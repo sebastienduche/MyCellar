@@ -1,4 +1,4 @@
-package Test;
+package test;
 
 import java.awt.AWTException;
 import java.awt.SystemTray;
@@ -7,7 +7,7 @@ import java.awt.TrayIcon.MessageType;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import Cave.MyCellarImage;
+import mycellar.MyCellarImage;
 
 public class TrayTest {
 	

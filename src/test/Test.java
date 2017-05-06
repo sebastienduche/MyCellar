@@ -1,13 +1,11 @@
-package Test;
+package test;
 
-import java.awt.GraphicsConfiguration;
-import java.awt.HeadlessException;
 import java.util.LinkedList;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
-import Cave.TextFieldPopup;
+import mycellar.TextFieldPopup;
 import net.miginfocom.swing.MigLayout;
 
 public class Test extends JFrame {

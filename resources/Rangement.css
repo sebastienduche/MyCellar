@@ -1,0 +1,16 @@
+table.internal {
+    border-spacing: 0;
+    width: 100%;
+    
+}
+
+table.external {
+    width: 100%;
+    
+}
+
+td.cell {
+    border: 1px solid black;
+    padding: 5;
+    text-align: center;
+}

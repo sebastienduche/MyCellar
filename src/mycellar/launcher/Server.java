@@ -81,7 +81,6 @@ public class Server implements Runnable {
 						sFile = sFile.substring(0, index);
 					}
 					// Suppression de fichier commençant par -
-					Debug("sFile1... "+sFile+" "+sFile.indexOf('-'));
 					if(sFile.indexOf('-') == 0)
 						listFileToRemove.add(sFile.substring(1));
 					else
@@ -140,8 +139,10 @@ public class Server implements Runnable {
 				Debug("sFile... "+sFile+" "+sFile.indexOf('-'));
 				if(sFile.indexOf('-') == 0)
 					listFileToRemove.add(sFile.substring(1));
-				else
-					listFile.add(new FileType(sFile, md5));
+				else {
+					boolean lib = (sFile.indexOf("MyCellar") == -1 && sFile.endsWith(".jar"));
+					listFile.add(new FileType(sFile, md5, lib));
+				}
 				sFile = in.readLine();
 			}
 
@@ -354,7 +355,10 @@ public class Server implements Runnable {
 
 					download.setValue(20 + i * percent);
 					try {
-						downloadFileFromGitHub(name, f.getAbsolutePath());
+						String dir = "";
+						if(fType.isForLibDirectory())
+							dir = "lib/";
+						downloadFileFromGitHub(dir+name, f.getAbsolutePath());
 					} catch (IOException e) {
 						e.printStackTrace();
 						Debug("Error Downloading " + name);
@@ -706,18 +710,18 @@ public class Server implements Runnable {
 
 		private String file;
 		private String md5;
-		private boolean folder;
+		private boolean lib;
 
-		public FileType(String file, String md5, boolean folder) {
+		public FileType(String file, String md5, boolean lib) {
 			this.file = file;
 			this.md5 = md5;
-			this.folder = folder;
+			this.lib = lib;
 		}
 
 		public FileType(String file, String md5) {
 			this.file = file;
 			this.md5 = md5;
-			this.folder = false;
+			this.lib = false;
 		}
 
 		public String getFile() {
@@ -728,8 +732,8 @@ public class Server implements Runnable {
 			return md5;
 		}
 
-		public boolean isFolder() {
-			return folder;
+		public boolean isForLibDirectory() {
+			return lib;
 		}
 	}
 }

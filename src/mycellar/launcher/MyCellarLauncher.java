@@ -6,8 +6,8 @@ package mycellar.launcher;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 17/04/17
+ * @version 1.0
+ * @since 07/05/17
  */
 
 import java.io.File;
@@ -22,8 +22,13 @@ public class MyCellarLauncher {
 		
 		Thread updateThread = null;
 		File fLib = new File("MyCellar.jar");
+		
     	if(!fLib.exists()) {
-    		install();
+    		boolean installError = install();
+    		if(installError)
+        		System.exit(1);
+        	else
+        		System.out.println("Installation Done");
     	}
     	else{
     		updateThread = new Thread(() -> {
@@ -65,6 +70,7 @@ public class MyCellarLauncher {
         		System.exit(0);
         });
     	}
+    		
         try {
             ProcessBuilder pb = new ProcessBuilder("java","-Dfile.encoding=UTF8","-jar","MyCellar.jar");
             pb.redirectErrorStream(true);
@@ -100,8 +106,8 @@ public class MyCellarLauncher {
 		System.exit(999);
 	}
 	
-	private void install() {
-		Server.getInstance().install();
+	private boolean install() {
+		return Server.getInstance().install();
 	}
 
 }

@@ -31,7 +31,7 @@ public class APropos extends JDialog {
   private MyCellarLabel MyCellarLabel2 = new MyCellarLabel();
   private MyCellarLabel MyCellarLabel3 = new MyCellarLabel();
   private MyCellarLabel MyCellarLabel4 = new MyCellarLabel();
-  public static String sVersion = "2.5.0.2";
+  public static String sVersion = "2.5.0.4";
   public static String sMainVersion = "4.8 CO";
   static final long serialVersionUID = 150505;
 

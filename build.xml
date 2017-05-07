@@ -19,11 +19,10 @@
     	<jar destfile="./Build/MyCellarInstall.jar">
     	            <manifest>
     	                <attribute name="Main-Class" value="mycellar.launcher.MyCellarLauncher"/>
-    	                <attribute name="Class-Path" value=". lib/jackson-core-2.4.0-rc3.jar lib/dropbox-core-sdk-1.7.7.jar"/>
+    	                <attribute name="Class-Path" value="."/>
     	            </manifest>
     	            <fileset dir="./bin">
     	            	<include name="**/*/*MyCellarLauncher*"/>
-    	            	<include name="**/*/*MyCellarDropbox*"/>
     	            	<include name="**/*/*Server*"/>
     	            </fileset>
     	        </jar>
@@ -65,6 +64,7 @@
     	<copy file="./lib/pdfbox-app-2.0.5.jar" todir="./Build/lib"/>
     	<copy file="./lib/smtp.jar" todir="./Build/lib"/>
     	<copy file="./Finish.html" todir="./Build"/>
+    	<copy file="./MyCellarVersion.txt" todir="./Build"/>
     	<copy file="./init.bat" todir="./Build"/>
     </target>
 </project>

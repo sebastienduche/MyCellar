@@ -14,6 +14,7 @@
             	<include name="**/*/*MyCellarLauncher*"/>
             	<include name="**/*/*MyCellarDropbox*"/>
             	<include name="**/*/*Server*"/>
+            	<include name="**/*/*APropos*"/>
             </fileset>
         </jar>
     	<jar destfile="./Build/MyCellarInstall.jar">

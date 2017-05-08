@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import mycellar.APropos;
+import mycellar.core.MyCellarVersion;
 
 /**
  * 
@@ -199,7 +199,7 @@ public class Server implements Runnable {
 		if (sServerVersion.isEmpty())
 			return false;
 
-		return (sServerVersion.compareTo(APropos.sVersion) > 0);
+		return (sServerVersion.compareTo(MyCellarVersion.version) > 0);
 	}
 
 	public boolean isDownloadCompleted() {

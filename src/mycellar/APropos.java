@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarVersion;
 import net.miginfocom.swing.MigLayout;
 
 
@@ -31,8 +32,6 @@ public class APropos extends JDialog {
   private MyCellarLabel MyCellarLabel2 = new MyCellarLabel();
   private MyCellarLabel MyCellarLabel3 = new MyCellarLabel();
   private MyCellarLabel MyCellarLabel4 = new MyCellarLabel();
-  public static String sVersion = "2.5.0.5";
-  public static String sMainVersion = "4.8 CO";
   static final long serialVersionUID = 150505;
 
   /**
@@ -71,9 +70,9 @@ public class APropos extends JDialog {
     MyCellarLabel2.setHorizontalAlignment(SwingConstants.LEFT);
     MyCellarLabel2.setText("Copyright: S.Duché");
     MyCellarLabel3.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel3.setText("Release: " + sVersion);
+    MyCellarLabel3.setText("Release: " + MyCellarVersion.version);
     MyCellarLabel4.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel4.setText("Version: " + sMainVersion);
+    MyCellarLabel4.setText("Version: " + MyCellarVersion.mainVersion);
     MyCellarLabel2.setFont(new java.awt.Font("Dialog", 0, 11));
     MyCellarLabel3.setFont(new java.awt.Font("Dialog", 0, 11));
     MyCellarLabel4.setFont(new java.awt.Font("Dialog", 0, 11));

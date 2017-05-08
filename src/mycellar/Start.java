@@ -33,6 +33,7 @@ import javax.swing.event.ChangeListener;
 import mycellar.actions.ExportPDFAction;
 import mycellar.core.IAddVin;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarVersion;
 import mycellar.launcher.Server;
 import mycellar.showfile.ShowFile;
 import net.miginfocom.swing.MigLayout;
@@ -258,7 +259,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	private void startup() throws Exception {
 
-		Debug("Starting MyCellar version: "+APropos.sVersion);
+		Debug("Starting MyCellar version: "+MyCellarVersion.version);
 		Thread.currentThread().setUncaughtExceptionHandler(this);
 		prefs = Preferences.userNodeForPackage(getClass());
 
@@ -1119,7 +1120,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (bUpdateAvailable) {
 			String sText = Program.getLabel("Infos385");
 			sText = sText.replaceFirst("A1", Server.getInstance().getAvailableVersion());
-			sText = sText.replaceFirst("A2", APropos.sMainVersion + "-" + APropos.sVersion);
+			sText = sText.replaceFirst("A2", MyCellarVersion.mainVersion + "-" + MyCellarVersion.version);
 			update.setText(sText);
 		}
 
@@ -1285,7 +1286,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (Server.getInstance().hasAvailableUpdate()) {
 			String sText = Program.getLabel("Infos384");
 			sText = sText.replaceFirst("A1", Server.getInstance().getAvailableVersion());
-			sText = sText.replaceFirst("A2", APropos.sVersion);
+			sText = sText.replaceFirst("A2", MyCellarVersion.version);
 			String title = Program.getError("Error032");
 			JOptionPane.showMessageDialog(this, sText, title, JOptionPane.INFORMATION_MESSAGE);
 		} else {

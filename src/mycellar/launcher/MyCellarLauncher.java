@@ -14,6 +14,9 @@ import java.io.File;
 import java.io.IOException;
 
 
+
+import mycellar.core.MyCellarVersion;
+
 import org.apache.commons.io.FileUtils;
 
 public class MyCellarLauncher {
@@ -36,6 +39,7 @@ public class MyCellarLauncher {
             	if(!Server.getInstance().hasAvailableUpdate())
             		return;
             	Server.getInstance().downloadVersion();
+            	MyCellarVersion.setLocalVersion(Server.getInstance().getServerVersion());
                 
             	File f = new File("download");
         		if(f.isDirectory()) {

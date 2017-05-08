@@ -199,7 +199,7 @@ public class Server implements Runnable {
 		if (sServerVersion.isEmpty())
 			return false;
 
-		return (sServerVersion.compareTo(MyCellarVersion.version) > 0);
+		return (sServerVersion.compareTo(MyCellarVersion.getLocalVersion()) > 0);
 	}
 
 	public boolean isDownloadCompleted() {

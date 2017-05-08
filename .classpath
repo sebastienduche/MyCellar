@@ -14,8 +14,6 @@
 	<classpathentry kind="lib" path="lib/jdom1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jxl.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="lib/dropbox-core-sdk-1.7.7.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-core-2.4.0-rc3.jar"/>
 	<classpathentry kind="lib" path="/Users/Seb/Documents/workspace/MyCellar-dev/lib/pdfbox-app-2.0.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

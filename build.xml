@@ -53,8 +53,6 @@
         <copy file="./lib/commons-lang-2.1.jar" todir="./Build/lib"/>
         <copy file="./lib/commons-logging.jar" todir="./Build/lib"/>
     	<copy file="./lib/commons-net-3.0.1.jar" todir="./Build/lib"/>
-    	<copy file="./lib/dropbox-core-sdk-1.7.7.jar" todir="./Build/lib" />
-    	<copy file="./lib/jackson-core-2.4.0-rc3.jar" todir="./Build/lib" />
     	<copy file="./lib/jcommon-1.0.18.jar" todir="./Build/lib"/>
         <copy file="./lib/jdom1.0.jar" todir="./Build/lib"/>
     	<copy file="./lib/jfreechart-1.0.15.jar" todir="./Build/lib"/>

@@ -13,6 +13,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -28,6 +30,7 @@ import mycellar.vignobles.CountryVignobles;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.net.util.Base64;
 
 import java.text.Normalizer;
 import java.util.Calendar;
@@ -67,8 +70,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 14.8
- * @since 21/01/17
+ * @version 14.9
+ * @since 08/05/17
  */
 
 public class Program {
@@ -236,7 +239,7 @@ public class Program {
 			}
 			defaut_half = "75cl";
 		}
-		
+
 		if(half.isEmpty()) {
 			half.add("75cl");
 			half.add("37.5cl");
@@ -336,28 +339,39 @@ public class Program {
 			System.exit(999);
 	}
 
-	private static void sendMail(String error, File filename) {
-		String to = "sebastienduche@gmail.com";
-		String from = "mycellarinfo@gmail.com";
-		String msgText1 = error;
-		String subject = "Problem";
-
-		// create some properties and get the default Session
-		Properties props = System.getProperties();
-
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.host", "smtp.gmail.com");
-		props.put("mail.smtp.port", "587");
-
-		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("mycellarinfo@gmail.com", "mycellar2014");
-			}
-		});
-		session.setDebug(false);
+	public static void sendMail(String error, File filename) {
+		InputStream stream = Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
 		try {
+			String line = reader.readLine();
+			reader.close();
+			String decoded = new String(Base64.decodeBase64(line.getBytes()));
+			final String[] values = decoded.split("/");
+
+			if(values == null)
+				return;
+
+			String to = values[0];
+			String from = values[1];
+			String msgText1 = error;
+			String subject = "Problem";
+
+			// create some properties and get the default Session
+			Properties props = System.getProperties();
+
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.starttls.enable", "true");
+			props.put("mail.smtp.host", "smtp.gmail.com");
+			props.put("mail.smtp.port", "587");
+
+			Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(from, values[2]);
+				}
+			});
+			session.setDebug(false);
+
 			// create a message
 			MimeMessage msg = new MimeMessage(session);
 			msg.setFrom(new InternetAddress(from));
@@ -609,11 +623,11 @@ public class Program {
 	public static String convertStringFromXMLString(String s) {
 		return StringEscapeUtils.unescapeXml(s);
 	}
-	
+
 	public static String removeAccents(String s) {
-	    s = Normalizer.normalize(s, Normalizer.Form.NFD);
-	    s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-	    return s;
+		s = Normalizer.normalize(s, Normalizer.Form.NFD);
+		s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+		return s;
 	}
 
 
@@ -939,21 +953,21 @@ public class Program {
 		Program.writeOtherObject();
 		CountryVignobles.save();
 		ListeBouteille.writeXML();
-		
+
 		String sFileName = archive;
 		if(!_sFilename.isEmpty())
 			sFileName = _sFilename;
 		Program.zipDir(sFileName);
-		
+
 		modified = false;
 		listCaveModified = false;
 		Debug("Program: Saving all files...Done");
 	}
-	
+
 	public static void setDebug(boolean debug) {
 		bDebug = debug;
 	}
-	
+
 	public static boolean isDebug() {
 		return bDebug;
 	}
@@ -1209,7 +1223,7 @@ public class Program {
 		for (Rangement r : getCave()) {
 			r.putTabStock();
 		}
-		
+
 		CountryVignobles.load();
 		CountryVignobles.addVignobleFromBottles();
 
@@ -1308,7 +1322,7 @@ public class Program {
 			{
 				if(!ListeBouteille.writeXML())
 					return false;
-				
+
 				if(isListCaveModified())
 					MyXmlDom.writeMyCellarXml(Program.getCave(),"");
 
@@ -1319,14 +1333,14 @@ public class Program {
 					String sVirgule = Character.toString(virgule);
 					putCaveConfigString("PRICE_SEPARATOR", sVirgule);
 				}
-				
+
 				// Suppression d'ancien fichier
 				for(Rangement r : getCave()){
 					File fToDelete = new File(getWorkDir(true)+Program.convertToHTMLString(r.getNom()) + ".ser");
 					if(fToDelete.exists())
 						fToDelete.delete();
 				}
-				
+
 				saveProperties();
 
 				if (!Program.getCave().isEmpty()) {						
@@ -1337,7 +1351,7 @@ public class Program {
 			}
 			// Sauvegarde des propriétés globales
 			saveGlobalProperties();
-			
+
 			if (getCaveConfigInt("FIC_EXCEL", 0) == 1) {
 				//Ecriture Excel
 				Rangement.write_XLS(getCaveConfigString("FILE_EXCEL",""), getStorage().getAllList(), true);
@@ -1376,7 +1390,7 @@ public class Program {
 
 		return true;
 	}
-	
+
 	public static void deleteTempFiles() {
 		for(File f : dirToDelete) {
 			if(!f.exists() || f.getName().equalsIgnoreCase("Global"))
@@ -1395,7 +1409,7 @@ public class Program {
 	 * Save Properties
 	 */
 	private static void saveProperties() {
-		
+
 		MyXmlDom.writeTypeXml(half);
 		File fToDelete = new File(getWorkDir(true) + "type.ini");
 		if(fToDelete.exists())
@@ -1448,7 +1462,7 @@ public class Program {
 			f_obj.mkdir();
 
 		if (_bWithEndSlash)
-    		return m_sGlobalDir + File.separator;
+			return m_sGlobalDir + File.separator;
 		return m_sGlobalDir;
 	}
 
@@ -1460,7 +1474,7 @@ public class Program {
 	public static boolean hasWorkDir() {
 		return m_bWorkDirCalculated;
 	}
-	
+
 	/**
 	 * getWorkDir: Retourne le nom du repertoire de travail.
 	 * @param _bWithEndSlash
@@ -1471,7 +1485,7 @@ public class Program {
 		if( m_bWorkDirCalculated )
 		{
 			if (_bWithEndSlash)
-    			return m_sWorkDir + File.separator;
+				return m_sWorkDir + File.separator;
 			return m_sWorkDir;
 		}
 		m_bWorkDirCalculated = true;
@@ -1494,11 +1508,11 @@ public class Program {
 		sTime += Integer.toString( g.get(Calendar.SECOND ) );
 
 		m_sWorkDir += File.separator + sTime;
-	
+
 		f_obj = new File(m_sWorkDir);
 		if(!f_obj.exists())
 			f_obj.mkdir();
-		
+
 		Debug("Program: work directory: "+m_sWorkDir);
 
 		if (_bWithEndSlash)
@@ -1651,12 +1665,12 @@ public class Program {
 	{
 		return getWorkDir(true) + m_sXMLPlacesFile;
 	}
-	
+
 	public static String getXMLTypesFileName()
 	{
 		return getWorkDir(true) + m_sXMLTypesFile;
 	}
-	
+
 	public static void setXMLTypesFileToDelete() {
 		isXMLTypesFileToDelete = true;
 	}
@@ -1695,7 +1709,7 @@ public class Program {
 	public static String getLabel(String _id) {
 		return getLabel(_id, true);
 	}
-	
+
 	public static String getLabel(String _id, boolean displayError) {
 		try {
 			return LanguageFileLoader.getLabel(_id);
@@ -1774,16 +1788,16 @@ public class Program {
 		if(managePlace != null)
 			managePlace.setUpdateView();
 	}
-	
+
 	public static void updateManagePlacePanel() {
 		if(managePlace != null)
 			managePlace.setUpdateView();
 	}
-	
+
 	public static List<Country> getCountries() {
 		return Countries.getInstance().getCountries();
 	}
-	
+
 	public static int findTab(ImageIcon image) {
 		for(int i = 0; i<tabbedPane.getTabCount();i++){
 			try{
@@ -1797,28 +1811,28 @@ public class Program {
 	public static void setModified() {
 		modified = true;
 	}
-	
+
 	public static boolean isModified() {
 		return modified;
 	}
-	
+
 	public static void setListCaveModified() {
 		listCaveModified = true;
 	}
-	
+
 	public static boolean isListCaveModified() {
 		return listCaveModified;
 	}
-	
+
 	public static PDFProperties getPDFProperties() {
 		String title = getCaveConfigString("PDF_TITLE", "");
-	    int titleSize = getCaveConfigInt("TITLE_SIZE", 10);
-	    int textSize = getCaveConfigInt("TEXT_SIZE", 10);
-	    String border = getCaveConfigString("BORDER", "ON");
-	    boolean boldTitle = "bold".equals(Program.getCaveConfigString("BOLD", ""));
-	      
+		int titleSize = getCaveConfigInt("TITLE_SIZE", 10);
+		int textSize = getCaveConfigInt("TEXT_SIZE", 10);
+		String border = getCaveConfigString("BORDER", "ON");
+		boolean boldTitle = "bold".equals(Program.getCaveConfigString("BOLD", ""));
+
 		PDFProperties properties = new PDFProperties(title, titleSize, textSize, "ON".equals(border), boldTitle);
-		
+
 		int nbCol = MyCellarFields.getFieldsList().size();
 		int countColumn = 0;
 		for(int i=0; i<nbCol; i++){
@@ -1837,7 +1851,7 @@ public class Program {
 		}
 		return properties;
 	}
-	
+
 	public static List<PDFRow> getPDFRows(LinkedList<Bouteille> list, PDFProperties properties) {
 		LinkedList<PDFRow> rows = new LinkedList<PDFRow>();
 		LinkedList<PDFColumn> columns = properties.getColumns();
@@ -1898,7 +1912,7 @@ public class Program {
 		}
 		return rows;
 	}
-	
+
 	public static PDFRow getPDFHeader(PDFProperties properties) {
 		LinkedList<PDFColumn> columns = properties.getColumns();
 		PDFRow row = new PDFRow();
@@ -1907,7 +1921,7 @@ public class Program {
 		}
 		return row;
 	}
-	
+
 	protected static void cleanDebugFiles() {
 		String sDir = System.getProperty("user.home");
 		sDir += "/MyCellarDebug";
@@ -1916,7 +1930,7 @@ public class Program {
 		oCal.add(Calendar.MONTH, -2);
 		Calendar c = Calendar.getInstance();
 		String files[] = f.list(new FilenameFilter() {
-			
+
 			@Override
 			public boolean accept(File dir, String name) {
 				if (name.startsWith("Debug-") && name.endsWith(".log")) {
@@ -1938,7 +1952,7 @@ public class Program {
 				return false;
 			}
 		});
-		
+
 		for(String s : files) {
 			f = new File(sDir, s);
 			Debug("Program: Deleting file "+f.getAbsolutePath());
@@ -1949,7 +1963,7 @@ public class Program {
 	public static void saveShowColumns(String value) {
 		putCaveConfigString("SHOWFILE_COLUMN", value);
 	}
-	
+
 	public static String getShowColumns() {
 		return getCaveConfigString("SHOWFILE_COLUMN", "");
 	}
@@ -1963,42 +1977,42 @@ public class Program {
 		}
 		putCaveConfigString("HTMLEXPORT_COLUMN", s);
 	}
-	
+
 	public static LinkedList<MyCellarFields> getHTMLColumns() {
 		LinkedList<MyCellarFields> cols = new LinkedList<MyCellarFields>();
 		String s = getCaveConfigString("HTMLEXPORT_COLUMN", "");
 		String [] fields = s.split(";");
 		for(String field : fields) {
-    		for(MyCellarFields f : MyCellarFields.getFieldsList()) {
-    			if(f.name().equals(field)) {
-    				cols.add(f);
-    				break;
-    			}
-    		}
+			for(MyCellarFields f : MyCellarFields.getFieldsList()) {
+				if(f.name().equals(field)) {
+					cols.add(f);
+					break;
+				}
+			}
 		}
 		return cols;
 	}
-	
+
 	public static boolean isSelectedTab(ITabListener tab) {
 		if(tabbedPane.getSelectedComponent() == null)
 			return false;
 		return tabbedPane.getSelectedComponent().equals(tab);
 	}
-	
+
 	public static String readFirstLineText(File f) {
 		if(f == null)
 			return "";
 		if(!f.getName().toLowerCase().endsWith(".txt"))
 			return "";
 		try {
-    		FileReader reader = new FileReader(f);
-    		BufferedReader buffer = new BufferedReader(reader);
-    		String line = buffer.readLine();
-    		buffer.close();
-    		return line.trim();
-    	} catch (IOException e) {
-    		showException(e, true);
-    	}
+			FileReader reader = new FileReader(f);
+			BufferedReader buffer = new BufferedReader(reader);
+			String line = buffer.readLine();
+			buffer.close();
+			return line.trim();
+		} catch (IOException e) {
+			showException(e, true);
+		}
 		return "";
 	}
 }

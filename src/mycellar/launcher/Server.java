@@ -685,8 +685,6 @@ public class Server implements Runnable {
 		listFile.add(new FileType("lib/miglayout-4.0-swing.jar", ""));
 		listFile.add(new FileType("lib/pdfbox-app-2.0.5.jar", ""));
 		listFile.add(new FileType("lib/smtp.jar", ""));
-		listFile.add(new FileType("lib/dropbox-core-sdk-1.7.7.jar", ""));
-		listFile.add(new FileType("lib/jackson-core-2.4.0-rc3.jar", ""));
 		listFile.add(new FileType("config/config.ini", ""));
 
 		listFile.add(new FileType("MyCellar.jar",""));

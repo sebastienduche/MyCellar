@@ -1,6 +1,7 @@
 package mycellar;
 
 import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -39,8 +40,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 9.7
- * @since 13/11/16
+ * @version 9.8
+ * @since 09/05/17
  */
 public class Parametres extends JDialog {
 	private MyCellarLabel label_fic_bak = new MyCellarLabel();
@@ -623,8 +624,9 @@ public class Parametres extends JDialog {
 		String className = info[lF.getSelectedIndex()].getClassName();
 		try {
 			UIManager.setLookAndFeel(className);
-			SwingUtilities.updateComponentTreeUI(this);
-			SwingUtilities.updateComponentTreeUI(popup);
+			for(Window window: Window.getWindows()) {
+                SwingUtilities.updateComponentTreeUI(window);
+            }
 			Program.putCaveConfigString("LOOK&FEEL", className);
 		}
 		catch (InstantiationException e) {

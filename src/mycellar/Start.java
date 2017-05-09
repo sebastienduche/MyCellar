@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
@@ -318,8 +319,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		afficheFrame();
 
 		try {
-			UIManager.setLookAndFeel(Program.getCaveConfigString("LOOK&FEEL", "javax.swing.plaf.metal.MetalLookAndFeel"));
-			SwingUtilities.updateComponentTreeUI(this);
+			UIManager.setLookAndFeel(Program.getCaveConfigString("LOOK&FEEL", UIManager.getCrossPlatformLookAndFeelClassName()));
+            for(Window window: Window.getWindows()) {
+                SwingUtilities.updateComponentTreeUI(window);
+            }
 		} catch (Exception exc) {
 		}
 
@@ -1128,7 +1131,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		try {
 			UIManager.setLookAndFeel(Program.getCaveConfigString("LOOK&FEEL", UIManager.getCrossPlatformLookAndFeelClassName()));
-			SwingUtilities.updateComponentTreeUI(this);
+			for(Window window: Window.getWindows()) {
+                SwingUtilities.updateComponentTreeUI(window);
+            }
 		} catch (Exception exc) {
 		}
 		Debug("Display Frame ended");

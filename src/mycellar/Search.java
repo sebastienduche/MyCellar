@@ -42,8 +42,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 16.9
- * @since 01/05/17
+ * @version 17.0
+ * @since 09/05/17
  */
 public class Search extends JPanel implements Runnable, ITabListener {
 	private static JTable table;
@@ -1421,13 +1421,12 @@ public class Search extends JPanel implements Runnable, ITabListener {
 	}
 
 	public static void updateTable() {
-		model.fireTableDataChanged();
+		SwingUtilities.invokeLater(() -> model.fireTableDataChanged());
+		
 	}
 
 	public static void clearResults() {
-		SwingUtilities.invokeLater(() -> {
-			model.removeAll();
-		});
+		SwingUtilities.invokeLater(() -> model.removeAll());
 	}
 
 	public void cut() {

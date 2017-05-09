@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 20.9
- * @since 01/05/17
+ * @version 21.0
+ * @since 09/05/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -717,20 +717,6 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 				enableAll(false);
 			}
 			
-			if ( (!m_bmodify && lieu_num_selected == 0) || (m_bmodify && lieu_num_selected == 0 && lieu_selected != 0)) { //Nécessite la sélection du numéro de lieu
-				Debug("ERROR: Wrong Num Place");
-				if (m_line.isVisible()) {
-					new Erreur(Program.getError("Error056"));
-				}
-				else {
-					new Erreur(Program.getError("Error174"));
-				}
-				m_num_lieu.setEnabled(true);
-				m_end.setText("");
-				enableAll(true);
-				return;
-			}
-			
 			String sPlaceName = "";
 			if (lieu_selected > 0) {
 				sPlaceName = Program.getCave(lieu_selected - 1).getNom();
@@ -738,7 +724,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			}
 			else if (m_bmodify) { //Si aucun emplacement n'a été sélectionné (modif du nom)
 				sPlaceName = m_sb_empl;
-				lieu_num_selected = 0;
+				lieu_num_selected = 1;
 				lieu_selected = Rangement.convertNom_Int(sPlaceName) + 1;
 				bIsCaisse = Program.getCave(lieu_selected - 1).isCaisse();
 			}

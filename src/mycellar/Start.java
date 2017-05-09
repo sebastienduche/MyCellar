@@ -45,8 +45,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 21.8
- * @since 21/01/17
+ * @version 21.9
+ * @since 09/05/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1123,11 +1123,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			sText = sText.replaceFirst("A2", MyCellarVersion.mainVersion + "-" + MyCellarVersion.version);
 			update.setText(sText);
 		}
-
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		m_bHasFrameBuilded = true;
 
 		try {
-			UIManager.setLookAndFeel(Program.getCaveConfigString("LOOK&FEEL", "javax.swing.plaf.metal.MetalLookAndFeel"));
+			UIManager.setLookAndFeel(Program.getCaveConfigString("LOOK&FEEL", UIManager.getCrossPlatformLookAndFeelClassName()));
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (Exception exc) {
 		}

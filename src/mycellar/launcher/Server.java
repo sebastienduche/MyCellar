@@ -26,8 +26,8 @@ import mycellar.core.MyCellarVersion;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 1.5
- * @since 07/05/17
+ * @version 1.6
+ * @since 09/05/17
  */
 
 public class Server implements Runnable {
@@ -696,11 +696,17 @@ public class Server implements Runnable {
 		return result;
 	}
 
-	private static boolean isRedirected( Map<String, List<String>> header ) {
-		for( String hv : header.get( null )) {
-			if(   hv.contains( " 301 " )
-					|| hv.contains( " 302 " )) return true;
-		}
+	private static boolean isRedirected(Map<String, List<String>> header) {
+		if(header == null)
+			return false;
+		try{
+			for( String hv : header.get( null )) {
+				if(hv == null)
+					return false;
+				if( hv.contains( " 301 " ) || hv.contains( " 302 " ))
+					return true;
+			}
+		}catch(Exception e) {}
 		return false;
 	}
 

@@ -23,8 +23,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.4
- * @since 04/05/15
+ * @version 3.5
+ * @since 10/05/17
  */
 public class ListVin extends JPanel {
   private MyCellarLabel textControl1 = new MyCellarLabel();
@@ -32,10 +32,8 @@ public class ListVin extends JPanel {
   public ListValues tv;
   public JScrollPane scrollpane;
 
-  MyCellarLabel MyCellarLabel2 = new MyCellarLabel();
-  AddVin add_vin;
-  TableColumn tc;
-  ListEditor le;
+  private MyCellarLabel MyCellarLabel2 = new MyCellarLabel();
+  private ListEditor le;
   static final long serialVersionUID = 10805;
 
   /**
@@ -53,14 +51,12 @@ public class ListVin extends JPanel {
 
         TableColumn tc1 = tcm.getColumn(0);
         tc1.setCellRenderer(new ToolTipRenderer());
-        //tc = tcm.getColumn(ListValues.ETAT);
         le = new ListEditor(bottle);
         tc1.setCellEditor(le);
         ListSelectionModel rowSM = table.getSelectionModel();
         rowSM.setSelectionInterval(0, 0);
         LinkedList<Bouteille> list = new LinkedList<Bouteille>();
         list.add(bottle.getFirst());
-        //le.putList(list);
         rowSM.addListSelectionListener(new ListSelectionListener() {
           public void valueChanged(ListSelectionEvent e) {
             //Ignore extra messages.
@@ -105,7 +101,6 @@ public class ListVin extends JPanel {
    * @param av AddVin
    */
   public void setAddVin(AddVin av) {
-    add_vin = av;
     le.setAddVin(av);
   }
 

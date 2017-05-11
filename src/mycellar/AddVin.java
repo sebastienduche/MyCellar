@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 21.0
- * @since 09/05/17
+ * @version 21.1
+ * @since 10/05/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -462,22 +462,13 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 			int num_rangement = Rangement.convertNom_Int(m_sb_empl);
 			if (num_rangement >= 0) {
-				if (Program.getCave(num_rangement).isCaisse()) {
-					m_line.setVisible(false);
-					m_column.setVisible(false);
-					m_avant4.setVisible(false);
-					m_avant5.setVisible(false);
-					m_labelLine.setVisible(false);
-					m_labelColumn.setVisible(false);
-				}
-				else {
-					m_line.setVisible(true);
-					m_column.setVisible(true);
-					m_avant4.setVisible(true);
-					m_avant5.setVisible(true);
-					m_labelLine.setVisible(true);
-					m_labelColumn.setVisible(true);
-				}
+				boolean bIsCaisse = Program.getCave(num_rangement).isCaisse();
+				m_line.setVisible(!bIsCaisse);
+				m_column.setVisible(!bIsCaisse);
+				m_avant4.setVisible(!bIsCaisse);
+				m_avant5.setVisible(!bIsCaisse);
+				m_labelLine.setVisible(!bIsCaisse);
+				m_labelColumn.setVisible(!bIsCaisse);
 			}
 			m_end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
 		}
@@ -718,11 +709,13 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			}
 			
 			String sPlaceName = "";
+			boolean bModifyPlace = true;
 			if (lieu_selected > 0) {
 				sPlaceName = Program.getCave(lieu_selected - 1).getNom();
 				bIsCaisse = Program.getCave(lieu_selected - 1).isCaisse();
 			}
 			else if (m_bmodify) { //Si aucun emplacement n'a été sélectionné (modif du nom)
+				bModifyPlace = false;
 				sPlaceName = m_sb_empl;
 				lieu_num_selected = 1;
 				lieu_selected = Rangement.convertNom_Int(sPlaceName) + 1;
@@ -741,12 +734,11 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 				}
 				
 				if (!m_bmulti) {
-					lieu_num_selected -= 1;
 					Bouteille bouteille = new BouteilleBuilder(nom)
 										.annee(annee)
 										.type(demie)
 										.place(sPlaceName)
-										.numPlace(lieu_num_selected)
+										.numPlace(lieu_num_selected+caisse.getStartCaisse()-1)
 										.price(prix)
 										.comment(comment1)
 										.maturity(dateOfC)
@@ -811,7 +803,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						}
 					} // Fin de l'ajout de plusieurs bouteilles restantes
 					if (nb_bottle_rest == 0 && resul) {
-						if (lieu_num_selected == -1) {
+						if (lieu_num_selected == 0) {
 							new Erreur(Program.getError("Error174"));
 							resul = false;
 						}
@@ -869,9 +861,8 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 				else { //if(! m_bmulti) Multi == true => Modification de plusieurs vins vers une caisse
 					//Récupération des diffrentes bouteilles
 					Debug("Modifying multiple bottle to a Caisse");
-					int nbbottle = listBottleInModification.size();
 					resul = true;
-					if(lieu_num_selected == 0)
+					if(!bModifyPlace)
 					{
 						Debug("Modifying without changing place");
 						boolean bOneBottle = listBottleInModification.size() == 1;
@@ -887,34 +878,34 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 								tmp.setColor(color);
 							if(bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty())
 								tmp.setVignoble(new Vignoble(country, vignoble, aoc, igp));
-							// Add multiple bottle with question
-							int num_l = Rangement.convertNom_Int(tmp.getEmplacement());
-							Debug("Adding multiple bottles...");
-							if (m_bmodify) {
-								//Delete Bouteilles
-								Debug("Deleting bottles when modifying");
-								Program.getStorage().deleteWine(tmp);
-								if (!Program.getCave(num_l).isCaisse()) { //Si ce n'est pas une caisse on supprime de stockage
-									Debug( Program.getCave(num_l).getNom() + " is Not a Caisse. Delete from stock");
-									Program.getCave(num_l).clearStock(tmp);
-								}
-							}
 							//Ajout des bouteilles dans la caisse
-							Debug("Adding bottle...");
-							if (m_bmodify)
+							
+							if (m_bmodify) {
+								Debug("Modifying bottle...");
 								Program.getStorage().addHistory(History.MODIFY, tmp);
-							else
-								Program.getStorage().addHistory(History.ADD, tmp);
-							//Ajout des bouteilles dans ALL
-							if (Program.getCave(num_l).addWine(tmp) != -1) {
 								m_bbottle_add = true;
-								resetValues();
-								try {
-									m_half.setSelectedIndex(0);
-								}
-								catch (Exception ex) {}
-								m_labelStillToAdd.setText("");
 							}
+							else {
+								Debug("Adding bottle...");
+								Program.getStorage().addHistory(History.ADD, tmp);
+								//Ajout des bouteilles
+								if (Program.getCave(tmp.getEmplacement()).addWine(tmp) != -1) {
+									m_bbottle_add = true;
+									resetValues();
+									try {
+										m_half.setSelectedIndex(1);
+									}
+									catch (Exception ex) {}
+									m_labelStillToAdd.setText("");
+								}
+							}
+						}
+						if(m_bmodify) {
+							resetValues();
+							try {
+								m_half.setSelectedIndex(1);
+							}
+							catch (Exception ex) {}
 						}
 					}
 					else
@@ -934,6 +925,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							m_add.setEnabled(true);
 						}
 						if (resul) {
+							int nbbottle = listBottleInModification.size();
 							if ( Program.getCave(lieu_selected - 1).isLimited() && (Program.getCave(lieu_selected - 1).getNbCaseUseCaisse(nLieuNum) + nbbottle) > Program.getCave(lieu_selected - 1).getStockNbcol() ) {
 								Debug("ERROR: Not enough place!");
 								new Erreur(Program.getError("Error154"), Program.getError("Error153"));
@@ -957,34 +949,36 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 									// Add multiple bottle with question
 									Debug("Adding multiple bottles...");
 									if (m_bmodify) {
-										//Delete Bouteilles
-										Debug("Deleting bottles when modifying");
-										int num_l = Rangement.convertNom_Int(tmp.getEmplacement());
-										boolean aCaisse = false;
-										Rangement r = Program.getCave(num_l);
+										Rangement r = Program.getCave(tmp.getEmplacement());
+										Debug("Delete from stockage (if not a caisse)");
 										if(r != null)
-											aCaisse = r.isCaisse();
-										Program.getStorage().deleteWine(tmp);
-										if (!aCaisse && r != null) { //Si ce n'est pas une caisse on supprime de stockage
-											Debug("is Not a Caisse. Delete from stock");
 											r.clearStock(tmp);
-										}
 									}
 									//Ajout des bouteilles dans la caisse
 									tmp.setEmplacement(sPlaceName);
 									tmp.setNumLieu(nLieuNum);
 									Debug("Adding bottle.");
 									Program.getStorage().addHistory(m_bmodify ? History.MODIFY : History.ADD, tmp);
-									int num_l = Rangement.convertNom_Int(tmp.getEmplacement());
+									//int num_l = Rangement.convertNom_Int(tmp.getEmplacement());
 									//Ajout des bouteilles dans ALL
-									if (Program.getCave(num_l).addWine(tmp) != -1) {
+									if(m_bmodify) {
 										m_bbottle_add = true;
 										resetValues();
 										try {
-											m_half.setSelectedIndex(0);
+											m_half.setSelectedIndex(1);
 										}
 										catch (Exception ex) {}
-										m_labelStillToAdd.setText("");
+									}
+									else {
+										if (Program.getCave(sPlaceName).addWine(tmp) != -1) {
+											m_bbottle_add = true;
+											resetValues();
+											try {
+												m_half.setSelectedIndex(1);
+											}
+											catch (Exception ex) {}
+											m_labelStillToAdd.setText("");
+										}
 									}
 
 								}
@@ -1433,8 +1427,6 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			}
 		}
 
-		//Quitter : Sauvegarde XML
-		//Save XML file
 		Debug("Quitting...");
 
 		for (Rangement rangement : Program.getCave()) {

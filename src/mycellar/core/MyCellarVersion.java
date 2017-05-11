@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 
 public class MyCellarVersion {
 
-	public static final String version = "2.5.1.0";
+	public static final String version = "2.5.1.9";
 	public static final String mainVersion = "4.8 CO";
 	  
 	public static String getLocalVersion() {
@@ -23,7 +23,6 @@ public class MyCellarVersion {
 			reader.close();
 			return version;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "";
@@ -37,7 +36,6 @@ public class MyCellarVersion {
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

@@ -40,8 +40,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.5
- * @since 01/05/17
+ * @version 2.6
+ * @since 10/05/17
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -239,6 +239,8 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 * @param e ItemEvent
 	 */
 	protected void lieu_itemStateChanged(ItemEvent e) {
+		if(!isListenersEnabled())
+			return;
 		Debug("Lieu_itemStateChanging...");
 		boolean bIsCaisse = false;
 		try {
@@ -313,6 +315,8 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 * @param e ItemEvent
 	 */
 	protected void line_itemStateChanged(ItemEvent e) {
+		if(!isListenersEnabled())
+			return;
 		Debug("Line_itemStateChanging...");
 		try {
 			int nb_col = 0;
@@ -409,8 +413,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_colorList.setSelectedItem(BottleColor.getColor(bottle.getColor()));
 			initializeVignobles(bottle);
 
-			int num_rangement = Rangement.convertNom_Int(bottle.getEmplacement());
-			m_lieu.setSelectedIndex(num_rangement+1);
+			//int num_rangement = Rangement.convertNom_Int(bottle.getEmplacement());
+			selectPlace(bottle);
+			/*m_lieu.setSelectedIndex(num_rangement+1);
 			if (num_rangement >= 0) {
 				if (Program.getCave(num_rangement).isCaisse()) {
 					m_num_lieu.setSelectedIndex(bottle.getNumLieu()+1);
@@ -428,7 +433,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 					m_labelLine.setVisible(true);
 					m_labelColumn.setVisible(true);
 				}
-			}
+			}*/
 			m_end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
 			resetModified();
 		}

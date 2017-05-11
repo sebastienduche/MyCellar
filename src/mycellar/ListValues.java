@@ -10,8 +10,8 @@ import javax.swing.table.*;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 04/05/15
+ * @version 1.0
+ * @since 10/05/17
  */
 public class ListValues extends AbstractTableModel {
   static final long serialVersionUID = 200505;
@@ -44,6 +44,8 @@ public class ListValues extends AbstractTableModel {
    * @return Object
    */
   public Object getValueAt(int row, int column) {
+	  if(list == null || list.size() == 0)
+		  return null;
     return list.get(row).getNom();
   }
 

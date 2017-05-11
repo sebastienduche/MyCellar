@@ -10,15 +10,13 @@ import javax.swing.table.AbstractTableModel;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 05/07/14
+ * @version 0.8
+ * @since 10/05/17
  */
 public class TableauValues extends AbstractTableModel {
-	public final static int ETAT = 3;
+	public final static int ETAT = 0;
 	static final long serialVersionUID = 220605;
-	private String[] columnNames = {Program.getLabel("Infos105"), Program.getLabel("Infos027"), Program.getLabel("Infos136"),
-			Program.getLabel("Infos057")
-	};
+	private String[] columnNames = {"", Program.getLabel("Infos105"), Program.getLabel("Infos027"), Program.getLabel("Infos136")};
 
 	private LinkedList<Rangement> list = new LinkedList<Rangement>();
 	private LinkedList<Boolean> listBoolean = new LinkedList<Boolean>();
@@ -52,8 +50,10 @@ public class TableauValues extends AbstractTableModel {
 		Rangement r = list.get(row);
 		switch(column) {
 		case 0:
-			return r.getNom();
+			return listBoolean.get(row);
 		case 1:
+			return r.getNom();
+		case 2:
 			if (r.isCaisse())
 				return Program.getLabel("Infos058");
 			int nombre_ligne = 0;
@@ -63,7 +63,7 @@ public class TableauValues extends AbstractTableModel {
 			if (nombre_ligne <= 1) 
 				return new String(Integer.toString(nombre_ligne)) + " " + Program.getLabel("Infos060");
 			return new String(Integer.toString(nombre_ligne)) + " " + Program.getLabel("Infos061");
-		case 2:
+		case 3:
 			int nombre_vin = 0;
 			for (int k = 0; k < r.getNbEmplacements(); k++) {
 				nombre_vin += r.getNbCaseUse(k);
@@ -74,8 +74,6 @@ public class TableauValues extends AbstractTableModel {
 			if (nombre_vin <= 1)
 				return new String(Integer.toString(nombre_vin)) + " " + Program.getLabel("Infos063");
 			return new String(Integer.toString(nombre_vin)) + " " + Program.getLabel("Infos064");
-		case 3:
-			return listBoolean.get(row);
 		}
 		return "";
 	}
@@ -98,10 +96,7 @@ public class TableauValues extends AbstractTableModel {
 	 * @return boolean
 	 */
 	public boolean isCellEditable(int row, int column) {
-		if (column == ETAT) {
-			return true;
-		}
-		return false;
+		return (column == ETAT);
 	}
 
 	/**

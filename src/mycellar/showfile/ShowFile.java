@@ -55,8 +55,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.6
- * @since 19/03/17
+ * @version 3.7
+ * @since 10/05/17
  */
 
 public class ShowFile extends JPanel implements ITabListener  {
@@ -363,10 +363,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 			else	
 				delete_actionPerformed(e);
 		});
-		if(trash) {
-    		add(m_oManageButton, "align right, split 2");
-		}
-		else {
+		if(!trash) {
 			add(m_oManageButton, "align right, split 3");
 			add(m_oModifyButton, "align right");
 		}

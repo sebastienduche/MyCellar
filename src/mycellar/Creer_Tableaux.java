@@ -47,8 +47,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.8
- * @since 17/01/17
+ * @version 4.9
+ * @since 10/05/17
  */
 public class Creer_Tableaux extends JPanel implements ITabListener {
 	private MyCellarLabel label2 = new MyCellarLabel();
@@ -550,17 +550,10 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 */
 	void selectall_actionPerformed(ActionEvent e) {
 		end.setText("");
-		if (selectall.isSelected() == true) {
-			for (int i = 0; i < tv.getRowCount(); i++) {
-				tv.setValueAt(new Boolean(true), i, 3);
-			}
+		for (int i = 0; i < tv.getRowCount(); i++) {
+			tv.setValueAt(new Boolean(selectall.isSelected()), i, 0);
 		}
-		else {
-			for (int i = 0; i < tv.getRowCount(); i++) {
-				tv.setValueAt(new Boolean(false), i, 3);
-			}
-		}
-		//scrollPane1.updateUI();
+		table.updateUI();
 	}
 
 	/**
@@ -584,12 +577,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 */
 	void jradio_actionPerformed(ActionEvent e) {
 		end.setText("");
-		if ( type_XLS.isSelected() ) {
-			m_jcb_options.setEnabled( true );
-		}
-		else {
-			m_jcb_options.setEnabled( false );
-		}
+		m_jcb_options.setEnabled(type_XLS.isSelected());
 	}
 
 	/**

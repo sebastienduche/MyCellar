@@ -39,8 +39,8 @@ import mycellar.vignobles.Vignobles;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 01/05/17
+ * @version 0.3
+ * @since 10/05/17
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -112,7 +112,7 @@ public class MyCellarManageBottles extends JPanel {
 	protected ItemListener numLieuListener;
 	protected ItemListener lineListener;
 	protected ItemListener columnListener;
-	
+	private boolean listenersEnabled = true;
 	
 	protected boolean m_bmulti = false; //Pour ListVin
 	
@@ -420,6 +420,8 @@ public class MyCellarManageBottles extends JPanel {
 	 * @param e ItemEvent
 	 */
 	protected void num_lieu_itemStateChanged(ItemEvent e) {
+		if(!isListenersEnabled())
+			return;
 		SwingUtilities.invokeLater(() -> {
 			Debug("Num_lieu_itemStateChanging...");
 			int nb_ligne = 0;
@@ -511,13 +513,6 @@ public class MyCellarManageBottles extends JPanel {
 		});
 	}
 	
-	protected void removeListeners() {
-		m_lieu.removeItemListener(lieuListener);
-		m_num_lieu.removeItemListener(numLieuListener);
-		m_line.removeItemListener(lineListener);
-		m_column.removeItemListener(columnListener);
-	}
-	
 	/**
 	 * Select a place in the lists (used from CellarOrganizerPanel)
 	 * @param rangement
@@ -526,7 +521,7 @@ public class MyCellarManageBottles extends JPanel {
 	 * @param column
 	 */
 	public void selectPlace(Rangement rangement, int place, int row, int column) {
-		removeListeners();
+		setListenersEnabled(false);
 		for(int i=0; i<m_lieu.getItemCount(); i++) {
 			if(rangement.getNom().equals(m_lieu.getItemAt(i))){
 				m_lieu.setSelectedIndex(i);
@@ -561,9 +556,70 @@ public class MyCellarManageBottles extends JPanel {
 		m_labelColumn.setVisible(true);
 		m_line.setVisible(true);
 		m_column.setVisible(true);
-		setListeners();
+		setListenersEnabled(true);
 	}
 	
+	public void selectPlace(Bouteille bottle) {
+		Debug("selectPlaceWithBottle...");
+		setListenersEnabled(false);
+		Rangement rangement = bottle.getRangement();
+		for(int i=0; i<m_lieu.getItemCount(); i++) {
+			if(rangement.getNom().equals(m_lieu.getItemAt(i))){
+				m_lieu.setSelectedIndex(i);
+				break;
+			}
+		}
+		int nbEmpl = rangement.getNbEmplacements();
+		int nbLine = -1;
+		int nbColumn = -1;
+		m_num_lieu.removeAllItems();
+		m_column.removeAllItems();
+		m_line.removeAllItems();
+		m_num_lieu.addItem("");
+		m_line.addItem("");
+		m_column.addItem("");
+		
+		
+		boolean isCaisse = rangement.isCaisse();
+		if(!isCaisse) {
+			for(int i = 1; i<= nbEmpl; i++)
+				m_num_lieu.addItem(Integer.toString(i));
+			nbLine = rangement.getNbLignes(bottle.getNumLieu()-1);
+			nbColumn = rangement.getNbColonnes(bottle.getNumLieu()-1, bottle.getLigne()-1);
+			for(int i = 1; i<= nbLine; i++)
+				m_line.addItem(Integer.toString(i));
+			for(int i = 1; i<= nbColumn; i++)
+				m_column.addItem(Integer.toString(i));
+			m_line.setEnabled(true);
+			m_column.setEnabled(true);
+			m_num_lieu.setSelectedIndex(bottle.getNumLieu());
+			m_line.setSelectedIndex(bottle.getLigne());
+			m_column.setSelectedIndex(bottle.getColonne());
+		}
+		else {
+			int start = rangement.getStartCaisse();
+			for(int i = start; i< nbEmpl+start; i++)
+				m_num_lieu.addItem(Integer.toString(i));
+			m_num_lieu.setSelectedIndex(bottle.getNumLieu()-start+1);
+		}
+		m_num_lieu.setEnabled(true);
+		
+		m_labelLine.setVisible(!isCaisse);
+		m_labelColumn.setVisible(!isCaisse);
+		m_line.setVisible(!isCaisse);
+		m_column.setVisible(!isCaisse);
+		setListenersEnabled(true);
+		Debug("selectPlaceWithBottle... Done");
+	}
+	
+	protected boolean isListenersEnabled() {
+		return listenersEnabled;
+	}
+
+	protected void setListenersEnabled(boolean listenersEnabled) {
+		this.listenersEnabled = listenersEnabled;
+	}
+
 	protected static void Debug(String s) {
 		
 	}

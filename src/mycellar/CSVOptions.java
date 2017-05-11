@@ -21,8 +21,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 13/11/16
+ * @version 1.3
+ * @since 11/05/17
  */
 public class CSVOptions extends JDialog {
 	private JPanel jPanel1 = new JPanel();
@@ -57,6 +57,7 @@ public class CSVOptions extends JDialog {
 	private void jbInit() throws Exception {
 		Debug("JbInit");
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setModal(true);
 		this.setTitle(Program.getLabel("Infos269"));
 
 		this.addKeyListener(new java.awt.event.KeyListener() {

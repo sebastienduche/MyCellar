@@ -23,8 +23,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.8
- * @since 13/11/16
+ * @version 1.9
+ * @since 11/05/17
  */
 public class PDFOptions extends JDialog {
   private JPanel jPanel1 = new JPanel();
@@ -69,6 +69,7 @@ public class PDFOptions extends JDialog {
   private void jbInit() throws Exception {
     this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     this.setTitle(Program.getLabel("Infos254"));
+    setModal(true);
     this.addKeyListener(new java.awt.event.KeyListener() {
       public void keyReleased(java.awt.event.KeyEvent e) {}
 

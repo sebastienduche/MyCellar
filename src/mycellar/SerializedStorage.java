@@ -20,8 +20,8 @@ import mycellar.vignobles.CountryVignobles;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.3
- * @since 15/01/17
+ * @version 3.4
+ * @since 11/05/17
  */
 
 public class SerializedStorage implements Storage {
@@ -40,7 +40,9 @@ public class SerializedStorage implements Storage {
 	public void setListBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles = listBouteilles;
 		listeUniqueBouteille.clear();
-		for(Bouteille b: listBouteilles.bouteille) {
+		if(this.listBouteilles.bouteille == null)
+			this.listBouteilles.bouteille = new LinkedList<Bouteille>();
+		for(Bouteille b: this.listBouteilles.bouteille) {
 			if(!listeUniqueBouteille.contains(b.getNom()))
 				listeUniqueBouteille.add(b.getNom());
 		}
@@ -197,9 +199,9 @@ public class SerializedStorage implements Storage {
 				nom1 = b.getNom();
 				annee1 = b.getAnneeInt();
 
-				int nCave = Rangement.convertNom_Int(empl);
+				Rangement rangement = Program.getCave(empl);
 
-				if (nCave != -1 && Program.getCave(nCave).isCaisse()) {
+				if (rangement != null && rangement.isCaisse()) {
 					if (nom1.equals(nom2) && empl.equals(empl1) && num_empl == num_empl1 && annee == annee1) {
 						resul = true;
 						num = i;

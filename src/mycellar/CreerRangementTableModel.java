@@ -10,8 +10,8 @@ import javax.swing.table.AbstractTableModel;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 16/01/17
+ * @version 0.5
+ * @since 12/05/17
  */
 
 public class CreerRangementTableModel extends AbstractTableModel {
@@ -202,6 +202,7 @@ public class CreerRangementTableModel extends AbstractTableModel {
 			{
 				mapPart.put(index, numPart);
 				mapLine.put(index, line);
+				p.setRows(1);
 				index++;
 			}
 			numPart++;

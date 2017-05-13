@@ -41,8 +41,8 @@ import jxl.Workbook;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.1
- * @since 13/11/16
+ * @version 10.2
+ * @since 13/05/17
  */
 public class Importer extends JPanel implements ITabListener, Runnable {
 
@@ -1093,14 +1093,14 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 							while (nom1.length() == 0);
 						}
 						if (resul == 0) {
-							int val;
+							Rangement rangement;
 							do {
 								// Contr�le de l'existance du rangement
-								val = -1;
+								rangement = null;
 								if (nom1.length() > 0) {
-									val = Rangement.convertNom_Int(nom1);
+									rangement = Program.getCave(nom1);
 								}
-								if (val != -1) {
+								if (rangement != null) {
 									Program.options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
 											Program.getError("Error037"), false);
 									Program.options.setVisible(true);
@@ -1109,7 +1109,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 									resul = 1;
 								}
 							}
-							while (val != -1);
+							while (rangement != null);
 						}
 					}
 					while (resul != 0);
@@ -1875,7 +1875,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 			if( !liste_lieu.isEmpty() ) {
 				String error = new String();
 				for(String lieu: liste_lieu){
-					if(Rangement.convertNom_Int(lieu) == -1){
+					if(Program.getCave(lieu) == null){
 						if(!error.isEmpty())
 							error += ", ";
 						error += lieu;

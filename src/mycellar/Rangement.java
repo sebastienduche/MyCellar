@@ -40,8 +40,8 @@ import jxl.write.WriteException;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 24.3
- * @since 01/05/17
+ * @version 24.4
+ * @since 13/05/17
  */
 public class Rangement implements Serializable, Comparable<Rangement> {
 
@@ -1051,15 +1051,6 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	}
 
 	/**
-	 * isCaisse: retourne true si c'est une caisse
-	 *
-	 * @return boolean
-	 */
-	public static boolean isCaisse(String empl) {
-		return Program.getCave().get(convertNom_Int(empl)).isCaisse();
-	}
-
-	/**
 	 * init_W_XML: Initialise le fichier XML
 	 *
 	 * @param file_xml FileWriter: Fichier XML
@@ -1094,43 +1085,6 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		return resul;
 	}
 	
-
-	/**
-	 * convertNom_Int: Convertir un nom de rangement en son numéro dans le
-	 * programme
-	 *
-	 * @param r LinkedList<Rangement>: liste des rangements
-	 * @param nom1 String: nom du rangement à convertir
-	 * @return int
-	 */
-	public static int convertNom_Int(String nom1) {
-
-		int resul = 1;
-		int i = 0;
-		int val = -1;
-
-		if (nom1 == null) {
-			return -1;
-		}
-		nom1 = nom1.trim();
-		try {
-			do {
-				String tmp = Program.getCave(i).getNom();
-				if (nom1.compareTo(tmp) == 0) {
-					resul = 0;
-					val = i;
-				}
-				i++;
-			}
-			while (resul != 0 && i < Program.GetCaveLength());
-		}
-		catch (Exception npe) {
-			val = -1;
-		}
-
-		return val;
-	}
-
 	/**
 	 * getOut: retourne le tableau de bouteilles hors rangement
 	 *
@@ -1813,38 +1767,37 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 */
 	public static void findRangementToCreate() {
 
-		String html = "";
-		boolean resul = true;
+		StringBuilder html = new StringBuilder();
 
-		html = "<html><body><p align=center><font size=4><b>" + Program.convertToHTMLString(Program.getLabel("Infos266")) + "</b></font></p><p><ul>";
+		html.append("<html><body><p align=center><font size=4pt><b>");
+		html.append(Program.convertToHTMLString(Program.getLabel("Infos266")));
+		html.append("</b></font></p><p><ul>");
 		LinkedList<String> missingPlace = new LinkedList<String>();
 		for( Bouteille bottle: Program.getStorage().getAllList() )
 		{
 			String place = bottle.getEmplacement();
-			if (place != null && Rangement.convertNom_Int(place) == -1 && place.compareTo("") != 0 && !missingPlace.contains(place))
+			if (place != null && !place.isEmpty() && Program.getCave(place) == null && !missingPlace.contains(place))
 				missingPlace.add(place);
 		}
 		for(String s: missingPlace)
-			html = html.concat("<li>" + s);
+			html.append("<li>" + s);
 
-		html = html.concat("</ul></p></body></html>");
+		html.append("</ul></p></body></html>");
 		if (missingPlace.isEmpty()) { //Pas de rangement à créer
-			html = "<html><body><p align=center><font size=4><b>" + Program.convertToHTMLString(Program.getLabel("Infos265")) + "</b></font></p></body></html>";
+			html.append("<html><body><p align=center><font size=4pt><b>");
+			html.append(Program.convertToHTMLString(Program.getLabel("Infos265")));
+			html.append("</b></font></p></body></html>");
 		}
-		File file = null;
 		try {
-			file = File.createTempFile("MyCellar", "html");
+			File file = File.createTempFile("MyCellar", "html");
 			file.deleteOnExit();
 			FileWriter f = new FileWriter(file);
-			f.write(html);
+			f.write(html.toString());
 			f.close();
+			Program.open(file);
 		}
 		catch (IOException ioe) {
 			Program.showException(ioe, false);
-			resul = false;
-		}
-		if (resul) {
-			Program.open(file);
 		}
 	}
 	

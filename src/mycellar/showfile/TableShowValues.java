@@ -15,8 +15,8 @@ import mycellar.Rangement;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.6
- * @since 16/01/17
+ * @version 2.7
+ * @since 13/05/17
  */
 
 public class TableShowValues extends AbstractTableModel {
@@ -195,7 +195,7 @@ public class TableShowValues extends AbstractTableModel {
     	int num_empl_old = b.getNumLieu();
     	int line_old = b.getLigne();
     	int column_old = b.getColonne();
-    	int n = Rangement.convertNom_Int(empl_old);
+    	Rangement rangement = Program.getCave(empl_old);
     	boolean bError = false;
     	int nValueToCheck = -1;
     	String empl = empl_old;
@@ -205,7 +205,7 @@ public class TableShowValues extends AbstractTableModel {
 
     	if ( column == PLACE ) {
     		empl = (String)value; 
-	    	n = Rangement.convertNom_Int((String)value);
+	    	rangement = Program.getCave(empl);
     	}
     	else if ( column == NUM_PLACE ) {
     		try{
@@ -239,7 +239,7 @@ public class TableShowValues extends AbstractTableModel {
     	}
     	
     	if ( !bError && (column == NUM_PLACE || column == LINE || column == COLUMN) ) {
-    		if (!Program.getCave(n).isCaisse() && nValueToCheck <= 0)
+    		if (rangement != null && !rangement.isCaisse() && nValueToCheck <= 0)
     		{
     			javax.swing.JOptionPane.showMessageDialog(null, Program.getError("Error197"), Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
                 bError = true;
@@ -248,7 +248,6 @@ public class TableShowValues extends AbstractTableModel {
     		
     	if ( !bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
     		// Controle de l'emplacement de la bouteille
-    		Rangement rangement = Program.getCave(n);
     		if(rangement.canAddBottle(num_empl, line, column1))
     		{
 		    	Bouteille bTemp = null;
@@ -259,7 +258,7 @@ public class TableShowValues extends AbstractTableModel {
 		    		javax.swing.JOptionPane.showMessageDialog(null, sText, Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
 		    	}
 		    	else {
-		    		String oldPlace = b.getEmplacement();
+		    		Rangement oldPlace = b.getRangement();
 		    		if(column == PLACE)
 		    			b.setEmplacement((String)value);
 		    		else if(column == NUM_PLACE)
@@ -276,8 +275,9 @@ public class TableShowValues extends AbstractTableModel {
 		    			b.setLigne(0);
 		    			b.setColonne(0);
 		    		}
-		    		Program.getCave(Rangement.convertNom_Int(oldPlace)).putTabStock();
-		    		Program.getCave(Rangement.convertNom_Int(b.getEmplacement())).putTabStock();
+		    		if(oldPlace != null)
+		    			oldPlace.putTabStock();
+		    		b.getRangement().putTabStock();
 		    	}
     		}
     		else {
@@ -304,7 +304,7 @@ public class TableShowValues extends AbstractTableModel {
    */
   public void setBottles(LinkedList<Bouteille> b) {
 
-	  if( b == null )
+	  if(b == null)
 		  return;
       values = new Boolean[b.size()];
       monVector = b;

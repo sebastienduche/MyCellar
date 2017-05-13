@@ -61,8 +61,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private static JButton m_oManagePlaceButton = new JButton();
 	private MyCellarLabel copyright = new MyCellarLabel();
 	private MyCellarLabel update = new MyCellarLabel();
-	private String infos_version = " 2017 v4.8 CO";
-	private MyCellarLabel version = new MyCellarLabel("Mai" + infos_version);
+	private String infos_version = " 2017 v";
+	private MyCellarLabel version = new MyCellarLabel("Mai" + infos_version + MyCellarVersion.mainVersion);
 	private static JButton m_oCreerButton = new JButton();
 	private static JButton m_oImporterButton = new JButton();
 	private static JButton m_oModifierButton = new JButton();
@@ -846,7 +846,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			m_oRechercherButton.setText(Program.getLabel("Infos006"));
 			label1.setText(Program.getLabel("Infos001"));
 			m_oSupprimerButton.setText(Program.getLabel("Infos004"));
-			version.setText(Program.getLabel("Infos296") + infos_version);
+			version.setText(Program.getLabel("Infos296") + infos_version + MyCellarVersion.mainVersion);
 			ajoutV.setAccelerator(KeyStroke.getKeyStroke(AJOUTERV, ActionEvent.CTRL_MASK));
 			ajoutR.setAccelerator(KeyStroke.getKeyStroke(AJOUTERR, ActionEvent.CTRL_MASK));
 			supprR.setAccelerator(KeyStroke.getKeyStroke(SUPPR, ActionEvent.CTRL_MASK));

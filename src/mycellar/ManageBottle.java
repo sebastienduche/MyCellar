@@ -40,8 +40,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.6
- * @since 10/05/17
+ * @version 2.7
+ * @since 13/05/17
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -651,7 +651,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 		Program.getStorage().addHistory(History.MODIFY, m_laBouteille);
 
-		int num_l = Rangement.convertNom_Int(m_laBouteille.getEmplacement());
+		Rangement rangement = m_laBouteille.getRangement();
 		if(!oldRangement.isCaisse()){
 			Bouteille tmp = new Bouteille();
 			tmp.setNumLieu(oldNum);
@@ -665,8 +665,8 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 		Search.updateTable();
 
-		if(!Program.getCave(num_l).isCaisse())
-			Program.getCave(num_l).updateToStock(m_laBouteille);
+		if(!rangement.isCaisse())
+			rangement.updateToStock(m_laBouteille);
 		
 		m_end.setText(Program.getLabel("Infos144"));
 		
@@ -710,16 +710,15 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			Program.getStorage().replaceWineAll(bottle, lieu_num, ligne, colonne);
 
 		if(m_laBouteille != null) {
-			int num_l = Rangement.convertNom_Int(m_laBouteille.getEmplacement());
-			Program.getCave(num_l).clearStock(m_laBouteille);
+			m_laBouteille.getRangement().clearStock(m_laBouteille);
 		}
 
 		Search.removeBottle(bToDelete);
 		Search.updateTable();
 
-		int num_l = Rangement.convertNom_Int(place);
-		if(!Program.getCave(num_l).isCaisse())
-			Program.getCave(num_l).updateToStock(bottle);
+		Rangement r = Program.getCave(place);
+		if(r != null && !r.isCaisse())
+			r.updateToStock(bottle);
 	}
 
 	public boolean runExit() {

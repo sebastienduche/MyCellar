@@ -26,8 +26,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 2.3
- * @since 19/03/17
+ * @version 2.4
+ * @since 13/05/17
  */
 
 public class ShowHistory extends JPanel implements ITabListener {
@@ -286,16 +286,18 @@ public class ShowHistory extends JPanel implements ITabListener {
 					LinkedList<Bouteille> cantRestoreList = new LinkedList<Bouteille>();
 					for (int i = 0; i < toRestoreList.size(); i++) {
 						Bouteille b = (Bouteille) toRestoreList.get(i);
-						int num_l = Rangement.convertNom_Int(b.getEmplacement());
-						if (Program.getCave(num_l).isCaisse()) {
-							Program.getStorage().addHistory(History.ADD, b);
-							Program.getStorage().addWine(b);
-						} else {
-							if (Program.getCave(num_l).getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1) == null) {
+						Rangement r = Program.getCave(b.getEmplacement());
+						if(r != null) {
+							if (r.isCaisse()) {
 								Program.getStorage().addHistory(History.ADD, b);
 								Program.getStorage().addWine(b);
-							} else
-								cantRestoreList.add(b);
+							} else {
+								if (r.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1) == null) {
+									Program.getStorage().addHistory(History.ADD, b);
+									Program.getStorage().addWine(b);
+								} else
+									cantRestoreList.add(b);
+							}
 						}
 						if(!cantRestoreList.contains(b)) {
 							if(Program.getTrash().contains(b))

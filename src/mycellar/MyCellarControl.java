@@ -6,8 +6,8 @@ package mycellar;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @since 29/12/12
- * @version 0.5
+ * @since 13/05/17
+ * @version 0.6
  */
 
 public class MyCellarControl {
@@ -54,15 +54,12 @@ public class MyCellarControl {
   public static boolean ctrl_existingName(String _sName) {
 
     Debug("Controling existing name...");
-    boolean bReturn = true;
-    int nNum = Rangement.convertNom_Int(_sName.trim());
-    if (nNum != -1) {
-      String sErreur = Program.getError("Error037"); //Le nom est déjà utilisé
-      bReturn = false;
+    if (Program.getCave(_sName.trim()) != null) {
       Debug("ERROR: Name already use!");
-      new Erreur(sErreur, "");
+      new Erreur(Program.getError("Error037"), "");//Le nom est déjà utilisé
+      return false;
     }
-    return bReturn;
+    return true;
   }
 
   /**

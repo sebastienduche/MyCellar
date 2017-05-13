@@ -55,8 +55,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.7
- * @since 10/05/17
+ * @version 3.8
+ * @since 13/05/17
  */
 
 public class ShowFile extends JPanel implements ITabListener  {
@@ -577,13 +577,13 @@ public class ShowFile extends JPanel implements ITabListener  {
 					for (int i = 0; i < toRestoreList.size(); i++) {
 						Bouteille b = (Bouteille) toRestoreList.get(i);
 						Program.getTrash().remove(b);
-						int num_l = Rangement.convertNom_Int(b.getEmplacement());
-						if(Program.getCave(num_l).isCaisse()){
-							Program.getStorage().addHistory(History.ADD, b);
-							Program.getStorage().addWine(b);
-						}
-						else {
-							if(Program.getCave(num_l).getBouteille(b.getNumLieu()-1, b.getLigne()-1, b.getColonne()-1) == null) {
+						Rangement rangement = Program.getCave(b.getEmplacement());
+						if(rangement != null) {
+    						if(rangement.isCaisse()){
+    							Program.getStorage().addHistory(History.ADD, b);
+    							Program.getStorage().addWine(b);
+    						}
+    						else if(rangement.getBouteille(b.getNumLieu()-1, b.getLigne()-1, b.getColonne()-1) == null) {
 								Program.getStorage().addHistory(History.ADD, b);
 								Program.getStorage().addWine(b);
 							}
@@ -623,7 +623,8 @@ public class ShowFile extends JPanel implements ITabListener  {
     	int num_empl_old = b.getNumLieu();
     	int line_old = b.getLigne();
     	int column_old = b.getColonne();
-    	int n = Rangement.convertNom_Int(empl_old);
+    	Rangement rangementOld = Program.getCave(empl_old);
+    	Rangement rangement = null;
     	boolean bError = false;
     	int nValueToCheck = -1;
     	String empl = empl_old;
@@ -635,7 +636,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 
     	if (column == MyCellarFields.PLACE) {
     		empl = (String)value; 
-	    	n = Rangement.convertNom_Int((String)value);
+	    	rangement = Program.getCave((String)value);
     	}
     	else if (column == MyCellarFields.NUM_PLACE) {
     		try{
@@ -669,7 +670,7 @@ public class ShowFile extends JPanel implements ITabListener  {
     	}
     	
     	if ( !bError && (column == MyCellarFields.NUM_PLACE || column == MyCellarFields.LINE || column == MyCellarFields.COLUMN) ) {
-    		if (!Program.getCave(n).isCaisse() && nValueToCheck <= 0)
+    		if (rangement != null && !rangement.isCaisse() && nValueToCheck <= 0)
     		{
     			new Erreur(Program.getError("Error197"));
                 bError = true;
@@ -678,8 +679,7 @@ public class ShowFile extends JPanel implements ITabListener  {
     		
     	if ( !bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
     		// Controle de l'emplacement de la bouteille
-    		Rangement rangement = Program.getCave(n);
-    		if(rangement.canAddBottle(num_empl, line, column1)) {
+    		if(rangement != null && rangement.canAddBottle(num_empl, line, column1)) {
 		    	Bouteille bTemp = null;
 		    	if(!rangement.isCaisse())
 		    		bTemp = rangement.getBouteille(num_empl-1, line-1, column1-1);
@@ -688,7 +688,6 @@ public class ShowFile extends JPanel implements ITabListener  {
 		    		javax.swing.JOptionPane.showMessageDialog(null, sText, Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
 		    	}
 		    	else {
-		    		String oldPlace = b.getEmplacement();
 		    		if(column == MyCellarFields.PLACE)
 		    			b.setEmplacement((String)value);
 		    		else if(column == MyCellarFields.NUM_PLACE)
@@ -704,8 +703,9 @@ public class ShowFile extends JPanel implements ITabListener  {
 		    			b.setLigne(0);
 		    			b.setColonne(0);
 		    		}
-		    		Program.getCave(Rangement.convertNom_Int(oldPlace)).putTabStock();
-		    		Program.getCave(Rangement.convertNom_Int(b.getEmplacement())).putTabStock();
+		    		if(rangementOld != null)
+		    			rangementOld.putTabStock();
+		    		rangement.putTabStock();
 		    	}
     		}
     		else {

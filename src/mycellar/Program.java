@@ -70,8 +70,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 14.9
- * @since 08/05/17
+ * @version 15.0
+ * @since 13/05/17
  */
 
 public class Program {
@@ -1035,6 +1035,22 @@ public class Program {
 				return r;
 		}
 		return null;
+	}
+	
+	/**
+	 * GetCaveIndex
+	 *
+	 * @param _nCave String
+	 * @return int
+	 */
+	public static int getCaveIndex(String name) {
+		if (name == null || name.isEmpty())
+			return -1;
+		for(int i = 0; i < m_oCave.size(); i++) {
+			if(name.equals(m_oCave.get(i).getNom()))
+				return i;
+		}
+		return -1;
 	}
 
 

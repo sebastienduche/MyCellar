@@ -22,8 +22,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 13/11/16
+ * @version 1.7
+ * @since 13/05/17
  */
 
 public class ShowMoreHistory extends JDialog {
@@ -124,8 +124,7 @@ public class ShowMoreHistory extends JDialog {
 		m_oValidate.setText(Program.getLabel("Infos019"));
 		m_oValidate.addActionListener((e) -> cancel_actionPerformed(e));
 		
-		int nCave = Rangement.convertNom_Int(_bottle.getEmplacement());
-		Rangement cave = Program.getCave(nCave);
+		Rangement cave = _bottle.getRangement();
 		if (cave != null && cave.isCaisse())
 		{
 			MyCellarLabel5.setVisible(false);

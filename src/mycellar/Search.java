@@ -42,8 +42,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.0
- * @since 09/05/17
+ * @version 17.1
+ * @since 13/05/17
  */
 public class Search extends JPanel implements Runnable, ITabListener {
 	private static JTable table;
@@ -1000,7 +1000,6 @@ public class Search extends JPanel implements Runnable, ITabListener {
 	private boolean searchByYear() {
 		Debug("Searching by year");
 		int annee;
-		int lieu = 0;
 		String lelieu = "";
 		int item_select = year.getSelectedIndex();
 		int nb_year = year.getItemCount();
@@ -1024,9 +1023,9 @@ public class Search extends JPanel implements Runnable, ITabListener {
 			lelieu = b.getEmplacement();
 
 			//Récupération du numéro du lieu
-			lieu = Rangement.convertNom_Int(lelieu);
+			Rangement r = Program.getCave(lelieu);
 
-			if (annee == b.getAnneeInt() && nb_year != item_select && lieu != -1) {
+			if (annee == b.getAnneeInt() && nb_year != item_select && r != null) {
 				if(!model.hasBottle(b)) {
 					model.addBouteille(b);
 				}

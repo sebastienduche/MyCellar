@@ -50,8 +50,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.9
- * @since 13/11/16
+ * @version 6.0
+ * @since 13/05/16
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -414,7 +414,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			tc.setMaxWidth(25);
 			JPanel panel = new JPanel();
 			panel.add(new JScrollPane(table));
-			JOptionPane.showMessageDialog(null, panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
+			JOptionPane.showMessageDialog(this, panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
 			cols = new LinkedList<MyCellarFields>();
 			Program.setModified();
 			LinkedList<Integer> properties = modelColumn.getSelectedColumns();

@@ -42,8 +42,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.1
- * @since 13/05/17
+ * @version 17.2
+ * @since 17/05/17
  */
 public class Search extends JPanel implements Runnable, ITabListener {
 	private static JTable table;
@@ -823,7 +823,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 			for (int x = start_boucle; x < boucle_toutes; x++) {
 				nb_bottles = rangement.getNbCaseUseCaisse(x - 1 + start_caisse);
 				for (int l = 0; l < nb_bottles; l++) {
-					b = rangement.getBouteilleCaisse(x - 1, l); //lieu_num
+					b = rangement.getBouteilleCaisseAt(x - 1, l); //lieu_num
 					if(b != null) {
 						lieu_num = b.getNumLieu();
 						if(!model.hasBottle(b)) {

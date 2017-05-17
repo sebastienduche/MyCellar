@@ -70,8 +70,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 15.0
- * @since 13/05/17
+ * @version 15.1
+ * @since 17/05/17
  */
 
 public class Program {
@@ -672,6 +672,7 @@ public class Program {
 		}
 		if(m_oCave == null) {
 			m_oCave = new LinkedList<Rangement>();
+			m_oCave.add(defaultPlace);
 			return false;
 		}
 		return true;

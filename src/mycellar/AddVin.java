@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 21.2
- * @since 13/05/17
+ * @version 21.3
+ * @since 17/05/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -755,7 +755,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 								//Add several bottles in Caisse
 								Debug("Adding multiple bottles in the same place: YES");
 								
-								if ( (caisse.getNbCaseUseCaisse(lieu_num_selected) + nb_bottle_rest) >= caisse.getStockNbcol() && caisse.isLimited()) {
+								if ( caisse.isLimited() && (caisse.getNbCaseUseCaisse(lieu_num_selected) + nb_bottle_rest) >= caisse.getNbColonnesStock()) {
 									new Erreur(Program.getError("Error154"), Program.getError("Error153"));
 								}
 								else {
@@ -785,7 +785,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							}
 						}
 						else { //Un seul rangement simple
-							if (Program.getCave(lieu_selected - 1).isLimited() && (Program.getCave(lieu_selected - 1).getNbCaseUseCaisse(lieu_num_selected) + nb_bottle_rest + 1) > Program.getCave(lieu_selected - 1).getStockNbcol()) {
+							if (Program.getCave(lieu_selected - 1).isLimited() && (Program.getCave(lieu_selected - 1).getNbCaseUseCaisse(lieu_num_selected) + nb_bottle_rest + 1) > Program.getCave(lieu_selected - 1).getNbColonnesStock()) {
 								resul = false;
 								Debug("ERROR: This caisse is full. Unable to add all bottles in the same place!");
 								m_bbottle_add = false;
@@ -926,7 +926,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						}
 						if (resul) {
 							int nbbottle = listBottleInModification.size();
-							if ( Program.getCave(lieu_selected - 1).isLimited() && (Program.getCave(lieu_selected - 1).getNbCaseUseCaisse(nLieuNum) + nbbottle) > Program.getCave(lieu_selected - 1).getStockNbcol() ) {
+							if ( Program.getCave(lieu_selected - 1).isLimited() && (Program.getCave(lieu_selected - 1).getNbCaseUseCaisse(nLieuNum) + nbbottle) > Program.getCave(lieu_selected - 1).getNbColonnesStock() ) {
 								Debug("ERROR: Not enough place!");
 								new Erreur(Program.getError("Error154"), Program.getError("Error153"));
 								m_lieu.setEnabled(true);

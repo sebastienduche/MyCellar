@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -40,8 +41,8 @@ import jxl.write.WriteException;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 24.4
- * @since 13/05/17
+ * @version 24.5
+ * @since 17/05/17
  */
 public class Rangement implements Serializable, Comparable<Rangement> {
 
@@ -60,28 +61,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	private boolean limite; //Indique si une limite de caisse est activée
 	private LinkedList<Part> listePartie = null;
 	static final long serialVersionUID = 5012007;
-
-
-	/**
-	 * Contructeur de Rangement par copie avec modification du nom
-	 * @param r
-	 * @param _nom
-	 */
-	public Rangement(Rangement r, String _nom)
-	{
-		nom = _nom.trim();
-		nb_emplacements = r.getNbEmplacements();
-		nb_lignes = r.getNbLignes();
-		nb_colonnes = r.getNbColonnes();
-		nbc = r.getNbColonnesTotal();
-		stock_nbcol = r.getStockNbcol();
-		stock_nblign = r.getStockNbligne();
-		caisse = r.isCaisse();
-		start_caisse = r.getStartCaisse();
-		stockage = r.getStockage();
-		limite = r.isLimited();
-		listePartie = r.getPlace();
-	}
+	private HashMap<Integer, ArrayList<Bouteille>> storageCaisse;
 
 	/**
 	 * Rangement: Constructeur de création d'un rangement de type Armoire
@@ -231,6 +211,9 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		nb_colonnes = new int[2];
 
 		stockage = new Bouteille[nb_emplacements][1][stock_nbcol];
+		storageCaisse = new HashMap<Integer, ArrayList<Bouteille>>(nb_emplacements);
+		for(int i=start_caisse; i<start_caisse+nb_emplacements; i++)
+			storageCaisse.put(i, new ArrayList<Bouteille>());
 		Program.getStorage().initialize();
 	}
 
@@ -259,11 +242,6 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	public int[] getNbColonnes(){
 		return nb_colonnes;
 	}
-	
-	public Bouteille[][][] getStockage(){
-		return stockage;
-	}
-
 
 	/**
 	 * getStartCaisse: retourne l'indice de démarrage d'une caisse
@@ -292,15 +270,6 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		if(listePartie != null)
 			return listePartie.size();
 		return nb_emplacements;
-	}
-
-	/**
-	 * getNbColonnesTotal: retourne le nombre total de colonnes dans un rangement
-	 *
-	 * @return int
-	 */
-	public int getNbColonnesTotal() {
-		return nbc;
 	}
 
 	/**
@@ -343,6 +312,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	/**
 	 * desactivateLimit: Désactive la limite d'une caisse
 	 */
+	@Deprecated
 	public void desactivateLimit() {
 		limite = false;
 	}
@@ -376,7 +346,8 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * @return
 	 */
 	public boolean isExistingCell(int emplacement, int ligne, int col) {
-		
+		if(getNbLignes(emplacement) <= ligne)
+			return false;
 		int nbCol = getNbColonnes(emplacement, ligne);
 		return (col < nbCol);
 	}
@@ -472,7 +443,10 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * @return int
 	 */
 	public int getNbCaseUseLigne(int emplacement, int ligne) {
-
+		if(isCaisse()) {
+			Debug("ERROR: Calling getNbCaseUseLigne not on a caisse!");
+			return -1;
+		}
 		int resul = 0;
 		int nb_colonne;
 		try {
@@ -499,7 +473,10 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * @return int
 	 */
 	public int getNbCaseFreeCoteLigne(int emplacement, int ligne, int colonne) {
-
+		if(isCaisse()) {
+			Debug("ERROR: Calling getNbCaseFreeCoteLigne not on a caisse!");
+			return -1;
+		}
 		int resul = 0;
 		int nb_colonne;
 		try {
@@ -522,28 +499,32 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * getNbCaseUse: retourne le nombre de case utilisée dans toutes les lignes
 	 * d'un emplacement
 	 *
-	 * @param emplacement int: numéro d'emplacement (0...n)
+	 * @param emplacement int: numéro d'emplacement (0...n ou start_caisse...n)
 	 * @return int
 	 */
 	public int getNbCaseUse(int emplacement) {
-
 		int resul = 0;
-		int nb_colonne;
-		int nb_ligne;
-
-		try {
-			nb_ligne = this.getNbLignes(emplacement);
-			for (int j = 0; j < nb_ligne; j++) {
-				nb_colonne = this.getNbColonnes(emplacement, j);
-				for (int i = 0; i < nb_colonne; i++) {
-					if (stockage[emplacement][j][i] != null) {
-						resul += 1;
+		if(isCaisse()) {
+			resul = storageCaisse.get(emplacement).size();
+		}
+		else {
+			int nb_colonne;
+			int nb_ligne;
+	
+			try {
+				nb_ligne = this.getNbLignes(emplacement);
+				for (int j = 0; j < nb_ligne; j++) {
+					nb_colonne = this.getNbColonnes(emplacement, j);
+					for (int i = 0; i < nb_colonne; i++) {
+						if (stockage[emplacement][j][i] != null) {
+							resul += 1;
+						}
 					}
 				}
 			}
-		}
-		catch (Exception e) {
-			Program.showException(e);
+			catch (Exception e) {
+				Program.showException(e);
+			}
 		}
 		return resul;
 	}
@@ -556,20 +537,12 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	public int getNbCaseUseAll() {
 
 		int resul = 0;
-		Bouteille b = null;
-		try {
-			for (int i = 0; i < Program.getStorage().getAllNblign(); i++) {
-				b = Program.getStorage().getAllAt(i);
-				if (b != null) {
-					String tmp = b.getEmplacement();
-					if (tmp.equals(getNom())) {
-						resul++;
-					}
-				}
-			}
-		}
-		catch (Exception e) {
-			Program.showException(e);
+		if(isCaisse()) {
+			for(int i=start_caisse; i<start_caisse+nb_emplacements; i++)
+				resul += getNbCaseUseCaisse(i);
+		} else {
+			for(int i=0; i<nb_emplacements; i++)
+				resul += getNbCaseUse(i);
 		}
 		return resul;
 	}
@@ -578,26 +551,16 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * getNbCaseUseCaisse: retourne le nombre de bouteille dans l'emplacement
 	 * d'une caisse
 	 *
-	 * @param num_empl int: numéro d'emplacement (0...n)
+	 * @param num_empl int: numéro d'emplacement (start_caisse...n)
 	 * @return int
 	 */
+	@Deprecated
 	public int getNbCaseUseCaisse(int num_empl) {
-
-		num_empl -= start_caisse;
-		int nLength = stockage[num_empl][0].length;
-		int nb_vin = 0;
-
-		try {
-			for (int i = 0; i < nLength; i++) {
-				if (stockage[num_empl][0][i] != null) {
-					nb_vin++;
-				}
-			}
+		if(!caisse) {
+			Debug("ERROR: Calling getNbCaseUseCaisse not on a caisse!");
+			return -1;
 		}
-		catch (Exception e) {
-			Program.showException(e);
-		}
-		return nb_vin;
+		return storageCaisse.get(num_empl).size();
 	}
 	
 
@@ -628,218 +591,208 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		try {
 			out = new LinkedList<Bouteille>();
 			Bouteille b = null;
-			try {
-				b = Program.getStorage().getAllAt(0);
-			}
-			catch (NullPointerException npe) {
-				b = null;
-			}
-			if (b != null) {
-				if (!caisse) {
-					stockage = new Bouteille[nb_emplacements][stock_nblign][stock_nbcol];
-					//Copie dans le tableau stockage de ce rangement
-					for (int i = 0; i < Program.getStorage().getAllNblign(); i++) {
-						b = Program.getStorage().getAllAt(i);
-						if (b != null) {
-							String tmp_nom = b.getEmplacement();
-							//Prix Max
-							int prix_max = 0;
-							String prix_tmp = Program.convertStringFromHTMLString(b.getPrix());
-							int ind_prix = prix_tmp.indexOf(virgule);
-							if (ind_prix > 0) {
-								prix_tmp = prix_tmp.substring(0, ind_prix);
-							}
-
-							if (virgule == '.') {
-								prix_tmp = prix_tmp.replace(',', ' ');
-							}
-							if (virgule == ',') {
-								prix_tmp = prix_tmp.replace('.', ' ');
-							}
-							int index = prix_tmp.indexOf(' ');
-							while (index != -1) {
-								prix_tmp = prix_tmp.substring(0, index) + prix_tmp.substring(index + 1);
-								index = prix_tmp.indexOf(' ');
-							}
-
-							try {
-								prix_max = Integer.parseInt(prix_tmp);
-								prix_max++;
-							}
-							catch (NumberFormatException nfe) {
-								prix_max=0;
-							}
-
-							if (Bouteille.prix_max < prix_max) {
-								Bouteille.prix_max = prix_max;
-
-							}
-							if (getNom().equals(tmp_nom)) {
-								//Récupération du numéro d'emplacement, du numéro de ligne et de colonne
-								int tmp_num = b.getNumLieu();
-								int tmp_lig = b.getLigne();
-								int tmp_col = b.getColonne();
-								//Copie de la bouteille
-								try {
-									//En dehors du rangement
-									if ( (tmp_num - 1) >= nb_emplacements || (tmp_lig - 1) >= getNbLignes(tmp_num - 1) || (tmp_col - 1) >= getNbColonnes(tmp_num - 1, tmp_lig - 1)) {
-										throw new ArrayIndexOutOfBoundsException();
-									}
-									if (stockage[tmp_num - 1][tmp_lig - 1][tmp_col - 1] == null) { //Ajout de la bouteille
-										stockage[tmp_num - 1][tmp_lig - 1][tmp_col - 1] = b; //-1 car ca commence � 0
-									}
-									else { //En dehors
-										isout = true;
-									}
-								}
-								catch (ArrayIndexOutOfBoundsException oobe1) {
-									if (tmp_num > 0 && tmp_lig > 0 && tmp_col > 0) { //Si bouteille en dehors et non � 0
-										if ( (tmp_num - 1) >= nb_emplacements || (tmp_lig - 1) >= getNbLignes(tmp_num - 1) || (tmp_col - 1) >= getNbColonnes(tmp_num - 1, tmp_lig - 1) /*stock_nbcol*/) {
-											isout = true;
-											if (tmp_num > tmp_num_max) {
-												tmp_num_max = tmp_num;
-											}
-											if (tmp_lig > tmp_lig_max) {
-												tmp_lig_max = tmp_lig;
-											}
-											if (tmp_col > tmp_col_max) {
-												tmp_col_max = tmp_col;
-											}
-											errors.add(new MyCellarError(100, new String(Program.getError("Error075") + " " + getNom() + " " + Program.getError("Error080")), new String(Program.getError("Error079") + ": " + tmp_num_max + " " + Program.getError("Error116") + ": " + tmp_lig_max + " " +
-													Program.getError("Error117") + ": " + tmp_col_max + " " + Program.getError("Error118"))));
-										}
-									}
-									if ( (tmp_num - 1) < 0 || (tmp_lig - 1) < 0 || (tmp_col - 1) < 0) { //Si valeurs � 0
-										isout = true;
-										errors.add(new MyCellarError(2, Program.getError("Error082"), Program.getError("Error083")));
-									}
-								}
-							}
-							if (isout) {
-								isout = false;
-								//Ajout des bouteilles en dehors dans le tableau out
-								out.add(b);
-							}
+			if (!caisse) {
+				stockage = new Bouteille[nb_emplacements][stock_nblign][stock_nbcol];
+				//Copie dans le tableau stockage de ce rangement
+				for (int i = 0; i < Program.getStorage().getAllNblign(); i++) {
+					b = Program.getStorage().getAllAt(i);
+					if (b != null) {
+						String tmp_nom = b.getEmplacement();
+						//Prix Max
+						int prix_max = 0;
+						String prix_tmp = Program.convertStringFromHTMLString(b.getPrix());
+						int ind_prix = prix_tmp.indexOf(virgule);
+						if (ind_prix > 0) {
+							prix_tmp = prix_tmp.substring(0, ind_prix);
 						}
-					}
-				}
-				else { //Pour la caisse
-					stock_nbcol = getStockNbcol();
-					stockage = new Bouteille[nb_emplacements][1][stock_nbcol];
-					int cpt1[] = new int[nb_emplacements];
 
-					for (int z = 0; z < nb_emplacements; z++) {
-						cpt1[z] = 0;
-					}
-					int cpt = 0;
-					int max_partie = 0; //Permet d'avoir le message d'erreur sur le nombre de partie maximal
-					for (int i = 0; i < Program.getStorage().getAllNblign(); i++) {
-						b = Program.getStorage().getAllAt(i);
-						if (b != null) {
-							int tmp_num_empl = b.getNumLieu();
-							tmp_num_empl -= start_caisse;
-							String tmp_nom = b.getEmplacement();
-							//Prix Max
-							int prix_max = 0;
-							String prix_tmp = Program.convertStringFromHTMLString(b.getPrix());
-							int ind_prix = prix_tmp.indexOf(virgule);
-							if (ind_prix > 0) {
-								prix_tmp = prix_tmp.substring(0, ind_prix);
-							}
-							if (virgule == '.') {
-								prix_tmp = prix_tmp.replace(',', ' ');
-							}
-							if (virgule == ',') {
-								prix_tmp = prix_tmp.replace('.', ' ');
-							}
-							int index = prix_tmp.indexOf(' ');
-							while (index != -1) {
-								prix_tmp = prix_tmp.substring(0, index) + prix_tmp.substring(index + 1);
-								index = prix_tmp.indexOf(' ');
-							}
+						if (virgule == '.') {
+							prix_tmp = prix_tmp.replace(',', ' ');
+						}
+						if (virgule == ',') {
+							prix_tmp = prix_tmp.replace('.', ' ');
+						}
+						int index = prix_tmp.indexOf(' ');
+						while (index != -1) {
+							prix_tmp = prix_tmp.substring(0, index) + prix_tmp.substring(index + 1);
+							index = prix_tmp.indexOf(' ');
+						}
+
+						try {
+							prix_max = Integer.parseInt(prix_tmp);
+							prix_max++;
+						}
+						catch (NumberFormatException nfe) {
+							prix_max=0;
+						}
+
+						if (Bouteille.prix_max < prix_max) {
+							Bouteille.prix_max = prix_max;
+
+						}
+						if (getNom().equals(tmp_nom)) {
+							//Récupération du numéro d'emplacement, du numéro de ligne et de colonne
+							int tmp_num = b.getNumLieu();
+							int tmp_lig = b.getLigne();
+							int tmp_col = b.getColonne();
+							//Copie de la bouteille
 							try {
-								prix_max = Integer.parseInt(prix_tmp);
-								prix_max++;
-							}
-							catch (NumberFormatException nfe) {}
-							if (Bouteille.prix_max < prix_max) {
-								Bouteille.prix_max = prix_max;
-							}
-
-							if (getNom().equals(tmp_nom)) {
-								//Le plus grand compteur??
-								int max_cpt = 0;
-								//Ecriture du vin
-								try {
-									max_cpt = cpt1[tmp_num_empl];
+								//En dehors du rangement
+								if ( (tmp_num - 1) >= nb_emplacements || (tmp_lig - 1) >= getNbLignes(tmp_num - 1) || (tmp_col - 1) >= getNbColonnes(tmp_num - 1, tmp_lig - 1)) {
+									throw new ArrayIndexOutOfBoundsException();
 								}
-								catch (Exception oobe) { //Nombre de partie pas assez grand
-									if (tmp_num_empl > max_partie) {
-										max_partie = tmp_num_empl;
-										errors.add(new MyCellarError(0, Program.getError("Error075") + " " + tmp_nom.trim() + " " + Program.getError("Error080"), Program.getError("Error119") + " " + (tmp_num_empl + 1 - start_caisse)));
-									}
-									if (tmp_num_empl < 0) {
-										errors.add(new MyCellarError(0, Program.getError("Error172"), Program.getError("Error173") + " " + start_caisse));
-									}
+								if (stockage[tmp_num - 1][tmp_lig - 1][tmp_col - 1] == null) { //Ajout de la bouteille
+									stockage[tmp_num - 1][tmp_lig - 1][tmp_col - 1] = b; //-1 car ca commence � 0
+								}
+								else { //En dehors
 									isout = true;
 								}
-
-								if (max_cpt < stock_nbcol) {
-									cpt = max_cpt;
-									if (!isout) { //Ajout de la bouteille
-										if (stockage[tmp_num_empl][0][cpt] == null) {
-											stockage[tmp_num_empl][0][cpt] = b;
-										}
-										else {
-											isout = true;
-										}
-										cpt1[tmp_num_empl]++; //cpt++;
-									}
-
-								}
-								else { // Plus de bouteille que défini par la variable stock
-									if (!limite) { //Agrandissement de la caisse permis
-										//Agrandissement du tableau de stockage
-										cpt = cpt1[tmp_num_empl];
-										Bouteille stockage2[][][] = new Bouteille[nb_emplacements][1][stock_nbcol * 2];
-										for (int z = 0; z < nb_emplacements; z++) {
-											for (int j = 0; j < stock_nbcol; j++) {
-												stockage2[z][0][j] = stockage[z][0][j];
-											}
-										}
-										stockage = stockage2;
-										if (stockage[tmp_num_empl][0][cpt] == null) {
-											stockage[tmp_num_empl][0][cpt] = b;
-										}
-										else {
-											isout = true;
-										}
-
-										cpt1[tmp_num_empl]++;
-										stock_nbcol *= 2;
-									}
-									else { //Agrandissement non permis
+							}
+							catch (ArrayIndexOutOfBoundsException oobe1) {
+								if (tmp_num > 0 && tmp_lig > 0 && tmp_col > 0) { //Si bouteille en dehors et non � 0
+									if ( (tmp_num - 1) >= nb_emplacements || (tmp_lig - 1) >= getNbLignes(tmp_num - 1) || (tmp_col - 1) >= getNbColonnes(tmp_num - 1, tmp_lig - 1) /*stock_nbcol*/) {
 										isout = true;
+										if (tmp_num > tmp_num_max) {
+											tmp_num_max = tmp_num;
+										}
+										if (tmp_lig > tmp_lig_max) {
+											tmp_lig_max = tmp_lig;
+										}
+										if (tmp_col > tmp_col_max) {
+											tmp_col_max = tmp_col;
+										}
+										errors.add(new MyCellarError(100, new String(Program.getError("Error075") + " " + getNom() + " " + Program.getError("Error080")), new String(Program.getError("Error079") + ": " + tmp_num_max + " " + Program.getError("Error116") + ": " + tmp_lig_max + " " +
+												Program.getError("Error117") + ": " + tmp_col_max + " " + Program.getError("Error118"))));
 									}
 								}
+								if ( (tmp_num - 1) < 0 || (tmp_lig - 1) < 0 || (tmp_col - 1) < 0) { //Si valeurs � 0
+									isout = true;
+									errors.add(new MyCellarError(2, Program.getError("Error082"), Program.getError("Error083")));
+								}
 							}
-							if (isout) {
-								isout = false;
-								//Ajout de la bouteille dans Out
-								out.add(b);
-							}
+						}
+						if (isout) {
+							isout = false;
+							//Ajout des bouteilles en dehors dans le tableau out
+							out.add(b);
 						}
 					}
 				}
 			}
-			else {
-				if (!caisse) { //Initialisation du tableau de stockage
-					stockage = new Bouteille[nb_emplacements][stock_nblign][stock_nbcol];
-				}
-				else {
-					stockage = new Bouteille[nb_emplacements][1][stock_nbcol];
+			else { //Pour la caisse
+				/*int cpt1[] = new int[nb_emplacements];
+
+				for (int z = 0; z < nb_emplacements; z++) {
+					cpt1[z] = 0;
+				}*/
+				//int cpt = 0;
+				//int max_partie = 0; //Permet d'avoir le message d'erreur sur le nombre de partie maximal
+				for (int i = 0; i < Program.getStorage().getAllNblign(); i++) {
+					b = Program.getStorage().getAllAt(i);
+					if (b != null) {
+						String tmp_nom = b.getEmplacement();
+						//Prix Max
+						int prix_max = 0;
+						String prix_tmp = Program.convertStringFromHTMLString(b.getPrix());
+						int ind_prix = prix_tmp.indexOf(virgule);
+						if (ind_prix > 0) {
+							prix_tmp = prix_tmp.substring(0, ind_prix);
+						}
+						if (virgule == '.') {
+							prix_tmp = prix_tmp.replace(',', ' ');
+						}
+						if (virgule == ',') {
+							prix_tmp = prix_tmp.replace('.', ' ');
+						}
+						int index = prix_tmp.indexOf(' ');
+						while (index != -1) {
+							prix_tmp = prix_tmp.substring(0, index) + prix_tmp.substring(index + 1);
+							index = prix_tmp.indexOf(' ');
+						}
+						try {
+							prix_max = Integer.parseInt(prix_tmp);
+							prix_max++;
+						}
+						catch (NumberFormatException nfe) {}
+						if (Bouteille.prix_max < prix_max) {
+							Bouteille.prix_max = prix_max;
+						}
+						
+						// Positionnement de la bouteille dans le stock
+						if (getNom().equals(tmp_nom)) {
+							int nb_vin = this.getNbCaseUseCaisse(b.getNumLieu());
+							if(limite && nb_vin == stock_nbcol)
+								out.add(b);
+							else
+								storageCaisse.get(b.getNumLieu()).add(b);
+						}
+
+						/*if (getNom().equals(tmp_nom)) {
+							//Le plus grand compteur??
+							int max_cpt = 0;
+							//Ecriture du vin
+							try {
+								max_cpt = cpt1[tmp_num_empl];
+							}
+							catch (Exception oobe) { //Nombre de partie pas assez grand
+								if (tmp_num_empl > max_partie) {
+									max_partie = tmp_num_empl;
+									errors.add(new MyCellarError(0, Program.getError("Error075") + " " + tmp_nom.trim() + " " + Program.getError("Error080"), Program.getError("Error119") + " " + (tmp_num_empl + 1 - start_caisse)));
+								}
+								if (tmp_num_empl < 0) {
+									errors.add(new MyCellarError(0, Program.getError("Error172"), Program.getError("Error173") + " " + start_caisse));
+								}
+								isout = true;
+							}
+
+							if (max_cpt < stock_nbcol) {
+								cpt = max_cpt;
+								if (!isout) { //Ajout de la bouteille
+									if (stockage[tmp_num_empl][0][cpt] == null) {
+										stockage[tmp_num_empl][0][cpt] = b;
+									}
+									else {
+										isout = true;
+									}
+									cpt1[tmp_num_empl]++; //cpt++;
+								}
+
+							}
+							else { // Plus de bouteille que défini par la variable stock
+								if (!limite) { //Agrandissement de la caisse permis
+									//Agrandissement du tableau de stockage
+									cpt = cpt1[tmp_num_empl];
+									Bouteille stockage2[][][] = new Bouteille[nb_emplacements][1][stock_nbcol * 2];
+									for (int z = 0; z < nb_emplacements; z++) {
+										for (int j = 0; j < stock_nbcol; j++) {
+											stockage2[z][0][j] = stockage[z][0][j];
+										}
+									}
+									stockage = stockage2;
+									if (stockage[tmp_num_empl][0][cpt] == null) {
+										stockage[tmp_num_empl][0][cpt] = b;
+									}
+									else {
+										isout = true;
+									}
+
+									cpt1[tmp_num_empl]++;
+									stock_nbcol *= 2;
+								}
+								else { //Agrandissement non permis
+									isout = true;
+								}
+							}
+						}
+						if (isout) {
+							isout = false;
+							//Ajout de la bouteille dans Out
+							out.add(b);
+						}*/
+					}
 				}
 			}
+
 		}
 		catch (Exception e) {
 			Program.showException(e);
@@ -849,7 +802,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 
 
 	/**
-	 * putWine: Ajout d'une bouteille
+	 * addWine: Ajout d'une bouteille
 	 *
 	 * @param wine Bouteille: bouteille à ajouter
 	 *
@@ -859,6 +812,18 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		if(isCaisse())
 			return putWineCaisse(wine);
 		return putWineStandard(wine);
+	}
+	
+	/**
+	 * removeWine: Suppression d'une bouteille
+	 *
+	 * @param wine Bouteille: bouteille à supprimer
+	 *
+	 * @return int
+	 */
+	public boolean removeWine(Bouteille wine) {
+		clearStock(wine);
+		return Program.getStorage().deleteWine(wine);
 	}
 
 	/**
@@ -874,11 +839,15 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		wine.setLigne(0);
 		wine.setColonne(0);
 		
-		Debug("putWineCaisse: "+wine.getNom()+" "+wine.getEmplacement()+" "+wine.getNumLieu());
+		Debug("putWineCaisse: "+wine.getNom()+" "+wine.getEmplacement()+" "+num_empl);
 
 		try {
 			int nb_vin = this.getNbCaseUseCaisse(num_empl);
-			num_empl -= start_caisse;
+			if(limite && nb_vin == stock_nbcol)
+				return -1;
+			storageCaisse.get(num_empl).add(wine);
+			resul = 0;
+			/*num_empl -= start_caisse;
 			int nLength = stockage[num_empl][0].length;
 			if (nb_vin < nLength) {
 				stockage[num_empl][0][nb_vin] = wine;
@@ -903,7 +872,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 				else {
 					resul = -1;
 				}
-			}
+			}*/
 			Program.getStorage().addWine(wine);
 		}
 		catch (Exception e) {
@@ -935,29 +904,6 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	}
 	
 	/**
-	 * replaceWine: Remplacement d'une bouteille dans un rangement non caisse
-	 *
-	 * @param wine Bouteille: Bouteille à remplacer
-	 */
-	public boolean replaceWine(Bouteille wine) {
-		
-		Debug("replaceWine: "+wine.getNom()+" "+wine.getEmplacement()+" "+wine.getNumLieu()+" "+wine.getLigne()+" "+wine.getColonne());
-
-		int num_empl = wine.getNumLieu();
-		int line = wine.getLigne();
-		int column = wine.getColonne();
-		try {
-			stockage[num_empl - 1][line - 1][column - 1] = wine;
-		}
-		catch (Exception e) {
-			Program.showException(e);
-			return false;
-		}
-		return true;
-	}
-
-
-	/**
 	 * updateToStock: Change une bouteille dans le stock
 	 *
 	 * @param wine Bouteille: Bouteille à changer
@@ -977,10 +923,10 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 
 
 	/**
-	 * moveWine: Déplacement d'une bouteille dans un rangement
+	 * moveLineWine: Déplacement d'une bouteille dans un rangement
 	 *
 	 * @param bottle Bouteille: Bouteille à déplacer
-	 * @param isCaisse boolean: indique si le rangement est une caisse
+	 * @param newLine int: noouveau numéro de ligne
 	 */
 	public void moveLineWine(Bouteille bottle, int nNewLine) {
 		Program.getStorage().deleteWine(bottle);
@@ -990,7 +936,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	}
 	
 	/**
-	 * getBouteille0: retourne la bouteille se trouvant à un emplacement précis
+	 * getBouteille: retourne la bouteille se trouvant à un emplacement précis dans une armoire
 	 *
 	 * @param num_empl int: numéro d'emplacement (0...n)
 	 * @param line int: numéro de ligne (0...n)
@@ -998,6 +944,10 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * @return Bouteille
 	 */
 	public Bouteille getBouteille(int num_empl, int line, int column) {
+		if(isCaisse()) {
+			Debug("ERROR: Can't use getBouteille. Not a complex place!");
+			return null;
+		}
 		try {
 			return stockage[num_empl][line][column];
 		}
@@ -1013,27 +963,37 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * @param bottle Bouteille
 	 */
 	public void clearStock(Bouteille bottle) {
-		if(isCaisse())
-			return;
-		try {
-			stockage[bottle.getNumLieu() - 1][bottle.getLigne() - 1][bottle.getColonne() - 1] = null;
+		if(isCaisse()) {
+			storageCaisse.get(bottle.getNumLieu()).remove(bottle);
+			/*int num_empl = bottle.getNumLieu() - start_caisse;
+			int length = stockage[num_empl][0].length;
+			for(int i=0; i<length; i++) {
+				if(stockage[num_empl][0][i] == bottle) {
+					stockage[num_empl][0][i] = null;
+					return;
+				}
+			}*/
 		}
-		catch (Exception e) {
-			Program.showException(e);
+		else {
+			try {
+				stockage[bottle.getNumLieu() - 1][bottle.getLigne() - 1][bottle.getColonne() - 1] = null;
+			}
+			catch (Exception e) {
+				Program.showException(e);
+			}
 		}
 	}
 
 	/**
-	 * getBouteilleCaisse: retourne la bouteille se trouvant à un emplacement précis
+	 * getBouteilleCaisseAt: retourne la bouteille se trouvant à un emplacement précis
 	 *
-	 * @param num_empl int: numéro d'emplacement (0...n)
-	 * @param column int: numéro de colonne (0...n)
+	 * @param num_empl int: numéro d'emplacement (start_caisse...n)
+	 * @param index int: index de la bouteille (0...n)
 	 * @return Bouteille
 	 */
-
-	public Bouteille getBouteilleCaisse(int num_empl, int column) {
+	public Bouteille getBouteilleCaisseAt(int num_empl, int index) {
 		try {
-			return stockage[num_empl][0][column];
+			return storageCaisse.get(num_empl).get(index);
 		}
 		catch (Exception e) {
 			Program.showException(e);
@@ -1656,7 +1616,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 								for (int k=0; k<place.getNbCaseUseCaisse(j - 1 + place.getStartCaisse()); k++)
 								{
 									nLine++;
-									Bouteille b = place.getBouteilleCaisse(j - 1, k);
+									Bouteille b = place.getBouteilleCaisseAt(j - 1, k);
 									String sTitle = "";
 									if (b != null) {
 										// Contenu de la cellule
@@ -1726,35 +1686,14 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		return resul;
 	}
 
-	/**
-	 * getStockNbcol: Retourne la capacité du lieu.
-	 *
-	 * @return int
-	 */
-	public int getStockNbcol() {
-
-		if (!limite) {
-			stock_nbcol = MAX_ROW;
-		}
-
-		return stock_nbcol;
-	}
-	
-	/**
-	 * getStockNbligne: Retourne la capacité du lieu.
-	 *
-	 * @return int
-	 */
-	public int getStockNbligne() {
-		return stock_nblign;
-	}
-	
 	public boolean isSameColumnNumber(){
 		for( int i=0; i<nb_emplacements; i++){
 			int nbCol = 0;
 			for(int j=0; j<nb_lignes[i];j++){
-				if(nbCol == 0)
+				if(nbCol == 0) {
 					nbCol = getNbColonnes(i, j);
+					continue;
+				}
 				if(nbCol != getNbColonnes(i, j))
 					return false;
 			}
@@ -1822,7 +1761,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		if (isCaisse()) {
 			sText = "<place name=\"\" IsCaisse=\"true\" NbPlace=\"" + getNbEmplacements() + "\" NumStart=\""+getStartCaisse()+"\"";
 			if ( isLimited() )
-				sText = sText.concat(" NbLimit=\""+this.getStockNbcol()+"\">");
+				sText = sText.concat(" NbLimit=\""+this.getNbColonnesStock()+"\">");
 			else
 				sText = sText.concat(" NbLimit=\"0\">");
 			sText += "<name>" + "<![CDATA["+getNom()+"]]></name>";
@@ -1859,11 +1798,11 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 			return true;
 		}
 
-		if (_nEmpl == 0 || _nEmpl > getNbEmplacements())
+		if (_nEmpl < 0 || _nEmpl >= getNbEmplacements())
 			return false;
-		if (_nLine == 0 || _nLine > getNbLignes(_nEmpl))
+		if (_nLine < 0 || _nLine >= getNbLignes(_nEmpl))
 			return false;
-		if (_nCol == 0 || _nCol > getNbColonnes(_nEmpl, _nLine))
+		if (_nCol < 0 || _nCol >= getNbColonnes(_nEmpl, _nLine))
 			return false;
 
 		return true;
@@ -1874,7 +1813,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * HasFreeSpaceInCaisse Indique si l'on peut encore ajouter des
 	 * bouteilles dans une caisse
 	 * 
-	 * @param _nEmpl
+	 * @param _nEmpl (start_caisse...n)
 	 * @return
 	 */
 	public boolean hasFreeSpaceInCaisse(int _nEmpl) {
@@ -1884,7 +1823,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		if(!isLimited())
 			return true;
 
-		if(getNbCaseUseCaisse(_nEmpl) == getStockNbcol())
+		if(getNbCaseUseCaisse(_nEmpl) == getNbColonnesStock())
 			return false;
 
 		return true;

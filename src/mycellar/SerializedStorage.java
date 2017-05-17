@@ -20,8 +20,8 @@ import mycellar.vignobles.CountryVignobles;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.4
- * @since 11/05/17
+ * @version 3.5
+ * @since 17/05/17
  */
 
 public class SerializedStorage implements Storage {
@@ -175,7 +175,7 @@ public class SerializedStorage implements Storage {
 	 * @param line int: numéro de ligne (1...n+1)
 	 * @param column int: numéro de colonne (1...n+1)
 	 */
-	public boolean deleteWine(String nom2, int annee, String empl, int num_empl, int line, int column) {
+	private boolean deleteWine(String nom2, int annee, String empl, int num_empl, int line, int column) {
 
 		int num_empl1 = 0;
 		int line1 = 0;

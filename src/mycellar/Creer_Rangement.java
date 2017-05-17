@@ -41,8 +41,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.0
- * @since 13/11/16
+ * @version 11.1
+ * @since 17/05/17
  */
 public class Creer_Rangement extends JPanel implements ITabListener {
 
@@ -334,7 +334,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 		{
 			checkLimite.setSelected(r.isLimited());
 			if(r.isLimited())
-				nb_limite.setValue(r.getStockNbcol());
+				nb_limite.setValue(r.getNbColonnesStock());
 			nb_parties.setValue(r.getNbEmplacements());
 			nb_start_caisse.setValue(r.getStartCaisse());
 		}

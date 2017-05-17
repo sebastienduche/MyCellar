@@ -30,8 +30,8 @@ import java.util.Vector;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 20/04/16
- * @version 1.4
+ * @since 17/05/17
+ * @version 1.5
  */
 
 public class MyXmlDom {
@@ -413,7 +413,8 @@ public class MyXmlDom {
 				r.appendChild(name);
 				
 				if(rangement.isCaisse()) {
-					for (int i = 0; i < rangement.getNbEmplacements(); i++) {
+					int start = rangement.getStartCaisse();
+					for (int i = start; i < rangement.getNbEmplacements() + start; i++) {
 						Element partie = doc.createElement("partie");
 						r.appendChild(partie);
 						name = doc.createElement("nom-partie");
@@ -429,7 +430,7 @@ public class MyXmlDom {
 							if(preview) {
 								vin_name.setTextContent(Program.getLabel("Infos229"));
 							}else {
-    							Bouteille b = rangement.getBouteilleCaisse(i, j);
+    							Bouteille b = rangement.getBouteilleCaisseAt(i, j);
     							if(b != null)
     								vin_name.setTextContent(b.getNom());
     							else

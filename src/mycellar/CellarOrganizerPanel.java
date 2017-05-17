@@ -48,8 +48,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 13/11/16
+ * @version 1.3
+ * @since 17/05/17
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener {
@@ -177,7 +177,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 				for(int i = 0; i<rangement.getNbEmplacements(); i++){
 					JPanel[][] place;
 					places.add(place = new JPanel[rangement.getNbLignes(i)][rangement.getNbColonnesMax(i)]);
-					JPanel panelCellar = new JPanel(new GridLayout(rangement.getNbLignes(i),rangement.getNbColonnesTotal()));
+					JPanel panelCellar = new JPanel(new GridLayout(rangement.getNbLignes(i),rangement.getNbColonnesStock()));
 					
 					for(int k=0; k<place.length; k++) {
 						for(int j=0; j<place[k].length; j++) {

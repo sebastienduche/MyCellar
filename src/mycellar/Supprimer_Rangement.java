@@ -26,8 +26,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.3
- * @since 13/11/16
+ * @version 6.4
+ * @since 18/05/17
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
@@ -136,9 +136,9 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 					Debug("Selecting Box place...");
 					nb_case_use_total = 0;
 					for (i = 0; i < num_emplacement; i++) {
-						SupprimerLine line = new SupprimerLine("", i + start_caisse, 0, rangement.getNbCaseUseCaisse(i + start_caisse));
+						SupprimerLine line = new SupprimerLine("", i + start_caisse, 0, rangement.getNbCaseUse(i + start_caisse));
 						listSupprimer.add(line);
-						nb_case_use_total += rangement.getNbCaseUseCaisse(i + start_caisse);
+						nb_case_use_total += rangement.getNbCaseUse(i + start_caisse);
 					}
 				}
 

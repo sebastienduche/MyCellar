@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 21.3
- * @since 17/05/17
+ * @version 21.4
+ * @since 18/05/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -755,7 +755,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 								//Add several bottles in Caisse
 								Debug("Adding multiple bottles in the same place: YES");
 								
-								if ( caisse.isLimited() && (caisse.getNbCaseUseCaisse(lieu_num_selected) + nb_bottle_rest) >= caisse.getNbColonnesStock()) {
+								if ( caisse.isLimited() && (caisse.getNbCaseUse(lieu_num_selected) + nb_bottle_rest) >= caisse.getNbColonnesStock()) {
 									new Erreur(Program.getError("Error154"), Program.getError("Error153"));
 								}
 								else {
@@ -785,7 +785,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							}
 						}
 						else { //Un seul rangement simple
-							if (Program.getCave(lieu_selected - 1).isLimited() && (Program.getCave(lieu_selected - 1).getNbCaseUseCaisse(lieu_num_selected) + nb_bottle_rest + 1) > Program.getCave(lieu_selected - 1).getNbColonnesStock()) {
+							if (Program.getCave(lieu_selected - 1).isLimited() && (Program.getCave(lieu_selected - 1).getNbCaseUse(lieu_num_selected) + nb_bottle_rest + 1) > Program.getCave(lieu_selected - 1).getNbColonnesStock()) {
 								resul = false;
 								Debug("ERROR: This caisse is full. Unable to add all bottles in the same place!");
 								m_bbottle_add = false;
@@ -808,13 +808,12 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							resul = false;
 						}
 						if (resul) {
-							int addReturn = -1;
+							boolean addReturn = true;
 							if(m_bmodify)
 							{
 								//Suppression de la bouteille lors de la modification
 								Debug("Updating bottle when modifying");
 								m_laBouteille.update(bouteille);
-								addReturn = 0;
 								Program.getStorage().addHistory( History.MODIFY, m_laBouteille);
 
 								Rangement r = Program.getCave(m_sb_empl);
@@ -834,7 +833,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							}
 
 							//Ajout dans ALL
-							if (addReturn != -1) {
+							if (addReturn) {
 								m_bbottle_add = true;
 								resetValues();
 
@@ -889,7 +888,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 								Debug("Adding bottle...");
 								Program.getStorage().addHistory(History.ADD, tmp);
 								//Ajout des bouteilles
-								if (Program.getCave(tmp.getEmplacement()).addWine(tmp) != -1) {
+								if (Program.getCave(tmp.getEmplacement()).addWine(tmp)) {
 									m_bbottle_add = true;
 									resetValues();
 									try {
@@ -926,7 +925,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						}
 						if (resul) {
 							int nbbottle = listBottleInModification.size();
-							if ( Program.getCave(lieu_selected - 1).isLimited() && (Program.getCave(lieu_selected - 1).getNbCaseUseCaisse(nLieuNum) + nbbottle) > Program.getCave(lieu_selected - 1).getNbColonnesStock() ) {
+							if ( Program.getCave(lieu_selected - 1).isLimited() && (Program.getCave(lieu_selected - 1).getNbCaseUse(nLieuNum) + nbbottle) > Program.getCave(lieu_selected - 1).getNbColonnesStock() ) {
 								Debug("ERROR: Not enough place!");
 								new Erreur(Program.getError("Error154"), Program.getError("Error153"));
 								m_lieu.setEnabled(true);
@@ -970,7 +969,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 										catch (Exception ex) {}
 									}
 									else {
-										if (Program.getCave(sPlaceName).addWine(tmp) != -1) {
+										if (Program.getCave(sPlaceName).addWine(tmp)) {
 											m_bbottle_add = true;
 											resetValues();
 											try {
@@ -1064,7 +1063,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						Debug("Adding bottle...");
 						Program.getStorage().addHistory( m_bmodify? History.MODIFY : History.ADD, tmp);
 						//Ajout des bouteilles dans ALL
-						if (rangement.addWine(tmp) != -1) {
+						if (rangement.addWine(tmp)) {
 							m_bbottle_add = true;
 							resetValues();
 							try {

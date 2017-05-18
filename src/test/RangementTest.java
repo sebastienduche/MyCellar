@@ -3,6 +3,7 @@ package test;
 import java.util.LinkedList;
 
 import mycellar.Bouteille;
+import mycellar.Part;
 import mycellar.Rangement;
 import junit.framework.TestCase;
 
@@ -19,12 +20,26 @@ public class RangementTest extends TestCase {
 		caisseNoLimit = new Rangement("caisseNoLimit");
 		// Caisse avec 2 emplacements commençant à 1 et limité à 6 bouteilles
 		caisseLimit = new Rangement("caisseLimit",2,1,true,6);
-		int lignes [] = {3};
-		int colonnes [] = {3, 3, 3};
-		armoire1x3x3 = new Rangement("armoire1x3x3", 1, lignes, colonnes);
-		int lignes1 [] = {2, 3};
-		int colonnes1 [] = {2, 2, 5, 4, 5};
-		armoire2x2_3x22545 = new Rangement("armoire2x2_3x22545", 2, lignes1, colonnes1);
+		Part partie = new Part(0);
+		LinkedList<Part> list = new LinkedList<Part>();
+		list.add(partie);
+		partie.setRows(3);
+		for(int i=0; i<3; i++)
+			partie.getRow(i).setCol(3);
+		armoire1x3x3 = new Rangement("armoire1x3x3", list);
+		partie = new Part(0);
+		list = new LinkedList<Part>();
+		list.add(partie);
+		partie.setRows(2);
+		for(int i=0; i<2; i++)
+			partie.getRow(i).setCol(2);
+		partie = new Part(1);
+		list.add(partie);
+		partie.setRows(3);
+		partie.getRow(0).setCol(5);
+		partie.getRow(1).setCol(4);
+		partie.getRow(2).setCol(5);
+		armoire2x2_3x22545 = new Rangement("armoire2x2_3x22545", list);
 	}
 
 	public void testGetNom() {
@@ -36,31 +51,6 @@ public class RangementTest extends TestCase {
 		r.setNom("toto");
 		assertEquals("toto", r.getNom());
 	}
-
-	public void testGetNbLignes() {
-		int lignes [] = {3};
-		int testLignes[] = armoire1x3x3.getNbLignes();
-		assertEquals(testLignes[0],lignes[0]);
-		int lignes1 [] = {2, 3};
-		int testLignes1[] = armoire2x2_3x22545.getNbLignes();
-		for(int i=0; i<testLignes1.length; i++)
-			assertEquals(lignes1[i], testLignes1[i]);
-	}
-
-	public void testGetNbColonnes() {
-		int colonnes [] = {3,3,3};
-		int testColonnes [] = armoire1x3x3.getNbColonnes();
-		for(int i=0; i<testColonnes.length; i++)
-			assertEquals(colonnes[i], testColonnes[i]);
-		int colonnes1 [] = {2, 2, 5, 4, 5};
-		int testColonnes1 [] = armoire2x2_3x22545.getNbColonnes();
-		for(int i=0; i<testColonnes1.length; i++)
-			assertEquals(colonnes1[i], testColonnes1[i]);
-	}
-
-	/*public void testGetStockage() {
-		fail("Not yet implemented");
-	}*/
 
 	public void testGetStartCaisse() {
 		assertEquals(1, caisseLimit.getStartCaisse());
@@ -77,12 +67,6 @@ public class RangementTest extends TestCase {
 		assertEquals(1, armoire1x3x3.getNbEmplacements());
 		assertEquals(2, armoire2x2_3x22545.getNbEmplacements());
 	}
-
-	/*public void testGetNbColonnesTotal() {
-		System.out.println("testGetNbColonnesTotal");
-		System.out.println(armoire1x3x3.getNbColonnesTotal());
-		System.out.println(armoire2x1_2x2_3.getNbColonnesTotal());
-	}*/
 
 	public void testGetNbColonnesStock() {
 		assertEquals(3, armoire1x3x3.getNbColonnesStock());
@@ -105,7 +89,7 @@ public class RangementTest extends TestCase {
 		caisseLimit.setNbBottleInCaisse(50);
 		assertEquals(50, caisseLimit.getNbColonnesStock());
 		caisseNoLimit.setNbBottleInCaisse(50);
-		assertEquals(10, caisseNoLimit.getNbColonnesStock());
+		assertEquals(-1, caisseNoLimit.getNbColonnesStock());
 	}
 
 	public void testGetNbLignesInt() {
@@ -327,30 +311,26 @@ public class RangementTest extends TestCase {
 		assertEquals(0, caisseNoLimit.getNbCaseUseAll());
 	}
 
-	public void testGetNbCaseUseCaisse() {
-		assertEquals(0, caisseLimit.getNbCaseUseCaisse(1));
-		assertEquals(0, caisseNoLimit.getNbCaseUseCaisse(0));
+	public void testGetNbCaseUseForCaisse() {
+		assertEquals(0, caisseLimit.getNbCaseUse(1));
+		assertEquals(0, caisseNoLimit.getNbCaseUse(0));
 		Bouteille b = new Bouteille();
 		b.setNom("B10");
 		b.setNumLieu(2);
 		b.setEmplacement("caisseLimit");
 		caisseLimit.addWine(b);
-		assertEquals(1, caisseLimit.getNbCaseUseCaisse(2));
+		assertEquals(1, caisseLimit.getNbCaseUse(2));
 		Bouteille b1 = new Bouteille();
 		b1.setNom("B11");
 		b1.setNumLieu(0);
 		b1.setEmplacement("caisseNoLimit");
 		caisseNoLimit.addWine(b1);
-		assertEquals(1, caisseNoLimit.getNbCaseUseCaisse(0));
+		assertEquals(1, caisseNoLimit.getNbCaseUse(0));
 		caisseLimit.removeWine(b);
-		assertEquals(0, caisseLimit.getNbCaseUseCaisse(2));
+		assertEquals(0, caisseLimit.getNbCaseUse(2));
 		caisseNoLimit.removeWine(b1);
-		assertEquals(0, caisseNoLimit.getNbCaseUseCaisse(0));
+		assertEquals(0, caisseNoLimit.getNbCaseUse(0));
 	}
-
-	/*public void testPutTabStock() {
-		fail("Not yet implemented");
-	}*/
 
 	public void testAddWine() {
 		Bouteille b = new Bouteille();
@@ -365,9 +345,9 @@ public class RangementTest extends TestCase {
 		armoire2x2_3x22545.removeWine(b);
 		b.setEmplacement("caisseLimit");
 		caisseLimit.addWine(b);
-		assertEquals(1, caisseLimit.getNbCaseUseCaisse(2));
+		assertEquals(1, caisseLimit.getNbCaseUse(2));
 		caisseLimit.removeWine(b);
-		assertEquals(0, caisseLimit.getNbCaseUseCaisse(2));
+		assertEquals(0, caisseLimit.getNbCaseUse(2));
 	}
 	
 	public void testRemoveWine() {
@@ -382,9 +362,9 @@ public class RangementTest extends TestCase {
 		assertEquals(b, armoire2x2_3x22545.getBouteille(1, 0, 1));
 		armoire2x2_3x22545.removeWine(b);
 		caisseLimit.addWine(b);
-		assertEquals(1, caisseLimit.getNbCaseUseCaisse(2));
+		assertEquals(1, caisseLimit.getNbCaseUse(2));
 		caisseLimit.removeWine(b);
-		assertEquals(0, caisseLimit.getNbCaseUseCaisse(2));
+		assertEquals(0, caisseLimit.getNbCaseUse(2));
 	}
 
 	public void testUpdateToStock() {
@@ -471,26 +451,10 @@ public class RangementTest extends TestCase {
 		armoire1x3x3.removeWine(b);
 	}
 
-	/*public void testGetBouteilleCaisse() {
-		fail("Not yet implemented");
-	}
-
-	public void testGetOut() {
-		fail("Not yet implemented");
-	}*/
-
 	public void testIsSameColumnNumber() {
 		assertTrue(armoire1x3x3.isSameColumnNumber());
 		assertFalse(armoire2x2_3x22545.isSameColumnNumber());
 	}
-
-	/*public void testFindRangementToCreate() {
-		fail("Not yet implemented");
-	}
-
-	public void testToXml() {
-		fail("Not yet implemented");
-	}*/
 
 	public void testCanAddBottle() {
 		Rangement caisse = new Rangement("caisse", 2, 1, true, 1);
@@ -583,12 +547,50 @@ public class RangementTest extends TestCase {
 		caisse.addWine(b1);
 		assertFalse(caisse.hasFreeSpaceInCaisse(0));
 	}
-
-	/*public void testSetPlace() {
-		fail("Not yet implemented");
+	
+	public void testIsSame() {
+		assertTrue(armoire1x3x3.isSame(armoire1x3x3));
+		assertTrue(armoire2x2_3x22545.isSame(armoire2x2_3x22545));
+		assertFalse(armoire1x3x3.isSame(armoire2x2_3x22545));
+		Rangement r = new Rangement("r");
+		Rangement r1 = new Rangement("r");
+		assertTrue(r.isSame(r1));
+		LinkedList<Part> list = new LinkedList<Part>();
+		Part partie = new Part(0);
+		list.add(partie);
+		partie.setRows(1);
+		partie.getRow(0).setCol(1);
+		Rangement r2 = new Rangement("r", list);
+		list = new LinkedList<Part>();
+		partie = new Part(0);
+		list.add(partie);
+		partie.setRows(1);
+		partie.getRow(0).setCol(1);
+		partie = new Part(1);
+		list.add(partie);
+		partie.setRows(1);
+		partie.getRow(0).setCol(2);
+		Rangement r3 = new Rangement("r", list);
+		assertFalse(r2.isSame(r3));
+		list = new LinkedList<Part>();
+		partie = new Part(0);
+		list.add(partie);
+		partie.setRows(2);
+		partie.getRow(0).setCol(1);
+		partie.getRow(1).setCol(2);
+		Rangement r4 = new Rangement("r", list);
+		assertFalse(r2.isSame(r4));
+		list = new LinkedList<Part>();
+		partie = new Part(0);
+		list.add(partie);
+		partie.setRows(1);
+		partie.getRow(0).setCol(3);
+		Rangement r5 = new Rangement("r", list);
+		assertFalse(r2.isSame(r5));
 	}
 
-	public void testGetPlace() {
+
+	/*public void testPutTabStock() {
 		fail("Not yet implemented");
 	}*/
 

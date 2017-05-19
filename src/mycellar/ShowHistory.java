@@ -26,8 +26,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 2.4
- * @since 13/05/17
+ * @version 2.5
+ * @since 18/05/17
  */
 
 public class ShowHistory extends JPanel implements ITabListener {
@@ -67,7 +67,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 
 		// Remplissage de la table
 		tv = new TableHistoryValues(true);
-		tv.setHistory(Program.getStorage().getHistory());
+		tv.setHistory(Program.getStorage().getHistory().getHistory());
 
 		m_oTable = new JTable(tv);
 		TableColumnModel tcm = m_oTable.getColumnModel();
@@ -194,7 +194,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 		if (b) {
 			Debug("History Cleared.");
 			m_oFilterCbx.setSelectedIndex(0);
-			tv.setHistory(Program.getStorage().getHistory());
+			tv.setHistory(Program.getStorage().getHistory().getHistory());
 		}
 	}
 
@@ -310,7 +310,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 				}
 				for (int j = 0; j < Program.GetCaveLength(); j++)
 					Program.getCave(j).putTabStock();
-				tv.setHistory(Program.getStorage().getHistory());
+				tv.setHistory(Program.getStorage().getHistory().getHistory());
 			}
 		}
 	}
@@ -369,7 +369,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 							History b = (History) toDeleteList.get(i);
 							Program.getStorage().removeHistory(b);
 						}
-						tv.setHistory(Program.getStorage().getHistory());
+						tv.setHistory(Program.getStorage().getHistory().getHistory());
 					}
 				}
 			} catch (Exception exc) {
@@ -379,7 +379,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 	}
 
 	public void refresh() {
-		tv.setHistory(Program.getStorage().getHistory());
+		tv.setHistory(Program.getStorage().getHistory().getHistory());
 	}
 
 }

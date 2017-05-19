@@ -2,11 +2,8 @@ package mycellar;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
@@ -20,8 +17,8 @@ import mycellar.vignobles.CountryVignobles;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.5
- * @since 17/05/17
+ * @version 3.6
+ * @since 18/05/17
  */
 
 public class SerializedStorage implements Storage {
@@ -131,8 +128,8 @@ public class SerializedStorage implements Storage {
 			return true;
 		}
 		LinkedList<History> tmpList = new LinkedList<History>();
-		for (History h : m_HistoryList) {
-			if (h.GetType() == _nValue) {
+		for (History h : m_HistoryList.getHistory()) {
+			if (h.getType() == _nValue) {
 				tmpList.addLast(h);
 			}
 		}
@@ -516,16 +513,7 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public boolean saveHistory() {
-		boolean resul = true;
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(Program.getWorkDir(true) + "history.sinfo"));
-			oos.writeObject(m_HistoryList);
-			oos.close();
-		}
-		catch (FileNotFoundException fnfe) {resul = false;
-		}
-		catch (IOException ioe) {resul = false;
-		}
+		boolean resul = HistoryList.writeXML(new File(Program.getWorkDir(true) + "history.xml"));
 		Debug("Program: Saving History OK");
 		return resul;
 	}
@@ -533,37 +521,36 @@ public class SerializedStorage implements Storage {
 	@Override
 	public boolean loadHistory() {
 		// Historique
-		boolean resul = true;
+		boolean resul = false;
 		File f1 = new File( Program.getWorkDir(true) + "history.sinfo");
-		if(!f1.exists()) {
-			m_HistoryList = new HistoryList();
-			return false;
-		}
-		ObjectInputStream ois = null;
-		try {
-			ois = new ObjectInputStream(new FileInputStream(f1));
-			m_HistoryList = (HistoryList) ois.readObject();
-			ois.close();
-			Debug("Loading History OK");
-		}
-		catch (IOException ex) {
-			Program.showException(ex, false);
-			Debug("ERROR: Loading History");
-			resul = false;
-			m_HistoryList = new HistoryList();
+		if(f1.exists()) {
+			ObjectInputStream ois = null;
 			try {
+				ois = new ObjectInputStream(new FileInputStream(f1));
+				m_HistoryList = (HistoryList) ois.readObject();
 				ois.close();
+				Debug("Loading History OK");
 			}
-			catch (IOException ioe) {}
-			catch (NullPointerException ioe) {}
+			catch (IOException ex) {
+				Debug("ERROR: Loading History");
+				resul = false;
+				try {
+					ois.close();
+				}
+				catch (IOException ioe) {}
+				catch (NullPointerException ioe) {}
+				f1.delete();
+			}
+			catch (ClassNotFoundException ex1) {
+				resul = false;
+				Debug("SerializedStorage: ERROR: Loading History");
+				m_HistoryList = new HistoryList();
+			}
+		}
+		if(!resul)
+			resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + "history.xml"));
+		if(f1.exists())
 			f1.delete();
-		}
-		catch (ClassNotFoundException ex1) {
-			resul = false;
-			Debug("SerializedStorage: ERROR: Loading History");
-			m_HistoryList = new HistoryList();
-		}
-
 		return resul;
 	}
 
@@ -571,13 +558,15 @@ public class SerializedStorage implements Storage {
 	public HistoryList getHistory() {
 		return m_HistoryList;
 	}
+	
+	@Override
+	public void setHistory(HistoryList list) {
+		m_HistoryList = list;
+	}
 
 	@Override
 	public void close() {
 		if(listBouteilles != null)
 			listBouteilles.resetBouteille();
 	}
-	
-	
-
 }

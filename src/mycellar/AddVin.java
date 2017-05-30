@@ -43,7 +43,7 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 21.2
+ * @version 21.3
  * @since 13/05/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
@@ -755,7 +755,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 								//Add several bottles in Caisse
 								Debug("Adding multiple bottles in the same place: YES");
 								
-								if ( (caisse.getNbCaseUseCaisse(lieu_num_selected) + nb_bottle_rest) >= caisse.getStockNbcol() && caisse.isLimited()) {
+								if ( (caisse.getNbCaseUseCaisse(lieu_num_selected+caisse.getStartCaisse()-1) + nb_bottle_rest) >= caisse.getStockNbcol() && caisse.isLimited()) {
 									new Erreur(Program.getError("Error154"), Program.getError("Error153"));
 								}
 								else {

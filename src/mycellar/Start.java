@@ -46,8 +46,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 21.9
- * @since 09/05/17
+ * @version 22.0
+ * @since 31/05/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1628,6 +1628,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 					Program.showException(e1);
 				}
 			}
+			Program.modifyPlace.updateView();
 			try {
 				Program.tabbedPane.setSelectedComponent(Program.modifyPlace);
 			} catch (IllegalArgumentException e) {

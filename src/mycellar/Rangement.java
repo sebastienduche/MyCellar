@@ -41,8 +41,8 @@ import jxl.write.WriteException;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 24.6
- * @since 18/05/17
+ * @version 24.7
+ * @since 31/05/17
  */
 public class Rangement implements Serializable, Comparable<Rangement> {
 
@@ -195,6 +195,8 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * @return int
 	 */
 	public int getNbLignes(int emplacement) {
+		if(isCaisse())
+			return -1;
 		try {
 			return listePartie.get(emplacement).getRowSize();
 		}
@@ -504,6 +506,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 				}
 			}
 			else { //Pour la caisse
+				updateCaisse(nb_emplacements);
 				/*int cpt1[] = new int[nb_emplacements];
 
 				for (int z = 0; z < nb_emplacements; z++) {
@@ -1608,6 +1611,17 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		return getNbEmplacements();
 	}
 
+	/**
+	 * Réinitialisation du stockage pour les caisses
+	 */
+	public void updateCaisse(int nb_emplacements) {
+		if(!isCaisse())
+			return;
+		this.nb_emplacements = nb_emplacements;
+		storageCaisse = new HashMap<Integer, ArrayList<Bouteille>>(nb_emplacements);
+		for(int i=start_caisse; i<start_caisse+nb_emplacements; i++)
+			storageCaisse.put(i, new ArrayList<Bouteille>());
+	}
 	/**
 	 * Rangement: Constructeur de création d'un rangement
 	 *

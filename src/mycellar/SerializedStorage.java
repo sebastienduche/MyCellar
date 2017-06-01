@@ -17,8 +17,8 @@ import mycellar.vignobles.CountryVignobles;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.6
- * @since 18/05/17
+ * @version 3.7
+ * @since 31/05/17
  */
 
 public class SerializedStorage implements Storage {
@@ -549,6 +549,8 @@ public class SerializedStorage implements Storage {
 		}
 		if(!resul)
 			resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + "history.xml"));
+		if(!resul)
+			m_HistoryList = new HistoryList();
 		if(f1.exists())
 			f1.delete();
 		return resul;

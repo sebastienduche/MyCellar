@@ -41,8 +41,8 @@ import jxl.write.WriteException;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 24.7
- * @since 31/05/17
+ * @version 24.8
+ * @since 01/06/17
  */
 public class Rangement implements Serializable, Comparable<Rangement> {
 
@@ -197,12 +197,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	public int getNbLignes(int emplacement) {
 		if(isCaisse())
 			return -1;
-		try {
-			return listePartie.get(emplacement).getRowSize();
-		}
-		catch (IndexOutOfBoundsException aiiobe) {
-			return -1;
-		}
+		return listePartie.get(emplacement).getRowSize();
 	}
 
 	/**
@@ -233,7 +228,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 */
 	public int getNbColonnes(int emplacement, int ligne) {
 		if(isCaisse()) {
-			Debug("ERROR: Function isExistingCell can't be called on a simple place!");
+			Debug("ERROR: Function getNbColonnes can't be called on a simple place!");
 			return -1;
 		}
 		return listePartie.get(emplacement).getRow(ligne).getCol();

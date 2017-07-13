@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 21.4
- * @since 18/05/17
+ * @version 21.6
+ * @since 13/07/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -755,7 +755,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 								//Add several bottles in Caisse
 								Debug("Adding multiple bottles in the same place: YES");
 								
-								if ( caisse.isLimited() && (caisse.getNbCaseUse(lieu_num_selected) + nb_bottle_rest) >= caisse.getNbColonnesStock()) {
+								if ( caisse.isLimited() && (caisse.getNbCaseUse(lieu_num_selected-1) + nb_bottle_rest) >= caisse.getNbColonnesStock()) {
 									new Erreur(Program.getError("Error154"), Program.getError("Error153"));
 								}
 								else {
@@ -910,8 +910,8 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					else
 					{
 						Debug("Modifying with changing place");
-						int nLieuNum = -1;
-						try {
+						int nLieuNum = m_num_lieu.getSelectedIndex();
+						/*try {
 							nLieuNum = Integer.parseInt(m_num_lieu.getItemAt(lieu_num_selected).toString());
 						}
 						catch (NumberFormatException nfe) {
@@ -922,7 +922,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							m_lieu.setEnabled(true);
 							m_end.setText("");
 							m_add.setEnabled(true);
-						}
+						}*/
 						if (resul) {
 							int nbbottle = listBottleInModification.size();
 							if ( Program.getCave(lieu_selected - 1).isLimited() && (Program.getCave(lieu_selected - 1).getNbCaseUse(nLieuNum) + nbbottle) > Program.getCave(lieu_selected - 1).getNbColonnesStock() ) {

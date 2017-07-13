@@ -30,8 +30,8 @@ import java.util.Vector;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 18/05/17
- * @version 1.6
+ * @since 13/07/17
+ * @version 1.8
  */
 
 public class MyXmlDom {
@@ -334,17 +334,17 @@ public class MyXmlDom {
 	public static LinkedList<String> readTypesXml()  {
 
 		Debug("readTypesXml: Reading file");
-		String filename = Program.getXMLTypesFileName();
-		LinkedList<String> typeList = new LinkedList<String>();
-		File file = new File(filename);
-		if(!file.exists())
+		File file = new File(Program.getXMLTypesFileName());
+		if(!file.exists()) {
+			Debug("WARNING: file '"+Program.getXMLTypesFileName()+"' not found!");
 			return null;
+		}
 
+		LinkedList<String> typeList = new LinkedList<String>();
 		try {
-
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(new File(filename));
+			Document doc = dBuilder.parse(new File(Program.getXMLTypesFileName()));
 			doc.getDocumentElement().normalize();
 
 			NodeList types = doc.getElementsByTagName("type");
@@ -419,12 +419,11 @@ public class MyXmlDom {
 				
 				if(rangement.isCaisse()) {
 					r.setAttribute("columns", "1");
-					int start = rangement.getStartCaisse();
-					for (int i = start; i < rangement.getNbEmplacements() + start; i++) {
+					for (int i = 0; i < rangement.getNbEmplacements(); i++) {
 						Element partie = doc.createElement("partie");
 						r.appendChild(partie);
 						name = doc.createElement("nom-partie");
-						name.setTextContent(Program.getLabel("Infos029") + " " + (i + rangement.getStartCaisse() + 1));
+						name.setTextContent(Program.getLabel("Infos029") + " " + (i + rangement.getStartCaisse()));
 						partie.appendChild(name);
 						Element caisse = doc.createElement("caisse");
 						partie.appendChild(caisse);

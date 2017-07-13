@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.3
- * @since 01/06/17
+ * @version 11.4
+ * @since 12/07/17
  */
 public class Creer_Rangement extends JPanel implements ITabListener {
 
@@ -394,7 +394,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 				if(rangement.getNbEmplacements() > nbPart) {
 					// Contrôle que les emplacements supprimés sont vides
 					for(int i=nbPart; i<rangement.getNbEmplacements(); i++) {
-						if(rangement.getNbCaseUse(nbPart+rangement.getStartCaisse()) > 0) {
+						if(rangement.getNbCaseUse(nbPart) > 0) {
 							Debug("ERROR: Unable to delete simple place part with bottles!");
 							new Erreur(MessageFormat.format(Program.getError("CreerRangement.CantDeletePartCaisse"), (i+rangement.getStartCaisse())));
 							return;

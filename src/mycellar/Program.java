@@ -15,8 +15,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import mycellar.core.MyCellarFields;
 import mycellar.countries.Countries;
@@ -70,8 +68,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 15.1
- * @since 17/05/17
+ * @version 15.2
+ * @since 13/07/17
  */
 
 public class Program {
@@ -253,7 +251,7 @@ public class Program {
 	 * Pour nettoyer et mettre a jour le programme
 	 */
 	protected static void cleanAndUpgrade() {
-		String sVersion = getCaveConfigString("VERSION", "");
+		/*String sVersion = getCaveConfigString("VERSION", "");
 		if(sVersion.isEmpty()) {
 			putCaveConfigString("VERSION", m_sVersion);
 			return;
@@ -269,20 +267,18 @@ public class Program {
 			putCaveConfigInt("HAUTEUR_LV", n);
 			putCaveConfigString("VERSION", m_sVersion);
 		}
-		removeGlobalConfigString("SPLASHSCREEN");
+		removeGlobalConfigString("SPLASHSCREEN");*/
 	}
 
 
 	/**
 	 * setLanguage
-	 * @param ext String
+	 * @param lang String
 	 * @return boolean
 	 */
-	public static boolean setLanguage(String ext) {
-		Program.Debug("set Language : "+ext);
-		boolean bLoaded = LanguageFileLoader.loadLanguageFiles( ext );
-		//buildColumnsList();
-		return bLoaded;
+	public static boolean setLanguage(String lang) {
+		Program.Debug("set Language : "+lang);
+		return LanguageFileLoader.loadLanguageFiles( lang );
 	}
 
 	/**
@@ -637,15 +633,6 @@ public class Program {
 	private static void writeOtherObject() {
 		Debug("Program: Writing Other Objects...");
 		boolean resul = true;
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(m_sWorkDir + "/static_all.sinfo"));
-			oos.writeObject(getStorage().getAllList());
-			oos.close();
-		}
-		catch (FileNotFoundException fnfe) {resul = false;
-		}
-		catch (IOException ioe) {resul = false;
-		}
 
 		if(!MyXmlDom.writeYears(getStorage().getAnneeList()))
 			resul = false;
@@ -688,40 +675,15 @@ public class Program {
 		//Récupération de la liste des fichiers
 		Debug("Program: Collecting file list");
 		LinkedList<Rangement> cave = new LinkedList<Rangement>();
-		ObjectInputStream ois = null;
 		boolean resul = true;
 		//Lecture des fichiers et écriture de MyCellar.xml
 		Debug("Program: Writing MyCellar.xml");
 		boolean bresul = getStorage().readRangement(cave);
 		if (bresul && !cave.isEmpty()) {
-			f1 = new File( m_sWorkDir + "/static_all.sinfo");
-			try {
-				ois = new ObjectInputStream(new FileInputStream(f1));
-				getStorage().setAll( (Bouteille[]) ois.readObject());
-				ois.close();
-				Debug("Program: Loading all bottles OK");
-			}
-			catch (IOException ex) {
-				Debug("Program: ERROR: Loading all bottles");
-				resul = false;
-				try {
-					ois.close();
-				}
-				catch (IOException ioe) {}
-				catch (NullPointerException ioe) {}
-				f1.delete();
-			}
-			catch (ClassNotFoundException ex1) {resul = false;
-			Debug("Program: ERROR: Loading all bottles");
-			}
 			loadYears();
 		}
 		else {
 			Debug("Program: WARNING: Destroying internal files");
-			f1 = new File( m_sWorkDir + "/static_all.sinfo");
-			f1.delete();
-			f1 = new File( m_sWorkDir + "/static_year.sinfo");
-			f1.delete();
 			f1 = new File( m_sWorkDir + "/static_col.sinfo");
 			f1.delete();
 			cave = null;
@@ -737,10 +699,7 @@ public class Program {
 	}
 
 	private static void loadYears() {
-		File f1 = new File( m_sWorkDir + "/static_year.sinfo");
-		if(f1.exists())
-			f1.delete();
-		f1 = new File(getXMLYearsFileName());
+		File f1 = new File(getXMLYearsFileName());
 		if(f1.exists()) {
 			getStorage().setAnnee(MyXmlDom.readYears());
 		}
@@ -941,12 +900,6 @@ public class Program {
 			}
 			catch (NullPointerException npe) {}
 		}
-		File fToDelete = new File(getWorkDir(true)+"static_all.sinfo");
-		if(fToDelete.exists())
-			fToDelete.delete();
-		fToDelete = new File(getWorkDir(true)+"place.ini");
-		if(fToDelete.exists())
-			fToDelete.delete();
 
 		if(isListCaveModified())
 			MyXmlDom.writeMyCellarXml(cave,"");
@@ -1060,7 +1013,7 @@ public class Program {
 	 *
 	 * @param _oCave LinkedList<Rangement>
 	 */
-	public static void SetCave(LinkedList<Rangement> _oCave) {
+	public static void setCave(LinkedList<Rangement> _oCave) {
 		m_oCave = _oCave;
 	}
 
@@ -1223,7 +1176,7 @@ public class Program {
 			Debug("Reading places from file");
 			LinkedList<Rangement> cave = MyXmlDom.readMyCellarXml("");
 			if(cave != null) {
-				Program.SetCave(cave);
+				Program.setCave(cave);
 			}
 		}
 
@@ -1427,14 +1380,13 @@ public class Program {
 	 */
 	private static void saveProperties() {
 
-		MyXmlDom.writeTypeXml(half);
-		File fToDelete = new File(getWorkDir(true) + "type.ini");
-		if(fToDelete.exists())
-			fToDelete.delete();
-		if(isXMLTypesFileToDelete)
-			fToDelete = new File(getWorkDir(true) + m_sXMLTypesFile);
-		if(fToDelete.exists())
-			fToDelete.delete();
+		if(isXMLTypesFileToDelete) {
+			File fToDelete = new File(getWorkDir(true) + m_sXMLTypesFile);
+			if(fToDelete.exists())
+				fToDelete.delete();
+		}
+		else
+			MyXmlDom.writeTypeXml(half);
 
 		if(inputPropCave != null)
 		{
@@ -1640,11 +1592,11 @@ public class Program {
 		configCave.put(_sKey, _sValue);
 	}
 
-	private static void removeGlobalConfigString( String _sKey )
+	/*private static void removeGlobalConfigString( String _sKey )
 	{
 		if( configGlobal.containsKey(_sKey))
 			configGlobal.remove(_sKey);
-	}
+	}*/
 
 	public static MyLinkedHashMap getCaveConfig()
 	{

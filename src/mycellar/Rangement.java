@@ -41,8 +41,8 @@ import jxl.write.WriteException;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 24.8
- * @since 01/06/17
+ * @version 25.0
+ * @since 13/07/17
  */
 public class Rangement implements Serializable, Comparable<Rangement> {
 
@@ -201,7 +201,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	}
 
 	/**
-	 * Indique si la celluce demandée existe
+	 * Indique si la cellule demandée existe
 	 * 
 	 * @param emplacement
 	 * @param ligne
@@ -245,12 +245,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 			Debug("ERROR: Function getNbColonnesMax can't be called on a simple place!");
 			return -1;
 		}
-		int max = 0;
-		for(Row row : listePartie.get(emplacement).getRows()) {
-			if(max < row.getCol())
-				max = row.getCol();
-		}
-		return max;
+		return listePartie.get(emplacement).getRows().stream().mapToInt(row -> row.getCol()).max().getAsInt();
 	}
 
 	/**
@@ -337,32 +332,31 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * getNbCaseUse: retourne le nombre de case utilisée dans toutes les lignes
 	 * d'un emplacement
 	 *
-	 * @param emplacement int: numéro d'emplacement (0...n ou start_caisse...n)
+	 * @param emplacement int: numéro d'emplacement (0...n)
 	 * @return int
 	 */
 	public int getNbCaseUse(int emplacement) {
-		int resul = 0;
-		if(isCaisse()) {
-			resul = storageCaisse.get(emplacement).size();
-		}
-		else {
-			int nb_colonne;
-			int nb_ligne;
+		
+		if(isCaisse())
+			return storageCaisse.get(emplacement + start_caisse).size();
 
-			try {
-				nb_ligne = this.getNbLignes(emplacement);
-				for (int j = 0; j < nb_ligne; j++) {
-					nb_colonne = this.getNbColonnes(emplacement, j);
-					for (int i = 0; i < nb_colonne; i++) {
-						if (stockage[emplacement][j][i] != null) {
-							resul += 1;
-						}
+		int resul = 0;
+		int nb_colonne;
+		int nb_ligne;
+
+		try {
+			nb_ligne = this.getNbLignes(emplacement);
+			for (int j = 0; j < nb_ligne; j++) {
+				nb_colonne = this.getNbColonnes(emplacement, j);
+				for (int i = 0; i < nb_colonne; i++) {
+					if (stockage[emplacement][j][i] != null) {
+						resul += 1;
 					}
 				}
 			}
-			catch (Exception e) {
-				Program.showException(e);
-			}
+		}
+		catch (Exception e) {
+			Program.showException(e);
 		}
 		return resul;
 	}
@@ -375,13 +369,8 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	public int getNbCaseUseAll() {
 
 		int resul = 0;
-		if(isCaisse()) {
-			for(int i=start_caisse; i<start_caisse+nb_emplacements; i++)
-				resul += getNbCaseUse(i);
-		} else {
-			for(int i=0; i<nb_emplacements; i++)
-				resul += getNbCaseUse(i);
-		}
+		for(int i=0; i<nb_emplacements; i++)
+			resul += getNbCaseUse(i);
 		return resul;
 	}
 
@@ -542,7 +531,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 
 						// Positionnement de la bouteille dans le stock
 						if (getNom().equals(tmp_nom)) {
-							int nb_vin = this.getNbCaseUse(b.getNumLieu());
+							int nb_vin = getNbCaseUse(b.getNumLieu()-start_caisse);
 							if(limite && nb_vin == stock_nbcol)
 								out.add(b);
 							else
@@ -655,7 +644,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 *
 	 * @return int
 	 */
-	private boolean putWineCaisse(Bouteille wine) { //pour les caisse A modifier
+	private boolean putWineCaisse(Bouteille wine) {
 
 		int num_empl = wine.getNumLieu();
 		wine.setLigne(0);
@@ -664,7 +653,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		Debug("putWineCaisse: "+wine.getNom()+" "+wine.getEmplacement()+" "+num_empl);
 
 		try {
-			int nb_vin = this.getNbCaseUse(num_empl);
+			int nb_vin = this.getNbCaseUse(num_empl-start_caisse);
 			if(limite && nb_vin == stock_nbcol)
 				return false;
 			storageCaisse.get(num_empl).add(wine);
@@ -726,7 +715,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * moveLineWine: Déplacement d'une bouteille dans un rangement
 	 *
 	 * @param bottle Bouteille: Bouteille à déplacer
-	 * @param newLine int: noouveau numéro de ligne
+	 * @param newLine int: nouveau numéro de ligne
 	 */
 	public void moveLineWine(Bouteille bottle, int nNewLine) {
 		Program.getStorage().deleteWine(bottle);
@@ -779,13 +768,13 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	/**
 	 * getBouteilleCaisseAt: retourne la bouteille se trouvant à un emplacement précis
 	 *
-	 * @param num_empl int: numéro d'emplacement (start_caisse...n)
+	 * @param num_empl int: numéro d'emplacement (0...n)
 	 * @param index int: index de la bouteille (0...n)
 	 * @return Bouteille
 	 */
 	public Bouteille getBouteilleCaisseAt(int num_empl, int index) {
 		try {
-			return storageCaisse.get(num_empl).get(index);
+			return storageCaisse.get(num_empl + start_caisse).get(index);
 		}
 		catch (Exception e) {
 			Program.showException(e);
@@ -1361,7 +1350,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 							}
 							if (place.isCaisse())
 							{
-								for (int k=0; k<place.getNbCaseUse(j - 1 + place.getStartCaisse()); k++)
+								for (int k=0; k<place.getNbCaseUse(j - 1); k++)
 								{
 									nLine++;
 									Bouteille b = place.getBouteilleCaisseAt(j - 1, k);
@@ -1532,22 +1521,21 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	/**
 	 * Indique si l'on peut ajouter une bouteille dans un rangement
 	 * 
-	 * @param _nEmpl Numero d'emplacement
-	 * @param _nLine Numero de ligne
-	 * @param _nCol Numero de colonne
+	 * @param _nEmpl Numero d'emplacement (0, n)
+	 * @param _nLine Numero de ligne (0, n)
+	 * @param _nCol Numero de colonne (0, n)
 	 * @return
 	 */
 	public boolean canAddBottle(int _nEmpl, int _nLine, int _nCol) {
+		
+		if (_nEmpl < start_caisse || _nEmpl >= getNbEmplacements() + start_caisse)
+			return false;
 		if (isCaisse()) {
-			if (_nEmpl < getStartCaisse())
-				return false;
 			if( isLimited() && !hasFreeSpaceInCaisse(_nEmpl))
 				return false;
 			return true;
 		}
 
-		if (_nEmpl < 0 || _nEmpl >= getNbEmplacements())
-			return false;
 		if (_nLine < 0 || _nLine >= getNbLignes(_nEmpl))
 			return false;
 		if (_nCol < 0 || _nCol >= getNbColonnes(_nEmpl, _nLine))
@@ -1561,7 +1549,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 	 * HasFreeSpaceInCaisse Indique si l'on peut encore ajouter des
 	 * bouteilles dans une caisse
 	 * 
-	 * @param _nEmpl (start_caisse...n)
+	 * @param _nEmpl (0...n)
 	 * @return
 	 */
 	public boolean hasFreeSpaceInCaisse(int _nEmpl) {
@@ -1586,11 +1574,9 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		if (!isCaisse())
 			return -1;
 
-		int nStart = getStartCaisse();
-		for( int i=nStart; i< (nStart+getNbEmplacements()); i++)
-		{
+		for( int i = 0; i < getNbEmplacements(); i++) {
 			if ( hasFreeSpaceInCaisse(i) )
-				return i;
+				return i + start_caisse;
 		}
 		return -1;
 	}

@@ -15,8 +15,8 @@ import mycellar.Rangement;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.7
- * @since 13/05/17
+ * @version 2.9
+ * @since 13/07/17
  */
 
 public class TableShowValues extends AbstractTableModel {
@@ -75,7 +75,7 @@ public class TableShowValues extends AbstractTableModel {
 	  Bouteille b = monVector.get(row);
 	  switch(column)
 	  {
-	  case 0:
+	  case ETAT:
 		  return values[row];
 	  case NAME:
 		  String nom = b.getNom();
@@ -254,8 +254,7 @@ public class TableShowValues extends AbstractTableModel {
 		    	if(!rangement.isCaisse())
 		    		bTemp = rangement.getBouteille(num_empl-1, line-1, column1-1);
 		    	if( bTemp != null) {
-		    		String sText = Program.convertStringFromHTMLString(bTemp.getNom()) + " " + Program.getError("Error059");
-		    		javax.swing.JOptionPane.showMessageDialog(null, sText, Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
+		    		new Error(Program.convertStringFromHTMLString(bTemp.getNom()) + " " + Program.getError("Error059"));
 		    	}
 		    	else {
 		    		Rangement oldPlace = b.getRangement();

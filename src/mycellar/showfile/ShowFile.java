@@ -55,8 +55,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.9
- * @since 17/05/17
+ * @version 4.1
+ * @since 13/07/17
  */
 
 public class ShowFile extends JPanel implements ITabListener  {
@@ -473,11 +473,13 @@ public class ShowFile extends JPanel implements ITabListener  {
 		tc.setCellEditor(new DefaultCellEditor(m_oPlaceCbx));
 		tc = tcm.getColumn(TableShowValues.TYPE);
 		tc.setCellEditor(new DefaultCellEditor(m_oTypeCbx));
-		tc = tcm.getColumn(tcm.getColumnCount()-1);
-		tc.setCellRenderer(new StateButtonRenderer());
-		tc.setCellEditor(new StateButtonEditor());
-		tc.setMinWidth(100);
-		tc.setMaxWidth(100);
+		if(!trash) {
+			tc = tcm.getColumn(tcm.getColumnCount()-1);
+			tc.setCellRenderer(new StateButtonRenderer());
+			tc.setCellEditor(new StateButtonEditor());
+			tc.setMinWidth(100);
+			tc.setMaxWidth(100);
+		}
 
 		m_oTable.setPreferredScrollableViewportSize(new Dimension(300, 200));
         m_oTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
@@ -619,7 +621,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 		m_oResultLabel.setText("");
 	}
 	
-	public void setRangementValue(Bouteille b, MyCellarFields column, Object value) {
+	private void setRangementValue(Bouteille b, MyCellarFields field, Object value) {
 		
 		String empl_old = b.getEmplacement();
     	int num_empl_old = b.getNumLieu();
@@ -631,15 +633,15 @@ public class ShowFile extends JPanel implements ITabListener  {
     	String empl = empl_old;
     	int num_empl = num_empl_old;
     	int line = line_old;
-    	int column1 = column_old;
+    	int column = column_old;
     	
     	Program.setModified();
 
-    	if (column == MyCellarFields.PLACE) {
+    	if (field == MyCellarFields.PLACE) {
     		empl = (String)value; 
     		rangement = Program.getCave(empl);
     	}
-    	else if (column == MyCellarFields.NUM_PLACE) {
+    	else if (field == MyCellarFields.NUM_PLACE) {
     		try{
     			num_empl = Integer.parseInt((String)value);
     			nValueToCheck = num_empl;
@@ -649,7 +651,7 @@ public class ShowFile extends JPanel implements ITabListener  {
               bError = true;
             }
     	}
-    	else if (column == MyCellarFields.LINE) {
+    	else if (field == MyCellarFields.LINE) {
     		try{
     			line = Integer.parseInt((String)value);
     			nValueToCheck = line;
@@ -659,10 +661,10 @@ public class ShowFile extends JPanel implements ITabListener  {
               bError = true;
             }
     	}
-    	else if (column == MyCellarFields.COLUMN) {
+    	else if (field == MyCellarFields.COLUMN) {
     		try{
-    			column1 = Integer.parseInt((String)value);
-    			nValueToCheck = column1;
+    			column = Integer.parseInt((String)value);
+    			nValueToCheck = column;
     		}
             catch (Exception e) {
               new Erreur(Program.getError("Error196"));
@@ -670,7 +672,7 @@ public class ShowFile extends JPanel implements ITabListener  {
             }
     	}
     	
-    	if ( !bError && (column == MyCellarFields.NUM_PLACE || column == MyCellarFields.LINE || column == MyCellarFields.COLUMN) ) {
+    	if ( !bError && (field == MyCellarFields.NUM_PLACE || field == MyCellarFields.LINE || field == MyCellarFields.COLUMN) ) {
     		if (rangement != null && !rangement.isCaisse() && nValueToCheck <= 0)
     		{
     			new Erreur(Program.getError("Error197"));
@@ -678,27 +680,26 @@ public class ShowFile extends JPanel implements ITabListener  {
     		}
     	}
     		
-    	if ( !bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
+    	if ( !bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column)) {
     		// Controle de l'emplacement de la bouteille
-    		if(rangement.canAddBottle(num_empl, line, column1)) {
+    		if(rangement.canAddBottle(num_empl, line, column)) {
 		    	Bouteille bTemp = null;
 		    	if(!rangement.isCaisse())
-		    		bTemp = rangement.getBouteille(num_empl-1, line-1, column1-1);
+		    		bTemp = rangement.getBouteille(num_empl-1, line-1, column-1);
 		    	if( bTemp != null) {
-		    		String sText = Program.convertStringFromHTMLString(bTemp.getNom()) + " " + Program.getError("Error059");
-		    		javax.swing.JOptionPane.showMessageDialog(null, sText, Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
+		    		new Error(Program.convertStringFromHTMLString(bTemp.getNom()) + " " + Program.getError("Error059"));
 		    	}
 		    	else {
 		    		Rangement oldPlace = b.getRangement();
-		    		if(column == MyCellarFields.PLACE)
+		    		if(field == MyCellarFields.PLACE)
 		    			b.setEmplacement((String)value);
-		    		else if(column == MyCellarFields.NUM_PLACE)
+		    		else if(field == MyCellarFields.NUM_PLACE)
 		    			b.setNumLieu(Integer.parseInt((String)value));
-		    		else if(column == MyCellarFields.LINE)
+		    		else if(field == MyCellarFields.LINE)
 		    			b.setLigne(Integer.parseInt((String)value));
-		    		else if(column == MyCellarFields.COLUMN)
+		    		else if(field == MyCellarFields.COLUMN)
 		    			b.setColonne(Integer.parseInt((String)value));
-		    		if ( column == MyCellarFields.PLACE && rangement.isCaisse()) {
+		    		if ( field == MyCellarFields.PLACE && rangement.isCaisse()) {
 		    			int nNumEmpl = b.getNumLieu();//Integer.parseInt((String) values[row][NUM_PLACE]);
 		    			if( nNumEmpl > rangement.getLastNumEmplacement())
 		    				b.setNumLieu(rangement.getFreeNumPlaceInCaisse());

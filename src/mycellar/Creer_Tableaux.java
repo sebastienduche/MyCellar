@@ -47,8 +47,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.9
- * @since 10/05/17
+ * @version 5.0
+ * @since 12/07/17
  */
 public class Creer_Tableaux extends JPanel implements ITabListener {
 	private MyCellarLabel label2 = new MyCellarLabel();
@@ -365,7 +365,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 				int max_row = tv.getRowCount();
 				int row = 0;
 				do {
-					if (tv.getValueAt(row, 3).toString() == "true") {
+					if (tv.getValueAt(row, TableauValues.ETAT).toString() == "true") {
 						count++;
 					}
 					row++;
@@ -384,7 +384,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 					row = 0;
 					k = 0;
 					do {
-						if (tv.getValueAt(row, 3).toString() == "true") {
+						if (tv.getValueAt(row, TableauValues.ETAT).toString() == "true") {
 							listToGen[k] = row;
 							k++;
 						}

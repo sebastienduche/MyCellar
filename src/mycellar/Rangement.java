@@ -41,8 +41,8 @@ import jxl.write.WriteException;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 25.0
- * @since 13/07/17
+ * @version 25.1
+ * @since 14/07/17
  */
 public class Rangement implements Serializable, Comparable<Rangement> {
 
@@ -350,7 +350,7 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 				nb_colonne = this.getNbColonnes(emplacement, j);
 				for (int i = 0; i < nb_colonne; i++) {
 					if (stockage[emplacement][j][i] != null) {
-						resul += 1;
+						resul++;
 					}
 				}
 			}
@@ -386,18 +386,6 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 		int tmp_col_max = 0;
 		LinkedList<MyCellarError> errors = new LinkedList<MyCellarError>();
 
-		char virgule;
-		String sVirgule;
-		if( Program.hasConfigCaveKey("PRICE_SEPARATOR"))
-		{
-			sVirgule = Program.getCaveConfigString("PRICE_SEPARATOR","");
-			virgule = sVirgule.charAt(0);
-		}
-		else
-		{
-			java.text.DecimalFormat df = new java.text.DecimalFormat();
-			virgule = df.getDecimalFormatSymbols().getDecimalSeparator();
-		}
 		try {
 			LinkedList<Bouteille> out = new LinkedList<Bouteille>();
 			Bouteille b = null;
@@ -408,38 +396,6 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 					b = Program.getStorage().getAllAt(i);
 					if (b != null) {
 						String tmp_nom = b.getEmplacement();
-						//Prix Max
-						int prix_max = 0;
-						String prix_tmp = Program.convertStringFromHTMLString(b.getPrix());
-						int ind_prix = prix_tmp.indexOf(virgule);
-						if (ind_prix > 0) {
-							prix_tmp = prix_tmp.substring(0, ind_prix);
-						}
-
-						if (virgule == '.') {
-							prix_tmp = prix_tmp.replace(',', ' ');
-						}
-						if (virgule == ',') {
-							prix_tmp = prix_tmp.replace('.', ' ');
-						}
-						int index = prix_tmp.indexOf(' ');
-						while (index != -1) {
-							prix_tmp = prix_tmp.substring(0, index) + prix_tmp.substring(index + 1);
-							index = prix_tmp.indexOf(' ');
-						}
-
-						try {
-							prix_max = Integer.parseInt(prix_tmp);
-							prix_max++;
-						}
-						catch (NumberFormatException nfe) {
-							prix_max=0;
-						}
-
-						if (Bouteille.prix_max < prix_max) {
-							Bouteille.prix_max = prix_max;
-
-						}
 						if (getNom().equals(tmp_nom)) {
 							//Récupération du numéro d'emplacement, du numéro de ligne et de colonne
 							int tmp_num = b.getNumLieu();
@@ -502,33 +458,6 @@ public class Rangement implements Serializable, Comparable<Rangement> {
 					b = Program.getStorage().getAllAt(i);
 					if (b != null) {
 						String tmp_nom = b.getEmplacement();
-						//Prix Max
-						int prix_max = 0;
-						String prix_tmp = Program.convertStringFromHTMLString(b.getPrix());
-						int ind_prix = prix_tmp.indexOf(virgule);
-						if (ind_prix > 0) {
-							prix_tmp = prix_tmp.substring(0, ind_prix);
-						}
-						if (virgule == '.') {
-							prix_tmp = prix_tmp.replace(',', ' ');
-						}
-						if (virgule == ',') {
-							prix_tmp = prix_tmp.replace('.', ' ');
-						}
-						int index = prix_tmp.indexOf(' ');
-						while (index != -1) {
-							prix_tmp = prix_tmp.substring(0, index) + prix_tmp.substring(index + 1);
-							index = prix_tmp.indexOf(' ');
-						}
-						try {
-							prix_max = Integer.parseInt(prix_tmp);
-							prix_max++;
-						}
-						catch (NumberFormatException nfe) {}
-						if (Bouteille.prix_max < prix_max) {
-							Bouteille.prix_max = prix_max;
-						}
-
 						// Positionnement de la bouteille dans le stock
 						if (getNom().equals(tmp_nom)) {
 							int nb_vin = getNbCaseUse(b.getNumLieu()-start_caisse);

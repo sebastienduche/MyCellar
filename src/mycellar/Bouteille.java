@@ -22,8 +22,8 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.1
- * @since 20/04/16
+ * @version 3.2
+ * @since 14/07/17
  */
 
 /**
@@ -578,30 +578,6 @@ public class Bouteille implements Serializable{
 		 }
 	 }
 
-	 /*public static int convertYear(String year)
-	 {
-		 year = year.trim();
-		 if( year.compareToIgnoreCase(NON_VINTAGE) == 0)
-			 return NON_VINTAGE_INT;
-		 int v = 0;
-		 try{
-			 v = Integer.parseInt(year);
-		 }catch( NumberFormatException nfe)
-		 {
-			 v = 0;
-			 Debug( "ERROR: Unable to convert '"+year+"' to int!!!!");
-		 }
-		 return  v;
-	 }*/
-
-	 /*public static String convertYear(int year)
-	 {
-		 if( year == NON_VINTAGE_INT )
-			 return NON_VINTAGE;
-
-		 return Integer.toString(year);
-	 }*/
-
 	 public static boolean isValidYear(String year)
 	 {
 		 year = year.trim();
@@ -638,23 +614,13 @@ public class Bouteille implements Serializable{
 	 }
 
 	 public double getPriceDouble() {
-		 char virgule;
-		 String sVirgule;
-		 if(Program.hasConfigCaveKey("PRICE_SEPARATOR")) {
-			 sVirgule = Program.getCaveConfigString("PRICE_SEPARATOR","");
-			 virgule = sVirgule.charAt(0);
-		 }
-		 else {
-			 java.text.DecimalFormat df = new java.text.DecimalFormat();
-			 virgule = df.getDecimalFormatSymbols().getDecimalSeparator();
-		 }
-		 java.math.BigDecimal bd = null;
+		 
 		 String price = Program.convertStringFromHTMLString(prix);
-		 if (virgule == '.') {
-			 price = price.replace(',', ' ');
+
+		 if (Program.priceSeparator == '.') {
+			 price = price.replace(',', '.');
 		 }
-		 if (virgule == ',') {
-			 price = price.replace('.', ' ');
+		 else if (Program.priceSeparator == ',') {
 			 price = price.replace(',', '.');
 		 }
 		 int index = price.indexOf(' ');
@@ -662,18 +628,14 @@ public class Bouteille implements Serializable{
 			 price = price.substring(0, index) + price.substring(index + 1);
 			 index = price.indexOf(' ');
 		 }
-		 boolean isNumeric = true;
 		 try {
-			 bd = new java.math.BigDecimal(price);
+			 java.math.BigDecimal bd = new java.math.BigDecimal(price);
 			 bd = bd.setScale(2, java.math.BigDecimal.ROUND_HALF_UP);
+			 return bd.doubleValue();
 		 }
 		 catch (NumberFormatException nfe) {
-			 isNumeric = false;
+			 return 0;
 		 }
-
-		 if (isNumeric) 
-			 return bd.doubleValue();
-		 return 0;
 	 }
 	 
 	 public boolean isRedWine() {

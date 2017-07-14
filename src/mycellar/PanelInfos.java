@@ -20,8 +20,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 18/05/17
+ * @version 1.0
+ * @since 14/07/17
  */
 public class PanelInfos extends JPanel {
 
@@ -92,19 +92,14 @@ class PanelStats extends JPanel {
 	public void refresh() {
 		nbBottles = 0;
 		model.clearRows();
-		double price = 0;
-		if(!Program.getCave().isEmpty())
-		{
-			for(Rangement r: Program.getCave() )
-			{
+		if(!Program.getCave().isEmpty()) {
+			for(Rangement r: Program.getCave() ) {
 				nbBottles += r.getNbCaseUseAll();
 				model.addRow(r, r.getNbCaseUseAll());
 			}
-			for(Bouteille b: Program.getStorage().getAllList())
-				price += b.getPriceDouble();
 		}
 		bottlesNb.setText(Integer.toString(nbBottles));
-		cellarTotal.setText((int)price + " " + Program.getCaveConfigString("DEVISE",""));
+		cellarTotal.setText(Program.getCellarValue() + " " + Program.getCaveConfigString("DEVISE",""));
         
 	}
 	

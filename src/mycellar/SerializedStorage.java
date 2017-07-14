@@ -17,8 +17,8 @@ import mycellar.vignobles.CountryVignobles;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.7
- * @since 31/05/17
+ * @version 3.8
+ * @since 14/07/17
  */
 
 public class SerializedStorage implements Storage {
@@ -274,13 +274,7 @@ public class SerializedStorage implements Storage {
 		Debug("AddWine: Adding bottle " + wine.getNom() + " " + wine.getAnnee() + " " + wine.getEmplacement() + " " + wine.getNumLieu() + " " + wine.getLigne() + " " + wine.getColonne());
 
 		Program.setModified();
-		int prix = 0;
-		try {
-			prix = Integer.parseInt(Program.convertStringFromHTMLString(wine.getPrix()));
-		}
-		catch (NumberFormatException nfe) {
-			prix = 0;
-		}
+		int prix = (int)wine.getPriceDouble();
 		if (Bouteille.prix_max < prix) {
 			Bouteille.prix_max = prix;
 		}

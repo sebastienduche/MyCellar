@@ -39,6 +39,7 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
@@ -68,8 +69,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 15.2
- * @since 13/07/17
+ * @version 15.3
+ * @since 14/07/17
  */
 
 public class Program {
@@ -138,6 +139,7 @@ public class Program {
 	private static LinkedList<File> dirToDelete = new LinkedList<File>();
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
+	public static char priceSeparator;
 
 	/**
 	 * init
@@ -195,11 +197,24 @@ public class Program {
 			}
 
 			verifyConfigFile();
+			initPriceSeparator();
 			cleanAndUpgrade();
 		}
 		catch (Exception e) {
 			showException(e);
 		}
+	}
+	
+	private static void initPriceSeparator() {
+		 String sVirgule;
+		 if(Program.hasConfigCaveKey("PRICE_SEPARATOR")) {
+			 sVirgule = Program.getCaveConfigString("PRICE_SEPARATOR","");
+			 priceSeparator = sVirgule.charAt(0);
+		 }
+		 else {
+			 java.text.DecimalFormat df = new java.text.DecimalFormat();
+			 priceSeparator = df.getDecimalFormatSymbols().getDecimalSeparator();
+		 }
 	}
 
 	/**
@@ -654,7 +669,7 @@ public class Program {
 		else {
 			m_oCave = MyXmlDom.readMyCellarXml("");
 			loadYears();
-
+			loadMaxPrice();
 			getStorage().loadHistory();
 		}
 		if(m_oCave == null) {
@@ -719,6 +734,19 @@ public class Program {
 				getStorage().addAnnee(b.getAnneeInt());
 			}
 		}
+	}
+	
+	public static void loadMaxPrice() {
+		
+		OptionalDouble i = getStorage().getAllList().stream().mapToDouble(bouteille -> bouteille.getPriceDouble()).max();
+		if(i.isPresent())
+			Bouteille.prix_max = (int) i.getAsDouble();
+		else
+			Bouteille.prix_max = 0;
+	}
+	
+	public static int getCellarValue() {	
+		return (int) getStorage().getAllList().stream().mapToDouble(bouteille -> bouteille.getPriceDouble()).sum();
 	}
 
 

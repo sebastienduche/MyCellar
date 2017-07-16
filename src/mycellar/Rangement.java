@@ -660,28 +660,30 @@ public class Rangement implements Comparable<Rangement> {
 	 */
 	public String toXml() {
 
-		String sText = "";
+		StringBuffer sText = new StringBuffer();
 		if (isCaisse()) {
-			sText = "<place name=\"\" IsCaisse=\"true\" NbPlace=\"" + getNbEmplacements() + "\" NumStart=\""+getStartCaisse()+"\"";
-			if ( isLimited() )
-				sText = sText.concat(" NbLimit=\""+this.getNbColonnesStock()+"\">");
+			sText.append("<place name=\"\" IsCaisse=\"true\" NbPlace=\"")
+			.append(getNbEmplacements())
+			.append("\" NumStart=\"")
+			.append(getStartCaisse())
+			.append("\"");
+			if (isLimited())
+				sText.append(" NbLimit=\"").append(this.getNbColonnesStock()).append("\">");
 			else
-				sText = sText.concat(" NbLimit=\"0\">");
-			sText += "<name>" + "<![CDATA["+getNom()+"]]></name>";
-			sText += "</place>";
+				sText.append(" NbLimit=\"0\">");
 		}else{
-			sText = "<place name=\"\" IsCaisse=\"false\" NbPlace=\"" + getNbEmplacements() + "\" >\n";
-			for ( int i=0; i<getNbEmplacements(); i++)
-			{
-				sText = sText + "<internal-place NbLine=\""+getNbLignes(i)+"\">\n";
-				for ( int j=0; j<getNbLignes(i); j++)
-					sText = sText + "<line NbColumn=\""+getNbColonnes(i,j)+"\"/>\n";
-				sText = sText + "</internal-place>\n";
+			sText.append("<place name=\"\" IsCaisse=\"false\" NbPlace=\"")
+			.append(getNbEmplacements())
+			.append("\">\n");
+			for (int i=0; i<getNbEmplacements(); i++) {
+				sText.append("<internal-place NbLine=\"").append(getNbLignes(i)).append("\">\n");
+				for (int j=0; j<getNbLignes(i); j++)
+					sText.append("<line NbColumn=\"").append(getNbColonnes(i,j)).append("\"/>\n");
+				sText.append("</internal-place>\n");
 			}
-			sText += "<name>" + "<![CDATA["+getNom()+"]]></name>";
-			sText = sText + "</place>";
 		}
-		return sText;
+		sText.append("<name><![CDATA[").append(getNom()).append("]]></name></place>");
+		return sText.toString();
 	}
 
 	/**
@@ -741,7 +743,7 @@ public class Rangement implements Comparable<Rangement> {
 			return -1;
 
 		for( int i = 0; i < getNbEmplacements(); i++) {
-			if ( hasFreeSpaceInCaisse(i) )
+			if (hasFreeSpaceInCaisse(i))
 				return i + start_caisse;
 		}
 		return -1;

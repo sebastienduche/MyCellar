@@ -329,23 +329,22 @@ public class RangementUtils {
 		int num_ligne = 0;
 		String title = "";
 
-		HashMap<MyCellarFields, Integer> mapCle = new HashMap<MyCellarFields, Integer>();
+		HashMap<MyCellarFields, Boolean> mapCle = new HashMap<MyCellarFields, Boolean>();
 		HashMap<Integer, Integer> mapColumnNumber = new HashMap<Integer, Integer>();
 
 		//Récupération des colonnes à exporter
 		LinkedList<MyCellarFields> fields = MyCellarFields.getFieldsList();
 		int i=0;
 		for(MyCellarFields field : fields) {
-			mapCle.put(field, Program.getCaveConfigInt("SIZE_COL"+i+"EXPORT_XLS", 1));
+			mapCle.put(field, Program.getCaveConfigInt("SIZE_COL"+i+"EXPORT_XLS", 1) == 1);
 			i++;
 		}
 
 		if (isExit) { //Cas sauvegarde XLS Backup
 			num_ligne = 0;
 			i=0;
-			for(MyCellarFields field : fields) {
+			for(i= 0; i<fields.size(); i++) {
 				mapColumnNumber.put(i, i);
-				i++;
 			}
 		}
 		else { // Export XLS
@@ -355,7 +354,7 @@ public class RangementUtils {
 			i=0;
 			int value = 0;
 			for(MyCellarFields field : fields) {
-				if(mapCle.get(field) == 1) {
+				if(mapCle.get(field)) {
 					mapColumnNumber.put(i, value);
 					value++;
 				}
@@ -427,7 +426,7 @@ public class RangementUtils {
 				}
 				else {
 					for(MyCellarFields field : fields) {
-						if(mapCle.get(field) == 1)
+						if(mapCle.get(field))
 							sheet.addCell(listLabels.get(field));
 					}
 				}
@@ -487,7 +486,9 @@ public class RangementUtils {
 								value = b.getVignoble().getIGP();
 						}
 						Label label;
-						if (isExit || mapCle.get(field) == 1) {
+						if (isExit || mapCle.get(field)) {
+							if(value == null)
+								value = "";
 							label = new Label(mapColumnNumber.get(j), i + num_ligne + 1, value, cellformat);
 							int width = label.getContents().length();
 							if(mapColumnWidth.get(field) < width)

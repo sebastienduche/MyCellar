@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 21.6
- * @since 13/07/17
+ * @version 21.7
+ * @since 16/07/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -911,10 +911,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					{
 						Debug("Modifying with changing place");
 						int nLieuNum = m_num_lieu.getSelectedIndex();
-						/*try {
-							nLieuNum = Integer.parseInt(m_num_lieu.getItemAt(lieu_num_selected).toString());
-						}
-						catch (NumberFormatException nfe) {
+						if(nLieuNum == 0) {
 							Debug("ERROR: Wrong place number");
 							new Erreur(Program.getError("Error056"));
 							m_num_lieu.setEnabled(true);
@@ -922,7 +919,10 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							m_lieu.setEnabled(true);
 							m_end.setText("");
 							m_add.setEnabled(true);
-						}*/
+						}
+						else
+							nLieuNum = Integer.parseInt(m_num_lieu.getItemAt(lieu_num_selected));
+						
 						if (resul) {
 							int nbbottle = listBottleInModification.size();
 							if ( Program.getCave(lieu_selected - 1).isLimited() && (Program.getCave(lieu_selected - 1).getNbCaseUse(nLieuNum) + nbbottle) > Program.getCave(lieu_selected - 1).getNbColonnesStock() ) {
@@ -1149,6 +1149,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							{
 								Debug("Empty case: Modifying bottle");
 								m_laBouteille.update(tmp);
+								tmp.getRangement().updateToStock(tmp);
 								Program.getStorage().addHistory(History.MODIFY, m_laBouteille);
 								Debug("Deleting bottle when modifying");
 								Rangement r = Program.getCave(m_sb_empl);

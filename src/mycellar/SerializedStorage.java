@@ -17,8 +17,8 @@ import mycellar.vignobles.CountryVignobles;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.8
- * @since 14/07/17
+ * @version 3.9
+ * @since 16/07/17
  */
 
 public class SerializedStorage implements Storage {
@@ -537,8 +537,9 @@ public class SerializedStorage implements Storage {
 			}
 			catch (ClassNotFoundException ex1) {
 				resul = false;
-				Debug("SerializedStorage: ERROR: Loading History");
+				Debug("ERROR: Loading History");
 				m_HistoryList = new HistoryList();
+				f1.delete();
 			}
 		}
 		if(!resul)

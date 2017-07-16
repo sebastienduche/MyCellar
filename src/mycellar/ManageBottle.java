@@ -40,8 +40,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.7
- * @since 13/05/17
+ * @version 2.8
+ * @since 16/07/17
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -627,7 +627,8 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_laBouteille.setVignoble(new Vignoble(country, vignoble, aoc, igp, null));
 		CountryVignobles.addVignobleFromBottle(m_laBouteille);
 		if(isCaisse) {
-			m_laBouteille.setNumLieu(lieu_num-1);
+			lieu_num=Integer.parseInt(m_num_lieu.getItemAt(lieu_num));
+			m_laBouteille.setNumLieu(lieu_num);
 			m_laBouteille.setLigne(0);
 			m_laBouteille.setColonne(0);
 		}

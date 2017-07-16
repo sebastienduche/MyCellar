@@ -69,8 +69,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 15.3
- * @since 14/07/17
+ * @version 15.4
+ * @since 16/07/17
  */
 
 public class Program {
@@ -1352,7 +1352,7 @@ public class Program {
 
 			if (getCaveConfigInt("FIC_EXCEL", 0) == 1) {
 				//Ecriture Excel
-				Rangement.write_XLS(getCaveConfigString("FILE_EXCEL",""), getStorage().getAllList(), true);
+				RangementUtils.write_XLS(getCaveConfigString("FILE_EXCEL",""), getStorage().getAllList(), true);
 			}
 
 			dirToDelete.add(new File(m_sWorkDir));

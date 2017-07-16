@@ -46,8 +46,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 22.0
- * @since 31/05/17
+ * @version 22.1
+ * @since 16/07/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -452,7 +452,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * tocreate_actionPerformed: Appelle la fenêtre de Bienvenue.
 	 */
 	void tocreate_actionPerformed() {
-		Rangement.findRangementToCreate();
+		RangementUtils.findRangementToCreate();
 	}
 
 	/**

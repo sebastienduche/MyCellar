@@ -47,8 +47,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.0
- * @since 12/07/17
+ * @version 5.1
+ * @since 16/07/17
  */
 public class Creer_Tableaux extends JPanel implements ITabListener {
 	private MyCellarLabel label2 = new MyCellarLabel();
@@ -435,7 +435,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 						if ( Program.getCave(listToGen[j]).isCaisse() )
 							caisse_select++;
 					}
-					Rangement.write_XLSTab( nom, oList );
+					RangementUtils.write_XLSTab( nom, oList );
 				}
 
 				int key = Program.getCaveConfigInt("DONT_SHOW_TAB_MESS", 0);

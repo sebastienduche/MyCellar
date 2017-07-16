@@ -50,8 +50,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.0
- * @since 13/05/16
+ * @version 6.1
+ * @since 16/07/17
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -602,7 +602,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 							file.setText(path);
 							if( null == bottles)
 								bottles = Program.getStorage().getAllList();
-							if (Rangement.write_HTML(file.getText().trim(), bottles, Program.getHTMLColumns())) {
+							if (RangementUtils.write_HTML(file.getText().trim(), bottles, Program.getHTMLColumns())) {
 								end.setText(Program.getLabel("Infos154")); //"Export terminé."
 								openit.setEnabled(true);
 							}
@@ -622,7 +622,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 								file.setText(path);
 								if( bottles == null)
 									bottles = Program.getStorage().getAllList();
-								resul = Rangement.write_CSV(file.getText().trim(), bottles);
+								resul = RangementUtils.write_CSV(file.getText().trim(), bottles);
 								if (resul != -2) {
 									end.setText(Program.getLabel("Infos154")); //"Export terminé."
 									openit.setEnabled(true);
@@ -643,7 +643,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 									file.setText(path);
 									if(bottles == null)
 										bottles = Program.getStorage().getAllList();
-									resul = Rangement.write_XLS(file.getText().trim(), bottles, false);
+									resul = RangementUtils.write_XLS(file.getText().trim(), bottles, false);
 									if (resul != -2) {
 										end.setText(Program.getLabel("Infos154")); //"Export terminé."
 										openit.setEnabled(true);

@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
@@ -50,8 +51,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.1
- * @since 16/07/17
+ * @version 6.2
+ * @since 17/07/17
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -402,8 +403,8 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			options.setSelected(false);
 		}
 		else if(MyCellarRadioButtonHTML.isSelected()) {
-			LinkedList<MyCellarFields> list = MyCellarFields.getFieldsList();
-			LinkedList<MyCellarFields> cols = Program.getHTMLColumns();
+			ArrayList<MyCellarFields> list = MyCellarFields.getFieldsList();
+			ArrayList<MyCellarFields> cols = Program.getHTMLColumns();
 			ManageColumnModel modelColumn = new ManageColumnModel(list, cols);
 			JTable table = new JTable(modelColumn);
 			TableColumnModel tcm = table.getColumnModel();
@@ -415,7 +416,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			JPanel panel = new JPanel();
 			panel.add(new JScrollPane(table));
 			JOptionPane.showMessageDialog(this, panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
-			cols = new LinkedList<MyCellarFields>();
+			cols = new ArrayList<MyCellarFields>();
 			Program.setModified();
 			LinkedList<Integer> properties = modelColumn.getSelectedColumns();
 			for(MyCellarFields c : list) {

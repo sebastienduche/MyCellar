@@ -23,6 +23,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import mycellar.actions.OpenAddVinAction;
 import mycellar.BottleColor;
@@ -55,8 +56,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.1
- * @since 13/07/17
+ * @version 4.2
+ * @since 17/07/17
  */
 
 public class ShowFile extends JPanel implements ITabListener  {
@@ -77,7 +78,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 	public JTable m_oTable;
 	public JScrollPane m_oScroll = new JScrollPane();
 	private boolean updateView = false;
-	private LinkedList<ShowFileColumn> columns = new LinkedList<ShowFileColumn>();
+	private ArrayList<ShowFileColumn> columns = new ArrayList<ShowFileColumn>();
 	
 	private boolean trash = false;
 
@@ -397,12 +398,16 @@ public class ShowFile extends JPanel implements ITabListener  {
 			tv = new ShowFileModel();
 			tv.setBottles(Program.getStorage().getAllList());
 			String savedColumns = Program.getShowColumns();
-			LinkedList<ShowFileColumn> cols;
+			ArrayList<ShowFileColumn> cols;
 			if(savedColumns.isEmpty()) {
-				cols = columns;
-				((ShowFileModel)tv).setColumns(columns);
+				cols = (ArrayList<ShowFileColumn>) columns.stream().filter((field) -> {
+					return !field.getField().equals(MyCellarFields.VINEYARD)
+							&& !field.getField().equals(MyCellarFields.AOC)
+							&& !field.getField().equals(MyCellarFields.IGP)
+							&& !field.getField().equals(MyCellarFields.COUNTRY);}).collect(Collectors.toList());
+				((ShowFileModel)tv).setColumns(cols);
 			} else {
-				cols = new LinkedList<ShowFileColumn>();
+				cols = new ArrayList<ShowFileColumn>();
 				String [] values = savedColumns.split(";");
 				for(ShowFileColumn c : columns) {
 					for(String s : values) {
@@ -778,7 +783,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JPanel panel = new JPanel();
-			LinkedList<MyCellarFields> list = new LinkedList<MyCellarFields>();
+			ArrayList<MyCellarFields> list = new ArrayList<MyCellarFields>();
 			list.add(MyCellarFields.NAME);
 			list.add(MyCellarFields.YEAR);
 			list.add(MyCellarFields.TYPE);
@@ -795,7 +800,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 			list.add(MyCellarFields.VINEYARD);
 			list.add(MyCellarFields.AOC);
 			list.add(MyCellarFields.IGP);
-			LinkedList<ShowFileColumn> cols = ((ShowFileModel)tv).getColumns();
+			ArrayList<ShowFileColumn> cols = ((ShowFileModel)tv).getColumns();
 			ManageColumnModel modelColumn = new ManageColumnModel(list, cols);
 			JTable table = new JTable(modelColumn);
 			TableColumnModel tcm = table.getColumnModel();
@@ -806,29 +811,33 @@ public class ShowFile extends JPanel implements ITabListener  {
 			tc.setMaxWidth(25);
 			panel.add(new JScrollPane(table));
 			JOptionPane.showMessageDialog(null, panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
-			((ShowFileModel)tv).removeAllColumns();
-			cols = new LinkedList<ShowFileColumn>();
+			cols = new ArrayList<ShowFileColumn>();
 			Program.setModified();
 			LinkedList<Integer> properties = modelColumn.getSelectedColumns();
 			for(ShowFileColumn c : columns) {
 				if(properties.contains(c.getField().ordinal()))
 					cols.add(c);
 			}
-			((ShowFileModel)tv).setColumns(cols);
-			tcm = m_oTable.getColumnModel();
-			tc = tcm.getColumn(0);
-			tc.setCellRenderer(new StateRenderer());
-			tc.setCellEditor(new StateEditor());
-			tc.setMinWidth(25);
-			tc.setMaxWidth(25);
-			tc = tcm.getColumn(tcm.getColumnCount()-1);
-			tc.setCellRenderer(new StateButtonRenderer());
-			tc.setCellEditor(new StateButtonEditor());
-			tc.setMinWidth(100);
-			tc.setMaxWidth(100);
+			if(!cols.isEmpty()) {
+				((ShowFileModel)tv).removeAllColumns();
+				((ShowFileModel)tv).setColumns(cols);
+				tcm = m_oTable.getColumnModel();
+				tc = tcm.getColumn(0);
+				tc.setCellRenderer(new StateRenderer());
+				tc.setCellEditor(new StateEditor());
+				tc.setMinWidth(25);
+				tc.setMaxWidth(25);
+				tc = tcm.getColumn(tcm.getColumnCount()-1);
+				tc.setCellRenderer(new StateButtonRenderer());
+				tc.setCellEditor(new StateButtonEditor());
+				tc.setMinWidth(100);
+				tc.setMaxWidth(100);
+			}
 			int i = 1;
 			StringBuffer buffer = new StringBuffer();
 			for(ShowFileColumn c : cols) {
+				if(i > 1)
+					buffer.append(';');
 				tc = tcm.getColumn(i++);
 				tc.setMinWidth(c.getWidth());
 				tc.setPreferredWidth(c.getWidth());
@@ -846,9 +855,8 @@ public class ShowFile extends JPanel implements ITabListener  {
 					tc.setCellEditor(new DefaultCellEditor(m_oAOCCbx));
 				else if(c.getField() == MyCellarFields.IGP)
 					tc.setCellEditor(new DefaultCellEditor(m_oIGPCbx));*/
-				buffer.append(c.getField().name()).append(";");
+				buffer.append(c.getField().name());
 			}
-			buffer.setLength(buffer.length()-1);
 			Program.saveShowColumns(buffer.toString());
 		}	
 	}

@@ -11,7 +11,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -41,8 +41,8 @@ import jxl.Workbook;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.2
- * @since 13/05/17
+ * @version 10.3
+ * @since 17/07/17
  */
 public class Importer extends JPanel implements ITabListener, Runnable {
 
@@ -236,7 +236,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 		add(label_progression, "grow, center, hidemode 3, wrap");
 		add(importe, "center");
 
-		LinkedList<MyCellarFields> list = MyCellarFields.getFieldsList();
+		ArrayList<MyCellarFields> list = MyCellarFields.getFieldsList();
 		choix1.addItem("");
 		choix2.addItem("");
 		choix3.addItem("");

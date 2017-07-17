@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 21.7
- * @since 16/07/17
+ * @version 21.8
+ * @since 17/07/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -270,6 +270,8 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 	 * @param e ItemEvent
 	 */
 	protected void lieu_itemStateChanged(ItemEvent e) {
+		if(!isListenersEnabled())
+			return;
 		SwingUtilities.invokeLater(() -> {
 
 			Debug("Lieu_itemStateChanging...");
@@ -323,6 +325,8 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 	 * @param e ItemEvent
 	 */
 	protected void line_itemStateChanged(ItemEvent e) {
+		if(!isListenersEnabled())
+			return;
 		SwingUtilities.invokeLater(() -> {
 			Debug("Line_itemStateChanging...");
 			int nb_col = 0;
@@ -330,12 +334,11 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			int emplacement = m_num_lieu.getSelectedIndex();
 			int lieu_select = m_lieu.getSelectedIndex();
 
-			//m_end.setText("");
 			m_labelExist.setText("");
 
 			m_column.setEnabled(num_select != 0);
 			
-			if (num_select > 0) { //!=0
+			if (num_select > 0) {
 				nb_col = Program.getCave(lieu_select - 1).getNbColonnes(emplacement - 1, num_select - 1);
 			}
 			m_column.removeAllItems();

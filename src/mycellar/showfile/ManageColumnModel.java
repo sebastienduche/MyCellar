@@ -1,5 +1,6 @@
 package mycellar.showfile;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.table.DefaultTableModel;
@@ -14,30 +15,31 @@ import mycellar.core.MyCellarFields;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 24/02/16
+ * @version 0.3
+ * @since 17/07/17
  */
 
 public class ManageColumnModel extends DefaultTableModel {
 
 	private static final long serialVersionUID = 826266254625465003L;
-	private LinkedList<MyCellarFields> list;
+	private ArrayList<MyCellarFields> list;
 	private static LinkedList<Integer> result = new LinkedList<Integer>();
 	private Boolean[] values = null;
 	
-	public ManageColumnModel(LinkedList<MyCellarFields> list, LinkedList<?> columns) {
+	public ManageColumnModel(ArrayList<MyCellarFields> list, ArrayList<?> cols) {
 		this.list = list;
 		values = new Boolean[list.size()];
 		result.clear();
 		for(int i=0; i<values.length; i++) {
 			values[i] = Boolean.FALSE;
-			result.add(this.list.get(i).ordinal());
 		}
-		for(Object c : columns) {
+		for(Object c : cols) {
 			if(c instanceof ShowFileColumn)
 				values[list.indexOf(((ShowFileColumn) c).getField())] = Boolean.TRUE;
-			else if(c instanceof MyCellarFields)
+			else if(c instanceof MyCellarFields) {
 				values[list.indexOf(c)] = Boolean.TRUE;
+				result.add(((MyCellarFields)c).ordinal());
+			}
 		}
 	}
 	

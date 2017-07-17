@@ -3,6 +3,7 @@ package mycellar;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -38,8 +39,8 @@ import jxl.write.WriteException;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 16/07/17
+ * @version 0.2
+ * @since 17/07/17
  */
 public class RangementUtils {
 
@@ -180,7 +181,7 @@ public class RangementUtils {
 	 *
 	 * @return int
 	 */
-	public static boolean write_HTML(String fichier, LinkedList<Bouteille> all, LinkedList<MyCellarFields> fields) {
+	public static boolean write_HTML(String fichier, LinkedList<Bouteille> all, ArrayList<MyCellarFields> fields) {
 
 		try{
 			DocumentBuilderFactory dbFactory =
@@ -333,7 +334,7 @@ public class RangementUtils {
 		HashMap<Integer, Integer> mapColumnNumber = new HashMap<Integer, Integer>();
 
 		//Récupération des colonnes à exporter
-		LinkedList<MyCellarFields> fields = MyCellarFields.getFieldsList();
+		ArrayList<MyCellarFields> fields = MyCellarFields.getFieldsList();
 		int i=0;
 		for(MyCellarFields field : fields) {
 			mapCle.put(field, Program.getCaveConfigInt("SIZE_COL"+i+"EXPORT_XLS", 1) == 1);

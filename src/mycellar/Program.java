@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.net.util.Base64;
 
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -69,8 +70,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 15.4
- * @since 16/07/17
+ * @version 15.5
+ * @since 17/07/17
  */
 
 public class Program {
@@ -1965,7 +1966,7 @@ public class Program {
 		return getCaveConfigString("SHOWFILE_COLUMN", "");
 	}
 
-	public static void saveHTMLColumns(LinkedList<MyCellarFields> cols) {
+	public static void saveHTMLColumns(ArrayList<MyCellarFields> cols) {
 		String s = "";
 		for(MyCellarFields f : cols) {
 			if(!s.isEmpty())
@@ -1975,8 +1976,8 @@ public class Program {
 		putCaveConfigString("HTMLEXPORT_COLUMN", s);
 	}
 
-	public static LinkedList<MyCellarFields> getHTMLColumns() {
-		LinkedList<MyCellarFields> cols = new LinkedList<MyCellarFields>();
+	public static ArrayList<MyCellarFields> getHTMLColumns() {
+	ArrayList<MyCellarFields> cols = new ArrayList<MyCellarFields>();
 		String s = getCaveConfigString("HTMLEXPORT_COLUMN", "");
 		String [] fields = s.split(";");
 		for(String field : fields) {

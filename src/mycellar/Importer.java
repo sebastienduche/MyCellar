@@ -41,8 +41,8 @@ import jxl.Workbook;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.3
- * @since 17/07/17
+ * @version 10.4
+ * @since 18/07/17
  */
 public class Importer extends JPanel implements ITabListener, Runnable {
 
@@ -664,33 +664,21 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR",""));
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		if (type_txt.isSelected()) {
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_TXT);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
+			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_TXT);
 		}
 		else if (type_xls.isSelected()) {
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_TXT);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
+			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		}
 		else if (type_xml.isSelected()) {
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_TXT);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
 		}
-		int retour_jfc = boiteFichier.showOpenDialog(this);
-		File nomFichier = new File("");
-		String fic = "";
-		if (retour_jfc == JFileChooser.APPROVE_OPTION) {
-			nomFichier = boiteFichier.getSelectedFile();
+		
+		if (boiteFichier.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File nomFichier = boiteFichier.getSelectedFile();
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
-			fic = nomFichier.getAbsolutePath();
+			String fic = nomFichier.getAbsolutePath();
 			int index = fic.indexOf(".");
 			if (index == -1) {
 				if (type_xls.isSelected()) {
@@ -751,12 +739,6 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 		try {
 			Debug("Running...");
 			Debug("Importing...");
-			File f = new File( Program.getWorkDir(true) + "static_all.sinfo");
-			f.delete();
-			f = new File( Program.getWorkDir(true) + "static_year.sinfo");
-			f.delete();
-			f = new File( Program.getWorkDir(true) + "static_col.sinfo");
-			f.delete();
 			Program.putCaveConfigString("SAVE", "KO");
 			importe.setEnabled(false);
 			//quit.setEnabled(false);
@@ -771,12 +753,10 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 			byte lecture[];
 			int nbcol_lu = 0;
 			int nb_choix = 0;
-			String tmp_lect = new String("");
 			String lu[] = new String[15];
 			Rangement new_rangement = null;
 			int i;
 			char XML[];
-			char verif[];
 			int inutile = 0;
 			int cpt_char_lu = 0;
 			int cpt_bottle = 0;
@@ -809,7 +789,6 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 			bool_othe3 = 0;
 
 			lecture = new byte[1];
-			verif = new char[1];
 			java.util.HashSet<String> liste_lieu = new java.util.HashSet<String>(20);
 			java.util.HashSet<String> liste_contenu = new java.util.HashSet<String>(20);
 
@@ -940,7 +919,9 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				resul = 1;
 				new Erreur(Program.getError("Error019"), "");
 			}
-
+ 
+			FileInputStream file_import = null;
+			File f = null;
 			if (resul == 0) {
 				//Ouverture du fichier à importer
 				f = new File(nom);
@@ -956,8 +937,8 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					new Erreur(erreur_txt1, erreur_txt2);
 					resul = 1;
 				}
+				else file_import = new FileInputStream(f);
 			}
-			FileInputStream file_import = new FileInputStream(f);
 
 			if (resul == 0 && nom_length >= 3) {
 				String str_tmp3 = nom.substring(nom_length - 3);
@@ -1165,6 +1146,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					}
 					//Lecture de la ligne de titre. On compte le nombre de colonne
 
+					String tmp_lect = "";
 					do {
 						try {
 							resul_l = file_import.read(lecture);
@@ -1210,6 +1192,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						}
 						nbcol_lu = 0;
 						cpt_char_lu = 0;
+						String tmp_lect = "";
 						do {
 							try {
 								resul_l = file_import.read(lecture);
@@ -1440,12 +1423,6 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				if (resul == 0) {
 					label_progression.setText("");
 					String mess;
-					f = new File( Program.getWorkDir(true) + "static_all.sinfo");
-					f.delete();
-					f = new File( Program.getWorkDir(true) + "static_year.sinfo");
-					f.delete();
-					f = new File( Program.getWorkDir(true) + "static_col.sinfo");
-					f.delete();
 					if (cpt_bottle > 1) {
 						mess = new String(Program.getLabel("Infos045") + " " + cpt_bottle + " " + Program.getLabel("Infos046")); //"L'import des " + cpt_bottle + " lignes s'est bien d�roul�.");
 					}
@@ -1518,8 +1495,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				Debug("Importing XLS file...");
 				int j;
 				int nb_lign_xls = 0;
-				String cell_tmp[][] = new String[1][1];
-				int start_cpt = 0;
+				boolean skipTitle = false;
 
 				if (resul == 0) {
 					if (nb_choix == 0) {
@@ -1550,29 +1526,25 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						boolean bool_resul = false;
 						do {
 							try {
-								cell_tmp[0] = readXLS(sheet, nb_lign_xls, resul_tmp);
+								readXLS(sheet, nb_lign_xls, resul_tmp);
 								resul_tmp++;
 							}
 							catch (ArrayIndexOutOfBoundsException aioobe) {
 								bool_resul = true;
 							}
-
 						}
 						while (resul_tmp < nb_lign_xls && bool_resul != true);
 						//Number of columns found in Excel File
 						nbcol_lu = resul_tmp;
 
-						if (titre.isSelected()) {
-							start_cpt = 1;
-						}
 						if (resul == 0) {
 							//Reading Excel File
-							cell_tmp = new String[nbcol_lu][nb_lign_xls];
+							String cell_tmp[][] = new String[nbcol_lu][nb_lign_xls];
 							for (int k = 0; k < nbcol_lu; k++) {
 								cell_tmp[k] = readXLS(sheet, nb_lign_xls, k);
 							}
 							//Ecriture du vin pour chaque ligne
-							for (j = start_cpt; j < nb_lign_xls; j++) {
+							for (j = 0; j < nb_lign_xls; j++) {
 								Debug("Read line :" + j);
 								int lu_length = 0;
 								try {
@@ -1582,13 +1554,19 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 										}
 										catch (NullPointerException npe) {}
 									}
+									if(lu_length > 0 && titre.isSelected() && !skipTitle) {
+										Debug("Skipping title line");
+										skipTitle = true;
+										continue;
+									}
 								}
 								catch (NullPointerException npe) {}
 								if (resul == 0) {
 									//On met toutes les valeurs r�cup�r�es pour un vin dans une HashMap
 									java.util.HashMap<String, String> le_vin = new java.util.HashMap<String, String>(20);
-									Bouteille bottle = new Bouteille();
+									
 									if (lu_length != 0) {
+										Bouteille bottle = new Bouteille();
 										for (i = 0; i < nbcol_lu; i++) {
 											choix_val = 0;
 											//Verify specials characters
@@ -1596,21 +1574,10 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 												cell_tmp[i][j].length();
 											}
 											catch (NullPointerException npe) {
-												cell_tmp[i][j] = new String("");
+												cell_tmp[i][j] = "";
 											}
-											;
-											int length = cell_tmp[i][j].length();
-											verif = new char[length];
-											verif = cell_tmp[i][j].toCharArray();
-											String verify = new String("");
-											for (int k = 0; k < length; k++) {
-												char verif2[] = new char[1];
-												verif2[0] = verif[k];
-												String verify_tmp = new String(verif2);
-												verify_tmp = Program.convertToHTMLString(verify_tmp);
-												verify = verify.concat(verify_tmp);
-											}
-											cell_tmp[i][j] = new String(verify);
+
+											cell_tmp[i][j] = Program.convertToHTMLString(cell_tmp[i][j]);
 
 											//Récupération des champs sélectionnés
 											switch (i) {
@@ -1697,7 +1664,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 										}
 										
 										//Ecriture du fichier XML
-										if (le_vin.get(XML_NAME).toString().trim().compareTo("") != 0) {
+										if (le_vin.get(XML_NAME).trim().compareTo("") != 0) {
 
 											if (le_vin.containsKey(XML_NAME)) {
 												bottle.setNom(le_vin.get(XML_NAME));
@@ -1761,8 +1728,9 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 												bottle.setAppellation(le_vin.get(XML_APPELATION));
 											}
 										}
+										Program.getStorage().addWine(bottle);
 									}
-									Program.getStorage().addWine(bottle);
+									
 								} //End if resul
 							}
 						} //End if resul
@@ -1795,13 +1763,6 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 
 				if (resul == 0) {
 					label_progression.setText("");
-					Program.putCaveConfigString("BOTTLEINFILE", Integer.toString(cpt_bottle + 1));
-					f = new File( Program.getWorkDir(true) + "static_all.sinfo");
-					f.delete();
-					f = new File( Program.getWorkDir(true) + "static_year.sinfo");
-					f.delete();
-					f = new File( Program.getWorkDir(true) + "static_col.sinfo");
-					f.delete();
 					String mess;
 					if (cpt_bottle > 1) {
 						mess = new String(Program.getLabel("Infos045") + " " + cpt_bottle + " " + Program.getLabel("Infos046")); //"L'import des " + cpt_bottle + " lignes s'est bien d�roul�.");
@@ -1888,6 +1849,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 		catch (Exception exc) {
 			Program.showException(exc);
 		}
+		RangementUtils.putTabStock1();
 	}
 
 	/**

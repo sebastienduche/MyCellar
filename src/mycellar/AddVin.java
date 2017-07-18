@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 21.8
- * @since 17/07/17
+ * @version 21.9
+ * @since 18/07/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -1432,9 +1432,10 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 		Debug("Quitting...");
 
-		for (Rangement rangement : Program.getCave()) {
+		/*for (Rangement rangement : Program.getCave()) {
 			rangement.putTabStock();
-		}
+		}*/
+		RangementUtils.putTabStock1();
 		m_colorList.setSelectedItem(BottleColor.NONE);
 		m_avant1.setVisible(false);
 		m_avant2.setVisible(false);

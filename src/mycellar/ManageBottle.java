@@ -40,8 +40,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.8
- * @since 16/07/17
+ * @version 2.9
+ * @since 18/07/17
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -661,9 +661,10 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			oldRangement.clearStock(tmp);
 		}
 		
-		for(Rangement cave : Program.getCave())
-			cave.putTabStock();
+		/*for(Rangement cave : Program.getCave())
+			cave.putTabStock();*/
 
+		RangementUtils.putTabStock1();
 		Search.updateTable();
 
 		if(!rangement.isCaisse())
@@ -755,9 +756,10 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		//Save XML file
 		Debug("Quitting...");
 
-		for (Rangement rangement : Program.getCave()) {
+		/*for (Rangement rangement : Program.getCave()) {
 			rangement.putTabStock();
-		}
+		}*/
+		RangementUtils.putTabStock1();
 		m_colorList.setSelectedItem(BottleColor.NONE);
 		name.setSelectedIndex(0);
 		m_year.setText("");

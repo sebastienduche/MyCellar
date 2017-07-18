@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.4
- * @since 12/07/17
+ * @version 11.5
+ * @since 18/07/17
  */
 public class Creer_Rangement extends JPanel implements ITabListener {
 
@@ -429,7 +429,8 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 								b.setEmplacement(nom);
 							}
 						}
-						rangement.putTabStock();
+						//rangement.putTabStock();
+						RangementUtils.putTabStock1();
 
 						nom_obj.setText("");
 						label_cree.setText(Program.getError("Error123"));
@@ -443,7 +444,8 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 						rangement.setStartCaisse(start_caisse);
 						rangement.setNbBottleInCaisse(limite);
 						rangement.updateCaisse(nbPart);
-						rangement.putTabStock();
+						//rangement.putTabStock();
+						RangementUtils.putTabStock1();
 						updateView();
 						Program.updateAllPanels();
 					}
@@ -456,7 +458,8 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 					rangement.setStartCaisse(start_caisse);
 					rangement.setNbBottleInCaisse(limite);
 					rangement.updateCaisse(nbPart);
-					rangement.putTabStock();
+					//rangement.putTabStock();
+					RangementUtils.putTabStock1();
 
 					label_cree.setText(Program.getError("Error123"));
 
@@ -492,7 +495,8 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 					if(nbBottles == 0) {
 						rangement.setNom(nom);
 						rangement.setPlace(listPart);
-						rangement.putTabStock();
+						//rangement.putTabStock();
+						RangementUtils.putTabStock1();
 						nom_obj.setText("");
 						comboPlace.removeAllItems();
 						comboPlace.addItem("");
@@ -592,7 +596,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 											b.setEmplacement(nom);
 										}
 									}
-									rangement.putTabStock();
+									//rangement.putTabStock();
 									nom_obj.setText("");
 									comboPlace.removeAllItems();
 									comboPlace.addItem("");
@@ -605,13 +609,14 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 								else {
 									rangement.setNom(nom);
 									rangement.setPlace(listPart);
-									rangement.putTabStock();
+									//rangement.putTabStock();
 								}
 							}
 							else {
 								rangement.setPlace(listPart);
-								rangement.putTabStock();
+								//rangement.putTabStock();
 							}
+							RangementUtils.putTabStock1();
 							if(bResul)
 								label_cree.setText(Program.getError("Error123"));
 						}

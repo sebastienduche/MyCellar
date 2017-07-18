@@ -26,6 +26,7 @@ import mycellar.MyClipBoard;
 import mycellar.MyXmlDom;
 import mycellar.Program;
 import mycellar.Rangement;
+import mycellar.RangementUtils;
 import mycellar.Vignoble;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
@@ -39,8 +40,8 @@ import mycellar.vignobles.Vignobles;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 10/05/17
+ * @version 0.4
+ * @since 18/07/17
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -394,7 +395,8 @@ public class MyCellarManageBottles extends JPanel {
 		Debug("Previewing...");
 		try {
 			int num_select = m_lieu.getSelectedIndex();
-			Program.getCave(num_select - 1).putTabStock();
+			//Program.getCave(num_select - 1).putTabStock();
+			RangementUtils.putTabStock1();
 			LinkedList<Rangement> rangements = new LinkedList<Rangement>();
 			rangements.add(Program.getCave(num_select - 1));
 			MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);

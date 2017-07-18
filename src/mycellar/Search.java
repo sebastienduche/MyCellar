@@ -42,8 +42,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.4
- * @since 12/07/17
+ * @version 17.5
+ * @since 18/07/17
  */
 public class Search extends JPanel implements Runnable, ITabListener {
 	private static JTable table;
@@ -335,9 +335,9 @@ public class Search extends JPanel implements Runnable, ITabListener {
 						Program.setToTrash(bottle);
 						Start.removeBottleTab(bottle);
 					}
-					for(int i=0; i<Program.GetCaveLength();i++)
-						Program.getCave(i).putTabStock();
-
+					/*for(int i=0; i<Program.GetCaveLength();i++)
+						Program.getCave(i).putTabStock();*/
+					RangementUtils.putTabStock1();
 					Program.updateManagePlacePanel();
 
 					if(listToSupp.size() == 1)

@@ -26,8 +26,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 2.5
- * @since 18/05/17
+ * @version 2.6
+ * @since 18/07/17
  */
 
 public class ShowHistory extends JPanel implements ITabListener {
@@ -308,8 +308,9 @@ public class ShowHistory extends JPanel implements ITabListener {
 					if (!cantRestoreList.isEmpty())
 						modifyBottles(cantRestoreList);
 				}
-				for (int j = 0; j < Program.GetCaveLength(); j++)
-					Program.getCave(j).putTabStock();
+				/*for (int j = 0; j < Program.GetCaveLength(); j++)
+					Program.getCave(j).putTabStock();*/
+				RangementUtils.putTabStock1();
 				tv.setHistory(Program.getStorage().getHistory().getHistory());
 			}
 		}

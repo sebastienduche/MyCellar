@@ -34,6 +34,7 @@ import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Rangement;
+import mycellar.RangementUtils;
 import mycellar.Start;
 import mycellar.StateButtonEditor;
 import mycellar.StateButtonRenderer;
@@ -56,8 +57,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.2
- * @since 17/07/17
+ * @version 4.3
+ * @since 18/07/17
  */
 
 public class ShowFile extends JPanel implements ITabListener  {
@@ -711,9 +712,10 @@ public class ShowFile extends JPanel implements ITabListener  {
 		    			b.setLigne(0);
 		    			b.setColonne(0);
 		    		}
-		    		if(oldPlace != null)
+		    		/*if(oldPlace != null)
 		    			oldPlace.putTabStock();
-		    		b.getRangement().putTabStock();
+		    		b.getRangement().putTabStock();*/
+		    		RangementUtils.putTabStock1();
 		    	}
     		}
     		else {

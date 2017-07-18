@@ -7,6 +7,7 @@ import javax.swing.table.AbstractTableModel;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.Rangement;
+import mycellar.RangementUtils;
 
 
 /**
@@ -15,8 +16,8 @@ import mycellar.Rangement;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.9
- * @since 13/07/17
+ * @version 3.0
+ * @since 18/07/17
  */
 
 public class TableShowValues extends AbstractTableModel {
@@ -274,9 +275,10 @@ public class TableShowValues extends AbstractTableModel {
 		    			b.setLigne(0);
 		    			b.setColonne(0);
 		    		}
-		    		if(oldPlace != null)
+		    		/*if(oldPlace != null)
 		    			oldPlace.putTabStock();
-		    		b.getRangement().putTabStock();
+		    		b.getRangement().putTabStock();*/
+		    		RangementUtils.putTabStock1();
 		    	}
     		}
     		else {

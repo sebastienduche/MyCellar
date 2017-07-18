@@ -70,8 +70,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 15.5
- * @since 17/07/17
+ * @version 15.6
+ * @since 18/07/17
  */
 
 public class Program {
@@ -1219,10 +1219,10 @@ public class Program {
 			return false;
 		}
 
-		for (Rangement r : getCave()) {
+		/*for (Rangement r : getCave()) {
 			r.putTabStock();
-		}
-
+		}*/
+		RangementUtils.putTabStock1();
 		CountryVignobles.load();
 		CountryVignobles.addVignobleFromBottles();
 
@@ -1400,6 +1400,7 @@ public class Program {
 				FileUtils.deleteDirectory(f);
 			}catch(Exception e){
 				Debug("Program: Error deleting "+f.getAbsolutePath());
+				Debug("Program: "+e.getMessage());
 			}
 		}
 	}

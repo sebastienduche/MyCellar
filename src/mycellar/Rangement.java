@@ -12,8 +12,8 @@ import mycellar.core.MyCellarError;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 25.2
- * @since 16/07/17
+ * @version 25.3
+ * @since 18/07/17
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -202,6 +202,8 @@ public class Rangement implements Comparable<Rangement> {
 			Debug("ERROR: Function getNbColonnes can't be called on a simple place!");
 			return -1;
 		}
+		if(emplacement < 0 || ligne < 0)
+			return -1;
 		return listePartie.get(emplacement).getRow(ligne).getCol();
 	}
 
@@ -533,7 +535,7 @@ public class Rangement implements Comparable<Rangement> {
 	 */
 	public void updateToStock(Bouteille wine) {
 		if(isCaisse()) {
-			Debug("ERROR: Function updateToStock can't be called on a simple place!");
+			storageCaisse.get(wine.getNumLieu()).add(wine);
 			return;
 		}
 		int line = wine.getLigne();
@@ -711,6 +713,20 @@ public class Rangement implements Comparable<Rangement> {
 
 		return true;
 	}
+	
+	/**
+	 * Indique si le numero du lieu existe
+	 * 
+	 * @param _nEmpl Numero d'emplacement (0, n)
+	 * @return
+	 */
+	public boolean isExistingNumPlace(int numPlace) {
+		
+		if (numPlace < start_caisse || numPlace >= getNbEmplacements() + start_caisse)
+			return false;
+		
+		return true;
+	}
 
 
 	/**
@@ -770,6 +786,16 @@ public class Rangement implements Comparable<Rangement> {
 		storageCaisse = new HashMap<Integer, ArrayList<Bouteille>>(nb_emplacements);
 		for(int i=start_caisse; i<start_caisse+nb_emplacements; i++)
 			storageCaisse.put(i, new ArrayList<Bouteille>());
+	}
+	
+	/**
+	 * Réinitialisation du stockage
+	 */
+	public void resetStock() {
+		if(isCaisse())
+			updateCaisse(nb_emplacements);
+		else
+			stockage = new Bouteille[nb_emplacements][stock_nblign][stock_nbcol];
 	}
 	/**
 	 * Rangement: Constructeur de création d'un rangement

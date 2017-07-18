@@ -20,8 +20,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 14/07/17
+ * @version 1.1
+ * @since 18/07/17
  */
 public class PanelInfos extends JPanel {
 
@@ -153,7 +153,8 @@ class PanelStats extends JPanel {
 			if(column == 2)
 			{
 				Rangement r = names.get(row);
-				r.putTabStock();
+				//r.putTabStock();
+				RangementUtils.putTabStock1();
 				LinkedList<Rangement> rangements = new LinkedList<Rangement>();
 				rangements.add(r);
 				MyXmlDom.writeRangements("", rangements, false);

@@ -1,8 +1,9 @@
 package mycellar.core;
 
-import java.util.LinkedList;
+import java.text.MessageFormat;
 
 import mycellar.Bouteille;
+import mycellar.Program;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -10,44 +11,36 @@ import mycellar.Bouteille;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 18/07/17
+ * @version 0.3
+ * @since 20/07/17
  */
 
 public class MyCellarError {
 
-	private LinkedList<String> messages = new LinkedList<String>();
 	private int error;
-	
+	private boolean status;
 	private Bouteille bottle;
-	
-	public MyCellarError(int error, String message) {
-		this.error = error;
-		messages.add(message);
-	}
 	
 	public MyCellarError(int error, Bouteille bottle) {
 		this.error = error;
 		this.bottle = bottle;
+		this.setStatus(false);
 	}
 	
-	public MyCellarError(int error, String message, String message2) {
-		this.error = error;
-		messages.add(message);
-		messages.add(message2);
-	}
-
-	public MyCellarError(int error, LinkedList<String> messages) {
-		this.messages = messages;
-		this.error = error;
-	}
-
-	public LinkedList<String> getMessages() {
-		return messages;
-	}
-	
-	public String getFirstMessage() {
-		return messages.getFirst();
+	public String getErrorMessage() {
+		switch (error) {
+		case 1:
+			return MessageFormat.format(Program.getError("MyCellarError.inexistingPlace"), bottle.getEmplacement());
+		case 2:
+			return MessageFormat.format(Program.getError("MyCellarError.inexistingNumPlace"), bottle.getNumLieu());
+		case 3:
+			return MessageFormat.format(Program.getError("MyCellarError.fullCaisse"), bottle.getNumLieu());
+		case 4:
+			return MessageFormat.format(Program.getError("MyCellarError.inexistingCase"), bottle.getEmplacement());
+		case 5:
+			return Program.getError("MyCellarError.occupiedCase");
+		}
+		return "";
 	}
 
 	public int getError() {
@@ -56,5 +49,21 @@ public class MyCellarError {
 	
 	public Bouteille getBottle() {
 		return bottle;
+	}
+	
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof MyCellarError) {
+			return bottle == ((MyCellarError)obj).bottle;
+		}
+		return false;
 	}
 }

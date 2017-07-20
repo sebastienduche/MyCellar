@@ -40,8 +40,8 @@ import jxl.write.WriteException;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 18/07/17
+ * @version 0.4
+ * @since 20/07/17
  */
 public class RangementUtils {
 
@@ -719,9 +719,9 @@ public class RangementUtils {
 		}
 	}
 	
-	public static ArrayList<MyCellarError> putTabStock1() {
+	public static void putTabStock1() {
 		Debug("putTabStock ...");
-		ArrayList<MyCellarError> list = new ArrayList<MyCellarError>();
+		Program.getErrors().clear();
 		for(Rangement rangement : Program.getCave())
 			rangement.resetStock();
 		
@@ -730,14 +730,14 @@ public class RangementUtils {
 			if(rangement == null) {
 				// Rangement inexistant
 				Debug("ERROR: Inexisting place: " + b.getNom() + " place: "+b.getEmplacement());
-				list.add(new MyCellarError(1, b));
+				Program.addError(new MyCellarError(1, b));
 				continue;
 			}
 			if(rangement.isCaisse()) {
 				if(!rangement.isExistingNumPlace(b.getNumLieu())) {
 					// Numero de rangement inexistant
 					Debug("ERROR: Inexisting numplace: " + b.getNom() + " numplace: "+b.getNumLieu() + " for place "+b.getEmplacement());
-					list.add(new MyCellarError(2, b));
+					Program.addError(new MyCellarError(2, b));
 					continue;
 				}
 				if(rangement.hasFreeSpaceInCaisse(b.getNumLieu()))
@@ -745,7 +745,7 @@ public class RangementUtils {
 				else {
 					// Caisse pleine
 					Debug("ERROR: simple place full for numplace: " + b.getNom() + " numplace: "+b.getNumLieu() + " for place "+b.getEmplacement());
-					list.add(new MyCellarError(2, b));
+					Program.addError(new MyCellarError(3, b));
 					continue;
 				}
 			}
@@ -754,19 +754,19 @@ public class RangementUtils {
 				if(!rangement.isExistingNumPlace(b.getNumLieu() - 1)) {
 					// Numero de rangement inexistant
 					Debug("ERROR: Inexisting numplace: " + b.getNom() + " numplace: "+ (b.getNumLieu()-1) + " for place "+b.getEmplacement());
-					list.add(new MyCellarError(2, b));
+					Program.addError(new MyCellarError(2, b));
 					continue;
 				}
 				if(!rangement.isExistingCell(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
 					// Cellule inexistante
 					Debug("ERROR: Inexisting cell: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
-					list.add(new MyCellarError(3, b));
+					Program.addError(new MyCellarError(4, b));
 					continue;
 				}
 				else if((bottle = rangement.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) != null && bottle != b){
 					// Cellule occupée
 					Debug("ERROR: Already occupied: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
-					list.add(new MyCellarError(4, b));
+					Program.addError(new MyCellarError(5, b));
 					continue;
 				}
 				else
@@ -774,11 +774,10 @@ public class RangementUtils {
 			}
 		}
 		// Suppression des bouteilles posant problème
-		for(MyCellarError error : list) {
+		for(MyCellarError error : Program.getErrors()) {
 			Program.getStorage().deleteWine(error.getBottle());
 		}
-		Debug("putTabStock OK");
-		return list;
+		Debug("putTabStock Done");
 	}
 
 	/**
@@ -787,7 +786,6 @@ public class RangementUtils {
 	 * @param sText String
 	 */
 	public static void Debug(String sText) {
-
 		Program.Debug("RangementUtils: " + sText);
 	}
 }

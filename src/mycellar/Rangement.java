@@ -12,8 +12,8 @@ import mycellar.core.MyCellarError;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 25.3
- * @since 18/07/17
+ * @version 25.4
+ * @since 20/07/17
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -184,6 +184,8 @@ public class Rangement implements Comparable<Rangement> {
 			Debug("ERROR: Function isExistingCell can't be called on a simple place!");
 			return false;
 		}
+		if(!isExistingNumPlace(emplacement))
+			return false;
 		if(getNbLignes(emplacement) <= ligne)
 			return false;
 		int nbCol = getNbColonnes(emplacement, ligne);
@@ -400,13 +402,12 @@ public class Rangement implements Comparable<Rangement> {
 										if (tmp_col > tmp_col_max) {
 											tmp_col_max = tmp_col;
 										}
-										errors.add(new MyCellarError(100, new String(Program.getError("Error075") + " " + getNom() + " " + Program.getError("Error080")), new String(Program.getError("Error079") + ": " + tmp_num_max + " " + Program.getError("Error116") + ": " + tmp_lig_max + " " +
-												Program.getError("Error117") + ": " + tmp_col_max + " " + Program.getError("Error118"))));
+										errors.add(new MyCellarError(100, b));
 									}
 								}
 								if ( (tmp_num - 1) < 0 || (tmp_lig - 1) < 0 || (tmp_col - 1) < 0) { //Si valeurs � 0
 									isout = true;
-									errors.add(new MyCellarError(2, Program.getError("Error082"), Program.getError("Error083")));
+									errors.add(new MyCellarError(2, b));
 								}
 							}
 						}
@@ -687,6 +688,12 @@ public class Rangement implements Comparable<Rangement> {
 		sText.append("<name><![CDATA[").append(getNom()).append("]]></name></place>");
 		return sText.toString();
 	}
+	
+	public boolean canAddBottle(Bouteille b) {
+		if(isCaisse())
+			return canAddBottle(b.getNumLieu(), 0, 0);
+		return canAddBottle(b.getNumLieu()-1, b.getLigne()-1, b.getColonne()-1);
+	}
 
 	/**
 	 * Indique si l'on peut ajouter une bouteille dans un rangement
@@ -717,7 +724,7 @@ public class Rangement implements Comparable<Rangement> {
 	/**
 	 * Indique si le numero du lieu existe
 	 * 
-	 * @param _nEmpl Numero d'emplacement (0, n)
+	 * @param numPlace Numero d'emplacement (0, n)
 	 * @return
 	 */
 	public boolean isExistingNumPlace(int numPlace) {

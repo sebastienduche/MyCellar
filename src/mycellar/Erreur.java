@@ -1,13 +1,11 @@
 package mycellar;
 
 import java.awt.Color;
-import java.util.LinkedList;
 
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
@@ -18,8 +16,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 10/05/15
+ * @version 1.8
+ * @since 20/07/17
  */
 public class Erreur {
   private MyCellarLabel textControl1 = new MyCellarLabel();
@@ -56,23 +54,6 @@ public class Erreur {
    * @param texte2 String: Message 2
    */
   public Erreur(String texte1, String texte2) {
-    initialize(texte1, texte2, false, "");
-  }
-  
-  /**
-   * Erreur: Constructeur d'un message d'erreur simple.
-   *
-   * @param texte1 String: Message 1
-   * @param texte2 String: Message 2
-   */
-  public Erreur(MyCellarError error) {
-	 LinkedList<String> list = error.getMessages();
-	 String texte1 = "";
-	 String texte2 = "";
-	 if(list.size() >= 1)
-		 texte1 = list.getFirst();
-	 if(list.size() >= 2)
-		 texte2 = list.get(1);
     initialize(texte1, texte2, false, "");
   }
   

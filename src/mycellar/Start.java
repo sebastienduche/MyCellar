@@ -37,6 +37,7 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarVersion;
 import mycellar.launcher.Server;
 import mycellar.showfile.ShowFile;
+import mycellar.showfile.ShowFile.ShowType;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -46,8 +47,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 22.1
- * @since 16/07/17
+ * @version 22.2
+ * @since 20/07/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1940,7 +1941,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if (Program.showtrash == null) {
-				Program.showtrash = new ShowFile(true);
+				Program.showtrash = new ShowFile(ShowType.TRASH);
 				Program.tabbedPane.add(Program.getLabel("Main.ShowTrash"), Program.showtrash);
 				Program.tabbedPane.setIconAt(Program.tabbedPane.getTabCount() - 1, MyCellarImage.TRASH);
 				Utils.addCloseButton(Program.tabbedPane, Program.showtrash);

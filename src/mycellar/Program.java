@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
@@ -70,8 +71,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 15.6
- * @since 18/07/17
+ * @version 15.7
+ * @since 20/07/17
  */
 
 public class Program {
@@ -92,6 +93,7 @@ public class Program {
 	public static Importer importer = null;
 	public static ShowFile showfile = null;
 	public static ShowFile showtrash = null;
+	public static ShowFile showerrors = null;
 	public static Search search = null;
 	public static ShowHistory history = null;
 	public static VineyardPanel vignobles = null;
@@ -108,6 +110,7 @@ public class Program {
 	private static boolean bDebug = false;
 	protected static LinkedList<Rangement> m_oCave = new LinkedList<Rangement>();
 	private static LinkedList<Bouteille> trash = new LinkedList<Bouteille>();
+	private static LinkedList<MyCellarError> errors = new LinkedList<MyCellarError>();
 	public static Rangement defaultPlace = new Rangement("");
 	private static String m_sWorkDir = null;
 	protected static String m_sTempDir = null;
@@ -458,6 +461,14 @@ public class Program {
 
 	public static void setToTrash(Bouteille b) {
 		trash.add(b);
+	}
+	
+	public static LinkedList<MyCellarError> getErrors() {
+		return errors;
+	}
+
+	public static void addError(MyCellarError error) {
+		errors.add(error);
 	}
 
 	/**

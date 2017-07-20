@@ -28,8 +28,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.8
- * @since 18/07/17
+ * @version 6.7
+ * @since 20/07/17
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
@@ -96,6 +96,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 				choix.addItem(Program.getCave(i).getNom());
 			}
 		}
+		RangementUtils.putTabStock1();
 		this.setVisible(true);
 	}
 
@@ -117,8 +118,6 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 			if (num_select != 0) {
 				preview.setEnabled(true);
 				Rangement rangement = Program.getCave(num_select - 1);
-				//rangement.putTabStock();
-				RangementUtils.putTabStock1();
 				// Nombre d'emplacement
 				num_emplacement = rangement.getNbEmplacements();
 				
@@ -257,9 +256,6 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 			}
 			else {
 				Rangement rangement = Program.getCave(num_select -1);
-				/*if(!rangement.isCaisse())
-					rangement.putTabStock();*/
-				RangementUtils.putTabStock1();
 				LinkedList<Rangement> rangements = new LinkedList<Rangement>();
 				rangements.add(rangement);
 				MyXmlDom.writeRangements("", rangements, false);
@@ -335,6 +331,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		if(!updateView)
 			return;
 		updateView = false;
+		RangementUtils.putTabStock1();
 		choix.removeAllItems();
 		choix.addItem("");
 		for (int i = 0; i < Program.GetCaveLength(); i++) {

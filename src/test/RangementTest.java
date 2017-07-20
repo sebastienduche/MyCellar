@@ -319,7 +319,7 @@ public class RangementTest extends TestCase {
 		b.setNumLieu(2);
 		b.setEmplacement("caisseLimit");
 		caisseLimit.addWine(b);
-		assertEquals(1, caisseLimit.getNbCaseUse(2));
+		assertEquals(1, caisseLimit.getNbCaseUse(1));
 		Bouteille b1 = new Bouteille();
 		b1.setNom("B11");
 		b1.setNumLieu(0);
@@ -327,7 +327,7 @@ public class RangementTest extends TestCase {
 		caisseNoLimit.addWine(b1);
 		assertEquals(1, caisseNoLimit.getNbCaseUse(0));
 		caisseLimit.removeWine(b);
-		assertEquals(0, caisseLimit.getNbCaseUse(2));
+		assertEquals(0, caisseLimit.getNbCaseUse(1));
 		caisseNoLimit.removeWine(b1);
 		assertEquals(0, caisseNoLimit.getNbCaseUse(0));
 	}
@@ -345,9 +345,9 @@ public class RangementTest extends TestCase {
 		armoire2x2_3x22545.removeWine(b);
 		b.setEmplacement("caisseLimit");
 		caisseLimit.addWine(b);
-		assertEquals(1, caisseLimit.getNbCaseUse(2));
+		assertEquals(1, caisseLimit.getNbCaseUse(1));
 		caisseLimit.removeWine(b);
-		assertEquals(0, caisseLimit.getNbCaseUse(2));
+		assertEquals(0, caisseLimit.getNbCaseUse(1));
 	}
 	
 	public void testRemoveWine() {
@@ -362,9 +362,9 @@ public class RangementTest extends TestCase {
 		assertEquals(b, armoire2x2_3x22545.getBouteille(1, 0, 1));
 		armoire2x2_3x22545.removeWine(b);
 		caisseLimit.addWine(b);
-		assertEquals(1, caisseLimit.getNbCaseUse(2));
+		assertEquals(1, caisseLimit.getNbCaseUse(1));
 		caisseLimit.removeWine(b);
-		assertEquals(0, caisseLimit.getNbCaseUse(2));
+		assertEquals(0, caisseLimit.getNbCaseUse(1));
 	}
 
 	public void testUpdateToStock() {
@@ -463,8 +463,11 @@ public class RangementTest extends TestCase {
 		b.setNom("B20");
 		b.setNumLieu(1);
 		caisse.addWine(b);
-		assertFalse(caisse.canAddBottle(1, 0, 0));
-		assertTrue(caisse.canAddBottle(2, 0, 0));
+		assertFalse(caisse.canAddBottle(0, 0, 0));
+		assertTrue(caisse.canAddBottle(1, 0, 0));
+		assertTrue(caisse.canAddBottle(b));
+		b.setNumLieu(0);
+		assertFalse(caisse.canAddBottle(b));
 		LinkedList<Rangement> list = new LinkedList<Rangement>();
 		list.add(armoire1x3x3);
 		list.add(armoire2x2_3x22545);
@@ -483,6 +486,15 @@ public class RangementTest extends TestCase {
 			}
 			assertFalse(r.canAddBottle(emplacementMax, 0, 0));
 		}
+		b = new Bouteille();
+		b.setNom("B20bis");
+		assertFalse(armoire1x3x3.canAddBottle(b));
+		b.setNumLieu(1);
+		assertFalse(armoire1x3x3.canAddBottle(b));
+		b.setLigne(1);
+		assertFalse(armoire1x3x3.canAddBottle(b));
+		b.setColonne(1);
+		assertTrue(armoire1x3x3.canAddBottle(b));
 	}
 
 	public void testHasFreeSpaceInCaisse() {
@@ -492,8 +504,8 @@ public class RangementTest extends TestCase {
 		b.setNom("B21");
 		b.setNumLieu(1);
 		caisse.addWine(b);
-		assertFalse(caisse.hasFreeSpaceInCaisse(1));
-		assertTrue(caisse.hasFreeSpaceInCaisse(2));
+		assertFalse(caisse.hasFreeSpaceInCaisse(0));
+		assertTrue(caisse.hasFreeSpaceInCaisse(1));
 		
 	}
 

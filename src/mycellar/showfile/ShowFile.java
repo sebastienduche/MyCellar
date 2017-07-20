@@ -45,6 +45,7 @@ import mycellar.ToolTipRenderer;
 import mycellar.Vignoble;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.countries.Countries;
@@ -57,8 +58,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.3
- * @since 18/07/17
+ * @version 4.4
+ * @since 20/07/17
  */
 
 public class ShowFile extends JPanel implements ITabListener  {
@@ -80,12 +81,18 @@ public class ShowFile extends JPanel implements ITabListener  {
 	public JScrollPane m_oScroll = new JScrollPane();
 	private boolean updateView = false;
 	private ArrayList<ShowFileColumn> columns = new ArrayList<ShowFileColumn>();
+	private ShowType showType;
 	
-	private boolean trash = false;
+	public enum ShowType{
+		NORMAL,
+		TRASH,
+		ERROR
+	};
 
 	static final long serialVersionUID = 020107;
 
 	public ShowFile() {
+		showType = ShowType.NORMAL;
 		try {
 			columns.add(new ShowFileColumn(MyCellarFields.NAME) {
 
@@ -334,8 +341,8 @@ public class ShowFile extends JPanel implements ITabListener  {
 		}
 	}
 	
-    public ShowFile(boolean trash) {
-		this.trash = trash;
+    public ShowFile(ShowType type) {
+		this.showType = type;
 		try {
 			jbInit();
 		}
@@ -348,28 +355,31 @@ public class ShowFile extends JPanel implements ITabListener  {
 
 		m_oTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		m_oTitleLabel.setText(Program.getLabel("Infos325")); //"Contenu du fichier");
-		m_oTitleLabel.setFont(Program.font_dialog);
-		m_oTitleLabel.setForeground(Color.red);
 		m_oResultLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		m_oResultLabel.setForeground(Color.red);
-		this.setLayout(new MigLayout("","grow","[]10px[grow][]"));
-		if(trash) {
+		this.setLayout(new MigLayout("","[][grow]","[]10px[grow][]"));
+		if(showType == ShowType.TRASH) {
 			m_oDeleteButton.setText(Program.getLabel("ShowFile.Restore"));
 			m_oDeleteButton.setIcon(MyCellarImage.RESTORE);
 		} else
 			m_oDeleteButton.setText(Program.getLabel("Infos051"));
 		
 		m_oDeleteButton.addActionListener((e) -> {
-			if(trash)
+			if(showType == ShowType.TRASH)
 				restore();
 			else	
 				delete_actionPerformed(e);
 		});
-		if(!trash) {
+		if(showType == ShowType.NORMAL) {
+			add(m_oTitleLabel, "align left");
 			add(m_oManageButton, "align right, split 3");
 			add(m_oModifyButton, "align right");
+			add(m_oDeleteButton, "align right, wrap");
+		} else {
+			add(m_oTitleLabel, "align left");
+			add(m_oDeleteButton, "align right, wrap");
 		}
-		add(m_oDeleteButton, "align right, wrap");
+		
 		
 		for( int i = 0; i < Program.GetCaveLength(); i++) {
 			m_oPlaceCbx.addItem(Program.getCave(i).getNom());
@@ -390,10 +400,16 @@ public class ShowFile extends JPanel implements ITabListener  {
 		
 		// Remplissage de la table
 		tv = new TableShowValues();
-		if(trash) {
+		if(showType == ShowType.TRASH) {
 			tv = new TableShowValues();
 			tv.setBottles(Program.getTrash());
 			m_oTable = new JTable(tv);
+		}
+		else if(showType == ShowType.ERROR) {
+			tv = new ErrorShowValues();
+			((ErrorShowValues) tv).setErrors(Program.getErrors());
+			m_oTable = new JTable(tv);
+			m_oTitleLabel.setText(Program.getLabel("ShowFile.manageError"));
 		}
 		else {
 			tv = new ShowFileModel();
@@ -470,29 +486,40 @@ public class ShowFile extends JPanel implements ITabListener  {
 				break;
 			}
 		}
-		TableColumn tc = tcm.getColumn(0);
+		TableColumn tc = tcm.getColumn(TableShowValues.ETAT);
 		tc.setCellRenderer(new StateRenderer());
 		tc.setCellEditor(new StateEditor());
 		tc.setMinWidth(25);
 		tc.setMaxWidth(25);
-		tc = tcm.getColumn(TableShowValues.PLACE);
-		tc.setCellEditor(new DefaultCellEditor(m_oPlaceCbx));
-		tc = tcm.getColumn(TableShowValues.TYPE);
-		tc.setCellEditor(new DefaultCellEditor(m_oTypeCbx));
-		if(!trash) {
+		if(showType == ShowType.ERROR) {
+			tc = tcm.getColumn(ErrorShowValues.PLACE);
+			tc.setCellEditor(new DefaultCellEditor(m_oPlaceCbx));
+			tc = tcm.getColumn(ErrorShowValues.TYPE);
+			tc.setCellEditor(new DefaultCellEditor(m_oTypeCbx));
+			tc = tcm.getColumn(ErrorShowValues.STATUS);
+			tc.setCellRenderer(new FontBoldTableCellRenderer());
+			tc = tcm.getColumn(ErrorShowValues.BUTTON);
+			tc.setCellRenderer(new StateButtonRenderer(Program.getLabel("Infos071"), MyCellarImage.ADD));
+			tc.setCellEditor(new StateButtonEditor());
+		}
+		else if(showType == ShowType.NORMAL) {
 			tc = tcm.getColumn(tcm.getColumnCount()-1);
 			tc.setCellRenderer(new StateButtonRenderer());
 			tc.setCellEditor(new StateButtonEditor());
 			tc.setMinWidth(100);
 			tc.setMaxWidth(100);
+			tc = tcm.getColumn(TableShowValues.PLACE);
+			tc.setCellEditor(new DefaultCellEditor(m_oPlaceCbx));
+			tc = tcm.getColumn(TableShowValues.TYPE);
+			tc.setCellEditor(new DefaultCellEditor(m_oTypeCbx));
 		}
 
 		m_oTable.setPreferredScrollableViewportSize(new Dimension(300, 200));
         m_oTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
 		m_oScroll = new JScrollPane(m_oTable);
 			
-		this.add(m_oScroll, "grow, wrap");
-		this.add(m_oResultLabel, "alignx center, hidemode 3");
+		this.add(m_oScroll, "grow, span 2, wrap");
+		this.add(m_oResultLabel, "span 2, alignx center, hidemode 3");
 	}
 
 
@@ -530,11 +557,18 @@ public class ShowFile extends JPanel implements ITabListener  {
 				}
 				if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))	
 				{
-					for (int i = 0; i < toDeleteList.size(); i++) {
-						Bouteille b = (Bouteille) toDeleteList.get(i);
-						Program.getStorage().addHistory(History.DEL, b);
-						Program.getStorage().deleteWine(b);
-						Program.setToTrash(b);
+					if(showType == ShowType.ERROR) {
+						for (int i = 0; i < toDeleteList.size(); i++) {
+							Bouteille b = (Bouteille) toDeleteList.get(i);
+							Program.getErrors().remove(new MyCellarError(0, b));
+						}
+					} else {
+						for (int i = 0; i < toDeleteList.size(); i++) {
+							Bouteille b = (Bouteille) toDeleteList.get(i);
+							Program.getStorage().addHistory(History.DEL, b);
+							Program.getStorage().deleteWine(b);
+							Program.setToTrash(b);
+						}
 					}
 				}
 				refresh();
@@ -620,8 +654,10 @@ public class ShowFile extends JPanel implements ITabListener  {
 	}
 
 	public void refresh() {
-		if(trash)
+		if(showType == ShowType.TRASH)
 			tv.setBottles(Program.getTrash());
+		else if(showType == ShowType.ERROR)
+			((ErrorShowValues)tv).setErrors(Program.getErrors());
 		else
 			tv.setBottles(Program.getStorage().getAllList());
 		m_oResultLabel.setText("");
@@ -696,7 +732,6 @@ public class ShowFile extends JPanel implements ITabListener  {
 		    		new Error(Program.convertStringFromHTMLString(bTemp.getNom()) + " " + Program.getError("Error059"));
 		    	}
 		    	else {
-		    		Rangement oldPlace = b.getRangement();
 		    		if(field == MyCellarFields.PLACE)
 		    			b.setEmplacement((String)value);
 		    		else if(field == MyCellarFields.NUM_PLACE)
@@ -712,9 +747,6 @@ public class ShowFile extends JPanel implements ITabListener  {
 		    			b.setLigne(0);
 		    			b.setColonne(0);
 		    		}
-		    		/*if(oldPlace != null)
-		    			oldPlace.putTabStock();
-		    		b.getRangement().putTabStock();*/
 		    		RangementUtils.putTabStock1();
 		    	}
     		}
@@ -766,6 +798,12 @@ public class ShowFile extends JPanel implements ITabListener  {
 
 	@Override
 	public boolean tabWillClose(TabEvent event) {
+		if(showType == ShowType.ERROR && Program.getErrors().stream().map((e) -> e.isStatus()).count() > 0) {
+			if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getLabel("ShowFile.QuitErrors"))) {
+				return true;
+			}
+			return false;
+		}
 		return true;
 	}
 

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.countries.Countries;
@@ -71,8 +72,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 15.7
- * @since 20/07/17
+ * @version 15.8
+ * @since 21/07/17
  */
 
 public class Program {
@@ -659,13 +660,10 @@ public class Program {
 	 */
 	private static void writeOtherObject() {
 		Debug("Program: Writing Other Objects...");
-		boolean resul = true;
 
-		if(!MyXmlDom.writeYears(getStorage().getAnneeList()))
-			resul = false;
+		MyXmlDom.writeYears(getStorage().getAnneeList());
 
 		getStorage().saveHistory();
-		putCaveConfigString("SAVE", resul ? "OK" : "KO");
 		Debug("Program: Writing Other Objects... Done");
 	}
 
@@ -719,7 +717,6 @@ public class Program {
 		if (!resul) {
 			Debug("Program: WARNING: Loading Unsuccessful");
 			getStorage().setAll(null);
-			putCaveConfigString("SAVE", "KO");
 		}
 		if(cave != null)
 			m_oCave = cave;
@@ -1230,10 +1227,9 @@ public class Program {
 			return false;
 		}
 
-		/*for (Rangement r : getCave()) {
-			r.putTabStock();
-		}*/
-		RangementUtils.putTabStock1();
+		RangementUtils.putTabStock();
+		if(!Program.getErrors().isEmpty())
+			new OpenShowErrorsAction().actionPerformed(null);
 		CountryVignobles.load();
 		CountryVignobles.addVignobleFromBottles();
 

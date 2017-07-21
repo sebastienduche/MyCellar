@@ -96,7 +96,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 				choix.addItem(Program.getCave(i).getNom());
 			}
 		}
-		RangementUtils.putTabStock1();
+		RangementUtils.putTabStock();
 		this.setVisible(true);
 	}
 
@@ -331,7 +331,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		if(!updateView)
 			return;
 		updateView = false;
-		RangementUtils.putTabStock1();
+		RangementUtils.putTabStock();
 		choix.removeAllItems();
 		choix.addItem("");
 		for (int i = 0; i < Program.GetCaveLength(); i++) {

@@ -664,7 +664,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		/*for(Rangement cave : Program.getCave())
 			cave.putTabStock();*/
 
-		RangementUtils.putTabStock1();
+		RangementUtils.putTabStock();
 		Search.updateTable();
 
 		if(!rangement.isCaisse())
@@ -759,7 +759,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		/*for (Rangement rangement : Program.getCave()) {
 			rangement.putTabStock();
 		}*/
-		RangementUtils.putTabStock1();
+		RangementUtils.putTabStock();
 		m_colorList.setSelectedItem(BottleColor.NONE);
 		name.setSelectedIndex(0);
 		m_year.setText("");

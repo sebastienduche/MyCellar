@@ -28,8 +28,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.0
- * @since 11/01/17
+ * @version 5.1
+ * @since 21/07/17
  */
 public class Stat extends JPanel implements ITabListener {
 
@@ -586,7 +586,7 @@ public class Stat extends JPanel implements ITabListener {
 		try {
 			Debug("options_actionPerforming...");
 			options.setSelected(false);
-			String value = JOptionPane.showInputDialog(this, Program.getLabel("Infos194") +"\n"+ Program.getLabel("Infos195") + " " + Program.getCaveConfigString("DEVISE","") + " ):", Program.getCaveConfigString("TRANCHE_PRIX",""));
+			String value = JOptionPane.showInputDialog(this, Program.getLabel("Infos194"));
 			if(value != null && StringUtils.isNumeric(value)) {
 				Program.putCaveConfigInt("TRANCHE_PRIX", new Integer(value));
 				listPrice.clear();

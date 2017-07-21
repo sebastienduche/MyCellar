@@ -310,7 +310,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 				}
 				/*for (int j = 0; j < Program.GetCaveLength(); j++)
 					Program.getCave(j).putTabStock();*/
-				RangementUtils.putTabStock1();
+				RangementUtils.putTabStock();
 				tv.setHistory(Program.getStorage().getHistory().getHistory());
 			}
 		}

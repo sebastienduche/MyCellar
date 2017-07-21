@@ -285,7 +285,7 @@ public class TableShowValues extends AbstractTableModel {
 		    			b.setLigne(0);
 		    			b.setColonne(0);
 		    		}
-		    		RangementUtils.putTabStock1();
+		    		RangementUtils.putTabStock();
 		    	}
     		}
     		else {

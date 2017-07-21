@@ -1432,10 +1432,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 		Debug("Quitting...");
 
-		/*for (Rangement rangement : Program.getCave()) {
-			rangement.putTabStock();
-		}*/
-		RangementUtils.putTabStock1();
+		RangementUtils.putTabStock();
 		m_colorList.setSelectedItem(BottleColor.NONE);
 		m_avant1.setVisible(false);
 		m_avant2.setVisible(false);

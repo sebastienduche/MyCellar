@@ -27,6 +27,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
+import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -43,8 +44,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.5
- * @since 18/07/17
+ * @version 11.6
+ * @since 21/07/17
  */
 public class Creer_Rangement extends JPanel implements ITabListener {
 
@@ -368,7 +369,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 			int num_rang = comboPlace.getSelectedIndex();
 			if (num_rang == 0) {
 				Debug("ERROR: Please select a place");
-				new Erreur(Program.getError("Error093"), ""); //"Veuillez sélectionner un rangement")
+				new Erreur(Program.getError("Error093")); //"Veuillez sélectionner un rangement")
 				return;
 			}
 			num_rang--;
@@ -429,8 +430,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 								b.setEmplacement(nom);
 							}
 						}
-						//rangement.putTabStock();
-						RangementUtils.putTabStock1();
+						RangementUtils.putTabStock();
 
 						nom_obj.setText("");
 						label_cree.setText(Program.getError("Error123"));
@@ -444,8 +444,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 						rangement.setStartCaisse(start_caisse);
 						rangement.setNbBottleInCaisse(limite);
 						rangement.updateCaisse(nbPart);
-						//rangement.putTabStock();
-						RangementUtils.putTabStock1();
+						RangementUtils.putTabStock();
 						updateView();
 						Program.updateAllPanels();
 					}
@@ -458,19 +457,16 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 					rangement.setStartCaisse(start_caisse);
 					rangement.setNbBottleInCaisse(limite);
 					rangement.updateCaisse(nbPart);
-					//rangement.putTabStock();
-					RangementUtils.putTabStock1();
+					RangementUtils.putTabStock();
 
 					label_cree.setText(Program.getError("Error123"));
 
 					updateView();
 					Program.updateAllPanels();
 				}
-				if (bResul) {
-					modify = true;
-					Debug("Modify completed");
-					label_cree.setText(Program.getError("Error123")); //"Rangement modifi�.");
-				}
+				modify = true;
+				Debug("Modify completed");
+				label_cree.setText(Program.getError("Error123")); //"Rangement modifi�.");
 			}
 			else {
 				// Rangement complexe
@@ -481,13 +477,13 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 					if(p.getRows().size() == 0) {
 						erreur_txt1 = new String(Program.getError("Error009") + " " + p.getNum() + "."); //"Erreur nombre de lignes incorrect sur la partie
 						new Erreur(erreur_txt1);
-						bResul = false;
+						return;
 					}
 					for(Row r: p.getRows()) {
 						if(r.getCol() == 0) {
 							erreur_txt1 = new String(Program.getError("Error004") + " " + p.getNum() + "."); //"Erreur nombre de colonnes incorrect sur la partie
 							new Erreur(erreur_txt1);
-							bResul = false;
+							return;
 						}
 					}
 				}
@@ -495,8 +491,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 					if(nbBottles == 0) {
 						rangement.setNom(nom);
 						rangement.setPlace(listPart);
-						//rangement.putTabStock();
-						RangementUtils.putTabStock1();
+						RangementUtils.putTabStock();
 						nom_obj.setText("");
 						comboPlace.removeAllItems();
 						comboPlace.addItem("");
@@ -540,7 +535,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 										String sText = Program.getError("Error202");
 										sText = sText.replaceFirst("A1", Integer.toString(i+1));
 										Debug("ERROR: Unable to reduce the number of row");
-										new Erreur(sText,"");
+										new Erreur(sText);
 										// Impossible de réduire le nombre de ligne de la partie, bouteilles présentes
 									}
 								}
@@ -596,7 +591,6 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 											b.setEmplacement(nom);
 										}
 									}
-									//rangement.putTabStock();
 									nom_obj.setText("");
 									comboPlace.removeAllItems();
 									comboPlace.addItem("");
@@ -609,14 +603,14 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 								else {
 									rangement.setNom(nom);
 									rangement.setPlace(listPart);
-									//rangement.putTabStock();
 								}
 							}
 							else {
 								rangement.setPlace(listPart);
-								//rangement.putTabStock();
 							}
-							RangementUtils.putTabStock1();
+							RangementUtils.putTabStock();
+							if(!Program.getErrors().isEmpty())
+								new OpenShowErrorsAction().actionPerformed(null);
 							if(bResul)
 								label_cree.setText(Program.getError("Error123"));
 						}

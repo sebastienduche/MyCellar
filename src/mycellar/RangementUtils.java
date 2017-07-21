@@ -719,7 +719,7 @@ public class RangementUtils {
 		}
 	}
 	
-	public static void putTabStock1() {
+	public static void putTabStock() {
 		Debug("putTabStock ...");
 		Program.getErrors().clear();
 		for(Rangement rangement : Program.getCave())

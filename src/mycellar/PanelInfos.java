@@ -154,7 +154,7 @@ class PanelStats extends JPanel {
 			{
 				Rangement r = names.get(row);
 				//r.putTabStock();
-				RangementUtils.putTabStock1();
+				RangementUtils.putTabStock();
 				LinkedList<Rangement> rangements = new LinkedList<Rangement>();
 				rangements.add(r);
 				MyXmlDom.writeRangements("", rangements, false);

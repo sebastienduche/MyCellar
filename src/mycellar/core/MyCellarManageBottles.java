@@ -396,7 +396,7 @@ public class MyCellarManageBottles extends JPanel {
 		try {
 			int num_select = m_lieu.getSelectedIndex();
 			//Program.getCave(num_select - 1).putTabStock();
-			RangementUtils.putTabStock1();
+			RangementUtils.putTabStock();
 			LinkedList<Rangement> rangements = new LinkedList<Rangement>();
 			rangements.add(Program.getCave(num_select - 1));
 			MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);

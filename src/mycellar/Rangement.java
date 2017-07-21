@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import mycellar.core.MyCellarError;
-
 /**
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
@@ -348,109 +346,6 @@ public class Rangement implements Comparable<Rangement> {
 			resul += getNbCaseUse(i);
 		return resul;
 	}
-
-	/**
-	 * putTabStock: Range les vins
-	 *
-	 * @return int
-	 */
-	public LinkedList<MyCellarError> putTabStock() {
-		boolean isout = false;
-		int tmp_num_max = 0;
-		int tmp_lig_max = 0;
-		int tmp_col_max = 0;
-		LinkedList<MyCellarError> errors = new LinkedList<MyCellarError>();
-
-		try {
-			LinkedList<Bouteille> out = new LinkedList<Bouteille>();
-			Bouteille b = null;
-			if (!caisse) {
-				stockage = new Bouteille[nb_emplacements][stock_nblign][stock_nbcol];
-				//Copie dans le tableau stockage de ce rangement
-				for (int i = 0; i < Program.getStorage().getAllNblign(); i++) {
-					b = Program.getStorage().getAllAt(i);
-					if (b != null) {
-						String tmp_nom = b.getEmplacement();
-						if (getNom().equals(tmp_nom)) {
-							//Récupération du numéro d'emplacement, du numéro de ligne et de colonne
-							int tmp_num = b.getNumLieu();
-							int tmp_lig = b.getLigne();
-							int tmp_col = b.getColonne();
-							//Copie de la bouteille
-							try {
-								//En dehors du rangement
-								if ( (tmp_num - 1) >= nb_emplacements || (tmp_lig - 1) >= getNbLignes(tmp_num - 1) || (tmp_col - 1) >= getNbColonnes(tmp_num - 1, tmp_lig - 1)) {
-									throw new ArrayIndexOutOfBoundsException();
-								}
-								if (stockage[tmp_num - 1][tmp_lig - 1][tmp_col - 1] == null) { //Ajout de la bouteille
-									stockage[tmp_num - 1][tmp_lig - 1][tmp_col - 1] = b; //-1 car ca commence � 0
-								}
-								else { //En dehors
-									isout = true;
-								}
-							}
-							catch (ArrayIndexOutOfBoundsException oobe1) {
-								if (tmp_num > 0 && tmp_lig > 0 && tmp_col > 0) { //Si bouteille en dehors et non � 0
-									if ( (tmp_num - 1) >= nb_emplacements || (tmp_lig - 1) >= getNbLignes(tmp_num - 1) || (tmp_col - 1) >= getNbColonnes(tmp_num - 1, tmp_lig - 1) /*stock_nbcol*/) {
-										isout = true;
-										if (tmp_num > tmp_num_max) {
-											tmp_num_max = tmp_num;
-										}
-										if (tmp_lig > tmp_lig_max) {
-											tmp_lig_max = tmp_lig;
-										}
-										if (tmp_col > tmp_col_max) {
-											tmp_col_max = tmp_col;
-										}
-										errors.add(new MyCellarError(100, b));
-									}
-								}
-								if ( (tmp_num - 1) < 0 || (tmp_lig - 1) < 0 || (tmp_col - 1) < 0) { //Si valeurs � 0
-									isout = true;
-									errors.add(new MyCellarError(2, b));
-								}
-							}
-						}
-						if (isout) {
-							isout = false;
-							//Ajout des bouteilles en dehors dans le tableau out
-							out.add(b);
-						}
-					}
-				}
-			}
-			else { //Pour la caisse
-				updateCaisse(nb_emplacements);
-				/*int cpt1[] = new int[nb_emplacements];
-
-				for (int z = 0; z < nb_emplacements; z++) {
-					cpt1[z] = 0;
-				}*/
-				//int cpt = 0;
-				//int max_partie = 0; //Permet d'avoir le message d'erreur sur le nombre de partie maximal
-				for (int i = 0; i < Program.getStorage().getAllNblign(); i++) {
-					b = Program.getStorage().getAllAt(i);
-					if (b != null) {
-						String tmp_nom = b.getEmplacement();
-						// Positionnement de la bouteille dans le stock
-						if (getNom().equals(tmp_nom)) {
-							int nb_vin = getNbCaseUse(b.getNumLieu()-start_caisse);
-							if(limite && nb_vin == stock_nbcol)
-								out.add(b);
-							else
-								storageCaisse.get(b.getNumLieu()).add(b);
-						}
-					}
-				}
-			}
-
-		}
-		catch (Exception e) {
-			Program.showException(e);
-		}
-		return errors;
-	}
-
 
 	/**
 	 * addWine: Ajout d'une bouteille

@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.MyCellarButton;
@@ -42,8 +43,8 @@ import jxl.Workbook;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.5
- * @since 20/07/17
+ * @version 10.6
+ * @since 21/07/17
  */
 public class Importer extends JPanel implements ITabListener, Runnable {
 
@@ -736,25 +737,19 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 		try {
 			Debug("Running...");
 			Debug("Importing...");
-			Program.putCaveConfigString("SAVE", "KO");
 			importe.setEnabled(false);
 			String separe = "";
 			String nom;
 			int resul = 0;
-			int resul_l = 0;
 			boolean ligne_titre = false;
 			byte lecture[];
-			int nbcol_lu = 0;
 			int nb_choix = 0;
 			String lu[] = new String[15];
 			Rangement new_rangement = null;
-			int i;
 			char XML[];
-			int inutile = 0;
-			int cpt_char_lu = 0;
-			int cpt_bottle = 0;
+			//int cpt_bottle = 0;
 			int choix_val = 0;
-			int max_num_place = 0;
+			//int max_num_place = 0;
 			String XML_NAME = Program.getCaveConfigString("XML_MARK1","wine");
 			String XML_YEAR = Program.getCaveConfigString("XML_MARK2","year");
 			String XML_TYPE = Program.getCaveConfigString("XML_MARK3","type");
@@ -823,7 +818,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 
 				//Verify only 1 use of each field
 			}
-			for (i = 0; i < nb_choix; i++) {
+			for (int i = 0; i < nb_choix; i++) {
 				choix_val = 0;
 				switch (i) {
 				case 0:
@@ -973,6 +968,20 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				importe.setEnabled(true);
 				label_progression.setText(Program.getLabel("Infos035")); //"Import Terminé");
 				file_import.close();
+				new java.util.Timer().schedule( 
+				        new java.util.TimerTask() {
+				            @Override
+				            public void run() {
+				            	SwingUtilities.invokeLater(new Runnable() {
+									@Override
+									public void run() {
+										label_progression.setText("");
+									}
+				            	});
+				            }
+				        }, 
+				        5000 
+				);
 				return;
 			}
 
@@ -1089,10 +1098,8 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					while (resul != 0);
 					resul = 0;
 					Debug("Creating new place with name: "+nom1);
-					new_rangement = new Rangement(nom1, 1, 0, false, 0);
+					new_rangement = new Rangement(nom1, 1, 0, false, -1);
 					Program.addCave(new_rangement);
-					MyXmlDom.appendRangement(new_rangement);
-					Program.putCaveConfigString("SAVE", "KO");
 				}
 				else {
 					new_rangement = Program.getCave(num_r);
@@ -1120,20 +1127,22 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				if (resul == 0 && nb_choix == 0) {
 					label_progression.setText("");
 					Debug("ERROR: No field selected");
-					String erreur_txt1 = Program.getError("Error025"); //"Aucun champs s�lectionn�s");
-					String erreur_txt2 = Program.getError("Error026"); //"Veuillez s�lectionner des champs pour que les donn�es soient trait�es");
+					String erreur_txt1 = Program.getError("Error025"); //"Aucun champs sélectionnés");
+					String erreur_txt2 = Program.getError("Error026"); //"Veuillez sélectionner des champs pour que les donn�es soient trait�es");
 					resul = 1;
 					new Erreur(erreur_txt1, erreur_txt2);
 				}
 				if (resul == 0) {
 					label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
-					//Valeur de la case � cocher ligne de titre
+					//Valeur de la case à cocher ligne de titre
 					if (titre.isSelected()) {
 						ligne_titre = true;
 					}
 					//Lecture de la ligne de titre. On compte le nombre de colonne
 
 					String tmp_lect = "";
+					int resul_l = -1;
+					int nbcol_lu = 0;
 					do {
 						try {
 							resul_l = file_import.read(lecture);
@@ -1170,13 +1179,15 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					}
 				}
 				if (resul == 0) {
+					int max_num_place = 0;
 					//Lecture des lignes
+					int resul_l = -1;
 					do {
-						for (i = 0; i < 15; i++) {
+						for (int i = 0; i < 15; i++) {
 							lu[i] = "";
 						}
-						nbcol_lu = 0;
-						cpt_char_lu = 0;
+						int nbcol_lu = 0;
+						int cpt_char_lu = 0;
 						String tmp_lect = "";
 						do {
 							try {
@@ -1217,7 +1228,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 							XML = lu[nbcol_lu - 1].toCharArray();
 							if (resul_l == -1) { //Cas du fin de fichier
 								char XML2[] = new char[count - 1];
-								for (i = 0; i < count - 1; i++) {
+								for (int i = 0; i < count - 1; i++) {
 									XML2[i] = XML[i];
 								}
 								lu[nbcol_lu - 1] = new String(XML2);
@@ -1227,7 +1238,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 								if (count > 2) {
 									XML2 = new char[count - 2];
 								}
-								for (i = 0; i < count - 2; i++) {
+								for (int i = 0; i < count - 2; i++) {
 									XML2[i] = XML[i];
 								}
 								lu[nbcol_lu - 1] = new String(XML2);
@@ -1242,7 +1253,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 							if (resul == 0 && lu_length != 0) {
 								java.util.HashMap<String, String> le_vin = new java.util.HashMap<String, String>(20);
 								bottle = new Bouteille();
-								for (i = 0; i < nbcol_lu; i++) {
+								for (int i = 0; i < nbcol_lu; i++) {
 									choix_val = 0;
 									switch (i) {
 									case 0:
@@ -1323,7 +1334,6 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 										le_vin.put(XML_APPELATION, lu[i]);
 										break;
 									case 13:
-										inutile = 1;
 										break;
 									}
 								}
@@ -1400,95 +1410,42 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					if (new_rangement != null) {
 						//Ecriture du nouveau rangement avec le bon nombre de parties
 						Debug("Creating and writing new place: name="+new_rangement.getNom()+" nbPlace="+(max_num_place+1));
-						new_rangement = new Rangement(new_rangement.getNom(), max_num_place + 1, 0, false, 0);
-						MyXmlDom.appendRangement(new_rangement);
-						Program.putCaveConfigString("SAVE", "KO");
+						new_rangement = new Rangement(new_rangement.getNom(), max_num_place + 1, 0, false, -1);
+						Program.addCave(new_rangement);
 					}
 				}
 				if (resul == 0) {
-					label_progression.setText("");
-					String mess;
-					if (cpt_bottle > 1) {
-						mess = new String(Program.getLabel("Infos045") + " " + cpt_bottle + " " + Program.getLabel("Infos046")); //"L'import des " + cpt_bottle + " lignes s'est bien d�roul�.");
-					}
-					else {
-						mess = Program.getLabel("Infos200");
-					}
-					String mess2;
-					if (inutile == 1) {
-						inutile = 0;
-						for (i = 0; i < nbcol_lu; i++) {
-							choix_val = 0;
-							switch (i) {
-							case 0:
-								choix_val = choix1.getSelectedIndex();
-								break;
-							case 1:
-								choix_val = choix2.getSelectedIndex();
-								break;
-							case 2:
-								choix_val = choix3.getSelectedIndex();
-								break;
-							case 3:
-								choix_val = choix4.getSelectedIndex();
-								break;
-							case 4:
-								choix_val = choix5.getSelectedIndex();
-								break;
-							case 5:
-								choix_val = choix6.getSelectedIndex();
-								break;
-							case 6:
-								choix_val = choix7.getSelectedIndex();
-								break;
-							case 7:
-								choix_val = choix8.getSelectedIndex();
-								break;
-							case 8:
-								choix_val = choix9.getSelectedIndex();
-								break;
-							case 9:
-								choix_val = choix10.getSelectedIndex();
-								break;
-							case 10:
-								choix_val = choix11.getSelectedIndex();
-								break;
-							case 11:
-								choix_val = choix12.getSelectedIndex();
-								break;
-							}
-
-							if(choix_val == 13)
-								inutile++;
-						}
-
-						if (inutile == 1) {
-							mess2 = Program.getLabel("Infos047"); //"Les donn�es du champ d�fini 'Inutile' ne sont pas import�es");
-						}
-						else {
-							mess2 = Program.getLabel("Infos232"); //"Les donn�es des champs d�finis 'Inutile' ne sont pas import�es");
-						}
-					}
-					else {
-						mess2 = Program.getLabel("Infos048"); //"Vous pouvez maintenant utiliser les autres fonctionalit�s");
-					}
+					label_progression.setText(Program.getLabel("Infos200"));
+					new java.util.Timer().schedule( 
+					        new java.util.TimerTask() {
+					            @Override
+					            public void run() {
+					            	SwingUtilities.invokeLater(new Runnable() {
+										@Override
+										public void run() {
+											label_progression.setText("");
+										}
+					            	});
+					            }
+					        }, 
+					        5000 
+					);
 					Debug("Import OK.");
-					new Erreur(mess, mess2, true, Program.getError("Error033"));
 				}
 			}
 			else { //Excel File
 				Debug("Importing XLS file...");
-				int j;
 				int nb_lign_xls = 0;
 				boolean skipTitle = false;
+				int max_num_place = 0;
 
 				if (resul == 0 && nb_choix == 0) {
 					label_progression.setText("");
 					Debug("ERROR: No field selected");
 					String erreur_txt1 = Program.getError("Error025"); //"Aucun champs sélectionnés");
 					String erreur_txt2 = Program.getError("Error026"); //"Veuillez s�lectionner des champs pour que les donn�es soient trait�es");
-					resul = 1;
 					new Erreur(erreur_txt1, erreur_txt2);
+					return;
 				}
 
 				if (resul == 0) {
@@ -1515,7 +1472,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						}
 						while (resul_tmp < nb_lign_xls && bool_resul != true);
 						//Number of columns found in Excel File
-						nbcol_lu = resul_tmp;
+						int nbcol_lu = resul_tmp;
 
 						if (resul == 0) {
 							//Reading Excel File
@@ -1524,7 +1481,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 								cell_tmp[k] = readXLS(sheet, nb_lign_xls, k);
 							}
 							//Ecriture du vin pour chaque ligne
-							for (j = 0; j < nb_lign_xls; j++) {
+							for (int j = 0; j < nb_lign_xls; j++) {
 								Debug("Read line :" + j);
 								int lu_length = 0;
 								try {
@@ -1547,7 +1504,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 									
 									if (lu_length != 0) {
 										Bouteille bottle = new Bouteille();
-										for (i = 0; i < nbcol_lu; i++) {
+										for (int i = 0; i < nbcol_lu; i++) {
 											choix_val = 0;
 											//Verify specials characters
 											try {
@@ -1638,7 +1595,6 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 												le_vin.put(XML_APPELATION, cell_tmp[i][j]);
 												break;
 											case 13:
-												inutile = 1;
 												break;
 											}
 										}
@@ -1721,113 +1677,50 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						String erreur_txt1 = new String(Program.getError("Error020") + " " + nom + " " + Program.getError("Error021")); //"Fichier " + nom + " non trouv�");
 						String erreur_txt2 = Program.getError("Error022"); //"Vérifier le chemin");
 						new Erreur(erreur_txt1, erreur_txt2);
-						resul = 1;
+						return;
 					}
 					catch (Exception e) {
 						label_progression.setText("");
 						Debug("ERROR: "+e.toString());
 						new Erreur(Program.getError("Error082"));
-						resul = 1;
+						return;
+					}
+					if (new_rangement != null) {
+						//Ecriture du nouveau rangement avec le bon nombre de partie
+						Debug("Creating and writing new place: name="+new_rangement.getNom()+" nbPlace="+(max_num_place+1));
+						new_rangement = new Rangement(new_rangement.getNom(), max_num_place + 1, 0, false, 0);
+						Program.addCave(new_rangement);
+						MyXmlDom.appendRangement(new_rangement);
 					}
 				} //End if resul
-				if (new_rangement != null) {
-					//Ecriture du nouveau rangement avec le bon nombre de partie
-					Debug("Creating and writing new place: name="+new_rangement.getNom()+" nbPlace="+(max_num_place+1));
-					new_rangement = new Rangement(new_rangement.getNom(), max_num_place + 1, 0, false, 0);
-					Program.addCave(new_rangement);
-					MyXmlDom.appendRangement(new_rangement);
-					Program.putCaveConfigString("SAVE", "KO");
-				}
+				
 
 				if (resul == 0) {
-					label_progression.setText("");
-					String mess;
-					if (cpt_bottle > 1) {
-						mess = new String(Program.getLabel("Infos045") + " " + cpt_bottle + " " + Program.getLabel("Infos046")); //"L'import des " + cpt_bottle + " lignes s'est bien d�roul�.");
-					}
-					else {
-						mess = Program.getLabel("Infos200");
-					}
-					String mess2;
-					if (inutile == 1) {
-						inutile = 0;
-						for (i = 0; i < nbcol_lu; i++) {
-							choix_val = 0;
-							switch (i) {
-							case 0:
-								choix_val = choix1.getSelectedIndex();
-								break;
-							case 1:
-								choix_val = choix2.getSelectedIndex();
-								break;
-							case 2:
-								choix_val = choix3.getSelectedIndex();
-								break;
-							case 3:
-								choix_val = choix4.getSelectedIndex();
-								break;
-							case 4:
-								choix_val = choix5.getSelectedIndex();
-								break;
-							case 5:
-								choix_val = choix6.getSelectedIndex();
-								break;
-							case 6:
-								choix_val = choix7.getSelectedIndex();
-								break;
-							case 7:
-								choix_val = choix8.getSelectedIndex();
-								break;
-							case 8:
-								choix_val = choix9.getSelectedIndex();
-								break;
-							case 9:
-								choix_val = choix10.getSelectedIndex();
-								break;
-							case 10:
-								choix_val = choix11.getSelectedIndex();
-								break;
-							case 11:
-								choix_val = choix12.getSelectedIndex();
-								break;
-							}
-
-							if(choix_val == 13)
-								inutile++;
-						}
-						if (inutile == 1) {
-							mess2 = Program.getLabel("Infos047"); //"Les données du(des) champ(s) défini(s) 'Inutile' ne sont pas importée(s)");
-						}
-						else {
-							mess2 = Program.getLabel("Infos232"); //"Les données du(des) champ(s) défini(s) 'Inutile' ne sont pas importée(s)");
-						}
-					}
-					else {
-						mess2 = Program.getLabel("Infos048"); //"Vous pouvez maintenant utiliser les autres fonctionalités");
-					}
+					label_progression.setText(Program.getLabel("Infos200"));
+					new java.util.Timer().schedule( 
+					        new java.util.TimerTask() {
+					            @Override
+					            public void run() {
+					            	SwingUtilities.invokeLater(new Runnable() {
+										@Override
+										public void run() {
+											label_progression.setText("");
+										}
+					            	});
+					            }
+					        }, 
+					        5000 
+					);
 					Debug("Import OK.");
-					new Erreur(mess, mess2, true, Program.getError("Error033"));
 				}
 			}
 			file_import.close();
 			importe.setEnabled(true);
-			if( !liste_lieu.isEmpty() ) {
-				String error = new String();
-				for(String lieu: liste_lieu){
-					if(Program.getCave(lieu) == null){
-						if(!error.isEmpty())
-							error += ", ";
-						error += lieu;
-					}
-				}
-				if (!error.isEmpty())
-					new Erreur(Program.getError("Error200"), error, true);
-			}
 		}
 		catch (Exception exc) {
 			Program.showException(exc);
 		}
-		RangementUtils.putTabStock1();
+		RangementUtils.putTabStock();
 		if(!Program.getErrors().isEmpty())
 			new OpenShowErrorsAction().actionPerformed(null);
 	}
@@ -1897,7 +1790,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 * @param sText String
 	 */
 	public static void Debug(String sText) {
-		Program.Debug("Importer: " + sText );
+		Program.Debug("Importer: " + sText);
 	}
 
 	/**

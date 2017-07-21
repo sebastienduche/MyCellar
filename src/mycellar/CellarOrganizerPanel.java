@@ -48,8 +48,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 12/07/17
+ * @version 1.6
+ * @since 21/07/17
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener {
@@ -91,6 +91,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 		else
 			setLayout(new MigLayout("","[grow]20px[200:200:200]","[][]20px[grow]"));
 		
+		RangementUtils.putTabStock();
 		placePanel.setLayout(new MigLayout("","grow", ""));
 		comboRangement = new MyCellarComboBox<Rangement>();
 		for(Rangement r : Program.getCave()) {
@@ -105,7 +106,6 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
 				if(arg0.getStateChange() == ItemEvent.SELECTED) {
-					rangement.putTabStock();
 					Rangement r = (Rangement)comboRangement.getSelectedItem();
 					setRangement(r);
 				}
@@ -153,9 +153,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 						JPanel panel;
 						RangementCell cell;
 						if(cellChooser)
-							cell = new RangementCell(rangement.getNom(), empl, k, 0);
+							cell = new RangementCell(rangement, empl, k, 0);
 						else
-							cell = new RangementCell(handler, th, rangement.getNom(), empl, k, 0);
+							cell = new RangementCell(handler, th, rangement, empl, k, 0);
 						place[k][0] = panel = cell;
 						cellsList.add(cell);
 						panelCellar.add(panel);
@@ -185,9 +185,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 							if(rangement.isExistingCell(i, k, j)) {
 								RangementCell cell;
 								if(cellChooser)
-									cell = new RangementCell(rangement.getNom(), i, k, j);
+									cell = new RangementCell(rangement, i, k, j);
 								else
-									cell = new RangementCell(handler, th, rangement.getNom(), i, k, j);
+									cell = new RangementCell(handler, th, rangement, i, k, j);
 								place[k][j] = panel = cell;
 								cellsList.add(cell);
 							} else
@@ -218,8 +218,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 
 	@Override
 	public boolean tabWillClose(TabEvent event) {
-		if(rangement != null)
-			rangement.putTabStock();
+		RangementUtils.putTabStock();
 		if(stock.getComponentCount() > 0) {
 			if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("ManageStock.ConfirmLost"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
 				return false;
@@ -232,8 +231,6 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 						 Program.setToTrash(((BouteilleLabel)c).getBouteille());
 					 }
 				}
-				for(Rangement rangement : Program.getCave())
-					rangement.putTabStock();
 			}	
 		}
 		if(cellChooser) {
@@ -301,7 +298,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 				bottle.getBouteille().setEmplacement("");
 				stock.addBottle(bottle);
 			}
-			rangement.putTabStock();
+			RangementUtils.putTabStock();
 			placePanel.updateUI();
 			stock.updateUI();
 		}
@@ -314,39 +311,44 @@ class RangementCell extends JPanel {
 	public BouteilleLabel draggingLabel;
 	private BouteilleLabel bottle;
 	private boolean stock;
-	private int place, row, column;
-	private String placeName;
+	private int placeNum, row, column;
+	private Rangement place;
 	private JToggleButton select = new JToggleButton();
 	private static final long serialVersionUID = -3180057277279430308L;
 
-	public RangementCell(MouseListener listener, TransferHandler handler, String placeName, int place, int row, int column) {
+	public RangementCell(MouseListener listener, TransferHandler handler, Rangement place, int placeNum, int row, int column) {
 		stock = false;
 		addMouseListener(listener);
 		setTransferHandler(handler);
 		setBorder(BorderFactory.createEtchedBorder());
-		setLayout(new MigLayout("","0px[align left, ::100, grow]0px","0px[align center, 20::, grow]0px"));
+		int width = 100;
+		if(place.isCaisse())
+			width = 400;
+		setLayout(new MigLayout("","0px[align left, ::"+width+", grow]0px","0px[align center, 20::, grow]0px"));
 		this.row = row;
 		this.column = column;
+		this.placeNum = placeNum;
 		this.place = place;
-		this.placeName = placeName;
 	}
 
 	public RangementCell(MouseListener listener, TransferHandler handler) {
 		stock = true;
-		this.placeName = "";
 		addMouseListener(listener);
 		setTransferHandler(handler);
 		setLayout(new MigLayout("","[align left, 200:200:200]","0px[]"));
 	}
 	
-	public RangementCell(String placeName, int place, int row, int column) {
+	public RangementCell(Rangement place, int placeNum, int row, int column) {
 		stock = false;
 		setBorder(BorderFactory.createEtchedBorder());
-		setLayout(new MigLayout("","0px[align left, ::100, grow]0px","0px[align center, 20::, grow]0px"));
+		int width = 100;
+		if(place.isCaisse())
+			width = 400;
+		setLayout(new MigLayout("","0px[align left, ::"+width+", grow]0px","0px[align center, 20::, grow]0px"));
 		this.row = row;
 		this.column = column;
 		this.place = place;
-		this.placeName = placeName;
+		this.placeNum = placeNum;
 		select.setText(Program.getLabel("ManagePlace.Select"));
 	}
 
@@ -385,15 +387,15 @@ class RangementCell extends JPanel {
 	}
 	
 	public int getPlace() {
-		return place;
+		return placeNum;
 	}
 
 	public String getPlaceName() {
-		return placeName;
+		return place != null ? place.getNom() : "";
 	}
 
-	public void setPlaceName(String placeName) {
-		this.placeName = placeName;
+	public void setPlace(Rangement place) {
+		this.place = place;
 	}
 }
 
@@ -405,7 +407,11 @@ class BouteilleLabel extends JPanel {
 
 	public BouteilleLabel(final Bouteille bouteille) {
 		super();
-		setLayout(new MigLayout("","5px[100:100:100][10:10:10]0px","0px[align center, grow]0px"));
+		int width = 100;
+		Rangement r = bouteille.getRangement();
+		if(r != null && r.isCaisse())
+			width = 400;
+		setLayout(new MigLayout("","5px["+width+":"+width+":"+width+"][10:10:10]0px","0px[align center, grow]0px"));
 		this.bouteille = bouteille;
 		if(bouteille.isWhiteWine())
 			label.setIcon(MyCellarImage.WHITEWINE);

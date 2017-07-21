@@ -747,7 +747,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 		    			b.setLigne(0);
 		    			b.setColonne(0);
 		    		}
-		    		RangementUtils.putTabStock1();
+		    		RangementUtils.putTabStock();
 		    	}
     		}
     		else {

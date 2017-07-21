@@ -337,7 +337,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 					}
 					/*for(int i=0; i<Program.GetCaveLength();i++)
 						Program.getCave(i).putTabStock();*/
-					RangementUtils.putTabStock1();
+					RangementUtils.putTabStock();
 					Program.updateManagePlacePanel();
 
 					if(listToSupp.size() == 1)

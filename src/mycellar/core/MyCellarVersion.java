@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 
 public class MyCellarVersion {
 
-	public static final String version = "2.6.3.2";
+	public static final String version = "2.6.3.5";
 	public static final String mainVersion = "5.0 ZE";
 	  
 	public static String getLocalVersion() {

@@ -8,8 +8,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -43,8 +44,8 @@ import jxl.Workbook;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.6
- * @since 21/07/17
+ * @version 10.7
+ * @since 25/07/17
  */
 public class Importer extends JPanel implements ITabListener, Runnable {
 
@@ -98,14 +99,11 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	private MyClipBoard clipboard = new MyClipBoard();
 	private JMenuItem quitter = new JMenuItem(Program.getLabel("Infos003"));
 	private Component objet1 = null;
-	private Bouteille bottle = null;
 	static final long serialVersionUID = 280706;
 
 
 	/**
 	 * Importer: Constructeur
-	 *
-	 * @param cave LinkedList<Rangement>: Liste des rangements
 	 */
 	public Importer() {
 		Debug("Constructor");
@@ -132,7 +130,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 		openit.setDebugGraphicsOptions(0);
 		openit.setMnemonic(OUVRIR);
 		importe.setText(Program.getLabel("Infos036")); //"Importer");
-		importe.addActionListener((e) -> importe_actionPerformed(e)); //"S�lectionner les diff�rents champs pr�sents dans le fichier (de gauche " + "� droite)");
+		importe.addActionListener((e) -> importe_actionPerformed(e)); //"Sélectionner les diff�rents champs pr�sents dans le fichier (de gauche " + "� droite)");
 		type_txt.setText(Program.getLabel("Infos040")); //"Fichier TXT ou CSV");
 		titre.setHorizontalTextPosition(2);
 		titre.setText(Program.getLabel("Infos038"));
@@ -249,32 +247,34 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 		choix12.addItem("");
 		for( int i=0; i<list.size(); i++)
 		{
-			choix1.addItem(list.get(i).toString());
-			choix2.addItem(list.get(i).toString());
-			choix3.addItem(list.get(i).toString());
-			choix4.addItem(list.get(i).toString());
-			choix5.addItem(list.get(i).toString());
-			choix6.addItem(list.get(i).toString());
-			choix7.addItem(list.get(i).toString());
-			choix8.addItem(list.get(i).toString());
-			choix9.addItem(list.get(i).toString());
-			choix10.addItem(list.get(i).toString());
-			choix11.addItem(list.get(i).toString());
-			choix12.addItem(list.get(i).toString());
+			String value = list.get(i).toString();
+			choix1.addItem(value);
+			choix2.addItem(value);
+			choix3.addItem(value);
+			choix4.addItem(value);
+			choix5.addItem(value);
+			choix6.addItem(value);
+			choix7.addItem(value);
+			choix8.addItem(value);
+			choix9.addItem(value);
+			choix10.addItem(value);
+			choix11.addItem(value);
+			choix12.addItem(value);
 		}
 		// On ajoute la ligne "Ignorer"
-		choix1.addItem(Program.getLabel("Infos271"));
-		choix2.addItem(Program.getLabel("Infos271"));
-		choix3.addItem(Program.getLabel("Infos271"));
-		choix4.addItem(Program.getLabel("Infos271"));
-		choix5.addItem(Program.getLabel("Infos271"));
-		choix6.addItem(Program.getLabel("Infos271"));
-		choix7.addItem(Program.getLabel("Infos271"));
-		choix8.addItem(Program.getLabel("Infos271"));
-		choix9.addItem(Program.getLabel("Infos271"));
-		choix10.addItem(Program.getLabel("Infos271"));
-		choix11.addItem(Program.getLabel("Infos271"));
-		choix12.addItem(Program.getLabel("Infos271"));
+		String ignore = Program.getLabel("Infos271");
+		choix1.addItem(ignore);
+		choix2.addItem(ignore);
+		choix3.addItem(ignore);
+		choix4.addItem(ignore);
+		choix5.addItem(ignore);
+		choix6.addItem(ignore);
+		choix7.addItem(ignore);
+		choix8.addItem(ignore);
+		choix9.addItem(ignore);
+		choix10.addItem(ignore);
+		choix11.addItem(ignore);
+		choix12.addItem(ignore);
 
 		separateur.addItem(Program.getLabel("Infos042"));
 		separateur.addItem(Program.getLabel("Infos043"));
@@ -738,18 +738,23 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 			Debug("Running...");
 			Debug("Importing...");
 			importe.setEnabled(false);
+			
+			String nom = file.getText().trim();
+			int nom_length = nom.length();
+			if (nom_length == 0) {
+				//Erreur le nom ne doit pas être vide
+				Debug("ERROR: filename cannot be empty");
+				label_progression.setText("");
+				new Erreur(Program.getError("Error019"));
+				importe.setEnabled(true);
+				return;
+			}
 			String separe = "";
-			String nom;
 			int resul = 0;
-			boolean ligne_titre = false;
-			byte lecture[];
 			int nb_choix = 0;
 			String lu[] = new String[15];
 			Rangement new_rangement = null;
-			char XML[];
-			//int cpt_bottle = 0;
 			int choix_val = 0;
-			//int max_num_place = 0;
 			String XML_NAME = Program.getCaveConfigString("XML_MARK1","wine");
 			String XML_YEAR = Program.getCaveConfigString("XML_MARK2","year");
 			String XML_TYPE = Program.getCaveConfigString("XML_MARK3","type");
@@ -775,10 +780,6 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 			bool_othe1 = 0;
 			bool_othe2 = 0;
 			bool_othe3 = 0;
-
-			lecture = new byte[1];
-			java.util.HashSet<String> liste_lieu = new java.util.HashSet<String>(20);
-			java.util.HashSet<String> liste_contenu = new java.util.HashSet<String>(20);
 
 			if (choix1.getSelectedIndex() != 0) {
 				nb_choix++;
@@ -897,38 +898,34 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					break;
 				}
 			}
-
-			nom = new String(file.getText().trim());
-			int nom_length = nom.length();
-			if (nom_length == 0) {
-				//Erreur le nom ne doit pas �tre vide
-				Debug("ERROR: filename cannot be empty");
-				label_progression.setText("");
-				resul = 1;
-				new Erreur(Program.getError("Error019"));
-			}
  
-			FileInputStream file_import = null;
-			File f = null;
-			if (resul == 0) {
-				//Ouverture du fichier à importer
-				f = new File(nom);
-				file.setText(f.getAbsolutePath());
-				nom = f.getAbsolutePath();
-				nom_length = nom.length();
-				if(!f.exists()) {
-					//Insertion classe Erreur
-					label_progression.setText("");
-					Debug("ERROR: File not found: "+nom);
-					String erreur_txt1 = new String(Program.getError("Error020") + " " + nom + " " + Program.getError("Error021")); //"Fichier " + nom + " non trouv�");
-					String erreur_txt2 = Program.getError("Error022"); //"Vérifier le chemin");
-					new Erreur(erreur_txt1, erreur_txt2);
-					resul = 1;
-				}
-				else file_import = new FileInputStream(f);
+			//Ouverture du fichier à importer
+			File f = new File(nom);
+			file.setText(f.getAbsolutePath());
+			nom = f.getAbsolutePath();
+			nom_length = nom.length();
+			if(!f.exists()) {
+				//Insertion classe Erreur
+				label_progression.setText("");
+				Debug("ERROR: File not found: "+nom);
+				String erreur_txt1 = new String(Program.getError("Error020") + " " + nom + " " + Program.getError("Error021")); //"Fichier " + nom + " non trouv�");
+				String erreur_txt2 = Program.getError("Error022"); //"Vérifier le chemin");
+				new Erreur(erreur_txt1, erreur_txt2);
+				importe.setEnabled(true);
+				return;
+			}
+			
+			if (!type_xml.isSelected() && nb_choix == 0) {
+				label_progression.setText("");
+				Debug("ERROR: No field selected");
+				String erreur_txt1 = Program.getError("Error025"); //"Aucun champs sélectionnés");
+				String erreur_txt2 = Program.getError("Error026"); //"Veuillez sélectionner des champs pour que les donn�es soient trait�es");
+				new Erreur(erreur_txt1, erreur_txt2);
+				importe.setEnabled(true);
+				return;
 			}
 
-			if (resul == 0 && nom_length >= 3) {
+			if (nom_length >= 3) {
 				String str_tmp3 = nom.substring(nom_length - 3);
 				if (type_xls.isSelected()) {
 					if (str_tmp3.compareToIgnoreCase("xls") != 0 && str_tmp3.compareToIgnoreCase("ods") != 0) {
@@ -967,7 +964,6 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				ListeBouteille.loadXML(f);
 				importe.setEnabled(true);
 				label_progression.setText(Program.getLabel("Infos035")); //"Import Terminé");
-				file_import.close();
 				new java.util.Timer().schedule( 
 				        new java.util.TimerTask() {
 				            @Override
@@ -1124,295 +1120,126 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					break;
 				}
 
-				if (resul == 0 && nb_choix == 0) {
-					label_progression.setText("");
-					Debug("ERROR: No field selected");
-					String erreur_txt1 = Program.getError("Error025"); //"Aucun champs sélectionnés");
-					String erreur_txt2 = Program.getError("Error026"); //"Veuillez sélectionner des champs pour que les donn�es soient trait�es");
-					resul = 1;
-					new Erreur(erreur_txt1, erreur_txt2);
-				}
 				if (resul == 0) {
-					label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
-					//Valeur de la case à cocher ligne de titre
-					if (titre.isSelected()) {
-						ligne_titre = true;
-					}
-					//Lecture de la ligne de titre. On compte le nombre de colonne
-
-					String tmp_lect = "";
-					int resul_l = -1;
-					int nbcol_lu = 0;
-					do {
-						try {
-							resul_l = file_import.read(lecture);
-							if (resul_l != -1 && nbcol_lu == 0) {
-								nbcol_lu = 1;
-							}
-							tmp_lect = new String(lecture);
-							if (tmp_lect.equals(separe)) {
-								nbcol_lu++;
-							}
-						}
-						catch (IOException ioe2) {
+					BufferedReader reader = new BufferedReader(new FileReader(f));
+					String line = reader.readLine();
+					if(line != null) {
+						String[] tab = line.split(separe);
+						if(tab == null || tab.length <= 1) {
 							label_progression.setText("");
+							Debug("ERROR: No separator found");
+							String erreur_txt1 = Program.getError("Error042"); //"Le s�parateur s�lectionn� n'a pas �t� trouv�.");
+							String erreur_txt2 = Program.getError("Error043"); //"Veuillez s�lectionner le s�parateur utilis� dans votre fichier.");
 							resul = 1;
-							Debug("ERROR: Reading file error (1)");
-							new Erreur(Program.getError("Error028"));
+							new Erreur(erreur_txt1, erreur_txt2);
 						}
 					}
-					while (tmp_lect.charAt(0) != '\n' && resul_l != -1);
+					if(titre.isSelected())
+						line = reader.readLine();
+					if(resul == 0) {
+						label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
+						int maxNumPlace = 0;
+						while (line != null) {
+							lu = line.split(separe);
+							Bouteille bottle = new Bouteille();
+							for (int i = 0; i < lu.length; i++) {
+								String value = lu[i];
+								if(value.charAt(0) == '"' && value.charAt(value.length()-1) == '"')
+									value = value.substring(1, value.length() - 1);
+								value = Program.convertToHTMLString(value);
+								choix_val = 0;
+								switch (i) {
+								case 0:
+									choix_val = choix1.getSelectedIndex();
+									break;
+								case 1:
+									choix_val = choix2.getSelectedIndex();
+									break;
+								case 2:
+									choix_val = choix3.getSelectedIndex();
+									break;
+								case 3:
+									choix_val = choix4.getSelectedIndex();
+									break;
+								case 4:
+									choix_val = choix5.getSelectedIndex();
+									break;
+								case 5:
+									choix_val = choix6.getSelectedIndex();
+									break;
+								case 6:
+									choix_val = choix7.getSelectedIndex();
+									break;
+								case 7:
+									choix_val = choix8.getSelectedIndex();
+									break;
+								case 8:
+									choix_val = choix9.getSelectedIndex();
+									break;
+								case 9:
+									choix_val = choix10.getSelectedIndex();
+									break;
+								case 10:
+									choix_val = choix11.getSelectedIndex();
+									break;
+								case 11:
+									choix_val = choix12.getSelectedIndex();
+									break;
+								}
 
-					// Si il n'y a pas de ligne de titre, on reouvre le fichier
-					if (!ligne_titre) {
-						file_import.close();
-						file_import = new FileInputStream(f);
-					}
-
-					if (resul == 0 && nbcol_lu != nb_choix && nbcol_lu == 1) {
-						label_progression.setText("");
-						Debug("ERROR: No separator found");
-						String erreur_txt1 = Program.getError("Error042"); //"Le s�parateur s�lectionn� n'a pas �t� trouv�.");
-						String erreur_txt2 = Program.getError("Error043"); //"Veuillez s�lectionner le s�parateur utilis� dans votre fichier.");
-						resul = 1;
-						new Erreur(erreur_txt1, erreur_txt2);
-					}
-				}
-				if (resul == 0) {
-					int max_num_place = 0;
-					//Lecture des lignes
-					int resul_l = -1;
-					do {
-						for (int i = 0; i < 15; i++) {
-							lu[i] = "";
-						}
-						int nbcol_lu = 0;
-						int cpt_char_lu = 0;
-						String tmp_lect = "";
-						do {
-							try {
-								resul_l = file_import.read(lecture);
-								tmp_lect = new String(lecture);
-								cpt_char_lu++;
-								//Appel à la fonction caratères spéciaux
-								//Call function specials charaters
-								tmp_lect = Program.convertToHTMLString(tmp_lect);
-								if ( (resul_l != -1 && nbcol_lu == 0) && tmp_lect.charAt(0) != '\n') {
-									nbcol_lu = 1;
-								}
-								if (tmp_lect.equals(Program.convertToHTMLString(separe))) {
-									nbcol_lu++;
-								}
-								else { //Création de la chaine
-									if (nbcol_lu >= 1) {
-										lu[nbcol_lu - 1] = lu[nbcol_lu - 1].concat(tmp_lect);
-									}
+								//Ajout des valeurs d'une bouteille dans la Map
+								switch (choix_val) { //Insert Keywords from file
+								case 1:
+									bottle.setNom(value);
+									break;
+								case 2:
+									bottle.setAnnee(value);
+									break;
+								case 3:
+									bottle.setType(value);
+									break;
+								case 4:
+									bottle.setEmplacement(value);
+									break;
+								case 5:
+									bottle.setNumLieu(Integer.parseInt(value));
+									if(maxNumPlace < bottle.getNumLieu())
+										maxNumPlace = bottle.getNumLieu();
+									break;
+								case 6:
+									bottle.setLigne(Integer.parseInt(value));
+									break;
+								case 7:
+									bottle.setColonne(Integer.parseInt(value));
+									break;
+								case 8:
+									bottle.setPrix(value);
+									break;
+								case 9:
+									bottle.setComment(value);
+									break;
+								case 10:
+									bottle.setMaturity(value);
+									break;
+								case 11:
+									bottle.setParker(value);
+									break;
+								case 12:
+									bottle.setAppellation(value);
+									break;
+								case 13:
+									break;
 								}
 							}
-							catch (IOException ioe3) {
-								label_progression.setText("");
-								resul = 1;
-								Debug("ERROR: Reading file error (2)");
-								new Erreur(Program.getError("Error028"));
+							if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null ) {
+								bottle.setEmplacement(new_rangement.getNom());
+								new_rangement.setNbEmplacements(maxNumPlace+1);
 							}
-						}
-						while (tmp_lect.charAt(0) != '\n' && resul_l != -1);
-						//When it's a blank line at the end of file
-						if (resul_l == 1 && nbcol_lu == 1 && cpt_char_lu == 2) {
-							nbcol_lu = 0;
-							//Suppression du caract�re en trop dans le dernier champ
-						}
-						if (nbcol_lu != 0) {
-							int count = lu[nbcol_lu - 1].length();
-							XML = new char[count];
-							XML = lu[nbcol_lu - 1].toCharArray();
-							if (resul_l == -1) { //Cas du fin de fichier
-								char XML2[] = new char[count - 1];
-								for (int i = 0; i < count - 1; i++) {
-									XML2[i] = XML[i];
-								}
-								lu[nbcol_lu - 1] = new String(XML2);
-							}
-							else { //Cas du fin de ligne \n
-								char XML2[] = new char[0];
-								if (count > 2) {
-									XML2 = new char[count - 2];
-								}
-								for (int i = 0; i < count - 2; i++) {
-									XML2[i] = XML[i];
-								}
-								lu[nbcol_lu - 1] = new String(XML2);
-							}
-						}
-						if (resul == 0) {
-							//Ecriture des infos au format XML
-							int lu_length = 0;
-							for (int z = 0; z < lu.length; z++) {
-								lu_length += lu[z].trim().length();
-							}
-							if (resul == 0 && lu_length != 0) {
-								java.util.HashMap<String, String> le_vin = new java.util.HashMap<String, String>(20);
-								bottle = new Bouteille();
-								for (int i = 0; i < nbcol_lu; i++) {
-									choix_val = 0;
-									switch (i) {
-									case 0:
-										choix_val = choix1.getSelectedIndex();
-										break;
-									case 1:
-										choix_val = choix2.getSelectedIndex();
-										break;
-									case 2:
-										choix_val = choix3.getSelectedIndex();
-										break;
-									case 3:
-										choix_val = choix4.getSelectedIndex();
-										break;
-									case 4:
-										choix_val = choix5.getSelectedIndex();
-										break;
-									case 5:
-										choix_val = choix6.getSelectedIndex();
-										break;
-									case 6:
-										choix_val = choix7.getSelectedIndex();
-										break;
-									case 7:
-										choix_val = choix8.getSelectedIndex();
-										break;
-									case 8:
-										choix_val = choix9.getSelectedIndex();
-										break;
-									case 9:
-										choix_val = choix10.getSelectedIndex();
-										break;
-									case 10:
-										choix_val = choix11.getSelectedIndex();
-										break;
-									case 11:
-										choix_val = choix12.getSelectedIndex();
-										break;
-									}
-
-
-									//Ajout des valeurs d'une bouteille dans la Map
-									switch (choix_val) { //Insert Keywords from file
-									case 1:
-										le_vin.put(XML_NAME, lu[i]);
-										break;
-									case 2:
-										le_vin.put(XML_YEAR, lu[i]);
-										break;
-									case 3:
-										le_vin.put(XML_TYPE, lu[i]);
-										break;
-									case 4:
-										le_vin.put(XML_PLACE, lu[i]);
-										break;
-									case 5:
-										le_vin.put(XML_NUM_PLACE, lu[i]);
-										break;
-									case 6:
-										le_vin.put(XML_LINE, lu[i]);
-										break;
-									case 7:
-										le_vin.put(XML_COLUMN, lu[i]);
-										break;
-									case 8:
-										le_vin.put(XML_PRICE, lu[i]);
-										break;
-									case 9:
-										le_vin.put(XML_COMMENT, lu[i]);
-										break;
-									case 10:
-										le_vin.put(XML_MATURITY, lu[i]);
-										break;
-									case 11:
-										le_vin.put(XML_PARKER, lu[i]);
-										break;
-									case 12:
-										le_vin.put(XML_APPELATION, lu[i]);
-										break;
-									case 13:
-										break;
-									}
-								}
-								//Ecriture du fichier XML
-								if (!le_vin.get(XML_NAME).trim().isEmpty()) {
-
-									if (le_vin.containsKey(XML_NAME)) {
-										bottle.setNom(le_vin.get(XML_NAME));
-									}
-									if (le_vin.containsKey(XML_YEAR)) {
-										bottle.setAnnee(le_vin.get(XML_YEAR));
-									}
-									if (le_vin.containsKey(XML_TYPE)) {
-										bottle.setType(le_vin.get(XML_TYPE));
-										liste_contenu.add(le_vin.get(XML_TYPE));
-									}
-									if (le_vin.containsKey(XML_PLACE)) {
-										bottle.setEmplacement(le_vin.get(XML_PLACE));
-										liste_lieu.add(le_vin.get(XML_PLACE));
-									}
-									else {
-										bottle.setEmplacement(new_rangement.getNom());
-										//On met toutes les bouteilles dans le nouveau rangement
-									}
-									if (le_vin.containsKey(XML_NUM_PLACE)) {
-										bottle.setNumLieu(Integer.parseInt(le_vin.get(XML_NUM_PLACE)));
-										String num = le_vin.get(XML_NUM_PLACE);
-										if (!le_vin.containsKey(XML_PLACE)) {
-											//Si toutes les bouteilles vont dans le nouveau rangement, on calcule le nombre de parties n�cessaires
-											try {
-												if (Integer.parseInt(num) > max_num_place) {
-													max_num_place = Integer.parseInt(num);
-												}
-											}
-											catch (NumberFormatException nfe) {}
-										}
-									}
-									else {
-										bottle.setNumLieu(0);
-									}
-									if (le_vin.containsKey(XML_LINE)) {
-										bottle.setLigne(Integer.parseInt(le_vin.get(XML_LINE)));
-									}
-									else {
-										bottle.setLigne(0);
-									}
-									if (le_vin.containsKey(XML_COLUMN)) {
-										bottle.setColonne(Integer.parseInt(le_vin.get(XML_COLUMN)));
-									}
-									else {
-										bottle.setColonne(0);
-									}
-									if (le_vin.containsKey(XML_PRICE)) {
-										bottle.setPrix(le_vin.get(XML_PRICE));
-									}
-									if (le_vin.containsKey(XML_COMMENT)) {
-										bottle.setComment(le_vin.get(XML_COMMENT));
-									}
-									if (le_vin.containsKey(XML_PARKER)) {
-										bottle.setParker(le_vin.get(XML_PARKER));
-									}
-									if (le_vin.containsKey(XML_MATURITY)) {
-										bottle.setMaturity(le_vin.get(XML_MATURITY));
-									}
-									if (le_vin.containsKey(XML_APPELATION)) {
-										bottle.setAppellation(le_vin.get(XML_APPELATION));
-									}
-								}
-								Program.getStorage().addWine(bottle);
-							}
+							Program.getStorage().addWine(bottle);
+							line = reader.readLine();
 						}
 					}
-					while (resul_l != -1);
-					if (new_rangement != null) {
-						//Ecriture du nouveau rangement avec le bon nombre de parties
-						Debug("Creating and writing new place: name="+new_rangement.getNom()+" nbPlace="+(max_num_place+1));
-						new_rangement = new Rangement(new_rangement.getNom(), max_num_place + 1, 0, false, -1);
-						Program.addCave(new_rangement);
-					}
+					reader.close();
 				}
 				if (resul == 0) {
 					label_progression.setText(Program.getLabel("Infos200"));
@@ -1438,15 +1265,6 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				int nb_lign_xls = 0;
 				boolean skipTitle = false;
 				int max_num_place = 0;
-
-				if (resul == 0 && nb_choix == 0) {
-					label_progression.setText("");
-					Debug("ERROR: No field selected");
-					String erreur_txt1 = Program.getError("Error025"); //"Aucun champs sélectionnés");
-					String erreur_txt2 = Program.getError("Error026"); //"Veuillez s�lectionner des champs pour que les donn�es soient trait�es");
-					new Erreur(erreur_txt1, erreur_txt2);
-					return;
-				}
 
 				if (resul == 0) {
 					label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
@@ -1610,11 +1428,9 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 											}
 											if (le_vin.containsKey(XML_TYPE)) {
 												bottle.setType(le_vin.get(XML_TYPE));
-												liste_contenu.add(le_vin.get(XML_TYPE));
 											}
 											if (le_vin.containsKey(XML_PLACE)) {
 												bottle.setEmplacement(le_vin.get(XML_PLACE));
-												liste_lieu.add(le_vin.get(XML_PLACE));
 											}
 											else {
 												//On met toutes les bouteilles dans le nouveau rangement
@@ -1627,7 +1443,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 													//Si toutes les bouteilles vont dans le nouveau rangement, on calcule le nombre de parties n�cessaires
 													try {
 														if (Integer.parseInt(num) > max_num_place) {
-															max_num_place = Integer.parseInt(num);
+															new_rangement.setNbEmplacements(Integer.parseInt(num)+1);
 														}
 													}
 													catch (NumberFormatException nfe) {}
@@ -1677,23 +1493,17 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						String erreur_txt1 = new String(Program.getError("Error020") + " " + nom + " " + Program.getError("Error021")); //"Fichier " + nom + " non trouv�");
 						String erreur_txt2 = Program.getError("Error022"); //"Vérifier le chemin");
 						new Erreur(erreur_txt1, erreur_txt2);
+						importe.setEnabled(true);
 						return;
 					}
 					catch (Exception e) {
 						label_progression.setText("");
 						Debug("ERROR: "+e.toString());
 						new Erreur(Program.getError("Error082"));
+						importe.setEnabled(true);
 						return;
 					}
-					if (new_rangement != null) {
-						//Ecriture du nouveau rangement avec le bon nombre de partie
-						Debug("Creating and writing new place: name="+new_rangement.getNom()+" nbPlace="+(max_num_place+1));
-						new_rangement = new Rangement(new_rangement.getNom(), max_num_place + 1, 0, false, 0);
-						Program.addCave(new_rangement);
-						MyXmlDom.appendRangement(new_rangement);
-					}
 				} //End if resul
-				
 
 				if (resul == 0) {
 					label_progression.setText(Program.getLabel("Infos200"));
@@ -1714,7 +1524,6 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					Debug("Import OK.");
 				}
 			}
-			file_import.close();
 			importe.setEnabled(true);
 		}
 		catch (Exception exc) {

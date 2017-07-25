@@ -10,8 +10,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 25.4
- * @since 20/07/17
+ * @version 25.5
+ * @since 25/07/17
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -118,6 +118,10 @@ public class Rangement implements Comparable<Rangement> {
 	 */
 	public int getNbEmplacements() {
 		return nb_emplacements;
+	}
+	
+	public void setNbEmplacements(int nb_emplacements) {
+		this.nb_emplacements = nb_emplacements;
 	}
 
 	/**

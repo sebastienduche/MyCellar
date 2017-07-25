@@ -15,8 +15,8 @@ import mycellar.core.MyCellarError;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 20/07/17
+ * @version 0.3
+ * @since 25/07/17
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -72,6 +72,8 @@ public class ErrorShowValues extends TableShowValues {
 	 * @return Object
 	 */
 	public Object getValueAt(int row, int column) {
+		if(monVector.size() <= row)
+			return null;
 		MyCellarError error = monVector.get(row);
 		Bouteille b = error.getBottle();
 		switch(column)

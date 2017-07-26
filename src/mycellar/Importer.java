@@ -44,8 +44,8 @@ import jxl.Workbook;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.7
- * @since 25/07/17
+ * @version 10.8
+ * @since 26/07/17
  */
 public class Importer extends JPanel implements ITabListener, Runnable {
 
@@ -54,34 +54,22 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	private MyCellarRadioButton type_xls = new MyCellarRadioButton();
 	private MyCellarRadioButton type_xml = new MyCellarRadioButton();
 	private ButtonGroup checkboxGroup1 = new ButtonGroup();
-	private int bool_name = 0;
-	private int bool_year = 0;
-	private int bool_half = 0;
-	private int bool_plac = 0;
-	private int bool_nump = 0;
-	private int bool_line = 0;
-	private int bool_colu = 0;
-	private int bool_pric = 0;
-	private int bool_comm = 0;
-	private int bool_othe1 = 0;
-	private int bool_othe2 = 0;
-	private int bool_othe3 = 0;
 	private MyCellarButton parcourir = new MyCellarButton();
 	private char IMPORT = Program.getLabel("IMPORT").charAt(0);
 	private char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private MyCellarButton openit = new MyCellarButton();
-	private MyCellarComboBox<String> choix1 = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> choix2 = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> choix3 = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> choix4 = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> choix5 = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> choix6 = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> choix7 = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> choix8 = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> choix9 = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> choix10 = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> choix11 = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> choix12 = new MyCellarComboBox<String>();
+	private MyCellarComboBox<MyCellarFields> choix1 = new MyCellarComboBox<MyCellarFields>();
+	private MyCellarComboBox<MyCellarFields> choix2 = new MyCellarComboBox<MyCellarFields>();
+	private MyCellarComboBox<MyCellarFields> choix3 = new MyCellarComboBox<MyCellarFields>();
+	private MyCellarComboBox<MyCellarFields> choix4 = new MyCellarComboBox<MyCellarFields>();
+	private MyCellarComboBox<MyCellarFields> choix5 = new MyCellarComboBox<MyCellarFields>();
+	private MyCellarComboBox<MyCellarFields> choix6 = new MyCellarComboBox<MyCellarFields>();
+	private MyCellarComboBox<MyCellarFields> choix7 = new MyCellarComboBox<MyCellarFields>();
+	private MyCellarComboBox<MyCellarFields> choix8 = new MyCellarComboBox<MyCellarFields>();
+	private MyCellarComboBox<MyCellarFields> choix9 = new MyCellarComboBox<MyCellarFields>();
+	private MyCellarComboBox<MyCellarFields> choix10 = new MyCellarComboBox<MyCellarFields>();
+	private MyCellarComboBox<MyCellarFields> choix11 = new MyCellarComboBox<MyCellarFields>();
+	private MyCellarComboBox<MyCellarFields> choix12 = new MyCellarComboBox<MyCellarFields>();
 	private MyCellarCheckBox titre = new MyCellarCheckBox();
 	private MyCellarLabel textControl2 = new MyCellarLabel();
 	private MyCellarLabel label_progression = new MyCellarLabel();
@@ -233,48 +221,46 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 		add(importe, "center");
 
 		ArrayList<MyCellarFields> list = MyCellarFields.getFieldsList();
-		choix1.addItem("");
-		choix2.addItem("");
-		choix3.addItem("");
-		choix4.addItem("");
-		choix5.addItem("");
-		choix6.addItem("");
-		choix7.addItem("");
-		choix8.addItem("");
-		choix9.addItem("");
-		choix10.addItem("");
-		choix11.addItem("");
-		choix12.addItem("");
-		for( int i=0; i<list.size(); i++)
+		choix1.addItem(MyCellarFields.EMPTY);
+		choix2.addItem(MyCellarFields.EMPTY);
+		choix3.addItem(MyCellarFields.EMPTY);
+		choix4.addItem(MyCellarFields.EMPTY);
+		choix5.addItem(MyCellarFields.EMPTY);
+		choix6.addItem(MyCellarFields.EMPTY);
+		choix7.addItem(MyCellarFields.EMPTY);
+		choix8.addItem(MyCellarFields.EMPTY);
+		choix9.addItem(MyCellarFields.EMPTY);
+		choix10.addItem(MyCellarFields.EMPTY);
+		choix11.addItem(MyCellarFields.EMPTY);
+		choix12.addItem(MyCellarFields.EMPTY);
+		for(MyCellarFields field : list)
 		{
-			String value = list.get(i).toString();
-			choix1.addItem(value);
-			choix2.addItem(value);
-			choix3.addItem(value);
-			choix4.addItem(value);
-			choix5.addItem(value);
-			choix6.addItem(value);
-			choix7.addItem(value);
-			choix8.addItem(value);
-			choix9.addItem(value);
-			choix10.addItem(value);
-			choix11.addItem(value);
-			choix12.addItem(value);
+			choix1.addItem(field);
+			choix2.addItem(field);
+			choix3.addItem(field);
+			choix4.addItem(field);
+			choix5.addItem(field);
+			choix6.addItem(field);
+			choix7.addItem(field);
+			choix8.addItem(field);
+			choix9.addItem(field);
+			choix10.addItem(field);
+			choix11.addItem(field);
+			choix12.addItem(field);
 		}
 		// On ajoute la ligne "Ignorer"
-		String ignore = Program.getLabel("Infos271");
-		choix1.addItem(ignore);
-		choix2.addItem(ignore);
-		choix3.addItem(ignore);
-		choix4.addItem(ignore);
-		choix5.addItem(ignore);
-		choix6.addItem(ignore);
-		choix7.addItem(ignore);
-		choix8.addItem(ignore);
-		choix9.addItem(ignore);
-		choix10.addItem(ignore);
-		choix11.addItem(ignore);
-		choix12.addItem(ignore);
+		choix1.addItem(MyCellarFields.USELESS);
+		choix2.addItem(MyCellarFields.USELESS);
+		choix3.addItem(MyCellarFields.USELESS);
+		choix4.addItem(MyCellarFields.USELESS);
+		choix5.addItem(MyCellarFields.USELESS);
+		choix6.addItem(MyCellarFields.USELESS);
+		choix7.addItem(MyCellarFields.USELESS);
+		choix8.addItem(MyCellarFields.USELESS);
+		choix9.addItem(MyCellarFields.USELESS);
+		choix10.addItem(MyCellarFields.USELESS);
+		choix11.addItem(MyCellarFields.USELESS);
+		choix12.addItem(MyCellarFields.USELESS);
 
 		separateur.addItem(Program.getLabel("Infos042"));
 		separateur.addItem(Program.getLabel("Infos043"));
@@ -754,32 +740,19 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 			int nb_choix = 0;
 			String lu[] = new String[15];
 			Rangement new_rangement = null;
-			int choix_val = 0;
-			String XML_NAME = Program.getCaveConfigString("XML_MARK1","wine");
-			String XML_YEAR = Program.getCaveConfigString("XML_MARK2","year");
-			String XML_TYPE = Program.getCaveConfigString("XML_MARK3","type");
-			String XML_PLACE = Program.getCaveConfigString("XML_MARK4","place");
-			String XML_NUM_PLACE = Program.getCaveConfigString("XML_MARK5","numplace");
-			String XML_LINE = Program.getCaveConfigString("XML_MARK6","line");
-			String XML_COLUMN = Program.getCaveConfigString("XML_MARK7","column");
-			String XML_PRICE = Program.getCaveConfigString("XML_MARK8","price");
-			String XML_COMMENT = Program.getCaveConfigString("XML_MARK9","comment");
-			String XML_PARKER = "parker";
-			String XML_MATURITY = "maturity";
-			String XML_APPELATION = "appelation";
 
-			bool_name = 0;
-			bool_year = 0;
-			bool_half = 0;
-			bool_plac = 0;
-			bool_nump = 0;
-			bool_line = 0;
-			bool_colu = 0;
-			bool_pric = 0;
-			bool_comm = 0;
-			bool_othe1 = 0;
-			bool_othe2 = 0;
-			bool_othe3 = 0;
+			int bool_name = 0;
+			int bool_year = 0;
+			int bool_half = 0;
+			int bool_plac = 0;
+			int bool_nump = 0;
+			int bool_line = 0;
+			int bool_colu = 0;
+			int bool_pric = 0;
+			int bool_comm = 0;
+			int bool_othe1 = 0;
+			int bool_othe2 = 0;
+			int bool_othe3 = 0;
 
 			if (choix1.getSelectedIndex() != 0) {
 				nb_choix++;
@@ -819,6 +792,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 
 				//Verify only 1 use of each field
 			}
+			int choix_val;
 			for (int i = 0; i < nb_choix; i++) {
 				choix_val = 0;
 				switch (i) {
@@ -1144,90 +1118,100 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 							Bouteille bottle = new Bouteille();
 							for (int i = 0; i < lu.length; i++) {
 								String value = lu[i];
-								if(value.charAt(0) == '"' && value.charAt(value.length()-1) == '"')
+								if(value.length() > 1 && value.charAt(0) == '"' && value.charAt(value.length()-1) == '"')
 									value = value.substring(1, value.length() - 1);
 								value = Program.convertToHTMLString(value);
-								choix_val = 0;
+								MyCellarFields selectedField = MyCellarFields.USELESS;
 								switch (i) {
 								case 0:
-									choix_val = choix1.getSelectedIndex();
+									selectedField = (MyCellarFields)choix1.getSelectedItem();
 									break;
 								case 1:
-									choix_val = choix2.getSelectedIndex();
+									selectedField = (MyCellarFields)choix2.getSelectedItem();
 									break;
 								case 2:
-									choix_val = choix3.getSelectedIndex();
+									selectedField = (MyCellarFields)choix3.getSelectedItem();
 									break;
 								case 3:
-									choix_val = choix4.getSelectedIndex();
+									selectedField = (MyCellarFields)choix4.getSelectedItem();
 									break;
 								case 4:
-									choix_val = choix5.getSelectedIndex();
+									selectedField = (MyCellarFields)choix5.getSelectedItem();
 									break;
 								case 5:
-									choix_val = choix6.getSelectedIndex();
+									selectedField = (MyCellarFields)choix6.getSelectedItem();
 									break;
 								case 6:
-									choix_val = choix7.getSelectedIndex();
+									selectedField = (MyCellarFields)choix7.getSelectedItem();
 									break;
 								case 7:
-									choix_val = choix8.getSelectedIndex();
+									selectedField = (MyCellarFields)choix8.getSelectedItem();
 									break;
 								case 8:
-									choix_val = choix9.getSelectedIndex();
+									selectedField = (MyCellarFields)choix9.getSelectedItem();
 									break;
 								case 9:
-									choix_val = choix10.getSelectedIndex();
+									selectedField = (MyCellarFields)choix10.getSelectedItem();
 									break;
 								case 10:
-									choix_val = choix11.getSelectedIndex();
+									selectedField = (MyCellarFields)choix11.getSelectedItem();
 									break;
 								case 11:
-									choix_val = choix12.getSelectedIndex();
+									selectedField = (MyCellarFields)choix12.getSelectedItem();
 									break;
 								}
 
-								//Ajout des valeurs d'une bouteille dans la Map
-								switch (choix_val) { //Insert Keywords from file
-								case 1:
+								//Ajout des valeurs d'une bouteille 
+								switch (selectedField) {
+								case NAME:
 									bottle.setNom(value);
 									break;
-								case 2:
+								case YEAR:
 									bottle.setAnnee(value);
 									break;
-								case 3:
+								case TYPE:
 									bottle.setType(value);
 									break;
-								case 4:
+								case PLACE:
 									bottle.setEmplacement(value);
 									break;
-								case 5:
+								case NUM_PLACE:
 									bottle.setNumLieu(Integer.parseInt(value));
 									if(maxNumPlace < bottle.getNumLieu())
 										maxNumPlace = bottle.getNumLieu();
 									break;
-								case 6:
+								case LINE:
 									bottle.setLigne(Integer.parseInt(value));
 									break;
-								case 7:
+								case COLUMN:
 									bottle.setColonne(Integer.parseInt(value));
 									break;
-								case 8:
+								case PRICE:
 									bottle.setPrix(value);
 									break;
-								case 9:
+								case COMMENT:
 									bottle.setComment(value);
 									break;
-								case 10:
+								case MATURITY:
 									bottle.setMaturity(value);
 									break;
-								case 11:
+								case PARKER:
 									bottle.setParker(value);
 									break;
-								case 12:
+								case VINEYARD:
 									bottle.setAppellation(value);
 									break;
-								case 13:
+								case COLOR:
+									bottle.setColor(value);
+									break;
+								case COUNTRY:
+									bottle.getVignoble().setCountry(value);
+									break;
+								case AOC:
+									bottle.getVignoble().setAOC(value);
+									break;
+								case IGP:
+									bottle.getVignoble().setIGP(value);
 									break;
 								}
 							}
@@ -1317,13 +1301,13 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 								}
 								catch (NullPointerException npe) {}
 								if (resul == 0) {
+									int maxNumPlace = 0;
 									//On met toutes les valeurs r�cup�r�es pour un vin dans une HashMap
 									java.util.HashMap<String, String> le_vin = new java.util.HashMap<String, String>(20);
 									
 									if (lu_length != 0) {
 										Bouteille bottle = new Bouteille();
 										for (int i = 0; i < nbcol_lu; i++) {
-											choix_val = 0;
 											//Verify specials characters
 											try {
 												cell_tmp[i][j].length();
@@ -1335,149 +1319,98 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 											cell_tmp[i][j] = Program.convertToHTMLString(cell_tmp[i][j]);
 
 											//Récupération des champs sélectionnés
+											MyCellarFields selectedField = MyCellarFields.USELESS;
 											switch (i) {
 											case 0:
-												choix_val = choix1.getSelectedIndex();
+												selectedField = (MyCellarFields)choix1.getSelectedItem();
 												break;
 											case 1:
-												choix_val = choix2.getSelectedIndex();
+												selectedField = (MyCellarFields)choix2.getSelectedItem();
 												break;
 											case 2:
-												choix_val = choix3.getSelectedIndex();
+												selectedField = (MyCellarFields)choix3.getSelectedItem();
 												break;
 											case 3:
-												choix_val = choix4.getSelectedIndex();
+												selectedField = (MyCellarFields)choix4.getSelectedItem();
 												break;
 											case 4:
-												choix_val = choix5.getSelectedIndex();
+												selectedField = (MyCellarFields)choix5.getSelectedItem();
 												break;
 											case 5:
-												choix_val = choix6.getSelectedIndex();
+												selectedField = (MyCellarFields)choix6.getSelectedItem();
 												break;
 											case 6:
-												choix_val = choix7.getSelectedIndex();
+												selectedField = (MyCellarFields)choix7.getSelectedItem();
 												break;
 											case 7:
-												choix_val = choix8.getSelectedIndex();
+												selectedField = (MyCellarFields)choix8.getSelectedItem();
 												break;
 											case 8:
-												choix_val = choix9.getSelectedIndex();
+												selectedField = (MyCellarFields)choix9.getSelectedItem();
 												break;
 											case 9:
-												choix_val = choix10.getSelectedIndex();
+												selectedField = (MyCellarFields)choix10.getSelectedItem();
 												break;
 											case 10:
-												choix_val = choix11.getSelectedIndex();
+												selectedField = (MyCellarFields)choix11.getSelectedItem();
 												break;
 											case 11:
-												choix_val = choix12.getSelectedIndex();
+												selectedField = (MyCellarFields)choix12.getSelectedItem();
 												break;
 											}
 											//Alimentation de la HashMap
-											Debug("Write "+ choix_val +"->"+cell_tmp[i][j]);
-											switch (choix_val) { //Insert Keywords from file
-											case 1:
-												le_vin.put(XML_NAME, cell_tmp[i][j]);
+											Debug("Write "+ selectedField +"->"+cell_tmp[i][j]);
+											switch (selectedField) {
+											case NAME:
+												bottle.setNom(cell_tmp[i][j]);
 												break;
-											case 2:
-												le_vin.put(XML_YEAR, cell_tmp[i][j]);
+											case YEAR:
+												bottle.setAnnee(cell_tmp[i][j]);
 												break;
-											case 3:
-												le_vin.put(XML_TYPE, cell_tmp[i][j]);
+											case TYPE:
+												bottle.setType(cell_tmp[i][j]);
 												break;
-											case 4:
-												le_vin.put(XML_PLACE, cell_tmp[i][j]);
+											case PLACE:
+												bottle.setEmplacement(cell_tmp[i][j]);
 												break;
-											case 5:
-												le_vin.put(XML_NUM_PLACE, cell_tmp[i][j]);
+											case NUM_PLACE:
+												bottle.setNumLieu(Integer.parseInt(cell_tmp[i][j]));
+												if(maxNumPlace < bottle.getNumLieu())
+													maxNumPlace = bottle.getNumLieu();
 												break;
-											case 6:
-												le_vin.put(XML_LINE, cell_tmp[i][j]);
+											case LINE:
+												bottle.setLigne(Integer.parseInt(cell_tmp[i][j]));
 												break;
-											case 7:
-												le_vin.put(XML_COLUMN, cell_tmp[i][j]);
+											case COLUMN:
+												bottle.setColonne(Integer.parseInt(cell_tmp[i][j]));
 												break;
-											case 8:
-												le_vin.put(XML_PRICE, cell_tmp[i][j]);
+											case PRICE:
+												bottle.setPrix(cell_tmp[i][j]);
 												break;
-											case 9:
-												le_vin.put(XML_COMMENT, cell_tmp[i][j]);
+											case COMMENT:
+												bottle.setComment(cell_tmp[i][j]);
 												break;
-											case 10:
-												le_vin.put(XML_MATURITY, cell_tmp[i][j]);
+											case MATURITY:
+												bottle.setMaturity(cell_tmp[i][j]);
 												break;
-											case 11:
-												le_vin.put(XML_PARKER, cell_tmp[i][j]);
+											case PARKER:
+												bottle.setParker(cell_tmp[i][j]);
 												break;
-											case 12:
-												le_vin.put(XML_APPELATION, cell_tmp[i][j]);
+											case VINEYARD:
+												bottle.setAppellation(cell_tmp[i][j]);
 												break;
-											case 13:
+											case COLOR:
+												bottle.setColor(cell_tmp[i][j]);
 												break;
-											}
-										}
-										
-										//Ecriture du fichier XML
-										if (!le_vin.get(XML_NAME).trim().isEmpty()) {
-
-											if (le_vin.containsKey(XML_NAME)) {
-												bottle.setNom(le_vin.get(XML_NAME));
-											}
-											if (le_vin.containsKey(XML_YEAR)) {
-												bottle.setAnnee(le_vin.get(XML_YEAR));
-											}
-											if (le_vin.containsKey(XML_TYPE)) {
-												bottle.setType(le_vin.get(XML_TYPE));
-											}
-											if (le_vin.containsKey(XML_PLACE)) {
-												bottle.setEmplacement(le_vin.get(XML_PLACE));
-											}
-											else {
-												//On met toutes les bouteilles dans le nouveau rangement
-												bottle.setEmplacement(new_rangement.getNom());
-											}
-											if (le_vin.containsKey(XML_NUM_PLACE)) {
-												bottle.setNumLieu(Integer.parseInt(le_vin.get(XML_NUM_PLACE)));
-												String num = le_vin.get(XML_NUM_PLACE);
-												if (!le_vin.containsKey(XML_PLACE)) {
-													//Si toutes les bouteilles vont dans le nouveau rangement, on calcule le nombre de parties n�cessaires
-													try {
-														if (Integer.parseInt(num) > max_num_place) {
-															new_rangement.setNbEmplacements(Integer.parseInt(num)+1);
-														}
-													}
-													catch (NumberFormatException nfe) {}
-												}
-											}
-											else {
-												bottle.setNumLieu(0);
-											}
-											if (le_vin.containsKey(XML_LINE)) {
-												bottle.setLigne(Integer.parseInt(le_vin.get(XML_LINE)));
-											}
-											else {
-												bottle.setLigne(0);
-											}
-											if (le_vin.containsKey(XML_COLUMN)) {
-												bottle.setColonne(Integer.parseInt(le_vin.get(XML_COLUMN)));
-											}
-											else {
-												bottle.setColonne(0);
-											}
-											if (le_vin.containsKey(XML_PRICE)) {
-												bottle.setPrix(le_vin.get(XML_PRICE));
-											}
-											if (le_vin.containsKey(XML_COMMENT)) {
-												bottle.setComment(le_vin.get(XML_COMMENT));
-											}
-											if (le_vin.containsKey(XML_MATURITY)) {
-												bottle.setMaturity(le_vin.get(XML_MATURITY));
-											}
-											if (le_vin.containsKey(XML_PARKER)) {
-												bottle.setParker(le_vin.get(XML_PARKER));
-											}
-											if (le_vin.containsKey(XML_APPELATION)) {
-												bottle.setAppellation(le_vin.get(XML_APPELATION));
+											case COUNTRY:
+												bottle.getVignoble().setCountry(cell_tmp[i][j]);
+												break;
+											case AOC:
+												bottle.getVignoble().setAOC(cell_tmp[i][j]);
+												break;
+											case IGP:
+												bottle.getVignoble().setIGP(cell_tmp[i][j]);
+												break;
 											}
 										}
 										Program.getStorage().addWine(bottle);
@@ -1497,6 +1430,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						return;
 					}
 					catch (Exception e) {
+						Program.showException(e, false);
 						label_progression.setText("");
 						Debug("ERROR: "+e.toString());
 						new Erreur(Program.getError("Error082"));

@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.prefs.Preferences;
 
@@ -23,7 +24,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -47,8 +47,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 22.2
- * @since 20/07/17
+ * @version 22.3
+ * @since 26/07/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1122,9 +1122,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			setListeners();
 
 		if (bUpdateAvailable) {
-			String sText = Program.getLabel("Infos385");
-			sText = sText.replaceFirst("A1", Server.getInstance().getAvailableVersion());
-			sText = sText.replaceFirst("A2", MyCellarVersion.mainVersion + "-" + MyCellarVersion.version);
+			String sText = MessageFormat.format(Program.getLabel("Infos385"), Server.getInstance().getAvailableVersion(), MyCellarVersion.mainVersion + "-" + MyCellarVersion.version);
 			update.setText(sText);
 		}
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -1207,10 +1205,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 	public static void updateMainPanel() {
 		Debug("updateMainPanel: Trying to display panelInfos...");
-		panelInfos.setVisible(Program.tabbedPane.getTabCount() == 0);
-
-		Program.tabbedPane.setVisible(!panelInfos.isVisible());
-		if (panelInfos.isVisible())
+		int count = Program.tabbedPane.getTabCount();
+		panelInfos.setVisible(count == 0);
+		Program.tabbedPane.setVisible(count > 0);
+		if (count == 0)
 			panelInfos.refresh();
 		boolean foundArmoire = false;
 		for (Rangement r : Program.getCave()) {
@@ -1231,12 +1229,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
 			int retour_jfc = boiteFichier.showSaveDialog(this);
-			File nomFichier = new File("");
-			String fic = "";
 			if (retour_jfc == JFileChooser.APPROVE_OPTION) {
 				Program.setFileSavable(true);
-				nomFichier = boiteFichier.getSelectedFile();
-				fic = nomFichier.getAbsolutePath();
+				File nomFichier = boiteFichier.getSelectedFile();
+				String fic = nomFichier.getAbsolutePath();
 				int index = fic.indexOf(".");
 				if (index == -1) {
 					fic = fic.concat(".sinfo");
@@ -1290,14 +1286,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	void menuCheckUpdate_actionPerformed() {
 		if (Server.getInstance().hasAvailableUpdate()) {
-			String sText = Program.getLabel("Infos384");
-			sText = sText.replaceFirst("A1", Server.getInstance().getAvailableVersion());
-			sText = sText.replaceFirst("A2", MyCellarVersion.version);
-			String title = Program.getError("Error032");
-			JOptionPane.showMessageDialog(this, sText, title, JOptionPane.INFORMATION_MESSAGE);
+			String sText = MessageFormat.format(Program.getLabel("Infos384"), Server.getInstance().getAvailableVersion(), MyCellarVersion.version);
+			new Erreur(sText, true);
 		} else {
-			JOptionPane.showMessageDialog(this, Program.getLabel("Infos388"), Program.getLabel("Infos052"),
-					JOptionPane.INFORMATION_MESSAGE);
+			new Erreur(Program.getLabel("Infos388"), true);
 		}
 	}
 

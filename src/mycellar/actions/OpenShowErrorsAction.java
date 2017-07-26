@@ -2,11 +2,14 @@ package mycellar.actions;
 
 import java.awt.event.ActionEvent;
 
+
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 
+
 import mycellar.MyCellarImage;
 import mycellar.Program;
+import mycellar.Start;
 import mycellar.Utils;
 import mycellar.showfile.ShowFile;
 import mycellar.showfile.ShowFile.ShowType;
@@ -37,6 +40,7 @@ public class OpenShowErrorsAction extends AbstractAction {
 			}
 	
 			Utils.addCloseButton(Program.tabbedPane, Program.showerrors);
+			Start.updateMainPanel();
 		});
 	}
 }

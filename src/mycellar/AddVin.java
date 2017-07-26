@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
@@ -43,8 +44,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 21.9
- * @since 18/07/17
+ * @version 22.0
+ * @since 26/07/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -496,7 +497,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			resetValues();
 			if(m_bmulti)
 			{
-				name.setSelectedItem(listBottleInModification.size() + " " + Program.getLabel("Infos140")); //" bouteilles sélectionn�es");
+				name.setSelectedItem(MessageFormat.format(Program.getLabel("Infos140"), listBottleInModification.size())); //" bouteilles sélectionn�es");
 				name.setEnabled(false);
 				m_annee_auto.setEnabled(false);
 				m_noYear.setEnabled(false);
@@ -1286,7 +1287,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					if(listBottleInModification.size() == 1)
 						m_end.setText(Program.getLabel("Infos144")); //"1 bouteille modifiée");
 					else {
-						m_end.setText(listBottleInModification.size() + " " + Program.getLabel("Infos143")); //" bouteilles modifi�es");
+						m_end.setText(MessageFormat.format(Program.getLabel("Infos143"), listBottleInModification.size())); //" bouteilles modifi�es");
 					}
 				}
 				else {

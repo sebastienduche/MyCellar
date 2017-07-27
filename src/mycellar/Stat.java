@@ -29,8 +29,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.2
- * @since 26/07/17
+ * @version 5.3
+ * @since 27/07/17
  */
 public class Stat extends JPanel implements ITabListener {
 
@@ -567,9 +567,9 @@ public class Stat extends JPanel implements ITabListener {
 
 				}
 				panel.updateUI();
-				end.setText(Program.getLabel("Infos244") + " " + (int) prix_total + " " + Program.getCaveConfigString("DEVISE",""));
+				end.setText(MessageFormat.format(Program.getLabel("Infos244"),(int) prix_total, Program.getCaveConfigString("DEVISE","")));
 				if (nb_tot > 0)
-					moy.setText(Program.getLabel("Infos300") + " " + (int) (prix_total / nb_tot) + " " + Program.getCaveConfigString("DEVISE",""));
+					moy.setText(MessageFormat.format(Program.getLabel("Infos300"),(int) (prix_total / nb_tot), Program.getCaveConfigString("DEVISE","")));
 				panelChart.setDataChart(listPrice, Program.getLabel("Infos185"));
 			}
 		}

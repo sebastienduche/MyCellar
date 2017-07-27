@@ -5,7 +5,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.LinkedList;
+
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
@@ -15,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
 
 import mycellar.actions.ManageVineyardAction;
 import mycellar.BottleColor;
@@ -40,8 +43,8 @@ import mycellar.vignobles.Vignobles;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 18/07/17
+ * @version 0.5
+ * @since 27/07/17
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -120,7 +123,7 @@ public class MyCellarManageBottles extends JPanel {
 	public MyCellarManageBottles() {
 		m_labelName.setText(Program.getLabel("Infos208")); //"Nom");
 		m_labelYear.setText(Program.getLabel("Infos189")); //"Année");
-		m_labelPlace.setText(Program.getLabel("Infos208")); //"Emplacement du vin");
+		m_labelPlace.setText(Program.getLabel("Infos208")); //"Nom");
 		m_labelNumPlace.setText(Program.getLabel("Infos082")); //"Numéro du lieu");
 		m_labelLine.setText(Program.getLabel("Infos028")); //"Ligne");
 		m_labelColumn.setText(Program.getLabel("Infos083")); //"Colonne");
@@ -276,7 +279,7 @@ public class MyCellarManageBottles extends JPanel {
        		Bouteille b;
        		m_labelExist.setText("");
        		if ((b = Program.getCave(nPlace - 1).getBouteille(nNumLieu-1, nLine-1, nColumn-1)) != null){
-       			m_labelExist.setText(Program.getLabel("Infos329")+" "+Program.convertStringFromHTMLString(b.getNom()));
+       			m_labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.getNom())));
        		}
        		Debug("Column_itemStateChanging... End");
 		});

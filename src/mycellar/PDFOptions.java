@@ -2,6 +2,7 @@ package mycellar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -23,8 +24,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.0
- * @since 17/07/17
+ * @version 2.1
+ * @since 27/07/17
  */
 public class PDFOptions extends JDialog {
   private JPanel jPanel1 = new JPanel();
@@ -227,7 +228,7 @@ public class PDFOptions extends JDialog {
       }
       this.dispose();
       if (col_size_max > 19) {
-        new Erreur(Program.getLabel("Infos273") + " " + col_size_max + "cms", "", true);
+        new Erreur(MessageFormat.format(Program.getLabel("Infos273"), col_size_max), true);
       }
     }
     catch (Exception exc) {

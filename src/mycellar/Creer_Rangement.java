@@ -44,8 +44,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.6
- * @since 21/07/17
+ * @version 11.7
+ * @since 27/07/17
  */
 public class Creer_Rangement extends JPanel implements ITabListener {
 
@@ -475,14 +475,13 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 				int nbBottles = rangement.getNbCaseUseAll();
 				for(Part p: listPart) {
 					if(p.getRows().size() == 0) {
-						erreur_txt1 = new String(Program.getError("Error009") + " " + p.getNum() + "."); //"Erreur nombre de lignes incorrect sur la partie
+						new Erreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrect sur la partie
 						new Erreur(erreur_txt1);
 						return;
 					}
 					for(Row r: p.getRows()) {
 						if(r.getCol() == 0) {
-							erreur_txt1 = new String(Program.getError("Error004") + " " + p.getNum() + "."); //"Erreur nombre de colonnes incorrect sur la partie
-							new Erreur(erreur_txt1);
+							new Erreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrect sur la partie
 							return;
 						}
 					}
@@ -677,14 +676,12 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 				Debug("Creating complex place...");
 				for(Part p: listPart) {
 					if(p.getRows().size() == 0) {
-						erreur_txt1 = new String(Program.getError("Error009") + " " + p.getNum() + "."); //"Erreur nombre de lignes incorrect sur la partie
-						new Erreur(erreur_txt1, "");
+						new Erreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrect sur la partie
 						bResul = false;
 					}
 					for(Row r: p.getRows()) {
 						if(r.getCol() == 0) {
-							erreur_txt1 = new String(Program.getError("Error004") + " " + p.getNum() + "."); //"Erreur nombre de colonnes incorrect sur la partie
-							new Erreur(erreur_txt1, "");
+							new Erreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrect sur la partie
 							bResul = false;
 						}
 					}
@@ -815,16 +812,15 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 				{
 					if(p.getRows().size() == 0)
 					{
-						erreur_txt1 = new String(Program.getError("Error009") + " " + p.getNum() + "."); //"Erreur nombre de lignes incorrect sur la partie
+						erreur_txt1 = MessageFormat.format(Program.getError("Error009"), p.getNum()); //"Erreur nombre de lignes incorrect sur la partie
 						new Erreur(erreur_txt1, Program.getError("Error109"));
 						bResul = false;
 						return;
 					}
 					for(Row r: p.getRows())
 					{
-						if(r.getCol() == 0)
-						{
-							erreur_txt1 = new String(Program.getError("Error004") + " " + p.getNum() + "."); //"Erreur nombre de colonnes incorrect sur la partie
+						if(r.getCol() == 0) {
+							erreur_txt1 = MessageFormat.format(Program.getError("Error004"), p.getNum());//"Erreur nombre de colonnes incorrect sur la partie
 							new Erreur(erreur_txt1, Program.getError("Error109"));
 							bResul = false;
 							return;

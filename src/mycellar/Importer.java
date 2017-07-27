@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -44,8 +45,8 @@ import jxl.Workbook;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.8
- * @since 26/07/17
+ * @version 10.9
+ * @since 27/07/17
  */
 public class Importer extends JPanel implements ITabListener, Runnable {
 
@@ -707,7 +708,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				//Insertion classe Erreur
 				label_progression.setText("");
 				Debug("ERROR: File not found: "+nom);
-				String erreur_txt1 = new String(Program.getError("Error020") + " " + nom + " " + Program.getError("Error021")); //"Fichier " + nom + " non trouvé");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error020"), nom); //Fichier non trouvé
 				String erreur_txt2 = Program.getError("Error022"); //"Vérifier le chemin");
 				new Erreur(erreur_txt1, erreur_txt2);
 				return;
@@ -882,7 +883,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				//Insertion classe Erreur
 				label_progression.setText("");
 				Debug("ERROR: File not found: "+nom);
-				String erreur_txt1 = new String(Program.getError("Error020") + " " + nom + " " + Program.getError("Error021")); //"Fichier " + nom + " non trouv�");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error020"), nom); //Fichier non trouvé
 				String erreur_txt2 = Program.getError("Error022"); //"Vérifier le chemin");
 				new Erreur(erreur_txt1, erreur_txt2);
 				importe.setEnabled(true);
@@ -915,7 +916,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					if (str_tmp3.compareToIgnoreCase("txt") != 0 && str_tmp3.compareToIgnoreCase("csv") != 0) {
 						label_progression.setText("");
 						Debug("ERROR: Not a TXT File");
-						String erreur_txt1 = new String(Program.getError("Error023") + " " + str_tmp3); //"Le fichier saisie ne possède pas une extension Texte: " + str_tmp3);
+						String erreur_txt1 = MessageFormat.format(Program.getError("Error023"), str_tmp3); //"Le fichier saisie ne possède pas une extension Texte: " + str_tmp3);
 						String erreur_txt2 = Program.getError("Error024"); //"Veuillez saisir le nom d'un fichier TXT ou CSV.");
 						resul = 1;
 						new Erreur(erreur_txt1, erreur_txt2);
@@ -1423,7 +1424,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					catch (IOException | jxl.read.biff.BiffException ioe1) {
 						label_progression.setText("");
 						Debug("ERROR: File not found (IO): "+nom);
-						String erreur_txt1 = new String(Program.getError("Error020") + " " + nom + " " + Program.getError("Error021")); //"Fichier " + nom + " non trouv�");
+						String erreur_txt1 = MessageFormat.format(Program.getError("Error020"), nom); //Fichier non trouvé
 						String erreur_txt2 = Program.getError("Error022"); //"Vérifier le chemin");
 						new Erreur(erreur_txt1, erreur_txt2);
 						importe.setEnabled(true);

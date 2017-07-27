@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -42,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.5
- * @since 18/07/17
+ * @version 17.6
+ * @since 27/07/17
  */
 public class Search extends JPanel implements Runnable, ITabListener {
 	private static JTable table;
@@ -335,15 +336,14 @@ public class Search extends JPanel implements Runnable, ITabListener {
 						Program.setToTrash(bottle);
 						Start.removeBottleTab(bottle);
 					}
-					/*for(int i=0; i<Program.GetCaveLength();i++)
-						Program.getCave(i).putTabStock();*/
+
 					RangementUtils.putTabStock();
 					Program.updateManagePlacePanel();
 
 					if(listToSupp.size() == 1)
 						resul_txt.setText(Program.getLabel("Infos397"));
 					else
-						resul_txt.setText(listToSupp.size() + " " + Program.getLabel("Infos398"));
+						resul_txt.setText(MessageFormat.format(Program.getLabel("Infos398"), listToSupp.size()));
 				}
 			}
 		}

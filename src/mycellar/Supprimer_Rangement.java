@@ -6,6 +6,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,8 +29,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.7
- * @since 20/07/17
+ * @version 6.8
+ * @since 27/07/17
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
@@ -156,7 +157,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 						label_final.setText(Program.getLabel("Infos066")); //"Il reste 1 vin dans le rangement!!!");
 					}
 					else {
-						label_final.setText(Program.getLabel("Infos067") + " " + nb_case_use_total + " " + Program.getLabel("Infos068")); //Il reste n vins dans le rangement
+						label_final.setText(MessageFormat.format(Program.getLabel("Infos072"), nb_case_use_total)); //Il reste n vins dans le rangement
 					}
 				}
 				table.updateUI();
@@ -205,10 +206,10 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 				else {
 					String sName = cave.getNom();
 					if (nb_case_use_total == 1) {
-						erreur_txt1 = new String(Program.getLabel("Infos067") + " " + nb_case_use_total + " " + Program.getLabel("Infos069") + " " + sName + "."); //il reste 1 bouteille dans
+						erreur_txt1 = MessageFormat.format(Program.getLabel("Infos073"), sName); //il reste 1 bouteille dans
 					}
 					else {
-						erreur_txt1 = new String(Program.getLabel("Infos067") + " " + nb_case_use_total + " " + Program.getLabel("Infos228") + " " + sName + "."); //Il reste n bouteilles dans
+						erreur_txt1 = MessageFormat.format(Program.getLabel("Infos074"), nb_case_use_total, sName); //Il reste n bouteilles dans
 					}
 					erreur_txt2 = Program.getError("Error039"); //"Voulez vous supprimer le rangement et les BOUTEILLES restantes?");
 					Debug("MESSAGE: Delete this place "+sName+" and all bottle(s) ("+nb_case_use_total+")?");

@@ -51,8 +51,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.2
- * @since 17/07/17
+ * @version 6.3
+ * @since 27/07/17
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -364,7 +364,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			catch (FileNotFoundException fnfe1) {
 				//Insertion classe Erreur
 				end.setText("");
-				String erreur_txt1 = new String(Program.getError("Error020") + " " + nom + " " + Program.getError("Error021")); //Fichier non trouv�
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error020"), nom); //Fichier non trouvé
 				String erreur_txt2 = Program.getError("Error022"); //Vérifier le chemin
 				new Erreur(erreur_txt1, erreur_txt2);
 				resul = 1;

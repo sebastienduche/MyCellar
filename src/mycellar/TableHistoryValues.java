@@ -1,5 +1,6 @@
 package mycellar;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,8 +14,8 @@ import javax.swing.table.AbstractTableModel;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 18/05/17
+ * @version 1.4
+ * @since 27/07/17
  */
 
 public class TableHistoryValues extends AbstractTableModel {
@@ -94,15 +95,15 @@ public class TableHistoryValues extends AbstractTableModel {
 	        switch (h.getType()) {
 	          case ADD:
 	            sType = Program.getLabel("Infos345");
-	            sLabel = Program.convertStringFromHTMLString(b.getNom()) + " " + b.getAnnee() + " " + Program.getLabel("Infos348") + " " + Program.convertStringFromHTMLString(b.getEmplacement());
+	            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), Program.convertStringFromHTMLString(b.getEmplacement()));
 	            break;
 	          case MODIFY:
 	            sType = Program.getLabel("Infos346");
-	            sLabel = Program.convertStringFromHTMLString(b.getNom()) + " " + b.getAnnee() + " " + Program.getLabel("Infos348") + " " + Program.convertStringFromHTMLString(b.getEmplacement());
+	            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), Program.convertStringFromHTMLString(b.getEmplacement()));
 	            break;
 	          case DEL:
 	            sType = Program.getLabel("Infos347");
-	            sLabel = Program.convertStringFromHTMLString(b.getNom()) + " " + b.getAnnee() + " " + Program.getLabel("Infos349") + " " + Program.convertStringFromHTMLString(b.getEmplacement());
+	            sLabel = MessageFormat.format(Program.getLabel("Infos349"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), Program.convertStringFromHTMLString(b.getEmplacement()));
 	            break;
 	        }
 	        if(column == TYPE)

@@ -40,8 +40,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 9.8
- * @since 09/05/17
+ * @version 9.9
+ * @since 27/07/17
  */
 public class Parametres extends JDialog {
 	private MyCellarLabel label_fic_bak = new MyCellarLabel();
@@ -360,15 +360,6 @@ public class Parametres extends JDialog {
 				Program.putCaveConfigString("DEVISE", devise.getText().trim());
 				
 				if (result) {
-					Program.putCaveConfigString("MARK1_TITLE", Program.getLabel("Infos208"));
-					Program.putCaveConfigString("MARK2_TITLE", Program.getLabel("Infos189"));
-					Program.putCaveConfigString("MARK3_TITLE", Program.getLabel("Infos134"));
-					Program.putCaveConfigString("MARK4_TITLE", Program.getLabel("Infos105"));
-					Program.putCaveConfigString("MARK5_TITLE", Program.getLabel("Infos158"));
-					Program.putCaveConfigString("MARK6_TITLE", Program.getLabel("Infos028"));
-					Program.putCaveConfigString("MARK7_TITLE", Program.getLabel("Infos083"));
-					Program.putCaveConfigString("MARK8_TITLE", Program.getLabel("Infos135"));
-					Program.putCaveConfigString("MARK9_TITLE", Program.getLabel("Infos137"));
 					Program.putCaveConfigString("ANNEE", annee.getValue().toString());
 					try {
 						Integer.parseInt(annee.getValue().toString());

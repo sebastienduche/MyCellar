@@ -44,8 +44,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 22.0
- * @since 26/07/17
+ * @version 22.1
+ * @since 27/07/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -781,7 +781,10 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 									rangement.addWine(bouteille);
 									m_end.setText( Program.getLabel("Infos075"));
 									m_nb_bottle.setValue(new Integer(nb_bottle_rest));
-									m_labelStillToAdd.setText(Program.getLabel("Infos067") + " " + nb_bottle_rest + " " + Program.getLabel("Infos072")); //Il reste n bouteille � ajouter
+									if(nb_bottle_rest == 1)
+										m_labelStillToAdd.setText(Program.getLabel("Infos067"));
+									else
+										m_labelStillToAdd.setText(MessageFormat.format(Program.getLabel("Infos062"), nb_bottle_rest));
 								}
 								else {
 									new Erreur(Program.getError("Error154"), Program.getError("Error153"));
@@ -1201,7 +1204,10 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 							if (nb_bottle_rest > 0) {
 								m_nb_bottle.setValue(new Integer(nb_bottle_rest));
-								m_labelStillToAdd.setText(Program.getLabel("Infos067") + " " + nb_bottle_rest + " " + Program.getLabel("Infos073")); //Il reste n bouteilles � ajouter
+								if(nb_bottle_rest == 1)
+									m_labelStillToAdd.setText(Program.getLabel("Infos067"));
+								else
+									m_labelStillToAdd.setText(MessageFormat.format(Program.getLabel("Infos062"), nb_bottle_rest));
 								m_lieu.setSelectedIndex(0);
 							}
 							else {

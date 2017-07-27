@@ -32,6 +32,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.net.util.Base64;
 
+import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -72,8 +73,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 15.8
- * @since 21/07/17
+ * @version 15.9
+ * @since 27/07/17
  */
 
 public class Program {
@@ -502,7 +503,7 @@ public class Program {
 	public static void write_XSL() {
 
 		Debug("Program: Writing XSL...");
-		String tmp, tmp1, tmp2, tmp3;
+		String tmp;
 		File f;
 		FileWriter ficout;
 
@@ -516,114 +517,60 @@ public class Program {
 			tmp = new String("<html>\n<body>\n<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\">\n<tr bgcolor=\"#FFFF00\">\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp1 = getCaveConfigString("MARK1_TITLE","");
-			tmp2 = Program.convertToHTMLString(tmp1);
-			tmp1 = getCaveConfigString("MARK2_TITLE","");
-			tmp3 = Program.convertToHTMLString(tmp1);
-			tmp = new String("<td>" + tmp2 + "</td>\n<td>" + tmp3 + "</td>\n");
+			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos208")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos189")) + "</td>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp1 = getCaveConfigString("MARK3_TITLE","");
-			tmp2 = Program.convertToHTMLString(tmp1);
-			tmp1 = getCaveConfigString("MARK4_TITLE","");
-			tmp3 = Program.convertToHTMLString(tmp1);
-			tmp = new String("<td>" + tmp2 + "</td>\n<td>" + tmp3 + "</td>\n");
+			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos134")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos105")) + "</td>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp1 = getCaveConfigString("MARK5_TITLE","");
-			tmp2 = Program.convertToHTMLString(tmp1);
-			tmp1 = getCaveConfigString("MARK6_TITLE","");
-			tmp3 = Program.convertToHTMLString(tmp1);
-			tmp = new String("<td>" + tmp2 + "</td>\n<td>" + tmp3 + "</td>\n");
+			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos158")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos028")) + "</td>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp1 = getCaveConfigString("MARK7_TITLE","");
-			tmp2 = Program.convertToHTMLString(tmp1);
-			tmp1 = getCaveConfigString("MARK8_TITLE","");
-			tmp3 = Program.convertToHTMLString(tmp1);
-			tmp = new String("<td>" + tmp2 + "</td>\n<td>" + tmp3 + "</td>\n");
+			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos083")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos135")) + "</td>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp1 = getCaveConfigString("MARK9_TITLE","");
-			tmp2 = Program.convertToHTMLString(tmp1);
-			tmp = new String("<td>" + tmp2 + "</td>\n");
+			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos137")) + "</td>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			if (getCaveConfigInt("OTHER1", 0) == 1) {
-				tmp1 = getCaveConfigString("MARK10_TITLE","");
-				tmp2 = Program.convertToHTMLString(tmp1);
-				tmp = new String("<td>" + tmp2 + "</td>\n");
-				ficout.write(tmp);
-				ficout.flush();
-			}
-			if (getCaveConfigInt("OTHER2", 0) == 1) {
-				tmp1 = getCaveConfigString("MARK11_TITLE","");
-				tmp2 = Program.convertToHTMLString(tmp1);
-				tmp = new String("<td>" + tmp2 + "</td>\n");
-				ficout.write(tmp);
-				ficout.flush();
-			}
-			if (getCaveConfigInt("OTHER3", 0) == 1) {
-				tmp1 = getCaveConfigString("MARK12_TITLE","");
-				tmp2 = Program.convertToHTMLString(tmp1);
-				tmp = new String("<td>" + tmp2 + "</td>\n");
-				ficout.write(tmp);
-				ficout.flush();
-			}
-			tmp = new String("</tr>\n<xsl:for-each select=\"" + getCaveConfigString("TYPE_XML","") + "\">\n<xsl:sort select=\"" + getCaveConfigString("XML_MARK1","") + "\"/>\n<tr>\n");
+			tmp = new String("</tr>\n<xsl:for-each select=\"cellar/name\">\n<xsl:sort select=\"name\"/>\n<tr>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK1","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"name\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK2","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"year\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK3","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"half\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK4","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"place\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK5","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"num-place\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK6","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"line\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK7","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"column\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK8","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"price\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK9","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"comment\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK13","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"dateOfC\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK14","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"parker\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK15","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"appellation\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			if (getCaveConfigInt("OTHER1", 0) == 1) {
-				tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK10","") + "\"/></td>");
-				ficout.write(tmp);
-				ficout.flush();
-			}
-			if (getCaveConfigInt("OTHER2", 0) == 1) {
-				tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK11","") + "\"/></td>");
-				ficout.write(tmp);
-				ficout.flush();
-			}
-			if (getCaveConfigInt("OTHER3", 0) == 1) {
-				tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK12","") + "\"/></td>");
-				ficout.write(tmp);
-				ficout.flush();
-			}
 			tmp = new String("</tr>\n</xsl:for-each>\n</table>\n</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>");
 			ficout.write(tmp);
 			ficout.flush();
@@ -1146,8 +1093,7 @@ public class Program {
 			setFileSavable(f.exists());
 
 		if(!f.exists()) {
-			String sErr = Program.getError("Error020") + " " + f.getAbsolutePath() + " " + Program.getError("Error021");
-			new Erreur(sErr, "");
+			new Erreur(MessageFormat.format(Program.getError("Error020"), f.getAbsolutePath())); //Fichier non trouvé);
 
 			putGlobalConfigString("LAST_OPEN1", list.pop());
 			putGlobalConfigString("LAST_OPEN2", list.pop());

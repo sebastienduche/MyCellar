@@ -47,8 +47,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 22.3
- * @since 26/07/17
+ * @version 22.4
+ * @since 27/07/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -232,14 +232,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (parameter.equals("restart")) {
 			// Démarrage avec une nouvelle cave
 			Program.putGlobalConfigString("STARTUP", "0");
-			Program.putCaveConfigString("OTHER1", "0");
-			Program.putCaveConfigString("OTHER2", "0");
-			Program.putCaveConfigString("OTHER3", "0");
 			Program.putCaveConfigString("ANNEE_CTRL", "1");
 			Program.putCaveConfigString("FILE_SRC", "");
-			Program.putCaveConfigString("OTHER1_TYPE", "3");
-			Program.putCaveConfigString("OTHER2_TYPE", "3");
-			Program.putCaveConfigString("OTHER3_TYPE", "3");
 			Program.putCaveConfigString("FIC_EXCEL", "0");
 			Program.putCaveConfigString("SAVE", "KO");
 		}

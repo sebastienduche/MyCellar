@@ -43,8 +43,8 @@ import mycellar.vignobles.Vignobles;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 27/07/17
+ * @version 0.6
+ * @since 29/07/17
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -180,18 +180,16 @@ public class MyCellarManageBottles extends JPanel {
 			Program.putCaveConfigInt("ANNEE_AUTO", 1);
 			
 			if (Program.getCaveConfigInt("ANNEE_AUTO_FALSE", 0) == 0) {
-				String erreur_txt1 = Program.getError("Error084"); //"En d�cochant cette option, vous d�sactivez la transformation");
-				String erreur_txt2 = Program.getError("Error085") + ( (SIECLE + 1) * 100) + ")."; //"automatique des ann�es sur 2 chiffres en 4 chiffres (00->2000).");
-				new Erreur(erreur_txt1, erreur_txt2, true, "", true, "ANNEE_AUTO_FALSE");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ( (SIECLE + 1) * 100)); //"En décochant cette option, vous désactivez la transformation");
+				new Erreur(erreur_txt1, "", true, "", true, "ANNEE_AUTO_FALSE");
 			}
 		}
 		else {
 			Program.putCaveConfigInt("ANNEE_AUTO", 0);
 
 			if (Program.getCaveConfigInt("ANNEE_AUTO_TRUE", 0) == 0) {
-				String erreur_txt1 = Program.getError("Error086"); //"En cochant cette option, vous activez la transformation");
-				String erreur_txt2 = Program.getError("Error085") + ( (SIECLE + 1) * 100) + ")."; //"automatique des ann�es sur 2 chiffres en 4 chiffres (00->2000).");
-				new Erreur(erreur_txt1, erreur_txt2, true, "", true, "ANNEE_AUTO_TRUE");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ( (SIECLE + 1) * 100));//"En cochant cette option, vous activez la transformation");
+				new Erreur(erreur_txt1, "", true, "", true, "ANNEE_AUTO_TRUE");
 			}
 		}
 		Debug("Annee_auto_actionPerformed...End");

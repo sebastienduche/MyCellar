@@ -2,6 +2,7 @@ package mycellar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
@@ -26,8 +27,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 2.6
- * @since 18/07/17
+ * @version 2.7
+ * @since 29/07/17
  */
 
 public class ShowHistory extends JPanel implements ITabListener {
@@ -277,7 +278,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 					erreur_txt1 = Program.getError("Error067"); // "1 vin sélectionné.");
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
 				} else {
-					erreur_txt1 = new String(toRestoreList.size() + " " + Program.getError("Error130")); // vins
+					erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toRestoreList.size()); // vins
 					// sélectionnés.");
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
 				}

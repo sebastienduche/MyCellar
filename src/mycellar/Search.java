@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.6
- * @since 27/07/17
+ * @version 17.7
+ * @since 29/07/17
  */
 public class Search extends JPanel implements Runnable, ITabListener {
 	private static JTable table;
@@ -324,7 +324,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 					erreur_txt2 = Program.getError("Error068"); //"Voulez-vous le supprimer?");
 				}
 				else {
-					erreur_txt1 = new String(listToSupp.size() + " " + Program.getError("Error130")); //vins sélectionnés.");
+					erreur_txt1 = MessageFormat.format(Program.getError("Error130"), listToSupp.size()); //vins sélectionnés.");
 					erreur_txt2 = Program.getError("Error131"); //"Voulez-vous les supprimer?");
 				}
 				int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -795,7 +795,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 
 		if (lieu_select == 0) {
 			Debug("ERROR: No place selected");
-			new Erreur(Program.getError("Error055"), ""); //Select emplacement
+			new Erreur(Program.getError("Error055")); //Select emplacement
 			resul_txt.setText("");
 			return false;
 		}

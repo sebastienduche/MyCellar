@@ -1,5 +1,6 @@
 package mycellar.showfile;
 
+import java.text.MessageFormat;
 import java.util.LinkedList;
 
 import mycellar.Bouteille;
@@ -15,8 +16,8 @@ import mycellar.core.MyCellarError;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 25/07/17
+ * @version 0.4
+ * @since 29/07/17
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -262,7 +263,7 @@ public class ErrorShowValues extends TableShowValues {
 						bTemp = rangement.getBouteille(num_empl-1, line-1, column1-1);
 					if( bTemp != null) {
 						status[row] = Boolean.FALSE;
-						new Erreur(Program.convertStringFromHTMLString(bTemp.getNom()) + " " + Program.getError("Error059"));
+						new Erreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), b.getAnnee()));
 					}
 					else {
 						if(column == PLACE)

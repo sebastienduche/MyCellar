@@ -6,8 +6,8 @@ package mycellar;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @since 13/05/17
- * @version 0.6
+ * @version 0.7
+ * @since 29/07/17
  */
 
 public class MyCellarControl {
@@ -21,33 +21,26 @@ public class MyCellarControl {
   public static boolean ctrl_Name(String _sName) {
 
     Debug("Controling name...");
-    String sError1;
-    boolean bResul = true;
     if (_sName.length() == 0) {
       //Erreur le nom ne doit pas être vide
       Debug("ERROR: Name cannot be empty!");
-      sError1 = Program.getError("Error010"); //"Le nom de l'emplacement ne doit pas être vide");
-      bResul = false;
-      new Erreur(sError1, "");
+      new Erreur(Program.getError("Error010"));
+      return false;
     }
 
-    if (bResul) {
       //Erreur utilisation de caractères interdits
       if (_sName.indexOf("\"") != -1 || _sName.indexOf(";") != -1 || _sName.indexOf("<") != -1 || _sName.indexOf(">") != -1 || _sName.indexOf("?") != -1 || _sName.indexOf("\\") != -1 || _sName.indexOf("/") != -1 ||
           _sName.indexOf("|") != -1 || _sName.indexOf("*") != -1) {
-        sError1 = Program.getError("Error126");
-        bResul = false;
         Debug("ERROR: Forbidden Characters!");
-        new Erreur(sError1, "");
+        new Erreur(Program.getError("Error126"));
+        return false;
       }
-    }
-    return bResul;
+    return true;
   }
 
   /**
    * ctrl_existingName Contrôle si le nom renseigné est déjà utilisé
    *
-   * @param _oCave LinkedList<Rangement>
    * @param _sName String
    * @return boolean
    */
@@ -56,7 +49,7 @@ public class MyCellarControl {
     Debug("Controling existing name...");
     if (Program.getCave(_sName.trim()) != null) {
       Debug("ERROR: Name already use!");
-      new Erreur(Program.getError("Error037"), "");//Le nom est déjà utilisé
+      new Erreur(Program.getError("Error037"));//Le nom est déjà utilisé
       return false;
     }
     return true;

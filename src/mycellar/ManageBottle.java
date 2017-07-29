@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
@@ -40,8 +41,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.9
- * @since 18/07/17
+ * @version 3.0
+ * @since 29/07/17
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -546,7 +547,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		if (nom.isEmpty()) {
 			Debug("ERROR: Wrong Name");
 			resul = false;
-			new Erreur(Program.getError("Error054"), ""); //"Veuillez saisir le nom du vin!"
+			new Erreur(Program.getError("Error054")); //"Veuillez saisir le nom du vin!"
 		}
 
 		// Controle de la date
@@ -556,7 +557,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			// Erreur sur la date
 			if (!Bouteille.isValidYear(annee) && resul) {
 				Debug("ERROR: Wrong date");
-				new Erreur(Program.getError("Error053"), ""); //"Veuillez saisir une année valide!"
+				new Erreur(Program.getError("Error053")); //"Veuillez saisir une année valide!"
 				resul = false;
 				m_year.setEditable(true);
 			}
@@ -572,17 +573,17 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		if (lieu_select == 0 && resul) {
 			Debug("ERROR: Wrong Place");
 			resul = false;
-			new Erreur(Program.getError("Error055"), ""); //"Veuillez sélectionner un emplacement!"
+			new Erreur(Program.getError("Error055")); //"Veuillez sélectionner un emplacement!"
 			return false;
 		}
 
 		if(lieu_num == 0) {
 			Debug("ERROR: Wrong Num Place");
 			if (m_line.isVisible()) {
-				new Erreur(Program.getError("Error056"), "");
+				new Erreur(Program.getError("Error056"));
 			}
 			else {
-				new Erreur(Program.getError("Error174"), "");
+				new Erreur(Program.getError("Error174"));
 			}
 			return false;
 		}
@@ -598,7 +599,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			if (line == 0) {
 				Debug("ERROR: Wrong Line");
 				resul = false;
-				new Erreur(Program.getError("Error057"), ""); //"Veuillez sélectionner un numero de line!"
+				new Erreur(Program.getError("Error057")); //"Veuillez sélectionner un numero de line!"
 				return false;
 			}
 
@@ -606,7 +607,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			if (line == 0) {
 				Debug("ERROR: Wrong Column");
 				resul = false;
-				new Erreur(Program.getError("Error058"), ""); //"Veuillez sélectionner un numero de line!"
+				new Erreur(Program.getError("Error058")); //"Veuillez sélectionner un numero de line!"
 				return false;
 			}
 		}
@@ -641,7 +642,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			Bouteille bottleInPlace = Program.getCave(lieu_select-1).getBouteille(m_laBouteille.getNumLieu()-1, m_laBouteille.getLigne()-1, m_laBouteille.getColonne()-1);
 			if(bottleInPlace != null && !bottleInPlace.equals(m_laBouteille)) {
 				Debug("ERROR: Not an empty place, Replace?");
-				String erreur_txt1 = new String(bottleInPlace.getNom() + " " + bottleInPlace.getAnnee() + " " + Program.getError("Error059")); //" déjà présent à cette place!");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bottleInPlace.getNom(), bottleInPlace.getAnnee()); //" déjà présent à cette place!");
 				String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
 				if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 					replaceWine(m_laBouteille, bottleInPlace);
@@ -660,10 +661,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			tmp.setColonne(oldColumn);
 			oldRangement.clearStock(tmp);
 		}
-		
-		/*for(Rangement cave : Program.getCave())
-			cave.putTabStock();*/
-
 		RangementUtils.putTabStock();
 		Search.updateTable();
 

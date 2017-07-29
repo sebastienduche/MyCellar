@@ -44,8 +44,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.7
- * @since 27/07/17
+ * @version 11.8
+ * @since 29/07/17
  */
 public class Creer_Rangement extends JPanel implements ITabListener {
 
@@ -404,14 +404,14 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 				}
 
 				if (nb_bottle > 0 && name.compareTo(nom) != 0) {
-					String erreur_txt1 = Program.getError("Error136"); //"1 bouteille est pr�sente dans ce rangement.");
+					String erreur_txt1 = Program.getError("Error136"); //"1 bouteille est présente dans ce rangement.");
 					String erreur_txt2 = Program.getError("Error137"); //"Voulez vous changer l'emplacement de cette bouteille?");
 					if (nb_bottle == 1) {
 						Debug("MESSAGE: 1 bottle in this place, modify?");
 					}
 					else {
 						Debug("MESSAGE: "+nb_bottle+" bottles in this place, Modify?");
-						erreur_txt1 = new String(nb_bottle + " " + Program.getError("Error094")); //bouteilles sont pr�sentes dans ce rangement.");
+						erreur_txt1 = MessageFormat.format(Program.getError("Error094"), nb_bottle); //bouteilles sont présentes dans ce rangement.");
 						erreur_txt2 = Program.getError("Error095"); //"Voulez vous changer l'emplacement de ces bouteilles?");
 					}
 					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -574,7 +574,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 								}
 								else {
 									Debug("MESSAGE: "+nbBottles+" bottles in this place, Modify?");
-									erreur_txt1 = new String(nbBottles + " " + Program.getError("Error094")); //bouteilles sont pr�sentes dans ce rangement.");
+									erreur_txt1 = MessageFormat.format(Program.getError("Error094"), nbBottles); //bouteilles sont présentes dans ce rangement.");
 									erreur_txt2 = Program.getError("Error095"); //"Voulez vous changer l'emplacement de ces bouteilles?");
 								}
 								if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {

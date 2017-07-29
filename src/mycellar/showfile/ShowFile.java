@@ -20,6 +20,7 @@ import javax.swing.table.TableRowSorter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,8 +59,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.4
- * @since 20/07/17
+ * @version 4.5
+ * @since 29/07/17
  */
 
 public class ShowFile extends JPanel implements ITabListener  {
@@ -110,7 +111,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 				@Override
 				void setValue(Bouteille b, Object value) {
 					if( Program.hasYearControl() && !Bouteille.isValidYear((String) value) )
-				       	  javax.swing.JOptionPane.showMessageDialog(null, Program.getError("Error053"), Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
+				       	 new Erreur(Program.getError("Error053"), Program.getError("Error015"));
 				        else{
 				        	Program.getStorage().removeAnnee(b.getAnneeInt());
 				        	b.setAnnee((String)value);	
@@ -552,7 +553,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 					erreur_txt2 = Program.getError("Error068"); //"Voulez-vous le supprimer?");
 				}
 				else {
-					erreur_txt1 = new String(toDeleteList.size() + " " + Program.getError("Error130")); //vins sélectionnés.");
+					erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toDeleteList.size()); //vins sélectionnés.");
 					erreur_txt2 = Program.getError("Error131"); //"Voulez-vous les supprimer?");
 				}
 				if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))	
@@ -610,7 +611,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
 				}
 				else {
-					erreur_txt1 = new String(toRestoreList.size() + " " + Program.getError("Error130")); //vins sélectionnés.");
+					erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toRestoreList.size()); //vins sélectionnés.");
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
 				}
 				if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))	
@@ -729,7 +730,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 		    	if(!rangement.isCaisse())
 		    		bTemp = rangement.getBouteille(num_empl-1, line-1, column-1);
 		    	if( bTemp != null) {
-		    		new Error(Program.convertStringFromHTMLString(bTemp.getNom()) + " " + Program.getError("Error059"));
+		    		new Erreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), b.getAnnee()));
 		    	}
 		    	else {
 		    		if(field == MyCellarFields.PLACE)

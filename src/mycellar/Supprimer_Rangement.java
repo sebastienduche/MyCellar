@@ -29,8 +29,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.8
- * @since 27/07/17
+ * @version 6.9
+ * @since 29/07/17
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
@@ -194,7 +194,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 				if (nb_case_use_total == 0) {
 					String tmp = cave.getNom();
 					Debug("MESSAGE: Delete this place: "+tmp+"?");
-					erreur_txt1 = new String(Program.getError("Error139") + " " + tmp + " ?"); //Voulez vous supprimer le rangement
+					erreur_txt1 = MessageFormat.format(Program.getError("Error139"), tmp); //Voulez vous supprimer le rangement
 					if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))        
 					{
 						Program.removeCave(cave);

@@ -44,8 +44,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 22.1
- * @since 27/07/17
+ * @version 22.2
+ * @since 29/07/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -753,7 +753,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					if (nb_bottle_rest > 0) {
 						if (m_lieu.isEnabled() || m_num_lieu.isEnabled()) {
 							Debug("Adding multiple bottles in the same place?");
-							String erreur_txt1 = new String(Program.getError("Error061") + " " + (nb_bottle_rest + 1) + " " + Program.getError("Error062") + " " + sPlaceName + "?"); //Voulez vous ajouter les xx bouteilles dans yy
+							String erreur_txt1 = MessageFormat.format(Program.getError("Error061"), (nb_bottle_rest + 1), sPlaceName); //Voulez vous ajouter les xx bouteilles dans yy
 							if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION ))
 							{
 								//Add several bottles in Caisse
@@ -857,7 +857,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							else {
 								Debug("ERROR: Adding bottle");
 								m_bbottle_add = false;
-								new Erreur(Program.getError("Error151") + " " + Program.getCave(lieu_selected - 1).getNom() + " " + Program.getError("Error152"),
+								new Erreur(MessageFormat.format(Program.getError("Error151"), Program.getCave(lieu_selected - 1).getNom()),
 										Program.getError("Error153"));
 								resul = false;
 							}
@@ -1087,7 +1087,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 				if (m_bmulti) { //On ne peut pas déplacer plusieurs bouteilles vers une armoire
 					Debug("ERROR: Unable to move multiple bottles to an Armoire");
 					m_end.setText("");
-					new Erreur(Program.getError("Error104") + " " + m_lieu.getSelectedItem().toString().trim() + ".", Program.getError("Error105")); //"Veuillez s�lectionner un rangement de type caisse.");//Impossible de d�placer plusieurs bouteilles dans
+					new Erreur(MessageFormat.format(Program.getError("Error104"), m_lieu.getSelectedItem().toString().trim()), Program.getError("Error105")); //"Veuillez s�lectionner un rangement de type caisse.");//Impossible de d�placer plusieurs bouteilles dans
 					enableAll(true);
 				}
 				else {
@@ -1264,7 +1264,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						}
 						else { // La case n'est pas vide
 							Debug("ERROR: Not an empty place, Replace?");
-							String erreur_txt1 = new String(b.getNom() + " " + b.getAnnee() + " " + Program.getError("Error059")); //" déjà présent à cette place!");
+							String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), b.getNom(), b.getAnnee()); //" déjà présent à cette place!");
 							String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
 							if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION))
 							{

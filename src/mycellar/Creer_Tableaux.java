@@ -39,6 +39,7 @@ import net.miginfocom.swing.MigLayout;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 
 /**
@@ -47,8 +48,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.1
- * @since 16/07/17
+ * @version 5.2
+ * @since 29/07/17
  */
 public class Creer_Tableaux extends JPanel implements ITabListener {
 	private MyCellarLabel label2 = new MyCellarLabel();
@@ -265,7 +266,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 			//Erreur utilisation de caractères interdits
 			if (nom.indexOf("\"") != -1 || nom.indexOf(";") != -1 || nom.indexOf("<") != -1 || nom.indexOf(">") != -1 || nom.indexOf("?") != -1 || nom.indexOf("\\") != -1 || nom.indexOf("/") != -1 ||
 					nom.indexOf("|") != -1 || nom.indexOf("*") != -1) {
-				new Erreur(Program.getError("Error126"), "");
+				new Erreur(Program.getError("Error126"));
 			}
 			else {
 				fic = nomFichier.getAbsolutePath();
@@ -301,28 +302,24 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	void create_actionPerformed(ActionEvent e) {
 		try {
 			Debug("create_actionPerforming...");
-			String nom = name.getText();
-			nom = nom.trim();
-			int nom_length = nom.length();
+			String nom = name.getText().trim();
 			String erreur_txt1 = "";
 			String erreur_txt2 = "";
 			int resul = 0;
 
-			if (nom_length == 0) {
+			if (nom.isEmpty()) {
 				Debug("ERROR: file empty");
-				erreur_txt1 = Program.getError("Error019"); //"Le nom du fichier ne doit pas être vide");
-				resul = 1;
-				new Erreur(erreur_txt1, "");
+				new Erreur(Program.getError("Error019"));
+				return;
 			}
 
-			if (resul == 0 && !isJFile) {
+			if (!isJFile) {
 				//Erreur utilisation de caractères interdits
 				if (nom.indexOf("\"") != -1 || nom.indexOf(";") != -1 || nom.indexOf("<") != -1 || nom.indexOf(">") != -1 ||
 						nom.indexOf("?") != -1 || nom.indexOf("|") != -1 || nom.indexOf("*") != -1) {
 					Debug("ERROR: Forbidden characters");
-					erreur_txt1 = Program.getError("Error126");
-					resul = 1;
-					new Erreur(erreur_txt1, "");
+					new Erreur(Program.getError("Error126"));
+					return;
 				}
 			}
 
@@ -335,7 +332,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 				if (type_XML.isSelected()) {
 					if ( !nom.toLowerCase().endsWith(".xml") ) {
 						Debug("ERROR: Not a XML File");
-						erreur_txt1 = new String(Program.getError("Error087")); //Non XML File
+						erreur_txt1 = MessageFormat.format(Program.getError("Error087"), nom); //Non XML File
 						erreur_txt2 = Program.getError("Error088"); //"Veuillez saisir le nom d'un fichier XML.");
 						resul = 1;
 						new Erreur(erreur_txt1, erreur_txt2);
@@ -344,17 +341,15 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 				if ( type_HTML.isSelected() ) {
 					if ( !nom.toLowerCase().endsWith(".html") && !nom.toLowerCase().endsWith(".htm") ) {
 						Debug("ERROR: Not a HTML File");
-						erreur_txt1 = new String(Program.getError("Error107")); //Non XML File
 						resul = 1;
-						new Erreur(erreur_txt1, "");
+						new Erreur(MessageFormat.format(Program.getError("Error107"), nom));
 					}
 				}
 				if ( type_XLS.isSelected() ) {
 					if ( !nom.toLowerCase().endsWith(".xls") && !nom.toLowerCase().endsWith(".ods") ) {
 						Debug("ERROR: Not a XLS File");
-						erreur_txt1 = new String(Program.getError("Error034")); //Non XLS File
 						resul = 1;
-						new Erreur(erreur_txt1, "");
+						new Erreur(Program.getError("Error034"));
 					}
 				}
 			}

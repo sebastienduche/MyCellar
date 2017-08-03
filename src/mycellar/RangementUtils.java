@@ -40,8 +40,8 @@ import jxl.write.WriteException;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 20/07/17
+ * @version 0.5
+ * @since 03/08/17
  */
 public class RangementUtils {
 
@@ -56,9 +56,8 @@ public class RangementUtils {
 	 *
 	 * @return int
 	 */
-	public static int write_CSV(String fichier, LinkedList<Bouteille> all) {
+	public static boolean write_CSV(String fichier, LinkedList<Bouteille> all) {
 
-		int resul = 0;
 		String name = null;
 		String year = null;
 		String half = null;
@@ -91,76 +90,71 @@ public class RangementUtils {
 			ficout = new FileWriter(f);
 			ficout.flush();
 
-			if (resul == 0) {
-				for (Bouteille b : all) {
-					//if (all[i] != null) {
-					if (cle0.equals("1")) {
-						name = Program.convertStringFromHTMLString(b.getNom());
-						name = name.replaceAll("\"", "\"\"");
-						ficout.write("\"" + name + "\"" + separator);
-						ficout.flush();
-					}
-					if (cle1.equals("1")) {
-						try {
-							year = b.getAnnee();
-							year = year.replaceAll("\"", "\"\"");
-							ficout.write("\"" + year + "\"" + separator);
-							ficout.flush();
-						}
-						catch (NullPointerException npe) {}
-					}
-					if (cle2.equals("1")) {
-						half = Program.convertStringFromHTMLString(b.getType());
-						half = half.replaceAll("\"", "\"\"");
-						ficout.write("\"" + half + "\"" + separator);
-						ficout.flush();
-					}
-					if (cle3.equals("1")) {
-						place = Program.convertStringFromHTMLString(b.getEmplacement());
-						place = place.replaceAll("\"", "\"\"");
-						ficout.write("\"" + place + "\"" + separator);
-						ficout.flush();
-					}
-					if (cle4.equals("1")) {
-						num_place = Integer.toString(b.getNumLieu());
-						ficout.write("\"" + num_place + "\"" + separator);
-						ficout.flush();
-					}
-					if (cle5.equals("1")) {
-						line = Integer.toString(b.getLigne());
-						ficout.write("\"" + line + "\"" + separator);
-						ficout.flush();
-					}
-					if (cle6.equals("1")) {
-						column = Integer.toString(b.getColonne());
-						ficout.write("\"" + column + "\"" + separator);
-						ficout.flush();
-					}
-					if (cle7.equals("1")) {
-						price = Program.convertStringFromHTMLString(b.getPrix());
-						price = price.replaceAll("\"", "\"\"");
-						ficout.write("\"" + price + "\"" + separator);
-						ficout.flush();
-					}
-					if (cle8.equals("1")) {
-						comment = Program.convertStringFromHTMLString(b.getComment());
-						comment = comment.replaceAll("\"", "\"\"");
-						ficout.write("\"" + comment + "\"" + separator);
-						ficout.flush();
-					}
+			for (Bouteille b : all) {
+				if (cle0.equals("1")) {
+					name = Program.convertStringFromHTMLString(b.getNom());
+					name = name.replaceAll("\"", "\"\"");
+					ficout.write("\"" + name + "\"" + separator);
 					ficout.flush();
-					ficout.write('\n');
-					ficout.flush();
-					//}
 				}
+				if (cle1.equals("1")) {
+					try {
+						year = b.getAnnee();
+						year = year.replaceAll("\"", "\"\"");
+						ficout.write("\"" + year + "\"" + separator);
+						ficout.flush();
+					}
+					catch (NullPointerException npe) {}
+				}
+				if (cle2.equals("1")) {
+					half = Program.convertStringFromHTMLString(b.getType());
+					half = half.replaceAll("\"", "\"\"");
+					ficout.write("\"" + half + "\"" + separator);
+					ficout.flush();
+				}
+				if (cle3.equals("1")) {
+					place = Program.convertStringFromHTMLString(b.getEmplacement());
+					place = place.replaceAll("\"", "\"\"");
+					ficout.write("\"" + place + "\"" + separator);
+					ficout.flush();
+				}
+				if (cle4.equals("1")) {
+					num_place = Integer.toString(b.getNumLieu());
+					ficout.write("\"" + num_place + "\"" + separator);
+					ficout.flush();
+				}
+				if (cle5.equals("1")) {
+					line = Integer.toString(b.getLigne());
+					ficout.write("\"" + line + "\"" + separator);
+					ficout.flush();
+				}
+				if (cle6.equals("1")) {
+					column = Integer.toString(b.getColonne());
+					ficout.write("\"" + column + "\"" + separator);
+					ficout.flush();
+				}
+				if (cle7.equals("1")) {
+					price = Program.convertStringFromHTMLString(b.getPrix());
+					price = price.replaceAll("\"", "\"\"");
+					ficout.write("\"" + price + "\"" + separator);
+					ficout.flush();
+				}
+				if (cle8.equals("1")) {
+					comment = Program.convertStringFromHTMLString(b.getComment());
+					comment = comment.replaceAll("\"", "\"\"");
+					ficout.write("\"" + comment + "\"" + separator);
+					ficout.flush();
+				}
+				ficout.flush();
+				ficout.write('\n');
+				ficout.flush();
 			}
 			ficout.flush();
 			ficout.close();
-
 		}
 		catch (IOException ioe) {
 			new Erreur(Program.getError("Error120"), Program.getError("Error161"));
-			resul = -2;
+			return false;
 		}
 		finally {
 			try {
@@ -169,7 +163,7 @@ public class RangementUtils {
 			catch (IOException ioe1) {}
 			catch (NullPointerException ioe1) {}
 		}
-		return resul;
+		return true;
 	}
 
 	/**

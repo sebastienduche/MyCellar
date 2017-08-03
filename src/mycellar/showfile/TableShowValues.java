@@ -1,5 +1,6 @@
 package mycellar.showfile;
 
+import java.text.MessageFormat;
 import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
@@ -19,8 +20,8 @@ import mycellar.actions.OpenAddVinAction;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.1
- * @since 20/07/17
+ * @version 3.2
+ * @since 03/08/17
  */
 
 public class TableShowValues extends AbstractTableModel {
@@ -266,7 +267,7 @@ public class TableShowValues extends AbstractTableModel {
 		    	if(!rangement.isCaisse())
 		    		bTemp = rangement.getBouteille(num_empl-1, line-1, column1-1);
 		    	if( bTemp != null) {
-		    		new Erreur(Program.convertStringFromHTMLString(bTemp.getNom()) + " " + Program.getError("Error059"));
+		    		new Erreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), bTemp.getAnnee()));
 		    	}
 		    	else {
 		    		if(column == PLACE)
@@ -289,16 +290,11 @@ public class TableShowValues extends AbstractTableModel {
 		    	}
     		}
     		else {
-    			String sText = Program.getError("Error198");
-    			sText = sText.replaceFirst("A1", Integer.toString(num_empl));
-    			sText = sText.replaceFirst("A2", Integer.toString(line));
-    			sText = sText.replaceFirst("A3", Integer.toString(column1));
-    			sText = sText.replaceFirst("A4", rangement.getNom());
     			if (rangement.isCaisse()) {
 					new Erreur(Program.getError("Error154"));
 				}
 				else {
-					if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, sText, Program.getError("Error015"), javax.swing.JOptionPane.YES_NO_OPTION)) {
+					if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getError("Error015"), javax.swing.JOptionPane.YES_NO_OPTION)) {
 						LinkedList<Bouteille> list = new LinkedList<Bouteille>();
 						list.add(b);
 						new OpenAddVinAction(list).actionPerformed(null);

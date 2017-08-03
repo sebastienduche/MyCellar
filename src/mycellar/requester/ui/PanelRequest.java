@@ -22,8 +22,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 03/09/14
+ * @version 0.3
+ * @since 03/08/17
  */
 public class PanelRequest extends JPanel {
 
@@ -72,6 +72,12 @@ public class PanelRequest extends JPanel {
 		label.setCopy(true);
 		panelKeyword.add(label);
 		label = new LabelSearch(Predicates.rangement, panelKeyword);
+		label.setCopy(true);
+		panelKeyword.add(label);
+		label = new LabelSearch(Predicates.color, panelKeyword);
+		label.setCopy(true);
+		panelKeyword.add(label);
+		label = new LabelSearch(Predicates.capacity, panelKeyword);
 		label.setCopy(true);
 		panelKeyword.add(label);
 		panelKeyword.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Parameters")));

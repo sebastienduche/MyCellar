@@ -43,8 +43,8 @@ import mycellar.vignobles.Vignobles;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 29/07/17
+ * @version 0.7
+ * @since 03/08/17
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -181,7 +181,7 @@ public class MyCellarManageBottles extends JPanel {
 			
 			if (Program.getCaveConfigInt("ANNEE_AUTO_FALSE", 0) == 0) {
 				String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ( (SIECLE + 1) * 100)); //"En décochant cette option, vous désactivez la transformation");
-				new Erreur(erreur_txt1, "", true, "", true, "ANNEE_AUTO_FALSE");
+				new Erreur(erreur_txt1, "", true, "ANNEE_AUTO_FALSE");
 			}
 		}
 		else {
@@ -189,7 +189,7 @@ public class MyCellarManageBottles extends JPanel {
 
 			if (Program.getCaveConfigInt("ANNEE_AUTO_TRUE", 0) == 0) {
 				String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ( (SIECLE + 1) * 100));//"En cochant cette option, vous activez la transformation");
-				new Erreur(erreur_txt1, "", true, "", true, "ANNEE_AUTO_TRUE");
+				new Erreur(erreur_txt1, "", true, "ANNEE_AUTO_TRUE");
 			}
 		}
 		Debug("Annee_auto_actionPerformed...End");

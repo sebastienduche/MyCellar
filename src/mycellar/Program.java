@@ -73,8 +73,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 15.9
- * @since 27/07/17
+ * @version 16.0
+ * @since 03/08/17
  */
 
 public class Program {
@@ -722,7 +722,7 @@ public class Program {
 			}
 		}
 		else {
-			new Erreur(Program.getError("Error162"), "");
+			new Erreur(Program.getError("Error162"));
 		}
 	}
 

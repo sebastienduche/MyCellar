@@ -47,8 +47,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 22.4
- * @since 27/07/17
+ * @version 22.5
+ * @since 03/08/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1280,8 +1280,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	void menuCheckUpdate_actionPerformed() {
 		if (Server.getInstance().hasAvailableUpdate()) {
-			String sText = MessageFormat.format(Program.getLabel("Infos384"), Server.getInstance().getAvailableVersion(), MyCellarVersion.version);
-			new Erreur(sText, true);
+			new Erreur(MessageFormat.format(Program.getLabel("Infos384"), Server.getInstance().getAvailableVersion(), MyCellarVersion.version), true);
 		} else {
 			new Erreur(Program.getLabel("Infos388"), true);
 		}

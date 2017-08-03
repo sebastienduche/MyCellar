@@ -59,8 +59,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.5
- * @since 29/07/17
+ * @version 4.6
+ * @since 03/08/17
  */
 
 public class ShowFile extends JPanel implements ITabListener  {
@@ -111,7 +111,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 				@Override
 				void setValue(Bouteille b, Object value) {
 					if( Program.hasYearControl() && !Bouteille.isValidYear((String) value) )
-				       	 new Erreur(Program.getError("Error053"), Program.getError("Error015"));
+				       	 new Erreur(Program.getError("Error053"));
 				        else{
 				        	Program.getStorage().removeAnnee(b.getAnneeInt());
 				        	b.setAnnee((String)value);	
@@ -542,9 +542,8 @@ public class ShowFile extends JPanel implements ITabListener  {
 			}
 
 			if (toDeleteList.size() == 0) {
-				erreur_txt1 = Program.getError("Error064"); //"Aucun vin à supprimer!");
-				erreur_txt2 = Program.getError("Error065"); //"Veuillez sélectionner les vins à supprimer.");
-				new Erreur(erreur_txt1, erreur_txt2,true);
+				//"Aucun vin à supprimer!");
+				new Erreur(Program.getError("Error064"), Program.getError("Error065"),true);
 			}
 			else {
 
@@ -600,9 +599,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 			}
 
 			if (toRestoreList.size() == 0) {
-				erreur_txt1 = Program.getLabel("ShowFile.NoBottleToRestore");
-				erreur_txt2 = Program.getLabel("ShowFile.SelectToRestore");
-				new Erreur(erreur_txt1, erreur_txt2,true);
+				new Erreur(Program.getLabel("ShowFile.NoBottleToRestore"), Program.getLabel("ShowFile.SelectToRestore"),true);
 			}
 			else {
 
@@ -730,7 +727,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 		    	if(!rangement.isCaisse())
 		    		bTemp = rangement.getBouteille(num_empl-1, line-1, column-1);
 		    	if( bTemp != null) {
-		    		new Erreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), b.getAnnee()));
+		    		new Erreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), bTemp.getAnnee()));
 		    	}
 		    	else {
 		    		if(field == MyCellarFields.PLACE)
@@ -927,9 +924,9 @@ public class ShowFile extends JPanel implements ITabListener  {
 				}
 
 				if(bottles.isEmpty()) {
-					String erreur_txt1 = Program.getError("Error071"); //"Aucun vin à modifier!");
-					String erreur_txt2 = Program.getError("Error072"); //"Veuillez sélectionner les vins à modifier.");
-					new Erreur(erreur_txt1, erreur_txt2, true);
+					//"Aucun vin à modifier!");
+					//"Veuillez sélectionner les vins à modifier.");
+					new Erreur(Program.getError("Error071"), Program.getError("Error072"), true);
 				}
 				else {
 					Debug("Modifying "+bottles.size()+" bottles...");

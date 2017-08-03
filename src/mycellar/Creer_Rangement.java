@@ -44,8 +44,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.8
- * @since 29/07/17
+ * @version 11.9
+ * @since 03/08/17
  */
 public class Creer_Rangement extends JPanel implements ITabListener {
 
@@ -64,7 +64,6 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 	private int limite = 0;
 	private final MyCellarSpinner nb_parties = new MyCellarSpinner();
 	private LinkedList<Part> listPart = new LinkedList<Part>();
-	private String erreur_txt1; //Texte de l'erreur
 	private char CREER = Program.getLabel("CREER").charAt(0);
 	private char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
 	private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner();
@@ -476,7 +475,6 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 				for(Part p: listPart) {
 					if(p.getRows().size() == 0) {
 						new Erreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrect sur la partie
-						new Erreur(erreur_txt1);
 						return;
 					}
 					for(Row r: p.getRows()) {
@@ -512,7 +510,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 							if(nb > 0) {
 								bResul = false;
 								Debug("ERROR: Unable to reduce the number of place");
-								new Erreur(Program.getError("Error201"),"");
+								new Erreur(Program.getError("Error201"));
 							}
 						}
 						if(bResul) {
@@ -531,10 +529,8 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 									}
 									if(nb > 0) {
 										bResul = false;
-										String sText = Program.getError("Error202");
-										sText = sText.replaceFirst("A1", Integer.toString(i+1));
 										Debug("ERROR: Unable to reduce the number of row");
-										new Erreur(sText);
+										new Erreur(MessageFormat.format(Program.getError("Error202"), Integer.toString(i+1)));
 										// Impossible de réduire le nombre de ligne de la partie, bouteilles présentes
 									}
 								}
@@ -552,11 +548,8 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 													break;
 												if(rangement.getBouteille(i, j, k) != null) {
 													bResul = false;
-													String sText = Program.getError("Error203");
-													sText = sText.replaceFirst("A1", Integer.toString(j+1));
-													sText = sText.replaceFirst("A2", Integer.toString(i+1));
 													Debug("ERROR: Unable to reduce the size of the number of column");
-													new Erreur(sText);
+													new Erreur(MessageFormat.format(Program.getError("Error203"), Integer.toString(j+1), Integer.toString(i+1)));
 													// Impossible de réduire le nombre de colonne de la ligne de la partie, bouteilles présentes
 												}
 											}
@@ -720,7 +713,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 			}
 			int key = Program.getCaveConfigInt("DONT_SHOW_CREATE_MESS", 0);
 			if (key == 0 && bResul) {
-				new Erreur(Program.getError("Error164"), "", true, "", true, "DONT_SHOW_CREATE_MESS");
+				new Erreur(Program.getError("Error164"), "", true, "DONT_SHOW_CREATE_MESS");
 			}
 			if (bResul)
 				Start.enableAll(true);
@@ -810,18 +803,17 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 
 				for(Part p: listPart)
 				{
-					if(p.getRows().size() == 0)
-					{
-						erreur_txt1 = MessageFormat.format(Program.getError("Error009"), p.getNum()); //"Erreur nombre de lignes incorrect sur la partie
-						new Erreur(erreur_txt1, Program.getError("Error109"));
+					if(p.getRows().size() == 0) {
+						//"Erreur nombre de lignes incorrect sur la partie
+						new Erreur(MessageFormat.format(Program.getError("Error009"), p.getNum()), Program.getError("Error109"));
 						bResul = false;
 						return;
 					}
 					for(Row r: p.getRows())
 					{
 						if(r.getCol() == 0) {
-							erreur_txt1 = MessageFormat.format(Program.getError("Error004"), p.getNum());//"Erreur nombre de colonnes incorrect sur la partie
-							new Erreur(erreur_txt1, Program.getError("Error109"));
+							//"Erreur nombre de colonnes incorrect sur la partie
+							new Erreur(MessageFormat.format(Program.getError("Error004"), p.getNum()), Program.getError("Error109"));
 							bResul = false;
 							return;
 						}

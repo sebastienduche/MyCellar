@@ -9,8 +9,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -51,8 +49,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.4
- * @since 29/07/17
+ * @version 6.5
+ * @since 03/08/17
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -306,18 +304,13 @@ public class Export extends JPanel implements ITabListener, Runnable {
 		String nom = file.getText().trim();
 		if (!nom.isEmpty()) {
 			File f = new File(nom);
-			try {
-				new FileInputStream(f);
-			}
-			catch (FileNotFoundException fnfe1) {
-				//Insertion classe Erreur
+			if(!f.exists() || f.isDirectory()) {
 				end.setText("");
-				String erreur_txt1 = MessageFormat.format(Program.getError("Error020"), nom); //Fichier non trouvé
-				String erreur_txt2 = Program.getError("Error022"); //Vérifier le chemin
-				new Erreur(erreur_txt1, erreur_txt2);
+				//Fichier non trouvé
+				//Vérifier le chemin
+				new Erreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
 				return;
 			}
-
 			Program.open(f);
 		}
 	}
@@ -486,9 +479,9 @@ public class Export extends JPanel implements ITabListener, Runnable {
 				extension = nom.substring(nom.length() - 4);
 			}
 			if (MyCellarRadioButtonXML.isSelected()) {
-				if (extension.toLowerCase().compareTo(".xml") != 0) {
+				if (!extension.equalsIgnoreCase(".xml")) {
 					end.setText("");
-					new Erreur(Program.getError("Error087") + " " + extension, "", true); //L'extension du fichier n'est pas XML
+					new Erreur(MessageFormat.format(Program.getError("Error087"), extension), true); //L'extension du fichier n'est pas XML
 					return;
 				}
 				if (!isJFile) {
@@ -526,7 +519,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 				if (MyCellarRadioButtonHTML.isSelected()) {
 					if (extension.compareToIgnoreCase(".htm") != 0 && extension.compareToIgnoreCase("html") != 0) {
 						end.setText("");
-						new Erreur(Program.getError("Error107") + " " + extension, "", true); //L'extension du fichier n'est pas HTML
+						new Erreur(MessageFormat.format(Program.getError("Error107"), extension), true); //L'extension du fichier n'est pas HTML
 						return;
 					}
 					file.setText(path);
@@ -544,14 +537,13 @@ public class Export extends JPanel implements ITabListener, Runnable {
 					if (MyCellarRadioButtonCSV.isSelected()) {
 						if (extension.compareToIgnoreCase(".csv") != 0) {
 							end.setText("");
-							new Erreur(MessageFormat.format(Program.getError("Error108"), extension)); //L'extension du fichier n'est pas CSV
+							new Erreur(MessageFormat.format(Program.getError("Error108"), extension), true); //L'extension du fichier n'est pas CSV
 							return;
 						}
 						file.setText(path);
 						if( bottles == null)
 							bottles = Program.getStorage().getAllList();
-						int resul = RangementUtils.write_CSV(file.getText().trim(), bottles);
-						if (resul != -2) {
+						if (RangementUtils.write_CSV(file.getText().trim(), bottles)) {
 							end.setText(Program.getLabel("Infos154")); //"Export terminé."
 							openit.setEnabled(true);
 						}
@@ -563,7 +555,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 						if (MyCellarRadioButtonXLS.isSelected()) {
 							if (extension.compareToIgnoreCase(".xls") != 0 && extension.compareToIgnoreCase(".ods") != 0) {
 								end.setText("");
-								new Erreur(Program.getError("Error034") + " " + extension, "", true); //L'extension du fichier n'est pas CSV
+								new Erreur(MessageFormat.format(Program.getError("Error034"), extension), true); //L'extension du fichier n'est pas CSV
 								return;
 							}
 							file.setText(path);
@@ -583,7 +575,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 							if (MyCellarRadioButtonPDF.isSelected()) {
 								if (extension.compareToIgnoreCase(".pdf") != 0) {
 									end.setText("");
-									new Erreur(Program.getError("Error157") + " " + extension, "", true); //L'extension du fichier n'est pas PDF
+									new Erreur(MessageFormat.format(Program.getError("Error157"), extension), true); //L'extension du fichier n'est pas PDF
 									return;
 								}
 								file.setText(path);

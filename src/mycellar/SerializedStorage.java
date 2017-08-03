@@ -17,8 +17,8 @@ import mycellar.vignobles.CountryVignobles;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.9
- * @since 16/07/17
+ * @version 4.0
+ * @since 03/08/17
  */
 
 public class SerializedStorage implements Storage {
@@ -119,7 +119,7 @@ public class SerializedStorage implements Storage {
 			sValue = Program.getError("Error190");
 		if( _nValue == 3 )
 			sValue = Program.getError("Error182");
-		if( JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue + " " + Program.getError("Error183"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
+		if( JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
 			return false;
 
 		Program.setModified();

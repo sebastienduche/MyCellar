@@ -48,8 +48,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.2
- * @since 29/07/17
+ * @version 5.3
+ * @since 03/08/17
  */
 public class Creer_Tableaux extends JPanel implements ITabListener {
 	private MyCellarLabel label2 = new MyCellarLabel();
@@ -303,8 +303,6 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 		try {
 			Debug("create_actionPerforming...");
 			String nom = name.getText().trim();
-			String erreur_txt1 = "";
-			String erreur_txt2 = "";
 			int resul = 0;
 
 			if (nom.isEmpty()) {
@@ -332,10 +330,10 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 				if (type_XML.isSelected()) {
 					if ( !nom.toLowerCase().endsWith(".xml") ) {
 						Debug("ERROR: Not a XML File");
-						erreur_txt1 = MessageFormat.format(Program.getError("Error087"), nom); //Non XML File
-						erreur_txt2 = Program.getError("Error088"); //"Veuillez saisir le nom d'un fichier XML.");
+						//Non XML File
+						//"Veuillez saisir le nom d'un fichier XML.");
 						resul = 1;
-						new Erreur(erreur_txt1, erreur_txt2);
+						new Erreur(MessageFormat.format(Program.getError("Error087"), nom), Program.getError("Error088"));
 					}
 				}
 				if ( type_HTML.isSelected() ) {
@@ -349,7 +347,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 					if ( !nom.toLowerCase().endsWith(".xls") && !nom.toLowerCase().endsWith(".ods") ) {
 						Debug("ERROR: Not a XLS File");
 						resul = 1;
-						new Erreur(Program.getError("Error034"));
+						new Erreur(MessageFormat.format(Program.getError("Error034"), nom));
 					}
 				}
 			}
@@ -369,10 +367,10 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 
 				if (count == 0) {
 					Debug("ERROR: No place selected");
-					erreur_txt1 = Program.getError("Error089"); //"Aucun rangement sélectionné!");
-					erreur_txt2 = Program.getError("Error090"); //"Veuillez sélectionner les rangements à générer.");
+					//"Aucun rangement sélectionné!");
+					//"Veuillez sélectionner les rangements à générer.");
 					resul = 1;
-					new Erreur(erreur_txt1, erreur_txt2, true);
+					new Erreur(Program.getError("Error089"), Program.getError("Error090"), true);
 				}
 				else {
 					listToGen = new int[count];
@@ -434,7 +432,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 				}
 
 				int key = Program.getCaveConfigInt("DONT_SHOW_TAB_MESS", 0);
-
+				String erreur_txt1, erreur_txt2;
 				if (key == 0) {
 					if (caisse_select >= 1) {
 						if ( caisse_select == 1){
@@ -444,7 +442,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 							erreur_txt1 = Program.getError("Error127"); //"Vous avez sélectionné des rangements de type Caisse");
 							erreur_txt2 = Program.getError("Error128"); //"Une liste des vins de ces rangements a été générée.");
 						}
-						new Erreur(erreur_txt1, erreur_txt2, true, "", true, "DONT_SHOW_TAB_MESS");
+						new Erreur(erreur_txt1, erreur_txt2, true, "DONT_SHOW_TAB_MESS");
 					}
 				}
 				end.setText(Program.getLabel("Infos097")); //"Fichier généré.");

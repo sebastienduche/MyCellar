@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.text.MessageFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -40,8 +41,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 9.9
- * @since 27/07/17
+ * @version 10.0
+ * @since 03/08/17
  */
 public class Parametres extends JDialog {
 	private MyCellarLabel label_fic_bak = new MyCellarLabel();
@@ -351,7 +352,7 @@ public class Parametres extends JDialog {
 					if (fic.length() >= 3) {
 						tmp1 = fic.substring(fic.length() - 3);
 					}
-					new Erreur(Program.getError("Error034") + tmp1, Program.getError("Error035"));
+					new Erreur(MessageFormat.format(Program.getError("Error034"), tmp1), Program.getError("Error035"));
 					result = false;
 				}
 			}

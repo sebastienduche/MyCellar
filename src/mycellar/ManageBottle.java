@@ -41,8 +41,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.0
- * @since 29/07/17
+ * @version 3.1
+ * @since 03/08/17
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -930,9 +930,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			add(m_labelMaturity,"");
 			add(m_labelParker,"");
 			add(m_labelColor,"wrap");
-			add(m_maturity,"width min(200,45%)");
-			add(m_parker,"width min(100,10%)");
-			add(m_colorList,"wrap, width min(200,45%)");
+			add(m_maturity,"width min(200,40%)");
+			add(m_parker,"width min(150,30%)");
+			add(m_colorList,"wrap, width min(150,30%)");
 			add(m_labelPrice,"wrap");
 			add(m_price,"width min(100,45%), split 2");
 			add(m_devise,"gapleft 5px");

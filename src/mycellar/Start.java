@@ -6,11 +6,11 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.prefs.Preferences;
 
@@ -23,7 +23,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -37,6 +36,7 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarVersion;
 import mycellar.launcher.Server;
 import mycellar.showfile.ShowFile;
+import mycellar.showfile.ShowFile.ShowType;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -46,12 +46,11 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 21.9
- * @since 09/05/17
+ * @version 22.6
+ * @since 04/08/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
-	private MyCellarLabel label1 = new MyCellarLabel();
 	private static JButton m_oSupprimerButton = new JButton();
 	private static JButton m_oAjouterButton = new JButton();
 	private static JButton m_oRechercherButton = new JButton();
@@ -59,10 +58,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private static JButton m_oExportButton = new JButton();
 	private static JButton m_oStatsButton = new JButton();
 	private static JButton m_oManagePlaceButton = new JButton();
-	private MyCellarLabel copyright = new MyCellarLabel();
-	private MyCellarLabel update = new MyCellarLabel();
-	private String infos_version = " 2017 v";
-	private MyCellarLabel version = new MyCellarLabel("Mai" + infos_version + MyCellarVersion.mainVersion);
+	private static MyCellarLabel copyright = new MyCellarLabel();
+	private static MyCellarLabel update = new MyCellarLabel();
+	private static String infos_version = " 2017 v";
+	private static MyCellarLabel version = new MyCellarLabel("Mai" + infos_version + MyCellarVersion.mainVersion);
 	private static JButton m_oCreerButton = new JButton();
 	private static JButton m_oImporterButton = new JButton();
 	private static JButton m_oModifierButton = new JButton();
@@ -71,7 +70,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private static JButton m_oCutButton = new JButton();
 	private static JButton m_oCopyButton = new JButton();
 	private static JButton m_oPasteButton = new JButton();
-	private static PanelInfos panelInfos = null;
 	private char QUITTER;
 	private char IMPORT;
 	private char AJOUTERV;
@@ -89,25 +87,25 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private JMenuBar m_oMenuBar = new JMenuBar();
 
 	// différents menus
-	private JMenu menuFile = new JMenu();
-	private JMenu menuPlace = new JMenu();
-	private JMenu menuEdition = new JMenu();
-	private JMenu menuWine = new JMenu();
-	private JMenu menuTools = new JMenu("?");
-	public static JMenu outils = new JMenu();
+	private static JMenu menuFile = new JMenu();
+	private static JMenu menuPlace = new JMenu();
+	private static JMenu menuEdition = new JMenu();
+	private static JMenu menuWine = new JMenu();
+	private static JMenu menuAbout = new JMenu("?");
+	public static JMenu menuTools = new JMenu();
 
 	// differents choix de chaque menu
 	private static JMenuItem importation = new JMenuItem();
-	private static JMenuItem fin = new JMenuItem();
+	private static JMenuItem quit = new JMenuItem();
 	private static JMenuItem exportation = new JMenuItem();
 	private static JMenuItem statistiques = new JMenuItem();
 	private static JMenuItem tableau = new JMenuItem();
-	private static JMenuItem ajoutR = new JMenuItem();
-	private static JMenuItem modifR = new JMenuItem();
-	private static JMenuItem supprR = new JMenuItem();
-	private static JMenuItem visual = new JMenuItem();
-	private static JMenuItem ajoutV = new JMenuItem();
-	private static JMenuItem rechercherV;
+	private static JMenuItem addPlace = new JMenuItem();
+	private static JMenuItem modifPlace = new JMenuItem();
+	private static JMenuItem delPlace = new JMenuItem();
+	private static JMenuItem showFile = new JMenuItem();
+	private static JMenuItem addWine = new JMenuItem();
+	private static JMenuItem searchWine = new JMenuItem();
 	private static JMenuItem Aide = new JMenuItem();
 	private static JMenuItem param = new JMenuItem();
 	private static JMenuItem about = new JMenuItem();
@@ -116,18 +114,18 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private static JMenuItem history = new JMenuItem();
 	private static JMenuItem vignobles = new JMenuItem();
 	private static JMenuItem bottleCapacity = new JMenuItem();
-	private static JMenuItem menuNew;
-	private static JMenuItem menuSave;
-	private static JMenuItem menuSaveAs = new JMenuItem();
+	private static JMenuItem newFile = new JMenuItem();
+	private static JMenuItem save = new JMenuItem();
+	private static JMenuItem saveAs = new JMenuItem();
 	private static JMenuItem jMenuImportXmlPlaces = new JMenuItem();
 	private static JMenuItem jMenuExportXmlPlaces = new JMenuItem();
 	private static JMenuItem jMenuExportXml = new JMenuItem();
-	private static JMenuItem jMenuOpenFile = null;
+	private static JMenuItem openFile = new JMenuItem();
 	private static JMenuItem jMenuCloseFile = new JMenuItem();
 	private static JMenuItem jMenuSetConfig = new JMenuItem();
 	static final long serialVersionUID = 501073;
-	private boolean m_bHasListener = false;
-	private boolean m_bHasFrameBuilded = false;
+	private static boolean m_bHasListener = false;
+	private static boolean m_bHasFrameBuilded = false;
 	private static JMenuItem jMenuReopen1 = new JMenuItem();
 	private static JMenuItem jMenuReopen2 = new JMenuItem();
 	private static JMenuItem jMenuReopen3 = new JMenuItem();
@@ -231,21 +229,14 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (parameter.equals("restart")) {
 			// Démarrage avec une nouvelle cave
 			Program.putGlobalConfigString("STARTUP", "0");
-			Program.putCaveConfigString("OTHER1", "0");
-			Program.putCaveConfigString("OTHER2", "0");
-			Program.putCaveConfigString("OTHER3", "0");
 			Program.putCaveConfigString("ANNEE_CTRL", "1");
 			Program.putCaveConfigString("FILE_SRC", "");
-			Program.putCaveConfigString("OTHER1_TYPE", "3");
-			Program.putCaveConfigString("OTHER2_TYPE", "3");
-			Program.putCaveConfigString("OTHER3_TYPE", "3");
 			Program.putCaveConfigString("FIC_EXCEL", "0");
 			Program.putCaveConfigString("SAVE", "KO");
 		}
 
 		if (parameter.equals("rebuild-stats")) {
 			Program.putCaveConfigString("REBUILD_STATISTICS", "1");
-			// Program.configCavew.setProperty("REBUILD_STATISTICS", "1");
 		}
 
 		if (parameter.equals("debug")) {
@@ -279,12 +270,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		// Démarrage
 		// _________
 
-		int startup = Program.getGlobalConfigInt("STARTUP", 0);
-		if (!Program.archive.isEmpty()) {
-			startup = 1;
-		}
-		// Language au premier démarrage
-		if (startup == 0) {
+		if (Program.archive.isEmpty() && Program.getGlobalConfigInt("STARTUP", 0) == 0) {
+			// Language au premier démarrage
 			String lang = System.getProperty("user.language");
 			if(lang.equalsIgnoreCase("fr"))
 				lang = "F";
@@ -293,7 +280,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			Program.putGlobalConfigString("LANGUAGE", lang);
 			
 			updateFrame(true);
-			Program.putGlobalConfigInt("STARTUP", 0);
+			Program.putGlobalConfigInt("STARTUP", 1);
 		}
 
 		// Paramètrage
@@ -334,15 +321,15 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			m_oShowTrashButton.setEnabled(false);
 			importation.setEnabled(false);
 			m_oCreerButton.setEnabled(false);
-			menuSave.setEnabled(false);
+			save.setEnabled(false);
 			buttonSave.setEnabled(false);
 			buttonPdf.setEnabled(false);
-			menuSaveAs.setEnabled(false);
-			ajoutR.setEnabled(false);
+			saveAs.setEnabled(false);
+			addPlace.setEnabled(false);
 			jMenuExportXmlPlaces.setEnabled(false);
 			jMenuImportXmlPlaces.setEnabled(false);
 			jMenuExportXml.setEnabled(false);
-			visual.setEnabled(false);
+			showFile.setEnabled(false);
 		} else if (Program.GetCaveLength() == 0) {
 			Program.getCave().add(Program.defaultPlace);
 		}
@@ -364,25 +351,25 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		exportation.setEnabled(_bEnable);
 		statistiques.setEnabled(_bEnable);
 		tableau.setEnabled(_bEnable);
-		ajoutV.setEnabled(_bEnable);
-		modifR.setEnabled(_bEnable);
-		supprR.setEnabled(_bEnable);
-		rechercherV.setEnabled(_bEnable);
+		addWine.setEnabled(_bEnable);
+		modifPlace.setEnabled(_bEnable);
+		delPlace.setEnabled(_bEnable);
+		searchWine.setEnabled(_bEnable);
 		m_oModifierButton.setEnabled(_bEnable);
 		m_oImporterButton.setEnabled(_bEnable);
 		m_oShowFileButton.setEnabled(_bEnable);
 		m_oShowTrashButton.setEnabled(_bEnable);
 		importation.setEnabled(_bEnable);
 		m_oCreerButton.setEnabled(_bEnable);
-		menuSave.setEnabled(Program.isFileSavable());
+		save.setEnabled(Program.isFileSavable());
 		buttonSave.setEnabled(Program.isFileSavable());
 		buttonPdf.setEnabled(_bEnable);
-		menuSaveAs.setEnabled(_bEnable);
-		ajoutR.setEnabled(_bEnable);
+		saveAs.setEnabled(_bEnable);
+		addPlace.setEnabled(_bEnable);
 		jMenuExportXmlPlaces.setEnabled(_bEnable);
 		jMenuImportXmlPlaces.setEnabled(_bEnable);
 		jMenuExportXml.setEnabled(_bEnable);
-		visual.setEnabled(_bEnable);
+		showFile.setEnabled(_bEnable);
 		tocreate.setEnabled(_bEnable);
 		history.setEnabled(_bEnable);
 		vignobles.setEnabled(_bEnable);
@@ -424,13 +411,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * stats_actionPerformed: Appelle la fenêtre de statistiques
-	 */
-	void stats_actionPerformed() {
-		new Stat().setVisible(true);
-	}
-
-	/**
 	 * about_actionPerformed: Appelle la fenêtre d'A Propos.
 	 */
 	void about_actionPerformed() {
@@ -452,19 +432,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * tocreate_actionPerformed: Appelle la fenêtre de Bienvenue.
 	 */
 	void tocreate_actionPerformed() {
-		Rangement.findRangementToCreate();
-	}
-
-	/**
-	 * exporter_actionPerformed: Appelle la fenêtre d'Export.
-	 */
-	void exporter_actionPerformed() {
-		try {
-			Program.export = new Export();
-			Program.export = null;
-		} catch (Exception e) {
-			Program.showException(e);
-		}
+		RangementUtils.findRangementToCreate();
 	}
 
 	/**
@@ -472,7 +440,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	void parametre_actionPerformed() {
 		try {
-			Program.parametres = new Parametres(this);
+			Program.parametres = new Parametres();
 			Program.parametres.setVisible(true);
 			Program.parametres = null;
 		} catch (Exception e) {
@@ -521,8 +489,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 		Program.updateAllPanels();
 		updateMainPanel();
-		panelInfos.setEnable(true);
-		panelInfos.refresh();
+		Program.panelInfos.setEnable(true);
+		Program.panelInfos.refresh();
 		String tmp = Program.getShortFilename();
 		if (tmp.isEmpty())
 			this.setTitle(Program.getLabel("Infos001"));
@@ -594,8 +562,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		Start.this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		Program.closeFile();
 		enableAll(false);
-		panelInfos.setEnable(false);
-		panelInfos.refresh();
+		Program.panelInfos.setEnable(false);
+		Program.panelInfos.refresh();
 		updateMainPanel();
 		Start.this.setCursor(Cursor.getDefaultCursor());
 		this.setTitle(Program.getLabel("Infos001"));
@@ -609,12 +577,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		JFileChooser boiteFichier = new JFileChooser();
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-		int retour_jfc = boiteFichier.showSaveDialog(this);
-		File nomFichier = new File("");
-		String fic = "";
-		if (retour_jfc == JFileChooser.APPROVE_OPTION) {
-			nomFichier = boiteFichier.getSelectedFile();
-			fic = nomFichier.getAbsolutePath();
+		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File nomFichier = boiteFichier.getSelectedFile();
+			String fic = nomFichier.getAbsolutePath();
 			int index = fic.indexOf(".");
 			if (index == -1) {
 				fic = fic.concat(".xml");
@@ -639,12 +604,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		JFileChooser boiteFichier = new JFileChooser();
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-		int retour_jfc = boiteFichier.showSaveDialog(this);
-		File nomFichier = new File("");
-		String fic = "";
-		if (retour_jfc == JFileChooser.APPROVE_OPTION) {
-			nomFichier = boiteFichier.getSelectedFile();
-			fic = nomFichier.getAbsolutePath();
+		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File nomFichier = boiteFichier.getSelectedFile();
+			String fic = nomFichier.getAbsolutePath();
 			int index = fic.indexOf(".");
 			if (index == -1) {
 				fic = fic.concat(".xml");
@@ -676,53 +638,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			Program.Morehistory.toFront();
 		}
 
-	}
-
-	/**
-	 * importer_actionPerformed: Appelle la fenêtre d'importation de données.
-	 */
-	void importer_actionPerformed() {
-		try {
-			MyXmlDom.writeMyCellarXml(Program.getCave(), "");
-			new Importer();
-			this.dispose();
-		} catch (Exception e) {
-			Program.showException(e);
-		}
-	}
-
-	/**
-	 * keylistener_actionPerformed: Fonction d'écoute des touches.
-	 * 
-	 * @param e
-	 *            KeyEvent
-	 */
-	void keylistener_actionPerformed(KeyEvent e) {
-		if (e.getKeyCode() == QUITTER) { // ALT+Q
-			quitter_actionPerformed();
-		}
-		if (e.getKeyCode() == AJOUTERR && m_oCreerButton.isEnabled()) {
-			new AddPlaceAction().actionPerformed(null);
-		}
-		if (e.getKeyCode() == IMPORT && importation.isEnabled()) {
-			importer_actionPerformed();
-		}
-		if (e.getKeyCode() == STAT && m_oStatsButton.isEnabled()) {
-			stats_actionPerformed();
-		}
-		if (e.getKeyCode() == TABLEAUX && m_oTableauxButton.isEnabled()) {
-			new CreateTabAction().actionPerformed(null);
-		}
-		if (e.getKeyCode() == EXPORT && exportation.isEnabled()) {
-			exporter_actionPerformed();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_F1) {
-			aide_actionPerformed();
-		}
-		if (e.getKeyCode() == SAVE)
-			new SaveAction().actionPerformed(null);
-		if (e.getKeyCode() == NEW)
-			new NewAction().actionPerformed(null);
 	}
 
 	/**
@@ -778,21 +693,27 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			menuFile.setText(Program.getLabel("Infos104")); // Fichier
 			menuPlace.setText(Program.getLabel("Infos105"));
 			menuWine.setText(Program.getLabel("Infos106")); // Vin
-			outils.setText(Program.getLabel("Infos246"));
+			menuTools.setText(Program.getLabel("Infos246"));
 			menuEdition.setText(Program.getLabel("Infos245"));
 
 			// differents choix de chaque menu
 			importation.setText(Program.getLabel("Infos107")); // Import...
-			fin.setText(Program.getLabel("Infos003")); // Quitter
+			quit.setText(Program.getLabel("Infos003")); // Quitter
 			exportation.setText(Program.getLabel("Infos108")); // Export...
 			statistiques.setText(Program.getLabel("Infos009")); // Statistiques
 			tableau.setText(Program.getLabel("Infos093")); // Tableaux...
-			ajoutR.setText(Program.getLabel("Infos109")); // Ajouter...
-			modifR.setText(Program.getLabel("Infos079") + "..."); // Modifier...
-			supprR.setText(Program.getLabel("Infos051") + "..."); // Supprimer...
-			ajoutV.setText(Program.getLabel("Infos109")); // Ajouter...
+			addPlace.setText(Program.getLabel("Infos109")); // Ajouter...
+			modifPlace.setText(Program.getLabel("Infos079") + "..."); // Modifier...
+			delPlace.setText(Program.getLabel("Infos051") + "..."); // Supprimer...
+			addWine.setText(Program.getLabel("Infos109")); // Ajouter...
 			Aide.setText(Program.getLabel("Infos111")); // Aide Contextuelle...
-			menuSaveAs.setText(Program.getLabel("Infos371")); // Sauvegarder
+			saveAs.setText(Program.getLabel("Infos371")); // Sauvegarder
+			newFile.setText(Program.getLabel("Infos378"));
+			openFile.setText(Program.getLabel("Infos372"));
+			save.setText(Program.getLabel("Infos326"));
+			showFile.setText(Program.getLabel("Infos324"));
+			searchWine.setText(Program.getLabel("Infos006"));
+			
 			// sous
 			param.setText(Program.getLabel("Infos156")); // Paramêtres
 			about.setText(Program.getLabel("Infos199")); // A Propos
@@ -844,19 +765,18 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			m_oTableauxButton.setText(Program.getLabel("Infos008"));
 			m_oAjouterButton.setText(Program.getLabel("Infos005"));
 			m_oRechercherButton.setText(Program.getLabel("Infos006"));
-			label1.setText(Program.getLabel("Infos001"));
 			m_oSupprimerButton.setText(Program.getLabel("Infos004"));
 			version.setText(Program.getLabel("Infos296") + infos_version + MyCellarVersion.mainVersion);
-			ajoutV.setAccelerator(KeyStroke.getKeyStroke(AJOUTERV, ActionEvent.CTRL_MASK));
-			ajoutR.setAccelerator(KeyStroke.getKeyStroke(AJOUTERR, ActionEvent.CTRL_MASK));
-			supprR.setAccelerator(KeyStroke.getKeyStroke(SUPPR, ActionEvent.CTRL_MASK));
+			addWine.setAccelerator(KeyStroke.getKeyStroke(AJOUTERV, ActionEvent.CTRL_MASK));
+			addPlace.setAccelerator(KeyStroke.getKeyStroke(AJOUTERR, ActionEvent.CTRL_MASK));
+			delPlace.setAccelerator(KeyStroke.getKeyStroke(SUPPR, ActionEvent.CTRL_MASK));
 			history.setAccelerator(KeyStroke.getKeyStroke(HISTORY, ActionEvent.CTRL_MASK));
 			tableau.setAccelerator(KeyStroke.getKeyStroke(TABLEAUX, ActionEvent.CTRL_MASK));
 			statistiques.setAccelerator(KeyStroke.getKeyStroke(STAT, ActionEvent.CTRL_MASK));
 			importation.setAccelerator(KeyStroke.getKeyStroke(IMPORT, ActionEvent.CTRL_MASK));
 			exportation.setAccelerator(KeyStroke.getKeyStroke(EXPORT, ActionEvent.CTRL_MASK));
-			modifR.setAccelerator(KeyStroke.getKeyStroke(MODIF, ActionEvent.CTRL_MASK));
-			fin.setAccelerator(KeyStroke.getKeyStroke(QUITTER, ActionEvent.CTRL_MASK));
+			modifPlace.setAccelerator(KeyStroke.getKeyStroke(MODIF, ActionEvent.CTRL_MASK));
+			quit.setAccelerator(KeyStroke.getKeyStroke(QUITTER, ActionEvent.CTRL_MASK));
 			SwingUtilities.updateComponentTreeUI(this);
 			String tmp = Program.getShortFilename();
 			Program.defaultPlace.setNom(Program.getLabel("Program.DefaultPlace"));
@@ -891,26 +811,26 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		CopyAction copyAction = new CopyAction();
 		PasteAction pasteAction = new PasteAction();
 
-		if (panelInfos == null)
-			panelInfos = new PanelInfos();
+		if (Program.panelInfos == null)
+			Program.panelInfos = new PanelInfos();
 
 		if (m_bHasFrameBuilded) {
 			// On ne recontruit que le menu Fichier pour remettre a jour la
 			// liste des fichiers ouverts récement
 			menuFile.removeAll();
-			menuFile.add(menuNew);
-			menuFile.add(jMenuOpenFile);
+			menuFile.add(newFile);
+			menuFile.add(openFile);
 			menuFile.add(jMenuCloseFile);
 			menuFile.addSeparator();
-			menuFile.add(menuSave);
-			menuFile.add(menuSaveAs);
+			menuFile.add(save);
+			menuFile.add(saveAs);
 			menuFile.addSeparator();
 			menuFile.add(importation);
 			menuFile.add(exportation);
 			menuFile.addSeparator();
 			menuFile.add(statistiques);
 			menuFile.add(tableau);
-			menuFile.add(visual);
+			menuFile.add(showFile);
 			if (!Program.getGlobalConfigString("LAST_OPEN1", "").isEmpty()) {
 				menuFile.addSeparator();
 				menuFile.add(jMenuReopen1);
@@ -922,7 +842,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			if (!Program.getGlobalConfigString("LAST_OPEN4", "").isEmpty())
 				menuFile.add(jMenuReopen4);
 			menuFile.addSeparator();
-			menuFile.add(fin);
+			menuFile.add(quit);
 			return;
 		}
 
@@ -959,7 +879,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		version.setFont(new Font("Dialog", 0, 10));
 		update.setFont(new Font("Dialog", 0, 10));
 		add(Program.tabbedPane, "grow, hidemode 3, wrap");
-		add(panelInfos, "grow, hidemode 3, wrap");
+		add(Program.panelInfos, "grow, hidemode 3, wrap");
 		add(update, "wrap");
 		add(copyright, "align right, gapright 10, wrap");
 		add(version, "align right, gapright 10, gapbottom 10 ");
@@ -968,7 +888,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		JToolBar toolBar = new JToolBar();
 		AddWineAction addWineAction = new AddWineAction("Infos005", MyCellarImage.WINE, "Infos005", null);
 		m_oAjouterButton = new JButton(addWineAction);
-		ajoutV = new JMenuItem(addWineAction);
+		addWine = new JMenuItem(addWineAction);
 		JButton newButton = new JButton(newAction);
 		newButton.setText("");
 		JButton openButton = new JButton(openAction);
@@ -1025,8 +945,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		toolBar.setFloatable(true);
 		add(toolBar, BorderLayout.NORTH);
 
-		label1.setText(Program.getLabel("Infos001"));
-
 		this.setIconImage(MyCellarImage.ICON.getImage());
 
 		boolean bUpdateAvailable = Server.getInstance().hasAvailableUpdate();
@@ -1038,21 +956,21 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		menuPlace.removeAll();
 		menuEdition.removeAll();
 		menuWine.removeAll();
+		menuAbout.removeAll();
 		menuTools.removeAll();
-		outils.removeAll();
-		menuFile.add(menuNew = new JMenuItem(newAction));
-		menuFile.add(jMenuOpenFile = new JMenuItem(openAction));
+		menuFile.add(newFile = new JMenuItem(newAction));
+		menuFile.add(openFile = new JMenuItem(openAction));
 		menuFile.add(jMenuCloseFile);
 		menuFile.addSeparator();
-		menuFile.add(menuSave = new JMenuItem(saveAction));
-		menuFile.add(menuSaveAs = new JMenuItem(saveAsAction));
+		menuFile.add(save = new JMenuItem(saveAction));
+		menuFile.add(saveAs = new JMenuItem(saveAsAction));
 		menuFile.addSeparator();
 		menuFile.add(importation = new JMenuItem(importFileAction));
 		menuFile.add(exportation = new JMenuItem(exportFileAction));
 		menuFile.addSeparator();
 		menuFile.add(statistiques = new JMenuItem(statAction));
 		menuFile.add(tableau = new JMenuItem(createTabAction));
-		menuFile.add(visual = new JMenuItem(showFileAction));
+		menuFile.add(showFile = new JMenuItem(showFileAction));
 		if (!Program.getGlobalConfigString("LAST_OPEN1", "").isEmpty()) {
 			menuFile.addSeparator();
 			menuFile.add(jMenuReopen1);
@@ -1064,45 +982,45 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (!Program.getGlobalConfigString("LAST_OPEN4", "").isEmpty())
 			menuFile.add(jMenuReopen4);
 		menuFile.addSeparator();
-		menuFile.add(fin);
-		menuPlace.add(ajoutR = new JMenuItem(addPlaceAction));
-		menuPlace.add(modifR = new JMenuItem(modifyPlaceAction));
-		menuPlace.add(supprR = new JMenuItem(deletePlaceAction));
-		menuWine.add(ajoutV = new JMenuItem(addWineAction));
-		menuWine.add(rechercherV = new JMenuItem(searchAction));
+		menuFile.add(quit);
+		menuPlace.add(addPlace = new JMenuItem(addPlaceAction));
+		menuPlace.add(modifPlace = new JMenuItem(modifyPlaceAction));
+		menuPlace.add(delPlace = new JMenuItem(deletePlaceAction));
+		menuWine.add(addWine = new JMenuItem(addWineAction));
+		menuWine.add(searchWine = new JMenuItem(searchAction));
 		menuEdition.add(jMenuCut = new JMenuItem(cutAction));
 		menuEdition.add(jMenuCopy = new JMenuItem(copyAction));
 		menuEdition.add(jMenuPaste = new JMenuItem(pasteAction));
-		menuTools.add(Aide);
-		menuTools.addSeparator();
-		menuTools.add(jMenuCheckUpdate);
-		menuTools.addSeparator();
-		menuTools.add(news);
-		outils.add(param);
-		outils.add(vignobles);
-		outils.add(bottleCapacity);
-		outils.add(history);
-		outils.add(tocreate);
-		outils.add(jMenuImportXmlPlaces);
-		outils.add(jMenuExportXmlPlaces);
-		outils.add(jMenuExportXml);
-		outils.add(jMenuSetConfig);
-		menuTools.add(about);
-		ajoutV.setAccelerator(KeyStroke.getKeyStroke(AJOUTERV, ActionEvent.CTRL_MASK));
-		ajoutR.setAccelerator(KeyStroke.getKeyStroke(AJOUTERR, ActionEvent.CTRL_MASK));
-		supprR.setAccelerator(KeyStroke.getKeyStroke(SUPPR, ActionEvent.CTRL_MASK));
-		visual.setAccelerator(KeyStroke.getKeyStroke(VISUAL, ActionEvent.CTRL_MASK));
+		menuAbout.add(Aide);
+		menuAbout.addSeparator();
+		menuAbout.add(jMenuCheckUpdate);
+		menuAbout.addSeparator();
+		menuAbout.add(news);
+		menuTools.add(param);
+		menuTools.add(vignobles);
+		menuTools.add(bottleCapacity);
+		menuTools.add(history);
+		menuTools.add(tocreate);
+		menuTools.add(jMenuImportXmlPlaces);
+		menuTools.add(jMenuExportXmlPlaces);
+		menuTools.add(jMenuExportXml);
+		menuTools.add(jMenuSetConfig);
+		menuAbout.add(about);
+		addWine.setAccelerator(KeyStroke.getKeyStroke(AJOUTERV, ActionEvent.CTRL_MASK));
+		addPlace.setAccelerator(KeyStroke.getKeyStroke(AJOUTERR, ActionEvent.CTRL_MASK));
+		delPlace.setAccelerator(KeyStroke.getKeyStroke(SUPPR, ActionEvent.CTRL_MASK));
+		showFile.setAccelerator(KeyStroke.getKeyStroke(VISUAL, ActionEvent.CTRL_MASK));
 		history.setAccelerator(KeyStroke.getKeyStroke(HISTORY, ActionEvent.CTRL_MASK));
-		rechercherV.setAccelerator(KeyStroke.getKeyStroke(RECHERCHE, ActionEvent.CTRL_MASK));
+		searchWine.setAccelerator(KeyStroke.getKeyStroke(RECHERCHE, ActionEvent.CTRL_MASK));
 		tableau.setAccelerator(KeyStroke.getKeyStroke(TABLEAUX, ActionEvent.CTRL_MASK));
 		statistiques.setAccelerator(KeyStroke.getKeyStroke(STAT, ActionEvent.CTRL_MASK));
 		importation.setAccelerator(KeyStroke.getKeyStroke(IMPORT, ActionEvent.CTRL_MASK));
 		exportation.setAccelerator(KeyStroke.getKeyStroke(EXPORT, ActionEvent.CTRL_MASK));
-		modifR.setAccelerator(KeyStroke.getKeyStroke(MODIF, ActionEvent.CTRL_MASK));
-		fin.setAccelerator(KeyStroke.getKeyStroke(QUITTER, ActionEvent.CTRL_MASK));
-		menuSave.setAccelerator(KeyStroke.getKeyStroke(SAVE, ActionEvent.CTRL_MASK));
-		menuNew.setAccelerator(KeyStroke.getKeyStroke(NEW, ActionEvent.CTRL_MASK));
-		jMenuOpenFile.setAccelerator(KeyStroke.getKeyStroke('O', ActionEvent.CTRL_MASK));
+		modifPlace.setAccelerator(KeyStroke.getKeyStroke(MODIF, ActionEvent.CTRL_MASK));
+		quit.setAccelerator(KeyStroke.getKeyStroke(QUITTER, ActionEvent.CTRL_MASK));
+		save.setAccelerator(KeyStroke.getKeyStroke(SAVE, ActionEvent.CTRL_MASK));
+		newFile.setAccelerator(KeyStroke.getKeyStroke(NEW, ActionEvent.CTRL_MASK));
+		openFile.setAccelerator(KeyStroke.getKeyStroke('O', ActionEvent.CTRL_MASK));
 		jMenuCut.setAccelerator(KeyStroke.getKeyStroke('X', ActionEvent.CTRL_MASK));
 		jMenuCopy.setAccelerator(KeyStroke.getKeyStroke('C', ActionEvent.CTRL_MASK));
 		jMenuPaste.setAccelerator(KeyStroke.getKeyStroke('V', ActionEvent.CTRL_MASK));
@@ -1111,8 +1029,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oMenuBar.add(menuEdition);
 		m_oMenuBar.add(menuPlace);
 		m_oMenuBar.add(menuWine);
-		m_oMenuBar.add(outils);
 		m_oMenuBar.add(menuTools);
+		m_oMenuBar.add(menuAbout);
 		// Ajouter la bar du menu à la frame
 		this.setJMenuBar(m_oMenuBar);
 
@@ -1121,9 +1039,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			setListeners();
 
 		if (bUpdateAvailable) {
-			String sText = Program.getLabel("Infos385");
-			sText = sText.replaceFirst("A1", Server.getInstance().getAvailableVersion());
-			sText = sText.replaceFirst("A2", MyCellarVersion.mainVersion + "-" + MyCellarVersion.version);
+			String sText = MessageFormat.format(Program.getLabel("Infos385"), Server.getInstance().getAvailableVersion(), MyCellarVersion.mainVersion + "-" + MyCellarVersion.version);
 			update.setText(sText);
 		}
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -1160,7 +1076,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		});
 
-		fin.addActionListener((e) -> quitter_actionPerformed());
+		quit.addActionListener((e) -> quitter_actionPerformed());
 		about.addActionListener((e) -> about_actionPerformed());
 		param.addActionListener((e) -> parametre_actionPerformed());
 		news.addActionListener((e) -> news_actionPerformed());
@@ -1181,17 +1097,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		jMenuSetConfig.addActionListener((e) -> menuSetConfig_actionPerformed());
 		jMenuCheckUpdate.addActionListener((e) -> menuCheckUpdate_actionPerformed());
 
-		this.addKeyListener(new java.awt.event.KeyListener() {
-			public void keyReleased(java.awt.event.KeyEvent e) {
-			}
-
-			public void keyPressed(java.awt.event.KeyEvent e) {
-				keylistener_actionPerformed(e);
-			}
-
-			public void keyTyped(java.awt.event.KeyEvent e) {
-			}
-		});
 		m_bHasListener = true;
 	}
 
@@ -1206,11 +1111,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 	public static void updateMainPanel() {
 		Debug("updateMainPanel: Trying to display panelInfos...");
-		panelInfos.setVisible(Program.tabbedPane.getTabCount() == 0);
-
-		Program.tabbedPane.setVisible(!panelInfos.isVisible());
-		if (panelInfos.isVisible())
-			panelInfos.refresh();
+		int count = Program.tabbedPane.getTabCount();
+		Program.panelInfos.setVisible(count == 0);
+		Program.tabbedPane.setVisible(count > 0);
+		if (count == 0)
+			Program.panelInfos.refresh();
 		boolean foundArmoire = false;
 		for (Rangement r : Program.getCave()) {
 			if (!r.isCaisse()) {
@@ -1230,12 +1135,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
 			int retour_jfc = boiteFichier.showSaveDialog(this);
-			File nomFichier = new File("");
-			String fic = "";
 			if (retour_jfc == JFileChooser.APPROVE_OPTION) {
 				Program.setFileSavable(true);
-				nomFichier = boiteFichier.getSelectedFile();
-				fic = nomFichier.getAbsolutePath();
+				File nomFichier = boiteFichier.getSelectedFile();
+				String fic = nomFichier.getAbsolutePath();
 				int index = fic.indexOf(".");
 				if (index == -1) {
 					fic = fic.concat(".sinfo");
@@ -1289,14 +1192,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	void menuCheckUpdate_actionPerformed() {
 		if (Server.getInstance().hasAvailableUpdate()) {
-			String sText = Program.getLabel("Infos384");
-			sText = sText.replaceFirst("A1", Server.getInstance().getAvailableVersion());
-			sText = sText.replaceFirst("A2", MyCellarVersion.version);
-			String title = Program.getError("Error032");
-			JOptionPane.showMessageDialog(this, sText, title, JOptionPane.INFORMATION_MESSAGE);
+			new Erreur(MessageFormat.format(Program.getLabel("Infos384"), Server.getInstance().getAvailableVersion(), MyCellarVersion.version), true);
 		} else {
-			JOptionPane.showMessageDialog(this, Program.getLabel("Infos388"), Program.getLabel("Infos052"),
-					JOptionPane.INFORMATION_MESSAGE);
+			new Erreur(Program.getLabel("Infos388"), true);
 		}
 	}
 
@@ -1628,6 +1526,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 					Program.showException(e1);
 				}
 			}
+			Program.modifyPlace.updateView();
 			try {
 				Program.tabbedPane.setSelectedComponent(Program.modifyPlace);
 			} catch (IllegalArgumentException e) {
@@ -1923,7 +1822,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				Utils.addCloseButton(Program.tabbedPane, Program.showfile);
 				Program.tabbedPane.setSelectedComponent(Program.showfile);
 			}
-			// selectedPanel = Program.showfile;
 			updateMainPanel();
 		}
 	}
@@ -1939,7 +1837,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if (Program.showtrash == null) {
-				Program.showtrash = new ShowFile(true);
+				Program.showtrash = new ShowFile(ShowType.TRASH);
 				Program.tabbedPane.add(Program.getLabel("Main.ShowTrash"), Program.showtrash);
 				Program.tabbedPane.setIconAt(Program.tabbedPane.getTabCount() - 1, MyCellarImage.TRASH);
 				Utils.addCloseButton(Program.tabbedPane, Program.showtrash);

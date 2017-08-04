@@ -2,12 +2,14 @@ package mycellar.requester;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.LinkedList;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
+import mycellar.BottleColor;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.Rangement;
@@ -19,39 +21,51 @@ import mycellar.vignobles.Appelation;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 14/01/17
+ * @version 0.4
+ * @since 03/08/17
  */
 
 public class Predicates {
 
-	/*public static IPredicate<Bouteille> isWhite = new IPredicate<Bouteille>() {
+	public static IPredicate<Bouteille> color = new IPredicate<Bouteille>() {
 
 		@Override
-		public boolean apply(Bouteille type) {
-			return type.isWhite();
+		public boolean apply(Bouteille bottle) {
+			return apply(bottle, "");
 		}
 
 		@Override
-		public boolean apply(Bouteille type, Object compare) {
-			return apply(type);
+		public boolean apply(Bouteille bottle, Object compare) {
+			return bottle.getColor().equals(((BottleColor)compare).name());
 		}
 
 		@Override
 		public boolean isValueRequired() {
-			return false;
+			return true;
 		}
 
 		@Override
 		public String getName() {
-			return "isWhite";
+			return Program.getLabel("AddVin.Color");
 		}
 
 		@Override
 		public Object askforValue() {
-			return null;
+			JPanel panel = new JPanel();
+			panel.setLayout(new MigLayout("", "grow", "[]"));
+			JComboBox<BottleColor> liste = new JComboBox<BottleColor>();
+			liste.addItem(BottleColor.NONE);
+			liste.addItem(BottleColor.RED);
+			liste.addItem(BottleColor.PINK);
+			liste.addItem(BottleColor.WHITE);
+			panel.add(new JLabel(Program.getLabel("Predicates.SelectColor")), "wrap");
+			panel.add(liste);
+			JOptionPane.showMessageDialog(null, panel,
+			        "",
+			        JOptionPane.PLAIN_MESSAGE);
+			return liste.getSelectedItem();
 		}
-	};*/
+	};
 
 	public static IPredicate<Bouteille> name = new IPredicate<Bouteille>() {
 		
@@ -177,20 +191,59 @@ public class Predicates {
 		
 		@Override
 		public Object askforValue() {
-			LinkedList<String> list = new LinkedList<String>();
-			list.add("");
+			JPanel panel = new JPanel();
+			panel.setLayout(new MigLayout("", "grow", "[]"));
+			JComboBox<Rangement> liste = new JComboBox<Rangement>();
 			for(Rangement r : Program.getCave()) {
-				list.add(r.getNom());
+				liste.addItem(r);
 			}
-			return JOptionPane.showInputDialog(null, Program.getLabel("Predicates.SelectPlace"),
-			        null,
-			        JOptionPane.PLAIN_MESSAGE, 
-			        null, 
-			        list.toArray(), 
-			        list.getFirst());
+			panel.add(new JLabel(Program.getLabel("Predicates.SelectPlace")), "wrap");
+			panel.add(liste);
+			JOptionPane.showMessageDialog(null, panel,
+			        "",
+			        JOptionPane.PLAIN_MESSAGE);
+			return ((Rangement)liste.getSelectedItem()).getNom();
 		}
 	};
 	
+	
+	public static IPredicate<Bouteille> capacity = new IPredicate<Bouteille>() {
+
+		@Override
+		public boolean apply(Bouteille bottle) {
+			return apply(bottle, "");
+		}
+
+		@Override
+		public boolean apply(Bouteille bottle, Object compare) {
+			return bottle.getType().equals(compare);
+		}
+
+		@Override
+		public boolean isValueRequired() {
+			return true;
+		}
+
+		@Override
+		public String getName() {
+			return Program.getLabel("Infos134");
+		}
+
+		@Override
+		public Object askforValue() {
+			JPanel panel = new JPanel();
+			panel.setLayout(new MigLayout("", "grow", "[]"));
+			JComboBox<String> liste = new JComboBox<String>();
+			for(String val : Program.half)
+				liste.addItem(val);
+			panel.add(new JLabel(Program.getLabel("Predicates.SelectSize")), "wrap");
+			panel.add(liste);
+			JOptionPane.showMessageDialog(null, panel,
+			        "",
+			        JOptionPane.PLAIN_MESSAGE);
+			return liste.getSelectedItem();
+		}
+	};
 	
 	public static IPredicate<Appelation> AND = new IPredicate<Appelation>() {
 

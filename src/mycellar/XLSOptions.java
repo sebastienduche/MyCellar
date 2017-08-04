@@ -2,7 +2,7 @@ package mycellar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -23,8 +23,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 13/11/16
+ * @version 1.1
+ * @since 04/08/17
  */
 public class XLSOptions extends JDialog {
   private JPanel jPanel1 = new JPanel();
@@ -110,7 +110,7 @@ public class XLSOptions extends JDialog {
     if (bold.equals("bold")) {
       MyCellarCheckBox1.setSelected(true);
     }
-    LinkedList<MyCellarFields> columns = MyCellarFields.getFieldsList();
+    ArrayList<MyCellarFields> columns = MyCellarFields.getFieldsList();
     nb_colonnes = columns.size();
     colonnes = new MyCellarLabel[nb_colonnes];
     export = new MyCellarCheckBox[nb_colonnes];
@@ -134,7 +134,7 @@ public class XLSOptions extends JDialog {
     }
     jPanel2.setLayout(new MigLayout("","[grow][grow]",""));
     jPanel2.setFont(Program.font_panel);
-    valider.setText("OK");
+    valider.setText(Program.getLabel("Main.OK"));
     valider.addActionListener((e) -> valider_actionPerformed(e));
     annuler.setText(Program.getLabel("Infos055"));
     annuler.addActionListener((e) -> dispose());

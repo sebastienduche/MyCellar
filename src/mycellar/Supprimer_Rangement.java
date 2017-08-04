@@ -6,7 +6,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -26,8 +29,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.3
- * @since 13/11/16
+ * @version 6.9
+ * @since 29/07/17
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
@@ -94,6 +97,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 				choix.addItem(Program.getCave(i).getNom());
 			}
 		}
+		RangementUtils.putTabStock();
 		this.setVisible(true);
 	}
 
@@ -115,7 +119,6 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 			if (num_select != 0) {
 				preview.setEnabled(true);
 				Rangement rangement = Program.getCave(num_select - 1);
-				rangement.putTabStock();
 				// Nombre d'emplacement
 				num_emplacement = rangement.getNbEmplacements();
 				
@@ -136,9 +139,9 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 					Debug("Selecting Box place...");
 					nb_case_use_total = 0;
 					for (i = 0; i < num_emplacement; i++) {
-						SupprimerLine line = new SupprimerLine("", i + start_caisse, 0, rangement.getNbCaseUseCaisse(i + start_caisse));
+						SupprimerLine line = new SupprimerLine("", i + start_caisse, 0, rangement.getNbCaseUse(i));
 						listSupprimer.add(line);
-						nb_case_use_total += rangement.getNbCaseUseCaisse(i + start_caisse);
+						nb_case_use_total += rangement.getNbCaseUse(i);
 					}
 				}
 
@@ -154,7 +157,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 						label_final.setText(Program.getLabel("Infos066")); //"Il reste 1 vin dans le rangement!!!");
 					}
 					else {
-						label_final.setText(Program.getLabel("Infos067") + " " + nb_case_use_total + " " + Program.getLabel("Infos068")); //Il reste n vins dans le rangement
+						label_final.setText(MessageFormat.format(Program.getLabel("Infos072"), nb_case_use_total)); //Il reste n vins dans le rangement
 					}
 				}
 				table.updateUI();
@@ -177,69 +180,54 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 	void supprimer_actionPerformed(ActionEvent e) {
 		try {
 			Debug("supprimer_actionPerforming...");
-			final int num_select;
+			final int num_select = choix.getSelectedIndex();
 			String erreur_txt1;
 			String erreur_txt2;
 
-			num_select = choix.getSelectedIndex();
 			// Vérifier l'état du rangement avant de le supprimer et demander confirmation
 			if (num_select > 0) {
+				if(Program.GetCaveLength() == 1) {
+					new Erreur(Program.getError("SupprimerRangement.ForbiddenToDelete"));
+					return;
+				}
 				Rangement cave = Program.getCave(num_select - 1);
 				if (nb_case_use_total == 0) {
 					String tmp = cave.getNom();
 					Debug("MESSAGE: Delete this place: "+tmp+"?");
-					erreur_txt1 = new String(Program.getError("Error139") + " " + tmp + " ?"); //Voulez vous supprimer le rangement
+					erreur_txt1 = MessageFormat.format(Program.getError("Error139"), tmp); //Voulez vous supprimer le rangement
 					if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))        
 					{
 						Program.removeCave(cave);
 						choix.removeItemAt(num_select);
 						choix.setSelectedIndex(0);
-						if(Program.GetCaveLength() == 0)
-							Start.enableAll(false);
 						Program.updateAllPanels();
 					}  
 				}
 				else {
 					String sName = cave.getNom();
 					if (nb_case_use_total == 1) {
-						erreur_txt1 = new String(Program.getLabel("Infos067") + " " + nb_case_use_total + " " + Program.getLabel("Infos069") + " " + sName + "."); //il reste 1 bouteille dans
+						erreur_txt1 = MessageFormat.format(Program.getLabel("Infos073"), sName); //il reste 1 bouteille dans
 					}
 					else {
-						erreur_txt1 = new String(Program.getLabel("Infos067") + " " + nb_case_use_total + " " + Program.getLabel("Infos228") + " " + sName + "."); //Il reste n bouteilles dans
+						erreur_txt1 = MessageFormat.format(Program.getLabel("Infos074"), nb_case_use_total, sName); //Il reste n bouteilles dans
 					}
 					erreur_txt2 = Program.getError("Error039"); //"Voulez vous supprimer le rangement et les BOUTEILLES restantes?");
 					Debug("MESSAGE: Delete this place "+sName+" and all bottle(s) ("+nb_case_use_total+")?");
 					if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))        
 					{
-						class Run implements Runnable
-						{
+						class Run implements Runnable {
 							@Override
 							public void run() {
 								//Suppression des bouteilles présentes dans le rangement
-								int tmp_all = Program.getStorage().getAllNblign();
-								Rangement cave = Program.getCave(num_select - 1);
-								String tmp_nom = cave.getNom();
+								String tmp_nom = Program.getCave(num_select - 1).getNom();
 
-								Bouteille b = null;
-								for (int i = 0; i < tmp_all; i++) {
-									b = (Bouteille) Program.getStorage().getAllAt(i);
-									if (b != null) {
-										String empl_tmp = new String(b.getEmplacement());
-										if (empl_tmp.compareTo(tmp_nom) == 0) {
-											Program.getStorage().addHistory(History.DEL, b);
-											Program.getStorage().deleteWine(b);
-											Program.setToTrash(b);
-											i--;
-										}
-									}
+								List<Bouteille> bottleList = Program.getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
+								for(Bouteille b : bottleList) {
+									Program.getStorage().addHistory(History.DEL, b);
+									Program.getStorage().deleteWine(b);
+									Program.setToTrash(b);
 								}
-								//Suppression du rangement
-								if (Program.GetCaveLength() > 1) {
-									Program.removeCave(cave);
-								}
-
-								if(Program.GetCaveLength() == 0)
-									Start.enableAll(false);
+								Program.removeCave(cave);
 								Program.updateAllPanels();
 							} 
 						}
@@ -269,8 +257,6 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 			}
 			else {
 				Rangement rangement = Program.getCave(num_select -1);
-				if(!rangement.isCaisse())
-					rangement.putTabStock();
 				LinkedList<Rangement> rangements = new LinkedList<Rangement>();
 				rangements.add(rangement);
 				MyXmlDom.writeRangements("", rangements, false);
@@ -346,6 +332,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		if(!updateView)
 			return;
 		updateView = false;
+		RangementUtils.putTabStock();
 		choix.removeAllItems();
 		choix.addItem("");
 		for (int i = 0; i < Program.GetCaveLength(); i++) {

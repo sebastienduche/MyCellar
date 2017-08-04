@@ -9,9 +9,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
@@ -50,8 +49,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.0
- * @since 13/05/16
+ * @version 6.5
+ * @since 03/08/17
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -214,32 +213,12 @@ public class Export extends JPanel implements ITabListener, Runnable {
 
 		int val = Program.getCaveConfigInt("EXPORT_DEFAULT", 0);
 
-		if (val == 0) {
-			MyCellarRadioButtonXML.setSelected(true);
-			options.setEnabled(false);
-		}
-		else {
-			if (val == 1) {
-				MyCellarRadioButtonHTML.setSelected(true);
-				options.setEnabled(true);
-			}
-			else {
-				if (val == 2) {
-					MyCellarRadioButtonCSV.setSelected(true);
-					options.setEnabled(true);
-				}
-				else {
-					if (val == 3) {
-						MyCellarRadioButtonXLS.setSelected(true);
-						options.setEnabled(true);
-					}
-					else {
-						MyCellarRadioButtonPDF.setSelected(true);
-						options.setEnabled(true);
-					}
-				}
-			}
-		}
+		MyCellarRadioButtonXML.setSelected(val == 0);
+		MyCellarRadioButtonHTML.setSelected(val == 1);
+		MyCellarRadioButtonCSV.setSelected(val == 2);
+		MyCellarRadioButtonXLS.setSelected(val == 3);
+		MyCellarRadioButtonPDF.setSelected(val == 4);
+		options.setEnabled(val != 0);
 
 		this.setVisible(true);
 	}
@@ -262,83 +241,52 @@ public class Export extends JPanel implements ITabListener, Runnable {
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		if (MyCellarRadioButtonPDF.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTM);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		}
 		if (MyCellarRadioButtonXLS.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTM);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		}
 		if (MyCellarRadioButtonCSV.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTM);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		}
 		if (MyCellarRadioButtonHTML.isSelected()) {
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTM);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
 		}
 		if (MyCellarRadioButtonXML.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTM);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
 		}
-		int retour_jfc = boiteFichier.showSaveDialog(this);
-		File nomFichier = new File("");
-		String fic = "";
-		if (retour_jfc == JFileChooser.APPROVE_OPTION) {
-			nomFichier = boiteFichier.getSelectedFile();
-			String nom = boiteFichier.getSelectedFile().getName();
+
+		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File nomFichier = boiteFichier.getSelectedFile();
+			String nom = nomFichier.getName();
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
 			//Erreur utilisation de caractères interdits
 			if (nom.indexOf("\"") != -1 || nom.indexOf(";") != -1 || nom.indexOf("<") != -1 || nom.indexOf(">") != -1 || nom.indexOf("?") != -1 || nom.indexOf("\\") != -1 || nom.indexOf("/") != -1 ||
 					nom.indexOf("|") != -1 || nom.indexOf("*") != -1) {
-				new Erreur(Program.getError("Error126"), "");
+				new Erreur(Program.getError("Error126"));
 			}
 			else {
-				fic = nomFichier.getAbsolutePath();
+				String fic = nomFichier.getAbsolutePath();
 				int index = fic.indexOf(".");
 				if (index == -1) {
 					if (MyCellarRadioButtonXML.isSelected()) {
 						fic = fic.concat(".xml");
 					}
-					if (MyCellarRadioButtonHTML.isSelected()) {
+					else if (MyCellarRadioButtonHTML.isSelected()) {
 						fic = fic.concat(".htm");
 					}
-					if (MyCellarRadioButtonCSV.isSelected()) {
+					else if (MyCellarRadioButtonCSV.isSelected()) {
 						fic = fic.concat(".csv");
 					}
-					if (MyCellarRadioButtonXLS.isSelected()) {
+					else if (MyCellarRadioButtonXLS.isSelected()) {
 						Filtre filtre = (Filtre) boiteFichier.getFileFilter();
 						if (filtre.toString().equals("xls"))
 							fic = fic.concat(".xls");
 						if (filtre.toString().equals("ods"))
 							fic = fic.concat(".ods");
 					}
-					if (MyCellarRadioButtonPDF.isSelected()) {
+					else if (MyCellarRadioButtonPDF.isSelected()) {
 						fic = fic.concat(".pdf");
 					}
 				}
@@ -353,25 +301,17 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	 */
 	void openit_actionPerformed() {
 
-		int resul = 0;
 		String nom = file.getText().trim();
 		if (!nom.isEmpty()) {
 			File f = new File(nom);
-			try {
-				new FileInputStream(f);
-			}
-			catch (FileNotFoundException fnfe1) {
-				//Insertion classe Erreur
+			if(!f.exists() || f.isDirectory()) {
 				end.setText("");
-				String erreur_txt1 = new String(Program.getError("Error020") + " " + nom + " " + Program.getError("Error021")); //Fichier non trouv�
-				String erreur_txt2 = Program.getError("Error022"); //Vérifier le chemin
-				new Erreur(erreur_txt1, erreur_txt2);
-				resul = 1;
+				//Fichier non trouvé
+				//Vérifier le chemin
+				new Erreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
+				return;
 			}
-
-			if (resul == 0) {
-				Program.open(new File(file.getText()));
-			}
+			Program.open(f);
 		}
 	}
 
@@ -402,8 +342,8 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			options.setSelected(false);
 		}
 		else if(MyCellarRadioButtonHTML.isSelected()) {
-			LinkedList<MyCellarFields> list = MyCellarFields.getFieldsList();
-			LinkedList<MyCellarFields> cols = Program.getHTMLColumns();
+			ArrayList<MyCellarFields> list = MyCellarFields.getFieldsList();
+			ArrayList<MyCellarFields> cols = Program.getHTMLColumns();
 			ManageColumnModel modelColumn = new ManageColumnModel(list, cols);
 			JTable table = new JTable(modelColumn);
 			TableColumnModel tcm = table.getColumnModel();
@@ -415,7 +355,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			JPanel panel = new JPanel();
 			panel.add(new JScrollPane(table));
 			JOptionPane.showMessageDialog(this, panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
-			cols = new LinkedList<MyCellarFields>();
+			cols = new ArrayList<MyCellarFields>();
 			Program.setModified();
 			LinkedList<Integer> properties = modelColumn.getSelectedColumns();
 			for(MyCellarFields c : list) {
@@ -448,12 +388,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	 */
 	void jradio_actionPerformed() {
 		end.setText("");
-		if (MyCellarRadioButtonXML.isSelected()) {
-			options.setEnabled(false);
-		}
-		else {
-			options.setEnabled(true);
-		}
+		options.setEnabled(!MyCellarRadioButtonXML.isSelected());
 	}
 
 	/**
@@ -526,9 +461,6 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	 */
 	public void run() {
 		try {
-			int resul = 0;
-			//int nb_pdf = 0;
-			//boolean more2000 = false;
 			valider.setEnabled(false);
 			openit.setEnabled(false);
 			String nom = file.getText().trim();
@@ -538,51 +470,80 @@ public class Export extends JPanel implements ITabListener, Runnable {
 
 			if (nom.isEmpty()) {
 				end.setText("");
-				resul = 1;
 				new Erreur(Program.getError("Error106")); //Veuillez saisir un nom de fichier.
+				return;
 			}
 
-			if (resul == 0) {
-				String extension = nom;
-				if (nom.length() >= 4) {
-					extension = nom.substring(nom.length() - 4);
+			String extension = nom;
+			if (nom.length() >= 4) {
+				extension = nom.substring(nom.length() - 4);
+			}
+			if (MyCellarRadioButtonXML.isSelected()) {
+				if (!extension.equalsIgnoreCase(".xml")) {
+					end.setText("");
+					new Erreur(MessageFormat.format(Program.getError("Error087"), extension), true); //L'extension du fichier n'est pas XML
+					return;
 				}
-				if (MyCellarRadioButtonXML.isSelected()) {
-					if (extension.toLowerCase().compareTo(".xml") != 0) {
-						new Erreur(Program.getError("Error087") + " " + extension, "", true); //L'extension du fichier n'est pas XML
+				if (!isJFile) {
+					if (nom.indexOf("\"") != -1 || nom.indexOf(";") != -1 || nom.indexOf("<") != -1 || nom.indexOf(">") != -1 || nom.indexOf("?") != -1 || nom.indexOf("|") != -1 || nom.indexOf("*") != -1) {
 						end.setText("");
-						resul = 1;
+						new Erreur(Program.getError("Error126"));
+						return;
 					}
-					if (resul == 0 && !isJFile) {
-						if (nom.indexOf("\"") != -1 || nom.indexOf(";") != -1 || nom.indexOf("<") != -1 || nom.indexOf(">") != -1 || nom.indexOf("?") != -1 || nom.indexOf("|") != -1 || nom.indexOf("*") != -1) {
-							resul = 1;
-							new Erreur(Program.getError("Error126"), "");
-							end.setText("");
-						}
-					}
+				}
 
-					if (resul == 0) {
+				boolean ok;
+				file.setText(path);
+				File aFile = new File(file.getText());
+				if(!aFile.exists())
+					aFile.createNewFile();
+				if(bottles == null) {
+					ok = ListeBouteille.writeXML(aFile);
+				}
+				else
+				{
+					ListeBouteille liste = new ListeBouteille();
+					for(Bouteille b: bottles)
+						liste.getBouteille().add(b);
+					ok = ListeBouteille.writeXML(liste, aFile);
+				}
+				if (ok) {
+					end.setText(Program.getLabel("Infos154")); //"Export terminé."
+					openit.setEnabled(true);
+				}
+				else {
+					end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
+				}
+			}
+			else {
+				if (MyCellarRadioButtonHTML.isSelected()) {
+					if (extension.compareToIgnoreCase(".htm") != 0 && extension.compareToIgnoreCase("html") != 0) {
+						end.setText("");
+						new Erreur(MessageFormat.format(Program.getError("Error107"), extension), true); //L'extension du fichier n'est pas HTML
+						return;
+					}
+					file.setText(path);
+					if( null == bottles)
+						bottles = Program.getStorage().getAllList();
+					if (RangementUtils.write_HTML(file.getText().trim(), bottles, Program.getHTMLColumns())) {
+						end.setText(Program.getLabel("Infos154")); //"Export terminé."
+						openit.setEnabled(true);
+					}
+					else {
+						end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
+					}
+				}
+				else {
+					if (MyCellarRadioButtonCSV.isSelected()) {
+						if (extension.compareToIgnoreCase(".csv") != 0) {
+							end.setText("");
+							new Erreur(MessageFormat.format(Program.getError("Error108"), extension), true); //L'extension du fichier n'est pas CSV
+							return;
+						}
 						file.setText(path);
-						File aFile = new File(file.getText());
-						if(!aFile.exists())
-							aFile.createNewFile();
-						if(bottles == null) {
-							if(ListeBouteille.writeXML(aFile))
-								resul = 0;
-							else
-								resul = -2;
-						}
-						else
-						{
-							ListeBouteille liste = new ListeBouteille();
-							for(Bouteille b: bottles)
-								liste.getBouteille().add(b);
-							if(ListeBouteille.writeXML(liste, aFile))
-								resul = 0;
-							else
-								resul = -2;
-						}
-						if (resul != -2) {
+						if( bottles == null)
+							bottles = Program.getStorage().getAllList();
+						if (RangementUtils.write_CSV(file.getText().trim(), bottles)) {
 							end.setText(Program.getLabel("Infos154")); //"Export terminé."
 							openit.setEnabled(true);
 						}
@@ -590,154 +551,43 @@ public class Export extends JPanel implements ITabListener, Runnable {
 							end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
 						}
 					}
-				}
-				else {
-					if (MyCellarRadioButtonHTML.isSelected()) {
-						if (extension.compareToIgnoreCase(".htm") != 0 && extension.compareToIgnoreCase("html") != 0) {
-							end.setText("");
-							new Erreur(Program.getError("Error107") + " " + extension, "", true); //L'extension du fichier n'est pas HTML
-							resul = 1;
-						}
-						if (resul == 0) {
+					else {
+						if (MyCellarRadioButtonXLS.isSelected()) {
+							if (extension.compareToIgnoreCase(".xls") != 0 && extension.compareToIgnoreCase(".ods") != 0) {
+								end.setText("");
+								new Erreur(MessageFormat.format(Program.getError("Error034"), extension), true); //L'extension du fichier n'est pas CSV
+								return;
+							}
 							file.setText(path);
-							if( null == bottles)
+							if(bottles == null)
 								bottles = Program.getStorage().getAllList();
-							if (Rangement.write_HTML(file.getText().trim(), bottles, Program.getHTMLColumns())) {
+							int resul = RangementUtils.write_XLS(file.getText().trim(), bottles, false);
+							if (resul != -2) {
 								end.setText(Program.getLabel("Infos154")); //"Export terminé."
 								openit.setEnabled(true);
 							}
 							else {
 								end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
+								new Erreur(Program.getError("Error160"), Program.getError("Error161"));
 							}
 						}
-					}
-					else {
-						if (MyCellarRadioButtonCSV.isSelected()) {
-							if (extension.compareToIgnoreCase(".csv") != 0) {
-								end.setText("");
-								new Erreur(Program.getError("Error108") + " " + extension, "", true); //L'extension du fichier n'est pas CSV
-								resul = 1;
-							}
-							if (resul == 0) {
+						else {
+							if (MyCellarRadioButtonPDF.isSelected()) {
+								if (extension.compareToIgnoreCase(".pdf") != 0) {
+									end.setText("");
+									new Erreur(MessageFormat.format(Program.getError("Error157"), extension), true); //L'extension du fichier n'est pas PDF
+									return;
+								}
 								file.setText(path);
 								if( bottles == null)
 									bottles = Program.getStorage().getAllList();
-								resul = Rangement.write_CSV(file.getText().trim(), bottles);
-								if (resul != -2) {
+
+								if (exportToPDF(bottles, new File(path))) {
 									end.setText(Program.getLabel("Infos154")); //"Export terminé."
 									openit.setEnabled(true);
 								}
 								else {
 									end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
-								}
-							}
-						}
-						else {
-							if (MyCellarRadioButtonXLS.isSelected()) {
-								if (extension.compareToIgnoreCase(".xls") != 0 && extension.compareToIgnoreCase(".ods") != 0) {
-									end.setText("");
-									new Erreur(Program.getError("Error034") + " " + extension, "", true); //L'extension du fichier n'est pas CSV
-									resul = 1;
-								}
-								if (resul == 0) {
-									file.setText(path);
-									if(bottles == null)
-										bottles = Program.getStorage().getAllList();
-									resul = Rangement.write_XLS(file.getText().trim(), bottles, false);
-									if (resul != -2) {
-										end.setText(Program.getLabel("Infos154")); //"Export terminé."
-										openit.setEnabled(true);
-									}
-									else {
-										end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
-										new Erreur(Program.getError("Error160"), Program.getError("Error161"));
-									}
-								}
-							}
-							else {
-								if (MyCellarRadioButtonPDF.isSelected()) {
-									if (extension.compareToIgnoreCase(".pdf") != 0) {
-										end.setText("");
-										new Erreur(Program.getError("Error157") + " " + extension, "", true); //L'extension du fichier n'est pas PDF
-										resul = 1;
-									}
-									if (resul == 0) {
-										file.setText(path);
-										if(bottles == null)
-											bottles = Program.getStorage().getAllList();
-										/*int nblign = bottles.length;
-                    if (nblign > 2000) {
-                      more2000 = true;
-                      int i = 0;
-                      while (nblign > 2000 && resul != -2) {
-                        Bouteille all2[] = new Bouteille[2000];
-                        for (int j = 0; j < 2000; j++) {
-                          all2[j] = bottles[j + i];
-                        }
-                        i += 2000;
-                        nb_pdf++;
-                        nblign -= 2000;
-                        Rangement.write_XML(Program.getPreviewXMLFileName(), all2, 2000, false);
-                        ExampleXML2PDF pdf = new ExampleXML2PDF();
-                        try {
-                          pdf.convertXML2PDF(new File(Program.getPreviewXMLFileName()), new File(fileXSL), new File(path.substring(0, path.length() - 4) + nb_pdf + ".pdf"));
-                        }
-                        catch (TransformerException ex) {
-                          resul = -2;
-                          Program.showException(ex, false);
-                        }
-                        catch (FOPException ex) {resul = -2;
-                        Program.showException(ex, false);
-                        }
-                        catch (IOException ex) {resul = -2;
-                        new Erreur(Program.getError("Error160"), Program.getError("Error161"));
-                        }
-                      }
-                      if (resul != -2) {
-                        Bouteille all2[] = new Bouteille[nblign];
-                        for (int j = 0; j < nblign; j++) {
-                          all2[j] = bottles[j + i];
-                        }
-                        nb_pdf++;
-                        Rangement.write_XML(Program.getPreviewXMLFileName(), all2, nblign, false);
-                        ExampleXML2PDF pdf = new ExampleXML2PDF();
-                        try {
-                          pdf.convertXML2PDF(new File(Program.getPreviewXMLFileName()), new File(fileXSL), new File(path.substring(0, path.length() - 4) + nb_pdf + ".pdf"));
-                        }
-                        catch (TransformerException ex) {
-                          resul = -2;
-                          Program.showException(ex, false);
-                        }
-                        catch (FOPException ex) {resul = -2;
-                        Program.showException(ex, false);
-                        }
-                        catch (IOException ex) {resul = -2;
-                        new Erreur(Program.getError("Error160"), Program.getError("Error161"));
-                        }
-                      }
-                    }
-                    else*/ {
-                    	if( bottles == null)
-                    		bottles = Program.getStorage().getAllList();
-
-                    	if (resul != -2) {
-                    		resul = exportToPDF(bottles, new File(path));
-                    	}
-                    }
-                    if (resul != -2) {
-                    	end.setText(Program.getLabel("Infos154")); //"Export terminé."
-                    	//if (!more2000) {
-                    	openit.setEnabled(true);
-                    	/*}
-                      else {
-                        new Erreur(Program.getError("Error180"), nb_pdf + " " + Program.getError("Error181"), true,
-                            Program.getError("Error033"));
-                      }*/
-                    }
-                    else {
-                    	end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
-                    }
-									}
 								}
 							}
 						}
@@ -752,12 +602,11 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	}
 
 	/**
-	 * @param resul
+	 * @param bottles
 	 * @param nomFichier
 	 * @return
 	 */
-	public static int exportToPDF(LinkedList<Bouteille> bottles, File nomFichier) {
-		int resul = 0;
+public static boolean exportToPDF(LinkedList<Bouteille> bottles, File nomFichier) {
 		try {
 			PDFTools pdf = PDFTools.createPDFFile();
 			PDFProperties properties = Program.getPDFProperties();
@@ -768,10 +617,11 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			pdf.save(nomFichier);
 			new Erreur(MessageFormat.format(Program.getLabel("Main.savedFile"), nomFichier.getAbsolutePath()), true);
 		}
-		catch (Exception ex) {resul = -2;
-		new Erreur(Program.getError("Error160"), Program.getError("Error161"));
+		catch (Exception ex) {
+			new Erreur(Program.getError("Error160"), Program.getError("Error161"));
+			return false;
 		}
-		return resul;
+		return true;
 	}
 
 	/**

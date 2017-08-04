@@ -2,7 +2,8 @@ package mycellar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.LinkedList;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -23,8 +24,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.9
- * @since 11/05/17
+ * @version 2.2
+ * @since 04/08/17
  */
 public class PDFOptions extends JDialog {
   private JPanel jPanel1 = new JPanel();
@@ -118,7 +119,7 @@ public class PDFOptions extends JDialog {
     if (border.equals("ON")) {
       MyCellarCheckBox3.setSelected(true);
     }
-    LinkedList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
+    ArrayList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
     nb_colonnes = listColumns.size();
     colonnes = new MyCellarLabel[nb_colonnes];
     MyCellarLabel5 = new MyCellarLabel[nb_colonnes];
@@ -155,7 +156,7 @@ public class PDFOptions extends JDialog {
     }
     jPanel2.setLayout(new MigLayout("", "[grow][grow][grow]",""));
     jPanel2.setFont(Program.font_panel);
-    valider.setText("OK");
+    valider.setText(Program.getLabel("Main.OK"));
     valider.addActionListener((e) -> valider_actionPerformed(e));
     annuler.setText(Program.getLabel("Infos055"));
     annuler.addActionListener((e) -> dispose());
@@ -227,7 +228,7 @@ public class PDFOptions extends JDialog {
       }
       this.dispose();
       if (col_size_max > 19) {
-        new Erreur(Program.getLabel("Infos273") + " " + col_size_max + "cms", "", true);
+        new Erreur(MessageFormat.format(Program.getLabel("Infos273"), col_size_max), true);
       }
     }
     catch (Exception exc) {

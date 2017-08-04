@@ -1,6 +1,6 @@
 package mycellar.showfile;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import mycellar.Bouteille;
 import mycellar.Start;
@@ -12,15 +12,15 @@ import mycellar.core.MyCellarFields;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 24/02/16
+ * @version 0.3
+ * @since 17/07/17
  */
 
 public class ShowFileModel extends TableShowValues {
 
 	private static final long serialVersionUID = -3120339216315975530L;
 
-	private LinkedList<ShowFileColumn> list = new LinkedList<ShowFileColumn>();
+	private ArrayList<ShowFileColumn> list = new ArrayList<ShowFileColumn>();
 
 	@Override
 	public int getColumnCount() {
@@ -84,16 +84,16 @@ public class ShowFileModel extends TableShowValues {
 	}
 	
 	public void removeAllColumns() {
-		list = new LinkedList<ShowFileColumn>();
+		list = new ArrayList<ShowFileColumn>();
 		fireTableStructureChanged();
 	}
 	
-	public void setColumns(LinkedList<ShowFileColumn> cols) {
+	public void setColumns(ArrayList<ShowFileColumn> cols) {
 		list = cols;
 		fireTableStructureChanged();
 	}
 
-	public LinkedList<ShowFileColumn> getColumns() {
+	public ArrayList<ShowFileColumn> getColumns() {
 		return list;
 	}
 }

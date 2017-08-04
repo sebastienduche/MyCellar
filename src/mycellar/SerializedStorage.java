@@ -2,11 +2,8 @@ package mycellar;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
@@ -20,8 +17,8 @@ import mycellar.vignobles.CountryVignobles;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.4
- * @since 11/05/17
+ * @version 4.1
+ * @since 04/08/17
  */
 
 public class SerializedStorage implements Storage {
@@ -43,6 +40,7 @@ public class SerializedStorage implements Storage {
 		if(this.listBouteilles.bouteille == null)
 			this.listBouteilles.bouteille = new LinkedList<Bouteille>();
 		for(Bouteille b: this.listBouteilles.bouteille) {
+			b.updateID();
 			if(!listeUniqueBouteille.contains(b.getNom()))
 				listeUniqueBouteille.add(b.getNom());
 		}
@@ -52,6 +50,7 @@ public class SerializedStorage implements Storage {
 		this.listBouteilles.bouteille = listBouteilles;
 		listeUniqueBouteille.clear();
 		for(Bouteille b: listBouteilles) {
+			b.updateID();
 			if(!listeUniqueBouteille.contains(b.getNom()))
 				listeUniqueBouteille.add(b.getNom());
 		}
@@ -60,6 +59,7 @@ public class SerializedStorage implements Storage {
 	public void addBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles.getBouteille().addAll(listBouteilles.getBouteille());
 		for(Bouteille b: listBouteilles.bouteille) {
+			b.updateID();
 			if(!listeUniqueBouteille.contains(b.getNom()))
 				listeUniqueBouteille.add(b.getNom());
 		}
@@ -122,7 +122,7 @@ public class SerializedStorage implements Storage {
 			sValue = Program.getError("Error190");
 		if( _nValue == 3 )
 			sValue = Program.getError("Error182");
-		if( JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue + " " + Program.getError("Error183"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
+		if( JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
 			return false;
 
 		Program.setModified();
@@ -131,8 +131,8 @@ public class SerializedStorage implements Storage {
 			return true;
 		}
 		LinkedList<History> tmpList = new LinkedList<History>();
-		for (History h : m_HistoryList) {
-			if (h.GetType() == _nValue) {
+		for (History h : m_HistoryList.getHistory()) {
+			if (h.getType() == _nValue) {
 				tmpList.addLast(h);
 			}
 		}
@@ -175,7 +175,7 @@ public class SerializedStorage implements Storage {
 	 * @param line int: numéro de ligne (1...n+1)
 	 * @param column int: numéro de colonne (1...n+1)
 	 */
-	public boolean deleteWine(String nom2, int annee, String empl, int num_empl, int line, int column) {
+	private boolean deleteWine(String nom2, int annee, String empl, int num_empl, int line, int column) {
 
 		int num_empl1 = 0;
 		int line1 = 0;
@@ -277,13 +277,7 @@ public class SerializedStorage implements Storage {
 		Debug("AddWine: Adding bottle " + wine.getNom() + " " + wine.getAnnee() + " " + wine.getEmplacement() + " " + wine.getNumLieu() + " " + wine.getLigne() + " " + wine.getColonne());
 
 		Program.setModified();
-		int prix = 0;
-		try {
-			prix = Integer.parseInt(Program.convertStringFromHTMLString(wine.getPrix()));
-		}
-		catch (NumberFormatException nfe) {
-			prix = 0;
-		}
+		int prix = (int)wine.getPriceDouble();
 		if (Bouteille.prix_max < prix) {
 			Bouteille.prix_max = prix;
 		}
@@ -516,16 +510,7 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public boolean saveHistory() {
-		boolean resul = true;
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(Program.getWorkDir(true) + "history.sinfo"));
-			oos.writeObject(m_HistoryList);
-			oos.close();
-		}
-		catch (FileNotFoundException fnfe) {resul = false;
-		}
-		catch (IOException ioe) {resul = false;
-		}
+		boolean resul = HistoryList.writeXML(new File(Program.getWorkDir(true) + "history.xml"));
 		Debug("Program: Saving History OK");
 		return resul;
 	}
@@ -533,37 +518,39 @@ public class SerializedStorage implements Storage {
 	@Override
 	public boolean loadHistory() {
 		// Historique
-		boolean resul = true;
+		boolean resul = false;
 		File f1 = new File( Program.getWorkDir(true) + "history.sinfo");
-		if(!f1.exists()) {
-			m_HistoryList = new HistoryList();
-			return false;
-		}
-		ObjectInputStream ois = null;
-		try {
-			ois = new ObjectInputStream(new FileInputStream(f1));
-			m_HistoryList = (HistoryList) ois.readObject();
-			ois.close();
-			Debug("Loading History OK");
-		}
-		catch (IOException ex) {
-			Program.showException(ex, false);
-			Debug("ERROR: Loading History");
-			resul = false;
-			m_HistoryList = new HistoryList();
+		if(f1.exists()) {
+			ObjectInputStream ois = null;
 			try {
+				ois = new ObjectInputStream(new FileInputStream(f1));
+				m_HistoryList = (HistoryList) ois.readObject();
 				ois.close();
+				Debug("Loading History OK");
 			}
-			catch (IOException ioe) {}
-			catch (NullPointerException ioe) {}
-			f1.delete();
+			catch (IOException ex) {
+				Debug("ERROR: Loading History");
+				resul = false;
+				try {
+					ois.close();
+				}
+				catch (IOException ioe) {}
+				catch (NullPointerException ioe) {}
+				f1.delete();
+			}
+			catch (ClassNotFoundException ex1) {
+				resul = false;
+				Debug("ERROR: Loading History");
+				m_HistoryList = new HistoryList();
+				f1.delete();
+			}
 		}
-		catch (ClassNotFoundException ex1) {
-			resul = false;
-			Debug("SerializedStorage: ERROR: Loading History");
+		if(!resul)
+			resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + "history.xml"));
+		if(!resul)
 			m_HistoryList = new HistoryList();
-		}
-
+		if(f1.exists())
+			f1.delete();
 		return resul;
 	}
 
@@ -571,13 +558,15 @@ public class SerializedStorage implements Storage {
 	public HistoryList getHistory() {
 		return m_HistoryList;
 	}
+	
+	@Override
+	public void setHistory(HistoryList list) {
+		m_HistoryList = list;
+	}
 
 	@Override
 	public void close() {
 		if(listBouteilles != null)
 			listBouteilles.resetBouteille();
 	}
-	
-	
-
 }

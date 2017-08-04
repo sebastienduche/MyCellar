@@ -10,8 +10,8 @@ import javax.swing.table.AbstractTableModel;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 10/05/17
+ * @version 0.9
+ * @since 12/07/17
  */
 public class TableauValues extends AbstractTableModel {
 	public final static int ETAT = 0;
@@ -65,12 +65,15 @@ public class TableauValues extends AbstractTableModel {
 			return new String(Integer.toString(nombre_ligne)) + " " + Program.getLabel("Infos061");
 		case 3:
 			int nombre_vin = 0;
-			for (int k = 0; k < r.getNbEmplacements(); k++) {
-				nombre_vin += r.getNbCaseUse(k);
-			}
 			if (r.isCaisse()) {
 				nombre_vin = r.getNbCaseUseAll();
 			}
+			else {
+				for (int k = 0; k < r.getNbEmplacements(); k++) {
+					nombre_vin += r.getNbCaseUse(k);
+				}
+			}
+				
 			if (nombre_vin <= 1)
 				return new String(Integer.toString(nombre_vin)) + " " + Program.getLabel("Infos063");
 			return new String(Integer.toString(nombre_vin)) + " " + Program.getLabel("Infos064");

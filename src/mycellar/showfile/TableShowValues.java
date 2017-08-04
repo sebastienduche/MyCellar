@@ -1,12 +1,17 @@
 package mycellar.showfile;
 
+import java.text.MessageFormat;
 import java.util.LinkedList;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import mycellar.Bouteille;
+import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Rangement;
+import mycellar.RangementUtils;
+import mycellar.actions.OpenAddVinAction;
 
 
 /**
@@ -15,8 +20,8 @@ import mycellar.Rangement;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.7
- * @since 13/05/17
+ * @version 3.2
+ * @since 03/08/17
  */
 
 public class TableShowValues extends AbstractTableModel {
@@ -75,7 +80,7 @@ public class TableShowValues extends AbstractTableModel {
 	  Bouteille b = monVector.get(row);
 	  switch(column)
 	  {
-	  case 0:
+	  case ETAT:
 		  return values[row];
 	  case NAME:
 		  String nom = b.getNom();
@@ -124,21 +129,21 @@ public class TableShowValues extends AbstractTableModel {
    * @return boolean
    */
   public boolean isCellEditable(int row, int column) {
-    if (column == ETAT 
-     || column == NAME 
-     || column == TYPE 
-     || column == YEAR 
-     || column == PRICE 
-     || column == PLACE
-     || column == NUM_PLACE
-     || column == LINE
-     || column == COLUMN
-     || column == MATURITY
-     || column == PARKER
-     || column == APPELLATION
-     || column == COMMENT) {
-      return true;
-    }
+//    if (column == ETAT 
+//     || column == NAME 
+//     || column == TYPE 
+//     || column == YEAR 
+//     || column == PRICE 
+//     || column == PLACE
+//     || column == NUM_PLACE
+//     || column == LINE
+//     || column == COLUMN
+//     || column == MATURITY
+//     || column == PARKER
+//     || column == APPELLATION
+//     || column == COMMENT) {
+//      return true;
+//    }
     return false;
   }
 
@@ -179,7 +184,7 @@ public class TableShowValues extends AbstractTableModel {
     	break;
     case YEAR:
         if( Program.hasYearControl() && !Bouteille.isValidYear( (String) value) )
-       	  javax.swing.JOptionPane.showMessageDialog(null, Program.getError("Error053"), Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
+       	  new Erreur(Program.getError("Error053"));
         else{
         	Program.getStorage().removeAnnee(b.getAnneeInt());
         	b.setAnnee((String)value);	
@@ -213,7 +218,7 @@ public class TableShowValues extends AbstractTableModel {
     			nValueToCheck = num_empl;
     		}
             catch (Exception e) {
-              javax.swing.JOptionPane.showMessageDialog(null, Program.getError("Error196"), Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
+              new Erreur(Program.getError("Error196"));
               bError = true;
             }
     	}
@@ -223,7 +228,7 @@ public class TableShowValues extends AbstractTableModel {
     			nValueToCheck = line;
     		}
             catch (Exception e) {
-              javax.swing.JOptionPane.showMessageDialog(null, Program.getError("Error196"), Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
+              new Erreur(Program.getError("Error196"));
               bError = true;
             }
     	}
@@ -233,7 +238,7 @@ public class TableShowValues extends AbstractTableModel {
     			nValueToCheck = column1;
     		}
             catch (Exception e) {
-              javax.swing.JOptionPane.showMessageDialog(null, Program.getError("Error196"), Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
+              new Erreur(Program.getError("Error196"));
               bError = true;
             }
     	}
@@ -241,24 +246,30 @@ public class TableShowValues extends AbstractTableModel {
     	if ( !bError && (column == NUM_PLACE || column == LINE || column == COLUMN) ) {
     		if (rangement != null && !rangement.isCaisse() && nValueToCheck <= 0)
     		{
-    			javax.swing.JOptionPane.showMessageDialog(null, Program.getError("Error197"), Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
+    			new Erreur(Program.getError("Error197"));
                 bError = true;
     		}
     	}
     		
     	if ( !bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
     		// Controle de l'emplacement de la bouteille
-    		if(rangement.canAddBottle(num_empl, line, column1))
+    		int tmpNumEmpl = num_empl;
+			int tmpLine = line;
+			int tmpCol = column1;
+			if(!rangement.isCaisse()) {
+				tmpNumEmpl--;
+				tmpCol--;
+				tmpLine--;
+			}
+			if(rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol))
     		{
 		    	Bouteille bTemp = null;
 		    	if(!rangement.isCaisse())
 		    		bTemp = rangement.getBouteille(num_empl-1, line-1, column1-1);
 		    	if( bTemp != null) {
-		    		String sText = Program.convertStringFromHTMLString(bTemp.getNom()) + " " + Program.getError("Error059");
-		    		javax.swing.JOptionPane.showMessageDialog(null, sText, Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
+		    		new Erreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), bTemp.getAnnee()));
 		    	}
 		    	else {
-		    		Rangement oldPlace = b.getRangement();
 		    		if(column == PLACE)
 		    			b.setEmplacement((String)value);
 		    		else if(column == NUM_PLACE)
@@ -275,20 +286,20 @@ public class TableShowValues extends AbstractTableModel {
 		    			b.setLigne(0);
 		    			b.setColonne(0);
 		    		}
-		    		if(oldPlace != null)
-		    			oldPlace.putTabStock();
-		    		b.getRangement().putTabStock();
+		    		RangementUtils.putTabStock();
 		    	}
     		}
     		else {
-    			String sText = Program.getError("Error198");
-    			sText = sText.replaceFirst("A1", Integer.toString(num_empl));
-    			sText = sText.replaceFirst("A2", Integer.toString(line));
-    			sText = sText.replaceFirst("A3", Integer.toString(column1));
-    			sText = sText.replaceFirst("A4", rangement.getNom());
-    			if (rangement.isCaisse())
-    				sText = Program.getError("Error154");
-    			javax.swing.JOptionPane.showMessageDialog(null, sText, Program.getError("Error015"), javax.swing.JOptionPane.ERROR_MESSAGE);
+    			if (rangement.isCaisse()) {
+					new Erreur(Program.getError("Error154"));
+				}
+				else {
+					if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getError("Error015"), javax.swing.JOptionPane.YES_NO_OPTION)) {
+						LinkedList<Bouteille> list = new LinkedList<Bouteille>();
+						list.add(b);
+						new OpenAddVinAction(list).actionPerformed(null);
+					}
+				}
     		}
     		break;
     	}

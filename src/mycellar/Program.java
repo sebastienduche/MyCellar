@@ -15,9 +15,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
+import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
@@ -32,7 +32,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.net.util.Base64;
 
+import java.text.MessageFormat;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -41,6 +43,7 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
@@ -70,8 +73,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 15.0
- * @since 13/05/17
+ * @version 16.1
+ * @since 04/08/17
  */
 
 public class Program {
@@ -92,10 +95,12 @@ public class Program {
 	public static Importer importer = null;
 	public static ShowFile showfile = null;
 	public static ShowFile showtrash = null;
+	public static ShowFile showerrors = null;
 	public static Search search = null;
 	public static ShowHistory history = null;
 	public static VineyardPanel vignobles = null;
 	public static ShowMoreHistory Morehistory = null;
+	public static PanelInfos panelInfos = null;
 	public static AddVin addWine = null;
 	public static JTabbedPane tabbedPane = new JTabbedPane();
 	public static String archive = null;
@@ -108,6 +113,7 @@ public class Program {
 	private static boolean bDebug = false;
 	protected static LinkedList<Rangement> m_oCave = new LinkedList<Rangement>();
 	private static LinkedList<Bouteille> trash = new LinkedList<Bouteille>();
+	private static LinkedList<MyCellarError> errors = new LinkedList<MyCellarError>();
 	public static Rangement defaultPlace = new Rangement("");
 	private static String m_sWorkDir = null;
 	protected static String m_sTempDir = null;
@@ -140,6 +146,7 @@ public class Program {
 	private static LinkedList<File> dirToDelete = new LinkedList<File>();
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
+	public static char priceSeparator;
 
 	/**
 	 * init
@@ -197,11 +204,24 @@ public class Program {
 			}
 
 			verifyConfigFile();
+			initPriceSeparator();
 			cleanAndUpgrade();
 		}
 		catch (Exception e) {
 			showException(e);
 		}
+	}
+	
+	private static void initPriceSeparator() {
+		 String sVirgule;
+		 if(Program.hasConfigCaveKey("PRICE_SEPARATOR")) {
+			 sVirgule = Program.getCaveConfigString("PRICE_SEPARATOR","");
+			 priceSeparator = sVirgule.charAt(0);
+		 }
+		 else {
+			 java.text.DecimalFormat df = new java.text.DecimalFormat();
+			 priceSeparator = df.getDecimalFormatSymbols().getDecimalSeparator();
+		 }
 	}
 
 	/**
@@ -253,7 +273,7 @@ public class Program {
 	 * Pour nettoyer et mettre a jour le programme
 	 */
 	protected static void cleanAndUpgrade() {
-		String sVersion = getCaveConfigString("VERSION", "");
+		/*String sVersion = getCaveConfigString("VERSION", "");
 		if(sVersion.isEmpty()) {
 			putCaveConfigString("VERSION", m_sVersion);
 			return;
@@ -269,20 +289,34 @@ public class Program {
 			putCaveConfigInt("HAUTEUR_LV", n);
 			putCaveConfigString("VERSION", m_sVersion);
 		}
-		removeGlobalConfigString("SPLASHSCREEN");
+		removeGlobalConfigString("SPLASHSCREEN");*/
 	}
 
 
 	/**
 	 * setLanguage
-	 * @param ext String
+	 * @param lang String
 	 * @return boolean
 	 */
-	public static boolean setLanguage(String ext) {
-		Program.Debug("set Language : "+ext);
-		boolean bLoaded = LanguageFileLoader.loadLanguageFiles( ext );
-		//buildColumnsList();
-		return bLoaded;
+	public static boolean setLanguage(String lang) {
+		Program.Debug("set Language : "+lang);
+		tabbedPane.removeAll();
+		addWine = null;
+		createPlace = null;
+		creer_tableau = null;
+		export = null;
+		history = null;
+		modifyPlace = null;
+		search = null;
+		showfile = null;
+		showtrash = null;
+		vignobles = null;
+		boolean load = LanguageFileLoader.loadLanguageFiles( lang );
+		if(panelInfos != null) {
+			panelInfos.setLabels();
+			Start.updateMainPanel();
+		}
+		return load;
 	}
 
 	/**
@@ -447,6 +481,14 @@ public class Program {
 	public static void setToTrash(Bouteille b) {
 		trash.add(b);
 	}
+	
+	public static LinkedList<MyCellarError> getErrors() {
+		return errors;
+	}
+
+	public static void addError(MyCellarError error) {
+		errors.add(error);
+	}
 
 	/**
 	 * deletePlaceFile: Suppression d'un objet sérialisé.
@@ -478,7 +520,7 @@ public class Program {
 	public static void write_XSL() {
 
 		Debug("Program: Writing XSL...");
-		String tmp, tmp1, tmp2, tmp3;
+		String tmp;
 		File f;
 		FileWriter ficout;
 
@@ -492,114 +534,60 @@ public class Program {
 			tmp = new String("<html>\n<body>\n<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\">\n<tr bgcolor=\"#FFFF00\">\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp1 = getCaveConfigString("MARK1_TITLE","");
-			tmp2 = Program.convertToHTMLString(tmp1);
-			tmp1 = getCaveConfigString("MARK2_TITLE","");
-			tmp3 = Program.convertToHTMLString(tmp1);
-			tmp = new String("<td>" + tmp2 + "</td>\n<td>" + tmp3 + "</td>\n");
+			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos208")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos189")) + "</td>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp1 = getCaveConfigString("MARK3_TITLE","");
-			tmp2 = Program.convertToHTMLString(tmp1);
-			tmp1 = getCaveConfigString("MARK4_TITLE","");
-			tmp3 = Program.convertToHTMLString(tmp1);
-			tmp = new String("<td>" + tmp2 + "</td>\n<td>" + tmp3 + "</td>\n");
+			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos134")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos105")) + "</td>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp1 = getCaveConfigString("MARK5_TITLE","");
-			tmp2 = Program.convertToHTMLString(tmp1);
-			tmp1 = getCaveConfigString("MARK6_TITLE","");
-			tmp3 = Program.convertToHTMLString(tmp1);
-			tmp = new String("<td>" + tmp2 + "</td>\n<td>" + tmp3 + "</td>\n");
+			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos158")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos028")) + "</td>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp1 = getCaveConfigString("MARK7_TITLE","");
-			tmp2 = Program.convertToHTMLString(tmp1);
-			tmp1 = getCaveConfigString("MARK8_TITLE","");
-			tmp3 = Program.convertToHTMLString(tmp1);
-			tmp = new String("<td>" + tmp2 + "</td>\n<td>" + tmp3 + "</td>\n");
+			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos083")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos135")) + "</td>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp1 = getCaveConfigString("MARK9_TITLE","");
-			tmp2 = Program.convertToHTMLString(tmp1);
-			tmp = new String("<td>" + tmp2 + "</td>\n");
+			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos137")) + "</td>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			if (getCaveConfigInt("OTHER1", 0) == 1) {
-				tmp1 = getCaveConfigString("MARK10_TITLE","");
-				tmp2 = Program.convertToHTMLString(tmp1);
-				tmp = new String("<td>" + tmp2 + "</td>\n");
-				ficout.write(tmp);
-				ficout.flush();
-			}
-			if (getCaveConfigInt("OTHER2", 0) == 1) {
-				tmp1 = getCaveConfigString("MARK11_TITLE","");
-				tmp2 = Program.convertToHTMLString(tmp1);
-				tmp = new String("<td>" + tmp2 + "</td>\n");
-				ficout.write(tmp);
-				ficout.flush();
-			}
-			if (getCaveConfigInt("OTHER3", 0) == 1) {
-				tmp1 = getCaveConfigString("MARK12_TITLE","");
-				tmp2 = Program.convertToHTMLString(tmp1);
-				tmp = new String("<td>" + tmp2 + "</td>\n");
-				ficout.write(tmp);
-				ficout.flush();
-			}
-			tmp = new String("</tr>\n<xsl:for-each select=\"" + getCaveConfigString("TYPE_XML","") + "\">\n<xsl:sort select=\"" + getCaveConfigString("XML_MARK1","") + "\"/>\n<tr>\n");
+			tmp = new String("</tr>\n<xsl:for-each select=\"cellar/name\">\n<xsl:sort select=\"name\"/>\n<tr>\n");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK1","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"name\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK2","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"year\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK3","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"half\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK4","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"place\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK5","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"num-place\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK6","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"line\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK7","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"column\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK8","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"price\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK9","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"comment\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK13","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"dateOfC\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK14","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"parker\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK15","") + "\"/></td>");
+			tmp = new String("<td><xsl:value-of select=\"appellation\"/></td>");
 			ficout.write(tmp);
 			ficout.flush();
-			if (getCaveConfigInt("OTHER1", 0) == 1) {
-				tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK10","") + "\"/></td>");
-				ficout.write(tmp);
-				ficout.flush();
-			}
-			if (getCaveConfigInt("OTHER2", 0) == 1) {
-				tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK11","") + "\"/></td>");
-				ficout.write(tmp);
-				ficout.flush();
-			}
-			if (getCaveConfigInt("OTHER3", 0) == 1) {
-				tmp = new String("<td><xsl:value-of select=\"" + getCaveConfigString("XML_MARK12","") + "\"/></td>");
-				ficout.write(tmp);
-				ficout.flush();
-			}
 			tmp = new String("</tr>\n</xsl:for-each>\n</table>\n</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>");
 			ficout.write(tmp);
 			ficout.flush();
@@ -636,22 +624,10 @@ public class Program {
 	 */
 	private static void writeOtherObject() {
 		Debug("Program: Writing Other Objects...");
-		boolean resul = true;
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(m_sWorkDir + "/static_all.sinfo"));
-			oos.writeObject(getStorage().getAllList());
-			oos.close();
-		}
-		catch (FileNotFoundException fnfe) {resul = false;
-		}
-		catch (IOException ioe) {resul = false;
-		}
 
-		if(!MyXmlDom.writeYears(getStorage().getAnneeList()))
-			resul = false;
+		MyXmlDom.writeYears(getStorage().getAnneeList());
 
 		getStorage().saveHistory();
-		putCaveConfigString("SAVE", resul ? "OK" : "KO");
 		Debug("Program: Writing Other Objects... Done");
 	}
 
@@ -667,11 +643,12 @@ public class Program {
 		else {
 			m_oCave = MyXmlDom.readMyCellarXml("");
 			loadYears();
-
+			loadMaxPrice();
 			getStorage().loadHistory();
 		}
 		if(m_oCave == null) {
 			m_oCave = new LinkedList<Rangement>();
+			m_oCave.add(defaultPlace);
 			return false;
 		}
 		return true;
@@ -687,40 +664,15 @@ public class Program {
 		//Récupération de la liste des fichiers
 		Debug("Program: Collecting file list");
 		LinkedList<Rangement> cave = new LinkedList<Rangement>();
-		ObjectInputStream ois = null;
 		boolean resul = true;
 		//Lecture des fichiers et écriture de MyCellar.xml
 		Debug("Program: Writing MyCellar.xml");
 		boolean bresul = getStorage().readRangement(cave);
 		if (bresul && !cave.isEmpty()) {
-			f1 = new File( m_sWorkDir + "/static_all.sinfo");
-			try {
-				ois = new ObjectInputStream(new FileInputStream(f1));
-				getStorage().setAll( (Bouteille[]) ois.readObject());
-				ois.close();
-				Debug("Program: Loading all bottles OK");
-			}
-			catch (IOException ex) {
-				Debug("Program: ERROR: Loading all bottles");
-				resul = false;
-				try {
-					ois.close();
-				}
-				catch (IOException ioe) {}
-				catch (NullPointerException ioe) {}
-				f1.delete();
-			}
-			catch (ClassNotFoundException ex1) {resul = false;
-			Debug("Program: ERROR: Loading all bottles");
-			}
 			loadYears();
 		}
 		else {
 			Debug("Program: WARNING: Destroying internal files");
-			f1 = new File( m_sWorkDir + "/static_all.sinfo");
-			f1.delete();
-			f1 = new File( m_sWorkDir + "/static_year.sinfo");
-			f1.delete();
 			f1 = new File( m_sWorkDir + "/static_col.sinfo");
 			f1.delete();
 			cave = null;
@@ -729,17 +681,13 @@ public class Program {
 		if (!resul) {
 			Debug("Program: WARNING: Loading Unsuccessful");
 			getStorage().setAll(null);
-			putCaveConfigString("SAVE", "KO");
 		}
 		if(cave != null)
 			m_oCave = cave;
 	}
 
 	private static void loadYears() {
-		File f1 = new File( m_sWorkDir + "/static_year.sinfo");
-		if(f1.exists())
-			f1.delete();
-		f1 = new File(getXMLYearsFileName());
+		File f1 = new File(getXMLYearsFileName());
 		if(f1.exists()) {
 			getStorage().setAnnee(MyXmlDom.readYears());
 		}
@@ -760,6 +708,19 @@ public class Program {
 			}
 		}
 	}
+	
+	public static void loadMaxPrice() {
+		
+		OptionalDouble i = getStorage().getAllList().stream().mapToDouble(bouteille -> bouteille.getPriceDouble()).max();
+		if(i.isPresent())
+			Bouteille.prix_max = (int) i.getAsDouble();
+		else
+			Bouteille.prix_max = 0;
+	}
+	
+	public static int getCellarValue() {	
+		return (int) getStorage().getAllList().stream().mapToDouble(bouteille -> bouteille.getPriceDouble()).sum();
+	}
 
 
 	/**
@@ -778,7 +739,7 @@ public class Program {
 			}
 		}
 		else {
-			new Erreur(Program.getError("Error162"), "");
+			new Erreur(Program.getError("Error162"));
 		}
 	}
 
@@ -940,12 +901,6 @@ public class Program {
 			}
 			catch (NullPointerException npe) {}
 		}
-		File fToDelete = new File(getWorkDir(true)+"static_all.sinfo");
-		if(fToDelete.exists())
-			fToDelete.delete();
-		fToDelete = new File(getWorkDir(true)+"place.ini");
-		if(fToDelete.exists())
-			fToDelete.delete();
 
 		if(isListCaveModified())
 			MyXmlDom.writeMyCellarXml(cave,"");
@@ -1059,7 +1014,7 @@ public class Program {
 	 *
 	 * @param _oCave LinkedList<Rangement>
 	 */
-	public static void SetCave(LinkedList<Rangement> _oCave) {
+	public static void setCave(LinkedList<Rangement> _oCave) {
 		m_oCave = _oCave;
 	}
 
@@ -1155,8 +1110,7 @@ public class Program {
 			setFileSavable(f.exists());
 
 		if(!f.exists()) {
-			String sErr = Program.getError("Error020") + " " + f.getAbsolutePath() + " " + Program.getError("Error021");
-			new Erreur(sErr, "");
+			new Erreur(MessageFormat.format(Program.getError("Error020"), f.getAbsolutePath())); //Fichier non trouvé);
 
 			putGlobalConfigString("LAST_OPEN1", list.pop());
 			putGlobalConfigString("LAST_OPEN2", list.pop());
@@ -1222,7 +1176,7 @@ public class Program {
 			Debug("Reading places from file");
 			LinkedList<Rangement> cave = MyXmlDom.readMyCellarXml("");
 			if(cave != null) {
-				Program.SetCave(cave);
+				Program.setCave(cave);
 			}
 		}
 
@@ -1236,10 +1190,9 @@ public class Program {
 			return false;
 		}
 
-		for (Rangement r : getCave()) {
-			r.putTabStock();
-		}
-
+		RangementUtils.putTabStock();
+		if(!Program.getErrors().isEmpty())
+			new OpenShowErrorsAction().actionPerformed(null);
 		CountryVignobles.load();
 		CountryVignobles.addVignobleFromBottles();
 
@@ -1370,7 +1323,7 @@ public class Program {
 
 			if (getCaveConfigInt("FIC_EXCEL", 0) == 1) {
 				//Ecriture Excel
-				Rangement.write_XLS(getCaveConfigString("FILE_EXCEL",""), getStorage().getAllList(), true);
+				RangementUtils.write_XLS(getCaveConfigString("FILE_EXCEL",""), getStorage().getAllList(), true);
 			}
 
 			dirToDelete.add(new File(m_sWorkDir));
@@ -1417,6 +1370,7 @@ public class Program {
 				FileUtils.deleteDirectory(f);
 			}catch(Exception e){
 				Debug("Program: Error deleting "+f.getAbsolutePath());
+				Debug("Program: "+e.getMessage());
 			}
 		}
 	}
@@ -1426,14 +1380,13 @@ public class Program {
 	 */
 	private static void saveProperties() {
 
-		MyXmlDom.writeTypeXml(half);
-		File fToDelete = new File(getWorkDir(true) + "type.ini");
-		if(fToDelete.exists())
-			fToDelete.delete();
-		if(isXMLTypesFileToDelete)
-			fToDelete = new File(getWorkDir(true) + m_sXMLTypesFile);
-		if(fToDelete.exists())
-			fToDelete.delete();
+		if(isXMLTypesFileToDelete) {
+			File fToDelete = new File(getWorkDir(true) + m_sXMLTypesFile);
+			if(fToDelete.exists())
+				fToDelete.delete();
+		}
+		else
+			MyXmlDom.writeTypeXml(half);
 
 		if(inputPropCave != null)
 		{
@@ -1639,11 +1592,11 @@ public class Program {
 		configCave.put(_sKey, _sValue);
 	}
 
-	private static void removeGlobalConfigString( String _sKey )
+	/*private static void removeGlobalConfigString( String _sKey )
 	{
 		if( configGlobal.containsKey(_sKey))
 			configGlobal.remove(_sKey);
-	}
+	}*/
 
 	public static MyLinkedHashMap getCaveConfig()
 	{
@@ -1984,7 +1937,7 @@ public class Program {
 		return getCaveConfigString("SHOWFILE_COLUMN", "");
 	}
 
-	public static void saveHTMLColumns(LinkedList<MyCellarFields> cols) {
+	public static void saveHTMLColumns(ArrayList<MyCellarFields> cols) {
 		String s = "";
 		for(MyCellarFields f : cols) {
 			if(!s.isEmpty())
@@ -1994,8 +1947,8 @@ public class Program {
 		putCaveConfigString("HTMLEXPORT_COLUMN", s);
 	}
 
-	public static LinkedList<MyCellarFields> getHTMLColumns() {
-		LinkedList<MyCellarFields> cols = new LinkedList<MyCellarFields>();
+	public static ArrayList<MyCellarFields> getHTMLColumns() {
+	ArrayList<MyCellarFields> cols = new ArrayList<MyCellarFields>();
 		String s = getCaveConfigString("HTMLEXPORT_COLUMN", "");
 		String [] fields = s.split(";");
 		for(String field : fields) {

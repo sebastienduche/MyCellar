@@ -19,8 +19,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 13/11/16
+ * @version 1.1
+ * @since 04/08/17
  */
 public class Options extends JDialog {
   private MyCellarLabel textControl1 = new MyCellarLabel();
@@ -81,7 +81,7 @@ public class Options extends JDialog {
     textControl2.setText(propriete);
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(0);
-    valider.setText("OK");
+    valider.setText(Program.getLabel("Main.OK"));
     valider.setMnemonic('O');
     value.setText(default_value);
     valider.addActionListener((e) -> valider_actionPerformed(e));
@@ -109,7 +109,7 @@ public class Options extends JDialog {
   }
 
   /**
-   * valider_actionPerformed: Valider la propri�t� et quitter.
+   * valider_actionPerformed: Valider la propriété et quitter.
    *
    * @param e ActionEvent
    */

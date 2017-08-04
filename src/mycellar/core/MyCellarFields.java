@@ -1,6 +1,6 @@
 package mycellar.core;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import mycellar.Program;
 
@@ -10,8 +10,8 @@ import mycellar.Program;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 16/04/16
+ * @version 0.4
+ * @since 26/07/17
  */
 
 public enum MyCellarFields {
@@ -30,7 +30,11 @@ public enum MyCellarFields {
 	COUNTRY(Program.getLabel("Main.Country")),
 	VINEYARD(Program.getLabel("Main.Vignoble")),
 	AOC(Program.getLabel("Main.AppelationAOC")),
-	IGP(Program.getLabel("Main.AppelationIGP"));
+	IGP(Program.getLabel("Main.AppelationIGP")),
+	
+	// Pour l'import de données
+	EMPTY(""),
+	USELESS(Program.getLabel("Infos271"));
 	
 	private String label;
 	
@@ -43,9 +47,9 @@ public enum MyCellarFields {
 		return label;
 	}
 	
-	private static final LinkedList<MyCellarFields> list = new LinkedList<MyCellarFields>();
+	private static final ArrayList<MyCellarFields> list = new ArrayList<MyCellarFields>();
 	
-	public static LinkedList<MyCellarFields> getFieldsList() {
+	public static ArrayList<MyCellarFields> getFieldsList() {
 		if(list.isEmpty()) {
     		list.add(NAME);
     		list.add(YEAR);

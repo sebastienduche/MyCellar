@@ -9,8 +9,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 17/01/16
+ * @version 1.1
+ * @since 18/05/17
  */
 
 public interface Storage {
@@ -29,6 +29,7 @@ public interface Storage {
 	public boolean saveHistory();
 	public boolean loadHistory();
 	public HistoryList getHistory();
+	public void setHistory(HistoryList list);
 	
 	public boolean deleteWine(Bouteille oB);
 	public void addAnnee(int annee);

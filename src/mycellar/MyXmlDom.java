@@ -30,8 +30,8 @@ import java.util.Vector;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 20/04/16
- * @version 1.4
+ * @since 13/07/17
+ * @version 1.8
  */
 
 public class MyXmlDom {
@@ -95,8 +95,9 @@ public class MyXmlDom {
 						// C'est un rangement complexe
 						// ___________________________
 
-						int nb_lignes[];
+						int nb_lignes[]; 
 						int nb_colonnes[];
+						LinkedList<Part> listPart = new LinkedList<Part>();
 						Vector<Integer> oVector = new Vector<Integer>();
 						NodeList internalPlaces = place.getElementsByTagName("internal-place");
 						int nLieu = 0;
@@ -104,15 +105,19 @@ public class MyXmlDom {
 						for (int j = 0; j < internalPlaces.getLength(); j++) {
 							Node nInternal = internalPlaces.item(j);
 							if (nInternal.getNodeType() == Node.ELEMENT_NODE) {
+								Part part = new Part(i);
+								listPart.add(part);
 								Element iPlace = (Element)nInternal;
 								int nLine = Integer.parseInt(iPlace.getAttribute("NbLine"));
 								nb_lignes[nLieu] = nLine;
+								part.setRows(nLine);
 								NodeList Line = iPlace.getElementsByTagName("line");
 								for (int k = 0; k < Line.getLength(); k++) {
 									Node nTempLine = Line.item(k);
 									if (nTempLine.getNodeType() == Node.ELEMENT_NODE) {
 										Element oLine = (Element)nTempLine;
 										int nColumn = Integer.parseInt(oLine.getAttribute("NbColumn"));
+										part.getRow(k).setCol(nColumn);
 										oVector.add(new Integer(nColumn));
 									}
 								}
@@ -127,7 +132,8 @@ public class MyXmlDom {
 						}
 						else {
 							names.add(sName);
-							oRangementVector.add(new Rangement(sName, nPlace, nb_lignes, nb_colonnes));
+							//Rangement rangement = new Rangement(sName, nPlace, nb_lignes, nb_colonnes);
+							oRangementVector.add(new Rangement(sName, listPart));
 						}
 					}
 
@@ -328,17 +334,17 @@ public class MyXmlDom {
 	public static LinkedList<String> readTypesXml()  {
 
 		Debug("readTypesXml: Reading file");
-		String filename = Program.getXMLTypesFileName();
-		LinkedList<String> typeList = new LinkedList<String>();
-		File file = new File(filename);
-		if(!file.exists())
+		File file = new File(Program.getXMLTypesFileName());
+		if(!file.exists()) {
+			Debug("WARNING: file '"+Program.getXMLTypesFileName()+"' not found!");
 			return null;
+		}
 
+		LinkedList<String> typeList = new LinkedList<String>();
 		try {
-
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(new File(filename));
+			Document doc = dBuilder.parse(new File(Program.getXMLTypesFileName()));
 			doc.getDocumentElement().normalize();
 
 			NodeList types = doc.getElementsByTagName("type");
@@ -406,22 +412,22 @@ public class MyXmlDom {
 			for(Rangement rangement : rangements)
 			{
 				Element r = doc.createElement("rangement");
-				r.setAttribute("columns", Integer.toString(rangement.getNbColonnesMax()));
 				root.appendChild(r);
 				Element name = doc.createElement("name");
 				name.setTextContent(rangement.getNom());
 				r.appendChild(name);
 				
 				if(rangement.isCaisse()) {
+					r.setAttribute("columns", "1");
 					for (int i = 0; i < rangement.getNbEmplacements(); i++) {
 						Element partie = doc.createElement("partie");
 						r.appendChild(partie);
 						name = doc.createElement("nom-partie");
-						name.setTextContent(Program.getLabel("Infos029") + " " + (i + rangement.getStartCaisse() + 1));
+						name.setTextContent(Program.getLabel("Infos029") + " " + (i + rangement.getStartCaisse()));
 						partie.appendChild(name);
 						Element caisse = doc.createElement("caisse");
 						partie.appendChild(caisse);
-						for(int j=0; j<rangement.getNbCaseUseCaisse(i); j++) {
+						for(int j=0; j<rangement.getNbCaseUse(i); j++) {
 							Element vin = doc.createElement("vin");
 							caisse.appendChild(vin);
 							Element vin_name = doc.createElement("vin1");
@@ -429,7 +435,7 @@ public class MyXmlDom {
 							if(preview) {
 								vin_name.setTextContent(Program.getLabel("Infos229"));
 							}else {
-    							Bouteille b = rangement.getBouteilleCaisse(i, j);
+    							Bouteille b = rangement.getBouteilleCaisseAt(i, j);
     							if(b != null)
     								vin_name.setTextContent(b.getNom());
     							else
@@ -439,6 +445,7 @@ public class MyXmlDom {
 					}
 				}
 				else {
+					r.setAttribute("columns", Integer.toString(rangement.getNbColonnesMax()));
 				for (int i = 0; i < rangement.getNbEmplacements(); i++) {
 					Element partie = doc.createElement("partie");
 					r.appendChild(partie);

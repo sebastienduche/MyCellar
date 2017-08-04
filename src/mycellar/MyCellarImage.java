@@ -5,8 +5,8 @@ package mycellar;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 20/04/16
+ * @version 0.7
+ * @since 20/07/17
  */
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -50,6 +50,7 @@ public final class MyCellarImage {
 	public static final ImageIcon RESTORE = getInstance().getImage("restore.png");
 	public static final ImageIcon PDF = getInstance().getImage("pdf.png");
 	public static final ImageIcon ICON = getInstance().getImage("MyCellar.gif");
+	public static final ImageIcon ERROR = getInstance().getImage("errors.png");
 
 	private ImageIcon getImage(final String filename) {
 		URL stream = getClass().getClassLoader().getResource("resources/"+filename);

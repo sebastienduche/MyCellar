@@ -2,6 +2,7 @@ package mycellar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -21,8 +22,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 11/05/17
+ * @version 1.5
+ * @since 04/08/17
  */
 public class CSVOptions extends JDialog {
 	private JPanel jPanel1 = new JPanel();
@@ -77,7 +78,7 @@ public class CSVOptions extends JDialog {
 		jPanel1.setLayout(new MigLayout("","grow",""));
 		jPanel1.setFont(Program.font_panel);
 		info_separator.setText(Program.getLabel("Infos034") + ":"); //Séparateur
-		java.util.LinkedList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
+		ArrayList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
 		nb_colonnes = listColumns.size();
 		colonnes = new MyCellarLabel[nb_colonnes];
 		export = new MyCellarCheckBox[nb_colonnes];
@@ -100,7 +101,7 @@ public class CSVOptions extends JDialog {
 		}
 		jPanel2.setLayout(new MigLayout("","[grow][grow]",""));
 		jPanel2.setFont(Program.font_panel);
-		valider.setText("OK");
+		valider.setText(Program.getLabel("Main.OK"));
 		separator.addItem(Program.getLabel("Infos002"));
 		separator.addItem(Program.getLabel("Infos042"));
 		separator.addItem(Program.getLabel("Infos043"));

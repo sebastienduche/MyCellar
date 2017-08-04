@@ -2,6 +2,7 @@ package mycellar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
@@ -28,8 +29,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.0
- * @since 11/01/17
+ * @version 5.3
+ * @since 27/07/17
  */
 public class Stat extends JPanel implements ITabListener {
 
@@ -100,13 +101,13 @@ public class Stat extends JPanel implements ITabListener {
 					list_num_empl[indx] = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
 				}
 				else {
-					list_num_empl[indx] = new MyCellarLabel(cave.getNbEmplacements() + " " + Program.getLabel("Infos176")); //emplacements
+					list_num_empl[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //emplacements
 				}
 				if (Program.getCave(i).getNbCaseUseAll() <= 1) {
 					list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
 				}
 				else {
-					list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos178")); //"bouteilles");
+					list_nb_bottle[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), cave.getNbCaseUseAll())); //"bouteilles");
 				}
 				nb_bottle += cave.getNbCaseUseAll();
 				panel.add(list_num_empl[indx]);
@@ -122,25 +123,25 @@ public class Stat extends JPanel implements ITabListener {
 					list_num_empl[indx] = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
 				}
 				else {
-					list_num_empl[indx] = new MyCellarLabel(cave.getNbEmplacements() + " " + Program.getLabel("Infos176")); //"emplacements");
+					list_num_empl[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //"emplacements");
 				}
 				if (cave.getNbCaseUseAll() <= 1) {
 					list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
 				}
 				else {
-					list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos178")); //"bouteilles");
+					list_nb_bottle[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), cave.getNbCaseUseAll())); //"bouteilles");
 				}
 				nb_bottle += cave.getNbCaseUseAll();
 				panel.add(list_num_empl[indx]);
 				panel.add(list_nb_bottle[indx],"align right, wrap");
 				indx++;
 				for (int j = 0; j < cave.getNbEmplacements(); j++) {
-					list_num_empl[indx] = new MyCellarLabel(Program.getLabel("Infos179") + (j + 1)); //Emplacement n°
+					list_num_empl[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos179"), (j + 1))); //Emplacement n°
 					if (cave.getNbCaseUseAll() <= 1) {
 						list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
 					}
 					else {
-						list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUse(j) + " " + Program.getLabel("Infos178")); //"bouteilles");
+						list_nb_bottle[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), cave.getNbCaseUse(j))); //"bouteilles");
 					}
 					panel.add(list_num_empl[indx]);
 					panel.add(list_nb_bottle[indx], "span 2, align right, wrap");
@@ -153,11 +154,11 @@ public class Stat extends JPanel implements ITabListener {
 		}
 		if (nb_bottle > 1) {
 			moy.setText("");
-			end.setText(Program.getLabel("Infos181") + " " + nb_bottle); //Nombre de bouteille total:
+			end.setText(MessageFormat.format(Program.getLabel("Infos181"), nb_bottle)); //Nombre de bouteille total:
 		}
 		else {
 			moy.setText("");
-			end.setText(Program.getLabel("Infos180") + " " + nb_bottle); //Nombre de bouteilles totales:
+			end.setText(MessageFormat.format(Program.getLabel("Infos180"), nb_bottle)); //Nombre de bouteilles totales:
 		}
 
 		options.addActionListener((e) -> options_actionPerformed(e));
@@ -274,13 +275,13 @@ public class Stat extends JPanel implements ITabListener {
 								list_num_empl[indx] = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
 							}
 							else {
-								list_num_empl[indx] = new MyCellarLabel(cave.getNbEmplacements() + " " + Program.getLabel("Infos176")); //"emplacements");
+								list_num_empl[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //"emplacements");
 							}
 							if (cave.getNbCaseUseAll() <= 1) {
 								list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
 							}
 							else {
-								list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos178")); //"bouteilles");
+								list_nb_bottle[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"),cave.getNbCaseUseAll())); //"bouteilles");
 							}
 							nb_bottle += cave.getNbCaseUseAll();
 							panel.add(list_num_empl[indx]);
@@ -294,25 +295,25 @@ public class Stat extends JPanel implements ITabListener {
 								list_num_empl[indx] = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
 							}
 							else {
-								list_num_empl[indx] = new MyCellarLabel(cave.getNbEmplacements() + " " + Program.getLabel("Infos176")); //"emplacements");
+								list_num_empl[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //"emplacements");
 							}
 							if (cave.getNbCaseUseAll() <= 1) {
 								list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
 							}
 							else {
-								list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos178")); //"bouteilles");
+								list_nb_bottle[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"),cave.getNbCaseUseAll())); //"bouteilles");
 							}
 							nb_bottle += cave.getNbCaseUseAll();
 							panel.add(list_num_empl[indx]);
 							panel.add(list_nb_bottle[indx], "span 2, align right, wrap");
 							indx++;
 							for (int j = 0; j < cave.getNbEmplacements(); j++) {
-								list_num_empl[indx] = new MyCellarLabel(Program.getLabel("Infos179") + (j + 1)); //Emplacement n°
+								list_num_empl[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos179"), (j + 1))); //Emplacement n°
 								if (cave.getNbCaseUseAll() <= 1) {
 									list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
 								}
 								else {
-									list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUse(j) + " " + Program.getLabel("Infos178")); //"bouteilles");
+									list_nb_bottle[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), cave.getNbCaseUse(j))); //"bouteilles");
 								}
 								panel.add(list_num_empl[indx]);
 								panel.add(list_nb_bottle[indx],"span 2, align right, wrap");
@@ -325,11 +326,11 @@ public class Stat extends JPanel implements ITabListener {
 					}
 					if (nb_bottle > 1) {
 						moy.setText("");
-						end.setText(Program.getLabel("Infos181") + " " + nb_bottle);
+						end.setText(MessageFormat.format(Program.getLabel("Infos181"), nb_bottle));
 					}
 					else {
 						moy.setText("");
-						end.setText(Program.getLabel("Infos180") + " " + nb_bottle);
+						end.setText(MessageFormat.format(Program.getLabel("Infos180"), nb_bottle));
 					}
 				}
 				else {
@@ -349,22 +350,23 @@ public class Stat extends JPanel implements ITabListener {
 						index = listPlaces.getSelectedIndex() - 1;
 					}
 					int i = 0;
-					panelChart.setPlaceChart(Program.getCave(index));
-					nb_bottle = Program.getCave(index).getNbCaseUseAll();
-					list_rangement[i] = new MyCellarLabel(Program.getCave(index).getNom());
+					Rangement cave = Program.getCave(index);
+					panelChart.setPlaceChart(cave);
+					nb_bottle = cave.getNbCaseUseAll();
+					list_rangement[i] = new MyCellarLabel(cave.getNom());
 					panel.add(list_rangement[i]);
-					if (Program.getCave(index).isCaisse()) {
-						if (Program.getCave(index).getNbEmplacements() == 1) {
+					if (cave.isCaisse()) {
+						if (cave.getNbEmplacements() == 1) {
 							list_num_empl[indx] = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
 						}
 						else {
-							list_num_empl[indx] = new MyCellarLabel(Program.getCave(index).getNbEmplacements() + " " + Program.getLabel("Infos176")); //"emplacements");
+							list_num_empl[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //"emplacements");
 						}
-						if (Program.getCave(index).getNbCaseUseAll() <= 1) {
-							list_nb_bottle[indx] = new MyCellarLabel(Program.getCave(index).getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
+						if (cave.getNbCaseUseAll() <= 1) {
+							list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
 						}
 						else {
-							list_nb_bottle[indx] = new MyCellarLabel(Program.getCave(index).getNbCaseUseAll() + " " + Program.getLabel("Infos178")); //"bouteilles");
+							list_nb_bottle[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), cave.getNbCaseUseAll())); //"bouteilles");
 						}
 						panel.add(list_num_empl[indx]);
 						panel.add(list_nb_bottle[indx], "span 2, align right, wrap");
@@ -373,28 +375,28 @@ public class Stat extends JPanel implements ITabListener {
 						indx++;
 					}
 					else {
-						if (Program.getCave(index).getNbEmplacements() == 1) {
+						if (cave.getNbEmplacements() == 1) {
 							list_num_empl[indx] = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
 						}
 						else {
-							list_num_empl[indx] = new MyCellarLabel(Program.getCave(index).getNbEmplacements() + " " + Program.getLabel("Infos176")); //"emplacements");
+							list_num_empl[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //"emplacements");
 						}
-						if (Program.getCave(index).getNbCaseUseAll() <= 1) {
-							list_nb_bottle[indx] = new MyCellarLabel(Program.getCave(index).getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
+						if (cave.getNbCaseUseAll() <= 1) {
+							list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
 						}
 						else {
-							list_nb_bottle[indx] = new MyCellarLabel(Program.getCave(index).getNbCaseUseAll() + " " + Program.getLabel("Infos178")); //"bouteilles");
+							list_nb_bottle[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), cave.getNbCaseUseAll())); //"bouteilles");
 						}
 						panel.add(list_num_empl[indx]);
 						panel.add(list_nb_bottle[indx], "span 2, align right, wrap");
 						indx++;
-						for (int j = 0; j < Program.getCave(index).getNbEmplacements(); j++) {
-							list_num_empl[indx] = new MyCellarLabel(Program.getLabel("Infos179") + (j + 1));
-							if (Program.getCave(index).getNbCaseUseAll() <= 1) {
-								list_nb_bottle[indx] = new MyCellarLabel(Program.getCave(index).getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
+						for (int j = 0; j < cave.getNbEmplacements(); j++) {
+							list_num_empl[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos179"), (j + 1)));
+							if (cave.getNbCaseUseAll() <= 1) {
+								list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
 							}
 							else {
-								list_nb_bottle[indx] = new MyCellarLabel(Program.getCave(index).getNbCaseUse(j) + " " + Program.getLabel("Infos178")); //"bouteilles");
+								list_nb_bottle[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), cave.getNbCaseUse(j))); //"bouteilles");
 							}
 							panel.add(list_num_empl[indx]);
 							panel.add(list_nb_bottle[indx],"span 2, align right, wrap");
@@ -443,7 +445,7 @@ public class Stat extends JPanel implements ITabListener {
 					if (data.getCount() <= 1)
 						panel.add(new MyCellarLabel(data.getCount() + " " + Program.getLabel("Infos177")), "span 2, align right, wrap"); //"bouteille");
 					else
-						panel.add(new MyCellarLabel(data.getCount() + " " + Program.getLabel("Infos178")), "span 2, align right, wrap"); //"bouteilles")
+						panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), data.getCount())), "span 2, align right, wrap"); //"bouteilles")
 				}
 				panel.updateUI();
 				panelChart.setDataChart(listYear, Program.getLabel("Infos184"));
@@ -532,8 +534,7 @@ public class Stat extends JPanel implements ITabListener {
 					}
 					int i = 0;
 					for (i = 0; i <= Bouteille.prix_max; i += tranche) {
-						String label = Program.getLabel("Infos190") + " " + i + " " + Program.getLabel("Infos191") + " " + (i + tranche - 1) + " " +
-								Program.getCaveConfigString("DEVISE", "");
+						String label = MessageFormat.format(Program.getLabel("Infos190"), i, (i + tranche - 1), Program.getCaveConfigString("DEVISE", ""));
 						int nb = 0;
 						for (int j = i; j < (i + tranche); j++) {
 							try {
@@ -559,16 +560,16 @@ public class Stat extends JPanel implements ITabListener {
 					if(all_bracket || price.getCount() > 0) {
 						panel.add(new MyCellarLabel(price.getName()));
 						if(price.getCount() > 1)
-							panel.add(new MyCellarLabel(price.getCount() + " " + Program.getLabel("Infos178")), "span 2, align right, wrap");
+							panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), price.getCount())), "span 2, align right, wrap");
 						else
 							panel.add(new MyCellarLabel(price.getCount() + " " + Program.getLabel("Infos177")), "span 2, align right, wrap");
 					}
 
 				}
 				panel.updateUI();
-				end.setText(Program.getLabel("Infos244") + " " + (int) prix_total + " " + Program.getCaveConfigString("DEVISE",""));
+				end.setText(MessageFormat.format(Program.getLabel("Infos244"),(int) prix_total, Program.getCaveConfigString("DEVISE","")));
 				if (nb_tot > 0)
-					moy.setText(Program.getLabel("Infos300") + " " + (int) (prix_total / nb_tot) + " " + Program.getCaveConfigString("DEVISE",""));
+					moy.setText(MessageFormat.format(Program.getLabel("Infos300"),(int) (prix_total / nb_tot), Program.getCaveConfigString("DEVISE","")));
 				panelChart.setDataChart(listPrice, Program.getLabel("Infos185"));
 			}
 		}
@@ -586,7 +587,7 @@ public class Stat extends JPanel implements ITabListener {
 		try {
 			Debug("options_actionPerforming...");
 			options.setSelected(false);
-			String value = JOptionPane.showInputDialog(this, Program.getLabel("Infos194") +"\n"+ Program.getLabel("Infos195") + " " + Program.getCaveConfigString("DEVISE","") + " ):", Program.getCaveConfigString("TRANCHE_PRIX",""));
+			String value = JOptionPane.showInputDialog(this, Program.getLabel("Infos194"));
 			if(value != null && StringUtils.isNumeric(value)) {
 				Program.putCaveConfigInt("TRANCHE_PRIX", new Integer(value));
 				listPrice.clear();
@@ -655,7 +656,7 @@ public class Stat extends JPanel implements ITabListener {
 				return;
 			DefaultPieDataset dataset = new DefaultPieDataset();
 			for(Part part: rangement.getPlace()){
-				dataset.setValue(Program.getLabel("Infos179")+part.getNum(), rangement.getNbCaseUse(part.getNum()-1));
+				dataset.setValue(MessageFormat.format(Program.getLabel("Infos179"),part.getNum()), rangement.getNbCaseUse(part.getNum()-1));
 			}
 			JFreeChart chart = ChartFactory.createPieChart(rangement.getNom(),          // chart title
 					dataset,                // data

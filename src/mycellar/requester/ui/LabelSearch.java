@@ -18,14 +18,14 @@ import mycellar.requester.ui.PanelDAndD;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 11/06/14
+ * @version 0.2
+ * @since 03/08/17
  */
 class LabelSearch extends JPanel {
 
 	private static final long serialVersionUID = 3361283505652395494L;
 	private String label;
-	private String value;
+	private Object value;
 	private IPredicate<?> predicate;
 	private boolean copy = false;
 	private MyCellarLabel MyCellarLabel = new MyCellarLabel();
@@ -78,27 +78,27 @@ class LabelSearch extends JPanel {
 		String s = "";
 		if(label != null && !label.isEmpty())
 			s += label;
-		if(label != null && !label.isEmpty() && value != null && !value.isEmpty())
+		if(label != null && !label.isEmpty() && value != null && !value.toString().isEmpty())
 			s += ": ";
 		if(value != null)
 			s += value;
 		MyCellarLabel.setText(s);
 	}
 
-	public String getValue() {
+	public Object getValue() {
 		return value;
 	}
 
-	public void setValue(String value) {
+	public void setValue(Object value) {
 		this.value = value;
 		setLabel();
 	}
 
 	public void askForValue() {
-		if(!predicate.isValueRequired() || (value != null && !value.isEmpty()))
+		if(!predicate.isValueRequired() || (value != null && !value.toString().isEmpty()))
 			return;
 
-		value = (String) predicate.askforValue();
+		value = predicate.askforValue();
 		setLabel(predicate.getName());
 	}
 

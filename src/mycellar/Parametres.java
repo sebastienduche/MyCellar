@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.text.MessageFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -40,8 +41,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 9.8
- * @since 09/05/17
+ * @version 10.1
+ * @since 04/08/17
  */
 public class Parametres extends JDialog {
 	private MyCellarLabel label_fic_bak = new MyCellarLabel();
@@ -87,15 +88,13 @@ public class Parametres extends JDialog {
 	private MyClipBoard clipboard = new MyClipBoard();
 	private JMenu edition = new JMenu(Program.getLabel("Infos245"));
 	private Component objet1 = null;
-	private Start start = null;
 	static final long serialVersionUID = 280706;
 
 	/**
 	 * Parametres: Constructeur: pour la fenêtre des paramètres.
 	 *
 	 */
-	public Parametres(Start start) {
-		this.start = start;
+	public Parametres() {
 		try {
 			jbInit();
 		}
@@ -141,7 +140,7 @@ public class Parametres extends JDialog {
 		MouseListener popup_l = new PopupListener();
 		file_bak.addMouseListener(popup_l);
 		devise.addMouseListener(popup_l);
-		valider.setText("OK");
+		valider.setText(Program.getLabel("Main.OK"));
 		annuler_btn.setText(Program.getLabel("Infos055"));
 		file_bak.setText(Program.getCaveConfigString("FILE_EXCEL",""));
 		
@@ -165,7 +164,7 @@ public class Parametres extends JDialog {
 			i++;
 			language = Program.getLanguage("Language" + i);
 		}
-		langue.addActionListener((e) -> langue_actionPerformed(e));
+		
 		lF.addActionListener((e) -> lF_actionPerformed(e));
 		i = 1;
 		language = Program.getLanguage("CodeLang1");
@@ -175,7 +174,7 @@ public class Parametres extends JDialog {
 			language = Program.getLanguage("CodeLang" + i);
 		}
 		langue.setSelectedIndex(i - 1);
-
+		
 		String auto = Program.getCaveConfigString("TYPE_AUTO", "OFF");
 		if (auto.equals("ON")) {
 			jcb_half_auto.setSelected(true);
@@ -278,18 +277,11 @@ public class Parametres extends JDialog {
 		add(annuler_btn);
 
 		try {
-			if (Program.getCaveConfigInt("FIC_EXCEL", 0) == 1) {
-				file_bak.setVisible(true);
-				label_fic_bak.setVisible(true);
-				jcb_excel.setSelected(true);
-				parcourir_excel.setVisible(true);
-			}
-			else {
-				file_bak.setVisible(false);
-				label_fic_bak.setVisible(false);
-				jcb_excel.setSelected(false);
-				parcourir_excel.setVisible(false);
-			}
+			int val = Program.getCaveConfigInt("FIC_EXCEL", 0);
+			file_bak.setVisible(val == 1);
+			label_fic_bak.setVisible(val == 1);
+			jcb_excel.setSelected(val == 1);
+			parcourir_excel.setVisible(val == 1);
 		}
 		catch (NullPointerException npe) {
 			file_bak.setVisible(false);
@@ -330,6 +322,8 @@ public class Parametres extends JDialog {
 		edition.setText(Program.getLabel("Infos245"));
 		jcb_annee_control.setText(Program.getLabel("Infos169"));
 		m_jcb_debug.setText(Program.getLabel("Infos337"));
+		annuler_btn.setText(Program.getLabel("Infos055"));
+		valider.setText(Program.getLabel("Main.OK"));
 	}
 
 	/**
@@ -339,7 +333,7 @@ public class Parametres extends JDialog {
 	 */
 	void valider_actionPerformed(ActionEvent e) {
 		try {
-
+			modifyLanguage();
 			boolean result = true;
 			if (jcb_excel.isSelected()) {
 				String fic = file_bak.getText().trim();
@@ -351,43 +345,29 @@ public class Parametres extends JDialog {
 					if (fic.length() >= 3) {
 						tmp1 = fic.substring(fic.length() - 3);
 					}
-					new Erreur(Program.getError("Error034") + tmp1, Program.getError("Error035"));
+					new Erreur(MessageFormat.format(Program.getError("Error034"), tmp1), Program.getError("Error035"));
 					result = false;
 				}
 			}
 
 			if (result) {
 				Program.putCaveConfigString("DEVISE", devise.getText().trim());
-				
-				if (result) {
-					Program.putCaveConfigString("MARK1_TITLE", Program.getLabel("Infos208"));
-					Program.putCaveConfigString("MARK2_TITLE", Program.getLabel("Infos189"));
-					Program.putCaveConfigString("MARK3_TITLE", Program.getLabel("Infos134"));
-					Program.putCaveConfigString("MARK4_TITLE", Program.getLabel("Infos105"));
-					Program.putCaveConfigString("MARK5_TITLE", Program.getLabel("Infos158"));
-					Program.putCaveConfigString("MARK6_TITLE", Program.getLabel("Infos028"));
-					Program.putCaveConfigString("MARK7_TITLE", Program.getLabel("Infos083"));
-					Program.putCaveConfigString("MARK8_TITLE", Program.getLabel("Infos135"));
-					Program.putCaveConfigString("MARK9_TITLE", Program.getLabel("Infos137"));
-					Program.putCaveConfigString("ANNEE", annee.getValue().toString());
-					try {
-						Integer.parseInt(annee.getValue().toString());
-					}
-					catch (NumberFormatException nfe) {}
-					Program.putCaveConfigString("SIECLE", siecle.getValue().toString());
-					try {
-						Integer.parseInt(siecle.getValue().toString());
-					}
-					catch (NumberFormatException nfe) {}
-
-					Program.setYearControl(jcb_annee_control.isSelected());
-
-					Program.write_XSL();
-					Program.saveGlobalProperties();
-					if(start != null)
-						start.updateFrame(false);
-					this.dispose();
+				Program.putCaveConfigString("ANNEE", annee.getValue().toString());
+				try {
+					Integer.parseInt(annee.getValue().toString());
 				}
+				catch (NumberFormatException nfe) {}
+				Program.putCaveConfigString("SIECLE", siecle.getValue().toString());
+				try {
+					Integer.parseInt(siecle.getValue().toString());
+				}
+				catch (NumberFormatException nfe) {}
+
+				Program.setYearControl(jcb_annee_control.isSelected());
+
+				Program.write_XSL();
+				Program.saveGlobalProperties();
+				this.dispose();
 			}
 		}
 		catch (Exception exc) {
@@ -479,11 +459,9 @@ public class Parametres extends JDialog {
 
 
 	/**
-	 * langue_actionPerformed: Choix de la langue.
-	 *
-	 * @param e ActionEvent
+	 * Modification de la langue à la fermeture de la boite de dialogue
 	 */
-	void langue_actionPerformed(ActionEvent e) {
+	void modifyLanguage() {
 		try {
 			String thelangue = Program.getLanguage("CodeLang" + (langue.getSelectedIndex() + 1));
 			Program.putGlobalConfigString("LANGUAGE", thelangue);

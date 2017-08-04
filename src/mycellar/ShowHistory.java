@@ -2,6 +2,7 @@ package mycellar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
@@ -26,8 +27,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 2.4
- * @since 13/05/17
+ * @version 2.9
+ * @since 04/08/17
  */
 
 public class ShowHistory extends JPanel implements ITabListener {
@@ -67,7 +68,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 
 		// Remplissage de la table
 		tv = new TableHistoryValues(true);
-		tv.setHistory(Program.getStorage().getHistory());
+		tv.setHistory(Program.getStorage().getHistory().getHistory());
 
 		m_oTable = new JTable(tv);
 		TableColumnModel tcm = m_oTable.getColumnModel();
@@ -116,8 +117,8 @@ public class ShowHistory extends JPanel implements ITabListener {
 		add(restoreButton, "align right, wrap");
 		add(m_oScroll, "grow, wrap");
 		add(m_oSuppr, "center");
-		Start.outils.add(ClearSomeHistory);
-		Start.outils.add(ClearHistory);
+		Start.menuTools.add(ClearSomeHistory);
+		Start.menuTools.add(ClearHistory);
 	}
 
 	/**
@@ -150,7 +151,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 	void clearHistory_actionPerformed(ActionEvent e) {
 
 		Debug("Clearing all history...");
-		if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error182") + " " + Program.getError("Error183"),
+		if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error182"),
 				Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 			Program.getStorage().clearHistory();
 			tv.removeAll();
@@ -194,7 +195,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 		if (b) {
 			Debug("History Cleared.");
 			m_oFilterCbx.setSelectedIndex(0);
-			tv.setHistory(Program.getStorage().getHistory());
+			tv.setHistory(Program.getStorage().getHistory().getHistory());
 		}
 	}
 
@@ -229,8 +230,8 @@ public class ShowHistory extends JPanel implements ITabListener {
 
 	@Override
 	public void tabClosed() {
-		Start.outils.remove(ClearSomeHistory);
-		Start.outils.remove(ClearHistory);
+		Start.menuTools.remove(ClearSomeHistory);
+		Start.menuTools.remove(ClearHistory);
 		Start.updateMainPanel();
 	}
 
@@ -265,19 +266,17 @@ public class ShowHistory extends JPanel implements ITabListener {
 			}
 
 			if (nonExit) {
-				new Erreur(Program.getLabel("ShowHistory.CantRestoreNonDeleted"), "", true);
+				new Erreur(Program.getLabel("ShowHistory.CantRestoreNonDeleted"), true);
 			}
 
 			if (toRestoreList.size() == 0) {
-				erreur_txt1 = Program.getLabel("ShowFile.NoBottleToRestore");
-				erreur_txt2 = Program.getLabel("ShowFile.SelectToRestore");
-				new Erreur(erreur_txt1, erreur_txt2, true);
+				new Erreur(Program.getLabel("ShowFile.NoBottleToRestore"), Program.getLabel("ShowFile.SelectToRestore"), true);
 			} else {
 				if (toRestoreList.size() == 1) {
 					erreur_txt1 = Program.getError("Error067"); // "1 vin sélectionné.");
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
 				} else {
-					erreur_txt1 = new String(toRestoreList.size() + " " + Program.getError("Error130")); // vins
+					erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toRestoreList.size()); // vins
 					// sélectionnés.");
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
 				}
@@ -308,9 +307,10 @@ public class ShowHistory extends JPanel implements ITabListener {
 					if (!cantRestoreList.isEmpty())
 						modifyBottles(cantRestoreList);
 				}
-				for (int j = 0; j < Program.GetCaveLength(); j++)
-					Program.getCave(j).putTabStock();
-				tv.setHistory(Program.getStorage().getHistory());
+				/*for (int j = 0; j < Program.GetCaveLength(); j++)
+					Program.getCave(j).putTabStock();*/
+				RangementUtils.putTabStock();
+				tv.setHistory(Program.getStorage().getHistory().getHistory());
 			}
 		}
 	}
@@ -346,19 +346,15 @@ public class ShowHistory extends JPanel implements ITabListener {
 				} while (row < max_row);
 
 				if (toDeleteList.isEmpty()) {
-					erreur_txt1 = Program.getError("Error184"); // "Aucune
-					// lignes
-					// sélectionnée
-					erreur_txt2 = Program.getError("Error185"); // "Veuillez sélectionner des lignes à supprimer.");
-					new Erreur(erreur_txt1, erreur_txt2, true);
+					// Aucune ligne sélectionnée "Veuillez sélectionner des lignes à supprimer.");
+					new Erreur(Program.getError("Error184"), Program.getError("Error185"), true);
 					Debug("ERROR: No lines selected");
 				} else {
 					if (toDeleteList.size() == 1) {
 						erreur_txt1 = Program.getError("Error186"); // "1 ligne sélectionnée.");
 						erreur_txt2 = Program.getError("Error188"); // "Voulez-vous la supprimer?");
 					} else {
-						erreur_txt1 = new String(count + " " + Program.getError("Error187")); // lignes
-						// sélectionn�s.");
+						erreur_txt1 = MessageFormat.format(Program.getError("Error187"), count); // lignes
 						erreur_txt2 = Program.getError("Error131"); // "Voulez-vous les supprimer?");
 					}
 					Debug(count + " line(s) selected");
@@ -369,7 +365,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 							History b = (History) toDeleteList.get(i);
 							Program.getStorage().removeHistory(b);
 						}
-						tv.setHistory(Program.getStorage().getHistory());
+						tv.setHistory(Program.getStorage().getHistory().getHistory());
 					}
 				}
 			} catch (Exception exc) {
@@ -379,7 +375,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 	}
 
 	public void refresh() {
-		tv.setHistory(Program.getStorage().getHistory());
+		tv.setHistory(Program.getStorage().getHistory().getHistory());
 	}
 
 }

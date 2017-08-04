@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
@@ -40,8 +41,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.7
- * @since 13/05/17
+ * @version 3.2
+ * @since 04/08/17
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -546,7 +547,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		if (nom.isEmpty()) {
 			Debug("ERROR: Wrong Name");
 			resul = false;
-			new Erreur(Program.getError("Error054"), ""); //"Veuillez saisir le nom du vin!"
+			new Erreur(Program.getError("Error054")); //"Veuillez saisir le nom du vin!"
 		}
 
 		// Controle de la date
@@ -556,7 +557,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			// Erreur sur la date
 			if (!Bouteille.isValidYear(annee) && resul) {
 				Debug("ERROR: Wrong date");
-				new Erreur(Program.getError("Error053"), ""); //"Veuillez saisir une année valide!"
+				new Erreur(Program.getError("Error053")); //"Veuillez saisir une année valide!"
 				resul = false;
 				m_year.setEditable(true);
 			}
@@ -572,17 +573,17 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		if (lieu_select == 0 && resul) {
 			Debug("ERROR: Wrong Place");
 			resul = false;
-			new Erreur(Program.getError("Error055"), ""); //"Veuillez sélectionner un emplacement!"
+			new Erreur(Program.getError("Error055")); //"Veuillez sélectionner un emplacement!"
 			return false;
 		}
 
 		if(lieu_num == 0) {
 			Debug("ERROR: Wrong Num Place");
 			if (m_line.isVisible()) {
-				new Erreur(Program.getError("Error056"), "");
+				new Erreur(Program.getError("Error056"));
 			}
 			else {
-				new Erreur(Program.getError("Error174"), "");
+				new Erreur(Program.getError("Error174"));
 			}
 			return false;
 		}
@@ -598,7 +599,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			if (line == 0) {
 				Debug("ERROR: Wrong Line");
 				resul = false;
-				new Erreur(Program.getError("Error057"), ""); //"Veuillez sélectionner un numero de line!"
+				new Erreur(Program.getError("Error057")); //"Veuillez sélectionner un numero de line!"
 				return false;
 			}
 
@@ -606,7 +607,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			if (line == 0) {
 				Debug("ERROR: Wrong Column");
 				resul = false;
-				new Erreur(Program.getError("Error058"), ""); //"Veuillez sélectionner un numero de line!"
+				new Erreur(Program.getError("Error058")); //"Veuillez sélectionner un numero de line!"
 				return false;
 			}
 		}
@@ -627,7 +628,8 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_laBouteille.setVignoble(new Vignoble(country, vignoble, aoc, igp, null));
 		CountryVignobles.addVignobleFromBottle(m_laBouteille);
 		if(isCaisse) {
-			m_laBouteille.setNumLieu(lieu_num-1);
+			lieu_num=Integer.parseInt(m_num_lieu.getItemAt(lieu_num));
+			m_laBouteille.setNumLieu(lieu_num);
 			m_laBouteille.setLigne(0);
 			m_laBouteille.setColonne(0);
 		}
@@ -640,7 +642,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			Bouteille bottleInPlace = Program.getCave(lieu_select-1).getBouteille(m_laBouteille.getNumLieu()-1, m_laBouteille.getLigne()-1, m_laBouteille.getColonne()-1);
 			if(bottleInPlace != null && !bottleInPlace.equals(m_laBouteille)) {
 				Debug("ERROR: Not an empty place, Replace?");
-				String erreur_txt1 = new String(bottleInPlace.getNom() + " " + bottleInPlace.getAnnee() + " " + Program.getError("Error059")); //" déjà présent à cette place!");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bottleInPlace.getNom(), bottleInPlace.getAnnee()); //" déjà présent à cette place!");
 				String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
 				if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 					replaceWine(m_laBouteille, bottleInPlace);
@@ -659,10 +661,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			tmp.setColonne(oldColumn);
 			oldRangement.clearStock(tmp);
 		}
-		
-		for(Rangement cave : Program.getCave())
-			cave.putTabStock();
-
+		RangementUtils.putTabStock();
 		Search.updateTable();
 
 		if(!rangement.isCaisse())
@@ -754,9 +753,10 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		//Save XML file
 		Debug("Quitting...");
 
-		for (Rangement rangement : Program.getCave()) {
+		/*for (Rangement rangement : Program.getCave()) {
 			rangement.putTabStock();
-		}
+		}*/
+		RangementUtils.putTabStock();
 		m_colorList.setSelectedItem(BottleColor.NONE);
 		name.setSelectedIndex(0);
 		m_year.setText("");
@@ -901,46 +901,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 */
 	public static void Debug(String sText) {
 		Program.Debug("ManageBottle: " + sText );
-	}
-
-	class PanelName extends JPanel{
-		private static final long serialVersionUID = 8617685535706381964L;
-
-		public PanelName(){
-			setLayout(new MigLayout("","[grow]30px[]10px[]10px[]30px[]10px[]",""));
-			add(m_labelName,"grow");
-			add(m_labelYear);
-			add(m_annee_auto);
-			add(m_contenance,"wrap");
-			add(name,"grow");
-			add(m_year,"width min(100,10%)");
-			
-			add(m_noYear,"");
-			add(m_half,"push");
-			add(m_manageContenance,"");
-
-		}
-	}
-
-	class PanelAttribute extends JPanel{
-		private static final long serialVersionUID = 183053076444982489L;
-
-		public PanelAttribute(){
-			setLayout(new MigLayout("","[]30px[]30px[]",""));
-			add(m_labelMaturity,"");
-			add(m_labelParker,"");
-			add(m_labelColor,"wrap");
-			add(m_maturity,"width min(200,45%)");
-			add(m_parker,"width min(100,10%)");
-			add(m_colorList,"wrap, width min(200,45%)");
-			add(m_labelPrice,"wrap");
-			add(m_price,"width min(100,45%), split 2");
-			add(m_devise,"gapleft 5px");
-			add(m_labelNbBottle,"split, span 2");
-			add(m_nb_bottle,"width min(50,10%)");
-			add(m_labelStillToAdd,"");
-
-		}
 	}
 
 	class PanelPlace extends JPanel{

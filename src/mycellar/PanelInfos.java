@@ -20,8 +20,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 13/11/16
+ * @version 1.2
+ * @since 04/08/17
  */
 public class PanelInfos extends JPanel {
 
@@ -42,6 +42,12 @@ public class PanelInfos extends JPanel {
 		Debug("Refreshing...");
 		panelStats.refresh();
 		panelHistory.refresh();
+	}
+	
+	public void setLabels() {
+		Debug("setLabels...");
+		panelStats.setLabels();
+		panelHistory.setLabels();
 	}
 	
 	public void setEnable(boolean b) {
@@ -92,20 +98,20 @@ class PanelStats extends JPanel {
 	public void refresh() {
 		nbBottles = 0;
 		model.clearRows();
-		double price = 0;
-		if(!Program.getCave().isEmpty())
-		{
-			for(Rangement r: Program.getCave() )
-			{
+		if(!Program.getCave().isEmpty()) {
+			for(Rangement r: Program.getCave() ) {
 				nbBottles += r.getNbCaseUseAll();
 				model.addRow(r, r.getNbCaseUseAll());
 			}
-			for(Bouteille b: Program.getStorage().getAllList())
-				price += b.getPriceDouble();
 		}
 		bottlesNb.setText(Integer.toString(nbBottles));
-		cellarTotal.setText((int)price + " " + Program.getCaveConfigString("DEVISE",""));
-        
+		cellarTotal.setText(Program.getCellarValue() + " " + Program.getCaveConfigString("DEVISE",""));
+	}
+	
+	public void setLabels() {
+		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
+		bottles.setText(Program.getLabel("Infos405"));
+		cellarValue.setText(Program.getLabel("Infos406"));
 	}
 	
 	public void setEnable(boolean b){
@@ -158,7 +164,8 @@ class PanelStats extends JPanel {
 			if(column == 2)
 			{
 				Rangement r = names.get(row);
-				r.putTabStock();
+				//r.putTabStock();
+				RangementUtils.putTabStock();
 				LinkedList<Rangement> rangements = new LinkedList<Rangement>();
 				rangements.add(r);
 				MyXmlDom.writeRangements("", rangements, false);
@@ -213,8 +220,12 @@ class PanelHistory extends JPanel {
 		SwingUtilities.invokeLater(() -> {
 			model.removeAll();
 			if(Program.getCave().size() > 0)
-				model.setHistory(Program.getStorage().getHistory());
+				model.setHistory(Program.getStorage().getHistory().getHistory());
 		});
+	}
+	
+	public void setLabels() {
+		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos407")));
 	}
 	
 	public void setEnable(boolean b){

@@ -8,7 +8,6 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 
-
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -18,7 +17,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-
+import net.miginfocom.swing.MigLayout;
 import mycellar.actions.ManageVineyardAction;
 import mycellar.BottleColor;
 import mycellar.Bouteille;
@@ -43,8 +42,8 @@ import mycellar.vignobles.Vignobles;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 03/08/17
+ * @version 0.8
+ * @since 04/08/17
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -297,7 +296,7 @@ public class MyCellarManageBottles extends JPanel {
 		m_price.setEditable(enable);
 		m_maturity.setEditable(enable);
 		m_parker.setEditable(enable);
-		m_colorList.setEditable(enable);
+		m_colorList.setEnabled(enable);
 		m_comment.setEditable(enable);
 		m_annee_auto.setEnabled(enable);
 		m_noYear.setEnabled(enable);
@@ -396,7 +395,6 @@ public class MyCellarManageBottles extends JPanel {
 		Debug("Previewing...");
 		try {
 			int num_select = m_lieu.getSelectedIndex();
-			//Program.getCave(num_select - 1).putTabStock();
 			RangementUtils.putTabStock();
 			LinkedList<Rangement> rangements = new LinkedList<Rangement>();
 			rangements.add(Program.getCave(num_select - 1));
@@ -627,4 +625,40 @@ public class MyCellarManageBottles extends JPanel {
 		
 	}
 
+	public class PanelAttribute extends JPanel{
+		private static final long serialVersionUID = 183053076444982489L;
+
+		public PanelAttribute(){
+			setLayout(new MigLayout("","[]30px[]30px[]",""));
+			add(m_labelMaturity,"");
+			add(m_labelParker,"");
+			add(m_labelColor,"wrap");
+			add(m_maturity,"width min(200,40%)");
+			add(m_parker,"width min(150,30%)");
+			add(m_colorList,"wrap, width min(150,30%)");
+			add(m_labelPrice,"wrap");
+			add(m_price,"width min(100,45%), split 2");
+			add(m_devise,"gapleft 5px");
+			add(m_labelNbBottle,"split, span 2");
+			add(m_nb_bottle,"width min(50,10%)");
+			add(m_labelStillToAdd,"");
+		}
+	}
+	
+	public class PanelName extends JPanel{
+		private static final long serialVersionUID = 8617685535706381964L;
+
+		public PanelName(){
+			setLayout(new MigLayout("","[grow]30px[]10px[]10px[]30px[]10px[]",""));
+			add(m_labelName,"grow");
+			add(m_labelYear);
+			add(m_annee_auto);
+			add(m_contenance,"wrap");
+			add(name,"grow");
+			add(m_year,"width min(100,10%)");
+			add(m_noYear,"");
+			add(m_half,"push");
+			add(m_manageContenance,"");
+		}
+	}
 }

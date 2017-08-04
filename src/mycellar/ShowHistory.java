@@ -27,8 +27,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 2.8
- * @since 03/08/17
+ * @version 2.9
+ * @since 04/08/17
  */
 
 public class ShowHistory extends JPanel implements ITabListener {
@@ -117,8 +117,8 @@ public class ShowHistory extends JPanel implements ITabListener {
 		add(restoreButton, "align right, wrap");
 		add(m_oScroll, "grow, wrap");
 		add(m_oSuppr, "center");
-		Start.outils.add(ClearSomeHistory);
-		Start.outils.add(ClearHistory);
+		Start.menuTools.add(ClearSomeHistory);
+		Start.menuTools.add(ClearHistory);
 	}
 
 	/**
@@ -230,8 +230,8 @@ public class ShowHistory extends JPanel implements ITabListener {
 
 	@Override
 	public void tabClosed() {
-		Start.outils.remove(ClearSomeHistory);
-		Start.outils.remove(ClearHistory);
+		Start.menuTools.remove(ClearSomeHistory);
+		Start.menuTools.remove(ClearHistory);
 		Start.updateMainPanel();
 	}
 

@@ -22,8 +22,8 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.2
- * @since 14/07/17
+ * @version 3.3
+ * @since 04/08/17
  */
 
 /**
@@ -670,6 +670,10 @@ public class Bouteille implements Serializable{
 		 setType(b.getType());
 		 setColor(b.getColor());
 		 setVignoble(b.getVignoble());
+	 }
+	 
+	 public void updateID() {
+		 id = generatedValue++;
 	 }
 
 	 /**

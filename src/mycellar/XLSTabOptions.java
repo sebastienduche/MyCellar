@@ -26,8 +26,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 13/11/16
+ * @version 0.9
+ * @since 04/08/17
  */
 public class XLSTabOptions extends JDialog {
   private int LARGEUR = 480;
@@ -186,7 +186,7 @@ public class XLSTabOptions extends JDialog {
 
     jPanel2.setFont(Program.font_panel);
     jPanel2.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos332")));
-    valider.setText("OK");
+    valider.setText(Program.getLabel("Main.OK"));
     valider.addActionListener((e) -> valider_actionPerformed(e));
     annuler.setText(Program.getLabel("Infos055"));
     annuler.addActionListener((e) -> annuler_actionPerformed(e));

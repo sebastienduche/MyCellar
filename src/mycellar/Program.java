@@ -73,8 +73,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 16.0
- * @since 03/08/17
+ * @version 16.1
+ * @since 04/08/17
  */
 
 public class Program {
@@ -100,6 +100,7 @@ public class Program {
 	public static ShowHistory history = null;
 	public static VineyardPanel vignobles = null;
 	public static ShowMoreHistory Morehistory = null;
+	public static PanelInfos panelInfos = null;
 	public static AddVin addWine = null;
 	public static JTabbedPane tabbedPane = new JTabbedPane();
 	public static String archive = null;
@@ -299,7 +300,23 @@ public class Program {
 	 */
 	public static boolean setLanguage(String lang) {
 		Program.Debug("set Language : "+lang);
-		return LanguageFileLoader.loadLanguageFiles( lang );
+		tabbedPane.removeAll();
+		addWine = null;
+		createPlace = null;
+		creer_tableau = null;
+		export = null;
+		history = null;
+		modifyPlace = null;
+		search = null;
+		showfile = null;
+		showtrash = null;
+		vignobles = null;
+		boolean load = LanguageFileLoader.loadLanguageFiles( lang );
+		if(panelInfos != null) {
+			panelInfos.setLabels();
+			Start.updateMainPanel();
+		}
+		return load;
 	}
 
 	/**

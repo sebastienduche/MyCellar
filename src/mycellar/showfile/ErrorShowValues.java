@@ -16,8 +16,8 @@ import mycellar.core.MyCellarError;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 29/07/17
+ * @version 0.5
+ * @since 04/08/17
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -99,7 +99,7 @@ public class ErrorShowValues extends TableShowValues {
 		case STATUS:
 			if(error.isStatus())
 				return Program.getLabel("ShowFile.Added");
-			return status[row] ? "OK" : "KO";
+			return status[row] ? Program.getLabel("Main.OK") : Program.getLabel("Main.KO");
 		case BUTTON:
 			return true;
 		case ERROR:

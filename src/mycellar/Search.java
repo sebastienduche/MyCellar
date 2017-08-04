@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.8
- * @since 03/08/17
+ * @version 17.9
+ * @since 04/08/17
  */
 public class Search extends JPanel implements Runnable, ITabListener {
 	private static JTable table;
@@ -268,7 +268,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		if( name != null && name.isVisible() )
 			name.requestFocusInWindow();
 
-		Start.outils.add(moveLine);
+		Start.menuTools.add(moveLine);
 	}
 
 	/**
@@ -612,8 +612,9 @@ public class Search extends JPanel implements Runnable, ITabListener {
 			if (m.matches()) {
 				if(!model.hasBottle(bottle))
 					model.addBouteille(bottle);
-				else
+				else {
 					already_found = true;
+				}
 			}
 		}
 		int nRows = model.getRowCount();
@@ -1277,15 +1278,8 @@ public class Search extends JPanel implements Runnable, ITabListener {
 	 * @param a ActionEvent
 	 */
 	void moveLine_actionPerformed(ActionEvent a) {
-		try {
-			new MoveLine();
-		}
-		catch (Exception e) {
-			Program.showException(e);
-		}
+		new MoveLine();
 	}
-
-
 
 	/**
 	 * Debug
@@ -1304,8 +1298,8 @@ public class Search extends JPanel implements Runnable, ITabListener {
 			name.addMouseListener(popup_l);
 			name.setFont(Program.font_panel);
 			setLayout(new MigLayout("","[grow]","[]"));
-			this.add(new MyCellarLabel(Program.getLabel("Infos085")),"wrap");
-			this.add(name,"grow");
+			add(new MyCellarLabel(Program.getLabel("Infos085")),"wrap");
+			add(name,"grow");
 		}
 	}
 
@@ -1314,15 +1308,15 @@ public class Search extends JPanel implements Runnable, ITabListener {
 
 		public PanelPlace(){
 			setLayout(new MigLayout("","[grow]","[][][][]"));
-			this.add(label3,"");
-			this.add(label4,"");
-			this.add(label5,"");
-			this.add(label6,"wrap");
-			this.add(lieu,"");
-			this.add(num_lieu,"");
-			this.add(line,"");
-			this.add(column,"wrap");
-			this.add(multi,"span 4");
+			add(label3,"");
+			add(label4,"");
+			add(label5,"");
+			add(label6,"wrap");
+			add(lieu,"");
+			add(num_lieu,"");
+			add(line,"");
+			add(column,"wrap");
+			add(multi,"span 4");
 		}
 	}
 
@@ -1331,8 +1325,8 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		public PanelYear(){
 			setLayout(new MigLayout("","",""));
 			MyCellarLabel labelYear = new MyCellarLabel(Program.getLabel("Infos133"));
-			this.add(labelYear,"wrap");
-			this.add(year,"");
+			add(labelYear,"wrap");
+			add(year,"");
 		}
 		public void fillYear(){
 			year.removeAllItems();
@@ -1357,10 +1351,10 @@ public class Search extends JPanel implements Runnable, ITabListener {
 
 		public PanelOption(){
 			setLayout(new MigLayout("","","[][]"));
-			this.add(cherche,"wrap");
-			this.add(vider,"");
-			this.add(export,"wrap");
-			this.add(empty_search,"wrap, span 2");
+			add(cherche,"wrap");
+			add(vider,"");
+			add(export,"wrap");
+			add(empty_search,"wrap, span 2");
 			add(txt_nbresul,"split");
 			add(txt_nb,"wrap");
 		}
@@ -1386,8 +1380,8 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		updateView = false;
 		lieu.removeAllItems();
 		lieu.addItem("");
-		for (int i = 0; i < Program.GetCaveLength(); i++) {
-			lieu.addItem(Program.getCave(i).getNom());
+		for (Rangement r : Program.getCave()) {
+			lieu.addItem(r.getNom());
 		}
 	}
 
@@ -1410,8 +1404,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		if( tabbedPane.getSelectedIndex() == 0 ) {
 			String text = name.getSelectedText();
 			String fullText = name.getText();
-			if(text != null)
-			{
+			if(text != null) {
 				name.setText(fullText.substring(0, name.getSelectionStart()) + fullText.substring(name.getSelectionEnd()));
 				clipboard.copier(text);
 			}

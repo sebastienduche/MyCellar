@@ -23,8 +23,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 13/11/16
+ * @version 1.2
+ * @since 04/08/17
  */
 public class APropos extends JDialog {
   private MyCellarButton ok = new MyCellarButton();
@@ -59,7 +59,7 @@ public class APropos extends JDialog {
    * @throws Exception
    */
   private void jbInit() throws Exception {
-    ok.setText("OK");
+    ok.setText(Program.getLabel("Main.OK"));
     IconPanel ip = new IconPanel(MyCellarImage.ICON.getImage());
     ok.setFont(new Font("Arial", 0, 12));
     ok.addActionListener((e) -> ok_actionPerformed(e));

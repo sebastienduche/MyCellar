@@ -24,8 +24,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 13/11/16
+ * @version 1.6
+ * @since 04/08/17
  */
 public class MyOptions extends JDialog {
   private MyCellarLabel textControl1 = new MyCellarLabel();
@@ -127,7 +127,6 @@ public class MyOptions extends JDialog {
     labelEdit = new JTextField[taille_value];
     this.setDefaultCloseOperation(0);
     this.setTitle(title);
-    //xYLayout1.setHeight(HAUTEUR);
     textControl1.setFont(Program.font_dialog_small);
     textControl1.setForeground(Color.red);
     textControl1.setText(title);
@@ -136,7 +135,7 @@ public class MyOptions extends JDialog {
     definition2.setText(message2);
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(0);
-    valider.setText("OK");
+    valider.setText(Program.getLabel("Main.OK"));
     valider.setMnemonic('O');
     annuler.setText(Program.getLabel("Infos055"));
     
@@ -243,7 +242,7 @@ public class MyOptions extends JDialog {
  }
 
   /**
-   * valider_actionPerformed: Valider la propri�t� et quitter.
+   * valider_actionPerformed: Valider la propriété et quitter.
    *
    * @param e ActionEvent
    */

@@ -20,8 +20,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 18/07/17
+ * @version 1.2
+ * @since 04/08/17
  */
 public class PanelInfos extends JPanel {
 
@@ -42,6 +42,12 @@ public class PanelInfos extends JPanel {
 		Debug("Refreshing...");
 		panelStats.refresh();
 		panelHistory.refresh();
+	}
+	
+	public void setLabels() {
+		Debug("setLabels...");
+		panelStats.setLabels();
+		panelHistory.setLabels();
 	}
 	
 	public void setEnable(boolean b) {
@@ -100,7 +106,12 @@ class PanelStats extends JPanel {
 		}
 		bottlesNb.setText(Integer.toString(nbBottles));
 		cellarTotal.setText(Program.getCellarValue() + " " + Program.getCaveConfigString("DEVISE",""));
-        
+	}
+	
+	public void setLabels() {
+		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
+		bottles.setText(Program.getLabel("Infos405"));
+		cellarValue.setText(Program.getLabel("Infos406"));
 	}
 	
 	public void setEnable(boolean b){
@@ -211,6 +222,10 @@ class PanelHistory extends JPanel {
 			if(Program.getCave().size() > 0)
 				model.setHistory(Program.getStorage().getHistory().getHistory());
 		});
+	}
+	
+	public void setLabels() {
+		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos407")));
 	}
 	
 	public void setEnable(boolean b){

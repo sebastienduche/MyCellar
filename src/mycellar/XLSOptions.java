@@ -23,8 +23,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 17/07/17
+ * @version 1.1
+ * @since 04/08/17
  */
 public class XLSOptions extends JDialog {
   private JPanel jPanel1 = new JPanel();
@@ -134,7 +134,7 @@ public class XLSOptions extends JDialog {
     }
     jPanel2.setLayout(new MigLayout("","[grow][grow]",""));
     jPanel2.setFont(Program.font_panel);
-    valider.setText("OK");
+    valider.setText(Program.getLabel("Main.OK"));
     valider.addActionListener((e) -> valider_actionPerformed(e));
     annuler.setText(Program.getLabel("Infos055"));
     annuler.addActionListener((e) -> dispose());

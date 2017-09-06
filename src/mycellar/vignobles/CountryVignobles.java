@@ -16,8 +16,8 @@ import mycellar.countries.Country;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 21/01/17
+ * @version 1.3
+ * @since 06/09/17
  */
 
 public final class CountryVignobles {
@@ -58,6 +58,14 @@ public final class CountryVignobles {
 		instance.map.put(country, vignobles);
 		Debug("Creating country End");
 		return true;
+	}
+	
+	public static boolean deleteCountry(Country country) {
+		Debug("Deleting country... "+country.getName());
+		instance.map.remove(country);
+		boolean resul = Vignobles.delete(country);
+		Debug("Deleting country End");
+		return resul;
 	}
 	
 	private static void generateCountryId(Country country) {

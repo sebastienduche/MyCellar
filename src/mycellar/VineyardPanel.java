@@ -36,8 +36,8 @@ import mycellar.vignobles.CountryVignobles;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 1.5
- * @since 19/02/17
+ * @version 1.6
+ * @since 06/09/17
  */
 
 public class VineyardPanel extends JPanel implements ITabListener {
@@ -54,6 +54,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 	private MyCellarButton renameVignoble = new MyCellarButton(new RenameVignobleAction());
 	private MyCellarButton addAppellation = new MyCellarButton(new AddAppellationAction());
 	private MyCellarButton addCountry = new MyCellarButton(new AddCountryAction());
+	private MyCellarButton delCountry = new MyCellarButton(new DelCountryAction());
 	private Vignobles vignobles = null;
 	private VineyardTableModel model = new VineyardTableModel();
 	private JTable tableAppellations = new JTable(model);
@@ -117,7 +118,8 @@ public class VineyardPanel extends JPanel implements ITabListener {
 		panelCombos.setLayout(new MigLayout("", "[][][][]", "[][]"));
 		panelCombos.add(labelCountries);
 		panelCombos.add(comboCountry);
-		panelCombos.add(addCountry, "wrap");
+		panelCombos.add(addCountry);
+		panelCombos.add(delCountry, "wrap");
 		panelCombos.add(labelVineyard);
 		panelCombos.add(comboVignoble);
 		panelCombos.add(addVignoble);
@@ -195,6 +197,8 @@ public class VineyardPanel extends JPanel implements ITabListener {
 				return;
 			}
 			comboVignoble.removeItemAt(comboVignoble.getSelectedIndex());
+			delVignoble.setEnabled(comboVignoble.getItemCount() > 0);
+			renameVignoble.setEnabled(comboVignoble.getItemCount() > 0);
 			vignobles.delVignoble(v);
 			Program.setModified();
 		}
@@ -260,6 +264,36 @@ public class VineyardPanel extends JPanel implements ITabListener {
 				comboCountry.addItem(country);
 				Program.setModified();
 			}
+		}
+	}
+	
+	class DelCountryAction extends AbstractAction {
+
+		private static final long serialVersionUID = -2587952745857642464L;
+
+		public DelCountryAction() {
+			super(Program.getLabel("VineyardPanel.delCountry"), MyCellarImage.DELETE);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Country country = (Country)comboCountry.getSelectedItem();
+			if(country == null)
+				return;
+			Vignobles vignobles = CountryVignobles.getVignobles(country);
+			if(vignobles == null)
+				return;
+			for(CountryVignoble v : vignobles.getVignoble()) {
+    			if(CountryVignobles.isVignobleUsed(v)) {
+    				JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteCountry"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
+    				return;
+    			}
+			}
+			if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delCountryQuestion"), country), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION))
+				return;
+			CountryVignobles.deleteCountry(country);
+			comboCountry.removeItem(country);
+			Program.setModified();
 		}
 	}
 

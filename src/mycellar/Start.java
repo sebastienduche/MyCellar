@@ -61,7 +61,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private static MyCellarLabel copyright = new MyCellarLabel();
 	private static MyCellarLabel update = new MyCellarLabel();
 	private static String infos_version = " 2017 v";
-	private static MyCellarLabel version = new MyCellarLabel("Mai" + infos_version + MyCellarVersion.mainVersion);
+	private static MyCellarLabel version = new MyCellarLabel("Septembre" + infos_version + MyCellarVersion.mainVersion);
 	private static JButton m_oCreerButton = new JButton();
 	private static JButton m_oImporterButton = new JButton();
 	private static JButton m_oModifierButton = new JButton();

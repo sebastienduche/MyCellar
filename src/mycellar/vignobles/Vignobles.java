@@ -31,8 +31,8 @@ import mycellar.countries.Country;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 21/01/17
+ * @version 1.0
+ * @since 06/09/17
  */
 
 @XmlRootElement(name = "vignobles")
@@ -183,7 +183,7 @@ public class Vignobles
 	}
 	
 	public static boolean save(Country c, Vignobles vignoble) {
-		Debug("Writing JAXB File");
+		Debug("Writing Country File");
 		try {
 			File fText = new File(Program.getWorkDir(true), c.getId() + TEXT);
 			FileWriter writer = new FileWriter(fText);
@@ -200,8 +200,23 @@ public class Vignobles
         	Program.showException(e);
         	return false;
         }
-		Debug("Writing JAXB File Done");
+		Debug("Writing Country File Done");
 		return true;
+	}
+	
+	public static boolean delete(Country c) {
+		Debug("Deleting Country File");
+		try {
+			File fText = new File(Program.getWorkDir(true), c.getId() + TEXT);
+			Debug("Deleting "+fText.getAbsolutePath());
+			fText.delete();
+			File f = new File(Program.getWorkDir(true), c.getId() + VIGNOBLE);
+			Debug("Deleting "+f.getAbsolutePath());
+			return f.delete();
+        } catch( Exception e ) {
+        	Program.showException(e);
+        	return false;
+        }
 	}
 	
 	public CountryVignoble findVignoble(Vignoble v) {

@@ -1,8 +1,4 @@
-2.5.3.6
-4.9
-MyCellar.jar@920069dddda2d897896d99ada6a20a1a
+2.7.0.9
+5.0
+MyCellar.jar@d288abb5c2360a2195e58a4b58dab8d5
 Finish.html
-pdfbox-app-2.0.5.jar
--pdfbox-app-1.8.10.jar
--dropbox-core-sdk-1.7.7.jar
--jackson-core-2.4.0-rc3.jar

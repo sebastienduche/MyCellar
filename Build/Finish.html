@@ -7,445 +7,489 @@
 <HR>
 <FONT SIZE=+1>
 <STRONG>Projet :</STRONG>MyCellar<BR>
-<STRONG>Auteur :</STRONG>Sébastien Duché<BR>
-<STRONG>Société :</STRONG>Seb Informatique<BR>
+<STRONG>Auteur :</STRONG>SÃ©bastien DuchÃ©<BR>
+<STRONG>SociÃ©tÃ© :</STRONG>Seb Informatique<BR>
 <STRONG>Description :</STRONG><BR>
-Programme de gestion de Cave à vins.
+Programme de gestion de Cave Ã  vins.
 <HR>
-<STRONG>Développements et corrections de la version 4.9 CO (release 2.5.3.6)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 5.0 ZE (release 2.7.0.6)</STRONG><BR>
+</FONT>
+<UL>
+<LI>Creer_Tableaux: Il n'Ã©tait plus possible de crÃ©er les tableaux OK
+<LI>Rangement/RangementUtils: Refonte de la classe OK
+<LI>ShowFile: L'affichage de la poubelle faisait planter l'application OK
+<LI>Program: Suppression de la gestion des anciennes versions OK
+<LI>Program: Refonte des calculs des statistiques OK
+<LI>AddVin: En modification de plusieurs bouteilles, il Ã©tait possible de mettre 2 bouteilles Ã  la mÃªme place OK
+<LI>AddVin: Correction de la sÃ©lection de l'emplacement d'une bouteille par le choix d'une case OK
+<LI>ShowFile: RÃ©duction de la liste des colonnes affichÃ©e par dÃ©faut OK
+<LI>ShowFile: L'annulation du choix des colonnes crÃ©ait un rendu incorrect OK
+<LI>SupprimerRangement: Interdiction de la suppression du dernier rangement OK
+<LI>Importer: Correction du type de fichier positionnÃ© dans la boÃ®te de sÃ©lection de fichier OK
+<LI>Importer: Gestion des fichiers Excel ayant plusieurs lignes vides avant l'en-tÃªte OK
+<LI>ShowFile: Gestion des bouteilles incorrectement chargÃ©es lors de l'import OK
+<LI>Trash: Il Ã©tait possible de modifier les bouteilles dans la poubelle Ã  tort OK
+<LI>CellarOrganizer: Agrandissement de la largeur des cellules affichÃ©es pour les caisses OK
+<LI>Importer: Modification de l'affichage de la fin de l'import OK
+<LI>Program: Affichages des bouteilles incorrectement chargÃ©es lors de l'ouverture d'un fichier OK
+<LI>Importer: RÃ©Ã©criture de la fonction d'import Texte OK
+<LI>All:AmÃ©lioration de la gestion des libellÃ©s OK
+<LI>AddVin: Redimensionnement des champs Notation et Couleur OK
+<LI>Predicates: Ajout des champs Couleur et Contenance dans la recherche avancÃ©e OK
+<LI>All: Externalisation des libellÃ©s "OK" OK
+<LI>ParamÃ¨tres: Changement de langue lors de la validation OK
+<LI>All: AmÃ©lioration du changement de langue OK
+<LI>Program: Mise Ã  jour des identifiants internes des bouteilles au chargement OK
+<LI>AddVin: La liste des couleurs n'est plus modifiable OK
+<LI>VineyardPanel: PossibilitÃ© de supprimer un pays OK
+<LI>VineyardPanel: Correction d'un problÃ¨me de suppression d'un vignoble inexistant OK
+</UL>
+<STRONG>DÃ©veloppements et corrections de la version 4.9 CO (release 2.5.6.3)</STRONG><BR>
 </FONT>
 <UL>
 <LI>Rangement: Suppression d'une vieille fonction (convertNom_Int) OK
-<LI>Export: La fenêtre de choix des colonnes d'export ne s'affichait pas au premier plan OK
+<LI>Export: La fenÃªtre de choix des colonnes d'export ne s'affichait pas au premier plan OK
+<LI>Program: Correction d'un problÃ¨me de recherche par rangement lorsqu'il n'y avait que le rangement par dÃ©faut OK
+<LI>Rangement: RÃ©Ã©criture et simplification de la classe OK
+<LI>Rangement: Ajout d'une classe de tests OK
+<LI>Creer_Rangement: Correction d'un problÃ¨me lorsque l'on prÃ©visualisait une caisse OK
+<LI>Storage: RÃ©Ã©criture de la gestion de l'historique OK
+<LI>Search: Correction d'un problÃ¨me de recherche d'un rangement simple OK
+<LI>Creer_Rangement: Correction d'un problÃ¨me de modification d'un rangement simple OK
+<LI>SupprimerRangement: Il Ã©tait possible de supprimer d'un rangement simple alors que des bouteilles Ã©taient prÃ©sentes OK
+<LI>SerializedStorage: La crÃ©ation d'un nouveau fichier ne rÃ©initialisait pas l'historique OK
+<LI>Creer_Rangement: Correction d'un plantage lorsque l'on modifiait un rangement complexe en ajoutant une partie OK
+<LI>Creer_Rangement: Correction de l'affichage "Rangement modifiÃ©" Ã  tort OK
+<LI>Creer_Rangement: L'affichage "Rangement modifiÃ©" disparait automatiquement OK
 <LI>AddVin: Correction de l'ajout de plusieurs de bouteilles OK
 </UL>
-<STRONG>Développements et corrections de la version 4.8 CO (release 2.5.2.3)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 4.8 CO (release 2.5.2.3)</STRONG><BR>
 </FONT>
 <UL>
-<LI>MyCellarManageBottles: Gestion centralisée de la plupart du fonctionnement de AddVin et ManageBottle OK
-<LI>ShowFile: Tri par défaut sur la colonne nom du vin OK
-<LI>VineyardPanel: Tri par défaut sur la colonne appellation OK
-<LI>Export: Mise à jour de la librairie PDF OK
-<LI>MyCellarLauncher: Possibilité de supprimer des fichiers jar lors de la mise à jour OK
-<LI>AddVin: Il était possible de mettre plus de bouteilles dans une caisse qu'autorisé par la limite OK
-<LI>Search/Creer_Tableaux: La case à cocher "Sélectionner tout" ne mettait pas à jour l'affichage de la liste OK
+<LI>MyCellarManageBottles: Gestion centralisÃ©e de la plupart du fonctionnement de AddVin et ManageBottle OK
+<LI>ShowFile: Tri par dÃ©faut sur la colonne nom du vin OK
+<LI>VineyardPanel: Tri par dÃ©faut sur la colonne appellation OK
+<LI>Export: Mise Ã  jour de la librairie PDF OK
+<LI>MyCellarLauncher: PossibilitÃ© de supprimer des fichiers jar lors de la mise Ã  jour OK
+<LI>AddVin: Il Ã©tait possible de mettre plus de bouteilles dans une caisse qu'autorisÃ© par la limite OK
+<LI>Search/Creer_Tableaux: La case Ã  cocher "SÃ©lectionner tout" ne mettait pas Ã  jour l'affichage de la liste OK
 <LI>Server: Utilisation de GitHub OK
-<LI>Program: Encodage de données sensibles OK
-<LI>Start: Le programme se fermait même si l'on avait répondu Non lorsque l'on avait une bouteille en cours de modification OK
-<LI>All: Correction d'un problème de Look&Feel OK
-<LI>AddVin: Une erreur de rangement était levée à tort lorsque l'on modifiait une bouteille parmi plusieurs sans changer de rangement OK
-<LI>AddVin: Amélioration pour ne plus supprimer puis ajouter une bouteille lors d'une modification OK
-<LI>Creer_Tableaux: Positionnement de la colonne des cases à cocher à gauche OK
+<LI>Program: Encodage de donnÃ©es sensibles OK
+<LI>Start: Le programme se fermait mÃªme si l'on avait rÃ©pondu Non lorsque l'on avait une bouteille en cours de modification OK
+<LI>All: Correction d'un problÃ¨me de Look&Feel OK
+<LI>AddVin: Une erreur de rangement Ã©tait levÃ©e Ã  tort lorsque l'on modifiait une bouteille parmi plusieurs sans changer de rangement OK
+<LI>AddVin: AmÃ©lioration pour ne plus supprimer puis ajouter une bouteille lors d'une modification OK
+<LI>Creer_Tableaux: Positionnement de la colonne des cases Ã  cocher Ã  gauche OK
 <LI>MyCellarManageBottles: Correction d'une erreur lors de l'affichage d'une bouteille depuis la recherche OK
-<LI>ShowFile: Suppression du bouton pour gérer les colonnes dans la vue 'Poubelle' OK
-<LI>CreerRangement: Correction d'une erreur lorsque l'on créait un rangement sans modifier le nombre de lignes OK
+<LI>ShowFile: Suppression du bouton pour gÃ©rer les colonnes dans la vue 'Poubelle' OK
+<LI>CreerRangement: Correction d'une erreur lorsque l'on crÃ©ait un rangement sans modifier le nombre de lignes OK
 </UL>
-<STRONG>Développements et corrections de la version 4.7 GA (release 2.4.8.1)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 4.7 GA (release 2.4.8.1)</STRONG><BR>
 </FONT>
 <UL>
 <LI>All: Utilisation de Java 8 OK
-<LI>AddVin: La sélection d'une case depuis la description d'un rangement ne fonctionnait plus OK
-<LI>Search: Le vidage de la liste se faisait après la recherche (régression Java 8) OK
-<LI>VineyardPanel: Les appelations pouvaient être supprimées à tort lorsqu'elles étaient utilisées OK
-<LI>VineyardPanel: Les appelations étaient supprimées alors que l'on avait utilisé la touche "Esc" OK
-<LI>AddVin: L'appelation pouvaient être supprimées lorsque l'on venait d'ajouter une bouteille l'utilisant OK
-<LI>Stats: L'affichage n'était pas mis à jour lors du changement de tranche de prix OK
-<LI>Vignobles: Correction d'un problème de création d'identifiant unique pour un pays OK
-<LI>Vignobles: Enregistrement du libellé d'un pays dans un fichier texte OK
-<LI>Program: Correction d'un problème de compression de fichier avec le même identifiant OK
-<LI>Predicates: Gestion des différentes options de recherche sur le nom en un seul champs OK
-<LI>AddVin: Disparition du message d'information après 5 secondes OK
-<LI>AddVin: Un nouveau pays saisi n'était pas présent dans la liste après enregistrement de la bouteille OK
-<LI>VineyardPanel: Activation / Désactivation des boutons en fonction des options possibles OK
-<LI>ManageBottle: La sélection du pays ne se faisait plus lors de la modification d'une bouteille OK
-<LI>AddVin: La saisie d'une année était possible alors que la case "Sans année" était active OK
-<LI>VineyardPanel: Il n'était pas possible de modifier l'IGP après une ajout de vignoble OK
+<LI>AddVin: La sÃ©lection d'une case depuis la description d'un rangement ne fonctionnait plus OK
+<LI>Search: Le vidage de la liste se faisait aprÃ¨s la recherche (rÃ©gression Java 8) OK
+<LI>VineyardPanel: Les appelations pouvaient Ãªtre supprimÃ©es Ã  tort lorsqu'elles Ã©taient utilisÃ©es OK
+<LI>VineyardPanel: Les appelations Ã©taient supprimÃ©es alors que l'on avait utilisÃ© la touche "Esc" OK
+<LI>AddVin: L'appelation pouvaient Ãªtre supprimÃ©es lorsque l'on venait d'ajouter une bouteille l'utilisant OK
+<LI>Stats: L'affichage n'Ã©tait pas mis Ã  jour lors du changement de tranche de prix OK
+<LI>Vignobles: Correction d'un problÃ¨me de crÃ©ation d'identifiant unique pour un pays OK
+<LI>Vignobles: Enregistrement du libellÃ© d'un pays dans un fichier texte OK
+<LI>Program: Correction d'un problÃ¨me de compression de fichier avec le mÃªme identifiant OK
+<LI>Predicates: Gestion des diffÃ©rentes options de recherche sur le nom en un seul champs OK
+<LI>AddVin: Disparition du message d'information aprÃ¨s 5 secondes OK
+<LI>AddVin: Un nouveau pays saisi n'Ã©tait pas prÃ©sent dans la liste aprÃ¨s enregistrement de la bouteille OK
+<LI>VineyardPanel: Activation / DÃ©sactivation des boutons en fonction des options possibles OK
+<LI>ManageBottle: La sÃ©lection du pays ne se faisait plus lors de la modification d'une bouteille OK
+<LI>AddVin: La saisie d'une annÃ©e Ã©tait possible alors que la case "Sans annÃ©e" Ã©tait active OK
+<LI>VineyardPanel: Il n'Ã©tait pas possible de modifier l'IGP aprÃ¨s une ajout de vignoble OK
 <LI>AddVin: Tri des pays OK
-<LI>VineyardPanel: Correction d'un problème de renommage des appelations OK
+<LI>VineyardPanel: Correction d'un problÃ¨me de renommage des appelations OK
 </UL>
-<STRONG>Développements et corrections de la version 4.6 AR (release 2.4.0.9)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 4.6 AR (release 2.4.0.9)</STRONG><BR>
 </FONT>
 <UL>
-<LI>Vignobles: Correction d'un problème lors de la création d'une appelation dans un nouveau vignoble OK
+<LI>Vignobles: Correction d'un problÃ¨me lors de la crÃ©ation d'une appelation dans un nouveau vignoble OK
 <LI>ManageBottle: Correction de l'ajout d'un nouveau vignoble lors de la modification d'une bouteille OK
-<LI>AddVin: La question sur l'ajout de plusieurs bouteilles étaient affiché à tort lorsqu'il y avait qu'une bouteille OK
-<LI>Search: La recherche avancé plantait si aucune sélection n'était faite OK
-<LI>Search: Correction d'un plantage lorsque la zone de saisie de recherche était vide et que l'on utilisait les flèches de navigation OK
-<LI>Search: La liste des vins trouvées n'étaient pas mise à jour si l'une des bouteilles étaient supprimée lors d'une modification OK
+<LI>AddVin: La question sur l'ajout de plusieurs bouteilles Ã©taient affichÃ© Ã  tort lorsqu'il y avait qu'une bouteille OK
+<LI>Search: La recherche avancÃ© plantait si aucune sÃ©lection n'Ã©tait faite OK
+<LI>Search: Correction d'un plantage lorsque la zone de saisie de recherche Ã©tait vide et que l'on utilisait les flÃ¨ches de navigation OK
+<LI>Search: La liste des vins trouvÃ©es n'Ã©taient pas mise Ã  jour si l'une des bouteilles Ã©taient supprimÃ©e lors d'une modification OK
 <LI>CellarOrganizerPanel: Correction d'un plantage lorsque l'on changeait de rangement avec des bouteilles dans le stock OK
-<LI>CellarOrganizerPanel: Possibilité de déplacer des bouteilles présents dans une caisse OK
-<LI>CellarOrganizerPanel: Possibilité de déplacer toutes les bouteilles d'une caisse dans le stock en une fois OK
-<LI>CellarOrganizerPanel: La liste des rangements n'était pas mise à jour après un ajout/suppression de rangement OK
+<LI>CellarOrganizerPanel: PossibilitÃ© de dÃ©placer des bouteilles prÃ©sents dans une caisse OK
+<LI>CellarOrganizerPanel: PossibilitÃ© de dÃ©placer toutes les bouteilles d'une caisse dans le stock en une fois OK
+<LI>CellarOrganizerPanel: La liste des rangements n'Ã©tait pas mise Ã  jour aprÃ¨s un ajout/suppression de rangement OK
 </UL>
-<STRONG>Développements et corrections de la version 4.5 GA (release 2.3.9.6)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 4.5 GA (release 2.3.9.6)</STRONG><BR>
 </FONT>
 <UL>
-<LI>Vignobles: Possibilité de trier le tableau des appellations OK
-<LI>Search: A la fermeture du fichier, la liste des résultats n'était pas vidée. OK
-<LI>Server: Récupération des mises à jour depuis Dropbox OK
+<LI>Vignobles: PossibilitÃ© de trier le tableau des appellations OK
+<LI>Search: A la fermeture du fichier, la liste des rÃ©sultats n'Ã©tait pas vidÃ©e. OK
+<LI>Server: RÃ©cupÃ©ration des mises Ã  jour depuis Dropbox OK
 <LI>Export: Ajout du titre des colonnes dans l'export PDF OK
-<LI>Export: Définition de colonnes par défaut pour l'export PDF si aucune n'était définie OK
-<LI>Program: Correction d'un problème entraînant la création d'un répertoire temporaire en quittant OK
-<LI>AddVin: Correction d'un problème de duplication de vignobles lorsque l'on modifiait plusieurs bouteilles OK
-<LI>Vignobles: Correction d'u problème d'affichage d'appelations vides OK
-<LI>AddVin: Amélioration de la gestion des listes pour sélectionner le rangement OK
-<LI>AddVin: Correction d'un ajout en double de bouteilles lorsque l'on ajoutait plusieurs bouteilles côte à côte OK
-<LI>AddVin: Correction d'un plantage lorsque l'on quittait la fenêtre de gestion des contenances sans avoir fait de sélection OK
-<LI>All: Correction de la gestion de la contenance par défaut OK
-<LI>All: Correction sur la présence de contenance en double OK
-<LI>All: Possibilité de gérer la contenance et la valeur par défaut depuis le menu Outils OK
-<LI>CellarOrganizerPanel: Mise à jour du contenu automatiquement après ajout/modification/suppression d'une bouteille OK
-<LI>CellarOrganizerPanel: Affichage de la couleur du vin avec différentes icônes OK
+<LI>Export: DÃ©finition de colonnes par dÃ©faut pour l'export PDF si aucune n'Ã©tait dÃ©finie OK
+<LI>Program: Correction d'un problÃ¨me entraÃ®nant la crÃ©ation d'un rÃ©pertoire temporaire en quittant OK
+<LI>AddVin: Correction d'un problÃ¨me de duplication de vignobles lorsque l'on modifiait plusieurs bouteilles OK
+<LI>Vignobles: Correction d'u problÃ¨me d'affichage d'appelations vides OK
+<LI>AddVin: AmÃ©lioration de la gestion des listes pour sÃ©lectionner le rangement OK
+<LI>AddVin: Correction d'un ajout en double de bouteilles lorsque l'on ajoutait plusieurs bouteilles cÃ´te Ã  cÃ´te OK
+<LI>AddVin: Correction d'un plantage lorsque l'on quittait la fenÃªtre de gestion des contenances sans avoir fait de sÃ©lection OK
+<LI>All: Correction de la gestion de la contenance par dÃ©faut OK
+<LI>All: Correction sur la prÃ©sence de contenance en double OK
+<LI>All: PossibilitÃ© de gÃ©rer la contenance et la valeur par dÃ©faut depuis le menu Outils OK
+<LI>CellarOrganizerPanel: Mise Ã  jour du contenu automatiquement aprÃ¨s ajout/modification/suppression d'une bouteille OK
+<LI>CellarOrganizerPanel: Affichage de la couleur du vin avec diffÃ©rentes icÃ´nes OK
 <LI>All: Correction sur la gestion des types des fichiers dans les boites de dialogue OK
-<LI>MyCellarLauncher: Création d'un jar pour installer automatiquement MyCellar OK
+<LI>MyCellarLauncher: CrÃ©ation d'un jar pour installer automatiquement MyCellar OK
 <LI>Start: Correction d'un plantage lors des boutons Copier/Coller sans avoir d'onglets ouvert OK
 </UL>
-<STRONG>Développements et corrections de la version 4.4 AR (release 2.3.4.3)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 4.4 AR (release 2.3.4.3)</STRONG><BR>
 </FONT>
 <UL>
-<LI>All: Suppression de l'option "Tous Fichiers" dans les boite de sélection de fichier OK
-<LI>Vignobles: Correction d'un problème d'ajout de pays vides OK
+<LI>All: Suppression de l'option "Tous Fichiers" dans les boite de sÃ©lection de fichier OK
+<LI>Vignobles: Correction d'un problÃ¨me d'ajout de pays vides OK
 <LI>Program: Suppression des fichiers de log de plus de 2 mois OK
-<LI>ShowFile: Ajout de la possibilité de sélectionner les colonnes à afficher OK
-<LI>ShowFile: Ajout de la possibilité d'ouvrir l'interface d'édition des bouteilles OK
+<LI>ShowFile: Ajout de la possibilitÃ© de sÃ©lectionner les colonnes Ã  afficher OK
+<LI>ShowFile: Ajout de la possibilitÃ© d'ouvrir l'interface d'Ã©dition des bouteilles OK
 <LI>MyXmlDom: Changement de technologie pour la gestion des fichiers XML OK
-<LI>All: Réécriture de l'export XML, XLS et HTML OK
+<LI>All: RÃ©Ã©criture de l'export XML, XLS et HTML OK
 <LI>All: Ajout de la gestion de la couleur du vin OK
 <LI>All: Centralisattion de la gestion des colonnes OK
 </UL>
-<STRONG>Développements et corrections de la version 4.3 GA (release 2.2.9.8)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 4.3 GA (release 2.2.9.8)</STRONG><BR>
 </FONT>
 <UL>
 <LI>All: Demande de sauvegarde uniquement lorsqu'il y a eu des modifications OK
 <LI>Export: Modification de l'export PDF qui ne fonctionnait plus OK
 <LI>Start: Ajout d'un bouton d'export PDF OK
-<LI>Vignobles: Correction d'un problème de chargement du fichier Vignobles OK
-<LI>Vignobles: Correction d'un problème de liste des appélations inexistantes OK
-<LI>Vignobles: Correction d'un problème d'ajout d'appelations vides OK
-<LI>Start: Suppression du contrôle de version Java 1.4 OK
+<LI>Vignobles: Correction d'un problÃ¨me de chargement du fichier Vignobles OK
+<LI>Vignobles: Correction d'un problÃ¨me de liste des appÃ©lations inexistantes OK
+<LI>Vignobles: Correction d'un problÃ¨me d'ajout d'appelations vides OK
+<LI>Start: Suppression du contrÃ´le de version Java 1.4 OK
 <LI>PanelInfos: Redimensionnement des colonnes de l'historique OK
 <LI>ShowHistory: L'historique n'utilisait pas toute la hauteur de l'affichage OK
-<LI>ShowHistory: Présentation de la liste du plus récent au plus ancien OK
+<LI>ShowHistory: PrÃ©sentation de la liste du plus rÃ©cent au plus ancien OK
 <LI>Export: Correction d'une erreur dans l'export XLS OK
 </UL>
-<STRONG>Développements et corrections de la version 4.2 MI (release 2.2.4.6)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 4.2 MI (release 2.2.4.6)</STRONG><BR>
 </FONT>
 <UL>
-<LI>VineyardPanel: Création d'une interface de gestion des vignobles OK
-<LI>AddVin: Possibilité de choisir l'emplacement de la bouteille en affichant l'emplacement OK
+<LI>VineyardPanel: CrÃ©ation d'une interface de gestion des vignobles OK
+<LI>AddVin: PossibilitÃ© de choisir l'emplacement de la bouteille en affichant l'emplacement OK
 </UL>
 
-<STRONG>Développements et corrections de la version 4.1 GA (release 2.2.0.7)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 4.1 GA (release 2.2.0.7)</STRONG><BR>
 </FONT>
 <UL>
 <LI>AddVin: L'ajout d'un vignoble pour un pays autre que France ne fonctionnait pas OK
-<LI>Search: Création d'une nouvelle zone de recherche avec liste OK
+<LI>Search: CrÃ©ation d'une nouvelle zone de recherche avec liste OK
 </UL>
 
-<STRONG>Développements et corrections de la version 4.0 KO (release 2.2.0.2)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 4.0 KO (release 2.2.0.2)</STRONG><BR>
 </FONT>
 <UL>
-<LI>Start: La fermeture de l'application ne gérait pas les actions en cours OK
-<LI>AddVin: Certaines modifications de vignobles n'étaient pas prises en compte OK
+<LI>Start: La fermeture de l'application ne gÃ©rait pas les actions en cours OK
+<LI>AddVin: Certaines modifications de vignobles n'Ã©taient pas prises en compte OK
 <LI>ManageBottle: La modification d'une bouteille ne chargeait pas correctement la liste des vignobles OK
-<LI>Error: Amélioration de l'affichage des erreurs simples OK
+<LI>Error: AmÃ©lioration de l'affichage des erreurs simples OK
 <LI>AddVin: Gestion de l'ajout de nouveaux vignobles et appelations OK
-<LI>Program: Amélioration de la gestion des fichiers Properties OK
+<LI>Program: AmÃ©lioration de la gestion des fichiers Properties OK
 <LI>Program: Correction sur la suppression des fichiers temporaires OK
-<LI>AddVin: Gestion automatique du séparateur de décimal dans le prix du vin OK
+<LI>AddVin: Gestion automatique du sÃ©parateur de dÃ©cimal dans le prix du vin OK
 </UL>
-<STRONG>Développements et corrections de la version 3.9 GA (release 2.1.7.7)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 3.9 GA (release 2.1.7.7)</STRONG><BR>
 <UL>
-<LI>MyCellarLauncher: Réécriture de la fonction de mise à jour automatique OK
+<LI>MyCellarLauncher: RÃ©Ã©criture de la fonction de mise Ã  jour automatique OK
 <LI>All: Nettoyage de code OK
 <LI>Program: Correction d'une erreur lors de la sauvegarde OK
-<LI>Program: Correction d'une erreur au démarrage de l'application si le fichier config.ini n'existait pas OK
-<LI>Start: Suppression de la fenêtre de sélection de la langue au démarrage ainsi que la fenêtre d'information OK
-<LI>Server: Ajout du contrôle du téléchargement avec le MD5 OK
-<LI>AddVin: La modification de plusieurs bouteilles dans une caisse pouvait entraîner un plantage OK
+<LI>Program: Correction d'une erreur au dÃ©marrage de l'application si le fichier config.ini n'existait pas OK
+<LI>Start: Suppression de la fenÃªtre de sÃ©lection de la langue au dÃ©marrage ainsi que la fenÃªtre d'information OK
+<LI>Server: Ajout du contrÃ´le du tÃ©lÃ©chargement avec le MD5 OK
+<LI>AddVin: La modification de plusieurs bouteilles dans une caisse pouvait entraÃ®ner un plantage OK
 <LI>AddVin: La modification de plusieurs bouteilles dans une caisse ne prenait pas en compte le vignoble OK
-<LI>Search: La liste des vins en cours de modifications n'étaient pas mise à jour lors d'une nouvelle modification OK
+<LI>Search: La liste des vins en cours de modifications n'Ã©taient pas mise Ã  jour lors d'une nouvelle modification OK
 </UL>
-<STRONG>Développements et corrections de la version 3.8 AR (release 2.1.5.4)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 3.8 AR (release 2.1.5.4)</STRONG><BR>
 <UL>
 <LI>All: Suppression de fichiers de configurations inutiles OK
-<LI>History: Possibilité de restaurer une bouteille supprimée OK
+<LI>History: PossibilitÃ© de restaurer une bouteille supprimÃ©e OK
 <LI>History: Correction sur la date OK
-<LI>Importer: Possibilité d'importer un fichier XML OK
-<LI>Program: L'historique n'était pas vidé lors de la création d'un fichier OK
-<LI>CreerRangement: Correction d'un plantage lors de la création de multiple rangements OK
-<LI>CreerRangement: Correction d'un plantage lors de la sauvegarde après la création des rangements OK
+<LI>Importer: PossibilitÃ© d'importer un fichier XML OK
+<LI>Program: L'historique n'Ã©tait pas vidÃ© lors de la crÃ©ation d'un fichier OK
+<LI>CreerRangement: Correction d'un plantage lors de la crÃ©ation de multiple rangements OK
+<LI>CreerRangement: Correction d'un plantage lors de la sauvegarde aprÃ¨s la crÃ©ation des rangements OK
 </UL>
-<STRONG>Développements et corrections de la version 3.7 GA (release 2.1.3.8)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 3.7 GA (release 2.1.3.8)</STRONG><BR>
 <UL>
-<LI>AddVin: Amélioration de l'interface OK
+<LI>AddVin: AmÃ©lioration de l'interface OK
 <LI>All: Suppression du dialogue de chargement OK
-<LI>All: Suppression du choix du nombre de parties maximales (désormais 99) OK
-<LI>Search: Ajout de l'option de recherche avancée: Nom contient OK
+<LI>All: Suppression du choix du nombre de parties maximales (dÃ©sormais 99) OK
+<LI>Search: Ajout de l'option de recherche avancÃ©e: Nom contient OK
 <LI>Start: Ajout d'un tooltip sur les derniers fichiers ouverts OK
 <LI>All: Suppression des options "Autres" OK
 <LI>Start: Correction d'une possible erreur d'affichage d'un rangement OK
-<LI>AddVin: Amélioration de la gestion des appellations OK
+<LI>AddVin: AmÃ©lioration de la gestion des appellations OK
 <LI>Vignobles: Gestion des vignobles Italiens OK
-<LI>AddVin: Correction d'un plantage lors de la réinitialisation des listes des vignobles OK
+<LI>AddVin: Correction d'un plantage lors de la rÃ©initialisation des listes des vignobles OK
 </UL>
-<STRONG>Développements et corrections de la version 3.6 HO (release 2.1.0.6)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 3.6 HO (release 2.1.0.6)</STRONG><BR>
 <UL>
-<LI>ManageBottle: Possibilité d'afficher les bouteilles dans des onglets séparés OK
-<LI>ManageBottle: Détection des modification avant fermeture de l'onglet OK
-<LI>Start: Ajout d'un astérisque au niveau de la bouteille lorsqu'elle est modifiée OK
-<LI>Start: Sauvegarde des bouteilles ouverte modifiées lors d'une demande de sauvegarde OK
-<LI>Program: La gestion des contenances à la création d'une cave n'était pas initialisée OK
+<LI>ManageBottle: PossibilitÃ© d'afficher les bouteilles dans des onglets sÃ©parÃ©s OK
+<LI>ManageBottle: DÃ©tection des modification avant fermeture de l'onglet OK
+<LI>Start: Ajout d'un astÃ©risque au niveau de la bouteille lorsqu'elle est modifiÃ©e OK
+<LI>Start: Sauvegarde des bouteilles ouverte modifiÃ©es lors d'une demande de sauvegarde OK
+<LI>Program: La gestion des contenances Ã  la crÃ©ation d'une cave n'Ã©tait pas initialisÃ©e OK
 <LI>Program: Changement de format pour le gestion des contenances OK
-<LI>ShowFile: Possibilité de changer le type des bouteilles OK
+<LI>ShowFile: PossibilitÃ© de changer le type des bouteilles OK
 </UL>
-<STRONG>Développements et corrections de la version 3.5 HA (release 2.0.3.8)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 3.5 HA (release 2.0.3.8)</STRONG><BR>
 <UL>
-<LI>CreerTableaux: Réécriture de l'interface OK
-<LI>XLSOptions: Réécriture de l'interface OK
-<LI>PDFOptions: Réécriture de l'interface OK
-<LI>CSVOptions: Réécriture de l'interface OK
-<LI>Importer: Réécriture de l'interface OK
-<LI>ShowHistory: Réécriture de l'interface OK
-<LI>ShowMoreHistory: Réécriture de l'interface OK
-<LI>Paramètres: Réécriture de l'interface OK
-<LI>XSLTabOptions: Réécriture de l'interface OK
-<LI>Options: Réécriture de l'interface OK
-<LI>Importer: Prise en compte de nouveaux paramètres OK
-<LI>AddVin: Correction sur le déplacement de bouteilles d'un rangement inexistant OK
+<LI>CreerTableaux: RÃ©Ã©criture de l'interface OK
+<LI>XLSOptions: RÃ©Ã©criture de l'interface OK
+<LI>PDFOptions: RÃ©Ã©criture de l'interface OK
+<LI>CSVOptions: RÃ©Ã©criture de l'interface OK
+<LI>Importer: RÃ©Ã©criture de l'interface OK
+<LI>ShowHistory: RÃ©Ã©criture de l'interface OK
+<LI>ShowMoreHistory: RÃ©Ã©criture de l'interface OK
+<LI>ParamÃ¨tres: RÃ©Ã©criture de l'interface OK
+<LI>XSLTabOptions: RÃ©Ã©criture de l'interface OK
+<LI>Options: RÃ©Ã©criture de l'interface OK
+<LI>Importer: Prise en compte de nouveaux paramÃ¨tres OK
+<LI>AddVin: Correction sur le dÃ©placement de bouteilles d'un rangement inexistant OK
 </UL>
-<STRONG>Développements et corrections de la version 3.4 GA (release 2.0.1.0)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 3.4 GA (release 2.0.1.0)</STRONG><BR>
 <UL>
 <LI>Program: Correction du chargement de l'historique OK
-<LI>AddVin: La modification de l'année était possible à tort lorsque l'on modifiait une bouteille sans année OK
+<LI>AddVin: La modification de l'annÃ©e Ã©tait possible Ã  tort lorsque l'on modifiait une bouteille sans annÃ©e OK
 <LI>Search: Nettoyage du code OK
-<LI>Search: Ajout de la nouvelle recherche avancée OK
+<LI>Search: Ajout de la nouvelle recherche avancÃ©e OK
 <LI>Start: Corrections sur l'affichage lors de l'ouverture et la fermeture de fichier OK
-<LI>Search: Amélioration des choix dans la recherche avancée OK
-<LI>Server: Amélioration de la gestion des erreurs de téléchargement OK
-<LI>Search: Correction de l'affichage des résultats des recherches OK
+<LI>Search: AmÃ©lioration des choix dans la recherche avancÃ©e OK
+<LI>Server: AmÃ©lioration de la gestion des erreurs de tÃ©lÃ©chargement OK
+<LI>Search: Correction de l'affichage des rÃ©sultats des recherches OK
 <LI>Program: Envoie d'un mail en cas de plantage du programme OK
 </UL>
-<STRONG>Développements et corrections de la version 3.3 GA (release 1.9.8.8)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 3.3 GA (release 1.9.8.8)</STRONG><BR>
 <UL>
 <LI>AddVin:Correction de l'affichage lorsque l'on n'ajoute pas toutes les bouteilles OK
 <LI>AddVin:Correction sur la gestion du rangement unique OK
-<LI>CreerRangement: Le renommage d'un rangement sans déplacer les bouteilles ne rafraîchissait pas les listes OK
+<LI>CreerRangement: Le renommage d'un rangement sans dÃ©placer les bouteilles ne rafraÃ®chissait pas les listes OK
 <LI>All:Suppression de la sauvegarde automatique sous forme de fichier Excel et de fichier sinfo OK
 <LI>ShowFile: La modification du rangement d'une bouteille ne recalculait pas l'organisation OK
-<LI>SupprimerRangement: Correction de l'affichage des caisses avec un début de partie différent de 0 OK
-<LI>Program: Modifications de la gestion des fichiers de propriétés OK
-<LI>Program: Amélioration et centralisation du chargement OK
+<LI>SupprimerRangement: Correction de l'affichage des caisses avec un dÃ©but de partie diffÃ©rent de 0 OK
+<LI>Program: Modifications de la gestion des fichiers de propriÃ©tÃ©s OK
+<LI>Program: AmÃ©lioration et centralisation du chargement OK
 <LI>AddVin: Ajout de la gestion des appelations OK
 <LI>AddVin: Correction de la modification de plusieurs bouteilles OK
-<LI>Program: L'historique n'était pas réinitialisé lors de la créattion d'un fichier OK
+<LI>Program: L'historique n'Ã©tait pas rÃ©initialisÃ© lors de la crÃ©attion d'un fichier OK
 </UL>
-<STRONG>Développements et corrections de la version 3.2 GA (release 1.9.6.0)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 3.2 GA (release 1.9.6.0)</STRONG><BR>
 <UL>
-<LI>Paramètres:Possibilité de recalculer les statistiques OK
+<LI>ParamÃ¨tres:PossibilitÃ© de recalculer les statistiques OK
 <LI>Start:Simplification du chargement OK
-<LI>ManagePlace: Ajout de la possibilité de gérer les armoires par Drag&Drop OK
+<LI>ManagePlace: Ajout de la possibilitÃ© de gÃ©rer les armoires par Drag&Drop OK
 <LI>All:Gestion de la poubelle OK
-<LI>ShowFile/Poubelle: Possibilité de restaurer les vins supprimés OK
-<LI>AddVin: Le nombre de bouteille à ajouter n'était pas remis à 1 après la fermeture OK
+<LI>ShowFile/Poubelle: PossibilitÃ© de restaurer les vins supprimÃ©s OK
+<LI>AddVin: Le nombre de bouteille Ã  ajouter n'Ã©tait pas remis Ã  1 aprÃ¨s la fermeture OK
 <LI>AddVin: Le champ de saisie du nom du vin contient la liste des noms existant OK
-<LI>All: En création de fichier, création d'un rangement Stock par défaut OK
-<LI>PanelInfos: Correction de la bouteille affichée dans les détails des dernières actions OK
-<LI>Welcome: Réécriture de l'interface OK
-<LI>Poubelle: Vidage de la poubelle à la fermeture d'un fichier OK
-<LI>All:Intégration des images dans le jar et centralisation de leur gestion OK
-<LI>Splashscreen: Réécriture de la classe OK
-<LI>All:Intégration des langues dans le jar OK
+<LI>All: En crÃ©ation de fichier, crÃ©ation d'un rangement Stock par dÃ©faut OK
+<LI>PanelInfos: Correction de la bouteille affichÃ©e dans les dÃ©tails des derniÃ¨res actions OK
+<LI>Welcome: RÃ©Ã©criture de l'interface OK
+<LI>Poubelle: Vidage de la poubelle Ã  la fermeture d'un fichier OK
+<LI>All:IntÃ©gration des images dans le jar et centralisation de leur gestion OK
+<LI>Splashscreen: RÃ©Ã©criture de la classe OK
+<LI>All:IntÃ©gration des langues dans le jar OK
 </UL>
-<STRONG>Développements et corrections de la version 3.1 CU (release 1.9.0.8)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 3.1 CU (release 1.9.0.8)</STRONG><BR>
 <UL>
-<LI>All:Suppression du code relatif à la gestion des couleurs OK
+<LI>All:Suppression du code relatif Ã  la gestion des couleurs OK
 <LI>Stats:Refonte de l'interface graphique OK
 <LI>Stats:Ajout de graphiques OK
 <LI>Stats:Remplacement de la boite d'option sur le prix OK
 <LI>MyOptions: Refonte de l'interface graphique OK
-<LI>MyCellarLauncher: Gestion des fichiers jar au téléchargement OK
-<LI>MyCellarLauncher: Amélioration du lancement de l'application après l'installation OK
+<LI>MyCellarLauncher: Gestion des fichiers jar au tÃ©lÃ©chargement OK
+<LI>MyCellarLauncher: AmÃ©lioration du lancement de l'application aprÃ¨s l'installation OK
 <LI>MyCellarLauncher: Ajout d'une boite de dialogue pour indiquer que l'installation est en cours OK
-<LI>Server: Récupération des fichier mis à jour dans le sous répertoire MyCellar OK
+<LI>Server: RÃ©cupÃ©ration des fichier mis Ã  jour dans le sous rÃ©pertoire MyCellar OK
 </UL>
-<STRONG>Développements et corrections de la version 3.0 GA (release 1.8.6.7)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 3.0 GA (release 1.8.6.7)</STRONG><BR>
 <UL>
 <LI>AddVin:Un plantage pouvait survenir lors de la modification d'une bouteille OK
-<LI>AddVin:La bouteille n'était pas mise à jour dans le tableau lors de la modification OK
-<LI>AddVin:Le déplacement d'une bouteille ne vidait pas l'ancienne case dans le tableau OK
-<LI>AddVin:L'affichage du contenu d'une armoire sous forme XML n'était pas correct OK
+<LI>AddVin:La bouteille n'Ã©tait pas mise Ã  jour dans le tableau lors de la modification OK
+<LI>AddVin:Le dÃ©placement d'une bouteille ne vidait pas l'ancienne case dans le tableau OK
+<LI>AddVin:L'affichage du contenu d'une armoire sous forme XML n'Ã©tait pas correct OK
 <LI>Start:Ajout d'une colonne sur la liste des rangements pour permettre l'affichage des armoires sous forme XML OK
 </UL>
-<STRONG>Développements et corrections de la version 2.9a GA (release 1.8.6.0)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.9a GA (release 1.8.6.0)</STRONG><BR>
 <UL>
 <LI>AddVin:Un plantage pouvait survenir lors de l'ajout de bouteilles OK
 <LI>Export:Modification de l'export XML OK
 <LI>Export:La boite de dialogue de choix du fichier ne permettait pas de choisir un nouveau fichier OK
 </UL>
-<STRONG>Développements et corrections de la version 2.9 RY (release 1.8.5.7)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.9 RY (release 1.8.5.7)</STRONG><BR>
 <UL>
-<LI>Search:La modification d'un vin ne réinitialisait pas le titre de l'onglet correctement OK
-<LI>AddVin:La modification d'un vin ne réinitialisait pas le nombre de bouteilles OK
-<LI>AddVin:Une erreur lors de la modification réinitialisait le titre de l'onglet et celui du bouton à tort OK
-<LI>AddVin:Le contrôle sur la validité des dates ne fonctionnait plus OK
-<LI>AddVin:Une erreur sur le numero de colonne lors de la modification ne réactivait pas la liste des numéro de colonne OK
-<LI>AddVin:L'annulation du remplacement d'une bouteille réinitialisait à tort l'affichage OK
-<LI>AddVin:Des erreurs lors de la modification multiple de bouteilles réinitialisait à tort l'affichage OK
-<LI>AddVin:La modification multiple des valeurs 'Maturité', 'Parker', 'Appelation' n'était pas prise en compte OK
-<LI>Start:Mise en place du téléchargement automatique de la dernière version pour une installation automatique au prochain démarrage OK
-<LI>AddVin:Le remplacement d'une bouteille ne mettait pas à jour le tableau OK
-<LI>Search/AddVin: La modification d'une bouteille ne mettait pas à jour le résultat de la recherche OK
+<LI>Search:La modification d'un vin ne rÃ©initialisait pas le titre de l'onglet correctement OK
+<LI>AddVin:La modification d'un vin ne rÃ©initialisait pas le nombre de bouteilles OK
+<LI>AddVin:Une erreur lors de la modification rÃ©initialisait le titre de l'onglet et celui du bouton Ã  tort OK
+<LI>AddVin:Le contrÃ´le sur la validitÃ© des dates ne fonctionnait plus OK
+<LI>AddVin:Une erreur sur le numero de colonne lors de la modification ne rÃ©activait pas la liste des numÃ©ro de colonne OK
+<LI>AddVin:L'annulation du remplacement d'une bouteille rÃ©initialisait Ã  tort l'affichage OK
+<LI>AddVin:Des erreurs lors de la modification multiple de bouteilles rÃ©initialisait Ã  tort l'affichage OK
+<LI>AddVin:La modification multiple des valeurs 'MaturitÃ©', 'Parker', 'Appelation' n'Ã©tait pas prise en compte OK
+<LI>Start:Mise en place du tÃ©lÃ©chargement automatique de la derniÃ¨re version pour une installation automatique au prochain dÃ©marrage OK
+<LI>AddVin:Le remplacement d'une bouteille ne mettait pas Ã  jour le tableau OK
+<LI>Search/AddVin: La modification d'une bouteille ne mettait pas Ã  jour le rÃ©sultat de la recherche OK
 </UL>
-<STRONG>Développements et corrections de la version 2.8 LV (release 1.8.3.5)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.8 LV (release 1.8.3.5)</STRONG><BR>
 <UL>
 <LI>Supprimer_Rangement: Refonte de l'interface graphique OK
-<LI>Start: Ajout d'un panneau d'information lors du démarrage de l'application OK
-<LI>AddVin: La case "Sans année" n'était pas sélectionné/déselectionné lors de la modification d'un vin OK
+<LI>Start: Ajout d'un panneau d'information lors du dÃ©marrage de l'application OK
+<LI>AddVin: La case "Sans annÃ©e" n'Ã©tait pas sÃ©lectionnÃ©/dÃ©selectionnÃ© lors de la modification d'un vin OK
 <LI>Start: Fermeture de tous les onglets lors de l'ouverture d'un nouveau fichier OK
-<LI>ShowFile: La liste des rangements n'était pas mis à jour après l'ouverture d'un nouveau fichier OK
+<LI>ShowFile: La liste des rangements n'Ã©tait pas mis Ã  jour aprÃ¨s l'ouverture d'un nouveau fichier OK
 <LI>All:Ajout d'un menu Edition avec les fonctions de Copier/Coller OK
 <LI>AddVin & Search:Initialisation des fonctions de Copier/Coller OK
 <LI>Start:Sauvegarde de la taille et de la position de l'application OK
 </UL>
-<STRONG>Développements et corrections de la version 2.7 BM (release 1.7.9.8)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.7 BM (release 1.7.9.8)</STRONG><BR>
 <UL>
 <LI>Search: Mise en place de l'auto completion OK
-<LI>Supprimer_Rangement: Amélioration de la gestion de la suppression des caves OK
+<LI>Supprimer_Rangement: AmÃ©lioration de la gestion de la suppression des caves OK
 <LI>Messages: Suppression de la majeure partie de leur utilisation OK
-<LI>CreerRangemment: Correction sur la gestion des rangements avec des nombres de colonnes différentes OK
-<LI>Program: Mise en place d'une fonctionnalité pour mettre à jour la liste des rangements dans les différents onglets OK
+<LI>CreerRangemment: Correction sur la gestion des rangements avec des nombres de colonnes diffÃ©rentes OK
+<LI>Program: Mise en place d'une fonctionnalitÃ© pour mettre Ã  jour la liste des rangements dans les diffÃ©rents onglets OK
 <LI>Erreur: Modification de la gestion des erreurs OK
 <LI>CreerRangement: Gestion de la modification des rangements OK
 <LI>Program: Correction sur la gestion des accents dans les noms des rangements. OK
-<LI>All:Réinitialisation des onglets à la fermeture du fichier OK
-<LI>A Propos: Réécriture de la boite OK
-<LI>All: Sauvegarde des informations sur les années dans un fichier XML OK
+<LI>All:RÃ©initialisation des onglets Ã  la fermeture du fichier OK
+<LI>A Propos: RÃ©Ã©criture de la boite OK
+<LI>All: Sauvegarde des informations sur les annÃ©es dans un fichier XML OK
 </UL>
-<STRONG>Développements et corrections de la version 2.6 HO (release 1.6.7.7)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.6 HO (release 1.6.7.7)</STRONG><BR>
 <UL>
 <LI>All: Refonte de l'interface graphique OK
 <LI>AddVin: Refonte de la gestion des vins en modifications OK
-<LI>AddVin / Search: Intégration dans la nouvelle interface OK
+<LI>AddVin / Search: IntÃ©gration dans la nouvelle interface OK
 <LI>All:Ajout de boutons de fermeture des onglets OK
 <LI>All:Utilisation de l'API Desktop pour l'ouverture de fichier OK
-<LI>Paramètres: Suppression des options de configuration d'IE et d'Adobe OK
-<LI>Export:Correction d'un problème de configuration de l'export PDF OK
+<LI>ParamÃ¨tres: Suppression des options de configuration d'IE et d'Adobe OK
+<LI>Export:Correction d'un problÃ¨me de configuration de l'export PDF OK
 <LI>CreerRangement: Nouveau fonctionnement et nouvelle interface OK
 </UL>
-<STRONG>Développements et corrections de la version 2.5 HO (release 1.6.7.7)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.5 HO (release 1.6.7.7)</STRONG><BR>
 <UL>
-<LI>All: Gestion du fichier des vins au format XML géré par JAXB OK
+<LI>All: Gestion du fichier des vins au format XML gÃ©rÃ© par JAXB OK
 <LI>Message: Certaines boites de messages ne s'affichaient pas OK
 <LI>Start: Lors de la fermeture avec enregistrement d'un nouveau fichier, la boite de dialogue de choix du nouveau fichier ne s'affichait pas OK
 <LI>Rangement: L'enregistrement avec une cave vide ne fonctionnait pas OK
-<LI>AddVin: Lors de l'ajout multiple de vins, les champs "Autres" n'étaient pas repositionnés par défaut OK
-<LI>All: Suppression de la copie de la liste de Rangements à chaque appel de fenêtre OK
+<LI>AddVin: Lors de l'ajout multiple de vins, les champs "Autres" n'Ã©taient pas repositionnÃ©s par dÃ©faut OK
+<LI>All: Suppression de la copie de la liste de Rangements Ã  chaque appel de fenÃªtre OK
 <LI>Program: Suppression de la gestion du fichier place.ini et gestion automatique des rangements disponibles OK
-<LI>Start: Gestion unique de la SplashScreen au démarrage OK
-<LI>Paramètres: La sauvegarde des paramètres de couleurs n'était pas correcte OK
-<LI>Importer: L'importation de données ne fonctionnait plus. Simplification du code. OK
-<LI>Start: Réécriture de la recherche des rangements à créer OK
+<LI>Start: Gestion unique de la SplashScreen au dÃ©marrage OK
+<LI>ParamÃ¨tres: La sauvegarde des paramÃ¨tres de couleurs n'Ã©tait pas correcte OK
+<LI>Importer: L'importation de donnÃ©es ne fonctionnait plus. Simplification du code. OK
+<LI>Start: RÃ©Ã©criture de la recherche des rangements Ã  crÃ©er OK
 <LI>Stats: Ajout d'un menu et on ajout d'une action pour reconstruire les statistiques OK
 </UL>
-<STRONG>Développements et corrections de la version 2.4a MB (release 1.6.3.4)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.4a MB (release 1.6.3.4)</STRONG><BR>
 <UL>
 <LI>All: Gestion du nouveau champs "Appellation" OK
-<LI>AddVin: Centralisation de la gestion de la hauteur de la fenêtre OK
-<LI>Paramètres: Suppression des données des champs "Autres" en fermeture de la fenêtre après désactivation OK
+<LI>AddVin: Centralisation de la gestion de la hauteur de la fenÃªtre OK
+<LI>ParamÃ¨tres: Suppression des donnÃ©es des champs "Autres" en fermeture de la fenÃªtre aprÃ¨s dÃ©sactivation OK
 </UL>
-<STRONG>Développements et corrections de la version 2.4 BM (release 1.6.1.7)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.4 BM (release 1.6.1.7)</STRONG><BR>
 <UL>
-<LI>Rangement: Plantage de l'export XLS lorsqu'il n'y a pas de titre à la feuille OK
-<LI>Export: La création de fichier PDF lors de l'export ne fonctionnait pas OK
-<LI>Export: La sélection de bouteilles n'était pas prise en compte pour l'export OK
-<LI>Program: Les marqueurs XML n'étaient plus initialisés OK
+<LI>Rangement: Plantage de l'export XLS lorsqu'il n'y a pas de titre Ã  la feuille OK
+<LI>Export: La crÃ©ation de fichier PDF lors de l'export ne fonctionnait pas OK
+<LI>Export: La sÃ©lection de bouteilles n'Ã©tait pas prise en compte pour l'export OK
+<LI>Program: Les marqueurs XML n'Ã©taient plus initialisÃ©s OK
 <LI>Conversion en UTF-8 des fichiers XML OK
-<LI>All: Possibilité de saisir du texte pour l'année (NV pour Non Vintage) OK
-<LI>Program: Centralisation du contrôle de date OK
+<LI>All: PossibilitÃ© de saisir du texte pour l'annÃ©e (NV pour Non Vintage) OK
+<LI>Program: Centralisation du contrÃ´le de date OK
 <LI>Export: Le titre des colonnes pour l'export HTML affichait mal les accents OK
-<LI>Start: L'ouverture d'un fichier existant après le démarrage avec un nouveau fichier ne fonctionnait pas OK
-<LI>Start: Les fichiers en cours de création étaient référencés dans les derniers fichiers ouverts à tort OK
-<LI>Rangement: Plantage à l'ajout de multiples bouteilles dans une caisse si la taille était mal gérée OK
-<LI>All: Gestion du nouveau champs "Maturité" OK
+<LI>Start: L'ouverture d'un fichier existant aprÃ¨s le dÃ©marrage avec un nouveau fichier ne fonctionnait pas OK
+<LI>Start: Les fichiers en cours de crÃ©ation Ã©taient rÃ©fÃ©rencÃ©s dans les derniers fichiers ouverts Ã  tort OK
+<LI>Rangement: Plantage Ã  l'ajout de multiples bouteilles dans une caisse si la taille Ã©tait mal gÃ©rÃ©e OK
+<LI>All: Gestion du nouveau champs "MaturitÃ©" OK
 <LI>All: Gestion du nouveau champs "Notation Parker" OK
-<LI>Paramètres: Les paramètres inutiles à Mac Os sont cachés OK
-<LI>Paramètres: Modification du champs "Fichier" pour afficher le nom complet du fichier ouvert OK
-<LI>ShowFile: Agrandissement de la fenêtre en largeur OK
-<LI>All: Supression de propriétés du fichier INI inutiles OK
+<LI>ParamÃ¨tres: Les paramÃ¨tres inutiles Ã  Mac Os sont cachÃ©s OK
+<LI>ParamÃ¨tres: Modification du champs "Fichier" pour afficher le nom complet du fichier ouvert OK
+<LI>ShowFile: Agrandissement de la fenÃªtre en largeur OK
+<LI>All: Supression de propriÃ©tÃ©s du fichier INI inutiles OK
 </UL>
-<STRONG>Développements et corrections de la version 2.3 GA (release 1.5.5.5)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.3 GA (release 1.5.5.5)</STRONG><BR>
 <UL>
-<LI>Server: Ajout d'une option de récupération des mises à jour en ligne OK
-<LI>LanguageFileLoader: Création d'une classe pour la gestion des libellés OK
-<LI>All: Modification de la gestion des caractères accentués OK
+<LI>Server: Ajout d'une option de rÃ©cupÃ©ration des mises Ã  jour en ligne OK
+<LI>LanguageFileLoader: CrÃ©ation d'une classe pour la gestion des libellÃ©s OK
+<LI>All: Modification de la gestion des caractÃ¨res accentuÃ©s OK
 <LI>All: Modification de la gestion des chemins de fichiers OK
-<LI>Program: Ecriture des fichiers de preview dans le mauvais répertoire OK
-<LI>Start:Problème lors du chagement d'un fichier après le changement du répertoire de travail OK
-<LI>Program: Détection Système d'exploitation OK
-<LI>Program: Gestion centralisée de l'ouverture d'un programme externe OK
+<LI>Program: Ecriture des fichiers de preview dans le mauvais rÃ©pertoire OK
+<LI>Start:ProblÃ¨me lors du chagement d'un fichier aprÃ¨s le changement du rÃ©pertoire de travail OK
+<LI>Program: DÃ©tection SystÃ¨me d'exploitation OK
+<LI>Program: Gestion centralisÃ©e de l'ouverture d'un programme externe OK
 <LI>Server: Modification de la gestion des connections OK
-<LI>Server: Téléchargement de tous les fichiers requis dans le répertoire download OK
-<LI>MyCellarLauncher: Gestion de l'installation des mises à jours et démarrage de l'application OK
-<LI>Program: Contôle des noms des rangements interdit les noms identiques avec des casses différentes OK
-<LI>Program: Impossible de créer un nouveau fichier OK
+<LI>Server: TÃ©lÃ©chargement de tous les fichiers requis dans le rÃ©pertoire download OK
+<LI>MyCellarLauncher: Gestion de l'installation des mises Ã  jours et dÃ©marrage de l'application OK
+<LI>Program: ContÃ´le des noms des rangements interdit les noms identiques avec des casses diffÃ©rentes OK
+<LI>Program: Impossible de crÃ©er un nouveau fichier OK
 </UL>
 
-<STRONG>Développements et corrections de la version 2.2 HA (release 1.4.5.5)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.2 HA (release 1.4.5.5)</STRONG><BR>
 <UL>
 <LI>All: Ajout de nouvelles classes pour la gestion des Stockages OK
 <LI>All: Transformation de Rangement[] en LinkedList<Rangement> OK
-<LI>Control: Les contrôles sur les noms de rangements identiques n'étaient plus fait OK
-<LI>Creer_Rangement: La création du premier rangement ne fonctionnait plus OK
-<LI>Program: La lecture du premier rangement était fait en double à tort OK
-<LI>Paramètres: L'affichage des options n'était pas possible juste après la création d'un nouveau fichier OK
-<LI>Paramètres: Il n'était pas possible de lire le chemin complet du fichier OK
-<LI>Paramètres: Ajout d'un bouton "Annuler" pour fermer sans rien faire OK
-<LI>All: Suppression de la fausse bouteille créé au démarrage avec le paramètre associé OK
-<LI>Rangement: Création d'un constructeur par copie avec changement du nom OK
-<LI>Search: Les résultats de la recherche avancée n'étaient plus affichés OK
-<LI>Search: Ajout d'un bouton en bout de ligne pour afficher les propriétés de la bouteille OK
-<LI>Search: Suppression de la ligne "Les résultats seront ici" OK
-<LI>Paramètres: Suppression de l'option de création d'une cave au prochain démarrage OK
+<LI>Control: Les contrÃ´les sur les noms de rangements identiques n'Ã©taient plus fait OK
+<LI>Creer_Rangement: La crÃ©ation du premier rangement ne fonctionnait plus OK
+<LI>Program: La lecture du premier rangement Ã©tait fait en double Ã  tort OK
+<LI>ParamÃ¨tres: L'affichage des options n'Ã©tait pas possible juste aprÃ¨s la crÃ©ation d'un nouveau fichier OK
+<LI>ParamÃ¨tres: Il n'Ã©tait pas possible de lire le chemin complet du fichier OK
+<LI>ParamÃ¨tres: Ajout d'un bouton "Annuler" pour fermer sans rien faire OK
+<LI>All: Suppression de la fausse bouteille crÃ©Ã© au dÃ©marrage avec le paramÃ¨tre associÃ© OK
+<LI>Rangement: CrÃ©ation d'un constructeur par copie avec changement du nom OK
+<LI>Search: Les rÃ©sultats de la recherche avancÃ©e n'Ã©taient plus affichÃ©s OK
+<LI>Search: Ajout d'un bouton en bout de ligne pour afficher les propriÃ©tÃ©s de la bouteille OK
+<LI>Search: Suppression de la ligne "Les rÃ©sultats seront ici" OK
+<LI>ParamÃ¨tres: Suppression de l'option de crÃ©ation d'une cave au prochain dÃ©marrage OK
 <LI>Start: Application du Look&Feel au chargement du fichier OK
-<LI>Search: Plantage lors de la tentative de suppression sans aucune sélection OK
-<Li>Search: Désactivation des boutons "Supprimer" et "Modifier" lorsqu'aucun résultat n'est trouvé OK
-<LI>All: Centralisation des icones et fichiers XSL dans le répertoire des resources OK
+<LI>Search: Plantage lors de la tentative de suppression sans aucune sÃ©lection OK
+<Li>Search: DÃ©sactivation des boutons "Supprimer" et "Modifier" lorsqu'aucun rÃ©sultat n'est trouvÃ© OK
+<LI>All: Centralisation des icones et fichiers XSL dans le rÃ©pertoire des resources OK
 <LI>Program: Changement de l'icone OK
-<LI>Program: Déplacement du fichier de contrôle d'ouverture du programme (isRunning) OK
-<LI>Program: Génération d'un répertoire temporaire pour chaque fichier OK
-<LI>Search: Affichage du nombre de bouteilles après une suppression OK
-<LI>Program: La liste des derniers fichiers ouvert n'était pas correctement alimenté OK
+<LI>Program: DÃ©placement du fichier de contrÃ´le d'ouverture du programme (isRunning) OK
+<LI>Program: GÃ©nÃ©ration d'un rÃ©pertoire temporaire pour chaque fichier OK
+<LI>Search: Affichage du nombre de bouteilles aprÃ¨s une suppression OK
+<LI>Program: La liste des derniers fichiers ouvert n'Ã©tait pas correctement alimentÃ© OK
 </UL>
-<STRONG>Développements et corrections de la version 2.1 GA (release 1.3.2.9)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.1 GA (release 1.3.2.9)</STRONG><BR>
 <UL>
-<LI>Program: Possibilité de créer un nouveau fichier OK
-<LI>Program: Gestion d'une erreur de répertoire pour l'écriture d'un fichier Excel lors de la sauvegarde OK
-<LI>Paramètres: Affichage du bon nom de fichier OK
+<LI>Program: PossibilitÃ© de crÃ©er un nouveau fichier OK
+<LI>Program: Gestion d'une erreur de rÃ©pertoire pour l'Ã©criture d'un fichier Excel lors de la sauvegarde OK
+<LI>ParamÃ¨tres: Affichage du bon nom de fichier OK
 <LI>All: La previsualisation des rangements et leur export ne fonctionnait plus avec le fichier preview.xml OK
 </UL>
 
-<STRONG>Développements et corrections de la version 2.0a GA (release 1.3.2.1)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.0a GA (release 1.3.2.1)</STRONG><BR>
 <UL>
-<LI>Program: Ecriture du fichier de configuation global dans le répertoire utilisateur OK
-<LI>Program: Gestion des couleurs du programme de façon globale OK
-<LI>Start: Possibilité de forcer le démarrage lorsque le programme a planté OK
+<LI>Program: Ecriture du fichier de configuation global dans le rÃ©pertoire utilisateur OK
+<LI>Program: Gestion des couleurs du programme de faÃ§on globale OK
+<LI>Start: PossibilitÃ© de forcer le dÃ©marrage lorsque le programme a plantÃ© OK
 </UL>
 
-<STRONG>Développements et corrections de la version 2.0 BM (release 1.3.1.9)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 2.0 BM (release 1.3.1.9)</STRONG><BR>
 <UL>
-<LI>Start: Certaines commandes n'étaient pas activées après la chargement d'un fichier OK
-<LI>AddVin: Le libellé d'informations n'était pas toujours visible OK
+<LI>Start: Certaines commandes n'Ã©taient pas activÃ©es aprÃ¨s la chargement d'un fichier OK
+<LI>AddVin: Le libellÃ© d'informations n'Ã©tait pas toujours visible OK
 <LI>All: Blindage de l'utilisation des ressources INI OK
-<LI>All: Gestion séparée des ressources INI propres au programme de celles spécifiques à chaque cave OK
+<LI>All: Gestion sÃ©parÃ©e des ressources INI propres au programme de celles spÃ©cifiques Ã  chaque cave OK
 <LI>Start: Le chargement d'un nouveau fichier ne demandait pas la sauvegarde du fichier ouvert OK
 <LI>Start: Gestion d'une liste des derniers fichiers ouverts OK
-<LI>Creer_Rangement: Affichage d'un message lors de la fermeture et désactivation du bouton de fermeture lorsqu'il a été pressé OK
-<LI>Start: Les statistiques pouvaient être affichée dans plusieurs fenêtres à tort OK
-<LI>Start: Désactivation de l'ouverture automatique de la fenêtre des paramètres OK
+<LI>Creer_Rangement: Affichage d'un message lors de la fermeture et dÃ©sactivation du bouton de fermeture lorsqu'il a Ã©tÃ© pressÃ© OK
+<LI>Start: Les statistiques pouvaient Ãªtre affichÃ©e dans plusieurs fenÃªtres Ã  tort OK
+<LI>Start: DÃ©sactivation de l'ouverture automatique de la fenÃªtre des paramÃ¨tres OK
 </UL>
 
-<STRONG>Développements et corrections de la version 1.9c LI (release 1.2.7.1)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.9c LI (release 1.2.7.1)</STRONG><BR>
 <UL>
 <LI>Program: Generalisation de l'utilisation du repertoire temporaire OK
 <LI>Program: Creation d'une fonction de fermeture de fichier OK
@@ -454,24 +498,24 @@ Programme de gestion de Cave à vins.
 <LI>Start: Gestion de la fermeture sans fichier OK
 <LI>Start: Gestion correcte du nom du fichier dans la barre de titre OK
 </UL>
-<STRONG>Développements et corrections de la version 1.9b LR (release 1.2.5.9)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.9b LR (release 1.2.5.9)</STRONG><BR>
 <UL>
-<LI>Program: Utilisation d'un répertoire temporaire dans le répertoire de l'utilisateur OK
-<LI>Program: Création automatique des fichiers temporaires OK
-<LI>Program: Déplacement du fichier xml vers le répertoire temporaire OK
+<LI>Program: Utilisation d'un rÃ©pertoire temporaire dans le rÃ©pertoire de l'utilisateur OK
+<LI>Program: CrÃ©ation automatique des fichiers temporaires OK
+<LI>Program: DÃ©placement du fichier xml vers le rÃ©pertoire temporaire OK
 </UL>
-<STRONG>Développements et corrections de la version 1.9a LR (release 1.2.5.5)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.9a LR (release 1.2.5.5)</STRONG><BR>
 <UL>
-<LI>Start: Possibilité de modifier manuellement des paramètres internes du fichier INI OK
-<LI>Start: Possibilité de redimensionner le champs Commentaires en hauteur
+<LI>Start: PossibilitÃ© de modifier manuellement des paramÃ¨tres internes du fichier INI OK
+<LI>Start: PossibilitÃ© de redimensionner le champs Commentaires en hauteur
 </UL>
-<STRONG>Développements et corrections de la version 1.9 LR (release 1.2.5.1)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.9 LR (release 1.2.5.1)</STRONG><BR>
 <UL>
-<LI>Start: Possibilité de charger un fichier depuis le menu "Fichier" OK
-<LI>Start: Possibilité de démarrer sans qu'aucun fichier ne soit chargé (tout grisé) OK
+<LI>Start: PossibilitÃ© de charger un fichier depuis le menu "Fichier" OK
+<LI>Start: PossibilitÃ© de dÃ©marrer sans qu'aucun fichier ne soit chargÃ© (tout grisÃ©) OK
 <LI>Start: Affiectation unique des Listeners OK
 </UL>
-<STRONG>Développements et corrections de la version 1.8 BM (release 1.2.4.8)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.8 BM (release 1.2.4.8)</STRONG><BR>
 <UL>
 <LI>Start: Probleme d'enregistrement apres import OK
 <LI>Importer: Perte des rangements apres import du a un mauvais numeero de version OK
@@ -486,250 +530,250 @@ Programme de gestion de Cave à vins.
 <LI>Start: Demande de confirmation pour l'enregistrement du fichier a la fermeture du programme OK
 </UL>
 
-<STRONG>Développements et corrections de la version 1.7c LR (release 1.2.2.7)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.7c LR (release 1.2.2.7)</STRONG><BR>
 <UL>
-<LI>ShowFile: Possibilité de modifier l'emplacement des bouteilles depuis la liste présentant le fichier OK
-<LI>ShowFile: Ajout d'un contrôle simple sur le lieu où est repositionné la bouteille OK
-<LI>ShowFile: Contrôle sur les valeurs numérique pour le numéro d'emplacement, la ligne et la colonne OK
+<LI>ShowFile: PossibilitÃ© de modifier l'emplacement des bouteilles depuis la liste prÃ©sentant le fichier OK
+<LI>ShowFile: Ajout d'un contrÃ´le simple sur le lieu oÃ¹ est repositionnÃ© la bouteille OK
+<LI>ShowFile: ContrÃ´le sur les valeurs numÃ©rique pour le numÃ©ro d'emplacement, la ligne et la colonne OK
 </UL>
-<STRONG>Développements et corrections de la version 1.7b LR (release 1.2.2.3)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.7b LR (release 1.2.2.3)</STRONG><BR>
 <UL>
-<LI>Search: Positionnement du focus sur l'édit de saisie de nom du vin à rechercher OK
-<LI>ShowHistory: La boite de dialogue des infos complémentaires n'affichait pas le bon vin OK
-<LI>ShowHistory: Les caractères Unicode n'étaient pas affichés correctement OK
+<LI>Search: Positionnement du focus sur l'Ã©dit de saisie de nom du vin Ã  rechercher OK
+<LI>ShowHistory: La boite de dialogue des infos complÃ©mentaires n'affichait pas le bon vin OK
+<LI>ShowHistory: Les caractÃ¨res Unicode n'Ã©taient pas affichÃ©s correctement OK
 <LI>ShowHistory: Le filtre ne fonctionnait pas OK
-<LI>ShowFile: Possibilité de modifier l'emplacement des bouteilles depuis la liste présentant le fichier OK
-<LI>ShowFile: Ajout d'un contrôle simple sur le lieu où est repositionné la bouteille OK
-<LI>ShowFile: Contrôle sur les valeurs numérique pour le numéro d'emplacement, la ligne et la colonne OK
+<LI>ShowFile: PossibilitÃ© de modifier l'emplacement des bouteilles depuis la liste prÃ©sentant le fichier OK
+<LI>ShowFile: Ajout d'un contrÃ´le simple sur le lieu oÃ¹ est repositionnÃ© la bouteille OK
+<LI>ShowFile: ContrÃ´le sur les valeurs numÃ©rique pour le numÃ©ro d'emplacement, la ligne et la colonne OK
 </UL>
-<STRONG>Développements et corrections de la version 1.7a LR (release 1.2.2.1)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.7a LR (release 1.2.2.1)</STRONG><BR>
 <UL>
 <LI>AddVin: La modification sans changement d'emplacement d'une bouteille d'une amoire ne fonctionnait plus OK
-<LI>AddVin: La modification multiple de bouteilles de plusieurs emplacement différents pouvait planter OK
-<LI>Program: Le nom du fichier de Debug avait un numéro de mois incorrect OK
+<LI>AddVin: La modification multiple de bouteilles de plusieurs emplacement diffÃ©rents pouvait planter OK
+<LI>Program: Le nom du fichier de Debug avait un numÃ©ro de mois incorrect OK
 </UL>
-<STRONG>Développements et corrections de la version 1.7 BM (release 1.2.1.9)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.7 BM (release 1.2.1.9)</STRONG><BR>
 <UL>
-<LI>Search: Fonction de déplacement d'une ligne vers une autre dans le même rangement... OK
-<LI>ShowFile: Les champs supplémentaires n'étaient pas visible lors de l'affichage du contenu de la Cave OK
-<LI>AddVin: Le texte indiquant la bouteille déjà présente à un emplacement utilisait des caractères Unicode OK
-<LI>AddVin: Possibilité de modifier les prix, commentaires et autres champs sur plusieurs bouteilles en une fois OK
-<LI>Search: Les recherches avancées pouvaient ne pas être sauvegardées dans l'historique OK
+<LI>Search: Fonction de dÃ©placement d'une ligne vers une autre dans le mÃªme rangement... OK
+<LI>ShowFile: Les champs supplÃ©mentaires n'Ã©taient pas visible lors de l'affichage du contenu de la Cave OK
+<LI>AddVin: Le texte indiquant la bouteille dÃ©jÃ  prÃ©sente Ã  un emplacement utilisait des caractÃ¨res Unicode OK
+<LI>AddVin: PossibilitÃ© de modifier les prix, commentaires et autres champs sur plusieurs bouteilles en une fois OK
+<LI>Search: Les recherches avancÃ©es pouvaient ne pas Ãªtre sauvegardÃ©es dans l'historique OK
 </UL>
-<STRONG>Développements et corrections de la version 1.6a BM (release 1.1.9.5)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.6a BM (release 1.1.9.5)</STRONG><BR>
 <UL>
-<LI>Search: La liste des anciennes recherches n'était pas limité par le nombre d'ancienne recherches autorisées OK
-<LI>ShowFile: Erreur d'affichage lorsque l'année n'était pas saisie OK
-<LI>Search: Erreur d'affichage dans les résultats lorsque l'année n'était pas saisie OK
+<LI>Search: La liste des anciennes recherches n'Ã©tait pas limitÃ© par le nombre d'ancienne recherches autorisÃ©es OK
+<LI>ShowFile: Erreur d'affichage lorsque l'annÃ©e n'Ã©tait pas saisie OK
+<LI>Search: Erreur d'affichage dans les rÃ©sultats lorsque l'annÃ©e n'Ã©tait pas saisie OK
 </UL>
-  <STRONG>Développements et corrections de la version 1.6 BM (release 1.1.9.2)</STRONG><BR>
+  <STRONG>DÃ©veloppements et corrections de la version 1.6 BM (release 1.1.9.2)</STRONG><BR>
 <UL>
-<LI>Search: Remplacement de l'édit de recherche par une combobox éditable qui conserve l'historique des recherches OK
+<LI>Search: Remplacement de l'Ã©dit de recherche par une combobox Ã©ditable qui conserve l'historique des recherches OK
 <LI>Search: Ajout d'un menu pour vider la liste des recherches OK
-<LI>AddVin: Le type de bouteille n'était pas réinitialisé correctement après l'ajout de plusieurs bouteilles OK
-<LI>ShowHistory: Ajout d'un historique des actions (Entrées, Sorties, Modifications de bouteilles) OK
+<LI>AddVin: Le type de bouteille n'Ã©tait pas rÃ©initialisÃ© correctement aprÃ¨s l'ajout de plusieurs bouteilles OK
+<LI>ShowHistory: Ajout d'un historique des actions (EntrÃ©es, Sorties, Modifications de bouteilles) OK
 <LI>Start: Ajout d'un menu pour consulter l'historique OK
-<LI>Search: Ajout de la possibilité de configurer le nombre de recherches à conserver OK
-<LI>ShowHistory: Ajout d'infos supplémentaires sur les bouteilles de l'historique OK
-<LI>AddVin: Sélection automatique du numéro du lieu lorsqu'il n'y en a qu'un OK
-<LI>MyOptions: Ajout de la possibilité d'avoir un bouton "Annuler" OK
+<LI>Search: Ajout de la possibilitÃ© de configurer le nombre de recherches Ã  conserver OK
+<LI>ShowHistory: Ajout d'infos supplÃ©mentaires sur les bouteilles de l'historique OK
+<LI>AddVin: SÃ©lection automatique du numÃ©ro du lieu lorsqu'il n'y en a qu'un OK
+<LI>MyOptions: Ajout de la possibilitÃ© d'avoir un bouton "Annuler" OK
 </UL>
-<STRONG>Développements et corrections de la version 1.5 SZ (release 1.1.6.2)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.5 SZ (release 1.1.6.2)</STRONG><BR>
 </FONT>
 <UL>
 <LI>Export: Erreur lors de l'export PDF OK
-<LI>All: Suppression du contrôle sur la longueur du nom d'un rangement OK
+<LI>All: Suppression du contrÃ´le sur la longueur du nom d'un rangement OK
 <LI>MyXmlDom: Gestion XML du format de sauvegarde des rangements au lieu d'un format texte OK
-<LI>Control: Centralisation des contrôles OK
-<LI>Creer_Tableaux: Possibilité d'ajouter champs (année / type de bouteille / prix ) dans l'export XLS/ODS OK
-<LI>Paramètres: Possibilité d'activer/désactiver la trace OK
+<LI>Control: Centralisation des contrÃ´les OK
+<LI>Creer_Tableaux: PossibilitÃ© d'ajouter champs (annÃ©e / type de bouteille / prix ) dans l'export XLS/ODS OK
+<LI>ParamÃ¨tres: PossibilitÃ© d'activer/dÃ©sactiver la trace OK
 <LI>All: Support de l'extension OpenDocument Spreadsheet (ods) OK
-<LI>Creer_Tableaux: Possibilité de choisir un mode de fonctionnement par défaut via leur menu Options OK
-<LI>Creer_Tableaux: Possibilité de personaliser l'export XLS/ODS OK
+<LI>Creer_Tableaux: PossibilitÃ© de choisir un mode de fonctionnement par dÃ©faut via leur menu Options OK
+<LI>Creer_Tableaux: PossibilitÃ© de personaliser l'export XLS/ODS OK
 <LI>Creer_Tableaux: Ajout de l'export des tableaux au format XLS/ODS OK
 <LI>All: Ajout des commentaires de trace OK
-<LI>AddVin: Le nouveau format du champ Année entraînait une erreur à tort en saisie OK
-<LI>AddVin: Perte de l'année lorsqu'une erreur en sélection de ligne ou de colonne suvenait en modification OK
+<LI>AddVin: Le nouveau format du champ AnnÃ©e entraÃ®nait une erreur Ã  tort en saisie OK
+<LI>AddVin: Perte de l'annÃ©e lorsqu'une erreur en sÃ©lection de ligne ou de colonne suvenait en modification OK
 </UL>
-<STRONG>Développements et corrections de la version 1.4 (release 1.1.2.1)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.4 (release 1.1.2.1)</STRONG><BR>
 </FONT>
 <UL>
-<LI>Export: Erreur de libellé dans la boîte de dialogue "Parcourir" OK
-<LI>Rangement: Pb lors de l'export, les caractères unicodes était visible OK
-<LI>Export: Absence des libellés d'un message d'information OK
-<LI>Export: En PDF Lorsqu'il y avait plus de 2000 bouteilles un fichier était généré en trop OK
-<LI>AddVin: Un numéro de rangement simple à 0 n'était pas accepté à tort OK
-<LI>AddVin: Une erreur en saisie de numéro de ligne après un ajout dans un rangement simple entraînait un plantage OK
-<LI>All: Sauvegarde du dernier répertoire utilisé dans les boîtes de sélection de fichiers OK
-<LI>AddVin: La saisie de l'année est désormais uniquement numérique OK
-<LI>AddVin: La conversion de l'année sur 4 chiffres était effectuée à tort si l'année n'était pas saisie OK
+<LI>Export: Erreur de libellÃ© dans la boÃ®te de dialogue "Parcourir" OK
+<LI>Rangement: Pb lors de l'export, les caractÃ¨res unicodes Ã©tait visible OK
+<LI>Export: Absence des libellÃ©s d'un message d'information OK
+<LI>Export: En PDF Lorsqu'il y avait plus de 2000 bouteilles un fichier Ã©tait gÃ©nÃ©rÃ© en trop OK
+<LI>AddVin: Un numÃ©ro de rangement simple Ã  0 n'Ã©tait pas acceptÃ© Ã  tort OK
+<LI>AddVin: Une erreur en saisie de numÃ©ro de ligne aprÃ¨s un ajout dans un rangement simple entraÃ®nait un plantage OK
+<LI>All: Sauvegarde du dernier rÃ©pertoire utilisÃ© dans les boÃ®tes de sÃ©lection de fichiers OK
+<LI>AddVin: La saisie de l'annÃ©e est dÃ©sormais uniquement numÃ©rique OK
+<LI>AddVin: La conversion de l'annÃ©e sur 4 chiffres Ã©tait effectuÃ©e Ã  tort si l'annÃ©e n'Ã©tait pas saisie OK
 <LI>Start: Epuration du code OK
 <LI>Start: Ajout d'options positionable sur la ligne de commande OK
-<LI>AddVin: Lors de l'ajout d'un vin dans une armoire, si la case est déjà occupée par un vin, son nom est indiqué OK
-<LI>Search: Possibilité de redimensionner la fenêtre OK
-<LI>Start: Possibilité de visualiser le fichier des améliorations de la version OK
-<LI>Start: Ajout d'une option debug au démarrage permettant de tracer le programme dans Debug.log OK
+<LI>AddVin: Lors de l'ajout d'un vin dans une armoire, si la case est dÃ©jÃ  occupÃ©e par un vin, son nom est indiquÃ© OK
+<LI>Search: PossibilitÃ© de redimensionner la fenÃªtre OK
+<LI>Start: PossibilitÃ© de visualiser le fichier des amÃ©liorations de la version OK
+<LI>Start: Ajout d'une option debug au dÃ©marrage permettant de tracer le programme dans Debug.log OK
 <LI>Start, Rangement, Program: Ajout des commentaires de trace OK
 </UL>
-<STRONG>Développements et corrections de la version 1.3a (release 1.1.0.2)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.3a (release 1.1.0.2)</STRONG><BR>
 </FONT>
 <UL>
-<LI>ShowFile: Il était impossible de réouvrir ShowFile lorsque l'on avait fermé la fenêtre par la croix X OK
-<LI>ShowFile: Ajout d'un message indiquant que la sauvegarde a été effectué et grisage des boutons durant la sauvegarde OK
-<LI>ShowFile: Lorsque le fichier était sauvegardé plusieurs fois de suite, le contenu se trouvait multiplié par 2^n OK
-<LI>AddVin: Absence de contrôle en modification d'un vin vers une caisse sans saisir de numéro de rangement OK
-<LI>Rangement: Correction pour s'assurer que l'on ne dépasse pas la capacité du tableau lors du calcul de place libre dans une caisse OK
-<LI>Start: Ajout d'une sauvegarde automatique au format xls après un démarrage sans erreur (autosave0 à 9 dans répertoire du programme) OK
+<LI>ShowFile: Il Ã©tait impossible de rÃ©ouvrir ShowFile lorsque l'on avait fermÃ© la fenÃªtre par la croix X OK
+<LI>ShowFile: Ajout d'un message indiquant que la sauvegarde a Ã©tÃ© effectuÃ© et grisage des boutons durant la sauvegarde OK
+<LI>ShowFile: Lorsque le fichier Ã©tait sauvegardÃ© plusieurs fois de suite, le contenu se trouvait multipliÃ© par 2^n OK
+<LI>AddVin: Absence de contrÃ´le en modification d'un vin vers une caisse sans saisir de numÃ©ro de rangement OK
+<LI>Rangement: Correction pour s'assurer que l'on ne dÃ©passe pas la capacitÃ© du tableau lors du calcul de place libre dans une caisse OK
+<LI>Start: Ajout d'une sauvegarde automatique au format xls aprÃ¨s un dÃ©marrage sans erreur (autosave0 Ã  9 dans rÃ©pertoire du programme) OK
 </UL>
-<STRONG>Développements et corrections de la version 1.3 (release 1.0.9.7)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.3 (release 1.0.9.7)</STRONG><BR>
 <UL>
-<LI>ShowFile: Développement d'une nouvelle fenêtre permettant de visualiser tout le contenu du fichier, de trier les colonnes et de supprimer des lignes OK
-<LI>ShowFile: Possibilité de modifier et sauvegarder certaines infos du fichier (Nom du vin, Année, Prix) OK
-<LI>Search: Les colonnes contenant les résultats de la recherche peuvent désormais être triée OK
+<LI>ShowFile: DÃ©veloppement d'une nouvelle fenÃªtre permettant de visualiser tout le contenu du fichier, de trier les colonnes et de supprimer des lignes OK
+<LI>ShowFile: PossibilitÃ© de modifier et sauvegarder certaines infos du fichier (Nom du vin, AnnÃ©e, Prix) OK
+<LI>Search: Les colonnes contenant les rÃ©sultats de la recherche peuvent dÃ©sormais Ãªtre triÃ©e OK
 <LI>Search: Corrections mineures sur le recherche OK
-<LI>AdvancedSearch: La recherche avancée permet désormais de choisir un invervalle de date OK
-<LI>Importer: Lorsque la case Ligne de titre n'était pas coché le séparateur n'était pas vérifié pour l'import TXT/CSV OK
-<LI>Importer: Lors de l'import de données TXT/CSV, les caractères transformés n'était pas reconnus OK
-<LI>BadPlace: Amélioration de l'affichage de la largeur des colonnes OK
+<LI>AdvancedSearch: La recherche avancÃ©e permet dÃ©sormais de choisir un invervalle de date OK
+<LI>Importer: Lorsque la case Ligne de titre n'Ã©tait pas cochÃ© le sÃ©parateur n'Ã©tait pas vÃ©rifiÃ© pour l'import TXT/CSV OK
+<LI>Importer: Lors de l'import de donnÃ©es TXT/CSV, les caractÃ¨res transformÃ©s n'Ã©tait pas reconnus OK
+<LI>BadPlace: AmÃ©lioration de l'affichage de la largeur des colonnes OK
 </UL>
-<STRONG>Développements et corrections de la version 1.2b (release 1.0.8.2)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.2b (release 1.0.8.2)</STRONG><BR>
 <UL>
-<LI>BadPlace: La colonne attendu lors de la sélection des lignes n'était plus la bonne OK
-<LI>Rangement: Les noms de rangements avec caractères spéciaux pouvaient poser problème à l'enregistrement OK
-<LI>All: Les caractères Unicode dans le prix n'étaient pas gérés et perturbait l'affichage et les statistiques OK
+<LI>BadPlace: La colonne attendu lors de la sÃ©lection des lignes n'Ã©tait plus la bonne OK
+<LI>Rangement: Les noms de rangements avec caractÃ¨res spÃ©ciaux pouvaient poser problÃ¨me Ã  l'enregistrement OK
+<LI>All: Les caractÃ¨res Unicode dans le prix n'Ã©taient pas gÃ©rÃ©s et perturbait l'affichage et les statistiques OK
 </UL>
-<STRONG>Développements et corrections de la version 1.2a (release 1.0.7.8)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.2a (release 1.0.7.8)</STRONG><BR>
 <UL>
-<LI>Export: Non affichage du vin créé par défaut lors de l'export d'un fichier vide OK
-<LI>Search: La colonne servant à sélectionner des lignes est maintenant une case à cocher en première colonne OK
-<LI>Search: Affectation d'une largeur par défaut pour les colonnes du résultat OK
-<LI>Search: En annulation de suppression de bouteilles, la recherche n'est plus réinitialisé à vide OK
+<LI>Export: Non affichage du vin crÃ©Ã© par dÃ©faut lors de l'export d'un fichier vide OK
+<LI>Search: La colonne servant Ã  sÃ©lectionner des lignes est maintenant une case Ã  cocher en premiÃ¨re colonne OK
+<LI>Search: Affectation d'une largeur par dÃ©faut pour les colonnes du rÃ©sultat OK
+<LI>Search: En annulation de suppression de bouteilles, la recherche n'est plus rÃ©initialisÃ© Ã  vide OK
 </UL>
-<STRONG>Développements et corrections de la version 1.2 (release 1.0.7.2)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.2 (release 1.0.7.2)</STRONG><BR>
 <UL>
-<LI>AddVin: Possibilité d'ajouter plusieurs bouteilles côte à côte dans un rangement complexe OK
-<LI>All: AMELIORATION MAJEURE: Adaptation du code pour que la liste des vins ne soit géré que par un seul objet statique et non plus une copie de la liste par rangement OK
-<LI>Search: Modification de la recherche fullText pour permettre l'utilisation multiple des caractères générique. Implémentation avec Regex & Pattern OK
-<LI>Stats: Nouvelle implémentation de la gestion des décimal avec la Locale et BigDecimal OK
-<LI>All: AMELIORATION MAJEURE: Implémentation de la sérialisation pour toutes les bouteilles: le fichier XML devient Backup: Enorme accélération du chargement (1sec pour charger 10000 bouteilles) OK
-<LI>All: Nouvelle gestion des années: Un objet statique regroupe les années présentes dans le programme ainsi que le nombre de bouteilles liées à cette année. Meilleure gestion de la liste pour Stats & Search OK
-<LI>All: Tous les textes et options sont gérés de façon centrale par Jakarta Commons Configuration au lieu du java.util.Properties avec une LinkedHashMap personalisée OK
+<LI>AddVin: PossibilitÃ© d'ajouter plusieurs bouteilles cÃ´te Ã  cÃ´te dans un rangement complexe OK
+<LI>All: AMELIORATION MAJEURE: Adaptation du code pour que la liste des vins ne soit gÃ©rÃ© que par un seul objet statique et non plus une copie de la liste par rangement OK
+<LI>Search: Modification de la recherche fullText pour permettre l'utilisation multiple des caractÃ¨res gÃ©nÃ©rique. ImplÃ©mentation avec Regex & Pattern OK
+<LI>Stats: Nouvelle implÃ©mentation de la gestion des dÃ©cimal avec la Locale et BigDecimal OK
+<LI>All: AMELIORATION MAJEURE: ImplÃ©mentation de la sÃ©rialisation pour toutes les bouteilles: le fichier XML devient Backup: Enorme accÃ©lÃ©ration du chargement (1sec pour charger 10000 bouteilles) OK
+<LI>All: Nouvelle gestion des annÃ©es: Un objet statique regroupe les annÃ©es prÃ©sentes dans le programme ainsi que le nombre de bouteilles liÃ©es Ã  cette annÃ©e. Meilleure gestion de la liste pour Stats & Search OK
+<LI>All: Tous les textes et options sont gÃ©rÃ©s de faÃ§on centrale par Jakarta Commons Configuration au lieu du java.util.Properties avec une LinkedHashMap personalisÃ©e OK
 <LI>All: Tests de charge: Performances (Ajout de 10000 bouteilles (8 sec), Suppression de 10000 bouteilles (1 min 25 sec au lieu de 1 min 31 sec), Recherche de 10000 bouteilles ( 1 min 20 au lieu de 1 min 50)) OK
-<LI>Start && Program: AMELIORATION MAJEURE: Fichier unique compressé regroupant tous les fichiers nécessaire à la gestion d'une cave OK
-<LI>Search: Développement d'une recherche avancée: Possibilité d'utiliser les noms des champs (NAME, YEAR...) et de séparer chaque argument par AND ou OR OK
-<LI>Start: Compatibilité assurée avec les versions précédentes OK
-<LI>Parametres: Possibilité de choisir entre les différents Look&Feel OK
-<LI>Export: Amélioration de l'export CSV pour la gestion des délimiteurs comme valeur OK
+<LI>Start && Program: AMELIORATION MAJEURE: Fichier unique compressÃ© regroupant tous les fichiers nÃ©cessaire Ã  la gestion d'une cave OK
+<LI>Search: DÃ©veloppement d'une recherche avancÃ©e: PossibilitÃ© d'utiliser les noms des champs (NAME, YEAR...) et de sÃ©parer chaque argument par AND ou OR OK
+<LI>Start: CompatibilitÃ© assurÃ©e avec les versions prÃ©cÃ©dentes OK
+<LI>Parametres: PossibilitÃ© de choisir entre les diffÃ©rents Look&Feel OK
+<LI>Export: AmÃ©lioration de l'export CSV pour la gestion des dÃ©limiteurs comme valeur OK
 <LI>All: Corrections sur le changement de langue non pris en compte dans certains cas OK
-<LI>All: Le fichier d'option est intégré au fichier unique. Les paramètres peuvent dont être différents pour chaque fichier OK
-<LI>Start: Le nom du fichier chargé apparaît dans la barre de titre OK
-<LI>Paramètres: Option pour créer une nouvelle cave au prochain démarrage OK
-<LI>Export: Lorsqu'il y a plus de 2000 bouteilles dans la cave, l'export PDF génère N fichiers de 2000 bouteilles max afin d'éviter le crash de l'application par OutOfMemory OK
+<LI>All: Le fichier d'option est intÃ©grÃ© au fichier unique. Les paramÃ¨tres peuvent dont Ãªtre diffÃ©rents pour chaque fichier OK
+<LI>Start: Le nom du fichier chargÃ© apparaÃ®t dans la barre de titre OK
+<LI>ParamÃ¨tres: Option pour crÃ©er une nouvelle cave au prochain dÃ©marrage OK
+<LI>Export: Lorsqu'il y a plus de 2000 bouteilles dans la cave, l'export PDF gÃ©nÃ¨re N fichiers de 2000 bouteilles max afin d'Ã©viter le crash de l'application par OutOfMemory OK
 </UL>
-<STRONG>Développements et corrections de la version 1.1 (release 9.3.9)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.1 (release 9.3.9)</STRONG><BR>
 <UL>
-<LI>AddVin && Parametres: Donner la possibilité de choisir le format des champs Other OK
-<LI>AddVin: Corrections lors de la modification d'un vin vers un emplacement utilisé OK
-<LI>All: Création de la liste pour la contenance des bouteilles à la place d'une valeur booléenne (Demie bouteille Vrai/faux) OK
-<LI>Export: Suppression des options liés à la valeur booléenne OK
+<LI>AddVin && Parametres: Donner la possibilitÃ© de choisir le format des champs Other OK
+<LI>AddVin: Corrections lors de la modification d'un vin vers un emplacement utilisÃ© OK
+<LI>All: CrÃ©ation de la liste pour la contenance des bouteilles Ã  la place d'une valeur boolÃ©enne (Demie bouteille Vrai/faux) OK
+<LI>Export: Suppression des options liÃ©s Ã  la valeur boolÃ©enne OK
 <LI>Suppression de l'objet ExportOptions devenu inutile OK
-<LI>MyOptions: Possibilité de définir une valeur min, max et par défaut pour les champs Other "Nombre Entier" OK
-<LI>Paramètres: Possibilité de vider les champs Other "Liste" ainsi que les alimenter automatiquement OK
-<LI>All: Corrections et améliorations mineures (Interface, Statistiques, Démarrage...) OK
-<LI>Stats: Correction du comptage du nombre de bouteilles après une modification OK
-<LI>All: Tests de charge: Amélioration des performances (Ajout de 10000 bouteilles (6 sec au lieu de 7sec), Suppression de 10000 bouteilles (1 min 31 sec au lieu de 8 min 50 sec), Recherche de 10000 bouteilles ( 1 min 50 au lieu de 2 min 16)) et optimisation du code OK
-<LI>Importer: Suppression de quelques contrôles restrictif inutiles pour plus de souplesse OK
-<LI>Stats: Amélioration de la prise en compte des spérateurs dans les nombres en fonction de la localisation OK
-<LI>Paramètres: Ajout du paramétrage de l'année de transformation et du siècle et Possibilité de désactiver le contrôle de l'année OK
-<LI>AddVin: Possibilité de spécifier des valeurs par défaut pour les listes OK
-<LI>Stats: Ajout du prix moyen des bouteilles ainsi que la possibilité de l'afficher que les tranches de prix contenant des bouteilles OK
+<LI>MyOptions: PossibilitÃ© de dÃ©finir une valeur min, max et par dÃ©faut pour les champs Other "Nombre Entier" OK
+<LI>ParamÃ¨tres: PossibilitÃ© de vider les champs Other "Liste" ainsi que les alimenter automatiquement OK
+<LI>All: Corrections et amÃ©liorations mineures (Interface, Statistiques, DÃ©marrage...) OK
+<LI>Stats: Correction du comptage du nombre de bouteilles aprÃ¨s une modification OK
+<LI>All: Tests de charge: AmÃ©lioration des performances (Ajout de 10000 bouteilles (6 sec au lieu de 7sec), Suppression de 10000 bouteilles (1 min 31 sec au lieu de 8 min 50 sec), Recherche de 10000 bouteilles ( 1 min 50 au lieu de 2 min 16)) et optimisation du code OK
+<LI>Importer: Suppression de quelques contrÃ´les restrictif inutiles pour plus de souplesse OK
+<LI>Stats: AmÃ©lioration de la prise en compte des spÃ©rateurs dans les nombres en fonction de la localisation OK
+<LI>ParamÃ¨tres: Ajout du paramÃ©trage de l'annÃ©e de transformation et du siÃ¨cle et PossibilitÃ© de dÃ©sactiver le contrÃ´le de l'annÃ©e OK
+<LI>AddVin: PossibilitÃ© de spÃ©cifier des valeurs par dÃ©faut pour les listes OK
+<LI>Stats: Ajout du prix moyen des bouteilles ainsi que la possibilitÃ© de l'afficher que les tranches de prix contenant des bouteilles OK
 <LI>Stats: Prise en compte des centimes dans les prix OK
-<LI>Creer_Rangement , Search , Export: Possibilité de choisir un mode de fonctionnement par défaut via leur menu Options OK
-<LI>AddVin: Ajout d'un contrôle d'année pour celles supérieures à l'année courante OK
-<LI>AddVin: Lors de l'ajout de plusieurs bouteilles avec un seul rangement, il n'y a plus de message de confirmation d'ajout de toutes les bouteilles au même endroit OK
-<LI>Export: Possibilité de choisir le séparateur pour le format CSV OK
-<LI>AddVin & Paramètres: Possibilité de réinitialiser la liste de contenance ainsi que l'alimenter automatiquement OK
+<LI>Creer_Rangement , Search , Export: PossibilitÃ© de choisir un mode de fonctionnement par dÃ©faut via leur menu Options OK
+<LI>AddVin: Ajout d'un contrÃ´le d'annÃ©e pour celles supÃ©rieures Ã  l'annÃ©e courante OK
+<LI>AddVin: Lors de l'ajout de plusieurs bouteilles avec un seul rangement, il n'y a plus de message de confirmation d'ajout de toutes les bouteilles au mÃªme endroit OK
+<LI>Export: PossibilitÃ© de choisir le sÃ©parateur pour le format CSV OK
+<LI>AddVin & ParamÃ¨tres: PossibilitÃ© de rÃ©initialiser la liste de contenance ainsi que l'alimenter automatiquement OK
 </UL>
-<STRONG>Développements et corrections de la version 1.0 (release 8.0.8)</STRONG><BR>
+<STRONG>DÃ©veloppements et corrections de la version 1.0 (release 8.0.8)</STRONG><BR>
 <UL>
 <!-- Modifiez cette section pour garder la trace des choses &agrave; faire -->
-<LI>Creer_Rangement: Possibilité de créer un rangement type Caisse.
+<LI>Creer_Rangement: PossibilitÃ© de crÃ©er un rangement type Caisse.
 <LI>Importer: Fonction d'import CVS.
 <LI>Rangement: Fonction de lecture du fichier XML.
-<LI>Rangement: Fonction d'écriture du XML.
-<LI>Rangement: PB suppression dans caisse (prise en compte l'année) OK
-<LI>Search: PB en recherche bouteille dernièrement ajoutée OK
+<LI>Rangement: Fonction d'Ã©criture du XML.
+<LI>Rangement: PB suppression dans caisse (prise en compte l'annÃ©e) OK
+<LI>Search: PB en recherche bouteille derniÃ¨rement ajoutÃ©e OK
 <LI>Search: Rechercher / Modifier
-<LI>Rangement: PB Vérifier PutTabStock pour Armoire/Armoire0 OK
-<LI>Rangement: Gestion des caractères spéciaux.
-<LI>Search: Possibilté de faire une recherche dans toutes les caisses portant le même nom.
-<LI>Creer_Rangement: Possibilité de prévisualiser un rangement avant de le créer.
+<LI>Rangement: PB VÃ©rifier PutTabStock pour Armoire/Armoire0 OK
+<LI>Rangement: Gestion des caractÃ¨res spÃ©ciaux.
+<LI>Search: PossibiltÃ© de faire une recherche dans toutes les caisses portant le mÃªme nom.
+<LI>Creer_Rangement: PossibilitÃ© de prÃ©visualiser un rangement avant de le crÃ©er.
 <LI>Search: Recherche sur (tous le rangement, tous le num_lieu, toute la ligne) OK
-<LI>Paramètrage de la longueur du nom d'un rangement au démarrage + mettre message en création de rangement OK
-<LI>Importer: Donner la possibilité de visualiser le fichier que l'on veut importer OK
-<LI>Rangement: Faire une fonction de tri alphabétique des rangements OK
-<LI>AddVin: Possibilité de désactiver l'alimentation automatique de l'année (00 -> 2000) OK
-<LI>Search: Rajouter une recherche par année (liste des années présentes dans le fichier) OK
+<LI>ParamÃ¨trage de la longueur du nom d'un rangement au dÃ©marrage + mettre message en crÃ©ation de rangement OK
+<LI>Importer: Donner la possibilitÃ© de visualiser le fichier que l'on veut importer OK
+<LI>Rangement: Faire une fonction de tri alphabÃ©tique des rangements OK
+<LI>AddVin: PossibilitÃ© de dÃ©sactiver l'alimentation automatique de l'annÃ©e (00 -> 2000) OK
+<LI>Search: Rajouter une recherche par annÃ©e (liste des annÃ©es prÃ©sentes dans le fichier) OK
 <LI>Start: Faire quelque chose pour le cas ou le fichier des vins est corrompu. Charger un Backup (Sauvegarder un backup si Chargement OK) OK
-<LI>Search: Possibilité d'exporter le résultat d'une recherche OK
+<LI>Search: PossibilitÃ© d'exporter le rÃ©sultat d'une recherche OK
 <LI>AddVin: Ajouter un bouton "Visualiser le rangement" OK
-<LI>BadPlace: Implémentation "Select All" OK
-<LI>Search: Implémentation "Select All" OK
+<LI>BadPlace: ImplÃ©mentation "Select All" OK
+<LI>Search: ImplÃ©mentation "Select All" OK
 <LI>AddVin: Permettre de modifier plusieurs vins d'un coup.
 <LI>ListVin + Search: Pb sur code_vin pour caisse OK
-<LI>Tous: Ne recharger en quittant que si des modif ont été effectués OK
-<LI>Rangement: Exception lancé lorsque l'on essaie d'accéder à une case du tableau dispo mais non autorisée OK
+<LI>Tous: Ne recharger en quittant que si des modif ont Ã©tÃ© effectuÃ©s OK
+<LI>Rangement: Exception lancÃ© lorsque l'on essaie d'accÃ©der Ã  une case du tableau dispo mais non autorisÃ©e OK
 <LI>AddVin: Remplacer ligne de saisie par un champ multi-lignes OK
-<LI>Export: Faire un outil pour exporter les données en format XML, CSV ou HTML OK
+<LI>Export: Faire un outil pour exporter les donnÃ©es en format XML, CSV ou HTML OK
 <LI>Export: Convertir avec spec_char dans write_XML et write_HTML OK
-<LI>Export: Paramètrage de l'export (valeur pour colonne Demie) OK
+<LI>Export: ParamÃ¨trage de l'export (valeur pour colonne Demie) OK
 <LI>ListVin: Correction pb un vin ne doit pas en remplacer un autre dans un caisse OK
-<LI>ListVin & AddVin: Permettre de déplacer plusieurs bouteilles d'un coup dans une caisse OK
-<LI>Stat: Finir décrément/incrément en ajout/modif/suppr de Bouteille OK
-<LI>Stat: Stat par rangement, stat par année, par prix OK
-<LI>Param: Possibilité de changer (vérif auto) le chemin d'accès à IE OK
-<LI>Rangement: Fonction pour regénérer le fichier XSL après modif des balises OK
+<LI>ListVin & AddVin: Permettre de dÃ©placer plusieurs bouteilles d'un coup dans une caisse OK
+<LI>Stat: Finir dÃ©crÃ©ment/incrÃ©ment en ajout/modif/suppr de Bouteille OK
+<LI>Stat: Stat par rangement, stat par annÃ©e, par prix OK
+<LI>Param: PossibilitÃ© de changer (vÃ©rif auto) le chemin d'accÃ¨s Ã  IE OK
+<LI>Rangement: Fonction pour regÃ©nÃ©rer le fichier XSL aprÃ¨s modif des balises OK
 <LI>A propos: Boite d'A propos OK
-<LI>Importer: Mettre un test pour le cas où il y a plus de 12 colonnes dans la source OK
-<LI>Param: Créer une fenêtre pour initaliser toutes les variables privés au 1er démarage (nom des fichiers, paramètre personnels) OK
-<LI>Rangement: Sérialisation de l'objet OK
-<LI>Start: Chargement des objets Sérialiser. Chargement de Options.txt en cas de problème OK
-<LI>Creer_Rangement: Interdire les caractères (\ / * : "? <    > | ) OK
+<LI>Importer: Mettre un test pour le cas oÃ¹ il y a plus de 12 colonnes dans la source OK
+<LI>Param: CrÃ©er une fenÃªtre pour initaliser toutes les variables privÃ©s au 1er dÃ©marage (nom des fichiers, paramÃ¨tre personnels) OK
+<LI>Rangement: SÃ©rialisation de l'objet OK
+<LI>Start: Chargement des objets SÃ©rialiser. Chargement de Options.txt en cas de problÃ¨me OK
+<LI>Creer_Rangement: Interdire les caractÃ¨res (\ / * : "? <    > | ) OK
 <LI>Rangement: Fonction de tri de la liste des vins pour l'export OK
 <LI>AddVin: Utilisation de JFormattedTextfield pour le prix et JSpinner pour le nombre de bouteilles OK
-<LI>Importer: Vérifier que le nouveau nom saisi n'existe pas déjà. Mettre toutes les bouteilles dans cet emplacement OK
+<LI>Importer: VÃ©rifier que le nouveau nom saisi n'existe pas dÃ©jÃ . Mettre toutes les bouteilles dans cet emplacement OK
 <LI>All: Mise en place des fichiers aux formats XXXX_LANG OK
-<LI>Rangement: En cas de suppression de tous les vins, remettre la ligne de defaulting avec son option à 1 OK
-<LI>AddVin: Permettre de sélectionner automatiquement l'unique rangement OK
+<LI>Rangement: En cas de suppression de tous les vins, remettre la ligne de defaulting avec son option Ã  1 OK
+<LI>AddVin: Permettre de sÃ©lectionner automatiquement l'unique rangement OK
 <LI>Creer_Rangement / Modifier_Rangement: JSpinner pour le nombre de parties OK
-<LI>Paramètres: ComboBox de Sélection de langue. OK
+<LI>ParamÃ¨tres: ComboBox de SÃ©lection de langue. OK
 <LI>Importer: Gestion des cas d'import sans lieu, num_lieu, ligne, colonne OK
-<LI>Paramètres: mettre option pour réinitialiser "show next time" OK
-<LI>Start: Gestion du premier démarrage OK
-<LI>SplashScreen: Ajout de l'écran de démarrage OK
-<LI>Message: Message pour confirmer la fermeture de AddVin si vin non ajouté (idem popur creer_rangement, modifier_rangement) OK
-<LI>AddVin: en modification de bouteille, vérifier sélection auto rangement unique OK
+<LI>ParamÃ¨tres: mettre option pour rÃ©initialiser "show next time" OK
+<LI>Start: Gestion du premier dÃ©marrage OK
+<LI>SplashScreen: Ajout de l'Ã©cran de dÃ©marrage OK
+<LI>Message: Message pour confirmer la fermeture de AddVin si vin non ajoutÃ© (idem popur creer_rangement, modifier_rangement) OK
+<LI>AddVin: en modification de bouteille, vÃ©rifier sÃ©lection auto rangement unique OK
 <LI>Rangement: Fonction d'ecriture XLS OK
-<LI>Start: Possibilité d'écrire un fichier XLS à chaque fermeture de programme si option. OK
-<LI>Welcome: Rajouter Fenêtre de Bienvenue OK
-<LI>Rangement: Possibilité de limité le nombre de bouteilles dans une caisse via un paramètre OK
-<LI>Message et Erreur: Redimensionnement automatique de la fenêtre si le message est trop long OK
-<LI>BadPlace: Possibilté d'agrandir un rangement. OK
-<LI>Implémenter Copier - Coller et menu contextuel (Paramètres OK, AddVin OK, Search OK, Export OK, Creer_Rangement OK, Modifier_Rangement OK, Supprimer_Rangement OK, Creer_Tableaux OK, Importer OK, BadPlace OK)
+<LI>Start: PossibilitÃ© d'Ã©crire un fichier XLS Ã  chaque fermeture de programme si option. OK
+<LI>Welcome: Rajouter FenÃªtre de Bienvenue OK
+<LI>Rangement: PossibilitÃ© de limitÃ© le nombre de bouteilles dans une caisse via un paramÃ¨tre OK
+<LI>Message et Erreur: Redimensionnement automatique de la fenÃªtre si le message est trop long OK
+<LI>BadPlace: PossibiltÃ© d'agrandir un rangement. OK
+<LI>ImplÃ©menter Copier - Coller et menu contextuel (ParamÃ¨tres OK, AddVin OK, Search OK, Export OK, Creer_Rangement OK, Modifier_Rangement OK, Supprimer_Rangement OK, Creer_Tableaux OK, Importer OK, BadPlace OK)
 <LI>Creer_Tableaux: Ajouter option Select All OK
-<LI>Start: Faire appel à BadPlace dans Chargement si bouteilles mal placées OK
+<LI>Start: Faire appel Ã  BadPlace dans Chargement si bouteilles mal placÃ©es OK
 <LI>All: Utilisation unique de Rangement.nb_rangement OK
 <LI>Rangement & Message: Suppression de la fonction lire_Option OK
-<LI>Langue: Fenêtre de choix de la langue au premier démarrage OK
+<LI>Langue: FenÃªtre de choix de la langue au premier dÃ©marrage OK
 <LI>Export: Export PDF et formatage de l'export OK
-<LI>Rangement: Correction de la suppression des bouteilles du tableau all lorsques celles-ci étaient à la fin du tableau OK
+<LI>Rangement: Correction de la suppression des bouteilles du tableau all lorsques celles-ci Ã©taient Ã  la fin du tableau OK
 <LI>All: Ajout de l'Aide OK
-<LI>Export: Paramétrage de l'export CSV et XLS OK.
-<LI>All: Ajout de la gestion de l'indice de démarrage du numéro de partie des caisses OK.
-<LI>BadPlace: Possibilité de modifier un rangement OK.
-<LI>Start: Gestion des problèmes de fichiers de configuration OK
-<LI>Start: Contrôle de la version de la JVM, contrôle des fichiers de configuration et contrôle q'une autre instance ne tourne pas OK
-<LI>Creer_Tableaux: Création de tableaux au format HTML OK
+<LI>Export: ParamÃ©trage de l'export CSV et XLS OK.
+<LI>All: Ajout de la gestion de l'indice de dÃ©marrage du numÃ©ro de partie des caisses OK.
+<LI>BadPlace: PossibilitÃ© de modifier un rangement OK.
+<LI>Start: Gestion des problÃ¨mes de fichiers de configuration OK
+<LI>Start: ContrÃ´le de la version de la JVM, contrÃ´le des fichiers de configuration et contrÃ´le q'une autre instance ne tourne pas OK
+<LI>Creer_Tableaux: CrÃ©ation de tableaux au format HTML OK
 </UL>
 </BODY>
 </HTML>

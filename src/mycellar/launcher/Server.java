@@ -1,5 +1,9 @@
 package mycellar.launcher;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +21,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import mycellar.core.MyCellarVersion;
 
 /**
@@ -26,8 +37,8 @@ import mycellar.core.MyCellarVersion;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 1.6
- * @since 09/05/17
+ * @version 1.7
+ * @since 18/10/17
  */
 
 public class Server implements Runnable {
@@ -99,7 +110,7 @@ public class Server implements Runnable {
 				if (!f.exists())
 					f.mkdir();
 
-				bDownloadError = downloadFromGitHub("download");
+				bDownloadError = downloadFromGitHub(f);
 			} catch (Exception e) {
 				showException(e);
 				sAction = "";
@@ -160,7 +171,7 @@ public class Server implements Runnable {
 			if (!f.exists())
 				f.mkdir();
 
-			bDownloadError = downloadFromGitHub("download");
+			bDownloadError = downloadFromGitHub(f);
 
 		} catch (Exception e) {
 			showException(e);
@@ -320,7 +331,7 @@ public class Server implements Runnable {
 		return bDownloadError;
 	}*/
 
-	public boolean downloadFromGitHub(String destination) {
+	public boolean downloadFromGitHub(File destination) {
 		MyCellarLauncherLoading download = null;
 		try{
 			download = new MyCellarLauncherLoading("Downloading...");
@@ -333,7 +344,7 @@ public class Server implements Runnable {
 			// Creation des fichiers pour lister les fichiers à supprimer
 			for(String s : listFileToRemove) {
 				Debug("Creating file to delete... "+s);
-				File f = new File(destination + "/" + s + ".myCellar");
+				File f = new File(destination, s + ".myCellar");
 				f.createNewFile();
 			}
 			bDownloadError = false;
@@ -668,6 +679,13 @@ public class Server implements Runnable {
 
 	public boolean install() {
 		Debug("Installing MyCellar...");
+		File directory = getDirectoryForInstall();
+		if(directory != null ) {
+			if(!directory.exists())
+				directory.mkdirs();
+		}
+		else
+			return false;
 		File f = new File("lib");
 		f.mkdir();
 		f = new File("config");
@@ -690,10 +708,38 @@ public class Server implements Runnable {
 		listFile.add(new FileType("MyCellar.jar",""));
 		listFile.add(new FileType("MyCellarLauncher.jar",""));
 		listFile.add(new FileType("Finish.html",""));
-		boolean result = downloadFromGitHub(".");
+		boolean result = downloadFromGitHub(directory);
 		
 		Debug("Installation of MyCellar Done.");
 		return result;
+	}
+	
+	private File getDirectoryForInstall() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout());
+		panel.setPreferredSize(new Dimension(400, 75));
+		panel.add(new JLabel("Choose the directory to install MyCellar."));
+		JTextField text = new JTextField(30);
+		text.setSize(100, 25);
+		panel.add(text);
+		JButton button = new JButton("...");
+		button.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser =  new JFileChooser();
+				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				if( JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(null) ) {
+					File selectedFile = fileChooser.getSelectedFile();
+					text.setText(selectedFile.getAbsolutePath());
+				}
+			}
+		});
+		panel.add(button);
+		if( JOptionPane.OK_OPTION == JOptionPane.showOptionDialog(null, panel, "MyCellar", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null)) {
+			return new File(text.getText());
+		}
+		return null;
 	}
 
 	private static boolean isRedirected(Map<String, List<String>> header) {

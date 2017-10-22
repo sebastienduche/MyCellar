@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.9
- * @since 04/08/17
+ * @version 18.0
+ * @since 22/10/17
  */
 public class Search extends JPanel implements Runnable, ITabListener {
 	private static JTable table;
@@ -1330,10 +1330,10 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		}
 		public void fillYear(){
 			year.removeAllItems();
-			Object an_array[] = Program.getStorage().getAnneeList().keySet().toArray();
+			int an_array[] = Program.getAnnees();
 			String mes_string[] = new String[an_array.length];
 			for (int y = 0; y < an_array.length; y++) {
-				mes_string[y] = an_array[y].toString();
+				mes_string[y] = Integer.toString(an_array[y]);
 			}
 			java.util.Arrays.sort(mes_string, java.text.Collator.getInstance());
 			for (int y = 0; y < mes_string.length; y++) {

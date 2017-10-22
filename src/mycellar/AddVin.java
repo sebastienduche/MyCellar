@@ -44,8 +44,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 22.5
- * @since 08/09/17
+ * @version 22.6
+ * @since 22/10/17
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -1351,7 +1351,6 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 		if(m_lv == null) {
 			enableAll(true);
-			Program.tabbedPane.setTitleAt(Program.tabbedPane.getSelectedIndex(), Program.getLabel("Infos005"));
 			m_bmodify = false;
 			m_avant1.setVisible(false);
 			m_avant2.setVisible(false);
@@ -1362,6 +1361,8 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		}
 		else if(m_lv.getListSize() == 0)
 			reInitAddVin();
+		
+		Program.tabbedPane.setTitleAt(Program.tabbedPane.getSelectedIndex(), Program.getLabel("Infos005"));
 		Debug("Do After Run Done");
 	}
 
@@ -1374,9 +1375,6 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			remove(m_lv);
 		m_lv = null;
 		enableAll(true);
-		int tabIndex = Program.findTab(MyCellarImage.WINE);
-		if(tabIndex != -1)
-			Program.tabbedPane.setTitleAt(tabIndex, Program.getLabel("Infos005"));
 		m_bmodify = false;
 		m_avant1.setVisible(false);
 		m_avant2.setVisible(false);

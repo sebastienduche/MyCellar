@@ -20,8 +20,8 @@ import mycellar.actions.OpenAddVinAction;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.2
- * @since 03/08/17
+ * @version 3.3
+ * @since 22/10/17
  */
 
 public class TableShowValues extends AbstractTableModel {
@@ -129,21 +129,6 @@ public class TableShowValues extends AbstractTableModel {
    * @return boolean
    */
   public boolean isCellEditable(int row, int column) {
-//    if (column == ETAT 
-//     || column == NAME 
-//     || column == TYPE 
-//     || column == YEAR 
-//     || column == PRICE 
-//     || column == PLACE
-//     || column == NUM_PLACE
-//     || column == LINE
-//     || column == COLUMN
-//     || column == MATURITY
-//     || column == PARKER
-//     || column == APPELLATION
-//     || column == COMMENT) {
-//      return true;
-//    }
     return false;
   }
 
@@ -186,9 +171,7 @@ public class TableShowValues extends AbstractTableModel {
         if( Program.hasYearControl() && !Bouteille.isValidYear( (String) value) )
        	  new Erreur(Program.getError("Error053"));
         else{
-        	Program.getStorage().removeAnnee(b.getAnneeInt());
         	b.setAnnee((String)value);	
-        	Program.getStorage().addAnnee(b.getAnneeInt());
         }
         break;
       case PLACE:

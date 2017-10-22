@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
@@ -17,13 +16,12 @@ import mycellar.vignobles.CountryVignobles;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.1
- * @since 04/08/17
+ * @version 4.2
+ * @since 22/10/17
  */
 
 public class SerializedStorage implements Storage {
 
-	public LinkedHashMap<Integer,Integer> annees; // Liste des années
 	protected static HistoryList m_HistoryList = new HistoryList();
 	protected ListeBouteille listBouteilles = new ListeBouteille();
 
@@ -31,7 +29,6 @@ public class SerializedStorage implements Storage {
 
 	// Private constructor prevents instantiation from other classes
 	private SerializedStorage() {
-		initialize();
 	}
 
 	public void setListBouteilles(ListeBouteille listBouteilles) {
@@ -71,15 +68,6 @@ public class SerializedStorage implements Storage {
 	
 	public LinkedList<String> getBottleNames() {
 		return listeUniqueBouteille;
-	}
-
-	public void initialize() {
-		if (annees == null) {
-			Debug("initialize: Creating year LinkedHashMap");
-			annees = new LinkedHashMap<Integer, Integer>();
-		}
-		else
-			annees.clear();
 	}
 
 	/**
@@ -224,44 +212,8 @@ public class SerializedStorage implements Storage {
 			Debug("DeleteWine: Deleted bottle number " + num);
 			listBouteilles.getBouteille().remove(num);
 		}
-		removeAnnee(annee);
 
-		if (listBouteilles.getBouteille().size() == 0) {
-			annees = new LinkedHashMap<Integer,Integer>();
-		}
 		return resul;
-	}
-	
-	/**
-	 * getNbAutreAnnee
-	 * @return int
-	 */
-	public int getNbAutreAnnee() {
-		int nb = 0;
-		Bouteille b;
-		for (int i = 0; i < listBouteilles.getBouteille().size(); i++) {
-			b = listBouteilles.getBouteille().get(i);
-			if (b != null && b.getAnneeInt() < 1000 ) {
-				nb++;
-			}
-		}
-		return nb;
-	}
-
-	/**
-	 * getNbNonVintage
-	 * @return int
-	 */
-	public int getNbNonVintage() {
-		int nb = 0;
-		Bouteille b;
-		for (int i = 0; i < listBouteilles.getBouteille().size(); i++) {
-			b = listBouteilles.getBouteille().get(i);
-			if (b != null && Bouteille.isNonVintageYear(b.getAnnee())) {
-				nb++;
-			}
-		}
-		return nb;
 	}
 
 	/**
@@ -281,7 +233,6 @@ public class SerializedStorage implements Storage {
 		if (Bouteille.prix_max < prix) {
 			Bouteille.prix_max = prix;
 		}
-		addAnnee(wine.getAnneeInt());
 		if(!listeUniqueBouteille.contains(wine.getNom()))
 			listeUniqueBouteille.add(wine.getNom());
 		CountryVignobles.addVignobleFromBottle(wine);
@@ -389,83 +340,6 @@ public class SerializedStorage implements Storage {
 				}
 			}
 		}
-	}
-
-	/**
-	 * removeAnnee: Décremente le compteur pour une année
-	 *
-	 * @param annee int
-	 */
-
-	public void removeAnnee(int annee) {
-		Integer an = new Integer(annee);
-		if (annees.containsKey(an)) {
-			int nb = Integer.parseInt(annees.get(an).toString());
-			nb--;
-			if (nb > 0) {
-				annees.put(an, new Integer(nb));
-			}
-			else {
-				annees.remove(an);
-			}
-		}
-	}
-
-	/**
-	 * addAnnee: Incremente le compteur pour une année
-	 *
-	 * @param annee int
-	 */
-
-	public void addAnnee(int annee) {
-		if (annees == null) {
-			annees = new LinkedHashMap<Integer,Integer>();
-		}
-		Integer an = new Integer(annee);
-		if (annees.containsKey(an)) {
-			int nb = Integer.parseInt(annees.get(an).toString());
-			nb++;
-			annees.put(an, new Integer(nb));
-		}
-		else {
-			annees.put(an, new Integer(1));
-		}
-	}
-
-	/**
-	 * getNbBouteilleAnnee: retourne le nombre de bouteilles d'une année
-	 *
-	 * @param an int: année souhaitée
-	 * @return int
-	 */
-	public int getNbBouteilleAnnee(int an) {
-		Integer annee = new Integer(an);
-		if (annees.containsKey(annee)) {
-			return Integer.parseInt(annees.get(annee).toString());
-		}
-		else {
-			return 0;
-		}
-	}
-
-	/**
-	 * setAnnee: Met à jour le tableau des années
-	 *
-	 * @param year LinkedHashMap
-	 */
-	public void setAnnee(LinkedHashMap<Integer,Integer> year) {
-		annees = year;
-		if (annees == null) {
-			annees = new LinkedHashMap<Integer, Integer>();
-		}
-	}
-
-	/**
-	 * getAnneeList: Retourne la liste des années
-	 *
-	 */
-	public LinkedHashMap<Integer,Integer> getAnneeList() {
-		return annees;
 	}
 
 	/**

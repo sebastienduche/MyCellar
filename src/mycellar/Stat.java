@@ -29,8 +29,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.3
- * @since 27/07/17
+ * @version 5.4
+ * @since 22/10/17
  */
 public class Stat extends JPanel implements ITabListener {
 
@@ -219,11 +219,11 @@ public class Stat extends JPanel implements ITabListener {
 			if (listOptions.getSelectedIndex() == 1) {
 				def2.setText("");
 				Debug("By year");
-				Object obj[] = Program.getStorage().getAnneeList().keySet().toArray();
+				int obj[] = Program.getAnnees();
 				nb_annee = obj.length;
 				annee = new String[obj.length];
 				for (int i = 0; i < annee.length; i++) {
-					annee[i] = obj[i].toString();
+					annee[i] = Integer.toString(obj[i]);
 				}
 				java.util.Arrays.sort(annee, java.text.Collator.getInstance());
 				listPlaces.removeAllItems();
@@ -423,18 +423,18 @@ public class Stat extends JPanel implements ITabListener {
     					int v = Integer.parseInt(annee[i].trim());
     					if ( v > 1000 && v < 9000) {
     						if (annee[i] != null) {
-    							int count = Program.getStorage().getNbBouteilleAnnee(Integer.parseInt(annee[i].trim()));
+    							int count = Program.getNbBouteilleAnnee(Integer.parseInt(annee[i].trim()));
     							nb_bottle += count;
     							listYear.add(new StatData(annee[i], count));
     						}
     					}
     				}
-    				int nb_autre = Program.getStorage().getNbNonVintage();
+    				int nb_autre = Program.getNbNonVintage();
     
     				nb_bottle += nb_autre;
     				listYear.add(new StatData(Program.getLabel("Infos390"), nb_autre));
     				
-    				nb_autre = Program.getStorage().getNbAutreAnnee();
+    				nb_autre = Program.getNbAutreAnnee();
     
     				nb_bottle += nb_autre;
     				listYear.add(new StatData(Program.getLabel("Infos225"), nb_autre));

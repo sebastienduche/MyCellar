@@ -59,8 +59,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.6
- * @since 03/08/17
+ * @version 4.7
+ * @since 22/10/17
  */
 
 public class ShowFile extends JPanel implements ITabListener  {
@@ -113,9 +113,7 @@ public class ShowFile extends JPanel implements ITabListener  {
 					if( Program.hasYearControl() && !Bouteille.isValidYear((String) value) )
 				       	 new Erreur(Program.getError("Error053"));
 				        else{
-				        	Program.getStorage().removeAnnee(b.getAnneeInt());
 				        	b.setAnnee((String)value);	
-				        	Program.getStorage().addAnnee(b.getAnneeInt());
 				        }
 				}
 

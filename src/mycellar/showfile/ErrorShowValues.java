@@ -16,8 +16,8 @@ import mycellar.core.MyCellarError;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 04/08/17
+ * @version 0.6
+ * @since 22/10/17
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -181,9 +181,7 @@ public class ErrorShowValues extends TableShowValues {
 			if( Program.hasYearControl() && !Bouteille.isValidYear( (String) value) )
 				new Erreur(Program.getError("Error053"));
 			else{
-				Program.getStorage().removeAnnee(b.getAnneeInt());
 				b.setAnnee((String)value);	
-				Program.getStorage().addAnnee(b.getAnneeInt());
 			}
 			break;
 		case PLACE:

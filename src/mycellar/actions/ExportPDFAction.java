@@ -15,7 +15,8 @@ public class ExportPDFAction extends AbstractAction {
 
 	private static final long serialVersionUID = -7521113567474056823L;
 	public ExportPDFAction() {
-		super(Program.getLabel("AddVin.ChooseCell"), MyCellarImage.PDF);
+		super("", MyCellarImage.PDF);
+		putValue(SHORT_DESCRIPTION, Program.getLabel("Infos248"));
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {

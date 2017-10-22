@@ -1,6 +1,5 @@
 package mycellar;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 /**
@@ -9,13 +8,12 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 18/05/17
+ * @version 1.2
+ * @since 22/10/17
  */
 
 public interface Storage {
 	
-	public void initialize();
 	public void setListBouteilles(ListeBouteille listBouteilles);
 	public void setListBouteilles(LinkedList<Bouteille> listBouteilles);
 	public void addBouteilles(ListeBouteille listBouteilles);
@@ -32,8 +30,6 @@ public interface Storage {
 	public void setHistory(HistoryList list);
 	
 	public boolean deleteWine(Bouteille oB);
-	public void addAnnee(int annee);
-	public void removeAnnee(int annee);
 	public boolean addWine(Bouteille oB);
 	public void replaceWineAll(Bouteille wine, int num_empl, int line, int column);
 	
@@ -42,12 +38,6 @@ public interface Storage {
 	public void setAll( Bouteille[] bList);
 	public LinkedList<Bouteille> getAllList();
 	public void setAllList(LinkedList<Bouteille> _all);
-	
-	public LinkedHashMap<Integer,Integer> getAnneeList();
-	public void setAnnee( LinkedHashMap<Integer,Integer> l );
-	public int getNbBouteilleAnnee(int an);
-	public int getNbAutreAnnee();
-	public int getNbNonVintage();
 	
 	public void close();
 	

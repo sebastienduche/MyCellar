@@ -73,8 +73,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 16.1
- * @since 04/08/17
+ * @version 16.2
+ * @since 22/10/17
  */
 
 public class Program {
@@ -625,8 +625,6 @@ public class Program {
 	private static void writeOtherObject() {
 		Debug("Program: Writing Other Objects...");
 
-		MyXmlDom.writeYears(getStorage().getAnneeList());
-
 		getStorage().saveHistory();
 		Debug("Program: Writing Other Objects... Done");
 	}
@@ -642,7 +640,6 @@ public class Program {
 		}
 		else {
 			m_oCave = MyXmlDom.readMyCellarXml("");
-			loadYears();
 			loadMaxPrice();
 			getStorage().loadHistory();
 		}
@@ -669,7 +666,7 @@ public class Program {
 		Debug("Program: Writing MyCellar.xml");
 		boolean bresul = getStorage().readRangement(cave);
 		if (bresul && !cave.isEmpty()) {
-			loadYears();
+		//	loadYears();
 		}
 		else {
 			Debug("Program: WARNING: Destroying internal files");
@@ -685,29 +682,6 @@ public class Program {
 		if(cave != null)
 			m_oCave = cave;
 	}
-
-	private static void loadYears() {
-		File f1 = new File(getXMLYearsFileName());
-		if(f1.exists()) {
-			getStorage().setAnnee(MyXmlDom.readYears());
-		}
-		else
-			rebuildStats();
-	}
-
-	/**
-	 * 
-	 */
-	public static void rebuildStats() {
-		Debug("Program: Rebuild Statistics");
-
-		getStorage().setAnnee(null);
-		for (Bouteille b:getStorage().getAllList()) {
-			if (b != null) {
-				getStorage().addAnnee(b.getAnneeInt());
-			}
-		}
-	}
 	
 	public static void loadMaxPrice() {
 		
@@ -720,6 +694,36 @@ public class Program {
 	
 	public static int getCellarValue() {	
 		return (int) getStorage().getAllList().stream().mapToDouble(bouteille -> bouteille.getPriceDouble()).sum();
+	}
+	
+	/**
+	 * getNbBouteilleAnnee: retourne le nombre de bouteilles d'une année
+	 *
+	 * @param an int: année souhaitée
+	 * @return int
+	 */
+	public static int getNbBouteilleAnnee(int an) {
+		return (int)getStorage().getAllList().stream().filter(bouteille -> bouteille.getAnneeInt() == an).count();
+	}
+	
+	public static int[] getAnnees() {
+		return getStorage().getAllList().stream().mapToInt(bouteille -> bouteille.getAnneeInt()).distinct().toArray();
+	}
+	
+	/**
+	 * getNbAutreAnnee
+	 * @return int
+	 */
+	public static int getNbAutreAnnee() {
+		return (int)getStorage().getAllList().stream().filter(bouteille -> bouteille.getAnneeInt() < 1000).count();
+	}
+
+	/**
+	 * getNbNonVintage
+	 * @return int
+	 */
+	public static int getNbNonVintage() {
+		return (int)getStorage().getAllList().stream().filter(bouteille -> Bouteille.isNonVintageYear(bouteille.getAnnee())).count();
 	}
 
 

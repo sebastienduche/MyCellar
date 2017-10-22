@@ -1,20 +1,16 @@
 package mycellar;
 
 import java.awt.Component;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.text.MessageFormat;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -22,10 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.LookAndFeel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
@@ -41,37 +33,30 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.1
- * @since 04/08/17
+ * @version 10.2
+ * @since 22/10/17
  */
-public class Parametres extends JDialog {
+public class Parametres extends JPanel implements ITabListener {
+
+	private static final long serialVersionUID = -4208146070057957967L;
 	private MyCellarLabel label_fic_bak = new MyCellarLabel();
 	private MyCellarLabel label_langue = new MyCellarLabel();
 	private MyCellarLabel label_devise = new MyCellarLabel();
-	private MyCellarLabel label_LF = new MyCellarLabel();
 	private MyCellarComboBox<String> langue = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> lF = new MyCellarComboBox<String>();
 	private MyCellarButton valider = new MyCellarButton();
-	private MyCellarButton annuler_btn = new MyCellarButton();
 	private MyCellarButton parcourir_excel = new MyCellarButton("..."); //Parcourir
-	private int LARGEUR = 750;
-	private int HAUTEUR = 520;
 	private JTextField file_bak = new JTextField();
 	private JTextField devise = new JTextField();
 	private MyCellarCheckBox jcb_excel = new MyCellarCheckBox(Program.getLabel("Infos234"), false);
-	private JPanel jPanel1 = new JPanel();
-	private JPanel jPanel2 = new JPanel();
-	private JPanel jPanel4 = new JPanel();
-	private MyCellarButton rebuild = new MyCellarButton(new RebuildStatsAction(Program.getLabel("Infos396"),null,"",null));
-
-	private MyCellarButton jcb_message = new MyCellarButton();
+	private JPanel generalPanel = new JPanel();
+	private JPanel excelPanel = new JPanel();
+	private JPanel dateControlPanel = new JPanel();
+	
+	private MyCellarButton buttonResetMessageDialog = new MyCellarButton();
 	private MyCellarButton jcb_half_del = new MyCellarButton(MyCellarImage.DELETE);
 	private MyCellarCheckBox jcb_half_auto = new MyCellarCheckBox();
 	private MyCellarCheckBox m_jcb_debug = new MyCellarCheckBox();
-	private JPanel jPanel5 = new JPanel();
-	private JPanel jPanel7 = new JPanel();
-	private JPanel jPanel8 = new JPanel();
-	private JPanel jPanel9 = new JPanel();
+	private JPanel otherPanel = new JPanel();
 	private MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox(Program.getLabel("Infos169"), false);
 	private MyCellarLabel label_annee = new MyCellarLabel();
 	private MyCellarLabel label_annee2 = new MyCellarLabel();
@@ -88,31 +73,12 @@ public class Parametres extends JDialog {
 	private MyClipBoard clipboard = new MyClipBoard();
 	private JMenu edition = new JMenu(Program.getLabel("Infos245"));
 	private Component objet1 = null;
-	static final long serialVersionUID = 280706;
 
 	/**
 	 * Parametres: Constructeur: pour la fenêtre des paramètres.
 	 *
 	 */
 	public Parametres() {
-		try {
-			jbInit();
-		}
-		catch (Exception e) {
-			Program.showException(e);
-		}
-	}
-
-	/**
-	 * jbInit: Fonction d'initialisation.
-	 *
-	 * @throws Exception
-	 */
-	private void jbInit() throws Exception {
-
-		this.setAlwaysOnTop(true);
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		this.setTitle(Program.getLabel("Infos193")); //Options
 		setLayout(new MigLayout("","grow",""));
 		setLabels();
 
@@ -140,8 +106,7 @@ public class Parametres extends JDialog {
 		MouseListener popup_l = new PopupListener();
 		file_bak.addMouseListener(popup_l);
 		devise.addMouseListener(popup_l);
-		valider.setText(Program.getLabel("Main.OK"));
-		annuler_btn.setText(Program.getLabel("Infos055"));
+		valider.setText(Program.getLabel("Infos315"));
 		file_bak.setText(Program.getCaveConfigString("FILE_EXCEL",""));
 		
 		annee.setValue(new Integer(Program.getCaveConfigInt("ANNEE", 50)));
@@ -151,12 +116,6 @@ public class Parametres extends JDialog {
 			m_jcb_debug.setSelected(true);
 
 		devise.setText(Program.getCaveConfigString("DEVISE",""));
-		UIManager.LookAndFeelInfo[] info = UIManager.getInstalledLookAndFeels();
-		for (int i = 0; i < info.length; i++) {
-			lF.addItem(info[i].getName());
-		}
-		LookAndFeel lf = UIManager.getLookAndFeel();
-		lF.setSelectedItem(lf.getName());
 		String language = Program.getLanguage("Language1");
 		int i = 1;
 		while (language != null) {
@@ -165,7 +124,6 @@ public class Parametres extends JDialog {
 			language = Program.getLanguage("Language" + i);
 		}
 		
-		lF.addActionListener((e) -> lF_actionPerformed(e));
 		i = 1;
 		language = Program.getLanguage("CodeLang1");
 		String the_language = Program.getGlobalConfigString("LANGUAGE","");
@@ -181,23 +139,12 @@ public class Parametres extends JDialog {
 		}
 
 		valider.addActionListener((e) -> valider_actionPerformed(e));
-		annuler_btn.addActionListener((e) -> annuler_actionPerformed(e));
 		parcourir_excel.addActionListener((e) -> parcourir_excel_actionPerformed(e));
 		jcb_excel.addActionListener((e) -> jcb_excel_actionPerformed(e));
-		jcb_message.addActionListener((e) -> jcb_message_actionPerformed(e));
+		buttonResetMessageDialog.addActionListener((e) -> jcb_message_actionPerformed(e));
 		jcb_half_del.addActionListener((e) -> jcb_half_del_actionPerformed(e));
 		jcb_half_auto.addActionListener((e) -> jcb_half_auto_actionPerformed(e));
 		m_jcb_debug.addActionListener((e) -> activate_debug_actionPerformed(e));
-
-		this.addKeyListener(new java.awt.event.KeyListener() {
-			public void keyReleased(java.awt.event.KeyEvent e) {}
-
-			public void keyPressed(java.awt.event.KeyEvent e) {
-				keylistener_actionPerformed(e);
-			}
-
-			public void keyTyped(java.awt.event.KeyEvent e) {}
-		});
 
 		annee.addChangeListener(new javax.swing.event.ChangeListener() {
 			public void stateChanged(javax.swing.event.ChangeEvent e) {
@@ -219,21 +166,11 @@ public class Parametres extends JDialog {
 			}
 		});
 
-		this.addWindowListener(new java.awt.event.WindowAdapter() {
-			public void windowActivated(WindowEvent e) {}
-
-			public void windowClosing(WindowEvent e) {annuler_actionPerformed(null);
-			}
-		});
-
-		jPanel4.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos294")));
-		jPanel7.setBorder(BorderFactory.createEtchedBorder());
-		jPanel8.setBorder(BorderFactory.createEtchedBorder());
-		jPanel9.setBorder(BorderFactory.createEtchedBorder());
-		jPanel1.setBorder(BorderFactory.createEtchedBorder());
-		jPanel2.setBorder(BorderFactory.createEtchedBorder());
-		jcb_message.setText(Program.getLabel("Infos160"));
-		jPanel5.setBorder(BorderFactory.createEtchedBorder());
+		dateControlPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos294")));
+		generalPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Main.General")));
+		excelPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos234")));
+		buttonResetMessageDialog.setText(Program.getLabel("Infos160"));
+		otherPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Parameters.Others")));
 		cut.setEnabled(false);
 		copy.setEnabled(false);
 		edition.add(cut);
@@ -243,60 +180,50 @@ public class Parametres extends JDialog {
 		cut.setAccelerator(KeyStroke.getKeyStroke('X', ActionEvent.CTRL_MASK));
 		copy.setAccelerator(KeyStroke.getKeyStroke('C', ActionEvent.CTRL_MASK));
 		paste.setAccelerator(KeyStroke.getKeyStroke('V', ActionEvent.CTRL_MASK));
-		jPanel1.setLayout(new MigLayout("","[][]30px[][]",""));
-		jPanel1.add(label_langue);
-		jPanel1.add(langue);
-		jPanel1.add(label_LF);
-		jPanel1.add(lF, "wrap");
-		jPanel1.add(label_devise);
-		jPanel1.add(devise, "w 100:100:100, wrap");
-		add(jPanel1, "grow, wrap");
-		jPanel2.setLayout(new MigLayout("","[][grow]",""));
-		jPanel2.add(jcb_excel, "span 2, wrap");
-		jPanel2.add(label_fic_bak);
-		jPanel2.add(file_bak, "grow, split 2");
-		jPanel2.add(parcourir_excel);
-		add(jPanel2, "grow, wrap");
-		jPanel4.setLayout(new MigLayout("","[][][][][][]",""));
-		jPanel4.add(jcb_annee_control);
-		jPanel4.add(label_annee);
-		jPanel4.add(annee);
-		jPanel4.add(label_annee2);
-		jPanel4.add(siecle);
-		jPanel4.add(label_siecle);
-		add(jPanel4, "grow, wrap");
-		jPanel5.setLayout(new MigLayout("","[][]",""));
-		jPanel5.add(jcb_message, "span 2, wrap");
-		jPanel5.add(jcb_half_del);
-		jPanel5.add(jcb_half_auto, "wrap");
-		add(jPanel5, "grow, wrap");
+		generalPanel.setLayout(new MigLayout("","[][]30px[][]",""));
+		generalPanel.add(label_langue);
+		generalPanel.add(langue, "gapleft 10");
+		generalPanel.add(label_devise);
+		generalPanel.add(devise, "w 100:100:100");
+		add(generalPanel, "grow, wrap");
+		excelPanel.setLayout(new MigLayout("","[100:100:100][][grow]",""));
+		excelPanel.add(jcb_excel);
+		excelPanel.add(label_fic_bak);
+		excelPanel.add(file_bak, "grow, split 2");
+		excelPanel.add(parcourir_excel);
+		add(excelPanel, "grow, wrap");
+		dateControlPanel.setLayout(new MigLayout("","[100:100:100][][][][][]",""));
+		dateControlPanel.add(jcb_annee_control);
+		dateControlPanel.add(label_annee);
+		dateControlPanel.add(annee);
+		dateControlPanel.add(label_annee2);
+		dateControlPanel.add(siecle);
+		dateControlPanel.add(label_siecle);
+		add(dateControlPanel, "grow, wrap");
+		otherPanel.setLayout(new MigLayout("","[][]",""));
+		otherPanel.add(buttonResetMessageDialog, "span 2, wrap");
+		otherPanel.add(jcb_half_del);
+		otherPanel.add(jcb_half_auto, "wrap");
+		otherPanel.add(m_jcb_debug,"wrap");
+		add(otherPanel, "grow, wrap");
 
-		add(m_jcb_debug,"split 2");
-		add(rebuild, "gapleft 20px, wrap");
-		add(valider, "split 2, gaptop 15px, center");
-		add(annuler_btn);
+		add(valider, "gaptop 15px, center");
 
-		try {
-			int val = Program.getCaveConfigInt("FIC_EXCEL", 0);
-			file_bak.setVisible(val == 1);
-			label_fic_bak.setVisible(val == 1);
-			jcb_excel.setSelected(val == 1);
-			parcourir_excel.setVisible(val == 1);
-		}
-		catch (NullPointerException npe) {
-			file_bak.setVisible(false);
-			label_fic_bak.setVisible(false);
-			jcb_excel.setSelected(false);
-			parcourir_excel.setVisible(false);
-			Program.putCaveConfigString("FIC_EXCEL", "0");
-		}
-
+		
+		int val = Program.getCaveConfigInt("FIC_EXCEL", 0);
+		file_bak.setEnabled(val == 1);
+		label_fic_bak.setEnabled(val == 1);
+		jcb_excel.setSelected(val == 1);
+		parcourir_excel.setEnabled(val == 1);
+	
 		if (Program.getCaveConfigInt("ANNEE_CTRL", 0) == 1) {
 			jcb_annee_control.setSelected(true);
 		}
-
-		this.setSize(LARGEUR, HAUTEUR);
-		setLocationRelativeTo(null);
+		label_annee.setEnabled(jcb_annee_control.isSelected());
+		label_annee2.setEnabled(jcb_annee_control.isSelected());
+		label_siecle.setEnabled(jcb_annee_control.isSelected());
+		annee.setEnabled(jcb_annee_control.isSelected());
+		siecle.setEnabled(jcb_annee_control.isSelected());
 	}
 
 	private void setLabels() {
@@ -306,10 +233,9 @@ public class Parametres extends JDialog {
 		label_annee.setText(Program.getLabel("Infos292"));
 		label_annee2.setText(Program.getLabel("Infos293"));
 		label_siecle.setText(Program.getLabel("Infos295"));
-		label_LF.setText(Program.getLabel("Infos322"));
 
-		jcb_excel.setText(Program.getLabel("Infos234"));
-		jcb_message.setText(Program.getLabel("Infos160"));
+		jcb_excel.setText(Program.getLabel("Infos169"));
+		buttonResetMessageDialog.setText(Program.getLabel("Infos160"));
 		jcb_half_del.setText(Program.getLabel("Infos311"));
 		jcb_half_auto.setText(Program.getLabel("Infos147"));
 		couper.setText(Program.getLabel("Infos241"));
@@ -322,7 +248,6 @@ public class Parametres extends JDialog {
 		edition.setText(Program.getLabel("Infos245"));
 		jcb_annee_control.setText(Program.getLabel("Infos169"));
 		m_jcb_debug.setText(Program.getLabel("Infos337"));
-		annuler_btn.setText(Program.getLabel("Infos055"));
 		valider.setText(Program.getLabel("Main.OK"));
 	}
 
@@ -336,6 +261,7 @@ public class Parametres extends JDialog {
 			modifyLanguage();
 			boolean result = true;
 			if (jcb_excel.isSelected()) {
+				Program.putCaveConfigString("FIC_EXCEL", "1");
 				String fic = file_bak.getText().trim();
 				if (fic.toLowerCase().endsWith(".xls") || fic.toLowerCase().endsWith(".ods")) {
 					Program.putCaveConfigString("FILE_EXCEL", fic);
@@ -349,6 +275,8 @@ public class Parametres extends JDialog {
 					result = false;
 				}
 			}
+			else
+				Program.putCaveConfigString("FIC_EXCEL", "0");
 
 			if (result) {
 				Program.putCaveConfigString("DEVISE", devise.getText().trim());
@@ -367,7 +295,6 @@ public class Parametres extends JDialog {
 
 				Program.write_XSL();
 				Program.saveGlobalProperties();
-				this.dispose();
 			}
 		}
 		catch (Exception exc) {
@@ -397,10 +324,6 @@ public class Parametres extends JDialog {
 		if (e.getKeyCode() == KeyEvent.VK_V) {
 			coller_actionPerformed(null);
 		}
-		if (e.getKeyCode() == KeyEvent.VK_Q) {
-			annuler_actionPerformed(null);
-		}
-
 	}
 
 
@@ -444,16 +367,14 @@ public class Parametres extends JDialog {
 	 */
 	void jcb_excel_actionPerformed(ActionEvent e) {
 		if (jcb_excel.isSelected()) {
-			Program.putCaveConfigString("FIC_EXCEL", "1");
-			file_bak.setVisible(true);
-			label_fic_bak.setVisible(true);
-			parcourir_excel.setVisible(true);
+			file_bak.setEnabled(true);
+			label_fic_bak.setEnabled(true);
+			parcourir_excel.setEnabled(true);
 		}
 		else {
-			Program.putCaveConfigString("FIC_EXCEL", "0");
-			file_bak.setVisible(false);
-			label_fic_bak.setVisible(false);
-			parcourir_excel.setVisible(false);
+			file_bak.setEnabled(false);
+			label_fic_bak.setEnabled(false);
+			parcourir_excel.setEnabled(false);
 		}
 	}
 
@@ -464,6 +385,9 @@ public class Parametres extends JDialog {
 	void modifyLanguage() {
 		try {
 			String thelangue = Program.getLanguage("CodeLang" + (langue.getSelectedIndex() + 1));
+			String currentLanguage = Program.getGlobalConfigString("LANGUAGE", "F");
+			if(thelangue.equals(currentLanguage))
+				return;
 			Program.putGlobalConfigString("LANGUAGE", thelangue);
 			boolean ok = Program.setLanguage(thelangue);
 			if (ok) {
@@ -493,25 +417,11 @@ public class Parametres extends JDialog {
 	 * @param e ActionEvent
 	 */
 	void jcb_message_actionPerformed(ActionEvent e) {
-
-		Program.putCaveConfigString("DONT_SHOW_*&?_MESS", "0");
 		Program.putCaveConfigString("DONT_SHOW_INFO", "0");
 		Program.putCaveConfigString("DONT_SHOW_TAB_MESS", "0");
 		Program.putCaveConfigString("DONT_SHOW_CREATE_MESS", "0");
-		Program.putCaveConfigString("DONT_SHOW_VIABADPLACE_MESS", "0");
-		Program.putCaveConfigString("DONT_SHOW_NUMERIC_MESS", "0");
-		jcb_message.setEnabled(false);
+		buttonResetMessageDialog.setEnabled(false);
 	}
-
-	/**
-	 * quitter_actionPerformed: Fonction pour quitter.
-	 *
-	 * @param e ActionEvent
-	 */
-	void annuler_actionPerformed(ActionEvent e) {
-		this.dispose();
-	}
-
 
 	/**
 	 * couper_actionPerformed: Couper
@@ -589,31 +499,6 @@ public class Parametres extends JDialog {
 		}
 		else {
 			Program.putCaveConfigString("TYPE_AUTO", "OFF");
-		}
-	}
-
-	/**
-	 * lF_actionPerformed: Choix de la langue.
-	 *
-	 * @param A ActionEvent
-	 */
-	void lF_actionPerformed(ActionEvent A) {
-		UIManager.LookAndFeelInfo[] info = UIManager.getInstalledLookAndFeels();
-		String className = info[lF.getSelectedIndex()].getClassName();
-		try {
-			UIManager.setLookAndFeel(className);
-			for(Window window: Window.getWindows()) {
-                SwingUtilities.updateComponentTreeUI(window);
-            }
-			Program.putCaveConfigString("LOOK&FEEL", className);
-		}
-		catch (InstantiationException e) {
-		}
-		catch (ClassNotFoundException e) {
-		}
-		catch (UnsupportedLookAndFeelException e) {
-		}
-		catch (IllegalAccessException e) {
 		}
 	}
 
@@ -705,17 +590,15 @@ public class Parametres extends JDialog {
 		}
 	}
 
-	class RebuildStatsAction extends AbstractAction {
+	@Override
+	public boolean tabWillClose(TabEvent event) {
+		// TODO Auto-generated method stub
+		return true;
+	}
 
-		private static final long serialVersionUID = -5234123562180384003L;
-		public RebuildStatsAction(String text, ImageIcon icon,
-				String desc, Integer mnemonic) {
-			super(text, icon);
-			putValue(SHORT_DESCRIPTION, desc);
-			putValue(MNEMONIC_KEY, mnemonic);
-		}
-		public void actionPerformed(ActionEvent e) {
-			Program.rebuildStats();
-		}
+	@Override
+	public void tabClosed() {
+		Start.updateMainPanel();
+		Program.parametres = null;
 	}
 }

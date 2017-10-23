@@ -16,8 +16,8 @@ import mycellar.countries.Country;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 06/09/17
+ * @version 1.4
+ * @since 23/10/17
  */
 
 public final class CountryVignobles {
@@ -37,6 +37,10 @@ public final class CountryVignobles {
 		instance.map.clear();
 		instance.map.put(Countries.find("FRA"), Vignobles.loadFrance());
 		instance.map.put(Countries.find("ITA"), Vignobles.loadItalie());
+	}
+	
+	public static void close() {
+		instance.map.clear();
 	}
 	
 	public static void load() {

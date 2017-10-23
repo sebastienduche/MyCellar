@@ -31,8 +31,8 @@ import mycellar.countries.Country;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 06/09/17
+ * @version 1.1
+ * @since 23/10/17
  */
 
 @XmlRootElement(name = "vignobles")
@@ -67,7 +67,7 @@ public class Vignobles
 	
 	public static Vignobles loadItalie() {
 		if(!Program.hasWorkDir()) {
-			return load("resources/vignobles.xml");
+			return load("resources/italie.xml");
 		}
 		File f = new File(Program.getWorkDir(true), Countries.find("ITA").getId() + VIGNOBLE);
 		if(f.exists()) {

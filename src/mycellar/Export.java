@@ -49,8 +49,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.5
- * @since 03/08/17
+ * @version 6.6
+ * @since 23/10/17
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -561,8 +561,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 							file.setText(path);
 							if(bottles == null)
 								bottles = Program.getStorage().getAllList();
-							int resul = RangementUtils.write_XLS(file.getText().trim(), bottles, false);
-							if (resul != -2) {
+							if (!RangementUtils.write_XLS(file.getText().trim(), bottles, false)) {
 								end.setText(Program.getLabel("Infos154")); //"Export terminé."
 								openit.setEnabled(true);
 							}

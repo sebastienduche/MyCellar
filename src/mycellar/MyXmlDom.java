@@ -18,10 +18,7 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -30,8 +27,8 @@ import java.util.Vector;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 13/07/17
- * @version 1.8
+ * @since 23/10/17
+ * @version 1.9
  */
 
 public class MyXmlDom {
@@ -208,87 +205,6 @@ public class MyXmlDom {
 			oCaveTmp.add(_oCave);
 
 		return writeMyCellarXml(oCaveTmp,"");
-	}
-
-	public static LinkedHashMap<Integer,Integer> readYears() {
-		LinkedHashMap<Integer,Integer> map = new LinkedHashMap<Integer,Integer>();
-
-		Debug("readYears: Reading file");
-		String filename = Program.getXMLYearsFileName();
-	
-		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(new File(filename));
-			doc.getDocumentElement().normalize();
-
-			NodeList years = doc.getElementsByTagName("year");
-			// Récupération des noeuds des rangements
-			for (int i = 0; i < years.getLength(); i++) {
-				Node nYear = years.item(i);
-				if (nYear.getNodeType() == Node.ELEMENT_NODE) {
-					Element oYear = (Element)nYear;
-					Integer year = new Integer(oYear.getAttribute("id"));
-					Integer number = new Integer(oYear.getAttribute("value"));
-					map.put(year, number);
-				}
-			}
-		} catch (IOException e) {
-			Debug("IOException");
-			Program.showException(e, false);
-		} catch (ParserConfigurationException e) {
-			Debug("ParserConfigurationException");
-			Program.showException(e, false);
-		} catch (SAXException e) {
-			Debug("SAXException");
-			Program.showException(e, false);
-		}
-
-		return map;
-	}
-
-	public static boolean writeYears(LinkedHashMap<Integer,Integer> map){
-
-		Debug("writeYears: Writing file");
-		String filename = Program.getXMLYearsFileName();
-		try {
-			DocumentBuilderFactory dbFactory =
-					DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = 
-					dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.newDocument();
-			// root element
-			Element root = doc.createElement("years");
-			doc.appendChild(root);
-
-			Set<Integer> set = map.keySet();
-			Iterator<Integer> it = set.iterator();
-			while(it.hasNext())
-			{
-				Integer id = it.next();
-				Integer value = map.get(id);
-				Element year = doc.createElement("year");
-				year.setAttribute("id", id.toString());
-				year.setAttribute("value", value.toString());
-				root.appendChild(year);
-			}
-
-			TransformerFactory transformerFactory =
-					TransformerFactory.newInstance();
-			Transformer transformer =
-					transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(doc);
-			StreamResult result =
-					new StreamResult(new File(filename));
-			transformer.transform(source, result);
-		} catch (ParserConfigurationException e) {
-			Debug("ParserConfigurationException");
-			Program.showException(e, false);
-		} catch (TransformerException e) {
-			Debug("TransformerException");
-			Program.showException(e, false);
-		}
-		return true;
 	}
 
 	/**

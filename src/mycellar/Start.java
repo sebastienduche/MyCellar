@@ -45,8 +45,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 22.7
- * @since 22/10/17
+ * @version 22.8
+ * @since 23/10/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -161,6 +161,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		while (splashscreen.isRunning()) {
 			;
 		}
+		
 		// initialisation
 		Program.init();
 
@@ -257,7 +258,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	private void startup() throws Exception {
 
-		Debug("===================================================");
 		Debug("Starting MyCellar version: "+MyCellarVersion.version);
 		Thread.currentThread().setUncaughtExceptionHandler(this);
 		prefs = Preferences.userNodeForPackage(getClass());
@@ -411,6 +411,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		prefs.putInt("Start.height", getSize().height);
 		Start.this.setCursor(Cursor.getDefaultCursor());
 		this.dispose();
+
 		Program.deleteTempFiles();
 		Program.cleanDebugFiles();
 		Debug("MyCellar End");
@@ -1372,9 +1373,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
+				Debug("newFileAction: Creating a new file...");
     			if (Program.newFile()) {
-    				Debug("newFileAction: Restart with new file...");
     				postOpenFile();
+    				Debug("newFileAction: Creating a new file OK");
     			}
 			}catch(Exception e) {
 				Program.showException(e);

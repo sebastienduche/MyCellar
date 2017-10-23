@@ -1,13 +1,9 @@
 package mycellar.countries;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
- 
-
-
-
-
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -24,8 +20,8 @@ import mycellar.Program;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 21/01/17
+ * @version 0.5
+ * @since 23/10/17
  */
 
 @XmlRootElement(name = "countries")
@@ -52,6 +48,11 @@ public class Countries
 	public static void init() {
 		instance = Countries.load();
 		Collections.sort(instance.getCountries());
+	}
+	
+	public static void close() {
+		instance = new Countries();
+		instance.setCountries(new ArrayList<Country>());
 	}
 	
 	private static Countries load() {

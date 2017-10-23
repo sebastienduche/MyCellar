@@ -40,8 +40,8 @@ import jxl.write.WriteException;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 03/08/17
+ * @version 0.6
+ * @since 23/10/17
  */
 public class RangementUtils {
 
@@ -299,11 +299,15 @@ public class RangementUtils {
 	 * @param all1 LinkedList<Bouteille>: Tableau de bouteilles à écrire
 	 * @param isExit boolean: True si appel pour la création automatique d'une sauvegarde Excel
 	 *
-	 * @return int
+	 * @return boolean
 	 */
-	public static int write_XLS(String file, LinkedList<Bouteille> all, boolean isExit) {
+	public static boolean write_XLS(String file, LinkedList<Bouteille> all, boolean isExit) {
 
 		Debug( "write_XLS: writing file: "+file );
+		if(file.isEmpty()) {
+			Debug( "write_XLS: ERROR: File not defined!" );
+			return false;
+		}
 		File f;
 		try {
 			f = new File(file);
@@ -313,15 +317,15 @@ public class RangementUtils {
 				if(!f.exists()) {
 					Debug( "write_XLS: ERROR: directory "+sDir+" don't exist." );
 					Debug( "write_XLS: ERROR: Unable to write XLS file" );
-					return -1;
+					return false;
 				}
 			}
 		} catch(Exception e) {
 			Program.showException(e, false);
 			Debug( "write_XLS: ERROR: with file " + file );
-			return -1;
+			return false;
 		}
-		int resul = 0;
+		boolean resul = true;
 		int num_ligne = 0;
 		String title = "";
 
@@ -389,7 +393,8 @@ public class RangementUtils {
 					sheet.addCell(titre0);
 				}
 				catch (WriteException ex3) {
-					resul = -2;
+					Program.showException(ex3, false);
+					resul = false;
 				}
 			}
 
@@ -428,7 +433,8 @@ public class RangementUtils {
 				}
 			}
 			catch (WriteException ex3) {
-				resul = -2;
+				Program.showException(ex3, false);
+				resul = false;
 			}
 
 			i = 0;
@@ -501,7 +507,8 @@ public class RangementUtils {
 					}
 				}
 				catch (WriteException ex1) {
-					resul = -2;
+					Program.showException(ex1, false);
+					resul = false;
 				}
 				i++;
 			}
@@ -511,11 +518,13 @@ public class RangementUtils {
 				workbook.close();
 			}
 			catch (WriteException ex2) {
-				resul = -2;
+				Program.showException(ex2, false);
+				resul = false;
 			}
 		}
 		catch (IOException ex) {
-			resul = -2;
+			Program.showException(ex, false);
+			resul = false;
 		}
 		return resul;
 	}
@@ -526,11 +535,11 @@ public class RangementUtils {
 	 * @param file String: Fichier à écrire.
 	 * @param _oPlace LinkedList: liste de rangements à écrire
 	 *
-	 * @return int
+	 * @return boolean
 	 */
-	public static int write_XLSTab(String file, LinkedList<Rangement> _oPlace) {
+	public static boolean write_XLSTab(String file, LinkedList<Rangement> _oPlace) {
 
-		int resul = 0;
+		boolean resul = true;
 		int i = 0;
 		String title = "";
 		int nNbCol = 0;
@@ -539,32 +548,24 @@ public class RangementUtils {
 			title = Program.getCaveConfigString("XLS_TAB_TITLE","");
 			WritableWorkbook workbook = Workbook.createWorkbook(new File(file));
 			String sheet_title = title;
-			if (title.length() == 0) {
+			if (title.isEmpty()) {
 				sheet_title = Program.getCaveConfigString("XML_TYPE","");
 			}
 			WritableSheet sheet = workbook.createSheet(sheet_title, 0);
 
-			int size = 0;
 			// Titre
-			size = Program.getCaveConfigInt("TITLE_TAB_SIZE_XLS", 10);
-			WritableFont cellfont = new WritableFont(WritableFont.ARIAL, size, WritableFont.NO_BOLD, false);
-			String bold = "";
-			boolean isBold = false;
-			bold = Program.getCaveConfigString("BOLD_TAB_XLS", "");
-			if (bold.equals("bold")) {
-				isBold = true;
-			}
-			if (isBold) {
-				cellfont = new WritableFont(WritableFont.ARIAL, size, WritableFont.BOLD, false);
-			}
-			WritableCellFormat cellformat = new WritableCellFormat(cellfont);
-
-			Label titre0 = new Label(0, 0, title, cellformat); //Ajout du titre
+			int size = Program.getCaveConfigInt("TITLE_TAB_SIZE_XLS", 10);
+			boolean isBold = "bold".equals(Program.getCaveConfigString("BOLD_TAB_XLS", ""));
+			WritableFont cellfont = new WritableFont(WritableFont.ARIAL, size, isBold ? WritableFont.BOLD : WritableFont.NO_BOLD, false);
+			
 			try {
+				WritableCellFormat cellformat = new WritableCellFormat(cellfont);
+				Label titre0 = new Label(0, 0, title, cellformat); //Ajout du titre
 				sheet.addCell(titre0);
 			}
 			catch (WriteException ex3) {
-				resul = -2;
+				Program.showException(ex3, false);
+				resul = false;
 			}
 
 			//propriétés du texte
@@ -581,6 +582,8 @@ public class RangementUtils {
 				boolean not_null = true;
 
 				int nLine = 3;
+				WritableFont titleFont = new WritableFont( WritableFont.ARIAL, 12, WritableFont.BOLD, false );
+				WritableCellFormat cellTitle = new WritableCellFormat( titleFont );
 				for (i = 0; i < _oPlace.size(); i++) {
 					not_null = true;
 					Rangement place = (Rangement) _oPlace.get(i);
@@ -589,8 +592,6 @@ public class RangementUtils {
 					}
 					if (not_null) {
 						nLine += nNbLinePlace;
-						WritableFont titleFont = new WritableFont( WritableFont.ARIAL, 12, WritableFont.BOLD, false );
-						WritableCellFormat cellTitle = new WritableCellFormat( titleFont );
 						Label aTitle = new Label( 1, nLine, Program.convertStringFromHTMLString( place.getNom() ), cellTitle );
 						sheet.addCell( aTitle );
 						for (int j = 1; j <= place.getNbEmplacements(); j++) {
@@ -652,11 +653,11 @@ public class RangementUtils {
 				}
 			}
 			catch (WriteException ex3) {
-				resul = -2;
+				Program.showException(ex3, false);
+				resul = false;
 			}
 			int nWidth = Program.getCaveConfigInt("COLUMN_TAB_WIDTH_XLS", 10);
-			for (i = 1; i <= nNbCol; i++ )
-			{
+			for (i = 1; i <= nNbCol; i++) {
 				sheet.setColumnView( i, nWidth );
 			}
 
@@ -665,11 +666,13 @@ public class RangementUtils {
 				workbook.close();
 			}
 			catch (WriteException ex2) {
-				resul = -2;
+				Program.showException(ex2, false);
+				resul = false;
 			}
 		}
 		catch (IOException ex) {
-			resul = -2;
+			Program.showException(ex, false);
+			resul = false;
 		}
 		return resul;
 	}

@@ -13,7 +13,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import mycellar.actions.OpenShowErrorsAction;
@@ -73,8 +72,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 16.2
- * @since 22/10/17
+ * @version 16.3
+ * @since 23/10/17
  */
 
 public class Program {
@@ -126,7 +125,6 @@ public class Program {
 	protected static String m_sXMLPlacesFile = "MyCellar.xml";
 	protected static String m_sXMLTypesFile = "Types.xml";
 	private static boolean isXMLTypesFileToDelete = false;
-	protected static String m_sXMLYearsFile = "Years.xml";
 	protected static String m_sXMLBottlesFile = "Bouteilles.xml";
 	public static String m_sVersion = "2.3";
 	protected static boolean m_bWorkDirCalculated = false;
@@ -156,9 +154,10 @@ public class Program {
 		try {
 			Program.archive = "";
 			Program.bDebug = true;
+			Debug("===================================================");
 			MacOS = System.getProperty("os.name").startsWith("Mac");
 			Server.getInstance().getAvailableVersion();
-			// Initailisation du répertoire de travail
+			// Initialisation du répertoire de travail
 			getWorkDir(false);
 			Debug("Program: Temp Dir: " + getWorkDir(false));
 			Debug("Program: Initializing Configuration files...");
@@ -167,7 +166,9 @@ public class Program {
 			if(!fileIni.exists()) {
 				fileIni.createNewFile();
 			}
-			propGlobal.load(new FileInputStream(fileIni));
+			FileInputStream inputStream = new FileInputStream(fileIni); 
+			propGlobal.load(inputStream);
+			inputStream.close();
 			LanguageFileLoader.loadLanguageFiles( "U" );
 
 			//Initialisation de la Map contenant config
@@ -235,7 +236,9 @@ public class Program {
 		if( !f.exists() )
 			f.createNewFile();
 		configCave = new MyLinkedHashMap();
-		propCave.load(new FileInputStream(inputPropCave));
+		FileInputStream inputStream = new FileInputStream(inputPropCave);
+		propCave.load(inputStream);
+		inputStream.close();
 
 		Enumeration<Object> keys = propCave.keys();
 		while (keys.hasMoreElements()) {
@@ -244,7 +247,7 @@ public class Program {
 		}
 
 		f = new File(m_sWorkDir + "/search.ini");
-		if( f.exists() )
+		if(f.exists())
 			FileUtils.deleteQuietly(f);
 
 		half = MyXmlDom.readTypesXml();
@@ -290,6 +293,9 @@ public class Program {
 			putCaveConfigString("VERSION", m_sVersion);
 		}
 		removeGlobalConfigString("SPLASHSCREEN");*/
+		File years = new File(getWorkDir(true) + "Years.xml");
+		if(years.exists())
+			FileUtils.deleteQuietly(years);
 	}
 
 
@@ -299,7 +305,7 @@ public class Program {
 	 * @return boolean
 	 */
 	public static boolean setLanguage(String lang) {
-		Program.Debug("set Language : "+lang);
+		Debug("Program: Set Language : "+lang);
 		tabbedPane.removeAll();
 		addWine = null;
 		createPlace = null;
@@ -328,10 +334,8 @@ public class Program {
 		if (!propGlobal.containsKey("LANGUAGE")) {
 			propGlobal.setProperty("LANGUAGE", "F");
 		}
-		else {
-			if (propGlobal.get("LANGUAGE").equals("")) {
-				propGlobal.setProperty("LANGUAGE", "F");
-			}
+		else if (propGlobal.get("LANGUAGE").equals("")) {
+			propGlobal.setProperty("LANGUAGE", "F");
 		}
 	}
 
@@ -374,12 +378,13 @@ public class Program {
 	}
 
 	public static void sendMail(String error, File filename) {
-		InputStream stream = Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		InputStreamReader stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
+		BufferedReader reader = new BufferedReader(stream);
 
 		try {
 			String line = reader.readLine();
 			reader.close();
+			stream.close();
 			String decoded = new String(Base64.decodeBase64(line.getBytes()));
 			final String[] values = decoded.split("/");
 
@@ -522,7 +527,7 @@ public class Program {
 		Debug("Program: Writing XSL...");
 		String tmp;
 		File f;
-		FileWriter ficout;
+		FileWriter ficout = null;
 
 		try {
 			f = new File("resources/vin.xsl");
@@ -591,9 +596,14 @@ public class Program {
 			tmp = new String("</tr>\n</xsl:for-each>\n</table>\n</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>");
 			ficout.write(tmp);
 			ficout.flush();
-			ficout.close();
 		}
 		catch (IOException ioe) {}
+		finally {
+			try {
+				if(ficout != null)
+					ficout.close();
+			} catch (IOException e) {}
+		}
 	}
 
 	public static String convertToHTMLString(String s) {
@@ -867,9 +877,12 @@ public class Program {
 				dest.flush();
 				// fermeture fichier
 				dest.close();
+				fos.close();
 			}
 			// fermeture archive
 			zis.close();
+			buffi.close();
+			fis.close();
 		}
 		catch (Exception e) {e.printStackTrace();
 		return false;
@@ -1067,18 +1080,15 @@ public class Program {
 
 	/**
 	 * openFile: Choix d'un fichier à ouvrir.
-	 *
-	 * @param e ActionEvent
 	 */
 	static boolean newFile() {
-		Debug("newFile: Start creating new file");
 		return openaFile(null);
 	}
 
 	/**
 	 * openaFile: Ouvre un fichier
 	 *
-	 * @param e ActionEvent
+	 * @param f File
 	 */
 	public static boolean openaFile(File f) {
 		if(f != null)
@@ -1096,6 +1106,9 @@ public class Program {
 
 		// Sauvegarde avant de charger le nouveau fichier
 		closeFile();
+		
+		CountryVignobles.init();
+		Countries.init();
 
 		if(f == null) {
 			setFileSavable(false);
@@ -1217,7 +1230,6 @@ public class Program {
 		saveGlobalProperties();
 		modified = false;
 		listCaveModified = false;
-		dirToDelete.add(new File(m_sWorkDir));
 		return true;
 	}
 
@@ -1232,13 +1244,21 @@ public class Program {
 			key = val[y].toString();
 			propGlobal.put(key, configGlobal.getString(key));
 		}
+		FileOutputStream outputStream = null;
 		try {
-			propGlobal.store(new FileOutputStream(inputPropGlobal), null);
+			outputStream = new FileOutputStream(inputPropGlobal);
+			propGlobal.store(outputStream, null);
 		} catch (FileNotFoundException e) {
 			showException(e);
 		} catch (IOException e) {
 			showException(e);
+		} finally {
+			if(outputStream != null)
+				try {
+					outputStream.close();
+				} catch (IOException e) {}
 		}
+		Debug("Program: Saving Global Properties OK");
 	}
 
 
@@ -1248,10 +1268,10 @@ public class Program {
 	 */
 	static boolean closeFile() {
 
-		Debug("Program: closeFile: Start closing file");
+		Debug("Program: closeFile: Closing file...");
 		try {
 			boolean bSave = false;
-			if(!Program.archive.isEmpty() && isModified()) {
+			if(!archive.isEmpty() && isModified()) {
 				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error199"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					bSave = true;
 					if(!isFileSavable()) {
@@ -1269,17 +1289,17 @@ public class Program {
 									fic = fic.concat(".sinfo");
 								}
 
-								Program.archive = fic;
+								archive = fic;
 							}
 						}
 						catch (Exception e3) {
-							Program.showException(e3);
+							showException(e3);
 						}
 					}
 				}
 
 				putCaveConfigString("ANNEE_AUTO", "0");
-				putCaveConfigString("FILE_SRC", Program.archive);
+				putCaveConfigString("FILE_SRC", archive);
 			}
 
 			File f = new File(getPreviewXMLFileName());
@@ -1297,9 +1317,9 @@ public class Program {
 					return false;
 
 				if(isListCaveModified())
-					MyXmlDom.writeMyCellarXml(Program.getCave(),"");
+					MyXmlDom.writeMyCellarXml(getCave(),"");
 
-				if(!Program.configCave.containsKey("PRICE_SEPARATOR"))
+				if(!configCave.containsKey("PRICE_SEPARATOR"))
 				{
 					java.text.DecimalFormat df = new java.text.DecimalFormat();
 					char virgule = df.getDecimalFormatSymbols().getDecimalSeparator();
@@ -1309,38 +1329,42 @@ public class Program {
 
 				// Suppression d'ancien fichier
 				for(Rangement r : getCave()){
-					File fToDelete = new File(getWorkDir(true)+Program.convertToHTMLString(r.getNom()) + ".ser");
+					File fToDelete = new File(getWorkDir(true)+convertToHTMLString(r.getNom()) + ".ser");
 					if(fToDelete.exists())
 						fToDelete.delete();
 				}
 
 				saveProperties();
 
-				if (!Program.getCave().isEmpty()) {						
+				if (!getCave().isEmpty()) {						
 					writeOtherObject();
 					CountryVignobles.save();
 					zipDir(Program.archive);
 				}
 			}
-			// Sauvegarde des propriétés globales
-			saveGlobalProperties();
-
-			if (getCaveConfigInt("FIC_EXCEL", 0) == 1) {
-				//Ecriture Excel
-				RangementUtils.write_XLS(getCaveConfigString("FILE_EXCEL",""), getStorage().getAllList(), true);
+			
+			if(!archive.isEmpty()) {
+				// Sauvegarde des propriétés globales
+				saveGlobalProperties();
+	
+				if (getCaveConfigInt("FIC_EXCEL", 0) == 1) {
+					//Ecriture Excel
+					RangementUtils.write_XLS(getCaveConfigString("FILE_EXCEL",""), getStorage().getAllList(), true);
+				}
 			}
-
-			dirToDelete.add(new File(m_sWorkDir));
-			m_bWorkDirCalculated = false;
 		}
 		catch (Exception ex) {
 			showException(ex);
 			return false;
 		}
 		tabbedPane.removeAll();
-		getStorage().close();
-		CountryVignobles.init();
-		Countries.init();
+		if(!archive.isEmpty()){
+			getStorage().close();
+			CountryVignobles.close();
+			Countries.close();
+			Search.clearResults();
+		}
+		m_bWorkDirCalculated = false;
 		archive = "";
 		addWine = null;
 		createPlace = null;
@@ -1356,7 +1380,6 @@ public class Program {
 		setFileSavable(false);
 		modified = false;
 		listCaveModified = false;
-		Search.clearResults();
 		if(getCave() != null)
 			getCave().clear();
 		Debug("Program: closeFile: Closing file Ended");
@@ -1370,7 +1393,6 @@ public class Program {
 				continue;
 			try{
 				Debug("Program: closeFile: Deleting work directory: "+f.getAbsolutePath());
-				FileUtils.cleanDirectory(f);
 				FileUtils.deleteDirectory(f);
 			}catch(Exception e){
 				Debug("Program: Error deleting "+f.getAbsolutePath());
@@ -1400,12 +1422,19 @@ public class Program {
 				key = val[y].toString();
 				propCave.put(key, configCave.getString(key));
 			}
+			FileOutputStream outputStream = null;
 			try {
-				propCave.store(new FileOutputStream(inputPropCave), null);
+				outputStream = new FileOutputStream(inputPropCave);
+				propCave.store(outputStream, null);
 			} catch (FileNotFoundException e) {
 				Program.showException(e);
 			} catch (IOException e) {
 				Program.showException(e);
+			} finally {
+				if(outputStream != null)
+					try {
+						outputStream.close();
+					} catch (IOException e) {}
 			}
 			inputPropCave = null;
 		}
@@ -1487,6 +1516,7 @@ public class Program {
 			f_obj.mkdir();
 
 		Debug("Program: work directory: "+m_sWorkDir);
+		dirToDelete.add(new File(m_sWorkDir));
 
 		if (_bWithEndSlash)
 			return m_sWorkDir + File.separator;
@@ -1648,11 +1678,6 @@ public class Program {
 		isXMLTypesFileToDelete = true;
 	}
 
-	public static String getXMLYearsFileName()
-	{
-		return getWorkDir(true) + m_sXMLYearsFile;
-	}
-
 	public static String getXMLBottlesFileName()
 	{
 		return getWorkDir(true) + m_sXMLBottlesFile;
@@ -1774,7 +1799,7 @@ public class Program {
 	public static int findTab(ImageIcon image) {
 		for(int i = 0; i<tabbedPane.getTabCount();i++){
 			try{
-				if(tabbedPane.getTabComponentAt(i) != null && tabbedPane.getIconAt(i) != null && tabbedPane.getIconAt(i).equals(MyCellarImage.WINE))
+				if(tabbedPane.getTabComponentAt(i) != null && tabbedPane.getIconAt(i) != null && tabbedPane.getIconAt(i).equals(image))
 					return i;
 			}catch(ArrayIndexOutOfBoundsException e){}
 		}

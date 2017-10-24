@@ -9,6 +9,7 @@
 package mycellar;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,8 +23,8 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 19/05/17
+ * @version 0.5
+ * @since 24/10/17
  */
 
 /**
@@ -51,7 +52,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "date",
     "type",
-    "bouteille"
+    "bouteille",
+    "time"
 })
 @XmlRootElement(name = "History")
 public class History {
@@ -59,6 +61,7 @@ public class History {
     @XmlElement(required = true)
     protected String date;
     protected int type;
+    protected Date time;
     @XmlElement(name = "Bouteille", required = true)
     protected Bouteille bouteille;
 	
@@ -76,6 +79,7 @@ public class History {
     this.bouteille = bouteille;
     this.type = type;
     Calendar oCal = Calendar.getInstance();
+    this.time = oCal.getTime();
     date = "";
     if (oCal.get(Calendar.DATE) < 10) {
       date = "0";
@@ -102,7 +106,7 @@ public class History {
      */
     public String getDate() {
         return date;
-    }
+    }    
 
     /**
      * Sets the value of the date property.
@@ -131,8 +135,20 @@ public class History {
     public void setType(int value) {
         this.type = value;
     }
+    
+    public boolean isDeleted() {
+    	return this.type == DEL;
+    }
 
-    /**
+    public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
+	}
+
+	/**
      * Gets the value of the bouteille property.
      * 
      * @return

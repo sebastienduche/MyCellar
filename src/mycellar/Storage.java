@@ -8,8 +8,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 22/10/17
+ * @version 1.3
+ * @since 24/10/17
  */
 
 public interface Storage {
@@ -23,11 +23,10 @@ public interface Storage {
 	public boolean addHistory(int nType, Bouteille oB);
 	public void removeHistory(History oB);
 	public boolean clearHistory(int _nValue);
-	public void clearHistory();
 	public boolean saveHistory();
 	public boolean loadHistory();
-	public HistoryList getHistory();
-	public void setHistory(HistoryList list);
+	public HistoryList getHistoryList();
+	public void setHistoryList(HistoryList list);
 	
 	public boolean deleteWine(Bouteille oB);
 	public boolean addWine(Bouteille oB);

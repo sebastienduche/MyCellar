@@ -10,6 +10,7 @@ import mycellar.AddVin;
 import mycellar.Bouteille;
 import mycellar.MyCellarImage;
 import mycellar.Program;
+import mycellar.Start;
 import mycellar.Utils;
 
 public class OpenAddVinAction extends AbstractAction {
@@ -42,6 +43,7 @@ public class OpenAddVinAction extends AbstractAction {
 			}
 	
 			Utils.addCloseButton(Program.tabbedPane, Program.addWine);
+			Start.updateMainPanel();
 		});
 	}
 }

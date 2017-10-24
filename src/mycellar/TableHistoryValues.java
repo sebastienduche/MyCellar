@@ -2,6 +2,7 @@ package mycellar;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,8 +15,8 @@ import javax.swing.table.AbstractTableModel;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 27/07/17
+ * @version 1.5
+ * @since 24/10/17
  */
 
 public class TableHistoryValues extends AbstractTableModel {
@@ -170,7 +171,20 @@ public class TableHistoryValues extends AbstractTableModel {
       case ACTION:
         History h = (History) displayList.get(row);
         Bouteille bottle = h.getBouteille();
-        Program.Morehistory = new ShowMoreHistory( bottle );
+        if(h.isDeleted())
+        	Program.Morehistory = new ShowMoreHistory( bottle );
+        else {
+			Rangement r = Program.getCave(bottle.getEmplacement());
+			if(r != null) {
+				if(!r.isCaisse()) {
+					bottle = r.getBouteille(bottle.getNumLieu()-1, bottle.getLigne()-1, bottle.getColonne()-1);
+					if(bottle != null)
+						Start.showBottle(bottle);
+				}
+				else
+					Program.Morehistory = new ShowMoreHistory( bottle );
+			}
+        }
       break;
       case SELECT:
     	  booleanTab[row] = (Boolean)value;
@@ -222,7 +236,15 @@ public class TableHistoryValues extends AbstractTableModel {
       }
       else
       {
-    	  Iterator<History> it = list.iterator();
+    	  Iterator<History> it = list.stream().sorted(new Comparator<History>() {
+
+			@Override
+			public int compare(History o1, History o2) {
+				if(o1.getTime() != null && o2.getTime() != null)
+					return o1.getTime().compareTo(o2.getTime());
+				return -1;
+			}
+		}).iterator();
     	  int n = 0;
     	  while(it.hasNext())
     	  {

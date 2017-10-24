@@ -20,8 +20,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 04/08/17
+ * @version 1.3
+ * @since 24/10/17
  */
 public class PanelInfos extends JPanel {
 
@@ -220,7 +220,7 @@ class PanelHistory extends JPanel {
 		SwingUtilities.invokeLater(() -> {
 			model.removeAll();
 			if(Program.getCave().size() > 0)
-				model.setHistory(Program.getStorage().getHistory().getHistory());
+				model.setHistory(Program.getHistory());
 		});
 	}
 	

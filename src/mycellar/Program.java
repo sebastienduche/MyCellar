@@ -42,6 +42,7 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.zip.Adler32;
@@ -72,8 +73,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 16.3
- * @since 23/10/17
+ * @version 16.4
+ * @since 24/10/17
  */
 
 public class Program {
@@ -653,12 +654,26 @@ public class Program {
 			loadMaxPrice();
 			getStorage().loadHistory();
 		}
+		Program.updateBottlesID();
 		if(m_oCave == null) {
 			m_oCave = new LinkedList<Rangement>();
 			m_oCave.add(defaultPlace);
 			return false;
 		}
 		return true;
+	}
+
+	private static void updateBottlesID() {
+		Debug("Program: updateBottlesID...");
+		List<History> historyList = getStorage().getHistoryList().getHistory();
+		for(Bouteille b : getStorage().getListBouteilles().getBouteille()) {
+			Optional<History> optional = historyList.stream().filter(history -> history.getBouteille().getId() == b.getId()).findFirst();
+			int id = b.updateID();
+			if(optional.isPresent()) {
+				optional.get().getBouteille().setId(id);
+			}
+		}
+		Debug("Program: updateBottlesID OK");
 	}
 
 	/**
@@ -2012,5 +2027,13 @@ public class Program {
 			showException(e, true);
 		}
 		return "";
+	}
+	
+	public static HistoryList getHistoryList() {
+		return getStorage().getHistoryList();
+	}
+	
+	public static List<History> getHistory() {
+		return getStorage().getHistoryList().getHistory();
 	}
 }

@@ -29,8 +29,8 @@ import javax.xml.transform.stream.StreamResult;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 19/05/17
+ * @version 0.3
+ * @since 24/10/17
  */
 
 /**
@@ -113,7 +113,7 @@ public class HistoryList {
             Unmarshaller u = jc.createUnmarshaller();
             HistoryList lb = 
                 (HistoryList)u.unmarshal(new FileInputStream(f));
-            Program.getStorage().setHistory(lb);
+            Program.getStorage().setHistoryList(lb);
         } catch( Exception e ) {
             Program.showException(e);
             return false;
@@ -131,7 +131,7 @@ public class HistoryList {
             Unmarshaller u = jc.createUnmarshaller();
             HistoryList lb = 
                 (HistoryList)u.unmarshal(new FileInputStream(f));
-            Program.getStorage().setHistory(lb);
+            Program.getStorage().setHistoryList(lb);
         } catch( Exception e ) {
             Program.showException(e);
             return false;
@@ -141,11 +141,11 @@ public class HistoryList {
 	}
 	
 	public static boolean writeXML() {
-		return writeXML(Program.getStorage().getHistory(), new File(Program.getXMLBottlesFileName()));
+		return writeXML(Program.getHistoryList(), new File(Program.getXMLBottlesFileName()));
 	}
 	
 	public static boolean writeXML(File f) {
-		return writeXML(Program.getStorage().getHistory(), f);
+		return writeXML(Program.getHistoryList(), f);
 	}
 	
 	public static boolean writeXML(HistoryList liste, File f) {

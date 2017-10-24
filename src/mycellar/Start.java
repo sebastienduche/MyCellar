@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -25,7 +24,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -45,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 22.8
- * @since 23/10/17
+ * @version 22.9
+ * @since 24/10/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -311,14 +309,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		// Contruction de la Frame
 		Debug("Showing Frame");
 		afficheFrame();
-
-		try {
-			UIManager.setLookAndFeel(Program.getCaveConfigString("LOOK&FEEL", UIManager.getCrossPlatformLookAndFeelClassName()));
-            for(Window window: Window.getWindows()) {
-                SwingUtilities.updateComponentTreeUI(window);
-            }
-		} catch (Exception exc) {
-		}
 
 		if (Program.archive.isEmpty()) {
 			Debug("ERROR: Unable to Load Empty File: Use Load command");
@@ -1266,6 +1256,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		Program.tabbedPane.addTab(bottle.getNom(), MyCellarImage.WINE, manage);
 		Program.tabbedPane.setSelectedIndex(Program.tabbedPane.getTabCount() - 1);
 		Utils.addCloseButton(Program.tabbedPane, manage);
+		updateMainPanel();
 	}
 
 	public static void removeBottleTab(Bouteille bottle) {

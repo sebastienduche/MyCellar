@@ -6,7 +6,6 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -27,39 +26,26 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 2.9
- * @since 04/08/17
+ * @version 3.0
+ * @since 24/10/17
  */
 
 public class ShowHistory extends JPanel implements ITabListener {
-	private MyCellarButton m_oSuppr = new MyCellarButton(new DeleteAction());
-	private MyCellarButton restoreButton = new MyCellarButton(new RestoreAction());
-	private MyCellarLabel m_oFilterLabel = new MyCellarLabel();
-	private MyCellarComboBox<String> m_oFilterCbx = new MyCellarComboBox<String>();
-	public JScrollPane m_oScroll = new JScrollPane();
-	public JTable m_oTable;
-	private TableHistoryValues tv;
-	private JMenuItem ClearHistory = new JMenuItem(Program.getLabel("Infos352"));
-	private JMenuItem ClearSomeHistory = new JMenuItem(Program.getLabel("Infos353"));
-	//private MyCellarCheckBox m_oSelectAll = new MyCellarCheckBox();
-	static final long serialVersionUID = 0601071;
+
+	private static final long serialVersionUID = 4778721795659106312L;
+	private static final MyCellarButton m_oSuppr = new MyCellarButton();
+	private static final MyCellarButton restoreButton = new MyCellarButton();
+	private static final MyCellarButton clearHistoryButton = new MyCellarButton();
+	private static final MyCellarLabel m_oFilterLabel = new MyCellarLabel();
+	private static final MyCellarComboBox<String> m_oFilterCbx = new MyCellarComboBox<String>();
+	private static TableHistoryValues tv;
 
 	public ShowHistory() {
 		Debug("Constructor");
-		try {
-			jbInit();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	void jbInit() throws Exception {
+		m_oSuppr.setAction(new DeleteAction());
+		restoreButton.setAction(new RestoreAction());
+		clearHistoryButton.setAction(new ClearHistoryAction());
 		m_oFilterLabel.setText(Program.getLabel("Infos350")); // Filtre
-		/*m_oSelectAll.setText(Program.getLabel("Infos126")); // "Tout sélectionner");
-		m_oSelectAll.setHorizontalAlignment(4);
-		m_oSelectAll.setHorizontalTextPosition(2);
-		m_oSelectAll.addActionListener((e) -> selectall_actionPerformed(e));*/
-
 		m_oFilterCbx.addItem(Program.getLabel("Infos351"));
 		m_oFilterCbx.addItem(Program.getLabel("Infos345"));
 		m_oFilterCbx.addItem(Program.getLabel("Infos346"));
@@ -68,9 +54,9 @@ public class ShowHistory extends JPanel implements ITabListener {
 
 		// Remplissage de la table
 		tv = new TableHistoryValues(true);
-		tv.setHistory(Program.getStorage().getHistory().getHistory());
+		tv.setHistory(Program.getHistory());
 
-		m_oTable = new JTable(tv);
+		JTable m_oTable = new JTable(tv);
 		TableColumnModel tcm = m_oTable.getColumnModel();
 		TableColumn tc1[] = new TableColumn[4];
 		for (int w = 0; w < 4; w++) {
@@ -105,20 +91,16 @@ public class ShowHistory extends JPanel implements ITabListener {
 		tc.setMinWidth(100);
 		tc.setMaxWidth(100);
 
-		m_oScroll = new JScrollPane(m_oTable);
-
-		ClearHistory.addActionListener((e) -> clearHistory_actionPerformed(e));
-		ClearSomeHistory.addActionListener((e) -> clearSomeHistory_actionPerformed(e));
+		JScrollPane m_oScroll = new JScrollPane(m_oTable);
 
 		setLayout(new MigLayout("", "grow", "[][grow][]"));
-		add(m_oFilterLabel, "split 4");
+		add(m_oFilterLabel, "split 5");
 		add(m_oFilterCbx);
+		add(clearHistoryButton, "gapleft 10px");
 		add(new MyCellarLabel(), "growx");
 		add(restoreButton, "align right, wrap");
 		add(m_oScroll, "grow, wrap");
 		add(m_oSuppr, "center");
-		Start.menuTools.add(ClearSomeHistory);
-		Start.menuTools.add(ClearHistory);
 	}
 
 	/**
@@ -142,87 +124,6 @@ public class ShowHistory extends JPanel implements ITabListener {
 		Program.Debug("ShowHistory: " + sText);
 	}
 
-	/**
-	 * clearHistory_actionPerformed: Vidage de l'historique
-	 * 
-	 * @param e
-	 *            ActionEvent
-	 */
-	void clearHistory_actionPerformed(ActionEvent e) {
-
-		Debug("Clearing all history...");
-		if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error182"),
-				Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-			Program.getStorage().clearHistory();
-			tv.removeAll();
-			Debug("History cleared");
-		}
-	}
-
-	/**
-	 * clearSomeHistory_actionPerformed: Vidage d'une partie de l'historique
-	 * 
-	 * @param e
-	 *            ActionEvent
-	 */
-	void clearSomeHistory_actionPerformed(ActionEvent e) {
-
-		Debug("Clearing some history");
-		String titre = Program.getLabel("Infos358");
-		String message2 = Program.getLabel("Infos359");
-		String titre_properties[] = new String[4];
-		titre_properties[0] = Program.getLabel("Infos354");
-		titre_properties[1] = Program.getLabel("Infos356");
-		titre_properties[2] = Program.getLabel("Infos355");
-		titre_properties[3] = Program.getLabel("Infos357");
-		String default_value[] = new String[4];
-		String key_properties[] = new String[4];
-		key_properties[0] = "TEMP_PROP";
-		key_properties[1] = "TEMP_PROP";
-		key_properties[2] = "TEMP_PROP";
-		key_properties[3] = "TEMP_PROP";
-
-		default_value[0] = "true";
-		default_value[1] = "false";
-		default_value[2] = "false";
-		default_value[3] = "false";
-		Program.putCaveConfigString("TEMP_PROP", "-1");
-		String type_objet[] = { "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton" };
-		MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), true);
-		myoptions.setVisible(true);
-		int nValue = Program.getCaveConfigInt("TEMP_PROP", -1);
-		boolean b = Program.getStorage().clearHistory(nValue);
-		if (b) {
-			Debug("History Cleared.");
-			m_oFilterCbx.setSelectedIndex(0);
-			tv.setHistory(Program.getStorage().getHistory().getHistory());
-		}
-	}
-
-	/**
-	 * selectall_actionPerformed: Permet de sélectionner toutes les lignes de la
-	 * JTable
-	 * 
-	 * @param e
-	 *            ActionEvent
-	 */
-	/*void selectall_actionPerformed(ActionEvent e) {
-		Debug("selectall_actionPerforming...");
-		if (m_oSelectAll.isSelected()) {
-			m_oSuppr.setEnabled(false);
-			for (int i = 0; i < tv.getRowCount(); i++) {
-				tv.setValueAt(new Boolean(true), i, TableHistoryValues.SELECT);
-			}
-			m_oSuppr.setEnabled(true);
-		} else {
-			m_oSuppr.setEnabled(false);
-			for (int i = 0; i < tv.getRowCount(); i++) {
-				tv.setValueAt(new Boolean(false), i, TableHistoryValues.SELECT);
-			}
-			m_oSuppr.setEnabled(true);
-		}
-	}*/
-
 	@Override
 	public boolean tabWillClose(TabEvent event) {
 		return true;
@@ -230,8 +131,6 @@ public class ShowHistory extends JPanel implements ITabListener {
 
 	@Override
 	public void tabClosed() {
-		Start.menuTools.remove(ClearSomeHistory);
-		Start.menuTools.remove(ClearHistory);
 		Start.updateMainPanel();
 	}
 
@@ -267,6 +166,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 
 			if (nonExit) {
 				new Erreur(Program.getLabel("ShowHistory.CantRestoreNonDeleted"), true);
+				return;
 			}
 
 			if (toRestoreList.size() == 0) {
@@ -307,10 +207,8 @@ public class ShowHistory extends JPanel implements ITabListener {
 					if (!cantRestoreList.isEmpty())
 						modifyBottles(cantRestoreList);
 				}
-				/*for (int j = 0; j < Program.GetCaveLength(); j++)
-					Program.getCave(j).putTabStock();*/
 				RangementUtils.putTabStock();
-				tv.setHistory(Program.getStorage().getHistory().getHistory());
+				tv.setHistory(Program.getHistory());
 			}
 		}
 	}
@@ -365,7 +263,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 							History b = (History) toDeleteList.get(i);
 							Program.getStorage().removeHistory(b);
 						}
-						tv.setHistory(Program.getStorage().getHistory().getHistory());
+						tv.setHistory(Program.getHistory());
 					}
 				}
 			} catch (Exception exc) {
@@ -373,9 +271,26 @@ public class ShowHistory extends JPanel implements ITabListener {
 			}
 		}
 	}
+	
+	class ClearHistoryAction extends AbstractAction {
+
+		private static final long serialVersionUID = 3079501619032347868L;
+
+		public ClearHistoryAction() {
+			super(Program.getLabel("ShowHistory.ClearHistory"));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int filter = m_oFilterCbx.getSelectedIndex() - 1;
+			Program.getStorage().clearHistory(filter);
+			m_oFilterCbx.setSelectedIndex(0);
+			refresh();
+		}
+	}
 
 	public void refresh() {
-		tv.setHistory(Program.getStorage().getHistory().getHistory());
+		tv.setHistory(Program.getHistory());
 	}
 
 }

@@ -16,8 +16,8 @@ import mycellar.vignobles.CountryVignobles;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.3
- * @since 23/10/17
+ * @version 4.4
+ * @since 24/10/17
  */
 
 public class SerializedStorage implements Storage {
@@ -37,7 +37,6 @@ public class SerializedStorage implements Storage {
 		if(this.listBouteilles.bouteille == null)
 			this.listBouteilles.bouteille = new LinkedList<Bouteille>();
 		for(Bouteille b: this.listBouteilles.bouteille) {
-			b.updateID();
 			if(!listeUniqueBouteille.contains(b.getNom()))
 				listeUniqueBouteille.add(b.getNom());
 		}
@@ -47,7 +46,6 @@ public class SerializedStorage implements Storage {
 		this.listBouteilles.bouteille = listBouteilles;
 		listeUniqueBouteille.clear();
 		for(Bouteille b: listBouteilles) {
-			b.updateID();
 			if(!listeUniqueBouteille.contains(b.getNom()))
 				listeUniqueBouteille.add(b.getNom());
 		}
@@ -92,29 +90,26 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public boolean clearHistory(int _nValue) {
-		/* -1 Do Nothing
+		/* -1 Clear All
 		 * 0 Clear Add
 		 * 1 Clear Modify
 		 * 2 Clear Del
-		 * 3 Clear All
 		 */
 		Debug("Program: Clearing history: "+_nValue);
-		if( _nValue == -1 )
-			return false;
 		String sValue = "";
+		if( _nValue == -1 )
+			sValue = Program.getError("Error182");
 		if( _nValue == 0 )
 			sValue = Program.getError("Error189");
 		if( _nValue == 1 )
 			sValue = Program.getError("Error191");
 		if( _nValue == 2 )
 			sValue = Program.getError("Error190");
-		if( _nValue == 3 )
-			sValue = Program.getError("Error182");
 		if( JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
 			return false;
 
 		Program.setModified();
-		if( _nValue == 3 ) {
+		if( _nValue == -1 ) {
 			m_HistoryList.clear();
 			return true;
 		}
@@ -129,12 +124,6 @@ public class SerializedStorage implements Storage {
 			removeHistory(h);
 		}
 		return true;
-	}
-
-	@Override
-	public void clearHistory() {
-		Program.setModified();
-		m_HistoryList.clear();
 	}
 
 	@Override
@@ -426,16 +415,17 @@ public class SerializedStorage implements Storage {
 			m_HistoryList = new HistoryList();
 		if(f1.exists())
 			f1.delete();
+		
 		return resul;
 	}
 
 	@Override
-	public HistoryList getHistory() {
+	public HistoryList getHistoryList() {
 		return m_HistoryList;
 	}
 	
 	@Override
-	public void setHistory(HistoryList list) {
+	public void setHistoryList(HistoryList list) {
 		m_HistoryList = list;
 	}
 

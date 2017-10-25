@@ -59,8 +59,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.7
- * @since 22/10/17
+ * @version 4.8
+ * @since 25/10/17
  */
 
 public class ShowFile extends JPanel implements ITabListener  {
@@ -751,7 +751,7 @@ public class ShowFile extends JPanel implements ITabListener  {
     				new Erreur(Program.getError("Error154"));
     			} else {
     				if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
-    					Start.showBottle(b);
+    					Start.showBottle(b, true);
     			}
     		}
     	}

@@ -15,8 +15,8 @@ import javax.swing.table.TableColumnModel;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.1
- * @since 16/01/17
+ * @version 2.2
+ * @since 25/10/17
  */
 public class TableValues extends AbstractTableModel {
 
@@ -129,7 +129,7 @@ public class TableValues extends AbstractTableModel {
 		switch (column) {
 		case SHOW:
 			Bouteille bottle = monVector.get(row);
-			Start.showBottle(bottle);
+			Start.showBottle(bottle, true);
 			break;
 		case ETAT:
 			listBoolean.set(row, (Boolean)value);

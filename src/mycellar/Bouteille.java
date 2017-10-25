@@ -22,8 +22,8 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.4
- * @since 24/10/17
+ * @version 3.5
+ * @since 25/10/17
  */
 
 /**
@@ -131,7 +131,6 @@ public class Bouteille implements Serializable{
 	 * Bouteille: Constructeur d'une bouteille vide.
 	 */
 	public Bouteille() {
-		id = generatedValue++;
 		nom = type = emplacement = prix = comment = annee = maturity = parker = "";
 		appellation = color = "";
 		vignoble = null;

@@ -42,8 +42,8 @@ import mycellar.vignobles.Vignobles;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 04/08/17
+ * @version 0.9
+ * @since 25/10/17
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -282,7 +282,7 @@ public class MyCellarManageBottles extends JPanel {
 		});
 	}
 	
-	protected void enableAll(boolean enable) {
+	public void enableAll(boolean enable) {
 		m_lieu.setEnabled(enable);
 		m_num_lieu.setEnabled(enable && m_lieu.getSelectedIndex() > 0);
 		m_line.setEnabled(enable && m_num_lieu.getSelectedIndex() > 0);
@@ -291,7 +291,7 @@ public class MyCellarManageBottles extends JPanel {
 		if(m_cancel != null)
 			m_cancel.setEnabled(enable);
 		m_half.setEnabled(enable && !m_bmulti);
-		name.setEditable(enable && !m_bmulti);
+		name.setEnabled(enable && !m_bmulti);
 		m_year.setEditable(enable && !m_noYear.isSelected());
 		m_price.setEditable(enable);
 		m_maturity.setEditable(enable);
@@ -306,6 +306,8 @@ public class MyCellarManageBottles extends JPanel {
 		comboVignoble.setEnabled(enable);
 		comboAppelationAOC.setEnabled(enable);
 		comboAppelationIGP.setEnabled(enable);
+		if(m_chooseCell != null)
+			m_chooseCell.setEnabled(enable);
 	}
 	
 	protected String getYear() {

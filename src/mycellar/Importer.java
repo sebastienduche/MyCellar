@@ -45,8 +45,8 @@ import jxl.Workbook;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.0
- * @since 03/08/17
+ * @version 11.1
+ * @since 25/10/17
  */
 public class Importer extends JPanel implements ITabListener, Runnable {
 
@@ -1116,6 +1116,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						while (line != null) {
 							lu = line.split(separe);
 							Bouteille bottle = new Bouteille();
+							bottle.updateID();
 							for (int i = 0; i < lu.length; i++) {
 								String value = lu[i];
 								if(value.length() > 1 && value.charAt(0) == '"' && value.charAt(value.length()-1) == '"')
@@ -1303,6 +1304,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 									int maxNumPlace = 0;
 									if (lu_length != 0) {
 										Bouteille bottle = new Bouteille();
+										bottle.updateID();
 										for (int i = 0; i < nbcol_lu; i++) {
 											//Verify specials characters
 											try {

@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -15,8 +16,8 @@ import javax.swing.table.AbstractTableModel;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 24/10/17
+ * @version 1.6
+ * @since 25/10/17
  */
 
 public class TableHistoryValues extends AbstractTableModel {
@@ -25,11 +26,6 @@ public class TableHistoryValues extends AbstractTableModel {
   public final static int TYPE = 2;
   public final static int LABEL = 3;
   public final static int ACTION = 4;
-
-  public final static int NONE = -1;
-  public final static int ADD = 0;
-  public final static int MODIFY = 1;
-  public final static int DEL = 2;
 
   static final long serialVersionUID = 0601072;
 
@@ -94,15 +90,15 @@ public class TableHistoryValues extends AbstractTableModel {
 		  String sType = "";
 		  String sLabel = "";
 	        switch (h.getType()) {
-	          case ADD:
+	          case History.ADD:
 	            sType = Program.getLabel("Infos345");
 	            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), Program.convertStringFromHTMLString(b.getEmplacement()));
 	            break;
-	          case MODIFY:
+	          case History.MODIFY:
 	            sType = Program.getLabel("Infos346");
 	            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), Program.convertStringFromHTMLString(b.getEmplacement()));
 	            break;
-	          case DEL:
+	          case History.DEL:
 	            sType = Program.getLabel("Infos347");
 	            sLabel = MessageFormat.format(Program.getLabel("Infos349"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), Program.convertStringFromHTMLString(b.getEmplacement()));
 	            break;
@@ -169,21 +165,17 @@ public class TableHistoryValues extends AbstractTableModel {
 		  column++;
     switch (column) {
       case ACTION:
-        History h = (History) displayList.get(row);
+        History h = displayList.get(row);
         Bouteille bottle = h.getBouteille();
         if(h.isDeleted())
-        	Program.Morehistory = new ShowMoreHistory( bottle );
+        	Start.showBottle(bottle, false);
         else {
-			Rangement r = Program.getCave(bottle.getEmplacement());
-			if(r != null) {
-				if(!r.isCaisse()) {
-					bottle = r.getBouteille(bottle.getNumLieu()-1, bottle.getLigne()-1, bottle.getColonne()-1);
-					if(bottle != null)
-						Start.showBottle(bottle);
-				}
-				else
-					Program.Morehistory = new ShowMoreHistory( bottle );
-			}
+        	Optional<Bouteille> optional = Program.getStorage().getListBouteilles().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst();
+        	Program.Debug("Bottle Get ID = "+bottle.getId());
+        	if(optional.isPresent())
+        		Start.showBottle(optional.get(), true);
+        	else
+        		Start.showBottle(bottle, false);
         }
       break;
       case SELECT:
@@ -205,7 +197,6 @@ public class TableHistoryValues extends AbstractTableModel {
    * @return List
    */
   public List<History> getData() {
-
     return m_oList;
   }
 
@@ -241,7 +232,7 @@ public class TableHistoryValues extends AbstractTableModel {
 			@Override
 			public int compare(History o1, History o2) {
 				if(o1.getTime() != null && o2.getTime() != null)
-					return o1.getTime().compareTo(o2.getTime());
+					return -o1.getTime().compareTo(o2.getTime());
 				return -1;
 			}
 		}).iterator();
@@ -274,7 +265,7 @@ public class TableHistoryValues extends AbstractTableModel {
       displayList.clear();
       for (int i = 0; i < m_oList.size(); i++) {
         History h = (History) m_oList.get(i);
-        if ( _nFilter == NONE || h.getType() == _nFilter) {
+        if ( _nFilter == -1 || h.getType() == _nFilter) {
         	displayList.addLast(h);
         }
       }
@@ -289,12 +280,10 @@ public class TableHistoryValues extends AbstractTableModel {
   }
   
   public Bouteille getBottle(int row) {
-	  History h = (History) displayList.get(row);
-      return h.getBouteille();
+	  return displayList.get(row).getBouteille();
   }
   
   public boolean isBottleDeleted(int row) {
-	  History h = displayList.get(row);
-	  return h.getType() == History.DEL;
+	  return displayList.get(row).isDeleted();
   }
 }

@@ -12,8 +12,8 @@ import mycellar.core.MyCellarFields;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 17/07/17
+ * @version 0.4
+ * @since 25/10/17
  */
 
 public class ShowFileModel extends TableShowValues {
@@ -45,7 +45,7 @@ public class ShowFileModel extends TableShowValues {
 		}
 		Bouteille b = monVector.get(row);
 		if(column == getColumnCount() - 1) {
-			Start.showBottle(b);
+			Start.showBottle(b, true);
 			return;
 			
 		}

@@ -23,8 +23,8 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 24/10/17
+ * @version 0.6
+ * @since 25/10/17
  */
 
 /**
@@ -65,9 +65,9 @@ public class History {
     @XmlElement(name = "Bouteille", required = true)
     protected Bouteille bouteille;
 	
-	public static int ADD = 0;
-    public static int MODIFY = 1;
-    public static int DEL = 2;
+	public final static int ADD = 0;
+    public final static int MODIFY = 1;
+    public final static int DEL = 2;
 	
 	/**
    * History: Contructeur avec une bouteille et un type d'action

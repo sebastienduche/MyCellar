@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 22.9
- * @since 24/10/17
+ * @version 23.0
+ * @since 25/10/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1244,7 +1244,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	public static void showBottle(Bouteille bottle) {
+	public static void showBottle(Bouteille bottle, boolean edit) {
 		for (int i = 0; i < Program.tabbedPane.getTabCount(); i++) {
 			Component tab = Program.tabbedPane.getComponentAt(i);
 			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
@@ -1253,6 +1253,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			}
 		}
 		ManageBottle manage = new ManageBottle(bottle);
+		manage.enableAll(edit);
 		Program.tabbedPane.addTab(bottle.getNom(), MyCellarImage.WINE, manage);
 		Program.tabbedPane.setSelectedIndex(Program.tabbedPane.getTabCount() - 1);
 		Utils.addCloseButton(Program.tabbedPane, manage);

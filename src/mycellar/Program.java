@@ -73,8 +73,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 16.4
- * @since 24/10/17
+ * @version 16.5
+ * @since 25/10/17
  */
 
 public class Program {
@@ -654,7 +654,7 @@ public class Program {
 			loadMaxPrice();
 			getStorage().loadHistory();
 		}
-		Program.updateBottlesID();
+		updateBottlesID();
 		if(m_oCave == null) {
 			m_oCave = new LinkedList<Rangement>();
 			m_oCave.add(defaultPlace);
@@ -664,16 +664,24 @@ public class Program {
 	}
 
 	private static void updateBottlesID() {
-		Debug("Program: updateBottlesID...");
+		/*Debug("Program: updateBottlesID...");
 		List<History> historyList = getStorage().getHistoryList().getHistory();
 		for(Bouteille b : getStorage().getListBouteilles().getBouteille()) {
+			int old = b.getId();
 			Optional<History> optional = historyList.stream().filter(history -> history.getBouteille().getId() == b.getId()).findFirst();
-			int id = b.updateID();
+			//int id = b.updateID();
+			Debug("Bouteille "+b.getNom()+" id="+b.getId()+" old="+old);
 			if(optional.isPresent()) {
-				optional.get().getBouteille().setId(id);
+				Bouteille h = optional.get().getBouteille();
+				Debug("History bouteille "+h.getNom()+" id="+h.getId());
+				//optional.get().getBouteille().setId(id);
+				Debug("New History bouteille "+h.getNom()+" id="+h.getId());
 			}
 		}
 		Debug("Program: updateBottlesID OK");
+		for(History h : historyList) {
+			Program.Debug(""+h.getBouteille().getId());
+		}*/
 	}
 
 	/**

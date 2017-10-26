@@ -42,7 +42,6 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
-import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.zip.Adler32;
@@ -73,8 +72,8 @@ import javax.swing.JTabbedPane;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 16.5
- * @since 25/10/17
+ * @version 16.6
+ * @since 26/10/17
  */
 
 public class Program {
@@ -99,7 +98,6 @@ public class Program {
 	public static Search search = null;
 	public static ShowHistory history = null;
 	public static VineyardPanel vignobles = null;
-	public static ShowMoreHistory Morehistory = null;
 	public static PanelInfos panelInfos = null;
 	public static AddVin addWine = null;
 	public static JTabbedPane tabbedPane = new JTabbedPane();
@@ -127,7 +125,7 @@ public class Program {
 	protected static String m_sXMLTypesFile = "Types.xml";
 	private static boolean isXMLTypesFileToDelete = false;
 	protected static String m_sXMLBottlesFile = "Bouteilles.xml";
-	public static String m_sVersion = "2.3";
+	public static String m_sVersion = "2.4";
 	protected static boolean m_bWorkDirCalculated = false;
 	protected static boolean m_bTempDirCalculated = false;
 	protected static boolean m_bGlobalDirCalculated = false;
@@ -277,7 +275,7 @@ public class Program {
 	 * Pour nettoyer et mettre a jour le programme
 	 */
 	protected static void cleanAndUpgrade() {
-		/*String sVersion = getCaveConfigString("VERSION", "");
+		String sVersion = getCaveConfigString("VERSION", "");
 		if(sVersion.isEmpty()) {
 			putCaveConfigString("VERSION", m_sVersion);
 			return;
@@ -286,17 +284,16 @@ public class Program {
 		int n2 = Integer.parseInt(sVersion.substring(2,3));
 		int val = n1*10 + n2;
 		// Affichage du nombre avec 2 décimales.
-		if ( val < 23 )
-		{
-			int n = getCaveConfigInt("HAUTEUR_LV", 430);
-			n += 50;
-			putCaveConfigInt("HAUTEUR_LV", n);
+		if ( val < 24 ) {
+			Debug("Program: WARNING: Destroying old files");
+			File years = new File(getWorkDir(true) + "Years.xml");
+			if(years.exists())
+				FileUtils.deleteQuietly(years);
+			File f1 = new File( getWorkDir(true) + "static_col.sinfo");
+			FileUtils.deleteQuietly(f1);
+			
 			putCaveConfigString("VERSION", m_sVersion);
 		}
-		removeGlobalConfigString("SPLASHSCREEN");*/
-		File years = new File(getWorkDir(true) + "Years.xml");
-		if(years.exists())
-			FileUtils.deleteQuietly(years);
 	}
 
 
@@ -688,32 +685,17 @@ public class Program {
 	 * read_Object: Fonction de lecture des objets Rangement sérialiser.
 	 */
 	private static void read_Object() {
-
-		Debug("Program: Reading Objects...");
-		File f1 = new File( m_sWorkDir + "/" );
-		//Récupération de la liste des fichiers
-		Debug("Program: Collecting file list");
+		Debug("Program: Loading places and history...");
 		LinkedList<Rangement> cave = new LinkedList<Rangement>();
-		boolean resul = true;
-		//Lecture des fichiers et écriture de MyCellar.xml
-		Debug("Program: Writing MyCellar.xml");
-		boolean bresul = getStorage().readRangement(cave);
-		if (bresul && !cave.isEmpty()) {
-		//	loadYears();
-		}
-		else {
-			Debug("Program: WARNING: Destroying internal files");
-			f1 = new File( m_sWorkDir + "/static_col.sinfo");
-			f1.delete();
-			cave = null;
-		}
+		boolean resul = getStorage().readRangement(cave);
 		getStorage().loadHistory();
 		if (!resul) {
 			Debug("Program: WARNING: Loading Unsuccessful");
 			getStorage().setAll(null);
 		}
-		if(cave != null)
+		else
 			m_oCave = cave;
+		Debug("Program: Loading places and history OK");
 	}
 	
 	public static void loadMaxPrice() {
@@ -850,7 +832,7 @@ public class Program {
 			}
 			return false;
 		}
-		Debug("Program: zipDir Done");
+		Debug("Program: zipDir OK");
 		return true;
 	}
 
@@ -907,9 +889,12 @@ public class Program {
 			buffi.close();
 			fis.close();
 		}
-		catch (Exception e) {e.printStackTrace();
-		return false;
+		catch (Exception e) {
+			e.printStackTrace();
+			Debug("Unzip: Archive Error");
+			return false;
 		}
+		Debug("Unzip: Archive OK");
 		return true;
 	}
 
@@ -926,37 +911,27 @@ public class Program {
 	 * saveAs
 	 * @param _sFilename String
 	 */
-	public static void saveAs(String _sFilename) {
+	public static void saveAs(String sFilename) {
 		Debug("Program: Saving all files...");
 
 		saveProperties();
 		saveGlobalProperties();
-		LinkedList<Rangement> cave = getCave();
-		// Suppression de fichiers inutiles
-		for (Rangement r : cave) {
-			try {
-				File fToDelete = new File(getWorkDir(true)+Program.convertToHTMLString(r.getNom()) + ".ser");
-				if(fToDelete.exists())
-					fToDelete.delete();
-			}
-			catch (NullPointerException npe) {}
-		}
 
 		if(isListCaveModified())
-			MyXmlDom.writeMyCellarXml(cave,"");
+			MyXmlDom.writeMyCellarXml(getCave(),"");
 
 		Program.writeOtherObject();
 		CountryVignobles.save();
 		ListeBouteille.writeXML();
 
-		String sFileName = archive;
-		if(!_sFilename.isEmpty())
-			sFileName = _sFilename;
-		Program.zipDir(sFileName);
+		if(!sFilename.isEmpty())
+			Program.zipDir(sFilename);
+		else
+			Program.zipDir(archive);
 
 		modified = false;
 		listCaveModified = false;
-		Debug("Program: Saving all files...Done");
+		Debug("Program: Saving all files OK");
 	}
 
 	public static void setDebug(boolean debug) {
@@ -1048,25 +1023,15 @@ public class Program {
 		return -1;
 	}
 
-
-	/**
-	 * SetCave
-	 *
-	 * @param _oCave LinkedList<Rangement>
-	 */
-	public static void setCave(LinkedList<Rangement> _oCave) {
-		m_oCave = _oCave;
-	}
-
 	/**
 	 * addCave
 	 *
 	 * @param _oCave Rangement
 	 */
-	public static void addCave(Rangement _oCave) {
-		if(_oCave == null)
+	public static void addCave(Rangement rangement) {
+		if(rangement == null)
 			return;
-		m_oCave.add(_oCave);
+		m_oCave.add(rangement);
 		setListCaveModified();
 		setModified();
 		if (Program.bDebug) Debug("Program: Sorting places...");
@@ -1078,11 +1043,11 @@ public class Program {
 	 *
 	 * @param _oCave Rangement
 	 */
-	public static void removeCave(Rangement _oCave) {
-		if(_oCave == null)
+	public static void removeCave(Rangement rangement) {
+		if(rangement == null)
 			return;
-		int num = m_oCave.indexOf(_oCave);
-		m_oCave.remove(_oCave);
+		int num = m_oCave.indexOf(rangement);
+		m_oCave.remove(rangement);
 		deletePlaceFile(num);
 		setModified();
 		setListCaveModified();
@@ -1150,7 +1115,7 @@ public class Program {
 			setFileSavable(f.exists());
 
 		if(!f.exists()) {
-			new Erreur(MessageFormat.format(Program.getError("Error020"), f.getAbsolutePath())); //Fichier non trouvé);
+			new Erreur(MessageFormat.format(getError("Error020"), f.getAbsolutePath())); //Fichier non trouvé);
 
 			putGlobalConfigString("LAST_OPEN1", list.pop());
 			putGlobalConfigString("LAST_OPEN2", list.pop());
@@ -1161,22 +1126,22 @@ public class Program {
 			return false;
 		}
 
-		Program.archive = f.getAbsolutePath();
+		archive = f.getAbsolutePath();
 
 		boolean bUnzipSucceeded = false;
 		try {
 			// Dézippage
-			bUnzipSucceeded = Program.unzipDir(Program.getWorkDir(false), Program.archive);
+			bUnzipSucceeded = unzipDir(Program.getWorkDir(false), archive);
 			if ( bUnzipSucceeded )
-				Debug("Unzipping "+Program.archive+" to "+Program.getWorkDir(false) +" OK");
+				Debug("Unzipping "+archive+" to "+getWorkDir(false) +" OK");
 			else {
-				Debug("Unzipping "+Program.archive+" to "+Program.getWorkDir(false) + " KO");
+				Debug("Unzipping "+archive+" to "+getWorkDir(false) + " KO");
 				Program.archive = "";
 			}
 		}
 		catch (Exception e) {
-			Debug("ERROR: Unable to unzip file "+Program.archive);
-			Program.showException(e,false);
+			Debug("ERROR: Unable to unzip file "+archive);
+			showException(e,false);
 			archive = "";
 			return false;
 		}
@@ -1189,7 +1154,7 @@ public class Program {
 		//Chargement des objets Rangement, Bouteilles et History
 		boolean loaded = true;
 		Debug("Reading Places, Bottles & History");
-		if (!Program.loadObjects()) {
+		if (!loadObjects()) {
 			Debug("Reading Object KO");
 			loaded = false;
 		}
@@ -1216,7 +1181,7 @@ public class Program {
 			Debug("Reading places from file");
 			LinkedList<Rangement> cave = MyXmlDom.readMyCellarXml("");
 			if(cave != null) {
-				Program.setCave(cave);
+				m_oCave = cave;
 			}
 		}
 
@@ -1231,7 +1196,7 @@ public class Program {
 		}
 
 		RangementUtils.putTabStock();
-		if(!Program.getErrors().isEmpty())
+		if(!getErrors().isEmpty())
 			new OpenShowErrorsAction().actionPerformed(null);
 		CountryVignobles.load();
 		CountryVignobles.addVignobleFromBottles();
@@ -1334,27 +1299,18 @@ public class Program {
 				f.delete();
 			}
 			//Tri du tableau et écriture du fichier XML
-			if ( bSave )
-			{
+			if ( bSave ) {
 				if(!ListeBouteille.writeXML())
 					return false;
 
 				if(isListCaveModified())
 					MyXmlDom.writeMyCellarXml(getCave(),"");
 
-				if(!configCave.containsKey("PRICE_SEPARATOR"))
-				{
+				if(!configCave.containsKey("PRICE_SEPARATOR")) {
 					java.text.DecimalFormat df = new java.text.DecimalFormat();
 					char virgule = df.getDecimalFormatSymbols().getDecimalSeparator();
 					String sVirgule = Character.toString(virgule);
 					putCaveConfigString("PRICE_SEPARATOR", sVirgule);
-				}
-
-				// Suppression d'ancien fichier
-				for(Rangement r : getCave()){
-					File fToDelete = new File(getWorkDir(true)+convertToHTMLString(r.getNom()) + ".ser");
-					if(fToDelete.exists())
-						fToDelete.delete();
 				}
 
 				saveProperties();
@@ -1362,7 +1318,7 @@ public class Program {
 				if (!getCave().isEmpty()) {						
 					writeOtherObject();
 					CountryVignobles.save();
-					zipDir(Program.archive);
+					zipDir(archive);
 				}
 			}
 			
@@ -1468,10 +1424,8 @@ public class Program {
 	 * @param _bWithEndSlash
 	 * @return
 	 */
-	public static String getGlobalDir(boolean _bWithEndSlash)
-	{
-		if(m_bGlobalDirCalculated)
-		{
+	public static String getGlobalDir(boolean _bWithEndSlash) {
+		if(m_bGlobalDirCalculated) {
 			if (_bWithEndSlash)
 				return m_sGlobalDir + File.separator;
 			return m_sGlobalDir;
@@ -1505,10 +1459,8 @@ public class Program {
 	 * @param _bWithEndSlash
 	 * @return
 	 */
-	public static String getWorkDir(boolean _bWithEndSlash)
-	{
-		if( m_bWorkDirCalculated )
-		{
+	public static String getWorkDir(boolean _bWithEndSlash) {
+		if( m_bWorkDirCalculated ) {
 			if (_bWithEndSlash)
 				return m_sWorkDir + File.separator;
 			return m_sWorkDir;
@@ -1551,10 +1503,8 @@ public class Program {
 	 * @param _bWithEndSlash
 	 * @return
 	 */
-	public static String getTempDir(boolean _bWithEndSlash)
-	{
-		if(m_bTempDirCalculated)
-		{
+	public static String getTempDir(boolean _bWithEndSlash) {
+		if(m_bTempDirCalculated) {
 			if (_bWithEndSlash)
 				return m_sTempDir + File.separator;
 			return m_sTempDir;
@@ -1574,18 +1524,11 @@ public class Program {
 		return m_sTempDir;
 	}
 
-	public static String getFullFilename()
-	{
-		return archive;
-	}
-
-	public static String getShortFilename()
-	{
+	public static String getShortFilename() {
 		return getShortFilename(archive);
 	}
 
-	public static String getShortFilename( String sFilename )
-	{
+	public static String getShortFilename( String sFilename ) {
 		String tmp = sFilename;
 		tmp = tmp.replaceAll("\\\\", "/");
 		int ind1 = tmp.lastIndexOf("/");
@@ -1597,55 +1540,47 @@ public class Program {
 		return tmp;
 	}
 
-	public static String getGlobalConfigString( String _sKey, String _sDefaultValue )
-	{
+	public static String getGlobalConfigString( String _sKey, String _sDefaultValue ) {
 		return configGlobal.getString(_sKey, _sDefaultValue);
 	}
 
-	public static String getCaveConfigString( String _sKey, String _sDefaultValue )
-	{
+	public static String getCaveConfigString( String _sKey, String _sDefaultValue ) {
 		if( null != configCave )
 			return configCave.getString(_sKey, _sDefaultValue);
 		Debug("ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+_sDefaultValue+"'");
 		return _sDefaultValue;
 	}
 
-	public static int getGlobalConfigInt( String _sKey, int _nDefaultValue )
-	{
+	public static int getGlobalConfigInt( String _sKey, int _nDefaultValue ) {
 		return configGlobal.getInt(_sKey, _nDefaultValue);
 	}
 
-	public static int getCaveConfigInt( String _sKey, int _nDefaultValue )
-	{
+	public static int getCaveConfigInt( String _sKey, int _nDefaultValue ) {
 		if( null != configCave )
 			return configCave.getInt(_sKey, _nDefaultValue);
 		Debug("ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+_nDefaultValue+"'");
 		return _nDefaultValue;
 	}
 
-	public static void putGlobalConfigString( String _sKey, String _sValue )
-	{
+	public static void putGlobalConfigString( String _sKey, String _sValue ) {
 		configGlobal.put(_sKey, _sValue);
 	}
 
-	public static void putCaveConfigString( String _sKey, String _sValue )
-	{
+	public static void putCaveConfigString( String _sKey, String _sValue ) {
 		if( null != configCave )
 			configCave.put(_sKey, _sValue);
 		else
 			Debug("ERROR: Unable to put value in configCave: [" + _sKey + " - " + _sValue + "]");
 	}
 
-	public static void putGlobalConfigInt( String _sKey, Integer _sValue )
-	{
+	public static void putGlobalConfigInt( String _sKey, Integer _sValue ) {
 		if( null != configGlobal )
 			configGlobal.put(_sKey, _sValue);
 		else
 			Debug("ERROR: Unable to put value in configGlobal: [" + _sKey + " - " + _sValue + "]");
 	}
 
-	public static void putCaveConfigInt( String _sKey, Integer _sValue )
-	{
+	public static void putCaveConfigInt( String _sKey, Integer _sValue ) {
 		configCave.put(_sKey, _sValue);
 	}
 
@@ -1655,20 +1590,17 @@ public class Program {
 			configGlobal.remove(_sKey);
 	}*/
 
-	public static MyLinkedHashMap getCaveConfig()
-	{
+	public static MyLinkedHashMap getCaveConfig() {
 		return configCave;
 	}
 
-	public static boolean hasConfigCaveKey( String _sKey )
-	{
+	public static boolean hasConfigCaveKey( String _sKey ) {
 		if( null != configCave )
 			return configCave.containsKey(_sKey);
 		return false;
 	}
 
-	public static boolean hasConfigGlobalKey( String _sKey )
-	{
+	public static boolean hasConfigGlobalKey( String _sKey ) {
 		if( null != configGlobal )
 			return configGlobal.containsKey(_sKey);
 		return false;
@@ -1682,18 +1614,15 @@ public class Program {
 		m_bIsTrueFile = _bIsTrueFile;
 	}
 
-	public static String getDataFileName()
-	{
+	public static String getDataFileName() {
 		return getWorkDir(true) + m_sDataFile;
 	}
 
-	public static String getXMLPlacesFileName()
-	{
+	public static String getXMLPlacesFileName() {
 		return getWorkDir(true) + m_sXMLPlacesFile;
 	}
 
-	public static String getXMLTypesFileName()
-	{
+	public static String getXMLTypesFileName() {
 		return getWorkDir(true) + m_sXMLTypesFile;
 	}
 
@@ -1701,26 +1630,20 @@ public class Program {
 		isXMLTypesFileToDelete = true;
 	}
 
-	public static String getXMLBottlesFileName()
-	{
+	public static String getXMLBottlesFileName() {
 		return getWorkDir(true) + m_sXMLBottlesFile;
 	}
 
-	public static String getUntitledFileName()
-	{
+	public static String getUntitledFileName() {
 		return m_sUntitledFile;
 	}
 
-	public static String getPreviewXMLFileName()
-	{
-		String sPreview = getGlobalDir(true) + m_sPreviewFile;
-		return sPreview;
+	public static String getPreviewXMLFileName() {
+		return getGlobalDir(true) + m_sPreviewFile;
 	}
 
-	public static String getPreviewHTMLFileName()
-	{
-		String sPreview = getGlobalDir(true) + m_sPreviewHTMLFile;
-		return sPreview;
+	public static String getPreviewHTMLFileName() {
+		return getGlobalDir(true) + m_sPreviewHTMLFile;
 	}
 
 	public static Storage getStorage() {

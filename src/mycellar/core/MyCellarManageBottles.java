@@ -3,7 +3,6 @@ package mycellar.core;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -42,8 +41,8 @@ import mycellar.vignobles.Vignobles;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 25/10/17
+ * @version 1.0
+ * @since 26/10/17
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -118,6 +117,7 @@ public class MyCellarManageBottles extends JPanel {
 	private boolean listenersEnabled = true;
 	
 	protected boolean m_bmulti = false; //Pour ListVin
+	protected boolean isEditionMode = false;
 	
 	public MyCellarManageBottles() {
 		m_labelName.setText(Program.getLabel("Infos208")); //"Nom");
@@ -143,16 +143,6 @@ public class MyCellarManageBottles extends JPanel {
 		m_preview.setEnabled(false);
 		m_preview.addActionListener((e) -> preview_actionPerformed(e));
 
-		this.addKeyListener(new java.awt.event.KeyListener() {
-			public void keyReleased(java.awt.event.KeyEvent e) {}
-
-			public void keyPressed(java.awt.event.KeyEvent e) {
-				keylistener_actionPerformed(e);
-			}
-
-			public void keyTyped(java.awt.event.KeyEvent e) {}
-		});
-
 		//Menu Contextuel
 		couper.addActionListener((e) -> couper_actionPerformed(e));
 		cut.addActionListener((e) -> couper_actionPerformed(e));
@@ -167,10 +157,6 @@ public class MyCellarManageBottles extends JPanel {
 		m_colorList.addItem(BottleColor.RED);
 		m_colorList.addItem(BottleColor.PINK);
 		m_colorList.addItem(BottleColor.WHITE);
-	}
-	
-	protected void keylistener_actionPerformed(KeyEvent e) {
-		
 	}
 	
 	protected void annee_auto_actionPerformed(ActionEvent e) {
@@ -300,7 +286,7 @@ public class MyCellarManageBottles extends JPanel {
 		m_comment.setEditable(enable);
 		m_annee_auto.setEnabled(enable);
 		m_noYear.setEnabled(enable);
-		m_nb_bottle.setEnabled(enable && !m_bmulti);
+		m_nb_bottle.setEnabled(enable && !m_bmulti && !isEditionMode);
 		m_manageContenance.setEnabled(enable);
 		comboCountry.setEnabled(enable);
 		comboVignoble.setEnabled(enable);

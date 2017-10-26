@@ -41,8 +41,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.2
- * @since 04/08/17
+ * @version 3.3
+ * @since 26/10/17
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -58,6 +58,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	public ManageBottle(Bouteille bottle) {
 		super();
 		instance = this;
+		isEditionMode = true;
 		m_add = new MyCellarButton(MyCellarImage.SAVE);
 		
 		m_chooseCell = new MyCellarButton(new ChooseCellAction(this));
@@ -414,27 +415,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_colorList.setSelectedItem(BottleColor.getColor(bottle.getColor()));
 			initializeVignobles(bottle);
 
-			//int num_rangement = Rangement.convertNom_Int(bottle.getEmplacement());
 			selectPlace(bottle);
-			/*m_lieu.setSelectedIndex(num_rangement+1);
-			if (num_rangement >= 0) {
-				if (Program.getCave(num_rangement).isCaisse()) {
-					m_num_lieu.setSelectedIndex(bottle.getNumLieu()+1);
-					m_line.setVisible(false);
-					m_column.setVisible(false);
-					m_labelLine.setVisible(false);
-					m_labelColumn.setVisible(false);
-				}
-				else {
-					m_num_lieu.setSelectedIndex(bottle.getNumLieu());
-					m_line.setSelectedIndex(bottle.getLigne());
-					m_column.setSelectedIndex(bottle.getColonne());
-					m_line.setVisible(true);
-					m_column.setVisible(true);
-					m_labelLine.setVisible(true);
-					m_labelColumn.setVisible(true);
-				}
-			}*/
 			m_end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
 			resetModified();
 		}
@@ -474,7 +455,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
 			quit_actionPerformed(null);
 		}
-
 	}
 
 	/**
@@ -749,13 +729,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			return false;
 		}
 
-		//Quitter : Sauvegarde XML
-		//Save XML file
 		Debug("Quitting...");
-
-		/*for (Rangement rangement : Program.getCave()) {
-			rangement.putTabStock();
-		}*/
 		RangementUtils.putTabStock();
 		m_colorList.setSelectedItem(BottleColor.NONE);
 		name.setSelectedIndex(0);
@@ -781,11 +755,11 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 
 	/**
-	 * <p>Titre : Cave � vin</p>
+	 * <p>Titre : Cave à vin</p>
 	 * <p>Description : Votre description</p>
 	 * <p>Copyright : Copyright (c) 1998</p>
-	 * <p>Soci�t� : Seb Informatique</p>
-	 * @author S�bastien Duch�
+	 * <p>Société : Seb Informatique</p>
+	 * @author Sébastien Duché
 	 * @version 0.1
 	 * @since 17/04/05
 	 */

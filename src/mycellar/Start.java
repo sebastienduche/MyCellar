@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 23.0
- * @since 25/10/17
+ * @version 23.1
+ * @since 26/10/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -608,19 +608,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	/**
-	 * this_windowActivated: Mis au premier plan des boites de dialogue.
-	 * 
-	 * @param e
-	 *            WindowEvent
-	 */
-	void this_windowActivated(WindowEvent e) {
-		if (Program.Morehistory != null) {
-			Program.Morehistory.toFront();
-		}
-
-	}
-
 	public void initFrame() {
 		boolean bHasVersion = false;
 		if (null != Program.getCaveConfig() && Program.hasConfigCaveKey("VERSION")) {
@@ -1104,10 +1091,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 	private void setListeners() {
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
-			public void windowActivated(WindowEvent e) {
-				this_windowActivated(e);
-			}
-
 			public void windowClosing(WindowEvent e) {
 				quitter_actionPerformed();
 			}

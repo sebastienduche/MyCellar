@@ -33,8 +33,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.2
- * @since 22/10/17
+ * @version 10.3
+ * @since 27/10/17
  */
 public class Parametres extends JPanel implements ITabListener {
 
@@ -53,7 +53,7 @@ public class Parametres extends JPanel implements ITabListener {
 	private JPanel dateControlPanel = new JPanel();
 	
 	private MyCellarButton buttonResetMessageDialog = new MyCellarButton();
-	private MyCellarButton jcb_half_del = new MyCellarButton(MyCellarImage.DELETE);
+	private MyCellarButton buttonManageContenance = new MyCellarButton();
 	private MyCellarCheckBox jcb_half_auto = new MyCellarCheckBox();
 	private MyCellarCheckBox m_jcb_debug = new MyCellarCheckBox();
 	private JPanel otherPanel = new JPanel();
@@ -142,7 +142,7 @@ public class Parametres extends JPanel implements ITabListener {
 		parcourir_excel.addActionListener((e) -> parcourir_excel_actionPerformed(e));
 		jcb_excel.addActionListener((e) -> jcb_excel_actionPerformed(e));
 		buttonResetMessageDialog.addActionListener((e) -> jcb_message_actionPerformed(e));
-		jcb_half_del.addActionListener((e) -> jcb_half_del_actionPerformed(e));
+		buttonManageContenance.addActionListener((e) -> buttonManageContenance_actionPerformed(e));
 		jcb_half_auto.addActionListener((e) -> jcb_half_auto_actionPerformed(e));
 		m_jcb_debug.addActionListener((e) -> activate_debug_actionPerformed(e));
 
@@ -202,7 +202,7 @@ public class Parametres extends JPanel implements ITabListener {
 		add(dateControlPanel, "grow, wrap");
 		otherPanel.setLayout(new MigLayout("","[][]",""));
 		otherPanel.add(buttonResetMessageDialog, "span 2, wrap");
-		otherPanel.add(jcb_half_del);
+		otherPanel.add(buttonManageContenance);
 		otherPanel.add(jcb_half_auto, "wrap");
 		otherPanel.add(m_jcb_debug,"wrap");
 		add(otherPanel, "grow, wrap");
@@ -236,7 +236,7 @@ public class Parametres extends JPanel implements ITabListener {
 
 		jcb_excel.setText(Program.getLabel("Infos169"));
 		buttonResetMessageDialog.setText(Program.getLabel("Infos160"));
-		jcb_half_del.setText(Program.getLabel("Infos311"));
+		buttonManageContenance.setText(Program.getLabel("Infos400"));
 		jcb_half_auto.setText(Program.getLabel("Infos147"));
 		couper.setText(Program.getLabel("Infos241"));
 		copier.setText(Program.getLabel("Infos242"));
@@ -472,19 +472,16 @@ public class Parametres extends JPanel implements ITabListener {
 	}
 
 	/**
-	 * Vidage de la liste des types
+	 * Gestion des contenus
 	 *
 	 * @param e ActionEvent
 	 */
-	void jcb_half_del_actionPerformed(ActionEvent e) {
-		Program.setXMLTypesFileToDelete();
-		Program.half.clear();
-		Program.half.add("75cl");
-		Program.half.add("37.5cl");
-		Program.defaut_half = "75cl";
-		jcb_half_del.setEnabled(false);
-		if(Program.addWine != null)
+	void buttonManageContenance_actionPerformed(ActionEvent e) {
+		new ManageList(Program.half, Program.getLabel("Infos400"));
+		if(Program.addWine != null) {
+			Program.addWine.setUpdateView();
 			Program.addWine.updateView();
+		}
 	}
 
 	/**

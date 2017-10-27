@@ -41,8 +41,8 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.3
- * @since 26/10/17
+ * @version 3.4
+ * @since 27/10/17
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -281,7 +281,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				m_line.setVisible(false);
 				m_column.setVisible(false);
 				m_labelNumPlace.setVisible(true); //false
-				m_labelNumPlace.setText(Program.getLabel("Infos158")); //"Num�ro de caisse");
+				m_labelNumPlace.setText(Program.getLabel("Infos158")); //"Numéro de caisse");
 				m_labelColumn.setVisible(false);
 				m_labelLine.setVisible(false);
 				if ( nb_emplacement == 1 )
@@ -298,12 +298,10 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				m_num_lieu.setVisible(true);
 				m_line.setVisible(true);
 				m_column.setVisible(true);
-				m_labelNumPlace.setText(Program.getLabel("Infos082")); //"Num�ro du lieu");
+				m_labelNumPlace.setText(Program.getLabel("Infos082")); //"Numéro du lieu");
 				m_labelNumPlace.setVisible(true);
 				m_labelLine.setVisible(true);
 				m_labelColumn.setVisible(true);
-				this.repaint();
-				this.setVisible(true);
 			}
 		}
 		catch (Exception a) {
@@ -338,8 +336,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			for (int i = 1; i <= nb_col; i++) {
 				m_column.addItem(Integer.toString(i));
 			}
-			this.repaint();
-			this.setVisible(true);
 		}
 		catch (Exception a) {
 			Program.showException(a);
@@ -584,7 +580,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			}
 
 			column = m_column.getSelectedIndex();
-			if (line == 0) {
+			if (column == 0) {
 				Debug("ERROR: Wrong Column");
 				resul = false;
 				new Erreur(Program.getError("Error058")); //"Veuillez sélectionner un numero de line!"

@@ -43,8 +43,8 @@ import net.miginfocom.swing.MigLayout;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 23.1
- * @since 26/10/17
+ * @version 23.2
+ * @since 27/10/17
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -819,29 +819,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	void afficheFrame() {
 
-		NewAction newAction = new NewAction();
-		OpenAction openAction = new OpenAction();
-		SaveAction saveAction = new SaveAction();
-		SaveAsAction saveAsAction = new SaveAsAction();
-		SearchAction searchAction = new SearchAction();
-		CutAction cutAction = new CutAction();
-		CopyAction copyAction = new CopyAction();
-		PasteAction pasteAction = new PasteAction();
-		ParametersAction parameterAction = new ParametersAction();
-		AddPlaceAction addPlaceAction = new AddPlaceAction();
-		ModifyPlaceAction modifyPlaceAction = new ModifyPlaceAction();
-		DeletePlaceAction deletePlaceAction = new DeletePlaceAction();
-		ShowFileAction showFileAction = new ShowFileAction();
-		CreateTabAction createTabAction = new CreateTabAction();
-		StatAction statAction = new StatAction();
-		ImportFileAction importFileAction = new ImportFileAction();
-		ExportFileAction exportFileAction = new ExportFileAction();
-		ManagePlaceAction managePlaceAction = new ManagePlaceAction();
-		ShowTrashAction showTrashAction = new ShowTrashAction();
-		AddWineAction addWineAction = new AddWineAction();
-		
-		
-
 		if (Program.panelInfos == null)
 			Program.panelInfos = new PanelInfos();
 
@@ -876,6 +853,27 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			menuFile.add(quit);
 			return;
 		}
+		
+		NewAction newAction = new NewAction();
+		OpenAction openAction = new OpenAction();
+		SaveAction saveAction = new SaveAction();
+		SaveAsAction saveAsAction = new SaveAsAction();
+		SearchAction searchAction = new SearchAction();
+		CutAction cutAction = new CutAction();
+		CopyAction copyAction = new CopyAction();
+		PasteAction pasteAction = new PasteAction();
+		ParametersAction parameterAction = new ParametersAction();
+		AddPlaceAction addPlaceAction = new AddPlaceAction();
+		ModifyPlaceAction modifyPlaceAction = new ModifyPlaceAction();
+		DeletePlaceAction deletePlaceAction = new DeletePlaceAction();
+		ShowFileAction showFileAction = new ShowFileAction();
+		CreateTabAction createTabAction = new CreateTabAction();
+		StatAction statAction = new StatAction();
+		ImportFileAction importFileAction = new ImportFileAction();
+		ExportFileAction exportFileAction = new ExportFileAction();
+		ManagePlaceAction managePlaceAction = new ManagePlaceAction();
+		ShowTrashAction showTrashAction = new ShowTrashAction();
+		AddWineAction addWineAction = new AddWineAction();
 
 		String tmp = Program.archive;
 		tmp = tmp.replaceAll("\\\\", "/");
@@ -1696,7 +1694,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -2981766233846291757L;
 
 		public ShowHistoryAction() {
-			super(Program.getLabel("Infos341"), null);
+			super(Program.getLabel("Infos341"));
 		}
 
 		@Override
@@ -1729,7 +1727,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -7956676252030557402L;
 
 		public VignoblesAction() {
-			super(Program.getLabel("Infos165"), null);
+			super(Program.getLabel("Infos165"));
 		}
 
 		@Override
@@ -1743,7 +1741,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -7204054967253027549L;
 
 		public CapacityAction() {
-			super(Program.getLabel("Infos400")+"...", null);
+			super(Program.getLabel("Infos400")+"...");
 		}
 
 		@Override

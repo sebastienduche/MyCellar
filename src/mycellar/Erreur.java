@@ -1,11 +1,11 @@
 package mycellar;
 
+import mycellar.core.MyCellarLabel;
+import net.miginfocom.swing.MigLayout;
+
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-import mycellar.core.MyCellarLabel;
-import net.miginfocom.swing.MigLayout;
 
 
 /**
@@ -14,35 +14,41 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.9
- * @since 03/08/17
+ * @version 2.0
+ * @since 01/03/18
  */
 public class Erreur {
-	private MyCellarLabel textControl1 = new MyCellarLabel();
-	private MyCellarLabel text_message1 = new MyCellarLabel();
-	private MyCellarLabel text_message2 = new MyCellarLabel();
-	private boolean Coche = false; //Pour la case à cocher
-	private String keyword; //Pour la case à cocher
-	private JCheckBox coche = new JCheckBox(Program.getLabel("Infos213"));
+	private final MyCellarLabel textControl1 = new MyCellarLabel();
+	private final MyCellarLabel text_message1 = new MyCellarLabel();
+	private final MyCellarLabel text_message2 = new MyCellarLabel();
+	private final JCheckBox checkNotShow = new JCheckBox(Program.getLabel("Infos213"));
 	static final long serialVersionUID = 230405;
+	private static final Erreur INSTANCE = new Erreur();
 
-	/**
-	 * Erreur: Constructeur d'un message d'erreur simple.
-	 *
-	 * @param texte1 String: Message
-	 */
-	public Erreur(String texte1) {
-		JOptionPane.showMessageDialog(null, texte1, Program.getError("Error015"), JOptionPane.ERROR_MESSAGE);
+	private Erreur() {
+
+	}
+
+	private static Erreur getInstance() {
+		return INSTANCE;
 	}
 
 	/**
 	 * Erreur: Constructeur d'un message d'erreur simple.
 	 *
-	 * @param texte1 String: Message
-	 * @param message boolean
+	 * @param texte
 	 */
-	public Erreur(String texte1, boolean information) {
-		JOptionPane.showMessageDialog(null, texte1,  information ? Program.getError("Error032"): Program.getError("Error015"),information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+	public static void showSimpleErreur(String texte) {
+			JOptionPane.showMessageDialog(null, texte, Program.getError("Error015"), JOptionPane.ERROR_MESSAGE);
+	}
+
+	/**
+	 * Erreur: Constructeur d'un message d'erreur simple.
+	 *
+	 * @param texte
+	 */
+	public static void showSimpleErreur(String texte, boolean information) {
+		JOptionPane.showMessageDialog(null, texte,  information ? Program.getError("Error032"): Program.getError("Error015"),information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
 	}
 
 	/**
@@ -51,20 +57,19 @@ public class Erreur {
 	 * @param texte1 String: Message 1
 	 * @param texte2 String: Message 2
 	 */
-	public Erreur(String texte1, String texte2) {
-		initialize(texte1, texte2, false);
+	public static void showSimpleErreur(String texte1, String texte2) {
+			getInstance().initialize(texte1, texte2, false, null);
 	}
 
 	/**
-	 * Erreur: Constructeur d'un message avec Titre particulier.
+	 * Erreur: Constructeur d'un message d'erreur avec type Information.
 	 *
 	 * @param texte1 String: Message 1
 	 * @param texte2 String: Message 2
-	 * @param title String: Titre de la fenêtre
-	 * @param mess String: Message du titre
+	 *               @param information String: Titre de la fenêtre
 	 */
-	public Erreur(String texte1, String texte2, boolean information) {
-		initialize(texte1, texte2, information);
+	public static void showSimpleErreur(String texte1, String texte2, boolean information) {
+		getInstance().initialize(texte1, texte2, information, null);
 	}
 
 	/**
@@ -72,34 +77,28 @@ public class Erreur {
 	 *
 	 * @param texte1 String: Message 1
 	 * @param texte2 String: Message 2
-	 * @param information boolean: Message d'information ou d'erreur
-	 * @param mess String: Message du titre
-	 * @param acocher boolean: indique la présence d'une case à cocher
 	 * @param key String: Nom de la Clé
 	 */
-	public Erreur(String texte1, String texte2, boolean information, String key) {
-		keyword = key;
-		Coche = true;
-		initialize(texte1, texte2, information);
+	public static void showKeyErreur(String texte1, String texte2, String key) {
+		getInstance().initialize(texte1, texte2, true, key);
 	}
 
-
-	private void initialize(String texte1, String texte2, boolean information) {
+	private void initialize(String texte1, String texte2, boolean information, String keyword) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new MigLayout("","grow","[]"));
 		textControl1.setFont(Program.font_dialog_small);
 		text_message1.setText(texte1);
-		coche.setFont(Program.font_boutton_small);
+		checkNotShow.setFont(Program.font_boutton_small);
 		text_message2.setText(texte2);
 		panel.add(text_message1,"");
 		panel.add(text_message2,"newline, hidemode 3");
-		panel.add(coche,"newline, hidemode 3, gaptop 15px");
-		coche.setVisible(Coche);
+		panel.add(checkNotShow,"newline, hidemode 3, gaptop 15px");
+		checkNotShow.setVisible(keyword != null && !keyword.isEmpty());
 		text_message2.setVisible(!texte2.isEmpty());
 		JOptionPane.showMessageDialog(null,panel,information ? Program.getError("Error032"): Program.getError("Error015"),information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
-		if (Coche && coche.isSelected()) {
+		if (checkNotShow.isSelected()) {
 			//Ecriture dans un fichier pour ne plus afficher le message
-			Program.putCaveConfigString(keyword, "1");
+			Program.putCaveConfigInt(keyword, 1);
 		}
 	}
 

@@ -1,13 +1,12 @@
 package mycellar.showfile;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-
-import javax.swing.table.DefaultTableModel;
-
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.core.MyCellarFields;
+
+import javax.swing.table.DefaultTableModel;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -15,18 +14,18 @@ import mycellar.core.MyCellarFields;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 17/07/17
+ * @version 0.4
+ * @since 01/03/18
  */
 
 public class ManageColumnModel extends DefaultTableModel {
 
 	private static final long serialVersionUID = 826266254625465003L;
-	private ArrayList<MyCellarFields> list;
-	private static LinkedList<Integer> result = new LinkedList<Integer>();
-	private Boolean[] values = null;
+	private final List<MyCellarFields> list;
+	private static final List<Integer> result = new LinkedList<>();
+	private final Boolean[] values;
 	
-	public ManageColumnModel(ArrayList<MyCellarFields> list, ArrayList<?> cols) {
+	public ManageColumnModel(List<MyCellarFields> list, List<?> cols) {
 		this.list = list;
 		values = new Boolean[list.size()];
 		result.clear();
@@ -80,16 +79,16 @@ public class ManageColumnModel extends DefaultTableModel {
 		result.clear();
 		for(int i=0; i<values.length; i++) {
 			if(values[i])
-				result.add(this.list.get(i).ordinal());
+				result.add(list.get(i).ordinal());
 		}
-		if(result.size() == 0) {
-			new Erreur(Program.getError("ManageColumn.ErrorNb"));
+		if(result.isEmpty()) {
+			Erreur.showSimpleErreur(Program.getError("ManageColumn.ErrorNb"));
 			values[row] = Boolean.TRUE;
-			result.add(this.list.get(row).ordinal());
+			result.add(list.get(row).ordinal());
 		}
 	}
 	
-	public LinkedList<Integer> getSelectedColumns() {
+	public List<Integer> getSelectedColumns() {
 		return result;
 	}
 }

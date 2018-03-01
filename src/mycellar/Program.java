@@ -1,5 +1,34 @@
 package mycellar;
 
+import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.MyCellarError;
+import mycellar.core.MyCellarFields;
+import mycellar.countries.Countries;
+import mycellar.countries.Country;
+import mycellar.launcher.Server;
+import mycellar.pdf.PDFColumn;
+import mycellar.pdf.PDFProperties;
+import mycellar.pdf.PDFRow;
+import mycellar.showfile.ShowFile;
+import mycellar.vignobles.CountryVignobles;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.net.util.Base64;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.io.BufferedInputStream;
@@ -14,23 +43,6 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import mycellar.actions.OpenShowErrorsAction;
-import mycellar.core.MyCellarError;
-import mycellar.core.MyCellarFields;
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
-import mycellar.launcher.Server;
-import mycellar.pdf.PDFColumn;
-import mycellar.pdf.PDFProperties;
-import mycellar.pdf.PDFRow;
-import mycellar.showfile.ShowFile;
-import mycellar.vignobles.CountryVignobles;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.net.util.Base64;
-
 import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -51,29 +63,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
-
 /**
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 16.7
- * @since 27/10/17
+ * @version 16.8
+ * @since 01/03/18
  */
 
 public class Program {
@@ -725,7 +722,7 @@ public class Program {
 			}
 		}
 		else {
-			new Erreur(Program.getError("Error162"));
+			Erreur.showSimpleErreur(getError("Error162"));
 		}
 	}
 
@@ -874,7 +871,7 @@ public class Program {
 
 	/**
 	 * saveAs
-	 * @param _sFilename String
+	 * @param sFilename String
 	 */
 	public static void saveAs(String sFilename) {
 		Debug("Program: Saving all files...");
@@ -890,9 +887,9 @@ public class Program {
 		ListeBouteille.writeXML();
 
 		if(!sFilename.isEmpty())
-			Program.zipDir(sFilename);
+			zipDir(sFilename);
 		else
-			Program.zipDir(archive);
+			zipDir(archive);
 
 		modified = false;
 		listCaveModified = false;
@@ -959,7 +956,7 @@ public class Program {
 	/**
 	 * GetCave
 	 *
-	 * @param _nCave String
+	 * @param name String
 	 * @return Rangement
 	 */
 	public static Rangement getCave(String name) {
@@ -975,7 +972,7 @@ public class Program {
 	/**
 	 * GetCaveIndex
 	 *
-	 * @param _nCave String
+	 * @param name String
 	 * @return int
 	 */
 	public static int getCaveIndex(String name) {
@@ -991,7 +988,7 @@ public class Program {
 	/**
 	 * addCave
 	 *
-	 * @param _oCave Rangement
+	 * @param rangement Rangement
 	 */
 	public static void addCave(Rangement rangement) {
 		if(rangement == null)
@@ -1006,7 +1003,7 @@ public class Program {
 	/**
 	 * removeCave
 	 *
-	 * @param _oCave Rangement
+	 * @param rangement Rangement
 	 */
 	public static void removeCave(Rangement rangement) {
 		if(rangement == null)
@@ -1080,7 +1077,7 @@ public class Program {
 			setFileSavable(f.exists());
 
 		if(!f.exists()) {
-			new Erreur(MessageFormat.format(getError("Error020"), f.getAbsolutePath())); //Fichier non trouvé);
+			Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), f.getAbsolutePath())); //Fichier non trouvé);
 
 			putGlobalConfigString("LAST_OPEN1", list.pop());
 			putGlobalConfigString("LAST_OPEN2", list.pop());
@@ -1405,8 +1402,7 @@ public class Program {
 	}
 
 	/**
-	 * getWorkDir: Retourne le nom du repertoire de travail.
-	 * @param _bWithEndSlash
+	 * hasWorkDir: Indique si le repertoire de travail existe.
 	 * @return
 	 */
 	public static boolean hasWorkDir() {
@@ -1435,7 +1431,7 @@ public class Program {
 		if(!f_obj.exists())
 			f_obj.mkdir();
 
-		java.util.Calendar g = GregorianCalendar.getInstance();
+		Calendar g = GregorianCalendar.getInstance();
 		String sTime = Integer.toString( g.get(Calendar.YEAR ) );
 		sTime += Integer.toString( g.get(Calendar.MONTH ) );
 		sTime += Integer.toString( g.get(Calendar.DAY_OF_MONTH ) );

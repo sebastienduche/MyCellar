@@ -6,8 +6,8 @@ package mycellar;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 29/07/17
+ * @version 0.8
+ * @since 01/03/18
  */
 
 public class MyCellarControl {
@@ -21,18 +21,18 @@ public class MyCellarControl {
   public static boolean ctrl_Name(String _sName) {
 
     Debug("Controling name...");
-    if (_sName.length() == 0) {
+    if (_sName.isEmpty()) {
       //Erreur le nom ne doit pas être vide
       Debug("ERROR: Name cannot be empty!");
-      new Erreur(Program.getError("Error010"));
+      Erreur.showSimpleErreur(Program.getError("Error010"));
       return false;
     }
 
       //Erreur utilisation de caractères interdits
-      if (_sName.indexOf("\"") != -1 || _sName.indexOf(";") != -1 || _sName.indexOf("<") != -1 || _sName.indexOf(">") != -1 || _sName.indexOf("?") != -1 || _sName.indexOf("\\") != -1 || _sName.indexOf("/") != -1 ||
-          _sName.indexOf("|") != -1 || _sName.indexOf("*") != -1) {
+      if (_sName.contains("\"") || _sName.contains(";") || _sName.contains("<") || _sName.contains(">") || _sName.contains("?") || _sName.contains("\\") || _sName.contains("/") ||
+          _sName.contains("|") || _sName.contains("*")) {
         Debug("ERROR: Forbidden Characters!");
-        new Erreur(Program.getError("Error126"));
+        Erreur.showSimpleErreur(Program.getError("Error126"));
         return false;
       }
     return true;
@@ -49,7 +49,7 @@ public class MyCellarControl {
     Debug("Controling existing name...");
     if (Program.getCave(_sName.trim()) != null) {
       Debug("ERROR: Name already use!");
-      new Erreur(Program.getError("Error037"));//Le nom est déjà utilisé
+      Erreur.showSimpleErreur(Program.getError("Error037"));//Le nom est déjà utilisé
       return false;
     }
     return true;

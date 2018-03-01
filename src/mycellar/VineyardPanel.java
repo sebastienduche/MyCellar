@@ -1,10 +1,14 @@
 package mycellar;
 
-import java.awt.event.ActionEvent;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarLabel;
+import mycellar.countries.Country;
+import mycellar.vignobles.Appelation;
+import mycellar.vignobles.CountryVignoble;
+import mycellar.vignobles.CountryVignobles;
+import mycellar.vignobles.Vignobles;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -18,16 +22,11 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-
-import net.miginfocom.swing.MigLayout;
-import mycellar.vignobles.Appelation;
-import mycellar.vignobles.CountryVignoble;
-import mycellar.vignobles.Vignobles;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarLabel;
-import mycellar.countries.Country;
-import mycellar.vignobles.CountryVignobles;
+import java.awt.event.ActionEvent;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Titre : Cave à vin
@@ -36,31 +35,29 @@ import mycellar.vignobles.CountryVignobles;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 1.6
- * @since 06/09/17
+ * @version 1.7
+ * @since 01/03/18
  */
 
 public class VineyardPanel extends JPanel implements ITabListener {
 
 	private static final long serialVersionUID = 2661586945830305901L;
 
-	private MyCellarLabel labelCountries = new MyCellarLabel();
-	private MyCellarComboBox<Country> comboCountry = new MyCellarComboBox<Country>();
-	private MyCellarLabel labelVineyard = new MyCellarLabel();
-	private MyCellarComboBox<CountryVignoble> comboVignoble = new MyCellarComboBox<CountryVignoble>();
-	private Country emptyCountry = new Country();
-	private MyCellarButton addVignoble = new MyCellarButton(new AddVignobleAction());
-	private MyCellarButton delVignoble = new MyCellarButton(new DelVignobleAction());
-	private MyCellarButton renameVignoble = new MyCellarButton(new RenameVignobleAction());
-	private MyCellarButton addAppellation = new MyCellarButton(new AddAppellationAction());
-	private MyCellarButton addCountry = new MyCellarButton(new AddCountryAction());
-	private MyCellarButton delCountry = new MyCellarButton(new DelCountryAction());
+	private final MyCellarComboBox<Country> comboCountry = new MyCellarComboBox<>();
+	private final MyCellarComboBox<CountryVignoble> comboVignoble = new MyCellarComboBox<>();
+	private final Country emptyCountry = new Country();
+	private final MyCellarButton addVignoble = new MyCellarButton(new AddVignobleAction());
+	private final MyCellarButton delVignoble = new MyCellarButton(new DelVignobleAction());
+	private final MyCellarButton renameVignoble = new MyCellarButton(new RenameVignobleAction());
+	private final MyCellarButton addAppellation = new MyCellarButton(new AddAppellationAction());
+	private final MyCellarButton addCountry = new MyCellarButton(new AddCountryAction());
+	private final MyCellarButton delCountry = new MyCellarButton(new DelCountryAction());
 	private Vignobles vignobles = null;
-	private VineyardTableModel model = new VineyardTableModel();
-	private JTable tableAppellations = new JTable(model);
+	private final VineyardTableModel model = new VineyardTableModel();
+	private final JTable tableAppellations = new JTable(model);
 
 	public VineyardPanel() {
-		labelCountries.setText(Program.getLabel("Infos218")); // Sélectionner un pays
+		MyCellarLabel labelCountries = new MyCellarLabel(Program.getLabel("Infos218")); // Sélectionner un pays
 		comboCountry.addItem(emptyCountry);
 		Collections.sort(Program.getCountries());
 		for(Country c : Program.getCountries())
@@ -72,7 +69,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 			delVignoble.setEnabled(false);
 			renameVignoble.setEnabled(false);
 			addAppellation.setEnabled(false);
-			if(comboCountry.getSelectedItem().equals(emptyCountry)) {
+			if(comboCountry.getSelectedItem() != null && comboCountry.getSelectedItem().equals(emptyCountry)) {
 				model.setAppellations(null, null, null);
 				return;
 			}
@@ -93,7 +90,9 @@ public class VineyardPanel extends JPanel implements ITabListener {
 			}
 			if(comboVignoble.getItemCount() > 0) {
 				CountryVignoble countryVignoble = (CountryVignoble)comboVignoble.getSelectedItem();
-				model.setAppellations(country, countryVignoble, countryVignoble.getAppelation());
+				if (countryVignoble != null) {
+					model.setAppellations(country, countryVignoble, countryVignoble.getAppelation());
+				}
 			}
 			else {
 				model.setAppellations(null, null, null);
@@ -112,7 +111,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 				addAppellation.setEnabled(true);
 			}
 		});
-		labelVineyard.setText(Program.getLabel("Infos166")); // Sélectionner un vignoble
+		MyCellarLabel labelVineyard = new MyCellarLabel(Program.getLabel("Infos166")); // Sélectionner un vignoble
 		setLayout(new MigLayout("", "grow",""));
 		JPanel panelCombos = new JPanel();
 		panelCombos.setLayout(new MigLayout("", "[][][][]", "[][]"));
@@ -155,7 +154,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 
 		private static final long serialVersionUID = 2164410331118124652L;
 
-		public AddVignobleAction() {
+		private AddVignobleAction() {
 			super(Program.getLabel("VineyardPanel.addVignoble"), MyCellarImage.ADD);
 		}
 
@@ -182,7 +181,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 
 		private static final long serialVersionUID = 2839462637218767338L;
 
-		public DelVignobleAction() {
+		private DelVignobleAction() {
 			super(Program.getLabel("VineyardPanel.delVignoble"), MyCellarImage.DELETE);
 		}
 
@@ -208,7 +207,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 
 		private static final long serialVersionUID = 2912399011575692147L;
 
-		public RenameVignobleAction() {
+		private RenameVignobleAction() {
 			super(Program.getLabel("VineyardPanel.renameVignoble"));
 		}
 
@@ -228,7 +227,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 
 		private static final long serialVersionUID = 2174872605239470622L;
 
-		public AddAppellationAction() {
+		private AddAppellationAction() {
 			super(Program.getLabel("VineyardPanel.addAppellation"), MyCellarImage.ADD);
 		}
 
@@ -247,7 +246,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 
 		private static final long serialVersionUID = -6725950975161352023L;
 
-		public AddCountryAction() {
+		private AddCountryAction() {
 			super(Program.getLabel("VineyardPanel.addCountry"), MyCellarImage.ADD);
 		}
 
@@ -257,7 +256,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 			if(val != null && !val.isEmpty()) {
 				Country country = new Country(val);
 				if(CountryVignobles.hasCountryByName(country)) {
-					new Erreur(Program.getError("VineyardPanel.CountryExist"));
+					Erreur.showSimpleErreur(Program.getError("VineyardPanel.CountryExist"));
 					return;
 				}
 				CountryVignobles.createCountry(country);
@@ -271,7 +270,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 
 		private static final long serialVersionUID = -2587952745857642464L;
 
-		public DelCountryAction() {
+		private DelCountryAction() {
 			super(Program.getLabel("VineyardPanel.delCountry"), MyCellarImage.DELETE);
 		}
 

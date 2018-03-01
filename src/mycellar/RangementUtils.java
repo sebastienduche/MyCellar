@@ -1,29 +1,5 @@
 package mycellar;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import mycellar.core.MyCellarError;
-import mycellar.core.MyCellarFields;
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import jxl.Workbook;
 import jxl.write.Border;
 import jxl.write.BorderLineStyle;
@@ -33,6 +9,28 @@ import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import mycellar.core.MyCellarError;
+import mycellar.core.MyCellarFields;
+import mycellar.countries.Countries;
+import mycellar.countries.Country;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -40,8 +38,8 @@ import jxl.write.WriteException;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 23/10/17
+ * @version 0.7
+ * @since 01/03/18
  */
 public class RangementUtils {
 
@@ -51,37 +49,23 @@ public class RangementUtils {
 	 * write_CSV: Ecriture d'un fichier CSV
 	 *
 	 * @param fichier String: fichier CSV à écrire
-	 * @param all LinkedList<Bouteille>: stock de bouteille
-	 * @param all_nblign int: nombre de bouteilles dans le stock
+	 * @param all List<Bouteille>: stock de bouteille
 	 *
 	 * @return int
 	 */
-	public static boolean write_CSV(String fichier, LinkedList<Bouteille> all) {
+	public static boolean write_CSV(String fichier, List<Bouteille> all) {
 
-		String name = null;
-		String year = null;
-		String half = null;
-		String place = null;
-		String num_place = null;
-		String line = null;
-		String column = null;
-		String price = null;
-		String comment = null;
-		String cle0, cle1, cle2, cle3, cle4, cle5, cle6, cle7, cle8;
-		String separator = null;
+		String separator = Program.getCaveConfigString("SEPARATOR_DEFAULT", ";");
 
-		separator = Program.getCaveConfigString("SEPARATOR_DEFAULT", ";");
-
-		cle0 = cle1 = cle2 = cle3 = cle4 = cle5 = cle6 = cle7 = cle8 = null;
-		cle0 = Program.getCaveConfigString("SIZE_COL0EXPORT_CSV", "1");
-		cle1 = Program.getCaveConfigString("SIZE_COL1EXPORT_CSV", "1");
-		cle2 = Program.getCaveConfigString("SIZE_COL2EXPORT_CSV", "1");
-		cle3 = Program.getCaveConfigString("SIZE_COL3EXPORT_CSV", "1");
-		cle4 = Program.getCaveConfigString("SIZE_COL4EXPORT_CSV", "1");
-		cle5 = Program.getCaveConfigString("SIZE_COL5EXPORT_CSV", "1");
-		cle6 = Program.getCaveConfigString("SIZE_COL6EXPORT_CSV", "1");
-		cle7 = Program.getCaveConfigString("SIZE_COL7EXPORT_CSV", "1");
-		cle8 = Program.getCaveConfigString("SIZE_COL8EXPORT_CSV", "1");
+		String cle0 = Program.getCaveConfigString("SIZE_COL0EXPORT_CSV", "1");
+		String cle1 = Program.getCaveConfigString("SIZE_COL1EXPORT_CSV", "1");
+		String cle2 = Program.getCaveConfigString("SIZE_COL2EXPORT_CSV", "1");
+		String cle3 = Program.getCaveConfigString("SIZE_COL3EXPORT_CSV", "1");
+		String cle4 = Program.getCaveConfigString("SIZE_COL4EXPORT_CSV", "1");
+		String cle5 = Program.getCaveConfigString("SIZE_COL5EXPORT_CSV", "1");
+		String cle6 = Program.getCaveConfigString("SIZE_COL6EXPORT_CSV", "1");
+		String cle7 = Program.getCaveConfigString("SIZE_COL7EXPORT_CSV", "1");
+		String cle8 = Program.getCaveConfigString("SIZE_COL8EXPORT_CSV", "1");
 
 		File f = new File(fichier);
 		FileWriter ficout = null;
@@ -92,14 +76,14 @@ public class RangementUtils {
 
 			for (Bouteille b : all) {
 				if (cle0.equals("1")) {
-					name = Program.convertStringFromHTMLString(b.getNom());
+					String name = Program.convertStringFromHTMLString(b.getNom());
 					name = name.replaceAll("\"", "\"\"");
 					ficout.write("\"" + name + "\"" + separator);
 					ficout.flush();
 				}
 				if (cle1.equals("1")) {
 					try {
-						year = b.getAnnee();
+						String year = b.getAnnee();
 						year = year.replaceAll("\"", "\"\"");
 						ficout.write("\"" + year + "\"" + separator);
 						ficout.flush();
@@ -107,40 +91,37 @@ public class RangementUtils {
 					catch (NullPointerException npe) {}
 				}
 				if (cle2.equals("1")) {
-					half = Program.convertStringFromHTMLString(b.getType());
+					String half = Program.convertStringFromHTMLString(b.getType());
 					half = half.replaceAll("\"", "\"\"");
 					ficout.write("\"" + half + "\"" + separator);
 					ficout.flush();
 				}
 				if (cle3.equals("1")) {
-					place = Program.convertStringFromHTMLString(b.getEmplacement());
+					String place = Program.convertStringFromHTMLString(b.getEmplacement());
 					place = place.replaceAll("\"", "\"\"");
 					ficout.write("\"" + place + "\"" + separator);
 					ficout.flush();
 				}
 				if (cle4.equals("1")) {
-					num_place = Integer.toString(b.getNumLieu());
-					ficout.write("\"" + num_place + "\"" + separator);
+					ficout.write("\"" + b.getNumLieu() + "\"" + separator);
 					ficout.flush();
 				}
 				if (cle5.equals("1")) {
-					line = Integer.toString(b.getLigne());
-					ficout.write("\"" + line + "\"" + separator);
+					ficout.write("\"" + b.getLigne() + "\"" + separator);
 					ficout.flush();
 				}
 				if (cle6.equals("1")) {
-					column = Integer.toString(b.getColonne());
-					ficout.write("\"" + column + "\"" + separator);
+					ficout.write("\"" + b.getColonne() + "\"" + separator);
 					ficout.flush();
 				}
 				if (cle7.equals("1")) {
-					price = Program.convertStringFromHTMLString(b.getPrix());
+					String price = Program.convertStringFromHTMLString(b.getPrix());
 					price = price.replaceAll("\"", "\"\"");
 					ficout.write("\"" + price + "\"" + separator);
 					ficout.flush();
 				}
 				if (cle8.equals("1")) {
-					comment = Program.convertStringFromHTMLString(b.getComment());
+					String comment = Program.convertStringFromHTMLString(b.getComment());
 					comment = comment.replaceAll("\"", "\"\"");
 					ficout.write("\"" + comment + "\"" + separator);
 					ficout.flush();
@@ -153,15 +134,14 @@ public class RangementUtils {
 			ficout.close();
 		}
 		catch (IOException ioe) {
-			new Erreur(Program.getError("Error120"), Program.getError("Error161"));
+			Erreur.showSimpleErreur(Program.getError("Error120"), Program.getError("Error161"));
 			return false;
 		}
 		finally {
 			try {
 				ficout.close();
+			} catch (IOException e) {
 			}
-			catch (IOException ioe1) {}
-			catch (NullPointerException ioe1) {}
 		}
 		return true;
 	}
@@ -170,13 +150,12 @@ public class RangementUtils {
 	 * write_HTML: Ecriture du fichier HTML
 	 *
 	 * @param fichier String: fichier HTML à écrire
-	 * @param all LinkedList<Bouteille>: stock de bouteilles
+	 * @param all List<Bouteille>: stock de bouteilles
 	 * @param fields 
-	 * @param all_nblign int: nombre de bouteille dans le stock
 	 *
-	 * @return int
+	 *  @return int
 	 */
-	public static boolean write_HTML(String fichier, LinkedList<Bouteille> all, ArrayList<MyCellarFields> fields) {
+	public static boolean write_HTML(String fichier, List<Bouteille> all, List<MyCellarFields> fields) {
 
 		try{
 			DocumentBuilderFactory dbFactory =
@@ -268,17 +247,13 @@ public class RangementUtils {
 						else
 							td.appendChild(doc.createTextNode(""));
 					}
-
 				}
 			}
 
-			TransformerFactory transformerFactory =
-					TransformerFactory.newInstance();
-			Transformer transformer =
-					transformerFactory.newTransformer();
+			TransformerFactory transformerFactory =	TransformerFactory.newInstance();
+			Transformer transformer =	transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
-			StreamResult result =
-					new StreamResult(new File(fichier));
+			StreamResult result =	new StreamResult(new File(fichier));
 			transformer.transform(source, result);
 		} catch (ParserConfigurationException e) {
 			Debug("ParserConfigurationException");
@@ -296,12 +271,12 @@ public class RangementUtils {
 	 * write_XLS: Fonction d'écriture du ficher Excel
 	 *
 	 * @param file String: Fichier à écrire.
-	 * @param all1 LinkedList<Bouteille>: Tableau de bouteilles à écrire
+	 * @param all List<Bouteille>: Tableau de bouteilles à écrire
 	 * @param isExit boolean: True si appel pour la création automatique d'une sauvegarde Excel
 	 *
 	 * @return boolean
 	 */
-	public static boolean write_XLS(String file, LinkedList<Bouteille> all, boolean isExit) {
+	public static boolean write_XLS(String file, List<Bouteille> all, boolean isExit) {
 
 		Debug( "write_XLS: writing file: "+file );
 		if(file.isEmpty()) {
@@ -326,11 +301,10 @@ public class RangementUtils {
 			return false;
 		}
 		boolean resul = true;
-		int num_ligne = 0;
 		String title = "";
 
-		HashMap<MyCellarFields, Boolean> mapCle = new HashMap<MyCellarFields, Boolean>();
-		HashMap<Integer, Integer> mapColumnNumber = new HashMap<Integer, Integer>();
+		HashMap<MyCellarFields, Boolean> mapCle = new HashMap<>();
+		HashMap<Integer, Integer> mapColumnNumber = new HashMap<>();
 
 		//Récupération des colonnes à exporter
 		ArrayList<MyCellarFields> fields = MyCellarFields.getFieldsList();
@@ -340,6 +314,7 @@ public class RangementUtils {
 			i++;
 		}
 
+		int num_ligne;
 		if (isExit) { //Cas sauvegarde XLS Backup
 			num_ligne = 0;
 			i=0;
@@ -365,7 +340,7 @@ public class RangementUtils {
 		try { //Création du fichier
 			WritableWorkbook workbook = Workbook.createWorkbook(new File(file));
 			String sheet_title = title;
-			if (sheet_title.length() == 0) {
+			if (sheet_title.isEmpty()) {
 				sheet_title = Program.getCaveConfigString("XML_TYPE","");
 			}
 			if( sheet_title.isEmpty() )
@@ -373,17 +348,10 @@ public class RangementUtils {
 			WritableSheet sheet = workbook.createSheet(sheet_title, 0);
 
 			if (!isExit) { //Export XLS
-				int size = 0;
 				//Taille du titre
-				size = Program.getCaveConfigInt("TITLE_SIZE_XLS", 10);
+				int size = Program.getCaveConfigInt("TITLE_SIZE_XLS", 10);
 				WritableFont cellfont = new WritableFont(WritableFont.ARIAL, size, WritableFont.NO_BOLD, false);
-				String bold = "";
-				boolean isBold = false;
-				bold = Program.getCaveConfigString("BOLD_XLS", "");
-				if (bold.equals("bold")) {
-					isBold = true;
-				}
-				if (isBold) {
+				if ("bold".equals(Program.getCaveConfigString("BOLD_XLS", ""))) {
 					cellfont = new WritableFont(WritableFont.ARIAL, size, WritableFont.BOLD, false);
 				}
 				WritableCellFormat cellformat = new WritableCellFormat(cellfont);
@@ -400,16 +368,15 @@ public class RangementUtils {
 
 			WritableFont cellfont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false);
 			if (!isExit) { //Export XLS
-				int size = 0;
 				//propriétés du texte
-				size = Program.getCaveConfigInt("TEXT_SIZE_XLS", 10);
+				int size = Program.getCaveConfigInt("TEXT_SIZE_XLS", 10);
 				cellfont = new WritableFont(WritableFont.ARIAL, size, WritableFont.NO_BOLD, false);
 			}
 			WritableCellFormat cellformat = new WritableCellFormat(cellfont);
 			//Ajout titre colonne
 			i=0;
-			HashMap<MyCellarFields, Label> listLabels = new HashMap<MyCellarFields, Label>();
-			HashMap<MyCellarFields, Integer> mapColumnWidth = new HashMap<MyCellarFields, Integer>();
+			HashMap<MyCellarFields, Label> listLabels = new HashMap<>();
+			HashMap<MyCellarFields, Integer> mapColumnWidth = new HashMap<>();
 
 			for(MyCellarFields field : fields) {
 				Label label;
@@ -535,29 +502,23 @@ public class RangementUtils {
 	 * @param file String: Fichier à écrire.
 	 * @param _oPlace LinkedList: liste de rangements à écrire
 	 *
-	 * @return boolean
 	 */
-	public static boolean write_XLSTab(String file, LinkedList<Rangement> _oPlace) {
+	public static void write_XLSTab(String file, List<Rangement> _oPlace) {
 
-		boolean resul = true;
-		int i = 0;
-		String title = "";
-		int nNbCol = 0;
 
 		try { //Création du fichier
-			title = Program.getCaveConfigString("XLS_TAB_TITLE","");
+			String title = Program.getCaveConfigString("XLS_TAB_TITLE","");
 			WritableWorkbook workbook = Workbook.createWorkbook(new File(file));
-			String sheet_title = title;
 			if (title.isEmpty()) {
-				sheet_title = Program.getCaveConfigString("XML_TYPE","");
+				title = Program.getCaveConfigString("XML_TYPE","");
 			}
-			WritableSheet sheet = workbook.createSheet(sheet_title, 0);
+			WritableSheet sheet = workbook.createSheet(title, 0);
 
 			// Titre
 			int size = Program.getCaveConfigInt("TITLE_TAB_SIZE_XLS", 10);
 			boolean isBold = "bold".equals(Program.getCaveConfigString("BOLD_TAB_XLS", ""));
 			WritableFont cellfont = new WritableFont(WritableFont.ARIAL, size, isBold ? WritableFont.BOLD : WritableFont.NO_BOLD, false);
-			
+
 			try {
 				WritableCellFormat cellformat = new WritableCellFormat(cellfont);
 				Label titre0 = new Label(0, 0, title, cellformat); //Ajout du titre
@@ -565,13 +526,13 @@ public class RangementUtils {
 			}
 			catch (WriteException ex3) {
 				Program.showException(ex3, false);
-				resul = false;
 			}
 
 			//propriétés du texte
 			size = Program.getCaveConfigInt("TEXT_TAB_SIZE_XLS", 10);
 			cellfont = new WritableFont(WritableFont.ARIAL, size, WritableFont.NO_BOLD, false);
 
+			int nNbCol = 0;
 			int nNbLinePart = Program.getCaveConfigInt("EMPTY_LINE_PART_XLS", 1);
 			int nNbLinePlace = Program.getCaveConfigInt("EMPTY_LINE_PLACE_XLS", 3);
 			try {
@@ -579,48 +540,40 @@ public class RangementUtils {
 				cellFormat.setBorder(Border.ALL, BorderLineStyle.THIN);
 				cellFormat.setWrap(true);
 
-				boolean not_null = true;
-
 				int nLine = 3;
 				WritableFont titleFont = new WritableFont( WritableFont.ARIAL, 12, WritableFont.BOLD, false );
 				WritableCellFormat cellTitle = new WritableCellFormat( titleFont );
-				for (i = 0; i < _oPlace.size(); i++) {
-					not_null = true;
-					Rangement place = (Rangement) _oPlace.get(i);
-					if (place == null) {
-						not_null = false;
-					}
-					if (not_null) {
+				for (Rangement place : _oPlace) {
+					if (place != null) {
 						nLine += nNbLinePlace;
-						Label aTitle = new Label( 1, nLine, Program.convertStringFromHTMLString( place.getNom() ), cellTitle );
-						sheet.addCell( aTitle );
+						sheet.addCell(new Label( 1, nLine, Program.convertStringFromHTMLString( place.getNom() ), cellTitle ));
 						for (int j = 1; j <= place.getNbEmplacements(); j++) {
-							if ( j == 1 ){
+							if (j == 1){
 								nLine++;
-							}else{
+							} else {
 								nLine += nNbLinePart;
 							}
-							if (place.isCaisse())
-							{
-								for (int k=0; k<place.getNbCaseUse(j - 1); k++)
-								{
+							if (place.isCaisse()) {
+								for (int k=0; k<place.getNbCaseUse(j - 1); k++) {
 									nLine++;
 									Bouteille b = place.getBouteilleCaisseAt(j - 1, k);
-									String sTitle = "";
+									StringBuilder sTitle = new StringBuilder();
 									if (b != null) {
 										// Contenu de la cellule
-										if (Program.getCaveConfigInt("XLSTAB_COL0", 1) == 1)
-											sTitle += b.getNom();
-										if (Program.getCaveConfigInt("XLSTAB_COL1", 0) == 1)
-											sTitle += " " + b.getAnnee();
-										if (Program.getCaveConfigInt("XLSTAB_COL2", 0) == 1)
-											sTitle += " " + b.getType();
-										if (Program.getCaveConfigInt("XLSTAB_COL3", 0) == 1)
-											sTitle += " " + b.getPrix() + Program.getCaveConfigString("DEVISE","");
-										sTitle.trim();
+										if (Program.getCaveConfigInt("XLSTAB_COL0", 1) == 1) {
+											sTitle.append(b.getNom());
+										}
+										if (Program.getCaveConfigInt("XLSTAB_COL1", 0) == 1) {
+											sTitle.append(" ").append(b.getAnnee());
+										}
+										if (Program.getCaveConfigInt("XLSTAB_COL2", 0) == 1) {
+											sTitle.append(" ").append(b.getType());
+										}
+										if (Program.getCaveConfigInt("XLSTAB_COL3", 0) == 1) {
+											sTitle.append(" ").append(b.getPrix()).append(Program.getCaveConfigString("DEVISE",""));
+										}
 									}
-									Label aLabel = new Label(1, nLine, Program.convertStringFromHTMLString(sTitle), cellFormat);
-									sheet.addCell(aLabel);
+									sheet.addCell(new Label(1, nLine, Program.convertStringFromHTMLString(sTitle.toString().trim()), cellFormat));
 								}
 							}else{
 								for (int k = 1; k <= place.getNbLignes(j - 1); k++) {
@@ -630,21 +583,19 @@ public class RangementUtils {
 										nNbCol = nCol;
 									for (int l = 1; l <= nCol; l++) {
 										Bouteille b = place.getBouteille(j - 1, k - 1, l - 1);
-										String sTitle = "";
+										StringBuilder sTitle = new StringBuilder();
 										if (b != null) {
 											// Contenu de la cellule
 											if (Program.getCaveConfigInt("XLSTAB_COL0", 1) == 1)
-												sTitle += b.getNom();
+												sTitle.append(b.getNom());
 											if (Program.getCaveConfigInt("XLSTAB_COL1", 0) == 1)
-												sTitle += " " + b.getAnnee();
+												sTitle.append(" ").append(b.getAnnee());
 											if (Program.getCaveConfigInt("XLSTAB_COL2", 0) == 1)
-												sTitle += " " + b.getType();
+												sTitle.append(" ").append(b.getType());
 											if (Program.getCaveConfigInt("XLSTAB_COL3", 0) == 1)
-												sTitle += " " + b.getPrix() + Program.getCaveConfigString("DEVISE","");
-											sTitle.trim();
+												sTitle.append(" ").append(b.getPrix()).append(Program.getCaveConfigString("DEVISE",""));
 										}
-										Label aLabel = new Label(l, nLine, Program.convertStringFromHTMLString(sTitle), cellFormat);
-										sheet.addCell(aLabel);
+										sheet.addCell(new Label(l, nLine, Program.convertStringFromHTMLString(sTitle.toString().trim()), cellFormat));
 									}
 								}
 							}
@@ -654,10 +605,9 @@ public class RangementUtils {
 			}
 			catch (WriteException ex3) {
 				Program.showException(ex3, false);
-				resul = false;
 			}
 			int nWidth = Program.getCaveConfigInt("COLUMN_TAB_WIDTH_XLS", 10);
-			for (i = 1; i <= nNbCol; i++) {
+			for (int i = 1; i <= nNbCol; i++) {
 				sheet.setColumnView( i, nWidth );
 			}
 
@@ -667,14 +617,11 @@ public class RangementUtils {
 			}
 			catch (WriteException ex2) {
 				Program.showException(ex2, false);
-				resul = false;
 			}
 		}
 		catch (IOException ex) {
 			Program.showException(ex, false);
-			resul = false;
 		}
-		return resul;
 	}
 
 	/**
@@ -695,7 +642,7 @@ public class RangementUtils {
 				missingPlace.add(place);
 		}
 		for(String s: missingPlace)
-			html.append("<li>" + s);
+			html.append("<li>").append(s);
 
 		html.append("</ul></p></body></html>");
 		if (missingPlace.isEmpty()) { //Pas de rangement à créer
@@ -703,16 +650,24 @@ public class RangementUtils {
 			html.append(Program.convertToHTMLString(Program.getLabel("Infos265")));
 			html.append("</b></font></p></body></html>");
 		}
+		FileWriter f = null;
 		try {
 			File file = File.createTempFile("MyCellar", "html");
 			file.deleteOnExit();
-			FileWriter f = new FileWriter(file);
+			f = new FileWriter(file);
 			f.write(html.toString());
 			f.close();
 			Program.open(file);
 		}
 		catch (IOException ioe) {
 			Program.showException(ioe, false);
+		}
+		finally {
+			if (f != null) {
+				try {
+					f.close();
+				} catch (IOException e) { }
+			}
 		}
 	}
 	
@@ -743,7 +698,6 @@ public class RangementUtils {
 					// Caisse pleine
 					Debug("ERROR: simple place full for numplace: " + b.getNom() + " numplace: "+b.getNumLieu() + " for place "+b.getEmplacement());
 					Program.addError(new MyCellarError(3, b));
-					continue;
 				}
 			}
 			else {
@@ -758,13 +712,11 @@ public class RangementUtils {
 					// Cellule inexistante
 					Debug("ERROR: Inexisting cell: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
 					Program.addError(new MyCellarError(4, b));
-					continue;
 				}
-				else if((bottle = rangement.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) != null && bottle != b){
+				else if((bottle = rangement.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) != null && !bottle.equals(b)){
 					// Cellule occupée
 					Debug("ERROR: Already occupied: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
 					Program.addError(new MyCellarError(5, b));
-					continue;
 				}
 				else
 					rangement.updateToStock(b);

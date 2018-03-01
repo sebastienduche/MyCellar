@@ -1,19 +1,17 @@
 package mycellar;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarCheckBox;
+import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarFields;
+import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarRadioButton;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -24,19 +22,27 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-
-import mycellar.actions.OpenShowErrorsAction;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarFields;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarRadioButton;
-import net.miginfocom.swing.MigLayout;
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -45,48 +51,48 @@ import jxl.Workbook;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.1
- * @since 25/10/17
+ * @version 11.2
+ * @since 01/03/18
  */
 public class Importer extends JPanel implements ITabListener, Runnable {
 
-	private MyCellarButton importe = new MyCellarButton();
-	private MyCellarRadioButton type_txt = new MyCellarRadioButton();
-	private MyCellarRadioButton type_xls = new MyCellarRadioButton();
-	private MyCellarRadioButton type_xml = new MyCellarRadioButton();
-	private ButtonGroup checkboxGroup1 = new ButtonGroup();
-	private MyCellarButton parcourir = new MyCellarButton();
+	private final MyCellarButton importe = new MyCellarButton();
+	private final MyCellarRadioButton type_txt = new MyCellarRadioButton();
+	private final MyCellarRadioButton type_xls = new MyCellarRadioButton();
+	private final MyCellarRadioButton type_xml = new MyCellarRadioButton();
+	private final ButtonGroup checkboxGroup1 = new ButtonGroup();
+	private final MyCellarButton parcourir = new MyCellarButton();
 	private char IMPORT = Program.getLabel("IMPORT").charAt(0);
 	private char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
-	private MyCellarButton openit = new MyCellarButton();
-	private MyCellarComboBox<MyCellarFields> choix1 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarComboBox<MyCellarFields> choix2 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarComboBox<MyCellarFields> choix3 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarComboBox<MyCellarFields> choix4 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarComboBox<MyCellarFields> choix5 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarComboBox<MyCellarFields> choix6 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarComboBox<MyCellarFields> choix7 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarComboBox<MyCellarFields> choix8 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarComboBox<MyCellarFields> choix9 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarComboBox<MyCellarFields> choix10 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarComboBox<MyCellarFields> choix11 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarComboBox<MyCellarFields> choix12 = new MyCellarComboBox<MyCellarFields>();
-	private MyCellarCheckBox titre = new MyCellarCheckBox();
-	private MyCellarLabel textControl2 = new MyCellarLabel();
-	private MyCellarLabel label_progression = new MyCellarLabel();
-	private MyCellarLabel label2 = new MyCellarLabel();
-	private MyCellarComboBox<String> separateur = new MyCellarComboBox<String>();
-	private MyCellarLabel label1 = new MyCellarLabel();
-	private JTextField file = new JTextField();
-	private JPopupMenu popup = new JPopupMenu();
-	private JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-	private JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-	private MyClipBoard clipboard = new MyClipBoard();
-	private JMenuItem quitter = new JMenuItem(Program.getLabel("Infos003"));
+	private final MyCellarButton openit = new MyCellarButton();
+	private final MyCellarComboBox<MyCellarFields> choix1 = new MyCellarComboBox<>();
+	private final MyCellarComboBox<MyCellarFields> choix2 = new MyCellarComboBox<>();
+	private final MyCellarComboBox<MyCellarFields> choix3 = new MyCellarComboBox<>();
+	private final MyCellarComboBox<MyCellarFields> choix4 = new MyCellarComboBox<>();
+	private final MyCellarComboBox<MyCellarFields> choix5 = new MyCellarComboBox<>();
+	private final MyCellarComboBox<MyCellarFields> choix6 = new MyCellarComboBox<>();
+	private final MyCellarComboBox<MyCellarFields> choix7 = new MyCellarComboBox<>();
+	private final MyCellarComboBox<MyCellarFields> choix8 = new MyCellarComboBox<>();
+	private final MyCellarComboBox<MyCellarFields> choix9 = new MyCellarComboBox<>();
+	private final MyCellarComboBox<MyCellarFields> choix10 = new MyCellarComboBox<>();
+	private final MyCellarComboBox<MyCellarFields> choix11 = new MyCellarComboBox<>();
+	private final MyCellarComboBox<MyCellarFields> choix12 = new MyCellarComboBox<>();
+	private final MyCellarCheckBox titre = new MyCellarCheckBox();
+	private final MyCellarLabel textControl2 = new MyCellarLabel();
+	private final MyCellarLabel label_progression = new MyCellarLabel();
+	private final MyCellarLabel label2 = new MyCellarLabel();
+	private final MyCellarComboBox<String> separateur = new MyCellarComboBox<>();
+	private final MyCellarLabel label1 = new MyCellarLabel();
+	private final JTextField file = new JTextField();
+	private final JPopupMenu popup = new JPopupMenu();
+	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
+	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
+	private final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
+	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
+	private final JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+	private final MyClipBoard clipboard = new MyClipBoard();
+	private final JMenuItem quitter = new JMenuItem(Program.getLabel("Infos003"));
 	private Component objet1 = null;
 	static final long serialVersionUID = 280706;
 
@@ -116,51 +122,51 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 		openit.setToolTipText(Program.getLabel("Infos152"));
 		parcourir.setToolTipText(Program.getLabel("Infos157"));
 		importe.setMnemonic(IMPORT);
-		openit.setDebugGraphicsOptions(0);
 		openit.setMnemonic(OUVRIR);
 		importe.setText(Program.getLabel("Infos036")); //"Importer");
-		importe.addActionListener((e) -> importe_actionPerformed(e)); //"Sélectionner les diff�rents champs pr�sents dans le fichier (de gauche " + "� droite)");
+		importe.addActionListener(this::importe_actionPerformed); //"Sélectionner les différents champs présents dans le fichier (de gauche " + "� droite)");
 		type_txt.setText(Program.getLabel("Infos040")); //"Fichier TXT ou CSV");
-		titre.setHorizontalTextPosition(2);
+		titre.setHorizontalTextPosition(SwingConstants.LEFT);
 		titre.setText(Program.getLabel("Infos038"));
 		textControl2.setText(Program.getLabel("Infos037"));
 		label_progression.setForeground(Color.red);
-		label_progression.setFont(new java.awt.Font("Dialog", 1, 12));
-		label_progression.setHorizontalAlignment(0);
+		label_progression.setFont(new Font("Dialog", Font.BOLD, 12));
+		label_progression.setHorizontalAlignment(SwingConstants.CENTER);
 		label2.setText(Program.getLabel("Infos034"));
 		label1.setText(Program.getLabel("Infos033"));
 		checkboxGroup1.add(type_txt);
 		checkboxGroup1.add(type_xls);
 		checkboxGroup1.add(type_xml);
-		type_txt.addItemListener((e) -> type_itemStateChanged(e));
+		type_txt.addItemListener(this::type_itemStateChanged);
 		type_xls.setText(Program.getLabel("Infos041")); //"Fichier Excel");
 		parcourir.setText("...");
 		openit.setText(Program.getLabel("Infos152")); //"Ouvrir le fichier");
-		openit.addActionListener((e) -> openit_actionPerformed(e));
-		parcourir.addActionListener((e) -> parcourir_actionPerformed(e));
-		type_xls.addItemListener((e) -> type_itemStateChanged(e));
+		openit.addActionListener(this::openit_actionPerformed);
+		parcourir.addActionListener(this::parcourir_actionPerformed);
+		type_xls.addItemListener(this::type_itemStateChanged);
 		type_txt.setSelected(true);
 		
-		type_xml.addItemListener((e) -> type_itemStateChanged(e));
+		type_xml.addItemListener(this::type_itemStateChanged);
 		type_xml.setText(Program.getLabel("Infos203")); //"Fichier XML");
 
-		this.addKeyListener(new java.awt.event.KeyListener() {
-			public void keyReleased(java.awt.event.KeyEvent e) {}
-
-			public void keyPressed(java.awt.event.KeyEvent e) {
+		this.addKeyListener(new KeyListener() {
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			@Override
+			public void keyPressed(KeyEvent e) {
 				keylistener_actionPerformed(e);
 			}
-
-			public void keyTyped(java.awt.event.KeyEvent e) {}
+			@Override
+			public void keyTyped(KeyEvent e) {}
 		});
 
 		//Menu Contextuel
-		couper.addActionListener((e) -> couper_actionPerformed(e));
-		cut.addActionListener((e) -> couper_actionPerformed(e));
-		copier.addActionListener((e) -> copier_actionPerformed(e));
-		copy.addActionListener((e) -> copier_actionPerformed(e));
-		coller.addActionListener((e) -> coller_actionPerformed(e));
-		paste.addActionListener((e) -> coller_actionPerformed(e));
+		couper.addActionListener(this::couper_actionPerformed);
+		cut.addActionListener(this::couper_actionPerformed);
+		copier.addActionListener(this::copier_actionPerformed);
+		copy.addActionListener(this::copier_actionPerformed);
+		coller.addActionListener(this::coller_actionPerformed);
+		paste.addActionListener(this::coller_actionPerformed);
 		couper.setEnabled(false);
 		copier.setEnabled(false);
 		popup.add(couper);
@@ -170,10 +176,10 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 		file.addMouseListener(popup_l);
 		cut.setEnabled(false);
 		copy.setEnabled(false);
-		cut.setAccelerator(KeyStroke.getKeyStroke('X', ActionEvent.CTRL_MASK));
-		copy.setAccelerator(KeyStroke.getKeyStroke('C', ActionEvent.CTRL_MASK));
-		paste.setAccelerator(KeyStroke.getKeyStroke('V', ActionEvent.CTRL_MASK));
-		quitter.setAccelerator(KeyStroke.getKeyStroke('Q', ActionEvent.CTRL_MASK));
+		cut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
+		copy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
+		paste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
+		quitter.setAccelerator(KeyStroke.getKeyStroke('Q', InputEvent.CTRL_DOWN_MASK));
 
 		setLayout(new MigLayout("","grow",""));
 		JPanel panelFile = new JPanel();
@@ -268,17 +274,17 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 		separateur.addItem(Program.getLabel("Infos044"));
 		separateur.addItem(Program.getLabel("Infos002"));
 
-		choix1.addActionListener((e) -> choix1_actionPerformed(e));
-		choix2.addActionListener((e) -> choix2_actionPerformed(e));
-		choix3.addActionListener((e) -> choix3_actionPerformed(e));
-		choix4.addActionListener((e) -> choix4_actionPerformed(e));
-		choix5.addActionListener((e) -> choix5_actionPerformed(e));
-		choix6.addActionListener((e) -> choix6_actionPerformed(e));
-		choix7.addActionListener((e) -> choix7_actionPerformed(e));
-		choix8.addActionListener((e) -> choix8_actionPerformed(e));
-		choix9.addActionListener((e) -> choix9_actionPerformed(e));
-		choix10.addActionListener((e) -> choix10_actionPerformed(e));
-		choix11.addActionListener((e) -> choix11_actionPerformed(e));
+		choix1.addActionListener(this::choix1_actionPerformed);
+		choix2.addActionListener(this::choix2_actionPerformed);
+		choix3.addActionListener(this::choix3_actionPerformed);
+		choix4.addActionListener(this::choix4_actionPerformed);
+		choix5.addActionListener(this::choix5_actionPerformed);
+		choix6.addActionListener(this::choix6_actionPerformed);
+		choix7.addActionListener(this::choix7_actionPerformed);
+		choix8.addActionListener(this::choix8_actionPerformed);
+		choix9.addActionListener(this::choix9_actionPerformed);
+		choix10.addActionListener(this::choix10_actionPerformed);
+		choix11.addActionListener(this::choix11_actionPerformed);
 		
 		choix2.setEnabled(false);
 		choix3.setEnabled(false);
@@ -299,7 +305,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ItemEvent
 	 */
-	void type_itemStateChanged(ItemEvent e) {
+	private void type_itemStateChanged(ItemEvent e) {
 
 		label_progression.setText("");
 		label2.setVisible(type_txt.isSelected());
@@ -325,7 +331,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void importe_actionPerformed(ActionEvent e) {
+	private void importe_actionPerformed(ActionEvent e) {
 		new Thread(this).start();
 	}
 
@@ -334,7 +340,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void choix1_actionPerformed(ActionEvent e) {
+	private void choix1_actionPerformed(ActionEvent e) {
 		if (choix1.getSelectedIndex() == 0) {
 			choix2.setEnabled(false);
 			choix3.setEnabled(false);
@@ -369,7 +375,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void choix2_actionPerformed(ActionEvent e) {
+	private void choix2_actionPerformed(ActionEvent e) {
 		if (choix2.getSelectedIndex() == 0) {
 			choix3.setEnabled(false);
 			choix4.setEnabled(false);
@@ -402,7 +408,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void choix3_actionPerformed(ActionEvent e) {
+	private void choix3_actionPerformed(ActionEvent e) {
 		if (choix3.getSelectedIndex() == 0) {
 			choix4.setEnabled(false);
 			choix5.setEnabled(false);
@@ -433,7 +439,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void choix4_actionPerformed(ActionEvent e) {
+	private void choix4_actionPerformed(ActionEvent e) {
 		if (choix4.getSelectedIndex() == 0) {
 			choix5.setEnabled(false);
 			choix6.setEnabled(false);
@@ -462,7 +468,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void choix5_actionPerformed(ActionEvent e) {
+	private void choix5_actionPerformed(ActionEvent e) {
 		if (choix5.getSelectedIndex() == 0) {
 			choix6.setEnabled(false);
 			choix7.setEnabled(false);
@@ -489,7 +495,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void choix6_actionPerformed(ActionEvent e) {
+	private void choix6_actionPerformed(ActionEvent e) {
 		if (choix6.getSelectedIndex() == 0) {
 			choix7.setEnabled(false);
 			choix8.setEnabled(false);
@@ -514,7 +520,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void choix7_actionPerformed(ActionEvent e) {
+	private void choix7_actionPerformed(ActionEvent e) {
 		if (choix7.getSelectedIndex() == 0) {
 			choix8.setEnabled(false);
 			choix9.setEnabled(false);
@@ -537,7 +543,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void choix8_actionPerformed(ActionEvent e) {
+	private void choix8_actionPerformed(ActionEvent e) {
 		if (choix8.getSelectedIndex() == 0) {
 			choix9.setEnabled(false);
 			choix10.setEnabled(false);
@@ -558,7 +564,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void choix9_actionPerformed(ActionEvent e) {
+	private void choix9_actionPerformed(ActionEvent e) {
 		if (choix9.getSelectedIndex() == 0) {
 			choix10.setEnabled(false);
 			choix11.setEnabled(false);
@@ -577,7 +583,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void choix10_actionPerformed(ActionEvent e) {
+	private void choix10_actionPerformed(ActionEvent e) {
 		if (choix10.getSelectedIndex() == 0) {
 			choix11.setEnabled(false);
 			choix12.setEnabled(false);
@@ -594,7 +600,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void choix11_actionPerformed(ActionEvent e) {
+	private void choix11_actionPerformed(ActionEvent e) {
 		if (choix11.getSelectedIndex() == 0) {
 			choix12.setEnabled(false);
 			choix12.setSelectedIndex(0);
@@ -613,10 +619,9 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 * @return String[]
 	 */
-	public String[] readXLS(Sheet sheet, int nb_lign_xls, int column) throws ArrayIndexOutOfBoundsException {
+	private String[] readXLS(Sheet sheet, int nb_lign_xls, int column) throws ArrayIndexOutOfBoundsException {
 
-		Cell xls[] = new Cell[nb_lign_xls];
-		xls = sheet.getColumn(column);
+		Cell []xls = sheet.getColumn(column);
 		String cell[] = new String[nb_lign_xls];
 		int i = 0;
 		try {
@@ -643,7 +648,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void parcourir_actionPerformed(ActionEvent e) {
+	private void parcourir_actionPerformed(ActionEvent e) {
 
 		Debug("parcourir_actionPerforming...");
 		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR",""));
@@ -679,7 +684,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						fic = fic.concat(".xml");
 				}
 				else {
-					if (boiteFichier.getFileFilter().getDescription().indexOf("CSV") == -1) {
+					if (!boiteFichier.getFileFilter().getDescription().contains("CSV")) {
 						fic = fic.concat(".txt");
 					}
 					else {
@@ -696,7 +701,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void openit_actionPerformed(ActionEvent e) {
+	private void openit_actionPerformed(ActionEvent e) {
 
 		Debug("openit_actionPerforming...");
 		String nom = file.getText().trim();
@@ -710,7 +715,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				Debug("ERROR: File not found: "+nom);
 				//Fichier non trouvé
 				//"Vérifier le chemin");
-				new Erreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
+				Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
 				return;
 			}
 			Program.open(f);
@@ -720,6 +725,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	/**
 	 * run: Fonction d'import
 	 */
+	@Override
 	public void run() {
 		try {
 			Debug("Running...");
@@ -727,20 +733,15 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 			importe.setEnabled(false);
 			
 			String nom = file.getText().trim();
-			int nom_length = nom.length();
-			if (nom_length == 0) {
+			if (nom.isEmpty()) {
 				//Erreur le nom ne doit pas être vide
 				Debug("ERROR: filename cannot be empty");
 				label_progression.setText("");
-				new Erreur(Program.getError("Error019"));
+				Erreur.showSimpleErreur(Program.getError("Error019"));
 				importe.setEnabled(true);
 				return;
 			}
-			String separe = "";
-			int resul = 0;
 			int nb_choix = 0;
-			String lu[] = new String[15];
-			Rangement new_rangement = null;
 
 			int bool_name = 0;
 			int bool_year = 0;
@@ -754,6 +755,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 			int bool_othe1 = 0;
 			int bool_othe2 = 0;
 			int bool_othe3 = 0;
+			Rangement new_rangement = null;
 
 			if (choix1.getSelectedIndex() != 0) {
 				nb_choix++;
@@ -878,14 +880,14 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 			File f = new File(nom);
 			file.setText(f.getAbsolutePath());
 			nom = f.getAbsolutePath();
-			nom_length = nom.length();
+			int nom_length = nom.length();
 			if(!f.exists()) {
 				//Insertion classe Erreur
 				label_progression.setText("");
 				Debug("ERROR: File not found: "+nom);
 				//Fichier non trouvé
 				//"Vérifier le chemin");
-				new Erreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
+				Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
 				importe.setEnabled(true);
 				return;
 			}
@@ -895,11 +897,12 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				Debug("ERROR: No field selected");
 				//"Aucun champs sélectionnés");
 				//"Veuillez sélectionner des champs pour que les donn�es soient trait�es");
-				new Erreur(Program.getError("Error025"), Program.getError("Error026"));
+				Erreur.showSimpleErreur(Program.getError("Error025"), Program.getError("Error026"));
 				importe.setEnabled(true);
 				return;
 			}
 
+			boolean resul = true;
 			if (nom_length >= 3) {
 				String str_tmp3 = nom.substring(nom_length - 3);
 				if (type_xls.isSelected()) {
@@ -907,8 +910,8 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						label_progression.setText("");
 						Debug("ERROR: Not a XLS File");
 						//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
-						resul = 1;
-						new Erreur(MessageFormat.format(Program.getError("Error034"), str_tmp3), Program.getError("Error035"));
+						resul = false;
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), str_tmp3), Program.getError("Error035"));
 					}
 				}
 				else if (type_txt.isSelected()){
@@ -917,8 +920,8 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						Debug("ERROR: Not a TXT File");
 						//"Le fichier saisie ne possède pas une extension Texte: " + str_tmp3);
 						//"Veuillez saisir le nom d'un fichier TXT ou CSV.");
-						resul = 1;
-						new Erreur(MessageFormat.format(Program.getError("Error023"), str_tmp3), Program.getError("Error024"));
+						resul = false;
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error023"), str_tmp3), Program.getError("Error024"));
 					}
 				}
 				else {
@@ -927,8 +930,8 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						Debug("ERROR: Not a XML File");
 						//"Le fichier saisie ne possède pas une extension Xml: " + str_tmp3);
 						//"Veuillez saisir le nom d'un fichier XML.");
-						resul = 1;
-						new Erreur(MessageFormat.format(Program.getError("Error204"), str_tmp3), Program.getError("Error205"));
+						resul = false;
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error204"), str_tmp3), Program.getError("Error205"));
 					}
 				}
 			}
@@ -938,47 +941,42 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				ListeBouteille.loadXML(f);
 				importe.setEnabled(true);
 				label_progression.setText(Program.getLabel("Infos035")); //"Import Terminé");
-				new java.util.Timer().schedule( 
-				        new java.util.TimerTask() {
-				            @Override
-				            public void run() {
-				            	SwingUtilities.invokeLater(new Runnable() {
-									@Override
-									public void run() {
-										label_progression.setText("");
-									}
-				            	});
-				            }
-				        }, 
-				        5000 
+				new Timer().schedule(
+						new TimerTask() {
+								@Override
+								public void run() {
+									SwingUtilities.invokeLater(() -> label_progression.setText(""));
+								}
+						},
+						5000
 				);
 				return;
 			}
 
 			if (bool_name > 1 || bool_year > 1 || bool_half > 1 || bool_plac > 1 || bool_nump > 1 || bool_line > 1 || bool_colu > 1 || bool_pric > 1 || bool_comm > 1 || bool_othe1 > 1 || bool_othe2 > 1 ||
-					bool_othe3 > 1 && resul == 0) {
+					bool_othe3 > 1 && resul) {
 
 				label_progression.setText("");
 				Debug("ERROR: fields cannot be selected more than one time");
 				//"Un champ ne doit pas être sélectionné 2 fois.");
 				//"Veuillez choisir un champ différent pour chaque colonne.");
-				new Erreur(Program.getError("Error017"), Program.getError("Error018"));
-				resul = 1;
+				Erreur.showSimpleErreur(Program.getError("Error017"), Program.getError("Error018"));
+				resul = false;
 			}
 			else if( bool_name == 0) {
 				label_progression.setText("");
 				Debug("ERROR: No column for wine name");
 				//"Aucune colonne n'indique le nom du vin.
 				//"Veuillez sélectionner une colonne avec le nom du vin
-				new Erreur(Program.getError("Error142"), Program.getError("Error143"));
-				resul = 1;
+				Erreur.showSimpleErreur(Program.getError("Error142"), Program.getError("Error143"));
+				resul = false;
 			}
 			else if( bool_plac == 0) {
 				label_progression.setText("");
 				Debug("ERROR: No place defined, a place will be create");
 				//Il n'y a pas de rangements définis dans le fichier.
 				//Un rangement par défaut va être créé.
-				new Erreur(Program.getError("Error140"), Program.getError("Error141"), true);
+				Erreur.showSimpleErreur(Program.getError("Error140"), Program.getError("Error141"), true);
 
 				int nb_caisse = 0;
 				for (Rangement cave : Program.getCave()) {
@@ -987,7 +985,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					}
 				}
 
-				String titre = Program.getLabel("Infos010");
+				String title = Program.getLabel("Infos010");
 				String message2 = Program.getLabel("Infos308");
 				String titre_properties[] = new String[nb_caisse + 2];
 				String default_value[] = new String[nb_caisse + 2];
@@ -1011,62 +1009,60 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				key_properties[nb_caisse + 1] = "RANGEMENT_NAME";
 				default_value[nb_caisse + 1] = "";
 				type_objet[nb_caisse + 1] = "JTextField";
-				MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
+				MyOptions myoptions = new MyOptions(title, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
 				myoptions.setVisible(true);
 				int num_r = Program.getCaveConfigInt("RANGEMENT_DEFAULT",-1);
 				if (num_r == Program.GetCaveLength()) {
 					String nom1 = Program.getCaveConfigString("RANGEMENT_NAME",""); //Program.options.getValue();
 					do {
 						do {
-							// Contr�le sur le nom
-							resul = 0;
-							if (nom1.indexOf("\"") != -1 || nom1.indexOf(";") != -1 || nom1.indexOf("<") != -1 || nom1.indexOf(">") != -1 || nom1.indexOf("?") != -1 || nom1.indexOf("\\") != -1 ||
-									nom1.indexOf("/") != -1 || nom1.indexOf("|") != -1 || nom1.indexOf("*") != -1) {
+							// Controle sur le nom
+							resul = true;
+							if (nom1.contains("\"") || nom1.contains(";") || nom1.contains("<") || nom1.contains(">") || nom1.contains("?") || nom1.contains("\\") ||
+									nom1.contains("/") || nom1.contains("|") || nom1.contains("*")) {
 								Program.options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
 										Program.getError("Error126"), false);
 								Program.options.setVisible(true);
 								nom1 = Program.options.getValue();
 								Program.options = null;
-								resul = 1;
+								resul = false;
 							}
 						}
-						while (resul != 0);
-						if (resul == 0) {
+						while (!resul);
+						if (resul) {
 							do {
-								// Contr�le sur la longueur du nom
-								if (nom1.length() == 0) {
+								// Controle sur la longueur du nom
+								if (nom1.isEmpty()) {
 									Program.options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", "",
 											Program.getError("Error010"), false);
 									Program.options.setVisible(true);
 									nom1 = Program.options.getValue();
 									Program.options = null;
-									resul = 1;
+									resul = false;
 								}
 							}
-							while (nom1.length() == 0);
+							while (nom1.isEmpty());
 						}
-						if (resul == 0) {
+						if (resul) {
 							Rangement rangement;
 							do {
-								// Contr�le de l'existance du rangement
+								// Controle de l'existance du rangement
 								rangement = null;
-								if (nom1.length() > 0) {
+								if (!nom1.isEmpty()) {
 									rangement = Program.getCave(nom1);
-								}
-								if (rangement != null) {
 									Program.options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
 											Program.getError("Error037"), false);
 									Program.options.setVisible(true);
 									nom1 = Program.options.getValue();
 									Program.options = null;
-									resul = 1;
+									resul = false;
 								}
 							}
 							while (rangement != null);
 						}
 					}
-					while (resul != 0);
-					resul = 0;
+					while (!resul);
+					resul = true;
 					Debug("Creating new place with name: "+nom1);
 					new_rangement = new Rangement(nom1, 1, 0, false, -1);
 					Program.addCave(new_rangement);
@@ -1076,25 +1072,27 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 				}
 			}
 			if (type_txt.isSelected()) {
+				String separe;
 				//Cas des fichiers TXT
 				Debug("Importing Text File...");
-				switch (separateur.getSelectedIndex())
-				{
-				case 0:
-					separe = ";";
-					break;
-				case 1:
-					separe = ":";
-					break;
-				case 2:
-					separe = "/";
-					break;
-				case 3:
-					separe = ",";
-					break;
+				switch (separateur.getSelectedIndex()) {
+					case 0:
+						separe = ";";
+						break;
+					case 1:
+						separe = ":";
+						break;
+					case 2:
+						separe = "/";
+						break;
+					case 3:
+						separe = ",";
+						break;
+					default:
+						separe = ";";
 				}
 
-				if (resul == 0) {
+				if (resul) {
 					BufferedReader reader = new BufferedReader(new FileReader(f));
 					String line = reader.readLine();
 					if(line != null) {
@@ -1104,17 +1102,17 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 							Debug("ERROR: No separator found");
 							//"Le séparateur sélectionné n'a pas été trouvé.");
 							//"Veuillez sélectionner le s�parateur utilis� dans votre fichier.");
-							resul = 1;
-							new Erreur(Program.getError("Error042"), Program.getError("Error043"));
+							resul = false;
+							Erreur.showSimpleErreur(Program.getError("Error042"), Program.getError("Error043"));
 						}
 					}
 					if(titre.isSelected())
 						line = reader.readLine();
-					if(resul == 0) {
+					if(resul) {
 						label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
 						int maxNumPlace = 0;
 						while (line != null) {
-							lu = line.split(separe);
+							String []lu = line.split(separe);
 							Bouteille bottle = new Bouteille();
 							bottle.updateID();
 							for (int i = 0; i < lu.length; i++) {
@@ -1214,6 +1212,8 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 								case IGP:
 									bottle.getVignoble().setIGP(value);
 									break;
+									default:
+										break;
 								}
 							}
 							if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null ) {
@@ -1226,18 +1226,13 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 					}
 					reader.close();
 				}
-				if (resul == 0) {
+				if (resul) {
 					label_progression.setText(Program.getLabel("Infos200"));
-					new java.util.Timer().schedule( 
+					new Timer().schedule(
 					        new java.util.TimerTask() {
 					            @Override
 					            public void run() {
-					            	SwingUtilities.invokeLater(new Runnable() {
-										@Override
-										public void run() {
-											label_progression.setText("");
-										}
-					            	});
+					            	SwingUtilities.invokeLater(() -> label_progression.setText(""));
 					            }
 					        }, 
 					        5000 
@@ -1247,10 +1242,8 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 			}
 			else { //Excel File
 				Debug("Importing XLS file...");
-				int nb_lign_xls = 0;
-				boolean skipTitle = false;
 
-				if (resul == 0) {
+				if (resul) {
 					label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
 					//Ouverture du fichier Excel
 					try {
@@ -1259,7 +1252,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						//Sélection de la feuille
 						Sheet sheet = workbook.getSheet(0);
 						//Lecture de cellules
-						nb_lign_xls = sheet.getRows();
+						int nb_lign_xls = sheet.getRows();
 						//Get number of column in excel File
 						int resul_tmp = 0;
 						boolean bool_resul = false;
@@ -1272,11 +1265,11 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 								bool_resul = true;
 							}
 						}
-						while (resul_tmp < nb_lign_xls && bool_resul != true);
+						while (resul_tmp < nb_lign_xls && !bool_resul);
 						//Number of columns found in Excel File
 						int nbcol_lu = resul_tmp;
 
-						if (resul == 0) {
+						if (resul) {
 							//Reading Excel File
 							String cell_tmp[][] = new String[nbcol_lu][nb_lign_xls];
 							for (int k = 0; k < nbcol_lu; k++) {
@@ -1293,14 +1286,15 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 										}
 										catch (NullPointerException npe) {}
 									}
-									if(lu_length > 0 && titre.isSelected() && !skipTitle) {
+									boolean skipTitle = false;
+									if(lu_length > 0 && titre.isSelected()) {
 										Debug("Skipping title line");
 										skipTitle = true;
 										continue;
 									}
 								}
 								catch (NullPointerException npe) {}
-								if (resul == 0) {
+								if (resul) {
 									int maxNumPlace = 0;
 									if (lu_length != 0) {
 										Bouteille bottle = new Bouteille();
@@ -1409,6 +1403,8 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 											case IGP:
 												bottle.getVignoble().setIGP(cell_tmp[i][j]);
 												break;
+												default:
+													break;
 											}
 										}
 										Program.getStorage().addWine(bottle);
@@ -1418,12 +1414,12 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 							}
 						} //End if resul
 					}
-					catch (IOException | jxl.read.biff.BiffException ioe1) {
+					catch (IOException | BiffException e) {
 						label_progression.setText("");
 						Debug("ERROR: File not found (IO): "+nom);
 						//Fichier non trouvé
 						//"Vérifier le chemin");
-						new Erreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
 						importe.setEnabled(true);
 						return;
 					}
@@ -1431,24 +1427,19 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 						Program.showException(e, false);
 						label_progression.setText("");
 						Debug("ERROR: "+e.toString());
-						new Erreur(Program.getError("Error082"));
+						Erreur.showSimpleErreur(Program.getError("Error082"));
 						importe.setEnabled(true);
 						return;
 					}
 				} //End if resul
 
-				if (resul == 0) {
+				if (resul) {
 					label_progression.setText(Program.getLabel("Infos200"));
-					new java.util.Timer().schedule( 
-					        new java.util.TimerTask() {
+					new Timer().schedule(
+					        new TimerTask() {
 					            @Override
 					            public void run() {
-					            	SwingUtilities.invokeLater(new Runnable() {
-										@Override
-										public void run() {
-											label_progression.setText("");
-										}
-					            	});
+					            	SwingUtilities.invokeLater(() -> label_progression.setText(""));
 					            }
 					        }, 
 					        5000 
@@ -1485,7 +1476,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void couper_actionPerformed(ActionEvent e) {
+	private void couper_actionPerformed(ActionEvent e) {
 		String txt = "";
 		try {
 			JTextField jtf = (JTextField) objet1;
@@ -1501,7 +1492,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void copier_actionPerformed(ActionEvent e) {
+	private void copier_actionPerformed(ActionEvent e) {
 		String txt = "";
 		try {
 			JTextField jtf = (JTextField) objet1;
@@ -1516,7 +1507,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param e ActionEvent
 	 */
-	void coller_actionPerformed(ActionEvent e) {
+	private void coller_actionPerformed(ActionEvent e) {
 
 		try {
 			JTextField jtf = (JTextField) objet1;
@@ -1544,21 +1535,21 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 	 * @since 17/04/05
 	 */
 	class PopupListener extends MouseAdapter {
-
+		@Override
 		public void mousePressed(MouseEvent e) {
 			maybeShowPopup(e);
 		}
-
+		@Override
 		public void mouseClicked(MouseEvent e) {
 			maybeShowPopup(e);
 		}
-
+		@Override
 		public void mouseEntered(MouseEvent e) {
 		}
-
+		@Override
 		public void mouseExited(MouseEvent e) {
 		}
-
+		@Override
 		public void mouseReleased(MouseEvent e) {
 		}
 

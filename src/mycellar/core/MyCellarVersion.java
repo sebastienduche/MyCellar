@@ -9,8 +9,8 @@ import java.io.InputStreamReader;
 
 public class MyCellarVersion {
 
-	public static final String version = "2.7.6.3";
-	public static final String mainVersion = "5.2 GA";
+	public static final String version = "2.7.8.7";
+	public static final String mainVersion = "5.3 ZE";
   
 	public static String getLocalVersion() {
 		InputStream stream = MyCellarVersion.class.getClassLoader().getResourceAsStream("MyCellarVersion.txt");

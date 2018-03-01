@@ -1,13 +1,14 @@
 package mycellar.showfile;
 
-import java.text.MessageFormat;
-import java.util.LinkedList;
-
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Rangement;
 import mycellar.core.MyCellarError;
+
+import java.text.MessageFormat;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -16,8 +17,8 @@ import mycellar.core.MyCellarError;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 22/10/17
+ * @version 0.7
+ * @since 01/03/18
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -35,23 +36,21 @@ public class ErrorShowValues extends TableShowValues {
 	public final static int STATUS = 9;
 	public final static int BUTTON = 10;
 	private final static int NBCOL = 11;
-	private String[] columnNames = {"", Program.getLabel("ErrorShowValues.error"), Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
+	private final String[] columnNames = {"", Program.getLabel("ErrorShowValues.error"), Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
 			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("ShowFile.Status"), "" };
 
 	protected Boolean[] values = null;
-	protected Boolean[] status = null;
-	protected Boolean[] editable = null;
+	private Boolean[] status = null;
+	private Boolean[] editable = null;
 
-	protected int sortCol = 0;
-
-	protected boolean isSortAsc = true;
-	protected LinkedList<MyCellarError> monVector = new LinkedList<MyCellarError>();
+	private List<MyCellarError> monVector = new LinkedList<>();
 
 	/**
 	 * getRowCount
 	 *
 	 * @return int
 	 */
+	@Override
 	public int getRowCount() {
 		return monVector.size();
 	}
@@ -61,6 +60,7 @@ public class ErrorShowValues extends TableShowValues {
 	 *
 	 * @return int
 	 */
+	@Override
 	public int getColumnCount() {
 		return NBCOL;
 	}
@@ -72,6 +72,7 @@ public class ErrorShowValues extends TableShowValues {
 	 * @param column int
 	 * @return Object
 	 */
+	@Override
 	public Object getValueAt(int row, int column) {
 		if(monVector.size() <= row)
 			return null;
@@ -114,6 +115,7 @@ public class ErrorShowValues extends TableShowValues {
 	 * @param column int
 	 * @return String
 	 */
+	@Override
 	public String getColumnName(int column) {
 		return columnNames[column];
 	}
@@ -125,8 +127,9 @@ public class ErrorShowValues extends TableShowValues {
 	 * @param column int
 	 * @return boolean
 	 */
+	@Override
 	public boolean isCellEditable(int row, int column) {
-		if(editable[row] == Boolean.FALSE)
+		if(editable[row].equals(Boolean.FALSE))
 			return false;
 		if (column == ETAT 
 				|| column == NAME 
@@ -150,6 +153,7 @@ public class ErrorShowValues extends TableShowValues {
 	 * @param row int
 	 * @param column int
 	 */
+	@Override
 	public void setValueAt(Object value, int row, int column) {
 
 		MyCellarError error = monVector.get(row);
@@ -168,7 +172,7 @@ public class ErrorShowValues extends TableShowValues {
 				fireTableRowsUpdated(row, row);
 			} else {
 				status[row] = Boolean.FALSE;
-				new Erreur(Program.getError("ShowFile.errorAddingBottle"));
+				Erreur.showSimpleErreur(Program.getError("ShowFile.errorAddingBottle"));
 			}
 			break;
 		case NAME:
@@ -179,7 +183,7 @@ public class ErrorShowValues extends TableShowValues {
 			break;
 		case YEAR:
 			if( Program.hasYearControl() && !Bouteille.isValidYear( (String) value) )
-				new Erreur(Program.getError("Error053"));
+				Erreur.showSimpleErreur(Program.getError("Error053"));
 			else{
 				b.setAnnee((String)value);	
 			}
@@ -211,7 +215,7 @@ public class ErrorShowValues extends TableShowValues {
 					nValueToCheck = num_empl;
 				}
 				catch (Exception e) {
-					new Erreur(Program.getError("Error196"));
+					Erreur.showSimpleErreur(Program.getError("Error196"));
 					bError = true;
 				}
 			}
@@ -221,7 +225,7 @@ public class ErrorShowValues extends TableShowValues {
 					nValueToCheck = line;
 				}
 				catch (Exception e) {
-					new Erreur(Program.getError("Error196"));
+					Erreur.showSimpleErreur(Program.getError("Error196"));
 					bError = true;
 				}
 			}
@@ -231,15 +235,14 @@ public class ErrorShowValues extends TableShowValues {
 					nValueToCheck = column1;
 				}
 				catch (Exception e) {
-					new Erreur(Program.getError("Error196"));
+					Erreur.showSimpleErreur(Program.getError("Error196"));
 					bError = true;
 				}
 			}
 
 			if ( !bError && (column == NUM_PLACE || column == LINE || column == COLUMN) ) {
-				if (rangement != null && !rangement.isCaisse() && nValueToCheck <= 0)
-				{
-					new Erreur(Program.getError("Error197"));
+				if (rangement != null && !rangement.isCaisse() && nValueToCheck <= 0) {
+					Erreur.showSimpleErreur(Program.getError("Error197"));
 					bError = true;
 				}
 			}
@@ -249,42 +252,41 @@ public class ErrorShowValues extends TableShowValues {
 				int tmpNumEmpl = num_empl;
 				int tmpLine = line;
 				int tmpCol = column1;
-				if(!rangement.isCaisse()) {
-					tmpNumEmpl--;
-					tmpCol--;
-					tmpLine--;
-				}
-				if(rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol))
-				{
-					Bouteille bTemp = null;
-					if(!rangement.isCaisse())
-						bTemp = rangement.getBouteille(num_empl-1, line-1, column1-1);
-					if( bTemp != null) {
-						status[row] = Boolean.FALSE;
-						new Erreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), b.getAnnee()));
+				if (rangement != null) {
+					if (!rangement.isCaisse()) {
+						tmpNumEmpl--;
+						tmpCol--;
+						tmpLine--;
 					}
-					else {
-						if(column == PLACE)
-							b.setEmplacement((String)value);
-						else if(column == NUM_PLACE)
-							b.setNumLieu(Integer.parseInt((String)value));
-						else if(column == LINE)
-							b.setLigne(Integer.parseInt((String)value));
-						else if(column == COLUMN)
-							b.setColonne(Integer.parseInt((String)value));
-						//values[row][column] = value;
-						if ( column == PLACE && rangement.isCaisse()) {
-							int nNumEmpl = b.getNumLieu();//Integer.parseInt((String) values[row][NUM_PLACE]);
-							if( nNumEmpl > rangement.getLastNumEmplacement())
-								b.setNumLieu(rangement.getFreeNumPlaceInCaisse());
-							b.setLigne(0);
-							b.setColonne(0);
+					if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
+						Bouteille bTemp = null;
+						if (!rangement.isCaisse())
+							bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
+						if (bTemp != null) {
+							status[row] = Boolean.FALSE;
+							Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), b.getAnnee()));
+						} else {
+							if (column == PLACE)
+								b.setEmplacement((String) value);
+							else if (column == NUM_PLACE)
+								b.setNumLieu(Integer.parseInt((String) value));
+							else if (column == LINE)
+								b.setLigne(Integer.parseInt((String) value));
+							else if (column == COLUMN)
+								b.setColonne(Integer.parseInt((String) value));
+							//values[row][column] = value;
+							if (column == PLACE && rangement.isCaisse()) {
+								int nNumEmpl = b.getNumLieu();//Integer.parseInt((String) values[row][NUM_PLACE]);
+								if (nNumEmpl > rangement.getLastNumEmplacement())
+									b.setNumLieu(rangement.getFreeNumPlaceInCaisse());
+								b.setLigne(0);
+								b.setColonne(0);
+							}
+							status[row] = Boolean.TRUE;
 						}
-						status[row] = Boolean.TRUE;
-					}
+					} else
+						status[row] = Boolean.FALSE;
 				}
-				else
-					status[row] = Boolean.FALSE;
 			}
 			else
 				status[row] = Boolean.FALSE;
@@ -325,6 +327,7 @@ public class ErrorShowValues extends TableShowValues {
 	 *
 	 * @return int
 	 */
+	@Override
 	public int getNbData() {
 		return monVector.size();
 	}

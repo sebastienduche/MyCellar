@@ -1,17 +1,16 @@
 package mycellar;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarCheckBox;
+import mycellar.core.MyCellarFields;
+import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarRadioButton;
+import mycellar.pdf.PDFPageProperties;
+import mycellar.pdf.PDFProperties;
+import mycellar.pdf.PDFTools;
+import mycellar.showfile.ManageColumnModel;
+import net.miginfocom.swing.MigLayout;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -25,22 +24,22 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarFields;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarRadioButton;
-import mycellar.pdf.PDFPageProperties;
-import mycellar.pdf.PDFProperties;
-import mycellar.pdf.PDFTools;
-import mycellar.showfile.ManageColumnModel;
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -49,41 +48,38 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.6
- * @since 23/10/17
+ * @version 6.7
+ * @since 01/03/18
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
-	private MyCellarLabel textControl1 = new MyCellarLabel();
-	private MyCellarButton valider = new MyCellarButton();
-	private JTextField file = new JTextField();
-	private MyCellarButton browse = new MyCellarButton();
-	private MyCellarButton parameters = new MyCellarButton();
-	private MyCellarRadioButton MyCellarRadioButtonXML = new MyCellarRadioButton(Program.getLabel("Infos210"), true);
-	private MyCellarRadioButton MyCellarRadioButtonHTML = new MyCellarRadioButton(Program.getLabel("Infos211"), false);
-	private MyCellarLabel MyCellarLabel1 = new MyCellarLabel();
-	private MyCellarRadioButton MyCellarRadioButtonCSV = new MyCellarRadioButton(Program.getLabel("Infos212"), false);
-	private MyCellarRadioButton MyCellarRadioButtonXLS = new MyCellarRadioButton(Program.getLabel("Infos233"), false);
-	private MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton(Program.getLabel("Infos248"), false);
-	private ButtonGroup cbg = new ButtonGroup();
-	private MyCellarLabel end = new MyCellarLabel();
-	private MyCellarButton openit = new MyCellarButton();
-	private MyCellarCheckBox options = new MyCellarCheckBox(Program.getLabel("Infos193") + "...");
+	private final MyCellarLabel textControl1 = new MyCellarLabel();
+	private final MyCellarButton valider = new MyCellarButton();
+	private final JTextField file = new JTextField();
+	private final MyCellarButton browse = new MyCellarButton();
+	private final MyCellarButton parameters = new MyCellarButton();
+	private final MyCellarRadioButton MyCellarRadioButtonXML = new MyCellarRadioButton(Program.getLabel("Infos210"), true);
+	private final MyCellarRadioButton MyCellarRadioButtonHTML = new MyCellarRadioButton(Program.getLabel("Infos211"), false);
+	private final MyCellarLabel MyCellarLabel1 = new MyCellarLabel();
+	private final MyCellarRadioButton MyCellarRadioButtonCSV = new MyCellarRadioButton(Program.getLabel("Infos212"), false);
+	private final MyCellarRadioButton MyCellarRadioButtonXLS = new MyCellarRadioButton(Program.getLabel("Infos233"), false);
+	private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton(Program.getLabel("Infos248"), false);
+	private final ButtonGroup cbg = new ButtonGroup();
+	private final MyCellarLabel end = new MyCellarLabel();
+	private final MyCellarButton openit = new MyCellarButton();
+	private final MyCellarCheckBox options = new MyCellarCheckBox(Program.getLabel("Infos193") + "...");
 	private char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private char EXPORT = Program.getLabel("EXPORT").charAt(0);
-	private JPopupMenu popup = new JPopupMenu();
-	private JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-	private JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-	private MyClipBoard clipboard = new MyClipBoard();
-	private JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
+	private final JPopupMenu popup = new JPopupMenu();
+	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
+	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
+	private final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
+	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
+	private final JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+	private final MyClipBoard clipboard = new MyClipBoard();
+	private final JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
 	private Component objet1 = null;
-	private PDFOptions ef = null;
-	private XLSOptions xf = null;
-	private CSVOptions cf = null;
 	private boolean isJFile = false;
 	private LinkedList<Bouteille> bottles = null;
 	static final long serialVersionUID = 240706;
@@ -103,10 +99,10 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	/**
 	 * Export: Constructeur pour l'export.
 	 *
-	 * @param cave LinkedList<Bouteille>: Contenu de la cave.
+	 * @param bottles LinkedList<Bouteille>: Contenu de la cave.
 	 */
-	public Export(LinkedList<Bouteille> cave) {
-		this.bottles = cave;
+	public Export(LinkedList<Bouteille> bottles) {
+		this.bottles = bottles;
 		try {
 			jbInit();
 		}
@@ -118,10 +114,9 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	/**
 	 * jbInit: Fonction d'initialisation.
 	 *
-	 * @param cave Rangement: contenu de la cave.
 	 * @throws Exception
 	 */
-	private void jbInit() throws Exception {
+	private void jbInit() {
 
 		textControl1.setText(Program.getLabel("Infos149")); //Nom du fichier:
 		browse.setText("...");
@@ -135,7 +130,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 		MyCellarRadioButtonXML.addActionListener((e) -> jradio_actionPerformed());
 		MyCellarRadioButtonHTML.addActionListener((e) -> jradio_actionPerformed());
 		MyCellarRadioButtonCSV.addActionListener((e) -> jradio_actionPerformed());
-		end.setHorizontalAlignment(0);
+		end.setHorizontalAlignment(SwingConstants.CENTER);
 		end.setForeground(Color.red);
 		MyCellarRadioButtonXLS.addActionListener((e) -> jradio_actionPerformed());
 		MyCellarRadioButtonPDF.addActionListener((e) -> jradio_actionPerformed());
@@ -156,9 +151,9 @@ public class Export extends JPanel implements ITabListener, Runnable {
 		file.addMouseListener(popup_l);
 		cut.setEnabled(false);
 		copy.setEnabled(false);
-		cut.setAccelerator(KeyStroke.getKeyStroke('X', ActionEvent.CTRL_MASK));
-		copy.setAccelerator(KeyStroke.getKeyStroke('C', ActionEvent.CTRL_MASK));
-		paste.setAccelerator(KeyStroke.getKeyStroke('V', ActionEvent.CTRL_MASK));
+		cut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
+		copy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
+		paste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
 
 		cbg.add(MyCellarRadioButtonXML);
 		cbg.add(MyCellarRadioButtonHTML);
@@ -174,14 +169,15 @@ public class Export extends JPanel implements ITabListener, Runnable {
 		options.addActionListener((e) -> options_actionPerformed());
 		browse.addActionListener((e) -> browse_actionPerformed());
 
-		this.addKeyListener(new java.awt.event.KeyListener() {
-			public void keyReleased(java.awt.event.KeyEvent e) {}
-
-			public void keyPressed(java.awt.event.KeyEvent e) {
+		addKeyListener(new KeyListener() {
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			@Override
+			public void keyPressed(KeyEvent e) {
 				keylistener_actionPerformed(e);
 			}
-
-			public void keyTyped(java.awt.event.KeyEvent e) {}
+			@Override
+			public void keyTyped(KeyEvent e) {}
 		});
 
 		setLayout(new MigLayout("","grow",""));
@@ -220,40 +216,35 @@ public class Export extends JPanel implements ITabListener, Runnable {
 		MyCellarRadioButtonPDF.setSelected(val == 4);
 		options.setEnabled(val != 0);
 
-		this.setVisible(true);
+		setVisible(true);
 	}
 
-	//Exporter
 	/**
 	 * valider_actionPerformed: Fonction d'export.
 	 */
-	void valider_actionPerformed() {
+	private void valider_actionPerformed() {
 		new Thread(this).start();
 	}
 
 	/**
 	 * browse_actionPerformed: Fonction pour parcourir les répertoires.
 	 */
-	void browse_actionPerformed() {
+	private void browse_actionPerformed() {
 
 		end.setText("");
 		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR",""));
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		if (MyCellarRadioButtonPDF.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
-		}
-		if (MyCellarRadioButtonXLS.isSelected()) {
+		} else if (MyCellarRadioButtonXLS.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-		}
-		if (MyCellarRadioButtonCSV.isSelected()) {
+		} else if (MyCellarRadioButtonCSV.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
-		}
-		if (MyCellarRadioButtonHTML.isSelected()) {
+		} else if (MyCellarRadioButtonHTML.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTM);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
-		}
-		if (MyCellarRadioButtonXML.isSelected()) {
+		} else if (MyCellarRadioButtonXML.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
 		}
 
@@ -262,9 +253,9 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			String nom = nomFichier.getName();
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
 			//Erreur utilisation de caractères interdits
-			if (nom.indexOf("\"") != -1 || nom.indexOf(";") != -1 || nom.indexOf("<") != -1 || nom.indexOf(">") != -1 || nom.indexOf("?") != -1 || nom.indexOf("\\") != -1 || nom.indexOf("/") != -1 ||
-					nom.indexOf("|") != -1 || nom.indexOf("*") != -1) {
-				new Erreur(Program.getError("Error126"));
+			if (nom.contains("\"") || nom.contains(";") || nom.contains("<") || nom.contains(">") || nom.contains("?") || nom.contains("\\") || nom.contains("/") ||
+					nom.contains("|") || nom.contains("*") ) {
+				Erreur.showSimpleErreur(Program.getError("Error126"));
 			}
 			else {
 				String fic = nomFichier.getAbsolutePath();
@@ -272,21 +263,17 @@ public class Export extends JPanel implements ITabListener, Runnable {
 				if (index == -1) {
 					if (MyCellarRadioButtonXML.isSelected()) {
 						fic = fic.concat(".xml");
-					}
-					else if (MyCellarRadioButtonHTML.isSelected()) {
+					}	else if (MyCellarRadioButtonHTML.isSelected()) {
 						fic = fic.concat(".htm");
-					}
-					else if (MyCellarRadioButtonCSV.isSelected()) {
+					}	else if (MyCellarRadioButtonCSV.isSelected()) {
 						fic = fic.concat(".csv");
-					}
-					else if (MyCellarRadioButtonXLS.isSelected()) {
+					}	else if (MyCellarRadioButtonXLS.isSelected()) {
 						Filtre filtre = (Filtre) boiteFichier.getFileFilter();
 						if (filtre.toString().equals("xls"))
 							fic = fic.concat(".xls");
 						if (filtre.toString().equals("ods"))
 							fic = fic.concat(".ods");
-					}
-					else if (MyCellarRadioButtonPDF.isSelected()) {
+					}	else if (MyCellarRadioButtonPDF.isSelected()) {
 						fic = fic.concat(".pdf");
 					}
 				}
@@ -299,7 +286,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	/**
 	 * openit_actionPerformed: Ouvrir le fichier issu de l'export.
 	 */
-	void openit_actionPerformed() {
+	private void openit_actionPerformed() {
 
 		String nom = file.getText().trim();
 		if (!nom.isEmpty()) {
@@ -308,7 +295,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 				end.setText("");
 				//Fichier non trouvé
 				//Vérifier le chemin
-				new Erreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
+				Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
 				return;
 			}
 			Program.open(f);
@@ -318,27 +305,24 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	/**
 	 * options_actionPerformed: Appel de la fenêtre d'options.
 	 */
-	void options_actionPerformed() {
+	private void options_actionPerformed() {
 		end.setText("");
 		if (MyCellarRadioButtonPDF.isSelected()) {
-			ef = new PDFOptions();
+			PDFOptions ef = new PDFOptions();
 			ef.setAlwaysOnTop(true);
 			ef.setVisible(true);
-			ef = null;
 			options.setSelected(false);
 		}
 		else if (MyCellarRadioButtonXLS.isSelected()) {
-			xf = new XLSOptions();
+			XLSOptions xf = new XLSOptions();
 			xf.setAlwaysOnTop(true);
 			xf.setVisible(true);
-			xf = null;
 			options.setSelected(false);
 		}
 		else if (MyCellarRadioButtonCSV.isSelected()) {
-			cf = new CSVOptions();
+			CSVOptions cf = new CSVOptions();
 			cf.setAlwaysOnTop(true);
 			cf.setVisible(true);
-			cf = null;
 			options.setSelected(false);
 		}
 		else if(MyCellarRadioButtonHTML.isSelected()) {
@@ -355,9 +339,9 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			JPanel panel = new JPanel();
 			panel.add(new JScrollPane(table));
 			JOptionPane.showMessageDialog(this, panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
-			cols = new ArrayList<MyCellarFields>();
+			cols = new ArrayList<>();
 			Program.setModified();
-			LinkedList<Integer> properties = modelColumn.getSelectedColumns();
+			List<Integer> properties = modelColumn.getSelectedColumns();
 			for(MyCellarFields c : list) {
 				if(properties.contains(c.ordinal()))
 					cols.add(c);
@@ -386,32 +370,15 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	/**
 	 * jradio_actionPerformed: Bouton radio.
 	 */
-	void jradio_actionPerformed() {
+	private void jradio_actionPerformed() {
 		end.setText("");
 		options.setEnabled(!MyCellarRadioButtonXML.isSelected());
 	}
 
 	/**
-	 * this_windowActivated: Mis au premier plan de l'erreur.
-	 *
-	 * @param e WindowEvent
-	 */
-	void this_windowActivated(WindowEvent e) {
-		if (ef != null) {
-			ef.toFront();
-		}
-		if (xf != null) {
-			xf.toFront();
-		}
-		if (cf != null) {
-			cf.toFront();
-		}
-	}
-
-	/**
 	 * couper_actionPerformed: Couper
 	 */
-	void couper_actionPerformed() {
+	private void couper_actionPerformed() {
 		String txt = "";
 		try {
 			JTextField jtf = (JTextField) objet1;
@@ -419,14 +386,13 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
 		}
 		catch (Exception e1) {}
-		;
 		clipboard.copier(txt);
 	}
 
 	/**
 	 * copier_actionPerformed: Copier
 	 */
-	void copier_actionPerformed() {
+	private void copier_actionPerformed() {
 		String txt = "";
 		try {
 			JTextField jtf = (JTextField) objet1;
@@ -439,7 +405,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	/**
 	 * coller_actionPerformed: Couper
 	 */
-	void coller_actionPerformed() {
+	private void coller_actionPerformed() {
 
 		try {
 			JTextField jtf = (JTextField) objet1;
@@ -451,7 +417,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	/**
 	 * aide_actionPerformed: Aide
 	 */
-	void aide_actionPerformed() {
+	private void aide_actionPerformed() {
 		Program.getAide();
 	}
 
@@ -459,6 +425,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	/**
 	 * run: Exécution des tâches.
 	 */
+	@Override
 	public void run() {
 		try {
 			valider.setEnabled(false);
@@ -470,7 +437,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 
 			if (nom.isEmpty()) {
 				end.setText("");
-				new Erreur(Program.getError("Error106")); //Veuillez saisir un nom de fichier.
+				Erreur.showSimpleErreur(Program.getError("Error106")); //Veuillez saisir un nom de fichier.
 				return;
 			}
 
@@ -481,13 +448,13 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			if (MyCellarRadioButtonXML.isSelected()) {
 				if (!extension.equalsIgnoreCase(".xml")) {
 					end.setText("");
-					new Erreur(MessageFormat.format(Program.getError("Error087"), extension), true); //L'extension du fichier n'est pas XML
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), extension), true); //L'extension du fichier n'est pas XML
 					return;
 				}
 				if (!isJFile) {
-					if (nom.indexOf("\"") != -1 || nom.indexOf(";") != -1 || nom.indexOf("<") != -1 || nom.indexOf(">") != -1 || nom.indexOf("?") != -1 || nom.indexOf("|") != -1 || nom.indexOf("*") != -1) {
+					if (nom.contains("\"") || nom.contains(";") || nom.contains("<") || nom.contains(">") || nom.contains("?") || nom.contains("|") || nom.contains("*")) {
 						end.setText("");
-						new Erreur(Program.getError("Error126"));
+						Erreur.showSimpleErreur(Program.getError("Error126"));
 						return;
 					}
 				}
@@ -515,11 +482,10 @@ public class Export extends JPanel implements ITabListener, Runnable {
 					end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
 				}
 			}
-			else {
-				if (MyCellarRadioButtonHTML.isSelected()) {
+			else if (MyCellarRadioButtonHTML.isSelected()) {
 					if (extension.compareToIgnoreCase(".htm") != 0 && extension.compareToIgnoreCase("html") != 0) {
 						end.setText("");
-						new Erreur(MessageFormat.format(Program.getError("Error107"), extension), true); //L'extension du fichier n'est pas HTML
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), extension), true); //L'extension du fichier n'est pas HTML
 						return;
 					}
 					file.setText(path);
@@ -533,64 +499,57 @@ public class Export extends JPanel implements ITabListener, Runnable {
 						end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
 					}
 				}
-				else {
-					if (MyCellarRadioButtonCSV.isSelected()) {
-						if (extension.compareToIgnoreCase(".csv") != 0) {
-							end.setText("");
-							new Erreur(MessageFormat.format(Program.getError("Error108"), extension), true); //L'extension du fichier n'est pas CSV
-							return;
-						}
-						file.setText(path);
-						if( bottles == null)
-							bottles = Program.getStorage().getAllList();
-						if (RangementUtils.write_CSV(file.getText().trim(), bottles)) {
-							end.setText(Program.getLabel("Infos154")); //"Export terminé."
-							openit.setEnabled(true);
-						}
-						else {
-							end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
-						}
+				else if (MyCellarRadioButtonCSV.isSelected()) {
+					if (extension.compareToIgnoreCase(".csv") != 0) {
+						end.setText("");
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error108"), extension), true); //L'extension du fichier n'est pas CSV
+						return;
+					}
+					file.setText(path);
+					if( bottles == null)
+						bottles = Program.getStorage().getAllList();
+					if (RangementUtils.write_CSV(file.getText().trim(), bottles)) {
+						end.setText(Program.getLabel("Infos154")); //"Export terminé."
+						openit.setEnabled(true);
 					}
 					else {
-						if (MyCellarRadioButtonXLS.isSelected()) {
-							if (extension.compareToIgnoreCase(".xls") != 0 && extension.compareToIgnoreCase(".ods") != 0) {
-								end.setText("");
-								new Erreur(MessageFormat.format(Program.getError("Error034"), extension), true); //L'extension du fichier n'est pas CSV
-								return;
-							}
-							file.setText(path);
-							if(bottles == null)
-								bottles = Program.getStorage().getAllList();
-							if (!RangementUtils.write_XLS(file.getText().trim(), bottles, false)) {
-								end.setText(Program.getLabel("Infos154")); //"Export terminé."
-								openit.setEnabled(true);
-							}
-							else {
-								end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
-								new Erreur(Program.getError("Error160"), Program.getError("Error161"));
-							}
-						}
-						else {
-							if (MyCellarRadioButtonPDF.isSelected()) {
-								if (extension.compareToIgnoreCase(".pdf") != 0) {
-									end.setText("");
-									new Erreur(MessageFormat.format(Program.getError("Error157"), extension), true); //L'extension du fichier n'est pas PDF
-									return;
-								}
-								file.setText(path);
-								if( bottles == null)
-									bottles = Program.getStorage().getAllList();
-
-								if (exportToPDF(bottles, new File(path))) {
-									end.setText(Program.getLabel("Infos154")); //"Export terminé."
-									openit.setEnabled(true);
-								}
-								else {
-									end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
-								}
-							}
-						}
+						end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
 					}
+				}
+			else if (MyCellarRadioButtonXLS.isSelected()) {
+				if (extension.compareToIgnoreCase(".xls") != 0 && extension.compareToIgnoreCase(".ods") != 0) {
+					end.setText("");
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), extension), true); //L'extension du fichier n'est pas CSV
+					return;
+				}
+				file.setText(path);
+				if(bottles == null)
+					bottles = Program.getStorage().getAllList();
+				if (!RangementUtils.write_XLS(file.getText().trim(), bottles, false)) {
+					end.setText(Program.getLabel("Infos154")); //"Export terminé."
+					openit.setEnabled(true);
+				}
+				else {
+					end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
+					Erreur.showSimpleErreur(Program.getError("Error160"), Program.getError("Error161"));
+				}
+			}
+			else if (MyCellarRadioButtonPDF.isSelected()) {
+				if (extension.compareToIgnoreCase(".pdf") != 0) {
+					end.setText("");
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error157"), extension), true); //L'extension du fichier n'est pas PDF
+					return;
+				}
+				file.setText(path);
+				if( bottles == null)
+					bottles = Program.getStorage().getAllList();
+
+				if (exportToPDF(bottles, new File(path))) {
+					end.setText(Program.getLabel("Infos154")); //"Export terminé."
+					openit.setEnabled(true);
+				}
+				else {
+					end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
 				}
 			}
 			valider.setEnabled(true);
@@ -614,10 +573,10 @@ public static boolean exportToPDF(LinkedList<Bouteille> bottles, File nomFichier
 			pageProperties.setStartTop(50);
 			pdf.drawTable(pageProperties, properties, Program.getPDFRows(bottles, properties), Program.getPDFHeader(properties));
 			pdf.save(nomFichier);
-			new Erreur(MessageFormat.format(Program.getLabel("Main.savedFile"), nomFichier.getAbsolutePath()), true);
+			Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), nomFichier.getAbsolutePath()), true);
 		}
 		catch (Exception ex) {
-			new Erreur(Program.getError("Error160"), Program.getError("Error161"));
+			Erreur.showSimpleErreur(Program.getError("Error160"), Program.getError("Error161"));
 			return false;
 		}
 		return true;
@@ -626,7 +585,7 @@ public static boolean exportToPDF(LinkedList<Bouteille> bottles, File nomFichier
 	/**
 	 * param_actionPerformed: Appelle la fenêtre de paramètres.
 	 */
-	void param_actionPerformed() {
+	private void param_actionPerformed() {
 		String titre = Program.getLabel("Infos310");
 		String message2 = Program.getLabel("Infos309");
 		String titre_properties[] = new String[5];
@@ -679,21 +638,21 @@ public static boolean exportToPDF(LinkedList<Bouteille> bottles, File nomFichier
 	 * @since 17/04/05
 	 */
 	class PopupListener extends MouseAdapter {
-
+		@Override
 		public void mousePressed(MouseEvent e) {
 			maybeShowPopup(e);
 		}
-
+		@Override
 		public void mouseClicked(MouseEvent e) {
 			maybeShowPopup(e);
 		}
-
+		@Override
 		public void mouseEntered(MouseEvent e) {
 		}
-
+		@Override
 		public void mouseExited(MouseEvent e) {
 		}
-
+		@Override
 		public void mouseReleased(MouseEvent e) {
 		}
 

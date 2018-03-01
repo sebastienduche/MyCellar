@@ -166,7 +166,7 @@ public class MyCellarManageBottles extends JPanel {
 			
 			if (Program.getCaveConfigInt("ANNEE_AUTO_FALSE", 0) == 0) {
 				String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ( (SIECLE + 1) * 100)); //"En décochant cette option, vous désactivez la transformation");
-				new Erreur(erreur_txt1, "", true, "ANNEE_AUTO_FALSE");
+				Erreur.showKeyErreur(erreur_txt1, "", "ANNEE_AUTO_FALSE");
 			}
 		}
 		else {
@@ -174,7 +174,7 @@ public class MyCellarManageBottles extends JPanel {
 
 			if (Program.getCaveConfigInt("ANNEE_AUTO_TRUE", 0) == 0) {
 				String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ( (SIECLE + 1) * 100));//"En cochant cette option, vous activez la transformation");
-				new Erreur(erreur_txt1, "", true, "ANNEE_AUTO_TRUE");
+				Erreur.showKeyErreur(erreur_txt1, "", "ANNEE_AUTO_TRUE");
 			}
 		}
 		Debug("Annee_auto_actionPerformed...End");
@@ -363,7 +363,7 @@ public class MyCellarManageBottles extends JPanel {
 	 * @param e
 	 */
 	protected void manageContenance_actionPerformed(ActionEvent e) {
-		new ManageList(Program.half, Program.getLabel("Infos400"));
+		new ManageList();
 		String selected = m_half.getSelectedItem().toString();
 		m_half.removeAllItems();
 		m_half.addItem("");

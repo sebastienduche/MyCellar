@@ -1,13 +1,10 @@
 package mycellar;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.WindowEvent;
+import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarCheckBox;
+import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarRadioButton;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -21,21 +18,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarRadioButton;
-import net.miginfocom.swing.MigLayout;
-
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -48,42 +48,40 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.3
- * @since 03/08/17
+ * @version 5.4
+ * @since 01/03/18
  */
 public class Creer_Tableaux extends JPanel implements ITabListener {
-	private MyCellarLabel label2 = new MyCellarLabel();
-	private JTextField name = new JTextField();
-	private MyCellarButton browse = new MyCellarButton();
-	private MyCellarButton parameter = new MyCellarButton();
-	private MyCellarLabel label3 = new MyCellarLabel();
-	private JScrollPane scrollPane1 = new JScrollPane();
-	private JButton create = new JButton();
-	private ButtonGroup checkboxGroup1 = new ButtonGroup();
-	private MyCellarRadioButton type_XML = new MyCellarRadioButton();
-	private MyCellarRadioButton type_HTML = new MyCellarRadioButton();
-	private MyCellarRadioButton type_XLS = new MyCellarRadioButton();
+	private final MyCellarLabel label2 = new MyCellarLabel();
+	private final JTextField name = new JTextField();
+	private final MyCellarButton browse = new MyCellarButton();
+	private final  MyCellarButton parameter = new MyCellarButton();
+	private final MyCellarLabel label3 = new MyCellarLabel();
+	private final JButton create = new JButton();
+	private final ButtonGroup checkboxGroup1 = new ButtonGroup();
+	private final MyCellarRadioButton type_XML = new MyCellarRadioButton();
+	private final MyCellarRadioButton type_HTML = new MyCellarRadioButton();
+	private final MyCellarRadioButton type_XLS = new MyCellarRadioButton();
 	private JTable table;
-	private TableauValues tv = new TableauValues();
-	private MyCellarLabel end = new MyCellarLabel();
-	private MyCellarButton preview = new MyCellarButton();
+	private final TableauValues tv = new TableauValues();
+	private final MyCellarLabel end = new MyCellarLabel();
+	private final MyCellarButton preview = new MyCellarButton();
 	private char CREER = Program.getLabel("CREER").charAt(0);
 	private char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
-	private MyCellarCheckBox selectall = new MyCellarCheckBox();
-	private JPopupMenu popup = new JPopupMenu();
-	private JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-	private JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-	private MyClipBoard clipboard = new MyClipBoard();
-	private JMenuItem quitter = new JMenuItem(Program.getLabel("Infos003"));
-	private JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
+	private final MyCellarCheckBox selectall = new MyCellarCheckBox();
+	private final JPopupMenu popup = new JPopupMenu();
+	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
+	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
+	private final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
+	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
+	private final JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+	private final MyClipBoard clipboard = new MyClipBoard();
+	private final JMenuItem quitter = new JMenuItem(Program.getLabel("Infos003"));
+	private final JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
 	private Component objet1 = null;
 	private boolean isJFile = false;
-	private MyCellarCheckBox m_jcb_options = new MyCellarCheckBox(Program.getLabel("Infos193") + "...");
-	private XLSTabOptions oXLSTabOptions = null;
+	private final MyCellarCheckBox m_jcb_options = new MyCellarCheckBox(Program.getLabel("Infos193") + "...");
 	static final long serialVersionUID = 260706;
 
 	/**
@@ -108,11 +106,11 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	private void jbInit() throws Exception {
 		Debug("jbInit with Rangement[]");
 		label2.setText(Program.getLabel("Infos095")); //"Nom du fichier généré:");
-		m_jcb_options.addActionListener((e) -> options_actionPerformed(e));
+		m_jcb_options.addActionListener(this::options_actionPerformed);
 		browse.setText("...");
-		browse.addActionListener((e) -> browse_actionPerformed(e));
+		browse.addActionListener(this::browse_actionPerformed);
 		parameter.setText(Program.getLabel("Main.Parameters"));
-		parameter.addActionListener((e) -> param_actionPerformed(e));
+		parameter.addActionListener(this::param_actionPerformed);
 		label3.setText(Program.getLabel("Infos096")); //"Sélectionner les rangements à générer:");
 		create.setText(Program.getLabel("Infos018")); //"Créer");
 		create.setMnemonic(CREER);
@@ -131,43 +129,44 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 		tc.setMinWidth(25);
 		tc.setMaxWidth(25);
 
-		type_XML.addActionListener((e) -> jradio_actionPerformed(e));
-		type_HTML.addActionListener((e) -> jradio_actionPerformed(e));
-		type_XLS.addActionListener((e) -> jradio_actionPerformed(e));
+		type_XML.addActionListener(this::jradio_actionPerformed);
+		type_HTML.addActionListener(this::jradio_actionPerformed);
+		type_XLS.addActionListener(this::jradio_actionPerformed);
 
 		for (int i = 0; i < Program.GetCaveLength(); i++) {
 			tv.addRangement(Program.getCave(i));
 		}
-		scrollPane1 = new JScrollPane(table);
-		end.setHorizontalAlignment(0);
+		JScrollPane scrollPane1 = new JScrollPane(table);
+		end.setHorizontalAlignment(SwingConstants.CENTER);
 		end.setForeground(Color.red);
 		end.setFont(Program.font_dialog_small);
 		preview.setText(Program.getLabel("Infos152")); //"Ouvrir le fichier");
 		preview.setMnemonic(OUVRIR);
 		selectall.setText(Program.getLabel("Infos126")); //"Tout sélectionner");
-		selectall.setHorizontalAlignment(4);
-		selectall.setHorizontalTextPosition(2);
-		selectall.addActionListener((e) -> selectall_actionPerformed(e));
-		preview.addActionListener((e) -> preview_actionPerformed(e));
-		create.addActionListener((e) -> create_actionPerformed(e));
-		this.addKeyListener(new java.awt.event.KeyListener() {
-			public void keyReleased(java.awt.event.KeyEvent e) {}
-
-			public void keyPressed(java.awt.event.KeyEvent e) {
+		selectall.setHorizontalAlignment(SwingConstants.RIGHT);
+		selectall.setHorizontalTextPosition(SwingConstants.LEFT);
+		selectall.addActionListener(this::selectall_actionPerformed);
+		preview.addActionListener(this::preview_actionPerformed);
+		create.addActionListener(this::create_actionPerformed);
+		this.addKeyListener(new KeyListener() {
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			@Override
+			public void keyPressed(KeyEvent e) {
 				keylistener_actionPerformed(e);
 			}
-
-			public void keyTyped(java.awt.event.KeyEvent e) {}
+			@Override
+			public void keyTyped(KeyEvent e) {}
 		});
 
 		//Menu Contextuel
-		couper.addActionListener((e) -> couper_actionPerformed(e));
-		cut.addActionListener((e) -> couper_actionPerformed(e));
-		copier.addActionListener((e) -> copier_actionPerformed(e));
-		copy.addActionListener((e) -> copier_actionPerformed(e));
-		coller.addActionListener((e) -> coller_actionPerformed(e));
-		paste.addActionListener((e) -> coller_actionPerformed(e));
-		param.addActionListener((e) -> param_actionPerformed(e));
+		couper.addActionListener(this::couper_actionPerformed);
+		cut.addActionListener(this::couper_actionPerformed);
+		copier.addActionListener(this::copier_actionPerformed);
+		copy.addActionListener(this::copier_actionPerformed);
+		coller.addActionListener(this::coller_actionPerformed);
+		paste.addActionListener(this::coller_actionPerformed);
+		param.addActionListener(this::param_actionPerformed);
 		couper.setEnabled(false);
 		copier.setEnabled(false);
 		popup.add(couper);
@@ -177,10 +176,10 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 		name.addMouseListener(popup_l);
 		cut.setEnabled(false);
 		copy.setEnabled(false);
-		cut.setAccelerator(KeyStroke.getKeyStroke('X', ActionEvent.CTRL_MASK));
-		copy.setAccelerator(KeyStroke.getKeyStroke('C', ActionEvent.CTRL_MASK));
-		paste.setAccelerator(KeyStroke.getKeyStroke('V', ActionEvent.CTRL_MASK));
-		quitter.setAccelerator(KeyStroke.getKeyStroke('Q', ActionEvent.CTRL_MASK));
+		cut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
+		copy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
+		paste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
+		quitter.setAccelerator(KeyStroke.getKeyStroke('Q', InputEvent.CTRL_DOWN_MASK));
 
 		m_jcb_options.setEnabled(false);
 		switch ( Program.getCaveConfigInt("CREATE_TAB_DEFAULT", 1) ) {
@@ -230,7 +229,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void browse_actionPerformed(ActionEvent e) {
+	private void browse_actionPerformed(ActionEvent e) {
 
 		Debug("browse_actionPerforming...");
 		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR",""));
@@ -257,30 +256,27 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		}
 
-		String fic = "";
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
 			String nom = boiteFichier.getSelectedFile().getName();
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
 			Filtre filtre = (Filtre) boiteFichier.getFileFilter();
 			//Erreur utilisation de caractères interdits
-			if (nom.indexOf("\"") != -1 || nom.indexOf(";") != -1 || nom.indexOf("<") != -1 || nom.indexOf(">") != -1 || nom.indexOf("?") != -1 || nom.indexOf("\\") != -1 || nom.indexOf("/") != -1 ||
-					nom.indexOf("|") != -1 || nom.indexOf("*") != -1) {
-				new Erreur(Program.getError("Error126"));
+			if (nom.contains("\"") || nom.contains(";") || nom.contains("<") || nom.contains(">") || nom.contains("?") || nom.contains("\\") || nom.contains("/") ||
+					nom.contains("|") || nom.contains("*")) {
+				Erreur.showSimpleErreur(Program.getError("Error126"));
 			}
 			else {
-				fic = nomFichier.getAbsolutePath();
+				String fic = nomFichier.getAbsolutePath();
 				int index = fic.indexOf(".");
 				if (index == -1) {
 					if (type_XML.isSelected()) {
 						fic = fic.concat(".xml");
-					}
-					if ( type_HTML.isSelected() ) {
+					} else if ( type_HTML.isSelected() ) {
 						fic = fic.concat(".htm");
 						if (filtre.toString().equals("html"))
 							fic = fic.concat("l");
-					}
-					if (type_XLS.isSelected()) {
+					} else if (type_XLS.isSelected()) {
 						if (filtre.toString().equals("xls"))
 							fic = fic.concat(".xls");
 						if (filtre.toString().equals("ods"))
@@ -299,7 +295,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void create_actionPerformed(ActionEvent e) {
+	private void create_actionPerformed(ActionEvent e) {
 		try {
 			Debug("create_actionPerforming...");
 			String nom = name.getText().trim();
@@ -307,58 +303,52 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 
 			if (nom.isEmpty()) {
 				Debug("ERROR: file empty");
-				new Erreur(Program.getError("Error019"));
+				Erreur.showSimpleErreur(Program.getError("Error019"));
 				return;
 			}
 
 			if (!isJFile) {
 				//Erreur utilisation de caractères interdits
-				if (nom.indexOf("\"") != -1 || nom.indexOf(";") != -1 || nom.indexOf("<") != -1 || nom.indexOf(">") != -1 ||
-						nom.indexOf("?") != -1 || nom.indexOf("|") != -1 || nom.indexOf("*") != -1) {
+				if (nom.contains("\"") || nom.contains(";") || nom.contains("<") || nom.contains(">") ||
+						nom.contains("?") || nom.contains("|") || nom.contains("*")) {
 					Debug("ERROR: Forbidden characters");
-					new Erreur(Program.getError("Error126"));
+					Erreur.showSimpleErreur(Program.getError("Error126"));
 					return;
 				}
 			}
 
-			if (resul == 0) {
-				nom.trim();
-				java.io.File path = new java.io.File(nom);
-				name.setText(path.getAbsolutePath());
+			File path = new File(nom.trim());
+			name.setText(path.getAbsolutePath());
 
-				//Verify file type. Is it XML File?
-				if (type_XML.isSelected()) {
-					if ( !nom.toLowerCase().endsWith(".xml") ) {
-						Debug("ERROR: Not a XML File");
-						//Non XML File
-						//"Veuillez saisir le nom d'un fichier XML.");
-						resul = 1;
-						new Erreur(MessageFormat.format(Program.getError("Error087"), nom), Program.getError("Error088"));
-					}
+			//Verify file type. Is it XML File?
+			if (type_XML.isSelected()) {
+				if ( !nom.toLowerCase().endsWith(".xml") ) {
+					Debug("ERROR: Not a XML File");
+					//Non XML File
+					//"Veuillez saisir le nom d'un fichier XML.");
+					resul = 1;
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom), Program.getError("Error088"));
 				}
-				if ( type_HTML.isSelected() ) {
-					if ( !nom.toLowerCase().endsWith(".html") && !nom.toLowerCase().endsWith(".htm") ) {
-						Debug("ERROR: Not a HTML File");
-						resul = 1;
-						new Erreur(MessageFormat.format(Program.getError("Error107"), nom));
-					}
+			} else if (type_HTML.isSelected()) {
+				if ( !nom.toLowerCase().endsWith(".html") && !nom.toLowerCase().endsWith(".htm") ) {
+					Debug("ERROR: Not a HTML File");
+					resul = 1;
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
 				}
-				if ( type_XLS.isSelected() ) {
-					if ( !nom.toLowerCase().endsWith(".xls") && !nom.toLowerCase().endsWith(".ods") ) {
-						Debug("ERROR: Not a XLS File");
-						resul = 1;
-						new Erreur(MessageFormat.format(Program.getError("Error034"), nom));
-					}
+			} else if (type_XLS.isSelected()) {
+				if ( !nom.toLowerCase().endsWith(".xls") && !nom.toLowerCase().endsWith(".ods") ) {
+					Debug("ERROR: Not a XLS File");
+					resul = 1;
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
 				}
 			}
 			int listToGen[] = new int[1];
-			int k = 0;
 			if (resul == 0) {
 				int count = 0;
 				int max_row = tv.getRowCount();
 				int row = 0;
 				do {
-					if (tv.getValueAt(row, TableauValues.ETAT).toString() == "true") {
+					if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
 						count++;
 					}
 					row++;
@@ -370,14 +360,14 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 					//"Aucun rangement sélectionné!");
 					//"Veuillez sélectionner les rangements à générer.");
 					resul = 1;
-					new Erreur(Program.getError("Error089"), Program.getError("Error090"), true);
+					Erreur.showSimpleErreur(Program.getError("Error089"), Program.getError("Error090"), true);
 				}
 				else {
 					listToGen = new int[count];
 					row = 0;
-					k = 0;
+					int k = 0;
 					do {
-						if (tv.getValueAt(row, TableauValues.ETAT).toString() == "true") {
+						if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
 							listToGen[k] = row;
 							k++;
 						}
@@ -388,14 +378,14 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 			}
 			if (resul == 0) {
 
-				int caisse_select = 0;
 
 				// Export XML
 				if (type_XML.isSelected()) {
 					Debug("Exporting in XML in progress...");
-					LinkedList<Rangement> rangements = new LinkedList<Rangement>();
-					for (int j = 0; j < listToGen.length; j++)
+					LinkedList<Rangement> rangements = new LinkedList<>();
+					for (int j : listToGen) {
 						rangements.add(Program.getCave(listToGen[j]));
+					}
 					MyXmlDom.writeRangements(nom, rangements, false);
 				}
 
@@ -403,8 +393,9 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 				if ( type_HTML.isSelected() ) {
 					Debug("Exporting in HTML in progress...");
 					LinkedList<Rangement> rangements = new LinkedList<Rangement>();
-					for (int j = 0; j < listToGen.length; j++)
+					for (int j : listToGen) {
 						rangements.add(Program.getCave(listToGen[j]));
+					}
 					MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
 			
 				    TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -419,22 +410,25 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 				}
 
 				//Export XLS
+				int caisse_select = 0;
 				if ( type_XLS.isSelected() ) {
 					Debug("Exporting in XLS in progress...");
-					java.util.LinkedList<Rangement> oList = new java.util.LinkedList<Rangement>();
-					for ( int j = 0; j < listToGen.length; j++ )
-					{
-						oList.add( Program.getCave(listToGen[j]) );
-						if ( Program.getCave(listToGen[j]).isCaisse() )
-							caisse_select++;
+					LinkedList<Rangement> oList = new LinkedList<>();
+					for ( int j : listToGen) {
+						Rangement r = Program.getCave(listToGen[j]);
+						if (r != null) {
+							oList.add(r);
+							if (r.isCaisse())
+								caisse_select++;
+						}
 					}
 					RangementUtils.write_XLSTab( nom, oList );
 				}
 
 				int key = Program.getCaveConfigInt("DONT_SHOW_TAB_MESS", 0);
-				String erreur_txt1, erreur_txt2;
 				if (key == 0) {
 					if (caisse_select >= 1) {
+						String erreur_txt1, erreur_txt2;
 						if ( caisse_select == 1){
 							erreur_txt1 = Program.getError("Error091"); //"Vous avez sélectionné un rangement de type Caisse");
 							erreur_txt2 = Program.getError("Error092"); //"Une liste des vins de ce rangement a été générée.");
@@ -442,7 +436,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 							erreur_txt1 = Program.getError("Error127"); //"Vous avez sélectionné des rangements de type Caisse");
 							erreur_txt2 = Program.getError("Error128"); //"Une liste des vins de ces rangements a été générée.");
 						}
-						new Erreur(erreur_txt1, erreur_txt2, true, "DONT_SHOW_TAB_MESS");
+						Erreur.showKeyErreur(erreur_txt1, erreur_txt2, "DONT_SHOW_TAB_MESS");
 					}
 				}
 				end.setText(Program.getLabel("Infos097")); //"Fichier généré.");
@@ -459,7 +453,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void preview_actionPerformed(ActionEvent e) {
+	private void preview_actionPerformed(ActionEvent e) {
 		Debug("preview_actionPerforming...");
 		String path = name.getText();
 		Program.open( new File(path) );
@@ -480,22 +474,11 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	}
 
 	/**
-	 * this_windowActivated: Mis au premier plan de l'Program.erreur.
-	 *
-	 * @param e WindowEvent
-	 */
-	void this_windowActivated(WindowEvent e) {
-		if ( oXLSTabOptions != null ){
-			oXLSTabOptions.toFront();
-		}
-	}
-
-	/**
 	 * couper_actionPerformed: Couper
 	 *
 	 * @param e ActionEvent
 	 */
-	void couper_actionPerformed(ActionEvent e) {
+	private void couper_actionPerformed(ActionEvent e) {
 		String txt = "";
 		try {
 			JTextField jtf = (JTextField) objet1;
@@ -511,7 +494,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void copier_actionPerformed(ActionEvent e) {
+	private void copier_actionPerformed(ActionEvent e) {
 		String txt = "";
 		try {
 			JTextField jtf = (JTextField) objet1;
@@ -526,7 +509,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void coller_actionPerformed(ActionEvent e) {
+	private void coller_actionPerformed(ActionEvent e) {
 
 		try {
 			JTextField jtf = (JTextField) objet1;
@@ -541,10 +524,10 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void selectall_actionPerformed(ActionEvent e) {
+	private void selectall_actionPerformed(ActionEvent e) {
 		end.setText("");
 		for (int i = 0; i < tv.getRowCount(); i++) {
-			tv.setValueAt(new Boolean(selectall.isSelected()), i, 0);
+			tv.setValueAt(selectall.isSelected(), i, 0);
 		}
 		table.updateUI();
 	}
@@ -554,12 +537,11 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void options_actionPerformed(ActionEvent e) {
+	private void options_actionPerformed(ActionEvent e) {
 
 		end.setText("");
-		oXLSTabOptions = new XLSTabOptions();
+		XLSTabOptions oXLSTabOptions = new XLSTabOptions();
 		oXLSTabOptions.setVisible(true);
-		oXLSTabOptions = null;
 		m_jcb_options.setSelected(false);
 	}
 
@@ -568,7 +550,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void jradio_actionPerformed(ActionEvent e) {
+	private void jradio_actionPerformed(ActionEvent e) {
 		end.setText("");
 		m_jcb_options.setEnabled(type_XLS.isSelected());
 	}
@@ -578,7 +560,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void param_actionPerformed(ActionEvent e) {
+	private void param_actionPerformed(ActionEvent e) {
 		Debug("param_actionPerforming...");
 		String titre = Program.getLabel("Infos310");
 		String message2 = Program.getLabel("Infos309");
@@ -632,21 +614,21 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	 * @since 17/04/05
 	 */
 	class PopupListener extends MouseAdapter {
-
+		@Override
 		public void mousePressed(MouseEvent e) {
 			maybeShowPopup(e);
 		}
-
+		@Override
 		public void mouseClicked(MouseEvent e) {
 			maybeShowPopup(e);
 		}
-
+		@Override
 		public void mouseEntered(MouseEvent e) {
 		}
-
+		@Override
 		public void mouseExited(MouseEvent e) {
 		}
-
+		@Override
 		public void mouseReleased(MouseEvent e) {
 		}
 
@@ -695,8 +677,6 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 		}
 	}
 
-
-
 	@Override
 	public boolean tabWillClose(TabEvent event) {
 		return true;
@@ -710,8 +690,8 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 	public void updateView() {
 		SwingUtilities.invokeLater(() -> {
 			tv.removeAll();
-			for (int i = 0; i < Program.GetCaveLength(); i++) {
-				tv.addRangement(Program.getCave(i));
+			for (Rangement r : Program.getCave()) {
+				tv.addRangement(r);
 			}
 		});
 	}

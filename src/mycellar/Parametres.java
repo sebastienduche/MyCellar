@@ -1,13 +1,11 @@
 package mycellar;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.File;
-import java.text.MessageFormat;
+import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarCheckBox;
+import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarSpinner;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -18,13 +16,15 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarSpinner;
-import net.miginfocom.swing.MigLayout;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.text.MessageFormat;
 
 
 /**
@@ -33,45 +33,40 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.3
- * @since 27/10/17
+ * @version 10.4
+ * @since 01/03/18
  */
 public class Parametres extends JPanel implements ITabListener {
 
 	private static final long serialVersionUID = -4208146070057957967L;
-	private MyCellarLabel label_fic_bak = new MyCellarLabel();
-	private MyCellarLabel label_langue = new MyCellarLabel();
-	private MyCellarLabel label_devise = new MyCellarLabel();
-	private MyCellarComboBox<String> langue = new MyCellarComboBox<String>();
-	private MyCellarButton valider = new MyCellarButton();
-	private MyCellarButton parcourir_excel = new MyCellarButton("..."); //Parcourir
-	private JTextField file_bak = new JTextField();
-	private JTextField devise = new JTextField();
-	private MyCellarCheckBox jcb_excel = new MyCellarCheckBox(Program.getLabel("Infos234"), false);
-	private JPanel generalPanel = new JPanel();
-	private JPanel excelPanel = new JPanel();
-	private JPanel dateControlPanel = new JPanel();
-	
-	private MyCellarButton buttonResetMessageDialog = new MyCellarButton();
-	private MyCellarButton buttonManageContenance = new MyCellarButton();
-	private MyCellarCheckBox jcb_half_auto = new MyCellarCheckBox();
-	private MyCellarCheckBox m_jcb_debug = new MyCellarCheckBox();
-	private JPanel otherPanel = new JPanel();
-	private MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox(Program.getLabel("Infos169"), false);
-	private MyCellarLabel label_annee = new MyCellarLabel();
-	private MyCellarLabel label_annee2 = new MyCellarLabel();
-	private MyCellarLabel label_siecle = new MyCellarLabel();
-	private MyCellarSpinner annee = new MyCellarSpinner();
-	private MyCellarSpinner siecle = new MyCellarSpinner();
-	private JPopupMenu popup = new JPopupMenu();
-	private JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-	private JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-	private MyClipBoard clipboard = new MyClipBoard();
-	private JMenu edition = new JMenu(Program.getLabel("Infos245"));
+	private final MyCellarLabel label_fic_bak = new MyCellarLabel();
+	private final MyCellarLabel label_langue = new MyCellarLabel();
+	private final MyCellarLabel label_devise = new MyCellarLabel();
+	private final MyCellarComboBox<String> langue = new MyCellarComboBox<>();
+	private final MyCellarButton valider = new MyCellarButton();
+	private final MyCellarButton parcourir_excel = new MyCellarButton("..."); //Parcourir
+	private final JTextField file_bak = new JTextField();
+	private final JTextField devise = new JTextField();
+	private final MyCellarCheckBox jcb_excel = new MyCellarCheckBox(Program.getLabel("Infos234"), false);
+	private final MyCellarButton buttonResetMessageDialog = new MyCellarButton();
+	private final MyCellarButton buttonManageContenance = new MyCellarButton();
+	private final MyCellarCheckBox jcb_half_auto = new MyCellarCheckBox();
+	private final MyCellarCheckBox m_jcb_debug = new MyCellarCheckBox();
+	private final MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox(Program.getLabel("Infos169"), false);
+	private final MyCellarLabel label_annee = new MyCellarLabel();
+	private final MyCellarLabel label_annee2 = new MyCellarLabel();
+	private final MyCellarLabel label_siecle = new MyCellarLabel();
+	private final MyCellarSpinner annee = new MyCellarSpinner();
+	private final MyCellarSpinner siecle = new MyCellarSpinner();
+	private final JPopupMenu popup = new JPopupMenu();
+	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
+	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
+	private final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
+	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
+	private final JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+	private final MyClipBoard clipboard = new MyClipBoard();
+	private final JMenu edition = new JMenu(Program.getLabel("Infos245"));
 	private Component objet1 = null;
 
 	/**
@@ -91,12 +86,12 @@ public class Parametres extends JPanel implements ITabListener {
 		});
 
 		//Menu Contextuel
-		couper.addActionListener((e) -> couper_actionPerformed(e));
-		cut.addActionListener((e) -> couper_actionPerformed(e));
-		copier.addActionListener((e) -> copier_actionPerformed(e));
-		copy.addActionListener((e) -> copier_actionPerformed(e));
-		coller.addActionListener((e) -> coller_actionPerformed(e));
-		paste.addActionListener((e) -> coller_actionPerformed(e));
+		couper.addActionListener(this::couper_actionPerformed);
+		cut.addActionListener(this::couper_actionPerformed);
+		copier.addActionListener(this::copier_actionPerformed);
+		copy.addActionListener(this::copier_actionPerformed);
+		coller.addActionListener(this::coller_actionPerformed);
+		paste.addActionListener(this::coller_actionPerformed);
 
 		couper.setEnabled(false);
 		copier.setEnabled(false);
@@ -109,8 +104,8 @@ public class Parametres extends JPanel implements ITabListener {
 		valider.setText(Program.getLabel("Infos315"));
 		file_bak.setText(Program.getCaveConfigString("FILE_EXCEL",""));
 		
-		annee.setValue(new Integer(Program.getCaveConfigInt("ANNEE", 50)));
-		siecle.setValue(new Integer(Program.getCaveConfigInt("SIECLE", 19)));
+		annee.setValue(Program.getCaveConfigInt("ANNEE", 50));
+		siecle.setValue(Program.getCaveConfigInt("SIECLE", 19));
 
 		if ( Program.getGlobalConfigInt("DEBUG", 0) == 1 )
 			m_jcb_debug.setSelected(true);
@@ -138,34 +133,35 @@ public class Parametres extends JPanel implements ITabListener {
 			jcb_half_auto.setSelected(true);
 		}
 
-		valider.addActionListener((e) -> valider_actionPerformed(e));
-		parcourir_excel.addActionListener((e) -> parcourir_excel_actionPerformed(e));
-		jcb_excel.addActionListener((e) -> jcb_excel_actionPerformed(e));
-		buttonResetMessageDialog.addActionListener((e) -> jcb_message_actionPerformed(e));
-		buttonManageContenance.addActionListener((e) -> buttonManageContenance_actionPerformed(e));
-		jcb_half_auto.addActionListener((e) -> jcb_half_auto_actionPerformed(e));
-		m_jcb_debug.addActionListener((e) -> activate_debug_actionPerformed(e));
+		valider.addActionListener(this::valider_actionPerformed);
+		parcourir_excel.addActionListener(this::parcourir_excel_actionPerformed);
+		jcb_excel.addActionListener(this::jcb_excel_actionPerformed);
+		buttonResetMessageDialog.addActionListener(this::jcb_message_actionPerformed);
+		buttonManageContenance.addActionListener(this::buttonManageContenance_actionPerformed);
+		jcb_half_auto.addActionListener(this::jcb_half_auto_actionPerformed);
+		m_jcb_debug.addActionListener(this::activate_debug_actionPerformed);
 
-		annee.addChangeListener(new javax.swing.event.ChangeListener() {
-			public void stateChanged(javax.swing.event.ChangeEvent e) {
+		annee.addChangeListener((e) -> {
 				if (Integer.parseInt(annee.getValue().toString()) < 0) {
-					annee.setValue(new Integer(0));
+					annee.setValue(0);
+				} else if (Integer.parseInt(annee.getValue().toString()) > 99) {
+					annee.setValue(99);
 				}
-				if (Integer.parseInt(annee.getValue().toString()) > 99) {
-					annee.setValue(new Integer(99));
-				}
-			}
 		});
 
 		siecle.addChangeListener((e) -> {
 			if (Integer.parseInt(siecle.getValue().toString()) < 18) {
-				siecle.setValue(new Integer(18));
+				siecle.setValue(18);
 			}
 			else if (Integer.parseInt(siecle.getValue().toString()) > 99) {
-				siecle.setValue(new Integer(99));
+				siecle.setValue(99);
 			}
 		});
 
+		JPanel dateControlPanel = new JPanel();
+		JPanel generalPanel = new JPanel();
+		JPanel excelPanel = new JPanel();
+		JPanel otherPanel = new JPanel();
 		dateControlPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos294")));
 		generalPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Main.General")));
 		excelPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos234")));
@@ -177,9 +173,9 @@ public class Parametres extends JPanel implements ITabListener {
 		edition.add(copy);
 		edition.add(paste);
 		edition.addMouseListener(popup_l);
-		cut.setAccelerator(KeyStroke.getKeyStroke('X', ActionEvent.CTRL_MASK));
-		copy.setAccelerator(KeyStroke.getKeyStroke('C', ActionEvent.CTRL_MASK));
-		paste.setAccelerator(KeyStroke.getKeyStroke('V', ActionEvent.CTRL_MASK));
+		cut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
+		copy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
+		paste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
 		generalPanel.setLayout(new MigLayout("","[][]30px[][]",""));
 		generalPanel.add(label_langue);
 		generalPanel.add(langue, "gapleft 10");
@@ -256,7 +252,7 @@ public class Parametres extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void valider_actionPerformed(ActionEvent e) {
+	private void valider_actionPerformed(ActionEvent e) {
 		try {
 			modifyLanguage();
 			boolean result = true;
@@ -271,7 +267,7 @@ public class Parametres extends JPanel implements ITabListener {
 					if (fic.length() >= 3) {
 						tmp1 = fic.substring(fic.length() - 3);
 					}
-					new Erreur(MessageFormat.format(Program.getError("Error034"), tmp1), Program.getError("Error035"));
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), tmp1), Program.getError("Error035"));
 					result = false;
 				}
 			}
@@ -332,7 +328,7 @@ public class Parametres extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void parcourir_excel_actionPerformed(ActionEvent e) {
+	private void parcourir_excel_actionPerformed(ActionEvent e) {
 
 		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR",""));
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
@@ -365,7 +361,7 @@ public class Parametres extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void jcb_excel_actionPerformed(ActionEvent e) {
+	private void jcb_excel_actionPerformed(ActionEvent e) {
 		if (jcb_excel.isSelected()) {
 			file_bak.setEnabled(true);
 			label_fic_bak.setEnabled(true);
@@ -382,7 +378,7 @@ public class Parametres extends JPanel implements ITabListener {
 	/**
 	 * Modification de la langue à la fermeture de la boite de dialogue
 	 */
-	void modifyLanguage() {
+	private void modifyLanguage() {
 		try {
 			String thelangue = Program.getLanguage("CodeLang" + (langue.getSelectedIndex() + 1));
 			String currentLanguage = Program.getGlobalConfigString("LANGUAGE", "F");
@@ -416,7 +412,7 @@ public class Parametres extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void jcb_message_actionPerformed(ActionEvent e) {
+	private void jcb_message_actionPerformed(ActionEvent e) {
 		Program.putCaveConfigString("DONT_SHOW_INFO", "0");
 		Program.putCaveConfigString("DONT_SHOW_TAB_MESS", "0");
 		Program.putCaveConfigString("DONT_SHOW_CREATE_MESS", "0");
@@ -428,7 +424,7 @@ public class Parametres extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void couper_actionPerformed(ActionEvent e) {
+	private void couper_actionPerformed(ActionEvent e) {
 		String txt = "";
 		JTextField jtf = (JTextField) objet1;
 		txt = jtf.getSelectedText();
@@ -441,7 +437,7 @@ public class Parametres extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void copier_actionPerformed(ActionEvent e) {
+	private void copier_actionPerformed(ActionEvent e) {
 		String txt = "";
 		JTextField jtf = (JTextField) objet1;
 		txt = jtf.getSelectedText();
@@ -453,7 +449,7 @@ public class Parametres extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void coller_actionPerformed(ActionEvent e) {
+	private void coller_actionPerformed(ActionEvent e) {
 
 		JTextField jtf = (JTextField) objet1;
 		try {
@@ -476,8 +472,8 @@ public class Parametres extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void buttonManageContenance_actionPerformed(ActionEvent e) {
-		new ManageList(Program.half, Program.getLabel("Infos400"));
+	private void buttonManageContenance_actionPerformed(ActionEvent e) {
+		new ManageList();
 		if(Program.addWine != null) {
 			Program.addWine.setUpdateView();
 			Program.addWine.updateView();
@@ -489,7 +485,7 @@ public class Parametres extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void jcb_half_auto_actionPerformed(ActionEvent e) {
+	private void jcb_half_auto_actionPerformed(ActionEvent e) {
 
 		if (jcb_half_auto.isSelected()) {
 			Program.putCaveConfigString("TYPE_AUTO", "ON");
@@ -504,7 +500,7 @@ public class Parametres extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void activate_debug_actionPerformed(ActionEvent e) {
+	private void activate_debug_actionPerformed(ActionEvent e) {
 
 		if (m_jcb_debug.isSelected()) {
 			Program.putGlobalConfigString("DEBUG", "1");
@@ -528,20 +524,21 @@ public class Parametres extends JPanel implements ITabListener {
 	 */
 	class PopupListener extends MouseAdapter {
 
+		@Override
 		public void mousePressed(MouseEvent e) {
 			maybeShowPopup(e);
 		}
-
+		@Override
 		public void mouseClicked(MouseEvent e) {
 			maybeShowPopup(e);
 		}
-
+		@Override
 		public void mouseEntered(MouseEvent e) {
 		}
-
+		@Override
 		public void mouseExited(MouseEvent e) {
 		}
-
+		@Override
 		public void mouseReleased(MouseEvent e) {
 		}
 
@@ -589,7 +586,6 @@ public class Parametres extends JPanel implements ITabListener {
 
 	@Override
 	public boolean tabWillClose(TabEvent event) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 

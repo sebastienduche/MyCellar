@@ -1,25 +1,24 @@
 package mycellar;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * <p>Titre : </p>
@@ -27,8 +26,8 @@ import java.util.Vector;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 23/10/17
- * @version 1.9
+ * @since 02/03/18
+ * @version 2.0
  */
 
 public class MyXmlDom {
@@ -44,8 +43,8 @@ public class MyXmlDom {
 		String filename = Program.getXMLPlacesFileName();
 		if( !_sFileName.isEmpty() )
 			filename = _sFileName;
-		LinkedList<Rangement> oRangementVector = new LinkedList<Rangement>();
-		LinkedList<String> names = new LinkedList<String>();
+		LinkedList<Rangement> oRangementVector = new LinkedList<>();
+		LinkedList<String> names = new LinkedList<>();
 
 		File file = new File(filename);
 		if(!file.exists())
@@ -65,7 +64,7 @@ public class MyXmlDom {
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
 					Element place = (Element) nNode;
-					Boolean bIsCaisse = new Boolean(place.getAttribute("IsCaisse"));
+					Boolean bIsCaisse = Boolean.parseBoolean(place.getAttribute("IsCaisse"));
 					int nPlace = Integer.parseInt(place.getAttribute("NbPlace"));
 					String sName = place.getAttribute("name");
 					if(sName.isEmpty())
@@ -92,13 +91,10 @@ public class MyXmlDom {
 						// C'est un rangement complexe
 						// ___________________________
 
-						int nb_lignes[]; 
 						int nb_colonnes[];
-						LinkedList<Part> listPart = new LinkedList<Part>();
-						Vector<Integer> oVector = new Vector<Integer>();
+						LinkedList<Part> listPart = new LinkedList<>();
+						List<Integer> oVector = new LinkedList<>();
 						NodeList internalPlaces = place.getElementsByTagName("internal-place");
-						int nLieu = 0;
-						nb_lignes = new int[nPlace];
 						for (int j = 0; j < internalPlaces.getLength(); j++) {
 							Node nInternal = internalPlaces.item(j);
 							if (nInternal.getNodeType() == Node.ELEMENT_NODE) {
@@ -106,7 +102,6 @@ public class MyXmlDom {
 								listPart.add(part);
 								Element iPlace = (Element)nInternal;
 								int nLine = Integer.parseInt(iPlace.getAttribute("NbLine"));
-								nb_lignes[nLieu] = nLine;
 								part.setRows(nLine);
 								NodeList Line = iPlace.getElementsByTagName("line");
 								for (int k = 0; k < Line.getLength(); k++) {
@@ -115,15 +110,14 @@ public class MyXmlDom {
 										Element oLine = (Element)nTempLine;
 										int nColumn = Integer.parseInt(oLine.getAttribute("NbColumn"));
 										part.getRow(k).setCol(nColumn);
-										oVector.add(new Integer(nColumn));
+										oVector.add(nColumn);
 									}
 								}
-								nLieu++;
 							}
 						}
 						nb_colonnes = new int[oVector.size()];
 						for (int j=0; j<nb_colonnes.length; j++)
-							nb_colonnes[j] = oVector.get(j).intValue();
+							nb_colonnes[j] = oVector.get(j);
 						if(names.contains(sName)) {
 							Debug("WARNING: Rangement name '"+sName+"' already used!");
 						}
@@ -161,7 +155,7 @@ public class MyXmlDom {
 	 * @param _oCave LinkedList<Rangement>
 	 * @return boolean
 	 */
-	public static boolean writeMyCellarXml(LinkedList<Rangement> _oCave, String _sFilename) {
+	public static boolean writeMyCellarXml(List<Rangement> _oCave, String _sFilename) {
 
 		Debug("writeMyCellarXml: Writing file");
 		String filename = Program.getXMLPlacesFileName();
@@ -174,9 +168,9 @@ public class MyXmlDom {
 			// Racine XML
 			oFile.write("<MyCellar>");
 			// Ecriture des rangements
-			for (int i=0; i<_oCave.size(); i++){
-				if ( _oCave.get(i) != null )
-					oFile.write(_oCave.get(i).toXml());
+			for (Rangement r : _oCave){
+				if (r != null)
+					oFile.write(r.toXml());
 			}
 			oFile.write("</MyCellar>");
 			oFile.flush();
@@ -196,7 +190,7 @@ public class MyXmlDom {
 	 * @param _oCave Rangement
 	 * @return boolean
 	 */
-	public static boolean appendRangement(Rangement _oCave) {
+	public static void appendRangement(Rangement _oCave) {
 		Debug("appendRangement: Add place "+_oCave.getNom());
 		LinkedList<Rangement> oCaveTmp = readMyCellarXml("");
 		if( null == oCaveTmp )
@@ -204,7 +198,7 @@ public class MyXmlDom {
 		if(!oCaveTmp.contains(_oCave))
 			oCaveTmp.add(_oCave);
 
-		return writeMyCellarXml(oCaveTmp,"");
+		writeMyCellarXml(oCaveTmp,"");
 	}
 
 	/**
@@ -213,7 +207,7 @@ public class MyXmlDom {
 	 * @param typeList LinkedList<String>
 	 * @return boolean
 	 */
-	public static boolean writeTypeXml(LinkedList<String> typeList) {
+	public static void writeTypeXml(List<String> typeList) {
 
 		Debug("writeTypeXml: Writing file");
 		String filename = Program.getXMLTypesFileName();
@@ -236,10 +230,8 @@ public class MyXmlDom {
 		}
 		catch (IOException ex) {
 			Program.showException(ex);
-			return false;
 		}
 		Debug("writeTypeXml: Writing file OK");
-		return true;
 	}
 
 	/**
@@ -299,11 +291,10 @@ public class MyXmlDom {
 	/**
 	 * writeRangements: Ecriture des Rangements pour l'export XML/HTML
 	 *
-	 * @param String filename : Fichier à écrire
-	 * @param LinkedList<Rangement> rangements : Liste des rangements à écrire
+	 * @param filename String : Fichier à écrire
+	 * @param rangements LinkedList<Rangement>: Liste des rangements à écrire
 	 */
-	public static boolean writeRangements(String filename, LinkedList<Rangement> rangements, boolean preview){
-
+	public static void writeRangements(String filename, List<Rangement> rangements, boolean preview){
 		Debug("writeRangement: Writing file");
 		if (filename.isEmpty()) {
 			filename = Program.getPreviewXMLFileName();
@@ -404,13 +395,10 @@ public class MyXmlDom {
 		} catch (ParserConfigurationException e) {
 			Debug("ParserConfigurationException");
 			Program.showException(e, false);
-			return false;
 		} catch (TransformerException e) {
 			Debug("TransformerException");
 			Program.showException(e, false);
-			return false;
 		}
-		return true;
 	}
 
 	/**

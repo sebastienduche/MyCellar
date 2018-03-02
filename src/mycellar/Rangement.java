@@ -3,6 +3,8 @@ package mycellar;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -10,8 +12,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 25.5
- * @since 25/07/17
+ * @version 25.6
+ * @since 02/03/18
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -23,14 +25,14 @@ public class Rangement implements Comparable<Rangement> {
 	private int start_caisse; //Indique l'indice de démarrage des caisses
 	private Bouteille stockage[][][]; //Stocke les vins du rangement: stockage[nb_emplacements][stock_nblign][stock_nbcol]
 	private boolean limite; //Indique si une limite de caisse est activée
-	private LinkedList<Part> listePartie = null;
+	private List<Part> listePartie = null;
 	static final long serialVersionUID = 5012007;
-	private HashMap<Integer, ArrayList<Bouteille>> storageCaisse;
+	private Map<Integer, ArrayList<Bouteille>> storageCaisse;
 
 	/**
 	 * Rangement: Constructeur de création d'un rangement de type Armoire
 	 *
-	 * @param nom1 String: nom du rangement
+	 * @param nom String: nom du rangement
 	 * @param listPart LinkedList<Part>: liste des parties
 	 */
 	public Rangement(String nom, LinkedList<Part> listPart) {
@@ -58,7 +60,7 @@ public class Rangement implements Comparable<Rangement> {
 	 */
 	public Rangement(String nom, int nb_emplacement, int start_caisse, boolean isLimit, int limite_caisse) {
 		this.nom = nom.trim();
-		this.nb_emplacements = nb_emplacement;
+		nb_emplacements = nb_emplacement;
 		this.start_caisse = start_caisse;
 
 		limite = isLimit;
@@ -70,9 +72,9 @@ public class Rangement implements Comparable<Rangement> {
 		stock_nblign = 1;
 		caisse = true;
 
-		storageCaisse = new HashMap<Integer, ArrayList<Bouteille>>(nb_emplacements);
+		storageCaisse = new HashMap<>(nb_emplacements);
 		for(int i=start_caisse; i<start_caisse+nb_emplacements; i++)
-			storageCaisse.put(i, new ArrayList<Bouteille>());
+			storageCaisse.put(i, new ArrayList<>());
 	}
 
 	/**
@@ -222,7 +224,7 @@ public class Rangement implements Comparable<Rangement> {
 			Debug("ERROR: Function getNbColonnesMax can't be called on a simple place!");
 			return -1;
 		}
-		return listePartie.get(emplacement).getRows().stream().mapToInt(row -> row.getCol()).max().getAsInt();
+		return listePartie.get(emplacement).getRows().stream().mapToInt(Row::getCol).max().getAsInt();
 	}
 
 	/**
@@ -288,9 +290,8 @@ public class Rangement implements Comparable<Rangement> {
 			return -1;
 		}
 		int resul = 0;
-		int nb_colonne;
 		try {
-			nb_colonne = this.getNbColonnes(emplacement, ligne);
+			int nb_colonne = getNbColonnes(emplacement, ligne);
 			for (int i = colonne; i < nb_colonne; i++) {
 				if (stockage[emplacement][ligne][i] == null) {
 					resul++;
@@ -318,13 +319,11 @@ public class Rangement implements Comparable<Rangement> {
 			return storageCaisse.get(emplacement + start_caisse).size();
 
 		int resul = 0;
-		int nb_colonne;
-		int nb_ligne;
 
 		try {
-			nb_ligne = this.getNbLignes(emplacement);
+			int nb_ligne = getNbLignes(emplacement);
 			for (int j = 0; j < nb_ligne; j++) {
-				nb_colonne = this.getNbColonnes(emplacement, j);
+				int nb_colonne = getNbColonnes(emplacement, j);
 				for (int i = 0; i < nb_colonne; i++) {
 					if (stockage[emplacement][j][i] != null) {
 						resul++;
@@ -371,9 +370,9 @@ public class Rangement implements Comparable<Rangement> {
 	 *
 	 * @return int
 	 */
-	public boolean removeWine(Bouteille wine) {
+	public void removeWine(Bouteille wine) {
 		clearStock(wine);
-		return Program.getStorage().deleteWine(wine);
+		Program.getStorage().deleteWine(wine);
 	}
 
 	/**
@@ -454,7 +453,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * moveLineWine: Déplacement d'une bouteille dans un rangement
 	 *
 	 * @param bottle Bouteille: Bouteille à déplacer
-	 * @param newLine int: nouveau numéro de ligne
+	 * @param nNewLine int: nouveau numéro de ligne
 	 */
 	public void moveLineWine(Bouteille bottle, int nNewLine) {
 		Program.getStorage().deleteWine(bottle);
@@ -562,7 +561,7 @@ public class Rangement implements Comparable<Rangement> {
 	 */
 	public String toXml() {
 
-		StringBuffer sText = new StringBuffer();
+		StringBuilder sText = new StringBuilder();
 		if (isCaisse()) {
 			sText.append("<place name=\"\" IsCaisse=\"true\" NbPlace=\"")
 			.append(getNbEmplacements())
@@ -706,25 +705,22 @@ public class Rangement implements Comparable<Rangement> {
 	/**
 	 * Rangement: Constructeur de création d'un rangement
 	 *
-	 * @param nom1 String: nom du rangement
 	 * @param listPart LinkedList<Part>: liste des parties
 	 */
-	public void setPlace(LinkedList<Part> listPart) {
+	public void setPlace(List<Part> listPart) {
 
 		stock_nbcol = 0;
 		stock_nblign = 0;
 		nb_emplacements = listPart.size();
-		listePartie = new LinkedList<Part>();
-		for(int i=0;i<nb_emplacements; i++)
-		{
+		listePartie = new LinkedList<>();
+		for(int i=0;i<nb_emplacements; i++) {
 			Part part = new Part(listPart.get(i).getNum());
 			listePartie.add(part);
 			int rowSize = listPart.get(i).getRowSize();
 			part.setRows(rowSize);
 			if(rowSize > stock_nblign)
 				stock_nblign = rowSize;
-			for(int j=0; j<rowSize; j++)
-			{
+			for(int j=0; j<rowSize; j++) {
 				int colSize = listPart.get(i).getRow(j).getCol();
 				part.getRow(j).setCol(colSize);
 				if(colSize > stock_nbcol)
@@ -741,15 +737,13 @@ public class Rangement implements Comparable<Rangement> {
 
 	public LinkedList<Part> getPlace() {
 
-		LinkedList<Part> listPart = new LinkedList<Part>();
-		for(int i=0;i<listePartie.size(); i++)
-		{
-			Part part = new Part(listePartie.get(i).getNum());
+		LinkedList<Part> listPart = new LinkedList<>();
+		for(Part p : listePartie) {
+			Part part = new Part(p.getNum());
 			listPart.add(part);
-			for(int j=0; j<listePartie.get(i).getRowSize(); j++)
-			{
-				part.setRows(listePartie.get(i).getRowSize());
-				part.getRow(j).setCol(listePartie.get(i).getRow(j).getCol());
+			for(int j=0; j<p.getRowSize(); j++) {
+				part.setRows(p.getRowSize());
+				part.getRow(j).setCol(p.getRow(j).getCol());
 			}
 		}
 		return listPart;

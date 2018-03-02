@@ -1,26 +1,10 @@
 package mycellar;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.Point;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceMotionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+
+import mycellar.core.IAddVin;
+import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarLabel;
+import net.miginfocom.swing.MigLayout;
 
 import javax.activation.ActivationDataFlavor;
 import javax.activation.DataHandler;
@@ -33,14 +17,30 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.JWindow;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
-
-import mycellar.core.IAddVin;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarLabel;
-import net.miginfocom.swing.MigLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DragSource;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -48,29 +48,29 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 21/07/17
+ * @version 1.7
+ * @since 02/03/18
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener {
 
 	private static final long serialVersionUID = -1239228393406479587L;
-	private MouseListener handler = new Handler();
-	private LabelTransferHandler th = new LabelTransferHandler();
+	private final MouseListener handler = new Handler();
+	private final LabelTransferHandler th = new LabelTransferHandler();
 
-	private LinkedList<JPanel[][]> places = new LinkedList<JPanel[][]>();
+	private final List<JPanel[][]> places = new LinkedList<>();
 	
-	private ArrayList<RangementCell> cellsList = new ArrayList<RangementCell>();
+	private final List<RangementCell> cellsList = new ArrayList<>();
 	
-	private JPanel placePanel = new JPanel();
-	private LinkedList<Rangement> armoires = new LinkedList<Rangement>();
+	private final JPanel placePanel = new JPanel();
+	private final LinkedList<Rangement> armoires = new LinkedList<>();
 	private MyCellarComboBox<Rangement> comboRangement;
 	private Rangement rangement;
 	private RangementCell stock;
-	private MyCellarButton move = new MyCellarButton(new MoveAction());
+	private final MyCellarButton move = new MyCellarButton(new MoveAction());
 	private IAddVin addvin;
 	
-	private boolean cellChooser = false;
+	private final boolean cellChooser;
 	private boolean updateView = false;
 
 	public CellarOrganizerPanel() {
@@ -93,7 +93,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 		
 		RangementUtils.putTabStock();
 		placePanel.setLayout(new MigLayout("","grow", ""));
-		comboRangement = new MyCellarComboBox<Rangement>();
+		comboRangement = new MyCellarComboBox<>();
 		for(Rangement r : Program.getCave()) {
 			if(addvin == null || !r.isCaisse()) {
 				armoires.add(r);
@@ -101,15 +101,13 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 			}
 		}
 		
-		comboRangement.addItemListener(new ItemListener() {
-			
-			@Override
-			public void itemStateChanged(ItemEvent arg0) {
+		comboRangement.addItemListener((arg0) -> {
 				if(arg0.getStateChange() == ItemEvent.SELECTED) {
 					Rangement r = (Rangement)comboRangement.getSelectedItem();
-					setRangement(r);
+					if (r != null) {
+						setRangement(r);
+					}
 				}
-			}
 		});
 		
 		if(!armoires.isEmpty())
@@ -117,7 +115,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 		
 		stock = new RangementCell(handler, th);
 		JScrollPane scrollStock = new JScrollPane(stock);
-		scrollStock.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollStock.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollStock.setBorder(BorderFactory.createTitledBorder(Program.getLabel("ManagePlace.Stock")));
 		add(new MyCellarLabel(Program.getLabel("ManagePlace.SelectPlace")), "split 3");
 		add(comboRangement, "gapleft 10px");
@@ -287,7 +285,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 
 		private static final long serialVersionUID = 6973442058662866086L;
 		
-		public MoveAction() {
+		private MoveAction() {
 			super(Program.getLabel("ManageStock.MoveAll"));
 		}
 
@@ -316,7 +314,7 @@ class RangementCell extends JPanel {
 	private JToggleButton select = new JToggleButton();
 	private static final long serialVersionUID = -3180057277279430308L;
 
-	public RangementCell(MouseListener listener, TransferHandler handler, Rangement place, int placeNum, int row, int column) {
+	RangementCell(MouseListener listener, TransferHandler handler, Rangement place, int placeNum, int row, int column) {
 		stock = false;
 		addMouseListener(listener);
 		setTransferHandler(handler);
@@ -331,14 +329,14 @@ class RangementCell extends JPanel {
 		this.place = place;
 	}
 
-	public RangementCell(MouseListener listener, TransferHandler handler) {
+	RangementCell(MouseListener listener, TransferHandler handler) {
 		stock = true;
 		addMouseListener(listener);
 		setTransferHandler(handler);
 		setLayout(new MigLayout("","[align left, 200:200:200]","0px[]"));
 	}
 	
-	public RangementCell(Rangement place, int placeNum, int row, int column) {
+	RangementCell(Rangement place, int placeNum, int row, int column) {
 		stock = false;
 		setBorder(BorderFactory.createEtchedBorder());
 		int width = 100;
@@ -364,9 +362,9 @@ class RangementCell extends JPanel {
 		return select.isSelected();
 	}
 	
-	public void clearToggle() {
-		select.setSelected(false);
-	}
+//	public void clearToggle() {
+//		select.setSelected(false);
+//	}
 
 	public void addBottle(BouteilleLabel comp) {
 		if(!stock)
@@ -402,10 +400,10 @@ class RangementCell extends JPanel {
 class BouteilleLabel extends JPanel {
 
 	private static final long serialVersionUID = -3982812616929975895L;
-	private Bouteille bouteille;
-	private MyCellarLabel label = new MyCellarLabel();
+	private final Bouteille bouteille;
+	private final MyCellarLabel label = new MyCellarLabel();
 
-	public BouteilleLabel(final Bouteille bouteille) {
+	BouteilleLabel(final Bouteille bouteille) {
 		super();
 		int width = 100;
 		Rangement r = bouteille.getRangement();
@@ -477,21 +475,17 @@ class LabelTransferHandler extends TransferHandler {
 	};
 	private final JWindow window = new JWindow();
 	
-	public LabelTransferHandler() {
+	LabelTransferHandler() {
 		localObjectFlavor = new ActivationDataFlavor(
 				RangementCell.class, DataFlavor.javaJVMLocalObjectMimeType, "JPanel");
 		window.add(label);
 		window.setAlwaysOnTop(true);
 		window.setBackground(new Color(0,true));
-		DragSource.getDefaultDragSource().addDragSourceMotionListener(
-				new DragSourceMotionListener() {
-					@Override
-					public void dragMouseMoved(DragSourceDragEvent dsde) {
-						Point pt = dsde.getLocation();
-						pt.translate(5, 5); // offset
-						window.setLocation(pt);
-					}
-				});
+		DragSource.getDefaultDragSource().addDragSourceMotionListener( (dsde) -> {
+			Point pt = dsde.getLocation();
+			pt.translate(5, 5); // offset
+			window.setLocation(pt);
+		});
 	}
 	@Override
 	protected Transferable createTransferable(JComponent c) {
@@ -505,15 +499,11 @@ class LabelTransferHandler extends TransferHandler {
 		return new Transferable() {
 			@Override
 			public DataFlavor[] getTransferDataFlavors() {
-				ArrayList<DataFlavor> list = new ArrayList<DataFlavor>();
-				for(DataFlavor f:ss.getTransferDataFlavors()) {
-					list.add(f);
-				}
-				for(DataFlavor f:dh.getTransferDataFlavors()) {
-					list.add(f);
-				}
+				ArrayList<DataFlavor> list = new ArrayList<>();
+				Collections.addAll(list, ss.getTransferDataFlavors());
+				Collections.addAll(list, dh.getTransferDataFlavors());
 				return list.toArray(dh.getTransferDataFlavors());
-			}
+			}@Override
 			public boolean isDataFlavorSupported(DataFlavor flavor) {
 				for (DataFlavor f: getTransferDataFlavors()) {
 					if (flavor.equals(f)) {
@@ -522,6 +512,7 @@ class LabelTransferHandler extends TransferHandler {
 				}
 				return false;
 			}
+			@Override
 			public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
 				if(flavor.equals(localObjectFlavor)) {
 					return dh.getTransferData(flavor);
@@ -577,7 +568,7 @@ class LabelTransferHandler extends TransferHandler {
 				Program.getStorage().addHistory(History.MODIFY, l.getBouteille());
 			return true;
 		} catch(UnsupportedFlavorException ufe) {
-		} catch(java.io.IOException ioe) {
+		} catch(IOException ioe) {
 		}
 		return false;
 	}

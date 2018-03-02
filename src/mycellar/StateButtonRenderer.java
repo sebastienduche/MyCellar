@@ -1,11 +1,10 @@
 package mycellar;
 
-import java.awt.Component;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
+import java.awt.Component;
 
 
 /**
@@ -14,13 +13,12 @@ import javax.swing.table.TableCellRenderer;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 01/09/15
+ * @version 0.4
+ * @since 02/03/18
  */
 public class StateButtonRenderer extends JButton implements TableCellRenderer {
 
-  static final long serialVersionUID = 040107;
-  private String label;
+  private final String label;
   private ImageIcon image;
   
   /**
@@ -48,6 +46,7 @@ public class StateButtonRenderer extends JButton implements TableCellRenderer {
    * @param column int
    * @return Component
    */
+  @Override
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
     try {
@@ -59,7 +58,7 @@ public class StateButtonRenderer extends JButton implements TableCellRenderer {
         setForeground(table.getForeground());
         setBackground(table.getBackground());
       }
-      boolean isSelect = ( (Boolean) value).booleanValue();
+      boolean isSelect = (Boolean) value;
       setSelected(isSelect);
       setFont(Program.font_panel);
       setText(label);

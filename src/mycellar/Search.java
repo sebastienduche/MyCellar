@@ -39,6 +39,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,20 +49,20 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.2
- * @since 01/03/18
+ * @version 18.3
+ * @since 02/03/18
  */
 public class Search extends JPanel implements Runnable, ITabListener {
-	private static JTable table;
+	private final JTable table;
 	private static final TableValues model = new TableValues();
 	private final MyCellarButton suppr = new MyCellarButton(MyCellarImage.DELETE);
 	private final MyCellarButton export = new MyCellarButton(MyCellarImage.EXPORT);
 	private final MyCellarButton modif = new MyCellarButton(MyCellarImage.WINE);
-	private final MyCellarComboBox<String> num_lieu = new MyCellarComboBox<String>();
-	private final MyCellarComboBox<String> column = new MyCellarComboBox<String>();
-	private final MyCellarComboBox<String> lieu = new MyCellarComboBox<String>();
-	private final MyCellarComboBox<String> line = new MyCellarComboBox<String>();
-	private final MyCellarComboBox<String> year = new MyCellarComboBox<String>();
+	private final MyCellarComboBox<String> num_lieu = new MyCellarComboBox<>();
+	private final MyCellarComboBox<String> column = new MyCellarComboBox<>();
+	private final MyCellarComboBox<String> lieu = new MyCellarComboBox<>();
+	private final MyCellarComboBox<String> line = new MyCellarComboBox<>();
+	private final MyCellarComboBox<String> year = new MyCellarComboBox<>();
 	private final MyCellarLabel label3 = new MyCellarLabel();
 	private final MyCellarLabel label4 = new MyCellarLabel();
 	private final MyCellarLabel label5 = new MyCellarLabel();
@@ -86,12 +87,9 @@ public class Search extends JPanel implements Runnable, ITabListener {
 	private final JPopupMenu popup = new JPopupMenu();
 	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
 	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
 	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
 	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private final JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
 	private final MyClipBoard clipboard = new MyClipBoard();
-	private final JMenuItem moveLine = new JMenuItem(Program.getLabel("Infos365"));
 	private Component objet1 = null;
 	private final MouseListener popup_l = new PopupListener();
 	private final JTabbedPane tabbedPane = new JTabbedPane();
@@ -221,13 +219,16 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		});
 
 		//Menu Contextuel
+		JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+		JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+		JMenuItem moveLine = new JMenuItem(Program.getLabel("Infos365"));
 		couper.addActionListener(this::couper_actionPerformed);
 		cut.addActionListener(this::couper_actionPerformed);
 		copier.addActionListener(this::copier_actionPerformed);
 		copy.addActionListener(this::copier_actionPerformed);
 		coller.addActionListener(this::coller_actionPerformed);
 		paste.addActionListener(this::coller_actionPerformed);
-		moveLine.addActionListener(this::moveLine_actionPerformed);
+		moveLine.addActionListener((e) -> new MoveLine());
 
 		couper.setEnabled(false);
 		copier.setEnabled(false);
@@ -281,7 +282,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 	private void export_actionPerformed(ActionEvent e) {
 		try {
 			Debug("Exporting...");
-			LinkedList<Bouteille> v = model.getDatas();
+			List<Bouteille> v = model.getDatas();
 			Export expor = new Export(v);
 			JDialog dialog = new JDialog();
 			dialog.add(expor);
@@ -1317,7 +1318,6 @@ public class Search extends JPanel implements Runnable, ITabListener {
 
 	public static void updateTable() {
 		SwingUtilities.invokeLater(model::fireTableDataChanged);
-		
 	}
 
 	public static void clearResults() {

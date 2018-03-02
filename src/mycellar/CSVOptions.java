@@ -1,14 +1,5 @@
 package mycellar;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-
-import javax.swing.BorderFactory;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -16,71 +7,61 @@ import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+
 /**
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 04/08/17
+ * @version 1.6
+ * @since 02/03/18
  */
 public class CSVOptions extends JDialog {
-	private JPanel jPanel1 = new JPanel();
-	private MyCellarLabel info_separator = new MyCellarLabel();
-	private MyCellarCheckBox export[] = new MyCellarCheckBox[1];
-	private JScrollPane jScrollPane1 = new JScrollPane();
-	private JPanel jPanel2 = new JPanel();
-	private MyCellarLabel colonnes[] = new MyCellarLabel[1];
-	private MyCellarButton valider = new MyCellarButton();
-	private MyCellarButton annuler = new MyCellarButton();
-	private MyCellarComboBox<String> separator = new MyCellarComboBox<String>();
-	private int nb_colonnes = 0;
+	private final MyCellarCheckBox export[];
+	private final MyCellarComboBox<String> separator = new MyCellarComboBox<>();
+	private final int nb_colonnes;
 	static final long serialVersionUID = 230705;
 
 	/**
 	 * CSVOptions: Constructeur pour la fenêtre d'options.
 	 */
 	public CSVOptions() {
-		try {
-			jbInit();
-		}
-		catch (Exception e) {
-			Program.showException(e);
-		}
-	}
 
-	/**
-	 * jbInit: Fonction d'initialisation.
-	 *
-	 * @throws Exception
-	 */
-	private void jbInit() throws Exception {
 		Debug("JbInit");
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setModal(true);
-		this.setTitle(Program.getLabel("Infos269"));
+		setTitle(Program.getLabel("Infos269"));
 
-		this.addKeyListener(new java.awt.event.KeyListener() {
-			public void keyReleased(java.awt.event.KeyEvent e) {}
-
-			public void keyPressed(java.awt.event.KeyEvent e) {
+		addKeyListener(new KeyListener() {
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			@Override
+			public void keyPressed(KeyEvent e) {
 				keylistener_actionPerformed(e);
 			}
-
-			public void keyTyped(java.awt.event.KeyEvent e) {}
+			@Override
+			public void keyTyped(KeyEvent e) {}
 		});
 
-
-		this.setLayout(new MigLayout("","grow",""));
-		this.setResizable(false);
+		setLayout(new MigLayout("","grow",""));
+		setResizable(false);
+		JPanel jPanel1 = new JPanel();
 		jPanel1.setBorder(BorderFactory.createEtchedBorder());
 		jPanel1.setLayout(new MigLayout("","grow",""));
 		jPanel1.setFont(Program.font_panel);
-		info_separator.setText(Program.getLabel("Infos034") + ":"); //Séparateur
+		MyCellarLabel info_separator = new MyCellarLabel(Program.getLabel("Infos034") + ":"); //Séparateur
 		ArrayList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
 		nb_colonnes = listColumns.size();
-		colonnes = new MyCellarLabel[nb_colonnes];
+		MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
 		export = new MyCellarCheckBox[nb_colonnes];
 		for (int i = 0; i < nb_colonnes; i++) {
 			export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
@@ -99,15 +80,15 @@ public class CSVOptions extends JDialog {
 			}
 			colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
 		}
+		JPanel jPanel2 = new JPanel();
 		jPanel2.setLayout(new MigLayout("","[grow][grow]",""));
 		jPanel2.setFont(Program.font_panel);
-		valider.setText(Program.getLabel("Main.OK"));
+		MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
 		separator.addItem(Program.getLabel("Infos002"));
 		separator.addItem(Program.getLabel("Infos042"));
 		separator.addItem(Program.getLabel("Infos043"));
 		separator.addItem(Program.getLabel("Infos044"));
-		String key = null;
-		key = Program.getCaveConfigString("SEPARATOR_DEFAULT", ",");
+		String key = Program.getCaveConfigString("SEPARATOR_DEFAULT", ",");
 		if (key.equals(";")) {
 			separator.setSelectedIndex(1);
 		}
@@ -121,25 +102,25 @@ public class CSVOptions extends JDialog {
 				}
 			}
 		}
-		valider.addActionListener((e) -> valider_actionPerformed(e));
-		annuler.setText(Program.getLabel("Infos055"));
+		valider.addActionListener(this::valider_actionPerformed);
+		MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos055"));
 		annuler.addActionListener((e) -> dispose());
 
-		this.add(info_separator, "split 2");
-		this.add(separator, "wrap");
+		add(info_separator, "split 2");
+		add(separator, "wrap");
 
-		jScrollPane1 = new JScrollPane(jPanel2);
+		JScrollPane jScrollPane1 = new JScrollPane(jPanel2);
 		jScrollPane1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
-		this.add(jScrollPane1, "grow, gaptop 15px, wrap");
+		add(jScrollPane1, "grow, gaptop 15px, wrap");
 		for (int i = 0; i < nb_colonnes; i++) {
 			jPanel2.add(colonnes[i],"grow");
 			jPanel2.add(export[i],"wrap");
 		}
 
-		this.add(valider, "gaptop 15px, split 2, center");
-		this.add(annuler);
+		add(valider, "gaptop 15px, split 2, center");
+		add(annuler);
 		setSize(400, 500);
-	    setLocationRelativeTo(null);
+		setLocationRelativeTo(null);
 		Debug("JbInit OK");
 	}
 
@@ -148,7 +129,7 @@ public class CSVOptions extends JDialog {
 	 *
 	 * @param e ActionEvent
 	 */
-	void valider_actionPerformed(ActionEvent e) {
+	private void valider_actionPerformed(ActionEvent e) {
 		Debug("valider_actionPerforming...");
 		for (int i = 0; i < nb_colonnes; i++) {
 			if (export[i].isSelected()) {
@@ -173,7 +154,7 @@ public class CSVOptions extends JDialog {
 			Program.putCaveConfigString("SEPARATOR_DEFAULT", "/");
 			break;
 		}
-		this.dispose();
+		dispose();
 	}
 
 	/**

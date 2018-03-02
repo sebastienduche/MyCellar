@@ -1,8 +1,8 @@
 package mycellar;
 
+import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
-
-import javax.swing.table.*;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -10,23 +10,23 @@ import javax.swing.table.*;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 20/04/16
+ * @version 0.3
+ * @since 02/03/18
  */
 public class ManageListTableValue extends AbstractTableModel {
-  public final static int ETAT = 0;
+  public static final int ETAT = 0;
   static final long serialVersionUID = 220605;
-  private String[] columnNames = {"", Program.getLabel("Infos401")
-  };
+  private final String[] columnNames = {"", Program.getLabel("Infos401")};
 
-  private LinkedList<Boolean> values = new LinkedList<Boolean>();
-  private LinkedList<String> list = new LinkedList<String>();
+  private final LinkedList<Boolean> values = new LinkedList<>();
+  private List<String> list = new LinkedList<>();
 
   /**
    * getRowCount
    *
    * @return int
    */
+  @Override
   public int getRowCount() {
     return list.size();
   }
@@ -36,6 +36,7 @@ public class ManageListTableValue extends AbstractTableModel {
    *
    * @return int
    */
+  @Override
   public int getColumnCount() {
     return columnNames.length;
   }
@@ -47,6 +48,7 @@ public class ManageListTableValue extends AbstractTableModel {
    * @param column int
    * @return Object
    */
+  @Override
   public Object getValueAt(int row, int column) {
 	  if(column == ETAT)
 		  return values.get(row);
@@ -59,6 +61,7 @@ public class ManageListTableValue extends AbstractTableModel {
    * @param column int
    * @return String
    */
+  @Override
   public String getColumnName(int column) {
     return columnNames[column];
   }
@@ -69,6 +72,7 @@ public class ManageListTableValue extends AbstractTableModel {
    * @param column int
    * @return Class
    */
+  @Override
   public Class<?> getColumnClass(int column) {
     Class<?> dataType = super.getColumnClass(column);
 
@@ -82,11 +86,9 @@ public class ManageListTableValue extends AbstractTableModel {
    * @param column int
    * @return boolean
    */
+  @Override
   public boolean isCellEditable(int row, int column) {
-    if (column == ETAT) {
-      return true;
-    }
-    return false;
+    return (column == ETAT);
   }
 
   /**
@@ -96,6 +98,7 @@ public class ManageListTableValue extends AbstractTableModel {
    * @param row int
    * @param column int
    */
+  @Override
   public void setValueAt(Object value, int row, int column) {
     try {
     	if(column == ETAT)
@@ -106,27 +109,27 @@ public class ManageListTableValue extends AbstractTableModel {
     }
   }
 
-  public void setValues(LinkedList<String> list){
+  public void setValues(List<String> list){
 	  if(list != null)
 		  this.list = list;
 	  values.clear();
-	  for(int i=0;i<list.size();i++)
-		  values.add(new Boolean(false));
-	  this.fireTableDataChanged();
+	  if (list != null) {
+      for (int i = 0; i < list.size(); i++)
+        values.add(false);
+    }
+	  fireTableDataChanged();
   }
   
   public void addValue(String value){
-	  if(list != null)
-	  {
+	  if(list != null) {
 		  list.add(value);
-		  values.add(new Boolean(false));
+		  values.add(false);
 	  }
-	  this.fireTableDataChanged();
+	  fireTableDataChanged();
   }
   
-  public void removeValueAt(LinkedList<Integer> index){
-	  if(list != null)
-	  {
+  public void removeValueAt(List<Integer> index){
+	  if(list != null) {
 		  for(int i = index.size()-1;i>=0;i--){
 			  Integer val = index.get(i);
 		  list.remove(val.intValue());
@@ -137,18 +140,18 @@ public class ManageListTableValue extends AbstractTableModel {
   }
   
   public LinkedList<Integer> getSelectedRows(){
-	  LinkedList<Integer> indexes = new LinkedList<Integer>();
+	  LinkedList<Integer> indexes = new LinkedList<>();
 	  for(int i=0;i<list.size();i++){
-		  if(((Boolean)values.get(i)).equals(Boolean.TRUE))
-			  indexes.add(new Integer(i));
+		  if(values.get(i).equals(Boolean.TRUE))
+			  indexes.add(i);
 	  }
 	  return indexes;
   }
   
   public LinkedList<String> getSelectedValues(){
-	  LinkedList<String> indexes = new LinkedList<String>();
+	  LinkedList<String> indexes = new LinkedList<>();
 	  for(int i=0;i<list.size();i++){
-		  if(((Boolean)values.get(i)).equals(Boolean.TRUE))
+		  if(values.get(i).equals(Boolean.TRUE))
 			  indexes.add(list.get(i));
 	  }
 	  return indexes;

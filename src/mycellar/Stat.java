@@ -1,26 +1,30 @@
 package mycellar;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.text.MessageFormat;
-import java.util.LinkedList;
-
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-
+import mycellar.core.MyCellarCheckBox;
+import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarLabel;
+import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
 
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarLabel;
-import net.miginfocom.swing.MigLayout;
-
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.math.BigDecimal;
+import java.text.Collator;
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -29,21 +33,20 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.4
- * @since 22/10/17
+ * @version 5.5
+ * @since 02/03/18
  */
 public class Stat extends JPanel implements ITabListener {
 
 	private static final long serialVersionUID = -5333602919958999440L;
 	private MyCellarLabel list_rangement[];
-	private MyCellarLabel definition = new MyCellarLabel();
-	private MyCellarLabel def2 = new MyCellarLabel();
-	private MyCellarLabel end = new MyCellarLabel();
-	private MyCellarLabel moy = new MyCellarLabel();
-	private MyCellarComboBox<String> listOptions = new MyCellarComboBox<String>();
-	private MyCellarComboBox<String> listPlaces = new MyCellarComboBox<String>();
-	private JScrollPane scroll = new JScrollPane();
-	private JPanel panel = new JPanel();
+	private final MyCellarLabel definition = new MyCellarLabel();
+	private final MyCellarLabel def2 = new MyCellarLabel();
+	private final MyCellarLabel end = new MyCellarLabel();
+	private final MyCellarLabel moy = new MyCellarLabel();
+	private final MyCellarComboBox<String> listOptions = new MyCellarComboBox<>();
+	private final MyCellarComboBox<String> listPlaces = new MyCellarComboBox<>();
+	private final JPanel panel = new JPanel();
 	private MyCellarLabel list_num_empl[];
 	private MyCellarLabel list_nb_bottle[];
 	private int nbparties = 0;
@@ -52,10 +55,10 @@ public class Stat extends JPanel implements ITabListener {
 	private int nb_bottle = 0;
 	private double prix_total = 0;
 	private String annee[] = new String[0];
-	private PanelChart panelChart = new PanelChart();
-	private MyCellarCheckBox options = new MyCellarCheckBox(Program.getLabel("Infos156"));
-	private LinkedList<StatData> listPrice = new LinkedList<StatData>();
-	private LinkedList<StatData> listYear = new LinkedList<StatData>();
+	private final PanelChart panelChart = new PanelChart();
+	private final MyCellarCheckBox options = new MyCellarCheckBox(Program.getLabel("Infos156"));
+	private final List<StatData> listPrice = new LinkedList<>();
+	private final List<StatData> listYear = new LinkedList<>();
 
 	/**
 	 * Stat: Constructeur.
@@ -82,8 +85,8 @@ public class Stat extends JPanel implements ITabListener {
 		nbparties = 99;
 		definition.setText(Program.getLabel("Infos174")); //"Type de statistiques:");
 		def2.setText(Program.getLabel("Infos105") + ":"); //"Rangement:");
-		end.setHorizontalAlignment(4);
-		moy.setHorizontalAlignment(4);
+		end.setHorizontalAlignment(SwingConstants.RIGHT);
+		moy.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.setLayout(new MigLayout("","[][][grow]",""));
 		panel.setFont(Program.font_panel);
 		int caveSize = Program.GetCaveLength();
@@ -97,13 +100,13 @@ public class Stat extends JPanel implements ITabListener {
 			list_rangement[i] = new MyCellarLabel(cave.getNom());
 			if (cave.isCaisse()) {
 				panel.add(list_rangement[i]);
-				if (Program.getCave(i).getNbEmplacements() == 1) {
+				if (cave.getNbEmplacements() == 1) {
 					list_num_empl[indx] = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
 				}
 				else {
 					list_num_empl[indx] = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //emplacements
 				}
-				if (Program.getCave(i).getNbCaseUseAll() <= 1) {
+				if (cave.getNbCaseUseAll() <= 1) {
 					list_nb_bottle[indx] = new MyCellarLabel(cave.getNbCaseUseAll() + " " + Program.getLabel("Infos177")); //"bouteille");
 				}
 				else {
@@ -152,16 +155,15 @@ public class Stat extends JPanel implements ITabListener {
 			}
 			i++;
 		}
+		moy.setText("");
 		if (nb_bottle > 1) {
-			moy.setText("");
 			end.setText(MessageFormat.format(Program.getLabel("Infos181"), nb_bottle)); //Nombre de bouteille total:
 		}
 		else {
-			moy.setText("");
 			end.setText(MessageFormat.format(Program.getLabel("Infos180"), nb_bottle)); //Nombre de bouteilles totales:
 		}
 
-		options.addActionListener((e) -> options_actionPerformed(e));
+		options.addActionListener(this::options_actionPerformed);
 
 		listPlaces.removeAllItems();
 		listPlaces.addItem(Program.getLabel("Infos182")); //"Tous les rangement");
@@ -173,24 +175,24 @@ public class Stat extends JPanel implements ITabListener {
 		listOptions.addItem(Program.getLabel("Infos184")); //"Par Année");
 		listOptions.addItem(Program.getLabel("Infos185")); //"Par Prix");
 
-		scroll = new JScrollPane(panel);
-		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		listOptions.addItemListener((e) -> list_itemStateChanged(e));
+		JScrollPane scroll = new JScrollPane(panel);
+		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		listOptions.addItemListener(this::list_itemStateChanged);
 		listPlaces.addItemListener((e) -> {
-			if(e.getSource() == listPlaces && e.getStateChange() == ItemEvent.SELECTED)
+			if(e.getSource().equals(listPlaces) && e.getStateChange() == ItemEvent.SELECTED)
 				list2_itemStateChanged(e);
 		});
 
-		this.setLayout(new MigLayout("","[][][grow]", "[][]20px[grow][][]"));
-		this.add(definition);
-		this.add(listOptions, "wrap");
-		this.add(def2);
-		this.add(listPlaces, "wrap");
-		this.add(scroll, "span 3, split 2, grow");
-		this.add(panelChart, "grow, wrap");
-		this.add(options);
-		this.add(end, "span 2, align right, wrap");
-		this.add(moy, "span 3, align right, wrap");
+		setLayout(new MigLayout("","[][][grow]", "[][]20px[grow][][]"));
+		add(definition);
+		add(listOptions, "wrap");
+		add(def2);
+		add(listPlaces, "wrap");
+		add(scroll, "span 3, split 2, grow");
+		add(panelChart, "grow, wrap");
+		add(options);
+		add(end, "span 2, align right, wrap");
+		add(moy, "span 3, align right, wrap");
 		options.setEnabled(false);
 
 		Debug("jbInit OK");
@@ -202,7 +204,7 @@ public class Stat extends JPanel implements ITabListener {
 	 *
 	 * @param e ItemEvent
 	 */
-	void list_itemStateChanged(ItemEvent e) {
+	private void list_itemStateChanged(ItemEvent e) {
 		try {
 			if (listOptions.getSelectedIndex() == 0) {
 				Debug("By place");
@@ -212,8 +214,8 @@ public class Stat extends JPanel implements ITabListener {
 				listPlaces.setEnabled(true);
 				listPlaces.addItem(Program.getLabel("Infos182")); //"Tous les rangements");
 				listPlaces.setSelectedIndex(0);
-				for (int i = 0; i < Program.GetCaveLength(); i++) {
-					listPlaces.addItem(Program.getCave(i).getNom());
+				for (Rangement r : Program.getCave()) {
+					listPlaces.addItem(r.getNom());
 				}
 			}
 			if (listOptions.getSelectedIndex() == 1) {
@@ -225,7 +227,7 @@ public class Stat extends JPanel implements ITabListener {
 				for (int i = 0; i < annee.length; i++) {
 					annee[i] = Integer.toString(obj[i]);
 				}
-				java.util.Arrays.sort(annee, java.text.Collator.getInstance());
+				Arrays.sort(annee, Collator.getInstance());
 				listPlaces.removeAllItems();
 				listPlaces.addItem(Program.getLabel("Infos186")); //"Toutes les années");
 				listPlaces.setSelectedIndex(0);
@@ -250,7 +252,7 @@ public class Stat extends JPanel implements ITabListener {
 	 *
 	 * @param e ItemEvent
 	 */
-	void list2_itemStateChanged(ItemEvent e) {
+	private void list2_itemStateChanged(ItemEvent e) {
 
 		try {
 			if (listOptions.getSelectedIndex() == 0) {
@@ -324,12 +326,11 @@ public class Stat extends JPanel implements ITabListener {
 						}
 						i++;
 					}
+					moy.setText("");
 					if (nb_bottle > 1) {
-						moy.setText("");
 						end.setText(MessageFormat.format(Program.getLabel("Infos181"), nb_bottle));
 					}
 					else {
-						moy.setText("");
 						end.setText(MessageFormat.format(Program.getLabel("Infos180"), nb_bottle));
 					}
 				}
@@ -481,15 +482,14 @@ public class Stat extends JPanel implements ITabListener {
 					sVirgule = Program.getCaveConfigString("PRICE_SEPARATOR","");
 					virgule = sVirgule.charAt(0);
 				}
-				else
-				{
-					java.text.DecimalFormat df = new java.text.DecimalFormat();
+				else {
+					DecimalFormat df = new DecimalFormat();
 					virgule = df.getDecimalFormatSymbols().getDecimalSeparator();
 				}
 				if(listPrice.isEmpty())
 				{
 					prix_total = 0;
-					java.math.BigDecimal bd = null;
+					BigDecimal bd = null;
 					for (int j = 0; j < Program.getStorage().getAllNblign(); j++) {
 						int prix_int = 0;
 						if (Program.getStorage().getAllAt(j) != null) {
@@ -509,8 +509,7 @@ public class Stat extends JPanel implements ITabListener {
 							}
 							boolean isNumeric = true;
 							try {
-								bd = new java.math.BigDecimal(prix);
-								bd = bd.setScale(2, java.math.BigDecimal.ROUND_HALF_UP);
+								bd = new BigDecimal(prix).setScale(2, BigDecimal.ROUND_HALF_UP);
 							}
 							catch (NumberFormatException nfe) {isNumeric = false;
 							ss_prix++;
@@ -583,7 +582,7 @@ public class Stat extends JPanel implements ITabListener {
 	 *
 	 * @param e ActionEvent
 	 */
-	void options_actionPerformed(ActionEvent e) {
+	private void options_actionPerformed(ActionEvent e) {
 		try {
 			Debug("options_actionPerforming...");
 			options.setSelected(false);
@@ -618,19 +617,19 @@ public class Stat extends JPanel implements ITabListener {
 		Start.updateMainPanel();
 	}
 
-	class PanelChart extends JPanel {
+	private class PanelChart extends JPanel {
 
 		private static final long serialVersionUID = -6697139633950076186L;
 
-		public PanelChart(){
-			this.setLayout(new MigLayout("","grow","grow"));
+		private PanelChart(){
+			setLayout(new MigLayout("","grow","grow"));
 			setPlacesChart(Program.getCave());
 		}
 
 
 		/** * Creates a chart */
 
-		public void setPlacesChart(LinkedList<Rangement> rangements) {
+		private void setPlacesChart(List<Rangement> rangements) {
 
 			DefaultPieDataset dataset = new DefaultPieDataset();
 			for(Rangement rangement: rangements) {
@@ -645,13 +644,13 @@ public class Stat extends JPanel implements ITabListener {
 					false);
 
 			ChartPanel chartPanel = new ChartPanel(chart);
-			this.removeAll();
-			this.add(chartPanel, "grow");
+			removeAll();
+			add(chartPanel, "grow");
 		}
 
-		public void setPlaceChart(Rangement rangement) {
+		private void setPlaceChart(Rangement rangement) {
 
-			this.removeAll();
+			removeAll();
 			if(rangement.isCaisse())
 				return;
 			DefaultPieDataset dataset = new DefaultPieDataset();
@@ -668,9 +667,9 @@ public class Stat extends JPanel implements ITabListener {
 			this.add(chartPanel, "grow");
 		}
 
-		public void setDataChart(LinkedList<StatData> datas, String title) {
+		private void setDataChart(List<StatData> datas, String title) {
 
-			this.removeAll();
+			removeAll();
 			DefaultPieDataset dataset = new DefaultPieDataset();
 			for(StatData part: datas) {
 				if(part.getCount() > 0)
@@ -683,20 +682,18 @@ public class Stat extends JPanel implements ITabListener {
 					false);
 
 			ChartPanel chartPanel = new ChartPanel(chart);
-			this.add(chartPanel, "grow");
-			this.updateUI();
-
+			add(chartPanel, "grow");
+			updateUI();
 		}
-
 	}
 
 	class StatData {
 
-		private String name;
-		private int count;
+		private final String name;
+		private final int count;
 
 
-		public StatData(String name, int count) {
+		private StatData(String name, int count) {
 			super();
 			this.name = name;
 			this.count = count;
@@ -708,8 +705,6 @@ public class Stat extends JPanel implements ITabListener {
 		public int getCount() {
 			return count;
 		}
-
-
 	}
 
 	public void updateView() {

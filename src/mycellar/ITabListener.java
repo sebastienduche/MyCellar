@@ -21,7 +21,7 @@ public interface ITabListener extends EventListener {
 	 *            the notified event
 	 * @return whether the tab closing is to be done. 
 	 */
-	public boolean tabWillClose(TabEvent event);
+	boolean tabWillClose(TabEvent event);
 
-	public void tabClosed();
+	void tabClosed();
 }

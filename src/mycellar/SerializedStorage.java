@@ -1,14 +1,13 @@
 package mycellar;
 
+import mycellar.vignobles.CountryVignobles;
+
+import javax.swing.JOptionPane;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.LinkedList;
-
-import javax.swing.JOptionPane;
-
-import mycellar.vignobles.CountryVignobles;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -16,14 +15,14 @@ import mycellar.vignobles.CountryVignobles;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.4
- * @since 24/10/17
+ * @version 4.5
+ * @since 02/03/18
  */
 
 public class SerializedStorage implements Storage {
 
-	protected static HistoryList m_HistoryList = new HistoryList();
-	protected ListeBouteille listBouteilles = new ListeBouteille();
+	private static HistoryList m_HistoryList = new HistoryList();
+	private ListeBouteille listBouteilles = new ListeBouteille();
 
 	private LinkedList<String> listeUniqueBouteille = new LinkedList<String>(); // Liste des noms de bouteille (un seule nom)
 
@@ -31,6 +30,7 @@ public class SerializedStorage implements Storage {
 	private SerializedStorage() {
 	}
 
+	@Override
 	public void setListBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles = listBouteilles;
 		listeUniqueBouteille.clear();
@@ -42,6 +42,7 @@ public class SerializedStorage implements Storage {
 		}
 	}
 
+	@Override
 	public void setListBouteilles(LinkedList<Bouteille> listBouteilles) {
 		this.listBouteilles.bouteille = listBouteilles;
 		listeUniqueBouteille.clear();
@@ -50,7 +51,8 @@ public class SerializedStorage implements Storage {
 				listeUniqueBouteille.add(b.getNom());
 		}
 	}
-	
+
+	@Override
 	public void addBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles.getBouteille().addAll(listBouteilles.getBouteille());
 		for(Bouteille b: listBouteilles.bouteille) {
@@ -60,10 +62,12 @@ public class SerializedStorage implements Storage {
 		}
 	}
 
+	@Override
 	public ListeBouteille getListBouteilles() {
 		return listBouteilles;
 	}
-	
+
+	@Override
 	public LinkedList<String> getBottleNames() {
 		return listeUniqueBouteille;
 	}
@@ -73,7 +77,7 @@ public class SerializedStorage implements Storage {
 	 * or the first access to SingletonHolder.INSTANCE, not before.
 	 */
 	private static class SerializedStorageHolder { 
-		public static final SerializedStorage INSTANCE = new SerializedStorage();
+		private static final SerializedStorage INSTANCE = new SerializedStorage();
 	}
 
 	public static SerializedStorage getInstance() {
@@ -154,27 +158,20 @@ public class SerializedStorage implements Storage {
 	 */
 	private boolean deleteWine(String nom2, int annee, String empl, int num_empl, int line, int column) {
 
-		int num_empl1 = 0;
-		int line1 = 0;
-		int column1 = 0;
 		int i = 0;
 		boolean resul = false;
 		int num = -1;
-		int annee1 = 0;
-		String nom1 = null;
-		String empl1 = null;
-		Bouteille b = null;
 
 		Debug("DeleteWine: Trying deleting bottle " + nom2.trim() + " " + annee + " " + empl.trim() + " " + num_empl + " " + line + " " + column);
 		try {
 			do {
-				b = listBouteilles.getBouteille().get(i);
-				empl1 = b.getEmplacement();
-				num_empl1 = b.getNumLieu();
-				line1 = b.getLigne();
-				column1 = b.getColonne();
-				nom1 = b.getNom();
-				annee1 = b.getAnneeInt();
+				Bouteille b = listBouteilles.getBouteille().get(i);
+				String empl1 = b.getEmplacement();
+				int num_empl1 = b.getNumLieu();
+				int line1 = b.getLigne();
+				int column1 = b.getColonne();
+				String nom1 = b.getNom();
+				int annee1 = b.getAnneeInt();
 
 				Rangement rangement = Program.getCave(empl);
 
@@ -237,22 +234,18 @@ public class SerializedStorage implements Storage {
 	 * @param column int: numéro de colonne (1...n+1)
 	 */
 
+	@Override
 	public void replaceWineAll(Bouteille wine, int num_empl, int line, int column) { //Remplace une bouteille existante par une autre
 
-		int num_empl1 = 0;
-		int line1 = 0;
-		int column1 = 0;
 		int i = 0;
 		boolean resul = false;
-		String empl = "";
-		Bouteille b = null;
 		do {
-			b = listBouteilles.getBouteille().get(i);
+			Bouteille b = listBouteilles.getBouteille().get(i);
 			String empl1 = wine.getEmplacement();
-			empl = b.getEmplacement();
-			num_empl1 = b.getNumLieu();
-			line1 = b.getLigne();
-			column1 = b.getColonne();
+			String empl = b.getEmplacement();
+			int num_empl1 = b.getNumLieu();
+			int line1 = b.getLigne();
+			int column1 = b.getColonne();
 
 			if (empl.equals(empl1) && num_empl == num_empl1 && line == line1 && column == column1) {
 				b.update(wine);
@@ -272,6 +265,7 @@ public class SerializedStorage implements Storage {
 	 *
 	 * @return LinkedList
 	 */
+	@Override
 	public LinkedList<Bouteille> getAllList() {
 		return listBouteilles.getBouteille();
 	}
@@ -281,6 +275,7 @@ public class SerializedStorage implements Storage {
 	 *
 	 * @param _all LinkedList
 	 */
+	@Override
 	public void setAllList(LinkedList<Bouteille> _all) {
 		listBouteilles.getBouteille().clear();
 		listBouteilles.getBouteille().addAll(_all);
@@ -292,10 +287,11 @@ public class SerializedStorage implements Storage {
 	 * @param i int: numéro de la bouteille (0...n)
 	 * @return Bouteille
 	 */
+	@Override
 	public Bouteille getAllAt(int i) {
 		Bouteille b = null;
 		try {
-			b = (Bouteille) listBouteilles.getBouteille().get(i);
+			b = listBouteilles.getBouteille().get(i);
 		}
 		catch (IndexOutOfBoundsException ioobe) {
 			b = null;
@@ -308,6 +304,7 @@ public class SerializedStorage implements Storage {
 	 *
 	 * @return int
 	 */
+	@Override
 	public int getAllNblign() {
 		return listBouteilles.getBouteille().size();
 	}
@@ -317,6 +314,7 @@ public class SerializedStorage implements Storage {
 	 *
 	 * @param all1 Bouteille[]: tableau
 	 */
+	@Override
 	public void setAll(Bouteille all1[]) {
 		if (all1 != null) {
 			listBouteilles.getBouteille().clear();
@@ -340,6 +338,7 @@ public class SerializedStorage implements Storage {
 		Program.Debug("SerializedStorage: " + sText);
 	}
 
+	@Override
 	public boolean readRangement(LinkedList<Rangement> cave) {
 		boolean bresul = false;
 		ObjectInputStream ois = null;

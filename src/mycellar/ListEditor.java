@@ -1,10 +1,13 @@
 package mycellar;
 
-import java.util.*;
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import javax.swing.JTable;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.EventListenerList;
+import javax.swing.table.TableCellEditor;
+import java.awt.Component;
+import java.util.EventObject;
+import java.util.LinkedList;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -12,15 +15,15 @@ import javax.swing.table.*;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 29/12/12
+ * @version 0.5
+ * @since 02/03/18
  */
 public class ListEditor extends Component implements TableCellEditor {
-  protected EventListenerList listenerList = new EventListenerList();
-  protected ChangeEvent changeEvent = new ChangeEvent(this);
+  private final EventListenerList listenerList = new EventListenerList();
+  private final ChangeEvent changeEvent = new ChangeEvent(this);
   protected LinkedList<Bouteille> bottle;
-  protected AddVin adv;
-  protected LinkedList<Bouteille> listSelected;
+  private AddVin adv;
+  private LinkedList<Bouteille> listSelected;
   static final long serialVersionUID = 301004;
 
   /**
@@ -29,7 +32,6 @@ public class ListEditor extends Component implements TableCellEditor {
   @SuppressWarnings("unused")
 private ListEditor() {
     super();
-
   }
 
   /**
@@ -37,8 +39,7 @@ private ListEditor() {
    *
    * @param b LinkedList<Bouteille>: Liste de bouteilles.
    */
-  public ListEditor(LinkedList<Bouteille> b) {
-
+  ListEditor(LinkedList<Bouteille> b) {
     super();
     bottle = b;
   }
@@ -61,6 +62,7 @@ private ListEditor() {
    *
    * @param listener CellEditorListener
    */
+  @Override
   public void addCellEditorListener(CellEditorListener listener) {
     listenerList.add(CellEditorListener.class, listener);
   }
@@ -70,6 +72,7 @@ private ListEditor() {
    *
    * @param listener CellEditorListener
    */
+  @Override
   public void removeCellEditorListener(CellEditorListener listener) {
     listenerList.remove(CellEditorListener.class, listener);
   }
@@ -77,11 +80,11 @@ private ListEditor() {
   /**
    * fireEditingStopped
    */
-  protected void fireEditingStopped() {
+  private void fireEditingStopped() {
     CellEditorListener listener;
     Object[] listeners = listenerList.getListenerList();
     for (int i = 0; i < listeners.length; i++) {
-      if (listeners[i] == CellEditorListener.class) {
+      if (listeners[i].equals(CellEditorListener.class)) {
         listener = (CellEditorListener) listeners[i + 1];
         listener.editingStopped(changeEvent);
       }
@@ -91,11 +94,11 @@ private ListEditor() {
   /**
    * fireEditingCanceled
    */
-  protected void fireEditingCanceled() {
+  private void fireEditingCanceled() {
     CellEditorListener listener;
     Object[] listeners = listenerList.getListenerList();
     for (int i = 0; i < listeners.length; i++) {
-      if (listeners[i] == CellEditorListener.class) {
+      if (listeners[i].equals(CellEditorListener.class)) {
         listener = (CellEditorListener) listeners[i + 1];
         listener.editingCanceled(changeEvent);
       }
@@ -105,6 +108,7 @@ private ListEditor() {
   /**
    * cancelCellEditing
    */
+  @Override
   public void cancelCellEditing() {
     fireEditingCanceled();
   }
@@ -114,6 +118,7 @@ private ListEditor() {
    *
    * @return boolean
    */
+  @Override
   public boolean stopCellEditing() {
     fireEditingStopped();
     return true;
@@ -125,6 +130,7 @@ private ListEditor() {
    * @param event EventObject
    * @return boolean
    */
+  @Override
   public boolean isCellEditable(EventObject event) {
     return false;
   }
@@ -135,6 +141,7 @@ private ListEditor() {
    * @param event EventObject
    * @return boolean
    */
+  @Override
   public boolean shouldSelectCell(EventObject event) {
     return true;
   }
@@ -144,8 +151,9 @@ private ListEditor() {
    *
    * @return Object
    */
+  @Override
   public Object getCellEditorValue() {
-    return new Boolean(true);
+    return true;
   }
 
   /**
@@ -158,6 +166,7 @@ private ListEditor() {
    * @param column int
    * @return Component
    */
+  @Override
   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
     if (listSelected != null && adv != null) {
       adv.setBottlesInModification(listSelected);

@@ -43,8 +43,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.5
- * @since 01/03/18
+ * @version 3.6
+ * @since 02/03/18
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -387,13 +387,11 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				m_half.setSelectedItem(Program.defaut_half);
 			}
 			m_half.setSelectedItem(bottle.getType());
-			String half_tmp;
-			try {
+			String half_tmp = "";
+			if (m_half.getSelectedItem() != null) {
 				half_tmp = m_half.getSelectedItem().toString();
 			}
-			catch (NullPointerException npe) {
-				half_tmp = "";
-			}
+
 			String auto = Program.getCaveConfigString("TYPE_AUTO", "OFF");
 
 			if (half_tmp.compareTo(bottle.getType()) != 0 && auto.equals("ON")) {
@@ -420,6 +418,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		}
 	}
 
+	@Override
 	public void selectPlace(Bouteille bottle) {
 		Debug("selectPlaceWithBottle...");
 		setListenersEnabled(false);
@@ -527,39 +526,44 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	public boolean save() {
 		Debug("Modifying...");
 
-		String annee = "";
 		String nom = name.getEditor().getItem().toString();
 		String demie = "";
-		try {
+		if(m_half.getSelectedItem() != null) {
 			demie = m_half.getSelectedItem().toString();
-		}
-		catch (Exception ex) {
-			demie = "";
 		}
 
 		String prix = m_price.getText();
 		String comment1 = m_comment.getText();
 		String dateOfC = m_maturity.getText();
 		String parker = m_parker.getText();
-		String color = m_colorList.getSelectedItem().toString();
+		String color = "";
+		if (m_colorList.getSelectedItem() != null) {
+			color = m_colorList.getSelectedItem().toString();
+		}
 		Object o = comboCountry.getEditor().getItem();
 		String country;
-		if(o instanceof Country)
+		if(o instanceof Country) {
 			country = ((Country) o).getId();
-		else
+		}
+		else {
 			country = o.toString();
+		}
 		o = comboVignoble.getEditor().getItem();
 		String vignoble;
-		if(o instanceof CountryVignoble)
+		if(o instanceof CountryVignoble) {
 			vignoble = ((CountryVignoble) o).getName();
-		else
+		}
+		else {
 			vignoble = o.toString();
+		}
 		o = comboAppelationAOC.getEditor().getItem();
 		String aoc;
-		if(o instanceof Appelation)
+		if(o instanceof Appelation) {
 			aoc = ((Appelation) o).getAOC();
-		else
+		}
+		else {
 			aoc = o.toString();
+		}
 		o = comboAppelationIGP.getEditor().getItem();
 		String igp = o.toString();
 		//Vérification du nom ...
@@ -571,6 +575,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		}
 
 		// Controle de la date
+		String annee = "";
 		if (resul && (m_year.isEditable() || m_noYear.isSelected())) {
 			annee = m_year.getText().trim();
 

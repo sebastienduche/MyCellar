@@ -38,7 +38,6 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -48,8 +47,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.7
- * @since 01/03/18
+ * @version 6.8
+ * @since 02/03/18
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -81,7 +80,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	private final JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
 	private Component objet1 = null;
 	private boolean isJFile = false;
-	private LinkedList<Bouteille> bottles = null;
+	private List<Bouteille> bottles = null;
 	static final long serialVersionUID = 240706;
 
 	/**
@@ -101,7 +100,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	 *
 	 * @param bottles LinkedList<Bouteille>: Contenu de la cave.
 	 */
-	public Export(LinkedList<Bouteille> bottles) {
+	public Export(List<Bouteille> bottles) {
 		this.bottles = bottles;
 		try {
 			jbInit();
@@ -564,7 +563,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	 * @param nomFichier
 	 * @return
 	 */
-public static boolean exportToPDF(LinkedList<Bouteille> bottles, File nomFichier) {
+public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 		try {
 			PDFTools pdf = PDFTools.createPDFFile();
 			PDFProperties properties = Program.getPDFProperties();

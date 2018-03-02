@@ -1,17 +1,18 @@
 package mycellar;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.JCheckBox;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
+import java.awt.Component;
 
 /**
- * <p>Titre : Cave � vin</p>
+ * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
- * <p>Soci�t� : Seb Informatique</p>
- * @author S�bastien Duch�
- * @version 0.2
- * @since 30/10/05
+ * <p>Société : Seb Informatique</p>
+ * @author Sébastien Duché
+ * @version 0.3
+ * @since 02/03/18
  */
 public class StateRenderer extends JCheckBox implements TableCellRenderer {
 
@@ -34,6 +35,7 @@ public class StateRenderer extends JCheckBox implements TableCellRenderer {
    * @param column int
    * @return Component
    */
+  @Override
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
     try {
@@ -45,13 +47,11 @@ public class StateRenderer extends JCheckBox implements TableCellRenderer {
         setForeground(table.getForeground());
         setBackground(table.getBackground());
       }
-      boolean isSelect = ( (Boolean) value).booleanValue();
+      boolean isSelect = ( (Boolean) value);
       setSelected(isSelect);
     }
     catch (NullPointerException npe) {
-
     }
-    ;
     return this;
   }
 }

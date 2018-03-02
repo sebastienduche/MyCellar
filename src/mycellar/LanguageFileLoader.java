@@ -16,13 +16,12 @@ import java.util.ResourceBundle.Control;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 27/04/14
+ * @version 0.7
+ * @since 02/03/18
  */
 public class LanguageFileLoader {
 
-	private static String language = null;
-	private static LanguageFileLoader instance = new LanguageFileLoader();
+	private static final LanguageFileLoader instance = new LanguageFileLoader();
 	
 	private static ResourceBundle bundleTitle;
 	private static ResourceBundle bundleError;
@@ -37,11 +36,10 @@ public class LanguageFileLoader {
 
 	public static boolean loadLanguageFiles( String _language ) {
 		Debug( "Loading labels' map in " + _language );
-		language = _language;
-		if(language == null)
+		if(_language == null)
 			return false;
 		Locale locale = Locale.FRENCH;
-		if(language.equals("U"))
+		if(_language.equals("U"))
 			locale = Locale.ENGLISH;
 		bundleTitle = ResourceBundle.getBundle("title", locale, new UTF8Control());
 		bundleError = ResourceBundle.getBundle("error", locale, new UTF8Control());
@@ -87,6 +85,7 @@ public class LanguageFileLoader {
 }
 
 class UTF8Control extends Control {
+	@Override
     public ResourceBundle newBundle
         (String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
             throws IllegalAccessException, InstantiationException, IOException

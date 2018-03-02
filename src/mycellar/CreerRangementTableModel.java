@@ -1,8 +1,9 @@
 package mycellar;
 
+import javax.swing.table.AbstractTableModel;
 import java.util.HashMap;
 import java.util.LinkedList;
-import javax.swing.table.AbstractTableModel;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -10,25 +11,25 @@ import javax.swing.table.AbstractTableModel;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 12/05/17
+ * @version 0.6
+ * @since 02/03/18
  */
 
 public class CreerRangementTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = -933488036527447807L;
-	private LinkedList<Column> columns = new LinkedList<Column>();
-	private LinkedList<Part> rows = new LinkedList<Part>();
-	private HashMap<Integer, Integer> mapPart = new HashMap<Integer, Integer>();
-	private HashMap<Integer, Integer> mapLine = new HashMap<Integer, Integer>();
+	private final List<Column> columns = new LinkedList<>();
+	private List<Part> rows = new LinkedList<>();
+	private HashMap<Integer, Integer> mapPart = new HashMap<>();
+	private final HashMap<Integer, Integer> mapLine = new HashMap<>();
 	
-	private final static int NAME = 0;
-	private final static int ROW = 1;
-	private final static int COLUMN = 2;
+	private static final int NAME = 0;
+	private static final int ROW = 1;
+	private static final int COLUMN = 2;
 	
 	private boolean sameColumnNumber = false;
 	
-	public CreerRangementTableModel(){
+	CreerRangementTableModel(){
 		columns.add(new Column(NAME, Program.getLabel("Infos029")));
 		columns.add(new Column(ROW, Program.getLabel("Infos027")));
 		columns.add(new Column(COLUMN, Program.getLabel("Infos026")));
@@ -43,11 +44,9 @@ public class CreerRangementTableModel extends AbstractTableModel {
 	public int getRowCount() {
 		if(sameColumnNumber)
 			return rows.size();
-		else
-		{
+		else {
 			int count = 0;
-			for(Part p:rows)
-			{
+			for(Part p:rows) {
 				if( p.getRowSize() == 0)
 					count += 1;
 				else
@@ -59,8 +58,7 @@ public class CreerRangementTableModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int row, int col) {
-		if(sameColumnNumber)
-		{
+		if(sameColumnNumber) {
 			Part p = rows.get(row);
 			if(p == null)
 				return "";
@@ -74,9 +72,7 @@ public class CreerRangementTableModel extends AbstractTableModel {
 					return p.getRow(0).getCol();
 				return "0";
 			}
-		}
-		else
-		{
+		} else {
 			int part = mapPart.get(row);
 			int line = mapLine.get(row);
 			Part p = rows.get(part);
@@ -111,11 +107,10 @@ public class CreerRangementTableModel extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object arg0, int row, int col) {
-		Part p = null;
+		Part p;
 		if(sameColumnNumber)
 			p = rows.get(row);
-		else
-		{
+		else {
 			// Récupération du numéro de la partie
 			// puis récupération de la partie correspondante
 			int part = mapPart.get(row);
@@ -125,11 +120,10 @@ public class CreerRangementTableModel extends AbstractTableModel {
 			return;
 		switch(col){
 		case ROW:
-			int nRow = 0;
+			int nRow;
 			try{
 				nRow = Integer.parseInt((String)arg0);
-			}catch(NumberFormatException e)
-			{
+			}catch(NumberFormatException e) {
 				return;
 			}
 			p.setRows(nRow);
@@ -141,28 +135,23 @@ public class CreerRangementTableModel extends AbstractTableModel {
 			}
 			return;
 		case COLUMN:
-			int nCol = 0;
+			int nCol;
 			try{
 				nCol = Integer.parseInt((String)arg0);
-			}catch(NumberFormatException e)
-			{
+			}catch(NumberFormatException e) {
 				return;
 			}
-			if(sameColumnNumber)
-			{
+			if(sameColumnNumber) {
 				for(Row r: p.getRows())
 					r.setCol(nCol);
-			}
-			else
-			{
+			} else {
 				int line = mapLine.get(row);
 				p.getRow(line-1).setCol(nCol);
-				
 			}
 		}
 	}
 	
-	public void setValues(LinkedList<Part> parts){
+	public void setValues(List<Part> parts){
 		rows = parts;
 		updateValues();
 		fireTableDataChanged();
@@ -179,7 +168,7 @@ public class CreerRangementTableModel extends AbstractTableModel {
 	}
 
 	private void updateValues() {
-		mapPart = new HashMap<Integer, Integer>();
+		mapPart = new HashMap<>();
 		int index = 0;
 		int numPart = 0;
 		for(Part p: rows)
@@ -191,15 +180,13 @@ public class CreerRangementTableModel extends AbstractTableModel {
 					r.setCol(p.getRow(0).getCol());
 			}
 			int line = 1;
-			for(@SuppressWarnings("unused") Row r: p.getRows())
-			{
+			for(@SuppressWarnings("unused") Row r: p.getRows()) {
 				mapPart.put(index, numPart);
 				mapLine.put(index, line);
 				line++;
 				index++;
 			}
-			if(p.getRowSize() == 0)
-			{
+			if(p.getRowSize() == 0) {
 				mapPart.put(index, numPart);
 				mapLine.put(index, line);
 				p.setRows(1);
@@ -212,8 +199,8 @@ public class CreerRangementTableModel extends AbstractTableModel {
 }
 
 class Column{
-	private int id;
-	private String label;
+	private final int id;
+	private final String label;
 	
 	public Column(int id, String label){
 		this.id = id;

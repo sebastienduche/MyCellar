@@ -1,20 +1,20 @@
 package mycellar;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
+import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarVersion;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarVersion;
-import net.miginfocom.swing.MigLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 
 
 /**
@@ -23,47 +23,38 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 04/08/17
+ * @version 1.3
+ * @since 02/03/18
  */
-public class APropos extends JDialog {
+class APropos extends JDialog {
   private MyCellarButton ok = new MyCellarButton();
-  private MyCellarLabel MyCellarLabel1 = new MyCellarLabel();
-  private MyCellarLabel MyCellarLabel2 = new MyCellarLabel();
-  private MyCellarLabel MyCellarLabel3 = new MyCellarLabel();
-  private MyCellarLabel MyCellarLabel4 = new MyCellarLabel();
+  private final MyCellarLabel MyCellarLabel1 = new MyCellarLabel();
+  private final MyCellarLabel MyCellarLabel2 = new MyCellarLabel();
+  private final MyCellarLabel MyCellarLabel3 = new MyCellarLabel();
+  private final MyCellarLabel MyCellarLabel4 = new MyCellarLabel();
   static final long serialVersionUID = 150505;
 
   /**
    * APropos: Constructeur pour la fenêtre d'A Propos.
-   *
-   * @param frame Frame
    */
-  public APropos() {
+  APropos() {
     super(new JFrame(), Program.getLabel("Infos198"), true);
-    try {
-      jbInit();
-      pack();
-      java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-      this.setLocation( (screenSize.width - this.getSize().width) / 2, (screenSize.height - this.getSize().height) / 2);
-      
-    }
-    catch (Exception ex) {
-      Program.showException(ex);
-    }
+    jbInit();
+    pack();
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    setLocation( (screenSize.width - getSize().width) / 2, (screenSize.height - getSize().height) / 2);
   }
 
   /**
    * jbInit: Fonction d'initialisation de la fenètre.
    *
-   * @throws Exception
    */
-  private void jbInit() throws Exception {
+  private void jbInit() {
     ok.setText(Program.getLabel("Main.OK"));
     IconPanel ip = new IconPanel(MyCellarImage.ICON.getImage());
-    ok.setFont(new Font("Arial", 0, 12));
-    ok.addActionListener((e) -> ok_actionPerformed(e));
-    MyCellarLabel1.setFont(new java.awt.Font("Dialog", 1, 13));
+    ok.setFont(new Font("Arial", Font.PLAIN, 12));
+    ok.addActionListener((e) -> dispose());
+    MyCellarLabel1.setFont(new Font("Dialog", Font.BOLD, 13));
     MyCellarLabel1.setForeground(Color.red);
     MyCellarLabel1.setHorizontalAlignment(SwingConstants.CENTER);
     MyCellarLabel1.setText("MyCellar");
@@ -73,42 +64,31 @@ public class APropos extends JDialog {
     MyCellarLabel3.setText("Release: " + MyCellarVersion.version);
     MyCellarLabel4.setHorizontalAlignment(SwingConstants.LEFT);
     MyCellarLabel4.setText("Version: " + MyCellarVersion.mainVersion);
-    MyCellarLabel2.setFont(new java.awt.Font("Dialog", 0, 11));
-    MyCellarLabel3.setFont(new java.awt.Font("Dialog", 0, 11));
-    MyCellarLabel4.setFont(new java.awt.Font("Dialog", 0, 11));
-    this.setLayout(new MigLayout("","[][]","[]"));
-    this.add(MyCellarLabel1,"center, span 2, wrap");
-    this.add(MyCellarLabel2,"gaptop 20px");
-    this.add(ip, "spany 3, wmin 64, hmin 64, wrap");
-    this.add(MyCellarLabel3,"wrap");
-    this.add(MyCellarLabel4,"wrap");
-    this.add(ok,"gaptop 20px, span 2, center");
+    MyCellarLabel2.setFont(new Font("Dialog", Font.PLAIN, 11));
+    MyCellarLabel3.setFont(new Font("Dialog", Font.PLAIN, 11));
+    MyCellarLabel4.setFont(new Font("Dialog", Font.PLAIN, 11));
+    setLayout(new MigLayout("","[][]","[]"));
+    add(MyCellarLabel1,"center, span 2, wrap");
+    add(MyCellarLabel2,"gaptop 20px");
+    add(ip, "spany 3, wmin 64, hmin 64, wrap");
+    add(MyCellarLabel3,"wrap");
+    add(MyCellarLabel4,"wrap");
+    add(ok,"gaptop 20px, span 2, center");
      
-    this.setResizable(false);
-  }
-
-  /**
-   * ok_actionPerformed: Fermeture de la fenètre.
-   *
-   * @param e ActionEvent
-   */
-  void ok_actionPerformed(ActionEvent e) {
-    this.dispose();
+    setResizable(false);
   }
 
   /**
    * APropos: Constructeur de l'image.
-   *
-   * @param fileImg File
    */
   class IconPanel extends JPanel {
-    Image img;
+    private Image img;
     static final long serialVersionUID = 1505051;
 
-    public IconPanel(Image img) {
+    private IconPanel(Image img) {
       this.img = img;
     }
-
+    @Override
     public void paintComponent(Graphics g) {
       super.paintComponent(g);
       g.drawImage(img, 0, 0, 64, 64, this);

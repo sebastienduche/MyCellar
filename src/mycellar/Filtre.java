@@ -1,9 +1,9 @@
 package mycellar;
 
+import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.util.LinkedList;
-
-import javax.swing.filechooser.FileFilter;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -11,8 +11,8 @@ import javax.swing.filechooser.FileFilter;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 23/04/16
+ * @version 0.3
+ * @since 02/03/18
  */
 
 public class Filtre extends FileFilter {
@@ -27,22 +27,23 @@ public class Filtre extends FileFilter {
 	public static final Filtre FILTRE_CSV = new Filtre("csv", Program.getLabel("Infos202"));
 	public static final Filtre FILTRE_TXT = new Filtre("txt", Program.getLabel("Infos201"));
 	
-	private LinkedList<String> suffixes;
-	private String laDescription;
+	private final List<String> suffixes;
+	private final String laDescription;
 
-	public Filtre(LinkedList<String> suffixes, String description) {
-		this.suffixes = new LinkedList<String>();
+	public Filtre(List<String> suffixes, String description) {
+		this.suffixes = new LinkedList<>();
 		for(String s : suffixes)
 			this.suffixes.add(s.toLowerCase());
-		this.laDescription = description;
+		laDescription = description;
 	}
 
 	private Filtre(String suffixe, String description) {
-		this.suffixes = new LinkedList<String>();
-		this.suffixes.add(suffixe.toLowerCase());
-		this.laDescription = description;
+		suffixes = new LinkedList<>();
+		suffixes.add(suffixe.toLowerCase());
+		laDescription = description;
 	}
 
+	@Override
 	public boolean accept(File f) {
 		if (f.isDirectory())
 			return true;
@@ -56,6 +57,7 @@ public class Filtre extends FileFilter {
 		return suffixe != null && suffixes.contains(suffixe);
 	}
 
+	@Override
 	public String getDescription() {
 		return laDescription;
 	}

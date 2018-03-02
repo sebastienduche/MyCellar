@@ -8,13 +8,15 @@
 
 package mycellar;
 
-import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -22,8 +24,8 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.5
- * @since 25/10/17
+ * @version 3.6
+ * @since 02/03/18
  */
 
 /**
@@ -585,8 +587,7 @@ public class Bouteille implements Serializable{
 		 }
 	 }
 
-	 public static boolean isValidYear(String year)
-	 {
+	 public static boolean isValidYear(String year) {
 		 year = year.trim();
 		 if( year.compareToIgnoreCase(NON_VINTAGE) == 0)
 			 return true;
@@ -601,23 +602,19 @@ public class Bouteille implements Serializable{
 			 return false;
 		 }
 
-		 java.util.Calendar date = new java.util.GregorianCalendar();
-		 int current_year = date.get(java.util.Calendar.YEAR);
+		 Calendar date = new GregorianCalendar();
+		 int current_year = date.get(Calendar.YEAR);
 		 if( year.length() == 4 && n > current_year )
 			 return false;
 		 return true;
 	 }
 
 	 public static boolean isNonVintageYear(String year) {
-		 if( year.compareToIgnoreCase(NON_VINTAGE) == 0)
-			 return true;
-		 return false;
+		 return ( year.compareToIgnoreCase(NON_VINTAGE) == 0);
 	 }
 
 	 public boolean isNonVintage() {
-		 if( annee.compareToIgnoreCase(NON_VINTAGE) == 0)
-			 return true;
-		 return false;
+		 return ( annee.compareToIgnoreCase(NON_VINTAGE) == 0);
 	 }
 
 	 public double getPriceDouble() {
@@ -636,8 +633,7 @@ public class Bouteille implements Serializable{
 			 index = price.indexOf(' ');
 		 }
 		 try {
-			 java.math.BigDecimal bd = new java.math.BigDecimal(price);
-			 bd = bd.setScale(2, java.math.BigDecimal.ROUND_HALF_UP);
+			 BigDecimal bd = new BigDecimal(price).setScale(2, BigDecimal.ROUND_HALF_UP);
 			 return bd.doubleValue();
 		 }
 		 catch (NumberFormatException nfe) {
@@ -679,9 +675,8 @@ public class Bouteille implements Serializable{
 		 setVignoble(b.getVignoble());
 	 }
 	 
-	 public int updateID() {
-		 id = generatedValue++;
-		 return id;
+	 public void updateID() {
+		 generatedValue++;
 	 }
 
 	 /**
@@ -796,7 +791,7 @@ public class Bouteille implements Serializable{
 
 
 	 public static class BouteilleBuilder {
-		 private String nom;
+		 private final String nom;
 		 private String annee;
 		 private String type;
 		 private String emplacement;
@@ -811,7 +806,7 @@ public class Bouteille implements Serializable{
 		 private String color;
 		 private Vignoble vignoble;
 
-		 public BouteilleBuilder(String nom){
+		 BouteilleBuilder(String nom){
 			 this.nom = nom;
 			 numLieu = ligne = colonne = 0;
 			 type = emplacement = prix = comment = annee = maturity = parker = "";
@@ -830,27 +825,27 @@ public class Bouteille implements Serializable{
 		 }
 
 		 public BouteilleBuilder place(String place) {
-			 this.emplacement = place;
+			 emplacement = place;
 			 return this;
 		 }
 
 		 public BouteilleBuilder numPlace(int num) {
-			 this.numLieu = num;
+			 numLieu = num;
 			 return this;
 		 }
 
 		 public BouteilleBuilder line(int num) {
-			 this.ligne = num;
+			 ligne = num;
 			 return this;
 		 }
 
 		 public BouteilleBuilder column(int num) {
-			 this.colonne = num;
+			 colonne = num;
 			 return this;
 		 }
 
 		 public BouteilleBuilder price(String price) {
-			 this.prix = price;
+			 prix = price;
 			 return this;
 		 }
 
@@ -880,22 +875,22 @@ public class Bouteille implements Serializable{
 		 }
 
 		 public BouteilleBuilder vignoble(String country, String name) {
-			 this.vignoble = new Vignoble(country, name);
+			 vignoble = new Vignoble(country, name);
 			 return this;
 		 }
 
 		 public BouteilleBuilder vignoble(String country, String name, String aoc) {
-			 this.vignoble = new Vignoble(country, name, aoc);
+			 vignoble = new Vignoble(country, name, aoc);
 			 return this;
 		 }
 
 		 public BouteilleBuilder vignoble(String country, String name, String aoc, String aop) {
-			 this.vignoble = new Vignoble(country, name, aoc, null, aop);
+			 vignoble = new Vignoble(country, name, aoc, null, aop);
 			 return this;
 		 }
 
 		 public BouteilleBuilder vignoble(String country, String name, String aoc, String igp, String aop) {
-			 this.vignoble = new Vignoble(country, name, aoc, igp, aop);
+			 vignoble = new Vignoble(country, name, aoc, igp, aop);
 			 return this;
 		 }
 

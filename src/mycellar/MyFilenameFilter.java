@@ -1,14 +1,12 @@
 package mycellar;
 
-import java.io.*;
+import java.io.File;
+import java.io.FilenameFilter;
 
 class MyFilenameFilter implements FilenameFilter {
 
+  @Override
   public boolean accept(File dir, String name) {
-
-    if (name.endsWith(".ser")) {
-      return true;
-    }
-    return false;
+    return (name.endsWith(".ser"));
   }
 }

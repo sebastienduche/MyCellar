@@ -31,6 +31,14 @@
 
 package mycellar;
 
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -44,29 +52,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.plaf.basic.BasicButtonUI;
-
-import mycellar.ITabListener;
-import mycellar.TabEvent;
-
 /**
  * Component to be used as tabComponent; Contains a JLabel to show the text and
  * a JButton to close the tab it belongs to
  */
-public class JButtonTabComponent extends JPanel {
+class JButtonTabComponent extends JPanel {
 
 	private static final long serialVersionUID = -3455621665205397725L;
 
 	private final JTabbedPane pane;
 
-	public JButtonTabComponent(final JTabbedPane pane) {
+	JButtonTabComponent(final JTabbedPane pane) {
 		// unset default FlowLayout' gaps
 		super(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		if (pane == null) {
@@ -78,6 +74,7 @@ public class JButtonTabComponent extends JPanel {
 		// make JLabel read titles from JTabbedPane
 		JLabel label = new JLabel() {
 			private static final long serialVersionUID = 262648555562361924L;
+			@Override
 			public String getText() {
 				int i = pane.indexOfTabComponent(JButtonTabComponent.this);
 				if (i != -1) {
@@ -109,7 +106,7 @@ public class JButtonTabComponent extends JPanel {
 
 		private static final long serialVersionUID = 76516458718107537L;
 
-		public TabButton() {
+		private TabButton() {
 			int size = 17;
 			setPreferredSize(new Dimension(size, size));
 			setToolTipText(Program.getLabel("Infos019")); //$NON-NLS-1$
@@ -129,6 +126,7 @@ public class JButtonTabComponent extends JPanel {
 			addActionListener(this);
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			int i = pane.indexOfTabComponent(JButtonTabComponent.this);
 			if (i != -1) {
@@ -154,10 +152,12 @@ public class JButtonTabComponent extends JPanel {
 		}
 
 		// we don't want to update UI for this button
+		@Override
 		public void updateUI() {
 		}
 
 		// paint the cross
+		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g.create();
@@ -179,7 +179,8 @@ public class JButtonTabComponent extends JPanel {
 		}
 	}
 
-	private final static MouseListener buttonMouseListener = new MouseAdapter() {
+	private static final MouseListener buttonMouseListener = new MouseAdapter() {
+		@Override
 		public void mouseEntered(MouseEvent e) {
 			Component component = e.getComponent();
 			if (component instanceof AbstractButton) {
@@ -187,7 +188,7 @@ public class JButtonTabComponent extends JPanel {
 				button.setBorderPainted(true);
 			}
 		}
-
+		@Override
 		public void mouseExited(MouseEvent e) {
 			Component component = e.getComponent();
 			if (component instanceof AbstractButton) {

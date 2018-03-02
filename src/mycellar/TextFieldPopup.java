@@ -1,29 +1,25 @@
 package mycellar;
 
+import mycellar.core.MyCellarLabel;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-
-import mycellar.core.MyCellarLabel;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -31,28 +27,23 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 25/05/16
+ * @version 0.5
+ * @since 02/03/18
  */
 public class TextFieldPopup extends JPanel {
 
 	private static final long serialVersionUID = -7190629333835800410L;
 	private boolean can;
 	private JScrollPane scroll;
-	private JPanel menu = new JPanel();
-	private JTextField textfield = new JTextField();
-	private LinkedList<MyJMenuItem> items = new LinkedList<MyJMenuItem>();
-	private List<String> list;
-	private int listHeight = 100;
-	private JPopupMenu popupMenu = new JPopupMenu();
-	private int x, y, width;
+	private final JPanel menu = new JPanel();
+	private final JTextField textfield = new JTextField();
+	private final List<MyJMenuItem> items = new LinkedList<>();
+	private final List<String> list;
+	private int listHeight;
+	private final JPopupMenu popupMenu = new JPopupMenu();
+	private int x, y;
 	
 
-	public TextFieldPopup(List<String> list) {
-		this.list = list;
-		init();
-	}
-	
 	public TextFieldPopup(List<String> list, int listHeight) {
 		this.list = list;
 		this.listHeight = listHeight;
@@ -96,7 +87,7 @@ public class TextFieldPopup extends JPanel {
 		updateUI();	
 	}
 	
-	public void updateMenu(){
+	private void updateMenu(){
 		if(!popupMenu.isVisible())
 			addMenu();
 		popupMenu.updateUI();
@@ -126,7 +117,7 @@ public class TextFieldPopup extends JPanel {
 		private MyJMenuItem selected;
 		private int index;
 
-		public PopupKeyListener() {
+		private PopupKeyListener() {
 			index = -1;
 		}
 
@@ -135,7 +126,7 @@ public class TextFieldPopup extends JPanel {
 			if(x == 0 || y == 0){
 				x = (int) textfield.getLocationOnScreen().getX();
 				y = (int) textfield.getLocationOnScreen().getY();
-				width = textfield.getWidth();
+				int width = textfield.getWidth();
 				popupMenu.setLocation(x, y+textfield.getHeight());
 				popupMenu.setPopupSize(width, listHeight);
 			}
@@ -162,8 +153,7 @@ public class TextFieldPopup extends JPanel {
 			menu.removeAll();
 			items.clear();
 			index = -1;
-			ArrayList<String> list = (ArrayList<String>) filter(val);
-			for(String b : list) {
+			for(String b : filter(val)) {
 				MyJMenuItem item = new MyJMenuItem(b);
 				items.add(item);
 				menu.add(item, "growx, gapy 0px, wrap");
@@ -212,35 +202,35 @@ public class TextFieldPopup extends JPanel {
 		public void keyReleased(KeyEvent e) {}
 	}
 
-	class MenuAction extends AbstractAction {
-
-		private static final long serialVersionUID = 1023561300178864980L;
-		private String text;
-
-		public MenuAction(String text) {
-			super(text);
-			this.text = text;
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			setCan(false);
-			textfield.setText(text);
-			removeMenu();
-		}
-	}
+//	class MenuAction extends AbstractAction {
+//
+//		private static final long serialVersionUID = 1023561300178864980L;
+//		private String text;
+//
+//		public MenuAction(String text) {
+//			super(text);
+//			this.text = text;
+//		}
+//
+//		@Override
+//		public void actionPerformed(ActionEvent e) {
+//			setCan(false);
+//			textfield.setText(text);
+//			removeMenu();
+//		}
+//	}
 	
 	class MyJMenuItem extends MyCellarLabel {
 
 		private static final long serialVersionUID = -463113999199742853L;
-		private Color blue = new Color(51,153,255);
-		private Color lightblue = new Color(153,204,255);
-		private Color foreground;
-		private Color background;
+		private final Color blue = new Color(51,153,255);
+		private final Color lightblue = new Color(153,204,255);
+		private final Color foreground;
+		private final Color background;
 		private boolean mouse = false;
-		private String text;
+		private final String text;
 		
-		public MyJMenuItem(String text) {
+		private MyJMenuItem(String text) {
 			super(text);
 			this.text = text;
 			foreground = getForeground();

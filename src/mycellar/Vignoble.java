@@ -8,17 +8,16 @@
 
 package mycellar;
 
-import java.io.Serializable;
+import mycellar.countries.Countries;
+import mycellar.countries.Country;
+import mycellar.vignobles.Appelation;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
-import mycellar.vignobles.Appelation;
+import java.io.Serializable;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -26,8 +25,8 @@ import mycellar.vignobles.Appelation;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 21/01/17
+ * @version 0.7
+ * @since 02/03/18
  */
 
 /**
@@ -75,7 +74,7 @@ public class Vignoble implements Serializable {
     @XmlElement(name = "IGP", required = false)
     public String igp;
     @XmlElement(name = "AOP", required = false)
-    public String aop;
+    private String aop;
     
     public Vignoble() {
 	}
@@ -254,7 +253,7 @@ public class Vignoble implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (getClass().equals(obj.getClass()))
 			return false;
 		Vignoble other = (Vignoble) obj;
 		if (aoc == null) {
@@ -287,7 +286,7 @@ public class Vignoble implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if(country != null) {
 			Country c = Countries.findByIdOrLabel(country);
 			if(c != null)

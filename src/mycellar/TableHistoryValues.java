@@ -1,14 +1,12 @@
 package mycellar;
 
+import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.swing.table.AbstractTableModel;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -16,26 +14,24 @@ import javax.swing.table.AbstractTableModel;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 25/10/17
+ * @version 1.7
+ * @since 02/03/18
  */
 
 public class TableHistoryValues extends AbstractTableModel {
-  public final static int SELECT = 0;
-  public final static int DATE = 1;
-  public final static int TYPE = 2;
-  public final static int LABEL = 3;
-  public final static int ACTION = 4;
+  public static final int SELECT = 0;
+  private static final int DATE = 1;
+  public static final int TYPE = 2;
+  private static final int LABEL = 3;
+  public static final int ACTION = 4;
 
-  static final long serialVersionUID = 0601072;
-
-  private List<History> m_oList = new ArrayList<History>();
-  private LinkedList<History> displayList = new LinkedList<History>();
-  private LinkedList<String> columnList = new LinkedList<String>();
+  private List<History> m_oList = new ArrayList<>();
+  private List<History> displayList = new LinkedList<>();
+  private final List<String> columnList = new LinkedList<>();
   private Boolean[] booleanTab = null;
-  private boolean firstcolumn = false;
+  private final boolean firstcolumn;
   
-  public TableHistoryValues(boolean firstcolumn){
+  TableHistoryValues(boolean firstcolumn){
 	  this.firstcolumn = firstcolumn;
 	  if(firstcolumn)
 		  columnList.add("");
@@ -51,6 +47,7 @@ public class TableHistoryValues extends AbstractTableModel {
    *
    * @return int
    */
+  @Override
   public int getRowCount() {
     return displayList.size();
   }
@@ -60,6 +57,7 @@ public class TableHistoryValues extends AbstractTableModel {
    *
    * @return int
    */
+  @Override
   public int getColumnCount() {
     return columnList.size();
   }
@@ -71,6 +69,7 @@ public class TableHistoryValues extends AbstractTableModel {
    * @param column int
    * @return Object
    */
+  @Override
   public Object getValueAt(int row, int column) {
 	  History h = displayList.get(row);
 	  if(!firstcolumn)
@@ -119,6 +118,7 @@ public class TableHistoryValues extends AbstractTableModel {
    * @param column int
    * @return String
    */
+  @Override
   public String getColumnName(int column) {
     return columnList.get(column);
   }
@@ -129,6 +129,7 @@ public class TableHistoryValues extends AbstractTableModel {
    * @param column int
    * @return Class
    */
+  @Override
   public Class<?> getColumnClass(int column) {
 	  if(!firstcolumn)
 		  column++;
@@ -143,6 +144,7 @@ public class TableHistoryValues extends AbstractTableModel {
    * @param column int
    * @return boolean
    */
+  @Override
   public boolean isCellEditable(int row, int column) {
 	  if(!firstcolumn)
 		  column++;
@@ -159,6 +161,7 @@ public class TableHistoryValues extends AbstractTableModel {
    * @param row int
    * @param column int
    */
+  @Override
   public void setValueAt(Object value, int row, int column) {
 
 	  if(!firstcolumn)
@@ -188,7 +191,7 @@ public class TableHistoryValues extends AbstractTableModel {
    */
   public void removeAll() {
     displayList.clear();
-    this.fireTableDataChanged();
+    fireTableDataChanged();
   }
 
   /**
@@ -213,28 +216,19 @@ public class TableHistoryValues extends AbstractTableModel {
    * addHistory: Ajout de l'historique.
    *
    * @param list LinkedList
-   * @param _nSort int
    */
   public void setHistory(List<History> list) {
     try {
       m_oList = list;
-      displayList = new LinkedList<History>();
+      displayList = new LinkedList<>();
       booleanTab = new Boolean[list.size()];
-      if(firstcolumn)
-      {
-	      for(History h:list)
-	    	  displayList.addFirst(h);
-      }
-      else
-      {
-    	  Iterator<History> it = list.stream().sorted(new Comparator<History>() {
-
-			@Override
-			public int compare(History o1, History o2) {
+      if(firstcolumn) {
+        displayList.addAll(list);
+      } else {
+    	  Iterator<History> it = list.stream().sorted((o1, o2) -> {
 				if(o1.getTime() != null && o2.getTime() != null)
 					return -o1.getTime().compareTo(o2.getTime());
 				return -1;
-			}
 		}).iterator();
     	  int n = 0;
     	  while(it.hasNext())
@@ -247,7 +241,7 @@ public class TableHistoryValues extends AbstractTableModel {
       }
       for(int i=0; i<booleanTab.length; i++)
     	  booleanTab[i] = Boolean.FALSE;
-      this.fireTableDataChanged();
+      fireTableDataChanged();
     }
     catch (Exception e) {
       Program.showException(e);
@@ -263,16 +257,15 @@ public class TableHistoryValues extends AbstractTableModel {
 
     try {
       displayList.clear();
-      for (int i = 0; i < m_oList.size(); i++) {
-        History h = (History) m_oList.get(i);
+      for (History h : m_oList) {
         if ( _nFilter == -1 || h.getType() == _nFilter) {
-        	displayList.addLast(h);
+        	displayList.add(h);
         }
       }
       booleanTab = new Boolean[displayList.size()];
       for(int i=0; i<booleanTab.length; i++)
     	  booleanTab[i] = Boolean.FALSE;
-      this.fireTableDataChanged();
+      fireTableDataChanged();
     }
     catch (Exception e) {
       Program.showException(e);

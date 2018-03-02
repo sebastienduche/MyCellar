@@ -1,18 +1,20 @@
 package mycellar;
 
-import java.awt.*;
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.Component;
 
 /**
- * <p>Titre : Cave � vin</p>
+ * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
- * <p>Soci�t� : Seb Informatique</p>
- * @author S�bastien Duch�
- * @version 0.1
- * @since 08/09/04
+ * <p>Société : Seb Informatique</p>
+ * @author Sébastien Duché
+ * @version 0.2
+ * @since 02/03/18
  */
-public class ToolTipRenderer extends javax.swing.table.DefaultTableCellRenderer {
+public class ToolTipRenderer extends DefaultTableCellRenderer {
 	
   static final long serialVersionUID = 80904;
   /**
@@ -26,6 +28,7 @@ public class ToolTipRenderer extends javax.swing.table.DefaultTableCellRenderer 
    * @param column int
    * @return Component
    */
+  @Override
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
     Component result = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     if (result instanceof JLabel) {

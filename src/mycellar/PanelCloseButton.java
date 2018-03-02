@@ -1,5 +1,9 @@
 package mycellar;
 
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -12,25 +16,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.plaf.basic.BasicButtonUI;
-
 /**
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 09/04/14
+ * @version 0.2
+ * @since 02/03/18
  */
 public abstract class PanelCloseButton extends JButton implements ActionListener {
 
     private static final long serialVersionUID = 76516458718107537L;
 
-    public PanelCloseButton() {
+    PanelCloseButton() {
         int size = 17;
         setPreferredSize(new Dimension(size, size));
         setToolTipText(Program.getLabel("Main.Delete"));
@@ -50,17 +49,20 @@ public abstract class PanelCloseButton extends JButton implements ActionListener
         addActionListener(this);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
     	actionPerformed();
     }
-    
+
     abstract void actionPerformed();
 
     // we don't want to update UI for this button
+    @Override
     public void updateUI() {
     }
 
     // paint the cross
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
@@ -80,7 +82,8 @@ public abstract class PanelCloseButton extends JButton implements ActionListener
                 - delta - 1);
         g2.dispose();
     }
-private final static MouseListener buttonMouseListener = new MouseAdapter() {
+private static final MouseListener buttonMouseListener = new MouseAdapter() {
+    @Override
     public void mouseEntered(MouseEvent e) {
         Component component = e.getComponent();
         if (component instanceof AbstractButton) {
@@ -89,6 +92,7 @@ private final static MouseListener buttonMouseListener = new MouseAdapter() {
         }
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
         Component component = e.getComponent();
         if (component instanceof AbstractButton) {

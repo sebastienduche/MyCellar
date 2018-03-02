@@ -1,16 +1,17 @@
 package mycellar;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarLabel;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarLabel;
-import net.miginfocom.swing.MigLayout;
+import javax.swing.SwingConstants;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 
 /**
@@ -19,20 +20,20 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 04/08/17
+ * @version 1.2
+ * @since 02/03/18
  */
 public class Options extends JDialog {
-  private MyCellarLabel textControl1 = new MyCellarLabel();
-  private MyCellarLabel textControl2 = new MyCellarLabel();
-  private MyCellarLabel definition = new MyCellarLabel();
-  private MyCellarButton valider = new MyCellarButton();
-  private MyCellarLabel textControl3 = new MyCellarLabel();
+  private final MyCellarLabel textControl1 = new MyCellarLabel();
+  private final MyCellarLabel textControl2 = new MyCellarLabel();
+  private final MyCellarLabel definition = new MyCellarLabel();
+  private final MyCellarButton valider = new MyCellarButton();
+  private final MyCellarLabel textControl3 = new MyCellarLabel();
   private int LARGEUR = 420;
   private int HAUTEUR = 230;
-  private JTextField value = new JTextField();
-  private String cle;
-  private boolean property;
+  private final JTextField value = new JTextField();
+  private final String cle;
+  private final boolean property;
   static final long serialVersionUID = 190305;
 
   /**
@@ -71,41 +72,41 @@ public class Options extends JDialog {
    */
   private void jbInit(String title, String message, String propriete, String default_value) throws Exception {
 
-    this.setDefaultCloseOperation(0);
-    this.setTitle(title);
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    setTitle(title);
     textControl1.setFont(Program.font_dialog_small);
     textControl1.setForeground(Color.red);
     textControl1.setText(title);
-    textControl1.setHorizontalAlignment(0);
+    textControl1.setHorizontalAlignment(SwingConstants.CENTER);
     definition.setText(message);
     textControl2.setText(propriete);
     textControl3.setForeground(Color.red);
-    textControl3.setHorizontalAlignment(0);
+    textControl3.setHorizontalAlignment(SwingConstants.CENTER);
     valider.setText(Program.getLabel("Main.OK"));
     valider.setMnemonic('O');
     value.setText(default_value);
-    valider.addActionListener((e) -> valider_actionPerformed(e));
-    this.addKeyListener(new java.awt.event.KeyListener() {
-      public void keyReleased(java.awt.event.KeyEvent e) {}
-
-      public void keyPressed(java.awt.event.KeyEvent e) {
+    valider.addActionListener(this::valider_actionPerformed);
+    addKeyListener(new KeyListener() {
+      @Override
+      public void keyReleased(KeyEvent e) {}
+      @Override
+      public void keyPressed(KeyEvent e) {
         keylistener_actionPerformed(e);
       }
-
-      public void keyTyped(java.awt.event.KeyEvent e) {}
+      @Override
+      public void keyTyped(KeyEvent e) {}
     });
 
-    this.setSize(LARGEUR, HAUTEUR);
-    this.setLocationRelativeTo(null);
+    setSize(LARGEUR, HAUTEUR);
+    setLocationRelativeTo(null);
     setLayout(new MigLayout("","grow",""));
-    this.getContentPane().add(textControl1, "grow, wrap");
-    this.getContentPane().add(definition, "gaptop 15px, grow, wrap");
-    this.getContentPane().add(textControl3, "grow, wrap");
-    this.getContentPane().add(textControl2, "split 2");
-    this.getContentPane().add(value, "grow, wrap");
-    this.getContentPane().add(valider, "center, gaptop 10px");
-    this.setResizable(false);
-
+    getContentPane().add(textControl1, "grow, wrap");
+    getContentPane().add(definition, "gaptop 15px, grow, wrap");
+    getContentPane().add(textControl3, "grow, wrap");
+    getContentPane().add(textControl2, "split 2");
+    getContentPane().add(value, "grow, wrap");
+    getContentPane().add(valider, "center, gaptop 10px");
+    setResizable(false);
   }
 
   /**
@@ -113,11 +114,11 @@ public class Options extends JDialog {
    *
    * @param e ActionEvent
    */
-  void valider_actionPerformed(ActionEvent e) {
+  private void valider_actionPerformed(ActionEvent e) {
     if (property) {
       Program.putCaveConfigString(cle, value.getText().trim());
     }
-    this.dispose();
+    dispose();
   }
 
   /**

@@ -1,14 +1,13 @@
 package mycellar;
 
-import java.awt.Component;
-import java.util.EventObject;
-
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.EventListenerList;
 import javax.swing.table.TableCellEditor;
+import java.awt.Component;
+import java.util.EventObject;
 
 
 /**
@@ -17,13 +16,13 @@ import javax.swing.table.TableCellEditor;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 13/11/16
+ * @version 0.3
+ * @since 02/03/18
  */
 
 public class StateButtonEditor extends JButton implements TableCellEditor {
-  protected EventListenerList listenerList = new EventListenerList();
-  protected ChangeEvent changeEvent = new ChangeEvent(this);
+  private final EventListenerList listenerList = new EventListenerList();
+  private final ChangeEvent changeEvent = new ChangeEvent(this);
   static final long serialVersionUID = 040105;
 
   public StateButtonEditor() {
@@ -37,6 +36,7 @@ public class StateButtonEditor extends JButton implements TableCellEditor {
    *
    * @param listener CellEditorListener
    */
+  @Override
   public void addCellEditorListener(CellEditorListener listener) {
     listenerList.add(CellEditorListener.class, listener);
   }
@@ -46,6 +46,7 @@ public class StateButtonEditor extends JButton implements TableCellEditor {
    *
    * @param listener CellEditorListener
    */
+  @Override
   public void removeCellEditorListener(CellEditorListener listener) {
     listenerList.remove(CellEditorListener.class, listener);
   }
@@ -53,7 +54,7 @@ public class StateButtonEditor extends JButton implements TableCellEditor {
   /**
    * fireEditingStopped
    */
-  protected void fireEditingStopped() {
+  private void fireEditingStopped() {
     CellEditorListener listener;
     Object[] listeners = listenerList.getListenerList();
     for (int i = 0; i < listeners.length; i++) {
@@ -67,7 +68,7 @@ public class StateButtonEditor extends JButton implements TableCellEditor {
   /**
    * fireEditingCanceled
    */
-  protected void fireEditingCanceled() {
+  private void fireEditingCanceled() {
     CellEditorListener listener;
     Object[] listeners = listenerList.getListenerList();
     for (int i = 0; i < listeners.length; i++) {
@@ -81,6 +82,7 @@ public class StateButtonEditor extends JButton implements TableCellEditor {
   /**
    * cancelCellEditing
    */
+  @Override
   public void cancelCellEditing() {
     fireEditingCanceled();
   }
@@ -90,6 +92,7 @@ public class StateButtonEditor extends JButton implements TableCellEditor {
    *
    * @return boolean
    */
+  @Override
   public boolean stopCellEditing() {
     fireEditingStopped();
     return true;
@@ -101,6 +104,7 @@ public class StateButtonEditor extends JButton implements TableCellEditor {
    * @param event EventObject
    * @return boolean
    */
+  @Override
   public boolean isCellEditable(EventObject event) {
     return true;
   }
@@ -111,6 +115,7 @@ public class StateButtonEditor extends JButton implements TableCellEditor {
    * @param event EventObject
    * @return boolean
    */
+  @Override
   public boolean shouldSelectCell(EventObject event) {
     return true;
   }
@@ -120,8 +125,9 @@ public class StateButtonEditor extends JButton implements TableCellEditor {
    *
    * @return Object
    */
+  @Override
   public Object getCellEditorValue() {
-    return new Boolean(isSelected());
+    return isSelected();
   }
 
   /**
@@ -134,6 +140,7 @@ public class StateButtonEditor extends JButton implements TableCellEditor {
    * @param column int
    * @return Component
    */
+  @Override
   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
     boolean isSelect = ( (Boolean) value).booleanValue();
     setSelected(isSelect);

@@ -1,8 +1,8 @@
 package mycellar;
 
+import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
-
-import javax.swing.table.*;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -10,19 +10,20 @@ import javax.swing.table.*;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 10/05/17
+ * @version 1.1
+ * @since 02/03/18
  */
 public class ListValues extends AbstractTableModel {
   static final long serialVersionUID = 200505;
 
-  private LinkedList<Bouteille> list = new LinkedList<Bouteille>();
+  private List<Bouteille> list = new LinkedList<>();
 
   /**
    * getRowCount
    *
    * @return int
    */
+  @Override
   public int getRowCount() {
     return list.size();
   }
@@ -32,6 +33,7 @@ public class ListValues extends AbstractTableModel {
    *
    * @return int
    */
+  @Override
   public int getColumnCount() {
     return 1;
   }
@@ -43,8 +45,9 @@ public class ListValues extends AbstractTableModel {
    * @param column int
    * @return Object
    */
+  @Override
   public Object getValueAt(int row, int column) {
-	  if(list == null || list.size() == 0)
+	  if(list == null || list.isEmpty())
 		  return null;
     return list.get(row).getNom();
   }
@@ -55,6 +58,7 @@ public class ListValues extends AbstractTableModel {
    * @param column int
    * @return String
    */
+  @Override
   public String getColumnName(int column) {
     return Program.getLabel("Infos208");
   }
@@ -66,6 +70,7 @@ public class ListValues extends AbstractTableModel {
    * @param column int
    * @return boolean
    */
+  @Override
   public boolean isCellEditable(int row, int column) {
     return false;
   }
@@ -77,6 +82,7 @@ public class ListValues extends AbstractTableModel {
    * @param row int
    * @param column int
    */
+  @Override
   public void setValueAt(Object value, int row, int column) {
   }
 
@@ -85,9 +91,9 @@ public class ListValues extends AbstractTableModel {
    *
    * @param b LinkedList<Bouteille>
    */
-  public void setBouteilles(LinkedList<Bouteille> b) {
+  public void setBouteilles(List<Bouteille> b) {
 	  list = b;
-	  this.fireTableDataChanged();
+	  fireTableDataChanged();
   }
 
   /**

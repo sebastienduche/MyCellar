@@ -1,8 +1,8 @@
 package mycellar;
 
-import java.util.LinkedList;
-
 import javax.swing.table.AbstractTableModel;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -10,22 +10,23 @@ import javax.swing.table.AbstractTableModel;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 12/07/17
+ * @version 1.0
+ * @since 02/03/18
  */
 public class TableauValues extends AbstractTableModel {
-	public final static int ETAT = 0;
+	public static final int ETAT = 0;
 	static final long serialVersionUID = 220605;
-	private String[] columnNames = {"", Program.getLabel("Infos105"), Program.getLabel("Infos027"), Program.getLabel("Infos136")};
+	private final String[] columnNames = {"", Program.getLabel("Infos105"), Program.getLabel("Infos027"), Program.getLabel("Infos136")};
 
-	private LinkedList<Rangement> list = new LinkedList<Rangement>();
-	private LinkedList<Boolean> listBoolean = new LinkedList<Boolean>();
+	private final List<Rangement> list = new LinkedList<>();
+	private final List<Boolean> listBoolean = new LinkedList<>();
 
 	/**
 	 * getRowCount
 	 *
 	 * @return int
 	 */
+	@Override
 	public int getRowCount() {
 		return list.size();
 	}
@@ -35,6 +36,7 @@ public class TableauValues extends AbstractTableModel {
 	 *
 	 * @return int
 	 */
+	@Override
 	public int getColumnCount() {
 		return 4;
 	}
@@ -46,6 +48,7 @@ public class TableauValues extends AbstractTableModel {
 	 * @param column int
 	 * @return Object
 	 */
+	@Override
 	public Object getValueAt(int row, int column) {
 		Rangement r = list.get(row);
 		switch(column) {
@@ -61,8 +64,8 @@ public class TableauValues extends AbstractTableModel {
 				nombre_ligne += r.getNbLignes(k);
 			}
 			if (nombre_ligne <= 1) 
-				return new String(Integer.toString(nombre_ligne)) + " " + Program.getLabel("Infos060");
-			return new String(Integer.toString(nombre_ligne)) + " " + Program.getLabel("Infos061");
+				return Integer.toString(nombre_ligne) + " " + Program.getLabel("Infos060");
+			return Integer.toString(nombre_ligne) + " " + Program.getLabel("Infos061");
 		case 3:
 			int nombre_vin = 0;
 			if (r.isCaisse()) {
@@ -75,8 +78,8 @@ public class TableauValues extends AbstractTableModel {
 			}
 				
 			if (nombre_vin <= 1)
-				return new String(Integer.toString(nombre_vin)) + " " + Program.getLabel("Infos063");
-			return new String(Integer.toString(nombre_vin)) + " " + Program.getLabel("Infos064");
+				return Integer.toString(nombre_vin) + " " + Program.getLabel("Infos063");
+			return Integer.toString(nombre_vin) + " " + Program.getLabel("Infos064");
 		}
 		return "";
 	}
@@ -87,6 +90,7 @@ public class TableauValues extends AbstractTableModel {
 	 * @param column int
 	 * @return String
 	 */
+	@Override
 	public String getColumnName(int column) {
 		return columnNames[column];
 	}
@@ -98,6 +102,7 @@ public class TableauValues extends AbstractTableModel {
 	 * @param column int
 	 * @return boolean
 	 */
+	@Override
 	public boolean isCellEditable(int row, int column) {
 		return (column == ETAT);
 	}
@@ -109,6 +114,7 @@ public class TableauValues extends AbstractTableModel {
 	 * @param row int
 	 * @param column int
 	 */
+	@Override
 	public void setValueAt(Object value, int row, int column) {
 		try {
 			listBoolean.set(row, (Boolean)value);

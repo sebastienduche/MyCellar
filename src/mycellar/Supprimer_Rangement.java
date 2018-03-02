@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.0
- * @since 01/03/18
+ * @version 7.1
+ * @since 02/03/18
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
@@ -185,7 +185,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 					Erreur.showSimpleErreur(Program.getError("SupprimerRangement.ForbiddenToDelete"));
 					return;
 				}
-				Rangement cave = Program.getCave(num_select - 1);
+				final Rangement cave = Program.getCave(num_select - 1);
 				if (cave != null) {
 					if (nb_case_use_total == 0) {
 						String tmp = cave.getNom();
@@ -212,7 +212,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 								@Override
 								public void run() {
 									//Suppression des bouteilles présentes dans le rangement
-									String tmp_nom = Program.getCave(num_select - 1).getNom();
+									String tmp_nom = cave.getNom();
 
 									List<Bouteille> bottleList = Program.getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
 									for (Bouteille b : bottleList) {

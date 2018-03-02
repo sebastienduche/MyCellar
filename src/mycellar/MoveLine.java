@@ -16,8 +16,8 @@ import java.awt.event.ItemEvent;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 01/03/18
+ * @version 1.6
+ * @since 02/03/18
  */
 
 public class MoveLine extends JDialog {
@@ -29,8 +29,7 @@ public class MoveLine extends JDialog {
 	private final MyCellarComboBox<String> new_line_cbx = new MyCellarComboBox<>();
 	static final long serialVersionUID = 40508;
 
-	public MoveLine()
-	{
+	MoveLine() {
 		setAlwaysOnTop(true);
 		setTitle(Program.getLabel("Infos363"));
 		setLayout(new MigLayout("","[]","[]20px[]10px[][]10px[][]20px[]10px[]"));

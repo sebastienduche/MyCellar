@@ -1,25 +1,24 @@
 package mycellar;
 
-import javax.swing.table.*;
-import java.util.Vector;
+import javax.swing.table.AbstractTableModel;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * <p>Titre : Cave � vin</p>
+ * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2006</p>
- * <p>Soci�t� : Seb Informatique</p>
- * @author S�bastien Duch�
- * @version 0.1
- * @since 26/07/06
+ * <p>Société : Seb Informatique</p>
+ * @author Sébastien Duché
+ * @version 0.2
+ * @since 02/03/18
  */
 public class XLSOptionsValues extends AbstractTableModel {
-  public final static int ETAT = 0;
-  private String[] columnNames = {"",""};
-  private Vector<String> oVector = new Vector<String>();
-  private Vector<Boolean> oBoolVector = new Vector<Boolean>();
-  private Object[][] values = { { new Boolean(false), ""
-  }
-  };
+  public static final int ETAT = 0;
+  private final String[] columnNames = {"",""};
+  private final List<String> oVector = new LinkedList<>();
+  private final List<Boolean> oBoolVector = new LinkedList<>();
+  private Object[][] values = { { false, "" } };
   static final long serialVersionUID = 260706;
 
   /**
@@ -27,6 +26,7 @@ public class XLSOptionsValues extends AbstractTableModel {
    *
    * @return int
    */
+  @Override
   public int getRowCount() {
     return values.length;
   }
@@ -36,6 +36,7 @@ public class XLSOptionsValues extends AbstractTableModel {
    *
    * @return int
    */
+  @Override
   public int getColumnCount() {
     return values[0].length;
   }
@@ -47,6 +48,7 @@ public class XLSOptionsValues extends AbstractTableModel {
    * @param column int
    * @return Object
    */
+  @Override
   public Object getValueAt(int row, int column) {
     return values[row][column];
   }
@@ -57,6 +59,7 @@ public class XLSOptionsValues extends AbstractTableModel {
    * @param column int
    * @return String
    */
+  @Override
   public String getColumnName(int column) {
     return columnNames[column];
   }
@@ -67,6 +70,7 @@ public class XLSOptionsValues extends AbstractTableModel {
    * @param column int
    * @return Class
    */
+  @Override
   public Class<?> getColumnClass(int column) {
     Class<?> dataType = super.getColumnClass(column);
 
@@ -80,11 +84,9 @@ public class XLSOptionsValues extends AbstractTableModel {
    * @param column int
    * @return boolean
    */
+  @Override
   public boolean isCellEditable(int row, int column) {
-    if (column == ETAT) {
-      return true;
-    }
-    return false;
+    return (column == ETAT);
   }
 
   /**
@@ -94,6 +96,7 @@ public class XLSOptionsValues extends AbstractTableModel {
    * @param row int
    * @param column int
    */
+  @Override
   public void setValueAt(Object value, int row, int column) {
     try {
       values[row][column] = value;
@@ -112,11 +115,11 @@ public class XLSOptionsValues extends AbstractTableModel {
   public void addString(String _sText, boolean _bState) {
 
     oVector.add(_sText);
-    oBoolVector.add(new Boolean(_bState));
+    oBoolVector.add(_bState);
     values = new Object[oVector.size()][2];
     for ( int i = 0; i < oVector.size(); i++ ){
-      values[i][1] = oVector.get(i).toString();
-      values[i][0] = (Boolean) oBoolVector.get(i);
+      values[i][1] = oVector.get(i);
+      values[i][0] = oBoolVector.get(i);
     }
   }
 
@@ -126,7 +129,7 @@ public class XLSOptionsValues extends AbstractTableModel {
   public void removeAll() {
 
     values = new Object[1][2];
-    values[0][0] = new Boolean(false);
+    values[0][0] = false;
     values[0][1] = "";
   }
 

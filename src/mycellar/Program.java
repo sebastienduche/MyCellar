@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.net.util.Base64;
 
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -40,9 +41,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -69,21 +70,21 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 16.8
- * @since 01/03/18
+ * @version 16.9
+ * @since 02/03/18
  */
 
 public class Program {
 
-	private static Properties propCave = new Properties();
-	private static Properties propGlobal = new Properties();
+	private static final Properties propCave = new Properties();
+	private static final Properties propGlobal = new Properties();
 	private static String inputPropCave = null;
 	private static String inputPropGlobal = null;
-	public static Font font_panel = new Font("Arial", 0, 12);
-	public static Font font_boutton_small = new Font("Arial", 0, 10);
-	public static Font font_label_bold = new Font("Arial", 1, 12);
-	public static Font font_dialog = new Font("Dialog", 1, 16);
-	public static Font font_dialog_small = new Font("Dialog", 1, 12);
+	public static Font font_panel = new Font("Arial", Font.PLAIN, 12);
+	public static Font font_boutton_small = new Font("Arial", Font.PLAIN, 10);
+	public static Font font_label_bold = new Font("Arial", Font.BOLD, 12);
+	public static Font font_dialog = new Font("Dialog", Font.BOLD, 16);
+	public static Font font_dialog_small = new Font("Dialog", Font.BOLD, 12);
 	public static Options options = null;
 	public static Export export = null;
 	public static Parametres parametres = null;
@@ -99,36 +100,33 @@ public class Program {
 	public static AddVin addWine = null;
 	public static JTabbedPane tabbedPane = new JTabbedPane();
 	public static String archive = null;
-	public static LinkedList<String> half = new LinkedList<String>();
+	public static LinkedList<String> half = new LinkedList<>();
 	public static String defaut_half = null;
-	private static MyLinkedHashMap configGlobal = new MyLinkedHashMap();
+	private static final MyLinkedHashMap configGlobal = new MyLinkedHashMap();
 	private static MyLinkedHashMap configCave = null;
 	private static FileWriter oDebugFile = null;
 	private static File debugFile = null;
 	private static boolean bDebug = false;
-	protected static LinkedList<Rangement> m_oCave = new LinkedList<Rangement>();
-	private static LinkedList<Bouteille> trash = new LinkedList<Bouteille>();
-	private static LinkedList<MyCellarError> errors = new LinkedList<MyCellarError>();
+	private static LinkedList<Rangement> m_oCave = new LinkedList<>();
+	private static final LinkedList<Bouteille> trash = new LinkedList<>();
+	private static final LinkedList<MyCellarError> errors = new LinkedList<>();
 	public static Rangement defaultPlace = new Rangement("");
 	private static String m_sWorkDir = null;
-	protected static String m_sTempDir = null;
-	protected static String m_sGlobalDir = null;
-	protected static boolean m_bIsTrueFile = false;
-	protected static String m_sDataFile = "data.xml";
-	protected static String m_sUntitledFile = "Untitled1.sinfo";
-	protected static String m_sPreviewFile = "preview.xml";
-	protected static String m_sPreviewHTMLFile = "preview.html";
-	protected static String m_sXMLPlacesFile = "MyCellar.xml";
-	protected static String m_sXMLTypesFile = "Types.xml";
-	protected static String m_sXMLBottlesFile = "Bouteilles.xml";
-	public static String m_sVersion = "2.4";
-	protected static boolean m_bWorkDirCalculated = false;
-	protected static boolean m_bTempDirCalculated = false;
-	protected static boolean m_bGlobalDirCalculated = false;
-	protected static boolean bYearControlCalculated = false;
-	protected static boolean bYearControled = false;
+	private static String m_sGlobalDir = null;
+	private static boolean m_bIsTrueFile = false;
+	private static final String m_sDataFile = "data.xml";
+	private static final String m_sUntitledFile = "Untitled1.sinfo";
+	private static final String m_sPreviewFile = "preview.xml";
+	private static final String m_sPreviewHTMLFile = "preview.html";
+	private static final String m_sXMLPlacesFile = "MyCellar.xml";
+	private static final String m_sXMLTypesFile = "Types.xml";
+	private static final String m_sXMLBottlesFile = "Bouteilles.xml";
+	private static final String m_sVersion = "2.4";
+	private static boolean m_bWorkDirCalculated = false;
+	private static boolean m_bGlobalDirCalculated = false;
+	private static boolean bYearControlCalculated = false;
+	private static boolean bYearControled = false;
 	private static boolean MacOS = false;
-	protected static LinkedList<String> listColumns = new LinkedList<String>();
 	public static Creer_Rangement createPlace;
 	public static Creer_Rangement modifyPlace;
 	public static CellarOrganizerPanel managePlace;
@@ -136,7 +134,7 @@ public class Program {
 	public static Supprimer_Rangement deletePlace;
 	public static Stat stat;
 	public static Country france = new Country("FRA", "France");
-	private static LinkedList<File> dirToDelete = new LinkedList<File>();
+	private static final List<File> dirToDelete = new LinkedList<>();
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
 	public static char priceSeparator;
@@ -147,8 +145,8 @@ public class Program {
 	public static void init() {
 
 		try {
-			Program.archive = "";
-			Program.bDebug = true;
+			archive = "";
+			bDebug = true;
 			Debug("===================================================");
 			MacOS = System.getProperty("os.name").startsWith("Mac");
 			Server.getInstance().getAvailableVersion();
@@ -156,7 +154,7 @@ public class Program {
 			getWorkDir(false);
 			Debug("Program: Temp Dir: " + getWorkDir(false));
 			Debug("Program: Initializing Configuration files...");
-			inputPropGlobal = getGlobalDir(true) + "config.ini";
+			inputPropGlobal = getGlobalDir() + "config.ini";
 			File fileIni = new File(inputPropGlobal);
 			if(!fileIni.exists()) {
 				fileIni.createNewFile();
@@ -209,13 +207,14 @@ public class Program {
 	}
 	
 	private static void initPriceSeparator() {
-		 String sVirgule;
-		 if(Program.hasConfigCaveKey("PRICE_SEPARATOR")) {
-			 sVirgule = Program.getCaveConfigString("PRICE_SEPARATOR","");
-			 priceSeparator = sVirgule.charAt(0);
+		 if(hasConfigCaveKey("PRICE_SEPARATOR")) {
+			 String sVirgule = getCaveConfigString("PRICE_SEPARATOR","");
+			 if (!sVirgule.isEmpty()) {
+				 priceSeparator = sVirgule.charAt(0);
+			 }
 		 }
 		 else {
-			 java.text.DecimalFormat df = new java.text.DecimalFormat();
+			 DecimalFormat df = new DecimalFormat();
 			 priceSeparator = df.getDecimalFormatSymbols().getDecimalSeparator();
 		 }
 	}
@@ -224,7 +223,7 @@ public class Program {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	private static void loadProperties() throws IOException, FileNotFoundException {
+	private static void loadProperties() throws IOException {
 
 		inputPropCave = getWorkDir(true) + "config.ini";
 		File f = new File(inputPropCave);
@@ -247,7 +246,7 @@ public class Program {
 
 		half = MyXmlDom.readTypesXml();
 		if(half == null) {
-			half = new LinkedList<String>();
+			half = new LinkedList<>();
 			if(getStorage().getAllList() != null) {
 				for(Bouteille b : getStorage().getAllList()) {
 					String type = b.getType();
@@ -270,7 +269,7 @@ public class Program {
 	 * 
 	 * Pour nettoyer et mettre a jour le programme
 	 */
-	protected static void cleanAndUpgrade() {
+	private static void cleanAndUpgrade() {
 		String sVersion = getCaveConfigString("VERSION", "");
 		if(sVersion.isEmpty()) {
 			putCaveConfigString("VERSION", m_sVersion);
@@ -342,20 +341,19 @@ public class Program {
 	 * @param e Exception
 	 */
 	public static void showException(Throwable e, boolean _bShowWindowErrorAndExit) {
-		StackTraceElement st[] = new StackTraceElement[1];
-		st = e.getStackTrace();
+		StackTraceElement st[] =  e.getStackTrace();
 		String error = "";
-		for (int z = 0; z < st.length; z++) {
-			error = error.concat("\n" + st[z]);
+		for (StackTraceElement s : st) {
+			error = error.concat("\n" + s);
 		}
-		if(error.indexOf("javax.swing.plaf.synth.SynthContext.getPainter(SynthContext.java:171)") != -1
-				|| error.indexOf("javax.swing.LayoutComparator.compare") != -1)
+		if(error.contains("javax.swing.plaf.synth.SynthContext.getPainter(SynthContext.java:171)")
+				|| error.contains("javax.swing.LayoutComparator.compare"))
 			_bShowWindowErrorAndExit = false;
 		if (_bShowWindowErrorAndExit)
-			javax.swing.JOptionPane.showMessageDialog(null, e.toString(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-		FileWriter fw = null;
+			JOptionPane.showMessageDialog(null, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+		FileWriter fw;
 		try {
-			fw = new FileWriter(getGlobalDir(true)+"Errors.log");
+			fw = new FileWriter(getGlobalDir()+"Errors.log");
 			fw.write(e.toString());
 			fw.write(error);
 			fw.flush();
@@ -371,7 +369,7 @@ public class Program {
 			System.exit(999);
 	}
 
-	public static void sendMail(String error, File filename) {
+	private static void sendMail(String error, File filename) {
 		InputStreamReader stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
 		BufferedReader reader = new BufferedReader(stream);
 
@@ -382,13 +380,8 @@ public class Program {
 			String decoded = new String(Base64.decodeBase64(line.getBytes()));
 			final String[] values = decoded.split("/");
 
-			if(values == null)
-				return;
-
 			String to = values[0];
 			String from = values[1];
-			String msgText1 = error;
-			String subject = "Problem";
 
 			// create some properties and get the default Session
 			Properties props = System.getProperties();
@@ -398,7 +391,8 @@ public class Program {
 			props.put("mail.smtp.host", "smtp.gmail.com");
 			props.put("mail.smtp.port", "587");
 
-			Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+			Session session = Session.getInstance(props, new Authenticator() {
+				@Override
 				protected PasswordAuthentication getPasswordAuthentication() {
 					return new PasswordAuthentication(from, values[2]);
 				}
@@ -410,11 +404,11 @@ public class Program {
 			msg.setFrom(new InternetAddress(from));
 			InternetAddress[] address = {new InternetAddress(to)};
 			msg.setRecipients(Message.RecipientType.TO, address);
-			msg.setSubject(subject);
+			msg.setSubject("Problem");
 
 			// create and fill the first message part
 			MimeBodyPart mbp1 = new MimeBodyPart();
-			mbp1.setText(msgText1);
+			mbp1.setText(error);
 
 			// create the second message part
 			MimeBodyPart mbp2 = new MimeBodyPart();
@@ -463,7 +457,7 @@ public class Program {
 
 		} catch (MessagingException mex) {
 			mex.printStackTrace();
-			Exception ex = null;
+			Exception ex;
 			if ((ex = mex.getNextException()) != null) {
 				ex.printStackTrace();
 			}
@@ -493,24 +487,20 @@ public class Program {
 	 * deletePlaceFile: Suppression d'un objet sérialisé.
 	 *
 	 * @param num_rangement int: numéro du rangement à supprimer
-	 * @return int
 	 */
-	private static int deletePlaceFile(int num_rangement) {
-		int resul = 0;
+	private static void deletePlaceFile(int num_rangement) {
 		Debug("Program: Deleting serialized object...");
 		try {
 			File f = new File( getWorkDir(false) );
 			String list[] = f.list(new MyFilenameFilter());
-			if( list != null && list.length > num_rangement )
-			{
+			if( list != null && list.length > num_rangement ) {
 				f = new File( getWorkDir(true) + list[num_rangement]);
 				f.delete();
 			}
 		}
 		catch (Exception exc) {
-			Program.showException(exc);
+			showException(exc);
 		}
-		return resul;
 	}
 
 	/**
@@ -527,67 +517,67 @@ public class Program {
 			f = new File("resources/vin.xsl");
 			ficout = new FileWriter(f);
 			ficout.flush();
-			tmp = new String("<?xml version='1.0'?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\"> <xsl:template match=\"/\">\n");
+			tmp = "<?xml version='1.0'?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\"> <xsl:template match=\"/\">\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<html>\n<body>\n<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\">\n<tr bgcolor=\"#FFFF00\">\n");
+			tmp = "<html>\n<body>\n<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\">\n<tr bgcolor=\"#FFFF00\">\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos208")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos189")) + "</td>\n");
+			tmp = "<td>" + Program.convertToHTMLString(Program.getLabel("Infos208")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos189")) + "</td>\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos134")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos105")) + "</td>\n");
+			tmp = "<td>" + Program.convertToHTMLString(Program.getLabel("Infos134")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos105")) + "</td>\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos158")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos028")) + "</td>\n");
+			tmp = "<td>" + Program.convertToHTMLString(Program.getLabel("Infos158")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos028")) + "</td>\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos083")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos135")) + "</td>\n");
+			tmp = "<td>" + Program.convertToHTMLString(Program.getLabel("Infos083")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos135")) + "</td>\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td>" + Program.convertToHTMLString(Program.getLabel("Infos137")) + "</td>\n");
+			tmp = "<td>" + Program.convertToHTMLString(Program.getLabel("Infos137")) + "</td>\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("</tr>\n<xsl:for-each select=\"cellar/name\">\n<xsl:sort select=\"name\"/>\n<tr>\n");
+			tmp = "</tr>\n<xsl:for-each select=\"cellar/name\">\n<xsl:sort select=\"name\"/>\n<tr>\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"name\"/></td>");
+			tmp = "<td><xsl:value-of select=\"name\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"year\"/></td>");
+			tmp = "<td><xsl:value-of select=\"year\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"half\"/></td>");
+			tmp = "<td><xsl:value-of select=\"half\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"place\"/></td>");
+			tmp = "<td><xsl:value-of select=\"place\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"num-place\"/></td>");
+			tmp = "<td><xsl:value-of select=\"num-place\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"line\"/></td>");
+			tmp = "<td><xsl:value-of select=\"line\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"column\"/></td>");
+			tmp = "<td><xsl:value-of select=\"column\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"price\"/></td>");
+			tmp = "<td><xsl:value-of select=\"price\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"comment\"/></td>");
+			tmp = "<td><xsl:value-of select=\"comment\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"dateOfC\"/></td>");
+			tmp = "<td><xsl:value-of select=\"dateOfC\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"parker\"/></td>");
+			tmp = "<td><xsl:value-of select=\"parker\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("<td><xsl:value-of select=\"appellation\"/></td>");
+			tmp = "<td><xsl:value-of select=\"appellation\"/></td>";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = new String("</tr>\n</xsl:for-each>\n</table>\n</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>");
+			tmp = "</tr>\n</xsl:for-each>\n</table>\n</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>";
 			ficout.write(tmp);
 			ficout.flush();
 		}
@@ -606,14 +596,6 @@ public class Program {
 
 	public static String convertStringFromHTMLString(String s) {
 		return StringEscapeUtils.unescapeHtml(s);
-	}
-
-	public static String convertToXMLString(String s) {
-		return StringEscapeUtils.escapeXml(s);
-	}
-
-	public static String convertStringFromXMLString(String s) {
-		return StringEscapeUtils.unescapeXml(s);
 	}
 
 	public static String removeAccents(String s) {
@@ -638,7 +620,7 @@ public class Program {
 		}
 
 		if(m_oCave == null) {
-			m_oCave = new LinkedList<Rangement>();
+			m_oCave = new LinkedList<>();
 			m_oCave.add(defaultPlace);
 			return false;
 		}
@@ -650,7 +632,7 @@ public class Program {
 	 */
 	private static void read_Object() {
 		Debug("Program: Loading places and history...");
-		LinkedList<Rangement> cave = new LinkedList<Rangement>();
+		LinkedList<Rangement> cave = new LinkedList<>();
 		boolean resul = getStorage().readRangement(cave);
 		getStorage().loadHistory();
 		if (!resul) {
@@ -662,9 +644,9 @@ public class Program {
 		Debug("Program: Loading places and history OK");
 	}
 	
-	public static void loadMaxPrice() {
+	private static void loadMaxPrice() {
 		
-		OptionalDouble i = getStorage().getAllList().stream().mapToDouble(bouteille -> bouteille.getPriceDouble()).max();
+		OptionalDouble i = getStorage().getAllList().stream().mapToDouble(Bouteille::getPriceDouble).max();
 		if(i.isPresent())
 			Bouteille.prix_max = (int) i.getAsDouble();
 		else
@@ -672,7 +654,7 @@ public class Program {
 	}
 	
 	public static int getCellarValue() {	
-		return (int) getStorage().getAllList().stream().mapToDouble(bouteille -> bouteille.getPriceDouble()).sum();
+		return (int) getStorage().getAllList().stream().mapToDouble(Bouteille::getPriceDouble).sum();
 	}
 	
 	/**
@@ -686,7 +668,7 @@ public class Program {
 	}
 	
 	public static int[] getAnnees() {
-		return getStorage().getAllList().stream().mapToInt(bouteille -> bouteille.getAnneeInt()).distinct().toArray();
+		return getStorage().getAllList().stream().mapToInt(Bouteille::getAnneeInt).distinct().toArray();
 	}
 	
 	/**
@@ -732,7 +714,7 @@ public class Program {
 	 * @param archive String
 	 * @return boolean
 	 */
-	private static boolean zipDir(String archive) {
+	private static void zipDir(String archive) {
 
 		Debug("Program: zipDir: Zipping in "+m_sWorkDir+" with archive "+archive);
 		int BUFFER = 2048;
@@ -754,34 +736,36 @@ public class Program {
 			// extraction de la liste des fichiers du répertoire courant
 			File f = new File(m_sWorkDir);
 			String files[] = f.list();
-			LinkedList<String> zipEntryList = new LinkedList<String>();
+			LinkedList<String> zipEntryList = new LinkedList<>();
 			// pour chacun des fichiers de la liste
-			for (int i = 0; i < files.length; i++) {
-				f = new File( getWorkDir(true) + files[i]);
-				if( f.isDirectory() || files[i].compareTo(m_sUntitledFile) == 0)
-					continue;
-				// création d'un flux de lecture
-				FileInputStream fi = new FileInputStream(getWorkDir(true) + files[i]);
-				// création d'un tampon de lecture sur ce flux
-				BufferedInputStream buffi = new BufferedInputStream(fi, BUFFER);
-				// création d'en entrée Zip pour ce fichier
-				String name = removeAccents(files[i]);
-				ZipEntry entry = new ZipEntry(name);
-				if(zipEntryList.contains(name))
-					continue;
-				zipEntryList.add(name);
-				// ajout de cette entrée dans le flux d'écriture de l'archive Zip
-				out.putNextEntry(entry);
-				// écriture du fichier par paquet de BUFFER octets dans le flux d'écriture
-				int count;
-				while ( (count = buffi.read(data, 0, BUFFER)) != -1) {
-					out.write(data, 0, count);
+			if (files != null) {
+				for (String file : files) {
+					f = new File(getWorkDir(true) + file);
+					if (f.isDirectory() || file.compareTo(m_sUntitledFile) == 0)
+						continue;
+					// création d'un flux de lecture
+					FileInputStream fi = new FileInputStream(getWorkDir(true) + file);
+					// création d'un tampon de lecture sur ce flux
+					BufferedInputStream buffi = new BufferedInputStream(fi, BUFFER);
+					// création d'en entrée Zip pour ce fichier
+					String name = removeAccents(file);
+					ZipEntry entry = new ZipEntry(name);
+					if (zipEntryList.contains(name))
+						continue;
+					zipEntryList.add(name);
+					// ajout de cette entrée dans le flux d'écriture de l'archive Zip
+					out.putNextEntry(entry);
+					// écriture du fichier par paquet de BUFFER octets dans le flux d'écriture
+					int count;
+					while ((count = buffi.read(data, 0, BUFFER)) != -1) {
+						out.write(data, 0, count);
+					}
+					// Close the current entry
+					out.closeEntry();
+					// fermeture du flux de lecture
+					buffi.close();
+					fi.close();
 				}
-				// Close the current entry
-				out.closeEntry();
-				// fermeture du flux de lecture
-				buffi.close();
-				fi.close();
 			}
 			// fermeture du flux d'écriture
 			out.close();
@@ -792,10 +776,8 @@ public class Program {
 		catch (Exception e) {
 			Debug("Program: zipDir: Error while zipping");
 			showException(e, false);
-			return false;
 		}
 		Debug("Program: zipDir OK");
-		return true;
 	}
 
 	/**
@@ -926,7 +908,7 @@ public class Program {
 				debugFile = new File(sDir, "Debug-"+sDate+".log");
 				oDebugFile = new FileWriter(debugFile, true);
 			}
-			oDebugFile.write("[" + java.util.Calendar.getInstance().getTime().toString() + "]: " + sText + "\n");
+			oDebugFile.write("[" + Calendar.getInstance().getTime().toString() + "]: " + sText + "\n");
 			oDebugFile.flush();
 		}
 		catch (Exception e) {}
@@ -1090,10 +1072,9 @@ public class Program {
 
 		archive = f.getAbsolutePath();
 
-		boolean bUnzipSucceeded = false;
 		try {
 			// Dézippage
-			bUnzipSucceeded = unzipDir(getWorkDir(false), archive);
+			boolean bUnzipSucceeded = unzipDir(getWorkDir(false), archive);
 			if ( bUnzipSucceeded )
 				Debug("Program: Unzipping "+archive+" to "+getWorkDir(false) +" OK");
 			else {
@@ -1189,9 +1170,8 @@ public class Program {
 	public static void saveGlobalProperties() {
 		Debug("Program: Saving Global Properties");
 		Object[] val = configGlobal.keySet().toArray();
-		String key;
-		for (int y = 0; y < val.length; y++) {
-			key = val[y].toString();
+		for (Object o : val) {
+			String key = o.toString();
 			propGlobal.put(key, configGlobal.getString(key));
 		}
 		FileOutputStream outputStream = null;
@@ -1216,7 +1196,7 @@ public class Program {
 	 * closeFile: Fermeture du fichier.
 	 *
 	 */
-	static boolean closeFile() {
+	static void closeFile() {
 
 		Debug("Program: closeFile: Closing file...");
 		try {
@@ -1261,15 +1241,15 @@ public class Program {
 				f.delete();
 			}
 			//Tri du tableau et écriture du fichier XML
-			if ( bSave ) {
+			if (bSave) {
 				if(!ListeBouteille.writeXML())
-					return false;
+					return;
 
 				if(isListCaveModified())
 					MyXmlDom.writeMyCellarXml(getCave(),"");
 
 				if(!configCave.containsKey("PRICE_SEPARATOR")) {
-					java.text.DecimalFormat df = new java.text.DecimalFormat();
+					DecimalFormat df = new DecimalFormat();
 					char virgule = df.getDecimalFormatSymbols().getDecimalSeparator();
 					String sVirgule = Character.toString(virgule);
 					putCaveConfigString("PRICE_SEPARATOR", sVirgule);
@@ -1296,7 +1276,7 @@ public class Program {
 		}
 		catch (Exception ex) {
 			showException(ex);
-			return false;
+			return;
 		}
 		tabbedPane.removeAll();
 		if(!archive.isEmpty()){
@@ -1324,8 +1304,6 @@ public class Program {
 		if(getCave() != null)
 			getCave().clear();
 		Debug("Program: closeFile: Closing file Ended");
-
-		return true;
 	}
 
 	public static void deleteTempFiles() {
@@ -1352,9 +1330,8 @@ public class Program {
 		if(inputPropCave != null)
 		{
 			Object[] val = configCave.keySet().toArray();
-			String key;
-			for (int y = 0; y < val.length; y++) {
-				key = val[y].toString();
+			for (Object o : val) {
+				String key = o.toString();
 				propCave.put(key, configCave.getString(key));
 			}
 			FileOutputStream outputStream = null;
@@ -1377,14 +1354,11 @@ public class Program {
 
 	/**
 	 * getGlobalDir: Retourne le nom du repertoire des propriétés globales.
-	 * @param _bWithEndSlash
 	 * @return
 	 */
-	public static String getGlobalDir(boolean _bWithEndSlash) {
+	private static String getGlobalDir() {
 		if(m_bGlobalDirCalculated) {
-			if (_bWithEndSlash)
-				return m_sGlobalDir + File.separator;
-			return m_sGlobalDir;
+			return m_sGlobalDir + File.separator;
 		}
 		m_bGlobalDirCalculated = true;
 		String sDir = System.getProperty("user.home");
@@ -1396,9 +1370,7 @@ public class Program {
 		if(!f_obj.exists())
 			f_obj.mkdir();
 
-		if (_bWithEndSlash)
-			return m_sGlobalDir + File.separator;
-		return m_sGlobalDir;
+		return m_sGlobalDir + File.separator;
 	}
 
 	/**
@@ -1453,37 +1425,11 @@ public class Program {
 		return m_sWorkDir;
 	}
 
-	/**
-	 * getTempDir: Retourne le nom du repertoire Temporaire.
-	 * @param _bWithEndSlash
-	 * @return
-	 */
-	public static String getTempDir(boolean _bWithEndSlash) {
-		if(m_bTempDirCalculated) {
-			if (_bWithEndSlash)
-				return m_sTempDir + File.separator;
-			return m_sTempDir;
-		}
-		m_bTempDirCalculated = true;
-		String sDir = System.getProperty("user.home");
-		if(sDir.isEmpty())
-			m_sTempDir = "./Temp";
-		else
-			m_sTempDir = sDir + "/MyCellar/Temp";
-		File f_obj = new File( m_sTempDir );
-		if(!f_obj.exists())
-			f_obj.mkdir();
-
-		if (_bWithEndSlash)
-			return m_sTempDir + File.separator;
-		return m_sTempDir;
-	}
-
 	public static String getShortFilename() {
 		return getShortFilename(archive);
 	}
 
-	public static String getShortFilename( String sFilename ) {
+	public static String getShortFilename(String sFilename) {
 		String tmp = sFilename;
 		tmp = tmp.replaceAll("\\\\", "/");
 		int ind1 = tmp.lastIndexOf("/");
@@ -1529,10 +1475,7 @@ public class Program {
 	}
 
 	public static void putGlobalConfigInt( String _sKey, Integer _sValue ) {
-		if( null != configGlobal )
-			configGlobal.put(_sKey, _sValue);
-		else
-			Debug("Program: ERROR: Unable to put value in configGlobal: [" + _sKey + " - " + _sValue + "]");
+		configGlobal.put(_sKey, _sValue);
 	}
 
 	public static void putCaveConfigInt( String _sKey, Integer _sValue ) {
@@ -1556,9 +1499,7 @@ public class Program {
 	}
 
 	public static boolean hasConfigGlobalKey( String _sKey ) {
-		if( null != configGlobal )
-			return configGlobal.containsKey(_sKey);
-		return false;
+		return configGlobal.containsKey(_sKey);
 	}
 
 	public static boolean isFileSavable() {
@@ -1569,7 +1510,7 @@ public class Program {
 		m_bIsTrueFile = _bIsTrueFile;
 	}
 
-	public static String getDataFileName() {
+	private static String getDataFileName() {
 		return getWorkDir(true) + m_sDataFile;
 	}
 
@@ -1590,11 +1531,11 @@ public class Program {
 	}
 
 	public static String getPreviewXMLFileName() {
-		return getGlobalDir(true) + m_sPreviewFile;
+		return getGlobalDir() + m_sPreviewFile;
 	}
 
-	public static String getPreviewHTMLFileName() {
-		return getGlobalDir(true) + m_sPreviewHTMLFile;
+	private static String getPreviewHTMLFileName() {
+		return getGlobalDir() + m_sPreviewHTMLFile;
 	}
 
 	public static Storage getStorage() {
@@ -1715,7 +1656,7 @@ public class Program {
 		listCaveModified = true;
 	}
 
-	public static boolean isListCaveModified() {
+	private static boolean isListCaveModified() {
 		return listCaveModified;
 	}
 
@@ -1747,8 +1688,8 @@ public class Program {
 		return properties;
 	}
 
-	public static List<PDFRow> getPDFRows(LinkedList<Bouteille> list, PDFProperties properties) {
-		LinkedList<PDFRow> rows = new LinkedList<PDFRow>();
+	public static List<PDFRow> getPDFRows(List<Bouteille> list, PDFProperties properties) {
+		LinkedList<PDFRow> rows = new LinkedList<>();
 		LinkedList<PDFColumn> columns = properties.getColumns();
 		PDFRow row;
 		for(Bouteille b : list) {
@@ -1824,10 +1765,7 @@ public class Program {
 		Calendar oCal = Calendar.getInstance();
 		oCal.add(Calendar.MONTH, -2);
 		Calendar c = Calendar.getInstance();
-		String files[] = f.list(new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
+		String files[] = f.list((dir, name) -> {
 				if (name.startsWith("Debug-") && name.endsWith(".log")) {
 					String date = name.substring(6, name.indexOf(".log"));
 					String fields[] = date.split("-");
@@ -1845,13 +1783,14 @@ public class Program {
 					return c.before(oCal);
 				}
 				return false;
-			}
 		});
 
-		for(String s : files) {
-			f = new File(sDir, s);
-			Debug("Program: Deleting file "+f.getAbsolutePath());
-			f.deleteOnExit();
+		if (files != null) {
+			for (String s : files) {
+				f = new File(sDir, s);
+				Debug("Program: Deleting file " + f.getAbsolutePath());
+				f.deleteOnExit();
+			}
 		}
 	}
 
@@ -1863,8 +1802,8 @@ public class Program {
 		return getCaveConfigString("SHOWFILE_COLUMN", "");
 	}
 
-	public static void saveHTMLColumns(ArrayList<MyCellarFields> cols) {
-		StringBuffer s = new StringBuffer();
+	public static void saveHTMLColumns(List<MyCellarFields> cols) {
+		StringBuilder s = new StringBuilder();
 		for(MyCellarFields f : cols) {
 			if(s.length() != 0)
 				s.append(";");
@@ -1874,7 +1813,7 @@ public class Program {
 	}
 
 	public static ArrayList<MyCellarFields> getHTMLColumns() {
-	ArrayList<MyCellarFields> cols = new ArrayList<MyCellarFields>();
+	ArrayList<MyCellarFields> cols = new ArrayList<>();
 		String s = getCaveConfigString("HTMLEXPORT_COLUMN", "");
 		String [] fields = s.split(";");
 		for(String field : fields) {

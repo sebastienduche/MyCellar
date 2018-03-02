@@ -1,13 +1,8 @@
 package mycellar;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.LinkedList;
-import java.util.Collections;
-import javax.swing.JTable;
-import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumnModel;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -15,32 +10,28 @@ import javax.swing.table.TableColumnModel;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.2
- * @since 25/10/17
+ * @version 2.3
+ * @since 02/03/18
  */
 public class TableValues extends AbstractTableModel {
 
 	private static final long serialVersionUID = -3899189654755476591L;
-	public final static int ETAT = 0;
-	public final static int SHOW = 7;
+	public static final int ETAT = 0;
+	public static final int SHOW = 7;
 
-	public final static int NBCOL = 8;
-	private String[] columnNames = {"", Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos217"),
-			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), ""
-	};
+	private static final int NBCOL = 8;
+	private final String[] columnNames = {"", Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos217"),
+			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), ""	};
 
-	private LinkedList<Boolean> listBoolean = new LinkedList<Boolean>();
-
-	protected int sortCol = 0;
-
-	protected boolean isSortAsc = true;
-	private LinkedList<Bouteille> monVector = new LinkedList<Bouteille>();
+	private final List<Boolean> listBoolean = new LinkedList<>();
+	private final List<Bouteille> monVector = new LinkedList<>();
 
 	/**
 	 * getRowCount
 	 *
 	 * @return int
 	 */
+	@Override
 	public int getRowCount() {
 		return monVector.size();
 	}
@@ -50,6 +41,7 @@ public class TableValues extends AbstractTableModel {
 	 *
 	 * @return int
 	 */
+	@Override
 	public int getColumnCount() {
 		return NBCOL;
 	}
@@ -61,6 +53,7 @@ public class TableValues extends AbstractTableModel {
 	 * @param column int
 	 * @return Object
 	 */
+	@Override
 	public Object getValueAt(int row, int column) {
 		if(row >= monVector.size()) {
 			Program.Debug("TableValues: Error index " + row + " > " + monVector.size());
@@ -100,6 +93,7 @@ public class TableValues extends AbstractTableModel {
 	 * @param column int
 	 * @return String
 	 */
+	@Override
 	public String getColumnName(int column) {
 		return columnNames[column];
 	}
@@ -111,11 +105,9 @@ public class TableValues extends AbstractTableModel {
 	 * @param column int
 	 * @return boolean
 	 */
+	@Override
 	public boolean isCellEditable(int row, int column) {
-		if (column == ETAT || column == SHOW) {
-			return true;
-		}
-		return false;
+		return (column == ETAT || column == SHOW);
 	}
 
 	/**
@@ -125,6 +117,7 @@ public class TableValues extends AbstractTableModel {
 	 * @param row int
 	 * @param column int
 	 */
+	@Override
 	public void setValueAt(Object value, int row, int column) {
 		switch (column) {
 		case SHOW:
@@ -171,47 +164,7 @@ public class TableValues extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 
-	/**
-	 * removeBouteille: Suppression d'une bouteille.
-	 *
-	 * @param num int
-	 */
-	public void removeBouteille(int num) {
-		monVector.remove(num);
-		listBoolean.remove(num);
-		fireTableDataChanged();
-	}
-
-	class ColumnListener extends MouseAdapter {
-		protected JTable table;
-
-		public ColumnListener(JTable t) {
-			table = t;
-		}
-
-		public void mouseClicked(MouseEvent e) {
-			TableColumnModel colModel = table.getColumnModel();
-			int columnModelIndex = colModel.getColumnIndexAtX(e.getX());
-			int modelIndex = colModel.getColumn(columnModelIndex).getModelIndex();
-			if (modelIndex < 0) {
-				return;
-			}
-			if (sortCol == modelIndex) {
-				isSortAsc = !isSortAsc;
-			}
-			else {
-				sortCol = modelIndex;
-			}
-			Collections.sort(monVector, (bottle1, bottle2) -> { int resul = bottle1.getNom().compareTo(bottle2.getNom());
-				if(isSortAsc)
-					return resul;
-				return -resul;});
-			table.tableChanged(new TableModelEvent(TableValues.this));
-			table.repaint();
-		}
-	}
-
-	public LinkedList<Bouteille> getDatas(){
+	public List<Bouteille> getDatas(){
 		return monVector;
 	}
 	

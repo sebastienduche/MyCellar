@@ -8,11 +8,6 @@
 
 package mycellar;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -22,6 +17,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -29,8 +28,8 @@ import javax.xml.transform.stream.StreamResult;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 24/10/17
+ * @version 0.4
+ * @since 02/03/18
  */
 
 /**
@@ -86,9 +85,9 @@ public class HistoryList {
      */
     public List<History> getHistory() {
         if (history == null) {
-            history = new ArrayList<History>();
+            history = new ArrayList<>();
         }
-        return this.history;
+        return history;
     }
 
     public void addLast(History history) {
@@ -103,24 +102,24 @@ public class HistoryList {
     	getHistory().clear();
     }
     
-    public static boolean loadXML() {
-		Debug("Loading JAXB File");
-		File f = new File(Program.getXMLBottlesFileName());
-		if(!f.exists())
-			return false;
-		try {
-            JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
-            Unmarshaller u = jc.createUnmarshaller();
-            HistoryList lb = 
-                (HistoryList)u.unmarshal(new FileInputStream(f));
-            Program.getStorage().setHistoryList(lb);
-        } catch( Exception e ) {
-            Program.showException(e);
-            return false;
-        }
-		Debug("Loading JAXB File Done");
-		return true;
-	}
+//    public static boolean loadXML() {
+//		Debug("Loading JAXB File");
+//		File f = new File(Program.getXMLBottlesFileName());
+//		if(!f.exists())
+//			return false;
+//		try {
+//            JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
+//            Unmarshaller u = jc.createUnmarshaller();
+//            HistoryList lb =
+//                (HistoryList)u.unmarshal(new FileInputStream(f));
+//            Program.getStorage().setHistoryList(lb);
+//        } catch( Exception e ) {
+//            Program.showException(e);
+//            return false;
+//        }
+//		Debug("Loading JAXB File Done");
+//		return true;
+//	}
     
     public static boolean loadXML(File f) {
 		Debug("Loading JAXB File "+f.getAbsolutePath());
@@ -140,15 +139,15 @@ public class HistoryList {
 		return true;
 	}
 	
-	public static boolean writeXML() {
-		return writeXML(Program.getHistoryList(), new File(Program.getXMLBottlesFileName()));
-	}
+//	public static boolean writeXML() {
+//		return writeXML(Program.getHistoryList(), new File(Program.getXMLBottlesFileName()));
+//	}
 	
 	public static boolean writeXML(File f) {
 		return writeXML(Program.getHistoryList(), f);
 	}
 	
-	public static boolean writeXML(HistoryList liste, File f) {
+	private static boolean writeXML(HistoryList liste, File f) {
 		Debug("Writing JAXB File");
 		try {
             JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);

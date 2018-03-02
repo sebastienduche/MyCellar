@@ -4,18 +4,7 @@
 
 package mycellar;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.LinkedList;
-import java.util.Vector;
+import org.apache.commons.lang.Validate;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
@@ -26,8 +15,17 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
-
-import org.apache.commons.lang.Validate;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -35,8 +33,8 @@ import org.apache.commons.lang.Validate;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 16/01/17
+ * @version 0.5
+ * @since 02/03/18
  */
 
 /**
@@ -61,15 +59,15 @@ public class JCompletionComboBox extends JComboBox {
 
 		// flag to indicate if setSelectedItem has been called
 		// subsequent calls to remove/insertString should be ignored
-		boolean selecting = false;
+		private boolean selecting = false;
 
 		@SuppressWarnings("unused")
-		boolean hitBackspace = false;
+		private boolean hitBackspace = false;
 
 		@SuppressWarnings("unused")
-		boolean hitBackspaceOnSelection;
+		private boolean hitBackspaceOnSelection;
 
-		boolean hidePopupOnFocusLoss;
+		private boolean hidePopupOnFocusLoss;
 		
 		private boolean caseSensitive;
 
@@ -77,9 +75,9 @@ public class JCompletionComboBox extends JComboBox {
 		
 		private boolean modified;
 		
-		private LinkedList<Object> objectList = new LinkedList<Object>();
+		private final List<Object> objectList = new LinkedList<>();
 
-		public ComboDocument(JComboBox comboBox) {
+		private ComboDocument(JComboBox comboBox) {
 			Validate.isTrue(comboBox != null, "The given combo box is null");
 
 			// Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when
@@ -96,11 +94,11 @@ public class JCompletionComboBox extends JComboBox {
 			editor.addKeyListener(this);
 		}
 
-		public void setCaseSensitive(boolean caseSensitive) {
+		private void setCaseSensitive(boolean caseSensitive) {
 			this.caseSensitive = caseSensitive;
 		}
 
-		public boolean isCaseSensitive() {
+		private boolean isCaseSensitive() {
 			return caseSensitive;
 		}
 		
@@ -303,33 +301,18 @@ public class JCompletionComboBox extends JComboBox {
 	 * 
 	 * @param items
 	 */
-	public JCompletionComboBox(Object[] items) {
-		super(items);
-
-		init();
-	}
-
-	/**
-	 * Creates a new instance of JCompletionComboBox.
-	 * 
-	 * @param items
-	 */
-	public JCompletionComboBox(Vector<?> items) {
+	JCompletionComboBox(Object[] items) {
 		super(items);
 
 		init();
 	}
 
 	private void init() {
-		addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent arg0) {
+		addItemListener((arg0) -> {
 				if(arg0.getStateChange() == ItemEvent.SELECTED) {
 					setModified(true);
 					doAfterModify();
 				}
-			}
 		});
 		document = new ComboDocument(this);
 
@@ -378,7 +361,7 @@ public class JCompletionComboBox extends JComboBox {
 	public void setModified(boolean modified) {
 		document.setModified(modified);
 	}
-	
+
 	protected void doAfterModify(){
 		document.doAfterModify();
 	}

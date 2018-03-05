@@ -57,8 +57,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.9
- * @since 01/03/18
+ * @version 5.0
+ * @since 05/03/18
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -797,12 +797,16 @@ public class ShowFile extends JPanel implements ITabListener {
 
   @Override
   public boolean tabWillClose(TabEvent event) {
-    if (showType == ShowType.ERROR && Program.getErrors().stream().map((e) -> e.isStatus()).count() > 0) {
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getLabel("ShowFile.QuitErrors"))) {
-        return true;
-      }
-      return false;
+    if (showType == ShowType.ERROR) {
+    	if(Program.getErrors().stream().map((e) -> e.isStatus()).count() > 0) {
+    		if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getLabel("ShowFile.QuitErrors"))) {
+    			RangementUtils.putTabStock();
+    			return true;
+    		}
+    		return false;
+    	}
     }
+    RangementUtils.putTabStock();
     return true;
   }
 

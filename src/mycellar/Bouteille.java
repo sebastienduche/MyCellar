@@ -25,7 +25,7 @@ import java.util.GregorianCalendar;
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
  * @version 3.6
- * @since 02/03/18
+ * @since 06/03/18
  */
 
 /**
@@ -640,6 +640,31 @@ public class Bouteille implements Serializable{
 			 return 0;
 		 }
 	 }
+
+	public boolean hasPrice() {
+
+		String price = Program.convertStringFromHTMLString(prix);
+		if (price.isEmpty())
+			return false;
+		if (Program.priceSeparator == '.') {
+			price = price.replace(',', '.');
+		}
+		else if (Program.priceSeparator == ',') {
+			price = price.replace(',', '.');
+		}
+		int index = price.indexOf(' ');
+		while (index != -1) {
+			price = price.substring(0, index) + price.substring(index + 1);
+			index = price.indexOf(' ');
+		}
+		try {
+			new BigDecimal(price);
+			return true;
+		}
+		catch (NumberFormatException nfe) {
+			return false;
+		}
+	}
 	 
 	 public boolean isRedWine() {
 		 return BottleColor.getColor(color) == BottleColor.RED;

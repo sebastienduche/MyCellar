@@ -15,8 +15,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.5
- * @since 02/03/18
+ * @version 4.6
+ * @since 06/03/18
  */
 
 public class SerializedStorage implements Storage {
@@ -215,10 +215,7 @@ public class SerializedStorage implements Storage {
 		Debug("AddWine: Adding bottle " + wine.getNom() + " " + wine.getAnnee() + " " + wine.getEmplacement() + " " + wine.getNumLieu() + " " + wine.getLigne() + " " + wine.getColonne());
 
 		Program.setModified();
-		int prix = (int)wine.getPriceDouble();
-		if (Bouteille.prix_max < prix) {
-			Bouteille.prix_max = prix;
-		}
+
 		if(!listeUniqueBouteille.contains(wine.getNom()))
 			listeUniqueBouteille.add(wine.getNom());
 		CountryVignobles.addVignobleFromBottle(wine);

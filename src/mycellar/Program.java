@@ -70,8 +70,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 16.9
- * @since 02/03/18
+ * @version 17.0
+ * @since 06/03/18
  */
 
 public class Program {
@@ -615,7 +615,6 @@ public class Program {
 		}
 		else {
 			m_oCave = MyXmlDom.readMyCellarXml("");
-			loadMaxPrice();
 			getStorage().loadHistory();
 		}
 
@@ -644,13 +643,12 @@ public class Program {
 		Debug("Program: Loading places and history OK");
 	}
 	
-	private static void loadMaxPrice() {
+	public static int getMaxPrice() {
 		
 		OptionalDouble i = getStorage().getAllList().stream().mapToDouble(Bouteille::getPriceDouble).max();
 		if(i.isPresent())
-			Bouteille.prix_max = (int) i.getAsDouble();
-		else
-			Bouteille.prix_max = 0;
+			return (int) i.getAsDouble();
+		return  0;
 	}
 	
 	public static int getCellarValue() {	

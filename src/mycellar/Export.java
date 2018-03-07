@@ -1,7 +1,6 @@
 package mycellar;
 
 import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
@@ -47,8 +46,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.8
- * @since 02/03/18
+ * @version 6.9
+ * @since 07/03/18
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -66,7 +65,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	private final ButtonGroup cbg = new ButtonGroup();
 	private final MyCellarLabel end = new MyCellarLabel();
 	private final MyCellarButton openit = new MyCellarButton();
-	private final MyCellarCheckBox options = new MyCellarCheckBox(Program.getLabel("Infos193") + "...");
+	private final MyCellarButton options = new MyCellarButton(Program.getLabel("Infos193") + "...");
 	private char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private char EXPORT = Program.getLabel("EXPORT").charAt(0);
 	private final JPopupMenu popup = new JPopupMenu();
@@ -194,7 +193,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 		panelFormat.add(MyCellarRadioButtonCSV);
 		panelFormat.add(MyCellarRadioButtonXLS);
 		panelFormat.add(MyCellarRadioButtonPDF);
-		panelFormat.add(options,"grow, push");
+		panelFormat.add(options,"w 100:100:100, push");
 		panelFormat.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos151")));
 		add(panelFormat,"grow, wrap");
 		JPanel panelEnd = new JPanel();
@@ -524,7 +523,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 				file.setText(path);
 				if(bottles == null)
 					bottles = Program.getStorage().getAllList();
-				if (!RangementUtils.write_XLS(file.getText().trim(), bottles, false)) {
+				if (RangementUtils.write_XLS(file.getText().trim(), bottles, false)) {
 					end.setText(Program.getLabel("Infos154")); //"Export terminé."
 					openit.setEnabled(true);
 				}

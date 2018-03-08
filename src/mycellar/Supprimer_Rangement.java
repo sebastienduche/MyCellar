@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.1
- * @since 02/03/18
+ * @version 7.2
+ * @since 08/03/18
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
@@ -438,9 +438,10 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 			return nbLine;
 		}
 		public String getNbLineLabel() {
-			if(nbLine <= 1)
-				return nbLine  + " " + Program.getLabel("Infos060");
-			return nbLine  + " " + Program.getLabel("Infos061");
+			if(nbLine <= 1) {
+				return MessageFormat.format(Program.getLabel("Infos060"), nbLine);
+			}
+			return MessageFormat.format(Program.getLabel("Infos061"),nbLine);
 		}
 		public void setNbLine(int nbLine) {
 			this.nbLine = nbLine;
@@ -449,9 +450,10 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 			return nbWine;
 		}
 		public String getNbWineLabel() {
-			if(nbWine <= 1)
-				return nbWine + " " + Program.getLabel("Infos063");
-			return nbWine + " " + Program.getLabel("Infos064");
+			if(nbWine <= 1) {
+				return MessageFormat.format(Program.getLabel("Infos063"), nbWine);
+			}
+			return MessageFormat.format(Program.getLabel("Infos064"), nbWine);
 		}
 		public void setNbWine(int nbWine) {
 			this.nbWine = nbWine;

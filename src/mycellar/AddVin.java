@@ -46,8 +46,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 22.7
- * @since 01/03/18
+ * @version 22.8
+ * @since 08/03/18
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -113,7 +113,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			m_nb_num = m_nb_lig = m_nb_col = -1;
 
 			m_contenance.setText(Program.getLabel("Infos134")); //"Demie bouteille");
-			m_annee_auto.setText(Program.getLabel("Infos117") + " " + ( (SIECLE + 1) * 100)); //"Année 00 -> 2000");
+			m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ( (SIECLE + 1) * 100))); //"Année 00 -> 2000");
 			m_annee_auto.setSelected(Program.getCaveConfigInt("ANNEE_AUTO", 0) == 0);
 			m_noYear.setText(Program.getLabel("Infos399"));
 
@@ -716,7 +716,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 										Program.getStorage().addHistory(History.ADD, b);
 										caisse.addWine(b);
 									}
-									m_end.setText( new String( (nb_bottle_rest + 1) + " " + Program.getLabel("Infos076")));
+									m_end.setText(MessageFormat.format(Program.getLabel("Infos076"), (nb_bottle_rest + 1)));
 									resetValues();
 								}
 							}
@@ -1244,7 +1244,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						m_end.setText(Program.getLabel("Infos075")); //"1 bouteille ajoutée");
 					}
 					else {
-						m_end.setText(m_nnb_bottle_add_only_one_place + " " + Program.getLabel("Infos076")); //"x bouteilles ajoutées");
+						m_end.setText(MessageFormat.format(Program.getLabel("Infos076"), m_nnb_bottle_add_only_one_place)); //"x bouteilles ajoutées");
 						m_nnb_bottle_add_only_one_place = 0;
 					}
 					//Remise des valeurs par défaut

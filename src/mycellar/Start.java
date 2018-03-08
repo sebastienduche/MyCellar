@@ -42,8 +42,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 23.3
- * @since 01/03/18
+ * @version 23.4
+ * @since 08/03/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -720,7 +720,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			m_oAjouterButton.setText(Program.getLabel("Infos005"));
 			m_oRechercherButton.setText(Program.getLabel("Infos006"));
 			m_oSupprimerButton.setText(Program.getLabel("Infos004"));
-			version.setText(Program.getLabel("Infos296") + infos_version + MyCellarVersion.mainVersion);
+			version.setText(Program.getLabel("MonthVersion") + infos_version + MyCellarVersion.mainVersion);
 			addWine.setAccelerator(KeyStroke.getKeyStroke(AJOUTERV, InputEvent.CTRL_DOWN_MASK));
 			addPlace.setAccelerator(KeyStroke.getKeyStroke(AJOUTERR, InputEvent.CTRL_DOWN_MASK));
 			delPlace.setAccelerator(KeyStroke.getKeyStroke(SUPPR, InputEvent.CTRL_DOWN_MASK));

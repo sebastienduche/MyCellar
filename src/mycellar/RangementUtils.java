@@ -38,8 +38,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 01/03/18
+ * @version 0.8
+ * @since 09/03/18
  */
 public class RangementUtils {
 
@@ -673,6 +673,9 @@ public class RangementUtils {
 	
 	public static void putTabStock() {
 		Debug("putTabStock ...");
+		for (MyCellarError error : Program.getErrors()) {
+			Program.getStorage().getAllList().add(error.getBottle());
+		}
 		Program.getErrors().clear();
 		for(Rangement rangement : Program.getCave())
 			rangement.resetStock();
@@ -682,14 +685,14 @@ public class RangementUtils {
 			if(rangement == null) {
 				// Rangement inexistant
 				Debug("ERROR: Inexisting place: " + b.getNom() + " place: "+b.getEmplacement());
-				Program.addError(new MyCellarError(1, b));
+				Program.addError(new MyCellarError(1, b, b.getEmplacement()));
 				continue;
 			}
 			if(rangement.isCaisse()) {
 				if(!rangement.isExistingNumPlace(b.getNumLieu())) {
 					// Numero de rangement inexistant
 					Debug("ERROR: Inexisting numplace: " + b.getNom() + " numplace: "+b.getNumLieu() + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(2, b));
+					Program.addError(new MyCellarError(2, b, b.getEmplacement(), b.getNumLieu()));
 					continue;
 				}
 				if(rangement.hasFreeSpaceInCaisse(b.getNumLieu()))
@@ -697,7 +700,7 @@ public class RangementUtils {
 				else {
 					// Caisse pleine
 					Debug("ERROR: simple place full for numplace: " + b.getNom() + " numplace: "+b.getNumLieu() + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(3, b));
+					Program.addError(new MyCellarError(3, b, b.getEmplacement(), b.getNumLieu()));
 				}
 			}
 			else {
@@ -705,18 +708,18 @@ public class RangementUtils {
 				if(!rangement.isExistingNumPlace(b.getNumLieu() - 1)) {
 					// Numero de rangement inexistant
 					Debug("ERROR: Inexisting numplace: " + b.getNom() + " numplace: "+ (b.getNumLieu()-1) + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(2, b));
+					Program.addError(new MyCellarError(2, b, b.getEmplacement()));
 					continue;
 				}
 				if(!rangement.isExistingCell(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
 					// Cellule inexistante
 					Debug("ERROR: Inexisting cell: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(4, b));
+					Program.addError(new MyCellarError(4, b, b.getEmplacement(), b.getNumLieu()));
 				}
 				else if((bottle = rangement.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) != null && !bottle.equals(b)){
 					// Cellule occupée
 					Debug("ERROR: Already occupied: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(5, b));
+					Program.addError(new MyCellarError(5, b, b.getEmplacement(), b.getNumLieu()));
 				}
 				else
 					rangement.updateToStock(b);

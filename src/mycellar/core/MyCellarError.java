@@ -1,9 +1,10 @@
 package mycellar.core;
 
-import java.text.MessageFormat;
-
 import mycellar.Bouteille;
 import mycellar.Program;
+
+import java.text.MessageFormat;
+import java.util.Objects;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -11,32 +12,52 @@ import mycellar.Program;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 20/07/17
+ * @version 0.4
+ * @since 09/03/18
  */
 
 public class MyCellarError {
 
-	private int error;
+	private final int error;
 	private boolean status;
-	private Bouteille bottle;
+	private final Bouteille bottle;
+	private final String place;
+	private final int numLieu;
 	
+	public MyCellarError(int error, Bouteille bottle, String place, int numLieu) {
+		this.error = error;
+		this.bottle = bottle;
+		this.place = place;
+		this.numLieu = numLieu;
+		setStatus(false);
+	}
+
+	public MyCellarError(int error, Bouteille bottle, String place) {
+		this.error = error;
+		this.bottle = bottle;
+		this.place = place;
+		numLieu = -1;
+		setStatus(false);
+	}
+
 	public MyCellarError(int error, Bouteille bottle) {
 		this.error = error;
 		this.bottle = bottle;
-		this.setStatus(false);
+		place = "";
+		numLieu = -1;
+		setStatus(false);
 	}
 	
 	public String getErrorMessage() {
 		switch (error) {
 		case 1:
-			return MessageFormat.format(Program.getError("MyCellarError.inexistingPlace"), bottle.getEmplacement());
+			return MessageFormat.format(Program.getError("MyCellarError.inexistingPlace"), place);
 		case 2:
-			return MessageFormat.format(Program.getError("MyCellarError.inexistingNumPlace"), bottle.getNumLieu());
+			return MessageFormat.format(Program.getError("MyCellarError.inexistingNumPlace"), numLieu);
 		case 3:
-			return MessageFormat.format(Program.getError("MyCellarError.fullCaisse"), bottle.getNumLieu());
+			return MessageFormat.format(Program.getError("MyCellarError.fullCaisse"), numLieu);
 		case 4:
-			return MessageFormat.format(Program.getError("MyCellarError.inexistingCase"), bottle.getEmplacement());
+			return MessageFormat.format(Program.getError("MyCellarError.inexistingCase"), place);
 		case 5:
 			return Program.getError("MyCellarError.occupiedCase");
 		}
@@ -62,8 +83,13 @@ public class MyCellarError {
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof MyCellarError) {
-			return bottle == ((MyCellarError)obj).bottle;
+			return bottle.equals(((MyCellarError)obj).bottle);
 		}
 		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(error, status, bottle);
 	}
 }

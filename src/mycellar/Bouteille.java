@@ -620,6 +620,9 @@ public class Bouteille implements Serializable{
 	 public double getPriceDouble() {
 		 
 		 String price = Program.convertStringFromHTMLString(prix);
+		 if(price.isEmpty()) {
+			 return 0;
+		 }
 
 		 if (Program.priceSeparator == '.') {
 			 price = price.replace(',', '.');

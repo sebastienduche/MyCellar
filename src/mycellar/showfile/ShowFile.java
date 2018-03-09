@@ -41,11 +41,14 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,17 +60,19 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 5.0
- * @since 05/03/18
+ * @version 5.1
+ * @since 09/03/18
  */
 
 public class ShowFile extends JPanel implements ITabListener {
 
+  private static final long serialVersionUID = 1265789936970092250L;
   private final MyCellarLabel m_oTitleLabel = new MyCellarLabel();
   private final MyCellarLabel m_oResultLabel = new MyCellarLabel();
   private final MyCellarButton m_oManageButton = new MyCellarButton(new ManageColumnAction());
   private final MyCellarButton m_oDeleteButton = new MyCellarButton(MyCellarImage.DELETE);
   private final MyCellarButton m_oModifyButton = new MyCellarButton(new ModifyBottlesAction());
+  private final MyCellarButton m_oReloadButton = new MyCellarButton(new ReloadErrorsAction());
   private final MyCellarComboBox<String> m_oPlaceCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<String> m_oTypeCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottleColor> m_oColorCbx = new MyCellarComboBox<>();
@@ -86,8 +91,6 @@ public class ShowFile extends JPanel implements ITabListener {
     TRASH,
     ERROR
   }
-
-  static final long serialVersionUID = 020107;
 
   public ShowFile() {
     showType = ShowType.NORMAL;
@@ -396,8 +399,12 @@ public class ShowFile extends JPanel implements ITabListener {
       add(m_oManageButton, "align right, split 3");
       add(m_oModifyButton, "align right");
       add(m_oDeleteButton, "align right, wrap");
+    } else if (showType == ShowType.TRASH){
+      add(m_oTitleLabel, "align left");
+      add(m_oDeleteButton, "align right, wrap");
     } else {
       add(m_oTitleLabel, "align left");
+      add(m_oReloadButton, "align right, split 2");
       add(m_oDeleteButton, "align right, wrap");
     }
 
@@ -514,27 +521,7 @@ public class ShowFile extends JPanel implements ITabListener {
     tc.setCellEditor(new StateEditor());
     tc.setMinWidth(25);
     tc.setMaxWidth(25);
-    if (showType == ShowType.ERROR) {
-      tc = tcm.getColumn(ErrorShowValues.PLACE);
-      tc.setCellEditor(new DefaultCellEditor(m_oPlaceCbx));
-      tc = tcm.getColumn(ErrorShowValues.TYPE);
-      tc.setCellEditor(new DefaultCellEditor(m_oTypeCbx));
-      tc = tcm.getColumn(ErrorShowValues.STATUS);
-      tc.setCellRenderer(new FontBoldTableCellRenderer());
-      tc = tcm.getColumn(ErrorShowValues.BUTTON);
-      tc.setCellRenderer(new StateButtonRenderer(Program.getLabel("Infos071"), MyCellarImage.ADD));
-      tc.setCellEditor(new StateButtonEditor());
-    } else if (showType == ShowType.NORMAL) {
-      tc = tcm.getColumn(tcm.getColumnCount() - 1);
-      tc.setCellRenderer(new StateButtonRenderer());
-      tc.setCellEditor(new StateButtonEditor());
-      tc.setMinWidth(100);
-      tc.setMaxWidth(100);
-      tc = tcm.getColumn(TableShowValues.PLACE);
-      tc.setCellEditor(new DefaultCellEditor(m_oPlaceCbx));
-      tc = tcm.getColumn(TableShowValues.TYPE);
-      tc.setCellEditor(new DefaultCellEditor(m_oTypeCbx));
-    }
+    updateModel();
 
     m_oTable.setPreferredScrollableViewportSize(new Dimension(300, 200));
     m_oTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
@@ -597,7 +584,6 @@ public class ShowFile extends JPanel implements ITabListener {
 
   private void restore() {
 
-    String erreur_txt1, erreur_txt2;
     LinkedList<Bouteille> toRestoreList = new LinkedList<>();
 
     try {
@@ -616,6 +602,7 @@ public class ShowFile extends JPanel implements ITabListener {
       if (toRestoreList.isEmpty()) {
         Erreur.showSimpleErreur(Program.getLabel("ShowFile.NoBottleToRestore"), Program.getLabel("ShowFile.SelectToRestore"), true);
       } else {
+        String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {
           erreur_txt1 = Program.getError("Error067"); //"1 vin sélectionné.");
           erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
@@ -780,25 +767,46 @@ public class ShowFile extends JPanel implements ITabListener {
       m_oPlaceCbx.addItem(r.getNom());
     }
 
-    TableColumnModel tcm = m_oTable.getColumnModel();
-    TableColumn tc = tcm.getColumn(TableShowValues.PLACE);
-    tc.setCellEditor(new DefaultCellEditor(m_oPlaceCbx));
-
     m_oTypeCbx.removeAllItems();
     m_oTypeCbx.addItem("");
     for (String type : Program.half) {
       m_oTypeCbx.addItem(type);
     }
 
-    tc = tcm.getColumn(TableShowValues.TYPE);
-    tc.setCellEditor(new DefaultCellEditor(m_oTypeCbx));
+    updateModel();
+  }
+
+  private void updateModel() {
+    TableColumnModel tcm = m_oTable.getColumnModel();
+    TableColumn tc;
+    if (showType == ShowType.ERROR) {
+      tc = tcm.getColumn(ErrorShowValues.PLACE);
+      tc.setCellEditor(new DefaultCellEditor(m_oPlaceCbx));
+      tc = tcm.getColumn(ErrorShowValues.TYPE);
+      tc.setCellEditor(new DefaultCellEditor(m_oTypeCbx));
+      tc = tcm.getColumn(ErrorShowValues.STATUS);
+      tc.setCellRenderer(new FontBoldTableCellRenderer());
+      tc = tcm.getColumn(ErrorShowValues.BUTTON);
+      tc.setCellRenderer(new StateButtonRenderer(Program.getLabel("Infos071"), MyCellarImage.ADD));
+      tc.setCellEditor(new StateButtonEditor());
+    } else if (showType == ShowType.NORMAL) {
+      tc = tcm.getColumn(tcm.getColumnCount() - 1);
+      tc.setCellRenderer(new StateButtonRenderer());
+      tc.setCellEditor(new StateButtonEditor());
+      tc.setMinWidth(100);
+      tc.setMaxWidth(100);
+      tc = tcm.getColumn(TableShowValues.PLACE);
+      tc.setCellEditor(new DefaultCellEditor(m_oPlaceCbx));
+      tc = tcm.getColumn(TableShowValues.TYPE);
+      tc.setCellEditor(new DefaultCellEditor(m_oTypeCbx));
+    }
   }
 
 
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (showType == ShowType.ERROR) {
-    	if(Program.getErrors().stream().map((e) -> e.isStatus()).count() > 0) {
+    	if(Program.getErrors().stream().map(MyCellarError::isStatus).count() > 0) {
     		if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getLabel("ShowFile.QuitErrors"))) {
     			RangementUtils.putTabStock();
     			return true;
@@ -826,7 +834,7 @@ public class ShowFile extends JPanel implements ITabListener {
     @Override
     public void actionPerformed(ActionEvent e) {
       JPanel panel = new JPanel();
-      ArrayList<MyCellarFields> list = new ArrayList<MyCellarFields>();
+      ArrayList<MyCellarFields> list = new ArrayList<>();
       list.add(MyCellarFields.NAME);
       list.add(MyCellarFields.YEAR);
       list.add(MyCellarFields.TYPE);
@@ -943,6 +951,20 @@ public class ShowFile extends JPanel implements ITabListener {
       } catch (Exception exc) {
         Program.showException(exc);
       }
+    }
+  }
+
+  class ReloadErrorsAction extends AbstractAction {
+
+    ReloadErrorsAction() {
+      super(Program.getLabel("ShowFile.reloadErrors"));
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      RangementUtils.putTabStock();
+      ((ErrorShowValues)tv).setErrors(Program.getErrors());
     }
   }
 

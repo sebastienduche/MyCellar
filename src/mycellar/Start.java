@@ -42,8 +42,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 23.4
- * @since 08/03/18
+ * @version 23.5
+ * @since 09/03/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1218,6 +1218,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (Program.isSelectedTab(Program.showtrash)) {
 			Program.showtrash.refresh();
 			Program.showtrash.updateView();
+		}
+		if (Program.isSelectedTab(Program.showerrors)) {
+			Program.showerrors.updateView();
 		}
 		if (Program.isSelectedTab(Program.stat))
 			Program.stat.updateView();

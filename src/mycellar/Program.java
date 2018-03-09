@@ -70,8 +70,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.0
- * @since 06/03/18
+ * @version 17.1
+ * @since 09/03/18
  */
 
 public class Program {
@@ -1621,6 +1621,10 @@ public class Program {
 			chooseCell.setUpdateView();
 		if(managePlace != null)
 			managePlace.setUpdateView();
+		if (showfile != null)
+			showfile.setUpdateView();
+		if (showerrors != null)
+			showerrors.setUpdateView();
 	}
 
 	public static void updateManagePlacePanel() {

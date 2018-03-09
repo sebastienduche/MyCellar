@@ -98,7 +98,7 @@ public class TableShowValues extends AbstractTableModel {
       case COLUMN:
         return Integer.toString(b.getColonne());
       case PRICE:
-        return Program.convertStringFromHTMLString(b.getPrix());
+        return b.hasPrice() ? b.getPriceDouble() : "";
       case COMMENT:
         return Program.convertStringFromHTMLString(b.getComment());
       case MATURITY:

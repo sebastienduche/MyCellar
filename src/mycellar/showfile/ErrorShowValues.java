@@ -17,33 +17,32 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 01/03/18
+ * @version 0.8
+ * @since 09/03/18
  */
 
 public class ErrorShowValues extends TableShowValues {
 
 	private static final long serialVersionUID = 2477822182069165515L;
-	public final static int ETAT = 0;
-	public final static int ERROR = 1;
-	public final static int NAME = 2;
-	public final static int YEAR = 3;
-	public final static int TYPE = 4;
-	public final static int PLACE = 5;
-	public final static int NUM_PLACE = 6;
-	public final static int LINE = 7;
-	public final static int COLUMN = 8;
-	public final static int STATUS = 9;
-	public final static int BUTTON = 10;
-	private final static int NBCOL = 11;
+	public static final int ETAT = 0;
+	public static final int ERROR = 1;
+	public static final int NAME = 2;
+	public static final int YEAR = 3;
+	public static final int TYPE = 4;
+	public static final int PLACE = 5;
+	private static final int NUM_PLACE = 6;
+	private static final int LINE = 7;
+	private static final int COLUMN = 8;
+	public static final int STATUS = 9;
+	public static final int BUTTON = 10;
+	private static final int NBCOL = 11;
 	private final String[] columnNames = {"", Program.getLabel("ErrorShowValues.error"), Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
 			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("ShowFile.Status"), "" };
 
-	protected Boolean[] values = null;
 	private Boolean[] status = null;
 	private Boolean[] editable = null;
 
-	private List<MyCellarError> monVector = new LinkedList<>();
+	private List<MyCellarError> errors = new LinkedList<>();
 
 	/**
 	 * getRowCount
@@ -52,7 +51,7 @@ public class ErrorShowValues extends TableShowValues {
 	 */
 	@Override
 	public int getRowCount() {
-		return monVector.size();
+		return errors.size();
 	}
 
 	/**
@@ -74,9 +73,9 @@ public class ErrorShowValues extends TableShowValues {
 	 */
 	@Override
 	public Object getValueAt(int row, int column) {
-		if(monVector.size() <= row)
+		if(errors.size() <= row)
 			return null;
-		MyCellarError error = monVector.get(row);
+		MyCellarError error = errors.get(row);
 		Bouteille b = error.getBottle();
 		switch(column)
 		{
@@ -156,7 +155,7 @@ public class ErrorShowValues extends TableShowValues {
 	@Override
 	public void setValueAt(Object value, int row, int column) {
 
-		MyCellarError error = monVector.get(row);
+		MyCellarError error = errors.get(row);
 		Bouteille b = error.getBottle();
 		Rangement rangement = null;
 		switch (column) {
@@ -229,7 +228,7 @@ public class ErrorShowValues extends TableShowValues {
 					bError = true;
 				}
 			}
-			else if ( column == COLUMN ) {
+			else {
 				try{
 					column1 = Integer.parseInt((String)value);
 					nValueToCheck = column1;
@@ -308,7 +307,7 @@ public class ErrorShowValues extends TableShowValues {
 		values = new Boolean[b.size()];
 		status = new Boolean[b.size()];
 		editable = new Boolean[b.size()];
-		monVector = b;
+		errors = b;
 		for (int i = 0; i < b.size(); i++) {
 			values[i] = Boolean.FALSE;
 			status[i] = Boolean.FALSE;
@@ -319,7 +318,7 @@ public class ErrorShowValues extends TableShowValues {
 	
 	@Override
 	public Bouteille getBottle(int i) {
-		return monVector.get(i).getBottle();
+		return errors.get(i).getBottle();
 	}
 
 	/**
@@ -329,7 +328,7 @@ public class ErrorShowValues extends TableShowValues {
 	 */
 	@Override
 	public int getNbData() {
-		return monVector.size();
+		return errors.size();
 	}
 
 }

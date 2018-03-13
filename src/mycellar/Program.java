@@ -43,7 +43,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.OptionalDouble;
 import java.util.Properties;
@@ -70,8 +73,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.1
- * @since 09/03/18
+ * @version 17.2
+ * @since 13/03/18
  */
 
 public class Program {
@@ -126,7 +129,6 @@ public class Program {
 	private static boolean m_bGlobalDirCalculated = false;
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;
-	private static boolean MacOS = false;
 	public static Creer_Rangement createPlace;
 	public static Creer_Rangement modifyPlace;
 	public static CellarOrganizerPanel managePlace;
@@ -148,7 +150,6 @@ public class Program {
 			archive = "";
 			bDebug = true;
 			Debug("===================================================");
-			MacOS = System.getProperty("os.name").startsWith("Mac");
 			Server.getInstance().getAvailableVersion();
 			// Initialisation du répertoire de travail
 			getWorkDir(false);
@@ -207,13 +208,14 @@ public class Program {
 	}
 	
 	private static void initPriceSeparator() {
+		String sVirgule = "";
 		 if(hasConfigCaveKey("PRICE_SEPARATOR")) {
-			 String sVirgule = getCaveConfigString("PRICE_SEPARATOR","");
+			 sVirgule = getCaveConfigString("PRICE_SEPARATOR","");
 			 if (!sVirgule.isEmpty()) {
 				 priceSeparator = sVirgule.charAt(0);
 			 }
 		 }
-		 else {
+		 if (sVirgule.isEmpty()){
 			 DecimalFormat df = new DecimalFormat();
 			 priceSeparator = df.getDecimalFormatSymbols().getDecimalSeparator();
 		 }
@@ -1569,13 +1571,15 @@ public class Program {
 	}
 
 	public static void open(File file) {
-		try {
-			if( MacOS )
-				Runtime.getRuntime().exec("/usr/bin/open " + file.getAbsolutePath());
-			else
-				Desktop.getDesktop().browse(file.toURI());
-		} catch (IOException e) {
-			showException(e, true);
+		if (file != null) {
+			try {
+				if (System.getProperty("os.name").startsWith("Mac"))
+					Runtime.getRuntime().exec("/usr/bin/open " + file.getAbsolutePath());
+				else
+					Desktop.getDesktop().browse(file.toURI());
+			} catch (IOException e) {
+				showException(e, true);
+			}
 		}
 	}
 
@@ -1859,4 +1863,41 @@ public class Program {
 	public static List<History> getHistory() {
 		return getStorage().getHistoryList().getHistory();
 	}
+	
+	private static DecimalFormat getDecimalFormat(final Locale locale) {
+		final DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+
+		if (Locale.UK.equals(locale) || Locale.US.equals(locale)) {
+		  dfs.setGroupingSeparator(',');
+		  dfs.setDecimalSeparator('.');
+		} else {
+		  dfs.setGroupingSeparator('.');
+		  dfs.setDecimalSeparator(',');
+		}
+
+		// format with grouping separator and decimal separator.
+		// always print first digit before comma, and two digits after comma.
+		return new DecimalFormat("###0.00",dfs);
+	  }
+	  
+	public static String bigDecimalToString(final BigDecimal value, final Locale locale) {
+    return getDecimalFormat(locale).format(value);
+  }
+  
+  public static BigDecimal stringToBigDecimal(final String value) throws NumberFormatException {
+	  StringBuilder buf = new StringBuilder();
+	  for(int i=0; i<value.length(); i++) {
+		  char c = value.charAt(i);
+		  if (c == ' ') {
+			  continue;
+		  }
+		  if (c == ',') {
+			  buf.append('.');
+		  }
+		  if (Character.isDigit(c)) {
+			  buf.append(c);
+		  }
+	  }
+		return new BigDecimal(buf.toString()).setScale(2, BigDecimal.ROUND_HALF_UP);
+  }
 }

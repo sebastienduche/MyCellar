@@ -1,13 +1,25 @@
 package mycellar.core;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.File;
-import java.text.MessageFormat;
-import java.util.LinkedList;
+import mycellar.BottleColor;
+import mycellar.Bouteille;
+import mycellar.Erreur;
+import mycellar.JCompletionComboBox;
+import mycellar.ManageList;
+import mycellar.MyCellarImage;
+import mycellar.MyClipBoard;
+import mycellar.MyXmlDom;
+import mycellar.Program;
+import mycellar.Rangement;
+import mycellar.RangementUtils;
+import mycellar.Vignoble;
+import mycellar.actions.ManageVineyardAction;
+import mycellar.countries.Countries;
+import mycellar.countries.Country;
+import mycellar.vignobles.CountryVignoble;
+import mycellar.vignobles.CountryVignobles;
+import mycellar.vignobles.Vignobles;
+import net.miginfocom.swing.MigLayout;
 
-import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -15,25 +27,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
-import mycellar.actions.ManageVineyardAction;
-import mycellar.BottleColor;
-import mycellar.Bouteille;
-import mycellar.Erreur;
-import mycellar.JCompletionComboBox;
-import mycellar.ManageList;
-import mycellar.MyClipBoard;
-import mycellar.MyXmlDom;
-import mycellar.Program;
-import mycellar.Rangement;
-import mycellar.RangementUtils;
-import mycellar.Vignoble;
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
-import mycellar.vignobles.CountryVignoble;
-import mycellar.vignobles.CountryVignobles;
-import mycellar.vignobles.Vignobles;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.io.File;
+import java.text.MessageFormat;
+import java.util.LinkedList;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -41,25 +39,25 @@ import mycellar.vignobles.Vignobles;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 26/10/17
+ * @version 1.1
+ * @since 13/03/18
  */
 public class MyCellarManageBottles extends JPanel {
 
 	private static final long serialVersionUID = 3056306291164598750L;
 	
-	protected final MyCellarLabel m_labelName = new MyCellarLabel();
-	protected final MyCellarLabel m_labelYear = new MyCellarLabel();
+	private final MyCellarLabel m_labelName = new MyCellarLabel();
+	private final MyCellarLabel m_labelYear = new MyCellarLabel();
 	protected final MyCellarLabel m_labelPlace = new MyCellarLabel();
 	protected final MyCellarLabel m_labelNumPlace = new MyCellarLabel();
 	protected final MyCellarLabel m_contenance = new MyCellarLabel();
 	protected final MyCellarLabel m_labelLine = new MyCellarLabel();
 	protected final MyCellarLabel m_labelColumn = new MyCellarLabel();
-	protected final MyCellarLabel m_labelPrice = new MyCellarLabel();
-	protected final MyCellarLabel m_labelNbBottle = new MyCellarLabel();
-	protected final MyCellarLabel m_labelMaturity = new MyCellarLabel();
-	protected final MyCellarLabel m_labelParker = new MyCellarLabel();
-	protected final MyCellarLabel m_labelColor = new MyCellarLabel();
+	private final MyCellarLabel m_labelPrice = new MyCellarLabel();
+	private final MyCellarLabel m_labelNbBottle = new MyCellarLabel();
+	private final MyCellarLabel m_labelMaturity = new MyCellarLabel();
+	private final MyCellarLabel m_labelParker = new MyCellarLabel();
+	private final MyCellarLabel m_labelColor = new MyCellarLabel();
 	protected final MyCellarLabel m_labelComment = new MyCellarLabel();
 	protected final MyCellarButton m_preview = new MyCellarButton();
 	protected final MyCellarLabel m_labelStillToAdd = new MyCellarLabel();
@@ -67,7 +65,7 @@ public class MyCellarManageBottles extends JPanel {
 	protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox();
 	protected int SIECLE = Program.getCaveConfigInt("SIECLE", 20) - 1;
 	protected Object m_objet1 = null;
-	protected final MyClipBoard clipboard = new MyClipBoard();
+	private final MyClipBoard clipboard = new MyClipBoard();
 	protected final JModifyComboBox<String> m_lieu = new JModifyComboBox<String>();
 	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<String>();
 	protected final JModifyComboBox<String> m_line = new JModifyComboBox<String>();
@@ -102,18 +100,14 @@ public class MyCellarManageBottles extends JPanel {
 	protected Bouteille m_laBouteille = null;
 	protected char AJOUTER = Program.getLabel("AJOUTER").charAt(0);
 	protected char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
-	protected final MyCellarLabel m_devise = new MyCellarLabel(Program.getCaveConfigString("DEVISE", "€"));
+	private final MyCellarLabel m_devise = new MyCellarLabel(Program.getCaveConfigString("DEVISE", "€"));
 	protected final JPopupMenu popup = new JPopupMenu();
-	protected final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	protected final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	protected final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-	protected final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	protected final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	protected final JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-	protected ItemListener lieuListener;
-	protected ItemListener numLieuListener;
-	protected ItemListener lineListener;
-	protected ItemListener columnListener;
+	protected final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
+	protected final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
+	protected final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
+	protected final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
+	protected final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
+	protected final JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
 	private boolean listenersEnabled = true;
 	
 	protected boolean m_bmulti = false; //Pour ListVin
@@ -141,17 +135,17 @@ public class MyCellarManageBottles extends JPanel {
 		m_preview.setMnemonic(PREVIEW);
 		m_preview.setText(Program.getLabel("Infos138")); //"Visualiser le rangement");
 		m_preview.setEnabled(false);
-		m_preview.addActionListener((e) -> preview_actionPerformed(e));
+		m_preview.addActionListener(this::preview_actionPerformed);
 
 		//Menu Contextuel
-		couper.addActionListener((e) -> couper_actionPerformed(e));
-		cut.addActionListener((e) -> couper_actionPerformed(e));
+		couper.addActionListener(this::couper_actionPerformed);
+		cut.addActionListener(this::couper_actionPerformed);
 
-		copier.addActionListener((e) -> copier_actionPerformed(e));
-		copy.addActionListener((e) -> copier_actionPerformed(e));
+		copier.addActionListener(this::copier_actionPerformed);
+		copy.addActionListener(this::copier_actionPerformed);
 
-		coller.addActionListener((e) -> coller_actionPerformed(e));
-		paste.addActionListener((e) -> coller_actionPerformed(e));
+		coller.addActionListener(this::coller_actionPerformed);
+		paste.addActionListener(this::coller_actionPerformed);
 		
 		m_colorList.addItem(BottleColor.NONE);
 		m_colorList.addItem(BottleColor.RED);
@@ -248,7 +242,7 @@ public class MyCellarManageBottles extends JPanel {
 	 *
 	 * @param e ItemEvent
 	 */
-	protected void column_itemStateChanged(ItemEvent e) {
+	private void column_itemStateChanged(ItemEvent e) {
 		SwingUtilities.invokeLater(() -> {
        		Debug("Column_itemStateChanging...");
        		int nPlace = m_lieu.getSelectedIndex();
@@ -364,7 +358,10 @@ public class MyCellarManageBottles extends JPanel {
 	 */
 	protected void manageContenance_actionPerformed(ActionEvent e) {
 		new ManageList();
-		String selected = m_half.getSelectedItem().toString();
+		String selected = "";
+		if (m_half.getSelectedItem() != null) {
+			selected = m_half.getSelectedItem().toString();
+		}
 		m_half.removeAllItems();
 		m_half.addItem("");
 		for(String s:Program.half)
@@ -408,7 +405,7 @@ public class MyCellarManageBottles extends JPanel {
 	 *
 	 * @param e ItemEvent
 	 */
-	protected void num_lieu_itemStateChanged(ItemEvent e) {
+	private void num_lieu_itemStateChanged(ItemEvent e) {
 		if(!isListenersEnabled())
 			return;
 		SwingUtilities.invokeLater(() -> {
@@ -427,12 +424,11 @@ public class MyCellarManageBottles extends JPanel {
 			else {
 				m_line.setEnabled(true);
 			}
-			if (num_select > 0) { //!=0
-				isCaisse = Program.getCave(lieu_select - 1).isCaisse();
+			Rangement r;
+			if (num_select > 0 && null != (r = Program.getCave( lieu_select - 1))) { //!=0
+				isCaisse = r.isCaisse();
 				if (!isCaisse) {
-					if (num_select != 0) {
-						nb_ligne = Program.getCave(lieu_select - 1).getNbLignes(num_select - 1);
-					}
+					nb_ligne = r.getNbLignes(num_select - 1);
 					m_line.removeAllItems();
 					m_column.removeAllItems();
 					m_line.addItem("");
@@ -479,27 +475,10 @@ public class MyCellarManageBottles extends JPanel {
 	}
 	
 	protected void setListeners() {
-		m_lieu.addItemListener(lieuListener = new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				lieu_itemStateChanged(e);
-			}
-		});
-		m_num_lieu.addItemListener(numLieuListener = new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				num_lieu_itemStateChanged(e);
-			}
-		});
-
-		m_line.addItemListener(lineListener = new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				line_itemStateChanged(e);
-			}
-		});
-		m_column.addItemListener(columnListener = new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				column_itemStateChanged(e);
-			}
-		});
+		m_lieu.addItemListener(this::lieu_itemStateChanged);
+		m_num_lieu.addItemListener(this::num_lieu_itemStateChanged);
+		m_line.addItemListener(this::line_itemStateChanged);
+		m_column.addItemListener(this::column_itemStateChanged);
 	}
 	
 	/**

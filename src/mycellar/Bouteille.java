@@ -14,7 +14,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -24,8 +23,8 @@ import java.util.GregorianCalendar;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.6
- * @since 06/03/18
+ * @version 3.7
+ * @since 13/03/18
  */
 
 /**
@@ -624,22 +623,10 @@ public class Bouteille implements Serializable{
 			 return 0;
 		 }
 
-		 if (Program.priceSeparator == '.') {
-			 price = price.replace(',', '.');
-		 }
-		 else if (Program.priceSeparator == ',') {
-			 price = price.replace(',', '.');
-		 }
-		 int index = price.indexOf(' ');
-		 while (index != -1) {
-			 price = price.substring(0, index) + price.substring(index + 1);
-			 index = price.indexOf(' ');
-		 }
 		 try {
-			 BigDecimal bd = new BigDecimal(price).setScale(2, BigDecimal.ROUND_HALF_UP);
-			 return bd.doubleValue();
+		 	return Program.stringToBigDecimal(price).doubleValue();
 		 }
-		 catch (NumberFormatException nfe) {
+		 catch (NumberFormatException ignored) {
 			 return 0;
 		 }
 	 }
@@ -649,24 +636,13 @@ public class Bouteille implements Serializable{
 		String price = Program.convertStringFromHTMLString(prix);
 		if (price.isEmpty())
 			return false;
-		if (Program.priceSeparator == '.') {
-			price = price.replace(',', '.');
-		}
-		else if (Program.priceSeparator == ',') {
-			price = price.replace(',', '.');
-		}
-		int index = price.indexOf(' ');
-		while (index != -1) {
-			price = price.substring(0, index) + price.substring(index + 1);
-			index = price.indexOf(' ');
-		}
 		try {
-			new BigDecimal(price);
-			return true;
+			Program.stringToBigDecimal(price);
 		}
-		catch (NumberFormatException nfe) {
+		catch (NumberFormatException ignored) {
 			return false;
 		}
+		return true;
 	}
 	 
 	 public boolean isRedWine() {

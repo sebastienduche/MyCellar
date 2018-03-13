@@ -9,7 +9,6 @@ import mycellar.requester.CollectionFilter;
 import mycellar.requester.ui.PanelRequest;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -49,8 +48,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.3
- * @since 02/03/18
+ * @version 18.4
+ * @since 13/03/18
  */
 public class Search extends JPanel implements Runnable, ITabListener {
 	private final JTable table;
@@ -85,10 +84,10 @@ public class Search extends JPanel implements Runnable, ITabListener {
 	private final MyCellarCheckBox selectall = new MyCellarCheckBox();
 	private final MyCellarCheckBox empty_search = new MyCellarCheckBox();
 	private final JPopupMenu popup = new JPopupMenu();
-	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
+	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
+	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
+	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
+	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
 	private final MyClipBoard clipboard = new MyClipBoard();
 	private Component objet1 = null;
 	private final MouseListener popup_l = new PopupListener();
@@ -219,8 +218,8 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		});
 
 		//Menu Contextuel
-		JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-		JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+		JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
+		JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
 		JMenuItem moveLine = new JMenuItem(Program.getLabel("Infos365"));
 		couper.addActionListener(this::couper_actionPerformed);
 		cut.addActionListener(this::couper_actionPerformed);

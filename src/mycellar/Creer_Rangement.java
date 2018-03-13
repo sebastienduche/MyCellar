@@ -11,7 +11,6 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -47,8 +46,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.1
- * @since 01/03/18
+ * @version 12.2
+ * @since 13/03/18
  */
 public class Creer_Rangement extends JPanel implements ITabListener {
 
@@ -63,18 +62,18 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 	private int limite = 0;
 	private final MyCellarSpinner nb_parties = new MyCellarSpinner();
 	private LinkedList<Part> listPart = new LinkedList<>();
-	private char CREER = Program.getLabel("CREER").charAt(0);
-	private char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
+	private static final char CREER = Program.getLabel("CREER").charAt(0);
+	private static final char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
 	private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner();
 	private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox(); //Caisse
 	private final MyCellarLabel label_cree = new MyCellarLabel();
 	private final MyCellarButton preview = new MyCellarButton();
 	private int start_caisse = 0;
 	private final JPopupMenu popup = new JPopupMenu();
-	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
-	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), new ImageIcon("./resources/Cut16.gif"));
-	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), new ImageIcon("./resources/Copy16.gif"));
+	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
+	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
+	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
+	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
 	private final MyClipBoard clipboard = new MyClipBoard();
 	private Component objet1 = null;
 	private final JPanel panelType;
@@ -95,23 +94,22 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 		this.modify = modify;
 
 		MyCellarButton createButton = new MyCellarButton(MyCellarImage.ADD);
-		if(modify)
+		if(modify) {
 			createButton.setText(Program.getLabel("Infos079")); //"Modifier");
-		else
+			createButton.addActionListener((e) -> modifyPlace());
+		} else {
 			createButton.setText(Program.getLabel("Infos018")); //"Créer");
-		createButton.addActionListener((e) -> {
-			if(modify)
-				modifyPlace();
-			else
-				create_actionPerformed(e);
-		});
+			createButton.addActionListener(this::create_actionPerformed);
+		}
+
 		createButton.setMnemonic(CREER);
 		preview.setMnemonic(PREVIEW);
 		MyCellarLabel labelName = new MyCellarLabel(Program.getLabel("Infos020")); //"Nom du rangement:");
 		MyCellarLabel labelModify = new MyCellarLabel(Program.getLabel("Infos226")); //"Sélectionner le rangement à modifier:"
 		comboPlace.addItem("");
-		for( Rangement r: Program.getCave())
+		for( Rangement r: Program.getCave()) {
 			comboPlace.addItem(r.getNom());
+		}
 		comboPlace.addItemListener(this::comboPlace_itemStateChanged);
 		ButtonGroup cbg = new ButtonGroup();
 		cbg.add(m_jrb_same_column_number);
@@ -131,7 +129,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 
 		nom_obj.addActionListener((e) -> label_cree.setText(""));
 
-		this.addKeyListener(new KeyListener() {
+		addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {}
 			@Override
@@ -142,8 +140,8 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 			public void keyTyped(KeyEvent e) {}
 		});
 
-		JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
-		JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), new ImageIcon("./resources/Paste16.gif"));
+		JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
+		JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
 		couper.addActionListener(this::couper_actionPerformed);
 		cut.addActionListener(this::couper_actionPerformed);
 		copier.addActionListener(this::copier_actionPerformed);
@@ -284,8 +282,9 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 
 		model.setSameColumnNumber(true);
 
-		if(modify)
+		if(modify) {
 			enableAll(false);
+		}
 
 		int val = Program.getCaveConfigInt("CREER_R_DEFAULT", 0);
 		if (val == 0) {
@@ -297,34 +296,36 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 
 	private void comboPlace_itemStateChanged(ItemEvent e) {
 		int nCave = comboPlace.getSelectedIndex();
-		Rangement r = null;
-		if( nCave > 0)
-			r = Program.getCave(nCave-1);
-		if(r == null) {
+		Rangement r;
+		if( nCave > 0) {
+			r = Program.getCave(nCave - 1);
+		}
+		else {
 			nom_obj.setText("");
 			label_cree.setText("");
-			model.setValues(new LinkedList<Part>());
+			model.setValues(new LinkedList<>());
 			enableAll(false);
 			return;
 		}
-		enableAll(true);
-		label_cree.setText("");
-		nom_obj.setText(r.getNom());
-		m_caisse_chk.setSelected(r.isCaisse());
-		m_caisse_chk.setEnabled(false);
-		if(r.isCaisse()) {
-			checkLimite.setSelected(r.isLimited());
-			if(r.isLimited())
-				nb_limite.setValue(r.getNbColonnesStock());
-			nb_parties.setValue(r.getNbEmplacements());
-			nb_start_caisse.setValue(r.getStartCaisse());
-		}
-		else {
-			m_jrb_same_column_number.setSelected(r.isSameColumnNumber());
-			m_jrb_dif_column_number.setSelected(!r.isSameColumnNumber());
-			listPart = r.getPlace();
-			model.setValues(listPart);
-			nb_parties.setValue(r.getNbEmplacements());
+		if (r != null) {
+			enableAll(true);
+			label_cree.setText("");
+			nom_obj.setText(r.getNom());
+			m_caisse_chk.setSelected(r.isCaisse());
+			m_caisse_chk.setEnabled(false);
+			if (r.isCaisse()) {
+				checkLimite.setSelected(r.isLimited());
+				if (r.isLimited())
+					nb_limite.setValue(r.getNbColonnesStock());
+				nb_parties.setValue(r.getNbEmplacements());
+				nb_start_caisse.setValue(r.getStartCaisse());
+			} else {
+				m_jrb_same_column_number.setSelected(r.isSameColumnNumber());
+				m_jrb_dif_column_number.setSelected(!r.isSameColumnNumber());
+				listPart = r.getPlace();
+				model.setValues(listPart);
+				nb_parties.setValue(r.getNbEmplacements());
+			}
 		}
 	}
 
@@ -593,14 +594,14 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 	private void create_actionPerformed(ActionEvent e) {
 		try {
 			Debug("create_actionPerforming...");
-			boolean bResul = true;
 			String nom = nom_obj.getText().trim();
 
 			//Contrôle si le nom est déjà utilisé
-			bResul = MyCellarControl.ctrl_existingName(nom);
+			boolean bResul = MyCellarControl.ctrl_existingName(nom);
 			// Contrôles sur le nom (format, longueur...)
-			if ( bResul )
+			if (bResul) {
 				bResul = MyCellarControl.ctrl_Name(nom);
+			}
 
 			if (m_caisse_chk.isSelected()) {
 				Debug("Creating a box...");
@@ -666,8 +667,9 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 			if (key == 0 && bResul) {
 				Erreur.showKeyErreur(Program.getError("Error164"), "", "DONT_SHOW_CREATE_MESS");
 			}
-			if (bResul)
+			if (bResul) {
 				Start.enableAll(true);
+			}
 		}
 		catch (Exception exc) {
 			Program.showException(exc);
@@ -738,40 +740,35 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 	 */
 	private void preview_actionPerformed(ActionEvent e) {
 		try {
-			boolean bResul = true;
 
 			if (!m_caisse_chk.isSelected()) {
 				// Contrôle du nom
 				String nom = nom_obj.getText().trim();
-				bResul = MyCellarControl.ctrl_Name( nom );
+				if(!MyCellarControl.ctrl_Name( nom )) {
+					return;
+				}
 
-				for(Part p: listPart)
-				{
+				for(Part p: listPart) {
 					if(p.getRows().isEmpty()) {
 						//"Erreur nombre de lignes incorrect sur la partie
 						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum()), Program.getError("Error109"));
-						bResul = false;
 						return;
 					}
-					for(Row r: p.getRows())
-					{
+					for(Row r: p.getRows()) {
 						if(r.getCol() == 0) {
 							//"Erreur nombre de colonnes incorrect sur la partie
 							Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()), Program.getError("Error109"));
-							bResul = false;
 							return;
 						}
 					}
 				}
 
 				// Création du rangement
-				if (bResul) {
-					Rangement r = new Rangement(nom, listPart);
-					LinkedList<Rangement> rangements = new LinkedList<>();
-					rangements.add(r);
-					MyXmlDom.writeRangements("", rangements, true);
-					Program.open( new File(Program.getPreviewXMLFileName()) );
-				}
+				Rangement r = new Rangement(nom, listPart);
+				LinkedList<Rangement> rangements = new LinkedList<>();
+				rangements.add(r);
+				MyXmlDom.writeRangements("", rangements, true);
+				Program.open( new File(Program.getPreviewXMLFileName()) );
 			}
 		}
 		catch (Exception exc) {

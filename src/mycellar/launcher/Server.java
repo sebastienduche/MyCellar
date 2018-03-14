@@ -219,22 +219,6 @@ public class Server implements Runnable {
 		return bDownloadError;
 	}
 
-	private boolean download() {
-		if (sAction.equals(DOWNLOAD)) {
-			return false;
-		}
-		try {
-			sAction = DOWNLOAD;
-			Thread a = new Thread(this);
-			a.start();
-		} catch (Exception a) {
-			showException(a);
-			bDownloadError = true;
-			return false;
-		}
-		return true;
-	}
-
 	private boolean downloadFromGitHub(File destination) {
 		MyCellarLauncherLoading download;
 		try{

@@ -27,7 +27,9 @@ import java.util.ArrayList;
  * @since 02/03/18
  */
 public class XLSOptions extends JDialog {
-  private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
+
+	private static final long serialVersionUID = 5307297932934344545L;
+private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
   private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox();
   private final MyCellarCheckBox export[];
   private final JTextField pdf_title = new JTextField();

@@ -1285,10 +1285,8 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 										}
 										catch (NullPointerException npe) {}
 									}
-									boolean skipTitle = false;
 									if(lu_length > 0 && titre.isSelected()) {
 										Debug("Skipping title line");
-										skipTitle = true;
 										continue;
 									}
 								}

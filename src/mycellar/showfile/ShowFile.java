@@ -45,10 +45,8 @@ import javax.swing.table.TableRowSorter;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -956,7 +954,10 @@ public class ShowFile extends JPanel implements ITabListener {
 
   class ReloadErrorsAction extends AbstractAction {
 
-    ReloadErrorsAction() {
+	private static final long serialVersionUID = 983425309954475989L;
+
+
+	ReloadErrorsAction() {
       super(Program.getLabel("ShowFile.reloadErrors"));
     }
 

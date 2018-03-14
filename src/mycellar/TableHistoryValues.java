@@ -19,7 +19,9 @@ import java.util.Optional;
  */
 
 public class TableHistoryValues extends AbstractTableModel {
-  public static final int SELECT = 0;
+
+	private static final long serialVersionUID = 2991755646049419440L;
+public static final int SELECT = 0;
   private static final int DATE = 1;
   public static final int TYPE = 2;
   private static final int LABEL = 3;

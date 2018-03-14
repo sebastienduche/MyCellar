@@ -5,7 +5,6 @@ import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
-import mycellar.launcher.Server;
 import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
@@ -73,8 +72,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.2
- * @since 13/03/18
+ * @version 17.3
+ * @since 14/03/18
  */
 
 public class Program {
@@ -150,7 +149,6 @@ public class Program {
 			archive = "";
 			bDebug = true;
 			Debug("===================================================");
-			Server.getInstance().getAvailableVersion();
 			// Initialisation du répertoire de travail
 			getWorkDir(false);
 			Debug("Program: Temp Dir: " + getWorkDir(false));
@@ -353,9 +351,8 @@ public class Program {
 			_bShowWindowErrorAndExit = false;
 		if (_bShowWindowErrorAndExit)
 			JOptionPane.showMessageDialog(null, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-		FileWriter fw;
-		try {
-			fw = new FileWriter(getGlobalDir()+"Errors.log");
+
+		try (FileWriter fw = new FileWriter(getGlobalDir()+"Errors.log")){
 			fw.write(e.toString());
 			fw.write(error);
 			fw.flush();
@@ -373,9 +370,9 @@ public class Program {
 
 	private static void sendMail(String error, File filename) {
 		InputStreamReader stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
-		BufferedReader reader = new BufferedReader(stream);
 
-		try {
+
+		try (BufferedReader reader = new BufferedReader(stream)) {
 			String line = reader.readLine();
 			reader.close();
 			stream.close();
@@ -512,12 +509,9 @@ public class Program {
 
 		Debug("Program: Writing XSL...");
 		String tmp;
-		File f;
-		FileWriter ficout = null;
 
-		try {
-			f = new File("resources/vin.xsl");
-			ficout = new FileWriter(f);
+		File f = new File("resources/vin.xsl");
+		try (FileWriter ficout = new FileWriter(f)){
 			ficout.flush();
 			tmp = "<?xml version='1.0'?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\"> <xsl:template match=\"/\">\n";
 			ficout.write(tmp);
@@ -583,13 +577,10 @@ public class Program {
 			ficout.write(tmp);
 			ficout.flush();
 		}
-		catch (IOException ioe) {}
-		finally {
-			try {
-				if(ficout != null)
-					ficout.close();
-			} catch (IOException e) {}
+		catch (IOException ex) {
+			showException(ex, false);
 		}
+
 	}
 
 	public static String convertToHTMLString(String s) {
@@ -700,7 +691,7 @@ public class Program {
 			try {
 				Runtime.getRuntime().exec("java -jar ./Help/hsviewer.jar -hsURL \"file:./Help/MyCellar.hs\"");
 			}
-			catch (IOException ex) {
+			catch (IOException ignored) {
 			}
 		}
 		else {
@@ -1130,9 +1121,6 @@ public class Program {
 
 		try {
 			loadProperties();
-		} catch (FileNotFoundException e) {
-			showException(e,false);
-			return false;
 		} catch (IOException e) {
 			showException(e,false);
 			return false;
@@ -1586,16 +1574,7 @@ public class Program {
 	public static boolean hasYearControl() {
 		if (bYearControlCalculated)
 			return bYearControled;
-		bYearControled = true;
-		try {
-			if (getCaveConfigInt("ANNEE_CTRL", 0) == 0) {
-				bYearControled = false;
-			}
-		}
-		catch (NullPointerException npe) {
-			bYearControled = true;
-			putCaveConfigInt("ANNEE_CTRL", 1);
-		}
+		bYearControled = (getCaveConfigInt("ANNEE_CTRL", 0) == 1);
 		bYearControlCalculated = true;
 		return bYearControled;
 	}
@@ -1844,9 +1823,7 @@ public class Program {
 			return "";
 		if(!f.getName().toLowerCase().endsWith(".txt"))
 			return "";
-		try {
-			FileReader reader = new FileReader(f);
-			BufferedReader buffer = new BufferedReader(reader);
+		try (BufferedReader buffer = new BufferedReader(new FileReader(f))){
 			String line = buffer.readLine();
 			buffer.close();
 			return line.trim();

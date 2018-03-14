@@ -1,5 +1,13 @@
 package mycellar.launcher;
 
+import mycellar.core.MyCellarVersion;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -21,15 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import mycellar.core.MyCellarVersion;
-
 /**
  * 
  * Titre : Cave à vin
@@ -37,8 +36,8 @@ import mycellar.core.MyCellarVersion;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 1.7
- * @since 18/10/17
+ * @version 1.8
+ * @since 14/03/18
  */
 
 public class Server implements Runnable {
@@ -46,24 +45,23 @@ public class Server implements Runnable {
 	private String sServerVersion = "";
 	private String sAvailableVersion = "";
 
-	private final static String GETVERSION = "GETVERSION";
-	private final static String DOWNLOAD = "DOWNLOAD";
+	private static final String GETVERSION = "GETVERSION";
+	private static final String DOWNLOAD = "DOWNLOAD";
 
 	private String sAction = "";
 
-	private static LinkedList<FileType> listFile = new LinkedList<FileType>();
-	private static LinkedList<String> listFileToRemove = new LinkedList<String>();
+	private static final LinkedList<FileType> listFile = new LinkedList<>();
+	private static final LinkedList<String> listFileToRemove = new LinkedList<>();
 
 	private boolean bDownloaded = false;
 	private boolean bDownloadError = false;
 	private boolean bExit = false;
 
 	private static FileWriter oDebugFile = null;
-	private static File debugFile = null;
 
 	private static final Server INSTANCE = new Server();
 
-	private static final String gitHubUrl = "https://github.com/sebastienduche/MyCellar/raw/master/Build/";
+	private static final String GIT_HUB_URL = "https://github.com/sebastienduche/MyCellar/raw/master/Build/";
 
 	private Server() {}
 
@@ -74,7 +72,7 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 
-		if (sAction == GETVERSION) {
+		if (sAction.equals(GETVERSION)) {
 			sServerVersion = "";
 			try {
 				File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
@@ -104,7 +102,7 @@ public class Server implements Runnable {
 				showException(e);
 			}
 			sAction = "";
-		} else if (sAction == DOWNLOAD) {
+		} else if (sAction.equals(DOWNLOAD)) {
 			try {
 				File f = new File("download");
 				if (!f.exists())
@@ -151,7 +149,7 @@ public class Server implements Runnable {
 				if(sFile.indexOf('-') == 0)
 					listFileToRemove.add(sFile.substring(1));
 				else {
-					boolean lib = (sFile.indexOf("MyCellar") == -1 && sFile.endsWith(".jar"));
+					boolean lib = (!sFile.contains("MyCellar") && sFile.endsWith(".jar"));
 					listFile.add(new FileType(sFile, md5, lib));
 				}
 				sFile = in.readLine();
@@ -221,8 +219,8 @@ public class Server implements Runnable {
 		return bDownloadError;
 	}
 
-	public boolean download() {
-		if (sAction == DOWNLOAD) {
+	private boolean download() {
+		if (sAction.equals(DOWNLOAD)) {
 			return false;
 		}
 		try {
@@ -237,108 +235,15 @@ public class Server implements Runnable {
 		return true;
 	}
 
-	public boolean downloadAndExit() {
-		bExit = true;
-		return download();
-	}
-
-	/*public boolean downloadFromDropbox(String destination) {
-		MyCellarLauncherLoading download = null;
+	private boolean downloadFromGitHub(File destination) {
+		MyCellarLauncherLoading download;
 		try{
 			download = new MyCellarLauncherLoading("Downloading...");
 			download.setText("Downloading in progress...", "Downloading...");
 			download.setVisible(true);
 		}catch(Exception e) {
 			e.printStackTrace();
-		}
-		try{
-			// Creation des fichiers pour lister les fichiers à supprimer
-			for(String s : listFileToRemove) {
-				Debug("Creating file to delete... "+s);
-				File f = new File(destination + "/" + s + ".myCellar");
-				f.createNewFile();
-			}
-			bDownloadError = false;
-			Debug("Connecting to Dropbox...");
-
-			int size = listFile.size();
-			int percent = 80;
-			if (size > 0)
-				percent = 80 / size;
-			for (int i = 0; i < size; i++) {
-				FileType fType = listFile.get(i);
-				String name = fType.getFile();
-				String serverMd5 = fType.getMd5();
-				Debug("Downloading... "+name);
-				{
-					File f = new File(destination + "/" + name);
-
-					download.setValue(20 + i * percent);
-					try {
-						if(fType.isFolder())
-							dropbox.downloadFolderFromDropbox(name, destination);
-						else
-							dropbox.downloadFromDropbox(name, f);
-					} catch (DbxException | IOException e) {
-						Debug("Error Downloading " + name);
-						bDownloadError = true;
-					}
-
-					if(!f.isDirectory()) {
-						InputStream stream = new FileInputStream(f);
-						int fileSize = -1;
-						try {
-							fileSize = stream.available();
-							String localMd5 = getMD5Checksum(f.getAbsolutePath());
-							if(!serverMd5.isEmpty()) {
-								if(localMd5.equals(serverMd5))
-									Debug(name + " Md5 OK");
-								else {
-									Debug(name + " "+serverMd5 + " "+localMd5);
-									bDownloadError = true;
-								}
-							}
-						} finally {
-							stream.close();
-						}
-						if (fileSize == 0)
-							bDownloadError = true;
-
-					}
-					if(bDownloadError) {
-						FileUtils.deleteQuietly(f);
-					}
-				}
-			}
-		} catch (IOException e) {
-			Debug("Server IO Exception.");
-			showException(e);
-			if(download != null)
-				download.dispose();
-			bDownloadError = true;
-		} catch (Exception e) {
-			Debug("Exception.");
-			showException(e);
-			if(download != null)
-				download.dispose();
-			bDownloadError = true;
-		} finally {
-			if(download != null) {
-				download.setValue(100);
-				download.dispose();
-			}
-		}
-		return bDownloadError;
-	}*/
-
-	public boolean downloadFromGitHub(File destination) {
-		MyCellarLauncherLoading download = null;
-		try{
-			download = new MyCellarLauncherLoading("Downloading...");
-			download.setText("Downloading in progress...", "Downloading...");
-			download.setVisible(true);
-		}catch(Exception e) {
-			e.printStackTrace();
+			return false;
 		}
 		try{
 			// Creation des fichiers pour lister les fichiers à supprimer
@@ -379,7 +284,7 @@ public class Server implements Runnable {
 
 					if(!serverMd5.isEmpty() && !f.isDirectory()) {
 						InputStream stream = new FileInputStream(f);
-						int fileSize = -1;
+						int fileSize;
 						try {
 							fileSize = stream.available();
 							String localMd5 = getMD5Checksum(f.getAbsolutePath());
@@ -407,27 +312,23 @@ public class Server implements Runnable {
 		} catch (IOException e) {
 			Debug("Server IO Exception.");
 			showException(e);
-			if(download != null)
-				download.dispose();
+			download.dispose();
 			bDownloadError = true;
 		} catch (Exception e) {
 			Debug("Exception.");
 			showException(e);
-			if(download != null)
-				download.dispose();
+			download.dispose();
 			bDownloadError = true;
 		} finally {
-			if(download != null) {
-				download.setValue(100);
-				download.dispose();
-			}
+			download.setValue(100);
+			download.dispose();
 		}
 		return bDownloadError;
 	}
 
 	public void downloadFileFromGitHub(String name, String destination) throws IOException {
 		String link;
-		URL url = new URL( gitHubUrl + name );
+		URL url = new URL( GIT_HUB_URL + name );
 		HttpURLConnection http = (HttpURLConnection)url.openConnection();
 		Map< String, List< String >> header = http.getHeaderFields();
 		while( isRedirected( header )) {
@@ -438,7 +339,7 @@ public class Server implements Runnable {
 		}
 		InputStream input = http.getInputStream();
 		byte[] buffer = new byte[4096];
-		int n = -1;
+		int n;
 		OutputStream output = new FileOutputStream( new File( destination ));
 		while ((n = input.read(buffer)) != -1) {
 			output.write( buffer, 0, n );
@@ -446,169 +347,21 @@ public class Server implements Runnable {
 		output.close();
 	}
 
-	/**
-	 * Download a file from a FTP server. A FTP URL is generated with the
-	 * following syntax: ftp://user:password@host:port/filePath;type=i.
-	 * 
-	 * @param ftpServer
-	 *            , FTP server address (optional port ':portNumber').
-	 * @param user
-	 *            , Optional user name to login.
-	 * @param password
-	 *            , Optional password for user.
-	 * @param filelist
-	 *            , Name of files to download (with optional preceeding relative
-	 *            path, e.g. one/two/three.txt).
-	 * @param fromdirectory
-	 *            , FTP Directory where files are stored
-	 * @param destination
-	 *            , Destination file to save.
-	 */
-	/*public boolean Download(String ftpServer, String user, String password, String fromdirectory, String destination) {
-		FTPClient ftp = new FTPClient();
-		// boolean storeFile = false;
-		Loading download = new Loading("Downloading...");
-		download.setText("Downloading in progress...", "Downloading...");
+	private static byte[] createChecksum(String filename) throws Exception {
+		try(InputStream fis = new FileInputStream(filename)) {
 
-		try {
-			download.setVisible(true);
-			int reply;
-			ftp.connect(ftpServer);
-			download.setValue(10);
-			Debug("Connected to " + ftpServer + ".");
-
-			// After connection attempt, you should check the reply code to
-			// verify
-			// success.
-			reply = ftp.getReplyCode();
-
-			if (!FTPReply.isPositiveCompletion(reply)) {
-				ftp.disconnect();
-				Debug("FTP server refused connection.");
-				download.dispose();
-				return true;
-			}
-		} catch (IOException e) {
-			if (ftp.isConnected()) {
-				try {
-					ftp.disconnect();
-				} catch (IOException f) {
-					// do nothing
+			byte[] buffer = new byte[1024];
+			MessageDigest complete = MessageDigest.getInstance("MD5");
+			int numRead;
+			do {
+				numRead = fis.read(buffer);
+				if (numRead > 0) {
+					complete.update(buffer, 0, numRead);
 				}
-			}
-			Debug("Could not connect to server.");
-			showException(e);
-			download.dispose();
-			bDownloadError = true;
+			} while (numRead != -1);
+			fis.close();
+			return complete.digest();
 		}
-
-		try {
-			if (!ftp.login(user, password)) {
-				ftp.logout();
-				Debug("Unable to log on with user: " + user);
-				download.dispose();
-				return true;
-			}
-
-			download.setValue(20);
-
-			ftp.setFileType(FTP.BINARY_FILE_TYPE);
-
-			// Use passive mode as default because most of us are
-			// behind firewalls these days.
-			ftp.enterLocalPassiveMode();
-
-			int size = listFile.size();
-			int percent = 80;
-			if (size > 0)
-				percent = 80 / size;
-			for (int i = 0; i < size; i++) {
-				String name = listFile.get(i);
-				String serverMd5 = listMd5.get(i);
-				Debug("Downloading... "+name);
-				{
-					File f = new File(destination + "/" + name);
-					FileOutputStream output;
-
-					output = new FileOutputStream(f);
-
-					download.setValue(20 + i * percent);
-					if (!ftp.retrieveFile(fromdirectory + "/MyCellar/" + name, output)) {
-						Debug("Error Downloading " + name);
-						bDownloadError = true;
-					}
-					output.close();
-
-					InputStream stream = new FileInputStream(f);
-					int fileSize = -1;
-					try {
-						fileSize = stream.available();
-						String localMd5 = getMD5Checksum(f.getAbsolutePath());
-						if(!serverMd5.isEmpty()) {
-							if(localMd5.equals(serverMd5))
-								Debug(name + " Md5 OK");
-							else {
-								Debug(name + " "+serverMd5 + " "+localMd5);
-								bDownloadError = true;
-							}
-						}
-					} finally {
-						stream.close();
-					}
-					if (fileSize == 0)
-						bDownloadError = true;
-					if(bDownloadError) {
-						FileUtils.deleteQuietly(f);
-					}
-				}
-			}
-
-			ftp.logout();
-			download.setValue(100);
-		} catch (FTPConnectionClosedException e) {
-			Debug("Server closed connection.");
-			showException(e);
-			download.dispose();
-			bDownloadError = true;
-		} catch (IOException e) {
-			Debug("Server IO Exception.");
-			showException(e);
-			download.dispose();
-			bDownloadError = true;
-		} catch (Exception e) {
-			Debug("Exception.");
-			showException(e);
-			download.dispose();
-			bDownloadError = true;
-		} finally {
-			download.setValue(100);
-			download.dispose();
-			if (ftp.isConnected()) {
-				try {
-					ftp.disconnect();
-				} catch (IOException f) {
-					// do nothing
-				}
-			}
-		}
-		Debug("Download completed.");
-		return bDownloadError;
-	}*/
-
-	public static byte[] createChecksum(String filename) throws Exception {
-		InputStream fis = new FileInputStream(filename);
-
-		byte[] buffer = new byte[1024];
-		MessageDigest complete = MessageDigest.getInstance("MD5");
-		int numRead;
-		do {
-			numRead = fis.read(buffer);
-			if (numRead > 0) {
-				complete.update(buffer, 0, numRead);
-			}
-		} while (numRead != -1);
-		fis.close();
-		return complete.digest();
 	}
 
 	// see this How-to for a faster way to convert
@@ -639,13 +392,12 @@ public class Server implements Runnable {
 					f_obj.mkdir();
 				Calendar oCal = Calendar.getInstance();
 				String sDate = oCal.get(Calendar.DATE) + "-" + (oCal.get(Calendar.MONTH)+1) + "-" + oCal.get(Calendar.YEAR);
-				debugFile = new File(sDir, "DebugFtp-"+sDate+".log");
-				oDebugFile = new FileWriter(debugFile, true);
+				oDebugFile = new FileWriter(new File(sDir, "DebugFtp-"+sDate+".log"), true);
 			}
 			oDebugFile.write("[" + java.util.Calendar.getInstance().getTime().toString() + "]: " + sText + "\n");
 			oDebugFile.flush();
 		}
-		catch (Exception e) {}
+		catch (Exception ignored) {}
 	}
 
 	/**
@@ -653,24 +405,22 @@ public class Server implements Runnable {
 	 * @param e Exception
 	 */
 	public static void showException(Exception e) {
-		StackTraceElement st[] = new StackTraceElement[1];
-		st = e.getStackTrace();
+		StackTraceElement st[] = e.getStackTrace();
 		String error = "";
 		for (int z = 0; z < st.length; z++) {
 			error = error.concat("\n" + st[z]);
 		}
-		FileWriter fw = null;
-		try {
-			String sDir = System.getProperty("user.home");
-			if( !sDir.isEmpty() )
-				sDir += "/MyCellarDebug";
-			fw = new FileWriter(sDir+"/Errors.log");
+		String sDir = System.getProperty("user.home");
+		if(!sDir.isEmpty()) {
+			sDir += "/MyCellarDebug";
+		}
+		try(FileWriter fw = new FileWriter(sDir+"/Errors.log")) {
 			fw.write(e.toString());
 			fw.write(error);
 			fw.flush();
 			fw.close();
 		}
-		catch (IOException ex) {}
+		catch (IOException ignored) {}
 		Debug("Server: ERROR:");
 		Debug("Server: "+e.toString());
 		Debug("Server: "+error);
@@ -758,31 +508,31 @@ public class Server implements Runnable {
 
 	class FileType {
 
-		private String file;
-		private String md5;
-		private boolean lib;
+		private final String file;
+		private final String md5;
+		private final boolean lib;
 
-		public FileType(String file, String md5, boolean lib) {
+		private FileType(String file, String md5, boolean lib) {
 			this.file = file;
 			this.md5 = md5;
 			this.lib = lib;
 		}
 
-		public FileType(String file, String md5) {
+		private FileType(String file, String md5) {
 			this.file = file;
 			this.md5 = md5;
-			this.lib = false;
+			lib = false;
 		}
 
 		public String getFile() {
 			return file;
 		}
 
-		public String getMd5() {
+		private String getMd5() {
 			return md5;
 		}
 
-		public boolean isForLibDirectory() {
+		private boolean isForLibDirectory() {
 			return lib;
 		}
 	}

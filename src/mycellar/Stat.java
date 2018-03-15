@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.MyCellarCheckBox;
+import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
@@ -33,8 +33,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.7
- * @since 08/03/18
+ * @version 5.8
+ * @since 15/03/18
  */
 public class Stat extends JPanel implements ITabListener {
 
@@ -47,7 +47,7 @@ public class Stat extends JPanel implements ITabListener {
 	private final JPanel panel = new JPanel();
 	private String annee[];
 	private final PanelChart panelChart = new PanelChart();
-	private final MyCellarCheckBox options = new MyCellarCheckBox(Program.getLabel("Infos156"));
+	private final MyCellarButton options = new MyCellarButton(Program.getLabel("Infos156"));
 	private final List<StatData> listPrice = new LinkedList<>();
 	private final List<StatData> listYear = new LinkedList<>();
 
@@ -160,6 +160,7 @@ public class Stat extends JPanel implements ITabListener {
 		try {
 			if (listOptions.getSelectedIndex() == 0) {
 				Debug("By place");
+				options.setEnabled(false);
 				panelChart.setPlacesChart(Program.getCave());
 				def2.setText(Program.getLabel("Infos105") + ":"); //"Rangement:");
 				listPlaces.removeAllItems();
@@ -216,7 +217,7 @@ public class Stat extends JPanel implements ITabListener {
 			}	else if (listOptions.getSelectedIndex() == 1) { //Par Année
 				displayYear();
 			}	else if (listOptions.getSelectedIndex() == 2) { //Par prix
-				displayByYear();
+				displayByPrice();
 			}
 		}
 		catch (Exception exc) {
@@ -224,7 +225,7 @@ public class Stat extends JPanel implements ITabListener {
 		}
 	}
 
-	private void displayByYear() {
+	private void displayByPrice() {
 		boolean all_bracket = true;
 		listPlaces.setEnabled(true);
 		if (listPlaces.getSelectedIndex() == 1) {
@@ -248,7 +249,7 @@ public class Stat extends JPanel implements ITabListener {
       for (Bouteille b : Program.getStorage().getAllList()) {
         if (b != null) {
           if (b.hasPrice()) {
-						int prix_int = (int)b.getPriceDouble();
+						int prix_int = b.getPrice().intValue();
 						if(mapPrixCount.containsKey(prix_int)) {
 							mapPrixCount.put(prix_int, mapPrixCount.get(prix_int) + 1);
 						}

@@ -1,10 +1,10 @@
 package mycellar.showfile;
 
-import java.util.ArrayList;
-
 import mycellar.Bouteille;
 import mycellar.Start;
 import mycellar.core.MyCellarFields;
+
+import java.util.ArrayList;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -12,15 +12,15 @@ import mycellar.core.MyCellarFields;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 25/10/17
+ * @version 0.5
+ * @since 15/03/18
  */
 
 public class ShowFileModel extends TableShowValues {
 
 	private static final long serialVersionUID = -3120339216315975530L;
 
-	private ArrayList<ShowFileColumn> list = new ArrayList<ShowFileColumn>();
+	private ArrayList<ShowFileColumn> list = new ArrayList<>();
 
 	@Override
 	public int getColumnCount() {
@@ -34,7 +34,7 @@ public class ShowFileModel extends TableShowValues {
 		if(column == getColumnCount() - 1)
 			return Boolean.TRUE;
 		Bouteille b = monVector.get(row);
-		return list.get(column-1).getValue(b);
+		return list.get(column-1).getDisplayValue(b);
 	}
 
 	@Override
@@ -58,6 +58,7 @@ public class ShowFileModel extends TableShowValues {
 	 * @param column int
 	 * @return String
 	 */
+	@Override
 	public String getColumnName(int column) {
 		if(column == 0 || column == getColumnCount() - 1)
 			return "";
@@ -71,6 +72,7 @@ public class ShowFileModel extends TableShowValues {
 	 * @param column int
 	 * @return boolean
 	 */
+	@Override
 	public boolean isCellEditable(int row, int column) {
 		if(column == 0 || column == getColumnCount() - 1)
 			return true;
@@ -84,7 +86,7 @@ public class ShowFileModel extends TableShowValues {
 	}
 	
 	public void removeAllColumns() {
-		list = new ArrayList<ShowFileColumn>();
+		list = new ArrayList<>();
 		fireTableStructureChanged();
 	}
 	

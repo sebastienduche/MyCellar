@@ -1,6 +1,7 @@
 package mycellar;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -8,38 +9,38 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 24/10/17
+ * @version 1.4
+ * @since 15/03/18
  */
 
 public interface Storage {
 	
-	public void setListBouteilles(ListeBouteille listBouteilles);
-	public void setListBouteilles(LinkedList<Bouteille> listBouteilles);
-	public void addBouteilles(ListeBouteille listBouteilles);
-	public ListeBouteille getListBouteilles();
-	public LinkedList<String> getBottleNames();
-	
-	public boolean addHistory(int nType, Bouteille oB);
-	public void removeHistory(History oB);
-	public boolean clearHistory(int _nValue);
-	public boolean saveHistory();
-	public boolean loadHistory();
-	public HistoryList getHistoryList();
-	public void setHistoryList(HistoryList list);
-	
-	public boolean deleteWine(Bouteille oB);
-	public boolean addWine(Bouteille oB);
-	public void replaceWineAll(Bouteille wine, int num_empl, int line, int column);
-	
-	public int getAllNblign();
-	public Bouteille getAllAt( int nIndex );
-	public void setAll( Bouteille[] bList);
-	public LinkedList<Bouteille> getAllList();
-	public void setAllList(LinkedList<Bouteille> _all);
-	
-	public void close();
-	
-	public boolean readRangement( LinkedList<Rangement> cave );
+	void setListBouteilles(ListeBouteille listBouteilles);
+	void addBouteilles(ListeBouteille listBouteilles);
+	ListeBouteille getListBouteilles();
+	LinkedList<String> getBottleNames();
+	boolean addHistory(int nType, Bouteille oB);
+
+	void removeHistory(History oB);
+	boolean clearHistory(int _nValue);
+	boolean saveHistory();
+	boolean loadHistory();
+	HistoryList getHistoryList();
+	void setHistoryList(HistoryList list);
+	boolean deleteWine(Bouteille oB);
+
+	boolean addWine(Bouteille oB);
+	void replaceWineAll(Bouteille wine, int num_empl, int line, int column);
+	int getAllNblign();
+
+	LinkedList<Bouteille> getAllList();
+	void close();
+
+	@Deprecated
+	void setListBouteilles(LinkedList<Bouteille> listBouteilles);
+	@Deprecated
+	void setAll( Bouteille[] bList);
+	@Deprecated
+	boolean readRangement(List<Rangement> cave);
 
 }

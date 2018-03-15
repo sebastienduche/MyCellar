@@ -3,6 +3,7 @@ package mycellar;
 import java.io.File;
 import java.io.FilenameFilter;
 
+@Deprecated
 class MyFilenameFilter implements FilenameFilter {
 
   @Override

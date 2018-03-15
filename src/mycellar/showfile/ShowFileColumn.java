@@ -9,8 +9,8 @@ import mycellar.core.MyCellarFields;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 06/03/16
+ * @version 0.5
+ * @since 15/03/18
  */
 
 public abstract class ShowFileColumn {
@@ -19,22 +19,22 @@ public abstract class ShowFileColumn {
 	private int width;
 	private boolean editable;
 	
-	public ShowFileColumn(MyCellarFields properties) {
+	ShowFileColumn(MyCellarFields properties) {
 		this.properties = properties;
-		this.setWidth(100);
-		this.setEditable(true);
+		width = 100;
+		setEditable(true);
 	}
 	
-	public ShowFileColumn(MyCellarFields properties, int width) {
+	ShowFileColumn(MyCellarFields properties, int width) {
 		this.properties = properties;
-		this.setWidth(width);
-		this.setEditable(true);
+		this.width = width;
+		setEditable(true);
 	}
 	
-	public ShowFileColumn(MyCellarFields properties, int width, boolean editable) {
+	ShowFileColumn(MyCellarFields properties, int width, boolean editable) {
 		this.properties = properties;
-		this.setWidth(width);
-		this.setEditable(editable);
+		this.width = width;
+		setEditable(editable);
 	}
 	
 	public String getLabel() {
@@ -61,10 +61,10 @@ public abstract class ShowFileColumn {
 		return editable;
 	}
 
-	public void setEditable(boolean editable) {
+	private void setEditable(boolean editable) {
 		this.editable = editable;
 	}
 
 	abstract void setValue(Bouteille b, Object value);
-	abstract Object getValue(Bouteille b);
+	abstract Object getDisplayValue(Bouteille b);
 }

@@ -72,8 +72,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.3
- * @since 14/03/18
+ * @version 17.4
+ * @since 15/03/18
  */
 
 public class Program {
@@ -110,20 +110,20 @@ public class Program {
 	private static File debugFile = null;
 	private static boolean bDebug = false;
 	private static LinkedList<Rangement> m_oCave = new LinkedList<>();
-	private static final LinkedList<Bouteille> trash = new LinkedList<>();
-	private static final LinkedList<MyCellarError> errors = new LinkedList<>();
+	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
+	private static final LinkedList<MyCellarError> ERRORS = new LinkedList<>();
 	public static Rangement defaultPlace = new Rangement("");
 	private static String m_sWorkDir = null;
 	private static String m_sGlobalDir = null;
 	private static boolean m_bIsTrueFile = false;
-	private static final String m_sDataFile = "data.xml";
-	private static final String m_sUntitledFile = "Untitled1.sinfo";
-	private static final String m_sPreviewFile = "preview.xml";
-	private static final String m_sPreviewHTMLFile = "preview.html";
-	private static final String m_sXMLPlacesFile = "MyCellar.xml";
-	private static final String m_sXMLTypesFile = "Types.xml";
-	private static final String m_sXMLBottlesFile = "Bouteilles.xml";
-	private static final String m_sVersion = "2.4";
+	private static final String DATA_XML = "data.xml";
+	private static final String UNTITLED1_SINFO = "Untitled1.sinfo";
+	private static final String PREVIEW_XML = "preview.xml";
+	private static final String PREVIEW_HTML = "preview.html";
+	private static final String MY_CELLAR_XML = "MyCellar.xml";
+	private static final String TYPES_XML = "Types.xml";
+	private static final String BOUTEILLES_XML = "Bouteilles.xml";
+	private static final String INTERNAL_VRSION = "2.4";
 	private static boolean m_bWorkDirCalculated = false;
 	private static boolean m_bGlobalDirCalculated = false;
 	private static boolean bYearControlCalculated = false;
@@ -135,10 +135,9 @@ public class Program {
 	public static Supprimer_Rangement deletePlace;
 	public static Stat stat;
 	public static Country france = new Country("FRA", "France");
-	private static final List<File> dirToDelete = new LinkedList<>();
+	private static final List<File> DIR_TO_DELETE = new LinkedList<>();
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
-	public static char priceSeparator;
 
 	/**
 	 * init
@@ -183,7 +182,7 @@ public class Program {
 			Debug("Program: Temp Dir: " + getWorkDir(false));
 			Debug("Program: Initializing Configuration files...");
 			loadProperties();
-			File f = new File(getWorkDir(true) + m_sDataFile);
+			File f = new File(getWorkDir(true) + DATA_XML);
 			if(!f.exists())
 				f.createNewFile();
 			LanguageFileLoader.loadLanguageFiles( "U" );
@@ -196,27 +195,16 @@ public class Program {
 				putGlobalConfigString(key, propGlobal.getProperty(key));
 			}
 
+			if(hasConfigCaveKey("PRICE_SEPARATOR")) {
+				getCaveConfig().remove("PPRICE_SEPARATOR");
+			}
+
 			verifyConfigFile();
-			initPriceSeparator();
 			cleanAndUpgrade();
 		}
 		catch (Exception e) {
 			showException(e);
 		}
-	}
-	
-	private static void initPriceSeparator() {
-		String sVirgule = "";
-		 if(hasConfigCaveKey("PRICE_SEPARATOR")) {
-			 sVirgule = getCaveConfigString("PRICE_SEPARATOR","");
-			 if (!sVirgule.isEmpty()) {
-				 priceSeparator = sVirgule.charAt(0);
-			 }
-		 }
-		 if (sVirgule.isEmpty()){
-			 DecimalFormat df = new DecimalFormat();
-			 priceSeparator = df.getDecimalFormatSymbols().getDecimalSeparator();
-		 }
 	}
 
 	/**
@@ -272,7 +260,7 @@ public class Program {
 	private static void cleanAndUpgrade() {
 		String sVersion = getCaveConfigString("VERSION", "");
 		if(sVersion.isEmpty()) {
-			putCaveConfigString("VERSION", m_sVersion);
+			putCaveConfigString("VERSION", INTERNAL_VRSION);
 			return;
 		}
 		int n1 = Integer.parseInt(sVersion.substring(0,1));
@@ -287,7 +275,7 @@ public class Program {
 			File f1 = new File( getWorkDir(true) + "static_col.sinfo");
 			FileUtils.deleteQuietly(f1);
 			
-			putCaveConfigString("VERSION", m_sVersion);
+			putCaveConfigString("VERSION", INTERNAL_VRSION);
 		}
 	}
 
@@ -467,19 +455,19 @@ public class Program {
 	}
 
 	public static LinkedList<Bouteille> getTrash() {
-		return trash;
+		return TRASH;
 	}
 
 	public static void setToTrash(Bouteille b) {
-		trash.add(b);
+		TRASH.add(b);
 	}
 	
 	public static LinkedList<MyCellarError> getErrors() {
-		return errors;
+		return ERRORS;
 	}
 
 	public static void addError(MyCellarError error) {
-		errors.add(error);
+		ERRORS.add(error);
 	}
 
 	/**
@@ -487,6 +475,7 @@ public class Program {
 	 *
 	 * @param num_rangement int: numéro du rangement à supprimer
 	 */
+	@Deprecated
 	private static void deletePlaceFile(int num_rangement) {
 		Debug("Program: Deleting serialized object...");
 		try {
@@ -622,6 +611,7 @@ public class Program {
 	/**
 	 * read_Object: Fonction de lecture des objets Rangement sérialiser.
 	 */
+	@Deprecated
 	private static void read_Object() {
 		Debug("Program: Loading places and history...");
 		LinkedList<Rangement> cave = new LinkedList<>();
@@ -732,7 +722,7 @@ public class Program {
 			if (files != null) {
 				for (String file : files) {
 					f = new File(getWorkDir(true) + file);
-					if (f.isDirectory() || file.compareTo(m_sUntitledFile) == 0)
+					if (f.isDirectory() || file.compareTo(UNTITLED1_SINFO) == 0)
 						continue;
 					// création d'un flux de lecture
 					FileInputStream fi = new FileInputStream(getWorkDir(true) + file);
@@ -1036,7 +1026,7 @@ public class Program {
 		if(f == null) {
 			setFileSavable(false);
 			// Nouveau fichier
-			String fic = getWorkDir(true) + m_sUntitledFile;
+			String fic = getWorkDir(true) + UNTITLED1_SINFO;
 			f = new File(fic);
 			if(f.exists())
 				f.delete();
@@ -1236,13 +1226,6 @@ public class Program {
 				if(isListCaveModified())
 					MyXmlDom.writeMyCellarXml(getCave(),"");
 
-				if(!configCave.containsKey("PRICE_SEPARATOR")) {
-					DecimalFormat df = new DecimalFormat();
-					char virgule = df.getDecimalFormatSymbols().getDecimalSeparator();
-					String sVirgule = Character.toString(virgule);
-					putCaveConfigString("PRICE_SEPARATOR", sVirgule);
-				}
-
 				saveProperties();
 
 				if (!getCave().isEmpty()) {						
@@ -1285,7 +1268,7 @@ public class Program {
 		showfile = null;
 		showtrash = null;
 		vignobles = null;
-		trash.clear();
+		TRASH.clear();
 		setFileSavable(false);
 		modified = false;
 		listCaveModified = false;
@@ -1295,7 +1278,7 @@ public class Program {
 	}
 
 	public static void deleteTempFiles() {
-		for(File f : dirToDelete) {
+		for(File f : DIR_TO_DELETE) {
 			if(!f.exists() || f.getName().equalsIgnoreCase("Global"))
 				continue;
 			try{
@@ -1406,7 +1389,7 @@ public class Program {
 			f_obj.mkdir();
 
 		Debug("Program: work directory: "+m_sWorkDir);
-		dirToDelete.add(new File(m_sWorkDir));
+		DIR_TO_DELETE.add(new File(m_sWorkDir));
 
 		if (_bWithEndSlash)
 			return m_sWorkDir + File.separator;
@@ -1499,31 +1482,31 @@ public class Program {
 	}
 
 	private static String getDataFileName() {
-		return getWorkDir(true) + m_sDataFile;
+		return getWorkDir(true) + DATA_XML;
 	}
 
 	public static String getXMLPlacesFileName() {
-		return getWorkDir(true) + m_sXMLPlacesFile;
+		return getWorkDir(true) + MY_CELLAR_XML;
 	}
 
 	public static String getXMLTypesFileName() {
-		return getWorkDir(true) + m_sXMLTypesFile;
+		return getWorkDir(true) + TYPES_XML;
 	}
 
 	public static String getXMLBottlesFileName() {
-		return getWorkDir(true) + m_sXMLBottlesFile;
+		return getWorkDir(true) + BOUTEILLES_XML;
 	}
 
 	public static String getUntitledFileName() {
-		return m_sUntitledFile;
+		return UNTITLED1_SINFO;
 	}
 
 	public static String getPreviewXMLFileName() {
-		return getGlobalDir() + m_sPreviewFile;
+		return getGlobalDir() + PREVIEW_XML;
 	}
 
 	private static String getPreviewHTMLFileName() {
-		return getGlobalDir() + m_sPreviewHTMLFile;
+		return getGlobalDir() + PREVIEW_HTML;
 	}
 
 	public static Storage getStorage() {

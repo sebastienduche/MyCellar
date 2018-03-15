@@ -41,10 +41,10 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -58,8 +58,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 5.1
- * @since 09/03/18
+ * @version 5.2
+ * @since 15/03/18
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -101,7 +101,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           return Program.convertStringFromHTMLString(b.getNom());
         }
       });
@@ -117,7 +117,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           return b.getAnnee();
         }
       });
@@ -129,7 +129,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           return b.getType();
         }
       });
@@ -141,7 +141,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           return Program.convertStringFromHTMLString(b.getEmplacement());
         }
       });
@@ -153,7 +153,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           return Integer.toString(b.getNumLieu());
         }
       });
@@ -165,7 +165,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           if (b.getRangement() == null || b.getRangement().isCaisse()) {
             return "";
           }
@@ -180,7 +180,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           if (b.getRangement() == null || b.getRangement().isCaisse()) {
             return "";
           }
@@ -195,7 +195,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           return Program.convertStringFromHTMLString(b.getPrix());
         }
       });
@@ -207,7 +207,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           return Program.convertStringFromHTMLString(b.getComment());
         }
       });
@@ -219,7 +219,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           return Program.convertStringFromHTMLString(b.getMaturity());
         }
       });
@@ -231,7 +231,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           return b.getParker();
         }
       });
@@ -243,7 +243,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           return BottleColor.getColor(b.getColor());
         }
       });
@@ -273,7 +273,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           if (b.getVignoble() == null) {
             return "";
           }
@@ -311,7 +311,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           if (b.getVignoble() == null) {
             return "";
           }
@@ -330,7 +330,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           if (b.getVignoble() == null) {
             return "";
           }
@@ -349,7 +349,7 @@ public class ShowFile extends JPanel implements ITabListener {
         }
 
         @Override
-        Object getValue(Bouteille b) {
+        Object getDisplayValue(Bouteille b) {
           if (b.getVignoble() == null) {
             return "";
           }
@@ -489,6 +489,31 @@ public class ShowFile extends JPanel implements ITabListener {
 
     m_oTable.setAutoCreateRowSorter(true);
     TableRowSorter<TableModel> sorter = new TableRowSorter<>(m_oTable.getModel());
+    sorter.setComparator(TableShowValues.PRICE,(String o1, String o2) -> {
+      BigDecimal price1;
+      if(o1.isEmpty()) {
+        price1 = BigDecimal.ZERO;
+      } else {
+        try {
+          price1 = Program.stringToBigDecimal(o1);
+        }
+        catch (NumberFormatException ignored) {
+          price1 = BigDecimal.ZERO;
+        }
+      }
+      BigDecimal price2;
+      if(o2.isEmpty()) {
+        price2 = BigDecimal.ZERO;
+      } else {
+        try {
+          price2 = Program.stringToBigDecimal(o2);
+        }
+        catch (NumberFormatException ignored) {
+          price2 = BigDecimal.ZERO;
+        }
+      }
+      return price1.compareTo(price2);
+    });
     m_oTable.setRowSorter(sorter);
     List<RowSorter.SortKey> sortKeys = new ArrayList<>();
     sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));

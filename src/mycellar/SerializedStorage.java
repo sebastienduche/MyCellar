@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -15,8 +16,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.6
- * @since 06/03/18
+ * @version 4.7
+ * @since 15/03/18
  */
 
 public class SerializedStorage implements Storage {
@@ -24,10 +25,22 @@ public class SerializedStorage implements Storage {
 	private static HistoryList m_HistoryList = new HistoryList();
 	private ListeBouteille listBouteilles = new ListeBouteille();
 
-	private LinkedList<String> listeUniqueBouteille = new LinkedList<String>(); // Liste des noms de bouteille (un seule nom)
+	private final LinkedList<String> listeUniqueBouteille = new LinkedList<>(); // Liste des noms de bouteille (un seule nom)
 
 	// Private constructor prevents instantiation from other classes
 	private SerializedStorage() {
+	}
+
+	/**
+	 * SingletonHolder is loaded on the first execution of Singleton.getInstance()
+	 * or the first access to SingletonHolder.INSTANCE, not before.
+	 */
+	private static class SerializedStorageHolder {
+		private static final SerializedStorage INSTANCE = new SerializedStorage();
+	}
+
+	public static SerializedStorage getInstance() {
+		return SerializedStorageHolder.INSTANCE;
 	}
 
 	@Override
@@ -35,7 +48,7 @@ public class SerializedStorage implements Storage {
 		this.listBouteilles = listBouteilles;
 		listeUniqueBouteille.clear();
 		if(this.listBouteilles.bouteille == null)
-			this.listBouteilles.bouteille = new LinkedList<Bouteille>();
+			this.listBouteilles.bouteille = new LinkedList<>();
 		for(Bouteille b: this.listBouteilles.bouteille) {
 			if(!listeUniqueBouteille.contains(b.getNom()))
 				listeUniqueBouteille.add(b.getNom());
@@ -43,6 +56,7 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
+	@Deprecated
 	public void setListBouteilles(LinkedList<Bouteille> listBouteilles) {
 		this.listBouteilles.bouteille = listBouteilles;
 		listeUniqueBouteille.clear();
@@ -70,18 +84,6 @@ public class SerializedStorage implements Storage {
 	@Override
 	public LinkedList<String> getBottleNames() {
 		return listeUniqueBouteille;
-	}
-
-	/**
-	 * SingletonHolder is loaded on the first execution of Singleton.getInstance() 
-	 * or the first access to SingletonHolder.INSTANCE, not before.
-	 */
-	private static class SerializedStorageHolder { 
-		private static final SerializedStorage INSTANCE = new SerializedStorage();
-	}
-
-	public static SerializedStorage getInstance() {
-		return SerializedStorageHolder.INSTANCE;
 	}
 
 
@@ -117,7 +119,7 @@ public class SerializedStorage implements Storage {
 			m_HistoryList.clear();
 			return true;
 		}
-		LinkedList<History> tmpList = new LinkedList<History>();
+		LinkedList<History> tmpList = new LinkedList<>();
 		for (History h : m_HistoryList.getHistory()) {
 			if (h.getType() == _nValue) {
 				tmpList.addLast(h);
@@ -268,35 +270,6 @@ public class SerializedStorage implements Storage {
 	}
 
 	/**
-	 * setAllList: retourne le tableau
-	 *
-	 * @param _all LinkedList
-	 */
-	@Override
-	public void setAllList(LinkedList<Bouteille> _all) {
-		listBouteilles.getBouteille().clear();
-		listBouteilles.getBouteille().addAll(_all);
-	}
-
-	/**
-	 * getAllAt: retourne une Bouteille du tableau
-	 *
-	 * @param i int: numéro de la bouteille (0...n)
-	 * @return Bouteille
-	 */
-	@Override
-	public Bouteille getAllAt(int i) {
-		Bouteille b = null;
-		try {
-			b = listBouteilles.getBouteille().get(i);
-		}
-		catch (IndexOutOfBoundsException ioobe) {
-			b = null;
-		}
-		return b;
-	}
-
-	/**
 	 * getAllNblign: retourne le nombre de lignes du rangement
 	 *
 	 * @return int
@@ -312,6 +285,7 @@ public class SerializedStorage implements Storage {
 	 * @param all1 Bouteille[]: tableau
 	 */
 	@Override
+	@Deprecated
 	public void setAll(Bouteille all1[]) {
 		if (all1 != null) {
 			listBouteilles.getBouteille().clear();
@@ -336,32 +310,28 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public boolean readRangement(LinkedList<Rangement> cave) {
+	@Deprecated
+	public boolean readRangement(List<Rangement> cave) {
 		boolean bresul = false;
-		ObjectInputStream ois = null;
 		File f1 = new File( Program.getWorkDir(true) );
 		final File[] list = f1.listFiles(new MyFilenameFilter());
-		if( list.length > 0 )
+		if( list != null && list.length > 0 )
 			bresul = true;
-		for (int i = 0; i < list.length; i++) {
-			try {
-				ois = new ObjectInputStream(new FileInputStream(list[i]));
-				Rangement r = (Rangement) ois.readObject();
-				if(r != null)
-					cave.add(r);
-				ois.close();
-				MyXmlDom.appendRangement(r);
-			}
-			catch (IOException ex) {
-				bresul = false;
-				try {
+		if(list != null) {
+			for (File f : list) {
+				try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
+					Rangement r = (Rangement) ois.readObject();
+					if (r != null) {
+						cave.add(r);
+						MyXmlDom.appendRangement(r);
+					}
 					ois.close();
+				} catch (IOException ex) {
+					bresul = false;
+					f.delete();
+				} catch (ClassNotFoundException ex1) {
+					bresul = false;
 				}
-				catch (IOException ioe) {}
-				catch (NullPointerException ioe) {}
-				list[i].delete();
-			}
-			catch (ClassNotFoundException ex1) {bresul = false;
 			}
 		}
 		return bresul;
@@ -377,41 +347,13 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public boolean loadHistory() {
-		// Historique
-		boolean resul = false;
-		File f1 = new File( Program.getWorkDir(true) + "history.sinfo");
-		if(f1.exists()) {
-			ObjectInputStream ois = null;
-			try {
-				ois = new ObjectInputStream(new FileInputStream(f1));
-				m_HistoryList = (HistoryList) ois.readObject();
-				ois.close();
-				Debug("Loading History OK");
-			}
-			catch (IOException ex) {
-				Debug("ERROR: Loading History");
-				resul = false;
-				try {
-					ois.close();
-				}
-				catch (IOException ioe) {}
-				catch (NullPointerException ioe) {}
-				f1.delete();
-			}
-			catch (ClassNotFoundException ex1) {
-				resul = false;
-				Debug("ERROR: Loading History");
-				m_HistoryList = new HistoryList();
-				f1.delete();
-			}
-		}
-		if(!resul)
-			resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + "history.xml"));
-		if(!resul)
+		Debug("Loadinging History...");
+		boolean resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + "history.xml"));
+		if(!resul) {
 			m_HistoryList = new HistoryList();
-		if(f1.exists())
-			f1.delete();
-		
+			Debug("Loadinging History KO");
+		}
+		Debug("Loadinging History OK");
 		return resul;
 	}
 

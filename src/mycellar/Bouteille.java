@@ -13,7 +13,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -23,8 +25,8 @@ import java.util.GregorianCalendar;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.7
- * @since 13/03/18
+ * @version 3.8
+ * @since 15/03/18
  */
 
 /**
@@ -628,6 +630,21 @@ public class Bouteille implements Serializable{
 		 }
 		 catch (NumberFormatException ignored) {
 			 return 0;
+		 }
+	 }
+	 
+	 public BigDecimal getPrice() {
+		 
+		 String price = Program.convertStringFromHTMLString(prix);
+		 if(price.isEmpty()) {
+			 return BigDecimal.ZERO;
+		 }
+
+		 try {
+		 	return Program.stringToBigDecimal(price);
+		 }
+		 catch (NumberFormatException ignored) {
+			 return BigDecimal.ZERO;
 		 }
 	 }
 

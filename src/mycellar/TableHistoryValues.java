@@ -14,14 +14,14 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 02/03/18
+ * @version 1.8
+ * @since 16/03/18
  */
 
 public class TableHistoryValues extends AbstractTableModel {
 
 	private static final long serialVersionUID = 2991755646049419440L;
-public static final int SELECT = 0;
+  public static final int SELECT = 0;
   private static final int DATE = 1;
   public static final int TYPE = 2;
   private static final int LABEL = 3;

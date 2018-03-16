@@ -72,8 +72,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.4
- * @since 15/03/18
+ * @version 17.5
+ * @since 16/03/18
  */
 
 public class Program {
@@ -138,6 +138,7 @@ public class Program {
 	private static final List<File> DIR_TO_DELETE = new LinkedList<>();
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
+	private static int nextID = -1;
 
 	/**
 	 * init
@@ -1860,4 +1861,14 @@ public class Program {
 	  }
 		return new BigDecimal(buf.toString()).setScale(2, BigDecimal.ROUND_HALF_UP);
   }
+
+	public static int getNewID() {
+		if (nextID == -1) {
+			nextID = getStorage().getAllNblign();
+		}
+		do {
+			++nextID;
+		} while (getStorage().getAllList().stream().anyMatch(bouteille -> bouteille.getId() == nextID));
+		return nextID;
+	}
 }

@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.util.LinkedList;
 
 /**
@@ -39,8 +40,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 13/03/18
+ * @version 1.2
+ * @since 16/03/18
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -66,21 +67,21 @@ public class MyCellarManageBottles extends JPanel {
 	protected int SIECLE = Program.getCaveConfigInt("SIECLE", 20) - 1;
 	protected Object m_objet1 = null;
 	private final MyClipBoard clipboard = new MyClipBoard();
-	protected final JModifyComboBox<String> m_lieu = new JModifyComboBox<String>();
-	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<String>();
-	protected final JModifyComboBox<String> m_line = new JModifyComboBox<String>();
-	protected final JModifyComboBox<String> m_column = new JModifyComboBox<String>();
+	protected final JModifyComboBox<String> m_lieu = new JModifyComboBox<>();
+	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<>();
+	protected final JModifyComboBox<String> m_line = new JModifyComboBox<>();
+	protected final JModifyComboBox<String> m_column = new JModifyComboBox<>();
 	protected final MyCellarLabel m_labelExist = new MyCellarLabel();
 	protected MyCellarButton m_add;
 	protected MyCellarButton m_cancel;
 	protected JCompletionComboBox name = new JCompletionComboBox();
 	protected final JModifyTextField m_year = new JModifyTextField();
-	protected final JModifyComboBox<String> m_half = new JModifyComboBox<String>();
+	protected final JModifyComboBox<String> m_half = new JModifyComboBox<>();
 	protected final MyCellarCheckBox m_noYear = new MyCellarCheckBox();
-	protected final JModifyFormattedTextField m_price = new JModifyFormattedTextField(java.text.NumberFormat.getNumberInstance());
+	protected final JModifyFormattedTextField m_price = new JModifyFormattedTextField(NumberFormat.getNumberInstance());
 	protected final JModifyTextField m_maturity = new JModifyTextField();
 	protected final JModifyTextField m_parker = new JModifyTextField();
-	protected final JModifyComboBox<BottleColor> m_colorList = new JModifyComboBox<BottleColor>();
+	protected final JModifyComboBox<BottleColor> m_colorList = new JModifyComboBox<>();
 	protected JModifyTextArea m_comment = new JModifyTextArea();
 	protected final JScrollPane m_js_comment = new JScrollPane(m_comment);
 	protected JCompletionComboBox comboCountry;
@@ -255,9 +256,12 @@ public class MyCellarManageBottles extends JPanel {
        
        		Bouteille b;
        		m_labelExist.setText("");
-       		if ((b = Program.getCave(nPlace - 1).getBouteille(nNumLieu-1, nLine-1, nColumn-1)) != null){
-       			m_labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.getNom())));
-       		}
+			Rangement cave = Program.getCave(nPlace - 1);
+			if(cave != null) {
+				if ((b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1)) != null) {
+					m_labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.getNom())));
+				}
+			}
        		Debug("Column_itemStateChanging... End");
 		});
 	}
@@ -288,6 +292,7 @@ public class MyCellarManageBottles extends JPanel {
 		comboAppelationIGP.setEnabled(enable);
 		if(m_chooseCell != null)
 			m_chooseCell.setEnabled(enable);
+		m_end.setVisible(enable);
 	}
 	
 	protected String getYear() {
@@ -381,7 +386,7 @@ public class MyCellarManageBottles extends JPanel {
 		try {
 			int num_select = m_lieu.getSelectedIndex();
 			RangementUtils.putTabStock();
-			LinkedList<Rangement> rangements = new LinkedList<Rangement>();
+			LinkedList<Rangement> rangements = new LinkedList<>();
 			rangements.add(Program.getCave(num_select - 1));
 			MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
 			Program.open( new File(Program.getPreviewXMLFileName()) );
@@ -410,10 +415,8 @@ public class MyCellarManageBottles extends JPanel {
 			return;
 		SwingUtilities.invokeLater(() -> {
 			Debug("Num_lieu_itemStateChanging...");
-			int nb_ligne = 0;
 			int num_select = m_num_lieu.getSelectedIndex();
 			int lieu_select = m_lieu.getSelectedIndex();
-			boolean isCaisse = false;
 
 			m_labelExist.setText("");
 
@@ -426,9 +429,8 @@ public class MyCellarManageBottles extends JPanel {
 			}
 			Rangement r;
 			if (num_select > 0 && null != (r = Program.getCave( lieu_select - 1))) { //!=0
-				isCaisse = r.isCaisse();
-				if (!isCaisse) {
-					nb_ligne = r.getNbLignes(num_select - 1);
+				if (!r.isCaisse()) {
+					int nb_ligne = r.getNbLignes(num_select - 1);
 					m_line.removeAllItems();
 					m_column.removeAllItems();
 					m_line.addItem("");
@@ -538,8 +540,6 @@ public class MyCellarManageBottles extends JPanel {
 			}
 		}
 		int nbEmpl = rangement.getNbEmplacements();
-		int nbLine = -1;
-		int nbColumn = -1;
 		m_num_lieu.removeAllItems();
 		m_column.removeAllItems();
 		m_line.removeAllItems();
@@ -552,8 +552,8 @@ public class MyCellarManageBottles extends JPanel {
 		if(!isCaisse) {
 			for(int i = 1; i<= nbEmpl; i++)
 				m_num_lieu.addItem(Integer.toString(i));
-			nbLine = rangement.getNbLignes(bottle.getNumLieu()-1);
-			nbColumn = rangement.getNbColonnes(bottle.getNumLieu()-1, bottle.getLigne()-1);
+			int nbLine = rangement.getNbLignes(bottle.getNumLieu()-1);
+			int nbColumn = rangement.getNbColonnes(bottle.getNumLieu()-1, bottle.getLigne()-1);
 			for(int i = 1; i<= nbLine; i++)
 				m_line.addItem(Integer.toString(i));
 			for(int i = 1; i<= nbColumn; i++)

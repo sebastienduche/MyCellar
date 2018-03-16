@@ -46,8 +46,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 22.8
- * @since 08/03/18
+ * @version 22.9
+ * @since 16/03/18
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -974,11 +974,12 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						.color(color)
 						.vignoble(country, vignoble, aoc, igp, null).build();
 					Debug("Replacing bottle...");
-					if (m_bmodify) {
+					//if (m_bmodify) {
+						m_laBouteille.update(tmp);
 						// Remplacement de la bouteille
 						Program.getStorage().addHistory(History.MODIFY, tmp);
-						Program.getStorage().replaceWineAll(tmp, tmp.getNumLieu(), tmp.getLigne(), tmp.getColonne());
-					}
+						//Program.getStorage().replaceWineAll(tmp, tmp.getNumLieu(), tmp.getLigne(), tmp.getColonne());
+					//}
 					m_bbottle_add = true;
 					resetValues();
 					if (m_half.getItemCount() > 0) {
@@ -986,8 +987,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					}
 					m_labelStillToAdd.setText("");
 				}
-				else
-				{
+				else {
 					// Modification de bouteilles dans Armoire sans changement de lieu
 					Debug("Modifying multiple bottles in Armoire without changing place");
 					// Modification sans changement de lieu 11/05/08

@@ -8,14 +8,13 @@
 
 package mycellar;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -23,8 +22,8 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 25/10/17
+ * @version 0.7
+ * @since 16/03/18
  */
 
 /**
@@ -61,25 +60,25 @@ public class History {
     @XmlElement(required = true)
     protected String date;
     protected int type;
-    protected Date time;
+    private Date time;
     @XmlElement(name = "Bouteille", required = true)
     protected Bouteille bouteille;
 	
-	public final static int ADD = 0;
-    public final static int MODIFY = 1;
-    public final static int DEL = 2;
+	  public static final int ADD = 0;
+    public static final int MODIFY = 1;
+    public static final int DEL = 2;
 	
 	/**
    * History: Contructeur avec une bouteille et un type d'action
    *
-   * @param _oBottle Bouteille
-   * @param _nType int
+   * @param bouteille Bouteille
+   * @param type int
    */
   public History(Bouteille bouteille, int type) {
     this.bouteille = bouteille;
     this.type = type;
     Calendar oCal = Calendar.getInstance();
-    this.time = oCal.getTime();
+    time = oCal.getTime();
     date = "";
     if (oCal.get(Calendar.DATE) < 10) {
       date = "0";

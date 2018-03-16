@@ -13,7 +13,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -25,8 +24,8 @@ import java.util.GregorianCalendar;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.8
- * @since 15/03/18
+ * @version 3.9
+ * @since 16/03/18
  */
 
 /**
@@ -90,7 +89,6 @@ public class Bouteille implements Serializable{
 
 	private static final long serialVersionUID = 7443323147347096230L;
 
-	private static int generatedValue = 0;
 	private int id;
 
 	@XmlElement(required = true)
@@ -126,9 +124,8 @@ public class Bouteille implements Serializable{
 	@XmlElement(required = false)
 	protected String color;
 
-	public static int prix_max = 0;
-	public static int NON_VINTAGE_INT = 9999;
-	public static String NON_VINTAGE = "NV";
+	public static final int NON_VINTAGE_INT = 9999;
+	public static final String NON_VINTAGE = "NV";
 
 	/**
 	 * Bouteille: Constructeur d'une bouteille vide.
@@ -143,7 +140,7 @@ public class Bouteille implements Serializable{
 	 * Bouteille: Constructeur par copie.
 	 */
 	public Bouteille(Bouteille b) {
-		id = generatedValue++;
+		id = Program.getNewID();
 		nom = b.getNom();
 		annee = b.getAnnee();
 		type = b.getType();
@@ -161,7 +158,7 @@ public class Bouteille implements Serializable{
 	}
 
 	public Bouteille(BouteilleBuilder builder){
-		id = generatedValue++;
+		id = Program.getNewID();
 		nom = builder.nom;
 		annee = builder.annee;
 		type = builder.type;
@@ -695,9 +692,9 @@ public class Bouteille implements Serializable{
 		 setColor(b.getColor());
 		 setVignoble(b.getVignoble());
 	 }
-	 
+
 	 public void updateID() {
-		 generatedValue++;
+		 id = Program.getNewID();
 	 }
 
 	 /**
@@ -885,8 +882,8 @@ public class Bouteille implements Serializable{
 			 return this;
 		 }
 
-		 public BouteilleBuilder appelation(String app) {
-			 this.appellation = app;
+		 public BouteilleBuilder appelation(String appellation) {
+			 this.appellation = appellation;
 			 return this;
 		 }
 

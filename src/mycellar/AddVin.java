@@ -46,8 +46,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 22.9
- * @since 16/03/18
+ * @version 23.0
+ * @since 20/03/18
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -131,13 +131,13 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		        public void keyTyped(KeyEvent e) {
 					if(e.getKeyChar() == ',' || e.getKeyChar() == '.') {
 						e.consume();
-							DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
-							DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
-							char sep = symbols.getDecimalSeparator();
-							String text = m_price.getText();
-							m_price.setText(text+sep);
+						DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
+						DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
+						char sep = symbols.getDecimalSeparator();
+						String text = m_price.getText();
+						m_price.setText(text+sep);
 					}
-				};
+				}
 		});
 
 			m_add.setText(Program.getLabel("Infos071"));
@@ -1530,22 +1530,22 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		private PanelPlace(){
 			setLayout(new MigLayout("","[]30px[]30px[]30px[]30px[grow]30px[]",""));
 			setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
-			this.add(m_labelPlace,"");
-			this.add(m_labelNumPlace,"");
-			this.add(m_labelLine,"");
-			this.add(m_labelColumn,"wrap");
-			this.add(m_lieu,"");
-			this.add(m_num_lieu,"");
-			this.add(m_line,"");
-			this.add(m_column,"");
-			this.add(m_labelExist,"hidemode 3");
-			this.add(m_chooseCell,"alignx right");
-			this.add(m_preview,"alignx right, wrap");
-			this.add(m_avant1,"hidemode 3,split 2");
-			this.add(m_avant2,"hidemode 3");
-			this.add(m_avant3,"hidemode 3");
-			this.add(m_avant4,"hidemode 3");
-			this.add(m_avant5,"hidemode 3");
+			add(m_labelPlace,"");
+			add(m_labelNumPlace,"");
+			add(m_labelLine,"");
+			add(m_labelColumn,"wrap");
+			add(m_lieu,"");
+			add(m_num_lieu,"");
+			add(m_line,"");
+			add(m_column,"");
+			add(m_labelExist,"hidemode 3");
+			add(m_chooseCell,"alignx right");
+			add(m_preview,"alignx right, wrap");
+			add(m_avant1,"hidemode 3,split 2");
+			add(m_avant2,"hidemode 3");
+			add(m_avant3,"hidemode 3");
+			add(m_avant4,"hidemode 3");
+			add(m_avant5,"hidemode 3");
 		}
 	}
 
@@ -1553,7 +1553,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		private static final long serialVersionUID = -4824541234206895953L;
 
 		private PanelMain(){
-			this.setLayout(new MigLayout("","grow","[][][]10px[][grow]10px[][]"));
+			setLayout(new MigLayout("","grow","[][][]10px[][grow]10px[][]"));
 			add(new PanelName(),"growx,wrap");
 			add(new PanelPlace(),"growx,wrap");
 			add(new PanelAttribute(),"growx,split 2");

@@ -1,19 +1,6 @@
 package mycellar.requester.ui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Point;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceMotionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.util.ArrayList;
+import mycellar.Program;
 
 import javax.activation.ActivationDataFlavor;
 import javax.activation.DataHandler;
@@ -27,8 +14,19 @@ import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import mycellar.Program;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DragSource;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -36,8 +34,8 @@ import mycellar.Program;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 13/11/16
+ * @version 0.3
+ * @since 20/03/18
  */
 public class PanelDAndD extends JPanel {
 
@@ -47,15 +45,15 @@ public class PanelDAndD extends JPanel {
 	private boolean isTarget = false;
 	protected ChangeListener listener = MainChangeListener.getChangeListener();
 	
-	private ArrayList<LabelSearch> labels = new ArrayList<LabelSearch>();
+	private final List<LabelSearch> labels = new ArrayList<>();
 
-	public PanelDAndD() {
+	PanelDAndD() {
 		super();
 		addMouseListener(new PanelHandler());
 		setTransferHandler(new PanelLabelTransferHandler());
 	}
 
-	public PanelDAndD(boolean isTarget) {
+	PanelDAndD(boolean isTarget) {
 		super();
 		addMouseListener(new PanelHandler());
 		setTransferHandler(new PanelLabelTransferHandler());
@@ -70,7 +68,7 @@ public class PanelDAndD extends JPanel {
 	public Component add(Component comp) {
 		boolean add = true;
 		if(!isTarget) {
-			if(!labels.contains((LabelSearch)comp))
+			if(!labels.contains(comp))
 				labels.add((LabelSearch) comp);
 			else
 				add = false;
@@ -86,7 +84,7 @@ public class PanelDAndD extends JPanel {
 	public void add(Component comp, Object constraints) {
 		boolean add = true;
 		if(!isTarget) {
-			if(!labels.contains((LabelSearch)comp))
+			if(!labels.contains(comp))
 				labels.add((LabelSearch) comp);
 			else
 				add = false;
@@ -164,21 +162,17 @@ class PanelLabelTransferHandler extends TransferHandler {
 	};
 	private final JWindow window = new JWindow();
 
-	public PanelLabelTransferHandler() {
+	PanelLabelTransferHandler() {
 		localObjectFlavor = new ActivationDataFlavor(
 				PanelDAndD.class, DataFlavor.javaJVMLocalObjectMimeType, "JPanel");
 		window.add(label);
 		window.setAlwaysOnTop(true);
 		window.setBackground(new Color(0,true));
-		DragSource.getDefaultDragSource().addDragSourceMotionListener(
-				new DragSourceMotionListener() {
-					@Override
-					public void dragMouseMoved(DragSourceDragEvent dsde) {
-						Point pt = dsde.getLocation();
-						pt.translate(5, 5); // offset
-						window.setLocation(pt);
-					}
-				});
+		DragSource.getDefaultDragSource().addDragSourceMotionListener( (dsde) -> {
+					Point pt = dsde.getLocation();
+					pt.translate(5, 5); // offset
+					window.setLocation(pt);
+			});
 	}
 	@Override
 	protected Transferable createTransferable(JComponent c) {
@@ -192,7 +186,7 @@ class PanelLabelTransferHandler extends TransferHandler {
 		return new Transferable() {
 			@Override
 			public DataFlavor[] getTransferDataFlavors() {
-				ArrayList<DataFlavor> list = new ArrayList<DataFlavor>();
+				ArrayList<DataFlavor> list = new ArrayList<>();
 				for(DataFlavor f:ss.getTransferDataFlavors()) {
 					list.add(f);
 				}
@@ -201,6 +195,7 @@ class PanelLabelTransferHandler extends TransferHandler {
 				}
 				return list.toArray(dh.getTransferDataFlavors());
 			}
+			@Override
 			public boolean isDataFlavorSupported(DataFlavor flavor) {
 				for (DataFlavor f: getTransferDataFlavors()) {
 					if (flavor.equals(f)) {
@@ -209,6 +204,7 @@ class PanelLabelTransferHandler extends TransferHandler {
 				}
 				return false;
 			}
+			@Override
 			public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
 				if(flavor.equals(localObjectFlavor)) {
 					return dh.getTransferData(flavor);
@@ -246,7 +242,7 @@ class PanelLabelTransferHandler extends TransferHandler {
 		final PanelDAndD target = (PanelDAndD)support.getComponent();
 		try {
 			PanelDAndD src = (PanelDAndD)support.getTransferable().getTransferData(localObjectFlavor);
-			final LabelSearch l = new LabelSearch(((LabelSearch)src.draggingLabel).getPredicate(), ((LabelSearch)src.draggingLabel).getSource());
+			final LabelSearch l = new LabelSearch(((LabelSearch)src.draggingLabel).getPredicate(), src.draggingLabel.getSource());
 			l.setLabel(src.draggingLabel.getLabel());
 			l.setAsKeyword(!target.isTarget());
 			if(target.isTarget()) {
@@ -262,7 +258,7 @@ class PanelLabelTransferHandler extends TransferHandler {
 			return true;
 		} catch(UnsupportedFlavorException ufe) {
 			ufe.printStackTrace();
-		} catch(java.io.IOException ioe) {
+		} catch(IOException ioe) {
 			ioe.printStackTrace();
 		}
 		return false;

@@ -6,6 +6,7 @@ import mycellar.core.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
+import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ItemEvent;
 
@@ -16,14 +17,14 @@ import java.awt.event.ItemEvent;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 02/03/18
+ * @version 1.7
+ * @since 20/03/18
  */
 
 public class MoveLine extends JDialog {
 
 	private final MyCellarLabel label_end = new MyCellarLabel();
-	private final MyCellarComboBox<String> place_cbx = new MyCellarComboBox<>();
+	private final MyCellarComboBox<Rangement> place_cbx = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> num_place_cbx = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> old_line_cbx = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> new_line_cbx = new MyCellarComboBox<>();
@@ -31,14 +32,15 @@ public class MoveLine extends JDialog {
 
 	MoveLine() {
 		setAlwaysOnTop(true);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(Program.getLabel("Infos363"));
 		setLayout(new MigLayout("","[]","[]20px[]10px[][]10px[][]20px[]10px[]"));
 		MyCellarLabel titre = new MyCellarLabel(Program.getLabel("Infos363"));
 		titre.setForeground(Color.red);
 		label_end.setForeground(Color.red);
 		titre.setFont(Program.font_dialog);
-		titre.setHorizontalAlignment(MyCellarLabel.CENTER);
-		label_end.setHorizontalAlignment(MyCellarLabel.CENTER);
+		titre.setHorizontalAlignment(SwingConstants.CENTER);
+		label_end.setHorizontalAlignment(SwingConstants.CENTER);
 
 		MyCellarLabel label_title = new MyCellarLabel(Program.getLabel("Infos364"));
 		MyCellarLabel label_place = new MyCellarLabel(Program.getLabel("Infos081"));
@@ -49,9 +51,11 @@ public class MoveLine extends JDialog {
 		MyCellarButton validate = new MyCellarButton(Program.getLabel("Infos315"));
 		MyCellarButton cancel = new MyCellarButton(Program.getLabel("Infos019"));
 
-		place_cbx.addItem("");
+		place_cbx.addItem(Program.EMPTY_PLACE);
 		for (Rangement r : Program.getCave()) {
-			place_cbx.addItem(r.getNom());
+			if(!r.isCaisse()) {
+				place_cbx.addItem(r);
+			}
 		}
 		num_place_cbx.setEnabled(false);
 		old_line_cbx.setEnabled(false);
@@ -61,37 +65,37 @@ public class MoveLine extends JDialog {
 			int nOldSelected = old_line_cbx.getSelectedIndex();
 			int nNewSelected = new_line_cbx.getSelectedIndex();
 			if ( nNewSelected == 0 || nOldSelected == nNewSelected ) {
-				Erreur.showSimpleErreur(Program.getError("Error192"));
+				Erreur.showSimpleErreur(this, Program.getError("Error192"));
 				return;
 			}
 			int nNumLieu = num_place_cbx.getSelectedIndex();
-			int nLieuSelected = place_cbx.getSelectedIndex();
-			Rangement r = Program.getCave(nLieuSelected - 1);
-			if (r != null) {
+			Rangement r = (Rangement)place_cbx.getSelectedItem();
+			if (r != null && !Program.EMPTY_PLACE.equals(r)) {
 				int nBottle = r.getNbCaseUseLigne(nNumLieu - 1, nNewSelected - 1);
 				int nNbBottle = r.getNbCaseUseLigne(nNumLieu - 1, nOldSelected - 1);
 
 				int nOldColumnCount = r.getNbColonnes(nNumLieu - 1, nOldSelected - 1);
 				int nNewColumnCount = r.getNbColonnes(nNumLieu - 1, nNewSelected - 1);
 				if( nOldColumnCount > nNewColumnCount && nNbBottle > nNewColumnCount ) {
-					Erreur.showSimpleErreur(Program.getError("Error194"));
+					Erreur.showSimpleErreur(this, Program.getError("Error194"));
 					return;
 				}
 				if ( nNbBottle == 0 ) {
-					Erreur.showSimpleErreur(Program.getError("Error195"));
-				} else if ( nBottle > 0 ) {
-					Erreur.showSimpleErreur(Program.getError("Error193"));
+					Erreur.showSimpleErreur(this, Program.getError("Error195"));
+					return;
 				}
-				else {
-					for( int i=1; i<=r.getNbColonnes(nNumLieu - 1, nOldSelected - 1); i++) {
-						Bouteille bottle = r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1);
-						if( bottle != null ) {
-							Program.getStorage().addHistory(History.MODIFY, bottle);
-							r.moveLineWine(bottle, nNewSelected);
-						}
+				if ( nBottle > 0 ) {
+					Erreur.showSimpleErreur(this, Program.getError("Error193"));
+					return;
+				}
+				for( int i=1; i<=r.getNbColonnes(nNumLieu - 1, nOldSelected - 1); i++) {
+					Bouteille bottle = r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1);
+					if( bottle != null ) {
+						Program.getStorage().addHistory(History.MODIFY, bottle);
+						r.moveLineWine(bottle, nNewSelected);
 					}
-					label_end.setText(Program.getLabel("Infos366"));
 				}
+				label_end.setText(Program.getLabel("Infos366"));
 			}
 		});
 		cancel.addActionListener((e) -> close());
@@ -99,30 +103,25 @@ public class MoveLine extends JDialog {
 		num_place_cbx.addItemListener(this::num_lieu_itemStateChanged);
 		old_line_cbx.addItemListener(this::old_line_itemStateChanged);
 
-		try {
-			add(titre,"align center, span 3, wrap");
-			add(label_title,"span 3, wrap");
-			add(label_place,"");
-			add(label_num_place, "");
-			add(label_old_line,"wrap");
-			add(place_cbx,"");
-			add(num_place_cbx,"");
-			add(old_line_cbx,"wrap");
-			add(label_new_line,"wrap");
-			add(new_line_cbx,"wrap");
-			add(label_end,"span 3,wrap");
-			add(validate,"span 3, split, align center");
-			add(cancel,"");
+		add(titre,"align center, span 3, wrap");
+		add(label_title,"span 3, wrap");
+		add(label_place,"");
+		add(label_num_place, "");
+		add(label_old_line,"wrap");
+		add(place_cbx,"");
+		add(num_place_cbx,"");
+		add(old_line_cbx,"wrap");
+		add(label_new_line,"wrap");
+		add(new_line_cbx,"wrap");
+		add(label_end,"span 3,wrap");
+		add(validate,"span 3, split, align center");
+		add(cancel,"");
 
-			setSize(320,280);
-			setResizable(true);
-			setIconImage(MyCellarImage.ICON.getImage());
-			setLocationRelativeTo(null);
-			setVisible(true);
-		}
-		catch (Exception ex) {
-		}
-
+		setSize(320,280);
+		setResizable(true);
+		setIconImage(MyCellarImage.ICON.getImage());
+		setLocationRelativeTo(null);
+		setVisible(true);
 	}
 
 	/**
@@ -140,47 +139,38 @@ public class MoveLine extends JDialog {
 	private void lieu_itemStateChanged(ItemEvent e) {
 		Debug("Lieu_itemStateChanging...");
 		label_end.setText("");
-		try {
-			int nb_emplacement = 0;
-			int lieu_select = place_cbx.getSelectedIndex();
 
-			if (lieu_select == 0) {
-				num_place_cbx.setEnabled(false);
-				old_line_cbx.setEnabled(false);
-				new_line_cbx.setEnabled(false);
-			}
-			else {
-				num_place_cbx.setEnabled(true);
-			}
-
-			boolean bIsCaisse = false;
-			Rangement r;
-			if (lieu_select > 0 && (r = Program.getCave(lieu_select - 1)) != null) {
-				nb_emplacement = r.getNbEmplacements();
-				bIsCaisse = r.isCaisse();
-			}
-			if (bIsCaisse) { //Type caisse
-				num_place_cbx.setEnabled(false);
-				old_line_cbx.setEnabled(false);
-				new_line_cbx.setEnabled(false);
-			}
-
-			num_place_cbx.removeAllItems();
-			old_line_cbx.removeAllItems();
-			new_line_cbx.removeAllItems();
-			num_place_cbx.addItem("");
-			for (int i = 1; i <= nb_emplacement; i++) {
-				num_place_cbx.addItem(Integer.toString(i));
-			}
-			num_place_cbx.setVisible(true);
-			old_line_cbx.setVisible(true);
-			new_line_cbx.setVisible(true);
-			repaint();
-			setVisible(true);
+		if (place_cbx.getSelectedIndex() == 0) {
+			num_place_cbx.setEnabled(false);
+			old_line_cbx.setEnabled(false);
+			new_line_cbx.setEnabled(false);
+			return;
 		}
-		catch (Exception a) {
-			Program.showException(a);
+
+		int nb_emplacement = 0;
+		num_place_cbx.setEnabled(true);
+		boolean bIsCaisse = false;
+		Rangement r;
+		if ((r = (Rangement)place_cbx.getSelectedItem()) != null) {
+			nb_emplacement = r.getNbEmplacements();
+			bIsCaisse = r.isCaisse();
 		}
+		if (bIsCaisse) { //Type caisse
+			num_place_cbx.setEnabled(false);
+			old_line_cbx.setEnabled(false);
+			new_line_cbx.setEnabled(false);
+		}
+
+		num_place_cbx.removeAllItems();
+		old_line_cbx.removeAllItems();
+		new_line_cbx.removeAllItems();
+		num_place_cbx.addItem("");
+		for (int i = 1; i <= nb_emplacement; i++) {
+			num_place_cbx.addItem(Integer.toString(i));
+		}
+		num_place_cbx.setVisible(true);
+		old_line_cbx.setVisible(true);
+		new_line_cbx.setVisible(true);
 	}
 
 	/**
@@ -204,21 +194,18 @@ public class MoveLine extends JDialog {
 		Debug("Num_lieu_itemStateChanging...");
 		try {
 			label_end.setText("");
-			int nb_ligne = 0;
 			int num_select = num_place_cbx.getSelectedIndex();
-			int lieu_select = place_cbx.getSelectedIndex();
 
-			if (num_select == 0) {
+			if (place_cbx.getSelectedIndex() == 0) {
 				old_line_cbx.setEnabled(false);
 				new_line_cbx.setEnabled(false);
+				return;
 			}
-			else {
-				old_line_cbx.setEnabled(true);
-			}
+			old_line_cbx.setEnabled(true);
 			Rangement r;
-			if (num_select > 0 && (r = Program.getCave(lieu_select - 1)) != null) { //!=0
+			if ((r = (Rangement)place_cbx.getSelectedItem()) != null) {
 				if (!r.isCaisse()) {
-					nb_ligne = r.getNbLignes(num_select - 1);
+					int nb_ligne = r.getNbLignes(num_select - 1);
 					old_line_cbx.removeAllItems();
 					new_line_cbx.removeAllItems();
 					old_line_cbx.addItem("");
@@ -228,8 +215,6 @@ public class MoveLine extends JDialog {
 						new_line_cbx.addItem(Integer.toString(i));
 					}
 				}
-				repaint();
-				setVisible(true);
 			}
 		}
 		catch (Exception a) {

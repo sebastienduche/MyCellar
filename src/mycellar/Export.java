@@ -45,8 +45,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.0
- * @since 13/03/18
+ * @version 7.1
+ * @since 20/03/18
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -435,6 +435,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			if (nom.isEmpty()) {
 				end.setText("");
 				Erreur.showSimpleErreur(Program.getError("Error106")); //Veuillez saisir un nom de fichier.
+				valider.setEnabled(true);
 				return;
 			}
 
@@ -446,12 +447,14 @@ public class Export extends JPanel implements ITabListener, Runnable {
 				if (!extension.equalsIgnoreCase(".xml")) {
 					end.setText("");
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), extension), true); //L'extension du fichier n'est pas XML
+					valider.setEnabled(true);
 					return;
 				}
 				if (!isJFile) {
 					if (nom.contains("\"") || nom.contains(";") || nom.contains("<") || nom.contains(">") || nom.contains("?") || nom.contains("|") || nom.contains("*")) {
 						end.setText("");
 						Erreur.showSimpleErreur(Program.getError("Error126"));
+						valider.setEnabled(true);
 						return;
 					}
 				}
@@ -483,6 +486,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 					if (extension.compareToIgnoreCase(".htm") != 0 && extension.compareToIgnoreCase("html") != 0) {
 						end.setText("");
 						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), extension), true); //L'extension du fichier n'est pas HTML
+						valider.setEnabled(true);
 						return;
 					}
 					file.setText(path);
@@ -500,6 +504,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 					if (extension.compareToIgnoreCase(".csv") != 0) {
 						end.setText("");
 						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error108"), extension), true); //L'extension du fichier n'est pas CSV
+						valider.setEnabled(true);
 						return;
 					}
 					file.setText(path);
@@ -517,6 +522,8 @@ public class Export extends JPanel implements ITabListener, Runnable {
 				if (extension.compareToIgnoreCase(".xls") != 0 && extension.compareToIgnoreCase(".ods") != 0) {
 					end.setText("");
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), extension), true); //L'extension du fichier n'est pas CSV
+					valider.setEnabled(true);
+
 					return;
 				}
 				file.setText(path);
@@ -535,6 +542,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 				if (extension.compareToIgnoreCase(".pdf") != 0) {
 					end.setText("");
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error157"), extension), true); //L'extension du fichier n'est pas PDF
+					valider.setEnabled(true);
 					return;
 				}
 				file.setText(path);
@@ -662,7 +670,6 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 				}
 			}
 			catch (Exception ee) {}
-			;
 			try {
 				jtf = (JTextField) objet1;
 				if (e.getButton() == MouseEvent.BUTTON3) {

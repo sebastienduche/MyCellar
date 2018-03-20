@@ -6,6 +6,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import java.awt.Component;
 
 
 /**
@@ -14,8 +15,8 @@ import javax.swing.JPanel;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.0
- * @since 01/03/18
+ * @version 2.1
+ * @since 20/03/18
  */
 public class Erreur {
 	private final MyCellarLabel textControl1 = new MyCellarLabel();
@@ -40,6 +41,16 @@ public class Erreur {
 	 */
 	public static void showSimpleErreur(String texte) {
 			JOptionPane.showMessageDialog(null, texte, Program.getError("Error015"), JOptionPane.ERROR_MESSAGE);
+	}
+
+	/**
+	 * Erreur: Constructeur d'un message d'erreur simple.
+	 *
+	 * @param target
+	 * @param texte
+	 */
+	public static void showSimpleErreur(Component target, String texte) {
+		JOptionPane.showMessageDialog(target, texte, Program.getError("Error015"), JOptionPane.ERROR_MESSAGE);
 	}
 
 	/**

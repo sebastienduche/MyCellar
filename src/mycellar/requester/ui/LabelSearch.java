@@ -1,16 +1,14 @@
 package mycellar.requester.ui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
+import mycellar.core.MyCellarLabel;
+import mycellar.requester.IPredicate;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
-
-import mycellar.core.MyCellarLabel;
-import mycellar.requester.IPredicate;
-import mycellar.requester.ui.PanelDAndD;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -18,24 +16,26 @@ import mycellar.requester.ui.PanelDAndD;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 03/08/17
+ * @version 0.3
+ * @since 20/03/18
  */
 class LabelSearch extends JPanel {
 
 	private static final long serialVersionUID = 3361283505652395494L;
 	private String label;
 	private Object value;
-	private IPredicate<?> predicate;
+	private int type;
+	private final IPredicate<?> predicate;
 	private boolean copy = false;
-	private MyCellarLabel MyCellarLabel = new MyCellarLabel();
-	private PanelCloseButton panelClose;
+	private final MyCellarLabel MyCellarLabel = new MyCellarLabel();
+	private final PanelCloseButton panelClose;
 	private PanelDAndD source;
 
-	public LabelSearch(IPredicate<?> predicate) {
+	private LabelSearch(IPredicate<?> predicate) {
 		super();
-		this.label = predicate.getName();
+		label = predicate.getName();
 		this.predicate = predicate;
+		type = predicate.getType();
 		MyCellarLabel.setText(label);
 		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED, Color.gray, Color.white));
 		setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
@@ -55,7 +55,7 @@ class LabelSearch extends JPanel {
 		panelClose.setVisible(false);
 	}
 	
-	public LabelSearch(IPredicate<?> predicate, PanelDAndD source) {
+	LabelSearch(IPredicate<?> predicate, PanelDAndD source) {
 		this(predicate);
 		this.source = source;
 	}
@@ -89,6 +89,10 @@ class LabelSearch extends JPanel {
 		return value;
 	}
 
+	public int getType() {
+		return type;
+	}
+
 	public void setValue(Object value) {
 		this.value = value;
 		setLabel();
@@ -99,6 +103,7 @@ class LabelSearch extends JPanel {
 			return;
 
 		value = predicate.askforValue();
+		type = predicate.getType();
 		setLabel(predicate.getName());
 	}
 

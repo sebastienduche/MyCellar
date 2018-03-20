@@ -11,8 +11,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 02/03/18
+ * @version 0.7
+ * @since 20/03/18
  */
 
 public class CreerRangementTableModel extends AbstractTableModel {
@@ -94,10 +94,9 @@ public class CreerRangementTableModel extends AbstractTableModel {
 
 	@Override
 	public String getColumnName(int col) {
-		Column c = columns.get(col);
-		if(c == null)
+		if (col >= columns.size())
 			return "";
-		return c.getLabel();
+		return columns.get(col).getLabel();
 	}
 
 	@Override
@@ -171,10 +170,8 @@ public class CreerRangementTableModel extends AbstractTableModel {
 		mapPart = new HashMap<>();
 		int index = 0;
 		int numPart = 0;
-		for(Part p: rows)
-		{
-			if(sameColumnNumber)
-			{
+		for(Part p: rows) {
+			if(sameColumnNumber) {
 				// On positionne le nombre de colonne de la première ligne sur toute les lignes
 				for( Row r: p.getRows())
 					r.setCol(p.getRow(0).getCol());

@@ -72,8 +72,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.5
- * @since 16/03/18
+ * @version 17.6
+ * @since 20/03/18
  */
 
 public class Program {
@@ -139,6 +139,7 @@ public class Program {
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
 	private static int nextID = -1;
+	public static final Rangement EMPTY_PLACE = new Rangement("");
 
 	/**
 	 * init

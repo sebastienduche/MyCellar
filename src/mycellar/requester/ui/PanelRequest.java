@@ -1,19 +1,16 @@
 package mycellar.requester.ui;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import mycellar.Program;
 import mycellar.core.MyCellarLabel;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.Predicates;
 import net.miginfocom.swing.MigLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**
@@ -22,31 +19,27 @@ import net.miginfocom.swing.MigLayout;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 03/08/17
+ * @version 0.4
+ * @since 20/03/18
  */
 public class PanelRequest extends JPanel {
 
 	private static final long serialVersionUID = -1239228393406479587L;
 
-	private PanelDAndD panelRequest;
-	private MyCellarLabel labelError = new MyCellarLabel();
+	private final PanelDAndD panelRequest;
+	private final MyCellarLabel labelError = new MyCellarLabel();
 
 	public PanelRequest() {
 
-		MainChangeListener.setChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				if(!CollectionFilter.validatePredicates(getPredicates())) {
-					labelError.setText(CollectionFilter.getError());
-					labelError.setVisible(true);
-				} else {
-					labelError.setText("");
-					labelError.setVisible(false);
-				}
+		MainChangeListener.setChangeListener((e) -> {
+			if(!CollectionFilter.validatePredicates(getPredicates())) {
+				labelError.setText(CollectionFilter.getError());
+				labelError.setVisible(true);
+			} else {
+				labelError.setText("");
+				labelError.setVisible(false);
 			}
 		});
-
 
 		setLayout(new MigLayout("","[grow][grow]","[][]"));
 		PanelDAndD panelKeyword = new PanelDAndD();
@@ -80,6 +73,9 @@ public class PanelRequest extends JPanel {
 		label = new LabelSearch(Predicates.capacity, panelKeyword);
 		label.setCopy(true);
 		panelKeyword.add(label);
+		label = new LabelSearch(Predicates.price, panelKeyword);
+		label.setCopy(true);
+		panelKeyword.add(label);
 		panelKeyword.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Parameters")));
 		panelOperator.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Operators")));
 		add(panelKeyword, "grow");
@@ -97,12 +93,12 @@ public class PanelRequest extends JPanel {
 	public Collection<Predicates> getPredicates() {
 		if(panelRequest == null)
 			return null;
-		Collection<Predicates> predicates = new ArrayList<Predicates>();
+		Collection<Predicates> predicates = new ArrayList<>();
 		for(int i=0; i<panelRequest.getComponentCount(); i++) {
 			Object obj = panelRequest.getComponent(i);
 			if(obj instanceof LabelSearch) {
 				LabelSearch label = (LabelSearch)obj;
-				predicates.add(new Predicates(label.getPredicate(), label.getValue()));
+				predicates.add(new Predicates(label.getPredicate(), label.getValue(), label.getType()));
 			}
 		}
 		return predicates;

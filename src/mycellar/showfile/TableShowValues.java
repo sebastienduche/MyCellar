@@ -21,8 +21,8 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 3.4
- * @since 01/03/18
+ * @version 3.5
+ * @since 21/03/18
  */
 
 public class TableShowValues extends AbstractTableModel {
@@ -47,7 +47,7 @@ public class TableShowValues extends AbstractTableModel {
   protected Boolean[] values = null;
   static final long serialVersionUID = 020406;
 
-  protected List<Bouteille> monVector = new LinkedList<>();
+  List<Bouteille> monVector = new LinkedList<>();
 
   /**
    * getRowCount
@@ -131,7 +131,7 @@ public class TableShowValues extends AbstractTableModel {
    */
   @Override
   public boolean isCellEditable(int row, int column) {
-    return false;
+    return ETAT == column;
   }
 
   /**
@@ -146,7 +146,7 @@ public class TableShowValues extends AbstractTableModel {
 
     Bouteille b = monVector.get(row);
     switch (column) {
-      case 0:
+      case ETAT:
         values[row] = (Boolean) value;
         break;
       case NAME:
@@ -212,7 +212,7 @@ public class TableShowValues extends AbstractTableModel {
             Erreur.showSimpleErreur(Program.getError("Error196"));
             bError = true;
           }
-        } else if (column == COLUMN) {
+        } else {
           try {
             column1 = Integer.parseInt((String) value);
             nValueToCheck = column1;

@@ -58,8 +58,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 5.2
- * @since 15/03/18
+ * @version 5.3
+ * @since 21/03/18
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -374,7 +374,6 @@ public class ShowFile extends JPanel implements ITabListener {
   private void jbInit() {
 
     m_oTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    m_oTitleLabel.setText(Program.getLabel("Infos325")); //"Contenu du fichier");
     m_oResultLabel.setHorizontalAlignment(SwingConstants.CENTER);
     m_oResultLabel.setForeground(Color.red);
     setLayout(new MigLayout("", "[][grow]", "[]10px[grow][]"));
@@ -426,7 +425,6 @@ public class ShowFile extends JPanel implements ITabListener {
     }
 
     // Remplissage de la table
-    tv = new TableShowValues();
     if (showType == ShowType.TRASH) {
       tv = new TableShowValues();
       tv.setBottles(Program.getTrash());
@@ -555,11 +553,9 @@ public class ShowFile extends JPanel implements ITabListener {
 
 
   private void delete_actionPerformed(ActionEvent e) {
-
-    LinkedList<Bouteille> toDeleteList = new LinkedList<>();
-
     try {
       int max_row = tv.getRowCount();
+      LinkedList<Bouteille> toDeleteList = new LinkedList<>();
       if (max_row != 0) {
         int row = 0;
         do {
@@ -594,11 +590,11 @@ public class ShowFile extends JPanel implements ITabListener {
               Program.getStorage().deleteWine(b);
               Program.setToTrash(b);
             }
+            RangementUtils.putTabStock();
           }
         }
         refresh();
       }
-      repaint();
     } catch (Exception exc) {
       Program.showException(exc);
     }
@@ -658,7 +654,6 @@ public class ShowFile extends JPanel implements ITabListener {
         }
         refresh();
       }
-      repaint();
     } catch (Exception exc) {
       Program.showException(exc);
     }

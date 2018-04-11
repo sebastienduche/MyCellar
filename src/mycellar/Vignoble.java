@@ -25,8 +25,8 @@ import java.io.Serializable;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 02/03/18
+ * @version 0.8
+ * @since 11/04/18
  */
 
 /**
@@ -287,6 +287,7 @@ public class Vignoble implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		sb.append("Vignoble [country=");
 		if(country != null) {
 			Country c = Countries.findByIdOrLabel(country);
 			if(c != null)
@@ -294,19 +295,14 @@ public class Vignoble implements Serializable {
 			else
 				sb.append(country);
 		}
-		sb.append("-");
+		sb.append(" name=");
 		sb.append(name);
-		sb.append("-");
-		if(aoc != null)
-			sb.append(aoc);
-		sb.append("-");
-		if(aop != null)
-			sb.append(aop);
-		/*else
-			sb.append(aoc);*/
-		sb.append("-");
-		if(igp != null)
-			sb.append(igp);
+		sb.append(" aoc=");
+		sb.append(aoc);
+		sb.append(" aop=");
+		sb.append(aop);
+		sb.append(" igp=");
+		sb.append(igp).append("]");
 		return sb.toString();
 	}
 

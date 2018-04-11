@@ -8,7 +8,14 @@
 
 package mycellar;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -17,9 +24,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.LinkedList;
 
 /**
@@ -28,12 +40,9 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 02/03/18
- */
-
-
-/**
+ * @version 0.7
+ * @since 11/04/18
+ *
  * <p>Java class for anonymous complex type.
  *
  * <p>The following schema fragment specifies the expected content contained within this class.
@@ -87,9 +96,9 @@ public class ListeBouteille {
 	 */
 	public LinkedList<Bouteille> getBouteille() {
 		if (bouteille == null) {
-			bouteille = new LinkedList<Bouteille>();
+			bouteille = new LinkedList<>();
 		}
-		return this.bouteille;
+		return bouteille;
 	}
 
 	public void resetBouteille() {
@@ -99,36 +108,109 @@ public class ListeBouteille {
 	public static boolean loadXML() {
 		Debug("Loading JAXB File");
 		File f = new File(Program.getXMLBottlesFileName());
+		return loadXML(f);
+	}
+
+	public static boolean loadXML(File f) {
+		Debug("Loading XML File "+f.getAbsolutePath());
 		if(!f.exists())
 			return false;
 		try {
-			JAXBContext jc = JAXBContext.newInstance(ObjectFactory.class);
-			Unmarshaller u = jc.createUnmarshaller();
-			ListeBouteille lb =
-					(ListeBouteille)u.unmarshal(new FileInputStream(f));
-			Program.getStorage().setListBouteilles(lb);
-		} catch( Exception e ) {
+			unMarshalXML(f);
+			return true;
+		} catch (Exception e) {
+			Debug("ERROR: Unable to Unmarshall JAXB File");
+			Program.showException(e, false);
+		}
+		Debug("Manual loading of the XML file");
+		try {
+			manualLoadXML(f);
+		} catch (ParserConfigurationException | IOException | SAXException e) {
+			Debug("ERROR: Unable to load manually File");
 			Program.showException(e);
 			return false;
 		}
-		Debug("Loading JAXB File Done");
 		return true;
 	}
 
-	public static void loadXML(File f) {
-		Debug("Loading JAXB File "+f.getAbsolutePath());
-		if(!f.exists())
-			return;
-		try {
-			JAXBContext jc = JAXBContext.newInstance(ObjectFactory.class);
-			Unmarshaller u = jc.createUnmarshaller();
-			ListeBouteille lb =
-					(ListeBouteille)u.unmarshal(new FileInputStream(f));
-			Program.getStorage().addBouteilles(lb);
-		} catch( Exception e ) {
-			Program.showException(e);
-			return;
+	private static void manualLoadXML(File f) throws ParserConfigurationException, IOException, SAXException {
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document doc = dBuilder.parse(f);
+		doc.getDocumentElement().normalize();
+
+		ListeBouteille listeBouteille = new ListeBouteille();
+		NodeList bouteilles = doc.getElementsByTagName("Bouteille");
+
+		for (int i = 0; i < bouteilles.getLength(); i++) {
+			Node node = bouteilles.item(i);
+
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element bouteilleElem = (Element) node;
+				NodeList nodeId = bouteilleElem.getElementsByTagName("id");
+				final int id = Integer.parseInt(nodeId.item(0).getTextContent());
+				NodeList nodeName = bouteilleElem.getElementsByTagName("nom");
+				final String name = nodeName.item(0).getTextContent();
+				NodeList nodeAnnee = bouteilleElem.getElementsByTagName("annee");
+				final String year = nodeAnnee.item(0).getTextContent();
+				NodeList nodeType = bouteilleElem.getElementsByTagName("type");
+				final String type = nodeType.item(0).getTextContent();
+				NodeList nodePlace = bouteilleElem.getElementsByTagName("emplacement");
+				final String place = nodePlace.item(0).getTextContent();
+				NodeList nodeNumLieu = bouteilleElem.getElementsByTagName("num_lieu");
+				final int numLieu = Integer.parseInt(nodeNumLieu.item(0).getTextContent());
+				NodeList nodeLine = bouteilleElem.getElementsByTagName("ligne");
+				final int line = Integer.parseInt(nodeLine.item(0).getTextContent());
+				NodeList nodeColumn = bouteilleElem.getElementsByTagName("colonne");
+				final int column = Integer.parseInt(nodeColumn.item(0).getTextContent());
+				NodeList nodePrice = bouteilleElem.getElementsByTagName("prix");
+				final String price = nodePrice.item(0).getTextContent();
+				NodeList nodeComment = bouteilleElem.getElementsByTagName("comment");
+				final String comment = nodeComment.item(0).getTextContent();
+				NodeList nodeMaturity = bouteilleElem.getElementsByTagName("maturity");
+				final String maturity = nodeMaturity.item(0).getTextContent();
+				NodeList nodeParker = bouteilleElem.getElementsByTagName("parker");
+				final String parker = nodeParker.item(0).getTextContent();
+				NodeList nodeColor = bouteilleElem.getElementsByTagName("color");
+				final String color = nodeColor.item(0).getTextContent();
+				NodeList nodeVignoble = bouteilleElem.getElementsByTagName("vignoble");
+				final Element vignoble = (Element) nodeVignoble.item(0);
+				NodeList nodeCountry = vignoble.getElementsByTagName("country");
+				final String country = nodeCountry.item(0).getTextContent();
+				NodeList nodeVigobleName = vignoble.getElementsByTagName("name");
+				String vignobleName, AOC, IGP, AOP;
+				vignobleName = AOC = AOP = IGP = "";
+				if (nodeVignoble.getLength() == 1) {
+					vignobleName = nodeVigobleName.item(0).getTextContent();
+					NodeList nodeAOC = vignoble.getElementsByTagName("AOC");
+					if (nodeAOC.getLength() == 1) {
+						AOC = nodeAOC.item(0).getTextContent();
+					}
+					NodeList nodeIGP = vignoble.getElementsByTagName("IGP");
+					if (nodeIGP.getLength() == 1) {
+						IGP = nodeIGP.item(0).getTextContent();
+					}
+					NodeList nodeAOP = vignoble.getElementsByTagName("AOP");
+					if (nodeAOP.getLength() == 1) {
+						AOP = nodeAOP.item(0).getTextContent();
+					}
+				}
+				Bouteille bouteille = new Bouteille.BouteilleBuilder(name).id(id).annee(year).type(type).place(place).numPlace(numLieu)
+						.line(line).column(column).price(price).comment(comment).maturity(maturity).parker(parker)
+						.color(color).vignoble(country, vignobleName, AOC, IGP, AOP).build();
+				listeBouteille.getBouteille().add(bouteille);
+			}
 		}
+		Program.getStorage().setListBouteilles(listeBouteille);
+		Debug("Loading Manually File Done");
+	}
+
+	private static void unMarshalXML(File f) throws JAXBException, FileNotFoundException {
+		JAXBContext jc = JAXBContext.newInstance(ObjectFactory.class);
+		Unmarshaller u = jc.createUnmarshaller();
+		ListeBouteille lb =
+				(ListeBouteille)u.unmarshal(new FileInputStream(f));
+		Program.getStorage().addBouteilles(lb);
 		Debug("Loading JAXB File Done");
 	}
 

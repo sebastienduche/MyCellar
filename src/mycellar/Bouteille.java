@@ -24,11 +24,9 @@ import java.util.GregorianCalendar;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.9
- * @since 16/03/18
- */
+ * @version 4.0
+ * @since 11/04/18
 
-/**
  * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
@@ -46,13 +44,9 @@ import java.util.GregorianCalendar;
  *         &lt;element name="ligne" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="colonne" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="prix" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="other1" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="other2" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="other3" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="comment" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="maturity" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="parker" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="appellation" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element ref="{}vignoble"/>
  *         &lt;element name="color" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
@@ -74,13 +68,9 @@ import java.util.GregorianCalendar;
 		"ligne",
 		"colonne",
 		"prix",
-		"other1",
-		"other2",
-		"other3",
 		"comment",
 		"maturity",
 		"parker",
-		"appellation",
 		"vignoble",
 		"color",
 })
@@ -105,20 +95,12 @@ public class Bouteille implements Serializable{
 	protected int colonne;
 	@XmlElement(required = true)
 	protected String prix;
-	@XmlElement(required = false)
-	protected String other1;
-	@XmlElement(required = false)
-	protected String other2;
-	@XmlElement(required = false)
-	protected String other3;
 	@XmlElement(required = true)
 	protected String comment;
 	@XmlElement(required = true)
 	protected String maturity;
 	@XmlElement(required = true)
 	protected String parker;
-	@XmlElement(required = true)
-	protected String appellation;
 	@XmlElement(required = false)
 	protected Vignoble vignoble;
 	@XmlElement(required = false)
@@ -131,8 +113,7 @@ public class Bouteille implements Serializable{
 	 * Bouteille: Constructeur d'une bouteille vide.
 	 */
 	public Bouteille() {
-		nom = type = emplacement = prix = comment = annee = maturity = parker = "";
-		appellation = color = "";
+		nom = type = emplacement = prix = comment = annee = maturity = parker = color = "";
 		vignoble = null;
 	}
 
@@ -152,13 +133,16 @@ public class Bouteille implements Serializable{
 		comment = b.getComment();
 		maturity = b.getMaturity();
 		parker = b.getParker();
-		appellation = b.getAppellation();
 		color = b.getColor();
 		vignoble = b.getVignoble();
 	}
 
 	public Bouteille(BouteilleBuilder builder){
-		id = Program.getNewID();
+		if (builder.id == 0) {
+			id = Program.getNewID();
+		} else {
+			id = builder.id;
+		}
 		nom = builder.nom;
 		annee = builder.annee;
 		type = builder.type;
@@ -170,7 +154,6 @@ public class Bouteille implements Serializable{
 		comment = builder.comment;
 		maturity = builder.maturity;
 		parker = builder.parker;
-		appellation = builder.appellation;
 		color = builder.color;
 		vignoble = builder.vignoble;
 	}
@@ -198,13 +181,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the nom property.
 	  * 
-	  * @param value
+	  * @param nom
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setNom(String value) {
-		 this.nom = value;
+	 public void setNom(String nom) {
+		 this.nom = nom;
 	 }
 
 	 /**
@@ -222,13 +205,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the annee property.
 	  * 
-	  * @param value
+	  * @param annee
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setAnnee(String value) {
-		 this.annee = value;
+	 public void setAnnee(String annee) {
+		 this.annee = annee;
 	 }
 
 	 /**
@@ -246,13 +229,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the type property.
 	  * 
-	  * @param value
+	  * @param type
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setType(String value) {
-		 this.type = value;
+	 public void setType(String type) {
+		 this.type = type;
 	 }
 
 	 /**
@@ -270,13 +253,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the emplacement property.
 	  * 
-	  * @param value
+	  * @param emplacement
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setEmplacement(String value) {
-		 this.emplacement = value;
+	 public void setEmplacement(String emplacement) {
+		 this.emplacement = emplacement;
 	 }
 
 	 /**
@@ -289,10 +272,11 @@ public class Bouteille implements Serializable{
 
 	 /**
 	  * Sets the value of the numLieu property.
-	  * 
+	  *
+		* @param numLieu
 	  */
-	 public void setNumLieu(int value) {
-		 this.numLieu = value;
+	 public void setNumLieu(int numLieu) {
+		 this.numLieu = numLieu;
 	 }
 
 	 /**
@@ -305,10 +289,11 @@ public class Bouteille implements Serializable{
 
 	 /**
 	  * Sets the value of the ligne property.
-	  * 
+	  *
+		* @param ligne
 	  */
-	 public void setLigne(int value) {
-		 this.ligne = value;
+	 public void setLigne(int ligne) {
+		 this.ligne = ligne;
 	 }
 
 	 /**
@@ -321,10 +306,11 @@ public class Bouteille implements Serializable{
 
 	 /**
 	  * Sets the value of the colonne property.
-	  * 
+	  *
+		* @param colonne
 	  */
-	 public void setColonne(int value) {
-		 this.colonne = value;
+	 public void setColonne(int colonne) {
+		 this.colonne = colonne;
 	 }
 
 	 /**
@@ -342,85 +328,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the prix property.
 	  * 
-	  * @param value
+	  * @param prix
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setPrix(String value) {
-		 this.prix = value;
-	 }
-
-	 /**
-	  * Gets the value of the other1 property.
-	  * 
-	  * @return
-	  *     possible object is
-	  *     {@link String }
-	  *     
-	  */
-	 public String getOther1s() {
-		 return other1;
-	 }
-
-	 /**
-	  * Sets the value of the other1 property.
-	  * 
-	  * @param value
-	  *     allowed object is
-	  *     {@link String }
-	  *     
-	  */
-	 public void setOther1s(String value) {
-		 this.other1 = value;
-	 }
-
-	 /**
-	  * Gets the value of the other2 property.
-	  * 
-	  * @return
-	  *     possible object is
-	  *     {@link String }
-	  *     
-	  */
-	 public String getOther2() {
-		 return other2;
-	 }
-
-	 /**
-	  * Sets the value of the other2 property.
-	  * 
-	  * @param value
-	  *     allowed object is
-	  *     {@link String }
-	  *     
-	  */
-	 public void setOther2(String value) {
-		 this.other2 = value;
-	 }
-
-	 /**
-	  * Gets the value of the other3 property.
-	  * 
-	  * @return
-	  *     possible object is
-	  *     {@link String }
-	  *     
-	  */
-	 public String getOther3() {
-		 return other3;
-	 }
-
-	 /**
-	  * Sets the value of the other3 property.
-	  * 
-	  * @param value
-	  *     allowed object is
-	  *     {@link String }
-	  *     
-	  */
-	 public void setOther3(String value) {
-		 this.other3 = value;
+	 public void setPrix(String prix) {
+		 this.prix = prix;
 	 }
 
 	 /**
@@ -438,13 +352,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the comment property.
 	  * 
-	  * @param value
+	  * @param comment
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setComment(String value) {
-		 this.comment = value;
+	 public void setComment(String comment) {
+		 this.comment = comment;
 	 }
 
 	 /**
@@ -462,13 +376,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the maturity property.
 	  * 
-	  * @param value
+	  * @param maturity
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setMaturity(String value) {
-		 this.maturity = value;
+	 public void setMaturity(String maturity) {
+		 this.maturity = maturity;
 	 }
 
 	 /**
@@ -486,37 +400,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the parker property.
 	  * 
-	  * @param value
+	  * @param parker
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setParker(String value) {
-		 this.parker = value;
-	 }
-
-	 /**
-	  * Gets the value of the appellation property.
-	  * 
-	  * @return
-	  *     possible object is
-	  *     {@link String }
-	  *     
-	  */
-	 public String getAppellation() {
-		 return appellation;
-	 }
-
-	 /**
-	  * Sets the value of the appellation property.
-	  * 
-	  * @param value
-	  *     allowed object is
-	  *     {@link String }
-	  *     
-	  */
-	 public void setAppellation(String value) {
-		 this.appellation = value;
+	 public void setParker(String parker) {
+		 this.parker = parker;
 	 }
 
 	 /**
@@ -534,13 +424,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the color property.
 	  * 
-	  * @param value
+	  * @param color
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setColor(String value) {
-		 this.color = value;
+	 public void setColor(String color) {
+		 this.color = color;
 	 }
 
 	 /**
@@ -558,13 +448,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the vignoble property.
 	  * 
-	  * @param value
+	  * @param vignoble
 	  *     allowed object is
 	  *     {@link Vignoble }
 	  *     
 	  */
-	 public void setVignoble(Vignoble value) {
-		 this.vignoble = value;
+	 public void setVignoble(Vignoble vignoble) {
+		 this.vignoble = vignoble;
 	 }
 
 
@@ -591,11 +481,10 @@ public class Bouteille implements Serializable{
 			 return true;
 		 if(!Program.hasYearControl())
 			 return true;
-		 int n = 0;
+		 int n;
 		 try{
 			 n = Integer.parseInt(year);
-		 }catch( NumberFormatException pe)
-		 {
+		 }catch( NumberFormatException e) {
 			 Debug( "ERROR: Unable to parse '"+year+"'!!!!");
 			 return false;
 		 }
@@ -679,7 +568,6 @@ public class Bouteille implements Serializable{
 	 public void update(Bouteille b) {
 		 setNom(b.getNom());
 		 setAnnee(b.getAnnee());
-		 setAppellation(b.getAppellation());
 		 setColonne(b.getColonne());
 		 setComment(b.getComment());
 		 setEmplacement(b.getEmplacement());
@@ -711,8 +599,6 @@ public class Bouteille implements Serializable{
 		 final int prime = 31;
 		 int result = 1;
 		 result = prime * result + ((annee == null) ? 0 : annee.hashCode());
-		 result = prime * result
-				 + ((appellation == null) ? 0 : appellation.hashCode());
 		 result = prime * result + colonne;
 		 result = prime * result + ((color == null) ? 0 : color.hashCode());
 		 result = prime * result + ((comment == null) ? 0 : comment.hashCode());
@@ -746,11 +632,6 @@ public class Bouteille implements Serializable{
 			 if (other.annee != null)
 				 return false;
 		 } else if (!annee.equals(other.annee))
-			 return false;
-		 if (appellation == null) {
-			 if (other.appellation != null)
-				 return false;
-		 } else if (!appellation.equals(other.appellation))
 			 return false;
 		 if (colonne != other.colonne)
 			 return false;
@@ -809,6 +690,7 @@ public class Bouteille implements Serializable{
 
 
 	 public static class BouteilleBuilder {
+	 	private int id;
 		 private final String nom;
 		 private String annee;
 		 private String type;
@@ -820,16 +702,19 @@ public class Bouteille implements Serializable{
 		 private String comment;
 		 private String maturity;
 		 private String parker;
-		 private String appellation;
 		 private String color;
 		 private Vignoble vignoble;
 
 		 BouteilleBuilder(String nom){
 			 this.nom = nom;
-			 numLieu = ligne = colonne = 0;
-			 type = emplacement = prix = comment = annee = maturity = parker = "";
-			 appellation = color = "";
+			 id = numLieu = ligne = colonne = 0;
+			 type = emplacement = prix = comment = annee = maturity = parker = color = "";
 			 vignoble = null;
+		 }
+
+		 public BouteilleBuilder id(int id) {
+			 this.id = id;
+			 return this;
 		 }
 
 		 public BouteilleBuilder annee(String annee) {
@@ -879,11 +764,6 @@ public class Bouteille implements Serializable{
 
 		 public BouteilleBuilder parker(String parker) {
 			 this.parker = parker;
-			 return this;
-		 }
-
-		 public BouteilleBuilder appelation(String appellation) {
-			 this.appellation = appellation;
 			 return this;
 		 }
 

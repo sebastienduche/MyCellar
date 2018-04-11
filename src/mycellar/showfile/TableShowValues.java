@@ -21,8 +21,8 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 3.5
- * @since 21/03/18
+ * @version 3.6
+ * @since 11/04/18
  */
 
 public class TableShowValues extends AbstractTableModel {
@@ -38,14 +38,12 @@ public class TableShowValues extends AbstractTableModel {
   private static final int COMMENT = 9;
   private static final int MATURITY = 10;
   private static final int PARKER = 11;
-  private static final int APPELLATION = 12;
-  private static final int NBCOL = 13;
+  private static final int NBCOL = 12;
   private final String[] columnNames = {"", Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
       Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("Infos135"), Program.getLabel("Infos137")
-      , Program.getLabel("Infos391"), Program.getLabel("Infos392"), Program.getLabel("Infos393")};
+      , Program.getLabel("Infos391"), Program.getLabel("Infos392")};
 
   protected Boolean[] values = null;
-  static final long serialVersionUID = 020406;
 
   List<Bouteille> monVector = new LinkedList<>();
 
@@ -105,8 +103,6 @@ public class TableShowValues extends AbstractTableModel {
         return Program.convertStringFromHTMLString(b.getMaturity());
       case PARKER:
         return b.getParker();
-      case APPELLATION:
-        return b.getAppellation();
     }
     return "";
   }
@@ -163,9 +159,6 @@ public class TableShowValues extends AbstractTableModel {
         break;
       case PARKER:
         b.setParker(Program.convertStringFromHTMLString((String) value));
-        break;
-      case APPELLATION:
-        b.setAppellation(Program.convertStringFromHTMLString((String) value));
         break;
       case COMMENT:
         b.setComment(Program.convertStringFromHTMLString((String) value));

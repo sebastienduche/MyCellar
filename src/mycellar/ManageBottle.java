@@ -43,8 +43,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.7
- * @since 08/03/18
+ * @version 3.8
+ * @since 11/04/18
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -538,7 +538,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		String parker = m_parker.getText();
 		String color = "";
 		if (m_colorList.getSelectedItem() != null) {
-			color = m_colorList.getSelectedItem().toString();
+			color = ((BottleColor)m_colorList.getSelectedItem()).name();
 		}
 		Object o = comboCountry.getEditor().getItem();
 		String country;

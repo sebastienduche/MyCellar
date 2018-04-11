@@ -42,8 +42,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 23.5
- * @since 09/03/18
+ * @version 23.6
+ * @since 11/04/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1192,10 +1192,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			int index = Program.tabbedPane.getSelectedIndex();
 			String title = Program.tabbedPane.getTitleAt(index);
 			if (modify) {
-				if (title.charAt(title.length() - 1) != '*')
+				if (!title.endsWith("*"))
 					Program.tabbedPane.setTitleAt(index, title + "*");
 			} else {
-				if (title.charAt(title.length() - 1) == '*')
+				if (title.endsWith("*"))
 					title = title.substring(0, title.length() - 1);
 				Program.tabbedPane.setTitleAt(index, title);
 			}

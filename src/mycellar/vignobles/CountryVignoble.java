@@ -1,12 +1,11 @@
 package mycellar.vignobles;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
  
 @XmlRootElement(name = "vignoble")
 @XmlAccessorType (XmlAccessType.FIELD)
@@ -42,6 +41,9 @@ public class CountryVignoble implements Comparable<CountryVignoble>
 
 	@Override
 	public int compareTo(CountryVignoble vignoble) {
+		if (getName() == null || vignoble.getName() == null) {
+			return -1;
+		}
 		return getName().compareTo(vignoble.getName());
 	}
 

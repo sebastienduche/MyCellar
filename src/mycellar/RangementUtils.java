@@ -38,8 +38,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 09/03/18
+ * @version 0.9
+ * @since 11/04/18
  */
 public class RangementUtils {
 
@@ -317,7 +317,6 @@ public class RangementUtils {
 		int num_ligne;
 		if (isExit) { //Cas sauvegarde XLS Backup
 			num_ligne = 0;
-			i=0;
 			for(i= 0; i<fields.size(); i++) {
 				mapColumnNumber.put(i, i);
 			}
@@ -374,28 +373,26 @@ public class RangementUtils {
 			}
 			WritableCellFormat cellformat = new WritableCellFormat(cellfont);
 			//Ajout titre colonne
-			i=0;
-			HashMap<MyCellarFields, Label> listLabels = new HashMap<>();
 			HashMap<MyCellarFields, Integer> mapColumnWidth = new HashMap<>();
-
-			for(MyCellarFields field : fields) {
-				Label label;
-				listLabels.put(field, label = new Label(i, num_ligne, field.toString(), cellformat));
-				mapColumnWidth.put(field, label.getContents().length());
-				i++;
-			}
 
 			try {
 				//Ajout Titre
 				if(isExit) {
+					i=0;
 					for(MyCellarFields field : fields) {
-						sheet.addCell(listLabels.get(field));
+						Label label;
+						sheet.addCell(label = new Label(i++, num_ligne, field.toString(), cellformat));
+						mapColumnWidth.put(field, label.getContents().length());
 					}
 				}
 				else {
+					i=0;
 					for(MyCellarFields field : fields) {
-						if(mapCle.get(field))
-							sheet.addCell(listLabels.get(field));
+						if(mapCle.get(field)) {
+							Label label;
+							sheet.addCell(label = new Label(i++, num_ligne, field.toString(), cellformat));
+							mapColumnWidth.put(field, label.getContents().length());
+						}
 					}
 				}
 			}
@@ -406,7 +403,6 @@ public class RangementUtils {
 
 			i = 0;
 			for (Bouteille b : all) {
-				listLabels.clear();
 				int j = 0;
 				try {
 					for(MyCellarFields field : fields) {
@@ -469,8 +465,9 @@ public class RangementUtils {
 								sheet.addCell(new jxl.write.Number(mapColumnNumber.get(j), i + num_ligne + 1, Integer.parseInt(value), cellformat));
 							else
 								sheet.addCell(label);
-							sheet.setColumnView(mapColumnNumber.get(j++), width + 1);
+							sheet.setColumnView(mapColumnNumber.get(j), width + 1);
 						}
+						j++;
 					}
 				}
 				catch (WriteException ex1) {

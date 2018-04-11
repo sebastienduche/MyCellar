@@ -47,8 +47,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.5
- * @since 13/03/18
+ * @version 5.6
+ * @since 11/04/18
  */
 public class Creer_Tableaux extends JPanel implements ITabListener {
 	private final MyCellarLabel label2 = new MyCellarLabel();
@@ -383,7 +383,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 					Debug("Exporting in XML in progress...");
 					LinkedList<Rangement> rangements = new LinkedList<>();
 					for (int j : listToGen) {
-						rangements.add(Program.getCave(listToGen[j]));
+						rangements.add(Program.getCave(j));
 					}
 					MyXmlDom.writeRangements(nom, rangements, false);
 				}
@@ -393,7 +393,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 					Debug("Exporting in HTML in progress...");
 					LinkedList<Rangement> rangements = new LinkedList<Rangement>();
 					for (int j : listToGen) {
-						rangements.add(Program.getCave(listToGen[j]));
+						rangements.add(Program.getCave(j));
 					}
 					MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
 			
@@ -414,7 +414,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 					Debug("Exporting in XLS in progress...");
 					LinkedList<Rangement> oList = new LinkedList<>();
 					for ( int j : listToGen) {
-						Rangement r = Program.getCave(listToGen[j]);
+						Rangement r = Program.getCave(j);
 						if (r != null) {
 							oList.add(r);
 							if (r.isCaisse())

@@ -40,8 +40,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 11/04/18
+ * @version 0.8
+ * @since 12/04/18
  *
  * <p>Java class for anonymous complex type.
  *
@@ -147,58 +147,7 @@ public class ListeBouteille {
 
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element bouteilleElem = (Element) node;
-				NodeList nodeId = bouteilleElem.getElementsByTagName("id");
-				final int id = Integer.parseInt(nodeId.item(0).getTextContent());
-				NodeList nodeName = bouteilleElem.getElementsByTagName("nom");
-				final String name = nodeName.item(0).getTextContent();
-				NodeList nodeAnnee = bouteilleElem.getElementsByTagName("annee");
-				final String year = nodeAnnee.item(0).getTextContent();
-				NodeList nodeType = bouteilleElem.getElementsByTagName("type");
-				final String type = nodeType.item(0).getTextContent();
-				NodeList nodePlace = bouteilleElem.getElementsByTagName("emplacement");
-				final String place = nodePlace.item(0).getTextContent();
-				NodeList nodeNumLieu = bouteilleElem.getElementsByTagName("num_lieu");
-				final int numLieu = Integer.parseInt(nodeNumLieu.item(0).getTextContent());
-				NodeList nodeLine = bouteilleElem.getElementsByTagName("ligne");
-				final int line = Integer.parseInt(nodeLine.item(0).getTextContent());
-				NodeList nodeColumn = bouteilleElem.getElementsByTagName("colonne");
-				final int column = Integer.parseInt(nodeColumn.item(0).getTextContent());
-				NodeList nodePrice = bouteilleElem.getElementsByTagName("prix");
-				final String price = nodePrice.item(0).getTextContent();
-				NodeList nodeComment = bouteilleElem.getElementsByTagName("comment");
-				final String comment = nodeComment.item(0).getTextContent();
-				NodeList nodeMaturity = bouteilleElem.getElementsByTagName("maturity");
-				final String maturity = nodeMaturity.item(0).getTextContent();
-				NodeList nodeParker = bouteilleElem.getElementsByTagName("parker");
-				final String parker = nodeParker.item(0).getTextContent();
-				NodeList nodeColor = bouteilleElem.getElementsByTagName("color");
-				final String color = nodeColor.item(0).getTextContent();
-				NodeList nodeVignoble = bouteilleElem.getElementsByTagName("vignoble");
-				final Element vignoble = (Element) nodeVignoble.item(0);
-				NodeList nodeCountry = vignoble.getElementsByTagName("country");
-				final String country = nodeCountry.item(0).getTextContent();
-				NodeList nodeVigobleName = vignoble.getElementsByTagName("name");
-				String vignobleName, AOC, IGP, AOP;
-				vignobleName = AOC = AOP = IGP = "";
-				if (nodeVignoble.getLength() == 1) {
-					vignobleName = nodeVigobleName.item(0).getTextContent();
-					NodeList nodeAOC = vignoble.getElementsByTagName("AOC");
-					if (nodeAOC.getLength() == 1) {
-						AOC = nodeAOC.item(0).getTextContent();
-					}
-					NodeList nodeIGP = vignoble.getElementsByTagName("IGP");
-					if (nodeIGP.getLength() == 1) {
-						IGP = nodeIGP.item(0).getTextContent();
-					}
-					NodeList nodeAOP = vignoble.getElementsByTagName("AOP");
-					if (nodeAOP.getLength() == 1) {
-						AOP = nodeAOP.item(0).getTextContent();
-					}
-				}
-				Bouteille bouteille = new Bouteille.BouteilleBuilder(name).id(id).annee(year).type(type).place(place).numPlace(numLieu)
-						.line(line).column(column).price(price).comment(comment).maturity(maturity).parker(parker)
-						.color(color).vignoble(country, vignobleName, AOC, IGP, AOP).build();
-				listeBouteille.getBouteille().add(bouteille);
+				listeBouteille.getBouteille().add(Bouteille.getBouteilleFromXML(bouteilleElem));
 			}
 		}
 		Program.getStorage().setListBouteilles(listeBouteille);

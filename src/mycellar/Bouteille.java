@@ -8,6 +8,9 @@
 
 package mycellar;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -15,8 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -24,8 +26,8 @@ import java.util.GregorianCalendar;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.0
- * @since 11/04/18
+ * @version 4.1
+ * @since 12/04/18
 
  * <p>Java class for anonymous complex type.
  * 
@@ -489,8 +491,7 @@ public class Bouteille implements Serializable{
 			 return false;
 		 }
 
-		 Calendar date = new GregorianCalendar();
-		 int current_year = date.get(Calendar.YEAR);
+		 int current_year = LocalDate.now().getYear();
 		 if( year.length() == 4 && n > current_year )
 			 return false;
 		 return true;
@@ -584,6 +585,60 @@ public class Bouteille implements Serializable{
 	 public void updateID() {
 		 id = Program.getNewID();
 	 }
+
+  public static Bouteille getBouteilleFromXML(Element bouteilleElem) {
+    NodeList nodeId = bouteilleElem.getElementsByTagName("id");
+    final int id = Integer.parseInt(nodeId.item(0).getTextContent());
+    NodeList nodeName = bouteilleElem.getElementsByTagName("nom");
+    final String name = nodeName.item(0).getTextContent();
+    NodeList nodeAnnee = bouteilleElem.getElementsByTagName("annee");
+    final String year = nodeAnnee.item(0).getTextContent();
+    NodeList nodeType = bouteilleElem.getElementsByTagName("type");
+    final String type = nodeType.item(0).getTextContent();
+    NodeList nodePlace = bouteilleElem.getElementsByTagName("emplacement");
+    final String place = nodePlace.item(0).getTextContent();
+    NodeList nodeNumLieu = bouteilleElem.getElementsByTagName("num_lieu");
+    final int numLieu = Integer.parseInt(nodeNumLieu.item(0).getTextContent());
+    NodeList nodeLine = bouteilleElem.getElementsByTagName("ligne");
+    final int line = Integer.parseInt(nodeLine.item(0).getTextContent());
+    NodeList nodeColumn = bouteilleElem.getElementsByTagName("colonne");
+    final int column = Integer.parseInt(nodeColumn.item(0).getTextContent());
+    NodeList nodePrice = bouteilleElem.getElementsByTagName("prix");
+    final String price = nodePrice.item(0).getTextContent();
+    NodeList nodeComment = bouteilleElem.getElementsByTagName("comment");
+    final String comment = nodeComment.item(0).getTextContent();
+    NodeList nodeMaturity = bouteilleElem.getElementsByTagName("maturity");
+    final String maturity = nodeMaturity.item(0).getTextContent();
+    NodeList nodeParker = bouteilleElem.getElementsByTagName("parker");
+    final String parker = nodeParker.item(0).getTextContent();
+    NodeList nodeColor = bouteilleElem.getElementsByTagName("color");
+    final String color = nodeColor.item(0).getTextContent();
+    NodeList nodeVignoble = bouteilleElem.getElementsByTagName("vignoble");
+    final Element vignoble = (Element) nodeVignoble.item(0);
+    NodeList nodeCountry = vignoble.getElementsByTagName("country");
+    final String country = nodeCountry.item(0).getTextContent();
+    NodeList nodeVigobleName = vignoble.getElementsByTagName("name");
+    String vignobleName, AOC, IGP, AOP;
+    vignobleName = AOC = AOP = IGP = "";
+    if (nodeVignoble.getLength() == 1) {
+      vignobleName = nodeVigobleName.item(0).getTextContent();
+      NodeList nodeAOC = vignoble.getElementsByTagName("AOC");
+      if (nodeAOC.getLength() == 1) {
+        AOC = nodeAOC.item(0).getTextContent();
+      }
+      NodeList nodeIGP = vignoble.getElementsByTagName("IGP");
+      if (nodeIGP.getLength() == 1) {
+        IGP = nodeIGP.item(0).getTextContent();
+      }
+      NodeList nodeAOP = vignoble.getElementsByTagName("AOP");
+      if (nodeAOP.getLength() == 1) {
+        AOP = nodeAOP.item(0).getTextContent();
+      }
+    }
+    return new Bouteille.BouteilleBuilder(name).id(id).annee(year).type(type).place(place).numPlace(numLieu)
+        .line(line).column(column).price(price).comment(comment).maturity(maturity).parker(parker)
+        .color(color).vignoble(country, vignobleName, AOC, IGP, AOP).build();
+  }
 
 	 /**
 	  * Debug

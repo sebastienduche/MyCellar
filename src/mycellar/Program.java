@@ -47,12 +47,13 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
 import java.text.Normalizer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -72,8 +73,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.6
- * @since 20/03/18
+ * @version 17.7
+ * @since 12/04/18
  */
 
 public class Program {
@@ -886,12 +887,11 @@ public class Program {
 				File f_obj = new File( sDir );
 				if(!f_obj.exists())
 					f_obj.mkdir();
-				Calendar oCal = Calendar.getInstance();
-				String sDate = oCal.get(Calendar.DATE) + "-" + (oCal.get(Calendar.MONTH)+1) + "-" + oCal.get(Calendar.YEAR);
+        String sDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 				debugFile = new File(sDir, "Debug-"+sDate+".log");
 				oDebugFile = new FileWriter(debugFile, true);
 			}
-			oDebugFile.write("[" + Calendar.getInstance().getTime().toString() + "]: " + sText + "\n");
+			oDebugFile.write("[" + LocalDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME) + "]: " + sText + "\n");
 			oDebugFile.flush();
 		}
 		catch (Exception e) {}
@@ -1368,23 +1368,17 @@ public class Program {
 		m_bWorkDirCalculated = true;
 		Debug("Program: Calculating work directory.");
 		String sDir = System.getProperty("user.home");
-		if( sDir.isEmpty() )
-			m_sWorkDir = "./Object";
+		if(sDir.isEmpty())
+			m_sWorkDir = "." + File.separator + "Object";
 		else
-			m_sWorkDir = sDir + "/MyCellar";
-		File f_obj = new File( m_sWorkDir );
+			m_sWorkDir = sDir + File.separator + "MyCellar";
+		File f_obj = new File(m_sWorkDir);
 		if(!f_obj.exists())
 			f_obj.mkdir();
 
-		Calendar g = GregorianCalendar.getInstance();
-		String sTime = Integer.toString( g.get(Calendar.YEAR ) );
-		sTime += Integer.toString( g.get(Calendar.MONTH ) );
-		sTime += Integer.toString( g.get(Calendar.DAY_OF_MONTH ) );
-		sTime += Integer.toString( g.get(Calendar.HOUR ) );
-		sTime += Integer.toString( g.get(Calendar.MINUTE ) );
-		sTime += Integer.toString( g.get(Calendar.SECOND ) );
+		String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
-		m_sWorkDir += File.separator + sTime;
+		m_sWorkDir += File.separator + time;
 
 		f_obj = new File(m_sWorkDir);
 		if(!f_obj.exists())
@@ -1730,27 +1724,22 @@ public class Program {
 
 	protected static void cleanDebugFiles() {
 		String sDir = System.getProperty("user.home");
-		sDir += "/MyCellarDebug";
+		sDir += File.separator + "MyCellarDebug";
 		File f = new File(sDir);
-		Calendar oCal = Calendar.getInstance();
-		oCal.add(Calendar.MONTH, -2);
-		Calendar c = Calendar.getInstance();
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime monthsAgo = LocalDateTime.now().minusMonths(2);
 		String files[] = f.list((dir, name) -> {
 				if (name.startsWith("Debug-") && name.endsWith(".log")) {
 					String date = name.substring(6, name.indexOf(".log"));
 					String fields[] = date.split("-");
-					c.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fields[0]));
-					c.set(Calendar.MONTH, Integer.parseInt(fields[1])-1);
-					c.set(Calendar.YEAR, Integer.parseInt(fields[2]));
-					return c.before(oCal);
+					LocalDateTime dateTime = now.withDayOfMonth(Integer.parseInt(fields[0])).withMonth(Integer.parseInt(fields[1])).withYear(Integer.parseInt(fields[2]));
+					return dateTime.isBefore(monthsAgo);
 				}
 				if (name.startsWith("DebugFtp-") && name.endsWith(".log")) {
 					String date = name.substring(9, name.indexOf(".log"));
 					String fields[] = date.split("-");
-					c.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fields[0]));
-					c.set(Calendar.MONTH, Integer.parseInt(fields[1])-1);
-					c.set(Calendar.YEAR, Integer.parseInt(fields[2]));
-					return c.before(oCal);
+					LocalDateTime dateTime = now.withDayOfMonth(Integer.parseInt(fields[0])).withMonth(Integer.parseInt(fields[1])).withYear(Integer.parseInt(fields[2]));
+					return dateTime.isBefore(monthsAgo);
 				}
 				return false;
 		});

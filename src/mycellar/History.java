@@ -13,7 +13,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -22,8 +23,8 @@ import java.util.Date;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 16/03/18
+ * @version 0.8
+ * @since 12/04/18
  */
 
 /**
@@ -77,20 +78,9 @@ public class History {
   public History(Bouteille bouteille, int type) {
     this.bouteille = bouteille;
     this.type = type;
-    Calendar oCal = Calendar.getInstance();
-    time = oCal.getTime();
-    date = "";
-    if (oCal.get(Calendar.DATE) < 10) {
-      date = "0";
-    }
-    date += oCal.get(Calendar.DATE);
-    date += "/";
-    if (oCal.get(Calendar.MONTH) < 9) {
-      date += "0";
-    }
-    date += (oCal.get(Calendar.MONTH) + 1);
-    date += "/";
-    date += oCal.get(Calendar.YEAR);
+    final LocalDate now = LocalDate.now();
+    time = new Date(now.getYear(), now.getMonthValue()-1, now.getDayOfMonth());
+    date = now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
   }
 
     public History() {}
@@ -110,13 +100,13 @@ public class History {
     /**
      * Sets the value of the date property.
      * 
-     * @param value
+     * @param date
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDate(String value) {
-        this.date = value;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     /**
@@ -131,12 +121,12 @@ public class History {
      * Sets the value of the type property.
      * 
      */
-    public void setType(int value) {
-        this.type = value;
+    public void setType(int type) {
+        this.type = type;
     }
     
     public boolean isDeleted() {
-    	return this.type == DEL;
+    	return type == DEL;
     }
 
     public Date getTime() {
@@ -162,13 +152,13 @@ public class History {
     /**
      * Sets the value of the bouteille property.
      * 
-     * @param value
+     * @param bouteille
      *     allowed object is
      *     {@link Bouteille }
      *     
      */
-    public void setBouteille(Bouteille value) {
-        this.bouteille = value;
+    public void setBouteille(Bouteille bouteille) {
+        this.bouteille = bouteille;
     }
 
 }

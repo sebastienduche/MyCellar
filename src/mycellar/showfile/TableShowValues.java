@@ -5,7 +5,6 @@ import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Rangement;
 import mycellar.RangementUtils;
-import mycellar.actions.OpenAddVinAction;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
@@ -21,8 +20,8 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 3.5
- * @since 21/03/18
+ * @version 3.6
+ * @since 13/04/18
  */
 
 public class TableShowValues extends AbstractTableModel {
@@ -274,7 +273,7 @@ public class TableShowValues extends AbstractTableModel {
               if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getError("Error015"), javax.swing.JOptionPane.YES_NO_OPTION)) {
                 LinkedList<Bouteille> list = new LinkedList<>();
                 list.add(b);
-                new OpenAddVinAction(list).actionPerformed(null);
+                Program.modifyBottles(list);
               }
             }
           }

@@ -43,8 +43,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.7
- * @since 08/03/18
+ * @version 3.8
+ * @since 13/04/18
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -75,7 +75,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				protected void doAfterModify() {
 					super.doAfterModify();
 					Start.setPaneModified(true);
-				};
+				}
 			};
 			name.setCaseSensitive(false);
 			name.setEditable(true);
@@ -107,34 +107,27 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	/**
 	 * jbInit: Fonction de démarrage.
 	 *
-	 * @throws Exception
 	 */
-	private void jbInit() throws Exception {
+	private void jbInit() {
 
 		Debug("Starting JbInit");
 		m_contenance.setText(Program.getLabel("Infos134")); //"Demie bouteille");
 		m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ( (SIECLE + 1) * 100))); //"Annee 00 -> 2000");
-		try {
-			m_annee_auto.setSelected(Program.getCaveConfigInt("ANNEE_AUTO", 0) == 0);
-		}
-		catch (NullPointerException npe) {
-			m_annee_auto.setSelected(true);
-			Program.putCaveConfigString("ANNEE_AUTO", "0");
-		}
-		
+		m_annee_auto.setSelected(Program.getCaveConfigInt("ANNEE_AUTO", 0) == 0);
+
 		m_price.addKeyListener(new KeyAdapter() {
 	        @Override
 	        public void keyTyped(KeyEvent e) {
-	        	if(e.getKeyChar() == ',' || e.getKeyChar() == '.') {
-	        		e.consume();
-		        	DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
-		        	DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
-		        	char sep = symbols.getDecimalSeparator();
-		        	String text = m_price.getText();
-		        	m_price.setText(text+sep);
-	        	}
-	        };
-	    });
+			if(e.getKeyChar() == ',' || e.getKeyChar() == '.') {
+				e.consume();
+				DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
+				DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
+				char sep = symbols.getDecimalSeparator();
+				String text = m_price.getText();
+				m_price.setText(text+sep);
+			}
+		};
+});
 		
 		m_noYear.setText(Program.getLabel("Infos399"));
 
@@ -178,7 +171,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 		m_add.addActionListener((e) -> saving());
 		m_manageContenance.addActionListener(this::manageContenance_actionPerformed);
-		//Add name of place
 		m_annee_auto.addActionListener(this::annee_auto_actionPerformed);
 
 		m_noYear.addActionListener((e) -> {
@@ -211,7 +203,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_line.setEnabled(false);
 		m_column.setEnabled(false);
 
-		this.setVisible(true);
+		setVisible(true);
 		Debug("JbInit Ended.");
 	}
 
@@ -276,7 +268,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				for (int i = 0; i < nb_emplacement; i++) {
 					m_num_lieu.addItem(Integer.toString(i + start_caisse));
 				}
-				this.repaint();
 				m_num_lieu.setVisible(true); //false
 				m_line.setVisible(false);
 				m_column.setVisible(false);
@@ -284,8 +275,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				m_labelNumPlace.setText(Program.getLabel("Infos158")); //"Numéro de caisse");
 				m_labelColumn.setVisible(false);
 				m_labelLine.setVisible(false);
-				if ( nb_emplacement == 1 )
+				if (nb_emplacement == 1) {
 					m_num_lieu.setSelectedIndex(1);
+				}
 			}
 			else {
 				m_num_lieu.removeAllItems();
@@ -366,7 +358,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 * @param bottle Bouteille
 	 */
 	public void setBottle(Bouteille bottle) {
-		Debug("Set Bottle ...");
+		Debug("Set Bottle...");
 		try {
 			enableAll(true);
 			m_nb_bottle.setValue(1);
@@ -394,12 +386,10 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 			String auto = Program.getCaveConfigString("TYPE_AUTO", "OFF");
 
-			if (half_tmp.compareTo(bottle.getType()) != 0 && auto.equals("ON")) {
-				if (!bottle.getType().isEmpty()) {
-					Program.half.add(bottle.getType());
-					m_half.addItem(bottle.getType());
-					m_half.setSelectedItem(bottle.getType());
-				}
+			if (half_tmp.compareTo(bottle.getType()) != 0 && "ON".equals(auto) && !bottle.getType().isEmpty()) {
+				Program.half.add(bottle.getType());
+				m_half.addItem(bottle.getType());
+				m_half.setSelectedItem(bottle.getType());
 			}
 
 			m_price.setText(Program.convertStringFromHTMLString(bottle.getPrix()));

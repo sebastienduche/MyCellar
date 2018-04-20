@@ -18,7 +18,6 @@ import mycellar.StateRenderer;
 import mycellar.TabEvent;
 import mycellar.ToolTipRenderer;
 import mycellar.Vignoble;
-import mycellar.actions.OpenAddVinAction;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarError;
@@ -59,7 +58,7 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 5.4
+ * @version 5.5
  * @since 20/04/18
  */
 
@@ -650,7 +649,7 @@ public class ShowFile extends JPanel implements ITabListener {
             }
           }
           if (!cantRestoreList.isEmpty()) {
-            modifyBottles(cantRestoreList);
+            Program.modifyBottles(cantRestoreList);
           }
         }
         refresh();
@@ -659,10 +658,6 @@ public class ShowFile extends JPanel implements ITabListener {
       Program.showException(exc);
     }
 
-  }
-
-  private void modifyBottles(LinkedList<Bouteille> listToModify) {
-    new OpenAddVinAction(listToModify).actionPerformed(null);
   }
 
   public void refresh() {
@@ -965,7 +960,7 @@ public class ShowFile extends JPanel implements ITabListener {
           Erreur.showSimpleErreur(Program.getError("Error071"), Program.getError("Error072"), true);
         } else {
           Debug("Modifying " + bottles.size() + " bottles...");
-          modifyBottles(bottles);
+          Program.modifyBottles(bottles);
         }
       } catch (Exception exc) {
         Program.showException(exc);

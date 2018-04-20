@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
@@ -74,7 +75,7 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.8
+ * @version 17.9
  * @since 20/04/18
  */
 
@@ -1843,5 +1844,16 @@ public class Program {
 			++nextID;
 		} while (getStorage().getAllList().stream().anyMatch(bouteille -> bouteille.getId() == nextID));
 		return nextID;
+	}
+
+	public static void modifyBottles(LinkedList<Bouteille> listToModify) {
+		if (listToModify == null || listToModify.isEmpty()) {
+			return;
+		}
+		if (listToModify.size() == 1) {
+			Start.showBottle(listToModify.getFirst(), true);
+		} else {
+			new OpenAddVinAction(listToModify).actionPerformed(null);
+		}
 	}
 }

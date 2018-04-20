@@ -1,11 +1,5 @@
 package mycellar.actions;
 
-import java.awt.event.ActionEvent;
-import java.util.LinkedList;
-
-import javax.swing.AbstractAction;
-import javax.swing.SwingUtilities;
-
 import mycellar.AddVin;
 import mycellar.Bouteille;
 import mycellar.MyCellarImage;
@@ -13,10 +7,15 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.Utils;
 
+import javax.swing.AbstractAction;
+import javax.swing.SwingUtilities;
+import java.awt.event.ActionEvent;
+import java.util.LinkedList;
+
 public class OpenAddVinAction extends AbstractAction {
 
 	private static final long serialVersionUID = 6187152928186377148L;
-	private LinkedList<Bouteille> listToModify;
+	private final LinkedList<Bouteille> listToModify;
 	
 	public OpenAddVinAction(LinkedList<Bouteille> listToModify) {
 		this.listToModify = listToModify;

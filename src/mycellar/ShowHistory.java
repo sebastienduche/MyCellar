@@ -1,6 +1,5 @@
 package mycellar;
 
-import mycellar.actions.OpenAddVinAction;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -25,8 +24,8 @@ import java.util.LinkedList;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 3.1
- * @since 01/03/18
+ * @version 3.3
+ * @since 13/04/18
  */
 
 public class ShowHistory extends JPanel implements ITabListener {
@@ -201,17 +200,14 @@ public class ShowHistory extends JPanel implements ITabListener {
 						}
 					}
 
-					if (!cantRestoreList.isEmpty())
-						modifyBottles(cantRestoreList);
+					if (!cantRestoreList.isEmpty()) {
+						Program.modifyBottles(cantRestoreList);
+					}
 				}
 				RangementUtils.putTabStock();
 				tv.setHistory(Program.getHistory());
 			}
 		}
-	}
-
-	private void modifyBottles(LinkedList<Bouteille> listToModify) {
-		new OpenAddVinAction(listToModify).actionPerformed(null);
 	}
 
 	class DeleteAction extends AbstractAction {

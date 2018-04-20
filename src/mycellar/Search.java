@@ -1,6 +1,5 @@
 package mycellar;
 
-import mycellar.actions.OpenAddVinAction;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -48,8 +47,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.5
- * @since 20/03/18
+ * @version 18.6
+ * @since 13/04/18
  */
 public class Search extends JPanel implements Runnable, ITabListener {
 	private final JTable table;
@@ -639,7 +638,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 			Debug("modif_actionPerforming...");
 			int max_row = MODEL.getRowCount();
 			int row = 0;
-			LinkedList<Bouteille> listToModify = new LinkedList<Bouteille>();
+			LinkedList<Bouteille> listToModify = new LinkedList<>();
 			do {
 				if ((boolean) MODEL.getValueAt(row, TableValues.ETAT)) {
 					listToModify.add(MODEL.getBouteille(row));
@@ -653,19 +652,14 @@ public class Search extends JPanel implements Runnable, ITabListener {
 				Erreur.showSimpleErreur(Program.getError("Error071"), Program.getError("Error072"), true);
 			}
 			else {
-				Debug("Modifying "+listToModify.size()+" bottles...");
-				modifyBottles(listToModify);
+				Debug("Modifying "+listToModify.size()+" bottle(s)...");
+				Program.modifyBottles(listToModify);
 			}
 		}
 		catch (Exception exc) {
 			Program.showException(exc);
 		}
 	}
-
-	private void modifyBottles(LinkedList<Bouteille> listToModify) {
-		new OpenAddVinAction(listToModify).actionPerformed(null);
-	}
-
 	/**
 	 * multi_itemStateChanged: Fonction pour activer la recheche sur plusieurs
 	 * lieu / numéro de lieu / ligne.

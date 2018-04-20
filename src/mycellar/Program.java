@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
+import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
 import mycellar.pdf.PDFColumn;
@@ -73,8 +74,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.7
- * @since 12/04/18
+ * @version 17.8
+ * @since 20/04/18
  */
 
 public class Program {
@@ -103,8 +104,6 @@ public class Program {
 	public static AddVin addWine = null;
 	public static JTabbedPane tabbedPane = new JTabbedPane();
 	public static String archive = null;
-	public static LinkedList<String> half = new LinkedList<>();
-	public static String defaut_half = null;
 	private static final MyLinkedHashMap configGlobal = new MyLinkedHashMap();
 	private static MyLinkedHashMap configCave = null;
 	private static FileWriter oDebugFile = null;
@@ -184,7 +183,7 @@ public class Program {
 		try {
 			Debug("Program: Temp Dir: " + getWorkDir(false));
 			Debug("Program: Initializing Configuration files...");
-			loadProperties();
+			loadProperties(false);
 			File f = new File(getWorkDir(true) + DATA_XML);
 			if(!f.exists())
 				f.createNewFile();
@@ -212,9 +211,8 @@ public class Program {
 
 	/**
 	 * @throws IOException
-	 * @throws FileNotFoundException
 	 */
-	private static void loadProperties() throws IOException {
+	private static void loadProperties(boolean loadTypes) throws IOException {
 
 		inputPropCave = getWorkDir(true) + "config.ini";
 		File f = new File(inputPropCave);
@@ -235,23 +233,8 @@ public class Program {
 		if(f.exists())
 			FileUtils.deleteQuietly(f);
 
-		half = MyXmlDom.readTypesXml();
-		if(half == null) {
-			half = new LinkedList<>();
-			if(getStorage().getAllList() != null) {
-				for(Bouteille b : getStorage().getAllList()) {
-					String type = b.getType();
-					if(type != null && !type.isEmpty() && !half.contains(type))
-						half.add(type);
-				}
-			}
-			defaut_half = "75cl";
-		}
-
-		if(half.isEmpty()) {
-			half.add("75cl");
-			half.add("37.5cl");
-			defaut_half = "75cl";
+		if (loadTypes) {
+			MyCellarBottleContenance.load();
 		}
 	}
 
@@ -1112,7 +1095,7 @@ public class Program {
 		}
 
 		try {
-			loadProperties();
+			loadProperties(true);
 		} catch (IOException e) {
 			showException(e,false);
 			return false;
@@ -1298,7 +1281,7 @@ public class Program {
 	 */
 	private static void saveProperties() {
 
-		MyXmlDom.writeTypeXml(half);
+		MyCellarBottleContenance.save();
 
 		if(inputPropCave != null)
 		{

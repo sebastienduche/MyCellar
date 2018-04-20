@@ -24,6 +24,7 @@ import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
 import net.miginfocom.swing.MigLayout;
@@ -58,8 +59,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 5.3
- * @since 21/03/18
+ * @version 5.4
+ * @since 20/04/18
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -420,7 +421,7 @@ public class ShowFile extends JPanel implements ITabListener {
 			m_oCountryCbx.addItem(c.getLabel());*/
 
     m_oTypeCbx.addItem("");
-    for (String type : Program.half) {
+    for (String type : MyCellarBottleContenance.getList()) {
       m_oTypeCbx.addItem(type);
     }
 
@@ -787,7 +788,7 @@ public class ShowFile extends JPanel implements ITabListener {
 
     m_oTypeCbx.removeAllItems();
     m_oTypeCbx.addItem("");
-    for (String type : Program.half) {
+    for (String type : MyCellarBottleContenance.getList()) {
       m_oTypeCbx.addItem(type);
     }
 

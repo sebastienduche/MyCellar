@@ -13,6 +13,7 @@ import mycellar.Rangement;
 import mycellar.RangementUtils;
 import mycellar.Vignoble;
 import mycellar.actions.ManageVineyardAction;
+import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
 import mycellar.vignobles.CountryVignoble;
@@ -40,8 +41,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 16/03/18
+ * @version 1.3
+ * @since 20/04/18
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -369,11 +370,15 @@ public class MyCellarManageBottles extends JPanel {
 		}
 		m_half.removeAllItems();
 		m_half.addItem("");
-		for(String s:Program.half)
+		for(String s: MyCellarBottleContenance.getList()) {
 			m_half.addItem(s);
-		m_half.setSelectedItem(selected);
-		if(m_half.getSelectedIndex() == 0)
-			m_half.setSelectedItem(Program.defaut_half);
+		}
+		if (name.isModified()) {
+			m_half.setSelectedItem(selected);
+		}
+		else {
+			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+		}
 	}
 	
 	/**
@@ -468,9 +473,10 @@ public class MyCellarManageBottles extends JPanel {
 			m_chooseCell.setEnabled(complex);
 			m_half.removeAllItems();
 			m_half.addItem("");
-			for(String s : Program.half)
+			for(String s : MyCellarBottleContenance.getList()) {
 				m_half.addItem(s);
-			m_half.setSelectedItem(Program.defaut_half);
+			}
+			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 			panelVignobles.updateList();
 			Debug("updateView Done");
 		});

@@ -5,6 +5,7 @@ import mycellar.core.IAddVin;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.PanelVignobles;
+import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.countries.Country;
 import mycellar.vignobles.Appelation;
 import mycellar.vignobles.CountryVignoble;
@@ -43,8 +44,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.8
- * @since 11/04/18
+ * @version 3.9
+ * @since 20/04/18
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -83,13 +84,10 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_half.removeAllItems();
 			try {
 				m_half.addItem("");
-				for(String s:Program.half) {
-					if(!s.isEmpty())
+				for(String s: MyCellarBottleContenance.getList()) {
 						m_half.addItem(s);
 				}
-				if (Program.half.contains(Program.defaut_half)) {
-					m_half.setSelectedItem(Program.defaut_half);
-				}
+				m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 			}
 			catch (Exception e) {}
 			jbInit();
@@ -379,12 +377,8 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				m_year.setEditable(false);
 			m_half.removeAllItems();
 			m_half.addItem("");
-			for(String s: Program.half) {
-				if(null != s && !s.isEmpty())
+			for(String s: MyCellarBottleContenance.getList()) {
 					m_half.addItem(s);
-			}
-			if (Program.half.contains(Program.defaut_half)) {
-				m_half.setSelectedItem(Program.defaut_half);
 			}
 			m_half.setSelectedItem(bottle.getType());
 			String half_tmp = "";
@@ -396,7 +390,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 			if (half_tmp.compareTo(bottle.getType()) != 0 && auto.equals("ON")) {
 				if (!bottle.getType().isEmpty()) {
-					Program.half.add(bottle.getType());
+					MyCellarBottleContenance.getList().add(bottle.getType());
 					m_half.addItem(bottle.getType());
 					m_half.setSelectedItem(bottle.getType());
 				}

@@ -7,6 +7,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.PanelVignobles;
+import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.countries.Country;
 import mycellar.vignobles.Appelation;
 import mycellar.vignobles.CountryVignoble;
@@ -46,8 +47,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 23.0
- * @since 20/03/18
+ * @version 23.1
+ * @since 20/04/18
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -98,16 +99,11 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			name.setCaseSensitive(false);
 			name.setEditable(true);
 
-			m_half.removeAllItems();
 			m_half.addItem("");
-			for(String s:Program.half) {
-				if(!s.isEmpty()) {
-					m_half.addItem(s);
-				}
+			for(String s: MyCellarBottleContenance.getList()) {
+				m_half.addItem(s);
 			}
-			if (Program.half.contains(Program.defaut_half)) {
-				m_half.setSelectedItem(Program.defaut_half);
-			}
+			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 
 			// Init à vide des valeurs spécifiques modification
 			m_nb_num = m_nb_lig = m_nb_col = -1;
@@ -382,12 +378,8 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 				m_year.setEditable(false);
 			m_half.removeAllItems();
 			m_half.addItem("");
-			for(String s: Program.half) {
-				if(null != s && !s.isEmpty())
+			for(String s: MyCellarBottleContenance.getList()) {
 					m_half.addItem(s);
-			}
-			if (Program.half.contains(Program.defaut_half)) {
-				m_half.setSelectedItem(Program.defaut_half);
 			}
 			m_half.setSelectedItem(bottle.getType());
 			String half_tmp = "";
@@ -398,7 +390,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 			if (half_tmp.compareTo(bottle.getType()) != 0 && auto.equals("ON")) {
 				if (!bottle.getType().isEmpty()) {
-					Program.half.add(bottle.getType());
+					MyCellarBottleContenance.getList().add(bottle.getType());
 					m_half.addItem(bottle.getType());
 					m_half.setSelectedItem(bottle.getType());
 				}
@@ -1248,7 +1240,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						m_nnb_bottle_add_only_one_place = 0;
 					}
 					//Remise des valeurs par défaut
-					m_half.setSelectedItem(Program.defaut_half);
+					m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 				}
 			}
 			if(resul)

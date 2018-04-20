@@ -26,8 +26,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 02/03/18
- * @version 2.0
+ * @since 20/04/18
+ * @version 2.1
  */
 
 public class MyXmlDom {
@@ -201,93 +201,6 @@ public class MyXmlDom {
 		writeMyCellarXml(oCaveTmp,"");
 	}
 
-	/**
-	 * writeTypeXml
-	 *
-	 * @param typeList LinkedList<String>
-	 * @return boolean
-	 */
-	public static void writeTypeXml(List<String> typeList) {
-
-		Debug("writeTypeXml: Writing file");
-		String filename = Program.getXMLTypesFileName();
-		try {
-			FileWriter oFile = new FileWriter(filename);
-			//Init XML File
-			oFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			// Racine XML
-			oFile.write("<MyCellar>");
-			// Ecriture des types
-			for (String type: typeList){
-				if(type.equals(Program.defaut_half))
-					oFile.write("<type value=\""+type+"\" default=\"true\"/>");
-				else
-					oFile.write("<type value=\""+type+"\"/>");
-			}
-			oFile.write("</MyCellar>");
-			oFile.flush();
-			oFile.close();
-		}
-		catch (IOException ex) {
-			Program.showException(ex);
-		}
-		Debug("writeTypeXml: Writing file OK");
-	}
-
-	/**
-	 * readTypesXml: Lit le fichier Types.xml des types
-	 *
-	 * @return LinkedList<String> Liste de types 
-	 */
-	public static LinkedList<String> readTypesXml()  {
-
-		Debug("readTypesXml: Reading file");
-		File file = new File(Program.getXMLTypesFileName());
-		if(!file.exists()) {
-			Debug("WARNING: file '"+Program.getXMLTypesFileName()+"' not found!");
-			return null;
-		}
-
-		LinkedList<String> typeList = new LinkedList<String>();
-		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(new File(Program.getXMLTypesFileName()));
-			doc.getDocumentElement().normalize();
-
-			NodeList types = doc.getElementsByTagName("type");
-
-			for (int i = 0; i < types.getLength(); i++) {
-				Node nNode = types.item(i);
-
-				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-					Element type = (Element) nNode;
-					// Récupération des noeuds des types
-					String value = type.getAttribute("value");
-					if(type.hasAttribute("default"))
-						Program.defaut_half = value;
-					if(value != null && !value.isEmpty() && !typeList.contains(value))
-						typeList.add(value);
-				}
-			}
-		}
-		catch (IOException e) {
-			Debug("IOException");
-			Program.showException(e, false);
-			return typeList;
-		} catch (ParserConfigurationException e) {
-			Debug("ParserConfigurationException");
-			Program.showException(e, false);
-			return typeList;
-		} catch (SAXException e) {
-			Debug("SAXException");
-			Program.showException(e, false);
-			return typeList;
-		}
-		Debug("readTypesXml: Reading file OK");
-		return typeList;
-	}
-	
 	/**
 	 * writeRangements: Ecriture des Rangements pour l'export XML/HTML
 	 *

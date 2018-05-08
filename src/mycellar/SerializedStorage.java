@@ -16,8 +16,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.7
- * @since 15/03/18
+ * @version 4.8
+ * @since 08/05/18
  */
 
 public class SerializedStorage implements Storage {
@@ -321,9 +321,8 @@ public class SerializedStorage implements Storage {
 			for (File f : list) {
 				try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
 					Rangement r = (Rangement) ois.readObject();
-					if (r != null) {
+					if (r != null && !cave.contains(r)) {
 						cave.add(r);
-						MyXmlDom.appendRangement(r);
 					}
 					ois.close();
 				} catch (IOException ex) {
@@ -333,6 +332,7 @@ public class SerializedStorage implements Storage {
 					bresul = false;
 				}
 			}
+			MyXmlDom.writeMyCellarXml(cave, "");
 		}
 		return bresul;
 	}
@@ -351,9 +351,10 @@ public class SerializedStorage implements Storage {
 		boolean resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + "history.xml"));
 		if(!resul) {
 			m_HistoryList = new HistoryList();
-			Debug("Loadinging History KO");
+			Debug("Loading History KO");
+		} else {
+			Debug("Loading History OK");
 		}
-		Debug("Loadinging History OK");
 		return resul;
 	}
 

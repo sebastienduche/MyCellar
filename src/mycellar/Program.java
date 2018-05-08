@@ -75,8 +75,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 17.9
- * @since 20/04/18
+ * @version 18.0
+ * @since 05/05/18
  */
 
 public class Program {
@@ -110,7 +110,7 @@ public class Program {
 	private static FileWriter oDebugFile = null;
 	private static File debugFile = null;
 	private static boolean bDebug = false;
-	private static LinkedList<Rangement> m_oCave = new LinkedList<>();
+	private static final LinkedList<Rangement> RANGEMENTS_LIST = new LinkedList<>();
 	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
 	private static final LinkedList<MyCellarError> ERRORS = new LinkedList<>();
 	public static Rangement defaultPlace = new Rangement("");
@@ -186,8 +186,9 @@ public class Program {
 			Debug("Program: Initializing Configuration files...");
 			loadProperties(false);
 			File f = new File(getWorkDir(true) + DATA_XML);
-			if(!f.exists())
+			if(!f.exists()) {
 				f.createNewFile();
+			}
 			LanguageFileLoader.loadLanguageFiles( "U" );
 
 			//Initialisation de la Map contenant config
@@ -217,8 +218,9 @@ public class Program {
 
 		inputPropCave = getWorkDir(true) + "config.ini";
 		File f = new File(inputPropCave);
-		if( !f.exists() )
+		if(!f.exists()) {
 			f.createNewFile();
+		}
 		configCave = new MyLinkedHashMap();
 		FileInputStream inputStream = new FileInputStream(inputPropCave);
 		propCave.load(inputStream);
@@ -231,8 +233,9 @@ public class Program {
 		}
 
 		f = new File(getWorkDir(true) + "search.ini");
-		if(f.exists())
+		if(f.exists()) {
 			FileUtils.deleteQuietly(f);
+		}
 
 		if (loadTypes) {
 			MyCellarBottleContenance.load();
@@ -495,19 +498,19 @@ public class Program {
 			tmp = "<html>\n<body>\n<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\">\n<tr bgcolor=\"#FFFF00\">\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = "<td>" + Program.convertToHTMLString(Program.getLabel("Infos208")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos189")) + "</td>\n";
+			tmp = "<td>" + convertToHTMLString(getLabel("Infos208")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos189")) + "</td>\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = "<td>" + Program.convertToHTMLString(Program.getLabel("Infos134")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos105")) + "</td>\n";
+			tmp = "<td>" + convertToHTMLString(getLabel("Infos134")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos105")) + "</td>\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = "<td>" + Program.convertToHTMLString(Program.getLabel("Infos158")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos028")) + "</td>\n";
+			tmp = "<td>" + convertToHTMLString(getLabel("Infos158")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos028")) + "</td>\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = "<td>" + Program.convertToHTMLString(Program.getLabel("Infos083")) + "</td>\n<td>" + Program.convertToHTMLString(Program.getLabel("Infos135")) + "</td>\n";
+			tmp = "<td>" + convertToHTMLString(getLabel("Infos083")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos135")) + "</td>\n";
 			ficout.write(tmp);
 			ficout.flush();
-			tmp = "<td>" + Program.convertToHTMLString(Program.getLabel("Infos137")) + "</td>\n";
+			tmp = "<td>" + convertToHTMLString(getLabel("Infos137")) + "</td>\n";
 			ficout.write(tmp);
 			ficout.flush();
 			tmp = "</tr>\n<xsl:for-each select=\"cellar/name\">\n<xsl:sort select=\"name\"/>\n<tr>\n";
@@ -575,24 +578,24 @@ public class Program {
 
 	/**
 	 * Chargement des données XML (Bouteilles et Rangement) ou des données sérialisées en cas de pb
-	 * @return
 	 */
 	public static boolean loadObjects() {
+		boolean load = false;
+		RANGEMENTS_LIST.clear();
 		if(!ListeBouteille.loadXML()) {
 			read_Object();
 			getStorage().setListBouteilles(getStorage().getAllList());
 		}
 		else {
-			m_oCave = MyXmlDom.readMyCellarXml("");
+			load = MyXmlDom.readMyCellarXml("", RANGEMENTS_LIST);
 			getStorage().loadHistory();
 		}
 
-		if(m_oCave == null) {
-			m_oCave = new LinkedList<>();
-			m_oCave.add(defaultPlace);
-			return false;
+		if(!load) {
+			RANGEMENTS_LIST.clear();
+			RANGEMENTS_LIST.add(defaultPlace);
 		}
-		return true;
+		return load;
 	}
 
 	/**
@@ -608,17 +611,17 @@ public class Program {
 			Debug("Program: WARNING: Loading Unsuccessful");
 			getStorage().setAll(null);
 		}
-		else
-			m_oCave = cave;
+		else {
+			RANGEMENTS_LIST.addAll(cave);
+		}
 		Debug("Program: Loading places and history OK");
 	}
 	
 	public static int getMaxPrice() {
-		
 		OptionalDouble i = getStorage().getAllList().stream().mapToDouble(Bouteille::getPriceDouble).max();
 		if(i.isPresent())
 			return (int) i.getAsDouble();
-		return  0;
+		return 0;
 	}
 	
 	public static int getCellarValue() {	
@@ -632,7 +635,7 @@ public class Program {
 	 * @return int
 	 */
 	public static int getNbBouteilleAnnee(int an) {
-		return (int)getStorage().getAllList().stream().filter(bouteille -> bouteille.getAnneeInt() == an).count();
+		return (int) getStorage().getAllList().stream().filter(bouteille -> bouteille.getAnneeInt() == an).count();
 	}
 	
 	public static int[] getAnnees() {
@@ -644,7 +647,7 @@ public class Program {
 	 * @return int
 	 */
 	public static int getNbAutreAnnee() {
-		return (int)getStorage().getAllList().stream().filter(bouteille -> bouteille.getAnneeInt() < 1000).count();
+		return (int) getStorage().getAllList().stream().filter(bouteille -> bouteille.getAnneeInt() < 1000).count();
 	}
 
 	/**
@@ -652,7 +655,7 @@ public class Program {
 	 * @return int
 	 */
 	public static int getNbNonVintage() {
-		return (int)getStorage().getAllList().stream().filter(bouteille -> Bouteille.isNonVintageYear(bouteille.getAnnee())).count();
+		return (int) getStorage().getAllList().stream().filter(bouteille -> Bouteille.isNonVintageYear(bouteille.getAnnee())).count();
 	}
 
 
@@ -836,10 +839,11 @@ public class Program {
 		CountryVignobles.save();
 		ListeBouteille.writeXML();
 
-		if(!sFilename.isEmpty())
+		if(!sFilename.isEmpty()) {
 			zipDir(sFilename);
-		else
+		} else {
 			zipDir(archive);
+		}
 
 		modified = false;
 		listCaveModified = false;
@@ -860,8 +864,9 @@ public class Program {
 	 * @param sText String
 	 */
 	public static void Debug(String sText) {
-		if(!bDebug)
+		if(!bDebug) {
 			return;
+		}
 
 		try {
 			if (oDebugFile == null) {
@@ -887,7 +892,7 @@ public class Program {
 	 * @return LinkedList<Rangement>
 	 */
 	public static LinkedList<Rangement> getCave() {
-		return m_oCave;
+		return RANGEMENTS_LIST;
 	}
 
 	/**
@@ -897,9 +902,10 @@ public class Program {
 	 * @return Rangement
 	 */
 	public static Rangement getCave(int _nCave) {
-		if ( _nCave >= m_oCave.size() || _nCave < 0 )
+		if ( _nCave >= RANGEMENTS_LIST.size() || _nCave < 0 ) {
 			return null;
-		return m_oCave.get(_nCave);
+		}
+		return RANGEMENTS_LIST.get(_nCave);
 	}
 
 	/**
@@ -909,11 +915,13 @@ public class Program {
 	 * @return Rangement
 	 */
 	public static Rangement getCave(String name) {
-		if (name == null || name.isEmpty())
+		if (name == null || name.isEmpty()) {
 			return null;
-		for(Rangement r: m_oCave) {
-			if(name.equals(r.getNom()))
+		}
+		for(Rangement r: RANGEMENTS_LIST) {
+			if(name.equals(r.getNom())) {
 				return r;
+			}
 		}
 		return null;
 	}
@@ -925,11 +933,13 @@ public class Program {
 	 * @return int
 	 */
 	public static int getCaveIndex(String name) {
-		if (name == null || name.isEmpty())
+		if (name == null || name.isEmpty()) {
 			return -1;
-		for(int i = 0; i < m_oCave.size(); i++) {
-			if(name.equals(m_oCave.get(i).getNom()))
+		}
+		for(int i = 0; i < RANGEMENTS_LIST.size(); i++) {
+			if(name.equals(RANGEMENTS_LIST.get(i).getNom())) {
 				return i;
+			}
 		}
 		return -1;
 	}
@@ -940,13 +950,14 @@ public class Program {
 	 * @param rangement Rangement
 	 */
 	public static void addCave(Rangement rangement) {
-		if(rangement == null)
+		if(rangement == null) {
 			return;
-		m_oCave.add(rangement);
+		}
+		RANGEMENTS_LIST.add(rangement);
 		setListCaveModified();
 		setModified();
 		Debug("Program: Sorting places...");
-		Collections.sort(m_oCave);
+		Collections.sort(RANGEMENTS_LIST);
 	}
 
 	/**
@@ -955,10 +966,11 @@ public class Program {
 	 * @param rangement Rangement
 	 */
 	public static void removeCave(Rangement rangement) {
-		if(rangement == null)
+		if(rangement == null) {
 			return;
-		int num = m_oCave.indexOf(rangement);
-		m_oCave.remove(rangement);
+		}
+		int num = RANGEMENTS_LIST.indexOf(rangement);
+		RANGEMENTS_LIST.remove(rangement);
 		deletePlaceFile(num);
 		setModified();
 		setListCaveModified();
@@ -971,10 +983,7 @@ public class Program {
 	 * @return int
 	 */
 	public static int GetCaveLength() {
-		if (m_oCave == null)
-			return 0;
-
-		return m_oCave.size();
+		return RANGEMENTS_LIST.size();
 	}
 
 	/**
@@ -995,7 +1004,7 @@ public class Program {
 		else
 			Debug("Program: openFile: Creating new file");
 
-		LinkedList<String> list = new LinkedList<String>();
+		LinkedList<String> list = new LinkedList<>();
 		list.addLast(getGlobalConfigString("LAST_OPEN1",""));
 		list.addLast(getGlobalConfigString("LAST_OPEN2",""));
 		list.addLast(getGlobalConfigString("LAST_OPEN3",""));
@@ -1010,12 +1019,15 @@ public class Program {
 		Countries.init();
 
 		if(f == null) {
+			// Nouveau fichier de bouteilles
+			ListeBouteille.writeXML();
 			setFileSavable(false);
 			// Nouveau fichier
 			String fic = getWorkDir(true) + UNTITLED1_SINFO;
 			f = new File(fic);
-			if(f.exists())
+			if(f.exists()) {
 				f.delete();
+			}
 			try {
 				f.createNewFile();
 			} catch (IOException e) {
@@ -1041,12 +1053,11 @@ public class Program {
 
 		try {
 			// Dézippage
-			boolean bUnzipSucceeded = unzipDir(getWorkDir(false), archive);
-			if ( bUnzipSucceeded )
-				Debug("Program: Unzipping "+archive+" to "+getWorkDir(false) +" OK");
-			else {
-				Debug("Program: Unzipping "+archive+" to "+getWorkDir(false) + " KO");
-				Program.archive = "";
+			boolean unzipOK = unzipDir(getWorkDir(false), archive);
+			Debug("Program: Unzipping " + archive + " to " + getWorkDir(false) + (unzipOK ? " OK" : " KO"));
+			if (!unzipOK) {
+				archive = "";
+				return false;
 			}
 		}
 		catch (Exception e) {
@@ -1083,16 +1094,14 @@ public class Program {
 			Debug("Program: Place Count: Program="+GetCaveLength()+" cave="+i);
 		}
 		// En cas d'erreur
-		if (!loaded)
+		if (!loaded) {
 			Debug("Program: ERROR: Loading");
+		}
 
 		//Chargement des rangement par le fichier d'options si la relecture des objets sérialisés a échouée
 		if (GetCaveLength() == 0) {
 			Debug("Program: Reading places from file");
-			LinkedList<Rangement> cave = MyXmlDom.readMyCellarXml("");
-			if(cave != null) {
-				m_oCave = cave;
-			}
+			MyXmlDom.readMyCellarXml("", RANGEMENTS_LIST);
 		}
 
 		try {
@@ -1103,16 +1112,18 @@ public class Program {
 		}
 
 		RangementUtils.putTabStock();
-		if(!getErrors().isEmpty())
+		if(!getErrors().isEmpty()) {
 			new OpenShowErrorsAction().actionPerformed(null);
+		}
 		CountryVignobles.load();
 		CountryVignobles.addVignobleFromBottles();
 
 		putGlobalConfigString("STARTUP", "1");
 		// Fin chargement
 
-		if(isFileSavable())
+		if(isFileSavable()) {
 			list.addFirst(f.getAbsolutePath());
+		}
 
 		putGlobalConfigString("LAST_OPEN1", list.pop());
 		putGlobalConfigString("LAST_OPEN2", list.pop());
@@ -1206,8 +1217,9 @@ public class Program {
 			}
 			//Tri du tableau et écriture du fichier XML
 			if (bSave) {
-				if(!ListeBouteille.writeXML())
+				if(!ListeBouteille.writeXML()) {
 					return;
+				}
 
 				if(isListCaveModified())
 					MyXmlDom.writeMyCellarXml(getCave(),"");
@@ -1265,8 +1277,9 @@ public class Program {
 
 	public static void deleteTempFiles() {
 		for(File f : DIR_TO_DELETE) {
-			if(!f.exists() || f.getName().equalsIgnoreCase("Global"))
+			if(!f.exists() || f.getName().equalsIgnoreCase("Global")) {
 				continue;
+			}
 			try{
 				Debug("Program: closeFile: Deleting work directory: "+f.getAbsolutePath());
 				FileUtils.deleteDirectory(f);
@@ -1284,8 +1297,7 @@ public class Program {
 
 		MyCellarBottleContenance.save();
 
-		if(inputPropCave != null)
-		{
+		if(inputPropCave != null) {
 			Object[] val = configCave.keySet().toArray();
 			for (Object o : val) {
 				String key = o.toString();
@@ -1324,8 +1336,9 @@ public class Program {
 		else
 			m_sGlobalDir = sDir + "/MyCellar/Global";
 		File f_obj = new File( m_sGlobalDir );
-		if(!f_obj.exists())
+		if(!f_obj.exists()) {
 			f_obj.mkdir();
+		}
 
 		return m_sGlobalDir + File.separator;
 	}
@@ -1344,35 +1357,40 @@ public class Program {
 	 * @return
 	 */
 	public static String getWorkDir(boolean _bWithEndSlash) {
-		if( m_bWorkDirCalculated ) {
-			if (_bWithEndSlash)
+		if(m_bWorkDirCalculated) {
+			if (_bWithEndSlash) {
 				return m_sWorkDir + File.separator;
+			}
 			return m_sWorkDir;
 		}
 		m_bWorkDirCalculated = true;
 		Debug("Program: Calculating work directory.");
 		String sDir = System.getProperty("user.home");
-		if(sDir.isEmpty())
+		if(sDir.isEmpty()) {
 			m_sWorkDir = "." + File.separator + "Object";
-		else
+		} else {
 			m_sWorkDir = sDir + File.separator + "MyCellar";
+		}
 		File f_obj = new File(m_sWorkDir);
-		if(!f_obj.exists())
+		if(!f_obj.exists()) {
 			f_obj.mkdir();
+		}
 
 		String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
 		m_sWorkDir += File.separator + time;
 
 		f_obj = new File(m_sWorkDir);
-		if(!f_obj.exists())
+		if(!f_obj.exists()) {
 			f_obj.mkdir();
+		}
 
 		Debug("Program: work directory: "+m_sWorkDir);
 		DIR_TO_DELETE.add(new File(m_sWorkDir));
 
-		if (_bWithEndSlash)
+		if (_bWithEndSlash) {
 			return m_sWorkDir + File.separator;
+		}
 		return m_sWorkDir;
 	}
 

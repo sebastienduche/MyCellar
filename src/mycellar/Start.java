@@ -42,8 +42,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 23.7
- * @since 11/04/18
+ * @version 23.8
+ * @since 08/05/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -244,7 +244,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	/**
 	 * jbInit: Fonction d'initialisation de l'application
 	 */
-	private void startup()  {
+	private void startup() {
 		Debug("Starting MyCellar version: "+MyCellarVersion.version);
 		Thread.currentThread().setUncaughtExceptionHandler(this);
 		prefs = Preferences.userNodeForPackage(getClass());
@@ -267,7 +267,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (Program.archive.isEmpty() && Program.getGlobalConfigInt("STARTUP", 0) == 0) {
 			// Language au premier démarrage
 			String lang = System.getProperty("user.language");
-			if(lang.equalsIgnoreCase("fr"))
+			if("fr".equalsIgnoreCase(lang))
 				lang = "F";
 			else
 				lang = "U";
@@ -438,11 +438,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				fic = fic.concat(".xml");
 			}
 			File f = new File(fic);
-			LinkedList<Rangement> cave = null;
-			if (f.exists()) {
-				cave = MyXmlDom.readMyCellarXml(fic);
-			}
-			if (cave != null) {
+			LinkedList<Rangement> cave = new LinkedList<>();
+			if (f.exists() && MyXmlDom.readMyCellarXml(fic, cave)) {
 				MyXmlDom.writeMyCellarXml(cave, "");
 				Program.loadObjects();
 			}

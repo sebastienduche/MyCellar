@@ -26,8 +26,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 20/04/18
- * @version 2.1
+ * @since 08/05/18
+ * @version 2.2
  */
 
 public class MyXmlDom {
@@ -35,20 +35,20 @@ public class MyXmlDom {
 	/**
 	 * readMyCellarXml: Lit le fichier MyCellar.xml des rangements
 	 *
-	 * @return LinkedList<Rangement> Liste de rangements
 	 */
-	public static LinkedList<Rangement> readMyCellarXml(String _sFileName) {
+	public static boolean readMyCellarXml(String _sFileName, final LinkedList<Rangement> rangementList) {
 
 		Debug("readMyCellarXml: Reading file");
+		rangementList.clear();
 		String filename = Program.getXMLPlacesFileName();
 		if( !_sFileName.isEmpty() )
 			filename = _sFileName;
-		LinkedList<Rangement> oRangementVector = new LinkedList<>();
 		LinkedList<String> names = new LinkedList<>();
 
 		File file = new File(filename);
-		if(!file.exists())
-			return null;
+		if(!file.exists()) {
+			return false;
+		}
 
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -83,7 +83,7 @@ public class MyXmlDom {
 							Debug("WARNING: Rangement name '"+sName+"' already used!");
 						}
 						else {
-							oRangementVector.add(new Rangement( sName, nPlace, nNumStart, bLimit, nNbLimit));
+							rangementList.add(new Rangement( sName, nPlace, nNumStart, bLimit, nNbLimit));
 							names.add(sName);
 						}
 					}
@@ -123,8 +123,7 @@ public class MyXmlDom {
 						}
 						else {
 							names.add(sName);
-							//Rangement rangement = new Rangement(sName, nPlace, nb_lignes, nb_colonnes);
-							oRangementVector.add(new Rangement(sName, listPart));
+							rangementList.add(new Rangement(sName, listPart));
 						}
 					}
 
@@ -134,19 +133,19 @@ public class MyXmlDom {
 		catch (IOException e) {
 			Debug("IOException");
 			Program.showException(e, false);
-			return oRangementVector;
+			return false;
 		} catch (ParserConfigurationException e) {
 			Debug("ParserConfigurationException");
 			Program.showException(e, false);
-			return oRangementVector;
+			return false;
 		} catch (SAXException e) {
 			Debug("SAXException");
 			Program.showException(e, false);
-			return oRangementVector;
+			return false;
 		}
 
 		Debug("readMyCellarXml: Reading file OK");
-		return oRangementVector;
+		return true;
 	}
 
 	/**
@@ -182,23 +181,6 @@ public class MyXmlDom {
 		}
 		Debug("writeMyCellarXml: Writing file OK");
 		return true;
-	}
-
-	/**
-	 * appendRangement
-	 *
-	 * @param _oCave Rangement
-	 * @return boolean
-	 */
-	public static void appendRangement(Rangement _oCave) {
-		Debug("appendRangement: Add place "+_oCave.getNom());
-		LinkedList<Rangement> oCaveTmp = readMyCellarXml("");
-		if( null == oCaveTmp )
-			oCaveTmp = new LinkedList<Rangement>();
-		if(!oCaveTmp.contains(_oCave))
-			oCaveTmp.add(_oCave);
-
-		writeMyCellarXml(oCaveTmp,"");
 	}
 
 	/**

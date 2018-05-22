@@ -26,8 +26,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 08/05/18
- * @version 2.2
+ * @since 22/05/18
+ * @version 2.3
  */
 
 public class MyXmlDom {
@@ -36,7 +36,7 @@ public class MyXmlDom {
 	 * readMyCellarXml: Lit le fichier MyCellar.xml des rangements
 	 *
 	 */
-	public static boolean readMyCellarXml(String _sFileName, final LinkedList<Rangement> rangementList) {
+	static boolean readMyCellarXml(String _sFileName, final List<Rangement> rangementList) {
 
 		Debug("readMyCellarXml: Reading file");
 		rangementList.clear();
@@ -152,35 +152,29 @@ public class MyXmlDom {
 	 * writeMyCellarXml
 	 *
 	 * @param _oCave LinkedList<Rangement>
-	 * @return boolean
 	 */
-	public static boolean writeMyCellarXml(List<Rangement> _oCave, String _sFilename) {
+	static void writeMyCellarXml(List<Rangement> _oCave, String _sFilename) {
 
 		Debug("writeMyCellarXml: Writing file");
 		String filename = Program.getXMLPlacesFileName();
 		if(!_sFilename.isEmpty())
 			filename = _sFilename;
-		try {
-			FileWriter oFile = new FileWriter(filename);
+		try (FileWriter oFile = new FileWriter(filename)){
 			//Init XML File
-			oFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			// Racine XML
-			oFile.write("<MyCellar>");
+			oFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
 			// Ecriture des rangements
 			for (Rangement r : _oCave){
-				if (r != null)
+				if (r != null) {
 					oFile.write(r.toXml());
+				}
 			}
 			oFile.write("</MyCellar>");
 			oFile.flush();
-			oFile.close();
 		}
 		catch (IOException ex) {
 			Program.showException(ex);
-			return false;
 		}
 		Debug("writeMyCellarXml: Writing file OK");
-		return true;
 	}
 
 	/**

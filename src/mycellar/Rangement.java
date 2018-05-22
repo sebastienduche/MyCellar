@@ -12,8 +12,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 25.6
- * @since 02/03/18
+ * @version 25.7
+ * @since 22/05/18
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -35,7 +35,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param nom String: nom du rangement
 	 * @param listPart LinkedList<Part>: liste des parties
 	 */
-	public Rangement(String nom, LinkedList<Part> listPart) {
+	public Rangement(String nom, List<Part> listPart) {
 
 		this.nom = nom.trim();
 		setPlace(listPart);
@@ -122,7 +122,7 @@ public class Rangement implements Comparable<Rangement> {
 		return nb_emplacements;
 	}
 	
-	public void setNbEmplacements(int nb_emplacements) {
+	void setNbEmplacements(int nb_emplacements) {
 		this.nb_emplacements = nb_emplacements;
 	}
 
@@ -510,7 +510,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param index int: index de la bouteille (0...n)
 	 * @return Bouteille
 	 */
-	public Bouteille getBouteilleCaisseAt(int num_empl, int index) {
+	Bouteille getBouteilleCaisseAt(int num_empl, int index) {
 		try {
 			return storageCaisse.get(num_empl + start_caisse).get(index);
 		}
@@ -559,7 +559,7 @@ public class Rangement implements Comparable<Rangement> {
 	 *
 	 * @return String
 	 */
-	public String toXml() {
+	String toXml() {
 
 		StringBuilder sText = new StringBuilder();
 		if (isCaisse()) {
@@ -568,18 +568,21 @@ public class Rangement implements Comparable<Rangement> {
 			.append("\" NumStart=\"")
 			.append(getStartCaisse())
 			.append("\"");
-			if (isLimited())
+			if (isLimited()) {
 				sText.append(" NbLimit=\"").append(this.getNbColonnesStock()).append("\">");
-			else
+			}
+			else {
 				sText.append(" NbLimit=\"0\">");
+			}
 		}else{
 			sText.append("<place name=\"\" IsCaisse=\"false\" NbPlace=\"")
 			.append(getNbEmplacements())
 			.append("\">\n");
 			for (int i=0; i<getNbEmplacements(); i++) {
 				sText.append("<internal-place NbLine=\"").append(getNbLignes(i)).append("\">\n");
-				for (int j=0; j<getNbLignes(i); j++)
-					sText.append("<line NbColumn=\"").append(getNbColonnes(i,j)).append("\"/>\n");
+				for (int j=0; j<getNbLignes(i); j++) {
+					sText.append("<line NbColumn=\"").append(getNbColonnes(i, j)).append("\"/>\n");
+				}
 				sText.append("</internal-place>\n");
 			}
 		}
@@ -625,7 +628,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param numPlace Numero d'emplacement (0, n)
 	 * @return
 	 */
-	public boolean isExistingNumPlace(int numPlace) {
+	boolean isExistingNumPlace(int numPlace) {
 		
 		if (numPlace < start_caisse || numPlace >= getNbEmplacements() + start_caisse)
 			return false;
@@ -684,19 +687,19 @@ public class Rangement implements Comparable<Rangement> {
 	/**
 	 * Réinitialisation du stockage pour les caisses
 	 */
-	public void updateCaisse(int nb_emplacements) {
+	void updateCaisse(int nb_emplacements) {
 		if(!isCaisse())
 			return;
 		this.nb_emplacements = nb_emplacements;
-		storageCaisse = new HashMap<Integer, ArrayList<Bouteille>>(nb_emplacements);
+		storageCaisse = new HashMap<>(nb_emplacements);
 		for(int i=start_caisse; i<start_caisse+nb_emplacements; i++)
-			storageCaisse.put(i, new ArrayList<Bouteille>());
+			storageCaisse.put(i, new ArrayList<>());
 	}
 	
 	/**
 	 * Réinitialisation du stockage
 	 */
-	public void resetStock() {
+	void resetStock() {
 		if(isCaisse())
 			updateCaisse(nb_emplacements);
 		else

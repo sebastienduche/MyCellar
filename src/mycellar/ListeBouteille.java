@@ -40,8 +40,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 12/04/18
+ * @version 0.9
+ * @since 22/05/18
  *
  * <p>Java class for anonymous complex type.
  *
@@ -101,17 +101,17 @@ public class ListeBouteille {
 		return bouteille;
 	}
 
-	public void resetBouteille() {
+	void resetBouteille() {
 		bouteille = null;
 	}
 
-	public static boolean loadXML() {
+	static boolean loadXML() {
 		Debug("Loading JAXB File");
 		File f = new File(Program.getXMLBottlesFileName());
 		return loadXML(f);
 	}
 
-	public static boolean loadXML(File f) {
+	static boolean loadXML(File f) {
 		Debug("Loading XML File "+f.getAbsolutePath());
 		if(!f.exists())
 			return false;
@@ -163,15 +163,15 @@ public class ListeBouteille {
 		Debug("Loading JAXB File Done");
 	}
 
-	public static boolean writeXML() {
+	static boolean writeXML() {
 		return writeXML(Program.getStorage().getListBouteilles(), new File(Program.getXMLBottlesFileName()));
 	}
 
-	public static boolean writeXML(File f) {
+	static boolean writeXML(File f) {
 		return writeXML(Program.getStorage().getListBouteilles(), f);
 	}
 
-	public static boolean writeXML(ListeBouteille liste, File f) {
+	static boolean writeXML(ListeBouteille liste, File f) {
 		Debug("Writing JAXB File");
 		try {
 			JAXBContext jc = JAXBContext.newInstance(ObjectFactory.class);

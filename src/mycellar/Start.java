@@ -42,8 +42,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 23.8
- * @since 08/05/18
+ * @version 23.9
+ * @since 22/05/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -71,7 +71,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private static final MyCellarLabel copyright = new MyCellarLabel();
 	private static final MyCellarLabel update = new MyCellarLabel();
 	private static final String infos_version = " 2018 v";
-	private static final MyCellarLabel version = new MyCellarLabel("Janvier" + infos_version + MyCellarVersion.mainVersion);
+	private static final MyCellarLabel version = new MyCellarLabel();
 	
 	private char QUITTER;
 	private char IMPORT;
@@ -95,7 +95,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private static final JMenu menuEdition = new JMenu();
 	private static final JMenu menuWine = new JMenu();
 	private static final JMenu menuAbout = new JMenu("?");
-	public static final JMenu menuTools = new JMenu();
+	static final JMenu menuTools = new JMenu();
 
 	// differents choix de chaque menu
 	private static final JMenuItem importation = new JMenuItem();
@@ -155,9 +155,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		final SplashScreen splashscreen = new SplashScreen();
 		
-		while (splashscreen.isRunning()) {
-			;
-		}
+		while (splashscreen.isRunning()) {}
 		
 		// initialisation
 		Program.init();
@@ -252,8 +250,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		// Initialisation du mode Debug
 		// ____________________________
 
-		if (Program.getGlobalConfigInt("DEBUG", 0) == 1)
+		if (Program.getGlobalConfigInt("DEBUG", 0) == 1) {
 			Program.setDebug(true);
+		}
 
 		// Contrôle des MAJ
 		// Appel serveur pour alimenter la dernière version en ligne
@@ -325,7 +324,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	/**
 	 * Fonction pour desactiver ou activer toutes les options ou boutons
 	 */
-	public static void enableAll(boolean _bEnable) {
+	static void enableAll(boolean _bEnable) {
 		jMenuCloseFile.setEnabled(_bEnable);
 		m_oExportButton.setEnabled(_bEnable);
 		m_oStatsButton.setEnabled(_bEnable);
@@ -533,8 +532,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		Program.panelInfos.setEnable(false);
 		Program.panelInfos.refresh();
 		updateMainPanel();
-		setCursor(Cursor.getDefaultCursor());
 		setTitle(Program.getLabel("Infos001"));
+		setCursor(Cursor.getDefaultCursor());
 	}
 
 	/**
@@ -777,12 +776,15 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				menuFile.addSeparator();
 				menuFile.add(jMenuReopen1);
 			}
-			if (!Program.getGlobalConfigString("LAST_OPEN2", "").isEmpty())
+			if (!Program.getGlobalConfigString("LAST_OPEN2", "").isEmpty()) {
 				menuFile.add(jMenuReopen2);
-			if (!Program.getGlobalConfigString("LAST_OPEN3", "").isEmpty())
+			}
+			if (!Program.getGlobalConfigString("LAST_OPEN3", "").isEmpty()) {
 				menuFile.add(jMenuReopen3);
-			if (!Program.getGlobalConfigString("LAST_OPEN4", "").isEmpty())
+			}
+			if (!Program.getGlobalConfigString("LAST_OPEN4", "").isEmpty()) {
 				menuFile.add(jMenuReopen4);
+			}
 			menuFile.addSeparator();
 			menuFile.add(quit);
 			return;
@@ -837,10 +839,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			setSize(screenSize.width, screenSize.height);
 		this.setLayout(new MigLayout("", "[grow]", "[grow][][]"));
 
-		copyright.setFont(new Font("Dialog", 0, 10));
+		copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
 		copyright.setText("Copyright Sébastien D.");
-		version.setFont(new Font("Dialog", 0, 10));
-		update.setFont(new Font("Dialog", 0, 10));
+		version.setFont(new Font("Dialog", Font.PLAIN, 10));
+		update.setFont(new Font("Dialog", Font.PLAIN, 10));
 		add(Program.tabbedPane, "grow, hidemode 3, wrap");
 		add(Program.panelInfos, "grow, hidemode 3, wrap");
 		add(update, "wrap");
@@ -947,13 +949,15 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			menuFile.addSeparator();
 			menuFile.add(jMenuReopen1);
 		}
-		if (!Program.getGlobalConfigString("LAST_OPEN2", "").isEmpty())
+		if (!Program.getGlobalConfigString("LAST_OPEN2", "").isEmpty()) {
 			menuFile.add(jMenuReopen2);
-		if (!Program.getGlobalConfigString("LAST_OPEN3", "").isEmpty())
+		}
+		if (!Program.getGlobalConfigString("LAST_OPEN3", "").isEmpty()) {
 			menuFile.add(jMenuReopen3);
-		if (!Program.getGlobalConfigString("LAST_OPEN4", "").isEmpty())
+		}
+		if (!Program.getGlobalConfigString("LAST_OPEN4", "").isEmpty()) {
 			menuFile.add(jMenuReopen4);
-		
+		}
 		menuFile.addSeparator();
 		menuFile.add(quit);
 		menuPlace.add(addPlace);
@@ -1169,7 +1173,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		updateMainPanel();
 	}
 
-	public static void removeBottleTab(Bouteille bottle) {
+	static void removeBottleTab(Bouteille bottle) {
 		for (int i = 0; i < Program.tabbedPane.getTabCount(); i++) {
 			Component tab = Program.tabbedPane.getComponentAt(i);
 			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
@@ -1179,7 +1183,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 	
-	public static void removeCurrentTab() {
+	static void removeCurrentTab() {
 		Program.tabbedPane.removeTabAt(Program.tabbedPane.getSelectedIndex());
 		updateMainPanel();
 	}
@@ -1312,14 +1316,14 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 							return;
 					}
 				}
-				this.setEnabled(false);
-				Start.this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				setEnabled(false);
+				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				Program.save();
 				this.setEnabled(true);
 			} catch (Exception e3) {
 				Program.showException(e3);
 			} finally {
-				Start.this.setCursor(Cursor.getDefaultCursor());
+				setCursor(Cursor.getDefaultCursor());
 			}
 		}
 	}

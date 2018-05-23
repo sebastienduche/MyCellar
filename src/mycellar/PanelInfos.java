@@ -19,8 +19,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 02/03/18
+ * @version 1.5
+ * @since 23/05/18
  */
 public class PanelInfos extends JPanel {
 
@@ -36,19 +36,19 @@ public class PanelInfos extends JPanel {
 		add(panelHistory, "grow");
 	}
 
-	public void refresh() {
+	void refresh() {
 		Debug("Refreshing...");
 		panelStats.refresh();
 		panelHistory.refresh();
 	}
 
-	public void setLabels() {
+	void setLabels() {
 		Debug("setLabels...");
 		panelStats.setLabels();
 		panelHistory.setLabels();
 	}
 
-	public void setEnable(boolean b) {
+	void setEnable(boolean b) {
 		panelStats.setEnable(b);
 		panelHistory.setEnable(b);
 	}
@@ -91,7 +91,7 @@ class PanelStats extends JPanel {
 		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
 		setEnabled(false);
 	}
-	public void refresh() {
+	void refresh() {
 		int nbBottles = 0;
 		model.clearRows();
 		if(!Program.getCave().isEmpty()) {
@@ -104,13 +104,13 @@ class PanelStats extends JPanel {
 		cellarTotal.setText(Program.getCellarValue() + " " + Program.getCaveConfigString("DEVISE",""));
 	}
 
-	public void setLabels() {
+	void setLabels() {
 		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
 		bottles.setText(Program.getLabel("Infos405"));
 		cellarValue.setText(Program.getLabel("Infos406"));
 	}
 
-	public void setEnable(boolean b){
+	void setEnable(boolean b){
 		setEnabled(b);
 		bottles.setEnabled(b);
 		bottlesNb.setEnabled(b);
@@ -209,7 +209,7 @@ class PanelHistory extends JPanel {
 		setEnabled(false);
 	}
 
-	public void refresh(){
+	void refresh(){
 		SwingUtilities.invokeLater(() -> {
 			model.removeAll();
 			if(!Program.getCave().isEmpty())
@@ -217,11 +217,11 @@ class PanelHistory extends JPanel {
 		});
 	}
 
-	public void setLabels() {
+	void setLabels() {
 		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos407")));
 	}
 
-	public void setEnable(boolean b){
+	void setEnable(boolean b){
 		setEnabled(b);
 	}
 }

@@ -47,8 +47,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 23.2
- * @since 20/04/18
+ * @version 23.3
+ * @since 23/05/18
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 
@@ -444,7 +444,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 	 *
 	 * @param bouteilles LinkedList<Bouteille>: Liste des bouteilles
 	 */
-	public void setBottlesInModification(LinkedList<Bouteille> bouteilles) {
+	void setBottlesInModification(LinkedList<Bouteille> bouteilles) {
 		Debug("setBottlesInModification...");
 		try {
 			m_bmulti = bouteilles.size() > 1;
@@ -1557,7 +1557,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 	
 	private void managePlaceCombos() {
@@ -1630,7 +1630,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			runExit();
-			Start.removeCurrentTab();
+			Start.getInstance().removeCurrentTab();
 		}
 	}
 }

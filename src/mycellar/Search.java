@@ -47,8 +47,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.6
- * @since 13/04/18
+ * @version 18.7
+ * @since 23/05/18
  */
 public class Search extends JPanel implements Runnable, ITabListener {
 	private final JTable table;
@@ -268,7 +268,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		if (name.isVisible())
 			name.requestFocusInWindow();
 
-		Start.menuTools.add(moveLine);
+		Start.getInstance().menuTools.add(moveLine);
 	}
 
 	/**
@@ -1284,11 +1284,11 @@ public class Search extends JPanel implements Runnable, ITabListener {
 
 	@Override
 	public void tabClosed() {
-		Start.menuTools.remove(moveLine);
-		Start.updateMainPanel();
+		Start.getInstance().menuTools.remove(moveLine);
+		Start.getInstance().updateMainPanel();
 	}
 
-	public void setUpdateView(){
+	void setUpdateView(){
 		updateView = true;
 	}
 
@@ -1303,17 +1303,17 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		}
 	}
 
-	public static void removeBottle(Bouteille bottleToDelete) {
+	static void removeBottle(Bouteille bottleToDelete) {
 		MODEL.deleteBottle(bottleToDelete);
 		MODEL.fireTableDataChanged();
 		updateLabelBottleNumber();
 	}
 
-	public static void updateTable() {
+	static void updateTable() {
 		SwingUtilities.invokeLater(MODEL::fireTableDataChanged);
 	}
 
-	public static void clearResults() {
+	static void clearResults() {
 		SwingUtilities.invokeLater(MODEL::removeAll);
 	}
 

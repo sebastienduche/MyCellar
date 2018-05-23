@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
@@ -32,8 +33,8 @@ import java.text.MessageFormat;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.5
- * @since 13/03/18
+ * @version 10.6
+ * @since 23/05/18
  */
 public class Parametres extends JPanel implements ITabListener {
 
@@ -334,11 +335,9 @@ public class Parametres extends JPanel implements ITabListener {
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
 		int retour_jfc = boiteFichier.showOpenDialog(this);
-		File nomFichier = new File("");
-		String fic = "";
 		if (retour_jfc == JFileChooser.APPROVE_OPTION) {
-			nomFichier = boiteFichier.getSelectedFile();
-			fic = nomFichier.getAbsolutePath();
+			File nomFichier = boiteFichier.getSelectedFile();
+			String fic = nomFichier.getAbsolutePath();
 			fic = fic.trim();
 			boolean extension = fic.toLowerCase().endsWith(".xls") || fic.toLowerCase().endsWith(".ods");
 			Filtre filtre = (Filtre)boiteFichier.getFileFilter();
@@ -349,9 +348,9 @@ public class Parametres extends JPanel implements ITabListener {
 					fic = fic.concat(".ods");
 			}
 			file_bak.setText(fic);
+			Program.putCaveConfigString("FILE_EXCEL", fic);
+			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
 		}
-		Program.putCaveConfigString("FILE_EXCEL", fic);
-		Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
 
 	}
 
@@ -381,14 +380,14 @@ public class Parametres extends JPanel implements ITabListener {
 		try {
 			String thelangue = Program.getLanguage("CodeLang" + (langue.getSelectedIndex() + 1));
 			String currentLanguage = Program.getGlobalConfigString("LANGUAGE", "F");
-			if(thelangue.equals(currentLanguage))
+			if(thelangue.equals(currentLanguage)) {
 				return;
+			}
 			Program.putGlobalConfigString("LANGUAGE", thelangue);
 			boolean ok = Program.setLanguage(thelangue);
 			if (ok) {
 				if (Program.getLabel("Infos159") == null) {
-					thelangue = "F";
-					ok = Program.setLanguage(thelangue);
+					ok = Program.setLanguage("F");
 					langue.setSelectedIndex(0);
 				}
 				if(ok) {
@@ -398,7 +397,7 @@ public class Parametres extends JPanel implements ITabListener {
 			else {
 				langue.setSelectedIndex(0);
 				Program.setLanguage("F");
-				javax.swing.JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		catch (Exception exc) {
@@ -590,7 +589,7 @@ public class Parametres extends JPanel implements ITabListener {
 
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 		Program.parametres = null;
 	}
 }

@@ -47,8 +47,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.6
- * @since 11/04/18
+ * @version 5.7
+ * @since 23/05/18
  */
 public class Creer_Tableaux extends JPanel implements ITabListener {
 	private final MyCellarLabel label2 = new MyCellarLabel();
@@ -391,7 +391,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 				// Export HTML
 				if ( type_HTML.isSelected() ) {
 					Debug("Exporting in HTML in progress...");
-					LinkedList<Rangement> rangements = new LinkedList<Rangement>();
+					LinkedList<Rangement> rangements = new LinkedList<>();
 					for (int j : listToGen) {
 						rangements.add(Program.getCave(j));
 					}
@@ -683,7 +683,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 
 	public void updateView() {

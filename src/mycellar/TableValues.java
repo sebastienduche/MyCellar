@@ -10,14 +10,14 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.3
- * @since 02/03/18
+ * @version 2.4
+ * @since 23/05/18
  */
 public class TableValues extends AbstractTableModel {
 
 	private static final long serialVersionUID = -3899189654755476591L;
 	public static final int ETAT = 0;
-	public static final int SHOW = 7;
+	static final int SHOW = 7;
 
 	private static final int NBCOL = 8;
 	private final String[] columnNames = {"", Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos217"),
@@ -122,7 +122,7 @@ public class TableValues extends AbstractTableModel {
 		switch (column) {
 		case SHOW:
 			Bouteille bottle = monVector.get(row);
-			Start.showBottle(bottle, true);
+			Start.getInstance().showBottle(bottle, true);
 			break;
 		case ETAT:
 			listBoolean.set(row, (Boolean)value);
@@ -135,7 +135,7 @@ public class TableValues extends AbstractTableModel {
 	 *
 	 * @param b Bouteille
 	 */
-	public void addBouteille(Bouteille b) {
+	void addBouteille(Bouteille b) {
 		if( b != null) {
 			monVector.add(b);
 			listBoolean.add(Boolean.FALSE);
@@ -157,7 +157,7 @@ public class TableValues extends AbstractTableModel {
 	 *
 	 * @param num Bouteille
 	 */
-	public void removeBouteille(Bouteille num) {
+	void removeBouteille(Bouteille num) {
 		int index = monVector.indexOf(num);
 		monVector.remove(num);
 		listBoolean.remove(index);
@@ -168,7 +168,7 @@ public class TableValues extends AbstractTableModel {
 		return monVector;
 	}
 	
-	public boolean hasBottle(Bouteille b){
+	boolean hasBottle(Bouteille b){
 		return monVector.contains(b);
 	}
 
@@ -177,11 +177,11 @@ public class TableValues extends AbstractTableModel {
 		return monVector.get(i);
 	}
 
-	public void deleteBottle(Bouteille bottleToDelete) {
-		if(bottleToDelete == null)
+	void deleteBottle(Bouteille bottleToDelete) {
+		if(bottleToDelete == null) {
 			return;
-		if(monVector.contains(bottleToDelete))
-			monVector.remove(bottleToDelete);
+		}
+		monVector.remove(bottleToDelete);
 	}
 
 }

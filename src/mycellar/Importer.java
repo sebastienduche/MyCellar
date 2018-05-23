@@ -50,8 +50,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.4
- * @since 11/04/18
+ * @version 11.5
+ * @since 23/05/18
  */
 public class Importer extends JPanel implements ITabListener, Runnable {
 
@@ -1546,7 +1546,7 @@ public class Importer extends JPanel implements ITabListener, Runnable {
 
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 
 }

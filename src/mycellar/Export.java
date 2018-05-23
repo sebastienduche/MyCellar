@@ -45,8 +45,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.1
- * @since 20/03/18
+ * @version 7.2
+ * @since 23/05/18
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -713,7 +713,7 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 
 }

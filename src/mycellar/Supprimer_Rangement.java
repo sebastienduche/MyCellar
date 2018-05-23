@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.2
- * @since 08/03/18
+ * @version 7.3
+ * @since 23/05/18
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
@@ -304,11 +304,11 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 		Program.deletePlace = null;
 	}
 
-	public void setUpdateView(){
+	void setUpdateView(){
 		updateView  = true;
 	}
 	/**
@@ -428,7 +428,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		public int getNumPart() {
 			return numPart;
 		}
-		public String getNumPartLabel() {
+		String getNumPartLabel() {
 			return Program.getLabel("Infos029") + " "+ numPart;
 		}
 		public void setNumPart(int numPart) {
@@ -437,7 +437,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		public int getNbLine() {
 			return nbLine;
 		}
-		public String getNbLineLabel() {
+		String getNbLineLabel() {
 			if(nbLine <= 1) {
 				return MessageFormat.format(Program.getLabel("Infos060"), nbLine);
 			}
@@ -449,7 +449,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		public int getNbWine() {
 			return nbWine;
 		}
-		public String getNbWineLabel() {
+		String getNbWineLabel() {
 			if(nbWine <= 1) {
 				return MessageFormat.format(Program.getLabel("Infos063"), nbWine);
 			}
@@ -460,4 +460,4 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		}
 	}
 
-} // Fin de la classe
+}

@@ -42,7 +42,7 @@ public class OpenAddVinAction extends AbstractAction {
 			}
 	
 			Utils.addCloseButton(Program.tabbedPane, Program.addWine);
-			Start.updateMainPanel();
+			Start.getInstance().updateMainPanel();
 		});
 	}
 }

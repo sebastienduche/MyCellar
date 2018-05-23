@@ -757,7 +757,7 @@ public class ShowFile extends JPanel implements ITabListener {
           Erreur.showSimpleErreur(Program.getError("Error154"));
         } else {
           if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-            Start.showBottle(b, true);
+            Start.getInstance().showBottle(b, true);
           }
         }
       }
@@ -834,7 +834,7 @@ public class ShowFile extends JPanel implements ITabListener {
 
   @Override
   public void tabClosed() {
-    Start.updateMainPanel();
+    Start.getInstance().updateMainPanel();
   }
 
   class ManageColumnAction extends AbstractAction {

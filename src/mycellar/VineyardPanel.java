@@ -35,8 +35,8 @@ import java.util.List;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 1.8
- * @since 02/03/18
+ * @version 1.9
+ * @since 23/05/18
  */
 
 public class VineyardPanel extends JPanel implements ITabListener {
@@ -323,7 +323,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 		comboCountry.setSelectedIndex(0);
 		model.setAppellations(null, null, null);
 		Program.updateAllPanels();
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 
 }

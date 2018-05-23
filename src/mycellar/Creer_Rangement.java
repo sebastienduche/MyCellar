@@ -46,8 +46,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.2
- * @since 13/03/18
+ * @version 12.3
+ * @since 23/05/18
  */
 public class Creer_Rangement extends JPanel implements ITabListener {
 
@@ -668,7 +668,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 				Erreur.showKeyErreur(Program.getError("Error164"), "", "DONT_SHOW_CREATE_MESS");
 			}
 			if (bResul) {
-				Start.enableAll(true);
+				Start.getInstance().enableAll(true);
 			}
 		}
 		catch (Exception exc) {
@@ -936,7 +936,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 	
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 
 	public void updateView() {

@@ -14,18 +14,18 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.8
- * @since 16/03/18
+ * @version 1.9
+ * @since 23/05/18
  */
 
 public class TableHistoryValues extends AbstractTableModel {
 
 	private static final long serialVersionUID = 2991755646049419440L;
-  public static final int SELECT = 0;
+  static final int SELECT = 0;
   private static final int DATE = 1;
-  public static final int TYPE = 2;
+  static final int TYPE = 2;
   private static final int LABEL = 3;
-  public static final int ACTION = 4;
+  static final int ACTION = 4;
 
   private List<History> m_oList = new ArrayList<>();
   private List<History> displayList = new LinkedList<>();
@@ -173,18 +173,20 @@ public class TableHistoryValues extends AbstractTableModel {
         History h = displayList.get(row);
         Bouteille bottle = h.getBouteille();
         if(h.isDeleted())
-        	Start.showBottle(bottle, false);
+        	Start.getInstance().showBottle(bottle, false);
         else {
         	Optional<Bouteille> optional = Program.getStorage().getListBouteilles().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst();
         	Program.Debug("Bottle Get ID = "+bottle.getId());
-        	if(optional.isPresent())
-        		Start.showBottle(optional.get(), true);
-        	else
-        		Start.showBottle(bottle, false);
+        	if(optional.isPresent()) {
+            Start.getInstance().showBottle(optional.get(), true);
+          } else {
+            Start.getInstance().showBottle(bottle, false);
+          }
         }
       break;
       case SELECT:
     	  booleanTab[row] = (Boolean)value;
+    	  break;
     }
   }
 
@@ -201,7 +203,7 @@ public class TableHistoryValues extends AbstractTableModel {
    *
    * @return List
    */
-  public List<History> getData() {
+  List<History> getData() {
     return m_oList;
   }
 
@@ -255,7 +257,7 @@ public class TableHistoryValues extends AbstractTableModel {
    *
    * @param _nFilter int
    */
-  public void SetFilter(int _nFilter) {
+  void SetFilter(int _nFilter) {
 
     try {
       displayList.clear();
@@ -274,11 +276,11 @@ public class TableHistoryValues extends AbstractTableModel {
     }
   }
   
-  public Bouteille getBottle(int row) {
+  Bouteille getBottle(int row) {
 	  return displayList.get(row).getBouteille();
   }
   
-  public boolean isBottleDeleted(int row) {
+  boolean isBottleDeleted(int row) {
 	  return displayList.get(row).isDeleted();
   }
 }

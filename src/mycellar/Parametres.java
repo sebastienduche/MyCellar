@@ -33,8 +33,8 @@ import java.text.MessageFormat;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.6
- * @since 23/05/18
+ * @version 10.7
+ * @since 24/05/18
  */
 public class Parametres extends JPanel implements ITabListener {
 
@@ -257,7 +257,7 @@ public class Parametres extends JPanel implements ITabListener {
 			modifyLanguage();
 			boolean result = true;
 			if (jcb_excel.isSelected()) {
-				Program.putCaveConfigString("FIC_EXCEL", "1");
+				Program.putCaveConfigInt("FIC_EXCEL", 1);
 				String fic = file_bak.getText().trim();
 				if (fic.toLowerCase().endsWith(".xls") || fic.toLowerCase().endsWith(".ods")) {
 					Program.putCaveConfigString("FILE_EXCEL", fic);
@@ -272,24 +272,24 @@ public class Parametres extends JPanel implements ITabListener {
 				}
 			}
 			else
-				Program.putCaveConfigString("FIC_EXCEL", "0");
+				Program.putCaveConfigInt("FIC_EXCEL", 0);
 
 			if (result) {
 				Program.putCaveConfigString("DEVISE", devise.getText().trim());
-				Program.putCaveConfigString("ANNEE", annee.getValue().toString());
 				try {
-					Integer.parseInt(annee.getValue().toString());
+					int val = Integer.parseInt(annee.getValue().toString());
+					Program.putCaveConfigInt("ANNEE", val);
 				}
-				catch (NumberFormatException nfe) {}
-				Program.putCaveConfigString("SIECLE", siecle.getValue().toString());
+				catch (NumberFormatException ignored) {}
 				try {
-					Integer.parseInt(siecle.getValue().toString());
+					int val = Integer.parseInt(siecle.getValue().toString());
+					Program.putCaveConfigInt("SIECLE", val);
 				}
-				catch (NumberFormatException nfe) {}
+				catch (NumberFormatException ignored) {}
 
 				Program.setYearControl(jcb_annee_control.isSelected());
 
-				Program.write_XSL();
+				//Program.write_XSL();
 				Program.saveGlobalProperties();
 			}
 		}

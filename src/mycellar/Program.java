@@ -74,8 +74,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.1
- * @since 23/05/18
+ * @version 18.2
+ * @since 24/05/18
  */
 
 public class Program {
@@ -322,9 +322,9 @@ public class Program {
 		if(error.contains("javax.swing.plaf.synth.SynthContext.getPainter(SynthContext.java:171)")
 				|| error.contains("javax.swing.LayoutComparator.compare"))
 			_bShowWindowErrorAndExit = false;
-		if (_bShowWindowErrorAndExit)
+		if (_bShowWindowErrorAndExit) {
 			JOptionPane.showMessageDialog(null, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-
+		}
 		try (FileWriter fw = new FileWriter(getGlobalDir()+"Errors.log")){
 			fw.write(e.toString());
 			fw.write(error);
@@ -480,83 +480,42 @@ public class Program {
 	/**
 	 * write_XSL: Ecriture du fichier XSL
 	 */
-	static void write_XSL() {
+	/*static void write_XSL() {
 
 		Debug("Program: Writing XSL...");
-		String tmp;
-
 		File f = new File("resources/vin.xsl");
+		StringBuilder tmp = new StringBuilder();
+		tmp.append("<?xml version='1.0'?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\"> <xsl:template match=\"/\">\n"
+			+ "<html>\n<body>\n<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\">\n<tr bgcolor=\"#FFFF00\">\n"
+			+ "<td>" + convertToHTMLString(getLabel("Infos134")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos105")) + "</td>\n"
+			+ "<td>" + convertToHTMLString(getLabel("Infos208")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos189")) + "</td>\n"
+			+ "<td>" + convertToHTMLString(getLabel("Infos158")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos028")) + "</td>\n"
+			+ "<td>" + convertToHTMLString(getLabel("Infos083")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos135")) + "</td>\n"
+			+ "<td>" + convertToHTMLString(getLabel("Infos137")) + "</td>\n"
+			+ "</tr>\n<xsl:for-each select=\"cellar/name\">\n<xsl:sort select=\"name\"/>\n<tr>\n"
+			+ "<td><xsl:value-of select=\"name\"/></td>"
+			+ "<td><xsl:value-of select=\"year\"/></td>"
+			+ "<td><xsl:value-of select=\"half\"/></td>"
+			+ "<td><xsl:value-of select=\"place\"/></td>"
+			+ "<td><xsl:value-of select=\"num-place\"/></td>"
+			+ "<td><xsl:value-of select=\"line\"/></td>"
+			+ "<td><xsl:value-of select=\"column\"/></td>"
+			+ "<td><xsl:value-of select=\"price\"/></td>"
+			+ "<td><xsl:value-of select=\"dateOfC\"/></td>"
+			+ "<td><xsl:value-of select=\"parker\"/></td>"
+			+ "<td><xsl:value-of select=\"appellation\"/></td>"
+			+ "<td><xsl:value-of select=\"appellatio\"/></td>"
+			+ "</tr>\n</xsl:for-each>\n</table>\n</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>");
+
 		try (FileWriter ficout = new FileWriter(f)){
-			ficout.flush();
-			tmp = "<?xml version='1.0'?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\"> <xsl:template match=\"/\">\n";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<html>\n<body>\n<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\">\n<tr bgcolor=\"#FFFF00\">\n";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td>" + convertToHTMLString(getLabel("Infos208")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos189")) + "</td>\n";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td>" + convertToHTMLString(getLabel("Infos134")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos105")) + "</td>\n";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td>" + convertToHTMLString(getLabel("Infos158")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos028")) + "</td>\n";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td>" + convertToHTMLString(getLabel("Infos083")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos135")) + "</td>\n";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td>" + convertToHTMLString(getLabel("Infos137")) + "</td>\n";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "</tr>\n<xsl:for-each select=\"cellar/name\">\n<xsl:sort select=\"name\"/>\n<tr>\n";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"name\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"year\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"half\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"place\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"num-place\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"line\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"column\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"price\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"comment\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"dateOfC\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"parker\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "<td><xsl:value-of select=\"appellation\"/></td>";
-			ficout.write(tmp);
-			ficout.flush();
-			tmp = "</tr>\n</xsl:for-each>\n</table>\n</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>";
-			ficout.write(tmp);
+			ficout.write(tmp.toString());
 			ficout.flush();
 		}
 		catch (IOException ex) {
 			showException(ex, false);
 		}
 
-	}
+	}*/
 
 	static String convertToHTMLString(String s) {
 		return StringEscapeUtils.escapeHtml(s);

@@ -43,8 +43,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 24.0
- * @since 23/05/18
+ * @version 24.1
+ * @since 24/05/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -227,8 +227,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			Program.putGlobalConfigString("STARTUP", "0");
 			Program.putCaveConfigString("ANNEE_CTRL", "1");
 			Program.putCaveConfigString("FILE_SRC", "");
-			Program.putCaveConfigString("FIC_EXCEL", "0");
-			Program.putCaveConfigString("SAVE", "KO");
+			Program.putCaveConfigInt("FIC_EXCEL", 0);
 		}
 
 		if (parameter.equals("rebuild-stats")) {
@@ -1799,8 +1798,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		public void actionPerformed(ActionEvent arg0) {
 			/*if (Program.isSelectedTab(Program.addWine))
 				Program.addWine.paste();
-			else*/ if (Program.isSelectedTab(Program.search))
+			else*/ if (Program.isSelectedTab(Program.search)) {
 				Program.search.paste();
+			}
 		}
 	}
 

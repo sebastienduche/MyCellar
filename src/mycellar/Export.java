@@ -45,8 +45,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.2
- * @since 23/05/18
+ * @version 7.3
+ * @since 24/05/18
  */
 public class Export extends JPanel implements ITabListener, Runnable {
 
@@ -86,7 +86,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	 */
 	public Export() {
 		try {
-			jbInit();
+			initialize();
 		}
 		catch (Exception e) {
 			Program.showException(e);
@@ -101,7 +101,7 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	public Export(List<Bouteille> bottles) {
 		this.bottles = bottles;
 		try {
-			jbInit();
+			initialize();
 		}
 		catch (Exception e) {
 			Program.showException(e);
@@ -109,11 +109,11 @@ public class Export extends JPanel implements ITabListener, Runnable {
 	}
 
 	/**
-	 * jbInit: Fonction d'initialisation.
+	 * initialize: Fonction d'initialisation.
 	 *
 	 * @throws Exception
 	 */
-	private void jbInit() {
+	private void initialize() {
 
 		textControl1.setText(Program.getLabel("Infos149")); //Nom du fichier:
 		browse.setText("...");
@@ -247,8 +247,8 @@ public class Export extends JPanel implements ITabListener, Runnable {
 
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
-			String nom = nomFichier.getName();
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
+			String nom = nomFichier.getName();
 			//Erreur utilisation de caractères interdits
 			if (nom.contains("\"") || nom.contains(";") || nom.contains("<") || nom.contains(">") || nom.contains("?") || nom.contains("\\") || nom.contains("/") ||
 					nom.contains("|") || nom.contains("*") ) {
@@ -428,8 +428,6 @@ public class Export extends JPanel implements ITabListener, Runnable {
 			valider.setEnabled(false);
 			openit.setEnabled(false);
 			String nom = file.getText().trim();
-			File f = new File(nom);
-			String path = f.getAbsolutePath();
 			end.setText(Program.getLabel("Infos250"));
 
 			if (nom.isEmpty()) {
@@ -437,6 +435,16 @@ public class Export extends JPanel implements ITabListener, Runnable {
 				Erreur.showSimpleErreur(Program.getError("Error106")); //Veuillez saisir un nom de fichier.
 				valider.setEnabled(true);
 				return;
+			}
+
+			File aFile = new File(nom);
+			if(aFile.exists()) {
+				// Existing file. replace?
+				if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getError("Export.replaceFileQuestion"), aFile.getAbsolutePath()), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+					end.setText("");
+					valider.setEnabled(true);
+					return;
+				}
 			}
 
 			String extension = nom;
@@ -460,18 +468,14 @@ public class Export extends JPanel implements ITabListener, Runnable {
 				}
 
 				boolean ok;
-				file.setText(path);
-				File aFile = new File(file.getText());
-				if(!aFile.exists())
-					aFile.createNewFile();
 				if(bottles == null) {
 					ok = ListeBouteille.writeXML(aFile);
 				}
-				else
-				{
+				else {
 					ListeBouteille liste = new ListeBouteille();
-					for(Bouteille b: bottles)
+					for(Bouteille b: bottles) {
 						liste.getBouteille().add(b);
+					}
 					ok = ListeBouteille.writeXML(liste, aFile);
 				}
 				if (ok) {
@@ -489,11 +493,12 @@ public class Export extends JPanel implements ITabListener, Runnable {
 						valider.setEnabled(true);
 						return;
 					}
-					file.setText(path);
-					if( null == bottles)
+					if( null == bottles) {
 						bottles = Program.getStorage().getAllList();
-					if (RangementUtils.write_HTML(file.getText().trim(), bottles, Program.getHTMLColumns())) {
+					}
+					if (RangementUtils.write_HTML(nom, bottles, Program.getHTMLColumns())) {
 						end.setText(Program.getLabel("Infos154")); //"Export terminé."
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), file.getText().trim()), true);
 						openit.setEnabled(true);
 					}
 					else {
@@ -507,15 +512,13 @@ public class Export extends JPanel implements ITabListener, Runnable {
 						valider.setEnabled(true);
 						return;
 					}
-					file.setText(path);
-					if( bottles == null)
+					if( bottles == null) {
 						bottles = Program.getStorage().getAllList();
-					if (RangementUtils.write_CSV(file.getText().trim(), bottles)) {
-						end.setText(Program.getLabel("Infos154")); //"Export terminé."
-						openit.setEnabled(true);
 					}
-					else {
-						end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
+					if (RangementUtils.write_CSV(nom, bottles)) {
+						end.setText(Program.getLabel("Infos154")); //"Export terminé."
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), file.getText().trim()), true);
+						openit.setEnabled(true);
 					}
 				}
 			else if (MyCellarRadioButtonXLS.isSelected()) {
@@ -523,14 +526,14 @@ public class Export extends JPanel implements ITabListener, Runnable {
 					end.setText("");
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), extension), true); //L'extension du fichier n'est pas CSV
 					valider.setEnabled(true);
-
 					return;
 				}
-				file.setText(path);
-				if(bottles == null)
+				if(bottles == null) {
 					bottles = Program.getStorage().getAllList();
-				if (RangementUtils.write_XLS(file.getText().trim(), bottles, false)) {
+				}
+				if (RangementUtils.write_XLS(nom, bottles, false)) {
 					end.setText(Program.getLabel("Infos154")); //"Export terminé."
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), file.getText().trim()), true);
 					openit.setEnabled(true);
 				}
 				else {
@@ -545,16 +548,12 @@ public class Export extends JPanel implements ITabListener, Runnable {
 					valider.setEnabled(true);
 					return;
 				}
-				file.setText(path);
-				if( bottles == null)
+				if( bottles == null) {
 					bottles = Program.getStorage().getAllList();
-
-				if (exportToPDF(bottles, new File(path))) {
+				}
+				if (exportToPDF(bottles, aFile)) {
 					end.setText(Program.getLabel("Infos154")); //"Export terminé."
 					openit.setEnabled(true);
-				}
-				else {
-					end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
 				}
 			}
 			valider.setEnabled(true);
@@ -581,6 +580,7 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 			Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), nomFichier.getAbsolutePath()), true);
 		}
 		catch (Exception ex) {
+			Program.showException(ex, false);
 			Erreur.showSimpleErreur(Program.getError("Error160"), Program.getError("Error161"));
 			return false;
 		}

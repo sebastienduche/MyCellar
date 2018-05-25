@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -46,10 +47,10 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.3
- * @since 23/05/18
+ * @version 12.4
+ * @since 25/05/18
  */
-public class Creer_Rangement extends JPanel implements ITabListener {
+public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable {
 
 	private final MyCellarComboBox<String> comboPlace = new MyCellarComboBox<>();
 	private final JTextField nom_obj = new JTextField();
@@ -944,6 +945,30 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 		comboPlace.addItem("");
 		for( Rangement r: Program.getCave())
 			comboPlace.addItem(r.getNom());
+	}
+
+	@Override
+	public void cut() {
+		String text = nom_obj.getSelectedText();
+		String fullText = nom_obj.getText();
+		if(text != null) {
+			nom_obj.setText(fullText.substring(0, nom_obj.getSelectionStart()) + fullText.substring(nom_obj.getSelectionEnd()));
+			Program.clipboard.copier(text);
+		}
+	}
+
+	@Override
+	public void copy() {
+		String text = nom_obj.getSelectedText();
+		if(text != null) {
+			Program.clipboard.copier(text);
+		}
+	}
+
+	@Override
+	public void paste() {
+		String fullText = nom_obj.getText();
+		nom_obj.setText(fullText.substring(0, nom_obj.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(nom_obj.getSelectionEnd()));
 	}
 
 }

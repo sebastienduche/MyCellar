@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.datas.MyCellarBottleContenance;
@@ -74,8 +75,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.2
- * @since 24/05/18
+ * @version 18.3
+ * @since 25/05/18
  */
 
 public class Program {
@@ -140,6 +141,7 @@ public class Program {
 	private static boolean listCaveModified = false;
 	private static int nextID = -1;
 	static final Rangement EMPTY_PLACE = new Rangement("");
+  public static final MyClipBoard clipboard = new MyClipBoard();
 
 	/**
 	 * init
@@ -1745,6 +1747,14 @@ public class Program {
 		}
 		return tabbedPane.getSelectedComponent().equals(tab);
 	}
+
+  static boolean isCutCopyPastTab() {
+    return tabbedPane.getSelectedComponent() != null && tabbedPane.getSelectedComponent() instanceof ICutCopyPastable;
+  }
+
+  static <T> T getSelectedComponent(Class<T> className) {
+	  return className.cast(tabbedPane.getSelectedComponent());
+  }
 
 	public static String readFirstLineText(File f) {
 		if(f == null) {

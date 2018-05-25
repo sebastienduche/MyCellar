@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
@@ -45,10 +46,10 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.3
- * @since 24/05/18
+ * @version 7.4
+ * @since 25/05/18
  */
-public class Export extends JPanel implements ITabListener, Runnable {
+public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
 	private final MyCellarLabel textControl1 = new MyCellarLabel();
 	private final MyCellarButton valider = new MyCellarButton();
@@ -633,7 +634,31 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 		myoptions.setVisible(true);
 	}
 
-	/**
+  @Override
+  public void cut() {
+    String text = file.getSelectedText();
+    String fullText = file.getText();
+    if(text != null) {
+      file.setText(fullText.substring(0, file.getSelectionStart()) + fullText.substring(file.getSelectionEnd()));
+      Program.clipboard.copier(text);
+    }
+  }
+
+  @Override
+  public void copy() {
+    String text = file.getSelectedText();
+    if(text != null) {
+      Program.clipboard.copier(text);
+    }
+  }
+
+  @Override
+  public void paste() {
+    String fullText = file.getText();
+    file.setText(fullText.substring(0,  file.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(file.getSelectionEnd()));
+  }
+
+  /**
 	 * <p>Titre : Cave à vin</p>
 	 * <p>Description : Votre description</p>
 	 * <p>Copyright : Copyright (c) 1998</p>

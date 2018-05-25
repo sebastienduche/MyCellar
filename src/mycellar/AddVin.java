@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.Bouteille.BouteilleBuilder;
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IAddVin;
+import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarManageBottles;
@@ -47,10 +48,10 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 23.3
- * @since 23/05/18
+ * @version 23.4
+ * @since 25/05/18
  */
-public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
+public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable {
 
 	private static final long serialVersionUID = -8925831759212999905L;
 	private boolean m_bmodify = false; // Pour la Modification
@@ -1369,7 +1370,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		return true;
 	}
 
-	public void reInit() {
+	void reInit() {
 		Debug("ReInit...");
 		m_laBouteille = null;
 		listBottleInModification = null;
@@ -1377,7 +1378,32 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		Debug("ReInit... Done");
 	}
 
-	/**
+  @Override
+  public void cut() {
+		String text = name.getEditor().getItem().toString();
+		if(text != null) {
+			Program.clipboard.copier(text);
+			name.getEditor().setItem("");
+		}
+  }
+
+  @Override
+  public void copy() {
+		String text = name.getEditor().getItem().toString();
+		if(text != null) {
+			Program.clipboard.copier(text);
+		}
+  }
+
+  @Override
+  public void paste() {
+		String text = Program.clipboard.coller();
+		if(text != null && !text.isEmpty()) {
+			name.getEditor().setItem(text);
+		}
+  }
+
+  /**
 	 * <p>Titre : Cave à vin</p>
 	 * <p>Description : Votre description</p>
 	 * <p>Copyright : Copyright (c) 1998</p>

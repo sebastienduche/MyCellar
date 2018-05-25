@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.actions.ExportPDFAction;
 import mycellar.core.IAddVin;
+import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarVersion;
 import mycellar.launcher.Server;
@@ -43,8 +44,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 24.1
- * @since 24/05/18
+ * @version 24.2
+ * @since 25/05/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1762,10 +1763,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			/*if (Program.isSelectedTab(Program.addWine))
-				Program.addWine.cut();
-			else*/ if (Program.isSelectedTab(Program.search))
-				Program.search.cut();
+			if (Program.isCutCopyPastTab()) {
+				Program.getSelectedComponent(ICutCopyPastable.class).cut();
+			}
 		}
 	}
 
@@ -1779,10 +1779,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			/*if (Program.isSelectedTab(Program.addWine))
-				Program.addWine.copy();
-			else*/ if (Program.isSelectedTab(Program.search))
-				Program.search.copy();
+			if (Program.isCutCopyPastTab()) {
+				Program.getSelectedComponent(ICutCopyPastable.class).copy();
+			}
 		}
 	}
 
@@ -1796,10 +1795,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			/*if (Program.isSelectedTab(Program.addWine))
-				Program.addWine.paste();
-			else*/ if (Program.isSelectedTab(Program.search)) {
-				Program.search.paste();
+			if (Program.isCutCopyPastTab()) {
+				Program.getSelectedComponent(ICutCopyPastable.class).paste();
 			}
 		}
 	}

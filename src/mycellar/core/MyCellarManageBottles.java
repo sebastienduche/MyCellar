@@ -41,8 +41,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 20/04/18
+ * @version 1.4
+ * @since 25/05/18
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -94,11 +94,11 @@ public class MyCellarManageBottles extends JPanel {
 	protected boolean updateView = false;
 	protected MyCellarButton m_chooseCell;
 	protected PanelVignobles panelVignobles;
-	protected final MyCellarLabel labelCountry = new MyCellarLabel();
-	protected final MyCellarLabel labelVignoble = new MyCellarLabel();
-	protected final MyCellarLabel labelAppelationAOC = new MyCellarLabel();
-	protected final MyCellarLabel labelAppelationIGP = new MyCellarLabel();
-	protected final MyCellarButton manageVineyardButton = new MyCellarButton(new ManageVineyardAction());
+	final MyCellarLabel labelCountry = new MyCellarLabel();
+	final MyCellarLabel labelVignoble = new MyCellarLabel();
+	final MyCellarLabel labelAppelationAOC = new MyCellarLabel();
+	final MyCellarLabel labelAppelationIGP = new MyCellarLabel();
+	final MyCellarButton manageVineyardButton = new MyCellarButton(new ManageVineyardAction());
 	protected Bouteille m_laBouteille = null;
 	protected char AJOUTER = Program.getLabel("AJOUTER").charAt(0);
 	protected char PREVIEW = Program.getLabel("PREVIEW").charAt(0);

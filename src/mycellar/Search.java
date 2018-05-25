@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -47,10 +48,10 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.7
- * @since 23/05/18
+ * @version 18.8
+ * @since 25/05/18
  */
-public class Search extends JPanel implements Runnable, ITabListener {
+public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable {
 	private final JTable table;
 	private static final TableValues MODEL = new TableValues();
 	private static final MyCellarLabel TXT_NBRESUL = new MyCellarLabel();
@@ -87,7 +88,6 @@ public class Search extends JPanel implements Runnable, ITabListener {
 	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
 	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
 	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
-	private final MyClipBoard clipboard = new MyClipBoard();
 	private Component objet1 = null;
 	private final MouseListener popup_l = new PopupListener();
 	private final JTabbedPane tabbedPane = new JTabbedPane();
@@ -1087,7 +1087,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		JTextField jtf = (JTextField) objet1;
 		txt = jtf.getSelectedText();
 		jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
-		clipboard.copier(txt);
+		Program.clipboard.copier(txt);
 	}
 
 	/**
@@ -1099,7 +1099,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		String txt = "";
 		JTextField jtf = (JTextField) objet1;
 		txt = jtf.getSelectedText();
-		clipboard.copier(txt);
+		Program.clipboard.copier(txt);
 	}
 
 	/**
@@ -1111,7 +1111,7 @@ public class Search extends JPanel implements Runnable, ITabListener {
 
 		try {
 			JTextField jtf = (JTextField) objet1;
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
+			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
 		}
 		catch (NullPointerException npe) {}
 	}
@@ -1317,38 +1317,38 @@ public class Search extends JPanel implements Runnable, ITabListener {
 		SwingUtilities.invokeLater(MODEL::removeAll);
 	}
 
-	public void cut() {
+  @Override
+  public void cut() {
 		if( tabbedPane.getSelectedIndex() == 0 ) {
 			String text = name.getSelectedText();
 			String fullText = name.getText();
 			if(text != null) {
 				name.setText(fullText.substring(0, name.getSelectionStart()) + fullText.substring(name.getSelectionEnd()));
-				clipboard.copier(text);
+				Program.clipboard.copier(text);
 			}
 		}
 	}
 
-	public void copy() {
-		if( tabbedPane.getSelectedIndex() == 0 )
-		{
+  @Override
+  public void copy() {
+		if(tabbedPane.getSelectedIndex() == 0) {
 			//if(name.hasFocus())
 			{
 				String text = name.getSelectedText();
-				if(text != null)
-				{
-					clipboard.copier(text);
+				if(text != null) {
+					Program.clipboard.copier(text);
 				}
 			}
 		}
 	}
 
+	@Override
 	public void paste() {
-		if( tabbedPane.getSelectedIndex() == 0 )
-		{
+		if(tabbedPane.getSelectedIndex() == 0) {
 			//if(name.hasFocus())
 			{
 				String fullText = name.getText();
-				name.setText(fullText.substring(0,  name.getSelectionStart()) + clipboard.coller() + fullText.substring(name.getSelectionEnd()));
+				name.setText(fullText.substring(0,  name.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(name.getSelectionEnd()));
 			}
 		}
 	}

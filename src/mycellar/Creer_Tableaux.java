@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
@@ -47,16 +48,16 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.7
- * @since 23/05/18
+ * @version 5.8
+ * @since 25/05/18
  */
-public class Creer_Tableaux extends JPanel implements ITabListener {
+public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable {
 	private final MyCellarLabel label2 = new MyCellarLabel();
 	private final JTextField name = new JTextField();
 	private final MyCellarButton browse = new MyCellarButton();
 	private final  MyCellarButton parameter = new MyCellarButton();
 	private final MyCellarLabel label3 = new MyCellarLabel();
-	private final JButton create = new JButton();
+	private final JButton create = new MyCellarButton();
 	private final ButtonGroup checkboxGroup1 = new ButtonGroup();
 	private final MyCellarRadioButton type_XML = new MyCellarRadioButton();
 	private final MyCellarRadioButton type_HTML = new MyCellarRadioButton();
@@ -601,6 +602,29 @@ public class Creer_Tableaux extends JPanel implements ITabListener {
 		Program.Debug("Creer_Tableaux: " + sText);
 	}
 
+	@Override
+	public void cut() {
+		String text = name.getSelectedText();
+		String fullText = name.getText();
+		if(text != null) {
+			name.setText(fullText.substring(0, name.getSelectionStart()) + fullText.substring(name.getSelectionEnd()));
+			Program.clipboard.copier(text);
+		}
+	}
+
+	@Override
+	public void copy() {
+		String text = name.getSelectedText();
+		if(text != null) {
+			Program.clipboard.copier(text);
+		}
+	}
+
+	@Override
+	public void paste() {
+		String fullText = name.getText();
+		name.setText(fullText.substring(0,  name.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(name.getSelectionEnd()));
+	}
 
 
 	/**

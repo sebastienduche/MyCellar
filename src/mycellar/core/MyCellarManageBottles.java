@@ -5,8 +5,6 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.JCompletionComboBox;
 import mycellar.ManageList;
-import mycellar.MyCellarImage;
-import mycellar.MyClipBoard;
 import mycellar.MyXmlDom;
 import mycellar.Program;
 import mycellar.Rangement;
@@ -21,9 +19,7 @@ import mycellar.vignobles.CountryVignobles;
 import mycellar.vignobles.Vignobles;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -41,8 +37,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 25/05/18
+ * @version 1.5
+ * @since 29/05/18
  */
 public class MyCellarManageBottles extends JPanel {
 
@@ -67,7 +63,6 @@ public class MyCellarManageBottles extends JPanel {
 	protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox();
 	protected int SIECLE = Program.getCaveConfigInt("SIECLE", 20) - 1;
 	protected Object m_objet1 = null;
-	private final MyClipBoard clipboard = new MyClipBoard();
 	protected final JModifyComboBox<String> m_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_line = new JModifyComboBox<>();
@@ -103,13 +98,6 @@ public class MyCellarManageBottles extends JPanel {
 	protected char AJOUTER = Program.getLabel("AJOUTER").charAt(0);
 	protected char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
 	private final MyCellarLabel m_devise = new MyCellarLabel(Program.getCaveConfigString("DEVISE", "€"));
-	protected final JPopupMenu popup = new JPopupMenu();
-	protected final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
-	protected final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
-	protected final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
-	protected final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
-	protected final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
-	protected final JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
 	private boolean listenersEnabled = true;
 	
 	protected boolean m_bmulti = false; //Pour ListVin
@@ -139,16 +127,6 @@ public class MyCellarManageBottles extends JPanel {
 		m_preview.setEnabled(false);
 		m_preview.addActionListener(this::preview_actionPerformed);
 
-		//Menu Contextuel
-		couper.addActionListener(this::couper_actionPerformed);
-		cut.addActionListener(this::couper_actionPerformed);
-
-		copier.addActionListener(this::copier_actionPerformed);
-		copy.addActionListener(this::copier_actionPerformed);
-
-		coller.addActionListener(this::coller_actionPerformed);
-		paste.addActionListener(this::coller_actionPerformed);
-		
 		m_colorList.addItem(BottleColor.NONE);
 		m_colorList.addItem(BottleColor.RED);
 		m_colorList.addItem(BottleColor.PINK);
@@ -185,12 +163,12 @@ public class MyCellarManageBottles extends JPanel {
 
 		try {
 			JTextField jtf = (JTextField) m_objet1;
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
+			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
 		}
 		catch (Exception e1) {}
 		try {
 			JTextArea jtf = (JTextArea) m_objet1;
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
+			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
 		}
 		catch (Exception e1) {}
 	}
@@ -215,7 +193,7 @@ public class MyCellarManageBottles extends JPanel {
 		}
 		catch (Exception e1) {}
 
-		clipboard.copier(txt);
+		Program.clipboard.copier(txt);
 	}
 
 	/**
@@ -236,7 +214,7 @@ public class MyCellarManageBottles extends JPanel {
 		}
 		catch (Exception e1) {}
 
-		clipboard.copier(txt);
+		Program.clipboard.copier(txt);
 	}
 	
 	/**

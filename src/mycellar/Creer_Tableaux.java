@@ -5,6 +5,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
+import mycellar.core.PopupListener;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -13,7 +14,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -28,14 +28,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -48,8 +44,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.8
- * @since 25/05/18
+ * @version 5.9
+ * @since 29/05/18
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable {
 	private final MyCellarLabel label2 = new MyCellarLabel();
@@ -69,17 +65,8 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	private char CREER = Program.getLabel("CREER").charAt(0);
 	private char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private final MyCellarCheckBox selectall = new MyCellarCheckBox();
-	private final JPopupMenu popup = new JPopupMenu();
-	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
-	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
-	private final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
-	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
-	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
-	private final JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
-	private final MyClipBoard clipboard = new MyClipBoard();
 	private final JMenuItem quitter = new JMenuItem(Program.getLabel("Infos003"));
 	private final JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
-	private Component objet1 = null;
 	private boolean isJFile = false;
 	private final MyCellarCheckBox m_jcb_options = new MyCellarCheckBox(Program.getLabel("Infos193") + "...");
 	static final long serialVersionUID = 260706;
@@ -159,26 +146,8 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			public void keyTyped(KeyEvent e) {}
 		});
 
-		//Menu Contextuel
-		couper.addActionListener(this::couper_actionPerformed);
-		cut.addActionListener(this::couper_actionPerformed);
-		copier.addActionListener(this::copier_actionPerformed);
-		copy.addActionListener(this::copier_actionPerformed);
-		coller.addActionListener(this::coller_actionPerformed);
-		paste.addActionListener(this::coller_actionPerformed);
 		param.addActionListener(this::param_actionPerformed);
-		couper.setEnabled(false);
-		copier.setEnabled(false);
-		popup.add(couper);
-		popup.add(copier);
-		popup.add(coller);
-		MouseListener popup_l = new PopupListener();
-		name.addMouseListener(popup_l);
-		cut.setEnabled(false);
-		copy.setEnabled(false);
-		cut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
-		copy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
-		paste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
+		name.addMouseListener(new PopupListener());
 		quitter.setAccelerator(KeyStroke.getKeyStroke('Q', InputEvent.CTRL_DOWN_MASK));
 
 		m_jcb_options.setEnabled(false);
@@ -474,51 +443,6 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	}
 
 	/**
-	 * couper_actionPerformed: Couper
-	 *
-	 * @param e ActionEvent
-	 */
-	private void couper_actionPerformed(ActionEvent e) {
-		String txt = "";
-		try {
-			JTextField jtf = (JTextField) objet1;
-			txt = jtf.getSelectedText();
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
-		}
-		catch (Exception e1) {}
-		clipboard.copier(txt);
-	}
-
-	/**
-	 * copier_actionPerformed: Copier
-	 *
-	 * @param e ActionEvent
-	 */
-	private void copier_actionPerformed(ActionEvent e) {
-		String txt = "";
-		try {
-			JTextField jtf = (JTextField) objet1;
-			txt = jtf.getSelectedText();
-		}
-		catch (Exception e1) {}
-		clipboard.copier(txt);
-	}
-
-	/**
-	 * coller_actionPerformed: Couper
-	 *
-	 * @param e ActionEvent
-	 */
-	private void coller_actionPerformed(ActionEvent e) {
-
-		try {
-			JTextField jtf = (JTextField) objet1;
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
-		}
-		catch (Exception e1) {}
-	}
-
-	/**
 	 * selectall_actionPerformed: Permet de sélectionner toutes les lignes de la
 	 * JTable
 	 *
@@ -624,80 +548,6 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	public void paste() {
 		String fullText = name.getText();
 		name.setText(fullText.substring(0,  name.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(name.getSelectionEnd()));
-	}
-
-
-	/**
-	 * <p>Titre : Cave à vin</p>
-	 * <p>Description : Votre description</p>
-	 * <p>Copyright : Copyright (c) 1998</p>
-	 * <p>Société : Seb Informatique</p>
-	 * @author Sébastien Duché
-	 * @version 0.1
-	 * @since 17/04/05
-	 */
-	class PopupListener extends MouseAdapter {
-		@Override
-		public void mousePressed(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		@Override
-		public void mouseEntered(MouseEvent e) {
-		}
-		@Override
-		public void mouseExited(MouseEvent e) {
-		}
-		@Override
-		public void mouseReleased(MouseEvent e) {
-		}
-
-		private void maybeShowPopup(MouseEvent e) {
-			JTextField jtf = null;
-			try {
-				jtf = (JTextField) e.getComponent();
-				if (jtf.isEnabled() && jtf.isVisible()) {
-					objet1 = e.getComponent();
-				}
-			}
-			catch (Exception ee) {}
-			try {
-				jtf = (JTextField) objet1;
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					if (jtf.isFocusable() && jtf.isEnabled()) {
-						jtf.requestFocus();
-						if (jtf.getSelectedText() == null) {
-							couper.setEnabled(false);
-							copier.setEnabled(false);
-						}
-						else {
-							couper.setEnabled(true);
-							copier.setEnabled(true);
-						}
-						if (jtf.isEnabled() && jtf.isVisible()) {
-							popup.show(e.getComponent(), e.getX(), e.getY());
-						}
-					}
-				}
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					if (jtf.isFocusable() && jtf.isEnabled()) {
-						jtf.requestFocus();
-						if (jtf.getSelectedText() == null) {
-							cut.setEnabled(false);
-							copy.setEnabled(false);
-						}
-						else {
-							cut.setEnabled(true);
-							copy.setEnabled(true);
-						}
-					}
-				}
-			}
-			catch (Exception ee) {}
-		}
 	}
 
 	@Override

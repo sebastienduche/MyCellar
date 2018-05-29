@@ -5,6 +5,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.PopupListener;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.ui.PanelRequest;
 import net.miginfocom.swing.MigLayout;
@@ -13,25 +14,18 @@ import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.Collator;
 import java.text.MessageFormat;
@@ -48,8 +42,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.8
- * @since 25/05/18
+ * @version 18.9
+ * @since 29/05/18
  */
 public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable {
 	private final JTable table;
@@ -83,12 +77,6 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 	private final String label_ligne = Program.getLabel("Infos103"); //"Tous les vins de la ligne");
 	private final MyCellarCheckBox selectall = new MyCellarCheckBox();
 	private final MyCellarCheckBox empty_search = new MyCellarCheckBox();
-	private final JPopupMenu popup = new JPopupMenu();
-	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
-	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
-	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
-	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
-	private Component objet1 = null;
 	private final MouseListener popup_l = new PopupListener();
 	private final JTabbedPane tabbedPane = new JTabbedPane();
 	private PanelYear panelYear;
@@ -216,28 +204,8 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			}
 		});
 
-		//Menu Contextuel
-		JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
-		JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
-		couper.addActionListener(this::couper_actionPerformed);
-		cut.addActionListener(this::couper_actionPerformed);
-		copier.addActionListener(this::copier_actionPerformed);
-		copy.addActionListener(this::copier_actionPerformed);
-		coller.addActionListener(this::coller_actionPerformed);
-		paste.addActionListener(this::coller_actionPerformed);
 		moveLine.addActionListener((e) -> new MoveLine());
 
-		couper.setEnabled(false);
-		copier.setEnabled(false);
-		paste.setEnabled(false);
-		popup.add(couper);
-		popup.add(copier);
-		popup.add(coller);
-		cut.setEnabled(false);
-		copy.setEnabled(false);
-		cut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
-		copy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
-		paste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
 		num_lieu.setEnabled(false);
 		column.setEnabled(false);
 		line.setEnabled(false);
@@ -1034,13 +1002,13 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			Program.getAide();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_C) {
-			copier_actionPerformed(null);
+			cut();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_X) {
-			couper_actionPerformed(null);
+			copy();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_V) {
-			coller_actionPerformed(null);
+			paste();
 		}
 	}
 
@@ -1075,118 +1043,6 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			Program.putCaveConfigString("EMPTY_SEARCH", "ON");
 		else
 			Program.putCaveConfigString("EMPTY_SEARCH", "OFF");
-	}
-
-	/**
-	 * couper_actionPerformed: Couper
-	 *
-	 * @param e ActionEvent
-	 */
-	private void couper_actionPerformed(ActionEvent e) {
-		String txt = "";
-		JTextField jtf = (JTextField) objet1;
-		txt = jtf.getSelectedText();
-		jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
-		Program.clipboard.copier(txt);
-	}
-
-	/**
-	 * copier_actionPerformed: Copier
-	 *
-	 * @param e ActionEvent
-	 */
-	private void copier_actionPerformed(ActionEvent e) {
-		String txt = "";
-		JTextField jtf = (JTextField) objet1;
-		txt = jtf.getSelectedText();
-		Program.clipboard.copier(txt);
-	}
-
-	/**
-	 * coller_actionPerformed: Couper
-	 *
-	 * @param e ActionEvent
-	 */
-	private void coller_actionPerformed(ActionEvent e) {
-
-		try {
-			JTextField jtf = (JTextField) objet1;
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
-		}
-		catch (NullPointerException npe) {}
-	}
-
-	/**
-	 * <p>Titre : Cave à vin</p>
-	 * <p>Description : Votre description</p>
-	 * <p>Copyright : Copyright (c) 1998</p>
-	 * <p>Société : Seb Informatique</p>
-	 * @author Sébastien Duché
-	 * @version 0.1
-	 * @since 17/04/05
-	 */
-	class PopupListener extends MouseAdapter {
-		@Override
-		public void mousePressed(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		@Override
-		public void mouseEntered(MouseEvent e) {
-		}
-		@Override
-		public void mouseExited(MouseEvent e) {
-		}
-		@Override
-		public void mouseReleased(MouseEvent e) {
-		}
-
-		private void maybeShowPopup(MouseEvent e) {
-			try {
-				try {
-					JTextField jtf = (JTextField) e.getComponent();
-					if (jtf.isEnabled() && jtf.isVisible()) {
-						objet1 = e.getComponent();
-					}
-				}
-				catch (Exception ee) {}
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					if (e.getComponent().isFocusable() && e.getComponent().isEnabled()) {
-						e.getComponent().requestFocus();
-						JTextField jtf = (JTextField) objet1;
-						if (jtf.getSelectedText() == null) {
-							couper.setEnabled(false);
-							copier.setEnabled(false);
-						}
-						else {
-							couper.setEnabled(true);
-							copier.setEnabled(true);
-						}
-						if (jtf.isEnabled() && jtf.isVisible()) {
-							popup.show(e.getComponent(), e.getX(), e.getY());
-						}
-					}
-				}
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					if (e.getComponent().isFocusable() && e.getComponent().isEnabled()) {
-						e.getComponent().requestFocus();
-						JTextField jtf = (JTextField) objet1;
-						if (jtf.getSelectedText() == null) {
-							cut.setEnabled(false);
-							copy.setEnabled(false);
-						}
-						else {
-							cut.setEnabled(true);
-							copy.setEnabled(true);
-						}
-					}
-				}
-			}
-			catch (NullPointerException npe) {}
-		}
 	}
 
 	/**

@@ -5,6 +5,7 @@ import mycellar.core.IAddVin;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.PanelVignobles;
+import mycellar.core.PopupListener;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.countries.Country;
 import mycellar.vignobles.Appelation;
@@ -15,8 +16,6 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -27,8 +26,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -44,8 +41,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.1
- * @since 23/05/18
+ * @version 4.2
+ * @since 29/05/18
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -142,11 +139,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_add.setMnemonic(AJOUTER);
 		m_manageContenance.setText(Program.getLabel("Infos400"));
 
-		couper.setEnabled(false);
-		copier.setEnabled(false);
-		popup.add(couper);
-		popup.add(copier);
-		popup.add(coller);
+
 		MouseListener popup_l = new PopupListener();
 		name.addMouseListener(popup_l);
 		m_year.addMouseListener(popup_l);
@@ -154,6 +147,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_comment.addMouseListener(popup_l);
 		m_maturity.addMouseListener(popup_l);
 		m_parker.addMouseListener(popup_l);
+
 		cut.setEnabled(false);
 		copy.setEnabled(false);
 
@@ -784,120 +778,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		Program.getAide();
 	}
 
-
-	/**
-	 * <p>Titre : Cave à vin</p>
-	 * <p>Description : Votre description</p>
-	 * <p>Copyright : Copyright (c) 1998</p>
-	 * <p>Société : Seb Informatique</p>
-	 * @author Sébastien Duché
-	 * @version 0.1
-	 * @since 17/04/05
-	 */
-	class PopupListener extends MouseAdapter {
-		@Override
-		public void mousePressed(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		@Override
-		public void mouseEntered(MouseEvent e) {
-		}
-		@Override
-		public void mouseExited(MouseEvent e) {
-		}
-		@Override
-		public void mouseReleased(MouseEvent e) {
-		}
-
-		private void maybeShowPopup(MouseEvent e) {
-			JTextField jtf = null;
-			try {
-				jtf = (JTextField) e.getComponent();
-				if (jtf.isEnabled() && jtf.isVisible()) {
-					m_objet1 = e.getComponent();
-				}
-			}
-			catch (Exception ee) {}
-			try {
-				jtf = (JTextField) m_objet1;
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					if (jtf.isFocusable() && jtf.isEnabled()) {
-						jtf.requestFocus();
-						if (jtf.getSelectedText() == null) {
-							couper.setEnabled(false);
-							copier.setEnabled(false);
-						}
-						else {
-							couper.setEnabled(true);
-							copier.setEnabled(true);
-						}
-						if (jtf.isEnabled() && jtf.isVisible()) {
-							popup.show(e.getComponent(), e.getX(), e.getY());
-						}
-					}
-				}
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					if (jtf.isFocusable() && jtf.isEnabled()) {
-						jtf.requestFocus();
-						if (jtf.getSelectedText() == null) {
-							cut.setEnabled(false);
-							copy.setEnabled(false);
-						}
-						else {
-							cut.setEnabled(true);
-							copy.setEnabled(true);
-						}
-					}
-				}
-			}
-			catch (Exception ee) {}
-			JTextArea jta = null;
-			try {
-				jta = (JTextArea) e.getComponent();
-				if (jta.isEnabled() && jta.isVisible()) {
-					m_objet1 = e.getComponent();
-				}
-			}
-			catch (Exception e1) {}
-			try {
-				jta = (JTextArea) m_objet1;
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					if (jta.isFocusable() && jta.isEnabled()) {
-						jta.requestFocus();
-						if (jta.getSelectedText() == null) {
-							couper.setEnabled(false);
-							copier.setEnabled(false);
-						}
-						else {
-							couper.setEnabled(true);
-							copier.setEnabled(true);
-						}
-						if (jta.isEnabled() && jta.isVisible()) {
-							popup.show(e.getComponent(), e.getX(), e.getY());
-						}
-					}
-				}
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					if (jta.isFocusable() && jta.isEnabled()) {
-						jta.requestFocus();
-						if (jta.getSelectedText() == null) {
-							cut.setEnabled(false);
-							copy.setEnabled(false);
-						}
-						else {
-							cut.setEnabled(true);
-							copy.setEnabled(true);
-						}
-					}
-				}
-			}
-			catch (Exception ee) {}
-		}
-	}
 
 	/**
 	 * Debug

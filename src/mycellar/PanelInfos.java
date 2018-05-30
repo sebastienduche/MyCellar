@@ -19,8 +19,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 23/05/18
+ * @version 1.6
+ * @since 30/05/18
  */
 public class PanelInfos extends JPanel {
 
@@ -66,10 +66,12 @@ class PanelStats extends JPanel {
 	private final MyCellarLabel bottlesNb = new MyCellarLabel();
 	private final MyCellarLabel cellarTotal = new MyCellarLabel();
 	private final PanelStatsModel model = new PanelStatsModel();
+	private final JTable table;
+
 	PanelStats(){
 		bottlesNb.setFont(Program.font_label_bold);
 		cellarTotal.setFont(Program.font_label_bold);
-		JTable table = new JTable(model);
+		table = new JTable(model);
 		table.getColumnModel().getColumn(1).setMinWidth(40);
 		table.getColumnModel().getColumn(1).setMaxWidth(40);
 		TableColumnModel tcm = table.getColumnModel();
@@ -108,6 +110,9 @@ class PanelStats extends JPanel {
 		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
 		bottles.setText(Program.getLabel("Infos405"));
 		cellarValue.setText(Program.getLabel("Infos406"));
+		TableColumnModel tcm = table.getColumnModel();
+		TableColumn tc = tcm.getColumn(2);
+		tc.setCellRenderer(new StateButtonRenderer());
 	}
 
 	void setEnable(boolean b){
@@ -122,7 +127,7 @@ class PanelStats extends JPanel {
 		private static final long serialVersionUID = -3683870571523007857L;
 		private final LinkedList<Rangement> names;
 		private final LinkedList<String> values;
-		private boolean isInit = false;
+		private boolean isInit;
 		private PanelStatsModel(){
 			names = new LinkedList<>();
 			values = new LinkedList<>();
@@ -141,17 +146,20 @@ class PanelStats extends JPanel {
 
 		@Override
 		public int getRowCount() {
-			if (isInit)
+			if (isInit) {
 				return values.size();
+			}
 			return 0;
 		}
 
 		@Override
 		public Object getValueAt(int row, int column) {
-			if(column == 0)
+			if(column == 0) {
 				return names.get(row).getNom();
-			else if(column == 1)
+			}
+			else if(column == 1) {
 				return values.get(row);
+			}
 			return Boolean.FALSE;
 		}
 
@@ -186,11 +194,12 @@ class PanelHistory extends JPanel {
 
 	private static final long serialVersionUID = 7574553715737201783L;
 	private final TableHistoryValues model;
+	private final JTable table;
 
 	PanelHistory() {
 		setLayout(new MigLayout("","[grow]","[]"));
 		model = new TableHistoryValues(false);
-		JTable table = new JTable(model);
+		table = new JTable(model);
 		add(table, "grow");
 		TableColumnModel tcm = table.getColumnModel();
 		TableColumn tc = tcm.getColumn(TableHistoryValues.ACTION - 1);
@@ -219,6 +228,9 @@ class PanelHistory extends JPanel {
 
 	void setLabels() {
 		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos407")));
+		TableColumnModel tcm = table.getColumnModel();
+		TableColumn tc = tcm.getColumn(TableHistoryValues.ACTION - 1);
+		tc.setCellRenderer(new StateButtonRenderer());
 	}
 
 	void setEnable(boolean b){

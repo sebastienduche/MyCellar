@@ -75,21 +75,27 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.3
- * @since 25/05/18
+ * @version 18.4
+ * @since 30/05/18
  */
 
 public class Program {
 
-	private static final Properties propCave = new Properties();
-	private static final Properties propGlobal = new Properties();
-	private static String inputPropCave = null;
-	private static String inputPropGlobal = null;
+	// Manage cave config
+	private static final Properties PROPERTIES_CAVE = new Properties();
+	private static MyLinkedHashMap configCave = null;
+	// Manage global config
+	private static final Properties PROPERTIES_GLOBAL = new Properties();
+	private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
+
+	private static String archive = null;
+
 	static Font font_panel = new Font("Arial", Font.PLAIN, 12);
 	static Font font_boutton_small = new Font("Arial", Font.PLAIN, 10);
 	public static Font font_label_bold = new Font("Arial", Font.BOLD, 12);
 	static Font font_dialog = new Font("Dialog", Font.BOLD, 16);
 	static Font font_dialog_small = new Font("Dialog", Font.BOLD, 12);
+
 	public static Options options = null;
 	public static Export export = null;
 	static Parametres parametres = null;
@@ -101,22 +107,28 @@ public class Program {
 	public static Search search = null;
 	public static ShowHistory history = null;
 	public static VineyardPanel vignobles = null;
-	static final PanelInfos PANEL_INFOS = new PanelInfos();
 	public static AddVin addWine = null;
-	public static JTabbedPane tabbedPane = new JTabbedPane();
-	static String archive = null;
-	private static final MyLinkedHashMap configGlobal = new MyLinkedHashMap();
-	private static MyLinkedHashMap configCave = null;
+
+	static final PanelInfos PANEL_INFOS = new PanelInfos();
+	public static final JTabbedPane TABBED_PANE = new JTabbedPane();
+
 	private static FileWriter oDebugFile = null;
 	private static File debugFile = null;
 	private static boolean bDebug = false;
+
 	private static final LinkedList<Rangement> RANGEMENTS_LIST = new LinkedList<>();
 	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
 	private static final LinkedList<MyCellarError> ERRORS = new LinkedList<>();
+
 	static Rangement defaultPlace = new Rangement("");
+
 	private static String m_sWorkDir = null;
 	private static String m_sGlobalDir = null;
+	private static boolean m_bWorkDirCalculated = false;
+	private static boolean m_bGlobalDirCalculated = false;
+
 	private static boolean m_bIsTrueFile = false;
+
 	private static final String DATA_XML = "data.xml";
 	private static final String UNTITLED1_SINFO = "Untitled1.sinfo";
 	private static final String PREVIEW_XML = "preview.xml";
@@ -125,16 +137,17 @@ public class Program {
 	private static final String TYPES_XML = "Types.xml";
 	private static final String BOUTEILLES_XML = "Bouteilles.xml";
 	private static final String INTERNAL_VRSION = "2.4";
-	private static boolean m_bWorkDirCalculated = false;
-	private static boolean m_bGlobalDirCalculated = false;
+
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;
+
 	static Creer_Rangement createPlace;
 	static Creer_Rangement modifyPlace;
 	static CellarOrganizerPanel managePlace;
 	static CellarOrganizerPanel chooseCell;
 	static Supprimer_Rangement deletePlace;
 	static Stat stat;
+
 	public static Country france = new Country("FRA", "France");
 	private static final List<File> DIR_TO_DELETE = new LinkedList<>();
 	private static boolean modified = false;
@@ -156,22 +169,21 @@ public class Program {
 			getWorkDir(false);
 			Debug("Program: Temp Dir: " + getWorkDir(false));
 			Debug("Program: Initializing Configuration files...");
-			inputPropGlobal = getGlobalDir() + "config.ini";
-			File fileIni = new File(inputPropGlobal);
+			File fileIni = new File(getGlobalConfigFilePath());
 			if(!fileIni.exists()) {
 				fileIni.createNewFile();
 			} else {
 				FileInputStream inputStream = new FileInputStream(fileIni);
-				propGlobal.load(inputStream);
+				PROPERTIES_GLOBAL.load(inputStream);
 				inputStream.close();
 			}
 			LanguageFileLoader.loadLanguageFiles( "U" );
 
 			//Initialisation de la Map contenant config
-			Enumeration<Object> keys = propGlobal.keys();
+			Enumeration<Object> keys = PROPERTIES_GLOBAL.keys();
 			while (keys.hasMoreElements()) {
 				String key = keys.nextElement().toString();
-				putGlobalConfigString(key, propGlobal.getProperty(key));
+				putGlobalConfigString(key, PROPERTIES_GLOBAL.getProperty(key));
 			}
 		}
 		catch (Exception e) {
@@ -186,7 +198,7 @@ public class Program {
 		try {
 			Debug("Program: Temp Dir: " + getWorkDir(false));
 			Debug("Program: Initializing Configuration files...");
-			loadProperties(false);
+			loadProperties();
 			File f = new File(getWorkDir(true) + DATA_XML);
 			if(!f.exists()) {
 				f.createNewFile();
@@ -195,10 +207,10 @@ public class Program {
 
 			//Initialisation de la Map contenant config
 			Debug("Program: Initialize ConfigGlobal");
-			Enumeration<Object> keys = propGlobal.keys();
+			Enumeration<Object> keys = PROPERTIES_GLOBAL.keys();
 			while (keys.hasMoreElements()) {
 				String key = keys.nextElement().toString();
-				putGlobalConfigString(key, propGlobal.getProperty(key));
+				putGlobalConfigString(key, PROPERTIES_GLOBAL.getProperty(key));
 			}
 
 			if(hasConfigCaveKey("PRICE_SEPARATOR")) {
@@ -213,29 +225,41 @@ public class Program {
 		}
 	}
 
+	static void setArchive(String archive) {
+		Program.archive = archive;
+	}
+
+	public static String getArchive() {
+		return archive;
+	}
+
+	private static String getConfigFilePath() {
+		return getWorkDir(true) + "config.ini";
+	}
+	private static String getGlobalConfigFilePath() {
+		return getGlobalDir() + "config.ini";
+	}
+
+
 	/**
 	 * @throws IOException
 	 */
-	private static void loadProperties(boolean loadTypes) throws IOException {
+	private static void loadProperties() throws IOException {
 
-		inputPropCave = getWorkDir(true) + "config.ini";
+		String inputPropCave = getConfigFilePath();
 		configCave = new MyLinkedHashMap();
 		File f = new File(inputPropCave);
 		if(!f.exists()) {
 			f.createNewFile();
 		} else {
 			FileInputStream inputStream = new FileInputStream(inputPropCave);
-			propCave.load(inputStream);
+			PROPERTIES_CAVE.load(inputStream);
 			inputStream.close();
 		}
-		Enumeration<Object> keys = propCave.keys();
+		Enumeration<Object> keys = PROPERTIES_CAVE.keys();
 		while (keys.hasMoreElements()) {
 			String key = keys.nextElement().toString();
-			putCaveConfigString(key, propCave.getProperty(key));
-		}
-
-		if (loadTypes) {
-			MyCellarBottleContenance.load();
+			putCaveConfigString(key, PROPERTIES_CAVE.getProperty(key));
 		}
 	}
 
@@ -275,7 +299,7 @@ public class Program {
 	 */
 	static boolean setLanguage(String lang) {
 		Debug("Program: Set Language : "+lang);
-		tabbedPane.removeAll();
+		TABBED_PANE.removeAll();
 		addWine = null;
 		createPlace = null;
 		creer_tableau = null;
@@ -299,11 +323,10 @@ public class Program {
 	static void verifyConfigFile() {
 
 		Debug("Program: Verifying INI file...");
-		if (!propGlobal.containsKey("LANGUAGE")) {
-			propGlobal.setProperty("LANGUAGE", "F");
-		}
-		else if (propGlobal.get("LANGUAGE").equals("")) {
-			propGlobal.setProperty("LANGUAGE", "F");
+		if (!PROPERTIES_GLOBAL.containsKey("LANGUAGE")) {
+			PROPERTIES_GLOBAL.setProperty("LANGUAGE", "F");
+		} else if (PROPERTIES_GLOBAL.get("LANGUAGE").equals("")) {
+			PROPERTIES_GLOBAL.setProperty("LANGUAGE", "F");
 		}
 	}
 
@@ -775,7 +798,7 @@ public class Program {
 	 */
 	public static void save() {
 		Debug("Program: Saving...");
-		saveAs("");
+		saveAs(archive);
 	}
 
 	/**
@@ -788,8 +811,9 @@ public class Program {
 		saveProperties();
 		saveGlobalProperties();
 
-		if(isListCaveModified())
-			MyXmlDom.writeMyCellarXml(getCave(),"");
+		if(isListCaveModified()) {
+			MyXmlDom.writeMyCellarXml(getCave(), "");
+		}
 
 		getStorage().saveHistory();
 		CountryVignobles.save();
@@ -801,6 +825,7 @@ public class Program {
 			zipDir(archive);
 		}
 
+		archive = sFilename;
 		modified = false;
 		listCaveModified = false;
 		Debug("Program: Saving all files OK");
@@ -1067,11 +1092,13 @@ public class Program {
 		}
 
 		try {
-			loadProperties(true);
+			loadProperties();
 		} catch (IOException e) {
 			showException(e,false);
 			return false;
 		}
+
+		MyCellarBottleContenance.load();
 
 		RangementUtils.putTabStock();
 		if(!getErrors().isEmpty()) {
@@ -1106,13 +1133,13 @@ public class Program {
 	 */
 	static void saveGlobalProperties() {
 		Debug("Program: Saving Global Properties");
-		Object[] val = configGlobal.keySet().toArray();
+		Object[] val = CONFIG_GLOBAL.keySet().toArray();
 		for (Object o : val) {
 			String key = o.toString();
-			propGlobal.put(key, configGlobal.getString(key));
+			PROPERTIES_GLOBAL.put(key, CONFIG_GLOBAL.getString(key));
 		}
-		try(FileOutputStream outputStream = new FileOutputStream(inputPropGlobal)) {
-			propGlobal.store(outputStream, null);
+		try(FileOutputStream outputStream = new FileOutputStream(getGlobalConfigFilePath())) {
+			PROPERTIES_GLOBAL.store(outputStream, null);
 		} catch (IOException e) {
 			showException(e);
 		}
@@ -1200,7 +1227,7 @@ public class Program {
 			showException(ex);
 			return;
 		}
-		tabbedPane.removeAll();
+		TABBED_PANE.removeAll();
 		if(!archive.isEmpty()){
 			getStorage().close();
 			CountryVignobles.close();
@@ -1223,8 +1250,9 @@ public class Program {
 		setFileSavable(false);
 		modified = false;
 		listCaveModified = false;
-		if(getCave() != null)
+		if(getCave() != null) {
 			getCave().clear();
+		}
 		Debug("Program: closeFile: Closing file Ended");
 	}
 
@@ -1250,18 +1278,15 @@ public class Program {
 
 		MyCellarBottleContenance.save();
 
-		if(inputPropCave != null) {
-			Object[] val = configCave.keySet().toArray();
-			for (Object o : val) {
-				String key = o.toString();
-				propCave.put(key, configCave.getString(key));
-			}
-			try (FileOutputStream outputStream = new FileOutputStream(inputPropCave)){
-				propCave.store(outputStream, null);
-			} catch (IOException e) {
-				showException(e);
-			}
-			inputPropCave = null;
+		Object[] val = configCave.keySet().toArray();
+		for (Object o : val) {
+			String key = o.toString();
+			PROPERTIES_CAVE.put(key, configCave.getString(key));
+		}
+		try (FileOutputStream outputStream = new FileOutputStream(getConfigFilePath())){
+			PROPERTIES_CAVE.store(outputStream, null);
+		} catch (IOException e) {
+			showException(e);
 		}
 	}
 
@@ -1354,7 +1379,7 @@ public class Program {
 	}
 
 	static String getGlobalConfigString( String _sKey, String _sDefaultValue ) {
-		return configGlobal.getString(_sKey, _sDefaultValue);
+		return CONFIG_GLOBAL.getString(_sKey, _sDefaultValue);
 	}
 
 	public static String getCaveConfigString( String _sKey, String _sDefaultValue ) {
@@ -1365,7 +1390,7 @@ public class Program {
 	}
 
 	static int getGlobalConfigInt( String _sKey, int _nDefaultValue ) {
-		return configGlobal.getInt(_sKey, _nDefaultValue);
+		return CONFIG_GLOBAL.getInt(_sKey, _nDefaultValue);
 	}
 
 	public static int getCaveConfigInt( String _sKey, int _nDefaultValue ) {
@@ -1376,7 +1401,7 @@ public class Program {
 	}
 
 	static void putGlobalConfigString( String _sKey, String _sValue ) {
-		configGlobal.put(_sKey, _sValue);
+		CONFIG_GLOBAL.put(_sKey, _sValue);
 	}
 
 	public static void putCaveConfigString( String _sKey, String _sValue ) {
@@ -1387,7 +1412,7 @@ public class Program {
 	}
 
 	static void putGlobalConfigInt( String _sKey, Integer _sValue ) {
-		configGlobal.put(_sKey, _sValue);
+		CONFIG_GLOBAL.put(_sKey, _sValue);
 	}
 
 	public static void putCaveConfigInt( String _sKey, Integer _sValue ) {
@@ -1396,8 +1421,8 @@ public class Program {
 
 	/*private static void removeGlobalConfigString( String _sKey )
 	{
-		if( configGlobal.containsKey(_sKey))
-			configGlobal.remove(_sKey);
+		if( CONFIG_GLOBAL.containsKey(_sKey))
+			CONFIG_GLOBAL.remove(_sKey);
 	}*/
 
 	static MyLinkedHashMap getCaveConfig() {
@@ -1411,7 +1436,7 @@ public class Program {
 	}
 
 	static boolean hasConfigGlobalKey( String _sKey ) {
-		return configGlobal.containsKey(_sKey);
+		return CONFIG_GLOBAL.containsKey(_sKey);
 	}
 
 	static boolean isFileSavable() {
@@ -1551,9 +1576,9 @@ public class Program {
 	}
 
 	public static int findTab(ImageIcon image) {
-		for(int i = 0; i<tabbedPane.getTabCount();i++){
+		for(int i = 0; i< TABBED_PANE.getTabCount(); i++){
 			try{
-				if(tabbedPane.getTabComponentAt(i) != null && tabbedPane.getIconAt(i) != null && tabbedPane.getIconAt(i).equals(image))
+				if(TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image))
 					return i;
 			}catch(ArrayIndexOutOfBoundsException e){}
 		}
@@ -1742,18 +1767,18 @@ public class Program {
 	}
 
 	static boolean isSelectedTab(ITabListener tab) {
-		if(tabbedPane.getSelectedComponent() == null) {
+		if(TABBED_PANE.getSelectedComponent() == null) {
 			return false;
 		}
-		return tabbedPane.getSelectedComponent().equals(tab);
+		return TABBED_PANE.getSelectedComponent().equals(tab);
 	}
 
   static boolean isCutCopyPastTab() {
-    return tabbedPane.getSelectedComponent() != null && tabbedPane.getSelectedComponent() instanceof ICutCopyPastable;
+    return TABBED_PANE.getSelectedComponent() != null && TABBED_PANE.getSelectedComponent() instanceof ICutCopyPastable;
   }
 
   static <T> T getSelectedComponent(Class<T> className) {
-	  return className.cast(tabbedPane.getSelectedComponent());
+	  return className.cast(TABBED_PANE.getSelectedComponent());
   }
 
 	public static String readFirstLineText(File f) {

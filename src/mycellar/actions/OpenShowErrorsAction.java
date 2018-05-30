@@ -23,20 +23,20 @@ public class OpenShowErrorsAction extends AbstractAction {
 		SwingUtilities.invokeLater(() -> {
 			if(Program.showerrors == null) {
 				Program.showerrors = new ShowFile(ShowType.ERROR);
-				Program.tabbedPane.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, Program.showerrors);
-				Program.tabbedPane.setSelectedIndex(Program.tabbedPane.getTabCount()-1);
+				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, Program.showerrors);
+				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
 			}
 			int tabIndex = Program.findTab(MyCellarImage.ERROR);
 			if(tabIndex != -1) {
-				Program.tabbedPane.setTitleAt(tabIndex, Program.getLabel("ShowFile.ErrorTitle"));
-				Program.tabbedPane.setSelectedIndex(tabIndex);
+				Program.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel("ShowFile.ErrorTitle"));
+				Program.TABBED_PANE.setSelectedIndex(tabIndex);
 			}
 			else {
-				Program.tabbedPane.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, Program.showerrors);
-				Program.tabbedPane.setSelectedIndex(Program.tabbedPane.getTabCount()-1);
+				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, Program.showerrors);
+				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
 			}
 	
-			Utils.addCloseButton(Program.tabbedPane, Program.showerrors);
+			Utils.addCloseButton(Program.TABBED_PANE, Program.showerrors);
 			Start.getInstance().updateMainPanel();
 		});
 	}

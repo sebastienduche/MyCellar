@@ -40,15 +40,13 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 12/04/18
- */
+ * @version 0.6
+ * @since 30/05/18
 
-/**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -60,8 +58,8 @@ import java.util.List;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -70,51 +68,51 @@ import java.util.List;
 @XmlRootElement(name = "HistoryList")
 public class HistoryList {
 
-    @XmlElement(name = "History", required = true)
-    protected List<History> history;
+  @XmlElement(name = "History", required = true)
+  protected List<History> history;
 
-    /**
-     * Gets the value of the history property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the history property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getHistory().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link History }
-     * 
-     * 
-     */
-    public List<History> getHistory() {
-        if (history == null) {
-            history = new ArrayList<>();
-        }
-        return history;
+  /**
+   * Gets the value of the history property.
+   *
+   * <p>
+   * This accessor method returns a reference to the live list,
+   * not a snapshot. Therefore any modification you make to the
+   * returned list will be present inside the JAXB object.
+   * This is why there is not a <CODE>set</CODE> method for the history property.
+   *
+   * <p>
+   * For example, to add a new item, do as follows:
+   * <pre>
+   *    getHistory().add(newItem);
+   * </pre>
+   *
+   *
+   * <p>
+   * Objects of the following type(s) are allowed in the list
+   * {@link History }
+   *
+   *
+   */
+  public List<History> getHistory() {
+    if (history == null) {
+      history = new ArrayList<>();
     }
+    return history;
+  }
 
-    public void addLast(History history) {
-    	getHistory().add(history);
-    }
-    
-    public void remove(History history) {
-    	getHistory().remove(history);
-    }
-    
-    public void clear() {
-    	getHistory().clear();
-    }
+  void addLast(History history) {
+    getHistory().add(history);
+  }
 
-  public static boolean loadXML(File f) {
+  public void remove(History history) {
+    getHistory().remove(history);
+  }
+
+  public void clear() {
+    getHistory().clear();
+  }
+
+  static boolean loadXML(File f) {
     Debug("Loading XML File "+f.getAbsolutePath());
     if(!f.exists())
       return false;
@@ -190,45 +188,45 @@ public class HistoryList {
 //		Debug("Loading JAXB File Done");
 //		return true;
 //	}
-    
-    private static void unMarshalXML(File f) throws JAXBException, FileNotFoundException {
+
+  private static void unMarshalXML(File f) throws JAXBException, FileNotFoundException {
     JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
     Unmarshaller u = jc.createUnmarshaller();
     HistoryList lb =
         (HistoryList)u.unmarshal(new FileInputStream(f));
     Program.getStorage().setHistoryList(lb);
-		Debug("Loading JAXB File Done");
-	}
-	
+    Debug("Loading JAXB File Done");
+  }
+
 //	public static boolean writeXML() {
 //		return writeXML(Program.getHistoryList(), new File(Program.getXMLBottlesFileName()));
 //	}
-	
-	public static boolean writeXML(File f) {
-		return writeXML(Program.getHistoryList(), f);
-	}
-	
-	private static boolean writeXML(HistoryList liste, File f) {
-		Debug("Writing JAXB File");
-		try {
-            JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
-            Marshaller m = jc.createMarshaller();
-            m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            m.marshal(liste, new StreamResult(f));
-        } catch( Exception e ) {
-        	Program.showException(e);
-        	return false;
-        }
-		Debug("Writing JAXB File Done");
-		return true;
-	}
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
-	public static void Debug(String sText) {
-		Program.Debug("HistoryList: " + sText );
-	}
+  static boolean writeXML(File f) {
+    return writeXML(Program.getHistoryList(), f);
+  }
+
+  private static boolean writeXML(HistoryList liste, File f) {
+    Debug("Writing JAXB File");
+    try {
+      JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
+      Marshaller m = jc.createMarshaller();
+      m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+      m.marshal(liste, new StreamResult(f));
+    } catch( Exception e ) {
+      Program.showException(e);
+      return false;
+    }
+    Debug("Writing JAXB File Done");
+    return true;
+  }
+
+  /**
+   * Debug
+   *
+   * @param sText String
+   */
+  public static void Debug(String sText) {
+    Program.Debug("HistoryList: " + sText );
+  }
 }

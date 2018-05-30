@@ -16,13 +16,11 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -41,8 +39,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.2
- * @since 29/05/18
+ * @version 4.3
+ * @since 30/05/18
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -64,7 +62,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_chooseCell = new MyCellarButton(new ChooseCellAction(this));
 		try {
 			Debug("Constructor with Bottle");
-			LinkedList<String> list = new LinkedList<String>();
+			LinkedList<String> list = new LinkedList<>();
 			list.add("");
 			list.addAll(Program.getStorage().getBottleNames());
 			name = new JCompletionComboBox(list.toArray()) {
@@ -148,13 +146,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_maturity.addMouseListener(popup_l);
 		m_parker.addMouseListener(popup_l);
 
-		cut.setEnabled(false);
-		copy.setEnabled(false);
-
-		cut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
-		copy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
-		paste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
-
 		m_labelStillToAdd.setForeground(Color.red);
 		m_end.setForeground(Color.red);
 		m_end.setHorizontalAlignment(SwingConstants.CENTER);
@@ -181,8 +172,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		boolean complex = false;
 		for (Rangement rangement : Program.getCave()) {
 			m_lieu.addItem(rangement.getNom());
-			if(!rangement.isCaisse())
+			if(!rangement.isCaisse()) {
 				complex = true;
+			}
 		}
 		m_chooseCell.setEnabled(complex);
 
@@ -224,8 +216,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 */
 	@Override
 	protected void lieu_itemStateChanged(ItemEvent e) {
-		if(!isListenersEnabled())
+		if(isListenersDisabled()) {
 			return;
+		}
 		Debug("Lieu_itemStateChanging...");
 		try {
 			int lieu_select = m_lieu.getSelectedIndex();
@@ -300,8 +293,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 */
 	@Override
 	protected void line_itemStateChanged(ItemEvent e) {
-		if(!isListenersEnabled())
+		if(isListenersDisabled()) {
 			return;
+		}
 		Debug("Line_itemStateChanging...");
 		try {
 			int nb_col = 0;
@@ -359,8 +353,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			name.setSelectedItem(bottle.getNom());
 			m_year.setText(bottle.getAnnee());
 			m_noYear.setSelected(bottle.isNonVintage());
-			if(bottle.isNonVintage())
+			if(bottle.isNonVintage()) {
 				m_year.setEditable(false);
+			}
 			m_half.removeAllItems();
 			m_half.addItem("");
 			for(String s: MyCellarBottleContenance.getList()) {
@@ -394,58 +389,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		catch (Exception e) {
 			Program.showException(e);
 		}
-	}
-
-	@Override
-	public void selectPlace(Bouteille bottle) {
-		Debug("selectPlaceWithBottle...");
-		setListenersEnabled(false);
-		Rangement rangement = bottle.getRangement();
-		for(int i=0; i<m_lieu.getItemCount(); i++) {
-			if(rangement.getNom().equals(m_lieu.getItemAt(i))){
-				m_lieu.setSelectedIndex(i);
-				break;
-			}
-		}
-		int nbEmpl = rangement.getNbEmplacements();
-		m_num_lieu.removeAllItems();
-		m_column.removeAllItems();
-		m_line.removeAllItems();
-		m_num_lieu.addItem("");
-		m_line.addItem("");
-		m_column.addItem("");
-
-
-		boolean isCaisse = rangement.isCaisse();
-		if(!isCaisse) {
-			for(int i = 1; i<= nbEmpl; i++)
-				m_num_lieu.addItem(Integer.toString(i));
-			int nbLine = rangement.getNbLignes(bottle.getNumLieu()-1);
-			int nbColumn = rangement.getNbColonnes(bottle.getNumLieu()-1, bottle.getLigne()-1);
-			for(int i = 1; i<= nbLine; i++)
-				m_line.addItem(Integer.toString(i));
-			for(int i = 1; i<= nbColumn; i++)
-				m_column.addItem(Integer.toString(i));
-			m_line.setEnabled(true);
-			m_column.setEnabled(true);
-			m_num_lieu.setSelectedIndex(bottle.getNumLieu());
-			m_line.setSelectedIndex(bottle.getLigne());
-			m_column.setSelectedIndex(bottle.getColonne());
-		}
-		else {
-			int start = rangement.getStartCaisse();
-			for(int i = start; i< nbEmpl+start; i++)
-				m_num_lieu.addItem(Integer.toString(i));
-			m_num_lieu.setSelectedIndex(bottle.getNumLieu()-start+1);
-		}
-		m_num_lieu.setEnabled(true);
-
-		m_labelLine.setVisible(!isCaisse);
-		m_labelColumn.setVisible(!isCaisse);
-		m_line.setVisible(!isCaisse);
-		m_column.setVisible(!isCaisse);
-		setListenersEnabled(true);
-		Debug("selectPlaceWithBottle... Done");
 	}
 
 	/**
@@ -670,8 +613,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			RangementUtils.putTabStock();
 			Search.updateTable();
 
-			if(!rangement.isCaisse())
+			if(!rangement.isCaisse()) {
 				rangement.updateToStock(m_laBouteille);
+			}
 
 			m_end.setText(Program.getLabel("Infos144"));
 		}
@@ -709,10 +653,11 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		String place = bottle.getEmplacement();
 
 		Program.getStorage().addHistory(History.MODIFY, bottle);
-		if(bToDelete != null)
+		if(bToDelete != null) {
 			Program.getStorage().deleteWine(bToDelete);
-		else
+		} else {
 			Program.getStorage().replaceWineAll(bottle, lieu_num, ligne, colonne);
+		}
 
 		if(m_laBouteille != null) {
 			m_laBouteille.getRangement().clearStock(m_laBouteille);
@@ -722,8 +667,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		Search.updateTable();
 
 		Rangement r = Program.getCave(place);
-		if(r != null && !r.isCaisse())
+		if(r != null && !r.isCaisse()) {
 			r.updateToStock(bottle);
+		}
 	}
 
 	private boolean runExit() {

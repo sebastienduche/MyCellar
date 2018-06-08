@@ -23,8 +23,8 @@ import java.awt.Toolkit;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 02/03/18
+ * @version 1.4
+ * @since 08/06/18
  */
 class APropos extends JDialog {
   private MyCellarButton ok = new MyCellarButton();
@@ -61,9 +61,9 @@ class APropos extends JDialog {
     MyCellarLabel2.setHorizontalAlignment(SwingConstants.LEFT);
     MyCellarLabel2.setText("Copyright: S.Duché");
     MyCellarLabel3.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel3.setText("Release: " + MyCellarVersion.version);
+    MyCellarLabel3.setText("Release: " + MyCellarVersion.VERSION);
     MyCellarLabel4.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel4.setText("Version: " + MyCellarVersion.mainVersion);
+    MyCellarLabel4.setText("Version: " + MyCellarVersion.MAIN_VERSION);
     MyCellarLabel2.setFont(new Font("Dialog", Font.PLAIN, 11));
     MyCellarLabel3.setFont(new Font("Dialog", Font.PLAIN, 11));
     MyCellarLabel4.setFont(new Font("Dialog", Font.PLAIN, 11));
@@ -82,7 +82,7 @@ class APropos extends JDialog {
    * APropos: Constructeur de l'image.
    */
   class IconPanel extends JPanel {
-    private Image img;
+    private final Image img;
     static final long serialVersionUID = 1505051;
 
     private IconPanel(Image img) {

@@ -13,8 +13,8 @@ import java.awt.Component;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 02/03/18
+ * @version 0.5
+ * @since 08/06/18
  */
 public class StateButtonRenderer extends JButton implements TableCellRenderer {
 
@@ -66,7 +66,7 @@ public class StateButtonRenderer extends JButton implements TableCellRenderer {
     	  setIcon(image);
     }
     catch (NullPointerException npe) {
-    };
+    }
     
     return this;
   }

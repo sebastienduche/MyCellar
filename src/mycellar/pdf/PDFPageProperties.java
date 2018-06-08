@@ -8,8 +8,8 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 17/01/16
+ * @version 0.2
+ * @since 08/06/18
  */
 
 public class PDFPageProperties {
@@ -29,10 +29,10 @@ public class PDFPageProperties {
 		this.marginRight = marginRight;
 		this.font = font;
 		this.fontSize = fontSize;
-		this.startTop = marginTop;
+		startTop = marginTop;
 	}
 
-	public float getMarginTop() {
+	float getMarginTop() {
 		return marginTop;
 	}
 
@@ -40,7 +40,7 @@ public class PDFPageProperties {
 		this.marginTop = marginTop;
 	}
 
-	public float getMarginBottom() {
+	float getMarginBottom() {
 		return marginBottom;
 	}
 
@@ -48,7 +48,7 @@ public class PDFPageProperties {
 		this.marginBottom = marginBottom;
 	}
 
-	public float getMarginLeft() {
+	float getMarginLeft() {
 		return marginLeft;
 	}
 
@@ -56,7 +56,7 @@ public class PDFPageProperties {
 		this.marginLeft = marginLeft;
 	}
 
-	public float getMarginRight() {
+	float getMarginRight() {
 		return marginRight;
 	}
 
@@ -72,7 +72,7 @@ public class PDFPageProperties {
 		this.font = font;
 	}
 
-	public int getFontSize() {
+	int getFontSize() {
 		return fontSize;
 	}
 
@@ -80,7 +80,7 @@ public class PDFPageProperties {
 		this.fontSize = fontSize;
 	}
 
-	public float getStartTop() {
+	float getStartTop() {
 		return startTop;
 	}
 

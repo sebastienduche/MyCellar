@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.3
- * @since 23/05/18
+ * @version 7.4
+ * @since 08/06/18
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
@@ -360,7 +360,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		}
 		@Override
 		public String getColumnName(int column) {
-			return ((Column)columns.get(column)).getLabel();
+			return columns.get(column).getLabel();
 		}
 		@Override
 		public int getRowCount() {

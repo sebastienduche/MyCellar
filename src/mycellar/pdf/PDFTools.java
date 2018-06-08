@@ -1,13 +1,13 @@
 package mycellar.pdf;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -15,17 +15,17 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 17/04/17
+ * @version 0.4
+ * @since 08/06/18
  */
 public class PDFTools {
 	
-	private PDDocument document;
-	private PDPage page;
-	private PDPageContentStream content;
+	private final PDDocument document;
+	private final PDPage page;
+	private final PDPageContentStream content;
 	
-	private PDFTools(PDDocument doc, PDPage page, PDPageContentStream content) {
-		this.document = doc;
+	private PDFTools(PDDocument document, PDPage page, PDPageContentStream content) {
+		this.document = document;
 		this.page = page;
 		this.content = content;
 	}
@@ -49,12 +49,9 @@ public class PDFTools {
 	/**
 	 * @param page
 	 * @param contentStream
-	 * @param y the y-coordinate of the first row
-	 * @param margin the padding on left and right of table
-	 * @param content a 2d array containing the table data
 	 * @throws IOException
 	 */
-	public static void drawTable(PDDocument doc, PDPage page, PDPageContentStream contentStream, 
+	private static void drawTable(PDDocument doc, PDPage page, PDPageContentStream contentStream,
 	                            PDFPageProperties pageProperties, PDFProperties properties,
 	                            List<PDFRow> rows, PDFRow header) throws IOException {
 		
@@ -129,7 +126,7 @@ public class PDFTools {
 	    }
 	    
 	    if(countDatas < nbDatas) {
-	    	rows = (List<PDFRow>) rows.subList(countDatas, nbDatas);
+	    	rows = rows.subList(countDatas, nbDatas);
 	    	page = new PDPage();
 			doc.addPage( page );
 			contentStream = new PDPageContentStream(doc, page);
@@ -162,7 +159,7 @@ public class PDFTools {
 		addTitle(title, marginTop, font, fontSize, page, content);
 	}
 	
-	public static void addTitle(String title, float marginTop, PDFont font, int fontSize, PDPage page, PDPageContentStream content) throws IOException {
+	private static void addTitle(String title, float marginTop, PDFont font, int fontSize, PDPage page, PDPageContentStream content) throws IOException {
     	float titleWidth = font.getStringWidth(title) / 1000 * fontSize;
     	float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
 

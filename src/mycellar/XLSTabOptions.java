@@ -27,19 +27,21 @@ import java.awt.event.WindowEvent;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 02/03/18
+ * @version 1.1
+ * @since 08/06/18
  */
 class XLSTabOptions extends JDialog {
-  private int LARGEUR = 480;
-  private int HAUTEUR = 550;
+  private static final int LARGEUR = 480;
+  private static final int HAUTEUR = 550;
   private final MyCellarSpinner title_size = new MyCellarSpinner();
-  private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox();
+  private final MyCellarCheckBox boldTitleCheckBox = new MyCellarCheckBox();
+  private final MyCellarCheckBox onePlacePerSheetCheckBox = new MyCellarCheckBox();
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner text_size = new MyCellarSpinner();
   private final MyCellarSpinner column_size = new MyCellarSpinner();
   private final MyCellarSpinner empty_line_part = new MyCellarSpinner();
   private final MyCellarSpinner empty_line_place = new MyCellarSpinner();
+  private final MyCellarLabel empty_line_place_label;
   private final XLSOptionsValues tv;
   static final long serialVersionUID = 260706;
 
@@ -102,6 +104,7 @@ class XLSTabOptions extends JDialog {
           empty_line_place.setValue(1);
         }
     });
+    onePlacePerSheetCheckBox.addActionListener(e -> updatePlaceSettings(onePlacePerSheetCheckBox.isSelected()));
 
     title_size.setValue(Program.getCaveConfigInt("TITLE_TAB_SIZE_XLS", 10));
     text_size.setValue(Program.getCaveConfigInt("TEXT_TAB_SIZE_XLS", 10));
@@ -109,11 +112,13 @@ class XLSTabOptions extends JDialog {
     empty_line_part.setValue(Program.getCaveConfigInt("EMPTY_LINE_PART_XLS", 1));
     empty_line_place.setValue(Program.getCaveConfigInt("EMPTY_LINE_PLACE_XLS", 3));
 
-    MyCellarCheckBox1.setText(Program.getLabel("Infos257")); //gras
+    boldTitleCheckBox.setText(Program.getLabel("Infos257")); //gras
+    onePlacePerSheetCheckBox.setText(Program.getLabel("XLSOptions.onePlacePerSheet"));
     String bold = Program.getCaveConfigString("BOLD_TAB_XLS","");
-    if (bold.equals("bold")) {
-      MyCellarCheckBox1.setSelected(true);
+    if ("bold".equals(bold)) {
+      boldTitleCheckBox.setSelected(true);
     }
+
    
     JTable table = new JTable(tv);
     TableColumnModel tcm = table.getColumnModel();
@@ -126,26 +131,10 @@ class XLSTabOptions extends JDialog {
     table.setSize(460, 100);
     JScrollPane oScrollPaneTab = new JScrollPane(table);
 
-    if( Program.getCaveConfigInt("XLSTAB_COL0", 1) == 1 ){
-      tv.addString(Program.getLabel("Infos132"), true);
-    }else{
-      tv.addString(Program.getLabel("Infos132"), false);
-    }
-    if( Program.getCaveConfigInt("XLSTAB_COL1", 0) == 1 ){
-      tv.addString(Program.getLabel("Infos133"), true);
-    }else{
-      tv.addString(Program.getLabel("Infos133"), false);
-    }
-    if( Program.getCaveConfigInt("XLSTAB_COL2", 0) == 1 ){
-      tv.addString(Program.getLabel("Infos134"), true);
-    }else{
-      tv.addString(Program.getLabel("Infos134"), false);
-    }
-    if( Program.getCaveConfigInt("XLSTAB_COL3", 0) == 1 ){
-      tv.addString(Program.getLabel("Infos135"), true);
-    }else{
-      tv.addString(Program.getLabel("Infos135"), false);
-    }
+    tv.addString(Program.getLabel("Infos132"), 1 == Program.getCaveConfigInt("XLSTAB_COL0", 1));
+    tv.addString(Program.getLabel("Infos133"), 1 == Program.getCaveConfigInt("XLSTAB_COL1", 0));
+    tv.addString(Program.getLabel("Infos134"), 1 == Program.getCaveConfigInt("XLSTAB_COL2", 0));
+    tv.addString(Program.getLabel("Infos135"), 1 == Program.getCaveConfigInt("XLSTAB_COL3", 0));
 
     JPanel jPanel2 = new JPanel();
     jPanel2.setFont(Program.font_panel);
@@ -158,11 +147,16 @@ class XLSTabOptions extends JDialog {
     MyCellarLabel MyCellarLabel7 = new MyCellarLabel(Program.getLabel("Infos256")); //Taille du texte
     MyCellarLabel pt_label2 = new MyCellarLabel("pt");
     MyCellarLabel column_size_label = new MyCellarLabel(Program.getLabel("Infos333")); //Largeur des colonnes
-    MyCellarLabel pt_label3 = new MyCellarLabel("pt");
+    MyCellarLabel pt_label3 = new MyCellarLabel("px");
     MyCellarLabel empty_line_part_label = new MyCellarLabel(Program.getLabel("Infos334")); //nb ligne entre partie
-    MyCellarLabel empty_line_place_label = new MyCellarLabel(Program.getLabel("Infos335")); //nb lignes entre rangement
-    MyCellarLabel column_label = new MyCellarLabel(Program.getLabel("Infos338")); //Colonnes à utiliser
-    
+    empty_line_place_label = new MyCellarLabel(Program.getLabel("Infos335")); //nb lignes entre rangement
+    //Colonnes à utiliser
+    MyCellarLabel column_label = new MyCellarLabel(Program.getLabel("Infos338"));
+
+    if (1 == Program.getCaveConfigInt("ONE_PER_SHEET_XLS", 0)) {
+      updatePlaceSettings(true);
+    }
+
     setLayout(new MigLayout("","grow",""));
     jPanel1.setLayout(new MigLayout("","[][grow]","[][]"));
     jPanel1.add(MyCellarLabel2);
@@ -170,7 +164,7 @@ class XLSTabOptions extends JDialog {
     jPanel1.add(MyCellarLabel3);
     jPanel1.add(title_size, "split 3");
     jPanel1.add(pt_label1, "grow");
-    jPanel1.add(MyCellarCheckBox1, "align right");
+    jPanel1.add(boldTitleCheckBox, "align right");
     
     add(jPanel1, "grow, wrap");
     
@@ -183,6 +177,7 @@ class XLSTabOptions extends JDialog {
     jPanel2.add(pt_label3, "wrap");
     jPanel2.add(empty_line_part_label);
     jPanel2.add(empty_line_part, "wrap");
+    jPanel2.add(onePlacePerSheetCheckBox, "wrap");
     jPanel2.add(empty_line_place_label);
     jPanel2.add(empty_line_place);
     add(jPanel2, "grow, wrap");
@@ -193,7 +188,12 @@ class XLSTabOptions extends JDialog {
     setLocationRelativeTo(null);
   }
 
-  //Accepter et Fermer le message
+  private void updatePlaceSettings(boolean b) {
+    onePlacePerSheetCheckBox.setSelected(b);
+    empty_line_place_label.setVisible(!b);
+    empty_line_place.setVisible(!b);
+  }
+
   /**
    * valider_actionPerformed: Valider les modifications et quitter.
    *
@@ -207,12 +207,8 @@ class XLSTabOptions extends JDialog {
       Program.putCaveConfigString("COLUMN_TAB_WIDTH_XLS", column_size.getValue().toString());
       Program.putCaveConfigString("EMPTY_LINE_PART_XLS", empty_line_part.getValue().toString());
       Program.putCaveConfigString("EMPTY_LINE_PLACE_XLS", empty_line_place.getValue().toString());
-      if (MyCellarCheckBox1.isSelected()) {
-        Program.putCaveConfigString("BOLD_TAB_XLS", "bold");
-      }
-      else {
-        Program.putCaveConfigString("BOLD_TAB_XLS", "");
-      }
+      Program.putCaveConfigString("BOLD_TAB_XLS", boldTitleCheckBox.isSelected() ? "bold" : "");
+      Program.putCaveConfigInt("ONE_PER_SHEET_XLS", onePlacePerSheetCheckBox.isSelected() ? 1 : 0);
 
       // Options des colonnes
       for ( int i=0; i<tv.getRowCount(); i++){

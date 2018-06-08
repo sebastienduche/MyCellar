@@ -1,8 +1,9 @@
 package mycellar.pdf;
 
-import java.util.LinkedList;
-
 import org.apache.pdfbox.pdmodel.font.PDFont;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -10,13 +11,13 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 17/01/16
+ * @version 0.2
+ * @since 08/06/18
  */
 
 public class PDFRow {
 
-	private LinkedList<String> columns =  new LinkedList<String>();
+	private final LinkedList<String> columns =  new LinkedList<>();
 	private PDFont font;
 	private int fontSize;
 	
@@ -28,11 +29,11 @@ public class PDFRow {
 		columns.add(value);
 	}
 	
-	public LinkedList<String> getCells() {
+	List<String> getCells() {
 		return columns;
 	}
 	
-	public int getCellCount() {
+	int getCellCount() {
 		return columns.size();
 	}
 	
@@ -45,7 +46,7 @@ public class PDFRow {
 		return font;
 	}
 	
-	public int getFontSize() {
+	int getFontSize() {
 		return fontSize;
 	}
 }

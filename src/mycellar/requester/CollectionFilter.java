@@ -15,8 +15,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 20/03/18
+ * @version 0.4
+ * @since 08/06/18
  */
 
 @SuppressWarnings(value = { "rawtypes", "unchecked" })
@@ -239,7 +239,7 @@ public class CollectionFilter<T> {
 			throw new NullPointerException("The predicate is null!");
 		Collection<T> result1 = new ArrayList<T>();
 		for(Object b : result) {
-			if(predicate.getPredicate().apply((T)b, predicate.getValue(), predicate.getType()))
+			if(predicate.getPredicate().apply(b, predicate.getValue(), predicate.getType()))
 				result1.add((T)b);
 		}
 		result = result1;
@@ -258,7 +258,7 @@ public class CollectionFilter<T> {
 		for(Object b : result) {
 			boolean apply = true;
 			for(Predicates predicate : predicates) {
-				if(!predicate.getPredicate().apply((T)b, predicate.getValue(), predicate.getType())) {
+				if(!predicate.getPredicate().apply(b, predicate.getValue(), predicate.getType())) {
 					apply = false;
 					break;
 				}
@@ -283,13 +283,13 @@ public class CollectionFilter<T> {
 		for(Object b : src) {
 			boolean apply = true;
 			for(Predicates predicate : predicates) {
-				if(!predicate.getPredicate().apply((T)b, predicate.getValue(), predicate.getType())) {
+				if(!predicate.getPredicate().apply(b, predicate.getValue(), predicate.getType())) {
 					apply = false;
 					break;
 				}
 			}
 			if(apply)
-				result.add((T)b);
+				result.add(b);
 		}
 		return INSTANCE;
 	}
@@ -304,7 +304,7 @@ public class CollectionFilter<T> {
 			throw new NullPointerException("The collection of source object is null!");
 		for(Object b : src) {
 			if(!result.contains(b))
-				result.add((T)b);
+				result.add(b);
 		}
 		return INSTANCE;
 	}
@@ -336,7 +336,7 @@ public class CollectionFilter<T> {
 			throw new NullPointerException("The collection of source objets or the predicate is null!");
 		for(Object b : src) {
 			if(predicate.apply((T)b) && !result.contains(b))
-				result.add((T)b);
+				result.add(b);
 		}
 		return INSTANCE;
 	}
@@ -352,7 +352,7 @@ public class CollectionFilter<T> {
 			throw new NullPointerException("The collection of source objets or the predicate is null!");
 		for(Object b : src) {
 			if(predicate.apply((T)b, value, type) && !result.contains(b))
-				result.add((T)b);
+				result.add(b);
 		}
 		return INSTANCE;
 	}
@@ -369,7 +369,7 @@ public class CollectionFilter<T> {
 		for(Object b : result) {
 			boolean apply = false;
 			for(Predicates predicate : predicates) {
-				if(predicate.getPredicate().apply((T)b, predicate.getValue(), predicate.getType())) {
+				if(predicate.getPredicate().apply(b, predicate.getValue(), predicate.getType())) {
 					apply = true;
 					break;
 				}
@@ -394,13 +394,13 @@ public class CollectionFilter<T> {
 		for(Object b : src) {
 			boolean apply = false;
 			for(Predicates predicate : predicates) {
-				if(predicate.getPredicate().apply((T)b, predicate.getValue(), predicate.getType())) {
+				if(predicate.getPredicate().apply(b, predicate.getValue(), predicate.getType())) {
 					apply = true;
 					break;
 				}
 			}
 			if(apply)
-				result.add((T)b);
+				result.add(b);
 		}
 		return INSTANCE;
 	}

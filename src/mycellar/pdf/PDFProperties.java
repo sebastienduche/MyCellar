@@ -1,8 +1,8 @@
 package mycellar.pdf;
 
-import java.util.LinkedList;
-
 import mycellar.core.MyCellarFields;
+
+import java.util.LinkedList;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -10,8 +10,8 @@ import mycellar.core.MyCellarFields;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 16/04/16
+ * @version 0.3
+ * @since 08/06/18
  */
 
 public class PDFProperties {
@@ -28,7 +28,7 @@ public class PDFProperties {
 		this.titleSize = titleSize;
 		this.fontSize = fontSize;
 		this.border = border;
-		this.setBoldTitle(boldTitle);
+		setBoldTitle(boldTitle);
 	}
 
 	public String getTitle() {
@@ -71,7 +71,7 @@ public class PDFProperties {
 		return column;
 	}
 
-	public float getColumnWidth(int i) {
+	float getColumnWidth(int i) {
 		return column.get(i).getWidth();
 	}
 	
@@ -83,11 +83,11 @@ public class PDFProperties {
 		return boldTitle;
 	}
 
-	public void setBoldTitle(boolean boldTitle) {
+	private void setBoldTitle(boolean boldTitle) {
 		this.boldTitle = boldTitle;
 	}
 
-	public float getTotalColumnWidth() {
+	float getTotalColumnWidth() {
 		int val = 0;
 		for(PDFColumn c : column)
 			val += c.getWidth();

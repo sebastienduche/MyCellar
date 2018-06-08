@@ -6,18 +6,18 @@ package mycellar.launcher;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 07/05/17
+ * @version 1.1
+ * @since 08/06/18
  */
+
+import mycellar.core.MyCellarVersion;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 
-
-
-import mycellar.core.MyCellarVersion;
-
-import org.apache.commons.io.FileUtils;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public class MyCellarLauncher {
 
@@ -46,23 +46,21 @@ public class MyCellarLauncher {
         			try{
         				Server.Debug("Installing new version...");
         				File fList[] = f.listFiles();
-        				for( int i=0; i<fList.length; i++)
-        				{
-        					File fTemp = fList[i];
-        					String name = fTemp.getName();
+        				for(File file : fList) {
+        					String name = file.getName();
         					if(name.endsWith(".myCellar")) {
         						name = name.substring(0, name.indexOf(".myCellar"));
         						Server.Debug("Delete file "+name);
         						FileUtils.deleteQuietly(new File("lib", name));
-        					} else if(fTemp.getName().endsWith("ini")){
-        						Server.Debug("Copy file "+fTemp.getName()+" to config dir");
-        						FileUtils.copyFileToDirectory(fTemp, new File("config"));
-        					}else if(fTemp.getName().endsWith("jar") && !fTemp.getName().equalsIgnoreCase("MyCellar.jar")){
-        						Server.Debug("Copying file "+fTemp.getName()+" to lib dir");
-        						FileUtils.copyFileToDirectory(fTemp, new File("lib"));
+        					} else if(file.getName().endsWith("ini")){
+        						Server.Debug("Copy file "+file.getName()+" to config dir");
+        						FileUtils.copyFileToDirectory(file, new File("config"));
+        					}else if(file.getName().endsWith("jar") && !file.getName().equalsIgnoreCase("MyCellar.jar")){
+        						Server.Debug("Copying file "+file.getName()+" to lib dir");
+        						FileUtils.copyFileToDirectory(file, new File("lib"));
         					}else {
-        						Server.Debug("Copying file "+fTemp.getName()+" to current dir");
-        						FileUtils.copyFileToDirectory(fTemp, new File("."));
+        						Server.Debug("Copying file "+file.getName()+" to current dir");
+        						FileUtils.copyFileToDirectory(file, new File("."));
         					}	
         				}
         				FileUtils.deleteDirectory(f);
@@ -84,11 +82,9 @@ public class MyCellarLauncher {
             	Runtime.getRuntime().addShutdownHook(updateThread);
             	updateThread.start();
             }
-        } catch (IOException ex) {
+        } catch (IOException | InterruptedException ex) {
             showException(ex);
-        } catch (InterruptedException ex) {
-        	showException(ex);
-        }	
+        }
 	}
 
 	/**
@@ -100,13 +96,12 @@ public class MyCellarLauncher {
 	}
 
 	private static void showException(Exception e ) {
-		StackTraceElement st[] = new StackTraceElement[1];
-		st = e.getStackTrace();
+		StackTraceElement st[] = e.getStackTrace();
 		String error = "";
-		for (int z = 0; z < st.length; z++) {
-			error = error.concat("\n" + st[z]);
+		for (StackTraceElement elem : st) {
+			error = error.concat("\n" + elem);
 		}
-		javax.swing.JOptionPane.showMessageDialog(null, e.toString(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+		showMessageDialog(null, e.toString(), "Error", ERROR_MESSAGE);
 		System.exit(999);
 	}
 	

@@ -1,9 +1,8 @@
 package mycellar.core;
 
-import java.awt.Font;
-
 import javax.swing.Icon;
 import javax.swing.JLabel;
+import java.awt.Font;
 
 /**
  * Titre : Cave à vin
@@ -12,42 +11,42 @@ import javax.swing.JLabel;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.1
- * @since 16/04/15
+ * @version 0.2
+ * @since 08/06/18
  */
 
 public class MyCellarLabel extends JLabel {
 
 	private static final long serialVersionUID = 4972622436840497820L;
-	private static final Font font = new Font("Arial", 0, 12);
+	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
 	public MyCellarLabel() {
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarLabel(String text) {
 		super(text);
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarLabel(Icon image) {
 		super(image);
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarLabel(String text, int horizontalAlignment) {
 		super(text, horizontalAlignment);
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarLabel(Icon image, int horizontalAlignment) {
 		super(image, horizontalAlignment);
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarLabel(String text, Icon icon, int horizontalAlignment) {
 		super(text, icon, horizontalAlignment);
-		setFont(font);
+		setFont(FONT);
 	}
 
 }

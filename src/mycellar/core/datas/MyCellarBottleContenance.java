@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -22,12 +24,12 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 20/04/18
+ * @version 0.2
+ * @since 08/06/18
  */
 public final class MyCellarBottleContenance {
 
-  private LinkedList<String> list;
+  private final LinkedList<String> list = new LinkedList<>();
   private String defaultValue;
 
   private MyCellarBottleContenance() {
@@ -39,17 +41,11 @@ public final class MyCellarBottleContenance {
 
   private void loadFile() {
     readTypesXml();
-    if(list == null) {
-      list = new LinkedList<>();
-      if(Program.getStorage().getAllList() != null) {
-        for(Bouteille b : Program.getStorage().getAllList()) {
-          String type = b.getType();
-          if(type != null && !type.isEmpty() && !list.contains(type))
-            list.add(type);
-        }
-      }
-      defaultValue = "75cl";
+    list.clear();
+    if(Program.getStorage().getAllList() != null) {
+      list.addAll(Program.getStorage().getAllList().stream().map(Bouteille::getType).distinct().collect(Collectors.toList()));
     }
+    defaultValue = "75cl";
 
     if(list.isEmpty()) {
       list.add("75cl");
@@ -80,7 +76,6 @@ public final class MyCellarBottleContenance {
       }
       fw.write("</MyCellar>");
       fw.flush();
-      fw.close();
     }
     catch (IOException ex) {
       Program.showException(ex);
@@ -88,7 +83,7 @@ public final class MyCellarBottleContenance {
     Debug("writeTypeXml: Writing file OK");
   }
 
-  public static LinkedList<String> getList() {
+  public static List<String> getList() {
     return getInstance().list;
   }
 
@@ -109,7 +104,7 @@ public final class MyCellarBottleContenance {
       return;
     }
 
-    list = new LinkedList<>();
+    list.clear();
     try {
       DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

@@ -1,8 +1,8 @@
 package mycellar.core;
 
-import java.util.ArrayList;
-
 import mycellar.Program;
+
+import java.util.ArrayList;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -10,8 +10,8 @@ import mycellar.Program;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 26/07/17
+ * @version 0.5
+ * @since 08/06/18
  */
 
 public enum MyCellarFields {
@@ -47,27 +47,27 @@ public enum MyCellarFields {
 		return label;
 	}
 	
-	private static final ArrayList<MyCellarFields> list = new ArrayList<MyCellarFields>();
+	private static final ArrayList<MyCellarFields> FIELDS = new ArrayList<>();
 	
 	public static ArrayList<MyCellarFields> getFieldsList() {
-		if(list.isEmpty()) {
-    		list.add(NAME);
-    		list.add(YEAR);
-    		list.add(TYPE);
-    		list.add(PLACE);
-    		list.add(NUM_PLACE);
-    		list.add(LINE);
-    		list.add(COLUMN);
-    		list.add(PRICE);
-    		list.add(COMMENT);
-    		list.add(MATURITY);
-    		list.add(PARKER);
-    		list.add(COLOR);
-    		list.add(COUNTRY);
-    		list.add(VINEYARD);
-    		list.add(AOC);
-    		list.add(IGP);
+		if(FIELDS.isEmpty()) {
+    		FIELDS.add(NAME);
+    		FIELDS.add(YEAR);
+    		FIELDS.add(TYPE);
+    		FIELDS.add(PLACE);
+    		FIELDS.add(NUM_PLACE);
+    		FIELDS.add(LINE);
+    		FIELDS.add(COLUMN);
+    		FIELDS.add(PRICE);
+    		FIELDS.add(COMMENT);
+    		FIELDS.add(MATURITY);
+    		FIELDS.add(PARKER);
+    		FIELDS.add(COLOR);
+    		FIELDS.add(COUNTRY);
+    		FIELDS.add(VINEYARD);
+    		FIELDS.add(AOC);
+    		FIELDS.add(IGP);
 		}
-		return list;
+		return FIELDS;
 	}
 }

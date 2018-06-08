@@ -1,13 +1,14 @@
 package mycellar.launcher;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
 
 
 /**
@@ -16,23 +17,22 @@ import javax.swing.JProgressBar;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 02/03/14
+ * @version 0.2
+ * @since 08/06/18
  */
 public class MyCellarLauncherLoading extends JDialog {
 
 	private static final long serialVersionUID = -2314335792718752038L;
 	private JLabel label;
-	private JProgressBar jProgressBar1 = new JProgressBar();
-	private GridBagLayout gridBagLayout1 = new GridBagLayout();
+	private final JProgressBar jProgressBar1 = new JProgressBar();
+	private final GridBagLayout gridBagLayout1 = new GridBagLayout();
 
 	/**
 	 * Loading: Constructeur avec texte de la fenêtre.
 	 *
 	 * @param txt String
-	 * @throws Exception 
 	 */
-	public MyCellarLauncherLoading(String txt) throws Exception {
+	MyCellarLauncherLoading(String txt) {
 		super(new JFrame(), "", false);
 		jbInit(txt);
 	}
@@ -41,22 +41,21 @@ public class MyCellarLauncherLoading extends JDialog {
 	 * jbInit: Fonction d'initialisation avec texte de la fenêtre.
 	 *
 	 * @param txt String
-	 * @throws Exception
 	 */
-	private void jbInit(String txt) throws Exception {
+	private void jbInit(String txt) {
 
-		this.setSize(270, 75);
-		this.setDefaultCloseOperation(0);
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		this.setTitle("Loading...");
-		this.setLocation( (screenSize.width - 270) / 2, (screenSize.height - 75) / 2);
+		setSize(270, 75);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setTitle("Loading...");
+		setLocation( (screenSize.width - 270) / 2, (screenSize.height - 75) / 2);
 		label = new JLabel(txt, JLabel.CENTER);
 		jProgressBar1.setMinimum(0);
 		jProgressBar1.setMaximum(100);
-		this.getContentPane().setLayout(gridBagLayout1);
-		this.getContentPane().add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 20));
-		this.getContentPane().add(jProgressBar1, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(1, 0, 1, 0), 270, 4));
-		this.setResizable(false);
+		getContentPane().setLayout(gridBagLayout1);
+		getContentPane().add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 20));
+		getContentPane().add(jProgressBar1, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(1, 0, 1, 0), 270, 4));
+		setResizable(false);
 	}
 
 	/**
@@ -69,9 +68,9 @@ public class MyCellarLauncherLoading extends JDialog {
 
 		label.setText(txt);
 		if (titre != null){
-			this.setTitle(titre);
+			setTitle(titre);
 		}
-		this.repaint();
+		repaint();
 	}
 
 	/**
@@ -83,7 +82,7 @@ public class MyCellarLauncherLoading extends JDialog {
 	public void setValue(int i) {
 
 		jProgressBar1.setValue(i);
-		this.repaint();
+		repaint();
 	}
 
 	/**
@@ -91,7 +90,7 @@ public class MyCellarLauncherLoading extends JDialog {
 	 */
 	public void cache() {
 
-		this.dispose();
+		dispose();
 	}
 
 	/**
@@ -99,8 +98,8 @@ public class MyCellarLauncherLoading extends JDialog {
 	 */
 	public void view() {
 
-		this.repaint();
-		this.setVisible(true);
+		repaint();
+		setVisible(true);
 
 	}
 

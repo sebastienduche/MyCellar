@@ -58,8 +58,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 5.5
- * @since 20/04/18
+ * @version 5.6
+ * @since 08/06/18
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -582,7 +582,7 @@ public class ShowFile extends JPanel implements ITabListener {
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           if (showType == ShowType.ERROR) {
             for (Bouteille b : toDeleteList) {
-              Program.getErrors().remove(new MyCellarError(0, b));
+              Program.getErrors().remove(new MyCellarError(MyCellarError.ID.INEXISTING_PLACE, b));
             }
           } else {
             for (Bouteille b : toDeleteList) {

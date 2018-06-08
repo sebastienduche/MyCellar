@@ -27,8 +27,8 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 02/03/18
+ * @version 1.8
+ * @since 08/06/18
  */
 public class MyOptions extends JDialog {
   private final MyCellarLabel textControl1 = new MyCellarLabel();
@@ -242,7 +242,7 @@ public class MyOptions extends JDialog {
       for (int i = 0; i < taille_value; i++) {
     	  if( bIsLabelEdit )
     	  {
-    		  JTextField jtf = (JTextField) labelEdit[i];
+    		  JTextField jtf = labelEdit[i];
     		  cle[i] = jtf.getText().trim();
     	  }
         if (value[i] instanceof JTextField) {

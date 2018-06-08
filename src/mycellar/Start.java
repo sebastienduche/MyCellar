@@ -44,8 +44,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 24.3
- * @since 30/05/18
+ * @version 24.4
+ * @since 08/06/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -244,7 +244,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * jbInit: Fonction d'initialisation de l'application
 	 */
 	private void startup() {
-		Debug("Starting MyCellar version: "+MyCellarVersion.version);
+		Debug("Starting MyCellar version: "+MyCellarVersion.VERSION);
 		Thread.currentThread().setUncaughtExceptionHandler(this);
 		prefs = Preferences.userNodeForPackage(getClass());
 
@@ -706,7 +706,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oAjouterButton.setText(Program.getLabel("Infos005"));
 		m_oRechercherButton.setText(Program.getLabel("Infos006"));
 		m_oSupprimerButton.setText(Program.getLabel("Infos004"));
-		version.setText(Program.getLabel("MonthVersion") + INFOS_VERSION + MyCellarVersion.mainVersion);
+		version.setText(Program.getLabel("MonthVersion") + INFOS_VERSION + MyCellarVersion.MAIN_VERSION);
 		addWine.setAccelerator(KeyStroke.getKeyStroke(AJOUTERV, InputEvent.CTRL_DOWN_MASK));
 		addPlace.setAccelerator(KeyStroke.getKeyStroke(AJOUTERR, InputEvent.CTRL_DOWN_MASK));
 		delPlace.setAccelerator(KeyStroke.getKeyStroke(SUPPR, InputEvent.CTRL_DOWN_MASK));
@@ -1004,7 +1004,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 
 		if (bUpdateAvailable) {
-			String sText = MessageFormat.format(Program.getLabel("Infos385"), Server.getInstance().getAvailableVersion(), MyCellarVersion.mainVersion + "-" + MyCellarVersion.version);
+			String sText = MessageFormat.format(Program.getLabel("Infos385"), Server.getInstance().getAvailableVersion(), MyCellarVersion.MAIN_VERSION + "-" + MyCellarVersion.VERSION);
 			update.setText(sText);
 		}
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -1136,7 +1136,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	private void menuCheckUpdate_actionPerformed() {
 		if (Server.getInstance().hasAvailableUpdate()) {
-			Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Infos384"), Server.getInstance().getAvailableVersion(), MyCellarVersion.version), true);
+			Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Infos384"), Server.getInstance().getAvailableVersion(), MyCellarVersion.VERSION), true);
 		} else {
 			Erreur.showSimpleErreur(Program.getLabel("Infos388"), true);
 		}

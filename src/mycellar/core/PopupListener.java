@@ -18,8 +18,8 @@ import java.awt.event.MouseEvent;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 29/05/18
+ * @version 0.3
+ * @since 08/06/18
  */
 public class PopupListener extends MouseAdapter {
 
@@ -94,7 +94,7 @@ public class PopupListener extends MouseAdapter {
    *
    * @param e ActionEvent
    */
-  protected void coller_actionPerformed(ActionEvent e) {
+  private void coller_actionPerformed(ActionEvent e) {
 
     if (textField instanceof JTextField) {
       JTextField jtf = (JTextField) textField;
@@ -110,7 +110,7 @@ public class PopupListener extends MouseAdapter {
    *
    * @param e ActionEvent
    */
-  protected void couper_actionPerformed(ActionEvent e) {
+  private void couper_actionPerformed(ActionEvent e) {
     String txt = "";
     if (textField instanceof JTextField) {
       JTextField jtf = (JTextField) textField;
@@ -130,7 +130,7 @@ public class PopupListener extends MouseAdapter {
    *
    * @param e ActionEvent
    */
-  protected void copier_actionPerformed(ActionEvent e) {
+  private void copier_actionPerformed(ActionEvent e) {
     String txt = "";
     if (textField instanceof JTextField) {
       JTextField jtf = (JTextField) textField;

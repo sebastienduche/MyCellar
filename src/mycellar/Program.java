@@ -75,8 +75,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.4
- * @since 30/05/18
+ * @version 18.5
+ * @since 08/06/18
  */
 
 public class Program {
@@ -1157,7 +1157,7 @@ public class Program {
 		try {
 			boolean bSave = false;
 			if(!archive.isEmpty() && isModified()) {
-				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error199"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("Error199"), getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					bSave = true;
 					if(!isFileSavable()) {
 						try {

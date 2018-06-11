@@ -13,12 +13,12 @@ import java.util.List;
  * @version 0.3
  * @since 02/03/18
  */
-public class ManageListTableValue extends AbstractTableModel {
+class ManageListTableValue extends AbstractTableModel {
   public static final int ETAT = 0;
   static final long serialVersionUID = 220605;
   private final String[] columnNames = {"", Program.getLabel("Infos401")};
 
-  private final LinkedList<Boolean> values = new LinkedList<>();
+  private final List<Boolean> values = new LinkedList<>();
   private List<String> list = new LinkedList<>();
 
   /**
@@ -120,7 +120,7 @@ public class ManageListTableValue extends AbstractTableModel {
 	  fireTableDataChanged();
   }
   
-  public void addValue(String value){
+  void addValue(String value){
 	  if(list != null) {
 		  list.add(value);
 		  values.add(false);
@@ -128,7 +128,7 @@ public class ManageListTableValue extends AbstractTableModel {
 	  fireTableDataChanged();
   }
   
-  public void removeValueAt(List<Integer> index){
+  void removeValueAt(List<Integer> index){
 	  if(list != null) {
 		  for(int i = index.size()-1;i>=0;i--){
 			  Integer val = index.get(i);
@@ -139,7 +139,7 @@ public class ManageListTableValue extends AbstractTableModel {
 	  this.fireTableDataChanged();
   }
   
-  public LinkedList<Integer> getSelectedRows(){
+  LinkedList<Integer> getSelectedRows(){
 	  LinkedList<Integer> indexes = new LinkedList<>();
 	  for(int i=0;i<list.size();i++){
 		  if(values.get(i).equals(Boolean.TRUE))
@@ -148,7 +148,7 @@ public class ManageListTableValue extends AbstractTableModel {
 	  return indexes;
   }
   
-  public LinkedList<String> getSelectedValues(){
+  LinkedList<String> getSelectedValues(){
 	  LinkedList<String> indexes = new LinkedList<>();
 	  for(int i=0;i<list.size();i++){
 		  if(values.get(i).equals(Boolean.TRUE))

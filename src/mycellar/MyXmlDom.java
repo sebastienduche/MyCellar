@@ -295,7 +295,7 @@ public class MyXmlDom {
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("MyXmlDom: " + sText);
 	}
 

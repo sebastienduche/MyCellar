@@ -24,16 +24,16 @@ import java.util.List;
  * @since 13/04/18
  */
 
-public class TableShowValues extends AbstractTableModel {
+class TableShowValues extends AbstractTableModel {
   public static final int ETAT = 0;
   public static final int NAME = 1;
   public static final int YEAR = 2;
-  public static final int TYPE = 3;
-  public static final int PLACE = 4;
+  static final int TYPE = 3;
+  static final int PLACE = 4;
   private static final int NUM_PLACE = 5;
   private static final int LINE = 6;
   private static final int COLUMN = 7;
-  protected static final int PRICE = 8;
+  static final int PRICE = 8;
   private static final int COMMENT = 9;
   private static final int MATURITY = 10;
   private static final int PARKER = 11;
@@ -245,7 +245,7 @@ public class TableShowValues extends AbstractTableModel {
                 b.setNumLieu(Integer.parseInt((String) value));
               } else if (column == LINE) {
                 b.setLigne(Integer.parseInt((String) value));
-              } else if (column == COLUMN) {
+              } else {
                 b.setColonne(Integer.parseInt((String) value));
               }
               //values[row][column] = value;
@@ -263,7 +263,7 @@ public class TableShowValues extends AbstractTableModel {
             if (rangement != null && rangement.isCaisse()) {
               Erreur.showSimpleErreur(Program.getError("Error154"));
             } else {
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getError("Error015"), javax.swing.JOptionPane.YES_NO_OPTION)) {
+              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getError("Error015"), JOptionPane.YES_NO_OPTION)) {
                 LinkedList<Bouteille> list = new LinkedList<>();
                 list.add(b);
                 Program.modifyBottles(list);

@@ -749,7 +749,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	 *
 	 * @param e KeyEvent
 	 */
-	void keylistener_actionPerformed(KeyEvent e) {
+	private void keylistener_actionPerformed(KeyEvent e) {
 		
 		if ( (e.getKeyCode() == CREER && e.isControlDown()) || e.getKeyCode() == KeyEvent.VK_ENTER) {
 			create_actionPerformed(null);

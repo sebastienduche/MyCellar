@@ -69,7 +69,7 @@ import java.util.List;
 public class HistoryList {
 
   @XmlElement(name = "History", required = true)
-  protected List<History> history;
+  private List<History> history;
 
   /**
    * Gets the value of the history property.
@@ -226,7 +226,7 @@ public class HistoryList {
    *
    * @param sText String
    */
-  public static void Debug(String sText) {
+  private static void Debug(String sText) {
     Program.Debug("HistoryList: " + sText );
   }
 }

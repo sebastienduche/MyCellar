@@ -36,7 +36,7 @@ public enum MyCellarFields {
 	EMPTY(""),
 	USELESS(Program.getLabel("Infos271"));
 	
-	private String label;
+	private final String label;
 	
 	MyCellarFields(String label) {
 		this.label = label;

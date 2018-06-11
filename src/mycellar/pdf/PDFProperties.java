@@ -20,7 +20,7 @@ public class PDFProperties {
 	private int titleSize;
 	private int fontSize;
 	private boolean border;
-	private LinkedList<PDFColumn> column = new LinkedList<PDFColumn>();
+	private final LinkedList<PDFColumn> column = new LinkedList<PDFColumn>();
 	private boolean boldTitle;
 	
 	public PDFProperties(String title, int titleSize, int fontSize, boolean border, boolean boldTitle) {

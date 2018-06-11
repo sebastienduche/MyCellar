@@ -60,7 +60,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	private final MyCellarLabel end = new MyCellarLabel();
 	private final MyCellarButton openit = new MyCellarButton();
 	private final MyCellarButton options = new MyCellarButton(Program.getLabel("Infos193") + "...");
-	private char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
+	private final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private char EXPORT = Program.getLabel("EXPORT").charAt(0);
 	private final JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
 	private boolean isJFile = false;
@@ -321,7 +321,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	 *
 	 * @param e KeyEvent
 	 */
-	void keylistener_actionPerformed(KeyEvent e) {
+	private void keylistener_actionPerformed(KeyEvent e) {
 		if (e.getKeyCode() == OUVRIR && openit.isEnabled()) {
 			openit_actionPerformed();
 		}

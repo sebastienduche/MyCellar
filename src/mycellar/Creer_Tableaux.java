@@ -62,7 +62,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	private final TableauValues tv = new TableauValues();
 	private final MyCellarLabel end = new MyCellarLabel();
 	private final MyCellarButton preview = new MyCellarButton();
-	private char CREER = Program.getLabel("CREER").charAt(0);
+	private final char CREER = Program.getLabel("CREER").charAt(0);
 	private char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private final MyCellarCheckBox selectall = new MyCellarCheckBox();
 	private final JMenuItem quitter = new JMenuItem(Program.getLabel("Infos003"));
@@ -90,7 +90,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	 *
 	 * @throws Exception
 	 */
-	private void jbInit() throws Exception {
+	private void jbInit() {
 		Debug("jbInit with Rangement[]");
 		label2.setText(Program.getLabel("Infos095")); //"Nom du fichier généré:");
 		m_jcb_options.addActionListener(this::options_actionPerformed);
@@ -433,7 +433,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	 *
 	 * @param e KeyEvent
 	 */
-	void keylistener_actionPerformed(KeyEvent e) {
+	private void keylistener_actionPerformed(KeyEvent e) {
 		if (e.getKeyCode() == CREER && e.isControlDown()) {
 			create_actionPerformed(null);
 		}

@@ -43,7 +43,7 @@ public class PanelDAndD extends JPanel {
 
 	public LabelSearch draggingLabel;
 	private boolean isTarget = false;
-	protected ChangeListener listener = MainChangeListener.getChangeListener();
+	ChangeListener listener = MainChangeListener.getChangeListener();
 	
 	private final List<LabelSearch> labels = new ArrayList<>();
 

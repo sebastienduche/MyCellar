@@ -8,6 +8,7 @@ import javax.swing.table.TableCellEditor;
 import java.awt.Component;
 import java.util.EventObject;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -18,10 +19,10 @@ import java.util.LinkedList;
  * @version 0.5
  * @since 02/03/18
  */
-public class ListEditor extends Component implements TableCellEditor {
+class ListEditor extends Component implements TableCellEditor {
   private final EventListenerList listenerList = new EventListenerList();
   private final ChangeEvent changeEvent = new ChangeEvent(this);
-  protected LinkedList<Bouteille> bottle;
+  protected List<Bouteille> bottle;
   private AddVin adv;
   private LinkedList<Bouteille> listSelected;
   static final long serialVersionUID = 301004;
@@ -39,12 +40,12 @@ private ListEditor() {
    *
    * @param b LinkedList<Bouteille>: Liste de bouteilles.
    */
-  ListEditor(LinkedList<Bouteille> b) {
+  ListEditor(List<Bouteille> b) {
     super();
     bottle = b;
   }
  
-  public void setAddVin(AddVin av){
+  void setAddVin(AddVin av){
 	  adv = av;
   }
 
@@ -53,7 +54,7 @@ private ListEditor() {
    *
    * @param list LinkedList<Bouteille>: Liste des vins s�lectionn�e.
    */
-  public void putList(LinkedList<Bouteille> list) {
+  void putList(LinkedList<Bouteille> list) {
     listSelected = list;
   }
 

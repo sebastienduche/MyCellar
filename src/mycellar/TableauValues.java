@@ -14,7 +14,7 @@ import java.util.List;
  * @version 1.1
  * @since 08/03/18
  */
-public class TableauValues extends AbstractTableModel {
+class TableauValues extends AbstractTableModel {
 	public static final int ETAT = 0;
 	static final long serialVersionUID = 220605;
 	private final String[] columnNames = {"", Program.getLabel("Infos105"), Program.getLabel("Infos027"), Program.getLabel("Infos136")};

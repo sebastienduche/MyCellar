@@ -13,7 +13,7 @@ import java.util.Map;
  * @since 05/08/07
  */
 
-public class MyLinkedHashMap extends LinkedHashMap<String,Object> {
+class MyLinkedHashMap extends LinkedHashMap<String,Object> {
 
   static final long serialVersionUID = 123;
   public MyLinkedHashMap() {

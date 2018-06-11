@@ -19,7 +19,7 @@ import java.io.IOException;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
-public class MyCellarLauncher {
+class MyCellarLauncher {
 
 	public MyCellarLauncher(final String[] args) {
 		

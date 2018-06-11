@@ -13,7 +13,7 @@ import java.util.List;
  * @version 2.4
  * @since 23/05/18
  */
-public class TableValues extends AbstractTableModel {
+class TableValues extends AbstractTableModel {
 
 	private static final long serialVersionUID = -3899189654755476591L;
 	public static final int ETAT = 0;

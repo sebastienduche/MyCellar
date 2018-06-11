@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 
 public class Predicates {
 
-	public static IPredicate<Bouteille> color = new IPredicate<Bouteille>() {
+	public static final IPredicate<Bouteille> color = new IPredicate<Bouteille>() {
 
 		@Override
 		public boolean apply(Bouteille bottle) {

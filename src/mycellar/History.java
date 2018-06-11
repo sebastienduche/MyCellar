@@ -59,11 +59,11 @@ import java.util.Date;
 public class History {
 
     @XmlElement(required = true)
-    protected String date;
-    protected int type;
+    private String date;
+    private int type;
     private Date time;
     @XmlElement(name = "Bouteille", required = true)
-    protected Bouteille bouteille;
+    private Bouteille bouteille;
 	
 	  public static final int ADD = 0;
     public static final int MODIFY = 1;

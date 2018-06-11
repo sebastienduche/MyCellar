@@ -182,7 +182,7 @@ public class CollectionFilter<T> {
 	 * @param predicate
 	 * @return
 	 */
-	public static <T> CollectionFilter<T> select(Collection<T> src, Predicates predicate) {
+	private static <T> CollectionFilter<T> select(Collection<T> src, Predicates predicate) {
 		if(src == null || predicate == null)
 			throw new NullPointerException("The collection of source objets or the predicate is null!");
 		result = new ArrayList<T>();

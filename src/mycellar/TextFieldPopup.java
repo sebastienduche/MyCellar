@@ -112,7 +112,7 @@ public class TextFieldPopup extends JPanel {
 		return list.stream().filter(b -> b.toLowerCase().startsWith(val.toLowerCase())).collect(Collectors.toList());
 	}
 
-	class PopupKeyListener implements KeyListener {
+	private class PopupKeyListener implements KeyListener {
 
 		private MyJMenuItem selected;
 		private int index;

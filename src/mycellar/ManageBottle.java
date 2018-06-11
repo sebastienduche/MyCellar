@@ -44,7 +44,7 @@ import java.util.TimerTask;
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
-	private char QUITTER = Program.getLabel("QUITTER").charAt(0);
+	private final char QUITTER = Program.getLabel("QUITTER").charAt(0);
 	private final ManageBottle instance;
 	
 
@@ -330,7 +330,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 *
 	 * @param bottle Bouteille
 	 */
-	public void setBottle(Bouteille bottle) {
+	private void setBottle(Bouteille bottle) {
 		Debug("Set Bottle...");
 		try {
 			enableAll(true);

@@ -90,7 +90,7 @@ public class Program {
 
 	private static String archive = null;
 
-	static Font font_panel = new Font("Arial", Font.PLAIN, 12);
+	static final Font font_panel = new Font("Arial", Font.PLAIN, 12);
 	static Font font_boutton_small = new Font("Arial", Font.PLAIN, 10);
 	public static Font font_label_bold = new Font("Arial", Font.BOLD, 12);
 	static Font font_dialog = new Font("Dialog", Font.BOLD, 16);
@@ -1589,7 +1589,7 @@ public class Program {
 		modified = true;
 	}
 
-	public static boolean isModified() {
+	private static boolean isModified() {
 		return modified;
 	}
 

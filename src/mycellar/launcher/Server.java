@@ -54,7 +54,7 @@ public class Server implements Runnable {
 
 	private boolean bDownloaded = false;
 	private boolean bDownloadError = false;
-	private boolean bExit = false;
+	private final boolean bExit = false;
 
 	private static FileWriter oDebugFile = null;
 
@@ -388,7 +388,7 @@ public class Server implements Runnable {
 	 * showException
 	 * @param e Exception
 	 */
-	public static void showException(Exception e) {
+	private static void showException(Exception e) {
 		StackTraceElement st[] = e.getStackTrace();
 		String error = "";
 		for (StackTraceElement element : st) {

@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * @version 1.2
  * @since 02/03/18
  */
-public class XLSOptions extends JDialog {
+class XLSOptions extends JDialog {
 
 	private static final long serialVersionUID = 5307297932934344545L;
 private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();

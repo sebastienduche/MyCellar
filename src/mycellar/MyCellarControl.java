@@ -10,7 +10,7 @@ package mycellar;
  * @since 01/03/18
  */
 
-public class MyCellarControl {
+class MyCellarControl {
 
   /**
    * ctrl_Name Contrôle le nom saisie pour la création d'un rangement

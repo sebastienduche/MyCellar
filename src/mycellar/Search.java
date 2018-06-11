@@ -65,7 +65,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 	private final TextFieldPopup name;
 	private final MyCellarButton cherche = new MyCellarButton(MyCellarImage.SEARCH);
 	private final MyCellarButton vider = new MyCellarButton();
-	private char RECHERCHE = Program.getLabel("RECHERCHE").charAt(0);
+	private final char RECHERCHE = Program.getLabel("RECHERCHE").charAt(0);
 	private char MODIF = Program.getLabel("MODIF").charAt(0);
 	private char SUPPR = Program.getLabel("SUPPR").charAt(0);
 	private char EXPORT = Program.getLabel("EXPORT").charAt(0);
@@ -985,7 +985,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 	 *
 	 * @param e KeyEvent
 	 */
-	void keylistener_actionPerformed(KeyEvent e) {
+	private void keylistener_actionPerformed(KeyEvent e) {
 		if ( (e.getKeyCode() == RECHERCHE && e.isControlDown()) || e.getKeyCode() == KeyEvent.VK_ENTER) {
 			cherche_actionPerformed(null);
 		}

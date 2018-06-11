@@ -22,7 +22,7 @@ import java.util.LinkedList;
  * @version 1.6
  * @since 30/05/18
  */
-public class PanelInfos extends JPanel {
+class PanelInfos extends JPanel {
 
 	private static final long serialVersionUID = 7993820887000979660L;
 	private final PanelStats panelStats;
@@ -123,11 +123,11 @@ class PanelStats extends JPanel {
 		cellarTotal.setEnabled(b);
 	}
 
-	class PanelStatsModel extends DefaultTableModel{
+	private class PanelStatsModel extends DefaultTableModel{
 		private static final long serialVersionUID = -3683870571523007857L;
 		private final LinkedList<Rangement> names;
 		private final LinkedList<String> values;
-		private boolean isInit;
+		private final boolean isInit;
 		private PanelStatsModel(){
 			names = new LinkedList<>();
 			values = new LinkedList<>();

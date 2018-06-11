@@ -11,7 +11,8 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>Titre : XYGridLayout</p>
@@ -92,15 +93,15 @@ import java.util.Vector;
 
 public class XYGridLayout implements ComponentListener {
 
-  private JPanel container;
+  private final JPanel container;
   private Container the_window;
-  private Vector<JComponent> list; //Liste des object
-  private Vector<String> list_row; //Contient le num�ro de ligne pour chaque objet
-  private Vector<String> list_column; //Contient le num�ro de colonne pour chaque objet
-  private Vector<String> list_nb_row; //Contient le nombre de ligne pour chaque objet
-  private Vector<String> list_nb_column; //Contient le nombre de colonne pour chaque objet
-  private Vector<Boolean> resizable; //Indique si les objets peuvent �tre redimensionn�s
-  private Vector<String> list_min_size; //Taille minimale n�cessaire pour chaque objet
+  private List<JComponent> list; //Liste des object
+  private List<String> list_row; //Contient le num�ro de ligne pour chaque objet
+  private List<String> list_column; //Contient le num�ro de colonne pour chaque objet
+  private List<String> list_nb_row; //Contient le nombre de ligne pour chaque objet
+  private List<String> list_nb_column; //Contient le nombre de colonne pour chaque objet
+  private List<Boolean> resizable; //Indique si les objets peuvent �tre redimensionn�s
+  private List<String> list_min_size; //Taille minimale n�cessaire pour chaque objet
   private int line_height = 25; //Hauteur de ligne
   private int space_line = 5; //Taille de l'interligne
   private int space_column = 5; //Taille de l'intercolonne
@@ -108,7 +109,7 @@ public class XYGridLayout implements ComponentListener {
   private int space_left = 5; //Espace libre � gauche
   private int space_right = 5; //Espace libre � droite
   private int space_bottom = 15; //Espace libre en bas
-  private Vector<String> sizecolumn; //Liste contenant la taille des colonnes
+  private List<String> sizecolumn; //Liste contenant la taille des colonnes
   private int size_width; //Largeur de la JFrame
   private int size_height; //Hauteur de la JFrame
   private int min_width; //Largeur minimale obligatoire
@@ -216,14 +217,14 @@ public class XYGridLayout implements ComponentListener {
   private void init() {
     container.setLayout(null);
     container.addComponentListener(this);
-    list = new Vector<JComponent>();
-    list_row = new Vector<String>();
-    list_column = new Vector<String>();
-    list_nb_row = new Vector<String>();
-    list_nb_column = new Vector<String>();
-    sizecolumn = new Vector<String>();
-    resizable = new Vector<Boolean>();
-    list_min_size = new Vector<String>();
+    list = new ArrayList<>();
+    list_row = new ArrayList<>();
+    list_column = new ArrayList<>();
+    list_nb_row = new ArrayList<>();
+    list_nb_column = new ArrayList<>();
+    sizecolumn = new ArrayList<>();
+    resizable = new ArrayList<>();
+    list_min_size = new ArrayList<>();
     auto_resize = false;
     auto_resize_centered_JLabel = true;
   }
@@ -301,7 +302,7 @@ public class XYGridLayout implements ComponentListener {
     if (sizecolumn.size() < (column + 1)) {
       int size_tmp = sizecolumn.size();
       for (int i = 0; i < (column + 1 - size_tmp); i++) {
-        sizecolumn.add(new String("0"));
+        sizecolumn.add("0");
       }
     }
     int size_column = 0;
@@ -309,11 +310,11 @@ public class XYGridLayout implements ComponentListener {
       size_column = Integer.parseInt(sizecolumn.get(column));
     }
     catch (IndexOutOfBoundsException ioobe) {
-      sizecolumn.add(new String("0"));
+      sizecolumn.add("0");
     }
     //On redimensionne la colonne si n�cessaire
     if (size_column == 0 || size_column < width) {
-      sizecolumn.set(column, new Integer(width).toString());
+      sizecolumn.set(column, Integer.toString(width));
     }
     int size = 0;
     //On r�cup�re l'emplacement exacte pour la colonne
@@ -322,12 +323,12 @@ public class XYGridLayout implements ComponentListener {
     }
     c.setLocation(space_left + size + (column * space_column), (row * (line_height + space_line)) + space_top);
     list.add(c);
-    list_row.add(new Integer(row).toString());
-    list_column.add(new Integer(column).toString());
-    list_nb_column.add(new Integer(1).toString());
-    list_nb_row.add(new Integer(1).toString());
-    resizable.add(new Boolean(isresizable));
-    list_min_size.add(new Integer(width).toString());
+    list_row.add(Integer.toString(row));
+    list_column.add(Integer.toString(column));
+    list_nb_column.add("1");
+    list_nb_row.add("1");
+    resizable.add(isresizable);
+    list_min_size.add(Integer.toString(width));
     if (row > nb_line) {
       nb_line = row;
     }
@@ -370,7 +371,7 @@ public class XYGridLayout implements ComponentListener {
     if (sizecolumn.size() < (column + nb_col + 1)) {
       int size_tmp = sizecolumn.size();
       for (int i = 0; i < (column + nb_col - size_tmp + 1); i++) {
-        sizecolumn.add(new String("0"));
+        sizecolumn.add("0");
       }
     }
     int size_column = 0;
@@ -378,11 +379,11 @@ public class XYGridLayout implements ComponentListener {
       size_column = Integer.parseInt(sizecolumn.get(column));
     }
     catch (IndexOutOfBoundsException ioobe) {
-      sizecolumn.add(new String("0"));
+      sizecolumn.add("0");
     }
     //On redimensionne la colonne si n�cessaire
     if ( (size_column == 0 || size_column < width) && nb_col == 1) {
-      sizecolumn.set(column, new Integer(width).toString());
+      sizecolumn.set(column, Integer.toString(width));
     }
 
     //On redimensionne la derni�re colonne utilisable si n�cessaire
@@ -394,7 +395,7 @@ public class XYGridLayout implements ComponentListener {
     if (size_max < width) {
       size = Integer.parseInt(sizecolumn.get( (column + nb_col - 1)));
       size += (width - size_max);
-      sizecolumn.set( (column + nb_col - 1), new Integer(size).toString());
+      sizecolumn.set( (column + nb_col - 1), Integer.toString(size));
     }
 
     size = 0;
@@ -407,12 +408,12 @@ public class XYGridLayout implements ComponentListener {
     width += (nb_col - 1) * space_column;
     c.setLocation(space_left + size + (column * space_column), (row * (line_height + space_line)) + space_top);
     list.add(c);
-    list_row.add(new Integer(row).toString());
-    list_column.add(new Integer(column).toString());
-    list_nb_column.add(new Integer(nb_col).toString());
-    list_nb_row.add(new Integer(nb_row).toString());
-    resizable.add(new Boolean(isresizable));
-    list_min_size.add(new Integer(width).toString());
+    list_row.add(Integer.toString(row));
+    list_column.add(Integer.toString(column));
+    list_nb_column.add(Integer.toString(nb_col));
+    list_nb_row.add(Integer.toString(nb_row));
+    resizable.add(isresizable);
+    list_min_size.add(Integer.toString(width));
     if (row > nb_line) {
       nb_line = row;
     }
@@ -453,7 +454,7 @@ public class XYGridLayout implements ComponentListener {
     }
     //On redimensionne les colonnes
     for (int i = 0; i < max_size_col.length; i++) {
-      sizecolumn.set(i, new Integer(max_size_col[i]).toString());
+      sizecolumn.set(i, Integer.toString(max_size_col[i]));
     }
     //Maintenant on s'occupe de redimensionner les colonnes si n�cessaire pour les composants tenant sur plusieurs colonnes
     for (int i = 0; i < list.size(); i++) {
@@ -473,8 +474,8 @@ public class XYGridLayout implements ComponentListener {
           Boolean b = resizable.get(i);
           //Si l'on est en train d'ex�cuter setMinimumWidthForJLabelColumn et que le composant peux �tre redimensionn� alors c'est la taille minimale du composant que l'on modifie
           //pour les JLabel size_tot contient d�j� la taille min obligatoire et pour les autres composants on s'autorise � r�duire leur largeur afin de s'adapter � la colonne
-          if (auto_resize && b.booleanValue()) {
-            list_min_size.set(i, new Integer(size_tot).toString());
+          if (auto_resize && b) {
+            list_min_size.set(i, Integer.toString(size_tot));
           }
           else { //Sinon on utilise l'option par d�faut: Redimensionnement de la colonne pour contenir le composant
             max_size_col[col + nb_col - 1] += (width - size_tot);
@@ -493,13 +494,13 @@ public class XYGridLayout implements ComponentListener {
           }
           JLabel aLabel = (JLabel) comp;
           //Si le JLabel d�bute sur la premi�re colonne est se termine sur la derni�re et qu'il peux �tre redimensionn� et qu'il est centr�
-          if (col == 0 && nb_col == max_nb_col && resizable.get(i).booleanValue() && aLabel.getHorizontalAlignment() == JLabel.CENTER){
+          if (col == 0 && nb_col == max_nb_col && resizable.get(i) && aLabel.getHorizontalAlignment() == JLabel.CENTER){
         		size_tot = 0;
         		for (int j = 0; j < nb_col; j++) {
           		size_tot += max_size_col[j];
         		}
         		//Alors on affecte au JLabel la taille de la fen�tre comme taille mini pour qu'il reste centr�
-        		list_min_size.set(i, new Integer(size_tot).toString());
+        		list_min_size.set(i, Integer.toString(size_tot));
           }
         }
         //Fin Am�lioration v 0.9
@@ -507,7 +508,7 @@ public class XYGridLayout implements ComponentListener {
     }
     //On redimensionne les colonnes
     for (int i = 0; i < max_size_col.length; i++) {
-      sizecolumn.set(i, new Integer(max_size_col[i]).toString());
+      sizecolumn.set(i, Integer.toString(max_size_col[i]));
     }
     //Mise � jour des l'emplacement des composants
     updateLocation(setsize);
@@ -565,6 +566,7 @@ public class XYGridLayout implements ComponentListener {
     }
   }
 
+  @Override
   public void componentResized(ComponentEvent e) {
     //Lorsque la fen�tre principale est redimensionn�e, on doit redimensionner en largeur les composants qui le peuvent
     Component c = e.getComponent();
@@ -580,7 +582,7 @@ public class XYGridLayout implements ComponentListener {
         for (int i = 0; i < list.size(); i++) {
           Boolean b = resizable.get(i);
           //Si le composant peut �tre redimensionn�
-          if (b.booleanValue() == true) {
+          if (b) {
             //Si le composant tient sur une colonne, on met sa colonne ok pour redimensionner
             if (Integer.parseInt(list_nb_column.get(i)) <= 1) {
               can_resize[Integer.parseInt(list_column.get(i))] = true;
@@ -592,7 +594,7 @@ public class XYGridLayout implements ComponentListener {
         for (int i = 0; i < list.size(); i++) {
           Boolean b = resizable.get(i);
           //Si le composant peut �tre redimensionn�
-          if (b.booleanValue() == true) {
+          if (b) {
             //Si le composant tient sur plusieurs colonnes
             int tmp_nb_col = Integer.parseInt(list_nb_column.get(i));
             if (tmp_nb_col > 1) {
@@ -741,7 +743,7 @@ public class XYGridLayout implements ComponentListener {
           for (int i = 0; i < list.size(); i++) {
             Boolean b = resizable.get(i);
             //Si le composant peut �tre redimensionner
-            if (b.booleanValue() == true) {
+            if (b) {
               JComponent comp = list.get(i);
               int new_size = Integer.parseInt(list_min_size.get(i)) + space_for_resizing;
               comp.setSize(new_size, comp.getSize().height);
@@ -756,7 +758,7 @@ public class XYGridLayout implements ComponentListener {
         }
         //Mise � jour de la liste sizecolumn
         for (int i = 0; i < min_col_size.length; i++) {
-          sizecolumn.set(i, new Integer(min_col_size[i]).toString());
+          sizecolumn.set(i, Integer.toString(min_col_size[i]));
         }
         //Appel de la mise � jour du positionnement
         updateLocation(false);
@@ -773,14 +775,16 @@ public class XYGridLayout implements ComponentListener {
     }
   }
 
+  @Override
   public void componentHidden(ComponentEvent e) {
   }
 
+  @Override
   public void componentMoved(ComponentEvent e) {
   }
 
+  @Override
   public void componentShown(ComponentEvent e) {
-
   }
 
   /*
@@ -968,7 +972,7 @@ public class XYGridLayout implements ComponentListener {
             }
             //On met � jour la taille du JLabel et la liste contenant les tailles minimales
             comp.setSize(messageWidth, comp.getSize().height);
-            list_min_size.set(i, new Integer(messageWidth).toString());
+            list_min_size.set(i, Integer.toString(messageWidth));
             list.set(i, comp);
             isJLabelmodified = true;
           }
@@ -977,7 +981,7 @@ public class XYGridLayout implements ComponentListener {
       //Si un JLabel a �t� modifi�
       if (isJLabelmodified) {
         int oldSize = Integer.parseInt(sizecolumn.get(column));
-        sizecolumn.set(column, new Integer(column_size).toString());
+        sizecolumn.set(column, Integer.toString(column_size));
 
         //Mise � jour de la largeur des composants autorisant le redimensionnement automatique
         for (int i = 0; i < list.size(); i++) {
@@ -990,9 +994,9 @@ public class XYGridLayout implements ComponentListener {
             //On met � jour la taille du composant
             Boolean b = resizable.get(i);
             //Si le composant peux �tre redimensionn�
-            if (b.booleanValue() == true) {
+            if (b) {
               //On redimensionne le composant avec la diff�rence de taille
-              list_min_size.set(i, new Integer(comp.getSize().width + (column_size - oldSize)).toString());
+              list_min_size.set(i, Integer.toString(comp.getSize().width + (column_size - oldSize)));
             }
             list.set(i, comp);
           }

@@ -56,7 +56,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	private final MyCellarRadioButton type_txt = new MyCellarRadioButton();
 	private final MyCellarRadioButton type_xls = new MyCellarRadioButton();
 	private final MyCellarRadioButton type_xml = new MyCellarRadioButton();
-	private char IMPORT = Program.getLabel("IMPORT").charAt(0);
+	private final char IMPORT = Program.getLabel("IMPORT").charAt(0);
 	private char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private final MyCellarComboBox<MyCellarFields> choix1 = new MyCellarComboBox<>();
 	private final MyCellarComboBox<MyCellarFields> choix2 = new MyCellarComboBox<>();
@@ -1047,117 +1047,117 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 						separe = ";";
 				}
 
-				BufferedReader reader = new BufferedReader(new FileReader(f));
-				String line = reader.readLine();
-				if(line != null) {
-					String[] tab = line.split(separe);
-					if(tab == null || tab.length <= 1) {
-						label_progression.setText("");
-						Debug("ERROR: No separator found");
-						//"Le séparateur sélectionné n'a pas été trouvé.");
-						//"Veuillez sélectionner le separateur utilise dans votre fichier.");
-						Erreur.showSimpleErreur(Program.getError("Error042"), Program.getError("Error043"));
-						importe.setEnabled(true);
-						reader.close();
-						return;
-					}
-				}
-				if(titre.isSelected()) {
-					line = reader.readLine();
-				}
-				label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
-				int maxNumPlace = 0;
-				while (line != null) {
-					String []lu = line.split(separe);
-					Bouteille bottle = new Bouteille();
-					bottle.updateID();
-					for (int i = 0; i < lu.length; i++) {
-						String value = lu[i];
-						if(value.length() > 1 && value.charAt(0) == '"' && value.charAt(value.length()-1) == '"')
-							value = value.substring(1, value.length() - 1);
-						value = Program.convertToHTMLString(value);
-						MyCellarFields selectedField = getSelectedField(i);
-
-						//Ajout des valeurs d'une bouteille
-						switch (selectedField) {
-						case NAME:
-							bottle.setNom(value);
-							break;
-						case YEAR:
-							bottle.setAnnee(value);
-							break;
-						case TYPE:
-							bottle.setType(value);
-							break;
-						case PLACE:
-							bottle.setEmplacement(value);
-							break;
-						case NUM_PLACE:
-							bottle.setNumLieu(Integer.parseInt(value));
-							if(maxNumPlace < bottle.getNumLieu())
-								maxNumPlace = bottle.getNumLieu();
-							break;
-						case LINE:
-							bottle.setLigne(Integer.parseInt(value));
-							break;
-						case COLUMN:
-							bottle.setColonne(Integer.parseInt(value));
-							break;
-						case PRICE:
-							bottle.setPrix(value);
-							break;
-						case COMMENT:
-							bottle.setComment(value);
-							break;
-						case MATURITY:
-							bottle.setMaturity(value);
-							break;
-						case PARKER:
-							bottle.setParker(value);
-							break;
-						case VINEYARD:
-							if (bottle.getVignoble() == null) {
-								bottle.setVignoble(new Vignoble());
-							}
-							bottle.getVignoble().setName(value);
-							break;
-						case COLOR:
-							bottle.setColor(value);
-							break;
-						case COUNTRY:
-							if (bottle.getVignoble() == null) {
-								bottle.setVignoble(new Vignoble(value));
-							} else {
-								bottle.getVignoble().setCountry(value);
-							}
-							break;
-						case AOC:
-							if (bottle.getVignoble() == null) {
-								bottle.setVignoble(new Vignoble());
-							}
-							bottle.getVignoble().setAOC(value);
-							break;
-						case IGP:
-							if (bottle.getVignoble() == null) {
-								bottle.setVignoble(new Vignoble());
-							}
-							bottle.getVignoble().setIGP(value);
-							break;
-							default:
-								break;
+				try(BufferedReader reader = new BufferedReader(new FileReader(f))) {
+					String line = reader.readLine();
+					if (line != null) {
+						String[] tab = line.split(separe);
+						if (tab == null || tab.length <= 1) {
+							label_progression.setText("");
+							Debug("ERROR: No separator found");
+							//"Le séparateur sélectionné n'a pas été trouvé.");
+							//"Veuillez sélectionner le separateur utilise dans votre fichier.");
+							Erreur.showSimpleErreur(Program.getError("Error042"), Program.getError("Error043"));
+							importe.setEnabled(true);
+							reader.close();
+							return;
 						}
 					}
-					if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null ) {
-						bottle.setEmplacement(new_rangement.getNom());
-						new_rangement.setNbEmplacements(maxNumPlace+1);
+					if (titre.isSelected()) {
+						line = reader.readLine();
 					}
-					Program.getStorage().addWine(bottle);
-					line = reader.readLine();
+					label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
+					int maxNumPlace = 0;
+					while (line != null) {
+						String []lu = line.split(separe);
+						Bouteille bottle = new Bouteille();
+						bottle.updateID();
+						for (int i = 0; i < lu.length; i++) {
+							String value = lu[i];
+							if(value.length() > 1 && value.charAt(0) == '"' && value.charAt(value.length()-1) == '"')
+								value = value.substring(1, value.length() - 1);
+							value = Program.convertToHTMLString(value);
+							MyCellarFields selectedField = getSelectedField(i);
+
+							//Ajout des valeurs d'une bouteille
+							switch (selectedField) {
+							case NAME:
+								bottle.setNom(value);
+								break;
+							case YEAR:
+								bottle.setAnnee(value);
+								break;
+							case TYPE:
+								bottle.setType(value);
+								break;
+							case PLACE:
+								bottle.setEmplacement(value);
+								break;
+							case NUM_PLACE:
+								bottle.setNumLieu(Integer.parseInt(value));
+								if(maxNumPlace < bottle.getNumLieu())
+									maxNumPlace = bottle.getNumLieu();
+								break;
+							case LINE:
+								bottle.setLigne(Integer.parseInt(value));
+								break;
+							case COLUMN:
+								bottle.setColonne(Integer.parseInt(value));
+								break;
+							case PRICE:
+								bottle.setPrix(value);
+								break;
+							case COMMENT:
+								bottle.setComment(value);
+								break;
+							case MATURITY:
+								bottle.setMaturity(value);
+								break;
+							case PARKER:
+								bottle.setParker(value);
+								break;
+							case VINEYARD:
+								if (bottle.getVignoble() == null) {
+									bottle.setVignoble(new Vignoble());
+								}
+								bottle.getVignoble().setName(value);
+								break;
+							case COLOR:
+								bottle.setColor(value);
+								break;
+							case COUNTRY:
+								if (bottle.getVignoble() == null) {
+									bottle.setVignoble(new Vignoble(value));
+								} else {
+									bottle.getVignoble().setCountry(value);
+								}
+								break;
+							case AOC:
+								if (bottle.getVignoble() == null) {
+									bottle.setVignoble(new Vignoble());
+								}
+								bottle.getVignoble().setAOC(value);
+								break;
+							case IGP:
+								if (bottle.getVignoble() == null) {
+									bottle.setVignoble(new Vignoble());
+								}
+								bottle.getVignoble().setIGP(value);
+								break;
+								default:
+									break;
+							}
+						}
+						if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null ) {
+							bottle.setEmplacement(new_rangement.getNom());
+							new_rangement.setNbEmplacements(maxNumPlace+1);
+						}
+						Program.getStorage().addWine(bottle);
+						line = reader.readLine();
+					}
 				}
-				reader.close();
 				label_progression.setText(Program.getLabel("Infos200"));
 				new Timer().schedule(
-								new java.util.TimerTask() {
+								new TimerTask() {
 										@Override
 										public void run() {
 											SwingUtilities.invokeLater(() -> label_progression.setText(""));
@@ -1387,7 +1387,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("Importer: " + sText);
 	}
 

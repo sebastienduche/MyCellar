@@ -305,7 +305,7 @@ public class SerializedStorage implements Storage {
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("SerializedStorage: " + sText);
 	}
 

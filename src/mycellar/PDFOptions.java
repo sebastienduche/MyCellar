@@ -27,11 +27,11 @@ import java.util.ArrayList;
  * @version 2.3
  * @since 01/03/18
  */
-public class PDFOptions extends JDialog {
+class PDFOptions extends JDialog {
   private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
   private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox();
   private final MyCellarCheckBox MyCellarCheckBox3 = new MyCellarCheckBox();
-  private MyCellarCheckBox export[];
+  private final MyCellarCheckBox[] export;
   private MyCellarSpinner col_size[];
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner MyCellarSpinner3 = new MyCellarSpinner();

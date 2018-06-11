@@ -30,7 +30,7 @@ import java.awt.event.KeyListener;
  * @version 1.8
  * @since 08/06/18
  */
-public class MyOptions extends JDialog {
+class MyOptions extends JDialog {
   private final MyCellarLabel textControl1 = new MyCellarLabel();
   private final MyCellarLabel definition = new MyCellarLabel();
   private final MyCellarLabel definition2 = new MyCellarLabel();
@@ -42,7 +42,7 @@ public class MyOptions extends JDialog {
   private int HAUTEUR = 200;
   private JComponent[] value;
   private JTextField[] labelEdit;
-  private String cle[];
+  private final String[] cle;
   private int taille_value = 0;
   private final MyLinkedHashMap config;
   private String resul[];
@@ -120,7 +120,7 @@ public class MyOptions extends JDialog {
    * @param type_objet String: Type des objets à ajouter.
    * @throws Exception
    */
-  private void jbInit(String title, String message, String message2, String[] propriete, String[] default_value, String[] type_objet) throws Exception {
+  private void jbInit(String title, String message, String message2, String[] propriete, String[] default_value, String[] type_objet) {
 
     taille_value = propriete.length;
     MyCellarLabel[] label_value = new MyCellarLabel[taille_value];

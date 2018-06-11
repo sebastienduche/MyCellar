@@ -110,7 +110,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 	 * @param sText
 	 *            String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("ShowHistory: " + sText);
 	}
 

@@ -84,29 +84,29 @@ public class Bouteille implements Serializable{
 	private int id;
 
 	@XmlElement(required = true)
-	protected String nom;
+	private String nom;
 	@XmlElement(required = true)
-	protected String annee;
+	private String annee;
 	@XmlElement(required = true)
-	protected String type;
+	private String type;
 	@XmlElement(required = true)
-	protected String emplacement;
+	private String emplacement;
 	@XmlElement(name = "num_lieu")
-	protected int numLieu;
-	protected int ligne;
-	protected int colonne;
+	private int numLieu;
+	private int ligne;
+	private int colonne;
 	@XmlElement(required = true)
-	protected String prix;
+	private String prix;
 	@XmlElement(required = true)
-	protected String comment;
+	private String comment;
 	@XmlElement(required = true)
-	protected String maturity;
+	private String maturity;
 	@XmlElement(required = true)
-	protected String parker;
+	private String parker;
 	@XmlElement(required = false)
-	protected Vignoble vignoble;
+	private Vignoble vignoble;
 	@XmlElement(required = false)
-	protected String color;
+	private String color;
 
 	public static final int NON_VINTAGE_INT = 9999;
 	public static final String NON_VINTAGE = "NV";
@@ -645,7 +645,7 @@ public class Bouteille implements Serializable{
 	  *
 	  * @param sText String
 	  */
-	 public static void Debug(String sText) {
+	 private static void Debug(String sText) {
 		 Program.Debug("Bouteille: " + sText);
 	 }
 
@@ -767,7 +767,7 @@ public class Bouteille implements Serializable{
 			 vignoble = null;
 		 }
 
-		 public BouteilleBuilder id(int id) {
+		 private BouteilleBuilder id(int id) {
 			 this.id = id;
 			 return this;
 		 }

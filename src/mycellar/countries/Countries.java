@@ -40,7 +40,7 @@ public class Countries
 		return countries;
 	}
 
-	public void setCountries(List<Country> countries) {
+	private void setCountries(List<Country> countries) {
 		this.countries = countries;
 	}
 	

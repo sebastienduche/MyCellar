@@ -25,7 +25,7 @@ import java.awt.event.MouseListener;
  * @version 0.2
  * @since 02/03/18
  */
-public abstract class PanelCloseButton extends JButton implements ActionListener {
+abstract class PanelCloseButton extends JButton implements ActionListener {
 
     private static final long serialVersionUID = 76516458718107537L;
 

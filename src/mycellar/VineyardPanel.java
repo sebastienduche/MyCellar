@@ -150,7 +150,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 		tc.setMaxWidth(25);
 	}
 
-	class AddVignobleAction extends AbstractAction {
+	private class AddVignobleAction extends AbstractAction {
 
 		private static final long serialVersionUID = 2164410331118124652L;
 

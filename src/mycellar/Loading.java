@@ -21,7 +21,7 @@ import java.awt.Toolkit;
  * @version 1.1
  * @since 02/03/18
  */
-public class Loading extends JDialog {
+class Loading extends JDialog {
   private final JProgressBar jProgressBar1 = new JProgressBar();
   static final long serialVersionUID = 130805;
   private final MyCellarLabel MyCellarLabel1;

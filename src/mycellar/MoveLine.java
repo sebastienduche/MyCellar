@@ -21,7 +21,7 @@ import java.awt.event.ItemEvent;
  * @since 20/03/18
  */
 
-public class MoveLine extends JDialog {
+class MoveLine extends JDialog {
 
 	private final MyCellarLabel label_end = new MyCellarLabel();
 	private final MyCellarComboBox<Rangement> place_cbx = new MyCellarComboBox<>();

@@ -84,7 +84,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 		init();
 	}
 	
-	public void init() {
+	private void init() {
 		
 		if(cellChooser)
 			setLayout(new MigLayout("","[grow]","[][]20px[grow]"));
@@ -281,7 +281,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 			setRangement(rangement);
 	}
 	
-	class MoveAction extends AbstractAction {
+	private class MoveAction extends AbstractAction {
 
 		private static final long serialVersionUID = 6973442058662866086L;
 		
@@ -308,7 +308,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 class RangementCell extends JPanel {
 	BouteilleLabel draggingLabel;
 	private BouteilleLabel bottle;
-	private boolean stock;
+	private final boolean stock;
 	private int placeNum, row, column;
 	private Rangement place;
 	private JToggleButton select = new JToggleButton();

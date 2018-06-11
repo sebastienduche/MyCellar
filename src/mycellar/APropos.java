@@ -27,7 +27,7 @@ import java.awt.Toolkit;
  * @since 08/06/18
  */
 class APropos extends JDialog {
-  private MyCellarButton ok = new MyCellarButton();
+  private final MyCellarButton ok = new MyCellarButton();
   private final MyCellarLabel MyCellarLabel1 = new MyCellarLabel();
   private final MyCellarLabel MyCellarLabel2 = new MyCellarLabel();
   private final MyCellarLabel MyCellarLabel3 = new MyCellarLabel();
@@ -81,7 +81,7 @@ class APropos extends JDialog {
   /**
    * APropos: Constructeur de l'image.
    */
-  class IconPanel extends JPanel {
+  private class IconPanel extends JPanel {
     private final Image img;
     static final long serialVersionUID = 1505051;
 

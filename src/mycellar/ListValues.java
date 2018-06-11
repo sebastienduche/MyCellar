@@ -13,7 +13,7 @@ import java.util.List;
  * @version 1.1
  * @since 02/03/18
  */
-public class ListValues extends AbstractTableModel {
+class ListValues extends AbstractTableModel {
   static final long serialVersionUID = 200505;
 
   private List<Bouteille> list = new LinkedList<>();

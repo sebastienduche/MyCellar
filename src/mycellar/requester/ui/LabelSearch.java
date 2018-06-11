@@ -43,7 +43,8 @@ class LabelSearch extends JPanel {
 		add(panelClose = new PanelCloseButton(){
 			private static final long serialVersionUID = 3495975676025406824L;
 
-			protected void actionPerformed() {
+			@Override
+      protected void actionPerformed() {
 				Component parent = LabelSearch.this.getParent();
 				if(parent instanceof JPanel) {
 					((JPanel)parent).remove(LabelSearch.this);

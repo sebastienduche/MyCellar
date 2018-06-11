@@ -18,7 +18,7 @@ import java.util.Optional;
  * @since 23/05/18
  */
 
-public class TableHistoryValues extends AbstractTableModel {
+class TableHistoryValues extends AbstractTableModel {
 
 	private static final long serialVersionUID = 2991755646049419440L;
   static final int SELECT = 0;

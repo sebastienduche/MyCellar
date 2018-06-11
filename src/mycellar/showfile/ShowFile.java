@@ -837,7 +837,7 @@ public class ShowFile extends JPanel implements ITabListener {
     Start.getInstance().updateMainPanel();
   }
 
-  class ManageColumnAction extends AbstractAction {
+  private class ManageColumnAction extends AbstractAction {
 
     private static final long serialVersionUID = 8165964725562440277L;
 

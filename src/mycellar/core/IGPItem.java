@@ -11,8 +11,8 @@ import mycellar.vignobles.Appelation;
  * @version 0.1
  * @since 21/01/17
  */
-public class IGPItem {
-	public Appelation appellation;
+class IGPItem {
+	public final Appelation appellation;
 
 	public IGPItem(Appelation appellation) {
 		this.appellation = appellation;

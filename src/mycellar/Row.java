@@ -1,7 +1,7 @@
 package mycellar;
 
 public class Row {
-	private int num;
+	private final int num;
 	private int col;
 	public Row(int num)
 	{

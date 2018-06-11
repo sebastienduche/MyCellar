@@ -19,7 +19,7 @@ public final class MyCellarImage {
 	
 	private static final MyCellarImage instance = new MyCellarImage();
 	
-	public static MyCellarImage getInstance() {
+	private static MyCellarImage getInstance() {
 		return instance;
 	}
 

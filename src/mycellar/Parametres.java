@@ -351,7 +351,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 			else {
 				langue.setSelectedIndex(0);
 				Program.setLanguage("F");
-				JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		catch (Exception exc) {

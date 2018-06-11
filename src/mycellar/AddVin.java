@@ -344,7 +344,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 	 *
 	 * @param bottle Bouteille
 	 */
-	public void setBottle(Bouteille bottle) {
+	private void setBottle(Bouteille bottle) {
 		Debug("Set Bottle...");
 		try {
 			m_laBouteille = bottle;

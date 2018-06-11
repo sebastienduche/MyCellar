@@ -68,7 +68,7 @@ public class Vignoble implements Serializable {
 	@XmlElement(required = true)
     public String country;
     @XmlElement(required = false)
-    public String name;
+    private String name;
     @XmlElement(name = "AOC", required = false)
     public String aoc;
     @XmlElement(name = "IGP", required = false)

@@ -20,7 +20,7 @@ import java.awt.Toolkit;
  * @version 0.2
  * @since 08/06/18
  */
-public class MyCellarLauncherLoading extends JDialog {
+class MyCellarLauncherLoading extends JDialog {
 
 	private static final long serialVersionUID = -2314335792718752038L;
 	private JLabel label;

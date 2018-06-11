@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,13 +41,13 @@ public class Vignobles
 	private static final String VIGNOBLE = ".vignoble";
 	private static final String TEXT = ".txt";
 	@XmlElement(name = "vignoble")
-	private ArrayList<CountryVignoble> vignoble = null;
+	private List<CountryVignoble> vignoble = null;
 
-	public ArrayList<CountryVignoble> getVignoble() {
+	public List<CountryVignoble> getVignoble() {
 		return vignoble;
 	}
 
-	public void setVignoble(ArrayList<CountryVignoble> vignoble) {
+	public void setVignoble(List<CountryVignoble> vignoble) {
 		this.vignoble = vignoble;
 	}
 
@@ -309,7 +310,7 @@ public class Vignobles
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("Vignobles: " + sText );
 	}
 

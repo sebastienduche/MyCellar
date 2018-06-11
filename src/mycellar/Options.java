@@ -29,7 +29,7 @@ public class Options extends JDialog {
   private final MyCellarLabel definition = new MyCellarLabel();
   private final MyCellarButton valider = new MyCellarButton();
   private final MyCellarLabel textControl3 = new MyCellarLabel();
-  private int LARGEUR = 420;
+  private final int LARGEUR = 420;
   private int HAUTEUR = 230;
   private final JTextField value = new JTextField();
   private final String cle;
@@ -70,7 +70,7 @@ public class Options extends JDialog {
    * @param default_value String: Valeur par défaut.
    * @throws Exception
    */
-  private void jbInit(String title, String message, String propriete, String default_value) throws Exception {
+  private void jbInit(String title, String message, String propriete, String default_value) {
 
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     setTitle(title);
@@ -126,7 +126,7 @@ public class Options extends JDialog {
    *
    * @param e KeyEvent
    */
-  void keylistener_actionPerformed(KeyEvent e) {
+  private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
       valider_actionPerformed(null);
     }

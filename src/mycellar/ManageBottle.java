@@ -717,7 +717,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	protected static void Debug(String sText) {
 		Program.Debug("ManageBottle: " + sText );
 	}
 

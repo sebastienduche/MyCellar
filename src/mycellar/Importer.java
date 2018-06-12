@@ -57,7 +57,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	private final MyCellarRadioButton type_xls = new MyCellarRadioButton();
 	private final MyCellarRadioButton type_xml = new MyCellarRadioButton();
 	private final char IMPORT = Program.getLabel("IMPORT").charAt(0);
-	private char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
+	private final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private final MyCellarComboBox<MyCellarFields> choix1 = new MyCellarComboBox<>();
 	private final MyCellarComboBox<MyCellarFields> choix2 = new MyCellarComboBox<>();
 	private final MyCellarComboBox<MyCellarFields> choix3 = new MyCellarComboBox<>();
@@ -1373,7 +1373,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	 *
 	 * @param e KeyEvent
 	 */
-	void keylistener_actionPerformed(KeyEvent e) {
+	private void keylistener_actionPerformed(KeyEvent e) {
 		if (e.getKeyCode() == IMPORT && e.isControlDown()) {
 			importe_actionPerformed(null);
 		}

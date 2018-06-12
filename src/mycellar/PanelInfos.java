@@ -53,7 +53,7 @@ class PanelInfos extends JPanel {
 		panelHistory.setEnable(b);
 	}
 
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("PanelInfos: " + sText );
 	}
 }

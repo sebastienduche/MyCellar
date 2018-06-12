@@ -61,7 +61,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	private final MyCellarButton openit = new MyCellarButton();
 	private final MyCellarButton options = new MyCellarButton(Program.getLabel("Infos193") + "...");
 	private final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
-	private char EXPORT = Program.getLabel("EXPORT").charAt(0);
+	private final char EXPORT = Program.getLabel("EXPORT").charAt(0);
 	private final JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
 	private boolean isJFile = false;
 	private List<Bouteille> bottles = null;

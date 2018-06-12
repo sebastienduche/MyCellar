@@ -30,7 +30,7 @@ public class Options extends JDialog {
   private final MyCellarButton valider = new MyCellarButton();
   private final MyCellarLabel textControl3 = new MyCellarLabel();
   private final int LARGEUR = 420;
-  private int HAUTEUR = 230;
+  private final int HAUTEUR = 230;
   private final JTextField value = new JTextField();
   private final String cle;
   private final boolean property;

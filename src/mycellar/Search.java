@@ -66,7 +66,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 	private final MyCellarButton cherche = new MyCellarButton(MyCellarImage.SEARCH);
 	private final MyCellarButton vider = new MyCellarButton();
 	private final char RECHERCHE = Program.getLabel("RECHERCHE").charAt(0);
-	private char MODIF = Program.getLabel("MODIF").charAt(0);
+	private final char MODIF = Program.getLabel("MODIF").charAt(0);
 	private char SUPPR = Program.getLabel("SUPPR").charAt(0);
 	private char EXPORT = Program.getLabel("EXPORT").charAt(0);
 	private final MyCellarCheckBox casse = new MyCellarCheckBox(Program.getLabel("Infos086")); //"Respecter la casse");;
@@ -1059,7 +1059,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("Search: " + sText);
 	}
 

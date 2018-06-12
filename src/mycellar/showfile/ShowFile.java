@@ -973,7 +973,7 @@ public class ShowFile extends JPanel implements ITabListener {
 	private static final long serialVersionUID = 983425309954475989L;
 
 
-	ReloadErrorsAction() {
+	private ReloadErrorsAction() {
       super(Program.getLabel("ShowFile.reloadErrors"));
     }
 

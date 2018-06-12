@@ -297,7 +297,7 @@ class MyOptions extends JDialog {
    *
    * @param e KeyEvent
    */
-  void keylistener_actionPerformed(KeyEvent e) {
+  private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
       valider_actionPerformed(null);
     }

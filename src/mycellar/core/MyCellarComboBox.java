@@ -1,10 +1,8 @@
 package mycellar.core;
 
-import java.awt.Font;
-import java.util.Vector;
-
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import java.awt.Font;
 
 /**
  * Titre : Cave à vin
@@ -19,24 +17,14 @@ import javax.swing.JComboBox;
 public class MyCellarComboBox<T> extends JComboBox<T> {
 
 	private static final long serialVersionUID = -1622264730055596931L;
-	private static final Font font = new Font("Arial", 0, 12);
+	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
 	public MyCellarComboBox() {
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarComboBox(ComboBoxModel<T> aModel) {
 		super(aModel);
-		setFont(font);
+		setFont(FONT);
 	}
-
-	@SuppressWarnings("unused")
-	private MyCellarComboBox(Object[] items) {
-	}
-
-	public MyCellarComboBox(Vector<T> items) {
-		super(items);
-		setFont(font);
-	}
-
 }

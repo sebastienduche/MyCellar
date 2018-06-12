@@ -26,7 +26,7 @@ public class PopupListener extends MouseAdapter {
   private final JPopupMenu popup = new JPopupMenu();
   private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
   private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
-  protected final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
+  private final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
   private JComponent textField;
 
   public PopupListener() {

@@ -26,7 +26,7 @@ import java.util.List;
 
 class TableShowValues extends AbstractTableModel {
   public static final int ETAT = 0;
-  public static final int NAME = 1;
+  private static final int NAME = 1;
   public static final int YEAR = 2;
   static final int TYPE = 3;
   static final int PLACE = 4;

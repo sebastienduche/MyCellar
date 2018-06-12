@@ -71,7 +71,7 @@ public class Predicates {
 		}
 	};
 
-	public static IPredicate<Bouteille> name = new IPredicate<Bouteille>() {
+	public static final IPredicate<Bouteille> name = new IPredicate<Bouteille>() {
 		
 		private int type = -1;
 

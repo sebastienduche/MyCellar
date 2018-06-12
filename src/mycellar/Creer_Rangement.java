@@ -764,7 +764,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("Creer_Rangement: " + sText);
 	}
 

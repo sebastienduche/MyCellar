@@ -251,7 +251,7 @@ public class CollectionFilter<T> {
 	 * @param predicates
 	 * @return
 	 */
-	public CollectionFilter<T> and(Collection<Predicates> predicates) {
+	private CollectionFilter<T> and(Collection<Predicates> predicates) {
 		if(predicates == null)
 			throw new NullPointerException("The collection of predicates is null!");
 		Collection<T> result1 = new ArrayList<>();

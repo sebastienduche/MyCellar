@@ -255,7 +255,7 @@ public class TextFieldPopup extends JPanel {
 			});
 		}
 		
-		public void activate() {
+		void activate() {
 			setBorder(BorderFactory.createEtchedBorder());
 			setBackground(mouse? lightblue : blue);
 			setForeground(Color.white);

@@ -98,7 +98,7 @@ class SplashScreen extends JPanel {
 	/**
 	 * quitter: Fonction pour fermer l'écran.
 	 */
-	public void quitter() {
+  private void quitter() {
 		f.dispose();
 	}
 	

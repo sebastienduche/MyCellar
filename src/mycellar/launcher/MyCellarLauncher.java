@@ -21,7 +21,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 class MyCellarLauncher {
 
-	public MyCellarLauncher(final String[] args) {
+	private MyCellarLauncher(final String[] args) {
 		
 		Thread updateThread = null;
 		File fLib = new File("MyCellar.jar");

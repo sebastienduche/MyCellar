@@ -147,7 +147,7 @@ public final class MyCellarBottleContenance {
    *
    * @param sText String
    */
-  public static void Debug(String sText) {
+  private static void Debug(String sText) {
     Program.Debug("MyCellarBottleContenance: " + sText);
   }
 

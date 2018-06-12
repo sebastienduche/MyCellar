@@ -91,7 +91,7 @@ public class Program {
 	private static String archive = null;
 
 	static final Font font_panel = new Font("Arial", Font.PLAIN, 12);
-	static Font font_boutton_small = new Font("Arial", Font.PLAIN, 10);
+	static final Font font_boutton_small = new Font("Arial", Font.PLAIN, 10);
 	public static Font font_label_bold = new Font("Arial", Font.BOLD, 12);
 	static Font font_dialog = new Font("Dialog", Font.BOLD, 16);
 	static Font font_dialog_small = new Font("Dialog", Font.BOLD, 12);

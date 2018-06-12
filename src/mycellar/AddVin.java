@@ -1410,7 +1410,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	protected static void Debug(String sText) {
 		Program.Debug("AddVin: " + sText );
 	}
 

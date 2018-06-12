@@ -22,7 +22,7 @@ import java.util.List;
 class ListEditor extends Component implements TableCellEditor {
   private final EventListenerList listenerList = new EventListenerList();
   private final ChangeEvent changeEvent = new ChangeEvent(this);
-  protected List<Bouteille> bottle;
+  private List<Bouteille> bottle;
   private AddVin adv;
   private LinkedList<Bouteille> listSelected;
   static final long serialVersionUID = 301004;

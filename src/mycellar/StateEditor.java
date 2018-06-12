@@ -20,7 +20,7 @@ import java.util.EventObject;
  */
 public class StateEditor extends JCheckBox implements TableCellEditor {
   private final EventListenerList listenerList = new EventListenerList();
-  private ChangeEvent changeEvent = new ChangeEvent(this);
+  private final ChangeEvent changeEvent = new ChangeEvent(this);
   static final long serialVersionUID = 301005;
 
   /**

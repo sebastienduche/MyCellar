@@ -127,7 +127,7 @@ class MoveLine extends JDialog {
 	/**
 	 * close
 	 */
-	public void close() {
+	private void close() {
 		dispose();
 	}
 

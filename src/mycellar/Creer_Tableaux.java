@@ -63,7 +63,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	private final MyCellarLabel end = new MyCellarLabel();
 	private final MyCellarButton preview = new MyCellarButton();
 	private final char CREER = Program.getLabel("CREER").charAt(0);
-	private char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
+	private final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private final MyCellarCheckBox selectall = new MyCellarCheckBox();
 	private final JMenuItem quitter = new JMenuItem(Program.getLabel("Infos003"));
 	private final JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
@@ -522,7 +522,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("Creer_Tableaux: " + sText);
 	}
 

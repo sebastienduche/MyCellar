@@ -32,7 +32,7 @@ class PDFOptions extends JDialog {
   private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox();
   private final MyCellarCheckBox MyCellarCheckBox3 = new MyCellarCheckBox();
   private final MyCellarCheckBox[] export;
-  private MyCellarSpinner col_size[];
+  private final MyCellarSpinner[] col_size;
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner MyCellarSpinner3 = new MyCellarSpinner();
   private final int nb_colonnes;

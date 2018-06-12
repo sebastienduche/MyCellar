@@ -54,7 +54,7 @@ public class PDFColumn {
 		return field;
 	}
 
-	public void setField(MyCellarFields field) {
+	private void setField(MyCellarFields field) {
 		this.field = field;
 	}
 }

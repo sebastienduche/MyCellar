@@ -63,7 +63,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final MyCellarLabel m_end = new MyCellarLabel(); // Label pour les résultats
 	protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox();
 	protected final int SIECLE = Program.getCaveConfigInt("SIECLE", 20) - 1;
-	private Object m_objet1 = null;
+	private final Object m_objet1 = null;
 	protected final JModifyComboBox<String> m_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_line = new JModifyComboBox<>();
@@ -104,7 +104,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected boolean m_bmulti = false; //Pour ListVin
 	protected boolean isEditionMode = false;
 	
-	public MyCellarManageBottles() {
+	protected MyCellarManageBottles() {
 		m_labelName.setText(Program.getLabel("Infos208")); //"Nom");
 		m_labelYear.setText(Program.getLabel("Infos189")); //"Année");
 		m_labelPlace.setText(Program.getLabel("Infos208")); //"Nom");

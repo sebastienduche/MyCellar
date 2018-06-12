@@ -41,7 +41,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 	private int nb_case_use_total = 0;
 	private final MyCellarButton preview = new MyCellarButton();
 	private final char SUPPRIMER = Program.getLabel("SUPPR").charAt(0);
-	private char PREVIEW = Program.getLabel("VISUAL").charAt(0);
+	private final char PREVIEW = Program.getLabel("VISUAL").charAt(0);
 	private final JTable table;
 	private final LinkedList<SupprimerLine> listSupprimer = new LinkedList<>();
 	private boolean updateView = false;
@@ -293,7 +293,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("Supprimer_Rangement: " + sText);
 	}
 

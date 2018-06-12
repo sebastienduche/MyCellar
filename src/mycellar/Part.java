@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public class Part {
 	private final int num;
-	private LinkedList<Row> rows;
+	private final LinkedList<Row> rows;
 
 	public Part(int num) {
 		this.num = num;

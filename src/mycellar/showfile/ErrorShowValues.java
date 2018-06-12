@@ -25,7 +25,7 @@ public class ErrorShowValues extends TableShowValues {
 
 	private static final long serialVersionUID = 2477822182069165515L;
 	private static final int ETAT = 0;
-	public static final int ERROR = 1;
+	private static final int ERROR = 1;
 	public static final int NAME = 2;
 	public static final int YEAR = 3;
 	public static final int TYPE = 4;

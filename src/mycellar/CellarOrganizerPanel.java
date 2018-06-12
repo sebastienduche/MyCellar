@@ -311,7 +311,7 @@ class RangementCell extends JPanel {
 	private final boolean stock;
 	private int placeNum, row, column;
 	private Rangement place;
-	private JToggleButton select = new JToggleButton();
+	private final JToggleButton select = new JToggleButton();
 	private static final long serialVersionUID = -3180057277279430308L;
 
 	RangementCell(MouseListener listener, TransferHandler handler, Rangement place, int placeNum, int row, int column) {

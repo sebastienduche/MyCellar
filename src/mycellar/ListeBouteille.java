@@ -70,7 +70,7 @@ import java.util.LinkedList;
 public class ListeBouteille {
 
 	@XmlElement(name = "Bouteille", required = true)
-	protected LinkedList<Bouteille> bouteille;
+	LinkedList<Bouteille> bouteille;
 
 	/**
 	 * Gets the value of the bouteille property.

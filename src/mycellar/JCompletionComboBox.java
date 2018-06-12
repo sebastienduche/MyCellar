@@ -106,7 +106,7 @@ public class JCompletionComboBox extends JComboBox {
 			return modified;
 		}
 		
-		public void setModified(boolean modified) {
+		private void setModified(boolean modified) {
 			this.modified = modified;
 		}
 		

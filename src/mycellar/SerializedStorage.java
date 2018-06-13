@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -16,8 +17,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.8
- * @since 08/05/18
+ * @version 4.9
+ * @since 13/06/18
  */
 
 public class SerializedStorage implements Storage {
@@ -70,7 +71,10 @@ public class SerializedStorage implements Storage {
 	public void addBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles.getBouteille().addAll(listBouteilles.getBouteille());
 		for(Bouteille b: listBouteilles.bouteille) {
-			b.updateID();
+			final List<History> theBottle = m_HistoryList.getHistory().stream().filter(history -> history.getBouteille().getId() == b.getId()).collect(Collectors.toList());
+			if (b.updateID() && !theBottle.isEmpty()) {
+				theBottle.get(0).getBouteille().setId(b.getId());
+			}
 			if(!listeUniqueBouteille.contains(b.getNom()))
 				listeUniqueBouteille.add(b.getNom());
 		}

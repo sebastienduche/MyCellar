@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -26,8 +28,8 @@ import java.time.LocalDate;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.1
- * @since 12/04/18
+ * @version 4.2
+ * @since 13/06/18
 
  * <p>Java class for anonymous complex type.
  * 
@@ -108,7 +110,7 @@ public class Bouteille implements Serializable{
 	@XmlElement(required = false)
 	private String color;
 
-	public static final int NON_VINTAGE_INT = 9999;
+	static final int NON_VINTAGE_INT = 9999;
 	public static final String NON_VINTAGE = "NV";
 
 	/**
@@ -464,7 +466,7 @@ public class Bouteille implements Serializable{
 		 return Program.getCave(emplacement);
 	 }
 
-	 public int getAnneeInt() {
+	 int getAnneeInt() {
 		 if(annee.isEmpty())
 			 return 0;
 		 if(isNonVintageYear(annee))
@@ -497,11 +499,11 @@ public class Bouteille implements Serializable{
 		 return true;
 	 }
 
-	 public static boolean isNonVintageYear(String year) {
+	 static boolean isNonVintageYear(String year) {
 		 return ( year.compareToIgnoreCase(NON_VINTAGE) == 0);
 	 }
 
-	 public boolean isNonVintage() {
+	 boolean isNonVintage() {
 		 return ( annee.compareToIgnoreCase(NON_VINTAGE) == 0);
 	 }
 
@@ -553,11 +555,11 @@ public class Bouteille implements Serializable{
 		 return BottleColor.getColor(color) == BottleColor.RED;
 	 }
 	 
-	 public boolean isWhiteWine() {
+	 boolean isWhiteWine() {
 		 return BottleColor.getColor(color) == BottleColor.WHITE;
 	 }
 
-	 public boolean isPinkWine() {
+	 boolean isPinkWine() {
 		 return BottleColor.getColor(color) == BottleColor.PINK;
 	 }
 
@@ -582,11 +584,18 @@ public class Bouteille implements Serializable{
 		 setVignoble(b.getVignoble());
 	 }
 
-	 public void updateID() {
+	 boolean updateID() {
+	 	if (id != -1) {
+			final List<Bouteille> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
+			if(bouteilles.size() == 1 && bouteilles.get(0).equals(this)) {
+				return false;
+			}
+		}
 		 id = Program.getNewID();
+	 	return true;
 	 }
 
-  public static Bouteille getBouteilleFromXML(Element bouteilleElem) {
+  static Bouteille getBouteilleFromXML(Element bouteilleElem) {
     NodeList nodeId = bouteilleElem.getElementsByTagName("id");
     final int id = Integer.parseInt(nodeId.item(0).getTextContent());
     NodeList nodeName = bouteilleElem.getElementsByTagName("nom");

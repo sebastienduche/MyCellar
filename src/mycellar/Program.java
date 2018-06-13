@@ -75,8 +75,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.5
- * @since 08/06/18
+ * @version 18.6
+ * @since 13/06/18
  */
 
 public class Program {
@@ -560,15 +560,12 @@ public class Program {
 	 * Chargement des données XML (Bouteilles et Rangement) ou des données sérialisées en cas de pb
 	 */
 	static boolean loadObjects() {
-		boolean load = false;
 		RANGEMENTS_LIST.clear();
+		boolean load = MyXmlDom.readMyCellarXml("", RANGEMENTS_LIST);
+		getStorage().loadHistory();
 		if(!ListeBouteille.loadXML()) {
 			read_Object();
 			getStorage().setListBouteilles(getStorage().getAllList());
-		}
-		else {
-			load = MyXmlDom.readMyCellarXml("", RANGEMENTS_LIST);
-			getStorage().loadHistory();
 		}
 
 		if(!load) {
@@ -1183,7 +1180,7 @@ public class Program {
 					}
 				}
 
-				putCaveConfigString("ANNEE_AUTO", "0");
+				putCaveConfigInt("ANNEE_AUTO", 0);
 				putCaveConfigString("FILE_SRC", archive);
 			}
 
@@ -1201,8 +1198,9 @@ public class Program {
 					return;
 				}
 
-				if(isListCaveModified())
-					MyXmlDom.writeMyCellarXml(getCave(),"");
+				if(isListCaveModified()) {
+					MyXmlDom.writeMyCellarXml(getCave(), "");
+				}
 
 				saveProperties();
 

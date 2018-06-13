@@ -40,8 +40,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 30/05/18
+ * @version 0.7
+ * @since 13/06/18
 
  * <p>Java class for anonymous complex type.
  *
@@ -169,26 +169,6 @@ public class HistoryList {
     Debug("Loading Manually File Done");
   }
 
-
-//    public static boolean loadXML() {
-//		Debug("Loading JAXB File");
-//		File f = new File(Program.getXMLBottlesFileName());
-//		if(!f.exists())
-//			return false;
-//		try {
-//            JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
-//            Unmarshaller u = jc.createUnmarshaller();
-//            HistoryList lb =
-//                (HistoryList)u.unmarshal(new FileInputStream(f));
-//            Program.getStorage().setHistoryList(lb);
-//        } catch( Exception e ) {
-//            Program.showException(e);
-//            return false;
-//        }
-//		Debug("Loading JAXB File Done");
-//		return true;
-//	}
-
   private static void unMarshalXML(File f) throws JAXBException, FileNotFoundException {
     JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
     Unmarshaller u = jc.createUnmarshaller();
@@ -197,10 +177,6 @@ public class HistoryList {
     Program.getStorage().setHistoryList(lb);
     Debug("Loading JAXB File Done");
   }
-
-//	public static boolean writeXML() {
-//		return writeXML(Program.getHistoryList(), new File(Program.getXMLBottlesFileName()));
-//	}
 
   static boolean writeXML(File f) {
     return writeXML(Program.getHistoryList(), f);

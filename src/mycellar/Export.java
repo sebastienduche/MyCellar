@@ -40,8 +40,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.5
- * @since 29/05/18
+ * @version 7.6
+ * @since 13/06/18
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -485,6 +485,8 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				if (exportToPDF(bottles, aFile)) {
 					end.setText(Program.getLabel("Infos154")); //"Export terminé."
 					openit.setEnabled(true);
+				} else {
+					end.setText("");
 				}
 			}
 			valider.setEnabled(true);

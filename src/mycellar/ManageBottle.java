@@ -331,6 +331,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 * @param bottle Bouteille
 	 */
 	private void setBottle(Bouteille bottle) {
+
 		Debug("Set Bottle...");
 		try {
 			enableAll(true);

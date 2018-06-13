@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.ICutCopyPastable;
+
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;

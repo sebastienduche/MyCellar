@@ -345,6 +345,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 	 * @param bottle Bouteille
 	 */
 	private void setBottle(Bouteille bottle) {
+
 		Debug("Set Bottle...");
 		try {
 			m_laBouteille = bottle;
@@ -433,6 +434,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 	 * @param bouteilles LinkedList<Bouteille>: Liste des bouteilles
 	 */
 	void setBottlesInModification(LinkedList<Bouteille> bouteilles) {
+
 		Debug("setBottlesInModification...");
 		try {
 			m_bmulti = bouteilles.size() > 1;
@@ -1373,6 +1375,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 	}
 
 	void reInit() {
+
 		Debug("ReInit...");
 		m_laBouteille = null;
 		listBottleInModification = null;

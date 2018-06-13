@@ -24,26 +24,19 @@ import java.util.LinkedList;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 3.3
- * @since 13/04/18
+ * @version 3.4
+ * @since 23/05/18
  */
 
 public class ShowHistory extends JPanel implements ITabListener {
 
 	private static final long serialVersionUID = 4778721795659106312L;
-	private static final MyCellarButton m_oSuppr = new MyCellarButton();
-	private static final MyCellarButton restoreButton = new MyCellarButton();
-	private static final MyCellarButton clearHistoryButton = new MyCellarButton();
-	private static final MyCellarLabel m_oFilterLabel = new MyCellarLabel();
-	private static final MyCellarComboBox<String> m_oFilterCbx = new MyCellarComboBox<String>();
-	private static TableHistoryValues tv;
+	private final MyCellarComboBox<String> m_oFilterCbx = new MyCellarComboBox<>();
+	private final TableHistoryValues tv;
 
 	public ShowHistory() {
 		Debug("Constructor");
-		m_oSuppr.setAction(new DeleteAction());
-		restoreButton.setAction(new RestoreAction());
-		clearHistoryButton.setAction(new ClearHistoryAction());
-		m_oFilterLabel.setText(Program.getLabel("Infos350")); // Filtre
+		MyCellarLabel m_oFilterLabel = new MyCellarLabel(Program.getLabel("Infos350")); // Filtre
 		m_oFilterCbx.addItem(Program.getLabel("Infos351"));
 		m_oFilterCbx.addItem(Program.getLabel("Infos345"));
 		m_oFilterCbx.addItem(Program.getLabel("Infos346"));
@@ -94,11 +87,11 @@ public class ShowHistory extends JPanel implements ITabListener {
 		setLayout(new MigLayout("", "grow", "[][grow][]"));
 		add(m_oFilterLabel, "split 5");
 		add(m_oFilterCbx);
-		add(clearHistoryButton, "gapleft 10px");
+		add(new MyCellarButton(new ClearHistoryAction()), "gapleft 10px");
 		add(new MyCellarLabel(), "growx");
-		add(restoreButton, "align right, wrap");
+		add(new MyCellarButton(new RestoreAction()), "align right, wrap");
 		add(m_oScroll, "grow, wrap");
-		add(m_oSuppr, "center");
+		add(new MyCellarButton(new DeleteAction()), "center");
 	}
 
 	/**
@@ -117,7 +110,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 	 * @param sText
 	 *            String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("ShowHistory: " + sText);
 	}
 
@@ -128,7 +121,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 
 	private class RestoreAction extends AbstractAction {
@@ -179,7 +172,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 				}
 				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-					LinkedList<Bouteille> cantRestoreList = new LinkedList<Bouteille>();
+					LinkedList<Bouteille> cantRestoreList = new LinkedList<>();
 					for (Bouteille b : toRestoreList) {
 						Rangement r = Program.getCave(b.getEmplacement());
 						if(r != null) {
@@ -195,8 +188,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 							}
 						}
 						if(!cantRestoreList.contains(b)) {
-							if(Program.getTrash().contains(b))
-								Program.getTrash().remove(b);
+							Program.getTrash().remove(b);
 						}
 					}
 
@@ -280,7 +272,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 		}
 	}
 
-	public void refresh() {
+	void refresh() {
 		tv.setHistory(Program.getHistory());
 	}
 

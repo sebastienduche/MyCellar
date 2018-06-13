@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,8 +30,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 02/03/18
+ * @version 1.3
+ * @since 08/06/18
  */
 
 @XmlRootElement(name = "vignobles")
@@ -40,17 +41,17 @@ public class Vignobles
 	private static final String VIGNOBLE = ".vignoble";
 	private static final String TEXT = ".txt";
 	@XmlElement(name = "vignoble")
-	private ArrayList<CountryVignoble> vignoble = null;
+	private List<CountryVignoble> vignoble = null;
 
-	public ArrayList<CountryVignoble> getVignoble() {
+	public List<CountryVignoble> getVignoble() {
 		return vignoble;
 	}
 
-	public void setVignoble(ArrayList<CountryVignoble> vignoble) {
+	public void setVignoble(List<CountryVignoble> vignoble) {
 		this.vignoble = vignoble;
 	}
 
-	public static Vignobles loadFrance() {
+	static Vignobles loadFrance() {
 		if(!Program.hasWorkDir()) {
 			return load("resources/vignobles.xml");
 		}
@@ -64,7 +65,7 @@ public class Vignobles
 		return load("resources/vignobles.xml");
 	}
 
-	public static Vignobles loadItalie() {
+	static Vignobles loadItalie() {
 		if(!Program.hasWorkDir()) {
 			return load("resources/italie.xml");
 		}
@@ -98,12 +99,12 @@ public class Vignobles
 		return v;
 	}
 
-	public static void loadAllCountries(Map<Country, Vignobles> map) {
+	static void loadAllCountries(Map<Country, Vignobles> map) {
 		Debug("Loading All countries");
 		map.clear();
 		File dir = new File(Program.getWorkDir(true));
-		map.put(Countries.find("FRA"), Vignobles.loadFrance());
-		map.put(Countries.find("ITA"), Vignobles.loadItalie());
+		map.put(Countries.find("FRA"), loadFrance());
+		map.put(Countries.find("ITA"), loadItalie());
 		File fileVignobles[] = dir.listFiles((pathname) -> {
 				return pathname.getName().endsWith(VIGNOBLE);
 		});
@@ -229,7 +230,7 @@ public class Vignobles
 		return null;
 	}
 
-	public CountryVignoble findVignobleWithAppelation(Vignoble v) {
+	CountryVignoble findVignobleWithAppelation(Vignoble v) {
 		CountryVignoble vigne = new CountryVignoble();
 		vigne.setName(v.getName());
 		int index = vignoble.indexOf(vigne);
@@ -246,7 +247,7 @@ public class Vignobles
 		return null;
 	}
 
-	public Appelation findAppelation(Vignoble v) {
+	Appelation findAppelation(Vignoble v) {
 		CountryVignoble vigne = new CountryVignoble();
 		vigne.setName(v.getName());
 		int index = vignoble.indexOf(vigne);
@@ -272,7 +273,7 @@ public class Vignobles
 //		return null;
 //	}
 
-	public void addVignoble(Vignoble v) {
+	void addVignoble(Vignoble v) {
 		Debug("add Vignoble "+v);
 		CountryVignoble vigne = new CountryVignoble();
 		vigne.setName(v.getName());
@@ -309,7 +310,7 @@ public class Vignobles
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("Vignobles: " + sText );
 	}
 

@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * @version 1.6
  * @since 02/03/18
  */
-public class CSVOptions extends JDialog {
+class CSVOptions extends JDialog {
 	private final MyCellarCheckBox export[];
 	private final MyCellarComboBox<String> separator = new MyCellarComboBox<>();
 	private final int nb_colonnes;
@@ -162,7 +162,7 @@ public class CSVOptions extends JDialog {
 	 *
 	 * @param e KeyEvent
 	 */
-	void keylistener_actionPerformed(KeyEvent e) {
+	private void keylistener_actionPerformed(KeyEvent e) {
 		if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
 			valider_actionPerformed(null);
 		}

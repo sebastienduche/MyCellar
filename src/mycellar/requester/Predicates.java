@@ -4,6 +4,7 @@ import mycellar.BottleColor;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.Rangement;
+import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.vignobles.Appelation;
 import net.miginfocom.swing.MigLayout;
 
@@ -19,13 +20,13 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 20/03/18
+ * @version 0.6
+ * @since 20/04/18
  */
 
 public class Predicates {
 
-	public static IPredicate<Bouteille> color = new IPredicate<Bouteille>() {
+	public static final IPredicate<Bouteille> color = new IPredicate<Bouteille>() {
 
 		@Override
 		public boolean apply(Bouteille bottle) {
@@ -70,7 +71,7 @@ public class Predicates {
 		}
 	};
 
-	public static IPredicate<Bouteille> name = new IPredicate<Bouteille>() {
+	public static final IPredicate<Bouteille> name = new IPredicate<Bouteille>() {
 		
 		private int type = -1;
 
@@ -252,9 +253,10 @@ public class Predicates {
 		public Object askforValue() {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
-			JComboBox<String> liste = new JComboBox<String>();
-			for(String val : Program.half)
+			JComboBox<String> liste = new JComboBox<>();
+			for(String val : MyCellarBottleContenance.getList()) {
 				liste.addItem(val);
+			}
 			panel.add(new JLabel(Program.getLabel("Predicates.SelectSize")), "wrap");
 			panel.add(liste);
 			JOptionPane.showMessageDialog(null, panel,

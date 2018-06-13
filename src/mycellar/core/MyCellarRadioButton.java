@@ -1,10 +1,9 @@
 package mycellar.core;
 
-import java.awt.Font;
-
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JRadioButton;
+import java.awt.Font;
 /**
  * Titre : Cave à vin
  * Description : Votre description
@@ -12,52 +11,52 @@ import javax.swing.JRadioButton;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.1
- * @since 16/04/15
+ * @version 0.2
+ * @since 08/06/18
  */
 public class MyCellarRadioButton extends JRadioButton {
 
 	private static final long serialVersionUID = 5420315767498997450L;
-	private static final Font font = new Font("Arial", 0, 12);
+	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
 
 	public MyCellarRadioButton() {
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarRadioButton(Icon icon) {
 		super(icon);
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarRadioButton(Action a) {
 		super(a);
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarRadioButton(String text) {
 		super(text);
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarRadioButton(Icon icon, boolean selected) {
 		super(icon, selected);
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarRadioButton(String text, boolean selected) {
 		super(text, selected);
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarRadioButton(String text, Icon icon) {
 		super(text, icon);
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarRadioButton(String text, Icon icon, boolean selected) {
 		super(text, icon, selected);
-		setFont(font);
+		setFont(FONT);
 	}
 
 }

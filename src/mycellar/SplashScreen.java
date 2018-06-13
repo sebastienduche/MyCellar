@@ -22,7 +22,7 @@ import java.net.URL;
  * @since 01/03/18
  */
 
-public class SplashScreen extends JPanel {
+class SplashScreen extends JPanel {
 	private static final long serialVersionUID = -5527379907989703970L;
 	private int resul = 0;
 	private BufferedImage image = null;
@@ -98,7 +98,7 @@ public class SplashScreen extends JPanel {
 	/**
 	 * quitter: Fonction pour fermer l'écran.
 	 */
-	public void quitter() {
+  private void quitter() {
 		f.dispose();
 	}
 	

@@ -67,7 +67,7 @@ public class JCompletionComboBox extends JComboBox {
 		@SuppressWarnings("unused")
 		private boolean hitBackspaceOnSelection;
 
-		private boolean hidePopupOnFocusLoss;
+		private final boolean hidePopupOnFocusLoss;
 		
 		private boolean caseSensitive;
 
@@ -102,11 +102,11 @@ public class JCompletionComboBox extends JComboBox {
 			return caseSensitive;
 		}
 		
-		public boolean isModified() {
+		private boolean isModified() {
 			return modified;
 		}
 		
-		public void setModified(boolean modified) {
+		private void setModified(boolean modified) {
 			this.modified = modified;
 		}
 		

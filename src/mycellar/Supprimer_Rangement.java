@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.2
- * @since 08/03/18
+ * @version 7.4
+ * @since 08/06/18
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
@@ -40,8 +40,8 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 	private final MyCellarLabel label_final = new MyCellarLabel();
 	private int nb_case_use_total = 0;
 	private final MyCellarButton preview = new MyCellarButton();
-	private char SUPPRIMER = Program.getLabel("SUPPR").charAt(0);
-	private char PREVIEW = Program.getLabel("VISUAL").charAt(0);
+	private final char SUPPRIMER = Program.getLabel("SUPPR").charAt(0);
+	private final char PREVIEW = Program.getLabel("VISUAL").charAt(0);
 	private final JTable table;
 	private final LinkedList<SupprimerLine> listSupprimer = new LinkedList<>();
 	private boolean updateView = false;
@@ -267,7 +267,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 	 *
 	 * @param e KeyEvent
 	 */
-	void keylistener_actionPerformed(KeyEvent e) {
+	private void keylistener_actionPerformed(KeyEvent e) {
 		if (e.getKeyCode() == SUPPRIMER) {
 			supprimer_actionPerformed(null);
 		}
@@ -293,7 +293,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("Supprimer_Rangement: " + sText);
 	}
 
@@ -304,11 +304,11 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 		Program.deletePlace = null;
 	}
 
-	public void setUpdateView(){
+	void setUpdateView(){
 		updateView  = true;
 	}
 	/**
@@ -330,13 +330,13 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 
 		private static final long serialVersionUID = -3295046126691124148L;
 		private final List<SupprimerLine> list;
-		private final LinkedList<Column> columns;
+		private final List<Column> columns;
 		private boolean isCaisse = false;
 		private Column colLine = new Column( Column.LINE, Program.getLabel("Infos027"));
 		private SupprimerModel(List<SupprimerLine> list)
 		{
 			this.list = list;
-			columns = new LinkedList<Column>();
+			columns = new LinkedList<>();
 			columns.add(new Column( Column.PART, Program.getLabel("Infos059")));
 			columns.add(colLine);
 			columns.add(new Column( Column.WINE, Program.getLabel("Infos057")));
@@ -360,7 +360,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		}
 		@Override
 		public String getColumnName(int column) {
-			return ((Column)columns.get(column)).getLabel();
+			return columns.get(column).getLabel();
 		}
 		@Override
 		public int getRowCount() {
@@ -428,7 +428,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		public int getNumPart() {
 			return numPart;
 		}
-		public String getNumPartLabel() {
+		String getNumPartLabel() {
 			return Program.getLabel("Infos029") + " "+ numPart;
 		}
 		public void setNumPart(int numPart) {
@@ -437,7 +437,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		public int getNbLine() {
 			return nbLine;
 		}
-		public String getNbLineLabel() {
+		String getNbLineLabel() {
 			if(nbLine <= 1) {
 				return MessageFormat.format(Program.getLabel("Infos060"), nbLine);
 			}
@@ -449,7 +449,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		public int getNbWine() {
 			return nbWine;
 		}
-		public String getNbWineLabel() {
+		String getNbWineLabel() {
 			if(nbWine <= 1) {
 				return MessageFormat.format(Program.getLabel("Infos063"), nbWine);
 			}
@@ -460,4 +460,4 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		}
 	}
 
-} // Fin de la classe
+}

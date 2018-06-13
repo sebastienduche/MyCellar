@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.datas.MyCellarBottleContenance;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
@@ -21,8 +22,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 01/03/18
+ * @version 0.7
+ * @since 20/04/18
  */
 
 public class ManageList extends JDialog {
@@ -35,10 +36,10 @@ public class ManageList extends JDialog {
 	{
 		setTitle(Program.getLabel("Infos400"));
 		defaultComboBox.addItem("");
-		for(String val : Program.half) {
+		for(String val : MyCellarBottleContenance.getList()) {
 			defaultComboBox.addItem(val);
 		}
-		defaultComboBox.setSelectedItem(Program.defaut_half);
+		defaultComboBox.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 		JTable table = new JTable(model);
 		TableColumnModel tcm = table.getColumnModel();
 	    TableColumn tc = tcm.getColumn(ManageListTableValue.ETAT);
@@ -46,7 +47,7 @@ public class ManageList extends JDialog {
 	    tc.setCellEditor(new StateEditor());
 	    tc.setMaxWidth(30);
 	    tc.setMinWidth(30);
-	    model.setValues(Program.half);
+	    model.setValues(MyCellarBottleContenance.getList());
 		MyCellarLabel labelTitle = new MyCellarLabel(Program.getLabel("Infos403"));
 		MyCellarLabel labelDefault = new MyCellarLabel(Program.getLabel("Infos146"));
 		MyCellarButton add = new MyCellarButton(Program.getLabel("Infos071"));
@@ -76,7 +77,7 @@ public class ManageList extends JDialog {
 			{
 				LinkedList<String> values = model.getSelectedValues();
 				String label = Program.getLabel("Infos129");
-				if(Program.half.size() > 1)
+				if(MyCellarBottleContenance.getList().size() > 1)
 					label = Program.getLabel("Infos130");
 				int resul = JOptionPane.showConfirmDialog(null, label);
 				if(resul == JOptionPane.YES_OPTION) {
@@ -96,7 +97,7 @@ public class ManageList extends JDialog {
 	
 	private void close(){
 		if(defaultComboBox.getSelectedIndex() != 0)
-			Program.defaut_half = (String)defaultComboBox.getSelectedItem();
+			MyCellarBottleContenance.setDefaultValue((String)defaultComboBox.getSelectedItem());
 		dispose();
 	}
 }

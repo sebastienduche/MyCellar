@@ -15,7 +15,7 @@ import java.util.List;
  * @since 20/03/18
  */
 
-public class CreerRangementTableModel extends AbstractTableModel {
+class CreerRangementTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = -933488036527447807L;
 	private final List<Column> columns = new LinkedList<>();

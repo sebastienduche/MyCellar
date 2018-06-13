@@ -23,6 +23,7 @@ import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
 import net.miginfocom.swing.MigLayout;
@@ -57,8 +58,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 5.4
- * @since 13/04/18
+ * @version 5.6
+ * @since 08/06/18
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -419,7 +420,7 @@ public class ShowFile extends JPanel implements ITabListener {
 			m_oCountryCbx.addItem(c.getLabel());*/
 
     m_oTypeCbx.addItem("");
-    for (String type : Program.half) {
+    for (String type : MyCellarBottleContenance.getList()) {
       m_oTypeCbx.addItem(type);
     }
 
@@ -581,7 +582,7 @@ public class ShowFile extends JPanel implements ITabListener {
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           if (showType == ShowType.ERROR) {
             for (Bouteille b : toDeleteList) {
-              Program.getErrors().remove(new MyCellarError(0, b));
+              Program.getErrors().remove(new MyCellarError(MyCellarError.ID.INEXISTING_PLACE, b));
             }
           } else {
             for (Bouteille b : toDeleteList) {
@@ -756,7 +757,7 @@ public class ShowFile extends JPanel implements ITabListener {
           Erreur.showSimpleErreur(Program.getError("Error154"));
         } else {
           if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-            Start.showBottle(b, true);
+            Start.getInstance().showBottle(b, true);
           }
         }
       }
@@ -782,7 +783,7 @@ public class ShowFile extends JPanel implements ITabListener {
 
     m_oTypeCbx.removeAllItems();
     m_oTypeCbx.addItem("");
-    for (String type : Program.half) {
+    for (String type : MyCellarBottleContenance.getList()) {
       m_oTypeCbx.addItem(type);
     }
 
@@ -833,10 +834,10 @@ public class ShowFile extends JPanel implements ITabListener {
 
   @Override
   public void tabClosed() {
-    Start.updateMainPanel();
+    Start.getInstance().updateMainPanel();
   }
 
-  class ManageColumnAction extends AbstractAction {
+  private class ManageColumnAction extends AbstractAction {
 
     private static final long serialVersionUID = 8165964725562440277L;
 
@@ -972,7 +973,7 @@ public class ShowFile extends JPanel implements ITabListener {
 	private static final long serialVersionUID = 983425309954475989L;
 
 
-	ReloadErrorsAction() {
+	private ReloadErrorsAction() {
       super(Program.getLabel("ShowFile.reloadErrors"));
     }
 

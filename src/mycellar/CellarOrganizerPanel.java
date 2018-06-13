@@ -48,8 +48,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 02/03/18
+ * @version 1.8
+ * @since 23/05/18
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener {
@@ -84,7 +84,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 		init();
 	}
 	
-	public void init() {
+	private void init() {
 		
 		if(cellChooser)
 			setLayout(new MigLayout("","[grow]","[][]20px[grow]"));
@@ -254,14 +254,14 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 	
-	public void setAddVin(IAddVin addvin) {
+	void setAddVin(IAddVin addvin) {
 		this.addvin = addvin;
 	}
 	
-	public void setUpdateView(){
+	void setUpdateView(){
 		updateView = true;
 	}
 	
@@ -281,7 +281,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 			setRangement(rangement);
 	}
 	
-	class MoveAction extends AbstractAction {
+	private class MoveAction extends AbstractAction {
 
 		private static final long serialVersionUID = 6973442058662866086L;
 		
@@ -306,12 +306,12 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 
 
 class RangementCell extends JPanel {
-	public BouteilleLabel draggingLabel;
+	BouteilleLabel draggingLabel;
 	private BouteilleLabel bottle;
-	private boolean stock;
+	private final boolean stock;
 	private int placeNum, row, column;
 	private Rangement place;
-	private JToggleButton select = new JToggleButton();
+	private final JToggleButton select = new JToggleButton();
 	private static final long serialVersionUID = -3180057277279430308L;
 
 	RangementCell(MouseListener listener, TransferHandler handler, Rangement place, int placeNum, int row, int column) {
@@ -354,25 +354,21 @@ class RangementCell extends JPanel {
 		return stock;
 	}
 	
-	public void initButton() {
+	void initButton() {
 		add(select, "newline");
 	}
 	
-	public boolean isToggle() {
+	boolean isToggle() {
 		return select.isSelected();
 	}
-	
-//	public void clearToggle() {
-//		select.setSelected(false);
-//	}
 
-	public void addBottle(BouteilleLabel comp) {
+	void addBottle(BouteilleLabel comp) {
 		if(!stock)
 			bottle = comp;
 		add(comp, stock ? "wrap" : "grow, gapright 0px");
 	}
 	
-	public BouteilleLabel getBottleLabel() {
+	BouteilleLabel getBottleLabel() {
 		return bottle;
 	}
 
@@ -388,7 +384,7 @@ class RangementCell extends JPanel {
 		return placeNum;
 	}
 
-	public String getPlaceName() {
+	String getPlaceName() {
 		return place != null ? place.getNom() : "";
 	}
 
@@ -422,6 +418,7 @@ class BouteilleLabel extends JPanel {
 		add(new PanelCloseButton(){
 			private static final long serialVersionUID = 3495975676025406824L;
 
+			@Override
 			void actionPerformed() {
 				String mess = MessageFormat.format(Program.getLabel("Main.DeleteWine"), bouteille.getNom());
 				if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, mess)) {
@@ -567,8 +564,7 @@ class LabelTransferHandler extends TransferHandler {
 			if(!target.isStock())
 				Program.getStorage().addHistory(History.MODIFY, l.getBouteille());
 			return true;
-		} catch(UnsupportedFlavorException ufe) {
-		} catch(IOException ioe) {
+		} catch(UnsupportedFlavorException | IOException ignored) {
 		}
 		return false;
 	}

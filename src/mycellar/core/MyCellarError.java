@@ -12,19 +12,27 @@ import java.util.Objects;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 09/03/18
+ * @version 0.5
+ * @since 08/06/18
  */
 
 public class MyCellarError {
 
-	private final int error;
+	private final ID error;
 	private boolean status;
 	private final Bouteille bottle;
 	private final String place;
 	private final int numLieu;
+
+	public enum ID{
+		INEXISTING_PLACE,
+		INEXISTING_NUM_PLACE,
+		FULL_BOX,
+		INEXISTING_CELL,
+		CELL_FULL
+	}
 	
-	public MyCellarError(int error, Bouteille bottle, String place, int numLieu) {
+	public MyCellarError(ID error, Bouteille bottle, String place, int numLieu) {
 		this.error = error;
 		this.bottle = bottle;
 		this.place = place;
@@ -32,7 +40,7 @@ public class MyCellarError {
 		setStatus(false);
 	}
 
-	public MyCellarError(int error, Bouteille bottle, String place) {
+	public MyCellarError(ID error, Bouteille bottle, String place) {
 		this.error = error;
 		this.bottle = bottle;
 		this.place = place;
@@ -40,7 +48,7 @@ public class MyCellarError {
 		setStatus(false);
 	}
 
-	public MyCellarError(int error, Bouteille bottle) {
+	public MyCellarError(ID error, Bouteille bottle) {
 		this.error = error;
 		this.bottle = bottle;
 		place = "";
@@ -50,21 +58,22 @@ public class MyCellarError {
 	
 	public String getErrorMessage() {
 		switch (error) {
-		case 1:
+			case INEXISTING_PLACE:
 			return MessageFormat.format(Program.getError("MyCellarError.inexistingPlace"), place);
-		case 2:
+			case INEXISTING_NUM_PLACE:
 			return MessageFormat.format(Program.getError("MyCellarError.inexistingNumPlace"), numLieu);
-		case 3:
+			case FULL_BOX:
 			return MessageFormat.format(Program.getError("MyCellarError.fullCaisse"), numLieu);
-		case 4:
+			case INEXISTING_CELL:
 			return MessageFormat.format(Program.getError("MyCellarError.inexistingCase"), place);
-		case 5:
+			case CELL_FULL:
 			return Program.getError("MyCellarError.occupiedCase");
+			default:
+				return "";
 		}
-		return "";
 	}
 
-	public int getError() {
+	public ID getError() {
 		return error;
 	}
 	

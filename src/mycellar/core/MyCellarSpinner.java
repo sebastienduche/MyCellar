@@ -1,9 +1,8 @@
 package mycellar.core;
 
-import java.awt.Font;
-
 import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
+import java.awt.Font;
 /**
  * Titre : Cave à vin
  * Description : Votre description
@@ -11,22 +10,22 @@ import javax.swing.SpinnerModel;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.1
- * @since 16/04/15
+ * @version 0.2
+ * @since 08/06/18
  */
 public class MyCellarSpinner extends JSpinner {
 
 	private static final long serialVersionUID = -6429351001334594600L;
-	private static final Font font = new Font("Arial", 0, 12);
+	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
 
 	public MyCellarSpinner() {
-		setFont(font);
+		setFont(FONT);
 	}
 
 	public MyCellarSpinner(SpinnerModel model) {
 		super(model);
-		setFont(font);
+		setFont(FONT);
 	}
 
 }

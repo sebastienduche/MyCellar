@@ -8,7 +8,14 @@
 
 package mycellar;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -16,9 +23,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,15 +40,13 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 02/03/18
- */
+ * @version 0.7
+ * @since 13/06/18
 
-/**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -48,8 +58,8 @@ import java.util.List;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -58,116 +68,141 @@ import java.util.List;
 @XmlRootElement(name = "HistoryList")
 public class HistoryList {
 
-    @XmlElement(name = "History", required = true)
-    protected List<History> history;
+  @XmlElement(name = "History", required = true)
+  private List<History> history;
 
-    /**
-     * Gets the value of the history property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the history property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getHistory().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link History }
-     * 
-     * 
-     */
-    public List<History> getHistory() {
-        if (history == null) {
-            history = new ArrayList<>();
-        }
-        return history;
+  /**
+   * Gets the value of the history property.
+   *
+   * <p>
+   * This accessor method returns a reference to the live list,
+   * not a snapshot. Therefore any modification you make to the
+   * returned list will be present inside the JAXB object.
+   * This is why there is not a <CODE>set</CODE> method for the history property.
+   *
+   * <p>
+   * For example, to add a new item, do as follows:
+   * <pre>
+   *    getHistory().add(newItem);
+   * </pre>
+   *
+   *
+   * <p>
+   * Objects of the following type(s) are allowed in the list
+   * {@link History }
+   *
+   *
+   */
+  public List<History> getHistory() {
+    if (history == null) {
+      history = new ArrayList<>();
     }
+    return history;
+  }
 
-    public void addLast(History history) {
-    	getHistory().add(history);
-    }
-    
-    public void remove(History history) {
-    	getHistory().remove(history);
-    }
-    
-    public void clear() {
-    	getHistory().clear();
-    }
-    
-//    public static boolean loadXML() {
-//		Debug("Loading JAXB File");
-//		File f = new File(Program.getXMLBottlesFileName());
-//		if(!f.exists())
-//			return false;
-//		try {
-//            JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
-//            Unmarshaller u = jc.createUnmarshaller();
-//            HistoryList lb =
-//                (HistoryList)u.unmarshal(new FileInputStream(f));
-//            Program.getStorage().setHistoryList(lb);
-//        } catch( Exception e ) {
-//            Program.showException(e);
-//            return false;
-//        }
-//		Debug("Loading JAXB File Done");
-//		return true;
-//	}
-    
-    public static boolean loadXML(File f) {
-		Debug("Loading JAXB File "+f.getAbsolutePath());
-		if(!f.exists())
-			return false;
-		try {
-            JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
-            Unmarshaller u = jc.createUnmarshaller();
-            HistoryList lb = 
-                (HistoryList)u.unmarshal(new FileInputStream(f));
-            Program.getStorage().setHistoryList(lb);
-        } catch( Exception e ) {
-            Program.showException(e);
-            return false;
-        }
-		Debug("Loading JAXB File Done");
-		return true;
-	}
-	
-//	public static boolean writeXML() {
-//		return writeXML(Program.getHistoryList(), new File(Program.getXMLBottlesFileName()));
-//	}
-	
-	public static boolean writeXML(File f) {
-		return writeXML(Program.getHistoryList(), f);
-	}
-	
-	private static boolean writeXML(HistoryList liste, File f) {
-		Debug("Writing JAXB File");
-		try {
-            JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
-            Marshaller m = jc.createMarshaller();
-            m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            m.marshal(liste, new StreamResult(f));
-        } catch( Exception e ) {
-        	Program.showException(e);
-        	return false;
-        }
-		Debug("Writing JAXB File Done");
-		return true;
-	}
+  void addLast(History history) {
+    getHistory().add(history);
+  }
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
-	public static void Debug(String sText) {
-		Program.Debug("HistoryList: " + sText );
-	}
+  public void remove(History history) {
+    getHistory().remove(history);
+  }
+
+  public void clear() {
+    getHistory().clear();
+  }
+
+  static boolean loadXML(File f) {
+    Debug("Loading XML File "+f.getAbsolutePath());
+    if(!f.exists())
+      return false;
+    try {
+      unMarshalXML(f);
+      return true;
+    } catch (Exception e) {
+      Debug("ERROR: Unable to Unmarshall JAXB File");
+      Program.showException(e, false);
+    }
+    Debug("Manual loading of the XML file");
+    try {
+      manualLoadXML(f);
+    } catch (ParserConfigurationException | IOException | SAXException e) {
+      Debug("ERROR: Unable to load manually File");
+      Program.showException(e);
+      return false;
+    }
+    return true;
+  }
+
+  private static void manualLoadXML(File f) throws ParserConfigurationException, IOException, SAXException {
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    Document doc = dBuilder.parse(f);
+    doc.getDocumentElement().normalize();
+
+    HistoryList listeHistory = new HistoryList();
+    NodeList historys = doc.getElementsByTagName("History");
+
+    for (int i = 0; i < historys.getLength(); i++) {
+      Node node = historys.item(i);
+
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        History history = new History();
+        Element historyElem = (Element) node;
+        final NodeList dateElem = historyElem.getElementsByTagName("date");
+        String date = dateElem.item(0).getTextContent();
+        history.setDate(date);
+        final NodeList typeElem = historyElem.getElementsByTagName("type");
+        for (int j=0; j<typeElem.getLength(); j++) {
+          final Node typeNode = typeElem.item(j);
+          if(typeNode.getParentNode().isSameNode(node)) {
+            history.setType(Integer.parseInt(typeNode.getTextContent()));
+          }
+        }
+        final NodeList bouteilleElem = historyElem.getElementsByTagName("Bouteille");
+        Bouteille bouteille = Bouteille.getBouteilleFromXML((Element)bouteilleElem.item(0));
+        history.setBouteille(bouteille);
+        listeHistory.getHistory().add(history);
+      }
+    }
+    Program.getStorage().setHistoryList(listeHistory);
+    Debug("Loading Manually File Done");
+  }
+
+  private static void unMarshalXML(File f) throws JAXBException, FileNotFoundException {
+    JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
+    Unmarshaller u = jc.createUnmarshaller();
+    HistoryList lb =
+        (HistoryList)u.unmarshal(new FileInputStream(f));
+    Program.getStorage().setHistoryList(lb);
+    Debug("Loading JAXB File Done");
+  }
+
+  static boolean writeXML(File f) {
+    return writeXML(Program.getHistoryList(), f);
+  }
+
+  private static boolean writeXML(HistoryList liste, File f) {
+    Debug("Writing JAXB File");
+    try {
+      JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
+      Marshaller m = jc.createMarshaller();
+      m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+      m.marshal(liste, new StreamResult(f));
+    } catch( Exception e ) {
+      Program.showException(e);
+      return false;
+    }
+    Debug("Writing JAXB File Done");
+    return true;
+  }
+
+  /**
+   * Debug
+   *
+   * @param sText String
+   */
+  private static void Debug(String sText) {
+    Program.Debug("HistoryList: " + sText );
+  }
 }

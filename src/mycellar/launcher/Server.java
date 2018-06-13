@@ -10,8 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.util.Calendar;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +35,8 @@ import java.util.Map;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 1.8
- * @since 14/03/18
+ * @version 1.9
+ * @since 08/06/18
  */
 
 public class Server implements Runnable {
@@ -50,12 +49,12 @@ public class Server implements Runnable {
 
 	private String sAction = "";
 
-	private static final LinkedList<FileType> listFile = new LinkedList<>();
-	private static final LinkedList<String> listFileToRemove = new LinkedList<>();
+	private static final LinkedList<FileType> FILE_TYPES = new LinkedList<>();
+	private static final Deque<String> LIST_FILE_TO_REMOVE = new LinkedList<>();
 
 	private boolean bDownloaded = false;
 	private boolean bDownloadError = false;
-	private boolean bExit = false;
+	private final boolean bExit = false;
 
 	private static FileWriter oDebugFile = null;
 
@@ -91,9 +90,9 @@ public class Server implements Runnable {
 					}
 					// Suppression de fichier commençant par -
 					if(sFile.indexOf('-') == 0)
-						listFileToRemove.add(sFile.substring(1));
+						LIST_FILE_TO_REMOVE.add(sFile.substring(1));
 					else
-						listFile.add(new FileType(sFile, md5));
+						FILE_TYPES.add(new FileType(sFile, md5));
 					sFile = in.readLine();
 				}
 
@@ -126,7 +125,7 @@ public class Server implements Runnable {
 			System.exit(0);
 	}
 
-	public void checkVersion() {
+	void checkVersion() {
 		Debug("Checking Version from GitHub...");
 		sServerVersion = "";
 		try {
@@ -147,10 +146,10 @@ public class Server implements Runnable {
 				// Suppression de fichier commençant par -
 				Debug("sFile... "+sFile+" "+sFile.indexOf('-'));
 				if(sFile.indexOf('-') == 0)
-					listFileToRemove.add(sFile.substring(1));
+					LIST_FILE_TO_REMOVE.add(sFile.substring(1));
 				else {
 					boolean lib = (!sFile.contains("MyCellar") && sFile.endsWith(".jar"));
-					listFile.add(new FileType(sFile, md5, lib));
+					FILE_TYPES.add(new FileType(sFile, md5, lib));
 				}
 				sFile = in.readLine();
 			}
@@ -162,7 +161,7 @@ public class Server implements Runnable {
 		}
 	}
 
-	public void downloadVersion() {
+	void downloadVersion() {
 		Debug("Downloading version from GitHub...");
 		try {
 			File f = new File("download");
@@ -231,7 +230,7 @@ public class Server implements Runnable {
 		}
 		try{
 			// Creation des fichiers pour lister les fichiers à supprimer
-			for(String s : listFileToRemove) {
+			for(String s : LIST_FILE_TO_REMOVE) {
 				Debug("Creating file to delete... "+s);
 				File f = new File(destination, s + ".myCellar");
 				f.createNewFile();
@@ -239,12 +238,12 @@ public class Server implements Runnable {
 			bDownloadError = false;
 			Debug("Connecting to GitHub...");
 
-			int size = listFile.size();
+			int size = FILE_TYPES.size();
 			int percent = 80;
 			if (size > 0)
 				percent = 80 / size;
 			for (int i = 0; i < size; i++) {
-				FileType fType = listFile.get(i);
+				FileType fType = FILE_TYPES.get(i);
 				String name = fType.getFile();
 				String serverMd5 = fType.getMd5();
 				bDownloadError = false;
@@ -324,11 +323,11 @@ public class Server implements Runnable {
 		InputStream input = http.getInputStream();
 		byte[] buffer = new byte[4096];
 		int n;
-		OutputStream output = new FileOutputStream( new File( destination ));
-		while ((n = input.read(buffer)) != -1) {
-			output.write( buffer, 0, n );
+		try(OutputStream output = new FileOutputStream( new File( destination ))) {
+			while ((n = input.read(buffer)) != -1) {
+				output.write(buffer, 0, n);
+			}
 		}
-		output.close();
 	}
 
 	private static byte[] createChecksum(String filename) throws Exception {
@@ -350,13 +349,13 @@ public class Server implements Runnable {
 
 	// see this How-to for a faster way to convert
 	// a byte array to a HEX string
-	public static String getMD5Checksum(String filename) throws Exception {
+	private static String getMD5Checksum(String filename) throws Exception {
 		byte[] b = createChecksum(filename);
-		String result = "";
-		for (int i = 0; i < b.length; i++) {
-			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+		StringBuilder result = new StringBuilder();
+		for (byte v : b) {
+			result.append(Integer.toString((v & 0xff) + 0x100, 16).substring(1));
 		}
-		return result;
+		return result.toString();
 	}
 
 	/**
@@ -372,13 +371,14 @@ public class Server implements Runnable {
 				if( !sDir.isEmpty() )
 					sDir += "/MyCellarDebug";
 				File f_obj = new File( sDir );
-				if(!f_obj.exists())
+				if(!f_obj.exists()) {
 					f_obj.mkdir();
+				}
 				Calendar oCal = Calendar.getInstance();
 				String sDate = oCal.get(Calendar.DATE) + "-" + (oCal.get(Calendar.MONTH)+1) + "-" + oCal.get(Calendar.YEAR);
 				oDebugFile = new FileWriter(new File(sDir, "DebugFtp-"+sDate+".log"), true);
 			}
-			oDebugFile.write("[" + java.util.Calendar.getInstance().getTime().toString() + "]: " + sText + "\n");
+			oDebugFile.write("[" + Calendar.getInstance().getTime().toString() + "]: " + sText + "\n");
 			oDebugFile.flush();
 		}
 		catch (Exception ignored) {}
@@ -388,11 +388,11 @@ public class Server implements Runnable {
 	 * showException
 	 * @param e Exception
 	 */
-	public static void showException(Exception e) {
+	private static void showException(Exception e) {
 		StackTraceElement st[] = e.getStackTrace();
 		String error = "";
-		for (int z = 0; z < st.length; z++) {
-			error = error.concat("\n" + st[z]);
+		for (StackTraceElement element : st) {
+			error = error.concat("\n" + element);
 		}
 		String sDir = System.getProperty("user.home");
 		if(!sDir.isEmpty()) {
@@ -402,7 +402,6 @@ public class Server implements Runnable {
 			fw.write(e.toString());
 			fw.write(error);
 			fw.flush();
-			fw.close();
 		}
 		catch (IOException ignored) {}
 		Debug("Server: ERROR:");
@@ -411,7 +410,7 @@ public class Server implements Runnable {
 		e.printStackTrace();
 	}
 
-	public boolean install() {
+	boolean install() {
 		Debug("Installing MyCellar...");
 		File directory = getDirectoryForInstall();
 		if(directory != null ) {
@@ -424,24 +423,24 @@ public class Server implements Runnable {
 		f.mkdir();
 		f = new File("config");
 		f.mkdir();
-		listFile.clear();
-		listFile.add(new FileType("lib/commons-io-2.1.jar", ""));
-		listFile.add(new FileType("lib/commons-lang-2.1.jar", ""));
-		listFile.add(new FileType("lib/commons-logging.jar", ""));
-		listFile.add(new FileType("lib/commons-net-3.0.1.jar", ""));
-		listFile.add(new FileType("lib/jcommon-1.0.18.jar", ""));
-		listFile.add(new FileType("lib/jdom1.0.jar", ""));
-		listFile.add(new FileType("lib/jfreechart-1.0.15.jar", ""));
-		listFile.add(new FileType("lib/jxl.jar", ""));
-		listFile.add(new FileType("lib/mailapi.jar", ""));
-		listFile.add(new FileType("lib/miglayout-4.0-swing.jar", ""));
-		listFile.add(new FileType("lib/pdfbox-app-2.0.5.jar", ""));
-		listFile.add(new FileType("lib/smtp.jar", ""));
-		listFile.add(new FileType("config/config.ini", ""));
+		FILE_TYPES.clear();
+		FILE_TYPES.add(new FileType("lib/commons-io-2.1.jar", ""));
+		FILE_TYPES.add(new FileType("lib/commons-lang-2.1.jar", ""));
+		FILE_TYPES.add(new FileType("lib/commons-logging.jar", ""));
+		FILE_TYPES.add(new FileType("lib/commons-net-3.0.1.jar", ""));
+		FILE_TYPES.add(new FileType("lib/jcommon-1.0.18.jar", ""));
+		FILE_TYPES.add(new FileType("lib/jdom1.0.jar", ""));
+		FILE_TYPES.add(new FileType("lib/jfreechart-1.0.15.jar", ""));
+		FILE_TYPES.add(new FileType("lib/jxl.jar", ""));
+		FILE_TYPES.add(new FileType("lib/mailapi.jar", ""));
+		FILE_TYPES.add(new FileType("lib/miglayout-4.0-swing.jar", ""));
+		FILE_TYPES.add(new FileType("lib/pdfbox-app-2.0.5.jar", ""));
+		FILE_TYPES.add(new FileType("lib/smtp.jar", ""));
+		FILE_TYPES.add(new FileType("config/config.ini", ""));
 
-		listFile.add(new FileType("MyCellar.jar",""));
-		listFile.add(new FileType("MyCellarLauncher.jar",""));
-		listFile.add(new FileType("Finish.html",""));
+		FILE_TYPES.add(new FileType("MyCellar.jar",""));
+		FILE_TYPES.add(new FileType("MyCellarLauncher.jar",""));
+		FILE_TYPES.add(new FileType("Finish.html",""));
 		boolean result = downloadFromGitHub(directory);
 		
 		Debug("Installation of MyCellar Done.");
@@ -457,16 +456,12 @@ public class Server implements Runnable {
 		text.setSize(100, 25);
 		panel.add(text);
 		JButton button = new JButton("...");
-		button.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser =  new JFileChooser();
-				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				if( JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(null) ) {
-					File selectedFile = fileChooser.getSelectedFile();
-					text.setText(selectedFile.getAbsolutePath());
-				}
+		button.addActionListener((e) -> {
+			JFileChooser fileChooser =  new JFileChooser();
+			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			if( JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(null) ) {
+				File selectedFile = fileChooser.getSelectedFile();
+				text.setText(selectedFile.getAbsolutePath());
 			}
 		});
 		panel.add(button);

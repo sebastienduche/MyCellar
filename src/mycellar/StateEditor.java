@@ -19,8 +19,8 @@ import java.util.EventObject;
  * @since 02/03/18
  */
 public class StateEditor extends JCheckBox implements TableCellEditor {
-  private EventListenerList listenerList = new EventListenerList();
-  private ChangeEvent changeEvent = new ChangeEvent(this);
+  private final EventListenerList listenerList = new EventListenerList();
+  private final ChangeEvent changeEvent = new ChangeEvent(this);
   static final long serialVersionUID = 301005;
 
   /**

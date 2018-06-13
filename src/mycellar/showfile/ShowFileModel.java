@@ -45,7 +45,7 @@ public class ShowFileModel extends TableShowValues {
 		}
 		Bouteille b = monVector.get(row);
 		if(column == getColumnCount() - 1) {
-			Start.showBottle(b, true);
+			Start.getInstance().showBottle(b, true);
 			return;
 			
 		}
@@ -85,7 +85,7 @@ public class ShowFileModel extends TableShowValues {
 		return true;
 	}
 	
-	public void removeAllColumns() {
+	void removeAllColumns() {
 		list = new ArrayList<>();
 		fireTableStructureChanged();
 	}

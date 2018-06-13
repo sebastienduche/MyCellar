@@ -1,13 +1,5 @@
 package mycellar.core;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import mycellar.JCompletionComboBox;
 import mycellar.Program;
 import mycellar.Start;
@@ -17,6 +9,12 @@ import mycellar.vignobles.CountryVignoble;
 import mycellar.vignobles.CountryVignobles;
 import mycellar.vignobles.Vignobles;
 import net.miginfocom.swing.MigLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import java.awt.event.ItemEvent;
+import java.util.ArrayList;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -30,7 +28,7 @@ import net.miginfocom.swing.MigLayout;
 public class PanelVignobles extends JPanel {
 
 	private static final long serialVersionUID = -3053382428338158563L;
-	private MyCellarManageBottles instance;
+	private final MyCellarManageBottles instance;
 	
 	public PanelVignobles(MyCellarManageBottles instance, boolean modifyActive) {
 		this.instance = instance;
@@ -38,21 +36,20 @@ public class PanelVignobles extends JPanel {
 		instance.comboCountry = new JCompletionComboBox() {
 			private static final long serialVersionUID = 8137073557763181546L;
 
+			@Override
 			protected void doAfterModify() {
 				super.doAfterModify();
 				if(modifyActive)
 					Start.setPaneModified(true);
-			};
+			}
 		};
 		instance.comboCountry.setCaseSensitive(false);
 		instance.comboCountry.setEditable(true);
 		instance.comboCountry.addItem("");
 		for(Country c : Program.getCountries())
 			instance.comboCountry.addItem(c);
-		instance.comboCountry.addItemListener(new ItemListener() {
+		instance.comboCountry.addItemListener((e) -> {
 
-			@Override
-			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange() == ItemEvent.SELECTED) {
 					if(e.getItem() instanceof String) {
 						instance.comboVignoble.removeAllItems();
@@ -80,24 +77,21 @@ public class PanelVignobles extends JPanel {
 							instance.comboVignoble.addItem(v);
 					}
 				}
-			}
 		});
 
 		instance.comboVignoble = new JCompletionComboBox() {
 			private static final long serialVersionUID = 8137073557763181546L;
-
+			@Override
 			protected void doAfterModify() {
 				super.doAfterModify();
 				if(modifyActive)
 					Start.setPaneModified(true);
-			};
+			}
 		};
 		instance.comboVignoble.setCaseSensitive(false);
 		instance.comboVignoble.setEditable(true);
-		instance.comboVignoble.addItemListener(new ItemListener() {
+		instance.comboVignoble.addItemListener((e) -> {
 
-			@Override
-			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange() == ItemEvent.SELECTED) {
 					if(e.getItem() instanceof String) {
 						instance.comboAppelationAOC.setSelectedItem("");
@@ -116,8 +110,6 @@ public class PanelVignobles extends JPanel {
 							instance.comboAppelationIGP.addItem(new IGPItem(v));
 					}
 				}
-
-			}
 		});
 
 		add(instance.labelCountry, "w 150:150:150, split 2");
@@ -131,12 +123,12 @@ public class PanelVignobles extends JPanel {
 
 		instance.comboAppelationAOC = new JCompletionComboBox() {
 			private static final long serialVersionUID = 8137073557763181546L;
-
+			@Override
 			protected void doAfterModify() {
 				super.doAfterModify();
 				if(modifyActive)
 					Start.setPaneModified(true);
-			};
+			}
 		};
 		instance.comboAppelationAOC.setCaseSensitive(false);
 		instance.comboAppelationAOC.setEditable(true);
@@ -145,12 +137,12 @@ public class PanelVignobles extends JPanel {
 
 		instance.comboAppelationIGP = new JCompletionComboBox() {
 			private static final long serialVersionUID = 8137073557763181546L;
-
+			@Override
 			protected void doAfterModify() {
 				super.doAfterModify();
 				if(modifyActive)
 					Start.setPaneModified(true);
-			};
+			}
 		};
 		instance.comboAppelationIGP.setCaseSensitive(false);
 		instance.comboAppelationIGP.setEditable(true);

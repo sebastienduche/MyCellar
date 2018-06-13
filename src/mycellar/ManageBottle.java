@@ -5,6 +5,8 @@ import mycellar.core.IAddVin;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.PanelVignobles;
+import mycellar.core.PopupListener;
+import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.countries.Country;
 import mycellar.vignobles.Appelation;
 import mycellar.vignobles.CountryVignoble;
@@ -14,20 +16,14 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -43,12 +39,12 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.8
- * @since 13/04/18
+ * @version 4.4
+ * @since 08/06/18
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
-	private char QUITTER = Program.getLabel("QUITTER").charAt(0);
+	private final char QUITTER = Program.getLabel("QUITTER").charAt(0);
 	private final ManageBottle instance;
 	
 
@@ -66,7 +62,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_chooseCell = new MyCellarButton(new ChooseCellAction(this));
 		try {
 			Debug("Constructor with Bottle");
-			LinkedList<String> list = new LinkedList<String>();
+			LinkedList<String> list = new LinkedList<>();
 			list.add("");
 			list.addAll(Program.getStorage().getBottleNames());
 			name = new JCompletionComboBox(list.toArray()) {
@@ -81,17 +77,11 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			name.setEditable(true);
 
 			m_half.removeAllItems();
-			try {
-				m_half.addItem("");
-				for(String s:Program.half) {
-					if(!s.isEmpty())
-						m_half.addItem(s);
-				}
-				if (Program.half.contains(Program.defaut_half)) {
-					m_half.setSelectedItem(Program.defaut_half);
-				}
+			m_half.addItem("");
+			for(String s: MyCellarBottleContenance.getList()) {
+					m_half.addItem(s);
 			}
-			catch (Exception e) {}
+			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 			jbInit();
 			setBottle(bottle);
 		}
@@ -126,7 +116,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				String text = m_price.getText();
 				m_price.setText(text+sep);
 			}
-		};
+		}
 });
 		
 		m_noYear.setText(Program.getLabel("Infos399"));
@@ -144,11 +134,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_add.setMnemonic(AJOUTER);
 		m_manageContenance.setText(Program.getLabel("Infos400"));
 
-		couper.setEnabled(false);
-		copier.setEnabled(false);
-		popup.add(couper);
-		popup.add(copier);
-		popup.add(coller);
+
 		MouseListener popup_l = new PopupListener();
 		name.addMouseListener(popup_l);
 		m_year.addMouseListener(popup_l);
@@ -156,12 +142,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_comment.addMouseListener(popup_l);
 		m_maturity.addMouseListener(popup_l);
 		m_parker.addMouseListener(popup_l);
-		cut.setEnabled(false);
-		copy.setEnabled(false);
-
-		cut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
-		copy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
-		paste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
 
 		m_labelStillToAdd.setForeground(Color.red);
 		m_end.setForeground(Color.red);
@@ -189,8 +169,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		boolean complex = false;
 		for (Rangement rangement : Program.getCave()) {
 			m_lieu.addItem(rangement.getNom());
-			if(!rangement.isCaisse())
+			if(!rangement.isCaisse()) {
 				complex = true;
+			}
 		}
 		m_chooseCell.setEnabled(complex);
 
@@ -232,8 +213,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 */
 	@Override
 	protected void lieu_itemStateChanged(ItemEvent e) {
-		if(!isListenersEnabled())
+		if(isListenersDisabled()) {
 			return;
+		}
 		Debug("Lieu_itemStateChanging...");
 		try {
 			int lieu_select = m_lieu.getSelectedIndex();
@@ -261,40 +243,32 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				bIsCaisse = cave.isCaisse();
 				start_caisse = cave.getStartCaisse();
 			}
+			m_num_lieu.removeAllItems();
+			m_num_lieu.addItem("");
 			if (bIsCaisse) { //Type caisse
 				m_preview.setEnabled(false);
-				m_num_lieu.removeAllItems();
-				m_num_lieu.addItem("");
 				for (int i = 0; i < nb_emplacement; i++) {
 					m_num_lieu.addItem(Integer.toString(i + start_caisse));
 				}
-				m_num_lieu.setVisible(true); //false
-				m_line.setVisible(false);
-				m_column.setVisible(false);
-				m_labelNumPlace.setVisible(true); //false
+				m_num_lieu.setVisible(true);
 				m_labelNumPlace.setText(Program.getLabel("Infos158")); //"Numéro de caisse");
-				m_labelColumn.setVisible(false);
-				m_labelLine.setVisible(false);
 				if (nb_emplacement == 1) {
 					m_num_lieu.setSelectedIndex(1);
 				}
-			}
-			else {
-				m_num_lieu.removeAllItems();
+			}	else {
 				m_line.removeAllItems();
 				m_column.removeAllItems();
-				m_num_lieu.addItem("");
 				for (int i = 1; i <= nb_emplacement; i++) {
 					m_num_lieu.addItem(Integer.toString(i));
 				}
-				m_num_lieu.setVisible(true);
-				m_line.setVisible(true);
-				m_column.setVisible(true);
 				m_labelNumPlace.setText(Program.getLabel("Infos082")); //"Numéro du lieu");
-				m_labelNumPlace.setVisible(true);
-				m_labelLine.setVisible(true);
-				m_labelColumn.setVisible(true);
 			}
+			m_labelNumPlace.setVisible(true);
+			m_num_lieu.setVisible(true);
+			m_line.setVisible(!bIsCaisse);
+			m_column.setVisible(!bIsCaisse);
+			m_labelLine.setVisible(!bIsCaisse);
+			m_labelColumn.setVisible(!bIsCaisse);
 		}
 		catch (Exception a) {
 			Program.showException(a);
@@ -308,8 +282,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 */
 	@Override
 	protected void line_itemStateChanged(ItemEvent e) {
-		if(!isListenersEnabled())
+		if(isListenersDisabled()) {
 			return;
+		}
 		Debug("Line_itemStateChanging...");
 		try {
 			int nb_col = 0;
@@ -350,14 +325,13 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		}
 	}
 
-
-
 	/**
 	 * setBottle: Fonction de chargement d'un vin dans la fenêtre pour la classe ListVin
 	 *
 	 * @param bottle Bouteille
 	 */
-	public void setBottle(Bouteille bottle) {
+	private void setBottle(Bouteille bottle) {
+
 		Debug("Set Bottle...");
 		try {
 			enableAll(true);
@@ -367,16 +341,13 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			name.setSelectedItem(bottle.getNom());
 			m_year.setText(bottle.getAnnee());
 			m_noYear.setSelected(bottle.isNonVintage());
-			if(bottle.isNonVintage())
+			if(bottle.isNonVintage()) {
 				m_year.setEditable(false);
+			}
 			m_half.removeAllItems();
 			m_half.addItem("");
-			for(String s: Program.half) {
-				if(null != s && !s.isEmpty())
+			for(String s: MyCellarBottleContenance.getList()) {
 					m_half.addItem(s);
-			}
-			if (Program.half.contains(Program.defaut_half)) {
-				m_half.setSelectedItem(Program.defaut_half);
 			}
 			m_half.setSelectedItem(bottle.getType());
 			String half_tmp = "";
@@ -384,10 +355,10 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				half_tmp = m_half.getSelectedItem().toString();
 			}
 
-			String auto = Program.getCaveConfigString("TYPE_AUTO", "OFF");
+			boolean autoAdd = "ON".equals(Program.getCaveConfigString("TYPE_AUTO", "OFF"));
 
-			if (half_tmp.compareTo(bottle.getType()) != 0 && "ON".equals(auto) && !bottle.getType().isEmpty()) {
-				Program.half.add(bottle.getType());
+			if (autoAdd && half_tmp.compareTo(bottle.getType()) != 0 && !bottle.getType().isEmpty()) {
+				MyCellarBottleContenance.getList().add(bottle.getType());
 				m_half.addItem(bottle.getType());
 				m_half.setSelectedItem(bottle.getType());
 			}
@@ -406,58 +377,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		catch (Exception e) {
 			Program.showException(e);
 		}
-	}
-
-	@Override
-	public void selectPlace(Bouteille bottle) {
-		Debug("selectPlaceWithBottle...");
-		setListenersEnabled(false);
-		Rangement rangement = bottle.getRangement();
-		for(int i=0; i<m_lieu.getItemCount(); i++) {
-			if(rangement.getNom().equals(m_lieu.getItemAt(i))){
-				m_lieu.setSelectedIndex(i);
-				break;
-			}
-		}
-		int nbEmpl = rangement.getNbEmplacements();
-		m_num_lieu.removeAllItems();
-		m_column.removeAllItems();
-		m_line.removeAllItems();
-		m_num_lieu.addItem("");
-		m_line.addItem("");
-		m_column.addItem("");
-
-
-		boolean isCaisse = rangement.isCaisse();
-		if(!isCaisse) {
-			for(int i = 1; i<= nbEmpl; i++)
-				m_num_lieu.addItem(Integer.toString(i));
-			int nbLine = rangement.getNbLignes(bottle.getNumLieu()-1);
-			int nbColumn = rangement.getNbColonnes(bottle.getNumLieu()-1, bottle.getLigne()-1);
-			for(int i = 1; i<= nbLine; i++)
-				m_line.addItem(Integer.toString(i));
-			for(int i = 1; i<= nbColumn; i++)
-				m_column.addItem(Integer.toString(i));
-			m_line.setEnabled(true);
-			m_column.setEnabled(true);
-			m_num_lieu.setSelectedIndex(bottle.getNumLieu());
-			m_line.setSelectedIndex(bottle.getLigne());
-			m_column.setSelectedIndex(bottle.getColonne());
-		}
-		else {
-			int start = rangement.getStartCaisse();
-			for(int i = start; i< nbEmpl+start; i++)
-				m_num_lieu.addItem(Integer.toString(i));
-			m_num_lieu.setSelectedIndex(bottle.getNumLieu()-start+1);
-		}
-		m_num_lieu.setEnabled(true);
-
-		m_labelLine.setVisible(!isCaisse);
-		m_labelColumn.setVisible(!isCaisse);
-		m_line.setVisible(!isCaisse);
-		m_column.setVisible(!isCaisse);
-		setListenersEnabled(true);
-		Debug("selectPlaceWithBottle... Done");
 	}
 
 	/**
@@ -528,7 +447,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		String parker = m_parker.getText();
 		String color = "";
 		if (m_colorList.getSelectedItem() != null) {
-			color = m_colorList.getSelectedItem().toString();
+			color = ((BottleColor)m_colorList.getSelectedItem()).name();
 		}
 		Object o = comboCountry.getEditor().getItem();
 		String country;
@@ -557,24 +476,23 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		o = comboAppelationIGP.getEditor().getItem();
 		String igp = o.toString();
 		//Vérification du nom ...
-		boolean resul = true;
 		if (nom.isEmpty()) {
 			Debug("ERROR: Wrong Name");
-			resul = false;
 			Erreur.showSimpleErreur(Program.getError("Error054")); //"Veuillez saisir le nom du vin!"
+			return false;
 		}
 
 		// Controle de la date
 		String annee = "";
-		if (resul && (m_year.isEditable() || m_noYear.isSelected())) {
+		if (m_year.isEditable() || m_noYear.isSelected()) {
 			annee = m_year.getText().trim();
 
 			// Erreur sur la date
 			if (!Bouteille.isValidYear(annee)) {
 				Debug("ERROR: Wrong date");
 				Erreur.showSimpleErreur(Program.getError("Error053")); //"Veuillez saisir une année valide!"
-				resul = false;
 				m_year.setEditable(true);
+				return false;
 			}
 			else {
 				annee = getYear();
@@ -585,7 +503,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		int lieu_select = m_lieu.getSelectedIndex();
 		int lieu_num = m_num_lieu.getSelectedIndex();
 
-		if (lieu_select == 0 && resul) {
+		if (lieu_select == 0) {
 			Debug("ERROR: Wrong Place");
 			Erreur.showSimpleErreur(Program.getError("Error055")); //"Veuillez sélectionner un emplacement!"
 			return false;
@@ -606,8 +524,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		if (cave != null) {
 			boolean isCaisse = cave.isCaisse();
 			String sPlaceName = "";
-			if (lieu_select > 0)
+			if (lieu_select > 0) {
 				sPlaceName = cave.getNom();
+			}
 
 			int line = 0;
 			int column = 0;
@@ -622,7 +541,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				column = m_column.getSelectedIndex();
 				if (column == 0) {
 					Debug("ERROR: Wrong Column");
-					Erreur.showSimpleErreur(Program.getError("Error058")); //"Veuillez sélectionner un numero de line!"
+					Erreur.showSimpleErreur(Program.getError("Error058")); //"Veuillez sélectionner un numero de colonne!"
 					return false;
 				}
 			}
@@ -682,8 +601,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			RangementUtils.putTabStock();
 			Search.updateTable();
 
-			if(!rangement.isCaisse())
+			if(!rangement.isCaisse()) {
 				rangement.updateToStock(m_laBouteille);
+			}
 
 			m_end.setText(Program.getLabel("Infos144"));
 		}
@@ -721,10 +641,11 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		String place = bottle.getEmplacement();
 
 		Program.getStorage().addHistory(History.MODIFY, bottle);
-		if(bToDelete != null)
+		if(bToDelete != null) {
 			Program.getStorage().deleteWine(bToDelete);
-		else
+		} else {
 			Program.getStorage().replaceWineAll(bottle, lieu_num, ligne, colonne);
+		}
 
 		if(m_laBouteille != null) {
 			m_laBouteille.getRangement().clearStock(m_laBouteille);
@@ -734,8 +655,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		Search.updateTable();
 
 		Rangement r = Program.getCave(place);
-		if(r != null && !r.isCaisse())
+		if(r != null && !r.isCaisse()) {
 			r.updateToStock(bottle);
+		}
 	}
 
 	private boolean runExit() {
@@ -792,125 +714,11 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 
 	/**
-	 * <p>Titre : Cave à vin</p>
-	 * <p>Description : Votre description</p>
-	 * <p>Copyright : Copyright (c) 1998</p>
-	 * <p>Société : Seb Informatique</p>
-	 * @author Sébastien Duché
-	 * @version 0.1
-	 * @since 17/04/05
-	 */
-	class PopupListener extends MouseAdapter {
-		@Override
-		public void mousePressed(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		@Override
-		public void mouseEntered(MouseEvent e) {
-		}
-		@Override
-		public void mouseExited(MouseEvent e) {
-		}
-		@Override
-		public void mouseReleased(MouseEvent e) {
-		}
-
-		private void maybeShowPopup(MouseEvent e) {
-			JTextField jtf = null;
-			try {
-				jtf = (JTextField) e.getComponent();
-				if (jtf.isEnabled() && jtf.isVisible()) {
-					m_objet1 = e.getComponent();
-				}
-			}
-			catch (Exception ee) {}
-			try {
-				jtf = (JTextField) m_objet1;
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					if (jtf.isFocusable() && jtf.isEnabled()) {
-						jtf.requestFocus();
-						if (jtf.getSelectedText() == null) {
-							couper.setEnabled(false);
-							copier.setEnabled(false);
-						}
-						else {
-							couper.setEnabled(true);
-							copier.setEnabled(true);
-						}
-						if (jtf.isEnabled() && jtf.isVisible()) {
-							popup.show(e.getComponent(), e.getX(), e.getY());
-						}
-					}
-				}
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					if (jtf.isFocusable() && jtf.isEnabled()) {
-						jtf.requestFocus();
-						if (jtf.getSelectedText() == null) {
-							cut.setEnabled(false);
-							copy.setEnabled(false);
-						}
-						else {
-							cut.setEnabled(true);
-							copy.setEnabled(true);
-						}
-					}
-				}
-			}
-			catch (Exception ee) {}
-			JTextArea jta = null;
-			try {
-				jta = (JTextArea) e.getComponent();
-				if (jta.isEnabled() && jta.isVisible()) {
-					m_objet1 = e.getComponent();
-				}
-			}
-			catch (Exception e1) {}
-			try {
-				jta = (JTextArea) m_objet1;
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					if (jta.isFocusable() && jta.isEnabled()) {
-						jta.requestFocus();
-						if (jta.getSelectedText() == null) {
-							couper.setEnabled(false);
-							copier.setEnabled(false);
-						}
-						else {
-							couper.setEnabled(true);
-							copier.setEnabled(true);
-						}
-						if (jta.isEnabled() && jta.isVisible()) {
-							popup.show(e.getComponent(), e.getX(), e.getY());
-						}
-					}
-				}
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					if (jta.isFocusable() && jta.isEnabled()) {
-						jta.requestFocus();
-						if (jta.getSelectedText() == null) {
-							cut.setEnabled(false);
-							copy.setEnabled(false);
-						}
-						else {
-							cut.setEnabled(true);
-							copy.setEnabled(true);
-						}
-					}
-				}
-			}
-			catch (Exception ee) {}
-		}
-	}
-
-	/**
 	 * Debug
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	protected static void Debug(String sText) {
 		Program.Debug("ManageBottle: " + sText );
 	}
 
@@ -957,7 +765,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 
 }

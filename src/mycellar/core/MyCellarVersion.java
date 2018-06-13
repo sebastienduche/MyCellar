@@ -9,19 +9,14 @@ import java.io.InputStreamReader;
 
 public class MyCellarVersion {
 
-	public static final String version = "2.9.0.3";
-	public static final String mainVersion = "5.4 DB";
+	public static final String VERSION = "3.0.2.6";
+	public static final String MAIN_VERSION = "5.5 ZE";
   
 	public static String getLocalVersion() {
-		InputStream stream = MyCellarVersion.class.getClassLoader().getResourceAsStream("MyCellarVersion.txt");
-		if(stream == null)
-			return "";
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		String version;
-		try {
-			version = reader.readLine();
-			reader.close();
-			return version;
+		try(InputStream stream = MyCellarVersion.class.getClassLoader().getResourceAsStream("MyCellarVersion.txt");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream)))
+		{
+			return reader.readLine();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -30,11 +25,9 @@ public class MyCellarVersion {
 	
 	public static void setLocalVersion(String version) {
 		File f = new File("MyCellarVersion.txt");
-		try {
-			FileWriter writer = new FileWriter(f);
+		try (FileWriter writer = new FileWriter(f)){
 			writer.write(version);
 			writer.flush();
-			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

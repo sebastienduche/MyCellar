@@ -33,8 +33,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.8
- * @since 15/03/18
+ * @version 5.9
+ * @since 23/05/18
  */
 public class Stat extends JPanel implements ITabListener {
 
@@ -464,7 +464,7 @@ public class Stat extends JPanel implements ITabListener {
 			Debug("options_actionPerforming...");
 			options.setSelected(false);
 			String value = JOptionPane.showInputDialog(this, Program.getLabel("Infos194"));
-			if(value != null && StringUtils.isNumeric(value)) {
+			if(StringUtils.isNumeric(value)) {
 				Program.putCaveConfigInt("TRANCHE_PRIX", new Integer(value));
 				listPrice.clear();
 				list2_itemStateChanged(null);
@@ -480,7 +480,7 @@ public class Stat extends JPanel implements ITabListener {
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("Stat: " + sText );
 	}
 
@@ -491,7 +491,7 @@ public class Stat extends JPanel implements ITabListener {
 
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 
 	private class PanelChart extends JPanel {

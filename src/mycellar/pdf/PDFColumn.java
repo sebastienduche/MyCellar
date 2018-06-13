@@ -8,8 +8,8 @@ import mycellar.core.MyCellarFields;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 16/04/16
+ * @version 0.3
+ * @since 08/06/18
  */
 
 public class PDFColumn {
@@ -19,11 +19,11 @@ public class PDFColumn {
 	private String title;
 	private MyCellarFields field;
 	
-	public PDFColumn(MyCellarFields field, int index, int width, String title) {
+	PDFColumn(MyCellarFields field, int index, int width, String title) {
 		this.index = index;
 		this.width = width;
-		this.setField(field);
-		this.setTitle(title);
+		setField(field);
+		setTitle(title);
 	}
 	
 	public int getIndex() {
@@ -46,7 +46,7 @@ public class PDFColumn {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	private void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -54,7 +54,7 @@ public class PDFColumn {
 		return field;
 	}
 
-	public void setField(MyCellarFields field) {
+	private void setField(MyCellarFields field) {
 		this.field = field;
 	}
 }

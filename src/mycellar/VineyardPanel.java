@@ -35,8 +35,8 @@ import java.util.List;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 1.8
- * @since 02/03/18
+ * @version 1.9
+ * @since 23/05/18
  */
 
 public class VineyardPanel extends JPanel implements ITabListener {
@@ -150,7 +150,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 		tc.setMaxWidth(25);
 	}
 
-	class AddVignobleAction extends AbstractAction {
+	private class AddVignobleAction extends AbstractAction {
 
 		private static final long serialVersionUID = 2164410331118124652L;
 
@@ -305,7 +305,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("VineyardPanel: " + sText );
 	}
 
@@ -323,7 +323,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 		comboCountry.setSelectedIndex(0);
 		model.setAppellations(null, null, null);
 		Program.updateAllPanels();
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 
 }

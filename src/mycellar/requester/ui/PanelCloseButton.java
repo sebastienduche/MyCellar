@@ -1,5 +1,9 @@
 package mycellar.requester.ui;
 
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -12,21 +16,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.plaf.basic.BasicButtonUI;
-
 /**
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 11/06/14
+ * @version 0.2
+ * @since 08/06/18
  */
-public abstract class PanelCloseButton extends JButton implements ActionListener {
+abstract class PanelCloseButton extends JButton implements ActionListener {
 
     private static final long serialVersionUID = 76516458718107537L;
 
@@ -44,12 +43,13 @@ public abstract class PanelCloseButton extends JButton implements ActionListener
         setBorderPainted(false);
         // Making nice rollover effect
         // we use the same listener for all buttons
-        addMouseListener(buttonMouseListener);
+        addMouseListener(BUTTON_MOUSE_LISTENER);
         setRolloverEnabled(true);
         // Close the proper tab by clicking the button
         addActionListener(this);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
     	actionPerformed();
     }
@@ -80,7 +80,8 @@ public abstract class PanelCloseButton extends JButton implements ActionListener
                 - delta - 1);
         g2.dispose();
     }
-private final static MouseListener buttonMouseListener = new MouseAdapter() {
+private static final MouseListener BUTTON_MOUSE_LISTENER = new MouseAdapter() {
+    @Override
     public void mouseEntered(MouseEvent e) {
         Component component = e.getComponent();
         if (component instanceof AbstractButton) {
@@ -88,7 +89,7 @@ private final static MouseListener buttonMouseListener = new MouseAdapter() {
             button.setBorderPainted(true);
         }
     }
-
+    @Override
     public void mouseExited(MouseEvent e) {
         Component component = e.getComponent();
         if (component instanceof AbstractButton) {

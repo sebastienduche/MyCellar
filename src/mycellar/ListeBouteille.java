@@ -8,7 +8,14 @@
 
 package mycellar;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -17,9 +24,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.LinkedList;
 
 /**
@@ -28,12 +40,9 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 02/03/18
- */
-
-
-/**
+ * @version 0.9
+ * @since 22/05/18
+ *
  * <p>Java class for anonymous complex type.
  *
  * <p>The following schema fragment specifies the expected content contained within this class.
@@ -61,7 +70,7 @@ import java.util.LinkedList;
 public class ListeBouteille {
 
 	@XmlElement(name = "Bouteille", required = true)
-	protected LinkedList<Bouteille> bouteille;
+	LinkedList<Bouteille> bouteille;
 
 	/**
 	 * Gets the value of the bouteille property.
@@ -87,60 +96,82 @@ public class ListeBouteille {
 	 */
 	public LinkedList<Bouteille> getBouteille() {
 		if (bouteille == null) {
-			bouteille = new LinkedList<Bouteille>();
+			bouteille = new LinkedList<>();
 		}
-		return this.bouteille;
+		return bouteille;
 	}
 
-	public void resetBouteille() {
+	void resetBouteille() {
 		bouteille = null;
 	}
 
-	public static boolean loadXML() {
+	static boolean loadXML() {
 		Debug("Loading JAXB File");
 		File f = new File(Program.getXMLBottlesFileName());
+		return loadXML(f);
+	}
+
+	static boolean loadXML(File f) {
+		Debug("Loading XML File "+f.getAbsolutePath());
 		if(!f.exists())
 			return false;
 		try {
-			JAXBContext jc = JAXBContext.newInstance(ObjectFactory.class);
-			Unmarshaller u = jc.createUnmarshaller();
-			ListeBouteille lb =
-					(ListeBouteille)u.unmarshal(new FileInputStream(f));
-			Program.getStorage().setListBouteilles(lb);
-		} catch( Exception e ) {
+			unMarshalXML(f);
+			return true;
+		} catch (Exception e) {
+			Debug("ERROR: Unable to Unmarshall JAXB File");
+			Program.showException(e, false);
+		}
+		Debug("Manual loading of the XML file");
+		try {
+			manualLoadXML(f);
+		} catch (ParserConfigurationException | IOException | SAXException e) {
+			Debug("ERROR: Unable to load manually File");
 			Program.showException(e);
 			return false;
 		}
-		Debug("Loading JAXB File Done");
 		return true;
 	}
 
-	public static void loadXML(File f) {
-		Debug("Loading JAXB File "+f.getAbsolutePath());
-		if(!f.exists())
-			return;
-		try {
-			JAXBContext jc = JAXBContext.newInstance(ObjectFactory.class);
-			Unmarshaller u = jc.createUnmarshaller();
-			ListeBouteille lb =
-					(ListeBouteille)u.unmarshal(new FileInputStream(f));
-			Program.getStorage().addBouteilles(lb);
-		} catch( Exception e ) {
-			Program.showException(e);
-			return;
+	private static void manualLoadXML(File f) throws ParserConfigurationException, IOException, SAXException {
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document doc = dBuilder.parse(f);
+		doc.getDocumentElement().normalize();
+
+		ListeBouteille listeBouteille = new ListeBouteille();
+		NodeList bouteilles = doc.getElementsByTagName("Bouteille");
+
+		for (int i = 0; i < bouteilles.getLength(); i++) {
+			Node node = bouteilles.item(i);
+
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element bouteilleElem = (Element) node;
+				listeBouteille.getBouteille().add(Bouteille.getBouteilleFromXML(bouteilleElem));
+			}
 		}
+		Program.getStorage().setListBouteilles(listeBouteille);
+		Debug("Loading Manually File Done");
+	}
+
+	private static void unMarshalXML(File f) throws JAXBException, FileNotFoundException {
+		JAXBContext jc = JAXBContext.newInstance(ObjectFactory.class);
+		Unmarshaller u = jc.createUnmarshaller();
+		ListeBouteille lb =
+				(ListeBouteille)u.unmarshal(new FileInputStream(f));
+		Program.getStorage().addBouteilles(lb);
 		Debug("Loading JAXB File Done");
 	}
 
-	public static boolean writeXML() {
+	static boolean writeXML() {
 		return writeXML(Program.getStorage().getListBouteilles(), new File(Program.getXMLBottlesFileName()));
 	}
 
-	public static boolean writeXML(File f) {
+	static boolean writeXML(File f) {
 		return writeXML(Program.getStorage().getListBouteilles(), f);
 	}
 
-	public static boolean writeXML(ListeBouteille liste, File f) {
+	static boolean writeXML(ListeBouteille liste, File f) {
 		Debug("Writing JAXB File");
 		try {
 			JAXBContext jc = JAXBContext.newInstance(ObjectFactory.class);

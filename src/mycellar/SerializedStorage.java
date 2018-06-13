@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -16,8 +17,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.7
- * @since 15/03/18
+ * @version 4.9
+ * @since 13/06/18
  */
 
 public class SerializedStorage implements Storage {
@@ -70,7 +71,10 @@ public class SerializedStorage implements Storage {
 	public void addBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles.getBouteille().addAll(listBouteilles.getBouteille());
 		for(Bouteille b: listBouteilles.bouteille) {
-			b.updateID();
+			final List<History> theBottle = m_HistoryList.getHistory().stream().filter(history -> history.getBouteille().getId() == b.getId()).collect(Collectors.toList());
+			if (b.updateID() && !theBottle.isEmpty()) {
+				theBottle.get(0).getBouteille().setId(b.getId());
+			}
 			if(!listeUniqueBouteille.contains(b.getNom()))
 				listeUniqueBouteille.add(b.getNom());
 		}
@@ -305,7 +309,7 @@ public class SerializedStorage implements Storage {
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("SerializedStorage: " + sText);
 	}
 
@@ -321,9 +325,8 @@ public class SerializedStorage implements Storage {
 			for (File f : list) {
 				try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
 					Rangement r = (Rangement) ois.readObject();
-					if (r != null) {
+					if (r != null && !cave.contains(r)) {
 						cave.add(r);
-						MyXmlDom.appendRangement(r);
 					}
 					ois.close();
 				} catch (IOException ex) {
@@ -333,6 +336,7 @@ public class SerializedStorage implements Storage {
 					bresul = false;
 				}
 			}
+			MyXmlDom.writeMyCellarXml(cave, "");
 		}
 		return bresul;
 	}
@@ -351,9 +355,10 @@ public class SerializedStorage implements Storage {
 		boolean resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + "history.xml"));
 		if(!resul) {
 			m_HistoryList = new HistoryList();
-			Debug("Loadinging History KO");
+			Debug("Loading History KO");
+		} else {
+			Debug("Loading History OK");
 		}
-		Debug("Loadinging History OK");
 		return resul;
 	}
 

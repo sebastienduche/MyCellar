@@ -13,7 +13,7 @@ import java.util.List;
  * @version 0.2
  * @since 02/03/18
  */
-public class XLSOptionsValues extends AbstractTableModel {
+class XLSOptionsValues extends AbstractTableModel {
   public static final int ETAT = 0;
   private final String[] columnNames = {"",""};
   private final List<String> oVector = new LinkedList<>();

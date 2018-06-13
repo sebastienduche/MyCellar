@@ -1,12 +1,11 @@
 package mycellar.actions;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.IAddVin;
+
+import javax.swing.AbstractAction;
+import java.awt.event.ActionEvent;
 
 public class ChooseCellAction extends AbstractAction {
 
@@ -18,6 +17,6 @@ public class ChooseCellAction extends AbstractAction {
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Start.openCellChooserPanel(addvin);
+		Start.getInstance().openCellChooserPanel(addvin);
 	}
 }

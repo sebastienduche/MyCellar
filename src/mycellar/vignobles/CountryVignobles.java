@@ -1,14 +1,16 @@
 package mycellar.vignobles;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.Vignoble;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -22,11 +24,11 @@ import mycellar.countries.Country;
 
 public final class CountryVignobles {
 
-	private final HashMap<Country, Vignobles> map = new HashMap<Country, Vignobles>();
-	private final HashMap<CountryVignoble, Vignoble> mapVignobles = new HashMap<CountryVignoble, Vignoble>();
-	private final LinkedList<Vignoble> usedVignoblesList = new LinkedList<Vignoble>();
-	private final LinkedList<String> usedAppellationsList = new LinkedList<String>();
-	private static final CountryVignobles instance = new CountryVignobles();
+	private final Map<Country, Vignobles> map = new HashMap<>();
+	private final Map<CountryVignoble, Vignoble> mapVignobles = new HashMap<>();
+	private final List<Vignoble> usedVignoblesList = new LinkedList<>();
+	private final List<String> usedAppellationsList = new LinkedList<>();
+	private static final CountryVignobles INSTANCE = new CountryVignobles();
 	
 	private CountryVignobles() {
 		map.put(Countries.find("FRA"), Vignobles.loadFrance());
@@ -34,21 +36,21 @@ public final class CountryVignobles {
 	}
 	
 	public static void init() {
-		instance.map.clear();
-		instance.map.put(Countries.find("FRA"), Vignobles.loadFrance());
-		instance.map.put(Countries.find("ITA"), Vignobles.loadItalie());
+		INSTANCE.map.clear();
+		INSTANCE.map.put(Countries.find("FRA"), Vignobles.loadFrance());
+		INSTANCE.map.put(Countries.find("ITA"), Vignobles.loadItalie());
 	}
 	
 	public static void close() {
-		instance.map.clear();
+		INSTANCE.map.clear();
 	}
 	
 	public static void load() {
-		Vignobles.loadAllCountries(instance.map);
+		Vignobles.loadAllCountries(INSTANCE.map);
 	}
 	
 	public static Vignobles getVignobles(Country country) {
-		return instance.map.get(country);
+		return INSTANCE.map.get(country);
 	}
 	
 	public static boolean createCountry(Country country) {
@@ -59,14 +61,14 @@ public final class CountryVignobles {
 			return false;
 		Vignobles vignobles = new Vignobles();
 		vignobles.setVignoble(new ArrayList<CountryVignoble>());
-		instance.map.put(country, vignobles);
+		INSTANCE.map.put(country, vignobles);
 		Debug("Creating country End");
 		return true;
 	}
 	
 	public static boolean deleteCountry(Country country) {
 		Debug("Deleting country... "+country.getName());
-		instance.map.remove(country);
+		INSTANCE.map.remove(country);
 		boolean resul = Vignobles.delete(country);
 		Debug("Deleting country End");
 		return resul;
@@ -85,7 +87,7 @@ public final class CountryVignobles {
 		int i = 1;
 		do {
 			found = false;
-    		for(Country c: instance.map.keySet()) {
+    		for(Country c: INSTANCE.map.keySet()) {
     			if(c.getId().equalsIgnoreCase(id)) {
     				id = id.substring(0, 3) + i;
     				i++;
@@ -98,16 +100,16 @@ public final class CountryVignobles {
 
 	public static void addVignobleFromBottles() {
 		Debug("addVignobleFromBottles...");
-		instance.usedVignoblesList.clear();
+		INSTANCE.usedVignoblesList.clear();
 		LinkedList<Bouteille> list = Program.getStorage().getAllList();
-		for (mycellar.Bouteille b : list) {
+		for (Bouteille b : list) {
 			Vignoble vignoble = b.getVignoble();
-			if(vignoble != null && !instance.usedVignoblesList.contains(vignoble)) {
-				instance.usedVignoblesList.add(vignoble);
+			if(vignoble != null && !INSTANCE.usedVignoblesList.contains(vignoble)) {
+				INSTANCE.usedVignoblesList.add(vignoble);
 			}
 			createVignobleInMap(vignoble);
 		}
-		for(Vignoble v : instance.usedVignoblesList) {
+		for(Vignoble v : INSTANCE.usedVignoblesList) {
 			addVignoble(v);	
 		}
 		Debug("addVignobleFromBottles... End");
@@ -154,33 +156,33 @@ public final class CountryVignobles {
 		
 		Appelation appellation = getVignobles(c).findAppelation(vignoble);
 		String val = vignoble.toString();
-		if(appellation != null && !appellation.isEmpty() && !instance.usedAppellationsList.contains(val)) {
-			instance.usedAppellationsList.add(val);
+		if(appellation != null && !appellation.isEmpty() && !INSTANCE.usedAppellationsList.contains(val)) {
+			INSTANCE.usedAppellationsList.add(val);
 		}
 
-		instance.mapVignobles.put(vigne, vignoble);
+		INSTANCE.mapVignobles.put(vigne, vignoble);
 	}
 
 	public static boolean isVignobleUsed(CountryVignoble vignoble) {
-		Vignoble vigne = instance.mapVignobles.get(vignoble);
+		Vignoble vigne = INSTANCE.mapVignobles.get(vignoble);
 		if(vigne == null) {
 			return false;
 		}
-		return instance.usedVignoblesList.contains(vigne);
+		return INSTANCE.usedVignoblesList.contains(vigne);
 	}
 	
 	public static boolean isAppellationUsed(Country country, CountryVignoble vignoble, Appelation appellation) {
 		String val = country.getId() + "-" + vignoble.toString() + "-"+ appellation.getKeyString();
-		return instance.usedAppellationsList.contains(val);
+		return INSTANCE.usedAppellationsList.contains(val);
 	}
 	
 	public static void renameVignoble(CountryVignoble vignoble, String name) {
-		Vignoble vigne = instance.mapVignobles.get(vignoble);
+		Vignoble vigne = INSTANCE.mapVignobles.get(vignoble);
 		vignoble.setName(name);
 		if(vigne == null) {
 			return;
 		}
-		if(instance.usedVignoblesList.contains(vigne)) {
+		if(INSTANCE.usedVignoblesList.contains(vigne)) {
 			LinkedList<Bouteille> list = Program.getStorage().getAllList();
 			for (Bouteille b : list) {
 				Vignoble v = b.getVignoble();
@@ -193,12 +195,12 @@ public final class CountryVignobles {
 	}
 	
 	public static void renameAOC(CountryVignoble vignoble, Appelation appelation, String name) {
-		Vignoble vigne = instance.mapVignobles.get(vignoble);
+		Vignoble vigne = INSTANCE.mapVignobles.get(vignoble);
 		if(vigne == null) {
 			appelation.setAOC(name);
 			return;
 		}
-		if(instance.usedVignoblesList.contains(vigne)) {
+		if(INSTANCE.usedVignoblesList.contains(vigne)) {
 			LinkedList<Bouteille> list = Program.getStorage().getAllList();
 			for (Bouteille b : list) {
 				Vignoble v = b.getVignoble();
@@ -215,12 +217,12 @@ public final class CountryVignobles {
 	}
 	
 	public static void renameIGP(CountryVignoble vignoble, Appelation appelation, String name) {
-		Vignoble vigne = instance.mapVignobles.get(vignoble);
+		Vignoble vigne = INSTANCE.mapVignobles.get(vignoble);
 		if(vigne == null) {
 			appelation.setIGP(name);
 			return;
 		}
-		if(instance.usedVignoblesList.contains(vigne)) {
+		if(INSTANCE.usedVignoblesList.contains(vigne)) {
 			LinkedList<Bouteille> list = Program.getStorage().getAllList();
 			for (Bouteille b : list) {
 				Vignoble v = b.getVignoble();
@@ -263,7 +265,7 @@ public final class CountryVignobles {
 			else {
 				Appelation ap = getVignobles(c).findAppelation(v);
 				v.setValues(ap);
-				instance.mapVignobles.put(cv, v);
+				INSTANCE.mapVignobles.put(cv, v);
 			}
 		}
 		else {
@@ -273,13 +275,13 @@ public final class CountryVignobles {
 			vignobles.setVignoble(new ArrayList<CountryVignoble>());
 			vignobles.addVignoble(v);
 			Countries.add(c);
-			instance.map.put(c, vignobles);
+			INSTANCE.map.put(c, vignobles);
 		}
-		if(!instance.usedVignoblesList.contains(v))
-			instance.usedVignoblesList.add(v);
+		if(!INSTANCE.usedVignoblesList.contains(v))
+			INSTANCE.usedVignoblesList.add(v);
 		String val = v.toString();
-		if(!instance.usedAppellationsList.contains(val))
-			instance.usedAppellationsList.add(val);
+		if(!INSTANCE.usedAppellationsList.contains(val))
+			INSTANCE.usedAppellationsList.add(val);
 	}
 	
 	public static void addVignobleFromBottle(Bouteille wine) {
@@ -290,14 +292,14 @@ public final class CountryVignobles {
 	
 	public static void save() {
 		Debug("Saving...");
-		for( Country c : instance.map.keySet()){
-			Vignobles.save(c, instance.map.get(c));
+		for( Country c : INSTANCE.map.keySet()){
+			Vignobles.save(c, INSTANCE.map.get(c));
 		}
 		Debug("Saved");
 	}
 	
 	public static boolean hasCountryByName(Country country) {
-		for( Country c : instance.map.keySet()){
+		for( Country c : INSTANCE.map.keySet()){
 			if(c.getName().equalsIgnoreCase(country.getName()))
 				return true;
 		}
@@ -309,7 +311,7 @@ public final class CountryVignobles {
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("CountryVignobles: " + sText );
 	}
 }

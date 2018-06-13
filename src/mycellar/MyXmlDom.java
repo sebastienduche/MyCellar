@@ -26,8 +26,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 02/03/18
- * @version 2.0
+ * @since 22/05/18
+ * @version 2.3
  */
 
 public class MyXmlDom {
@@ -35,20 +35,20 @@ public class MyXmlDom {
 	/**
 	 * readMyCellarXml: Lit le fichier MyCellar.xml des rangements
 	 *
-	 * @return LinkedList<Rangement> Liste de rangements
 	 */
-	public static LinkedList<Rangement> readMyCellarXml(String _sFileName) {
+	static boolean readMyCellarXml(String _sFileName, final List<Rangement> rangementList) {
 
 		Debug("readMyCellarXml: Reading file");
+		rangementList.clear();
 		String filename = Program.getXMLPlacesFileName();
 		if( !_sFileName.isEmpty() )
 			filename = _sFileName;
-		LinkedList<Rangement> oRangementVector = new LinkedList<>();
 		LinkedList<String> names = new LinkedList<>();
 
 		File file = new File(filename);
-		if(!file.exists())
-			return null;
+		if(!file.exists()) {
+			return false;
+		}
 
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -83,7 +83,7 @@ public class MyXmlDom {
 							Debug("WARNING: Rangement name '"+sName+"' already used!");
 						}
 						else {
-							oRangementVector.add(new Rangement( sName, nPlace, nNumStart, bLimit, nNbLimit));
+							rangementList.add(new Rangement( sName, nPlace, nNumStart, bLimit, nNbLimit));
 							names.add(sName);
 						}
 					}
@@ -123,8 +123,7 @@ public class MyXmlDom {
 						}
 						else {
 							names.add(sName);
-							//Rangement rangement = new Rangement(sName, nPlace, nb_lignes, nb_colonnes);
-							oRangementVector.add(new Rangement(sName, listPart));
+							rangementList.add(new Rangement(sName, listPart));
 						}
 					}
 
@@ -134,160 +133,50 @@ public class MyXmlDom {
 		catch (IOException e) {
 			Debug("IOException");
 			Program.showException(e, false);
-			return oRangementVector;
+			return false;
 		} catch (ParserConfigurationException e) {
 			Debug("ParserConfigurationException");
 			Program.showException(e, false);
-			return oRangementVector;
+			return false;
 		} catch (SAXException e) {
 			Debug("SAXException");
 			Program.showException(e, false);
-			return oRangementVector;
+			return false;
 		}
 
 		Debug("readMyCellarXml: Reading file OK");
-		return oRangementVector;
+		return true;
 	}
 
 	/**
 	 * writeMyCellarXml
 	 *
 	 * @param _oCave LinkedList<Rangement>
-	 * @return boolean
 	 */
-	public static boolean writeMyCellarXml(List<Rangement> _oCave, String _sFilename) {
+	static void writeMyCellarXml(List<Rangement> _oCave, String _sFilename) {
 
 		Debug("writeMyCellarXml: Writing file");
 		String filename = Program.getXMLPlacesFileName();
 		if(!_sFilename.isEmpty())
 			filename = _sFilename;
-		try {
-			FileWriter oFile = new FileWriter(filename);
+		try (FileWriter oFile = new FileWriter(filename)){
 			//Init XML File
-			oFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			// Racine XML
-			oFile.write("<MyCellar>");
+			oFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
 			// Ecriture des rangements
 			for (Rangement r : _oCave){
-				if (r != null)
+				if (r != null) {
 					oFile.write(r.toXml());
-			}
-			oFile.write("</MyCellar>");
-			oFile.flush();
-			oFile.close();
-		}
-		catch (IOException ex) {
-			Program.showException(ex);
-			return false;
-		}
-		Debug("writeMyCellarXml: Writing file OK");
-		return true;
-	}
-
-	/**
-	 * appendRangement
-	 *
-	 * @param _oCave Rangement
-	 * @return boolean
-	 */
-	public static void appendRangement(Rangement _oCave) {
-		Debug("appendRangement: Add place "+_oCave.getNom());
-		LinkedList<Rangement> oCaveTmp = readMyCellarXml("");
-		if( null == oCaveTmp )
-			oCaveTmp = new LinkedList<Rangement>();
-		if(!oCaveTmp.contains(_oCave))
-			oCaveTmp.add(_oCave);
-
-		writeMyCellarXml(oCaveTmp,"");
-	}
-
-	/**
-	 * writeTypeXml
-	 *
-	 * @param typeList LinkedList<String>
-	 * @return boolean
-	 */
-	public static void writeTypeXml(List<String> typeList) {
-
-		Debug("writeTypeXml: Writing file");
-		String filename = Program.getXMLTypesFileName();
-		try {
-			FileWriter oFile = new FileWriter(filename);
-			//Init XML File
-			oFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			// Racine XML
-			oFile.write("<MyCellar>");
-			// Ecriture des types
-			for (String type: typeList){
-				if(type.equals(Program.defaut_half))
-					oFile.write("<type value=\""+type+"\" default=\"true\"/>");
-				else
-					oFile.write("<type value=\""+type+"\"/>");
-			}
-			oFile.write("</MyCellar>");
-			oFile.flush();
-			oFile.close();
-		}
-		catch (IOException ex) {
-			Program.showException(ex);
-		}
-		Debug("writeTypeXml: Writing file OK");
-	}
-
-	/**
-	 * readTypesXml: Lit le fichier Types.xml des types
-	 *
-	 * @return LinkedList<String> Liste de types 
-	 */
-	public static LinkedList<String> readTypesXml()  {
-
-		Debug("readTypesXml: Reading file");
-		File file = new File(Program.getXMLTypesFileName());
-		if(!file.exists()) {
-			Debug("WARNING: file '"+Program.getXMLTypesFileName()+"' not found!");
-			return null;
-		}
-
-		LinkedList<String> typeList = new LinkedList<String>();
-		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(new File(Program.getXMLTypesFileName()));
-			doc.getDocumentElement().normalize();
-
-			NodeList types = doc.getElementsByTagName("type");
-
-			for (int i = 0; i < types.getLength(); i++) {
-				Node nNode = types.item(i);
-
-				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-					Element type = (Element) nNode;
-					// Récupération des noeuds des types
-					String value = type.getAttribute("value");
-					if(type.hasAttribute("default"))
-						Program.defaut_half = value;
-					if(value != null && !value.isEmpty() && !typeList.contains(value))
-						typeList.add(value);
 				}
 			}
+			oFile.write("</MyCellar>");
+			oFile.flush();
 		}
-		catch (IOException e) {
-			Debug("IOException");
-			Program.showException(e, false);
-			return typeList;
-		} catch (ParserConfigurationException e) {
-			Debug("ParserConfigurationException");
-			Program.showException(e, false);
-			return typeList;
-		} catch (SAXException e) {
-			Debug("SAXException");
-			Program.showException(e, false);
-			return typeList;
+		catch (IOException ex) {
+			Program.showException(ex);
 		}
-		Debug("readTypesXml: Reading file OK");
-		return typeList;
+		Debug("writeMyCellarXml: Writing file OK");
 	}
-	
+
 	/**
 	 * writeRangements: Ecriture des Rangements pour l'export XML/HTML
 	 *
@@ -406,7 +295,7 @@ public class MyXmlDom {
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("MyXmlDom: " + sText);
 	}
 

@@ -7,7 +7,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import mycellar.Program;
 
-public class FontBoldTableCellRenderer extends DefaultTableCellRenderer {
+class FontBoldTableCellRenderer extends DefaultTableCellRenderer {
 
 	private static final long serialVersionUID = -7366533325659261460L;
 

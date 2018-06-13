@@ -25,7 +25,7 @@ import java.util.List;
  * @version 3.6
  * @since 02/03/18
  */
-public class ListVin extends JPanel {
+class ListVin extends JPanel {
   private JTable table;
   private ListValues tv;
 

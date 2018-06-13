@@ -13,7 +13,7 @@ import mycellar.core.MyCellarFields;
  * @since 15/03/18
  */
 
-public abstract class ShowFileColumn {
+abstract class ShowFileColumn {
 
 	private MyCellarFields properties;
 	private int width;

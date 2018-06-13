@@ -25,7 +25,7 @@ public class JModifyFormattedTextField extends JFormattedTextField {
 	private boolean modified;
 	private boolean active;
 
-	public JModifyFormattedTextField() {
+	private JModifyFormattedTextField() {
 		init();
 	}
 

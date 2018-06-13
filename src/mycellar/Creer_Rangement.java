@@ -1,38 +1,32 @@
 package mycellar;
 
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSpinner;
+import mycellar.core.PopupListener;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -46,10 +40,10 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.2
- * @since 13/03/18
+ * @version 12.5
+ * @since 29/05/18
  */
-public class Creer_Rangement extends JPanel implements ITabListener {
+public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable {
 
 	private final MyCellarComboBox<String> comboPlace = new MyCellarComboBox<>();
 	private final JTextField nom_obj = new JTextField();
@@ -69,13 +63,6 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 	private final MyCellarLabel label_cree = new MyCellarLabel();
 	private final MyCellarButton preview = new MyCellarButton();
 	private int start_caisse = 0;
-	private final JPopupMenu popup = new JPopupMenu();
-	private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
-	private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
-	private final JMenuItem cut = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
-	private final JMenuItem copy = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
-	private final MyClipBoard clipboard = new MyClipBoard();
-	private Component objet1 = null;
 	private final JPanel panelType;
 	private final JPanel panelStartCaisse;
 	private final JPanel panelLimite;
@@ -128,6 +115,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 		checkLimite.addItemListener(this::checkbox2_itemStateChanged);
 
 		nom_obj.addActionListener((e) -> label_cree.setText(""));
+		nom_obj.addMouseListener(new PopupListener());
 
 		addKeyListener(new KeyListener() {
 			@Override
@@ -140,26 +128,6 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 			public void keyTyped(KeyEvent e) {}
 		});
 
-		JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
-		JMenuItem paste = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
-		couper.addActionListener(this::couper_actionPerformed);
-		cut.addActionListener(this::couper_actionPerformed);
-		copier.addActionListener(this::copier_actionPerformed);
-		copy.addActionListener(this::copier_actionPerformed);
-		coller.addActionListener(this::coller_actionPerformed);
-		paste.addActionListener(this::coller_actionPerformed);
-		couper.setEnabled(false);
-		copier.setEnabled(false);
-		popup.add(couper);
-		popup.add(copier);
-		popup.add(coller);
-		MouseListener popup_l = new PopupListener();
-		nom_obj.addMouseListener(popup_l);
-		cut.setEnabled(false);
-		copy.setEnabled(false);
-		cut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
-		copy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
-		paste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
 
 		label_limite.setText(Program.getLabel("Infos177"));
 
@@ -436,8 +404,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 					Debug("Modify completed");
 					label_cree.setText(Program.getError("Error123")); //"Rangement modifié.");
 				}
-			}
-			else {
+			}	else {
 				// Rangement complexe
 				Debug("Modifying complex place...");
 				Rangement rangement = Program.getCave(comboPlace.getSelectedIndex() - 1);
@@ -566,8 +533,9 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 							if (!Program.getErrors().isEmpty())
 								new OpenShowErrorsAction().actionPerformed(null);
 						}
-						if (bResul)
+						if (bResul) {
 							label_cree.setText(Program.getError("Error123"));
+						}
 					}
 				}
 			}
@@ -668,7 +636,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 				Erreur.showKeyErreur(Program.getError("Error164"), "", "DONT_SHOW_CREATE_MESS");
 			}
 			if (bResul) {
-				Start.enableAll(true);
+				Start.getInstance().enableAll(true);
 			}
 		}
 		catch (Exception exc) {
@@ -781,7 +749,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 	 *
 	 * @param e KeyEvent
 	 */
-	void keylistener_actionPerformed(KeyEvent e) {
+	private void keylistener_actionPerformed(KeyEvent e) {
 		
 		if ( (e.getKeyCode() == CREER && e.isControlDown()) || e.getKeyCode() == KeyEvent.VK_ENTER) {
 			create_actionPerformed(null);
@@ -792,130 +760,11 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 	}
 
 	/**
-	 * couper_actionPerformed: Couper
-	 *
-	 * @param e ActionEvent
-	 */
-	private void couper_actionPerformed(ActionEvent e) {
-		String txt = "";
-		try {
-			JTextField jtf = (JTextField) objet1;
-			txt = jtf.getSelectedText();
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
-		}
-		catch (Exception e1) {}
-		clipboard.copier(txt);
-	}
-
-	/**
-	 * copier_actionPerformed: Copier
-	 *
-	 * @param e ActionEvent
-	 */
-	private void copier_actionPerformed(ActionEvent e) {
-		String txt = "";
-		try {
-			JTextField jtf = (JTextField) objet1;
-			txt = jtf.getSelectedText();
-		}
-		catch (Exception e1) {}
-		clipboard.copier(txt);
-	}
-
-	/**
-	 * coller_actionPerformed: Couper
-	 *
-	 * @param e ActionEvent
-	 */
-	private void coller_actionPerformed(ActionEvent e) {
-
-		try {
-			JTextField jtf = (JTextField) objet1;
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
-		}
-		catch (Exception e1) {}
-	}
-
-	/**
-	 * <p>Titre : Cave à vin</p>
-	 * <p>Description : Votre description</p>
-	 * <p>Copyright : Copyright (c) 1998</p>
-	 * <p>Société : Seb Informatique</p>
-	 * @author Sébastien Duché
-	 * @version 0.1
-	 * @since 17/04/05
-	 */
-	class PopupListener extends MouseAdapter {
-		@Override
-		public void mousePressed(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		@Override
-		public void mouseEntered(MouseEvent e) {
-		}
-		@Override
-		public void mouseExited(MouseEvent e) {
-		}
-		@Override
-		public void mouseReleased(MouseEvent e) {
-		}
-
-		private void maybeShowPopup(MouseEvent e) {
-			JTextField jtf = null;
-			try {
-				jtf = (JTextField) e.getComponent();
-				if (jtf.isEnabled() && jtf.isVisible()) {
-					objet1 = e.getComponent();
-				}
-			}
-			catch (Exception ee) {}
-
-			try {
-				jtf = (JTextField) objet1;
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					if (jtf.isFocusable() && jtf.isEnabled()) {
-						jtf.requestFocus();
-						if (jtf.getSelectedText() == null) {
-							couper.setEnabled(false);
-							copier.setEnabled(false);
-						}
-						else {
-							couper.setEnabled(true);
-							copier.setEnabled(true);
-						}
-						if (jtf.isEnabled() && jtf.isVisible()) {
-							popup.show(e.getComponent(), e.getX(), e.getY());
-						}
-					}
-				}
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					if (jtf.isFocusable() && jtf.isEnabled()) {
-						jtf.requestFocus();
-						if (jtf.getSelectedText() == null) {
-							cut.setEnabled(false);
-							copy.setEnabled(false);
-						}
-						else {
-							cut.setEnabled(true);
-							copy.setEnabled(true);
-						}
-					}
-				}
-			}
-			catch (Exception ee) {}
-		}
-	}
-
-	/**
 	 * Debug
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("Creer_Rangement: " + sText);
 	}
 
@@ -936,7 +785,7 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 	
 	@Override
 	public void tabClosed() {
-		Start.updateMainPanel();
+		Start.getInstance().updateMainPanel();
 	}
 
 	public void updateView() {
@@ -944,6 +793,30 @@ public class Creer_Rangement extends JPanel implements ITabListener {
 		comboPlace.addItem("");
 		for( Rangement r: Program.getCave())
 			comboPlace.addItem(r.getNom());
+	}
+
+	@Override
+	public void cut() {
+		String text = nom_obj.getSelectedText();
+		String fullText = nom_obj.getText();
+		if(text != null) {
+			nom_obj.setText(fullText.substring(0, nom_obj.getSelectionStart()) + fullText.substring(nom_obj.getSelectionEnd()));
+			Program.clipboard.copier(text);
+		}
+	}
+
+	@Override
+	public void copy() {
+		String text = nom_obj.getSelectedText();
+		if(text != null) {
+			Program.clipboard.copier(text);
+		}
+	}
+
+	@Override
+	public void paste() {
+		String fullText = nom_obj.getText();
+		nom_obj.setText(fullText.substring(0, nom_obj.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(nom_obj.getSelectionEnd()));
 	}
 
 }

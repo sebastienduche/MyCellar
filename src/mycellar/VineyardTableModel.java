@@ -22,7 +22,7 @@ import mycellar.vignobles.CountryVignobles;
  * @since 21/01/17
  */
 
-public class VineyardTableModel extends DefaultTableModel {
+class VineyardTableModel extends DefaultTableModel {
 
 	private static final long serialVersionUID = -6356586420904968734L;
 	public static final int ACTION = 2;

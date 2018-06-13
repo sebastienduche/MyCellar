@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * @version 1.2
  * @since 02/03/18
  */
-public class XLSOptions extends JDialog {
+class XLSOptions extends JDialog {
 
 	private static final long serialVersionUID = 5307297932934344545L;
 private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
@@ -173,7 +173,7 @@ private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
    *
    * @param e KeyEvent
    */
-  void keylistener_actionPerformed(KeyEvent e) {
+  private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
       valider_actionPerformed(null);
     }

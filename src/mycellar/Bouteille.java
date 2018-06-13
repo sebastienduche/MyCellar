@@ -8,6 +8,9 @@
 
 package mycellar;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -15,8 +18,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -24,11 +28,9 @@ import java.util.GregorianCalendar;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.9
- * @since 16/03/18
- */
+ * @version 4.2
+ * @since 13/06/18
 
-/**
  * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
@@ -46,13 +48,9 @@ import java.util.GregorianCalendar;
  *         &lt;element name="ligne" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="colonne" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="prix" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="other1" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="other2" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="other3" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="comment" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="maturity" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="parker" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="appellation" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element ref="{}vignoble"/>
  *         &lt;element name="color" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
@@ -74,13 +72,9 @@ import java.util.GregorianCalendar;
 		"ligne",
 		"colonne",
 		"prix",
-		"other1",
-		"other2",
-		"other3",
 		"comment",
 		"maturity",
 		"parker",
-		"appellation",
 		"vignoble",
 		"color",
 })
@@ -92,47 +86,38 @@ public class Bouteille implements Serializable{
 	private int id;
 
 	@XmlElement(required = true)
-	protected String nom;
+	private String nom;
 	@XmlElement(required = true)
-	protected String annee;
+	private String annee;
 	@XmlElement(required = true)
-	protected String type;
+	private String type;
 	@XmlElement(required = true)
-	protected String emplacement;
+	private String emplacement;
 	@XmlElement(name = "num_lieu")
-	protected int numLieu;
-	protected int ligne;
-	protected int colonne;
+	private int numLieu;
+	private int ligne;
+	private int colonne;
 	@XmlElement(required = true)
-	protected String prix;
-	@XmlElement(required = false)
-	protected String other1;
-	@XmlElement(required = false)
-	protected String other2;
-	@XmlElement(required = false)
-	protected String other3;
+	private String prix;
 	@XmlElement(required = true)
-	protected String comment;
+	private String comment;
 	@XmlElement(required = true)
-	protected String maturity;
+	private String maturity;
 	@XmlElement(required = true)
-	protected String parker;
-	@XmlElement(required = true)
-	protected String appellation;
+	private String parker;
 	@XmlElement(required = false)
-	protected Vignoble vignoble;
+	private Vignoble vignoble;
 	@XmlElement(required = false)
-	protected String color;
+	private String color;
 
-	public static final int NON_VINTAGE_INT = 9999;
+	static final int NON_VINTAGE_INT = 9999;
 	public static final String NON_VINTAGE = "NV";
 
 	/**
 	 * Bouteille: Constructeur d'une bouteille vide.
 	 */
 	public Bouteille() {
-		nom = type = emplacement = prix = comment = annee = maturity = parker = "";
-		appellation = color = "";
+		nom = type = emplacement = prix = comment = annee = maturity = parker = color = "";
 		vignoble = null;
 	}
 
@@ -152,13 +137,16 @@ public class Bouteille implements Serializable{
 		comment = b.getComment();
 		maturity = b.getMaturity();
 		parker = b.getParker();
-		appellation = b.getAppellation();
 		color = b.getColor();
 		vignoble = b.getVignoble();
 	}
 
 	public Bouteille(BouteilleBuilder builder){
-		id = Program.getNewID();
+		if (builder.id == 0) {
+			id = Program.getNewID();
+		} else {
+			id = builder.id;
+		}
 		nom = builder.nom;
 		annee = builder.annee;
 		type = builder.type;
@@ -170,7 +158,6 @@ public class Bouteille implements Serializable{
 		comment = builder.comment;
 		maturity = builder.maturity;
 		parker = builder.parker;
-		appellation = builder.appellation;
 		color = builder.color;
 		vignoble = builder.vignoble;
 	}
@@ -198,13 +185,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the nom property.
 	  * 
-	  * @param value
+	  * @param nom
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setNom(String value) {
-		 this.nom = value;
+	 public void setNom(String nom) {
+		 this.nom = nom;
 	 }
 
 	 /**
@@ -222,13 +209,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the annee property.
 	  * 
-	  * @param value
+	  * @param annee
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setAnnee(String value) {
-		 this.annee = value;
+	 public void setAnnee(String annee) {
+		 this.annee = annee;
 	 }
 
 	 /**
@@ -246,13 +233,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the type property.
 	  * 
-	  * @param value
+	  * @param type
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setType(String value) {
-		 this.type = value;
+	 public void setType(String type) {
+		 this.type = type;
 	 }
 
 	 /**
@@ -270,13 +257,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the emplacement property.
 	  * 
-	  * @param value
+	  * @param emplacement
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setEmplacement(String value) {
-		 this.emplacement = value;
+	 public void setEmplacement(String emplacement) {
+		 this.emplacement = emplacement;
 	 }
 
 	 /**
@@ -289,10 +276,11 @@ public class Bouteille implements Serializable{
 
 	 /**
 	  * Sets the value of the numLieu property.
-	  * 
+	  *
+		* @param numLieu
 	  */
-	 public void setNumLieu(int value) {
-		 this.numLieu = value;
+	 public void setNumLieu(int numLieu) {
+		 this.numLieu = numLieu;
 	 }
 
 	 /**
@@ -305,10 +293,11 @@ public class Bouteille implements Serializable{
 
 	 /**
 	  * Sets the value of the ligne property.
-	  * 
+	  *
+		* @param ligne
 	  */
-	 public void setLigne(int value) {
-		 this.ligne = value;
+	 public void setLigne(int ligne) {
+		 this.ligne = ligne;
 	 }
 
 	 /**
@@ -321,10 +310,11 @@ public class Bouteille implements Serializable{
 
 	 /**
 	  * Sets the value of the colonne property.
-	  * 
+	  *
+		* @param colonne
 	  */
-	 public void setColonne(int value) {
-		 this.colonne = value;
+	 public void setColonne(int colonne) {
+		 this.colonne = colonne;
 	 }
 
 	 /**
@@ -342,85 +332,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the prix property.
 	  * 
-	  * @param value
+	  * @param prix
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setPrix(String value) {
-		 this.prix = value;
-	 }
-
-	 /**
-	  * Gets the value of the other1 property.
-	  * 
-	  * @return
-	  *     possible object is
-	  *     {@link String }
-	  *     
-	  */
-	 public String getOther1s() {
-		 return other1;
-	 }
-
-	 /**
-	  * Sets the value of the other1 property.
-	  * 
-	  * @param value
-	  *     allowed object is
-	  *     {@link String }
-	  *     
-	  */
-	 public void setOther1s(String value) {
-		 this.other1 = value;
-	 }
-
-	 /**
-	  * Gets the value of the other2 property.
-	  * 
-	  * @return
-	  *     possible object is
-	  *     {@link String }
-	  *     
-	  */
-	 public String getOther2() {
-		 return other2;
-	 }
-
-	 /**
-	  * Sets the value of the other2 property.
-	  * 
-	  * @param value
-	  *     allowed object is
-	  *     {@link String }
-	  *     
-	  */
-	 public void setOther2(String value) {
-		 this.other2 = value;
-	 }
-
-	 /**
-	  * Gets the value of the other3 property.
-	  * 
-	  * @return
-	  *     possible object is
-	  *     {@link String }
-	  *     
-	  */
-	 public String getOther3() {
-		 return other3;
-	 }
-
-	 /**
-	  * Sets the value of the other3 property.
-	  * 
-	  * @param value
-	  *     allowed object is
-	  *     {@link String }
-	  *     
-	  */
-	 public void setOther3(String value) {
-		 this.other3 = value;
+	 public void setPrix(String prix) {
+		 this.prix = prix;
 	 }
 
 	 /**
@@ -438,13 +356,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the comment property.
 	  * 
-	  * @param value
+	  * @param comment
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setComment(String value) {
-		 this.comment = value;
+	 public void setComment(String comment) {
+		 this.comment = comment;
 	 }
 
 	 /**
@@ -462,13 +380,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the maturity property.
 	  * 
-	  * @param value
+	  * @param maturity
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setMaturity(String value) {
-		 this.maturity = value;
+	 public void setMaturity(String maturity) {
+		 this.maturity = maturity;
 	 }
 
 	 /**
@@ -486,37 +404,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the parker property.
 	  * 
-	  * @param value
+	  * @param parker
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setParker(String value) {
-		 this.parker = value;
-	 }
-
-	 /**
-	  * Gets the value of the appellation property.
-	  * 
-	  * @return
-	  *     possible object is
-	  *     {@link String }
-	  *     
-	  */
-	 public String getAppellation() {
-		 return appellation;
-	 }
-
-	 /**
-	  * Sets the value of the appellation property.
-	  * 
-	  * @param value
-	  *     allowed object is
-	  *     {@link String }
-	  *     
-	  */
-	 public void setAppellation(String value) {
-		 this.appellation = value;
+	 public void setParker(String parker) {
+		 this.parker = parker;
 	 }
 
 	 /**
@@ -534,13 +428,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the color property.
 	  * 
-	  * @param value
+	  * @param color
 	  *     allowed object is
 	  *     {@link String }
 	  *     
 	  */
-	 public void setColor(String value) {
-		 this.color = value;
+	 public void setColor(String color) {
+		 this.color = color;
 	 }
 
 	 /**
@@ -558,13 +452,13 @@ public class Bouteille implements Serializable{
 	 /**
 	  * Sets the value of the vignoble property.
 	  * 
-	  * @param value
+	  * @param vignoble
 	  *     allowed object is
 	  *     {@link Vignoble }
 	  *     
 	  */
-	 public void setVignoble(Vignoble value) {
-		 this.vignoble = value;
+	 public void setVignoble(Vignoble vignoble) {
+		 this.vignoble = vignoble;
 	 }
 
 
@@ -572,7 +466,7 @@ public class Bouteille implements Serializable{
 		 return Program.getCave(emplacement);
 	 }
 
-	 public int getAnneeInt() {
+	 int getAnneeInt() {
 		 if(annee.isEmpty())
 			 return 0;
 		 if(isNonVintageYear(annee))
@@ -591,27 +485,25 @@ public class Bouteille implements Serializable{
 			 return true;
 		 if(!Program.hasYearControl())
 			 return true;
-		 int n = 0;
+		 int n;
 		 try{
 			 n = Integer.parseInt(year);
-		 }catch( NumberFormatException pe)
-		 {
+		 }catch( NumberFormatException e) {
 			 Debug( "ERROR: Unable to parse '"+year+"'!!!!");
 			 return false;
 		 }
 
-		 Calendar date = new GregorianCalendar();
-		 int current_year = date.get(Calendar.YEAR);
+		 int current_year = LocalDate.now().getYear();
 		 if( year.length() == 4 && n > current_year )
 			 return false;
 		 return true;
 	 }
 
-	 public static boolean isNonVintageYear(String year) {
+	 static boolean isNonVintageYear(String year) {
 		 return ( year.compareToIgnoreCase(NON_VINTAGE) == 0);
 	 }
 
-	 public boolean isNonVintage() {
+	 boolean isNonVintage() {
 		 return ( annee.compareToIgnoreCase(NON_VINTAGE) == 0);
 	 }
 
@@ -663,11 +555,11 @@ public class Bouteille implements Serializable{
 		 return BottleColor.getColor(color) == BottleColor.RED;
 	 }
 	 
-	 public boolean isWhiteWine() {
+	 boolean isWhiteWine() {
 		 return BottleColor.getColor(color) == BottleColor.WHITE;
 	 }
 
-	 public boolean isPinkWine() {
+	 boolean isPinkWine() {
 		 return BottleColor.getColor(color) == BottleColor.PINK;
 	 }
 
@@ -679,7 +571,6 @@ public class Bouteille implements Serializable{
 	 public void update(Bouteille b) {
 		 setNom(b.getNom());
 		 setAnnee(b.getAnnee());
-		 setAppellation(b.getAppellation());
 		 setColonne(b.getColonne());
 		 setComment(b.getComment());
 		 setEmplacement(b.getEmplacement());
@@ -693,16 +584,77 @@ public class Bouteille implements Serializable{
 		 setVignoble(b.getVignoble());
 	 }
 
-	 public void updateID() {
+	 boolean updateID() {
+	 	if (id != -1) {
+			final List<Bouteille> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
+			if(bouteilles.size() == 1 && bouteilles.get(0).equals(this)) {
+				return false;
+			}
+		}
 		 id = Program.getNewID();
+	 	return true;
 	 }
+
+  static Bouteille getBouteilleFromXML(Element bouteilleElem) {
+    NodeList nodeId = bouteilleElem.getElementsByTagName("id");
+    final int id = Integer.parseInt(nodeId.item(0).getTextContent());
+    NodeList nodeName = bouteilleElem.getElementsByTagName("nom");
+    final String name = nodeName.item(0).getTextContent();
+    NodeList nodeAnnee = bouteilleElem.getElementsByTagName("annee");
+    final String year = nodeAnnee.item(0).getTextContent();
+    NodeList nodeType = bouteilleElem.getElementsByTagName("type");
+    final String type = nodeType.item(0).getTextContent();
+    NodeList nodePlace = bouteilleElem.getElementsByTagName("emplacement");
+    final String place = nodePlace.item(0).getTextContent();
+    NodeList nodeNumLieu = bouteilleElem.getElementsByTagName("num_lieu");
+    final int numLieu = Integer.parseInt(nodeNumLieu.item(0).getTextContent());
+    NodeList nodeLine = bouteilleElem.getElementsByTagName("ligne");
+    final int line = Integer.parseInt(nodeLine.item(0).getTextContent());
+    NodeList nodeColumn = bouteilleElem.getElementsByTagName("colonne");
+    final int column = Integer.parseInt(nodeColumn.item(0).getTextContent());
+    NodeList nodePrice = bouteilleElem.getElementsByTagName("prix");
+    final String price = nodePrice.item(0).getTextContent();
+    NodeList nodeComment = bouteilleElem.getElementsByTagName("comment");
+    final String comment = nodeComment.item(0).getTextContent();
+    NodeList nodeMaturity = bouteilleElem.getElementsByTagName("maturity");
+    final String maturity = nodeMaturity.item(0).getTextContent();
+    NodeList nodeParker = bouteilleElem.getElementsByTagName("parker");
+    final String parker = nodeParker.item(0).getTextContent();
+    NodeList nodeColor = bouteilleElem.getElementsByTagName("color");
+    final String color = nodeColor.item(0).getTextContent();
+    NodeList nodeVignoble = bouteilleElem.getElementsByTagName("vignoble");
+    final Element vignoble = (Element) nodeVignoble.item(0);
+    NodeList nodeCountry = vignoble.getElementsByTagName("country");
+    final String country = nodeCountry.item(0).getTextContent();
+    NodeList nodeVigobleName = vignoble.getElementsByTagName("name");
+    String vignobleName, AOC, IGP, AOP;
+    vignobleName = AOC = AOP = IGP = "";
+    if (nodeVignoble.getLength() == 1) {
+      vignobleName = nodeVigobleName.item(0).getTextContent();
+      NodeList nodeAOC = vignoble.getElementsByTagName("AOC");
+      if (nodeAOC.getLength() == 1) {
+        AOC = nodeAOC.item(0).getTextContent();
+      }
+      NodeList nodeIGP = vignoble.getElementsByTagName("IGP");
+      if (nodeIGP.getLength() == 1) {
+        IGP = nodeIGP.item(0).getTextContent();
+      }
+      NodeList nodeAOP = vignoble.getElementsByTagName("AOP");
+      if (nodeAOP.getLength() == 1) {
+        AOP = nodeAOP.item(0).getTextContent();
+      }
+    }
+    return new Bouteille.BouteilleBuilder(name).id(id).annee(year).type(type).place(place).numPlace(numLieu)
+        .line(line).column(column).price(price).comment(comment).maturity(maturity).parker(parker)
+        .color(color).vignoble(country, vignobleName, AOC, IGP, AOP).build();
+  }
 
 	 /**
 	  * Debug
 	  *
 	  * @param sText String
 	  */
-	 public static void Debug(String sText) {
+	 private static void Debug(String sText) {
 		 Program.Debug("Bouteille: " + sText);
 	 }
 
@@ -711,8 +663,6 @@ public class Bouteille implements Serializable{
 		 final int prime = 31;
 		 int result = 1;
 		 result = prime * result + ((annee == null) ? 0 : annee.hashCode());
-		 result = prime * result
-				 + ((appellation == null) ? 0 : appellation.hashCode());
 		 result = prime * result + colonne;
 		 result = prime * result + ((color == null) ? 0 : color.hashCode());
 		 result = prime * result + ((comment == null) ? 0 : comment.hashCode());
@@ -746,11 +696,6 @@ public class Bouteille implements Serializable{
 			 if (other.annee != null)
 				 return false;
 		 } else if (!annee.equals(other.annee))
-			 return false;
-		 if (appellation == null) {
-			 if (other.appellation != null)
-				 return false;
-		 } else if (!appellation.equals(other.appellation))
 			 return false;
 		 if (colonne != other.colonne)
 			 return false;
@@ -809,6 +754,7 @@ public class Bouteille implements Serializable{
 
 
 	 public static class BouteilleBuilder {
+	 	private int id;
 		 private final String nom;
 		 private String annee;
 		 private String type;
@@ -820,16 +766,19 @@ public class Bouteille implements Serializable{
 		 private String comment;
 		 private String maturity;
 		 private String parker;
-		 private String appellation;
 		 private String color;
 		 private Vignoble vignoble;
 
 		 BouteilleBuilder(String nom){
 			 this.nom = nom;
-			 numLieu = ligne = colonne = 0;
-			 type = emplacement = prix = comment = annee = maturity = parker = "";
-			 appellation = color = "";
+			 id = numLieu = ligne = colonne = 0;
+			 type = emplacement = prix = comment = annee = maturity = parker = color = "";
 			 vignoble = null;
+		 }
+
+		 private BouteilleBuilder id(int id) {
+			 this.id = id;
+			 return this;
 		 }
 
 		 public BouteilleBuilder annee(String annee) {
@@ -879,11 +828,6 @@ public class Bouteille implements Serializable{
 
 		 public BouteilleBuilder parker(String parker) {
 			 this.parker = parker;
-			 return this;
-		 }
-
-		 public BouteilleBuilder appelation(String appellation) {
-			 this.appellation = appellation;
 			 return this;
 		 }
 

@@ -112,7 +112,7 @@ public class TextFieldPopup extends JPanel {
 		return list.stream().filter(b -> b.toLowerCase().startsWith(val.toLowerCase())).collect(Collectors.toList());
 	}
 
-	class PopupKeyListener implements KeyListener {
+	private class PopupKeyListener implements KeyListener {
 
 		private MyJMenuItem selected;
 		private int index;
@@ -255,7 +255,7 @@ public class TextFieldPopup extends JPanel {
 			});
 		}
 		
-		public void activate() {
+		void activate() {
 			setBorder(BorderFactory.createEtchedBorder());
 			setBackground(mouse? lightblue : blue);
 			setForeground(Color.white);

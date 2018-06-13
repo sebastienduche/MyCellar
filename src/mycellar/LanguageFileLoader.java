@@ -79,7 +79,7 @@ public class LanguageFileLoader {
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("LanguageFileLoader: " + sText );
 	}
 }
@@ -88,7 +88,7 @@ class UTF8Control extends Control {
 	@Override
     public ResourceBundle newBundle
         (String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
-            throws IllegalAccessException, InstantiationException, IOException
+            throws IOException
     {
         // The below is a copy of the default implementation.
         String bundleName = toBundleName(baseName, locale);

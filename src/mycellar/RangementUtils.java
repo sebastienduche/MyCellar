@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,8 +39,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 09/03/18
+ * @version 1.0
+ * @since 08/06/18
  */
 public class RangementUtils {
 
@@ -53,7 +54,7 @@ public class RangementUtils {
 	 *
 	 * @return int
 	 */
-	public static boolean write_CSV(String fichier, List<Bouteille> all) {
+	static boolean write_CSV(String fichier, List<Bouteille> all) {
 
 		String separator = Program.getCaveConfigString("SEPARATOR_DEFAULT", ";");
 
@@ -68,10 +69,8 @@ public class RangementUtils {
 		String cle8 = Program.getCaveConfigString("SIZE_COL8EXPORT_CSV", "1");
 
 		File f = new File(fichier);
-		FileWriter ficout = null;
 
-		try {
-			ficout = new FileWriter(f);
+		try (FileWriter ficout = new FileWriter(f)){
 			ficout.flush();
 
 			for (Bouteille b : all) {
@@ -82,13 +81,10 @@ public class RangementUtils {
 					ficout.flush();
 				}
 				if (cle1.equals("1")) {
-					try {
-						String year = b.getAnnee();
-						year = year.replaceAll("\"", "\"\"");
-						ficout.write("\"" + year + "\"" + separator);
-						ficout.flush();
-					}
-					catch (NullPointerException npe) {}
+					String year = b.getAnnee();
+					year = year.replaceAll("\"", "\"\"");
+					ficout.write("\"" + year + "\"" + separator);
+					ficout.flush();
 				}
 				if (cle2.equals("1")) {
 					String half = Program.convertStringFromHTMLString(b.getType());
@@ -131,17 +127,10 @@ public class RangementUtils {
 				ficout.flush();
 			}
 			ficout.flush();
-			ficout.close();
 		}
 		catch (IOException ioe) {
 			Erreur.showSimpleErreur(Program.getError("Error120"), Program.getError("Error161"));
 			return false;
-		}
-		finally {
-			try {
-				ficout.close();
-			} catch (IOException e) {
-			}
 		}
 		return true;
 	}
@@ -155,7 +144,7 @@ public class RangementUtils {
 	 *
 	 *  @return int
 	 */
-	public static boolean write_HTML(String fichier, List<Bouteille> all, List<MyCellarFields> fields) {
+	static boolean write_HTML(String fichier, List<Bouteille> all, List<MyCellarFields> fields) {
 
 		try{
 			DocumentBuilderFactory dbFactory =
@@ -276,16 +265,15 @@ public class RangementUtils {
 	 *
 	 * @return boolean
 	 */
-	public static boolean write_XLS(String file, List<Bouteille> all, boolean isExit) {
+	static boolean write_XLS(String file, List<Bouteille> all, boolean isExit) {
 
 		Debug( "write_XLS: writing file: "+file );
 		if(file.isEmpty()) {
 			Debug( "write_XLS: ERROR: File not defined!" );
 			return false;
 		}
-		File f;
 		try {
-			f = new File(file);
+			File f = new File(file);
 			String sDir = f.getParent();
 			if(null != sDir) {
 				f = new File(sDir);
@@ -301,10 +289,8 @@ public class RangementUtils {
 			return false;
 		}
 		boolean resul = true;
-		String title = "";
 
-		HashMap<MyCellarFields, Boolean> mapCle = new HashMap<>();
-		HashMap<Integer, Integer> mapColumnNumber = new HashMap<>();
+		EnumMap<MyCellarFields, Boolean> mapCle = new EnumMap<>(MyCellarFields.class);
 
 		//Récupération des colonnes à exporter
 		ArrayList<MyCellarFields> fields = MyCellarFields.getFieldsList();
@@ -314,10 +300,11 @@ public class RangementUtils {
 			i++;
 		}
 
+		HashMap<Integer, Integer> mapColumnNumber = new HashMap<>();
 		int num_ligne;
+		String title = "";
 		if (isExit) { //Cas sauvegarde XLS Backup
 			num_ligne = 0;
-			i=0;
 			for(i= 0; i<fields.size(); i++) {
 				mapColumnNumber.put(i, i);
 			}
@@ -374,28 +361,26 @@ public class RangementUtils {
 			}
 			WritableCellFormat cellformat = new WritableCellFormat(cellfont);
 			//Ajout titre colonne
-			i=0;
-			HashMap<MyCellarFields, Label> listLabels = new HashMap<>();
-			HashMap<MyCellarFields, Integer> mapColumnWidth = new HashMap<>();
-
-			for(MyCellarFields field : fields) {
-				Label label;
-				listLabels.put(field, label = new Label(i, num_ligne, field.toString(), cellformat));
-				mapColumnWidth.put(field, label.getContents().length());
-				i++;
-			}
+			EnumMap<MyCellarFields, Integer> mapColumnWidth = new EnumMap<>(MyCellarFields.class);
 
 			try {
 				//Ajout Titre
 				if(isExit) {
+					i=0;
 					for(MyCellarFields field : fields) {
-						sheet.addCell(listLabels.get(field));
+						Label label;
+						sheet.addCell(label = new Label(i++, num_ligne, field.toString(), cellformat));
+						mapColumnWidth.put(field, label.getContents().length());
 					}
 				}
 				else {
+					i=0;
 					for(MyCellarFields field : fields) {
-						if(mapCle.get(field))
-							sheet.addCell(listLabels.get(field));
+						if(mapCle.get(field)) {
+							Label label;
+							sheet.addCell(label = new Label(i++, num_ligne, field.toString(), cellformat));
+							mapColumnWidth.put(field, label.getContents().length());
+						}
 					}
 				}
 			}
@@ -406,90 +391,82 @@ public class RangementUtils {
 
 			i = 0;
 			for (Bouteille b : all) {
-				listLabels.clear();
 				int j = 0;
-				try {
-					for(MyCellarFields field : fields) {
-						String value = "";
-						if(field == MyCellarFields.NAME)
-							value = b.getNom();
-						else if(field == MyCellarFields.YEAR)
-							value = b.getAnnee();
-						else if(field == MyCellarFields.TYPE)
-							value = b.getType();
-						else if(field == MyCellarFields.PLACE)
-							value = b.getEmplacement();
-						else if(field == MyCellarFields.NUM_PLACE)
-							value = Integer.toString(b.getNumLieu());
-						else if(field == MyCellarFields.LINE)
-							value = Integer.toString(b.getLigne());
-						else if(field == MyCellarFields.COLUMN)
-							value = Integer.toString(b.getColonne());
-						else if(field == MyCellarFields.PRICE)
-							value = b.getPrix();
-						else if(field == MyCellarFields.COMMENT)
-							value = b.getComment();
-						else if(field == MyCellarFields.MATURITY)
-							value = b.getMaturity();
-						else if(field == MyCellarFields.PARKER)
-							value = b.getParker();
-						else if(field == MyCellarFields.COLOR)
-							value = b.getColor();
-						else if(field == MyCellarFields.COUNTRY) {
-							if(b.getVignoble() != null) {
-								Country c = Countries.find(b.getVignoble().getCountry());
-								if(c != null)
-									value = c.toString();
+				for(MyCellarFields field : fields) {
+					String value = "";
+					if(field == MyCellarFields.NAME)
+						value = b.getNom();
+					else if(field == MyCellarFields.YEAR)
+						value = b.getAnnee();
+					else if(field == MyCellarFields.TYPE)
+						value = b.getType();
+					else if(field == MyCellarFields.PLACE)
+						value = b.getEmplacement();
+					else if(field == MyCellarFields.NUM_PLACE)
+						value = Integer.toString(b.getNumLieu());
+					else if(field == MyCellarFields.LINE)
+						value = Integer.toString(b.getLigne());
+					else if(field == MyCellarFields.COLUMN)
+						value = Integer.toString(b.getColonne());
+					else if(field == MyCellarFields.PRICE)
+						value = b.getPrix();
+					else if(field == MyCellarFields.COMMENT)
+						value = b.getComment();
+					else if(field == MyCellarFields.MATURITY)
+						value = b.getMaturity();
+					else if(field == MyCellarFields.PARKER)
+						value = b.getParker();
+					else if(field == MyCellarFields.COLOR)
+						value = b.getColor();
+					else if(field == MyCellarFields.COUNTRY) {
+						if(b.getVignoble() != null) {
+							Country c = Countries.find(b.getVignoble().getCountry());
+							if(c != null) {
+								value = c.toString();
 							}
 						}
-						else if(field == MyCellarFields.VINEYARD) {
-							if(b.getVignoble() != null)
-								value = b.getVignoble().getName();
-						}
-						else if(field == MyCellarFields.AOC) {
-							if(b.getVignoble() != null && b.getVignoble().getAOC() != null)
-								value = b.getVignoble().getAOC();
-						}
-						else if(field == MyCellarFields.IGP) {
-							if(b.getVignoble() != null && b.getVignoble().getIGP() != null)
-								value = b.getVignoble().getIGP();
-						}
-						Label label;
-						if (isExit || mapCle.get(field)) {
-							if(value == null)
-								value = "";
-							label = new Label(mapColumnNumber.get(j), i + num_ligne + 1, value, cellformat);
-							int width = label.getContents().length();
-							if(mapColumnWidth.get(field) < width)
-								mapColumnWidth.put(field, width);
-							else 
-								width = mapColumnWidth.get(field);
-
-							if(field == MyCellarFields.NUM_PLACE || field == MyCellarFields.LINE || field == MyCellarFields.COLUMN)
-								sheet.addCell(new jxl.write.Number(mapColumnNumber.get(j), i + num_ligne + 1, Integer.parseInt(value), cellformat));
-							else
-								sheet.addCell(label);
-							sheet.setColumnView(mapColumnNumber.get(j++), width + 1);
-						}
 					}
-				}
-				catch (WriteException ex1) {
-					Program.showException(ex1, false);
-					resul = false;
+					else if(field == MyCellarFields.VINEYARD) {
+						if(b.getVignoble() != null)
+							value = b.getVignoble().getName();
+					}
+					else if(field == MyCellarFields.AOC) {
+						if(b.getVignoble() != null && b.getVignoble().getAOC() != null)
+							value = b.getVignoble().getAOC();
+					}
+					else if(field == MyCellarFields.IGP) {
+						if(b.getVignoble() != null && b.getVignoble().getIGP() != null)
+							value = b.getVignoble().getIGP();
+					}
+					Label label;
+					if (isExit || mapCle.get(field)) {
+						if(value == null) {
+							value = "";
+						}
+						label = new Label(mapColumnNumber.get(j), i + num_ligne + 1, value, cellformat);
+						int width = label.getContents().length();
+						if(mapColumnWidth.get(field) < width) {
+							mapColumnWidth.put(field, width);
+						} else {
+							width = mapColumnWidth.get(field);
+						}
+
+						if(field == MyCellarFields.NUM_PLACE || field == MyCellarFields.LINE || field == MyCellarFields.COLUMN) {
+							sheet.addCell(new jxl.write.Number(mapColumnNumber.get(j), i + num_ligne + 1, Integer.parseInt(value), cellformat));
+						} else {
+							sheet.addCell(label);
+						}
+						sheet.setColumnView(mapColumnNumber.get(j), width + 1);
+					}
+					j++;
 				}
 				i++;
 			}
 
 			workbook.write();
-			try {
-				workbook.close();
-			}
-			catch (WriteException ex2) {
-				Program.showException(ex2, false);
-				resul = false;
-			}
+			workbook.close();
 		}
-		catch (IOException ex) {
+		catch (IOException | WriteException ex) {
 			Program.showException(ex, false);
 			resul = false;
 		}
@@ -503,16 +480,17 @@ public class RangementUtils {
 	 * @param _oPlace LinkedList: liste de rangements à écrire
 	 *
 	 */
-	public static void write_XLSTab(String file, List<Rangement> _oPlace) {
-
+	static void write_XLSTab(String file, List<Rangement> _oPlace) {
 
 		try { //Création du fichier
-			String title = Program.getCaveConfigString("XLS_TAB_TITLE","");
+			String title = Program.getCaveConfigString("XLS_TAB_TITLE", Program.getCaveConfigString("XML_TYPE",""));
+			boolean onePlacePerSheet = 1 == Program.getCaveConfigInt("ONE_PER_SHEET_XLS", 0);
 			WritableWorkbook workbook = Workbook.createWorkbook(new File(file));
 			if (title.isEmpty()) {
-				title = Program.getCaveConfigString("XML_TYPE","");
+				title = Program.getLabel("Infos001");
 			}
-			WritableSheet sheet = workbook.createSheet(title, 0);
+			int count = 0;
+			WritableSheet sheet = workbook.createSheet(title, count++);
 
 			// Titre
 			int size = Program.getCaveConfigInt("TITLE_TAB_SIZE_XLS", 10);
@@ -535,114 +513,108 @@ public class RangementUtils {
 			int nNbCol = 0;
 			int nNbLinePart = Program.getCaveConfigInt("EMPTY_LINE_PART_XLS", 1);
 			int nNbLinePlace = Program.getCaveConfigInt("EMPTY_LINE_PLACE_XLS", 3);
-			try {
-				WritableCellFormat cellFormat = new WritableCellFormat(cellfont);
-				cellFormat.setBorder(Border.ALL, BorderLineStyle.THIN);
-				cellFormat.setWrap(true);
+			WritableCellFormat cellFormat = new WritableCellFormat(cellfont);
+			cellFormat.setBorder(Border.ALL, BorderLineStyle.THIN);
+			cellFormat.setWrap(true);
 
-				int nLine = 3;
-				WritableFont titleFont = new WritableFont( WritableFont.ARIAL, 12, WritableFont.BOLD, false );
-				WritableCellFormat cellTitle = new WritableCellFormat( titleFont );
-				for (Rangement place : _oPlace) {
-					if (place != null) {
-						nLine += nNbLinePlace;
-						sheet.addCell(new Label( 1, nLine, Program.convertStringFromHTMLString( place.getNom() ), cellTitle ));
-						for (int j = 1; j <= place.getNbEmplacements(); j++) {
-							if (j == 1){
-								nLine++;
-							} else {
-								nLine += nNbLinePart;
+			int nLine = 3;
+			WritableFont titleFont = new WritableFont( WritableFont.ARIAL, 12, WritableFont.BOLD, false );
+			WritableCellFormat cellTitle = new WritableCellFormat( titleFont );
+			boolean firstSheet = true;
+			for (Rangement place : _oPlace) {
+				if (onePlacePerSheet) {
+					if (firstSheet) {
+						sheet.setName(place.getNom());
+						firstSheet = false;
+					} else {
+						sheet = workbook.createSheet(place.getNom(), count++);
+					}
+					nLine = 0;
+				}
+				nLine += nNbLinePlace;
+				sheet.addCell(new Label( 1, nLine, Program.convertStringFromHTMLString(place.getNom()), cellTitle ));
+				for (int j = 1; j <= place.getNbEmplacements(); j++) {
+					if (j == 1){
+						nLine++;
+					} else {
+						nLine += nNbLinePart;
+					}
+					if (place.isCaisse()) {
+						for (int k=0; k<place.getNbCaseUse(j - 1); k++) {
+							nLine++;
+							Bouteille b = place.getBouteilleCaisseAt(j - 1, k);
+							if (b != null) {
+								// Contenu de la cellule
+								sheet.addCell(new Label(1, nLine, Program.convertStringFromHTMLString(getLabelToDisplay(b)), cellFormat));
 							}
-							if (place.isCaisse()) {
-								for (int k=0; k<place.getNbCaseUse(j - 1); k++) {
-									nLine++;
-									Bouteille b = place.getBouteilleCaisseAt(j - 1, k);
-									StringBuilder sTitle = new StringBuilder();
-									if (b != null) {
-										// Contenu de la cellule
-										if (Program.getCaveConfigInt("XLSTAB_COL0", 1) == 1) {
-											sTitle.append(b.getNom());
-										}
-										if (Program.getCaveConfigInt("XLSTAB_COL1", 0) == 1) {
-											sTitle.append(" ").append(b.getAnnee());
-										}
-										if (Program.getCaveConfigInt("XLSTAB_COL2", 0) == 1) {
-											sTitle.append(" ").append(b.getType());
-										}
-										if (Program.getCaveConfigInt("XLSTAB_COL3", 0) == 1) {
-											sTitle.append(" ").append(b.getPrix()).append(Program.getCaveConfigString("DEVISE",""));
-										}
-									}
-									sheet.addCell(new Label(1, nLine, Program.convertStringFromHTMLString(sTitle.toString().trim()), cellFormat));
-								}
-							}else{
-								for (int k = 1; k <= place.getNbLignes(j - 1); k++) {
-									nLine++;
-									int nCol = place.getNbColonnes(j - 1, k - 1);
-									if (nCol > nNbCol)
-										nNbCol = nCol;
-									for (int l = 1; l <= nCol; l++) {
-										Bouteille b = place.getBouteille(j - 1, k - 1, l - 1);
-										StringBuilder sTitle = new StringBuilder();
-										if (b != null) {
-											// Contenu de la cellule
-											if (Program.getCaveConfigInt("XLSTAB_COL0", 1) == 1)
-												sTitle.append(b.getNom());
-											if (Program.getCaveConfigInt("XLSTAB_COL1", 0) == 1)
-												sTitle.append(" ").append(b.getAnnee());
-											if (Program.getCaveConfigInt("XLSTAB_COL2", 0) == 1)
-												sTitle.append(" ").append(b.getType());
-											if (Program.getCaveConfigInt("XLSTAB_COL3", 0) == 1)
-												sTitle.append(" ").append(b.getPrix()).append(Program.getCaveConfigString("DEVISE",""));
-										}
-										sheet.addCell(new Label(l, nLine, Program.convertStringFromHTMLString(sTitle.toString().trim()), cellFormat));
-									}
+						}
+					}else{
+						for (int k = 1; k <= place.getNbLignes(j - 1); k++) {
+							nLine++;
+							int nCol = place.getNbColonnes(j - 1, k - 1);
+							if (nCol > nNbCol) {
+								nNbCol = nCol;
+							}
+							for (int l = 1; l <= nCol; l++) {
+								Bouteille b = place.getBouteille(j - 1, k - 1, l - 1);
+								if (b != null) {
+									sheet.addCell(new Label(l, nLine, Program.convertStringFromHTMLString(getLabelToDisplay(b)), cellFormat));
 								}
 							}
 						}
 					}
 				}
 			}
-			catch (WriteException ex3) {
-				Program.showException(ex3, false);
-			}
+
 			int nWidth = Program.getCaveConfigInt("COLUMN_TAB_WIDTH_XLS", 10);
 			for (int i = 1; i <= nNbCol; i++) {
-				sheet.setColumnView( i, nWidth );
+				sheet.setColumnView(i, nWidth);
 			}
 
 			workbook.write();
-			try {
-				workbook.close();
-			}
-			catch (WriteException ex2) {
-				Program.showException(ex2, false);
-			}
-		}
-		catch (IOException ex) {
+			workbook.close();
+		}	catch (IOException | WriteException ex) {
 			Program.showException(ex, false);
 		}
+	}
+
+	private static String getLabelToDisplay(Bouteille b) {
+		StringBuilder sTitle = new StringBuilder();
+		// Contenu de la cellule
+		if (1 == Program.getCaveConfigInt("XLSTAB_COL0", 1)) {
+			sTitle.append(b.getNom());
+		}
+		if (Program.getCaveConfigInt("XLSTAB_COL1", 0) == 1) {
+			sTitle.append(" ").append(b.getAnnee());
+		}
+		if (Program.getCaveConfigInt("XLSTAB_COL2", 0) == 1) {
+			sTitle.append(" ").append(b.getType());
+		}
+		if (Program.getCaveConfigInt("XLSTAB_COL3", 0) == 1) {
+			sTitle.append(" ").append(b.getPrix()).append(Program.getCaveConfigString("DEVISE", ""));
+		}
+		return sTitle.toString().trim();
 	}
 
 	/**
 	 * findRangementToCreate
 	 */
-	public static void findRangementToCreate() {
+	static void findRangementToCreate() {
 
 		StringBuilder html = new StringBuilder();
 
 		html.append("<html><body><p align=center><font size=4pt><b>");
 		html.append(Program.convertToHTMLString(Program.getLabel("Infos266")));
 		html.append("</b></font></p><p><ul>");
-		LinkedList<String> missingPlace = new LinkedList<String>();
-		for( Bouteille bottle: Program.getStorage().getAllList() )
-		{
+		LinkedList<String> missingPlace = new LinkedList<>();
+		for( Bouteille bottle: Program.getStorage().getAllList() ) {
 			String place = bottle.getEmplacement();
 			if (place != null && !place.isEmpty() && Program.getCave(place) == null && !missingPlace.contains(place))
 				missingPlace.add(place);
 		}
-		for(String s: missingPlace)
+		for(String s: missingPlace) {
 			html.append("<li>").append(s);
+		}
 
 		html.append("</ul></p></body></html>");
 		if (missingPlace.isEmpty()) { //Pas de rangement à créer
@@ -650,23 +622,21 @@ public class RangementUtils {
 			html.append(Program.convertToHTMLString(Program.getLabel("Infos265")));
 			html.append("</b></font></p></body></html>");
 		}
-		FileWriter f = null;
+		File file = null;
 		try {
-			File file = File.createTempFile("MyCellar", "html");
+			file = File.createTempFile("MyCellar", "html");
 			file.deleteOnExit();
-			f = new FileWriter(file);
-			f.write(html.toString());
-			f.close();
-			Program.open(file);
+		} catch (IOException e) {
+			Program.showException(e, false);
 		}
-		catch (IOException ioe) {
-			Program.showException(ioe, false);
-		}
-		finally {
-			if (f != null) {
-				try {
-					f.close();
-				} catch (IOException e) { }
+		if (file != null) {
+			try (FileWriter f = new FileWriter(file)){
+				f.write(html.toString());
+				f.close();
+				Program.open(file);
+			}
+			catch (IOException ioe) {
+				Program.showException(ioe, false);
 			}
 		}
 	}
@@ -685,14 +655,14 @@ public class RangementUtils {
 			if(rangement == null) {
 				// Rangement inexistant
 				Debug("ERROR: Inexisting place: " + b.getNom() + " place: "+b.getEmplacement());
-				Program.addError(new MyCellarError(1, b, b.getEmplacement()));
+				Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_PLACE, b, b.getEmplacement()));
 				continue;
 			}
 			if(rangement.isCaisse()) {
 				if(!rangement.isExistingNumPlace(b.getNumLieu())) {
 					// Numero de rangement inexistant
 					Debug("ERROR: Inexisting numplace: " + b.getNom() + " numplace: "+b.getNumLieu() + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(2, b, b.getEmplacement(), b.getNumLieu()));
+					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_NUM_PLACE, b, b.getEmplacement(), b.getNumLieu()));
 					continue;
 				}
 				if(rangement.hasFreeSpaceInCaisse(b.getNumLieu()))
@@ -700,7 +670,7 @@ public class RangementUtils {
 				else {
 					// Caisse pleine
 					Debug("ERROR: simple place full for numplace: " + b.getNom() + " numplace: "+b.getNumLieu() + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(3, b, b.getEmplacement(), b.getNumLieu()));
+					Program.addError(new MyCellarError(MyCellarError.ID.FULL_BOX, b, b.getEmplacement(), b.getNumLieu()));
 				}
 			}
 			else {
@@ -708,18 +678,18 @@ public class RangementUtils {
 				if(!rangement.isExistingNumPlace(b.getNumLieu() - 1)) {
 					// Numero de rangement inexistant
 					Debug("ERROR: Inexisting numplace: " + b.getNom() + " numplace: "+ (b.getNumLieu()-1) + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(2, b, b.getEmplacement()));
+					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_NUM_PLACE, b, b.getEmplacement()));
 					continue;
 				}
 				if(!rangement.isExistingCell(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
 					// Cellule inexistante
 					Debug("ERROR: Inexisting cell: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(4, b, b.getEmplacement(), b.getNumLieu()));
+					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_CELL, b, b.getEmplacement(), b.getNumLieu()));
 				}
 				else if((bottle = rangement.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) != null && !bottle.equals(b)){
 					// Cellule occupée
 					Debug("ERROR: Already occupied: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(5, b, b.getEmplacement(), b.getNumLieu()));
+					Program.addError(new MyCellarError(MyCellarError.ID.CELL_FULL, b, b.getEmplacement(), b.getNumLieu()));
 				}
 				else
 					rangement.updateToStock(b);
@@ -737,7 +707,7 @@ public class RangementUtils {
 	 *
 	 * @param sText String
 	 */
-	public static void Debug(String sText) {
+	private static void Debug(String sText) {
 		Program.Debug("RangementUtils: " + sText);
 	}
 }

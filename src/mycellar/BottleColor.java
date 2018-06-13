@@ -6,7 +6,7 @@ public enum BottleColor {
 	PINK(Program.getLabel("BottleColor.pink")),
 	WHITE(Program.getLabel("BottleColor.white"));
 	
-	private String label;
+	private final String label;
 	
 	BottleColor(String label) {
 		this.label = label;
@@ -21,7 +21,7 @@ public enum BottleColor {
 		if(value.isEmpty())
 			return NONE;
 		try {
-			return BottleColor.valueOf(value);
+			return valueOf(value);
 		}catch(Exception e) {
 			if(value.equals(RED.label))
 				return RED;

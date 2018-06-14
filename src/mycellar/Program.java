@@ -75,8 +75,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.6
- * @since 13/06/18
+ * @version 18.7
+ * @since 14/06/18
  */
 
 public class Program {
@@ -1860,5 +1860,13 @@ public class Program {
 		} else {
 			new OpenAddVinAction(listToModify).actionPerformed(null);
 		}
+	}
+
+	public static boolean checkXLSExtenstion(String filename) {
+		if (filename == null || filename.isEmpty() || filename.indexOf('.') == -1) {
+			return false;
+		}
+		String extension = filename.trim().toLowerCase().substring(filename.lastIndexOf('.') + 1);
+		return "ods".equals(extension) || "xls".equals(extension) || "xlsx".equals(extension);
 	}
 }

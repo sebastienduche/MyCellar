@@ -39,8 +39,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 08/06/18
+ * @version 1.1
+ * @since 14/06/18
  */
 public class RangementUtils {
 
@@ -559,6 +559,8 @@ public class RangementUtils {
 								Bouteille b = place.getBouteille(j - 1, k - 1, l - 1);
 								if (b != null) {
 									sheet.addCell(new Label(l, nLine, Program.convertStringFromHTMLString(getLabelToDisplay(b)), cellFormat));
+								} else {
+									sheet.addCell(new Label(l, nLine, "", cellFormat));
 								}
 							}
 						}

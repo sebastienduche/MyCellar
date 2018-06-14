@@ -44,8 +44,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.9
- * @since 29/05/18
+ * @version 6.0
+ * @since 14/06/18
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable {
 	private final MyCellarLabel label2 = new MyCellarLabel();
@@ -305,7 +305,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
 				}
 			} else if (type_XLS.isSelected()) {
-				if ( !nom.toLowerCase().endsWith(".xls") && !nom.toLowerCase().endsWith(".ods") ) {
+				if (!Program.checkXLSExtenstion(nom)) {
 					Debug("ERROR: Not a XLS File");
 					resul = 1;
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));

@@ -26,8 +26,8 @@ import java.text.MessageFormat;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.8
- * @since 29/05/18
+ * @version 10.9
+ * @since 14/06/18
  */
 public class Parametres extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -213,7 +213,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 			if (jcb_excel.isSelected()) {
 				Program.putCaveConfigInt("FIC_EXCEL", 1);
 				String fic = file_bak.getText().trim();
-				if (fic.toLowerCase().endsWith(".xls") || fic.toLowerCase().endsWith(".ods")) {
+				if (Program.checkXLSExtenstion(fic)) {
 					Program.putCaveConfigString("FILE_EXCEL", fic);
 				}
 				else {
@@ -293,7 +293,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 			File nomFichier = boiteFichier.getSelectedFile();
 			String fic = nomFichier.getAbsolutePath();
 			fic = fic.trim();
-			boolean extension = fic.toLowerCase().endsWith(".xls") || fic.toLowerCase().endsWith(".ods");
+			boolean extension = Program.checkXLSExtenstion(fic);
 			Filtre filtre = (Filtre)boiteFichier.getFileFilter();
 			if (!extension) {
 				if (filtre.toString().equals("xls"))

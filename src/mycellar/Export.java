@@ -40,8 +40,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.6
- * @since 13/06/18
+ * @version 7.7
+ * @since 14/06/18
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -453,7 +453,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					}
 				}
 			else if (MyCellarRadioButtonXLS.isSelected()) {
-				if (extension.compareToIgnoreCase(".xls") != 0 && extension.compareToIgnoreCase(".ods") != 0) {
+				if (!Program.checkXLSExtenstion(nom)) {
 					end.setText("");
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), extension), true); //L'extension du fichier n'est pas CSV
 					valider.setEnabled(true);

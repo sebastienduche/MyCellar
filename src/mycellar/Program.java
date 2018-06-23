@@ -13,6 +13,7 @@ import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.CountryVignobles;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.net.util.Base64;
@@ -32,6 +33,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+
 import java.awt.Desktop;
 import java.awt.Font;
 import java.io.BufferedInputStream;
@@ -51,7 +53,10 @@ import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -76,7 +81,7 @@ import java.util.zip.ZipOutputStream;
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
  * @version 18.7
- * @since 14/06/18
+ * @since 23/06/18
  */
 
 public class Program {
@@ -362,7 +367,15 @@ public class Program {
 		if (bDebug) {
 			e.printStackTrace();
 		}
+		try {
+			oDebugFile.flush();
+			oDebugFile.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		sendMail(error, debugFile);
+		oDebugFile = null;
+
 		if (_bShowWindowErrorAndExit) {
 			System.exit(999);
 		}
@@ -850,7 +863,7 @@ public class Program {
 			if (oDebugFile == null) {
 				String sDir = System.getProperty("user.home");
 				if(!sDir.isEmpty())
-					sDir += "/MyCellarDebug";
+					sDir += File.separator + "MyCellarDebug";
 				File f_obj = new File( sDir );
 				boolean ok = true;
 				if(!f_obj.exists()) {
@@ -862,10 +875,23 @@ public class Program {
 					oDebugFile = new FileWriter(debugFile, true);
 				}
 			}
-			oDebugFile.write("[" + LocalDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME) + "]: " + sText + "\n");
+			oDebugFile.write("[" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "]: " + sText + "\n");
+			System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "]: " + sText + "\n");
 			oDebugFile.flush();
 		}
 		catch (Exception ignored) {}
+	}
+	
+	static void closeDebug() {
+		if(!bDebug || oDebugFile == null) {
+			return;
+		}
+		
+		try {
+			oDebugFile.flush();
+			oDebugFile.close();
+		} catch (IOException ignored) {}
+		
 	}
 
 	/**

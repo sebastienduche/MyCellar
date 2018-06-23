@@ -63,6 +63,7 @@
     	<copy file="./lib/pdfbox-app-2.0.5.jar" todir="./Build/lib"/>
     	<copy file="./lib/smtp.jar" todir="./Build/lib"/>
     	<copy file="./Finish.html" todir="./Build"/>
+    	<copy file="./MyCellarVersion.txt" todir="./Build"/>
     	<copy file="./init.bat" todir="./Build"/>
     </target>
 </project>

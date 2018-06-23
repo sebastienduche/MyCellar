@@ -9,10 +9,11 @@ import java.io.InputStreamReader;
 
 public class MyCellarVersion {
 
-	public static final String VERSION = "3.0.3.1";
+	public static final String VERSION = "3.0.3.3";
 	public static final String MAIN_VERSION = "5.5 ZE";
   
 	public static String getLocalVersion() {
+		// In directory bin
 		try(InputStream stream = MyCellarVersion.class.getClassLoader().getResourceAsStream("MyCellarVersion.txt");
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stream)))
 		{

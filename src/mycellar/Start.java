@@ -44,8 +44,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 24.4
- * @since 08/06/18
+ * @version 24.5
+ * @since 23/06/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -393,6 +393,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		Program.deleteTempFiles();
 		Program.cleanDebugFiles();
 		Debug("MyCellar End");
+		Program.closeDebug();
 		System.exit(0);
 	}
 

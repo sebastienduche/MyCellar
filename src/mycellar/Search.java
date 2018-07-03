@@ -43,8 +43,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.9
- * @since 29/05/18
+ * @version 19.0
+ * @since 29/06/18
  */
 public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable {
 	private final JTable table;
@@ -257,7 +257,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			dialog.setLocationRelativeTo(null);
 			dialog.setModal(true);
 			dialog.setVisible(true);
-			Debug("Export Completed");
+			Debug("Export Done");
 		}
 		catch (Exception exc) {
 			Program.showException(exc);
@@ -315,6 +315,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 						resul_txt.setText(MessageFormat.format(Program.getLabel("Infos398"), listToSupp.size()));
 				}
 			}
+			Debug("Deleting Done");
 		}
 		catch (Exception exc) {
 			Program.showException(exc);
@@ -723,7 +724,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		}
 		Debug(MODEL.getRowCount()+" bottle(s) found");
 		updateLabelBottleNumber();
-		Debug("Search by request completed");
+		Debug("Search by request Done");
 		return already_found;
 	}
 

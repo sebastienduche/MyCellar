@@ -40,8 +40,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 13/06/18
+ * @version 0.8
+ * @since 29/06/18
 
  * <p>Java class for anonymous complex type.
  *
@@ -127,7 +127,7 @@ public class HistoryList {
     try {
       manualLoadXML(f);
     } catch (ParserConfigurationException | IOException | SAXException e) {
-      Debug("ERROR: Unable to load manually File");
+      Debug("ERROR: Unable to load manually the File");
       Program.showException(e);
       return false;
     }

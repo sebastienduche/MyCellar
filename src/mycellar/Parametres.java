@@ -14,6 +14,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -26,8 +27,8 @@ import java.text.MessageFormat;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 10.9
- * @since 14/06/18
+ * @version 11.0
+ * @since 29/06/18
  */
 public class Parametres extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -291,6 +292,12 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		int retour_jfc = boiteFichier.showOpenDialog(this);
 		if (retour_jfc == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
+			if (nomFichier == null) {
+				setCursor(Cursor.getDefaultCursor());
+				Erreur.showSimpleErreur(Program.getError("FileNotFound"));
+				Program.Debug("ERROR: parcourir_excel: File not found during Opening!");
+				return;
+			}
 			String fic = nomFichier.getAbsolutePath();
 			fic = fic.trim();
 			boolean extension = Program.checkXLSExtenstion(fic);

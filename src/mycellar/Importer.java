@@ -25,6 +25,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -47,8 +48,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.6
- * @since 29/05/18
+ * @version 11.7
+ * @since 29/06/18
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -618,6 +619,12 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		
 		if (boiteFichier.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
+			if (nomFichier == null) {
+				setCursor(Cursor.getDefaultCursor());
+				Erreur.showSimpleErreur(Program.getError("FileNotFound"));
+				Debug("ERROR: parcourir: File not found during Opening!");
+				return;
+			}
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
 			String fic = nomFichier.getAbsolutePath();
 			int index = fic.indexOf(".");

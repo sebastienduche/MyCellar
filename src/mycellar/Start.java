@@ -44,8 +44,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 24.5
- * @since 23/06/18
+ * @version 24.6
+ * @since 29/06/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -433,6 +433,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		int retour_jfc = boiteFichier.showOpenDialog(this);
 		if (retour_jfc == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
+			if (nomFichier == null) {
+				setCursor(Cursor.getDefaultCursor());
+				Erreur.showSimpleErreur(Program.getError("FileNotFound"));
+				Debug("ERROR: ImportXmlPlace: File not found during Opening!");
+				return;
+			}
 			String fic = nomFichier.getAbsolutePath();
 			int index = fic.indexOf(".");
 			if (index == -1) {
@@ -1088,6 +1094,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			if (retour_jfc == JFileChooser.APPROVE_OPTION) {
 				Program.setFileSavable(true);
 				File nomFichier = boiteFichier.getSelectedFile();
+				if (nomFichier == null) {
+					setCursor(Cursor.getDefaultCursor());
+					Erreur.showSimpleErreur(Program.getError("FileNotFound"));
+					Debug("ERROR: menuSaveAs: File not found during Opening!");
+					return;
+				}
 				String fic = nomFichier.getAbsolutePath();
 				int index = fic.indexOf(".");
 				if (index == -1) {
@@ -1236,14 +1248,21 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
     			int retour_jfc = boiteFichier.showOpenDialog(null);
     			if (retour_jfc == JFileChooser.APPROVE_OPTION) {
-    				File nomFichier = boiteFichier.getSelectedFile();
-    				String fic = nomFichier.getAbsolutePath();
+    				File file = boiteFichier.getSelectedFile();
+    				if (file == null) {
+    					setCursor(Cursor.getDefaultCursor());
+    					Erreur.showSimpleErreur(Program.getError("FileNotFound"));
+    					Debug("ERROR: OpenAction: File not found during Opening!");
+    					return;
+						}
+    				String fic = file.getAbsolutePath();
     				int index = fic.indexOf(".");
     				if (index == -1) {
     					fic = fic.concat(".sinfo");
     				}
-    				if (Program.openaFile(new File(fic)))
-    					postOpenFile();
+    				if (Program.openaFile(new File(fic))) {
+							postOpenFile();
+						}
     			}
 			}catch(Exception e) {
 				Program.showException(e);

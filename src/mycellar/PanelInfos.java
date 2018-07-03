@@ -19,8 +19,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 30/05/18
+ * @version 1.7
+ * @since 29/06/18
  */
 class PanelInfos extends JPanel {
 
@@ -101,9 +101,9 @@ class PanelStats extends JPanel {
 				nbBottles += r.getNbCaseUseAll();
 				model.addRow(r, r.getNbCaseUseAll());
 			}
+			cellarTotal.setText(Program.getCellarValue() + " " + Program.getCaveConfigString("DEVISE",""));
 		}
 		bottlesNb.setText(Integer.toString(nbBottles));
-		cellarTotal.setText(Program.getCellarValue() + " " + Program.getCaveConfigString("DEVISE",""));
 	}
 
 	void setLabels() {

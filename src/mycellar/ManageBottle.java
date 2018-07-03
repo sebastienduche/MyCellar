@@ -39,8 +39,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.4
- * @since 08/06/18
+ * @version 4.5
+ * @since 29/06/18
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -185,7 +185,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_column.setEnabled(false);
 
 		setVisible(true);
-		Debug("JbInit Ended.");
+		Debug("JbInit Done");
 	}
 
 	/**
@@ -424,7 +424,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 							SwingUtilities.invokeLater(() -> {
 						Debug("Set Text ...");
 						m_end.setText("");
-						Debug("Set Text OK");
+						Debug("Set Text Done");
 							});
 						}
 				},

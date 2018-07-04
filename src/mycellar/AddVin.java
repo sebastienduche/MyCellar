@@ -42,8 +42,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 23.6
- * @since 30/05/18
+ * @version 23.7
+ * @since 04/07/18
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable {
 
@@ -1387,7 +1387,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
   public void cut() {
 		String text = name.getEditor().getItem().toString();
 		if(text != null) {
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 			name.getEditor().setItem("");
 		}
   }
@@ -1396,13 +1396,13 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
   public void copy() {
 		String text = name.getEditor().getItem().toString();
 		if(text != null) {
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 		}
   }
 
   @Override
   public void paste() {
-		String text = Program.clipboard.coller();
+		String text = Program.CLIPBOARD.coller();
 		if(text != null && !text.isEmpty()) {
 			name.getEditor().setItem(text);
 		}

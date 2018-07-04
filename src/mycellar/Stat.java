@@ -33,8 +33,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.9
- * @since 23/05/18
+ * @version 6.0
+ * @since 04/07/18
  */
 public class Stat extends JPanel implements ITabListener {
 
@@ -62,7 +62,7 @@ public class Stat extends JPanel implements ITabListener {
 		end.setHorizontalAlignment(SwingConstants.RIGHT);
 		moy.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.setLayout(new MigLayout("","[][][grow]",""));
-		panel.setFont(Program.font_panel);
+		panel.setFont(Program.FONT_PANEL);
 		int nb_bottle = 0;
 		moy.setText("");
 		for (Rangement cave : Program.getCave()) {

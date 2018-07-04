@@ -22,8 +22,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 02/03/18
+ * @version 1.7
+ * @since 04/07/18
  */
 class CSVOptions extends JDialog {
 	private final MyCellarCheckBox export[];
@@ -57,7 +57,7 @@ class CSVOptions extends JDialog {
 		JPanel jPanel1 = new JPanel();
 		jPanel1.setBorder(BorderFactory.createEtchedBorder());
 		jPanel1.setLayout(new MigLayout("","grow",""));
-		jPanel1.setFont(Program.font_panel);
+		jPanel1.setFont(Program.FONT_PANEL);
 		MyCellarLabel info_separator = new MyCellarLabel(Program.getLabel("Infos034") + ":"); //Séparateur
 		ArrayList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
 		nb_colonnes = listColumns.size();
@@ -82,7 +82,7 @@ class CSVOptions extends JDialog {
 		}
 		JPanel jPanel2 = new JPanel();
 		jPanel2.setLayout(new MigLayout("","[grow][grow]",""));
-		jPanel2.setFont(Program.font_panel);
+		jPanel2.setFont(Program.FONT_PANEL);
 		MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
 		separator.addItem(Program.getLabel("Infos002"));
 		separator.addItem(Program.getLabel("Infos042"));

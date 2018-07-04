@@ -27,8 +27,8 @@ import java.text.MessageFormat;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.0
- * @since 29/06/18
+ * @version 11.1
+ * @since 04/07/18
  */
 public class Parametres extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -441,7 +441,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		String fullText = file_bak.getText();
 		if(text != null) {
 			file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + fullText.substring(file_bak.getSelectionEnd()));
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 		}
 	}
 
@@ -449,13 +449,13 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	public void copy() {
 		String text = file_bak.getSelectedText();
 		if(text != null) {
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 		}
 	}
 
 	@Override
 	public void paste() {
 		String fullText = file_bak.getText();
-		file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(file_bak.getSelectionEnd()));
+		file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(file_bak.getSelectionEnd()));
 	}
 }

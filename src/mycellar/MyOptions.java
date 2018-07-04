@@ -27,8 +27,8 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.8
- * @since 08/06/18
+ * @version 1.9
+ * @since 04/07/18
  */
 class MyOptions extends JDialog {
   private final MyCellarLabel textControl1 = new MyCellarLabel();
@@ -129,7 +129,7 @@ class MyOptions extends JDialog {
     labelEdit = new JTextField[taille_value];
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     setTitle(title);
-    textControl1.setFont(Program.font_dialog_small);
+    textControl1.setFont(Program.FONT_DIALOG_SMALL);
     textControl1.setForeground(Color.red);
     textControl1.setText(title);
     textControl1.setHorizontalAlignment(SwingConstants.CENTER);

@@ -23,8 +23,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 02/03/18
+ * @version 1.3
+ * @since 04/07/18
  */
 class XLSOptions extends JDialog {
 
@@ -59,7 +59,7 @@ private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
     JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
     jPanel1.setLayout(new MigLayout("","grow",""));
-    jPanel1.setFont(Program.font_panel);
+    jPanel1.setFont(Program.FONT_PANEL);
     MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("Infos270")); //Titre du XLS
     String xls_title = Program.getCaveConfigString("XLS_TITLE", "");
     pdf_title.setText(xls_title);
@@ -104,7 +104,7 @@ private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
     }
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("","[grow][grow]",""));
-    jPanel2.setFont(Program.font_panel);
+    jPanel2.setFont(Program.FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
     valider.addActionListener(this::valider_actionPerformed);
     MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos055"));

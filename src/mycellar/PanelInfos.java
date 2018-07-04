@@ -19,8 +19,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 29/06/18
+ * @version 1.8
+ * @since 04/07/18
  */
 class PanelInfos extends JPanel {
 
@@ -69,8 +69,8 @@ class PanelStats extends JPanel {
 	private final JTable table;
 
 	PanelStats(){
-		bottlesNb.setFont(Program.font_label_bold);
-		cellarTotal.setFont(Program.font_label_bold);
+		bottlesNb.setFont(Program.FONT_LABEL_BOLD);
+		cellarTotal.setFont(Program.FONT_LABEL_BOLD);
 		table = new JTable(model);
 		table.getColumnModel().getColumn(1).setMinWidth(40);
 		table.getColumnModel().getColumn(1).setMaxWidth(40);

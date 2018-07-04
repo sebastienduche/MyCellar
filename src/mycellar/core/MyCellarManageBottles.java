@@ -38,8 +38,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 30/05/18
+ * @version 1.7
+ * @since 04/07/18
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -164,12 +164,12 @@ public abstract class MyCellarManageBottles extends JPanel {
 
 		try {
 			JTextField jtf = (JTextField) m_objet1;
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
+			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
 		}
 		catch (Exception e1) {}
 		try {
 			JTextArea jtf = (JTextArea) m_objet1;
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
+			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
 		}
 		catch (Exception e1) {}
 	}
@@ -194,7 +194,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		}
 		catch (Exception e1) {}
 
-		Program.clipboard.copier(txt);
+		Program.CLIPBOARD.copier(txt);
 	}
 
 	/**
@@ -215,7 +215,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		}
 		catch (Exception e1) {}
 
-		Program.clipboard.copier(txt);
+		Program.CLIPBOARD.copier(txt);
 	}
 	
 	/**

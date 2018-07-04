@@ -13,7 +13,6 @@ import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.CountryVignobles;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.net.util.Base64;
@@ -33,7 +32,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
-
 import java.awt.Desktop;
 import java.awt.Font;
 import java.io.BufferedInputStream;
@@ -53,10 +51,7 @@ import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -80,8 +75,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.7
- * @since 23/06/18
+ * @version 18.8
+ * @since 04/07/18
  */
 
 public class Program {
@@ -95,23 +90,30 @@ public class Program {
 
 	private static String archive = null;
 
-	static final Font font_panel = new Font("Arial", Font.PLAIN, 12);
-	static final Font font_boutton_small = new Font("Arial", Font.PLAIN, 10);
-	public static Font font_label_bold = new Font("Arial", Font.BOLD, 12);
-	static Font font_dialog = new Font("Dialog", Font.BOLD, 16);
-	static Font font_dialog_small = new Font("Dialog", Font.BOLD, 12);
+	static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
+	static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
+	static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);
+	static final Font FONT_DIALOG_SMALL = new Font("Dialog", Font.BOLD, 12);
+	public static final Font FONT_LABEL_BOLD = new Font("Arial", Font.BOLD, 12);
 
-	public static Options options = null;
-	public static Export export = null;
+	static Options options = null;
+	static Export export = null;
 	static Parametres parametres = null;
 	static Creer_Tableaux creer_tableau = null;
 	static Importer importer = null;
-	public static ShowFile showfile = null;
+	static ShowFile showfile = null;
 	static ShowFile showtrash = null;
+	static Search search = null;
+	static ShowHistory history = null;
+	static VineyardPanel vignobles = null;
+	static Creer_Rangement createPlace = null;
+	static Creer_Rangement modifyPlace = null;
+	static CellarOrganizerPanel managePlace = null;
+	static CellarOrganizerPanel chooseCell = null;
+	static Supprimer_Rangement deletePlace = null;
+	static Stat stat = null;
+
 	public static ShowFile showerrors = null;
-	public static Search search = null;
-	public static ShowHistory history = null;
-	public static VineyardPanel vignobles = null;
 	public static AddVin addWine = null;
 
 	static final PanelInfos PANEL_INFOS = new PanelInfos();
@@ -125,7 +127,8 @@ public class Program {
 	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
 	private static final LinkedList<MyCellarError> ERRORS = new LinkedList<>();
 
-	static Rangement defaultPlace = new Rangement("");
+	static final Rangement DEFAULT_PLACE = new Rangement("");
+	static final Rangement EMPTY_PLACE = new Rangement("");
 
 	private static String m_sWorkDir = null;
 	private static String m_sGlobalDir = null;
@@ -146,20 +149,12 @@ public class Program {
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;
 
-	static Creer_Rangement createPlace;
-	static Creer_Rangement modifyPlace;
-	static CellarOrganizerPanel managePlace;
-	static CellarOrganizerPanel chooseCell;
-	static Supprimer_Rangement deletePlace;
-	static Stat stat;
-
 	public static Country france = new Country("FRA", "France");
 	private static final List<File> DIR_TO_DELETE = new LinkedList<>();
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
 	private static int nextID = -1;
-	static final Rangement EMPTY_PLACE = new Rangement("");
-  public static final MyClipBoard clipboard = new MyClipBoard();
+  public static final MyClipBoard CLIPBOARD = new MyClipBoard();
 
 	/**
 	 * init
@@ -182,7 +177,7 @@ public class Program {
 				PROPERTIES_GLOBAL.load(inputStream);
 				inputStream.close();
 			}
-			LanguageFileLoader.loadLanguageFiles( "U" );
+			LanguageFileLoader.loadLanguageFiles("U");
 
 			//Initialisation de la Map contenant config
 			Enumeration<Object> keys = PROPERTIES_GLOBAL.keys();
@@ -208,7 +203,7 @@ public class Program {
 			if(!f.exists()) {
 				f.createNewFile();
 			}
-			LanguageFileLoader.loadLanguageFiles( "U" );
+			LanguageFileLoader.loadLanguageFiles("U");
 
 			//Initialisation de la Map contenant config
 			Debug("Program: Initialize ConfigGlobal");
@@ -222,7 +217,9 @@ public class Program {
 				getCaveConfig().remove("PPRICE_SEPARATOR");
 			}
 
-			verifyConfigFile();
+			if (!hasConfigGlobalKey("LANGUAGE") || getGlobalConfigString("LANGUAGE", "").isEmpty()) {
+				putGlobalConfigString("LANGUAGE", "F");
+			}
 			cleanAndUpgrade();
 		}
 		catch (Exception e) {
@@ -234,7 +231,7 @@ public class Program {
 		Program.archive = archive;
 	}
 
-	public static String getArchive() {
+	static String getArchive() {
 		return archive;
 	}
 
@@ -320,19 +317,6 @@ public class Program {
 		Start.getInstance().updateLabels();
 		Start.getInstance().updateMainPanel();
 		return load;
-	}
-
-	/**
-	 * verifyConfigFile
-	 */
-	static void verifyConfigFile() {
-
-		Debug("Program: Verifying INI file...");
-		if (!PROPERTIES_GLOBAL.containsKey("LANGUAGE")) {
-			PROPERTIES_GLOBAL.setProperty("LANGUAGE", "F");
-		} else if (PROPERTIES_GLOBAL.get("LANGUAGE").equals("")) {
-			PROPERTIES_GLOBAL.setProperty("LANGUAGE", "F");
-		}
 	}
 
 	public static void showException(Exception e) {
@@ -494,67 +478,6 @@ public class Program {
 		ERRORS.add(error);
 	}
 
-	/**
-	 * deletePlaceFile: Suppression d'un objet sérialisé.
-	 *
-	 * @param num_rangement int: numéro du rangement à supprimer
-	 */
-	@Deprecated
-	private static void deletePlaceFile(int num_rangement) {
-		Debug("Program: Deleting serialized object...");
-		try {
-			File f = new File( getWorkDir(false) );
-			String list[] = f.list(new MyFilenameFilter());
-			if( list != null && list.length > num_rangement ) {
-				f = new File( getWorkDir(true) + list[num_rangement]);
-				f.delete();
-			}
-		}
-		catch (Exception exc) {
-			showException(exc);
-		}
-	}
-
-	/**
-	 * write_XSL: Ecriture du fichier XSL
-	 */
-	/*static void write_XSL() {
-
-		Debug("Program: Writing XSL...");
-		File f = new File("resources/vin.xsl");
-		StringBuilder tmp = new StringBuilder();
-		tmp.append("<?xml version='1.0'?>\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\"> <xsl:template match=\"/\">\n"
-			+ "<html>\n<body>\n<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\">\n<tr bgcolor=\"#FFFF00\">\n"
-			+ "<td>" + convertToHTMLString(getLabel("Infos134")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos105")) + "</td>\n"
-			+ "<td>" + convertToHTMLString(getLabel("Infos208")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos189")) + "</td>\n"
-			+ "<td>" + convertToHTMLString(getLabel("Infos158")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos028")) + "</td>\n"
-			+ "<td>" + convertToHTMLString(getLabel("Infos083")) + "</td>\n<td>" + convertToHTMLString(getLabel("Infos135")) + "</td>\n"
-			+ "<td>" + convertToHTMLString(getLabel("Infos137")) + "</td>\n"
-			+ "</tr>\n<xsl:for-each select=\"cellar/name\">\n<xsl:sort select=\"name\"/>\n<tr>\n"
-			+ "<td><xsl:value-of select=\"name\"/></td>"
-			+ "<td><xsl:value-of select=\"year\"/></td>"
-			+ "<td><xsl:value-of select=\"half\"/></td>"
-			+ "<td><xsl:value-of select=\"place\"/></td>"
-			+ "<td><xsl:value-of select=\"num-place\"/></td>"
-			+ "<td><xsl:value-of select=\"line\"/></td>"
-			+ "<td><xsl:value-of select=\"column\"/></td>"
-			+ "<td><xsl:value-of select=\"price\"/></td>"
-			+ "<td><xsl:value-of select=\"dateOfC\"/></td>"
-			+ "<td><xsl:value-of select=\"parker\"/></td>"
-			+ "<td><xsl:value-of select=\"appellation\"/></td>"
-			+ "<td><xsl:value-of select=\"appellatio\"/></td>"
-			+ "</tr>\n</xsl:for-each>\n</table>\n</body>\n</html>\n</xsl:template>\n</xsl:stylesheet>");
-
-		try (FileWriter ficout = new FileWriter(f)){
-			ficout.write(tmp.toString());
-			ficout.flush();
-		}
-		catch (IOException ex) {
-			showException(ex, false);
-		}
-
-	}*/
-
 	static String convertToHTMLString(String s) {
 		return StringEscapeUtils.escapeHtml(s);
 	}
@@ -576,35 +499,13 @@ public class Program {
 		RANGEMENTS_LIST.clear();
 		boolean load = MyXmlDom.readMyCellarXml("", RANGEMENTS_LIST);
 		getStorage().loadHistory();
-		if(!ListeBouteille.loadXML()) {
-			read_Object();
-			getStorage().setListBouteilles(getStorage().getAllList());
-		}
+		load |= ListeBouteille.loadXML();
 
 		if(!load) {
 			RANGEMENTS_LIST.clear();
-			RANGEMENTS_LIST.add(defaultPlace);
+			RANGEMENTS_LIST.add(DEFAULT_PLACE);
 		}
 		return load;
-	}
-
-	/**
-	 * read_Object: Fonction de lecture des objets Rangement sérialiser.
-	 */
-	@Deprecated
-	private static void read_Object() {
-		Debug("Program: Loading places and history...");
-		LinkedList<Rangement> cave = new LinkedList<>();
-		boolean resul = getStorage().readRangement(cave);
-		getStorage().loadHistory();
-		if (!resul) {
-			Debug("Program: WARNING: Loading Unsuccessful");
-			getStorage().setAll(null);
-		}
-		else {
-			RANGEMENTS_LIST.addAll(cave);
-		}
-		Debug("Program: Loading places and history OK");
 	}
 	
 	static int getMaxPrice() {
@@ -876,13 +777,12 @@ public class Program {
 				}
 			}
 			oDebugFile.write("[" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "]: " + sText + "\n");
-			System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "]: " + sText + "\n");
 			oDebugFile.flush();
 		}
 		catch (Exception ignored) {}
 	}
 	
-	static void closeDebug() {
+	private static void closeDebug() {
 		if(!bDebug || oDebugFile == null) {
 			return;
 		}
@@ -977,9 +877,7 @@ public class Program {
 		if(rangement == null) {
 			return;
 		}
-		int num = RANGEMENTS_LIST.indexOf(rangement);
 		RANGEMENTS_LIST.remove(rangement);
-		deletePlaceFile(num);
 		setModified();
 		setListCaveModified();
 	}
@@ -1142,7 +1040,6 @@ public class Program {
 		putGlobalConfigString("LAST_OPEN3", list.pop());
 		putGlobalConfigString("LAST_OPEN4", list.pop());
 
-		putCaveConfigString("FILE_SRC", f.getAbsolutePath());
 		putCaveConfigString("DIR", f.getParent());
 
 		saveGlobalProperties();
@@ -1207,7 +1104,6 @@ public class Program {
 				}
 
 				putCaveConfigInt("ANNEE_AUTO", 0);
-				putCaveConfigString("FILE_SRC", archive);
 			}
 
 			File f = new File(getPreviewXMLFileName());
@@ -1280,7 +1176,7 @@ public class Program {
 		Debug("Program: closeFile: Closing file Ended");
 	}
 
-	static void deleteTempFiles() {
+	private static void deleteTempFiles() {
 		for(File f : DIR_TO_DELETE) {
 			if(!f.exists() || f.getName().equalsIgnoreCase("Global")) {
 				continue;
@@ -1725,7 +1621,7 @@ public class Program {
 		return row;
 	}
 
-	static void cleanDebugFiles() {
+	private static void cleanDebugFiles() {
 		String sDir = System.getProperty("user.home");
 		sDir += File.separator + "MyCellarDebug";
 		File f = new File(sDir);
@@ -1888,11 +1784,18 @@ public class Program {
 		}
 	}
 
-	public static boolean checkXLSExtenstion(String filename) {
+	static boolean checkXLSExtenstion(String filename) {
 		if (filename == null || filename.isEmpty() || filename.indexOf('.') == -1) {
 			return false;
 		}
 		String extension = filename.trim().toLowerCase().substring(filename.lastIndexOf('.') + 1);
 		return "ods".equals(extension) || "xls".equals(extension) || "xlsx".equals(extension);
+	}
+
+	static void exit() {
+		deleteTempFiles();
+		cleanDebugFiles();
+		Debug("Program: MyCellar End");
+		closeDebug();
 	}
 }

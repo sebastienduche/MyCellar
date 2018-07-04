@@ -17,8 +17,8 @@ import java.awt.event.ItemEvent;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 20/03/18
+ * @version 1.8
+ * @since 04/07/18
  */
 
 class MoveLine extends JDialog {
@@ -38,7 +38,7 @@ class MoveLine extends JDialog {
 		MyCellarLabel titre = new MyCellarLabel(Program.getLabel("Infos363"));
 		titre.setForeground(Color.red);
 		label_end.setForeground(Color.red);
-		titre.setFont(Program.font_dialog);
+		titre.setFont(Program.FONT_DIALOG);
 		titre.setHorizontalAlignment(SwingConstants.CENTER);
 		label_end.setHorizontalAlignment(SwingConstants.CENTER);
 

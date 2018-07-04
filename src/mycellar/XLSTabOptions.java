@@ -27,8 +27,8 @@ import java.awt.event.WindowEvent;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 08/06/18
+ * @version 1.2
+ * @since 04/07/18
  */
 class XLSTabOptions extends JDialog {
   private static final int LARGEUR = 480;
@@ -73,7 +73,7 @@ class XLSTabOptions extends JDialog {
 
     JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
-    jPanel1.setFont(Program.font_panel);
+    jPanel1.setFont(Program.FONT_PANEL);
     jPanel1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos331")));
     MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("Infos270")); //Titre du XLS
     String xls_title = Program.getCaveConfigString("XLS_TAB_TITLE", "");
@@ -137,7 +137,7 @@ class XLSTabOptions extends JDialog {
     tv.addString(Program.getLabel("Infos135"), 1 == Program.getCaveConfigInt("XLSTAB_COL3", 0));
 
     JPanel jPanel2 = new JPanel();
-    jPanel2.setFont(Program.font_panel);
+    jPanel2.setFont(Program.FONT_PANEL);
     jPanel2.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos332")));
     MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
     valider.addActionListener(this::valider_actionPerformed);

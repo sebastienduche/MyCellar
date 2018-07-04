@@ -24,8 +24,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.3
- * @since 01/03/18
+ * @version 2.4
+ * @since 04/07/18
  */
 class PDFOptions extends JDialog {
   private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
@@ -61,7 +61,7 @@ class PDFOptions extends JDialog {
     JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
     jPanel1.setLayout(new MigLayout("","grow",""));
-    jPanel1.setFont(Program.font_panel);
+    jPanel1.setFont(Program.FONT_PANEL);
     MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("Infos255")); //Titre du PDF
     String pdf_title1 = Program.getCaveConfigString("PDF_TITLE", "");
     pdf_title.setText(pdf_title1);
@@ -118,7 +118,7 @@ class PDFOptions extends JDialog {
     }
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow][grow]",""));
-    jPanel2.setFont(Program.font_panel);
+    jPanel2.setFont(Program.FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
     valider.addActionListener(this::valider_actionPerformed);
     MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos055"));

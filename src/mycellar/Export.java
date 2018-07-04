@@ -40,8 +40,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.7
- * @since 14/06/18
+ * @version 7.8
+ * @since 04/07/18
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -105,7 +105,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		browse.setText("...");
 		parameters.setText(Program.getLabel("Main.Parameters"));
 		MyCellarLabel1.setText(Program.getLabel("Infos151")); //Format de l\'Export:
-		end.setFont(Program.font_dialog_small);
+		end.setFont(Program.FONT_DIALOG_SMALL);
 		openit.setMnemonic(OUVRIR);
 		openit.setText(Program.getLabel("Infos152")); //Ouvrir le fichier
 		openit.addActionListener((e) -> openit_actionPerformed());
@@ -572,7 +572,7 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
     String fullText = file.getText();
     if(text != null) {
       file.setText(fullText.substring(0, file.getSelectionStart()) + fullText.substring(file.getSelectionEnd()));
-      Program.clipboard.copier(text);
+      Program.CLIPBOARD.copier(text);
     }
   }
 
@@ -580,14 +580,14 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
   public void copy() {
     String text = file.getSelectedText();
     if(text != null) {
-      Program.clipboard.copier(text);
+      Program.CLIPBOARD.copier(text);
     }
   }
 
   @Override
   public void paste() {
     String fullText = file.getText();
-    file.setText(fullText.substring(0,  file.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(file.getSelectionEnd()));
+    file.setText(fullText.substring(0,  file.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(file.getSelectionEnd()));
   }
 
 	@Override

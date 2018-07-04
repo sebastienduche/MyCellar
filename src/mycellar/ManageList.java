@@ -22,8 +22,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 20/04/18
+ * @version 0.8
+ * @since 04/07/18
  */
 
 public class ManageList extends JDialog {
@@ -61,7 +61,7 @@ public class ManageList extends JDialog {
 		add(add,"split 2, center");
 		add(remove,"wrap");
 		add(close,"center");
-		labelTitle.setFont(Program.font_label_bold);
+		labelTitle.setFont(Program.FONT_LABEL_BOLD);
 		
 		close.addActionListener((e) -> close());
 		add.addActionListener((e) -> {

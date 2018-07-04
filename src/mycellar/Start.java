@@ -44,8 +44,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 24.6
- * @since 29/06/18
+ * @version 24.7
+ * @since 04/07/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -194,7 +194,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				tmp = parameters.substring(nIndex + 6).trim();
 				tmp = tmp.substring(0, tmp.indexOf(" ")).trim();
 				// Options à gérer
-				beforeStart(tmp);
+				if ("restart".equals(tmp)) {
+					// Démarrage avec une nouvelle cave
+					Program.putGlobalConfigInt("STARTUP", 0);
+					Program.putCaveConfigInt("ANNEE_CTRL", 1);
+					Program.putCaveConfigInt("FIC_EXCEL", 0);
+				}
 			}
 		} catch (Exception e) {
 		}
@@ -216,31 +221,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * beforeStart Fonction pour exécuter quelques actions avant le démarrage
-	 * 
-	 * @param parameter
-	 *            String
-	 */
-	private static void beforeStart(final String parameter) {
-
-		if (parameter.equals("restart")) {
-			// Démarrage avec une nouvelle cave
-			Program.putGlobalConfigString("STARTUP", "0");
-			Program.putCaveConfigString("ANNEE_CTRL", "1");
-			Program.putCaveConfigString("FILE_SRC", "");
-			Program.putCaveConfigInt("FIC_EXCEL", 0);
-		}
-
-		if (parameter.equals("rebuild-stats")) {
-			Program.putCaveConfigString("REBUILD_STATISTICS", "1");
-		}
-
-		if (parameter.equals("debug")) {
-			Program.setDebug(true);
-		}
-	}
-
-	/**
 	 * jbInit: Fonction d'initialisation de l'application
 	 */
 	private void startup() {
@@ -259,18 +239,17 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		// Appel serveur pour alimenter la dernière version en ligne
 		Server.getInstance().getServerVersion();
 
-		Program.verifyConfigFile();
-
 		// Démarrage
 		// _________
 
 		if (Program.getArchive().isEmpty() && Program.getGlobalConfigInt("STARTUP", 0) == 0) {
 			// Language au premier démarrage
 			String lang = System.getProperty("user.language");
-			if("fr".equalsIgnoreCase(lang))
+			if("fr".equalsIgnoreCase(lang)) {
 				lang = "F";
-			else
+			} else {
 				lang = "U";
+			}
 			Program.putGlobalConfigString("LANGUAGE", lang);
 			
 			updateFrame(true);
@@ -317,7 +296,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			jMenuExportXml.setEnabled(false);
 			showFile.setEnabled(false);
 		} else if (Program.GetCaveLength() == 0) {
-			Program.getCave().add(Program.defaultPlace);
+			Program.getCave().add(Program.DEFAULT_PLACE);
 		}
 		enableAll(true);
 	}
@@ -325,48 +304,48 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	/**
 	 * Fonction pour desactiver ou activer toutes les options ou boutons
 	 */
-	void enableAll(boolean _bEnable) {
-		jMenuCloseFile.setEnabled(_bEnable);
-		m_oExportButton.setEnabled(_bEnable);
-		m_oStatsButton.setEnabled(_bEnable);
-		m_oManagePlaceButton.setEnabled(_bEnable);
-		m_oTableauxButton.setEnabled(_bEnable);
-		m_oSupprimerButton.setEnabled(_bEnable);
-		m_oAjouterButton.setEnabled(_bEnable);
-		m_oRechercherButton.setEnabled(_bEnable);
-		exportation.setEnabled(_bEnable);
-		statistiques.setEnabled(_bEnable);
-		tableau.setEnabled(_bEnable);
-		addWine.setEnabled(_bEnable);
-		modifPlace.setEnabled(_bEnable);
-		delPlace.setEnabled(_bEnable);
-		searchWine.setEnabled(_bEnable);
-		m_oModifierButton.setEnabled(_bEnable);
-		m_oImporterButton.setEnabled(_bEnable);
-		m_oShowFileButton.setEnabled(_bEnable);
-		m_oShowTrashButton.setEnabled(_bEnable);
-		importation.setEnabled(_bEnable);
-		m_oCreerButton.setEnabled(_bEnable);
+	void enableAll(boolean enable) {
+		jMenuCloseFile.setEnabled(enable);
+		m_oExportButton.setEnabled(enable);
+		m_oStatsButton.setEnabled(enable);
+		m_oManagePlaceButton.setEnabled(enable);
+		m_oTableauxButton.setEnabled(enable);
+		m_oSupprimerButton.setEnabled(enable);
+		m_oAjouterButton.setEnabled(enable);
+		m_oRechercherButton.setEnabled(enable);
+		exportation.setEnabled(enable);
+		statistiques.setEnabled(enable);
+		tableau.setEnabled(enable);
+		addWine.setEnabled(enable);
+		modifPlace.setEnabled(enable);
+		delPlace.setEnabled(enable);
+		searchWine.setEnabled(enable);
+		m_oModifierButton.setEnabled(enable);
+		m_oImporterButton.setEnabled(enable);
+		m_oShowFileButton.setEnabled(enable);
+		m_oShowTrashButton.setEnabled(enable);
+		importation.setEnabled(enable);
+		m_oCreerButton.setEnabled(enable);
 		save.setEnabled(Program.isFileSavable());
 		buttonSave.setEnabled(Program.isFileSavable());
-		buttonPdf.setEnabled(_bEnable);
-		saveAs.setEnabled(_bEnable);
-		addPlace.setEnabled(_bEnable);
-		jMenuExportXmlPlaces.setEnabled(_bEnable);
-		jMenuImportXmlPlaces.setEnabled(_bEnable);
-		jMenuExportXml.setEnabled(_bEnable);
-		showFile.setEnabled(_bEnable);
-		tocreate.setEnabled(_bEnable);
-		history.setEnabled(_bEnable);
-		vignobles.setEnabled(_bEnable);
-		bottleCapacity.setEnabled(_bEnable);
-		parameter.setEnabled(_bEnable);
-		jMenuCut.setEnabled(_bEnable);
-		jMenuCopy.setEnabled(_bEnable);
-		jMenuPaste.setEnabled(_bEnable);
-		m_oCutButton.setEnabled(_bEnable);
-		m_oCopyButton.setEnabled(_bEnable);
-		m_oPasteButton.setEnabled(_bEnable);
+		buttonPdf.setEnabled(enable);
+		saveAs.setEnabled(enable);
+		addPlace.setEnabled(enable);
+		jMenuExportXmlPlaces.setEnabled(enable);
+		jMenuImportXmlPlaces.setEnabled(enable);
+		jMenuExportXml.setEnabled(enable);
+		showFile.setEnabled(enable);
+		tocreate.setEnabled(enable);
+		history.setEnabled(enable);
+		vignobles.setEnabled(enable);
+		bottleCapacity.setEnabled(enable);
+		parameter.setEnabled(enable);
+		jMenuCut.setEnabled(enable);
+		jMenuCopy.setEnabled(enable);
+		jMenuPaste.setEnabled(enable);
+		m_oCutButton.setEnabled(enable);
+		m_oCopyButton.setEnabled(enable);
+		m_oPasteButton.setEnabled(enable);
 	}
 
 	/**
@@ -377,8 +356,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private void quitter_actionPerformed() {
 		for(Component c : Program.TABBED_PANE.getComponents()) {
 			if(c instanceof ITabListener) {
-				if(!((ITabListener) c).tabWillClose(null))
+				if(!((ITabListener) c).tabWillClose(null)) {
+					Debug("Exiting progam cancelled!");
 					return;
+				}
 			}
 		}
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -390,10 +371,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		setCursor(Cursor.getDefaultCursor());
 		dispose();
 
-		Program.deleteTempFiles();
-		Program.cleanDebugFiles();
-		Debug("MyCellar End");
-		Program.closeDebug();
+		Program.exit();
 		System.exit(0);
 	}
 
@@ -467,10 +445,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		Program.PANEL_INFOS.setEnable(true);
 		Program.PANEL_INFOS.refresh();
 		String tmp = Program.getShortFilename();
-		if (tmp.isEmpty())
+		if (tmp.isEmpty()) {
 			setTitle(Program.getLabel("Infos001"));
-		else
+		} else {
 			setTitle(Program.getLabel("Infos001") + " - [" + tmp + "]");
+		}
 	}
 
 	/**
@@ -482,10 +461,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		try{
     		enableAll(false);
     		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-    		if (!sFile.isEmpty() && Program.openaFile(new File(sFile)))
-    			postOpenFile();
-    		else
-    			enableAll(false);
+    		if (!sFile.isEmpty() && Program.openaFile(new File(sFile))) {
+					postOpenFile();
+				} else {
+					enableAll(false);
+				}
 		}catch(Exception e) {
 			Program.showException(e);
 		}
@@ -601,9 +581,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			String thelangue = Program.getGlobalConfigString("LANGUAGE", "F");
 			if (!bHasVersion || toverify) {
 				Program.initConf();
-				if (!bHasVersion) {
-					Program.putCaveConfigString("FILE_SRC", "MyCellar.sinfo");
-				}
 			}
 			Program.setLanguage(thelangue);
 			updateLabels();
@@ -726,7 +703,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		quit.setAccelerator(KeyStroke.getKeyStroke(QUITTER, InputEvent.CTRL_DOWN_MASK));
 		SwingUtilities.updateComponentTreeUI(this);
 		String tmp = Program.getShortFilename();
-		Program.defaultPlace.setNom(Program.getLabel("Program.DefaultPlace"));
+		Program.DEFAULT_PLACE.setNom(Program.getLabel("Program.DefaultPlace"));
 		if (tmp.isEmpty()) {
 			setTitle(Program.getLabel("Infos001"));
 		} else {
@@ -801,13 +778,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		ShowTrashAction showTrashAction = new ShowTrashAction();
 		AddWineAction addWineAction = new AddWineAction();
 
-		String tmp = Program.getArchive();
-		tmp = tmp.replaceAll("\\\\", "/");
-		int ind1 = tmp.lastIndexOf("/");
-		int ind2 = tmp.indexOf(".sinfo");
-		if (ind1 != -1 && ind2 != -1) {
-			tmp = tmp.substring(ind1 + 1, ind2);
-		}
+		final String tmp = Program.getShortFilename();
 		if (tmp.isEmpty()) {
 			setTitle(Program.getLabel("Infos001"));
 		} else {
@@ -1070,8 +1041,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		int count = Program.TABBED_PANE.getTabCount();
 		Program.PANEL_INFOS.setVisible(count == 0);
 		Program.TABBED_PANE.setVisible(count > 0);
-		if (count == 0)
+		if (count == 0) {
 			Program.PANEL_INFOS.refresh();
+		}
 		boolean foundArmoire = false;
 		for (Rangement r : Program.getCave()) {
 			if (!r.isCaisse()) {

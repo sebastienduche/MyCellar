@@ -18,8 +18,8 @@ import java.awt.event.MouseEvent;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 08/06/18
+ * @version 0.4
+ * @since 04/07/18
  */
 public class PopupListener extends MouseAdapter {
 
@@ -98,10 +98,10 @@ public class PopupListener extends MouseAdapter {
 
     if (textField instanceof JTextField) {
       JTextField jtf = (JTextField) textField;
-      jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
+      jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
     } else if (textField instanceof JTextArea) {
       JTextArea jtf = (JTextArea) textField;
-      jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.clipboard.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
+      jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
     }
   }
 
@@ -122,7 +122,7 @@ public class PopupListener extends MouseAdapter {
       jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
     }
 
-    Program.clipboard.copier(txt);
+    Program.CLIPBOARD.copier(txt);
   }
 
   /**
@@ -140,6 +140,6 @@ public class PopupListener extends MouseAdapter {
       txt = jtf.getSelectedText();
     }
 
-    Program.clipboard.copier(txt);
+    Program.CLIPBOARD.copier(txt);
   }
 }

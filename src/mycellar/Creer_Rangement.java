@@ -40,8 +40,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.5
- * @since 29/05/18
+ * @version 12.6
+ * @since 04/07/18
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -105,7 +105,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		m_caisse_chk.setText(Program.getLabel("Infos024")); //"Rangement de type Caisse");
 		checkLimite.setText(Program.getLabel("Infos238")); //Limite de caisse
 		label_cree.setForeground(Color.red);
-		label_cree.setFont(Program.font_dialog_small);
+		label_cree.setFont(Program.FONT_DIALOG_SMALL);
 		label_cree.setText("");
 		label_cree.setHorizontalAlignment(SwingConstants.CENTER);
 		preview.setText(Program.getLabel("Infos155")); //"Prévisualiser le rangement");
@@ -191,7 +191,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		setLayout(new MigLayout("","[grow][grow]","[][]"));
 
 		JPanel panelModify = new JPanel();
-		panelModify.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"",0,0,Program.font_panel), BorderFactory.createEmptyBorder()));
+		panelModify.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"",0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
 		panelModify.setLayout(new MigLayout("","[]","[]"));
 		panelModify.add(labelModify, "split 2");
 		panelModify.add(comboPlace, "");
@@ -203,23 +203,23 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		add(m_caisse_chk, "wrap");
 
 		panelType = new JPanel();
-		panelType.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos021"),0,0,Program.font_panel), BorderFactory.createEmptyBorder()));
+		panelType.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos021"),0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
 		panelType.setLayout(new GridLayout(0,2));
 		panelType.add(m_jrb_same_column_number);
 		panelType.add(m_jrb_dif_column_number);
 		
 		JPanel panelPartie = new JPanel();
-		panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos023"),0,0,Program.font_panel), BorderFactory.createEmptyBorder()));
+		panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos023"),0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
 		panelPartie.setLayout(new MigLayout("","[]","[]"));
 		panelPartie.add(nb_parties, "wmin 50");
 		
 		panelStartCaisse = new JPanel();
-		panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos272"),0,0,Program.font_panel), BorderFactory.createEmptyBorder()));
+		panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos272"),0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
 		panelStartCaisse.setLayout(new MigLayout("","[]","[]"));
 		panelStartCaisse.add(nb_start_caisse, "wmin 50");
 		
 		panelLimite = new JPanel();
-		panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos274"),0,0,Program.font_panel), BorderFactory.createEmptyBorder()));
+		panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos274"),0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
 		panelLimite.setLayout(new MigLayout("","[][]","[]"));
 		panelLimite.add(checkLimite, "gapright 10");
 		panelLimite.add(nb_limite, "split 2, wmin 50, hidemode 3");
@@ -801,7 +801,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		String fullText = nom_obj.getText();
 		if(text != null) {
 			nom_obj.setText(fullText.substring(0, nom_obj.getSelectionStart()) + fullText.substring(nom_obj.getSelectionEnd()));
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 		}
 	}
 
@@ -809,14 +809,14 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	public void copy() {
 		String text = nom_obj.getSelectedText();
 		if(text != null) {
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 		}
 	}
 
 	@Override
 	public void paste() {
 		String fullText = nom_obj.getText();
-		nom_obj.setText(fullText.substring(0, nom_obj.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(nom_obj.getSelectionEnd()));
+		nom_obj.setText(fullText.substring(0, nom_obj.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(nom_obj.getSelectionEnd()));
 	}
 
 }

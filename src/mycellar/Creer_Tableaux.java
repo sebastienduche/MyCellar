@@ -44,8 +44,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.0
- * @since 14/06/18
+ * @version 6.1
+ * @since 04/07/18
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable {
 	private final MyCellarLabel label2 = new MyCellarLabel();
@@ -126,7 +126,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 		JScrollPane scrollPane1 = new JScrollPane(table);
 		end.setHorizontalAlignment(SwingConstants.CENTER);
 		end.setForeground(Color.red);
-		end.setFont(Program.font_dialog_small);
+		end.setFont(Program.FONT_DIALOG_SMALL);
 		preview.setText(Program.getLabel("Infos152")); //"Ouvrir le fichier");
 		preview.setMnemonic(OUVRIR);
 		selectall.setText(Program.getLabel("Infos126")); //"Tout sélectionner");
@@ -532,7 +532,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 		String fullText = name.getText();
 		if(text != null) {
 			name.setText(fullText.substring(0, name.getSelectionStart()) + fullText.substring(name.getSelectionEnd()));
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 		}
 	}
 
@@ -540,14 +540,14 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	public void copy() {
 		String text = name.getSelectedText();
 		if(text != null) {
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 		}
 	}
 
 	@Override
 	public void paste() {
 		String fullText = name.getText();
-		name.setText(fullText.substring(0,  name.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(name.getSelectionEnd()));
+		name.setText(fullText.substring(0,  name.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(name.getSelectionEnd()));
 	}
 
 	@Override

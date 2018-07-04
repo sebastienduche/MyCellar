@@ -48,8 +48,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.7
- * @since 29/06/18
+ * @version 11.8
+ * @since 04/07/18
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -1415,7 +1415,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		String fullText = file.getText();
 		if(text != null) {
 			file.setText(fullText.substring(0, file.getSelectionStart()) + fullText.substring(file.getSelectionEnd()));
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 		}
 	}
 
@@ -1423,14 +1423,14 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	public void copy() {
 		String text = file.getSelectedText();
 		if(text != null) {
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 		}
 	}
 
 	@Override
 	public void paste() {
 		String fullText = file.getText();
-		file.setText(fullText.substring(0, file.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(file.getSelectionEnd()));
+		file.setText(fullText.substring(0, file.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(file.getSelectionEnd()));
 	}
 
 }

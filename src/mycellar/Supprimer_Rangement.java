@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.4
- * @since 08/06/18
+ * @version 7.5
+ * @since 04/07/18
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
@@ -141,7 +141,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 				}
 
 				label_final.setForeground(Color.red);
-				label_final.setFont(Program.font_dialog_small);
+				label_final.setFont(Program.FONT_DIALOG_SMALL);
 				label_final.setHorizontalAlignment(SwingConstants.CENTER);
 				Debug("There is "+nb_case_use_total+" bottle(s) in this place!");
 				if (nb_case_use_total == 0) {

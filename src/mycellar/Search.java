@@ -43,8 +43,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.0
- * @since 29/06/18
+ * @version 19.1
+ * @since 04/07/18
  */
 public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable {
 	private final JTable table;
@@ -189,12 +189,12 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		modif.addActionListener(this::modif_actionPerformed);
 		resul_txt.setForeground(Color.red);
 		resul_txt.setHorizontalAlignment(SwingConstants.CENTER);
-		resul_txt.setFont(Program.font_dialog_small);
+		resul_txt.setFont(Program.FONT_DIALOG_SMALL);
 		multi.addItemListener(this::multi_itemStateChanged);
 
 		multi.setText(label_empl);
 		TXT_NB.setForeground(Color.red);
-		TXT_NB.setFont(Program.font_dialog_small);
+		TXT_NB.setFont(Program.FONT_DIALOG_SMALL);
 		TXT_NBRESUL.setHorizontalAlignment(SwingConstants.RIGHT);
 		multi.setEnabled(false);
 
@@ -1071,7 +1071,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		private PanelName(){
 			name.setEditable(true);
 			name.addMouseListener(popup_l);
-			name.setFont(Program.font_panel);
+			name.setFont(Program.FONT_PANEL);
 			setLayout(new MigLayout("","[grow]","[]"));
 			add(new MyCellarLabel(Program.getLabel("Infos085")),"wrap");
 			add(name,"grow");
@@ -1182,7 +1182,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			String fullText = name.getText();
 			if(text != null) {
 				name.setText(fullText.substring(0, name.getSelectionStart()) + fullText.substring(name.getSelectionEnd()));
-				Program.clipboard.copier(text);
+				Program.CLIPBOARD.copier(text);
 			}
 		}
 	}
@@ -1194,7 +1194,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			{
 				String text = name.getSelectedText();
 				if(text != null) {
-					Program.clipboard.copier(text);
+					Program.CLIPBOARD.copier(text);
 				}
 			}
 		}
@@ -1206,7 +1206,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			//if(name.hasFocus())
 			{
 				String fullText = name.getText();
-				name.setText(fullText.substring(0,  name.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(name.getSelectionEnd()));
+				name.setText(fullText.substring(0,  name.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(name.getSelectionEnd()));
 			}
 		}
 	}

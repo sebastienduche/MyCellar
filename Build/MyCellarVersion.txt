@@ -1,4 +1,4 @@
-3.0.4.1
+3.0.4.2
 5.5
-MyCellar.jar@9c613b68bf399fa1a6c216fa881e37f3
+MyCellar.jar@73e512d55e1414d931baa15d6fb7187a
 Finish.html

@@ -9,8 +9,8 @@ import java.io.InputStreamReader;
 
 public class MyCellarVersion {
 
-	public static final String VERSION = "3.0.4.1";
-	public static final String MAIN_VERSION = "5.6 ZE";
+	public static final String VERSION = "3.0.4.2";
+	public static final String MAIN_VERSION = "5.5 ZE";
   
 	public static String getLocalVersion() {
 		// In directory bin

@@ -18,8 +18,8 @@ import java.net.URL;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 01/03/18
+ * @version 0.8
+ * @since 22/08/18
  */
 
 class SplashScreen extends JPanel {
@@ -33,14 +33,15 @@ class SplashScreen extends JPanel {
 	/**
 	 * SplashScreen: Contructeur par défaut pour l'écran SplashScreen
 	 */
-	public SplashScreen() {
+	public SplashScreen() throws Exception {
 		URL stream = getClass().getClassLoader().getResource("resources/SebInformatique.jpg");
 
 		if (stream != null) {
 			try {
 				image = ImageIO.read(stream);
 			} catch (IOException e) {
-				e.printStackTrace();
+				Program.Debug("ERROR: Splashscreen: Unable to read image!");
+				Program.Debug(e.getMessage());
 			}
 
 			if (image != null) {
@@ -63,6 +64,8 @@ class SplashScreen extends JPanel {
 				});
 				timer.start();
 			}
+		} else {
+			throw new Exception("Missing resources file. Check resources dir in bin directory!");
 		}
 	}
 
@@ -102,7 +105,7 @@ class SplashScreen extends JPanel {
 		f.dispose();
 	}
 	
-	public boolean isRunning() {
+	boolean isRunning() {
 		return timer.isRunning();
 	}
 }

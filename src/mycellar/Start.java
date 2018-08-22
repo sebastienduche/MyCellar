@@ -44,8 +44,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 24.7
- * @since 04/07/18
+ * @version 24.8
+ * @since 22/08/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -151,17 +151,17 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 	public static void main(String[] args) {
 
-		final SplashScreen splashscreen = new SplashScreen();
-		
-		while (splashscreen.isRunning()) {}
-		
-		// initialisation
-		Program.init();
-
-		// Lecture des paramètres
-		// ______________________
-
 		try {
+			final SplashScreen splashscreen = new SplashScreen();
+
+			while (splashscreen.isRunning()) {}
+
+			// initialisation
+			Program.init();
+
+			// Lecture des paramètres
+			// ______________________
+
 			String parameters = "";
 			
 			for (String arg : args) {
@@ -201,10 +201,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 					Program.putCaveConfigInt("FIC_EXCEL", 0);
 				}
 			}
-		} catch (Exception e) {
-		}
 
-		try {
 			Thread.setDefaultUncaughtExceptionHandler((t, e) -> Program.showException(e, true));
 			getInstance().startup();
 		} catch (Exception e) {
@@ -221,10 +218,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * jbInit: Fonction d'initialisation de l'application
+	 * Fonction d'initialisation de l'application
 	 */
 	private void startup() {
-		Debug("Starting MyCellar version: "+MyCellarVersion.VERSION);
 		Thread.currentThread().setUncaughtExceptionHandler(this);
 		prefs = Preferences.userNodeForPackage(getClass());
 
@@ -381,8 +377,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private void about_actionPerformed() {
 		try {
 			new APropos().setVisible(true);
-		} catch (Exception e3) {
-			Program.showException(e3);
+		} catch (Exception e) {
+			Program.showException(e);
 		}
 	}
 
@@ -570,19 +566,16 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private void updateFrame(boolean toverify) {
 
 		try {
-
 			boolean bHasVersion = false;
-			if (null != Program.getCaveConfig() && Program.hasConfigCaveKey("VERSION")) {
-				bHasVersion = true;
-			} else if (Program.hasConfigGlobalKey("VERSION")) {
+			if ((null != Program.getCaveConfig() && Program.hasConfigCaveKey("VERSION")) || Program.hasConfigGlobalKey("VERSION")) {
 				bHasVersion = true;
 			}
 
-			String thelangue = Program.getGlobalConfigString("LANGUAGE", "F");
 			if (!bHasVersion || toverify) {
 				Program.initConf();
 			}
-			Program.setLanguage(thelangue);
+			String thelangue = Program.getGlobalConfigString("LANGUAGE", "F");
+			Program.setLanguage(thelangue.charAt(0));
 			updateLabels();
 			Debug("Loading Frame ended");
 		} catch (Exception e) {
@@ -591,10 +584,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	void updateLabels() {
-		try {
-			QUITTER = Program.getLabel("QUITTER").charAt(0);
-		} catch (NullPointerException npe) {
-			Program.setLanguage("F");
+		final String quitter = Program.getLabel("QUITTER");
+		if (quitter == null || quitter.isEmpty()) {
+			Program.setLanguage('F');
 			QUITTER = Program.getLabel("QUITTER").charAt(0);
 		}
 

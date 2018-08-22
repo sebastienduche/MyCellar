@@ -27,8 +27,8 @@ import java.text.MessageFormat;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.1
- * @since 04/07/18
+ * @version 11.2
+ * @since 22/08/18
  */
 public class Parametres extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -78,8 +78,9 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		annee.setValue(Program.getCaveConfigInt("ANNEE", 50));
 		siecle.setValue(Program.getCaveConfigInt("SIECLE", 19));
 
-		if ( Program.getGlobalConfigInt("DEBUG", 0) == 1 )
+		if ( Program.getGlobalConfigInt("DEBUG", 0) == 1) {
 			m_jcb_debug.setSelected(true);
+		}
 
 		devise.setText(Program.getCaveConfigString("DEVISE",""));
 		String language = Program.getLanguage("Language1");
@@ -100,9 +101,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		langue.setSelectedIndex(i - 1);
 		
 		String auto = Program.getCaveConfigString("TYPE_AUTO", "OFF");
-		if (auto.equals("ON")) {
-			jcb_half_auto.setSelected(true);
-		}
+		jcb_half_auto.setSelected("ON".equals(auto));
 
 		valider.addActionListener(this::valider_actionPerformed);
 		parcourir_excel.addActionListener(this::parcourir_excel_actionPerformed);
@@ -244,7 +243,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 
 				Program.setYearControl(jcb_annee_control.isSelected());
 
-				//Program.write_XSL();
 				Program.saveGlobalProperties();
 			}
 		}
@@ -252,8 +250,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 			Program.showException(exc);
 		}
 	}
-
-	
 
 	/**
 	 * keylistener_actionPerformed: Ecoute clavier.
@@ -321,16 +317,9 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	 * @param e ActionEvent
 	 */
 	private void jcb_excel_actionPerformed(ActionEvent e) {
-		if (jcb_excel.isSelected()) {
-			file_bak.setEnabled(true);
-			label_fic_bak.setEnabled(true);
-			parcourir_excel.setEnabled(true);
-		}
-		else {
-			file_bak.setEnabled(false);
-			label_fic_bak.setEnabled(false);
-			parcourir_excel.setEnabled(false);
-		}
+		file_bak.setEnabled(jcb_excel.isSelected());
+		label_fic_bak.setEnabled(jcb_excel.isSelected());
+		parcourir_excel.setEnabled(jcb_excel.isSelected());
 	}
 
 
@@ -345,10 +334,10 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 				return;
 			}
 			Program.putGlobalConfigString("LANGUAGE", thelangue);
-			boolean ok = Program.setLanguage(thelangue);
+			boolean ok = Program.setLanguage(thelangue.charAt(0));
 			if (ok) {
 				if (Program.getLabel("Infos159") == null) {
-					ok = Program.setLanguage("F");
+					ok = Program.setLanguage('F');
 					langue.setSelectedIndex(0);
 				}
 				if(ok) {
@@ -357,7 +346,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 			}
 			else {
 				langue.setSelectedIndex(0);
-				Program.setLanguage("F");
+				Program.setLanguage('F');
 				JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}

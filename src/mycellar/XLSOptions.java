@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 /**
@@ -23,13 +23,13 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 04/07/18
+ * @version 1.4
+ * @since 26/09/18
  */
 class XLSOptions extends JDialog {
 
 	private static final long serialVersionUID = 5307297932934344545L;
-private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
+  private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
   private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox();
   private final MyCellarCheckBox export[];
   private final JTextField pdf_title = new JTextField();
@@ -43,15 +43,13 @@ private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
 	  setModal(true);
 	  setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(Program.getLabel("Infos268"));
-    addKeyListener(new KeyListener() {
-      @Override
-      public void keyReleased(KeyEvent e) {}
+    addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
-        keylistener_actionPerformed(e);
+        if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
+          valider_actionPerformed(null);
+        }
       }
-      @Override
-      public void keyTyped(KeyEvent e) {}
     });
 
     setLayout(new MigLayout("","grow",""));
@@ -60,9 +58,8 @@ private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
     jPanel1.setLayout(new MigLayout("","grow",""));
     jPanel1.setFont(Program.FONT_PANEL);
+    pdf_title.setText(Program.getCaveConfigString("XLS_TITLE", ""));
     MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("Infos270")); //Titre du XLS
-    String xls_title = Program.getCaveConfigString("XLS_TITLE", "");
-    pdf_title.setText(xls_title);
     MyCellarLabel MyCellarLabel3 = new MyCellarLabel(Program.getLabel("Infos256")); //Taille du texte
     MyCellarSpinner3.addChangeListener((e) -> {
         if (Integer.parseInt(MyCellarSpinner3.getValue().toString()) <= 0) {
@@ -86,19 +83,7 @@ private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
     export = new MyCellarCheckBox[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
       export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
-      try {
-        int I = Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_XLS",0);
-        if (I == 1) {
-          export[i].setSelected(true);
-        }
-        else {
-          export[i].setSelected(false);
-        }
-      }
-      catch (NumberFormatException nfe) {
-        export[i].setSelected(false);
-        Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT_XLS", 0);
-      }
+      export[i].setSelected(1 == Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_XLS", 0));
       colonnes[i] = new MyCellarLabel(columns.get(i).toString());
      
     }
@@ -125,9 +110,9 @@ private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
     jPanel2.add(MyCellarLabel8, "wrap");
     setSize(400, 500);
     for (int i = 0; i < nb_colonnes; i++) {
-        jPanel2.add(colonnes[i], "newline, grow");
-        jPanel2.add(export[i], "push, align right");
-      }
+      jPanel2.add(colonnes[i], "newline, grow");
+      jPanel2.add(export[i], "push, align right");
+    }
     JScrollPane jScrollPane1 = new JScrollPane(jPanel2);
     jScrollPane1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
     add(jScrollPane1, "gaptop 15px, grow, wrap");
@@ -147,19 +132,9 @@ private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
       Program.putCaveConfigString("XLS_TITLE", pdf_title.getText());
       Program.putCaveConfigString("TITLE_SIZE_XLS", MyCellarSpinner1.getValue().toString());
       Program.putCaveConfigString("TEXT_SIZE_XLS", MyCellarSpinner3.getValue().toString());
-      if (MyCellarCheckBox1.isSelected()) {
-        Program.putCaveConfigString("BOLD_XLS", "bold");
-      }
-      else {
-        Program.putCaveConfigString("BOLD_XLS", "");
-      }
+      Program.putCaveConfigString("BOLD_XLS", MyCellarCheckBox1.isSelected() ? "bold" : "");
       for (int i = 0; i < nb_colonnes; i++) {
-        if (export[i].isSelected()) {
-          Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT_XLS", 1);
-        }
-        else {
-          Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT_XLS", 0);
-        }
+        Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT_XLS", export[i].isSelected() ? 1 : 0);
       }
       dispose();
     }
@@ -167,16 +142,4 @@ private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
       Program.showException(exc);
     }
   }
-
-  /**
-   * keylistener_actionPerformed: Fonction d'écoute clavier.
-   *
-   * @param e KeyEvent
-   */
-  private void keylistener_actionPerformed(KeyEvent e) {
-    if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
-      valider_actionPerformed(null);
-    }
-  }
-
 }

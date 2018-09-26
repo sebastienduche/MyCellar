@@ -11,19 +11,17 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 08/06/18
+ * @version 0.3
+ * @since 26/09/18
  */
 
 public class PDFRow {
 
-	private final LinkedList<String> columns =  new LinkedList<>();
+	private final LinkedList<String> columns = new LinkedList<>();
 	private PDFont font;
 	private int fontSize;
 	
-	public PDFRow() {
-		
-	}
+	public PDFRow() {}
 	
 	public void addCell(String value) {
 		columns.add(value);

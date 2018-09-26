@@ -40,8 +40,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.8
- * @since 04/07/18
+ * @version 7.9
+ * @since 26/09/18
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -503,7 +503,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	 */
 public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 		try {
-			PDFTools pdf = PDFTools.createPDFFile();
+			PDFTools pdf = new PDFTools();
 			PDFProperties properties = Program.getPDFProperties();
 			pdf.addTitle(properties.getTitle(), 20, properties.isBoldTitle() ? PDType1Font.HELVETICA_BOLD : PDType1Font.HELVETICA, properties.getTitleSize());
 			PDFPageProperties pageProperties = new PDFPageProperties(30, 20, 20, 20, PDType1Font.HELVETICA, properties.getFontSize());

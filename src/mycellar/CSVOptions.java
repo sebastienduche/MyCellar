@@ -12,8 +12,8 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 /**
@@ -22,8 +22,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 04/07/18
+ * @version 1.8
+ * @since 26/09/18
  */
 class CSVOptions extends JDialog {
 	private final MyCellarCheckBox export[];
@@ -36,32 +36,30 @@ class CSVOptions extends JDialog {
 	 */
 	public CSVOptions() {
 
-		Debug("JbInit");
+		Debug("Constructor");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setModal(true);
 		setTitle(Program.getLabel("Infos269"));
 
-		addKeyListener(new KeyListener() {
-			@Override
-			public void keyReleased(KeyEvent e) {}
+		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				keylistener_actionPerformed(e);
+				if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
+					valider_actionPerformed(null);
+				}
 			}
-			@Override
-			public void keyTyped(KeyEvent e) {}
 		});
 
 		setLayout(new MigLayout("","grow",""));
 		setResizable(false);
-		JPanel jPanel1 = new JPanel();
-		jPanel1.setBorder(BorderFactory.createEtchedBorder());
-		jPanel1.setLayout(new MigLayout("","grow",""));
-		jPanel1.setFont(Program.FONT_PANEL);
+		JPanel panel = new JPanel();
+		panel.setBorder(BorderFactory.createEtchedBorder());
+		panel.setLayout(new MigLayout("","grow",""));
+		panel.setFont(Program.FONT_PANEL);
 		MyCellarLabel info_separator = new MyCellarLabel(Program.getLabel("Infos034") + ":"); //Séparateur
 		ArrayList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
 		nb_colonnes = listColumns.size();
-		MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
+		final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
 		export = new MyCellarCheckBox[nb_colonnes];
 		for (int i = 0; i < nb_colonnes; i++) {
 			export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
@@ -76,7 +74,7 @@ class CSVOptions extends JDialog {
 			}
 			catch (NumberFormatException nfe) {
 				export[i].setSelected(false);
-				Program.putCaveConfigString("SIZE_COL" + i + "EXPORT_CSV", "0");
+				Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0);
 			}
 			colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
 		}
@@ -91,16 +89,10 @@ class CSVOptions extends JDialog {
 		String key = Program.getCaveConfigString("SEPARATOR_DEFAULT", ",");
 		if (key.equals(";")) {
 			separator.setSelectedIndex(1);
-		}
-		else {
-			if (key.equals(":")) {
-				separator.setSelectedIndex(2);
-			}
-			else {
-				if (key.equals("/")) {
-					separator.setSelectedIndex(3);
-				}
-			}
+		}	else if (key.equals(":")) {
+			separator.setSelectedIndex(2);
+		}	else if (key.equals("/")) {
+			separator.setSelectedIndex(3);
 		}
 		valider.addActionListener(this::valider_actionPerformed);
 		MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos055"));
@@ -132,12 +124,7 @@ class CSVOptions extends JDialog {
 	private void valider_actionPerformed(ActionEvent e) {
 		Debug("valider_actionPerforming...");
 		for (int i = 0; i < nb_colonnes; i++) {
-			if (export[i].isSelected()) {
-				Program.putCaveConfigString("SIZE_COL" + i + "EXPORT_CSV", "1");
-			}
-			else {
-				Program.putCaveConfigString("SIZE_COL" + i + "EXPORT_CSV", "0");
-			}
+			Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", export[i].isSelected() ? 1 : 0);
 		}
 		int separ_select = separator.getSelectedIndex();
 		switch (separ_select) {
@@ -155,17 +142,6 @@ class CSVOptions extends JDialog {
 			break;
 		}
 		dispose();
-	}
-
-	/**
-	 * keylistener_actionPerformed: Fonction d'écoute clavier.
-	 *
-	 * @param e KeyEvent
-	 */
-	private void keylistener_actionPerformed(KeyEvent e) {
-		if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
-			valider_actionPerformed(null);
-		}
 	}
 
 	/**

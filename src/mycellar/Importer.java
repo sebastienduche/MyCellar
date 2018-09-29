@@ -48,8 +48,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.8
- * @since 04/07/18
+ * @version 11.9
+ * @since 28/09/18
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -897,19 +897,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			}
 			
 			if(type_xml.isSelected()) {
-				label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
-				ListeBouteille.loadXML(f);
-				importe.setEnabled(true);
-				label_progression.setText(Program.getLabel("Infos035")); //"Import Terminé");
-				new Timer().schedule(
-						new TimerTask() {
-								@Override
-								public void run() {
-									SwingUtilities.invokeLater(() -> label_progression.setText(""));
-								}
-						},
-						5000
-				);
+				importFromXML(f);
 				return;
 			}
 
@@ -1330,6 +1318,26 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		RangementUtils.putTabStock();
 		if(!Program.getErrors().isEmpty())
 			new OpenShowErrorsAction().actionPerformed(null);
+	}
+
+	private void importFromXML(File f) {
+		label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
+		ListeBouteille.loadXML(f);
+		importe.setEnabled(true);
+		label_progression.setText(Program.getLabel("Infos035")); //"Import Terminé");
+		new Timer().schedule(
+				new TimerTask() {
+						@Override
+						public void run() {
+							SwingUtilities.invokeLater(() -> label_progression.setText(""));
+						}
+				},
+				5000
+		);
+		RangementUtils.putTabStock();
+		if (!Program.getErrors().isEmpty()) {
+			new OpenShowErrorsAction().actionPerformed(null);
+		}
 	}
 
 	private MyCellarFields getSelectedField(int i) {

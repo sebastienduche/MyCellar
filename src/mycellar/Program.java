@@ -76,8 +76,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 18.9
- * @since 22/08/18
+ * @version 19.0
+ * @since 28/09/18
  */
 
 public class Program {
@@ -1535,7 +1535,7 @@ public class Program {
 		return listCaveModified;
 	}
 
-	static PDFProperties getPDFProperties() {
+	public static PDFProperties getPDFProperties() {
 		String title = getCaveConfigString("PDF_TITLE", "");
 		int titleSize = getCaveConfigInt("TITLE_SIZE", 10);
 		int textSize = getCaveConfigInt("TEXT_SIZE", 10);

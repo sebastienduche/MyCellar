@@ -1,13 +1,16 @@
 package mycellar;
 
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
+
 /**
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 01/03/18
+ * @version 0.9
+ * @since 28/09/18
  */
 
 class MyCellarControl {
@@ -18,23 +21,49 @@ class MyCellarControl {
    * @param _sName String
    * @return boolean
    */
-  public static boolean ctrl_Name(String _sName) {
+  static boolean ctrl_Name(String _sName) {
 
     Debug("Controling name...");
-    if (_sName.isEmpty()) {
+    if (_sName == null || _sName.isEmpty()) {
       //Erreur le nom ne doit pas être vide
       Debug("ERROR: Name cannot be empty!");
       Erreur.showSimpleErreur(Program.getError("Error010"));
       return false;
     }
 
-      //Erreur utilisation de caractères interdits
-      if (_sName.contains("\"") || _sName.contains(";") || _sName.contains("<") || _sName.contains(">") || _sName.contains("?") || _sName.contains("\\") || _sName.contains("/") ||
-          _sName.contains("|") || _sName.contains("*")) {
-        Debug("ERROR: Forbidden Characters!");
-        Erreur.showSimpleErreur(Program.getError("Error126"));
-        return false;
-      }
+    try {
+      Paths.get(_sName);
+    } catch (InvalidPathException e) {
+      Debug("ERROR: Forbidden Characters!");
+      Erreur.showSimpleErreur(Program.getError("Error126"));
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * controlPath Contrôle le chemin d'un fichier
+   *
+   * @param path String
+   * @return boolean
+   */
+  static boolean controlPath(String path) {
+
+    Debug("Controling path...");
+    if (null == path || path.isEmpty()) {
+      //Erreur le nom ne doit pas être vide
+      Debug("ERROR: Name cannot be empty!");
+      Erreur.showSimpleErreur(Program.getError("MyCellarControl.emptyPath"));
+      return false;
+    }
+
+    try {
+      Paths.get(path);
+    } catch (InvalidPathException e) {
+      Debug("ERROR: Forbidden Characters!");
+      Erreur.showSimpleErreur(Program.getError("MyCellarControl.invalidPath"));
+      return false;
+    }
     return true;
   }
 
@@ -44,7 +73,7 @@ class MyCellarControl {
    * @param _sName String
    * @return boolean
    */
-  public static boolean ctrl_existingName(String _sName) {
+  static boolean ctrl_existingName(String _sName) {
 
     Debug("Controling existing name...");
     if (Program.getCave(_sName.trim()) != null) {

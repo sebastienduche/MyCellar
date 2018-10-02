@@ -76,8 +76,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.0
- * @since 28/09/18
+ * @version 19.1
+ * @since 02/10/18
  */
 
 public class Program {
@@ -522,6 +522,10 @@ public class Program {
 	
 	static int getCellarValue() {
 		return (int) getStorage().getAllList().stream().mapToDouble(Bouteille::getPriceDouble).sum();
+	}
+
+	static int getNbBouteille() {
+		return getStorage().getAllList().size();
 	}
 	
 	/**

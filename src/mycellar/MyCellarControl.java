@@ -1,5 +1,6 @@
 package mycellar;
 
+import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
@@ -9,8 +10,8 @@ import java.nio.file.Paths;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 28/09/18
+ * @version 1.0
+ * @since 10/10/18
  */
 
 class MyCellarControl {
@@ -39,6 +40,16 @@ class MyCellarControl {
       return false;
     }
     return true;
+  }
+
+  /**
+   * controlPath Contrôle le chemin d'un fichier
+   *
+   * @param file File
+   * @return boolean
+   */
+  static boolean controlPath(File file) {
+    return controlPath(file.getAbsolutePath());
   }
 
   /**

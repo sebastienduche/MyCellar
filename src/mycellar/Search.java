@@ -43,8 +43,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.1
- * @since 04/07/18
+ * @version 19.2
+ * @since 10/10/18
  */
 public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable {
 	private final JTable table;
@@ -254,7 +254,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			dialog.add(expor);
 			dialog.pack();
 			dialog.setTitle(Program.getLabel("Infos151"));
-			dialog.setLocationRelativeTo(null);
+			dialog.setLocationRelativeTo(Start.getInstance());
 			dialog.setModal(true);
 			dialog.setVisible(true);
 			Debug("Export Done");

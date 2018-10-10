@@ -20,8 +20,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 28/09/18
+ * @version 0.2
+ * @since 10/10/18
  */
 public class RangementCreationDialog extends JDialog {
 
@@ -54,7 +54,7 @@ public class RangementCreationDialog extends JDialog {
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
     setSize(600, 500);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Start.getInstance());
     setVisible(true);
     Debug("Constructor OK");
 

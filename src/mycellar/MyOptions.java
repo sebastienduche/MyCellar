@@ -10,7 +10,6 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.Color;
@@ -27,8 +26,8 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.9
- * @since 04/07/18
+ * @version 2.0
+ * @since 10/10/18
  */
 class MyOptions extends JDialog {
   private final MyCellarLabel textControl1 = new MyCellarLabel();
@@ -65,7 +64,7 @@ class MyOptions extends JDialog {
   public MyOptions(String title, String message, String message2, String[] propriete, String[] default_value, String[] cle2, String[] type_objet,
                    MyLinkedHashMap config1, boolean cancel) {
 
-    super(new JFrame(), "", true);
+    super(Start.getInstance(), "", true);
     config = config1;
     cle = cle2;
     bCancel = cancel;
@@ -95,7 +94,7 @@ class MyOptions extends JDialog {
   public MyOptions(String title, String message, String message2, String[] propriete, String[] default_value, String[] cle2, String[] type_objet, String erreur,
                    MyLinkedHashMap config1, boolean cancel, boolean isLabelEdit) {
 
-    super(new JFrame(), "", true);
+    super(Start.getInstance(), "", true);
     config = config1;
     cle = cle2;
     bCancel = cancel;
@@ -127,7 +126,7 @@ class MyOptions extends JDialog {
     resul = new String[taille_value];
     value = new JComponent[taille_value];
     labelEdit = new JTextField[taille_value];
-    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(title);
     textControl1.setFont(Program.FONT_DIALOG_SMALL);
     textControl1.setForeground(Color.red);

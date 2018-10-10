@@ -11,8 +11,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 02/03/18
+ * @version 0.4
+ * @since 10/10/18
  */
 
 public class Filtre extends FileFilter {
@@ -20,7 +20,6 @@ public class Filtre extends FileFilter {
 	public static final Filtre FILTRE_SINFO = new Filtre("sinfo", Program.getLabel("Infos313"));
 	public static final Filtre FILTRE_XLS = new Filtre("xls", Program.getLabel("Infos235"));
 	public static final Filtre FILTRE_ODS = new Filtre("ods", Program.getLabel("Infos336"));
-	public static final Filtre FILTRE_HTM = new Filtre("htm", Program.getLabel("Infos204"));
 	public static final Filtre FILTRE_HTML = new Filtre("html", Program.getLabel("Infos205"));
 	public static final Filtre FILTRE_XML = new Filtre("xml", Program.getLabel("Infos203"));
 	public static final Filtre FILTRE_PDF = new Filtre("pdf", Program.getLabel("Infos249"));

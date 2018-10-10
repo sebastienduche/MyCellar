@@ -17,8 +17,8 @@ import java.awt.event.ItemEvent;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 1.8
- * @since 04/07/18
+ * @version 1.9
+ * @since 10/10/18
  */
 
 class MoveLine extends JDialog {
@@ -120,7 +120,7 @@ class MoveLine extends JDialog {
 		setSize(320,280);
 		setResizable(true);
 		setIconImage(MyCellarImage.ICON.getImage());
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(Start.getInstance());
 		setVisible(true);
 	}
 

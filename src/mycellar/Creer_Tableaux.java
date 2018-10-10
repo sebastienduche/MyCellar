@@ -10,33 +10,30 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -44,17 +41,11 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.1
- * @since 04/07/18
+ * @version 6.2
+ * @since 10/10/18
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable {
-	private final MyCellarLabel label2 = new MyCellarLabel();
 	private final JTextField name = new JTextField();
-	private final MyCellarButton browse = new MyCellarButton();
-	private final  MyCellarButton parameter = new MyCellarButton();
-	private final MyCellarLabel label3 = new MyCellarLabel();
-	private final JButton create = new MyCellarButton();
-	private final ButtonGroup checkboxGroup1 = new ButtonGroup();
 	private final MyCellarRadioButton type_XML = new MyCellarRadioButton();
 	private final MyCellarRadioButton type_HTML = new MyCellarRadioButton();
 	private final MyCellarRadioButton type_XLS = new MyCellarRadioButton();
@@ -65,10 +56,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	private final char CREER = Program.getLabel("CREER").charAt(0);
 	private final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private final MyCellarCheckBox selectall = new MyCellarCheckBox();
-	private final JMenuItem quitter = new JMenuItem(Program.getLabel("Infos003"));
-	private final JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
-	private boolean isJFile = false;
-	private final MyCellarCheckBox m_jcb_options = new MyCellarCheckBox(Program.getLabel("Infos193") + "...");
+	private final MyCellarButton m_jcb_options = new MyCellarButton(Program.getLabel("Infos193") + "...");
 	static final long serialVersionUID = 260706;
 
 	/**
@@ -78,119 +66,105 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	public Creer_Tableaux() {
 		Debug("Constructor");
 		try {
-			jbInit();
+			final MyCellarLabel fileLabel = new MyCellarLabel(Program.getLabel("Infos095")); //"Nom du fichier généré:");
+			m_jcb_options.addActionListener(this::options_actionPerformed);
+			final MyCellarButton browse = new MyCellarButton("...");
+			browse.addActionListener(this::browse_actionPerformed);
+			final MyCellarButton parameter = new MyCellarButton(Program.getLabel("Main.Parameters"));
+			parameter.addActionListener(this::param_actionPerformed);
+			final MyCellarLabel chooseLabel = new MyCellarLabel(Program.getLabel("Infos096")); //"Sélectionner les rangements à générer:");
+			final MyCellarButton create = new MyCellarButton(Program.getLabel("Infos018")); //"Créer");
+			create.setMnemonic(CREER);
+
+			type_XML.setText(Program.getLabel("Infos210"));
+			type_HTML.setText(Program.getLabel("Infos211"));
+			type_XLS.setText(Program.getLabel("Infos233"));
+			final ButtonGroup buttonGroup = new ButtonGroup();
+			buttonGroup.add(type_HTML);
+			buttonGroup.add(type_XML);
+			buttonGroup.add(type_XLS);
+			table = new JTable(tv);
+			table.setAutoCreateRowSorter(true);
+			TableColumnModel tcm = table.getColumnModel();
+			TableColumn tc = tcm.getColumn(TableauValues.ETAT);
+			tc.setCellRenderer(new StateRenderer());
+			tc.setCellEditor(new StateEditor());
+			tc.setMinWidth(25);
+			tc.setMaxWidth(25);
+
+			type_XML.addActionListener(this::jradio_actionPerformed);
+			type_HTML.addActionListener(this::jradio_actionPerformed);
+			type_XLS.addActionListener(this::jradio_actionPerformed);
+
+			for (Rangement r : Program.getCave()) {
+				tv.addRangement(r);
+			}
+			JScrollPane jScrollPane = new JScrollPane(table);
+			end.setHorizontalAlignment(SwingConstants.CENTER);
+			end.setForeground(Color.red);
+			end.setFont(Program.FONT_DIALOG_SMALL);
+			preview.setText(Program.getLabel("Infos152")); //"Ouvrir le fichier");
+			preview.setMnemonic(OUVRIR);
+			selectall.setText(Program.getLabel("Infos126")); //"Tout sélectionner");
+			selectall.setHorizontalAlignment(SwingConstants.RIGHT);
+			selectall.setHorizontalTextPosition(SwingConstants.LEFT);
+			selectall.addActionListener(this::selectall_actionPerformed);
+			preview.addActionListener(this::preview_actionPerformed);
+			create.addActionListener(this::create_actionPerformed);
+			addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					keylistener_actionPerformed(e);
+				}
+			});
+
+			name.addMouseListener(new PopupListener());
+
+			m_jcb_options.setEnabled(false);
+			switch ( Program.getCaveConfigInt("CREATE_TAB_DEFAULT", 1) ) {
+				case 0:
+					type_XML.setSelected(true);
+					break;
+				case 1:
+					type_HTML.setSelected(true);
+					break;
+				case 2:
+					type_XLS.setSelected(true);
+					m_jcb_options.setEnabled(true);
+					break;
+			}
+
+			setLayout(new MigLayout("","grow","[][][grow]"));
+			final JPanel panelFile = new JPanel();
+			panelFile.setLayout(new MigLayout("","grow",""));
+			panelFile.add(fileLabel, "wrap");
+			panelFile.add(name, "grow, split 3");
+			panelFile.add(browse);
+			panelFile.add(parameter, "push");
+			add(panelFile, "grow, wrap");
+			final JPanel panelType = new JPanel();
+			panelType.setLayout(new MigLayout("","[grow][grow][grow]",""));
+			panelType.add(type_XML);
+			panelType.add(type_HTML);
+			panelType.add(type_XLS, "split 2");
+			panelType.add(m_jcb_options, "push");
+			panelType.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos151")));
+			add(panelType, "grow, wrap");
+			final JPanel panelTable = new JPanel();
+			panelTable.setLayout(new MigLayout("","grow","grow"));
+			panelTable.add(chooseLabel,"wrap");
+			panelTable.add(jScrollPane, "grow, wrap");
+			panelTable.add(selectall, "grow, push, wrap");
+			panelTable.add(end, "grow, center, hidemode 3, wrap");
+			panelTable.add(create, "gaptop 15px, split 2, center");
+			panelTable.add(preview);
+			add(panelTable, "grow");
+			preview.setEnabled(false);
+			Debug("Constructor OK");
 		}
 		catch (Exception e) {
 			Program.showException(e);
 		}
-	}
-
-	/**
-	 * jbInit: Fonction d'initialisation.
-	 *
-	 * @throws Exception
-	 */
-	private void jbInit() {
-		Debug("jbInit with Rangement[]");
-		label2.setText(Program.getLabel("Infos095")); //"Nom du fichier généré:");
-		m_jcb_options.addActionListener(this::options_actionPerformed);
-		browse.setText("...");
-		browse.addActionListener(this::browse_actionPerformed);
-		parameter.setText(Program.getLabel("Main.Parameters"));
-		parameter.addActionListener(this::param_actionPerformed);
-		label3.setText(Program.getLabel("Infos096")); //"Sélectionner les rangements à générer:");
-		create.setText(Program.getLabel("Infos018")); //"Créer");
-		create.setMnemonic(CREER);
-		
-		type_XML.setText(Program.getLabel("Infos210"));
-		type_HTML.setText(Program.getLabel("Infos211"));
-		type_XLS.setText(Program.getLabel("Infos233"));
-		checkboxGroup1.add(type_HTML);
-		checkboxGroup1.add(type_XML);
-		checkboxGroup1.add(type_XLS);
-		table = new JTable(tv);
-		TableColumnModel tcm = table.getColumnModel();
-		TableColumn tc = tcm.getColumn(TableauValues.ETAT);
-		tc.setCellRenderer(new StateRenderer());
-		tc.setCellEditor(new StateEditor());
-		tc.setMinWidth(25);
-		tc.setMaxWidth(25);
-
-		type_XML.addActionListener(this::jradio_actionPerformed);
-		type_HTML.addActionListener(this::jradio_actionPerformed);
-		type_XLS.addActionListener(this::jradio_actionPerformed);
-
-		for (int i = 0; i < Program.GetCaveLength(); i++) {
-			tv.addRangement(Program.getCave(i));
-		}
-		JScrollPane scrollPane1 = new JScrollPane(table);
-		end.setHorizontalAlignment(SwingConstants.CENTER);
-		end.setForeground(Color.red);
-		end.setFont(Program.FONT_DIALOG_SMALL);
-		preview.setText(Program.getLabel("Infos152")); //"Ouvrir le fichier");
-		preview.setMnemonic(OUVRIR);
-		selectall.setText(Program.getLabel("Infos126")); //"Tout sélectionner");
-		selectall.setHorizontalAlignment(SwingConstants.RIGHT);
-		selectall.setHorizontalTextPosition(SwingConstants.LEFT);
-		selectall.addActionListener(this::selectall_actionPerformed);
-		preview.addActionListener(this::preview_actionPerformed);
-		create.addActionListener(this::create_actionPerformed);
-		this.addKeyListener(new KeyListener() {
-			@Override
-			public void keyReleased(KeyEvent e) {}
-			@Override
-			public void keyPressed(KeyEvent e) {
-				keylistener_actionPerformed(e);
-			}
-			@Override
-			public void keyTyped(KeyEvent e) {}
-		});
-
-		param.addActionListener(this::param_actionPerformed);
-		name.addMouseListener(new PopupListener());
-		quitter.setAccelerator(KeyStroke.getKeyStroke('Q', InputEvent.CTRL_DOWN_MASK));
-
-		m_jcb_options.setEnabled(false);
-		switch ( Program.getCaveConfigInt("CREATE_TAB_DEFAULT", 1) ) {
-		case 0:
-			type_XML.setSelected(true);
-			break;
-		case 1:
-			type_HTML.setSelected(true);
-			break;
-		case 2:
-			type_XLS.setSelected(true);
-			m_jcb_options.setEnabled(true);
-			break;
-		}
-
-		setLayout(new MigLayout("","grow","[][][grow]"));
-		JPanel panelFile = new JPanel();
-		panelFile.setLayout(new MigLayout("","grow",""));
-		panelFile.add(label2, "wrap");
-		panelFile.add(name, "grow, split 3");
-		panelFile.add(browse);
-		panelFile.add(parameter, "push");
-		add(panelFile, "grow, wrap");
-		JPanel panelType = new JPanel();
-		panelType.setLayout(new MigLayout("","[grow][grow][grow]",""));
-		panelType.add(type_XML);
-		panelType.add(type_HTML);
-		panelType.add(type_XLS);
-		panelType.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos151")));
-		add(panelType, "grow, wrap");
-		JPanel panelTable = new JPanel();
-		panelTable.setLayout(new MigLayout("","grow","grow"));
-		panelTable.add(label3,"wrap");
-		panelTable.add(scrollPane1, "grow, wrap");
-		panelTable.add(m_jcb_options, "split 2");
-		panelTable.add(selectall, "grow, push, wrap");
-		panelTable.add(end, "grow, center, hidemode 3, wrap");
-		panelTable.add(create, "gaptop 15px, split 2, center");
-		panelTable.add(preview);
-		add(panelTable, "grow");
-		preview.setEnabled(false);
-		Debug("jbInit OK");
 	}
 
 	/**
@@ -207,55 +181,40 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTM);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
-		}
-		if ( type_HTML.isSelected() ) {
+		} else if (type_HTML.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTM);
-		}
-		if ( type_XLS.isSelected() ) {
+		} else if (type_XLS.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTM);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		}
 
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-			File nomFichier = boiteFichier.getSelectedFile();
-			String nom = boiteFichier.getSelectedFile().getName();
+			File file = boiteFichier.getSelectedFile();
+			String nom = file.getAbsolutePath();
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
 			Filtre filtre = (Filtre) boiteFichier.getFileFilter();
-			//Erreur utilisation de caractères interdits
-			if (nom.contains("\"") || nom.contains(";") || nom.contains("<") || nom.contains(">") || nom.contains("?") || nom.contains("\\") || nom.contains("/") ||
-					nom.contains("|") || nom.contains("*")) {
-				Erreur.showSimpleErreur(Program.getError("Error126"));
-			}
-			else {
-				String fic = nomFichier.getAbsolutePath();
-				int index = fic.indexOf(".");
-				if (index == -1) {
-					if (type_XML.isSelected()) {
-						fic = fic.concat(".xml");
-					} else if ( type_HTML.isSelected() ) {
-						fic = fic.concat(".htm");
-						if (filtre.toString().equals("html"))
-							fic = fic.concat("l");
-					} else if (type_XLS.isSelected()) {
-						if (filtre.toString().equals("xls"))
-							fic = fic.concat(".xls");
-						if (filtre.toString().equals("ods"))
-							fic = fic.concat(".ods");
+
+			int index = nom.indexOf(".");
+			if (index == -1) {
+				if (type_XML.isSelected()) {
+					nom = nom.concat(".xml");
+				} else if (type_HTML.isSelected()) {
+					nom = nom.concat(".html");
+				} else if (type_XLS.isSelected()) {
+					if (filtre.toString().equals("xls")) {
+						nom = nom.concat(".xls");
+					} else 	if (filtre.toString().equals("ods")) {
+						nom = nom.concat(".ods");
 					}
 				}
-				name.setText(fic);
-				isJFile = true;
 			}
-			end.setText("");
+			name.setText(nom);
 		}
 	}
 
@@ -268,22 +227,9 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 		try {
 			Debug("create_actionPerforming...");
 			String nom = name.getText().trim();
-			int resul = 0;
 
-			if (nom.isEmpty()) {
-				Debug("ERROR: file empty");
-				Erreur.showSimpleErreur(Program.getError("Error019"));
+			if (!MyCellarControl.controlPath(nom)) {
 				return;
-			}
-
-			if (!isJFile) {
-				//Erreur utilisation de caractères interdits
-				if (nom.contains("\"") || nom.contains(";") || nom.contains("<") || nom.contains(">") ||
-						nom.contains("?") || nom.contains("|") || nom.contains("*")) {
-					Debug("ERROR: Forbidden characters");
-					Erreur.showSimpleErreur(Program.getError("Error126"));
-					return;
-				}
 			}
 
 			File path = new File(nom.trim());
@@ -291,126 +237,126 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 
 			//Verify file type. Is it XML File?
 			if (type_XML.isSelected()) {
-				if ( !nom.toLowerCase().endsWith(".xml") ) {
+				if (!nom.toLowerCase().endsWith(".xml")) {
 					Debug("ERROR: Not a XML File");
 					//Non XML File
 					//"Veuillez saisir le nom d'un fichier XML.");
-					resul = 1;
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom), Program.getError("Error088"));
+					return;
 				}
 			} else if (type_HTML.isSelected()) {
-				if ( !nom.toLowerCase().endsWith(".html") && !nom.toLowerCase().endsWith(".htm") ) {
+				if (!nom.toLowerCase().endsWith(".html") && !nom.toLowerCase().endsWith(".htm")) {
 					Debug("ERROR: Not a HTML File");
-					resul = 1;
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
+					return;
 				}
 			} else if (type_XLS.isSelected()) {
 				if (!Program.checkXLSExtenstion(nom)) {
 					Debug("ERROR: Not a XLS File");
-					resul = 1;
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
+					return;
 				}
 			}
-			int listToGen[] = new int[1];
-			if (resul == 0) {
-				int count = 0;
-				int max_row = tv.getRowCount();
-				int row = 0;
-				do {
-					if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
-						count++;
-					}
-					row++;
+			int count = 0;
+			int max_row = tv.getRowCount();
+			int row = 0;
+			do {
+				if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
+					count++;
 				}
-				while (row < max_row);
+				row++;
+			}
+			while (row < max_row);
 
-				if (count == 0) {
-					Debug("ERROR: No place selected");
-					//"Aucun rangement sélectionné!");
-					//"Veuillez sélectionner les rangements à générer.");
-					resul = 1;
-					Erreur.showSimpleErreur(Program.getError("Error089"), Program.getError("Error090"), true);
+			if (count == 0) {
+				Debug("ERROR: No place selected");
+				//"Aucun rangement sélectionné!");
+				//"Veuillez sélectionner les rangements à générer.");
+				Erreur.showSimpleErreur(Program.getError("Error089"), Program.getError("Error090"), true);
+				return;
+			}
+			int[] listToGen = new int[count];
+			row = 0;
+			int k = 0;
+			do {
+				if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
+					listToGen[k] = row;
+					k++;
 				}
-				else {
-					listToGen = new int[count];
-					row = 0;
-					int k = 0;
-					do {
-						if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
-							listToGen[k] = row;
-							k++;
+				row++;
+			}
+			while (row < max_row);
+
+			int caisse_select = 0;
+			// Export XML
+			if (type_XML.isSelected()) {
+				Debug("Exporting in XML in progress...");
+				LinkedList<Rangement> rangements = new LinkedList<>();
+				for (int j : listToGen) {
+					rangements.add(Program.getCave(j));
+				}
+				MyXmlDom.writeRangements(nom, rangements, false);
+			} else if (type_HTML.isSelected()) {
+				Debug("Exporting in HTML in progress...");
+				LinkedList<Rangement> rangements = new LinkedList<>();
+				for (int j : listToGen) {
+					rangements.add(Program.getCave(j));
+				}
+				MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
+
+				TransformerFactory tFactory = TransformerFactory.newInstance();
+
+				StreamSource xslDoc = new StreamSource("resources/Rangement.xsl");
+				StreamSource xmlDoc = new StreamSource(Program.getPreviewXMLFileName());
+
+				try(OutputStream htmlFile = new FileOutputStream(nom)) {
+					Transformer transformer = tFactory.newTransformer(xslDoc);
+					transformer.transform(xmlDoc, new StreamResult(htmlFile));
+				} catch (Exception e1) {
+					Program.showException(e1);
+				}
+			} else if (type_XLS.isSelected()) {
+				Debug("Exporting in XLS in progress...");
+				LinkedList<Rangement> oList = new LinkedList<>();
+				for (int j : listToGen) {
+					Rangement r = Program.getCave(j);
+					if (r != null) {
+						oList.add(r);
+						if (r.isCaisse()) {
+							caisse_select++;
 						}
-						row++;
 					}
-					while (row < max_row);
+				}
+				RangementUtils.write_XLSTab( nom, oList );
+			}
+
+			int key = Program.getCaveConfigInt("DONT_SHOW_TAB_MESS", 0);
+			if (key == 0) {
+				if (caisse_select >= 1) {
+					String erreur_txt1, erreur_txt2;
+					if (caisse_select == 1){
+						erreur_txt1 = Program.getError("Error091"); //"Vous avez sélectionné un rangement de type Caisse");
+						erreur_txt2 = Program.getError("Error092"); //"Une liste des vins de ce rangement a été générée.");
+					}else{
+						erreur_txt1 = Program.getError("Error127"); //"Vous avez sélectionné des rangements de type Caisse");
+						erreur_txt2 = Program.getError("Error128"); //"Une liste des vins de ces rangements a été générée.");
+					}
+					Erreur.showKeyErreur(erreur_txt1, erreur_txt2, "DONT_SHOW_TAB_MESS");
 				}
 			}
-			if (resul == 0) {
-
-
-				// Export XML
-				if (type_XML.isSelected()) {
-					Debug("Exporting in XML in progress...");
-					LinkedList<Rangement> rangements = new LinkedList<>();
-					for (int j : listToGen) {
-						rangements.add(Program.getCave(j));
-					}
-					MyXmlDom.writeRangements(nom, rangements, false);
-				}
-
-				// Export HTML
-				if ( type_HTML.isSelected() ) {
-					Debug("Exporting in HTML in progress...");
-					LinkedList<Rangement> rangements = new LinkedList<>();
-					for (int j : listToGen) {
-						rangements.add(Program.getCave(j));
-					}
-					MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
-			
-				    TransformerFactory tFactory = TransformerFactory.newInstance();
-
-		            Source xslDoc = new StreamSource("resources/Rangement.xsl");
-		            Source xmlDoc = new StreamSource(Program.getPreviewXMLFileName());
-
-		            OutputStream htmlFile = new FileOutputStream(nom);
-
-		            Transformer transformer = tFactory.newTransformer(xslDoc);
-		            transformer.transform(xmlDoc, new StreamResult(htmlFile));
-				}
-
-				//Export XLS
-				int caisse_select = 0;
-				if ( type_XLS.isSelected() ) {
-					Debug("Exporting in XLS in progress...");
-					LinkedList<Rangement> oList = new LinkedList<>();
-					for ( int j : listToGen) {
-						Rangement r = Program.getCave(j);
-						if (r != null) {
-							oList.add(r);
-							if (r.isCaisse())
-								caisse_select++;
+			end.setText(Program.getLabel("Infos097")); //"Fichier généré.");
+			new Timer().schedule(
+					new TimerTask() {
+						@Override
+						public void run() {
+							SwingUtilities.invokeLater(() -> {
+								end.setText("");
+							});
 						}
-					}
-					RangementUtils.write_XLSTab( nom, oList );
-				}
-
-				int key = Program.getCaveConfigInt("DONT_SHOW_TAB_MESS", 0);
-				if (key == 0) {
-					if (caisse_select >= 1) {
-						String erreur_txt1, erreur_txt2;
-						if ( caisse_select == 1){
-							erreur_txt1 = Program.getError("Error091"); //"Vous avez sélectionné un rangement de type Caisse");
-							erreur_txt2 = Program.getError("Error092"); //"Une liste des vins de ce rangement a été générée.");
-						}else{
-							erreur_txt1 = Program.getError("Error127"); //"Vous avez sélectionné des rangements de type Caisse");
-							erreur_txt2 = Program.getError("Error128"); //"Une liste des vins de ces rangements a été générée.");
-						}
-						Erreur.showKeyErreur(erreur_txt1, erreur_txt2, "DONT_SHOW_TAB_MESS");
-					}
-				}
-				end.setText(Program.getLabel("Infos097")); //"Fichier généré.");
-				preview.setEnabled(true);
-			}
+					},
+					5000
+			);
+			preview.setEnabled(true);
 		}
 		catch (Exception exc) {
 			Program.showException(exc);
@@ -449,7 +395,6 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	 * @param e ActionEvent
 	 */
 	private void selectall_actionPerformed(ActionEvent e) {
-		end.setText("");
 		for (int i = 0; i < tv.getRowCount(); i++) {
 			tv.setValueAt(selectall.isSelected(), i, 0);
 		}
@@ -463,7 +408,6 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	 */
 	private void options_actionPerformed(ActionEvent e) {
 
-		end.setText("");
 		XLSTabOptions oXLSTabOptions = new XLSTabOptions();
 		oXLSTabOptions.setVisible(true);
 		m_jcb_options.setSelected(false);
@@ -475,7 +419,6 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	 * @param e ActionEvent
 	 */
 	private void jradio_actionPerformed(ActionEvent e) {
-		end.setText("");
 		m_jcb_options.setEnabled(type_XLS.isSelected());
 	}
 

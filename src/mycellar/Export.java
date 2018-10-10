@@ -39,8 +39,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 8.0
- * @since 28/09/18
+ * @version 8.1
+ * @since 10/10/18
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -199,7 +199,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		} else if (MyCellarRadioButtonCSV.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
 		} else if (MyCellarRadioButtonHTML.isSelected()) {
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTM);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
 		} else if (MyCellarRadioButtonXML.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
@@ -210,29 +209,27 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
 			String nom = nomFichier.getName();
 			//Erreur utilisation de caractères interdits
-			if (MyCellarControl.controlPath(nom)) {
-				String fic = nomFichier.getAbsolutePath();
-				int index = fic.indexOf(".");
+			if (MyCellarControl.controlPath(nomFichier)) {
+				int index = nom.indexOf(".");
 				if (index == -1) {
 					if (MyCellarRadioButtonXML.isSelected()) {
-						fic = fic.concat(".xml");
+						nom = nom.concat(".xml");
 					}	else if (MyCellarRadioButtonHTML.isSelected()) {
-						fic = fic.concat(".htm");
+						nom = nom.concat(".html");
 					}	else if (MyCellarRadioButtonCSV.isSelected()) {
-						fic = fic.concat(".csv");
+						nom = nom.concat(".csv");
 					}	else if (MyCellarRadioButtonXLS.isSelected()) {
 						Filtre filtre = (Filtre) boiteFichier.getFileFilter();
 						if (filtre.toString().equals("xls")) {
-              fic = fic.concat(".xls");
-            }
-						if (filtre.toString().equals("ods")) {
-              fic = fic.concat(".ods");
+              nom = nom.concat(".xls");
+            } else {
+              nom = nom.concat(".ods");
             }
 					}	else if (MyCellarRadioButtonPDF.isSelected()) {
-						fic = fic.concat(".pdf");
+						nom = nom.concat(".pdf");
 					}
 				}
-				file.setText(fic);
+				file.setText(nom);
 			}
 		}
 	}

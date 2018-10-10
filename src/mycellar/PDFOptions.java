@@ -24,8 +24,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.5
- * @since 26/09/18
+ * @version 2.6
+ * @since 10/10/18
  */
 class PDFOptions extends JDialog {
   private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
@@ -143,7 +143,7 @@ class PDFOptions extends JDialog {
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
     setSize(400, 500);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Start.getInstance());
   }
 
   /**

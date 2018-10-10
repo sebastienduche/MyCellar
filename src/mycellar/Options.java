@@ -20,8 +20,8 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 04/07/18
+ * @version 1.4
+ * @since 10/10/18
  */
 public class Options extends JDialog {
   private final MyCellarLabel textControl1 = new MyCellarLabel();
@@ -98,7 +98,7 @@ public class Options extends JDialog {
     });
 
     setSize(LARGEUR, HAUTEUR);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Start.getInstance());
     setLayout(new MigLayout("","grow",""));
     getContentPane().add(textControl1, "grow, wrap");
     getContentPane().add(definition, "gaptop 15px, grow, wrap");

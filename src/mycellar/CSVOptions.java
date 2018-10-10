@@ -22,8 +22,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.8
- * @since 26/09/18
+ * @version 1.9
+ * @since 10/10/18
  */
 class CSVOptions extends JDialog {
 	private final MyCellarCheckBox export[];
@@ -112,7 +112,7 @@ class CSVOptions extends JDialog {
 		add(valider, "gaptop 15px, split 2, center");
 		add(annuler);
 		setSize(400, 500);
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(Start.getInstance());
 		Debug("JbInit OK");
 	}
 

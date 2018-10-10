@@ -15,8 +15,8 @@ import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -27,8 +27,8 @@ import java.awt.event.WindowEvent;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 04/07/18
+ * @version 1.3
+ * @since 10/10/18
  */
 class XLSTabOptions extends JDialog {
   private static final int LARGEUR = 480;
@@ -53,15 +53,11 @@ class XLSTabOptions extends JDialog {
     tv = new XLSOptionsValues();
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(Program.getLabel("Infos268"));
-    addKeyListener(new KeyListener() {
-      @Override
-      public void keyReleased(KeyEvent e) {}
+    addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
         keylistener_actionPerformed(e);
       }
-      @Override
-      public void keyTyped(KeyEvent e) {}
     });
     addWindowListener(new WindowAdapter() {
       @Override
@@ -71,7 +67,7 @@ class XLSTabOptions extends JDialog {
 
     setSize(LARGEUR, HAUTEUR);
 
-    JPanel jPanel1 = new JPanel();
+    final JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
     jPanel1.setFont(Program.FONT_PANEL);
     jPanel1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos331")));
@@ -136,7 +132,7 @@ class XLSTabOptions extends JDialog {
     tv.addString(Program.getLabel("Infos134"), 1 == Program.getCaveConfigInt("XLSTAB_COL2", 0));
     tv.addString(Program.getLabel("Infos135"), 1 == Program.getCaveConfigInt("XLSTAB_COL3", 0));
 
-    JPanel jPanel2 = new JPanel();
+    final JPanel jPanel2 = new JPanel();
     jPanel2.setFont(Program.FONT_PANEL);
     jPanel2.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos332")));
     MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
@@ -185,7 +181,7 @@ class XLSTabOptions extends JDialog {
     add(oScrollPaneTab, "grow, wrap");
     add(valider, "split 2, center, gaptop 15px");
     add(annuler);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Start.getInstance());
   }
 
   private void updatePlaceSettings(boolean b) {

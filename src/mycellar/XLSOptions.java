@@ -23,8 +23,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 26/09/18
+ * @version 1.5
+ * @since 10/10/18
  */
 class XLSOptions extends JDialog {
 
@@ -118,7 +118,7 @@ class XLSOptions extends JDialog {
     add(jScrollPane1, "gaptop 15px, grow, wrap");
     add(valider, "split 2, center");
     add(annuler);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Start.getInstance());
   }
 
   //Accepter et Fermer le message

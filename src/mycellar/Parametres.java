@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.Arrays;
 
 
 /**
@@ -27,8 +28,8 @@ import java.text.MessageFormat;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.2
- * @since 22/08/18
+ * @version 11.3
+ * @since 12/10/18
  */
 public class Parametres extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -212,17 +213,12 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 			boolean result = true;
 			if (jcb_excel.isSelected()) {
 				Program.putCaveConfigInt("FIC_EXCEL", 1);
-				String fic = file_bak.getText().trim();
-				if (Program.checkXLSExtenstion(fic)) {
-					Program.putCaveConfigString("FILE_EXCEL", fic);
-				}
-				else {
-					String tmp1 = "";
-					if (fic.length() >= 3) {
-						tmp1 = fic.substring(fic.length() - 3);
-					}
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), tmp1), Program.getError("Error035"));
+				String fic = file_bak.getText();
+				if (!MyCellarControl.controlExtension(fic, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), fic), Program.getError("Error035"));
 					result = false;
+				} else {
+					Program.putCaveConfigString("FILE_EXCEL", fic);
 				}
 			}
 			else
@@ -295,15 +291,8 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 				return;
 			}
 			String fic = nomFichier.getAbsolutePath();
-			fic = fic.trim();
-			boolean extension = Program.checkXLSExtenstion(fic);
 			Filtre filtre = (Filtre)boiteFichier.getFileFilter();
-			if (!extension) {
-				if (filtre.toString().equals("xls"))
-					fic = fic.concat(".xls");
-				if (filtre.toString().equals("ods"))
-					fic = fic.concat(".ods");
-			}
+			fic = MyCellarControl.controlAndUpdateExtension(fic, filtre);
 			file_bak.setText(fic);
 			Program.putCaveConfigString("FILE_EXCEL", fic);
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());

@@ -35,8 +35,8 @@ import java.util.Map;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 1.9
- * @since 08/06/18
+ * @version 2.0
+ * @since 12/10/18
  */
 
 public class Server implements Runnable {
@@ -54,7 +54,6 @@ public class Server implements Runnable {
 
 	private boolean bDownloaded = false;
 	private boolean bDownloadError = false;
-	private final boolean bExit = false;
 
 	private static FileWriter oDebugFile = null;
 
@@ -121,8 +120,6 @@ public class Server implements Runnable {
 			File f = new File("download");
 			f.deleteOnExit();
 		}
-		if (bExit)
-			System.exit(0);
 	}
 
 	void checkVersion() {

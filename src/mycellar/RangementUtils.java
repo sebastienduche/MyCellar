@@ -1,6 +1,5 @@
 package mycellar;
 
-import jxl.Workbook;
 import jxl.write.Border;
 import jxl.write.BorderLineStyle;
 import jxl.write.Label;
@@ -13,6 +12,12 @@ import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -25,6 +30,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,8 +46,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 28/09/18
+ * @version 1.3
+ * @since 12/10/18
  */
 public class RangementUtils {
 
@@ -255,13 +261,14 @@ public class RangementUtils {
 	 *
 	 * @return boolean
 	 */
-	static boolean write_XLS(String file, List<Bouteille> all, boolean isExit) {
+	static boolean write_XLS(final String file, final List<Bouteille> all, boolean isExit) {
 
 		Debug( "write_XLS: writing file: "+file );
 		if(file.isEmpty()) {
 			Debug( "write_XLS: ERROR: File not defined!" );
 			return false;
 		}
+
 		try {
 			File f = new File(file);
 			String sDir = f.getParent();
@@ -314,8 +321,8 @@ public class RangementUtils {
 			}
 		}
 
-		try { //Création du fichier
-			WritableWorkbook workbook = Workbook.createWorkbook(new File(file));
+		try (Workbook workbook = new SXSSFWorkbook(100)) { //Création du fichier
+			int columnsCount = 0;
 			String sheet_title = title;
 			if (sheet_title.isEmpty()) {
 				sheet_title = Program.getCaveConfigString("XML_TYPE","");
@@ -323,59 +330,62 @@ public class RangementUtils {
 			if (sheet_title.isEmpty()) {
 				sheet_title = Program.getLabel("Infos389");
 			}
-			WritableSheet sheet = workbook.createSheet(sheet_title, 0);
+			SXSSFSheet sheet = (SXSSFSheet) workbook.createSheet();
+			workbook.setSheetName(0, sheet_title);
 
 			if (!isExit) { //Export XLS
 				//Taille du titre
 				int size = Program.getCaveConfigInt("TITLE_SIZE_XLS", 10);
-				WritableFont cellfont = new WritableFont(WritableFont.ARIAL, size, WritableFont.NO_BOLD, false);
-				if ("bold".equals(Program.getCaveConfigString("BOLD_XLS", ""))) {
-					cellfont = new WritableFont(WritableFont.ARIAL, size, WritableFont.BOLD, false);
-				}
-				WritableCellFormat cellformat = new WritableCellFormat(cellfont);
+				Font cellfont = workbook.createFont();
+				cellfont.setFontName("Arial");
+				cellfont.setFontHeightInPoints((short) size);
+				cellfont.setBold("bold".equals(Program.getCaveConfigString("BOLD_XLS", "")));
+				XSSFCellStyle cellStyle = (XSSFCellStyle) workbook.createCellStyle();
+				cellStyle.setFont(cellfont);
 
-				Label titre0 = new Label(0, 0, title, cellformat); //Ajout du titre
-				try {
-					sheet.addCell(titre0);
-				}
-				catch (WriteException ex3) {
-					Program.showException(ex3, false);
-					resul = false;
-				}
+				final org.apache.poi.ss.usermodel.Row row = sheet.createRow(0);
+				final Cell cell = row.createCell(0);
+				cell.setCellStyle(cellStyle);
+				cell.setCellValue(title);
 			}
 
-			WritableFont cellfont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false);
+			Font cellfont = workbook.createFont();
+			cellfont.setFontName("Arial");
 			if (!isExit) { //Export XLS
-				//propriétés du texte
-				int size = Program.getCaveConfigInt("TEXT_SIZE_XLS", 10);
-				cellfont = new WritableFont(WritableFont.ARIAL, size, WritableFont.NO_BOLD, false);
+				cellfont.setFontHeightInPoints((short) Program.getCaveConfigInt("TEXT_SIZE_XLS", 10));
+			} else {
+				cellfont.setFontHeightInPoints((short) 10);
 			}
-			WritableCellFormat cellformat = new WritableCellFormat(cellfont);
-			//Ajout titre colonne
-			EnumMap<MyCellarFields, Integer> mapColumnWidth = new EnumMap<>(MyCellarFields.class);
+			XSSFCellStyle cellStyle = (XSSFCellStyle) workbook.createCellStyle();
+			cellStyle.setFont(cellfont);
 
 			try {
 				//Ajout Titre
+				i=0;
 				if(isExit) {
-					i=0;
+					final org.apache.poi.ss.usermodel.Row row = sheet.createRow(num_ligne);
 					for(MyCellarFields field : fields) {
-						Label label;
-						sheet.addCell(label = new Label(i++, num_ligne, field.toString(), cellformat));
-						mapColumnWidth.put(field, label.getContents().length());
+						columnsCount++;
+						sheet.trackColumnForAutoSizing(i);
+						final Cell cell = row.createCell(i++);
+						cell.setCellStyle(cellStyle);
+						cell.setCellValue(field.toString());
 					}
 				}
 				else {
-					i=0;
+					final org.apache.poi.ss.usermodel.Row row = sheet.createRow(num_ligne);
 					for(MyCellarFields field : fields) {
 						if(mapCle.get(field)) {
-							Label label;
-							sheet.addCell(label = new Label(i++, num_ligne, field.toString(), cellformat));
-							mapColumnWidth.put(field, label.getContents().length());
+							columnsCount++;
+							sheet.trackColumnForAutoSizing(i);
+							final Cell cell = row.createCell(i++);
+							cell.setCellStyle(cellStyle);
+							cell.setCellValue(field.toString());
 						}
 					}
 				}
 			}
-			catch (WriteException ex3) {
+			catch (Exception ex3) {
 				Program.showException(ex3, false);
 				resul = false;
 			}
@@ -383,6 +393,8 @@ public class RangementUtils {
 			i = 0;
 			for (Bouteille b : all) {
 				int j = 0;
+				org.apache.poi.ss.usermodel.Row row = sheet.createRow(i + num_ligne + 1);
+				row.setRowStyle(cellStyle);
 				for(MyCellarFields field : fields) {
 					String value = "";
 					if(field == MyCellarFields.NAME)
@@ -429,35 +441,28 @@ public class RangementUtils {
 						if(b.getVignoble() != null && b.getVignoble().getIGP() != null)
 							value = b.getVignoble().getIGP();
 					}
-					Label label;
 					if (isExit || mapCle.get(field)) {
 						if(value == null) {
 							value = "";
 						}
-						label = new Label(mapColumnNumber.get(j), i + num_ligne + 1, value, cellformat);
-						int width = label.getContents().length();
-						if(mapColumnWidth.get(field) < width) {
-							mapColumnWidth.put(field, width);
-						} else {
-							width = mapColumnWidth.get(field);
-						}
 
+						final Cell cell = row.createCell(mapColumnNumber.get(j));
 						if(field == MyCellarFields.NUM_PLACE || field == MyCellarFields.LINE || field == MyCellarFields.COLUMN) {
-							sheet.addCell(new jxl.write.Number(mapColumnNumber.get(j), i + num_ligne + 1, Integer.parseInt(value), cellformat));
+							cell.setCellValue(Integer.parseInt(value));
 						} else {
-							sheet.addCell(label);
+							cell.setCellValue(value);
 						}
-						sheet.setColumnView(mapColumnNumber.get(j), width + 1);
 					}
 					j++;
 				}
 				i++;
 			}
-
-			workbook.write();
-			workbook.close();
+			for (i=0; i<columnsCount; i++) {
+				sheet.autoSizeColumn(i);
+			}
+			workbook.write(new FileOutputStream(new File(file)));
 		}
-		catch (IOException | WriteException ex) {
+		catch (IOException ex) {
 			Program.showException(ex, false);
 			resul = false;
 		}
@@ -476,7 +481,7 @@ public class RangementUtils {
 		try { //Création du fichier
 			String title = Program.getCaveConfigString("XLS_TAB_TITLE", Program.getCaveConfigString("XML_TYPE",""));
 			boolean onePlacePerSheet = 1 == Program.getCaveConfigInt("ONE_PER_SHEET_XLS", 0);
-			WritableWorkbook workbook = Workbook.createWorkbook(new File(file));
+			WritableWorkbook workbook = jxl.Workbook.createWorkbook(new File(file));
 			if (title.isEmpty()) {
 				title = Program.getLabel("Infos001");
 			}

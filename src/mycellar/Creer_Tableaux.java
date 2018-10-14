@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -41,8 +42,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.2
- * @since 10/10/18
+ * @version 6.3
+ * @since 12/0/18
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable {
 	private final JTextField name = new JTextField();
@@ -199,21 +200,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			String nom = file.getAbsolutePath();
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
 			Filtre filtre = (Filtre) boiteFichier.getFileFilter();
-
-			int index = nom.indexOf(".");
-			if (index == -1) {
-				if (type_XML.isSelected()) {
-					nom = nom.concat(".xml");
-				} else if (type_HTML.isSelected()) {
-					nom = nom.concat(".html");
-				} else if (type_XLS.isSelected()) {
-					if (filtre.toString().equals("xls")) {
-						nom = nom.concat(".xls");
-					} else 	if (filtre.toString().equals("ods")) {
-						nom = nom.concat(".ods");
-					}
-				}
-			}
+			nom = MyCellarControl.controlAndUpdateExtension(nom, filtre);
 			name.setText(nom);
 		}
 	}
@@ -237,26 +224,49 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 
 			//Verify file type. Is it XML File?
 			if (type_XML.isSelected()) {
-				if (!nom.toLowerCase().endsWith(".xml")) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XML.toString()))) {
 					Debug("ERROR: Not a XML File");
-					//Non XML File
-					//"Veuillez saisir le nom d'un fichier XML.");
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom), Program.getError("Error088"));
+					//"Le fichier saisie ne possède pas une extension XML: " + str_tmp3);
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom));
 					return;
 				}
 			} else if (type_HTML.isSelected()) {
-				if (!nom.toLowerCase().endsWith(".html") && !nom.toLowerCase().endsWith(".htm")) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_HTML.toString()))) {
 					Debug("ERROR: Not a HTML File");
+					//"Le fichier saisie ne possède pas une extension HTML: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
 					return;
 				}
 			} else if (type_XLS.isSelected()) {
-				if (!Program.checkXLSExtenstion(nom)) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					Debug("ERROR: Not a XLS File");
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
+					//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error34"), nom));
 					return;
 				}
 			}
+//
+//			if (type_XML.isSelected()) {
+//				if (!nom.toLowerCase().endsWith(".xml")) {
+//					Debug("ERROR: Not a XML File");
+//					//Non XML File
+//					//"Veuillez saisir le nom d'un fichier XML.");
+//					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom), Program.getError("Error088"));
+//					return;
+//				}
+//			} else if (type_HTML.isSelected()) {
+//				if (!nom.toLowerCase().endsWith(".html") && !nom.toLowerCase().endsWith(".htm")) {
+//					Debug("ERROR: Not a HTML File");
+//					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
+//					return;
+//				}
+//			} else if (type_XLS.isSelected()) {
+//				if (!Program.checkXLSExtenstion(nom)) {
+//					Debug("ERROR: Not a XLS File");
+//					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
+//					return;
+//				}
+//			}
 			int count = 0;
 			int max_row = tv.getRowCount();
 			int row = 0;

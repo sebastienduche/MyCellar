@@ -38,6 +38,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -48,8 +49,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.9
- * @since 28/09/18
+ * @version 12.0
+ * @since 12/10/18
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -627,29 +628,8 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			}
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
 			String fic = nomFichier.getAbsolutePath();
-			int index = fic.indexOf(".");
-			if (index == -1) {
-				if (type_xls.isSelected()) {
-					Filtre filtre = (Filtre) boiteFichier.getFileFilter();
-					if (filtre.toString().equals("xls"))
-						fic = fic.concat(".xls");
-					if (filtre.toString().equals("ods"))
-						fic = fic.concat(".ods");
-				}
-				if (type_xml.isSelected()) {
-					Filtre filtre = (Filtre) boiteFichier.getFileFilter();
-					if (filtre.toString().equals("xml"))
-						fic = fic.concat(".xml");
-				}
-				else {
-					if (!boiteFichier.getFileFilter().getDescription().contains("CSV")) {
-						fic = fic.concat(".txt");
-					}
-					else {
-						fic = fic.concat(".csv");
-					}
-				}
-			}
+			Filtre filtre = (Filtre) boiteFichier.getFileFilter();
+			fic = MyCellarControl.controlAndUpdateExtension(fic, filtre);
 			file.setText(fic);
 		}
 	}
@@ -860,41 +840,69 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				return;
 			}
 
-			if (nom_length >= 3) {
-				String str_tmp3 = nom.substring(nom_length - 3);
-				if (type_xls.isSelected()) {
-					if (str_tmp3.compareToIgnoreCase("xls") != 0 && str_tmp3.compareToIgnoreCase("ods") != 0) {
-						label_progression.setText("");
-						Debug("ERROR: Not a XLS File");
-						//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
-						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), str_tmp3), Program.getError("Error035"));
-						importe.setEnabled(true);
-						return;
-					}
+			if (type_xls.isSelected()) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+					label_progression.setText("");
+					Debug("ERROR: Not a XLS File");
+					//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom), Program.getError("Error035"));
+					importe.setEnabled(true);
+					return;
 				}
-				else if (type_txt.isSelected()){
-					if (str_tmp3.compareToIgnoreCase("txt") != 0 && str_tmp3.compareToIgnoreCase("csv") != 0) {
-						label_progression.setText("");
-						Debug("ERROR: Not a TXT File");
-						//"Le fichier saisie ne possède pas une extension Texte: " + str_tmp3);
-						//"Veuillez saisir le nom d'un fichier TXT ou CSV.");
-						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error023"), str_tmp3), Program.getError("Error024"));
-						importe.setEnabled(true);
-						return;
-					}
+			} else if (type_txt.isSelected()) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_TXT.toString(), Filtre.FILTRE_CSV.toString()))) {
+					label_progression.setText("");
+					Debug("ERROR: Not a Text File");
+					//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error023"), nom), Program.getError("Error024"));
+					importe.setEnabled(true);
+					return;
 				}
-				else {
-					if (str_tmp3.compareToIgnoreCase("xml") != 0) {
-						label_progression.setText("");
-						Debug("ERROR: Not a XML File");
-						//"Le fichier saisie ne possède pas une extension Xml: " + str_tmp3);
-						//"Veuillez saisir le nom d'un fichier XML.");
-						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error204"), str_tmp3), Program.getError("Error205"));
-						importe.setEnabled(true);
-						return;
-					}
+			} else {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XML.toString()))) {
+					label_progression.setText("");
+					Debug("ERROR: Not a XML File");
+					//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error204"), nom), Program.getError("Error205"));
+					importe.setEnabled(true);
+					return;
 				}
 			}
+//			if (nom_length >= 3) {
+//				String str_tmp3 = nom.substring(nom_length - 3);
+//				if (type_xls.isSelected()) {
+//					if (str_tmp3.compareToIgnoreCase("xls") != 0 && str_tmp3.compareToIgnoreCase("ods") != 0) {
+//						label_progression.setText("");
+//						Debug("ERROR: Not a XLS File");
+//						//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
+//						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), str_tmp3), Program.getError("Error035"));
+//						importe.setEnabled(true);
+//						return;
+//					}
+//				}
+//				else if (type_txt.isSelected()){
+//					if (str_tmp3.compareToIgnoreCase("txt") != 0 && str_tmp3.compareToIgnoreCase("csv") != 0) {
+//						label_progression.setText("");
+//						Debug("ERROR: Not a TXT File");
+//						//"Le fichier saisie ne possède pas une extension Texte: " + str_tmp3);
+//						//"Veuillez saisir le nom d'un fichier TXT ou CSV.");
+//						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error023"), str_tmp3), Program.getError("Error024"));
+//						importe.setEnabled(true);
+//						return;
+//					}
+//				}
+//				else {
+//					if (str_tmp3.compareToIgnoreCase("xml") != 0) {
+//						label_progression.setText("");
+//						Debug("ERROR: Not a XML File");
+//						//"Le fichier saisie ne possède pas une extension Xml: " + str_tmp3);
+//						//"Veuillez saisir le nom d'un fichier XML.");
+//						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error204"), str_tmp3), Program.getError("Error205"));
+//						importe.setEnabled(true);
+//						return;
+//					}
+//				}
+//			}
 			
 			if(type_xml.isSelected()) {
 				importFromXML(f);

@@ -3,6 +3,7 @@ package mycellar;
 import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -10,11 +11,11 @@ import java.nio.file.Paths;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 10/10/18
+ * @version 1.1
+ * @since 12/10/18
  */
 
-class MyCellarControl {
+public class MyCellarControl {
 
   /**
    * ctrl_Name Contrôle le nom saisie pour la création d'un rangement
@@ -75,6 +76,7 @@ class MyCellarControl {
       Erreur.showSimpleErreur(Program.getError("MyCellarControl.invalidPath"));
       return false;
     }
+
     return true;
   }
 
@@ -93,6 +95,67 @@ class MyCellarControl {
       return false;
     }
     return true;
+  }
+
+  /**
+   * controlAndUpdateExtension Contrôle si le nom renseigné a la bonne extension et retourne le nom modifié
+   *
+   * @param name String
+   * @param filtre Filtre
+   * @return String
+   */
+  public static String controlAndUpdateExtension(final String name, final Filtre filtre) {
+    return controlAndUpdateExtension(name, filtre.toString());
+
+  }
+
+  /**
+ * controlAndUpdateExtension Contrôle si le nom renseigné a la bonne extension et retourne le nom modifié
+ *
+ * @param name String
+ * @param extension String
+ * @return String
+ */
+  public static String controlAndUpdateExtension(final String name, final String extension) {
+
+    Debug("Controling extension...");
+    if (name == null) {
+      Debug("ERROR: name is null!");
+      return "";
+    }
+
+    if (extension == null) {
+      Debug("ERROR: extension is null!");
+      return name;
+    }
+    if (!name.toLowerCase().trim().endsWith(extension.toLowerCase().trim())) {
+      return name + extension.toLowerCase();
+    }
+    return name;
+  }
+
+  /**
+   * controlExtension Contrôle si le nom renseigné a la bonne extension
+   *
+   * @param name String
+   * @param extensions List
+   * @return String
+   */
+  public static boolean controlExtension(final String name, final List<String> extensions) {
+
+    Debug("Controling extension...");
+    if (name == null) {
+      Debug("ERROR: name is null!");
+      return false;
+    }
+
+    if (extensions == null) {
+      Debug("ERROR: extension is null!");
+      return false;
+    }
+
+    String nameClean = name.toLowerCase().trim();
+    return extensions.stream().anyMatch(nameClean::endsWith);
   }
 
   /**

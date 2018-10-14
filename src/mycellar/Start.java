@@ -44,8 +44,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 24.8
- * @since 22/08/18
+ * @version 24.9
+ * @since 12/10/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -144,26 +144,19 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 	private static final Start INSTANCE = new Start();
 
-	/**
-	 * Start: Constructeur pour démarrer l'application
-	 */
 	private Start() {}
 
 	public static void main(String[] args) {
 
 		try {
 			final SplashScreen splashscreen = new SplashScreen();
-
-			while (splashscreen.isRunning()) {}
-
 			// initialisation
 			Program.init();
-
 			// Lecture des paramètres
 			// ______________________
 
 			String parameters = "";
-			
+
 			for (String arg : args) {
 				parameters = parameters.concat(arg + " ");
 			}
@@ -203,6 +196,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			}
 
 			Thread.setDefaultUncaughtExceptionHandler((t, e) -> Program.showException(e, true));
+
+			while (splashscreen.isRunning()) {}
+
 			getInstance().startup();
 		} catch (Exception e) {
 			Program.showException(e);
@@ -1065,22 +1061,19 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 					return;
 				}
 				String fic = nomFichier.getAbsolutePath();
-				int index = fic.indexOf(".");
-				if (index == -1) {
-					fic = fic.concat(".sinfo");
-				}
+				fic = MyCellarControl.controlAndUpdateExtension(fic, Filtre.FILTRE_SINFO);
 
 				setEnabled(false);
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				Program.saveAs(fic);
 				setCursor(Cursor.getDefaultCursor());
-				fic = fic.replaceAll("\\\\", "/");
-				int ind1 = fic.lastIndexOf("/");
-				int ind2 = fic.indexOf(".sinfo");
-				if(ind1 != -1 && ind2 != -1) {
-					fic = fic.substring(ind1 + 1, ind2);
-				}
-				setTitle(Program.getLabel("Infos001") + " - [" + fic + "]");
+//				fic = fic.replaceAll("\\\\", "/");
+//				int ind1 = fic.lastIndexOf("/");
+//				int ind2 = fic.indexOf(".sinfo");
+//				if(ind1 != -1 && ind2 != -1) {
+//					fic = fic.substring(ind1 + 1, ind2);
+//				}
+				setTitle(Program.getLabel("Infos001") + " - [" + Program.getShortFilename(fic) + "]");
 				setEnabled(true);
 			}
 		} catch (Exception e3) {
@@ -1220,10 +1213,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     					return;
 						}
     				String fic = file.getAbsolutePath();
-    				int index = fic.indexOf(".");
-    				if (index == -1) {
-    					fic = fic.concat(".sinfo");
-    				}
+    				fic = MyCellarControl.controlAndUpdateExtension(fic, Filtre.FILTRE_SINFO);
     				if (Program.openaFile(new File(fic))) {
 							postOpenFile();
 						}
@@ -1286,7 +1276,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				setEnabled(false);
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				Program.save();
-				this.setEnabled(true);
+				setEnabled(true);
 			} catch (Exception e3) {
 				Program.showException(e3);
 			} finally {

@@ -76,8 +76,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.1
- * @since 02/10/18
+ * @version 19.2
+ * @since 12/10/18
  */
 
 public class Program {
@@ -341,7 +341,7 @@ public class Program {
 				|| error.contains("javax.swing.LayoutComparator.compare"))
 			_bShowWindowErrorAndExit = false;
 		if (_bShowWindowErrorAndExit) {
-			JOptionPane.showMessageDialog(null, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(Start.getInstance(), e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		try (FileWriter fw = new FileWriter(getGlobalDir()+"Errors.log")){
 			fw.write(e.toString());
@@ -413,8 +413,9 @@ public class Program {
 			MimeBodyPart mbp2 = new MimeBodyPart();
 
 			// attach the file to the message
-			if(filename != null)
+			if(filename != null) {
 				mbp2.attachFile(filename);
+			}
 
 			/*
 			 * Use the following approach instead of the above line if
@@ -1102,11 +1103,7 @@ public class Program {
 								setFileSavable(true);
 								File nomFichier = boiteFichier.getSelectedFile();
 								String fic = nomFichier.getAbsolutePath();
-								int index = fic.indexOf(".");
-								if (index == -1) {
-									fic = fic.concat(".sinfo");
-								}
-
+								fic = MyCellarControl.controlAndUpdateExtension(fic, Filtre.FILTRE_SINFO);
 								archive = fic;
 							}
 						}
@@ -1152,7 +1149,13 @@ public class Program {
 
 				if (getCaveConfigInt("FIC_EXCEL", 0) == 1) {
 					//Ecriture Excel
-					RangementUtils.write_XLS(getCaveConfigString("FILE_EXCEL",""), getStorage().getAllList(), true);
+					final String file_excel = getCaveConfigString("FILE_EXCEL", "");
+					Debug("Writing backup Excel file: " + file_excel);
+					final List<Bouteille> bouteilles = Collections.unmodifiableList(getStorage().getAllList());
+					Thread writingExcel = new Thread(() -> {
+						RangementUtils.write_XLS(file_excel, bouteilles, true);
+					});
+					Runtime.getRuntime().addShutdownHook(writingExcel);
 				}
 			}
 		}
@@ -1800,14 +1803,6 @@ public class Program {
 		} else {
 			new OpenAddVinAction(listToModify).actionPerformed(null);
 		}
-	}
-
-	static boolean checkXLSExtenstion(String filename) {
-		if (filename == null || filename.isEmpty() || filename.indexOf('.') == -1) {
-			return false;
-		}
-		String extension = filename.trim().toLowerCase().substring(filename.lastIndexOf('.') + 1);
-		return "ods".equals(extension) || "xls".equals(extension) || "xlsx".equals(extension);
 	}
 
 	static void exit() {

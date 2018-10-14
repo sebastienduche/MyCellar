@@ -15,5 +15,11 @@
 	<classpathentry kind="lib" path="lib/jxl.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/pdfbox-app-2.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections4-4.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-compress-1.18.jar"/>
+	<classpathentry kind="lib" path="lib/poi-4.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-4.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-4.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/xmlbeans-3.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

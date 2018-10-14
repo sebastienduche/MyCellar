@@ -3,7 +3,6 @@ package mycellar;
 import mycellar.core.MyCellarLabel;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -18,8 +17,8 @@ import java.awt.Toolkit;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 02/03/18
+ * @version 1.2
+ * @since 12/10/18
  */
 class Loading extends JDialog {
   private final JProgressBar jProgressBar1 = new JProgressBar();
@@ -32,7 +31,7 @@ class Loading extends JDialog {
    * @param txt String
    */
   public Loading(String txt) {
-    super(new JFrame(), "", false);
+    super(Start.getInstance());
     setSize(270, 75);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

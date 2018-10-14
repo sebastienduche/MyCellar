@@ -30,6 +30,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -39,8 +40,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 8.1
- * @since 10/10/18
+ * @version 8.2
+ * @since 12/10/18
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -207,28 +208,11 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
-			String nom = nomFichier.getName();
+			String nom = nomFichier.getAbsolutePath();
 			//Erreur utilisation de caractères interdits
 			if (MyCellarControl.controlPath(nomFichier)) {
-				int index = nom.indexOf(".");
-				if (index == -1) {
-					if (MyCellarRadioButtonXML.isSelected()) {
-						nom = nom.concat(".xml");
-					}	else if (MyCellarRadioButtonHTML.isSelected()) {
-						nom = nom.concat(".html");
-					}	else if (MyCellarRadioButtonCSV.isSelected()) {
-						nom = nom.concat(".csv");
-					}	else if (MyCellarRadioButtonXLS.isSelected()) {
-						Filtre filtre = (Filtre) boiteFichier.getFileFilter();
-						if (filtre.toString().equals("xls")) {
-              nom = nom.concat(".xls");
-            } else {
-              nom = nom.concat(".ods");
-            }
-					}	else if (MyCellarRadioButtonPDF.isSelected()) {
-						nom = nom.concat(".pdf");
-					}
-				}
+				Filtre filtre = (Filtre) boiteFichier.getFileFilter();
+				nom = MyCellarControl.controlAndUpdateExtension(nom, filtre);
 				file.setText(nom);
 			}
 		}
@@ -363,14 +347,11 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				}
 			}
 
-			String extension = nom;
-			if (nom.length() >= 4) {
-				extension = nom.substring(nom.length() - 4);
-			}
 			if (MyCellarRadioButtonXML.isSelected()) {
-				if (!extension.equalsIgnoreCase(".xml")) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XML.toString()))) {
+					//"Le fichier saisie ne possède pas une extension XML: " + str_tmp3);
 					end.setText("");
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), extension), true); //L'extension du fichier n'est pas XML
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom));
 					valider.setEnabled(true);
 					return;
 				}
@@ -395,12 +376,13 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				}
 			}
 			else if (MyCellarRadioButtonHTML.isSelected()) {
-					if (extension.compareToIgnoreCase(".htm") != 0 && extension.compareToIgnoreCase("html") != 0) {
-						end.setText("");
-						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), extension), true); //L'extension du fichier n'est pas HTML
-						valider.setEnabled(true);
-						return;
-					}
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_HTML.toString()))) {
+					//"Le fichier saisie ne possède pas une extension HTML: " + str_tmp3);
+					end.setText("");
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
+					valider.setEnabled(true);
+					return;
+				}
 					if(null == bottles) {
 						bottles = Program.getStorage().getAllList();
 					}
@@ -414,9 +396,10 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					}
 				}
 				else if (MyCellarRadioButtonCSV.isSelected()) {
-					if (extension.compareToIgnoreCase(".csv") != 0) {
+					if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_CSV.toString()))) {
+						//"Le fichier saisie ne possède pas une extension CSV: " + str_tmp3);
 						end.setText("");
-						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error108"), extension), true); //L'extension du fichier n'est pas CSV
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error108"), nom));
 						valider.setEnabled(true);
 						return;
 					}
@@ -430,9 +413,10 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					}
 				}
 			else if (MyCellarRadioButtonXLS.isSelected()) {
-				if (!Program.checkXLSExtenstion(nom)) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+					//"Le fichier saisie ne possède pas une extension XLS: " + str_tmp3);
 					end.setText("");
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), extension), true); //L'extension du fichier n'est pas CSV
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
 					valider.setEnabled(true);
 					return;
 				}
@@ -450,9 +434,10 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				}
 			}
 			else if (MyCellarRadioButtonPDF.isSelected()) {
-				if (extension.compareToIgnoreCase(".pdf") != 0) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_PDF.toString()))) {
+					//"Le fichier saisie ne possède pas une extension PDF: " + str_tmp3);
 					end.setText("");
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error157"), extension), true); //L'extension du fichier n'est pas PDF
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error157"), nom));
 					valider.setEnabled(true);
 					return;
 				}

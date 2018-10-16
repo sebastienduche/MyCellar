@@ -44,8 +44,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 24.9
- * @since 12/10/18
+ * @version 25.0
+ * @since 16/10/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -584,6 +584,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (quitter == null || quitter.isEmpty()) {
 			Program.setLanguage('F');
 			QUITTER = Program.getLabel("QUITTER").charAt(0);
+		} else {
+			QUITTER = quitter.charAt(0);
 		}
 
 		IMPORT = Program.getLabel("IMPORT").charAt(0);

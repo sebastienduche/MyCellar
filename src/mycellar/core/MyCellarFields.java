@@ -1,6 +1,9 @@
 package mycellar.core;
 
+import mycellar.Bouteille;
 import mycellar.Program;
+import mycellar.countries.Countries;
+import mycellar.countries.Country;
 
 import java.util.ArrayList;
 
@@ -41,8 +44,60 @@ public enum MyCellarFields {
 	MyCellarFields(String label) {
 		this.label = label;
 	}
-	
-	@Override
+
+  public static String getValue(MyCellarFields field, Bouteille b) {
+		if (b == null) {
+			return "";
+		}
+		String value = "";
+		if(field == NAME) {
+			value = b.getNom();
+		} else if(field == YEAR) {
+			value = b.getAnnee();
+		} else if(field == TYPE) {
+			value = b.getType();
+		} else if(field == PLACE) {
+			value = b.getEmplacement();
+		} else if(field == NUM_PLACE) {
+			value = Integer.toString(b.getNumLieu());
+		} else if(field == LINE) {
+			value = Integer.toString(b.getLigne());
+		} else if(field == COLUMN) {
+			value = Integer.toString(b.getColonne());
+		} else if(field == PRICE) {
+			value = b.getPrix();
+		} else if(field == COMMENT) {
+			value = b.getComment();
+		} else if(field == MATURITY) {
+			value = b.getMaturity();
+		} else if(field == PARKER) {
+			value = b.getParker();
+		} else if(field == COLOR) {
+			value = b.getColor();
+		} else if(field == COUNTRY) {
+			if(b.getVignoble() != null) {
+				Country c = Countries.find(b.getVignoble().getCountry());
+				if(c != null) {
+					value = c.toString();
+				}
+			}
+		} else if(field == VINEYARD) {
+			if(b.getVignoble() != null) {
+				value = b.getVignoble().getName();
+			}
+		}else if(field == AOC) {
+			if(b.getVignoble() != null && b.getVignoble().getAOC() != null) {
+				value = b.getVignoble().getAOC();
+			}
+		}	else if(field == IGP) {
+			if(b.getVignoble() != null && b.getVignoble().getIGP() != null) {
+				value = b.getVignoble().getIGP();
+			}
+		}
+		return value;
+  }
+
+  @Override
 	public String toString() {
 		return label;
 	}

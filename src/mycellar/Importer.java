@@ -1,9 +1,6 @@
 package mycellar;
 
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
+
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarButton;
@@ -14,6 +11,12 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.PopupListener;
 import net.miginfocom.swing.MigLayout;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -30,15 +33,18 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -49,8 +55,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.0
- * @since 12/10/18
+ * @version 12.1
+ * @since 17/10/18
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -120,15 +126,11 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		type_xml.addItemListener(this::type_itemStateChanged);
 		type_xml.setText(Program.getLabel("Infos203")); //"Fichier XML");
 
-		addKeyListener(new KeyListener() {
-			@Override
-			public void keyReleased(KeyEvent e) {}
+		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				keylistener_actionPerformed(e);
 			}
-			@Override
-			public void keyTyped(KeyEvent e) {}
 		});
 
 		file.addMouseListener(new PopupListener());
@@ -564,35 +566,25 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	}
 
 	/**
-	 * Réalise la lecture d'un fichier XLS
+	 * Réalise la lecture d'une ligne d'un fichier XLS
 	 *
-	 * @param sheet Sheet: Feuille Excel
-	 * @param nb_lign_xls int: Nombre de ligne du fichier Excel
-	 * @param column int: Numéro de la colonne à lire
-	 * @throws ArrayIndexOutOfBoundsException
-	 * @return String[]
+	 * @param row Row: Ligne d'une feuille Excel
+	 * @return LinkedList<String>
 	 */
-	private String[] readXLS(Sheet sheet, int nb_lign_xls, int column) throws ArrayIndexOutOfBoundsException {
-
-		Cell []xls = sheet.getColumn(column);
-		String cell[] = new String[nb_lign_xls];
-		int i = 0;
-		try {
-			for (i = 0; i < nb_lign_xls; i++) {
-				if (xls[i] == null || xls[i].getContents() == null) {
-					cell[i] = "";
-				}
-				else {
-					cell[i] = xls[i].getContents();
-				}
+	private LinkedList<String> readRow(Row row) {
+		final Iterator<Cell> cellIterator = row.cellIterator();
+		LinkedList<String> bottle = new LinkedList<>();
+		while (cellIterator.hasNext()) {
+			final Cell cell = cellIterator.next();
+			if (cell.getCellType() == CellType.NUMERIC) {
+				bottle.add(Double.toString(cell.getNumericCellValue()));
+			} else if (cell.getCellType() == CellType.STRING) {
+				bottle.add(cell.getStringCellValue());
+			} else {
+				// ERROR @TODO
 			}
 		}
-		catch (ArrayIndexOutOfBoundsException aioobe) {}
-		if (i == 0) {
-			throw new ArrayIndexOutOfBoundsException();
-		}
-
-		return cell;
+		return bottle;
 	}
 
 	/**
@@ -609,12 +601,10 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		if (type_txt.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_TXT);
-		}
-		else if (type_xls.isSelected()) {
+		}	else if (type_xls.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-		}
-		else if (type_xml.isSelected()) {
+		}	else if (type_xml.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
 		}
 		
@@ -818,7 +808,6 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			File f = new File(nom);
 			file.setText(f.getAbsolutePath());
 			nom = f.getAbsolutePath();
-			int nom_length = nom.length();
 			if(!f.exists()) {
 				//Insertion classe Erreur
 				label_progression.setText("");
@@ -868,49 +857,13 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 					return;
 				}
 			}
-//			if (nom_length >= 3) {
-//				String str_tmp3 = nom.substring(nom_length - 3);
-//				if (type_xls.isSelected()) {
-//					if (str_tmp3.compareToIgnoreCase("xls") != 0 && str_tmp3.compareToIgnoreCase("ods") != 0) {
-//						label_progression.setText("");
-//						Debug("ERROR: Not a XLS File");
-//						//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
-//						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), str_tmp3), Program.getError("Error035"));
-//						importe.setEnabled(true);
-//						return;
-//					}
-//				}
-//				else if (type_txt.isSelected()){
-//					if (str_tmp3.compareToIgnoreCase("txt") != 0 && str_tmp3.compareToIgnoreCase("csv") != 0) {
-//						label_progression.setText("");
-//						Debug("ERROR: Not a TXT File");
-//						//"Le fichier saisie ne possède pas une extension Texte: " + str_tmp3);
-//						//"Veuillez saisir le nom d'un fichier TXT ou CSV.");
-//						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error023"), str_tmp3), Program.getError("Error024"));
-//						importe.setEnabled(true);
-//						return;
-//					}
-//				}
-//				else {
-//					if (str_tmp3.compareToIgnoreCase("xml") != 0) {
-//						label_progression.setText("");
-//						Debug("ERROR: Not a XML File");
-//						//"Le fichier saisie ne possède pas une extension Xml: " + str_tmp3);
-//						//"Veuillez saisir le nom d'un fichier XML.");
-//						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error204"), str_tmp3), Program.getError("Error205"));
-//						importe.setEnabled(true);
-//						return;
-//					}
-//				}
-//			}
-			
+
 			if(type_xml.isSelected()) {
 				importFromXML(f);
 				return;
 			}
 
-			if (bool_name > 1 || bool_year > 1 || bool_half > 1 || bool_plac > 1 || bool_nump > 1 || bool_line > 1 || bool_colu > 1 || bool_pric > 1 || bool_comm > 1 || bool_othe1 > 1 || bool_othe2 > 1 ||
-					bool_othe3 > 1) {
+			if (bool_name > 1 || bool_year > 1 || bool_half > 1 || bool_plac > 1 || bool_nump > 1 || bool_line > 1 || bool_colu > 1 || bool_pric > 1 || bool_comm > 1 || bool_othe1 > 1 || bool_othe2 > 1 || bool_othe3 > 1) {
 
 				label_progression.setText("");
 				Debug("ERROR: fields cannot be selected more than one time");
@@ -919,8 +872,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				Erreur.showSimpleErreur(Program.getError("Error017"), Program.getError("Error018"));
 				importe.setEnabled(true);
 				return;
-			}
-			else if( bool_name == 0) {
+			}	else if(bool_name == 0) {
 				label_progression.setText("");
 				Debug("ERROR: No column for wine name");
 				//"Aucune colonne n'indique le nom du vin.
@@ -928,20 +880,14 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				Erreur.showSimpleErreur(Program.getError("Error142"), Program.getError("Error143"));
 				importe.setEnabled(true);
 				return;
-			}
-			else if( bool_plac == 0) {
+			}	else if(bool_plac == 0) {
 				label_progression.setText("");
 				Debug("ERROR: No place defined, a place will be create");
 				//Il n'y a pas de rangements définis dans le fichier.
 				//Un rangement par défaut va être créé.
 				Erreur.showSimpleErreur(Program.getError("Error140"), Program.getError("Error141"), true);
 
-				int nb_caisse = 0;
-				for (Rangement cave : Program.getCave()) {
-					if (cave.isCaisse()) {
-						nb_caisse++;
-					}
-				}
+				int nb_caisse = (int)Program.getCave().stream().filter(Rangement::isCaisse).count();
 
 				String title = Program.getLabel("Infos010");
 				String message2 = Program.getLabel("Infos308");
@@ -1024,8 +970,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 					Debug("Creating new place with name: "+nom1);
 					new_rangement = new Rangement(nom1, 1, 0, false, -1);
 					Program.addCave(new_rangement);
-				}
-				else {
+				}	else {
 					new_rangement = Program.getCave(num_r);
 				}
 			}
@@ -1076,8 +1021,9 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 						bottle.updateID();
 						for (int i = 0; i < lu.length; i++) {
 							String value = lu[i];
-							if(value.length() > 1 && value.charAt(0) == '"' && value.charAt(value.length()-1) == '"')
+							if(value.length() > 1 && value.charAt(0) == '"' && value.charAt(value.length()-1) == '"') {
 								value = value.substring(1, value.length() - 1);
+							}
 							value = Program.convertToHTMLString(value);
 							MyCellarFields selectedField = getSelectedField(i);
 
@@ -1150,7 +1096,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 									break;
 							}
 						}
-						if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null ) {
+						if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
 							bottle.setEmplacement(new_rangement.getNom());
 							new_rangement.setNbEmplacements(maxNumPlace+1);
 						}
@@ -1175,120 +1121,110 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 
 				label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
 				//Ouverture du fichier Excel
-				try {
+				try (Workbook workbook = new XSSFWorkbook(new FileInputStream(nom))) {
 
-					Workbook workbook = Workbook.getWorkbook(new File(nom));
 					//Sélection de la feuille
-					Sheet sheet = workbook.getSheet(0);
+					Sheet sheet = workbook.getSheetAt(0);
 					//Lecture de cellules
-					int nb_lign_xls = sheet.getRows();
-					//Number of columns found in Excel File
-					int nbcol_lu = sheet.getColumns();
-
-					//Reading Excel File
-					String cell_tmp[][] = new String[nbcol_lu][nb_lign_xls];
-					for (int k = 0; k < nbcol_lu; k++) {
-						cell_tmp[k] = readXLS(sheet, nb_lign_xls, k);
-					}
+					Iterator<Row> iterator = sheet.iterator();
 					//Ecriture du vin pour chaque ligne
 					boolean skipLine = titre.isSelected();
-					for (int j = 0; j < nb_lign_xls; j++) {
-						Debug("Read line :" + j);
-						int lu_length = 0;
-						for (int z = 0; z < cell_tmp.length; z++) {
-							lu_length += cell_tmp[z][j].trim().length();
-						}
-						if(lu_length > 0 && skipLine) {
+					int maxNumPlace = 0;
+					while (iterator.hasNext()) {
+						LinkedList<String> bottleValues = readRow(iterator.next());
+						final long count = bottleValues.stream().filter(s -> !s.isEmpty()).count();
+						if (skipLine && count > 0) {
 							Debug("Skipping title line");
 							skipLine = false;
 							continue;
 						}
-						int maxNumPlace = 0;
-						if (lu_length != 0) {
+						if (count > 0) {
 							Bouteille bottle = new Bouteille();
 							bottle.updateID();
-							for (int i = 0; i < nbcol_lu; i++) {
 
+							int i = 0;
+							for (String value : bottleValues) {
 								//Récupération des champs sélectionnés
 								MyCellarFields selectedField = getSelectedField(i);
 								//Alimentation de la HashMap
-								Debug("Write "+ selectedField +"->"+cell_tmp[i][j]);
+								Debug("Write " + selectedField + "->" + value);
 								switch (selectedField) {
-								case NAME:
-									bottle.setNom(cell_tmp[i][j]);
-									break;
-								case YEAR:
-									bottle.setAnnee(cell_tmp[i][j]);
-									break;
-								case TYPE:
-									bottle.setType(cell_tmp[i][j]);
-									break;
-								case PLACE:
-									bottle.setEmplacement(cell_tmp[i][j]);
-									break;
-								case NUM_PLACE:
-									bottle.setNumLieu(Integer.parseInt(cell_tmp[i][j]));
-									if(maxNumPlace < bottle.getNumLieu())
-										maxNumPlace = bottle.getNumLieu();
-									break;
-								case LINE:
-									bottle.setLigne(Integer.parseInt(cell_tmp[i][j]));
-									break;
-								case COLUMN:
-									bottle.setColonne(Integer.parseInt(cell_tmp[i][j]));
-									break;
-								case PRICE:
-									bottle.setPrix(cell_tmp[i][j]);
-									break;
-								case COMMENT:
-									bottle.setComment(cell_tmp[i][j]);
-									break;
-								case MATURITY:
-									bottle.setMaturity(cell_tmp[i][j]);
-									break;
-								case PARKER:
-									bottle.setParker(cell_tmp[i][j]);
-									break;
-								case VINEYARD:
-									if (bottle.getVignoble() == null) {
-										bottle.setVignoble(new Vignoble());
-									}
-									bottle.getVignoble().setName(cell_tmp[i][j]);
-									break;
-								case COLOR:
-									bottle.setColor(cell_tmp[i][j]);
-									break;
-								case COUNTRY:
-									if (bottle.getVignoble() == null) {
-										bottle.setVignoble(new Vignoble());
-									}
-									bottle.getVignoble().setCountry(cell_tmp[i][j]);
-									break;
-								case AOC:
-									if (bottle.getVignoble() == null) {
-										bottle.setVignoble(new Vignoble());
-									}
-									bottle.getVignoble().setAOC(cell_tmp[i][j]);
-									break;
-								case IGP:
-									if (bottle.getVignoble() == null) {
-										bottle.setVignoble(new Vignoble());
-									}
-									bottle.getVignoble().setIGP(cell_tmp[i][j]);
-									break;
+									case NAME:
+										bottle.setNom(value);
+										break;
+									case YEAR:
+										bottle.setAnnee(value);
+										break;
+									case TYPE:
+										bottle.setType(value);
+										break;
+									case PLACE:
+										bottle.setEmplacement(value);
+										break;
+									case NUM_PLACE:
+										bottle.setNumLieu(Double.valueOf(value).intValue());
+										if (maxNumPlace < bottle.getNumLieu()) {
+											maxNumPlace = bottle.getNumLieu();
+										}
+										break;
+									case LINE:
+										bottle.setLigne(Double.valueOf(value).intValue());
+										break;
+									case COLUMN:
+										bottle.setColonne(Double.valueOf(value).intValue());
+										break;
+									case PRICE:
+										bottle.setPrix(value);
+										break;
+									case COMMENT:
+										bottle.setComment(value);
+										break;
+									case MATURITY:
+										bottle.setMaturity(value);
+										break;
+									case PARKER:
+										bottle.setParker(value);
+										break;
+									case VINEYARD:
+										if (bottle.getVignoble() == null) {
+											bottle.setVignoble(new Vignoble());
+										}
+										bottle.getVignoble().setName(value);
+										break;
+									case COLOR:
+										bottle.setColor(value);
+										break;
+									case COUNTRY:
+										if (bottle.getVignoble() == null) {
+											bottle.setVignoble(new Vignoble());
+										}
+										bottle.getVignoble().setCountry(value);
+										break;
+									case AOC:
+										if (bottle.getVignoble() == null) {
+											bottle.setVignoble(new Vignoble());
+										}
+										bottle.getVignoble().setAOC(value);
+										break;
+									case IGP:
+										if (bottle.getVignoble() == null) {
+											bottle.setVignoble(new Vignoble());
+										}
+										bottle.getVignoble().setIGP(value);
+										break;
 									default:
 										break;
 								}
-							}
-							if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
-								bottle.setEmplacement(new_rangement.getNom());
-								new_rangement.setNbEmplacements(maxNumPlace+1);
+								if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
+									bottle.setEmplacement(new_rangement.getNom());
+									new_rangement.setNbEmplacements(maxNumPlace+1);
+								}
+								i++;
 							}
 							Program.getStorage().addWine(bottle);
 						}
 					}
-				}
-				catch (IOException | BiffException e) {
+				}	catch (IOException e) {
 					label_progression.setText("");
 					Debug("ERROR: File not found (IO): "+nom);
 					//Fichier non trouvé
@@ -1324,8 +1260,9 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			Program.showException(exc);
 		}
 		RangementUtils.putTabStock();
-		if(!Program.getErrors().isEmpty())
+		if(!Program.getErrors().isEmpty()) {
 			new OpenShowErrorsAction().actionPerformed(null);
+		}
 	}
 
 	private void importFromXML(File f) {

@@ -76,8 +76,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.2
- * @since 12/10/18
+ * @version 19.3
+ * @since 17/10/18
  */
 
 public class Program {
@@ -1124,6 +1124,9 @@ public class Program {
 			if (f.exists()) {
 				f.delete();
 			}
+
+			getErrors().clear();
+
 			//Tri du tableau et écriture du fichier XML
 			if (bSave) {
 				if(!ListeBouteille.writeXML()) {

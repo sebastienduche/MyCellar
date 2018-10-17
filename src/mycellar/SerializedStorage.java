@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.0
- * @since 04/07/18
+ * @version 5.1
+ * @since 17/10/18
  */
 
 public class SerializedStorage implements Storage {
@@ -313,7 +313,9 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public void close() {
-		if(listBouteilles != null)
+		if(listBouteilles != null) {
 			listBouteilles.resetBouteille();
+		}
+		listeUniqueBouteille.clear();
 	}
 }

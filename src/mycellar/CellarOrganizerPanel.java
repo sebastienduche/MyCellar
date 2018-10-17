@@ -48,8 +48,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.8
- * @since 23/05/18
+ * @version 1.9
+ * @since 17/10/18
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener {
@@ -421,7 +421,7 @@ class BouteilleLabel extends JPanel {
 			@Override
 			void actionPerformed() {
 				String mess = MessageFormat.format(Program.getLabel("Main.DeleteWine"), bouteille.getNom());
-				if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, mess)) {
+				if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), mess, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 					Component parent = BouteilleLabel.this.getParent();
 					if(parent instanceof RangementCell) {
 						((RangementCell)parent).remove(BouteilleLabel.this);

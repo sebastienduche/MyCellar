@@ -22,8 +22,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 04/07/18
+ * @version 0.9
+ * @since 17/10/18
  */
 
 public class ManageList extends JDialog {
@@ -73,17 +73,17 @@ public class ManageList extends JDialog {
 		});
 		remove.addActionListener((e) -> {
 			final LinkedList<Integer> list1 = model.getSelectedRows();
-			if(!list1.isEmpty())
-			{
+			if(!list1.isEmpty()) {
 				LinkedList<String> values = model.getSelectedValues();
 				String label = Program.getLabel("Infos129");
 				if(MyCellarBottleContenance.getList().size() > 1)
 					label = Program.getLabel("Infos130");
-				int resul = JOptionPane.showConfirmDialog(null, label);
+				int resul = JOptionPane.showConfirmDialog(Start.getInstance(), label, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION);
 				if(resul == JOptionPane.YES_OPTION) {
 					model.removeValueAt(list1);
-					for(String val: values)
+					for(String val: values) {
 						defaultComboBox.removeItem(val);
+					}
 				}
 			}
 		});

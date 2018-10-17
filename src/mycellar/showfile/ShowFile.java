@@ -821,10 +821,9 @@ public class ShowFile extends JPanel implements ITabListener {
   public boolean tabWillClose(TabEvent event) {
     if (showType == ShowType.ERROR) {
     	if(Program.getErrors().stream().map(MyCellarError::isStatus).count() > 0) {
-    		if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getLabel("ShowFile.QuitErrors"))) {
-    			RangementUtils.putTabStock();
-    			return true;
-    		}
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getLabel("ShowFile.QuitErrors"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+          return false;
+        }
     		return false;
     	}
     }

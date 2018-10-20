@@ -55,8 +55,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.1
- * @since 17/10/18
+ * @version 12.2
+ * @since 19/10/18
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -138,13 +138,6 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		quitter.setAccelerator(KeyStroke.getKeyStroke('Q', InputEvent.CTRL_DOWN_MASK));
 
 		setLayout(new MigLayout("","grow",""));
-		JPanel panelFile = new JPanel();
-		panelFile.setLayout(new MigLayout("","[grow][][]","[]"));
-		panelFile.add(label1, "wrap");
-		panelFile.add(file, "grow");
-		panelFile.add(parcourir);
-		panelFile.add(openit);
-		add(panelFile,"grow,wrap");
 		JPanel panelType = new JPanel();
 		panelType.setLayout(new MigLayout("","[][]","[]"));
 		JPanel panelFileType = new JPanel();
@@ -160,6 +153,13 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		panelSeparator.add(separateur, "gapleft 10px");
 		panelType.add(panelSeparator);
 		add(panelType, "grow, wrap");
+		JPanel panelFile = new JPanel();
+		panelFile.setLayout(new MigLayout("","[grow][][]","[]"));
+		panelFile.add(label1, "wrap");
+		panelFile.add(file, "grow");
+		panelFile.add(parcourir);
+		panelFile.add(openit);
+		add(panelFile,"grow,wrap");
 		JPanel panel = new JPanel();
 		panel.setLayout(new MigLayout("","",""));
 		panel.add(titre, "");
@@ -252,7 +252,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		choix10.setEnabled(false);
 		choix11.setEnabled(false);
 		choix12.setEnabled(false);
-		Debug("jbInit OK");
+		Debug("Constructor OK");
 	}
 	
 	/**
@@ -581,7 +581,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			} else if (cell.getCellType() == CellType.STRING) {
 				bottle.add(cell.getStringCellValue());
 			} else {
-				// ERROR @TODO
+				throw new UnsupportedOperationException(Program.getError(MessageFormat.format(Program.getError("Importer.unknownCellType"), cell.getCellType())));
 			}
 		}
 		return bottle;
@@ -955,12 +955,14 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 								rangement = null;
 								if (!nom1.isEmpty()) {
 									rangement = Program.getCave(nom1);
-									Program.options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
-											Program.getError("Error037"), false);
-									Program.options.setVisible(true);
-									nom1 = Program.options.getValue();
-									Program.options = null;
-									resul = false;
+									if (rangement != null) {
+										Program.options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
+												Program.getError("Error037"), false);
+										Program.options.setVisible(true);
+										nom1 = Program.options.getValue();
+										Program.options = null;
+										resul = false;
+									}
 								}
 							}
 							while (rangement != null);
@@ -1117,142 +1119,9 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				Debug("Import OK.");
 			}
 			else { //Excel File
-				Debug("Importing XLS file...");
-
-				label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
-				//Ouverture du fichier Excel
-				try (Workbook workbook = new XSSFWorkbook(new FileInputStream(nom))) {
-
-					//Sélection de la feuille
-					Sheet sheet = workbook.getSheetAt(0);
-					//Lecture de cellules
-					Iterator<Row> iterator = sheet.iterator();
-					//Ecriture du vin pour chaque ligne
-					boolean skipLine = titre.isSelected();
-					int maxNumPlace = 0;
-					while (iterator.hasNext()) {
-						LinkedList<String> bottleValues = readRow(iterator.next());
-						final long count = bottleValues.stream().filter(s -> !s.isEmpty()).count();
-						if (skipLine && count > 0) {
-							Debug("Skipping title line");
-							skipLine = false;
-							continue;
-						}
-						if (count > 0) {
-							Bouteille bottle = new Bouteille();
-							bottle.updateID();
-
-							int i = 0;
-							for (String value : bottleValues) {
-								//Récupération des champs sélectionnés
-								MyCellarFields selectedField = getSelectedField(i);
-								//Alimentation de la HashMap
-								Debug("Write " + selectedField + "->" + value);
-								switch (selectedField) {
-									case NAME:
-										bottle.setNom(value);
-										break;
-									case YEAR:
-										bottle.setAnnee(value);
-										break;
-									case TYPE:
-										bottle.setType(value);
-										break;
-									case PLACE:
-										bottle.setEmplacement(value);
-										break;
-									case NUM_PLACE:
-										bottle.setNumLieu(Double.valueOf(value).intValue());
-										if (maxNumPlace < bottle.getNumLieu()) {
-											maxNumPlace = bottle.getNumLieu();
-										}
-										break;
-									case LINE:
-										bottle.setLigne(Double.valueOf(value).intValue());
-										break;
-									case COLUMN:
-										bottle.setColonne(Double.valueOf(value).intValue());
-										break;
-									case PRICE:
-										bottle.setPrix(value);
-										break;
-									case COMMENT:
-										bottle.setComment(value);
-										break;
-									case MATURITY:
-										bottle.setMaturity(value);
-										break;
-									case PARKER:
-										bottle.setParker(value);
-										break;
-									case VINEYARD:
-										if (bottle.getVignoble() == null) {
-											bottle.setVignoble(new Vignoble());
-										}
-										bottle.getVignoble().setName(value);
-										break;
-									case COLOR:
-										bottle.setColor(value);
-										break;
-									case COUNTRY:
-										if (bottle.getVignoble() == null) {
-											bottle.setVignoble(new Vignoble());
-										}
-										bottle.getVignoble().setCountry(value);
-										break;
-									case AOC:
-										if (bottle.getVignoble() == null) {
-											bottle.setVignoble(new Vignoble());
-										}
-										bottle.getVignoble().setAOC(value);
-										break;
-									case IGP:
-										if (bottle.getVignoble() == null) {
-											bottle.setVignoble(new Vignoble());
-										}
-										bottle.getVignoble().setIGP(value);
-										break;
-									default:
-										break;
-								}
-								if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
-									bottle.setEmplacement(new_rangement.getNom());
-									new_rangement.setNbEmplacements(maxNumPlace+1);
-								}
-								i++;
-							}
-							Program.getStorage().addWine(bottle);
-						}
-					}
-				}	catch (IOException e) {
-					label_progression.setText("");
-					Debug("ERROR: File not found (IO): "+nom);
-					//Fichier non trouvé
-					//"Vérifier le chemin");
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
-					importe.setEnabled(true);
+				if (!importExcelFile(nom, new_rangement)) {
 					return;
 				}
-				catch (Exception e) {
-					Program.showException(e, false);
-					label_progression.setText("");
-					Debug("ERROR: "+e.toString());
-					Erreur.showSimpleErreur(Program.getError("Error082"));
-					importe.setEnabled(true);
-					return;
-				}
-
-				label_progression.setText(Program.getLabel("Infos200"));
-				new Timer().schedule(
-								new TimerTask() {
-										@Override
-										public void run() {
-											SwingUtilities.invokeLater(() -> label_progression.setText(""));
-										}
-								},
-								5000
-				);
-				Debug("Import OK.");
 			}
 			importe.setEnabled(true);
 		}
@@ -1263,6 +1132,147 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		if(!Program.getErrors().isEmpty()) {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
+	}
+
+	private boolean importExcelFile(final String nom, final Rangement new_rangement) {
+		Debug("Importing XLS file...");
+
+		label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
+		//Ouverture du fichier Excel
+		try (Workbook workbook = new XSSFWorkbook(new FileInputStream(nom))) {
+
+			//Sélection de la feuille
+			Sheet sheet = workbook.getSheetAt(0);
+			//Lecture de cellules
+			Iterator<Row> iterator = sheet.iterator();
+			//Ecriture du vin pour chaque ligne
+			boolean skipLine = titre.isSelected();
+			int maxNumPlace = 0;
+			while (iterator.hasNext()) {
+				LinkedList<String> bottleValues = readRow(iterator.next());
+				final long count = bottleValues.stream().filter(s -> !s.isEmpty()).count();
+				if (skipLine && count > 0) {
+					Debug("Skipping title line");
+					skipLine = false;
+					continue;
+				}
+				if (count > 0) {
+					Bouteille bottle = new Bouteille();
+					bottle.updateID();
+
+					int i = 0;
+					for (String value : bottleValues) {
+						//Récupération des champs sélectionnés
+						MyCellarFields selectedField = getSelectedField(i);
+						//Alimentation de la HashMap
+						Debug("Write " + selectedField + "->" + value);
+						switch (selectedField) {
+							case NAME:
+								bottle.setNom(value);
+								break;
+							case YEAR:
+								bottle.setAnnee(value);
+								break;
+							case TYPE:
+								bottle.setType(value);
+								break;
+							case PLACE:
+								bottle.setEmplacement(value);
+								break;
+							case NUM_PLACE:
+								bottle.setNumLieu(Double.valueOf(value).intValue());
+								if (maxNumPlace < bottle.getNumLieu()) {
+									maxNumPlace = bottle.getNumLieu();
+								}
+								break;
+							case LINE:
+								bottle.setLigne(Double.valueOf(value).intValue());
+								break;
+							case COLUMN:
+								bottle.setColonne(Double.valueOf(value).intValue());
+								break;
+							case PRICE:
+								bottle.setPrix(value);
+								break;
+							case COMMENT:
+								bottle.setComment(value);
+								break;
+							case MATURITY:
+								bottle.setMaturity(value);
+								break;
+							case PARKER:
+								bottle.setParker(value);
+								break;
+							case VINEYARD:
+								if (bottle.getVignoble() == null) {
+									bottle.setVignoble(new Vignoble());
+								}
+								bottle.getVignoble().setName(value);
+								break;
+							case COLOR:
+								bottle.setColor(value);
+								break;
+							case COUNTRY:
+								if (bottle.getVignoble() == null) {
+									bottle.setVignoble(new Vignoble());
+								}
+								bottle.getVignoble().setCountry(value);
+								break;
+							case AOC:
+								if (bottle.getVignoble() == null) {
+									bottle.setVignoble(new Vignoble());
+								}
+								bottle.getVignoble().setAOC(value);
+								break;
+							case IGP:
+								if (bottle.getVignoble() == null) {
+									bottle.setVignoble(new Vignoble());
+								}
+								bottle.getVignoble().setIGP(value);
+								break;
+							default:
+								break;
+						}
+						if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
+							bottle.setEmplacement(new_rangement.getNom());
+							new_rangement.setNbEmplacements(maxNumPlace+1);
+						}
+						i++;
+					}
+					Program.getStorage().addWine(bottle);
+				}
+			}
+		}	catch (IOException e) {
+			label_progression.setText("");
+			Debug("ERROR: File not found (IO): "+nom);
+			//Fichier non trouvé
+			//"Vérifier le chemin");
+			Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
+			importe.setEnabled(true);
+			return false;
+		}
+		catch (Exception e) {
+			Program.showException(e, false);
+			label_progression.setText("");
+			Debug("ERROR: "+e.toString());
+			Erreur.showSimpleErreur(Program.getError("Error082"));
+			importe.setEnabled(true);
+			return false;
+		}
+
+		label_progression.setText(Program.getLabel("Infos200"));
+		new Timer().schedule(
+						new TimerTask() {
+								@Override
+								public void run() {
+									SwingUtilities.invokeLater(() -> label_progression.setText(""));
+								}
+						},
+						5000
+		);
+		Debug("Import OK.");
+		importe.setEnabled(true);
+		return true;
 	}
 
 	private void importFromXML(File f) {

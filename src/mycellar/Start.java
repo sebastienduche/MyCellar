@@ -44,8 +44,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 25.0
- * @since 16/10/18
+ * @version 25.1
+ * @since 19/10/18
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -202,6 +202,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			getInstance().startup();
 		} catch (Exception e) {
 			Program.showException(e);
+			System.exit(998);
 		} catch (ExceptionInInitializerError a) {
 			JOptionPane.showMessageDialog(null, "Error during program initialisation!!\nProgram files corrupted!!\nPlease reinstall program.",
 					"Error", JOptionPane.ERROR_MESSAGE);

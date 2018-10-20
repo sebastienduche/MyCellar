@@ -35,8 +35,8 @@ import java.util.Map;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 2.0
- * @since 12/10/18
+ * @version 2.1
+ * @since 19/10/18
  */
 
 public class Server implements Runnable {
@@ -70,7 +70,7 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 
-		if (sAction.equals(GETVERSION)) {
+		if (GETVERSION.equals(sAction)) {
 			sServerVersion = "";
 			try {
 				File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
@@ -88,10 +88,11 @@ public class Server implements Runnable {
 						sFile = sFile.substring(0, index);
 					}
 					// Suppression de fichier commençant par -
-					if(sFile.indexOf('-') == 0)
+					if(sFile.startsWith("-")) {
 						LIST_FILE_TO_REMOVE.add(sFile.substring(1));
-					else
+					} else {
 						FILE_TYPES.add(new FileType(sFile, md5));
+					}
 					sFile = in.readLine();
 				}
 
@@ -100,11 +101,12 @@ public class Server implements Runnable {
 				showException(e);
 			}
 			sAction = "";
-		} else if (sAction.equals(DOWNLOAD)) {
+		} else if (DOWNLOAD.equals(sAction)) {
 			try {
 				File f = new File("download");
-				if (!f.exists())
+				if (!f.exists()) {
 					f.mkdir();
+				}
 
 				bDownloadError = downloadFromGitHub(f);
 			} catch (Exception e) {
@@ -117,8 +119,7 @@ public class Server implements Runnable {
 			sAction = "";
 		}
 		if (bDownloadError) {
-			File f = new File("download");
-			f.deleteOnExit();
+			new File("download").deleteOnExit();
 		}
 	}
 
@@ -142,9 +143,9 @@ public class Server implements Runnable {
 				}
 				// Suppression de fichier commençant par -
 				Debug("sFile... "+sFile+" "+sFile.indexOf('-'));
-				if(sFile.indexOf('-') == 0)
+				if(sFile.startsWith("-")) {
 					LIST_FILE_TO_REMOVE.add(sFile.substring(1));
-				else {
+				} else {
 					boolean lib = (!sFile.contains("MyCellar") && sFile.endsWith(".jar"));
 					FILE_TYPES.add(new FileType(sFile, md5, lib));
 				}
@@ -162,9 +163,9 @@ public class Server implements Runnable {
 		Debug("Downloading version from GitHub...");
 		try {
 			File f = new File("download");
-			if (!f.exists())
+			if (!f.exists()) {
 				f.mkdir();
-
+			}
 			bDownloadError = downloadFromGitHub(f);
 
 		} catch (Exception e) {
@@ -176,8 +177,7 @@ public class Server implements Runnable {
 		bDownloaded = true;
 		sAction = "";
 		if (bDownloadError) {
-			File f = new File("download");
-			f.deleteOnExit();
+			new File("download").deleteOnExit();
 		}
 	}
 
@@ -237,8 +237,9 @@ public class Server implements Runnable {
 
 			int size = FILE_TYPES.size();
 			int percent = 80;
-			if (size > 0)
+			if (size > 0) {
 				percent = 80 / size;
+			}
 			for (int i = 0; i < size; i++) {
 				FileType fType = FILE_TYPES.get(i);
 				String name = fType.getFile();
@@ -247,14 +248,15 @@ public class Server implements Runnable {
 				System.out.println("Downloading... "+name);
 				Debug("Downloading... "+name);
 				{
-					File f = new File(destination + "/" + name);
+					File f = new File(destination + File.separator + name);
 
 					download.setValue(20 + i * percent);
 					try {
 						String dir = "";
-						if(fType.isForLibDirectory())
-							dir = "lib/";
-						downloadFileFromGitHub(dir+name, f.getAbsolutePath());
+						if(fType.isForLibDirectory()) {
+							dir = "lib" + File.separator;
+						}
+						downloadFileFromGitHub(dir + name, f.getAbsolutePath());
 					} catch (IOException e) {
 						e.printStackTrace();
 						Debug("Error Downloading " + name);
@@ -271,8 +273,7 @@ public class Server implements Runnable {
 							if(localMd5.equals(serverMd5)) {
 								Debug(name + " Md5 OK");
 								System.out.println("MD5 OK "+name);
-							}
-							else {
+							} else {
 								Debug(name + " "+serverMd5 + " "+localMd5);
 								System.out.println("Error MD5 "+name);
 								bDownloadError = true;
@@ -280,8 +281,9 @@ public class Server implements Runnable {
 						} finally {
 							stream.close();
 						}
-						if (fileSize == 0)
+						if (fileSize == 0) {
 							bDownloadError = true;
+						}
 					}
 					if(bDownloadError) {
 						System.out.println("Error "+name);
@@ -308,19 +310,19 @@ public class Server implements Runnable {
 
 	public void downloadFileFromGitHub(String name, String destination) throws IOException {
 		String link;
-		URL url = new URL( GIT_HUB_URL + name );
+		URL url = new URL(GIT_HUB_URL + name);
 		HttpURLConnection http = (HttpURLConnection)url.openConnection();
 		Map< String, List< String >> header = http.getHeaderFields();
-		while( isRedirected( header )) {
-			link = header.get( "Location" ).get( 0 );
-			url = new URL( link );
+		while(isRedirected( header )) {
+			link = header.get("Location").get( 0 );
+			url = new URL(link);
 			http = (HttpURLConnection)url.openConnection();
 			header = http.getHeaderFields();
 		}
 		InputStream input = http.getInputStream();
 		byte[] buffer = new byte[4096];
 		int n;
-		try(OutputStream output = new FileOutputStream( new File( destination ))) {
+		try(OutputStream output = new FileOutputStream(new File(destination))) {
 			while ((n = input.read(buffer)) != -1) {
 				output.write(buffer, 0, n);
 			}
@@ -365,9 +367,10 @@ public class Server implements Runnable {
 		try {
 			if (oDebugFile == null) {
 				String sDir = System.getProperty("user.home");
-				if( !sDir.isEmpty() )
-					sDir += "/MyCellarDebug";
-				File f_obj = new File( sDir );
+				if(!sDir.isEmpty()) {
+					sDir +=  File.separator + "MyCellarDebug";
+				}
+				File f_obj = new File(sDir);
 				if(!f_obj.exists()) {
 					f_obj.mkdir();
 				}
@@ -393,9 +396,9 @@ public class Server implements Runnable {
 		}
 		String sDir = System.getProperty("user.home");
 		if(!sDir.isEmpty()) {
-			sDir += "/MyCellarDebug";
+			sDir += File.separator + "MyCellarDebug";
 		}
-		try(FileWriter fw = new FileWriter(sDir+"/Errors.log")) {
+		try(FileWriter fw = new FileWriter(sDir + File.separator + "Errors.log")) {
 			fw.write(e.toString());
 			fw.write(error);
 			fw.flush();
@@ -410,12 +413,13 @@ public class Server implements Runnable {
 	boolean install() {
 		Debug("Installing MyCellar...");
 		File directory = getDirectoryForInstall();
-		if(directory != null ) {
-			if(!directory.exists())
-				directory.mkdirs();
-		}
-		else
+		if (directory == null) {
 			return false;
+		}
+		if(!directory.exists()) {
+			directory.mkdirs();
+		}
+		
 		File f = new File("lib");
 		f.mkdir();
 		f = new File("config");
@@ -433,6 +437,11 @@ public class Server implements Runnable {
 		FILE_TYPES.add(new FileType("lib/miglayout-4.0-swing.jar", ""));
 		FILE_TYPES.add(new FileType("lib/pdfbox-app-2.0.5.jar", ""));
 		FILE_TYPES.add(new FileType("lib/smtp.jar", ""));
+		FILE_TYPES.add(new FileType("lib/poi-4.0.0.jar", ""));
+		FILE_TYPES.add(new FileType("lib/poi-ooxml-4.0.0.jar", ""));
+		FILE_TYPES.add(new FileType("lib/poi-ooxml-schemas-4.0.0.jar", ""));
+		FILE_TYPES.add(new FileType("lib/xmlbeans-3.0.1.jar", ""));
+		
 		FILE_TYPES.add(new FileType("config/config.ini", ""));
 
 		FILE_TYPES.add(new FileType("MyCellar.jar",""));
@@ -469,13 +478,15 @@ public class Server implements Runnable {
 	}
 
 	private static boolean isRedirected(Map<String, List<String>> header) {
-		if(header == null)
+		if(header == null) {
 			return false;
+		}
 		try{
-			for( String hv : header.get( null )) {
-				if(hv == null)
+			for( String hv : header.get(null)) {
+				if(hv == null) {
 					return false;
-				if( hv.contains( " 301 " ) || hv.contains( " 302 " ))
+				}
+				if( hv.contains(" 301 ") || hv.contains(" 302 "))
 					return true;
 			}
 		}catch(Exception e) {}

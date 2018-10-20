@@ -4,24 +4,24 @@
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
     	<delete dir="./Build/lib"/>
-			<mkdir dir="./Build/lib"/>
-    	<copy file="./lib/commons-io-2.1.jar" todir="./Build/lib"/>
-      <copy file="./lib/commons-lang-2.1.jar" todir="./Build/lib"/>
-      <copy file="./lib/commons-logging.jar" todir="./Build/lib"/>
-    	<copy file="./lib/commons-net-3.0.1.jar" todir="./Build/lib"/>
-    	<copy file="./lib/jcommon-1.0.18.jar" todir="./Build/lib"/>
-      <copy file="./lib/jdom1.0.jar" todir="./Build/lib"/>
-    	<copy file="./lib/jfreechart-1.0.15.jar" todir="./Build/lib"/>
-    	<copy file="./lib/mailapi.jar" todir="./Build/lib"/>
-    	<copy file="./lib/miglayout-4.0-swing.jar" todir="./Build/lib"/>
-    	<copy file="./lib/pdfbox-app-2.0.5.jar" todir="./Build/lib"/>
-    	<copy file="./lib/smtp.jar" todir="./Build/lib"/>
-			<copy file="./lib/commons-collections4-4.2.jar" todir="./Build/lib"/>
-			<copy file="./lib/commons-compress-1.18.jar" todir="./Build/lib"/>
-			<copy file="./lib/poi-4.0.0.jar" todir="./Build/lib"/>
-			<copy file="./lib/poi-ooxml-4.0.0.jar" todir="./Build/lib"/>
-			<copy file="./lib/poi-ooxml-schemas-4.0.0.jar" todir="./Build/lib"/>
-			<copy file="./lib/xmlbeans-3.0.1.jar" todir="./Build/lib"/>
+		<mkdir dir="./Build/lib"/>
+		<copy file="./lib/commons-io-2.1.jar" todir="./Build/lib"/>
+		<copy file="./lib/commons-lang-2.1.jar" todir="./Build/lib"/>
+		<copy file="./lib/commons-logging.jar" todir="./Build/lib"/>
+		<copy file="./lib/commons-net-3.0.1.jar" todir="./Build/lib"/>
+		<copy file="./lib/jcommon-1.0.18.jar" todir="./Build/lib"/>
+		<copy file="./lib/jdom1.0.jar" todir="./Build/lib"/>
+		<copy file="./lib/jfreechart-1.0.15.jar" todir="./Build/lib"/>
+		<copy file="./lib/mailapi.jar" todir="./Build/lib"/>
+		<copy file="./lib/miglayout-4.0-swing.jar" todir="./Build/lib"/>
+		<copy file="./lib/pdfbox-app-2.0.5.jar" todir="./Build/lib"/>
+		<copy file="./lib/smtp.jar" todir="./Build/lib"/>
+		<copy file="./lib/commons-collections4-4.2.jar" todir="./Build/lib"/>
+		<copy file="./lib/commons-compress-1.18.jar" todir="./Build/lib"/>
+		<copy file="./lib/poi-4.0.0.jar" todir="./Build/lib"/>
+		<copy file="./lib/poi-ooxml-4.0.0.jar" todir="./Build/lib"/>
+		<copy file="./lib/poi-ooxml-schemas-4.0.0.jar" todir="./Build/lib"/>
+		<copy file="./lib/xmlbeans-3.0.1.jar" todir="./Build/lib"/>
 
     	<path id="compile.classpath">
     	    <fileset dir="./Build/lib" includes="*.jar"/>
@@ -36,7 +36,6 @@
             <manifest>
               <attribute name="Main-Class" value="mycellar.launcher.MyCellarLauncher"/>
 							<attribute name="Class-Path" value="${jar.classpath}" />
-                <!--<attribute name="Class-Path" value=". MyCellar.jar lib/commons-lang-2.1.jar lib/jdom1.0.jar lib/jxl.jar lib/commons-io-2.1.jar lib/commons-net-3.0.1.jar lib/commons-collections-3.1.jar lib/commons-logging.jar"/>-->
             	<attribute name="SplashScreen-Image" value="resources/SebInformatique.jpg"/>
             </manifest>
             <fileset dir="./bin">
@@ -59,8 +58,7 @@
     	<jar destfile="./Build/MyCellar.jar">
             <manifest>
                 <attribute name="Main-Class" value="mycellar.Start"/>
-								<attribute name="Class-Path" value="${jar.classpath}" />
-                <!--<attribute name="Class-Path" value=". lib/commons-lang-2.1.jar lib/jdom1.0.jar lib/jxl.jar lib/commons-io-2.1.jar lib/commons-net-3.0.1.jar lib/miglayout-4.0-swing.jar lib/jfreechart-1.0.15.jar lib/jcommon-1.0.18.jar lib/smtp.jar lib/mailapi.jar lib/javax.mail.jar lib/commons-collections-3.1.jar lib/commons-logging.jar lib/pdfbox-app-2.0.5.jar"/>-->
+				<attribute name="Class-Path" value="${jar.classpath}" />
             </manifest>
             <fileset dir="./bin">
             	<include name="**/*.class"/>

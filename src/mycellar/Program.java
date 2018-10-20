@@ -63,6 +63,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.OptionalDouble;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.Deflater;
@@ -76,8 +77,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.3
- * @since 17/10/18
+ * @version 19.4
+ * @since 19/10/18
  */
 
 public class Program {
@@ -835,12 +836,12 @@ public class Program {
 		if (name == null || name.isEmpty()) {
 			return null;
 		}
-		for(Rangement r: RANGEMENTS_LIST) {
-			if(name.equals(r.getNom())) {
-				return r;
-			}
+		final List<Rangement> list = RANGEMENTS_LIST.stream().filter(rangement -> rangement.getNom().equals(name))
+				.collect(Collectors.toList());
+		if (list.isEmpty()) {
+			return null;
 		}
-		return null;
+		return list.get(0);
 	}
 	
 	/**

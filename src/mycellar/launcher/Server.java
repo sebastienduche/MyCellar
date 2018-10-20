@@ -441,6 +441,8 @@ public class Server implements Runnable {
 		FILE_TYPES.add(new FileType("lib/poi-ooxml-4.0.0.jar", ""));
 		FILE_TYPES.add(new FileType("lib/poi-ooxml-schemas-4.0.0.jar", ""));
 		FILE_TYPES.add(new FileType("lib/xmlbeans-3.0.1.jar", ""));
+		FILE_TYPES.add(new FileType("lib/commons-collections4-4.2.jar", ""));
+		FILE_TYPES.add(new FileType("lib/commons-compress-1.18.jar", ""));
 		
 		FILE_TYPES.add(new FileType("config/config.ini", ""));
 

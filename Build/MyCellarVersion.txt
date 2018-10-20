@@ -1,6 +1,6 @@
-3.0.3.3
-5.5
-MyCellar.jar@b3068502751874a17a54ef2de2b1504f
+3.1.3.1
+5.6
+MyCellar.jar@0cb7af724d8cbe05c4b9739b55a40b48
 Finish.html
 commons-collections4-4.2.jar
 commons-compress-1.18.jar
@@ -8,3 +8,4 @@ poi-4.0.0.jar
 poi-ooxml-4.0.0.jar
 poi-ooxml-schemas-4.0.0.jar
 xmlbeans-3.0.1.jar
+-jxl.jar

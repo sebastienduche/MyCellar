@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.util.Calendar;
 import java.util.Deque;
@@ -74,29 +75,28 @@ public class Server implements Runnable {
 			sServerVersion = "";
 			try {
 				File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
+				myCellarVersion.deleteOnExit();
 				downloadFileFromGitHub("MyCellarVersion.txt", myCellarVersion.getAbsolutePath());
-				BufferedReader in = new BufferedReader(new FileReader(myCellarVersion));
-
-				sServerVersion = in.readLine();
-				sAvailableVersion = in.readLine();
-				String sFile = in.readLine();
-				while (sFile != null && !sFile.isEmpty()) {
-					int index = sFile.indexOf('@');
-					String md5 = "";
-					if(index != -1) {
-						md5 = sFile.substring(index+1).trim();
-						sFile = sFile.substring(0, index);
+				try (BufferedReader in = new BufferedReader(new FileReader(myCellarVersion))){
+					sServerVersion = in.readLine();
+					sAvailableVersion = in.readLine();
+					String sFile = in.readLine();
+					while (sFile != null && !sFile.isEmpty()) {
+						int index = sFile.indexOf('@');
+						String md5 = "";
+						if(index != -1) {
+							md5 = sFile.substring(index+1).trim();
+							sFile = sFile.substring(0, index);
+						}
+						// Suppression de fichier commençant par -
+						if(sFile.indexOf('-') == 0) {
+							LIST_FILE_TO_REMOVE.add(sFile.substring(1));
+						} else {
+							FILE_TYPES.add(new FileType(sFile, md5));
+						}
+						sFile = in.readLine();
 					}
-					// Suppression de fichier commençant par -
-					if(sFile.startsWith("-")) {
-						LIST_FILE_TO_REMOVE.add(sFile.substring(1));
-					} else {
-						FILE_TYPES.add(new FileType(sFile, md5));
-					}
-					sFile = in.readLine();
 				}
-
-				in.close();
 			} catch (Exception e) {
 				showException(e);
 			}
@@ -105,7 +105,7 @@ public class Server implements Runnable {
 			try {
 				File f = new File("download");
 				if (!f.exists()) {
-					f.mkdir();
+					Files.createDirectory(f.toPath());
 				}
 
 				bDownloadError = downloadFromGitHub(f);
@@ -129,30 +129,28 @@ public class Server implements Runnable {
 		try {
 			File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
 			downloadFileFromGitHub("MyCellarVersion.txt", myCellarVersion.getAbsolutePath());
-			BufferedReader in = new BufferedReader(new FileReader(myCellarVersion));
-
-			sServerVersion = in.readLine();
-			sAvailableVersion = in.readLine();
-			String sFile = in.readLine();
-			while (sFile != null && !sFile.isEmpty()) {
-				int index = sFile.indexOf('@');
-				String md5 = "";
-				if(index != -1) {
-					md5 = sFile.substring(index+1).trim();
-					sFile = sFile.substring(0, index);
+			try(BufferedReader in = new BufferedReader(new FileReader(myCellarVersion))) {
+				sServerVersion = in.readLine();
+				sAvailableVersion = in.readLine();
+				String sFile = in.readLine();
+				while (sFile != null && !sFile.isEmpty()) {
+					int index = sFile.indexOf('@');
+					String md5 = "";
+					if(index != -1) {
+						md5 = sFile.substring(index+1).trim();
+						sFile = sFile.substring(0, index);
+					}
+					// Suppression de fichier commençant par -
+					Debug("sFile... "+sFile+" "+sFile.indexOf('-'));
+					if(sFile.indexOf('-') == 0) {
+						LIST_FILE_TO_REMOVE.add(sFile.substring(1));
+					} else {
+						boolean lib = (!sFile.contains("MyCellar") && sFile.endsWith(".jar"));
+						FILE_TYPES.add(new FileType(sFile, md5, lib));
+					}
+					sFile = in.readLine();
 				}
-				// Suppression de fichier commençant par -
-				Debug("sFile... "+sFile+" "+sFile.indexOf('-'));
-				if(sFile.startsWith("-")) {
-					LIST_FILE_TO_REMOVE.add(sFile.substring(1));
-				} else {
-					boolean lib = (!sFile.contains("MyCellar") && sFile.endsWith(".jar"));
-					FILE_TYPES.add(new FileType(sFile, md5, lib));
-				}
-				sFile = in.readLine();
 			}
-
-			in.close();
 			Debug("GitHub version: "+sServerVersion+"/"+sAvailableVersion);
 		} catch (Exception e) {
 			showException(e);
@@ -163,9 +161,10 @@ public class Server implements Runnable {
 		Debug("Downloading version from GitHub...");
 		try {
 			File f = new File("download");
-			if (!f.exists()) {
-				f.mkdir();
+			if (!f.exists()){
+				Files.createDirectory(f.toPath());
 			}
+
 			bDownloadError = downloadFromGitHub(f);
 
 		} catch (Exception e) {
@@ -190,8 +189,7 @@ public class Server implements Runnable {
 		if (sServerVersion.isEmpty()) {
 			try {
 				sAction = GETVERSION;
-				Thread t = new Thread(this);
-				t.start();
+				new Thread(this).start();
 			} catch (Exception a) {
 				showException(a);
 			}
@@ -201,8 +199,9 @@ public class Server implements Runnable {
 	}
 
 	public boolean hasAvailableUpdate() {
-		if (sServerVersion.isEmpty())
+		if (sServerVersion.isEmpty()) {
 			return false;
+		}
 
 		return (sServerVersion.compareTo(MyCellarVersion.getLocalVersion()) > 0);
 	}
@@ -247,48 +246,47 @@ public class Server implements Runnable {
 				bDownloadError = false;
 				System.out.println("Downloading... "+name);
 				Debug("Downloading... "+name);
-				{
-					File f = new File(destination + File.separator + name);
+				File f = new File(destination, name);
 
-					download.setValue(20 + i * percent);
-					try {
-						String dir = "";
-						if(fType.isForLibDirectory()) {
-							dir = "lib" + File.separator;
-						}
-						downloadFileFromGitHub(dir + name, f.getAbsolutePath());
-					} catch (IOException e) {
-						e.printStackTrace();
-						Debug("Error Downloading " + name);
-						System.out.println("Error Downloading "+name);
-						bDownloadError = true;
+				download.setValue(20 + i * percent);
+				try {
+					String dir = "";
+					if(fType.isForLibDirectory()) {
+						dir = "lib/";
 					}
+					downloadFileFromGitHub(dir+name, f.getAbsolutePath());
+				} catch (IOException e) {
+					e.printStackTrace();
+					Debug("Error Downloading " + name);
+					System.out.println("Error Downloading "+name);
+					bDownloadError = true;
+				}
 
-					if(!serverMd5.isEmpty() && !f.isDirectory()) {
-						InputStream stream = new FileInputStream(f);
-						int fileSize;
-						try {
-							fileSize = stream.available();
-							String localMd5 = getMD5Checksum(f.getAbsolutePath());
-							if(localMd5.equals(serverMd5)) {
-								Debug(name + " Md5 OK");
-								System.out.println("MD5 OK "+name);
-							} else {
-								Debug(name + " "+serverMd5 + " "+localMd5);
-								System.out.println("Error MD5 "+name);
-								bDownloadError = true;
-							}
-						} finally {
-							stream.close();
+				if(!serverMd5.isEmpty() && !f.isDirectory()) {
+					InputStream stream = new FileInputStream(f);
+					int fileSize;
+					try {
+						fileSize = stream.available();
+						String localMd5 = getMD5Checksum(f.getAbsolutePath());
+						if(localMd5.equals(serverMd5)) {
+							Debug(name + " Md5 OK");
+							System.out.println("MD5 OK "+name);
 						}
-						if (fileSize == 0) {
+						else {
+							Debug(name + " "+serverMd5 + " "+localMd5);
+							System.out.println("Error MD5 "+name);
 							bDownloadError = true;
 						}
+					} finally {
+						stream.close();
 					}
-					if(bDownloadError) {
-						System.out.println("Error "+name);
-						f.deleteOnExit();
+					if (fileSize == 0) {
+						bDownloadError = true;
 					}
+				}
+				if(bDownloadError) {
+					Debug("Error "+name);
+					f.deleteOnExit();
 				}
 			}
 		} catch (IOException e) {
@@ -313,8 +311,8 @@ public class Server implements Runnable {
 		URL url = new URL(GIT_HUB_URL + name);
 		HttpURLConnection http = (HttpURLConnection)url.openConnection();
 		Map< String, List< String >> header = http.getHeaderFields();
-		while(isRedirected( header )) {
-			link = header.get("Location").get( 0 );
+		while(isRedirected(header)) {
+			link = header.get("Location").get(0);
 			url = new URL(link);
 			http = (HttpURLConnection)url.openConnection();
 			header = http.getHeaderFields();
@@ -372,7 +370,7 @@ public class Server implements Runnable {
 				}
 				File f_obj = new File(sDir);
 				if(!f_obj.exists()) {
-					f_obj.mkdir();
+					Files.createDirectory(f_obj.toPath());
 				}
 				Calendar oCal = Calendar.getInstance();
 				String sDate = oCal.get(Calendar.DATE) + "-" + (oCal.get(Calendar.MONTH)+1) + "-" + oCal.get(Calendar.YEAR);
@@ -410,20 +408,22 @@ public class Server implements Runnable {
 		e.printStackTrace();
 	}
 
-	boolean install() {
+	boolean install() throws IOException {
 		Debug("Installing MyCellar...");
 		File directory = getDirectoryForInstall();
-		if (directory == null) {
+		if(directory != null) {
+			if(!directory.exists()) {
+				Files.createDirectories(directory.toPath());
+			}
+		}
+		else {
 			return false;
 		}
-		if(!directory.exists()) {
-			directory.mkdirs();
-		}
+		File f = new File(directory, "lib");
+		Files.createDirectory(f.toPath());
+		f = new File(directory, "config");
+		Files.createDirectory(f.toPath());
 		
-		File f = new File("lib");
-		f.mkdir();
-		f = new File("config");
-		f.mkdir();
 		FILE_TYPES.clear();
 		FILE_TYPES.add(new FileType("lib/commons-io-2.1.jar", ""));
 		FILE_TYPES.add(new FileType("lib/commons-lang-2.1.jar", ""));
@@ -456,10 +456,10 @@ public class Server implements Runnable {
 	}
 	
 	private File getDirectoryForInstall() {
-		JPanel panel = new JPanel();
+		final JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout());
-		panel.setPreferredSize(new Dimension(400, 75));
-		panel.add(new JLabel("Choose the directory to install MyCellar."));
+		panel.setPreferredSize(new Dimension(500, 75));
+		panel.add(new JLabel("Select the directory where to install MyCellar."));
 		JTextField text = new JTextField(30);
 		text.setSize(100, 25);
 		panel.add(text);
@@ -467,7 +467,7 @@ public class Server implements Runnable {
 		button.addActionListener((e) -> {
 			JFileChooser fileChooser =  new JFileChooser();
 			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			if( JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(null) ) {
+			if( JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(panel) ) {
 				File selectedFile = fileChooser.getSelectedFile();
 				text.setText(selectedFile.getAbsolutePath());
 			}

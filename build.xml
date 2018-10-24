@@ -52,6 +52,7 @@
     	            </manifest>
     	            <fileset dir="./bin">
     	            	<include name="**/*/*MyCellarLauncher*"/>
+    	            	<include name="**/*/*MyCellarVersion*"/>
     	            	<include name="**/*/*Server*"/>
     	            </fileset>
     	        </jar>

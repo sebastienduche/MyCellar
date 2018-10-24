@@ -1,7 +1,6 @@
 package mycellar;
 
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -9,8 +8,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 15/03/18
+ * @version 1.5
+ * @since 04/07/18
  */
 
 public interface Storage {
@@ -35,12 +34,4 @@ public interface Storage {
 
 	LinkedList<Bouteille> getAllList();
 	void close();
-
-	@Deprecated
-	void setListBouteilles(LinkedList<Bouteille> listBouteilles);
-	@Deprecated
-	void setAll( Bouteille[] bList);
-	@Deprecated
-	boolean readRangement(List<Rangement> cave);
-
 }

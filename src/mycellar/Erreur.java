@@ -15,8 +15,8 @@ import java.awt.Component;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.1
- * @since 20/03/18
+ * @version 2.2
+ * @since 04/07/18
  */
 public class Erreur {
 	private final MyCellarLabel textControl1 = new MyCellarLabel();
@@ -97,9 +97,9 @@ public class Erreur {
 	private void initialize(String texte1, String texte2, boolean information, String keyword) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new MigLayout("","grow","[]"));
-		textControl1.setFont(Program.font_dialog_small);
+		textControl1.setFont(Program.FONT_DIALOG_SMALL);
 		text_message1.setText(texte1);
-		checkNotShow.setFont(Program.font_boutton_small);
+		checkNotShow.setFont(Program.FONT_BOUTTON_SMALL);
 		text_message2.setText(texte2);
 		panel.add(text_message1,"");
 		panel.add(text_message2,"newline, hidemode 3");

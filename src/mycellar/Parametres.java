@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.Arrays;
 
 
 /**
@@ -27,8 +28,8 @@ import java.text.MessageFormat;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.0
- * @since 29/06/18
+ * @version 11.3
+ * @since 12/10/18
  */
 public class Parametres extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -78,8 +79,9 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		annee.setValue(Program.getCaveConfigInt("ANNEE", 50));
 		siecle.setValue(Program.getCaveConfigInt("SIECLE", 19));
 
-		if ( Program.getGlobalConfigInt("DEBUG", 0) == 1 )
+		if ( Program.getGlobalConfigInt("DEBUG", 0) == 1) {
 			m_jcb_debug.setSelected(true);
+		}
 
 		devise.setText(Program.getCaveConfigString("DEVISE",""));
 		String language = Program.getLanguage("Language1");
@@ -100,9 +102,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		langue.setSelectedIndex(i - 1);
 		
 		String auto = Program.getCaveConfigString("TYPE_AUTO", "OFF");
-		if (auto.equals("ON")) {
-			jcb_half_auto.setSelected(true);
-		}
+		jcb_half_auto.setSelected("ON".equals(auto));
 
 		valider.addActionListener(this::valider_actionPerformed);
 		parcourir_excel.addActionListener(this::parcourir_excel_actionPerformed);
@@ -213,17 +213,12 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 			boolean result = true;
 			if (jcb_excel.isSelected()) {
 				Program.putCaveConfigInt("FIC_EXCEL", 1);
-				String fic = file_bak.getText().trim();
-				if (Program.checkXLSExtenstion(fic)) {
-					Program.putCaveConfigString("FILE_EXCEL", fic);
-				}
-				else {
-					String tmp1 = "";
-					if (fic.length() >= 3) {
-						tmp1 = fic.substring(fic.length() - 3);
-					}
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), tmp1), Program.getError("Error035"));
+				String fic = file_bak.getText();
+				if (!MyCellarControl.controlExtension(fic, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), fic), Program.getError("Error035"));
 					result = false;
+				} else {
+					Program.putCaveConfigString("FILE_EXCEL", fic);
 				}
 			}
 			else
@@ -244,7 +239,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 
 				Program.setYearControl(jcb_annee_control.isSelected());
 
-				//Program.write_XSL();
 				Program.saveGlobalProperties();
 			}
 		}
@@ -252,8 +246,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 			Program.showException(exc);
 		}
 	}
-
-	
 
 	/**
 	 * keylistener_actionPerformed: Ecoute clavier.
@@ -299,15 +291,8 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 				return;
 			}
 			String fic = nomFichier.getAbsolutePath();
-			fic = fic.trim();
-			boolean extension = Program.checkXLSExtenstion(fic);
 			Filtre filtre = (Filtre)boiteFichier.getFileFilter();
-			if (!extension) {
-				if (filtre.toString().equals("xls"))
-					fic = fic.concat(".xls");
-				if (filtre.toString().equals("ods"))
-					fic = fic.concat(".ods");
-			}
+			fic = MyCellarControl.controlAndUpdateExtension(fic, filtre);
 			file_bak.setText(fic);
 			Program.putCaveConfigString("FILE_EXCEL", fic);
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
@@ -321,16 +306,9 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	 * @param e ActionEvent
 	 */
 	private void jcb_excel_actionPerformed(ActionEvent e) {
-		if (jcb_excel.isSelected()) {
-			file_bak.setEnabled(true);
-			label_fic_bak.setEnabled(true);
-			parcourir_excel.setEnabled(true);
-		}
-		else {
-			file_bak.setEnabled(false);
-			label_fic_bak.setEnabled(false);
-			parcourir_excel.setEnabled(false);
-		}
+		file_bak.setEnabled(jcb_excel.isSelected());
+		label_fic_bak.setEnabled(jcb_excel.isSelected());
+		parcourir_excel.setEnabled(jcb_excel.isSelected());
 	}
 
 
@@ -345,10 +323,10 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 				return;
 			}
 			Program.putGlobalConfigString("LANGUAGE", thelangue);
-			boolean ok = Program.setLanguage(thelangue);
+			boolean ok = Program.setLanguage(thelangue.charAt(0));
 			if (ok) {
 				if (Program.getLabel("Infos159") == null) {
-					ok = Program.setLanguage("F");
+					ok = Program.setLanguage('F');
 					langue.setSelectedIndex(0);
 				}
 				if(ok) {
@@ -357,7 +335,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 			}
 			else {
 				langue.setSelectedIndex(0);
-				Program.setLanguage("F");
+				Program.setLanguage('F');
 				JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
@@ -441,7 +419,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		String fullText = file_bak.getText();
 		if(text != null) {
 			file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + fullText.substring(file_bak.getSelectionEnd()));
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 		}
 	}
 
@@ -449,13 +427,13 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	public void copy() {
 		String text = file_bak.getSelectedText();
 		if(text != null) {
-			Program.clipboard.copier(text);
+			Program.CLIPBOARD.copier(text);
 		}
 	}
 
 	@Override
 	public void paste() {
 		String fullText = file_bak.getText();
-		file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(file_bak.getSelectionEnd()));
+		file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(file_bak.getSelectionEnd()));
 	}
 }

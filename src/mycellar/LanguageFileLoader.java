@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -16,31 +17,40 @@ import java.util.ResourceBundle.Control;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 02/03/18
+ * @version 0.8
+ * @since 22/08/18
  */
 public class LanguageFileLoader {
 
-	private static final LanguageFileLoader instance = new LanguageFileLoader();
-	
-	private static ResourceBundle bundleTitle;
-	private static ResourceBundle bundleError;
-	private static ResourceBundle bundleLanguage;
+	private static final LanguageFileLoader INSTANCE = new LanguageFileLoader();
 
-	private LanguageFileLoader(){}
+	private char language;
+	
+	private ResourceBundle bundleTitle;
+	private ResourceBundle bundleError;
+	private ResourceBundle bundleLanguage;
+
+	private LanguageFileLoader(){
+		language = ' ';
+		loadLanguageFiles('U');
+	}
 
 	public static LanguageFileLoader getInstance(){
-		return instance;
+		return INSTANCE;
 	}
 
 
-	public static boolean loadLanguageFiles( String _language ) {
-		Debug( "Loading labels' map in " + _language );
-		if(_language == null)
-			return false;
+	boolean loadLanguageFiles(char language) {
+
+		if (this.language == language) {
+			return true;
+		}
+		this.language = language;
+		Debug( "Loading labels' map in " + language);
 		Locale locale = Locale.FRENCH;
-		if(_language.equals("U"))
+		if(language == 'U') {
 			locale = Locale.ENGLISH;
+		}
 		bundleTitle = ResourceBundle.getBundle("title", locale, new UTF8Control());
 		bundleError = ResourceBundle.getBundle("error", locale, new UTF8Control());
 		bundleLanguage = ResourceBundle.getBundle("language", Locale.FRENCH, new UTF8Control());
@@ -48,29 +58,30 @@ public class LanguageFileLoader {
 		return true;
 	}
 
-	public static String getLabel( String _id ) {
-		if(bundleTitle == null) {
-			Debug( "ERROR: Labels' map not intialized " );
+	public static String getLabel(String _id) {
+		if(INSTANCE.bundleTitle == null) {
+			Debug("ERROR: Labels' map not intialized!");
 			return "";
 		}
-		return bundleTitle.getString(_id);
+		return INSTANCE.bundleTitle.getString(_id);
 	}
 
-	public static String getError( String _id ) {
-		if(bundleError == null) {
-			Debug( "ERROR: Errors' map not intialized " );
+	public static String getError(String _id) {
+		if(INSTANCE.bundleError == null) {
+			Debug("ERROR: Errors' map not intialized!");
 			return "";
 		}
-		return bundleError.getString(_id);
+		return INSTANCE.bundleError.getString(_id);
 	}
 
-	public static String getLanguage( String _id ) {
-		if(bundleLanguage == null) {
-			Debug( "ERROR: Language' map not intialized " );
+	static String getLanguage( String _id ) {
+		if(INSTANCE.bundleLanguage == null) {
+			Debug("ERROR: Language' map not intialized!");
 			return "";
 		}
-		if(bundleLanguage.containsKey(_id))
-			return bundleLanguage.getString(_id);
+		if(INSTANCE.bundleLanguage.containsKey(_id)) {
+			return INSTANCE.bundleLanguage.getString(_id);
+		}
 		return null;
 	}
 
@@ -80,7 +91,7 @@ public class LanguageFileLoader {
 	 * @param sText String
 	 */
 	private static void Debug(String sText) {
-		Program.Debug("LanguageFileLoader: " + sText );
+		Program.Debug("LanguageFileLoader: " + sText);
 	}
 }
 
@@ -110,7 +121,7 @@ class UTF8Control extends Control {
         if (stream != null) {
             try {
                 // Only this line is changed to make it to read properties files as UTF-8.
-                bundle = new PropertyResourceBundle(new InputStreamReader(stream, "UTF-8"));
+                bundle = new PropertyResourceBundle(new InputStreamReader(stream, StandardCharsets.UTF_8));
             } finally {
                 stream.close();
             }

@@ -10,8 +10,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 08/06/18
+ * @version 0.4
+ * @since 26/09/18
  */
 
 public class PDFProperties {
@@ -20,7 +20,7 @@ public class PDFProperties {
 	private int titleSize;
 	private int fontSize;
 	private boolean border;
-	private final LinkedList<PDFColumn> column = new LinkedList<PDFColumn>();
+	private final LinkedList<PDFColumn> column = new LinkedList<>();
 	private boolean boldTitle;
 	
 	public PDFProperties(String title, int titleSize, int fontSize, boolean border, boolean boldTitle) {
@@ -89,8 +89,9 @@ public class PDFProperties {
 
 	float getTotalColumnWidth() {
 		int val = 0;
-		for(PDFColumn c : column)
+		for(PDFColumn c : column) {
 			val += c.getWidth();
+		}
 		return val;
 	}
 }

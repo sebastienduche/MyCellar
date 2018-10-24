@@ -8,6 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import javax.swing.JOptionPane;
@@ -33,23 +35,26 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.9
- * @since 23/05/18
+ * @version 6.1
+ * @since 02/10/18
  */
 public class Stat extends JPanel implements ITabListener {
 
 	private static final long serialVersionUID = -5333602919958999440L;
-	private final MyCellarLabel def2 = new MyCellarLabel();
+	private final MyCellarLabel comboLabel = new MyCellarLabel();
 	private final MyCellarLabel end = new MyCellarLabel();
 	private final MyCellarLabel moy = new MyCellarLabel();
 	private final MyCellarComboBox<String> listOptions = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> listPlaces = new MyCellarComboBox<>();
+	private final MyCellarComboBox<String> listChart = new MyCellarComboBox<>();
 	private final JPanel panel = new JPanel();
+	private final int nb_bottle;
 	private String annee[];
 	private final PanelChart panelChart = new PanelChart();
 	private final MyCellarButton options = new MyCellarButton(Program.getLabel("Infos156"));
 	private final List<StatData> listPrice = new LinkedList<>();
 	private final List<StatData> listYear = new LinkedList<>();
+
 
 	/**
 	 * Stat: Constructeur.
@@ -58,13 +63,12 @@ public class Stat extends JPanel implements ITabListener {
 	public Stat() {
 		Debug("Stats");
 		MyCellarLabel definition = new MyCellarLabel(Program.getLabel("Infos174")); //"Type de statistiques:");
-		def2.setText(Program.getLabel("Infos105") + ":"); //"Rangement:");
+		comboLabel.setText(Program.getLabel("Infos105") + ":"); //"Rangement:");
 		end.setHorizontalAlignment(SwingConstants.RIGHT);
 		moy.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.setLayout(new MigLayout("","[][][grow]",""));
-		panel.setFont(Program.font_panel);
-		int nb_bottle = 0;
-		moy.setText("");
+		panel.setFont(Program.FONT_PANEL);
+		nb_bottle = Program.getNbBouteille();
 		for (Rangement cave : Program.getCave()) {
 			final MyCellarLabel list_num_empl;
 			final MyCellarLabel list_nb_bottle;
@@ -72,17 +76,14 @@ public class Stat extends JPanel implements ITabListener {
 			if (cave.isCaisse()) {
 				if (cave.getNbEmplacements() == 1) {
 					list_num_empl = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
-				}
-				else {
+				}	else {
 					list_num_empl = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //emplacements
 				}
 				if (cave.getNbCaseUseAll() <= 1) {
 					list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.1Bottle"),cave.getNbCaseUseAll())); //"bouteille");
-				}
-				else {
+				}	else {
 					list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), cave.getNbCaseUseAll())); //"bouteilles");
 				}
-				nb_bottle += cave.getNbCaseUseAll();
 				panel.add(list_num_empl);
 				panel.add(list_nb_bottle, "align right, wrap");
 				panel.add(new JSeparator(), "span 3, grow, wrap");
@@ -90,17 +91,14 @@ public class Stat extends JPanel implements ITabListener {
 			else {
 				if (cave.getNbEmplacements() == 1) {
 					list_num_empl = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
-				}
-				else {
+				}	else {
 					list_num_empl = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //"emplacements");
 				}
 				if (cave.getNbCaseUseAll() <= 1) {
 					list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.1Bottle"),cave.getNbCaseUseAll())); //"bouteille");
-				}
-				else {
+				}	else {
 					list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), cave.getNbCaseUseAll())); //"bouteilles");
 				}
-				nb_bottle += cave.getNbCaseUseAll();
 				panel.add(list_num_empl);
 				panel.add(list_nb_bottle,"align right, wrap");
 				displayNbBottlePlace(cave);
@@ -110,19 +108,18 @@ public class Stat extends JPanel implements ITabListener {
 
 		if (nb_bottle > 1) {
 			end.setText(MessageFormat.format(Program.getLabel("Infos181"), nb_bottle)); //Nombre de bouteille total:
-		}
-		else {
+		} else {
 			end.setText(MessageFormat.format(Program.getLabel("Infos180"), nb_bottle)); //Nombre de bouteilles totales:
 		}
 
 		options.addActionListener(this::options_actionPerformed);
 
-		listPlaces.removeAllItems();
+//		listPlaces.removeAllItems();
 		listPlaces.addItem(Program.getLabel("Infos182")); //"Tous les rangement");
 		for (Rangement cave : Program.getCave()) {
 			listPlaces.addItem(cave.getNom());
 		}
-		listOptions.removeAllItems();
+//		listOptions.removeAllItems();
 		listOptions.addItem(Program.getLabel("Infos183")); //"Par Rangement");
 		listOptions.addItem(Program.getLabel("Infos184")); //"Par Année");
 		listOptions.addItem(Program.getLabel("Infos185")); //"Par Prix");
@@ -135,12 +132,20 @@ public class Stat extends JPanel implements ITabListener {
 				list2_itemStateChanged(e);
 		});
 
-		setLayout(new MigLayout("","[][][grow]", "[][]20px[grow][][]"));
+		MyCellarLabel chartType = new MyCellarLabel(Program.getLabel("Stat.chartType"));
+		listChart.addItem(Program.getLabel("Stat.chartBar"));
+		listChart.addItem(Program.getLabel("Stat.chartPie"));
+		listChart.addItemListener(this::chartItemStateChanged);
+		listChart.setEnabled(listOptions.getSelectedIndex() != 0);
+
+		setLayout(new MigLayout("","[][][grow]", "[][][]20px[grow][][]"));
 		add(definition);
 		add(listOptions, "wrap");
-		add(def2);
+		add(comboLabel);
 		add(listPlaces, "wrap");
-		add(scroll, "span 3, split 2, grow");
+		add(chartType);
+		add(listChart, "wrap");
+		add(scroll, "span 3, split 2, grow 30");
 		add(panelChart, "grow, wrap");
 		add(options);
 		add(end, "span 2, align right, wrap");
@@ -148,6 +153,24 @@ public class Stat extends JPanel implements ITabListener {
 		options.setEnabled(false);
 
 		Debug("Stats OK");
+	}
+
+	private void chartItemStateChanged(ItemEvent itemEvent) {
+		if (listChart.getSelectedIndex() == 0) {
+			Debug("Bar Chart");
+			if (listOptions.getSelectedIndex() == 1) {
+				panelChart.setDataBarChart(listYear, Program.getLabel("Infos184"));
+			} else if (listOptions.getSelectedIndex() == 2) {
+				panelChart.setDataBarChart(listPrice, Program.getLabel("Infos185"));
+			}
+		} else if (listChart.getSelectedIndex() == 1) {
+			Debug("Pie Chart");
+			if (listOptions.getSelectedIndex() == 1) {
+				panelChart.setDataPieChart(listYear, Program.getLabel("Infos184"));
+			} else if (listOptions.getSelectedIndex() == 2) {
+				panelChart.setDataPieChart(listPrice, Program.getLabel("Infos185"));
+			}
+		}
 	}
 
 	/**
@@ -162,7 +185,7 @@ public class Stat extends JPanel implements ITabListener {
 				Debug("By place");
 				options.setEnabled(false);
 				panelChart.setPlacesChart(Program.getCave());
-				def2.setText(Program.getLabel("Infos105") + ":"); //"Rangement:");
+				comboLabel.setText(Program.getLabel("Infos105") + ":"); //"Rangement:");
 				listPlaces.removeAllItems();
 				listPlaces.setEnabled(true);
 				listPlaces.addItem(Program.getLabel("Infos182")); //"Tous les rangements");
@@ -172,12 +195,12 @@ public class Stat extends JPanel implements ITabListener {
 				}
 			}
 			if (listOptions.getSelectedIndex() == 1) {
-				def2.setText("");
 				Debug("By year");
+				comboLabel.setText("");
 				int obj[] = Program.getAnnees();
 				annee = new String[obj.length];
 				int i = 0;
-				for (int an : Program.getAnnees()) {
+				for (int an : obj) {
 					annee[i++] = Integer.toString(an);
 				}
 				Arrays.sort(annee, Collator.getInstance());
@@ -188,11 +211,12 @@ public class Stat extends JPanel implements ITabListener {
 			}
 			if (listOptions.getSelectedIndex() == 2) {
 				Debug("By price");
-				def2.setText(Program.getLabel("Infos187")); //"Tranche de prix:");
+				comboLabel.setText(Program.getLabel("Infos187")); //"Tranche de prix:");
 				listPlaces.removeAllItems();
 				listPlaces.addItem(Program.getLabel("Infos188")); //"Toutes les tranches");
 				listPlaces.addItem(Program.getLabel("Infos299")); //"Tranches avec bouteilles");
 			}
+			listChart.setEnabled(listOptions.getSelectedIndex() != 0);
 		}
 		catch (Exception exc) {
 			Program.showException(exc);
@@ -288,7 +312,11 @@ public class Stat extends JPanel implements ITabListener {
 		end.setText(MessageFormat.format(Program.getLabel("Infos244"),Program.getCellarValue(), Program.getCaveConfigString("DEVISE","")));
 		if (Program.getStorage().getAllNblign() > 0)
       moy.setText(MessageFormat.format(Program.getLabel("Infos300"), (Program.getCellarValue() / Program.getStorage().getAllNblign()), Program.getCaveConfigString("DEVISE","")));
-		panelChart.setDataChart(listPrice, Program.getLabel("Infos185"));
+		if (listChart.getSelectedIndex() == 0) {
+			panelChart.setDataBarChart(listPrice, Program.getLabel("Infos185"));
+		} else {
+			panelChart.setDataPieChart(listPrice, Program.getLabel("Infos185"));
+		}
 	}
 
 	private void displayYear() {
@@ -296,35 +324,30 @@ public class Stat extends JPanel implements ITabListener {
 		panel.removeAll();
 		options.setEnabled(false);
 		moy.setText("");
-		int nb_bottle = 0;
-		if(listYear.isEmpty() && annee != null) {
+		if(listYear.isEmpty()) {
         for (String an : annee) {
-          int v = Integer.parseInt(an.trim());
-          if ( v > 1000 && v < 9000) {
-            int count = Program.getNbBouteilleAnnee(v);
-            nb_bottle += count;
-            listYear.add(new StatData(an, count));
+          int year = Integer.parseInt(an.trim());
+          if ( year > 1000 && year < 9000) {
+            listYear.add(new StatData(an, Program.getNbBouteilleAnnee(year)));
           }
         }
-        int nb_autre = Program.getNbNonVintage();
-
-        nb_bottle += nb_autre;
-        listYear.add(new StatData(Program.getLabel("Infos390"), nb_autre));
-
-        nb_autre = Program.getNbAutreAnnee();
-
-        nb_bottle += nb_autre;
-        listYear.add(new StatData(Program.getLabel("Infos225"), nb_autre));
+        listYear.add(new StatData(Program.getLabel("Infos390"), Program.getNbNonVintage()));
+        listYear.add(new StatData(Program.getLabel("Infos225"), Program.getNbAutreAnnee()));
     }
 		for(StatData data: listYear) {
       panel.add(new MyCellarLabel(data.getName()));
-      if (data.getCount() <= 1)
-        panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.1Bottle"),data.getCount())), "span 2, align right, wrap"); //"bouteille");
-      else
-        panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), data.getCount())), "span 2, align right, wrap"); //"bouteilles")
+      if (data.getCount() <= 1) {
+				panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.1Bottle"), data.getCount())), "span 2, align right, wrap"); //"bouteille");
+			} else {
+				panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), data.getCount())), "span 2, align right, wrap"); //"bouteilles")
+			}
     }
 		panel.updateUI();
-		panelChart.setDataChart(listYear, Program.getLabel("Infos184"));
+		if (listChart.getSelectedIndex() == 0) {
+			panelChart.setDataBarChart(listYear, Program.getLabel("Infos184"));
+		} else {
+			panelChart.setDataPieChart(listYear, Program.getLabel("Infos184"));
+		}
 		end.setText(Program.getLabel("Infos136") + ": " + nb_bottle);
 	}
 
@@ -340,12 +363,12 @@ public class Stat extends JPanel implements ITabListener {
       index = listPlaces.getSelectedIndex() - 1;
     }
 		Rangement cave = Program.getCave(index);
-		int nb_bottle = 0;
+		int nbBottle = 0;
 		if (cave != null) {
 			final MyCellarLabel list_num_empl;
 			final MyCellarLabel list_nb_bottle;
 			panelChart.setPlaceChart(cave);
-			nb_bottle = cave.getNbCaseUseAll();
+			nbBottle = cave.getNbCaseUseAll();
 			panel.add(new MyCellarLabel(cave.getNom()));
 			if (cave.isCaisse()) {
 				if (cave.getNbEmplacements() == 1) {
@@ -365,14 +388,12 @@ public class Stat extends JPanel implements ITabListener {
     	else {
 				if (cave.getNbEmplacements() == 1) {
 					list_num_empl = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
-				}
-				else {
+				}	else {
 					list_num_empl = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //"emplacements");
 				}
 				if (cave.getNbCaseUseAll() <= 1) {
 					list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.1Bottle"),cave.getNbCaseUseAll())); //"bouteille");
-				}
-				else {
+				}	else {
 					list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), cave.getNbCaseUseAll())); //"bouteilles");
 				}
 				panel.add(list_num_empl);
@@ -381,7 +402,7 @@ public class Stat extends JPanel implements ITabListener {
 				panel.add(new JSeparator(), "span 3, wrap");
 			}
 		}
-		end.setText(Program.getLabel("Infos136") + ": " + nb_bottle);
+		end.setText(Program.getLabel("Infos136") + ": " + nbBottle);
 	}
 
 	private void displayAllPlaces() {
@@ -390,7 +411,7 @@ public class Stat extends JPanel implements ITabListener {
 		panel.removeAll();
 		panel.repaint();
 
-		int nb_bottle = 0;
+		int nbBottle = 0;
 		for (Rangement cave : Program.getCave()) {
       final MyCellarLabel list_num_empl;
       final MyCellarLabel list_nb_bottle;
@@ -398,17 +419,15 @@ public class Stat extends JPanel implements ITabListener {
       if (cave.isCaisse()) {
         if (cave.getNbEmplacements() == 1) {
           list_num_empl = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
-        }
-        else {
+        } else {
           list_num_empl = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //"emplacements");
         }
         if (cave.getNbCaseUseAll() <= 1) {
           list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.1Bottle"),cave.getNbCaseUseAll())); //"bouteille");
-        }
-        else {
+        } else {
           list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"),cave.getNbCaseUseAll())); //"bouteilles");
         }
-        nb_bottle += cave.getNbCaseUseAll();
+        nbBottle += cave.getNbCaseUseAll();
         panel.add(list_num_empl);
         panel.add(list_nb_bottle, "span 2, align right, wrap");
         panel.add(new JSeparator(), "span 3, wrap");
@@ -416,17 +435,15 @@ public class Stat extends JPanel implements ITabListener {
       else {
         if (cave.getNbEmplacements() == 1) {
           list_num_empl = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
-        }
-        else {
+        } else {
           list_num_empl = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), cave.getNbEmplacements())); //"emplacements");
         }
         if (cave.getNbCaseUseAll() <= 1) {
           list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.1Bottle"),cave.getNbCaseUseAll())); //"bouteille");
-        }
-        else {
+        } else {
           list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"),cave.getNbCaseUseAll())); //"bouteilles");
         }
-        nb_bottle += cave.getNbCaseUseAll();
+        nbBottle += cave.getNbCaseUseAll();
         panel.add(list_num_empl);
         panel.add(list_nb_bottle, "span 2, align right, wrap");
         displayNbBottlePlace(cave);
@@ -434,11 +451,10 @@ public class Stat extends JPanel implements ITabListener {
       }
     }
 		moy.setText("");
-		if (nb_bottle > 1) {
-      end.setText(MessageFormat.format(Program.getLabel("Infos181"), nb_bottle));
-    }
-    else {
-      end.setText(MessageFormat.format(Program.getLabel("Infos180"), nb_bottle));
+		if (nbBottle > 1) {
+      end.setText(MessageFormat.format(Program.getLabel("Infos181"), nbBottle));
+    } else {
+      end.setText(MessageFormat.format(Program.getLabel("Infos180"), nbBottle));
     }
 	}
 
@@ -447,8 +463,7 @@ public class Stat extends JPanel implements ITabListener {
       panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos179"), (j + 1)))); //Emplacement n°
       if (cave.getNbCaseUseAll() <= 1) {
         panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.1Bottle"),cave.getNbCaseUseAll())),"span 2, align right, wrap"); //"bouteille");
-      }
-      else {
+      } else {
         panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos161"), cave.getNbCaseUse(j))),"span 2, align right, wrap"); //"bouteilles");
       }
     }
@@ -481,7 +496,7 @@ public class Stat extends JPanel implements ITabListener {
 	 * @param sText String
 	 */
 	private static void Debug(String sText) {
-		Program.Debug("Stat: " + sText );
+		Program.Debug("Stat: " + sText);
 	}
 
 	@Override
@@ -541,10 +556,10 @@ public class Stat extends JPanel implements ITabListener {
 					false);
 
 			ChartPanel chartPanel = new ChartPanel(chart);
-			this.add(chartPanel, "grow");
+			add(chartPanel, "grow");
 		}
 
-		private void setDataChart(List<StatData> datas, String title) {
+		private void setDataPieChart(List<StatData> datas, String title) {
 
 			removeAll();
 			DefaultPieDataset dataset = new DefaultPieDataset();
@@ -557,6 +572,28 @@ public class Stat extends JPanel implements ITabListener {
 					false,                   // include legend
 					true,
 					false);
+
+			ChartPanel chartPanel = new ChartPanel(chart);
+			add(chartPanel, "grow");
+			updateUI();
+		}
+
+		private void setDataBarChart(List<StatData> datas, String title) {
+
+			removeAll();
+			DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+			for(StatData part: datas) {
+				if(part.getCount() > 0) {
+					dataset.addValue(part.getCount(), part.getName(), part.getName());
+				}
+			}
+			JFreeChart chart = ChartFactory.createBarChart3D(title,          // chart title
+					"", Program.getLabel("Stat.count"),
+					dataset,                // data
+					PlotOrientation.VERTICAL,
+					true,                   // include legend
+					true,
+					true);
 
 			ChartPanel chartPanel = new ChartPanel(chart);
 			add(chartPanel, "grow");

@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
@@ -24,8 +24,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.3
- * @since 01/03/18
+ * @version 2.6
+ * @since 10/10/18
  */
 class PDFOptions extends JDialog {
   private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
@@ -45,15 +45,13 @@ class PDFOptions extends JDialog {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(Program.getLabel("Infos254"));
     setModal(true);
-    addKeyListener(new KeyListener() {
-      @Override
-      public void keyReleased(KeyEvent e) {}
+    addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
-        keylistener_actionPerformed(e);
+        if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
+          valider_actionPerformed(null);
+        }
       }
-      @Override
-      public void keyTyped(KeyEvent e) {}
     });
 
     setLayout(new MigLayout("", "grow",""));
@@ -61,10 +59,9 @@ class PDFOptions extends JDialog {
     JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
     jPanel1.setLayout(new MigLayout("","grow",""));
-    jPanel1.setFont(Program.font_panel);
+    jPanel1.setFont(Program.FONT_PANEL);
+    pdf_title.setText(Program.getCaveConfigString("PDF_TITLE", ""));
     MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("Infos255")); //Titre du PDF
-    String pdf_title1 = Program.getCaveConfigString("PDF_TITLE", "");
-    pdf_title.setText(pdf_title1);
     MyCellarLabel MyCellarLabel3 = new MyCellarLabel(Program.getLabel("Infos256")); //Taille du texte
     MyCellarSpinner1.addChangeListener((e) -> {
         if (Integer.parseInt(MyCellarSpinner1.getValue().toString()) <= 0) {
@@ -77,8 +74,8 @@ class PDFOptions extends JDialog {
         }
     });
 
-    MyCellarSpinner1.setValue(Program.getCaveConfigInt("TITLE_SIZE",10));
-    MyCellarSpinner3.setValue(Program.getCaveConfigInt("TEXT_SIZE",10));
+    MyCellarSpinner1.setValue(Program.getCaveConfigInt("TITLE_SIZE", 10));
+    MyCellarSpinner3.setValue(Program.getCaveConfigInt("TEXT_SIZE", 10));
 
     MyCellarCheckBox1.setText(Program.getLabel("Infos257")); //gras
     if ("bold".equals(Program.getCaveConfigString("BOLD", ""))) {
@@ -91,19 +88,13 @@ class PDFOptions extends JDialog {
     }
     ArrayList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
     nb_colonnes = listColumns.size();
-    MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
-    MyCellarLabel[] MyCellarLabel5 = new MyCellarLabel[nb_colonnes];
+    final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
+    final MyCellarLabel[] MyCellarLabel5 = new MyCellarLabel[nb_colonnes];
     col_size = new MyCellarSpinner[nb_colonnes];
     export = new MyCellarCheckBox[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
       export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
-      try {
-        export[i].setSelected(1 == Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT", 0));
-      }
-      catch (NumberFormatException nfe) {
-        export[i].setSelected(false);
-        Program.putCaveConfigString("SIZE_COL" + i + "EXPORT", "0");
-      }
+      export[i].setSelected(1 == Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT", 0));
       col_size[i] = new MyCellarSpinner();
       col_size[i].addChangeListener((e) -> {
           MyCellarSpinner js = (MyCellarSpinner) e.getSource();
@@ -118,7 +109,7 @@ class PDFOptions extends JDialog {
     }
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow][grow]",""));
-    jPanel2.setFont(Program.font_panel);
+    jPanel2.setFont(Program.FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
     valider.addActionListener(this::valider_actionPerformed);
     MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos055"));
@@ -140,11 +131,11 @@ class PDFOptions extends JDialog {
     jPanel2.add(MyCellarCheckBox3, "push, align right, gapbottom 15px");
     
     for (int i = 0; i < nb_colonnes; i++) {
-        jPanel2.add(colonnes[i], "newline");
-        jPanel2.add(col_size[i], "split 2");
-        jPanel2.add(MyCellarLabel5[i]);
-        jPanel2.add(export[i], "push, align right");
-      }
+      jPanel2.add(colonnes[i], "newline");
+      jPanel2.add(col_size[i], "split 2");
+      jPanel2.add(MyCellarLabel5[i]);
+      jPanel2.add(export[i], "push, align right");
+    }
     
     JScrollPane jScrollPane1 = new JScrollPane(jPanel2);
     jScrollPane1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
@@ -152,7 +143,7 @@ class PDFOptions extends JDialog {
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
     setSize(400, 500);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Start.getInstance());
   }
 
   /**
@@ -165,29 +156,15 @@ class PDFOptions extends JDialog {
       Program.putCaveConfigString("PDF_TITLE", pdf_title.getText());
       Program.putCaveConfigString("TITLE_SIZE", MyCellarSpinner1.getValue().toString());
       Program.putCaveConfigString("TEXT_SIZE", MyCellarSpinner3.getValue().toString());
-      if (MyCellarCheckBox1.isSelected()) {
-        Program.putCaveConfigString("BOLD", "bold");
-      }
-      else {
-        Program.putCaveConfigString("BOLD", "");
-      }
-      if (MyCellarCheckBox3.isSelected()) {
-        Program.putCaveConfigString("BORDER", "ON");
-      }
-      else {
-        Program.putCaveConfigString("BORDER", "OFF");
-      }
+      Program.putCaveConfigString("BOLD", MyCellarCheckBox1.isSelected() ? "bold" : "");
+      Program.putCaveConfigString("BORDER", MyCellarCheckBox3.isSelected() ? "ON" : "OFF");
       int col_size_max = 0;
       for (int i = 0; i < nb_colonnes; i++) {
-
         Program.putCaveConfigString("SIZE_COL" + i, col_size[i].getValue().toString());
         if (export[i].isSelected()) {
           col_size_max += Integer.parseInt(col_size[i].getValue().toString());
-          Program.putCaveConfigString("SIZE_COL" + i + "EXPORT", "1");
         }
-        else {
-          Program.putCaveConfigString("SIZE_COL" + i + "EXPORT", "0");
-        }
+        Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT", export[i].isSelected() ? 1 : 0);
       }
       dispose();
       if (col_size_max > 19) {
@@ -199,14 +176,4 @@ class PDFOptions extends JDialog {
     }
   }
 
-  /**
-   * keylistener_actionPerformed: Fonction d'écoute clavier.
-   *
-   * @param e KeyEvent
-   */
-  void keylistener_actionPerformed(KeyEvent e) {
-    if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
-      valider_actionPerformed(null);
-    }
-  }
 }

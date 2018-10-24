@@ -18,7 +18,7 @@ class FontBoldTableCellRenderer extends DefaultTableCellRenderer {
 		Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
 				row, column);
 		
-		c.setFont(Program.font_label_bold);
+		c.setFont(Program.FONT_LABEL_BOLD);
 		return c;
 	}
 }

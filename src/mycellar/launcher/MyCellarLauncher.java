@@ -26,14 +26,14 @@ class MyCellarLauncher {
 		Thread updateThread = null;
 		File fLib = new File("MyCellar.jar");
 		
-    	if(!fLib.exists()) {
+    	if (!fLib.exists()) {
     		boolean installError = install();
-    		if(installError)
+    		if (installError) {
         		System.exit(1);
-        	else
+    		} else {
         		System.out.println("Installation Done");
-    	}
-    	else{
+    		}
+    	} else {
     		updateThread = new Thread(() -> {
             	Server.getInstance().checkVersion();
             	if(!Server.getInstance().hasAvailableUpdate())

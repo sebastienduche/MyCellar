@@ -4,9 +4,6 @@ import mycellar.vignobles.CountryVignobles;
 
 import javax.swing.JOptionPane;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,8 +14,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.9
- * @since 13/06/18
+ * @version 5.1
+ * @since 17/10/18
  */
 
 public class SerializedStorage implements Storage {
@@ -56,16 +53,6 @@ public class SerializedStorage implements Storage {
 		}
 	}
 
-	@Override
-	@Deprecated
-	public void setListBouteilles(LinkedList<Bouteille> listBouteilles) {
-		this.listBouteilles.bouteille = listBouteilles;
-		listeUniqueBouteille.clear();
-		for(Bouteille b: listBouteilles) {
-			if(!listeUniqueBouteille.contains(b.getNom()))
-				listeUniqueBouteille.add(b.getNom());
-		}
-	}
 
 	@Override
 	public void addBouteilles(ListeBouteille listBouteilles) {
@@ -283,26 +270,6 @@ public class SerializedStorage implements Storage {
 		return listBouteilles.getBouteille().size();
 	}
 
-	/**
-	 * setAll: Remplace le tableau all par un autre
-	 *
-	 * @param all1 Bouteille[]: tableau
-	 */
-	@Override
-	@Deprecated
-	public void setAll(Bouteille all1[]) {
-		if (all1 != null) {
-			listBouteilles.getBouteille().clear();
-
-			if (all1.length > 0) {
-				for (int i = 0; i < all1.length; i++) {
-					if (all1[i] != null ) {
-						listBouteilles.getBouteille().add(all1[i]);
-					}
-				}
-			}
-		}
-	}
 
 	/**
 	 * Debug
@@ -311,34 +278,6 @@ public class SerializedStorage implements Storage {
 	 */
 	private static void Debug(String sText) {
 		Program.Debug("SerializedStorage: " + sText);
-	}
-
-	@Override
-	@Deprecated
-	public boolean readRangement(List<Rangement> cave) {
-		boolean bresul = false;
-		File f1 = new File( Program.getWorkDir(true) );
-		final File[] list = f1.listFiles(new MyFilenameFilter());
-		if( list != null && list.length > 0 )
-			bresul = true;
-		if(list != null) {
-			for (File f : list) {
-				try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
-					Rangement r = (Rangement) ois.readObject();
-					if (r != null && !cave.contains(r)) {
-						cave.add(r);
-					}
-					ois.close();
-				} catch (IOException ex) {
-					bresul = false;
-					f.delete();
-				} catch (ClassNotFoundException ex1) {
-					bresul = false;
-				}
-			}
-			MyXmlDom.writeMyCellarXml(cave, "");
-		}
-		return bresul;
 	}
 
 	@Override
@@ -374,7 +313,9 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public void close() {
-		if(listBouteilles != null)
+		if(listBouteilles != null) {
 			listBouteilles.resetBouteille();
+		}
+		listeUniqueBouteille.clear();
 	}
 }

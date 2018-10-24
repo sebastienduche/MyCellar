@@ -7,7 +7,6 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.PopupListener;
 import mycellar.pdf.PDFPageProperties;
-import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFTools;
 import mycellar.showfile.ManageColumnModel;
 import net.miginfocom.swing.MigLayout;
@@ -26,11 +25,12 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -40,30 +40,26 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 7.7
- * @since 14/06/18
+ * @version 8.2
+ * @since 12/10/18
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
-	private final MyCellarLabel textControl1 = new MyCellarLabel();
 	private final MyCellarButton valider = new MyCellarButton();
 	private final JTextField file = new JTextField();
 	private final MyCellarButton browse = new MyCellarButton();
 	private final MyCellarButton parameters = new MyCellarButton();
 	private final MyCellarRadioButton MyCellarRadioButtonXML = new MyCellarRadioButton(Program.getLabel("Infos210"), true);
 	private final MyCellarRadioButton MyCellarRadioButtonHTML = new MyCellarRadioButton(Program.getLabel("Infos211"), false);
-	private final MyCellarLabel MyCellarLabel1 = new MyCellarLabel();
 	private final MyCellarRadioButton MyCellarRadioButtonCSV = new MyCellarRadioButton(Program.getLabel("Infos212"), false);
 	private final MyCellarRadioButton MyCellarRadioButtonXLS = new MyCellarRadioButton(Program.getLabel("Infos233"), false);
 	private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton(Program.getLabel("Infos248"), false);
-	private final ButtonGroup cbg = new ButtonGroup();
 	private final MyCellarLabel end = new MyCellarLabel();
 	private final MyCellarButton openit = new MyCellarButton();
 	private final MyCellarButton options = new MyCellarButton(Program.getLabel("Infos193") + "...");
-	private final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
-	private final char EXPORT = Program.getLabel("EXPORT").charAt(0);
+	private static final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
+	private static final char EXPORT = Program.getLabel("EXPORT").charAt(0);
 	private final JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
-	private boolean isJFile = false;
 	private List<Bouteille> bottles = null;
 	static final long serialVersionUID = 240706;
 
@@ -101,11 +97,10 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	 */
 	private void initialize() {
 
-		textControl1.setText(Program.getLabel("Infos149")); //Nom du fichier:
+		MyCellarLabel nameLabel = new MyCellarLabel(Program.getLabel("Infos149")); //Nom du fichier:
 		browse.setText("...");
 		parameters.setText(Program.getLabel("Main.Parameters"));
-		MyCellarLabel1.setText(Program.getLabel("Infos151")); //Format de l\'Export:
-		end.setFont(Program.font_dialog_small);
+		end.setFont(Program.FONT_DIALOG_SMALL);
 		openit.setMnemonic(OUVRIR);
 		openit.setText(Program.getLabel("Infos152")); //Ouvrir le fichier
 		openit.addActionListener((e) -> openit_actionPerformed());
@@ -121,11 +116,12 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		param.addActionListener((e) -> param_actionPerformed());
 		file.addMouseListener(new PopupListener());
 
-		cbg.add(MyCellarRadioButtonXML);
-		cbg.add(MyCellarRadioButtonHTML);
-		cbg.add(MyCellarRadioButtonCSV);
-		cbg.add(MyCellarRadioButtonXLS);
-		cbg.add(MyCellarRadioButtonPDF);
+    final ButtonGroup buttonGroup = new ButtonGroup();
+		buttonGroup.add(MyCellarRadioButtonXML);
+		buttonGroup.add(MyCellarRadioButtonHTML);
+		buttonGroup.add(MyCellarRadioButtonCSV);
+		buttonGroup.add(MyCellarRadioButtonXLS);
+		buttonGroup.add(MyCellarRadioButtonPDF);
 
 		valider.setText(Program.getLabel("Infos153")); //Exporter
 		valider.setMnemonic(EXPORT);
@@ -135,21 +131,17 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		options.addActionListener((e) -> options_actionPerformed());
 		browse.addActionListener((e) -> browse_actionPerformed());
 
-		addKeyListener(new KeyListener() {
-			@Override
-			public void keyReleased(KeyEvent e) {}
+		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				keylistener_actionPerformed(e);
 			}
-			@Override
-			public void keyTyped(KeyEvent e) {}
 		});
 
 		setLayout(new MigLayout("","grow",""));
 		JPanel panelTitle = new JPanel();
 		panelTitle.setLayout(new MigLayout("", "grow",""));
-		panelTitle.add(textControl1, "split 4");
+		panelTitle.add(nameLabel, "split 4");
 		panelTitle.add(file, "grow");
 		panelTitle.add(browse);
 		panelTitle.add(parameters);
@@ -208,7 +200,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		} else if (MyCellarRadioButtonCSV.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
 		} else if (MyCellarRadioButtonHTML.isSelected()) {
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTM);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
 		} else if (MyCellarRadioButtonXML.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
@@ -217,34 +208,12 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
 			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
-			String nom = nomFichier.getName();
+			String nom = nomFichier.getAbsolutePath();
 			//Erreur utilisation de caractères interdits
-			if (nom.contains("\"") || nom.contains(";") || nom.contains("<") || nom.contains(">") || nom.contains("?") || nom.contains("\\") || nom.contains("/") ||
-					nom.contains("|") || nom.contains("*") ) {
-				Erreur.showSimpleErreur(Program.getError("Error126"));
-			}
-			else {
-				String fic = nomFichier.getAbsolutePath();
-				int index = fic.indexOf(".");
-				if (index == -1) {
-					if (MyCellarRadioButtonXML.isSelected()) {
-						fic = fic.concat(".xml");
-					}	else if (MyCellarRadioButtonHTML.isSelected()) {
-						fic = fic.concat(".htm");
-					}	else if (MyCellarRadioButtonCSV.isSelected()) {
-						fic = fic.concat(".csv");
-					}	else if (MyCellarRadioButtonXLS.isSelected()) {
-						Filtre filtre = (Filtre) boiteFichier.getFileFilter();
-						if (filtre.toString().equals("xls"))
-							fic = fic.concat(".xls");
-						if (filtre.toString().equals("ods"))
-							fic = fic.concat(".ods");
-					}	else if (MyCellarRadioButtonPDF.isSelected()) {
-						fic = fic.concat(".pdf");
-					}
-				}
-				file.setText(fic);
-				isJFile = true;
+			if (MyCellarControl.controlPath(nomFichier)) {
+				Filtre filtre = (Filtre) boiteFichier.getFileFilter();
+				nom = MyCellarControl.controlAndUpdateExtension(nom, filtre);
+				file.setText(nom);
 			}
 		}
 	}
@@ -309,8 +278,9 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			Program.setModified();
 			List<Integer> properties = modelColumn.getSelectedColumns();
 			for(MyCellarFields c : list) {
-				if(properties.contains(c.ordinal()))
-					cols.add(c);
+				if(properties.contains(c.ordinal())) {
+          cols.add(c);
+        }
 			}
 			Program.saveHTMLColumns(cols);
 		}
@@ -361,9 +331,8 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			String nom = file.getText().trim();
 			end.setText(Program.getLabel("Infos250"));
 
-			if (nom.isEmpty()) {
+			if (!MyCellarControl.controlPath(nom)) {
 				end.setText("");
-				Erreur.showSimpleErreur(Program.getError("Error106")); //Veuillez saisir un nom de fichier.
 				valider.setEnabled(true);
 				return;
 			}
@@ -378,28 +347,17 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				}
 			}
 
-			String extension = nom;
-			if (nom.length() >= 4) {
-				extension = nom.substring(nom.length() - 4);
-			}
 			if (MyCellarRadioButtonXML.isSelected()) {
-				if (!extension.equalsIgnoreCase(".xml")) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XML.toString()))) {
+					//"Le fichier saisie ne possède pas une extension XML: " + str_tmp3);
 					end.setText("");
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), extension), true); //L'extension du fichier n'est pas XML
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom));
 					valider.setEnabled(true);
 					return;
 				}
-				if (!isJFile) {
-					if (nom.contains("\"") || nom.contains(";") || nom.contains("<") || nom.contains(">") || nom.contains("?") || nom.contains("|") || nom.contains("*")) {
-						end.setText("");
-						Erreur.showSimpleErreur(Program.getError("Error126"));
-						valider.setEnabled(true);
-						return;
-					}
-				}
 
 				boolean ok;
-				if(bottles == null) {
+				if(null == bottles) {
 					ok = ListeBouteille.writeXML(aFile);
 				}
 				else {
@@ -418,13 +376,14 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				}
 			}
 			else if (MyCellarRadioButtonHTML.isSelected()) {
-					if (extension.compareToIgnoreCase(".htm") != 0 && extension.compareToIgnoreCase("html") != 0) {
-						end.setText("");
-						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), extension), true); //L'extension du fichier n'est pas HTML
-						valider.setEnabled(true);
-						return;
-					}
-					if( null == bottles) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_HTML.toString()))) {
+					//"Le fichier saisie ne possède pas une extension HTML: " + str_tmp3);
+					end.setText("");
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
+					valider.setEnabled(true);
+					return;
+				}
+					if(null == bottles) {
 						bottles = Program.getStorage().getAllList();
 					}
 					if (RangementUtils.write_HTML(nom, bottles, Program.getHTMLColumns())) {
@@ -437,13 +396,14 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					}
 				}
 				else if (MyCellarRadioButtonCSV.isSelected()) {
-					if (extension.compareToIgnoreCase(".csv") != 0) {
+					if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_CSV.toString()))) {
+						//"Le fichier saisie ne possède pas une extension CSV: " + str_tmp3);
 						end.setText("");
-						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error108"), extension), true); //L'extension du fichier n'est pas CSV
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error108"), nom));
 						valider.setEnabled(true);
 						return;
 					}
-					if( bottles == null) {
+					if(null == bottles) {
 						bottles = Program.getStorage().getAllList();
 					}
 					if (RangementUtils.write_CSV(nom, bottles)) {
@@ -453,13 +413,14 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					}
 				}
 			else if (MyCellarRadioButtonXLS.isSelected()) {
-				if (!Program.checkXLSExtenstion(nom)) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+					//"Le fichier saisie ne possède pas une extension XLS: " + str_tmp3);
 					end.setText("");
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), extension), true); //L'extension du fichier n'est pas CSV
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
 					valider.setEnabled(true);
 					return;
 				}
-				if(bottles == null) {
+				if(null == bottles) {
 					bottles = Program.getStorage().getAllList();
 				}
 				if (RangementUtils.write_XLS(nom, bottles, false)) {
@@ -473,13 +434,14 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				}
 			}
 			else if (MyCellarRadioButtonPDF.isSelected()) {
-				if (extension.compareToIgnoreCase(".pdf") != 0) {
+				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_PDF.toString()))) {
+					//"Le fichier saisie ne possède pas une extension PDF: " + str_tmp3);
 					end.setText("");
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error157"), extension), true); //L'extension du fichier n'est pas PDF
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error157"), nom));
 					valider.setEnabled(true);
 					return;
 				}
-				if( bottles == null) {
+				if(null == bottles) {
 					bottles = Program.getStorage().getAllList();
 				}
 				if (exportToPDF(bottles, aFile)) {
@@ -503,12 +465,11 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	 */
 public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 		try {
-			PDFTools pdf = PDFTools.createPDFFile();
-			PDFProperties properties = Program.getPDFProperties();
-			pdf.addTitle(properties.getTitle(), 20, properties.isBoldTitle() ? PDType1Font.HELVETICA_BOLD : PDType1Font.HELVETICA, properties.getTitleSize());
-			PDFPageProperties pageProperties = new PDFPageProperties(30, 20, 20, 20, PDType1Font.HELVETICA, properties.getFontSize());
+			PDFTools pdf = new PDFTools();
+			pdf.addTitle(20);
+			PDFPageProperties pageProperties = new PDFPageProperties(30, 20, 20, 20, PDType1Font.HELVETICA, pdf.getProperties().getFontSize());
 			pageProperties.setStartTop(50);
-			pdf.drawTable(pageProperties, properties, Program.getPDFRows(bottles, properties), Program.getPDFHeader(properties));
+			pdf.drawTable(pageProperties, Program.getPDFRows(bottles, pdf.getProperties()), Program.getPDFHeader(pdf.getProperties()));
 			pdf.save(nomFichier);
 			Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), nomFichier.getAbsolutePath()), true);
 		}
@@ -532,35 +493,10 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 		titre_properties[2] = Program.getLabel("Infos212");
 		titre_properties[3] = Program.getLabel("Infos233");
 		titre_properties[4] = Program.getLabel("Infos248");
-		String default_value[] = new String[5];
-		String key_properties[] = new String[5];
-		key_properties[0] = "EXPORT_DEFAULT";
-		key_properties[1] = "EXPORT_DEFAULT";
-		key_properties[2] = "EXPORT_DEFAULT";
-		key_properties[3] = "EXPORT_DEFAULT";
-		key_properties[4] = "EXPORT_DEFAULT";
-		String val = Program.getCaveConfigString(key_properties[0], "0");
+		String default_value[] = {"false", "false", "false", "false", "false"};
+		String key_properties[] = {"EXPORT_DEFAULT", "EXPORT_DEFAULT", "EXPORT_DEFAULT", "EXPORT_DEFAULT", "EXPORT_DEFAULT"};
+		default_value[Program.getCaveConfigInt(key_properties[0], 0)] = "true";
 
-		default_value[0] = "false";
-		default_value[1] = "false";
-		default_value[2] = "false";
-		default_value[3] = "false";
-		default_value[4] = "false";
-		if (val.equals("0")) {
-			default_value[0] = "true";
-		}
-		if (val.equals("1")) {
-			default_value[1] = "true";
-		}
-		if (val.equals("2")) {
-			default_value[2] = "true";
-		}
-		if (val.equals("3")) {
-			default_value[3] = "true";
-		}
-		if (val.equals("4")) {
-			default_value[4] = "true";
-		}
 		String type_objet[] = {"MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton"};
 		MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
 		myoptions.setVisible(true);
@@ -572,7 +508,7 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
     String fullText = file.getText();
     if(text != null) {
       file.setText(fullText.substring(0, file.getSelectionStart()) + fullText.substring(file.getSelectionEnd()));
-      Program.clipboard.copier(text);
+      Program.CLIPBOARD.copier(text);
     }
   }
 
@@ -580,14 +516,14 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
   public void copy() {
     String text = file.getSelectedText();
     if(text != null) {
-      Program.clipboard.copier(text);
+      Program.CLIPBOARD.copier(text);
     }
   }
 
   @Override
   public void paste() {
     String fullText = file.getText();
-    file.setText(fullText.substring(0,  file.getSelectionStart()) + Program.clipboard.coller() + fullText.substring(file.getSelectionEnd()));
+    file.setText(fullText.substring(0,  file.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(file.getSelectionEnd()));
   }
 
 	@Override

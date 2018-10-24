@@ -13,8 +13,8 @@ import java.awt.Component;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 08/06/18
+ * @version 0.6
+ * @since 04/07/18
  */
 public class StateButtonRenderer extends JButton implements TableCellRenderer {
 
@@ -60,7 +60,7 @@ public class StateButtonRenderer extends JButton implements TableCellRenderer {
       }
       boolean isSelect = (Boolean) value;
       setSelected(isSelect);
-      setFont(Program.font_panel);
+      setFont(Program.FONT_PANEL);
       setText(label);
       if(image != null)
     	  setIcon(image);

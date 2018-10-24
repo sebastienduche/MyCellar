@@ -1,15 +1,15 @@
 package mycellar.actions;
 
-import java.awt.event.ActionEvent;
-import java.io.File;
+import mycellar.Export;
+import mycellar.Filtre;
+import mycellar.MyCellarControl;
+import mycellar.MyCellarImage;
+import mycellar.Program;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
-
-import mycellar.Export;
-import mycellar.Filtre;
-import mycellar.MyCellarImage;
-import mycellar.Program;
+import java.awt.event.ActionEvent;
+import java.io.File;
 
 public class ExportPDFAction extends AbstractAction {
 
@@ -21,21 +21,15 @@ public class ExportPDFAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR",""));
-		  boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
-	      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
-	   
-	    int retour_jfc = boiteFichier.showSaveDialog(null);
-	    if (retour_jfc == JFileChooser.APPROVE_OPTION) {
-	      File nomFichier = boiteFichier.getSelectedFile();
-	      String name = nomFichier.getName();
-	      int index = -1;
-	      if((index = name.indexOf('.')) == -1)
-	    	  nomFichier = new File(nomFichier.getParentFile(), nomFichier.getName() + ".pdf");
-	      else {
-	    	  if(!name.substring(index).equalsIgnoreCase(".pdf"))
-	    		  nomFichier = new File(nomFichier.getParentFile(), nomFichier.getName() + ".pdf");
-	      }
-	      Export.exportToPDF(Program.getStorage().getAllList(), nomFichier);
-	    }
+		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
+		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
+
+		int retour_jfc = boiteFichier.showSaveDialog(null);
+		if (retour_jfc == JFileChooser.APPROVE_OPTION) {
+			File nomFichier = boiteFichier.getSelectedFile();
+			String name = nomFichier.getAbsolutePath();
+			name = MyCellarControl.controlAndUpdateExtension(name, Filtre.FILTRE_PDF.toString());
+			Export.exportToPDF(Program.getStorage().getAllList(), new File(name));
+		}
 	}
 }

@@ -2,24 +2,28 @@ package mycellar.core;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class MyCellarVersion {
 
-	public static final String VERSION = "3.0.4.2";
-	public static final String MAIN_VERSION = "5.5 ZE";
+	public static final String VERSION = "3.1.3.1";
+	public static final String MAIN_VERSION = "5.6 ZE";
   
 	public static String getLocalVersion() {
 		// In directory bin
-		try(InputStream stream = MyCellarVersion.class.getClassLoader().getResourceAsStream("MyCellarVersion.txt");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stream)))
-		{
-			return reader.readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
+		File versionFile = new File("MyCellarVersion.txt");
+		if (versionFile.exists()) {
+    		try(BufferedReader reader = new BufferedReader(new FileReader(versionFile)))
+    		{
+    			return reader.readLine();
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+		} else {
+			setLocalVersion(VERSION);
+			return VERSION;
 		}
 		return "";
 	}

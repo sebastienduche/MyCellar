@@ -36,8 +36,8 @@ import java.util.Map;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 2.0
- * @since 14/07/18
+ * @version 2.1
+ * @since 19/10/18
  */
 
 public class Server implements Runnable {
@@ -55,7 +55,6 @@ public class Server implements Runnable {
 
 	private boolean bDownloaded = false;
 	private boolean bDownloadError = false;
-	private final boolean bExit = false;
 
 	private static FileWriter oDebugFile = null;
 
@@ -72,10 +71,11 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 
-		if (sAction.equals(GETVERSION)) {
+		if (GETVERSION.equals(sAction)) {
 			sServerVersion = "";
 			try {
 				File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
+				myCellarVersion.deleteOnExit();
 				downloadFileFromGitHub("MyCellarVersion.txt", myCellarVersion.getAbsolutePath());
 				try (BufferedReader in = new BufferedReader(new FileReader(myCellarVersion))){
 					sServerVersion = in.readLine();
@@ -97,12 +97,11 @@ public class Server implements Runnable {
 						sFile = in.readLine();
 					}
 				}
-				myCellarVersion.deleteOnExit();
 			} catch (Exception e) {
 				showException(e);
 			}
 			sAction = "";
-		} else if (sAction.equals(DOWNLOAD)) {
+		} else if (DOWNLOAD.equals(sAction)) {
 			try {
 				File f = new File("download");
 				if (!f.exists()) {
@@ -120,11 +119,7 @@ public class Server implements Runnable {
 			sAction = "";
 		}
 		if (bDownloadError) {
-			File f = new File("download");
-			f.deleteOnExit();
-		}
-		if (bExit) {
-			System.exit(0);
+			new File("download").deleteOnExit();
 		}
 	}
 
@@ -181,8 +176,7 @@ public class Server implements Runnable {
 		bDownloaded = true;
 		sAction = "";
 		if (bDownloadError) {
-			File f = new File("download");
-			f.deleteOnExit();
+			new File("download").deleteOnExit();
 		}
 	}
 
@@ -371,10 +365,10 @@ public class Server implements Runnable {
 		try {
 			if (oDebugFile == null) {
 				String sDir = System.getProperty("user.home");
-				if( !sDir.isEmpty() ) {
-					sDir += "/MyCellarDebug";
+				if(!sDir.isEmpty()) {
+					sDir +=  File.separator + "MyCellarDebug";
 				}
-				File f_obj = new File( sDir );
+				File f_obj = new File(sDir);
 				if(!f_obj.exists()) {
 					Files.createDirectory(f_obj.toPath());
 				}
@@ -400,9 +394,9 @@ public class Server implements Runnable {
 		}
 		String sDir = System.getProperty("user.home");
 		if(!sDir.isEmpty()) {
-			sDir += "/MyCellarDebug";
+			sDir += File.separator + "MyCellarDebug";
 		}
-		try(FileWriter fw = new FileWriter(sDir+"/Errors.log")) {
+		try(FileWriter fw = new FileWriter(sDir + File.separator + "Errors.log")) {
 			fw.write(e.toString());
 			fw.write(error);
 			fw.flush();
@@ -414,49 +408,50 @@ public class Server implements Runnable {
 		e.printStackTrace();
 	}
 
-	boolean install() {
+	boolean install() throws IOException {
 		Debug("Installing MyCellar...");
-		boolean result = false;
 		File directory = getDirectoryForInstall();
-		try{
-			if(directory != null ) {
-				if(!directory.exists()) {
-					Files.createDirectories(directory.toPath());
-				}
+		if(directory != null) {
+			if(!directory.exists()) {
+				Files.createDirectories(directory.toPath());
 			}
-			else {
-				return false;
-			}
-			File f = new File(directory, "lib");
-			Files.createDirectory(f.toPath());
-			f = new File(directory, "config");
-			Files.createDirectory(f.toPath());
-			FILE_TYPES.clear();
-			FILE_TYPES.add(new FileType("lib/commons-io-2.1.jar", ""));
-			FILE_TYPES.add(new FileType("lib/commons-lang-2.1.jar", ""));
-			FILE_TYPES.add(new FileType("lib/commons-logging.jar", ""));
-			FILE_TYPES.add(new FileType("lib/commons-net-3.0.1.jar", ""));
-			FILE_TYPES.add(new FileType("lib/jcommon-1.0.18.jar", ""));
-			FILE_TYPES.add(new FileType("lib/jdom1.0.jar", ""));
-			FILE_TYPES.add(new FileType("lib/jfreechart-1.0.15.jar", ""));
-			FILE_TYPES.add(new FileType("lib/jxl.jar", ""));
-			FILE_TYPES.add(new FileType("lib/mailapi.jar", ""));
-			FILE_TYPES.add(new FileType("lib/miglayout-4.0-swing.jar", ""));
-			FILE_TYPES.add(new FileType("lib/pdfbox-app-2.0.5.jar", ""));
-			FILE_TYPES.add(new FileType("lib/smtp.jar", ""));
-			FILE_TYPES.add(new FileType("config/config.ini", ""));
-
-			FILE_TYPES.add(new FileType("MyCellar.jar",""));
-			FILE_TYPES.add(new FileType("MyCellarLauncher.jar",""));
-			FILE_TYPES.add(new FileType("Finish.html",""));
-			FILE_TYPES.add(new FileType("MyCellarVersion.txt",""));
-			result = downloadFromGitHub(directory);
-			
-			Debug("Installation of MyCellar Done.");
-		} catch (IOException e) {
-			Debug("Error while creating directory "+directory);
-			Debug(e.toString());
 		}
+		else {
+			return false;
+		}
+		File f = new File(directory, "lib");
+		Files.createDirectory(f.toPath());
+		f = new File(directory, "config");
+		Files.createDirectory(f.toPath());
+		
+		FILE_TYPES.clear();
+		FILE_TYPES.add(new FileType("lib/commons-io-2.1.jar", ""));
+		FILE_TYPES.add(new FileType("lib/commons-lang-2.1.jar", ""));
+		FILE_TYPES.add(new FileType("lib/commons-logging.jar", ""));
+		FILE_TYPES.add(new FileType("lib/commons-net-3.0.1.jar", ""));
+		FILE_TYPES.add(new FileType("lib/jcommon-1.0.18.jar", ""));
+		FILE_TYPES.add(new FileType("lib/jdom1.0.jar", ""));
+		FILE_TYPES.add(new FileType("lib/jfreechart-1.0.15.jar", ""));
+		FILE_TYPES.add(new FileType("lib/jxl.jar", ""));
+		FILE_TYPES.add(new FileType("lib/mailapi.jar", ""));
+		FILE_TYPES.add(new FileType("lib/miglayout-4.0-swing.jar", ""));
+		FILE_TYPES.add(new FileType("lib/pdfbox-app-2.0.5.jar", ""));
+		FILE_TYPES.add(new FileType("lib/smtp.jar", ""));
+		FILE_TYPES.add(new FileType("lib/poi-4.0.0.jar", ""));
+		FILE_TYPES.add(new FileType("lib/poi-ooxml-4.0.0.jar", ""));
+		FILE_TYPES.add(new FileType("lib/poi-ooxml-schemas-4.0.0.jar", ""));
+		FILE_TYPES.add(new FileType("lib/xmlbeans-3.0.1.jar", ""));
+		FILE_TYPES.add(new FileType("lib/commons-collections4-4.2.jar", ""));
+		FILE_TYPES.add(new FileType("lib/commons-compress-1.18.jar", ""));
+		
+		FILE_TYPES.add(new FileType("config/config.ini", ""));
+
+		FILE_TYPES.add(new FileType("MyCellar.jar",""));
+		FILE_TYPES.add(new FileType("MyCellarLauncher.jar",""));
+		FILE_TYPES.add(new FileType("Finish.html",""));
+		boolean result = downloadFromGitHub(directory);
+		
+		Debug("Installation of MyCellar Done.");
 		return result;
 	}
 	
@@ -485,13 +480,15 @@ public class Server implements Runnable {
 	}
 
 	private static boolean isRedirected(Map<String, List<String>> header) {
-		if(header == null)
+		if(header == null) {
 			return false;
+		}
 		try{
-			for( String hv : header.get( null )) {
-				if(hv == null)
+			for( String hv : header.get(null)) {
+				if(hv == null) {
 					return false;
-				if( hv.contains( " 301 " ) || hv.contains( " 302 " ))
+				}
+				if( hv.contains(" 301 ") || hv.contains(" 302 "))
 					return true;
 			}
 		}catch(Exception e) {}

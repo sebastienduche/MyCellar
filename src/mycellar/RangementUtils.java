@@ -16,6 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.swing.JProgressBar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,8 +42,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 17/10/18
+ * @version 1.5
+ * @since 25/10/18
  */
 public class RangementUtils {
 
@@ -256,7 +257,7 @@ public class RangementUtils {
 	 *
 	 * @return boolean
 	 */
-	static boolean write_XLS(final String file, final List<Bouteille> all, boolean isExit) {
+	static boolean write_XLS(final String file, final List<Bouteille> all, boolean isExit, JProgressBar progressBar) {
 
 		Debug( "write_XLS: writing file: "+file );
 		if(file.isEmpty()) {
@@ -377,9 +378,16 @@ public class RangementUtils {
 				}
 			}
 
+			if (progressBar != null) {
+				progressBar.setMaximum(all.size());
+				progressBar.setMinimum(0);
+			}
 			i = 0;
 			for (Bouteille b : all) {
 				int j = 0;
+				if (progressBar != null) {
+					progressBar.setValue(i);
+				}
 				org.apache.poi.ss.usermodel.Row row = sheet.createRow(i + num_ligne + 1);
 				row.setRowStyle(cellStyle);
 				for(MyCellarFields field : fields) {
@@ -400,6 +408,9 @@ public class RangementUtils {
 				sheet.autoSizeColumn(i);
 			}
 			workbook.write(new FileOutputStream(new File(file)));
+			if (progressBar != null) {
+				progressBar.setValue(progressBar.getMaximum());
+			}
 		}
 		catch (IOException ex) {
 			Program.showException(ex, false);
@@ -587,14 +598,24 @@ public class RangementUtils {
 		}
 	}
 
-	public static void putTabStock() {
-		Debug("putTabStock ...");
+	/**
+	 * Positionne toutes les bouteilles dans les differents rangements
+	 * - Une liste d'erreurs est cree
+	 * - Les bouteilles en erreurs sont supprimees de la liste principale pour correction
+	 *
+	 * @return boolean: false si des erreurs existent
+	 */
+	public static boolean putTabStock() {
+		Debug("putTabStock...");
 		for (MyCellarError error : Program.getErrors()) {
-			Program.getStorage().getAllList().add(error.getBottle());
+			if (!error.isSolved()) {
+				Program.getStorage().getAllList().add(error.getBottle());
+			}
 		}
 		Program.getErrors().clear();
-		for(Rangement rangement : Program.getCave())
+		for(Rangement rangement : Program.getCave()) {
 			rangement.resetStock();
+		}
 		
 		for(Bouteille b : Program.getStorage().getAllList()) {
 			Rangement rangement = Program.getCave(b.getEmplacement());
@@ -611,15 +632,14 @@ public class RangementUtils {
 					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_NUM_PLACE, b, b.getEmplacement(), b.getNumLieu()));
 					continue;
 				}
-				if(rangement.hasFreeSpaceInCaisse(b.getNumLieu()))
+				if(rangement.hasFreeSpaceInCaisse(b.getNumLieu())) {
 					rangement.updateToStock(b);
-				else {
+				} else {
 					// Caisse pleine
 					Debug("ERROR: simple place full for numplace: " + b.getNom() + " numplace: "+b.getNumLieu() + " for place "+b.getEmplacement());
 					Program.addError(new MyCellarError(MyCellarError.ID.FULL_BOX, b, b.getEmplacement(), b.getNumLieu()));
 				}
-			}
-			else {
+			} else {
 				Bouteille bottle;
 				if(!rangement.isExistingNumPlace(b.getNumLieu() - 1)) {
 					// Numero de rangement inexistant
@@ -631,14 +651,13 @@ public class RangementUtils {
 					// Cellule inexistante
 					Debug("ERROR: Inexisting cell: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
 					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_CELL, b, b.getEmplacement(), b.getNumLieu()));
-				}
-				else if((bottle = rangement.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) != null && !bottle.equals(b)){
+				}	else if((bottle = rangement.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) != null && !bottle.equals(b)){
 					// Cellule occupée
 					Debug("ERROR: Already occupied: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
 					Program.addError(new MyCellarError(MyCellarError.ID.CELL_FULL, b, b.getEmplacement(), b.getNumLieu()));
-				}
-				else
+				}	else {
 					rangement.updateToStock(b);
+				}
 			}
 		}
 		// Suppression des bouteilles posant problème
@@ -646,6 +665,7 @@ public class RangementUtils {
 			Program.getStorage().deleteWine(error.getBottle());
 		}
 		Debug("putTabStock Done");
+		return Program.getErrors().isEmpty();
 	}
 
 	/**

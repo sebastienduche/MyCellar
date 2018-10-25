@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -40,8 +41,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.6
- * @since 04/07/18
+ * @version 12.7
+ * @since 25/10/18
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -117,15 +118,11 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		nom_obj.addActionListener((e) -> label_cree.setText(""));
 		nom_obj.addMouseListener(new PopupListener());
 
-		addKeyListener(new KeyListener() {
-			@Override
-			public void keyReleased(KeyEvent e) {}
+		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				keylistener_actionPerformed(e);
 			}
-			@Override
-			public void keyTyped(KeyEvent e) {}
 		});
 
 
@@ -144,15 +141,18 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 					while (listPart.size() < top) {
 						Part part = new Part(listPart.size() + 1);
 						listPart.add(part);
-						if (m_jrb_dif_column_number.isSelected())
+						if (m_jrb_dif_column_number.isSelected()) {
 							part.setRows(1);
+						}
 					}
 				} else {
-					while (listPart.size() > top)
+					while (listPart.size() > top) {
 						listPart.removeLast();
+					}
 				}
-				if (model != null)
+				if (model != null) {
 					model.setValues(listPart);
+				}
 			}
 		});
 
@@ -196,8 +196,9 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		panelModify.add(labelModify, "split 2");
 		panelModify.add(comboPlace, "");
 		
-		if(modify)
+		if(modify) {
 			add(panelModify, "span 2, wrap");
+		}
 		add(labelName, "span 2, split 3");
 		add(nom_obj,"growx");
 		add(m_caisse_chk, "wrap");
@@ -254,8 +255,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 			enableAll(false);
 		}
 
-		int val = Program.getCaveConfigInt("CREER_R_DEFAULT", 0);
-		if (val == 0) {
+		if (0 == Program.getCaveConfigInt("CREER_R_DEFAULT", 0)) {
 			m_caisse_chk.setSelected(true);
 		}
 		setVisible(true);
@@ -321,17 +321,18 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 
 			final String nom = nom_obj.getText().trim();
 			// Contrôle sur le nom
-			if(!MyCellarControl.ctrl_Name( nom ))
+			if(!MyCellarControl.ctrl_Name( nom )) {
 				return;
+			}
 
 			Debug("Advanced modifying...");
 			if (m_caisse_chk.isSelected()) {
 				Debug("Modifying Caisse...");
 				//Modification d'un rangement de type "Caisse"
-				start_caisse = Integer.parseInt(nb_start_caisse.getValue().toString());
+				start_caisse = nb_start_caisse.getIntValue();
 				islimited = checkLimite.isSelected();
-				limite = Integer.parseInt(nb_limite.getValue().toString());
-				int nbPart = Integer.parseInt(nb_parties.getValue().toString());
+				limite = nb_limite.getIntValue();
+				int nbPart = nb_parties.getIntValue();
 
 				Rangement rangement = Program.getCave(num_rang);
 				if (rangement != null) {
@@ -348,42 +349,82 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 						}
 					}
 
-					if (nb_bottle > 0 && name.compareTo(nom) != 0) {
-						String erreur_txt1 = Program.getError("Error136"); //"1 bouteille est présente dans ce rangement.");
-						String erreur_txt2 = Program.getError("Error137"); //"Voulez vous changer l'emplacement de cette bouteille?");
-						if (nb_bottle == 1) {
-							Debug("MESSAGE: 1 bottle in this place, modify?");
-						} else {
-							Debug("MESSAGE: " + nb_bottle + " bottles in this place, Modify?");
-							erreur_txt1 = MessageFormat.format(Program.getError("Error094"), nb_bottle); //bouteilles sont présentes dans ce rangement.");
-							erreur_txt2 = Program.getError("Error095"); //"Voulez vous changer l'emplacement de ces bouteilles?");
-						}
-						if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-							//Modify Name of place
-							rangement.setNom(nom);
-							rangement.setLimited(islimited);
-							rangement.setStartCaisse(start_caisse);
-							rangement.setNbBottleInCaisse(limite);
-							rangement.updateCaisse(nbPart);
-							Program.setListCaveModified();
-							Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
-							RangementUtils.putTabStock();
+					if (nb_bottle > 0) {
+						if (name.compareTo(nom) != 0) {
+							String erreur_txt1, erreur_txt2;
+							if (nb_bottle == 1) {
+								Debug("MESSAGE: 1 bottle in this place, modify?");
+								erreur_txt1 = Program.getError("Error136"); //"1 bouteille est présente dans ce rangement.");
+								erreur_txt2 = Program.getError("Error137"); //"Voulez vous changer l'emplacement de cette bouteille?");
+							} else {
+								Debug("MESSAGE: " + nb_bottle + " bottles in this place, Modify?");
+								erreur_txt1 = MessageFormat.format(Program.getError("Error094"), nb_bottle); //bouteilles sont présentes dans ce rangement.");
+								erreur_txt2 = Program.getError("Error095"); //"Voulez vous changer l'emplacement de ces bouteilles?");
+							}
+							if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+								//Modify Name of place
+								Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
 
-							nom_obj.setText("");
-							label_cree.setText(Program.getError("Error123"));
+								rangement.setNom(nom);
+								rangement.setLimited(islimited);
+								rangement.setStartCaisse(start_caisse);
+								rangement.setNbBottleInCaisse(limite);
+								rangement.updateCaisse(nbPart);
+								Program.setListCaveModified();
+								putTabStock();
 
-							updateView();
-							Program.updateAllPanels();
-						} else {
-							rangement.setNom(nom);
-							rangement.setLimited(islimited);
-							rangement.setStartCaisse(start_caisse);
-							rangement.setNbBottleInCaisse(limite);
-							rangement.updateCaisse(nbPart);
-							Program.setListCaveModified();
-							RangementUtils.putTabStock();
-							updateView();
-							Program.updateAllPanels();
+								nom_obj.setText("");
+								label_cree.setText(Program.getError("Error123"));
+
+								updateView();
+								Program.updateAllPanels();
+							} else {
+								rangement.setNom(nom);
+								rangement.setLimited(islimited);
+								rangement.setStartCaisse(start_caisse);
+								rangement.setNbBottleInCaisse(limite);
+								rangement.updateCaisse(nbPart);
+								Program.setListCaveModified();
+								putTabStock();
+
+								updateView();
+								Program.updateAllPanels();
+							}
+						} else if (rangement.getStartCaisse() != start_caisse) {
+							// Le numero de la premiere partie a change, renumroter
+							String erreur_txt1 = MessageFormat.format(Program.getError("CreerRangement.UpdatedBottlePart"), start_caisse, rangement.getStartCaisse());
+							String erreur_txt2 = Program.getError("CreerRangement.AskUpdateBottlePart");
+
+							if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+								//Modify start part number
+								final int difference = start_caisse - rangement.getStartCaisse();
+								Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setNumLieu(b.getNumLieu() + difference));
+
+								rangement.setNom(nom);
+								rangement.setLimited(islimited);
+								rangement.setStartCaisse(start_caisse);
+								rangement.setNbBottleInCaisse(limite);
+								rangement.updateCaisse(nbPart);
+								Program.setListCaveModified();
+								putTabStock();
+
+								nom_obj.setText("");
+								label_cree.setText(Program.getError("Error123"));
+
+								updateView();
+								Program.updateAllPanels();
+							} else {
+								rangement.setNom(nom);
+								rangement.setLimited(islimited);
+								rangement.setStartCaisse(start_caisse);
+								rangement.setNbBottleInCaisse(limite);
+								rangement.updateCaisse(nbPart);
+								Program.setListCaveModified();
+								putTabStock();
+
+								updateView();
+								Program.updateAllPanels();
+							}
 						}
 					} else {
 						// Pas de bouteilles à modifier
@@ -393,7 +434,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 						rangement.setStartCaisse(start_caisse);
 						rangement.setNbBottleInCaisse(limite);
 						rangement.updateCaisse(nbPart);
-						RangementUtils.putTabStock();
+						putTabStock();
 
 						label_cree.setText(Program.getError("Error123"));
 
@@ -427,7 +468,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 						rangement.setNom(nom);
 						rangement.setPlace(listPart);
 						Program.setListCaveModified();
-						RangementUtils.putTabStock();
+						putTabStock();
 						nom_obj.setText("");
 						comboPlace.removeAllItems();
 						comboPlace.addItem("");
@@ -529,9 +570,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 								rangement.setPlace(listPart);
 								Program.setListCaveModified();
 							}
-							RangementUtils.putTabStock();
-							if (!Program.getErrors().isEmpty())
-								new OpenShowErrorsAction().actionPerformed(null);
+							putTabStock();
 						}
 						if (bResul) {
 							label_cree.setText(Program.getError("Error123"));
@@ -551,6 +590,12 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		}
 		catch (Exception exc) {
 			Program.showException(exc);
+		}
+	}
+
+	private void putTabStock() {
+		if(!RangementUtils.putTabStock()) {
+			new OpenShowErrorsAction().actionPerformed(null);
 		}
 	}
 

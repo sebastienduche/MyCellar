@@ -8,8 +8,8 @@ import java.io.IOException;
 
 public class MyCellarVersion {
 
-	public static final String VERSION = "3.1.3.1";
-	public static final String MAIN_VERSION = "5.6 ZE";
+	public static final String VERSION = "3.1.4.2";
+	public static final String MAIN_VERSION = "5.6 DB";
   
 	public static String getLocalVersion() {
 		// In directory bin

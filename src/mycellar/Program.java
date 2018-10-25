@@ -77,8 +77,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.4
- * @since 19/10/18
+ * @version 19.5
+ * @since 25/10/18
  */
 
 public class Program {
@@ -1157,7 +1157,7 @@ public class Program {
 					Debug("Writing backup Excel file: " + file_excel);
 					final List<Bouteille> bouteilles = Collections.unmodifiableList(getStorage().getAllList());
 					Thread writingExcel = new Thread(() -> {
-						RangementUtils.write_XLS(file_excel, bouteilles, true);
+						RangementUtils.write_XLS(file_excel, bouteilles, true, null);
 					});
 					Runtime.getRuntime().addShutdownHook(writingExcel);
 				}

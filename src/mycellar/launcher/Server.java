@@ -36,8 +36,8 @@ import java.util.Map;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 2.1
- * @since 19/10/18
+ * @version 2.2
+ * @since 25/10/18
  */
 
 public class Server implements Runnable {
@@ -408,22 +408,26 @@ public class Server implements Runnable {
 		e.printStackTrace();
 	}
 
-	boolean install() throws IOException {
+	boolean install() {
 		Debug("Installing MyCellar...");
 		File directory = getDirectoryForInstall();
-		if(directory != null) {
-			if(!directory.exists()) {
-				Files.createDirectories(directory.toPath());
+		try {
+			if (directory != null) {
+				if (!directory.exists()) {
+					Files.createDirectories(directory.toPath());
+				}
+			} else {
+				return false;
 			}
-		}
-		else {
+			File f = new File(directory, "lib");
+			Files.createDirectory(f.toPath());
+			f = new File(directory, "config");
+			Files.createDirectory(f.toPath());
+		}catch (IOException e) {
+			showException(e);
 			return false;
 		}
-		File f = new File(directory, "lib");
-		Files.createDirectory(f.toPath());
-		f = new File(directory, "config");
-		Files.createDirectory(f.toPath());
-		
+
 		FILE_TYPES.clear();
 		FILE_TYPES.add(new FileType("lib/commons-io-2.1.jar", ""));
 		FILE_TYPES.add(new FileType("lib/commons-lang-2.1.jar", ""));

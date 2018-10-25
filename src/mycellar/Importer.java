@@ -55,8 +55,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.2
- * @since 19/10/18
+ * @version 12.3
+ * @since 25/10/18
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -1128,8 +1128,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		catch (Exception exc) {
 			Program.showException(exc);
 		}
-		RangementUtils.putTabStock();
-		if(!Program.getErrors().isEmpty()) {
+		if(!RangementUtils.putTabStock()) {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
 	}
@@ -1289,8 +1288,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				},
 				5000
 		);
-		RangementUtils.putTabStock();
-		if (!Program.getErrors().isEmpty()) {
+		if (!RangementUtils.putTabStock()) {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
 	}

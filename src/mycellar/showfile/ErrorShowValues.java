@@ -17,8 +17,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 09/03/18
+ * @version 0.9
+ * @since 25/10/18
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -165,6 +165,7 @@ public class ErrorShowValues extends TableShowValues {
 		case BUTTON:
 			rangement = b.getRangement();
 			if(rangement != null && rangement.canAddBottle(b)) {
+				error.setSolved(true);
 				Program.getStorage().addWine(b);
 				editable[row] = Boolean.FALSE;
 				error.setStatus(true);

@@ -12,8 +12,8 @@ import java.util.Objects;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 08/06/18
+ * @version 0.6
+ * @since 25/10/18
  */
 
 public class MyCellarError {
@@ -23,6 +23,7 @@ public class MyCellarError {
 	private final Bouteille bottle;
 	private final String place;
 	private final int numLieu;
+	private boolean solved;
 
 	public enum ID{
 		INEXISTING_PLACE,
@@ -37,7 +38,8 @@ public class MyCellarError {
 		this.bottle = bottle;
 		this.place = place;
 		this.numLieu = numLieu;
-		setStatus(false);
+		status = false;
+		solved = false;
 	}
 
 	public MyCellarError(ID error, Bouteille bottle, String place) {
@@ -45,7 +47,8 @@ public class MyCellarError {
 		this.bottle = bottle;
 		this.place = place;
 		numLieu = -1;
-		setStatus(false);
+		status = false;
+		solved = false;
 	}
 
 	public MyCellarError(ID error, Bouteille bottle) {
@@ -53,7 +56,8 @@ public class MyCellarError {
 		this.bottle = bottle;
 		place = "";
 		numLieu = -1;
-		setStatus(false);
+		status = false;
+		solved = false;
 	}
 	
 	public String getErrorMessage() {
@@ -87,6 +91,18 @@ public class MyCellarError {
 
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+
+	public boolean isSolved() {
+		return solved;
+	}
+
+	public boolean isNotSolved() {
+		return !solved;
+	}
+
+	public void setSolved(boolean solved) {
+		this.solved = solved;
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -40,8 +41,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 8.2
- * @since 12/10/18
+ * @version 8.3
+ * @since 25/10/18
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -49,6 +50,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	private final JTextField file = new JTextField();
 	private final MyCellarButton browse = new MyCellarButton();
 	private final MyCellarButton parameters = new MyCellarButton();
+	private final JProgressBar progressBar = new JProgressBar();
 	private final MyCellarRadioButton MyCellarRadioButtonXML = new MyCellarRadioButton(Program.getLabel("Infos210"), true);
 	private final MyCellarRadioButton MyCellarRadioButtonHTML = new MyCellarRadioButton(Program.getLabel("Infos211"), false);
 	private final MyCellarRadioButton MyCellarRadioButtonCSV = new MyCellarRadioButton(Program.getLabel("Infos212"), false);
@@ -138,14 +140,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			}
 		});
 
-		setLayout(new MigLayout("","grow",""));
-		JPanel panelTitle = new JPanel();
-		panelTitle.setLayout(new MigLayout("", "grow",""));
-		panelTitle.add(nameLabel, "split 4");
-		panelTitle.add(file, "grow");
-		panelTitle.add(browse);
-		panelTitle.add(parameters);
-		add(panelTitle,"grow, wrap");
+		setLayout(new MigLayout("","grow","[][][]push[]"));
 		JPanel panelFormat = new JPanel();
 		panelFormat.setLayout(new MigLayout("", "grow",""));
 		panelFormat.add(MyCellarRadioButtonXML, "split 6");
@@ -156,14 +151,24 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		panelFormat.add(options,"w 100:100:100, push");
 		panelFormat.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos151")));
 		add(panelFormat,"grow, wrap");
+		JPanel panelTitle = new JPanel();
+		panelTitle.setLayout(new MigLayout("", "grow",""));
+		panelTitle.add(nameLabel, "split 4");
+		panelTitle.add(file, "grow");
+		panelTitle.add(browse);
+		panelTitle.add(parameters);
+		add(panelTitle,"grow, wrap");
 		JPanel panelEnd = new JPanel();
 		panelEnd.setLayout(new MigLayout("", "grow",""));
+
 		panelEnd.add(end, "grow, center, hidemode 3, wrap");
 		panelEnd.add(valider, "center, split 2");
 		panelEnd.add(openit);
-		add(panelEnd, "grow");
+		add(panelEnd, "grow, wrap");
+		add(progressBar, "grow, center, hidemode 3");
 		openit.setEnabled(false);
 		options.setEnabled(false);
+		progressBar.setVisible(false);
 
 		int val = Program.getCaveConfigInt("EXPORT_DEFAULT", 0);
 
@@ -423,7 +428,8 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				if(null == bottles) {
 					bottles = Program.getStorage().getAllList();
 				}
-				if (RangementUtils.write_XLS(nom, bottles, false)) {
+				progressBar.setVisible(true);
+				if (RangementUtils.write_XLS(nom, bottles, false, progressBar)) {
 					end.setText(Program.getLabel("Infos154")); //"Export terminé."
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), file.getText().trim()), true);
 					openit.setEnabled(true);
@@ -432,6 +438,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
 					Erreur.showSimpleErreur(Program.getError("Error160"), Program.getError("Error161"));
 				}
+				progressBar.setVisible(false);
 			}
 			else if (MyCellarRadioButtonPDF.isSelected()) {
 				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_PDF.toString()))) {

@@ -25,6 +25,8 @@ public class OpenShowErrorsAction extends AbstractAction {
 				Program.showerrors = new ShowFile(ShowType.ERROR);
 				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, Program.showerrors);
 				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
+			} else {
+				Program.showerrors.refresh();
 			}
 			int tabIndex = Program.findTab(MyCellarImage.ERROR);
 			if(tabIndex != -1) {

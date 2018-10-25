@@ -10,8 +10,8 @@ import java.awt.Font;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.2
- * @since 08/06/18
+ * @version 0.3
+ * @since 25/10/18
  */
 public class MyCellarSpinner extends JSpinner {
 
@@ -28,4 +28,7 @@ public class MyCellarSpinner extends JSpinner {
 		setFont(FONT);
 	}
 
+	public Integer getIntValue() {
+		return (Integer) getValue();
+	}
 }

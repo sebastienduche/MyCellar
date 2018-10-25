@@ -48,7 +48,7 @@ class ListVin extends JPanel {
 
         TableColumn tc1 = tcm.getColumn(0);
         tc1.setCellRenderer(new ToolTipRenderer());
-        le = new ListEditor(bottle);
+        le = new ListEditor();
         tc1.setCellEditor(le);
         ListSelectionModel rowSM = table.getSelectionModel();
         rowSM.setSelectionInterval(0, 0);

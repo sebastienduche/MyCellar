@@ -55,8 +55,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.3
- * @since 25/10/18
+ * @version 12.4
+ * @since 01/12/18
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -997,7 +997,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 						separe = ";";
 				}
 
-				try(BufferedReader reader = new BufferedReader(new FileReader(f))) {
+				try(var reader = new BufferedReader(new FileReader(f))) {
 					String line = reader.readLine();
 					if (line != null) {
 						String[] tab = line.split(separe);
@@ -1138,7 +1138,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 
 		label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
 		//Ouverture du fichier Excel
-		try (Workbook workbook = new XSSFWorkbook(new FileInputStream(nom))) {
+		try (var workbook = new XSSFWorkbook(new FileInputStream(nom))) {
 
 			//Sélection de la feuille
 			Sheet sheet = workbook.getSheetAt(0);

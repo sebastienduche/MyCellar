@@ -77,8 +77,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.5
- * @since 25/10/18
+ * @version 19.6
+ * @since 01/12/18
  */
 
 public class Program {
@@ -344,10 +344,10 @@ public class Program {
 		if (_bShowWindowErrorAndExit) {
 			JOptionPane.showMessageDialog(Start.getInstance(), e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		try (FileWriter fw = new FileWriter(getGlobalDir()+"Errors.log")){
-			fw.write(e.toString());
-			fw.write(error);
-			fw.flush();
+		try (var fileWriter = new FileWriter(getGlobalDir()+"Errors.log")){
+			fileWriter.write(e.toString());
+			fileWriter.write(error);
+			fileWriter.flush();
 		}
 		catch (IOException ignored) {}
 		Debug("Program: ERROR:");
@@ -371,9 +371,9 @@ public class Program {
 	}
 
 	private static void sendMail(String error, File filename) {
-		InputStreamReader stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
+		var stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
 
-		try (BufferedReader reader = new BufferedReader(stream)) {
+		try (var reader = new BufferedReader(stream)) {
 			String line = reader.readLine();
 			reader.close();
 			stream.close();
@@ -592,13 +592,13 @@ public class Program {
 		int BUFFER = 2048;
 		try {
 			// création d'un flux d'écriture sur fichier
-			FileOutputStream dest = new FileOutputStream(archive);
+			var dest = new FileOutputStream(archive);
 			// calcul du checksum : Adler32 (plus rapide) ou CRC32
-			CheckedOutputStream checksum = new CheckedOutputStream(dest, new Adler32());
+			var checksum = new CheckedOutputStream(dest, new Adler32());
 			// création d'un buffer d'écriture
-			BufferedOutputStream buff = new BufferedOutputStream(checksum);
+			var buff = new BufferedOutputStream(checksum);
 			// création d'un flux d'écriture Zip
-			try(ZipOutputStream out = new ZipOutputStream(buff)) {
+			try(var out = new ZipOutputStream(buff)) {
 				// spécification de la méthode de compression
 				out.setMethod(ZipOutputStream.DEFLATED);
 				// spécifier la qualité de la compression 0..9
@@ -616,12 +616,12 @@ public class Program {
 						if (f.isDirectory() || file.compareTo(UNTITLED1_SINFO) == 0)
 							continue;
 						// création d'un flux de lecture
-						FileInputStream fi = new FileInputStream(getWorkDir(true) + file);
+						var inputStream = new FileInputStream(getWorkDir(true) + file);
 						// création d'un tampon de lecture sur ce flux
-						try (BufferedInputStream buffi = new BufferedInputStream(fi, BUFFER)) {
+						try (var bufferedInputStream = new BufferedInputStream(inputStream, BUFFER)) {
 							// création d'en entrée Zip pour ce fichier
 							String name = removeAccents(file);
-							ZipEntry entry = new ZipEntry(name);
+							var entry = new ZipEntry(name);
 							if (zipEntryList.contains(name)) {
 								continue;
 							}
@@ -630,13 +630,13 @@ public class Program {
 							out.putNextEntry(entry);
 							// écriture du fichier par paquet de BUFFER octets dans le flux d'écriture
 							int count;
-							while ((count = buffi.read(data, 0, BUFFER)) != -1) {
+							while ((count = bufferedInputStream.read(data, 0, BUFFER)) != -1) {
 								out.write(data, 0, count);
 							}
 							// Close the current entry
 							out.closeEntry();
 						}
-						fi.close();
+						inputStream.close();
 					}
 				}
 			}
@@ -666,15 +666,15 @@ public class Program {
 			File f = new File(archive);
 			if(!f.exists())
 				return false;
-			FileInputStream fis = new FileInputStream(archive);
+			var fileInputStream = new FileInputStream(archive);
 			// ouverture fichier de buffer
-			BufferedInputStream buffi = new BufferedInputStream(fis);
+			var bufferedInputStream = new BufferedInputStream(fileInputStream);
 			// ouverture archive Zip d'entrée
-			try(ZipInputStream zis = new ZipInputStream(buffi)) {
+			try(var zipInputStream = new ZipInputStream(bufferedInputStream)) {
 				// entrée Zip
 				ZipEntry entry;
 				// parcours des entrées de l'archive
-				while ((entry = zis.getNextEntry()) != null) {
+				while ((entry = zipInputStream.getNextEntry()) != null) {
 					// affichage du nom de l'entrée
 					int count;
 					byte data[] = new byte[BUFFER];
@@ -685,23 +685,23 @@ public class Program {
 						ok = f.mkdir();
 					}
 					if (ok) {
-						FileOutputStream fos = new FileOutputStream(dest_dir + File.separator + entry.getName());
+						var fileOutputStream = new FileOutputStream(dest_dir + File.separator + entry.getName());
 						Debug("Unzip: File " + dest_dir + File.separator + entry.getName());
 						// affectation buffer de sortie
-						try (BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER)) {
+						try (var bufferOutputStream = new BufferedOutputStream(fileOutputStream, BUFFER)) {
 							// écriture sur disque
-							while ((count = zis.read(data, 0, BUFFER)) != -1) {
-								dest.write(data, 0, count);
+							while ((count = zipInputStream.read(data, 0, BUFFER)) != -1) {
+								bufferOutputStream.write(data, 0, count);
 							}
 							// vidage du tampon
-							dest.flush();
+							bufferOutputStream.flush();
 						}
-						fos.close();
+						fileOutputStream.close();
 					}
 				}
 			}
-			buffi.close();
-			fis.close();
+			bufferedInputStream.close();
+			fileInputStream.close();
 		}
 		catch (Exception e) {
 			Debug("Program: Unzip: Archive Error");
@@ -1073,7 +1073,7 @@ public class Program {
 			String key = o.toString();
 			PROPERTIES_GLOBAL.put(key, CONFIG_GLOBAL.getString(key));
 		}
-		try(FileOutputStream outputStream = new FileOutputStream(getGlobalConfigFilePath())) {
+		try(var outputStream = new FileOutputStream(getGlobalConfigFilePath())) {
 			PROPERTIES_GLOBAL.store(outputStream, null);
 		} catch (IOException e) {
 			showException(e);
@@ -1223,7 +1223,7 @@ public class Program {
 			String key = o.toString();
 			PROPERTIES_CAVE.put(key, configCave.getString(key));
 		}
-		try (FileOutputStream outputStream = new FileOutputStream(getConfigFilePath())){
+		try (var outputStream = new FileOutputStream(getConfigFilePath())){
 			PROPERTIES_CAVE.store(outputStream, null);
 		} catch (IOException e) {
 			showException(e);
@@ -1733,7 +1733,7 @@ public class Program {
 		if(!f.getName().toLowerCase().endsWith(".txt")) {
 			return "";
 		}
-		try (BufferedReader buffer = new BufferedReader(new FileReader(f))){
+		try (var buffer = new BufferedReader(new FileReader(f))){
 			String line = buffer.readLine();
 			buffer.close();
 			return line.trim();

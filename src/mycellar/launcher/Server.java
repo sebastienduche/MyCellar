@@ -18,7 +18,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
@@ -36,8 +35,8 @@ import java.util.Map;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 2.2
- * @since 25/10/18
+ * @version 2.3
+ * @since 01/12/18
  */
 
 public class Server implements Runnable {
@@ -77,7 +76,7 @@ public class Server implements Runnable {
 				File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
 				myCellarVersion.deleteOnExit();
 				downloadFileFromGitHub("MyCellarVersion.txt", myCellarVersion.getAbsolutePath());
-				try (BufferedReader in = new BufferedReader(new FileReader(myCellarVersion))){
+				try (var in = new BufferedReader(new FileReader(myCellarVersion))){
 					sServerVersion = in.readLine();
 					sAvailableVersion = in.readLine();
 					String sFile = in.readLine();
@@ -129,10 +128,10 @@ public class Server implements Runnable {
 		try {
 			File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
 			downloadFileFromGitHub("MyCellarVersion.txt", myCellarVersion.getAbsolutePath());
-			try(BufferedReader in = new BufferedReader(new FileReader(myCellarVersion))) {
-				sServerVersion = in.readLine();
-				sAvailableVersion = in.readLine();
-				String sFile = in.readLine();
+			try(var bufferedReader = new BufferedReader(new FileReader(myCellarVersion))) {
+				sServerVersion = bufferedReader.readLine();
+				sAvailableVersion = bufferedReader.readLine();
+				String sFile = bufferedReader.readLine();
 				while (sFile != null && !sFile.isEmpty()) {
 					int index = sFile.indexOf('@');
 					String md5 = "";
@@ -148,7 +147,7 @@ public class Server implements Runnable {
 						boolean lib = (!sFile.contains("MyCellar") && sFile.endsWith(".jar"));
 						FILE_TYPES.add(new FileType(sFile, md5, lib));
 					}
-					sFile = in.readLine();
+					sFile = bufferedReader.readLine();
 				}
 			}
 			Debug("GitHub version: "+sServerVersion+"/"+sAvailableVersion);
@@ -320,7 +319,7 @@ public class Server implements Runnable {
 		InputStream input = http.getInputStream();
 		byte[] buffer = new byte[4096];
 		int n;
-		try(OutputStream output = new FileOutputStream(new File(destination))) {
+		try(var output = new FileOutputStream(new File(destination))) {
 			while ((n = input.read(buffer)) != -1) {
 				output.write(buffer, 0, n);
 			}
@@ -328,7 +327,7 @@ public class Server implements Runnable {
 	}
 
 	private static byte[] createChecksum(String filename) throws Exception {
-		try(InputStream fis = new FileInputStream(filename)) {
+		try(var fis = new FileInputStream(filename)) {
 
 			byte[] buffer = new byte[1024];
 			MessageDigest complete = MessageDigest.getInstance("MD5");
@@ -396,10 +395,10 @@ public class Server implements Runnable {
 		if(!sDir.isEmpty()) {
 			sDir += File.separator + "MyCellarDebug";
 		}
-		try(FileWriter fw = new FileWriter(sDir + File.separator + "Errors.log")) {
-			fw.write(e.toString());
-			fw.write(error);
-			fw.flush();
+		try(var fileWriter = new FileWriter(sDir + File.separator + "Errors.log")) {
+			fileWriter.write(e.toString());
+			fileWriter.write(error);
+			fileWriter.flush();
 		}
 		catch (IOException ignored) {}
 		Debug("Server: ERROR:");

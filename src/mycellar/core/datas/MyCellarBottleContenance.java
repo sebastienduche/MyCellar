@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 08/06/18
+ * @version 0.3
+ * @since 01/12/18
  */
 public final class MyCellarBottleContenance {
 
@@ -62,20 +62,20 @@ public final class MyCellarBottleContenance {
 
     Debug("writeTypeXml: Writing file");
     String filename = Program.getXMLTypesFileName();
-    try (FileWriter fw = new FileWriter(filename)){
+    try (var fileWriter = new FileWriter(filename)){
       //Init XML File
-      fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+      fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       // Racine XML
-      fw.write("<MyCellar>");
+      fileWriter.write("<MyCellar>");
       // Ecriture des types
       for (String type: list){
         if(type.equals(defaultValue))
-          fw.write("<type value=\""+type+"\" default=\"true\"/>");
+          fileWriter.write("<type value=\""+type+"\" default=\"true\"/>");
         else
-          fw.write("<type value=\""+type+"\"/>");
+          fileWriter.write("<type value=\""+type+"\"/>");
       }
-      fw.write("</MyCellar>");
-      fw.flush();
+      fileWriter.write("</MyCellar>");
+      fileWriter.flush();
     }
     catch (IOException ex) {
       Program.showException(ex);
@@ -106,9 +106,9 @@ public final class MyCellarBottleContenance {
 
     list.clear();
     try {
-      DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-      Document doc = dBuilder.parse(new File(Program.getXMLTypesFileName()));
+      var dbFactory = DocumentBuilderFactory.newInstance();
+      var dBuilder = dbFactory.newDocumentBuilder();
+      var doc = dBuilder.parse(new File(Program.getXMLTypesFileName()));
       doc.getDocumentElement().normalize();
 
       NodeList types = doc.getElementsByTagName("type");

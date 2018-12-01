@@ -6,8 +6,8 @@ package mycellar.launcher;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 08/06/18
+ * @version 1.2
+ * @since 01/12/18
  */
 
 import mycellar.core.MyCellarVersion;
@@ -36,26 +36,26 @@ class MyCellarLauncher {
     	} else {
     		updateThread = new Thread(() -> {
             	Server.getInstance().checkVersion();
-            	if(!Server.getInstance().hasAvailableUpdate())
+            	if (!Server.getInstance().hasAvailableUpdate())
             		return;
             	Server.getInstance().downloadVersion();
             	MyCellarVersion.setLocalVersion(Server.getInstance().getServerVersion());
                 
             	File f = new File("download");
-        		if(f.isDirectory()) {
-        			try{
+        		if (f.isDirectory()) {
+        			try {
         				Server.Debug("Installing new version...");
         				File fList[] = f.listFiles();
-        				for(File file : fList) {
+        				for (File file : fList) {
         					String name = file.getName();
         					if(name.endsWith(".myCellar")) {
         						name = name.substring(0, name.indexOf(".myCellar"));
         						Server.Debug("Delete file "+name);
         						FileUtils.deleteQuietly(new File("lib", name));
-        					} else if(file.getName().endsWith("ini")){
+        					} else if (file.getName().endsWith("ini")){
         						Server.Debug("Copy file "+file.getName()+" to config dir");
         						FileUtils.copyFileToDirectory(file, new File("config"));
-        					}else if(file.getName().endsWith("jar") && !file.getName().equalsIgnoreCase("MyCellar.jar")){
+        					}else if (file.getName().endsWith("jar") && !file.getName().equalsIgnoreCase("MyCellar.jar")){
         						Server.Debug("Copying file "+file.getName()+" to lib dir");
         						FileUtils.copyFileToDirectory(file, new File("lib"));
         					}else {
@@ -74,7 +74,7 @@ class MyCellarLauncher {
     	}
     		
         try {
-            ProcessBuilder pb = new ProcessBuilder("java","-Dfile.encoding=UTF8","-jar","MyCellar.jar");
+            var pb = new ProcessBuilder("java","-Dfile.encoding=UTF8","-jar","MyCellar.jar");
             pb.redirectErrorStream(true);
             Process p = pb.start();
             p.waitFor();

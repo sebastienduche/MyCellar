@@ -26,8 +26,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 22/05/18
- * @version 2.3
+ * @since 01/12/18
+ * @version 2.4
  */
 
 public class MyXmlDom {
@@ -159,7 +159,7 @@ public class MyXmlDom {
 		String filename = Program.getXMLPlacesFileName();
 		if(!_sFilename.isEmpty())
 			filename = _sFilename;
-		try (FileWriter oFile = new FileWriter(filename)){
+		try (var oFile = new FileWriter(filename)){
 			//Init XML File
 			oFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
 			// Ecriture des rangements

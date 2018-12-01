@@ -8,7 +8,6 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -42,8 +41,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 25/10/18
+ * @version 1.6
+ * @since 01/12/18
  */
 public class RangementUtils {
 
@@ -73,52 +72,52 @@ public class RangementUtils {
 
 		File f = new File(fichier);
 
-		try (FileWriter ficout = new FileWriter(f)){
+		try (var fileWriter = new FileWriter(f)){
 
 			for (Bouteille b : all) {
 				if (cle0 == 1) {
 					String name = Program.convertStringFromHTMLString(b.getNom());
 					name = name.replaceAll("\"", "\"\"");
-					ficout.write("\"" + name + "\"" + separator);
+					fileWriter.write("\"" + name + "\"" + separator);
 				}
 				if (cle1 == 1) {
 					String year = b.getAnnee();
 					year = year.replaceAll("\"", "\"\"");
-					ficout.write("\"" + year + "\"" + separator);
+					fileWriter.write("\"" + year + "\"" + separator);
 				}
 				if (cle2 == 1) {
 					String half = Program.convertStringFromHTMLString(b.getType());
 					half = half.replaceAll("\"", "\"\"");
-					ficout.write("\"" + half + "\"" + separator);
+					fileWriter.write("\"" + half + "\"" + separator);
 				}
 				if (cle3 == 1) {
 					String place = Program.convertStringFromHTMLString(b.getEmplacement());
 					place = place.replaceAll("\"", "\"\"");
-					ficout.write("\"" + place + "\"" + separator);
+					fileWriter.write("\"" + place + "\"" + separator);
 				}
 				if (cle4 == 1) {
-					ficout.write("\"" + b.getNumLieu() + "\"" + separator);
+					fileWriter.write("\"" + b.getNumLieu() + "\"" + separator);
 				}
 				if (cle5 == 1) {
-					ficout.write("\"" + b.getLigne() + "\"" + separator);
+					fileWriter.write("\"" + b.getLigne() + "\"" + separator);
 				}
 				if (cle6 == 1) {
-					ficout.write("\"" + b.getColonne() + "\"" + separator);
+					fileWriter.write("\"" + b.getColonne() + "\"" + separator);
 				}
 				if (cle7 == 1) {
 					String price = Program.convertStringFromHTMLString(b.getPrix());
 					price = price.replaceAll("\"", "\"\"");
-					ficout.write("\"" + price + "\"" + separator);
+					fileWriter.write("\"" + price + "\"" + separator);
 				}
 				if (cle8 == 1) {
 					String comment = Program.convertStringFromHTMLString(b.getComment());
 					comment = comment.replaceAll("\"", "\"\"");
-					ficout.write("\"" + comment + "\"" + separator);
+					fileWriter.write("\"" + comment + "\"" + separator);
 				}
-				ficout.write('\n');
-				ficout.flush();
+				fileWriter.write('\n');
+				fileWriter.flush();
 			}
-			ficout.flush();
+			fileWriter.flush();
 		}
 		catch (IOException ioe) {
 			Erreur.showSimpleErreur(Program.getError("Error120"), Program.getError("Error161"));
@@ -317,7 +316,7 @@ public class RangementUtils {
 			}
 		}
 
-		try (Workbook workbook = new SXSSFWorkbook(100)) { //Création du fichier
+		try (var workbook = new SXSSFWorkbook(100)) { //Création du fichier
 			int columnsCount = 0;
 			String sheet_title = title;
 			if (sheet_title.isEmpty()) {
@@ -428,7 +427,7 @@ public class RangementUtils {
 	 */
 	static void write_XLSTab(String file, List<Rangement> _oPlace) {
 
-		try (Workbook workbook = new SXSSFWorkbook(100)) { //Création du fichier
+		try (var workbook = new SXSSFWorkbook(100)) { //Création du fichier
 			String title = Program.getCaveConfigString("XLS_TAB_TITLE", Program.getCaveConfigString("XML_TYPE",""));
 			boolean onePlacePerSheet = 1 == Program.getCaveConfigInt("ONE_PER_SHEET_XLS", 0);
 

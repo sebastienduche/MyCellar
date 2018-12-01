@@ -42,8 +42,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.3
- * @since 12/0/18
+ * @version 6.4
+ * @since 01/12/18
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable {
 	private final JTextField name = new JTextField();
@@ -319,8 +319,8 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 				StreamSource xslDoc = new StreamSource("resources/Rangement.xsl");
 				StreamSource xmlDoc = new StreamSource(Program.getPreviewXMLFileName());
 
-				try(OutputStream htmlFile = new FileOutputStream(nom)) {
-					Transformer transformer = tFactory.newTransformer(xslDoc);
+				try(var htmlFile = new FileOutputStream(nom)) {
+					var transformer = tFactory.newTransformer(xslDoc);
 					transformer.transform(xmlDoc, new StreamResult(htmlFile));
 				} catch (Exception e1) {
 					Program.showException(e1);

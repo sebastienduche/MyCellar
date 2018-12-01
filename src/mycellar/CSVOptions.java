@@ -22,8 +22,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.9
- * @since 10/10/18
+ * @version 2.0
+ * @since 01/12/18
  */
 class CSVOptions extends JDialog {
 	private final MyCellarCheckBox export[];
@@ -63,19 +63,7 @@ class CSVOptions extends JDialog {
 		export = new MyCellarCheckBox[nb_colonnes];
 		for (int i = 0; i < nb_colonnes; i++) {
 			export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
-			try {
-				int I = Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0);
-				if (I == 1) {
-					export[i].setSelected(true);
-				}
-				else {
-					export[i].setSelected(false);
-				}
-			}
-			catch (NumberFormatException nfe) {
-				export[i].setSelected(false);
-				Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0);
-			}
+			export[i].setSelected(Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0) == 1);
 			colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
 		}
 		JPanel jPanel2 = new JPanel();

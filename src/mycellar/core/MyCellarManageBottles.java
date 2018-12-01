@@ -38,8 +38,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 04/07/18
+ * @version 1.8
+ * @since 01/12/18
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -162,16 +162,13 @@ public abstract class MyCellarManageBottles extends JPanel {
 	 */
 	protected void coller_actionPerformed(ActionEvent e) {
 
-		try {
+		if (m_objet1 instanceof JTextField) {
 			JTextField jtf = (JTextField) m_objet1;
 			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
-		}
-		catch (Exception e1) {}
-		try {
+		} else if (m_objet1 instanceof JTextArea) {
 			JTextArea jtf = (JTextArea) m_objet1;
 			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
 		}
-		catch (Exception e1) {}
 	}
 	
 	/**
@@ -181,18 +178,15 @@ public abstract class MyCellarManageBottles extends JPanel {
 	 */
 	protected void couper_actionPerformed(ActionEvent e) {
 		String txt = "";
-		try {
+		if (m_objet1 instanceof JTextField) {
 			JTextField jtf = (JTextField) m_objet1;
 			txt = jtf.getSelectedText();
 			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
-		}
-		catch (Exception e1) {}
-		try {
+		} else if (m_objet1 instanceof JTextArea) {
 			JTextArea jtf = (JTextArea) m_objet1;
 			txt = jtf.getSelectedText();
 			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
 		}
-		catch (Exception e1) {}
 
 		Program.CLIPBOARD.copier(txt);
 	}
@@ -204,16 +198,13 @@ public abstract class MyCellarManageBottles extends JPanel {
 	 */
 	protected void copier_actionPerformed(ActionEvent e) {
 		String txt = "";
-		try {
+		if (m_objet1 instanceof JTextField) {
 			JTextField jtf = (JTextField) m_objet1;
 			txt = jtf.getSelectedText();
-		}
-		catch (Exception e1) {}
-		try {
+		} else if (m_objet1 instanceof JTextArea) {
 			JTextArea jtf = (JTextArea) m_objet1;
 			txt = jtf.getSelectedText();
 		}
-		catch (Exception e1) {}
 
 		Program.CLIPBOARD.copier(txt);
 	}
@@ -286,8 +277,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		if( m_annee_auto.isSelected() && annee.length() == 2) {
 			int n = Program.getCaveConfigInt("ANNEE", 50);
 			int siecle = Program.getCaveConfigInt("SIECLE", 20);
-			try
-			{
+			try {
 				if( Integer.parseInt(annee) > n ) {
 					annee = Integer.toString(siecle - 1) + annee;
 				} else {
@@ -314,10 +304,10 @@ public abstract class MyCellarManageBottles extends JPanel {
 		if(Program.france.getId().equals(vignoble.country)) {
 			comboCountry.setSelectedItem(Program.france);
 			vignobles = CountryVignobles.getVignobles(Program.france);
-		}	else if("fr".equals(vignoble.country)) {
+		} else if("fr".equals(vignoble.country)) {
 			comboCountry.setSelectedItem(Program.france);
 			vignobles = CountryVignobles.getVignobles(Program.france);
-		}	else if(vignoble.country != null) {
+		} else if(vignoble.country != null) {
 			Country c = Countries.findByIdOrLabel(vignoble.country);
 			if(c != null) {
 				comboCountry.setSelectedItem(c);
@@ -358,7 +348,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		}
 		if (name.isModified()) {
 			m_half.setSelectedItem(selected);
-		}	else {
+		} else {
 			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 		}
 	}
@@ -370,17 +360,11 @@ public abstract class MyCellarManageBottles extends JPanel {
 	 */
 	protected void preview_actionPerformed(ActionEvent e) {
 		Debug("Previewing...");
-		try {
-			int num_select = m_lieu.getSelectedIndex();
-			RangementUtils.putTabStock();
-			LinkedList<Rangement> rangements = new LinkedList<>();
-			rangements.add(Program.getCave(num_select - 1));
-			MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
-			Program.open( new File(Program.getPreviewXMLFileName()) );
-		}
-		catch (Exception a) {
-			Program.showException(a);
-		}
+		RangementUtils.putTabStock();
+		final LinkedList<Rangement> rangements = new LinkedList<>();
+		rangements.add(Program.getCave(m_lieu.getSelectedIndex() - 1));
+		MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
+		Program.open( new File(Program.getPreviewXMLFileName()) );
 		Debug("Previewing... End");
 	}
 
@@ -391,8 +375,9 @@ public abstract class MyCellarManageBottles extends JPanel {
 	 * @param e ItemEvent
 	 */
 	private void num_lieu_itemStateChanged(ItemEvent e) {
-		if(isListenersDisabled())
+		if(isListenersDisabled()) {
 			return;
+		}
 		SwingUtilities.invokeLater(() -> {
 			Debug("Num_lieu_itemStateChanging...");
 			int num_select = m_num_lieu.getSelectedIndex();

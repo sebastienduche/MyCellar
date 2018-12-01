@@ -14,8 +14,6 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.BorderFactory;
@@ -1141,7 +1139,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		try (var workbook = new XSSFWorkbook(new FileInputStream(nom))) {
 
 			//Sélection de la feuille
-			Sheet sheet = workbook.getSheetAt(0);
+			var sheet = workbook.getSheetAt(0);
 			//Lecture de cellules
 			Iterator<Row> iterator = sheet.iterator();
 			//Ecriture du vin pour chaque ligne

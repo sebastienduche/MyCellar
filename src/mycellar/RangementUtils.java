@@ -12,14 +12,11 @@ import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.swing.JProgressBar;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -138,11 +135,9 @@ public class RangementUtils {
 	static boolean write_HTML(String fichier, List<Bouteille> all, List<MyCellarFields> fields) {
 
 		try{
-			DocumentBuilderFactory dbFactory =
-					DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = 
-					dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.newDocument();
+			var dbFactory = DocumentBuilderFactory.newInstance();
+			var dBuilder = dbFactory.newDocumentBuilder();
+			var doc = dBuilder.newDocument();
 			// root element
 			Element root = doc.createElement("html");
 			doc.appendChild(root);
@@ -159,8 +154,9 @@ public class RangementUtils {
 			body.appendChild(table);
 			Element thead = doc.createElement("thead");
 			table.appendChild(thead);
-			if(fields.isEmpty())
+			if(fields.isEmpty()) {
 				fields = MyCellarFields.getFieldsList();
+			}
 			for(MyCellarFields field : fields){
 				Element td = doc.createElement("td");
 				thead.appendChild(td);
@@ -176,64 +172,65 @@ public class RangementUtils {
 				for(MyCellarFields field : fields){
 					Element td = doc.createElement("td");
 					tr.appendChild(td);
-					if(field == MyCellarFields.NAME)
+					if(field == MyCellarFields.NAME) {
 						td.appendChild(doc.createTextNode(b.getNom()));
-					else if(field == MyCellarFields.YEAR)
+					} else if(field == MyCellarFields.YEAR) {
 						td.appendChild(doc.createTextNode(b.getAnnee()));
-					else if(field == MyCellarFields.TYPE)
+					} else if(field == MyCellarFields.TYPE) {
 						td.appendChild(doc.createTextNode(b.getType()));
-					else if(field == MyCellarFields.PLACE)
+					} else if(field == MyCellarFields.PLACE) {
 						td.appendChild(doc.createTextNode(b.getEmplacement()));
-					else if(field == MyCellarFields.NUM_PLACE)
+					} else if(field == MyCellarFields.NUM_PLACE) {
 						td.appendChild(doc.createTextNode(Integer.toString(b.getNumLieu())));
-					else if(field == MyCellarFields.LINE)
+					} else if(field == MyCellarFields.LINE) {
 						td.appendChild(doc.createTextNode(Integer.toString(b.getLigne())));
-					else if(field == MyCellarFields.COLUMN)
+					} else if(field == MyCellarFields.COLUMN) {
 						td.appendChild(doc.createTextNode(Integer.toString(b.getColonne())));
-					else if(field == MyCellarFields.PRICE)
+					} else if(field == MyCellarFields.PRICE) {
 						td.appendChild(doc.createTextNode(b.getPrix()));
-					else if(field == MyCellarFields.COMMENT)
+					} else if(field == MyCellarFields.COMMENT) {
 						td.appendChild(doc.createTextNode(b.getComment()));
-					else if(field == MyCellarFields.MATURITY)
+					} else if(field == MyCellarFields.MATURITY) {
 						td.appendChild(doc.createTextNode(b.getMaturity()));
-					else if(field == MyCellarFields.PARKER)
+					} else if(field == MyCellarFields.PARKER) {
 						td.appendChild(doc.createTextNode(b.getParker()));
-					else if(field == MyCellarFields.COLOR)
+					} else if(field == MyCellarFields.COLOR) {
 						td.appendChild(doc.createTextNode(BottleColor.getColor(b.getColor()).toString()));
-					else if(field == MyCellarFields.COUNTRY) {
+					} else if(field == MyCellarFields.COUNTRY) {
 						if(b.getVignoble() != null) {
 							Country c = Countries.find(b.getVignoble().getCountry());
-							if(c != null)
+							if(c != null) {
 								td.appendChild(doc.createTextNode(c.toString()));
+							}
+						} else {
+							td.appendChild(doc.createTextNode(""));
 						}
-						else
-							td.appendChild(doc.createTextNode(""));
-					}
-					else if(field == MyCellarFields.VINEYARD) {
-						if(b.getVignoble() != null)
+					} else if(field == MyCellarFields.VINEYARD) {
+						if(b.getVignoble() != null) {
 							td.appendChild(doc.createTextNode(b.getVignoble().getName()));
-						else
+						} else {
 							td.appendChild(doc.createTextNode(""));
-					}
-					else if(field == MyCellarFields.AOC) {
-						if(b.getVignoble() != null && b.getVignoble().getAOC() != null)
+						}
+					} else if(field == MyCellarFields.AOC) {
+						if(b.getVignoble() != null && b.getVignoble().getAOC() != null) {
 							td.appendChild(doc.createTextNode(b.getVignoble().getAOC()));
-						else
+						} else {
 							td.appendChild(doc.createTextNode(""));
-					}
-					else if(field == MyCellarFields.IGP) {
-						if(b.getVignoble() != null && b.getVignoble().getIGP() != null)
+						}
+					} else if(field == MyCellarFields.IGP) {
+						if(b.getVignoble() != null && b.getVignoble().getIGP() != null) {
 							td.appendChild(doc.createTextNode(b.getVignoble().getIGP()));
-						else
+						} else {
 							td.appendChild(doc.createTextNode(""));
+						}
 					}
 				}
 			}
 
-			TransformerFactory transformerFactory =	TransformerFactory.newInstance();
-			Transformer transformer =	transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(doc);
-			StreamResult result =	new StreamResult(new File(fichier));
+			var transformerFactory = TransformerFactory.newInstance();
+			var transformer = transformerFactory.newTransformer();
+			var source = new DOMSource(doc);
+			var result = new StreamResult(new File(fichier));
 			transformer.transform(source, result);
 		} catch (ParserConfigurationException e) {
 			Debug("ParserConfigurationException");

@@ -2,13 +2,11 @@ package mycellar.core.datas;
 
 import mycellar.Bouteille;
 import mycellar.Program;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -64,15 +62,14 @@ public final class MyCellarBottleContenance {
     String filename = Program.getXMLTypesFileName();
     try (var fileWriter = new FileWriter(filename)){
       //Init XML File
-      fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-      // Racine XML
-      fileWriter.write("<MyCellar>");
+      fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
       // Ecriture des types
       for (String type: list){
-        if(type.equals(defaultValue))
+        if(type.equals(defaultValue)) {
           fileWriter.write("<type value=\""+type+"\" default=\"true\"/>");
-        else
+        } else {
           fileWriter.write("<type value=\""+type+"\"/>");
+        }
       }
       fileWriter.write("</MyCellar>");
       fileWriter.flush();
@@ -121,10 +118,12 @@ public final class MyCellarBottleContenance {
           // Récupération des noeuds des types
           String value = type.getAttribute("value");
           if (null != value && !value.isEmpty()) {
-            if (type.hasAttribute("default"))
+            if (type.hasAttribute("default")) {
               defaultValue = value;
-            if (!list.contains(value))
+            }
+            if (!list.contains(value)) {
               list.add(value);
+            }
           }
         }
       }

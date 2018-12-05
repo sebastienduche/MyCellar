@@ -2,9 +2,7 @@
 5.5
 MyCellar.jar@b3068502751874a17a54ef2de2b1504f
 Finish.html
-commons-collections4-4.2.jar
-commons-compress-1.18.jar
-poi-4.0.0.jar
-poi-ooxml-4.0.0.jar
-poi-ooxml-schemas-4.0.0.jar
-xmlbeans-3.0.1.jar
+activation-1.0.2.jar
+jaxb-api-2.3.0.jar
+jaxb-core-2.3.0.1.jar
+jaxb-impl-2.3.1.jar

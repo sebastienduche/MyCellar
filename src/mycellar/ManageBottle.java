@@ -39,8 +39,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.5
- * @since 29/06/18
+ * @version 4.6
+ * @since 07/12/18
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -110,9 +110,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	        public void keyTyped(KeyEvent e) {
 			if(e.getKeyChar() == ',' || e.getKeyChar() == '.') {
 				e.consume();
-				DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
-				DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
-				char sep = symbols.getDecimalSeparator();
+				char sep = Program.getDecimalSeparator();
 				String text = m_price.getText();
 				m_price.setText(text+sep);
 			}
@@ -355,7 +353,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				half_tmp = m_half.getSelectedItem().toString();
 			}
 
-			boolean autoAdd = "ON".equals(Program.getCaveConfigString("TYPE_AUTO", "OFF"));
+			final boolean autoAdd = Program.getCaveConfigBool("TYPE_AUTO", false);
 
 			if (autoAdd && half_tmp.compareTo(bottle.getType()) != 0 && !bottle.getType().isEmpty()) {
 				MyCellarBottleContenance.getList().add(bottle.getType());

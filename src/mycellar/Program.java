@@ -46,6 +46,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
@@ -77,8 +78,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.6
- * @since 01/12/18
+ * @version 19.7
+ * @since 07/12/18
  */
 
 public class Program {
@@ -578,6 +579,12 @@ public class Program {
 		else {
 			Erreur.showSimpleErreur(getError("Error162"));
 		}
+	}
+
+	static char getDecimalSeparator() {
+		DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
+		DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
+		return symbols.getDecimalSeparator();
 	}
 
 	/**
@@ -1331,6 +1338,15 @@ public class Program {
 		return _sDefaultValue;
 	}
 
+	static boolean getCaveConfigBool(String _sKey, boolean defaultValue) {
+		if(null != configCave) {
+			final String value = configCave.getString(_sKey, defaultValue ? "1" : "0");
+			return ("1".equals(value) || "ON".equalsIgnoreCase(value));
+		}
+		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+defaultValue+"'");
+		return defaultValue;
+	}
+
 	static int getGlobalConfigInt(String _sKey, int _nDefaultValue) {
 		return CONFIG_GLOBAL.getInt(_sKey, _nDefaultValue);
 	}
@@ -1350,6 +1366,18 @@ public class Program {
 	public static void putCaveConfigString(String _sKey, String _sValue) {
 		if(null != configCave) {
 			configCave.put(_sKey, _sValue);
+		} else {
+			Debug("Program: ERROR: Unable to put value in configCave: [" + _sKey + " - " + _sValue + "]");
+		}
+	}
+
+	static void putGlobalConfigBool(String _sKey, boolean _sValue) {
+		CONFIG_GLOBAL.put(_sKey, _sValue ? "1" : "0");
+	}
+
+	static void putCaveConfigBool(String _sKey, boolean _sValue) {
+		if(null != configCave) {
+			configCave.put(_sKey, _sValue ? "1" : "0");
 		} else {
 			Debug("Program: ERROR: Unable to put value in configCave: [" + _sKey + " - " + _sValue + "]");
 		}
@@ -1550,10 +1578,10 @@ public class Program {
 		String title = getCaveConfigString("PDF_TITLE", "");
 		int titleSize = getCaveConfigInt("TITLE_SIZE", 10);
 		int textSize = getCaveConfigInt("TEXT_SIZE", 10);
-		String border = getCaveConfigString("BORDER", "ON");
+		final boolean border = getCaveConfigBool("BORDER", true);
 		boolean boldTitle = "bold".equals(getCaveConfigString("BOLD", ""));
 
-		PDFProperties properties = new PDFProperties(title, titleSize, textSize, "ON".equals(border), boldTitle);
+		PDFProperties properties = new PDFProperties(title, titleSize, textSize, border, boldTitle);
 
 		int nbCol = MyCellarFields.getFieldsList().size();
 		int countColumn = 0;
@@ -1778,14 +1806,14 @@ public class Program {
 		  if (c == ' ') {
 			  continue;
 		  }
-		  if (c == ',') {
+		  if (c == ',' || c == '.') {
 			  buf.append('.');
 		  }
 		  if (Character.isDigit(c)) {
 			  buf.append(c);
 		  }
 	  }
-		return new BigDecimal(buf.toString()).setScale(2, BigDecimal.ROUND_HALF_UP);
+		return new BigDecimal(buf.toString()).setScale(2, RoundingMode.HALF_UP);
   }
 
 	static int getNewID() {

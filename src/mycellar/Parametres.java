@@ -28,8 +28,8 @@ import java.util.Arrays;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.3
- * @since 12/10/18
+ * @version 11.4
+ * @since 07/12/18
  */
 public class Parametres extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -100,9 +100,9 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 			language = Program.getLanguage("CodeLang" + i);
 		}
 		langue.setSelectedIndex(i - 1);
-		
-		String auto = Program.getCaveConfigString("TYPE_AUTO", "OFF");
-		jcb_half_auto.setSelected("ON".equals(auto));
+
+		boolean auto = Program.getCaveConfigBool("TYPE_AUTO", false);
+		jcb_half_auto.setSelected(auto);
 
 		valider.addActionListener(this::valider_actionPerformed);
 		parcourir_excel.addActionListener(this::parcourir_excel_actionPerformed);
@@ -221,8 +221,9 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 					Program.putCaveConfigString("FILE_EXCEL", fic);
 				}
 			}
-			else
+			else {
 				Program.putCaveConfigInt("FIC_EXCEL", 0);
+			}
 
 			if (result) {
 				Program.putCaveConfigString("DEVISE", devise.getText().trim());
@@ -350,9 +351,9 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	 * @param e ActionEvent
 	 */
 	private void jcb_message_actionPerformed(ActionEvent e) {
-		Program.putCaveConfigString("DONT_SHOW_INFO", "0");
-		Program.putCaveConfigString("DONT_SHOW_TAB_MESS", "0");
-		Program.putCaveConfigString("DONT_SHOW_CREATE_MESS", "0");
+		Program.putCaveConfigBool("DONT_SHOW_INFO", false);
+		Program.putCaveConfigBool("DONT_SHOW_TAB_MESS", false);
+		Program.putCaveConfigBool("DONT_SHOW_CREATE_MESS", false);
 		buttonResetMessageDialog.setEnabled(false);
 	}
 
@@ -375,13 +376,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	 * @param e ActionEvent
 	 */
 	private void jcb_half_auto_actionPerformed(ActionEvent e) {
-
-		if (jcb_half_auto.isSelected()) {
-			Program.putCaveConfigString("TYPE_AUTO", "ON");
-		}
-		else {
-			Program.putCaveConfigString("TYPE_AUTO", "OFF");
-		}
+		Program.putCaveConfigBool("TYPE_AUTO", jcb_half_auto.isSelected());
 	}
 
 	/**
@@ -391,14 +386,9 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	 */
 	private void activate_debug_actionPerformed(ActionEvent e) {
 
-		if (m_jcb_debug.isSelected()) {
-			Program.putGlobalConfigString("DEBUG", "1");
-			Program.setDebug(true);
-		}
-		else {
-			Program.putGlobalConfigString("DEBUG", "0");
-			Program.setDebug(false);
-		}
+		final boolean selected = m_jcb_debug.isSelected();
+		Program.putGlobalConfigBool("DEBUG", selected);
+		Program.setDebug(selected);
 	}
 
 

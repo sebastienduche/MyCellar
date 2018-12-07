@@ -24,8 +24,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.6
- * @since 10/10/18
+ * @version 2.7
+ * @since 07/12/18
  */
 class PDFOptions extends JDialog {
   private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
@@ -83,7 +83,7 @@ class PDFOptions extends JDialog {
     }
   
     MyCellarCheckBox3.setText(Program.getLabel("Infos264")); //bordure
-    if ("ON".equals(Program.getCaveConfigString("BORDER", "OFF"))) {
+    if (Program.getCaveConfigBool("BORDER", false)) {
       MyCellarCheckBox3.setSelected(true);
     }
     ArrayList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
@@ -157,7 +157,7 @@ class PDFOptions extends JDialog {
       Program.putCaveConfigString("TITLE_SIZE", MyCellarSpinner1.getValue().toString());
       Program.putCaveConfigString("TEXT_SIZE", MyCellarSpinner3.getValue().toString());
       Program.putCaveConfigString("BOLD", MyCellarCheckBox1.isSelected() ? "bold" : "");
-      Program.putCaveConfigString("BORDER", MyCellarCheckBox3.isSelected() ? "ON" : "OFF");
+      Program.putCaveConfigBool("BORDER", MyCellarCheckBox3.isSelected());
       int col_size_max = 0;
       for (int i = 0; i < nb_colonnes; i++) {
         Program.putCaveConfigString("SIZE_COL" + i, col_size[i].getValue().toString());

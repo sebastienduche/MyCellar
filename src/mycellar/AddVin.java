@@ -42,8 +42,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 23.8
- * @since 19/10/18
+ * @version 23.9
+ * @since 07/12/18
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable {
 
@@ -123,9 +123,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		        public void keyTyped(KeyEvent e) {
 					if(e.getKeyChar() == ',' || e.getKeyChar() == '.') {
 						e.consume();
-						DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
-						DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
-						char sep = symbols.getDecimalSeparator();
+						char sep = Program.getDecimalSeparator();
 						String text = m_price.getText();
 						m_price.setText(text+sep);
 					}
@@ -373,9 +371,9 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			if(oHalf != null) {
 				half_tmp = oHalf.toString();
 			}
-			String auto = Program.getCaveConfigString("TYPE_AUTO", "OFF");
+			final boolean auto = Program.getCaveConfigBool("TYPE_AUTO", false);
 
-			if (half_tmp.compareTo(bottle.getType()) != 0 && "ON".equals(auto) && !bottle.getType().isEmpty()) {
+			if (half_tmp.compareTo(bottle.getType()) != 0 && auto && !bottle.getType().isEmpty()) {
 				MyCellarBottleContenance.getList().add(bottle.getType());
 				m_half.addItem(bottle.getType());
 				m_half.setSelectedItem(bottle.getType());

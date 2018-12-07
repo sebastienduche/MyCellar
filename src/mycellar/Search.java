@@ -43,8 +43,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.3
- * @since 01/12/18
+ * @version 19.4
+ * @since 07/12/18
  */
 public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable {
 
@@ -96,8 +96,8 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		TXT_NB.setText("-");
 		TXT_NBRESUL.setText(Program.getLabel("Infos222")); //"Bouteille(s) trouvée(s): ");
 
-		String key = Program.getCaveConfigString("EMPTY_SEARCH", "OFF");
-		if ("ON".equals(key)) {
+		boolean key = Program.getCaveConfigBool("EMPTY_SEARCH", false);
+		if (key) {
 			empty_search.setSelected(true);
 		}
 
@@ -1029,7 +1029,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 	 * @param e ActionEvent
 	 */
 	private void empty_search_actionPerformed(ActionEvent e) {
-		Program.putCaveConfigString("EMPTY_SEARCH", empty_search.isSelected() ? "ON" : "OFF");
+		Program.putCaveConfigBool("EMPTY_SEARCH", empty_search.isSelected());
 	}
 
 	/**

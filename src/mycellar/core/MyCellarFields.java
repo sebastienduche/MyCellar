@@ -13,8 +13,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 08/06/18
+ * @version 0.6
+ * @since 28/12/18
  */
 
 public enum MyCellarFields {
@@ -97,7 +97,11 @@ public enum MyCellarFields {
 		return value;
   }
 
-  @Override
+	public static boolean hasSpecialHTMLCharacters(MyCellarFields field) {
+		return field.equals(NAME) || field.equals(TYPE) || field.equals(COMMENT) || field.equals(PRICE) || field.equals(PLACE);
+	}
+
+	@Override
 	public String toString() {
 		return label;
 	}

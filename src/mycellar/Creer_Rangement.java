@@ -7,6 +7,7 @@ import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
 import mycellar.core.PopupListener;
 import net.miginfocom.swing.MigLayout;
@@ -40,8 +41,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.7
- * @since 25/10/18
+ * @version 12.8
+ * @since 28/12/18
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -254,9 +255,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 			enableAll(false);
 		}
 
-		if (0 == Program.getCaveConfigInt("CREER_R_DEFAULT", 0)) {
-			m_caisse_chk.setSelected(true);
-		}
+		m_caisse_chk.setSelected(true);
 		setVisible(true);
 
 	}
@@ -675,9 +674,8 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 					}
 				}
 			}
-			int key = Program.getCaveConfigInt("DONT_SHOW_CREATE_MESS", 0);
-			if (key == 0 && bResul) {
-				Erreur.showKeyErreur(Program.getError("Error164"), "", "DONT_SHOW_CREATE_MESS");
+			if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false) && bResul) {
+				Erreur.showKeyErreur(Program.getError("Error164"), "", MyCellarSettings.DONT_SHOW_CREATE_MESS);
 			}
 			if (bResul) {
 				Start.getInstance().enableAll(true);

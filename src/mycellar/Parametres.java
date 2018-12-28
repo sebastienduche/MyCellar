@@ -5,6 +5,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
 import mycellar.core.PopupListener;
 import net.miginfocom.swing.MigLayout;
@@ -28,8 +29,8 @@ import java.util.Arrays;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 11.4
- * @since 07/12/18
+ * @version 11.5
+ * @since 28/12/18
  */
 public class Parametres extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -74,16 +75,16 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		file_bak.addMouseListener(popup_l);
 		devise.addMouseListener(popup_l);
 		valider.setText(Program.getLabel("Infos315"));
-		file_bak.setText(Program.getCaveConfigString("FILE_EXCEL",""));
+		file_bak.setText(Program.getCaveConfigString(MyCellarSettings.FILE_EXCEL,""));
 		
-		annee.setValue(Program.getCaveConfigInt("ANNEE", 50));
-		siecle.setValue(Program.getCaveConfigInt("SIECLE", 19));
+		annee.setValue(Program.getCaveConfigInt(MyCellarSettings.ANNEE, 50));
+		siecle.setValue(Program.getCaveConfigInt(MyCellarSettings.SIECLE, 19));
 
-		if ( Program.getGlobalConfigInt("DEBUG", 0) == 1) {
+		if (Program.getGlobalConfigBool(MyCellarSettings.DEBUG, false)) {
 			m_jcb_debug.setSelected(true);
 		}
 
-		devise.setText(Program.getCaveConfigString("DEVISE",""));
+		devise.setText(Program.getCaveConfigString(MyCellarSettings.DEVISE,""));
 		String language = Program.getLanguage("Language1");
 		int i = 1;
 		while (language != null) {
@@ -93,16 +94,15 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		}
 		
 		i = 1;
-		language = Program.getLanguage("CodeLang1");
-		String the_language = Program.getGlobalConfigString("LANGUAGE","");
+		language = Program.getLanguage("CodeLang" + i);
+		String the_language = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE,"");
 		while (language != null && language.compareTo(the_language) != 0) {
 			i++;
 			language = Program.getLanguage("CodeLang" + i);
 		}
 		langue.setSelectedIndex(i - 1);
 
-		boolean auto = Program.getCaveConfigBool("TYPE_AUTO", false);
-		jcb_half_auto.setSelected(auto);
+		jcb_half_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.TYPE_AUTO, false));
 
 		valider.addActionListener(this::valider_actionPerformed);
 		parcourir_excel.addActionListener(this::parcourir_excel_actionPerformed);
@@ -168,13 +168,13 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		add(valider, "gaptop 15px, center");
 
 		
-		int val = Program.getCaveConfigInt("FIC_EXCEL", 0);
-		file_bak.setEnabled(val == 1);
-		label_fic_bak.setEnabled(val == 1);
-		jcb_excel.setSelected(val == 1);
-		parcourir_excel.setEnabled(val == 1);
+		boolean excel = Program.getCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
+		file_bak.setEnabled(excel);
+		label_fic_bak.setEnabled(excel);
+		jcb_excel.setSelected(excel);
+		parcourir_excel.setEnabled(excel);
 	
-		if (Program.getCaveConfigInt("ANNEE_CTRL", 0) == 1) {
+		if (Program.getCaveConfigBool(MyCellarSettings.ANNEE_CTRL, false)) {
 			jcb_annee_control.setSelected(true);
 		}
 		label_annee.setEnabled(jcb_annee_control.isSelected());
@@ -210,38 +210,31 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	private void valider_actionPerformed(ActionEvent e) {
 		try {
 			modifyLanguage();
-			boolean result = true;
 			if (jcb_excel.isSelected()) {
-				Program.putCaveConfigInt("FIC_EXCEL", 1);
+				Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, true);
 				String fic = file_bak.getText();
 				if (!MyCellarControl.controlExtension(fic, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), fic), Program.getError("Error035"));
-					result = false;
+					return;
 				} else {
-					Program.putCaveConfigString("FILE_EXCEL", fic);
+					Program.putCaveConfigString(MyCellarSettings.FILE_EXCEL, fic);
 				}
-			}
-			else {
-				Program.putCaveConfigInt("FIC_EXCEL", 0);
+			} else {
+				Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
 			}
 
-			if (result) {
-				Program.putCaveConfigString("DEVISE", devise.getText().trim());
-				try {
-					int val = Integer.parseInt(annee.getValue().toString());
-					Program.putCaveConfigInt("ANNEE", val);
-				}
-				catch (NumberFormatException ignored) {}
-				try {
-					int val = Integer.parseInt(siecle.getValue().toString());
-					Program.putCaveConfigInt("SIECLE", val);
-				}
-				catch (NumberFormatException ignored) {}
-
-				Program.setYearControl(jcb_annee_control.isSelected());
-
-				Program.saveGlobalProperties();
+			Program.putCaveConfigString(MyCellarSettings.DEVISE, devise.getText().trim());
+			try {
+				int val = Integer.parseInt(annee.getValue().toString());
+				Program.putCaveConfigInt(MyCellarSettings.ANNEE, val);
+				val = Integer.parseInt(siecle.getValue().toString());
+				Program.putCaveConfigInt(MyCellarSettings.SIECLE, val);
 			}
+			catch (NumberFormatException ignored) {}
+
+			Program.setYearControl(jcb_annee_control.isSelected());
+
+			Program.saveGlobalProperties();
 		}
 		catch (Exception exc) {
 			Program.showException(exc);
@@ -278,7 +271,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	 */
 	private void parcourir_excel_actionPerformed(ActionEvent e) {
 
-		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR",""));
+		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR,""));
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
@@ -288,15 +281,15 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 			if (nomFichier == null) {
 				setCursor(Cursor.getDefaultCursor());
 				Erreur.showSimpleErreur(Program.getError("FileNotFound"));
-				Program.Debug("ERROR: parcourir_excel: File not found during Opening!");
+				Program.Debug("ERROR: parcourir_excel: File not found while Opening!");
 				return;
 			}
 			String fic = nomFichier.getAbsolutePath();
 			Filtre filtre = (Filtre)boiteFichier.getFileFilter();
 			fic = MyCellarControl.controlAndUpdateExtension(fic, filtre);
 			file_bak.setText(fic);
-			Program.putCaveConfigString("FILE_EXCEL", fic);
-			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
+			Program.putCaveConfigString(MyCellarSettings.FILE_EXCEL, fic);
+			Program.putCaveConfigString(MyCellarSettings.DIR, boiteFichier.getCurrentDirectory().toString());
 		}
 
 	}
@@ -319,11 +312,11 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	private void modifyLanguage() {
 		try {
 			String thelangue = Program.getLanguage("CodeLang" + (langue.getSelectedIndex() + 1));
-			String currentLanguage = Program.getGlobalConfigString("LANGUAGE", "F");
+			String currentLanguage = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
 			if(thelangue.equals(currentLanguage)) {
 				return;
 			}
-			Program.putGlobalConfigString("LANGUAGE", thelangue);
+			Program.putGlobalConfigString(MyCellarSettings.LANGUAGE, thelangue);
 			boolean ok = Program.setLanguage(thelangue.charAt(0));
 			if (ok) {
 				if (Program.getLabel("Infos159") == null) {
@@ -333,8 +326,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 				if(ok) {
 					setLabels();
 				}
-			}
-			else {
+			} else {
 				langue.setSelectedIndex(0);
 				Program.setLanguage('F');
 				JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -351,9 +343,9 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	 * @param e ActionEvent
 	 */
 	private void jcb_message_actionPerformed(ActionEvent e) {
-		Program.putCaveConfigBool("DONT_SHOW_INFO", false);
-		Program.putCaveConfigBool("DONT_SHOW_TAB_MESS", false);
-		Program.putCaveConfigBool("DONT_SHOW_CREATE_MESS", false);
+		Program.putCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false);
+		Program.putCaveConfigBool(MyCellarSettings.DONT_SHOW_TAB_MESS, false);
+		Program.putCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false);
 		buttonResetMessageDialog.setEnabled(false);
 	}
 
@@ -376,7 +368,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	 * @param e ActionEvent
 	 */
 	private void jcb_half_auto_actionPerformed(ActionEvent e) {
-		Program.putCaveConfigBool("TYPE_AUTO", jcb_half_auto.isSelected());
+		Program.putCaveConfigBool(MyCellarSettings.TYPE_AUTO, jcb_half_auto.isSelected());
 	}
 
 	/**
@@ -387,7 +379,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	private void activate_debug_actionPerformed(ActionEvent e) {
 
 		final boolean selected = m_jcb_debug.isSelected();
-		Program.putGlobalConfigBool("DEBUG", selected);
+		Program.putGlobalConfigBool(MyCellarSettings.DEBUG, selected);
 		Program.setDebug(selected);
 	}
 

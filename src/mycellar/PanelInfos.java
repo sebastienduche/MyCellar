@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarSettings;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -19,8 +20,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.9
- * @since 17/10/18
+ * @version 2.0
+ * @since 28/12/18
  */
 class PanelInfos extends JPanel {
 
@@ -102,7 +103,7 @@ class PanelStats extends JPanel {
 				model.addRow(r, r.getNbCaseUseAll());
 			}
 		}
-		cellarTotal.setText(Program.getCellarValue() + " " + Program.getCaveConfigString("DEVISE",""));
+		cellarTotal.setText(Program.getCellarValue() + " " + Program.getCaveConfigString(MyCellarSettings.DEVISE,""));
 		bottlesNb.setText(Integer.toString(nbBottles));
 	}
 

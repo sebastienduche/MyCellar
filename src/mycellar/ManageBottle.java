@@ -4,6 +4,7 @@ import mycellar.actions.ChooseCellAction;
 import mycellar.core.IAddVin;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.MyCellarBottleContenance;
@@ -39,8 +40,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.6
- * @since 07/12/18
+ * @version 4.7
+ * @since 28/12/18
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -103,7 +104,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		Debug("Starting JbInit");
 		m_contenance.setText(Program.getLabel("Infos134")); //"Demie bouteille");
 		m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ( (SIECLE + 1) * 100))); //"Annee 00 -> 2000");
-		m_annee_auto.setSelected(Program.getCaveConfigInt("ANNEE_AUTO", 0) == 0);
+		m_annee_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
 
 		m_price.addKeyListener(new KeyAdapter() {
 	        @Override
@@ -353,7 +354,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				half_tmp = m_half.getSelectedItem().toString();
 			}
 
-			final boolean autoAdd = Program.getCaveConfigBool("TYPE_AUTO", false);
+			final boolean autoAdd = Program.getCaveConfigBool(MyCellarSettings.TYPE_AUTO, false);
 
 			if (autoAdd && half_tmp.compareTo(bottle.getType()) != 0 && !bottle.getType().isEmpty()) {
 				MyCellarBottleContenance.getList().add(bottle.getType());

@@ -38,8 +38,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.8
- * @since 01/12/18
+ * @version 1.9
+ * @since 28/12/18
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -62,7 +62,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final MyCellarLabel m_labelStillToAdd = new MyCellarLabel();
 	protected final MyCellarLabel m_end = new MyCellarLabel(); // Label pour les résultats
 	protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox();
-	protected final int SIECLE = Program.getCaveConfigInt("SIECLE", 20) - 1;
+	protected final int SIECLE = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
 	private final Object m_objet1 = null;
 	protected final JModifyComboBox<String> m_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<>();
@@ -98,7 +98,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected Bouteille m_laBouteille = null;
 	protected char AJOUTER = Program.getLabel("AJOUTER").charAt(0);
 	protected char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
-	private final MyCellarLabel m_devise = new MyCellarLabel(Program.getCaveConfigString("DEVISE", "€"));
+	private final MyCellarLabel m_devise = new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, "€"));
 	private boolean listenersEnabled = true;
 	
 	protected boolean m_bmulti = false; //Pour ListVin
@@ -137,19 +137,19 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected void annee_auto_actionPerformed(ActionEvent e) {
 		Debug("Annee_auto_actionPerformed...");
 		if (!m_annee_auto.isSelected()) {
-			Program.putCaveConfigInt("ANNEE_AUTO", 1);
+			Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
 			
-			if (Program.getCaveConfigInt("ANNEE_AUTO_FALSE", 0) == 0) {
+			if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_FALSE, false)) {
 				String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ( (SIECLE + 1) * 100)); //"En décochant cette option, vous désactivez la transformation");
-				Erreur.showKeyErreur(erreur_txt1, "", "ANNEE_AUTO_FALSE");
+				Erreur.showKeyErreur(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_FALSE);
 			}
 		}
 		else {
-			Program.putCaveConfigInt("ANNEE_AUTO", 0);
+			Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, true);
 
-			if (Program.getCaveConfigInt("ANNEE_AUTO_TRUE", 0) == 0) {
+			if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_TRUE, false)) {
 				String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ( (SIECLE + 1) * 100));//"En cochant cette option, vous activez la transformation");
-				Erreur.showKeyErreur(erreur_txt1, "", "ANNEE_AUTO_TRUE");
+				Erreur.showKeyErreur(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_TRUE);
 			}
 		}
 		Debug("Annee_auto_actionPerformed...End");
@@ -275,13 +275,13 @@ public abstract class MyCellarManageBottles extends JPanel {
 		
 		String annee = m_year.getText().trim();
 		if( m_annee_auto.isSelected() && annee.length() == 2) {
-			int n = Program.getCaveConfigInt("ANNEE", 50);
-			int siecle = Program.getCaveConfigInt("SIECLE", 20);
+			int n = Program.getCaveConfigInt(MyCellarSettings.ANNEE, 50);
+			int siecle = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20);
 			try {
-				if( Integer.parseInt(annee) > n ) {
-					annee = Integer.toString(siecle - 1) + annee;
+				if(Integer.parseInt(annee) > n) {
+					annee = (siecle - 1) + annee;
 				} else {
-					annee = Integer.toString(siecle) + annee;
+					annee = siecle + annee;
 				}
 			}
 			catch(NumberFormatException e) {

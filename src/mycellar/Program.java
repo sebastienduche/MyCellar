@@ -5,6 +5,7 @@ import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.countries.Countries;
@@ -78,8 +79,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.7
- * @since 07/12/18
+ * @version 19.8
+ * @since 28/12/18
  */
 
 public class Program {
@@ -147,7 +148,7 @@ public class Program {
 	private static final String MY_CELLAR_XML = "MyCellar.xml";
 	private static final String TYPES_XML = "Types.xml";
 	private static final String BOUTEILLES_XML = "Bouteilles.xml";
-	private static final String INTERNAL_VERSION = "2.4";
+	private static final String INTERNAL_VERSION = "2.5";
 
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;
@@ -215,12 +216,8 @@ public class Program {
 				putGlobalConfigString(key, PROPERTIES_GLOBAL.getProperty(key));
 			}
 
-			if(hasConfigCaveKey("PRICE_SEPARATOR")) {
-				getCaveConfig().remove("PPRICE_SEPARATOR");
-			}
-
-			if (!hasConfigGlobalKey("LANGUAGE") || getGlobalConfigString("LANGUAGE", "").isEmpty()) {
-				putGlobalConfigString("LANGUAGE", "F");
+			if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
+				putGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
 			}
 			cleanAndUpgrade();
 		}
@@ -267,7 +264,7 @@ public class Program {
 		}
 		if (PROPERTIES_CAVE.isEmpty()) {
 			// Initialisation de la devise pour les nouveaux fichiers
-			putCaveConfigString("DEVISE", "€");
+			putCaveConfigString(MyCellarSettings.DEVISE, "€");
 		}
 	}
 
@@ -277,16 +274,17 @@ public class Program {
 	 * Pour nettoyer et mettre a jour le programme
 	 */
 	private static void cleanAndUpgrade() {
-		String sVersion = getCaveConfigString("VERSION", "");
+		String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
 		if(sVersion.isEmpty()) {
-			putCaveConfigString("VERSION", INTERNAL_VERSION);
+			putCaveConfigString(MyCellarSettings.VERSION, INTERNAL_VERSION);
 			return;
 		}
 		int n1 = Integer.parseInt(sVersion.substring(0,1));
 		int n2 = Integer.parseInt(sVersion.substring(2,3));
 		int val = n1*10 + n2;
 		// Affichage du nombre avec 2 décimales.
-		if ( val < 24 ) {
+		if (val < 24) {
+			Debug("Program: Updating to internal version 2.4");
 			Debug("Program: WARNING: Destroying old files");
 			File years = new File(getWorkDir(true) + "Years.xml");
 			if(years.exists()) {
@@ -295,7 +293,36 @@ public class Program {
 			File f1 = new File( getWorkDir(true) + "static_col.sinfo");
 			FileUtils.deleteQuietly(f1);
 			
-			putCaveConfigString("VERSION", INTERNAL_VERSION);
+			putCaveConfigString(MyCellarSettings.VERSION, INTERNAL_VERSION);
+		}
+		if (val < 25) {
+			Debug("Program: Updating to internal version 2.5");
+			if(hasConfigCaveKey("PRICE_SEPARATOR")) {
+				getCaveConfig().remove("PRICE_SEPARATOR");
+			}
+			if(hasConfigCaveKey("JUST_ONE_PLACE")) {
+				getCaveConfig().remove("JUST_ONE_PLACE");
+			}
+			if(hasConfigCaveKey("JUST_ONE_NUM_PLACE")) {
+				getCaveConfig().remove("JUST_ONE_NUM_PLACE");
+			}
+			if(hasConfigCaveKey("SEARCH_DEFAULT")) {
+				getCaveConfig().remove("SEARCH_DEFAULT");
+			}
+			if(hasConfigCaveKey("XML_TYPE")) {
+				getCaveConfig().remove("XML_TYPE");
+			}
+
+			putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, !getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
+			putCaveConfigBool(MyCellarSettings.BOLD, "bold".equals(getCaveConfigString(MyCellarSettings.BOLD, "")));
+			putCaveConfigBool(MyCellarSettings.BOLD_XLS, "bold".equals(getCaveConfigString(MyCellarSettings.BOLD_XLS, "")));
+			putCaveConfigBool(MyCellarSettings.BOLD_TAB_XLS, "bold".equals(getCaveConfigString(MyCellarSettings.BOLD_TAB_XLS, "")));
+			putCaveConfigString(MyCellarSettings.VERSION, INTERNAL_VERSION);
+		}
+		if(hasConfigCaveKey(MyCellarSettings.EXPORT_CSV + MyCellarFields.NAME.name())) {
+			for (int i=0; i<9; i++) {
+				getCaveConfig().remove("SIZE_COL"+i+"EXPORT_CSV");
+			}
 		}
 	}
 
@@ -308,16 +335,7 @@ public class Program {
 	static boolean setLanguage(char lang) {
 		Debug("Program: Set Language : "+lang);
 		TABBED_PANE.removeAll();
-		addWine = null;
-		createPlace = null;
-		creer_tableau = null;
-		export = null;
-		history = null;
-		modifyPlace = null;
-		search = null;
-		showfile = null;
-		showtrash = null;
-		vignobles = null;
+		clearObjectsVariables();
 		boolean load = LanguageFileLoader.getInstance().loadLanguageFiles(lang);
 		PANEL_INFOS.setLabels();
 		Start.getInstance().updateLabels();
@@ -373,7 +391,10 @@ public class Program {
 
 	private static void sendMail(String error, File filename) {
 		var stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
-
+		if (stream == null) {
+			Debug("Program: ERROR: Unable to load MyCellar.dat");
+			return;
+		}
 		try (var reader = new BufferedReader(stream)) {
 			String line = reader.readLine();
 			reader.close();
@@ -922,21 +943,18 @@ public class Program {
 	 * @param f File
 	 */
 	static boolean openaFile(File f) {
+		LinkedList<String> list = new LinkedList<>();
+		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN1,""));
+		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN2,""));
+		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN3,""));
+		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN4,""));
 		boolean newFile = false;
 		if(f != null) {
 			Debug("Program: openFile: Opening file: " + f.getAbsolutePath());
+			list.remove(f.getAbsolutePath());
 		} else {
 			newFile = true;
 			Debug("Program: openFile: Creating new file");
-		}
-
-		LinkedList<String> list = new LinkedList<>();
-		list.addLast(getGlobalConfigString("LAST_OPEN1",""));
-		list.addLast(getGlobalConfigString("LAST_OPEN2",""));
-		list.addLast(getGlobalConfigString("LAST_OPEN3",""));
-		list.addLast(getGlobalConfigString("LAST_OPEN4",""));
-		if(f != null) {
-			list.remove(f.getAbsolutePath());
 		}
 
 		// Sauvegarde avant de charger le nouveau fichier
@@ -968,11 +986,11 @@ public class Program {
 		if(!f.exists()) {
 			Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), f.getAbsolutePath())); //Fichier non trouvé);
 
-			putGlobalConfigString("LAST_OPEN1", list.pop());
-			putGlobalConfigString("LAST_OPEN2", list.pop());
-			putGlobalConfigString("LAST_OPEN3", list.pop());
+			putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
+			putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
+			putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
 			// On a déjà enlevé un élément de la liste
-			putGlobalConfigString("LAST_OPEN4", "");
+			putGlobalConfigString(MyCellarSettings.LAST_OPEN4, "");
 			saveGlobalProperties();
 			return false;
 		}
@@ -1050,19 +1068,16 @@ public class Program {
 		CountryVignobles.load();
 		CountryVignobles.addVignobleFromBottles();
 
-		putGlobalConfigString("STARTUP", "1");
-		// Fin chargement
-
 		if(isFileSavable()) {
 			list.addFirst(f.getAbsolutePath());
 		}
 
-		putGlobalConfigString("LAST_OPEN1", list.pop());
-		putGlobalConfigString("LAST_OPEN2", list.pop());
-		putGlobalConfigString("LAST_OPEN3", list.pop());
-		putGlobalConfigString("LAST_OPEN4", list.pop());
+		putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
+		putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
+		putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
+		putGlobalConfigString(MyCellarSettings.LAST_OPEN4, list.pop());
 
-		putCaveConfigString("DIR", f.getParent());
+		putCaveConfigString(MyCellarSettings.DIR, f.getParent());
 
 		saveGlobalProperties();
 		modified = false;
@@ -1121,7 +1136,7 @@ public class Program {
 					}
 				}
 
-				putCaveConfigInt("ANNEE_AUTO", 0);
+				putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
 			}
 
 			File f = new File(getPreviewXMLFileName());
@@ -1158,14 +1173,12 @@ public class Program {
 				// Sauvegarde des propriétés globales
 				saveGlobalProperties();
 
-				if (getCaveConfigInt("FIC_EXCEL", 0) == 1) {
+				if (getCaveConfigBool(MyCellarSettings.FIC_EXCEL, false)) {
 					//Ecriture Excel
-					final String file_excel = getCaveConfigString("FILE_EXCEL", "");
-					Debug("Writing backup Excel file: " + file_excel);
+					final String file_excel = getCaveConfigString(MyCellarSettings.FILE_EXCEL, "");
+					Debug("Program: Writing backup Excel file: " + file_excel);
 					final List<Bouteille> bouteilles = Collections.unmodifiableList(getStorage().getAllList());
-					Thread writingExcel = new Thread(() -> {
-						RangementUtils.write_XLS(file_excel, bouteilles, true, null);
-					});
+					Thread writingExcel = new Thread(() -> RangementUtils.write_XLS(file_excel, bouteilles, true, null));
 					Runtime.getRuntime().addShutdownHook(writingExcel);
 				}
 			}
@@ -1181,8 +1194,20 @@ public class Program {
 			Countries.close();
 			Search.clearResults();
 		}
+		clearObjectsVariables();
 		m_bWorkDirCalculated = false;
 		archive = "";
+		TRASH.clear();
+		setFileSavable(false);
+		modified = false;
+		listCaveModified = false;
+		if(getCave() != null) {
+			getCave().clear();
+		}
+		Debug("Program: closeFile: Closing file Ended");
+	}
+
+	private static void clearObjectsVariables() {
 		addWine = null;
 		createPlace = null;
 		creer_tableau = null;
@@ -1193,14 +1218,6 @@ public class Program {
 		showfile = null;
 		showtrash = null;
 		vignobles = null;
-		TRASH.clear();
-		setFileSavable(false);
-		modified = false;
-		listCaveModified = false;
-		if(getCave() != null) {
-			getCave().clear();
-		}
-		Debug("Program: closeFile: Closing file Ended");
 	}
 
 	private static void deleteTempFiles() {
@@ -1338,17 +1355,17 @@ public class Program {
 		return _sDefaultValue;
 	}
 
-	static boolean getCaveConfigBool(String _sKey, boolean defaultValue) {
+	static boolean getGlobalConfigBool(String _sKey, boolean defaultValue) {
+		return 1 == CONFIG_GLOBAL.getInt(_sKey, defaultValue ? 1 : 0);
+	}
+
+	public static boolean getCaveConfigBool(String _sKey, boolean defaultValue) {
 		if(null != configCave) {
 			final String value = configCave.getString(_sKey, defaultValue ? "1" : "0");
 			return ("1".equals(value) || "ON".equalsIgnoreCase(value));
 		}
 		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+defaultValue+"'");
 		return defaultValue;
-	}
-
-	static int getGlobalConfigInt(String _sKey, int _nDefaultValue) {
-		return CONFIG_GLOBAL.getInt(_sKey, _nDefaultValue);
 	}
 
 	public static int getCaveConfigInt(String _sKey, int _nDefaultValue) {
@@ -1375,7 +1392,7 @@ public class Program {
 		CONFIG_GLOBAL.put(_sKey, _sValue ? "1" : "0");
 	}
 
-	static void putCaveConfigBool(String _sKey, boolean _sValue) {
+	public static void putCaveConfigBool(String _sKey, boolean _sValue) {
 		if(null != configCave) {
 			configCave.put(_sKey, _sValue ? "1" : "0");
 		} else {
@@ -1383,29 +1400,16 @@ public class Program {
 		}
 	}
 
-	static void putGlobalConfigInt(String _sKey, Integer _sValue) {
-		CONFIG_GLOBAL.put(_sKey, _sValue);
-	}
-
 	public static void putCaveConfigInt(String _sKey, Integer _sValue) {
 		configCave.put(_sKey, _sValue);
 	}
-
-	/*private static void removeGlobalConfigString( String _sKey )
-	{
-		if( CONFIG_GLOBAL.containsKey(_sKey))
-			CONFIG_GLOBAL.remove(_sKey);
-	}*/
 
 	static MyLinkedHashMap getCaveConfig() {
 		return configCave;
 	}
 
 	static boolean hasConfigCaveKey(String _sKey) {
-		if(null != configCave) {
-			return configCave.containsKey(_sKey);
-		}
-		return false;
+		return null != configCave && configCave.containsKey(_sKey);
 	}
 
 	static boolean hasConfigGlobalKey(String _sKey) {
@@ -1497,14 +1501,14 @@ public class Program {
 		if (bYearControlCalculated) {
 			return bYearControled;
 		}
-		bYearControled = (getCaveConfigInt("ANNEE_CTRL", 0) == 1);
+		bYearControled = getCaveConfigBool(MyCellarSettings.ANNEE_CTRL, false);
 		bYearControlCalculated = true;
 		return bYearControled;
 	}
 
 	static void setYearControl(boolean b) {
 		bYearControled = b;
-		putCaveConfigInt("ANNEE_CTRL", bYearControled ? 1 : 0);
+		putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, bYearControled);
 		bYearControlCalculated = true;
 	}
 
@@ -1575,21 +1579,21 @@ public class Program {
 	}
 
 	public static PDFProperties getPDFProperties() {
-		String title = getCaveConfigString("PDF_TITLE", "");
-		int titleSize = getCaveConfigInt("TITLE_SIZE", 10);
-		int textSize = getCaveConfigInt("TEXT_SIZE", 10);
-		final boolean border = getCaveConfigBool("BORDER", true);
-		boolean boldTitle = "bold".equals(getCaveConfigString("BOLD", ""));
+		String title = getCaveConfigString(MyCellarSettings.PDF_TITLE, "");
+		int titleSize = getCaveConfigInt(MyCellarSettings.TITLE_SIZE, 10);
+		int textSize = getCaveConfigInt(MyCellarSettings.TEXT_SIZE, 10);
+		final boolean border = getCaveConfigBool(MyCellarSettings.BORDER, true);
+		boolean boldTitle = getCaveConfigBool(MyCellarSettings.BOLD, false);
 
 		PDFProperties properties = new PDFProperties(title, titleSize, textSize, border, boldTitle);
 
 		int nbCol = MyCellarFields.getFieldsList().size();
 		int countColumn = 0;
 		for(int i=0; i<nbCol; i++) {
-			int export = getCaveConfigInt("SIZE_COL" + i + "EXPORT", 0);
+			int export = getCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT", 0);
 			if(export == 1) {
 				countColumn++;
-				int sizeCol = getCaveConfigInt("SIZE_COL" + i, 5);
+				int sizeCol = getCaveConfigInt(MyCellarSettings.SIZE_COL + i, 5);
 				properties.addColumn(MyCellarFields.getFieldsList().get(i), i, sizeCol, MyCellarFields.getFieldsList().get(i).toString());
 			}
 		}
@@ -1706,11 +1710,11 @@ public class Program {
 	}
 
 	public static void saveShowColumns(String value) {
-		putCaveConfigString("SHOWFILE_COLUMN", value);
+		putCaveConfigString(MyCellarSettings.SHOWFILE_COLUMN, value);
 	}
 
 	public static String getShowColumns() {
-		return getCaveConfigString("SHOWFILE_COLUMN", "");
+		return getCaveConfigString(MyCellarSettings.SHOWFILE_COLUMN, "");
 	}
 
 	static void saveHTMLColumns(List<MyCellarFields> cols) {
@@ -1721,12 +1725,12 @@ public class Program {
 			}
 			s.append(f.name());
 		}
-		putCaveConfigString("HTMLEXPORT_COLUMN", s.toString());
+		putCaveConfigString(MyCellarSettings.HTMLEXPORT_COLUMN, s.toString());
 	}
 
 	static ArrayList<MyCellarFields> getHTMLColumns() {
 	ArrayList<MyCellarFields> cols = new ArrayList<>();
-		String s = getCaveConfigString("HTMLEXPORT_COLUMN", "");
+		String s = getCaveConfigString(MyCellarSettings.HTMLEXPORT_COLUMN, "");
 		String [] fields = s.split(";");
 		for(String field : fields) {
 			for(MyCellarFields f : MyCellarFields.getFieldsList()) {

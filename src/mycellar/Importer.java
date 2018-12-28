@@ -9,6 +9,7 @@ import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
 import net.miginfocom.swing.MigLayout;
 import org.apache.poi.ss.usermodel.Cell;
@@ -53,8 +54,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.4
- * @since 01/12/18
+ * @version 12.5
+ * @since 28/12/18
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -594,7 +595,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	private void parcourir_actionPerformed(ActionEvent e) {
 
 		Debug("parcourir_actionPerforming...");
-		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR",""));
+		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR,""));
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		if (type_txt.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
@@ -614,7 +615,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				Debug("ERROR: parcourir: File not found during Opening!");
 				return;
 			}
-			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
+			Program.putCaveConfigString(MyCellarSettings.DIR, boiteFichier.getCurrentDirectory().toString());
 			String fic = nomFichier.getAbsolutePath();
 			Filtre filtre = (Filtre) boiteFichier.getFileFilter();
 			fic = MyCellarControl.controlAndUpdateExtension(fic, filtre);
@@ -897,25 +898,25 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				for (Rangement cave : Program.getCave()) {
 					if (cave.isCaisse()) {
 						titre_properties[j] = cave.getNom();
-						key_properties[j] = "RANGEMENT_DEFAULT";
+						key_properties[j] = MyCellarSettings.RANGEMENT_DEFAULT;
 						default_value[j] = "false";
 						type_objet[j] = "MyCellarRadioButton";
 						j++;
 					}
 				}
 				titre_properties[nb_caisse] = Program.getLabel("Infos289");
-				key_properties[nb_caisse] = "RANGEMENT_DEFAULT";
+				key_properties[nb_caisse] = MyCellarSettings.RANGEMENT_DEFAULT;
 				default_value[nb_caisse] = "true";
 				type_objet[nb_caisse] = "MyCellarRadioButton";
 				titre_properties[nb_caisse + 1] = Program.getLabel("Infos307");
-				key_properties[nb_caisse + 1] = "RANGEMENT_NAME";
+				key_properties[nb_caisse + 1] = MyCellarSettings.RANGEMENT_NAME;
 				default_value[nb_caisse + 1] = "";
 				type_objet[nb_caisse + 1] = "JTextField";
 				MyOptions myoptions = new MyOptions(title, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
 				myoptions.setVisible(true);
-				int num_r = Program.getCaveConfigInt("RANGEMENT_DEFAULT",-1);
+				int num_r = Program.getCaveConfigInt(MyCellarSettings.RANGEMENT_DEFAULT, -1);
 				if (num_r == Program.GetCaveLength()) {
-					String nom1 = Program.getCaveConfigString("RANGEMENT_NAME",""); //Program.options.getValue();
+					String nom1 = Program.getCaveConfigString(MyCellarSettings.RANGEMENT_NAME,""); //Program.options.getValue();
 					boolean resul;
 					do {
 						do {

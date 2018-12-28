@@ -6,6 +6,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.ui.PanelRequest;
@@ -43,8 +44,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.4
- * @since 07/12/18
+ * @version 19.5
+ * @since 28/12/18
  */
 public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable {
 
@@ -96,8 +97,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		TXT_NB.setText("-");
 		TXT_NBRESUL.setText(Program.getLabel("Infos222")); //"Bouteille(s) trouvée(s): ");
 
-		boolean key = Program.getCaveConfigBool("EMPTY_SEARCH", false);
-		if (key) {
+		if (Program.getCaveConfigBool(MyCellarSettings.EMPTY_SEARCH, false)) {
 			empty_search.setSelected(true);
 		}
 
@@ -233,8 +233,6 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		add(modif, "split, span 2, align center");
 		add(suppr, "wrap");
 
-		int val = Program.getCaveConfigInt("SEARCH_DEFAULT", 0);
-		tabbedPane.setSelectedIndex(val);
 		setVisible(true);
 		if (name.isVisible()) {
 			name.requestFocusInWindow();
@@ -679,10 +677,10 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 				already_found = searchByYear();
 			}
 			if (already_found) {
-				if (0 == Program.getCaveConfigInt("DONT_SHOW_INFO", 0)) {
+				if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false)) {
 					//"Lorsqu'une bouteille recherchée est déjà présente dans la liste");
 					//"des vins trouvés, elle n'est pas ajoutée en double.");
-					Erreur.showKeyErreur(Program.getError("Error133") , Program.getError("Error134"), "DONT_SHOW_INFO");
+					Erreur.showKeyErreur(Program.getError("Error133") , Program.getError("Error134"), MyCellarSettings.DONT_SHOW_INFO);
 				}
 			}
 			resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminée.");
@@ -1029,7 +1027,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 	 * @param e ActionEvent
 	 */
 	private void empty_search_actionPerformed(ActionEvent e) {
-		Program.putCaveConfigBool("EMPTY_SEARCH", empty_search.isSelected());
+		Program.putCaveConfigBool(MyCellarSettings.EMPTY_SEARCH, empty_search.isSelected());
 	}
 
 	/**

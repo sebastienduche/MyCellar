@@ -5,6 +5,7 @@ import mycellar.Filtre;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarImage;
 import mycellar.Program;
+import mycellar.core.MyCellarSettings;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
@@ -20,7 +21,7 @@ public class ExportPDFAction extends AbstractAction {
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR",""));
+		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR,""));
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
 

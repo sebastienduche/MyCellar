@@ -7,6 +7,7 @@ import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarManageBottles;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.MyCellarBottleContenance;
@@ -28,8 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -42,8 +41,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 23.9
- * @since 07/12/18
+ * @version 24.0
+ * @since 28/12/18
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable {
 
@@ -106,7 +105,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 			m_contenance.setText(Program.getLabel("Infos134")); //"Demie bouteille");
 			m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ( (SIECLE + 1) * 100))); //"Année 00 -> 2000");
-			m_annee_auto.setSelected(Program.getCaveConfigInt("ANNEE_AUTO", 0) == 0);
+			m_annee_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
 			m_noYear.setText(Program.getLabel("Infos399"));
 
 			m_nb_bottle.setToolTipText(Program.getLabel("Infos263"));
@@ -371,7 +370,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			if(oHalf != null) {
 				half_tmp = oHalf.toString();
 			}
-			final boolean auto = Program.getCaveConfigBool("TYPE_AUTO", false);
+			final boolean auto = Program.getCaveConfigBool(MyCellarSettings.TYPE_AUTO, false);
 
 			if (half_tmp.compareTo(bottle.getType()) != 0 && auto && !bottle.getType().isEmpty()) {
 				MyCellarBottleContenance.getList().add(bottle.getType());
@@ -1156,19 +1155,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 								}
 							}
 							m_lieu.setSelectedIndex(0);
-							int key = Program.getCaveConfigInt("JUST_ONE_PLACE", 0);
-							if (key == 1) {
-								if (!m_bmodify) {
-									m_lieu.setSelectedIndex(1);
-								}
-								m_lieu.setEnabled(false);
-							}
-							key = Program.getCaveConfigInt("JUST_ONE_NUM_PLACE", 0);
-							if (key == 1) {
-								m_num_lieu.setSelectedIndex(m_bmodify ? 0 : 1);
-								m_num_lieu.setEnabled(false);
-								m_line.setEnabled(true);
-							}	else if (m_bmodify) {
+							if (m_bmodify) {
 								m_lieu.setEnabled(true);
 							}
 							if (m_bmodify && m_line.isVisible()) {

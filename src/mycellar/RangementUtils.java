@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
+import mycellar.core.MyCellarSettings;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -38,8 +39,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 01/12/18
+ * @version 1.7
+ * @since 28/12/18
  */
 public class RangementUtils {
 
@@ -51,70 +52,78 @@ public class RangementUtils {
 	 * @param fichier String: fichier CSV à écrire
 	 * @param all List<Bouteille>: stock de bouteille
 	 *
+	 * @param progressBar
 	 * @return int
 	 */
-	static boolean write_CSV(String fichier, List<Bouteille> all) {
+	static boolean write_CSV(final String fichier, final List<Bouteille> all, final JProgressBar progressBar) {
 
-		String separator = Program.getCaveConfigString("SEPARATOR_DEFAULT", ";");
+		String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ";");
 
-		int cle0 = Program.getCaveConfigInt("SIZE_COL0EXPORT_CSV", 1);
-		int cle1 = Program.getCaveConfigInt("SIZE_COL1EXPORT_CSV", 1);
-		int cle2 = Program.getCaveConfigInt("SIZE_COL2EXPORT_CSV", 1);
-		int cle3 = Program.getCaveConfigInt("SIZE_COL3EXPORT_CSV", 1);
-		int cle4 = Program.getCaveConfigInt("SIZE_COL4EXPORT_CSV", 1);
-		int cle5 = Program.getCaveConfigInt("SIZE_COL5EXPORT_CSV", 1);
-		int cle6 = Program.getCaveConfigInt("SIZE_COL6EXPORT_CSV", 1);
-		int cle7 = Program.getCaveConfigInt("SIZE_COL7EXPORT_CSV", 1);
-		int cle8 = Program.getCaveConfigInt("SIZE_COL8EXPORT_CSV", 1);
+		// Deprecated: To remove later
+		boolean cle0 = Program.getCaveConfigBool("SIZE_COL0EXPORT_CSV", true);
+		boolean cle1 = Program.getCaveConfigBool("SIZE_COL1EXPORT_CSV", true);
+		boolean cle2 = Program.getCaveConfigBool("SIZE_COL2EXPORT_CSV", true);
+		boolean cle3 = Program.getCaveConfigBool("SIZE_COL3EXPORT_CSV", true);
+		boolean cle4 = Program.getCaveConfigBool("SIZE_COL4EXPORT_CSV", true);
+		boolean cle5 = Program.getCaveConfigBool("SIZE_COL5EXPORT_CSV", true);
+		boolean cle6 = Program.getCaveConfigBool("SIZE_COL6EXPORT_CSV", true);
+		boolean cle7 = Program.getCaveConfigBool("SIZE_COL7EXPORT_CSV", true);
+		boolean cle8 = Program.getCaveConfigBool("SIZE_COL8EXPORT_CSV", true);
+		final HashMap<MyCellarFields, Boolean> map = new HashMap<>();
+		for (var field : MyCellarFields.getFieldsList()) {
+			map.put(field, Program.getCaveConfigBool(MyCellarSettings.EXPORT_CSV + field.name(), false));
+		}
+		map.put(MyCellarFields.NAME, map.get(MyCellarFields.NAME) || cle0);
+		map.put(MyCellarFields.YEAR, map.get(MyCellarFields.YEAR) || cle1);
+		map.put(MyCellarFields.TYPE, map.get(MyCellarFields.TYPE) || cle2);
+		map.put(MyCellarFields.PLACE, map.get(MyCellarFields.PLACE) || cle3);
+		map.put(MyCellarFields.NUM_PLACE, map.get(MyCellarFields.NUM_PLACE) || cle4);
+		map.put(MyCellarFields.LINE, map.get(MyCellarFields.LINE) || cle5);
+		map.put(MyCellarFields.COLUMN, map.get(MyCellarFields.COLUMN) || cle6);
+		map.put(MyCellarFields.PRICE, map.get(MyCellarFields.PRICE) || cle7);
+		map.put(MyCellarFields.COMMENT, map.get(MyCellarFields.COMMENT) || cle8);
 
-		File f = new File(fichier);
+		if (progressBar != null) {
+			progressBar.setMaximum(all.size());
+			progressBar.setMinimum(0);
+		}
 
-		try (var fileWriter = new FileWriter(f)){
+		try (var fileWriter = new FileWriter(new File(fichier))){
 
+			StringBuilder line = new StringBuilder();
+			// Title line
+			for (var field : map.keySet()) {
+				if (map.get(field)) {
+					line.append(field).append(separator);
+				}
+			}
+			line.append('\n');
+			fileWriter.write(line.toString());
+			int i = 0;
 			for (Bouteille b : all) {
-				if (cle0 == 1) {
-					String name = Program.convertStringFromHTMLString(b.getNom());
-					name = name.replaceAll("\"", "\"\"");
-					fileWriter.write("\"" + name + "\"" + separator);
+				if (progressBar != null) {
+					progressBar.setValue(i++);
 				}
-				if (cle1 == 1) {
-					String year = b.getAnnee();
-					year = year.replaceAll("\"", "\"\"");
-					fileWriter.write("\"" + year + "\"" + separator);
+				line = new StringBuilder();
+				final String doubleCote = "\"";
+				final String escapedDoubleCote = "\"\"";
+				for (var field : map.keySet()) {
+					if (map.get(field)) {
+						String value = MyCellarFields.getValue(field, b);
+						if(MyCellarFields.hasSpecialHTMLCharacters(field)) {
+							value = Program.convertStringFromHTMLString(value);
+						}
+						line.append(doubleCote).append(value.replaceAll(doubleCote, escapedDoubleCote)).append(doubleCote).append(separator);
+					}
 				}
-				if (cle2 == 1) {
-					String half = Program.convertStringFromHTMLString(b.getType());
-					half = half.replaceAll("\"", "\"\"");
-					fileWriter.write("\"" + half + "\"" + separator);
-				}
-				if (cle3 == 1) {
-					String place = Program.convertStringFromHTMLString(b.getEmplacement());
-					place = place.replaceAll("\"", "\"\"");
-					fileWriter.write("\"" + place + "\"" + separator);
-				}
-				if (cle4 == 1) {
-					fileWriter.write("\"" + b.getNumLieu() + "\"" + separator);
-				}
-				if (cle5 == 1) {
-					fileWriter.write("\"" + b.getLigne() + "\"" + separator);
-				}
-				if (cle6 == 1) {
-					fileWriter.write("\"" + b.getColonne() + "\"" + separator);
-				}
-				if (cle7 == 1) {
-					String price = Program.convertStringFromHTMLString(b.getPrix());
-					price = price.replaceAll("\"", "\"\"");
-					fileWriter.write("\"" + price + "\"" + separator);
-				}
-				if (cle8 == 1) {
-					String comment = Program.convertStringFromHTMLString(b.getComment());
-					comment = comment.replaceAll("\"", "\"\"");
-					fileWriter.write("\"" + comment + "\"" + separator);
-				}
-				fileWriter.write('\n');
+				line.append('\n');
+				fileWriter.write(line.toString());
 				fileWriter.flush();
 			}
 			fileWriter.flush();
+			if (progressBar != null) {
+				progressBar.setValue(progressBar.getMaximum());
+			}
 		}
 		catch (IOException ioe) {
 			Erreur.showSimpleErreur(Program.getError("Error120"), Program.getError("Error161"));
@@ -132,8 +141,9 @@ public class RangementUtils {
 	 *
 	 *  @return int
 	 */
-	static boolean write_HTML(String fichier, List<Bouteille> all, List<MyCellarFields> fields) {
+	static boolean write_HTML(final String fichier, final List<Bouteille> all, List<MyCellarFields> fields) {
 
+		Debug("write_HTML: writing file: " + fichier);
 		try{
 			var dbFactory = DocumentBuilderFactory.newInstance();
 			var dBuilder = dbFactory.newDocumentBuilder();
@@ -285,7 +295,7 @@ public class RangementUtils {
 		ArrayList<MyCellarFields> fields = MyCellarFields.getFieldsList();
 		int i=0;
 		for(MyCellarFields field : fields) {
-			mapCle.put(field, Program.getCaveConfigInt("SIZE_COL"+i+"EXPORT_XLS", 1) == 1);
+			mapCle.put(field, Program.getCaveConfigBool(MyCellarSettings.SIZE_COL+i+"EXPORT_XLS", true));
 			i++;
 		}
 
@@ -299,7 +309,7 @@ public class RangementUtils {
 			}
 		}
 		else { // Export XLS
-			title = Program.getCaveConfigString("XLS_TITLE", ""); //Récupération du titre du XLS
+			title = Program.getCaveConfigString(MyCellarSettings.XLS_TITLE, ""); //Récupération du titre du XLS
 
 			num_ligne = 2; //Affectation des numéros de colonnes
 			i=0;
@@ -314,24 +324,20 @@ public class RangementUtils {
 		}
 
 		try (var workbook = new SXSSFWorkbook(100)) { //Création du fichier
-			int columnsCount = 0;
 			String sheet_title = title;
-			if (sheet_title.isEmpty()) {
-				sheet_title = Program.getCaveConfigString("XML_TYPE","");
-			}
 			if (sheet_title.isEmpty()) {
 				sheet_title = Program.getLabel("Infos389");
 			}
-			SXSSFSheet sheet = (SXSSFSheet) workbook.createSheet();
+			SXSSFSheet sheet = workbook.createSheet();
 			workbook.setSheetName(0, sheet_title);
 
 			if (!isExit) { //Export XLS
 				//Taille du titre
-				int size = Program.getCaveConfigInt("TITLE_SIZE_XLS", 10);
+				int size = Program.getCaveConfigInt(MyCellarSettings.TITLE_SIZE_XLS, 10);
 				Font cellfont = workbook.createFont();
 				cellfont.setFontName("Arial");
 				cellfont.setFontHeightInPoints((short) size);
-				cellfont.setBold("bold".equals(Program.getCaveConfigString("BOLD_XLS", "")));
+				cellfont.setBold(Program.getCaveConfigBool(MyCellarSettings.BOLD_XLS, false));
 				XSSFCellStyle cellStyle = (XSSFCellStyle) workbook.createCellStyle();
 				cellStyle.setFont(cellfont);
 
@@ -344,7 +350,7 @@ public class RangementUtils {
 			final Font cellfont = workbook.createFont();
 			cellfont.setFontName("Arial");
 			if (!isExit) { //Export XLS
-				cellfont.setFontHeightInPoints((short) Program.getCaveConfigInt("TEXT_SIZE_XLS", 10));
+				cellfont.setFontHeightInPoints((short) Program.getCaveConfigInt(MyCellarSettings.TEXT_SIZE_XLS, 10));
 			} else {
 				cellfont.setFontHeightInPoints((short) 10);
 			}
@@ -352,6 +358,7 @@ public class RangementUtils {
 			cellStyle.setFont(cellfont);
 
 			i = 0;
+			int columnsCount = 0;
 			if(isExit) {
 				final SXSSFRow row = sheet.createRow(num_ligne);
 				for(MyCellarFields field : fields) {
@@ -384,7 +391,7 @@ public class RangementUtils {
 				if (progressBar != null) {
 					progressBar.setValue(i);
 				}
-				org.apache.poi.ss.usermodel.Row row = sheet.createRow(i + num_ligne + 1);
+				var row = sheet.createRow(i + num_ligne + 1);
 				row.setRowStyle(cellStyle);
 				for(MyCellarFields field : fields) {
 					String value = MyCellarFields.getValue(field, b);
@@ -422,26 +429,27 @@ public class RangementUtils {
 	 * @param _oPlace LinkedList: liste de rangements à écrire
 	 *
 	 */
-	static void write_XLSTab(String file, List<Rangement> _oPlace) {
+	static void write_XLSTab(final String file, final List<Rangement> _oPlace) {
 
+		Debug("write_XLSTab: writing file: " + file);
 		try (var workbook = new SXSSFWorkbook(100)) { //Création du fichier
-			String title = Program.getCaveConfigString("XLS_TAB_TITLE", Program.getCaveConfigString("XML_TYPE",""));
-			boolean onePlacePerSheet = 1 == Program.getCaveConfigInt("ONE_PER_SHEET_XLS", 0);
+			String title = Program.getCaveConfigString(MyCellarSettings.XLS_TAB_TITLE, "");
+			boolean onePlacePerSheet = Program.getCaveConfigBool(MyCellarSettings.ONE_PER_SHEET_XLS, false);
 
 			if (title.isEmpty()) {
 				title = Program.getLabel("Infos001");
 			}
 			int count = 0;
-			SXSSFSheet sheet = (SXSSFSheet) workbook.createSheet();
+			SXSSFSheet sheet = workbook.createSheet();
 			workbook.setSheetName(count++, title);
 
 			// Titre
-			int size = Program.getCaveConfigInt("TITLE_TAB_SIZE_XLS", 10);
+			int size = Program.getCaveConfigInt(MyCellarSettings.TITLE_TAB_SIZE_XLS, 10);
 
 			Font cellfont = workbook.createFont();
 			cellfont.setFontName("Arial");
 			cellfont.setFontHeightInPoints((short) size);
-			cellfont.setBold("bold".equals(Program.getCaveConfigString("BOLD_XLS", "")));
+			cellfont.setBold(Program.getCaveConfigBool(MyCellarSettings.BOLD_XLS, false));
 			CellStyle cellStyleTitle = workbook.createCellStyle();
 			cellStyleTitle.setFont(cellfont);
 
@@ -451,11 +459,11 @@ public class RangementUtils {
 			cell.setCellValue(title);
 
 			//propriétés du texte
-			size = Program.getCaveConfigInt("TEXT_TAB_SIZE_XLS", 10);
+			size = Program.getCaveConfigInt(MyCellarSettings.TEXT_TAB_SIZE_XLS, 10);
 
 			int nNbCol = 0;
-			int nNbLinePart = Program.getCaveConfigInt("EMPTY_LINE_PART_XLS", 1);
-			int nNbLinePlace = Program.getCaveConfigInt("EMPTY_LINE_PLACE_XLS", 3);
+			int nNbLinePart = Program.getCaveConfigInt(MyCellarSettings.EMPTY_LINE_PART_XLS, 1);
+			int nNbLinePlace = Program.getCaveConfigInt(MyCellarSettings.EMPTY_LINE_PLACE_XLS, 3);
 
 			cellfont.setFontHeightInPoints((short) size);
 			cellfont.setBold(false);
@@ -475,7 +483,7 @@ public class RangementUtils {
 						workbook.setSheetName(0, place.getNom());
 						firstSheet = false;
 					} else {
-						sheet = (SXSSFSheet) workbook.createSheet();
+						sheet = workbook.createSheet();
 						workbook.setSheetName(count++, place.getNom());
 					}
 					nLine = 0;
@@ -520,7 +528,7 @@ public class RangementUtils {
 						}
 					}
 				}
-				int nWidth = Program.getCaveConfigInt("COLUMN_TAB_WIDTH_XLS", 10) * 400;
+				int nWidth = Program.getCaveConfigInt(MyCellarSettings.COLUMN_TAB_WIDTH_XLS, 10) * 400;
 				for (int i = 1; i <= nNbCol; i++) {
 					sheet.setColumnWidth(i, nWidth);
 				}
@@ -532,23 +540,23 @@ public class RangementUtils {
 		}
 	}
 
-	private static String getLabelToDisplay(Bouteille b) {
+	private static String getLabelToDisplay(final Bouteille b) {
 		if (b == null) {
 			return "";
 		}
 		StringBuilder sTitle = new StringBuilder();
 		// Contenu de la cellule
-		if (1 == Program.getCaveConfigInt("XLSTAB_COL0", 1)) {
+		if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL0, true)) {
 			sTitle.append(b.getNom());
 		}
-		if (1 == Program.getCaveConfigInt("XLSTAB_COL1", 0)) {
+		if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL1, false)) {
 			sTitle.append(" ").append(b.getAnnee());
 		}
-		if (1 == Program.getCaveConfigInt("XLSTAB_COL2", 0)) {
+		if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL2, false)) {
 			sTitle.append(" ").append(b.getType());
 		}
-		if (1 == Program.getCaveConfigInt("XLSTAB_COL3", 0)) {
-			sTitle.append(" ").append(b.getPrix()).append(Program.getCaveConfigString("DEVISE", ""));
+		if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL3, false)) {
+			sTitle.append(" ").append(b.getPrix()).append(Program.getCaveConfigString(MyCellarSettings.DEVISE, ""));
 		}
 		return sTitle.toString().trim();
 	}
@@ -559,10 +567,10 @@ public class RangementUtils {
 	static void findRangementToCreate() {
 
 		final Map<String, LinkedList<Part>> rangements = new HashMap<>();
-		for( Bouteille bottle: Program.getStorage().getAllList() ) {
+		for( var bottle: Program.getStorage().getAllList() ) {
 			updatePlaceMapToCreate(rangements, bottle);
 		}
-		for (MyCellarError error : Program.getErrors()) {
+		for (var error : Program.getErrors()) {
 			final Bouteille bottle = error.getBottle();
 			updatePlaceMapToCreate(rangements, bottle);
 		}
@@ -570,7 +578,7 @@ public class RangementUtils {
 		new RangementCreationDialog(rangements);
 	}
 
-	private static void updatePlaceMapToCreate(Map<String, LinkedList<Part>> rangements, Bouteille bottle) {
+	private static void updatePlaceMapToCreate(final Map<String, LinkedList<Part>> rangements, final Bouteille bottle) {
 		final String place = bottle.getEmplacement();
 		if (place != null && !place.isEmpty() && Program.getCave(place) == null) {
 			if (!rangements.containsKey(place)) {
@@ -613,51 +621,51 @@ public class RangementUtils {
 			rangement.resetStock();
 		}
 		
-		for(Bouteille b : Program.getStorage().getAllList()) {
-			Rangement rangement = Program.getCave(b.getEmplacement());
+		for(var bouteille : Program.getStorage().getAllList()) {
+			Rangement rangement = Program.getCave(bouteille.getEmplacement());
 			if(rangement == null) {
 				// Rangement inexistant
-				Debug("ERROR: Inexisting place: " + b.getNom() + " place: "+b.getEmplacement());
-				Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_PLACE, b, b.getEmplacement()));
+				Debug("ERROR: Inexisting place: " + bouteille.getNom() + " place: "+bouteille.getEmplacement());
+				Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_PLACE, bouteille, bouteille.getEmplacement()));
 				continue;
 			}
 			if(rangement.isCaisse()) {
-				if(!rangement.isExistingNumPlace(b.getNumLieu())) {
+				if(!rangement.isExistingNumPlace(bouteille.getNumLieu())) {
 					// Numero de rangement inexistant
-					Debug("ERROR: Inexisting numplace: " + b.getNom() + " numplace: "+b.getNumLieu() + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_NUM_PLACE, b, b.getEmplacement(), b.getNumLieu()));
+					Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: "+bouteille.getNumLieu() + " for place "+bouteille.getEmplacement());
+					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 					continue;
 				}
-				if(rangement.hasFreeSpaceInCaisse(b.getNumLieu())) {
-					rangement.updateToStock(b);
+				if(rangement.hasFreeSpaceInCaisse(bouteille.getNumLieu())) {
+					rangement.updateToStock(bouteille);
 				} else {
 					// Caisse pleine
-					Debug("ERROR: simple place full for numplace: " + b.getNom() + " numplace: "+b.getNumLieu() + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(MyCellarError.ID.FULL_BOX, b, b.getEmplacement(), b.getNumLieu()));
+					Debug("ERROR: simple place full for numplace: " + bouteille.getNom() + " numplace: "+bouteille.getNumLieu() + " for place "+bouteille.getEmplacement());
+					Program.addError(new MyCellarError(MyCellarError.ID.FULL_BOX, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 				}
 			} else {
 				Bouteille bottle;
-				if(!rangement.isExistingNumPlace(b.getNumLieu() - 1)) {
+				if(!rangement.isExistingNumPlace(bouteille.getNumLieu() - 1)) {
 					// Numero de rangement inexistant
-					Debug("ERROR: Inexisting numplace: " + b.getNom() + " numplace: "+ (b.getNumLieu()-1) + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_NUM_PLACE, b, b.getEmplacement()));
+					Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: "+ (bouteille.getNumLieu()-1) + " for place "+bouteille.getEmplacement());
+					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement()));
 					continue;
 				}
-				if(!rangement.isExistingCell(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
+				if(!rangement.isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
 					// Cellule inexistante
-					Debug("ERROR: Inexisting cell: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_CELL, b, b.getEmplacement(), b.getNumLieu()));
-				}	else if((bottle = rangement.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) != null && !bottle.equals(b)){
+					Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: "+(bouteille.getNumLieu()-1)+ ", line: " + (bouteille.getLigne()-1) + ", column:" + (bouteille.getColonne()-1) + " for place "+bouteille.getEmplacement());
+					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
+				}	else if((bottle = rangement.getBouteille(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) != null && !bottle.equals(bouteille)){
 					// Cellule occupée
-					Debug("ERROR: Already occupied: " + b.getNom() + " numplace: "+(b.getNumLieu()-1)+ ", line: " + (b.getLigne()-1) + ", column:" + (b.getColonne()-1) + " for place "+b.getEmplacement());
-					Program.addError(new MyCellarError(MyCellarError.ID.CELL_FULL, b, b.getEmplacement(), b.getNumLieu()));
+					Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: "+(bouteille.getNumLieu()-1)+ ", line: " + (bouteille.getLigne()-1) + ", column:" + (bouteille.getColonne()-1) + " for place "+bouteille.getEmplacement());
+					Program.addError(new MyCellarError(MyCellarError.ID.CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 				}	else {
-					rangement.updateToStock(b);
+					rangement.updateToStock(bouteille);
 				}
 			}
 		}
 		// Suppression des bouteilles posant problème
-		for(MyCellarError error : Program.getErrors()) {
+		for(var error : Program.getErrors()) {
 			Program.getStorage().deleteWine(error.getBottle());
 		}
 		Debug("putTabStock Done");

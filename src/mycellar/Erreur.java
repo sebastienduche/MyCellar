@@ -15,8 +15,8 @@ import java.awt.Component;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.2
- * @since 04/07/18
+ * @version 2.3
+ * @since 28/12/18
  */
 public class Erreur {
 	private final MyCellarLabel textControl1 = new MyCellarLabel();
@@ -109,7 +109,7 @@ public class Erreur {
 		JOptionPane.showMessageDialog(null,panel,information ? Program.getError("Error032"): Program.getError("Error015"),information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
 		if (checkNotShow.isSelected()) {
 			//Ecriture dans un fichier pour ne plus afficher le message
-			Program.putCaveConfigInt(keyword, 1);
+			Program.putCaveConfigBool(keyword, true);
 		}
 	}
 

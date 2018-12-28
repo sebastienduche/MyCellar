@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class MyCellarVersion {
 
-	public static final String VERSION = "3.1.6.0";
+	public static final String VERSION = "3.1.8.2";
 	public static final String MAIN_VERSION = "5.6 DB";
   
 	public static String getLocalVersion() {

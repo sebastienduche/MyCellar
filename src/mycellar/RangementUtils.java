@@ -39,8 +39,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 28/12/18
+ * @version 1.8
+ * @since 31/12/18
  */
 public class RangementUtils {
 
@@ -636,7 +636,7 @@ public class RangementUtils {
 					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 					continue;
 				}
-				if(rangement.hasFreeSpaceInCaisse(bouteille.getNumLieu())) {
+				if(rangement.hasFreeSpaceInCaisse(bouteille.getNumLieu() - rangement.getStartCaisse())) {
 					rangement.updateToStock(bouteille);
 				} else {
 					// Caisse pleine

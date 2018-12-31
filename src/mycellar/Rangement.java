@@ -12,8 +12,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 25.7
- * @since 22/05/18
+ * @version 25.8
+ * @since 31/12/18
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -64,17 +64,19 @@ public class Rangement implements Comparable<Rangement> {
 		this.start_caisse = start_caisse;
 
 		limite = isLimit;
-		if (limite)
+		if (limite) {
 			stock_nbcol = limite_caisse;
-		else
+		} else {
 			stock_nbcol = -1;
-
+        }
+		
 		stock_nblign = 1;
 		caisse = true;
 
 		storageCaisse = new HashMap<>(nb_emplacements);
-		for(int i=start_caisse; i<start_caisse+nb_emplacements; i++)
+		for(int i=start_caisse; i<start_caisse+nb_emplacements; i++) {
 			storageCaisse.put(i, new ArrayList<>());
+		}
 	}
 
 	/**
@@ -159,8 +161,9 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return boolean
 	 */
 	public void setNbBottleInCaisse(int nbBottle) {
-		if(limite && nbBottle > 0)
+		if(limite && nbBottle > 0) {
 			stock_nbcol = nbBottle;
+		}
 	}
 
 	/**
@@ -170,8 +173,9 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return int
 	 */
 	public int getNbLignes(int emplacement) {
-		if(isCaisse())
+		if(isCaisse()) {
 			return -1;
+		}
 		return listePartie.get(emplacement).getRowSize();
 	}
 
@@ -188,10 +192,12 @@ public class Rangement implements Comparable<Rangement> {
 			Debug("ERROR: Function isExistingCell can't be called on a simple place!");
 			return false;
 		}
-		if(!isExistingNumPlace(emplacement))
+		if(!isExistingNumPlace(emplacement)) {
 			return false;
-		if(getNbLignes(emplacement) <= ligne)
+		}
+		if(getNbLignes(emplacement) <= ligne) {
 			return false;
+		}
 		int nbCol = getNbColonnes(emplacement, ligne);
 		return (col < nbCol);
 	}
@@ -208,8 +214,9 @@ public class Rangement implements Comparable<Rangement> {
 			Debug("ERROR: Function getNbColonnes can't be called on a simple place!");
 			return -1;
 		}
-		if(emplacement < 0 || ligne < 0)
+		if(emplacement < 0 || ligne < 0) {
 			return -1;
+		}
 		return listePartie.get(emplacement).getRow(ligne).getCol();
 	}
 
@@ -240,8 +247,9 @@ public class Rangement implements Comparable<Rangement> {
 		int max = 0;
 		for(int i=0; i<getNbEmplacements(); i++) {
 			int val = getNbColonnesMax(i);
-			if(val > max)
+			if(val > max) {
 				max = val;
+			}
 		}
 		return max;
 	}
@@ -295,9 +303,9 @@ public class Rangement implements Comparable<Rangement> {
 			for (int i = colonne; i < nb_colonne; i++) {
 				if (stockage[emplacement][ligne][i] == null) {
 					resul++;
-				}
-				else
+				} else {
 					return resul;
+				}
 			}
 		}
 		catch (Exception e) {
@@ -315,8 +323,9 @@ public class Rangement implements Comparable<Rangement> {
 	 */
 	public int getNbCaseUse(int emplacement) {
 		
-		if(isCaisse())
-			return storageCaisse.get(emplacement + start_caisse).size();
+		if(isCaisse()) {
+			return getNbCaseUseCaisse(emplacement + start_caisse);
+		}
 
 		int resul = 0;
 
@@ -338,6 +347,22 @@ public class Rangement implements Comparable<Rangement> {
 	}
 
 	/**
+	 * getNbCaseUseCaisse: retourne le nombre de case utilisée dans toutes les lignes
+	 * d'une caisse
+	 *
+	 * @param emplacement int: numéro d'emplacement (start_caisse...n)
+	 * @return int
+	 */
+	public int getNbCaseUseCaisse(int emplacement) {
+
+		if(!isCaisse()) {
+			Debug("ERROR: Function getNbCaseUseCaisse can't be called on a complex place!");
+			return -1;
+		}
+		return storageCaisse.get(emplacement).size();
+	}
+
+	/**
 	 * getNbCaseUseAll: Nombre de case utilisée dans toutes les lignes
 	 *
 	 * @return int
@@ -345,8 +370,9 @@ public class Rangement implements Comparable<Rangement> {
 	public int getNbCaseUseAll() {
 
 		int resul = 0;
-		for(int i=0; i<nb_emplacements; i++)
+		for(int i=0; i<nb_emplacements; i++) {
 			resul += getNbCaseUse(i);
+		}
 		return resul;
 	}
 
@@ -358,8 +384,9 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return int
 	 */
 	public boolean addWine(Bouteille wine) {
-		if(isCaisse())
+		if(isCaisse()) {
 			return putWineCaisse(wine);
+		}
 		return putWineStandard(wine);
 	}
 
@@ -391,9 +418,10 @@ public class Rangement implements Comparable<Rangement> {
 		Debug("putWineCaisse: "+wine.getNom()+" "+wine.getEmplacement()+" "+num_empl);
 
 		try {
-			int nb_vin = this.getNbCaseUse(num_empl-start_caisse);
-			if(limite && nb_vin == stock_nbcol)
+			int nb_vin = getNbCaseUse(num_empl-start_caisse);
+			if(limite && nb_vin == stock_nbcol) {
 				return false;
+			}
 			storageCaisse.get(num_empl).add(wine);
 			Program.getStorage().addWine(wine);
 		}
@@ -492,8 +520,7 @@ public class Rangement implements Comparable<Rangement> {
 	public void clearStock(Bouteille bottle) {
 		if(isCaisse()) {
 			storageCaisse.get(bottle.getNumLieu()).remove(bottle);
-		}
-		else {
+		} else {
 			try {
 				stockage[bottle.getNumLieu() - 1][bottle.getLigne() - 1][bottle.getColonne() - 1] = null;
 			}
@@ -530,15 +557,16 @@ public class Rangement implements Comparable<Rangement> {
 	}
 
 	public boolean isSameColumnNumber(){
-		for( int i=0; i<nb_emplacements; i++){
+		for(int i=0; i<nb_emplacements; i++){
 			int nbCol = 0;
 			for(int j=0; j<getNbLignes(i);j++){
 				if(nbCol == 0) {
 					nbCol = getNbColonnes(i, j);
 					continue;
 				}
-				if(nbCol != getNbColonnes(i, j))
+				if(nbCol != getNbColonnes(i, j)) {
 					return false;
+				}
 			}
 		}
 		return true;
@@ -591,8 +619,9 @@ public class Rangement implements Comparable<Rangement> {
 	}
 	
 	public boolean canAddBottle(Bouteille b) {
-		if(isCaisse())
+		if(isCaisse()) {
 			return canAddBottle(b.getNumLieu(), 0, 0);
+		}
 		return canAddBottle(b.getNumLieu()-1, b.getLigne()-1, b.getColonne()-1);
 	}
 
@@ -606,20 +635,17 @@ public class Rangement implements Comparable<Rangement> {
 	 */
 	public boolean canAddBottle(int _nEmpl, int _nLine, int _nCol) {
 		
-		if (_nEmpl < start_caisse || _nEmpl >= getNbEmplacements() + start_caisse)
+		if (_nEmpl < start_caisse || _nEmpl >= getNbEmplacements() + start_caisse) {
 			return false;
+		}
 		if (isCaisse()) {
-			if( isLimited() && !hasFreeSpaceInCaisse(_nEmpl))
-				return false;
-			return true;
+			return !(isLimited() && !hasFreeSpaceInCaisse(_nEmpl));
 		}
 
-		if (_nLine < 0 || _nLine >= getNbLignes(_nEmpl))
+		if (_nLine < 0 || _nLine >= getNbLignes(_nEmpl)) {
 			return false;
-		if (_nCol < 0 || _nCol >= getNbColonnes(_nEmpl, _nLine))
-			return false;
-
-		return true;
+		}
+		return !(_nCol < 0 || _nCol >= getNbColonnes(_nEmpl, _nLine));
 	}
 	
 	/**
@@ -629,11 +655,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return
 	 */
 	boolean isExistingNumPlace(int numPlace) {
-		
-		if (numPlace < start_caisse || numPlace >= getNbEmplacements() + start_caisse)
-			return false;
-		
-		return true;
+		return !(numPlace < start_caisse || numPlace >= getNbEmplacements() + start_caisse);
 	}
 
 
@@ -645,16 +667,15 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return
 	 */
 	public boolean hasFreeSpaceInCaisse(int _nEmpl) {
-		if(!isCaisse())
+		if(!isCaisse()) {
 			return false;
+		}
 
-		if(!isLimited())
+		if(!isLimited()) {
 			return true;
+		}
 
-		if(getNbCaseUse(_nEmpl) == getNbColonnesStock())
-			return false;
-
-		return true;
+		return getNbCaseUse(_nEmpl) != getNbColonnesStock();
 	}
 
 
@@ -663,12 +684,14 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return
 	 */
 	public int getFreeNumPlaceInCaisse() {
-		if (!isCaisse())
+		if (!isCaisse()) {
 			return -1;
+		}
 
 		for( int i = 0; i < getNbEmplacements(); i++) {
-			if (hasFreeSpaceInCaisse(i))
+			if (hasFreeSpaceInCaisse(i)) {
 				return i + start_caisse;
+			}
 		}
 		return -1;
 	}
@@ -679,31 +702,35 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return
 	 */
 	public int getLastNumEmplacement() {
-		if( isCaisse())
+		if( isCaisse()) {
 			return getStartCaisse() + getNbEmplacements();
+		}
 		return getNbEmplacements();
 	}
 
 	/**
 	 * Réinitialisation du stockage pour les caisses
 	 */
-	void updateCaisse(int nb_emplacements) {
-		if(!isCaisse())
+	void updateCaisse(int nbEmplacements) {
+		if(!isCaisse()) {
 			return;
-		this.nb_emplacements = nb_emplacements;
-		storageCaisse = new HashMap<>(nb_emplacements);
-		for(int i=start_caisse; i<start_caisse+nb_emplacements; i++)
+		}
+		nb_emplacements = nbEmplacements;
+		storageCaisse = new HashMap<>(nbEmplacements);
+		for(int i=start_caisse; i<start_caisse+nbEmplacements; i++) {
 			storageCaisse.put(i, new ArrayList<>());
+		}
 	}
 	
 	/**
 	 * Réinitialisation du stockage
 	 */
 	void resetStock() {
-		if(isCaisse())
+		if(isCaisse()) {
 			updateCaisse(nb_emplacements);
-		else
+		} else {
 			stockage = new Bouteille[nb_emplacements][stock_nblign][stock_nbcol];
+		}
 	}
 	/**
 	 * Rangement: Constructeur de création d'un rangement
@@ -721,13 +748,15 @@ public class Rangement implements Comparable<Rangement> {
 			listePartie.add(part);
 			int rowSize = listPart.get(i).getRowSize();
 			part.setRows(rowSize);
-			if(rowSize > stock_nblign)
+			if(rowSize > stock_nblign) {
 				stock_nblign = rowSize;
+			}
 			for(int j=0; j<rowSize; j++) {
 				int colSize = listPart.get(i).getRow(j).getCol();
 				part.getRow(j).setCol(colSize);
-				if(colSize > stock_nbcol)
+				if(colSize > stock_nbcol) {
 					stock_nbcol = colSize;
+				}
 			}
 		}
 

@@ -26,8 +26,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -40,12 +38,11 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.7
- * @since 28/12/18
+ * @version 4.8
+ * @since 06/01/19
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
-	private final char QUITTER = Program.getLabel("QUITTER").charAt(0);
 	private final ManageBottle instance;
 	
 
@@ -164,15 +161,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		});
 
 
-		m_lieu.addItem("");
-		boolean complex = false;
-		for (Rangement rangement : Program.getCave()) {
-			m_lieu.addItem(rangement.getNom());
-			if(!rangement.isCaisse()) {
-				complex = true;
-			}
-		}
-		m_chooseCell.setEnabled(complex);
+		initPlaceCombo();
 
 		// Listener sur les combobox
 		// _________________________
@@ -185,24 +174,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 		setVisible(true);
 		Debug("JbInit Done");
-	}
-
-	/**
-	 * quit_actionPerformed: Fonction pour quitter.
-	 *
-	 * @param e ActionEvent
-	 */
-	private void quit_actionPerformed(ActionEvent e) {
-		Debug("Quitting...");
-		if (e == null) {
-			name.setSelectedIndex(0);
-		}
-		try {
-			new Thread(this::runExit).start();
-		}
-		catch (Exception a) {
-			Program.showException(a);
-		}
 	}
 
 	/**
@@ -379,38 +350,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	}
 
 	/**
-	 * keylistener_actionPerformed: Fonction d'écoute du clavier.
-	 *
-	 * @param e KeyEvent
-	 */
-	protected void keylistener_actionPerformed(KeyEvent e) {
-		if (e.getKeyCode() == QUITTER && e.isControlDown()) { //CTRL+Q
-			quit_actionPerformed(null);
-		}
-		if ( (e.getKeyCode() == AJOUTER && e.isControlDown()) || e.getKeyCode() == KeyEvent.VK_ENTER) {
-			saving();
-		}
-		if (e.getKeyCode() == PREVIEW && e.isControlDown() && m_preview.isEnabled()) {
-			preview_actionPerformed(null);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_F1) {
-			aide_actionPerformed(null);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_C) {
-			copier_actionPerformed(null);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_X) {
-			couper_actionPerformed(null);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_V) {
-			coller_actionPerformed(null);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_Q) {
-			quit_actionPerformed(null);
-		}
-	}
-
-	/**
 	 * run: Exécution des tâches.
 	 */
 	@Override
@@ -512,8 +451,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			Debug("ERROR: Wrong Num Place");
 			if (m_line.isVisible()) {
 				Erreur.showSimpleErreur(Program.getError("Error056"));
-			}
-			else {
+			}	else {
 				Erreur.showSimpleErreur(Program.getError("Error174"));
 			}
 			return false;
@@ -579,7 +517,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 					String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bottleInPlace.getNom(), bottleInPlace.getAnnee()); //" déjà présent à cette place!");
 					String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
 					if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
-						replaceWine(m_laBouteille, bottleInPlace);
+						replaceWine(bottleInPlace);
 						m_end.setText(Program.getLabel("Infos075"));
 					}
 				}
@@ -632,30 +570,20 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		Start.setPaneModified(false);
 	}
 
-	private void replaceWine(Bouteille bottle, Bouteille bToDelete) {
+	private void replaceWine(final Bouteille bToDelete) {
 		//Change wine in a place
-		int ligne = bottle.getLigne();
-		int lieu_num = bottle.getNumLieu();
-		int colonne = bottle.getColonne();
-		String place = bottle.getEmplacement();
 
-		Program.getStorage().addHistory(History.MODIFY, bottle);
-		if(bToDelete != null) {
-			Program.getStorage().deleteWine(bToDelete);
-		} else {
-			Program.getStorage().replaceWineAll(bottle, lieu_num, ligne, colonne);
-		}
+		Program.getStorage().addHistory(History.MODIFY, m_laBouteille);
+		Program.getStorage().deleteWine(bToDelete);
 
-		if(m_laBouteille != null) {
-			m_laBouteille.getRangement().clearStock(m_laBouteille);
-		}
+		m_laBouteille.getRangement().clearStock(m_laBouteille);
 
 		Search.removeBottle(bToDelete);
 		Search.updateTable();
 
-		Rangement r = Program.getCave(place);
-		if(r != null && !r.isCaisse()) {
-			r.updateToStock(bottle);
+		final Rangement rangement = m_laBouteille.getRangement();
+		if(rangement != null && !rangement.isCaisse()) {
+			rangement.updateToStock(m_laBouteille);
 		}
 	}
 

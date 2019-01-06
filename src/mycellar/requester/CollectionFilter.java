@@ -15,8 +15,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 08/06/18
+ * @version 0.5
+ * @since 06/01/19
  */
 
 @SuppressWarnings(value = { "rawtypes", "unchecked" })
@@ -49,12 +49,14 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public static <T> CollectionFilter<T> select(Collection<T> src, IPredicate<T> predicate) {
-		if(src == null || predicate == null)
+		if(src == null || predicate == null) {
 			throw new NullPointerException("The collection of source objets or the predicate is null!");
+		}
 		result = new ArrayList<T>();
 		for(T b : src) {
-			if(predicate.apply(b))
+			if(predicate.apply(b)) {
 				result.add(b);
+			}
 		}
 		return INSTANCE;
 	}
@@ -68,12 +70,14 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public static <T> CollectionFilter<T> select(Collection<T> src, IPredicate<T> predicate, Object value, int type) {
-		if(src == null || predicate == null)
+		if(src == null || predicate == null) {
 			throw new NullPointerException("The collection of source objets or the predicate is null!");
+		}
 		result = new ArrayList<T>();
 		for(T b : src) {
-			if(predicate.apply(b, value, type))
+			if(predicate.apply(b, value, type)) {
 				result.add(b);
+			}
 		}
 		return INSTANCE;
 	}
@@ -85,19 +89,22 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public static <T> CollectionFilter<T> select(Collection<T> src, Collection<Predicates> predicates) {
-		if(src == null || predicates == null)
+		if(src == null || predicates == null) {
 			throw new NullPointerException("The collection of source objets or the collection of predicates is null!");
+		}
 		result = null;
-		for(Predicates p : predicates)
+		for(Predicates p : predicates) {
 			LOGGER.debug(p.toString());
-		if(!validatePredicates(predicates))
+		}
+		if(!validatePredicates(predicates)) {
 			return INSTANCE;
+		}
 		
 		LOGGER.debug("Predicates OK");
 
 		Collection<LinkedList<Predicates>> split = splitPredicates(predicates);
 		if(split.size() > 1) {
-			for(LinkedList<Predicates> list : split){
+			for(LinkedList<Predicates> list : split) {
 				LOGGER.debug("Display List");
 				if(LOGGER.isDebugEnabled()) {
 					StringBuilder sb = new StringBuilder();
@@ -111,7 +118,7 @@ public class CollectionFilter<T> {
 			boolean first = true;
 			IPredicate last = null;
 			Collection resultTmp = null;
-			for(LinkedList<Predicates> list : split){
+			for(LinkedList<Predicates> list : split) {
 				// Sur chaque list, on supprime le premier ou le dernier élément qui est un mot clé.
 				if(Predicates.isKeywordPredicate(list.getLast().getPredicate())) {
 					last = list.getLast().getPredicate();
@@ -121,17 +128,18 @@ public class CollectionFilter<T> {
 					list.removeFirst();
 				}
 				
-				// On fai la selection
+				// On fait la selection
 				select(src, list);
 				if(first) {
 					// Dans le cas du premier passage, on conserve la liste
 					// Elle servira pour les intersections et unions des éléments suivant
 					resultTmp = result;
 				} else {
-					if(last.equals(Predicates.AND))
+					if(Predicates.AND.equals(last)) {
 						intersect(resultTmp);
-					else if(last.equals(Predicates.OR))
+					} else if(Predicates.OR.equals(last)) {
 						union(resultTmp);
+					}
 					resultTmp = result;
 				}
 				first = false;
@@ -142,31 +150,36 @@ public class CollectionFilter<T> {
 			IPredicate<?> previous = null;
 			Collection<Predicates> predicatesToDo = new ArrayList<>();
 			for(Predicates predicate : predicates) {
-				if(Predicates.isParenthesisPredicate(predicate.getPredicate()))
+				if(Predicates.isParenthesisPredicate(predicate.getPredicate())) {
 					continue;
+				}
 				if(Predicates.isKeywordPredicate(predicate.getPredicate())) {
-					if(previous == null)
+					if(previous == null) {
 						previous = predicate.getPredicate();
+					}
 					if(!previous.equals(predicate.getPredicate())) {
-						if(previous.equals(Predicates.AND))
+						if(Predicates.AND.equals(previous)) {
 							INSTANCE.and(predicatesToDo);
-						else if(previous.equals(Predicates.OR))
+						}
+						else if(Predicates.OR.equals(previous)) {
 							INSTANCE.or(predicatesToDo);
+						}
 						predicatesToDo.clear();
 					}
 				}
 				else {
-					if(result == null)
+					if(result == null) {
 						select(src, predicate);
-					else
+					} else {
 						predicatesToDo.add(predicate);
+					}
 				}
 			}
 
 			if(previous != null) {
-				if(previous.equals(Predicates.AND))
+				if(Predicates.AND.equals(previous)) {
 					INSTANCE.and(predicatesToDo);
-				else if(previous.equals(Predicates.OR)) {
+				} else if(Predicates.OR.equals(previous)) {
 					Collection resultTmp = result;
 					select(src, predicatesToDo);
 					union(resultTmp);
@@ -183,12 +196,14 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	private static <T> CollectionFilter<T> select(Collection<T> src, Predicates predicate) {
-		if(src == null || predicate == null)
+		if(src == null || predicate == null) {
 			throw new NullPointerException("The collection of source objets or the predicate is null!");
+		}
 		result = new ArrayList<T>();
 		for(T b : src) {
-			if(predicate.getPredicate().apply(b, predicate.getValue(), predicate.getType()))
+			if(predicate.getPredicate().apply(b, predicate.getValue(), predicate.getType())) {
 				result.add(b);
+			}
 		}
 		return INSTANCE;
 	}
@@ -199,12 +214,14 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public CollectionFilter<T> and(IPredicate<T> predicate) {
-		if(predicate == null)
+		if(predicate == null) {
 			throw new NullPointerException("The predicate is null!");
-		Collection<T> result1 = new ArrayList<T>();
+		}
+		Collection<T> result1 = new ArrayList<>();
 		for(Object b : result) {
-			if(predicate.apply((T)b))
-				result1.add((T)b);
+			if(predicate.apply((T)b)) {
+				result1.add((T) b);
+			}
 		}
 		result = result1;
 		return INSTANCE;
@@ -218,12 +235,14 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public CollectionFilter<T> and(IPredicate<T> predicate, Object value, int type) {
-		if(predicate == null)
+		if(predicate == null) {
 			throw new NullPointerException("The predicate is null!");
-		Collection<T> result1 = new ArrayList<T>();
+		}
+		Collection<T> result1 = new ArrayList<>();
 		for(Object b : result) {
-			if(predicate.apply((T)b, value, type))
-				result1.add((T)b);
+			if(predicate.apply((T)b, value, type)) {
+				result1.add((T) b);
+			}
 		}
 		result = result1;
 		return INSTANCE;
@@ -235,12 +254,14 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public CollectionFilter<T> and(Predicates predicate) {
-		if(predicate == null)
+		if(predicate == null) {
 			throw new NullPointerException("The predicate is null!");
-		Collection<T> result1 = new ArrayList<T>();
+		}
+		Collection<T> result1 = new ArrayList<>();
 		for(Object b : result) {
-			if(predicate.getPredicate().apply(b, predicate.getValue(), predicate.getType()))
-				result1.add((T)b);
+			if(predicate.getPredicate().apply(b, predicate.getValue(), predicate.getType())) {
+				result1.add((T) b);
+			}
 		}
 		result = result1;
 		return INSTANCE;
@@ -252,8 +273,9 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	private CollectionFilter<T> and(Collection<Predicates> predicates) {
-		if(predicates == null)
+		if(predicates == null) {
 			throw new NullPointerException("The collection of predicates is null!");
+		}
 		Collection<T> result1 = new ArrayList<>();
 		for(Object b : result) {
 			boolean apply = true;
@@ -263,8 +285,9 @@ public class CollectionFilter<T> {
 					break;
 				}
 			}
-			if(apply)
-				result1.add((T)b);
+			if(apply) {
+				result1.add((T) b);
+			}
 		}
 		result = result1;
 		return INSTANCE;
@@ -277,8 +300,9 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public static <T> CollectionFilter<T> and(Collection<T> src, Collection<Predicates> predicates) {
-		if(src == null || predicates == null)
+		if(src == null || predicates == null) {
 			throw new NullPointerException("The collection of source objets or the collection of predicates is null!");
+		}
 		result = new ArrayList<T>();
 		for(Object b : src) {
 			boolean apply = true;
@@ -288,8 +312,9 @@ public class CollectionFilter<T> {
 					break;
 				}
 			}
-			if(apply)
+			if(apply) {
 				result.add(b);
+			}
 		}
 		return INSTANCE;
 	}
@@ -300,11 +325,13 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	private static <T> CollectionFilter<T> union(Collection<T> src) {
-		if(src == null)
+		if(src == null) {
 			throw new NullPointerException("The collection of source object is null!");
+		}
 		for(Object b : src) {
-			if(!result.contains(b))
+			if(!result.contains(b)) {
 				result.add(b);
+			}
 		}
 		return INSTANCE;
 	}
@@ -315,12 +342,14 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	private static <T> CollectionFilter<T> intersect(Collection<T> src) {
-		if(src == null)
+		if(src == null) {
 			throw new NullPointerException("The collection of source object is null!");
-		Collection<T> list = new ArrayList<T>();
+		}
+		Collection<T> list = new ArrayList<>();
 		for (Object t : result) {
-			if(src.contains(t))
-				list.add((T)t);
+			if(src.contains(t)) {
+				list.add((T) t);
+			}
 		}
 		result = list;
 		return INSTANCE;
@@ -332,11 +361,13 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public CollectionFilter<T> or(Collection<T> src, IPredicate<T> predicate) {
-		if(src == null || predicate == null)
+		if(src == null || predicate == null) {
 			throw new NullPointerException("The collection of source objets or the predicate is null!");
+		}
 		for(Object b : src) {
-			if(predicate.apply((T)b) && !result.contains(b))
+			if(predicate.apply((T)b) && !result.contains(b)) {
 				result.add(b);
+			}
 		}
 		return INSTANCE;
 	}
@@ -348,11 +379,13 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public CollectionFilter<T> or(Collection<T> src, IPredicate<T> predicate, Object value, int type) {
-		if(src == null || predicate == null)
+		if(src == null || predicate == null) {
 			throw new NullPointerException("The collection of source objets or the predicate is null!");
+		}
 		for(Object b : src) {
-			if(predicate.apply((T)b, value, type) && !result.contains(b))
+			if(predicate.apply((T)b, value, type) && !result.contains(b)) {
 				result.add(b);
+			}
 		}
 		return INSTANCE;
 	}
@@ -363,8 +396,9 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public CollectionFilter<T> or(Collection<Predicates> predicates) {
-		if(predicates == null)
+		if(predicates == null) {
 			throw new NullPointerException("The collection of predicates is null!");
+		}
 		Collection<T> result1 = new ArrayList<T>();
 		for(Object b : result) {
 			boolean apply = false;
@@ -374,8 +408,9 @@ public class CollectionFilter<T> {
 					break;
 				}
 			}
-			if(apply)
-				result1.add((T)b);
+			if(apply) {
+				result1.add((T) b);
+			}
 		}
 		result = result1;
 		return INSTANCE;
@@ -388,8 +423,9 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public static <T> CollectionFilter<T> or(Collection<T> src, Collection<Predicates> predicates) {
-		if(src == null || predicates == null)
+		if(src == null || predicates == null) {
 			throw new NullPointerException("The collection of source objets or the collection of predicates is null!");
+		}
 		result = new ArrayList<T>();
 		for(Object b : src) {
 			boolean apply = false;
@@ -399,8 +435,9 @@ public class CollectionFilter<T> {
 					break;
 				}
 			}
-			if(apply)
+			if(apply) {
 				result.add(b);
+			}
 		}
 		return INSTANCE;
 	}
@@ -411,8 +448,9 @@ public class CollectionFilter<T> {
 	 * @return
 	 */
 	public static boolean validatePredicates(Collection<Predicates> predicates) {
-		if(predicates == null)
+		if(predicates == null) {
 			return true;
+		}
 		error = null;
 		boolean first = true;
 		IPredicate<?> previous = null;
@@ -456,14 +494,16 @@ public class CollectionFilter<T> {
 					return false;
 				}
 			}
-			if(Predicates.openParenthesis.equals(predicate.getPredicate()))
+			if(Predicates.openParenthesis.equals(predicate.getPredicate())) {
 				openParenthesis++;
-			if(Predicates.closeParenthesis.equals(predicate.getPredicate()))
+			}
+			if(Predicates.closeParenthesis.equals(predicate.getPredicate())) {
 				closeParenthesis++;
+			}
 			previous = predicate.getPredicate();
 			first = false;
 		}
-		if(openParenthesis != closeParenthesis)  {
+		if(openParenthesis != closeParenthesis) {
 			error = Program.getLabel("CollectionFilter.ErrorParenthesis");
 			LOGGER.debug("Should have the same number of open and close parenthesis");
 			return false;
@@ -486,8 +526,9 @@ public class CollectionFilter<T> {
 	 */
 	private static Collection<LinkedList<Predicates>> splitPredicates(Collection<Predicates> predicates) {
 		Collection<LinkedList<Predicates>> predicatesToDo = new LinkedList<>();
-		if(predicates == null)
+		if(predicates == null) {
 			return predicatesToDo;
+		}
 		LinkedList<Predicates> predicatesToDoParenthesis = null;
 		LinkedList<Predicates> predicatesToDoNoParenthesis = null;
 		for(Predicates predicate : predicates) {
@@ -500,25 +541,29 @@ public class CollectionFilter<T> {
 				continue;
 			}
 			else if(predicate.getPredicate().equals(Predicates.closeParenthesis)) {
-				if(predicatesToDoParenthesis != null)
+				if(predicatesToDoParenthesis != null) {
 					predicatesToDo.add(predicatesToDoParenthesis);
+				}
 				predicatesToDoParenthesis = null;
 				continue;
 			}
 			if(predicatesToDoParenthesis == null) {
-				if(predicatesToDoNoParenthesis == null)
+				if(predicatesToDoNoParenthesis == null) {
 					predicatesToDoNoParenthesis = new LinkedList<>();
+				}
 				if(!Predicates.isParenthesisPredicate(predicate.getPredicate())) {
 					predicatesToDoNoParenthesis.add(predicate);
 				}
-			}else {
-				if(!Predicates.isParenthesisPredicate(predicate.getPredicate()))
+			} else {
+				if(!Predicates.isParenthesisPredicate(predicate.getPredicate())) {
 					predicatesToDoParenthesis.add(predicate);
+				}
 			}
 		}
 
-		if(predicatesToDoNoParenthesis != null && !predicatesToDoNoParenthesis.isEmpty())
+		if(predicatesToDoNoParenthesis != null && !predicatesToDoNoParenthesis.isEmpty()) {
 			predicatesToDo.add(predicatesToDoNoParenthesis);
+		}
 
 		return predicatesToDo;
 	}

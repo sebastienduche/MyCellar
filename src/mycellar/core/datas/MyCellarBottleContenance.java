@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 01/12/18
+ * @version 0.4
+ * @since 06/01/19
  */
 public final class MyCellarBottleContenance {
 
@@ -75,6 +75,7 @@ public final class MyCellarBottleContenance {
       fileWriter.flush();
     }
     catch (IOException ex) {
+      Debug("IOException");
       Program.showException(ex);
     }
     Debug("writeTypeXml: Writing file OK");

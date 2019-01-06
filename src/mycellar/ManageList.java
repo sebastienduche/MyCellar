@@ -22,8 +22,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 17/10/18
+ * @version 1.0
+ * @since 06/01/19
  */
 
 public class ManageList extends JDialog {
@@ -32,8 +32,7 @@ public class ManageList extends JDialog {
 	private final ManageListTableValue model = new ManageListTableValue();
 	private final MyCellarComboBox<String> defaultComboBox = new MyCellarComboBox<>();
 
-	public ManageList()
-	{
+	public ManageList() {
 		setTitle(Program.getLabel("Infos400"));
 		defaultComboBox.addItem("");
 		for(String val : MyCellarBottleContenance.getList()) {
@@ -42,17 +41,16 @@ public class ManageList extends JDialog {
 		defaultComboBox.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 		JTable table = new JTable(model);
 		TableColumnModel tcm = table.getColumnModel();
-	    TableColumn tc = tcm.getColumn(ManageListTableValue.ETAT);
-	    tc.setCellRenderer(new StateRenderer());
-	    tc.setCellEditor(new StateEditor());
-	    tc.setMaxWidth(30);
-	    tc.setMinWidth(30);
-	    model.setValues(MyCellarBottleContenance.getList());
-		MyCellarLabel labelTitle = new MyCellarLabel(Program.getLabel("Infos403"));
-		MyCellarLabel labelDefault = new MyCellarLabel(Program.getLabel("Infos146"));
-		MyCellarButton add = new MyCellarButton(Program.getLabel("Infos071"));
-		MyCellarButton close = new MyCellarButton(Program.getLabel("Infos019"));
-		MyCellarButton remove = new MyCellarButton(Program.getLabel("Infos051"));
+		TableColumn tc = tcm.getColumn(ManageListTableValue.ETAT);
+		tc.setCellRenderer(new StateRenderer());
+		tc.setCellEditor(new StateEditor());
+		tc.setMaxWidth(30);
+		tc.setMinWidth(30);
+		final MyCellarLabel labelTitle = new MyCellarLabel(Program.getLabel("Infos403"));
+		final MyCellarLabel labelDefault = new MyCellarLabel(Program.getLabel("Infos146"));
+		final MyCellarButton add = new MyCellarButton(Program.getLabel("Infos071"));
+		final MyCellarButton close = new MyCellarButton(Program.getLabel("Infos019"));
+		final MyCellarButton remove = new MyCellarButton(Program.getLabel("Infos051"));
 		setLayout(new MigLayout("","grow","[]30px[grow]20px[]30px[]"));
 		add(labelTitle,"center, wrap");
 		add(new JScrollPane(table),"grow,wrap");
@@ -64,40 +62,46 @@ public class ManageList extends JDialog {
 		labelTitle.setFont(Program.FONT_LABEL_BOLD);
 		
 		close.addActionListener((e) -> close());
-		add.addActionListener((e) -> {
-			String s = JOptionPane.showInputDialog(null,Program.getLabel("Infos289"),Program.getLabel("Infos402"),JOptionPane.QUESTION_MESSAGE);
-			if(null != s && !s.isEmpty()) {
-				model.addValue(s);
-				defaultComboBox.addItem(s);
-			}
-		});
-		remove.addActionListener((e) -> {
-			final LinkedList<Integer> list1 = model.getSelectedRows();
-			if(!list1.isEmpty()) {
-				LinkedList<String> values = model.getSelectedValues();
-				String label = Program.getLabel("Infos129");
-				if(MyCellarBottleContenance.getList().size() > 1)
-					label = Program.getLabel("Infos130");
-				int resul = JOptionPane.showConfirmDialog(Start.getInstance(), label, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION);
-				if(resul == JOptionPane.YES_OPTION) {
-					model.removeValueAt(list1);
-					for(String val: values) {
-						defaultComboBox.removeItem(val);
-					}
-				}
-			}
-		});
+		add.addActionListener((e) -> add());
+		remove.addActionListener((e) -> remove());
 		setModal(true);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	    setLocation( (screenSize.width - 300) / 2, (screenSize.height - 400) / 2);
-		setSize(300,400);
+		setLocation( (screenSize.width - 300) / 2, (screenSize.height - 400) / 2);
+		setSize(300, 400);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}
-	
+
+	private void remove() {
+		final LinkedList<Integer> list1 = model.getSelectedRows();
+		if(!list1.isEmpty()) {
+			LinkedList<String> values = model.getSelectedValues();
+			String label = Program.getLabel("Infos129");
+			if(values.size() > 1) {
+				label = Program.getLabel("Infos130");
+			}
+			int resul = JOptionPane.showConfirmDialog(Start.getInstance(), label, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION);
+			if(resul == JOptionPane.YES_OPTION) {
+				model.removeValueAt(list1);
+				for(String val: values) {
+					defaultComboBox.removeItem(val);
+				}
+			}
+		}
+	}
+
+	private void add() {
+		String s = JOptionPane.showInputDialog(null, Program.getLabel("Infos289"),Program.getLabel("Infos402"),JOptionPane.QUESTION_MESSAGE);
+		if(null != s && !s.isEmpty()) {
+			model.addValue(s);
+			defaultComboBox.addItem(s);
+		}
+	}
+
 	private void close(){
-		if(defaultComboBox.getSelectedIndex() != 0)
-			MyCellarBottleContenance.setDefaultValue((String)defaultComboBox.getSelectedItem());
+		if(defaultComboBox.getSelectedIndex() != 0) {
+			MyCellarBottleContenance.setDefaultValue((String) defaultComboBox.getSelectedItem());
+		}
 		dispose();
 	}
 }

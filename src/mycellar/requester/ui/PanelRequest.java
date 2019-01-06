@@ -9,6 +9,8 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,8 +21,8 @@ import java.util.Collection;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 20/03/18
+ * @version 0.5
+ * @since 06/01/19
  */
 public class PanelRequest extends JPanel {
 
@@ -30,6 +32,9 @@ public class PanelRequest extends JPanel {
 	private final MyCellarLabel labelError = new MyCellarLabel();
 
 	public PanelRequest() {
+
+		labelError.setFont(Program.FONT_LABEL_BOLD);
+		labelError.setForeground(Color.red);
 
 		MainChangeListener.setChangeListener((e) -> {
 			if(!CollectionFilter.validatePredicates(getPredicates())) {
@@ -83,7 +88,7 @@ public class PanelRequest extends JPanel {
 		panelRequest = new PanelDAndD(true);
 		panelRequest.setLayout(new MigLayout("","",""));
 		JScrollPane scroll = new JScrollPane(panelRequest);
-		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		scroll.setBorder(BorderFactory.createEmptyBorder());
 		panelRequest.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Request")));
 		add(scroll, "h 75::, grow, span 2");

@@ -79,8 +79,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.8
- * @since 28/12/18
+ * @version 19.9
+ * @since 06/01/19
  */
 
 public class Program {
@@ -904,6 +904,10 @@ public class Program {
 		setModified();
 		Debug("Program: Sorting places...");
 		Collections.sort(RANGEMENTS_LIST);
+	}
+
+	public static boolean hasComplexPlace() {
+		return RANGEMENTS_LIST.stream().anyMatch(rangement -> !rangement.isCaisse());
 	}
 
 	/**

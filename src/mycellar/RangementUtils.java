@@ -39,8 +39,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.8
- * @since 31/12/18
+ * @version 1.9
+ * @since 09/01/19
  */
 public class RangementUtils {
 
@@ -564,7 +564,7 @@ public class RangementUtils {
 	/**
 	 * findRangementToCreate
 	 */
-	static void findRangementToCreate() {
+	public static void findRangementToCreate() {
 
 		final Map<String, LinkedList<Part>> rangements = new HashMap<>();
 		for( var bottle: Program.getStorage().getAllList() ) {

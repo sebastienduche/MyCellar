@@ -42,8 +42,10 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,29 +56,19 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.5
- * @since 28/12/18
+ * @version 12.6
+ * @since 09/01/19
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
+	private static final int COUNT = 18;
 	private final MyCellarButton importe = new MyCellarButton();
 	private final MyCellarRadioButton type_txt = new MyCellarRadioButton();
 	private final MyCellarRadioButton type_xls = new MyCellarRadioButton();
 	private final MyCellarRadioButton type_xml = new MyCellarRadioButton();
 	private final char IMPORT = Program.getLabel("IMPORT").charAt(0);
 	private final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
-	private final MyCellarComboBox<MyCellarFields> choix1 = new MyCellarComboBox<>();
-	private final MyCellarComboBox<MyCellarFields> choix2 = new MyCellarComboBox<>();
-	private final MyCellarComboBox<MyCellarFields> choix3 = new MyCellarComboBox<>();
-	private final MyCellarComboBox<MyCellarFields> choix4 = new MyCellarComboBox<>();
-	private final MyCellarComboBox<MyCellarFields> choix5 = new MyCellarComboBox<>();
-	private final MyCellarComboBox<MyCellarFields> choix6 = new MyCellarComboBox<>();
-	private final MyCellarComboBox<MyCellarFields> choix7 = new MyCellarComboBox<>();
-	private final MyCellarComboBox<MyCellarFields> choix8 = new MyCellarComboBox<>();
-	private final MyCellarComboBox<MyCellarFields> choix9 = new MyCellarComboBox<>();
-	private final MyCellarComboBox<MyCellarFields> choix10 = new MyCellarComboBox<>();
-	private final MyCellarComboBox<MyCellarFields> choix11 = new MyCellarComboBox<>();
-	private final MyCellarComboBox<MyCellarFields> choix12 = new MyCellarComboBox<>();
+	private final List<MyCellarComboBox<MyCellarFields>> comboBoxList = new ArrayList<>(COUNT);
 	private final MyCellarCheckBox titre = new MyCellarCheckBox();
 	private final MyCellarLabel textControl2 = new MyCellarLabel();
 	private final MyCellarLabel label_progression = new MyCellarLabel();
@@ -166,91 +158,32 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		JPanel panelChoix = new JPanel();
 		panelChoix.setLayout(new MigLayout("","[][][][]",""));
 		panelChoix.add(textControl2, "span 4,wrap");
-		panelChoix.add(choix1);
-		panelChoix.add(choix2);
-		panelChoix.add(choix3);
-		panelChoix.add(choix4, "wrap");
-		panelChoix.add(choix5);
-		panelChoix.add(choix6);
-		panelChoix.add(choix7);
-		panelChoix.add(choix8, "wrap");
-		panelChoix.add(choix9);
-		panelChoix.add(choix10);
-		panelChoix.add(choix11);
-		panelChoix.add(choix12);
+		for (int i=0; i<COUNT; i++) {
+			MyCellarComboBox<MyCellarFields> combo = new MyCellarComboBox<>();
+			combo.addItem(MyCellarFields.EMPTY);
+			for(MyCellarFields field : MyCellarFields.getFieldsList()) {
+				combo.addItem(field);
+			}
+			if (i < COUNT - 1) {
+				int index = i + 1;
+				combo.addActionListener((e) -> updateCombo(e, index));
+			}
+			combo.addItem(MyCellarFields.USELESS);
+			comboBoxList.add(combo);
+			panelChoix.add(combo, i % 6 == 5 ? "wrap" : "");
+			if (i > 0) {
+				combo.setEnabled(false);
+			}
+		}
 		add(panelChoix, "grow, wrap");
 		add(label_progression, "grow, center, hidemode 3, wrap");
 		add(importe, "center");
-
-		ArrayList<MyCellarFields> list = MyCellarFields.getFieldsList();
-		choix1.addItem(MyCellarFields.EMPTY);
-		choix2.addItem(MyCellarFields.EMPTY);
-		choix3.addItem(MyCellarFields.EMPTY);
-		choix4.addItem(MyCellarFields.EMPTY);
-		choix5.addItem(MyCellarFields.EMPTY);
-		choix6.addItem(MyCellarFields.EMPTY);
-		choix7.addItem(MyCellarFields.EMPTY);
-		choix8.addItem(MyCellarFields.EMPTY);
-		choix9.addItem(MyCellarFields.EMPTY);
-		choix10.addItem(MyCellarFields.EMPTY);
-		choix11.addItem(MyCellarFields.EMPTY);
-		choix12.addItem(MyCellarFields.EMPTY);
-		for(MyCellarFields field : list) {
-			choix1.addItem(field);
-			choix2.addItem(field);
-			choix3.addItem(field);
-			choix4.addItem(field);
-			choix5.addItem(field);
-			choix6.addItem(field);
-			choix7.addItem(field);
-			choix8.addItem(field);
-			choix9.addItem(field);
-			choix10.addItem(field);
-			choix11.addItem(field);
-			choix12.addItem(field);
-		}
-		// On ajoute la ligne "Ignorer"
-		choix1.addItem(MyCellarFields.USELESS);
-		choix2.addItem(MyCellarFields.USELESS);
-		choix3.addItem(MyCellarFields.USELESS);
-		choix4.addItem(MyCellarFields.USELESS);
-		choix5.addItem(MyCellarFields.USELESS);
-		choix6.addItem(MyCellarFields.USELESS);
-		choix7.addItem(MyCellarFields.USELESS);
-		choix8.addItem(MyCellarFields.USELESS);
-		choix9.addItem(MyCellarFields.USELESS);
-		choix10.addItem(MyCellarFields.USELESS);
-		choix11.addItem(MyCellarFields.USELESS);
-		choix12.addItem(MyCellarFields.USELESS);
 
 		separateur.addItem(Program.getLabel("Infos042"));
 		separateur.addItem(Program.getLabel("Infos043"));
 		separateur.addItem(Program.getLabel("Infos044"));
 		separateur.addItem(Program.getLabel("Infos002"));
 
-		choix1.addActionListener(this::choix1_actionPerformed);
-		choix2.addActionListener(this::choix2_actionPerformed);
-		choix3.addActionListener(this::choix3_actionPerformed);
-		choix4.addActionListener(this::choix4_actionPerformed);
-		choix5.addActionListener(this::choix5_actionPerformed);
-		choix6.addActionListener(this::choix6_actionPerformed);
-		choix7.addActionListener(this::choix7_actionPerformed);
-		choix8.addActionListener(this::choix8_actionPerformed);
-		choix9.addActionListener(this::choix9_actionPerformed);
-		choix10.addActionListener(this::choix10_actionPerformed);
-		choix11.addActionListener(this::choix11_actionPerformed);
-		
-		choix2.setEnabled(false);
-		choix3.setEnabled(false);
-		choix4.setEnabled(false);
-		choix5.setEnabled(false);
-		choix6.setEnabled(false);
-		choix7.setEnabled(false);
-		choix8.setEnabled(false);
-		choix9.setEnabled(false);
-		choix10.setEnabled(false);
-		choix11.setEnabled(false);
-		choix12.setEnabled(false);
 		Debug("Constructor OK");
 	}
 	
@@ -264,18 +197,10 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		label_progression.setText("");
 		label2.setVisible(type_txt.isSelected());
 		separateur.setVisible(type_txt.isSelected());
-		choix1.setVisible(!type_xml.isSelected());
-		choix2.setVisible(!type_xml.isSelected());
-		choix3.setVisible(!type_xml.isSelected());
-		choix4.setVisible(!type_xml.isSelected());
-		choix5.setVisible(!type_xml.isSelected());
-		choix6.setVisible(!type_xml.isSelected());
-		choix7.setVisible(!type_xml.isSelected());
-		choix8.setVisible(!type_xml.isSelected());
-		choix9.setVisible(!type_xml.isSelected());
-		choix10.setVisible(!type_xml.isSelected());
-		choix11.setVisible(!type_xml.isSelected());
-		choix12.setVisible(!type_xml.isSelected());
+		boolean typeXml = type_xml.isSelected();
+		for (var combo: comboBoxList) {
+			combo.setVisible(!typeXml);
+		}
 		titre.setVisible(!type_xml.isSelected());
 		textControl2.setVisible(!type_xml.isSelected());
 	}
@@ -290,277 +215,20 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	}
 
 	/**
-	 * choix1_actionPerformed: Choix
+	 * updateCombo: Choix
 	 *
 	 * @param e ActionEvent
+	 * @param  index int
 	 */
-	private void choix1_actionPerformed(ActionEvent e) {
-		if (choix1.getSelectedIndex() == 0) {
-			choix2.setEnabled(false);
-			choix3.setEnabled(false);
-			choix4.setEnabled(false);
-			choix5.setEnabled(false);
-			choix6.setEnabled(false);
-			choix7.setEnabled(false);
-			choix8.setEnabled(false);
-			choix9.setEnabled(false);
-			choix10.setEnabled(false);
-			choix11.setEnabled(false);
-			choix12.setEnabled(false);
-			choix2.setSelectedIndex(0);
-			choix3.setSelectedIndex(0);
-			choix4.setSelectedIndex(0);
-			choix5.setSelectedIndex(0);
-			choix6.setSelectedIndex(0);
-			choix7.setSelectedIndex(0);
-			choix8.setSelectedIndex(0);
-			choix9.setSelectedIndex(0);
-			choix10.setSelectedIndex(0);
-			choix11.setSelectedIndex(0);
-			choix12.setSelectedIndex(0);
-		}
-		else {
-			choix2.setEnabled(true);
-		}
-	}
-
-	/**
-	 * choix2_actionPerformed: Choix
-	 *
-	 * @param e ActionEvent
-	 */
-	private void choix2_actionPerformed(ActionEvent e) {
-		if (choix2.getSelectedIndex() == 0) {
-			choix3.setEnabled(false);
-			choix4.setEnabled(false);
-			choix5.setEnabled(false);
-			choix6.setEnabled(false);
-			choix7.setEnabled(false);
-			choix8.setEnabled(false);
-			choix9.setEnabled(false);
-			choix10.setEnabled(false);
-			choix11.setEnabled(false);
-			choix12.setEnabled(false);
-			choix3.setSelectedIndex(0);
-			choix4.setSelectedIndex(0);
-			choix5.setSelectedIndex(0);
-			choix6.setSelectedIndex(0);
-			choix7.setSelectedIndex(0);
-			choix8.setSelectedIndex(0);
-			choix9.setSelectedIndex(0);
-			choix10.setSelectedIndex(0);
-			choix11.setSelectedIndex(0);
-			choix12.setSelectedIndex(0);
-		}
-		else {
-			choix3.setEnabled(true);
-		}
-	}
-
-	/**
-	 * choix3_actionPerformed: Choix
-	 *
-	 * @param e ActionEvent
-	 */
-	private void choix3_actionPerformed(ActionEvent e) {
-		if (choix3.getSelectedIndex() == 0) {
-			choix4.setEnabled(false);
-			choix5.setEnabled(false);
-			choix6.setEnabled(false);
-			choix7.setEnabled(false);
-			choix8.setEnabled(false);
-			choix9.setEnabled(false);
-			choix10.setEnabled(false);
-			choix11.setEnabled(false);
-			choix12.setEnabled(false);
-			choix4.setSelectedIndex(0);
-			choix5.setSelectedIndex(0);
-			choix6.setSelectedIndex(0);
-			choix7.setSelectedIndex(0);
-			choix8.setSelectedIndex(0);
-			choix9.setSelectedIndex(0);
-			choix10.setSelectedIndex(0);
-			choix11.setSelectedIndex(0);
-			choix12.setSelectedIndex(0);
-		}
-		else {
-			choix4.setEnabled(true);
-		}
-	}
-
-	/**
-	 * choix4_actionPerformed: Choix
-	 *
-	 * @param e ActionEvent
-	 */
-	private void choix4_actionPerformed(ActionEvent e) {
-		if (choix4.getSelectedIndex() == 0) {
-			choix5.setEnabled(false);
-			choix6.setEnabled(false);
-			choix7.setEnabled(false);
-			choix8.setEnabled(false);
-			choix9.setEnabled(false);
-			choix10.setEnabled(false);
-			choix11.setEnabled(false);
-			choix12.setEnabled(false);
-			choix5.setSelectedIndex(0);
-			choix6.setSelectedIndex(0);
-			choix7.setSelectedIndex(0);
-			choix8.setSelectedIndex(0);
-			choix9.setSelectedIndex(0);
-			choix10.setSelectedIndex(0);
-			choix11.setSelectedIndex(0);
-			choix12.setSelectedIndex(0);
-		}
-		else {
-			choix5.setEnabled(true);
-		}
-	}
-
-	/**
-	 * choix5_actionPerformed: Choix
-	 *
-	 * @param e ActionEvent
-	 */
-	private void choix5_actionPerformed(ActionEvent e) {
-		if (choix5.getSelectedIndex() == 0) {
-			choix6.setEnabled(false);
-			choix7.setEnabled(false);
-			choix8.setEnabled(false);
-			choix9.setEnabled(false);
-			choix10.setEnabled(false);
-			choix11.setEnabled(false);
-			choix12.setEnabled(false);
-			choix6.setSelectedIndex(0);
-			choix7.setSelectedIndex(0);
-			choix8.setSelectedIndex(0);
-			choix9.setSelectedIndex(0);
-			choix10.setSelectedIndex(0);
-			choix11.setSelectedIndex(0);
-			choix12.setSelectedIndex(0);
-		}
-		else {
-			choix6.setEnabled(true);
-		}
-	}
-
-	/**
-	 * choix6_actionPerformed: Choix
-	 *
-	 * @param e ActionEvent
-	 */
-	private void choix6_actionPerformed(ActionEvent e) {
-		if (choix6.getSelectedIndex() == 0) {
-			choix7.setEnabled(false);
-			choix8.setEnabled(false);
-			choix9.setEnabled(false);
-			choix10.setEnabled(false);
-			choix11.setEnabled(false);
-			choix12.setEnabled(false);
-			choix7.setSelectedIndex(0);
-			choix8.setSelectedIndex(0);
-			choix9.setSelectedIndex(0);
-			choix10.setSelectedIndex(0);
-			choix11.setSelectedIndex(0);
-			choix12.setSelectedIndex(0);
-		}
-		else {
-			choix7.setEnabled(true);
-		}
-	}
-
-	/**
-	 * choix7_actionPerformed: Choix
-	 *
-	 * @param e ActionEvent
-	 */
-	private void choix7_actionPerformed(ActionEvent e) {
-		if (choix7.getSelectedIndex() == 0) {
-			choix8.setEnabled(false);
-			choix9.setEnabled(false);
-			choix10.setEnabled(false);
-			choix11.setEnabled(false);
-			choix12.setEnabled(false);
-			choix8.setSelectedIndex(0);
-			choix9.setSelectedIndex(0);
-			choix10.setSelectedIndex(0);
-			choix11.setSelectedIndex(0);
-			choix12.setSelectedIndex(0);
-		}
-		else {
-			choix8.setEnabled(true);
-		}
-	}
-
-	/**
-	 * choix8_actionPerformed: Choix
-	 *
-	 * @param e ActionEvent
-	 */
-	private void choix8_actionPerformed(ActionEvent e) {
-		if (choix8.getSelectedIndex() == 0) {
-			choix9.setEnabled(false);
-			choix10.setEnabled(false);
-			choix11.setEnabled(false);
-			choix12.setEnabled(false);
-			choix9.setSelectedIndex(0);
-			choix10.setSelectedIndex(0);
-			choix11.setSelectedIndex(0);
-			choix12.setSelectedIndex(0);
-		}
-		else {
-			choix9.setEnabled(true);
-		}
-	}
-
-	/**
-	 * choix9_actionPerformed: Choix
-	 *
-	 * @param e ActionEvent
-	 */
-	private void choix9_actionPerformed(ActionEvent e) {
-		if (choix9.getSelectedIndex() == 0) {
-			choix10.setEnabled(false);
-			choix11.setEnabled(false);
-			choix12.setEnabled(false);
-			choix10.setSelectedIndex(0);
-			choix11.setSelectedIndex(0);
-			choix12.setSelectedIndex(0);
-		}
-		else {
-			choix10.setEnabled(true);
-		}
-	}
-
-	/**
-	 * choix10_actionPerformed: Choix
-	 *
-	 * @param e ActionEvent
-	 */
-	private void choix10_actionPerformed(ActionEvent e) {
-		if (choix10.getSelectedIndex() == 0) {
-			choix11.setEnabled(false);
-			choix12.setEnabled(false);
-			choix11.setSelectedIndex(0);
-			choix12.setSelectedIndex(0);
-		}
-		else {
-			choix11.setEnabled(true);
-		}
-	}
-
-	/**
-	 * choix11_actionPerformed: Choix
-	 *
-	 * @param e ActionEvent
-	 */
-	private void choix11_actionPerformed(ActionEvent e) {
-		if (choix11.getSelectedIndex() == 0) {
-			choix12.setEnabled(false);
-			choix12.setSelectedIndex(0);
-		}
-		else {
-			choix12.setEnabled(true);
+	private void updateCombo(ActionEvent e, int index) {
+		if (((MyCellarComboBox)e.getSource()).getSelectedIndex() == 0) {
+			for (int i=index; i<COUNT; i++) {
+				final var comboBox = comboBoxList.get(i);
+				comboBox.setEnabled(false);
+				comboBox.setSelectedIndex(0);
+			}
+		} else {
+			comboBoxList.get(index).setEnabled(true);
 		}
 	}
 
@@ -668,138 +336,20 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				importe.setEnabled(true);
 				return;
 			}
+
 			int nb_choix = 0;
-
-			int bool_name = 0;
-			int bool_year = 0;
-			int bool_half = 0;
-			int bool_plac = 0;
-			int bool_nump = 0;
-			int bool_line = 0;
-			int bool_colu = 0;
-			int bool_pric = 0;
-			int bool_comm = 0;
-			int bool_othe1 = 0;
-			int bool_othe2 = 0;
-			int bool_othe3 = 0;
-			Rangement new_rangement = null;
-
-			if (choix1.getSelectedIndex() != 0) {
-				nb_choix++;
-			}
-			if (choix2.getSelectedIndex() != 0) {
-				nb_choix++;
-			}
-			if (choix3.getSelectedIndex() != 0) {
-				nb_choix++;
-			}
-			if (choix4.getSelectedIndex() != 0) {
-				nb_choix++;
-			}
-			if (choix5.getSelectedIndex() != 0) {
-				nb_choix++;
-			}
-			if (choix6.getSelectedIndex() != 0) {
-				nb_choix++;
-			}
-			if (choix7.getSelectedIndex() != 0) {
-				nb_choix++;
-			}
-			if (choix8.getSelectedIndex() != 0) {
-				nb_choix++;
-			}
-			if (choix9.getSelectedIndex() != 0) {
-				nb_choix++;
-			}
-			if (choix10.getSelectedIndex() != 0) {
-				nb_choix++;
-			}
-			if (choix11.getSelectedIndex() != 0) {
-				nb_choix++;
-			}
-			if (choix12.getSelectedIndex() != 0) {
-				nb_choix++;
-
-				//Verify only 1 use of each field
-			}
-			int choix_val;
-			for (int i = 0; i < nb_choix; i++) {
-				choix_val = 0;
-				switch (i) {
-				case 0:
-					choix_val = choix1.getSelectedIndex();
-					break;
-				case 1:
-					choix_val = choix2.getSelectedIndex();
-					break;
-				case 2:
-					choix_val = choix3.getSelectedIndex();
-					break;
-				case 3:
-					choix_val = choix4.getSelectedIndex();
-					break;
-				case 4:
-					choix_val = choix5.getSelectedIndex();
-					break;
-				case 5:
-					choix_val = choix6.getSelectedIndex();
-					break;
-				case 6:
-					choix_val = choix7.getSelectedIndex();
-					break;
-				case 7:
-					choix_val = choix8.getSelectedIndex();
-					break;
-				case 8:
-					choix_val = choix9.getSelectedIndex();
-					break;
-				case 9:
-					choix_val = choix10.getSelectedIndex();
-					break;
-				case 10:
-					choix_val = choix11.getSelectedIndex();
-					break;
-				case 11:
-					choix_val = choix12.getSelectedIndex();
-					break;
+			for (var combo : comboBoxList) {
+				if (combo.getSelectedIndex() != 0) {
+					nb_choix++;
 				}
-				switch (choix_val) {
-				case 1:
-					bool_name++;
-					break;
-				case 2:
-					bool_year++;
-					break;
-				case 3:
-					bool_half++;
-					break;
-				case 4:
-					bool_plac++;
-					break;
-				case 5:
-					bool_nump++;
-					break;
-				case 6:
-					bool_line++;
-					break;
-				case 7:
-					bool_colu++;
-					break;
-				case 8:
-					bool_pric++;
-					break;
-				case 9:
-					bool_comm++;
-					break;
-				case 11:
-					bool_othe1++;
-					break;
-				case 12:
-					bool_othe2++;
-					break;
-				case 13:
-					bool_othe3++;
-					break;
+			}
+
+			HashMap<MyCellarFields, Integer> mapFieldCount = new HashMap<>();
+			for (int i = 0; i < nb_choix; i++) {
+				final var comboBox = comboBoxList.get(i);
+				final MyCellarFields selectedField = (MyCellarFields) comboBox.getSelectedItem();
+				if (selectedField != null && MyCellarFields.isRealField(selectedField)) {
+					mapFieldCount.put(selectedField, mapFieldCount.getOrDefault(selectedField, 0) + 1);
 				}
 			}
  
@@ -862,8 +412,15 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				return;
 			}
 
-			if (bool_name > 1 || bool_year > 1 || bool_half > 1 || bool_plac > 1 || bool_nump > 1 || bool_line > 1 || bool_colu > 1 || bool_pric > 1 || bool_comm > 1 || bool_othe1 > 1 || bool_othe2 > 1 || bool_othe3 > 1) {
-
+			boolean isMoreThanOne = false;
+			for (var key: mapFieldCount.keySet()) {
+				if (mapFieldCount.get(key) > 1) {
+					isMoreThanOne = true;
+					break;
+				}
+			}
+			Rangement new_rangement = null;
+			if (isMoreThanOne) {
 				label_progression.setText("");
 				Debug("ERROR: fields cannot be selected more than one time");
 				//"Un champ ne doit pas être sélectionné 2 fois.");
@@ -871,7 +428,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				Erreur.showSimpleErreur(Program.getError("Error017"), Program.getError("Error018"));
 				importe.setEnabled(true);
 				return;
-			}	else if(bool_name == 0) {
+			}	else if(mapFieldCount.get(MyCellarFields.NAME) == null) {
 				label_progression.setText("");
 				Debug("ERROR: No column for wine name");
 				//"Aucune colonne n'indique le nom du vin.
@@ -879,7 +436,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				Erreur.showSimpleErreur(Program.getError("Error142"), Program.getError("Error143"));
 				importe.setEnabled(true);
 				return;
-			}	else if(bool_plac == 0) {
+			}	else if(mapFieldCount.get(MyCellarFields.PLACE) == null) {
 				label_progression.setText("");
 				Debug("ERROR: No place defined, a place will be create");
 				//Il n'y a pas de rangements définis dans le fichier.
@@ -890,10 +447,10 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 
 				String title = Program.getLabel("Infos010");
 				String message2 = Program.getLabel("Infos308");
-				String titre_properties[] = new String[nb_caisse + 2];
-				String default_value[] = new String[nb_caisse + 2];
-				String key_properties[] = new String[nb_caisse + 2];
-				String type_objet[] = new String[nb_caisse + 2];
+				String []titre_properties = new String[nb_caisse + 2];
+				String []default_value = new String[nb_caisse + 2];
+				String []key_properties = new String[nb_caisse + 2];
+				String []type_objet = new String[nb_caisse + 2];
 				int j = 0;
 				for (Rangement cave : Program.getCave()) {
 					if (cave.isCaisse()) {
@@ -999,8 +556,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				try(var reader = new BufferedReader(new FileReader(f))) {
 					String line = reader.readLine();
 					if (line != null) {
-						String[] tab = line.split(separe);
-						if (tab == null || tab.length <= 1) {
+						if (line.split(separe).length <= 1) {
 							label_progression.setText("");
 							Debug("ERROR: No separator found");
 							//"Le séparateur sélectionné n'a pas été trouvé.");
@@ -1027,74 +583,9 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 							}
 							value = Program.convertToHTMLString(value);
 							MyCellarFields selectedField = getSelectedField(i);
-
-							//Ajout des valeurs d'une bouteille
-							switch (selectedField) {
-							case NAME:
-								bottle.setNom(value);
-								break;
-							case YEAR:
-								bottle.setAnnee(value);
-								break;
-							case TYPE:
-								bottle.setType(value);
-								break;
-							case PLACE:
-								bottle.setEmplacement(value);
-								break;
-							case NUM_PLACE:
-								bottle.setNumLieu(Integer.parseInt(value));
-								if(maxNumPlace < bottle.getNumLieu())
-									maxNumPlace = bottle.getNumLieu();
-								break;
-							case LINE:
-								bottle.setLigne(Integer.parseInt(value));
-								break;
-							case COLUMN:
-								bottle.setColonne(Integer.parseInt(value));
-								break;
-							case PRICE:
-								bottle.setPrix(value);
-								break;
-							case COMMENT:
-								bottle.setComment(value);
-								break;
-							case MATURITY:
-								bottle.setMaturity(value);
-								break;
-							case PARKER:
-								bottle.setParker(value);
-								break;
-							case VINEYARD:
-								if (bottle.getVignoble() == null) {
-									bottle.setVignoble(new Vignoble());
-								}
-								bottle.getVignoble().setName(value);
-								break;
-							case COLOR:
-								bottle.setColor(value);
-								break;
-							case COUNTRY:
-								if (bottle.getVignoble() == null) {
-									bottle.setVignoble(new Vignoble(value));
-								} else {
-									bottle.getVignoble().setCountry(value);
-								}
-								break;
-							case AOC:
-								if (bottle.getVignoble() == null) {
-									bottle.setVignoble(new Vignoble());
-								}
-								bottle.getVignoble().setAOC(value);
-								break;
-							case IGP:
-								if (bottle.getVignoble() == null) {
-									bottle.setVignoble(new Vignoble());
-								}
-								bottle.getVignoble().setIGP(value);
-								break;
-								default:
-									break;
+							bottle.setValue(selectedField, value);
+							if (selectedField.equals(MyCellarFields.NUM_PLACE) && maxNumPlace < bottle.getNumLieu()) {
+								maxNumPlace = bottle.getNumLieu();
 							}
 						}
 						if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
@@ -1164,73 +655,11 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 						MyCellarFields selectedField = getSelectedField(i);
 						//Alimentation de la HashMap
 						Debug("Write " + selectedField + "->" + value);
-						switch (selectedField) {
-							case NAME:
-								bottle.setNom(value);
-								break;
-							case YEAR:
-								bottle.setAnnee(value);
-								break;
-							case TYPE:
-								bottle.setType(value);
-								break;
-							case PLACE:
-								bottle.setEmplacement(value);
-								break;
-							case NUM_PLACE:
-								bottle.setNumLieu(Double.valueOf(value).intValue());
-								if (maxNumPlace < bottle.getNumLieu()) {
-									maxNumPlace = bottle.getNumLieu();
-								}
-								break;
-							case LINE:
-								bottle.setLigne(Double.valueOf(value).intValue());
-								break;
-							case COLUMN:
-								bottle.setColonne(Double.valueOf(value).intValue());
-								break;
-							case PRICE:
-								bottle.setPrix(value);
-								break;
-							case COMMENT:
-								bottle.setComment(value);
-								break;
-							case MATURITY:
-								bottle.setMaturity(value);
-								break;
-							case PARKER:
-								bottle.setParker(value);
-								break;
-							case VINEYARD:
-								if (bottle.getVignoble() == null) {
-									bottle.setVignoble(new Vignoble());
-								}
-								bottle.getVignoble().setName(value);
-								break;
-							case COLOR:
-								bottle.setColor(value);
-								break;
-							case COUNTRY:
-								if (bottle.getVignoble() == null) {
-									bottle.setVignoble(new Vignoble());
-								}
-								bottle.getVignoble().setCountry(value);
-								break;
-							case AOC:
-								if (bottle.getVignoble() == null) {
-									bottle.setVignoble(new Vignoble());
-								}
-								bottle.getVignoble().setAOC(value);
-								break;
-							case IGP:
-								if (bottle.getVignoble() == null) {
-									bottle.setVignoble(new Vignoble());
-								}
-								bottle.getVignoble().setIGP(value);
-								break;
-							default:
-								break;
+						bottle.setValue(selectedField, value);
+						if (selectedField.equals(MyCellarFields.NUM_PLACE) && maxNumPlace < bottle.getNumLieu()) {
+							maxNumPlace = bottle.getNumLieu();
 						}
+
 						if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
 							bottle.setEmplacement(new_rangement.getNom());
 							new_rangement.setNbEmplacements(maxNumPlace+1);
@@ -1293,46 +722,10 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	}
 
 	private MyCellarFields getSelectedField(int i) {
-		MyCellarFields selectedField = MyCellarFields.USELESS;
-		switch (i) {
-    case 0:
-      selectedField = (MyCellarFields)choix1.getSelectedItem();
-      break;
-    case 1:
-      selectedField = (MyCellarFields)choix2.getSelectedItem();
-      break;
-    case 2:
-      selectedField = (MyCellarFields)choix3.getSelectedItem();
-      break;
-    case 3:
-      selectedField = (MyCellarFields)choix4.getSelectedItem();
-      break;
-    case 4:
-      selectedField = (MyCellarFields)choix5.getSelectedItem();
-      break;
-    case 5:
-      selectedField = (MyCellarFields)choix6.getSelectedItem();
-      break;
-    case 6:
-      selectedField = (MyCellarFields)choix7.getSelectedItem();
-      break;
-    case 7:
-      selectedField = (MyCellarFields)choix8.getSelectedItem();
-      break;
-    case 8:
-      selectedField = (MyCellarFields)choix9.getSelectedItem();
-      break;
-    case 9:
-      selectedField = (MyCellarFields)choix10.getSelectedItem();
-      break;
-    case 10:
-      selectedField = (MyCellarFields)choix11.getSelectedItem();
-      break;
-    case 11:
-      selectedField = (MyCellarFields)choix12.getSelectedItem();
-      break;
-    }
-		return selectedField;
+		if (i < comboBoxList.size()) {
+			return (MyCellarFields) comboBoxList.get(i).getSelectedItem();
+		}
+		return MyCellarFields.USELESS;
 	}
 
 	/**

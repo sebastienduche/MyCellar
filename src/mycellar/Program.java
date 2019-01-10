@@ -79,8 +79,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.9
- * @since 06/01/19
+ * @version 20.0
+ * @since 10/01/19
  */
 
 public class Program {
@@ -390,12 +390,8 @@ public class Program {
 	}
 
 	private static void sendMail(String error, File filename) {
-		var stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
-		if (stream == null) {
-			Debug("Program: ERROR: Unable to load MyCellar.dat");
-			return;
-		}
-		try (var reader = new BufferedReader(stream)) {
+		try (var stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
+			 var reader = new BufferedReader(stream)) {
 			String line = reader.readLine();
 			reader.close();
 			stream.close();

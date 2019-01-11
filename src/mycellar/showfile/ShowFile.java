@@ -58,8 +58,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 5.7
- * @since 25/10/18
+ * @version 5.8
+ * @since 11/01/19
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -67,6 +67,7 @@ public class ShowFile extends JPanel implements ITabListener {
   private static final long serialVersionUID = 1265789936970092250L;
   private final MyCellarLabel m_oTitleLabel = new MyCellarLabel();
   private final MyCellarLabel m_oResultLabel = new MyCellarLabel();
+  private final MyCellarButton m_oCreatePlacesButton = new MyCellarButton(new CreatePlacesAction());
   private final MyCellarButton m_oManageButton = new MyCellarButton(new ManageColumnAction());
   private final MyCellarButton m_oDeleteButton = new MyCellarButton(MyCellarImage.DELETE);
   private final MyCellarButton m_oModifyButton = new MyCellarButton(new ModifyBottlesAction());
@@ -401,7 +402,8 @@ public class ShowFile extends JPanel implements ITabListener {
       add(m_oDeleteButton, "align right, wrap");
     } else {
       add(m_oTitleLabel, "align left");
-      add(m_oReloadButton, "align right, split 2");
+      add(m_oCreatePlacesButton, "align right, split 3");
+      add(m_oReloadButton, "align right");
       add(m_oDeleteButton, "align right, wrap");
     }
 
@@ -967,7 +969,7 @@ public class ShowFile extends JPanel implements ITabListener {
     }
   }
 
-  class ReloadErrorsAction extends AbstractAction {
+  private class ReloadErrorsAction extends AbstractAction {
 
 	private static final long serialVersionUID = 983425309954475989L;
 
@@ -981,6 +983,19 @@ public class ShowFile extends JPanel implements ITabListener {
     public void actionPerformed(ActionEvent e) {
       RangementUtils.putTabStock();
       ((ErrorShowValues)tv).setErrors(Program.getErrors());
+    }
+  }
+
+  private class CreatePlacesAction extends AbstractAction {
+
+    private CreatePlacesAction() {
+      super(Program.getLabel("Infos267"));
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      RangementUtils.findRangementToCreate();
     }
   }
 

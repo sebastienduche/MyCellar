@@ -45,8 +45,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 25.2
- * @since 28/12/18
+ * @version 25.3
+ * @since 11/01/19
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -73,7 +73,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	
 	private final MyCellarLabel copyright = new MyCellarLabel();
 	private final MyCellarLabel update = new MyCellarLabel();
-	private static final String INFOS_VERSION = " 2018 v";
+	private static final String INFOS_VERSION = " 2019 v";
 	private final MyCellarLabel version = new MyCellarLabel();
 	
 	private char QUITTER;
@@ -385,13 +385,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	private void news_actionPerformed() {
 		Program.open(new File("Finish.html"));
-	}
-
-	/**
-	 * tocreate_actionPerformed: Appelle la fenêtre de Bienvenue.
-	 */
-	private void tocreate_actionPerformed() {
-		RangementUtils.findRangementToCreate();
 	}
 
 	/**
@@ -1008,7 +1001,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		jMenuExportXmlPlaces.addActionListener((e) -> exportXmlPlace_actionPerformed());
 		jMenuExportXml.addActionListener((e) -> exportXml_actionPerformed());
 		jMenuCloseFile.addActionListener((e) -> closeFile_actionPerformed());
-		tocreate.addActionListener((e) -> tocreate_actionPerformed());
+		tocreate.addActionListener((e) -> RangementUtils.findRangementToCreate());
 		jMenuReopen1.addActionListener((e) -> reopen1_actionPerformed());
 		jMenuReopen2.addActionListener((e) -> reopen2_actionPerformed());
 		jMenuReopen3.addActionListener((e) -> reopen3_actionPerformed());

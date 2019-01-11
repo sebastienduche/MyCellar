@@ -11,6 +11,7 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.core.datas.MyCellarBottleContenance;
 import net.miginfocom.swing.MigLayout;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -56,8 +57,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.6
- * @since 09/01/19
+ * @version 12.7
+ * @since 11/01/19
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -596,17 +597,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 						line = reader.readLine();
 					}
 				}
-				label_progression.setText(Program.getLabel("Infos200"));
-				new Timer().schedule(
-								new TimerTask() {
-										@Override
-										public void run() {
-											SwingUtilities.invokeLater(() -> label_progression.setText(""));
-										}
-								},
-								5000
-				);
-				Debug("Import OK.");
+				displayImportDone();
 			}
 			else { //Excel File
 				if (!importExcelFile(nom, new_rangement)) {
@@ -618,9 +609,25 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		catch (Exception exc) {
 			Program.showException(exc);
 		}
-		if(!RangementUtils.putTabStock()) {
+		if(RangementUtils.putTabStock()) {
+			MyCellarBottleContenance.load();
+		} else {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
+	}
+
+	private void displayImportDone() {
+		label_progression.setText(Program.getLabel("Infos200"));
+		new Timer().schedule(
+				new TimerTask() {
+					@Override
+					public void run() {
+						SwingUtilities.invokeLater(() -> label_progression.setText(""));
+					}
+				},
+				5000
+		);
+		Debug("Import OK.");
 	}
 
 	private boolean importExcelFile(final String nom, final Rangement new_rangement) {
@@ -687,17 +694,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			return false;
 		}
 
-		label_progression.setText(Program.getLabel("Infos200"));
-		new Timer().schedule(
-						new TimerTask() {
-								@Override
-								public void run() {
-									SwingUtilities.invokeLater(() -> label_progression.setText(""));
-								}
-						},
-						5000
-		);
-		Debug("Import OK.");
+		displayImportDone();
 		importe.setEnabled(true);
 		return true;
 	}

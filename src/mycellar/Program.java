@@ -79,8 +79,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 20.0
- * @since 10/01/19
+ * @version 20.1
+ * @since 11/01/19
  */
 
 public class Program {
@@ -856,11 +856,13 @@ public class Program {
 	 * @param name String
 	 * @return Rangement
 	 */
-	public static Rangement getCave(String name) {
-		if (name == null || name.isEmpty()) {
+	public static Rangement getCave(final String name) {
+		if (name == null || name.trim().isEmpty()) {
 			return null;
 		}
-		final List<Rangement> list = RANGEMENTS_LIST.stream().filter(rangement -> rangement.getNom().equals(name))
+
+		final String placeName = name.trim();
+		final List<Rangement> list = RANGEMENTS_LIST.stream().filter(rangement -> rangement.getNom().equals(placeName))
 				.collect(Collectors.toList());
 		if (list.isEmpty()) {
 			return null;
@@ -874,12 +876,13 @@ public class Program {
 	 * @param name String
 	 * @return int
 	 */
-	static int getCaveIndex(String name) {
-		if (name == null || name.isEmpty()) {
+	static int getCaveIndex(final String name) {
+		if (name == null || name.trim().isEmpty()) {
 			return -1;
 		}
+		final String placeName = name.trim();
 		for(int i = 0; i < RANGEMENTS_LIST.size(); i++) {
-			if(name.equals(RANGEMENTS_LIST.get(i).getNom())) {
+			if(placeName.equals(RANGEMENTS_LIST.get(i).getNom())) {
 				return i;
 			}
 		}
@@ -1204,6 +1207,8 @@ public class Program {
 		if(getCave() != null) {
 			getCave().clear();
 		}
+		DEFAULT_PLACE.resetStock();
+		EMPTY_PLACE.resetStock();
 		Debug("Program: closeFile: Closing file Ended");
 	}
 

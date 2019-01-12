@@ -38,8 +38,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.0
- * @since 06/01/19
+ * @version 2.1
+ * @since 12/01/19
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -506,49 +506,52 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected void selectPlace(final Bouteille bottle) {
 		Debug("selectPlaceWithBottle...");
 		setListenersEnabled(false);
-		Rangement rangement = bottle.getRangement();
-		for(int i=0; i<m_lieu.getItemCount(); i++) {
-			if(rangement.getNom().equals(m_lieu.getItemAt(i))){
-				m_lieu.setSelectedIndex(i);
-				break;
-			}
-		}
 		m_num_lieu.removeAllItems();
 		m_column.removeAllItems();
 		m_line.removeAllItems();
 		m_num_lieu.addItem("");
 		m_line.addItem("");
 		m_column.addItem("");
-
-
-		int nbEmpl = rangement.getNbEmplacements();
-		boolean isCaisse = rangement.isCaisse();
-		if(!isCaisse) {
-			for(int i = 1; i<= nbEmpl; i++) {
-				m_num_lieu.addItem(Integer.toString(i));
-			}
-			int nbLine = rangement.getNbLignes(bottle.getNumLieu()-1);
-			int nbColumn = rangement.getNbColonnes(bottle.getNumLieu()-1, bottle.getLigne()-1);
-			for(int i = 1; i<= nbLine; i++) {
-				m_line.addItem(Integer.toString(i));
-			}
-			for(int i = 1; i<= nbColumn; i++) {
-				m_column.addItem(Integer.toString(i));
-			}
-			m_line.setEnabled(true);
-			m_column.setEnabled(true);
-			m_num_lieu.setSelectedIndex(bottle.getNumLieu());
-			m_line.setSelectedIndex(bottle.getLigne());
-			m_column.setSelectedIndex(bottle.getColonne());
+		boolean isCaisse = false;
+		
+		Rangement rangement = bottle.getRangement();
+		if(rangement != null) {
+    		for(int i=0; i<m_lieu.getItemCount(); i++) {
+    			if(rangement.getNom().equals(m_lieu.getItemAt(i))){
+    				m_lieu.setSelectedIndex(i);
+    				break;
+    			}
+    		}
+    		
+    		int nbEmpl = rangement.getNbEmplacements();
+    		isCaisse = rangement.isCaisse();
+    		if(!isCaisse) {
+    			for(int i = 1; i<= nbEmpl; i++) {
+    				m_num_lieu.addItem(Integer.toString(i));
+    			}
+    			int nbLine = rangement.getNbLignes(bottle.getNumLieu()-1);
+    			int nbColumn = rangement.getNbColonnes(bottle.getNumLieu()-1, bottle.getLigne()-1);
+    			for(int i = 1; i<= nbLine; i++) {
+    				m_line.addItem(Integer.toString(i));
+    			}
+    			for(int i = 1; i<= nbColumn; i++) {
+    				m_column.addItem(Integer.toString(i));
+    			}
+    			m_line.setEnabled(true);
+    			m_column.setEnabled(true);
+    			m_num_lieu.setSelectedIndex(bottle.getNumLieu());
+    			m_line.setSelectedIndex(bottle.getLigne());
+    			m_column.setSelectedIndex(bottle.getColonne());
+    		}
+    		else {
+    			int start = rangement.getStartCaisse();
+    			for(int i = start; i< nbEmpl+start; i++) {
+    				m_num_lieu.addItem(Integer.toString(i));
+    			}
+    			m_num_lieu.setSelectedIndex(bottle.getNumLieu()-start+1);
+    		}
+    		m_num_lieu.setEnabled(true);
 		}
-		else {
-			int start = rangement.getStartCaisse();
-			for(int i = start; i< nbEmpl+start; i++) {
-				m_num_lieu.addItem(Integer.toString(i));
-			}
-			m_num_lieu.setSelectedIndex(bottle.getNumLieu()-start+1);
-		}
-		m_num_lieu.setEnabled(true);
 		
 		m_labelLine.setVisible(!isCaisse);
 		m_labelColumn.setVisible(!isCaisse);

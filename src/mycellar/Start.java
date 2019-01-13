@@ -1577,6 +1577,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				Utils.addCloseButton(Program.TABBED_PANE, Program.stat);
 				Program.TABBED_PANE.setSelectedComponent(Program.stat);
 			}
+			Program.stat.updateView();
 			updateMainPanel();
 		}
 	}

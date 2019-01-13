@@ -36,8 +36,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.2
- * @since 28/12/18
+ * @version 6.3
+ * @since 13/01/19
  */
 public class Stat extends JPanel implements ITabListener {
 
@@ -49,7 +49,6 @@ public class Stat extends JPanel implements ITabListener {
 	private final MyCellarComboBox<String> listPlaces = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> listChart = new MyCellarComboBox<>();
 	private final JPanel panel = new JPanel();
-	private final int nb_bottle;
 	private String annee[];
 	private final PanelChart panelChart = new PanelChart();
 	private final MyCellarButton options = new MyCellarButton(Program.getLabel("Infos156"));
@@ -69,7 +68,6 @@ public class Stat extends JPanel implements ITabListener {
 		moy.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.setLayout(new MigLayout("","[][][grow]",""));
 		panel.setFont(Program.FONT_PANEL);
-		nb_bottle = Program.getNbBouteille();
 		for (Rangement cave : Program.getCave()) {
 			final MyCellarLabel list_num_empl;
 			final MyCellarLabel list_nb_bottle;
@@ -107,11 +105,7 @@ public class Stat extends JPanel implements ITabListener {
 			}
 		}
 
-		if (nb_bottle > 1) {
-			end.setText(MessageFormat.format(Program.getLabel("Infos181"), nb_bottle)); //Nombre de bouteille total:
-		} else {
-			end.setText(MessageFormat.format(Program.getLabel("Infos180"), nb_bottle)); //Nombre de bouteilles totales:
-		}
+		updateBouteilleCountLabel();
 
 		options.addActionListener(this::options_actionPerformed);
 
@@ -154,6 +148,18 @@ public class Stat extends JPanel implements ITabListener {
 		options.setEnabled(false);
 
 		Debug("Stats OK");
+	}
+
+	/**
+	 * 
+	 */
+	private void updateBouteilleCountLabel() {
+		int nb_bottle = Program.getNbBouteille();
+		if (nb_bottle > 1) {
+			end.setText(MessageFormat.format(Program.getLabel("Infos181"), nb_bottle)); //Nombre de bouteille total:
+		} else {
+			end.setText(MessageFormat.format(Program.getLabel("Infos180"), nb_bottle)); //Nombre de bouteilles totales:
+		}
 	}
 
 	private void chartItemStateChanged(ItemEvent itemEvent) {
@@ -349,7 +355,7 @@ public class Stat extends JPanel implements ITabListener {
 		} else {
 			panelChart.setDataPieChart(listYear, Program.getLabel("Infos184"));
 		}
-		end.setText(Program.getLabel("Infos136") + ": " + nb_bottle);
+		end.setText(Program.getLabel("Infos136") + ": " + Program.getNbBouteille());
 	}
 
 	private void displayOnePlace() {
@@ -626,6 +632,7 @@ public class Stat extends JPanel implements ITabListener {
 		listYear.clear();
 		listPrice.clear();
 		list2_itemStateChanged(null);
+		updateBouteilleCountLabel();
 	}
 
 }

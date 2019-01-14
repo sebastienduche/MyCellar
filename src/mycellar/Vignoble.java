@@ -25,8 +25,8 @@ import java.io.Serializable;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 11/04/18
+ * @version 0.9
+ * @since 14/01/19
  */
 
 /**
@@ -124,13 +124,13 @@ public class Vignoble implements Serializable {
     /**
      * Sets the value of the country property.
      * 
-     * @param value
+     * @param country
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setCountry(String value) {
-        this.country = value;
+    public void setCountry(String country) {
+        this.country = country;
     }
     
 	/**
@@ -148,13 +148,13 @@ public class Vignoble implements Serializable {
     /**
      * Sets the value of the name property.
      * 
-     * @param value
+     * @param name
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setName(String value) {
-        this.name = value;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -172,13 +172,13 @@ public class Vignoble implements Serializable {
     /**
      * Sets the value of the aoc property.
      * 
-     * @param value
+     * @param aoc
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setAOC(String value) {
-        this.aoc = value;
+    public void setAOC(String aoc) {
+        this.aoc = aoc;
     }
 
     /**
@@ -196,13 +196,13 @@ public class Vignoble implements Serializable {
     /**
      * Sets the value of the igp property.
      * 
-     * @param value
+     * @param igp
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setIGP(String value) {
-        this.igp = value;
+    public void setIGP(String igp) {
+        this.igp = igp;
     }
 
     /**
@@ -220,13 +220,13 @@ public class Vignoble implements Serializable {
     /**
      * Sets the value of the aop property.
      * 
-     * @param value
+     * @param aop
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setAOP(String value) {
-        this.aop = value;
+    public void setAOP(String aop) {
+        this.aop = aop;
     }
     
     public boolean isAppellationEmpty() {
@@ -249,38 +249,51 @@ public class Vignoble implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass().equals(obj.getClass()))
+		}
+		if (!getClass().equals(obj.getClass())) {
 			return false;
+		}
 		Vignoble other = (Vignoble) obj;
 		if (aoc == null) {
-			if (other.aoc != null)
+			if (other.aoc != null) {
 				return false;
-		} else if (!aoc.equals(other.aoc))
+			}
+		} else if (!aoc.equals(other.aoc)) {
 			return false;
+		}
 		if (aop == null) {
-			if (other.aop != null)
+			if (other.aop != null) {
 				return false;
-		} else if (!aop.equals(other.aop))
+			}
+		} else if (!aop.equals(other.aop)) {
 			return false;
+		}
 		if (country == null) {
-			if (other.country != null)
+			if (other.country != null) {
 				return false;
-		} else if (!country.equals(other.country))
+			}
+		} else if (!country.equals(other.country)) {
 			return false;
+		}
 		if (igp == null) {
-			if (other.igp != null)
+			if (other.igp != null) {
 				return false;
-		} else if (!igp.equals(other.igp))
+			}
+		} else if (!igp.equals(other.igp)) {
 			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -290,10 +303,11 @@ public class Vignoble implements Serializable {
 		sb.append("Vignoble [country=");
 		if(country != null) {
 			Country c = Countries.findByIdOrLabel(country);
-			if(c != null)
+			if(c != null) {
 				sb.append(c.getId());
-			else
+			} else {
 				sb.append(country);
+			}
 		}
 		sb.append(" name=");
 		sb.append(name);

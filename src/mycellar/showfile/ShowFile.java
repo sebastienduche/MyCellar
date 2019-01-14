@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
@@ -58,8 +59,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 5.8
- * @since 11/01/19
+ * @version 5.9
+ * @since 14/01/19
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -389,7 +390,7 @@ public class ShowFile extends JPanel implements ITabListener {
       if (showType == ShowType.TRASH) {
         restore();
       } else {
-        delete_actionPerformed(e);
+        delete();
       }
     });
     if (showType == ShowType.NORMAL) {
@@ -520,7 +521,7 @@ public class ShowFile extends JPanel implements ITabListener {
     sorter.setSortKeys(sortKeys);
     sorter.sort();
     TableColumnModel tcm = m_oTable.getColumnModel();
-    TableColumn tc1[] = new TableColumn[5];
+    TableColumn[] tc1 = new TableColumn[5];
     for (int w = 0; w < 5; w++) {
       tc1[w] = tcm.getColumn(w);
       tc1[w].setCellRenderer(new ToolTipRenderer());
@@ -547,14 +548,14 @@ public class ShowFile extends JPanel implements ITabListener {
     updateModel();
 
     m_oTable.setPreferredScrollableViewportSize(new Dimension(300, 200));
-    m_oTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+    m_oTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-    add(new JScrollPane(m_oTable), "grow, span 2, wrap");
+    add(new JScrollPane(m_oTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), "grow, span 2, wrap");
     add(m_oResultLabel, "span 2, alignx center, hidemode 3");
   }
 
 
-  private void delete_actionPerformed(ActionEvent e) {
+  private void delete() {
     try {
       int max_row = tv.getRowCount();
       LinkedList<Bouteille> toDeleteList = new LinkedList<>();
@@ -605,9 +606,9 @@ public class ShowFile extends JPanel implements ITabListener {
 
   private void restore() {
 
-    LinkedList<Bouteille> toRestoreList = new LinkedList<>();
 
     try {
+      final LinkedList<Bouteille> toRestoreList = new LinkedList<>();
       int max_row = tv.getRowCount();
       if (max_row != 0) {
         int row = 0;
@@ -940,9 +941,9 @@ public class ShowFile extends JPanel implements ITabListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      LinkedList<Bouteille> bottles = new LinkedList<>();
 
       try {
+        LinkedList<Bouteille> bottles = new LinkedList<>();
         int max_row = tv.getRowCount();
         if (max_row != 0) {
           int row = 0;

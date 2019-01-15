@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.3
- * @since 09/01/19
+ * @version 4.4
+ * @since 15/01/19
 
  * <p>Java class for anonymous complex type.
  * 
@@ -901,21 +901,6 @@ public class Bouteille implements Serializable{
 
 		 public BouteilleBuilder color(String color) {
 			 this.color = color;
-			 return this;
-		 }
-
-		 public BouteilleBuilder vignoble(String country, String name) {
-			 vignoble = new Vignoble(country, name);
-			 return this;
-		 }
-
-		 public BouteilleBuilder vignoble(String country, String name, String aoc) {
-			 vignoble = new Vignoble(country, name, aoc);
-			 return this;
-		 }
-
-		 public BouteilleBuilder vignoble(String country, String name, String aoc, String aop) {
-			 vignoble = new Vignoble(country, name, aoc, null, aop);
 			 return this;
 		 }
 

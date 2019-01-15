@@ -41,8 +41,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 24.1
- * @since 06/01/19
+ * @version 24.2
+ * @since 15/01/19
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable {
 
@@ -669,7 +669,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 										.maturity(dateOfC)
 										.parker(parker)
 										.color(color)
-										.vignoble(country, vignoble, aoc, igp, null).build();
+										.vignoble(country, vignoble, aoc, igp, aoc).build();
 					// Add multiple bottle with question
 					if (nb_bottle_rest > 0) {
 						if (m_lieu.isEnabled() || m_num_lieu.isEnabled()) {
@@ -806,7 +806,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 								tmp.setPrix(prix);
 							}
 							if(bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
-								tmp.setVignoble(new Vignoble(country, vignoble, aoc, igp));
+								tmp.setVignoble(new Vignoble(country, vignoble, aoc, igp, aoc));
 							}
 							//Ajout des bouteilles dans la caisse
 							
@@ -877,7 +877,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 										tmp.setPrix(prix);
 									}
 									if(bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
-										tmp.setVignoble(new Vignoble(country, vignoble, aoc, igp));
+										tmp.setVignoble(new Vignoble(country, vignoble, aoc, igp, aoc));
 									}
 									// Add multiple bottle with question
 									Debug("Adding multiple bottles...");
@@ -951,7 +951,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						.maturity(dateOfC)
 						.parker(parker)
 						.color(color)
-						.vignoble(country, vignoble, aoc, igp, null).build();
+						.vignoble(country, vignoble, aoc, igp, aoc).build();
 					Debug("Replacing bottle...");
 					m_laBouteille.update(tmp);
 					// Remplacement de la bouteille
@@ -977,7 +977,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						tmp.setColor(color);
 						tmp.setType(demie);
 						if(!country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
-							tmp.setVignoble(new Vignoble(country, vignoble, aoc, igp));
+							tmp.setVignoble(new Vignoble(country, vignoble, aoc, igp, aoc));
 						}
 						// Add multiple bottles
 						Debug("Adding multiple bottles...");
@@ -1071,7 +1071,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							.maturity(dateOfC)
 							.parker(parker)
 							.color(color)
-							.vignoble(country, vignoble, aoc, igp, null).build();
+							.vignoble(country, vignoble, aoc, igp, aoc).build();
 						if (b == null) {
 							//Case vide donc ajout
 							if (m_bmodify) {
@@ -1113,7 +1113,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 												.maturity(dateOfC)
 												.parker(parker)
 												.color(color)
-												.vignoble(country, vignoble, aoc, igp, null).build();
+												.vignoble(country, vignoble, aoc, igp, aoc).build();
 											Program.getStorage().addHistory(History.ADD, tmp);
 											Program.getCave(lieu_selected - 1).addWine(tmp);
 										}

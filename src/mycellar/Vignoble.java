@@ -25,8 +25,8 @@ import java.io.Serializable;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 14/01/19
+ * @version 1.0
+ * @since 15/01/19
  */
 
 /**
@@ -78,16 +78,19 @@ public class Vignoble implements Serializable {
     
     public Vignoble() {
 	}
-    
-    public Vignoble(String country) {
+
+	@Deprecated
+	public Vignoble(String country) {
 		this.country = country;
 	}
 
-    public Vignoble(String country, String name) {
-    	this.country = country;
+	@Deprecated
+  public Vignoble(String country, String name) {
+  	this.country = country;
 		this.name = name;
 	}
 
+	@Deprecated
 	public Vignoble(String country, String name, String aoc) {
 		this.country = country;
 		this.name = name;

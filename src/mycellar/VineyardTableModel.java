@@ -18,8 +18,8 @@ import mycellar.vignobles.CountryVignobles;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.6
- * @since 21/01/17
+ * @version 0.7
+ * @since 12/01/19
  */
 
 class VineyardTableModel extends DefaultTableModel {
@@ -55,15 +55,17 @@ class VineyardTableModel extends DefaultTableModel {
 	
 	@Override
 	public int getRowCount() {
-		if(appelations == null)
+		if(appelations == null) {
 			return 0;
+		}
 		return appelations.size();
 	}
 	
 	@Override
 	public Object getValueAt(int row, int column) {
-		if(appelations == null)
+		if(appelations == null) {
 			return "";
+		}
 		
 		Appelation appelation = appelations.get(row);
 		switch(column) {
@@ -94,8 +96,10 @@ class VineyardTableModel extends DefaultTableModel {
 			CountryVignobles.renameIGP(vignoble, appelation, (String)aValue);
 			break;
 		case 2:
-			if(JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delAppellationQuestion"), appelation.getAOC()) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION))
+			String name = appelation.getAOC() != null ? appelation.getAOC() : appelation.getIGP();
+			if(JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delAppellationQuestion"), name) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 				return;
+			}
 			
 			if(CountryVignobles.isAppellationUsed(country, vignoble, appelation)) {
 				JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteAppellation"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);

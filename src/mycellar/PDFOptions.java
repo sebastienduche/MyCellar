@@ -4,6 +4,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;
 
@@ -24,8 +25,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.6
- * @since 10/10/18
+ * @version 2.8
+ * @since 28/12/18
  */
 class PDFOptions extends JDialog {
   private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
@@ -60,7 +61,7 @@ class PDFOptions extends JDialog {
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
     jPanel1.setLayout(new MigLayout("","grow",""));
     jPanel1.setFont(Program.FONT_PANEL);
-    pdf_title.setText(Program.getCaveConfigString("PDF_TITLE", ""));
+    pdf_title.setText(Program.getCaveConfigString(MyCellarSettings.PDF_TITLE, ""));
     MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("Infos255")); //Titre du PDF
     MyCellarLabel MyCellarLabel3 = new MyCellarLabel(Program.getLabel("Infos256")); //Taille du texte
     MyCellarSpinner1.addChangeListener((e) -> {
@@ -74,16 +75,16 @@ class PDFOptions extends JDialog {
         }
     });
 
-    MyCellarSpinner1.setValue(Program.getCaveConfigInt("TITLE_SIZE", 10));
-    MyCellarSpinner3.setValue(Program.getCaveConfigInt("TEXT_SIZE", 10));
+    MyCellarSpinner1.setValue(Program.getCaveConfigInt(MyCellarSettings.TITLE_SIZE, 10));
+    MyCellarSpinner3.setValue(Program.getCaveConfigInt(MyCellarSettings.TEXT_SIZE, 10));
 
     MyCellarCheckBox1.setText(Program.getLabel("Infos257")); //gras
-    if ("bold".equals(Program.getCaveConfigString("BOLD", ""))) {
+    if (Program.getCaveConfigBool(MyCellarSettings.BOLD, false)) {
       MyCellarCheckBox1.setSelected(true);
     }
   
     MyCellarCheckBox3.setText(Program.getLabel("Infos264")); //bordure
-    if ("ON".equals(Program.getCaveConfigString("BORDER", "OFF"))) {
+    if (Program.getCaveConfigBool(MyCellarSettings.BORDER, false)) {
       MyCellarCheckBox3.setSelected(true);
     }
     ArrayList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
@@ -94,7 +95,7 @@ class PDFOptions extends JDialog {
     export = new MyCellarCheckBox[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
       export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
-      export[i].setSelected(1 == Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT", 0));
+      export[i].setSelected(1 == Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT", 0));
       col_size[i] = new MyCellarSpinner();
       col_size[i].addChangeListener((e) -> {
           MyCellarSpinner js = (MyCellarSpinner) e.getSource();
@@ -105,7 +106,7 @@ class PDFOptions extends JDialog {
       colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
       MyCellarLabel5[i] = new MyCellarLabel("cm");
    
-      col_size[i].setValue(Program.getCaveConfigInt("SIZE_COL" + i, 5));
+      col_size[i].setValue(Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i, 5));
     }
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow][grow]",""));
@@ -153,18 +154,18 @@ class PDFOptions extends JDialog {
    */
   private void valider_actionPerformed(ActionEvent e) {
     try {
-      Program.putCaveConfigString("PDF_TITLE", pdf_title.getText());
-      Program.putCaveConfigString("TITLE_SIZE", MyCellarSpinner1.getValue().toString());
-      Program.putCaveConfigString("TEXT_SIZE", MyCellarSpinner3.getValue().toString());
-      Program.putCaveConfigString("BOLD", MyCellarCheckBox1.isSelected() ? "bold" : "");
-      Program.putCaveConfigString("BORDER", MyCellarCheckBox3.isSelected() ? "ON" : "OFF");
+      Program.putCaveConfigString(MyCellarSettings.PDF_TITLE, pdf_title.getText());
+      Program.putCaveConfigString(MyCellarSettings.TITLE_SIZE, MyCellarSpinner1.getValue().toString());
+      Program.putCaveConfigString(MyCellarSettings.TEXT_SIZE, MyCellarSpinner3.getValue().toString());
+      Program.putCaveConfigBool(MyCellarSettings.BOLD, MyCellarCheckBox1.isSelected());
+      Program.putCaveConfigBool(MyCellarSettings.BORDER, MyCellarCheckBox3.isSelected());
       int col_size_max = 0;
       for (int i = 0; i < nb_colonnes; i++) {
-        Program.putCaveConfigString("SIZE_COL" + i, col_size[i].getValue().toString());
+        Program.putCaveConfigString(MyCellarSettings.SIZE_COL + i, col_size[i].getValue().toString());
         if (export[i].isSelected()) {
           col_size_max += Integer.parseInt(col_size[i].getValue().toString());
         }
-        Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT", export[i].isSelected() ? 1 : 0);
+        Program.putCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT", export[i].isSelected() ? 1 : 0);
       }
       dispose();
       if (col_size_max > 19) {

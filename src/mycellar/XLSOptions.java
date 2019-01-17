@@ -4,6 +4,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;
 
@@ -23,15 +24,15 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 10/10/18
+ * @version 1.6
+ * @since 28/12/18
  */
 class XLSOptions extends JDialog {
 
 	private static final long serialVersionUID = 5307297932934344545L;
   private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
   private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox();
-  private final MyCellarCheckBox export[];
+  private final MyCellarCheckBox[] export;
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner MyCellarSpinner3 = new MyCellarSpinner();
   private final int nb_colonnes;
@@ -58,7 +59,7 @@ class XLSOptions extends JDialog {
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
     jPanel1.setLayout(new MigLayout("","grow",""));
     jPanel1.setFont(Program.FONT_PANEL);
-    pdf_title.setText(Program.getCaveConfigString("XLS_TITLE", ""));
+    pdf_title.setText(Program.getCaveConfigString(MyCellarSettings.XLS_TITLE, ""));
     MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("Infos270")); //Titre du XLS
     MyCellarLabel MyCellarLabel3 = new MyCellarLabel(Program.getLabel("Infos256")); //Taille du texte
     MyCellarSpinner3.addChangeListener((e) -> {
@@ -72,18 +73,18 @@ class XLSOptions extends JDialog {
         }
     });
 
-    MyCellarSpinner1.setValue(Program.getCaveConfigInt("TITLE_SIZE_XLS",10));
-    MyCellarSpinner3.setValue(Program.getCaveConfigInt("TEXT_SIZE_XLS",10));
+    MyCellarSpinner1.setValue(Program.getCaveConfigInt(MyCellarSettings.TITLE_SIZE_XLS, 10));
+    MyCellarSpinner3.setValue(Program.getCaveConfigInt(MyCellarSettings.TEXT_SIZE_XLS, 10));
 
     MyCellarCheckBox1.setText(Program.getLabel("Infos257")); //gras
-    MyCellarCheckBox1.setSelected("bold".equals(Program.getCaveConfigString("BOLD_XLS","")));
+    MyCellarCheckBox1.setSelected(Program.getCaveConfigBool(MyCellarSettings.BOLD_XLS, false));
     ArrayList<MyCellarFields> columns = MyCellarFields.getFieldsList();
     nb_colonnes = columns.size();
     MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     export = new MyCellarCheckBox[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
       export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
-      export[i].setSelected(1 == Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_XLS", 0));
+      export[i].setSelected(1 == Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT_XLS", 0));
       colonnes[i] = new MyCellarLabel(columns.get(i).toString());
      
     }
@@ -129,12 +130,12 @@ class XLSOptions extends JDialog {
    */
   private void valider_actionPerformed(ActionEvent e) {
     try {
-      Program.putCaveConfigString("XLS_TITLE", pdf_title.getText());
-      Program.putCaveConfigString("TITLE_SIZE_XLS", MyCellarSpinner1.getValue().toString());
-      Program.putCaveConfigString("TEXT_SIZE_XLS", MyCellarSpinner3.getValue().toString());
-      Program.putCaveConfigString("BOLD_XLS", MyCellarCheckBox1.isSelected() ? "bold" : "");
+      Program.putCaveConfigString(MyCellarSettings.XLS_TITLE, pdf_title.getText());
+      Program.putCaveConfigString(MyCellarSettings.TITLE_SIZE_XLS, MyCellarSpinner1.getValue().toString());
+      Program.putCaveConfigString(MyCellarSettings.TEXT_SIZE_XLS, MyCellarSpinner3.getValue().toString());
+      Program.putCaveConfigBool(MyCellarSettings.BOLD_XLS, MyCellarCheckBox1.isSelected());
       for (int i = 0; i < nb_colonnes; i++) {
-        Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT_XLS", export[i].isSelected() ? 1 : 0);
+        Program.putCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT_XLS", export[i].isSelected() ? 1 : 0);
       }
       dispose();
     }

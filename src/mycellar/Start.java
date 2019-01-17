@@ -4,6 +4,7 @@ import mycellar.actions.ExportPDFAction;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.launcher.Server;
 import mycellar.showfile.ShowFile;
@@ -44,8 +45,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 25.1
- * @since 19/10/18
+ * @version 25.3
+ * @since 11/01/19
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -72,7 +73,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	
 	private final MyCellarLabel copyright = new MyCellarLabel();
 	private final MyCellarLabel update = new MyCellarLabel();
-	private static final String INFOS_VERSION = " 2018 v";
+	private static final String INFOS_VERSION = " 2019 v";
 	private final MyCellarLabel version = new MyCellarLabel();
 	
 	private char QUITTER;
@@ -189,9 +190,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				// Options à gérer
 				if ("restart".equals(tmp)) {
 					// Démarrage avec une nouvelle cave
-					Program.putGlobalConfigInt("STARTUP", 0);
-					Program.putCaveConfigInt("ANNEE_CTRL", 1);
-					Program.putCaveConfigInt("FIC_EXCEL", 0);
+					Program.putGlobalConfigBool(MyCellarSettings.STARTUP, false);
+					Program.putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, true);
+					Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
 				}
 			}
 
@@ -224,7 +225,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		// Initialisation du mode Debug
 		// ____________________________
 
-		if (Program.getGlobalConfigInt("DEBUG", 0) == 1) {
+		if (Program.getGlobalConfigBool(MyCellarSettings.DEBUG, false)) {
 			Program.setDebug(true);
 		}
 
@@ -235,7 +236,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		// Démarrage
 		// _________
 
-		if (Program.getArchive().isEmpty() && Program.getGlobalConfigInt("STARTUP", 0) == 0) {
+		if (Program.getArchive().isEmpty() && !Program.getGlobalConfigBool(MyCellarSettings.STARTUP, false)) {
 			// Language au premier démarrage
 			String lang = System.getProperty("user.language");
 			if("fr".equalsIgnoreCase(lang)) {
@@ -243,10 +244,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			} else {
 				lang = "U";
 			}
-			Program.putGlobalConfigString("LANGUAGE", lang);
+			Program.putGlobalConfigString(MyCellarSettings.LANGUAGE, lang);
 			
 			updateFrame(true);
-			Program.putGlobalConfigInt("STARTUP", 1);
+			Program.putGlobalConfigBool(MyCellarSettings.STARTUP, true);
 		}
 
 		// Paramètrage
@@ -387,13 +388,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * tocreate_actionPerformed: Appelle la fenêtre de Bienvenue.
-	 */
-	private void tocreate_actionPerformed() {
-		RangementUtils.findRangementToCreate();
-	}
-
-	/**
 	 * importXmlPlace_actionPerformed: Permet d'importer une liste de rangement
 	 * au format xml
 	 */
@@ -471,7 +465,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * reopen1_actionPerformed: Ouvre un fichier précédement ouvert
 	 */
 	private void reopen1_actionPerformed() {
-		String sFile = Program.getGlobalConfigString("LAST_OPEN1", "");
+		String sFile = Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "");
 		Debug("Reopen1FileAction: Restart with file " + sFile);
 		reOpenFile(sFile);
 	}
@@ -480,7 +474,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * reopen2_actionPerformed: Ouvre un fichier précédement ouvert
 	 */
 	private void reopen2_actionPerformed() {
-		String sFile = Program.getGlobalConfigString("LAST_OPEN2", "");
+		String sFile = Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "");
 		Debug("Reopen2FileAction: Restart with file " + sFile);
 		reOpenFile(sFile);
 	}
@@ -489,7 +483,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * reopen3_actionPerformed: Ouvre un fichier précédement ouvert
 	 */
 	private void reopen3_actionPerformed() {
-		String sFile = Program.getGlobalConfigString("LAST_OPEN3", "");
+		String sFile = Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "");
 		Debug("Reopen3FileAction: Restart with file " + sFile);
 		reOpenFile(sFile);
 	}
@@ -498,7 +492,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * reopen4_actionPerformed: Ouvre un fichier précédement ouvert
 	 */
 	private void reopen4_actionPerformed() {
-		String sFile = Program.getGlobalConfigString("LAST_OPEN4", "");
+		String sFile = Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, "");
 		Debug("Reopen4FileAction: Restart with file " + sFile);
 		reOpenFile(sFile);
 	}
@@ -564,14 +558,15 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		try {
 			boolean bHasVersion = false;
-			if ((null != Program.getCaveConfig() && Program.hasConfigCaveKey("VERSION")) || Program.hasConfigGlobalKey("VERSION")) {
+			if ((null != Program.getCaveConfig() && Program.hasConfigCaveKey(MyCellarSettings.VERSION))
+					|| Program.hasConfigGlobalKey(MyCellarSettings.VERSION)) {
 				bHasVersion = true;
 			}
 
 			if (!bHasVersion || toverify) {
 				Program.initConf();
 			}
-			String thelangue = Program.getGlobalConfigString("LANGUAGE", "F");
+			String thelangue = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
 			Program.setLanguage(thelangue.charAt(0));
 			updateLabels();
 			Debug("Loading Frame ended");
@@ -653,18 +648,18 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		// paramètres...
 		jMenuCheckUpdate.setText(Program.getLabel("Infos379")); // Vérifier
 		// mise à jour...
-		jMenuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString("LAST_OPEN1", "")) + ".sinfo");
-		jMenuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString("LAST_OPEN2", "")) + ".sinfo");
-		jMenuReopen3.setText("3 - " + Program.getShortFilename(Program.getGlobalConfigString("LAST_OPEN3", "")) + ".sinfo");
-		jMenuReopen4.setText("4 - " + Program.getShortFilename(Program.getGlobalConfigString("LAST_OPEN4", "")) + ".sinfo");
+		jMenuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "")) + ".sinfo");
+		jMenuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "")) + ".sinfo");
+		jMenuReopen3.setText("3 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "")) + ".sinfo");
+		jMenuReopen4.setText("4 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, "")) + ".sinfo");
 		jMenuReopen1.setAccelerator(KeyStroke.getKeyStroke('1', InputEvent.CTRL_DOWN_MASK));
 		jMenuReopen2.setAccelerator(KeyStroke.getKeyStroke('2', InputEvent.CTRL_DOWN_MASK));
 		jMenuReopen3.setAccelerator(KeyStroke.getKeyStroke('3', InputEvent.CTRL_DOWN_MASK));
 		jMenuReopen4.setAccelerator(KeyStroke.getKeyStroke('4', InputEvent.CTRL_DOWN_MASK));
-		jMenuReopen1.setToolTipText(Program.getGlobalConfigString("LAST_OPEN1", ""));
-		jMenuReopen2.setToolTipText(Program.getGlobalConfigString("LAST_OPEN2", ""));
-		jMenuReopen3.setToolTipText(Program.getGlobalConfigString("LAST_OPEN3", ""));
-		jMenuReopen4.setToolTipText(Program.getGlobalConfigString("LAST_OPEN4", ""));
+		jMenuReopen1.setToolTipText(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, ""));
+		jMenuReopen2.setToolTipText(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, ""));
+		jMenuReopen3.setToolTipText(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, ""));
+		jMenuReopen4.setToolTipText(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, ""));
 
 		jMenuCut.setText(Program.getLabel("Infos241"));
 		jMenuCopy.setText(Program.getLabel("Infos242"));
@@ -730,17 +725,17 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			menuFile.add(statistiques);
 			menuFile.add(tableau);
 			menuFile.add(showFile);
-			if (!Program.getGlobalConfigString("LAST_OPEN1", "").isEmpty()) {
+			if (!Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "").isEmpty()) {
 				menuFile.addSeparator();
 				menuFile.add(jMenuReopen1);
 			}
-			if (!Program.getGlobalConfigString("LAST_OPEN2", "").isEmpty()) {
+			if (!Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "").isEmpty()) {
 				menuFile.add(jMenuReopen2);
 			}
-			if (!Program.getGlobalConfigString("LAST_OPEN3", "").isEmpty()) {
+			if (!Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "").isEmpty()) {
 				menuFile.add(jMenuReopen3);
 			}
-			if (!Program.getGlobalConfigString("LAST_OPEN4", "").isEmpty()) {
+			if (!Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, "").isEmpty()) {
 				menuFile.add(jMenuReopen4);
 			}
 			menuFile.addSeparator();
@@ -901,17 +896,17 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		menuFile.add(statistiques);
 		menuFile.add(tableau);
 		menuFile.add(showFile);
-		if (!Program.getGlobalConfigString("LAST_OPEN1", "").isEmpty()) {
+		if (!Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "").isEmpty()) {
 			menuFile.addSeparator();
 			menuFile.add(jMenuReopen1);
 		}
-		if (!Program.getGlobalConfigString("LAST_OPEN2", "").isEmpty()) {
+		if (!Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "").isEmpty()) {
 			menuFile.add(jMenuReopen2);
 		}
-		if (!Program.getGlobalConfigString("LAST_OPEN3", "").isEmpty()) {
+		if (!Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "").isEmpty()) {
 			menuFile.add(jMenuReopen3);
 		}
-		if (!Program.getGlobalConfigString("LAST_OPEN4", "").isEmpty()) {
+		if (!Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, "").isEmpty()) {
 			menuFile.add(jMenuReopen4);
 		}
 		menuFile.addSeparator();
@@ -1006,7 +1001,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		jMenuExportXmlPlaces.addActionListener((e) -> exportXmlPlace_actionPerformed());
 		jMenuExportXml.addActionListener((e) -> exportXml_actionPerformed());
 		jMenuCloseFile.addActionListener((e) -> closeFile_actionPerformed());
-		tocreate.addActionListener((e) -> tocreate_actionPerformed());
+		tocreate.addActionListener((e) -> RangementUtils.findRangementToCreate());
 		jMenuReopen1.addActionListener((e) -> reopen1_actionPerformed());
 		jMenuReopen2.addActionListener((e) -> reopen2_actionPerformed());
 		jMenuReopen3.addActionListener((e) -> reopen3_actionPerformed());
@@ -1203,7 +1198,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		public void actionPerformed(ActionEvent arg0) {
 			try {
     			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-    			JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR", ""));
+    			JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR, ""));
     			boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
     			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
     			int retour_jfc = boiteFichier.showOpenDialog(null);
@@ -1582,6 +1577,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				Utils.addCloseButton(Program.TABBED_PANE, Program.stat);
 				Program.TABBED_PANE.setSelectedComponent(Program.stat);
 			}
+			Program.stat.updateView();
 			updateMainPanel();
 		}
 	}

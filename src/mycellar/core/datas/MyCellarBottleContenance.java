@@ -2,13 +2,11 @@ package mycellar.core.datas;
 
 import mycellar.Bouteille;
 import mycellar.Program;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -24,8 +22,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 08/06/18
+ * @version 0.4
+ * @since 06/01/19
  */
 public final class MyCellarBottleContenance {
 
@@ -62,22 +60,22 @@ public final class MyCellarBottleContenance {
 
     Debug("writeTypeXml: Writing file");
     String filename = Program.getXMLTypesFileName();
-    try (FileWriter fw = new FileWriter(filename)){
+    try (var fileWriter = new FileWriter(filename)){
       //Init XML File
-      fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-      // Racine XML
-      fw.write("<MyCellar>");
+      fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
       // Ecriture des types
       for (String type: list){
-        if(type.equals(defaultValue))
-          fw.write("<type value=\""+type+"\" default=\"true\"/>");
-        else
-          fw.write("<type value=\""+type+"\"/>");
+        if(type.equals(defaultValue)) {
+          fileWriter.write("<type value=\""+type+"\" default=\"true\"/>");
+        } else {
+          fileWriter.write("<type value=\""+type+"\"/>");
+        }
       }
-      fw.write("</MyCellar>");
-      fw.flush();
+      fileWriter.write("</MyCellar>");
+      fileWriter.flush();
     }
     catch (IOException ex) {
+      Debug("IOException");
       Program.showException(ex);
     }
     Debug("writeTypeXml: Writing file OK");
@@ -106,9 +104,9 @@ public final class MyCellarBottleContenance {
 
     list.clear();
     try {
-      DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-      Document doc = dBuilder.parse(new File(Program.getXMLTypesFileName()));
+      var dbFactory = DocumentBuilderFactory.newInstance();
+      var dBuilder = dbFactory.newDocumentBuilder();
+      var doc = dBuilder.parse(new File(Program.getXMLTypesFileName()));
       doc.getDocumentElement().normalize();
 
       NodeList types = doc.getElementsByTagName("type");
@@ -121,10 +119,12 @@ public final class MyCellarBottleContenance {
           // Récupération des noeuds des types
           String value = type.getAttribute("value");
           if (null != value && !value.isEmpty()) {
-            if (type.hasAttribute("default"))
+            if (type.hasAttribute("default")) {
               defaultValue = value;
-            if (!list.contains(value))
+            }
+            if (!list.contains(value)) {
               list.add(value);
+            }
           }
         }
       }

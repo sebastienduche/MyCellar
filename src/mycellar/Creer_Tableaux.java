@@ -5,6 +5,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
 import net.miginfocom.swing.MigLayout;
 
@@ -42,8 +43,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.3
- * @since 12/0/18
+ * @version 6.5
+ * @since 28/12/18
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable {
 	private final JTextField name = new JTextField();
@@ -122,7 +123,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			name.addMouseListener(new PopupListener());
 
 			m_jcb_options.setEnabled(false);
-			switch ( Program.getCaveConfigInt("CREATE_TAB_DEFAULT", 1) ) {
+			switch (Program.getCaveConfigInt(MyCellarSettings.CREATE_TAB_DEFAULT, 1)) {
 				case 0:
 					type_XML.setSelected(true);
 					break;
@@ -176,7 +177,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	private void browse_actionPerformed(ActionEvent e) {
 
 		Debug("browse_actionPerforming...");
-		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR",""));
+		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR,""));
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		if (type_XML.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
@@ -198,7 +199,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File file = boiteFichier.getSelectedFile();
 			String nom = file.getAbsolutePath();
-			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
+			Program.putCaveConfigString(MyCellarSettings.DIR, boiteFichier.getCurrentDirectory().toString());
 			Filtre filtre = (Filtre) boiteFichier.getFileFilter();
 			nom = MyCellarControl.controlAndUpdateExtension(nom, filtre);
 			name.setText(nom);
@@ -319,8 +320,8 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 				StreamSource xslDoc = new StreamSource("resources/Rangement.xsl");
 				StreamSource xmlDoc = new StreamSource(Program.getPreviewXMLFileName());
 
-				try(OutputStream htmlFile = new FileOutputStream(nom)) {
-					Transformer transformer = tFactory.newTransformer(xslDoc);
+				try(var htmlFile = new FileOutputStream(nom)) {
+					var transformer = tFactory.newTransformer(xslDoc);
 					transformer.transform(xmlDoc, new StreamResult(htmlFile));
 				} catch (Exception e1) {
 					Program.showException(e1);
@@ -340,8 +341,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 				RangementUtils.write_XLSTab( nom, oList );
 			}
 
-			int key = Program.getCaveConfigInt("DONT_SHOW_TAB_MESS", 0);
-			if (key == 0) {
+			if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_TAB_MESS, false)) {
 				if (caisse_select >= 1) {
 					String erreur_txt1, erreur_txt2;
 					if (caisse_select == 1){
@@ -351,7 +351,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 						erreur_txt1 = Program.getError("Error127"); //"Vous avez sélectionné des rangements de type Caisse");
 						erreur_txt2 = Program.getError("Error128"); //"Une liste des vins de ces rangements a été générée.");
 					}
-					Erreur.showKeyErreur(erreur_txt1, erreur_txt2, "DONT_SHOW_TAB_MESS");
+					Erreur.showKeyErreur(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
 				}
 			}
 			end.setText(Program.getLabel("Infos097")); //"Fichier généré.");
@@ -447,9 +447,9 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 		titre_properties[2] = Program.getLabel("Infos233");
 		String default_value[] = new String[3];
 		String key_properties[] = new String[3];
-		key_properties[0] = "CREATE_TAB_DEFAULT";
-		key_properties[1] = "CREATE_TAB_DEFAULT";
-		key_properties[2] = "CREATE_TAB_DEFAULT";
+		key_properties[0] = MyCellarSettings.CREATE_TAB_DEFAULT;
+		key_properties[1] = MyCellarSettings.CREATE_TAB_DEFAULT;
+		key_properties[2] = MyCellarSettings.CREATE_TAB_DEFAULT;
 		String val = Program.getCaveConfigString(key_properties[0], "1");
 
 		default_value[0] = "false";

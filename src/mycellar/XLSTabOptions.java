@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;
 
@@ -27,8 +28,8 @@ import java.awt.event.WindowEvent;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 10/10/18
+ * @version 1.4
+ * @since 28/12/18
  */
 class XLSTabOptions extends JDialog {
   private static final int LARGEUR = 480;
@@ -72,7 +73,7 @@ class XLSTabOptions extends JDialog {
     jPanel1.setFont(Program.FONT_PANEL);
     jPanel1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos331")));
     MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("Infos270")); //Titre du XLS
-    String xls_title = Program.getCaveConfigString("XLS_TAB_TITLE", "");
+    String xls_title = Program.getCaveConfigString(MyCellarSettings.XLS_TAB_TITLE, "");
     pdf_title.setText(xls_title);
     MyCellarLabel MyCellarLabel3 = new MyCellarLabel(Program.getLabel("Infos256")); //Taille du texte
     title_size.addChangeListener((e) -> {
@@ -102,16 +103,15 @@ class XLSTabOptions extends JDialog {
     });
     onePlacePerSheetCheckBox.addActionListener(e -> updatePlaceSettings(onePlacePerSheetCheckBox.isSelected()));
 
-    title_size.setValue(Program.getCaveConfigInt("TITLE_TAB_SIZE_XLS", 10));
-    text_size.setValue(Program.getCaveConfigInt("TEXT_TAB_SIZE_XLS", 10));
-    column_size.setValue(Program.getCaveConfigInt("COLUMN_TAB_WIDTH_XLS", 10));
-    empty_line_part.setValue(Program.getCaveConfigInt("EMPTY_LINE_PART_XLS", 1));
-    empty_line_place.setValue(Program.getCaveConfigInt("EMPTY_LINE_PLACE_XLS", 3));
+    title_size.setValue(Program.getCaveConfigInt(MyCellarSettings.TITLE_TAB_SIZE_XLS, 10));
+    text_size.setValue(Program.getCaveConfigInt(MyCellarSettings.TEXT_TAB_SIZE_XLS, 10));
+    column_size.setValue(Program.getCaveConfigInt(MyCellarSettings.COLUMN_TAB_WIDTH_XLS, 10));
+    empty_line_part.setValue(Program.getCaveConfigInt(MyCellarSettings.EMPTY_LINE_PART_XLS, 1));
+    empty_line_place.setValue(Program.getCaveConfigInt(MyCellarSettings.EMPTY_LINE_PLACE_XLS, 3));
 
     boldTitleCheckBox.setText(Program.getLabel("Infos257")); //gras
     onePlacePerSheetCheckBox.setText(Program.getLabel("XLSOptions.onePlacePerSheet"));
-    String bold = Program.getCaveConfigString("BOLD_TAB_XLS","");
-    if ("bold".equals(bold)) {
+    if (Program.getCaveConfigBool(MyCellarSettings.BOLD_TAB_XLS, false)) {
       boldTitleCheckBox.setSelected(true);
     }
 
@@ -127,10 +127,10 @@ class XLSTabOptions extends JDialog {
     table.setSize(460, 100);
     JScrollPane oScrollPaneTab = new JScrollPane(table);
 
-    tv.addString(Program.getLabel("Infos132"), 1 == Program.getCaveConfigInt("XLSTAB_COL0", 1));
-    tv.addString(Program.getLabel("Infos133"), 1 == Program.getCaveConfigInt("XLSTAB_COL1", 0));
-    tv.addString(Program.getLabel("Infos134"), 1 == Program.getCaveConfigInt("XLSTAB_COL2", 0));
-    tv.addString(Program.getLabel("Infos135"), 1 == Program.getCaveConfigInt("XLSTAB_COL3", 0));
+    tv.addString(Program.getLabel("Infos132"), Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL0, true));
+    tv.addString(Program.getLabel("Infos133"), Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL1, false));
+    tv.addString(Program.getLabel("Infos134"), Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL2, false));
+    tv.addString(Program.getLabel("Infos135"), Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL3, false));
 
     final JPanel jPanel2 = new JPanel();
     jPanel2.setFont(Program.FONT_PANEL);
@@ -149,7 +149,7 @@ class XLSTabOptions extends JDialog {
     //Colonnes à utiliser
     MyCellarLabel column_label = new MyCellarLabel(Program.getLabel("Infos338"));
 
-    if (1 == Program.getCaveConfigInt("ONE_PER_SHEET_XLS", 0)) {
+    if (Program.getCaveConfigBool(MyCellarSettings.ONE_PER_SHEET_XLS, false)) {
       updatePlaceSettings(true);
     }
 
@@ -197,21 +197,18 @@ class XLSTabOptions extends JDialog {
    */
   private void valider_actionPerformed(ActionEvent e) {
     try {
-      Program.putCaveConfigString("XLS_TAB_TITLE", pdf_title.getText());
-      Program.putCaveConfigString("TITLE_TAB_SIZE_XLS", title_size.getValue().toString());
-      Program.putCaveConfigString("TEXT_TAB_SIZE_XLS", text_size.getValue().toString());
-      Program.putCaveConfigString("COLUMN_TAB_WIDTH_XLS", column_size.getValue().toString());
-      Program.putCaveConfigString("EMPTY_LINE_PART_XLS", empty_line_part.getValue().toString());
-      Program.putCaveConfigString("EMPTY_LINE_PLACE_XLS", empty_line_place.getValue().toString());
-      Program.putCaveConfigString("BOLD_TAB_XLS", boldTitleCheckBox.isSelected() ? "bold" : "");
-      Program.putCaveConfigInt("ONE_PER_SHEET_XLS", onePlacePerSheetCheckBox.isSelected() ? 1 : 0);
+      Program.putCaveConfigString(MyCellarSettings.XLS_TAB_TITLE, pdf_title.getText());
+      Program.putCaveConfigString(MyCellarSettings.TITLE_TAB_SIZE_XLS, title_size.getValue().toString());
+      Program.putCaveConfigString(MyCellarSettings.TEXT_TAB_SIZE_XLS, text_size.getValue().toString());
+      Program.putCaveConfigString(MyCellarSettings.COLUMN_TAB_WIDTH_XLS, column_size.getValue().toString());
+      Program.putCaveConfigString(MyCellarSettings.EMPTY_LINE_PART_XLS, empty_line_part.getValue().toString());
+      Program.putCaveConfigString(MyCellarSettings.EMPTY_LINE_PLACE_XLS, empty_line_place.getValue().toString());
+      Program.putCaveConfigBool(MyCellarSettings.BOLD_TAB_XLS, boldTitleCheckBox.isSelected());
+      Program.putCaveConfigBool(MyCellarSettings.ONE_PER_SHEET_XLS, onePlacePerSheetCheckBox.isSelected());
 
       // Options des colonnes
       for ( int i=0; i<tv.getRowCount(); i++){
-        int nVal = 0;
-        if ( ((Boolean)tv.getValueAt(i, XLSOptionsValues.ETAT)) )
-          nVal = 1;
-        Program.putCaveConfigInt("XLSTAB_COL"+i, nVal);
+        Program.putCaveConfigBool(MyCellarSettings.XLSTAB_COL+i, ((Boolean)tv.getValueAt(i, XLSOptionsValues.ETAT)));
       }
       dispose();
     }

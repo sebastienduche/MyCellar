@@ -20,5 +20,9 @@
 	<classpathentry kind="lib" path="lib/poi-ooxml-4.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-4.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/activation-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-api-2.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-core-2.3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-impl-2.3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

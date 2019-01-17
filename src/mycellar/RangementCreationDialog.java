@@ -20,8 +20,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 10/10/18
+ * @version 0.3
+ * @since 11/01/19
  */
 public class RangementCreationDialog extends JDialog {
 
@@ -63,14 +63,17 @@ public class RangementCreationDialog extends JDialog {
   private void valider_actionPerformed(ActionEvent actionEvent) {
     map.keySet().forEach(name -> {
       final LinkedList<Part> parts = map.get(name);
-      Rangement rangement;
       int row = 0;
       for (Part part : parts) {
         row += part.getRowSize();
       }
+      Rangement rangement;
       if (row == 0) {
-        rangement = new Rangement(name, parts.size(), 0, false, -1);
+        int part = parts.isEmpty() ? 1 : parts.size();
+        Debug("Creating place: " + name + " parts: " + part);
+        rangement = new Rangement(name, parts.isEmpty() ? 1 : parts.size(), 0, false, -1);
       } else {
+        Debug("Creating complex place: " + name + " parts: " + parts);
         rangement = new Rangement(name, parts);
       }
       Program.addCave(rangement);

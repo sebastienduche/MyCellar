@@ -22,8 +22,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 21/01/17
+ * @version 0.2
+ * @since 17/01/19
  */
 public class PanelVignobles extends JPanel {
 
@@ -39,15 +39,17 @@ public class PanelVignobles extends JPanel {
 			@Override
 			protected void doAfterModify() {
 				super.doAfterModify();
-				if(modifyActive)
+				if(modifyActive) {
 					Start.setPaneModified(true);
+				}
 			}
 		};
 		instance.comboCountry.setCaseSensitive(false);
 		instance.comboCountry.setEditable(true);
 		instance.comboCountry.addItem("");
-		for(Country c : Program.getCountries())
+		for(Country c : Program.getCountries()) {
 			instance.comboCountry.addItem(c);
+		}
 		instance.comboCountry.addItemListener((e) -> {
 
 				if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -73,8 +75,9 @@ public class PanelVignobles extends JPanel {
 					Vignobles vignobles = CountryVignobles.getVignobles(country);
 					if(vignobles != null) {
 						ArrayList<CountryVignoble> list = (ArrayList<CountryVignoble>)vignobles.getVignoble();
-						for(CountryVignoble v : list)
+						for(CountryVignoble v : list) {
 							instance.comboVignoble.addItem(v);
+						}
 					}
 				}
 		});
@@ -84,8 +87,9 @@ public class PanelVignobles extends JPanel {
 			@Override
 			protected void doAfterModify() {
 				super.doAfterModify();
-				if(modifyActive)
+				if(modifyActive) {
 					Start.setPaneModified(true);
+				}
 			}
 		};
 		instance.comboVignoble.setCaseSensitive(false);
@@ -103,11 +107,13 @@ public class PanelVignobles extends JPanel {
 					instance.comboAppelationIGP.removeAllItems();
 					instance.comboAppelationIGP.addItem("");
 					instance.comboAppelationAOC.addItem("");
-					for(Appelation v : vignoble.getAppelation()) {
-						if(v.getAOC() != null && !v.getAOC().isEmpty())
+					for(Appelation v : vignoble.getUnmodifiableAppelation()) {
+						if(v.getAOC() != null && !v.getAOC().isEmpty()) {
 							instance.comboAppelationAOC.addItem(v);
-						if(v.getIGP() != null && !v.getIGP().isEmpty())
+						}
+						if(v.getIGP() != null && !v.getIGP().isEmpty()) {
 							instance.comboAppelationIGP.addItem(new IGPItem(v));
+						}
 					}
 				}
 		});
@@ -126,8 +132,9 @@ public class PanelVignobles extends JPanel {
 			@Override
 			protected void doAfterModify() {
 				super.doAfterModify();
-				if(modifyActive)
+				if(modifyActive) {
 					Start.setPaneModified(true);
+				}
 			}
 		};
 		instance.comboAppelationAOC.setCaseSensitive(false);
@@ -140,8 +147,9 @@ public class PanelVignobles extends JPanel {
 			@Override
 			protected void doAfterModify() {
 				super.doAfterModify();
-				if(modifyActive)
+				if(modifyActive) {
 					Start.setPaneModified(true);
+				}
 			}
 		};
 		instance.comboAppelationIGP.setCaseSensitive(false);
@@ -156,11 +164,13 @@ public class PanelVignobles extends JPanel {
 	public void updateList() {
 		SwingUtilities.invokeLater(() -> {
 			Debug("Updating List...");
-			if(instance.comboCountry.getItemCount() == 0)
+			if(instance.comboCountry.getItemCount() == 0) {
 				instance.comboCountry.addItem("");
+			}
 			for(Country c : Program.getCountries()) {
-				if(!instance.comboCountry.hasItem(c))
+				if(!instance.comboCountry.hasItem(c)) {
 					instance.comboCountry.addItem(c);
+				}
 			}
 			Debug("Updating List Done");
 		});

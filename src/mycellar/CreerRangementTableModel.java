@@ -11,8 +11,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 20/03/18
+ * @version 0.8
+ * @since 06/01/19
  */
 
 class CreerRangementTableModel extends AbstractTableModel {
@@ -29,7 +29,7 @@ class CreerRangementTableModel extends AbstractTableModel {
 	
 	private boolean sameColumnNumber = false;
 	
-	CreerRangementTableModel(){
+	CreerRangementTableModel() {
 		columns.add(new Column(NAME, Program.getLabel("Infos029")));
 		columns.add(new Column(ROW, Program.getLabel("Infos027")));
 		columns.add(new Column(COLUMN, Program.getLabel("Infos026")));
@@ -42,15 +42,16 @@ class CreerRangementTableModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		if(sameColumnNumber)
+		if(sameColumnNumber) {
 			return rows.size();
-		else {
+		} else {
 			int count = 0;
-			for(Part p:rows) {
-				if( p.getRowSize() == 0)
+			for(Part p : rows) {
+				if( p.getRowSize() == 0) {
 					count += 1;
-				else
+				} else {
 					count += p.getRowSize();
+				}
 			}
 			return count;
 		}
@@ -60,32 +61,36 @@ class CreerRangementTableModel extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		if(sameColumnNumber) {
 			Part p = rows.get(row);
-			if(p == null)
+			if(p == null) {
 				return "";
+			}
 			switch(col){
 			case NAME:
 				return  Program.getLabel("Infos029") + " " + p.getNum();
 			case ROW:
 				return p.getRows().size();
 			case COLUMN:
-				if(p.getRow(0) != null)
+				if(p.getRowSize() > 0) {
 					return p.getRow(0).getCol();
+				}
 				return "0";
 			}
 		} else {
 			int part = mapPart.get(row);
 			int line = mapLine.get(row);
 			Part p = rows.get(part);
-			if(p == null)
+			if(p == null) {
 				return "";
+			}
 			switch(col){
 			case NAME:
-				return  Program.getLabel("Infos029") + " " + p.getNum() + " " + Program.getLabel("Infos027");
+				return Program.getLabel("Infos029") + " " + p.getNum() + " " + Program.getLabel("Infos027");
 			case ROW:
 				return line;
 			case COLUMN:
-				if(p.getRow(line-1) != null)
-					return p.getRow(line-1).getCol();
+				if(p.getRow(line - 1) != null) {
+					return p.getRow(line - 1).getCol();
+				}
 				return "0";
 			}
 		}
@@ -94,8 +99,9 @@ class CreerRangementTableModel extends AbstractTableModel {
 
 	@Override
 	public String getColumnName(int col) {
-		if (col >= columns.size())
+		if (col >= columns.size()) {
 			return "";
+		}
 		return columns.get(col).getLabel();
 	}
 
@@ -107,16 +113,17 @@ class CreerRangementTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object arg0, int row, int col) {
 		Part p;
-		if(sameColumnNumber)
+		if(sameColumnNumber) {
 			p = rows.get(row);
-		else {
+		}	else {
 			// Récupération du numéro de la partie
 			// puis récupération de la partie correspondante
 			int part = mapPart.get(row);
 			p = rows.get(part);
 		}
-		if(p == null)
+		if(p == null) {
 			return;
+		}
 		switch(col){
 		case ROW:
 			int nRow;
@@ -126,11 +133,15 @@ class CreerRangementTableModel extends AbstractTableModel {
 				return;
 			}
 			p.setRows(nRow);
-			if(!sameColumnNumber)
-			{
+			if(!sameColumnNumber) {
 				updateValues();
 				fireTableDataChanged();
 				fireTableStructureChanged();
+			} else if (p.getRowSize() > 0){
+				final int nCol = p.getRow(0).getCol();
+				for(Row r: p.getRows()) {
+					r.setCol(nCol);
+				}
 			}
 			return;
 		case COLUMN:
@@ -141,8 +152,9 @@ class CreerRangementTableModel extends AbstractTableModel {
 				return;
 			}
 			if(sameColumnNumber) {
-				for(Row r: p.getRows())
+				for(Row r: p.getRows()) {
 					r.setCol(nCol);
+				}
 			} else {
 				int line = mapLine.get(row);
 				p.getRow(line-1).setCol(nCol);
@@ -160,7 +172,7 @@ class CreerRangementTableModel extends AbstractTableModel {
 		return sameColumnNumber;
 	}
 
-	public void setSameColumnNumber(boolean sameColumnNumber) {
+	void setSameColumnNumber(boolean sameColumnNumber) {
 		this.sameColumnNumber = sameColumnNumber;
 		updateValues();
 		fireTableDataChanged();
@@ -173,8 +185,9 @@ class CreerRangementTableModel extends AbstractTableModel {
 		for(Part p: rows) {
 			if(sameColumnNumber) {
 				// On positionne le nombre de colonne de la première ligne sur toute les lignes
-				for( Row r: p.getRows())
+				for( Row r: p.getRows()) {
 					r.setCol(p.getRow(0).getCol());
+				}
 			}
 			int line = 1;
 			for(@SuppressWarnings("unused") Row r: p.getRows()) {
@@ -195,11 +208,11 @@ class CreerRangementTableModel extends AbstractTableModel {
 
 }
 
-class Column{
+class Column {
 	private final int id;
 	private final String label;
 	
-	public Column(int id, String label){
+	Column(int id, String label) {
 		this.id = id;
 		this.label = label;
 	}

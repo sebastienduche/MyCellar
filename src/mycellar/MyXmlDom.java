@@ -1,15 +1,12 @@
 package mycellar;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -26,8 +23,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 22/05/18
- * @version 2.3
+ * @since 01/12/18
+ * @version 2.4
  */
 
 public class MyXmlDom {
@@ -41,8 +38,9 @@ public class MyXmlDom {
 		Debug("readMyCellarXml: Reading file");
 		rangementList.clear();
 		String filename = Program.getXMLPlacesFileName();
-		if( !_sFileName.isEmpty() )
+		if (!_sFileName.isEmpty()) {
 			filename = _sFileName;
+		}
 		LinkedList<String> names = new LinkedList<>();
 
 		File file = new File(filename);
@@ -51,9 +49,9 @@ public class MyXmlDom {
 		}
 
 		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(file);
+			final var dbFactory = DocumentBuilderFactory.newInstance();
+			final var dBuilder = dbFactory.newDocumentBuilder();
+			final var doc = dBuilder.parse(file);
 			doc.getDocumentElement().normalize();
 
 			NodeList places = doc.getElementsByTagName("place");
@@ -67,8 +65,7 @@ public class MyXmlDom {
 					Boolean bIsCaisse = Boolean.parseBoolean(place.getAttribute("IsCaisse"));
 					int nPlace = Integer.parseInt(place.getAttribute("NbPlace"));
 					String sName = place.getAttribute("name");
-					if(sName.isEmpty())
-					{
+					if(sName.isEmpty()) {
 						NodeList placeName = place.getElementsByTagName("name");
 						sName = placeName.item(0).getTextContent();
 					}
@@ -92,8 +89,8 @@ public class MyXmlDom {
 						// ___________________________
 
 						int nb_colonnes[];
-						LinkedList<Part> listPart = new LinkedList<>();
-						List<Integer> oVector = new LinkedList<>();
+						final LinkedList<Part> listPart = new LinkedList<>();
+						final List<Integer> oVector = new LinkedList<>();
 						NodeList internalPlaces = place.getElementsByTagName("internal-place");
 						for (int j = 0; j < internalPlaces.getLength(); j++) {
 							Node nInternal = internalPlaces.item(j);
@@ -116,8 +113,9 @@ public class MyXmlDom {
 							}
 						}
 						nb_colonnes = new int[oVector.size()];
-						for (int j=0; j<nb_colonnes.length; j++)
+						for (int j=0; j<nb_colonnes.length; j++) {
 							nb_colonnes[j] = oVector.get(j);
+						}
 						if(names.contains(sName)) {
 							Debug("WARNING: Rangement name '"+sName+"' already used!");
 						}
@@ -157,9 +155,10 @@ public class MyXmlDom {
 
 		Debug("writeMyCellarXml: Writing file");
 		String filename = Program.getXMLPlacesFileName();
-		if(!_sFilename.isEmpty())
+		if(!_sFilename.isEmpty()) {
 			filename = _sFilename;
-		try (FileWriter oFile = new FileWriter(filename)){
+		}
+		try (var oFile = new FileWriter(filename)){
 			//Init XML File
 			oFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
 			// Ecriture des rangements
@@ -189,11 +188,9 @@ public class MyXmlDom {
 			filename = Program.getPreviewXMLFileName();
 		}
 		try {
-			DocumentBuilderFactory dbFactory =
-					DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = 
-					dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.newDocument();
+			final var dbFactory = DocumentBuilderFactory.newInstance();
+			final var dBuilder = dbFactory.newDocumentBuilder();
+			final var doc = dBuilder.newDocument();
 			// root element
 			Element root = doc.createElement("cave");
 			doc.appendChild(root);
@@ -205,8 +202,7 @@ public class MyXmlDom {
 			         ("xml-stylesheet", "type=\"text/xsl\" href=\""+dir+"/resources/Rangement.xsl\"");
 			doc.insertBefore(pi, rootDoc);
 
-			for(Rangement rangement : rangements)
-			{
+			for(Rangement rangement : rangements) {
 				Element r = doc.createElement("rangement");
 				root.appendChild(r);
 				Element name = doc.createElement("name");
@@ -273,13 +269,10 @@ public class MyXmlDom {
 				}
 			}
 
-			TransformerFactory transformerFactory =
-					TransformerFactory.newInstance();
-			Transformer transformer =
-					transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(doc);
-			StreamResult result =
-					new StreamResult(new File(filename));
+			var transformerFactory = TransformerFactory.newInstance();
+			var transformer = transformerFactory.newTransformer();
+			var source = new DOMSource(doc);
+			var result = new StreamResult(new File(filename));
 			transformer.transform(source, result);
 		} catch (ParserConfigurationException e) {
 			Debug("ParserConfigurationException");

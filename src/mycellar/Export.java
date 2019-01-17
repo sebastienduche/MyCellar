@@ -5,6 +5,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
 import mycellar.pdf.PDFPageProperties;
 import mycellar.pdf.PDFTools;
@@ -41,8 +42,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 8.3
- * @since 25/10/18
+ * @version 8.4
+ * @since 28/12/18
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -170,7 +171,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		options.setEnabled(false);
 		progressBar.setVisible(false);
 
-		int val = Program.getCaveConfigInt("EXPORT_DEFAULT", 0);
+		int val = Program.getCaveConfigInt(MyCellarSettings.EXPORT_DEFAULT, 0);
 
 		MyCellarRadioButtonXML.setSelected(val == 0);
 		MyCellarRadioButtonHTML.setSelected(val == 1);
@@ -195,7 +196,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	private void browse_actionPerformed() {
 
 		end.setText("");
-		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString("DIR",""));
+		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR,""));
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		if (MyCellarRadioButtonPDF.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
@@ -212,7 +213,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
-			Program.putCaveConfigString("DIR", boiteFichier.getCurrentDirectory().toString());
+			Program.putCaveConfigString(MyCellarSettings.DIR, boiteFichier.getCurrentDirectory().toString());
 			String nom = nomFichier.getAbsolutePath();
 			//Erreur utilisation de caractères interdits
 			if (MyCellarControl.controlPath(nomFichier)) {
@@ -411,11 +412,14 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					if(null == bottles) {
 						bottles = Program.getStorage().getAllList();
 					}
-					if (RangementUtils.write_CSV(nom, bottles)) {
+					progressBar.setVisible(true);
+					if (RangementUtils.write_CSV(nom, bottles, progressBar)) {
 						end.setText(Program.getLabel("Infos154")); //"Export terminé."
-						Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), file.getText().trim()), true);
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), file.getText().trim()),
+								Program.getLabel("Export.CSVInfo"), true);
 						openit.setEnabled(true);
 					}
+					progressBar.setVisible(false);
 				}
 			else if (MyCellarRadioButtonXLS.isSelected()) {
 				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
@@ -500,11 +504,12 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 		titre_properties[2] = Program.getLabel("Infos212");
 		titre_properties[3] = Program.getLabel("Infos233");
 		titre_properties[4] = Program.getLabel("Infos248");
-		String default_value[] = {"false", "false", "false", "false", "false"};
-		String key_properties[] = {"EXPORT_DEFAULT", "EXPORT_DEFAULT", "EXPORT_DEFAULT", "EXPORT_DEFAULT", "EXPORT_DEFAULT"};
+		String[] default_value = {"false", "false", "false", "false", "false"};
+		String[] key_properties = {MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT,
+			MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT};
 		default_value[Program.getCaveConfigInt(key_properties[0], 0)] = "true";
 
-		String type_objet[] = {"MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton"};
+		String[] type_objet = {"MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton"};
 		MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
 		myoptions.setVisible(true);
 	}

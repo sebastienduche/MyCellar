@@ -5,6 +5,7 @@ import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarSettings;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -22,19 +23,20 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.9
- * @since 10/10/18
+ * @version 2.1
+ * @since 28/12/18
  */
 class CSVOptions extends JDialog {
-	private final MyCellarCheckBox export[];
+	private final MyCellarCheckBox[] export;
 	private final MyCellarComboBox<String> separator = new MyCellarComboBox<>();
 	private final int nb_colonnes;
 	static final long serialVersionUID = 230705;
+	private final ArrayList<MyCellarFields> listColumns;
 
 	/**
 	 * CSVOptions: Constructeur pour la fenêtre d'options.
 	 */
-	public CSVOptions() {
+	CSVOptions() {
 
 		Debug("Constructor");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -57,25 +59,13 @@ class CSVOptions extends JDialog {
 		panel.setLayout(new MigLayout("","grow",""));
 		panel.setFont(Program.FONT_PANEL);
 		MyCellarLabel info_separator = new MyCellarLabel(Program.getLabel("Infos034") + ":"); //Séparateur
-		ArrayList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
+		listColumns = MyCellarFields.getFieldsList();
 		nb_colonnes = listColumns.size();
 		final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
 		export = new MyCellarCheckBox[nb_colonnes];
 		for (int i = 0; i < nb_colonnes; i++) {
 			export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
-			try {
-				int I = Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0);
-				if (I == 1) {
-					export[i].setSelected(true);
-				}
-				else {
-					export[i].setSelected(false);
-				}
-			}
-			catch (NumberFormatException nfe) {
-				export[i].setSelected(false);
-				Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0);
-			}
+			export[i].setSelected(Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0) == 1);
 			colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
 		}
 		JPanel jPanel2 = new JPanel();
@@ -86,13 +76,20 @@ class CSVOptions extends JDialog {
 		separator.addItem(Program.getLabel("Infos042"));
 		separator.addItem(Program.getLabel("Infos043"));
 		separator.addItem(Program.getLabel("Infos044"));
-		String key = Program.getCaveConfigString("SEPARATOR_DEFAULT", ",");
-		if (key.equals(";")) {
-			separator.setSelectedIndex(1);
-		}	else if (key.equals(":")) {
-			separator.setSelectedIndex(2);
-		}	else if (key.equals("/")) {
-			separator.setSelectedIndex(3);
+		String key = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ",");
+		switch (key) {
+			case ";":
+				separator.setSelectedIndex(1);
+				break;
+			case ":":
+				separator.setSelectedIndex(2);
+				break;
+			case "/":
+				separator.setSelectedIndex(3);
+				break;
+			default:
+				Debug("ERROR: Unknown separator");
+				break;
 		}
 		valider.addActionListener(this::valider_actionPerformed);
 		MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos055"));
@@ -124,21 +121,21 @@ class CSVOptions extends JDialog {
 	private void valider_actionPerformed(ActionEvent e) {
 		Debug("valider_actionPerforming...");
 		for (int i = 0; i < nb_colonnes; i++) {
-			Program.putCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", export[i].isSelected() ? 1 : 0);
+			Program.putCaveConfigBool(MyCellarSettings.EXPORT_CSV + listColumns.get(i).name(), export[i].isSelected());
 		}
 		int separ_select = separator.getSelectedIndex();
 		switch (separ_select) {
 		case 0:
-			Program.putCaveConfigString("SEPARATOR_DEFAULT", ",");
+			Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ",");
 			break;
 		case 1:
-			Program.putCaveConfigString("SEPARATOR_DEFAULT", ";");
+			Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ";");
 			break;
 		case 2:
-			Program.putCaveConfigString("SEPARATOR_DEFAULT", ":");
+			Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ":");
 			break;
 		case 3:
-			Program.putCaveConfigString("SEPARATOR_DEFAULT", "/");
+			Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, "/");
 			break;
 		}
 		dispose();

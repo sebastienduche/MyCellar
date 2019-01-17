@@ -12,8 +12,36 @@
 <STRONG>Description :</STRONG><BR>
 Programme de gestion de Cave à vins.
 <HR>
-<STRONG>Développements et corrections de la version 5.6 DB (release 3.1.4.2)</STRONG><BR>
+<STRONG>Développements et corrections de la version 5.7 ZE (release 3.2.1.9)</STRONG><BR>
 </FONT>
+<UL><LI>All: Amélioration de la gestion des propriétés booléenne OK
+<LI>All: La virgule des prix au format anglais était ignorée OK
+<LI>All: Centralisation de la gestion des propriétés du fichier de configuration OK
+<LI>Export CSV: Possibilité d'exporter tous les champs OK
+<LI>Export CSV: Ajout d'une barre de progression lors de l'export OK
+<LI>Rangement: Correction d'une erreur sur la gestion des rangements simples dont le numéro ne commence pas à 0 OK
+<LI>CreerRangement: Plantage lors de l'ajout de lignes pour un rangement complexe OK
+<LI>ManageList: Correction d'un message OK
+<LI>Search: Affichage en rouge des erreurs lors d'une recherche avancée OK
+<LI>AddVin: Correction d'un message lorsque l'on ne remplaçait pas une ancienne bouteille par une nouvelle OK
+<LI>Importer: Simplification du code OK
+<LI>Importer: Possibilité d'importer tous les champs disponibles OK
+<LI>Rangement: La création automatique des rangements pouvait créer des rangements sans emplacements OK
+<LI>Importer: Lors de l'import, la liste des contenances n'était pas mise à jour OK
+<LI>All: La création d'une nouvelle cave ne réinitialisait pas le rangement par défaut OK
+<LI>Import: Ajout du bouton pour créer les rangements dans l'onglet des erreurs OK
+<LI>Rangement: Un rangement avec des espaces en debut/fin de nom pouvait ne pas être trouvé OK
+<LI>History: Plantage lors de l'affichage de l'historique d'une bouteille dont le rangement n'existe plus OK
+<LI>Vignobles: Le message de confirmation pour la suppression d'une appelation affichait la valeur 'null' si l'AOC était vide OK
+<LI>Statistiques: Le nombre de bouteilles total n'était pas mis à jour lors de l'ouverture d'un nouveau fichier OK
+<LI>Vignobles: La suppression d'une appelation était possible à tort lorsqu'elle était utilisée OK
+<LI>Vignobles: Le renommage d'un vignoble n'était pas pris en compte sur les bouteilles OK
+<LI>Vignobles: La suppression d'une appelation utilisée était possible à tort après le renommage d'un vignoble OK
+<LI>ShowFile: La barre de défilement verticale ne s'affichait pas OK
+<LI>Vignobles: Un vignoble créé lors de l'ajout d'une bouteille pouvait être supprimé à tort OK
+<LI>Vignobles: Amélioration de la gestion des appelations afin d'éviter les doubles OK
+</LI></UL>  
+<STRONG>Développements et corrections de la version 5.6 DB (release 3.1.4.2)</STRONG><BR>
 <UL><LI>All: Vérification de la possibilité d'ouvrir un fichier OK
 <LI>All: Amélioration du contrôle sur le chemin du fichier OK
 <LI>ExportPDF: Simplification du code OK
@@ -32,10 +60,10 @@ Programme de gestion de Cave à vins.
 <LI>Search: La liste des noms des vins n'était pas réinitialisé à la fermeture du fichier OK
 <LI>Import: Il n'était plus possible de saisir le nom d'un nouveau rangement OK
 <LI>AddVin: Lors de la modification de plusieurs bouteilles, le prix saisi n'était pas sauvegardé OK
-<LI>All: La liste des erreurs n'était pas remise à jour lors de son réaffichage OK</LI>
+<LI>All: La liste des erreurs n'était pas remise à jour lors de son réaffichage OK
 <LI>All: Les bouteilles dont les erreurs avaient été corrigées pouvaient être ajoutées en double OK</LI>
 <LI>CreerRangement: La modification du numéro de la première partie ne permettait pas de modifier les bouteilles impactées OK</LI>
-<LI>CreerRangement: Après modification d'un rangement, les bouteilles en erreurs n'étaient pas affichées OK</LI>
+<LI>CreerRangement: Après modification d'un rangement, les bouteilles en erreurs n'étaient pas affichées OK
 <LI>Export: Affichage d'une barre de progression de l'export Excel</LI>
 </UL>
 <STRONG>Développements et corrections de la version 5.5 ZE (release 3.0.3.3)</STRONG><BR>

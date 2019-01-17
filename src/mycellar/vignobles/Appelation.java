@@ -54,18 +54,23 @@ public class Appelation {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Appelation other = (Appelation) obj;
 		if (AOC == null) {
-			if (other.AOC != null)
+			if (other.AOC != null) {
 				return false;
-		} else if (!AOC.equals(other.AOC))
+			}
+		} else if (!AOC.equals(other.AOC)) {
 			return false;
+		}
 		//if(other.AOP ! = null && other.AOP)
 		/*if (AOP == null) {
 			if (other.AOP != null)
@@ -75,8 +80,9 @@ public class Appelation {
 		if (IGP == null || IGP.isEmpty()) {
 			if (other.IGP != null && !other.IGP.isEmpty())
 				return false;
-		} else if (!IGP.equals(other.IGP))
+		} else if (!IGP.equals(other.IGP)) {
 			return false;
+		}
 		return true;
 	}
  
@@ -87,16 +93,31 @@ public class Appelation {
     }
 	
 	public String getKeyString() {
-		StringBuffer sb = new StringBuffer();
-		if(AOC != null)
+		StringBuilder sb = new StringBuilder();
+		if(AOC != null) {
 			sb.append(AOC);
+		}
 		sb.append("-");
-		if(AOP != null)
+		if(AOP != null) {
 			sb.append(AOP);
+		}
 		sb.append("-");
-		if(IGP != null)
+		if(IGP != null) {
 			sb.append(IGP);
+		}
 		return sb.toString();
 	}
-	
+
+	void makeItClean() {
+		if (getAOC() != null) {
+			if (getAOP() == null || getAOP().isEmpty()) {
+				setAOP(getAOC());
+			}
+		} else {
+			setAOC("");
+		}
+		if (getIGP() == null) {
+			setIGP("");
+		}
+	}
 }

@@ -30,8 +30,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 08/06/18
+ * @version 1.4
+ * @since 17/01/19
  */
 
 @XmlRootElement(name = "vignobles")
@@ -81,20 +81,28 @@ public class Vignobles
 
 	private static Vignobles load(File f) {
 		Debug("Loading JAXB File "+f.getAbsolutePath());
-		Vignobles v;
-		if(!f.exists())
+		if(!f.exists()) {
 			return null;
+		}
+		Vignobles v;
 		try {
 			JAXBContext jc = JAXBContext.newInstance(Vignobles.class);
 			Unmarshaller u = jc.createUnmarshaller();
 			v = (Vignobles)u.unmarshal(new FileInputStream(f));
-		} catch( Exception e ) {
+		} catch(Exception e) {
 			Program.showException(e);
 			return null;
 		}
-		if(v.vignoble == null)
+		if(v.vignoble == null) {
 			v.vignoble = new ArrayList<>();
+		}
 		Collections.sort(v.vignoble);
+		for (CountryVignoble vignoble: v.vignoble) {
+			for (Appelation appelation : vignoble.getUnmodifiableAppelation()) {
+				appelation.makeItClean();
+			}
+			vignoble.makeItClean();
+		}
 		Debug("Loading JAXB File Done");
 		return v;
 	}
@@ -112,22 +120,26 @@ public class Vignobles
 			for (File f : fileVignobles) {
 				String name = f.getName();
 				String id = name.substring(0, name.indexOf(VIGNOBLE));
-				if (!id.equals(id.toUpperCase()))
+				if (!id.equals(id.toUpperCase())) {
 					continue;
+				}
 				name = name.substring(0, name.indexOf(VIGNOBLE));
 				Country country = Countries.find(name);
 				File fText = new File(f.getParent(), name + TEXT);
 				String label = "";
-				if (fText.exists())
+				if (fText.exists()) {
 					label = Program.readFirstLineText(fText);
+				}
 				if (country == null) {
 					country = new Country(name, name);
-					if (!label.isEmpty())
+					if (!label.isEmpty()) {
 						country.setName(label);
+					}
 					Countries.add(country);
 				} else {
-					if (!label.isEmpty())
+					if (!label.isEmpty()) {
 						country.setName(label);
+					}
 				}
 				if (!map.containsKey(country)) {
 					map.put(country, load(f));
@@ -136,15 +148,14 @@ public class Vignobles
 					if (v != null) {
 						Vignobles v1 = map.get(country);
 						for (CountryVignoble vignoble : v1.vignoble) {
-							if (!v.vignoble.contains(vignoble))
+							if (!v.vignoble.contains(vignoble)) {
 								v.vignoble.add(vignoble);
+							}
 							else {
 								CountryVignoble countryVignoble = v.vignoble.get(v.vignoble.indexOf(vignoble));
-								if (vignoble.getAppelation() != null) {
-									for (Appelation appelation : vignoble.getAppelation()) {
-										if (!countryVignoble.getAppelation().contains(appelation)) {
-											countryVignoble.getAppelation().add(appelation);
-										}
+								if (vignoble.getUnmodifiableAppelation() != null) {
+									for (Appelation appelation : vignoble.getUnmodifiableAppelation()) {
+										countryVignoble.add(appelation);
 									}
 								} else {
 									vignoble.setAppelation(new LinkedList<>());
@@ -158,7 +169,7 @@ public class Vignobles
 		Debug("Loading All countries Done");
 	}
 
-	private static Vignobles load(String ressource) {
+	private static Vignobles load(final String ressource) {
 		Debug("Loading vignoble "+ressource);
 		Vignobles vignobles = null;
 		try{
@@ -197,7 +208,7 @@ public class Vignobles
 			Marshaller m = jc.createMarshaller();
 			m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			m.marshal(vignoble, new StreamResult(f));
-		} catch( Exception e ) {
+		} catch(Exception e) {
 			Program.showException(e);
 			return false;
 		}
@@ -214,23 +225,24 @@ public class Vignobles
 			File f = new File(Program.getWorkDir(true), c.getId() + VIGNOBLE);
 			Debug("Deleting "+f.getAbsolutePath());
 			return f.delete();
-		} catch( Exception e ) {
+		} catch(Exception e) {
 			Program.showException(e);
 			return false;
 		}
 	}
 
-	public CountryVignoble findVignoble(Vignoble v) {
+	public CountryVignoble findVignoble(final Vignoble v) {
 		CountryVignoble vigne = new CountryVignoble();
 		vigne.setName(v.getName());
 		int index = vignoble.indexOf(vigne);
-		if(index != -1)
+		if(index != -1) {
 			return vignoble.get(index);
+		}
 		Debug("ERROR findVignoble "+v.toString());
 		return null;
 	}
 
-	CountryVignoble findVignobleWithAppelation(Vignoble v) {
+	CountryVignoble findVignobleWithAppelation(final Vignoble v) {
 		CountryVignoble vigne = new CountryVignoble();
 		vigne.setName(v.getName());
 		int index = vignoble.indexOf(vigne);
@@ -240,14 +252,15 @@ public class Vignobles
 			appelation.setAOC(v.getAOC());
 			appelation.setAOP(v.getAOC());
 			appelation.setIGP(v.getIGP());
-			if(vignoble1.getAppelation().contains(appelation))
+			if(vignoble1.getUnmodifiableAppelation().contains(appelation)) {
 				return vignoble1;
+			}
 		}
 		Debug("ERROR findVignobleWithAppelation "+v.toString());
 		return null;
 	}
 
-	Appelation findAppelation(Vignoble v) {
+	Appelation findAppelation(final Vignoble v) {
 		CountryVignoble vigne = new CountryVignoble();
 		vigne.setName(v.getName());
 		int index = vignoble.indexOf(vigne);
@@ -257,23 +270,15 @@ public class Vignobles
 			appelation.setAOC(v.getAOC());
 			appelation.setAOP(v.getAOC());
 			appelation.setIGP(v.getIGP());
-			if(vignoble1.getAppelation().contains(appelation))
+			if(vignoble1.getUnmodifiableAppelation().contains(appelation)) {
 				return appelation;
+			}
 		}
 		Debug("ERROR findAppelation "+v.toString());
 		return null;
 	}
 
-//	public CountryVignoble findXMLVignoble(CountryVignoble v) {
-//		int index = vignoble.indexOf(v);
-//		if(index != -1) {
-//			return vignoble.get(index);
-//		}
-//		Debug("ERROR findXMLVignoble "+v.toString());
-//		return null;
-//	}
-
-	void addVignoble(Vignoble v) {
+	void addVignoble(final Vignoble v) {
 		Debug("add Vignoble "+v);
 		CountryVignoble vigne = new CountryVignoble();
 		vigne.setName(v.getName());
@@ -290,7 +295,7 @@ public class Vignobles
 		Debug("add vignoble Done");
 	}
 
-	public CountryVignoble addVignoble(String name) {
+	public CountryVignoble addVignoble(final String name) {
 		Debug("Loading vignoble "+name);
 		CountryVignoble vigne = new CountryVignoble();
 		vigne.setName(name);
@@ -301,7 +306,7 @@ public class Vignobles
 		return vigne;
 	}
 
-	public void delVignoble(CountryVignoble vigne) {
+	public void delVignoble(final CountryVignoble vigne) {
 		vignoble.remove(vigne);
 	}
 

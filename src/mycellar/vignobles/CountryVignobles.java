@@ -18,8 +18,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 14/01/19
+ * @version 1.6
+ * @since 17/01/19
  */
 
 public final class CountryVignobles {
@@ -127,18 +127,20 @@ public final class CountryVignobles {
 		if(c == null) {
 			return;
 		}
-		if(getVignobles(c) == null) {
+		Vignobles country = getVignobles(c);
+		if(country == null) {
 			createCountry(c);
+			country = getVignobles(c);
 		}
-		CountryVignoble vigne = getVignobles(c).findVignobleWithAppelation(vignoble);
+		CountryVignoble vigne = country.findVignobleWithAppelation(vignoble);
 		boolean found = true;
 		if(vigne == null) {
-			vigne = getVignobles(c).findVignoble(vignoble);
+			vigne = country.findVignoble(vignoble);
 			found = false;
 			if(vigne == null) {
-				getVignobles(c).addVignoble(vignoble);
+				country.addVignoble(vignoble);
 			}
-			vigne = getVignobles(c).findVignoble(vignoble);
+			vigne = country.findVignoble(vignoble);
 		}
 		if(vigne == null) {
 			Debug("ERROR: Unable to find vignoble "+vignoble);
@@ -150,8 +152,8 @@ public final class CountryVignobles {
 			appelation.setAOP(vignoble.getAOP());
 			appelation.setIGP(vignoble.getIGP());
 			if(!appelation.isEmpty()) {
-				vigne.getAppelation().add(appelation);
-				vigne = getVignobles(c).findVignobleWithAppelation(vignoble);
+				vigne.add(appelation);
+				vigne = country.findVignobleWithAppelation(vignoble);
 			}
 		}
 		if(vigne == null && !appelation.isEmpty()) {
@@ -159,7 +161,7 @@ public final class CountryVignobles {
 			return;
 		}
 		
-		final Appelation appellation = getVignobles(c).findAppelation(vignoble);
+		final Appelation appellation = country.findAppelation(vignoble);
 		String val = vignoble.toString();
 		if(appellation != null && !appellation.isEmpty() && !INSTANCE.usedAppellationsList.contains(val)) {
 			INSTANCE.usedAppellationsList.add(val);
@@ -272,7 +274,7 @@ public final class CountryVignobles {
 					appelation.setAOC(v.getAOC());
 					appelation.setAOP(v.getAOP());
 					appelation.setIGP(v.getIGP());
-					vignoble.getAppelation().add(appelation);
+					vignoble.add(appelation);
 				}
 				else if(vignoble == null) {
 					getVignobles(c).addVignoble(v);

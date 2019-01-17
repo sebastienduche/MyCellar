@@ -5,8 +5,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Collections;
 import java.util.List;
- 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @XmlRootElement(name = "vignoble")
 @XmlAccessorType (XmlAccessType.FIELD)
 public class CountryVignoble implements Comparable<CountryVignoble>
@@ -17,12 +20,26 @@ public class CountryVignoble implements Comparable<CountryVignoble>
     @XmlAttribute
     private String name;
 
+	public List<Appelation> getUnmodifiableAppelation() {
+		return Collections.unmodifiableList(appelation);
+	}
+
 	public List<Appelation> getAppelation() {
 		return appelation;
 	}
 
 	public void setAppelation(List<Appelation> appelation) {
 		this.appelation = appelation;
+	}
+
+	public void add(final Appelation _appelation) {
+		if (_appelation == null) {
+			return;
+		}
+		_appelation.makeItClean();
+		if (!appelation.contains(_appelation)) {
+			appelation.add(_appelation);
+		}
 	}
 
 	//@XmlAttribute
@@ -49,20 +66,32 @@ public class CountryVignoble implements Comparable<CountryVignoble>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CountryVignoble other = (CountryVignoble) obj;
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
-	
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(appelation, name);
+	}
+
+	void makeItClean() {
+		appelation = appelation.stream().distinct().collect(Collectors.toList());
+	}
 }

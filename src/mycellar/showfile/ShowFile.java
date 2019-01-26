@@ -989,7 +989,10 @@ public class ShowFile extends JPanel implements ITabListener {
 
   private class CreatePlacesAction extends AbstractAction {
 
-    private CreatePlacesAction() {
+	private static final long serialVersionUID = -3652414491735669984L;
+
+
+	private CreatePlacesAction() {
       super(Program.getLabel("Infos267"));
     }
 

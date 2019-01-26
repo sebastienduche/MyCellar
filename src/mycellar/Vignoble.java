@@ -25,8 +25,8 @@ import java.io.Serializable;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 15/01/19
+ * @version 1.1
+ * @since 26/01/19
  */
 
 /**
@@ -327,5 +327,30 @@ public class Vignoble implements Serializable {
 		aoc = ap.getAOC();
 		aop = ap.getAOP();
 		igp = ap.getIGP();
+	}
+
+	public String getSearchLabel() {
+		StringBuilder sb = new StringBuilder();
+		if(country != null) {
+			Country c = Countries.findByIdOrLabel(country);
+			if(c != null) {
+				sb.append(c.getLabel());
+			} else {
+				sb.append(country);
+			}
+		}
+		if (name != null && !name.isEmpty()) {
+			sb.append("-");
+			sb.append(name);
+		}
+		if (aoc != null && !aoc.isEmpty()) {
+			sb.append("-");
+			sb.append(aoc);
+		}
+		if (igp != null && !igp.isEmpty()) {
+			sb.append("-");
+			sb.append(igp);
+		}
+		return sb.toString();
 	}
 }

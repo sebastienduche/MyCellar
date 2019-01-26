@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
  
 @XmlRootElement
-public class Appelation {
+public class Appelation implements Comparable<Appelation> {
  
 	private String AOC;
 	private String AOP;
@@ -119,5 +119,10 @@ public class Appelation {
 		if (getIGP() == null) {
 			setIGP("");
 		}
+	}
+
+	@Override
+	public int compareTo(Appelation appelation) {
+		return getAOC().compareTo(appelation.getAOC());
 	}
 }

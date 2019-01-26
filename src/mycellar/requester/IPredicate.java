@@ -6,8 +6,8 @@ package mycellar.requester;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 20/03/18
+ * @version 0.3
+ * @since 26/01/19
  */
 
 public interface IPredicate<T> {
@@ -18,4 +18,5 @@ public interface IPredicate<T> {
 	Object askforValue();
 	String getName();
 	int getType();
+	String getLabelForValue(Object value);
 }

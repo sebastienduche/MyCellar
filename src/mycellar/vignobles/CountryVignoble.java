@@ -20,7 +20,12 @@ public class CountryVignoble implements Comparable<CountryVignoble>
     @XmlAttribute
     private String name;
 
-	public List<Appelation> getUnmodifiableAppelation() {
+	List<Appelation> getUnmodifiableAppelation() {
+		return Collections.unmodifiableList(appelation);
+	}
+
+	public List<Appelation> getSortedUnmodifiableAppelation() {
+		Collections.sort(appelation);
 		return Collections.unmodifiableList(appelation);
 	}
 
@@ -42,7 +47,6 @@ public class CountryVignoble implements Comparable<CountryVignoble>
 		}
 	}
 
-	//@XmlAttribute
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -50,7 +54,11 @@ public class CountryVignoble implements Comparable<CountryVignoble>
 	public String getName() {
 		return name;
 	}
- 
+
+	void makeItClean() {
+		appelation = appelation.stream().distinct().collect(Collectors.toList());
+	}
+
 	@Override
 	public String toString() {
 		return name;
@@ -89,9 +97,5 @@ public class CountryVignoble implements Comparable<CountryVignoble>
 	@Override
 	public int hashCode() {
 		return Objects.hash(appelation, name);
-	}
-
-	void makeItClean() {
-		appelation = appelation.stream().distinct().collect(Collectors.toList());
 	}
 }

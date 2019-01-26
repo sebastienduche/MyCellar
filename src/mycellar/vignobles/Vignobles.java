@@ -30,8 +30,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 17/01/19
+ * @version 1.5
+ * @since 26/01/19
  */
 
 @XmlRootElement(name = "vignobles")
@@ -247,13 +247,13 @@ public class Vignobles
 		vigne.setName(v.getName());
 		int index = vignoble.indexOf(vigne);
 		if(index != -1) {
-			CountryVignoble vignoble1 = vignoble.get(index);
-			Appelation appelation = new Appelation();
+			final CountryVignoble vignobleToReturn = vignoble.get(index);
+			final Appelation appelation = new Appelation();
 			appelation.setAOC(v.getAOC());
 			appelation.setAOP(v.getAOC());
 			appelation.setIGP(v.getIGP());
-			if(vignoble1.getUnmodifiableAppelation().contains(appelation)) {
-				return vignoble1;
+			if(vignobleToReturn.getUnmodifiableAppelation().contains(appelation)) {
+				return vignobleToReturn;
 			}
 		}
 		Debug("ERROR findVignobleWithAppelation "+v.toString());
@@ -265,13 +265,13 @@ public class Vignobles
 		vigne.setName(v.getName());
 		int index = vignoble.indexOf(vigne);
 		if(index != -1) {
-			CountryVignoble vignoble1 = vignoble.get(index);
-			Appelation appelation = new Appelation();
-			appelation.setAOC(v.getAOC());
-			appelation.setAOP(v.getAOC());
-			appelation.setIGP(v.getIGP());
-			if(vignoble1.getUnmodifiableAppelation().contains(appelation)) {
-				return appelation;
+			final CountryVignoble vignoble1 = vignoble.get(index);
+			final Appelation appelationToReturn = new Appelation();
+			appelationToReturn.setAOC(v.getAOC());
+			appelationToReturn.setAOP(v.getAOC());
+			appelationToReturn.setIGP(v.getIGP());
+			if(vignoble1.getUnmodifiableAppelation().contains(appelationToReturn)) {
+				return appelationToReturn;
 			}
 		}
 		Debug("ERROR findAppelation "+v.toString());

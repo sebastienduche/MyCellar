@@ -39,8 +39,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.9
- * @since 09/01/19
+ * @version 2.0
+ * @since 03/03/19
  */
 public class RangementUtils {
 
@@ -622,6 +622,10 @@ public class RangementUtils {
 		}
 		
 		for(var bouteille : Program.getStorage().getAllList()) {
+			// On ignore les bouteilles qui sont dans le stock temporairement
+			if(bouteille.getEmplacement().equalsIgnoreCase(Program.TEMP_PLACE)) {
+				continue;
+			}
 			Rangement rangement = Program.getCave(bouteille.getEmplacement());
 			if(rangement == null) {
 				// Rangement inexistant
@@ -667,6 +671,7 @@ public class RangementUtils {
 		// Suppression des bouteilles posant problème
 		for(var error : Program.getErrors()) {
 			Program.getStorage().deleteWine(error.getBottle());
+			Debug("Error putTabStock: "+error.getBottle());
 		}
 		Debug("putTabStock Done");
 		return Program.getErrors().isEmpty();

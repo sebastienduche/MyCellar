@@ -79,8 +79,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 20.1
- * @since 11/01/19
+ * @version 20.2
+ * @since 01/03/19
  */
 
 public class Program {
@@ -133,6 +133,7 @@ public class Program {
 
 	static final Rangement DEFAULT_PLACE = new Rangement("");
 	static final Rangement EMPTY_PLACE = new Rangement("");
+	public static final String TEMP_PLACE = "$$$@@@Temp_--$$$$££££";
 
 	private static String m_sWorkDir = null;
 	private static String m_sGlobalDir = null;
@@ -1693,21 +1694,21 @@ public class Program {
 				if (name.startsWith("Debug-") && name.endsWith(".log")) {
 					String date = name.substring(6, name.indexOf(".log"));
 					String fields[] = date.split("-");
-					LocalDateTime dateTime = now.withDayOfMonth(Integer.parseInt(fields[0])).withMonth(Integer.parseInt(fields[1])).withYear(Integer.parseInt(fields[2]));
+					LocalDateTime dateTime = now.withMonth(Integer.parseInt(fields[1])).withDayOfMonth(Integer.parseInt(fields[0])).withYear(Integer.parseInt(fields[2]));
 					return dateTime.isBefore(monthsAgo);
 				}
 				if (name.startsWith("DebugFtp-") && name.endsWith(".log")) {
 					String date = name.substring(9, name.indexOf(".log"));
 					String fields[] = date.split("-");
-					LocalDateTime dateTime = now.withDayOfMonth(Integer.parseInt(fields[0])).withMonth(Integer.parseInt(fields[1])).withYear(Integer.parseInt(fields[2]));
+					LocalDateTime dateTime = now.withMonth(Integer.parseInt(fields[1])).withDayOfMonth(Integer.parseInt(fields[0])).withYear(Integer.parseInt(fields[2]));
 					return dateTime.isBefore(monthsAgo);
 				}
 				return false;
 		});
 
 		if (files != null) {
-			for (String s : files) {
-				f = new File(sDir, s);
+			for (String file : files) {
+				f = new File(sDir, file);
 				Debug("Program: Deleting file " + f.getAbsolutePath());
 				f.deleteOnExit();
 			}

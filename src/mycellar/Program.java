@@ -79,8 +79,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 20.1
- * @since 11/01/19
+ * @version 20.2
+ * @since 08/03/19
  */
 
 public class Program {
@@ -1706,8 +1706,8 @@ public class Program {
 		});
 
 		if (files != null) {
-			for (String s : files) {
-				f = new File(sDir, s);
+			for (String file : files) {
+				f = new File(sDir, file);
 				Debug("Program: Deleting file " + f.getAbsolutePath());
 				f.deleteOnExit();
 			}

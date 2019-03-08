@@ -16,14 +16,14 @@ import java.awt.FlowLayout;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 20/03/18
+ * @version 0.4
+ * @since 08/03/19
  */
 class LabelSearch extends JPanel {
 
 	private static final long serialVersionUID = 3361283505652395494L;
 	private String label;
-	private Object value;
+	private ValueSearch value;
 	private int type;
 	private final IPredicate<?> predicate;
 	private boolean copy = false;
@@ -61,6 +61,12 @@ class LabelSearch extends JPanel {
 		this.source = source;
 	}
 
+	LabelSearch(IPredicate<?> predicate, PanelDAndD source, boolean copy) {
+		this(predicate);
+		this.source = source;
+		this.copy = copy;
+	}
+
 
 	public String getLabel() {
 		return label;
@@ -76,17 +82,20 @@ class LabelSearch extends JPanel {
 	}
 
 	private void setLabel() {
-		String s = "";
-		if(label != null && !label.isEmpty())
-			s += label;
-		if(label != null && !label.isEmpty() && value != null && !value.toString().isEmpty())
-			s += ": ";
-		if(value != null)
-			s += value;
-		MyCellarLabel.setText(s);
+		StringBuilder s = new StringBuilder();
+		if(label != null && !label.isEmpty()) {
+			s.append(label);
+		}
+		if(label != null && !label.isEmpty() && value != null && !value.getLabel().isEmpty()) {
+			s.append(": ");
+		}
+		if(value != null) {
+			s.append(value.getLabel());
+		}
+		MyCellarLabel.setText(s.toString());
 	}
 
-	public Object getValue() {
+	ValueSearch getValueSearch() {
 		return value;
 	}
 
@@ -94,14 +103,23 @@ class LabelSearch extends JPanel {
 		return type;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(ValueSearch value) {
 		this.value = value;
 		setLabel();
 	}
 
-	public void askForValue() {
-		if(!predicate.isValueRequired() || (value != null && !value.toString().isEmpty()))
+	Object getValue() {
+		if (value == null) {
+			return null;
+		}
+		return value.getValue();
+	}
+
+
+	void askForValue() {
+		if(!predicate.isValueRequired() || (value != null && !value.getLabel().isEmpty())) {
 			return;
+		}
 
 		value = predicate.askforValue();
 		type = predicate.getType();
@@ -126,12 +144,12 @@ class LabelSearch extends JPanel {
 	}
 
 
-	public void setAsKeyword(boolean b) {
+	void setAsKeyword(boolean b) {
 		if(b){
 			setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED, Color.gray, Color.white));
 			setBackground(null);
 			MyCellarLabel.setForeground(null);
-			setValue("");
+			setValue(null);
 		}
 		else {
 			setBorder(BorderFactory.createEtchedBorder());
@@ -141,7 +159,7 @@ class LabelSearch extends JPanel {
 		panelClose.setVisible(!b);
 	}
 
-	public IPredicate<?> getPredicate() {
+	IPredicate<?> getPredicate() {
 		return predicate;
 	}
 

@@ -35,8 +35,8 @@ import java.util.Map;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 2.3
- * @since 01/12/18
+ * @version 2.4
+ * @since 08/03/19
  */
 
 public class Server implements Runnable {
@@ -140,7 +140,7 @@ public class Server implements Runnable {
 						sFile = sFile.substring(0, index);
 					}
 					// Suppression de fichier commençant par -
-					Debug("sFile... "+sFile+" "+sFile.indexOf('-'));
+					Debug("sFile... "+sFile+" "+ ((sFile.indexOf('-') == 0) ? "to delete" : ""));
 					if(sFile.indexOf('-') == 0) {
 						LIST_FILE_TO_REMOVE.add(sFile.substring(1));
 					} else {
@@ -386,7 +386,7 @@ public class Server implements Runnable {
 	 * @param e Exception
 	 */
 	private static void showException(Exception e) {
-		StackTraceElement st[] = e.getStackTrace();
+		StackTraceElement[] st = e.getStackTrace();
 		String error = "";
 		for (StackTraceElement element : st) {
 			error = error.concat("\n" + element);
@@ -486,7 +486,7 @@ public class Server implements Runnable {
 		if(header == null) {
 			return false;
 		}
-		try{
+		try {
 			for( String hv : header.get(null)) {
 				if(hv == null) {
 					return false;
@@ -494,7 +494,7 @@ public class Server implements Runnable {
 				if( hv.contains(" 301 ") || hv.contains(" 302 "))
 					return true;
 			}
-		}catch(Exception e) {}
+		} catch(Exception ignored) {}
 		return false;
 	}
 

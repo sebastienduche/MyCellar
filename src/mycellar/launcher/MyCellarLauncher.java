@@ -1,15 +1,5 @@
 package mycellar.launcher;
 
-/**
- * <p>Titre : Cave à vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2011</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 1.2
- * @since 01/12/18
- */
-
 import mycellar.core.MyCellarVersion;
 import org.apache.commons.io.FileUtils;
 
@@ -19,56 +9,74 @@ import java.io.IOException;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ *
+ * <p>Titre : Cave à vin</p>
+ * <p>Description : Votre description</p>
+ * <p>Copyright : Copyright (c) 2011</p>
+ * <p>Société : Seb Informatique</p>
+ * @author Sébastien Duché
+ * @version 1.3
+ * @since 08/03/19
+ */
 class MyCellarLauncher {
 
-	private MyCellarLauncher(final String[] args) {
+	private MyCellarLauncher() {
 		
 		Thread updateThread = null;
 		File fLib = new File("MyCellar.jar");
 		
     	if (!fLib.exists()) {
+				Server.Debug("New Installation...");
     		boolean installError = install();
     		if (installError) {
         		System.exit(1);
     		} else {
-        		System.out.println("Installation Done");
+    			Server.Debug("Installation Done");
     		}
     	} else {
     		updateThread = new Thread(() -> {
-            	Server.getInstance().checkVersion();
-            	if (!Server.getInstance().hasAvailableUpdate())
-            		return;
-            	Server.getInstance().downloadVersion();
-            	MyCellarVersion.setLocalVersion(Server.getInstance().getServerVersion());
-                
-            	File f = new File("download");
+					Server.getInstance().checkVersion();
+					if (!Server.getInstance().hasAvailableUpdate()) {
+						return;
+					}
+					Server.getInstance().downloadVersion();
+					MyCellarVersion.setLocalVersion(Server.getInstance().getServerVersion());
+
+					File f = new File("download");
         		if (f.isDirectory()) {
         			try {
         				Server.Debug("Installing new version...");
-        				File fList[] = f.listFiles();
-        				for (File file : fList) {
-        					String name = file.getName();
-        					if(name.endsWith(".myCellar")) {
-        						name = name.substring(0, name.indexOf(".myCellar"));
-        						Server.Debug("Delete file "+name);
-        						FileUtils.deleteQuietly(new File("lib", name));
-        					} else if (file.getName().endsWith("ini")){
-        						Server.Debug("Copy file "+file.getName()+" to config dir");
-        						FileUtils.copyFileToDirectory(file, new File("config"));
-        					}else if (file.getName().endsWith("jar") && !file.getName().equalsIgnoreCase("MyCellar.jar")){
-        						Server.Debug("Copying file "+file.getName()+" to lib dir");
-        						FileUtils.copyFileToDirectory(file, new File("lib"));
-        					}else {
-        						Server.Debug("Copying file "+file.getName()+" to current dir");
-        						FileUtils.copyFileToDirectory(file, new File("."));
-        					}	
-        				}
+        				final File[] fList = f.listFiles();
+        				if (fList != null) {
+									for (File file : fList) {
+										String name = file.getName();
+										if (name.endsWith(".myCellar")) {
+											name = name.substring(0, name.indexOf(".myCellar"));
+											Server.Debug("Delete file " + name);
+											FileUtils.deleteQuietly(new File("lib", name));
+										} else if (file.getName().endsWith("ini")) {
+											Server.Debug("Copying file " + file.getName() + " to config dir");
+											FileUtils.copyFileToDirectory(file, new File("config"));
+										} else if (file.getName().endsWith("jar") && !file.getName().equalsIgnoreCase("MyCellar.jar")) {
+											Server.Debug("Copying file " + file.getName() + " to lib dir");
+											FileUtils.copyFileToDirectory(file, new File("lib"));
+										} else {
+											Server.Debug("Copying file " + file.getName() + " to current dir");
+											FileUtils.copyFileToDirectory(file, new File("."));
+										}
+									}
+								} else {
+        					Server.Debug("ERROR: Unable to list files");
+								}
         				FileUtils.deleteDirectory(f);
         				Server.Debug("Installing new version... Done");
-        			}catch( IOException e) {
+        			} catch(IOException e) {
         				showException(e);
         			}
-        		}
+        		} else {
+        			Server.Debug("ERROR: Missing download directory");
+						}
         		System.exit(0);
         });
     	}
@@ -91,12 +99,12 @@ class MyCellarLauncher {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new MyCellarLauncher(args);
+		new MyCellarLauncher();
 
 	}
 
-	private static void showException(Exception e ) {
-		StackTraceElement st[] = e.getStackTrace();
+	private static void showException(Exception e) {
+		StackTraceElement[] st = e.getStackTrace();
 		String error = "";
 		for (StackTraceElement elem : st) {
 			error = error.concat("\n" + elem);

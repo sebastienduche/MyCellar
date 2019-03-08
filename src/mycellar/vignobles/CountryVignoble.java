@@ -56,6 +56,10 @@ public class CountryVignoble implements Comparable<CountryVignoble>
 		return name;
 	}
 
+	void makeItClean() {
+		appelation = appelation.stream().distinct().collect(Collectors.toList());
+	}
+
 	void checkAvaibility() {
 		if (appelation == null) {
 			appelation = new ArrayList<>();
@@ -104,9 +108,5 @@ public class CountryVignoble implements Comparable<CountryVignoble>
 	@Override
 	public int hashCode() {
 		return Objects.hash(appelation, name);
-	}
-	
-	void makeItClean() {
-		appelation = appelation.stream().distinct().collect(Collectors.toList());
 	}
 }

@@ -7,6 +7,7 @@ import mycellar.Rangement;
 import mycellar.Vignoble;
 import mycellar.core.PanelVignobles;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.requester.ui.ValueSearch;
 import mycellar.vignobles.Appelation;
 import net.miginfocom.swing.MigLayout;
 
@@ -22,8 +23,8 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 26/01/19
+ * @version 0.8
+ * @since 08/03/19
  */
 
 public class Predicates {
@@ -61,7 +62,7 @@ public class Predicates {
 		}
 
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
 			JComboBox<BottleColor> liste = new JComboBox<>();
@@ -74,7 +75,7 @@ public class Predicates {
 			JOptionPane.showMessageDialog(null, panel,
 			        "",
 			        JOptionPane.PLAIN_MESSAGE);
-			return liste.getSelectedItem();
+			return new ValueSearch(liste.getSelectedItem());
 		}
 	};
 
@@ -136,7 +137,7 @@ public class Predicates {
 		}
 		
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			type = 0;
 			JPanel panel = new JPanel();
 			JComboBox<String> combo = new JComboBox<>();
@@ -147,7 +148,7 @@ public class Predicates {
 					type = combo.getSelectedIndex();
 				});
 			panel.add(combo);
-			return JOptionPane.showInputDialog(panel);
+			return new ValueSearch(JOptionPane.showInputDialog(panel));
 		}
 	};
 	
@@ -184,8 +185,8 @@ public class Predicates {
 		}
 		
 		@Override
-		public Object askforValue() {
-			return JOptionPane.showInputDialog(getName());
+		public ValueSearch askforValue() {
+			return new ValueSearch(JOptionPane.showInputDialog(getName()));
 		}
 	};
 	
@@ -222,7 +223,7 @@ public class Predicates {
 		}
 		
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
 			JComboBox<Rangement> liste = new JComboBox<>();
@@ -234,7 +235,7 @@ public class Predicates {
 			JOptionPane.showMessageDialog(null, panel,
 			        "",
 			        JOptionPane.PLAIN_MESSAGE);
-			return ((Rangement)liste.getSelectedItem()).getNom();
+			return new ValueSearch(((Rangement)liste.getSelectedItem()).getNom());
 		}
 	};
 	
@@ -272,7 +273,7 @@ public class Predicates {
 		}
 
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
 			JComboBox<String> liste = new JComboBox<>();
@@ -284,7 +285,7 @@ public class Predicates {
 			JOptionPane.showMessageDialog(null, panel,
 			        "",
 			        JOptionPane.PLAIN_MESSAGE);
-			return liste.getSelectedItem();
+			return new ValueSearch(liste.getSelectedItem());
 		}
 	};
 
@@ -339,7 +340,7 @@ public class Predicates {
 		}
 
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			type = 0;
 			JPanel panel = new JPanel();
 			JComboBox<String> combo = new JComboBox<>();
@@ -347,7 +348,7 @@ public class Predicates {
 			combo.addItem(Program.getLabel("Predicates.Greater"));
 			combo.addItemListener((e) -> type = combo.getSelectedIndex());
 			panel.add(combo);
-			return JOptionPane.showInputDialog(panel);
+			return new ValueSearch(JOptionPane.showInputDialog(panel));
 		}
 	};
 
@@ -401,12 +402,13 @@ public class Predicates {
 		}
 
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			PanelVignobles panelVignobles = new PanelVignobles(true, false);
 			JOptionPane.showMessageDialog(null, panelVignobles,
 					"",
 					JOptionPane.PLAIN_MESSAGE);
-			return panelVignobles.getSelectedVignoble();
+			final Vignoble selectedVignoble = panelVignobles.getSelectedVignoble();
+			return new ValueSearch(selectedVignoble, selectedVignoble.getSearchLabel());
 		}
 	};
 
@@ -443,7 +445,7 @@ public class Predicates {
 		}
 
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			return null;
 		}
 	};
@@ -481,7 +483,7 @@ public class Predicates {
 		}
 		
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			return null;
 		}
 	};
@@ -519,7 +521,7 @@ public class Predicates {
 		}
 		
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			return null;
 		}
 	};
@@ -557,7 +559,7 @@ public class Predicates {
 		}
 		
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			return null;
 		}
 	};

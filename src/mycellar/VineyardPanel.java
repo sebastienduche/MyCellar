@@ -188,11 +188,12 @@ public class VineyardPanel extends JPanel implements ITabListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			CountryVignoble v = (CountryVignoble) comboVignoble.getSelectedItem();
+			Country country = (Country)comboCountry.getSelectedItem();
 			if (v != null) {
 				if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delVignobleQuestion"), v.getName()), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION))
 					return;
 
-				if (CountryVignobles.isVignobleUsed(v)) {
+				if (CountryVignobles.isVignobleUsed(country, v)) {
 					JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteVignoble"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -287,7 +288,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 			if(vi == null)
 				return;
 			for(CountryVignoble v : vi.getVignoble()) {
-    			if(CountryVignobles.isVignobleUsed(v)) {
+    			if(CountryVignobles.isVignobleUsed(country, v)) {
     				JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteCountry"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
     				return;
     			}

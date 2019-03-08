@@ -80,7 +80,7 @@ import java.util.zip.ZipOutputStream;
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
  * @version 20.2
- * @since 01/03/19
+ * @since 08/03/19
  */
 
 public class Program {

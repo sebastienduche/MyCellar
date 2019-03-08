@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +43,6 @@ public class CountryVignoble implements Comparable<CountryVignoble>
 		}
 	}
 
-	//@XmlAttribute
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -50,7 +50,17 @@ public class CountryVignoble implements Comparable<CountryVignoble>
 	public String getName() {
 		return name;
 	}
- 
+
+	void checkAvaibility() {
+		if (appelation == null) {
+			appelation = new ArrayList<>();
+		}
+	}
+
+	boolean isEmpty() {
+		return name.isEmpty() && (appelation == null || appelation.isEmpty());
+	}
+
 	@Override
 	public String toString() {
 		return name;
@@ -90,7 +100,7 @@ public class CountryVignoble implements Comparable<CountryVignoble>
 	public int hashCode() {
 		return Objects.hash(appelation, name);
 	}
-
+	
 	void makeItClean() {
 		appelation = appelation.stream().distinct().collect(Collectors.toList());
 	}

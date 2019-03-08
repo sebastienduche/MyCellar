@@ -18,8 +18,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 17/01/19
+ * @version 1.7
+ * @since 08/03/19
  */
 
 public final class CountryVignobles {
@@ -167,12 +167,14 @@ public final class CountryVignobles {
 			INSTANCE.usedAppellationsList.add(val);
 		}
 
-		INSTANCE.mapVignobles.put(vigne, vignoble);
+		if (!vigne.isEmpty()) {
+			INSTANCE.mapVignobles.put(vigne, vignoble);
+		}
 	}
 
-	public static boolean isVignobleUsed(CountryVignoble vignoble) {
+	public static boolean isVignobleUsed(Country country, CountryVignoble vignoble) {
 		Vignoble vigne = INSTANCE.mapVignobles.get(vignoble);
-		if(vigne == null) {
+		if(vigne == null || !vigne.getCountry().equalsIgnoreCase(country.getId())) {
 			return false;
 		}
 		return INSTANCE.usedVignoblesList.contains(vigne);

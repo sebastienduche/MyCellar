@@ -30,8 +30,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 17/01/19
+ * @version 1.5
+ * @since 08/03/19
  */
 
 @XmlRootElement(name = "vignobles")
@@ -49,6 +49,12 @@ public class Vignobles
 
 	public void setVignoble(List<CountryVignoble> vignoble) {
 		this.vignoble = vignoble;
+	}
+
+	void checkAvaibility() {
+		if (vignoble == null) {
+			vignoble = new ArrayList<>();
+		}
 	}
 
 	static Vignobles loadFrance() {
@@ -93,11 +99,10 @@ public class Vignobles
 			Program.showException(e);
 			return null;
 		}
-		if(v.vignoble == null) {
-			v.vignoble = new ArrayList<>();
-		}
+		v.checkAvaibility();
 		Collections.sort(v.vignoble);
 		for (CountryVignoble vignoble: v.vignoble) {
+			vignoble.checkAvaibility();
 			for (Appelation appelation : vignoble.getUnmodifiableAppelation()) {
 				appelation.makeItClean();
 			}
@@ -113,9 +118,7 @@ public class Vignobles
 		File dir = new File(Program.getWorkDir(true));
 		map.put(Countries.find("FRA"), loadFrance());
 		map.put(Countries.find("ITA"), loadItalie());
-		File fileVignobles[] = dir.listFiles((pathname) -> {
-				return pathname.getName().endsWith(VIGNOBLE);
-		});
+		File[] fileVignobles = dir.listFiles((pathname) -> pathname.getName().endsWith(VIGNOBLE));
 		if (fileVignobles != null) {
 			for (File f : fileVignobles) {
 				String name = f.getName();
@@ -182,7 +185,7 @@ public class Vignobles
 				Debug("Vignobles: Missing resource "+ressource);
 				return null;
 			}
-			vignobles = (Vignobles) jaxbUnmarshaller.unmarshal( stream );
+			vignobles = (Vignobles) jaxbUnmarshaller.unmarshal(stream);
 		}catch(Exception e){
 			Program.showException(e);
 		}
@@ -195,15 +198,17 @@ public class Vignobles
 	}
 
 	public static boolean save(Country c, Vignobles vignoble) {
-		Debug("Writing Country File");
-		try {
-			File fText = new File(Program.getWorkDir(true), c.getId() + TEXT);
-			FileWriter writer = new FileWriter(fText);
-			BufferedWriter buffer = new BufferedWriter(writer);
+		Debug("Writing Country File: " + c.getId());
+		File fText = new File(Program.getWorkDir(true), c.getId() + TEXT);
+		try (FileWriter writer = new FileWriter(fText);
+				 BufferedWriter buffer = new BufferedWriter(writer)){
 			buffer.write(c.getName());
-			buffer.flush();
-			buffer.close();
-			File f = new File(Program.getWorkDir(true), c.getId() + VIGNOBLE);
+		} catch(Exception e) {
+			Program.showException(e);
+			return false;
+		}
+		File f = new File(Program.getWorkDir(true), c.getId() + VIGNOBLE);
+		try {
 			JAXBContext jc = JAXBContext.newInstance(Vignobles.class);
 			Marshaller m = jc.createMarshaller();
 			m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -217,7 +222,7 @@ public class Vignobles
 	}
 
 	public static boolean delete(Country c) {
-		Debug("Deleting Country File");
+		Debug("Deleting Country File: "+c.getId());
 		try {
 			File fText = new File(Program.getWorkDir(true), c.getId() + TEXT);
 			Debug("Deleting "+fText.getAbsolutePath());
@@ -247,13 +252,13 @@ public class Vignobles
 		vigne.setName(v.getName());
 		int index = vignoble.indexOf(vigne);
 		if(index != -1) {
-			CountryVignoble vignoble1 = vignoble.get(index);
-			Appelation appelation = new Appelation();
+			final CountryVignoble vignobleToReturn = vignoble.get(index);
+			final Appelation appelation = new Appelation();
 			appelation.setAOC(v.getAOC());
 			appelation.setAOP(v.getAOC());
 			appelation.setIGP(v.getIGP());
-			if(vignoble1.getUnmodifiableAppelation().contains(appelation)) {
-				return vignoble1;
+			if(vignobleToReturn.getUnmodifiableAppelation().contains(appelation)) {
+				return vignobleToReturn;
 			}
 		}
 		Debug("ERROR findVignobleWithAppelation "+v.toString());
@@ -265,13 +270,13 @@ public class Vignobles
 		vigne.setName(v.getName());
 		int index = vignoble.indexOf(vigne);
 		if(index != -1) {
-			CountryVignoble vignoble1 = vignoble.get(index);
-			Appelation appelation = new Appelation();
-			appelation.setAOC(v.getAOC());
-			appelation.setAOP(v.getAOC());
-			appelation.setIGP(v.getIGP());
-			if(vignoble1.getUnmodifiableAppelation().contains(appelation)) {
-				return appelation;
+			final CountryVignoble vignoble1 = vignoble.get(index);
+			final Appelation appelationToReturn = new Appelation();
+			appelationToReturn.setAOC(v.getAOC());
+			appelationToReturn.setAOP(v.getAOC());
+			appelationToReturn.setIGP(v.getIGP());
+			if(vignoble1.getUnmodifiableAppelation().contains(appelationToReturn)) {
+				return appelationToReturn;
 			}
 		}
 		Debug("ERROR findAppelation "+v.toString());

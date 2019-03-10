@@ -159,7 +159,7 @@ public class Program {
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
 	private static int nextID = -1;
-  public static final MyClipBoard CLIPBOARD = new MyClipBoard();
+	public static final MyClipBoard CLIPBOARD = new MyClipBoard();
 
 	/**
 	 * init
@@ -1764,7 +1764,7 @@ public class Program {
 	  return className.cast(TABBED_PANE.getSelectedComponent());
   }
 
-	public static String readFirstLineText(File f) {
+	public static String readFirstLineText(final File f) {
 		if(f == null) {
 			return "";
 		}

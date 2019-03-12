@@ -112,7 +112,7 @@ public class PanelVignobles extends JPanel {
 							instance.comboAppelationAOC.addItem(v);
 						}
 						if(v.getIGP() != null && !v.getIGP().isEmpty()) {
-							instance.comboAppelationIGP.addItem(new IGPItem(v));
+							instance.comboAppelationIGP.addItem(v);
 						}
 					}
 				}

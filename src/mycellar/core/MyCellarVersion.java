@@ -8,15 +8,15 @@ import java.io.IOException;
 
 public class MyCellarVersion {
 
-	public static final String VERSION = "3.2.4.9";
-	public static final String MAIN_VERSION = "5.8 YC";
-  
+	public static final String VERSION = "3.2.5.1";
+	public static final String NUMERIC_VERSION = "5.8";
+	public static final String MAIN_VERSION = NUMERIC_VERSION+" YC";
+
 	public static String getLocalVersion() {
 		// In directory bin
 		File versionFile = new File("MyCellarVersion.txt");
 		if (versionFile.exists()) {
     		try(var bufferReader = new BufferedReader(new FileReader(versionFile)))
-    		
     		{
     			return bufferReader.readLine();
     		} catch (IOException e) {

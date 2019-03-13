@@ -16,26 +16,14 @@ import static javax.swing.JOptionPane.showMessageDialog;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 08/03/19
+ * @version 1.4
+ * @since 13/03/19
  */
 class MyCellarLauncher {
 
 	private MyCellarLauncher() {
 		
-		Thread updateThread = null;
-		File fLib = new File("MyCellar.jar");
-		
-    	if (!fLib.exists()) {
-				Server.Debug("New Installation...");
-    		boolean installError = install();
-    		if (installError) {
-        		System.exit(1);
-    		} else {
-    			Server.Debug("Installation Done");
-    		}
-    	} else {
-    		updateThread = new Thread(() -> {
+		Thread updateThread = new Thread(() -> {
 					Server.getInstance().checkVersion();
 					if (!Server.getInstance().hasAvailableUpdate()) {
 						return;
@@ -79,17 +67,14 @@ class MyCellarLauncher {
 						}
         		System.exit(0);
         });
-    	}
-    		
+
         try {
-            var pb = new ProcessBuilder("java","-Dfile.encoding=UTF8","-jar","MyCellar.jar");
-            pb.redirectErrorStream(true);
-            Process p = pb.start();
-            p.waitFor();
-            if(updateThread != null) {
-            	Runtime.getRuntime().addShutdownHook(updateThread);
-            	updateThread.start();
-            }
+					var pb = new ProcessBuilder("java","-Dfile.encoding=UTF8","-jar","MyCellar.jar");
+					pb.redirectErrorStream(true);
+					Process p = pb.start();
+					p.waitFor();
+					Runtime.getRuntime().addShutdownHook(updateThread);
+					updateThread.start();
         } catch (IOException | InterruptedException ex) {
             showException(ex);
         }
@@ -111,10 +96,6 @@ class MyCellarLauncher {
 		}
 		showMessageDialog(null, e.toString(), "Error", ERROR_MESSAGE);
 		System.exit(999);
-	}
-	
-	private boolean install() {
-		return Server.getInstance().install();
 	}
 
 }

@@ -45,22 +45,10 @@
             </manifest>
             <fileset dir="./bin">
             	<include name="**/*/*MyCellarLauncher*"/>
-            	<include name="**/*/*MyCellarDropbox*"/>
             	<include name="**/*/*Server*"/>
             	<include name="**/*/*MyCellarVersion*"/>
             </fileset>
         </jar>
-    	<jar destfile="./Build/MyCellarInstall.jar">
-    	            <manifest>
-    	                <attribute name="Main-Class" value="mycellar.launcher.MyCellarLauncher"/>
-    	                <attribute name="Class-Path" value="."/>
-    	            </manifest>
-    	            <fileset dir="./bin">
-    	            	<include name="**/*/*MyCellarLauncher*"/>
-    	            	<include name="**/*/*MyCellarVersion*"/>
-    	            	<include name="**/*/*Server*"/>
-    	            </fileset>
-    	        </jar>
     	<jar destfile="./Build/MyCellar.jar">
             <manifest>
                 <attribute name="Main-Class" value="mycellar.Start"/>

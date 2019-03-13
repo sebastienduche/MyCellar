@@ -2,14 +2,6 @@ package mycellar.launcher;
 
 import mycellar.core.MyCellarVersion;
 
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,8 +27,8 @@ import java.util.Map;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 2.4
- * @since 08/03/19
+ * @version 2.5
+ * @since 13/03/19
  */
 
 public class Server implements Runnable {
@@ -52,7 +44,6 @@ public class Server implements Runnable {
 	private static final LinkedList<FileType> FILE_TYPES = new LinkedList<>();
 	private static final Deque<String> LIST_FILE_TO_REMOVE = new LinkedList<>();
 
-	private boolean bDownloaded = false;
 	private boolean bDownloadError = false;
 
 	private static FileWriter oDebugFile = null;
@@ -69,57 +60,62 @@ public class Server implements Runnable {
 
 	@Override
 	public void run() {
-
 		if (GETVERSION.equals(sAction)) {
-			sServerVersion = "";
-			try {
-				File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
-				myCellarVersion.deleteOnExit();
-				downloadFileFromGitHub("MyCellarVersion.txt", myCellarVersion.getAbsolutePath());
-				try (var in = new BufferedReader(new FileReader(myCellarVersion))){
-					sServerVersion = in.readLine();
-					sAvailableVersion = in.readLine();
-					String sFile = in.readLine();
-					while (sFile != null && !sFile.isEmpty()) {
-						int index = sFile.indexOf('@');
-						String md5 = "";
-						if(index != -1) {
-							md5 = sFile.substring(index+1).trim();
-							sFile = sFile.substring(0, index);
-						}
-						// Suppression de fichier commençant par -
-						if(sFile.indexOf('-') == 0) {
-							LIST_FILE_TO_REMOVE.add(sFile.substring(1));
-						} else {
-							FILE_TYPES.add(new FileType(sFile, md5));
-						}
-						sFile = in.readLine();
-					}
-				}
-			} catch (Exception e) {
-				showException(e);
-			}
-			sAction = "";
+			getVersionFromServer();
 		} else if (DOWNLOAD.equals(sAction)) {
-			try {
-				File f = new File("download");
-				if (!f.exists()) {
-					Files.createDirectory(f.toPath());
-				}
-
-				bDownloadError = downloadFromGitHub(f);
-			} catch (Exception e) {
-				showException(e);
-				sAction = "";
-				bDownloadError = true;
-				return;
-			}
-			bDownloaded = true;
-			sAction = "";
+			downloadFromServer();
 		}
 		if (bDownloadError) {
 			new File("download").deleteOnExit();
 		}
+	}
+
+	private void downloadFromServer() {
+		sAction = "";
+		bDownloadError = false;
+		try {
+			File f = new File("download");
+			if (!f.exists()) {
+				Files.createDirectory(f.toPath());
+			}
+
+			bDownloadError = downloadFromGitHub(f);
+		} catch (Exception e) {
+			showException(e);
+			bDownloadError = true;
+		}
+	}
+
+	private void getVersionFromServer() {
+		sServerVersion = "";
+		try {
+			File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
+			myCellarVersion.deleteOnExit();
+			downloadFileFromGitHub("MyCellarVersion.txt", myCellarVersion.getAbsolutePath());
+			try (var in = new BufferedReader(new FileReader(myCellarVersion))){
+				sServerVersion = in.readLine();
+				sAvailableVersion = in.readLine();
+				String sFile = in.readLine();
+				while (sFile != null && !sFile.isEmpty()) {
+					int index = sFile.indexOf('@');
+					String md5 = "";
+					if(index != -1) {
+						md5 = sFile.substring(index+1).trim();
+						sFile = sFile.substring(0, index);
+					}
+					// Suppression de fichier commençant par -
+					if(sFile.indexOf('-') == 0) {
+						LIST_FILE_TO_REMOVE.add(sFile.substring(1));
+					} else {
+						FILE_TYPES.add(new FileType(sFile, md5));
+					}
+					sFile = in.readLine();
+				}
+			}
+		} catch (Exception e) {
+			showException(e);
+		}
+		sAction = "";
 	}
 
 	void checkVersion() {
@@ -158,22 +154,7 @@ public class Server implements Runnable {
 
 	void downloadVersion() {
 		Debug("Downloading version from GitHub...");
-		try {
-			File f = new File("download");
-			if (!f.exists()){
-				Files.createDirectory(f.toPath());
-			}
-
-			bDownloadError = downloadFromGitHub(f);
-
-		} catch (Exception e) {
-			showException(e);
-			sAction = "";
-			bDownloadError = true;
-			return;
-		}
-		bDownloaded = true;
-		sAction = "";
+		downloadFromServer();
 		if (bDownloadError) {
 			new File("download").deleteOnExit();
 		}
@@ -184,7 +165,6 @@ public class Server implements Runnable {
 	}
 
 	public String getServerVersion() {
-
 		if (sServerVersion.isEmpty()) {
 			try {
 				sAction = GETVERSION;
@@ -203,10 +183,6 @@ public class Server implements Runnable {
 		}
 
 		return (sServerVersion.compareTo(MyCellarVersion.getLocalVersion()) > 0);
-	}
-
-	public boolean isDownloadCompleted() {
-		return bDownloaded;
 	}
 
 	public boolean isDownloadError() {
@@ -405,81 +381,6 @@ public class Server implements Runnable {
 		Debug("Server: "+e.toString());
 		Debug("Server: "+error);
 		e.printStackTrace();
-	}
-
-	boolean install() {
-		Debug("Installing MyCellar...");
-		File directory = getDirectoryForInstall();
-		try {
-			if (directory != null) {
-				if (!directory.exists()) {
-					Files.createDirectories(directory.toPath());
-				}
-			} else {
-				return false;
-			}
-			File f = new File(directory, "lib");
-			Files.createDirectory(f.toPath());
-			f = new File(directory, "config");
-			Files.createDirectory(f.toPath());
-		}catch (IOException e) {
-			showException(e);
-			return false;
-		}
-
-		FILE_TYPES.clear();
-		FILE_TYPES.add(new FileType("lib/commons-io-2.1.jar", ""));
-		FILE_TYPES.add(new FileType("lib/commons-lang-2.1.jar", ""));
-		FILE_TYPES.add(new FileType("lib/commons-logging.jar", ""));
-		FILE_TYPES.add(new FileType("lib/commons-net-3.0.1.jar", ""));
-		FILE_TYPES.add(new FileType("lib/jcommon-1.0.18.jar", ""));
-		FILE_TYPES.add(new FileType("lib/jdom1.0.jar", ""));
-		FILE_TYPES.add(new FileType("lib/jfreechart-1.0.15.jar", ""));
-		FILE_TYPES.add(new FileType("lib/jxl.jar", ""));
-		FILE_TYPES.add(new FileType("lib/mailapi.jar", ""));
-		FILE_TYPES.add(new FileType("lib/miglayout-4.0-swing.jar", ""));
-		FILE_TYPES.add(new FileType("lib/pdfbox-app-2.0.5.jar", ""));
-		FILE_TYPES.add(new FileType("lib/smtp.jar", ""));
-		FILE_TYPES.add(new FileType("lib/poi-4.0.0.jar", ""));
-		FILE_TYPES.add(new FileType("lib/poi-ooxml-4.0.0.jar", ""));
-		FILE_TYPES.add(new FileType("lib/poi-ooxml-schemas-4.0.0.jar", ""));
-		FILE_TYPES.add(new FileType("lib/xmlbeans-3.0.1.jar", ""));
-		FILE_TYPES.add(new FileType("lib/commons-collections4-4.2.jar", ""));
-		FILE_TYPES.add(new FileType("lib/commons-compress-1.18.jar", ""));
-		
-		FILE_TYPES.add(new FileType("config/config.ini", ""));
-
-		FILE_TYPES.add(new FileType("MyCellar.jar",""));
-		FILE_TYPES.add(new FileType("MyCellarLauncher.jar",""));
-		FILE_TYPES.add(new FileType("Finish.html",""));
-		boolean result = downloadFromGitHub(directory);
-		
-		Debug("Installation of MyCellar Done.");
-		return result;
-	}
-	
-	private File getDirectoryForInstall() {
-		final JPanel panel = new JPanel();
-		panel.setLayout(new FlowLayout());
-		panel.setPreferredSize(new Dimension(500, 75));
-		panel.add(new JLabel("Select the directory where to install MyCellar."));
-		JTextField text = new JTextField(30);
-		text.setSize(100, 25);
-		panel.add(text);
-		JButton button = new JButton("...");
-		button.addActionListener((e) -> {
-			JFileChooser fileChooser =  new JFileChooser();
-			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			if( JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(panel) ) {
-				File selectedFile = fileChooser.getSelectedFile();
-				text.setText(selectedFile.getAbsolutePath());
-			}
-		});
-		panel.add(button);
-		if( JOptionPane.OK_OPTION == JOptionPane.showOptionDialog(null, panel, "MyCellar", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null)) {
-			return new File(text.getText());
-		}
-		return null;
 	}
 
 	private static boolean isRedirected(Map<String, List<String>> header) {

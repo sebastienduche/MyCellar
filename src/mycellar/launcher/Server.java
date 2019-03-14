@@ -27,8 +27,8 @@ import java.util.Map;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 2.5
- * @since 13/03/19
+ * @version 2.6
+ * @since 14/03/19
  */
 
 public class Server implements Runnable {
@@ -52,6 +52,11 @@ public class Server implements Runnable {
 
 	private static final String GIT_HUB_URL = "https://github.com/sebastienduche/MyCellar/raw/master/Build/";
 
+	private static final String DOWNLOAD_DIRECTORY = "download";
+	private static final String MY_CELLAR = "MyCellar";
+	private static final String LIB = "lib";
+	private static final String MY_CELLAR_DEBUG = "MyCellarDebug";
+
 	private Server() {}
 
 	public static Server getInstance() {
@@ -66,7 +71,7 @@ public class Server implements Runnable {
 			downloadFromServer();
 		}
 		if (bDownloadError) {
-			new File("download").deleteOnExit();
+			new File(DOWNLOAD_DIRECTORY).deleteOnExit();
 		}
 	}
 
@@ -74,7 +79,7 @@ public class Server implements Runnable {
 		sAction = "";
 		bDownloadError = false;
 		try {
-			File f = new File("download");
+			File f = new File(DOWNLOAD_DIRECTORY);
 			if (!f.exists()) {
 				Files.createDirectory(f.toPath());
 			}
@@ -87,43 +92,30 @@ public class Server implements Runnable {
 	}
 
 	private void getVersionFromServer() {
-		sServerVersion = "";
+		sServerVersion = sAction = "";
 		try {
-			File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
-			myCellarVersion.deleteOnExit();
-			downloadFileFromGitHub("MyCellarVersion.txt", myCellarVersion.getAbsolutePath());
+			final File myCellarVersion = downloadMyCellarVersionTxt();
 			try (var in = new BufferedReader(new FileReader(myCellarVersion))){
 				sServerVersion = in.readLine();
 				sAvailableVersion = in.readLine();
-				String sFile = in.readLine();
-				while (sFile != null && !sFile.isEmpty()) {
-					int index = sFile.indexOf('@');
-					String md5 = "";
-					if(index != -1) {
-						md5 = sFile.substring(index+1).trim();
-						sFile = sFile.substring(0, index);
-					}
-					// Suppression de fichier commençant par -
-					if(sFile.indexOf('-') == 0) {
-						LIST_FILE_TO_REMOVE.add(sFile.substring(1));
-					} else {
-						FILE_TYPES.add(new FileType(sFile, md5));
-					}
-					sFile = in.readLine();
-				}
 			}
 		} catch (Exception e) {
 			showException(e);
 		}
-		sAction = "";
+	}
+
+	private File downloadMyCellarVersionTxt() throws IOException {
+		final File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
+		myCellarVersion.deleteOnExit();
+		downloadFileFromGitHub("MyCellarVersion.txt", myCellarVersion);
+		return myCellarVersion;
 	}
 
 	void checkVersion() {
 		Debug("Checking Version from GitHub...");
 		sServerVersion = "";
 		try {
-			File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
-			downloadFileFromGitHub("MyCellarVersion.txt", myCellarVersion.getAbsolutePath());
+			final File myCellarVersion = downloadMyCellarVersionTxt();
 			try(var bufferedReader = new BufferedReader(new FileReader(myCellarVersion))) {
 				sServerVersion = bufferedReader.readLine();
 				sAvailableVersion = bufferedReader.readLine();
@@ -136,11 +128,11 @@ public class Server implements Runnable {
 						sFile = sFile.substring(0, index);
 					}
 					// Suppression de fichier commençant par -
-					Debug("sFile... "+sFile+" "+ ((sFile.indexOf('-') == 0) ? "to delete" : ""));
+					Debug("sFile... " + sFile + " " + ((sFile.indexOf('-') == 0) ? "to delete" : ""));
 					if(sFile.indexOf('-') == 0) {
 						LIST_FILE_TO_REMOVE.add(sFile.substring(1));
 					} else {
-						boolean lib = (!sFile.contains("MyCellar") && sFile.endsWith(".jar"));
+						boolean lib = (!sFile.contains(MY_CELLAR) && sFile.endsWith(".jar"));
 						FILE_TYPES.add(new FileType(sFile, md5, lib));
 					}
 					sFile = bufferedReader.readLine();
@@ -156,7 +148,7 @@ public class Server implements Runnable {
 		Debug("Downloading version from GitHub...");
 		downloadFromServer();
 		if (bDownloadError) {
-			new File("download").deleteOnExit();
+			new File(DOWNLOAD_DIRECTORY).deleteOnExit();
 		}
 	}
 
@@ -201,9 +193,9 @@ public class Server implements Runnable {
 		}
 		try{
 			// Creation des fichiers pour lister les fichiers à supprimer
-			for(String s : LIST_FILE_TO_REMOVE) {
-				Debug("Creating file to delete... "+s);
-				File f = new File(destination, s + ".myCellar");
+			for(String fileNameToRemove : LIST_FILE_TO_REMOVE) {
+				Debug("Creating file to delete... "+fileNameToRemove);
+				File f = new File(destination, fileNameToRemove + ".myCellar");
 				f.createNewFile();
 			}
 			bDownloadError = false;
@@ -219,41 +211,33 @@ public class Server implements Runnable {
 				String name = fType.getFile();
 				String serverMd5 = fType.getMd5();
 				bDownloadError = false;
-				System.out.println("Downloading... "+name);
 				Debug("Downloading... "+name);
-				File f = new File(destination, name);
 
 				download.setValue(20 + i * percent);
+				final File file = new File(destination, name);
 				try {
 					String dir = "";
 					if(fType.isForLibDirectory()) {
-						dir = "lib/";
+						dir = LIB + File.separator;
 					}
-					downloadFileFromGitHub(dir+name, f.getAbsolutePath());
+					downloadFileFromGitHub(dir + name, file);
 				} catch (IOException e) {
-					e.printStackTrace();
+					showException(e);
 					Debug("Error Downloading " + name);
-					System.out.println("Error Downloading "+name);
 					bDownloadError = true;
 				}
 
-				if(!serverMd5.isEmpty() && !f.isDirectory()) {
-					InputStream stream = new FileInputStream(f);
+				if(!serverMd5.isEmpty() && !file.isDirectory()) {
 					int fileSize;
-					try {
+					try(InputStream stream = new FileInputStream(file)) {
 						fileSize = stream.available();
-						String localMd5 = getMD5Checksum(f.getAbsolutePath());
+						String localMd5 = getMD5Checksum(file.getAbsolutePath());
 						if(localMd5.equals(serverMd5)) {
 							Debug(name + " Md5 OK");
-							System.out.println("MD5 OK "+name);
-						}
-						else {
-							Debug(name + " "+serverMd5 + " "+localMd5);
-							System.out.println("Error MD5 "+name);
+						}	else {
+							Debug(name + " " + serverMd5 + " " + localMd5 + " KO");
 							bDownloadError = true;
 						}
-					} finally {
-						stream.close();
 					}
 					if (fileSize == 0) {
 						bDownloadError = true;
@@ -261,7 +245,7 @@ public class Server implements Runnable {
 				}
 				if(bDownloadError) {
 					Debug("Error "+name);
-					f.deleteOnExit();
+					file.deleteOnExit();
 				}
 			}
 		} catch (IOException e) {
@@ -281,21 +265,21 @@ public class Server implements Runnable {
 		return bDownloadError;
 	}
 
-	public void downloadFileFromGitHub(String name, String destination) throws IOException {
-		String link;
+	public void downloadFileFromGitHub(String name, File destination) throws IOException {
 		URL url = new URL(GIT_HUB_URL + name);
 		HttpURLConnection http = (HttpURLConnection)url.openConnection();
 		Map< String, List< String >> header = http.getHeaderFields();
 		while(isRedirected(header)) {
-			link = header.get("Location").get(0);
+			String link = header.get("Location").get(0);
 			url = new URL(link);
 			http = (HttpURLConnection)url.openConnection();
 			header = http.getHeaderFields();
 		}
-		InputStream input = http.getInputStream();
-		byte[] buffer = new byte[4096];
-		int n;
-		try(var output = new FileOutputStream(new File(destination))) {
+
+		try(InputStream input = http.getInputStream();
+				var output = new FileOutputStream(destination)) {
+			int n;
+			byte[] buffer = new byte[4096];
 			while ((n = input.read(buffer)) != -1) {
 				output.write(buffer, 0, n);
 			}
@@ -319,8 +303,6 @@ public class Server implements Runnable {
 		}
 	}
 
-	// see this How-to for a faster way to convert
-	// a byte array to a HEX string
 	private static String getMD5Checksum(String filename) throws Exception {
 		byte[] b = createChecksum(filename);
 		StringBuilder result = new StringBuilder();
@@ -341,7 +323,7 @@ public class Server implements Runnable {
 			if (oDebugFile == null) {
 				String sDir = System.getProperty("user.home");
 				if(!sDir.isEmpty()) {
-					sDir +=  File.separator + "MyCellarDebug";
+					sDir +=  File.separator + MY_CELLAR_DEBUG;
 				}
 				File f_obj = new File(sDir);
 				if(!f_obj.exists()) {
@@ -369,7 +351,7 @@ public class Server implements Runnable {
 		}
 		String sDir = System.getProperty("user.home");
 		if(!sDir.isEmpty()) {
-			sDir += File.separator + "MyCellarDebug";
+			sDir += File.separator + MY_CELLAR_DEBUG;
 		}
 		try(var fileWriter = new FileWriter(sDir + File.separator + "Errors.log")) {
 			fileWriter.write(e.toString());
@@ -409,12 +391,6 @@ public class Server implements Runnable {
 			this.file = file;
 			this.md5 = md5;
 			this.lib = lib;
-		}
-
-		private FileType(String file, String md5) {
-			this.file = file;
-			this.md5 = md5;
-			lib = false;
 		}
 
 		public String getFile() {

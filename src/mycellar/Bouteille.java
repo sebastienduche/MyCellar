@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.5
- * @since 03/03/19
+ * @version 4.6
+ * @since 15/03/19
 
  * <p>Java class for anonymous complex type.
  * 
@@ -467,7 +467,7 @@ public class Bouteille implements Serializable{
 		 return Program.getCave(emplacement);
 	 }
 
-	 int getAnneeInt() {
+	 public int getAnneeInt() {
 		 if(annee.isEmpty())
 			 return 0;
 		 if(isNonVintageYear(annee))
@@ -504,7 +504,7 @@ public class Bouteille implements Serializable{
 		 return ( year.compareToIgnoreCase(NON_VINTAGE) == 0);
 	 }
 
-	 boolean isNonVintage() {
+	 public boolean isNonVintage() {
 		 return ( annee.compareToIgnoreCase(NON_VINTAGE) == 0);
 	 }
 
@@ -556,11 +556,11 @@ public class Bouteille implements Serializable{
 		 return BottleColor.getColor(color) == BottleColor.RED;
 	 }
 	 
-	 boolean isWhiteWine() {
+	 public boolean isWhiteWine() {
 		 return BottleColor.getColor(color) == BottleColor.WHITE;
 	 }
 
-	 boolean isPinkWine() {
+	 public boolean isPinkWine() {
 		 return BottleColor.getColor(color) == BottleColor.PINK;
 	 }
 
@@ -569,7 +569,7 @@ public class Bouteille implements Serializable{
 		 return nom;
 	 }
 
-	 public void update(Bouteille b) {
+	 public void update(final Bouteille b) {
 		 setNom(b.getNom());
 		 setAnnee(b.getAnnee());
 		 setColonne(b.getColonne());
@@ -841,7 +841,7 @@ public class Bouteille implements Serializable{
 		 private String color;
 		 private Vignoble vignoble;
 
-		 BouteilleBuilder(String nom){
+		 public BouteilleBuilder(String nom){
 			 this.nom = nom;
 			 id = numLieu = ligne = colonne = 0;
 			 type = emplacement = prix = comment = annee = maturity = parker = color = "";

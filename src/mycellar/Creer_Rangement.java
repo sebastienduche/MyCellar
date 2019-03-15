@@ -41,8 +41,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.9
- * @since 06/01/19
+ * @version 13.0
+ * @since 15/03/19
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -469,8 +469,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 
 					if (nbBottles == 0) {
 						rangement.setNom(nom);
-						rangement.setPlace(listPart);
-						Program.setListCaveModified();
+						rangement.updatePlace(listPart);
 						putTabStock();
 						nom_obj.setText("");
 						comboPlace.removeAllItems();
@@ -543,7 +542,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 
 						if (bResul) {
 							String name = rangement.getNom();
-							if (name.compareTo(nom) != 0) {
+							if (!name.equalsIgnoreCase(nom)) {
 								String erreur_txt1 = Program.getError("Error136"); //"1 bouteille est présente dans ce rangement.");
 								String erreur_txt2 = Program.getError("Error137"); //"Voulez vous changer l'emplacement de cette bouteille?");
 								if (nbBottles == 1) {
@@ -556,8 +555,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 								if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 									//Modify Name of place
 									rangement.setNom(nom);
-									rangement.setPlace(listPart);
-									Program.setListCaveModified();
+									rangement.updatePlace(listPart);
 									Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
 									nom_obj.setText("");
 									comboPlace.removeAllItems();
@@ -569,14 +567,10 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 									Program.updateAllPanels();
 								} else {
 									rangement.setNom(nom);
-									rangement.setPlace(listPart);
-									Program.setListCaveModified();
-									Program.setModified();
+									rangement.updatePlace(listPart);
 								}
 							} else {
-								rangement.setPlace(listPart);
-								Program.setListCaveModified();
-								Program.setModified();
+								rangement.updatePlace(listPart);
 							}
 							putTabStock();
 						}

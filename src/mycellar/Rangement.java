@@ -12,8 +12,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 25.8
- * @since 31/12/18
+ * @version 25.9
+ * @since 15/03/19
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -733,11 +733,11 @@ public class Rangement implements Comparable<Rangement> {
 		}
 	}
 	/**
-	 * Rangement: Constructeur de création d'un rangement
+	 * Initialise les parties
 	 *
 	 * @param listPart LinkedList<Part>: liste des parties
 	 */
-	public void setPlace(List<Part> listPart) {
+	private void setPlace(List<Part> listPart) {
 
 		stock_nbcol = 0;
 		stock_nblign = 0;
@@ -779,6 +779,12 @@ public class Rangement implements Comparable<Rangement> {
 			}
 		}
 		return listPart;
+	}
+
+	void updatePlace(List<Part> listPart) {
+		setPlace(listPart);
+		Program.setListCaveModified();
+		Program.setModified();
 	}
 
 	@Override
@@ -825,7 +831,7 @@ public class Rangement implements Comparable<Rangement> {
 			return false;
 		if(!isCaisse()) {
 			for(int i=0; i<getNbEmplacements(); i++) {
-				int lignes = getNbLignes(i); 
+				int lignes = getNbLignes(i);
 				if(lignes != r.getNbLignes(i))
 					return false;
 				for(int j=0; j<lignes; j++) {
@@ -836,6 +842,5 @@ public class Rangement implements Comparable<Rangement> {
 		}
 		return true;
 	}
-
 }
 

@@ -10,6 +10,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.ui.PanelRequest;
+import mycellar.vignobles.CountryVignobles;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
@@ -44,8 +45,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.5
- * @since 28/12/18
+ * @version 19.6
+ * @since 10/04/19
  */
 public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable {
 
@@ -701,6 +702,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 
 	private boolean searchByRequest() {
 		Debug("Search by request");
+		CountryVignobles.addVignobleFromBottles();
 		Collection<Bouteille> bouteilles = CollectionFilter.select(Program.getStorage().getAllList() , panelRequest.getPredicates()).getResults();
 		boolean already_found = false;
 		if(bouteilles != null) {

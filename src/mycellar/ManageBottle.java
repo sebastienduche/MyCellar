@@ -34,8 +34,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.9
- * @since 26/01/19
+ * @version 5.0
+ * @since 10/04/19
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -472,8 +472,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_laBouteille.setType(demie);
 			m_laBouteille.setVignoble(new Vignoble(country, vignoble, aoc, igp, null));
 			CountryVignobles.addVignobleFromBottle(m_laBouteille);
+			CountryVignobles.setRebuildNeeded();
 			if(isCaisse) {
-				lieu_num=Integer.parseInt(m_num_lieu.getItemAt(lieu_num));
+				lieu_num = Integer.parseInt(m_num_lieu.getItemAt(lieu_num));
 				m_laBouteille.setNumLieu(lieu_num);
 				m_laBouteille.setLigne(0);
 				m_laBouteille.setColonne(0);

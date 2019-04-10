@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class MyCellarVersion {
 
-	public static final String VERSION = "3.2.5.7";
+	public static final String VERSION = "3.2.7.1";
 	public static final String NUMERIC_VERSION = "5.8";
 	public static final String MAIN_VERSION = NUMERIC_VERSION+" YC";
 

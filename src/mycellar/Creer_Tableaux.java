@@ -41,8 +41,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 6.5
- * @since 28/12/18
+ * @version 6.6
+ * @since 10/04/19
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable {
 	private final JTextField name = new JTextField();
@@ -439,20 +439,16 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 		Debug("param_actionPerforming...");
 		String titre = Program.getLabel("Infos310");
 		String message2 = Program.getLabel("Infos309");
-		String titre_properties[] = new String[3];
-		titre_properties[0] = Program.getLabel("Infos210");
-		titre_properties[1] = Program.getLabel("Infos211");
-		titre_properties[2] = Program.getLabel("Infos233");
-		String default_value[] = new String[3];
-		String key_properties[] = new String[3];
-		key_properties[0] = MyCellarSettings.CREATE_TAB_DEFAULT;
-		key_properties[1] = MyCellarSettings.CREATE_TAB_DEFAULT;
-		key_properties[2] = MyCellarSettings.CREATE_TAB_DEFAULT;
+		String[] titre_properties = {
+				Program.getLabel("Infos210"),
+				Program.getLabel("Infos211"),
+				Program.getLabel("Infos233") };
+		String[] key_properties = {
+				MyCellarSettings.CREATE_TAB_DEFAULT,
+				MyCellarSettings.CREATE_TAB_DEFAULT,
+				MyCellarSettings.CREATE_TAB_DEFAULT	};
 		String val = Program.getCaveConfigString(key_properties[0], "1");
-
-		default_value[0] = "false";
-		default_value[1] = "false";
-		default_value[2] = "false";
+		String[] default_value = { "false", "false", "false" };
 		if (val.equals("0")) {
 			default_value[0] = "true";
 		}
@@ -462,7 +458,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 		if (val.equals("2")) {
 			default_value[2] = "true";
 		}
-		String type_objet[] = {"MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton"};
+		String[] type_objet = {"MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton"};
 		MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
 		myoptions.setVisible(true);
 	}

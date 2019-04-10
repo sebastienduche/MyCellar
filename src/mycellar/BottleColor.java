@@ -18,17 +18,19 @@ public enum BottleColor {
 	}
 	
 	public static BottleColor getColor(String value) {
-		if(value.isEmpty())
+		if(value.isEmpty()) {
 			return NONE;
+		}
 		try {
 			return valueOf(value);
 		}catch(Exception e) {
-			if(value.equals(RED.label))
+			if(value.equals(RED.label)) {
 				return RED;
-			else if(value.equals(WHITE.label))
+			}	else if(value.equals(WHITE.label)) {
 				return WHITE;
-			else if(value.equals(PINK.label))
+			} else if(value.equals(PINK.label)) {
 				return PINK;
+			}
 		}
 		return NONE;
 	}

@@ -79,17 +79,15 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 20.3
- * @since 14/03/19
+ * @version 20.4
+ * @since 10/04/19
  */
 
 public class Program {
 
 	// Manage cave config
-	private static final Properties PROPERTIES_CAVE = new Properties();
 	private static MyLinkedHashMap configCave = null;
 	// Manage global config
-	private static final Properties PROPERTIES_GLOBAL = new Properties();
 	private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
 
 	private static String archive = null;
@@ -150,6 +148,7 @@ public class Program {
 	private static final String TYPES_XML = "Types.xml";
 	private static final String BOUTEILLES_XML = "Bouteilles.xml";
 	private static final String INTERNAL_VERSION = "2.5";
+	static final String EXTENSION = ".sinfo";
 
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;
@@ -179,17 +178,17 @@ public class Program {
 				fileIni.createNewFile();
 			} else {
 				FileInputStream inputStream = new FileInputStream(fileIni);
-				PROPERTIES_GLOBAL.load(inputStream);
+				Properties properties = new Properties();
+				properties.load(inputStream);
 				inputStream.close();
+				//Initialisation de la Map contenant config
+				Enumeration<Object> keys = properties.keys();
+				while (keys.hasMoreElements()) {
+					String key = keys.nextElement().toString();
+					putGlobalConfigString(key, properties.getProperty(key));
+				}
 			}
 			LanguageFileLoader.getInstance().loadLanguageFiles('U');
-
-			//Initialisation de la Map contenant config
-			Enumeration<Object> keys = PROPERTIES_GLOBAL.keys();
-			while (keys.hasMoreElements()) {
-				String key = keys.nextElement().toString();
-				putGlobalConfigString(key, PROPERTIES_GLOBAL.getProperty(key));
-			}
 		}
 		catch (Exception e) {
 			showException(e);
@@ -208,14 +207,6 @@ public class Program {
 				f.createNewFile();
 			}
 			LanguageFileLoader.getInstance().loadLanguageFiles('U');
-
-			//Initialisation de la Map contenant config
-			Debug("Program: Initialize ConfigGlobal");
-			Enumeration<Object> keys = PROPERTIES_GLOBAL.keys();
-			while (keys.hasMoreElements()) {
-				String key = keys.nextElement().toString();
-				putGlobalConfigString(key, PROPERTIES_GLOBAL.getProperty(key));
-			}
 
 			if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
 				putGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
@@ -255,18 +246,20 @@ public class Program {
 			f.createNewFile();
 		} else {
 			FileInputStream inputStream = new FileInputStream(inputPropCave);
-			PROPERTIES_CAVE.load(inputStream);
+			Properties properties = new Properties();
+			properties.load(inputStream);
 			inputStream.close();
+			Enumeration<Object> keys = properties.keys();
+			while (keys.hasMoreElements()) {
+				String key = keys.nextElement().toString();
+				putCaveConfigString(key, properties.getProperty(key));
+			}
+			if (properties.isEmpty()) {
+				// Initialisation de la devise pour les nouveaux fichiers
+				putCaveConfigString(MyCellarSettings.DEVISE, "€");
+			}
 		}
-		Enumeration<Object> keys = PROPERTIES_CAVE.keys();
-		while (keys.hasMoreElements()) {
-			String key = keys.nextElement().toString();
-			putCaveConfigString(key, PROPERTIES_CAVE.getProperty(key));
-		}
-		if (PROPERTIES_CAVE.isEmpty()) {
-			// Initialisation de la devise pour les nouveaux fichiers
-			putCaveConfigString(MyCellarSettings.DEVISE, "€");
-		}
+
 	}
 
 	/**
@@ -755,7 +748,7 @@ public class Program {
 	static void saveAs(String sFilename) {
 		Debug("Program: Saving all files...");
 
-		saveProperties();
+		saveCaveProperties();
 		saveGlobalProperties();
 
 		if(isListCaveModified()) {
@@ -1091,25 +1084,6 @@ public class Program {
 	}
 
 	/**
-	 * Fonction pour sauvegarder les propriétés globales du programme
-	 */
-	static void saveGlobalProperties() {
-		Debug("Program: Saving Global Properties");
-		Object[] val = CONFIG_GLOBAL.keySet().toArray();
-		for (Object o : val) {
-			String key = o.toString();
-			PROPERTIES_GLOBAL.put(key, CONFIG_GLOBAL.getString(key));
-		}
-		try(var outputStream = new FileOutputStream(getGlobalConfigFilePath())) {
-			PROPERTIES_GLOBAL.store(outputStream, null);
-		} catch (IOException e) {
-			showException(e);
-		}
-		Debug("Program: Saving Global Properties OK");
-	}
-
-
-	/**
 	 * closeFile: Fermeture du fichier.
 	 */
 	static void closeFile() {
@@ -1164,7 +1138,7 @@ public class Program {
 					MyXmlDom.writeMyCellarXml(getCave(), "");
 				}
 
-				saveProperties();
+				saveCaveProperties();
 
 				if (!getCave().isEmpty()) {
 					getStorage().saveHistory();
@@ -1224,6 +1198,14 @@ public class Program {
 		showfile = null;
 		showtrash = null;
 		vignobles = null;
+		options = null;
+		parametres = null;
+		importer = null;
+		history = null;
+		managePlace = null;
+		chooseCell = null;
+		deletePlace = null;
+		stat = null;
 	}
 
 	private static void deleteTempFiles() {
@@ -1242,19 +1224,31 @@ public class Program {
 	}
 
 	/**
-	 * Save Properties
+	 * Save Properties for current cave
 	 */
-	private static void saveProperties() {
-
+	private static void saveCaveProperties() {
 		MyCellarBottleContenance.save();
+		saveProperties(configCave, getConfigFilePath());
+	}
 
-		Object[] val = configCave.keySet().toArray();
+	/**
+	 * Save global properties
+	 */
+	static void saveGlobalProperties() {
+		Debug("Program: Saving Global Properties");
+		saveProperties(CONFIG_GLOBAL, getGlobalConfigFilePath());
+		Debug("Program: Saving Global Properties OK");
+	}
+
+	private static void saveProperties(final MyLinkedHashMap map, final String file) {
+		Object[] val = map.keySet().toArray();
+		final Properties properties = new Properties();
 		for (Object o : val) {
 			String key = o.toString();
-			PROPERTIES_CAVE.put(key, configCave.getString(key));
+			properties.put(key, map.getString(key));
 		}
-		try (var outputStream = new FileOutputStream(getConfigFilePath())){
-			PROPERTIES_CAVE.store(outputStream, null);
+		try (var outputStream = new FileOutputStream(file)){
+			properties.store(outputStream, null);
 		} catch (IOException e) {
 			showException(e);
 		}
@@ -1342,7 +1336,7 @@ public class Program {
 		String tmp = sFilename;
 		tmp = tmp.replaceAll("\\\\", "/");
 		int ind1 = tmp.lastIndexOf("/");
-		int ind2 = tmp.indexOf(".sinfo");
+		int ind2 = tmp.indexOf(EXTENSION);
 		if (ind1 != -1 && ind2 != -1) {
 			tmp = tmp.substring(ind1 + 1, ind2);
 		}
@@ -1406,7 +1400,7 @@ public class Program {
 		}
 	}
 
-	public static void putCaveConfigInt(String _sKey, Integer _sValue) {
+	static void putCaveConfigInt(String _sKey, Integer _sValue) {
 		configCave.put(_sKey, _sValue);
 	}
 

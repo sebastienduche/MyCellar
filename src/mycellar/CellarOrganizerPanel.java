@@ -48,8 +48,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.0
- * @since 03/03/19
+ * @version 2.1
+ * @since 10/04/19
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener {
@@ -60,7 +60,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 
 	private final List<JPanel[][]> places = new LinkedList<>();
 	
-	public static final List<RangementCell> cellsList = new ArrayList<>();
+	static final List<RangementCell> CELLS_LIST = new ArrayList<>();
 	
 	private final JPanel placePanel = new JPanel();
 	private final LinkedList<Rangement> armoires = new LinkedList<>();
@@ -142,7 +142,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 		this.rangement = rangement;
 		move.setEnabled(rangement.isCaisse());
 		SwingUtilities.invokeLater(() -> {
-			cellsList.clear();
+			CELLS_LIST.clear();
 			placePanel.removeAll();
 			places.clear();
 			if(rangement.equals(Program.EMPTY_PLACE)) {
@@ -150,7 +150,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 				return;
 			}
 			if(rangement.isCaisse()) {
-				HashMap<Integer, Integer> mapEmplSize = new HashMap<Integer, Integer>();
+				HashMap<Integer, Integer> mapEmplSize = new HashMap<>();
 				for(int i = 0; i<rangement.getNbEmplacements(); i++){
 					int empl = i + rangement.getStartCaisse();
 					mapEmplSize.put(empl, 0);
@@ -171,7 +171,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 							cell = new RangementCell(handler, th, rangement, empl, k, 0, panelCellar);
 						}
 						place[k][0] = panel = cell;
-						cellsList.add(cell);
+						CELLS_LIST.add(cell);
 						panelCellar.add(panel, "growx, wrap");
 					}
 					placePanel.add(new MyCellarLabel(Program.getLabel("Infos029")+" "+(empl)), i>0 ? "newline, gaptop 30, wrap" : "wrap");
@@ -203,7 +203,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 								else
 									cell = new RangementCell(handler, th, rangement, i, k, j, panelCellar);
 								place[k][j] = panel = cell;
-								cellsList.add(cell);
+								CELLS_LIST.add(cell);
 							} else
 								place[k][j] = panel = new JPanel();
 							panelCellar.add(panel);
@@ -222,7 +222,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 			}
 			
 			if(cellChooser) {
-				for(RangementCell cell : cellsList) {
+				for(RangementCell cell : CELLS_LIST) {
 					cell.initButton();
 				}
 			}
@@ -250,7 +250,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 		if(cellChooser) {
 			int count = 0;
 			RangementCell selectedCell = null;
-			for(RangementCell cell : cellsList) {
+			for(RangementCell cell : CELLS_LIST) {
 				if(cell.isToggle()) {
 					selectedCell = cell;
 					count++;
@@ -271,7 +271,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 	@Override
 	public void tabClosed() {
 		Start.getInstance().updateMainPanel();
-		cellsList.clear();
+		CELLS_LIST.clear();
 		stock.removeAll();
 		places.clear();
 		placePanel.removeAll();
@@ -286,8 +286,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 	}
 	
 	public void updateView() {
-		if(!updateView)
+		if(!updateView) {
 			return;
+		}
 		SwingUtilities.invokeLater(() -> {
 			armoires.clear();
 			comboRangement.removeAllItems();
@@ -312,7 +313,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			for(RangementCell cell: cellsList) {
+			for(RangementCell cell: CELLS_LIST) {
 				BouteilleLabel bottle = cell.getBottleLabel();
 				if(bottle != null && bottle.getBouteille() != null) {
 					bottle.getBouteille().setEmplacement(Program.TEMP_PLACE);
@@ -422,7 +423,7 @@ class RangementCell extends JPanel {
 		return column;
 	}
 	
-	public int getPlaceNum() {
+	int getPlaceNum() {
 		if(place != null && place.isCaisse()) {
 			return placeNum-1;
 		}
@@ -441,7 +442,7 @@ class RangementCell extends JPanel {
 		this.place = place;
 	}
 	
-	public RangementCell createNewCell() {
+	RangementCell createNewCell() {
 		RangementCell rangementCell = new RangementCell(getMouseListeners()[0], getTransferHandler(), place, placeNum, row+1, 0, parent);
 		parent.add(rangementCell, "newline, growx");
 		return rangementCell;
@@ -457,7 +458,7 @@ class RangementCell extends JPanel {
 				+ ", column=" + column + ", place=" + place + ", parent=" + (parent != null ? "Yes" : "No") + "]";
 	}
 
-	public boolean canImport() {
+	boolean canImport() {
 		return getBottleLabel() == null || getBottleLabel().getBouteille() == null;
 	}
 	
@@ -519,7 +520,7 @@ class BouteilleLabel extends JPanel {
 		return bouteille;
 	}
 	
-	public void removeBouteille() {
+	void removeBouteille() {
 		bouteille = null;
 	}
 
@@ -653,7 +654,7 @@ class LabelTransferHandler extends TransferHandler {
 			src.draggingLabel.removeBouteille();
 			RangementUtils.putTabStock();
 			if(target.isCaisse()) {
-				CellarOrganizerPanel.cellsList.add(target.createNewCell());
+				CellarOrganizerPanel.CELLS_LIST.add(target.createNewCell());
 			}
 			target.revalidate();
 			if(!target.isStock()) {

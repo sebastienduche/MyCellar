@@ -26,8 +26,8 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.0
- * @since 10/10/18
+ * @version 2.1
+ * @since 10/04/19
  */
 class MyOptions extends JDialog {
   private final MyCellarLabel textControl1 = new MyCellarLabel();
@@ -38,13 +38,12 @@ class MyOptions extends JDialog {
   private final MyCellarLabel textControl3 = new MyCellarLabel();
   private final ButtonGroup cbg = new ButtonGroup();
   private static final int LARGEUR = 420;
-  private int HAUTEUR = 200;
   private JComponent[] value;
   private JTextField[] labelEdit;
   private final String[] cle;
   private int taille_value = 0;
   private final MyLinkedHashMap config;
-  private String resul[];
+  private String[] resul;
   private final boolean bCancel;
   private boolean bIsLabelEdit = false;
   static final long serialVersionUID = 030107;
@@ -61,7 +60,7 @@ class MyOptions extends JDialog {
    * @param type_objet String[]: Type des objets à ajouter.
    * @param config1 MyLinkedHashMap
    */
-  public MyOptions(String title, String message, String message2, String[] propriete, String[] default_value, String[] cle2, String[] type_objet,
+  MyOptions(String title, String message, String message2, String[] propriete, String[] default_value, String[] cle2, String[] type_objet,
                    MyLinkedHashMap config1, boolean cancel) {
 
     super(Start.getInstance(), "", true);
@@ -81,27 +80,23 @@ class MyOptions extends JDialog {
    *
    * @param title String: Titre de la fenêtre.
    * @param message String: Message de la fenêtre.
-   * @param message2 String: Message de la fenêtre.
-   * @param propriete String[]: Propriété à renseigner.
-   * @param default_value String[]: Valeur par défaut.
-   * @param cle2 String[]: Clé de la propiété.
    * @param type_objet String[]: Type des objets à ajouter.
    * @param erreur String: texte de l'erreur
    * @param config1 MyLinkedHashMap
    * @param cancel boolean
    * @param isLabelEdit boolean 
    */
-  public MyOptions(String title, String message, String message2, String[] propriete, String[] default_value, String[] cle2, String[] type_objet, String erreur,
+  MyOptions(String title, String message, String[] type_objet, String erreur,
                    MyLinkedHashMap config1, boolean cancel, boolean isLabelEdit) {
 
     super(Start.getInstance(), "", true);
     config = config1;
-    cle = cle2;
+    cle = new String[] { "" };
     bCancel = cancel;
     bIsLabelEdit = isLabelEdit;
     textControl3.setText(erreur);
     try {
-      jbInit(title, message, message2, propriete, default_value, type_objet);
+      jbInit(title, message, "", new String[]{ "" }, new String[]{ "" }, type_objet);
     }
     catch (Exception e) {
       Program.showException(e);
@@ -148,7 +143,7 @@ class MyOptions extends JDialog {
       }
       if (type_objet[i].equals("MyCellarSpinner")) {
         final MyCellarSpinner jspi = new MyCellarSpinner();
-        jspi.setValue(new Integer(default_value[i]));
+        jspi.setValue(Integer.parseInt(default_value[i]));
         jspi.addChangeListener((e) -> {
             if (Integer.parseInt(jspi.getValue().toString()) < 0) {
               jspi.setValue(0);
@@ -198,10 +193,10 @@ class MyOptions extends JDialog {
       public void keyTyped(KeyEvent e) {}
     });
 
-    HAUTEUR = 200 + (taille_value * 25);
-    setSize(LARGEUR, HAUTEUR);
+    int hauteur = 200 + (taille_value * 25);
+    setSize(LARGEUR, hauteur);
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    setLocation( (screenSize.width - LARGEUR) / 2, (screenSize.height - HAUTEUR) / 2);
+    setLocation( (screenSize.width - LARGEUR) / 2, (screenSize.height - hauteur) / 2);
     getContentPane().setLayout(new MigLayout("","[grow][grow]","[]15px[][]15px[]"));
     getContentPane().add(textControl1, "center, grow, span 2, wrap");
     getContentPane().add(definition, "span 2, wrap");
@@ -300,15 +295,6 @@ class MyOptions extends JDialog {
     if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
       valider_actionPerformed(null);
     }
-  }
-
-  /**
-   * getResul
-   *
-   * @return String[]
-   */
-  public String[] getResul() {
-    return resul;
   }
 
 }

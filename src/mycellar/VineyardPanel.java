@@ -35,8 +35,8 @@ import java.util.List;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 1.9
- * @since 23/05/18
+ * @version 2.0
+ * @since 10/04/19
  */
 
 public class VineyardPanel extends JPanel implements ITabListener {
@@ -57,8 +57,9 @@ public class VineyardPanel extends JPanel implements ITabListener {
 		MyCellarLabel labelCountries = new MyCellarLabel(Program.getLabel("Infos218")); // Sélectionner un pays
 		comboCountry.addItem(emptyCountry);
 		Collections.sort(Program.getCountries());
-		for(Country c : Program.getCountries())
+		for(Country c : Program.getCountries()) {
 			comboCountry.addItem(c);
+		}
 		comboCountry.addActionListener((e) -> {
 
 			comboVignoble.removeAllItems();
@@ -81,8 +82,9 @@ public class VineyardPanel extends JPanel implements ITabListener {
 				}
 			}
 			for(CountryVignoble v : vignobles.getVignoble()) {
-				if(v.getName().isEmpty())
+				if(v.getName().isEmpty()) {
 					continue;
+				}
 				comboVignoble.addItem(v);
 			}
 			if(comboVignoble.getItemCount() > 0) {
@@ -90,8 +92,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 				if (countryVignoble != null) {
 					model.setAppellations(country, countryVignoble, countryVignoble.getAppelation());
 				}
-			}
-			else {
+			}	else {
 				model.setAppellations(null, null, null);
 				addAppellation.setEnabled(false);
 			}
@@ -162,13 +163,13 @@ public class VineyardPanel extends JPanel implements ITabListener {
 		public void actionPerformed(ActionEvent e) {
 			String val = JOptionPane.showInputDialog(Program.getLabel("VineyardPanel.addVignobleQuestion"));
 			if(val != null && !val.isEmpty()) {
-				CountryVignoble v = new CountryVignoble();
-				v.setName(val);
-				if(!vignobles.getVignoble().contains(v)) {
-					v = vignobles.addVignoble(val);
+				CountryVignoble countryVignoble = new CountryVignoble();
+				countryVignoble.setName(val);
+				if(!vignobles.getVignoble().contains(countryVignoble)) {
+					countryVignoble = vignobles.addVignoble(val);
 					comboVignoble.setEnabled(true);
-					comboVignoble.addItem(v);
-					comboVignoble.setSelectedItem(v);
+					comboVignoble.addItem(countryVignoble);
+					comboVignoble.setSelectedItem(countryVignoble);
 					delVignoble.setEnabled(true);
 					renameVignoble.setEnabled(true);
 					Program.setModified();
@@ -187,20 +188,22 @@ public class VineyardPanel extends JPanel implements ITabListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CountryVignoble v = (CountryVignoble) comboVignoble.getSelectedItem();
-			Country country = (Country)comboCountry.getSelectedItem();
-			if (v != null) {
-				if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delVignobleQuestion"), v.getName()), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION))
+			CountryVignoble countryVignoble = (CountryVignoble) comboVignoble.getSelectedItem();
+			Country country = (Country) comboCountry.getSelectedItem();
+			if (countryVignoble != null) {
+				if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delVignobleQuestion"), countryVignoble.getName()), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 					return;
+				}
 
-				if (CountryVignobles.isVignobleUsed(country, v)) {
+				CountryVignobles.addVignobleFromBottles();
+				if (CountryVignobles.isVignobleUsed(country, countryVignoble)) {
 					JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteVignoble"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				comboVignoble.removeItemAt(comboVignoble.getSelectedIndex());
 				delVignoble.setEnabled(comboVignoble.getItemCount() > 0);
 				renameVignoble.setEnabled(comboVignoble.getItemCount() > 0);
-				vignobles.delVignoble(v);
+				vignobles.delVignoble(countryVignoble);
 				Program.setModified();
 			}
 		}
@@ -216,11 +219,12 @@ public class VineyardPanel extends JPanel implements ITabListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CountryVignoble v = (CountryVignoble) comboVignoble.getSelectedItem();
-			if (v != null) {
-				String val = JOptionPane.showInputDialog(MessageFormat.format(Program.getLabel("VineyardPanel.renameVignobleQuestion"), v.getName()));
+			CountryVignoble countryVignoble = (CountryVignoble) comboVignoble.getSelectedItem();
+			Country country = (Country) comboCountry.getSelectedItem();
+			if (countryVignoble != null) {
+				String val = JOptionPane.showInputDialog(MessageFormat.format(Program.getLabel("VineyardPanel.renameVignobleQuestion"), countryVignoble.getName()));
 				if (val != null && !val.isEmpty()) {
-					CountryVignobles.renameVignoble(v, val);
+					CountryVignobles.renameVignoble(country, countryVignoble, val);
 					comboVignoble.updateUI();
 					Program.setModified();
 				}
@@ -281,20 +285,24 @@ public class VineyardPanel extends JPanel implements ITabListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Country country = (Country)comboCountry.getSelectedItem();
-			if(country == null)
+			Country country = (Country) comboCountry.getSelectedItem();
+			if(country == null) {
 				return;
-			Vignobles vi = CountryVignobles.getVignobles(country);
-			if(vi == null)
+			}
+			Vignobles vignoble = CountryVignobles.getVignobles(country);
+			if(vignoble == null) {
 				return;
-			for(CountryVignoble v : vi.getVignoble()) {
-    			if(CountryVignobles.isVignobleUsed(country, v)) {
+			}
+			CountryVignobles.addVignobleFromBottles();
+			for(CountryVignoble countryVignoble : vignoble.getVignoble()) {
+    			if(CountryVignobles.isVignobleUsed(country, countryVignoble)) {
     				JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteCountry"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
     				return;
     			}
 			}
-			if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delCountryQuestion"), country), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION))
+			if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delCountryQuestion"), country), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 				return;
+			}
 			CountryVignobles.deleteCountry(country);
 			comboCountry.removeItem(country);
 			Program.setModified();

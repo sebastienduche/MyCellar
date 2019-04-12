@@ -39,8 +39,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.0
- * @since 03/03/19
+ * @version 2.1
+ * @since 12/04/19
  */
 public class RangementUtils {
 
@@ -287,7 +287,6 @@ public class RangementUtils {
 			Debug( "write_XLS: ERROR: with file " + file );
 			return false;
 		}
-		boolean resul = true;
 
 		EnumMap<MyCellarFields, Boolean> mapCle = new EnumMap<>(MyCellarFields.class);
 
@@ -323,7 +322,8 @@ public class RangementUtils {
 			}
 		}
 
-		try (var workbook = new SXSSFWorkbook(100)) { //Création du fichier
+		try (var workbook = new SXSSFWorkbook(100);
+				var output = new FileOutputStream(new File(file))) { //Création du fichier
 			String sheet_title = title;
 			if (sheet_title.isEmpty()) {
 				sheet_title = Program.getLabel("Infos389");
@@ -410,16 +410,16 @@ public class RangementUtils {
 			for (i=0; i<columnsCount; i++) {
 				sheet.autoSizeColumn(i);
 			}
-			workbook.write(new FileOutputStream(new File(file)));
+			workbook.write(output);
 			if (progressBar != null) {
 				progressBar.setValue(progressBar.getMaximum());
 			}
 		}
 		catch (IOException ex) {
 			Program.showException(ex, false);
-			resul = false;
+			return false;
 		}
-		return resul;
+		return true;
 	}
 
 	/**
@@ -432,7 +432,8 @@ public class RangementUtils {
 	static void write_XLSTab(final String file, final List<Rangement> _oPlace) {
 
 		Debug("write_XLSTab: writing file: " + file);
-		try (var workbook = new SXSSFWorkbook(100)) { //Création du fichier
+		try (var workbook = new SXSSFWorkbook(100);
+				 var output = new FileOutputStream(new File(file))) { //Création du fichier
 			String title = Program.getCaveConfigString(MyCellarSettings.XLS_TAB_TITLE, "");
 			boolean onePlacePerSheet = Program.getCaveConfigBool(MyCellarSettings.ONE_PER_SHEET_XLS, false);
 
@@ -534,7 +535,7 @@ public class RangementUtils {
 				}
 			}
 
-			workbook.write(new FileOutputStream(new File(file)));
+			workbook.write(output);
 		}	catch (IOException ex) {
 			Program.showException(ex, false);
 		}

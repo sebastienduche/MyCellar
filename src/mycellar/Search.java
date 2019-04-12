@@ -45,8 +45,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.6
- * @since 10/04/19
+ * @version 19.7
+ * @since 12/04/19
  */
 public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable {
 
@@ -58,9 +58,9 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 	private final MyCellarButton suppr = new MyCellarButton(MyCellarImage.DELETE);
 	private final MyCellarButton export = new MyCellarButton(MyCellarImage.EXPORT);
 	private final MyCellarButton modif = new MyCellarButton(MyCellarImage.WINE);
+	private final MyCellarComboBox<Rangement> lieu = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> num_lieu = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> column = new MyCellarComboBox<>();
-	private final MyCellarComboBox<String> lieu = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> line = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> year = new MyCellarComboBox<>();
 	private final MyCellarLabel label3 = new MyCellarLabel();
@@ -107,9 +107,9 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 
 		//Ajout des lieux
 		lieu.removeAllItems();
-		lieu.addItem("");
+		lieu.addItem(Program.EMPTY_PLACE);
 		for (Rangement r : Program.getCave()) {
-			lieu.addItem(r.getNom());
+			lieu.addItem(r);
 		}
 		export.setText(Program.getLabel("Infos120")); //"Exporter le résultat");
 		export.setMnemonic(EXPORT);
@@ -161,7 +161,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 
 		num_lieu.addItemListener(this::num_lieu_itemStateChanged);
 		TableColumnModel tcm = table.getColumnModel();
-		TableColumn tc1[] = new TableColumn[5];
+		TableColumn[] tc1 = new TableColumn[5];
 		for (int w = 0; w < 5; w++) {
 			tc1[w] = tcm.getColumn(w);
 			tc1[w].setCellRenderer(new ToolTipRenderer());
@@ -311,10 +311,11 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 					RangementUtils.putTabStock();
 					Program.updateManagePlacePanel();
 
-					if(listToSupp.size() == 1)
+					if(listToSupp.size() == 1) {
 						resul_txt.setText(Program.getLabel("Infos397"));
-					else
+					} else {
 						resul_txt.setText(MessageFormat.format(Program.getLabel("Infos398"), listToSupp.size()));
+					}
 				}
 			}
 			Debug("Deleting Done");
@@ -343,11 +344,10 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 
 			resul_txt.setText("");
 			int nb_ligne = 0;
-			Rangement r;
-			if (num_select > 0 && (r = Program.getCave(lieu_select - 1)) != null) {
-				nb_ligne = r.getNbLignes(num_select - 1);
-			}
-			else {
+			Rangement rangement = lieu.getItemAt(lieu_select);
+			if (num_select > 0) {
+				nb_ligne = rangement.getNbLignes(num_select - 1);
+			}	else {
 				multi.setText(label_empl);
 			}
 			line.removeAllItems();
@@ -359,8 +359,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			}
 			if (num_select > 0) {
 				multi.setText(label_num_empl);
-			}
-			else {
+			}	else {
 				multi.setText(label_empl);
 			}
 		}
@@ -379,6 +378,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		try {
 			Debug("Lieu_itemStateChanging...");
 			int lieu_select = lieu.getSelectedIndex();
+			Rangement rangement = lieu.getItemAt(lieu_select);
 
 			multi.setEnabled(false);
 			num_lieu.setEnabled(lieu_select > 0);
@@ -388,19 +388,15 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 
 			multi.setSelected(false);
 			resul_txt.setText("");
-			Rangement r;
-			if (lieu_select > 0 && (r = Program.getCave(lieu_select - 1)) != null) {
+			if (lieu_select > 0) {
 				multi.setEnabled(true);
-				int nb_emplacement = r.getNbEmplacements();
-				boolean isCaisse = r.isCaisse();
-				int start_caisse = r.getStartCaisse();
 
-				if (isCaisse) { //Type caisse
+				if (rangement.isCaisse()) {
 					multi.setEnabled(false);
 					num_lieu.removeAllItems();
 					num_lieu.addItem(Program.getLabel("Infos223")); //"Toutes");
-					for (int i = 0; i < nb_emplacement; i++) {
-						num_lieu.addItem(Integer.toString(i + start_caisse));
+					for (int i = 0; i < rangement.getNbEmplacements(); i++) {
+						num_lieu.addItem(Integer.toString(i + rangement.getStartCaisse()));
 
 					}
 					line.setVisible(false);
@@ -414,7 +410,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 					line.removeAllItems();
 					column.removeAllItems();
 					num_lieu.addItem("");
-					for (int i = 1; i <= nb_emplacement; i++) {
+					for (int i = 1; i <= rangement.getNbEmplacements(); i++) {
 						num_lieu.addItem(Integer.toString(i));
 					}
 					line.setVisible(true);
@@ -444,17 +440,16 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			int num_select = line.getSelectedIndex();
 			int emplacement = num_lieu.getSelectedIndex();
 			int lieu_select = lieu.getSelectedIndex();
+			Rangement rangement = lieu.getItemAt(lieu_select);
 
 			multi.setSelected(false);
 			column.setEnabled(num_select > 0);
 
 			resul_txt.setText("");
-			Rangement r;
-			if (num_select > 0 && (r = Program.getCave(lieu_select - 1)) != null) {
-				nb_col = r.getNbColonnes(emplacement - 1, num_select - 1);
+			if (num_select > 0) {
+				nb_col = rangement.getNbColonnes(emplacement - 1, num_select - 1);
 				multi.setText(label_ligne);
-			}
-			else {
+			}	else {
 				multi.setText(label_num_empl);
 			}
 			column.removeAllItems();
@@ -515,6 +510,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		selectall.setSelected(false);
 		resul_txt.setText("");
 		MODEL.removeAll();
+		Debug("emptyRows End");
 	}
 
 	//	Fonction de recherche full text avec carat!res spéciaux (*, ?)
@@ -707,10 +703,11 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		boolean already_found = false;
 		if(bouteilles != null) {
 			for(Bouteille b : bouteilles) {
-				if(!MODEL.hasBottle(b))
+				if(!MODEL.hasBottle(b)) {
 					MODEL.addBouteille(b);
-				else
+				} else {
 					already_found = true;
+				}
 			}
 		}
 		Debug(MODEL.getRowCount()+" bottle(s) found");
@@ -743,8 +740,8 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			return false;
 		}
 		
-		Rangement rangement = Program.getCave(lieu_select - 1); 
-		if (rangement != null && rangement.isCaisse()) {
+		Rangement rangement = lieu.getItemAt(lieu_select);
+		if (rangement.isCaisse()) {
 			//Pour la caisse
 			int lieu_num = num_lieu.getSelectedIndex();
 			resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
@@ -806,10 +803,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 					Erreur.showSimpleErreur(Program.getError("Error058")); //"Veuillez sélectionner un numéro de colonne!";
 					return false;
 				}
-				Bouteille b = null;
-				if (rangement != null) {
-					b = rangement.getBouteille(lieu_num - 1, ligne - 1, colonne - 1);
-				}
+				Bouteille b = rangement.getBouteille(lieu_num - 1, ligne - 1, colonne - 1);
 				resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
 
 				if (b == null) {
@@ -867,38 +861,36 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 				}
 				resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
 				//Recherche toutes les bouteilles d'un emplacement
-				if (rangement != null) {
-					int nb_empl = rangement.getNbEmplacements();
-					int i_deb = 1;
-					int j_deb = 1;
-					int i_fin = nb_empl;
-					int j_fin = 0;
-					if (multi.getText().compareTo(label_num_empl) == 0) {
-						i_deb = lieu_num;
-						i_fin = lieu_num;
+				int nb_empl = rangement.getNbEmplacements();
+				int i_deb = 1;
+				int j_deb = 1;
+				int i_fin = nb_empl;
+				int j_fin = 0;
+				if (multi.getText().compareTo(label_num_empl) == 0) {
+					i_deb = lieu_num;
+					i_fin = lieu_num;
+				}
+				if (multi.getText().compareTo(label_ligne) == 0) {
+					i_deb = lieu_num;
+					i_fin = lieu_num;
+					j_deb = ligne;
+					j_fin = ligne;
+				}
+				for (int i = i_deb; i <= i_fin; i++) {
+					int nb_lignes = rangement.getNbLignes(i - 1);
+					if (multi.getText().compareTo(label_ligne) != 0) {
+						j_fin = nb_lignes;
 					}
-					if (multi.getText().compareTo(label_ligne) == 0) {
-						i_deb = lieu_num;
-						i_fin = lieu_num;
-						j_deb = ligne;
-						j_fin = ligne;
-					}
-					for (int i = i_deb; i <= i_fin; i++) {
-						int nb_lignes = rangement.getNbLignes(i - 1);
-						if (multi.getText().compareTo(label_ligne) != 0) {
-							j_fin = nb_lignes;
-						}
-						for (int j = j_deb; j <= j_fin; j++) {
-							int nb_colonnes = rangement.getNbColonnes(i - 1, j - 1);
-							for (int k = 1; k <= nb_colonnes; k++) {
-								Bouteille b = rangement.getBouteille(i - 1, j - 1, k - 1);
-								if (b != null) {
-									//Ajout de la bouteille dans la liste si elle n'y ait pas déjà
-									if (!MODEL.hasBottle(b)) {
-										MODEL.addBouteille(b);
-									} else {
-										already_found = true;
-									}
+					for (int j = j_deb; j <= j_fin; j++) {
+						int nb_colonnes = rangement.getNbColonnes(i - 1, j - 1);
+						for (int k = 1; k <= nb_colonnes; k++) {
+							Bouteille b = rangement.getBouteille(i - 1, j - 1, k - 1);
+							if (b != null) {
+								//Ajout de la bouteille dans la liste si elle n'y ait pas déjà
+								if (!MODEL.hasBottle(b)) {
+									MODEL.addBouteille(b);
+								} else {
+									already_found = true;
 								}
 							}
 						}
@@ -944,10 +936,8 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			if(b == null) {
 				continue;
 			}
-			String lelieu = b.getEmplacement();
-
 			//Récupération du numéro du lieu
-			Rangement r = Program.getCave(lelieu);
+			Rangement r = b.getRangement();
 
 			if (annee == b.getAnneeInt() && nb_year != item_select && r != null) {
 				if(!MODEL.hasBottle(b)) {
@@ -1081,8 +1071,8 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		}
 		private void fillYear(){
 			year.removeAllItems();
-			int an_array[] = Program.getAnnees();
-			String mes_string[] = new String[an_array.length];
+			int[] an_array = Program.getAnnees();
+			String[] mes_string = new String[an_array.length];
 			for (int y = 0; y < an_array.length; y++) {
 				mes_string[y] = Integer.toString(an_array[y]);
 			}
@@ -1127,13 +1117,14 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 	}
 
 	public void updateView() {
-		if(!updateView)
+		if(!updateView) {
 			return;
+		}
 		updateView = false;
 		lieu.removeAllItems();
-		lieu.addItem("");
+		lieu.addItem(Program.EMPTY_PLACE);
 		for (Rangement r : Program.getCave()) {
-			lieu.addItem(r.getNom());
+			lieu.addItem(r);
 		}
 	}
 

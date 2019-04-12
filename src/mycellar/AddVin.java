@@ -38,8 +38,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 24.3
- * @since 26/01/19
+ * @version 24.4
+ * @since 12/04/19
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable {
 
@@ -323,9 +323,8 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 	public void setBottles(LinkedList<Bouteille> bottles) {
 		Debug("Set Bottles...");
 		if(m_lv == null) {
-				m_lv = new ListVin(bottles);
+				m_lv = new ListVin(bottles, this);
 				add(m_lv, BorderLayout.WEST);
-				m_lv.setAddVin(this);
 		}	else {
 			m_lv.setBottles(bottles);
 		}

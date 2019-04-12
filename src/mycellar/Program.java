@@ -79,8 +79,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 20.4
- * @since 10/04/19
+ * @version 20.5
+ * @since 12/04/19
  */
 
 public class Program {
@@ -871,6 +871,7 @@ public class Program {
 	 * @param name String
 	 * @return int
 	 */
+	@Deprecated
 	static int getCaveIndex(final String name) {
 		if (name == null || name.trim().isEmpty()) {
 			return -1;

@@ -42,7 +42,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -65,6 +64,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.OptionalDouble;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
@@ -79,17 +79,15 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 20.2
- * @since 08/03/19
+ * @version 20.5
+ * @since 12/04/19
  */
 
 public class Program {
 
 	// Manage cave config
-	private static final Properties PROPERTIES_CAVE = new Properties();
 	private static MyLinkedHashMap configCave = null;
 	// Manage global config
-	private static final Properties PROPERTIES_GLOBAL = new Properties();
 	private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
 
 	private static String archive = null;
@@ -133,6 +131,7 @@ public class Program {
 
 	static final Rangement DEFAULT_PLACE = new Rangement("");
 	static final Rangement EMPTY_PLACE = new Rangement("");
+	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
 
 	private static String m_sWorkDir = null;
 	private static String m_sGlobalDir = null;
@@ -149,6 +148,7 @@ public class Program {
 	private static final String TYPES_XML = "Types.xml";
 	private static final String BOUTEILLES_XML = "Bouteilles.xml";
 	private static final String INTERNAL_VERSION = "2.5";
+	static final String EXTENSION = ".sinfo";
 
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;
@@ -158,7 +158,7 @@ public class Program {
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
 	private static int nextID = -1;
-  public static final MyClipBoard CLIPBOARD = new MyClipBoard();
+	public static final MyClipBoard CLIPBOARD = new MyClipBoard();
 
 	/**
 	 * init
@@ -178,17 +178,17 @@ public class Program {
 				fileIni.createNewFile();
 			} else {
 				FileInputStream inputStream = new FileInputStream(fileIni);
-				PROPERTIES_GLOBAL.load(inputStream);
+				Properties properties = new Properties();
+				properties.load(inputStream);
 				inputStream.close();
+				//Initialisation de la Map contenant config
+				Enumeration<Object> keys = properties.keys();
+				while (keys.hasMoreElements()) {
+					String key = keys.nextElement().toString();
+					putGlobalConfigString(key, properties.getProperty(key));
+				}
 			}
 			LanguageFileLoader.getInstance().loadLanguageFiles('U');
-
-			//Initialisation de la Map contenant config
-			Enumeration<Object> keys = PROPERTIES_GLOBAL.keys();
-			while (keys.hasMoreElements()) {
-				String key = keys.nextElement().toString();
-				putGlobalConfigString(key, PROPERTIES_GLOBAL.getProperty(key));
-			}
 		}
 		catch (Exception e) {
 			showException(e);
@@ -207,14 +207,6 @@ public class Program {
 				f.createNewFile();
 			}
 			LanguageFileLoader.getInstance().loadLanguageFiles('U');
-
-			//Initialisation de la Map contenant config
-			Debug("Program: Initialize ConfigGlobal");
-			Enumeration<Object> keys = PROPERTIES_GLOBAL.keys();
-			while (keys.hasMoreElements()) {
-				String key = keys.nextElement().toString();
-				putGlobalConfigString(key, PROPERTIES_GLOBAL.getProperty(key));
-			}
 
 			if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
 				putGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
@@ -254,18 +246,20 @@ public class Program {
 			f.createNewFile();
 		} else {
 			FileInputStream inputStream = new FileInputStream(inputPropCave);
-			PROPERTIES_CAVE.load(inputStream);
+			Properties properties = new Properties();
+			properties.load(inputStream);
 			inputStream.close();
+			Enumeration<Object> keys = properties.keys();
+			while (keys.hasMoreElements()) {
+				String key = keys.nextElement().toString();
+				putCaveConfigString(key, properties.getProperty(key));
+			}
+			if (properties.isEmpty()) {
+				// Initialisation de la devise pour les nouveaux fichiers
+				putCaveConfigString(MyCellarSettings.DEVISE, "€");
+			}
 		}
-		Enumeration<Object> keys = PROPERTIES_CAVE.keys();
-		while (keys.hasMoreElements()) {
-			String key = keys.nextElement().toString();
-			putCaveConfigString(key, PROPERTIES_CAVE.getProperty(key));
-		}
-		if (PROPERTIES_CAVE.isEmpty()) {
-			// Initialisation de la devise pour les nouveaux fichiers
-			putCaveConfigString(MyCellarSettings.DEVISE, "€");
-		}
+
 	}
 
 	/**
@@ -352,7 +346,7 @@ public class Program {
 	 * @param e Exception
 	 */
 	public static void showException(Throwable e, boolean _bShowWindowErrorAndExit) {
-		StackTraceElement st[] =  e.getStackTrace();
+		StackTraceElement[] st =  e.getStackTrace();
 		String error = "";
 		for (StackTraceElement s : st) {
 			error = error.concat("\n" + s);
@@ -607,16 +601,16 @@ public class Program {
 	/**
 	 * zipDir: Compression de répertoire
 	 *
-	 * @param archive String
+	 * @param fileName String
 	 * @return boolean
 	 */
-	private static void zipDir(String archive) {
+	private static void zipDir(String fileName) {
 
-		Debug("Program: zipDir: Zipping in "+m_sWorkDir+" with archive "+archive);
+		Debug("Program: zipDir: Zipping in "+m_sWorkDir+" with archive "+fileName);
 		int BUFFER = 2048;
 		try {
 			// création d'un flux d'écriture sur fichier
-			var dest = new FileOutputStream(archive);
+			var dest = new FileOutputStream(fileName);
 			// calcul du checksum : Adler32 (plus rapide) ou CRC32
 			var checksum = new CheckedOutputStream(dest, new Adler32());
 			// création d'un buffer d'écriture
@@ -627,14 +621,13 @@ public class Program {
 				out.setMethod(ZipOutputStream.DEFLATED);
 				// spécifier la qualité de la compression 0..9
 				out.setLevel(Deflater.BEST_COMPRESSION);
-				// buffer temporaire des données à écrire dans le flux de sortie
-				byte data[] = new byte[BUFFER];
+
 				// extraction de la liste des fichiers du répertoire courant
 				File f = new File(m_sWorkDir);
-				String files[] = f.list();
-				LinkedList<String> zipEntryList = new LinkedList<>();
+				String[] files = f.list();
 				// pour chacun des fichiers de la liste
 				if (files != null) {
+					LinkedList<String> zipEntryList = new LinkedList<>();
 					for (String file : files) {
 						f = new File(getWorkDir(true) + file);
 						if (f.isDirectory() || file.compareTo(UNTITLED1_SINFO) == 0)
@@ -654,6 +647,8 @@ public class Program {
 							out.putNextEntry(entry);
 							// écriture du fichier par paquet de BUFFER octets dans le flux d'écriture
 							int count;
+							// buffer temporaire des données à écrire dans le flux de sortie
+							byte[] data = new byte[BUFFER];
 							while ((count = bufferedInputStream.read(data, 0, BUFFER)) != -1) {
 								out.write(data, 0, count);
 							}
@@ -700,8 +695,6 @@ public class Program {
 				// parcours des entrées de l'archive
 				while ((entry = zipInputStream.getNextEntry()) != null) {
 					// affichage du nom de l'entrée
-					int count;
-					byte data[] = new byte[BUFFER];
 					// création fichier
 					f = new File(dest_dir);
 					boolean ok = true;
@@ -714,6 +707,8 @@ public class Program {
 						// affectation buffer de sortie
 						try (var bufferOutputStream = new BufferedOutputStream(fileOutputStream, BUFFER)) {
 							// écriture sur disque
+							int count;
+							byte[] data = new byte[BUFFER];
 							while ((count = zipInputStream.read(data, 0, BUFFER)) != -1) {
 								bufferOutputStream.write(data, 0, count);
 							}
@@ -753,7 +748,7 @@ public class Program {
 	static void saveAs(String sFilename) {
 		Debug("Program: Saving all files...");
 
-		saveProperties();
+		saveCaveProperties();
 		saveGlobalProperties();
 
 		if(isListCaveModified()) {
@@ -844,7 +839,7 @@ public class Program {
 	 * @return Rangement
 	 */
 	public static Rangement getCave(int _nCave) {
-		if ( _nCave >= RANGEMENTS_LIST.size() || _nCave < 0 ) {
+		if (_nCave >= RANGEMENTS_LIST.size() || _nCave < 0) {
 			return null;
 		}
 		return RANGEMENTS_LIST.get(_nCave);
@@ -876,6 +871,7 @@ public class Program {
 	 * @param name String
 	 * @return int
 	 */
+	@Deprecated
 	static int getCaveIndex(final String name) {
 		if (name == null || name.trim().isEmpty()) {
 			return -1;
@@ -1089,27 +1085,7 @@ public class Program {
 	}
 
 	/**
-	 * Fonction pour sauvegarder les propriétés globales du programme
-	 */
-	static void saveGlobalProperties() {
-		Debug("Program: Saving Global Properties");
-		Object[] val = CONFIG_GLOBAL.keySet().toArray();
-		for (Object o : val) {
-			String key = o.toString();
-			PROPERTIES_GLOBAL.put(key, CONFIG_GLOBAL.getString(key));
-		}
-		try(var outputStream = new FileOutputStream(getGlobalConfigFilePath())) {
-			PROPERTIES_GLOBAL.store(outputStream, null);
-		} catch (IOException e) {
-			showException(e);
-		}
-		Debug("Program: Saving Global Properties OK");
-	}
-
-
-	/**
 	 * closeFile: Fermeture du fichier.
-	 *
 	 */
 	static void closeFile() {
 
@@ -1163,7 +1139,7 @@ public class Program {
 					MyXmlDom.writeMyCellarXml(getCave(), "");
 				}
 
-				saveProperties();
+				saveCaveProperties();
 
 				if (!getCave().isEmpty()) {
 					getStorage().saveHistory();
@@ -1223,6 +1199,14 @@ public class Program {
 		showfile = null;
 		showtrash = null;
 		vignobles = null;
+		options = null;
+		parametres = null;
+		importer = null;
+		history = null;
+		managePlace = null;
+		chooseCell = null;
+		deletePlace = null;
+		stat = null;
 	}
 
 	private static void deleteTempFiles() {
@@ -1241,19 +1225,31 @@ public class Program {
 	}
 
 	/**
-	 * Save Properties
+	 * Save Properties for current cave
 	 */
-	private static void saveProperties() {
-
+	private static void saveCaveProperties() {
 		MyCellarBottleContenance.save();
+		saveProperties(configCave, getConfigFilePath());
+	}
 
-		Object[] val = configCave.keySet().toArray();
+	/**
+	 * Save global properties
+	 */
+	static void saveGlobalProperties() {
+		Debug("Program: Saving Global Properties");
+		saveProperties(CONFIG_GLOBAL, getGlobalConfigFilePath());
+		Debug("Program: Saving Global Properties OK");
+	}
+
+	private static void saveProperties(final MyLinkedHashMap map, final String file) {
+		Object[] val = map.keySet().toArray();
+		final Properties properties = new Properties();
 		for (Object o : val) {
 			String key = o.toString();
-			PROPERTIES_CAVE.put(key, configCave.getString(key));
+			properties.put(key, map.getString(key));
 		}
-		try (var outputStream = new FileOutputStream(getConfigFilePath())){
-			PROPERTIES_CAVE.store(outputStream, null);
+		try (var outputStream = new FileOutputStream(file)){
+			properties.store(outputStream, null);
 		} catch (IOException e) {
 			showException(e);
 		}
@@ -1341,7 +1337,7 @@ public class Program {
 		String tmp = sFilename;
 		tmp = tmp.replaceAll("\\\\", "/");
 		int ind1 = tmp.lastIndexOf("/");
-		int ind2 = tmp.indexOf(".sinfo");
+		int ind2 = tmp.indexOf(EXTENSION);
 		if (ind1 != -1 && ind2 != -1) {
 			tmp = tmp.substring(ind1 + 1, ind2);
 		}
@@ -1405,7 +1401,7 @@ public class Program {
 		}
 	}
 
-	public static void putCaveConfigInt(String _sKey, Integer _sValue) {
+	static void putCaveConfigInt(String _sKey, Integer _sValue) {
 		configCave.put(_sKey, _sValue);
 	}
 
@@ -1560,9 +1556,10 @@ public class Program {
 	public static int findTab(ImageIcon image) {
 		for(int i = 0; i< TABBED_PANE.getTabCount(); i++){
 			try{
-				if(TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image))
+				if(TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image)) {
 					return i;
-			}catch(ArrayIndexOutOfBoundsException e){}
+				}
+			}catch(Exception e){}
 		}
 		return -1;
 	}
@@ -1689,17 +1686,17 @@ public class Program {
 		File f = new File(sDir);
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime monthsAgo = LocalDateTime.now().minusMonths(2);
-		String files[] = f.list((dir, name) -> {
+		String[] files = f.list((dir, name) -> {
+			String date = "";
 				if (name.startsWith("Debug-") && name.endsWith(".log")) {
-					String date = name.substring(6, name.indexOf(".log"));
-					String fields[] = date.split("-");
-					LocalDateTime dateTime = now.withDayOfMonth(Integer.parseInt(fields[0])).withMonth(Integer.parseInt(fields[1])).withYear(Integer.parseInt(fields[2]));
-					return dateTime.isBefore(monthsAgo);
+					date = name.substring(6, name.indexOf(".log"));
 				}
 				if (name.startsWith("DebugFtp-") && name.endsWith(".log")) {
-					String date = name.substring(9, name.indexOf(".log"));
-					String fields[] = date.split("-");
-					LocalDateTime dateTime = now.withDayOfMonth(Integer.parseInt(fields[0])).withMonth(Integer.parseInt(fields[1])).withYear(Integer.parseInt(fields[2]));
+					date = name.substring(9, name.indexOf(".log"));
+				}
+				if (!date.isEmpty()) {
+					String[] fields = date.split("-");
+					LocalDateTime dateTime = now.withMonth(Integer.parseInt(fields[1])).withDayOfMonth(Integer.parseInt(fields[0])).withYear(Integer.parseInt(fields[2]));
 					return dateTime.isBefore(monthsAgo);
 				}
 				return false;
@@ -1763,16 +1760,15 @@ public class Program {
 	  return className.cast(TABBED_PANE.getSelectedComponent());
   }
 
-	public static String readFirstLineText(File f) {
+	public static String readFirstLineText(final File f) {
 		if(f == null) {
 			return "";
 		}
 		if(!f.getName().toLowerCase().endsWith(".txt")) {
 			return "";
 		}
-		try (var buffer = new BufferedReader(new FileReader(f))){
-			String line = buffer.readLine();
-			buffer.close();
+		try (var scanner = new Scanner(f)){
+			String line = scanner.nextLine();
 			return line.trim();
 		} catch (IOException e) {
 			showException(e, true);

@@ -8,9 +8,6 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.MyCellarBottleContenance;
-import mycellar.countries.Country;
-import mycellar.vignobles.Appelation;
-import mycellar.vignobles.CountryVignoble;
 import mycellar.vignobles.CountryVignobles;
 import net.miginfocom.swing.MigLayout;
 
@@ -21,7 +18,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -38,13 +34,12 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.8
- * @since 06/01/19
+ * @version 5.0
+ * @since 10/04/19
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
-	private final ManageBottle instance;
-	
+
 
 	/**
 	 * ManageBottle: Constructeur pour la modification de vins
@@ -53,7 +48,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 */
 	public ManageBottle(Bouteille bottle) {
 		super();
-		instance = this;
 		isEditionMode = true;
 		m_add = new MyCellarButton(MyCellarImage.SAVE);
 		
@@ -338,7 +332,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_maturity.setText(bottle.getMaturity());
 			m_parker.setText(bottle.getParker());
 			m_colorList.setSelectedItem(BottleColor.getColor(bottle.getColor()));
-			initializeVignobles(bottle);
+			panelVignobles.initializeVignobles(bottle);
 
 			selectPlace(bottle);
 			m_end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
@@ -387,32 +381,11 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		if (m_colorList.getSelectedItem() != null) {
 			color = ((BottleColor)m_colorList.getSelectedItem()).name();
 		}
-		Object o = comboCountry.getEditor().getItem();
-		String country;
-		if(o instanceof Country) {
-			country = ((Country) o).getId();
-		}
-		else {
-			country = o.toString();
-		}
-		o = comboVignoble.getEditor().getItem();
-		String vignoble;
-		if(o instanceof CountryVignoble) {
-			vignoble = ((CountryVignoble) o).getName();
-		}
-		else {
-			vignoble = o.toString();
-		}
-		o = comboAppelationAOC.getEditor().getItem();
-		String aoc;
-		if(o instanceof Appelation) {
-			aoc = ((Appelation) o).getAOC();
-		}
-		else {
-			aoc = o.toString();
-		}
-		o = comboAppelationIGP.getEditor().getItem();
-		String igp = o.toString();
+		String country = panelVignobles.getCountry();
+		String vignoble = panelVignobles.getVignoble();
+		String aoc = panelVignobles.getAOC();
+		String igp = panelVignobles.getIGP();
+
 		//Vérification du nom ...
 		if (nom.isEmpty()) {
 			Debug("ERROR: Wrong Name");
@@ -499,8 +472,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_laBouteille.setType(demie);
 			m_laBouteille.setVignoble(new Vignoble(country, vignoble, aoc, igp, null));
 			CountryVignobles.addVignobleFromBottle(m_laBouteille);
+			CountryVignobles.setRebuildNeeded();
 			if(isCaisse) {
-				lieu_num=Integer.parseInt(m_num_lieu.getItemAt(lieu_num));
+				lieu_num = Integer.parseInt(m_num_lieu.getItemAt(lieu_num));
 				m_laBouteille.setNumLieu(lieu_num);
 				m_laBouteille.setLigne(0);
 				m_laBouteille.setColonne(0);
@@ -528,11 +502,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 			Rangement rangement = m_laBouteille.getRangement();
 			if(!oldRangement.isCaisse()){
-				Bouteille tmp = new Bouteille();
-				tmp.setNumLieu(oldNum);
-				tmp.setLigne(oldLine);
-				tmp.setColonne(oldColumn);
-				oldRangement.clearStock(tmp);
+				oldRangement.clearStock(new Bouteille.BouteilleBuilder("").numPlace(oldNum).line(oldLine).column(oldColumn).build());
 			}
 
 			RangementUtils.putTabStock();
@@ -563,10 +533,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_line.setModified(false);
 		m_column.setModified(false);
 		m_half.setModified(false);
-		comboCountry.setModified(false);
-		comboVignoble.setModified(false);
-		comboAppelationAOC.setModified(false);
-		comboAppelationIGP.setModified(false);
+		panelVignobles.setModified(false);
 		Start.setPaneModified(false);
 	}
 
@@ -604,10 +571,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		modified |= m_line.isModified();
 		modified |= m_column.isModified();
 		modified |= m_half.isModified();
-		modified |= comboCountry.isModified();
-		modified |= comboVignoble.isModified();
-		modified |= comboAppelationAOC.isModified();
-		modified |= comboAppelationIGP.isModified();
+		modified |= panelVignobles.isModified();
 
 		if(modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, Program.getError("Error148") + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 			Debug("Don't Quit.");
@@ -626,19 +590,9 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_lieu.setSelectedIndex(0);
 		m_labelExist.setText("");
 		m_nb_bottle.setValue(1);
-		comboCountry.setSelectedIndex(0);
+		panelVignobles.resetCountrySelected();
 		return true;
 	}
-
-	/**
-	 * aide_actionPerformed: Aide
-	 *
-	 * @param e ActionEvent
-	 */
-	private void aide_actionPerformed(ActionEvent e) {
-		Program.getAide();
-	}
-
 
 	/**
 	 * Debug
@@ -677,7 +631,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			add(new PanelName(),"growx,wrap");
 			add(new PanelPlace(),"growx,wrap");
 			add(new PanelAttribute(),"growx,split 2");
-			add(panelVignobles = new PanelVignobles(instance,true),"growx, wrap");
+			add(panelVignobles = new PanelVignobles(true, true),"growx, wrap");
 			add(m_labelComment,"growx, wrap");
 			add(m_js_comment,"grow, wrap");
 			add(m_end, "center, hidemode 3, wrap");

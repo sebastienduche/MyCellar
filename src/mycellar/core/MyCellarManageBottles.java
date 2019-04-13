@@ -9,14 +9,7 @@ import mycellar.MyXmlDom;
 import mycellar.Program;
 import mycellar.Rangement;
 import mycellar.RangementUtils;
-import mycellar.Vignoble;
-import mycellar.actions.ManageVineyardAction;
 import mycellar.core.datas.MyCellarBottleContenance;
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
-import mycellar.vignobles.CountryVignoble;
-import mycellar.vignobles.CountryVignobles;
-import mycellar.vignobles.Vignobles;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
@@ -38,8 +31,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.1
- * @since 12/01/19
+ * @version 2.2
+ * @since 26/01/19
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -81,20 +74,11 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final JModifyComboBox<BottleColor> m_colorList = new JModifyComboBox<>();
 	protected JModifyTextArea m_comment = new JModifyTextArea();
 	protected final JScrollPane m_js_comment = new JScrollPane(m_comment);
-	protected JCompletionComboBox comboCountry;
-	protected JCompletionComboBox comboVignoble;
-	protected JCompletionComboBox comboAppelationAOC;
-	protected JCompletionComboBox comboAppelationIGP;
 	protected final MyCellarButton m_manageContenance = new MyCellarButton();
 	protected final MyCellarSpinner m_nb_bottle = new MyCellarSpinner();
 	private boolean updateView = false;
 	protected MyCellarButton m_chooseCell;
 	protected PanelVignobles panelVignobles;
-	final MyCellarLabel labelCountry = new MyCellarLabel();
-	final MyCellarLabel labelVignoble = new MyCellarLabel();
-	final MyCellarLabel labelAppelationAOC = new MyCellarLabel();
-	final MyCellarLabel labelAppelationIGP = new MyCellarLabel();
-	final MyCellarButton manageVineyardButton = new MyCellarButton(new ManageVineyardAction());
 	protected Bouteille m_laBouteille = null;
 	protected char AJOUTER = Program.getLabel("AJOUTER").charAt(0);
 	protected char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
@@ -118,10 +102,6 @@ public abstract class MyCellarManageBottles extends JPanel {
 		m_labelMaturity.setText(Program.getLabel("Infos391")); // Date de conso
 		m_labelParker.setText(Program.getLabel("Infos392")); // Notation Parker
 		m_labelColor.setText(Program.getLabel("AddVin.Color"));
-		labelCountry.setText(Program.getLabel("Main.Country"));
-		labelVignoble.setText(Program.getLabel("Main.Vignoble"));
-		labelAppelationAOC.setText(Program.getLabel("Main.AppelationAOC"));
-		labelAppelationIGP.setText(Program.getLabel("Main.AppelationIGP"));
 		m_manageContenance.setText(Program.getLabel("Infos400"));
 		m_preview.setMnemonic(PREVIEW);
 		m_preview.setText(Program.getLabel("Infos138")); //"Visualiser le rangement");
@@ -259,10 +239,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		m_noYear.setEnabled(enable);
 		m_nb_bottle.setEnabled(enable && !m_bmulti && !isEditionMode);
 		m_manageContenance.setEnabled(enable);
-		comboCountry.setEnabled(enable);
-		comboVignoble.setEnabled(enable);
-		comboAppelationAOC.setEnabled(enable);
-		comboAppelationIGP.setEnabled(enable);
+		panelVignobles.enableAll(enable);
 		if(m_chooseCell != null) {
 			m_chooseCell.setEnabled(enable && Program.hasComplexPlace());
 		}
@@ -291,43 +268,6 @@ public abstract class MyCellarManageBottles extends JPanel {
 			}
 		}
 		return annee;
-	}
-	
-	protected void initializeVignobles(final Bouteille bottle) {
-		Vignoble vignoble = bottle.getVignoble();
-		if(vignoble == null) {
-			return;
-		}
-
-		Vignobles vignobles = null;
-		if(Program.france.getId().equals(vignoble.country)) {
-			comboCountry.setSelectedItem(Program.france);
-			vignobles = CountryVignobles.getVignobles(Program.france);
-		} else if("fr".equals(vignoble.country)) {
-			comboCountry.setSelectedItem(Program.france);
-			vignobles = CountryVignobles.getVignobles(Program.france);
-		} else if(vignoble.country != null) {
-			Country c = Countries.findByIdOrLabel(vignoble.country);
-			if(c != null) {
-				comboCountry.setSelectedItem(c);
-				vignobles = CountryVignobles.getVignobles(c);
-			}
-		}
-
-		if(vignobles != null) {
-			CountryVignoble countryVignoble = vignobles.findVignoble(vignoble);
-    		if(countryVignoble != null) {
-					comboVignoble.setSelectedItem(countryVignoble);
-				}
-		}
-
-		if(vignoble.aoc != null) {
-			comboAppelationAOC.setSelectedItem(vignoble.aoc);
-		}
-
-		if(vignoble.igp != null) {
-			comboAppelationIGP.setSelectedItem(vignoble.igp);
-		}
 	}
 
 	/**

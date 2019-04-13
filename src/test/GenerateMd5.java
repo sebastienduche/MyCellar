@@ -1,6 +1,10 @@
 package test;
 
+import mycellar.core.MyCellarVersion;
+
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.security.MessageDigest;
 
@@ -11,7 +15,17 @@ public class GenerateMd5 {
 	 */
 	public static void main(String[] args) {
 		try {
-			System.out.println(getMD5Checksum("./Build/MyCellar.jar"));
+			System.out.println("Building Build/MyCellarVersion.txt");
+			String checksum = getMD5Checksum("./Build/MyCellar.jar");
+			FileWriter writer = new FileWriter(new File("./Build/MyCellarVersion.txt"));
+			writer.write(MyCellarVersion.VERSION+"\n");
+			writer.write(MyCellarVersion.NUMERIC_VERSION+"\n");
+			writer.write("MyCellar.jar@"+checksum+"\n");
+			writer.write("Finish.html");
+			writer.flush();
+			writer.close();
+			System.out.println("Checksum");
+			System.out.println(checksum);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -37,12 +51,12 @@ public class GenerateMd5 {
 
 	// see this How-to for a faster way to convert
 	// a byte array to a HEX string
-	public static String getMD5Checksum(String filename) throws Exception {
+	private static String getMD5Checksum(String filename) throws Exception {
 		byte[] b = createChecksum(filename);
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < b.length; i++) {
-			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+			result.append(Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1));
 		}
-		return result;
+		return result.toString();
 	}
 }

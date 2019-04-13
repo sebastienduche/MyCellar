@@ -34,8 +34,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 20/03/18
+ * @version 0.4
+ * @since 08/03/19
  */
 public class PanelDAndD extends JPanel {
 
@@ -246,7 +246,7 @@ class PanelLabelTransferHandler extends TransferHandler {
 			l.setLabel(src.draggingLabel.getLabel());
 			l.setAsKeyword(!target.isTarget());
 			if(target.isTarget()) {
-				l.setValue(src.draggingLabel.getValue());
+				l.setValue(src.draggingLabel.getValueSearch());
 				l.setAsKeyword(false);
 				SwingUtilities.invokeLater(() -> {
 					l.askForValue();

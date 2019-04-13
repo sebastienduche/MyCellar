@@ -12,8 +12,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 25.8
- * @since 31/12/18
+ * @version 26.0
+ * @since 10/04/19
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -23,7 +23,7 @@ public class Rangement implements Comparable<Rangement> {
 	private int stock_nblign; //Nombre max de lignes pour tous les emplacements
 	private boolean caisse; //Indique si le rangement est une caisse
 	private int start_caisse; //Indique l'indice de démarrage des caisses
-	private Bouteille stockage[][][]; //Stocke les vins du rangement: stockage[nb_emplacements][stock_nblign][stock_nbcol]
+	private Bouteille[][][] stockage; //Stocke les vins du rangement: stockage[nb_emplacements][stock_nblign][stock_nbcol]
 	private boolean limite; //Indique si une limite de caisse est activée
 	private List<Part> listePartie = null;
 	static final long serialVersionUID = 5012007;
@@ -68,7 +68,7 @@ public class Rangement implements Comparable<Rangement> {
 			stock_nbcol = limite_caisse;
 		} else {
 			stock_nbcol = -1;
-        }
+		}
 		
 		stock_nblign = 1;
 		caisse = true;
@@ -268,9 +268,8 @@ public class Rangement implements Comparable<Rangement> {
 			return -1;
 		}
 		int resul = 0;
-		int nb_colonne;
 		try {
-			nb_colonne = this.getNbColonnes(emplacement, ligne);
+			int nb_colonne = getNbColonnes(emplacement, ligne);
 			for (int i = 0; i < nb_colonne; i++) {
 				if (stockage[emplacement][ligne][i] != null) {
 					resul += 1;
@@ -353,7 +352,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param emplacement int: numéro d'emplacement (start_caisse...n)
 	 * @return int
 	 */
-	public int getNbCaseUseCaisse(int emplacement) {
+	private int getNbCaseUseCaisse(int emplacement) {
 
 		if(!isCaisse()) {
 			Debug("ERROR: Function getNbCaseUseCaisse can't be called on a complex place!");
@@ -597,7 +596,7 @@ public class Rangement implements Comparable<Rangement> {
 			.append(getStartCaisse())
 			.append("\"");
 			if (isLimited()) {
-				sText.append(" NbLimit=\"").append(this.getNbColonnesStock()).append("\">");
+				sText.append(" NbLimit=\"").append(getNbColonnesStock()).append("\">");
 			}
 			else {
 				sText.append(" NbLimit=\"0\">");
@@ -733,11 +732,11 @@ public class Rangement implements Comparable<Rangement> {
 		}
 	}
 	/**
-	 * Rangement: Constructeur de création d'un rangement
+	 * Initialise les parties
 	 *
 	 * @param listPart LinkedList<Part>: liste des parties
 	 */
-	public void setPlace(List<Part> listPart) {
+	private void setPlace(List<Part> listPart) {
 
 		stock_nbcol = 0;
 		stock_nblign = 0;
@@ -779,6 +778,12 @@ public class Rangement implements Comparable<Rangement> {
 			}
 		}
 		return listPart;
+	}
+
+	void updatePlace(List<Part> listPart) {
+		setPlace(listPart);
+		Program.setListCaveModified();
+		Program.setModified();
 	}
 
 	@Override
@@ -825,7 +830,7 @@ public class Rangement implements Comparable<Rangement> {
 			return false;
 		if(!isCaisse()) {
 			for(int i=0; i<getNbEmplacements(); i++) {
-				int lignes = getNbLignes(i); 
+				int lignes = getNbLignes(i);
 				if(lignes != r.getNbLignes(i))
 					return false;
 				for(int j=0; j<lignes; j++) {
@@ -836,6 +841,5 @@ public class Rangement implements Comparable<Rangement> {
 		}
 		return true;
 	}
-
 }
 

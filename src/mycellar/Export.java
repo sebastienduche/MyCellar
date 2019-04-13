@@ -42,8 +42,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 8.4
- * @since 28/12/18
+ * @version 8.5
+ * @since 12/04/19
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -81,7 +81,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	/**
 	 * Export: Constructeur pour l'export.
 	 *
-	 * @param bottles LinkedList<Bouteille>: Contenu de la cave.
+	 * @param bottles LinkedList<Bouteille>: Bottles to export
 	 */
 	public Export(List<Bouteille> bottles) {
 		this.bottles = bottles;
@@ -476,7 +476,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	 */
 public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 		try {
-			PDFTools pdf = new PDFTools();
+			final PDFTools pdf = new PDFTools();
 			pdf.addTitle(20);
 			PDFPageProperties pageProperties = new PDFPageProperties(30, 20, 20, 20, PDType1Font.HELVETICA, pdf.getProperties().getFontSize());
 			pageProperties.setStartTop(50);
@@ -498,12 +498,11 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 	private void param_actionPerformed() {
 		String titre = Program.getLabel("Infos310");
 		String message2 = Program.getLabel("Infos309");
-		String titre_properties[] = new String[5];
-		titre_properties[0] = Program.getLabel("Infos210");
-		titre_properties[1] = Program.getLabel("Infos211");
-		titre_properties[2] = Program.getLabel("Infos212");
-		titre_properties[3] = Program.getLabel("Infos233");
-		titre_properties[4] = Program.getLabel("Infos248");
+		String[] titre_properties = {Program.getLabel("Infos210"),
+			Program.getLabel("Infos211"),
+			Program.getLabel("Infos212"),
+			Program.getLabel("Infos233"),
+			Program.getLabel("Infos248")};
 		String[] default_value = {"false", "false", "false", "false", "false"};
 		String[] key_properties = {MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT,
 			MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT};

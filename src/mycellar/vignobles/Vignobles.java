@@ -135,14 +135,10 @@ public class Vignobles
 				}
 				if (country == null) {
 					country = new Country(name, name);
-					if (!label.isEmpty()) {
-						country.setName(label);
-					}
 					Countries.add(country);
-				} else {
-					if (!label.isEmpty()) {
-						country.setName(label);
-					}
+				}
+				if (!label.isEmpty()) {
+					country.setName(label);
 				}
 				if (!map.containsKey(country)) {
 					map.put(country, load(f));

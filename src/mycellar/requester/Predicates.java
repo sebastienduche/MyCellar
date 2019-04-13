@@ -4,7 +4,10 @@ import mycellar.BottleColor;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.Rangement;
+import mycellar.Vignoble;
+import mycellar.core.PanelVignobles;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.requester.ui.ValueSearch;
 import mycellar.vignobles.Appelation;
 import net.miginfocom.swing.MigLayout;
 
@@ -20,13 +23,13 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 20/04/18
+ * @version 0.8
+ * @since 08/03/19
  */
 
 public class Predicates {
 
-	public static final IPredicate<Bouteille> color = new IPredicate<Bouteille>() {
+	public static final IPredicate<Bouteille> color = new IPredicate<>() {
 
 		@Override
 		public boolean apply(Bouteille bottle) {
@@ -54,7 +57,12 @@ public class Predicates {
 		}
 
 		@Override
-		public Object askforValue() {
+		public String getLabelForValue(Object value) {
+			return value == null ? "" : value.toString();
+		}
+
+		@Override
+		public ValueSearch askforValue() {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
 			JComboBox<BottleColor> liste = new JComboBox<>();
@@ -67,17 +75,17 @@ public class Predicates {
 			JOptionPane.showMessageDialog(null, panel,
 			        "",
 			        JOptionPane.PLAIN_MESSAGE);
-			return liste.getSelectedItem();
+			return new ValueSearch(liste.getSelectedItem());
 		}
 	};
 
-	public static final IPredicate<Bouteille> name = new IPredicate<Bouteille>() {
+	public static final IPredicate<Bouteille> name = new IPredicate<>() {
 		
 		private int type = -1;
 
 		@Override
-		public boolean apply(Bouteille type) {
-			return apply(type, "", -1);
+		public boolean apply(Bouteille bouteille) {
+			return apply(bouteille, "", -1);
 		}
 
 		@Override
@@ -109,21 +117,27 @@ public class Predicates {
 		public int getType() {
 			return type;
 		}
+
+		@Override
+		public String getLabelForValue(Object value) {
+			return value == null ? "" : value.toString();
+		}
 		
 		@Override
 		public String getName() {
 			String label = Program.getLabel("Predicates.Name");
-			if(type == 0)
+			if(type == 0) {
 				label += Program.getLabel("Predicates.StartWith");
-			else if(type == 1)
+			} else if(type == 1) {
 				label += Program.getLabel("Predicates.EndWith");
-			else if(type == 2)
+			} else if(type == 2) {
 				label += Program.getLabel("Predicates.Contains");
+			}
 			return label;
 		}
 		
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			type = 0;
 			JPanel panel = new JPanel();
 			JComboBox<String> combo = new JComboBox<>();
@@ -134,23 +148,20 @@ public class Predicates {
 					type = combo.getSelectedIndex();
 				});
 			panel.add(combo);
-			return JOptionPane.showInputDialog(panel);
+			return new ValueSearch(JOptionPane.showInputDialog(panel));
 		}
 	};
 	
-	public static IPredicate<Bouteille> year = new IPredicate<Bouteille>() {
+	public static IPredicate<Bouteille> year = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Bouteille type) {
-			return apply(type, "", -1);
+		public boolean apply(Bouteille bouteille) {
+			return apply(bouteille, "", -1);
 		}
 
 		@Override
 		public boolean apply(Bouteille bouteille, Object compare, int type) {
-			if(compare instanceof String) {
-				return bouteille.getAnnee() != null && bouteille.getAnnee().equals(compare);
-			}
-			return false;
+			return (compare instanceof String) && bouteille.getAnnee() != null && bouteille.getAnnee().equals(compare);
 		}
 		
 		@Override
@@ -167,26 +178,28 @@ public class Predicates {
 		public int getType() {
 			return 0;
 		}
+
+		@Override
+		public String getLabelForValue(Object value) {
+			return value == null ? "" : value.toString();
+		}
 		
 		@Override
-		public Object askforValue() {
-			return JOptionPane.showInputDialog(getName());
+		public ValueSearch askforValue() {
+			return new ValueSearch(JOptionPane.showInputDialog(getName()));
 		}
 	};
 	
-	public static IPredicate<Bouteille> rangement = new IPredicate<Bouteille>() {
+	public static IPredicate<Bouteille> rangement = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Bouteille type) {
-			return apply(type, "", -1);
+		public boolean apply(Bouteille bouteille) {
+			return apply(bouteille, "", -1);
 		}
 
 		@Override
 		public boolean apply(Bouteille bouteille, Object compare, int type) {
-			if(compare instanceof String) {
-				return bouteille.getEmplacement() != null && bouteille.getEmplacement().equals(compare);
-			}
-			return false;
+			return (compare instanceof String) && bouteille.getEmplacement() != null && bouteille.getEmplacement().equals(compare);
 		}
 		
 		@Override
@@ -203,9 +216,14 @@ public class Predicates {
 		public int getType() {
 			return 0;
 		}
+
+		@Override
+		public String getLabelForValue(Object value) {
+			return value == null ? "" : value.toString();
+		}
 		
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
 			JComboBox<Rangement> liste = new JComboBox<>();
@@ -217,12 +235,12 @@ public class Predicates {
 			JOptionPane.showMessageDialog(null, panel,
 			        "",
 			        JOptionPane.PLAIN_MESSAGE);
-			return ((Rangement)liste.getSelectedItem()).getNom();
+			return new ValueSearch(((Rangement)liste.getSelectedItem()).getNom());
 		}
 	};
 	
 	
-	public static IPredicate<Bouteille> capacity = new IPredicate<Bouteille>() {
+	public static IPredicate<Bouteille> capacity = new IPredicate<>() {
 
 		@Override
 		public boolean apply(Bouteille bottle) {
@@ -250,7 +268,12 @@ public class Predicates {
 		}
 
 		@Override
-		public Object askforValue() {
+		public String getLabelForValue(Object value) {
+			return value == null ? "" : value.toString();
+		}
+
+		@Override
+		public ValueSearch askforValue() {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
 			JComboBox<String> liste = new JComboBox<>();
@@ -262,11 +285,11 @@ public class Predicates {
 			JOptionPane.showMessageDialog(null, panel,
 			        "",
 			        JOptionPane.PLAIN_MESSAGE);
-			return liste.getSelectedItem();
+			return new ValueSearch(liste.getSelectedItem());
 		}
 	};
 
-	public static IPredicate<Bouteille> price = new IPredicate<Bouteille>() {
+	public static IPredicate<Bouteille> price = new IPredicate<>() {
 
 		private int type = -1;
 
@@ -298,10 +321,11 @@ public class Predicates {
 		@Override
 		public String getName() {
 			String label = Program.getLabel("Predicates.Price");
-			if(type == 0)
+			if(type == 0) {
 				label += Program.getLabel("Predicates.Smaller");
-			else if(type == 1)
+			} else if(type == 1) {
 				label += Program.getLabel("Predicates.Greater");
+			}
 			return label;
 		}
 
@@ -311,29 +335,92 @@ public class Predicates {
 		}
 
 		@Override
-		public Object askforValue() {
+		public String getLabelForValue(Object value) {
+			return value == null ? "" : value.toString();
+		}
+
+		@Override
+		public ValueSearch askforValue() {
 			type = 0;
 			JPanel panel = new JPanel();
 			JComboBox<String> combo = new JComboBox<>();
 			combo.addItem(Program.getLabel("Predicates.Smaller"));
 			combo.addItem(Program.getLabel("Predicates.Greater"));
-			combo.addItemListener((e) -> {
-				type = combo.getSelectedIndex();
-			});
+			combo.addItemListener((e) -> type = combo.getSelectedIndex());
 			panel.add(combo);
-			return JOptionPane.showInputDialog(panel);
+			return new ValueSearch(JOptionPane.showInputDialog(panel));
 		}
 	};
 
-	public static final IPredicate<Appelation> AND = new IPredicate<Appelation>() {
+	public static IPredicate<Bouteille> country = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Appelation type) {
+		public boolean apply(Bouteille bouteille) {
+			return apply(bouteille, "", -1);
+		}
+
+		@Override
+		public boolean apply(Bouteille bouteille, Object compare, int type) {
+			if (!(compare instanceof Vignoble) || bouteille.getVignoble() == null) {
+				return false;
+			}
+			Vignoble compareVignoble = (Vignoble) compare;
+			final Vignoble vignoble = bouteille.getVignoble();
+			if (!compareVignoble.getCountry().equals(vignoble.getCountry())) {
+				return false;
+			}
+			if (!compareVignoble.getName().isEmpty() && !compareVignoble.getName().equals(vignoble.getName())) {
+				return false;
+			}
+			if (!compareVignoble.getAOC().isEmpty() && !compareVignoble.getAOC().equals(vignoble.getAOC())) {
+				return false;
+			}
+			if (!compareVignoble.getIGP().isEmpty() && !compareVignoble.getIGP().equals(vignoble.getIGP())) {
+				return false;
+			}
 			return true;
 		}
 
 		@Override
-		public boolean apply(Appelation predicate, Object compare, int type) {
+		public boolean isValueRequired() {
+			return true;
+		}
+
+		@Override
+		public String getName() {
+			return Program.getLabel("Predicates.Vignoble");
+		}
+
+		@Override
+		public int getType() {
+			return 0;
+		}
+
+		@Override
+		public String getLabelForValue(Object value) {
+			return value == null ? "" : ((Vignoble)value).getSearchLabel();
+		}
+
+		@Override
+		public ValueSearch askforValue() {
+			PanelVignobles panelVignobles = new PanelVignobles(true, false);
+			JOptionPane.showMessageDialog(null, panelVignobles,
+					"",
+					JOptionPane.PLAIN_MESSAGE);
+			final Vignoble selectedVignoble = panelVignobles.getSelectedVignoble();
+			return new ValueSearch(selectedVignoble, selectedVignoble.getSearchLabel());
+		}
+	};
+
+	public static final IPredicate<Appelation> AND = new IPredicate<>() {
+
+		@Override
+		public boolean apply(Appelation appelation) {
+			return true;
+		}
+
+		@Override
+		public boolean apply(Appelation appelation, Object compare, int type) {
 			return true;
 		}
 
@@ -353,20 +440,25 @@ public class Predicates {
 		}
 
 		@Override
-		public Object askforValue() {
+		public String getLabelForValue(Object value) {
+			return value == null ? "" : value.toString();
+		}
+
+		@Override
+		public ValueSearch askforValue() {
 			return null;
 		}
 	};
 
-	public static final IPredicate<Appelation> OR = new IPredicate<Appelation>() {
+	public static final IPredicate<Appelation> OR = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Appelation type) {
+		public boolean apply(Appelation appelation) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(Appelation predicate, Object compare, int type) {
+		public boolean apply(Appelation appelation, Object compare, int type) {
 			return true;
 		}
 		
@@ -384,22 +476,27 @@ public class Predicates {
 		public int getType() {
 			return 0;
 		}
+
+		@Override
+		public String getLabelForValue(Object value) {
+			return value == null ? "" : value.toString();
+		}
 		
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			return null;
 		}
 	};
 	
-	public static IPredicate<Appelation> openParenthesis = new IPredicate<Appelation>() {
+	public static IPredicate<Appelation> openParenthesis = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Appelation type) {
+		public boolean apply(Appelation appelation) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(Appelation predicate, Object compare, int type) {
+		public boolean apply(Appelation appelation, Object compare, int type) {
 			return true;
 		}
 		
@@ -417,22 +514,27 @@ public class Predicates {
 		public int getType() {
 			return 0;
 		}
+
+		@Override
+		public String getLabelForValue(Object value) {
+			return value == null ? "" : value.toString();
+		}
 		
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			return null;
 		}
 	};
 	
-	public static IPredicate<Appelation> closeParenthesis = new IPredicate<Appelation>() {
+	public static IPredicate<Appelation> closeParenthesis = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Appelation type) {
+		public boolean apply(Appelation appelation) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(Appelation predicate, Object compare, int type) {
+		public boolean apply(Appelation appelation, Object compare, int type) {
 			return true;
 		}
 		
@@ -450,29 +552,28 @@ public class Predicates {
 		public int getType() {
 			return 0;
 		}
+
+		@Override
+		public String getLabelForValue(Object value) {
+			return value == null ? "" : value.toString();
+		}
 		
 		@Override
-		public Object askforValue() {
+		public ValueSearch askforValue() {
 			return null;
 		}
 	};
 	
-	public static boolean isFieldPredicate(IPredicate<?> predicate) {
-		if(predicate == null)
-			return false;
-		return !isKeywordPredicate(predicate) && !isParenthesisPredicate(predicate);
+	static boolean isFieldPredicate(IPredicate<?> predicate) {
+		return (predicate != null) && !isKeywordPredicate(predicate) && !isParenthesisPredicate(predicate);
 	}
 	
-	public static boolean isKeywordPredicate(IPredicate<?> predicate) {
-		if(predicate == null)
-			return false;
-		return (predicate.equals(AND) || predicate.equals(OR));
+	static boolean isKeywordPredicate(IPredicate<?> predicate) {
+		return (predicate != null) && (predicate.equals(AND) || predicate.equals(OR));
 	}
 	
-	public static boolean isParenthesisPredicate(IPredicate<?> predicate) {
-		if(predicate == null)
-			return false;
-		return (predicate.equals(openParenthesis) || predicate.equals(closeParenthesis));
+	static boolean isParenthesisPredicate(IPredicate<?> predicate) {
+		return (predicate != null) && (predicate.equals(openParenthesis) || predicate.equals(closeParenthesis));
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -487,7 +588,7 @@ public class Predicates {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> IPredicate<T> getPredicate() {
+	<T> IPredicate<T> getPredicate() {
 		return predicate;
 	}
 

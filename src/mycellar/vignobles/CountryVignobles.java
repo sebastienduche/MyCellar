@@ -18,35 +18,40 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 08/03/19
+ * @version 1.8
+ * @since 10/04/19
  */
 
 public final class CountryVignobles {
 
 	private final Map<Country, Vignobles> map = new HashMap<>();
-	private final Map<CountryVignoble, Vignoble> mapVignobles = new HashMap<>();
+	private final Map<String, Vignoble> mapVignobles = new HashMap<>();
 	private final List<Vignoble> usedVignoblesList = new LinkedList<>();
 	private final List<String> usedAppellationsList = new LinkedList<>();
 	private static final CountryVignobles INSTANCE = new CountryVignobles();
-	
+	private static boolean rebuildNeeded = false;
+
 	private CountryVignobles() {
 		map.put(Countries.find("FRA"), Vignobles.loadFrance());
 		map.put(Countries.find("ITA"), Vignobles.loadItalie());
+		setRebuildNeeded();
 	}
 	
 	public static void init() {
 		INSTANCE.map.clear();
 		INSTANCE.map.put(Countries.find("FRA"), Vignobles.loadFrance());
 		INSTANCE.map.put(Countries.find("ITA"), Vignobles.loadItalie());
+		setRebuildNeeded();
 	}
 	
 	public static void close() {
 		INSTANCE.map.clear();
+		setRebuildNeeded();
 	}
 	
 	public static void load() {
 		Vignobles.loadAllCountries(INSTANCE.map);
+		setRebuildNeeded();
 	}
 	
 	public static Vignobles getVignobles(Country country) {
@@ -100,19 +105,24 @@ public final class CountryVignobles {
 	}
 
 	public static void addVignobleFromBottles() {
+		if (!rebuildNeeded) {
+			return;
+		}
 		Debug("addVignobleFromBottles...");
 		INSTANCE.usedVignoblesList.clear();
-		LinkedList<Bouteille> list = Program.getStorage().getAllList();
-		for (Bouteille b : list) {
+		INSTANCE.mapVignobles.clear();
+		INSTANCE.usedAppellationsList.clear();
+		for (Bouteille b : Program.getStorage().getAllList()) {
 			Vignoble vignoble = b.getVignoble();
 			if(vignoble != null && !INSTANCE.usedVignoblesList.contains(vignoble)) {
 				INSTANCE.usedVignoblesList.add(vignoble);
 			}
 			createVignobleInMap(vignoble);
 		}
-		for(Vignoble v : INSTANCE.usedVignoblesList) {
+		for (Vignoble v : INSTANCE.usedVignoblesList) {
 			addVignoble(v);	
 		}
+		rebuildNeeded = false;
 		Debug("addVignobleFromBottles... End");
 	}
 	
@@ -123,26 +133,26 @@ public final class CountryVignobles {
 		if(vignoble.getCountry().isEmpty()) {
 			return;
 		}
-		Country c = Countries.find(vignoble.getCountry());
-		if(c == null) {
+		Country country = Countries.find(vignoble.getCountry());
+		if(country == null) {
 			return;
 		}
-		Vignobles country = getVignobles(c);
-		if(country == null) {
-			createCountry(c);
-			country = getVignobles(c);
+		Vignobles vignobles = getVignobles(country);
+		if(vignobles == null) {
+			createCountry(country);
+			vignobles = getVignobles(country);
 		}
-		CountryVignoble vigne = country.findVignobleWithAppelation(vignoble);
+		CountryVignoble countryVignoble = vignobles.findVignobleWithAppelation(vignoble);
 		boolean found = true;
-		if(vigne == null) {
-			vigne = country.findVignoble(vignoble);
+		if(countryVignoble == null) {
+			countryVignoble = vignobles.findVignoble(vignoble);
 			found = false;
-			if(vigne == null) {
-				country.addVignoble(vignoble);
+			if(countryVignoble == null) {
+				vignobles.addVignoble(vignoble);
 			}
-			vigne = country.findVignoble(vignoble);
+			countryVignoble = vignobles.findVignoble(vignoble);
 		}
-		if(vigne == null) {
+		if(countryVignoble == null) {
 			Debug("ERROR: Unable to find vignoble "+vignoble);
 			return;
 		}
@@ -152,28 +162,28 @@ public final class CountryVignobles {
 			appelation.setAOP(vignoble.getAOP());
 			appelation.setIGP(vignoble.getIGP());
 			if(!appelation.isEmpty()) {
-				vigne.add(appelation);
-				vigne = country.findVignobleWithAppelation(vignoble);
+				countryVignoble.add(appelation);
+				countryVignoble = vignobles.findVignobleWithAppelation(vignoble);
 			}
 		}
-		if(vigne == null && !appelation.isEmpty()) {
+		if(countryVignoble == null && !appelation.isEmpty()) {
 			Debug("ERROR: Unable to find created vignoble "+vignoble);
 			return;
 		}
 		
-		final Appelation appellation = country.findAppelation(vignoble);
+		final Appelation appellation = vignobles.findAppelation(vignoble);
 		String val = vignoble.toString();
 		if(appellation != null && !appellation.isEmpty() && !INSTANCE.usedAppellationsList.contains(val)) {
 			INSTANCE.usedAppellationsList.add(val);
 		}
 
-		if (!vigne.isEmpty()) {
-			INSTANCE.mapVignobles.put(vigne, vignoble);
+		if (countryVignoble != null && !countryVignoble.isEmpty()) {
+			INSTANCE.mapVignobles.put(new CountryVignobleID(country, countryVignoble).getId(), vignoble);
 		}
 	}
 
 	public static boolean isVignobleUsed(Country country, CountryVignoble vignoble) {
-		Vignoble vigne = INSTANCE.mapVignobles.get(vignoble);
+		Vignoble vigne = INSTANCE.mapVignobles.get(new CountryVignobleID(country, vignoble).getId());
 		if(vigne == null || !vigne.getCountry().equalsIgnoreCase(country.getId())) {
 			return false;
 		}
@@ -182,12 +192,13 @@ public final class CountryVignobles {
 	
 	public static boolean isAppellationUsed(Country country, CountryVignoble vignoble, Appelation appellation) {
 		var aop = appellation.getAOP() != null ? appellation.getAOP() : appellation.getAOC();
-		Vignoble vignoble1 = new Vignoble(country.getId(), vignoble.getName(), appellation.getAOC(), appellation.getIGP(), aop);
+		var igp = appellation.getIGP() != null ? appellation.getIGP() : "";
+		Vignoble vignoble1 = new Vignoble(country.getId(), vignoble.getName(), appellation.getAOC(), igp, aop);
 		return INSTANCE.usedAppellationsList.contains(vignoble1.toString());
 	}
 	
-	public static void renameVignoble(final CountryVignoble vignoble, final String name) {
-		Vignoble vigne = INSTANCE.mapVignobles.get(vignoble);
+	public static void renameVignoble(final Country country, final CountryVignoble vignoble, final String name) {
+		Vignoble vigne = INSTANCE.mapVignobles.get(new CountryVignobleID(country, vignoble).getId());
 		vignoble.setName(name);
 		if(vigne == null) {
 			Debug("ERROR: Unable to rename vignoble: "+vignoble.getName());
@@ -203,12 +214,12 @@ public final class CountryVignobles {
 			}
 		}
 		vigne.setName(name);
-		// Reload
+		setRebuildNeeded();
 		addVignobleFromBottles();
 	}
 	
-	public static void renameAOC(final CountryVignoble vignoble, final Appelation appelation, final String name) {
-		Vignoble vigne = INSTANCE.mapVignobles.get(vignoble);
+	public static void renameAOC(final Country country, final CountryVignoble vignoble, final Appelation appelation, final String name) {
+		Vignoble vigne = INSTANCE.mapVignobles.get(new CountryVignobleID(country, vignoble).getId());
 		if(vigne == null) {
 			Debug("ERROR: Unable to rename AOC: "+vignoble.getName());
 			appelation.setAOC(name);
@@ -227,12 +238,12 @@ public final class CountryVignobles {
 		}
 		vigne.setAOC(name);
 		appelation.setAOC(name);
-		// Reload
+		setRebuildNeeded();
 		addVignobleFromBottles();
 	}
 	
-	public static void renameIGP(final CountryVignoble vignoble, final Appelation appelation, final String name) {
-		Vignoble vigne = INSTANCE.mapVignobles.get(vignoble);
+	public static void renameIGP(final Country country, final CountryVignoble vignoble, final Appelation appelation, final String name) {
+		Vignoble vigne = INSTANCE.mapVignobles.get(new CountryVignobleID(country, vignoble).getId());
 		if(vigne == null) {
 			appelation.setIGP(name);
 			Debug("ERROR: Unable to rename IGP: "+vignoble.getName());
@@ -251,54 +262,54 @@ public final class CountryVignobles {
 		}
 		vigne.setIGP(name);
 		appelation.setIGP(name);
-		// Reload
+		setRebuildNeeded();
 		addVignobleFromBottles();
 	}
 
 	/**
-	 * @param v
+	 * @param vignoble1
 	 * @return
 	 */
-	private static void addVignoble(final Vignoble v) {
-		if(v == null || v.getCountry() == null || v.getCountry().isEmpty()) {
+	private static void addVignoble(final Vignoble vignoble1) {
+		if(vignoble1 == null || vignoble1.getCountry() == null || vignoble1.getCountry().isEmpty()) {
 			return;
 		}
-		Country c = Countries.findByIdOrLabel(v.getCountry());
-		if(c != null) {
-			if(getVignobles(c) == null) {
-				createCountry(c);
+		Country country = Countries.findByIdOrLabel(vignoble1.getCountry());
+		if(country != null) {
+			if(getVignobles(country) == null) {
+				createCountry(country);
 			}
-			CountryVignoble cv = getVignobles(c).findVignobleWithAppelation(v);
-			if(cv == null) {
-				CountryVignoble vignoble = getVignobles(c).findVignoble(v);
-				if(vignoble != null && !v.isAppellationEmpty()) {
+			CountryVignoble countryVignoble = getVignobles(country).findVignobleWithAppelation(vignoble1);
+			if(countryVignoble == null) {
+				CountryVignoble vignoble = getVignobles(country).findVignoble(vignoble1);
+				if(vignoble != null && !vignoble1.isAppellationEmpty()) {
 					Appelation appelation = new Appelation();
-					appelation.setAOC(v.getAOC());
-					appelation.setAOP(v.getAOP());
-					appelation.setIGP(v.getIGP());
+					appelation.setAOC(vignoble1.getAOC());
+					appelation.setAOP(vignoble1.getAOP());
+					appelation.setIGP(vignoble1.getIGP());
 					vignoble.add(appelation);
 				}
 				else if(vignoble == null) {
-					getVignobles(c).addVignoble(v);
+					getVignobles(country).addVignoble(vignoble1);
 				}
 			} else {
-				Appelation ap = getVignobles(c).findAppelation(v);
-				v.setValues(ap);
-				INSTANCE.mapVignobles.put(cv, v);
+				Appelation ap = getVignobles(country).findAppelation(vignoble1);
+				vignoble1.setValues(ap);
+				INSTANCE.mapVignobles.put(new CountryVignobleID(country, countryVignoble).getId(), vignoble1);
 			}
 		}	else {
-			c = new Country(v.getCountry());
-			generateCountryId(c);
+			country = new Country(vignoble1.getCountry());
+			generateCountryId(country);
 			Vignobles vignobles = new Vignobles();
 			vignobles.setVignoble(new ArrayList<>());
-			vignobles.addVignoble(v);
-			Countries.add(c);
-			INSTANCE.map.put(c, vignobles);
+			vignobles.addVignoble(vignoble1);
+			Countries.add(country);
+			INSTANCE.map.put(country, vignobles);
 		}
-		if(!INSTANCE.usedVignoblesList.contains(v)) {
-			INSTANCE.usedVignoblesList.add(v);
+		if(!INSTANCE.usedVignoblesList.contains(vignoble1)) {
+			INSTANCE.usedVignoblesList.add(vignoble1);
 		}
-		String val = v.toString();
+		String val = vignoble1.toString();
 		if(!INSTANCE.usedAppellationsList.contains(val)) {
 			INSTANCE.usedAppellationsList.add(val);
 		}
@@ -312,20 +323,24 @@ public final class CountryVignobles {
 	
 	public static void save() {
 		Debug("Saving...");
-		for( Country c : INSTANCE.map.keySet()){
+		for (Country c : INSTANCE.map.keySet()){
 			Vignobles.save(c, INSTANCE.map.get(c));
 		}
 		Debug("Saved");
 	}
 	
 	public static boolean hasCountryByName(final Country country) {
-		for( Country c : INSTANCE.map.keySet()){
+		for (Country c : INSTANCE.map.keySet()){
 			if(c.getName().equalsIgnoreCase(country.getName()))
 				return true;
 		}
 		return false;
 	}
-	
+
+	public static void setRebuildNeeded() {
+		rebuildNeeded = true;
+	}
+
 	/**
 	 * Debug
 	 *

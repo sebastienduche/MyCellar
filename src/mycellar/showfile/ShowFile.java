@@ -59,8 +59,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 5.9
- * @since 14/01/19
+ * @version 6.0
+ * @since 03/03/19
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -144,6 +144,9 @@ public class ShowFile extends JPanel implements ITabListener {
 
         @Override
         Object getDisplayValue(Bouteille b) {
+        	if(b.isInTemporaryStock()) {
+        		return Program.getLabel("Bouteille.TemporaryPlace");
+        	}
           return Program.convertStringFromHTMLString(b.getEmplacement());
         }
       });
@@ -989,7 +992,10 @@ public class ShowFile extends JPanel implements ITabListener {
 
   private class CreatePlacesAction extends AbstractAction {
 
-    private CreatePlacesAction() {
+	private static final long serialVersionUID = -3652414491735669984L;
+
+
+	private CreatePlacesAction() {
       super(Program.getLabel("Infos267"));
     }
 

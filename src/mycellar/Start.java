@@ -45,8 +45,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 25.3
- * @since 11/01/19
+ * @version 25.4
+ * @since 10/04/19
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -170,12 +170,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				// ______________________
 				String tmp = parameters.substring(0, nIndex);
 				// Récupération du nom du fichier
-				if (tmp.contains(".sinfo")) {
+				if (tmp.contains(Program.EXTENSION)) {
 					Program.setArchive(tmp.trim());
 				} else {
 					// On prend tous ce qu'il y a après -opts
 					tmp = parameters.substring(nIndex);
-					if (tmp.contains(".sinfo")) {
+					if (tmp.contains(Program.EXTENSION)) {
 						// Si l'on trouve l'extension du fichier
 						// on cherche le caractère ' ' qui va séparer les
 						// options du nom du fichier
@@ -452,6 +452,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 					postOpenFile();
 				} else {
 					enableAll(false);
+					Program.updateAllPanels();
+					updateMainPanel();
+					setTitle(Program.getLabel("Infos001"));
 				}
 		}catch(Exception e) {
 			Program.showException(e);
@@ -648,10 +651,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		// paramètres...
 		jMenuCheckUpdate.setText(Program.getLabel("Infos379")); // Vérifier
 		// mise à jour...
-		jMenuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "")) + ".sinfo");
-		jMenuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "")) + ".sinfo");
-		jMenuReopen3.setText("3 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "")) + ".sinfo");
-		jMenuReopen4.setText("4 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, "")) + ".sinfo");
+		jMenuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "")) + Program.EXTENSION);
+		jMenuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "")) + Program.EXTENSION);
+		jMenuReopen3.setText("3 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "")) + Program.EXTENSION);
+		jMenuReopen4.setText("4 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, "")) + Program.EXTENSION);
 		jMenuReopen1.setAccelerator(KeyStroke.getKeyStroke('1', InputEvent.CTRL_DOWN_MASK));
 		jMenuReopen2.setAccelerator(KeyStroke.getKeyStroke('2', InputEvent.CTRL_DOWN_MASK));
 		jMenuReopen3.setAccelerator(KeyStroke.getKeyStroke('3', InputEvent.CTRL_DOWN_MASK));
@@ -1065,12 +1068,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				Program.saveAs(fic);
 				setCursor(Cursor.getDefaultCursor());
-//				fic = fic.replaceAll("\\\\", "/");
-//				int ind1 = fic.lastIndexOf("/");
-//				int ind2 = fic.indexOf(".sinfo");
-//				if(ind1 != -1 && ind2 != -1) {
-//					fic = fic.substring(ind1 + 1, ind2);
-//				}
 				setTitle(Program.getLabel("Infos001") + " - [" + Program.getShortFilename(fic) + "]");
 				setEnabled(true);
 			}
@@ -1084,13 +1081,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	private void menuSetConfig_actionPerformed() {
 		try {
-			String type_objet[] = { "JTextField" };
+			String[] type_objet = { "JTextField" };
 			String titre = Program.getLabel("Infos374");
 			String message1 = Program.getLabel("Infos375");
-			String titre_properties[] = { "" };
-			String default_value[] = { "" };
-			String key_properties[] = { "" };
-			MyOptions myoptions = new MyOptions(titre, message1, "", titre_properties, default_value, key_properties, type_objet, "",
+			MyOptions myoptions = new MyOptions(titre, message1, type_objet, "",
 					Program.getCaveConfig(), true, true);
 			myoptions.setVisible(true);
 
@@ -1208,6 +1202,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     					setCursor(Cursor.getDefaultCursor());
     					Erreur.showSimpleErreur(Program.getError("FileNotFound"));
     					Debug("ERROR: OpenAction: File not found during Opening!");
+							Program.updateAllPanels();
+							updateMainPanel();
+							setTitle(Program.getLabel("Infos001"));
     					return;
 						}
     				String fic = file.getAbsolutePath();

@@ -1,15 +1,14 @@
 package mycellar;
 
-import java.text.MessageFormat;
-import java.util.List;
-
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-
 import mycellar.countries.Country;
 import mycellar.vignobles.Appelation;
 import mycellar.vignobles.CountryVignoble;
 import mycellar.vignobles.CountryVignobles;
+
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * Titre : Cave à vin
@@ -18,8 +17,8 @@ import mycellar.vignobles.CountryVignobles;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.7
- * @since 12/01/19
+ * @version 0.8
+ * @since 10/04/19
  */
 
 class VineyardTableModel extends DefaultTableModel {
@@ -82,37 +81,39 @@ class VineyardTableModel extends DefaultTableModel {
 	
 	@Override
 	public void setValueAt(Object aValue, int row, int column) {
-		if(appelations == null)
+		if(appelations == null) {
 			return;
+		}
 		
 		Appelation appelation = appelations.get(row);
 		switch(column) {
 		case 0:
 			setModified(true);
-			CountryVignobles.renameAOC(vignoble, appelation, (String)aValue);
+			CountryVignobles.renameAOC(country, vignoble, appelation, (String)aValue);
 			break;
 		case 1:
 			setModified(true);
-			CountryVignobles.renameIGP(vignoble, appelation, (String)aValue);
+			CountryVignobles.renameIGP(country, vignoble, appelation, (String)aValue);
 			break;
 		case 2:
 			String name = appelation.getAOC() != null ? appelation.getAOC() : appelation.getIGP();
 			if(JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delAppellationQuestion"), name) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 				return;
 			}
-			
+
+			CountryVignobles.addVignobleFromBottles();
 			if(CountryVignobles.isAppellationUsed(country, vignoble, appelation)) {
 				JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteAppellation"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			setModified(true);
 			appelations.remove(appelation);
-			this.fireTableDataChanged();
+			fireTableDataChanged();
 			break;
 		}
 	}
 	
-	public void setAppellations(Country country, CountryVignoble vignoble, List<Appelation> appelations) {
+	void setAppellations(Country country, CountryVignoble vignoble, List<Appelation> appelations) {
 		this.appelations = appelations;
 		this.vignoble = vignoble;
 		this.country = country;
@@ -127,7 +128,7 @@ class VineyardTableModel extends DefaultTableModel {
 		this.modified = modified;
 	}
 
-	public void addAppellation(Appelation appellation) {
+	void addAppellation(Appelation appellation) {
 		appelations.add(appellation);
 		fireTableDataChanged();
 		modified = true;

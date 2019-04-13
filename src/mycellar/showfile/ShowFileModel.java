@@ -12,8 +12,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 15/03/18
+ * @version 0.6
+ * @since 03/03/19
  */
 
 public class ShowFileModel extends TableShowValues {
@@ -33,8 +33,11 @@ public class ShowFileModel extends TableShowValues {
 			return values[row];
 		if(column == getColumnCount() - 1)
 			return Boolean.TRUE;
-		Bouteille b = monVector.get(row);
-		return list.get(column-1).getDisplayValue(b);
+		if(monVector.size() > row) {
+			Bouteille b = monVector.get(row);
+			return list.get(column-1).getDisplayValue(b);
+		}
+		return null;
 	}
 
 	@Override

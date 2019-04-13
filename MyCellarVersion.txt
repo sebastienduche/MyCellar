@@ -1,8 +1,4 @@
-3.2.1.9
-5.7
-MyCellar.jar@476ce41ab859ac2b9410883f81b3536e
+3.2.7.7
+5.8
+MyCellar.jar@647f83baa95229ffc0e695b7de1d723e
 Finish.html
-activation-1.0.2.jar
-jaxb-api-2.3.0.jar
-jaxb-core-2.3.0.1.jar
-jaxb-impl-2.3.1.jar

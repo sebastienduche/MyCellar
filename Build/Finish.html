@@ -12,6 +12,22 @@
 <STRONG>Description :</STRONG><BR>
 Programme de gestion de Cave à vins.
 <HR>
+<STRONG>Développements et corrections de la version 5.8 YC (release 3.2.7.7)</STRONG><BR>
+</FONT>
+<UL><LI>PanelVignobles: Tri alphabétique des appelation OK
+<LI>PanelVignobles/Search: Amélioration du code OK
+<LI>Search: Ajout de la recherche avancée par pays/vignoble/appelation OK
+<LI>AddVin: Le déplacement de plusieurs bouteilles depuis un rangement complexe vers un rangement simple ne réinialisait pas la ligne et la colonne OK
+<LI>Program: Une erreur se produisait en fin de mois si le nombre de jour était supérieur au précédent mois, lors du nettoyage des anciens fichiers de log OK
+<LI>CellarOrganiser: Le déplacement depuis une caisse vers le stock ne fonctionnait pas OK
+<LI>CellarOrganiser: Le déplacement depuis le stock vers une caisse ne fonctionnait pas OK
+<LI>CellarOrganiser: Il pouvait ne pas y avoir de case disponible dans une caisse à tort OK
+<LI>CellarOrganiser: La bouteille déplacée pouvait être dupliquée OK
+<LI>Vignobles: La modification du vignoble d'une bouteille n'était pas prise en compte lors d'une tentative de suppression de vignoble OK
+<LI>Vignobles: La modification du vignoble d'une bouteille n'était pas prise en compte lors de la recherche OK
+<LI>Vignobles: Détections des mise à jour de vignobles OK
+<LI>Export XLS: A la fin de l'export, le fichier restait verrouillé en écriture tant que le programme s'exécutait OK
+</LI></UL>
 <STRONG>Développements et corrections de la version 5.7 ZE (release 3.2.2.4)</STRONG><BR>
 </FONT>
 <UL><LI>All: Amélioration de la gestion des propriétés booléenne OK
@@ -63,7 +79,7 @@ Programme de gestion de Cave à vins.
 <LI>Import: Il n'était plus possible de saisir le nom d'un nouveau rangement OK
 <LI>AddVin: Lors de la modification de plusieurs bouteilles, le prix saisi n'était pas sauvegardé OK
 <LI>All: La liste des erreurs n'était pas remise à jour lors de son réaffichage OK
-<LI>All: Les bouteilles dont les erreurs avaient été corrigées pouvaient être ajoutées en double OK</LI>
+<LI>All: Les bouteilles dont les erreurs avaient été corrigées pouvaient être ajoutées en double OK
 <LI>CreerRangement: La modification du numéro de la première partie ne permettait pas de modifier les bouteilles impactées OK</LI>
 <LI>CreerRangement: Après modification d'un rangement, les bouteilles en erreurs n'étaient pas affichées OK
 <LI>Export: Affichage d'une barre de progression de l'export Excel</LI>

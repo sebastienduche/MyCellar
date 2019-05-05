@@ -34,8 +34,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.0
- * @since 10/04/19
+ * @version 5.1
+ * @since 27/04/19
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -201,8 +201,8 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			boolean bIsCaisse = false;
 			int nb_emplacement = 0;
 			int start_caisse = 0;
-			Rangement cave;
-			if (lieu_select > 0 && (cave = Program.getCave(lieu_select - 1)) != null) {
+			if (lieu_select > 0) {
+				Rangement cave = m_lieu.getItemAt(lieu_select);
 				nb_emplacement = cave.getNbEmplacements();
 				bIsCaisse = cave.isCaisse();
 				start_caisse = cave.getStartCaisse();
@@ -260,8 +260,8 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_labelExist.setText("");
 
 			m_column.setEnabled(num_select != 0);
-			Rangement cave;
-			if (num_select > 0 && (cave = Program.getCave(lieu_select - 1)) != null) { //!=0
+			if (num_select > 0) {
+				Rangement cave = m_lieu.getItemAt(lieu_select);
 				nb_col = cave.getNbColonnes(emplacement - 1, num_select - 1);
 			}
 			m_column.removeAllItems();
@@ -430,90 +430,85 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			return false;
 		}
 
-		Rangement cave = Program.getCave(lieu_select - 1);
-		if (cave != null) {
-			boolean isCaisse = cave.isCaisse();
-			String sPlaceName = "";
-			if (lieu_select > 0) {
-				sPlaceName = cave.getNom();
+		Rangement cave = m_lieu.getItemAt(lieu_select);
+		boolean isCaisse = cave.isCaisse();
+		String sPlaceName = cave.getNom();
+
+		int line = 0;
+		int column = 0;
+		if (!isCaisse) {
+			line = m_line.getSelectedIndex();
+			if (line == 0) {
+				Debug("ERROR: Wrong Line");
+				Erreur.showSimpleErreur(Program.getError("Error057")); //"Veuillez sélectionner un numero de line!"
+				return false;
 			}
 
-			int line = 0;
-			int column = 0;
-			if (!isCaisse) {
-				line = m_line.getSelectedIndex();
-				if (line == 0) {
-					Debug("ERROR: Wrong Line");
-					Erreur.showSimpleErreur(Program.getError("Error057")); //"Veuillez sélectionner un numero de line!"
-					return false;
-				}
-
-				column = m_column.getSelectedIndex();
-				if (column == 0) {
-					Debug("ERROR: Wrong Column");
-					Erreur.showSimpleErreur(Program.getError("Error058")); //"Veuillez sélectionner un numero de colonne!"
-					return false;
-				}
+			column = m_column.getSelectedIndex();
+			if (column == 0) {
+				Debug("ERROR: Wrong Column");
+				Erreur.showSimpleErreur(Program.getError("Error058")); //"Veuillez sélectionner un numero de colonne!"
+				return false;
 			}
-
-			Rangement oldRangement = m_laBouteille.getRangement();
-			int oldNum = m_laBouteille.getNumLieu();
-			int oldLine = m_laBouteille.getLigne();
-			int oldColumn = m_laBouteille.getColonne();
-			m_laBouteille.setAnnee(annee);
-			m_laBouteille.setColor(color);
-			m_laBouteille.setComment(comment1);
-			m_laBouteille.setEmplacement(sPlaceName);
-			m_laBouteille.setMaturity(dateOfC);
-			m_laBouteille.setNom(nom);
-			m_laBouteille.setNumLieu(lieu_num);
-			m_laBouteille.setParker(parker);
-			m_laBouteille.setPrix(prix);
-			m_laBouteille.setType(demie);
-			m_laBouteille.setVignoble(new Vignoble(country, vignoble, aoc, igp, null));
-			CountryVignobles.addVignobleFromBottle(m_laBouteille);
-			CountryVignobles.setRebuildNeeded();
-			if(isCaisse) {
-				lieu_num = Integer.parseInt(m_num_lieu.getItemAt(lieu_num));
-				m_laBouteille.setNumLieu(lieu_num);
-				m_laBouteille.setLigne(0);
-				m_laBouteille.setColonne(0);
-			}
-			else {
-				m_laBouteille.setLigne(line);
-				m_laBouteille.setColonne(column);
-			}
-
-			if(!isCaisse) {
-				Bouteille bottleInPlace = cave.getBouteille(m_laBouteille.getNumLieu()-1, m_laBouteille.getLigne()-1, m_laBouteille.getColonne()-1);
-				if(bottleInPlace != null && !bottleInPlace.equals(m_laBouteille)) {
-					Debug("ERROR: Not an empty place, Replace?");
-					String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bottleInPlace.getNom(), bottleInPlace.getAnnee()); //" déjà présent à cette place!");
-					String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
-					if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
-						replaceWine(bottleInPlace);
-						m_end.setText(Program.getLabel("Infos075"));
-					}
-				}
-			}
-
-
-			Program.getStorage().addHistory(History.MODIFY, m_laBouteille);
-
-			Rangement rangement = m_laBouteille.getRangement();
-			if(!oldRangement.isCaisse()){
-				oldRangement.clearStock(new Bouteille.BouteilleBuilder("").numPlace(oldNum).line(oldLine).column(oldColumn).build());
-			}
-
-			RangementUtils.putTabStock();
-			Search.updateTable();
-
-			if(!rangement.isCaisse()) {
-				rangement.updateToStock(m_laBouteille);
-			}
-
-			m_end.setText(Program.getLabel("Infos144"));
 		}
+
+		Rangement oldRangement = m_laBouteille.getRangement();
+		int oldNum = m_laBouteille.getNumLieu();
+		int oldLine = m_laBouteille.getLigne();
+		int oldColumn = m_laBouteille.getColonne();
+		m_laBouteille.setAnnee(annee);
+		m_laBouteille.setColor(color);
+		m_laBouteille.setComment(comment1);
+		m_laBouteille.setEmplacement(sPlaceName);
+		m_laBouteille.setMaturity(dateOfC);
+		m_laBouteille.setNom(nom);
+		m_laBouteille.setNumLieu(lieu_num);
+		m_laBouteille.setParker(parker);
+		m_laBouteille.setPrix(prix);
+		m_laBouteille.setType(demie);
+		m_laBouteille.setVignoble(new Vignoble(country, vignoble, aoc, igp, null));
+		CountryVignobles.addVignobleFromBottle(m_laBouteille);
+		CountryVignobles.setRebuildNeeded();
+		if(isCaisse) {
+			lieu_num = Integer.parseInt(m_num_lieu.getItemAt(lieu_num));
+			m_laBouteille.setNumLieu(lieu_num);
+			m_laBouteille.setLigne(0);
+			m_laBouteille.setColonne(0);
+		}
+		else {
+			m_laBouteille.setLigne(line);
+			m_laBouteille.setColonne(column);
+		}
+
+		if(!isCaisse) {
+			Bouteille bottleInPlace = cave.getBouteille(m_laBouteille.getNumLieu()-1, m_laBouteille.getLigne()-1, m_laBouteille.getColonne()-1);
+			if(bottleInPlace != null && !bottleInPlace.equals(m_laBouteille)) {
+				Debug("ERROR: Not an empty place, Replace?");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bottleInPlace.getNom(), bottleInPlace.getAnnee()); //" déjà présent à cette place!");
+				String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
+				if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+					replaceWine(bottleInPlace);
+					m_end.setText(Program.getLabel("Infos075"));
+				}
+			}
+		}
+
+
+		Program.getStorage().addHistory(History.MODIFY, m_laBouteille);
+
+		Rangement rangement = m_laBouteille.getRangement();
+		if(!oldRangement.isCaisse()){
+			oldRangement.clearStock(new Bouteille.BouteilleBuilder("").numPlace(oldNum).line(oldLine).column(oldColumn).build());
+		}
+
+		RangementUtils.putTabStock();
+		Search.updateTable();
+
+		if(!rangement.isCaisse()) {
+			rangement.updateToStock(m_laBouteille);
+		}
+
+		m_end.setText(Program.getLabel("Infos144"));
 		Program.updateManagePlacePanel();
 		resetModified();
 		

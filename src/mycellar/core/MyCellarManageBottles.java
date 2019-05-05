@@ -14,8 +14,6 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
@@ -31,8 +29,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.2
- * @since 26/01/19
+ * @version 2.3
+ * @since 27/04/19
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -57,7 +55,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox();
 	protected final int SIECLE = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
 	private final Object m_objet1 = null;
-	protected final JModifyComboBox<String> m_lieu = new JModifyComboBox<>();
+	protected final JModifyComboBox<Rangement> m_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_line = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_column = new JModifyComboBox<>();
@@ -136,60 +134,6 @@ public abstract class MyCellarManageBottles extends JPanel {
 	}
 	
 	/**
-	 * coller_actionPerformed: Couper
-	 *
-	 * @param e ActionEvent
-	 */
-	protected void coller_actionPerformed(ActionEvent e) {
-
-		if (m_objet1 instanceof JTextField) {
-			JTextField jtf = (JTextField) m_objet1;
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
-		} else if (m_objet1 instanceof JTextArea) {
-			JTextArea jtf = (JTextArea) m_objet1;
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
-		}
-	}
-	
-	/**
-	 * couper_actionPerformed: Couper
-	 *
-	 * @param e ActionEvent
-	 */
-	protected void couper_actionPerformed(ActionEvent e) {
-		String txt = "";
-		if (m_objet1 instanceof JTextField) {
-			JTextField jtf = (JTextField) m_objet1;
-			txt = jtf.getSelectedText();
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
-		} else if (m_objet1 instanceof JTextArea) {
-			JTextArea jtf = (JTextArea) m_objet1;
-			txt = jtf.getSelectedText();
-			jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
-		}
-
-		Program.CLIPBOARD.copier(txt);
-	}
-
-	/**
-	 * copier_actionPerformed: Copier
-	 *
-	 * @param e ActionEvent
-	 */
-	protected void copier_actionPerformed(ActionEvent e) {
-		String txt = "";
-		if (m_objet1 instanceof JTextField) {
-			JTextField jtf = (JTextField) m_objet1;
-			txt = jtf.getSelectedText();
-		} else if (m_objet1 instanceof JTextArea) {
-			JTextArea jtf = (JTextArea) m_objet1;
-			txt = jtf.getSelectedText();
-		}
-
-		Program.CLIPBOARD.copier(txt);
-	}
-	
-	/**
 	 * column_itemStateChanged: Fonction pour la liste des colonnes.
 	 *
 	 * @param e ItemEvent
@@ -207,14 +151,12 @@ public abstract class MyCellarManageBottles extends JPanel {
 			}
 
 			m_labelExist.setText("");
-			Rangement cave = Program.getCave(nPlace - 1);
-			if(cave != null) {
-				Bouteille b;
-				if ((b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1)) != null) {
-					m_labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.getNom())));
-				}
+			Rangement cave = m_lieu.getItemAt(nPlace);
+			Bouteille b;
+			if ((b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1)) != null) {
+				m_labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.getNom())));
 			}
-       		Debug("Column_itemStateChanging... End");
+      Debug("Column_itemStateChanging... End");
 		});
 	}
 	
@@ -301,7 +243,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		Debug("Previewing...");
 		RangementUtils.putTabStock();
 		final LinkedList<Rangement> rangements = new LinkedList<>();
-		rangements.add(Program.getCave(m_lieu.getSelectedIndex() - 1));
+		rangements.add((Rangement) m_lieu.getSelectedItem());
 		MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
 		Program.open( new File(Program.getPreviewXMLFileName()) );
 		Debug("Previewing... End");
@@ -327,14 +269,11 @@ public abstract class MyCellarManageBottles extends JPanel {
 			if (num_select == 0) {
 				m_line.setEnabled(false);
 				m_column.setEnabled(false);
-			}
-			else {
+			}	else {
 				m_line.setEnabled(true);
-			}
-			Rangement r;
-			if (num_select > 0 && null != (r = Program.getCave(lieu_select - 1))) { //!=0
-				if (!r.isCaisse()) {
-					int nb_ligne = r.getNbLignes(num_select - 1);
+				Rangement rangement = m_lieu.getItemAt(lieu_select);
+				if (!rangement.isCaisse()) {
+					int nb_ligne = rangement.getNbLignes(num_select - 1);
 					m_line.removeAllItems();
 					m_column.removeAllItems();
 					m_line.addItem("");
@@ -376,10 +315,10 @@ public abstract class MyCellarManageBottles extends JPanel {
 	}
 
 	protected void initPlaceCombo() {
-		m_lieu.addItem("");
+		m_lieu.addItem(Program.EMPTY_PLACE);
 		boolean complex = false;
 		for (Rangement rangement : Program.getCave()) {
-			m_lieu.addItem(rangement.getNom());
+			m_lieu.addItem(rangement);
 			if(!rangement.isCaisse()) {
 				complex = true;
 			}
@@ -404,7 +343,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	public void selectPlace(Rangement rangement, int place, int row, int column) {
 		setListenersEnabled(false);
 		for(int i=0; i<m_lieu.getItemCount(); i++) {
-			if(rangement.getNom().equals(m_lieu.getItemAt(i))){
+			if(rangement.equals(m_lieu.getItemAt(i))){
 				m_lieu.setSelectedIndex(i);
 				break;
 			}
@@ -457,7 +396,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		Rangement rangement = bottle.getRangement();
 		if(rangement != null) {
     		for(int i=0; i<m_lieu.getItemCount(); i++) {
-    			if(rangement.getNom().equals(m_lieu.getItemAt(i))){
+    			if(rangement.equals(m_lieu.getItemAt(i))){
     				m_lieu.setSelectedIndex(i);
     				break;
     			}

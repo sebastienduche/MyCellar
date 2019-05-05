@@ -79,8 +79,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 20.5
- * @since 12/04/19
+ * @version 20.6
+ * @since 27/04/19
  */
 
 public class Program {
@@ -130,7 +130,7 @@ public class Program {
 	private static final LinkedList<MyCellarError> ERRORS = new LinkedList<>();
 
 	static final Rangement DEFAULT_PLACE = new Rangement("");
-	static final Rangement EMPTY_PLACE = new Rangement("");
+	public static final Rangement EMPTY_PLACE = new Rangement("");
 	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
 
 	private static String m_sWorkDir = null;
@@ -868,17 +868,15 @@ public class Program {
 	/**
 	 * GetCaveIndex
 	 *
-	 * @param name String
+	 * @param rangement {@link Rangement}
 	 * @return int
 	 */
-	@Deprecated
-	static int getCaveIndex(final String name) {
-		if (name == null || name.trim().isEmpty()) {
+	static int getCaveIndex(final Rangement rangement) {
+		if (rangement == null) {
 			return -1;
 		}
-		final String placeName = name.trim();
 		for(int i = 0; i < RANGEMENTS_LIST.size(); i++) {
-			if(placeName.equals(RANGEMENTS_LIST.get(i).getNom())) {
+			if(rangement.equals(RANGEMENTS_LIST.get(i))) {
 				return i;
 			}
 		}

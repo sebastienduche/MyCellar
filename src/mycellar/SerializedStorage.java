@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.1
- * @since 17/10/18
+ * @version 5.2
+ * @since 27/04/19
  */
 
 public class SerializedStorage implements Storage {
@@ -214,41 +214,6 @@ public class SerializedStorage implements Storage {
 		CountryVignobles.addVignobleFromBottle(wine);
 		return listBouteilles.getBouteille().add(wine);
 	}
-
-	/**
-	 * replaceWineAll: Modifie une bouteille dans un rangement non caisse
-	 *
-	 * @param wine Bouteille: Bouteille à ajouter
-	 * @param num_empl int: numéro de l'emplacement (1...n+1)
-	 * @param line int: numéro de ligne (1...n+1)
-	 * @param column int: numéro de colonne (1...n+1)
-	 */
-
-	@Override
-	public void replaceWineAll(Bouteille wine, int num_empl, int line, int column) { //Remplace une bouteille existante par une autre
-
-		int i = 0;
-		boolean resul = false;
-		do {
-			Bouteille b = listBouteilles.getBouteille().get(i);
-			String empl1 = wine.getEmplacement();
-			String empl = b.getEmplacement();
-			int num_empl1 = b.getNumLieu();
-			int line1 = b.getLigne();
-			int column1 = b.getColonne();
-
-			if (empl.equals(empl1) && num_empl == num_empl1 && line == line1 && column == column1) {
-				b.update(wine);
-				resul = true;
-			}
-			i++;
-		}
-		while (!resul && i < getAllNblign());
-		
-		if(resul)
-			Program.setModified();
-	}
-
 
 	/**
 	 * getAllList: retourne le tableau

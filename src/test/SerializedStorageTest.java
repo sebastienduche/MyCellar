@@ -113,8 +113,8 @@ class SerializedStorageTest {
     serializedStorage.getListBouteilles().getBouteille().add(bouteille4);
     serializedStorage.getListBouteilles().getBouteille().add(bouteille5);
     final LinkedList<Rangement> cave = Program.getCave();
-    final Rangement place3 = new Rangement("place3", 10, 0, false, 0);
-    cave.add(place3);
+    final Rangement caisse = new Rangement.CaisseBuilder("place3").nb_emplacement(10).build();
+    cave.add(caisse);
 
   }
 
@@ -126,6 +126,19 @@ class SerializedStorageTest {
     for (Bouteille b : serializedStorage.getListBouteilles().getBouteille()) {
       assertNotEquals("bouteille3", b.getNom());
     }
+    final Bouteille bouteille6 = new Bouteille.BouteilleBuilder("bouteille6")
+        .place("place3")
+        .numPlace(1)
+        .type("type")
+        .annee("2018")
+        .color("Red")
+        .comment("comment")
+        .maturity("maturity")
+        .parker("100")
+        .price("123")
+        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+        .build();
+    serializedStorage.addWine(bouteille6);
   }
 
 }

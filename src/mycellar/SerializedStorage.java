@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.2
- * @since 27/04/19
+ * @version 5.3
+ * @since 26/06/19
  */
 
 public class SerializedStorage implements Storage {
@@ -156,43 +156,58 @@ public class SerializedStorage implements Storage {
 		int num = -1;
 
 		Debug("DeleteWine: Trying deleting bottle " + nom2.trim() + " " + annee + " " + empl.trim() + " " + num_empl + " " + line + " " + column);
-		try {
-			do {
-				Bouteille b = listBouteilles.getBouteille().get(i);
-				String empl1 = b.getEmplacement();
-				int num_empl1 = b.getNumLieu();
-				int line1 = b.getLigne();
-				int column1 = b.getColonne();
-				String nom1 = b.getNom();
-				int annee1 = b.getAnneeInt();
-
-				Rangement rangement = Program.getCave(empl);
-
-				if (rangement != null && rangement.isCaisse()) {
-					if (nom1.equals(nom2) && empl.equals(empl1) && num_empl == num_empl1 && annee == annee1) {
-						resul = true;
-						num = i;
-					}
-				}
-				else {
-					if (nom1.equals(nom2) && empl.equals(empl1) && num_empl == num_empl1 && line == line1 && column == column1) {
-						resul = true;
-						num = i;
-					}
-				}
-				i++;
-			}
-			while (!resul && i < listBouteilles.getBouteille().size());
+		Rangement rangement = Program.getCave(empl);
+		boolean isCaisse = rangement == null || rangement.isCaisse();
+		final List<Bouteille> resultBouteilles = listBouteilles.getBouteille().stream().filter(bouteille -> empl.equals(bouteille.getEmplacement())
+				&& nom2.equals(bouteille.getNom())
+				&& num_empl == bouteille.getNumLieu()
+				&& (isCaisse ? annee == bouteille.getAnneeInt() : (line == bouteille.getLigne() && column == bouteille.getColonne()))).collect(Collectors.toList());
+		if (resultBouteilles.isEmpty()) {
+			Debug("DeleteWine: Unable to find the wine!");
+			return false;
 		}
-		catch (Exception ex) {Program.showException(ex, false);}
-
-		if (resul) {
-			Program.setModified();
-			Debug("DeleteWine: Deleted bottle number " + num);
-			listBouteilles.getBouteille().remove(num);
-		}
-
-		return resul;
+		Program.setModified();
+		final Bouteille bouteille = resultBouteilles.get(0);
+		Debug("DeleteWine: Deleted bottle " + bouteille);
+		listBouteilles.getBouteille().remove(bouteille);
+		return true;
+//		try {
+//			do {
+//				Bouteille b = listBouteilles.getBouteille().get(i);
+//				String empl1 = b.getEmplacement();
+//				int num_empl1 = b.getNumLieu();
+//				int line1 = b.getLigne();
+//				int column1 = b.getColonne();
+//				String nom1 = b.getNom();
+//				int annee1 = b.getAnneeInt();
+//
+//				Rangement rangement = Program.getCave(empl);
+//
+//				if (rangement != null && rangement.isCaisse()) {
+//					if (nom1.equals(nom2) && empl.equals(empl1) && num_empl == num_empl1 && annee == annee1) {
+//						resul = true;
+//						num = i;
+//					}
+//				}
+//				else {
+//					if (nom1.equals(nom2) && empl.equals(empl1) && num_empl == num_empl1 && line == line1 && column == column1) {
+//						resul = true;
+//						num = i;
+//					}
+//				}
+//				i++;
+//			}
+//			while (!resul && i < listBouteilles.getBouteille().size());
+//		}
+//		catch (Exception ex) {Program.showException(ex, false);}
+//
+//		if (resul) {
+//			Program.setModified();
+//			Debug("DeleteWine: Deleted bottle number " + num);
+//			listBouteilles.getBouteille().remove(num);
+//		}
+//
+//		return resul;
 	}
 
 	/**

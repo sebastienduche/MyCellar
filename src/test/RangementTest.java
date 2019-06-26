@@ -18,7 +18,9 @@ class RangementTest {
   private Rangement caisseNoLimit;
   private Rangement caisseLimit;
   private Rangement armoire1x3x3;
+  private Rangement armoire1x3x3Builder;
   private Rangement armoire2x2_3x22545;
+  private Rangement armoire2x2_3x22545Builder;
   private Rangement rangement;
 
   @BeforeEach
@@ -34,6 +36,10 @@ class RangementTest {
       partie.getRow(i).setCol(3);
     }
     armoire1x3x3 = new Rangement("armoire1x3x3", list);
+    armoire1x3x3Builder = new Rangement.RangementBuilder("armoire1x3x3")
+        .nb_emplacement(new int[]{3})
+        .sameColumnsNumber(new int[]{3})
+        .build();
     partie = new Part(0);
     list = new LinkedList<>();
     list.add(partie);
@@ -48,6 +54,15 @@ class RangementTest {
     partie.getRow(1).setCol(4);
     partie.getRow(2).setCol(5);
     armoire2x2_3x22545 = new Rangement("armoire2x2_3x22545", list);
+    try {
+      armoire2x2_3x22545Builder = new Rangement.RangementBuilder("armoire2x2_3x22545")
+          .nb_emplacement(new int[]{2,3})
+          .differentColumnsNumber()
+          .columnsNumberForPart(0, new int[]{2,2})
+          .columnsNumberForPart(1, new int[]{5,4,5})
+          .build();
+    } catch (Exception e) {
+    }
     rangement = new Rangement("test");
   }
 
@@ -77,13 +92,17 @@ class RangementTest {
   @Test
   void getNbEmplacements() {
     assertEquals(1, armoire1x3x3.getNbEmplacements());
+    assertEquals(1, armoire1x3x3Builder.getNbEmplacements());
     assertEquals(2, armoire2x2_3x22545.getNbEmplacements());
+    assertEquals(2, armoire2x2_3x22545Builder.getNbEmplacements());
   }
 
   @Test
   void getNbColonnesStock() {
     assertEquals(3, armoire1x3x3.getNbColonnesStock());
+    assertEquals(3, armoire1x3x3Builder.getNbColonnesStock());
     assertEquals(5, armoire2x2_3x22545.getNbColonnesStock());
+    assertEquals(5, armoire2x2_3x22545Builder.getNbColonnesStock());
   }
 
   @Test
@@ -110,8 +129,11 @@ class RangementTest {
   @Test
   void getNbLignesInt() {
     assertEquals(3, armoire1x3x3.getNbLignes(0));
+    assertEquals(3, armoire1x3x3Builder.getNbLignes(0));
     assertEquals(2, armoire2x2_3x22545.getNbLignes(0));
+    assertEquals(2, armoire2x2_3x22545Builder.getNbLignes(0));
     assertEquals(3, armoire2x2_3x22545.getNbLignes(1));
+    assertEquals(3, armoire2x2_3x22545Builder.getNbLignes(1));
   }
 
   @Test
@@ -119,15 +141,21 @@ class RangementTest {
     for(int i=0; i<3; i++) {
       for(int j=0; j<3; j++) {
         assertTrue(armoire1x3x3.isExistingCell(0, i, j));
+        assertTrue(armoire1x3x3Builder.isExistingCell(0, i, j));
       }
       assertFalse(armoire1x3x3.isExistingCell(0, i, 3));
+      assertFalse(armoire1x3x3Builder.isExistingCell(0, i, 3));
     }
     assertFalse(armoire1x3x3.isExistingCell(0, 3, 3));
+    assertFalse(armoire1x3x3Builder.isExistingCell(0, 3, 3));
     assertFalse(armoire1x3x3.isExistingCell(0, 3, 0));
+    assertFalse(armoire1x3x3Builder.isExistingCell(0, 3, 0));
 
     LinkedList<Rangement> list = new LinkedList<>();
     list.add(armoire1x3x3);
+    list.add(armoire1x3x3Builder);
     list.add(armoire2x2_3x22545);
+    list.add(armoire2x2_3x22545Builder);
     for(Rangement r : list) {
       int emplacementMax = r.getNbEmplacements();
       for(int i=0; i<emplacementMax; i++) {
@@ -148,32 +176,47 @@ class RangementTest {
   @Test
   void getNbColonnesIntInt() {
     assertEquals(3, armoire1x3x3.getNbColonnes(0, 0));
+    assertEquals(3, armoire1x3x3Builder.getNbColonnes(0, 0));
     assertEquals(3, armoire1x3x3.getNbColonnes(0, 1));
+    assertEquals(3, armoire1x3x3Builder.getNbColonnes(0, 1));
     assertEquals(3, armoire1x3x3.getNbColonnes(0, 2));
+    assertEquals(3, armoire1x3x3Builder.getNbColonnes(0, 2));
     assertEquals(2, armoire2x2_3x22545.getNbColonnes(0, 0));
+    assertEquals(2, armoire2x2_3x22545Builder.getNbColonnes(0, 0));
     assertEquals(2, armoire2x2_3x22545.getNbColonnes(0, 1));
+    assertEquals(2, armoire2x2_3x22545Builder.getNbColonnes(0, 1));
     assertEquals(5, armoire2x2_3x22545.getNbColonnes(1, 0));
+    assertEquals(5, armoire2x2_3x22545Builder.getNbColonnes(1, 0));
     assertEquals(4, armoire2x2_3x22545.getNbColonnes(1, 1));
+    assertEquals(4, armoire2x2_3x22545Builder.getNbColonnes(1, 1));
     assertEquals(5, armoire2x2_3x22545.getNbColonnes(1, 2));
+    assertEquals(5, armoire2x2_3x22545Builder.getNbColonnes(1, 2));
   }
 
   @Test
   void getNbColonnesMaxInt() {
     assertEquals(3, armoire1x3x3.getNbColonnesMax(0));
+    assertEquals(3, armoire1x3x3Builder.getNbColonnesMax(0));
     assertEquals(2, armoire2x2_3x22545.getNbColonnesMax(0));
+    assertEquals(2, armoire2x2_3x22545Builder.getNbColonnesMax(0));
     assertEquals(5, armoire2x2_3x22545.getNbColonnesMax(1));
+    assertEquals(5, armoire2x2_3x22545Builder.getNbColonnesMax(1));
   }
 
   @Test
   void getNbColonnesMax() {
     assertEquals(3, armoire1x3x3.getNbColonnesMax());
+    assertEquals(3, armoire1x3x3Builder.getNbColonnesMax());
     assertEquals(5, armoire2x2_3x22545.getNbColonnesMax());
+    assertEquals(5, armoire2x2_3x22545Builder.getNbColonnesMax());
   }
 
   @Test
   void getNbCaseUseLigne() {
     assertEquals(0, armoire1x3x3.getNbCaseUseLigne(0, 0));
+    assertEquals(0, armoire1x3x3Builder.getNbCaseUseLigne(0, 0));
     assertEquals(0, armoire2x2_3x22545.getNbCaseUseLigne(0, 0));
+    assertEquals(0, armoire2x2_3x22545Builder.getNbCaseUseLigne(0, 0));
     Bouteille b = new Bouteille();
     b.setNom("B1");
     updateToArmoire1x3x3(b, 1, 1);
@@ -232,7 +275,9 @@ class RangementTest {
   void getNbCaseFreeCoteLigne() {
     LinkedList<Rangement> list = new LinkedList<>();
     list.add(armoire1x3x3);
+    list.add(armoire1x3x3Builder);
     list.add(armoire2x2_3x22545);
+    list.add(armoire2x2_3x22545Builder);
     for(Rangement r : list) {
       int emplacementMax = r.getNbEmplacements();
       for(int i=0; i<emplacementMax; i++) {
@@ -271,8 +316,11 @@ class RangementTest {
   @Test
   void getNbCaseUse() {
     assertEquals(0, armoire1x3x3.getNbCaseUse(0));
+    assertEquals(0, armoire1x3x3Builder.getNbCaseUse(0));
     assertEquals(0, armoire2x2_3x22545.getNbCaseUse(0));
+    assertEquals(0, armoire2x2_3x22545Builder.getNbCaseUse(0));
     assertEquals(0, armoire2x2_3x22545.getNbCaseUse(1));
+    assertEquals(0, armoire2x2_3x22545Builder.getNbCaseUse(1));
     Bouteille b = new Bouteille();
     b.setNom("B7");
     updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", armoire2x2_3x22545);
@@ -286,7 +334,9 @@ class RangementTest {
   @Test
   void getNbCaseUseAll() {
     assertEquals(0, armoire1x3x3.getNbCaseUseAll());
+    assertEquals(0, armoire1x3x3Builder.getNbCaseUseAll());
     assertEquals(0, armoire2x2_3x22545.getNbCaseUseAll());
+    assertEquals(0, armoire2x2_3x22545Builder.getNbCaseUseAll());
     Bouteille b = new Bouteille();
     b.setNom("B8");
     updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", armoire2x2_3x22545);
@@ -433,7 +483,9 @@ class RangementTest {
   @Test
   void isSameColumnNumber() {
     assertTrue(armoire1x3x3.isSameColumnNumber());
+    assertTrue(armoire1x3x3Builder.isSameColumnNumber());
     assertFalse(armoire2x2_3x22545.isSameColumnNumber());
+    assertFalse(armoire2x2_3x22545Builder.isSameColumnNumber());
   }
 
   @Test
@@ -451,7 +503,9 @@ class RangementTest {
     assertFalse(caisse.canAddBottle(b));
     LinkedList<Rangement> list = new LinkedList<>();
     list.add(armoire1x3x3);
+    list.add(armoire1x3x3Builder);
     list.add(armoire2x2_3x22545);
+    list.add(armoire2x2_3x22545Builder);
     for(Rangement r : list) {
       int emplacementMax = r.getNbEmplacements();
       for(int i=0; i<emplacementMax; i++) {
@@ -470,12 +524,16 @@ class RangementTest {
     b = new Bouteille();
     b.setNom("B20bis");
     assertFalse(armoire1x3x3.canAddBottle(b));
+    assertFalse(armoire1x3x3Builder.canAddBottle(b));
     b.setNumLieu(1);
     assertFalse(armoire1x3x3.canAddBottle(b));
+    assertFalse(armoire1x3x3Builder.canAddBottle(b));
     b.setLigne(1);
     assertFalse(armoire1x3x3.canAddBottle(b));
+    assertFalse(armoire1x3x3Builder.canAddBottle(b));
     b.setColonne(1);
     assertTrue(armoire1x3x3.canAddBottle(b));
+    assertTrue(armoire1x3x3Builder.canAddBottle(b));
   }
 
   @Test
@@ -513,7 +571,9 @@ class RangementTest {
     assertEquals(3, caisseLimit.getLastNumEmplacement());
     assertEquals(1, caisseNoLimit.getLastNumEmplacement());
     assertEquals(1, armoire1x3x3.getLastNumEmplacement());
+    assertEquals(1, armoire1x3x3Builder.getLastNumEmplacement());
     assertEquals(2, armoire2x2_3x22545.getLastNumEmplacement());
+    assertEquals(2, armoire2x2_3x22545Builder.getLastNumEmplacement());
   }
 
   @Test
@@ -547,7 +607,11 @@ class RangementTest {
   @Test
   void isSame() {
     assertTrue(armoire1x3x3.isSame(armoire1x3x3));
+    assertTrue(armoire1x3x3Builder.isSame(armoire1x3x3Builder));
+    assertTrue(armoire1x3x3Builder.isSame(armoire1x3x3));
     assertTrue(armoire2x2_3x22545.isSame(armoire2x2_3x22545));
+    assertTrue(armoire2x2_3x22545Builder.isSame(armoire2x2_3x22545Builder));
+    assertTrue(armoire2x2_3x22545Builder.isSame(armoire2x2_3x22545));
     assertFalse(armoire1x3x3.isSame(armoire2x2_3x22545));
     Rangement r = new Rangement("r");
     Rangement r1 = new Rangement("r");

@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.3
- * @since 26/06/19
+ * @version 5.4
+ * @since 27/06/19
  */
 
 public class SerializedStorage implements Storage {
@@ -45,11 +45,13 @@ public class SerializedStorage implements Storage {
 	public void setListBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles = listBouteilles;
 		listeUniqueBouteille.clear();
-		if(this.listBouteilles.bouteille == null)
+		if(this.listBouteilles.bouteille == null) {
 			this.listBouteilles.bouteille = new LinkedList<>();
+		}
 		for(Bouteille b: this.listBouteilles.bouteille) {
-			if(!listeUniqueBouteille.contains(b.getNom()))
+			if(!listeUniqueBouteille.contains(b.getNom())) {
 				listeUniqueBouteille.add(b.getNom());
+			}
 		}
 	}
 
@@ -62,8 +64,9 @@ public class SerializedStorage implements Storage {
 			if (b.updateID() && !theBottle.isEmpty()) {
 				theBottle.get(0).getBouteille().setId(b.getId());
 			}
-			if(!listeUniqueBouteille.contains(b.getNom()))
+			if(!listeUniqueBouteille.contains(b.getNom())) {
 				listeUniqueBouteille.add(b.getNom());
+			}
 		}
 	}
 
@@ -86,38 +89,44 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public boolean clearHistory(int _nValue) {
+	public boolean clearHistory(int value) {
 		/* -1 Clear All
 		 * 0 Clear Add
 		 * 1 Clear Modify
 		 * 2 Clear Del
 		 */
-		Debug("Program: Clearing history: "+_nValue);
-		String sValue = "";
-		if( _nValue == -1 )
-			sValue = Program.getError("Error182");
-		if( _nValue == 0 )
-			sValue = Program.getError("Error189");
-		if( _nValue == 1 )
-			sValue = Program.getError("Error191");
-		if( _nValue == 2 )
-			sValue = Program.getError("Error190");
-		if( JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
+		Debug("Program: Clearing history: "+value);
+		String sValue;
+		switch (value) {
+			case -1:
+				sValue = Program.getError("Error182");
+				break;
+			case 0:
+				sValue = Program.getError("Error189");
+				break;
+			case 1:
+				sValue = Program.getError("Error191");
+				break;
+			case 2:
+				sValue = Program.getError("Error190");
+				break;
+			default:
+				sValue = "";
+		}
+
+		if( JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 			return false;
+		}
 
 		Program.setModified();
-		if( _nValue == -1 ) {
+		if(value == -1) {
 			m_HistoryList.clear();
 			return true;
 		}
-		LinkedList<History> tmpList = new LinkedList<>();
-		for (History h : m_HistoryList.getHistory()) {
-			if (h.getType() == _nValue) {
-				tmpList.addLast(h);
-			}
-		}
+		final List<History> list = m_HistoryList.getHistory().stream().filter(history -> history.getType() == value).collect(Collectors.toList());
+
 		// Suppression de l'historique
-		for (History h : tmpList) {
+		for (History h : list) {
 			removeHistory(h);
 		}
 		return true;
@@ -136,32 +145,22 @@ public class SerializedStorage implements Storage {
 	 */
 	@Override
 	public boolean deleteWine(Bouteille bottle) {
-		return deleteWine(bottle.getNom(), bottle.getAnneeInt(), bottle.getEmplacement(), bottle.getNumLieu(), bottle.getLigne(), bottle.getColonne());
-	}
 
-	/**
-	 * deleteWine: Supression d'une bouteille dans un rangement
-	 *
-	 * @param nom2 Bouteille: Bouteille à supprimer
-	 * @param annee int: Année du vin
-	 * @param empl String: emplacement du vin
-	 * @param num_empl int: numéro de l'emplacement (1...n+1)
-	 * @param line int: numéro de ligne (1...n+1)
-	 * @param column int: numéro de colonne (1...n+1)
-	 */
-	private boolean deleteWine(String nom2, int annee, String empl, int num_empl, int line, int column) {
+		final String nom = bottle.getNom();
+		final String annee = bottle.getAnnee();
+		final String emplacement = bottle.getEmplacement();
+		final int numLieu = bottle.getNumLieu();
+		final int ligne = bottle.getLigne();
+		final int colonne = bottle.getColonne();
 
-		int i = 0;
-		boolean resul = false;
-		int num = -1;
-
-		Debug("DeleteWine: Trying deleting bottle " + nom2.trim() + " " + annee + " " + empl.trim() + " " + num_empl + " " + line + " " + column);
-		Rangement rangement = Program.getCave(empl);
+		Debug("DeleteWine: Trying deleting bottle " + nom.trim() + " " + annee + " " + emplacement.trim() + " " + numLieu + " " + ligne + " " + colonne);
+		Rangement rangement = Program.getCave(emplacement);
 		boolean isCaisse = rangement == null || rangement.isCaisse();
-		final List<Bouteille> resultBouteilles = listBouteilles.getBouteille().stream().filter(bouteille -> empl.equals(bouteille.getEmplacement())
-				&& nom2.equals(bouteille.getNom())
-				&& num_empl == bouteille.getNumLieu()
-				&& (isCaisse ? annee == bouteille.getAnneeInt() : (line == bouteille.getLigne() && column == bouteille.getColonne()))).collect(Collectors.toList());
+		final List<Bouteille> resultBouteilles = listBouteilles.getBouteille().stream().filter(
+				bouteille -> emplacement.equals(bouteille.getEmplacement())
+				&& nom.equals(bouteille.getNom())
+				&& numLieu == bouteille.getNumLieu()
+				&& (isCaisse ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(Collectors.toList());
 		if (resultBouteilles.isEmpty()) {
 			Debug("DeleteWine: Unable to find the wine!");
 			return false;
@@ -171,43 +170,6 @@ public class SerializedStorage implements Storage {
 		Debug("DeleteWine: Deleted bottle " + bouteille);
 		listBouteilles.getBouteille().remove(bouteille);
 		return true;
-//		try {
-//			do {
-//				Bouteille b = listBouteilles.getBouteille().get(i);
-//				String empl1 = b.getEmplacement();
-//				int num_empl1 = b.getNumLieu();
-//				int line1 = b.getLigne();
-//				int column1 = b.getColonne();
-//				String nom1 = b.getNom();
-//				int annee1 = b.getAnneeInt();
-//
-//				Rangement rangement = Program.getCave(empl);
-//
-//				if (rangement != null && rangement.isCaisse()) {
-//					if (nom1.equals(nom2) && empl.equals(empl1) && num_empl == num_empl1 && annee == annee1) {
-//						resul = true;
-//						num = i;
-//					}
-//				}
-//				else {
-//					if (nom1.equals(nom2) && empl.equals(empl1) && num_empl == num_empl1 && line == line1 && column == column1) {
-//						resul = true;
-//						num = i;
-//					}
-//				}
-//				i++;
-//			}
-//			while (!resul && i < listBouteilles.getBouteille().size());
-//		}
-//		catch (Exception ex) {Program.showException(ex, false);}
-//
-//		if (resul) {
-//			Program.setModified();
-//			Debug("DeleteWine: Deleted bottle number " + num);
-//			listBouteilles.getBouteille().remove(num);
-//		}
-//
-//		return resul;
 	}
 
 	/**
@@ -224,8 +186,9 @@ public class SerializedStorage implements Storage {
 
 		Program.setModified();
 
-		if(!listeUniqueBouteille.contains(wine.getNom()))
+		if(!listeUniqueBouteille.contains(wine.getNom())) {
 			listeUniqueBouteille.add(wine.getNom());
+		}
 		CountryVignobles.addVignobleFromBottle(wine);
 		return listBouteilles.getBouteille().add(wine);
 	}
@@ -241,12 +204,12 @@ public class SerializedStorage implements Storage {
 	}
 
 	/**
-	 * getAllNblign: retourne le nombre de lignes du rangement
+	 * getBottlesCount: retourne le nombre total de bouteilles du fichier
 	 *
 	 * @return int
 	 */
 	@Override
-	public int getAllNblign() {
+	public int getBottlesCount() {
 		return listBouteilles.getBouteille().size();
 	}
 
@@ -273,7 +236,7 @@ public class SerializedStorage implements Storage {
 		Debug("Loadinging History...");
 		boolean resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + "history.xml"));
 		if(!resul) {
-			m_HistoryList = new HistoryList();
+			setHistoryList(new HistoryList());
 			Debug("Loading History KO");
 		} else {
 			Debug("Loading History OK");

@@ -129,8 +129,8 @@ public class Program {
 	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
 	private static final LinkedList<MyCellarError> ERRORS = new LinkedList<>();
 
-	static final Rangement DEFAULT_PLACE = new Rangement("");
-	public static final Rangement EMPTY_PLACE = new Rangement("");
+	static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").build();
+	public static final Rangement EMPTY_PLACE = new Rangement.CaisseBuilder("").build();
 	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
 
 	private static String m_sWorkDir = null;
@@ -1821,7 +1821,7 @@ public class Program {
 
 	static int getNewID() {
 		if (nextID == -1) {
-			nextID = getStorage().getAllNblign();
+			nextID = getStorage().getBottlesCount();
 		}
 		do {
 			++nextID;

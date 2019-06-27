@@ -12,8 +12,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 26.1
- * @since 26/06/19
+ * @version 26.2
+ * @since 27/06/19
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -42,14 +42,6 @@ public class Rangement implements Comparable<Rangement> {
 	}
 
 	/**
-	 * Création d'un rangement de type Caisse sans limite
-	 * @param nom
-	 */
-	public Rangement(String nom) {
-		this(nom, 1, 0, false, -1);
-	}
-
-	/**
 	 * Rangement: Constructeur: rangement de type caisse
 	 *
 	 * @param nom String: nom du rangement
@@ -58,7 +50,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param isLimit boolean: Limite de caisse activée?
 	 * @param limite_caisse int: Capacité pour la limite
 	 */
-	public Rangement(String nom, int nb_emplacement, int start_caisse, boolean isLimit, int limite_caisse) {
+	private Rangement(String nom, int nb_emplacement, int start_caisse, boolean isLimit, int limite_caisse) {
 		this.nom = nom.trim();
 		nb_emplacements = nb_emplacement;
 		this.start_caisse = start_caisse;

@@ -41,8 +41,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 13.1
- * @since 10/04/19
+ * @version 13.2
+ * @since 27/06/19
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable {
 
@@ -584,8 +584,12 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 
 				if (bResul) {
 					Debug("Creating...");
-					Rangement r = new Rangement(nom, nbPart, start_caisse, islimited, limite);
-					Program.addCave(r);
+					final Rangement caisse = new Rangement.CaisseBuilder(nom)
+							.nb_emplacement(nbPart)
+							.start_caisse(start_caisse)
+							.limit(islimited)
+							.limite_caisse(limite).build();
+					Program.addCave(caisse);
 					Debug("Creation "+ nom +" completed.");
 					nom_obj.setText("");
 					label_cree.setText(Program.getLabel("Infos090")); //"Rangement créé.");

@@ -25,9 +25,9 @@ class RangementTest {
 
   @BeforeEach
   void setUp() {
-    caisseNoLimit = new Rangement("caisseNoLimit");
+    caisseNoLimit = new Rangement.CaisseBuilder("caisseNoLimit").build();
     // Caisse avec 2 emplacements commençant à 1 et limité à 6 bouteilles
-    caisseLimit = new Rangement("caisseLimit", 2, 1, true, 6);
+    caisseLimit = new Rangement.CaisseBuilder("caisseLimit").nb_emplacement(2).start_caisse(1).limit(true).limite_caisse(6).build();
     Part partie = new Part(0);
     LinkedList<Part> list = new LinkedList<>();
     list.add(partie);
@@ -63,7 +63,7 @@ class RangementTest {
           .build();
     } catch (Exception e) {
     }
-    rangement = new Rangement("test");
+    rangement = new Rangement.CaisseBuilder("test").build();
   }
 
   @Test
@@ -490,7 +490,7 @@ class RangementTest {
 
   @Test
   void canAddBottle() {
-    Rangement caisse = new Rangement("caisse", 2, 1, true, 1);
+    Rangement caisse = new Rangement.CaisseBuilder("caisse").nb_emplacement(2).start_caisse(1).limit(true).limite_caisse(1).build();
     assertTrue(caisse.hasFreeSpaceInCaisse(1));
     Bouteille b = new Bouteille();
     b.setNom("B20");
@@ -538,7 +538,7 @@ class RangementTest {
 
   @Test
   void hasFreeSpaceInCaisse() {
-    Rangement caisse = new Rangement("caisse", 2, 1, true, 1);
+    Rangement caisse = new Rangement.CaisseBuilder("caisse").nb_emplacement(2).start_caisse(1).limit(true).limite_caisse(1).build();
     assertTrue(caisse.hasFreeSpaceInCaisse(1));
     Bouteille b = new Bouteille();
     b.setNom("B21");
@@ -552,7 +552,7 @@ class RangementTest {
   void getFreeNumPlaceInCaisse() {
     assertEquals(1, caisseLimit.getFreeNumPlaceInCaisse());
     assertEquals(0, caisseNoLimit.getFreeNumPlaceInCaisse());
-    Rangement caisse = new Rangement("caisse", 2, 1, true, 1);
+    Rangement caisse = new Rangement.CaisseBuilder("caisse").nb_emplacement(2).start_caisse(1).limit(true).limite_caisse(1).build();
     assertTrue(caisse.hasFreeSpaceInCaisse(1));
     Bouteille b = new Bouteille();
     b.setNom("B22");
@@ -578,7 +578,7 @@ class RangementTest {
 
   @Test
   void complexCaisse() {
-    Rangement caisse = new Rangement("caisse", 1, 0, true, 3);
+    Rangement caisse = new Rangement.CaisseBuilder("caisse").nb_emplacement(1).start_caisse(0).limit(true).limite_caisse(3).build();
     assertTrue(caisse.hasFreeSpaceInCaisse(0));
     Bouteille b = new Bouteille();
     b.setNom("B24");
@@ -613,8 +613,8 @@ class RangementTest {
     assertTrue(armoire2x2_3x22545Builder.isSame(armoire2x2_3x22545Builder));
     assertTrue(armoire2x2_3x22545Builder.isSame(armoire2x2_3x22545));
     assertFalse(armoire1x3x3.isSame(armoire2x2_3x22545));
-    Rangement r = new Rangement("r");
-    Rangement r1 = new Rangement("r");
+    Rangement r = new Rangement.CaisseBuilder("r").build();
+    Rangement r1 = new Rangement.CaisseBuilder("r").build();
     assertTrue(r.isSame(r1));
     LinkedList<Part> list = new LinkedList<>();
     Part partie = new Part(0);

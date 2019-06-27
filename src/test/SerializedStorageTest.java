@@ -112,17 +112,20 @@ class SerializedStorageTest {
     serializedStorage.getListBouteilles().getBouteille().add(bouteille3);
     serializedStorage.getListBouteilles().getBouteille().add(bouteille4);
     serializedStorage.getListBouteilles().getBouteille().add(bouteille5);
+    serializedStorage.getListBouteilles().getBouteille().add(new Bouteille(bouteille5));
     final LinkedList<Rangement> cave = Program.getCave();
     final Rangement caisse = new Rangement.CaisseBuilder("place3").nb_emplacement(10).build();
+    final Rangement place = new Rangement.RangementBuilder("place").nb_emplacement(new int[] {3}).sameColumnsNumber(new int[] {3}).build();
     cave.add(caisse);
+    cave.add(place);
 
   }
 
   @Test
   void deleteWine() {
-    assertEquals(6, serializedStorage.getListBouteilles().getBouteille().size());
+    assertEquals(7, serializedStorage.getListBouteilles().getBouteille().size());
     serializedStorage.deleteWine(bouteille3);
-    assertEquals(5, serializedStorage.getListBouteilles().getBouteille().size());
+    assertEquals(6, serializedStorage.getListBouteilles().getBouteille().size());
     for (Bouteille b : serializedStorage.getListBouteilles().getBouteille()) {
       assertNotEquals("bouteille3", b.getNom());
     }
@@ -139,6 +142,28 @@ class SerializedStorageTest {
         .vignoble("fr", "vignoble", "aoc", "igp", "aop")
         .build();
     serializedStorage.addWine(bouteille6);
+    final Bouteille bouteille7 = new Bouteille.BouteilleBuilder("bouteille7")
+        .place("place")
+        .numPlace(1)
+        .line(2)
+        .column(3)
+        .type("type")
+        .annee("2018")
+        .color("Red")
+        .comment("comment")
+        .maturity("maturity")
+        .parker("100")
+        .price("123")
+        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+        .build();
+    serializedStorage.addWine(bouteille7);
+    assertEquals(8, serializedStorage.getListBouteilles().getBouteille().size());
+    serializedStorage.deleteWine(bouteille6);
+    serializedStorage.deleteWine(bouteille7);
+    assertEquals(6, serializedStorage.getListBouteilles().getBouteille().size());
+    serializedStorage.deleteWine(bouteille4);
+    serializedStorage.deleteWine(bouteille5);
+    assertEquals(4, serializedStorage.getListBouteilles().getBouteille().size());
   }
 
 }

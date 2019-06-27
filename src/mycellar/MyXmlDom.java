@@ -23,8 +23,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @since 01/12/18
- * @version 2.4
+ * @since 27/06/19
+ * @version 2.5
  */
 
 public class MyXmlDom {
@@ -80,7 +80,12 @@ public class MyXmlDom {
 							Debug("WARNING: Rangement name '"+sName+"' already used!");
 						}
 						else {
-							rangementList.add(new Rangement( sName, nPlace, nNumStart, bLimit, nNbLimit));
+							final Rangement caisse = new Rangement.CaisseBuilder(sName)
+									.nb_emplacement(nPlace)
+									.start_caisse(nNumStart)
+									.limit(bLimit)
+									.limite_caisse(nNbLimit).build();
+							rangementList.add(caisse);
 							names.add(sName);
 						}
 					}
@@ -88,9 +93,7 @@ public class MyXmlDom {
 						// C'est un rangement complexe
 						// ___________________________
 
-						int nb_colonnes[];
 						final LinkedList<Part> listPart = new LinkedList<>();
-						final List<Integer> oVector = new LinkedList<>();
 						NodeList internalPlaces = place.getElementsByTagName("internal-place");
 						for (int j = 0; j < internalPlaces.getLength(); j++) {
 							Node nInternal = internalPlaces.item(j);
@@ -107,19 +110,14 @@ public class MyXmlDom {
 										Element oLine = (Element)nTempLine;
 										int nColumn = Integer.parseInt(oLine.getAttribute("NbColumn"));
 										part.getRow(k).setCol(nColumn);
-										oVector.add(nColumn);
 									}
 								}
 							}
 						}
-						nb_colonnes = new int[oVector.size()];
-						for (int j=0; j<nb_colonnes.length; j++) {
-							nb_colonnes[j] = oVector.get(j);
-						}
+
 						if(names.contains(sName)) {
 							Debug("WARNING: Rangement name '"+sName+"' already used!");
-						}
-						else {
+						} else {
 							names.add(sName);
 							rangementList.add(new Rangement(sName, listPart));
 						}

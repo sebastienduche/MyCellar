@@ -20,8 +20,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 11/01/19
+ * @version 0.4
+ * @since 27/06/19
  */
 public class RangementCreationDialog extends JDialog {
 
@@ -71,7 +71,8 @@ public class RangementCreationDialog extends JDialog {
       if (row == 0) {
         int part = parts.isEmpty() ? 1 : parts.size();
         Debug("Creating place: " + name + " parts: " + part);
-        rangement = new Rangement(name, parts.isEmpty() ? 1 : parts.size(), 0, false, -1);
+        rangement = new Rangement.CaisseBuilder(name)
+            .nb_emplacement(parts.isEmpty() ? 1 : parts.size()).build();
       } else {
         Debug("Creating complex place: " + name + " parts: " + parts);
         rangement = new Rangement(name, parts);

@@ -8,8 +8,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 27/04/19
+ * @version 1.7
+ * @since 27/06/19
  */
 
 public interface Storage {
@@ -29,7 +29,7 @@ public interface Storage {
 	boolean deleteWine(Bouteille oB);
 
 	boolean addWine(Bouteille oB);
-	int getAllNblign();
+	int getBottlesCount();
 
 	LinkedList<Bouteille> getAllList();
 	void close();

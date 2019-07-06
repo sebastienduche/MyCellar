@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.actions.ExportPDFAction;
+import mycellar.actions.OpenWorkSheetAction;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarLabel;
@@ -45,8 +46,8 @@ import java.util.prefs.Preferences;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 25.4
- * @since 10/04/19
+ * @version 25.5
+ * @since 05/07/19
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -110,6 +111,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private final JMenuItem modifPlace = new JMenuItem();
 	private final JMenuItem delPlace = new JMenuItem();
 	private final JMenuItem showFile = new JMenuItem();
+	private final JMenuItem showWorksheet = new JMenuItem();
 	private final JMenuItem addWine = new JMenuItem();
 	private final JMenuItem searchWine = new JMenuItem();
 	private final JMenuItem Aide = new JMenuItem();
@@ -289,6 +291,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			jMenuImportXmlPlaces.setEnabled(false);
 			jMenuExportXml.setEnabled(false);
 			showFile.setEnabled(false);
+			showWorksheet.setEnabled(false);
 		} else if (Program.GetCaveLength() == 0) {
 			Program.getCave().add(Program.DEFAULT_PLACE);
 		}
@@ -329,6 +332,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		jMenuImportXmlPlaces.setEnabled(enable);
 		jMenuExportXml.setEnabled(enable);
 		showFile.setEnabled(enable);
+		showWorksheet.setEnabled(enable);
 		tocreate.setEnabled(enable);
 		history.setEnabled(enable);
 		vignobles.setEnabled(enable);
@@ -625,6 +629,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		openFile.setText(Program.getLabel("Infos372"));
 		save.setText(Program.getLabel("Infos326"));
 		showFile.setText(Program.getLabel("Infos324"));
+		showWorksheet.setText(Program.getLabel("ShowFile.Worksheet"));
 		searchWine.setText(Program.getLabel("Infos006"));
 
 		// sous
@@ -847,6 +852,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		jMenuCut.setAction(cutAction);
 		jMenuCopy.setAction(copyAction);
 		jMenuPaste.setAction(pasteAction);
+		showWorksheet.setAction(new OpenWorkSheetAction(new LinkedList<>()));
 		
 		JToolBar toolBar = new JToolBar();
 		toolBar.add(newButton);
@@ -928,6 +934,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		menuAbout.addSeparator();
 		menuAbout.add(news);
 		menuTools.add(parameter);
+		menuTools.add(showWorksheet);
 		menuTools.add(vignobles);
 		menuTools.add(bottleCapacity);
 		menuTools.add(history);
@@ -1169,6 +1176,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 		if (Program.isSelectedTab(Program.showerrors)) {
 			Program.showerrors.updateView();
+		}
+		if (Program.isSelectedTab(Program.showworksheet)) {
+			Program.showworksheet.refresh();
+			Program.showworksheet.updateView();
 		}
 		if (Program.isSelectedTab(Program.stat))
 			Program.stat.updateView();

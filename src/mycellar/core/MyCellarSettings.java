@@ -6,8 +6,8 @@ package mycellar.core;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 28/12/18
+ * @version 0.2
+ * @since 05/07/19
  */
 
 public final class MyCellarSettings {
@@ -65,6 +65,7 @@ public final class MyCellarSettings {
   public static final String EXPORT_DEFAULT = "EXPORT_DEFAULT";
   public static final String CREATE_TAB_DEFAULT = "CREATE_TAB_DEFAULT";
   public static final String EXPORT_CSV = "EXPORT_CSV";
+  public static final String SHOWFILE_COLUMN_WORK = "SHOWFILE_COLUMN_WORK";
   static final String ANNEE_AUTO_FALSE = "ANNEE_AUTO_FALSE";
   static final String ANNEE_AUTO_TRUE = "ANNEE_AUTO_TRUE";
 

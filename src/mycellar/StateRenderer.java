@@ -11,8 +11,8 @@ import java.awt.Component;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 02/03/18
+ * @version 0.4
+ * @since 05/07/19
  */
 public class StateRenderer extends JCheckBox implements TableCellRenderer {
 
@@ -22,6 +22,13 @@ public class StateRenderer extends JCheckBox implements TableCellRenderer {
    */
   public StateRenderer() {
     super();
+  }
+
+  /**
+   * StateRenderer
+   */
+  public StateRenderer(String label) {
+    super(label);
   }
 
   /**

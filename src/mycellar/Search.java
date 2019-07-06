@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.actions.OpenWorkSheetAction;
 import mycellar.core.ICutCopyPastable;
 
 import mycellar.core.MyCellarButton;
@@ -45,8 +46,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 19.8
- * @since 20/06/19
+ * @version 19.9
+ * @since 05/07/19
  */
 public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable {
 
@@ -81,6 +82,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 	private final String label_num_empl = Program.getLabel("Infos102"); //"Tous les vins du lieu");
 	private final String label_ligne = Program.getLabel("Infos103"); //"Tous les vins de la ligne");
 	private final MyCellarCheckBox selectall = new MyCellarCheckBox();
+	private final MyCellarButton addToWorksheet = new MyCellarButton(MyCellarImage.WORK);
 	private final MyCellarCheckBox empty_search = new MyCellarCheckBox();
 	private final MouseListener popup_l = new PopupListener();
 	private final JTabbedPane tabbedPane = new JTabbedPane();
@@ -124,6 +126,8 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		selectall.setHorizontalTextPosition(SwingConstants.LEFT);
 
 		selectall.addActionListener(this::selectall_actionPerformed);
+		addToWorksheet.setText(Program.getLabel("Search.AddWorksheet"));
+		addToWorksheet.addActionListener(this::addToWorksheet_actionPerformed);
 		empty_search.addActionListener(this::empty_search_actionPerformed);
 		export.addActionListener(this::export_actionPerformed);
 		suppr.setText(Program.getLabel("Infos051")); //"Supprimer");
@@ -232,7 +236,8 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		add(tabbedPane,"growx");
 		add(new PanelOption(),"wrap");
 		add(scrollpane, "grow, wrap, span 2");
-		add(selectall,"wrap, span 2, alignx right");
+		add(addToWorksheet,"alignx left, aligny top");
+		add(selectall,"wrap, alignx right, aligny top");
 
 		add(textControl2, "wrap, span 2, alignx center");
 		add(resul_txt,"wrap, span 2, alignx center");
@@ -279,14 +284,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 	private void suppr_actionPerformed(ActionEvent e) {
 		try {
 			Debug("Deleting...");
-			int max_row = MODEL.getRowCount();
-			final LinkedList<Bouteille> listToSupp = new LinkedList<>();
-			// Récupération du nombre de lignes sélectionnées
-			for (int i=0; i<max_row; i++) {
-				if ((boolean) MODEL.getValueAt(i, TableValues.ETAT)) {
-					listToSupp.add(MODEL.getBouteille(i));
-				}
-			}
+			final LinkedList<Bouteille> listToSupp = getSelectedBouteilles();
 
 			if (listToSupp.isEmpty()) {
 				//"Aucun vin à supprimer! / Veuillez sélectionner les vins à supprimer.");
@@ -513,6 +511,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		suppr.setEnabled(false);
 		export.setEnabled(false);
 		selectall.setSelected(false);
+		addToWorksheet.setEnabled(false);
 		resul_txt.setText("");
 		MODEL.removeAll();
 		Debug("emptyRows End");
@@ -665,6 +664,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			export.setEnabled(false);
 			selectall.setSelected(false);
 			selectall.setEnabled(false);
+			addToWorksheet.setEnabled(false);
 			if (empty_search.isSelected()) {
 				emptyRows();
 			}
@@ -695,6 +695,7 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 			cherche.setEnabled(true);
 			vider.setEnabled(true);
 			selectall.setEnabled(true);
+			addToWorksheet.setEnabled(true);
 		}
 		catch (Exception exc) {
 			Program.showException(exc);
@@ -1016,6 +1017,35 @@ public class Search extends JPanel implements Runnable, ITabListener, ICutCopyPa
 		}
 		table.updateUI();
 		Debug("selectall_actionPerforming... Done");
+	}
+
+	/**
+	 * addToWorksheet_actionPerformed: Permet d'ajouter des bouteilles a la feuille de travail
+	 *
+	 * @param e ActionEvent
+	 */
+	private void addToWorksheet_actionPerformed(ActionEvent e) {
+		Debug("addToWorksheet_actionPerforming...");
+		final LinkedList<Bouteille> list = getSelectedBouteilles();
+
+		if (list.isEmpty()) {
+			Erreur.showSimpleErreur(Program.getError("Error.NoWineSelected"), true);
+			return;
+		}
+		new OpenWorkSheetAction(list).actionPerformed(null);
+		Debug("addToWorksheet_actionPerforming... Done");
+	}
+
+	private LinkedList<Bouteille> getSelectedBouteilles() {
+		int max_row = MODEL.getRowCount();
+		final LinkedList<Bouteille> list = new LinkedList<>();
+		// Récupération du nombre de lignes sélectionnées
+		for (int i = 0; i < max_row; i++) {
+			if ((boolean) MODEL.getValueAt(i, TableValues.ETAT)) {
+				list.add(MODEL.getBouteille(i));
+			}
+		}
+		return list;
 	}
 
 	/**

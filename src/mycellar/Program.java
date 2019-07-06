@@ -79,8 +79,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 20.6
- * @since 27/04/19
+ * @version 20.7
+ * @since 05/07/19
  */
 
 public class Program {
@@ -116,6 +116,7 @@ public class Program {
 	static Stat stat = null;
 
 	public static ShowFile showerrors = null;
+	public static ShowFile showworksheet = null;
 	public static AddVin addWine = null;
 
 	static final PanelInfos PANEL_INFOS = new PanelInfos();
@@ -1539,6 +1540,9 @@ public class Program {
 		if (showerrors != null) {
 			showerrors.setUpdateView();
 		}
+		if (showworksheet != null) {
+			showworksheet.setUpdateView();
+		}
 	}
 
 	static void updateManagePlacePanel() {
@@ -1715,6 +1719,14 @@ public class Program {
 
 	public static String getShowColumns() {
 		return getCaveConfigString(MyCellarSettings.SHOWFILE_COLUMN, "");
+	}
+
+	public static void saveShowColumnsWork(String value) {
+		putCaveConfigString(MyCellarSettings.SHOWFILE_COLUMN_WORK, value);
+	}
+
+	public static String getShowColumnsWork() {
+		return getCaveConfigString(MyCellarSettings.SHOWFILE_COLUMN_WORK, "");
 	}
 
 	static void saveHTMLColumns(List<MyCellarFields> cols) {

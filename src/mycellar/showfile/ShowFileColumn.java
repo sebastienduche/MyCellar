@@ -12,18 +12,18 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 05/07/19
+ * @version 0.7
+ * @since 07/07/19
  */
 
-abstract class ShowFileColumn {
+abstract class ShowFileColumn<T> {
 
 	private MyCellarFields properties;
 	private int width;
 	private boolean editable;
 	private ShowFileColumn.Type type;
 	private String buttonLabel;
-	private final Map<Bouteille, Boolean> value = new HashMap<>();
+	private final Map<Bouteille, T> value = new HashMap<>();
 	
 	ShowFileColumn(MyCellarFields properties) {
 		this.properties = properties;
@@ -129,11 +129,11 @@ abstract class ShowFileColumn {
 		return true;
 	}
 
-	public boolean getMapValue(Bouteille b) {
-		return value.getOrDefault(b, false);
+	public T getMapValue(Bouteille b) {
+		return value.get(b);
 	}
 
-	public void setMapValue(Bouteille b, boolean value) {
+	public void setMapValue(Bouteille b, T value) {
 		this.value.put(b, value);
 	}
 

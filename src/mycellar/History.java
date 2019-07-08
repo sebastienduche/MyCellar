@@ -23,8 +23,8 @@ import java.util.Date;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 05/07/19
+ * @version 1.0
+ * @since 08/07/19
  */
 
 /**
@@ -69,6 +69,7 @@ public class History {
     public static final int MODIFY = 1;
     public static final int DEL = 2;
     public static final int VALIDATED = 3;
+    public static final int TOCHECK = 4;
 
 	/**
    * History: Contructeur avec une bouteille et un type d'action

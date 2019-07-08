@@ -61,14 +61,15 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 6.2
- * @since 07/07/19
+ * @version 6.3
+ * @since 08/07/19
  */
 
 public class ShowFile extends JPanel implements ITabListener {
 
   private static final MyCellarEnum NONE = new MyCellarEnum(0, "");
   private static final MyCellarEnum VALIDATED = new MyCellarEnum(1, Program.getLabel("History.Validated"));
+  private static final MyCellarEnum TOCHECK = new MyCellarEnum(2, Program.getLabel("History.ToCheck"));
 
   private static final long serialVersionUID = 1265789936970092250L;
   private final MyCellarLabel m_oTitleLabel = new MyCellarLabel();
@@ -374,19 +375,26 @@ public class ShowFile extends JPanel implements ITabListener {
       }
     };
     columns.add(modifyButtonColumn);
-    checkedButtonColumn = new ShowFileColumn<MyCellarEnum>(100, true, true, Program.getLabel("ShowFile.Valid")) {
+    checkedButtonColumn = new ShowFileColumn<>(100, true, true, Program.getLabel("ShowFile.Valid")) {
       @Override
       void setValue(Bouteille b, Object value) {
     	  MyCellarEnum status = (MyCellarEnum) value; 
         setMapValue(b, status);
         if (VALIDATED.equals(status)) {
           Program.getStorage().addHistory(History.VALIDATED, b);
+        } else if (TOCHECK.equals(status)) {
+          Program.getStorage().addHistory(History.TOCHECK, b);
         }
       }
 
       @Override
       Object getDisplayValue(Bouteille b) {
         return getMapValue(b);
+      }
+
+      @Override
+      public String getLabel() {
+        return Program.getLabel("ShowFile.Status");
       }
     };
     columns.add(checkedButtonColumn);
@@ -441,6 +449,7 @@ public class ShowFile extends JPanel implements ITabListener {
     
     m_oStatusCbx.addItem(NONE);
     m_oStatusCbx.addItem(VALIDATED);
+    m_oStatusCbx.addItem(TOCHECK);
 
     List<ShowFileColumn<?>> cols = new LinkedList<>(columns);
     // Remplissage de la table

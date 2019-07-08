@@ -12,8 +12,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 07/07/19
+ * @version 0.8
+ * @since 08/07/19
  */
 
 abstract class ShowFileColumn<T> {
@@ -21,7 +21,7 @@ abstract class ShowFileColumn<T> {
 	private MyCellarFields properties;
 	private int width;
 	private boolean editable;
-	private ShowFileColumn.Type type;
+	private Type type;
 	private String buttonLabel;
 	private final Map<Bouteille, T> value = new HashMap<>();
 	

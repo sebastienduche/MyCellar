@@ -14,8 +14,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.0
- * @since 05/07/19
+ * @version 2.1
+ * @since 08/07/19
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -97,6 +97,10 @@ class TableHistoryValues extends AbstractTableModel {
 	            break;
             case History.VALIDATED:
               sType = Program.getLabel("History.Validated");
+              sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), Program.convertStringFromHTMLString(b.getEmplacement()));
+              break;
+            case History.TOCHECK:
+              sType = Program.getLabel("History.ToCheck");
               sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), Program.convertStringFromHTMLString(b.getEmplacement()));
               break;
 	          case History.MODIFY:

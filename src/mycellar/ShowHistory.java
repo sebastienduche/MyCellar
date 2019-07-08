@@ -24,8 +24,8 @@ import java.util.LinkedList;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 3.5
- * @since 05/07/19
+ * @version 3.6
+ * @since 08/07/19
  */
 
 public class ShowHistory extends JPanel implements ITabListener {
@@ -42,6 +42,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 		m_oFilterCbx.addItem(Program.getLabel("Infos346"));
 		m_oFilterCbx.addItem(Program.getLabel("Infos347"));
 		m_oFilterCbx.addItem(Program.getLabel("History.Validated"));
+		m_oFilterCbx.addItem(Program.getLabel("History.ToCheck"));
 		m_oFilterCbx.addItemListener(this::filter_itemStateChanged);
 
 		// Remplissage de la table

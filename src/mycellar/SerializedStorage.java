@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.5
- * @since 05/07/19
+ * @version 5.6
+ * @since 08/07/19
  */
 
 public class SerializedStorage implements Storage {
@@ -95,6 +95,7 @@ public class SerializedStorage implements Storage {
 		 * 1 Clear Modify
 		 * 2 Clear Del
 		 * 3 Clear Validated
+		 * 4 Clear To Check
 		 */
 		Debug("Program: Clearing history: "+value);
 		String sValue;
@@ -102,16 +103,19 @@ public class SerializedStorage implements Storage {
 			case -1:
 				sValue = Program.getError("Error182");
 				break;
-			case 0:
+			case History.ADD:
 				sValue = Program.getError("Error189");
 				break;
-			case 1:
+			case History.MODIFY:
 				sValue = Program.getError("Error191");
 				break;
-			case 2:
+			case History.DEL:
 				sValue = Program.getError("Error190");
 				break;
-			case 3:
+			case History.VALIDATED:
+				sValue = Program.getError("Error.HistoryValidatedDelete");
+				break;
+			case History.TOCHECK:
 				sValue = Program.getError("Error.HistoryValidatedDelete");
 				break;
 			default:

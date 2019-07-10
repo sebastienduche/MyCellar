@@ -2,6 +2,7 @@ package mycellar.showfile;
 
 
 import mycellar.BottleColor;
+import mycellar.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.History;
@@ -48,6 +49,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -61,8 +63,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 6.3
- * @since 08/07/19
+ * @version 6.4
+ * @since 10/07/19
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -381,15 +383,20 @@ public class ShowFile extends JPanel implements ITabListener {
     	  MyCellarEnum status = (MyCellarEnum) value; 
         setMapValue(b, status);
         if (VALIDATED.equals(status)) {
+          b.setStatus(BottlesStatus.VERIFIED.name());
+          b.setLastModified(LocalDateTime.now());
           Program.getStorage().addHistory(History.VALIDATED, b);
         } else if (TOCHECK.equals(status)) {
+          b.setStatus(BottlesStatus.TOCHECK.name());
+          b.setLastModified(LocalDateTime.now());
           Program.getStorage().addHistory(History.TOCHECK, b);
         }
       }
 
       @Override
       Object getDisplayValue(Bouteille b) {
-        return getMapValue(b);
+        final MyCellarEnum mapValue = getMapValue(b);
+        return mapValue;
       }
 
       @Override

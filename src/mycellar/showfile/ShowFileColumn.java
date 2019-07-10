@@ -12,8 +12,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 08/07/19
+ * @version 0.9
+ * @since 10/07/19
  */
 
 abstract class ShowFileColumn<T> {
@@ -23,7 +23,7 @@ abstract class ShowFileColumn<T> {
 	private boolean editable;
 	private Type type;
 	private String buttonLabel;
-	private final Map<Bouteille, T> value = new HashMap<>();
+	private final Map<Integer, T> value = new HashMap<>();
 	
 	ShowFileColumn(MyCellarFields properties) {
 		this.properties = properties;
@@ -64,33 +64,33 @@ abstract class ShowFileColumn<T> {
 		}
 	}
 	
-	public String getLabel() {
+	String getLabel() {
 		if (!isDefault()) {
 			return "";
 		}
 		return properties.toString();
 	}
 
-	public MyCellarFields getField() {
+	MyCellarFields getField() {
 		if (properties == null) {
 			return MyCellarFields.EMPTY;
 		}
 		return properties;
 	}
 
-	public void setField(MyCellarFields properties) {
+	void setField(MyCellarFields properties) {
 		this.properties = properties;
 	}
 
-	public int getWidth() {
+	int getWidth() {
 		return width;
 	}
 
-	public void setWidth(int width) {
+	void setWidth(int width) {
 		this.width = width;
 	}
 
-	public boolean isEditable() {
+	boolean isEditable() {
 		return editable;
 	}
 
@@ -101,27 +101,27 @@ abstract class ShowFileColumn<T> {
 	abstract void setValue(Bouteille b, Object value);
 	abstract Object getDisplayValue(Bouteille b);
 
-	public boolean isButton() {
+	boolean isButton() {
 		return type == Type.BUTTON;
 	}
 
-	public boolean isCheckBox() {
+	boolean isCheckBox() {
 		return type == Type.CHECK;
 	}
 
-	public boolean isDefault() {
+	boolean isDefault() {
 		return type == Type.DEFAULT;
 	}
 
-	public void seType(Type type) {
+	void seType(Type type) {
 		this.type = type;
 	}
 
-	public String getButtonLabel() {
+	String getButtonLabel() {
 		return buttonLabel;
 	}
 
-	public void setButtonLabel(String buttonLabel) {
+	void setButtonLabel(String buttonLabel) {
 		this.buttonLabel = buttonLabel;
 	}
 
@@ -129,12 +129,12 @@ abstract class ShowFileColumn<T> {
 		return true;
 	}
 
-	public T getMapValue(Bouteille b) {
-		return value.get(b);
+	T getMapValue(Bouteille b) {
+		return value.get(b.getId());
 	}
 
-	public void setMapValue(Bouteille b, T value) {
-		this.value.put(b, value);
+	void setMapValue(Bouteille b, T value) {
+		this.value.put(b.getId(), value);
 	}
 
 	public enum Type {

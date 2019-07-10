@@ -34,8 +34,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.1
- * @since 27/04/19
+ * @version 5.2
+ * @since 10/07/19
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -332,6 +332,8 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_maturity.setText(bottle.getMaturity());
 			m_parker.setText(bottle.getParker());
 			m_colorList.setSelectedItem(BottleColor.getColor(bottle.getColor()));
+			statusList.setSelectedItem(BottlesStatus.getStatus(bottle.getStatus()));
+			lastModified.setText(bottle.getLastModified());
 			panelVignobles.initializeVignobles(bottle);
 
 			selectPlace(bottle);
@@ -380,6 +382,10 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		String color = "";
 		if (m_colorList.getSelectedItem() != null) {
 			color = ((BottleColor)m_colorList.getSelectedItem()).name();
+		}
+		String status = BottlesStatus.MODIFIED.name();
+		if (statusList.isModified() && statusList.getSelectedItem() != null) {
+			status = ((BottlesStatus)statusList.getSelectedItem()).name();
 		}
 		String country = panelVignobles.getCountry();
 		String vignoble = panelVignobles.getVignoble();
@@ -467,6 +473,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_laBouteille.setPrix(prix);
 		m_laBouteille.setType(demie);
 		m_laBouteille.setVignoble(new Vignoble(country, vignoble, aoc, igp, null));
+		m_laBouteille.setStatus(status);
 		CountryVignobles.addVignobleFromBottle(m_laBouteille);
 		CountryVignobles.setRebuildNeeded();
 		if(isCaisse) {
@@ -494,6 +501,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		}
 
 
+		m_laBouteille.setModified();
 		Program.getStorage().addHistory(History.MODIFY, m_laBouteille);
 
 		Rangement rangement = m_laBouteille.getRangement();
@@ -522,6 +530,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_maturity.setModified(false);
 		m_parker.setModified(false);
 		m_colorList.setModified(false);
+		statusList.setModified(false);
 		m_price.setModified(false);
 		m_lieu.setModified(false);
 		m_num_lieu.setModified(false);
@@ -560,6 +569,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		modified |= m_maturity.isModified();
 		modified |= m_parker.isModified();
 		modified |= m_colorList.isModified();
+		modified |= statusList.isModified();
 		modified |= m_price.isModified();
 		modified |= m_lieu.isModified();
 		modified |= m_num_lieu.isModified();
@@ -577,6 +587,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		Debug("Quitting...");
 		RangementUtils.putTabStock();
 		m_colorList.setSelectedItem(BottleColor.NONE);
+		statusList.setSelectedItem(BottlesStatus.NONE);
 		name.setSelectedIndex(0);
 		m_year.setText("");
 		m_parker.setText("");

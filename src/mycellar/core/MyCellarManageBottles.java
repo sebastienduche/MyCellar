@@ -1,6 +1,7 @@
 package mycellar.core;
 
 import mycellar.BottleColor;
+import mycellar.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.JCompletionComboBox;
@@ -29,8 +30,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.3
- * @since 27/04/19
+ * @version 2.4
+ * @since 10/07/19
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -47,14 +48,16 @@ public abstract class MyCellarManageBottles extends JPanel {
 	private final MyCellarLabel m_labelNbBottle = new MyCellarLabel();
 	private final MyCellarLabel m_labelMaturity = new MyCellarLabel();
 	private final MyCellarLabel m_labelParker = new MyCellarLabel();
+	private final MyCellarLabel labelStatus = new MyCellarLabel();
+	private final MyCellarLabel labelLastModified = new MyCellarLabel();
 	private final MyCellarLabel m_labelColor = new MyCellarLabel();
+	protected final MyCellarLabel lastModified = new MyCellarLabel();
 	protected final MyCellarLabel m_labelComment = new MyCellarLabel();
 	protected final MyCellarButton m_preview = new MyCellarButton();
 	protected final MyCellarLabel m_labelStillToAdd = new MyCellarLabel();
 	protected final MyCellarLabel m_end = new MyCellarLabel(); // Label pour les résultats
 	protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox();
 	protected final int SIECLE = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
-	private final Object m_objet1 = null;
 	protected final JModifyComboBox<Rangement> m_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_line = new JModifyComboBox<>();
@@ -70,6 +73,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final JModifyTextField m_maturity = new JModifyTextField();
 	protected final JModifyTextField m_parker = new JModifyTextField();
 	protected final JModifyComboBox<BottleColor> m_colorList = new JModifyComboBox<>();
+	protected final JModifyComboBox<BottlesStatus> statusList = new JModifyComboBox<>();
 	protected JModifyTextArea m_comment = new JModifyTextArea();
 	protected final JScrollPane m_js_comment = new JScrollPane(m_comment);
 	protected final MyCellarButton m_manageContenance = new MyCellarButton();
@@ -99,6 +103,8 @@ public abstract class MyCellarManageBottles extends JPanel {
 		m_labelComment.setText(Program.getLabel("Infos137")); //"Commentaires");
 		m_labelMaturity.setText(Program.getLabel("Infos391")); // Date de conso
 		m_labelParker.setText(Program.getLabel("Infos392")); // Notation Parker
+		labelStatus.setText(Program.getLabel("MyCellarManageBottles.status"));
+		labelLastModified.setText(Program.getLabel("MyCellarManageBottles.lastModified"));
 		m_labelColor.setText(Program.getLabel("AddVin.Color"));
 		m_manageContenance.setText(Program.getLabel("Infos400"));
 		m_preview.setMnemonic(PREVIEW);
@@ -110,6 +116,12 @@ public abstract class MyCellarManageBottles extends JPanel {
 		m_colorList.addItem(BottleColor.RED);
 		m_colorList.addItem(BottleColor.PINK);
 		m_colorList.addItem(BottleColor.WHITE);
+
+		statusList.addItem(BottlesStatus.NONE);
+		statusList.addItem(BottlesStatus.CREATED);
+		statusList.addItem(BottlesStatus.MODIFIED);
+		statusList.addItem(BottlesStatus.VERIFIED);
+		statusList.addItem(BottlesStatus.TOCHECK);
 	}
 	
 	protected void annee_auto_actionPerformed(ActionEvent e) {
@@ -176,6 +188,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		m_maturity.setEditable(enable);
 		m_parker.setEditable(enable);
 		m_colorList.setEnabled(enable);
+		statusList.setEnabled(enable);
 		m_comment.setEditable(enable);
 		m_annee_auto.setEnabled(enable);
 		m_noYear.setEnabled(enable);
@@ -470,7 +483,11 @@ public abstract class MyCellarManageBottles extends JPanel {
 			add(m_devise,"gapleft 5px");
 			add(m_labelNbBottle,"split, span 2");
 			add(m_nb_bottle,"width min(50,10%)");
-			add(m_labelStillToAdd,"");
+			add(m_labelStillToAdd,"wrap");
+			add(labelStatus);
+			add(labelLastModified, "wrap");
+			add(statusList, "width min(150,30%)");
+			add(lastModified);
 		}
 	}
 	

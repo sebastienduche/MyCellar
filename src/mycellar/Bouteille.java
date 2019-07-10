@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,8 +31,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.6
- * @since 15/03/19
+ * @version 4.7
+ * @since 10/07/19
 
  * <p>Java class for anonymous complex type.
  * 
@@ -78,6 +80,8 @@ import java.util.stream.Collectors;
 		"parker",
 		"vignoble",
 		"color",
+		"status",
+		"lastModified"
 })
 @XmlRootElement(name = "Bouteille")
 public class Bouteille implements Serializable{
@@ -110,6 +114,10 @@ public class Bouteille implements Serializable{
 	private Vignoble vignoble;
 	@XmlElement(required = false)
 	private String color;
+	@XmlElement(required = false)
+	private String status;
+	@XmlElement(required = false)
+	private String lastModified;
 
 	static final int NON_VINTAGE_INT = 9999;
 	public static final String NON_VINTAGE = "NV";
@@ -120,6 +128,8 @@ public class Bouteille implements Serializable{
 	public Bouteille() {
 		nom = type = emplacement = prix = comment = annee = maturity = parker = color = "";
 		vignoble = null;
+		status = "";
+		lastModified = null;
 	}
 
 	/**
@@ -140,6 +150,8 @@ public class Bouteille implements Serializable{
 		parker = b.getParker();
 		color = b.getColor();
 		vignoble = b.getVignoble();
+		status = b.getStatus();
+		lastModified = b.getLastModified();
 	}
 
 	public Bouteille(BouteilleBuilder builder){
@@ -161,6 +173,8 @@ public class Bouteille implements Serializable{
 		parker = builder.parker;
 		color = builder.color;
 		vignoble = builder.vignoble;
+		status = builder.status;
+		lastModified = builder.lastModified;
 	}
 	
 	public int getId() {
@@ -462,6 +476,24 @@ public class Bouteille implements Serializable{
 		 this.vignoble = vignoble;
 	 }
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(LocalDateTime lastModified) {
+		String GENERAL_DATE_FORMAT_DD_MM_YYYY_HH_MM = "dd-MM-yyyy HH:mm";
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(GENERAL_DATE_FORMAT_DD_MM_YYYY_HH_MM);
+		this.lastModified = dateFormat.format(lastModified);
+	}
+
 
 	 public Rangement getRangement() {
 		 return Program.getCave(emplacement);
@@ -583,7 +615,24 @@ public class Bouteille implements Serializable{
 		 setType(b.getType());
 		 setColor(b.getColor());
 		 setVignoble(b.getVignoble());
+		 if (!b.hasStatus()) {
+			 setStatus(BottlesStatus.MODIFIED.name());
+		 }
+		 setLastModified(LocalDateTime.now());
 	 }
+
+	 public void setModified() {
+	 	setLastModified(LocalDateTime.now());
+	 }
+
+	void setCreated() {
+		setStatus(BottlesStatus.CREATED.name());
+		setLastModified(LocalDateTime.now());
+	}
+
+	boolean hasStatus() {
+		return !status.equals(BottlesStatus.NONE.name());
+	}
 
 	 public void setValue(MyCellarFields field, String value) {
 		 switch (field) {
@@ -666,7 +715,7 @@ public class Bouteille implements Serializable{
 	 public boolean isInTemporaryStock() {
 		return Program.TEMP_PLACE.equalsIgnoreCase(emplacement);
 	}
-	 
+
   static Bouteille getBouteilleFromXML(Element bouteilleElem) {
     NodeList nodeId = bouteilleElem.getElementsByTagName("id");
     final int id = Integer.parseInt(nodeId.item(0).getTextContent());
@@ -698,6 +747,16 @@ public class Bouteille implements Serializable{
     final Element vignoble = (Element) nodeVignoble.item(0);
     NodeList nodeCountry = vignoble.getElementsByTagName("country");
     final String country = nodeCountry.item(0).getTextContent();
+		NodeList nodeStatus = vignoble.getElementsByTagName("status");
+		String status = "";
+		if (nodeStatus.getLength() > 0) {
+			status = nodeStatus.item(0).getTextContent();
+		}
+		NodeList nodeLAstModified = vignoble.getElementsByTagName("lastModified");
+		String lastModifed = "";
+		if (nodeLAstModified.getLength() > 0) {
+			lastModifed = nodeLAstModified.item(0).getTextContent();
+		}
     NodeList nodeVigobleName = vignoble.getElementsByTagName("name");
     String vignobleName, AOC, IGP, AOP;
     vignobleName = AOC = AOP = IGP = "";
@@ -718,6 +777,7 @@ public class Bouteille implements Serializable{
     }
     return new Bouteille.BouteilleBuilder(name).id(id).annee(year).type(type).place(place).numPlace(numLieu)
         .line(line).column(column).price(price).comment(comment).maturity(maturity).parker(parker)
+				.status(status).lastModified(lastModifed)
         .color(color).vignoble(country, vignobleName, AOC, IGP, AOP).build();
   }
 
@@ -748,8 +808,9 @@ public class Bouteille implements Serializable{
 		 result = prime * result + ((parker == null) ? 0 : parker.hashCode());
 		 result = prime * result + ((prix == null) ? 0 : prix.hashCode());
 		 result = prime * result + ((type == null) ? 0 : type.hashCode());
-		 result = prime * result
-				 + ((vignoble == null) ? 0 : vignoble.hashCode());
+		 result = prime * result + ((vignoble == null) ? 0 : vignoble.hashCode());
+		 result = prime * result + ((status == null) ? 0 : status.hashCode());
+		 result = prime * result + ((lastModified == null) ? 0 : lastModified.hashCode());
 		 return result;
 	 }
 
@@ -820,13 +881,22 @@ public class Bouteille implements Serializable{
 				 return false;
 		 } else if (!vignoble.equals(other.vignoble))
 			 return false;
+		 if (status == null) {
+			 if (other.status != null)
+				 return false;
+		 } else if (!status.equals(other.status))
+			 return false;
+		 if (lastModified == null) {
+			 if (other.lastModified != null)
+				 return false;
+		 } else if (!lastModified.equals(other.lastModified))
+			 return false;
 		 return true;
 	 }
 
 
-
-	 public static class BouteilleBuilder {
-	 	private int id;
+	public static class BouteilleBuilder {
+		 private int id;
 		 private final String nom;
 		 private String annee;
 		 private String type;
@@ -840,12 +910,16 @@ public class Bouteille implements Serializable{
 		 private String parker;
 		 private String color;
 		 private Vignoble vignoble;
+		 private String status;
+		 private String lastModified;
 
 		 public BouteilleBuilder(String nom){
 			 this.nom = nom;
 			 id = numLieu = ligne = colonne = 0;
 			 type = emplacement = prix = comment = annee = maturity = parker = color = "";
 			 vignoble = null;
+			 status = "";
+			 lastModified = null;
 		 }
 
 		 private BouteilleBuilder id(int id) {
@@ -905,6 +979,16 @@ public class Bouteille implements Serializable{
 
 		 public BouteilleBuilder color(String color) {
 			 this.color = color;
+			 return this;
+		 }
+
+		 public BouteilleBuilder status(String status) {
+			 this.status = status;
+			 return this;
+		 }
+
+		 public BouteilleBuilder lastModified(String lastModified) {
+			 this.lastModified = lastModified;
 			 return this;
 		 }
 

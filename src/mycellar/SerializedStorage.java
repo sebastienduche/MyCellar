@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 5.6
- * @since 08/07/19
+ * @version 5.7
+ * @since 10/07/19
  */
 
 public class SerializedStorage implements Storage {
@@ -116,7 +116,7 @@ public class SerializedStorage implements Storage {
 				sValue = Program.getError("Error.HistoryValidatedDelete");
 				break;
 			case History.TOCHECK:
-				sValue = Program.getError("Error.HistoryValidatedDelete");
+				sValue = Program.getError("Error.HistoryToCheckDelete");
 				break;
 			default:
 				sValue = "";
@@ -187,8 +187,11 @@ public class SerializedStorage implements Storage {
 	 */
 	@Override
 	public boolean addWine(Bouteille wine) { 
-		if(null == wine)
+		if(null == wine) {
 			return false;
+		}
+
+		wine.setModified();
 
 		Debug("AddWine: Adding bottle " + wine.getNom() + " " + wine.getAnnee() + " " + wine.getEmplacement() + " " + wine.getNumLieu() + " " + wine.getLigne() + " " + wine.getColonne());
 

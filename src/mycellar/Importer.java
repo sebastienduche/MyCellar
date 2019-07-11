@@ -57,8 +57,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 12.8
- * @since 27/06/19
+ * @version 12.9
+ * @since 11/07/19
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -162,7 +162,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		for (int i=0; i<COUNT; i++) {
 			MyCellarComboBox<MyCellarFields> combo = new MyCellarComboBox<>();
 			combo.addItem(MyCellarFields.EMPTY);
-			for(MyCellarFields field : MyCellarFields.getFieldsList()) {
+			for(MyCellarFields field : MyCellarFields.getFieldsListForImport()) {
 				combo.addItem(field);
 			}
 			if (i < COUNT - 1) {

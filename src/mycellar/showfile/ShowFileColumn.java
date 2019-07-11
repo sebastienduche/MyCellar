@@ -12,35 +12,35 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 10/07/19
+ * @version 1.0
+ * @since 11/07/19
  */
 
 abstract class ShowFileColumn<T> {
 
-	private MyCellarFields properties;
+	private MyCellarFields field;
 	private int width;
 	private boolean editable;
 	private Type type;
 	private String buttonLabel;
 	private final Map<Integer, T> value = new HashMap<>();
 	
-	ShowFileColumn(MyCellarFields properties) {
-		this.properties = properties;
+	ShowFileColumn(MyCellarFields field) {
+		this.field = field;
 		width = 100;
 		setEditable(true);
 		seType(Type.DEFAULT);
 	}
 	
-	ShowFileColumn(MyCellarFields properties, int width) {
-		this.properties = properties;
+	ShowFileColumn(MyCellarFields field, int width) {
+		this.field = field;
 		this.width = width;
 		setEditable(true);
 		seType(Type.DEFAULT);
 	}
 	
-	ShowFileColumn(MyCellarFields properties, int width, boolean editable) {
-		this.properties = properties;
+	ShowFileColumn(MyCellarFields field, int width, boolean editable) {
+		this.field = field;
 		this.width = width;
 		setEditable(editable);
 		seType(Type.DEFAULT);
@@ -68,18 +68,18 @@ abstract class ShowFileColumn<T> {
 		if (!isDefault()) {
 			return "";
 		}
-		return properties.toString();
+		return field.toString();
 	}
 
 	MyCellarFields getField() {
-		if (properties == null) {
+		if (field == null) {
 			return MyCellarFields.EMPTY;
 		}
-		return properties;
+		return field;
 	}
 
-	void setField(MyCellarFields properties) {
-		this.properties = properties;
+	void setField(MyCellarFields field) {
+		this.field = field;
 	}
 
 	int getWidth() {
@@ -98,7 +98,11 @@ abstract class ShowFileColumn<T> {
 		this.editable = editable;
 	}
 
-	abstract void setValue(Bouteille b, Object value);
+	void setValue(Bouteille b, Object value) {
+		if (value instanceof String) {
+			b.setValue(field, (String) value);
+		}
+	}
 	abstract Object getDisplayValue(Bouteille b);
 
 	boolean isButton() {
@@ -130,7 +134,13 @@ abstract class ShowFileColumn<T> {
 	}
 
 	T getMapValue(Bouteille b) {
-		return value.get(b.getId());
+		if (value.containsKey(b.getId())) {
+			return value.get(b.getId());
+		}
+		if (isCheckBox()) {
+			return (T) Boolean.FALSE;
+		}
+		return null;
 	}
 
 	void setMapValue(Bouteille b, T value) {

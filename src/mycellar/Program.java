@@ -79,8 +79,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 20.7
- * @since 05/07/19
+ * @version 20.8
+ * @since 11/07/19
  */
 
 public class Program {
@@ -1663,9 +1663,10 @@ public class Program {
 					} else {
 						row.addCell("");
 					}
-				}
-				else if(column.getField().equals(MyCellarFields.COLOR)) {
+				} else if(column.getField().equals(MyCellarFields.COLOR)) {
 					row.addCell(BottleColor.getColor(b.getColor()).toString());
+				}	else if(column.getField().equals(MyCellarFields.STATUS)) {
+					row.addCell(BottlesStatus.getStatus(b.getStatus()).toString());
 				}
 			}
 			rows.add(row);

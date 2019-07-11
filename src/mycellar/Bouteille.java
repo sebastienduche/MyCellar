@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.7
- * @since 10/07/19
+ * @version 4.8
+ * @since 11/07/19
 
  * <p>Java class for anonymous complex type.
  * 
@@ -617,6 +617,8 @@ public class Bouteille implements Serializable{
 		 setVignoble(b.getVignoble());
 		 if (!b.hasStatus()) {
 			 setStatus(BottlesStatus.MODIFIED.name());
+		 } else {
+		 	setStatus(b.getStatus());
 		 }
 		 setLastModified(LocalDateTime.now());
 	 }
@@ -634,7 +636,19 @@ public class Bouteille implements Serializable{
 		return !status.equals(BottlesStatus.NONE.name());
 	}
 
+	boolean canChangeStatus() {
+		return status.equals(BottlesStatus.NONE.name()) || status.equals(BottlesStatus.CREATED.name());
+	}
+
+	void updateStatus() {
+	 	if (canChangeStatus()) {
+	 		status = BottlesStatus.MODIFIED.name();
+		}
+	 	setModified();
+	}
+
 	 public void setValue(MyCellarFields field, String value) {
+	 	setModified();
 		 switch (field) {
 			 case NAME:
 				 setNom(value);
@@ -695,6 +709,9 @@ public class Bouteille implements Serializable{
 					 setVignoble(new Vignoble());
 				 }
 				 getVignoble().setIGP(value);
+				 break;
+			 case STATUS:
+				 setStatus(value);
 				 break;
 			 default:
 				 break;

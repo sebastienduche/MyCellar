@@ -25,13 +25,13 @@ import java.text.NumberFormat;
 import java.util.LinkedList;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2017</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 2.4
- * @since 10/07/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 2.5
+ * @since 12/07/19
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -92,9 +92,9 @@ public abstract class MyCellarManageBottles extends JPanel {
 	
 	protected MyCellarManageBottles() {
 		m_labelName.setText(Program.getLabel("Infos208")); //"Nom");
-		m_labelYear.setText(Program.getLabel("Infos189")); //"Année");
+		m_labelYear.setText(Program.getLabel("Infos189")); //"Annee");
 		m_labelPlace.setText(Program.getLabel("Infos208")); //"Nom");
-		m_labelNumPlace.setText(Program.getLabel("Infos082")); //"Numéro du lieu");
+		m_labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu");
 		m_labelLine.setText(Program.getLabel("Infos028")); //"Ligne");
 		m_labelColumn.setText(Program.getLabel("Infos083")); //"Colonne");
 		m_labelPrice.setText(Program.getLabel("Infos135")); //"Prix");
@@ -130,7 +130,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 			Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
 			
 			if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_FALSE, false)) {
-				String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ( (SIECLE + 1) * 100)); //"En décochant cette option, vous désactivez la transformation");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ( (SIECLE + 1) * 100)); //"En decochant cette option, vous dsactivez la transformation");
 				Erreur.showKeyErreur(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_FALSE);
 			}
 		}
@@ -219,7 +219,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 				}
 			}
 			catch(NumberFormatException e) {
-				// On doit déjà avoir eu un message d'erreur avant
+				// On doit deja avoir eu un message d'erreur avant
 			}
 		}
 		return annee;
@@ -264,7 +264,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 
 	
 	/**
-	 * num_lieu_itemStateChanged: Fonction pour la liste des numéros de lieu.
+	 * num_lieu_itemStateChanged: Fonction pour la liste des numeros de lieu.
 	 *
 	 * @param e ItemEvent
 	 */
@@ -305,7 +305,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	}
 
 	/**
-	 * Mise à jour de la liste des rangements
+	 * Mise a jour de la liste des rangements
 	 */
 	public void updateView() {
 		if(!updateView) {
@@ -451,6 +451,18 @@ public abstract class MyCellarManageBottles extends JPanel {
 		m_column.setVisible(!isCaisse);
 		setListenersEnabled(true);
 		Debug("selectPlaceWithBottle... Done");
+	}
+
+	protected void clearValues() {
+		name.setSelectedIndex(0);
+		m_year.setText("");
+		m_parker.setText("");
+		m_price.setText("");
+		m_maturity.setText("");
+		m_lieu.setSelectedIndex(0);
+		m_labelExist.setText("");
+		m_nb_bottle.setValue(1);
+		panelVignobles.resetCountrySelected();
 	}
 	
 	protected boolean isListenersDisabled() {

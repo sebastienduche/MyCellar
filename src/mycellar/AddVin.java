@@ -38,8 +38,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.8
- * @since 12/07/19
+ * @version 24.9
+ * @since 15/07/19
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable {
 
@@ -1415,7 +1415,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 				m_lieu.setSelectedIndex(1);
 			}
 			m_lieu.setEnabled(false);
-			Rangement r = Program.getCave(0);
+			Rangement r = (Rangement) m_lieu.getSelectedItem();
 			if(m_num_lieu.getItemCount() == 2) {
 				if(m_num_lieu.getSelectedIndex() == 0) {
 					m_num_lieu.setSelectedIndex(1);

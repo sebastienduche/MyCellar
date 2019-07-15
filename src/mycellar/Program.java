@@ -79,8 +79,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 20.8
- * @since 11/07/19
+ * @version 20.9
+ * @since 15/07/19
  */
 
 public class Program {
@@ -839,6 +839,7 @@ public class Program {
 	 * @param _nCave int
 	 * @return Rangement
 	 */
+	@Deprecated
 	public static Rangement getCave(int _nCave) {
 		if (_nCave >= RANGEMENTS_LIST.size() || _nCave < 0) {
 			return null;

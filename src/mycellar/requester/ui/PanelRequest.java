@@ -16,13 +16,13 @@ import java.util.Collection;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2014</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 0.6
- * @since 08/03/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.7
+ * @since 15/07/19
  */
 public class PanelRequest extends JPanel {
 
@@ -62,6 +62,7 @@ public class PanelRequest extends JPanel {
 		panelKeyword.add(new LabelSearch(Predicates.capacity, panelKeyword, true));
 		panelKeyword.add(new LabelSearch(Predicates.price, panelKeyword, true));
 		panelKeyword.add(new LabelSearch(Predicates.country, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.status, panelKeyword, true));
 		panelKeyword.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Parameters")));
 		panelOperator.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Operators")));
 		add(panelKeyword, "grow");

@@ -10,13 +10,13 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2014</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 0.5
- * @since 06/01/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.6
+ * @since 15/07/19
  */
 
 @SuppressWarnings(value = { "rawtypes", "unchecked" })
@@ -119,7 +119,7 @@ public class CollectionFilter<T> {
 			IPredicate last = null;
 			Collection resultTmp = null;
 			for(LinkedList<Predicates> list : split) {
-				// Sur chaque list, on supprime le premier ou le dernier élément qui est un mot clé.
+				// Sur chaque list, on supprime le premier ou le dernier element qui est un mot clef.
 				if(Predicates.isKeywordPredicate(list.getLast().getPredicate())) {
 					last = list.getLast().getPredicate();
 					list.removeLast();
@@ -132,7 +132,7 @@ public class CollectionFilter<T> {
 				select(src, list);
 				if(first) {
 					// Dans le cas du premier passage, on conserve la liste
-					// Elle servira pour les intersections et unions des éléments suivant
+					// Elle servira pour les intersections et unions des elements suivant
 					resultTmp = result;
 				} else {
 					if(Predicates.AND.equals(last)) {
@@ -146,7 +146,7 @@ public class CollectionFilter<T> {
 			}
 		}
 		else {
-			// On traite un ensemble de prédicats
+			// On traite un ensemble de predicats
 			IPredicate<?> previous = null;
 			Collection<Predicates> predicatesToDo = new ArrayList<>();
 			for(Predicates predicate : predicates) {
@@ -462,10 +462,17 @@ public class CollectionFilter<T> {
 				LOGGER.debug("Cant start by AND/OR");
 				return false;
 			}
-			if(predicate.getPredicate().isValueRequired() && (predicate.getValue() == null || predicate.getValue().toString().isEmpty())) {
-				error = Program.getLabel("CollectionFilter.ErrorValueRequired");
-				LOGGER.debug("Value required for this predicate");
-				return false;
+			if (predicate.getPredicate().isValueRequired()) {
+				if (predicate.getValue() == null) {
+					error = Program.getLabel("CollectionFilter.ErrorValueRequired");
+					LOGGER.debug("Value required for this predicate");
+					return false;
+				}
+				if (predicate.getPredicate().isEmptyValueForbidden() && predicate.getValue().toString().isEmpty()) {
+					error = Program.getLabel("CollectionFilter.ErrorValueRequired");
+					LOGGER.debug("Value required for this predicate");
+					return false;
+				}
 			}
 			if(previous != null) {
 				if((Predicates.openParenthesis.equals(previous) || Predicates.isKeywordPredicate(previous)) && Predicates.isKeywordPredicate(predicate.getPredicate())) {

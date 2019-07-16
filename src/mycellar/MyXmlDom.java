@@ -5,6 +5,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -21,9 +23,9 @@ import java.util.List;
  * <p>Titre : </p>
  * <p>Description : </p>
  * <p>Copyright : Copyright (c) 2006</p>
- * <p>Société : SebInformatique</p>
- * @author Sébastien Duché
- * @since 27/06/19
+ * <p>Soci&eacute;t&eacute; : SebInformatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @since 16/07/19
  * @version 2.5
  */
 
@@ -62,7 +64,7 @@ public class MyXmlDom {
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
 					Element place = (Element) nNode;
-					Boolean bIsCaisse = Boolean.parseBoolean(place.getAttribute("IsCaisse"));
+					boolean bIsCaisse = Boolean.parseBoolean(place.getAttribute("IsCaisse"));
 					int nPlace = Integer.parseInt(place.getAttribute("NbPlace"));
 					String sName = place.getAttribute("name");
 					if(sName.isEmpty()) {
@@ -177,8 +179,8 @@ public class MyXmlDom {
 	/**
 	 * writeRangements: Ecriture des Rangements pour l'export XML/HTML
 	 *
-	 * @param filename String : Fichier à écrire
-	 * @param rangements LinkedList<Rangement>: Liste des rangements à écrire
+	 * @param filename String : Fichier
+	 * @param rangements LinkedList<Rangement>: Liste des rangements
 	 */
 	public static void writeRangements(String filename, List<Rangement> rangements, boolean preview){
 		Debug("writeRangement: Writing file");
@@ -279,6 +281,21 @@ public class MyXmlDom {
 			Debug("TransformerException");
 			Program.showException(e, false);
 		}
+	}
+
+	public static boolean writeXML(Object o, File f, Class classe) {
+		Debug("Writing JAXB File");
+		try {
+			JAXBContext jc = JAXBContext.newInstance(classe);
+			Marshaller m = jc.createMarshaller();
+			m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			m.marshal(o, new StreamResult(f));
+		} catch(Exception e) {
+			Program.showException(e);
+			return false;
+		}
+		Debug("Writing JAXB File Done");
+		return true;
 	}
 
 	/**

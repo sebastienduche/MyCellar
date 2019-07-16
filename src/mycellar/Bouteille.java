@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 4.8
- * @since 11/07/19
+ * @version 4.9
+ * @since 16/07/19
 
  * <p>Java class for anonymous complex type.
  * 
@@ -733,7 +733,7 @@ public class Bouteille implements Serializable{
 		return Program.TEMP_PLACE.equalsIgnoreCase(emplacement);
 	}
 
-  static Bouteille getBouteilleFromXML(Element bouteilleElem) {
+  public static Bouteille getBouteilleFromXML(Element bouteilleElem) {
     NodeList nodeId = bouteilleElem.getElementsByTagName("id");
     final int id = Integer.parseInt(nodeId.item(0).getTextContent());
     NodeList nodeName = bouteilleElem.getElementsByTagName("nom");

@@ -26,6 +26,8 @@ import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.datas.worksheet.WorkSheetData;
+import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
 import net.miginfocom.swing.MigLayout;
@@ -56,14 +58,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 6.5
- * @since 11/07/19
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 6.6
+ * @since 16/07/19
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -117,6 +119,8 @@ public class ShowFile extends JPanel implements ITabListener {
     this.showType = showType;
     if (isWork()) {
       initializeStandardColumns();
+      final List<Integer> bouteilles = Program.getWorksheetList().getWorsheet().stream().map(WorkSheetData::getBouteilleId).collect(Collectors.toList());
+      workingBottles.addAll(Program.getExistingBottles(bouteilles));
     }
     try {
       jbInit();
@@ -362,6 +366,11 @@ public class ShowFile extends JPanel implements ITabListener {
 
       @Override
       public boolean execute(Bouteille b, int row, int column) {
+        if (!Program.isExistingBottle(b)) {
+          Debug("Inexisting bottle " + b.getNom() + " [" + b.getId() + "]");
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle"), b.getNom()));
+          return false;
+        }
         Start.getInstance().showBottle(b, true);
         return false;
       }
@@ -401,7 +410,11 @@ public class ShowFile extends JPanel implements ITabListener {
 
   public void addWorkingBottles(Collection<Bouteille> bottles) {
     if (bottles != null) {
-      workingBottles.addAll(bottles.stream().filter(bouteille -> !workingBottles.contains(bouteille)).collect(Collectors.toList()));
+      final List<Bouteille> bouteilles = bottles.stream().filter(bouteille -> !workingBottles.contains(bouteille)).collect(Collectors.toList());
+      for (Bouteille bottle : bouteilles) {
+        Program.getStorage().addToWorksheet(bottle);
+      }
+      workingBottles.addAll(bouteilles);
       tv.setBottles(workingBottles);
     }
   }
@@ -432,8 +445,8 @@ public class ShowFile extends JPanel implements ITabListener {
       add(m_oModifyButton, "align right");
     } else if (isWork()) {
       add(m_oManageButton, "align right, split 4");
-      add(m_oModifyButton, "align right");
       add(m_oClearWorksheetButton, "align right");
+      add(m_oModifyButton, "align right");
     } else if (isError()){
       add(m_oCreatePlacesButton, "align right, split 3");
       add(m_oReloadButton, "align right");
@@ -600,15 +613,15 @@ public class ShowFile extends JPanel implements ITabListener {
       LinkedList<Bouteille> toDeleteList = getSelectedBouteilles();
 
       if (toDeleteList.isEmpty()) {
-        //"Aucun vin à supprimer!");
+        //"Aucun vin a supprimer!");
         Erreur.showSimpleErreur(Program.getError("Error064"), Program.getError("Error065"), true);
       } else {
         String erreur_txt1, erreur_txt2;
         if (toDeleteList.size() == 1) {
-          erreur_txt1 = Program.getError("Error067"); //"1 vin sélectionné.");
+          erreur_txt1 = Program.getError("Error067"); //"1 vin selectionne.");
           erreur_txt2 = Program.getError("Error068"); //"Voulez-vous le supprimer?");
         } else {
-          erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toDeleteList.size()); //vins sélectionnés.");
+          erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toDeleteList.size()); //vins selectionnes.");
           erreur_txt2 = Program.getError("Error131"); //"Voulez-vous les supprimer?");
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -672,10 +685,10 @@ public class ShowFile extends JPanel implements ITabListener {
       } else {
         String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {
-          erreur_txt1 = Program.getError("Error067"); //"1 vin sélectionné.");
+          erreur_txt1 = Program.getError("Error067"); //"1 vin selectionne.");
           erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
         } else {
-          erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toRestoreList.size()); //vins sélectionnés.");
+          erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toRestoreList.size()); //vins selectionnes.");
           erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -817,7 +830,7 @@ public class ShowFile extends JPanel implements ITabListener {
   }
 
   /**
-   * Mise à jour de la liste des rangements
+   * Mise a jour de la liste des rangements
    */
   public void updateView() {
     if (!updateView) {
@@ -995,7 +1008,17 @@ public class ShowFile extends JPanel implements ITabListener {
           Erreur.showSimpleErreur(Program.getError("Error071"), Program.getError("Error072"), true);
         } else {
           Debug("Modifying " + bottles.size() + " bottles...");
-          Program.modifyBottles(bottles);
+          LinkedList<Bouteille> existingBottles = new LinkedList<>();
+          for (Bouteille bottle : bottles) {
+            if (!Program.isExistingBottle(bottle)) {
+              Debug("Inexisting bottle " + bottle.getNom() + " [" + bottle.getId() + "]");
+              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle"), bottle.getNom()));
+            } else {
+              existingBottles.add(bottle);
+            }
+
+          }
+          Program.modifyBottles(existingBottles);
         }
       } catch (Exception exc) {
         Program.showException(exc);
@@ -1053,6 +1076,8 @@ public class ShowFile extends JPanel implements ITabListener {
     @Override
     public void actionPerformed(ActionEvent e) {
       workingBottles.clear();
+      Program.setModified();
+      Program.getStorage().setWorksheetList(new WorkSheetList());
       tv.setBottles(workingBottles);
     }
   }

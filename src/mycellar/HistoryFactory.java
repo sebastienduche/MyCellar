@@ -38,7 +38,7 @@ class HistoryFactory {
 
     /**
      * Create an instance of {@link HistoryList }
-     * 
+     *
      */
     public HistoryList createHistoryList() {
         return new HistoryList();
@@ -46,7 +46,7 @@ class HistoryFactory {
 
     /**
      * Create an instance of {@link History }
-     * 
+     *
      */
     public History createHistory() {
         return new History();

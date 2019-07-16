@@ -16,7 +16,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,7 +25,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,13 +33,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 0.8
- * @since 29/06/18
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.9
+ * @since 16/07/19
 
  * <p>Java class for anonymous complex type.
  *
@@ -178,23 +176,8 @@ public class HistoryList {
     Debug("Loading JAXB File Done");
   }
 
-  static boolean writeXML(File f) {
-    return writeXML(Program.getHistoryList(), f);
-  }
-
-  private static boolean writeXML(HistoryList liste, File f) {
-    Debug("Writing JAXB File");
-    try {
-      JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
-      Marshaller m = jc.createMarshaller();
-      m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-      m.marshal(liste, new StreamResult(f));
-    } catch( Exception e ) {
-      Program.showException(e);
-      return false;
-    }
-    Debug("Writing JAXB File Done");
-    return true;
+  static void writeXML(File f) {
+    MyXmlDom.writeXML(Program.getHistoryList(), f, HistoryFactory.class);
   }
 
   /**

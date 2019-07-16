@@ -1,5 +1,7 @@
 package mycellar;
 
+import mycellar.core.datas.worksheet.WorkSheetData;
+import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.vignobles.CountryVignobles;
 
 import javax.swing.JOptionPane;
@@ -9,18 +11,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2011</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 5.7
- * @since 10/07/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 5.8
+ * @since 16/07/19
  */
 
 public class SerializedStorage implements Storage {
 
+	private static final String HISTORY_XML = "history.xml";
+	private static final String WORKSHEET_XML = "worksheet.xml";
 	private static HistoryList m_HistoryList = new HistoryList();
+	private static WorkSheetList worksheetList = new WorkSheetList();
 	private ListeBouteille listBouteilles = new ListeBouteille();
 
 	private final LinkedList<String> listeUniqueBouteille = new LinkedList<>(); // Liste des noms de bouteille (un seule nom)
@@ -82,14 +87,19 @@ public class SerializedStorage implements Storage {
 
 
 	@Override
-	public boolean addHistory(int type, Bouteille bottle) {
+	public void addHistory(int type, Bouteille bottle) {
 		Program.setModified();
 		m_HistoryList.addLast(new History(bottle, type));
-		return true;
 	}
 
 	@Override
-	public boolean clearHistory(int value) {
+	public void addToWorksheet(Bouteille bottle) {
+		Program.setModified();
+		worksheetList.add(new WorkSheetData(bottle));
+	}
+
+	@Override
+	public void clearHistory(int value) {
 		/* -1 Clear All
 		 * 0 Clear Add
 		 * 1 Clear Modify
@@ -123,13 +133,13 @@ public class SerializedStorage implements Storage {
 		}
 
 		if( JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-			return false;
+			return;
 		}
 
 		Program.setModified();
 		if(value == -1) {
 			m_HistoryList.clear();
-			return true;
+			return;
 		}
 		final List<History> list = m_HistoryList.getHistory().stream().filter(history -> history.getType() == value).collect(Collectors.toList());
 
@@ -137,7 +147,6 @@ public class SerializedStorage implements Storage {
 		for (History h : list) {
 			removeHistory(h);
 		}
-		return true;
 	}
 
 	@Override
@@ -149,7 +158,7 @@ public class SerializedStorage implements Storage {
 	/**
 	 * deleteWine: Supression d'une bouteille dans un rangement
 	 *
-	 * @param bottle Bouteille: Bouteille à supprimer
+	 * @param bottle Bouteille: Bouteille a supprimer
 	 */
 	@Override
 	public boolean deleteWine(Bouteille bottle) {
@@ -235,24 +244,22 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public boolean saveHistory() {
+	public void saveHistory() {
 		Debug("Saving History...");
-		boolean resul = HistoryList.writeXML(new File(Program.getWorkDir(true) + "history.xml"));
+		HistoryList.writeXML(new File(Program.getWorkDir(true) + HISTORY_XML));
 		Debug("Saving History OK");
-		return resul;
 	}
 
 	@Override
-	public boolean loadHistory() {
-		Debug("Loadinging History...");
-		boolean resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + "history.xml"));
+	public void loadHistory() {
+		Debug("Loading History...");
+		boolean resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + HISTORY_XML));
 		if(!resul) {
 			setHistoryList(new HistoryList());
 			Debug("Loading History KO");
 		} else {
 			Debug("Loading History OK");
 		}
-		return resul;
 	}
 
 	@Override
@@ -263,6 +270,35 @@ public class SerializedStorage implements Storage {
 	@Override
 	public void setHistoryList(HistoryList list) {
 		m_HistoryList = list;
+	}
+
+	@Override
+	public void saveWorksheet() {
+		Debug("Saving Worksheet...");
+		 WorkSheetList.writeXML(new File(Program.getWorkDir(true) + WORKSHEET_XML));
+		Debug("Saving Worksheet OK");
+	}
+
+	@Override
+	public void loadWorksheet() {
+		Debug("Loading Worksheet...");
+		boolean resul = WorkSheetList.loadXML(new File(Program.getWorkDir(true) + WORKSHEET_XML));
+		if(!resul) {
+			setWorksheetList(new WorkSheetList());
+			Debug("Loading Worksheet KO");
+		} else {
+			Debug("Loading Worksheet OK");
+		}
+	}
+
+	@Override
+	public WorkSheetList getWorksheetList() {
+		return worksheetList;
+	}
+
+	@Override
+	public void setWorksheetList(WorkSheetList list) {
+		worksheetList = list;
 	}
 
 	@Override

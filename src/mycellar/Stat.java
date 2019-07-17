@@ -31,13 +31,13 @@ import java.util.Map;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 6.4
- * @since 27/06/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 6.5
+ * @since 17/07/19
  */
 public class Stat extends JPanel implements ITabListener {
 
@@ -46,7 +46,7 @@ public class Stat extends JPanel implements ITabListener {
 	private final MyCellarLabel end = new MyCellarLabel();
 	private final MyCellarLabel moy = new MyCellarLabel();
 	private final MyCellarComboBox<String> listOptions = new MyCellarComboBox<>();
-	private final MyCellarComboBox<String> listPlaces = new MyCellarComboBox<>();
+	private final MyCellarComboBox<PlaceComboItem> listPlaces = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> listChart = new MyCellarComboBox<>();
 	private final JPanel panel = new JPanel();
 	private String[] annee;
@@ -76,11 +76,11 @@ public class Stat extends JPanel implements ITabListener {
 
 		options.addActionListener(this::options_actionPerformed);
 
-		listPlaces.addItem(Program.getLabel("Infos182")); //"Tous les rangement");
-		Program.getCave().forEach(rangement -> listPlaces.addItem(rangement.getNom()));
+		listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos182"))); //"Tous les rangement");
+		Program.getCave().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
 
 		listOptions.addItem(Program.getLabel("Infos183")); //"Par Rangement");
-		listOptions.addItem(Program.getLabel("Infos184")); //"Par Année");
+		listOptions.addItem(Program.getLabel("Infos184")); //"Par Annee");
 		listOptions.addItem(Program.getLabel("Infos185")); //"Par Prix");
 
 		JScrollPane scroll = new JScrollPane(panel);
@@ -145,8 +145,8 @@ public class Stat extends JPanel implements ITabListener {
 	}
 
 	/**
-	 * list_itemStateChanged: Fonction appellé lors d'un changement dans la
-	 * première liste.
+	 * list_itemStateChanged: Fonction appelle lors d'un changement dans la
+	 * premiere liste.
 	 *
 	 * @param e ItemEvent
 	 */
@@ -159,9 +159,9 @@ public class Stat extends JPanel implements ITabListener {
 				comboLabel.setText(Program.getLabel("Infos105") + ":"); //"Rangement:");
 				listPlaces.removeAllItems();
 				listPlaces.setEnabled(true);
-				listPlaces.addItem(Program.getLabel("Infos182")); //"Tous les rangements");
+				listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos182"))); //"Tous les rangements");
 				listPlaces.setSelectedIndex(0);
-				Program.getCave().forEach(rangement -> listPlaces.addItem(rangement.getNom()));
+				Program.getCave().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
 			}
 			if (listOptions.getSelectedIndex() == 1) {
 				Debug("By year");
@@ -174,7 +174,7 @@ public class Stat extends JPanel implements ITabListener {
 				}
 				Arrays.sort(annee, Collator.getInstance());
 				listPlaces.removeAllItems();
-				listPlaces.addItem(Program.getLabel("Infos186")); //"Toutes les années");
+				listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos186"))); //"Toutes les annees");
 				listPlaces.setSelectedIndex(0);
 				listPlaces.setEnabled(false);
 			}
@@ -182,8 +182,8 @@ public class Stat extends JPanel implements ITabListener {
 				Debug("By price");
 				comboLabel.setText(Program.getLabel("Infos187")); //"Tranche de prix:");
 				listPlaces.removeAllItems();
-				listPlaces.addItem(Program.getLabel("Infos188")); //"Toutes les tranches");
-				listPlaces.addItem(Program.getLabel("Infos299")); //"Tranches avec bouteilles");
+				listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos188"))); //"Toutes les tranches");
+				listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos299"))); //"Tranches avec bouteilles");
 			}
 			listChart.setEnabled(listOptions.getSelectedIndex() != 0);
 		}
@@ -193,7 +193,7 @@ public class Stat extends JPanel implements ITabListener {
 	}
 
 	/**
-	 * list2_itemStateChanged: Fonction appellé lors d'un changement dans la
+	 * list2_itemStateChanged: Fonction appelle lors d'un changement dans la
 	 * seconde liste.
 	 *
 	 * @param e ItemEvent
@@ -207,7 +207,7 @@ public class Stat extends JPanel implements ITabListener {
 				}	else {
 					displayOnePlace();
 				}
-			}	else if (listOptions.getSelectedIndex() == 1) { //Par Année
+			}	else if (listOptions.getSelectedIndex() == 1) { //Par Annee
 				displayYear();
 			}	else if (listOptions.getSelectedIndex() == 2) { //Par prix
 				displayByPrice();
@@ -326,13 +326,10 @@ public class Stat extends JPanel implements ITabListener {
 		end.setText("");
 		moy.setText("");
 		options.setEnabled(false);
-		int index = 0;
-		if (listPlaces.getSelectedIndex() > 1) {
-      index = listPlaces.getSelectedIndex() - 1;
-    }
-		Rangement cave = Program.getCave(index);
+		PlaceComboItem placeComboItem = (PlaceComboItem) listPlaces.getSelectedItem();
 		int nbBottle = 0;
-		if (cave != null) {
+		if (placeComboItem!= null && placeComboItem.getRangement() != null) {
+			Rangement cave = placeComboItem.getRangement();
 			panelChart.setPlaceChart(cave);
 			nbBottle = cave.getNbCaseUseAll();
 			panel.add(new MyCellarLabel(cave.getNom()));
@@ -382,7 +379,7 @@ public class Stat extends JPanel implements ITabListener {
 
 	private void displayNbBottlePlace(Rangement cave) {
 		for (int j = 0; j < cave.getNbEmplacements(); j++) {
-      panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos179"), (j + 1)))); //Emplacement n°
+      panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos179"), (j + 1)))); //Emplacement
       if (cave.getNbCaseUseAll() <= 1) {
         panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.1Bottle"),cave.getNbCaseUseAll())),"span 2, align right, wrap"); //"bouteille");
       } else {
@@ -392,7 +389,7 @@ public class Stat extends JPanel implements ITabListener {
 	}
 
 	/**
-	 * options_actionPerformed: Appel de la fenètre d'options.
+	 * options_actionPerformed: Appel de la fenetre d'options.
 	 *
 	 * @param e ActionEvent
 	 */
@@ -550,4 +547,28 @@ public class Stat extends JPanel implements ITabListener {
 		updateBouteilleCountLabel();
 	}
 
+	class PlaceComboItem {
+
+		private final String label;
+		private final Rangement rangement;
+
+		private PlaceComboItem(Rangement rangement) {
+			this.rangement = rangement;
+			label = rangement.getNom();
+		}
+
+		private PlaceComboItem(String label) {
+			rangement = null;
+			this.label = label;
+		}
+
+		@Override
+		public String toString() {
+			return label;
+		}
+
+		public Rangement getRangement() {
+			return rangement;
+		}
+	}
 }

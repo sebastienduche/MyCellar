@@ -162,10 +162,8 @@ public class Program {
 	private static int nextID = -1;
 	public static final MyClipBoard CLIPBOARD = new MyClipBoard();
 
-	/**
-	 * init
-	 */
-	public static void init() {
+
+	public static void start() {
 
 		try {
 			archive = "";
@@ -197,9 +195,6 @@ public class Program {
 		}
 	}
 
-	/**
-	 * initConf
-	 */
 	static void initConf() {
 		try {
 			Debug("Program: Initializing Configuration files...");
@@ -235,10 +230,6 @@ public class Program {
 		return getGlobalDir() + "config.ini";
 	}
 
-
-	/**
-	 * @throws IOException
-	 */
 	private static void loadProperties() throws IOException {
 
 		String inputPropCave = getConfigFilePath();
@@ -258,7 +249,7 @@ public class Program {
 			}
 			if (properties.isEmpty()) {
 				// Initialisation de la devise pour les nouveaux fichiers
-				putCaveConfigString(MyCellarSettings.DEVISE, "€");
+				putCaveConfigString(MyCellarSettings.DEVISE, "\u20ac");
 			}
 		}
 
@@ -650,7 +641,7 @@ public class Program {
 							out.putNextEntry(entry);
 							// ecriture du fichier par paquet de BUFFER octets dans le flux d'ecriture
 							int count;
-							// buffer temporaire des donnees à ecrire dans le flux de sortie
+							// buffer temporaire des donnees a ecrire dans le flux de sortie
 							byte[] data = new byte[BUFFER];
 							while ((count = bufferedInputStream.read(data, 0, BUFFER)) != -1) {
 								out.write(data, 0, count);
@@ -933,7 +924,7 @@ public class Program {
 	}
 
 	/**
-	 * openFile: Choix d'un fichier à ouvrir.
+	 * openFile: Choix d'un fichier a ouvrir.
 	 */
 	static boolean newFile() {
 		return openaFile(null);
@@ -991,7 +982,7 @@ public class Program {
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
-			// On a dejà enleve un element de la liste
+			// On a deja enleve un element de la liste
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN4, "");
 			saveGlobalProperties();
 			return false;
@@ -1028,7 +1019,7 @@ public class Program {
 			Debug("Program: Reading Object KO");
 			loaded = false;
 		}
-		// Contrôle du nombre de rangement
+		// Controle du nombre de rangement
 		Debug("Program: Checking place count");
 		if (loaded) {
 			int i = 0;

@@ -30,8 +30,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 12/07/19
+ * @version 2.6
+ * @since 17/07/19
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -337,6 +337,23 @@ public abstract class MyCellarManageBottles extends JPanel {
 			}
 		}
 		m_chooseCell.setEnabled(complex);
+	}
+
+	protected void initColumnCombo() {
+		int num_select = m_line.getSelectedIndex();
+		int emplacement = m_num_lieu.getSelectedIndex();
+		int lieu_select = m_lieu.getSelectedIndex();
+		m_column.setEnabled(num_select != 0);
+		int nb_col = 0;
+		if (num_select > 0) {
+			Rangement cave = m_lieu.getItemAt(lieu_select);
+			nb_col = cave.getNbColonnes(emplacement - 1, num_select - 1);
+		}
+		m_column.removeAllItems();
+		m_column.addItem("");
+		for (int i = 1; i <= nb_col; i++) {
+			m_column.addItem(Integer.toString(i));
+		}
 	}
 	
 	protected void setListeners() {

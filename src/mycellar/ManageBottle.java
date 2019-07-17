@@ -34,8 +34,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.3
- * @since 12/07/19
+ * @version 5.4
+ * @since 17/07/19
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -244,30 +244,12 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			return;
 		}
 		Debug("Line_itemStateChanging...");
-		try {
-			int nb_col = 0;
-			int num_select = m_line.getSelectedIndex();
-			int emplacement = m_num_lieu.getSelectedIndex();
-			int lieu_select = m_lieu.getSelectedIndex();
+		m_end.setText("");
+		m_labelExist.setText("");
 
-			m_end.setText("");
-			m_labelExist.setText("");
-
-			m_column.setEnabled(num_select != 0);
-			if (num_select > 0) {
-				Rangement cave = m_lieu.getItemAt(lieu_select);
-				nb_col = cave.getNbColonnes(emplacement - 1, num_select - 1);
-			}
-			m_column.removeAllItems();
-			m_column.addItem("");
-			for (int i = 1; i <= nb_col; i++) {
-				m_column.addItem(Integer.toString(i));
-			}
-			Debug("Line_itemStateChanging... Done");
-		}	catch (Exception a) {
-			Program.showException(a);
-		}
-	}
+		initColumnCombo();
+		Debug("Line_itemStateChanging... Done");
+}
 
 	/**
 	 * saving: Fonction de sauvegarde
@@ -460,9 +442,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		else {
 			m_laBouteille.setLigne(line);
 			m_laBouteille.setColonne(column);
-		}
 
-		if(!isCaisse) {
 			Bouteille bottleInPlace = cave.getBouteille(m_laBouteille.getNumLieu()-1, m_laBouteille.getLigne()-1, m_laBouteille.getColonne()-1);
 			if(bottleInPlace != null && !bottleInPlace.equals(m_laBouteille)) {
 				Debug("ERROR: Not an empty place, Replace?");
@@ -535,7 +515,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	}
 
 	private boolean runExit() {
-		Debug("Processing Quit");
+		Debug("Processing Quit...");
 		m_add.setEnabled(false);
 		
 		boolean modified = name.isModified();
@@ -565,7 +545,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		m_colorList.setSelectedItem(BottleColor.NONE);
 		statusList.setSelectedItem(BottlesStatus.NONE);
     clearValues();
-		Debug("Quitting... Done");
+		Debug("Processing Quit... Done");
 		return true;
 	}
 

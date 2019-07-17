@@ -82,6 +82,7 @@ public class ShowFile extends JPanel implements ITabListener {
   private final MyCellarButton m_oDeleteButton = new MyCellarButton(MyCellarImage.DELETE);
   private final MyCellarButton m_oModifyButton = new MyCellarButton(new ModifyBottlesAction());
   private final MyCellarButton m_oReloadButton = new MyCellarButton(new ReloadErrorsAction());
+  private final MyCellarButton m_oRemoveFromWorksheetButton = new MyCellarButton(new RemoveFromWorksheetAction());
   private final MyCellarButton m_oClearWorksheetButton = new MyCellarButton(new ClearWorksheetAction());
   private final MyCellarComboBox<String> m_oPlaceCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottleColor> colorCbx = new MyCellarComboBox<>();
@@ -444,8 +445,9 @@ public class ShowFile extends JPanel implements ITabListener {
       add(m_oManageButton, "align right, split 3");
       add(m_oModifyButton, "align right");
     } else if (isWork()) {
-      add(m_oManageButton, "align right, split 4");
+      add(m_oManageButton, "align right, split 5");
       add(m_oClearWorksheetButton, "align right");
+      add(m_oRemoveFromWorksheetButton, "align right");
       add(m_oModifyButton, "align right");
     } else if (isError()){
       add(m_oCreatePlacesButton, "align right, split 3");
@@ -1003,8 +1005,8 @@ public class ShowFile extends JPanel implements ITabListener {
         LinkedList<Bouteille> bottles = getSelectedBouteilles();
 
         if (bottles.isEmpty()) {
-          //"Aucun vin à modifier!");
-          //"Veuillez sélectionner les vins à modifier.");
+          //"Aucun vin a modifier!");
+          //"Veuillez selectionner les vins a modifier.");
           Erreur.showSimpleErreur(Program.getError("Error071"), Program.getError("Error072"), true);
         } else {
           Debug("Modifying " + bottles.size() + " bottles...");
@@ -1059,10 +1061,6 @@ public class ShowFile extends JPanel implements ITabListener {
     }
   }
 
-  public void Debug(String text) {
-    Program.Debug("ShowFile: " + text);
-  }
-
   private class ClearWorksheetAction extends AbstractAction {
 
     private static final long serialVersionUID = 983425309954475988L;
@@ -1080,5 +1078,31 @@ public class ShowFile extends JPanel implements ITabListener {
       Program.getStorage().setWorksheetList(new WorkSheetList());
       tv.setBottles(workingBottles);
     }
+
+  }
+
+  private class RemoveFromWorksheetAction extends AbstractAction {
+
+    private static final long serialVersionUID = 983425309954475987L;
+
+
+    private RemoveFromWorksheetAction() {
+      super(Program.getLabel("ShowFile.removeFromWorksheet"));
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final LinkedList<Bouteille> selectedBouteilles = getSelectedBouteilles();
+      workingBottles.removeAll(selectedBouteilles);
+      Program.setModified();
+      tv.fireTableDataChanged();
+    }
+
+  }
+
+
+  public void Debug(String text) {
+    Program.Debug("ShowFile: " + text);
   }
 }

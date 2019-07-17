@@ -11,16 +11,20 @@ import mycellar.showfile.ShowFile.ShowType;
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OpenWorkSheetAction extends AbstractAction {
 
 	private final List<Bouteille> bouteilles;
 
+	public OpenWorkSheetAction() {
+		this(null);
+	}
 	public OpenWorkSheetAction(List<Bouteille> list) {
 		super(Program.getLabel("ShowFile.Worksheet"), MyCellarImage.WORK);
 		putValue(SHORT_DESCRIPTION, Program.getLabel("ShowFile.Worksheet"));
-		bouteilles = list;
+		bouteilles = list != null ? list : new ArrayList<>();
 	}
 	
 	@Override

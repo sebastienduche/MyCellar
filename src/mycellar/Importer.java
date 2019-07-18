@@ -52,13 +52,13 @@ import java.util.TimerTask;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 12.9
- * @since 11/07/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 13.0
+ * @since 18/07/19
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
 
@@ -92,7 +92,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		importe.setMnemonic(IMPORT);
 		openit.setMnemonic(OUVRIR);
 		importe.setText(Program.getLabel("Infos036")); //"Importer");
-		importe.addActionListener(this::importe_actionPerformed); //"Sélectionner les différents champs présents dans le fichier (de gauche " + "� droite)");
+		importe.addActionListener(this::importe_actionPerformed); //"Selectionner les differents champs presents dans le fichier (de gauche a droite)");
 		type_txt.setText(Program.getLabel("Infos040")); //"Fichier TXT ou CSV");
 		titre.setHorizontalTextPosition(SwingConstants.LEFT);
 		titre.setText(Program.getLabel("Infos038"));
@@ -185,11 +185,11 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		separateur.addItem(Program.getLabel("Infos044"));
 		separateur.addItem(Program.getLabel("Infos002"));
 
-		Debug("Constructor OK");
+		Debug("Constructor End");
 	}
 	
 	/**
-	 * type_txt_itemStateChanged: Sélection d'un type de fichier
+	 * type_txt_itemStateChanged: Selection d'un type de fichier
 	 *
 	 * @param e ItemEvent
 	 */
@@ -207,7 +207,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	}
 
 	/**
-	 * importe_actionPerformed: Exécuter une Importation de données
+	 * importe_actionPerformed: Executer une Importation de donnees
 	 *
 	 * @param e ActionEvent
 	 */
@@ -234,7 +234,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	}
 
 	/**
-	 * Réalise la lecture d'une ligne d'un fichier XLS
+	 * Realise la lecture d'une ligne d'un fichier XLS
 	 *
 	 * @param row Row: Ligne d'une feuille Excel
 	 * @return LinkedList<String>
@@ -256,8 +256,8 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	}
 
 	/**
-	 * parcourir_actionPerformed: Permet de parcourir les répertoires pour trouver
-	 * le fichier à importer
+	 * parcourir_actionPerformed: Permet de parcourir les repertoires pour trouver
+	 * le fichier a importer
 	 *
 	 * @param e ActionEvent
 	 */
@@ -293,7 +293,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	}
 
 	/**
-	 * openit_actionPerformed: Ouverture du fichier à importer
+	 * openit_actionPerformed: Ouverture du fichier a importer
 	 *
 	 * @param e ActionEvent
 	 */
@@ -309,8 +309,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				//Insertion classe Erreur
 				label_progression.setText("");
 				Debug("ERROR: File not found: "+nom);
-				//Fichier non trouvé
-				//"Vérifier le chemin");
+				//Fichier non trouve Verifier le chemin");
 				Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
 				return;
 			}
@@ -330,7 +329,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			
 			String nom = file.getText().trim();
 			if (nom.isEmpty()) {
-				//Erreur le nom ne doit pas être vide
+				//Erreur le nom ne doit pas etre vide
 				Debug("ERROR: filename cannot be empty");
 				label_progression.setText("");
 				Erreur.showSimpleErreur(Program.getError("Error019"));
@@ -349,12 +348,12 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			for (int i = 0; i < nb_choix; i++) {
 				final var comboBox = comboBoxList.get(i);
 				final MyCellarFields selectedField = (MyCellarFields) comboBox.getSelectedItem();
-				if (selectedField != null && MyCellarFields.isRealField(selectedField)) {
+				if (MyCellarFields.isRealField(selectedField)) {
 					mapFieldCount.put(selectedField, mapFieldCount.getOrDefault(selectedField, 0) + 1);
 				}
 			}
  
-			//Ouverture du fichier à importer
+			//Ouverture du fichier a importer
 			File f = new File(nom);
 			file.setText(f.getAbsolutePath());
 			nom = f.getAbsolutePath();
@@ -362,8 +361,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				//Insertion classe Erreur
 				label_progression.setText("");
 				Debug("ERROR: File not found: "+nom);
-				//Fichier non trouvé
-				//"Vérifier le chemin");
+				//Fichier non trouve Verifier le chemin");
 				Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
 				importe.setEnabled(true);
 				return;
@@ -372,8 +370,8 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			if (!type_xml.isSelected() && nb_choix == 0) {
 				label_progression.setText("");
 				Debug("ERROR: No field selected");
-				//"Aucun champs sélectionnés");
-				//"Veuillez sélectionner des champs pour que les donn�es soient trait�es");
+				//"Aucun champs selectionnes");
+				//"Veuillez selectionner des champs pour que les donnees soient traitees");
 				Erreur.showSimpleErreur(Program.getError("Error025"), Program.getError("Error026"));
 				importe.setEnabled(true);
 				return;
@@ -383,7 +381,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					label_progression.setText("");
 					Debug("ERROR: Not a XLS File");
-					//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
+					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom), Program.getError("Error035"));
 					importe.setEnabled(true);
 					return;
@@ -392,7 +390,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_TXT.toString(), Filtre.FILTRE_CSV.toString()))) {
 					label_progression.setText("");
 					Debug("ERROR: Not a Text File");
-					//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
+					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error023"), nom), Program.getError("Error024"));
 					importe.setEnabled(true);
 					return;
@@ -401,7 +399,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XML.toString()))) {
 					label_progression.setText("");
 					Debug("ERROR: Not a XML File");
-					//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
+					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error204"), nom), Program.getError("Error205"));
 					importe.setEnabled(true);
 					return;
@@ -424,24 +422,28 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			if (isMoreThanOne) {
 				label_progression.setText("");
 				Debug("ERROR: fields cannot be selected more than one time");
-				//"Un champ ne doit pas être sélectionné 2 fois.");
-				//"Veuillez choisir un champ différent pour chaque colonne.");
+				//"Un champ ne doit pas etre selectionne 2 fois.");
+				//"Veuillez choisir un champ different pour chaque colonne.");
 				Erreur.showSimpleErreur(Program.getError("Error017"), Program.getError("Error018"));
 				importe.setEnabled(true);
 				return;
-			}	else if(mapFieldCount.get(MyCellarFields.NAME) == null) {
+			}
+
+			if(mapFieldCount.get(MyCellarFields.NAME) == null) {
 				label_progression.setText("");
 				Debug("ERROR: No column for wine name");
 				//"Aucune colonne n'indique le nom du vin.
-				//"Veuillez sélectionner une colonne avec le nom du vin
+				//"Veuillez selectionner une colonne avec le nom du vin
 				Erreur.showSimpleErreur(Program.getError("Error142"), Program.getError("Error143"));
 				importe.setEnabled(true);
 				return;
-			}	else if(mapFieldCount.get(MyCellarFields.PLACE) == null) {
+			}
+
+			if(mapFieldCount.get(MyCellarFields.PLACE) == null) {
 				label_progression.setText("");
 				Debug("ERROR: No place defined, a place will be create");
-				//Il n'y a pas de rangements définis dans le fichier.
-				//Un rangement par défaut va être créé.
+				//Il n'y a pas de rangements definis dans le fichier.
+				//Un rangement par defaut va etre cree.
 				Erreur.showSimpleErreur(Program.getError("Error140"), Program.getError("Error141"), true);
 
 				int nb_caisse = (int)Program.getCave().stream().filter(Rangement::isCaisse).count();
@@ -489,22 +491,18 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 								Program.options = null;
 								resul = false;
 							}
-						}
-						while (!resul);
-						if (resul) {
-							do {
-								// Controle sur la longueur du nom
-								if (nom1.isEmpty()) {
-									Program.options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", "",
-											Program.getError("Error010"), false);
-									Program.options.setVisible(true);
-									nom1 = Program.options.getValue();
-									Program.options = null;
-									resul = false;
-								}
+						}	while (!resul);
+						do {
+							// Controle sur la longueur du nom
+							if (nom1.isEmpty()) {
+								Program.options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", "",
+										Program.getError("Error010"), false);
+								Program.options.setVisible(true);
+								nom1 = Program.options.getValue();
+								Program.options = null;
+								resul = false;
 							}
-							while (nom1.isEmpty());
-						}
+						}	while (nom1.isEmpty());
 						if (resul) {
 							Rangement rangement;
 							do {
@@ -530,7 +528,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 					new_rangement = new Rangement.CaisseBuilder(nom1).build();
 					Program.addCave(new_rangement);
 				}	else {
-					new_rangement = Program.getCave(num_r);
+					new_rangement = Program.getCave().get(num_r);
 				}
 			}
 			if (type_txt.isSelected()) {
@@ -560,8 +558,8 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 						if (line.split(separe).length <= 1) {
 							label_progression.setText("");
 							Debug("ERROR: No separator found");
-							//"Le séparateur sélectionné n'a pas été trouvé.");
-							//"Veuillez sélectionner le separateur utilise dans votre fichier.");
+							//"Le separateur selectionne n'a pas ete trouve.");
+							//"Veuillez selectionner le separateur utilise dans votre fichier.");
 							Erreur.showSimpleErreur(Program.getError("Error042"), Program.getError("Error043"));
 							importe.setEnabled(true);
 							reader.close();
@@ -630,14 +628,14 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		Debug("Import OK.");
 	}
 
-	private boolean importExcelFile(final String nom, final Rangement new_rangement) {
+	private boolean importExcelFile(final String nom, final Rangement rangement) {
 		Debug("Importing XLS file...");
 
 		label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
 		//Ouverture du fichier Excel
 		try (var workbook = new XSSFWorkbook(new FileInputStream(nom))) {
 
-			//Sélection de la feuille
+			//Selection de la feuille
 			var sheet = workbook.getSheetAt(0);
 			//Lecture de cellules
 			Iterator<Row> iterator = sheet.iterator();
@@ -658,7 +656,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 
 					int i = 0;
 					for (String value : bottleValues) {
-						//Récupération des champs sélectionnés
+						//Recuperation des champs selectionnes
 						MyCellarFields selectedField = getSelectedField(i);
 						//Alimentation de la HashMap
 						Debug("Write " + selectedField + "->" + value);
@@ -667,9 +665,9 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 							maxNumPlace = bottle.getNumLieu();
 						}
 
-						if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
-							bottle.setEmplacement(new_rangement.getNom());
-							new_rangement.setNbEmplacements(maxNumPlace+1);
+						if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && rangement != null) {
+							bottle.setEmplacement(rangement.getNom());
+							rangement.setNbEmplacements(maxNumPlace+1);
 						}
 						i++;
 					}
@@ -679,13 +677,12 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		}	catch (IOException e) {
 			label_progression.setText("");
 			Debug("ERROR: File not found (IO): "+nom);
-			//Fichier non trouvé
-			//"Vérifier le chemin");
+			//Fichier non trouve
+			//"Verifier le chemin");
 			Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
 			importe.setEnabled(true);
 			return false;
-		}
-		catch (Exception e) {
+		}	catch (Exception e) {
 			Program.showException(e, false);
 			label_progression.setText("");
 			Debug("ERROR: "+e.toString());
@@ -703,7 +700,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
 		ListeBouteille.loadXML(f);
 		importe.setEnabled(true);
-		label_progression.setText(Program.getLabel("Infos035")); //"Import Terminé");
+		label_progression.setText(Program.getLabel("Infos035")); //"Import Termine");
 		new Timer().schedule(
 				new TimerTask() {
 						@Override

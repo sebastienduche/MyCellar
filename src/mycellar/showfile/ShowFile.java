@@ -64,8 +64,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.6
- * @since 16/07/19
+ * @version 6.7
+ * @since 18/07/19
  */
 
 public class ShowFile extends JPanel implements ITabListener {
@@ -740,15 +740,11 @@ public class ShowFile extends JPanel implements ITabListener {
   private void setRangementValue(Bouteille b, MyCellarFields field, Object value) {
 
     Rangement rangement = b.getRangement();
-    boolean bError = false;
     int nValueToCheck = -1;
     String empl = b.getEmplacement();
     int num_empl = b.getNumLieu();
     int line = b.getLigne();
     int column = b.getColonne();
-
-    Program.setModified();
-    b.setModified();
 
     if (field == MyCellarFields.PLACE) {
       empl = (String) value;
@@ -759,7 +755,7 @@ public class ShowFile extends JPanel implements ITabListener {
         nValueToCheck = num_empl;
       } catch (Exception e) {
         Erreur.showSimpleErreur(Program.getError("Error196"));
-        bError = true;
+        return;
       }
     } else if (field == MyCellarFields.LINE) {
       try {
@@ -767,7 +763,7 @@ public class ShowFile extends JPanel implements ITabListener {
         nValueToCheck = line;
       } catch (Exception e) {
         Erreur.showSimpleErreur(Program.getError("Error196"));
-        bError = true;
+        return;
       }
     } else if (field == MyCellarFields.COLUMN) {
       try {
@@ -775,18 +771,18 @@ public class ShowFile extends JPanel implements ITabListener {
         nValueToCheck = column;
       } catch (Exception e) {
         Erreur.showSimpleErreur(Program.getError("Error196"));
-        bError = true;
+        return;
       }
     }
 
-    if (!bError && (field == MyCellarFields.NUM_PLACE || field == MyCellarFields.LINE || field == MyCellarFields.COLUMN)) {
+    if (field == MyCellarFields.NUM_PLACE || field == MyCellarFields.LINE || field == MyCellarFields.COLUMN) {
       if (rangement != null && !rangement.isCaisse() && nValueToCheck <= 0) {
         Erreur.showSimpleErreur(Program.getError("Error197"));
-        bError = true;
+        return;
       }
     }
 
-    if (!bError && (b.getEmplacement().compareTo(empl) != 0 || b.getNumLieu() != num_empl || b.getLigne() != line || b.getColonne() != column)) {
+    if (b.getEmplacement().compareTo(empl) != 0 || b.getNumLieu() != num_empl || b.getLigne() != line || b.getColonne() != column) {
       // Controle de l'emplacement de la bouteille
       if (rangement != null && rangement.canAddBottle(num_empl, line, column)) {
         Bouteille bTemp = null;
@@ -814,6 +810,9 @@ public class ShowFile extends JPanel implements ITabListener {
             b.setColonne(0);
           }
           RangementUtils.putTabStock();
+          Program.setModified();
+          b.setModified();
+          Program.getStorage().addHistory(History.MODIFY, b);
         }
       } else {
         if (rangement != null && rangement.isCaisse()) {
@@ -984,9 +983,13 @@ public class ShowFile extends JPanel implements ITabListener {
           buffer.append(';');
         }
         i++;
-		buffer.append(c.getField().name());
+		    buffer.append(c.getField().name());
       }
-      Program.saveShowColumns(buffer.toString());
+      if (isWork()) {
+        Program.saveShowColumnsWork(buffer.toString());
+      } else {
+        Program.saveShowColumns(buffer.toString());
+      }
     }
   }
 

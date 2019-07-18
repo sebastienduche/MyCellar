@@ -80,11 +80,11 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.0
- * @since 16/07/19
+ * @version 21.1
+ * @since 18/07/19
  */
 
-public class Program {
+public final class Program {
 
 	// Manage cave config
 	private static MyLinkedHashMap configCave = null;
@@ -827,19 +827,6 @@ public class Program {
 		return RANGEMENTS_LIST;
 	}
 
-	/**
-	 * GetCave
-	 *
-	 * @param _nCave int
-	 * @return Rangement
-	 */
-	@Deprecated
-	public static Rangement getCave(int _nCave) {
-		if (_nCave >= RANGEMENTS_LIST.size() || _nCave < 0) {
-			return null;
-		}
-		return RANGEMENTS_LIST.get(_nCave);
-	}
 
 	/**
 	 * GetCave
@@ -862,24 +849,6 @@ public class Program {
 	}
 	
 	/**
-	 * GetCaveIndex
-	 *
-	 * @param rangement {@link Rangement}
-	 * @return int
-	 */
-	static int getCaveIndex(final Rangement rangement) {
-		if (rangement == null) {
-			return -1;
-		}
-		for(int i = 0; i < RANGEMENTS_LIST.size(); i++) {
-			if(rangement.equals(RANGEMENTS_LIST.get(i))) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	/**
 	 * addCave
 	 *
 	 * @param rangement Rangement
@@ -893,10 +862,6 @@ public class Program {
 		setModified();
 		Debug("Program: Sorting places...");
 		Collections.sort(RANGEMENTS_LIST);
-	}
-
-	public static boolean hasComplexPlace() {
-		return RANGEMENTS_LIST.stream().anyMatch(rangement -> !rangement.isCaisse());
 	}
 
 	/**
@@ -913,7 +878,6 @@ public class Program {
 		setListCaveModified();
 	}
 
-
 	/**
 	 * GetCaveLength
 	 *
@@ -921,6 +885,10 @@ public class Program {
 	 */
 	static int GetCaveLength() {
 		return RANGEMENTS_LIST.size();
+	}
+
+	public static boolean hasComplexPlace() {
+		return RANGEMENTS_LIST.stream().anyMatch(rangement -> !rangement.isCaisse());
 	}
 
 	/**
@@ -1209,12 +1177,12 @@ public class Program {
 			if(!f.exists() || f.getName().equalsIgnoreCase("Global")) {
 				continue;
 			}
-			try{
-				Debug("Program: closeFile: Deleting work directory: "+f.getAbsolutePath());
+			try {
+				Debug("Program: closeFile: Deleting work directory: " + f.getAbsolutePath());
 				FileUtils.deleteDirectory(f);
-			}catch(Exception e){
-				Debug("Program: Error deleting "+f.getAbsolutePath());
-				Debug("Program: "+e.getMessage());
+			} catch(Exception e) {
+				Debug("Program: Error deleting " + f.getAbsolutePath());
+				Debug("Program: " + e.getMessage());
 			}
 		}
 	}
@@ -1552,12 +1520,12 @@ public class Program {
 	}
 
 	public static int findTab(ImageIcon image) {
-		for(int i = 0; i< TABBED_PANE.getTabCount(); i++){
-			try{
+		for(int i = 0; i< TABBED_PANE.getTabCount(); i++) {
+			try {
 				if(TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image)) {
 					return i;
 				}
-			}catch(Exception e){}
+			} catch(Exception ignored){}
 		}
 		return -1;
 	}
@@ -1753,10 +1721,7 @@ public class Program {
 	}
 
 	static boolean isSelectedTab(ITabListener tab) {
-		if(TABBED_PANE.getSelectedComponent() == null) {
-			return false;
-		}
-		return TABBED_PANE.getSelectedComponent().equals(tab);
+		return TABBED_PANE.getSelectedComponent() != null && TABBED_PANE.getSelectedComponent().equals(tab);
 	}
 
   static boolean isCutCopyPastTab() {

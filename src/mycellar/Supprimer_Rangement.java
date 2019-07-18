@@ -24,19 +24,19 @@ import java.util.stream.Collectors;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2005</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 7.5
- * @since 04/07/18
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 7.6
+ * @since 17/07/19
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener {
 
 	private static final long serialVersionUID = 6959053537854600207L;
-	private final MyCellarComboBox<String> choix = new MyCellarComboBox<>();
+	private final MyCellarComboBox<Rangement> choix = new MyCellarComboBox<>();
 	private final MyCellarLabel label_final = new MyCellarLabel();
 	private int nb_case_use_total = 0;
 	private final MyCellarButton preview = new MyCellarButton();
@@ -55,7 +55,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 
 		Debug("Initializing...");
 		setLayout(new MigLayout("","[grow]","20px[]15px[]15px[]"));
-		MyCellarLabel textControl2 = new MyCellarLabel(Program.getLabel("Infos054")); //"Veuillez sélectionner le rangement � supprimer:");
+		MyCellarLabel textControl2 = new MyCellarLabel(Program.getLabel("Infos054")); //"Veuillez selectionner le rangement a supprimer:");
 		MyCellarButton supprimer = new MyCellarButton(Program.getLabel("Infos051")); //"Supprimer");
 		supprimer.setMnemonic(SUPPRIMER);
 		preview.setMnemonic(PREVIEW);
@@ -72,7 +72,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 			public void keyTyped(KeyEvent e) {}
 		});
 
-		model = new SupprimerModel( listSupprimer );
+		model = new SupprimerModel(listSupprimer);
 		table = new JTable(model);
 		JScrollPane scroll = new JScrollPane(table);
 
@@ -88,16 +88,16 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 
 		choix.addItemListener(this::choix_itemStateChanged);
 
-		choix.addItem("");
+		choix.addItem(Program.EMPTY_PLACE);
 		for (Rangement r : Program.getCave()) {
-			choix.addItem(r.getNom());
+			choix.addItem(r);
 		}
 		RangementUtils.putTabStock();
 		setVisible(true);
 	}
 
 	/**
-	 * choix_itemStateChanged: Méthode pour la première liste
+	 * choix_itemStateChanged: Methode pour la premiere liste
 	 *
 	 * @param e ItemEvent
 	 */
@@ -105,14 +105,13 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		try {
 			Debug("choix_itemStateChanging...");
 			int i;
-			int num_select;
 			listSupprimer.clear();
 			nb_case_use_total = 0;
 
-			num_select = choix.getSelectedIndex();
+			int num_select = choix.getSelectedIndex();
 			if (num_select != 0) {
 				preview.setEnabled(true);
-				Rangement rangement = Program.getCave(num_select - 1);
+				Rangement rangement = (Rangement) choix.getSelectedItem();
 				// Nombre d'emplacement
 				if (rangement != null) {
 					int num_emplacement = rangement.getNbEmplacements();
@@ -168,7 +167,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 	}
 
 	/**
-	 * supprimer_actionPerformed: méthode pour la suppression d'un rangement.
+	 * supprimer_actionPerformed: methode pour la suppression d'un rangement.
 	 *
 	 * @param e ActionEvent
 	 */
@@ -179,13 +178,13 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 			String erreur_txt1;
 			String erreur_txt2;
 
-			// Vérifier l'état du rangement avant de le supprimer et demander confirmation
+			// Verifier l'etat du rangement avant de le supprimer et demander confirmation
 			if (num_select > 0) {
 				if(Program.GetCaveLength() == 1) {
 					Erreur.showSimpleErreur(Program.getError("SupprimerRangement.ForbiddenToDelete"));
 					return;
 				}
-				final Rangement cave = Program.getCave(num_select - 1);
+				final Rangement cave = (Rangement) choix.getSelectedItem();
 				if (cave != null) {
 					if (nb_case_use_total == 0) {
 						String tmp = cave.getNom();
@@ -211,7 +210,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 							class Run implements Runnable {
 								@Override
 								public void run() {
-									//Suppression des bouteilles présentes dans le rangement
+									//Suppression des bouteilles presentes dans le rangement
 									String tmp_nom = cave.getNom();
 
 									List<Bouteille> bottleList = Program.getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
@@ -238,7 +237,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 	}
 
 	/**
-	 * preview_actionPerformed: Méthode pour visualiser un rangement
+	 * preview_actionPerformed: Methode pour visualiser un rangement
 	 *
 	 * @param e ActionEvent
 	 */
@@ -250,8 +249,8 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 				preview.setEnabled(false);
 			}
 			else {
-				Rangement rangement = Program.getCave(num_select -1);
-				LinkedList<Rangement> rangements = new LinkedList<Rangement>();
+				Rangement rangement = (Rangement) choix.getSelectedItem();
+				LinkedList<Rangement> rangements = new LinkedList<>();
 				rangements.add(rangement);
 				MyXmlDom.writeRangements("", rangements, false);
 				Program.open(new File(Program.getPreviewXMLFileName()));
@@ -263,7 +262,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 	}
 
 	/**
-	 * keylistener_actionPerformed: Méthode d'écoute clavier.
+	 * keylistener_actionPerformed: Methode d'ecoute clavier.
 	 *
 	 * @param e KeyEvent
 	 */
@@ -312,7 +311,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		updateView  = true;
 	}
 	/**
-	 * Mise à jour de la liste des rangements
+	 * Mise a jour de la liste des rangements
 	 */
 	public void updateView() {
 		if(!updateView)
@@ -320,9 +319,9 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		updateView = false;
 		RangementUtils.putTabStock();
 		choix.removeAllItems();
-		choix.addItem("");
+		choix.addItem(Program.EMPTY_PLACE);
 		for (Rangement r : Program.getCave()) {
-			choix.addItem(r.getNom());
+			choix.addItem(r);
 		}
 	}
 
@@ -331,10 +330,10 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		private static final long serialVersionUID = -3295046126691124148L;
 		private final List<SupprimerLine> list;
 		private final List<Column> columns;
+		private final Column colLine = new Column( Column.LINE, Program.getLabel("Infos027"));
 		private boolean isCaisse = false;
-		private Column colLine = new Column( Column.LINE, Program.getLabel("Infos027"));
-		private SupprimerModel(List<SupprimerLine> list)
-		{
+
+		private SupprimerModel(List<SupprimerLine> list) {
 			this.list = list;
 			columns = new LinkedList<>();
 			columns.add(new Column( Column.PART, Program.getLabel("Infos059")));
@@ -342,15 +341,14 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 			columns.add(new Column( Column.WINE, Program.getLabel("Infos057")));
 
 		}
-		public void setCaisse(boolean caisse)
-		{
-			if(isCaisse != caisse)
-			{
+		public void setCaisse(boolean caisse) {
+			if(isCaisse != caisse) {
 				isCaisse = caisse;
-				if(isCaisse)
+				if(isCaisse) {
 					columns.remove(colLine);
-				else
+				} else {
 					columns.add(1, colLine);
+				}
 			}
 			fireTableStructureChanged();
 		}
@@ -364,16 +362,16 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		}
 		@Override
 		public int getRowCount() {
-			if(list == null)
+			if(list == null) {
 				return 0;
+			}
 			return list.size();
 		}
 		@Override
 		public Object getValueAt(int row, int column) {
 			SupprimerLine line = list.get(row);
 			Column col = columns.get(column);
-			switch(col.getCol())
-			{
+			switch(col.getCol()) {
 			case 0:
 				return line.getNumPartLabel();
 			case 1:
@@ -388,14 +386,15 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 			return false;
 		}
 
-		class Column{
+		class Column {
 			private static final int PART = 0;
 			private static final int LINE = 1;
 			private static final int WINE = 2;
 
 			private final int col;
 			private final String label;
-			public Column(int col, String label) {
+
+			private Column(int col, String label) {
 				this.col = col;
 				this.label = label;
 			}
@@ -408,11 +407,12 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 		}
 	}
 
-	class SupprimerLine{
+	class SupprimerLine {
 		private String place;
 		private int numPart;
 		private int nbLine;
 		private int nbWine;
+
 		private SupprimerLine(String place, int numPart, int nbLine, int nbWine) {
 			this.place = place;
 			this.numPart = numPart;
@@ -441,7 +441,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener {
 			if(nbLine <= 1) {
 				return MessageFormat.format(Program.getLabel("Infos060"), nbLine);
 			}
-			return MessageFormat.format(Program.getLabel("Infos061"),nbLine);
+			return MessageFormat.format(Program.getLabel("Infos061"), nbLine);
 		}
 		public void setNbLine(int nbLine) {
 			this.nbLine = nbLine;

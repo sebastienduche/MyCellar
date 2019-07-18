@@ -6,6 +6,7 @@ import mycellar.countries.Countries;
 import mycellar.countries.Country;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -13,8 +14,8 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 15/03/19
+ * @version 0.9
+ * @since 11/07/19
  */
 
 public enum MyCellarFields {
@@ -34,7 +35,8 @@ public enum MyCellarFields {
 	VINEYARD(Program.getLabel("Main.Vignoble")),
 	AOC(Program.getLabel("Main.AppelationAOC")),
 	IGP(Program.getLabel("Main.AppelationIGP")),
-	
+	STATUS(Program.getLabel("Main.Status")),
+
 	// Pour l'import de données
 	EMPTY(""),
 	USELESS(Program.getLabel("Infos271"));
@@ -74,6 +76,8 @@ public enum MyCellarFields {
 			value = b.getParker();
 		} else if(field == COLOR) {
 			value = b.getColor();
+		} else if(field == STATUS) {
+			value = b.getStatus();
 		} else if(field == COUNTRY) {
 			if(b.getVignoble() != null) {
 				Country c = Countries.find(b.getVignoble().getCountry());
@@ -120,22 +124,30 @@ public enum MyCellarFields {
 	
 	public static ArrayList<MyCellarFields> getFieldsList() {
 		if(FIELDS.isEmpty()) {
-    		FIELDS.add(NAME);
-    		FIELDS.add(YEAR);
-    		FIELDS.add(TYPE);
-    		FIELDS.add(PLACE);
-    		FIELDS.add(NUM_PLACE);
-    		FIELDS.add(LINE);
-    		FIELDS.add(COLUMN);
-    		FIELDS.add(PRICE);
-    		FIELDS.add(COMMENT);
-    		FIELDS.add(MATURITY);
-    		FIELDS.add(PARKER);
-    		FIELDS.add(COLOR);
-    		FIELDS.add(COUNTRY);
-    		FIELDS.add(VINEYARD);
-    		FIELDS.add(AOC);
-    		FIELDS.add(IGP);
+    		getFieldsListForImport();
+		}
+		FIELDS.add(STATUS);
+		return FIELDS;
+	}
+
+	public static List<MyCellarFields> getFieldsListForImport() {
+		if(FIELDS.isEmpty()) {
+			FIELDS.add(NAME);
+			FIELDS.add(YEAR);
+			FIELDS.add(TYPE);
+			FIELDS.add(PLACE);
+			FIELDS.add(NUM_PLACE);
+			FIELDS.add(LINE);
+			FIELDS.add(COLUMN);
+			FIELDS.add(PRICE);
+			FIELDS.add(COMMENT);
+			FIELDS.add(MATURITY);
+			FIELDS.add(PARKER);
+			FIELDS.add(COLOR);
+			FIELDS.add(COUNTRY);
+			FIELDS.add(VINEYARD);
+			FIELDS.add(AOC);
+			FIELDS.add(IGP);
 		}
 		return FIELDS;
 	}

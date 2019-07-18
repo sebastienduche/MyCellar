@@ -8,6 +8,7 @@ import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
 import mycellar.pdf.PDFColumn;
@@ -74,16 +75,16 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 20.5
- * @since 12/04/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 21.1
+ * @since 18/07/19
  */
 
-public class Program {
+public final class Program {
 
 	// Manage cave config
 	private static MyLinkedHashMap configCave = null;
@@ -116,6 +117,7 @@ public class Program {
 	static Stat stat = null;
 
 	public static ShowFile showerrors = null;
+	public static ShowFile showworksheet = null;
 	public static AddVin addWine = null;
 
 	static final PanelInfos PANEL_INFOS = new PanelInfos();
@@ -129,8 +131,8 @@ public class Program {
 	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
 	private static final LinkedList<MyCellarError> ERRORS = new LinkedList<>();
 
-	static final Rangement DEFAULT_PLACE = new Rangement("");
-	static final Rangement EMPTY_PLACE = new Rangement("");
+	static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").build();
+	public static final Rangement EMPTY_PLACE = new Rangement.CaisseBuilder("").build();
 	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
 
 	private static String m_sWorkDir = null;
@@ -160,17 +162,15 @@ public class Program {
 	private static int nextID = -1;
 	public static final MyClipBoard CLIPBOARD = new MyClipBoard();
 
-	/**
-	 * init
-	 */
-	public static void init() {
+
+	public static void start() {
 
 		try {
 			archive = "";
 			bDebug = true;
 			Debug("===================================================");
 			Debug("Starting MyCellar version: "+ MyCellarVersion.VERSION);
-			// Initialisation du répertoire de travail
+			// Initialisation du repertoire de travail
 			getWorkDir(false);
 			Debug("Program: Initializing Configuration files...");
 			File fileIni = new File(getGlobalConfigFilePath());
@@ -195,9 +195,6 @@ public class Program {
 		}
 	}
 
-	/**
-	 * initConf
-	 */
 	static void initConf() {
 		try {
 			Debug("Program: Initializing Configuration files...");
@@ -233,10 +230,6 @@ public class Program {
 		return getGlobalDir() + "config.ini";
 	}
 
-
-	/**
-	 * @throws IOException
-	 */
 	private static void loadProperties() throws IOException {
 
 		String inputPropCave = getConfigFilePath();
@@ -256,7 +249,7 @@ public class Program {
 			}
 			if (properties.isEmpty()) {
 				// Initialisation de la devise pour les nouveaux fichiers
-				putCaveConfigString(MyCellarSettings.DEVISE, "€");
+				putCaveConfigString(MyCellarSettings.DEVISE, "\u20ac");
 			}
 		}
 
@@ -276,7 +269,7 @@ public class Program {
 		int n1 = Integer.parseInt(sVersion.substring(0,1));
 		int n2 = Integer.parseInt(sVersion.substring(2,3));
 		int val = n1*10 + n2;
-		// Affichage du nombre avec 2 décimales.
+		// Affichage du nombre avec 2 decimales.
 		if (val < 24) {
 			Debug("Program: Updating to internal version 2.4");
 			Debug("Program: WARNING: Destroying old files");
@@ -511,12 +504,13 @@ public class Program {
 	}
 
 	/**
-	 * Chargement des données XML (Bouteilles et Rangement) ou des données sérialisées en cas de pb
+	 * Chargement des donnees XML (Bouteilles et Rangement) ou des donnees serialisees en cas de pb
 	 */
 	static boolean loadObjects() {
 		RANGEMENTS_LIST.clear();
 		boolean load = MyXmlDom.readMyCellarXml("", RANGEMENTS_LIST);
 		getStorage().loadHistory();
+		getStorage().loadWorksheet();
 		load |= ListeBouteille.loadXML();
 
 		if(!load) {
@@ -543,9 +537,9 @@ public class Program {
 	}
 	
 	/**
-	 * getNbBouteilleAnnee: retourne le nombre de bouteilles d'une année
+	 * getNbBouteilleAnnee: retourne le nombre de bouteilles d'une annee
 	 *
-	 * @param an int: année souhaitée
+	 * @param an int: annee souhaitee
 	 * @return int
 	 */
 	static int getNbBouteilleAnnee(int an) {
@@ -599,7 +593,7 @@ public class Program {
 	}
 
 	/**
-	 * zipDir: Compression de répertoire
+	 * zipDir: Compression de repertoire
 	 *
 	 * @param fileName String
 	 * @return boolean
@@ -609,20 +603,20 @@ public class Program {
 		Debug("Program: zipDir: Zipping in "+m_sWorkDir+" with archive "+fileName);
 		int BUFFER = 2048;
 		try {
-			// création d'un flux d'écriture sur fichier
+			// creation d'un flux d'ecriture sur fichier
 			var dest = new FileOutputStream(fileName);
 			// calcul du checksum : Adler32 (plus rapide) ou CRC32
 			var checksum = new CheckedOutputStream(dest, new Adler32());
-			// création d'un buffer d'écriture
+			// creation d'un buffer d'ecriture
 			var buff = new BufferedOutputStream(checksum);
-			// création d'un flux d'écriture Zip
+			// creation d'un flux d'ecriture Zip
 			try(var out = new ZipOutputStream(buff)) {
-				// spécification de la méthode de compression
+				// specification de la methode de compression
 				out.setMethod(ZipOutputStream.DEFLATED);
-				// spécifier la qualité de la compression 0..9
+				// specifier la qualite de la compression 0..9
 				out.setLevel(Deflater.BEST_COMPRESSION);
 
-				// extraction de la liste des fichiers du répertoire courant
+				// extraction de la liste des fichiers du repertoire courant
 				File f = new File(m_sWorkDir);
 				String[] files = f.list();
 				// pour chacun des fichiers de la liste
@@ -632,22 +626,22 @@ public class Program {
 						f = new File(getWorkDir(true) + file);
 						if (f.isDirectory() || file.compareTo(UNTITLED1_SINFO) == 0)
 							continue;
-						// création d'un flux de lecture
+						// creation d'un flux de lecture
 						var inputStream = new FileInputStream(getWorkDir(true) + file);
-						// création d'un tampon de lecture sur ce flux
+						// creation d'un tampon de lecture sur ce flux
 						try (var bufferedInputStream = new BufferedInputStream(inputStream, BUFFER)) {
-							// création d'en entrée Zip pour ce fichier
+							// creation d'en entree Zip pour ce fichier
 							String name = removeAccents(file);
 							var entry = new ZipEntry(name);
 							if (zipEntryList.contains(name)) {
 								continue;
 							}
 							zipEntryList.add(name);
-							// ajout de cette entrée dans le flux d'écriture de l'archive Zip
+							// ajout de cette entree dans le flux d'ecriture de l'archive Zip
 							out.putNextEntry(entry);
-							// écriture du fichier par paquet de BUFFER octets dans le flux d'écriture
+							// ecriture du fichier par paquet de BUFFER octets dans le flux d'ecriture
 							int count;
-							// buffer temporaire des données à écrire dans le flux de sortie
+							// buffer temporaire des donnees a ecrire dans le flux de sortie
 							byte[] data = new byte[BUFFER];
 							while ((count = bufferedInputStream.read(data, 0, BUFFER)) != -1) {
 								out.write(data, 0, count);
@@ -671,7 +665,7 @@ public class Program {
 	}
 
 	/**
-	 * unzipDir: Dézippe une archive dans un répertoire
+	 * unzipDir: Dezippe une archive dans un repertoire
 	 *
 	 * @param dest_dir String
 	 * @return boolean
@@ -680,7 +674,7 @@ public class Program {
 		try {
 			Debug("Program: Unzip: Archive "+archive);
 			int BUFFER = 2048;
-			// ouverture fichier entrée
+			// ouverture fichier entree
 			archive = archive.replaceAll("\\\\", "/");
 			File f = new File(archive);
 			if(!f.exists())
@@ -688,14 +682,14 @@ public class Program {
 			var fileInputStream = new FileInputStream(archive);
 			// ouverture fichier de buffer
 			var bufferedInputStream = new BufferedInputStream(fileInputStream);
-			// ouverture archive Zip d'entrée
+			// ouverture archive Zip d'entree
 			try(var zipInputStream = new ZipInputStream(bufferedInputStream)) {
-				// entrée Zip
+				// entree Zip
 				ZipEntry entry;
-				// parcours des entrées de l'archive
+				// parcours des entrees de l'archive
 				while ((entry = zipInputStream.getNextEntry()) != null) {
-					// affichage du nom de l'entrée
-					// création fichier
+					// affichage du nom de l'entree
+					// creation fichier
 					f = new File(dest_dir);
 					boolean ok = true;
 					if (!f.exists()) {
@@ -706,7 +700,7 @@ public class Program {
 						Debug("Unzip: File " + dest_dir + File.separator + entry.getName());
 						// affectation buffer de sortie
 						try (var bufferOutputStream = new BufferedOutputStream(fileOutputStream, BUFFER)) {
-							// écriture sur disque
+							// ecriture sur disque
 							int count;
 							byte[] data = new byte[BUFFER];
 							while ((count = zipInputStream.read(data, 0, BUFFER)) != -1) {
@@ -756,6 +750,7 @@ public class Program {
 		}
 
 		getStorage().saveHistory();
+		getStorage().saveWorksheet();
 		CountryVignobles.save();
 		ListeBouteille.writeXML();
 
@@ -832,18 +827,6 @@ public class Program {
 		return RANGEMENTS_LIST;
 	}
 
-	/**
-	 * GetCave
-	 *
-	 * @param _nCave int
-	 * @return Rangement
-	 */
-	public static Rangement getCave(int _nCave) {
-		if (_nCave >= RANGEMENTS_LIST.size() || _nCave < 0) {
-			return null;
-		}
-		return RANGEMENTS_LIST.get(_nCave);
-	}
 
 	/**
 	 * GetCave
@@ -866,26 +849,6 @@ public class Program {
 	}
 	
 	/**
-	 * GetCaveIndex
-	 *
-	 * @param name String
-	 * @return int
-	 */
-	@Deprecated
-	static int getCaveIndex(final String name) {
-		if (name == null || name.trim().isEmpty()) {
-			return -1;
-		}
-		final String placeName = name.trim();
-		for(int i = 0; i < RANGEMENTS_LIST.size(); i++) {
-			if(placeName.equals(RANGEMENTS_LIST.get(i).getNom())) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	/**
 	 * addCave
 	 *
 	 * @param rangement Rangement
@@ -899,10 +862,6 @@ public class Program {
 		setModified();
 		Debug("Program: Sorting places...");
 		Collections.sort(RANGEMENTS_LIST);
-	}
-
-	public static boolean hasComplexPlace() {
-		return RANGEMENTS_LIST.stream().anyMatch(rangement -> !rangement.isCaisse());
 	}
 
 	/**
@@ -919,7 +878,6 @@ public class Program {
 		setListCaveModified();
 	}
 
-
 	/**
 	 * GetCaveLength
 	 *
@@ -929,8 +887,12 @@ public class Program {
 		return RANGEMENTS_LIST.size();
 	}
 
+	public static boolean hasComplexPlace() {
+		return RANGEMENTS_LIST.stream().anyMatch(rangement -> !rangement.isCaisse());
+	}
+
 	/**
-	 * openFile: Choix d'un fichier à ouvrir.
+	 * openFile: Choix d'un fichier a ouvrir.
 	 */
 	static boolean newFile() {
 		return openaFile(null);
@@ -983,12 +945,12 @@ public class Program {
 		}
 
 		if(!f.exists()) {
-			Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), f.getAbsolutePath())); //Fichier non trouvé);
+			Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), f.getAbsolutePath())); //Fichier non trouve);
 
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
-			// On a déjà enlevé un élément de la liste
+			// On a deja enleve un element de la liste
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN4, "");
 			saveGlobalProperties();
 			return false;
@@ -997,7 +959,7 @@ public class Program {
 		archive = f.getAbsolutePath();
 
 		try {
-			// Dézippage
+			// Dezippage
 			boolean unzipOK = unzipDir(getWorkDir(false));
 			Debug("Program: Unzipping " + archive + " to " + getWorkDir(false) + (unzipOK ? " OK" : " KO"));
 			if (!unzipOK) {
@@ -1025,7 +987,7 @@ public class Program {
 			Debug("Program: Reading Object KO");
 			loaded = false;
 		}
-		// Contrôle du nombre de rangement
+		// Controle du nombre de rangement
 		Debug("Program: Checking place count");
 		if (loaded) {
 			int i = 0;
@@ -1045,7 +1007,7 @@ public class Program {
 			Debug("Program: ERROR: Loading");
 		}
 
-		//Chargement des rangement par le fichier d'options si la relecture des objets sérialisés a échouée
+		//Chargement des rangement par le fichier d'options si la relecture des objets serialises a echouee
 		if (GetCaveLength() == 0) {
 			Debug("Program: Reading places from file");
 			MyXmlDom.readMyCellarXml("", RANGEMENTS_LIST);
@@ -1129,7 +1091,7 @@ public class Program {
 
 			getErrors().clear();
 
-			//Tri du tableau et écriture du fichier XML
+			//Tri du tableau et ecriture du fichier XML
 			if (bSave) {
 				if(!ListeBouteille.writeXML()) {
 					return;
@@ -1143,13 +1105,14 @@ public class Program {
 
 				if (!getCave().isEmpty()) {
 					getStorage().saveHistory();
+					getStorage().saveWorksheet();
 					CountryVignobles.save();
 					zipDir(archive);
 				}
 			}
 
 			if(!archive.isEmpty()) {
-				// Sauvegarde des propriétés globales
+				// Sauvegarde des proprietes globales
 				saveGlobalProperties();
 
 				if (getCaveConfigBool(MyCellarSettings.FIC_EXCEL, false)) {
@@ -1214,12 +1177,12 @@ public class Program {
 			if(!f.exists() || f.getName().equalsIgnoreCase("Global")) {
 				continue;
 			}
-			try{
-				Debug("Program: closeFile: Deleting work directory: "+f.getAbsolutePath());
+			try {
+				Debug("Program: closeFile: Deleting work directory: " + f.getAbsolutePath());
 				FileUtils.deleteDirectory(f);
-			}catch(Exception e){
-				Debug("Program: Error deleting "+f.getAbsolutePath());
-				Debug("Program: "+e.getMessage());
+			} catch(Exception e) {
+				Debug("Program: Error deleting " + f.getAbsolutePath());
+				Debug("Program: " + e.getMessage());
 			}
 		}
 	}
@@ -1256,7 +1219,7 @@ public class Program {
 	}
 
 	/**
-	 * getGlobalDir: Retourne le nom du repertoire des propriétés globales.
+	 * getGlobalDir: Retourne le nom du repertoire des proprietes globales.
 	 * @return
 	 */
 	private static String getGlobalDir() {
@@ -1541,6 +1504,9 @@ public class Program {
 		if (showerrors != null) {
 			showerrors.setUpdateView();
 		}
+		if (showworksheet != null) {
+			showworksheet.setUpdateView();
+		}
 	}
 
 	static void updateManagePlacePanel() {
@@ -1554,12 +1520,12 @@ public class Program {
 	}
 
 	public static int findTab(ImageIcon image) {
-		for(int i = 0; i< TABBED_PANE.getTabCount(); i++){
-			try{
+		for(int i = 0; i< TABBED_PANE.getTabCount(); i++) {
+			try {
 				if(TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image)) {
 					return i;
 				}
-			}catch(Exception e){}
+			} catch(Exception ignored){}
 		}
 		return -1;
 	}
@@ -1661,9 +1627,10 @@ public class Program {
 					} else {
 						row.addCell("");
 					}
-				}
-				else if(column.getField().equals(MyCellarFields.COLOR)) {
+				} else if(column.getField().equals(MyCellarFields.COLOR)) {
 					row.addCell(BottleColor.getColor(b.getColor()).toString());
+				}	else if(column.getField().equals(MyCellarFields.STATUS)) {
+					row.addCell(BottlesStatus.getStatus(b.getStatus()).toString());
 				}
 			}
 			rows.add(row);
@@ -1719,6 +1686,14 @@ public class Program {
 		return getCaveConfigString(MyCellarSettings.SHOWFILE_COLUMN, "");
 	}
 
+	public static void saveShowColumnsWork(String value) {
+		putCaveConfigString(MyCellarSettings.SHOWFILE_COLUMN_WORK, value);
+	}
+
+	public static String getShowColumnsWork() {
+		return getCaveConfigString(MyCellarSettings.SHOWFILE_COLUMN_WORK, "");
+	}
+
 	static void saveHTMLColumns(List<MyCellarFields> cols) {
 		StringBuilder s = new StringBuilder();
 		for(MyCellarFields f : cols) {
@@ -1746,10 +1721,7 @@ public class Program {
 	}
 
 	static boolean isSelectedTab(ITabListener tab) {
-		if(TABBED_PANE.getSelectedComponent() == null) {
-			return false;
-		}
-		return TABBED_PANE.getSelectedComponent().equals(tab);
+		return TABBED_PANE.getSelectedComponent() != null && TABBED_PANE.getSelectedComponent().equals(tab);
 	}
 
   static boolean isCutCopyPastTab() {
@@ -1778,6 +1750,10 @@ public class Program {
 	
 	static HistoryList getHistoryList() {
 		return getStorage().getHistoryList();
+	}
+
+	public static WorkSheetList getWorksheetList() {
+		return getStorage().getWorksheetList();
 	}
 	
 	public static List<History> getHistory() {
@@ -1823,7 +1799,7 @@ public class Program {
 
 	static int getNewID() {
 		if (nextID == -1) {
-			nextID = getStorage().getAllNblign();
+			nextID = getStorage().getBottlesCount();
 		}
 		do {
 			++nextID;
@@ -1840,6 +1816,14 @@ public class Program {
 		} else {
 			new OpenAddVinAction(listToModify).actionPerformed(null);
 		}
+	}
+
+	public static List<Bouteille> getExistingBottles(List<Integer> bouteilles) {
+		return getStorage().getAllList().stream().filter(bouteille -> bouteilles.contains(bouteille.getId())).collect(Collectors.toList());
+	}
+
+	public static boolean isExistingBottle(Bouteille bouteille) {
+		return getStorage().getAllList().stream().anyMatch(bouteille1 -> bouteille1.getId() == bouteille.getId());
 	}
 
 	static void exit() {

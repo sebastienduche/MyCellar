@@ -1,14 +1,15 @@
 package test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.ArrayList;
-
+import mycellar.Bouteille;
+import mycellar.core.MyCellarFields;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import mycellar.Bouteille;
-import mycellar.core.MyCellarFields;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MyCellarFieldsTest {
 
@@ -29,6 +30,7 @@ class MyCellarFieldsTest {
 		        .parker("100")
 		        .price("123")
 		        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+						.status("ToCheck")
 		        .build();
 	}
 	
@@ -45,6 +47,7 @@ class MyCellarFieldsTest {
 		assertEquals("Red", MyCellarFields.getValue(MyCellarFields.COLOR, bouteille));
 		assertEquals("comment", MyCellarFields.getValue(MyCellarFields.COMMENT, bouteille));
 		assertEquals("maturity", MyCellarFields.getValue(MyCellarFields.MATURITY, bouteille));
+		assertEquals("ToCheck", MyCellarFields.getValue(MyCellarFields.STATUS, bouteille));
 		assertEquals("100", MyCellarFields.getValue(MyCellarFields.PARKER, bouteille));
 		assertEquals("123", MyCellarFields.getValue(MyCellarFields.PRICE, bouteille));
 		assertEquals("France", MyCellarFields.getValue(MyCellarFields.COUNTRY, bouteille));
@@ -66,6 +69,7 @@ class MyCellarFieldsTest {
 		assertTrue(MyCellarFields.hasSpecialHTMLCharacters(MyCellarFields.TYPE));
 		assertFalse(MyCellarFields.hasSpecialHTMLCharacters(MyCellarFields.YEAR));
 		assertFalse(MyCellarFields.hasSpecialHTMLCharacters(MyCellarFields.COLOR));
+		assertFalse(MyCellarFields.hasSpecialHTMLCharacters(MyCellarFields.STATUS));
 		assertTrue(MyCellarFields.hasSpecialHTMLCharacters(MyCellarFields.COMMENT));
 		assertFalse(MyCellarFields.hasSpecialHTMLCharacters(MyCellarFields.MATURITY));
 		assertFalse(MyCellarFields.hasSpecialHTMLCharacters(MyCellarFields.PARKER));
@@ -89,6 +93,7 @@ class MyCellarFieldsTest {
 		assertTrue(MyCellarFields.isRealField(MyCellarFields.TYPE));
 		assertTrue(MyCellarFields.isRealField(MyCellarFields.YEAR));
 		assertTrue(MyCellarFields.isRealField(MyCellarFields.COLOR));
+		assertTrue(MyCellarFields.isRealField(MyCellarFields.STATUS));
 		assertTrue(MyCellarFields.isRealField(MyCellarFields.COMMENT));
 		assertTrue(MyCellarFields.isRealField(MyCellarFields.MATURITY));
 		assertTrue(MyCellarFields.isRealField(MyCellarFields.PARKER));
@@ -112,6 +117,7 @@ class MyCellarFieldsTest {
 		assertTrue(list.contains(MyCellarFields.TYPE));
 		assertTrue(list.contains(MyCellarFields.YEAR));
 		assertTrue(list.contains(MyCellarFields.COLOR));
+		assertTrue(list.contains(MyCellarFields.STATUS));
 		assertTrue(list.contains(MyCellarFields.COMMENT));
 		assertTrue(list.contains(MyCellarFields.MATURITY));
 		assertTrue(list.contains(MyCellarFields.PARKER));
@@ -122,7 +128,7 @@ class MyCellarFieldsTest {
 		assertTrue(list.contains(MyCellarFields.IGP));
 		assertFalse(list.contains(MyCellarFields.EMPTY));
 		assertFalse(list.contains(MyCellarFields.USELESS));
-		assertEquals(16, list.size());
+		assertEquals(17, list.size());
 	}
 
 }

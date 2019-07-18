@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.actions.ExportPDFAction;
+import mycellar.actions.OpenWorkSheetAction;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarLabel;
@@ -39,14 +40,14 @@ import java.util.LinkedList;
 import java.util.prefs.Preferences;
 
 /**
- * Titre : Cave à vin
+ * Titre : Cave &agrave; vin
  * Description : Votre description
  * Copyright : Copyright (c) 2003
- * Société : Seb Informatique
- * 
- * @author Sébastien Duché
- * @version 25.4
- * @since 10/04/19
+ * Soci&eacute;t&eacute; : Seb Informatique
+ *
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 25.6
+ * @since 17/07/19
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -57,6 +58,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private final JButton m_oExportButton = new JButton();
 	private final JButton m_oStatsButton = new JButton();
 	private final JButton m_oManagePlaceButton = new JButton();
+	private final JButton m_oWorksheetButton = new JButton();
 	private final JButton m_oCreerButton = new JButton();
 	private final JButton m_oImporterButton = new JButton();
 	private final JButton m_oModifierButton = new JButton();
@@ -92,7 +94,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private char NEW;
 	private JMenuBar m_oMenuBar = new JMenuBar();
 
-	// différents menus
+	// differents menus
 	private final JMenu menuFile = new JMenu();
 	private final JMenu menuPlace = new JMenu();
 	private final JMenu menuEdition = new JMenu();
@@ -110,6 +112,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private final JMenuItem modifPlace = new JMenuItem();
 	private final JMenuItem delPlace = new JMenuItem();
 	private final JMenuItem showFile = new JMenuItem();
+	private final JMenuItem showWorksheet = new JMenuItem();
 	private final JMenuItem addWine = new JMenuItem();
 	private final JMenuItem searchWine = new JMenuItem();
 	private final JMenuItem Aide = new JMenuItem();
@@ -152,8 +155,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		try {
 			final SplashScreen splashscreen = new SplashScreen();
 			// initialisation
-			Program.init();
-			// Lecture des paramètres
+			Program.start();
+			// Lecture des parametres
 			// ______________________
 
 			String parameters = "";
@@ -163,33 +166,33 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			}
 			int nIndex = parameters.indexOf("-opts=");
 			if (nIndex == -1) {
-				// démarrage sans options
+				// demarrage sans options
 				Program.setArchive(parameters.trim());
 			} else {
-				// démarrage avec options
+				// demarrage avec options
 				// ______________________
 				String tmp = parameters.substring(0, nIndex);
-				// Récupération du nom du fichier
+				// Recuperation du nom du fichier
 				if (tmp.contains(Program.EXTENSION)) {
 					Program.setArchive(tmp.trim());
 				} else {
-					// On prend tous ce qu'il y a après -opts
+					// On prend tous ce qu'il y a apres -opts
 					tmp = parameters.substring(nIndex);
 					if (tmp.contains(Program.EXTENSION)) {
 						// Si l'on trouve l'extension du fichier
-						// on cherche le caractère ' ' qui va séparer les
+						// on cherche le caractere ' ' qui va separer les
 						// options du nom du fichier
 						String tmp2 = tmp.trim();
 						tmp2 = tmp2.substring(tmp2.indexOf(" "));
 						Program.setArchive(tmp2.trim());
 					}
 				}
-				// Récupération des options
+				// Recuperation des options
 				tmp = parameters.substring(nIndex + 6).trim();
 				tmp = tmp.substring(0, tmp.indexOf(" ")).trim();
-				// Options à gérer
+				// Options a gerer
 				if ("restart".equals(tmp)) {
-					// Démarrage avec une nouvelle cave
+					// Demarrage avec une nouvelle cave
 					Program.putGlobalConfigBool(MyCellarSettings.STARTUP, false);
 					Program.putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, true);
 					Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
@@ -229,11 +232,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			Program.setDebug(true);
 		}
 
-		// Contrôle des MAJ
-		// Appel serveur pour alimenter la dernière version en ligne
+		// Controle des MAJ
+		// Appel serveur pour alimenter la derniere version en ligne
 		Server.getInstance().getServerVersion();
 
-		// Démarrage
+		// Demarrage
 		// _________
 
 		if (Program.getArchive().isEmpty() && !Program.getGlobalConfigBool(MyCellarSettings.STARTUP, false)) {
@@ -250,7 +253,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			Program.putGlobalConfigBool(MyCellarSettings.STARTUP, true);
 		}
 
-		// Paramètrage
+		// Parametrage
 		if (!Program.getArchive().isEmpty()) {
 			loadFile();
 		} else {
@@ -289,6 +292,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			jMenuImportXmlPlaces.setEnabled(false);
 			jMenuExportXml.setEnabled(false);
 			showFile.setEnabled(false);
+			showWorksheet.setEnabled(false);
 		} else if (Program.GetCaveLength() == 0) {
 			Program.getCave().add(Program.DEFAULT_PLACE);
 		}
@@ -303,6 +307,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oExportButton.setEnabled(enable);
 		m_oStatsButton.setEnabled(enable);
 		m_oManagePlaceButton.setEnabled(enable);
+		m_oWorksheetButton.setEnabled(enable);
 		m_oTableauxButton.setEnabled(enable);
 		m_oSupprimerButton.setEnabled(enable);
 		m_oAjouterButton.setEnabled(enable);
@@ -329,6 +334,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		jMenuImportXmlPlaces.setEnabled(enable);
 		jMenuExportXml.setEnabled(enable);
 		showFile.setEnabled(enable);
+		showWorksheet.setEnabled(enable);
 		tocreate.setEnabled(enable);
 		history.setEnabled(enable);
 		vignobles.setEnabled(enable);
@@ -343,9 +349,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * quitter_actionPerformed: Fonction appellé lorsque l'on quitte le
-	 * programme.
-	 * 
+	 * quitter_actionPerformed: Quitter le programme
+	 *
 	 */
 	private void quitter_actionPerformed() {
 		for(Component c : Program.TABBED_PANE.getComponents()) {
@@ -370,7 +375,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * about_actionPerformed: Appelle la fenêtre d'A Propos.
+	 * about_actionPerformed: Appelle la fenetre d'A Propos.
 	 */
 	private void about_actionPerformed() {
 		try {
@@ -381,7 +386,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * news_actionPerformed: Affiche les nouveautés de la release
+	 * news_actionPerformed: Affiche les nouveautes de la release
 	 */
 	private void news_actionPerformed() {
 		Program.open(new File("Finish.html"));
@@ -419,7 +424,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * Actions réalisés après l'ouverture d'un fichier
+	 * Actions realises apres l'ouverture d'un fichier
 	 */
 	private void postOpenFile() {
 		try {
@@ -440,7 +445,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * Ouverture d'un fichier déjà référencé
+	 * Ouverture d'un fichier
 	 * 
 	 * @param sFile
 	 */
@@ -465,7 +470,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * reopen1_actionPerformed: Ouvre un fichier précédement ouvert
+	 * reopen1_actionPerformed: Ouvre un fichier precedement ouvert
 	 */
 	private void reopen1_actionPerformed() {
 		String sFile = Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "");
@@ -474,7 +479,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * reopen2_actionPerformed: Ouvre un fichier précédement ouvert
+	 * reopen2_actionPerformed: Ouvre un fichier precedement ouvert
 	 */
 	private void reopen2_actionPerformed() {
 		String sFile = Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "");
@@ -483,7 +488,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * reopen3_actionPerformed: Ouvre un fichier précédement ouvert
+	 * reopen3_actionPerformed: Ouvre un fichier precedement ouvert
 	 */
 	private void reopen3_actionPerformed() {
 		String sFile = Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "");
@@ -492,7 +497,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * reopen4_actionPerformed: Ouvre un fichier précédement ouvert
+	 * reopen4_actionPerformed: Ouvre un fichier precedement ouvert
 	 */
 	private void reopen4_actionPerformed() {
 		String sFile = Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, "");
@@ -551,11 +556,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * updateFrame: Met à jour tous les champs avec la langue sélectionnée. Met
-	 * à jour tous les paramêtres suite au chargement d'un fichier
+	 * updateFrame: Met a jour tous les champs avec la langue selectionnee. Met
+	 * a jour tous les parametres suite au chargement d'un fichier
 	 * 
-	 * @param toverify
-	 *            boolean
+	 * @param toverify boolean
 	 */
 	private void updateFrame(boolean toverify) {
 
@@ -602,7 +606,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		NEW = Program.getLabel("NEW").charAt(0);
 		m_oMenuBar = new JMenuBar();
 
-		// différents menus
+		// differents menus
 		menuFile.setText(Program.getLabel("Infos104")); // Fichier
 		menuPlace.setText(Program.getLabel("Infos105"));
 		menuWine.setText(Program.getLabel("Infos106")); // Vin
@@ -625,32 +629,22 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		openFile.setText(Program.getLabel("Infos372"));
 		save.setText(Program.getLabel("Infos326"));
 		showFile.setText(Program.getLabel("Infos324"));
+		showWorksheet.setText(Program.getLabel("ShowFile.Worksheet"));
 		searchWine.setText(Program.getLabel("Infos006"));
 
-		// sous
-		parameter.setText(Program.getLabel("Infos156")); // Paramêtres
+		parameter.setText(Program.getLabel("Infos156")); // Parametres
 		about.setText(Program.getLabel("Infos199")); // A Propos
-		news.setText(Program.getLabel("Infos330")); // Nouveautés
-		tocreate.setText(Program.getLabel("Infos267")); // Rangement à créer
+		news.setText(Program.getLabel("Infos330")); // Nouveautes
+		tocreate.setText(Program.getLabel("Infos267")); // Rangement a creer
 		history.setText(Program.getLabel("Infos341")); // Historique
 		vignobles.setText(Program.getLabel("Infos165")); // Vignobles
 		bottleCapacity.setText(Program.getLabel("Infos400")); // Contenance
-		jMenuImportXmlPlaces.setText(Program.getLabel("Infos367")); // Importer
-		// des
-		// rangements
-		// xml
-		jMenuExportXmlPlaces.setText(Program.getLabel("Infos368")); // Exporter
-		// des
-		// rangements
-		// xml
-		jMenuExportXml.setText(Program.getLabel("Infos408")); // Exporter au
-		// format xml
+		jMenuImportXmlPlaces.setText(Program.getLabel("Infos367")); // Importer des rangements xml
+		jMenuExportXmlPlaces.setText(Program.getLabel("Infos368")); // Exporter des rangements xml
+		jMenuExportXml.setText(Program.getLabel("Infos408")); // Exporter au format xml
 		jMenuCloseFile.setText(Program.getLabel("Infos019")); // Fermer...
-		jMenuSetConfig.setText(Program.getLabel("Infos373")); // Modifier
-		// les
-		// paramètres...
-		jMenuCheckUpdate.setText(Program.getLabel("Infos379")); // Vérifier
-		// mise à jour...
+		jMenuSetConfig.setText(Program.getLabel("Infos373")); // Modifier les parametres...
+		jMenuCheckUpdate.setText(Program.getLabel("Infos379")); // Verifier mise a jour...
 		jMenuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "")) + Program.EXTENSION);
 		jMenuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "")) + Program.EXTENSION);
 		jMenuReopen3.setText("3 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "")) + Program.EXTENSION);
@@ -673,6 +667,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oCreerButton.setText(Program.getLabel("Infos010"));
 		m_oStatsButton.setText(Program.getLabel("Infos009"));
 		m_oManagePlaceButton.setText(Program.getLabel("Main.ManagePlace"));
+		m_oWorksheetButton.setText(Program.getLabel("ShowFile.Worksheet"));
 		m_oModifierButton.setText(Program.getLabel("Infos007"));
 		m_oShowFileButton.setText(Program.getLabel("Infos324"));
 		m_oTableauxButton.setText(Program.getLabel("Infos008"));
@@ -713,7 +708,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private void afficheFrame() {
 		if (m_bHasFrameBuilded) {
 			// On ne recontruit que le menu Fichier pour remettre a jour la
-			// liste des fichiers ouverts récement
+			// liste des fichiers ouverts recement
 			menuFile.removeAll();
 			menuFile.add(newFile);
 			menuFile.add(openFile);
@@ -792,7 +787,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		setLayout(new MigLayout("", "[grow]", "[grow][][]"));
 
 		copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
-		copyright.setText("Copyright Sébastien D.");
+		copyright.setText("Copyright S\u00e9bastien D.");
 		version.setFont(new Font("Dialog", Font.PLAIN, 10));
 		update.setFont(new Font("Dialog", Font.PLAIN, 10));
 		add(Program.TABBED_PANE, "grow, hidemode 3, wrap");
@@ -828,6 +823,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oImporterButton.setAction(importFileAction);
 		m_oExportButton.setAction(exportFileAction);
 		m_oManagePlaceButton.setAction(managePlaceAction);
+		m_oWorksheetButton.setAction(new OpenWorkSheetAction());
 		m_oShowTrashButton.setAction(showTrashAction);
 		parameter.setAction(parameterAction);
 		addPlace.setAction(addPlaceAction);
@@ -847,6 +843,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		jMenuCut.setAction(cutAction);
 		jMenuCopy.setAction(copyAction);
 		jMenuPaste.setAction(pasteAction);
+		showWorksheet.setAction(new OpenWorkSheetAction());
 		
 		JToolBar toolBar = new JToolBar();
 		toolBar.add(newButton);
@@ -865,6 +862,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		toolBar.add(m_oStatsButton);
 		toolBar.add(m_oExportButton);
 		toolBar.add(m_oManagePlaceButton);
+		toolBar.add(m_oWorksheetButton);
 		toolBar.add(Box.createHorizontalGlue());
 		toolBar.add(m_oShowTrashButton);
 		toolBar.setFloatable(true);
@@ -928,6 +926,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		menuAbout.addSeparator();
 		menuAbout.add(news);
 		menuTools.add(parameter);
+		menuTools.add(showWorksheet);
 		menuTools.add(vignobles);
 		menuTools.add(bottleCapacity);
 		menuTools.add(history);
@@ -962,7 +961,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oMenuBar.add(menuWine);
 		m_oMenuBar.add(menuTools);
 		m_oMenuBar.add(menuAbout);
-		// Ajouter la bar du menu à la frame
+		// Ajouter la bar du menu a la frame
 		setJMenuBar(m_oMenuBar);
 
 		// Chargement du Frame
@@ -1044,7 +1043,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * menuSaveAs_actionPerformed: Sauvegarde sous la cave
+	 * menuSaveAs_actionPerformed: Sauvegarde sous
 	 */
 	private void menuSaveAs_actionPerformed() {
 		try {
@@ -1077,7 +1076,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * menuSetConfig_actionPerformed: Modification des paramètres internes
+	 * menuSetConfig_actionPerformed: Modification des parametres internes
 	 */
 	private void menuSetConfig_actionPerformed() {
 		try {
@@ -1094,7 +1093,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * menuCheckUpdate_actionPerformed: Recherche de mises à jour
+	 * menuCheckUpdate_actionPerformed: Recherche de mises a jour
 	 */
 	private void menuCheckUpdate_actionPerformed() {
 		if (Server.getInstance().hasAvailableUpdate()) {
@@ -1169,6 +1168,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 		if (Program.isSelectedTab(Program.showerrors)) {
 			Program.showerrors.updateView();
+		}
+		if (Program.isSelectedTab(Program.showworksheet)) {
+			Program.showworksheet.refresh();
+			Program.showworksheet.updateView();
 		}
 		if (Program.isSelectedTab(Program.stat))
 			Program.stat.updateView();

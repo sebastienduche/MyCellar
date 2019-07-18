@@ -1,6 +1,7 @@
 package mycellar.requester;
 
 import mycellar.BottleColor;
+import mycellar.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.Rangement;
@@ -18,13 +19,13 @@ import javax.swing.JPanel;
 import java.math.BigDecimal;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2014</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 0.8
- * @since 08/03/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.9
+ * @since 15/07/19
  */
 
 public class Predicates {
@@ -57,8 +58,8 @@ public class Predicates {
 		}
 
 		@Override
-		public String getLabelForValue(Object value) {
-			return value == null ? "" : value.toString();
+		public boolean isEmptyValueForbidden() {
+			return false;
 		}
 
 		@Override
@@ -66,15 +67,68 @@ public class Predicates {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
 			JComboBox<BottleColor> liste = new JComboBox<>();
-			liste.addItem(BottleColor.NONE);
-			liste.addItem(BottleColor.RED);
-			liste.addItem(BottleColor.PINK);
-			liste.addItem(BottleColor.WHITE);
+			for (BottleColor color : BottleColor.values()) {
+				liste.addItem(color);
+			}
 			panel.add(new JLabel(Program.getLabel("Predicates.SelectColor")), "wrap");
 			panel.add(liste);
 			JOptionPane.showMessageDialog(null, panel,
 			        "",
 			        JOptionPane.PLAIN_MESSAGE);
+			return new ValueSearch(liste.getSelectedItem());
+		}
+	};
+
+	public static final IPredicate<Bouteille> status = new IPredicate<>() {
+
+		@Override
+		public boolean apply(Bouteille bottle) {
+			return apply(bottle, "", -1);
+		}
+
+		@Override
+		public boolean apply(Bouteille bottle, Object compare, int type) {
+			final String status = bottle.getStatus();
+			final BottlesStatus bottlesStatus = (BottlesStatus) compare;
+			if (status.isEmpty() && BottlesStatus.NONE.equals(bottlesStatus)) {
+				return true;
+			}
+			return status.equals(bottlesStatus.name());
+		}
+
+		@Override
+		public boolean isValueRequired() {
+			return true;
+		}
+
+		@Override
+		public String getName() {
+			return Program.getLabel("MyCellarManageBottles.status");
+		}
+
+		@Override
+		public int getType() {
+			return 0;
+		}
+
+		@Override
+		public boolean isEmptyValueForbidden() {
+			return false;
+		}
+
+		@Override
+		public ValueSearch askforValue() {
+			JPanel panel = new JPanel();
+			panel.setLayout(new MigLayout("", "grow", "[]"));
+			JComboBox<BottlesStatus> liste = new JComboBox<>();
+			for (BottlesStatus status : BottlesStatus.values()) {
+				liste.addItem(status);
+			}
+			panel.add(new JLabel(Program.getLabel("Predicates.SelectStatus")), "wrap");
+			panel.add(liste);
+			JOptionPane.showMessageDialog(null, panel,
+					"",
+					JOptionPane.PLAIN_MESSAGE);
 			return new ValueSearch(liste.getSelectedItem());
 		}
 	};
@@ -119,8 +173,8 @@ public class Predicates {
 		}
 
 		@Override
-		public String getLabelForValue(Object value) {
-			return value == null ? "" : value.toString();
+		public boolean isEmptyValueForbidden() {
+			return true;
 		}
 		
 		@Override
@@ -180,8 +234,8 @@ public class Predicates {
 		}
 
 		@Override
-		public String getLabelForValue(Object value) {
-			return value == null ? "" : value.toString();
+		public boolean isEmptyValueForbidden() {
+			return true;
 		}
 		
 		@Override
@@ -218,8 +272,8 @@ public class Predicates {
 		}
 
 		@Override
-		public String getLabelForValue(Object value) {
-			return value == null ? "" : value.toString();
+		public boolean isEmptyValueForbidden() {
+			return true;
 		}
 		
 		@Override
@@ -268,8 +322,8 @@ public class Predicates {
 		}
 
 		@Override
-		public String getLabelForValue(Object value) {
-			return value == null ? "" : value.toString();
+		public boolean isEmptyValueForbidden() {
+			return true;
 		}
 
 		@Override
@@ -335,8 +389,8 @@ public class Predicates {
 		}
 
 		@Override
-		public String getLabelForValue(Object value) {
-			return value == null ? "" : value.toString();
+		public boolean isEmptyValueForbidden() {
+			return true;
 		}
 
 		@Override
@@ -397,8 +451,8 @@ public class Predicates {
 		}
 
 		@Override
-		public String getLabelForValue(Object value) {
-			return value == null ? "" : ((Vignoble)value).getSearchLabel();
+		public boolean isEmptyValueForbidden() {
+			return true;
 		}
 
 		@Override
@@ -440,8 +494,8 @@ public class Predicates {
 		}
 
 		@Override
-		public String getLabelForValue(Object value) {
-			return value == null ? "" : value.toString();
+		public boolean isEmptyValueForbidden() {
+			return true;
 		}
 
 		@Override
@@ -478,8 +532,8 @@ public class Predicates {
 		}
 
 		@Override
-		public String getLabelForValue(Object value) {
-			return value == null ? "" : value.toString();
+		public boolean isEmptyValueForbidden() {
+			return true;
 		}
 		
 		@Override
@@ -516,8 +570,8 @@ public class Predicates {
 		}
 
 		@Override
-		public String getLabelForValue(Object value) {
-			return value == null ? "" : value.toString();
+		public boolean isEmptyValueForbidden() {
+			return true;
 		}
 		
 		@Override
@@ -554,8 +608,8 @@ public class Predicates {
 		}
 
 		@Override
-		public String getLabelForValue(Object value) {
-			return value == null ? "" : value.toString();
+		public boolean isEmptyValueForbidden() {
+			return true;
 		}
 		
 		@Override

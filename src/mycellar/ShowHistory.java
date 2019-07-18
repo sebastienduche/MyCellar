@@ -24,8 +24,8 @@ import java.util.LinkedList;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 3.4
- * @since 23/05/18
+ * @version 3.6
+ * @since 08/07/19
  */
 
 public class ShowHistory extends JPanel implements ITabListener {
@@ -41,6 +41,8 @@ public class ShowHistory extends JPanel implements ITabListener {
 		m_oFilterCbx.addItem(Program.getLabel("Infos345"));
 		m_oFilterCbx.addItem(Program.getLabel("Infos346"));
 		m_oFilterCbx.addItem(Program.getLabel("Infos347"));
+		m_oFilterCbx.addItem(Program.getLabel("History.Validated"));
+		m_oFilterCbx.addItem(Program.getLabel("History.ToCheck"));
 		m_oFilterCbx.addItemListener(this::filter_itemStateChanged);
 
 		// Remplissage de la table
@@ -49,7 +51,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 
 		JTable m_oTable = new JTable(tv);
 		TableColumnModel tcm = m_oTable.getColumnModel();
-		TableColumn tc1[] = new TableColumn[4];
+		TableColumn[] tc1 = new TableColumn[4];
 		for (int w = 0; w < 4; w++) {
 			tc1[w] = tcm.getColumn(w);
 			tc1[w].setCellRenderer(new ToolTipRenderer());
@@ -57,17 +59,14 @@ public class ShowHistory extends JPanel implements ITabListener {
 			case 0:
 				tc1[w].setMinWidth(30);
 				break;
-			case 1:
+				case 1:
 				tc1[w].setMinWidth(100);
 				break;
-			case 2:
+				case 2: case 4:
 				tc1[w].setMinWidth(100);
 				break;
-			case 3:
+				case 3:
 				tc1[w].setMinWidth(350);
-				break;
-			case 4:
-				tc1[w].setMinWidth(100);
 				break;
 			}
 		}
@@ -135,7 +134,6 @@ public class ShowHistory extends JPanel implements ITabListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			String erreur_txt1, erreur_txt2;
 			LinkedList<Bouteille> toRestoreList = new LinkedList<>();
 
 			boolean nonExit = false;
@@ -162,6 +160,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 			if (toRestoreList.isEmpty()) {
 				Erreur.showSimpleErreur(Program.getLabel("ShowFile.NoBottleToRestore"), Program.getLabel("ShowFile.SelectToRestore"), true);
 			} else {
+				String erreur_txt1, erreur_txt2;
 				if (toRestoreList.size() == 1) {
 					erreur_txt1 = Program.getError("Error067"); // "1 vin sélectionné.");
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
@@ -220,7 +219,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 				int row = 0;
 				LinkedList<History> toDeleteList = new LinkedList<>();
 				do {
-					if (tv.getValueAt(row, TableHistoryValues.SELECT).toString().equals("true")) {
+					if (tv.getValueAt(row, TableHistoryValues.SELECT).equals(Boolean.TRUE)) {
 						toDeleteList.add(tv.getData().get(row));
 					}
 					row++;

@@ -1,12 +1,11 @@
 package test;
 
-import java.util.LinkedList;
+import mycellar.TextFieldPopup;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-
-import mycellar.TextFieldPopup;
-import net.miginfocom.swing.MigLayout;
+import java.util.LinkedList;
 
 public class Test extends JFrame {
 
@@ -17,7 +16,12 @@ public class Test extends JFrame {
 		list.add("aaaa");
 		list.add("aa");
 		list.add("aaazzz");
-		text = new TextFieldPopup(list, 200);
+		text = new TextFieldPopup(list, 200) {
+      @Override
+      public void doAfterValidate() {
+
+      }
+    };
 		setSize(400,400);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new MigLayout("","grow",""));

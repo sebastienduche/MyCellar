@@ -14,7 +14,7 @@ import java.awt.Component;
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
  * @version 0.6
- * @since 04/07/18
+ * @since 05/07/19
  */
 public class StateButtonRenderer extends JButton implements TableCellRenderer {
 
@@ -29,11 +29,16 @@ public class StateButtonRenderer extends JButton implements TableCellRenderer {
     label = Program.getLabel("Infos360");
   }
   
+  public StateButtonRenderer(String label) {
+    super();
+    this.label = label;
+  }
+
   public StateButtonRenderer(String label, ImageIcon image) {
-	    super();
-	    this.label = label;
-	    this.image = image;
-	  }
+    super();
+    this.label = label;
+    this.image = image;
+  }
 
   /**
    * getTableCellRendererComponent
@@ -62,8 +67,9 @@ public class StateButtonRenderer extends JButton implements TableCellRenderer {
       setSelected(isSelect);
       setFont(Program.FONT_PANEL);
       setText(label);
-      if(image != null)
-    	  setIcon(image);
+      if(image != null) {
+        setIcon(image);
+      }
     }
     catch (NullPointerException npe) {
     }

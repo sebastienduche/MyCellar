@@ -6,13 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 1.1
- * @since 08/03/18
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 1.2
+ * @since 17/07/19
  */
 class TableauValues extends AbstractTableModel {
 	public static final int ETAT = 0;
@@ -132,7 +132,7 @@ class TableauValues extends AbstractTableModel {
 	 *
 	 * @param r Rangement
 	 */
-	public void addRangement(Rangement r) {
+	void addRangement(Rangement r) {
 		list.add(r);
 		listBoolean.add(Boolean.FALSE);
 	}
@@ -143,5 +143,9 @@ class TableauValues extends AbstractTableModel {
 	public void removeAll() {
 		list.clear();
 		listBoolean.clear();
+	}
+
+	Rangement getRangementAt(int index) {
+		return list.get(index);
 	}
 }

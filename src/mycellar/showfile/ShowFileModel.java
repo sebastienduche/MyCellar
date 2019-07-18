@@ -1,10 +1,10 @@
 package mycellar.showfile;
 
 import mycellar.Bouteille;
-import mycellar.Start;
 import mycellar.core.MyCellarFields;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -12,47 +12,42 @@ import java.util.ArrayList;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 03/03/19
+ * @version 0.8
+ * @since 07/07/19
  */
 
 public class ShowFileModel extends TableShowValues {
 
 	private static final long serialVersionUID = -3120339216315975530L;
 
-	private ArrayList<ShowFileColumn> list = new ArrayList<>();
+	private List<ShowFileColumn<?>> list = new ArrayList<>();
 
 	@Override
 	public int getColumnCount() {
-		return list.size() + 2;
+		return list.size();
 	}
 
 	@Override
 	public Object getValueAt(int row, int column) {
-		if(column == 0)
-			return values[row];
-		if(column == getColumnCount() - 1)
-			return Boolean.TRUE;
-		if(monVector.size() > row) {
+		if(row < monVector.size()) {
+			final ShowFileColumn<?> showFileColumn = list.get(column);
+			if (showFileColumn.isButton()) {
+				return Boolean.TRUE;
+			}
 			Bouteille b = monVector.get(row);
-			return list.get(column-1).getDisplayValue(b);
+			return showFileColumn.getDisplayValue(b);
 		}
 		return null;
 	}
 
 	@Override
 	public void setValueAt(Object value, int row, int column) {
-		if(column == 0) {
-			values[row] = (Boolean)value;
-			return;
-		}
 		Bouteille b = monVector.get(row);
-		if(column == getColumnCount() - 1) {
-			Start.getInstance().showBottle(b, true);
+		if (!list.get(column).execute(b, row, column)) {
+			fireTableRowsUpdated(row, row);
 			return;
-			
 		}
-		list.get(column-1).setValue(b, value);
+		list.get(column).setValue(b, value);
 	}
 
 	/**
@@ -63,9 +58,7 @@ public class ShowFileModel extends TableShowValues {
 	 */
 	@Override
 	public String getColumnName(int column) {
-		if(column == 0 || column == getColumnCount() - 1)
-			return "";
-		return list.get(column-1).getLabel();
+		return list.get(column).getLabel();
 	}
 
 	/**
@@ -77,15 +70,13 @@ public class ShowFileModel extends TableShowValues {
 	 */
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		if(column == 0 || column == getColumnCount() - 1)
-			return true;
-		ShowFileColumn col = list.get(column-1);
+		ShowFileColumn<?> col = list.get(column);
 		if(col.getField() == MyCellarFields.LINE
 			|| col.getField() == MyCellarFields.COLUMN) {
 			Bouteille b = monVector.get(row);
 			return !b.getRangement().isCaisse();
 		}
-		return true;
+		return col.isEditable();
 	}
 	
 	void removeAllColumns() {
@@ -93,12 +84,12 @@ public class ShowFileModel extends TableShowValues {
 		fireTableStructureChanged();
 	}
 	
-	public void setColumns(ArrayList<ShowFileColumn> cols) {
+	public void setColumns(List<ShowFileColumn<?>> cols) {
 		list = cols;
 		fireTableStructureChanged();
 	}
 
-	public ArrayList<ShowFileColumn> getColumns() {
+	public List<ShowFileColumn<?>> getColumns() {
 		return list;
 	}
 }

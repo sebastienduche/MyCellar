@@ -16,7 +16,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,7 +26,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,13 +33,13 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2012</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 0.9
- * @since 22/05/18
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 1.0
+ * @since 16/07/18
  *
  * <p>Java class for anonymous complex type.
  *
@@ -164,26 +162,15 @@ public class ListeBouteille {
 	}
 
 	static boolean writeXML() {
-		return writeXML(Program.getStorage().getListBouteilles(), new File(Program.getXMLBottlesFileName()));
+		return MyXmlDom.writeXML(Program.getStorage().getListBouteilles(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
 	}
 
 	static boolean writeXML(File f) {
-		return writeXML(Program.getStorage().getListBouteilles(), f);
+		return MyXmlDom.writeXML(Program.getStorage().getListBouteilles(), f, ObjectFactory.class);
 	}
 
 	static boolean writeXML(ListeBouteille liste, File f) {
-		Debug("Writing JAXB File");
-		try {
-			JAXBContext jc = JAXBContext.newInstance(ObjectFactory.class);
-			Marshaller m = jc.createMarshaller();
-			m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			m.marshal(liste, new StreamResult(f));
-		} catch( Exception e ) {
-			Program.showException(e);
-			return false;
-		}
-		Debug("Writing JAXB File Done");
-		return true;
+		return MyXmlDom.writeXML(liste, f, ObjectFactory.class);
 	}
 
 	/**

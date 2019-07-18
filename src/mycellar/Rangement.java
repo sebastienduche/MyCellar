@@ -12,8 +12,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 26.0
- * @since 10/04/19
+ * @version 26.3
+ * @since 10/07/19
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -42,14 +42,6 @@ public class Rangement implements Comparable<Rangement> {
 	}
 
 	/**
-	 * Création d'un rangement de type Caisse sans limite
-	 * @param nom
-	 */
-	public Rangement(String nom) {
-		this(nom, 1, 0, false, -1);
-	}
-
-	/**
 	 * Rangement: Constructeur: rangement de type caisse
 	 *
 	 * @param nom String: nom du rangement
@@ -58,7 +50,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param isLimit boolean: Limite de caisse activée?
 	 * @param limite_caisse int: Capacité pour la limite
 	 */
-	public Rangement(String nom, int nb_emplacement, int start_caisse, boolean isLimit, int limite_caisse) {
+	private Rangement(String nom, int nb_emplacement, int start_caisse, boolean isLimit, int limite_caisse) {
 		this.nom = nom.trim();
 		nb_emplacements = nb_emplacement;
 		this.start_caisse = start_caisse;
@@ -383,6 +375,9 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return int
 	 */
 	public boolean addWine(Bouteille wine) {
+		if (!wine.hasStatus()) {
+			wine.setCreated();
+		}
 		if(isCaisse()) {
 			return putWineCaisse(wine);
 		}
@@ -840,6 +835,114 @@ public class Rangement implements Comparable<Rangement> {
 			}
 		}
 		return true;
+	}
+
+	public static class RangementBuilder {
+		private final String nom;
+		private final List<Part> partList;
+		private int nb_emplacement;
+
+		private boolean sameColumns;
+		private int[] nb_columnsByEmplacement;
+
+		private int[] linesByEmplacement;
+		private int[][] columnsByLines;
+
+		public RangementBuilder(String nom) {
+			this.nom = nom;
+			partList = new LinkedList<>();
+		}
+
+		public RangementBuilder nb_emplacement(int[] linesByEmplacement) {
+			nb_emplacement = linesByEmplacement.length;
+			this.linesByEmplacement = linesByEmplacement;
+			return this;
+		}
+
+		public RangementBuilder sameColumnsNumber(int[] nb_columnsByEmplacement) {
+			sameColumns = true;
+			this.nb_columnsByEmplacement = nb_columnsByEmplacement;
+			return this;
+		}
+
+		public RangementBuilder differentColumnsNumber() {
+			sameColumns = false;
+			columnsByLines = new int[nb_emplacement][1];
+			return this;
+		}
+
+		public RangementBuilder columnsNumberForPart(int part, int[] columns) throws Exception {
+			if (sameColumns) {
+				throw new Exception("This place has the same column number option set!");
+			}
+			if (part >= nb_emplacement) {
+				throw new Exception("Incorrect part number! :" + part);
+			}
+
+			if (columns.length < linesByEmplacement[part]) {
+				throw new Exception("Incorrect columns length number! :" + part);
+			}
+			columnsByLines[part] = columns;
+			return this;
+		}
+
+		public Rangement build() {
+			for (int i = 0; i < nb_emplacement; i++) {
+				Part part = new Part(i);
+				partList.add(part);
+				part.setRows(linesByEmplacement[i]);
+				if (sameColumns) {
+					for (Row row: part.getRows()) {
+						row.setCol(nb_columnsByEmplacement[i]);
+					}
+				} else {
+					for (Row row: part.getRows()) {
+						row.setCol(columnsByLines[i][row.getNum()-1]);
+					}
+				}
+			}
+			return new Rangement(nom, partList);
+		}
+	}
+
+	public static class CaisseBuilder {
+		private final String nom;
+		private int nb_emplacement;
+		private int start_caisse;
+		private boolean isLimit;
+		private int limite_caisse;
+
+		public CaisseBuilder(String nom) {
+			this.nom = nom;
+			nb_emplacement = 1;
+			start_caisse = 0;
+			isLimit = false;
+			limite_caisse = -1;
+		}
+
+		public CaisseBuilder nb_emplacement(int nb_emplacement) {
+			this.nb_emplacement = nb_emplacement;
+			return this;
+		}
+
+		public CaisseBuilder start_caisse(int start_caisse) {
+			this.start_caisse = start_caisse;
+			return this;
+		}
+
+		public CaisseBuilder limit(boolean limit) {
+			isLimit = limit;
+			return this;
+		}
+
+		public CaisseBuilder limite_caisse(int limite_caisse) {
+			this.limite_caisse = limite_caisse;
+			return this;
+		}
+
+		public Rangement build() {
+			return new Rangement(nom, nb_emplacement, start_caisse, isLimit, limite_caisse);
+		}
 	}
 }
 

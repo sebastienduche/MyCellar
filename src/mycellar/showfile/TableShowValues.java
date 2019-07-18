@@ -20,8 +20,8 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 3.7
- * @since 13/04/18
+ * @version 3.8
+ * @since 05/07/19
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -173,18 +173,13 @@ class TableShowValues extends AbstractTableModel {
       case NUM_PLACE:
       case LINE:
       case COLUMN: {
-        String empl_old = b.getEmplacement();
-        int num_empl_old = b.getNumLieu();
-        int line_old = b.getLigne();
-        int column_old = b.getColonne();
-        Rangement rangement = Program.getCave(empl_old);
+        Rangement rangement = b.getRangement();
         boolean bError = false;
         int nValueToCheck = -1;
-        String empl = empl_old;
-        int num_empl = num_empl_old;
-        int line = line_old;
-        int column1 = column_old;
-
+        int num_empl = b.getNumLieu();
+        int line = b.getLigne();
+        int column1 = b.getColonne();
+        String empl = b.getEmplacement();
         if (column == PLACE) {
           empl = (String) value;
           rangement = Program.getCave(empl);
@@ -221,7 +216,7 @@ class TableShowValues extends AbstractTableModel {
           }
         }
 
-        if (!bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
+        if (!bError && (b.getEmplacement().compareTo(empl) != 0 || b.getNumLieu() != num_empl || b.getLigne() != line || b.getColonne() != column1)) {
           // Controle de l'emplacement de la bouteille
           int tmpNumEmpl = num_empl;
           int tmpLine = line;

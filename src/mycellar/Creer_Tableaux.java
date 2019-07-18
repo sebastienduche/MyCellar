@@ -36,13 +36,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2005</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 6.6
- * @since 10/04/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 6.7
+ * @since 17/07/19
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable {
 	private final JTextField name = new JTextField();
@@ -60,20 +60,20 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	static final long serialVersionUID = 260706;
 
 	/**
-	 * Creer_Tableaux: Constructeur pour la création des tableaux.
+	 * Creer_Tableaux: Constructeur pour la creation des tableaux.
 	 *
 	 */
 	public Creer_Tableaux() {
 		Debug("Constructor");
 		try {
-			final MyCellarLabel fileLabel = new MyCellarLabel(Program.getLabel("Infos095")); //"Nom du fichier généré:");
+			final MyCellarLabel fileLabel = new MyCellarLabel(Program.getLabel("Infos095")); //"Nom du fichier genere:");
 			m_jcb_options.addActionListener(this::options_actionPerformed);
 			final MyCellarButton browse = new MyCellarButton("...");
 			browse.addActionListener(this::browse_actionPerformed);
 			final MyCellarButton parameter = new MyCellarButton(Program.getLabel("Main.Parameters"));
 			parameter.addActionListener(this::param_actionPerformed);
-			final MyCellarLabel chooseLabel = new MyCellarLabel(Program.getLabel("Infos096")); //"Sélectionner les rangements à générer:");
-			final MyCellarButton create = new MyCellarButton(Program.getLabel("Infos018")); //"Créer");
+			final MyCellarLabel chooseLabel = new MyCellarLabel(Program.getLabel("Infos096")); //"Selectionner les rangements a generer:");
+			final MyCellarButton create = new MyCellarButton(Program.getLabel("Infos018")); //"Creer");
 			create.setMnemonic(CREER);
 
 			type_XML.setText(Program.getLabel("Infos210"));
@@ -105,7 +105,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			end.setFont(Program.FONT_DIALOG_SMALL);
 			preview.setText(Program.getLabel("Infos152")); //"Ouvrir le fichier");
 			preview.setMnemonic(OUVRIR);
-			selectall.setText(Program.getLabel("Infos126")); //"Tout sélectionner");
+			selectall.setText(Program.getLabel("Infos126")); //"Tout selectionner");
 			selectall.setHorizontalAlignment(SwingConstants.RIGHT);
 			selectall.setHorizontalTextPosition(SwingConstants.LEFT);
 			selectall.addActionListener(this::selectall_actionPerformed);
@@ -205,7 +205,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	}
 
 	/**
-	 * create_actionPerformed: Fonction de création des tableaux.
+	 * create_actionPerformed: Fonction de creation des tableaux.
 	 *
 	 * @param e ActionEvent
 	 */
@@ -225,47 +225,25 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			if (type_XML.isSelected()) {
 				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XML.toString()))) {
 					Debug("ERROR: Not a XML File");
-					//"Le fichier saisie ne possède pas une extension XML: " + str_tmp3);
+					//"Le fichier saisie ne possede pas une extension XML: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom));
 					return;
 				}
 			} else if (type_HTML.isSelected()) {
 				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_HTML.toString()))) {
 					Debug("ERROR: Not a HTML File");
-					//"Le fichier saisie ne possède pas une extension HTML: " + str_tmp3);
+					//"Le fichier saisie ne possede pas une extension HTML: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
 					return;
 				}
 			} else if (type_XLS.isSelected()) {
 				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					Debug("ERROR: Not a XLS File");
-					//"Le fichier saisie ne possède pas une extension Excel: " + str_tmp3);
+					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error34"), nom));
 					return;
 				}
 			}
-//
-//			if (type_XML.isSelected()) {
-//				if (!nom.toLowerCase().endsWith(".xml")) {
-//					Debug("ERROR: Not a XML File");
-//					//Non XML File
-//					//"Veuillez saisir le nom d'un fichier XML.");
-//					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom), Program.getError("Error088"));
-//					return;
-//				}
-//			} else if (type_HTML.isSelected()) {
-//				if (!nom.toLowerCase().endsWith(".html") && !nom.toLowerCase().endsWith(".htm")) {
-//					Debug("ERROR: Not a HTML File");
-//					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
-//					return;
-//				}
-//			} else if (type_XLS.isSelected()) {
-//				if (!Program.checkXLSExtenstion(nom)) {
-//					Debug("ERROR: Not a XLS File");
-//					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
-//					return;
-//				}
-//			}
 			int count = 0;
 			int max_row = tv.getRowCount();
 			int row = 0;
@@ -279,38 +257,28 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 
 			if (count == 0) {
 				Debug("ERROR: No place selected");
-				//"Aucun rangement sélectionné!");
-				//"Veuillez sélectionner les rangements à générer.");
+				//"Aucun rangement selectionne!");
+				//"Veuillez selectionner les rangements a generer.");
 				Erreur.showSimpleErreur(Program.getError("Error089"), Program.getError("Error090"), true);
 				return;
 			}
-			int[] listToGen = new int[count];
+			LinkedList<Rangement> rangements = new LinkedList<>();
 			row = 0;
-			int k = 0;
 			do {
 				if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
-					listToGen[k] = row;
-					k++;
+					rangements.add(tv.getRangementAt(row));
 				}
 				row++;
 			}
 			while (row < max_row);
 
-			int caisse_select = 0;
+			long caisseCount = 0;
 			// Export XML
 			if (type_XML.isSelected()) {
 				Debug("Exporting in XML in progress...");
-				LinkedList<Rangement> rangements = new LinkedList<>();
-				for (int j : listToGen) {
-					rangements.add(Program.getCave(j));
-				}
 				MyXmlDom.writeRangements(nom, rangements, false);
 			} else if (type_HTML.isSelected()) {
 				Debug("Exporting in HTML in progress...");
-				LinkedList<Rangement> rangements = new LinkedList<>();
-				for (int j : listToGen) {
-					rangements.add(Program.getCave(j));
-				}
 				MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
 
 				TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -326,40 +294,29 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 				}
 			} else if (type_XLS.isSelected()) {
 				Debug("Exporting in XLS in progress...");
-				LinkedList<Rangement> oList = new LinkedList<>();
-				for (int j : listToGen) {
-					Rangement r = Program.getCave(j);
-					if (r != null) {
-						oList.add(r);
-						if (r.isCaisse()) {
-							caisse_select++;
-						}
-					}
-				}
-				RangementUtils.write_XLSTab( nom, oList );
+				caisseCount = rangements.stream().filter(Rangement::isCaisse).count();
+				RangementUtils.write_XLSTab( nom, rangements);
 			}
 
 			if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_TAB_MESS, false)) {
-				if (caisse_select >= 1) {
+				if (caisseCount > 0) {
 					String erreur_txt1, erreur_txt2;
-					if (caisse_select == 1){
-						erreur_txt1 = Program.getError("Error091"); //"Vous avez sélectionné un rangement de type Caisse");
-						erreur_txt2 = Program.getError("Error092"); //"Une liste des vins de ce rangement a été générée.");
+					if (caisseCount == 1){
+						erreur_txt1 = Program.getError("Error091"); //"Vous avez selectionne un rangement de type Caisse");
+						erreur_txt2 = Program.getError("Error092"); //"Une liste des vins de ce rangement a ete generee.");
 					}else{
-						erreur_txt1 = Program.getError("Error127"); //"Vous avez sélectionné des rangements de type Caisse");
-						erreur_txt2 = Program.getError("Error128"); //"Une liste des vins de ces rangements a été générée.");
+						erreur_txt1 = Program.getError("Error127"); //"Vous avez selectionne des rangements de type Caisse");
+						erreur_txt2 = Program.getError("Error128"); //"Une liste des vins de ces rangements a ete generee.");
 					}
 					Erreur.showKeyErreur(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
 				}
 			}
-			end.setText(Program.getLabel("Infos097")); //"Fichier généré.");
+			end.setText(Program.getLabel("Infos097")); //"Fichier genere.");
 			new Timer().schedule(
 					new TimerTask() {
 						@Override
 						public void run() {
-							SwingUtilities.invokeLater(() -> {
-								end.setText("");
-							});
+							SwingUtilities.invokeLater(() -> end.setText(""));
 						}
 					},
 					5000
@@ -379,11 +336,11 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	private void preview_actionPerformed(ActionEvent e) {
 		Debug("preview_actionPerforming...");
 		String path = name.getText();
-		Program.open( new File(path) );
+		Program.open(new File(path));
 	}
 
 	/**
-	 * keylistener_actionPerformed: Foncion d'écoute des touches.
+	 * keylistener_actionPerformed: Foncion d'ecoute des touches.
 	 *
 	 * @param e KeyEvent
 	 */
@@ -397,7 +354,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	}
 
 	/**
-	 * selectall_actionPerformed: Permet de sélectionner toutes les lignes de la
+	 * selectall_actionPerformed: Permet de selectionner toutes les lignes de la
 	 * JTable
 	 *
 	 * @param e ActionEvent
@@ -410,7 +367,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	}
 
 	/**
-	 * options_actionPerformed: Appel de la fenêtre d'options.
+	 * options_actionPerformed: Appel de la fenetre d'options.
 	 *
 	 * @param e ActionEvent
 	 */
@@ -431,7 +388,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	}
 
 	/**
-	 * param_actionPerformed: Appelle la fenêtre de paramètres.
+	 * param_actionPerformed: Appelle la fenetre de parametres.
 	 *
 	 * @param e ActionEvent
 	 */

@@ -14,30 +14,31 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 01/03/18
+ * @version 0.5
+ * @since 05/07/19
  */
 
 public class ManageColumnModel extends DefaultTableModel {
 
 	private static final long serialVersionUID = 826266254625465003L;
 	private final List<MyCellarFields> list;
-	private static final List<Integer> result = new LinkedList<>();
+	private static final List<Integer> RESULT = new LinkedList<>();
 	private final Boolean[] values;
 	
 	public ManageColumnModel(List<MyCellarFields> list, List<?> cols) {
 		this.list = list;
 		values = new Boolean[list.size()];
-		result.clear();
+		RESULT.clear();
 		for(int i=0; i<values.length; i++) {
 			values[i] = Boolean.FALSE;
 		}
 		for(Object c : cols) {
-			if(c instanceof ShowFileColumn)
+			if(c instanceof ShowFileColumn) {
 				values[list.indexOf(((ShowFileColumn) c).getField())] = Boolean.TRUE;
+			}
 			else if(c instanceof MyCellarFields) {
 				values[list.indexOf(c)] = Boolean.TRUE;
-				result.add(((MyCellarFields)c).ordinal());
+				RESULT.add(((MyCellarFields)c).ordinal());
 			}
 		}
 	}
@@ -76,19 +77,19 @@ public class ManageColumnModel extends DefaultTableModel {
 	@Override
 	public void setValueAt(Object value, int row, int column) {
 		values[row] = (Boolean) value;
-		result.clear();
+		RESULT.clear();
 		for(int i=0; i<values.length; i++) {
 			if(values[i])
-				result.add(list.get(i).ordinal());
+				RESULT.add(list.get(i).ordinal());
 		}
-		if(result.isEmpty()) {
+		if(RESULT.isEmpty()) {
 			Erreur.showSimpleErreur(Program.getError("ManageColumn.ErrorNb"));
 			values[row] = Boolean.TRUE;
-			result.add(list.get(row).ordinal());
+			RESULT.add(list.get(row).ordinal());
 		}
 	}
 	
 	public List<Integer> getSelectedColumns() {
-		return result;
+		return RESULT;
 	}
 }

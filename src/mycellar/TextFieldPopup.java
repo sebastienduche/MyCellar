@@ -27,30 +27,28 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 02/03/18
+ * @version 0.6
+ * @since 20/06/19
  */
-public class TextFieldPopup extends JPanel {
+public abstract class TextFieldPopup extends JPanel {
 
 	private static final long serialVersionUID = -7190629333835800410L;
 	private boolean can;
-	private JScrollPane scroll;
+	private final JScrollPane scroll;
 	private final JPanel menu = new JPanel();
 	private final JTextField textfield = new JTextField();
 	private final List<MyJMenuItem> items = new LinkedList<>();
 	private final List<String> list;
-	private int listHeight;
 	private final JPopupMenu popupMenu = new JPopupMenu();
+	private int listHeight;
 	private int x, y;
-	
 
-	public TextFieldPopup(List<String> list, int listHeight) {
+	public abstract void doAfterValidate();
+
+	protected TextFieldPopup(List<String> list, int listHeight) {
 		this.list = list;
 		this.listHeight = listHeight;
-		init();
-	}
-	
-	private void init() {
+
 		can = true;
 		scroll = new JScrollPane(menu);
 		scroll.getVerticalScrollBar().setUnitIncrement(5);
@@ -88,12 +86,13 @@ public class TextFieldPopup extends JPanel {
 	}
 	
 	private void updateMenu(){
-		if(!popupMenu.isVisible())
+		if(!popupMenu.isVisible()) {
 			addMenu();
+		}
 		popupMenu.updateUI();
 	}
 	
-	public void removeMenu() {
+	void removeMenu() {
 		menu.removeAll();
 		menu.updateUI();
 		popupMenu.setVisible(false);
@@ -142,8 +141,9 @@ public class TextFieldPopup extends JPanel {
 				return;
 			}
 
-			if( Character.isLetter(e.getKeyChar()) || Character.isDigit(e.getKeyChar()) )
+			if(Character.isLetter(e.getKeyChar()) || Character.isDigit(e.getKeyChar())) {
 				val += c;
+			}
 
 			if (val.isEmpty()) {
 				removeMenu();
@@ -152,11 +152,16 @@ public class TextFieldPopup extends JPanel {
 			
 			menu.removeAll();
 			items.clear();
+			selected = null;
 			index = -1;
 			for(String b : filter(val)) {
 				MyJMenuItem item = new MyJMenuItem(b);
 				items.add(item);
 				menu.add(item, "growx, gapy 0px, wrap");
+			}
+			if (items.size() == 1) {
+				selected = items.get(0);
+				selected.activate();
 			}
 			updateMenu();
 		}
@@ -164,34 +169,39 @@ public class TextFieldPopup extends JPanel {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-				if (index == items.size() - 1)
+				if (index == items.size() - 1) {
 					index = -1;
-				if(selected != null)
+				}
+				if(selected != null) {
 					selected.deactivate();
+				}
 				if(items.size() > (index+1)) {
     				selected = items.get(++index);
     				selected.activate();
 				}
-				if(index == 0)
+				if(index == 0) {
 					scroll.getVerticalScrollBar().setValue(0);
-				else if(selected != null)
+				} else if(selected != null) {
 					selected.scrollRectToVisible(new Rectangle(0, 25, 0, 0));
+				}
 			} else if (e.getKeyCode() == KeyEvent.VK_UP) {
 				if (index <= 0) {
 					index = items.size();
 					scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
-				}
-				else
+				}	else {
 					selected.scrollRectToVisible(new Rectangle(0, -25, 0, 0));
-				if(selected != null)
+				}
+				if(selected != null) {
 					selected.deactivate();
+				}
 				if(index > 0) {
 					selected = items.get(--index);
 					selected.activate();
 				}
 			} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-				if(selected != null)
+				if(selected != null) {
 					selected.doClick();
+				}
 			}
 			if (e.getKeyChar() == KeyEvent.VK_ESCAPE) {
 				removeMenu();
@@ -202,24 +212,6 @@ public class TextFieldPopup extends JPanel {
 		public void keyReleased(KeyEvent e) {}
 	}
 
-//	class MenuAction extends AbstractAction {
-//
-//		private static final long serialVersionUID = 1023561300178864980L;
-//		private String text;
-//
-//		public MenuAction(String text) {
-//			super(text);
-//			this.text = text;
-//		}
-//
-//		@Override
-//		public void actionPerformed(ActionEvent e) {
-//			setCan(false);
-//			textfield.setText(text);
-//			removeMenu();
-//		}
-//	}
-	
 	class MyJMenuItem extends MyCellarLabel {
 
 		private static final long serialVersionUID = -463113999199742853L;
@@ -257,30 +249,31 @@ public class TextFieldPopup extends JPanel {
 		
 		void activate() {
 			setBorder(BorderFactory.createEtchedBorder());
-			setBackground(mouse? lightblue : blue);
+			setBackground(mouse ? lightblue : blue);
 			setForeground(Color.white);
 			setFont(getFont().deriveFont(Font.BOLD));
 		}
 		
-		public void deactivate() {
+		void deactivate() {
 			setBorder(BorderFactory.createEmptyBorder());
 			setBackground(background);
 			setForeground(foreground);
 			setFont(getFont().deriveFont(Font.PLAIN));
 		}
 		
-		public void doClick() {
+		void doClick() {
 			setCan(false);
 			textfield.setText(text);
 			removeMenu();
+			doAfterValidate();
 		}
 	}
 	
-	public void setEditable(boolean b) {
+	void setEditable(boolean b) {
 		textfield.setEditable(b);
 	}
 
-	public String getSelectedText() {
+	String getSelectedText() {
 		return textfield.getSelectedText();
 	}
 	

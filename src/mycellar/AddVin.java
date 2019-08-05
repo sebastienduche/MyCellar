@@ -38,8 +38,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.0
- * @since 17/07/19
+ * @version 25.1
+ * @since 05/08/19
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable {
 
@@ -189,6 +189,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		}
 
 		name.setEnabled(true);
+		name.setEditable(true);
 		if(m_noYear.isSelected()) {
 			m_year.setText(Bouteille.NON_VINTAGE);
 		} else {
@@ -1282,7 +1283,6 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 	}
 
 	void reInit() {
-
 		Debug("ReInit...");
 		m_laBouteille = null;
 		listBottleInModification = null;

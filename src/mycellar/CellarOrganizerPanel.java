@@ -43,13 +43,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2014</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 2.1
- * @since 10/04/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 2.2
+ * @since 05/08/19
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener {
@@ -116,7 +116,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener {
 		});
 		
 		if(!armoires.isEmpty()) {
-			setRangement(armoires.getFirst());
+			final Rangement r = armoires.getFirst();
+			comboRangement.setSelectedItem(r);
+			setRangement(r);
 		}
 		
 		stock = new RangementCell(handler, th);
@@ -449,7 +451,7 @@ class RangementCell extends JPanel {
 	}
 	
 	public boolean isCaisse() {
-		return place != null ? place.isCaisse() : false;
+		return place != null && place.isCaisse();
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.ICutCopyPastable;
+import mycellar.core.IMyCellar;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -17,22 +18,21 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 11.5
- * @since 28/12/18
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 11.6
+ * @since 08/08/19
  */
-public class Parametres extends JPanel implements ITabListener, ICutCopyPastable {
+public class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
 	private static final long serialVersionUID = -4208146070057957967L;
 	private final MyCellarLabel label_fic_bak = new MyCellarLabel();
@@ -56,7 +56,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	private final MyCellarSpinner siecle = new MyCellarSpinner();
 
 	/**
-	 * Parametres: Constructeur: pour la fenêtre des paramètres.
+	 * Parametres: Constructeur: pour la fenetre des parametres.
 	 *
 	 */
 	public Parametres() {
@@ -242,29 +242,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	}
 
 	/**
-	 * keylistener_actionPerformed: Ecoute clavier.
-	 *
-	 * @param e KeyEvent
-	 */
-	void keylistener_actionPerformed(KeyEvent e) {
-		if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
-			valider_actionPerformed(null);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_F1) {
-		}
-		if (e.getKeyCode() == KeyEvent.VK_C) {
-			cut();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_X) {
-			copy();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_V) {
-			paste();
-		}
-	}
-
-
-	/**
 	 * parcourir_excel_actionPerformed: Boite Parcourir.
 	 *
 	 * @param e ActionEvent
@@ -294,11 +271,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 
 	}
 
-	/**
-	 * jcb_excel_actionPerformed: Case à cocher.
-	 *
-	 * @param e ActionEvent
-	 */
 	private void jcb_excel_actionPerformed(ActionEvent e) {
 		file_bak.setEnabled(jcb_excel.isSelected());
 		label_fic_bak.setEnabled(jcb_excel.isSelected());
@@ -307,7 +279,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 
 
 	/**
-	 * Modification de la langue à la fermeture de la boite de dialogue
+	 * Modification de la langue a la fermeture de la boite de dialogue
 	 */
 	private void modifyLanguage() {
 		try {
@@ -337,11 +309,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		}
 	}
 
-	/**
-	 * jcb_message_actionPerformed: Case à cocher.
-	 *
-	 * @param e ActionEvent
-	 */
 	private void jcb_message_actionPerformed(ActionEvent e) {
 		Program.putCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false);
 		Program.putCaveConfigBool(MyCellarSettings.DONT_SHOW_TAB_MESS, false);
@@ -356,26 +323,16 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	 */
 	private void buttonManageContenance_actionPerformed(ActionEvent e) {
 		new ManageList();
-		if(Program.addWine != null) {
-			Program.addWine.setUpdateView();
-			Program.addWine.updateView();
+		if(Program.getAddVin() != null) {
+			Program.getAddVin().setUpdateView();
+			Program.getAddVin().updateView();
 		}
 	}
 
-	/**
-	 * jcb_half_auto_actionPerformed: Case à cocher.
-	 *
-	 * @param e ActionEvent
-	 */
 	private void jcb_half_auto_actionPerformed(ActionEvent e) {
 		Program.putCaveConfigBool(MyCellarSettings.TYPE_AUTO, jcb_half_auto.isSelected());
 	}
 
-	/**
-	 * activate_debug_actionPerformed: Case à cocher.
-	 *
-	 * @param e ActionEvent
-	 */
 	private void activate_debug_actionPerformed(ActionEvent e) {
 
 		final boolean selected = m_jcb_debug.isSelected();
@@ -392,7 +349,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	@Override
 	public void tabClosed() {
 		Start.getInstance().updateMainPanel();
-		Program.parametres = null;
+		Program.deleteParametres();
 	}
 
 	@Override

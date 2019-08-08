@@ -4,6 +4,8 @@ import mycellar.Bouteille.BouteilleBuilder;
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
+import mycellar.core.IMyCellar;
+import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarManageBottles;
@@ -38,10 +40,10 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.1
- * @since 05/08/19
+ * @version 25.2
+ * @since 08/08/19
  */
-public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable {
+public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
 	private static final long serialVersionUID = -8925831759212999905L;
 	private boolean m_bmodify = false; // Pour la Modification
@@ -1369,7 +1371,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 	@Override
 	public boolean tabWillClose(TabEvent event) {
-		return Program.addWine.runExit();
+		return Program.getAddVin().runExit();
 	}
 
 	@Override

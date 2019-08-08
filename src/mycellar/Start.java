@@ -9,7 +9,6 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.launcher.Server;
 import mycellar.showfile.ShowFile;
-import mycellar.showfile.ShowFile.ShowType;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -46,8 +45,8 @@ import java.util.prefs.Preferences;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.6
- * @since 17/07/19
+ * @version 25.7
+ * @since 08/08/19
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -240,7 +239,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		// _________
 
 		if (Program.getArchive().isEmpty() && !Program.getGlobalConfigBool(MyCellarSettings.STARTUP, false)) {
-			// Language au premier démarrage
+			// Language au premier demarrage
 			String lang = System.getProperty("user.language");
 			if("fr".equalsIgnoreCase(lang)) {
 				lang = "F";
@@ -350,7 +349,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 	/**
 	 * quitter_actionPerformed: Quitter le programme
-	 *
 	 */
 	private void quitter_actionPerformed() {
 		for(Component c : Program.TABBED_PANE.getComponents()) {
@@ -530,7 +528,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
 			String fic = nomFichier.getAbsolutePath();
-			if(!fic.trim().toLowerCase().endsWith(".xml")) {
+			if (!fic.trim().toLowerCase().endsWith(".xml")) {
 				fic = fic.concat(".xml");
 			}
 			MyXmlDom.writeMyCellarXml(Program.getCave(), fic);
@@ -548,7 +546,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
 			String fic = nomFichier.getAbsolutePath();
-			if(!fic.trim().toLowerCase().endsWith(".xml")) {
+			if (!fic.trim().toLowerCase().endsWith(".xml")) {
 				fic = fic.concat(".xml");
 			}
 			ListeBouteille.writeXML(new File(fic));
@@ -703,7 +701,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	/**
-	 * afficheFrame: Affiche la fenêtre principale
+	 * afficheFrame: Affiche la fenetre principale
 	 */
 	private void afficheFrame() {
 		if (m_bHasFrameBuilded) {
@@ -988,7 +986,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		});
 
 		Program.TABBED_PANE.addChangeListener((arg) -> {
-				checkSelectedTab();
+				Program.updateSelectedTab();
 				Program.TABBED_PANE.getSelectedComponent();
 		});
 
@@ -1086,7 +1084,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			MyOptions myoptions = new MyOptions(titre, message1, type_objet, "",
 					Program.getCaveConfig(), true, true);
 			myoptions.setVisible(true);
-
 		} catch (Exception e3) {
 			Program.showException(e3);
 		}
@@ -1139,48 +1136,16 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			int index = Program.TABBED_PANE.getSelectedIndex();
 			String title = Program.TABBED_PANE.getTitleAt(index);
 			if (modify) {
-				if (!title.endsWith("*"))
+				if (!title.endsWith("*")) {
 					Program.TABBED_PANE.setTitleAt(index, title + "*");
+				}
 			} else {
-				if (title.endsWith("*"))
+				if (title.endsWith("*")) {
 					title = title.substring(0, title.length() - 1);
+				}
 				Program.TABBED_PANE.setTitleAt(index, title);
 			}
 		}
-	}
-
-	/**
-	 */
-	private void checkSelectedTab() {
-		if (Program.isSelectedTab(Program.addWine))
-			Program.addWine.updateView();
-		if (Program.isSelectedTab(Program.search))
-			Program.search.updateView();
-		if (Program.isSelectedTab(Program.deletePlace))
-			Program.deletePlace.updateView();
-		if (Program.isSelectedTab(Program.showfile)) {
-			Program.showfile.refresh();
-			Program.showfile.updateView();
-		}
-		if (Program.isSelectedTab(Program.showtrash)) {
-			Program.showtrash.refresh();
-			Program.showtrash.updateView();
-		}
-		if (Program.isSelectedTab(Program.showerrors)) {
-			Program.showerrors.updateView();
-		}
-		if (Program.isSelectedTab(Program.showworksheet)) {
-			Program.showworksheet.refresh();
-			Program.showworksheet.updateView();
-		}
-		if (Program.isSelectedTab(Program.stat))
-			Program.stat.updateView();
-		if (Program.isSelectedTab(Program.creer_tableau))
-			Program.creer_tableau.updateView();
-		if (Program.isSelectedTab(Program.chooseCell))
-			Program.chooseCell.updateView();
-		if (Program.isSelectedTab(Program.managePlace))
-			Program.managePlace.updateView();
 	}
 
 	class OpenAction extends AbstractAction {
@@ -1216,10 +1181,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 							postOpenFile();
 						}
     			}
-			}catch(Exception e) {
+			} catch(Exception e) {
 				Program.showException(e);
-			}
-			finally {
+			}	finally {
 				setCursor(Cursor.getDefaultCursor());
 			}
 		}
@@ -1237,11 +1201,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		public void actionPerformed(ActionEvent arg0) {
 			try {
 				Debug("newFileAction: Creating a new file...");
-    			if (Program.newFile()) {
-    				postOpenFile();
-    				Debug("newFileAction: Creating a new file OK");
-    			}
-			}catch(Exception e) {
+				if (Program.newFile()) {
+					postOpenFile();
+					Debug("newFileAction: Creating a new file OK");
+				}
+			} catch(Exception e) {
 				Program.showException(e);
 			}
 		}
@@ -1265,10 +1229,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				for (int i = 0; i < Program.TABBED_PANE.getTabCount(); i++) {
 					Component tab = Program.TABBED_PANE.getComponentAt(i);
 					if (tab instanceof ManageBottle) {
-						if (Program.TABBED_PANE.getTitleAt(i).endsWith("*"))
+						if (Program.TABBED_PANE.getTitleAt(i).endsWith("*")) {
 							Program.TABBED_PANE.setSelectedIndex(i);
-						if (!((ManageBottle) tab).save())
+						}
+						if (!((ManageBottle) tab).save()) {
 							return;
+						}
 					}
 				}
 				setEnabled(false);
@@ -1308,25 +1274,26 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.addWine == null) {
+			if (Program.getAddVin() == null) {
 				try {
-					Program.addWine = new AddVin();
-					Program.TABBED_PANE.add(Program.getLabel("Infos005"), Program.addWine);
+					final AddVin addVin = Program.createAddVin();
+					Program.TABBED_PANE.add(Program.getLabel("Infos005"), addVin);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.WINE);
-					Utils.addCloseButton(Program.TABBED_PANE, Program.addWine);
+					Utils.addCloseButton(Program.TABBED_PANE, addVin);
 				} catch (Exception e1) {
 					Program.showException(e1);
 				}
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.addWine);
+				Program.TABBED_PANE.setSelectedComponent(Program.getAddVin());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos005"), Program.addWine);
+				final AddVin addVin = Program.getAddVin();
+				Program.TABBED_PANE.add(Program.getLabel("Infos005"), addVin);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.WINE);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.addWine);
-				Program.TABBED_PANE.setSelectedComponent(Program.addWine);
+				Utils.addCloseButton(Program.TABBED_PANE, addVin);
+				Program.TABBED_PANE.setSelectedComponent(addVin);
 			}
-			Program.addWine.reInit();
+			Program.getAddVin().reInit();
 			updateMainPanel();
 		}
 	}
@@ -1341,23 +1308,24 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.createPlace == null) {
+			if (Program.getCreerRangement() == null) {
 				try {
-					Program.createPlace = new Creer_Rangement(false);
-					Program.TABBED_PANE.add(Program.getLabel("Infos010"), Program.createPlace);
+					final Creer_Rangement creerRangement = Program.createCreerRangement();
+					Program.TABBED_PANE.add(Program.getLabel("Infos010"), creerRangement);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-					Utils.addCloseButton(Program.TABBED_PANE, Program.createPlace);
+					Utils.addCloseButton(Program.TABBED_PANE, creerRangement);
 				} catch (Exception e1) {
 					Program.showException(e1);
 				}
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.createPlace);
+				Program.TABBED_PANE.setSelectedComponent(Program.getCreerRangement());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos010"), Program.createPlace);
+				final Creer_Rangement creerRangement = Program.createCreerRangement();
+				Program.TABBED_PANE.add(Program.getLabel("Infos010"), creerRangement);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.createPlace);
-				Program.TABBED_PANE.setSelectedComponent(Program.createPlace);
+				Utils.addCloseButton(Program.TABBED_PANE, creerRangement);
+				Program.TABBED_PANE.setSelectedComponent(creerRangement);
 			}
 			updateMainPanel();
 		}
@@ -1373,23 +1341,24 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.deletePlace == null) {
+			if (Program.getSupprimerRangement() == null) {
 				try {
-					Program.deletePlace = new Supprimer_Rangement();
-					Program.TABBED_PANE.add(Program.getLabel("Infos004"), Program.deletePlace);
+					final Supprimer_Rangement supprimerRangement = Program.createSupprimerRangement();
+					Program.TABBED_PANE.add(Program.getLabel("Infos004"), supprimerRangement);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.DELPLACE);
-					Utils.addCloseButton(Program.TABBED_PANE, Program.deletePlace);
+					Utils.addCloseButton(Program.TABBED_PANE, supprimerRangement);
 				} catch (Exception e1) {
 					Program.showException(e1);
 				}
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.deletePlace);
+				Program.TABBED_PANE.setSelectedComponent(Program.getSupprimerRangement());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos004"), Program.deletePlace);
+				final Supprimer_Rangement supprimerRangement = Program.createSupprimerRangement();
+				Program.TABBED_PANE.add(Program.getLabel("Infos004"), supprimerRangement);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.DELPLACE);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.deletePlace);
-				Program.TABBED_PANE.setSelectedComponent(Program.deletePlace);
+				Utils.addCloseButton(Program.TABBED_PANE, supprimerRangement);
+				Program.TABBED_PANE.setSelectedComponent(supprimerRangement);
 			}
 			updateMainPanel();
 		}
@@ -1405,24 +1374,25 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.modifyPlace == null) {
+			if (Program.getModifierRangement() == null) {
 				try {
-					Program.modifyPlace = new Creer_Rangement(true);
-					Program.TABBED_PANE.add(Program.getLabel("Infos007"), Program.modifyPlace);
+					final Creer_Rangement modifierRangement = Program.createModifierRangement();
+					Program.TABBED_PANE.add(Program.getLabel("Infos007"), modifierRangement);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.MODIFYPLACE);
-					Utils.addCloseButton(Program.TABBED_PANE, Program.modifyPlace);
+					Utils.addCloseButton(Program.TABBED_PANE, modifierRangement);
 				} catch (Exception e1) {
 					Program.showException(e1);
 				}
 			}
-			Program.modifyPlace.updateView();
+			Program.getModifierRangement().updateView();
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.modifyPlace);
+				Program.TABBED_PANE.setSelectedComponent(Program.getModifierRangement());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos007"), Program.modifyPlace);
+				final Creer_Rangement modifierRangement = Program.createModifierRangement();
+				Program.TABBED_PANE.add(Program.getLabel("Infos007"), modifierRangement);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.MODIFYPLACE);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.modifyPlace);
-				Program.TABBED_PANE.setSelectedComponent(Program.modifyPlace);
+				Utils.addCloseButton(Program.TABBED_PANE, modifierRangement);
+				Program.TABBED_PANE.setSelectedComponent(modifierRangement);
 			}
 			updateMainPanel();
 		}
@@ -1438,21 +1408,21 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.search == null) {
-				Program.search = new Search();
-				Program.TABBED_PANE.add(Program.getLabel("Infos221"), Program.search);
+			if (Program.getSearch() == null) {
+				final Search search = Program.createSearch();
+				Program.TABBED_PANE.add(Program.getLabel("Infos221"), search);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.SEARCH);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.search);
+				Utils.addCloseButton(Program.TABBED_PANE, search);
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.search);
+				Program.TABBED_PANE.setSelectedComponent(Program.getSearch());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos221"), Program.search);
+				final Search search = Program.createSearch();
+				Program.TABBED_PANE.add(Program.getLabel("Infos221"), search);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.SEARCH);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.search);
-				Program.TABBED_PANE.setSelectedComponent(Program.search);
+				Utils.addCloseButton(Program.TABBED_PANE, search);
+				Program.TABBED_PANE.setSelectedComponent(search);
 			}
-			checkSelectedTab();
 			updateMainPanel();
 		}
 	}
@@ -1467,21 +1437,21 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.creer_tableau == null) {
-				Program.creer_tableau = new Creer_Tableaux();
-				Program.TABBED_PANE.add(Program.getLabel("Infos008"), Program.creer_tableau);
+			if (Program.getCreerTableaux() == null) {
+				final Creer_Tableaux creerTableaux = Program.createCreerTableaux();
+				Program.TABBED_PANE.add(Program.getLabel("Infos008"), creerTableaux);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.TABLE);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.creer_tableau);
+				Utils.addCloseButton(Program.TABBED_PANE, creerTableaux);
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.creer_tableau);
+				Program.TABBED_PANE.setSelectedComponent(Program.getCreerTableaux());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos008"), Program.creer_tableau);
+				final Creer_Tableaux creerTableaux = Program.createCreerTableaux();
+				Program.TABBED_PANE.add(Program.getLabel("Infos008"), creerTableaux);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.TABLE);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.creer_tableau);
-				Program.TABBED_PANE.setSelectedComponent(Program.creer_tableau);
+				Utils.addCloseButton(Program.TABBED_PANE, creerTableaux);
+				Program.TABBED_PANE.setSelectedComponent(creerTableaux);
 			}
-			checkSelectedTab();
 			updateMainPanel();
 		}
 	}
@@ -1497,21 +1467,21 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 
-			if (Program.importer == null) {
-				Program.importer = new Importer();
-				Program.TABBED_PANE.add(Program.getLabel("Infos011"), Program.importer);
+			if (Program.getImporter() == null) {
+				final Importer importer = Program.createImporter();
+				Program.TABBED_PANE.add(Program.getLabel("Infos011"), importer);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.IMPORT);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.importer);
+				Utils.addCloseButton(Program.TABBED_PANE, importer);
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.importer);
+				Program.TABBED_PANE.setSelectedComponent(Program.getImporter());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos011"), Program.importer);
+				final Importer importer = Program.createImporter();
+				Program.TABBED_PANE.add(Program.getLabel("Infos011"), importer);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.IMPORT);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.importer);
-				Program.TABBED_PANE.setSelectedComponent(Program.importer);
+				Utils.addCloseButton(Program.TABBED_PANE, importer);
+				Program.TABBED_PANE.setSelectedComponent(importer);
 			}
-			checkSelectedTab();
 			updateMainPanel();
 		}
 	}
@@ -1526,23 +1496,24 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.export == null) {
+			if (Program.getExport() == null) {
 				try {
-					Program.export = new Export();
-					Program.TABBED_PANE.add(Program.getLabel("Infos148"), Program.export);
+					final Export export = Program.createExport();
+					Program.TABBED_PANE.add(Program.getLabel("Infos148"), export);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.EXPORT);
-					Utils.addCloseButton(Program.TABBED_PANE, Program.export);
+					Utils.addCloseButton(Program.TABBED_PANE, export);
 				} catch (Exception e1) {
 					Program.showException(e1);
 				}
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.export);
+				Program.TABBED_PANE.setSelectedComponent(Program.getExport());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos148"), Program.export);
+				final Export export = Program.createExport();
+				Program.TABBED_PANE.add(Program.getLabel("Infos148"), export);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.EXPORT);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.export);
-				Program.TABBED_PANE.setSelectedComponent(Program.export);
+				Utils.addCloseButton(Program.TABBED_PANE, export);
+				Program.TABBED_PANE.setSelectedComponent(export);
 			}
 			updateMainPanel();
 		}
@@ -1558,26 +1529,27 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.stat == null) {
+			if (Program.getStat() == null) {
 				try {
-					Program.stat = new Stat();
-					Program.stat.setVisible(true);
-					Program.TABBED_PANE.add(Program.getLabel("Infos009"), Program.stat);
+					final Stat stat = Program.createStat();
+					stat.setVisible(true);
+					Program.TABBED_PANE.add(Program.getLabel("Infos009"), stat);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.STATS);
-					Utils.addCloseButton(Program.TABBED_PANE, Program.stat);
+					Utils.addCloseButton(Program.TABBED_PANE, stat);
 				} catch (Exception e1) {
 					Program.showException(e1);
 				}
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.stat);
+				Program.TABBED_PANE.setSelectedComponent(Program.getStat());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos009"), Program.stat);
+				final Stat stat = Program.createStat();
+				Program.TABBED_PANE.add(Program.getLabel("Infos009"), stat);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.STATS);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.stat);
-				Program.TABBED_PANE.setSelectedComponent(Program.stat);
+				Utils.addCloseButton(Program.TABBED_PANE, stat);
+				Program.TABBED_PANE.setSelectedComponent(stat);
 			}
-			Program.stat.updateView();
+			Program.getStat().updateView();
 			updateMainPanel();
 		}
 	}
@@ -1591,25 +1563,26 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.history == null) {
+			if (Program.getShowHistory() == null) {
 				try {
-					Program.history = new ShowHistory();
-					Program.TABBED_PANE.add(Program.getLabel("Infos341"), Program.history);
+					final ShowHistory showHistory = Program.createShowHistory();
+					Program.TABBED_PANE.add(Program.getLabel("Infos341"), showHistory);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, null);
-					Utils.addCloseButton(Program.TABBED_PANE, Program.history);
+					Utils.addCloseButton(Program.TABBED_PANE, showHistory);
 				} catch (Exception e1) {
 					Program.showException(e1);
 				}
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.history);
+				Program.TABBED_PANE.setSelectedComponent(Program.getShowHistory());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos341"), Program.history);
+				final ShowHistory showHistory = Program.createShowHistory();
+				Program.TABBED_PANE.add(Program.getLabel("Infos341"), showHistory);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, null);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.history);
-				Program.TABBED_PANE.setSelectedComponent(Program.history);
+				Utils.addCloseButton(Program.TABBED_PANE, showHistory);
+				Program.TABBED_PANE.setSelectedComponent(showHistory);
 			}
-			Program.history.refresh();
+			Program.getShowHistory().refresh();
 			updateMainPanel();
 		}
 	}
@@ -1640,29 +1613,31 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		public void actionPerformed(ActionEvent arg0) {
 			new ManageList();
 			Program.updateAllPanels();
-			if(Program.addWine != null)
-				Program.addWine.updateView();
+			if (Program.getAddVin() != null) {
+				Program.getAddVin().updateView();
+			}
 		}
 	}
 
 	public void openVineyardPanel() {
-		if (Program.vignobles == null) {
+		if (Program.getVineyardPanel() == null) {
 			try {
-				Program.vignobles = new VineyardPanel();
-				Program.TABBED_PANE.add(Program.getLabel("Infos165"), Program.vignobles);
+				final VineyardPanel vineyardPanel = Program.createVineyardPanel();
+				Program.TABBED_PANE.add(Program.getLabel("Infos165"), vineyardPanel);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, null);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.vignobles);
+				Utils.addCloseButton(Program.TABBED_PANE, vineyardPanel);
 			} catch (Exception e1) {
 				Program.showException(e1);
 			}
 		}
 		try {
-			Program.TABBED_PANE.setSelectedComponent(Program.vignobles);
+			Program.TABBED_PANE.setSelectedComponent(Program.getVineyardPanel());
 		} catch (IllegalArgumentException e) {
-			Program.TABBED_PANE.add(Program.getLabel("Infos165"), Program.vignobles);
+			final VineyardPanel vineyardPanel = Program.createVineyardPanel();
+			Program.TABBED_PANE.add(Program.getLabel("Infos165"), vineyardPanel);
 			Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, null);
-			Utils.addCloseButton(Program.TABBED_PANE, Program.vignobles);
-			Program.TABBED_PANE.setSelectedComponent(Program.vignobles);
+			Utils.addCloseButton(Program.TABBED_PANE, vineyardPanel);
+			Program.TABBED_PANE.setSelectedComponent(vineyardPanel);
 		}
 		updateMainPanel();
 	}
@@ -1677,19 +1652,20 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.showfile == null) {
-				Program.showfile = new ShowFile();
-				Program.TABBED_PANE.add(Program.getLabel("Infos325"), Program.showfile);
+			if (Program.getShowFile() == null) {
+				final ShowFile showFile = Program.createShowFile();
+				Program.TABBED_PANE.add(Program.getLabel("Infos325"), showFile);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.SHOW);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.showfile);
+				Utils.addCloseButton(Program.TABBED_PANE, showFile);
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.showfile);
+				Program.TABBED_PANE.setSelectedComponent(Program.getShowFile());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos325"), Program.showfile);
+				final ShowFile showFile = Program.createShowFile();
+				Program.TABBED_PANE.add(Program.getLabel("Infos325"), showFile);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.SHOW);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.showfile);
-				Program.TABBED_PANE.setSelectedComponent(Program.showfile);
+				Utils.addCloseButton(Program.TABBED_PANE, showFile);
+				Program.TABBED_PANE.setSelectedComponent(showFile);
 			}
 			updateMainPanel();
 		}
@@ -1705,21 +1681,22 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.showtrash == null) {
-				Program.showtrash = new ShowFile(ShowType.TRASH);
-				Program.TABBED_PANE.add(Program.getLabel("Main.ShowTrash"), Program.showtrash);
+			if (Program.getShowTrash() == null) {
+				final ShowFile showTrash = Program.createShowTrash();
+				Program.TABBED_PANE.add(Program.getLabel("Main.ShowTrash"), showTrash);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.TRASH);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.showtrash);
+				Utils.addCloseButton(Program.TABBED_PANE, showTrash);
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.showtrash);
+				Program.TABBED_PANE.setSelectedComponent(Program.getShowTrash());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Main.ShowTrash"), Program.showtrash);
+				final ShowFile showTrash = Program.createShowTrash();
+				Program.TABBED_PANE.add(Program.getLabel("Main.ShowTrash"), showTrash);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.TRASH);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.showtrash);
-				Program.TABBED_PANE.setSelectedComponent(Program.showtrash);
+				Utils.addCloseButton(Program.TABBED_PANE, showTrash);
+				Program.TABBED_PANE.setSelectedComponent(showTrash);
 			}
-			Program.showtrash.refresh();
+			Program.getShowTrash().updateView();
 			updateMainPanel();
 		}
 	}
@@ -1783,23 +1760,24 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.managePlace == null) {
+			if (Program.getCellarOrganizerPanel() == null) {
 				try {
-					Program.managePlace = new CellarOrganizerPanel();
-					Program.TABBED_PANE.add(Program.getLabel("Main.ManagePlace"), Program.managePlace);
+					final CellarOrganizerPanel cellarOrganizerPanel = Program.createCellarOrganizerPanel();
+					Program.TABBED_PANE.add(Program.getLabel("Main.ManagePlace"), cellarOrganizerPanel);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-					Utils.addCloseButton(Program.TABBED_PANE, Program.managePlace);
+					Utils.addCloseButton(Program.TABBED_PANE, cellarOrganizerPanel);
 				} catch (Exception e1) {
 					Program.showException(e1);
 				}
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.managePlace);
+				Program.TABBED_PANE.setSelectedComponent(Program.getCellarOrganizerPanel());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Main.ManagePlace"), Program.managePlace);
+				final CellarOrganizerPanel cellarOrganizerPanel = Program.createCellarOrganizerPanel();
+				Program.TABBED_PANE.add(Program.getLabel("Main.ManagePlace"), cellarOrganizerPanel);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.managePlace);
-				Program.TABBED_PANE.setSelectedComponent(Program.managePlace);
+				Utils.addCloseButton(Program.TABBED_PANE, cellarOrganizerPanel);
+				Program.TABBED_PANE.setSelectedComponent(cellarOrganizerPanel);
 			}
 			updateMainPanel();
 		}
@@ -1816,47 +1794,49 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.parametres == null) {
+			if (Program.getParametres() == null) {
 				try {
-					Program.parametres = new Parametres();
-					Program.TABBED_PANE.add(Program.getLabel("Infos193"), Program.parametres);
+					final Parametres parametres = Program.createParametres();
+					Program.TABBED_PANE.add(Program.getLabel("Infos193"), parametres);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PARAMETER);
-					Utils.addCloseButton(Program.TABBED_PANE, Program.parametres);
+					Utils.addCloseButton(Program.TABBED_PANE, parametres);
 				} catch (Exception e1) {
 					Program.showException(e1);
 				}
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.parametres);
+				Program.TABBED_PANE.setSelectedComponent(Program.getParametres());
 			} catch (IllegalArgumentException e) {
-				Program.TABBED_PANE.add(Program.getLabel("Infos193"), Program.parametres);
+				final Parametres parametres = Program.createParametres();
+				Program.TABBED_PANE.add(Program.getLabel("Infos193"), parametres);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PARAMETER);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.parametres);
-				Program.TABBED_PANE.setSelectedComponent(Program.parametres);
+				Utils.addCloseButton(Program.TABBED_PANE, parametres);
+				Program.TABBED_PANE.setSelectedComponent(parametres);
 			}
 			updateMainPanel();
 		}
 	}
 	
 	public void openCellChooserPanel(IAddVin addvin) {
-		if (Program.chooseCell == null) {
+		if (Program.getCellChoosePanel() == null) {
 			try {
-				Program.chooseCell = new CellarOrganizerPanel(true, addvin);
-				Program.TABBED_PANE.add(Program.getLabel("Main.ChooseCell"), Program.chooseCell);
+				final CellarOrganizerPanel chooseCellPanel = Program.createChooseCellPanel(addvin);
+				Program.TABBED_PANE.add(Program.getLabel("Main.ChooseCell"), chooseCellPanel);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-				Utils.addCloseButton(Program.TABBED_PANE, Program.chooseCell);
+				Utils.addCloseButton(Program.TABBED_PANE, chooseCellPanel);
 			} catch (Exception e1) {
 				Program.showException(e1);
 			}
 		}
 		try {
-			Program.TABBED_PANE.setSelectedComponent(Program.chooseCell);
-			Program.chooseCell.setAddVin(addvin);
+			Program.TABBED_PANE.setSelectedComponent(Program.getCellChoosePanel());
+			Program.getCellChoosePanel().setAddVin(addvin);
 		} catch (IllegalArgumentException e) {
-			Program.TABBED_PANE.add(Program.getLabel("Main.ChooseCell"), Program.chooseCell);
+			final CellarOrganizerPanel chooseCellPanel = Program.createChooseCellPanel(addvin);
+			Program.TABBED_PANE.add(Program.getLabel("Main.ChooseCell"), chooseCellPanel);
 			Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-			Utils.addCloseButton(Program.TABBED_PANE, Program.chooseCell);
-			Program.TABBED_PANE.setSelectedComponent(Program.chooseCell);
+			Utils.addCloseButton(Program.TABBED_PANE, chooseCellPanel);
+			Program.TABBED_PANE.setSelectedComponent(chooseCellPanel);
 		}
 		updateMainPanel();
 	}

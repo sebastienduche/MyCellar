@@ -3,6 +3,7 @@ package mycellar;
 
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
+import mycellar.core.IMyCellar;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -57,10 +58,10 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.0
- * @since 18/07/19
+ * @version 13.1
+ * @since 08/08/19
  */
-public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable {
+public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
 	private static final int COUNT = 18;
 	private final MyCellarButton importe = new MyCellarButton();
@@ -357,7 +358,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			File f = new File(nom);
 			file.setText(f.getAbsolutePath());
 			nom = f.getAbsolutePath();
-			if(!f.exists()) {
+			if (!f.exists()) {
 				//Insertion classe Erreur
 				label_progression.setText("");
 				Debug("ERROR: File not found: "+nom);
@@ -406,7 +407,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				}
 			}
 
-			if(type_xml.isSelected()) {
+			if (type_xml.isSelected()) {
 				importFromXML(f);
 				return;
 			}
@@ -429,7 +430,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				return;
 			}
 
-			if(mapFieldCount.get(MyCellarFields.NAME) == null) {
+			if (mapFieldCount.get(MyCellarFields.NAME) == null) {
 				label_progression.setText("");
 				Debug("ERROR: No column for wine name");
 				//"Aucune colonne n'indique le nom du vin.
@@ -439,7 +440,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				return;
 			}
 
-			if(mapFieldCount.get(MyCellarFields.PLACE) == null) {
+			if (mapFieldCount.get(MyCellarFields.PLACE) == null) {
 				label_progression.setText("");
 				Debug("ERROR: No place defined, a place will be create");
 				//Il n'y a pas de rangements definis dans le fichier.
@@ -484,22 +485,20 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 							resul = true;
 							if (nom1.contains("\"") || nom1.contains(";") || nom1.contains("<") || nom1.contains(">") || nom1.contains("?") || nom1.contains("\\") ||
 									nom1.contains("/") || nom1.contains("|") || nom1.contains("*")) {
-								Program.options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
+								Options options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
 										Program.getError("Error126"), false);
-								Program.options.setVisible(true);
-								nom1 = Program.options.getValue();
-								Program.options = null;
+								options.setVisible(true);
+								nom1 = options.getValue();
 								resul = false;
 							}
 						}	while (!resul);
 						do {
 							// Controle sur la longueur du nom
 							if (nom1.isEmpty()) {
-								Program.options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", "",
+								Options options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", "",
 										Program.getError("Error010"), false);
-								Program.options.setVisible(true);
-								nom1 = Program.options.getValue();
-								Program.options = null;
+								options.setVisible(true);
+								nom1 = options.getValue();
 								resul = false;
 							}
 						}	while (nom1.isEmpty());
@@ -511,19 +510,16 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 								if (!nom1.isEmpty()) {
 									rangement = Program.getCave(nom1);
 									if (rangement != null) {
-										Program.options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
+										Options options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
 												Program.getError("Error037"), false);
-										Program.options.setVisible(true);
-										nom1 = Program.options.getValue();
-										Program.options = null;
+										options.setVisible(true);
+										nom1 = options.getValue();
 										resul = false;
 									}
 								}
-							}
-							while (rangement != null);
+							}	while (rangement != null);
 						}
-					}
-					while (!resul);
+					}	while (!resul);
 					Debug("Creating new place with name: "+nom1);
 					new_rangement = new Rangement.CaisseBuilder(nom1).build();
 					Program.addCave(new_rangement);
@@ -532,9 +528,9 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				}
 			}
 			if (type_txt.isSelected()) {
-				String separe;
 				//Cas des fichiers TXT
 				Debug("Importing Text File...");
+				String separe;
 				switch (separateur.getSelectedIndex()) {
 					case 0:
 						separe = ";";
@@ -577,7 +573,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 						bottle.updateID();
 						for (int i = 0; i < lu.length; i++) {
 							String value = lu[i];
-							if(value.length() > 1 && value.charAt(0) == '"' && value.charAt(value.length()-1) == '"') {
+							if (value.length() > 1 && value.charAt(0) == '"' && value.charAt(value.length()-1) == '"') {
 								value = value.substring(1, value.length() - 1);
 							}
 							value = Program.convertToHTMLString(value);
@@ -587,7 +583,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 								maxNumPlace = bottle.getNumLieu();
 							}
 						}
-						if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
+						if ((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
 							bottle.setEmplacement(new_rangement.getNom());
 							new_rangement.setNbEmplacements(maxNumPlace+1);
 						}
@@ -607,7 +603,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		catch (Exception exc) {
 			Program.showException(exc);
 		}
-		if(RangementUtils.putTabStock()) {
+		if (RangementUtils.putTabStock()) {
 			MyCellarBottleContenance.load();
 		} else {
 			new OpenShowErrorsAction().actionPerformed(null);
@@ -665,7 +661,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 							maxNumPlace = bottle.getNumLieu();
 						}
 
-						if((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && rangement != null) {
+						if ((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && rangement != null) {
 							bottle.setEmplacement(rangement.getNom());
 							rangement.setNbEmplacements(maxNumPlace+1);
 						}
@@ -760,7 +756,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	public void cut() {
 		String text = file.getSelectedText();
 		String fullText = file.getText();
-		if(text != null) {
+		if (text != null) {
 			file.setText(fullText.substring(0, file.getSelectionStart()) + fullText.substring(file.getSelectionEnd()));
 			Program.CLIPBOARD.copier(text);
 		}
@@ -769,7 +765,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	@Override
 	public void copy() {
 		String text = file.getSelectedText();
-		if(text != null) {
+		if (text != null) {
 			Program.CLIPBOARD.copier(text);
 		}
 	}

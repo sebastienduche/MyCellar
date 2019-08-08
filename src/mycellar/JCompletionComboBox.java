@@ -1,5 +1,5 @@
 /* *******************************************************
- * � 1996-2009 HR Access Solutions. All rights reserved
+ * @ 1996-2009 HR Access Solutions. All rights reserved
  * ******************************************************/
 
 package mycellar;
@@ -28,11 +28,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2012</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.5
  * @since 02/03/18
  */
@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * A {@link JComboBox} with an auto-populating history feature. 
  * 
- * @author Fran�ois RITALY / HR Access Solutions
+ * @author Francois RITALY / HR Access Solutions
  */
 public class JCompletionComboBox extends JComboBox {
 
@@ -61,11 +61,9 @@ public class JCompletionComboBox extends JComboBox {
 		// subsequent calls to remove/insertString should be ignored
 		private boolean selecting = false;
 
-		@SuppressWarnings("unused")
-		private boolean hitBackspace = false;
+//		private boolean hitBackspace = false;
 
-		@SuppressWarnings("unused")
-		private boolean hitBackspaceOnSelection;
+//		private boolean hitBackspaceOnSelection;
 
 		private final boolean hidePopupOnFocusLoss;
 		
@@ -139,28 +137,24 @@ public class JCompletionComboBox extends JComboBox {
 			if (comboBox.isDisplayable()) {
 				comboBox.setPopupVisible(true);
 			}
-			hitBackspace = false;
-			switch (e.getKeyCode()) {
+//			hitBackspace = false;
 			// determine if the pressed key is backspace (needed by the remove
 			// method)
-			case KeyEvent.VK_BACK_SPACE:
+			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 				JTextComponent editor = (JTextComponent) comboBox.getEditor()
 						.getEditorComponent();
-				hitBackspace = true;
-				hitBackspaceOnSelection = editor.getSelectionStart() != editor
-						.getSelectionEnd();
-				break;
+//				hitBackspace = true;
+//				hitBackspaceOnSelection = editor.getSelectionStart() != editor
+//						.getSelectionEnd();
 			}
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-
 		}
 
 		@Override
 		public void keyTyped(KeyEvent e) {
-
 		}
 
 		@Override
@@ -243,8 +237,7 @@ public class JCompletionComboBox extends JComboBox {
 			Object selectedItem = model.getSelectedItem();
 			// only search for a different item if the currently selected does
 			// not match
-			if(isCaseSensitive())
-			{
+			if(isCaseSensitive()) {
 				if ((selectedItem != null)
 						&& selectedItem.toString().startsWith(pattern)) {
 					return selectedItem;
@@ -258,9 +251,7 @@ public class JCompletionComboBox extends JComboBox {
 						}
 					}
 				}
-			}
-			else
-			{
+			}	else {
 				if ((selectedItem != null)
 						&& selectedItem.toString().toLowerCase().startsWith(pattern.toLowerCase())) {
 					return selectedItem;
@@ -339,7 +330,7 @@ public class JCompletionComboBox extends JComboBox {
 				} else {
 					c.setForeground(Color.BLACK);
 				}
-		        setForeground(isSelected ? Color.WHITE : Color.BLACK);
+				setForeground(isSelected ? Color.WHITE : Color.BLACK);
 				
 				return c;
 			}
@@ -376,8 +367,8 @@ public class JCompletionComboBox extends JComboBox {
 		document.addItem(obj);
 		
 		if (handleSelectionChange) {
-			// M�moriser le dernier objet ajout� � la liste afin de le mettre en
-			// �vidence dans la combobox
+			// Memoriser le dernier objet ajoute a la liste afin de le mettre en
+			// evidence dans la combobox
 			this.lastSelectedItem = obj;
 		}
 	}
@@ -387,9 +378,9 @@ public class JCompletionComboBox extends JComboBox {
 		super.setSelectedItem(obj);
 		
 		if (handleSelectionChange) {
-			// M�moriser le dernier objet ajout� � la liste afin de le mettre en
-			// �vidence dans la combobox. Le cas o� obj == null est g�r�
-			this.lastSelectedItem = obj;			
+			// Memoriser le dernier objet ajoute a la liste afin de le mettre en
+			// evidence dans la combobox. Le cas ou obj == null est gere
+			lastSelectedItem = obj;
 		}
 	}
 	
@@ -398,10 +389,10 @@ public class JCompletionComboBox extends JComboBox {
 		super.setSelectedIndex(i);
 		
 		if (handleSelectionChange) {
-			// M�moriser le dernier objet ajout� � la liste afin de le mettre en
-			// �vidence dans la combobox. Retournera null si i est non valide 
-			// donc d�selectionnera l'item
-			this.lastSelectedItem = getItemAt(i);
+			// Memoriser le dernier objet ajoute a la liste afin de le mettre en
+			// evidence dans la combobox. Retournera null si i est non valide
+			// donc deselectionnera l'item
+			lastSelectedItem = getItemAt(i);
 		}
 	}
 	
@@ -411,7 +402,7 @@ public class JCompletionComboBox extends JComboBox {
 		document.removeItem(obj);
 		
 		if (handleSelectionChange && (lastSelectedItem != null) && lastSelectedItem.equals(obj)) {
-			// Supprimer la s�lection
+			// Supprimer la selection
 			lastSelectedItem = null;
 		}
 	}
@@ -424,7 +415,7 @@ public class JCompletionComboBox extends JComboBox {
 		document.removeItem(removedItem);
 		
 		if (handleSelectionChange && (removedItem != null) && removedItem.equals(lastSelectedItem)) {
-			// Supprimer la s�lection
+			// Supprimer la selection
 			lastSelectedItem = null;
 		}
 	}

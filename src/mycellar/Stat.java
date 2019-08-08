@@ -1,5 +1,7 @@
 package mycellar;
 
+import mycellar.core.IMyCellar;
+import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -36,10 +38,10 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.5
- * @since 17/07/19
+ * @version 6.6
+ * @since 08/08/19
  */
-public class Stat extends JPanel implements ITabListener {
+public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
 	private static final long serialVersionUID = -5333602919958999440L;
 	private final MyCellarLabel comboLabel = new MyCellarLabel();
@@ -58,7 +60,6 @@ public class Stat extends JPanel implements ITabListener {
 
 	/**
 	 * Stat: Constructeur.
-	 *
 	 */
 	public Stat() {
 		Debug("Stats");
@@ -87,8 +88,9 @@ public class Stat extends JPanel implements ITabListener {
 		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		listOptions.addItemListener(this::list_itemStateChanged);
 		listPlaces.addItemListener((e) -> {
-			if(e.getSource().equals(listPlaces) && e.getStateChange() == ItemEvent.SELECTED)
+			if (e.getSource().equals(listPlaces) && e.getStateChange() == ItemEvent.SELECTED) {
 				list2_itemStateChanged(e);
+			}
 		});
 
 		MyCellarLabel chartType = new MyCellarLabel(Program.getLabel("Stat.chartType"));
@@ -186,8 +188,7 @@ public class Stat extends JPanel implements ITabListener {
 				listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos299"))); //"Tranches avec bouteilles");
 			}
 			listChart.setEnabled(listOptions.getSelectedIndex() != 0);
-		}
-		catch (Exception exc) {
+		}	catch (Exception exc) {
 			Program.showException(exc);
 		}
 	}
@@ -212,8 +213,7 @@ public class Stat extends JPanel implements ITabListener {
 			}	else if (listOptions.getSelectedIndex() == 2) { //Par prix
 				displayByPrice();
 			}
-		}
-		catch (Exception exc) {
+		}	catch (Exception exc) {
 			Program.showException(exc);
 		}
 	}
@@ -235,7 +235,7 @@ public class Stat extends JPanel implements ITabListener {
       Program.putCaveConfigInt(MyCellarSettings.TRANCHE_PRIX, 50);
     }
 
-		if(listPrice.isEmpty()) {
+		if (listPrice.isEmpty()) {
 			Map<Integer, Integer> mapPrixCount = new HashMap<>();
 			int ss_prix = 0;
 
@@ -268,9 +268,9 @@ public class Stat extends JPanel implements ITabListener {
       }
       listPrice.add(new StatData(Program.getLabel("Infos192"), ss_prix));
     }
-		for(StatData price: listPrice) {
+		for (StatData price: listPrice) {
 			final int priceCount = price.getCount();
-			if(all_bracket || priceCount > 0) {
+			if (all_bracket || priceCount > 0) {
         panel.add(new MyCellarLabel(price.getName()));
         String labelId = priceCount > 1 ? "Infos161" : "Main.1Bottle";
 				panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel(labelId), priceCount)), "span 2, align right, wrap");
@@ -294,17 +294,17 @@ public class Stat extends JPanel implements ITabListener {
 		panel.removeAll();
 		options.setEnabled(false);
 		moy.setText("");
-		if(listYear.isEmpty()) {
+		if (listYear.isEmpty()) {
         for (String an : annee) {
           int year = Integer.parseInt(an.trim());
-          if ( year > 1000 && year < 9000) {
+          if (year > 1000 && year < 9000) {
             listYear.add(new StatData(an, Program.getNbBouteilleAnnee(year)));
           }
         }
         listYear.add(new StatData(Program.getLabel("Infos390"), Program.getNbNonVintage()));
         listYear.add(new StatData(Program.getLabel("Infos225"), Program.getNbAutreAnnee()));
     }
-		for(StatData data: listYear) {
+		for (StatData data: listYear) {
       panel.add(new MyCellarLabel(data.getName()));
 			final int dataCount = data.getCount();
 			String labelId = dataCount > 1 ? "Infos161" : "Main.1Bottle";
@@ -398,7 +398,7 @@ public class Stat extends JPanel implements ITabListener {
 			Debug("options_actionPerforming...");
 			options.setSelected(false);
 			String value = JOptionPane.showInputDialog(this, Program.getLabel("Infos194"));
-			if(StringUtils.isNumeric(value)) {
+			if (StringUtils.isNumeric(value)) {
 				Program.putCaveConfigInt(MyCellarSettings.TRANCHE_PRIX, Integer.parseInt(value));
 				listPrice.clear();
 				list2_itemStateChanged(null);
@@ -428,7 +428,12 @@ public class Stat extends JPanel implements ITabListener {
 		Start.getInstance().updateMainPanel();
 	}
 
-	private class PanelChart extends JPanel {
+	@Override
+	public void setUpdateView() {
+
+	}
+
+	private static class PanelChart extends JPanel {
 
 		private static final long serialVersionUID = -6697139633950076186L;
 
@@ -443,8 +448,8 @@ public class Stat extends JPanel implements ITabListener {
 		private void setPlacesChart(List<Rangement> rangements) {
 
 			DefaultPieDataset dataset = new DefaultPieDataset();
-			for(Rangement rangement: rangements) {
-				if(rangement == null)
+			for (Rangement rangement: rangements) {
+				if (rangement == null)
 					continue;
 				dataset.setValue(rangement.getNom(), rangement.getNbCaseUseAll());
 			}
@@ -462,10 +467,11 @@ public class Stat extends JPanel implements ITabListener {
 		private void setPlaceChart(Rangement rangement) {
 
 			removeAll();
-			if(rangement.isCaisse())
+			if (rangement.isCaisse()) {
 				return;
+			}
 			DefaultPieDataset dataset = new DefaultPieDataset();
-			for(Part part: rangement.getPlace()){
+			for (Part part: rangement.getPlace()){
 				dataset.setValue(MessageFormat.format(Program.getLabel("Infos179"),part.getNum()), rangement.getNbCaseUse(part.getNum()-1));
 			}
 			JFreeChart chart = ChartFactory.createPieChart(rangement.getNom(),          // chart title
@@ -482,9 +488,10 @@ public class Stat extends JPanel implements ITabListener {
 
 			removeAll();
 			DefaultPieDataset dataset = new DefaultPieDataset();
-			for(StatData part: datas) {
-				if(part.getCount() > 0)
+			for (StatData part: datas) {
+				if (part.getCount() > 0) {
 					dataset.setValue(part.getName(), part.getCount());
+				}
 			}
 			JFreeChart chart = ChartFactory.createPieChart(title,          // chart title
 					dataset,                // data
@@ -501,8 +508,8 @@ public class Stat extends JPanel implements ITabListener {
 
 			removeAll();
 			DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-			for(StatData part: datas) {
-				if(part.getCount() > 0) {
+			for (StatData part: datas) {
+				if (part.getCount() > 0) {
 					dataset.addValue(part.getCount(), part.getName(), part.getName());
 				}
 			}
@@ -520,7 +527,7 @@ public class Stat extends JPanel implements ITabListener {
 		}
 	}
 
-	class StatData {
+	static class StatData {
 
 		private final String name;
 		private final int count;
@@ -540,6 +547,7 @@ public class Stat extends JPanel implements ITabListener {
 		}
 	}
 
+	@Override
 	public void updateView() {
 		listYear.clear();
 		listPrice.clear();
@@ -547,7 +555,7 @@ public class Stat extends JPanel implements ITabListener {
 		updateBouteilleCountLabel();
 	}
 
-	class PlaceComboItem {
+	static class PlaceComboItem {
 
 		private final String label;
 		private final Rangement rangement;

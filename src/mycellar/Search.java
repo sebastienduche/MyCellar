@@ -2,6 +2,8 @@ package mycellar;
 
 import mycellar.actions.OpenWorkSheetAction;
 import mycellar.core.ICutCopyPastable;
+import mycellar.core.IMyCellar;
+import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -45,10 +47,10 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 20.0
- * @since 06/08/19
+ * @version 20.1
+ * @since 08/08/19
  */
-public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable {
+public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
 	private static final long serialVersionUID = 8497660112193602839L;
 	private final JTable table;
@@ -1115,10 +1117,12 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 		Start.getInstance().updateMainPanel();
 	}
 
-	void setUpdateView(){
+	@Override
+	public void setUpdateView(){
 		updateView = true;
 	}
 
+	@Override
 	public void updateView() {
 		if(!updateView) {
 			return;

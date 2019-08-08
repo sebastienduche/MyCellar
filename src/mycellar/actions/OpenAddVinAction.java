@@ -24,12 +24,13 @@ public class OpenAddVinAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		SwingUtilities.invokeLater(() -> {
-			if(Program.addWine == null) {
-				Program.addWine = new AddVin();
-				Program.TABBED_PANE.addTab(Program.getLabel("Infos131"), MyCellarImage.WINE, Program.addWine);
+			if(Program.getAddVin() == null) {
+				final AddVin addVin = Program.createAddVin();
+				Program.TABBED_PANE.addTab(Program.getLabel("Infos131"), MyCellarImage.WINE, addVin);
 				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
 			}
-			Program.addWine.setBottles(listToModify);
+			final AddVin addVin = Program.getAddVin();
+			addVin.setBottles(listToModify);
 	
 			int tabIndex = Program.findTab(MyCellarImage.WINE);
 			if(tabIndex != -1) {
@@ -37,11 +38,11 @@ public class OpenAddVinAction extends AbstractAction {
 				Program.TABBED_PANE.setSelectedIndex(tabIndex);
 			}
 			else {
-				Program.TABBED_PANE.addTab(Program.getLabel("Infos131"), MyCellarImage.WINE, Program.addWine);
+				Program.TABBED_PANE.addTab(Program.getLabel("Infos131"), MyCellarImage.WINE, addVin);
 				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
 			}
 	
-			Utils.addCloseButton(Program.TABBED_PANE, Program.addWine);
+			Utils.addCloseButton(Program.TABBED_PANE, addVin);
 			Start.getInstance().updateMainPanel();
 		});
 	}

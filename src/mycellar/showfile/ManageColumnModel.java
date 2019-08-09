@@ -5,17 +5,18 @@ import mycellar.Program;
 import mycellar.core.MyCellarFields;
 
 import javax.swing.table.DefaultTableModel;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 0.5
- * @since 05/07/19
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.6
+ * @since 09/08/19
  */
 
 public class ManageColumnModel extends DefaultTableModel {
@@ -29,16 +30,19 @@ public class ManageColumnModel extends DefaultTableModel {
 		this.list = list;
 		values = new Boolean[list.size()];
 		RESULT.clear();
-		for(int i=0; i<values.length; i++) {
-			values[i] = Boolean.FALSE;
-		}
+		Arrays.fill(values, Boolean.FALSE);
 		for(Object c : cols) {
 			if(c instanceof ShowFileColumn) {
-				values[list.indexOf(((ShowFileColumn) c).getField())] = Boolean.TRUE;
-			}
-			else if(c instanceof MyCellarFields) {
-				values[list.indexOf(c)] = Boolean.TRUE;
-				RESULT.add(((MyCellarFields)c).ordinal());
+				final int index = list.indexOf(((ShowFileColumn) c).getField());
+				if (index != -1) {
+					values[index] = Boolean.TRUE;
+				}
+			}	else if(c instanceof MyCellarFields) {
+				final int index = list.indexOf(c);
+				if (index != -1) {
+					values[index] = Boolean.TRUE;
+					RESULT.add(((MyCellarFields) c).ordinal());
+				}
 			}
 		}
 	}
@@ -50,8 +54,9 @@ public class ManageColumnModel extends DefaultTableModel {
 	
 	@Override
 	public String getColumnName(int column) {
-		if(column == 0)
+		if(column == 0) {
 			return "";
+		}
 		return Program.getLabel("Main.Column");
 	}
 	
@@ -62,15 +67,17 @@ public class ManageColumnModel extends DefaultTableModel {
 	
 	@Override
 	public int getRowCount() {
-		if(list == null)
+		if(list == null) {
 			return 0;
+		}
 		return list.size();
 	}
 	
 	@Override
 	public Object getValueAt(int row, int column) {
-		if(column == 0)
+		if(column == 0) {
 			return values[row];
+		}
 		return list.get(row);
 	}
 	
@@ -79,8 +86,9 @@ public class ManageColumnModel extends DefaultTableModel {
 		values[row] = (Boolean) value;
 		RESULT.clear();
 		for(int i=0; i<values.length; i++) {
-			if(values[i])
+			if(values[i]) {
 				RESULT.add(list.get(i).ordinal());
+			}
 		}
 		if(RESULT.isEmpty()) {
 			Erreur.showSimpleErreur(Program.getError("ManageColumn.ErrorNb"));

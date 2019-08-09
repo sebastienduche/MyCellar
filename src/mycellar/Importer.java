@@ -163,7 +163,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		for (int i=0; i<COUNT; i++) {
 			MyCellarComboBox<MyCellarFields> combo = new MyCellarComboBox<>();
 			combo.addItem(MyCellarFields.EMPTY);
-			for(MyCellarFields field : MyCellarFields.getFieldsListForImport()) {
+			for(MyCellarFields field : MyCellarFields.getFieldsListForImportAndWorksheet()) {
 				combo.addItem(field);
 			}
 			if (i < COUNT - 1) {

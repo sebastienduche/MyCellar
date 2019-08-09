@@ -87,8 +87,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.2
- * @since 08/08/19
+ * @version 21.3
+ * @since 09/08/19
  */
 
 public final class Program {
@@ -106,8 +106,8 @@ public final class Program {
 	static final Font FONT_DIALOG_SMALL = new Font("Dialog", Font.BOLD, 12);
 	public static final Font FONT_LABEL_BOLD = new Font("Arial", Font.BOLD, 12);
 
-	static Map<String, IMyCellar> openedObjects = new HashMap<>();
-	static Map<String, IUpdatable> updatableObjects = new HashMap<>();
+	private static final Map<String, IMyCellar> OPENED_OBJECTS = new HashMap<>();
+	private static final Map<String, IUpdatable> UPDATABLE_OBJECTS = new HashMap<>();
 
 	private static final String EXPORT = "EXPORT";
 	private static final String PARAMETRES = "PARAMETRES";
@@ -120,7 +120,6 @@ public final class Program {
 	private static final String VIGNOBLES = "VIGNOBLES";
 	private static final String CREATE_PLACE = "CREATE_PLACE";
 	private static final String MODIFY_PLACE = "MODIFY_PLACE";
-	private static final String MANAGE_PLACE = "MANAGE_PLACE";
 	private static final String CHOOSE_CELL = "CHOOSE_CELL";
 	private static final String CELL_ORGANIZER = "CELL_ORGANIZER";
 	private static final String SUPPRIMER_RANGEMENT = "SUPPRIMER_RANGEMENT";
@@ -1163,8 +1162,8 @@ public final class Program {
 	}
 
 	private static void clearObjectsVariables() {
-		updatableObjects.clear();
-		openedObjects.clear();
+		UPDATABLE_OBJECTS.clear();
+		OPENED_OBJECTS.clear();
 	}
 
 	private static void deleteTempFiles() {
@@ -1472,12 +1471,12 @@ public final class Program {
 	}
 
 	static void updateAllPanels() {
-		updatableObjects.forEach((aString, iUpdatable) -> iUpdatable.setUpdateView());
+		UPDATABLE_OBJECTS.forEach((aString, iUpdatable) -> iUpdatable.setUpdateView());
 	}
 
 	static void updateManagePlacePanel() {
-		final IUpdatable managePlace = updatableObjects.get("ManagePlace");
-		if(managePlace != null) {
+		final IUpdatable managePlace = UPDATABLE_OBJECTS.get(CELL_ORGANIZER);
+		if (managePlace != null) {
 			managePlace.setUpdateView();
 		}
 	}
@@ -1487,9 +1486,9 @@ public final class Program {
 	}
 
 	public static int findTab(ImageIcon image) {
-		for(int i = 0; i< TABBED_PANE.getTabCount(); i++) {
+		for(int i = 0; i < TABBED_PANE.getTabCount(); i++) {
 			try {
-				if(TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image)) {
+				if (TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image)) {
 					return i;
 				}
 			} catch(Exception ignored){}
@@ -1688,82 +1687,82 @@ public final class Program {
 	}
 
 	public static AddVin getAddVin() {
-		return (AddVin) openedObjects.get(ADDVIN);
+		return (AddVin) OPENED_OBJECTS.get(ADDVIN);
 	}
 
 	public static AddVin createAddVin() {
-		AddVin addVin = (AddVin) openedObjects.get(ADDVIN);
+		AddVin addVin = (AddVin) OPENED_OBJECTS.get(ADDVIN);
 		if (addVin == null) {
 			addVin = new AddVin();
-			openedObjects.put(ADDVIN, addVin);
-			updatableObjects.put(ADDVIN, addVin);
+			OPENED_OBJECTS.put(ADDVIN, addVin);
+			UPDATABLE_OBJECTS.put(ADDVIN, addVin);
 		}
 		return addVin;
 	}
 
 	static Supprimer_Rangement getSupprimerRangement() {
-		return (Supprimer_Rangement) openedObjects.get(SUPPRIMER_RANGEMENT);
+		return (Supprimer_Rangement) OPENED_OBJECTS.get(SUPPRIMER_RANGEMENT);
 	}
 
 	static Supprimer_Rangement createSupprimerRangement() {
 		final Supprimer_Rangement supprimerRangement = (Supprimer_Rangement) createOpenedObject(Supprimer_Rangement.class, SUPPRIMER_RANGEMENT);
-		updatableObjects.put(SUPPRIMER_RANGEMENT, supprimerRangement);
+		UPDATABLE_OBJECTS.put(SUPPRIMER_RANGEMENT, supprimerRangement);
 		return supprimerRangement;
 	}
 
 	static void deleteSupprimerRangement() {
-		openedObjects.remove(SUPPRIMER_RANGEMENT);
-		updatableObjects.remove(SUPPRIMER_RANGEMENT);
+		OPENED_OBJECTS.remove(SUPPRIMER_RANGEMENT);
+		UPDATABLE_OBJECTS.remove(SUPPRIMER_RANGEMENT);
 	}
 
 	static Creer_Rangement getCreerRangement() {
-		return (Creer_Rangement) openedObjects.get(CREATE_PLACE);
+		return (Creer_Rangement) OPENED_OBJECTS.get(CREATE_PLACE);
 	}
 
 	static Creer_Rangement createCreerRangement() {
-		Creer_Rangement creerRangement = (Creer_Rangement) openedObjects.get(CREATE_PLACE);
+		Creer_Rangement creerRangement = (Creer_Rangement) OPENED_OBJECTS.get(CREATE_PLACE);
 		if (creerRangement == null) {
 			creerRangement = new Creer_Rangement(false);
-			openedObjects.put(CREATE_PLACE, creerRangement);
+			OPENED_OBJECTS.put(CREATE_PLACE, creerRangement);
 		}
 		return creerRangement;
 	}
 
 	static Creer_Rangement getModifierRangement() {
-		return (Creer_Rangement) openedObjects.get(MODIFY_PLACE);
+		return (Creer_Rangement) OPENED_OBJECTS.get(MODIFY_PLACE);
 	}
 
 	static Creer_Rangement createModifierRangement() {
-		Creer_Rangement creerRangement = (Creer_Rangement) openedObjects.get(MODIFY_PLACE);
+		Creer_Rangement creerRangement = (Creer_Rangement) OPENED_OBJECTS.get(MODIFY_PLACE);
 		if (creerRangement == null) {
 			creerRangement = new Creer_Rangement(true);
-			openedObjects.put(MODIFY_PLACE, creerRangement);
+			OPENED_OBJECTS.put(MODIFY_PLACE, creerRangement);
 		}
 		return creerRangement;
 	}
 
 	static Search getSearch() {
-		return (Search) openedObjects.get(SEARCH);
+		return (Search) OPENED_OBJECTS.get(SEARCH);
 	}
 
 	static Search createSearch() {
 		final Search search = (Search) createOpenedObject(Search.class, SEARCH);
-		updatableObjects.put(SEARCH, search);
+		UPDATABLE_OBJECTS.put(SEARCH, search);
 		return search;
 	}
 
 	static Creer_Tableaux getCreerTableaux() {
-		return (Creer_Tableaux) openedObjects.get(CREER_TABLEAU);
+		return (Creer_Tableaux) OPENED_OBJECTS.get(CREER_TABLEAU);
 	}
 
 	static Creer_Tableaux createCreerTableaux() {
 		final Creer_Tableaux creerTableaux = (Creer_Tableaux) createOpenedObject(Creer_Tableaux.class, CREER_TABLEAU);
-		updatableObjects.put(CREER_TABLEAU, creerTableaux);
+		UPDATABLE_OBJECTS.put(CREER_TABLEAU, creerTableaux);
 		return creerTableaux;
 	}
 
 	static Importer getImporter() {
-		return (Importer) openedObjects.get(IMPORTER);
+		return (Importer) OPENED_OBJECTS.get(IMPORTER);
 	}
 
 	static Importer createImporter() {
@@ -1772,7 +1771,7 @@ public final class Program {
 	}
 
 	static Export getExport() {
-		return (Export) openedObjects.get(EXPORT);
+		return (Export) OPENED_OBJECTS.get(EXPORT);
 	}
 
 	static Export createExport() {
@@ -1781,17 +1780,17 @@ public final class Program {
 	}
 
 	static Stat getStat() {
-		return (Stat) openedObjects.get(STATS);
+		return (Stat) OPENED_OBJECTS.get(STATS);
 	}
 
 	static Stat createStat() {
 		final Stat stat = (Stat) createOpenedObject(Stat.class, STATS);
-		updatableObjects.put(STATS, stat);
+		UPDATABLE_OBJECTS.put(STATS, stat);
 		return stat;
 	}
 
 	static ShowHistory getShowHistory() {
-		return (ShowHistory) openedObjects.get(HISTORY);
+		return (ShowHistory) OPENED_OBJECTS.get(HISTORY);
 	}
 
 	static ShowHistory createShowHistory() {
@@ -1800,7 +1799,7 @@ public final class Program {
 	}
 
 	static VineyardPanel getVineyardPanel() {
-		return (VineyardPanel) openedObjects.get(VIGNOBLES);
+		return (VineyardPanel) OPENED_OBJECTS.get(VIGNOBLES);
 	}
 
 	static VineyardPanel createVineyardPanel() {
@@ -1809,69 +1808,69 @@ public final class Program {
 	}
 
 	static ShowFile getShowFile() {
-		return (ShowFile) openedObjects.get(SHOW_FILE);
+		return (ShowFile) OPENED_OBJECTS.get(SHOW_FILE);
 	}
 
 	static ShowFile createShowFile() {
 		final ShowFile showFile = (ShowFile) createOpenedObject(ShowFile.class, SHOW_FILE);
-		updatableObjects.put(SHOW_FILE, showFile);
+		UPDATABLE_OBJECTS.put(SHOW_FILE, showFile);
 		return showFile;
 	}
 
 	static ShowFile getShowTrash() {
-		return (ShowFile) openedObjects.get(SHOW_TRASH);
+		return (ShowFile) OPENED_OBJECTS.get(SHOW_TRASH);
 	}
 
 	static ShowFile createShowTrash() {
-		ShowFile showFile = (ShowFile) openedObjects.get(SHOW_TRASH);
+		ShowFile showFile = (ShowFile) OPENED_OBJECTS.get(SHOW_TRASH);
 		if (showFile == null) {
 			showFile = new ShowFile(ShowFile.ShowType.TRASH);
-			openedObjects.put(SHOW_TRASH, showFile);
-			updatableObjects.put(SHOW_TRASH, showFile);
+			OPENED_OBJECTS.put(SHOW_TRASH, showFile);
+			UPDATABLE_OBJECTS.put(SHOW_TRASH, showFile);
 		}
 		return showFile;
 	}
 
 	public static ShowFile getShowWorksheet() {
-		return (ShowFile) openedObjects.get(SHOW_WORKSHEET);
+		return (ShowFile) OPENED_OBJECTS.get(SHOW_WORKSHEET);
 	}
 
 	public static ShowFile createShowWorksheet() {
-		ShowFile showFile = (ShowFile) openedObjects.get(SHOW_WORKSHEET);
+		ShowFile showFile = (ShowFile) OPENED_OBJECTS.get(SHOW_WORKSHEET);
 		if (showFile == null) {
 			showFile = new ShowFile(ShowFile.ShowType.WORK);
-			openedObjects.put(SHOW_WORKSHEET, showFile);
-			updatableObjects.put(SHOW_WORKSHEET, showFile);
+			OPENED_OBJECTS.put(SHOW_WORKSHEET, showFile);
+			UPDATABLE_OBJECTS.put(SHOW_WORKSHEET, showFile);
 		}
 		return showFile;
 	}
 
 	public static ShowFile getShowErrors() {
-		return (ShowFile) openedObjects.get(SHOW_ERRORS);
+		return (ShowFile) OPENED_OBJECTS.get(SHOW_ERRORS);
 	}
 
 	public static ShowFile createShowErrors() {
-		ShowFile showFile = (ShowFile) openedObjects.get(SHOW_ERRORS);
+		ShowFile showFile = (ShowFile) OPENED_OBJECTS.get(SHOW_ERRORS);
 		if (showFile == null) {
 			showFile = new ShowFile(ShowFile.ShowType.ERROR);
-			openedObjects.put(SHOW_ERRORS, showFile);
-			updatableObjects.put(SHOW_ERRORS, showFile);
+			OPENED_OBJECTS.put(SHOW_ERRORS, showFile);
+			UPDATABLE_OBJECTS.put(SHOW_ERRORS, showFile);
 		}
 		return showFile;
 	}
 
 	static CellarOrganizerPanel getCellarOrganizerPanel() {
-		return (CellarOrganizerPanel) openedObjects.get(CELL_ORGANIZER);
+		return (CellarOrganizerPanel) OPENED_OBJECTS.get(CELL_ORGANIZER);
 	}
 
 	static CellarOrganizerPanel createCellarOrganizerPanel() {
 		final CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) createOpenedObject(CellarOrganizerPanel.class, CELL_ORGANIZER);
-		updatableObjects.put(CELL_ORGANIZER, cellarOrganizerPanel);
+		UPDATABLE_OBJECTS.put(CELL_ORGANIZER, cellarOrganizerPanel);
 		return cellarOrganizerPanel;
 	}
 
 	static Parametres getParametres() {
-		return (Parametres) openedObjects.get(PARAMETRES);
+		return (Parametres) OPENED_OBJECTS.get(PARAMETRES);
 	}
 
 	static Parametres createParametres() {
@@ -1880,30 +1879,30 @@ public final class Program {
 	}
 
 	static void deleteParametres() {
-		openedObjects.remove(PARAMETRES);
+		OPENED_OBJECTS.remove(PARAMETRES);
 	}
 
 	static CellarOrganizerPanel getCellChoosePanel() {
-		return (CellarOrganizerPanel) openedObjects.get(CHOOSE_CELL);
+		return (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL);
 	}
 
 	static CellarOrganizerPanel createChooseCellPanel(IAddVin addVin) {
-		CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) openedObjects.get(CHOOSE_CELL);
+		CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL);
 		if (cellarOrganizerPanel == null) {
 			cellarOrganizerPanel = new CellarOrganizerPanel(addVin);
-			openedObjects.put(CHOOSE_CELL, cellarOrganizerPanel);
-			updatableObjects.put(CHOOSE_CELL, cellarOrganizerPanel);
+			OPENED_OBJECTS.put(CHOOSE_CELL, cellarOrganizerPanel);
+			UPDATABLE_OBJECTS.put(CHOOSE_CELL, cellarOrganizerPanel);
 		}
 		return cellarOrganizerPanel;
 	}
 
 	static void deleteChooseCellPanel() {
-		openedObjects.remove(CHOOSE_CELL);
-		updatableObjects.remove(CHOOSE_CELL);
+		OPENED_OBJECTS.remove(CHOOSE_CELL);
+		UPDATABLE_OBJECTS.remove(CHOOSE_CELL);
 	}
 
 	private static IMyCellar createOpenedObject(Class className, String id) {
-		IMyCellar object = openedObjects.get(id);
+		IMyCellar object = OPENED_OBJECTS.get(id);
 		if (object == null) {
 			try {
 				Constructor<?> ctor = className.getConstructor();
@@ -1911,13 +1910,13 @@ public final class Program {
 			} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
 				showException(e);
 			}
-			openedObjects.put(id, object);
+			OPENED_OBJECTS.put(id, object);
 		}
 		return object;
 	}
 
 	static void updateSelectedTab() {
-		updatableObjects.forEach((s, iUpdatable) -> {
+		UPDATABLE_OBJECTS.forEach((s, iUpdatable) -> {
 			if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
 				iUpdatable.updateView();
 			}

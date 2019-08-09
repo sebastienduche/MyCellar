@@ -66,8 +66,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.8
- * @since 08/08/19
+ * @version 6.9
+ * @since 09/08/19
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -932,24 +932,12 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     @Override
     public void actionPerformed(ActionEvent e) {
       JPanel panel = new JPanel();
-      ArrayList<MyCellarFields> list = new ArrayList<>();
-      list.add(MyCellarFields.NAME);
-      list.add(MyCellarFields.YEAR);
-      list.add(MyCellarFields.TYPE);
-      list.add(MyCellarFields.PLACE);
-      list.add(MyCellarFields.NUM_PLACE);
-      list.add(MyCellarFields.LINE);
-      list.add(MyCellarFields.COLUMN);
-      list.add(MyCellarFields.PRICE);
-      list.add(MyCellarFields.COMMENT);
-      list.add(MyCellarFields.MATURITY);
-      list.add(MyCellarFields.PARKER);
-      list.add(MyCellarFields.COLOR);
-      list.add(MyCellarFields.COUNTRY);
-      list.add(MyCellarFields.VINEYARD);
-      list.add(MyCellarFields.AOC);
-      list.add(MyCellarFields.IGP);
-      list.add(MyCellarFields.STATUS);
+      List<MyCellarFields> list;
+      if (isWork()) {
+        list = MyCellarFields.getFieldsListForImportAndWorksheet();
+      } else {
+        list = MyCellarFields.getFieldsList();
+      }
       List<ShowFileColumn<?>> cols = ((ShowFileModel) tv).getColumns();
       final List<ShowFileColumn<?>> showFileColumns = cols.stream().filter(ShowFileColumn::isDefault).collect(Collectors.toList());
       ManageColumnModel modelColumn = new ManageColumnModel(list, showFileColumns);
@@ -961,19 +949,21 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       tc.setMinWidth(25);
       tc.setMaxWidth(25);
       panel.add(new JScrollPane(table));
-      JOptionPane.showMessageDialog(null, panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
-      cols = new ArrayList<>();
-      cols.add(checkBoxStartColumn);
-      Program.setModified();
+      JOptionPane.showMessageDialog(Start.getInstance(), panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
       List<Integer> properties = modelColumn.getSelectedColumns();
-      for (ShowFileColumn<?> c : columns) {
-        if (properties.contains(c.getField().ordinal())) {
-          cols.add(c);
+      if (!properties.isEmpty()) {
+        cols = new ArrayList<>();
+        cols.add(checkBoxStartColumn);
+        Program.setModified();
+        for (ShowFileColumn<?> c : columns) {
+          if (properties.contains(c.getField().ordinal())) {
+            cols.add(c);
+          }
         }
-      }
-      cols.add(modifyButtonColumn);
-      if (isWork()) {
-        cols.add(checkedButtonColumn);
+        cols.add(modifyButtonColumn);
+        if (isWork()) {
+          cols.add(checkedButtonColumn);
+        }
       }
       if (!cols.isEmpty()) {
         ((ShowFileModel) tv).removeAllColumns();

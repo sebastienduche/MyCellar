@@ -66,8 +66,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.9
- * @since 09/08/19
+ * @version 7.0
+ * @since 14/08/19
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -733,7 +733,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       tv.setBottles(Program.getTrash());
     } else if (isError()) {
       ((ErrorShowValues) tv).setErrors(Program.getErrors());
-    } else if (isWork()){
+    } else if (isWork()) {
       tv.setBottles(workingBottles);
     } else {
       tv.setBottles(Program.getStorage().getAllList());
@@ -742,7 +742,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   private void setRangementValue(Bouteille b, MyCellarFields field, Object value) {
-
     Rangement rangement = b.getRangement();
     int nValueToCheck = -1;
     String empl = b.getEmplacement();
@@ -806,8 +805,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
             b.setColonne(Integer.parseInt((String) value));
           }
           if (field == MyCellarFields.PLACE && rangement.isCaisse()) {
-            int nNumEmpl = b.getNumLieu();//Integer.parseInt((String) values[row][NUM_PLACE]);
-            if (nNumEmpl > rangement.getLastNumEmplacement()) {
+            if (b.getNumLieu() > rangement.getLastNumEmplacement()) {
               b.setNumLieu(rangement.getFreeNumPlaceInCaisse());
             }
             b.setLigne(0);
@@ -846,15 +844,11 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     updateView = false;
     m_oPlaceCbx.removeAllItems();
-    for (Rangement r : Program.getCave()) {
-      m_oPlaceCbx.addItem(r.getNom());
-    }
+    Program.getCave().forEach(rangement -> m_oPlaceCbx.addItem(rangement.getNom()));
 
     m_oTypeCbx.removeAllItems();
     m_oTypeCbx.addItem("");
-    for (String type : MyCellarBottleContenance.getList()) {
-      m_oTypeCbx.addItem(type);
-    }
+    MyCellarBottleContenance.getList().forEach(m_oTypeCbx::addItem);
 
     updateModel(columns);
   }
@@ -908,7 +902,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (isError()) {
-    	if(Program.getErrors().stream().anyMatch(MyCellarError::isNotSolved)) {
+    	if (Program.getErrors().stream().anyMatch(MyCellarError::isNotSolved)) {
         return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), Program.getLabel("ShowFile.QuitErrors"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION);
       }
     }

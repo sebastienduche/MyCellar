@@ -34,8 +34,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.4
- * @since 17/07/19
+ * @version 5.5
+ * @since 13/08/19
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -70,9 +70,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 			m_half.removeAllItems();
 			m_half.addItem("");
-			for(String s: MyCellarBottleContenance.getList()) {
-					m_half.addItem(s);
-			}
+			MyCellarBottleContenance.getList().forEach(m_half::addItem);
 			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 
 			Debug("Starting JbInit");
@@ -83,7 +81,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_price.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyTyped(KeyEvent e) {
-					if(e.getKeyChar() == ',' || e.getKeyChar() == '.') {
+					if (e.getKeyChar() == ',' || e.getKeyChar() == '.') {
 						e.consume();
 						char sep = Program.getDecimalSeparator();
 						String text = m_price.getText();
@@ -127,11 +125,10 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_annee_auto.addActionListener(this::annee_auto_actionPerformed);
 
 			m_noYear.addActionListener((e) -> {
-				if(m_noYear.isSelected()) {
+				if (m_noYear.isSelected()) {
 					m_year.setText(Bouteille.NON_VINTAGE);
 					m_year.setEditable(false);
-				}
-				else {
+				}	else {
 					m_year.setText("");
 					m_year.setEditable(true);
 				}
@@ -153,8 +150,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			Debug("JbInit Done");
 
 			setBottle(bottle);
-		}
-		catch (Exception e) {
+		}	catch (Exception e) {
 			Program.showException(e);
 		}
 	}
@@ -170,7 +166,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 */
 	@Override
 	protected void lieu_itemStateChanged(ItemEvent e) {
-		if(isListenersDisabled()) {
+		if (isListenersDisabled()) {
 			return;
 		}
 		Debug("Lieu_itemStateChanging...");
@@ -185,8 +181,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				m_num_lieu.setEnabled(false);
 				m_line.setEnabled(false);
 				m_column.setEnabled(false);
-			}
-			else {
+			}	else {
 				m_preview.setEnabled(true);
 				m_num_lieu.setEnabled(true);
 			}
@@ -208,7 +203,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 					m_num_lieu.addItem(Integer.toString(i + start_caisse));
 				}
 				m_num_lieu.setVisible(true);
-				m_labelNumPlace.setText(Program.getLabel("Infos158")); //"Num&eacute;ro de caisse");
+				m_labelNumPlace.setText(Program.getLabel("Infos158")); //"Numero de caisse");
 				if (nb_emplacement == 1) {
 					m_num_lieu.setSelectedIndex(1);
 				}
@@ -218,7 +213,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				for (int i = 1; i <= nb_emplacement; i++) {
 					m_num_lieu.addItem(Integer.toString(i));
 				}
-				m_labelNumPlace.setText(Program.getLabel("Infos082")); //"Num&eacute;ro du lieu");
+				m_labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu");
 			}
 			m_labelNumPlace.setVisible(true);
 			m_num_lieu.setVisible(true);
@@ -227,8 +222,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_labelLine.setVisible(!bIsCaisse);
 			m_labelColumn.setVisible(!bIsCaisse);
 			Debug("Lieu_itemStateChanging... Done");
-		}
-		catch (Exception a) {
+		}	catch (Exception a) {
 			Program.showException(a);
 		}
 	}
@@ -259,14 +253,13 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		Debug("Saving...");
 		try {
 			new Thread(this).start();
-		}
-		catch (Exception a) {
+		}	catch (Exception a) {
 			Program.showException(a);
 		}
 	}
 
 	/**
-	 * setBottle: Fonction de chargement d'un vin dans la fen&ecirc;tre
+	 * setBottle: Fonction de chargement d'un vin
 	 *
 	 * @param bottle Bouteille
 	 */
@@ -314,8 +307,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			selectPlace(bottle);
 			m_end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
 			resetModified();
-		}
-		catch (Exception e) {
+		}	catch (Exception e) {
 			Program.showException(e);
 		}
 	}
@@ -438,8 +430,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_laBouteille.setNumLieu(lieu_num);
 			m_laBouteille.setLigne(0);
 			m_laBouteille.setColonne(0);
-		}
-		else {
+		}	else {
 			m_laBouteille.setLigne(line);
 			m_laBouteille.setColonne(column);
 
@@ -499,7 +490,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 	private void replaceWine(final Bouteille bToDelete) {
 		//Change wine in a place
-
 		Program.getStorage().addHistory(History.MODIFY, m_laBouteille);
 		Program.getStorage().deleteWine(bToDelete);
 
@@ -564,14 +554,14 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		private PanelPlace(){
 			setLayout(new MigLayout("","[]30px[]30px[]30px[]30px[grow]30px[]",""));
 			setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("Infos105")));
-			add(m_labelPlace,"");
-			add(m_labelNumPlace,"");
-			add(m_labelLine,"");
+			add(m_labelPlace);
+			add(m_labelNumPlace);
+			add(m_labelLine);
 			add(m_labelColumn,"wrap");
-			add(m_lieu,"");
-			add(m_num_lieu,"");
-			add(m_line,"");
-			add(m_column,"");
+			add(m_lieu);
+			add(m_num_lieu);
+			add(m_line);
+			add(m_column);
 			add(m_labelExist,"hidemode 3");
 			add(m_chooseCell,"alignx right");
 			add(m_preview,"alignx right, wrap");

@@ -1,17 +1,18 @@
 package mycellar;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 2.4
- * @since 23/05/18
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 2.5
+ * @since 14/08/18
  */
 class TableValues extends AbstractTableModel {
 
@@ -136,7 +137,7 @@ class TableValues extends AbstractTableModel {
 	 * @param b Bouteille
 	 */
 	void addBouteille(Bouteille b) {
-		if( b != null) {
+		if(b != null) {
 			monVector.add(b);
 			listBoolean.add(Boolean.FALSE);
 			fireTableDataChanged();
@@ -155,11 +156,11 @@ class TableValues extends AbstractTableModel {
 	/**
 	 * removeBouteille: Suppression d'une bouteille.
 	 *
-	 * @param num Bouteille
+	 * @param bouteille Bouteille
 	 */
-	void removeBouteille(Bouteille num) {
-		int index = monVector.indexOf(num);
-		monVector.remove(num);
+	void removeBouteille(Bouteille bouteille) {
+		int index = monVector.indexOf(bouteille);
+		monVector.remove(bouteille);
 		listBoolean.remove(index);
 		fireTableDataChanged();
 	}
@@ -172,16 +173,17 @@ class TableValues extends AbstractTableModel {
 		return monVector.contains(b);
 	}
 
-
 	public Bouteille getBouteille(int i){
 		return monVector.get(i);
 	}
 
-	void deleteBottle(Bouteille bottleToDelete) {
-		if(bottleToDelete == null) {
-			return;
+	List<Bouteille> getSelectedBottles() {
+		List<Bouteille> list = new ArrayList<>();
+		for (int i = 0; i < listBoolean.size(); i++) {
+			if (listBoolean.get(i)) {
+				list.add(getBouteille(i));
+			}
 		}
-		monVector.remove(bottleToDelete);
+		return list;
 	}
-
 }

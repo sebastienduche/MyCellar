@@ -63,7 +63,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 				case 1:
 				tc1[w].setMinWidth(100);
 				break;
-				case 2: case 4:
+				case 2:
 				tc1[w].setMinWidth(100);
 				break;
 				case 3:
@@ -142,7 +142,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 			if (max_row != 0) {
 				int row = 0;
 				do {
-					if (tv.getValueAt(row, TableHistoryValues.SELECT).equals(Boolean.TRUE)) {
+					if (Boolean.TRUE.equals(tv.getValueAt(row, TableHistoryValues.SELECT))) {
 						if (tv.isBottleDeleted(row))
 							toRestoreList.add(tv.getBottle(row));
 						else {
@@ -174,7 +174,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 					LinkedList<Bouteille> cantRestoreList = new LinkedList<>();
 					for (Bouteille b : toRestoreList) {
 						Rangement r = Program.getCave(b.getEmplacement());
-						if(r != null) {
+						if (r != null) {
 							if (r.isCaisse()) {
 								Program.getStorage().addHistory(History.ADD, b);
 								Program.getStorage().addWine(b);
@@ -182,11 +182,12 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 								if (r.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1) == null) {
 									Program.getStorage().addHistory(History.ADD, b);
 									Program.getStorage().addWine(b);
-								} else
+								} else {
 									cantRestoreList.add(b);
+								}
 							}
 						}
-						if(!cantRestoreList.contains(b)) {
+						if (!cantRestoreList.contains(b)) {
 							Program.getTrash().remove(b);
 						}
 					}

@@ -38,8 +38,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.6
- * @since 08/08/19
+ * @version 6.7
+ * @since 14/08/19
  */
 public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -69,9 +69,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		moy.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.setLayout(new MigLayout("","[][][grow]",""));
 		panel.setFont(Program.FONT_PANEL);
-		for (Rangement cave : Program.getCave()) {
-			displayPlace(cave);
-		}
+		Program.getCave().forEach(this::displayPlace);
 
 		updateBouteilleCountLabel();
 
@@ -116,9 +114,6 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		Debug("Stats OK");
 	}
 
-	/**
-	 * 
-	 */
 	private void updateBouteilleCountLabel() {
 		int nb_bottle = Program.getNbBouteille();
 		if (nb_bottle > 1) {
@@ -164,8 +159,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 				listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos182"))); //"Tous les rangements");
 				listPlaces.setSelectedIndex(0);
 				Program.getCave().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
-			}
-			if (listOptions.getSelectedIndex() == 1) {
+			} else if (listOptions.getSelectedIndex() == 1) {
 				Debug("By year");
 				comboLabel.setText("");
 				int[] annees = Program.getAnnees();
@@ -179,8 +173,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 				listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos186"))); //"Toutes les annees");
 				listPlaces.setSelectedIndex(0);
 				listPlaces.setEnabled(false);
-			}
-			if (listOptions.getSelectedIndex() == 2) {
+			} else if (listOptions.getSelectedIndex() == 2) {
 				Debug("By price");
 				comboLabel.setText(Program.getLabel("Infos187")); //"Tranche de prix:");
 				listPlaces.removeAllItems();
@@ -430,7 +423,6 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 
 	@Override
 	public void setUpdateView() {
-
 	}
 
 	private static class PanelChart extends JPanel {
@@ -448,9 +440,10 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		private void setPlacesChart(List<Rangement> rangements) {
 
 			DefaultPieDataset dataset = new DefaultPieDataset();
-			for (Rangement rangement: rangements) {
-				if (rangement == null)
+			for (Rangement rangement : rangements) {
+				if (rangement == null) {
 					continue;
+				}
 				dataset.setValue(rangement.getNom(), rangement.getNbCaseUseAll());
 			}
 			JFreeChart chart = ChartFactory.createPieChart(Program.getLabel("Infos182"),          // chart title
@@ -465,7 +458,6 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		}
 
 		private void setPlaceChart(Rangement rangement) {
-
 			removeAll();
 			if (rangement.isCaisse()) {
 				return;
@@ -485,7 +477,6 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		}
 
 		private void setDataPieChart(List<StatData> datas, String title) {
-
 			removeAll();
 			DefaultPieDataset dataset = new DefaultPieDataset();
 			for (StatData part: datas) {
@@ -505,7 +496,6 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		}
 
 		private void setDataBarChart(List<StatData> datas, String title) {
-
 			removeAll();
 			DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 			for (StatData part: datas) {
@@ -532,9 +522,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		private final String name;
 		private final int count;
 
-
 		private StatData(String name, int count) {
-			super();
 			this.name = name;
 			this.count = count;
 		}

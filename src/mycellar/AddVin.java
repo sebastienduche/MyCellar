@@ -40,8 +40,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.2
- * @since 08/08/19
+ * @version 25.3
+ * @since 13/08/19
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -96,9 +96,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			name.setEditable(true);
 
 			m_half.addItem("");
-			for(String s: MyCellarBottleContenance.getList()) {
-				m_half.addItem(s);
-			}
+			MyCellarBottleContenance.getList().forEach(m_half::addItem);
 			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 
 			// Init des valeurs pour modification
@@ -115,7 +113,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					m_labelStillToAdd.setText("");
 					if (Integer.parseInt(m_nb_bottle.getValue().toString()) <= 0) {
 						m_nb_bottle.setValue(1);
-				}
+					}
 			});
 			
 			m_price.addKeyListener(new KeyAdapter() {
@@ -151,16 +149,14 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			m_annee_auto.addActionListener(this::annee_auto_actionPerformed);
 
 			m_noYear.addActionListener((e) -> {
-				if(m_noYear.isSelected()) {
+				if (m_noYear.isSelected()) {
 					m_year.setText(Bouteille.NON_VINTAGE);
 					m_year.setEditable(false);
-				}
-				else {
+				}	else {
 					m_year.setText("");
 					m_year.setEditable(true);
 				}
 			});
-
 
 			initPlaceCombo();
 
@@ -186,13 +182,13 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		Debug("Reset Values...");
 		name.removeAllItems();
 		name.addItem("");
-		for(String s:Program.getStorage().getBottleNames()) {
+		for (String s:Program.getStorage().getBottleNames()) {
 			name.addItem(s);
 		}
 
 		name.setEnabled(true);
 		name.setEditable(true);
-		if(m_noYear.isSelected()) {
+		if (m_noYear.isSelected()) {
 			m_year.setText(Bouteille.NON_VINTAGE);
 		} else {
 			m_year.setText("");
@@ -208,8 +204,8 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		statusList.setModified(false);
 		m_nb_bottle.setValue(1);
 		m_labelStillToAdd.setText("");
-		if(!m_bmodify) {
-			if(m_lieu.getItemCount() > 0) {
+		if (!m_bmodify) {
+			if (m_lieu.getItemCount() > 0) {
 				m_lieu.setSelectedIndex(0);
 			}
 			managePlaceCombos();
@@ -343,7 +339,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			m_half.setSelectedItem(bottle.getType());
 			String half_tmp = "";
 			Object oHalf = m_half.getSelectedItem();
-			if(oHalf != null) {
+			if (oHalf != null) {
 				half_tmp = oHalf.toString();
 			}
 			final boolean auto = Program.getCaveConfigBool(MyCellarSettings.TYPE_AUTO, false);
@@ -392,8 +388,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 				m_labelColumn.setVisible(!bIsCaisse);
 			}
 			m_end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
-		}
-		catch (Exception e) {
+		}	catch (Exception e) {
 			Program.showException(e);
 		}
 		Debug("Set Bottle... Done");
@@ -412,7 +407,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			listBottleInModification = bouteilles;
 
 			resetValues();
-			if(m_bmulti) {
+			if (m_bmulti) {
 				name.setSelectedItem(MessageFormat.format(Program.getLabel("Infos140"), listBottleInModification.size())); //" bouteilles selectionnees");
 				name.setEnabled(false);
 				m_annee_auto.setEnabled(false);
@@ -430,13 +425,13 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 				m_add.setEnabled(true);
 				m_lieu.setEnabled(true);
 				
-				if(!m_bmodify) {
-					if(m_lieu.getItemCount() > 0) {
+				if (!m_bmodify) {
+					if (m_lieu.getItemCount() > 0) {
 						m_lieu.setSelectedIndex(0);
 					}
-					if(m_lieu.getItemCount() == 2) {
+					if (m_lieu.getItemCount() == 2) {
 						m_lieu.setSelectedIndex(1);
-						if(m_num_lieu.getItemCount() == 2) {
+						if (m_num_lieu.getItemCount() == 2) {
 							m_num_lieu.setSelectedIndex(1);
 						}
 					}
@@ -448,35 +443,15 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					m_lieu.setEnabled(true);
 				}
 				m_end.setText(Program.getLabel("Infos141")); //"Vous ne pouvez deplacer plusieurs bouteilles que dans une caisse");
-			}
-			else {
+			}	else {
 				setBottle(listBottleInModification.getFirst());
 			}
-		}
-		catch (Exception e) {
+		}	catch (Exception e) {
 			Program.showException(e);
 		}
 		Debug("setBottlesInModification... Done");
 	}
 
-	protected void keylistener_actionPerformed(KeyEvent e) {
-		if ( (e.getKeyCode() == AJOUTER && e.isControlDown()) || e.getKeyCode() == KeyEvent.VK_ENTER) {
-			new AddAction().actionPerformed(null);
-		}
-		if (e.getKeyCode() == PREVIEW && e.isControlDown() && m_preview.isEnabled()) {
-			preview_actionPerformed(null);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_C) {
-			copy();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_X) {
-			cut();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_V) {
-			paste();
-		}
-	}
-	
 	private boolean controlBottle() {
 		Debug("Control Bottle...");
 
@@ -540,7 +515,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 		try {
 			// Check Name / Year / Place / Num Place
-			if(!controlBottle()) {
+			if (!controlBottle()) {
 				m_end.setText("");
 				enableAll(true);
 				return;
@@ -607,7 +582,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			if (bIsCaisse) {
 				//Caisse
 				Debug("Is a Caisse");
-				if(!rangement.hasFreeSpaceInCaisse(lieu_num_selected - 1)) {
+				if (!rangement.hasFreeSpaceInCaisse(lieu_num_selected - 1)) {
 					Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
 					m_end.setText("");
 					return;
@@ -631,7 +606,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						if (m_lieu.isEnabled() || m_num_lieu.isEnabled()) {
 							Debug("Adding multiple bottles in the same place?");
 							String erreur_txt1 = MessageFormat.format(Program.getError("Error061"), (nb_bottle_rest + 1), sPlaceName); //Voulez vous ajouter les xx bouteilles dans yy
-							if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION )) {
+							if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION )) {
 								//Add several bottles in Caisse
 								Debug("Adding multiple bottles in the same place: YES");
 								
@@ -679,7 +654,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							resul = false;
 						} else {
 							boolean addReturn = true;
-							if(m_bmodify) {
+							if (m_bmodify) {
 								//Suppression de la bouteille lors de la modification
 								Debug("Updating bottle when modifying");
 								m_laBouteille.update(bouteille);
@@ -724,38 +699,37 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					//Recuperation des differentes bouteilles
 					Debug("Modifying multiple bottles to a Caisse");
 					resul = true;
-					if(!bModifyPlace) {
+					if (!bModifyPlace) {
 						Debug("Modifying without changing place");
 						boolean bOneBottle = listBottleInModification.size() == 1;
 						// Modification sans changement de lieu 10/05/08
-						for (Bouteille tmp: listBottleInModification) {
-							if(bOneBottle || !comment1.isEmpty()) {
+						for (Bouteille tmp : listBottleInModification) {
+							if (bOneBottle || !comment1.isEmpty()) {
 								tmp.setComment(comment1);
 							}
-							if(bOneBottle || !dateOfC.isEmpty()) {
+							if (bOneBottle || !dateOfC.isEmpty()) {
 								tmp.setMaturity(dateOfC);
 							}
-							if(bOneBottle || !parker.isEmpty()) {
+							if (bOneBottle || !parker.isEmpty()) {
 								tmp.setParker(parker);
 							}
-							if(bOneBottle || m_colorList.isModified()) {
+							if (bOneBottle || m_colorList.isModified()) {
 								tmp.setColor(color);
 							}
-							if(bOneBottle || statusList.isModified()) {
+							if (bOneBottle || statusList.isModified()) {
 								tmp.setStatus(status);
 							}
-							if(bOneBottle || !demie.isEmpty()) {
+							if (bOneBottle || !demie.isEmpty()) {
 								tmp.setType(demie);
 							}
-							if(bOneBottle || !prix.isEmpty()) {
+							if (bOneBottle || !prix.isEmpty()) {
 								tmp.setPrix(prix);
 							}
-							if(bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
+							if (bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
 								tmp.setVignoble(new Vignoble(country, vignoble, aoc, igp, aoc));
 							}
 							tmp.updateStatus();
-							//Ajout des bouteilles dans la caisse
-							
+
 							if (m_bmodify) {
 								Debug("Modifying bottle...");
 								Program.getStorage().addHistory(History.MODIFY, tmp);
@@ -774,7 +748,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 								}
 							}
 						}
-						if(m_bmodify) {
+						if (m_bmodify) {
 							resetValues();
 							if (m_half.getItemCount() > 1) {
 								m_half.setSelectedIndex(1);
@@ -783,7 +757,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					}	else {
 						Debug("Modifying with changing place");
 						int nLieuNum = m_num_lieu.getSelectedIndex();
-						if(nLieuNum == 0) {
+						if (nLieuNum == 0) {
 							resul = false;
 							Debug("ERROR: Wrong place number");
 							Erreur.showSimpleErreur(Program.getError("Error056"));
@@ -803,34 +777,34 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							}	else {
 								boolean bOneBottle = listBottleInModification.size() == 1;
 								for (Bouteille tmp : listBottleInModification) {
-									if(bOneBottle || !comment1.isEmpty()) {
+									if (bOneBottle || !comment1.isEmpty()) {
 										tmp.setComment(comment1);
 									}
-									if(bOneBottle || !dateOfC.isEmpty()) {
+									if (bOneBottle || !dateOfC.isEmpty()) {
 										tmp.setMaturity(dateOfC);
 									}
-									if(bOneBottle || !parker.isEmpty()) {
+									if (bOneBottle || !parker.isEmpty()) {
 										tmp.setParker(parker);
 									}
-									if(bOneBottle || m_colorList.isModified()) {
+									if (bOneBottle || m_colorList.isModified()) {
 										tmp.setColor(color);
 									}
-									if(bOneBottle || statusList.isModified()) {
+									if (bOneBottle || statusList.isModified()) {
 										tmp.setStatus(status);
 									}
-									if(bOneBottle || !demie.isEmpty()) {
+									if (bOneBottle || !demie.isEmpty()) {
 										tmp.setType(demie);
 									}
-									if(bOneBottle || !prix.isEmpty()) {
+									if (bOneBottle || !prix.isEmpty()) {
 										tmp.setPrix(prix);
 									}
-									if(bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
+									if (bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
 										tmp.setVignoble(new Vignoble(country, vignoble, aoc, igp, aoc));
 									}
 									Debug("Adding multiple bottles in simple place...");
 									if (m_bmodify) {
 										Rangement r = Program.getCave(tmp.getEmplacement());
-										if(r != null) {
+										if (r != null) {
 											Debug("Delete from stock");
 											r.clearStock(tmp);
 										}
@@ -843,7 +817,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 									tmp.updateStatus();
 									Debug("Bottle updated.");
 									Program.getStorage().addHistory(m_bmodify ? History.MODIFY : History.ADD, tmp);
-									if(m_bmodify) {
+									if (m_bmodify) {
 										m_bbottle_add = true;
 										resetValues();
 										if (m_half.getItemCount() > 1) {
@@ -860,13 +834,13 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 										}
 									}
 								}
-								if(!m_bmodify){
-									if(m_lieu.getItemCount() > 0) {
+								if (!m_bmodify){
+									if (m_lieu.getItemCount() > 0) {
 										m_lieu.setSelectedIndex(0);
 									}
-									if(m_lieu.getItemCount() == 2) {
+									if (m_lieu.getItemCount() == 2) {
 										m_lieu.setSelectedIndex(1);
-										if(m_num_lieu.getItemCount() == 2) {
+										if (m_num_lieu.getItemCount() == 2) {
 											m_num_lieu.setSelectedIndex(1);
 										}
 									}
@@ -951,10 +925,10 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 //								Rangement rangement = Program.getCave(lieu_selected - 1);
 								rangement.addWine(tmp);
 								if (nb_bottle_rest > 0 && nb_free_space > 1) { //Ajout de bouteilles cote a cote
-									if(nb_free_space > (nb_bottle_rest + 1)) {
+									if (nb_free_space > (nb_bottle_rest + 1)) {
 										nb_free_space = nb_bottle_rest + 1;
 									}
-									if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(Program.getError("Error175"), nb_free_space), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+									if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(Program.getError("Error175"), nb_free_space), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 										Debug("Putting multiple bottle in close place");
 										m_nnb_bottle_add_only_one_place = nb_free_space;
 										nb_bottle_rest = nb_bottle_rest - nb_free_space + 1;
@@ -1022,9 +996,9 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 							Debug("WARNING: Not an empty place, Replace?");
 							String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), b.getNom(), b.getAnnee()); //" deja present a cette place!");
 							String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
-							if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+							if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 								replaceWine(tmp, m_bmodify, b);
-								if(m_bmodify) {
+								if (m_bmodify) {
 									m_laBouteille.update(tmp);
 								}
 								m_end.setText(m_bmodify ? Program.getLabel("Infos144") : Program.getLabel("Infos075"));
@@ -1060,11 +1034,10 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 				}
 			}
-			if(resul) {
+			if (resul) {
 				doAfterRun();
 			}
-		}
-		catch (Exception e) {
+		}	catch (Exception e) {
 			Program.showException(e);
 		}
 	}
@@ -1084,7 +1057,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		String demie) {
 		Debug("modifyOneOrSeveralBottlesWithoutPlaceModification...");
 		boolean m_bbottle_add = false;
-		if(!m_bmulti) {
+		if (!m_bmulti) {
 			// Modification d'une bouteille dans Armoire sans changement de lieu
 			Debug("Modifying one bottle in Armoire without changing place");
 			Bouteille tmp = new BouteilleBuilder(nom)
@@ -1125,7 +1098,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 				tmp.setColor(color);
 				tmp.setType(demie);
 				tmp.updateStatus();
-				if(!country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
+				if (!country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
 					tmp.setVignoble(new Vignoble(country, vignoble, aoc, igp, aoc));
 				}
 				// Add multiple bottles
@@ -1159,7 +1132,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 	private void setStillNbBottle(int nb_bottle_rest) {
 		m_nb_bottle.setValue(nb_bottle_rest);
-		if(nb_bottle_rest == 1) {
+		if (nb_bottle_rest == 1) {
 			m_labelStillToAdd.setText(Program.getLabel("Infos067"));
 		} else {
 			m_labelStillToAdd.setText(MessageFormat.format(Program.getLabel("Infos062"), nb_bottle_rest));
@@ -1172,10 +1145,10 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		Program.getStorage().addHistory(modify ? History.MODIFY : History.ADD, bottle);
 		Program.getStorage().addHistory(History.DEL, bToDelete);
 		Program.getStorage().deleteWine(bToDelete);
-		if(!modify) {
+		if (!modify) {
 			Program.getStorage().addWine(bottle);
 		}	else {
-			if(m_laBouteille != null) {
+			if (m_laBouteille != null) {
 				final Rangement r = m_laBouteille.getRangement();
 				if(!r.isCaisse()) {
 					r.clearStock(m_laBouteille);
@@ -1226,9 +1199,6 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		Debug("Do After Run... Done");
 	}
 
-	/**
-	 * 
-	 */
 	private void reInitAddVin() {
 		m_bmulti = false;
 		if(m_lv != null) {
@@ -1257,11 +1227,9 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			String erreur_txt1;
 			if (!m_bmodify) {
 				erreur_txt1 = Program.getError("Error144");
-			}
-			else if (name.isEnabled()) {
+			}	else if (name.isEnabled()) {
 				erreur_txt1 = Program.getError("Error148");
-			}
-			else {
+			}	else {
 				erreur_txt1 = Program.getError("Error149");
 			}
 			Debug("Message: Confirm to Quit?");
@@ -1332,22 +1300,22 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		private PanelPlace(){
 			setLayout(new MigLayout("","[]30px[]30px[]30px[]30px[grow]30px[]",""));
 			setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
-			add(m_labelPlace,"");
-			add(m_labelNumPlace,"");
-			add(m_labelLine,"");
-			add(m_labelColumn,"wrap");
-			add(m_lieu,"");
-			add(m_num_lieu,"");
-			add(m_line,"");
-			add(m_column,"");
-			add(m_labelExist,"hidemode 3");
-			add(m_chooseCell,"alignx right");
-			add(m_preview,"alignx right, wrap");
-			add(m_avant1,"hidemode 3,split 2");
-			add(m_avant2,"hidemode 3");
-			add(m_avant3,"hidemode 3");
-			add(m_avant4,"hidemode 3");
-			add(m_avant5,"hidemode 3");
+			add(m_labelPlace);
+			add(m_labelNumPlace);
+			add(m_labelLine);
+			add(m_labelColumn, "wrap");
+			add(m_lieu);
+			add(m_num_lieu);
+			add(m_line);
+			add(m_column);
+			add(m_labelExist, "hidemode 3");
+			add(m_chooseCell, "alignx right");
+			add(m_preview, "alignx right, wrap");
+			add(m_avant1, "hidemode 3,split 2");
+			add(m_avant2, "hidemode 3");
+			add(m_avant3, "hidemode 3");
+			add(m_avant4, "hidemode 3");
+			add(m_avant5, "hidemode 3");
 		}
 	}
 

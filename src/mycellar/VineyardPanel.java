@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.IMyCellar;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -29,17 +30,17 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Titre : Cave à vin
+ * Titre : Cave &agrave; vin
  * Description : Votre description
  * Copyright : Copyright (c) 2015
- * Société : Seb Informatique
- * 
- * @author Sébastien Duché
- * @version 2.0
- * @since 10/04/19
+ * Soci&eacute;t&eacute; : Seb Informatique
+ *
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 2.1
+ * @since 08/08/19
  */
 
-public class VineyardPanel extends JPanel implements ITabListener {
+public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 
 	private static final long serialVersionUID = 2661586945830305901L;
 
@@ -54,7 +55,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 	private final VineyardTableModel model = new VineyardTableModel();
 
 	public VineyardPanel() {
-		MyCellarLabel labelCountries = new MyCellarLabel(Program.getLabel("Infos218")); // Sélectionner un pays
+		MyCellarLabel labelCountries = new MyCellarLabel(Program.getLabel("Infos218")); // Selectionner un pays
 		comboCountry.addItem(emptyCountry);
 		Collections.sort(Program.getCountries());
 		for(Country c : Program.getCountries()) {
@@ -109,7 +110,7 @@ public class VineyardPanel extends JPanel implements ITabListener {
 				addAppellation.setEnabled(true);
 			}
 		});
-		MyCellarLabel labelVineyard = new MyCellarLabel(Program.getLabel("Infos166")); // Sélectionner un vignoble
+		MyCellarLabel labelVineyard = new MyCellarLabel(Program.getLabel("Infos166")); // Selectionner un vignoble
 		MyCellarButton addCountry = new MyCellarButton(new AddCountryAction());
 		MyCellarButton delCountry = new MyCellarButton(new DelCountryAction());
 		setLayout(new MigLayout("", "grow",""));

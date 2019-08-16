@@ -34,13 +34,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2017</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 2.1
- * @since 12/04/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 2.2
+ * @since 09/08/19
  */
 public class RangementUtils {
 
@@ -49,7 +49,7 @@ public class RangementUtils {
 	/**
 	 * write_CSV: Ecriture d'un fichier CSV
 	 *
-	 * @param fichier String: fichier CSV à écrire
+	 * @param fichier String: fichier CSV a ecrire
 	 * @param all List<Bouteille>: stock de bouteille
 	 *
 	 * @param progressBar
@@ -135,13 +135,13 @@ public class RangementUtils {
 	/**
 	 * write_HTML: Ecriture du fichier HTML
 	 *
-	 * @param fichier String: fichier HTML à écrire
-	 * @param all List<Bouteille>: stock de bouteilles
+	 * @param fichier String: fichier HTML a ecrire
+	 * @param bouteilles List<Bouteille>: stock de bouteilles
 	 * @param fields 
 	 *
 	 *  @return int
 	 */
-	static boolean write_HTML(final String fichier, final List<Bouteille> all, List<MyCellarFields> fields) {
+	static boolean write_HTML(final String fichier, final List<Bouteille> bouteilles, List<MyCellarFields> fields) {
 
 		Debug("write_HTML: writing file: " + fichier);
 		try{
@@ -176,7 +176,7 @@ public class RangementUtils {
 			Element tbody = doc.createElement("tbody");
 			table.appendChild(tbody);
 
-			for (Bouteille b : all) {
+			for (Bouteille b : bouteilles) {
 				Element tr = doc.createElement("tr");
 				tbody.appendChild(tr);
 				for(MyCellarFields field : fields){
@@ -255,19 +255,19 @@ public class RangementUtils {
 	}
 
 	/**
-	 * write_XLS: Fonction d'écriture du ficher Excel
+	 * write_XLS: Fonction d'ecriture du ficher Excel
 	 *
-	 * @param file String: Fichier à écrire.
-	 * @param all List<Bouteille>: Tableau de bouteilles à écrire
-	 * @param isExit boolean: True si appel pour la création automatique d'une sauvegarde Excel
+	 * @param file String: Fichier a ecrire.
+	 * @param bouteilles List<Bouteille>: Tableau de bouteilles a ecrire
+	 * @param isExit boolean: True si appel pour la creation automatique d'une sauvegarde Excel
 	 *
 	 * @return boolean
 	 */
-	static boolean write_XLS(final String file, final List<Bouteille> all, boolean isExit, JProgressBar progressBar) {
+	static boolean write_XLS(final String file, final List<Bouteille> bouteilles, boolean isExit, JProgressBar progressBar) {
 
-		Debug( "write_XLS: writing file: "+file );
+		Debug("write_XLS: writing file: " + file);
 		if(file.isEmpty()) {
-			Debug( "write_XLS: ERROR: File not defined!" );
+			Debug("write_XLS: ERROR: File not defined!");
 			return false;
 		}
 
@@ -277,8 +277,8 @@ public class RangementUtils {
 			if(null != sDir) {
 				f = new File(sDir);
 				if(!f.exists()) {
-					Debug( "write_XLS: ERROR: directory "+sDir+" don't exist." );
-					Debug( "write_XLS: ERROR: Unable to write XLS file" );
+					Debug("write_XLS: ERROR: directory "+sDir+" don't exist." );
+					Debug("write_XLS: ERROR: Unable to write XLS file" );
 					return false;
 				}
 			}
@@ -290,7 +290,7 @@ public class RangementUtils {
 
 		EnumMap<MyCellarFields, Boolean> mapCle = new EnumMap<>(MyCellarFields.class);
 
-		//Récupération des colonnes à exporter
+		//Recuperation des colonnes a exporter
 		ArrayList<MyCellarFields> fields = MyCellarFields.getFieldsList();
 		int i=0;
 		for(MyCellarFields field : fields) {
@@ -308,9 +308,9 @@ public class RangementUtils {
 			}
 		}
 		else { // Export XLS
-			title = Program.getCaveConfigString(MyCellarSettings.XLS_TITLE, ""); //Récupération du titre du XLS
+			title = Program.getCaveConfigString(MyCellarSettings.XLS_TITLE, ""); //Recuperation du titre du XLS
 
-			num_ligne = 2; //Affectation des numéros de colonnes
+			num_ligne = 2; //Affectation des numeros de colonnes
 			i=0;
 			int value = 0;
 			for(MyCellarFields field : fields) {
@@ -323,7 +323,7 @@ public class RangementUtils {
 		}
 
 		try (var workbook = new SXSSFWorkbook(100);
-				var output = new FileOutputStream(new File(file))) { //Création du fichier
+				var output = new FileOutputStream(new File(file))) { //Creation du fichier
 			String sheet_title = title;
 			if (sheet_title.isEmpty()) {
 				sheet_title = Program.getLabel("Infos389");
@@ -382,11 +382,11 @@ public class RangementUtils {
 			}
 
 			if (progressBar != null) {
-				progressBar.setMaximum(all.size());
+				progressBar.setMaximum(bouteilles.size());
 				progressBar.setMinimum(0);
 			}
 			i = 0;
-			for (Bouteille b : all) {
+			for (Bouteille b : bouteilles) {
 				int j = 0;
 				if (progressBar != null) {
 					progressBar.setValue(i);
@@ -423,17 +423,17 @@ public class RangementUtils {
 	}
 
 	/**
-	 * write_XLSTab: Fonction d'écriture du ficher Excel des tableaux
+	 * write_XLSTab: Fonction d'ecriture du ficher Excel des tableaux
 	 *
-	 * @param file String: Fichier à écrire.
-	 * @param _oPlace LinkedList: liste de rangements à écrire
+	 * @param file String: Fichier a ecrire.
+	 * @param _oPlace LinkedList: liste de rangements a ecrire
 	 *
 	 */
 	static void write_XLSTab(final String file, final List<Rangement> _oPlace) {
 
 		Debug("write_XLSTab: writing file: " + file);
 		try (var workbook = new SXSSFWorkbook(100);
-				 var output = new FileOutputStream(new File(file))) { //Création du fichier
+				 var output = new FileOutputStream(new File(file))) { //Creation du fichier
 			String title = Program.getCaveConfigString(MyCellarSettings.XLS_TAB_TITLE, "");
 			boolean onePlacePerSheet = Program.getCaveConfigBool(MyCellarSettings.ONE_PER_SHEET_XLS, false);
 
@@ -459,7 +459,7 @@ public class RangementUtils {
 			cell.setCellStyle(cellStyleTitle);
 			cell.setCellValue(title);
 
-			//propriétés du texte
+			//proprietes du texte
 			size = Program.getCaveConfigInt(MyCellarSettings.TEXT_TAB_SIZE_XLS, 10);
 
 			int nNbCol = 0;
@@ -568,7 +568,7 @@ public class RangementUtils {
 	public static void findRangementToCreate() {
 
 		final Map<String, LinkedList<Part>> rangements = new HashMap<>();
-		for( var bottle: Program.getStorage().getAllList() ) {
+		for(var bottle: Program.getStorage().getAllList()) {
 			updatePlaceMapToCreate(rangements, bottle);
 		}
 		for (var error : Program.getErrors()) {
@@ -624,7 +624,7 @@ public class RangementUtils {
 		
 		for(var bouteille : Program.getStorage().getAllList()) {
 			// On ignore les bouteilles qui sont dans le stock temporairement
-			if(bouteille.getEmplacement().equalsIgnoreCase(Program.TEMP_PLACE)) {
+			if(bouteille.isInTemporaryStock()) {
 				continue;
 			}
 			Rangement rangement = Program.getCave(bouteille.getEmplacement());
@@ -661,7 +661,7 @@ public class RangementUtils {
 					Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: "+(bouteille.getNumLieu()-1)+ ", line: " + (bouteille.getLigne()-1) + ", column:" + (bouteille.getColonne()-1) + " for place "+bouteille.getEmplacement());
 					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 				}	else if((bottle = rangement.getBouteille(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) != null && !bottle.equals(bouteille)){
-					// Cellule occupée
+					// Cellule occupee
 					Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: "+(bouteille.getNumLieu()-1)+ ", line: " + (bouteille.getLigne()-1) + ", column:" + (bouteille.getColonne()-1) + " for place "+bouteille.getEmplacement());
 					Program.addError(new MyCellarError(MyCellarError.ID.CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 				}	else {
@@ -669,7 +669,7 @@ public class RangementUtils {
 				}
 			}
 		}
-		// Suppression des bouteilles posant problème
+		// Suppression des bouteilles posant probleme
 		for(var error : Program.getErrors()) {
 			Program.getStorage().deleteWine(error.getBottle());
 			Debug("Error putTabStock: "+error.getBottle());

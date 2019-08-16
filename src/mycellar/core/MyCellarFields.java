@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2016</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 0.9
- * @since 11/07/19
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 1.0
+ * @since 09/08/19
  */
 
 public enum MyCellarFields {
@@ -37,7 +37,7 @@ public enum MyCellarFields {
 	IGP(Program.getLabel("Main.AppelationIGP")),
 	STATUS(Program.getLabel("Main.Status")),
 
-	// Pour l'import de données
+	// Pour l'import de donnees
 	EMPTY(""),
 	USELESS(Program.getLabel("Infos271"));
 	
@@ -124,13 +124,13 @@ public enum MyCellarFields {
 	
 	public static ArrayList<MyCellarFields> getFieldsList() {
 		if(FIELDS.isEmpty()) {
-    		getFieldsListForImport();
+    		getFieldsListForImportAndWorksheet();
 		}
 		FIELDS.add(STATUS);
 		return FIELDS;
 	}
 
-	public static List<MyCellarFields> getFieldsListForImport() {
+	public static List<MyCellarFields> getFieldsListForImportAndWorksheet() {
 		if(FIELDS.isEmpty()) {
 			FIELDS.add(NAME);
 			FIELDS.add(YEAR);

@@ -1,19 +1,20 @@
 package mycellar.showfile;
 
 import mycellar.Bouteille;
+import mycellar.Program;
 import mycellar.core.MyCellarFields;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 1.0
- * @since 11/07/19
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 1.1
+ * @since 09/08/19
  */
 
 abstract class ShowFileColumn<T> {
@@ -101,6 +102,8 @@ abstract class ShowFileColumn<T> {
 	void setValue(Bouteille b, Object value) {
 		if (value instanceof String) {
 			b.setValue(field, (String) value);
+			Program.setModified();
+			b.updateStatus();
 		}
 	}
 	abstract Object getDisplayValue(Bouteille b);
@@ -117,7 +120,7 @@ abstract class ShowFileColumn<T> {
 		return type == Type.DEFAULT;
 	}
 
-	void seType(Type type) {
+	private void seType(Type type) {
 		this.type = type;
 	}
 
@@ -125,7 +128,7 @@ abstract class ShowFileColumn<T> {
 		return buttonLabel;
 	}
 
-	void setButtonLabel(String buttonLabel) {
+	private void setButtonLabel(String buttonLabel) {
 		this.buttonLabel = buttonLabel;
 	}
 

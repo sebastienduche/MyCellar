@@ -12,8 +12,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 26.3
- * @since 10/07/19
+ * @version 26.4
+ * @since 09/08/19
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -375,7 +375,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return int
 	 */
 	public boolean addWine(Bouteille wine) {
-		if (!wine.hasStatus()) {
+		if (wine.hasNoStatus()) {
 			wine.setCreated();
 		}
 		if(isCaisse()) {

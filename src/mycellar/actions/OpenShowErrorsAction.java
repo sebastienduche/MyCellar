@@ -5,7 +5,6 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.Utils;
 import mycellar.showfile.ShowFile;
-import mycellar.showfile.ShowFile.ShowType;
 
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
@@ -21,24 +20,24 @@ public class OpenShowErrorsAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		SwingUtilities.invokeLater(() -> {
-			if(Program.showerrors == null) {
-				Program.showerrors = new ShowFile(ShowType.ERROR);
-				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, Program.showerrors);
+			if(Program.getShowErrors() == null) {
+				final ShowFile showErrors = Program.createShowErrors();
+				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, showErrors);
 				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
-			} else {
-				Program.showerrors.refresh();
 			}
+			final ShowFile showErrors = Program.getShowErrors();
+			showErrors.updateView();
 			int tabIndex = Program.findTab(MyCellarImage.ERROR);
 			if(tabIndex != -1) {
 				Program.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel("ShowFile.ErrorTitle"));
 				Program.TABBED_PANE.setSelectedIndex(tabIndex);
 			}
 			else {
-				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, Program.showerrors);
+				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, showErrors);
 				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
 			}
 	
-			Utils.addCloseButton(Program.TABBED_PANE, Program.showerrors);
+			Utils.addCloseButton(Program.TABBED_PANE, showErrors);
 			Start.getInstance().updateMainPanel();
 		});
 	}

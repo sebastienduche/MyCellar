@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.IMyCellar;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -18,17 +19,17 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 
 /**
- * Titre : Cave à vin
+ * Titre : Cave &agrave; vin
  * Description : Votre description
  * Copyright : Copyright (c) 1998
- * Société : Seb Informatique
- * 
- * @author Sébastien Duché
- * @version 3.6
- * @since 08/07/19
+ * Soci&eacute;t&eacute; : Seb Informatique
+ *
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 3.7
+ * @since 08/08/19
  */
 
-public class ShowHistory extends JPanel implements ITabListener {
+public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
 	private static final long serialVersionUID = 4778721795659106312L;
 	private final MyCellarComboBox<String> m_oFilterCbx = new MyCellarComboBox<>();
@@ -62,7 +63,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 				case 1:
 				tc1[w].setMinWidth(100);
 				break;
-				case 2: case 4:
+				case 2:
 				tc1[w].setMinWidth(100);
 				break;
 				case 3:
@@ -106,8 +107,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 	/**
 	 * Debug
 	 * 
-	 * @param sText
-	 *            String
+	 * @param sText String
 	 */
 	private static void Debug(String sText) {
 		Program.Debug("ShowHistory: " + sText);
@@ -142,11 +142,12 @@ public class ShowHistory extends JPanel implements ITabListener {
 			if (max_row != 0) {
 				int row = 0;
 				do {
-					if (tv.getValueAt(row, TableHistoryValues.SELECT).equals(Boolean.TRUE)) {
+					if (Boolean.TRUE.equals(tv.getValueAt(row, TableHistoryValues.SELECT))) {
 						if (tv.isBottleDeleted(row))
 							toRestoreList.add(tv.getBottle(row));
-						else
+						else {
 							nonExit = true;
+						}
 					}
 					row++;
 				} while (row < max_row);
@@ -162,11 +163,10 @@ public class ShowHistory extends JPanel implements ITabListener {
 			} else {
 				String erreur_txt1, erreur_txt2;
 				if (toRestoreList.size() == 1) {
-					erreur_txt1 = Program.getError("Error067"); // "1 vin sélectionné.");
+					erreur_txt1 = Program.getError("Error067"); // "1 vin selectionne.");
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
 				} else {
-					erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toRestoreList.size()); // vins
-					// sélectionnés.");
+					erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toRestoreList.size()); // vins selectionnes.");
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
 				}
 				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
@@ -174,7 +174,7 @@ public class ShowHistory extends JPanel implements ITabListener {
 					LinkedList<Bouteille> cantRestoreList = new LinkedList<>();
 					for (Bouteille b : toRestoreList) {
 						Rangement r = Program.getCave(b.getEmplacement());
-						if(r != null) {
+						if (r != null) {
 							if (r.isCaisse()) {
 								Program.getStorage().addHistory(History.ADD, b);
 								Program.getStorage().addWine(b);
@@ -182,11 +182,12 @@ public class ShowHistory extends JPanel implements ITabListener {
 								if (r.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1) == null) {
 									Program.getStorage().addHistory(History.ADD, b);
 									Program.getStorage().addWine(b);
-								} else
+								} else {
 									cantRestoreList.add(b);
+								}
 							}
 						}
-						if(!cantRestoreList.contains(b)) {
+						if (!cantRestoreList.contains(b)) {
 							Program.getTrash().remove(b);
 						}
 					}
@@ -226,13 +227,13 @@ public class ShowHistory extends JPanel implements ITabListener {
 				} while (row < max_row);
 
 				if (toDeleteList.isEmpty()) {
-					// Aucune ligne sélectionnée "Veuillez sélectionner des lignes à supprimer.");
+					// Aucune ligne selectionnee "Veuillez selectionner des lignes a supprimer.");
 					Erreur.showSimpleErreur(Program.getError("Error184"), Program.getError("Error185"), true);
 					Debug("ERROR: No lines selected");
 				} else {
 					String erreur_txt1, erreur_txt2;// erreur_txt3, erreur_txt4;
 					if (toDeleteList.size() == 1) {
-						erreur_txt1 = Program.getError("Error186"); // "1 ligne sélectionnée.");
+						erreur_txt1 = Program.getError("Error186"); // "1 ligne selectionnee.");
 						erreur_txt2 = Program.getError("Error188"); // "Voulez-vous la supprimer?");
 					} else {
 						erreur_txt1 = MessageFormat.format(Program.getError("Error187"), toDeleteList.size()); // lignes

@@ -11,15 +11,15 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 12/07/19
+ * @version 1.4
+ * @since 14/08/19
  */
 
 public class MyCellarControl {
 
 
   static boolean checkBottleName(String name) {
-    if (name == null || name.isEmpty()) {
+    if (name == null || name.trim().isEmpty()) {
       Debug("ERROR: Wrong Name");
       Erreur.showSimpleErreur(Program.getError("Error054")); //"Veuillez saisir le nom du vin!"
       return false;
@@ -76,7 +76,7 @@ public class MyCellarControl {
   }
 
   /**
-   * ctrl_Name Contr&ocirc;le le nom saisie pour la cr&eacute;ation d'un rangement
+   * ctrl_Name Controle le nom saisie pour la creation d'un rangement
    *
    * @param _sName String
    * @return boolean
@@ -84,7 +84,7 @@ public class MyCellarControl {
   static boolean ctrl_Name(String _sName) {
 
     Debug("Controling name...");
-    if (_sName == null || _sName.isEmpty()) {
+    if (_sName == null || _sName.trim().isEmpty()) {
       //Erreur le nom ne doit pas &ecirc;tre vide
       Debug("ERROR: Name cannot be empty!");
       Erreur.showSimpleErreur(Program.getError("Error010"));
@@ -92,7 +92,7 @@ public class MyCellarControl {
     }
 
     try {
-      Paths.get(_sName);
+      Paths.get(_sName.trim());
     } catch (InvalidPathException e) {
       Debug("ERROR: Forbidden Characters!");
       Erreur.showSimpleErreur(Program.getError("Error126"));
@@ -102,7 +102,7 @@ public class MyCellarControl {
   }
 
   /**
-   * controlPath Contr&ocirc;le le chemin d'un fichier
+   * controlPath Controle le chemin d'un fichier
    *
    * @param file File
    * @return boolean
@@ -112,7 +112,7 @@ public class MyCellarControl {
   }
 
   /**
-   * controlPath Contr&ocirc;le le chemin d'un fichier
+   * controlPath Controle le chemin d'un fichier
    *
    * @param path String
    * @return boolean
@@ -120,7 +120,7 @@ public class MyCellarControl {
   static boolean controlPath(String path) {
 
     Debug("Controling path...");
-    if (null == path || path.isEmpty()) {
+    if (null == path || path.trim().isEmpty()) {
       //Erreur le nom ne doit pas &ecirc;tre vide
       Debug("ERROR: Name cannot be empty!");
       Erreur.showSimpleErreur(Program.getError("MyCellarControl.emptyPath"));
@@ -128,7 +128,7 @@ public class MyCellarControl {
     }
 
     try {
-      Paths.get(path);
+      Paths.get(path.trim());
     } catch (InvalidPathException e) {
       Debug("ERROR: Forbidden Characters!");
       Erreur.showSimpleErreur(Program.getError("MyCellarControl.invalidPath"));
@@ -139,7 +139,7 @@ public class MyCellarControl {
   }
 
   /**
-   * ctrl_existingName Contr&ocirc;le si le nom renseign&eacute; est d&eacute;j&agrave; utilis&eacute;
+   * ctrl_existingName Controle si le nom renseigne est deja utilise
    *
    * @param _sName String
    * @return boolean
@@ -156,7 +156,7 @@ public class MyCellarControl {
   }
 
   /**
-   * controlAndUpdateExtension Contr&ocirc;le si le nom renseign&eacute; a la bonne extension et retourne le nom modifi&eacute;
+   * controlAndUpdateExtension Controle si le nom renseigne a la bonne extension et retourne le nom modifie
    *
    * @param name String
    * @param filtre Filtre
@@ -168,7 +168,7 @@ public class MyCellarControl {
   }
 
   /**
-   * controlAndUpdateExtension Contr&ocirc;le si le nom renseign&eacute; a la bonne extension et retourne le nom modifi&eacute;
+   * controlAndUpdateExtension Controle si le nom renseigne a la bonne extension et retourne le nom modifie
    *
    * @param name String
    * @param extension String
@@ -193,7 +193,7 @@ public class MyCellarControl {
   }
 
   /**
-   * controlExtension Contr&ocirc;le si le nom renseign&eacute; a la bonne extension
+   * controlExtension Controle si le nom renseigne a la bonne extension
    *
    * @param name String
    * @param extensions List

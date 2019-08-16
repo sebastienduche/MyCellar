@@ -19,6 +19,8 @@ import mycellar.StateRenderer;
 import mycellar.TabEvent;
 import mycellar.ToolTipRenderer;
 import mycellar.Vignoble;
+import mycellar.core.IMyCellar;
+import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarEnum;
@@ -64,11 +66,11 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.7
- * @since 18/07/19
+ * @version 7.0
+ * @since 14/08/19
  */
 
-public class ShowFile extends JPanel implements ITabListener {
+public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
   private static final MyCellarEnum NONE = new MyCellarEnum(0, "");
   private static final MyCellarEnum VALIDATED = new MyCellarEnum(1, Program.getLabel("History.Validated"));
@@ -263,6 +265,7 @@ public class ShowFile extends JPanel implements ITabListener {
       @Override
       void setValue(Bouteille b, Object value) {
         b.setModified();
+        Program.setModified();
         b.setColor(((BottleColor) value).name());
       }
 
@@ -277,6 +280,7 @@ public class ShowFile extends JPanel implements ITabListener {
         @Override
         void setValue(Bouteille b, Object value) {
           b.setModified();
+          Program.setModified();
           b.setStatus(((BottlesStatus) value).name());
         }
 
@@ -325,6 +329,7 @@ public class ShowFile extends JPanel implements ITabListener {
           return;
         }
         b.setModified();
+        Program.setModified();
         v.setAOC((String) value);
       }
 
@@ -345,6 +350,7 @@ public class ShowFile extends JPanel implements ITabListener {
           return;
         }
         b.setModified();
+        Program.setModified();
         v.setIGP((String) value);
       }
 
@@ -385,18 +391,19 @@ public class ShowFile extends JPanel implements ITabListener {
         if (VALIDATED.equals(status)) {
           b.setStatus(BottlesStatus.VERIFIED.name());
           b.setModified();
+          Program.setModified();
           Program.getStorage().addHistory(History.VALIDATED, b);
         } else if (TOCHECK.equals(status)) {
           b.setStatus(BottlesStatus.TOCHECK.name());
           b.setModified();
+          Program.setModified();
           Program.getStorage().addHistory(History.TOCHECK, b);
         }
       }
 
       @Override
       Object getDisplayValue(Bouteille b) {
-        final MyCellarEnum mapValue = getMapValue(b);
-        return mapValue;
+        return getMapValue(b);
       }
 
       @Override
@@ -532,13 +539,12 @@ public class ShowFile extends JPanel implements ITabListener {
     TableRowSorter<TableModel> sorter = new TableRowSorter<>(m_oTable.getModel());
     sorter.setComparator(TableShowValues.PRICE,(String o1, String o2) -> {
       BigDecimal price1;
-      if(o1.isEmpty()) {
+      if (o1.isEmpty()) {
         price1 = BigDecimal.ZERO;
       } else {
         try {
           price1 = Program.stringToBigDecimal(o1);
-        }
-        catch (NumberFormatException ignored) {
+        } catch (NumberFormatException ignored) {
           price1 = BigDecimal.ZERO;
         }
       }
@@ -548,8 +554,7 @@ public class ShowFile extends JPanel implements ITabListener {
       } else {
         try {
           price2 = Program.stringToBigDecimal(o2);
-        }
-        catch (NumberFormatException ignored) {
+        } catch (NumberFormatException ignored) {
           price2 = BigDecimal.ZERO;
         }
       }
@@ -648,7 +653,6 @@ public class ShowFile extends JPanel implements ITabListener {
     } catch (Exception exc) {
       Program.showException(exc);
     }
-
   }
 
   private LinkedList<Bouteille> getSelectedBouteilles() {
@@ -724,12 +728,12 @@ public class ShowFile extends JPanel implements ITabListener {
 
   }
 
-  public void refresh() {
+  private void refresh() {
     if (isTrash()) {
       tv.setBottles(Program.getTrash());
     } else if (isError()) {
       ((ErrorShowValues) tv).setErrors(Program.getErrors());
-    } else if (isWork()){
+    } else if (isWork()) {
       tv.setBottles(workingBottles);
     } else {
       tv.setBottles(Program.getStorage().getAllList());
@@ -738,7 +742,6 @@ public class ShowFile extends JPanel implements ITabListener {
   }
 
   private void setRangementValue(Bouteille b, MyCellarFields field, Object value) {
-
     Rangement rangement = b.getRangement();
     int nValueToCheck = -1;
     String empl = b.getEmplacement();
@@ -802,8 +805,7 @@ public class ShowFile extends JPanel implements ITabListener {
             b.setColonne(Integer.parseInt((String) value));
           }
           if (field == MyCellarFields.PLACE && rangement.isCaisse()) {
-            int nNumEmpl = b.getNumLieu();//Integer.parseInt((String) values[row][NUM_PLACE]);
-            if (nNumEmpl > rangement.getLastNumEmplacement()) {
+            if (b.getNumLieu() > rangement.getLastNumEmplacement()) {
               b.setNumLieu(rangement.getFreeNumPlaceInCaisse());
             }
             b.setLigne(0);
@@ -826,6 +828,7 @@ public class ShowFile extends JPanel implements ITabListener {
     }
   }
 
+  @Override
   public void setUpdateView() {
     updateView = true;
   }
@@ -833,21 +836,19 @@ public class ShowFile extends JPanel implements ITabListener {
   /**
    * Mise a jour de la liste des rangements
    */
+  @Override
   public void updateView() {
+    refresh();
     if (!updateView) {
       return;
     }
     updateView = false;
     m_oPlaceCbx.removeAllItems();
-    for (Rangement r : Program.getCave()) {
-      m_oPlaceCbx.addItem(r.getNom());
-    }
+    Program.getCave().forEach(rangement -> m_oPlaceCbx.addItem(rangement.getNom()));
 
     m_oTypeCbx.removeAllItems();
     m_oTypeCbx.addItem("");
-    for (String type : MyCellarBottleContenance.getList()) {
-      m_oTypeCbx.addItem(type);
-    }
+    MyCellarBottleContenance.getList().forEach(m_oTypeCbx::addItem);
 
     updateModel(columns);
   }
@@ -901,7 +902,7 @@ public class ShowFile extends JPanel implements ITabListener {
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (isError()) {
-    	if(Program.getErrors().stream().anyMatch(MyCellarError::isNotSolved)) {
+    	if (Program.getErrors().stream().anyMatch(MyCellarError::isNotSolved)) {
         return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), Program.getLabel("ShowFile.QuitErrors"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION);
       }
     }
@@ -925,24 +926,12 @@ public class ShowFile extends JPanel implements ITabListener {
     @Override
     public void actionPerformed(ActionEvent e) {
       JPanel panel = new JPanel();
-      ArrayList<MyCellarFields> list = new ArrayList<>();
-      list.add(MyCellarFields.NAME);
-      list.add(MyCellarFields.YEAR);
-      list.add(MyCellarFields.TYPE);
-      list.add(MyCellarFields.PLACE);
-      list.add(MyCellarFields.NUM_PLACE);
-      list.add(MyCellarFields.LINE);
-      list.add(MyCellarFields.COLUMN);
-      list.add(MyCellarFields.PRICE);
-      list.add(MyCellarFields.COMMENT);
-      list.add(MyCellarFields.MATURITY);
-      list.add(MyCellarFields.PARKER);
-      list.add(MyCellarFields.COLOR);
-      list.add(MyCellarFields.COUNTRY);
-      list.add(MyCellarFields.VINEYARD);
-      list.add(MyCellarFields.AOC);
-      list.add(MyCellarFields.IGP);
-      list.add(MyCellarFields.STATUS);
+      List<MyCellarFields> list;
+      if (isWork()) {
+        list = MyCellarFields.getFieldsListForImportAndWorksheet();
+      } else {
+        list = MyCellarFields.getFieldsList();
+      }
       List<ShowFileColumn<?>> cols = ((ShowFileModel) tv).getColumns();
       final List<ShowFileColumn<?>> showFileColumns = cols.stream().filter(ShowFileColumn::isDefault).collect(Collectors.toList());
       ManageColumnModel modelColumn = new ManageColumnModel(list, showFileColumns);
@@ -954,19 +943,21 @@ public class ShowFile extends JPanel implements ITabListener {
       tc.setMinWidth(25);
       tc.setMaxWidth(25);
       panel.add(new JScrollPane(table));
-      JOptionPane.showMessageDialog(null, panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
-      cols = new ArrayList<>();
-      cols.add(checkBoxStartColumn);
-      Program.setModified();
+      JOptionPane.showMessageDialog(Start.getInstance(), panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
       List<Integer> properties = modelColumn.getSelectedColumns();
-      for (ShowFileColumn<?> c : columns) {
-        if (properties.contains(c.getField().ordinal())) {
-          cols.add(c);
+      if (!properties.isEmpty()) {
+        cols = new ArrayList<>();
+        cols.add(checkBoxStartColumn);
+        Program.setModified();
+        for (ShowFileColumn<?> c : columns) {
+          if (properties.contains(c.getField().ordinal())) {
+            cols.add(c);
+          }
         }
-      }
-      cols.add(modifyButtonColumn);
-      if (isWork()) {
-        cols.add(checkedButtonColumn);
+        cols.add(modifyButtonColumn);
+        if (isWork()) {
+          cols.add(checkedButtonColumn);
+        }
       }
       if (!cols.isEmpty()) {
         ((ShowFileModel) tv).removeAllColumns();
@@ -1021,7 +1012,6 @@ public class ShowFile extends JPanel implements ITabListener {
             } else {
               existingBottles.add(bottle);
             }
-
           }
           Program.modifyBottles(existingBottles);
         }

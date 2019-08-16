@@ -2,7 +2,10 @@ package mycellar;
 
 import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
+import mycellar.core.IMyCellar;
+import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarSettings;
@@ -46,6 +49,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -59,9 +64,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.OptionalDouble;
 import java.util.Properties;
@@ -80,8 +87,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.1
- * @since 18/07/19
+ * @version 21.3
+ * @since 09/08/19
  */
 
 public final class Program {
@@ -99,26 +106,27 @@ public final class Program {
 	static final Font FONT_DIALOG_SMALL = new Font("Dialog", Font.BOLD, 12);
 	public static final Font FONT_LABEL_BOLD = new Font("Arial", Font.BOLD, 12);
 
-	static Options options = null;
-	static Export export = null;
-	static Parametres parametres = null;
-	static Creer_Tableaux creer_tableau = null;
-	static Importer importer = null;
-	static ShowFile showfile = null;
-	static ShowFile showtrash = null;
-	static Search search = null;
-	static ShowHistory history = null;
-	static VineyardPanel vignobles = null;
-	static Creer_Rangement createPlace = null;
-	static Creer_Rangement modifyPlace = null;
-	static CellarOrganizerPanel managePlace = null;
-	static CellarOrganizerPanel chooseCell = null;
-	static Supprimer_Rangement deletePlace = null;
-	static Stat stat = null;
+	private static final Map<String, IMyCellar> OPENED_OBJECTS = new HashMap<>();
+	private static final Map<String, IUpdatable> UPDATABLE_OBJECTS = new HashMap<>();
 
-	public static ShowFile showerrors = null;
-	public static ShowFile showworksheet = null;
-	public static AddVin addWine = null;
+	private static final String EXPORT = "EXPORT";
+	private static final String PARAMETRES = "PARAMETRES";
+	private static final String CREER_TABLEAU = "CREER_TABLEAU";
+	private static final String IMPORTER = "IMPORTER";
+	private static final String SHOW_FILE = "SHOW_FILE";
+	private static final String SHOW_TRASH = "SHOW_TRASH";
+	private static final String SEARCH = "SEARCH";
+	private static final String HISTORY = "HISTORY";
+	private static final String VIGNOBLES = "VIGNOBLES";
+	private static final String CREATE_PLACE = "CREATE_PLACE";
+	private static final String MODIFY_PLACE = "MODIFY_PLACE";
+	private static final String CHOOSE_CELL = "CHOOSE_CELL";
+	private static final String CELL_ORGANIZER = "CELL_ORGANIZER";
+	private static final String SUPPRIMER_RANGEMENT = "SUPPRIMER_RANGEMENT";
+	private static final String STATS = "STATS";
+	private static final String SHOW_ERRORS = "SHOW_ERRORS";
+	private static final String SHOW_WORKSHEET = "SHOW_WORKSHEET";
+	private static final String ADDVIN = "ADDVIN";
 
 	static final PanelInfos PANEL_INFOS = new PanelInfos();
 	public static final JTabbedPane TABBED_PANE = new JTabbedPane();
@@ -601,7 +609,6 @@ public final class Program {
 	private static void zipDir(String fileName) {
 
 		Debug("Program: zipDir: Zipping in "+m_sWorkDir+" with archive "+fileName);
-		int BUFFER = 2048;
 		try {
 			// creation d'un flux d'ecriture sur fichier
 			var dest = new FileOutputStream(fileName);
@@ -622,10 +629,12 @@ public final class Program {
 				// pour chacun des fichiers de la liste
 				if (files != null) {
 					LinkedList<String> zipEntryList = new LinkedList<>();
+					int BUFFER = 2048;
 					for (String file : files) {
 						f = new File(getWorkDir(true) + file);
-						if (f.isDirectory() || file.compareTo(UNTITLED1_SINFO) == 0)
+						if (f.isDirectory() || file.compareTo(UNTITLED1_SINFO) == 0) {
 							continue;
+						}
 						// creation d'un flux de lecture
 						var inputStream = new FileInputStream(getWorkDir(true) + file);
 						// creation d'un tampon de lecture sur ce flux
@@ -673,12 +682,12 @@ public final class Program {
 	private static boolean unzipDir(String dest_dir) {
 		try {
 			Debug("Program: Unzip: Archive "+archive);
-			int BUFFER = 2048;
 			// ouverture fichier entree
 			archive = archive.replaceAll("\\\\", "/");
 			File f = new File(archive);
-			if(!f.exists())
+			if(!f.exists()) {
 				return false;
+			}
 			var fileInputStream = new FileInputStream(archive);
 			// ouverture fichier de buffer
 			var bufferedInputStream = new BufferedInputStream(fileInputStream);
@@ -687,6 +696,7 @@ public final class Program {
 				// entree Zip
 				ZipEntry entry;
 				// parcours des entrees de l'archive
+				int BUFFER = 2048;
 				while ((entry = zipInputStream.getNextEntry()) != null) {
 					// affichage du nom de l'entree
 					// creation fichier
@@ -1152,24 +1162,8 @@ public final class Program {
 	}
 
 	private static void clearObjectsVariables() {
-		addWine = null;
-		createPlace = null;
-		creer_tableau = null;
-		export = null;
-		history = null;
-		modifyPlace = null;
-		search = null;
-		showfile = null;
-		showtrash = null;
-		vignobles = null;
-		options = null;
-		parametres = null;
-		importer = null;
-		history = null;
-		managePlace = null;
-		chooseCell = null;
-		deletePlace = null;
-		stat = null;
+		UPDATABLE_OBJECTS.clear();
+		OPENED_OBJECTS.clear();
 	}
 
 	private static void deleteTempFiles() {
@@ -1477,40 +1471,12 @@ public final class Program {
 	}
 
 	static void updateAllPanels() {
-		if(addWine != null) {
-			addWine.setUpdateView();
-		}
-		if(search != null) {
-			search.setUpdateView();
-		}
-		if(deletePlace != null) {
-			deletePlace.setUpdateView();
-		}
-		if(showfile != null) {
-			showfile.setUpdateView();
-		}
-		if(showtrash != null) {
-			showtrash.setUpdateView();
-		}
-		if(chooseCell != null) {
-			chooseCell.setUpdateView();
-		}
-		if(managePlace != null) {
-			managePlace.setUpdateView();
-		}
-		if (showfile != null) {
-			showfile.setUpdateView();
-		}
-		if (showerrors != null) {
-			showerrors.setUpdateView();
-		}
-		if (showworksheet != null) {
-			showworksheet.setUpdateView();
-		}
+		UPDATABLE_OBJECTS.forEach((aString, iUpdatable) -> iUpdatable.setUpdateView());
 	}
 
 	static void updateManagePlacePanel() {
-		if(managePlace != null) {
+		final IUpdatable managePlace = UPDATABLE_OBJECTS.get(CELL_ORGANIZER);
+		if (managePlace != null) {
 			managePlace.setUpdateView();
 		}
 	}
@@ -1520,9 +1486,9 @@ public final class Program {
 	}
 
 	public static int findTab(ImageIcon image) {
-		for(int i = 0; i< TABBED_PANE.getTabCount(); i++) {
+		for(int i = 0; i < TABBED_PANE.getTabCount(); i++) {
 			try {
-				if(TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image)) {
+				if (TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image)) {
 					return i;
 				}
 			} catch(Exception ignored){}
@@ -1720,8 +1686,241 @@ public final class Program {
 		return cols;
 	}
 
-	static boolean isSelectedTab(ITabListener tab) {
-		return TABBED_PANE.getSelectedComponent() != null && TABBED_PANE.getSelectedComponent().equals(tab);
+	public static AddVin getAddVin() {
+		return (AddVin) OPENED_OBJECTS.get(ADDVIN);
+	}
+
+	public static AddVin createAddVin() {
+		AddVin addVin = (AddVin) OPENED_OBJECTS.get(ADDVIN);
+		if (addVin == null) {
+			addVin = new AddVin();
+			OPENED_OBJECTS.put(ADDVIN, addVin);
+			UPDATABLE_OBJECTS.put(ADDVIN, addVin);
+		}
+		return addVin;
+	}
+
+	static Supprimer_Rangement getSupprimerRangement() {
+		return (Supprimer_Rangement) OPENED_OBJECTS.get(SUPPRIMER_RANGEMENT);
+	}
+
+	static Supprimer_Rangement createSupprimerRangement() {
+		final Supprimer_Rangement supprimerRangement = (Supprimer_Rangement) createOpenedObject(Supprimer_Rangement.class, SUPPRIMER_RANGEMENT);
+		UPDATABLE_OBJECTS.put(SUPPRIMER_RANGEMENT, supprimerRangement);
+		return supprimerRangement;
+	}
+
+	static void deleteSupprimerRangement() {
+		OPENED_OBJECTS.remove(SUPPRIMER_RANGEMENT);
+		UPDATABLE_OBJECTS.remove(SUPPRIMER_RANGEMENT);
+	}
+
+	static Creer_Rangement getCreerRangement() {
+		return (Creer_Rangement) OPENED_OBJECTS.get(CREATE_PLACE);
+	}
+
+	static Creer_Rangement createCreerRangement() {
+		Creer_Rangement creerRangement = (Creer_Rangement) OPENED_OBJECTS.get(CREATE_PLACE);
+		if (creerRangement == null) {
+			creerRangement = new Creer_Rangement(false);
+			OPENED_OBJECTS.put(CREATE_PLACE, creerRangement);
+		}
+		return creerRangement;
+	}
+
+	static Creer_Rangement getModifierRangement() {
+		return (Creer_Rangement) OPENED_OBJECTS.get(MODIFY_PLACE);
+	}
+
+	static Creer_Rangement createModifierRangement() {
+		Creer_Rangement creerRangement = (Creer_Rangement) OPENED_OBJECTS.get(MODIFY_PLACE);
+		if (creerRangement == null) {
+			creerRangement = new Creer_Rangement(true);
+			OPENED_OBJECTS.put(MODIFY_PLACE, creerRangement);
+		}
+		return creerRangement;
+	}
+
+	static Search getSearch() {
+		return (Search) OPENED_OBJECTS.get(SEARCH);
+	}
+
+	static Search createSearch() {
+		final Search search = (Search) createOpenedObject(Search.class, SEARCH);
+		UPDATABLE_OBJECTS.put(SEARCH, search);
+		return search;
+	}
+
+	static Creer_Tableaux getCreerTableaux() {
+		return (Creer_Tableaux) OPENED_OBJECTS.get(CREER_TABLEAU);
+	}
+
+	static Creer_Tableaux createCreerTableaux() {
+		final Creer_Tableaux creerTableaux = (Creer_Tableaux) createOpenedObject(Creer_Tableaux.class, CREER_TABLEAU);
+		UPDATABLE_OBJECTS.put(CREER_TABLEAU, creerTableaux);
+		return creerTableaux;
+	}
+
+	static Importer getImporter() {
+		return (Importer) OPENED_OBJECTS.get(IMPORTER);
+	}
+
+	static Importer createImporter() {
+		final Importer importer = (Importer) createOpenedObject(Importer.class, IMPORTER);
+		return importer;
+	}
+
+	static Export getExport() {
+		return (Export) OPENED_OBJECTS.get(EXPORT);
+	}
+
+	static Export createExport() {
+		final Export export = (Export) createOpenedObject(Export.class, EXPORT);
+		return export;
+	}
+
+	static Stat getStat() {
+		return (Stat) OPENED_OBJECTS.get(STATS);
+	}
+
+	static Stat createStat() {
+		final Stat stat = (Stat) createOpenedObject(Stat.class, STATS);
+		UPDATABLE_OBJECTS.put(STATS, stat);
+		return stat;
+	}
+
+	static ShowHistory getShowHistory() {
+		return (ShowHistory) OPENED_OBJECTS.get(HISTORY);
+	}
+
+	static ShowHistory createShowHistory() {
+		final ShowHistory showHistory = (ShowHistory) createOpenedObject(ShowHistory.class, HISTORY);
+		return showHistory;
+	}
+
+	static VineyardPanel getVineyardPanel() {
+		return (VineyardPanel) OPENED_OBJECTS.get(VIGNOBLES);
+	}
+
+	static VineyardPanel createVineyardPanel() {
+		final VineyardPanel vineyardPanel = (VineyardPanel) createOpenedObject(VineyardPanel.class, VIGNOBLES);
+		return vineyardPanel;
+	}
+
+	static ShowFile getShowFile() {
+		return (ShowFile) OPENED_OBJECTS.get(SHOW_FILE);
+	}
+
+	static ShowFile createShowFile() {
+		final ShowFile showFile = (ShowFile) createOpenedObject(ShowFile.class, SHOW_FILE);
+		UPDATABLE_OBJECTS.put(SHOW_FILE, showFile);
+		return showFile;
+	}
+
+	static ShowFile getShowTrash() {
+		return (ShowFile) OPENED_OBJECTS.get(SHOW_TRASH);
+	}
+
+	static ShowFile createShowTrash() {
+		ShowFile showFile = (ShowFile) OPENED_OBJECTS.get(SHOW_TRASH);
+		if (showFile == null) {
+			showFile = new ShowFile(ShowFile.ShowType.TRASH);
+			OPENED_OBJECTS.put(SHOW_TRASH, showFile);
+			UPDATABLE_OBJECTS.put(SHOW_TRASH, showFile);
+		}
+		return showFile;
+	}
+
+	public static ShowFile getShowWorksheet() {
+		return (ShowFile) OPENED_OBJECTS.get(SHOW_WORKSHEET);
+	}
+
+	public static ShowFile createShowWorksheet() {
+		ShowFile showFile = (ShowFile) OPENED_OBJECTS.get(SHOW_WORKSHEET);
+		if (showFile == null) {
+			showFile = new ShowFile(ShowFile.ShowType.WORK);
+			OPENED_OBJECTS.put(SHOW_WORKSHEET, showFile);
+			UPDATABLE_OBJECTS.put(SHOW_WORKSHEET, showFile);
+		}
+		return showFile;
+	}
+
+	public static ShowFile getShowErrors() {
+		return (ShowFile) OPENED_OBJECTS.get(SHOW_ERRORS);
+	}
+
+	public static ShowFile createShowErrors() {
+		ShowFile showFile = (ShowFile) OPENED_OBJECTS.get(SHOW_ERRORS);
+		if (showFile == null) {
+			showFile = new ShowFile(ShowFile.ShowType.ERROR);
+			OPENED_OBJECTS.put(SHOW_ERRORS, showFile);
+			UPDATABLE_OBJECTS.put(SHOW_ERRORS, showFile);
+		}
+		return showFile;
+	}
+
+	static CellarOrganizerPanel getCellarOrganizerPanel() {
+		return (CellarOrganizerPanel) OPENED_OBJECTS.get(CELL_ORGANIZER);
+	}
+
+	static CellarOrganizerPanel createCellarOrganizerPanel() {
+		final CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) createOpenedObject(CellarOrganizerPanel.class, CELL_ORGANIZER);
+		UPDATABLE_OBJECTS.put(CELL_ORGANIZER, cellarOrganizerPanel);
+		return cellarOrganizerPanel;
+	}
+
+	static Parametres getParametres() {
+		return (Parametres) OPENED_OBJECTS.get(PARAMETRES);
+	}
+
+	static Parametres createParametres() {
+		final Parametres parametres = (Parametres) createOpenedObject(Parametres.class, PARAMETRES);
+		return parametres;
+	}
+
+	static void deleteParametres() {
+		OPENED_OBJECTS.remove(PARAMETRES);
+	}
+
+	static CellarOrganizerPanel getCellChoosePanel() {
+		return (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL);
+	}
+
+	static CellarOrganizerPanel createChooseCellPanel(IAddVin addVin) {
+		CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL);
+		if (cellarOrganizerPanel == null) {
+			cellarOrganizerPanel = new CellarOrganizerPanel(addVin);
+			OPENED_OBJECTS.put(CHOOSE_CELL, cellarOrganizerPanel);
+			UPDATABLE_OBJECTS.put(CHOOSE_CELL, cellarOrganizerPanel);
+		}
+		return cellarOrganizerPanel;
+	}
+
+	static void deleteChooseCellPanel() {
+		OPENED_OBJECTS.remove(CHOOSE_CELL);
+		UPDATABLE_OBJECTS.remove(CHOOSE_CELL);
+	}
+
+	private static IMyCellar createOpenedObject(Class className, String id) {
+		IMyCellar object = OPENED_OBJECTS.get(id);
+		if (object == null) {
+			try {
+				Constructor<?> ctor = className.getConstructor();
+				object = (IMyCellar) ctor.newInstance();
+			} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+				showException(e);
+			}
+			OPENED_OBJECTS.put(id, object);
+		}
+		return object;
+	}
+
+	static void updateSelectedTab() {
+		UPDATABLE_OBJECTS.forEach((s, iUpdatable) -> {
+			if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
+				iUpdatable.updateView();
+			}
+		});
 	}
 
   static boolean isCutCopyPastTab() {

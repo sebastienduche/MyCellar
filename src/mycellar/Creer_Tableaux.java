@@ -1,6 +1,8 @@
 package mycellar;
 
 import mycellar.core.ICutCopyPastable;
+import mycellar.core.IMyCellar;
+import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
@@ -41,10 +43,10 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.7
- * @since 17/07/19
+ * @version 6.8
+ * @since 08/08/19
  */
-public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable {
+public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
 	private final MyCellarRadioButton type_XML = new MyCellarRadioButton();
 	private final MyCellarRadioButton type_HTML = new MyCellarRadioButton();
@@ -161,8 +163,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			add(panelTable, "grow");
 			preview.setEnabled(false);
 			Debug("Constructor OK");
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			Program.showException(e);
 		}
 	}
@@ -252,8 +253,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 					count++;
 				}
 				row++;
-			}
-			while (row < max_row);
+			}	while (row < max_row);
 
 			if (count == 0) {
 				Debug("ERROR: No place selected");
@@ -262,15 +262,14 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 				Erreur.showSimpleErreur(Program.getError("Error089"), Program.getError("Error090"), true);
 				return;
 			}
-			LinkedList<Rangement> rangements = new LinkedList<>();
 			row = 0;
+			LinkedList<Rangement> rangements = new LinkedList<>();
 			do {
 				if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
 					rangements.add(tv.getRangementAt(row));
 				}
 				row++;
-			}
-			while (row < max_row);
+			}	while (row < max_row);
 
 			long caisseCount = 0;
 			// Export XML
@@ -286,7 +285,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 				StreamSource xslDoc = new StreamSource("resources/Rangement.xsl");
 				StreamSource xmlDoc = new StreamSource(Program.getPreviewXMLFileName());
 
-				try(var htmlFile = new FileOutputStream(nom)) {
+				try (var htmlFile = new FileOutputStream(nom)) {
 					var transformer = tFactory.newTransformer(xslDoc);
 					transformer.transform(xmlDoc, new StreamResult(htmlFile));
 				} catch (Exception e1) {
@@ -301,10 +300,10 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_TAB_MESS, false)) {
 				if (caisseCount > 0) {
 					String erreur_txt1, erreur_txt2;
-					if (caisseCount == 1){
+					if (caisseCount == 1) {
 						erreur_txt1 = Program.getError("Error091"); //"Vous avez selectionne un rangement de type Caisse");
 						erreur_txt2 = Program.getError("Error092"); //"Une liste des vins de ce rangement a ete generee.");
-					}else{
+					} else {
 						erreur_txt1 = Program.getError("Error127"); //"Vous avez selectionne des rangements de type Caisse");
 						erreur_txt2 = Program.getError("Error128"); //"Une liste des vins de ces rangements a ete generee.");
 					}
@@ -322,8 +321,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 					5000
 			);
 			preview.setEnabled(true);
-		}
-		catch (Exception exc) {
+		}	catch (Exception exc) {
 			Program.showException(exc);
 		}
 	}
@@ -406,13 +404,13 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 				MyCellarSettings.CREATE_TAB_DEFAULT	};
 		String val = Program.getCaveConfigString(key_properties[0], "1");
 		String[] default_value = { "false", "false", "false" };
-		if (val.equals("0")) {
+		if ("0".equals(val)) {
 			default_value[0] = "true";
 		}
-		if (val.equals("1")) {
+		if ("1".equals(val)) {
 			default_value[1] = "true";
 		}
-		if (val.equals("2")) {
+		if ("2".equals(val)) {
 			default_value[2] = "true";
 		}
 		String[] type_objet = {"MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton"};
@@ -434,7 +432,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	public void cut() {
 		String text = name.getSelectedText();
 		String fullText = name.getText();
-		if(text != null) {
+		if (text != null) {
 			name.setText(fullText.substring(0, name.getSelectionStart()) + fullText.substring(name.getSelectionEnd()));
 			Program.CLIPBOARD.copier(text);
 		}
@@ -443,7 +441,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	@Override
 	public void copy() {
 		String text = name.getSelectedText();
-		if(text != null) {
+		if (text != null) {
 			Program.CLIPBOARD.copier(text);
 		}
 	}
@@ -464,6 +462,11 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 		Start.getInstance().updateMainPanel();
 	}
 
+	@Override
+	public void setUpdateView() {
+	}
+
+	@Override
 	public void updateView() {
 		SwingUtilities.invokeLater(() -> {
 			tv.removeAll();

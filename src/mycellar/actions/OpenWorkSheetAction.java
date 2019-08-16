@@ -6,7 +6,6 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.Utils;
 import mycellar.showfile.ShowFile;
-import mycellar.showfile.ShowFile.ShowType;
 
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
@@ -30,26 +29,26 @@ public class OpenWorkSheetAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		SwingUtilities.invokeLater(() -> {
-			if(Program.showworksheet == null) {
-				Program.showworksheet = new ShowFile(ShowType.WORK);
-				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.Worksheet"), MyCellarImage.WORK, Program.showworksheet);
+			if(Program.getShowWorksheet() == null) {
+				final ShowFile showWorksheet = Program.createShowWorksheet();
+				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.Worksheet"), MyCellarImage.WORK, showWorksheet);
 				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
-			} else {
-				Program.showworksheet.refresh();
 			}
+			final ShowFile showWorksheet = Program.getShowWorksheet();
+			showWorksheet.updateView();
 			int tabIndex = Program.findTab(MyCellarImage.WORK);
 			if(tabIndex != -1) {
 				Program.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel("ShowFile.Worksheet"));
 				Program.TABBED_PANE.setSelectedIndex(tabIndex);
 			}
 			else {
-				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.Worksheet"), MyCellarImage.WORK, Program.showworksheet);
+				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.Worksheet"), MyCellarImage.WORK, showWorksheet);
 				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
 			}
 	
-			Utils.addCloseButton(Program.TABBED_PANE, Program.showworksheet);
+			Utils.addCloseButton(Program.TABBED_PANE, showWorksheet);
 			Start.getInstance().updateMainPanel();
-			Program.showworksheet.addWorkingBottles(bouteilles);
+			showWorksheet.addWorkingBottles(bouteilles);
 		});
 	}
 }

@@ -29,8 +29,8 @@ import java.util.Arrays;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.6
- * @since 08/08/19
+ * @version 11.7
+ * @since 17/10/19
  */
 public class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -85,22 +85,9 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		}
 
 		devise.setText(Program.getCaveConfigString(MyCellarSettings.DEVISE,""));
-		String language = Program.getLanguage("Language1");
-		int i = 1;
-		while (language != null) {
-			langue.addItem(language);
-			i++;
-			language = Program.getLanguage("Language" + i);
-		}
-		
-		i = 1;
-		language = Program.getLanguage("CodeLang" + i);
+		Program.getLanguages().forEach(langue::addItem);
 		String the_language = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE,"");
-		while (language != null && language.compareTo(the_language) != 0) {
-			i++;
-			language = Program.getLanguage("CodeLang" + i);
-		}
-		langue.setSelectedIndex(i - 1);
+		langue.setSelectedIndex(Program.getLanguageIndex(the_language));
 
 		jcb_half_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.TYPE_AUTO, false));
 
@@ -283,24 +270,18 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	 */
 	private void modifyLanguage() {
 		try {
-			String thelangue = Program.getLanguage("CodeLang" + (langue.getSelectedIndex() + 1));
-			String currentLanguage = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
+			String thelangue = Program.getLanguage(langue.getSelectedIndex());
+			String currentLanguage = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
 			if(thelangue.equals(currentLanguage)) {
 				return;
 			}
 			Program.putGlobalConfigString(MyCellarSettings.LANGUAGE, thelangue);
-			boolean ok = Program.setLanguage(thelangue.charAt(0));
-			if (ok) {
-				if (Program.getLabel("Infos159") == null) {
-					ok = Program.setLanguage('F');
-					langue.setSelectedIndex(0);
-				}
-				if(ok) {
+			Program.setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
+			if (LanguageFileLoader.getInstance().isLoaded()) {
 					setLabels();
-				}
 			} else {
 				langue.setSelectedIndex(0);
-				Program.setLanguage('F');
+				Program.setLanguage(LanguageFileLoader.Language.FRENCH);
 				JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
@@ -334,7 +315,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	}
 
 	private void activate_debug_actionPerformed(ActionEvent e) {
-
 		final boolean selected = m_jcb_debug.isSelected();
 		Program.putGlobalConfigBool(MyCellarSettings.DEBUG, selected);
 		Program.setDebug(selected);

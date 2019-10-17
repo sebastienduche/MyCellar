@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -17,22 +19,37 @@ import java.util.ResourceBundle.Control;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 22/08/18
+ * @version 0.9
+ * @since 17/10/19
  */
 public class LanguageFileLoader {
 
 	private static final LanguageFileLoader INSTANCE = new LanguageFileLoader();
+	private static final String LANGUAGE = "Language";
+	private static final String CODE_LANG = "CodeLang";
 
-	private char language;
+	enum Language {
+		FRENCH('F'),
+		ENGLISH('U');
+
+		private final char language;
+
+		Language(char language) {
+			this.language = language;
+		}
+
+		public char getLanguage() {
+			return language;
+		}
+	}
+	private Language language;
 	
 	private ResourceBundle bundleTitle;
 	private ResourceBundle bundleError;
 	private ResourceBundle bundleLanguage;
 
-	private LanguageFileLoader(){
-		language = ' ';
-		loadLanguageFiles('U');
+	private LanguageFileLoader() {
+		loadLanguageFiles(Language.ENGLISH);
 	}
 
 	public static LanguageFileLoader getInstance(){
@@ -40,22 +57,23 @@ public class LanguageFileLoader {
 	}
 
 
-	boolean loadLanguageFiles(char language) {
-
+	void loadLanguageFiles(Language language) {
 		if (this.language == language) {
-			return true;
+			return;
 		}
 		this.language = language;
 		Debug( "Loading labels' map in " + language);
 		Locale locale = Locale.FRENCH;
-		if(language == 'U') {
+		if(language == Language.ENGLISH) {
 			locale = Locale.ENGLISH;
 		}
 		bundleTitle = ResourceBundle.getBundle("title", locale, new UTF8Control());
 		bundleError = ResourceBundle.getBundle("error", locale, new UTF8Control());
 		bundleLanguage = ResourceBundle.getBundle("language", Locale.FRENCH, new UTF8Control());
-		
-		return true;
+	}
+
+	boolean isLoaded() {
+		return bundleError != null && bundleLanguage != null && bundleTitle != null;
 	}
 
 	public static String getLabel(String _id) {
@@ -74,15 +92,48 @@ public class LanguageFileLoader {
 		return INSTANCE.bundleError.getString(_id);
 	}
 
-	static String getLanguage( String _id ) {
+	static int getLanguageIndex(String language) {
 		if(INSTANCE.bundleLanguage == null) {
 			Debug("ERROR: Language' map not intialized!");
-			return "";
+			return -1;
 		}
-		if(INSTANCE.bundleLanguage.containsKey(_id)) {
-			return INSTANCE.bundleLanguage.getString(_id);
+		int i = 1;
+		while (INSTANCE.bundleLanguage.containsKey(CODE_LANG + i)) {
+			String string = INSTANCE.bundleLanguage.getString(CODE_LANG + i);
+			if (string.equalsIgnoreCase(language)) {
+				return i - 1;
+			}
+			i++;
 		}
-		return null;
+		return -1;
+	}
+
+	static String getLanguageFromIndex(int index) {
+		return INSTANCE.bundleLanguage.getString(CODE_LANG + (index + 1));
+	}
+
+	static List<String> getLanguages() {
+		ArrayList<String> list = new ArrayList<>();
+		if(INSTANCE.bundleLanguage == null) {
+			Debug("ERROR: Language' map not intialized!");
+			return list;
+		}
+		int i = 1;
+		while (INSTANCE.bundleLanguage.containsKey(LANGUAGE + i)) {
+			list.add(INSTANCE.bundleLanguage.getString(LANGUAGE + i));
+			i++;
+		}
+		return list;
+	}
+
+	static Language getLanguage(char language) {
+		if (language == Language.ENGLISH.getLanguage()) {
+			return Language.ENGLISH;
+		}
+		if (language == Language.FRENCH.getLanguage()) {
+			return Language.FRENCH;
+		}
+		return Language.ENGLISH;
 	}
 
 	/**

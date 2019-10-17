@@ -87,8 +87,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.3
- * @since 09/08/19
+ * @version 21.4
+ * @since 17/10/19
  */
 
 public final class Program {
@@ -196,7 +196,7 @@ public final class Program {
 					putGlobalConfigString(key, properties.getProperty(key));
 				}
 			}
-			LanguageFileLoader.getInstance().loadLanguageFiles('U');
+			LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 		}
 		catch (Exception e) {
 			showException(e);
@@ -211,7 +211,7 @@ public final class Program {
 			if(!f.exists()) {
 				f.createNewFile();
 			}
-			LanguageFileLoader.getInstance().loadLanguageFiles('U');
+			LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 
 			if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
 				putGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
@@ -324,18 +324,16 @@ public final class Program {
 
 	/**
 	 * setLanguage
-	 * @param lang String
-	 * @return boolean
+	 * @param lang Language
 	 */
-	static boolean setLanguage(char lang) {
+	static void setLanguage(LanguageFileLoader.Language lang) {
 		Debug("Program: Set Language : "+lang);
 		TABBED_PANE.removeAll();
 		clearObjectsVariables();
-		boolean load = LanguageFileLoader.getInstance().loadLanguageFiles(lang);
+		LanguageFileLoader.getInstance().loadLanguageFiles(lang);
 		PANEL_INFOS.setLabels();
 		Start.getInstance().updateLabels();
 		Start.getInstance().updateMainPanel();
-		return load;
 	}
 
 	public static void showException(Exception e) {
@@ -370,14 +368,16 @@ public final class Program {
 		if (bDebug) {
 			e.printStackTrace();
 		}
-		try {
-			oDebugFile.flush();
-			oDebugFile.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		if (debugFile != null) {
+			try {
+				oDebugFile.flush();
+				oDebugFile.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			sendMail(error, debugFile);
+			oDebugFile = null;
 		}
-		sendMail(error, debugFile);
-		oDebugFile = null;
 
 		if (_bShowWindowErrorAndExit) {
 			System.exit(999);
@@ -1438,8 +1438,16 @@ public final class Program {
 		}
 	}
 
-	static String getLanguage(String _id) {
-		return LanguageFileLoader.getLanguage(_id);
+	static List<String> getLanguages() {
+		return LanguageFileLoader.getLanguages();
+	}
+
+	static int getLanguageIndex(String language) {
+		return LanguageFileLoader.getLanguageIndex(language);
+	}
+
+	static String getLanguage(int val) {
+		return LanguageFileLoader.getLanguageFromIndex(val);
 	}
 
 	public static void open(File file) {

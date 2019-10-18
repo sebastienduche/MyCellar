@@ -1,8 +1,12 @@
 package mycellar.core;
 
+import mycellar.Program;
+
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import java.awt.Font;
+
+import static mycellar.core.LabelType.INFO;
 
 /**
  * Titre : Cave à vin
@@ -11,8 +15,8 @@ import java.awt.Font;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.2
- * @since 08/06/18
+ * @version 0.3
+ * @since 18/10/19
  */
 
 public class MyCellarLabel extends JLabel {
@@ -26,6 +30,11 @@ public class MyCellarLabel extends JLabel {
 
 	public MyCellarLabel(String text) {
 		super(text);
+		setFont(FONT);
+	}
+
+	public MyCellarLabel(LabelType type, String code) {
+		super(type == INFO ? Program.getLabel("Infos" + code) : Program.getLabel("Errors" + code));
 		setFont(FONT);
 	}
 

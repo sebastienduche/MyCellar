@@ -148,9 +148,7 @@ public class LanguageFileLoader {
 
 class UTF8Control extends Control {
 	@Override
-    public ResourceBundle newBundle
-        (String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
-            throws IOException
+    public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload) throws IOException
     {
         // The below is a copy of the default implementation.
         String bundleName = toBundleName(baseName, locale);

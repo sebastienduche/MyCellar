@@ -16,14 +16,16 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.LinkedList;
 
+import static mycellar.core.LabelType.INFO;
+
 /**
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 06/01/19
+ * @version 1.1
+ * @since 18/10/19
  */
 
 public class ManageList extends JDialog {
@@ -35,9 +37,7 @@ public class ManageList extends JDialog {
 	public ManageList() {
 		setTitle(Program.getLabel("Infos400"));
 		defaultComboBox.addItem("");
-		for(String val : MyCellarBottleContenance.getList()) {
-			defaultComboBox.addItem(val);
-		}
+		MyCellarBottleContenance.getList().forEach(defaultComboBox::addItem);
 		defaultComboBox.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 		JTable table = new JTable(model);
 		TableColumnModel tcm = table.getColumnModel();
@@ -46,11 +46,11 @@ public class ManageList extends JDialog {
 		tc.setCellEditor(new StateEditor());
 		tc.setMaxWidth(30);
 		tc.setMinWidth(30);
-		final MyCellarLabel labelTitle = new MyCellarLabel(Program.getLabel("Infos403"));
-		final MyCellarLabel labelDefault = new MyCellarLabel(Program.getLabel("Infos146"));
-		final MyCellarButton add = new MyCellarButton(Program.getLabel("Infos071"));
-		final MyCellarButton close = new MyCellarButton(Program.getLabel("Infos019"));
-		final MyCellarButton remove = new MyCellarButton(Program.getLabel("Infos051"));
+		final MyCellarLabel labelTitle = new MyCellarLabel(INFO, "403");
+		final MyCellarLabel labelDefault = new MyCellarLabel(INFO, "146");
+		final MyCellarButton add = new MyCellarButton(INFO, "071", MyCellarImage.ADD);
+		final MyCellarButton close = new MyCellarButton(INFO, "019");
+		final MyCellarButton remove = new MyCellarButton(INFO,"051", MyCellarImage.DELETE);
 		setLayout(new MigLayout("","grow","[]30px[grow]20px[]30px[]"));
 		add(labelTitle,"center, wrap");
 		add(new JScrollPane(table),"grow,wrap");
@@ -91,7 +91,7 @@ public class ManageList extends JDialog {
 	}
 
 	private void add() {
-		String s = JOptionPane.showInputDialog(null, Program.getLabel("Infos289"),Program.getLabel("Infos402"),JOptionPane.QUESTION_MESSAGE);
+		String s = JOptionPane.showInputDialog(this, Program.getLabel("Infos289"),Program.getLabel("Infos402"),JOptionPane.QUESTION_MESSAGE);
 		if(null != s && !s.isEmpty()) {
 			model.addValue(s);
 			defaultComboBox.addItem(s);

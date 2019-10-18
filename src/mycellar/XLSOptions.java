@@ -40,7 +40,7 @@ class XLSOptions extends JDialog {
   /**
    * XLSOptions: Constructeur pour la fenêtre d'options.
    */
-  public XLSOptions() {
+  XLSOptions() {
 	  setModal(true);
 	  setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(Program.getLabel("Infos268"));
@@ -122,7 +122,6 @@ class XLSOptions extends JDialog {
     setLocationRelativeTo(Start.getInstance());
   }
 
-  //Accepter et Fermer le message
   /**
    * valider_actionPerformed: Valider les modifications et quitter.
    *

@@ -51,7 +51,6 @@ public class RangementUtils {
 	 *
 	 * @param fichier String: fichier CSV a ecrire
 	 * @param all List<Bouteille>: stock de bouteille
-	 *
 	 * @param progressBar
 	 * @return int
 	 */
@@ -260,6 +259,7 @@ public class RangementUtils {
 	 * @param file String: Fichier a ecrire.
 	 * @param bouteilles List<Bouteille>: Tableau de bouteilles a ecrire
 	 * @param isExit boolean: True si appel pour la creation automatique d'une sauvegarde Excel
+	 * @param progressBar JProgressBar
 	 *
 	 * @return boolean
 	 */

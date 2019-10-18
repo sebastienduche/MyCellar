@@ -29,7 +29,6 @@ import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.worksheet.WorkSheetData;
-import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
 import net.miginfocom.swing.MigLayout;
@@ -66,8 +65,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.0
- * @since 14/08/19
+ * @version 7.1
+ * @since 18/10/19
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -517,12 +516,11 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         }
       }
       if (cols.isEmpty()) {
-        cols = columns.stream().filter((field) -> {
-          return !field.getField().equals(MyCellarFields.VINEYARD)
-              && !field.getField().equals(MyCellarFields.AOC)
-              && !field.getField().equals(MyCellarFields.IGP)
-              && !field.getField().equals(MyCellarFields.COUNTRY);
-        }).collect(Collectors.toList());
+        cols = columns.stream().filter((field) ->
+            !field.getField().equals(MyCellarFields.VINEYARD)
+            && !field.getField().equals(MyCellarFields.AOC)
+            && !field.getField().equals(MyCellarFields.IGP)
+            && !field.getField().equals(MyCellarFields.COUNTRY)).collect(Collectors.toList());
       } else {
         cols.add(0, checkBoxStartColumn);
         cols.add(modifyButtonColumn);
@@ -1068,7 +1066,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     public void actionPerformed(ActionEvent e) {
       workingBottles.clear();
       Program.setModified();
-      Program.getStorage().setWorksheetList(new WorkSheetList());
+      Program.getStorage().getWorksheetList().clear();
       tv.setBottles(workingBottles);
     }
 

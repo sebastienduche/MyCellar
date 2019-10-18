@@ -38,8 +38,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 16/07/19
+ * @version 1.0
+ * @since 18/10/19
 
  * <p>Java class for anonymous complex type.
  *
@@ -138,7 +138,7 @@ public class HistoryList {
     Document doc = dBuilder.parse(f);
     doc.getDocumentElement().normalize();
 
-    HistoryList listeHistory = new HistoryList();
+    HistoryList listeHistory = Program.getHistoryList();
     NodeList historys = doc.getElementsByTagName("History");
 
     for (int i = 0; i < historys.getLength(); i++) {
@@ -163,7 +163,6 @@ public class HistoryList {
         listeHistory.getHistory().add(history);
       }
     }
-    Program.getStorage().setHistoryList(listeHistory);
     Debug("Loading Manually File Done");
   }
 
@@ -172,7 +171,7 @@ public class HistoryList {
     Unmarshaller u = jc.createUnmarshaller();
     HistoryList lb =
         (HistoryList)u.unmarshal(new FileInputStream(f));
-    Program.getStorage().setHistoryList(lb);
+    Program.getStorage().getHistoryList().getHistory().addAll(lb.getHistory());
     Debug("Loading JAXB File Done");
   }
 

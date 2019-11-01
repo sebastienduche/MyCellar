@@ -6,8 +6,12 @@ import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
+import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.datas.MyCellarBottleContenance;
@@ -87,8 +91,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.5
- * @since 18/10/19
+ * @version 21.6
+ * @since 01/11/19
  */
 
 public final class Program {
@@ -288,6 +292,10 @@ public final class Program {
 	 */
 	static void setLanguage(LanguageFileLoader.Language lang) {
 		Debug("Program: Set Language : " + lang);
+		MyCellarLabel.updateLabels();
+		MyCellarButton.updateLabels();
+		MyCellarCheckBox.updateLabels();
+		MyCellarRadioButton.updateLabels();
 		TABBED_PANE.removeAll();
 		clearObjectsVariables();
 		LanguageFileLoader.getInstance().loadLanguageFiles(lang);

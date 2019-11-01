@@ -3,6 +3,8 @@ package mycellar.core;
 import mycellar.Program;
 
 import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -17,8 +19,8 @@ import static mycellar.core.LabelType.INFO;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.2
- * @since 18/10/19
+ * @version 0.3
+ * @since 01/11/19
  */
 
 public class MyCellarButton extends JButton {
@@ -26,6 +28,12 @@ public class MyCellarButton extends JButton {
 	private static final long serialVersionUID = 8395284022737446765L;
 	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
+	private static final List<MyCellarButton> LABEL_LIST = new ArrayList<>();
+
+	private LabelType type;
+	private String code;
+
+	@Deprecated
 	public MyCellarButton() {
 		setFont(FONT);
 	}
@@ -41,7 +49,10 @@ public class MyCellarButton extends JButton {
 	}
 
 	public MyCellarButton(LabelType type, String code) {
-		super(type == INFO ? Program.getLabel("Infos" + code) : Program.getLabel("Errors" + code));
+		this.type = type;
+		this.code = code;
+		updateText();
+		LABEL_LIST.add(this);
 		setFont(FONT);
 	}
 
@@ -56,8 +67,32 @@ public class MyCellarButton extends JButton {
 	}
 
 	public MyCellarButton(LabelType type, String code, Icon icon) {
-		super(type == INFO ? Program.getLabel("Infos" + code) : Program.getLabel("Errors" + code), icon);
+		super(icon);
+		this.type = type;
+		this.code = code;
+		updateText();
 		setFont(FONT);
+	}
+
+	private void updateText() {
+		switch (type) {
+			case INFO:
+				setText(Program.getLabel("Infos" + code));
+				break;
+			case ERROR:
+				setText(Program.getError("Errors" + code));
+				break;
+			case INFO_OTHER:
+				setText(Program.getLabel(code));
+				break;
+			case ERROR_OTHER:
+				setText(Program.getError(code));
+				break;
+		}
+	}
+
+	public static void updateLabels() {
+		LABEL_LIST.forEach(MyCellarButton::updateText);
 	}
 
 }

@@ -1,46 +1,43 @@
 package mycellar.core;
 
-import javax.swing.Action;
-import javax.swing.Icon;
+import mycellar.Program;
+
 import javax.swing.JRadioButton;
 import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Titre : Cave à vin
+ * Titre : Cave &agrave; vin
  * Description : Votre description
  * Copyright : Copyright (c) 2011
- * Société : Seb Informatique
- * 
- * @author Sébastien Duché
- * @version 0.2
- * @since 08/06/18
+ * Soci&eacute;t&eacute; : Seb Informatique
+ *
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.3
+ * @since 01/11/19
  */
 public class MyCellarRadioButton extends JRadioButton {
 
 	private static final long serialVersionUID = 5420315767498997450L;
 	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
+	private static final List<MyCellarRadioButton> LABEL_LIST = new ArrayList<>();
 
+	private LabelType type;
+	private String code;
+
+	@Deprecated
 	public MyCellarRadioButton() {
 		setFont(FONT);
 	}
 
-	public MyCellarRadioButton(Icon icon) {
-		super(icon);
-		setFont(FONT);
-	}
-
-	public MyCellarRadioButton(Action a) {
-		super(a);
-		setFont(FONT);
-	}
-
-	public MyCellarRadioButton(String text) {
-		super(text);
-		setFont(FONT);
-	}
-
-	public MyCellarRadioButton(Icon icon, boolean selected) {
-		super(icon, selected);
+	public MyCellarRadioButton(LabelType type, String code, boolean selected) {
+		super("", selected);
+		this.type = type;
+		this.code = code;
+		updateText();
+		LABEL_LIST.add(this);
 		setFont(FONT);
 	}
 
@@ -49,14 +46,24 @@ public class MyCellarRadioButton extends JRadioButton {
 		setFont(FONT);
 	}
 
-	public MyCellarRadioButton(String text, Icon icon) {
-		super(text, icon);
-		setFont(FONT);
+	private void updateText() {
+		switch (type) {
+			case INFO:
+				setText(Program.getLabel("Infos" + code));
+				break;
+			case ERROR:
+				setText(Program.getError("Errors" + code));
+				break;
+			case INFO_OTHER:
+				setText(Program.getLabel(code));
+				break;
+			case ERROR_OTHER:
+				setText(Program.getError(code));
+				break;
+		}
 	}
 
-	public MyCellarRadioButton(String text, Icon icon, boolean selected) {
-		super(text, icon, selected);
-		setFont(FONT);
+	public static void updateLabels() {
+		LABEL_LIST.forEach(MyCellarRadioButton::updateText);
 	}
-
 }

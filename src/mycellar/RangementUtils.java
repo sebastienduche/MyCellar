@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,8 +38,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 09/08/19
+ * @version 2.4
+ * @since 01/11/19
  */
 public class RangementUtils {
 
@@ -68,7 +67,7 @@ public class RangementUtils {
 		boolean cle6 = Program.getCaveConfigBool("SIZE_COL6EXPORT_CSV", true);
 		boolean cle7 = Program.getCaveConfigBool("SIZE_COL7EXPORT_CSV", true);
 		boolean cle8 = Program.getCaveConfigBool("SIZE_COL8EXPORT_CSV", true);
-		final HashMap<MyCellarFields, Boolean> map = new HashMap<>();
+		final EnumMap<MyCellarFields, Boolean> map = new EnumMap<>(MyCellarFields.class);
 		for (var field : MyCellarFields.getFieldsList()) {
 			map.put(field, Program.getCaveConfigBool(MyCellarSettings.EXPORT_CSV + field.name(), false));
 		}
@@ -291,7 +290,7 @@ public class RangementUtils {
 		EnumMap<MyCellarFields, Boolean> mapCle = new EnumMap<>(MyCellarFields.class);
 
 		//Recuperation des colonnes a exporter
-		ArrayList<MyCellarFields> fields = MyCellarFields.getFieldsList();
+		List<MyCellarFields> fields = MyCellarFields.getFieldsList();
 		int i=0;
 		for(MyCellarFields field : fields) {
 			mapCle.put(field, Program.getCaveConfigBool(MyCellarSettings.SIZE_COL+i+"EXPORT_XLS", true));

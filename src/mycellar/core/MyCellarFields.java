@@ -6,6 +6,7 @@ import mycellar.countries.Countries;
 import mycellar.countries.Country;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,8 +15,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 09/08/19
+ * @version 1.1
+ * @since 01/11/19
  */
 
 public enum MyCellarFields {
@@ -102,17 +103,11 @@ public enum MyCellarFields {
   }
 
 	public static boolean hasSpecialHTMLCharacters(MyCellarFields field) {
-		if(field == null) {
-			return false;
-		}
-		return field.equals(NAME) || field.equals(TYPE) || field.equals(COMMENT) || field.equals(PRICE) || field.equals(PLACE);
+		return field != null && (field.equals(NAME) || field.equals(TYPE) || field.equals(COMMENT) || field.equals(PRICE) || field.equals(PLACE));
 	}
 
 	public static boolean isRealField(MyCellarFields field) {
-		if(field == null) {
-			return false;
-		}
-		return !(field.equals(EMPTY) || field.equals(USELESS));
+		return field != null && !(field.equals(EMPTY) || field.equals(USELESS));
 	}
 
   @Override
@@ -120,35 +115,21 @@ public enum MyCellarFields {
 		return label;
 	}
 	
-	private static final ArrayList<MyCellarFields> FIELDS = new ArrayList<>();
-	
-	public static ArrayList<MyCellarFields> getFieldsList() {
-		if(FIELDS.isEmpty()) {
-    		getFieldsListForImportAndWorksheet();
-		}
-		FIELDS.add(STATUS);
+	private static final List<MyCellarFields> FIELDSFORIMPORT = Arrays.asList(
+			NAME, YEAR, TYPE, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, MATURITY, PARKER, COLOR,
+			COUNTRY, VINEYARD, AOC, IGP
+	);
+
+	private static final List<MyCellarFields> FIELDS = Arrays.asList(
+			NAME, YEAR, TYPE, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, MATURITY, PARKER, COLOR,
+			COUNTRY, VINEYARD, AOC, IGP, STATUS
+	);
+
+	public static List<MyCellarFields> getFieldsList() {
 		return FIELDS;
 	}
 
 	public static List<MyCellarFields> getFieldsListForImportAndWorksheet() {
-		if(FIELDS.isEmpty()) {
-			FIELDS.add(NAME);
-			FIELDS.add(YEAR);
-			FIELDS.add(TYPE);
-			FIELDS.add(PLACE);
-			FIELDS.add(NUM_PLACE);
-			FIELDS.add(LINE);
-			FIELDS.add(COLUMN);
-			FIELDS.add(PRICE);
-			FIELDS.add(COMMENT);
-			FIELDS.add(MATURITY);
-			FIELDS.add(PARKER);
-			FIELDS.add(COLOR);
-			FIELDS.add(COUNTRY);
-			FIELDS.add(VINEYARD);
-			FIELDS.add(AOC);
-			FIELDS.add(IGP);
-		}
-		return FIELDS;
+		return FIELDSFORIMPORT;
 	}
 }

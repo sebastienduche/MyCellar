@@ -65,8 +65,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.1
- * @since 18/10/19
+ * @version 7.2
+ * @since 09/11/19
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -377,7 +377,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle"), b.getNom()));
           return false;
         }
-        Start.getInstance().showBottle(b, true);
+        Program.showBottle(b, true);
         return false;
       }
     };
@@ -819,7 +819,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           Erreur.showSimpleErreur(Program.getError("Error154"));
         } else {
           if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-            Start.getInstance().showBottle(b, true);
+            Program.showBottle(b, true);
           }
         }
       }

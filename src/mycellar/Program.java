@@ -42,6 +42,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.io.BufferedInputStream;
@@ -91,8 +93,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.6
- * @since 01/11/19
+ * @version 21.7
+ * @since 09/11/19
  */
 
 public final class Program {
@@ -1978,9 +1980,39 @@ public final class Program {
 			return;
 		}
 		if (listToModify.size() == 1) {
-			Start.getInstance().showBottle(listToModify.getFirst(), true);
+			showBottle(listToModify.getFirst(), true);
 		} else {
 			new OpenAddVinAction(listToModify).actionPerformed(null);
+		}
+	}
+	
+	public static void showBottle(Bouteille bottle, boolean edit) {
+		for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+			Component tab = TABBED_PANE.getComponentAt(i);
+			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
+				TABBED_PANE.setSelectedIndex(i);
+				return;
+			}
+		}
+		ManageBottle manage = new ManageBottle(bottle);
+		manage.enableAll(edit);
+		String bottleName = bottle.getNom();
+		if (bottleName.length() > 30) {
+			bottleName = bottleName.substring(0, 30) + " ...";
+		}
+		TABBED_PANE.addTab(bottleName, MyCellarImage.WINE, manage);
+		TABBED_PANE.setSelectedIndex(TABBED_PANE.getTabCount() - 1);
+		Utils.addCloseButton(TABBED_PANE, manage);
+		Start.getInstance().updateMainPanel();
+	}
+
+	static void removeBottleTab(Bouteille bottle) {
+		for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+			Component tab = TABBED_PANE.getComponentAt(i);
+			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
+				TABBED_PANE.removeTabAt(i);
+				return;
+			}
 		}
 	}
 

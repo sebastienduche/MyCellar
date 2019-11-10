@@ -47,8 +47,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 20.3
- * @since 14/08/19
+ * @version 20.4
+ * @since 09/11/19
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -303,7 +303,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					Program.getStorage().addHistory(History.DEL, bottle);
 					Program.getStorage().deleteWine(bottle);
 					Program.setToTrash(bottle);
-					Start.removeBottleTab(bottle);
+					Program.removeBottleTab(bottle);
 				}
 
 				RangementUtils.putTabStock();

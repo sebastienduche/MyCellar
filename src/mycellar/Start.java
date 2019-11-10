@@ -35,7 +35,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.function.Predicate;
 import java.util.prefs.Preferences;
@@ -47,8 +46,8 @@ import java.util.prefs.Preferences;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.8
- * @since 17/10/19
+ * @version 25.9
+ * @since 09/11/19
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1096,31 +1095,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	public void showBottle(Bouteille bottle, boolean edit) {
-		for (int i = 0; i < Program.TABBED_PANE.getTabCount(); i++) {
-			Component tab = Program.TABBED_PANE.getComponentAt(i);
-			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
-				Program.TABBED_PANE.setSelectedIndex(i);
-				return;
-			}
-		}
-		ManageBottle manage = new ManageBottle(bottle);
-		manage.enableAll(edit);
-		Program.TABBED_PANE.addTab(bottle.getNom(), MyCellarImage.WINE, manage);
-		Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount() - 1);
-		Utils.addCloseButton(Program.TABBED_PANE, manage);
-		updateMainPanel();
-	}
-
-	static void removeBottleTab(Bouteille bottle) {
-		for (int i = 0; i < Program.TABBED_PANE.getTabCount(); i++) {
-			Component tab = Program.TABBED_PANE.getComponentAt(i);
-			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
-				Program.TABBED_PANE.removeTabAt(i);
-				return;
-			}
-		}
-	}
+	
 	
 	void removeCurrentTab() {
 		Program.TABBED_PANE.removeTabAt(Program.TABBED_PANE.getSelectedIndex());

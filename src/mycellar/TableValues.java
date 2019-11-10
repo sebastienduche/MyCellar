@@ -11,8 +11,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 14/08/18
+ * @version 2.6
+ * @since 09/11/19
  */
 class TableValues extends AbstractTableModel {
 
@@ -123,7 +123,7 @@ class TableValues extends AbstractTableModel {
 		switch (column) {
 		case SHOW:
 			Bouteille bottle = monVector.get(row);
-			Start.getInstance().showBottle(bottle, true);
+			Program.showBottle(bottle, true);
 			break;
 		case ETAT:
 			listBoolean.set(row, (Boolean)value);

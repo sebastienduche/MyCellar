@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class MyCellarVersion {
 
-	public static final String VERSION = "3.4.5.6";
+	public static final String VERSION = "3.4.6.2";
 	public static final String MAIN_VERSION = Program.VERSION + " BD";
 
 	public static String getLocalVersion() {

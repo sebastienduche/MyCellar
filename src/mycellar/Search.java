@@ -4,6 +4,7 @@ import mycellar.actions.OpenWorkSheetAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -47,16 +48,16 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 20.4
- * @since 09/11/19
+ * @version 20.5
+ * @since 06/12/19
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
 	private static final long serialVersionUID = 8497660112193602839L;
 	private final JTable table;
 	private static final TableValues MODEL = new TableValues();
-	private static final MyCellarLabel TXT_NBRESUL = new MyCellarLabel();
-	private static final MyCellarLabel TXT_NB = new MyCellarLabel();
+	private static final MyCellarLabel TXT_NBRESUL = new MyCellarLabel(LabelType.INFO, "222"); //"Bouteille(s) trouvee(s): ");
+	private static final MyCellarLabel TXT_NB = new MyCellarLabel("-");
 	private final MyCellarButton suppr = new MyCellarButton(MyCellarImage.DELETE);
 	private final MyCellarButton export = new MyCellarButton(MyCellarImage.EXPORT);
 	private final MyCellarButton modif = new MyCellarButton(MyCellarImage.WINE);
@@ -65,13 +66,13 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 	private final MyCellarComboBox<String> column = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> line = new MyCellarComboBox<>();
 	private final MyCellarComboBox<String> year = new MyCellarComboBox<>();
-	private final MyCellarLabel label3 = new MyCellarLabel();
-	private final MyCellarLabel label4 = new MyCellarLabel();
-	private final MyCellarLabel label5 = new MyCellarLabel();
-	private final MyCellarLabel label6 = new MyCellarLabel();
+	private final MyCellarLabel label3 = new MyCellarLabel(LabelType.INFO, "081"); // Emplacement
+	private final MyCellarLabel label4 = new MyCellarLabel(LabelType.INFO, "082"); // Numero lieu
+	private final MyCellarLabel label5 = new MyCellarLabel(LabelType.INFO, "028"); // Ligne
+	private final MyCellarLabel label6 = new MyCellarLabel(LabelType.INFO, "083"); // Colonne
 	private final TextFieldPopup name;
-	private final MyCellarButton cherche = new MyCellarButton(MyCellarImage.SEARCH);
-	private final MyCellarButton vider = new MyCellarButton();
+	private final MyCellarButton cherche = new MyCellarButton(LabelType.INFO, "084", MyCellarImage.SEARCH); // Cherche
+	private final MyCellarButton vider = new MyCellarButton(LabelType.INFO, "220"); // Effacer resultats
 	private final char RECHERCHE = Program.getLabel("RECHERCHE").charAt(0);
 	private final char MODIF = Program.getLabel("MODIF").charAt(0);
 	private final char SUPPR = Program.getLabel("SUPPR").charAt(0);
@@ -81,13 +82,13 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 	private final String label_empl = Program.getLabel("Infos101"); //"Tous les vins de l'emplacement");
 	private final String label_num_empl = Program.getLabel("Infos102"); //"Tous les vins du lieu");
 	private final String label_ligne = Program.getLabel("Infos103"); //"Tous les vins de la ligne");
-	private final MyCellarCheckBox selectall = new MyCellarCheckBox();
+	private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126"); // Tout selectionner
 	private final MyCellarButton addToWorksheet = new MyCellarButton(MyCellarImage.WORK);
-	private final MyCellarCheckBox empty_search = new MyCellarCheckBox();
+	private final MyCellarCheckBox empty_search = new MyCellarCheckBox(LabelType.INFO, "275"); //Vider automatiquement
 	private final MouseListener popup_l = new PopupListener();
 	private final JTabbedPane tabbedPane = new JTabbedPane();
-	private PanelYear panelYear;
-	private final PanelRequest panelRequest;
+	private final PanelYear panelYear = new PanelYear();
+	private final PanelRequest panelRequest = new PanelRequest();
 	private boolean updateView = false;
 	private final JMenuItem moveLine = new JMenuItem(Program.getLabel("Infos365"));
 
@@ -97,8 +98,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 	public Search() {
 
 		Debug("Constructor");
-		TXT_NB.setText("-");
-		TXT_NBRESUL.setText(Program.getLabel("Infos222")); //"Bouteille(s) trouvee(s): ");
 
 		if (Program.getCaveConfigBool(MyCellarSettings.EMPTY_SEARCH, false)) {
 			empty_search.setSelected(true);
@@ -119,8 +118,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
 		export.setText(Program.getLabel("Infos120")); //"Exporter le resultat");
 		export.setMnemonic(EXPORT);
-		selectall.setText(Program.getLabel("Infos126")); //"Tout selectionner");
-		empty_search.setText(Program.getLabel("Infos275")); //Vider automatiquement
 		selectall.setHorizontalAlignment(SwingConstants.RIGHT);
 		selectall.setHorizontalTextPosition(SwingConstants.LEFT);
 
@@ -131,7 +128,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 		export.addActionListener(this::export_actionPerformed);
 		suppr.setText(Program.getLabel("Infos051")); //"Supprimer");
 		suppr.setMnemonic(SUPPR);
-		MyCellarLabel textControl2 = new MyCellarLabel(Program.getLabel("Infos080")); //"Selectionner un(des) vin(s) dans la liste. Cliquer sur \"Modifier\" ou \"Supprimer\"");
+		MyCellarLabel infoLabel = new MyCellarLabel(LabelType.INFO, "080"); //"Selectionner un(des) vin(s) dans la liste. Cliquer sur \"Modifier\" ou \"Supprimer\"");
 		modif.setText(Program.getLabel("Infos079")); //"Modifier");
 		modif.setMnemonic(MODIF);
 		if (MODEL.getRowCount() == 0) {
@@ -144,15 +141,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
 		table = new JTable(MODEL);
 		table.setAutoCreateRowSorter(true);
-		label3.setText(Program.getLabel("Infos081")); //"Emplacement du vin");
-		label4.setText(Program.getLabel("Infos082")); //"Numero du lieu");
-		label5.setText(Program.getLabel("Infos028")); //"Ligne");
-		label6.setText(Program.getLabel("Infos083")); //"Colonne");
 		cherche.addActionListener(this::cherche_actionPerformed);
-		cherche.setText(Program.getLabel("Infos084")); //"Chercher");
 		cherche.setMnemonic(RECHERCHE);
 		vider.addActionListener(this::vider_actionPerformed);
-		vider.setText(Program.getLabel("Infos220")); //"Effacer les resultats");
 		line.addItemListener(this::line_itemStateChanged);
 		lieu.addItemListener(this::lieu_itemStateChanged);
 
@@ -220,12 +211,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
 		setLayout(new MigLayout("","[grow][]","[]10px[][grow][]"));
 
-		JPanel panelName = new PanelName();
-		panelYear = new PanelYear();
-		JPanel panelPlace = new PanelPlace();
-		panelRequest = new PanelRequest();
-		tabbedPane.add(Program.getLabel("Infos077"), panelName);
-		tabbedPane.add(Program.getLabel("Infos078"), panelPlace);
+		tabbedPane.add(Program.getLabel("Infos077"), new PanelName());
+		tabbedPane.add(Program.getLabel("Infos078"), new PanelPlace());
 		tabbedPane.add(Program.getLabel("Infos219"), panelYear);
 		tabbedPane.add(Program.getLabel("Infos318"), panelRequest);
 		add(tabbedPane,"growx");
@@ -234,7 +221,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 		add(addToWorksheet,"alignx left, aligny top");
 		add(selectall,"wrap, alignx right, aligny top");
 
-		add(textControl2, "wrap, span 2, alignx center");
+		add(infoLabel, "wrap, span 2, alignx center");
 		add(resul_txt,"wrap, span 2, alignx center");
 		add(modif, "split, span 2, align center");
 		add(suppr, "wrap");
@@ -508,28 +495,16 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 		String search = name.getText();
 		MODEL.removeAll();
 		Debug("Preparing statement...");
-		int index = search.indexOf("*");
-		int lastIndex = 0;
-		StringBuilder regex = new StringBuilder();
-		while (index != -1) {
-			regex.append(search, lastIndex, index);
-			regex.append(".{0,}");
-			lastIndex = index + 1;
-			index = search.indexOf("*", index + 1);
-		}
-		regex.append(search.substring(lastIndex));
 
-		search = regex.toString();
-		regex = new StringBuilder();
-		index = search.indexOf("?");
-		lastIndex = 0;
-		while (index != -1) {
-			regex.append(search, lastIndex, index);
-			regex.append(".{1}");
-			lastIndex = index + 1;
-			index = search.indexOf("*", index + 1);
-		}
-		regex.append(search.substring(lastIndex));
+		StringBuilder regex = new StringBuilder(search);
+		regex = replaceCharInSearch(regex, "*", ".{0,}");
+		regex = replaceCharInSearch(regex, "?", ".{1}");
+		// Replace $ in the regexp
+		regex = replaceCharInSearch(regex, "$", "\\$");
+		regex = replaceCharInSearch(regex, "^", "\\^");
+		regex = replaceCharInSearch(regex, "(", "\\(");
+		regex = replaceCharInSearch(regex, ")", "\\)");
+		regex = replaceCharInSearch(regex, "\\", "\\\\");
 
 		final String regexToSearch = regex.toString();
 		Debug("Searching with regexp: " + regexToSearch);
@@ -553,6 +528,21 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 		}
 		resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminee.");
 		return already_found;
+	}
+
+	private StringBuilder replaceCharInSearch(StringBuilder regex, String searchValue, String replaceValue) {
+		int lastIndex = 0;
+		String search = regex.toString();
+		regex = new StringBuilder();
+		int index = search.indexOf(searchValue);
+		while (index != -1) {
+			regex.append(search, lastIndex, index);
+			regex.append(replaceValue);
+			lastIndex = index + 1;
+			index = search.indexOf(searchValue, index + 1);
+		}
+		regex.append(search.substring(lastIndex));
+		return regex;
 	}
 
 

@@ -100,7 +100,7 @@ import java.util.zip.ZipOutputStream;
 public final class Program {
 
 
-	public static final int VERSION = 60;
+	public static final int VERSION = 61;
 
 	// Manage cave config
 	private static MyLinkedHashMap configCave = null;

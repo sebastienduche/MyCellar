@@ -11,7 +11,7 @@ import java.io.IOException;
 public class MyCellarVersion {
 
 	public static final String VERSION = "3.4.6.3";
-	public static final String MAIN_VERSION = Program.VERSION + " BD";
+	public static final String MAIN_VERSION = Program.VERSION + " NL";
 
 	public static String getLocalVersion() {
 		// In directory bin

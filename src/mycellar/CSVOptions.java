@@ -15,23 +15,23 @@ import javax.swing.JScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 2.1
- * @since 28/12/18
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 2.2
+ * @since 01/11/19
  */
-class CSVOptions extends JDialog {
+final class CSVOptions extends JDialog {
 	private final MyCellarCheckBox[] export;
 	private final MyCellarComboBox<String> separator = new MyCellarComboBox<>();
 	private final int nb_colonnes;
 	static final long serialVersionUID = 230705;
-	private final ArrayList<MyCellarFields> listColumns;
+	private final List<MyCellarFields> listColumns;
 
 	/**
 	 * CSVOptions: Constructeur pour la fenêtre d'options.

@@ -1,5 +1,7 @@
 package mycellar.core;
 
+import mycellar.Program;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,9 +10,8 @@ import java.io.IOException;
 
 public class MyCellarVersion {
 
-	public static final String VERSION = "3.4.1.9";
-	public static final String NUMERIC_VERSION = "60";
-	public static final String MAIN_VERSION = NUMERIC_VERSION + " BD";
+	public static final String VERSION = "3.4.6.3";
+	public static final String MAIN_VERSION = Program.VERSION + " NL";
 
 	public static String getLocalVersion() {
 		// In directory bin

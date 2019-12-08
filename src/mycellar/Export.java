@@ -43,8 +43,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.6
- * @since 08/08/19
+ * @version 8.7
+ * @since 01/11/19
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -250,8 +250,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			ef.setAlwaysOnTop(true);
 			ef.setVisible(true);
 			options.setSelected(false);
-		}
-		else if (MyCellarRadioButtonXLS.isSelected()) {
+		} else if (MyCellarRadioButtonXLS.isSelected()) {
 			XLSOptions xf = new XLSOptions();
 			xf.setAlwaysOnTop(true);
 			xf.setVisible(true);
@@ -262,9 +261,8 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			cf.setVisible(true);
 			options.setSelected(false);
 		}	else if(MyCellarRadioButtonHTML.isSelected()) {
-			ArrayList<MyCellarFields> list = MyCellarFields.getFieldsList();
-			ArrayList<MyCellarFields> cols = Program.getHTMLColumns();
-			ManageColumnModel modelColumn = new ManageColumnModel(list, cols);
+			List<MyCellarFields> fieldsList = MyCellarFields.getFieldsList();
+			ManageColumnModel modelColumn = new ManageColumnModel(fieldsList, Program.getHTMLColumns());
 			JTable table = new JTable(modelColumn);
 			TableColumnModel tcm = table.getColumnModel();
 			TableColumn tc = tcm.getColumn(0);
@@ -275,10 +273,10 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			JPanel panel = new JPanel();
 			panel.add(new JScrollPane(table));
 			JOptionPane.showMessageDialog(this, panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
-			cols = new ArrayList<>();
 			Program.setModified();
 			List<Integer> properties = modelColumn.getSelectedColumns();
-			for (MyCellarFields c : list) {
+			List<MyCellarFields> cols = new ArrayList<>();
+			for (MyCellarFields c : fieldsList) {
 				if (properties.contains(c.ordinal())) {
           cols.add(c);
         }
@@ -339,7 +337,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			File aFile = new File(nom);
 			if (aFile.exists()) {
 				// Existing file. replace?
-				if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getError("Export.replaceFileQuestion"), aFile.getAbsolutePath()), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+				if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getError("Export.replaceFileQuestion"), aFile.getAbsolutePath()), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					end.setText("");
 					valider.setEnabled(true);
 					return;
@@ -360,9 +358,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					ok = ListeBouteille.writeXML(aFile);
 				}	else {
 					ListeBouteille liste = new ListeBouteille();
-					for (Bouteille b: bottles) {
-						liste.getBouteille().add(b);
-					}
+					bottles.forEach(bouteille -> liste.getBouteille().add(bouteille));
 					ok = ListeBouteille.writeXML(liste, aFile);
 				}
 				if (ok) {

@@ -15,8 +15,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 09/08/19
+ * @version 2.3
+ * @since 09/11/19
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -188,14 +188,14 @@ class TableHistoryValues extends AbstractTableModel {
         History h = displayList.get(row);
         Bouteille bottle = h.getBouteille();
         if(h.isDeleted()) {
-          Start.getInstance().showBottle(bottle, false);
+          Program.showBottle(bottle, false);
         } else {
         	Optional<Bouteille> optional = Program.getStorage().getListBouteilles().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst();
         	Program.Debug("Bottle Get ID = "+bottle.getId());
         	if(optional.isPresent()) {
-            Start.getInstance().showBottle(optional.get(), true);
+            Program.showBottle(optional.get(), true);
           } else {
-            Start.getInstance().showBottle(bottle, false);
+            Program.showBottle(bottle, false);
           }
         }
       break;

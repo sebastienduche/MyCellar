@@ -123,6 +123,14 @@ public class Appelation implements Comparable<Appelation> {
 
 	@Override
 	public int compareTo(Appelation appelation) {
-		return getAOC().compareTo(appelation.getAOC());
+		String aoc = getAOC();
+		if (aoc == null) {
+			aoc = "";
+		}
+		String appelationAoc = appelation.getAOC();
+		if (appelationAoc == null) {
+			appelationAoc = "";
+		}
+		return aoc.compareTo(appelationAoc);
 	}
 }

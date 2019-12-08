@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -108,7 +109,7 @@ class MyCellarFieldsTest {
 
 	@Test
 	void testGetFieldsList() {
-		ArrayList<MyCellarFields> list = MyCellarFields.getFieldsList();
+		List<MyCellarFields> list = MyCellarFields.getFieldsList();
 		assertTrue(list.contains(MyCellarFields.NAME));
 		assertTrue(list.contains(MyCellarFields.PLACE));
 		assertTrue(list.contains(MyCellarFields.NUM_PLACE));

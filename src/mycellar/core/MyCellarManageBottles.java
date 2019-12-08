@@ -30,8 +30,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 13/08/19
+ * @version 2.8
+ * @since 18/10/19
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -211,14 +211,10 @@ public abstract class MyCellarManageBottles extends JPanel {
 		if (m_annee_auto.isSelected() && annee.length() == 2) {
 			int n = Program.getCaveConfigInt(MyCellarSettings.ANNEE, 50);
 			int siecle = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20);
-			try {
-				if(Integer.parseInt(annee) > n) {
-					annee = (siecle - 1) + annee;
-				} else {
-					annee = siecle + annee;
-				}
-			}	catch (NumberFormatException e) {
-				// On doit deja avoir eu un message d'erreur avant
+			if(Program.safeParseInt(annee, -1) > n) {
+				annee = (siecle - 1) + annee;
+			} else {
+				annee = siecle + annee;
 			}
 		}
 		return annee;

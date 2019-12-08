@@ -6,8 +6,12 @@ import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
+import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.datas.MyCellarBottleContenance;
@@ -38,6 +42,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.io.BufferedInputStream;
@@ -87,11 +93,14 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.3
- * @since 09/08/19
+ * @version 21.7
+ * @since 09/11/19
  */
 
 public final class Program {
+
+
+	public static final int VERSION = 61;
 
 	// Manage cave config
 	private static MyLinkedHashMap configCave = null;
@@ -157,7 +166,7 @@ public final class Program {
 	private static final String MY_CELLAR_XML = "MyCellar.xml";
 	private static final String TYPES_XML = "Types.xml";
 	private static final String BOUTEILLES_XML = "Bouteilles.xml";
-	private static final String INTERNAL_VERSION = "2.5";
+	private static final String CONFIG_INI = "config.ini";
 	static final String EXTENSION = ".sinfo";
 
 	private static boolean bYearControlCalculated = false;
@@ -196,7 +205,7 @@ public final class Program {
 					putGlobalConfigString(key, properties.getProperty(key));
 				}
 			}
-			LanguageFileLoader.getInstance().loadLanguageFiles('U');
+			LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 		}
 		catch (Exception e) {
 			showException(e);
@@ -211,10 +220,10 @@ public final class Program {
 			if(!f.exists()) {
 				f.createNewFile();
 			}
-			LanguageFileLoader.getInstance().loadLanguageFiles('U');
+			LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 
 			if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
-				putGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
+				putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
 			}
 			cleanAndUpgrade();
 		}
@@ -232,10 +241,10 @@ public final class Program {
 	}
 
 	private static String getConfigFilePath() {
-		return getWorkDir(true) + "config.ini";
+		return getWorkDir(true) + CONFIG_INI;
 	}
 	private static String getGlobalConfigFilePath() {
-		return getGlobalDir() + "config.ini";
+		return getGlobalDir() + CONFIG_INI;
 	}
 
 	private static void loadProperties() throws IOException {
@@ -270,72 +279,31 @@ public final class Program {
 	 */
 	private static void cleanAndUpgrade() {
 		String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
-		if(sVersion.isEmpty()) {
-			putCaveConfigString(MyCellarSettings.VERSION, INTERNAL_VERSION);
+		if(sVersion.isEmpty() || sVersion.contains(".")) {
+			putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
 			return;
 		}
-		int n1 = Integer.parseInt(sVersion.substring(0,1));
-		int n2 = Integer.parseInt(sVersion.substring(2,3));
-		int val = n1*10 + n2;
-		// Affichage du nombre avec 2 decimales.
-		if (val < 24) {
-			Debug("Program: Updating to internal version 2.4");
-			Debug("Program: WARNING: Destroying old files");
-			File years = new File(getWorkDir(true) + "Years.xml");
-			if(years.exists()) {
-				FileUtils.deleteQuietly(years);
-			}
-			File f1 = new File( getWorkDir(true) + "static_col.sinfo");
-			FileUtils.deleteQuietly(f1);
-			
-			putCaveConfigString(MyCellarSettings.VERSION, INTERNAL_VERSION);
-		}
-		if (val < 25) {
-			Debug("Program: Updating to internal version 2.5");
-			if(hasConfigCaveKey("PRICE_SEPARATOR")) {
-				getCaveConfig().remove("PRICE_SEPARATOR");
-			}
-			if(hasConfigCaveKey("JUST_ONE_PLACE")) {
-				getCaveConfig().remove("JUST_ONE_PLACE");
-			}
-			if(hasConfigCaveKey("JUST_ONE_NUM_PLACE")) {
-				getCaveConfig().remove("JUST_ONE_NUM_PLACE");
-			}
-			if(hasConfigCaveKey("SEARCH_DEFAULT")) {
-				getCaveConfig().remove("SEARCH_DEFAULT");
-			}
-			if(hasConfigCaveKey("XML_TYPE")) {
-				getCaveConfig().remove("XML_TYPE");
-			}
 
-			putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, !getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
-			putCaveConfigBool(MyCellarSettings.BOLD, "bold".equals(getCaveConfigString(MyCellarSettings.BOLD, "")));
-			putCaveConfigBool(MyCellarSettings.BOLD_XLS, "bold".equals(getCaveConfigString(MyCellarSettings.BOLD_XLS, "")));
-			putCaveConfigBool(MyCellarSettings.BOLD_TAB_XLS, "bold".equals(getCaveConfigString(MyCellarSettings.BOLD_TAB_XLS, "")));
-			putCaveConfigString(MyCellarSettings.VERSION, INTERNAL_VERSION);
-		}
-		if(hasConfigCaveKey(MyCellarSettings.EXPORT_CSV + MyCellarFields.NAME.name())) {
-			for (int i=0; i<9; i++) {
-				getCaveConfig().remove("SIZE_COL"+i+"EXPORT_CSV");
-			}
-		}
+		int version = Integer.parseInt(sVersion);
 	}
 
 
 	/**
 	 * setLanguage
-	 * @param lang String
-	 * @return boolean
+	 * @param lang Language
 	 */
-	static boolean setLanguage(char lang) {
-		Debug("Program: Set Language : "+lang);
+	static void setLanguage(LanguageFileLoader.Language lang) {
+		Debug("Program: Set Language : " + lang);
+		MyCellarLabel.updateLabels();
+		MyCellarButton.updateLabels();
+		MyCellarCheckBox.updateLabels();
+		MyCellarRadioButton.updateLabels();
 		TABBED_PANE.removeAll();
 		clearObjectsVariables();
-		boolean load = LanguageFileLoader.getInstance().loadLanguageFiles(lang);
+		LanguageFileLoader.getInstance().loadLanguageFiles(lang);
 		PANEL_INFOS.setLabels();
 		Start.getInstance().updateLabels();
 		Start.getInstance().updateMainPanel();
-		return load;
 	}
 
 	public static void showException(Exception e) {
@@ -370,14 +338,16 @@ public final class Program {
 		if (bDebug) {
 			e.printStackTrace();
 		}
-		try {
-			oDebugFile.flush();
-			oDebugFile.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		if (debugFile != null) {
+			try {
+				oDebugFile.flush();
+				oDebugFile.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			sendMail(error, debugFile);
+			oDebugFile = null;
 		}
-		sendMail(error, debugFile);
-		oDebugFile = null;
 
 		if (_bShowWindowErrorAndExit) {
 			System.exit(999);
@@ -517,14 +487,13 @@ public final class Program {
 	static boolean loadObjects() {
 		RANGEMENTS_LIST.clear();
 		boolean load = MyXmlDom.readMyCellarXml("", RANGEMENTS_LIST);
-		getStorage().loadHistory();
-		getStorage().loadWorksheet();
-		load |= ListeBouteille.loadXML();
-
-		if(!load) {
+		if(!load || RANGEMENTS_LIST.isEmpty()) {
 			RANGEMENTS_LIST.clear();
 			RANGEMENTS_LIST.add(DEFAULT_PLACE);
 		}
+		getStorage().loadHistory();
+		getStorage().loadWorksheet();
+		load = ListeBouteille.loadXML();
 		return load;
 	}
 	
@@ -991,11 +960,10 @@ public final class Program {
 		}
 
 		//Chargement des objets Rangement, Bouteilles et History
-		boolean loaded = true;
 		Debug("Program: Reading Places, Bottles & History");
-		if (!loadObjects()) {
-			Debug("Program: Reading Object KO");
-			loaded = false;
+		boolean loaded;
+		if (!(loaded = loadObjects())) {
+			Debug("Program: Reading Objects KO");
 		}
 		// Controle du nombre de rangement
 		Debug("Program: Checking place count");
@@ -1015,12 +983,6 @@ public final class Program {
 		// En cas d'erreur
 		if (!loaded) {
 			Debug("Program: ERROR: Loading");
-		}
-
-		//Chargement des rangement par le fichier d'options si la relecture des objets serialises a echouee
-		if (GetCaveLength() == 0) {
-			Debug("Program: Reading places from file");
-			MyXmlDom.readMyCellarXml("", RANGEMENTS_LIST);
 		}
 
 		try {
@@ -1140,7 +1102,7 @@ public final class Program {
 			return;
 		}
 		TABBED_PANE.removeAll();
-		if(!archive.isEmpty()){
+		if (!archive.isEmpty()) {
 			getStorage().close();
 			CountryVignobles.close();
 			Countries.close();
@@ -1153,7 +1115,7 @@ public final class Program {
 		setFileSavable(false);
 		modified = false;
 		listCaveModified = false;
-		if(getCave() != null) {
+		if (getCave() != null) {
 			getCave().clear();
 		}
 		DEFAULT_PLACE.resetStock();
@@ -1167,8 +1129,8 @@ public final class Program {
 	}
 
 	private static void deleteTempFiles() {
-		for(File f : DIR_TO_DELETE) {
-			if(!f.exists() || f.getName().equalsIgnoreCase("Global")) {
+		for (File f : DIR_TO_DELETE) {
+			if (!f.exists() || f.getName().equalsIgnoreCase("Global")) {
 				continue;
 			}
 			try {
@@ -1249,7 +1211,7 @@ public final class Program {
 	 * @return
 	 */
 	public static String getWorkDir(boolean _bWithEndSlash) {
-		if(m_bWorkDirCalculated) {
+		if (m_bWorkDirCalculated) {
 			if (_bWithEndSlash) {
 				return m_sWorkDir + File.separator;
 			}
@@ -1258,13 +1220,13 @@ public final class Program {
 		m_bWorkDirCalculated = true;
 		Debug("Program: Calculating work directory.");
 		String sDir = System.getProperty("user.home");
-		if(sDir.isEmpty()) {
+		if (sDir.isEmpty()) {
 			m_sWorkDir = "." + File.separator + "Object";
 		} else {
 			m_sWorkDir = sDir + File.separator + "MyCellar";
 		}
 		File f_obj = new File(m_sWorkDir);
-		if(!f_obj.exists()) {
+		if (!f_obj.exists()) {
 			f_obj.mkdir();
 		}
 
@@ -1306,7 +1268,7 @@ public final class Program {
 	}
 
 	public static String getCaveConfigString(String _sKey, String _sDefaultValue) {
-		if(null != configCave) {
+		if (null != configCave) {
 			return configCave.getString(_sKey, _sDefaultValue);
 		}
 		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+_sDefaultValue+"'");
@@ -1318,7 +1280,7 @@ public final class Program {
 	}
 
 	public static boolean getCaveConfigBool(String _sKey, boolean defaultValue) {
-		if(null != configCave) {
+		if (null != configCave) {
 			final String value = configCave.getString(_sKey, defaultValue ? "1" : "0");
 			return ("1".equals(value) || "ON".equalsIgnoreCase(value));
 		}
@@ -1327,7 +1289,7 @@ public final class Program {
 	}
 
 	public static int getCaveConfigInt(String _sKey, int _nDefaultValue) {
-		if(null != configCave) {
+		if (null != configCave) {
 			return configCave.getInt(_sKey, _nDefaultValue);
 		}
 		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+_nDefaultValue+"'");
@@ -1339,7 +1301,7 @@ public final class Program {
 	}
 
 	public static void putCaveConfigString(String _sKey, String _sValue) {
-		if(null != configCave) {
+		if (null != configCave) {
 			configCave.put(_sKey, _sValue);
 		} else {
 			Debug("Program: ERROR: Unable to put value in configCave: [" + _sKey + " - " + _sValue + "]");
@@ -1351,7 +1313,7 @@ public final class Program {
 	}
 
 	public static void putCaveConfigBool(String _sKey, boolean _sValue) {
-		if(null != configCave) {
+		if (null != configCave) {
 			configCave.put(_sKey, _sValue ? "1" : "0");
 		} else {
 			Debug("Program: ERROR: Unable to put value in configCave: [" + _sKey + " - " + _sValue + "]");
@@ -1438,8 +1400,16 @@ public final class Program {
 		}
 	}
 
-	static String getLanguage(String _id) {
-		return LanguageFileLoader.getLanguage(_id);
+	static List<String> getLanguages() {
+		return LanguageFileLoader.getLanguages();
+	}
+
+	static int getLanguageIndex(String language) {
+		return LanguageFileLoader.getLanguageIndex(language);
+	}
+
+	static String getLanguage(int val) {
+		return LanguageFileLoader.getLanguageFromIndex(val);
 	}
 
 	public static void open(File file) {
@@ -1544,58 +1514,58 @@ public final class Program {
 		LinkedList<PDFRow> rows = new LinkedList<>();
 		LinkedList<PDFColumn> columns = properties.getColumns();
 		PDFRow row;
-		for(Bouteille b : list) {
+		for (Bouteille b : list) {
 			row = new PDFRow();
-			for(PDFColumn column : columns) {
-				if(column.getField().equals(MyCellarFields.NAME)) {
+			for (PDFColumn column : columns) {
+				if (column.getField().equals(MyCellarFields.NAME)) {
 					row.addCell(b.getNom());
-				}	else if(column.getField().equals(MyCellarFields.YEAR)) {
+				}	else if (column.getField().equals(MyCellarFields.YEAR)) {
 					row.addCell(b.getAnnee());
-				} else if(column.getField().equals(MyCellarFields.TYPE)) {
+				} else if (column.getField().equals(MyCellarFields.TYPE)) {
 					row.addCell(b.getType());
-				} else if(column.getField().equals(MyCellarFields.PLACE)) {
+				} else if (column.getField().equals(MyCellarFields.PLACE)) {
 					row.addCell(b.getEmplacement());
-				} else if(column.getField().equals(MyCellarFields.NUM_PLACE)) {
+				} else if (column.getField().equals(MyCellarFields.NUM_PLACE)) {
 					row.addCell(Integer.toString(b.getNumLieu()));
-				} else if(column.getField().equals(MyCellarFields.LINE)) {
+				} else if (column.getField().equals(MyCellarFields.LINE)) {
 					row.addCell(Integer.toString(b.getLigne()));
-				} else if(column.getField().equals(MyCellarFields.COLUMN)) {
+				} else if (column.getField().equals(MyCellarFields.COLUMN)) {
 					row.addCell(Integer.toString(b.getColonne()));
-				} else if(column.getField().equals(MyCellarFields.PRICE)) {
+				} else if (column.getField().equals(MyCellarFields.PRICE)) {
 					row.addCell(b.getPrix());
-				} else if(column.getField().equals(MyCellarFields.COMMENT)) {
+				} else if (column.getField().equals(MyCellarFields.COMMENT)) {
 					row.addCell(b.getComment());
-				} else if(column.getField().equals(MyCellarFields.MATURITY)) {
+				} else if (column.getField().equals(MyCellarFields.MATURITY)) {
 					row.addCell(b.getMaturity());
-				} else if(column.getField().equals(MyCellarFields.PARKER)) {
+				} else if (column.getField().equals(MyCellarFields.PARKER)) {
 					row.addCell(b.getParker());
-				} else if(column.getField().equals(MyCellarFields.COUNTRY)) {
-					if(b.getVignoble() != null) {
+				} else if (column.getField().equals(MyCellarFields.COUNTRY)) {
+					if (b.getVignoble() != null) {
 						row.addCell(b.getVignoble().getCountry());
 					} else {
 						row.addCell("");
 					}
-				}	else if(column.getField().equals(MyCellarFields.VINEYARD)) {
-					if(b.getVignoble() != null) {
+				}	else if (column.getField().equals(MyCellarFields.VINEYARD)) {
+					if (b.getVignoble() != null) {
 						row.addCell(b.getVignoble().getName());
 					} else {
 						row.addCell("");
 					}
-				}	else if(column.getField().equals(MyCellarFields.AOC)) {
-					if(b.getVignoble() != null) {
+				}	else if (column.getField().equals(MyCellarFields.AOC)) {
+					if (b.getVignoble() != null) {
 						row.addCell(b.getVignoble().getAOC());
 					} else {
 						row.addCell("");
 					}
-				}	else if(column.getField().equals(MyCellarFields.IGP)) {
-					if(b.getVignoble() != null) {
+				}	else if (column.getField().equals(MyCellarFields.IGP)) {
+					if (b.getVignoble() != null) {
 						row.addCell(b.getVignoble().getIGP());
 					} else {
 						row.addCell("");
 					}
-				} else if(column.getField().equals(MyCellarFields.COLOR)) {
+				} else if (column.getField().equals(MyCellarFields.COLOR)) {
 					row.addCell(BottleColor.getColor(b.getColor()).toString());
-				}	else if(column.getField().equals(MyCellarFields.STATUS)) {
+				}	else if (column.getField().equals(MyCellarFields.STATUS)) {
 					row.addCell(BottlesStatus.getStatus(b.getStatus()).toString());
 				}
 			}
@@ -1607,15 +1577,14 @@ public final class Program {
 	static PDFRow getPDFHeader(PDFProperties properties) {
 		LinkedList<PDFColumn> columns = properties.getColumns();
 		PDFRow row = new PDFRow();
-		for(PDFColumn column : columns) {
+		for (PDFColumn column : columns) {
 			row.addCell(column.getTitle());
 		}
 		return row;
 	}
 
 	private static void cleanDebugFiles() {
-		String sDir = System.getProperty("user.home");
-		sDir += File.separator + "MyCellarDebug";
+		String sDir = System.getProperty("user.home") + File.separator + "MyCellarDebug";
 		File f = new File(sDir);
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime monthsAgo = LocalDateTime.now().minusMonths(2);
@@ -1662,8 +1631,8 @@ public final class Program {
 
 	static void saveHTMLColumns(List<MyCellarFields> cols) {
 		StringBuilder s = new StringBuilder();
-		for(MyCellarFields f : cols) {
-			if(s.length() != 0) {
+		for (MyCellarFields f : cols) {
+			if (s.length() != 0) {
 				s.append(";");
 			}
 			s.append(f.name());
@@ -1675,8 +1644,8 @@ public final class Program {
 	ArrayList<MyCellarFields> cols = new ArrayList<>();
 		String s = getCaveConfigString(MyCellarSettings.HTMLEXPORT_COLUMN, "");
 		String [] fields = s.split(";");
-		for(String field : fields) {
-			for(MyCellarFields f : MyCellarFields.getFieldsList()) {
+		for (String field : fields) {
+			for (MyCellarFields f : MyCellarFields.getFieldsList()) {
 				if(f.name().equals(field)) {
 					cols.add(f);
 					break;
@@ -2011,9 +1980,39 @@ public final class Program {
 			return;
 		}
 		if (listToModify.size() == 1) {
-			Start.getInstance().showBottle(listToModify.getFirst(), true);
+			showBottle(listToModify.getFirst(), true);
 		} else {
 			new OpenAddVinAction(listToModify).actionPerformed(null);
+		}
+	}
+	
+	public static void showBottle(Bouteille bottle, boolean edit) {
+		for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+			Component tab = TABBED_PANE.getComponentAt(i);
+			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
+				TABBED_PANE.setSelectedIndex(i);
+				return;
+			}
+		}
+		ManageBottle manage = new ManageBottle(bottle);
+		manage.enableAll(edit);
+		String bottleName = bottle.getNom();
+		if (bottleName.length() > 30) {
+			bottleName = bottleName.substring(0, 30) + " ...";
+		}
+		TABBED_PANE.addTab(bottleName, MyCellarImage.WINE, manage);
+		TABBED_PANE.setSelectedIndex(TABBED_PANE.getTabCount() - 1);
+		Utils.addCloseButton(TABBED_PANE, manage);
+		Start.getInstance().updateMainPanel();
+	}
+
+	static void removeBottleTab(Bouteille bottle) {
+		for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+			Component tab = TABBED_PANE.getComponentAt(i);
+			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
+				TABBED_PANE.removeTabAt(i);
+				return;
+			}
 		}
 	}
 
@@ -2023,6 +2022,14 @@ public final class Program {
 
 	public static boolean isExistingBottle(Bouteille bouteille) {
 		return getStorage().getAllList().stream().anyMatch(bouteille1 -> bouteille1.getId() == bouteille.getId());
+	}
+
+	public static int safeParseInt(String value, int defaultValue) {
+		try {
+			return Integer.parseInt(value);
+		} catch (NumberFormatException ignored) {
+			return defaultValue;
+		}
 	}
 
 	static void exit() {

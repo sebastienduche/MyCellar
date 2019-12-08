@@ -16,16 +16,16 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.8
- * @since 16/07/19
+ * @version 5.9
+ * @since 18/10/19
  */
 
 public class SerializedStorage implements Storage {
 
 	private static final String HISTORY_XML = "history.xml";
 	private static final String WORKSHEET_XML = "worksheet.xml";
-	private static HistoryList m_HistoryList = new HistoryList();
-	private static WorkSheetList worksheetList = new WorkSheetList();
+	private static final HistoryList HISTORY_LIST = new HistoryList();
+	private static final WorkSheetList WORKSHEET_LIST = new WorkSheetList();
 	private ListeBouteille listBouteilles = new ListeBouteille();
 
 	private final LinkedList<String> listeUniqueBouteille = new LinkedList<>(); // Liste des noms de bouteille (un seule nom)
@@ -65,7 +65,7 @@ public class SerializedStorage implements Storage {
 	public void addBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles.getBouteille().addAll(listBouteilles.getBouteille());
 		for(Bouteille b: listBouteilles.bouteille) {
-			final List<History> theBottle = m_HistoryList.getHistory().stream().filter(history -> history.getBouteille().getId() == b.getId()).collect(Collectors.toList());
+			final List<History> theBottle = HISTORY_LIST.getHistory().stream().filter(history -> history.getBouteille().getId() == b.getId()).collect(Collectors.toList());
 			if (b.updateID() && !theBottle.isEmpty()) {
 				theBottle.get(0).getBouteille().setId(b.getId());
 			}
@@ -89,13 +89,13 @@ public class SerializedStorage implements Storage {
 	@Override
 	public void addHistory(int type, Bouteille bottle) {
 		Program.setModified();
-		m_HistoryList.addLast(new History(bottle, type));
+		HISTORY_LIST.addLast(new History(bottle, type));
 	}
 
 	@Override
 	public void addToWorksheet(Bouteille bottle) {
 		Program.setModified();
-		worksheetList.add(new WorkSheetData(bottle));
+		WORKSHEET_LIST.add(new WorkSheetData(bottle));
 	}
 
 	@Override
@@ -138,10 +138,10 @@ public class SerializedStorage implements Storage {
 
 		Program.setModified();
 		if(value == -1) {
-			m_HistoryList.clear();
+			HISTORY_LIST.clear();
 			return;
 		}
-		final List<History> list = m_HistoryList.getHistory().stream().filter(history -> history.getType() == value).collect(Collectors.toList());
+		final List<History> list = HISTORY_LIST.getHistory().stream().filter(history -> history.getType() == value).collect(Collectors.toList());
 
 		// Suppression de l'historique
 		for (History h : list) {
@@ -151,7 +151,7 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public void removeHistory(History oB) {
-		m_HistoryList.remove(oB);
+		HISTORY_LIST.remove(oB);
 	}
 
 
@@ -255,7 +255,7 @@ public class SerializedStorage implements Storage {
 		Debug("Loading History...");
 		boolean resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + HISTORY_XML));
 		if(!resul) {
-			setHistoryList(new HistoryList());
+			HISTORY_LIST.clear();
 			Debug("Loading History KO");
 		} else {
 			Debug("Loading History OK");
@@ -264,13 +264,9 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public HistoryList getHistoryList() {
-		return m_HistoryList;
+		return HISTORY_LIST;
 	}
-	
-	@Override
-	public void setHistoryList(HistoryList list) {
-		m_HistoryList = list;
-	}
+
 
 	@Override
 	public void saveWorksheet() {
@@ -284,7 +280,7 @@ public class SerializedStorage implements Storage {
 		Debug("Loading Worksheet...");
 		boolean resul = WorkSheetList.loadXML(new File(Program.getWorkDir(true) + WORKSHEET_XML));
 		if(!resul) {
-			setWorksheetList(new WorkSheetList());
+			WORKSHEET_LIST.clear();
 			Debug("Loading Worksheet KO");
 		} else {
 			Debug("Loading Worksheet OK");
@@ -293,12 +289,7 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public WorkSheetList getWorksheetList() {
-		return worksheetList;
-	}
-
-	@Override
-	public void setWorksheetList(WorkSheetList list) {
-		worksheetList = list;
+		return WORKSHEET_LIST;
 	}
 
 	@Override

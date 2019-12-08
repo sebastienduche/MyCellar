@@ -36,6 +36,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.LinkedList;
+import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 
 /**
@@ -45,8 +46,8 @@ import java.util.prefs.Preferences;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.7
- * @since 08/08/19
+ * @version 25.9
+ * @since 09/11/19
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -305,7 +306,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		jMenuCloseFile.setEnabled(enable);
 		m_oExportButton.setEnabled(enable);
 		m_oStatsButton.setEnabled(enable);
-		m_oManagePlaceButton.setEnabled(enable);
+		m_oManagePlaceButton.setEnabled(enable && Program.getCave().stream().anyMatch(Predicate.not(Rangement::isCaisse)));
 		m_oWorksheetButton.setEnabled(enable);
 		m_oTableauxButton.setEnabled(enable);
 		m_oSupprimerButton.setEnabled(enable);
@@ -572,7 +573,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				Program.initConf();
 			}
 			String thelangue = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
-			Program.setLanguage(thelangue.charAt(0));
+			Program.setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
 			updateLabels();
 			Debug("Loading Frame ended");
 		} catch (Exception e) {
@@ -583,7 +584,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	void updateLabels() {
 		final String quitter = Program.getLabel("QUITTER");
 		if (quitter == null || quitter.isEmpty()) {
-			Program.setLanguage('F');
+			Program.setLanguage(LanguageFileLoader.Language.FRENCH);
 			QUITTER = Program.getLabel("QUITTER").charAt(0);
 		} else {
 			QUITTER = quitter.charAt(0);
@@ -1030,13 +1031,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (count == 0) {
 			Program.PANEL_INFOS.refresh();
 		}
-		boolean foundArmoire = false;
-		for (Rangement r : Program.getCave()) {
-			if (!r.isCaisse()) {
-				foundArmoire = true;
-				break;
-			}
-		}
+		boolean foundArmoire = Program.getCave().stream().anyMatch(Predicate.not(Rangement::isCaisse));
 		m_oManagePlaceButton.setEnabled(foundArmoire);
 	}
 
@@ -1100,31 +1095,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	public void showBottle(Bouteille bottle, boolean edit) {
-		for (int i = 0; i < Program.TABBED_PANE.getTabCount(); i++) {
-			Component tab = Program.TABBED_PANE.getComponentAt(i);
-			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
-				Program.TABBED_PANE.setSelectedIndex(i);
-				return;
-			}
-		}
-		ManageBottle manage = new ManageBottle(bottle);
-		manage.enableAll(edit);
-		Program.TABBED_PANE.addTab(bottle.getNom(), MyCellarImage.WINE, manage);
-		Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount() - 1);
-		Utils.addCloseButton(Program.TABBED_PANE, manage);
-		updateMainPanel();
-	}
-
-	static void removeBottleTab(Bouteille bottle) {
-		for (int i = 0; i < Program.TABBED_PANE.getTabCount(); i++) {
-			Component tab = Program.TABBED_PANE.getComponentAt(i);
-			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
-				Program.TABBED_PANE.removeTabAt(i);
-				return;
-			}
-		}
-	}
+	
 	
 	void removeCurrentTab() {
 		Program.TABBED_PANE.removeTabAt(Program.TABBED_PANE.getSelectedIndex());

@@ -24,7 +24,7 @@ import java.util.List;
 class VineyardTableModel extends DefaultTableModel {
 
 	private static final long serialVersionUID = -6356586420904968734L;
-	public static final int ACTION = 2;
+	static final int ACTION = 2;
 	private List<Appelation> appelations;
 	private CountryVignoble vignoble;
 	private Country country;

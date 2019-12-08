@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarFields;
@@ -17,18 +18,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 2.8
- * @since 28/12/18
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 2.9
+ * @since 01/11/19
  */
-class PDFOptions extends JDialog {
+final class PDFOptions extends JDialog {
   private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
   private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox();
   private final MyCellarCheckBox MyCellarCheckBox3 = new MyCellarCheckBox();
@@ -39,10 +40,7 @@ class PDFOptions extends JDialog {
   private final int nb_colonnes;
   static final long serialVersionUID = 110805;
 
-  /**
-   * PDFOptions: Constructeur pour la fenêtre d'options.
-   */
-  public PDFOptions() {
+  PDFOptions() {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(Program.getLabel("Infos254"));
     setModal(true);
@@ -62,8 +60,6 @@ class PDFOptions extends JDialog {
     jPanel1.setLayout(new MigLayout("","grow",""));
     jPanel1.setFont(Program.FONT_PANEL);
     pdf_title.setText(Program.getCaveConfigString(MyCellarSettings.PDF_TITLE, ""));
-    MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("Infos255")); //Titre du PDF
-    MyCellarLabel MyCellarLabel3 = new MyCellarLabel(Program.getLabel("Infos256")); //Taille du texte
     MyCellarSpinner1.addChangeListener((e) -> {
         if (Integer.parseInt(MyCellarSpinner1.getValue().toString()) <= 0) {
           MyCellarSpinner1.setValue(1);
@@ -87,10 +83,9 @@ class PDFOptions extends JDialog {
     if (Program.getCaveConfigBool(MyCellarSettings.BORDER, false)) {
       MyCellarCheckBox3.setSelected(true);
     }
-    ArrayList<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
+    List<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
     nb_colonnes = listColumns.size();
     final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
-    final MyCellarLabel[] MyCellarLabel5 = new MyCellarLabel[nb_colonnes];
     col_size = new MyCellarSpinner[nb_colonnes];
     export = new MyCellarCheckBox[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
@@ -104,8 +99,7 @@ class PDFOptions extends JDialog {
           }
       });
       colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
-      MyCellarLabel5[i] = new MyCellarLabel("cm");
-   
+
       col_size[i].setValue(Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i, 5));
     }
     JPanel jPanel2 = new JPanel();
@@ -115,26 +109,23 @@ class PDFOptions extends JDialog {
     valider.addActionListener(this::valider_actionPerformed);
     MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos055"));
     annuler.addActionListener((e) -> dispose());
-    MyCellarLabel MyCellarLabel6 = new MyCellarLabel("pt");
-    MyCellarLabel MyCellarLabel7 = new MyCellarLabel(Program.getLabel("Infos256")); //Taille du texte
-    MyCellarLabel MyCellarLabel8 = new MyCellarLabel("pt");
- 
-    jPanel1.add(MyCellarLabel2, "split 2");
+
+    jPanel1.add(new MyCellarLabel(LabelType.INFO, "255"), "split 2"); //Titre du PDF
     jPanel1.add(pdf_title, "grow, wrap");
-    jPanel1.add(MyCellarLabel3, "split 4");
+    jPanel1.add(new MyCellarLabel(LabelType.INFO, "256"), "split 4"); //Taille du texte
     jPanel1.add(MyCellarSpinner1);
-    jPanel1.add(MyCellarLabel6);
+    jPanel1.add(new MyCellarLabel("pt"));
     jPanel1.add(MyCellarCheckBox1, "grow, align right");   
     add(jPanel1, "grow, wrap");
-    jPanel2.add(MyCellarLabel7, "split 4, span 3");
+    jPanel2.add(new MyCellarLabel(LabelType.INFO, "256"), "split 4, span 3");
     jPanel2.add(MyCellarSpinner3);
-    jPanel2.add(MyCellarLabel8);
+    jPanel2.add(new MyCellarLabel("pt"));
     jPanel2.add(MyCellarCheckBox3, "push, align right, gapbottom 15px");
     
     for (int i = 0; i < nb_colonnes; i++) {
       jPanel2.add(colonnes[i], "newline");
       jPanel2.add(col_size[i], "split 2");
-      jPanel2.add(MyCellarLabel5[i]);
+      jPanel2.add(new MyCellarLabel("cm"));
       jPanel2.add(export[i], "push, align right");
     }
     

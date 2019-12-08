@@ -1,8 +1,8 @@
 package mycellar.core;
 
 public class MyCellarEnum {
-	  private int value;
-	  private String label;
+	  private final int value;
+	  private final String label;
 	  
 	  public MyCellarEnum(int value, String label) {
 		  this.value = value;

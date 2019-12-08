@@ -40,8 +40,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 16/07/19
+ * @version 0.2
+ * @since 18/10/19
 
  *
  */
@@ -103,7 +103,7 @@ public class WorkSheetList {
     Document doc = dBuilder.parse(f);
     doc.getDocumentElement().normalize();
 
-    WorkSheetList listeWorksheet = new WorkSheetList();
+    WorkSheetList listeWorksheet = Program.getWorksheetList();
     NodeList worksheet = doc.getElementsByTagName("worksheet");
 
     for (int i = 0; i < worksheet.getLength(); i++) {
@@ -118,7 +118,6 @@ public class WorkSheetList {
         listeWorksheet.getWorsheet().add(workSheetData);
       }
     }
-    Program.getStorage().setWorksheetList(listeWorksheet);
     Debug("Loading Manually File Done");
   }
 
@@ -127,7 +126,7 @@ public class WorkSheetList {
     Unmarshaller u = jc.createUnmarshaller();
     WorkSheetList lb =
         (WorkSheetList)u.unmarshal(new FileInputStream(f));
-    Program.getStorage().setWorksheetList(lb);
+    Program.getStorage().getWorksheetList().getWorsheet().addAll(lb.getWorsheet());
     Debug("Loading JAXB File Done");
   }
 

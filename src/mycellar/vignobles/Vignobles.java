@@ -51,7 +51,7 @@ public class Vignobles
 		this.vignoble = vignoble;
 	}
 
-	void checkAvaibility() {
+	private void checkAvaibility() {
 		if (vignoble == null) {
 			vignoble = new ArrayList<>();
 		}

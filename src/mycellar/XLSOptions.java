@@ -16,18 +16,18 @@ import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 1.6
- * @since 28/12/18
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 1.7
+ * @since 01/11/19
  */
-class XLSOptions extends JDialog {
+final class XLSOptions extends JDialog {
 
 	private static final long serialVersionUID = 5307297932934344545L;
   private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
@@ -40,7 +40,7 @@ class XLSOptions extends JDialog {
   /**
    * XLSOptions: Constructeur pour la fenêtre d'options.
    */
-  public XLSOptions() {
+  XLSOptions() {
 	  setModal(true);
 	  setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(Program.getLabel("Infos268"));
@@ -78,7 +78,7 @@ class XLSOptions extends JDialog {
 
     MyCellarCheckBox1.setText(Program.getLabel("Infos257")); //gras
     MyCellarCheckBox1.setSelected(Program.getCaveConfigBool(MyCellarSettings.BOLD_XLS, false));
-    ArrayList<MyCellarFields> columns = MyCellarFields.getFieldsList();
+    List<MyCellarFields> columns = MyCellarFields.getFieldsList();
     nb_colonnes = columns.size();
     MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     export = new MyCellarCheckBox[nb_colonnes];
@@ -122,7 +122,6 @@ class XLSOptions extends JDialog {
     setLocationRelativeTo(Start.getInstance());
   }
 
-  //Accepter et Fermer le message
   /**
    * valider_actionPerformed: Valider les modifications et quitter.
    *

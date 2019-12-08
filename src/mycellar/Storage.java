@@ -30,9 +30,7 @@ public interface Storage {
 	void saveWorksheet();
 	void loadWorksheet();
 	HistoryList getHistoryList();
-	void setHistoryList(HistoryList list);
 	WorkSheetList getWorksheetList();
-	void setWorksheetList(WorkSheetList list);
 	boolean deleteWine(Bouteille oB);
 
 	boolean addWine(Bouteille oB);

@@ -93,14 +93,14 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.7
- * @since 09/11/19
+ * @version 21.8
+ * @since 08/01/20
  */
 
 public final class Program {
 
-
-	public static final int VERSION = 61;
+	public static final String INTERNAL_VERSION = "3.4.6.8";
+	public static final int VERSION = 62;
 
 	// Manage cave config
 	private static MyLinkedHashMap configCave = null;
@@ -186,7 +186,7 @@ public final class Program {
 			archive = "";
 			bDebug = true;
 			Debug("===================================================");
-			Debug("Starting MyCellar version: "+ MyCellarVersion.VERSION);
+			Debug("Starting MyCellar version: "+ VERSION + " Internal: " + INTERNAL_VERSION);
 			// Initialisation du repertoire de travail
 			getWorkDir(false);
 			Debug("Program: Initializing Configuration files...");

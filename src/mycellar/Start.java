@@ -46,8 +46,8 @@ import java.util.prefs.Preferences;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.9
- * @since 09/11/19
+ * @version 26.0
+ * @since 08/01/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -619,8 +619,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		statistiques.setText(Program.getLabel("Infos009")); // Statistiques
 		tableau.setText(Program.getLabel("Infos093")); // Tableaux...
 		addPlace.setText(Program.getLabel("Infos109")); // Ajouter...
-		modifPlace.setText(Program.getLabel("Infos079") + "..."); // Modifier...
-		delPlace.setText(Program.getLabel("Infos051") + "..."); // Supprimer...
+		modifPlace.setText(Program.getLabel("Infos086")); // Modifier...
+		delPlace.setText(Program.getLabel("Infos052")); // Supprimer...
 		addWine.setText(Program.getLabel("Infos109")); // Ajouter...
 		Aide.setText(Program.getLabel("Infos111")); // Aide Contextuelle...
 		saveAs.setText(Program.getLabel("Infos371")); // Sauvegarder
@@ -969,7 +969,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 
 		if (bUpdateAvailable) {
-			String sText = MessageFormat.format(Program.getLabel("Infos385"), Server.getInstance().getAvailableVersion(), MyCellarVersion.MAIN_VERSION + "-" + MyCellarVersion.VERSION);
+			String sText = MessageFormat.format(Program.getLabel("Infos385"), Server.getInstance().getAvailableVersion(), MyCellarVersion.MAIN_VERSION + "-" + Program.INTERNAL_VERSION);
 			update.setText(sText);
 		}
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -1089,7 +1089,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	private void menuCheckUpdate_actionPerformed() {
 		if (Server.getInstance().hasAvailableUpdate()) {
-			Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Infos384"), Server.getInstance().getAvailableVersion(), MyCellarVersion.VERSION), true);
+			Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Infos384"), Server.getInstance().getAvailableVersion(), Program.INTERNAL_VERSION), true);
 		} else {
 			Erreur.showSimpleErreur(Program.getLabel("Infos388"), true);
 		}
@@ -1273,7 +1273,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private AddPlaceAction() {
-			super(Program.getLabel("Infos010"), MyCellarImage.PLACE);
+			super(Program.getLabel("Infos109"), MyCellarImage.PLACE);
 			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos010"));
 		}
 
@@ -1306,7 +1306,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private DeletePlaceAction() {
-			super(Program.getLabel("Infos004"), MyCellarImage.DELPLACE);
+			super(Program.getLabel("Infos052"), MyCellarImage.DELPLACE);
 			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos004"));
 		}
 
@@ -1339,7 +1339,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private ModifyPlaceAction() {
-			super(Program.getLabel("Infos007"), MyCellarImage.MODIFYPLACE);
+			super(Program.getLabel("Infos086"), MyCellarImage.MODIFYPLACE);
 			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos007"));
 		}
 
@@ -1402,7 +1402,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private CreateTabAction() {
-			super(Program.getLabel("Infos008"), MyCellarImage.TABLE);
+			super(Program.getLabel("Infos093"), MyCellarImage.TABLE);
 			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos008"));
 		}
 
@@ -1431,7 +1431,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private ImportFileAction() {
-			super(Program.getLabel("Infos011"), MyCellarImage.IMPORT);
+			super(Program.getLabel("Infos107"), MyCellarImage.IMPORT);
 			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos011"));
 		}
 
@@ -1461,7 +1461,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private ExportFileAction() {
-			super(Program.getLabel("Infos125"), MyCellarImage.EXPORT);
+			super(Program.getLabel("Infos108"), MyCellarImage.EXPORT);
 			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos125"));
 		}
 

@@ -59,14 +59,12 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.1
- * @since 08/08/19
+ * @version 13.2
+ * @since 08/01/20
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
 	private static final int COUNT = 18;
-	private final MyCellarButton importe = new MyCellarButton();
-	private final MyCellarRadioButton type_txt = new MyCellarRadioButton();
 	private final MyCellarButton importe = new MyCellarButton(LabelType.INFO, "011");
 	private final MyCellarRadioButton type_txt = new MyCellarRadioButton(LabelType.INFO, "040", true);
 	private final MyCellarRadioButton type_xls = new MyCellarRadioButton(LabelType.INFO, "041", false);

@@ -20,8 +20,8 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 3.8
- * @since 05/07/19
+ * @version 3.9
+ * @since 27/02/20
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -187,7 +187,7 @@ class TableShowValues extends AbstractTableModel {
           try {
             num_empl = Integer.parseInt((String) value);
             nValueToCheck = num_empl;
-          } catch (Exception e) {
+          } catch (NumberFormatException e) {
             Erreur.showSimpleErreur(Program.getError("Error196"));
             bError = true;
           }
@@ -195,7 +195,7 @@ class TableShowValues extends AbstractTableModel {
           try {
             line = Integer.parseInt((String) value);
             nValueToCheck = line;
-          } catch (Exception e) {
+          } catch (NumberFormatException e) {
             Erreur.showSimpleErreur(Program.getError("Error196"));
             bError = true;
           }
@@ -203,7 +203,7 @@ class TableShowValues extends AbstractTableModel {
           try {
             column1 = Integer.parseInt((String) value);
             nValueToCheck = column1;
-          } catch (Exception e) {
+          } catch (NumberFormatException e) {
             Erreur.showSimpleErreur(Program.getError("Error196"));
             bError = true;
           }
@@ -295,16 +295,6 @@ class TableShowValues extends AbstractTableModel {
    */
   public Bouteille getBottle(int i) {
     return monVector.get(i);
-  }
-
-
-  /**
-   * getNbData
-   *
-   * @return int
-   */
-  public int getNbData() {
-    return monVector.size();
   }
 
 }

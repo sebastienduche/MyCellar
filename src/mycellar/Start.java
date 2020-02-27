@@ -7,6 +7,7 @@ import mycellar.core.ICutCopyPastable;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
+import mycellar.core.UnableToOpenFileException;
 import mycellar.launcher.Server;
 import mycellar.showfile.ShowFile;
 import net.miginfocom.swing.MigLayout;
@@ -46,8 +47,8 @@ import java.util.prefs.Preferences;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.0
- * @since 08/01/20
+ * @version 26.1
+ * @since 27/02/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -452,7 +453,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		try{
     		enableAll(false);
     		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-    		if (!sFile.isEmpty() && Program.openaFile(new File(sFile))) {
+    		if (!sFile.isEmpty()) {
+					Program.openaFile(new File(sFile));
 					postOpenFile();
 				} else {
 					enableAll(false);
@@ -460,10 +462,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 					updateMainPanel();
 					setTitle(Program.getLabel("Infos001"));
 				}
-		}catch(Exception e) {
-			Program.showException(e);
-		}
-		finally {
+		} catch(UnableToOpenFileException e) {
+			Erreur.showSimpleErreur(Program.getError("Error.LoadingFile"));
+			Program.showException(e, false);
+		} finally {
 			setCursor(Cursor.getDefaultCursor());
 		}
 	}
@@ -1148,12 +1150,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 						}
     				String fic = file.getAbsolutePath();
     				fic = MyCellarControl.controlAndUpdateExtension(fic, Filtre.FILTRE_SINFO);
-    				if (Program.openaFile(new File(fic))) {
-							postOpenFile();
-						}
+    				Program.openaFile(new File(fic));
+    				postOpenFile();
     			}
-			} catch(Exception e) {
-				Program.showException(e);
+			} catch(UnableToOpenFileException e) {
+				Erreur.showSimpleErreur(Program.getError("Error.LoadingFile"));
+				Program.showException(e, false);
 			}	finally {
 				setCursor(Cursor.getDefaultCursor());
 			}
@@ -1170,15 +1172,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			try {
-				Debug("newFileAction: Creating a new file...");
-				if (Program.newFile()) {
-					postOpenFile();
-					Debug("newFileAction: Creating a new file OK");
-				}
-			} catch(Exception e) {
-				Program.showException(e);
-			}
+			Debug("newFileAction: Creating a new file...");
+			Program.newFile();
+			postOpenFile();
+			Debug("newFileAction: Creating a new file OK");
 		}
 	}
 

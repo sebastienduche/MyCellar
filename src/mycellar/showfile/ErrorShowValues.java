@@ -17,8 +17,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 25/10/18
+ * @version 1.0
+ * @since 27/02/20
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -73,37 +73,38 @@ public class ErrorShowValues extends TableShowValues {
 	 */
 	@Override
 	public Object getValueAt(int row, int column) {
-		if(errors.size() <= row)
+		if(errors.size() <= row) {
 			return null;
+		}
 		MyCellarError error = errors.get(row);
 		Bouteille b = error.getBottle();
-		switch(column)
-		{
-		case ETAT:
-			return values[row];
-		case NAME:
-			String nom = b.getNom();
-			return Program.convertStringFromHTMLString(nom);
-		case YEAR:
-			return b.getAnnee();
-		case TYPE:
-			return b.getType();
-		case PLACE:
-			return Program.convertStringFromHTMLString(b.getEmplacement());
-		case NUM_PLACE:
-			return Integer.toString(b.getNumLieu());
-		case LINE:
-			return Integer.toString(b.getLigne());
-		case COLUMN:
-			return Integer.toString(b.getColonne());
-		case STATUS:
-			if(error.isStatus())
-				return Program.getLabel("ShowFile.Added");
-			return status[row] ? Program.getLabel("Main.OK") : Program.getLabel("Main.KO");
-		case BUTTON:
-			return true;
-		case ERROR:
-			return Program.convertStringFromHTMLString(error.getErrorMessage());
+		switch(column) {
+			case ETAT:
+				return values[row];
+			case NAME:
+				String nom = b.getNom();
+				return Program.convertStringFromHTMLString(nom);
+			case YEAR:
+				return b.getAnnee();
+			case TYPE:
+				return b.getType();
+			case PLACE:
+				return Program.convertStringFromHTMLString(b.getEmplacement());
+			case NUM_PLACE:
+				return Integer.toString(b.getNumLieu());
+			case LINE:
+				return Integer.toString(b.getLigne());
+			case COLUMN:
+				return Integer.toString(b.getColonne());
+			case STATUS:
+				if(error.isStatus()) {
+					return Program.getLabel("ShowFile.Added");
+				}
+				return status[row] ? Program.getLabel("Main.OK") : Program.getLabel("Main.KO");
+			case BUTTON:
+				return true;
+			case ERROR:
+				return Program.convertStringFromHTMLString(error.getErrorMessage());
 		}
 		return "";
 	}
@@ -128,8 +129,9 @@ public class ErrorShowValues extends TableShowValues {
 	 */
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		if(editable[row].equals(Boolean.FALSE))
+		if(Boolean.FALSE.equals(editable[row])) {
 			return false;
+		}
 		if (column == ETAT 
 				|| column == NAME 
 				|| column == TYPE 
@@ -157,7 +159,7 @@ public class ErrorShowValues extends TableShowValues {
 
 		MyCellarError error = errors.get(row);
 		Bouteille b = error.getBottle();
-		Rangement rangement = null;
+		Rangement rangement;
 		switch (column) {
 		case ETAT:
 			values[row] = (Boolean)value;
@@ -191,8 +193,7 @@ public class ErrorShowValues extends TableShowValues {
 		case PLACE:
 		case NUM_PLACE:
 		case LINE:
-		case COLUMN:
-		{
+		case COLUMN: {
 			String empl_old = b.getEmplacement();
 			int num_empl_old = b.getNumLieu();
 			int line_old = b.getLigne();
@@ -205,49 +206,43 @@ public class ErrorShowValues extends TableShowValues {
 			int line = line_old;
 			int column1 = column_old;
 
-			if ( column == PLACE ) {
+			if (column == PLACE) {
 				empl = (String)value; 
 				rangement = Program.getCave(empl);
-			}
-			else if ( column == NUM_PLACE ) {
-				try{
+			} else if (column == NUM_PLACE) {
+				try {
 					num_empl = Integer.parseInt((String)value);
 					nValueToCheck = num_empl;
-				}
-				catch (Exception e) {
+				} catch (NumberFormatException e) {
 					Erreur.showSimpleErreur(Program.getError("Error196"));
 					bError = true;
 				}
-			}
-			else if ( column == LINE ) {
-				try{
+			} else if (column == LINE) {
+				try {
 					line = Integer.parseInt((String)value);
 					nValueToCheck = line;
-				}
-				catch (Exception e) {
+				} catch (NumberFormatException e) {
 					Erreur.showSimpleErreur(Program.getError("Error196"));
 					bError = true;
 				}
-			}
-			else {
-				try{
+			} else {
+				try {
 					column1 = Integer.parseInt((String)value);
 					nValueToCheck = column1;
-				}
-				catch (Exception e) {
+				} catch (NumberFormatException e) {
 					Erreur.showSimpleErreur(Program.getError("Error196"));
 					bError = true;
 				}
 			}
 
-			if ( !bError && (column == NUM_PLACE || column == LINE || column == COLUMN) ) {
+			if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
 				if (rangement != null && !rangement.isCaisse() && nValueToCheck <= 0) {
 					Erreur.showSimpleErreur(Program.getError("Error197"));
 					bError = true;
 				}
 			}
 
-			if ( !bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
+			if (!bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
 				// Controle de l'emplacement de la bouteille
 				int tmpNumEmpl = num_empl;
 				int tmpLine = line;
@@ -266,30 +261,32 @@ public class ErrorShowValues extends TableShowValues {
 							status[row] = Boolean.FALSE;
 							Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), b.getAnnee()));
 						} else {
-							if (column == PLACE)
+							if (column == PLACE) {
 								b.setEmplacement((String) value);
-							else if (column == NUM_PLACE)
+							} else if (column == NUM_PLACE) {
 								b.setNumLieu(Integer.parseInt((String) value));
-							else if (column == LINE)
+							} else if (column == LINE) {
 								b.setLigne(Integer.parseInt((String) value));
-							else if (column == COLUMN)
+							} else if (column == COLUMN) {
 								b.setColonne(Integer.parseInt((String) value));
-							//values[row][column] = value;
+							}
 							if (column == PLACE && rangement.isCaisse()) {
-								int nNumEmpl = b.getNumLieu();//Integer.parseInt((String) values[row][NUM_PLACE]);
-								if (nNumEmpl > rangement.getLastNumEmplacement())
+								int nNumEmpl = b.getNumLieu();
+								if (nNumEmpl > rangement.getLastNumEmplacement()) {
 									b.setNumLieu(rangement.getFreeNumPlaceInCaisse());
+								}
 								b.setLigne(0);
 								b.setColonne(0);
 							}
 							status[row] = Boolean.TRUE;
 						}
-					} else
+					} else {
 						status[row] = Boolean.FALSE;
+					}
 				}
-			}
-			else
+			} else {
 				status[row] = Boolean.FALSE;
+			}
 			fireTableRowsUpdated(row, row);
 		}
 		break;
@@ -302,9 +299,6 @@ public class ErrorShowValues extends TableShowValues {
 	 * @param b LinkedList<MyCellarError>
 	 */
 	public void setErrors(LinkedList<MyCellarError> b) {
-
-		if(b == null)
-			return;
 		values = new Boolean[b.size()];
 		status = new Boolean[b.size()];
 		editable = new Boolean[b.size()];
@@ -320,16 +314,6 @@ public class ErrorShowValues extends TableShowValues {
 	@Override
 	public Bouteille getBottle(int i) {
 		return errors.get(i).getBottle();
-	}
-
-	/**
-	 * getNbData
-	 *
-	 * @return int
-	 */
-	@Override
-	public int getNbData() {
-		return errors.size();
 	}
 
 }

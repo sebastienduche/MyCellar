@@ -1,19 +1,19 @@
-package mycellar;
+package mycellar.core;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * <p>Titre : Cave � vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
- * <p>Soci�t� : Seb Informatique</p>
- * @author S�bastien Duch�
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.6
  * @since 05/08/07
  */
 
-class MyLinkedHashMap extends LinkedHashMap<String,Object> {
+public class MyLinkedHashMap extends LinkedHashMap<String,Object> {
 
   static final long serialVersionUID = 123;
   public MyLinkedHashMap() {

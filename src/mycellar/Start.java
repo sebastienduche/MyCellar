@@ -47,8 +47,8 @@ import java.util.prefs.Preferences;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.1
- * @since 27/02/20
+ * @version 26.2
+ * @since 06/03/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -168,14 +168,14 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			int nIndex = parameters.indexOf("-opts=");
 			if (nIndex == -1) {
 				// demarrage sans options
-				Program.setArchive(parameters.trim());
+				Program.setNewFile(parameters.trim());
 			} else {
 				// demarrage avec options
 				// ______________________
 				String tmp = parameters.substring(0, nIndex);
 				// Recuperation du nom du fichier
 				if (tmp.contains(Program.EXTENSION)) {
-					Program.setArchive(tmp.trim());
+					Program.setNewFile(tmp.trim());
 				} else {
 					// On prend tous ce qu'il y a apres -opts
 					tmp = parameters.substring(nIndex);
@@ -185,7 +185,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 						// options du nom du fichier
 						String tmp2 = tmp.trim();
 						tmp2 = tmp2.substring(tmp2.indexOf(" "));
-						Program.setArchive(tmp2.trim());
+						Program.setNewFile(tmp2.trim());
 					}
 				}
 				// Recuperation des options
@@ -240,7 +240,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		// Demarrage
 		// _________
 
-		if (Program.getArchive().isEmpty() && !Program.getGlobalConfigBool(MyCellarSettings.STARTUP, false)) {
+		if (!Program.hasFile() && !Program.getGlobalConfigBool(MyCellarSettings.STARTUP, false)) {
 			// Language au premier demarrage
 			String lang = System.getProperty("user.language");
 			if("fr".equalsIgnoreCase(lang)) {
@@ -255,7 +255,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 
 		// Parametrage
-		if (!Program.getArchive().isEmpty()) {
+		if (Program.hasFile()) {
 			loadFile();
 		} else {
 			updateFrame(false);
@@ -276,7 +276,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		Debug("Showing Frame");
 		afficheFrame();
 
-		if (Program.getArchive().isEmpty()) {
+		if (!Program.hasFile()) {
 			Debug("ERROR: Unable to Load Empty File: Use Load command");
 			m_oModifierButton.setEnabled(false);
 			m_oImporterButton.setEnabled(false);
@@ -1047,7 +1047,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
 			int retour_jfc = boiteFichier.showSaveDialog(this);
 			if (retour_jfc == JFileChooser.APPROVE_OPTION) {
-				Program.setFileSavable(true);
 				File nomFichier = boiteFichier.getSelectedFile();
 				if (nomFichier == null) {
 					setCursor(Cursor.getDefaultCursor());
@@ -1060,7 +1059,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 				setEnabled(false);
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				Program.saveAs(fic);
+				Program.saveAs(new File(fic));
 				setCursor(Cursor.getDefaultCursor());
 				setTitle(Program.getLabel("Infos001") + " - [" + Program.getShortFilename(fic) + "]");
 				setEnabled(true);

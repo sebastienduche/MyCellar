@@ -15,8 +15,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 09/11/19
+ * @version 2.4
+ * @since 06/03/20
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -210,6 +210,7 @@ class TableHistoryValues extends AbstractTableModel {
    */
   public void removeAll() {
     displayList.clear();
+    m_oList = new LinkedList<>();
     fireTableDataChanged();
   }
 

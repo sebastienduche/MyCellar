@@ -10,10 +10,11 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
+import mycellar.core.MyCellarFile;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.MyCellarVersion;
+import mycellar.core.MyLinkedHashMap;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.worksheet.WorkSheetList;
@@ -47,8 +48,6 @@ import javax.swing.JTabbedPane;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -82,12 +81,6 @@ import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.stream.Collectors;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -95,21 +88,18 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.9
- * @since 27/02/20
+ * @version 22.0
+ * @since 06/03/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.4.7.3";
+	public static final String INTERNAL_VERSION = "3.4.7.7";
 	public static final int VERSION = 62;
 
-	// Manage cave config
-	private static MyLinkedHashMap configCave = null;
+	private static MyCellarFile myCellarFile = null;
 	// Manage global config
 	private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
-
-	private static String archive = null;
 
 	static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
 	static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
@@ -159,10 +149,8 @@ public final class Program {
 	private static boolean m_bWorkDirCalculated = false;
 	private static boolean m_bGlobalDirCalculated = false;
 
-	private static boolean m_bIsTrueFile = false;
-
+	public static final String UNTITLED1_SINFO = "Untitled1.sinfo";
 	private static final String DATA_XML = "data.xml";
-	private static final String UNTITLED1_SINFO = "Untitled1.sinfo";
 	private static final String PREVIEW_XML = "preview.xml";
 	private static final String PREVIEW_HTML = "preview.html";
 	private static final String MY_CELLAR_XML = "MyCellar.xml";
@@ -185,28 +173,12 @@ public final class Program {
 	public static void start() {
 
 		try {
-			archive = "";
 			bDebug = true;
 			Debug("===================================================");
 			Debug("Starting MyCellar version: "+ VERSION + " Internal: " + INTERNAL_VERSION);
 			// Initialisation du repertoire de travail
 			getWorkDir(false);
-			Debug("Program: Initializing Configuration files...");
-			File fileIni = new File(getGlobalConfigFilePath());
-			if(!fileIni.exists()) {
-				fileIni.createNewFile();
-			} else {
-				FileInputStream inputStream = new FileInputStream(fileIni);
-				Properties properties = new Properties();
-				properties.load(inputStream);
-				inputStream.close();
-				//Initialisation de la Map contenant config
-				Enumeration<Object> keys = properties.keys();
-				while (keys.hasMoreElements()) {
-					String key = keys.nextElement().toString();
-					putGlobalConfigString(key, properties.getProperty(key));
-				}
-			}
+			loadGlobalProperties();
 			LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 		}
 		catch (Exception e) {
@@ -234,15 +206,15 @@ public final class Program {
 		}
 	}
 
-	static void setArchive(String archive) {
-		Program.archive = archive;
+	static void setNewFile(String file) {
+		myCellarFile = new MyCellarFile(new File(file));
 	}
 
-	static String getArchive() {
-		return archive;
+	static boolean hasFile() {
+		return myCellarFile != null;
 	}
 
-	private static String getConfigFilePath() {
+	public static String getConfigFilePath() {
 		return getWorkDir(true) + CONFIG_INI;
 	}
 	private static String getGlobalConfigFilePath() {
@@ -252,7 +224,6 @@ public final class Program {
 	private static void loadProperties() throws IOException {
 
 		String inputPropCave = getConfigFilePath();
-		configCave = new MyLinkedHashMap();
 		File f = new File(inputPropCave);
 		if(!f.exists()) {
 			f.createNewFile();
@@ -274,6 +245,25 @@ public final class Program {
 
 	}
 
+	private static void loadGlobalProperties() throws IOException {
+		Debug("Program: Initializing Configuration files...");
+		File fileIni = new File(getGlobalConfigFilePath());
+		if(!fileIni.exists()) {
+			fileIni.createNewFile();
+		} else {
+			FileInputStream inputStream = new FileInputStream(fileIni);
+			Properties properties = new Properties();
+			properties.load(inputStream);
+			inputStream.close();
+			//Initialisation de la Map contenant config
+			Enumeration<Object> keys = properties.keys();
+			while (keys.hasMoreElements()) {
+				String key = keys.nextElement().toString();
+				putGlobalConfigString(key, properties.getProperty(key));
+			}
+		}
+	}
+
 	/**
 	 * cleanAndUpgrade
 	 * 
@@ -286,7 +276,7 @@ public final class Program {
 			return;
 		}
 
-		int version = Integer.parseInt(sVersion);
+		//int version = Integer.parseInt(sVersion);
 	}
 
 
@@ -571,141 +561,6 @@ public final class Program {
 		return symbols.getDecimalSeparator();
 	}
 
-	/**
-	 * zipDir: Compression de repertoire
-	 *
-	 * @param fileName String
-	 * @return boolean
-	 */
-	private static void zipDir(String fileName) {
-
-		Debug("Program: zipDir: Zipping in "+m_sWorkDir+" with archive "+fileName);
-		try {
-			// creation d'un flux d'ecriture sur fichier
-			var dest = new FileOutputStream(fileName);
-			// calcul du checksum : Adler32 (plus rapide) ou CRC32
-			var checksum = new CheckedOutputStream(dest, new Adler32());
-			// creation d'un buffer d'ecriture
-			var buff = new BufferedOutputStream(checksum);
-			// creation d'un flux d'ecriture Zip
-			try(var out = new ZipOutputStream(buff)) {
-				// specification de la methode de compression
-				out.setMethod(ZipOutputStream.DEFLATED);
-				// specifier la qualite de la compression 0..9
-				out.setLevel(Deflater.BEST_COMPRESSION);
-
-				// extraction de la liste des fichiers du repertoire courant
-				File f = new File(m_sWorkDir);
-				String[] files = f.list();
-				// pour chacun des fichiers de la liste
-				if (files != null) {
-					LinkedList<String> zipEntryList = new LinkedList<>();
-					int BUFFER = 2048;
-					for (String file : files) {
-						f = new File(getWorkDir(true) + file);
-						if (f.isDirectory() || file.compareTo(UNTITLED1_SINFO) == 0) {
-							continue;
-						}
-						// creation d'un flux de lecture
-						var inputStream = new FileInputStream(getWorkDir(true) + file);
-						// creation d'un tampon de lecture sur ce flux
-						try (var bufferedInputStream = new BufferedInputStream(inputStream, BUFFER)) {
-							// creation d'en entree Zip pour ce fichier
-							String name = removeAccents(file);
-							var entry = new ZipEntry(name);
-							if (zipEntryList.contains(name)) {
-								continue;
-							}
-							zipEntryList.add(name);
-							// ajout de cette entree dans le flux d'ecriture de l'archive Zip
-							out.putNextEntry(entry);
-							// ecriture du fichier par paquet de BUFFER octets dans le flux d'ecriture
-							int count;
-							// buffer temporaire des donnees a ecrire dans le flux de sortie
-							byte[] data = new byte[BUFFER];
-							while ((count = bufferedInputStream.read(data, 0, BUFFER)) != -1) {
-								out.write(data, 0, count);
-							}
-							// Close the current entry
-							out.closeEntry();
-						}
-						inputStream.close();
-					}
-				}
-			}
-			buff.close();
-			checksum.close();
-			dest.close();
-		}
-		catch (Exception e) {
-			Debug("Program: zipDir: Error while zipping");
-			showException(e, false);
-		}
-		Debug("Program: zipDir OK");
-	}
-
-	/**
-	 * unzipDir: Dezippe une archive dans un repertoire
-	 *
-	 * @param dest_dir String
-	 * @return boolean
-	 */
-	private static boolean unzipDir(String dest_dir) {
-		try {
-			Debug("Program: Unzip: Archive "+archive);
-			// ouverture fichier entree
-			archive = archive.replaceAll("\\\\", "/");
-			File f = new File(archive);
-			if(!f.exists()) {
-				return false;
-			}
-			var fileInputStream = new FileInputStream(archive);
-			// ouverture fichier de buffer
-			var bufferedInputStream = new BufferedInputStream(fileInputStream);
-			// ouverture archive Zip d'entree
-			try(var zipInputStream = new ZipInputStream(bufferedInputStream)) {
-				// entree Zip
-				ZipEntry entry;
-				// parcours des entrees de l'archive
-				int BUFFER = 2048;
-				while ((entry = zipInputStream.getNextEntry()) != null) {
-					// affichage du nom de l'entree
-					// creation fichier
-					f = new File(dest_dir);
-					boolean ok = true;
-					if (!f.exists()) {
-						ok = f.mkdir();
-					}
-					if (ok) {
-						var fileOutputStream = new FileOutputStream(dest_dir + File.separator + entry.getName());
-						Debug("Unzip: File " + dest_dir + File.separator + entry.getName());
-						// affectation buffer de sortie
-						try (var bufferOutputStream = new BufferedOutputStream(fileOutputStream, BUFFER)) {
-							// ecriture sur disque
-							int count;
-							byte[] data = new byte[BUFFER];
-							while ((count = zipInputStream.read(data, 0, BUFFER)) != -1) {
-								bufferOutputStream.write(data, 0, count);
-							}
-							// vidage du tampon
-							bufferOutputStream.flush();
-						}
-						fileOutputStream.close();
-					}
-				}
-			}
-			bufferedInputStream.close();
-			fileInputStream.close();
-		}
-		catch (Exception e) {
-			Debug("Program: Unzip: Archive Error");
-			Debug(e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
-		Debug("Program: Unzip: Archive OK");
-		return true;
-	}
 
 
 	/**
@@ -713,17 +568,16 @@ public final class Program {
 	 */
 	public static void save() {
 		Debug("Program: Saving...");
-		saveAs(archive);
+		saveAs(myCellarFile.getFile());
 	}
 
 	/**
 	 * saveAs
-	 * @param sFilename String
+	 * @param file File
 	 */
-	static void saveAs(String sFilename) {
+	static void saveAs(File file) {
 		Debug("Program: Saving all files...");
 
-		saveCaveProperties();
 		saveGlobalProperties();
 
 		if(isListCaveModified()) {
@@ -735,13 +589,8 @@ public final class Program {
 		CountryVignobles.save();
 		ListeBouteille.writeXML();
 
-		if(!sFilename.isEmpty()) {
-			zipDir(sFilename);
-		} else {
-			zipDir(archive);
-		}
+		myCellarFile.saveAs(file);
 
-		archive = sFilename;
 		modified = false;
 		listCaveModified = false;
 		Debug("Program: Saving all files OK");
@@ -923,9 +772,6 @@ public final class Program {
 		if(isNewFile) {
 			// Nouveau fichier de bouteilles
 			ListeBouteille.writeXML();
-			setFileSavable(false);
-		} else {
-			setFileSavable(file.exists());
 		}
 
 		if(!file.exists()) {
@@ -940,22 +786,8 @@ public final class Program {
 			throw new UnableToOpenFileException("File not found: " + file.getAbsolutePath());
 		}
 
-		archive = file.getAbsolutePath();
-
-		try {
-			// Dezippage
-			boolean unzipOK = unzipDir(getWorkDir(false));
-			Debug("Program: Unzipping " + archive + " to " + getWorkDir(false) + (unzipOK ? " OK" : " KO"));
-			if (!unzipOK) {
-				archive = "";
-				throw new UnableToOpenFileException("Unzipping error for file: " + file.getAbsolutePath());
-			}
-		} catch (Exception e) {
-			Debug("Program: ERROR: Unable to unzip file "+archive);
-			showException(e,false);
-			archive = "";
-			throw new UnableToOpenFileException("Unzipping error: " + e.getMessage());
-		}
+		myCellarFile = new MyCellarFile(file);
+		myCellarFile.unzip();
 
 		// Chargement
 		if(!isNewFile && !getDataFile().exists()) {
@@ -993,7 +825,7 @@ public final class Program {
 		CountryVignobles.load();
 		CountryVignobles.addVignobleFromBottles();
 
-		if(isFileSavable()) {
+		if(myCellarFile.isFileSavable()) {
 			list.addFirst(file.getAbsolutePath());
 		}
 
@@ -1016,18 +848,18 @@ public final class Program {
 
 		Debug("Program: closeFile: Closing file...");
 		boolean bSave = false;
-		if(!archive.isEmpty() && isModified()) {
+		File newFile = null;
+		if(myCellarFile.exists() && isModified()) {
 			if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("Error199"), getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 				bSave = true;
-				if(!isFileSavable()) {
+				if(!myCellarFile.isFileSavable()) {
 					JFileChooser boiteFichier = new JFileChooser();
 					boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 					boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
 					int retour_jfc = boiteFichier.showSaveDialog(null);
 					if (retour_jfc == JFileChooser.APPROVE_OPTION) {
-						setFileSavable(true);
 						File nomFichier = boiteFichier.getSelectedFile();
-						archive = MyCellarControl.controlAndUpdateExtension(nomFichier.getAbsolutePath(), Filtre.FILTRE_SINFO);
+						newFile = new File(MyCellarControl.controlAndUpdateExtension(nomFichier.getAbsolutePath(), Filtre.FILTRE_SINFO));
 					}
 				}
 			}
@@ -1056,17 +888,19 @@ public final class Program {
 				MyXmlDom.writeMyCellarXml(getCave(), "");
 			}
 
-			saveCaveProperties();
-
 			if (!getCave().isEmpty()) {
 				getStorage().saveHistory();
 				getStorage().saveWorksheet();
 				CountryVignobles.save();
-				zipDir(archive);
+				if (newFile != null) {
+					myCellarFile.saveAs(newFile);
+				} else {
+					myCellarFile.save();
+				}
 			}
 		}
 
-		if(!archive.isEmpty()) {
+		if(myCellarFile.exists()) {
 			// Sauvegarde des proprietes globales
 			saveGlobalProperties();
 
@@ -1081,7 +915,7 @@ public final class Program {
 		}
 
 		TABBED_PANE.removeAll();
-		if (!archive.isEmpty()) {
+		if (myCellarFile.exists()) {
 			getStorage().close();
 			CountryVignobles.close();
 			Countries.close();
@@ -1089,9 +923,7 @@ public final class Program {
 		}
 		clearObjectsVariables();
 		m_bWorkDirCalculated = false;
-		archive = "";
 		TRASH.clear();
-		setFileSavable(false);
 		modified = false;
 		listCaveModified = false;
 		if (getCave() != null) {
@@ -1099,6 +931,7 @@ public final class Program {
 		}
 		DEFAULT_PLACE.resetStock();
 		EMPTY_PLACE.resetStock();
+		myCellarFile = null;
 		Debug("Program: closeFile: Closing file Ended");
 	}
 
@@ -1123,14 +956,6 @@ public final class Program {
 	}
 
 	/**
-	 * Save Properties for current cave
-	 */
-	private static void saveCaveProperties() {
-		MyCellarBottleContenance.save();
-		saveProperties(configCave, getConfigFilePath());
-	}
-
-	/**
 	 * Save global properties
 	 */
 	static void saveGlobalProperties() {
@@ -1139,7 +964,7 @@ public final class Program {
 		Debug("Program: Saving Global Properties OK");
 	}
 
-	private static void saveProperties(final MyLinkedHashMap map, final String file) {
+	public static void saveProperties(final MyLinkedHashMap map, final String file) {
 		Object[] val = map.keySet().toArray();
 		final Properties properties = new Properties();
 		for (Object o : val) {
@@ -1228,7 +1053,10 @@ public final class Program {
 	}
 
 	static String getShortFilename() {
-		return getShortFilename(archive);
+		if (myCellarFile == null) {
+			return getShortFilename(UNTITLED1_SINFO);
+		}
+		return getShortFilename(myCellarFile.getFile().getAbsolutePath());
 	}
 
 	static String getShortFilename(String sFilename) {
@@ -1247,8 +1075,8 @@ public final class Program {
 	}
 
 	public static String getCaveConfigString(String _sKey, String _sDefaultValue) {
-		if (null != configCave) {
-			return configCave.getString(_sKey, _sDefaultValue);
+		if (null != getCaveConfig()) {
+			return getCaveConfig().getString(_sKey, _sDefaultValue);
 		}
 		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+_sDefaultValue+"'");
 		return _sDefaultValue;
@@ -1259,8 +1087,8 @@ public final class Program {
 	}
 
 	public static boolean getCaveConfigBool(String _sKey, boolean defaultValue) {
-		if (null != configCave) {
-			final String value = configCave.getString(_sKey, defaultValue ? "1" : "0");
+		if (null != getCaveConfig()) {
+			final String value = getCaveConfig().getString(_sKey, defaultValue ? "1" : "0");
 			return ("1".equals(value) || "ON".equalsIgnoreCase(value));
 		}
 		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+defaultValue+"'");
@@ -1268,8 +1096,8 @@ public final class Program {
 	}
 
 	public static int getCaveConfigInt(String _sKey, int _nDefaultValue) {
-		if (null != configCave) {
-			return configCave.getInt(_sKey, _nDefaultValue);
+		if (null != getCaveConfig()) {
+			return getCaveConfig().getInt(_sKey, _nDefaultValue);
 		}
 		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+_nDefaultValue+"'");
 		return _nDefaultValue;
@@ -1280,8 +1108,8 @@ public final class Program {
 	}
 
 	public static void putCaveConfigString(String _sKey, String _sValue) {
-		if (null != configCave) {
-			configCave.put(_sKey, _sValue);
+		if (null != getCaveConfig()) {
+			getCaveConfig().put(_sKey, _sValue);
 		} else {
 			Debug("Program: ERROR: Unable to put value in configCave: [" + _sKey + " - " + _sValue + "]");
 		}
@@ -1292,35 +1120,27 @@ public final class Program {
 	}
 
 	public static void putCaveConfigBool(String _sKey, boolean _sValue) {
-		if (null != configCave) {
-			configCave.put(_sKey, _sValue ? "1" : "0");
+		if (null != getCaveConfig()) {
+			getCaveConfig().put(_sKey, _sValue ? "1" : "0");
 		} else {
 			Debug("Program: ERROR: Unable to put value in configCave: [" + _sKey + " - " + _sValue + "]");
 		}
 	}
 
 	static void putCaveConfigInt(String _sKey, Integer _sValue) {
-		configCave.put(_sKey, _sValue);
+		Objects.requireNonNull(getCaveConfig()).put(_sKey, _sValue);
 	}
 
 	static MyLinkedHashMap getCaveConfig() {
-		return configCave;
+		return myCellarFile == null ? null : myCellarFile.getCaveConfig();
 	}
 
 	static boolean hasConfigCaveKey(String _sKey) {
-		return null != configCave && configCave.containsKey(_sKey);
+		return null != getCaveConfig() && getCaveConfig().containsKey(_sKey);
 	}
 
 	static boolean hasConfigGlobalKey(String _sKey) {
 		return CONFIG_GLOBAL.containsKey(_sKey);
-	}
-
-	static boolean isFileSavable() {
-		return m_bIsTrueFile;
-	}
-
-	static void setFileSavable(boolean _bIsTrueFile) {
-		m_bIsTrueFile = _bIsTrueFile;
 	}
 
 	private static File getDataFile() {
@@ -2016,5 +1836,9 @@ public final class Program {
 		cleanDebugFiles();
 		Debug("Program: MyCellar End");
 		closeDebug();
+	}
+
+	static boolean isFileSavable() {
+		return myCellarFile != null && myCellarFile.isFileSavable();
 	}
 }

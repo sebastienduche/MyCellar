@@ -5,6 +5,7 @@ import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSpinner;
+import mycellar.core.MyLinkedHashMap;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ButtonGroup;

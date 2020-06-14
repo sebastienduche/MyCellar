@@ -69,7 +69,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,13 +87,13 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.0
- * @since 06/03/20
+ * @version 22.1
+ * @since 14/06/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.4.7.7";
+	public static final String INTERNAL_VERSION = "3.4.7.8";
 	public static final int VERSION = 62;
 
 	private static MyCellarFile myCellarFile = null;
@@ -170,20 +169,14 @@ public final class Program {
 	public static final MyClipBoard CLIPBOARD = new MyClipBoard();
 
 
-	public static void start() {
-
-		try {
-			bDebug = true;
-			Debug("===================================================");
-			Debug("Starting MyCellar version: "+ VERSION + " Internal: " + INTERNAL_VERSION);
-			// Initialisation du repertoire de travail
-			getWorkDir(false);
-			loadGlobalProperties();
-			LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
-		}
-		catch (Exception e) {
-			showException(e);
-		}
+	public static void start() throws UnableToOpenFileException {
+		bDebug = true;
+		Debug("===================================================");
+		Debug("Starting MyCellar version: "+ VERSION + " Internal: " + INTERNAL_VERSION);
+		// Initialisation du repertoire de travail
+		getWorkDir(false);
+		loadGlobalProperties();
+		LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 	}
 
 	static void initConf() {
@@ -221,46 +214,45 @@ public final class Program {
 		return getGlobalDir() + CONFIG_INI;
 	}
 
-	private static void loadProperties() throws IOException {
-
-		String inputPropCave = getConfigFilePath();
-		File f = new File(inputPropCave);
-		if(!f.exists()) {
-			f.createNewFile();
-		} else {
-			FileInputStream inputStream = new FileInputStream(inputPropCave);
-			Properties properties = new Properties();
-			properties.load(inputStream);
-			inputStream.close();
-			Enumeration<Object> keys = properties.keys();
-			while (keys.hasMoreElements()) {
-				String key = keys.nextElement().toString();
-				putCaveConfigString(key, properties.getProperty(key));
+	private static void loadProperties() throws UnableToOpenFileException {
+		try {
+			String inputPropCave = getConfigFilePath();
+			File f = new File(inputPropCave);
+			if(!f.exists()) {
+				f.createNewFile();
+			} else {
+				FileInputStream inputStream = new FileInputStream(inputPropCave);
+				Properties properties = new Properties();
+				properties.load(inputStream);
+				inputStream.close();
+				properties.forEach((key, value) -> putCaveConfigString(key.toString(), value.toString()));
+				if (properties.isEmpty()) {
+					// Initialisation de la devise pour les nouveaux fichiers
+					putCaveConfigString(MyCellarSettings.DEVISE, "\u20ac");
+				}
 			}
-			if (properties.isEmpty()) {
-				// Initialisation de la devise pour les nouveaux fichiers
-				putCaveConfigString(MyCellarSettings.DEVISE, "\u20ac");
-			}
+		} catch (IOException e) {
+			throw new UnableToOpenFileException("Load properties failed: " + e.getMessage());
 		}
 
 	}
 
-	private static void loadGlobalProperties() throws IOException {
-		Debug("Program: Initializing Configuration files...");
-		File fileIni = new File(getGlobalConfigFilePath());
-		if(!fileIni.exists()) {
-			fileIni.createNewFile();
-		} else {
-			FileInputStream inputStream = new FileInputStream(fileIni);
-			Properties properties = new Properties();
-			properties.load(inputStream);
-			inputStream.close();
-			//Initialisation de la Map contenant config
-			Enumeration<Object> keys = properties.keys();
-			while (keys.hasMoreElements()) {
-				String key = keys.nextElement().toString();
-				putGlobalConfigString(key, properties.getProperty(key));
+	private static void loadGlobalProperties() throws UnableToOpenFileException {
+		try {
+			Debug("Program: Initializing Configuration files...");
+			File fileIni = new File(getGlobalConfigFilePath());
+			if(!fileIni.exists()) {
+				fileIni.createNewFile();
+			} else {
+				FileInputStream inputStream = new FileInputStream(fileIni);
+				Properties properties = new Properties();
+				properties.load(inputStream);
+				inputStream.close();
+				//Initialisation de la Map contenant config
+				properties.forEach((key, value) -> putGlobalConfigString(key.toString(), value.toString()));
 			}
+		} catch (IOException e) {
+			throw new UnableToOpenFileException("Load properties failed: " + e.getMessage());
 		}
 	}
 
@@ -809,12 +801,7 @@ public final class Program {
 			throw new UnableToOpenFileException("Place Count: Program=" + GetCaveLength() + " cave=" + i);
 		}
 
-		try {
-			loadProperties();
-		} catch (IOException e) {
-			showException(e,false);
-			throw new UnableToOpenFileException("Load properties failed: " + e.getMessage());
-		}
+		loadProperties();
 
 		MyCellarBottleContenance.load();
 
@@ -1070,77 +1057,77 @@ public final class Program {
 		return tmp;
 	}
 
-	static String getGlobalConfigString(String _sKey, String _sDefaultValue) {
-		return CONFIG_GLOBAL.getString(_sKey, _sDefaultValue);
+	static String getGlobalConfigString(String key, String defaultValue) {
+		return CONFIG_GLOBAL.getString(key, defaultValue);
 	}
 
-	public static String getCaveConfigString(String _sKey, String _sDefaultValue) {
+	public static String getCaveConfigString(String key, String defaultValue) {
 		if (null != getCaveConfig()) {
-			return getCaveConfig().getString(_sKey, _sDefaultValue);
+			return getCaveConfig().getString(key, defaultValue);
 		}
-		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+_sDefaultValue+"'");
-		return _sDefaultValue;
-	}
-
-	static boolean getGlobalConfigBool(String _sKey, boolean defaultValue) {
-		return 1 == CONFIG_GLOBAL.getInt(_sKey, defaultValue ? 1 : 0);
-	}
-
-	public static boolean getCaveConfigBool(String _sKey, boolean defaultValue) {
-		if (null != getCaveConfig()) {
-			final String value = getCaveConfig().getString(_sKey, defaultValue ? "1" : "0");
-			return ("1".equals(value) || "ON".equalsIgnoreCase(value));
-		}
-		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+defaultValue+"'");
+		Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
 		return defaultValue;
 	}
 
-	public static int getCaveConfigInt(String _sKey, int _nDefaultValue) {
+	static boolean getGlobalConfigBool(String key, boolean defaultValue) {
+		return 1 == CONFIG_GLOBAL.getInt(key, defaultValue ? 1 : 0);
+	}
+
+	public static boolean getCaveConfigBool(String key, boolean defaultValue) {
 		if (null != getCaveConfig()) {
-			return getCaveConfig().getInt(_sKey, _nDefaultValue);
+			final String value = getCaveConfig().getString(key, defaultValue ? "1" : "0");
+			return ("1".equals(value) || "ON".equalsIgnoreCase(value));
 		}
-		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+_nDefaultValue+"'");
-		return _nDefaultValue;
+		Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
+		return defaultValue;
 	}
 
-	static void putGlobalConfigString(String _sKey, String _sValue) {
-		CONFIG_GLOBAL.put(_sKey, _sValue);
-	}
-
-	public static void putCaveConfigString(String _sKey, String _sValue) {
+	public static int getCaveConfigInt(String key, int defaultValue) {
 		if (null != getCaveConfig()) {
-			getCaveConfig().put(_sKey, _sValue);
+			return getCaveConfig().getInt(key, defaultValue);
+		}
+		Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
+		return defaultValue;
+	}
+
+	static void putGlobalConfigString(String key, String value) {
+		CONFIG_GLOBAL.put(key, value);
+	}
+
+	public static void putCaveConfigString(String key, String value) {
+		if (null != getCaveConfig()) {
+			getCaveConfig().put(key, value);
 		} else {
-			Debug("Program: ERROR: Unable to put value in configCave: [" + _sKey + " - " + _sValue + "]");
+			Debug("Program: ERROR: Unable to put value in configCave: [" + key + " - " + value + "]");
 		}
 	}
 
-	static void putGlobalConfigBool(String _sKey, boolean _sValue) {
-		CONFIG_GLOBAL.put(_sKey, _sValue ? "1" : "0");
+	static void putGlobalConfigBool(String key, boolean value) {
+		CONFIG_GLOBAL.put(key, value ? "1" : "0");
 	}
 
-	public static void putCaveConfigBool(String _sKey, boolean _sValue) {
+	public static void putCaveConfigBool(String key, boolean value) {
 		if (null != getCaveConfig()) {
-			getCaveConfig().put(_sKey, _sValue ? "1" : "0");
+			getCaveConfig().put(key, value ? "1" : "0");
 		} else {
-			Debug("Program: ERROR: Unable to put value in configCave: [" + _sKey + " - " + _sValue + "]");
+			Debug("Program: ERROR: Unable to put value in configCave: [" + key + " - " + value + "]");
 		}
 	}
 
-	static void putCaveConfigInt(String _sKey, Integer _sValue) {
-		Objects.requireNonNull(getCaveConfig()).put(_sKey, _sValue);
+	static void putCaveConfigInt(String key, int value) {
+		Objects.requireNonNull(getCaveConfig()).put(key, value);
 	}
 
 	static MyLinkedHashMap getCaveConfig() {
 		return myCellarFile == null ? null : myCellarFile.getCaveConfig();
 	}
 
-	static boolean hasConfigCaveKey(String _sKey) {
-		return null != getCaveConfig() && getCaveConfig().containsKey(_sKey);
+	static boolean hasConfigCaveKey(String key) {
+		return null != getCaveConfig() && getCaveConfig().containsKey(key);
 	}
 
-	static boolean hasConfigGlobalKey(String _sKey) {
-		return CONFIG_GLOBAL.containsKey(_sKey);
+	static boolean hasConfigGlobalKey(String key) {
+		return CONFIG_GLOBAL.containsKey(key);
 	}
 
 	private static File getDataFile() {
@@ -1175,27 +1162,27 @@ public final class Program {
 		return SerializedStorage.getInstance();
 	}
 
-	public static String getLabel(String _id) {
-		return getLabel(_id, true);
+	public static String getLabel(String id) {
+		return getLabel(id, true);
 	}
 
-	public static String getLabel(String _id, boolean displayError) {
+	public static String getLabel(String id, boolean displayError) {
 		try {
-			return LanguageFileLoader.getLabel(_id);
+			return LanguageFileLoader.getLabel(id);
 		}catch(MissingResourceException e) {
 			if(displayError) {
-				JOptionPane.showMessageDialog(null, "Missing Label "+_id, "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Missing Label " + id, "Error", JOptionPane.ERROR_MESSAGE);
 			}
-			return _id;
+			return id;
 		}
 	}
 
-	public static String getError(String _id) {
+	public static String getError(String id) {
 		try {
-			return LanguageFileLoader.getError(_id);
+			return LanguageFileLoader.getError(id);
 		}catch(MissingResourceException e) {
-			JOptionPane.showMessageDialog(null, "Missing Error "+_id, "Error", JOptionPane.ERROR_MESSAGE);
-			return _id;
+			JOptionPane.showMessageDialog(null, "Missing Error " + id, "Error", JOptionPane.ERROR_MESSAGE);
+			return id;
 		}
 	}
 

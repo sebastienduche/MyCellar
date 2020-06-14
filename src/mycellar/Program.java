@@ -93,7 +93,7 @@ import java.util.stream.Collectors;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.4.7.8";
+	public static final String INTERNAL_VERSION = "3.4.8.1";
 	public static final int VERSION = 62;
 
 	private static MyCellarFile myCellarFile = null;

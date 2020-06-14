@@ -11,6 +11,7 @@ import mycellar.core.PopupListener;
 import mycellar.pdf.PDFPageProperties;
 import mycellar.pdf.PDFTools;
 import mycellar.showfile.ManageColumnModel;
+import mycellar.xls.XLSOptions;
 import net.miginfocom.swing.MigLayout;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 

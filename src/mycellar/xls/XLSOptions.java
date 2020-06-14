@@ -1,5 +1,7 @@
-package mycellar;
+package mycellar.xls;
 
+import mycellar.Program;
+import mycellar.Start;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarFields;
@@ -24,12 +26,12 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 01/11/19
+ * @version 1.8
+ * @since 14/06/20
  */
-final class XLSOptions extends JDialog {
+final public class XLSOptions extends JDialog {
 
-	private static final long serialVersionUID = 5307297932934344545L;
+  private static final long serialVersionUID = 5307297932934344545L;
   private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
   private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox();
   private final MyCellarCheckBox[] export;
@@ -40,7 +42,7 @@ final class XLSOptions extends JDialog {
   /**
    * XLSOptions: Constructeur pour la fenêtre d'options.
    */
-  XLSOptions() {
+  public XLSOptions() {
 	  setModal(true);
 	  setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(Program.getLabel("Infos268"));

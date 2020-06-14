@@ -100,7 +100,7 @@ public final class Program {
 	// Manage global config
 	private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
 
-	static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
+	public static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
 	static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
 	static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);
 	static final Font FONT_DIALOG_SMALL = new Font("Dialog", Font.BOLD, 12);
@@ -1114,7 +1114,7 @@ public final class Program {
 		}
 	}
 
-	static void putCaveConfigInt(String key, int value) {
+	public static void putCaveConfigInt(String key, int value) {
 		Objects.requireNonNull(getCaveConfig()).put(key, value);
 	}
 

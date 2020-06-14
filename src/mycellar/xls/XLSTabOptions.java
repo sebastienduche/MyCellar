@@ -1,5 +1,9 @@
-package mycellar;
+package mycellar.xls;
 
+import mycellar.Program;
+import mycellar.Start;
+import mycellar.StateEditor;
+import mycellar.StateRenderer;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
@@ -28,10 +32,10 @@ import java.awt.event.WindowEvent;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 28/12/18
+ * @version 1.5
+ * @since 14/06/20
  */
-class XLSTabOptions extends JDialog {
+public class XLSTabOptions extends JDialog {
   private static final int LARGEUR = 480;
   private static final int HAUTEUR = 550;
   private final MyCellarSpinner title_size = new MyCellarSpinner();
@@ -49,7 +53,7 @@ class XLSTabOptions extends JDialog {
   /**
    * XLSOptions: Constructeur pour la fenêtre d'options.
    */
-  XLSTabOptions() {
+  public XLSTabOptions() {
 	  setModal(true);
     tv = new XLSOptionsValues();
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);

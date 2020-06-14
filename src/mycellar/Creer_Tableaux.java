@@ -9,6 +9,7 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.xls.XLSTabOptions;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;

@@ -87,13 +87,13 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.1
- * @since 14/06/20
+ * @version 22.2
+ * @since 21/06/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.4.8.1";
+	public static final String INTERNAL_VERSION = "3.4.8.2";
 	public static final int VERSION = 62;
 
 	private static MyCellarFile myCellarFile = null;
@@ -1693,9 +1693,12 @@ public final class Program {
 		if(!f.getName().toLowerCase().endsWith(".txt")) {
 			return "";
 		}
+		Debug("Program: Reading first line of file " + f.getName());
 		try (var scanner = new Scanner(f)){
-			String line = scanner.nextLine();
-			return line.trim();
+			if(scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				return line.trim();
+			}
 		} catch (IOException e) {
 			showException(e, true);
 		}

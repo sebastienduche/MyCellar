@@ -47,8 +47,8 @@ import java.util.prefs.Preferences;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.2
- * @since 06/03/20
+ * @version 26.3
+ * @since 25/06/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -74,10 +74,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private final JButton newButton = new JButton();
 	private final JButton openButton = new JButton();
 	
-	private final MyCellarLabel copyright = new MyCellarLabel();
-	private final MyCellarLabel update = new MyCellarLabel();
-	private static final String INFOS_VERSION = " 2019 v";
-	private final MyCellarLabel version = new MyCellarLabel();
+	private final MyCellarLabel update = new MyCellarLabel("");
+	private final MyCellarLabel version = new MyCellarLabel("");
 	
 	private char QUITTER;
 	private char IMPORT;
@@ -675,7 +673,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oAjouterButton.setText(Program.getLabel("Infos005"));
 		m_oRechercherButton.setText(Program.getLabel("Infos006"));
 		m_oSupprimerButton.setText(Program.getLabel("Infos004"));
-		version.setText(Program.getLabel("MonthVersion") + INFOS_VERSION + MyCellarVersion.MAIN_VERSION);
+		version.setText(Program.getLabel("MonthVersion") + Program.INFOS_VERSION + MyCellarVersion.MAIN_VERSION);
 		addWine.setAccelerator(KeyStroke.getKeyStroke(AJOUTERV, InputEvent.CTRL_DOWN_MASK));
 		addPlace.setAccelerator(KeyStroke.getKeyStroke(AJOUTERR, InputEvent.CTRL_DOWN_MASK));
 		delPlace.setAccelerator(KeyStroke.getKeyStroke(SUPPR, InputEvent.CTRL_DOWN_MASK));
@@ -787,8 +785,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 		setLayout(new MigLayout("", "[grow]", "[grow][][]"));
 
+		MyCellarLabel copyright = new MyCellarLabel("Copyright S\u00e9bastien D.");
 		copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
-		copyright.setText("Copyright S\u00e9bastien D.");
 		version.setFont(new Font("Dialog", Font.PLAIN, 10));
 		update.setFont(new Font("Dialog", Font.PLAIN, 10));
 		add(Program.TABBED_PANE, "grow, hidemode 3, wrap");
@@ -971,8 +969,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 
 		if (bUpdateAvailable) {
-			String sText = MessageFormat.format(Program.getLabel("Infos385"), Server.getInstance().getAvailableVersion(), MyCellarVersion.MAIN_VERSION + "-" + Program.INTERNAL_VERSION);
-			update.setText(sText);
+			update.setText(MessageFormat.format(Program.getLabel("Infos385"), Server.getInstance().getAvailableVersion(), MyCellarVersion.MAIN_VERSION + "-" + Program.INTERNAL_VERSION));
 		}
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		m_bHasFrameBuilded = true;

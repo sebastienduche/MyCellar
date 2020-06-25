@@ -87,14 +87,15 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.2
- * @since 21/06/20
+ * @version 22.3
+ * @since 25/06/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.4.8.2";
+	public static final String INTERNAL_VERSION = "3.4.9.3";
 	public static final int VERSION = 62;
+	public static final String INFOS_VERSION = " 2020 v";
 
 	private static MyCellarFile myCellarFile = null;
 	// Manage global config
@@ -1656,7 +1657,7 @@ public final class Program {
 		UPDATABLE_OBJECTS.remove(CHOOSE_CELL);
 	}
 
-	private static IMyCellar createOpenedObject(Class className, String id) {
+	private static IMyCellar createOpenedObject(Class<?> className, String id) {
 		IMyCellar object = OPENED_OBJECTS.get(id);
 		if (object == null) {
 			try {

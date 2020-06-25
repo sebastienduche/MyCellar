@@ -47,7 +47,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
@@ -65,8 +64,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.2
- * @since 09/11/19
+ * @version 7.3
+ * @since 25/06/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -76,8 +75,8 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private static final MyCellarEnum TOCHECK = new MyCellarEnum(2, Program.getLabel("History.ToCheck"));
 
   private static final long serialVersionUID = 1265789936970092250L;
+  @SuppressWarnings("deprecation")
   private final MyCellarLabel m_oTitleLabel = new MyCellarLabel();
-  private final MyCellarLabel m_oResultLabel = new MyCellarLabel();
   private final MyCellarButton m_oCreatePlacesButton = new MyCellarButton(new CreatePlacesAction());
   private final MyCellarButton m_oManageButton = new MyCellarButton(new ManageColumnAction());
   private final MyCellarButton m_oDeleteButton = new MyCellarButton(MyCellarImage.DELETE);
@@ -429,8 +428,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private void jbInit() {
 
     m_oTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    m_oResultLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    m_oResultLabel.setForeground(Color.red);
     setLayout(new MigLayout("", "[][grow]", "[]10px[grow][]"));
     if (isTrash()) {
       m_oDeleteButton.setText(Program.getLabel("ShowFile.Restore"));
@@ -594,7 +591,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     m_oTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
     add(new JScrollPane(m_oTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), "grow, span 2, wrap");
-    add(m_oResultLabel, "span 2, alignx center, hidemode 3");
   }
 
   private boolean isNormal() {
@@ -736,7 +732,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     } else {
       tv.setBottles(Program.getStorage().getAllList());
     }
-    m_oResultLabel.setText("");
   }
 
   private void setRangementValue(Bouteille b, MyCellarFields field, Object value) {

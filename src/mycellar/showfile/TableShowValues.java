@@ -20,11 +20,13 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 3.9
- * @since 27/02/20
+ * @version 4.0
+ * @since 25/06/20
  */
 
 class TableShowValues extends AbstractTableModel {
+
+  private static final long serialVersionUID = 1183158496820687240L;
   public static final int ETAT = 0;
   private static final int NAME = 1;
   public static final int YEAR = 2;

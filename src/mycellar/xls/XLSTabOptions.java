@@ -4,6 +4,7 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.StateEditor;
 import mycellar.StateRenderer;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
@@ -32,15 +33,15 @@ import java.awt.event.WindowEvent;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 14/06/20
+ * @version 1.6
+ * @since 25/06/20
  */
 public class XLSTabOptions extends JDialog {
   private static final int LARGEUR = 480;
   private static final int HAUTEUR = 550;
   private final MyCellarSpinner title_size = new MyCellarSpinner();
-  private final MyCellarCheckBox boldTitleCheckBox = new MyCellarCheckBox();
-  private final MyCellarCheckBox onePlacePerSheetCheckBox = new MyCellarCheckBox();
+  private final MyCellarCheckBox boldTitleCheckBox = new MyCellarCheckBox(LabelType.INFO, "257");
+  private final MyCellarCheckBox onePlacePerSheetCheckBox = new MyCellarCheckBox(LabelType.INFO_OTHER, "XLSOptions.onePlacePerSheet");
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner text_size = new MyCellarSpinner();
   private final MyCellarSpinner column_size = new MyCellarSpinner();
@@ -113,8 +114,6 @@ public class XLSTabOptions extends JDialog {
     empty_line_part.setValue(Program.getCaveConfigInt(MyCellarSettings.EMPTY_LINE_PART_XLS, 1));
     empty_line_place.setValue(Program.getCaveConfigInt(MyCellarSettings.EMPTY_LINE_PLACE_XLS, 3));
 
-    boldTitleCheckBox.setText(Program.getLabel("Infos257")); //gras
-    onePlacePerSheetCheckBox.setText(Program.getLabel("XLSOptions.onePlacePerSheet"));
     if (Program.getCaveConfigBool(MyCellarSettings.BOLD_TAB_XLS, false)) {
       boldTitleCheckBox.setSelected(true);
     }

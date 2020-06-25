@@ -10,8 +10,6 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
 
-import static mycellar.core.LabelType.INFO;
-
 /**
  * Titre : Cave à vin
  * Description : Votre description

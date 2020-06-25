@@ -2,6 +2,7 @@ package mycellar.xls;
 
 import mycellar.Program;
 import mycellar.Start;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarFields;
@@ -26,14 +27,14 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 14/06/20
+ * @version 1.9
+ * @since 25/06/20
  */
 final public class XLSOptions extends JDialog {
 
   private static final long serialVersionUID = 5307297932934344545L;
   private final MyCellarSpinner MyCellarSpinner1 = new MyCellarSpinner();
-  private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox();
+  private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox(LabelType.INFO, "257");
   private final MyCellarCheckBox[] export;
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner MyCellarSpinner3 = new MyCellarSpinner();
@@ -78,7 +79,6 @@ final public class XLSOptions extends JDialog {
     MyCellarSpinner1.setValue(Program.getCaveConfigInt(MyCellarSettings.TITLE_SIZE_XLS, 10));
     MyCellarSpinner3.setValue(Program.getCaveConfigInt(MyCellarSettings.TEXT_SIZE_XLS, 10));
 
-    MyCellarCheckBox1.setText(Program.getLabel("Infos257")); //gras
     MyCellarCheckBox1.setSelected(Program.getCaveConfigBool(MyCellarSettings.BOLD_XLS, false));
     List<MyCellarFields> columns = MyCellarFields.getFieldsList();
     nb_colonnes = columns.size();

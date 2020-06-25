@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarVersion;
@@ -24,15 +25,15 @@ import java.awt.Toolkit;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 08/01/20
+ * @version 1.6
+ * @since 25/06/20
  */
 class APropos extends JDialog {
-  private final MyCellarButton ok = new MyCellarButton();
-  private final MyCellarLabel MyCellarLabel1 = new MyCellarLabel();
-  private final MyCellarLabel MyCellarLabel2 = new MyCellarLabel();
-  private final MyCellarLabel MyCellarLabel3 = new MyCellarLabel();
-  private final MyCellarLabel MyCellarLabel4 = new MyCellarLabel();
+  private final MyCellarButton ok = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
+  private final MyCellarLabel MyCellarLabel1 = new MyCellarLabel("MyCellar");
+  private final MyCellarLabel MyCellarLabel2 = new MyCellarLabel("Copyright: S.Duché");
+  private final MyCellarLabel MyCellarLabel3 = new MyCellarLabel("Release: " + Program.INTERNAL_VERSION);
+  private final MyCellarLabel MyCellarLabel4 = new MyCellarLabel("Version: " + MyCellarVersion.MAIN_VERSION);
   static final long serialVersionUID = 150505;
 
   /**
@@ -51,19 +52,13 @@ class APropos extends JDialog {
    *
    */
   private void jbInit() {
-    ok.setText(Program.getLabel("Main.OK"));
     IconPanel ip = new IconPanel(MyCellarImage.ICON);
-    ok.setFont(new Font("Arial", Font.PLAIN, 12));
     ok.addActionListener((e) -> dispose());
     MyCellarLabel1.setForeground(Color.red);
     MyCellarLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-    MyCellarLabel1.setText("MyCellar");
     MyCellarLabel2.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel2.setText("Copyright: S.Duché");
     MyCellarLabel3.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel3.setText("Release: " + Program.INTERNAL_VERSION);
     MyCellarLabel4.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel4.setText("Version: " + MyCellarVersion.MAIN_VERSION);
     MyCellarLabel1.setFont(new Font("Arial", Font.BOLD, 13));
     setLayout(new MigLayout("","[][]","[]"));
     add(MyCellarLabel1,"center, span 2, wrap");

@@ -59,8 +59,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.2
- * @since 08/01/20
+ * @version 13.3
+ * @since 25/06/20
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -74,6 +74,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	private final List<MyCellarComboBox<MyCellarFields>> comboBoxList = new ArrayList<>(COUNT);
 	private final MyCellarCheckBox titre = new MyCellarCheckBox(LabelType.INFO, "038");
 	private final MyCellarLabel textControl2 = new MyCellarLabel(LabelType.INFO, "037");
+	@SuppressWarnings("deprecation")
 	private final MyCellarLabel label_progression = new MyCellarLabel();
 	private final MyCellarLabel label2 = new MyCellarLabel(LabelType.INFO, "034");
 	private final MyCellarComboBox<String> separateur = new MyCellarComboBox<>();
@@ -213,7 +214,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	 * @param  index int
 	 */
 	private void updateCombo(ActionEvent e, int index) {
-		if (((MyCellarComboBox)e.getSource()).getSelectedIndex() == 0) {
+		if (((MyCellarComboBox<?>)e.getSource()).getSelectedIndex() == 0) {
 			for (int i=index; i<COUNT; i++) {
 				final var comboBox = comboBoxList.get(i);
 				comboBox.setEnabled(false);

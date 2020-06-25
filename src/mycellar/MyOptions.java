@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
@@ -27,16 +28,12 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.1
- * @since 10/04/19
+ * @version 2.2
+ * @since 25/06/20
  */
 class MyOptions extends JDialog {
-  private final MyCellarLabel textControl1 = new MyCellarLabel();
-  private final MyCellarLabel definition = new MyCellarLabel();
-  private final MyCellarLabel definition2 = new MyCellarLabel();
-  private final MyCellarButton valider = new MyCellarButton();
-  private final MyCellarButton annuler = new MyCellarButton();
-  private final MyCellarLabel textControl3 = new MyCellarLabel();
+  @SuppressWarnings("deprecation")
+private final MyCellarLabel textControl3 = new MyCellarLabel();
   private final ButtonGroup cbg = new ButtonGroup();
   private static final int LARGEUR = 420;
   private JComponent[] value;
@@ -124,17 +121,20 @@ class MyOptions extends JDialog {
     labelEdit = new JTextField[taille_value];
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(title);
+    MyCellarLabel textControl1 = new MyCellarLabel(title);
     textControl1.setFont(Program.FONT_DIALOG_SMALL);
     textControl1.setForeground(Color.red);
     textControl1.setText(title);
     textControl1.setHorizontalAlignment(SwingConstants.CENTER);
+    MyCellarLabel definition = new MyCellarLabel(message);
+    MyCellarLabel definition2 = new MyCellarLabel(message2);
+    MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
+    MyCellarButton annuler = new MyCellarButton(LabelType.INFO, "055");
     definition.setText(message);
     definition2.setText(message2);
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(SwingConstants.CENTER);
-    valider.setText(Program.getLabel("Main.OK"));
     valider.setMnemonic('O');
-    annuler.setText(Program.getLabel("Infos055"));
     
     for (int i = 0; i < taille_value; i++) {
       value[i] = null;

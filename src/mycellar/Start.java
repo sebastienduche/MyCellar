@@ -75,7 +75,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	
 	private final MyCellarLabel copyright = new MyCellarLabel();
 	private final MyCellarLabel update = new MyCellarLabel();
-	private static final String INFOS_VERSION = " 2019 v";
+	private static final String INFOS_VERSION = " 2020 v";
 	private final MyCellarLabel version = new MyCellarLabel();
 	
 	private char QUITTER;

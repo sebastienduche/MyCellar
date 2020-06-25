@@ -78,7 +78,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final JScrollPane m_js_comment = new JScrollPane(m_comment);
 	protected final MyCellarButton m_manageContenance = new MyCellarButton();
 	protected final MyCellarSpinner m_nb_bottle = new MyCellarSpinner();
-	private boolean updateView = false;
+	protected boolean updateView = false;
 	protected MyCellarButton m_chooseCell;
 	protected PanelVignobles panelVignobles;
 	protected Bouteille m_laBouteille = null;
@@ -446,7 +446,7 @@ public abstract class MyCellarManageBottles extends JPanel {
     			m_num_lieu.setSelectedIndex(bottle.getNumLieu());
     			m_line.setSelectedIndex(bottle.getLigne());
     			m_column.setSelectedIndex(bottle.getColonne());
-    		}	else {
+    		} else {
     			int start = rangement.getStartCaisse();
     			for (int i = start; i< nbEmpl+start; i++) {
     				m_num_lieu.addItem(Integer.toString(i));
@@ -480,7 +480,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		return !listenersEnabled;
 	}
 
-	private void setListenersEnabled(boolean listenersEnabled) {
+	protected void setListenersEnabled(boolean listenersEnabled) {
 		this.listenersEnabled = listenersEnabled;
 	}
 

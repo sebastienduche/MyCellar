@@ -1786,6 +1786,7 @@ public final class Program {
 		}
 		ManageBottle manage = new ManageBottle(bottle);
 		manage.enableAll(edit);
+		UPDATABLE_OBJECTS.put(Integer.toString(bottle.getId()), manage);
 		String bottleName = bottle.getNom();
 		if (bottleName.length() > 30) {
 			bottleName = bottleName.substring(0, 30) + " ...";

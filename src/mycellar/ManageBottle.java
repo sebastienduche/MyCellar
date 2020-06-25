@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IAddVin;
+import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarSettings;
@@ -34,10 +35,10 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.5
- * @since 13/08/19
+ * @version 5.6
+ * @since 25/06/20
  */
-public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
+public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
 
 
@@ -592,6 +593,30 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	@Override
 	public void tabClosed() {
 		Start.getInstance().updateMainPanel();
+	}
+	
+	@Override
+	public void updateView() {
+		if (!updateView) {
+			return;
+		}
+		SwingUtilities.invokeLater(() -> {
+			Debug("updateView...");
+			setListenersEnabled(false);
+			updateView = false;
+			m_lieu.removeAllItems();
+			initPlaceCombo();
+			m_half.removeAllItems();
+			m_half.addItem("");
+			for (String s : MyCellarBottleContenance.getList()) {
+				m_half.addItem(s);
+			}
+			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+			panelVignobles.updateList();
+			selectPlace(m_laBouteille);
+			setListenersEnabled(true);
+			Debug("updateView Done");
+		});
 	}
 
 }

@@ -1908,8 +1908,10 @@ public final class Program {
 			return "";
 		}
 		try (var scanner = new Scanner(f)){
-			String line = scanner.nextLine();
-			return line.trim();
+			if(scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				return line.trim();
+			}
 		} catch (IOException e) {
 			showException(e, true);
 		}

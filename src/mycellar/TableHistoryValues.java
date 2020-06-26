@@ -1,6 +1,7 @@
 package mycellar;
 
 import javax.swing.table.AbstractTableModel;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +29,7 @@ class TableHistoryValues extends AbstractTableModel {
   private static final int LABEL = 3;
   static final int ACTION = 4;
 
-  private List<History> m_oList = new ArrayList<>();
+  private List<History> fullList = new ArrayList<>();
   private List<History> displayList = new LinkedList<>();
   private final List<String> columnList = new LinkedList<>();
   private Boolean[] booleanTab = null;
@@ -90,12 +91,12 @@ class TableHistoryValues extends AbstractTableModel {
 	  case TYPE:
 	  {
 		  Bouteille b = h.getBouteille();
-      String emplacement;
+		  String emplacement;
 		  if (b.isInTemporaryStock()) {
 		    emplacement = Program.getLabel("Bouteille.TemporaryPlace");
-      } else {
+		  } else {
 		    emplacement = Program.convertStringFromHTMLString(b.getEmplacement());
-      }
+		 }
       String sType = "";
       String sLabel = "";
       switch (h.getType()) {
@@ -149,9 +150,10 @@ class TableHistoryValues extends AbstractTableModel {
    */
   @Override
   public Class<?> getColumnClass(int column) {
-	  if(!firstcolumn) {
+    if(!firstcolumn) {
       column++;
     }
+
     Class<?> dataType = super.getColumnClass(column);
     return dataType;
   }
@@ -210,7 +212,7 @@ class TableHistoryValues extends AbstractTableModel {
    */
   public void removeAll() {
     displayList.clear();
-    m_oList = new LinkedList<>();
+    fullList = new LinkedList<>();
     fireTableDataChanged();
   }
 
@@ -220,7 +222,7 @@ class TableHistoryValues extends AbstractTableModel {
    * @return List
    */
   List<History> getData() {
-    return m_oList;
+    return fullList;
   }
 
   /**
@@ -229,7 +231,7 @@ class TableHistoryValues extends AbstractTableModel {
    * @return int
    */
   public int getNbData() {
-    return m_oList.size();
+    return fullList.size();
   }
 
   /**
@@ -239,7 +241,7 @@ class TableHistoryValues extends AbstractTableModel {
    */
   public void setHistory(List<History> list) {
     try {
-      m_oList = list;
+      fullList = list;
       displayList = new LinkedList<>();
       booleanTab = new Boolean[list.size()];
       if(firstcolumn) {
@@ -271,13 +273,13 @@ class TableHistoryValues extends AbstractTableModel {
   /**
    * SetFilter: Filtre l'historique
    *
-   * @param _nFilter int
+   * @param filter int
    */
-  void SetFilter(int _nFilter) {
+  void SetFilter(int filter) {
     try {
       displayList.clear();
-      for (History h : m_oList) {
-        if (_nFilter == -1 || h.getType() == _nFilter) {
+      for (History h : fullList) {
+        if (filter == -1 || h.getType() == filter) {
         	displayList.add(h);
         }
       }

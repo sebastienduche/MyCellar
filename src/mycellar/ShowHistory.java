@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.IMyCellar;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -13,9 +14,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableRowSorter;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 
 /**
@@ -25,33 +32,34 @@ import java.util.LinkedList;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 08/08/19
+ * @version 3.8
+ * @since 26/06/20
  */
 
 public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
 	private static final long serialVersionUID = 4778721795659106312L;
-	private final MyCellarComboBox<String> m_oFilterCbx = new MyCellarComboBox<>();
+	private final MyCellarComboBox<String> filterCbx = new MyCellarComboBox<>();
 	private final TableHistoryValues tv;
 
+	@SuppressWarnings("deprecation")
 	public ShowHistory() {
 		Debug("Constructor");
-		MyCellarLabel m_oFilterLabel = new MyCellarLabel(Program.getLabel("Infos350")); // Filtre
-		m_oFilterCbx.addItem(Program.getLabel("Infos351"));
-		m_oFilterCbx.addItem(Program.getLabel("Infos345"));
-		m_oFilterCbx.addItem(Program.getLabel("Infos346"));
-		m_oFilterCbx.addItem(Program.getLabel("Infos347"));
-		m_oFilterCbx.addItem(Program.getLabel("History.Validated"));
-		m_oFilterCbx.addItem(Program.getLabel("History.ToCheck"));
-		m_oFilterCbx.addItemListener(this::filter_itemStateChanged);
+		MyCellarLabel filterLabel = new MyCellarLabel(LabelType.INFO, "350"); // Filtre
+		filterCbx.addItem(Program.getLabel("Infos351"));
+		filterCbx.addItem(Program.getLabel("Infos345"));
+		filterCbx.addItem(Program.getLabel("Infos346"));
+		filterCbx.addItem(Program.getLabel("Infos347"));
+		filterCbx.addItem(Program.getLabel("History.Validated"));
+		filterCbx.addItem(Program.getLabel("History.ToCheck"));
+		filterCbx.addItemListener(this::filter_itemStateChanged);
 
 		// Remplissage de la table
 		tv = new TableHistoryValues(true);
 		tv.setHistory(Program.getHistory());
 
-		JTable m_oTable = new JTable(tv);
-		TableColumnModel tcm = m_oTable.getColumnModel();
+		JTable table = new JTable(tv);
+		TableColumnModel tcm = table.getColumnModel();
 		TableColumn[] tc1 = new TableColumn[4];
 		for (int w = 0; w < 4; w++) {
 			tc1[w] = tcm.getColumn(w);
@@ -82,15 +90,43 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 		tc.setMinWidth(100);
 		tc.setMaxWidth(100);
 
-		JScrollPane m_oScroll = new JScrollPane(m_oTable);
+		TableRowSorter<TableHistoryValues> sorter = new TableRowSorter<>(tv);
+		sorter.setComparator(1, new Comparator<String>() {
+
+      @Override
+      public int compare(String o1, String o2) {
+        if (o1 == null || o2 == null) {
+          return 1;
+        }
+        if (o1.isBlank() || o2.isBlank()
+            || !o1.contains("/") || !o2.contains("/")) {
+          return o1.compareTo(o2);
+        }
+        
+        Date date1 = null;
+        Date date2 = null;
+        try {
+          SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy");
+          date1 = parser.parse(o1);
+          date2 = parser.parse(o2);
+        } catch (ParseException e) {}
+        
+        if (date1 == null || date2 == null) {
+          return 1;
+        }
+        return date1.compareTo(date2);
+      }
+		  
+		});
+		table.setRowSorter(sorter);
 
 		setLayout(new MigLayout("", "grow", "[][grow][]"));
-		add(m_oFilterLabel, "split 5");
-		add(m_oFilterCbx);
+		add(filterLabel, "split 5");
+		add(filterCbx);
 		add(new MyCellarButton(new ClearHistoryAction()), "gapleft 10px");
 		add(new MyCellarLabel(), "growx");
 		add(new MyCellarButton(new RestoreAction()), "align right, wrap");
-		add(m_oScroll, "grow, wrap");
+		add(new JScrollPane(table), "grow, wrap");
 		add(new MyCellarButton(new DeleteAction()), "center");
 	}
 
@@ -101,14 +137,9 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 	 */
 	private void filter_itemStateChanged(ItemEvent e) {
 		Debug("SetFilter");
-		tv.SetFilter(m_oFilterCbx.getSelectedIndex() - 1);
+		tv.SetFilter(filterCbx.getSelectedIndex() - 1);
 	}
 
-	/**
-	 * Debug
-	 * 
-	 * @param sText String
-	 */
 	private static void Debug(String sText) {
 		Program.Debug("ShowHistory: " + sText);
 	}
@@ -169,7 +200,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 					erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toRestoreList.size()); // vins selectionnes.");
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
 				}
-				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
+				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					LinkedList<Bouteille> cantRestoreList = new LinkedList<>();
 					for (Bouteille b : toRestoreList) {
@@ -179,7 +210,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 								Program.getStorage().addHistory(History.ADD, b);
 								Program.getStorage().addWine(b);
 							} else {
-								if (r.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1) == null) {
+								if (r.canAddBottle(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
 									Program.getStorage().addHistory(History.ADD, b);
 									Program.getStorage().addWine(b);
 								} else {
@@ -240,7 +271,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 						erreur_txt2 = Program.getError("Error131"); // "Voulez-vous les supprimer?");
 					}
 					Debug(toDeleteList.size() + " line(s) selected");
-					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
+					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 						Debug("Deleting lines...");
 						for (History b : toDeleteList) {
@@ -249,8 +280,8 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 						tv.setHistory(Program.getHistory());
 					}
 				}
-			} catch (Exception exc) {
-				Program.showException(exc);
+			} catch (Exception e) {
+				Program.showException(e);
 			}
 		}
 	}
@@ -265,9 +296,9 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int filter = m_oFilterCbx.getSelectedIndex() - 1;
+			int filter = filterCbx.getSelectedIndex() - 1;
 			Program.getStorage().clearHistory(filter);
-			m_oFilterCbx.setSelectedIndex(0);
+			filterCbx.setSelectedIndex(0);
 			refresh();
 		}
 	}

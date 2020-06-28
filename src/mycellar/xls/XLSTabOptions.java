@@ -39,14 +39,14 @@ import java.awt.event.WindowEvent;
 public class XLSTabOptions extends JDialog {
   private static final int LARGEUR = 480;
   private static final int HAUTEUR = 550;
-  private final MyCellarSpinner title_size = new MyCellarSpinner();
+  private final MyCellarSpinner title_size = new MyCellarSpinner(1, 99);
   private final MyCellarCheckBox boldTitleCheckBox = new MyCellarCheckBox(LabelType.INFO, "257");
   private final MyCellarCheckBox onePlacePerSheetCheckBox = new MyCellarCheckBox(LabelType.INFO_OTHER, "XLSOptions.onePlacePerSheet");
   private final JTextField pdf_title = new JTextField();
-  private final MyCellarSpinner text_size = new MyCellarSpinner();
-  private final MyCellarSpinner column_size = new MyCellarSpinner();
-  private final MyCellarSpinner empty_line_part = new MyCellarSpinner();
-  private final MyCellarSpinner empty_line_place = new MyCellarSpinner();
+  private final MyCellarSpinner text_size = new MyCellarSpinner(1, 99);
+  private final MyCellarSpinner column_size = new MyCellarSpinner(1, 99);
+  private final MyCellarSpinner empty_line_part = new MyCellarSpinner(1, 99);
+  private final MyCellarSpinner empty_line_place = new MyCellarSpinner(1, 99);
   private final MyCellarLabel empty_line_place_label;
   private final XLSOptionsValues tv;
   static final long serialVersionUID = 260706;
@@ -81,31 +81,7 @@ public class XLSTabOptions extends JDialog {
     String xls_title = Program.getCaveConfigString(MyCellarSettings.XLS_TAB_TITLE, "");
     pdf_title.setText(xls_title);
     MyCellarLabel MyCellarLabel3 = new MyCellarLabel(Program.getLabel("Infos256")); //Taille du texte
-    title_size.addChangeListener((e) -> {
-        if (Integer.parseInt(title_size.getValue().toString()) <= 0) {
-          title_size.setValue(1);
-        }
-    });
-    text_size.addChangeListener((e) -> {
-        if (Integer.parseInt(text_size.getValue().toString()) <= 0) {
-          text_size.setValue(1);
-        }
-    });
-    column_size.addChangeListener((e) -> {
-        if (Integer.parseInt(column_size.getValue().toString()) <= 0) {
-          column_size.setValue(1);
-        }
-    });
-    empty_line_part.addChangeListener((e)-> {
-        if (Integer.parseInt(empty_line_part.getValue().toString()) <= 0) {
-          empty_line_part.setValue(1);
-        }
-    });
-    empty_line_place.addChangeListener((e) -> {
-        if (Integer.parseInt(empty_line_place.getValue().toString()) <= 0) {
-          empty_line_place.setValue(1);
-        }
-    });
+    
     onePlacePerSheetCheckBox.addActionListener(e -> updatePlaceSettings(onePlacePerSheetCheckBox.isSelected()));
 
     title_size.setValue(Program.getCaveConfigInt(MyCellarSettings.TITLE_TAB_SIZE_XLS, 10));

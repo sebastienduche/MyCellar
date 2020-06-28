@@ -30,8 +30,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 18/10/19
+ * @version 2.89
+ * @since 28/06/20
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -77,7 +77,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected JModifyTextArea m_comment = new JModifyTextArea();
 	protected final JScrollPane m_js_comment = new JScrollPane(m_comment);
 	protected final MyCellarButton m_manageContenance = new MyCellarButton();
-	protected final MyCellarSpinner m_nb_bottle = new MyCellarSpinner();
+	protected final MyCellarSpinner m_nb_bottle = new MyCellarSpinner(1, 999);
 	protected boolean updateView = false;
 	protected MyCellarButton m_chooseCell;
 	protected PanelVignobles panelVignobles;

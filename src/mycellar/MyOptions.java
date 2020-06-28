@@ -28,8 +28,8 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.2
- * @since 25/06/20
+ * @version 2.3
+ * @since 28/06/20
  */
 class MyOptions extends JDialog {
   @SuppressWarnings("deprecation")
@@ -143,13 +143,8 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
         value[i] = new JTextField(default_value[i]);
       }
       if (type_objet[i].equals("MyCellarSpinner")) {
-        final MyCellarSpinner jspi = new MyCellarSpinner();
+        final MyCellarSpinner jspi = new MyCellarSpinner(0, 99999);
         jspi.setValue(Integer.parseInt(default_value[i]));
-        jspi.addChangeListener((e) -> {
-            if (Integer.parseInt(jspi.getValue().toString()) < 0) {
-              jspi.setValue(0);
-            }
-        });
         value[i] = jspi;
       }
       if (type_objet[i].equals("MyCellarCheckBox")) {
@@ -207,7 +202,7 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
         getContentPane().add(label_value[i], "wrap");
       }
       else {
-    	if( bIsLabelEdit )
+    	if(bIsLabelEdit)
     		getContentPane().add(labelEdit[i], "grow");
     	else
     		getContentPane().add(label_value[i], "grow");
@@ -216,7 +211,7 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
     }
     getContentPane().add(textControl3, "wrap");
     
-    if ( bCancel ) {
+    if (bCancel) {
       getContentPane().add(valider, "span 2, split 2, center");
       getContentPane().add(annuler, "");
     } else {
@@ -235,15 +230,14 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
       String defaut = null;
       int nb_jradio = 0;
       for (int i = 0; i < taille_value; i++) {
-    	  if( bIsLabelEdit )
-    	  {
+    	  if(bIsLabelEdit) {
     		  JTextField jtf = labelEdit[i];
     		  cle[i] = jtf.getText().trim();
     	  }
         if (value[i] instanceof JTextField) {
           JTextField jtex = (JTextField) value[i];
           resul[i] = jtex.getText().trim();
-          if (config != null && !cle[i].isEmpty()){
+          if (config != null && !cle[i].isEmpty()) {
             config.put(cle[i], resul[i]);
           }
           if (defaut == null) {
@@ -270,20 +264,18 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
           MyCellarRadioButton jrb = (MyCellarRadioButton) value[i];
           if (jrb.isSelected()) {
             resul[i] = Integer.toString(nb_jradio);
-            if (config != null && !cle[i].isEmpty()){
+            if (config != null && !cle[i].isEmpty()) {
               config.put(cle[i], resul[i]);
             }
           }
           nb_jradio++;
-        }
-        else {
+        } else {
           nb_jradio = 0;
         }
       }
       dispose();
-    }
-    catch (Exception exc) {
-      Program.showException(exc);
+    } catch (Exception ex) {
+      Program.showException(ex);
     }
   }
 

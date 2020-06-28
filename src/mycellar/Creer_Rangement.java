@@ -42,8 +42,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.4
- * @since 14/08/19
+ * @version 13.5
+ * @since 28/06/20
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -53,14 +53,14 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton(Program.getLabel("Infos013"), false); //"Toutes les lignes n'ont pas le meme nombre de colonnes"
 	private final MyCellarCheckBox checkLimite = new MyCellarCheckBox(); //limite
 	private final MyCellarLabel label_limite = new MyCellarLabel();
-	private final MyCellarSpinner nb_limite = new MyCellarSpinner();
+	private final MyCellarSpinner nb_limite = new MyCellarSpinner(1, 999);
 	private boolean islimited = false;
 	private int limite = 0;
-	private final MyCellarSpinner nb_parties = new MyCellarSpinner();
+	private final MyCellarSpinner nb_parties = new MyCellarSpinner(1, 99);
 	private LinkedList<Part> listPart = new LinkedList<>();
 	private static final char CREER = Program.getLabel("CREER").charAt(0);
 	private static final char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
-	private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner();
+	private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner(0, 99);
 	private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox(); //Caisse
 	private final MyCellarLabel label_cree = new MyCellarLabel();
 	private final MyCellarButton preview = new MyCellarButton();
@@ -126,11 +126,6 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		label_limite.setText(Program.getLabel("Infos177"));
 
 		nb_parties.addChangeListener((e) -> {
-			if (Integer.parseInt(nb_parties.getValue().toString()) <= 0) {
-				nb_parties.setValue(1);
-			} else if (Integer.parseInt(nb_parties.getValue().toString()) > 99) {
-				nb_parties.setValue(99);
-			}
 			if (!m_caisse_chk.isSelected()) {
 				int top = Integer.parseInt(nb_parties.getValue().toString());
 				if (top > listPart.size()) {
@@ -150,20 +145,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 			}
 		});
 
-		nb_start_caisse.addChangeListener((e) -> {
-				if (Integer.parseInt(nb_start_caisse.getValue().toString()) < 0) {
-					nb_start_caisse.setValue(0);
-				} else if (Integer.parseInt(nb_start_caisse.getValue().toString()) > 99) {
-					nb_start_caisse.setValue(99);
-				}
-			});
-
 		nb_limite.addChangeListener((e) -> {
-				if (Integer.parseInt(nb_limite.getValue().toString()) <= 0) {
-					nb_limite.setValue(1);
-				} else if (Integer.parseInt(nb_limite.getValue().toString()) > 999) {
-					nb_limite.setValue(999);
-				}
 				if (Integer.parseInt(nb_limite.getValue().toString()) == 1) {
 					label_limite.setText(Program.getLabel("Infos177"));
 				}	else {

@@ -17,8 +17,8 @@ import javax.swing.JCheckBox;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.2
- * @since 01/11/19
+ * @version 0.3
+ * @since 28/08/20
  */
 
 public class MyCellarCheckBox extends JCheckBox {
@@ -30,11 +30,6 @@ public class MyCellarCheckBox extends JCheckBox {
 
 	private LabelType type;
 	private String code;
-
-	@Deprecated
-	public MyCellarCheckBox() {
-		setFont(FONT);
-	}
 
 	public MyCellarCheckBox(Icon icon) {
 		super(icon);

@@ -48,8 +48,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 20.5
- * @since 06/12/19
+ * @version 20.6
+ * @since 28/08/20
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -78,7 +78,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 	private final char SUPPR = Program.getLabel("SUPPR").charAt(0);
 	private final char EXPORT = Program.getLabel("EXPORT").charAt(0);
 	private final MyCellarLabel resul_txt = new MyCellarLabel();
-	private final MyCellarCheckBox multi = new MyCellarCheckBox();
+	private final MyCellarCheckBox multi = new MyCellarCheckBox(LabelType.INFO, "101");
 	private final String label_empl = Program.getLabel("Infos101"); //"Tous les vins de l'emplacement");
 	private final String label_num_empl = Program.getLabel("Infos102"); //"Tous les vins du lieu");
 	private final String label_ligne = Program.getLabel("Infos103"); //"Tous les vins de la ligne");

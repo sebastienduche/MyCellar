@@ -30,8 +30,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.89
- * @since 28/06/20
+ * @version 3.0
+ * @since 28/08/20
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -53,10 +53,10 @@ public abstract class MyCellarManageBottles extends JPanel {
 	private final MyCellarLabel m_labelColor = new MyCellarLabel();
 	protected final MyCellarLabel lastModified = new MyCellarLabel();
 	protected final MyCellarLabel m_labelComment = new MyCellarLabel();
-	protected final MyCellarButton m_preview = new MyCellarButton();
+	protected final MyCellarButton m_preview = new MyCellarButton(LabelType.INFO, "138");
 	protected final MyCellarLabel m_labelStillToAdd = new MyCellarLabel();
 	protected final MyCellarLabel m_end = new MyCellarLabel(); // Label pour les résultats
-	protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox();
+	protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox("");
 	protected final int SIECLE = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
 	protected final JModifyComboBox<Rangement> m_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<>();
@@ -68,7 +68,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected JCompletionComboBox name = new JCompletionComboBox();
 	protected final JModifyTextField m_year = new JModifyTextField();
 	protected final JModifyComboBox<String> m_half = new JModifyComboBox<>();
-	protected final MyCellarCheckBox m_noYear = new MyCellarCheckBox();
+	protected final MyCellarCheckBox m_noYear = new MyCellarCheckBox(LabelType.INFO, "399");
 	protected final JModifyFormattedTextField m_price = new JModifyFormattedTextField(NumberFormat.getNumberInstance());
 	protected final JModifyTextField m_maturity = new JModifyTextField();
 	protected final JModifyTextField m_parker = new JModifyTextField();
@@ -76,7 +76,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final JModifyComboBox<BottlesStatus> statusList = new JModifyComboBox<>();
 	protected JModifyTextArea m_comment = new JModifyTextArea();
 	protected final JScrollPane m_js_comment = new JScrollPane(m_comment);
-	protected final MyCellarButton m_manageContenance = new MyCellarButton();
+	protected final MyCellarButton m_manageContenance = new MyCellarButton(LabelType.INFO, "400");
 	protected final MyCellarSpinner m_nb_bottle = new MyCellarSpinner(1, 999);
 	protected boolean updateView = false;
 	protected MyCellarButton m_chooseCell;
@@ -106,9 +106,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		labelStatus.setText(Program.getLabel("MyCellarManageBottles.status"));
 		labelLastModified.setText(Program.getLabel("MyCellarManageBottles.lastModified"));
 		m_labelColor.setText(Program.getLabel("AddVin.Color"));
-		m_manageContenance.setText(Program.getLabel("Infos400"));
 		m_preview.setMnemonic(PREVIEW);
-		m_preview.setText(Program.getLabel("Infos138")); //"Visualiser le rangement");
 		m_preview.setEnabled(false);
 		m_preview.addActionListener(this::preview_actionPerformed);
 

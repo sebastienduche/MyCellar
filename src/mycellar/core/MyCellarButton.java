@@ -17,8 +17,8 @@ import javax.swing.JButton;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.3
- * @since 01/11/19
+ * @version 0.4
+ * @since 28/08/20
  */
 
 public class MyCellarButton extends JButton {
@@ -30,11 +30,6 @@ public class MyCellarButton extends JButton {
 
 	private LabelType type;
 	private String code;
-
-	@Deprecated
-	public MyCellarButton() {
-		setFont(FONT);
-	}
 
 	public MyCellarButton(Icon icon) {
 		super(icon);

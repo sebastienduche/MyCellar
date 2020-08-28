@@ -40,8 +40,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.3
- * @since 13/08/19
+ * @version 25.4
+ * @since 28/08/20
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -105,7 +105,6 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 			m_contenance.setText(Program.getLabel("Infos134")); //"Demie bouteille");
 			m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ( (SIECLE + 1) * 100))); //"Annee 00 -> 2000");
 			m_annee_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
-			m_noYear.setText(Program.getLabel("Infos399"));
 
 			m_nb_bottle.setToolTipText(Program.getLabel("Infos263"));
 			m_nb_bottle.setValue(1);

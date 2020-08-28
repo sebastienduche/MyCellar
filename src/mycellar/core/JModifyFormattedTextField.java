@@ -14,8 +14,8 @@ import mycellar.Start;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 21/01/17
+ * @version 0.4
+ * @since 28/08/20
  */
 
 public class JModifyFormattedTextField extends JFormattedTextField {
@@ -25,70 +25,10 @@ public class JModifyFormattedTextField extends JFormattedTextField {
 	private boolean modified;
 	private boolean active;
 
-	private JModifyFormattedTextField() {
-		init();
-	}
-
-	public JModifyFormattedTextField(Object value) {
-		super(value);
-		init();
-	}
 
 	public JModifyFormattedTextField(Format format) {
 		super(format);
 		init();
-	}
-
-	public JModifyFormattedTextField(AbstractFormatter formatter) {
-		super(formatter);
-		init();
-	}
-
-	public JModifyFormattedTextField(AbstractFormatterFactory factory) {
-		super(factory);
-		init();
-	}
-
-	public JModifyFormattedTextField(AbstractFormatterFactory factory,
-			Object currentValue) {
-		super(factory, currentValue);
-		init();
-	}
-	
-	public JModifyFormattedTextField(boolean active) {
-		this();
-		this.active = active;
-	}
-	
-	public JModifyFormattedTextField(Object value, boolean active) {
-		super(value);
-		init();
-		this.active = active;
-	}
-
-	public JModifyFormattedTextField(Format format, boolean active) {
-		super(format);
-		init();
-		this.active = active;
-	}
-
-	public JModifyFormattedTextField(AbstractFormatter formatter, boolean active) {
-		super(formatter);
-		init();
-		this.active = active;
-	}
-
-	public JModifyFormattedTextField(AbstractFormatterFactory factory, boolean active) {
-		super(factory);
-		init();
-		this.active = active;
-	}
-
-	public JModifyFormattedTextField(AbstractFormatterFactory factory,
-			Object currentValue, boolean active) {
-		super(factory, currentValue);
-		init();
-		this.active = active;
 	}
 	
 	private void init() {
@@ -125,10 +65,7 @@ public class JModifyFormattedTextField extends JFormattedTextField {
 	public void setModified(boolean modified) {
 		this.modified = modified;
 	}
-	
-	public boolean isModifyActive() {
-		return active;
-	}
+
 
 	public void setModifyActive(boolean active) {
 		this.active = active;

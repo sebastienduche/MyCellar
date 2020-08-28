@@ -35,8 +35,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.6
- * @since 25/06/20
+ * @version 5.7
+ * @since 28/08/20
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -90,8 +90,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 					}
 				}
 			});
-
-			m_noYear.setText(Program.getLabel("Infos399"));
 
 			m_nb_bottle.setToolTipText(Program.getLabel("Infos263"));
 			m_nb_bottle.setValue(1);

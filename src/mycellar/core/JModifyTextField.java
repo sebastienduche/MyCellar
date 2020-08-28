@@ -13,8 +13,8 @@ import mycellar.Start;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 21/01/17
+ * @version 0.4
+ * @since 28/08/20
  */
 
 public class JModifyTextField extends JTextField {
@@ -47,12 +47,7 @@ public class JModifyTextField extends JTextField {
 		});
 	}
 	
-	public JModifyTextField(boolean active) {
-		this();
-		this.active = active;
-	}
-	
-	private void doAfterModify(){
+	private void doAfterModify() {
 		Start.setPaneModified(true);
 	}
 

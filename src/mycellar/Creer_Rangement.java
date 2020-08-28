@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -42,8 +43,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.5
- * @since 28/06/20
+ * @version 13.6
+ * @since 28/08/20
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -51,7 +52,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	private final JTextField nom_obj = new JTextField();
 	private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton(Program.getLabel("Infos012"), true); //"Toutes les lignes ont le meme nombre de colonnes"
 	private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton(Program.getLabel("Infos013"), false); //"Toutes les lignes n'ont pas le meme nombre de colonnes"
-	private final MyCellarCheckBox checkLimite = new MyCellarCheckBox(); //limite
+	private final MyCellarCheckBox checkLimite = new MyCellarCheckBox(LabelType.INFO, "238"); //limite
 	private final MyCellarLabel label_limite = new MyCellarLabel();
 	private final MyCellarSpinner nb_limite = new MyCellarSpinner(1, 999);
 	private boolean islimited = false;
@@ -61,9 +62,9 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	private static final char CREER = Program.getLabel("CREER").charAt(0);
 	private static final char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
 	private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner(0, 99);
-	private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox(); //Caisse
+	private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox(LabelType.INFO, "024"); //Caisse
 	private final MyCellarLabel label_cree = new MyCellarLabel();
-	private final MyCellarButton preview = new MyCellarButton();
+	private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "155");
 	private int start_caisse = 0;
 	private final JPanel panelType;
 	private final JPanel panelStartCaisse;
@@ -101,13 +102,10 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		cbg.add(m_jrb_same_column_number);
 		cbg.add(m_jrb_dif_column_number);
 		m_jrb_same_column_number.addItemListener((e) -> model.setSameColumnNumber(m_jrb_same_column_number.isSelected()));
-		m_caisse_chk.setText(Program.getLabel("Infos024")); //"Rangement de type Caisse");
-		checkLimite.setText(Program.getLabel("Infos238")); //Limite de caisse
 		label_cree.setForeground(Color.red);
 		label_cree.setFont(Program.FONT_DIALOG_SMALL);
 		label_cree.setText("");
 		label_cree.setHorizontalAlignment(SwingConstants.CENTER);
-		preview.setText(Program.getLabel("Infos155")); //"Previsualiser le rangement");
 		
 		preview.addActionListener(this::preview_actionPerformed);
 		m_caisse_chk.addItemListener(this::checkbox1_itemStateChanged);
@@ -623,25 +621,21 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	private void checkbox1_itemStateChanged(ItemEvent e) {
 		label_cree.setText("");
 		try {
+		  boolean checked = m_caisse_chk.isSelected();
+		  preview.setEnabled(!checked);
+		  panelType.setVisible(!checked);
+		  panelTable.setVisible(!checked);
+		  nb_start_caisse.setVisible(checked);
+      panelStartCaisse.setVisible(checked);
+      panelLimite.setVisible(checked);
+		  checkLimite.setVisible(true);
 			if (m_caisse_chk.isSelected()) {
-				checkLimite.setVisible(true);
+				
 				final boolean checkLimiteSelected = checkLimite.isSelected();
 				label_limite.setVisible(checkLimiteSelected);
 				nb_limite.setVisible(checkLimiteSelected);
-				nb_start_caisse.setVisible(true);
-				panelType.setVisible(false);
-				panelStartCaisse.setVisible(true);
-				panelLimite.setVisible(true);
-				panelTable.setVisible(false);
-				preview.setEnabled(false);
 			}	else {
-				nb_start_caisse.setVisible(false);
-				panelType.setVisible(true);
-				panelStartCaisse.setVisible(false);
-				panelLimite.setVisible(false);
-				panelTable.setVisible(true);
 				preview.setEnabled(true);
-				checkLimite.setVisible(true);
 				nb_parties.setValue(1);
 			}
 		} catch (Exception exc) {

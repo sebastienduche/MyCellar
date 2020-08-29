@@ -14,6 +14,7 @@ import mycellar.core.MyCellarSpinner;
 import mycellar.core.PopupListener;
 import net.miginfocom.swing.MigLayout;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
@@ -43,17 +44,17 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.6
- * @since 28/08/20
+ * @version 13.7
+ * @since 29/08/20
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
 	private final MyCellarComboBox<Rangement> comboPlace = new MyCellarComboBox<>();
 	private final JTextField nom_obj = new JTextField();
-	private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton(Program.getLabel("Infos012"), true); //"Toutes les lignes ont le meme nombre de colonnes"
-	private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton(Program.getLabel("Infos013"), false); //"Toutes les lignes n'ont pas le meme nombre de colonnes"
+	private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton(LabelType.INFO, "012", true); //"Toutes les lignes ont le meme nombre de colonnes"
+	private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton(LabelType.INFO, "013", false); //"Toutes les lignes n'ont pas le meme nombre de colonnes"
 	private final MyCellarCheckBox checkLimite = new MyCellarCheckBox(LabelType.INFO, "238"); //limite
-	private final MyCellarLabel label_limite = new MyCellarLabel();
+	private final MyCellarLabel label_limite = new MyCellarLabel(LabelType.INFO, "177");
 	private final MyCellarSpinner nb_limite = new MyCellarSpinner(1, 999);
 	private boolean islimited = false;
 	private int limite = 0;
@@ -86,9 +87,11 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 
 		MyCellarButton createButton = new MyCellarButton(MyCellarImage.ADD);
 		if(modify) {
+		  createButton = new MyCellarButton(LabelType.INFO, "079", new ModifyAction());
 			createButton.setText(Program.getLabel("Infos079")); //"Modifier");
 			createButton.addActionListener((e) -> modifyPlace());
 		} else {
+		  createButton = new MyCellarButton(LabelType.INFO, "018", new CreateAction());
 			createButton.setText(Program.getLabel("Infos018")); //"Creer");
 			createButton.addActionListener(this::create_actionPerformed);
 		}
@@ -120,8 +123,6 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 				keylistener_actionPerformed(e);
 			}
 		});
-
-		label_limite.setText(Program.getLabel("Infos177"));
 
 		nb_parties.addChangeListener((e) -> {
 			if (!m_caisse_chk.isSelected()) {
@@ -772,4 +773,31 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		nom_obj.setText(fullText.substring(0, nom_obj.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(nom_obj.getSelectionEnd()));
 	}
 
+	class CreateAction extends AbstractAction {
+    private static final long serialVersionUID = 3560817063990123326L;
+
+    CreateAction() {
+	    super("", MyCellarImage.ADD);
+	  }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      create_actionPerformed(e);
+    }
+	  
+	}
+	
+class ModifyAction extends AbstractAction {
+  private static final long serialVersionUID = 546778254003860608L;
+
+  ModifyAction() {
+      super("", MyCellarImage.ADD);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      modifyPlace();
+    }
+    
+  }
 }

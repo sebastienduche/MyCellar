@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IAddVin;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarSettings;
@@ -35,8 +36,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.7
- * @since 28/08/20
+ * @version 5.8
+ * @since 29/08/20
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -52,7 +53,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		isEditionMode = true;
 		m_add = new MyCellarButton(MyCellarImage.SAVE);
 		
-		m_chooseCell = new MyCellarButton(new ChooseCellAction(this));
+		m_chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
 		try {
 			Debug("Constructor with Bottle");
 			LinkedList<String> list = new LinkedList<>();

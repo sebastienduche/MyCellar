@@ -32,8 +32,8 @@ import java.util.LinkedList;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.8
- * @since 26/06/20
+ * @version 3.9
+ * @since 29/08/20
  */
 
 public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
@@ -123,11 +123,11 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 		setLayout(new MigLayout("", "grow", "[][grow][]"));
 		add(filterLabel, "split 5");
 		add(filterCbx);
-		add(new MyCellarButton(new ClearHistoryAction()), "gapleft 10px");
+		add(new MyCellarButton(LabelType.INFO_OTHER, "ShowHistory.ClearHistory", new ClearHistoryAction()), "gapleft 10px");
 		add(new MyCellarLabel(), "growx");
-		add(new MyCellarButton(new RestoreAction()), "align right, wrap");
+		add(new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.Restore", new RestoreAction()), "align right, wrap");
 		add(new JScrollPane(table), "grow, wrap");
-		add(new MyCellarButton(new DeleteAction()), "center");
+		add(new MyCellarButton(LabelType.INFO, "051", new DeleteAction()), "center");
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 		private static final long serialVersionUID = 4095399581910695568L;
 
 		private RestoreAction() {
-			super(Program.getLabel("ShowFile.Restore"), MyCellarImage.RESTORE);
+			super("", MyCellarImage.RESTORE);
 			putValue(SHORT_DESCRIPTION, Program.getLabel("ShowFile.Restore"));
 		}
 
@@ -238,7 +238,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 		private static final long serialVersionUID = -1982193809982154836L;
 
 		private DeleteAction() {
-			super(Program.getLabel("Infos051"), MyCellarImage.DELETE);
+			super("", MyCellarImage.DELETE);
 			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos051"));
 		}
 
@@ -291,7 +291,6 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 		private static final long serialVersionUID = 3079501619032347868L;
 
 		private ClearHistoryAction() {
-			super(Program.getLabel("ShowHistory.ClearHistory"));
 		}
 
 		@Override

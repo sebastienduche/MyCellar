@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.core.IAddVin;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -51,8 +52,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 09/08/19
+ * @version 2.5
+ * @since 29/08/20
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -70,7 +71,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 	private MyCellarComboBox<Rangement> comboRangement;
 	private Rangement rangement;
 	private RangementCell stock;
-	private final MyCellarButton move = new MyCellarButton(new MoveAction());
+	private final MyCellarButton move = new MyCellarButton(LabelType.INFO_OTHER, "Stock.MoveAll", new MoveAction());
 	private IAddVin addvin;
 	
 	private final boolean cellChooser;

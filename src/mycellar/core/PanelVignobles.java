@@ -28,8 +28,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 18/10/19
+ * @version 0.5
+ * @since 29/08/20
  */
 public class PanelVignobles extends JPanel {
 
@@ -43,7 +43,7 @@ public class PanelVignobles extends JPanel {
 	private final MyCellarLabel labelVignoble = new MyCellarLabel();
 	private final MyCellarLabel labelAppelationAOC = new MyCellarLabel();
 	private final MyCellarLabel labelAppelationIGP = new MyCellarLabel();
-	private final MyCellarButton manageVineyardButton = new MyCellarButton(new ManageVineyardAction());
+	private final MyCellarButton manageVineyardButton = new MyCellarButton(LabelType.INFO, "165", new ManageVineyardAction());
 	
 	public PanelVignobles(boolean modifyActive, boolean manageButton) {
 

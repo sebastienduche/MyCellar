@@ -17,8 +17,8 @@ import javax.swing.JButton;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.4
- * @since 28/08/20
+ * @version 0.5
+ * @since 29/08/20
  */
 
 public class MyCellarButton extends JButton {
@@ -49,8 +49,12 @@ public class MyCellarButton extends JButton {
 		setFont(FONT);
 	}
 
-	public MyCellarButton(Action a) {
+	public MyCellarButton(LabelType type, String code, Action a) {
 		super(a);
+		this.type = type;
+    this.code = code;
+		updateText();
+    LABEL_LIST.add(this);
 		setFont(FONT);
 	}
 

@@ -41,6 +41,7 @@ public class MyCellarRadioButton extends JRadioButton {
 		setFont(FONT);
 	}
 
+	@Deprecated
 	public MyCellarRadioButton(String text, boolean selected) {
 		super(text, selected);
 		setFont(FONT);

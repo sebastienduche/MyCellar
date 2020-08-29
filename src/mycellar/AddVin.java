@@ -6,6 +6,7 @@ import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarManageBottles;
@@ -40,8 +41,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.4
- * @since 28/08/20
+ * @version 25.5
+ * @since 29/08/20
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -70,8 +71,8 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		instance = this;
 		Debug("Constructor");
 		m_laBouteille = null;
-		m_add = new MyCellarButton(new AddAction());
-		m_cancel = new MyCellarButton(new CancelAction());
+		m_add = new MyCellarButton(LabelType.INFO, "071", new AddAction());
+		m_cancel = new MyCellarButton(LabelType.INFO, "055", new CancelAction());
 		
 		m_lieu.setModifyActive(false);
 		m_num_lieu.setModifyActive(false);
@@ -85,7 +86,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		m_colorList.setModifyActive(true);
 		statusList.setModifyActive(true);
 		m_comment.setModifyActive(false);
-		m_chooseCell = new MyCellarButton(new ChooseCellAction(instance));
+		m_chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(instance));
 		m_add.setMnemonic(AJOUTER);
 		try {		
 			LinkedList<String> list = new LinkedList<>();
@@ -1398,7 +1399,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 		private static final long serialVersionUID = -2958181161054647775L;
 		private AddAction() {
-			super(Program.getLabel("Infos071"), MyCellarImage.ADD);
+			super("", MyCellarImage.ADD);
 		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -1415,7 +1416,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 		private static final long serialVersionUID = -8689301287853923641L;
 		private CancelAction() {
-			super(Program.getLabel("Infos055"), MyCellarImage.DELETE);
+			super("", MyCellarImage.DELETE);
 		}
 		@Override
 		public void actionPerformed(ActionEvent e) {

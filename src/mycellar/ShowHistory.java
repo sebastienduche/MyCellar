@@ -8,6 +8,7 @@ import mycellar.core.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -32,8 +33,8 @@ import java.util.LinkedList;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.9
- * @since 29/08/20
+ * @version 4.0
+ * @since 30/08/20
  */
 
 public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
@@ -42,7 +43,6 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 	private final MyCellarComboBox<String> filterCbx = new MyCellarComboBox<>();
 	private final TableHistoryValues tv;
 
-	@SuppressWarnings("deprecation")
 	public ShowHistory() {
 		Debug("Constructor");
 		MyCellarLabel filterLabel = new MyCellarLabel(LabelType.INFO, "350"); // Filtre
@@ -124,7 +124,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 		add(filterLabel, "split 5");
 		add(filterCbx);
 		add(new MyCellarButton(LabelType.INFO_OTHER, "ShowHistory.ClearHistory", new ClearHistoryAction()), "gapleft 10px");
-		add(new MyCellarLabel(), "growx");
+		add(new JLabel(), "growx");
 		add(new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.Restore", new RestoreAction()), "align right, wrap");
 		add(new JScrollPane(table), "grow, wrap");
 		add(new MyCellarButton(LabelType.INFO, "051", new DeleteAction()), "center");

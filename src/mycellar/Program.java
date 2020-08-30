@@ -6,13 +6,10 @@ import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarFile;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarRadioButton;
+import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.UnableToOpenFileException;
@@ -93,7 +90,7 @@ import java.util.stream.Collectors;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.5.2.5";
+	public static final String INTERNAL_VERSION = "3.5.3.0";
 	public static final int VERSION = 62;
 	public static final String INFOS_VERSION = " 2020 v";
 
@@ -279,10 +276,7 @@ public final class Program {
 	 */
 	static void setLanguage(LanguageFileLoader.Language lang) {
 		Debug("Program: Set Language : " + lang);
-		MyCellarLabel.updateLabels();
-		MyCellarButton.updateLabels();
-		MyCellarCheckBox.updateLabels();
-		MyCellarRadioButton.updateLabels();
+		MyCellarLabelManagement.updateLabels();
 		TABBED_PANE.removeAll();
 		clearObjectsVariables();
 		LanguageFileLoader.getInstance().loadLanguageFiles(lang);

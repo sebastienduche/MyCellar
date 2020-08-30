@@ -36,8 +36,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.8
- * @since 29/08/20
+ * @version 5.9
+ * @since 30/08/20
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -76,9 +76,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 
 			Debug("Starting JbInit");
-			m_contenance.setText(Program.getLabel("Infos134")); //"Demie bouteille");
-			m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ( (SIECLE + 1) * 100))); //"Annee 00 -> 2000");
-			m_annee_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
+			setYearAuto();
 
 			m_price.addKeyListener(new KeyAdapter() {
 				@Override

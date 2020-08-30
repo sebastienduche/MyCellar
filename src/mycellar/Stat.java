@@ -309,7 +309,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		} else {
 			panelChart.setDataPieChart(listYear, Program.getLabel("Infos184"));
 		}
-		end.setText(Program.getLabel("Infos136") + ": " + Program.getNbBouteille());
+		end.setText(MessageFormat.format(Program.getLabel("Infos098"), Program.getNbBouteille()));
 	}
 
 	private void displayOnePlace() {
@@ -328,7 +328,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 			panel.add(new MyCellarLabel(cave.getNom()));
 			displayPlace(cave);
 		}
-		end.setText(Program.getLabel("Infos136") + ": " + nbBottle);
+		end.setText(MessageFormat.format(Program.getLabel("Infos098"), nbBottle));
 	}
 
 	private void displayPlace(Rangement cave) {

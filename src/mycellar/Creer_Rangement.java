@@ -45,7 +45,7 @@ import java.util.TimerTask;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
  * @version 13.7
- * @since 29/08/20
+ * @since 30/08/20
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -66,6 +66,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox(LabelType.INFO, "024"); //Caisse
 	private final MyCellarLabel label_cree = new MyCellarLabel();
 	private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "155");
+	private final MyCellarButton createButton;
 	private int start_caisse = 0;
 	private final JPanel panelType;
 	private final JPanel panelStartCaisse;
@@ -85,15 +86,10 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		this.modify = modify;
 		model = new CreerRangementTableModel();
 
-		MyCellarButton createButton = new MyCellarButton(MyCellarImage.ADD);
 		if(modify) {
 		  createButton = new MyCellarButton(LabelType.INFO, "079", new ModifyAction());
-			createButton.setText(Program.getLabel("Infos079")); //"Modifier");
-			createButton.addActionListener((e) -> modifyPlace());
 		} else {
 		  createButton = new MyCellarButton(LabelType.INFO, "018", new CreateAction());
-			createButton.setText(Program.getLabel("Infos018")); //"Creer");
-			createButton.addActionListener(this::create_actionPerformed);
 		}
 
 		createButton.setMnemonic(CREER);

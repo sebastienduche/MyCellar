@@ -15,13 +15,10 @@ import java.awt.Component;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.3
- * @since 28/12/18
+ * @version 2.4
+ * @since 29/08/19
  */
 public class Erreur {
-	private final MyCellarLabel textControl1 = new MyCellarLabel();
-	private final MyCellarLabel text_message1 = new MyCellarLabel();
-	private final MyCellarLabel text_message2 = new MyCellarLabel();
 	private final JCheckBox checkNotShow = new JCheckBox(Program.getLabel("Infos213"));
 	static final long serialVersionUID = 230405;
 	private static final Erreur INSTANCE = new Erreur();
@@ -97,15 +94,14 @@ public class Erreur {
 	private void initialize(String texte1, String texte2, boolean information, String keyword) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new MigLayout("","grow","[]"));
-		textControl1.setFont(Program.FONT_DIALOG_SMALL);
-		text_message1.setText(texte1);
+		MyCellarLabel label1 = new MyCellarLabel(texte1);
+    MyCellarLabel label2 = new MyCellarLabel(texte2);
 		checkNotShow.setFont(Program.FONT_BOUTTON_SMALL);
-		text_message2.setText(texte2);
-		panel.add(text_message1,"");
-		panel.add(text_message2,"newline, hidemode 3");
+		panel.add(label1);
+		panel.add(label2,"newline, hidemode 3");
 		panel.add(checkNotShow,"newline, hidemode 3, gaptop 15px");
 		checkNotShow.setVisible(keyword != null && !keyword.isEmpty());
-		text_message2.setVisible(!texte2.isEmpty());
+		label2.setVisible(!texte2.isEmpty());
 		JOptionPane.showMessageDialog(null,panel,information ? Program.getError("Error032"): Program.getError("Error015"),information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
 		if (checkNotShow.isSelected()) {
 			//Ecriture dans un fichier pour ne plus afficher le message

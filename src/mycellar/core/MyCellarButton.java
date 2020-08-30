@@ -1,10 +1,6 @@
 package mycellar.core;
 
-import mycellar.Program;
-
 import java.awt.Font;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -17,19 +13,18 @@ import javax.swing.JButton;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.5
- * @since 29/08/20
+ * @version 0.6
+ * @since 30/08/20
  */
 
-public class MyCellarButton extends JButton {
+public class MyCellarButton extends JButton implements IMyCellarComponent {
 
 	private static final long serialVersionUID = 8395284022737446765L;
 	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
-	private static final List<MyCellarButton> LABEL_LIST = new ArrayList<>();
-
 	private LabelType type;
 	private String code;
+	private String value;
 
 	public MyCellarButton(Icon icon) {
 		super(icon);
@@ -45,18 +40,37 @@ public class MyCellarButton extends JButton {
 		this.type = type;
 		this.code = code;
 		updateText();
-		LABEL_LIST.add(this);
+		MyCellarLabelManagement.add(this);
 		setFont(FONT);
 	}
+	
+	 public MyCellarButton(LabelType type, String code, String value) {
+	    this.type = type;
+	    this.code = code;
+	    this.value = value;
+	    updateText();
+	    MyCellarLabelManagement.add(this);
+	    setFont(FONT);
+	  }
 
 	public MyCellarButton(LabelType type, String code, Action a) {
 		super(a);
 		this.type = type;
     this.code = code;
 		updateText();
-    LABEL_LIST.add(this);
+		MyCellarLabelManagement.add(this);
 		setFont(FONT);
 	}
+	
+	public MyCellarButton(LabelType type, String code, String value, Action a) {
+    super(a);
+    this.type = type;
+    this.code = code;
+    this.value = value;
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT);
+  }
 
 	public MyCellarButton(String text, Icon icon) {
 		super(text, icon);
@@ -71,25 +85,8 @@ public class MyCellarButton extends JButton {
 		setFont(FONT);
 	}
 
-	private void updateText() {
-		switch (type) {
-			case INFO:
-				setText(Program.getLabel("Infos" + code));
-				break;
-			case ERROR:
-				setText(Program.getError("Errors" + code));
-				break;
-			case INFO_OTHER:
-				setText(Program.getLabel(code));
-				break;
-			case ERROR_OTHER:
-				setText(Program.getError(code));
-				break;
-		}
-	}
-
-	public static void updateLabels() {
-		LABEL_LIST.forEach(MyCellarButton::updateText);
+	public void updateText() {
+     MyCellarLabelManagement.updateText(this, type, code, value);
 	}
 
 }

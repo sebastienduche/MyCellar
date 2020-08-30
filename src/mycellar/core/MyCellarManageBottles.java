@@ -15,7 +15,6 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -30,32 +29,32 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 28/08/20
+ * @version 3.2
+ * @since 30/08/20
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
 	private static final long serialVersionUID = 3056306291164598750L;
 	
-	private final MyCellarLabel m_labelName = new MyCellarLabel();
-	private final MyCellarLabel m_labelYear = new MyCellarLabel();
-	protected final MyCellarLabel m_labelPlace = new MyCellarLabel();
-	protected final MyCellarLabel m_labelNumPlace = new MyCellarLabel();
-	protected final MyCellarLabel m_contenance = new MyCellarLabel();
-	protected final MyCellarLabel m_labelLine = new MyCellarLabel();
-	protected final MyCellarLabel m_labelColumn = new MyCellarLabel();
-	private final MyCellarLabel m_labelPrice = new MyCellarLabel();
-	private final MyCellarLabel m_labelNbBottle = new MyCellarLabel();
-	private final MyCellarLabel m_labelMaturity = new MyCellarLabel();
-	private final MyCellarLabel m_labelParker = new MyCellarLabel();
-	private final MyCellarLabel labelStatus = new MyCellarLabel();
-	private final MyCellarLabel labelLastModified = new MyCellarLabel();
-	private final MyCellarLabel m_labelColor = new MyCellarLabel();
-	protected final MyCellarLabel lastModified = new MyCellarLabel();
-	protected final MyCellarLabel m_labelComment = new MyCellarLabel();
+	private final MyCellarLabel m_labelName = new MyCellarLabel(LabelType.INFO, "208");
+	private final MyCellarLabel m_labelYear = new MyCellarLabel(LabelType.INFO, "189");
+	protected final MyCellarLabel m_labelPlace = new MyCellarLabel(LabelType.INFO, "208");
+	protected final MyCellarLabel m_labelNumPlace = new MyCellarLabel(LabelType.INFO, "082");
+	protected final MyCellarLabel m_contenance = new MyCellarLabel(LabelType.INFO, "134");
+	protected final MyCellarLabel m_labelLine = new MyCellarLabel(LabelType.INFO, "028");
+	protected final MyCellarLabel m_labelColumn = new MyCellarLabel(LabelType.INFO, "083");
+	private final MyCellarLabel m_labelPrice = new MyCellarLabel(LabelType.INFO, "135");
+	private final MyCellarLabel m_labelNbBottle = new MyCellarLabel(LabelType.INFO, "098", "");
+	private final MyCellarLabel m_labelMaturity = new MyCellarLabel(LabelType.INFO, "391");
+	private final MyCellarLabel m_labelParker = new MyCellarLabel(LabelType.INFO, "392");
+	private final MyCellarLabel labelStatus = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarManageBottles.status");
+	private final MyCellarLabel labelLastModified = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarManageBottles.lastModified");
+	private final MyCellarLabel m_labelColor = new MyCellarLabel(LabelType.INFO_OTHER, "AddVin.Color");
+	protected final MyCellarLabel lastModified = new MyCellarLabel("");
+	protected final MyCellarLabel m_labelComment = new MyCellarLabel(LabelType.INFO, "137");
 	protected final MyCellarButton m_preview = new MyCellarButton(LabelType.INFO, "138");
-	protected final MyCellarLabel m_labelStillToAdd = new MyCellarLabel();
-	protected final MyCellarLabel m_end = new MyCellarLabel(); // Label pour les résultats
+	protected final MyCellarLabel m_labelStillToAdd = new MyCellarLabel("");
+	protected final MyCellarLabel m_end = new MyCellarLabel(""); // Label pour les résultats
 	protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox("");
 	protected final int SIECLE = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
 	protected final JModifyComboBox<Rangement> m_lieu = new JModifyComboBox<>();
@@ -91,21 +90,6 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected boolean isEditionMode = false;
 	
 	protected MyCellarManageBottles() {
-		m_labelName.setText(Program.getLabel("Infos208")); //"Nom");
-		m_labelYear.setText(Program.getLabel("Infos189")); //"Annee");
-		m_labelPlace.setText(Program.getLabel("Infos208")); //"Nom");
-		m_labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu");
-		m_labelLine.setText(Program.getLabel("Infos028")); //"Ligne");
-		m_labelColumn.setText(Program.getLabel("Infos083")); //"Colonne");
-		m_labelPrice.setText(Program.getLabel("Infos135")); //"Prix");
-		m_labelNbBottle.setText(Program.getLabel("Infos136") + ":"); //"Nombre de bouteilles");
-		m_labelNbBottle.setHorizontalAlignment(SwingConstants.RIGHT);
-		m_labelComment.setText(Program.getLabel("Infos137")); //"Commentaires");
-		m_labelMaturity.setText(Program.getLabel("Infos391")); // Date de conso
-		m_labelParker.setText(Program.getLabel("Infos392")); // Notation Parker
-		labelStatus.setText(Program.getLabel("MyCellarManageBottles.status"));
-		labelLastModified.setText(Program.getLabel("MyCellarManageBottles.lastModified"));
-		m_labelColor.setText(Program.getLabel("AddVin.Color"));
 		m_preview.setMnemonic(PREVIEW);
 		m_preview.setEnabled(false);
 		m_preview.addActionListener(this::preview_actionPerformed);
@@ -128,7 +112,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 			Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
 			
 			if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_FALSE, false)) {
-				String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ( (SIECLE + 1) * 100)); //"En decochant cette option, vous dsactivez la transformation");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ((SIECLE + 1) * 100)); //"En decochant cette option, vous dsactivez la transformation");
 				Erreur.showKeyErreur(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_FALSE);
 			}
 		}
@@ -136,7 +120,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 			Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, true);
 
 			if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_TRUE, false)) {
-				String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ( (SIECLE + 1) * 100));//"En cochant cette option, vous activez la transformation");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ((SIECLE + 1) * 100));//"En cochant cette option, vous activez la transformation");
 				Erreur.showKeyErreur(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_TRUE);
 			}
 		}
@@ -160,11 +144,12 @@ public abstract class MyCellarManageBottles extends JPanel {
 				return;
 			}
 
-			m_labelExist.setText("");
 			Rangement cave = m_lieu.getItemAt(nPlace);
 			Bouteille b;
 			if ((b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1)) != null) {
 				m_labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.getNom())));
+			} else {
+			  m_labelExist.setText("");
 			}
       Debug("Column_itemStateChanging... End");
 		});
@@ -216,6 +201,11 @@ public abstract class MyCellarManageBottles extends JPanel {
 			}
 		}
 		return annee;
+	}
+	
+	protected void setYearAuto() {
+	  m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ((SIECLE + 1) * 100))); //"Annee 00 -> 2000");
+    m_annee_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
 	}
 
 	/**

@@ -14,18 +14,17 @@ import java.util.List;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 01/11/19
+ * @version 0.4
+ * @since 30/08/20
  */
-public class MyCellarRadioButton extends JRadioButton {
+public class MyCellarRadioButton extends JRadioButton implements IMyCellarComponent {
 
 	private static final long serialVersionUID = 5420315767498997450L;
 	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
-	private static final List<MyCellarRadioButton> LABEL_LIST = new ArrayList<>();
-
 	private LabelType type;
 	private String code;
+	private String value;
 
 	@Deprecated
 	public MyCellarRadioButton() {
@@ -37,9 +36,19 @@ public class MyCellarRadioButton extends JRadioButton {
 		this.type = type;
 		this.code = code;
 		updateText();
-		LABEL_LIST.add(this);
+		MyCellarLabelManagement.add(this);
 		setFont(FONT);
 	}
+	
+	public MyCellarRadioButton(LabelType type, String code, String value, boolean selected) {
+    super("", selected);
+    this.type = type;
+    this.code = code;
+    this.value = value;
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT);
+  }
 
 	@Deprecated
 	public MyCellarRadioButton(String text, boolean selected) {
@@ -47,24 +56,7 @@ public class MyCellarRadioButton extends JRadioButton {
 		setFont(FONT);
 	}
 
-	private void updateText() {
-		switch (type) {
-			case INFO:
-				setText(Program.getLabel("Infos" + code));
-				break;
-			case ERROR:
-				setText(Program.getError("Errors" + code));
-				break;
-			case INFO_OTHER:
-				setText(Program.getLabel(code));
-				break;
-			case ERROR_OTHER:
-				setText(Program.getError(code));
-				break;
-		}
-	}
-
-	public static void updateLabels() {
-		LABEL_LIST.forEach(MyCellarRadioButton::updateText);
+	public void updateText() {
+	  MyCellarLabelManagement.updateText(this, type, code, value);
 	}
 }

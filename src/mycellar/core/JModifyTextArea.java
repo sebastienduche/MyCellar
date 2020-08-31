@@ -24,7 +24,7 @@ public class JModifyTextArea extends JTextArea {
 	private boolean modified;
 	private boolean active;
 
-	public JModifyTextArea() {
+	JModifyTextArea() {
 		modified = false;
 		active = true;
 		addKeyListener(new KeyListener() {

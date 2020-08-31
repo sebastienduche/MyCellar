@@ -16,33 +16,24 @@ import mycellar.core.MyCellarComboBox;
  * @since 21/01/17
  */
 
-public class JModifyComboBox<T> extends MyCellarComboBox<T> {
+public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
 
 	private static final long serialVersionUID = 833606680694326736L;
 
 	private boolean modified;
 	private boolean active;
 
-	public JModifyComboBox() {
+	JModifyComboBox() {
 		modified = false;
 		active = true;
-		addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent arg0) {
-				if(arg0.getStateChange() == ItemEvent.SELECTED) {
-					if(active) {
-						modified = true;
-						doAfterModify();
-					}
+		addItemListener(itemEvent -> {
+			if(itemEvent.getStateChange() == ItemEvent.SELECTED) {
+				if(active) {
+					modified = true;
+					doAfterModify();
 				}
 			}
 		});
-	}
-	
-	public JModifyComboBox(boolean active) {
-		this();
-		this.active = active;
 	}
 
 	public boolean isModified() {

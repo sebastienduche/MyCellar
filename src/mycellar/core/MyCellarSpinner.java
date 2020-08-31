@@ -11,14 +11,14 @@ import java.awt.Font;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.4
- * @since 27/06/220
+ * @version 0.5
+ * @since 30/08/20
  */
 public class MyCellarSpinner extends JSpinner {
 
 	private static final long serialVersionUID = -6429351001334594600L;
 	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
-	private SpinnerNumberModel model;
+	private final SpinnerNumberModel model;
 
 
 	public MyCellarSpinner(int min, int max) {

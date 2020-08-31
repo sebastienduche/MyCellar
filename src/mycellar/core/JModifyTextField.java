@@ -24,7 +24,7 @@ public class JModifyTextField extends JTextField {
 	private boolean modified;
 	private boolean active;
 	
-	public JModifyTextField() {
+	JModifyTextField() {
 		modified = false;
 		active = true;
 		addKeyListener(new KeyListener() {
@@ -66,5 +66,4 @@ public class JModifyTextField extends JTextField {
 	public void setModifyActive(boolean active) {
 		this.active = active;
 	}
-	
 }

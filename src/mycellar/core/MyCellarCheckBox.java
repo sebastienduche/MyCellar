@@ -78,6 +78,7 @@ public class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
 		setFont(FONT);
 	}
 
+	@Override
 	public void updateText() {
 	  MyCellarLabelManagement.updateText(this, type, code, value);
 	}

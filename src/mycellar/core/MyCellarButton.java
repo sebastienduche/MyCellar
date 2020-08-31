@@ -85,6 +85,7 @@ public class MyCellarButton extends JButton implements IMyCellarComponent {
 		setFont(FONT);
 	}
 
+	@Override
 	public void updateText() {
      MyCellarLabelManagement.updateText(this, type, code, value);
 	}

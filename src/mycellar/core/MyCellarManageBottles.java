@@ -56,7 +56,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final MyCellarLabel m_labelStillToAdd = new MyCellarLabel("");
 	protected final MyCellarLabel m_end = new MyCellarLabel(""); // Label pour les résultats
 	protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox("");
-	protected final int SIECLE = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
+	private final int SIECLE = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
 	protected final JModifyComboBox<Rangement> m_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_line = new JModifyComboBox<>();
@@ -82,7 +82,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected PanelVignobles panelVignobles;
 	protected Bouteille m_laBouteille = null;
 	protected char AJOUTER = Program.getLabel("AJOUTER").charAt(0);
-	protected char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
+	private char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
 	private final MyCellarLabel m_devise = new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, "€"));
 	private boolean listenersEnabled = true;
 	
@@ -478,7 +478,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 
 	protected abstract void line_itemStateChanged(ItemEvent e);
 
-	public class PanelAttribute extends JPanel{
+	public final class PanelAttribute extends JPanel{
 		private static final long serialVersionUID = 183053076444982489L;
 
 		public PanelAttribute(){
@@ -502,7 +502,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		}
 	}
 	
-	public class PanelName extends JPanel{
+	public final class PanelName extends JPanel{
 		private static final long serialVersionUID = 8617685535706381964L;
 
 		public PanelName(){

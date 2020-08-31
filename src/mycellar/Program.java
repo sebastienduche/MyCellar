@@ -90,9 +90,9 @@ import java.util.stream.Collectors;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.5.3.0";
+	public static final String INTERNAL_VERSION = "3.5.3.2";
 	public static final int VERSION = 62;
-	public static final String INFOS_VERSION = " 2020 v";
+	static final String INFOS_VERSION = " 2020 v";
 
 	private static MyCellarFile myCellarFile = null;
 	// Manage global config
@@ -183,7 +183,9 @@ public final class Program {
 			loadProperties();
 			File f = new File(getWorkDir(true) + DATA_XML);
 			if(!f.exists()) {
-				f.createNewFile();
+				if (!f.createNewFile()) {
+					Debug("Program: ERROR: Unable to create file " + f.getAbsolutePath());
+				}
 			}
 			LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 
@@ -217,7 +219,10 @@ public final class Program {
 			String inputPropCave = getConfigFilePath();
 			File f = new File(inputPropCave);
 			if(!f.exists()) {
-				f.createNewFile();
+				if (!f.createNewFile()) {
+					Debug("Program: ERROR: Unable to create file " + f.getAbsolutePath());
+					throw new UnableToOpenFileException("Unable to create file " + f.getAbsolutePath());
+				}
 			} else {
 				FileInputStream inputStream = new FileInputStream(inputPropCave);
 				Properties properties = new Properties();
@@ -240,7 +245,10 @@ public final class Program {
 			Debug("Program: Initializing Configuration files...");
 			File fileIni = new File(getGlobalConfigFilePath());
 			if(!fileIni.exists()) {
-				fileIni.createNewFile();
+				if (!fileIni.createNewFile()) {
+					Debug("Program: ERROR: Unable to create file " + fileIni.getAbsolutePath());
+					throw new UnableToOpenFileException("Unable to create file " + fileIni.getAbsolutePath());
+				}
 			} else {
 				FileInputStream inputStream = new FileInputStream(fileIni);
 				Properties properties = new Properties();
@@ -263,7 +271,6 @@ public final class Program {
 		String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
 		if(sVersion.isEmpty() || sVersion.contains(".")) {
 			putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
-			return;
 		}
 
 		//int version = Integer.parseInt(sVersion);

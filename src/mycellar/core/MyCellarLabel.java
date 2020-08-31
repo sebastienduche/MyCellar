@@ -73,6 +73,7 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 		setFont(FONT);
 	}
 
+	@Override
 	public void updateText() {
 	  MyCellarLabelManagement.updateText(this, type, code, value);
 	}

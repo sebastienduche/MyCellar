@@ -5,7 +5,6 @@ import mycellar.Program;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

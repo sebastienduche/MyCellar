@@ -1,11 +1,7 @@
 package mycellar.core;
 
-import mycellar.Program;
-
 import javax.swing.JRadioButton;
 import java.awt.Font;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Titre : Cave &agrave; vin
@@ -56,6 +52,7 @@ public class MyCellarRadioButton extends JRadioButton implements IMyCellarCompon
 		setFont(FONT);
 	}
 
+	@Override
 	public void updateText() {
 	  MyCellarLabelManagement.updateText(this, type, code, value);
 	}

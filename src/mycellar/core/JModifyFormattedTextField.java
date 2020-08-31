@@ -25,8 +25,7 @@ public class JModifyFormattedTextField extends JFormattedTextField {
 	private boolean modified;
 	private boolean active;
 
-
-	public JModifyFormattedTextField(Format format) {
+	JModifyFormattedTextField(Format format) {
 		super(format);
 		init();
 	}
@@ -65,7 +64,6 @@ public class JModifyFormattedTextField extends JFormattedTextField {
 	public void setModified(boolean modified) {
 		this.modified = modified;
 	}
-
 
 	public void setModifyActive(boolean active) {
 		this.active = active;

@@ -660,7 +660,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
 	private boolean searchByRequest() {
 		Debug("Search by request");
-		CountryVignobles.addVignobleFromBottles();
+		CountryVignobles.rebuild();
 		Collection<Bouteille> bouteilles = CollectionFilter.select(Program.getStorage().getAllList() , panelRequest.getPredicates()).getResults();
 		boolean already_found = false;
 		if (bouteilles != null) {

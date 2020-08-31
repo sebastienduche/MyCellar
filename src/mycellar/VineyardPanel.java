@@ -77,7 +77,7 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 			Country country = (Country) comboCountry.getSelectedItem();
 			vignobles = CountryVignobles.getVignobles(country);
 			if(vignobles == null) {
-				CountryVignobles.createCountry(country);
+				CountryVignobles.createVignoblesCountry(country);
 				vignobles = CountryVignobles.getVignobles(country);
 				if(vignobles == null) {
 					Debug("ERROR: Unable to find country "+country.getName());
@@ -197,7 +197,7 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 					return;
 				}
 
-				CountryVignobles.addVignobleFromBottles();
+				CountryVignobles.rebuild();
 				if (CountryVignobles.isVignobleUsed(country, countryVignoble)) {
 					JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("VineyardPanel.unableDeleteVignoble"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 					return;
@@ -269,7 +269,7 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 					Erreur.showSimpleErreur(Program.getError("VineyardPanel.CountryExist"));
 					return;
 				}
-				CountryVignobles.createCountry(country);
+				CountryVignobles.createVignoblesCountry(country);
 				comboCountry.addItem(country);
 				Program.setModified();
 			}
@@ -294,7 +294,7 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 			if(vignoble == null) {
 				return;
 			}
-			CountryVignobles.addVignobleFromBottles();
+			CountryVignobles.rebuild();
 			for(CountryVignoble countryVignoble : vignoble.getVignoble()) {
     			if(CountryVignobles.isVignobleUsed(country, countryVignoble)) {
     				JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("VineyardPanel.unableDeleteCountry"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);

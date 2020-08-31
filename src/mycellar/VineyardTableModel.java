@@ -101,7 +101,7 @@ class VineyardTableModel extends DefaultTableModel {
 				return;
 			}
 
-			CountryVignobles.addVignobleFromBottles();
+			CountryVignobles.rebuild();
 			if(CountryVignobles.isAppellationUsed(country, vignoble, appelation)) {
 				JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteAppellation"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 				return;

@@ -84,8 +84,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.3
- * @since 25/06/20
+ * @version 22.4
+ * @since 30/08/20
  */
 
 public final class Program {
@@ -812,7 +812,6 @@ public final class Program {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
 		CountryVignobles.load();
-		CountryVignobles.addVignobleFromBottles();
 
 		if(myCellarFile.isFileSavable()) {
 			list.addFirst(file.getAbsolutePath());

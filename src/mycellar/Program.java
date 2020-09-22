@@ -21,6 +21,8 @@ import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
 import mycellar.showfile.ShowFile;
+import mycellar.vignobles.Appelation;
+import mycellar.vignobles.CountryVignoble;
 import mycellar.vignobles.CountryVignobles;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -84,13 +86,13 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.4
- * @since 30/08/20
+ * @version 22.5
+ * @since 02/09/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.5.3.2";
+	public static final String INTERNAL_VERSION = "3.5.5.9";
 	public static final int VERSION = 62;
 	static final String INFOS_VERSION = " 2020 v";
 
@@ -159,7 +161,10 @@ public final class Program {
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;
 
-	public static Country france = new Country("FRA", "France");
+	public static final Country france = new Country("FRA", "France");
+	public static final Country NO_COUNTRY = new Country("");
+	public static final CountryVignoble NO_VIGNOBLE = new CountryVignoble();
+	public static final Appelation NO_APPELATION = new Appelation();
 	private static final List<File> DIR_TO_DELETE = new LinkedList<>();
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
@@ -659,11 +664,11 @@ public final class Program {
 	 * @return Rangement
 	 */
 	public static Rangement getCave(final String name) {
-		if (name == null || name.trim().isEmpty()) {
+		if (name == null || name.strip().isEmpty()) {
 			return null;
 		}
 
-		final String placeName = name.trim();
+		final String placeName = name.strip();
 		final List<Rangement> list = RANGEMENTS_LIST.stream().filter(rangement -> rangement.getNom().equals(placeName))
 				.collect(Collectors.toList());
 		if (list.isEmpty()) {
@@ -897,7 +902,7 @@ public final class Program {
 				final String file_excel = getCaveConfigString(MyCellarSettings.FILE_EXCEL, "");
 				Debug("Program: Writing backup Excel file: " + file_excel);
 				final List<Bouteille> bouteilles = Collections.unmodifiableList(getStorage().getAllList());
-				Thread writingExcel = new Thread(() -> RangementUtils.write_XLS(file_excel, bouteilles, true, null));
+				Thread writingExcel = new Thread(() -> RangementUtils.write_XLS(new File(file_excel), bouteilles, true, null));
 				Runtime.getRuntime().addShutdownHook(writingExcel);
 			}
 		}
@@ -1698,7 +1703,7 @@ public final class Program {
 		try (var scanner = new Scanner(f)){
 			if(scanner.hasNextLine()) {
 				String line = scanner.nextLine();
-				return line.trim();
+				return line.strip();
 			}
 		} catch (IOException e) {
 			showException(e, true);

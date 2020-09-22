@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.9
- * @since 18/10/19
+ * @version 6.0
+ * @since 02/09/20
  */
 
 public class SerializedStorage implements Storage {
@@ -170,7 +170,7 @@ public class SerializedStorage implements Storage {
 		final int ligne = bottle.getLigne();
 		final int colonne = bottle.getColonne();
 
-		Debug("DeleteWine: Trying deleting bottle " + nom.trim() + " " + annee + " " + emplacement.trim() + " " + numLieu + " " + ligne + " " + colonne);
+		Debug("DeleteWine: Trying deleting bottle " + nom.strip() + " " + annee + " " + emplacement.strip() + " " + numLieu + " " + ligne + " " + colonne);
 		Rangement rangement = Program.getCave(emplacement);
 		boolean isCaisse = rangement == null || rangement.isCaisse();
 		final List<Bouteille> resultBouteilles = listBouteilles.getBouteille().stream().filter(

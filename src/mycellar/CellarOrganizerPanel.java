@@ -52,8 +52,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 29/08/20
+ * @version 2.6
+ * @since 02/09/20
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -71,7 +71,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 	private MyCellarComboBox<Rangement> comboRangement;
 	private Rangement rangement;
 	private RangementCell stock;
-	private final MyCellarButton move = new MyCellarButton(LabelType.INFO_OTHER, "Stock.MoveAll", new MoveAction());
+	private final MyCellarButton move = new MyCellarButton(LabelType.INFO_OTHER, "ManageStock.MoveAll", new MoveAction());
 	private IAddVin addvin;
 	
 	private final boolean cellChooser;
@@ -261,7 +261,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 				}
 			}
 			if (count > 1) {
-				JOptionPane.showMessageDialog(null, Program.getError("ManageStock.TooManySelected"), Program.getLabel("Infos049"), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(Start.getInstance(), Program.getError("ManageStock.TooManySelected"), Program.getLabel("Infos049"), JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 			if (selectedCell != null) {

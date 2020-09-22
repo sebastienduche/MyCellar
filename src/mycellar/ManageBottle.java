@@ -36,8 +36,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.9
- * @since 30/08/20
+ * @version 6.0
+ * @since 02/09/20
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -59,8 +59,11 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			LinkedList<String> list = new LinkedList<>();
 			list.add("");
 			list.addAll(Program.getStorage().getBottleNames());
-			name = new JCompletionComboBox(list.toArray()) {
+			String[] bottlesName = new String[0];
+			bottlesName = list.toArray(bottlesName);
+			name = new JCompletionComboBox<>(bottlesName) {
 				private static final long serialVersionUID = 8137073557763181546L;
+
 				@Override
 				protected void doAfterModify() {
 					super.doAfterModify();
@@ -366,7 +369,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		// Controle de la date
 		String annee = "";
 		if (m_year.isEditable() || m_noYear.isSelected()) {
-			annee = m_year.getText().trim();
+			annee = m_year.getText();
 
 			// Erreur sur la date
 			if (!MyCellarControl.checkYear(annee)) {

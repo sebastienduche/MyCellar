@@ -59,8 +59,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.3
- * @since 25/06/20
+ * @version 13.4
+ * @since 02/09/20
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -292,7 +292,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	private void openit_actionPerformed(ActionEvent e) {
 
 		Debug("openit_actionPerforming...");
-		String nom = file.getText().trim();
+		String nom = file.getText().strip();
 		if (!nom.isEmpty()) {
 			File f = new File(nom);
 			file.setText(f.getAbsolutePath());
@@ -319,7 +319,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			Debug("Importing...");
 			importe.setEnabled(false);
 			
-			String nom = file.getText().trim();
+			String nom = file.getText().strip();
 			if (nom.isEmpty()) {
 				//Erreur le nom ne doit pas etre vide
 				Debug("ERROR: filename cannot be empty");

@@ -33,8 +33,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 02/03/18
+ * @version 0.6
+ * @since 02/09/20
  */
 
 /**
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Francois RITALY / HR Access Solutions
  */
-public class JCompletionComboBox extends JComboBox {
+public class JCompletionComboBox<T> extends JComboBox<T> {
 
 	private static final long serialVersionUID = -7209698149395632434L;
 	
@@ -50,7 +50,7 @@ public class JCompletionComboBox extends JComboBox {
 	/**
 	 * Custom {@link Document} to implement the history feature.
 	 * 
-	 * @author Fran�ois RITALY / HR Access Solutions
+	 * @author Francois RITALY / HR Access Solutions
 	 */
 	private static final class ComboDocument extends PlainDocument implements
 			ActionListener, KeyListener, FocusListener {
@@ -69,13 +69,13 @@ public class JCompletionComboBox extends JComboBox {
 		
 		private boolean caseSensitive;
 
-		private final JComboBox comboBox;
+		private final JComboBox<?> comboBox;
 		
 		private boolean modified;
 		
 		private final List<Object> objectList = new LinkedList<>();
 
-		private ComboDocument(JComboBox comboBox) {
+		private ComboDocument(JComboBox<?> comboBox) {
 			Validate.isTrue(comboBox != null, "The given combo box is null");
 
 			// Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when
@@ -141,8 +141,8 @@ public class JCompletionComboBox extends JComboBox {
 			// determine if the pressed key is backspace (needed by the remove
 			// method)
 			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-				JTextComponent editor = (JTextComponent) comboBox.getEditor()
-						.getEditorComponent();
+//				JTextComponent editor = (JTextComponent) comboBox.getEditor()
+//						.getEditorComponent();
 //				hitBackspace = true;
 //				hitBackspaceOnSelection = editor.getSelectionStart() != editor
 //						.getSelectionEnd();
@@ -233,7 +233,7 @@ public class JCompletionComboBox extends JComboBox {
 		}
 
 		private Object lookupItem(String pattern) {
-			ComboBoxModel model = comboBox.getModel();
+			ComboBoxModel<?> model = comboBox.getModel();
 			Object selectedItem = model.getSelectedItem();
 			// only search for a different item if the currently selected does
 			// not match
@@ -292,7 +292,7 @@ public class JCompletionComboBox extends JComboBox {
 	 * 
 	 * @param items
 	 */
-	JCompletionComboBox(Object[] items) {
+	JCompletionComboBox(T[] items) {
 		super(items);
 
 		init();
@@ -362,7 +362,7 @@ public class JCompletionComboBox extends JComboBox {
 	}
 	
 	@Override
-	public void addItem(Object obj) {
+	public void addItem(T obj) {
 		super.addItem(obj);
 		document.addItem(obj);
 		
@@ -418,6 +418,10 @@ public class JCompletionComboBox extends JComboBox {
 			// Supprimer la selection
 			lastSelectedItem = null;
 		}
+	}
+
+	public String getText() {
+		return getEditor().getItem().toString().strip();
 	}
 
 	public boolean isHandleSelectionChange() {

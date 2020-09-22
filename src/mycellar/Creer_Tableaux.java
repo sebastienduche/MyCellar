@@ -45,8 +45,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.9
- * @since 25/06/20
+ * @version 7.0
+ * @since 02/09/20
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
@@ -211,13 +211,13 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	private void create_actionPerformed(ActionEvent e) {
 		try {
 			Debug("create_actionPerforming...");
-			String nom = name.getText().trim();
+			String nom = name.getText().strip();
 
 			if (!MyCellarControl.controlPath(nom)) {
 				return;
 			}
 
-			File path = new File(nom.trim());
+			File path = new File(nom);
 			name.setText(path.getAbsolutePath());
 
 			//Verify file type. Is it XML File?

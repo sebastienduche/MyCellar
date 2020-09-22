@@ -29,8 +29,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 30/08/20
+ * @version 3.3
+ * @since 02/09/20
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -64,7 +64,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final MyCellarLabel m_labelExist = new MyCellarLabel();
 	protected MyCellarButton m_add;
 	protected MyCellarButton m_cancel;
-	protected JCompletionComboBox name = new JCompletionComboBox();
+	protected JCompletionComboBox<String> name = new JCompletionComboBox<>();
 	protected final JModifyTextField m_year = new JModifyTextField();
 	protected final JModifyComboBox<String> m_half = new JModifyComboBox<>();
 	protected final MyCellarCheckBox m_noYear = new MyCellarCheckBox(LabelType.INFO, "399");
@@ -190,7 +190,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 			return Bouteille.NON_VINTAGE;
 		}
 		
-		String annee = m_year.getText().trim();
+		String annee = m_year.getText();
 		if (m_annee_auto.isSelected() && annee.length() == 2) {
 			int n = Program.getCaveConfigInt(MyCellarSettings.ANNEE, 50);
 			int siecle = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20);
@@ -203,7 +203,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		return annee;
 	}
 	
-	protected void setYearAuto() {
+	protected final void setYearAuto() {
 	  m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ((SIECLE + 1) * 100))); //"Annee 00 -> 2000");
     m_annee_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
 	}
@@ -478,10 +478,10 @@ public abstract class MyCellarManageBottles extends JPanel {
 
 	protected abstract void line_itemStateChanged(ItemEvent e);
 
-	public final class PanelAttribute extends JPanel{
+	public final class PanelAttribute extends JPanel {
 		private static final long serialVersionUID = 183053076444982489L;
 
-		public PanelAttribute(){
+		public PanelAttribute() {
 			setLayout(new MigLayout("","[]30px[]30px[]",""));
 			add(m_labelMaturity);
 			add(m_labelParker);
@@ -502,10 +502,10 @@ public abstract class MyCellarManageBottles extends JPanel {
 		}
 	}
 	
-	public final class PanelName extends JPanel{
+	public final class PanelName extends JPanel {
 		private static final long serialVersionUID = 8617685535706381964L;
 
-		public PanelName(){
+		public PanelName() {
 			setLayout(new MigLayout("","[grow]30px[]10px[]10px[]30px[]10px[]",""));
 			add(m_labelName,"grow");
 			add(m_labelYear);

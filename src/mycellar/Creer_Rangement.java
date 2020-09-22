@@ -44,8 +44,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.7
- * @since 30/08/20
+ * @version 13.8
+ * @since 02/09/20
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -278,7 +278,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 				return;
 			}
 
-			final String nom = nom_obj.getText().trim();
+			final String nom = nom_obj.getText().strip();
 			// Controle sur le nom
 			if(!MyCellarControl.ctrl_Name(nom)) {
 				return;
@@ -524,13 +524,11 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 
 	/**
 	 * button1_actionPerformed: Boutton Creer
-	 *
-	 * @param e ActionEvent
 	 */
-	private void create_actionPerformed(ActionEvent e) {
+	private void create_actionPerformed() {
 		try {
 			Debug("create_actionPerforming...");
-			String nom = nom_obj.getText().trim();
+			String nom = nom_obj.getText().strip();
 
 			//Controle si le nom est deja utilise
 			boolean bResul = MyCellarControl.ctrl_existingName(nom);
@@ -661,18 +659,18 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		try {
 			if (!m_caisse_chk.isSelected()) {
 				// Controle du nom
-				String nom = nom_obj.getText().trim();
+				String nom = nom_obj.getText().strip();
 				if (!MyCellarControl.ctrl_Name(nom)) {
 					return;
 				}
 
-				for (Part p: listPart) {
+				for (Part p : listPart) {
 					if (p.getRows().isEmpty()) {
 						//"Erreur nombre de lignes incorrect sur la partie
 						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum()), Program.getError("Error109"));
 						return;
 					}
-					for (Row r: p.getRows()) {
+					for (Row r : p.getRows()) {
 						if (r.getCol() == 0) {
 							//"Erreur nombre de colonnes incorrect sur la partie
 							Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()), Program.getError("Error109"));
@@ -701,7 +699,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	private void keylistener_actionPerformed(KeyEvent e) {
 		
 		if ((e.getKeyCode() == CREER && e.isControlDown()) || e.getKeyCode() == KeyEvent.VK_ENTER) {
-			create_actionPerformed(null);
+			create_actionPerformed();
 		}
 		if (e.getKeyCode() == PREVIEW && e.isControlDown() && preview.isEnabled()) {
 			preview_actionPerformed(null);
@@ -719,7 +717,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 
 	@Override
 	public boolean tabWillClose(TabEvent event) {
-		if (!nom_obj.getText().trim().isEmpty()) {
+		if (!nom_obj.getText().strip().isEmpty()) {
 			String label = Program.getError("Error146");
 			if(modify) {
 				label = Program.getError("Error147");
@@ -778,7 +776,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      create_actionPerformed(e);
+      create_actionPerformed();
     }
 	  
 	}

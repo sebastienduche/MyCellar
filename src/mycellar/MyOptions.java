@@ -28,8 +28,8 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.3
- * @since 28/06/20
+ * @version 2.4
+ * @since 02/09/20
  */
 class MyOptions extends JDialog {
   @SuppressWarnings("deprecation")
@@ -232,16 +232,16 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
       for (int i = 0; i < taille_value; i++) {
     	  if(bIsLabelEdit) {
     		  JTextField jtf = labelEdit[i];
-    		  cle[i] = jtf.getText().trim();
+    		  cle[i] = jtf.getText().strip();
     	  }
         if (value[i] instanceof JTextField) {
           JTextField jtex = (JTextField) value[i];
-          resul[i] = jtex.getText().trim();
+          resul[i] = jtex.getText().strip();
           if (config != null && !cle[i].isEmpty()) {
             config.put(cle[i], resul[i]);
           }
           if (defaut == null) {
-            defaut = jtex.getText().trim();
+            defaut = jtex.getText().strip();
           }
         }
         if (value[i] instanceof MyCellarSpinner) {

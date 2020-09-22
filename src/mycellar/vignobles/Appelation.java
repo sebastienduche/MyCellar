@@ -9,6 +9,10 @@ public class Appelation implements Comparable<Appelation> {
 	private String AOC;
 	private String AOP;
 	private String IGP;
+
+	public Appelation() {
+		AOC = "";
+	}
 	
 	public String getAOC() {
 		return AOC;

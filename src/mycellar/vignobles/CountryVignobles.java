@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -18,8 +19,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.9
- * @since 30/08/20
+ * @version 2.0
+ * @since 02/09/20
  */
 
 public final class CountryVignobles {
@@ -73,7 +74,7 @@ public final class CountryVignobles {
 			return;
 		}
 		Vignobles vignobles = new Vignobles();
-		vignobles.setVignoble(new ArrayList<>());
+		vignobles.init();
 		INSTANCE.countryToVignobles.put(country, vignobles);
 		Debug("Creating country End");
 	}
@@ -140,17 +141,17 @@ public final class CountryVignobles {
 			createVignoblesCountry(country);
 			vignobles = getVignobles(country);
 		}
-		CountryVignoble countryVignoble = vignobles.findVignobleWithAppelation(vignoble);
+		Optional<CountryVignoble> countryVignoble = vignobles.findVignobleWithAppelation(vignoble);
 		boolean found = true;
-		if (countryVignoble == null) {
+		if (countryVignoble.isEmpty()) {
 			countryVignoble = vignobles.findVignoble(vignoble);
 			found = false;
-			if (countryVignoble == null) {
+			if (countryVignoble.isEmpty()) {
 				vignobles.addVignoble(vignoble);
 			}
 			countryVignoble = vignobles.findVignoble(vignoble);
 		}
-		if (countryVignoble == null) {
+		if (countryVignoble.isEmpty()) {
 			Debug("ERROR: Unable to find vignoble "+vignoble);
 			return;
 		}
@@ -160,11 +161,11 @@ public final class CountryVignobles {
 			appelation.setAOP(vignoble.getAOP());
 			appelation.setIGP(vignoble.getIGP());
 			if (!appelation.isEmpty()) {
-				countryVignoble.add(appelation);
+				countryVignoble.get().add(appelation);
 				countryVignoble = vignobles.findVignobleWithAppelation(vignoble);
 			}
 		}
-		if (countryVignoble == null && !appelation.isEmpty()) {
+		if (countryVignoble.isEmpty() && !appelation.isEmpty()) {
 			Debug("ERROR: Unable to find created vignoble " + vignoble);
 			return;
 		}
@@ -175,8 +176,8 @@ public final class CountryVignobles {
 			INSTANCE.usedAppellationsList.add(val);
 		}
 
-		if (countryVignoble != null && !countryVignoble.isEmpty()) {
-			INSTANCE.mapCountryVignobleIDToVignoble.put(new CountryVignobleID(country, countryVignoble).getId(), vignoble);
+		if (countryVignoble.isPresent() && !countryVignoble.get().isEmpty()) {
+			INSTANCE.mapCountryVignobleIDToVignoble.put(new CountryVignobleID(country, countryVignoble.get()).getId(), vignoble);
 		}
 	}
 
@@ -274,28 +275,28 @@ public final class CountryVignobles {
 			if (getVignobles(country) == null) {
 				createVignoblesCountry(country);
 			}
-			CountryVignoble countryVignoble = getVignobles(country).findVignobleWithAppelation(bouteilleVignoble);
-			if (countryVignoble == null) {
-				CountryVignoble vignoble = getVignobles(country).findVignoble(bouteilleVignoble);
-				if (vignoble != null && !bouteilleVignoble.isAppellationEmpty()) {
+			Optional<CountryVignoble> countryVignoble = getVignobles(country).findVignobleWithAppelation(bouteilleVignoble);
+			if (countryVignoble.isEmpty()) {
+				Optional<CountryVignoble> vignoble = getVignobles(country).findVignoble(bouteilleVignoble);
+				if (vignoble.isPresent() && !bouteilleVignoble.isAppellationEmpty()) {
 					Appelation appelation = new Appelation();
 					appelation.setAOC(bouteilleVignoble.getAOC());
 					appelation.setAOP(bouteilleVignoble.getAOP());
 					appelation.setIGP(bouteilleVignoble.getIGP());
-					vignoble.add(appelation);
-				} else if (vignoble == null) {
+					vignoble.get().add(appelation);
+				} else if (vignoble.isEmpty()) {
 					getVignobles(country).addVignoble(bouteilleVignoble);
 				}
 			} else {
 				Appelation ap = getVignobles(country).findAppelation(bouteilleVignoble);
 				bouteilleVignoble.setValues(ap);
-				INSTANCE.mapCountryVignobleIDToVignoble.put(new CountryVignobleID(country, countryVignoble).getId(), bouteilleVignoble);
+				INSTANCE.mapCountryVignobleIDToVignoble.put(new CountryVignobleID(country, countryVignoble.get()).getId(), bouteilleVignoble);
 			}
 		}	else {
 			country = new Country(bouteilleVignoble.getCountry());
 			generateCountryId(country);
 			Vignobles vignobles = new Vignobles();
-			vignobles.setVignoble(new ArrayList<>());
+			vignobles.init();
 			vignobles.addVignoble(bouteilleVignoble);
 			Countries.add(country);
 			INSTANCE.countryToVignobles.put(country, vignobles);

@@ -30,8 +30,8 @@ import java.util.Arrays;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.9
- * @since 28/06/20
+ * @version 12.0
+ * @since 02/09/20
  */
 public class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -191,7 +191,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 				Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
 			}
 
-			Program.putCaveConfigString(MyCellarSettings.DEVISE, devise.getText().trim());
+			Program.putCaveConfigString(MyCellarSettings.DEVISE, devise.getText().strip());
 			try {
 				int val = Integer.parseInt(annee.getValue().toString());
 				Program.putCaveConfigInt(MyCellarSettings.ANNEE, val);

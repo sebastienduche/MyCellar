@@ -21,8 +21,8 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 28/08/20
+ * @version 1.6
+ * @since 02/09/20
  */
 public class Options extends JDialog {
   private final MyCellarLabel textControl1 = new MyCellarLabel();
@@ -30,8 +30,8 @@ public class Options extends JDialog {
   private final MyCellarLabel definition = new MyCellarLabel();
   private final MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
   private final MyCellarLabel textControl3 = new MyCellarLabel();
-  private final int LARGEUR = 420;
-  private final int HAUTEUR = 230;
+  private static final int LARGEUR = 420;
+  private static final int HAUTEUR = 230;
   private final JTextField value = new JTextField();
   private final String cle;
   private final boolean property;
@@ -116,7 +116,7 @@ public class Options extends JDialog {
    */
   private void valider_actionPerformed(ActionEvent e) {
     if (property) {
-      Program.putCaveConfigString(cle, value.getText().trim());
+      Program.putCaveConfigString(cle, value.getText().strip());
     }
     dispose();
   }
@@ -138,7 +138,7 @@ public class Options extends JDialog {
    * @return String
    */
   public String getValue() {
-    return value.getText().trim();
+    return value.getText().strip();
   }
 
 }

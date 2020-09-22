@@ -47,8 +47,8 @@ import java.util.prefs.Preferences;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.3
- * @since 25/06/20
+ * @version 26.4
+ * @since 02/09/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -166,14 +166,14 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			int nIndex = parameters.indexOf("-opts=");
 			if (nIndex == -1) {
 				// demarrage sans options
-				Program.setNewFile(parameters.trim());
+				Program.setNewFile(parameters.strip());
 			} else {
 				// demarrage avec options
 				// ______________________
 				String tmp = parameters.substring(0, nIndex);
 				// Recuperation du nom du fichier
 				if (tmp.contains(Program.EXTENSION)) {
-					Program.setNewFile(tmp.trim());
+					Program.setNewFile(tmp.strip());
 				} else {
 					// On prend tous ce qu'il y a apres -opts
 					tmp = parameters.substring(nIndex);
@@ -181,14 +181,14 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 						// Si l'on trouve l'extension du fichier
 						// on cherche le caractere ' ' qui va separer les
 						// options du nom du fichier
-						String tmp2 = tmp.trim();
+						String tmp2 = tmp.strip();
 						tmp2 = tmp2.substring(tmp2.indexOf(" "));
-						Program.setNewFile(tmp2.trim());
+						Program.setNewFile(tmp2.strip());
 					}
 				}
 				// Recuperation des options
-				tmp = parameters.substring(nIndex + 6).trim();
-				tmp = tmp.substring(0, tmp.indexOf(" ")).trim();
+				tmp = parameters.substring(nIndex + 6).strip();
+				tmp = tmp.substring(0, tmp.indexOf(" ")).strip();
 				// Options a gerer
 				if ("restart".equals(tmp)) {
 					// Demarrage avec une nouvelle cave
@@ -529,7 +529,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
 			String fic = nomFichier.getAbsolutePath();
-			if (!fic.trim().toLowerCase().endsWith(".xml")) {
+			if (!fic.strip().toLowerCase().endsWith(".xml")) {
 				fic = fic.concat(".xml");
 			}
 			MyXmlDom.writeMyCellarXml(Program.getCave(), fic);
@@ -547,7 +547,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
 			String fic = nomFichier.getAbsolutePath();
-			if (!fic.trim().toLowerCase().endsWith(".xml")) {
+			if (!fic.strip().toLowerCase().endsWith(".xml")) {
 				fic = fic.concat(".xml");
 			}
 			ListeBouteille.writeXML(new File(fic));

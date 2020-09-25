@@ -1,12 +1,8 @@
 package mycellar.core;
 
-import mycellar.Program;
-
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import java.awt.Font;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Titre : Cave à vin
@@ -15,19 +11,18 @@ import java.util.List;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.4
- * @since 01/11/19
+ * @version 0.5
+ * @since 30/08/20
  */
 
-public class MyCellarLabel extends JLabel {
+public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
 	private static final long serialVersionUID = 4972622436840497820L;
 	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
-	private static final List<MyCellarLabel> LABEL_LIST = new ArrayList<>();
-
 	private LabelType type;
 	private String code;
+	private String value;
 
 	@Deprecated
 	public MyCellarLabel() {
@@ -43,8 +38,17 @@ public class MyCellarLabel extends JLabel {
 		this.type = type;
 		this.code = code;
 		updateText();
-		LABEL_LIST.add(this);
+		MyCellarLabelManagement.add(this);
 		setFont(FONT);
+	}
+	
+	public MyCellarLabel(LabelType type, String code, String value) {
+	  this.type = type;
+    this.code = code;
+    this.value = value;
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT);
 	}
 
 	public MyCellarLabel(Icon image) {
@@ -69,24 +73,8 @@ public class MyCellarLabel extends JLabel {
 		setFont(FONT);
 	}
 
-	private void updateText() {
-		switch (type) {
-			case INFO:
-				setText(Program.getLabel("Infos" + code));
-				break;
-			case ERROR:
-				setText(Program.getError("Errors" + code));
-				break;
-			case INFO_OTHER:
-				setText(Program.getLabel(code));
-				break;
-			case ERROR_OTHER:
-				setText(Program.getError(code));
-				break;
-		}
-	}
-
-	public static void updateLabels() {
-		LABEL_LIST.forEach(MyCellarLabel::updateText);
+	@Override
+	public void updateText() {
+	  MyCellarLabelManagement.updateText(this, type, code, value);
 	}
 }

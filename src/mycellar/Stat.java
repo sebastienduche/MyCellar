@@ -38,8 +38,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.7
- * @since 14/08/19
+ * @version 6.8
+ * @since 02/09/20
  */
 public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -87,7 +87,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		listOptions.addItemListener(this::list_itemStateChanged);
 		listPlaces.addItemListener((e) -> {
 			if (e.getSource().equals(listPlaces) && e.getStateChange() == ItemEvent.SELECTED) {
-				list2_itemStateChanged(e);
+				list2_itemStateChanged();
 			}
 		});
 
@@ -189,10 +189,8 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 	/**
 	 * list2_itemStateChanged: Fonction appelle lors d'un changement dans la
 	 * seconde liste.
-	 *
-	 * @param e ItemEvent
 	 */
-	private void list2_itemStateChanged(ItemEvent e) {
+	private void list2_itemStateChanged() {
 
 		try {
 			if (listOptions.getSelectedIndex() == 0) {
@@ -289,7 +287,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		moy.setText("");
 		if (listYear.isEmpty()) {
         for (String an : annee) {
-          int year = Integer.parseInt(an.trim());
+          int year = Integer.parseInt(an.strip());
           if (year > 1000 && year < 9000) {
             listYear.add(new StatData(an, Program.getNbBouteilleAnnee(year)));
           }
@@ -309,7 +307,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		} else {
 			panelChart.setDataPieChart(listYear, Program.getLabel("Infos184"));
 		}
-		end.setText(Program.getLabel("Infos136") + ": " + Program.getNbBouteille());
+		end.setText(MessageFormat.format(Program.getLabel("Infos098"), Program.getNbBouteille()));
 	}
 
 	private void displayOnePlace() {
@@ -328,7 +326,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 			panel.add(new MyCellarLabel(cave.getNom()));
 			displayPlace(cave);
 		}
-		end.setText(Program.getLabel("Infos136") + ": " + nbBottle);
+		end.setText(MessageFormat.format(Program.getLabel("Infos098"), nbBottle));
 	}
 
 	private void displayPlace(Rangement cave) {
@@ -394,7 +392,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 			if (StringUtils.isNumeric(value)) {
 				Program.putCaveConfigInt(MyCellarSettings.TRANCHE_PRIX, Integer.parseInt(value));
 				listPrice.clear();
-				list2_itemStateChanged(null);
+				list2_itemStateChanged();
 			}
 		}
 		catch (Exception exc) {
@@ -539,7 +537,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 	public void updateView() {
 		listYear.clear();
 		listPrice.clear();
-		list2_itemStateChanged(null);
+		list2_itemStateChanged();
 		updateBouteilleCountLabel();
 	}
 

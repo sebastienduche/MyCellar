@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -31,8 +32,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.0
- * @since 09/08/19
+ * @version 5.1
+ * @since 02/09/20
 
  * <p>Java class for anonymous complex type.
  *
@@ -136,6 +137,7 @@ public class Bouteille implements Serializable{
 	 * Bouteille: Constructeur par copie.
 	 */
 	public Bouteille(Bouteille b) {
+		Objects.requireNonNull(b);
 		id = Program.getNewID();
 		nom = b.getNom();
 		annee = b.getAnnee();
@@ -451,7 +453,7 @@ public class Bouteille implements Serializable{
 	 }
 
 	 public static boolean isValidYear(String year) {
-		 year = year.trim();
+		 year = year.strip();
 		 if (year.compareToIgnoreCase(NON_VINTAGE) == 0) {
 			 return true;
 		 }
@@ -467,10 +469,7 @@ public class Bouteille implements Serializable{
 		 }
 
 		 int current_year = LocalDate.now().getYear();
-		 if (year.length() == 4 && n > current_year) {
-			 return false;
-		 }
-		 return true;
+		 return year.length() != 4 || n <= current_year;
 	 }
 
 	 static boolean isNonVintageYear(String year) {
@@ -575,7 +574,7 @@ public class Bouteille implements Serializable{
 		return status.isEmpty() || status.equals(BottlesStatus.NONE.name());
 	}
 
-	boolean canChangeStatus() {
+	private boolean canChangeStatus() {
 		return status.isEmpty() || status.equals(BottlesStatus.NONE.name()) || status.equals(BottlesStatus.CREATED.name());
 	}
 
@@ -869,7 +868,7 @@ public class Bouteille implements Serializable{
 		 private String status;
 		 private String lastModified;
 
-		 public BouteilleBuilder(String nom){
+		 public BouteilleBuilder(String nom) {
 			 this.nom = nom;
 			 id = numLieu = ligne = colonne = 0;
 			 type = emplacement = prix = comment = annee = maturity = parker = color = "";

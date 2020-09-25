@@ -3,12 +3,14 @@ package mycellar;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.xls.XLSTabOptions;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -43,21 +45,22 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.8
- * @since 08/08/19
+ * @version 7.0
+ * @since 02/09/20
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
-	private final MyCellarRadioButton type_XML = new MyCellarRadioButton();
-	private final MyCellarRadioButton type_HTML = new MyCellarRadioButton();
-	private final MyCellarRadioButton type_XLS = new MyCellarRadioButton();
+	private final MyCellarRadioButton type_XML = new MyCellarRadioButton(LabelType.INFO, "210", false);
+	private final MyCellarRadioButton type_HTML = new MyCellarRadioButton(LabelType.INFO, "211", true);
+	private final MyCellarRadioButton type_XLS = new MyCellarRadioButton(LabelType.INFO, "233", false);
 	private JTable table;
 	private final TableauValues tv = new TableauValues();
+	@SuppressWarnings("deprecation")
 	private final MyCellarLabel end = new MyCellarLabel();
-	private final MyCellarButton preview = new MyCellarButton();
+	private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "152");
 	private final char CREER = Program.getLabel("CREER").charAt(0);
 	private final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
-	private final MyCellarCheckBox selectall = new MyCellarCheckBox();
+	private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126");
 	private final MyCellarButton m_jcb_options = new MyCellarButton(Program.getLabel("Infos193") + "...");
 	static final long serialVersionUID = 260706;
 
@@ -78,9 +81,6 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			final MyCellarButton create = new MyCellarButton(Program.getLabel("Infos018")); //"Creer");
 			create.setMnemonic(CREER);
 
-			type_XML.setText(Program.getLabel("Infos210"));
-			type_HTML.setText(Program.getLabel("Infos211"));
-			type_XLS.setText(Program.getLabel("Infos233"));
 			final ButtonGroup buttonGroup = new ButtonGroup();
 			buttonGroup.add(type_HTML);
 			buttonGroup.add(type_XML);
@@ -105,9 +105,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			end.setHorizontalAlignment(SwingConstants.CENTER);
 			end.setForeground(Color.red);
 			end.setFont(Program.FONT_DIALOG_SMALL);
-			preview.setText(Program.getLabel("Infos152")); //"Ouvrir le fichier");
 			preview.setMnemonic(OUVRIR);
-			selectall.setText(Program.getLabel("Infos126")); //"Tout selectionner");
 			selectall.setHorizontalAlignment(SwingConstants.RIGHT);
 			selectall.setHorizontalTextPosition(SwingConstants.LEFT);
 			selectall.addActionListener(this::selectall_actionPerformed);
@@ -213,13 +211,13 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	private void create_actionPerformed(ActionEvent e) {
 		try {
 			Debug("create_actionPerforming...");
-			String nom = name.getText().trim();
+			String nom = name.getText().strip();
 
 			if (!MyCellarControl.controlPath(nom)) {
 				return;
 			}
 
-			File path = new File(nom.trim());
+			File path = new File(nom);
 			name.setText(path.getAbsolutePath());
 
 			//Verify file type. Is it XML File?

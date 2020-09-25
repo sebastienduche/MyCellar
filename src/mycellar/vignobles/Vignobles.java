@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -30,8 +31,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 08/03/19
+ * @version 1.6
+ * @since 02/09/20
  */
 
 @XmlRootElement(name = "vignobles")
@@ -47,8 +48,8 @@ public class Vignobles
 		return vignoble;
 	}
 
-	public void setVignoble(List<CountryVignoble> vignoble) {
-		this.vignoble = vignoble;
+	public void init() {
+		vignoble = new ArrayList<>();
 	}
 
 	private void checkAvaibility() {
@@ -232,45 +233,37 @@ public class Vignobles
 		}
 	}
 
-	public CountryVignoble findVignoble(final Vignoble v) {
-		CountryVignoble vigne = new CountryVignoble();
-		vigne.setName(v.getName());
-		int index = vignoble.indexOf(vigne);
-		if(index != -1) {
-			return vignoble.get(index);
-		}
-		Debug("ERROR findVignoble "+v.toString());
-		return null;
+	public Optional<CountryVignoble> findVignoble(final Vignoble v) {
+		return vignoble.stream().filter(countryVignoble -> v.getName().equals(countryVignoble.getName())).findFirst();
 	}
 
-	CountryVignoble findVignobleWithAppelation(final Vignoble v) {
-		CountryVignoble vigne = new CountryVignoble();
-		vigne.setName(v.getName());
-		int index = vignoble.indexOf(vigne);
-		if(index != -1) {
-			final CountryVignoble vignobleToReturn = vignoble.get(index);
+	Optional<CountryVignoble> findVignobleWithAppelation(final Vignoble v) {
+		final Optional<CountryVignoble> vignobleToReturn = findVignoble(v);
+		if (vignobleToReturn.isPresent()) {
 			final Appelation appelation = new Appelation();
 			appelation.setAOC(v.getAOC());
 			appelation.setAOP(v.getAOC());
 			appelation.setIGP(v.getIGP());
-			if(vignobleToReturn.getUnmodifiableAppelation().contains(appelation)) {
+			if (vignobleToReturn.get().getUnmodifiableAppelation().contains(appelation)) {
 				return vignobleToReturn;
 			}
 		}
-		Debug("ERROR findVignobleWithAppelation "+v.toString());
-		return null;
+		Debug("ERROR findVignobleWithAppelation " + v.toString());
+		return Optional.empty();
 	}
 
 	Appelation findAppelation(final Vignoble v) {
 		CountryVignoble vigne = new CountryVignoble();
 		vigne.setName(v.getName());
+		final Appelation appelationToReturn = new Appelation();
+		appelationToReturn.setAOC(v.getAOC());
+		appelationToReturn.setAOP(v.getAOC());
+		appelationToReturn.setIGP(v.getIGP());
+
 		int index = vignoble.indexOf(vigne);
 		if(index != -1) {
 			final CountryVignoble vignoble1 = vignoble.get(index);
-			final Appelation appelationToReturn = new Appelation();
-			appelationToReturn.setAOC(v.getAOC());
-			appelationToReturn.setAOP(v.getAOC());
-			appelationToReturn.setIGP(v.getIGP());
+
 			if(vignoble1.getUnmodifiableAppelation().contains(appelationToReturn)) {
 				return appelationToReturn;
 			}

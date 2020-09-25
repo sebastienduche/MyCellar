@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -31,8 +32,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.8
- * @since 14/08/19
+ * @version 7.9
+ * @since 28/08/20
  */
 
 public class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -41,7 +42,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener, IMyCell
 	private final MyCellarComboBox<Rangement> choix = new MyCellarComboBox<>();
 	private final MyCellarLabel label_final = new MyCellarLabel();
 	private int nb_case_use_total = 0;
-	private final MyCellarButton preview = new MyCellarButton();
+	private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "138");
 	private final char SUPPRIMER = Program.getLabel("SUPPR").charAt(0);
 	private final char PREVIEW = Program.getLabel("VISUAL").charAt(0);
 	private final JTable table;
@@ -81,7 +82,6 @@ public class Supprimer_Rangement extends JPanel implements ITabListener, IMyCell
 		add(preview, "split 2, center");
 		add(supprimer, "");
 	
-		preview.setText(Program.getLabel("Infos138")); //"Visualiser le rangement");
 		preview.addActionListener(this::preview_actionPerformed);
 
 		choix.addItemListener(this::choix_itemStateChanged);

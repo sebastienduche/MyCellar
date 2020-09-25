@@ -6,14 +6,13 @@ import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarRadioButton;
+import mycellar.core.MyCellarFile;
+import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.MyCellarVersion;
+import mycellar.core.MyLinkedHashMap;
+import mycellar.core.UnableToOpenFileException;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.countries.Countries;
@@ -22,6 +21,8 @@ import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
 import mycellar.showfile.ShowFile;
+import mycellar.vignobles.Appelation;
+import mycellar.vignobles.CountryVignoble;
 import mycellar.vignobles.CountryVignobles;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -46,8 +47,6 @@ import javax.swing.JTabbedPane;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,23 +68,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.stream.Collectors;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -93,23 +86,21 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.7
- * @since 09/11/19
+ * @version 22.5
+ * @since 02/09/20
  */
 
 public final class Program {
 
+	public static final String INTERNAL_VERSION = "3.5.5.9";
+	public static final int VERSION = 62;
+	static final String INFOS_VERSION = " 2020 v";
 
-	public static final int VERSION = 61;
-
-	// Manage cave config
-	private static MyLinkedHashMap configCave = null;
+	private static MyCellarFile myCellarFile = null;
 	// Manage global config
 	private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
 
-	private static String archive = null;
-
-	static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
+	public static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
 	static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
 	static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);
 	static final Font FONT_DIALOG_SMALL = new Font("Dialog", Font.BOLD, 12);
@@ -157,10 +148,8 @@ public final class Program {
 	private static boolean m_bWorkDirCalculated = false;
 	private static boolean m_bGlobalDirCalculated = false;
 
-	private static boolean m_bIsTrueFile = false;
-
+	public static final String UNTITLED1_SINFO = "Untitled1.sinfo";
 	private static final String DATA_XML = "data.xml";
-	private static final String UNTITLED1_SINFO = "Untitled1.sinfo";
 	private static final String PREVIEW_XML = "preview.xml";
 	private static final String PREVIEW_HTML = "preview.html";
 	private static final String MY_CELLAR_XML = "MyCellar.xml";
@@ -172,7 +161,10 @@ public final class Program {
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;
 
-	public static Country france = new Country("FRA", "France");
+	public static final Country france = new Country("FRA", "France");
+	public static final Country NO_COUNTRY = new Country("");
+	public static final CountryVignoble NO_VIGNOBLE = new CountryVignoble();
+	public static final Appelation NO_APPELATION = new Appelation();
 	private static final List<File> DIR_TO_DELETE = new LinkedList<>();
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
@@ -180,36 +172,14 @@ public final class Program {
 	public static final MyClipBoard CLIPBOARD = new MyClipBoard();
 
 
-	public static void start() {
-
-		try {
-			archive = "";
-			bDebug = true;
-			Debug("===================================================");
-			Debug("Starting MyCellar version: "+ MyCellarVersion.VERSION);
-			// Initialisation du repertoire de travail
-			getWorkDir(false);
-			Debug("Program: Initializing Configuration files...");
-			File fileIni = new File(getGlobalConfigFilePath());
-			if(!fileIni.exists()) {
-				fileIni.createNewFile();
-			} else {
-				FileInputStream inputStream = new FileInputStream(fileIni);
-				Properties properties = new Properties();
-				properties.load(inputStream);
-				inputStream.close();
-				//Initialisation de la Map contenant config
-				Enumeration<Object> keys = properties.keys();
-				while (keys.hasMoreElements()) {
-					String key = keys.nextElement().toString();
-					putGlobalConfigString(key, properties.getProperty(key));
-				}
-			}
-			LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
-		}
-		catch (Exception e) {
-			showException(e);
-		}
+	public static void start() throws UnableToOpenFileException {
+		bDebug = true;
+		Debug("===================================================");
+		Debug("Starting MyCellar version: "+ VERSION + " Internal: " + INTERNAL_VERSION);
+		// Initialisation du repertoire de travail
+		getWorkDir(false);
+		loadGlobalProperties();
+		LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 	}
 
 	static void initConf() {
@@ -218,7 +188,9 @@ public final class Program {
 			loadProperties();
 			File f = new File(getWorkDir(true) + DATA_XML);
 			if(!f.exists()) {
-				f.createNewFile();
+				if (!f.createNewFile()) {
+					Debug("Program: ERROR: Unable to create file " + f.getAbsolutePath());
+				}
 			}
 			LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 
@@ -232,44 +204,67 @@ public final class Program {
 		}
 	}
 
-	static void setArchive(String archive) {
-		Program.archive = archive;
+	static void setNewFile(String file) {
+		myCellarFile = new MyCellarFile(new File(file));
 	}
 
-	static String getArchive() {
-		return archive;
+	static boolean hasFile() {
+		return myCellarFile != null;
 	}
 
-	private static String getConfigFilePath() {
+	public static String getConfigFilePath() {
 		return getWorkDir(true) + CONFIG_INI;
 	}
 	private static String getGlobalConfigFilePath() {
 		return getGlobalDir() + CONFIG_INI;
 	}
 
-	private static void loadProperties() throws IOException {
-
-		String inputPropCave = getConfigFilePath();
-		configCave = new MyLinkedHashMap();
-		File f = new File(inputPropCave);
-		if(!f.exists()) {
-			f.createNewFile();
-		} else {
-			FileInputStream inputStream = new FileInputStream(inputPropCave);
-			Properties properties = new Properties();
-			properties.load(inputStream);
-			inputStream.close();
-			Enumeration<Object> keys = properties.keys();
-			while (keys.hasMoreElements()) {
-				String key = keys.nextElement().toString();
-				putCaveConfigString(key, properties.getProperty(key));
+	private static void loadProperties() throws UnableToOpenFileException {
+		try {
+			String inputPropCave = getConfigFilePath();
+			File f = new File(inputPropCave);
+			if(!f.exists()) {
+				if (!f.createNewFile()) {
+					Debug("Program: ERROR: Unable to create file " + f.getAbsolutePath());
+					throw new UnableToOpenFileException("Unable to create file " + f.getAbsolutePath());
+				}
+			} else {
+				FileInputStream inputStream = new FileInputStream(inputPropCave);
+				Properties properties = new Properties();
+				properties.load(inputStream);
+				inputStream.close();
+				properties.forEach((key, value) -> putCaveConfigString(key.toString(), value.toString()));
+				if (properties.isEmpty()) {
+					// Initialisation de la devise pour les nouveaux fichiers
+					putCaveConfigString(MyCellarSettings.DEVISE, "\u20ac");
+				}
 			}
-			if (properties.isEmpty()) {
-				// Initialisation de la devise pour les nouveaux fichiers
-				putCaveConfigString(MyCellarSettings.DEVISE, "\u20ac");
-			}
+		} catch (IOException e) {
+			throw new UnableToOpenFileException("Load properties failed: " + e.getMessage());
 		}
 
+	}
+
+	private static void loadGlobalProperties() throws UnableToOpenFileException {
+		try {
+			Debug("Program: Initializing Configuration files...");
+			File fileIni = new File(getGlobalConfigFilePath());
+			if(!fileIni.exists()) {
+				if (!fileIni.createNewFile()) {
+					Debug("Program: ERROR: Unable to create file " + fileIni.getAbsolutePath());
+					throw new UnableToOpenFileException("Unable to create file " + fileIni.getAbsolutePath());
+				}
+			} else {
+				FileInputStream inputStream = new FileInputStream(fileIni);
+				Properties properties = new Properties();
+				properties.load(inputStream);
+				inputStream.close();
+				//Initialisation de la Map contenant config
+				properties.forEach((key, value) -> putGlobalConfigString(key.toString(), value.toString()));
+			}
+		} catch (IOException e) {
+			throw new UnableToOpenFileException("Load properties failed: " + e.getMessage());
+		}
 	}
 
 	/**
@@ -281,10 +276,9 @@ public final class Program {
 		String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
 		if(sVersion.isEmpty() || sVersion.contains(".")) {
 			putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
-			return;
 		}
 
-		int version = Integer.parseInt(sVersion);
+		//int version = Integer.parseInt(sVersion);
 	}
 
 
@@ -294,10 +288,7 @@ public final class Program {
 	 */
 	static void setLanguage(LanguageFileLoader.Language lang) {
 		Debug("Program: Set Language : " + lang);
-		MyCellarLabel.updateLabels();
-		MyCellarButton.updateLabels();
-		MyCellarCheckBox.updateLabels();
-		MyCellarRadioButton.updateLabels();
+		MyCellarLabelManagement.updateLabels();
 		TABBED_PANE.removeAll();
 		clearObjectsVariables();
 		LanguageFileLoader.getInstance().loadLanguageFiles(lang);
@@ -569,141 +560,6 @@ public final class Program {
 		return symbols.getDecimalSeparator();
 	}
 
-	/**
-	 * zipDir: Compression de repertoire
-	 *
-	 * @param fileName String
-	 * @return boolean
-	 */
-	private static void zipDir(String fileName) {
-
-		Debug("Program: zipDir: Zipping in "+m_sWorkDir+" with archive "+fileName);
-		try {
-			// creation d'un flux d'ecriture sur fichier
-			var dest = new FileOutputStream(fileName);
-			// calcul du checksum : Adler32 (plus rapide) ou CRC32
-			var checksum = new CheckedOutputStream(dest, new Adler32());
-			// creation d'un buffer d'ecriture
-			var buff = new BufferedOutputStream(checksum);
-			// creation d'un flux d'ecriture Zip
-			try(var out = new ZipOutputStream(buff)) {
-				// specification de la methode de compression
-				out.setMethod(ZipOutputStream.DEFLATED);
-				// specifier la qualite de la compression 0..9
-				out.setLevel(Deflater.BEST_COMPRESSION);
-
-				// extraction de la liste des fichiers du repertoire courant
-				File f = new File(m_sWorkDir);
-				String[] files = f.list();
-				// pour chacun des fichiers de la liste
-				if (files != null) {
-					LinkedList<String> zipEntryList = new LinkedList<>();
-					int BUFFER = 2048;
-					for (String file : files) {
-						f = new File(getWorkDir(true) + file);
-						if (f.isDirectory() || file.compareTo(UNTITLED1_SINFO) == 0) {
-							continue;
-						}
-						// creation d'un flux de lecture
-						var inputStream = new FileInputStream(getWorkDir(true) + file);
-						// creation d'un tampon de lecture sur ce flux
-						try (var bufferedInputStream = new BufferedInputStream(inputStream, BUFFER)) {
-							// creation d'en entree Zip pour ce fichier
-							String name = removeAccents(file);
-							var entry = new ZipEntry(name);
-							if (zipEntryList.contains(name)) {
-								continue;
-							}
-							zipEntryList.add(name);
-							// ajout de cette entree dans le flux d'ecriture de l'archive Zip
-							out.putNextEntry(entry);
-							// ecriture du fichier par paquet de BUFFER octets dans le flux d'ecriture
-							int count;
-							// buffer temporaire des donnees a ecrire dans le flux de sortie
-							byte[] data = new byte[BUFFER];
-							while ((count = bufferedInputStream.read(data, 0, BUFFER)) != -1) {
-								out.write(data, 0, count);
-							}
-							// Close the current entry
-							out.closeEntry();
-						}
-						inputStream.close();
-					}
-				}
-			}
-			buff.close();
-			checksum.close();
-			dest.close();
-		}
-		catch (Exception e) {
-			Debug("Program: zipDir: Error while zipping");
-			showException(e, false);
-		}
-		Debug("Program: zipDir OK");
-	}
-
-	/**
-	 * unzipDir: Dezippe une archive dans un repertoire
-	 *
-	 * @param dest_dir String
-	 * @return boolean
-	 */
-	private static boolean unzipDir(String dest_dir) {
-		try {
-			Debug("Program: Unzip: Archive "+archive);
-			// ouverture fichier entree
-			archive = archive.replaceAll("\\\\", "/");
-			File f = new File(archive);
-			if(!f.exists()) {
-				return false;
-			}
-			var fileInputStream = new FileInputStream(archive);
-			// ouverture fichier de buffer
-			var bufferedInputStream = new BufferedInputStream(fileInputStream);
-			// ouverture archive Zip d'entree
-			try(var zipInputStream = new ZipInputStream(bufferedInputStream)) {
-				// entree Zip
-				ZipEntry entry;
-				// parcours des entrees de l'archive
-				int BUFFER = 2048;
-				while ((entry = zipInputStream.getNextEntry()) != null) {
-					// affichage du nom de l'entree
-					// creation fichier
-					f = new File(dest_dir);
-					boolean ok = true;
-					if (!f.exists()) {
-						ok = f.mkdir();
-					}
-					if (ok) {
-						var fileOutputStream = new FileOutputStream(dest_dir + File.separator + entry.getName());
-						Debug("Unzip: File " + dest_dir + File.separator + entry.getName());
-						// affectation buffer de sortie
-						try (var bufferOutputStream = new BufferedOutputStream(fileOutputStream, BUFFER)) {
-							// ecriture sur disque
-							int count;
-							byte[] data = new byte[BUFFER];
-							while ((count = zipInputStream.read(data, 0, BUFFER)) != -1) {
-								bufferOutputStream.write(data, 0, count);
-							}
-							// vidage du tampon
-							bufferOutputStream.flush();
-						}
-						fileOutputStream.close();
-					}
-				}
-			}
-			bufferedInputStream.close();
-			fileInputStream.close();
-		}
-		catch (Exception e) {
-			Debug("Program: Unzip: Archive Error");
-			Debug(e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
-		Debug("Program: Unzip: Archive OK");
-		return true;
-	}
 
 
 	/**
@@ -711,17 +567,16 @@ public final class Program {
 	 */
 	public static void save() {
 		Debug("Program: Saving...");
-		saveAs(archive);
+		saveAs(myCellarFile.getFile());
 	}
 
 	/**
 	 * saveAs
-	 * @param sFilename String
+	 * @param file File
 	 */
-	static void saveAs(String sFilename) {
+	static void saveAs(File file) {
 		Debug("Program: Saving all files...");
 
-		saveCaveProperties();
 		saveGlobalProperties();
 
 		if(isListCaveModified()) {
@@ -733,13 +588,8 @@ public final class Program {
 		CountryVignobles.save();
 		ListeBouteille.writeXML();
 
-		if(!sFilename.isEmpty()) {
-			zipDir(sFilename);
-		} else {
-			zipDir(archive);
-		}
+		myCellarFile.saveAs(file);
 
-		archive = sFilename;
 		modified = false;
 		listCaveModified = false;
 		Debug("Program: Saving all files OK");
@@ -814,11 +664,11 @@ public final class Program {
 	 * @return Rangement
 	 */
 	public static Rangement getCave(final String name) {
-		if (name == null || name.trim().isEmpty()) {
+		if (name == null || name.strip().isEmpty()) {
 			return null;
 		}
 
-		final String placeName = name.trim();
+		final String placeName = name.strip();
 		final List<Rangement> list = RANGEMENTS_LIST.stream().filter(rangement -> rangement.getNom().equals(placeName))
 				.collect(Collectors.toList());
 		if (list.isEmpty()) {
@@ -871,30 +721,45 @@ public final class Program {
 	}
 
 	/**
-	 * openFile: Choix d'un fichier a ouvrir.
+	 * newFile: Create a new file.
 	 */
-	static boolean newFile() {
-		return openaFile(null);
+	static void newFile() {
+		final File file = new File(getWorkDir(true) + UNTITLED1_SINFO);
+		if(file.exists()) {
+			file.delete();
+		}
+		try {
+			file.createNewFile();
+		} catch (IOException e) {
+			showException(e);
+		}
+		try {
+			openaFile(file, true);
+		} catch (UnableToOpenFileException e) {
+			showException(e);
+		}
 	}
 
 	/**
 	 * openaFile: Ouvre un fichier
 	 *
-	 * @param f File
+	 * @param file File
 	 */
-	static boolean openaFile(File f) {
+	static void openaFile(File file) throws UnableToOpenFileException {
+		openaFile(file, false);
+	}
+
+	private static void openaFile(File file, boolean isNewFile) throws UnableToOpenFileException {
 		LinkedList<String> list = new LinkedList<>();
 		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN1,""));
 		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN2,""));
 		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN3,""));
 		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN4,""));
-		boolean newFile = false;
-		if(f != null) {
-			Debug("Program: openFile: Opening file: " + f.getAbsolutePath());
-			list.remove(f.getAbsolutePath());
-		} else {
-			newFile = true;
+		if (isNewFile) {
 			Debug("Program: openFile: Creating new file");
+		} else {
+			Debug("Program: openFile: Opening file: " + file.getAbsolutePath());
+			list.remove(file.getAbsolutePath());
 		}
 
 		// Sauvegarde avant de charger le nouveau fichier
@@ -903,28 +768,13 @@ public final class Program {
 		CountryVignobles.init();
 		Countries.init();
 
-		if(f == null) {
+		if(isNewFile) {
 			// Nouveau fichier de bouteilles
 			ListeBouteille.writeXML();
-			setFileSavable(false);
-			// Nouveau fichier
-			String fic = getWorkDir(true) + UNTITLED1_SINFO;
-			f = new File(fic);
-			if(f.exists()) {
-				f.delete();
-			}
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				showException(e);
-			}
-		}
-		else {
-			setFileSavable(f.exists());
 		}
 
-		if(!f.exists()) {
-			Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), f.getAbsolutePath())); //Fichier non trouve);
+		if(!file.exists()) {
+			Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), file.getAbsolutePath())); //Fichier non trouve);
 
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
@@ -932,65 +782,33 @@ public final class Program {
 			// On a deja enleve un element de la liste
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN4, "");
 			saveGlobalProperties();
-			return false;
+			throw new UnableToOpenFileException("File not found: " + file.getAbsolutePath());
 		}
 
-		archive = f.getAbsolutePath();
-
-		try {
-			// Dezippage
-			boolean unzipOK = unzipDir(getWorkDir(false));
-			Debug("Program: Unzipping " + archive + " to " + getWorkDir(false) + (unzipOK ? " OK" : " KO"));
-			if (!unzipOK) {
-				archive = "";
-				return false;
-			}
-		}
-		catch (Exception e) {
-			Debug("Program: ERROR: Unable to unzip file "+archive);
-			showException(e,false);
-			archive = "";
-			return false;
-		}
+		myCellarFile = new MyCellarFile(file);
+		myCellarFile.unzip();
 
 		// Chargement
-		File data = new File(getDataFileName());
-		if(!newFile && !data.exists()) {
+		if(!isNewFile && !getDataFile().exists()) {
 			Debug("Program: ERROR: Unable to find file data.xml!!");
+			throw new UnableToOpenFileException("File not found: data.xml");
 		}
 
 		//Chargement des objets Rangement, Bouteilles et History
 		Debug("Program: Reading Places, Bottles & History");
-		boolean loaded;
-		if (!(loaded = loadObjects())) {
-			Debug("Program: Reading Objects KO");
+		if (!loadObjects()) {
+			Debug("Program: ERROR Reading Objects KO");
+			throw new UnableToOpenFileException("Error while reading objects.");
 		}
-		// Controle du nombre de rangement
+
 		Debug("Program: Checking place count");
-		if (loaded) {
-			int i = 0;
-			LinkedList<Rangement> cave = getCave();
-			while (i < GetCaveLength() && cave.get(i) != null) {
-				i++;
-			}
-
-			if (i != GetCaveLength()) {
-				loaded = false;
-			}
-
-			Debug("Program: Place Count: Program="+GetCaveLength()+" cave="+i);
-		}
-		// En cas d'erreur
-		if (!loaded) {
-			Debug("Program: ERROR: Loading");
+		long i = getCave().stream().filter(Objects::nonNull).count();
+		if (i != GetCaveLength()) {
+			Debug("Program: Place Count: Program=" + GetCaveLength() + " cave=" + i);
+			throw new UnableToOpenFileException("Place Count: Program=" + GetCaveLength() + " cave=" + i);
 		}
 
-		try {
-			loadProperties();
-		} catch (IOException e) {
-			showException(e,false);
-			return false;
-		}
+		loadProperties();
 
 		MyCellarBottleContenance.load();
 
@@ -999,10 +817,9 @@ public final class Program {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
 		CountryVignobles.load();
-		CountryVignobles.addVignobleFromBottles();
 
-		if(isFileSavable()) {
-			list.addFirst(f.getAbsolutePath());
+		if(myCellarFile.isFileSavable()) {
+			list.addFirst(file.getAbsolutePath());
 		}
 
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
@@ -1010,12 +827,11 @@ public final class Program {
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN4, list.pop());
 
-		putCaveConfigString(MyCellarSettings.DIR, f.getParent());
+		putCaveConfigString(MyCellarSettings.DIR, file.getParent());
 
 		saveGlobalProperties();
 		modified = false;
 		listCaveModified = false;
-		return true;
 	}
 
 	/**
@@ -1024,85 +840,75 @@ public final class Program {
 	static void closeFile() {
 
 		Debug("Program: closeFile: Closing file...");
-		try {
-			boolean bSave = false;
-			if(!archive.isEmpty() && isModified()) {
-				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("Error199"), getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-					bSave = true;
-					if(!isFileSavable()) {
-						try {
-							JFileChooser boiteFichier = new JFileChooser();
-							boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
-							boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
-							int retour_jfc = boiteFichier.showSaveDialog(null);
-							if (retour_jfc == JFileChooser.APPROVE_OPTION) {
-								setFileSavable(true);
-								File nomFichier = boiteFichier.getSelectedFile();
-								String fic = nomFichier.getAbsolutePath();
-								fic = MyCellarControl.controlAndUpdateExtension(fic, Filtre.FILTRE_SINFO);
-								archive = fic;
-							}
-						}
-						catch (Exception e3) {
-							showException(e3);
-						}
+		boolean bSave = false;
+		File newFile = null;
+		if(myCellarFile.exists() && isModified()) {
+			if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("Error199"), getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+				bSave = true;
+				if(!myCellarFile.isFileSavable()) {
+					JFileChooser boiteFichier = new JFileChooser();
+					boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
+					boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
+					int retour_jfc = boiteFichier.showSaveDialog(null);
+					if (retour_jfc == JFileChooser.APPROVE_OPTION) {
+						File nomFichier = boiteFichier.getSelectedFile();
+						newFile = new File(MyCellarControl.controlAndUpdateExtension(nomFichier.getAbsolutePath(), Filtre.FILTRE_SINFO));
 					}
 				}
-
-				putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
 			}
 
-			File f = new File(getPreviewXMLFileName());
-			if (f.exists()) {
-				f.delete();
-			}
-			f = new File(getPreviewHTMLFileName());
-			if (f.exists()) {
-				f.delete();
-			}
+			putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
+		}
 
-			getErrors().clear();
+		File f = new File(getPreviewXMLFileName());
+		if (f.exists()) {
+			f.delete();
+		}
+		f = new File(getPreviewHTMLFileName());
+		if (f.exists()) {
+			f.delete();
+		}
 
-			//Tri du tableau et ecriture du fichier XML
-			if (bSave) {
-				if(!ListeBouteille.writeXML()) {
-					return;
-				}
+		getErrors().clear();
 
-				if(isListCaveModified()) {
-					MyXmlDom.writeMyCellarXml(getCave(), "");
-				}
-
-				saveCaveProperties();
-
-				if (!getCave().isEmpty()) {
-					getStorage().saveHistory();
-					getStorage().saveWorksheet();
-					CountryVignobles.save();
-					zipDir(archive);
-				}
+		//Tri du tableau et ecriture du fichier XML
+		if (bSave) {
+			if(!ListeBouteille.writeXML()) {
+				return;
 			}
 
-			if(!archive.isEmpty()) {
-				// Sauvegarde des proprietes globales
-				saveGlobalProperties();
+			if(isListCaveModified()) {
+				MyXmlDom.writeMyCellarXml(getCave(), "");
+			}
 
-				if (getCaveConfigBool(MyCellarSettings.FIC_EXCEL, false)) {
-					//Ecriture Excel
-					final String file_excel = getCaveConfigString(MyCellarSettings.FILE_EXCEL, "");
-					Debug("Program: Writing backup Excel file: " + file_excel);
-					final List<Bouteille> bouteilles = Collections.unmodifiableList(getStorage().getAllList());
-					Thread writingExcel = new Thread(() -> RangementUtils.write_XLS(file_excel, bouteilles, true, null));
-					Runtime.getRuntime().addShutdownHook(writingExcel);
+			if (!getCave().isEmpty()) {
+				getStorage().saveHistory();
+				getStorage().saveWorksheet();
+				CountryVignobles.save();
+				if (newFile != null) {
+					myCellarFile.saveAs(newFile);
+				} else {
+					myCellarFile.save();
 				}
 			}
 		}
-		catch (Exception ex) {
-			showException(ex);
-			return;
+
+		if(myCellarFile.exists()) {
+			// Sauvegarde des proprietes globales
+			saveGlobalProperties();
+
+			if (getCaveConfigBool(MyCellarSettings.FIC_EXCEL, false)) {
+				//Ecriture Excel
+				final String file_excel = getCaveConfigString(MyCellarSettings.FILE_EXCEL, "");
+				Debug("Program: Writing backup Excel file: " + file_excel);
+				final List<Bouteille> bouteilles = Collections.unmodifiableList(getStorage().getAllList());
+				Thread writingExcel = new Thread(() -> RangementUtils.write_XLS(new File(file_excel), bouteilles, true, null));
+				Runtime.getRuntime().addShutdownHook(writingExcel);
+			}
 		}
+
 		TABBED_PANE.removeAll();
-		if (!archive.isEmpty()) {
+		if (myCellarFile.exists()) {
 			getStorage().close();
 			CountryVignobles.close();
 			Countries.close();
@@ -1110,9 +916,7 @@ public final class Program {
 		}
 		clearObjectsVariables();
 		m_bWorkDirCalculated = false;
-		archive = "";
 		TRASH.clear();
-		setFileSavable(false);
 		modified = false;
 		listCaveModified = false;
 		if (getCave() != null) {
@@ -1120,6 +924,7 @@ public final class Program {
 		}
 		DEFAULT_PLACE.resetStock();
 		EMPTY_PLACE.resetStock();
+		myCellarFile = null;
 		Debug("Program: closeFile: Closing file Ended");
 	}
 
@@ -1144,14 +949,6 @@ public final class Program {
 	}
 
 	/**
-	 * Save Properties for current cave
-	 */
-	private static void saveCaveProperties() {
-		MyCellarBottleContenance.save();
-		saveProperties(configCave, getConfigFilePath());
-	}
-
-	/**
 	 * Save global properties
 	 */
 	static void saveGlobalProperties() {
@@ -1160,7 +957,7 @@ public final class Program {
 		Debug("Program: Saving Global Properties OK");
 	}
 
-	private static void saveProperties(final MyLinkedHashMap map, final String file) {
+	public static void saveProperties(final MyLinkedHashMap map, final String file) {
 		Object[] val = map.keySet().toArray();
 		final Properties properties = new Properties();
 		for (Object o : val) {
@@ -1249,7 +1046,10 @@ public final class Program {
 	}
 
 	static String getShortFilename() {
-		return getShortFilename(archive);
+		if (myCellarFile == null) {
+			return getShortFilename(UNTITLED1_SINFO);
+		}
+		return getShortFilename(myCellarFile.getFile().getAbsolutePath());
 	}
 
 	static String getShortFilename(String sFilename) {
@@ -1263,89 +1063,81 @@ public final class Program {
 		return tmp;
 	}
 
-	static String getGlobalConfigString(String _sKey, String _sDefaultValue) {
-		return CONFIG_GLOBAL.getString(_sKey, _sDefaultValue);
+	static String getGlobalConfigString(String key, String defaultValue) {
+		return CONFIG_GLOBAL.getString(key, defaultValue);
 	}
 
-	public static String getCaveConfigString(String _sKey, String _sDefaultValue) {
-		if (null != configCave) {
-			return configCave.getString(_sKey, _sDefaultValue);
+	public static String getCaveConfigString(String key, String defaultValue) {
+		if (null != getCaveConfig()) {
+			return getCaveConfig().getString(key, defaultValue);
 		}
-		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+_sDefaultValue+"'");
-		return _sDefaultValue;
-	}
-
-	static boolean getGlobalConfigBool(String _sKey, boolean defaultValue) {
-		return 1 == CONFIG_GLOBAL.getInt(_sKey, defaultValue ? 1 : 0);
-	}
-
-	public static boolean getCaveConfigBool(String _sKey, boolean defaultValue) {
-		if (null != configCave) {
-			final String value = configCave.getString(_sKey, defaultValue ? "1" : "0");
-			return ("1".equals(value) || "ON".equalsIgnoreCase(value));
-		}
-		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+defaultValue+"'");
+		Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
 		return defaultValue;
 	}
 
-	public static int getCaveConfigInt(String _sKey, int _nDefaultValue) {
-		if (null != configCave) {
-			return configCave.getInt(_sKey, _nDefaultValue);
+	static boolean getGlobalConfigBool(String key, boolean defaultValue) {
+		return 1 == CONFIG_GLOBAL.getInt(key, defaultValue ? 1 : 0);
+	}
+
+	public static boolean getCaveConfigBool(String key, boolean defaultValue) {
+		if (null != getCaveConfig()) {
+			final String value = getCaveConfig().getString(key, defaultValue ? "1" : "0");
+			return ("1".equals(value) || "ON".equalsIgnoreCase(value));
 		}
-		Debug("Program: ERROR: Calling null configCave for key '"+_sKey+"' and default value '"+_nDefaultValue+"'");
-		return _nDefaultValue;
+		Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
+		return defaultValue;
 	}
 
-	static void putGlobalConfigString(String _sKey, String _sValue) {
-		CONFIG_GLOBAL.put(_sKey, _sValue);
+	public static int getCaveConfigInt(String key, int defaultValue) {
+		if (null != getCaveConfig()) {
+			return getCaveConfig().getInt(key, defaultValue);
+		}
+		Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
+		return defaultValue;
 	}
 
-	public static void putCaveConfigString(String _sKey, String _sValue) {
-		if (null != configCave) {
-			configCave.put(_sKey, _sValue);
+	static void putGlobalConfigString(String key, String value) {
+		CONFIG_GLOBAL.put(key, value);
+	}
+
+	public static void putCaveConfigString(String key, String value) {
+		if (null != getCaveConfig()) {
+			getCaveConfig().put(key, value);
 		} else {
-			Debug("Program: ERROR: Unable to put value in configCave: [" + _sKey + " - " + _sValue + "]");
+			Debug("Program: ERROR: Unable to put value in configCave: [" + key + " - " + value + "]");
 		}
 	}
 
-	static void putGlobalConfigBool(String _sKey, boolean _sValue) {
-		CONFIG_GLOBAL.put(_sKey, _sValue ? "1" : "0");
+	static void putGlobalConfigBool(String key, boolean value) {
+		CONFIG_GLOBAL.put(key, value ? "1" : "0");
 	}
 
-	public static void putCaveConfigBool(String _sKey, boolean _sValue) {
-		if (null != configCave) {
-			configCave.put(_sKey, _sValue ? "1" : "0");
+	public static void putCaveConfigBool(String key, boolean value) {
+		if (null != getCaveConfig()) {
+			getCaveConfig().put(key, value ? "1" : "0");
 		} else {
-			Debug("Program: ERROR: Unable to put value in configCave: [" + _sKey + " - " + _sValue + "]");
+			Debug("Program: ERROR: Unable to put value in configCave: [" + key + " - " + value + "]");
 		}
 	}
 
-	static void putCaveConfigInt(String _sKey, Integer _sValue) {
-		configCave.put(_sKey, _sValue);
+	public static void putCaveConfigInt(String key, int value) {
+		Objects.requireNonNull(getCaveConfig()).put(key, value);
 	}
 
 	static MyLinkedHashMap getCaveConfig() {
-		return configCave;
+		return myCellarFile == null ? null : myCellarFile.getCaveConfig();
 	}
 
-	static boolean hasConfigCaveKey(String _sKey) {
-		return null != configCave && configCave.containsKey(_sKey);
+	static boolean hasConfigCaveKey(String key) {
+		return null != getCaveConfig() && getCaveConfig().containsKey(key);
 	}
 
-	static boolean hasConfigGlobalKey(String _sKey) {
-		return CONFIG_GLOBAL.containsKey(_sKey);
+	static boolean hasConfigGlobalKey(String key) {
+		return CONFIG_GLOBAL.containsKey(key);
 	}
 
-	static boolean isFileSavable() {
-		return m_bIsTrueFile;
-	}
-
-	static void setFileSavable(boolean _bIsTrueFile) {
-		m_bIsTrueFile = _bIsTrueFile;
-	}
-
-	private static String getDataFileName() {
-		return getWorkDir(true) + DATA_XML;
+	private static File getDataFile() {
+		return new File(getWorkDir(true) + DATA_XML);
 	}
 
 	static String getXMLPlacesFileName() {
@@ -1376,27 +1168,27 @@ public final class Program {
 		return SerializedStorage.getInstance();
 	}
 
-	public static String getLabel(String _id) {
-		return getLabel(_id, true);
+	public static String getLabel(String id) {
+		return getLabel(id, true);
 	}
 
-	public static String getLabel(String _id, boolean displayError) {
+	public static String getLabel(String id, boolean displayError) {
 		try {
-			return LanguageFileLoader.getLabel(_id);
+			return LanguageFileLoader.getLabel(id);
 		}catch(MissingResourceException e) {
 			if(displayError) {
-				JOptionPane.showMessageDialog(null, "Missing Label "+_id, "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Missing Label " + id, "Error", JOptionPane.ERROR_MESSAGE);
 			}
-			return _id;
+			return id;
 		}
 	}
 
-	public static String getError(String _id) {
+	public static String getError(String id) {
 		try {
-			return LanguageFileLoader.getError(_id);
+			return LanguageFileLoader.getError(id);
 		}catch(MissingResourceException e) {
-			JOptionPane.showMessageDialog(null, "Missing Error "+_id, "Error", JOptionPane.ERROR_MESSAGE);
-			return _id;
+			JOptionPane.showMessageDialog(null, "Missing Error " + id, "Error", JOptionPane.ERROR_MESSAGE);
+			return id;
 		}
 	}
 
@@ -1870,7 +1662,7 @@ public final class Program {
 		UPDATABLE_OBJECTS.remove(CHOOSE_CELL);
 	}
 
-	private static IMyCellar createOpenedObject(Class className, String id) {
+	private static IMyCellar createOpenedObject(Class<?> className, String id) {
 		IMyCellar object = OPENED_OBJECTS.get(id);
 		if (object == null) {
 			try {
@@ -1907,10 +1699,11 @@ public final class Program {
 		if(!f.getName().toLowerCase().endsWith(".txt")) {
 			return "";
 		}
+		Debug("Program: Reading first line of file " + f.getName());
 		try (var scanner = new Scanner(f)){
 			if(scanner.hasNextLine()) {
 				String line = scanner.nextLine();
-				return line.trim();
+				return line.strip();
 			}
 		} catch (IOException e) {
 			showException(e, true);
@@ -1998,6 +1791,7 @@ public final class Program {
 		}
 		ManageBottle manage = new ManageBottle(bottle);
 		manage.enableAll(edit);
+		UPDATABLE_OBJECTS.put(Integer.toString(bottle.getId()), manage);
 		String bottleName = bottle.getNom();
 		if (bottleName.length() > 30) {
 			bottleName = bottleName.substring(0, 30) + " ...";
@@ -2039,5 +1833,9 @@ public final class Program {
 		cleanDebugFiles();
 		Debug("Program: MyCellar End");
 		closeDebug();
+	}
+
+	static boolean isFileSavable() {
+		return myCellarFile != null && myCellarFile.isFileSavable();
 	}
 }

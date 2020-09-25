@@ -4,6 +4,7 @@ package mycellar;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -58,23 +59,24 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.1
- * @since 08/08/19
+ * @version 13.4
+ * @since 02/09/20
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
 	private static final int COUNT = 18;
-	private final MyCellarButton importe = new MyCellarButton();
-	private final MyCellarRadioButton type_txt = new MyCellarRadioButton();
-	private final MyCellarRadioButton type_xls = new MyCellarRadioButton();
-	private final MyCellarRadioButton type_xml = new MyCellarRadioButton();
+	private final MyCellarButton importe = new MyCellarButton(LabelType.INFO, "011");
+	private final MyCellarRadioButton type_txt = new MyCellarRadioButton(LabelType.INFO, "040", true);
+	private final MyCellarRadioButton type_xls = new MyCellarRadioButton(LabelType.INFO, "041", false);
+	private final MyCellarRadioButton type_xml = new MyCellarRadioButton(LabelType.INFO, "203", false);
 	private final char IMPORT = Program.getLabel("IMPORT").charAt(0);
 	private final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private final List<MyCellarComboBox<MyCellarFields>> comboBoxList = new ArrayList<>(COUNT);
-	private final MyCellarCheckBox titre = new MyCellarCheckBox();
-	private final MyCellarLabel textControl2 = new MyCellarLabel();
+	private final MyCellarCheckBox titre = new MyCellarCheckBox(LabelType.INFO, "038");
+	private final MyCellarLabel textControl2 = new MyCellarLabel(LabelType.INFO, "037");
+	@SuppressWarnings("deprecation")
 	private final MyCellarLabel label_progression = new MyCellarLabel();
-	private final MyCellarLabel label2 = new MyCellarLabel();
+	private final MyCellarLabel label2 = new MyCellarLabel(LabelType.INFO, "034");
 	private final MyCellarComboBox<String> separateur = new MyCellarComboBox<>();
 	private final JTextField file = new JTextField();
 	static final long serialVersionUID = 280706;
@@ -85,39 +87,28 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	 */
 	public Importer() {
 		Debug("Constructor");
-		importe.setToolTipText(Program.getLabel("Infos011"));
-		MyCellarButton openit = new MyCellarButton();
+		MyCellarButton openit = new MyCellarButton(LabelType.INFO, "152");
 		openit.setToolTipText(Program.getLabel("Infos152"));
-		MyCellarButton parcourir = new MyCellarButton();
+		MyCellarButton parcourir = new MyCellarButton("...");
 		parcourir.setToolTipText(Program.getLabel("Infos157"));
 		importe.setMnemonic(IMPORT);
 		openit.setMnemonic(OUVRIR);
 		importe.setText(Program.getLabel("Infos036")); //"Importer");
 		importe.addActionListener(this::importe_actionPerformed); //"Selectionner les differents champs presents dans le fichier (de gauche a droite)");
-		type_txt.setText(Program.getLabel("Infos040")); //"Fichier TXT ou CSV");
 		titre.setHorizontalTextPosition(SwingConstants.LEFT);
-		titre.setText(Program.getLabel("Infos038"));
-		textControl2.setText(Program.getLabel("Infos037"));
 		label_progression.setForeground(Color.red);
 		label_progression.setFont(new Font("Dialog", Font.BOLD, 12));
 		label_progression.setHorizontalAlignment(SwingConstants.CENTER);
-		label2.setText(Program.getLabel("Infos034"));
-		MyCellarLabel label1 = new MyCellarLabel(Program.getLabel("Infos033"));
 		ButtonGroup checkboxGroup1 = new ButtonGroup();
 		checkboxGroup1.add(type_txt);
 		checkboxGroup1.add(type_xls);
 		checkboxGroup1.add(type_xml);
 		type_txt.addItemListener(this::type_itemStateChanged);
-		type_xls.setText(Program.getLabel("Infos041")); //"Fichier Excel");
-		parcourir.setText("...");
-		openit.setText(Program.getLabel("Infos152")); //"Ouvrir le fichier");
 		openit.addActionListener(this::openit_actionPerformed);
 		parcourir.addActionListener(this::parcourir_actionPerformed);
 		type_xls.addItemListener(this::type_itemStateChanged);
-		type_txt.setSelected(true);
-		
+
 		type_xml.addItemListener(this::type_itemStateChanged);
-		type_xml.setText(Program.getLabel("Infos203")); //"Fichier XML");
 
 		addKeyListener(new KeyAdapter() {
 			@Override
@@ -134,7 +125,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		JPanel panelType = new JPanel();
 		panelType.setLayout(new MigLayout("","[][]","[]"));
 		JPanel panelFileType = new JPanel();
-		panelFileType.setLayout(new MigLayout("","",""));
+		panelFileType.setLayout(new MigLayout());
 		panelFileType.add(type_txt);
 		panelFileType.add(type_xls, "gapleft 15px");
 		panelFileType.add(type_xml, "gapleft 15px");
@@ -148,14 +139,14 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		add(panelType, "grow, wrap");
 		JPanel panelFile = new JPanel();
 		panelFile.setLayout(new MigLayout("","[grow][][]","[]"));
-		panelFile.add(label1, "wrap");
+		panelFile.add(new MyCellarLabel(LabelType.INFO, "033"), "wrap");
 		panelFile.add(file, "grow");
 		panelFile.add(parcourir);
 		panelFile.add(openit);
 		add(panelFile,"grow,wrap");
 		JPanel panel = new JPanel();
-		panel.setLayout(new MigLayout("","",""));
-		panel.add(titre, "");
+		panel.setLayout(new MigLayout());
+		panel.add(titre);
 		add(panel, "wrap");
 		JPanel panelChoix = new JPanel();
 		panelChoix.setLayout(new MigLayout("","[][][][]",""));
@@ -223,7 +214,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	 * @param  index int
 	 */
 	private void updateCombo(ActionEvent e, int index) {
-		if (((MyCellarComboBox)e.getSource()).getSelectedIndex() == 0) {
+		if (((MyCellarComboBox<?>)e.getSource()).getSelectedIndex() == 0) {
 			for (int i=index; i<COUNT; i++) {
 				final var comboBox = comboBoxList.get(i);
 				comboBox.setEnabled(false);
@@ -301,7 +292,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	private void openit_actionPerformed(ActionEvent e) {
 
 		Debug("openit_actionPerforming...");
-		String nom = file.getText().trim();
+		String nom = file.getText().strip();
 		if (!nom.isEmpty()) {
 			File f = new File(nom);
 			file.setText(f.getAbsolutePath());
@@ -328,7 +319,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			Debug("Importing...");
 			importe.setEnabled(false);
 			
-			String nom = file.getText().trim();
+			String nom = file.getText().strip();
 			if (nom.isEmpty()) {
 				//Erreur le nom ne doit pas etre vide
 				Debug("ERROR: filename cannot be empty");

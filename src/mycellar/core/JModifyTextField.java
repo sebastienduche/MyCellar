@@ -2,6 +2,7 @@ package mycellar.core;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Objects;
 
 import javax.swing.JTextField;
 
@@ -13,8 +14,8 @@ import mycellar.Start;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 21/01/17
+ * @version 0.5
+ * @since 02/09/20
  */
 
 public class JModifyTextField extends JTextField {
@@ -24,7 +25,7 @@ public class JModifyTextField extends JTextField {
 	private boolean modified;
 	private boolean active;
 	
-	public JModifyTextField() {
+	JModifyTextField() {
 		modified = false;
 		active = true;
 		addKeyListener(new KeyListener() {
@@ -47,12 +48,7 @@ public class JModifyTextField extends JTextField {
 		});
 	}
 	
-	public JModifyTextField(boolean active) {
-		this();
-		this.active = active;
-	}
-	
-	private void doAfterModify(){
+	private void doAfterModify() {
 		Start.setPaneModified(true);
 	}
 
@@ -71,5 +67,9 @@ public class JModifyTextField extends JTextField {
 	public void setModifyActive(boolean active) {
 		this.active = active;
 	}
-	
+
+	@Override
+	public String getText() {
+		return Objects.requireNonNull(super.getText()).strip();
+	}
 }

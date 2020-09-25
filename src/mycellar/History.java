@@ -65,7 +65,7 @@ public class History {
     @XmlElement(name = "Bouteille", required = true)
     private Bouteille bouteille;
 	
-	  public static final int ADD = 0;
+	public static final int ADD = 0;
     public static final int MODIFY = 1;
     public static final int DEL = 2;
     public static final int VALIDATED = 3;
@@ -97,7 +97,7 @@ public class History {
      */
     public String getDate() {
         return date;
-    }    
+    }
 
     /**
      * Sets the value of the date property.

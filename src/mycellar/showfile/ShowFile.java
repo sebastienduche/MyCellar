@@ -21,6 +21,7 @@ import mycellar.ToolTipRenderer;
 import mycellar.Vignoble;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarEnum;
@@ -47,7 +48,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
@@ -65,8 +65,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.2
- * @since 09/11/19
+ * @version 7.4
+ * @since 29/08/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -76,15 +76,15 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private static final MyCellarEnum TOCHECK = new MyCellarEnum(2, Program.getLabel("History.ToCheck"));
 
   private static final long serialVersionUID = 1265789936970092250L;
+  @SuppressWarnings("deprecation")
   private final MyCellarLabel m_oTitleLabel = new MyCellarLabel();
-  private final MyCellarLabel m_oResultLabel = new MyCellarLabel();
-  private final MyCellarButton m_oCreatePlacesButton = new MyCellarButton(new CreatePlacesAction());
-  private final MyCellarButton m_oManageButton = new MyCellarButton(new ManageColumnAction());
+  private final MyCellarButton m_oCreatePlacesButton = new MyCellarButton(LabelType.INFO, "267", new CreatePlacesAction());
+  private final MyCellarButton m_oManageButton = new MyCellarButton(LabelType.INFO_OTHER, "Main.Columns", new ManageColumnAction());
   private final MyCellarButton m_oDeleteButton = new MyCellarButton(MyCellarImage.DELETE);
-  private final MyCellarButton m_oModifyButton = new MyCellarButton(new ModifyBottlesAction());
-  private final MyCellarButton m_oReloadButton = new MyCellarButton(new ReloadErrorsAction());
-  private final MyCellarButton m_oRemoveFromWorksheetButton = new MyCellarButton(new RemoveFromWorksheetAction());
-  private final MyCellarButton m_oClearWorksheetButton = new MyCellarButton(new ClearWorksheetAction());
+  private final MyCellarButton m_oModifyButton = new MyCellarButton(LabelType.INFO, "079", new ModifyBottlesAction());
+  private final MyCellarButton m_oReloadButton = new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.reloadErrors", new ReloadErrorsAction());
+  private final MyCellarButton m_oRemoveFromWorksheetButton = new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.removeFromWorksheet", new RemoveFromWorksheetAction());
+  private final MyCellarButton m_oClearWorksheetButton = new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.clearWorksheet", new ClearWorksheetAction());
   private final MyCellarComboBox<String> m_oPlaceCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottleColor> colorCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottlesStatus> statusCbx = new MyCellarComboBox<>();
@@ -429,8 +429,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private void jbInit() {
 
     m_oTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    m_oResultLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    m_oResultLabel.setForeground(Color.red);
     setLayout(new MigLayout("", "[][grow]", "[]10px[grow][]"));
     if (isTrash()) {
       m_oDeleteButton.setText(Program.getLabel("ShowFile.Restore"));
@@ -594,7 +592,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     m_oTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
     add(new JScrollPane(m_oTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), "grow, span 2, wrap");
-    add(m_oResultLabel, "span 2, alignx center, hidemode 3");
   }
 
   private boolean isNormal() {
@@ -736,7 +733,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     } else {
       tv.setBottles(Program.getStorage().getAllList());
     }
-    m_oResultLabel.setText("");
   }
 
   private void setRangementValue(Bouteille b, MyCellarFields field, Object value) {
@@ -918,7 +914,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     private static final long serialVersionUID = 8165964725562440277L;
 
     private ManageColumnAction() {
-      super(Program.getLabel("Main.Columns"));
     }
 
     @Override
@@ -987,7 +982,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     private static final long serialVersionUID = -7590310564039085580L;
 
     private ModifyBottlesAction() {
-      super(Program.getLabel("Infos079"), MyCellarImage.WINE);
+      super("", MyCellarImage.WINE);
     }
 
     @Override
@@ -1023,11 +1018,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
 	private static final long serialVersionUID = 983425309954475989L;
 
-
-	private ReloadErrorsAction() {
-      super(Program.getLabel("ShowFile.reloadErrors"));
-    }
-
+	private ReloadErrorsAction() {}
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -1042,7 +1033,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
 
 	private CreatePlacesAction() {
-      super(Program.getLabel("Infos267"));
     }
 
 
@@ -1056,11 +1046,8 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
     private static final long serialVersionUID = 983425309954475988L;
 
-
     private ClearWorksheetAction() {
-      super(Program.getLabel("ShowFile.clearWorksheet"));
     }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -1076,11 +1063,8 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
     private static final long serialVersionUID = 983425309954475987L;
 
-
     private RemoveFromWorksheetAction() {
-      super(Program.getLabel("ShowFile.removeFromWorksheet"));
     }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {

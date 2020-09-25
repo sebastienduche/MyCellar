@@ -1,10 +1,12 @@
 package mycellar;
 
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSpinner;
+import mycellar.core.MyLinkedHashMap;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ButtonGroup;
@@ -26,16 +28,12 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.1
- * @since 10/04/19
+ * @version 2.4
+ * @since 02/09/20
  */
 class MyOptions extends JDialog {
-  private final MyCellarLabel textControl1 = new MyCellarLabel();
-  private final MyCellarLabel definition = new MyCellarLabel();
-  private final MyCellarLabel definition2 = new MyCellarLabel();
-  private final MyCellarButton valider = new MyCellarButton();
-  private final MyCellarButton annuler = new MyCellarButton();
-  private final MyCellarLabel textControl3 = new MyCellarLabel();
+  @SuppressWarnings("deprecation")
+private final MyCellarLabel textControl3 = new MyCellarLabel();
   private final ButtonGroup cbg = new ButtonGroup();
   private static final int LARGEUR = 420;
   private JComponent[] value;
@@ -123,17 +121,20 @@ class MyOptions extends JDialog {
     labelEdit = new JTextField[taille_value];
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(title);
+    MyCellarLabel textControl1 = new MyCellarLabel(title);
     textControl1.setFont(Program.FONT_DIALOG_SMALL);
     textControl1.setForeground(Color.red);
     textControl1.setText(title);
     textControl1.setHorizontalAlignment(SwingConstants.CENTER);
+    MyCellarLabel definition = new MyCellarLabel(message);
+    MyCellarLabel definition2 = new MyCellarLabel(message2);
+    MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
+    MyCellarButton annuler = new MyCellarButton(LabelType.INFO, "055");
     definition.setText(message);
     definition2.setText(message2);
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(SwingConstants.CENTER);
-    valider.setText(Program.getLabel("Main.OK"));
     valider.setMnemonic('O');
-    annuler.setText(Program.getLabel("Infos055"));
     
     for (int i = 0; i < taille_value; i++) {
       value[i] = null;
@@ -142,13 +143,8 @@ class MyOptions extends JDialog {
         value[i] = new JTextField(default_value[i]);
       }
       if (type_objet[i].equals("MyCellarSpinner")) {
-        final MyCellarSpinner jspi = new MyCellarSpinner();
+        final MyCellarSpinner jspi = new MyCellarSpinner(0, 99999);
         jspi.setValue(Integer.parseInt(default_value[i]));
-        jspi.addChangeListener((e) -> {
-            if (Integer.parseInt(jspi.getValue().toString()) < 0) {
-              jspi.setValue(0);
-            }
-        });
         value[i] = jspi;
       }
       if (type_objet[i].equals("MyCellarCheckBox")) {
@@ -206,7 +202,7 @@ class MyOptions extends JDialog {
         getContentPane().add(label_value[i], "wrap");
       }
       else {
-    	if( bIsLabelEdit )
+    	if(bIsLabelEdit)
     		getContentPane().add(labelEdit[i], "grow");
     	else
     		getContentPane().add(label_value[i], "grow");
@@ -215,7 +211,7 @@ class MyOptions extends JDialog {
     }
     getContentPane().add(textControl3, "wrap");
     
-    if ( bCancel ) {
+    if (bCancel) {
       getContentPane().add(valider, "span 2, split 2, center");
       getContentPane().add(annuler, "");
     } else {
@@ -234,19 +230,18 @@ class MyOptions extends JDialog {
       String defaut = null;
       int nb_jradio = 0;
       for (int i = 0; i < taille_value; i++) {
-    	  if( bIsLabelEdit )
-    	  {
+    	  if(bIsLabelEdit) {
     		  JTextField jtf = labelEdit[i];
-    		  cle[i] = jtf.getText().trim();
+    		  cle[i] = jtf.getText().strip();
     	  }
         if (value[i] instanceof JTextField) {
           JTextField jtex = (JTextField) value[i];
-          resul[i] = jtex.getText().trim();
-          if (config != null && !cle[i].isEmpty()){
+          resul[i] = jtex.getText().strip();
+          if (config != null && !cle[i].isEmpty()) {
             config.put(cle[i], resul[i]);
           }
           if (defaut == null) {
-            defaut = jtex.getText().trim();
+            defaut = jtex.getText().strip();
           }
         }
         if (value[i] instanceof MyCellarSpinner) {
@@ -269,20 +264,18 @@ class MyOptions extends JDialog {
           MyCellarRadioButton jrb = (MyCellarRadioButton) value[i];
           if (jrb.isSelected()) {
             resul[i] = Integer.toString(nb_jradio);
-            if (config != null && !cle[i].isEmpty()){
+            if (config != null && !cle[i].isEmpty()) {
               config.put(cle[i], resul[i]);
             }
           }
           nb_jradio++;
-        }
-        else {
+        } else {
           nb_jradio = 0;
         }
       }
       dispose();
-    }
-    catch (Exception exc) {
-      Program.showException(exc);
+    } catch (Exception ex) {
+      Program.showException(ex);
     }
   }
 

@@ -2,6 +2,8 @@ package mycellar;
 
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IAddVin;
+import mycellar.core.IUpdatable;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarSettings;
@@ -34,10 +36,10 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.5
- * @since 13/08/19
+ * @version 6.0
+ * @since 02/09/20
  */
-public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin {
+public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
 
 
@@ -51,14 +53,17 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		isEditionMode = true;
 		m_add = new MyCellarButton(MyCellarImage.SAVE);
 		
-		m_chooseCell = new MyCellarButton(new ChooseCellAction(this));
+		m_chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
 		try {
 			Debug("Constructor with Bottle");
 			LinkedList<String> list = new LinkedList<>();
 			list.add("");
 			list.addAll(Program.getStorage().getBottleNames());
-			name = new JCompletionComboBox(list.toArray()) {
+			String[] bottlesName = new String[0];
+			bottlesName = list.toArray(bottlesName);
+			name = new JCompletionComboBox<>(bottlesName) {
 				private static final long serialVersionUID = 8137073557763181546L;
+
 				@Override
 				protected void doAfterModify() {
 					super.doAfterModify();
@@ -74,9 +79,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 
 			Debug("Starting JbInit");
-			m_contenance.setText(Program.getLabel("Infos134")); //"Demie bouteille");
-			m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ( (SIECLE + 1) * 100))); //"Annee 00 -> 2000");
-			m_annee_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
+			setYearAuto();
 
 			m_price.addKeyListener(new KeyAdapter() {
 				@Override
@@ -89,8 +92,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 					}
 				}
 			});
-
-			m_noYear.setText(Program.getLabel("Infos399"));
 
 			m_nb_bottle.setToolTipText(Program.getLabel("Infos263"));
 			m_nb_bottle.setValue(1);
@@ -368,7 +369,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		// Controle de la date
 		String annee = "";
 		if (m_year.isEditable() || m_noYear.isSelected()) {
-			annee = m_year.getText().trim();
+			annee = m_year.getText();
 
 			// Erreur sur la date
 			if (!MyCellarControl.checkYear(annee)) {
@@ -592,6 +593,30 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	@Override
 	public void tabClosed() {
 		Start.getInstance().updateMainPanel();
+	}
+	
+	@Override
+	public void updateView() {
+		if (!updateView) {
+			return;
+		}
+		SwingUtilities.invokeLater(() -> {
+			Debug("updateView...");
+			setListenersEnabled(false);
+			updateView = false;
+			m_lieu.removeAllItems();
+			initPlaceCombo();
+			m_half.removeAllItems();
+			m_half.addItem("");
+			for (String s : MyCellarBottleContenance.getList()) {
+				m_half.addItem(s);
+			}
+			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+			panelVignobles.updateList();
+			selectPlace(m_laBouteille);
+			setListenersEnabled(true);
+			Debug("updateView Done");
+		});
 	}
 
 }

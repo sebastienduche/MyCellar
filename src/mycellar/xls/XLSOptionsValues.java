@@ -1,6 +1,9 @@
-package mycellar;
+package mycellar.xls;
 
 import javax.swing.table.AbstractTableModel;
+
+import mycellar.Program;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,8 +13,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 02/03/18
+ * @version 0.3
+ * @since 14/06/20
  */
 class XLSOptionsValues extends AbstractTableModel {
   public static final int ETAT = 0;

@@ -30,8 +30,8 @@ import java.util.Arrays;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.8
- * @since 01/11/19
+ * @version 12.0
+ * @since 02/09/20
  */
 public class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -43,14 +43,14 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	private final JTextField devise = new JTextField();
 	private final MyCellarCheckBox jcb_excel = new MyCellarCheckBox(Program.getLabel("Infos234"), false);
 	private final MyCellarButton buttonResetMessageDialog;
-	private final MyCellarCheckBox jcb_half_auto = new MyCellarCheckBox();
-	private final MyCellarCheckBox m_jcb_debug = new MyCellarCheckBox();
+	private final MyCellarCheckBox jcb_half_auto = new MyCellarCheckBox(Program.getLabel("Infos147"), false);
+	private final MyCellarCheckBox m_jcb_debug = new MyCellarCheckBox(Program.getLabel("Infos337"), false);
 	private final MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox(Program.getLabel("Infos169"), false);
 	private final MyCellarLabel label_annee;
 	private final MyCellarLabel label_annee2;
 	private final MyCellarLabel label_siecle;
-	private final MyCellarSpinner annee = new MyCellarSpinner();
-	private final MyCellarSpinner siecle = new MyCellarSpinner();
+	private final MyCellarSpinner annee = new MyCellarSpinner(0, 99);
+	private final MyCellarSpinner siecle = new MyCellarSpinner(18, 99);
 
 	/**
 	 * Parametres: Constructeur: pour la fenetre des parametres.
@@ -68,10 +68,8 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		buttonResetMessageDialog = new MyCellarButton(LabelType.INFO, "160");
 		MyCellarButton buttonManageContenance = new MyCellarButton(LabelType.INFO, "400");
 		MyCellarButton valider = new MyCellarButton(LabelType.INFO, "315");
-		jcb_half_auto.setText(Program.getLabel("Infos147"));
 		parcourir_excel.setToolTipText(Program.getLabel("Infos157"));
 		jcb_annee_control.setText(Program.getLabel("Infos169"));
-		m_jcb_debug.setText(Program.getLabel("Infos337"));
 		setLabels();
 
 		jcb_annee_control.addActionListener((e) -> {
@@ -108,23 +106,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		buttonManageContenance.addActionListener(this::buttonManageContenance_actionPerformed);
 		jcb_half_auto.addActionListener(this::jcb_half_auto_actionPerformed);
 		m_jcb_debug.addActionListener(this::activate_debug_actionPerformed);
-
-		annee.addChangeListener((e) -> {
-				if (Integer.parseInt(annee.getValue().toString()) < 0) {
-					annee.setValue(0);
-				} else if (Integer.parseInt(annee.getValue().toString()) > 99) {
-					annee.setValue(99);
-				}
-		});
-
-		siecle.addChangeListener((e) -> {
-			if (Integer.parseInt(siecle.getValue().toString()) < 18) {
-				siecle.setValue(18);
-			}
-			else if (Integer.parseInt(siecle.getValue().toString()) > 99) {
-				siecle.setValue(99);
-			}
-		});
 
 		JPanel dateControlPanel = new JPanel();
 		JPanel generalPanel = new JPanel();
@@ -210,7 +191,7 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 				Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
 			}
 
-			Program.putCaveConfigString(MyCellarSettings.DEVISE, devise.getText().trim());
+			Program.putCaveConfigString(MyCellarSettings.DEVISE, devise.getText().strip());
 			try {
 				int val = Integer.parseInt(annee.getValue().toString());
 				Program.putCaveConfigInt(MyCellarSettings.ANNEE, val);

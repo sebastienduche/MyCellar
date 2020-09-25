@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
@@ -20,17 +21,17 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 10/10/18
+ * @version 1.6
+ * @since 02/09/20
  */
 public class Options extends JDialog {
   private final MyCellarLabel textControl1 = new MyCellarLabel();
   private final MyCellarLabel textControl2 = new MyCellarLabel();
   private final MyCellarLabel definition = new MyCellarLabel();
-  private final MyCellarButton valider = new MyCellarButton();
+  private final MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
   private final MyCellarLabel textControl3 = new MyCellarLabel();
-  private final int LARGEUR = 420;
-  private final int HAUTEUR = 230;
+  private static final int LARGEUR = 420;
+  private static final int HAUTEUR = 230;
   private final JTextField value = new JTextField();
   private final String cle;
   private final boolean property;
@@ -82,7 +83,6 @@ public class Options extends JDialog {
     textControl2.setText(propriete);
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(SwingConstants.CENTER);
-    valider.setText(Program.getLabel("Main.OK"));
     valider.setMnemonic('O');
     value.setText(default_value);
     valider.addActionListener(this::valider_actionPerformed);
@@ -116,7 +116,7 @@ public class Options extends JDialog {
    */
   private void valider_actionPerformed(ActionEvent e) {
     if (property) {
-      Program.putCaveConfigString(cle, value.getText().trim());
+      Program.putCaveConfigString(cle, value.getText().strip());
     }
     dispose();
   }
@@ -138,7 +138,7 @@ public class Options extends JDialog {
    * @return String
    */
   public String getValue() {
-    return value.getText().trim();
+    return value.getText().strip();
   }
 
 }

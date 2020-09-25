@@ -21,11 +21,18 @@ public class CountryVignoble implements Comparable<CountryVignoble>
     @XmlAttribute
     private String name;
 
+	public CountryVignoble() {
+		name = "";
+	}
+
 	List<Appelation> getUnmodifiableAppelation() {
 		return Collections.unmodifiableList(appelation);
 	}
 
 	public List<Appelation> getSortedUnmodifiableAppelation() {
+		if (appelation == null) {
+			return Collections.emptyList();
+		}
 		Collections.sort(appelation);
 		return Collections.unmodifiableList(appelation);
 	}

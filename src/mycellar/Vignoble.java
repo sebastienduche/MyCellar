@@ -30,9 +30,7 @@ import java.io.Serializable;
  */
 
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>This class is linked to the Vignoble that contains the Bouteille object
  * 
  * <pre>
  * &lt;complexType>
@@ -79,24 +77,6 @@ public class Vignoble implements Serializable {
     public Vignoble() {
 	}
 
-	@Deprecated
-	public Vignoble(String country) {
-		this.country = country;
-	}
-
-	@Deprecated
-  public Vignoble(String country, String name) {
-  	this.country = country;
-		this.name = name;
-	}
-
-	@Deprecated
-	public Vignoble(String country, String name, String aoc) {
-		this.country = country;
-		this.name = name;
-		this.aoc = aoc;
-	}
-
 	public Vignoble(String country, String name, String aoc, String igp) {
 		this.country = country;
 		this.name = name;
@@ -112,122 +92,37 @@ public class Vignoble implements Serializable {
 		this.aop = aop;
 	}
 
-	/**
-     * Gets the value of the country property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCountry() {
+		public String getCountry() {
         return country;
     }
-
-    /**
-     * Sets the value of the country property.
-     * 
-     * @param country
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCountry(String country) {
+  	public void setCountry(String country) {
         this.country = country;
     }
     
-	/**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
+		public String getName() {
         return name;
     }
-
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param name
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * Gets the value of the aoc property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
     public String getAOC() {
         return aoc;
     }
-
-    /**
-     * Sets the value of the aoc property.
-     * 
-     * @param aoc
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
     public void setAOC(String aoc) {
         this.aoc = aoc;
     }
 
-    /**
-     * Gets the value of the igp property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
     public String getIGP() {
         return igp;
     }
-
-    /**
-     * Sets the value of the igp property.
-     * 
-     * @param igp
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
     public void setIGP(String igp) {
         this.igp = igp;
     }
 
-    /**
-     * Gets the value of the aop property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
     public String getAOP() {
         return aop;
     }
-
-    /**
-     * Sets the value of the aop property.
-     * 
-     * @param aop
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
     public void setAOP(String aop) {
         this.aop = aop;
     }

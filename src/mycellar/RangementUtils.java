@@ -38,10 +38,10 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 01/11/19
+ * @version 2.5
+ * @since 02/09/20
  */
-public class RangementUtils {
+public final class RangementUtils {
 
 	private RangementUtils() {}
 
@@ -53,7 +53,7 @@ public class RangementUtils {
 	 * @param progressBar
 	 * @return int
 	 */
-	static boolean write_CSV(final String fichier, final List<Bouteille> all, final JProgressBar progressBar) {
+	static boolean write_CSV(final File fichier, final List<Bouteille> all, final JProgressBar progressBar) {
 
 		String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ";");
 
@@ -86,7 +86,7 @@ public class RangementUtils {
 			progressBar.setMinimum(0);
 		}
 
-		try (var fileWriter = new FileWriter(new File(fichier))){
+		try (var fileWriter = new FileWriter(fichier)){
 
 			StringBuilder line = new StringBuilder();
 			// Title line
@@ -139,9 +139,9 @@ public class RangementUtils {
 	 *
 	 *  @return int
 	 */
-	static boolean write_HTML(final String fichier, final List<Bouteille> bouteilles, List<MyCellarFields> fields) {
+	static boolean write_HTML(final File fichier, final List<Bouteille> bouteilles, List<MyCellarFields> fields) {
 
-		Debug("write_HTML: writing file: " + fichier);
+		Debug("write_HTML: writing file: " + fichier.getAbsolutePath());
 		try{
 			var dbFactory = DocumentBuilderFactory.newInstance();
 			var dBuilder = dbFactory.newDocumentBuilder();
@@ -238,7 +238,7 @@ public class RangementUtils {
 			var transformerFactory = TransformerFactory.newInstance();
 			var transformer = transformerFactory.newTransformer();
 			var source = new DOMSource(doc);
-			var result = new StreamResult(new File(fichier));
+			var result = new StreamResult(fichier);
 			transformer.transform(source, result);
 		} catch (ParserConfigurationException e) {
 			Debug("ParserConfigurationException");
@@ -262,19 +262,14 @@ public class RangementUtils {
 	 *
 	 * @return boolean
 	 */
-	static boolean write_XLS(final String file, final List<Bouteille> bouteilles, boolean isExit, JProgressBar progressBar) {
+	static boolean write_XLS(final File file, final List<Bouteille> bouteilles, boolean isExit, JProgressBar progressBar) {
 
 		Debug("write_XLS: writing file: " + file);
-		if(file.isEmpty()) {
-			Debug("write_XLS: ERROR: File not defined!");
-			return false;
-		}
 
 		try {
-			File f = new File(file);
-			String sDir = f.getParent();
+			String sDir = file.getParent();
 			if(null != sDir) {
-				f = new File(sDir);
+				File f = new File(sDir);
 				if(!f.exists()) {
 					Debug("write_XLS: ERROR: directory "+sDir+" don't exist." );
 					Debug("write_XLS: ERROR: Unable to write XLS file" );
@@ -322,7 +317,7 @@ public class RangementUtils {
 		}
 
 		try (var workbook = new SXSSFWorkbook(100);
-				var output = new FileOutputStream(new File(file))) { //Creation du fichier
+				var output = new FileOutputStream(file)) { //Creation du fichier
 			String sheet_title = title;
 			if (sheet_title.isEmpty()) {
 				sheet_title = Program.getLabel("Infos389");
@@ -558,7 +553,7 @@ public class RangementUtils {
 		if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL3, false)) {
 			sTitle.append(" ").append(b.getPrix()).append(Program.getCaveConfigString(MyCellarSettings.DEVISE, ""));
 		}
-		return sTitle.toString().trim();
+		return sTitle.toString().strip();
 	}
 
 	/**

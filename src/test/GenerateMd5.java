@@ -15,7 +15,7 @@ public class GenerateMd5 {
 		try (FileWriter writer = new FileWriter(new File("./Build/MyCellarVersion.txt"))){
 			System.out.println("Building Build/MyCellarVersion.txt");
 			String checksum = getMD5Checksum("./Build/MyCellar.jar");
-			writer.write(MyCellarVersion.VERSION+"\n");
+			writer.write(Program.INTERNAL_VERSION+"\n");
 			writer.write(Program.VERSION+"\n");
 			writer.write("MyCellar.jar@"+checksum+"\n");
 			writer.write("Finish.html");

@@ -1,10 +1,12 @@
 package mycellar;
 
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarVersion;
 import net.miginfocom.swing.MigLayout;
 
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,15 +25,15 @@ import java.awt.Toolkit;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 08/06/18
+ * @version 1.6
+ * @since 25/06/20
  */
 class APropos extends JDialog {
-  private final MyCellarButton ok = new MyCellarButton();
-  private final MyCellarLabel MyCellarLabel1 = new MyCellarLabel();
-  private final MyCellarLabel MyCellarLabel2 = new MyCellarLabel();
-  private final MyCellarLabel MyCellarLabel3 = new MyCellarLabel();
-  private final MyCellarLabel MyCellarLabel4 = new MyCellarLabel();
+  private final MyCellarButton ok = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
+  private final MyCellarLabel MyCellarLabel1 = new MyCellarLabel("MyCellar");
+  private final MyCellarLabel MyCellarLabel2 = new MyCellarLabel("Copyright: S.Duché");
+  private final MyCellarLabel MyCellarLabel3 = new MyCellarLabel("Release: " + Program.INTERNAL_VERSION);
+  private final MyCellarLabel MyCellarLabel4 = new MyCellarLabel("Version: " + MyCellarVersion.MAIN_VERSION);
   static final long serialVersionUID = 150505;
 
   /**
@@ -50,23 +52,14 @@ class APropos extends JDialog {
    *
    */
   private void jbInit() {
-    ok.setText(Program.getLabel("Main.OK"));
-    IconPanel ip = new IconPanel(MyCellarImage.ICON.getImage());
-    ok.setFont(new Font("Arial", Font.PLAIN, 12));
+    IconPanel ip = new IconPanel(MyCellarImage.ICON);
     ok.addActionListener((e) -> dispose());
-    MyCellarLabel1.setFont(new Font("Dialog", Font.BOLD, 13));
     MyCellarLabel1.setForeground(Color.red);
     MyCellarLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-    MyCellarLabel1.setText("MyCellar");
     MyCellarLabel2.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel2.setText("Copyright: S.Duché");
     MyCellarLabel3.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel3.setText("Release: " + MyCellarVersion.VERSION);
     MyCellarLabel4.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel4.setText("Version: " + MyCellarVersion.MAIN_VERSION);
-    MyCellarLabel2.setFont(new Font("Dialog", Font.PLAIN, 11));
-    MyCellarLabel3.setFont(new Font("Dialog", Font.PLAIN, 11));
-    MyCellarLabel4.setFont(new Font("Dialog", Font.PLAIN, 11));
+    MyCellarLabel1.setFont(new Font("Arial", Font.BOLD, 13));
     setLayout(new MigLayout("","[][]","[]"));
     add(MyCellarLabel1,"center, span 2, wrap");
     add(MyCellarLabel2,"gaptop 20px");
@@ -81,17 +74,20 @@ class APropos extends JDialog {
   /**
    * APropos: Constructeur de l'image.
    */
-  private class IconPanel extends JPanel {
-    private final Image img;
+  private static class IconPanel extends JPanel {
+    private final ImageIcon img;
     static final long serialVersionUID = 1505051;
 
-    private IconPanel(Image img) {
+    private IconPanel(ImageIcon img) {
       this.img = img;
     }
     @Override
     public void paintComponent(Graphics g) {
       super.paintComponent(g);
-      g.drawImage(img, 0, 0, 64, 64, this);
+      final Image image = img.getImage();
+      if (image != null) {
+        g.drawImage(image, 0, 0, 64, 64, this);
+      }
     }
   }
 }

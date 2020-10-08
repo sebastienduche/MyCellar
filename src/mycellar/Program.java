@@ -86,13 +86,13 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.5
- * @since 02/09/20
+ * @version 22.6
+ * @since 08/10/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.5.5.9";
+	public static final String INTERNAL_VERSION = "3.5.6.2";
 	public static final int VERSION = 62;
 	static final String INFOS_VERSION = " 2020 v";
 
@@ -470,6 +470,14 @@ public final class Program {
 		s = Normalizer.normalize(s, Normalizer.Form.NFD);
 		s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
 		return s;
+	}
+
+	public static String toCleanString(final Object o) {
+		if (o == null) {
+			return "";
+		}
+		String value = o.toString();
+		return value == null ? "" : value.strip();
 	}
 
 	/**

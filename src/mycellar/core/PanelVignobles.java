@@ -26,6 +26,7 @@ import java.util.Optional;
 import static mycellar.Program.NO_APPELATION;
 import static mycellar.Program.NO_COUNTRY;
 import static mycellar.Program.NO_VIGNOBLE;
+import static mycellar.Program.toCleanString;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -33,8 +34,8 @@ import static mycellar.Program.NO_VIGNOBLE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 02/09/20
+ * @version 0.7
+ * @since 08/10/20
  */
 public class PanelVignobles extends JPanel {
 
@@ -208,9 +209,9 @@ public class PanelVignobles extends JPanel {
 	public String getCountry() {
 		Object o = comboCountry.getEditor().getItem();
 		if(o instanceof Country) {
-			return ((Country) o).getId();
+			return toCleanString(((Country) o).getId());
 		}
-		return o.toString();
+		return toCleanString(o);
 	}
 
 	public void setModified(boolean modified) {
@@ -235,17 +236,17 @@ public class PanelVignobles extends JPanel {
 	public String getVignoble() {
 		Object o = comboVignoble.getEditor().getItem();
 		if (o instanceof CountryVignoble) {
-			return ((CountryVignoble) o).getName();
+			return toCleanString(((CountryVignoble) o).getName());
 		}
-		return o.toString();
+		return toCleanString(o);
 	}
 
 	public String getAOC() {
 		Object o = comboAppelationAOC.getEditor().getItem();
 		if (o instanceof Appelation) {
-			return ((Appelation) o).getAOC();
+			return toCleanString(((Appelation) o).getAOC());
 		}
-		return o.toString();
+		return toCleanString(o);
 	}
 
 	public String getIGP() {

@@ -11,8 +11,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 09/11/19
+ * @version 2.7
+ * @since 08/10/20
  */
 class TableValues extends AbstractTableModel {
 
@@ -75,6 +75,9 @@ class TableValues extends AbstractTableModel {
 		case 2:
 			return b.getAnnee();
 		case 3:
+			if (b.isInTemporaryStock()) {
+				return Program.getLabel("Bouteille.TemporaryPlace");
+			}
 			return b.getEmplacement();
 		case 4:
 			return Integer.toString(b.getNumLieu());

@@ -65,8 +65,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.4
- * @since 29/08/20
+ * @version 7.5
+ * @since 08/10/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -784,6 +784,10 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       if (rangement != null && rangement.canAddBottle(num_empl, line, column)) {
         Bouteille bTemp = null;
         if (!rangement.isCaisse()) {
+          if (num_empl <= 0 || line <= 0 || column <= 0) {
+            Erreur.showSimpleErreur(Program.getError("Error197"));
+            return;
+          }
           bTemp = rangement.getBouteille(num_empl - 1, line - 1, column - 1);
         }
         if (bTemp != null) {

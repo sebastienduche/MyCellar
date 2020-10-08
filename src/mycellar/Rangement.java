@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -12,8 +13,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 26.5
- * @since 02/09/20
+ * @version 26.6
+ * @since 08/10/20
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -476,7 +477,15 @@ public class Rangement implements Comparable<Rangement> {
 		Program.getStorage().deleteWine(bottle);
 		clearStock(bottle);
 		bottle.setLigne(nNewLine);
-		addWine( bottle );
+		addWine(bottle);
+	}
+
+	public Optional<Bouteille> getBouteille(final Bouteille tempBouteille) {
+		final Bouteille bouteille = getBouteille(tempBouteille.getNumLieu() - 1, tempBouteille.getLigne() - 1, tempBouteille.getColonne() - 1);
+		if (bouteille == null) {
+			return Optional.empty();
+		}
+		return Optional.of(bouteille);
 	}
 
 	/**

@@ -13,8 +13,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 26.6
- * @since 08/10/20
+ * @version 26.7
+ * @since 09/10/20
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -481,11 +481,7 @@ public class Rangement implements Comparable<Rangement> {
 	}
 
 	public Optional<Bouteille> getBouteille(final Bouteille tempBouteille) {
-		final Bouteille bouteille = getBouteille(tempBouteille.getNumLieu() - 1, tempBouteille.getLigne() - 1, tempBouteille.getColonne() - 1);
-		if (bouteille == null) {
-			return Optional.empty();
-		}
-		return Optional.of(bouteille);
+		return getBouteille(tempBouteille.getNumLieu() - 1, tempBouteille.getLigne() - 1, tempBouteille.getColonne() - 1);
 	}
 
 	/**
@@ -496,18 +492,23 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param column int: numéro de colonne (0...n)
 	 * @return Bouteille
 	 */
-	public Bouteille getBouteille(int num_empl, int line, int column) {
+	public Optional<Bouteille> getBouteille(int num_empl, int line, int column) {
 		if (isCaisse()) {
 			Debug("ERROR: Function getBouteille can't be called on a simple place!");
-			return null;
+			return Optional.empty();
 		}
 		try {
-			return stockage[num_empl][line][column];
+			final Bouteille bouteille = stockage[num_empl][line][column];
+			if (bouteille == null) {
+				return Optional.empty();
+			} else {
+				return Optional.of(bouteille);
+			}
 		}
 		catch (Exception e) {
 			Program.showException(e);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**

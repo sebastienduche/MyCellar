@@ -10,6 +10,7 @@ import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarManageBottles;
+import mycellar.core.MyCellarRuntimeException;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
@@ -32,6 +33,7 @@ import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,8 +44,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.7
- * @since 02/09/20
+ * @version 25.8
+ * @since 09/10/20
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -875,7 +877,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					int colonne = m_column.getSelectedIndex();
 
 					int nb_free_space = 0;
-					Bouteille b = null;
+					Optional<Bouteille> bouteille = Optional.empty();
 					if (m_bmodify && !m_bIsPlaceModify) { //Si aucune modification du Lieu
 						sPlaceName = m_sb_empl;
 						lieu_num_selected = m_nb_num;
@@ -884,9 +886,13 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					}	else { //Si Ajout bouteille ou modification du lieu
 						Debug("Adding bottle or modifying place");
 						//Recuperation de la bouteille present a l'emplacement
-						b = rangement.getBouteille(lieu_num_selected - 1, ligne - 1, colonne - 1);
-						if (b == null) {
-							nb_free_space = rangement.getNbCaseFreeCoteLigne(lieu_num_selected - 1, ligne - 1, colonne - 1);
+						if (rangement != null) {
+							bouteille = rangement.getBouteille(lieu_num_selected - 1, ligne - 1, colonne - 1);
+							if (bouteille.isEmpty()) {
+								nb_free_space = rangement.getNbCaseFreeCoteLigne(lieu_num_selected - 1, ligne - 1, colonne - 1);
+							}
+						} else {
+							throw new MyCellarRuntimeException("No Place!!");
 						}
 					}
 					//Creation de la nouvelle bouteille
@@ -905,7 +911,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						.color(color)
 						.status(status)
 						.vignoble(country, vignoble, aoc, igp, aoc).build();
-					if (b == null) {
+					if (bouteille.isEmpty()) {
 						//Case vide donc ajout
 						if (m_bmodify) {
 							Debug("Empty case: Modifying bottle");
@@ -992,10 +998,11 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 						m_bbottle_add = true;
 					}	else { // La case n'est pas vide
 						Debug("WARNING: Not an empty place, Replace?");
-						String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), b.getNom(), b.getAnnee()); //" deja present a cette place!");
+						final Bouteille bouteille1 = bouteille.get();
+						String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), bouteille1.getNom(), bouteille1.getAnnee()); //" deja present a cette place!");
 						String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
 						if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
-							replaceWine(tmp, m_bmodify, b);
+							replaceWine(tmp, m_bmodify, bouteille1);
 							if (m_bmodify) {
 								m_laBouteille.update(tmp);
 							}

@@ -26,6 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.text.MessageFormat;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,8 +37,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.0
- * @since 02/09/20
+ * @version 6.1
+ * @since 09/10/20
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -435,16 +436,18 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_laBouteille.setLigne(line);
 			m_laBouteille.setColonne(column);
 
-			Bouteille bottleInPlace = cave.getBouteille(m_laBouteille.getNumLieu()-1, m_laBouteille.getLigne()-1, m_laBouteille.getColonne()-1);
-			if(bottleInPlace != null && !bottleInPlace.equals(m_laBouteille)) {
-				Debug("ERROR: Not an empty place, Replace?");
-				String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bottleInPlace.getNom(), bottleInPlace.getAnnee()); //" d&eacute;j&agrave; pr&eacute;sent &agrave; cette place!");
-				String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
-				if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
-					replaceWine(bottleInPlace);
-					m_end.setText(Program.getLabel("Infos075"));
+			Optional<Bouteille> bottleInPlace = cave.getBouteille(m_laBouteille);
+			bottleInPlace.ifPresent( bouteille -> {
+				if(!bouteille.equals(m_laBouteille)) {
+					Debug("ERROR: Not an empty place, Replace?");
+					String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bouteille.getNom(), bouteille.getAnnee()); //" d&eacute;j&agrave; pr&eacute;sent &agrave; cette place!");
+					String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
+					if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+						replaceWine(bouteille);
+						m_end.setText(Program.getLabel("Infos075"));
+					}
 				}
-			}
+			});
 		}
 
 		m_laBouteille.setModified();

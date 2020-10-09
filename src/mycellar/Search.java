@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,8 +49,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 20.6
- * @since 28/08/20
+ * @version 20.7
+ * @since 09/10/20
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -761,10 +762,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					Erreur.showSimpleErreur(Program.getError("Error058")); //"Veuillez selectionner un numero de colonne!";
 					return false;
 				}
-				Bouteille b = rangement.getBouteille(lieu_num - 1, ligne - 1, colonne - 1);
+				Optional<Bouteille> b = rangement.getBouteille(lieu_num - 1, ligne - 1, colonne - 1);
 				resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
 
-				if (b == null) {
+				if (b.isEmpty()) {
 					resul_txt.setText(Program.getLabel("Infos224")); //"Echec de la recherche.");
 					Erreur.showSimpleErreur(Program.getError("Error066")); //Aucune bouteille trouve
 					TXT_NB.setText("0");
@@ -772,8 +773,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					modif.setEnabled(false);
 					suppr.setEnabled(false);
 				}	else {
-					if (!MODEL.hasBottle(b)) {
-						MODEL.addBouteille(b);
+					final Bouteille bouteille = b.get();
+					if (!MODEL.hasBottle(bouteille)) {
+						MODEL.addBouteille(bouteille);
 					} else {
 						already_found = true;
 					}
@@ -838,11 +840,12 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					for (int j = j_deb; j <= j_fin; j++) {
 						int nb_colonnes = rangement.getNbColonnes(i - 1, j - 1);
 						for (int k = 1; k <= nb_colonnes; k++) {
-							Bouteille b = rangement.getBouteille(i - 1, j - 1, k - 1);
-							if (b != null) {
+							Optional<Bouteille> b = rangement.getBouteille(i - 1, j - 1, k - 1);
+							if (b.isPresent()) {
+								final Bouteille bouteille = b.get();
 								//Ajout de la bouteille dans la liste si elle n'y ait pas deja
-								if (!MODEL.hasBottle(b)) {
-									MODEL.addBouteille(b);
+								if (!MODEL.hasBottle(bouteille)) {
+									MODEL.addBouteille(bouteille);
 								} else {
 									already_found = true;
 								}

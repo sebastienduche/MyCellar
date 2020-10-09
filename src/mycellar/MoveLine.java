@@ -9,6 +9,7 @@ import javax.swing.JDialog;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ItemEvent;
+import java.util.Optional;
 
 
 /**
@@ -17,8 +18,8 @@ import java.awt.event.ItemEvent;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 1.9
- * @since 10/10/18
+ * @version 2.0
+ * @since 09/10/20
  */
 
 class MoveLine extends JDialog {
@@ -88,11 +89,13 @@ class MoveLine extends JDialog {
 					Erreur.showSimpleErreur(this, Program.getError("Error193"));
 					return;
 				}
-				for( int i=1; i<=r.getNbColonnes(nNumLieu - 1, nOldSelected - 1); i++) {
-					Bouteille bottle = r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1);
-					if( bottle != null ) {
-						Program.getStorage().addHistory(History.MODIFY, bottle);
-						r.moveLineWine(bottle, nNewSelected);
+				for(int i=1; i<=r.getNbColonnes(nNumLieu - 1, nOldSelected - 1); i++) {
+					Optional<Bouteille> bottle = r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1);
+					if(bottle.isPresent()) {
+						bottle.ifPresent(bouteille -> {
+							Program.getStorage().addHistory(History.MODIFY, bouteille);
+							r.moveLineWine(bouteille, nNewSelected);
+						});
 					}
 				}
 				label_end.setText(Program.getLabel("Infos366"));

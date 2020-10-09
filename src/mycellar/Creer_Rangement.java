@@ -44,8 +44,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.8
- * @since 02/09/20
+ * @version 13.9
+ * @since 09/10/20
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -66,7 +66,6 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox(LabelType.INFO, "024"); //Caisse
 	private final MyCellarLabel label_cree = new MyCellarLabel();
 	private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "155");
-	private final MyCellarButton createButton;
 	private int start_caisse = 0;
 	private final JPanel panelType;
 	private final JPanel panelStartCaisse;
@@ -86,6 +85,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		this.modify = modify;
 		model = new CreerRangementTableModel();
 
+		MyCellarButton createButton;
 		if(modify) {
 		  createButton = new MyCellarButton(LabelType.INFO, "079", new ModifyAction());
 		} else {
@@ -443,7 +443,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 										if (!bResul) {
 											break;
 										}
-										if (rangement.getBouteille(i, j, k) != null) {
+										if (rangement.getBouteille(i, j, k).isPresent()) {
 											bResul = false;
 											Debug("ERROR: Unable to reduce the size of the number of column");
 											Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error203"), Integer.toString(j + 1), Integer.toString(i + 1)));

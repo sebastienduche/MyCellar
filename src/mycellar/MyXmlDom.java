@@ -18,6 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>Titre : </p>
@@ -25,8 +26,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : SebInformatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @since 16/07/19
- * @version 2.5
+ * @since 09/10/20
+ * @version 2.6
  */
 
 public class MyXmlDom {
@@ -257,9 +258,9 @@ public class MyXmlDom {
 							if(preview) {
 								vin_name.setTextContent(Program.getLabel("Infos229"));
 							}else {
-    							Bouteille b = rangement.getBouteille(i, j, k);
-    							if(b != null)
-    								vin_name.setTextContent(b.getNom());
+    							Optional<Bouteille> b = rangement.getBouteille(i, j, k);
+    							if(b.isPresent())
+    								vin_name.setTextContent(b.get().getNom());
     							else
     								vin_name.setTextContent("-");
 							}

@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -65,8 +66,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.5
- * @since 08/10/20
+ * @version 7.6
+ * @since 09/10/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -702,7 +703,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
                 Program.getStorage().addHistory(History.ADD, b);
                 Program.getStorage().addWine(b);
               } else {
-                if (r.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1) == null) {
+                if (r.getBouteille(b).isEmpty()) {
                   Program.getStorage().addHistory(History.ADD, b);
                   Program.getStorage().addWine(b);
                 } else {
@@ -782,7 +783,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     if (b.getEmplacement().compareTo(empl) != 0 || b.getNumLieu() != num_empl || b.getLigne() != line || b.getColonne() != column) {
       // Controle de l'emplacement de la bouteille
       if (rangement != null && rangement.canAddBottle(num_empl, line, column)) {
-        Bouteille bTemp = null;
+        Optional<Bouteille> bTemp = Optional.empty();
         if (!rangement.isCaisse()) {
           if (num_empl <= 0 || line <= 0 || column <= 0) {
             Erreur.showSimpleErreur(Program.getError("Error197"));
@@ -790,8 +791,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           }
           bTemp = rangement.getBouteille(num_empl - 1, line - 1, column - 1);
         }
-        if (bTemp != null) {
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), bTemp.getAnnee()));
+        if (bTemp.isPresent()) {
+          final Bouteille bouteille = bTemp.get();
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
         } else {
           if (field == MyCellarFields.PLACE) {
             b.setEmplacement((String) value);

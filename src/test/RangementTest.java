@@ -61,7 +61,7 @@ class RangementTest {
           .columnsNumberForPart(0, new int[]{2,2})
           .columnsNumberForPart(1, new int[]{5,4,5})
           .build();
-    } catch (Exception e) {
+    } catch (Exception ignored) {
     }
     rangement = new Rangement.CaisseBuilder("test").build();
   }
@@ -156,13 +156,13 @@ class RangementTest {
     list.add(armoire1x3x3Builder);
     list.add(armoire2x2_3x22545);
     list.add(armoire2x2_3x22545Builder);
-    for(Rangement r : list) {
+    for (Rangement r : list) {
       int emplacementMax = r.getNbEmplacements();
-      for(int i=0; i<emplacementMax; i++) {
+      for (int i=0; i<emplacementMax; i++) {
         int ligneMax = r.getNbLignes(i);
-        for(int j=0; j<ligneMax; j++) {
+        for (int j=0; j<ligneMax; j++) {
           int colMax = r.getNbColonnes(i, j);
-          for(int k=0; k<colMax; k++) {
+          for (int k=0; k<colMax; k++) {
             assertTrue(r.isExistingCell(i, j, k));
           }
           assertFalse(r.isExistingCell(i, j, colMax));
@@ -278,13 +278,13 @@ class RangementTest {
     list.add(armoire1x3x3Builder);
     list.add(armoire2x2_3x22545);
     list.add(armoire2x2_3x22545Builder);
-    for(Rangement r : list) {
+    for (Rangement r : list) {
       int emplacementMax = r.getNbEmplacements();
-      for(int i=0; i<emplacementMax; i++) {
+      for (int i=0; i<emplacementMax; i++) {
         int ligneMax = r.getNbLignes(i);
-        for(int j=0; j<ligneMax; j++) {
+        for (int j=0; j<ligneMax; j++) {
           int colMax = r.getNbColonnes(i, j);
-          for(int k=0; k<colMax; k++) {
+          for (int k=0; k<colMax; k++) {
             assertEquals(colMax - k, r.getNbCaseFreeCoteLigne(i, j, k));
           }
         }
@@ -406,7 +406,8 @@ class RangementTest {
     b.setNom("B12");
     updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", armoire2x2_3x22545);
     assertEquals(1, armoire2x2_3x22545.getNbCaseUseLigne(1, 0));
-    assertEquals(b, armoire2x2_3x22545.getBouteille(1, 0, 1));
+    assertEquals(b, armoire2x2_3x22545.getBouteille(1, 0, 1).get());
+    assertEquals(b, armoire2x2_3x22545.getBouteille(b).get());
     armoire2x2_3x22545.removeWine(b);
     return b;
   }
@@ -425,13 +426,15 @@ class RangementTest {
     Bouteille b = new Bouteille();
     b.setNom("B13");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);
-    assertEquals(b, armoire1x3x3.getBouteille(0, 0, 1));
+    assertEquals(b, armoire1x3x3.getBouteille(0, 0, 1).get());
+    assertEquals(b, armoire1x3x3.getBouteille(b).get());
     Bouteille b1 = new Bouteille();
     b1.setNom("B14");
     updateToArmoire1x3x3(b1, 1, 2);
-    assertEquals(b1, armoire1x3x3.getBouteille(0, 0, 1));
+    assertEquals(b1, armoire1x3x3.getBouteille(0, 0, 1).get());
+    assertEquals(b1, armoire1x3x3.getBouteille(b1).get());
     armoire1x3x3.clearStock(b1);
-    assertNull(armoire1x3x3.getBouteille(0, 0, 1));
+    assertTrue(armoire1x3x3.getBouteille(0, 0, 1).isEmpty());
     armoire1x3x3.removeWine(b);
   }
 
@@ -440,10 +443,10 @@ class RangementTest {
     Bouteille b = new Bouteille();
     b.setNom("B15");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);
-    assertEquals(b, armoire1x3x3.getBouteille(0, 0, 1));
+    assertEquals(b, armoire1x3x3.getBouteille(0, 0, 1).get());
     armoire1x3x3.moveLineWine(b, 2);
-    assertNull(armoire1x3x3.getBouteille(0, 0, 1));
-    assertEquals(b, armoire1x3x3.getBouteille(0, 1, 1));
+    assertTrue(armoire1x3x3.getBouteille(0, 0, 1).isEmpty());
+    assertEquals(b, armoire1x3x3.getBouteille(0, 1, 1).get());
   }
 
   @Test
@@ -451,15 +454,15 @@ class RangementTest {
     Bouteille b = new Bouteille();
     b.setNom("B16");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);
-    assertEquals(b, armoire1x3x3.getBouteille(0, 0, 1));
+    assertEquals(b, armoire1x3x3.getBouteille(0, 0, 1).get());
     Bouteille b1 = new Bouteille();
     b.setNom("B17");
     updateToArmoire(b1, 2, 2, 3, "armoire2x2_3x22545", armoire2x2_3x22545);
-    assertEquals(b1, armoire2x2_3x22545.getBouteille(1, 1, 2));
+    assertEquals(b1, armoire2x2_3x22545.getBouteille(1, 1, 2).get());
     armoire1x3x3.clearStock(b);
     armoire2x2_3x22545.clearStock(b1);
-    assertNull(armoire1x3x3.getBouteille(0, 0, 1));
-    assertNull(armoire2x2_3x22545.getBouteille(1, 1, 2));
+    assertTrue(armoire1x3x3.getBouteille(0, 0, 1).isEmpty());
+    assertTrue(armoire2x2_3x22545.getBouteille(1, 1, 2).isEmpty());
   }
 
   @Test
@@ -467,15 +470,15 @@ class RangementTest {
     Bouteille b = new Bouteille();
     b.setNom("B18");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);
-    assertEquals(b, armoire1x3x3.getBouteille(0, 0, 1));
+    assertEquals(b, armoire1x3x3.getBouteille(0, 0, 1).get());
     Bouteille b1 = new Bouteille();
     b1.setNom("B19");
     updateToArmoire(b1, 2, 2, 3, "armoire2x2_3x22545", armoire2x2_3x22545);
-    assertEquals(b1, armoire2x2_3x22545.getBouteille(1, 1, 2));
+    assertEquals(b1, armoire2x2_3x22545.getBouteille(1, 1, 2).get());
     armoire1x3x3.clearStock(b);
     armoire2x2_3x22545.clearStock(b1);
-    assertNull(armoire1x3x3.getBouteille(0, 0, 1));
-    assertNull(armoire2x2_3x22545.getBouteille(1, 1, 2));
+    assertTrue(armoire1x3x3.getBouteille(0, 0, 1).isEmpty());
+    assertTrue(armoire2x2_3x22545.getBouteille(1, 1, 2).isEmpty());
     armoire2x2_3x22545.removeWine(b1);
     armoire1x3x3.removeWine(b);
   }
@@ -506,13 +509,13 @@ class RangementTest {
     list.add(armoire1x3x3Builder);
     list.add(armoire2x2_3x22545);
     list.add(armoire2x2_3x22545Builder);
-    for(Rangement r : list) {
+    for (Rangement r : list) {
       int emplacementMax = r.getNbEmplacements();
-      for(int i=0; i<emplacementMax; i++) {
+      for (int i=0; i<emplacementMax; i++) {
         int ligneMax = r.getNbLignes(i);
-        for(int j=0; j<ligneMax; j++) {
+        for (int j=0; j<ligneMax; j++) {
           int colMax = r.getNbColonnes(i, j);
-          for(int k=0; k<colMax; k++) {
+          for (int k=0; k<colMax; k++) {
             assertTrue(r.canAddBottle(i, j, k));
           }
           assertFalse(r.canAddBottle(i, j, colMax));

@@ -22,6 +22,7 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
+import java.util.Optional;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -29,8 +30,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 02/09/20
+ * @version 3.4
+ * @since 09/10/20
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -145,9 +146,9 @@ public abstract class MyCellarManageBottles extends JPanel {
 			}
 
 			Rangement cave = m_lieu.getItemAt(nPlace);
-			Bouteille b;
-			if ((b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1)) != null) {
-				m_labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.getNom())));
+			Optional<Bouteille> b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1);
+			if (b.isPresent()) {
+				m_labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.get().getNom())));
 			} else {
 			  m_labelExist.setText("");
 			}

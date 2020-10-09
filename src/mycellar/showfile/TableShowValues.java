@@ -11,6 +11,7 @@ import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -20,8 +21,8 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.0
- * @since 25/06/20
+ * @version 4.1
+ * @since 09/10/20
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -229,12 +230,13 @@ class TableShowValues extends AbstractTableModel {
             tmpLine--;
           }
           if (rangement != null && rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
-            Bouteille bTemp = null;
+            Optional<Bouteille> bTemp = Optional.empty();
             if (!rangement.isCaisse()) {
               bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
             }
-            if (bTemp != null) {
-              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), bTemp.getAnnee()));
+            if (bTemp.isPresent()) {
+              final Bouteille bouteille = bTemp.get();
+              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
             } else {
               if (column == PLACE) {
                 b.setEmplacement((String) value);

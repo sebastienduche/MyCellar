@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import net.miginfocom.swing.MigLayout;
@@ -62,7 +63,7 @@ class PanelInfos extends JPanel {
 class PanelStats extends JPanel {
 
 	private static final long serialVersionUID = 7438892143990782047L;
-	private final MyCellarLabel bottles = new MyCellarLabel(Program.getLabel("Infos405"));
+	private final MyCellarLabel bottles = new MyCellarLabel(Program.getLabel("Infos405", LabelProperty.PLURAL));
 	private final MyCellarLabel cellarValue = new MyCellarLabel(Program.getLabel("Infos406"));
 	private final MyCellarLabel bottlesNb = new MyCellarLabel();
 	private final MyCellarLabel cellarTotal = new MyCellarLabel();
@@ -109,7 +110,7 @@ class PanelStats extends JPanel {
 
 	void setLabels() {
 		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
-		bottles.setText(Program.getLabel("Infos405"));
+		bottles.setText(Program.getLabel("Infos405", LabelProperty.PLURAL));
 		cellarValue.setText(Program.getLabel("Infos406"));
 		TableColumnModel tcm = table.getColumnModel();
 		TableColumn tc = tcm.getColumn(2);

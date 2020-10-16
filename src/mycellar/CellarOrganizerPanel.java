@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.core.IAddVin;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
@@ -52,8 +53,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 02/09/20
+ * @version 2.7
+ * @since 16/10/20
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -71,7 +72,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 	private MyCellarComboBox<Rangement> comboRangement;
 	private Rangement rangement;
 	private RangementCell stock;
-	private final MyCellarButton move = new MyCellarButton(LabelType.INFO_OTHER, "ManageStock.MoveAll", new MoveAction());
+	private final MyCellarButton move = new MyCellarButton(LabelType.INFO_OTHER, "ManageStock.MoveAll", LabelProperty.PLURAL, new MoveAction());
 	private IAddVin addvin;
 	
 	private final boolean cellChooser;
@@ -132,9 +133,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 		add(move, "gapleft 10px, wrap");
 		move.setEnabled(false);
 		if (cellChooser) {
-			add(new MyCellarLabel(Program.getLabel("ManagePlace.ChooseCell")),"wrap");
+			add(new MyCellarLabel(Program.getLabel("ManagePlace.ChooseCell", LabelProperty.THE_SINGLE)),"wrap");
 		} else {
-			add(new MyCellarLabel(Program.getLabel("ManagePlace.StockDescription")),"wrap");
+			add(new MyCellarLabel(Program.getLabel("ManagePlace.StockDescription", LabelProperty.PLURAL)),"wrap");
 		}
 		add(new JScrollPane(placePanel), "grow");
 		if (!cellChooser) {
@@ -314,7 +315,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 		private static final long serialVersionUID = 6973442058662866086L;
 		
 		private MoveAction() {
-			super(Program.getLabel("ManageStock.MoveAll"));
+			super(Program.getLabel("ManageStock.MoveAll", LabelProperty.PLURAL));
 		}
 
 		@Override
@@ -499,7 +500,7 @@ class BouteilleLabel extends JPanel {
 
 			@Override
 			void actionPerformed() {
-				String mess = MessageFormat.format(Program.getLabel("Main.DeleteWine"), bouteille.getNom());
+				String mess = MessageFormat.format(Program.getLabel("Main.DeleteWine", LabelProperty.THE_SINGLE), bouteille.getNom());
 				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), mess, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 					Component parent = BouteilleLabel.this.getParent();
 					if (parent instanceof RangementCell) {

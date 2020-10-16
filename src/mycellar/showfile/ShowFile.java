@@ -21,6 +21,7 @@ import mycellar.ToolTipRenderer;
 import mycellar.Vignoble;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
@@ -683,7 +684,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       final LinkedList<Bouteille> toRestoreList = getSelectedBouteilles();
 
       if (toRestoreList.isEmpty()) {
-        Erreur.showSimpleErreur(Program.getLabel("ShowFile.NoBottleToRestore"), Program.getLabel("ShowFile.SelectToRestore"), true);
+        Erreur.showSimpleErreur(Program.getLabel("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), Program.getLabel("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL), true);
       } else {
         String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {

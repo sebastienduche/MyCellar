@@ -2,8 +2,10 @@ package mycellar;
 
 import mycellar.actions.ExportPDFAction;
 import mycellar.actions.OpenWorkSheetAction;
+import mycellar.core.Grammar;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
+import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
@@ -47,8 +49,8 @@ import java.util.prefs.Preferences;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.4
- * @since 02/09/20
+ * @version 26.5
+ * @since 16/10/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -573,6 +575,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				Program.initConf();
 			}
 			String thelangue = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
+			Program.setProgramType(Program.Type.valueOf(Program.getGlobalConfigString(MyCellarSettings.PROGRAM_TYPE, Program.Type.WINE.name())));
 			Program.setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
 			updateLabels();
 			Debug("Loading Frame ended");
@@ -629,7 +632,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		save.setText(Program.getLabel("Infos326"));
 		showFile.setText(Program.getLabel("Infos324"));
 		showWorksheet.setText(Program.getLabel("ShowFile.Worksheet"));
-		searchWine.setText(Program.getLabel("Infos006"));
+		searchWine.setText(Program.getLabel("Main.tabSearch", LabelProperty.SINGLE));
 
 		parameter.setText(Program.getLabel("Infos156")); // Parametres
 		about.setText(Program.getLabel("Infos199")); // A Propos
@@ -670,8 +673,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oModifierButton.setText(Program.getLabel("Infos007"));
 		m_oShowFileButton.setText(Program.getLabel("Infos324"));
 		m_oTableauxButton.setText(Program.getLabel("Infos008"));
-		m_oAjouterButton.setText(Program.getLabel("Infos005"));
-		m_oRechercherButton.setText(Program.getLabel("Infos006"));
+		m_oAjouterButton.setText(Program.getLabel("Main.tabAdd", LabelProperty.SINGLE));
+		m_oRechercherButton.setText(Program.getLabel("Main.tabSearch", LabelProperty.SINGLE));
 		m_oSupprimerButton.setText(Program.getLabel("Infos004"));
 		version.setText(Program.getLabel("MonthVersion") + Program.INFOS_VERSION + MyCellarVersion.MAIN_VERSION);
 		addWine.setAccelerator(KeyStroke.getKeyStroke(AJOUTERV, InputEvent.CTRL_DOWN_MASK));
@@ -1231,8 +1234,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private AddWineAction() {
-			super(Program.getLabel("Infos005"), MyCellarImage.WINE);
-			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos005"));
+			super(Program.getLabel("Main.tabAdd", LabelProperty.SINGLE), MyCellarImage.WINE);
+			putValue(SHORT_DESCRIPTION, Program.getLabel("Main.tabAdd", LabelProperty.SINGLE));
 			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(AJOUTERR, InputEvent.CTRL_DOWN_MASK));
 		}
 
@@ -1241,7 +1244,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			if (Program.getAddVin() == null) {
 				try {
 					final AddVin addVin = Program.createAddVin();
-					Program.TABBED_PANE.add(Program.getLabel("Infos005"), addVin);
+					Program.TABBED_PANE.add(Program.getLabel("Main.tabAdd", LabelProperty.SINGLE), addVin);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.WINE);
 					Utils.addCloseButton(Program.TABBED_PANE, addVin);
 				} catch (Exception e1) {
@@ -1252,7 +1255,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				Program.TABBED_PANE.setSelectedComponent(Program.getAddVin());
 			} catch (IllegalArgumentException e) {
 				final AddVin addVin = Program.getAddVin();
-				Program.TABBED_PANE.add(Program.getLabel("Infos005"), addVin);
+				Program.TABBED_PANE.add(Program.getLabel("Main.tabAdd", LabelProperty.SINGLE), addVin);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.WINE);
 				Utils.addCloseButton(Program.TABBED_PANE, addVin);
 				Program.TABBED_PANE.setSelectedComponent(addVin);
@@ -1366,15 +1369,15 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private SearchAction() {
-			super(Program.getLabel("Infos006"), MyCellarImage.SEARCH);
-			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos006"));
+			super(Program.getLabel("Main.tabSearch", LabelProperty.SINGLE), MyCellarImage.SEARCH);
+			putValue(SHORT_DESCRIPTION, Program.getLabel("Main.tabSearch", LabelProperty.SINGLE));
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if (Program.getSearch() == null) {
 				final Search search = Program.createSearch();
-				Program.TABBED_PANE.add(Program.getLabel("Infos221"), search);
+				Program.TABBED_PANE.add(Program.getLabel("Main.tabSearchSimple"), search);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.SEARCH);
 				Utils.addCloseButton(Program.TABBED_PANE, search);
 			}
@@ -1382,7 +1385,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				Program.TABBED_PANE.setSelectedComponent(Program.getSearch());
 			} catch (IllegalArgumentException e) {
 				final Search search = Program.createSearch();
-				Program.TABBED_PANE.add(Program.getLabel("Infos221"), search);
+				Program.TABBED_PANE.add(Program.getLabel("Main.tabSearchSimple"), search);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.SEARCH);
 				Utils.addCloseButton(Program.TABBED_PANE, search);
 				Program.TABBED_PANE.setSelectedComponent(search);

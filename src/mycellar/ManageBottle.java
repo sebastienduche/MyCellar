@@ -1,8 +1,10 @@
 package mycellar;
 
 import mycellar.actions.ChooseCellAction;
+import mycellar.core.Grammar;
 import mycellar.core.IAddVin;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
@@ -37,8 +39,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.1
- * @since 09/10/20
+ * @version 6.2
+ * @since 16/10/20
  */
 public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -94,7 +96,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				}
 			});
 
-			m_nb_bottle.setToolTipText(Program.getLabel("Infos263"));
+			m_nb_bottle.setToolTipText(Program.getLabel("AddVin.NbItemsToAdd", LabelProperty.PLURAL));
 			m_nb_bottle.setValue(1);
 			m_nb_bottle.addChangeListener((e) -> {
 				m_labelStillToAdd.setText("");
@@ -444,7 +446,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 					String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
 					if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 						replaceWine(bouteille);
-						m_end.setText(Program.getLabel("Infos075"));
+						m_end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
 					}
 				}
 			});
@@ -465,7 +467,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			rangement.updateToStock(m_laBouteille);
 		}
 
-		m_end.setText(Program.getLabel("Infos144"));
+		m_end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE));
 		Program.updateManagePlacePanel();
 		updateStatusAndTime();
 		resetModified();

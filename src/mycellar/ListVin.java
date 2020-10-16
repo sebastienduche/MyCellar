@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
@@ -23,8 +24,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.7
- * @since 12/04/19
+ * @version 3.8
+ * @since 16/10/20
  */
 class ListVin extends JPanel {
   private ListValues listValues;
@@ -69,14 +70,14 @@ class ListVin extends JPanel {
         });
         
         JScrollPane scrollpane = new JScrollPane(table);
-        MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("Infos173"));
+        MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("ListVin.selectItems", LabelProperty.SINGLE));
 
         scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         setLayout(new MigLayout("","grow","[grow][]"));
         MyCellarLabel textControl1 = new MyCellarLabel();
         textControl1.setForeground(Color.red);
         textControl1.setFont(new Font("Dialog", Font.BOLD, 13));
-        textControl1.setText(Program.getLabel("Infos124"));
+        textControl1.setText(Program.getLabel("ListVin.listProblems", LabelProperty.PLURAL));
         textControl1.setHorizontalAlignment(SwingConstants.CENTER);
 
         add(scrollpane,"grow,wrap,width min(100,200)");

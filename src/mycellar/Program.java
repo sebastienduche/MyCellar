@@ -2,10 +2,12 @@ package mycellar;
 
 import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.Grammar;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarFile;
@@ -26,6 +28,7 @@ import mycellar.vignobles.CountryVignoble;
 import mycellar.vignobles.CountryVignobles;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.util.Base64;
 
 import javax.mail.Authenticator;
@@ -86,15 +89,17 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.6
- * @since 08/10/20
+ * @version 22.7
+ * @since 16/10/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.5.7.8";
+	public static final String INTERNAL_VERSION = "3.6.0.4";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
+	private static Type type = Type.WINE;
+	private static final String KEY_TYPE = "<KEY>";
 
 	private static MyCellarFile myCellarFile = null;
 	// Manage global config
@@ -171,6 +176,11 @@ public final class Program {
 	private static int nextID = -1;
 	public static final MyClipBoard CLIPBOARD = new MyClipBoard();
 
+	enum Type {
+		WINE,
+		BOOK,
+		DISC
+	}
 
 	public static void start() throws UnableToOpenFileException {
 		bDebug = true;
@@ -202,6 +212,45 @@ public final class Program {
 		catch (Exception e) {
 			showException(e);
 		}
+	}
+
+	static void setProgramType(Type value) {
+		type = value;
+	}
+
+	static String getLabelForType(boolean plural, boolean firstLetterUppercase, Grammar grammar) {
+		String value;
+		String prefix;
+		String postfix = plural ? "s" : "";
+		switch (grammar) {
+			case SINGLE:
+				prefix = plural ? "more" : "one";
+				break;
+			case THE:
+				prefix = "the";
+				break;
+			case NONE:
+			default:
+				prefix = "";
+				break;
+		}
+		switch (type) {
+			case WINE:
+				value = getLabel("Program." + prefix + "wine" + postfix);
+				break;
+			case BOOK:
+				value = getLabel("Program." + prefix + "book" + postfix);
+				break;
+			case DISC:
+				value = getLabel("Program." + prefix + "disc" + postfix);
+				break;
+			default:
+				value = getLabel("Program." + prefix + "wine" + postfix);
+		}
+		if (firstLetterUppercase) {
+			value = StringUtils.capitalize(value);
+		}
+		return value;
 	}
 
 	static void setNewFile(String file) {
@@ -1180,6 +1229,14 @@ public final class Program {
 		return getLabel(id, true);
 	}
 
+	public static String getLabel(String id, LabelProperty labelProperty) {
+		if (labelProperty == null) {
+			return getLabel(id, true);
+		}
+		String label = getLabel(id, true);
+		return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
+	}
+
 	public static String getLabel(String id, boolean displayError) {
 		try {
 			return LanguageFileLoader.getLabel(id);
@@ -1189,6 +1246,14 @@ public final class Program {
 			}
 			return id;
 		}
+	}
+
+	public static String getError(String id, LabelProperty labelProperty) {
+		if (labelProperty == null) {
+			return getError(id);
+		}
+		String label = getError(id);
+		return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
 	}
 
 	public static String getError(String id) {

@@ -4,6 +4,7 @@ import mycellar.actions.OpenWorkSheetAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
@@ -49,15 +50,15 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 20.7
- * @since 09/10/20
+ * @version 20.8
+ * @since 16/10/20
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
 	private static final long serialVersionUID = 8497660112193602839L;
 	private final JTable table;
 	private static final TableValues MODEL = new TableValues();
-	private static final MyCellarLabel TXT_NBRESUL = new MyCellarLabel(LabelType.INFO, "222"); //"Bouteille(s) trouvee(s): ");
+	private static final MyCellarLabel TXT_NBRESUL = new MyCellarLabel(LabelType.INFO_OTHER, "Search.bottleFound", LabelProperty.PLURAL.withCapital()); //"Bouteille(s) trouvee(s): ");
 	private static final MyCellarLabel TXT_NB = new MyCellarLabel("-");
 	private final MyCellarButton suppr = new MyCellarButton(MyCellarImage.DELETE);
 	private final MyCellarButton export = new MyCellarButton(MyCellarImage.EXPORT);
@@ -298,9 +299,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 				Program.updateManagePlacePanel();
 
 				if (listToSupp.size() == 1) {
-					resul_txt.setText(Program.getLabel("Infos397"));
+					resul_txt.setText(Program.getLabel("Search.1ItemDeleted", LabelProperty.SINGLE));
 				} else {
-					resul_txt.setText(MessageFormat.format(Program.getLabel("Infos398"), listToSupp.size()));
+					resul_txt.setText(MessageFormat.format(Program.getLabel("Search.NItemDeleted", LabelProperty.PLURAL), listToSupp.size()));
 				}
 			}
 			Debug("Deleting Done");
@@ -448,7 +449,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 			Debug("Cherche_actionPerforming...");
 			name.removeMenu();
 			TXT_NB.setText("-");
-			TXT_NBRESUL.setText(Program.getLabel("Infos222"));
+			TXT_NBRESUL.setText(Program.getLabel("Search.bottleFound", LabelProperty.SINGLE.withCapital()));
 			resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
 			new Thread(this).start();
 		}	catch (Exception exc) {
@@ -475,7 +476,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 	private void emptyRows() {
 		Debug("emptyRows...");
 		TXT_NB.setText("-");
-		TXT_NBRESUL.setText(Program.getLabel("Infos222"));
+		TXT_NBRESUL.setText(Program.getLabel("Search.bottleFound", LabelProperty.SINGLE.withCapital()));
 		modif.setEnabled(false);
 		suppr.setEnabled(false);
 		export.setEnabled(false);
@@ -681,11 +682,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
 	private static void updateLabelBottleNumber() {
 		TXT_NB.setText(Integer.toString(MODEL.getRowCount()));
-		if (MODEL.getRowCount() == 0) {
-			TXT_NBRESUL.setText(Program.getLabel("Infos222"));
-		} else {
-			TXT_NBRESUL.setText(Program.getLabel("Infos239"));
-		}
+		TXT_NBRESUL.setText(Program.getLabel("Search.bottleFound", new LabelProperty(MODEL.getRowCount() > 1).withCapital()));
 	}
 
 	private boolean searchByPlace() {
@@ -769,7 +766,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					resul_txt.setText(Program.getLabel("Infos224")); //"Echec de la recherche.");
 					Erreur.showSimpleErreur(Program.getError("Error066")); //Aucune bouteille trouve
 					TXT_NB.setText("0");
-					TXT_NBRESUL.setText(Program.getLabel("Infos222"));
+					TXT_NBRESUL.setText(Program.getLabel("Search.bottleFound", LabelProperty.SINGLE.withCapital()));
 					modif.setEnabled(false);
 					suppr.setEnabled(false);
 				}	else {

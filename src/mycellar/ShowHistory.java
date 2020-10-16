@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.IMyCellar;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
@@ -33,8 +34,8 @@ import java.util.LinkedList;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.0
- * @since 30/08/20
+ * @version 4.1
+ * @since 16/10/20
  */
 
 public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
@@ -185,12 +186,12 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 			}
 
 			if (nonExit) {
-				Erreur.showSimpleErreur(Program.getLabel("ShowHistory.CantRestoreNonDeleted"), true);
+				Erreur.showSimpleErreur(Program.getLabel("ShowHistory.CantRestoreNonDeleted", LabelProperty.PLURAL), true);
 				return;
 			}
 
 			if (toRestoreList.isEmpty()) {
-				Erreur.showSimpleErreur(Program.getLabel("ShowFile.NoBottleToRestore"), Program.getLabel("ShowFile.SelectToRestore"), true);
+				Erreur.showSimpleErreur(Program.getLabel("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), Program.getLabel("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL), true);
 			} else {
 				String erreur_txt1, erreur_txt2;
 				if (toRestoreList.size() == 1) {

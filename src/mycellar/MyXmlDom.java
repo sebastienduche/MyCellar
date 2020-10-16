@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelProperty;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -26,8 +27,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : SebInformatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @since 09/10/20
- * @version 2.6
+ * @since 16/10/20
+ * @version 2.7
  */
 
 public class MyXmlDom {
@@ -37,14 +38,12 @@ public class MyXmlDom {
 	 *
 	 */
 	static boolean readMyCellarXml(String _sFileName, final List<Rangement> rangementList) {
-
 		Debug("readMyCellarXml: Reading file");
 		rangementList.clear();
 		String filename = Program.getXMLPlacesFileName();
 		if (!_sFileName.isEmpty()) {
 			filename = _sFileName;
 		}
-		LinkedList<String> names = new LinkedList<>();
 
 		File file = new File(filename);
 		if(!file.exists()) {
@@ -59,6 +58,7 @@ public class MyXmlDom {
 
 			NodeList places = doc.getElementsByTagName("place");
 
+			LinkedList<String> names = new LinkedList<>();
 			for (int i = 0; i < places.getLength(); i++) {
 				Node nNode = places.item(i);
 
@@ -80,7 +80,7 @@ public class MyXmlDom {
 						if ( nNbLimit > 0 )
 							bLimit = true;
 						if(names.contains(sName)) {
-							Debug("WARNING: Rangement name '"+sName+"' already used!");
+							Debug("WARNING: Rangement name '" + sName + "' already used!");
 						}
 						else {
 							final Rangement caisse = new Rangement.CaisseBuilder(sName)
@@ -119,7 +119,7 @@ public class MyXmlDom {
 						}
 
 						if(names.contains(sName)) {
-							Debug("WARNING: Rangement name '"+sName+"' already used!");
+							Debug("WARNING: Rangement name '" + sName + "' already used!");
 						} else {
 							names.add(sName);
 							rangementList.add(new Rangement(sName, listPart));
@@ -153,7 +153,6 @@ public class MyXmlDom {
 	 * @param _oCave LinkedList<Rangement>
 	 */
 	static void writeMyCellarXml(List<Rangement> _oCave, String _sFilename) {
-
 		Debug("writeMyCellarXml: Writing file");
 		String filename = Program.getXMLPlacesFileName();
 		if(!_sFilename.isEmpty()) {
@@ -226,7 +225,7 @@ public class MyXmlDom {
 							Element vin_name = doc.createElement("vin1");
 							vin.appendChild(vin_name);
 							if(preview) {
-								vin_name.setTextContent(Program.getLabel("Infos229"));
+								vin_name.setTextContent(Program.getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
 							}else {
     							Bouteille b = rangement.getBouteilleCaisseAt(i, j);
     							if(b != null)
@@ -256,7 +255,7 @@ public class MyXmlDom {
 							Element vin_name = doc.createElement("vin1");
 							vin.appendChild(vin_name);
 							if(preview) {
-								vin_name.setTextContent(Program.getLabel("Infos229"));
+								vin_name.setTextContent(Program.getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
 							}else {
     							Optional<Bouteille> b = rangement.getBouteille(i, j, k);
     							if(b.isPresent())
@@ -284,12 +283,12 @@ public class MyXmlDom {
 		}
 	}
 
-	public static boolean writeXML(Object o, File f, Class classe) {
+	public static boolean writeXML(Object o, File f, Class<?> classe) {
 		Debug("Writing JAXB File");
 		try {
 			JAXBContext jc = JAXBContext.newInstance(classe);
 			Marshaller m = jc.createMarshaller();
-			m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			m.marshal(o, new StreamResult(f));
 		} catch(Exception e) {
 			Program.showException(e);

@@ -4,6 +4,7 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.StateEditor;
 import mycellar.StateRenderer;
+import mycellar.core.Grammar;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
@@ -107,7 +108,7 @@ public class XLSTabOptions extends JDialog {
     JScrollPane oScrollPaneTab = new JScrollPane(table);
 
     tv.addString(Program.getLabel("Infos132"), Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL0, true));
-    tv.addString(Program.getLabel("Infos133"), Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL1, false));
+    tv.addString(Program.getLabel("Infos189"), Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL1, false));
     tv.addString(Program.getLabel("Infos134"), Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL2, false));
     tv.addString(Program.getLabel("Infos135"), Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL3, false));
 

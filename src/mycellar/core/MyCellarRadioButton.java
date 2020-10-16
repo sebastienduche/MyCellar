@@ -10,8 +10,8 @@ import java.awt.Font;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 30/08/20
+ * @version 0.5
+ * @since 16/10/20
  */
 public class MyCellarRadioButton extends JRadioButton implements IMyCellarComponent {
 
@@ -21,6 +21,7 @@ public class MyCellarRadioButton extends JRadioButton implements IMyCellarCompon
 	private LabelType type;
 	private String code;
 	private String value;
+	private LabelProperty labelProperty;
 
 	@Deprecated
 	public MyCellarRadioButton() {
@@ -35,16 +36,6 @@ public class MyCellarRadioButton extends JRadioButton implements IMyCellarCompon
 		MyCellarLabelManagement.add(this);
 		setFont(FONT);
 	}
-	
-	public MyCellarRadioButton(LabelType type, String code, String value, boolean selected) {
-    super("", selected);
-    this.type = type;
-    this.code = code;
-    this.value = value;
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT);
-  }
 
 	@Deprecated
 	public MyCellarRadioButton(String text, boolean selected) {
@@ -54,6 +45,6 @@ public class MyCellarRadioButton extends JRadioButton implements IMyCellarCompon
 
 	@Override
 	public void updateText() {
-	  MyCellarLabelManagement.updateText(this, type, code, value);
+	  MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
 	}
 }

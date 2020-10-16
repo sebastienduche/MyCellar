@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -18,8 +19,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 2.0
- * @since 09/10/20
+ * @version 2.1
+ * @since 16/10/20
  */
 
 class MoveLine extends JDialog {
@@ -43,7 +44,7 @@ class MoveLine extends JDialog {
 		titre.setHorizontalAlignment(SwingConstants.CENTER);
 		label_end.setHorizontalAlignment(SwingConstants.CENTER);
 
-		MyCellarLabel label_title = new MyCellarLabel(Program.getLabel("Infos364"));
+		MyCellarLabel label_title = new MyCellarLabel(Program.getLabel("MoveLine.moveFromLine", LabelProperty.PLURAL));
 		MyCellarLabel label_place = new MyCellarLabel(Program.getLabel("Infos081"));
 		MyCellarLabel label_num_place = new MyCellarLabel(Program.getLabel("Infos082"));
 		MyCellarLabel label_old_line = new MyCellarLabel(Program.getLabel("Infos028"));
@@ -98,7 +99,7 @@ class MoveLine extends JDialog {
 						});
 					}
 				}
-				label_end.setText(Program.getLabel("Infos366"));
+				label_end.setText(Program.getLabel("MoveLine.ItemsMoved", LabelProperty.THE_PLURAL.withCapital()));
 			}
 		});
 		cancel.addActionListener((e) -> close());

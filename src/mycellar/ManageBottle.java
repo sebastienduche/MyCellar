@@ -1,7 +1,6 @@
 package mycellar;
 
 import mycellar.actions.ChooseCellAction;
-import mycellar.core.Grammar;
 import mycellar.core.IAddVin;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;

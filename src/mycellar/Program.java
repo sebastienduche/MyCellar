@@ -95,7 +95,7 @@ import java.util.stream.Collectors;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.6.0.4";
+	public static final String INTERNAL_VERSION = "3.6.0.5";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -218,7 +218,7 @@ public final class Program {
 		type = value;
 	}
 
-	static String getLabelForType(boolean plural, boolean firstLetterUppercase, Grammar grammar) {
+	private static String getLabelForType(boolean plural, boolean firstLetterUppercase, Grammar grammar) {
 		String value;
 		String prefix;
 		String postfix = plural ? "s" : "";

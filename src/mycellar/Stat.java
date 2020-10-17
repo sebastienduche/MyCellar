@@ -393,11 +393,6 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		}
 	}
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	private static void Debug(String sText) {
 		Program.Debug("Stat: " + sText);
 	}

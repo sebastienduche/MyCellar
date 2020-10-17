@@ -2,7 +2,6 @@ package mycellar;
 
 import mycellar.actions.ExportPDFAction;
 import mycellar.actions.OpenWorkSheetAction;
-import mycellar.core.Grammar;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.LabelProperty;

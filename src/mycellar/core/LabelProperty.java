@@ -6,8 +6,8 @@ package mycellar.core;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 16/10/20
+ * @version 0.2
+ * @since 17/10/20
  */
 public class LabelProperty {
 
@@ -35,8 +35,7 @@ public class LabelProperty {
   }
 
   public LabelProperty withCapital() {
-    uppercaseFirst = true;
-    return this;
+    return new LabelProperty(plural, true, grammar);
   }
 
   public boolean isPlural() {

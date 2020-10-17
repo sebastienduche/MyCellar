@@ -672,6 +672,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 				}
 			}
 		}
+		
+		StringBuilder sb = new StringBuilder();
+    panelRequest.getPredicates().forEach(p -> sb.append(p.toString()));
+    Debug(sb.toString());
 		Debug(MODEL.getRowCount() + " bottle(s) found");
 		updateLabelBottleNumber();
 		Debug("Search by request Done");

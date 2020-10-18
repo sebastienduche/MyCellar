@@ -48,8 +48,8 @@ import java.util.prefs.Preferences;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.5
- * @since 16/10/20
+ * @version 26.6
+ * @since 18/10/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -610,7 +610,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		// differents menus
 		menuFile.setText(Program.getLabel("Infos104")); // Fichier
 		menuPlace.setText(Program.getLabel("Infos105"));
-		menuWine.setText(Program.getLabel("Infos106")); // Vin
+		menuWine.setText(Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital())); // Vin
 		menuTools.setText(Program.getLabel("Infos246"));
 		menuEdition.setText(Program.getLabel("Infos245"));
 

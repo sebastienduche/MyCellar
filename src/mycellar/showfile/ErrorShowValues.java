@@ -4,6 +4,7 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Rangement;
+import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
 
 import java.text.MessageFormat;
@@ -18,8 +19,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 09/10/20
+ * @version 1.2
+ * @since 18/10/20
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -37,8 +38,8 @@ public class ErrorShowValues extends TableShowValues {
 	static final int STATUS = 9;
 	static final int BUTTON = 10;
 	private static final int NBCOL = 11;
-	private final String[] columnNames = {"", Program.getLabel("ErrorShowValues.error"), Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
-			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("ShowFile.Status"), "" };
+	private final String[] columnNames = {"", Program.getLabel("ErrorShowValues.error"), Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
+			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("ShowFile.Status"), ""};
 
 	private Boolean[] status = null;
 	private Boolean[] editable = null;

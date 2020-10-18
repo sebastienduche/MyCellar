@@ -39,8 +39,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.9
- * @since 16/10/20
+ * @version 7.1
+ * @since 18/10/20
  */
 public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -175,7 +175,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 				comboLabel.setText(Program.getLabel("Infos187")); //"Tranche de prix:");
 				listPlaces.removeAllItems();
 				listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos188"))); //"Toutes les tranches");
-				listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos299"))); //"Tranches avec bouteilles");
+				listPlaces.addItem(new PlaceComboItem(Program.getLabel("Stat.BracketsWith", LabelProperty.PLURAL))); //"Tranches avec bouteilles");
 			}
 			listChart.setEnabled(listOptions.getSelectedIndex() != 0);
 		}	catch (Exception exc) {
@@ -304,7 +304,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		} else {
 			panelChart.setDataPieChart(listYear, Program.getLabel("Infos184"));
 		}
-		end.setText(MessageFormat.format(Program.getLabel("Infos098"), Program.getNbBouteille()));
+		end.setText(MessageFormat.format(Program.getLabel("Infos098", LabelProperty.PLURAL), Program.getNbBouteille()));
 	}
 
 	private void displayOnePlace() {
@@ -323,7 +323,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 			panel.add(new MyCellarLabel(cave.getNom()));
 			displayPlace(cave);
 		}
-		end.setText(MessageFormat.format(Program.getLabel("Infos098"), nbBottle));
+		end.setText(MessageFormat.format(Program.getLabel("Infos098", LabelProperty.PLURAL), nbBottle));
 	}
 
 	private void displayPlace(Rangement cave) {
@@ -525,6 +525,9 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 	public void updateView() {
 		listYear.clear();
 		listPrice.clear();
+		listPlaces.removeAllItems();
+		listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos182"))); //"Tous les rangement");
+    Program.getCave().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
 		list2_itemStateChanged();
 		updateBouteilleCountLabel();
 	}

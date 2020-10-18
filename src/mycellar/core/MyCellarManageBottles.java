@@ -30,8 +30,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 09/10/20
+ * @version 3.5
+ * @since 18/10/20
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -45,7 +45,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final MyCellarLabel m_labelLine = new MyCellarLabel(LabelType.INFO, "028");
 	protected final MyCellarLabel m_labelColumn = new MyCellarLabel(LabelType.INFO, "083");
 	private final MyCellarLabel m_labelPrice = new MyCellarLabel(LabelType.INFO, "135");
-	private final MyCellarLabel m_labelNbBottle = new MyCellarLabel(LabelType.INFO, "098", "");
+	private final MyCellarLabel m_labelNbBottle = new MyCellarLabel(LabelType.INFO, "405", LabelProperty.PLURAL);
 	private final MyCellarLabel m_labelMaturity = new MyCellarLabel(LabelType.INFO, "391");
 	private final MyCellarLabel m_labelParker = new MyCellarLabel(LabelType.INFO, "392");
 	private final MyCellarLabel labelStatus = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarManageBottles.status");

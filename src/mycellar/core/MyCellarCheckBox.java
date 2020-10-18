@@ -13,8 +13,8 @@ import javax.swing.JCheckBox;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.5
- * @since 16/10/20
+ * @version 0.6
+ * @since 18/10/20
  */
 
 public class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
@@ -44,6 +44,15 @@ public class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
 		MyCellarLabelManagement.add(this);
 		setFont(FONT);
 	}
+	
+	public MyCellarCheckBox(LabelType type, String code, LabelProperty labelProperty) {
+    this.type = type;
+    this.code = code;
+    this.labelProperty = labelProperty;
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT);
+  }
 	
 	public MyCellarCheckBox(LabelType type, String code, String value) {
     this.type = type;

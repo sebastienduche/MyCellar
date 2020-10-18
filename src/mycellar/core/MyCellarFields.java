@@ -14,12 +14,12 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 01/11/19
+ * @version 1.2
+ * @since 18/10/20
  */
 
 public enum MyCellarFields {
-	NAME(Program.getLabel("Infos106")),
+	NAME(Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital())),
 	YEAR(Program.getLabel("Infos189")),
 	TYPE(Program.getLabel("Infos134")),
 	PLACE(Program.getLabel("Infos217")),

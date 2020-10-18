@@ -1,6 +1,9 @@
 package mycellar;
 
 import javax.swing.table.AbstractTableModel;
+
+import mycellar.core.LabelProperty;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,8 +14,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 08/10/20
+ * @version 2.8
+ * @since 18/10/20
  */
 class TableValues extends AbstractTableModel {
 
@@ -21,8 +24,8 @@ class TableValues extends AbstractTableModel {
 	static final int SHOW = 7;
 
 	private static final int NBCOL = 8;
-	private final String[] columnNames = {"", Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos217"),
-			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), ""	};
+	private final String[] columnNames = {"", Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), Program.getLabel("Infos189"), Program.getLabel("Infos217"),
+			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), ""};
 
 	private final List<Boolean> listBoolean = new LinkedList<>();
 	private final List<Bouteille> monVector = new LinkedList<>();

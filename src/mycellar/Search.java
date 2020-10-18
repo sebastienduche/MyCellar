@@ -50,8 +50,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 20.8
- * @since 16/10/20
+ * @version 20.9
+ * @since 18/10/20
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -80,10 +80,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 	private final char SUPPR = Program.getLabel("SUPPR").charAt(0);
 	private final char EXPORT = Program.getLabel("EXPORT").charAt(0);
 	private final MyCellarLabel resul_txt = new MyCellarLabel();
-	private final MyCellarCheckBox multi = new MyCellarCheckBox(LabelType.INFO, "101");
-	private final String label_empl = Program.getLabel("Infos101"); //"Tous les vins de l'emplacement");
-	private final String label_num_empl = Program.getLabel("Infos102"); //"Tous les vins du lieu");
-	private final String label_ligne = Program.getLabel("Infos103"); //"Tous les vins de la ligne");
+	private final MyCellarCheckBox multi = new MyCellarCheckBox(LabelType.INFO_OTHER, "Search.AllBottlesInPlace", LabelProperty.PLURAL);
+	private final String label_empl = Program.getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL); //"Tous les vins de l'emplacement");
+	private final String label_num_empl = Program.getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL); //"Tous les vins du lieu");
+	private final String label_ligne = Program.getLabel("Search.AllBottlesInLine", LabelProperty.PLURAL); //"Tous les vins de la ligne");
 	private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126"); // Tout selectionner
 	private final MyCellarButton addToWorksheet = new MyCellarButton(MyCellarImage.WORK);
 	private final MyCellarCheckBox empty_search = new MyCellarCheckBox(LabelType.INFO, "275"); //Vider automatiquement
@@ -130,7 +130,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 		export.addActionListener(this::export_actionPerformed);
 		suppr.setText(Program.getLabel("Infos051")); //"Supprimer");
 		suppr.setMnemonic(SUPPR);
-		MyCellarLabel infoLabel = new MyCellarLabel(LabelType.INFO, "080"); //"Selectionner un(des) vin(s) dans la liste. Cliquer sur \"Modifier\" ou \"Supprimer\"");
+		MyCellarLabel infoLabel = new MyCellarLabel(LabelType.INFO, "080", LabelProperty.SINGLE); //"Selectionner un(des) vin(s) dans la liste. Cliquer sur \"Modifier\" ou \"Supprimer\"");
 		modif.setText(Program.getLabel("Infos079")); //"Modifier");
 		modif.setMnemonic(MODIF);
 		if (MODEL.getRowCount() == 0) {

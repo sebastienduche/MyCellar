@@ -5,6 +5,7 @@ import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Rangement;
 import mycellar.RangementUtils;
+import mycellar.core.LabelProperty;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
@@ -21,8 +22,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.1
- * @since 09/10/20
+ * @version 4.2
+ * @since 18/10/20
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -41,7 +42,7 @@ class TableShowValues extends AbstractTableModel {
   private static final int MATURITY = 10;
   private static final int PARKER = 11;
   private static final int NBCOL = 12;
-  private final String[] columnNames = {"", Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
+  private final String[] columnNames = {"", Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
       Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("Infos135"), Program.getLabel("Infos137")
       , Program.getLabel("Infos391"), Program.getLabel("Infos392")};
 

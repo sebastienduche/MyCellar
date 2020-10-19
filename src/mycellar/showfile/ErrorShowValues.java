@@ -19,8 +19,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 18/10/20
+ * @version 1.3
+ * @since 19/10/20
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -176,7 +176,7 @@ public class ErrorShowValues extends TableShowValues {
 				fireTableRowsUpdated(row, row);
 			} else {
 				status[row] = Boolean.FALSE;
-				Erreur.showSimpleErreur(Program.getError("ShowFile.errorAddingBottle"));
+				Erreur.showSimpleErreur(Program.getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
 			}
 			break;
 		case NAME:

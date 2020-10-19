@@ -67,8 +67,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.6
- * @since 09/10/20
+ * @version 7.7
+ * @since 19/10/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -376,7 +376,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       public boolean execute(Bouteille b, int row, int column) {
         if (!Program.isExistingBottle(b)) {
           Debug("Inexisting bottle " + b.getNom() + " [" + b.getId() + "]");
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle"), b.getNom()));
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle", LabelProperty.THE_SINGLE), b.getNom()));
           return false;
         }
         Program.showBottle(b, true);
@@ -618,14 +618,14 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       if (toDeleteList.isEmpty()) {
         //"Aucun vin a supprimer!");
-        Erreur.showSimpleErreur(Program.getError("Error064"), Program.getError("Error065"), true);
+        Erreur.showSimpleErreur(Program.getError("Error064", LabelProperty.SINGLE), Program.getError("Error065", LabelProperty.THE_PLURAL), true);
       } else {
         String erreur_txt1, erreur_txt2;
         if (toDeleteList.size() == 1) {
-          erreur_txt1 = Program.getError("Error067"); //"1 vin selectionne.");
+          erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); //"1 vin selectionne.");
           erreur_txt2 = Program.getError("Error068"); //"Voulez-vous le supprimer?");
         } else {
-          erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toDeleteList.size()); //vins selectionnes.");
+          erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toDeleteList.size()); //vins selectionnes.");
           erreur_txt2 = Program.getError("Error131"); //"Voulez-vous les supprimer?");
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -688,10 +688,10 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       } else {
         String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {
-          erreur_txt1 = Program.getError("Error067"); //"1 vin selectionne.");
+          erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); //"1 vin selectionne.");
           erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
         } else {
-          erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toRestoreList.size()); //vins selectionnes.");
+          erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); //vins selectionnes.");
           erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -821,7 +821,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (rangement != null && rangement.isCaisse()) {
           Erreur.showSimpleErreur(Program.getError("Error154"));
         } else {
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             Program.showBottle(b, true);
           }
         }
@@ -1001,14 +1001,14 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (bottles.isEmpty()) {
           //"Aucun vin a modifier!");
           //"Veuillez selectionner les vins a modifier.");
-          Erreur.showSimpleErreur(Program.getError("Error071"), Program.getError("Error072"), true);
+          Erreur.showSimpleErreur(Program.getError("Error071", LabelProperty.SINGLE), Program.getError("Error072", LabelProperty.THE_PLURAL), true);
         } else {
           Debug("Modifying " + bottles.size() + " bottles...");
           LinkedList<Bouteille> existingBottles = new LinkedList<>();
           for (Bouteille bottle : bottles) {
             if (!Program.isExistingBottle(bottle)) {
               Debug("Inexisting bottle " + bottle.getNom() + " [" + bottle.getId() + "]");
-              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle"), bottle.getNom()));
+              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle", LabelProperty.THE_SINGLE), bottle.getNom()));
             } else {
               existingBottles.add(bottle);
             }

@@ -45,8 +45,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.0
- * @since 16/10/20
+ * @version 14.1
+ * @since 19/10/20
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -310,12 +310,12 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 						String erreur_txt1, erreur_txt2;
 						if (nb_bottle == 1) {
 							Debug("MESSAGE: 1 bottle in this place, modify?");
-							erreur_txt1 = Program.getError("Error136"); //"1 bouteille est presente dans ce rangement.");
-							erreur_txt2 = Program.getError("Error137"); //"Voulez vous changer l'emplacement de cette bouteille?");
+							erreur_txt1 = Program.getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.");
+							erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); //"Voulez vous changer l'emplacement de cette bouteille?");
 						} else {
 							Debug("MESSAGE: " + nb_bottle + " bottles in this place, Modify?");
-							erreur_txt1 = MessageFormat.format(Program.getError("Error094"), nb_bottle); //bouteilles sont presentes dans ce rangement.");
-							erreur_txt2 = Program.getError("Error095"); //"Voulez vous changer l'emplacement de ces bouteilles?");
+							erreur_txt1 = MessageFormat.format(Program.getError("Error094", LabelProperty.PLURAL), nb_bottle); //bouteilles sont presentes dans ce rangement.");
+							erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Voulez vous changer l'emplacement de ces bouteilles?");
 						}
 						if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 							//Modify Name of place
@@ -336,7 +336,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 					} else if (rangement.getStartCaisse() != start_caisse) {
 						// Le numero de la premiere partie a change, renumeroter
 						String erreur_txt1 = MessageFormat.format(Program.getError("CreerRangement.UpdatedBottlePart"), start_caisse, rangement.getStartCaisse());
-						String erreur_txt2 = Program.getError("CreerRangement.AskUpdateBottlePart");
+						String erreur_txt2 = Program.getError("CreerRangement.AskUpdateBottlePart", LabelProperty.PLURAL);
 
 						if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 							//Modify start part number
@@ -456,14 +456,14 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 					if (bResul) {
 						String name = rangement.getNom();
 						if (!name.equalsIgnoreCase(nom)) {
-							String erreur_txt1 = Program.getError("Error136"); //"1 bouteille est presente dans ce rangement.");
-							String erreur_txt2 = Program.getError("Error137"); //"Voulez vous changer l'emplacement de cette bouteille?");
+							String erreur_txt1 = Program.getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.");
+							String erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); //"Voulez vous changer l'emplacement de cette bouteille?");
 							if (nbBottles == 1) {
 								Debug("MESSAGE: 1 bottle in this place, modify?");
 							} else {
 								Debug("MESSAGE: " + nbBottles + " bottles in this place, Modify?");
-								erreur_txt1 = MessageFormat.format(Program.getError("Error094"), nbBottles); //bouteilles sont presentes dans ce rangement.");
-								erreur_txt2 = Program.getError("Error095"); //"Voulez vous changer l'emplacement de ces bouteilles?");
+								erreur_txt1 = MessageFormat.format(Program.getError("Error094", LabelProperty.PLURAL), nbBottles); //bouteilles sont presentes dans ce rangement.");
+								erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Voulez vous changer l'emplacement de ces bouteilles?");
 							}
 							if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 								//Modify Name of place

@@ -34,8 +34,8 @@ import java.util.LinkedList;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.1
- * @since 16/10/20
+ * @version 4.2
+ * @since 19/10/20
  */
 
 public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
@@ -195,10 +195,10 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 			} else {
 				String erreur_txt1, erreur_txt2;
 				if (toRestoreList.size() == 1) {
-					erreur_txt1 = Program.getError("Error067"); // "1 vin selectionne.");
+					erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); // "1 vin selectionne.");
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
 				} else {
-					erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toRestoreList.size()); // vins selectionnes.");
+					erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); // vins selectionnes.");
 					erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
 				}
 				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),

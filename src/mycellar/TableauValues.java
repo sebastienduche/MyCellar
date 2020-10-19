@@ -13,8 +13,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 16/10/20
+ * @version 1.4
+ * @since 19/10/20
  */
 class TableauValues extends AbstractTableModel {
 	public static final int ETAT = 0;
@@ -60,8 +60,9 @@ class TableauValues extends AbstractTableModel {
 		case 1:
 			return r.getNom();
 		case 2:
-			if (r.isCaisse())
+			if (r.isCaisse()) {
 				return Program.getLabel("Infos024");
+			}
 			int nombre_ligne = 0;
 			for (int k = 0; k < r.getNbEmplacements(); k++) {
 				nombre_ligne += r.getNbLignes(k);
@@ -80,11 +81,7 @@ class TableauValues extends AbstractTableModel {
 					nombre_vin += r.getNbCaseUse(k);
 				}
 			}
-				
-			if (nombre_vin <= 1) {
-				return MessageFormat.format(Program.getLabel("Main.1Item", LabelProperty.SINGLE), nombre_vin);
-			}
-			return MessageFormat.format(Program.getLabel("Main.severalItems", LabelProperty.PLURAL), nombre_vin);
+			return MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nombre_vin > 1)), nombre_vin);
 		}
 		return "";
 	}

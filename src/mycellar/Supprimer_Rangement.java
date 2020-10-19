@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.0
- * @since 16/10/20
+ * @version 8.1
+ * @since 19/10/20
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -197,7 +197,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 							erreur_txt1 = MessageFormat.format(Program.getLabel("DeletePlace.stillNItemsIn", LabelProperty.PLURAL), nb_case_use_total, nom); //Il reste n bouteilles dans
 						}
 						//"Voulez vous supprimer le rangement et les BOUTEILLES restantes?");
-						String erreur_txt2 = Program.getError("Error039");
+						String erreur_txt2 = Program.getError("Error039", LabelProperty.THE_PLURAL);
 						Debug("MESSAGE: Delete this place " + nom + " and all bottle(s) (" + nb_case_use_total + ")?");
 						if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 							new Thread(() -> {
@@ -427,10 +427,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 			return nbWine;
 		}
 		String getNbWineLabel() {
-			if(nbWine <= 1) {
-				return MessageFormat.format(Program.getLabel("Main.1Item", LabelProperty.SINGLE), nbWine);
-			}
-			return MessageFormat.format(Program.getLabel("Main.severalItems", LabelProperty.PLURAL), nbWine);
+			return MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nbWine > 1)), nbWine);
 		}
 		public void setNbWine(int nbWine) {
 			this.nbWine = nbWine;

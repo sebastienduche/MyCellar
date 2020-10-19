@@ -4,6 +4,7 @@ package mycellar;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
@@ -59,8 +60,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.4
- * @since 02/09/20
+ * @version 13.5
+ * @since 19/10/20
  */
 public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -426,7 +427,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				Debug("ERROR: No column for wine name");
 				//"Aucune colonne n'indique le nom du vin.
 				//"Veuillez selectionner une colonne avec le nom du vin
-				Erreur.showSimpleErreur(Program.getError("Error142"), Program.getError("Error143"));
+				Erreur.showSimpleErreur(Program.getError("Error142", LabelProperty.SINGLE), Program.getError("Error143", LabelProperty.SINGLE));
 				importe.setEnabled(true);
 				return;
 			}

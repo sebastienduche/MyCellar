@@ -22,8 +22,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.2
- * @since 18/10/20
+ * @version 4.3
+ * @since 19/10/20
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -263,7 +263,7 @@ class TableShowValues extends AbstractTableModel {
             if (rangement != null && rangement.isCaisse()) {
               Erreur.showSimpleErreur(Program.getError("Error154"));
             } else {
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getError("Error015"), JOptionPane.YES_NO_OPTION)) {
+              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getError("Error015"), JOptionPane.YES_NO_OPTION)) {
                 LinkedList<Bouteille> list = new LinkedList<>();
                 list.add(b);
                 Program.modifyBottles(list);

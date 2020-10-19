@@ -53,8 +53,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 16/10/20
+ * @version 2.8
+ * @since 19/10/20
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -240,7 +240,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 	public boolean tabWillClose(TabEvent event) {
 		RangementUtils.putTabStock();
 		if (stock.getComponentCount() > 0) {
-			if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("ManageStock.ConfirmLost"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+			if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("ManageStock.ConfirmLost", LabelProperty.PLURAL), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 				return false;
 	  	}
 			for (int i=0; i<stock.getComponentCount(); i++) {

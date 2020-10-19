@@ -39,6 +39,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static mycellar.core.LabelProperty.A_SINGLE;
+import static mycellar.core.LabelProperty.PLURAL;
+import static mycellar.core.LabelProperty.SINGLE;
 
 
 /**
@@ -47,8 +49,8 @@ import static mycellar.core.LabelProperty.A_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.9
- * @since 16/10/20
+ * @version 26.0
+ * @since 19/10/20
  */
 public class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -611,7 +613,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					if (nb_bottle_rest > 0) {
 						if (m_lieu.isEnabled() || m_num_lieu.isEnabled()) {
 							Debug("Adding multiple bottles in the same place?");
-							String erreur_txt1 = MessageFormat.format(Program.getError("Error061"), (nb_bottle_rest + 1), sPlaceName); //Voulez vous ajouter les xx bouteilles dans yy
+							String erreur_txt1 = MessageFormat.format(Program.getError("Error061", LabelProperty.PLURAL), (nb_bottle_rest + 1), sPlaceName); //Voulez vous ajouter les xx bouteilles dans yy
 							if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION )) {
 								//Add several bottles in Caisse
 								Debug("Adding multiple bottles in the same place: YES");
@@ -871,7 +873,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 					Debug("ERROR: Unable to move multiple bottles to an Armoire");
 					m_end.setText("");
 					String nomRangement = rangement != null ? rangement.getNom() : "";
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error104"), nomRangement), Program.getError("Error105")); //"Veuillez selectionner un rangement de type caisse.");//Impossible de deplacer plusieurs bouteilles dans
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error104", PLURAL), nomRangement), Program.getError("Error105")); //"Veuillez selectionner un rangement de type caisse.");//Impossible de deplacer plusieurs bouteilles dans
 					enableAll(true);
 				}	else {
 					// Ajout d'une bouteille dans l'armoire
@@ -934,7 +936,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 								if (nb_free_space > (nb_bottle_rest + 1)) {
 									nb_free_space = nb_bottle_rest + 1;
 								}
-								if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(Program.getError("Error175"), nb_free_space), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+								if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(Program.getError("Error175", PLURAL), nb_free_space), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 									Debug("Putting multiple bottle in close place");
 									m_nnb_bottle_add_only_one_place = nb_free_space;
 									nb_bottle_rest = nb_bottle_rest - nb_free_space + 1;
@@ -1138,11 +1140,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 
 	private void setStillNbBottle(int nb_bottle_rest) {
 		m_nb_bottle.setValue(nb_bottle_rest);
-		if (nb_bottle_rest == 1) {
-			m_labelStillToAdd.setText(Program.getLabel("AddVin.still1toAdd", LabelProperty.SINGLE));
-		} else {
-			m_labelStillToAdd.setText(MessageFormat.format(Program.getLabel("AddVin.stillNtoAdd", LabelProperty.PLURAL), nb_bottle_rest));
-		}
+		m_labelStillToAdd.setText(MessageFormat.format(Program.getLabel("AddVin.stillNtoAdd", new LabelProperty(nb_bottle_rest > 1)), nb_bottle_rest));
 	}
 
 	private void replaceWine(final Bouteille bottle, boolean modify, final Bouteille bToDelete) {
@@ -1232,7 +1230,7 @@ public class AddVin extends MyCellarManageBottles implements Runnable, ITabListe
 		if (!name.getText().isEmpty()) {
 			String erreur_txt1;
 			if (!m_bmodify) {
-				erreur_txt1 = Program.getError("Error144");
+				erreur_txt1 = Program.getError("Error144", SINGLE.withCapital());
 			}	else if (name.isEnabled()) {
 				erreur_txt1 = Program.getError("Error148");
 			}	else {

@@ -39,8 +39,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.1
- * @since 18/10/20
+ * @version 7.2
+ * @since 19/10/20
  */
 public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -260,8 +260,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 			final int priceCount = price.getCount();
 			if (all_bracket || priceCount > 0) {
         panel.add(new MyCellarLabel(price.getName()));
-        String labelId = priceCount > 1 ? "Main.severalItems" : "Main.1Item";
-				panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel(labelId, new LabelProperty(priceCount > 1)), priceCount)), "span 2, align right, wrap");
+				panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(priceCount > 1)), priceCount)), "span 2, align right, wrap");
       }
     }
 		panel.updateUI();
@@ -295,8 +294,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		for (StatData data: listYear) {
       panel.add(new MyCellarLabel(data.getName()));
 			final int dataCount = data.getCount();
-			String labelId = dataCount > 1 ? "Main.severalItems" : "Main.1Item";
-			panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel(labelId, new LabelProperty(dataCount > 1)), dataCount)), "span 2, align right, wrap"); //"bouteille");
+			panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(dataCount > 1)), dataCount)), "span 2, align right, wrap"); //"bouteille");
     }
 		panel.updateUI();
 		if (listChart.getSelectedIndex() == 0) {
@@ -335,8 +333,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 		} else {
 			list_num_empl = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), nbEmplacements)); //"emplacements");
 		}
-		String labelId = nbCaseUseAll > 1 ? "Main.severalItems" : "Main.1Item";
-		final MyCellarLabel list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel(labelId, new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll)); //"bouteille");
+		final MyCellarLabel list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll)); //"bouteille");
 		panel.add(list_num_empl);
 		panel.add(list_nb_bottle, "span 2, align right, wrap");
 		if (!cave.isCaisse()) {
@@ -364,11 +361,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 	private void displayNbBottlePlace(Rangement cave) {
 		for (int j = 0; j < cave.getNbEmplacements(); j++) {
       panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos179"), (j + 1)))); //Emplacement
-      if (cave.getNbCaseUseAll() <= 1) {
-        panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.1Item", LabelProperty.SINGLE),cave.getNbCaseUseAll())),"span 2, align right, wrap"); //"bouteille");
-      } else {
-        panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", LabelProperty.PLURAL), cave.getNbCaseUse(j))),"span 2, align right, wrap"); //"bouteilles");
-      }
+			panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(cave.getNbCaseUseAll() > 1)),cave.getNbCaseUseAll())),"span 2, align right, wrap"); //"bouteille");
     }
 	}
 

@@ -92,7 +92,7 @@ import java.util.stream.Collectors;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.5.6.3";
+	public static final String INTERNAL_VERSION = "3.5.6.6";
 	public static final int VERSION = 62;
 	static final String INFOS_VERSION = " 2020 v";
 

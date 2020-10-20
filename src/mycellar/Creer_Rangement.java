@@ -44,8 +44,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.8
- * @since 02/09/20
+ * @version 13.9
+ * @since 20/10/20
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -284,7 +284,6 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 				return;
 			}
 
-			boolean bResul = true;
 			Debug("Advanced modifying...");
 			if (m_caisse_chk.isSelected()) {
 				Debug("Modifying Caisse...");
@@ -370,16 +369,19 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 				Debug("Modify completed");
 				label_cree.setText(Program.getError("Error123")); //"Rangement modifie.");
 			}	else {
+			  boolean bResul = true;
 				// Rangement complexe
 				Debug("Modifying complex place...");
 				int nbBottles = rangement.getNbCaseUseAll();
 				for (Part p : listPart) {
 					if (p.getRows().isEmpty()) {
+					  Debug("ERROR: Wrong number of lines on part: " + p.getNum());
 						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrect sur la partie
 						return;
 					}
 					for (Row r : p.getRows()) {
 						if (r.getCol() == 0) {
+						  Debug("ERROR: Wrong number of columns on part:  " + p.getNum());
 							Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrect sur la partie
 							return;
 						}
@@ -408,6 +410,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 					}
 					for (int i = 0; i < listPart.size(); i++) {
 						if (!bResul) {
+						  Debug("ERROR: bResul false, skipping part");
 							continue;
 						}
 						Part part = listPart.get(i);
@@ -431,6 +434,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 						if (bResul) {
 							for (int j = 0; j < part.getRowSize(); j++) {
 								if (!bResul) {
+								  Debug("ERROR: bResul false, skipping row");
 									break;
 								}
 								int nbCol = -1;
@@ -441,6 +445,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 								if (nbCol > newNbCol) {
 									for (int k = newNbCol; k < nbCol; k++) {
 										if (!bResul) {
+										  Debug("ERROR: bResul false, skipping column");
 											break;
 										}
 										if (rangement.getBouteille(i, j, k) != null) {
@@ -456,6 +461,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 					}
 
 					if (bResul) {
+					  Debug("Updating complex place: " + rangement.getNom());
 						String name = rangement.getNom();
 						if (!name.equalsIgnoreCase(nom)) {
 							String erreur_txt1 = Program.getError("Error136"); //"1 bouteille est presente dans ce rangement.");

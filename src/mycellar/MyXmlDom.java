@@ -25,8 +25,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : SebInformatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @since 16/07/19
- * @version 2.5
+ * @since 20/10/20
+ * @version 2.6
  */
 
 public class MyXmlDom {
@@ -46,7 +46,7 @@ public class MyXmlDom {
 		LinkedList<String> names = new LinkedList<>();
 
 		File file = new File(filename);
-		if(!file.exists()) {
+		if (!file.exists()) {
 			return false;
 		}
 
@@ -67,7 +67,7 @@ public class MyXmlDom {
 					boolean bIsCaisse = Boolean.parseBoolean(place.getAttribute("IsCaisse"));
 					int nPlace = Integer.parseInt(place.getAttribute("NbPlace"));
 					String sName = place.getAttribute("name");
-					if(sName.isEmpty()) {
+					if (sName.isEmpty()) {
 						NodeList placeName = place.getElementsByTagName("name");
 						sName = placeName.item(0).getTextContent();
 					}
@@ -76,12 +76,10 @@ public class MyXmlDom {
 						int nNumStart = Integer.parseInt(place.getAttribute("NumStart"));
 						int nNbLimit = Integer.parseInt(place.getAttribute("NbLimit"));
 						boolean bLimit = false;
-						if ( nNbLimit > 0 )
-							bLimit = true;
-						if(names.contains(sName)) {
+						bLimit = (nNbLimit > 0);
+						if (names.contains(sName)) {
 							Debug("WARNING: Rangement name '"+sName+"' already used!");
-						}
-						else {
+						} else {
 							final Rangement caisse = new Rangement.CaisseBuilder(sName)
 									.nb_emplacement(nPlace)
 									.start_caisse(nNumStart)
@@ -90,8 +88,7 @@ public class MyXmlDom {
 							rangementList.add(caisse);
 							names.add(sName);
 						}
-					}
-					else {
+					} else {
 						// C'est un rangement complexe
 						// ___________________________
 
@@ -100,7 +97,7 @@ public class MyXmlDom {
 						for (int j = 0; j < internalPlaces.getLength(); j++) {
 							Node nInternal = internalPlaces.item(j);
 							if (nInternal.getNodeType() == Node.ELEMENT_NODE) {
-								Part part = new Part(i);
+								Part part = new Part(j);
 								listPart.add(part);
 								Element iPlace = (Element)nInternal;
 								int nLine = Integer.parseInt(iPlace.getAttribute("NbLine"));
@@ -109,7 +106,7 @@ public class MyXmlDom {
 								for (int k = 0; k < Line.getLength(); k++) {
 									Node nTempLine = Line.item(k);
 									if (nTempLine.getNodeType() == Node.ELEMENT_NODE) {
-										Element oLine = (Element)nTempLine;
+										Element oLine = (Element) nTempLine;
 										int nColumn = Integer.parseInt(oLine.getAttribute("NbColumn"));
 										part.getRow(k).setCol(nColumn);
 									}
@@ -117,7 +114,7 @@ public class MyXmlDom {
 							}
 						}
 
-						if(names.contains(sName)) {
+						if (names.contains(sName)) {
 							Debug("WARNING: Rangement name '"+sName+"' already used!");
 						} else {
 							names.add(sName);
@@ -155,7 +152,7 @@ public class MyXmlDom {
 
 		Debug("writeMyCellarXml: Writing file");
 		String filename = Program.getXMLPlacesFileName();
-		if(!_sFilename.isEmpty()) {
+		if (!_sFilename.isEmpty()) {
 			filename = _sFilename;
 		}
 		try (var oFile = new FileWriter(filename)){

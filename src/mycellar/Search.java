@@ -672,6 +672,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 				}
 			}
 		}
+
 		StringBuilder sb = new StringBuilder();
     panelRequest.getPredicates().forEach(p -> sb.append(p.toString()));
     Debug(sb.toString());

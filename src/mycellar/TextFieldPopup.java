@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 20/06/19
+ * @version 0.7
+ * @since 23/10/20
  */
 public abstract class TextFieldPopup extends JPanel {
 
@@ -126,7 +126,7 @@ public abstract class TextFieldPopup extends JPanel {
 				x = (int) textfield.getLocationOnScreen().getX();
 				y = (int) textfield.getLocationOnScreen().getY();
 				int width = textfield.getWidth();
-				popupMenu.setLocation(x, y+textfield.getHeight());
+				popupMenu.setLocation(x, y + textfield.getHeight());
 				popupMenu.setPopupSize(width, listHeight);
 			}
 			String val = textfield.getText();
@@ -172,16 +172,16 @@ public abstract class TextFieldPopup extends JPanel {
 				if (index == items.size() - 1) {
 					index = -1;
 				}
-				if(selected != null) {
+				if (selected != null) {
 					selected.deactivate();
 				}
-				if(items.size() > (index+1)) {
+				if (items.size() > (index + 1)) {
     				selected = items.get(++index);
     				selected.activate();
 				}
-				if(index == 0) {
+				if (index == 0) {
 					scroll.getVerticalScrollBar().setValue(0);
-				} else if(selected != null) {
+				} else if (selected != null) {
 					selected.scrollRectToVisible(new Rectangle(0, 25, 0, 0));
 				}
 			} else if (e.getKeyCode() == KeyEvent.VK_UP) {
@@ -191,15 +191,15 @@ public abstract class TextFieldPopup extends JPanel {
 				}	else {
 					selected.scrollRectToVisible(new Rectangle(0, -25, 0, 0));
 				}
-				if(selected != null) {
+				if (selected != null) {
 					selected.deactivate();
 				}
-				if(index > 0) {
+				if (index > 0) {
 					selected = items.get(--index);
 					selected.activate();
 				}
 			} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-				if(selected != null) {
+				if (selected != null) {
 					selected.doClick();
 				}
 			}
@@ -217,7 +217,6 @@ public abstract class TextFieldPopup extends JPanel {
 		private static final long serialVersionUID = -463113999199742853L;
 		private final Color blue = new Color(51,153,255);
 		private final Color lightblue = new Color(153,204,255);
-		private final Color foreground;
 		private final Color background;
 		private boolean mouse = false;
 		private final String text;
@@ -225,7 +224,6 @@ public abstract class TextFieldPopup extends JPanel {
 		private MyJMenuItem(String text) {
 			super(text);
 			this.text = text;
-			foreground = getForeground();
 			background = getBackground();
 			setFont(getFont().deriveFont(Font.PLAIN));
 			setBorder(BorderFactory.createEmptyBorder());
@@ -250,14 +248,12 @@ public abstract class TextFieldPopup extends JPanel {
 		void activate() {
 			setBorder(BorderFactory.createEtchedBorder());
 			setBackground(mouse ? lightblue : blue);
-			setForeground(Color.white);
 			setFont(getFont().deriveFont(Font.BOLD));
 		}
 		
 		void deactivate() {
 			setBorder(BorderFactory.createEmptyBorder());
 			setBackground(background);
-			setForeground(foreground);
 			setFont(getFont().deriveFont(Font.PLAIN));
 		}
 		

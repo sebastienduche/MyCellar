@@ -1,7 +1,6 @@
 package mycellar;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,8 +10,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 08/10/20
+ * @version 2.8
+ * @since 14/10/20
  */
 class TableValues extends AbstractTableModel {
 
@@ -20,12 +19,12 @@ class TableValues extends AbstractTableModel {
 	public static final int ETAT = 0;
 	static final int SHOW = 7;
 
-	private static final int NBCOL = 8;
-	private final String[] columnNames = {"", Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos217"),
-			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), ""	};
+	private final List<String> columnNames = List.of("",
+			Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos217"),
+			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), "");
 
 	private final List<Boolean> listBoolean = new LinkedList<>();
-	private final List<Bouteille> monVector = new LinkedList<>();
+	private final List<Bouteille> datas = new LinkedList<>();
 
 	/**
 	 * getRowCount
@@ -34,7 +33,10 @@ class TableValues extends AbstractTableModel {
 	 */
 	@Override
 	public int getRowCount() {
-		return monVector.size();
+		if (datas == null) {
+			return 0;
+		}
+		return datas.size();
 	}
 
 	/**
@@ -44,7 +46,7 @@ class TableValues extends AbstractTableModel {
 	 */
 	@Override
 	public int getColumnCount() {
-		return NBCOL;
+		return columnNames.size();
 	}
 
 	/**
@@ -56,39 +58,40 @@ class TableValues extends AbstractTableModel {
 	 */
 	@Override
 	public Object getValueAt(int row, int column) {
-		if(row >= monVector.size()) {
-			Program.Debug("TableValues: Error index " + row + " > " + monVector.size());
+		if(row >= datas.size()) {
+			Program.Debug("TableValues: Error index " + row + " > " + datas.size());
 			return "";
 		}
 		if(row >= listBoolean.size()) {
-			Program.Debug("TableValues: Error listBoolean index " + row + " > " + monVector.size());
+			Program.Debug("TableValues: Error listBoolean index " + row + " > " + datas.size());
 			return "";
 		}
-		Bouteille b = monVector.get(row);
+		Bouteille b = datas.get(row);
 		switch(column)
 		{
-		case 0:
-			return listBoolean.get(row);
-		case 1:
-			String nom = b.getNom();
-			return Program.convertStringFromHTMLString(nom);
-		case 2:
-			return b.getAnnee();
-		case 3:
-			if (b.isInTemporaryStock()) {
-				return Program.getLabel("Bouteille.TemporaryPlace");
-			}
-			return b.getEmplacement();
-		case 4:
-			return Integer.toString(b.getNumLieu());
-		case 5:
-			return Integer.toString(b.getLigne());
-		case 6:
-			return Integer.toString(b.getColonne());
-		case 7:
-			return Boolean.FALSE;
+			case ETAT:
+				return listBoolean.get(row);
+			case 1:
+				String nom = b.getNom();
+				return Program.convertStringFromHTMLString(nom);
+			case 2:
+				return b.getAnnee();
+			case 3:
+				if (b.isInTemporaryStock()) {
+					return Program.getLabel("Bouteille.TemporaryPlace");
+				}
+				return b.getEmplacement();
+			case 4:
+				return Integer.toString(b.getNumLieu());
+			case 5:
+				return Integer.toString(b.getLigne());
+			case 6:
+				return Integer.toString(b.getColonne());
+			case SHOW:
+				return Boolean.FALSE;
+			default:
+				return "";
 		}
-		return "";
 	}
 
 	/**
@@ -99,7 +102,7 @@ class TableValues extends AbstractTableModel {
 	 */
 	@Override
 	public String getColumnName(int column) {
-		return columnNames[column];
+		return columnNames.get(column);
 	}
 
 	/**
@@ -124,13 +127,13 @@ class TableValues extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object value, int row, int column) {
 		switch (column) {
-		case SHOW:
-			Bouteille bottle = monVector.get(row);
-			Program.showBottle(bottle, true);
-			break;
-		case ETAT:
-			listBoolean.set(row, (Boolean)value);
-			break;
+			case SHOW:
+				Bouteille bottle = datas.get(row);
+				Program.showBottle(bottle, true);
+				break;
+			case ETAT:
+				listBoolean.set(row, (Boolean)value);
+				break;
 		}
 	}
 
@@ -141,7 +144,7 @@ class TableValues extends AbstractTableModel {
 	 */
 	void addBouteille(Bouteille b) {
 		if(b != null) {
-			monVector.add(b);
+			datas.add(b);
 			listBoolean.add(Boolean.FALSE);
 			fireTableDataChanged();
 		}
@@ -151,7 +154,7 @@ class TableValues extends AbstractTableModel {
 	 * removeAll: Vidage de la liste.
 	 */
 	public void removeAll() {
-		monVector.clear();
+		datas.clear();
 		listBoolean.clear();
 		fireTableDataChanged();
 	}
@@ -162,31 +165,21 @@ class TableValues extends AbstractTableModel {
 	 * @param bouteille Bouteille
 	 */
 	void removeBouteille(Bouteille bouteille) {
-		int index = monVector.indexOf(bouteille);
-		monVector.remove(bouteille);
+		int index = datas.indexOf(bouteille);
+		datas.remove(bouteille);
 		listBoolean.remove(index);
 		fireTableDataChanged();
 	}
 
 	public List<Bouteille> getDatas(){
-		return monVector;
+		return datas;
 	}
 	
 	boolean hasBottle(Bouteille b){
-		return monVector.contains(b);
+		return datas.contains(b);
 	}
 
 	public Bouteille getBouteille(int i){
-		return monVector.get(i);
-	}
-
-	List<Bouteille> getSelectedBottles() {
-		List<Bouteille> list = new ArrayList<>();
-		for (int i = 0; i < listBoolean.size(); i++) {
-			if (listBoolean.get(i)) {
-				list.add(getBouteille(i));
-			}
-		}
-		return list;
+		return datas.get(i);
 	}
 }

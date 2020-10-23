@@ -424,11 +424,11 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 		return getEditor().getItem().toString().strip();
 	}
 
-	public boolean isHandleSelectionChange() {
-		return handleSelectionChange;
-	}
-
-	public void setHandleSelectionChange(boolean handleSelectionChange) {
-		this.handleSelectionChange = handleSelectionChange;
-	}
+//	public boolean isHandleSelectionChange() {
+//		return handleSelectionChange;
+//	}
+//
+//	public void setHandleSelectionChange(boolean handleSelectionChange) {
+//		this.handleSelectionChange = handleSelectionChange;
+//	}
 }

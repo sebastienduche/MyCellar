@@ -65,8 +65,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.4
- * @since 29/08/20
+ * @version 7.5
+ * @since 24/10/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -863,6 +863,11 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     } else if (isNormal() || isWork()) {
       int i = 0;
       for (ShowFileColumn<?> column : columnsModel) {
+        if (i >= tcm.getColumnCount()) {
+          Debug("ERROR: i >= columnCount : " + i);
+          Debug("ERROR: columsModel = " + columnsModel.size() + "\n" + columnsModel.stream().map(c -> c.getField().toString() + ";"));
+          continue;
+        }
         tc = tcm.getColumn(i);
         if (column.getField().equals(MyCellarFields.PLACE)) {
           tc.setCellEditor(new DefaultCellEditor(m_oPlaceCbx));

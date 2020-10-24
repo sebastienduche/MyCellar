@@ -12,8 +12,8 @@ import java.awt.event.KeyEvent;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 02/03/18
+ * @version 0.3
+ * @since 24/10/20
  */
 public final class Utils {
 
@@ -24,9 +24,11 @@ public final class Utils {
     // Ne pas afficher les composants d'onglets si ça a été
     // explicitement demandé (ne fonctionne pas avec tous les look and
     // feels)
-    tabbedPane.setTabComponentAt(
-        tabbedPane.indexOfComponent(component),
-        new JButtonTabComponent(tabbedPane));
+    final int index = tabbedPane.indexOfComponent(component);
+    if (index != -1) {
+      tabbedPane.setTabComponentAt(index,
+          new JButtonTabComponent(tabbedPane));
+    }
     //}
 
     tabbedPane.addKeyListener(new KeyAdapter() {

@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.DateCellRenderer;
 import mycellar.core.IMyCellar;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
@@ -14,18 +15,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Titre : Cave &agrave; vin
@@ -34,8 +35,8 @@ import java.util.LinkedList;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.2
- * @since 19/10/20
+ * @version 4.3
+ * @since 26/10/20
  */
 
 public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
@@ -90,36 +91,18 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 		tc.setCellEditor(new StateButtonEditor());
 		tc.setMinWidth(100);
 		tc.setMaxWidth(100);
+		tc = tcm.getColumn(TableHistoryValues.DATE);
+		tc.setCellRenderer(new DateCellRenderer());
 
 		TableRowSorter<TableHistoryValues> sorter = new TableRowSorter<>(tv);
-		sorter.setComparator(1, new Comparator<String>() {
-
-      @Override
-      public int compare(String o1, String o2) {
-        if (o1 == null || o2 == null) {
-          return 1;
-        }
-        if (o1.isBlank() || o2.isBlank()
-            || !o1.contains("/") || !o2.contains("/")) {
-          return o1.compareTo(o2);
-        }
-        
-        Date date1 = null;
-        Date date2 = null;
-        try {
-          SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy");
-          date1 = parser.parse(o1);
-          date2 = parser.parse(o2);
-        } catch (ParseException e) {}
-        
-        if (date1 == null || date2 == null) {
-          return 1;
-        }
-        return date1.compareTo(date2);
-      }
-		  
+		sorter.setComparator(1, (Comparator<LocalDate>) (o1, o2) -> {
+		  if (o1 == null || o2 == null) {
+			return 1;
+		  }
+		  return o1.compareTo(o2);
 		});
 		table.setRowSorter(sorter);
+		sorter.setSortKeys(List.of(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
 
 		setLayout(new MigLayout("", "grow", "[][grow][]"));
 		add(filterLabel, "split 5");

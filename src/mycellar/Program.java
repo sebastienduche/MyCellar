@@ -89,13 +89,13 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.7
- * @since 16/10/20
+ * @version 22.8
+ * @since 26/10/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.6.2.8";
+	public static final String INTERNAL_VERSION = "3.6.3.5";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -175,6 +175,8 @@ public final class Program {
 	private static boolean listCaveModified = false;
 	private static int nextID = -1;
 	public static final MyClipBoard CLIPBOARD = new MyClipBoard();
+
+	public static final DateTimeFormatter DATE_FORMATER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	enum Type {
 		WINE,

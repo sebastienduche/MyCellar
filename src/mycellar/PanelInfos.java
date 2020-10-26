@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.DateCellRenderer;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
@@ -21,8 +22,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.0
- * @since 28/12/18
+ * @version 2.1
+ * @since 26/10/20
  */
 class PanelInfos extends JPanel {
 
@@ -215,6 +216,8 @@ class PanelHistory extends JPanel {
 		tc = tcm.getColumn(0);
 		tc.setMinWidth(100);
 		tc.setMaxWidth(100);
+		tc = tcm.getColumn(TableHistoryValues.DATE - 1);
+		tc.setCellRenderer(new DateCellRenderer());
 
 		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos407")));
 		setEnabled(false);

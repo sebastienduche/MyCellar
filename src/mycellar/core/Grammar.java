@@ -6,12 +6,13 @@ package mycellar.core;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 16/10/20
+ * @version 0.2
+ * @since 30/10/20
  */
 
 public enum Grammar {
   NONE,
   SINGLE,
-  THE
+  THE,
+  OF_THE
 }

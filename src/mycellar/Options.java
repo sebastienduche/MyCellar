@@ -11,8 +11,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 
 /**
@@ -21,13 +21,10 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 02/09/20
+ * @version 1.7
+ * @since 30/10/20
  */
 public class Options extends JDialog {
-  private final MyCellarLabel textControl1 = new MyCellarLabel();
-  private final MyCellarLabel textControl2 = new MyCellarLabel();
-  private final MyCellarLabel definition = new MyCellarLabel();
   private final MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
   private final MyCellarLabel textControl3 = new MyCellarLabel();
   private static final int LARGEUR = 420;
@@ -57,7 +54,7 @@ public class Options extends JDialog {
     try {
       jbInit(title, message, propriete, default_value);
     }
-    catch (Exception e) {
+    catch (RuntimeException e) {
       Program.showException(e);
     }
   }
@@ -75,26 +72,22 @@ public class Options extends JDialog {
 
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     setTitle(title);
+    MyCellarLabel textControl1 = new MyCellarLabel(title);
     textControl1.setFont(Program.FONT_DIALOG_SMALL);
     textControl1.setForeground(Color.red);
-    textControl1.setText(title);
     textControl1.setHorizontalAlignment(SwingConstants.CENTER);
-    definition.setText(message);
-    textControl2.setText(propriete);
+    MyCellarLabel definition = new MyCellarLabel(message);
+    MyCellarLabel textControl2 = new MyCellarLabel(propriete);
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(SwingConstants.CENTER);
     valider.setMnemonic('O');
     value.setText(default_value);
     valider.addActionListener(this::valider_actionPerformed);
-    addKeyListener(new KeyListener() {
-      @Override
-      public void keyReleased(KeyEvent e) {}
+    addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
         keylistener_actionPerformed(e);
       }
-      @Override
-      public void keyTyped(KeyEvent e) {}
     });
 
     setSize(LARGEUR, HAUTEUR);

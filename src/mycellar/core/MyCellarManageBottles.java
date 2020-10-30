@@ -30,8 +30,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.5
- * @since 18/10/20
+ * @version 3.6
+ * @since 30/10/20
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -81,7 +81,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected boolean updateView = false;
 	protected MyCellarButton m_chooseCell;
 	protected PanelVignobles panelVignobles;
-	protected Bouteille m_laBouteille = null;
+	protected Bouteille bottle = null;
 	protected char AJOUTER = Program.getLabel("AJOUTER").charAt(0);
 	private char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
 	private final MyCellarLabel m_devise = new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, "€"));
@@ -422,8 +422,8 @@ public abstract class MyCellarManageBottles extends JPanel {
     			for (int i = 1; i<= nbEmpl; i++) {
     				m_num_lieu.addItem(Integer.toString(i));
     			}
-    			int nbLine = rangement.getNbLignes(bottle.getNumLieu()-1);
-    			int nbColumn = rangement.getNbColonnes(bottle.getNumLieu()-1, bottle.getLigne()-1);
+    			int nbLine = rangement.getNbLignes(bottle.getNumLieu() - 1);
+    			int nbColumn = rangement.getNbColonnes(bottle.getNumLieu() - 1, bottle.getLigne() - 1);
     			for (int i = 1; i<= nbLine; i++) {
     				m_line.addItem(Integer.toString(i));
     			}
@@ -440,7 +440,7 @@ public abstract class MyCellarManageBottles extends JPanel {
     			for (int i = start; i< nbEmpl+start; i++) {
     				m_num_lieu.addItem(Integer.toString(i));
     			}
-    			m_num_lieu.setSelectedIndex(bottle.getNumLieu()-start+1);
+    			m_num_lieu.setSelectedIndex(bottle.getNumLieu() - start + 1);
     		}
     		m_num_lieu.setEnabled(true);
 		}

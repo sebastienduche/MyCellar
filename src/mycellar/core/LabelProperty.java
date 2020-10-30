@@ -6,19 +6,21 @@ package mycellar.core;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 17/10/20
+ * @version 0.3
+ * @since 30/10/20
  */
 public class LabelProperty {
 
   private final boolean plural;
-  private boolean uppercaseFirst;
+  private final boolean uppercaseFirst;
   private final Grammar grammar;
 
   public static final LabelProperty PLURAL = new LabelProperty(true);
   public static final LabelProperty SINGLE = new LabelProperty(false);
   public static final LabelProperty THE_SINGLE = new LabelProperty(false, false, Grammar.THE);
+  public static final LabelProperty OF_THE_SINGLE = new LabelProperty(false, false, Grammar.OF_THE);
   public static final LabelProperty THE_PLURAL = new LabelProperty(true, false, Grammar.THE);
+  public static final LabelProperty OF_THE_PLURAL = new LabelProperty(true, false, Grammar.OF_THE);
   public static final LabelProperty A_SINGLE = new LabelProperty(false, false, Grammar.SINGLE);
 
 

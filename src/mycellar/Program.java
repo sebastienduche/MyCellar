@@ -83,19 +83,21 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.8
- * @since 26/10/20
+ * @version 22.9
+ * @since 30/10/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.6.3.5";
+	public static final String INTERNAL_VERSION = "3.6.4.4";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -221,6 +223,10 @@ public final class Program {
 	}
 
 	private static String getLabelForType(boolean plural, boolean firstLetterUppercase, Grammar grammar) {
+		return getLabelForType(type, plural, firstLetterUppercase, grammar);
+	}
+
+	public static String getLabelForType(Type theType, boolean plural, boolean firstLetterUppercase, Grammar grammar) {
 		String value;
 		String prefix;
 		String postfix = plural ? "s" : "";
@@ -231,12 +237,15 @@ public final class Program {
 			case THE:
 				prefix = "the";
 				break;
+			case OF_THE:
+				prefix = "ofthe";
+				break;
 			case NONE:
 			default:
 				prefix = "";
 				break;
 		}
-		switch (type) {
+		switch (theType) {
 			case WINE:
 				value = getLabel("Program." + prefix + "wine" + postfix);
 				break;
@@ -327,6 +336,10 @@ public final class Program {
 		String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
 		if(sVersion.isEmpty() || sVersion.contains(".")) {
 			putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
+		}
+		final String programType = getCaveConfigString(PROGRAM_TYPE, "");
+		if (programType.isBlank()) {
+			putCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name());
 		}
 
 		//int version = Integer.parseInt(sVersion);
@@ -885,6 +898,7 @@ public final class Program {
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN4, list.pop());
+		setProgramType(Program.Type.valueOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
 
 		putCaveConfigString(MyCellarSettings.DIR, file.getParent());
 
@@ -897,7 +911,10 @@ public final class Program {
 	 * closeFile: Fermeture du fichier.
 	 */
 	static void closeFile() {
-
+		if (myCellarFile == null) {
+			Debug("Program: closeFile: File already closed!");
+			return;
+		}
 		Debug("Program: closeFile: Closing file...");
 		boolean bSave = false;
 		File newFile = null;

@@ -295,7 +295,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			jMenuExportXml.setEnabled(false);
 			showFile.setEnabled(false);
 			showWorksheet.setEnabled(false);
-		} else if (Program.GetCaveLength() == 0) {
+		} else if (Program.getCaveLength() == 0) {
 			Program.getCave().add(Program.DEFAULT_PLACE);
 		}
 		enableAll(true);

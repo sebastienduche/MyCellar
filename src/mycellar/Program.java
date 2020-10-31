@@ -69,6 +69,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -91,13 +92,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.9
- * @since 30/10/20
+ * @version 23.0
+ * @since 31/10/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.6.4.4";
+	public static final String INTERNAL_VERSION = "3.6.4.5";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -784,7 +785,7 @@ public final class Program {
 	 *
 	 * @return int
 	 */
-	static int GetCaveLength() {
+	static int getCaveLength() {
 		return RANGEMENTS_LIST.size();
 	}
 
@@ -875,9 +876,9 @@ public final class Program {
 
 		Debug("Program: Checking place count");
 		long i = getCave().stream().filter(Objects::nonNull).count();
-		if (i != GetCaveLength()) {
-			Debug("Program: Place Count: Program=" + GetCaveLength() + " cave=" + i);
-			throw new UnableToOpenFileException("Place Count: Program=" + GetCaveLength() + " cave=" + i);
+		if (i != getCaveLength()) {
+			Debug("Program: Place Count: Program=" + getCaveLength() + " cave=" + i);
+			throw new UnableToOpenFileException("Place Count: Program=" + getCaveLength() + " cave=" + i);
 		}
 
 		loadProperties();
@@ -1112,7 +1113,7 @@ public final class Program {
 			f_obj.mkdir();
 		}
 
-		Debug("Program: work directory: "+m_sWorkDir);
+		Debug("Program: work directory: " + m_sWorkDir);
 		DIR_TO_DELETE.add(new File(m_sWorkDir));
 
 		if (_bWithEndSlash) {
@@ -1495,6 +1496,27 @@ public final class Program {
 				f.deleteOnExit();
 			}
 		}
+	}
+	
+	private static void cleanTempDirs() {
+	  String sDir = System.getProperty("user.home") + File.separator + "MyCellar";
+
+    File file = new File(sDir);
+    if (!file.exists()) {
+      return;
+    }
+
+    Long time = Long.parseLong(LocalDateTime.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+    
+    List<Long> oldTime = Arrays.asList(file.list())
+      .stream()
+      .filter(StringUtils::isNumeric)
+      .map(Long::parseLong)
+      .filter(value -> value < time).collect(Collectors.toList());
+    
+    oldTime.forEach(value -> {
+      DIR_TO_DELETE.add(new File(file + File.separator + Long.toString(value)));
+    });
 	}
 
 	public static void saveShowColumns(String value) {
@@ -1921,6 +1943,7 @@ public final class Program {
 	}
 
 	static void exit() {
+	  cleanTempDirs();
 		deleteTempFiles();
 		cleanDebugFiles();
 		Debug("Program: MyCellar End");

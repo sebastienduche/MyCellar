@@ -468,8 +468,8 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				MyOptions myoptions = new MyOptions(title, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
 				myoptions.setVisible(true);
 				int num_r = Program.getCaveConfigInt(MyCellarSettings.RANGEMENT_DEFAULT, -1);
-				if (num_r == Program.GetCaveLength()) {
-					String nom1 = Program.getCaveConfigString(MyCellarSettings.RANGEMENT_NAME,""); //Program.options.getValue();
+				if (num_r == Program.getCaveLength()) {
+					String nom1 = Program.getCaveConfigString(MyCellarSettings.RANGEMENT_NAME, ""); //Program.options.getValue();
 					boolean resul;
 					do {
 						do {

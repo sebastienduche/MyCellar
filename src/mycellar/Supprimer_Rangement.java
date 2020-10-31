@@ -172,7 +172,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 
 			// Verifier l'etat du rangement avant de le supprimer et demander confirmation
 			if (num_select > 0) {
-				if (Program.GetCaveLength() == 1) {
+				if (Program.getCaveLength() == 1) {
 					Erreur.showSimpleErreur(Program.getError("SupprimerRangement.ForbiddenToDelete"));
 					return;
 				}

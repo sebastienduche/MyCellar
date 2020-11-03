@@ -72,6 +72,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,6 +85,24 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import static mycellar.ScreenType.ADDVIN;
+import static mycellar.ScreenType.CELL_ORGANIZER;
+import static mycellar.ScreenType.CHOOSE_CELL;
+import static mycellar.ScreenType.CREATE_PLACE;
+import static mycellar.ScreenType.CREER_TABLEAU;
+import static mycellar.ScreenType.EXPORT;
+import static mycellar.ScreenType.HISTORY;
+import static mycellar.ScreenType.IMPORTER;
+import static mycellar.ScreenType.MODIFY_PLACE;
+import static mycellar.ScreenType.PARAMETRES;
+import static mycellar.ScreenType.SEARCH;
+import static mycellar.ScreenType.SHOW_ERRORS;
+import static mycellar.ScreenType.SHOW_FILE;
+import static mycellar.ScreenType.SHOW_TRASH;
+import static mycellar.ScreenType.SHOW_WORKSHEET;
+import static mycellar.ScreenType.STATS;
+import static mycellar.ScreenType.SUPPRIMER_RANGEMENT;
+import static mycellar.ScreenType.VIGNOBLES;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 /**
@@ -92,13 +111,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.0
- * @since 31/10/20
+ * @version 23.1
+ * @since 03/11/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.6.4.5";
+	public static final String INTERNAL_VERSION = "3.6.4.8";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -114,27 +133,9 @@ public final class Program {
 	static final Font FONT_DIALOG_SMALL = new Font("Dialog", Font.BOLD, 12);
 	public static final Font FONT_LABEL_BOLD = new Font("Arial", Font.BOLD, 12);
 
-	private static final Map<String, IMyCellar> OPENED_OBJECTS = new HashMap<>();
-	private static final Map<String, IUpdatable> UPDATABLE_OBJECTS = new HashMap<>();
-
-	private static final String EXPORT = "EXPORT";
-	private static final String PARAMETRES = "PARAMETRES";
-	private static final String CREER_TABLEAU = "CREER_TABLEAU";
-	private static final String IMPORTER = "IMPORTER";
-	private static final String SHOW_FILE = "SHOW_FILE";
-	private static final String SHOW_TRASH = "SHOW_TRASH";
-	private static final String SEARCH = "SEARCH";
-	private static final String HISTORY = "HISTORY";
-	private static final String VIGNOBLES = "VIGNOBLES";
-	private static final String CREATE_PLACE = "CREATE_PLACE";
-	private static final String MODIFY_PLACE = "MODIFY_PLACE";
-	private static final String CHOOSE_CELL = "CHOOSE_CELL";
-	private static final String CELL_ORGANIZER = "CELL_ORGANIZER";
-	private static final String SUPPRIMER_RANGEMENT = "SUPPRIMER_RANGEMENT";
-	private static final String STATS = "STATS";
-	private static final String SHOW_ERRORS = "SHOW_ERRORS";
-	private static final String SHOW_WORKSHEET = "SHOW_WORKSHEET";
-	private static final String ADDVIN = "ADDVIN";
+	private static final Map<ScreenType, IMyCellar> OPENED_OBJECTS = new EnumMap<>(ScreenType.class);
+	private static final Map<ScreenType, IUpdatable> UPDATABLE_OBJECTS = new EnumMap<>(ScreenType.class);
+	private static final Map<Integer, IUpdatable> UPDATABLE_BOTTLES = new HashMap<>();
 
 	static final PanelInfos PANEL_INFOS = new PanelInfos();
 	public static final JTabbedPane TABBED_PANE = new JTabbedPane();
@@ -1007,6 +1008,7 @@ public final class Program {
 
 	private static void clearObjectsVariables() {
 		UPDATABLE_OBJECTS.clear();
+		UPDATABLE_BOTTLES.clear();
 		OPENED_OBJECTS.clear();
 	}
 
@@ -1326,7 +1328,8 @@ public final class Program {
 	}
 
 	static void updateAllPanels() {
-		UPDATABLE_OBJECTS.forEach((aString, iUpdatable) -> iUpdatable.setUpdateView());
+		UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView());
+		UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView());
 	}
 
 	static void updateManagePlacePanel() {
@@ -1346,7 +1349,7 @@ public final class Program {
 				if (TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image)) {
 					return i;
 				}
-			} catch(Exception ignored){}
+			} catch(RuntimeException ignored) {}
 		}
 		return -1;
 	}
@@ -1776,7 +1779,7 @@ public final class Program {
 		UPDATABLE_OBJECTS.remove(CHOOSE_CELL);
 	}
 
-	private static IMyCellar createOpenedObject(Class<?> className, String id) {
+	private static IMyCellar createOpenedObject(Class<?> className, ScreenType id) {
 		IMyCellar object = OPENED_OBJECTS.get(id);
 		if (object == null) {
 			try {
@@ -1792,6 +1795,11 @@ public final class Program {
 
 	static void updateSelectedTab() {
 		UPDATABLE_OBJECTS.forEach((s, iUpdatable) -> {
+			if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
+				iUpdatable.updateView();
+			}
+		});
+		UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> {
 			if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
 				iUpdatable.updateView();
 			}
@@ -1856,6 +1864,14 @@ public final class Program {
 	public static String bigDecimalToString(final BigDecimal value, final Locale locale) {
     return getDecimalFormat(locale).format(value);
   }
+
+	public static BigDecimal safeStringToBigDecimal(final String value, BigDecimal defaultValue) {
+		try {
+			return stringToBigDecimal(value);
+		} catch (NumberFormatException e) {
+			return defaultValue;
+		}
+	}
   
   public static BigDecimal stringToBigDecimal(final String value) throws NumberFormatException {
 	  StringBuilder buf = new StringBuilder();
@@ -1905,7 +1921,7 @@ public final class Program {
 		}
 		ManageBottle manage = new ManageBottle(bottle);
 		manage.enableAll(edit);
-		UPDATABLE_OBJECTS.put(Integer.toString(bottle.getId()), manage);
+		UPDATABLE_BOTTLES.put(bottle.getId(), manage);
 		String bottleName = bottle.getNom();
 		if (bottleName.length() > 30) {
 			bottleName = bottleName.substring(0, 30) + " ...";

@@ -67,8 +67,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.7
- * @since 19/10/20
+ * @version 7.8
+ * @since 03/11/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -114,7 +114,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     try {
       initializeStandardColumns();
       jbInit();
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
       Program.showException(e);
     }
   }
@@ -128,7 +128,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     try {
       jbInit();
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
       Program.showException(e);
     }
   }
@@ -419,7 +419,10 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
   public void addWorkingBottles(Collection<Bouteille> bottles) {
     if (bottles != null) {
-      final List<Bouteille> bouteilles = bottles.stream().filter(bouteille -> !workingBottles.contains(bouteille)).collect(Collectors.toList());
+      final List<Bouteille> bouteilles = bottles
+          .stream()
+          .filter(bouteille -> !workingBottles.contains(bouteille))
+          .collect(Collectors.toList());
       for (Bouteille bottle : bouteilles) {
         Program.getStorage().addToWorksheet(bottle);
       }
@@ -540,21 +543,13 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       if (o1.isEmpty()) {
         price1 = BigDecimal.ZERO;
       } else {
-        try {
-          price1 = Program.stringToBigDecimal(o1);
-        } catch (NumberFormatException ignored) {
-          price1 = BigDecimal.ZERO;
-        }
+        price1 = Program.safeStringToBigDecimal(o1, BigDecimal.ZERO);
       }
       BigDecimal price2;
       if(o2.isEmpty()) {
         price2 = BigDecimal.ZERO;
       } else {
-        try {
-          price2 = Program.stringToBigDecimal(o2);
-        } catch (NumberFormatException ignored) {
-          price2 = BigDecimal.ZERO;
-        }
+        price2 = Program.safeStringToBigDecimal(o2, BigDecimal.ZERO);
       }
       return price1.compareTo(price2);
     });
@@ -869,7 +864,13 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       tc.setCellEditor(new StateButtonEditor());
     } else if (isNormal() || isWork()) {
       int i = 0;
+      final int columnCount = tcm.getColumnCount();
       for (ShowFileColumn<?> column : columnsModel) {
+        if (i >= columnCount) {
+          Debug("ERROR: i >= columnCount: Colum: " + column.getField().name() + " " + i + " >= " + columnCount);
+          i++;
+          continue;
+        }
         tc = tcm.getColumn(i);
         if (column.getField().equals(MyCellarFields.PLACE)) {
           tc.setCellEditor(new DefaultCellEditor(m_oPlaceCbx));
@@ -1036,12 +1037,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
   private class CreatePlacesAction extends AbstractAction {
 
-	private static final long serialVersionUID = -3652414491735669984L;
+	  private static final long serialVersionUID = -3652414491735669984L;
 
-
-	private CreatePlacesAction() {
-    }
-
+	  private CreatePlacesAction() {}
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -1063,7 +1061,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       Program.getStorage().getWorksheetList().clear();
       tv.setBottles(workingBottles);
     }
-
   }
 
   private class RemoveFromWorksheetAction extends AbstractAction {
@@ -1080,9 +1077,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       Program.setModified();
       tv.fireTableDataChanged();
     }
-
   }
-
 
   public void Debug(String text) {
     Program.Debug("ShowFile: " + text);

@@ -45,8 +45,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 09/10/20
+ * @version 2.7
+ * @since 06/11/20
  */
 public final class RangementUtils {
 
@@ -213,7 +213,7 @@ public final class RangementUtils {
 						td.appendChild(doc.createTextNode(BottleColor.getColor(b.getColor()).toString()));
 					} else if (field == MyCellarFields.COUNTRY) {
 						if (b.getVignoble() != null) {
-							Country c = Countries.find(b.getVignoble().getCountry());
+							Country c = Countries.findbyId(b.getVignoble().getCountry()).orElse(null);
 							if (c != null) {
 								td.appendChild(doc.createTextNode(c.toString()));
 							}

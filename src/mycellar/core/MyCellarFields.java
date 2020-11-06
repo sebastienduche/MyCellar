@@ -14,8 +14,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 18/10/20
+ * @version 1.3
+ * @since 06/11/20
  */
 
 public enum MyCellarFields {
@@ -80,7 +80,7 @@ public enum MyCellarFields {
 			value = b.getStatus();
 		} else if(field == COUNTRY) {
 			if(b.getVignoble() != null) {
-				Country c = Countries.find(b.getVignoble().getCountry());
+				Country c = Countries.findbyId(b.getVignoble().getCountry()).orElse(null);
 				if(c != null) {
 					value = c.toString();
 				}

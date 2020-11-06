@@ -67,8 +67,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.8
- * @since 03/11/20
+ * @version 7.9
+ * @since 06/11/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -301,7 +301,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (b.getVignoble() == null) {
           return "";
         }
-        Country country = Countries.find(b.getVignoble().getCountry());
+        Country country = Countries.findbyId(b.getVignoble().getCountry()).orElse(null);
         if (country != null) {
           return country.getLabel();
         }
@@ -868,6 +868,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       for (ShowFileColumn<?> column : columnsModel) {
         if (i >= columnCount) {
           Debug("ERROR: i >= columnCount: Colum: " + column.getField().name() + " " + i + " >= " + columnCount);
+          columnsModel.forEach(showFileColumn -> Debug(showFileColumn.getField().name()));
           i++;
           continue;
         }

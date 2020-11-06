@@ -46,7 +46,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
-
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
@@ -117,7 +116,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.6.4.8";
+	public static final String INTERNAL_VERSION = "3.6.5.8";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -170,7 +169,7 @@ public final class Program {
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;
 
-	public static final Country france = new Country("FRA", "France");
+	public static final Country FRANCE = new Country("FRA", "France");
 	public static final Country NO_COUNTRY = new Country("");
 	public static final CountryVignoble NO_VIGNOBLE = new CountryVignoble();
 	public static final Appelation NO_APPELATION = new Appelation();
@@ -214,8 +213,7 @@ public final class Program {
 				putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
 			}
 			cleanAndUpgrade();
-		}
-		catch (Exception e) {
+		} catch (IOException | UnableToOpenFileException | RuntimeException e) {
 			showException(e);
 		}
 	}
@@ -615,15 +613,11 @@ public final class Program {
 	static void getAide() {
 
 		File f = new File("./Help/MyCellar.hs");
-
 		if (f.exists()) {
 			try {
 				Runtime.getRuntime().exec("java -jar ./Help/hsviewer.jar -hsURL \"file:./Help/MyCellar.hs\"");
-			}
-			catch (IOException ignored) {
-			}
-		}
-		else {
+			} catch (IOException ignored) {}
+		} else {
 			Erreur.showSimpleErreur(getError("Error162"));
 		}
 	}
@@ -633,8 +627,6 @@ public final class Program {
 		DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
 		return symbols.getDecimalSeparator();
 	}
-
-
 
 	/**
 	 * Sauvegarde le fichier
@@ -842,12 +834,12 @@ public final class Program {
 		CountryVignobles.init();
 		Countries.init();
 
-		if(isNewFile) {
+		if (isNewFile) {
 			// Nouveau fichier de bouteilles
 			ListeBouteille.writeXML();
 		}
 
-		if(!file.exists()) {
+		if (!file.exists()) {
 			Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), file.getAbsolutePath())); //Fichier non trouve);
 
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
@@ -863,7 +855,7 @@ public final class Program {
 		myCellarFile.unzip();
 
 		// Chargement
-		if(!isNewFile && !getDataFile().exists()) {
+		if (!isNewFile && !getDataFile().exists()) {
 			Debug("Program: ERROR: Unable to find file data.xml!!");
 			throw new UnableToOpenFileException("File not found: data.xml");
 		}
@@ -920,15 +912,14 @@ public final class Program {
 		Debug("Program: closeFile: Closing file...");
 		boolean bSave = false;
 		File newFile = null;
-		if(myCellarFile.exists() && isModified()) {
+		if (myCellarFile.exists() && isModified()) {
 			if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("Error199"), getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 				bSave = true;
-				if(!myCellarFile.isFileSavable()) {
+				if (!myCellarFile.isFileSavable()) {
 					JFileChooser boiteFichier = new JFileChooser();
 					boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 					boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
-					int retour_jfc = boiteFichier.showSaveDialog(null);
-					if (retour_jfc == JFileChooser.APPROVE_OPTION) {
+					if (boiteFichier.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 						File nomFichier = boiteFichier.getSelectedFile();
 						newFile = new File(MyCellarControl.controlAndUpdateExtension(nomFichier.getAbsolutePath(), Filtre.FILTRE_SINFO));
 					}
@@ -971,7 +962,7 @@ public final class Program {
 			}
 		}
 
-		if(myCellarFile.exists()) {
+		if (myCellarFile.exists()) {
 			// Sauvegarde des proprietes globales
 			saveGlobalProperties();
 
@@ -1055,18 +1046,18 @@ public final class Program {
 	 * @return
 	 */
 	private static String getGlobalDir() {
-		if(m_bGlobalDirCalculated) {
+		if (m_bGlobalDirCalculated) {
 			return m_sGlobalDir + File.separator;
 		}
 		m_bGlobalDirCalculated = true;
 		String sDir = System.getProperty("user.home");
-		if(sDir.isEmpty()) {
+		if (sDir.isEmpty()) {
 			m_sGlobalDir = "./Object/Global";
 		} else {
 			m_sGlobalDir = sDir + "/MyCellar/Global";
 		}
 		File f_obj = new File(m_sGlobalDir);
-		if(!f_obj.exists()) {
+		if (!f_obj.exists()) {
 			f_obj.mkdir();
 		}
 
@@ -1111,7 +1102,7 @@ public final class Program {
 		m_sWorkDir += File.separator + time;
 
 		f_obj = new File(m_sWorkDir);
-		if(!f_obj.exists()) {
+		if (!f_obj.exists()) {
 			f_obj.mkdir();
 		}
 
@@ -1231,10 +1222,6 @@ public final class Program {
 		return getWorkDir(true) + BOUTEILLES_XML;
 	}
 
-	public static String getUntitledFileName() {
-		return UNTITLED1_SINFO;
-	}
-
 	public static String getPreviewXMLFileName() {
 		return getGlobalDir() + PREVIEW_XML;
 	}
@@ -1262,8 +1249,8 @@ public final class Program {
 	public static String getLabel(String id, boolean displayError) {
 		try {
 			return LanguageFileLoader.getLabel(id);
-		}catch(MissingResourceException e) {
-			if(displayError) {
+		} catch(MissingResourceException e) {
+			if (displayError) {
 				JOptionPane.showMessageDialog(null, "Missing Label " + id, "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			return id;
@@ -1281,7 +1268,7 @@ public final class Program {
 	public static String getError(String id) {
 		try {
 			return LanguageFileLoader.getError(id);
-		}catch(MissingResourceException e) {
+		} catch(MissingResourceException e) {
 			JOptionPane.showMessageDialog(null, "Missing Error " + id, "Error", JOptionPane.ERROR_MESSAGE);
 			return id;
 		}
@@ -1302,10 +1289,11 @@ public final class Program {
 	public static void open(File file) {
 		if (file != null) {
 			try {
-				if (System.getProperty("os.name").startsWith("Mac"))
+				if (System.getProperty("os.name").startsWith("Mac")) {
 					Runtime.getRuntime().exec("/usr/bin/open " + file.getAbsolutePath());
-				else
+				} else {
 					Desktop.getDesktop().browse(file.toURI());
+				}
 			} catch (IOException e) {
 				showException(e, true);
 			}
@@ -1381,15 +1369,15 @@ public final class Program {
 
 		int nbCol = MyCellarFields.getFieldsList().size();
 		int countColumn = 0;
-		for(int i=0; i<nbCol; i++) {
+		for (int i=0; i<nbCol; i++) {
 			int export = getCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT", 0);
-			if(export == 1) {
+			if (export == 1) {
 				countColumn++;
 				int sizeCol = getCaveConfigInt(MyCellarSettings.SIZE_COL + i, 5);
 				properties.addColumn(MyCellarFields.getFieldsList().get(i), i, sizeCol, MyCellarFields.getFieldsList().get(i).toString());
 			}
 		}
-		if(countColumn == 0) {
+		if (countColumn == 0) {
 			properties.addColumn(MyCellarFields.getFieldsList().get(0), 0, 10, MyCellarFields.getFieldsList().get(0).toString());
 			properties.addColumn(MyCellarFields.getFieldsList().get(1), 1, 2, MyCellarFields.getFieldsList().get(1).toString());
 			properties.addColumn(MyCellarFields.getFieldsList().get(3), 3, 5, MyCellarFields.getFieldsList().get(3).toString());
@@ -1509,17 +1497,17 @@ public final class Program {
       return;
     }
 
-    Long time = Long.parseLong(LocalDateTime.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
-    
-    List<Long> oldTime = Arrays.asList(file.list())
-      .stream()
-      .filter(StringUtils::isNumeric)
-      .map(Long::parseLong)
-      .filter(value -> value < time).collect(Collectors.toList());
-    
-    oldTime.forEach(value -> {
-      DIR_TO_DELETE.add(new File(file + File.separator + Long.toString(value)));
-    });
+    long time = Long.parseLong(LocalDateTime.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+
+		final String[] list = file.list();
+		if (list != null) {
+			List<Long> oldTime = Arrays.stream(list)
+					.filter(StringUtils::isNumeric)
+					.map(Long::parseLong)
+					.filter(value -> value < time).collect(Collectors.toList());
+
+			oldTime.forEach(value -> DIR_TO_DELETE.add(new File(file + File.separator + value)));
+		}
 	}
 
 	public static void saveShowColumns(String value) {

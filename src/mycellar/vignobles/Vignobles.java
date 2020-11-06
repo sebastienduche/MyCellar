@@ -31,8 +31,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 02/09/20
+ * @version 1.7
+ * @since 06/11/20
  */
 
 @XmlRootElement(name = "vignobles")
@@ -62,28 +62,27 @@ public class Vignobles
 		if(!Program.hasWorkDir()) {
 			return load("resources/vignobles.xml");
 		}
-		Country fra = Countries.find("FRA");
-		if (fra != null) {
-			File f = new File(Program.getWorkDir(true), fra.getId() + VIGNOBLE);
-			if (f.exists()) {
-				return load(f);
-			}
-		}
-		return load("resources/vignobles.xml");
+		final Vignobles fra = loadById("FRA");
+		return (fra != null) ? fra : load("resources/vignobles.xml");
 	}
 
 	static Vignobles loadItalie() {
 		if(!Program.hasWorkDir()) {
 			return load("resources/italie.xml");
 		}
-		Country ita = Countries.find("ITA");
-		if (ita != null) {
-			File f = new File(Program.getWorkDir(true), ita.getId() + VIGNOBLE);
+		final Vignobles ita = loadById("ITA");
+		return (ita != null) ? ita : load("resources/italie.xml");
+	}
+
+	private static Vignobles loadById(String id) {
+		final Country country = Countries.findbyId(id).orElse(null);
+		if (country != null) {
+			File f = new File(Program.getWorkDir(true), country.getId() + VIGNOBLE);
 			if (f.exists()) {
 				return load(f);
 			}
 		}
-		return load("resources/italie.xml");
+		return null;
 	}
 
 	private static Vignobles load(File f) {
@@ -117,8 +116,8 @@ public class Vignobles
 		Debug("Loading All countries");
 		map.clear();
 		File dir = new File(Program.getWorkDir(true));
-		map.put(Countries.find("FRA"), loadFrance());
-		map.put(Countries.find("ITA"), loadItalie());
+		Countries.findbyId("FRA").ifPresent(country -> map.put(country, loadFrance()));
+		Countries.findbyId("ITA").ifPresent(country -> map.put(country, loadItalie()));
 		File[] fileVignobles = dir.listFiles((pathname) -> pathname.getName().endsWith(VIGNOBLE));
 		if (fileVignobles != null) {
 			for (File f : fileVignobles) {
@@ -128,12 +127,12 @@ public class Vignobles
 					continue;
 				}
 				name = name.substring(0, name.indexOf(VIGNOBLE));
-				Country country = Countries.find(name);
 				File fText = new File(f.getParent(), name + TEXT);
 				String label = "";
 				if (fText.exists()) {
 					label = Program.readFirstLineText(fText);
 				}
+				Country country = Countries.findbyId(name).orElse(null);
 				if (country == null) {
 					country = new Country(name, name);
 					Countries.add(country);

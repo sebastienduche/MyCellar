@@ -34,8 +34,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 08/10/20
+ * @version 0.8
+ * @since 06/11/20
  */
 public class PanelVignobles extends JPanel {
 
@@ -103,9 +103,8 @@ public class PanelVignobles extends JPanel {
 		comboAppelationAOC.setCaseSensitive(false);
 		comboAppelationAOC.setEditable(true);
 		comboCountry.addItem(NO_COUNTRY);
-		for(Country c : Program.getCountries()) {
-			comboCountry.addItem(c);
-		}
+		Program.getCountries().forEach(comboCountry::addItem);
+
 		comboCountry.addItemListener((e) -> {
 
 				if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -128,12 +127,8 @@ public class PanelVignobles extends JPanel {
 					comboVignoble.addItem(NO_VIGNOBLE);
 					comboAppelationAOC.addItem(NO_APPELATION);
 					comboAppelationIGP.addItem("");
-					Vignobles vignobles = CountryVignobles.getVignobles(country);
-					if(vignobles != null) {
-						for(CountryVignoble v : vignobles.getVignoble()) {
-							comboVignoble.addItem(v);
-						}
-					}
+					CountryVignobles.getVignobles(country)
+						.ifPresent(vignobles -> vignobles.getVignoble().forEach(comboVignoble::addItem));
 				}
 		});
 
@@ -266,19 +261,17 @@ public class PanelVignobles extends JPanel {
 			return;
 		}
 
-		Vignobles vignobles = null;
-		if (Program.france.getId().equals(vignoble.country)) {
-			comboCountry.setSelectedItem(Program.france);
-			vignobles = CountryVignobles.getVignobles(Program.france);
-		} else if ("fr".equals(vignoble.country)) {
-			comboCountry.setSelectedItem(Program.france);
-			vignobles = CountryVignobles.getVignobles(Program.france);
+		Country country = null;
+		if (Program.FRANCE.getId().equals(vignoble.country) || "fr".equals(vignoble.country)) {
+			country = Program.FRANCE;
 		} else if (vignoble.country != null) {
-			Country c = Countries.findByIdOrLabel(vignoble.country);
-			if (c != null) {
-				comboCountry.setSelectedItem(c);
-				vignobles = CountryVignobles.getVignobles(c);
-			}
+			country = Countries.findByIdOrLabel(vignoble.country);
+		}
+
+		Vignobles vignobles = null;
+		if (country != null) {
+			comboCountry.setSelectedItem(country);
+			vignobles = CountryVignobles.getVignobles(country).orElse(null);
 		}
 
 		if (vignobles != null) {

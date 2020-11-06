@@ -13,8 +13,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 26.7
- * @since 09/10/20
+ * @version 26.8
+ * @since 06/11/20
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -499,11 +499,7 @@ public class Rangement implements Comparable<Rangement> {
 		}
 		try {
 			final Bouteille bouteille = stockage[num_empl][line][column];
-			if (bouteille == null) {
-				return Optional.empty();
-			} else {
-				return Optional.of(bouteille);
-			}
+			return Optional.ofNullable(bouteille);
 		}
 		catch (Exception e) {
 			Program.showException(e);

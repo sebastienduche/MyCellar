@@ -11,6 +11,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.datas.jaxb.Vignoble;
 import mycellar.vignobles.CountryVignobles;
 import net.miginfocom.swing.MigLayout;
 
@@ -40,8 +41,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.3
- * @since 30/10/20
+ * @version 6.4
+ * @since 09/11/20
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;

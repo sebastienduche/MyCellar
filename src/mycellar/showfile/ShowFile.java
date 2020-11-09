@@ -18,7 +18,7 @@ import mycellar.StateEditor;
 import mycellar.StateRenderer;
 import mycellar.TabEvent;
 import mycellar.ToolTipRenderer;
-import mycellar.Vignoble;
+import mycellar.core.datas.jaxb.Vignoble;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
@@ -67,8 +67,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.9
- * @since 06/11/20
+ * @version 8.0
+ * @since 09/11/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {

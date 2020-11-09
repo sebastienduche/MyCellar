@@ -5,11 +5,11 @@ import mycellar.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.Rangement;
-import mycellar.Vignoble;
+import mycellar.core.datas.jaxb.AppelationJaxb;
+import mycellar.core.datas.jaxb.Vignoble;
 import mycellar.core.PanelVignobles;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.requester.ui.ValueSearch;
-import mycellar.vignobles.Appelation;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JComboBox;
@@ -24,13 +24,13 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 15/07/19
+ * @version 1.0
+ * @since 09/11/20
  */
 
 public class Predicates {
 
-	public static final IPredicate<Bouteille> color = new IPredicate<>() {
+	public static final IPredicate<Bouteille> COLOR = new IPredicate<>() {
 
 		@Override
 		public boolean apply(Bouteille bottle) {
@@ -79,7 +79,7 @@ public class Predicates {
 		}
 	};
 
-	public static final IPredicate<Bouteille> status = new IPredicate<>() {
+	public static final IPredicate<Bouteille> SATUS = new IPredicate<>() {
 
 		@Override
 		public boolean apply(Bouteille bottle) {
@@ -133,7 +133,7 @@ public class Predicates {
 		}
 	};
 
-	public static final IPredicate<Bouteille> name = new IPredicate<>() {
+	public static final IPredicate<Bouteille> NAME = new IPredicate<>() {
 		
 		private int type = -1;
 
@@ -144,19 +144,19 @@ public class Predicates {
 
 		@Override
 		public boolean apply(Bouteille bouteille, Object compare, int type) {
-			if(type == 0) {
+			if (type == 0) {
     			if(compare instanceof String) {
     				return bouteille.getNom() != null && bouteille.getNom().startsWith((String)compare);
     			}
 			}
-			else if(type == 1) {
+			else if (type == 1) {
     			if(compare instanceof String) {
     				return bouteille.getNom() != null && bouteille.getNom().endsWith((String)compare);
     			}
 			}
-			else if(type == 2) {
-				if(compare instanceof String) {
-					return bouteille.getNom() != null && ( bouteille.getNom().contains((String)compare));
+			else if (type == 2) {
+				if (compare instanceof String) {
+					return bouteille.getNom() != null && bouteille.getNom().contains((String)compare);
 				}
 			}
 			return false;
@@ -180,11 +180,11 @@ public class Predicates {
 		@Override
 		public String getName() {
 			String label = Program.getLabel("Predicates.Name");
-			if(type == 0) {
+			if (type == 0) {
 				label += Program.getLabel("Predicates.StartWith");
-			} else if(type == 1) {
+			} else if (type == 1) {
 				label += Program.getLabel("Predicates.EndWith");
-			} else if(type == 2) {
+			} else if (type == 2) {
 				label += Program.getLabel("Predicates.Contains");
 			}
 			return label;
@@ -198,9 +198,7 @@ public class Predicates {
 			combo.addItem(Program.getLabel("Predicates.StartWith"));
 			combo.addItem(Program.getLabel("Predicates.EndWith"));
 			combo.addItem(Program.getLabel("Predicates.Contains"));
-			combo.addItemListener((e) -> {
-					type = combo.getSelectedIndex();
-				});
+			combo.addItemListener((e) -> type = combo.getSelectedIndex());
 			panel.add(combo);
 			return new ValueSearch(JOptionPane.showInputDialog(panel));
 		}
@@ -281,7 +279,7 @@ public class Predicates {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
 			JComboBox<Rangement> liste = new JComboBox<>();
-			for(Rangement r : Program.getCave()) {
+			for (Rangement r : Program.getCave()) {
 				liste.addItem(r);
 			}
 			panel.add(new JLabel(Program.getLabel("Predicates.SelectPlace")), "wrap");
@@ -331,7 +329,7 @@ public class Predicates {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
 			JComboBox<String> liste = new JComboBox<>();
-			for(String val : MyCellarBottleContenance.getList()) {
+			for (String val : MyCellarBottleContenance.getList()) {
 				liste.addItem(val);
 			}
 			panel.add(new JLabel(Program.getLabel("Predicates.SelectSize")), "wrap");
@@ -354,13 +352,13 @@ public class Predicates {
 
 		@Override
 		public boolean apply(Bouteille bouteille, Object compare, int type) {
-			if(type == 0) {
-				if(compare instanceof String) {
+			if (type == 0) {
+				if (compare instanceof String) {
 					return bouteille.getPrice().compareTo(BigDecimal.ZERO) != 0 && bouteille.getPrice().compareTo(new BigDecimal((String)compare)) < 0;
 				}
 			}
-			else if(type == 1) {
-				if(compare instanceof String) {
+			else if (type == 1) {
+				if (compare instanceof String) {
 					return bouteille.getPrice().compareTo(BigDecimal.ZERO) != 0 && bouteille.getPrice().compareTo(new BigDecimal((String)compare)) > 0;
 				}
 			}
@@ -375,9 +373,9 @@ public class Predicates {
 		@Override
 		public String getName() {
 			String label = Program.getLabel("Predicates.Price");
-			if(type == 0) {
+			if (type == 0) {
 				label += Program.getLabel("Predicates.Smaller");
-			} else if(type == 1) {
+			} else if (type == 1) {
 				label += Program.getLabel("Predicates.Greater");
 			}
 			return label;
@@ -466,15 +464,15 @@ public class Predicates {
 		}
 	};
 
-	public static final IPredicate<Appelation> AND = new IPredicate<>() {
+	public static final IPredicate<AppelationJaxb> AND = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Appelation appelation) {
+		public boolean apply(AppelationJaxb appelationJaxb) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(Appelation appelation, Object compare, int type) {
+		public boolean apply(AppelationJaxb appelationJaxb, Object compare, int type) {
 			return true;
 		}
 
@@ -504,15 +502,15 @@ public class Predicates {
 		}
 	};
 
-	public static final IPredicate<Appelation> OR = new IPredicate<>() {
+	public static final IPredicate<AppelationJaxb> OR = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Appelation appelation) {
+		public boolean apply(AppelationJaxb appelationJaxb) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(Appelation appelation, Object compare, int type) {
+		public boolean apply(AppelationJaxb appelationJaxb, Object compare, int type) {
 			return true;
 		}
 		
@@ -542,15 +540,15 @@ public class Predicates {
 		}
 	};
 	
-	public static IPredicate<Appelation> openParenthesis = new IPredicate<>() {
+	public static IPredicate<AppelationJaxb> openParenthesis = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Appelation appelation) {
+		public boolean apply(AppelationJaxb appelationJaxb) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(Appelation appelation, Object compare, int type) {
+		public boolean apply(AppelationJaxb appelationJaxb, Object compare, int type) {
 			return true;
 		}
 		
@@ -580,15 +578,15 @@ public class Predicates {
 		}
 	};
 	
-	public static IPredicate<Appelation> closeParenthesis = new IPredicate<>() {
+	public static IPredicate<AppelationJaxb> closeParenthesis = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Appelation appelation) {
+		public boolean apply(AppelationJaxb appelationJaxb) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(Appelation appelation, Object compare, int type) {
+		public boolean apply(AppelationJaxb appelationJaxb, Object compare, int type) {
 			return true;
 		}
 		
@@ -658,11 +656,11 @@ public class Predicates {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[Predicate: ");
-		if(predicate != null) {
+		if (predicate != null) {
 			sb.append(predicate.getName());
 			sb.append(" ");
 		}
-		if(value != null) {
+		if (value != null) {
 			sb.append(value).append(" ");
 		}
 		sb.append(type);

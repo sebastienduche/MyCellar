@@ -1,7 +1,7 @@
 package test;
 
 import mycellar.Bouteille;
-import mycellar.Vignoble;
+import mycellar.core.datas.jaxb.Vignoble;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -16,6 +16,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.datas.jaxb.Vignoble;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -52,8 +53,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.1
- * @since 30/10/20
+ * @version 26.2
+ * @since 09/11/20
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 

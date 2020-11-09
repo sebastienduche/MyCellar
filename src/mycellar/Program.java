@@ -16,6 +16,8 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.datas.jaxb.AppelationJaxb;
+import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
@@ -23,8 +25,6 @@ import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
 import mycellar.showfile.ShowFile;
-import mycellar.vignobles.Appelation;
-import mycellar.vignobles.CountryVignoble;
 import mycellar.vignobles.CountryVignobles;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -110,13 +110,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.1
- * @since 03/11/20
+ * @version 23.2
+ * @since 09/11/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.6.5.8";
+	public static final String INTERNAL_VERSION = "3.6.7.4";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -171,12 +171,13 @@ public final class Program {
 
 	public static final Country FRANCE = new Country("FRA", "France");
 	public static final Country NO_COUNTRY = new Country("");
-	public static final CountryVignoble NO_VIGNOBLE = new CountryVignoble();
-	public static final Appelation NO_APPELATION = new Appelation();
+	public static final CountryVignobleJaxb NO_VIGNOBLE = new CountryVignobleJaxb();
+	public static final AppelationJaxb NO_APPELATION_JAXB = new AppelationJaxb();
 	private static final List<File> DIR_TO_DELETE = new LinkedList<>();
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
 	private static int nextID = -1;
+	private static long localID = 0; // Used for all temp ids (jaxb)
 	public static final MyClipBoard CLIPBOARD = new MyClipBoard();
 
 	public static final DateTimeFormatter DATE_FORMATER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -1944,6 +1945,10 @@ public final class Program {
 		} catch (NumberFormatException ignored) {
 			return defaultValue;
 		}
+	}
+
+	public static long generateID() {
+		return localID++;
 	}
 
 	static void exit() {

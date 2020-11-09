@@ -6,10 +6,10 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.countries.Country;
-import mycellar.vignobles.Appelation;
-import mycellar.vignobles.CountryVignoble;
+import mycellar.core.datas.jaxb.AppelationJaxb;
+import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.vignobles.CountryVignobles;
-import mycellar.vignobles.Vignobles;
+import mycellar.core.datas.jaxb.Vignobles;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -37,8 +37,8 @@ import java.util.List;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 06/11/20
+ * @version 2.4
+ * @since 09/11/20
  */
 
 public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
@@ -46,7 +46,7 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 	private static final long serialVersionUID = 2661586945830305901L;
 
 	private final MyCellarComboBox<Country> comboCountry = new MyCellarComboBox<>();
-	private final MyCellarComboBox<CountryVignoble> comboVignoble = new MyCellarComboBox<>();
+	private final MyCellarComboBox<CountryVignobleJaxb> comboVignoble = new MyCellarComboBox<>();
 	private final Country emptyCountry = new Country();
 	private final MyCellarButton addVignoble = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.addVignoble", new AddVignobleAction());
 	private final MyCellarButton delVignoble = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.delVignoble", new DelVignobleAction());
@@ -80,16 +80,16 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 					.ifPresentOrElse(vignobles1 -> vignobles = vignobles1,
 							() -> Debug("ERROR: Unable to find country " + country.getName())));
 
-			for (CountryVignoble v : vignobles.getVignoble()) {
+			for (CountryVignobleJaxb v : vignobles.getVignoble()) {
 				if (v.getName().isEmpty()) {
 					continue;
 				}
 				comboVignoble.addItem(v);
 			}
 			if (comboVignoble.getItemCount() > 0) {
-				CountryVignoble countryVignoble = (CountryVignoble)comboVignoble.getSelectedItem();
-				if (countryVignoble != null) {
-					model.setAppellations(country, countryVignoble, countryVignoble.getAppelation());
+				CountryVignobleJaxb countryVignobleJaxb = (CountryVignobleJaxb)comboVignoble.getSelectedItem();
+				if (countryVignobleJaxb != null) {
+					model.setAppellations(country, countryVignobleJaxb, countryVignobleJaxb.getAppelation());
 				}
 			}	else {
 				model.setAppellations(null, null, null);
@@ -103,8 +103,8 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 		comboVignoble.addActionListener((e) -> {
 
 			if (comboVignoble.getSelectedItem() != null) {
-				CountryVignoble countryVignoble = (CountryVignoble) comboVignoble.getSelectedItem();
-				model.setAppellations((Country) comboCountry.getSelectedItem(), countryVignoble, countryVignoble.getAppelation());
+				CountryVignobleJaxb countryVignobleJaxb = (CountryVignobleJaxb) comboVignoble.getSelectedItem();
+				model.setAppellations((Country) comboCountry.getSelectedItem(), countryVignobleJaxb, countryVignobleJaxb.getAppelation());
 				addAppellation.setEnabled(true);
 			}
 		});
@@ -162,13 +162,13 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 		public void actionPerformed(ActionEvent e) {
 			String val = JOptionPane.showInputDialog(Program.getLabel("VineyardPanel.addVignobleQuestion"));
 			if (val != null && !val.isEmpty()) {
-				CountryVignoble countryVignoble = new CountryVignoble();
-				countryVignoble.setName(val);
-				if(!vignobles.getVignoble().contains(countryVignoble)) {
-					countryVignoble = vignobles.addVignoble(val);
+				CountryVignobleJaxb countryVignobleJaxb = new CountryVignobleJaxb();
+				countryVignobleJaxb.setName(val);
+				if(!vignobles.getVignoble().contains(countryVignobleJaxb)) {
+					countryVignobleJaxb = vignobles.addVignoble(val);
 					comboVignoble.setEnabled(true);
-					comboVignoble.addItem(countryVignoble);
-					comboVignoble.setSelectedItem(countryVignoble);
+					comboVignoble.addItem(countryVignobleJaxb);
+					comboVignoble.setSelectedItem(countryVignobleJaxb);
 					delVignoble.setEnabled(true);
 					renameVignoble.setEnabled(true);
 					Program.setModified();
@@ -187,22 +187,22 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CountryVignoble countryVignoble = (CountryVignoble) comboVignoble.getSelectedItem();
+			CountryVignobleJaxb countryVignobleJaxb = (CountryVignobleJaxb) comboVignoble.getSelectedItem();
 			Country country = (Country) comboCountry.getSelectedItem();
-			if (countryVignoble != null) {
-				if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getLabel("VineyardPanel.delVignobleQuestion"), countryVignoble.getName()), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+			if (countryVignobleJaxb != null) {
+				if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getLabel("VineyardPanel.delVignobleQuestion"), countryVignobleJaxb.getName()), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 					return;
 				}
 
 				CountryVignobles.rebuild();
-				if (CountryVignobles.isVignobleUsed(country, countryVignoble)) {
+				if (CountryVignobles.isVignobleUsed(country, countryVignobleJaxb)) {
 					JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("VineyardPanel.unableDeleteVignoble"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				comboVignoble.removeItemAt(comboVignoble.getSelectedIndex());
 				delVignoble.setEnabled(comboVignoble.getItemCount() > 0);
 				renameVignoble.setEnabled(comboVignoble.getItemCount() > 0);
-				vignobles.delVignoble(countryVignoble);
+				vignobles.delVignoble(countryVignobleJaxb);
 				Program.setModified();
 			}
 		}
@@ -217,12 +217,12 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CountryVignoble countryVignoble = (CountryVignoble) comboVignoble.getSelectedItem();
+			CountryVignobleJaxb countryVignobleJaxb = (CountryVignobleJaxb) comboVignoble.getSelectedItem();
 			Country country = (Country) comboCountry.getSelectedItem();
-			if (countryVignoble != null) {
-				String val = JOptionPane.showInputDialog(MessageFormat.format(Program.getLabel("VineyardPanel.renameVignobleQuestion"), countryVignoble.getName()));
+			if (countryVignobleJaxb != null) {
+				String val = JOptionPane.showInputDialog(MessageFormat.format(Program.getLabel("VineyardPanel.renameVignobleQuestion"), countryVignobleJaxb.getName()));
 				if (val != null && !val.isEmpty()) {
-					CountryVignobles.renameVignoble(country, countryVignoble, val);
+					CountryVignobles.renameVignoble(country, countryVignobleJaxb, val);
 					comboVignoble.updateUI();
 					Program.setModified();
 				}
@@ -242,7 +242,7 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 		public void actionPerformed(ActionEvent e) {
 			String val = JOptionPane.showInputDialog(Program.getLabel("VineyardPanel.addAppellationQuestion"));
 			if (val != null && !val.isEmpty()) {
-				Appelation v = new Appelation();
+				AppelationJaxb v = new AppelationJaxb();
 				v.setAOC(val);
 				model.addAppellation(v);
 			}
@@ -289,8 +289,8 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 			}
 			CountryVignobles.getVignobles(country).ifPresent(vignoble -> {
 				CountryVignobles.rebuild();
-				for(CountryVignoble countryVignoble : vignoble.getVignoble()) {
-					if(CountryVignobles.isVignobleUsed(country, countryVignoble)) {
+				for(CountryVignobleJaxb countryVignobleJaxb : vignoble.getVignoble()) {
+					if(CountryVignobles.isVignobleUsed(country, countryVignobleJaxb)) {
 						JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("VineyardPanel.unableDeleteCountry"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 						return;
 					}

@@ -9,6 +9,7 @@
 package mycellar;
 
 import mycellar.core.MyCellarFields;
+import mycellar.core.datas.jaxb.Vignoble;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -32,8 +33,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.1
- * @since 02/09/20
+ * @version 5.2
+ * @since 09/11/20
 
  * <p>Java class for anonymous complex type.
  *

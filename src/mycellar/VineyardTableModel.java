@@ -1,8 +1,8 @@
 package mycellar;
 
+import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.countries.Country;
-import mycellar.vignobles.Appelation;
-import mycellar.vignobles.CountryVignoble;
+import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.vignobles.CountryVignobles;
 
 import javax.swing.JOptionPane;
@@ -17,16 +17,16 @@ import java.util.List;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.8
- * @since 10/04/19
+ * @version 0.9
+ * @since 09/11/20
  */
 
 class VineyardTableModel extends DefaultTableModel {
 
 	private static final long serialVersionUID = -6356586420904968734L;
 	static final int ACTION = 2;
-	private List<Appelation> appelations;
-	private CountryVignoble vignoble;
+	private List<AppelationJaxb> appelationJaxbs;
+	private CountryVignobleJaxb vignoble;
 	private Country country;
 	private boolean modified = false;
 	
@@ -54,24 +54,24 @@ class VineyardTableModel extends DefaultTableModel {
 	
 	@Override
 	public int getRowCount() {
-		if(appelations == null) {
+		if(appelationJaxbs == null) {
 			return 0;
 		}
-		return appelations.size();
+		return appelationJaxbs.size();
 	}
 	
 	@Override
 	public Object getValueAt(int row, int column) {
-		if(appelations == null) {
+		if (appelationJaxbs == null) {
 			return "";
 		}
 		
-		Appelation appelation = appelations.get(row);
+		AppelationJaxb appelationJaxb = appelationJaxbs.get(row);
 		switch(column) {
 		case 0:
-			return appelation.getAOC();
+			return appelationJaxb.getAOC();
 		case 1:
-			return appelation.getIGP();
+			return appelationJaxb.getIGP();
 		case 2:
 			return Boolean.FALSE;
 		default:
@@ -81,40 +81,40 @@ class VineyardTableModel extends DefaultTableModel {
 	
 	@Override
 	public void setValueAt(Object aValue, int row, int column) {
-		if(appelations == null) {
+		if (appelationJaxbs == null) {
 			return;
 		}
 		
-		Appelation appelation = appelations.get(row);
+		AppelationJaxb appelationJaxb = appelationJaxbs.get(row);
 		switch(column) {
 		case 0:
 			setModified(true);
-			CountryVignobles.renameAOC(country, vignoble, appelation, (String)aValue);
+			CountryVignobles.renameAOC(country, vignoble, appelationJaxb, (String)aValue);
 			break;
 		case 1:
 			setModified(true);
-			CountryVignobles.renameIGP(country, vignoble, appelation, (String)aValue);
+			CountryVignobles.renameIGP(country, vignoble, appelationJaxb, (String)aValue);
 			break;
 		case 2:
-			String name = appelation.getAOC() != null ? appelation.getAOC() : appelation.getIGP();
-			if(JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delAppellationQuestion"), name) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+			String name = appelationJaxb.getAOC() != null ? appelationJaxb.getAOC() : appelationJaxb.getIGP();
+			if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delAppellationQuestion"), name) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 				return;
 			}
 
 			CountryVignobles.rebuild();
-			if(CountryVignobles.isAppellationUsed(country, vignoble, appelation)) {
+			if (CountryVignobles.isAppellationUsed(country, vignoble, appelationJaxb)) {
 				JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteAppellation"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			setModified(true);
-			appelations.remove(appelation);
+			appelationJaxbs.remove(appelationJaxb);
 			fireTableDataChanged();
 			break;
 		}
 	}
 	
-	void setAppellations(Country country, CountryVignoble vignoble, List<Appelation> appelations) {
-		this.appelations = appelations;
+	void setAppellations(Country country, CountryVignobleJaxb vignoble, List<AppelationJaxb> appelationJaxbs) {
+		this.appelationJaxbs = appelationJaxbs;
 		this.vignoble = vignoble;
 		this.country = country;
 		fireTableDataChanged();
@@ -128,8 +128,8 @@ class VineyardTableModel extends DefaultTableModel {
 		this.modified = modified;
 	}
 
-	void addAppellation(Appelation appellation) {
-		appelations.add(appellation);
+	void addAppellation(AppelationJaxb appellation) {
+		appelationJaxbs.add(appellation);
 		fireTableDataChanged();
 		modified = true;
 	}

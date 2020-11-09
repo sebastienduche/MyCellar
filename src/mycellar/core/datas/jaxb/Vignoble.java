@@ -6,11 +6,11 @@
 //
 
 
-package mycellar;
+package mycellar.core.datas.jaxb;
 
+import mycellar.Program;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
-import mycellar.vignobles.Appelation;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,8 +25,8 @@ import java.io.Serializable;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 26/01/19
+ * @version 1.2
+ * @since 09/11/20
  */
 
 /**
@@ -56,7 +56,8 @@ import java.io.Serializable;
     "name",
     "aoc",
     "igp",
-    "aop"
+    "aop",
+		"id",
 })
 @XmlRootElement(name = "vignoble")
 public class Vignoble implements Serializable {
@@ -64,17 +65,21 @@ public class Vignoble implements Serializable {
 	private static final long serialVersionUID = -4668411717652334826L;
 	
 	@XmlElement(required = true)
-    public String country;
-    @XmlElement(required = false)
-    private String name;
-    @XmlElement(name = "AOC", required = false)
-    public String aoc;
-    @XmlElement(name = "IGP", required = false)
-    public String igp;
-    @XmlElement(name = "AOP", required = false)
-    private String aop;
+	public String country;
+	@XmlElement()
+	private String name;
+	@XmlElement(name = "AOC")
+	public String aoc;
+	@XmlElement(name = "IGP")
+	public String igp;
+	@XmlElement(name = "AOP")
+	private String aop;
+
+	@XmlElement()
+	private long id;
     
     public Vignoble() {
+    	id = Program.generateID();
 	}
 
 	public Vignoble(String country, String name, String aoc, String igp) {
@@ -82,6 +87,7 @@ public class Vignoble implements Serializable {
 		this.name = name;
 		this.aoc = aoc;
 		this.igp = igp;
+		id = Program.generateID();
 	}
 
 	public Vignoble(String country, String name, String aoc, String igp, String aop) {
@@ -90,6 +96,7 @@ public class Vignoble implements Serializable {
 		this.aoc = aoc;
 		this.igp = igp;
 		this.aop = aop;
+		id = Program.generateID();
 	}
 
 		public String getCountry() {
@@ -218,7 +225,7 @@ public class Vignoble implements Serializable {
 		return sb.toString();
 	}
 
-	public void setValues(Appelation ap) {
+	public void setValues(AppelationJaxb ap) {
 		aoc = ap.getAOC();
 		aop = ap.getAOP();
 		igp = ap.getIGP();

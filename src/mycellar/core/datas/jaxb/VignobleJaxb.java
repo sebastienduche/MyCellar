@@ -60,7 +60,7 @@ import java.io.Serializable;
 		"id",
 })
 @XmlRootElement(name = "vignoble")
-public class Vignoble implements Serializable {
+public class VignobleJaxb implements Serializable {
 
 	private static final long serialVersionUID = -4668411717652334826L;
 	
@@ -78,11 +78,11 @@ public class Vignoble implements Serializable {
 	@XmlElement()
 	private long id;
     
-    public Vignoble() {
+    public VignobleJaxb() {
     	id = Program.generateID();
 	}
 
-	public Vignoble(String country, String name, String aoc, String igp) {
+	public VignobleJaxb(String country, String name, String aoc, String igp) {
 		this.country = country;
 		this.name = name;
 		this.aoc = aoc;
@@ -90,7 +90,7 @@ public class Vignoble implements Serializable {
 		id = Program.generateID();
 	}
 
-	public Vignoble(String country, String name, String aoc, String igp, String aop) {
+	public VignobleJaxb(String country, String name, String aoc, String igp, String aop) {
 		this.country = country;
 		this.name = name;
 		this.aoc = aoc;
@@ -163,7 +163,7 @@ public class Vignoble implements Serializable {
 		if (!getClass().equals(obj.getClass())) {
 			return false;
 		}
-		Vignoble other = (Vignoble) obj;
+		VignobleJaxb other = (VignobleJaxb) obj;
 		if (aoc == null) {
 			if (other.aoc != null) {
 				return false;
@@ -205,10 +205,10 @@ public class Vignoble implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Vignoble [country=");
-		if(country != null) {
+		sb.append("VignobleJaxb [country=");
+		if (country != null) {
 			Country c = Countries.findByIdOrLabel(country);
-			if(c != null) {
+			if (c != null) {
 				sb.append(c.getId());
 			} else {
 				sb.append(country);
@@ -233,9 +233,9 @@ public class Vignoble implements Serializable {
 
 	public String getSearchLabel() {
 		StringBuilder sb = new StringBuilder();
-		if(country != null) {
+		if (country != null) {
 			Country c = Countries.findByIdOrLabel(country);
-			if(c != null) {
+			if (c != null) {
 				sb.append(c.getLabel());
 			} else {
 				sb.append(country);

@@ -5,11 +5,11 @@ import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.datas.jaxb.VignoblesJaxb;
 import mycellar.countries.Country;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.vignobles.CountryVignobles;
-import mycellar.core.datas.jaxb.Vignobles;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -37,8 +37,8 @@ import java.util.List;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 09/11/20
+ * @version 2.5
+ * @since 10/11/20
  */
 
 public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
@@ -52,7 +52,7 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 	private final MyCellarButton delVignoble = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.delVignoble", new DelVignobleAction());
 	private final MyCellarButton renameVignoble = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.renameVignoble", new RenameVignobleAction());
 	private final MyCellarButton addAppellation = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.addAppellation", new AddAppellationAction());
-	private Vignobles vignobles = null;
+	private VignoblesJaxb vignoblesJaxb = null;
 	private final VineyardTableModel model = new VineyardTableModel();
 
 	public VineyardPanel() {
@@ -76,11 +76,11 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 			addVignoble.setEnabled(true);
 			Country country = (Country) comboCountry.getSelectedItem();
 			CountryVignobles.getVignobles(country)
-				.ifPresentOrElse(vignobles1 -> vignobles = vignobles1, () -> CountryVignobles.createVignoblesCountry(country)
-					.ifPresentOrElse(vignobles1 -> vignobles = vignobles1,
+				.ifPresentOrElse(vignoblesJaxb1 -> vignoblesJaxb = vignoblesJaxb1, () -> CountryVignobles.createVignoblesCountry(country)
+					.ifPresentOrElse(vignoblesJaxb1 -> vignoblesJaxb = vignoblesJaxb1,
 							() -> Debug("ERROR: Unable to find country " + country.getName())));
 
-			for (CountryVignobleJaxb v : vignobles.getVignoble()) {
+			for (CountryVignobleJaxb v : vignoblesJaxb.getCountryVignobleJaxbList()) {
 				if (v.getName().isEmpty()) {
 					continue;
 				}
@@ -164,8 +164,8 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 			if (val != null && !val.isEmpty()) {
 				CountryVignobleJaxb countryVignobleJaxb = new CountryVignobleJaxb();
 				countryVignobleJaxb.setName(val);
-				if(!vignobles.getVignoble().contains(countryVignobleJaxb)) {
-					countryVignobleJaxb = vignobles.addVignoble(val);
+				if(!vignoblesJaxb.getCountryVignobleJaxbList().contains(countryVignobleJaxb)) {
+					countryVignobleJaxb = vignoblesJaxb.addVignoble(val);
 					comboVignoble.setEnabled(true);
 					comboVignoble.addItem(countryVignobleJaxb);
 					comboVignoble.setSelectedItem(countryVignobleJaxb);
@@ -202,7 +202,7 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 				comboVignoble.removeItemAt(comboVignoble.getSelectedIndex());
 				delVignoble.setEnabled(comboVignoble.getItemCount() > 0);
 				renameVignoble.setEnabled(comboVignoble.getItemCount() > 0);
-				vignobles.delVignoble(countryVignobleJaxb);
+				vignoblesJaxb.delVignoble(countryVignobleJaxb);
 				Program.setModified();
 			}
 		}
@@ -289,7 +289,7 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar {
 			}
 			CountryVignobles.getVignobles(country).ifPresent(vignoble -> {
 				CountryVignobles.rebuild();
-				for(CountryVignobleJaxb countryVignobleJaxb : vignoble.getVignoble()) {
+				for(CountryVignobleJaxb countryVignobleJaxb : vignoble.getCountryVignobleJaxbList()) {
 					if(CountryVignobles.isVignobleUsed(country, countryVignobleJaxb)) {
 						JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("VineyardPanel.unableDeleteCountry"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 						return;

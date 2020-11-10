@@ -6,7 +6,7 @@ import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.Rangement;
 import mycellar.core.datas.jaxb.AppelationJaxb;
-import mycellar.core.datas.jaxb.Vignoble;
+import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.PanelVignobles;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.requester.ui.ValueSearch;
@@ -24,8 +24,8 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 09/11/20
+ * @version 1.1
+ * @since 10/11/20
  */
 
 public class Predicates {
@@ -145,16 +145,14 @@ public class Predicates {
 		@Override
 		public boolean apply(Bouteille bouteille, Object compare, int type) {
 			if (type == 0) {
-    			if(compare instanceof String) {
+    			if (compare instanceof String) {
     				return bouteille.getNom() != null && bouteille.getNom().startsWith((String)compare);
     			}
-			}
-			else if (type == 1) {
-    			if(compare instanceof String) {
+			} else if (type == 1) {
+    			if (compare instanceof String) {
     				return bouteille.getNom() != null && bouteille.getNom().endsWith((String)compare);
     			}
-			}
-			else if (type == 2) {
+			} else if (type == 2) {
 				if (compare instanceof String) {
 					return bouteille.getNom() != null && bouteille.getNom().contains((String)compare);
 				}
@@ -329,9 +327,7 @@ public class Predicates {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
 			JComboBox<String> liste = new JComboBox<>();
-			for (String val : MyCellarBottleContenance.getList()) {
-				liste.addItem(val);
-			}
+			MyCellarBottleContenance.getList().forEach(liste::addItem);
 			panel.add(new JLabel(Program.getLabel("Predicates.SelectSize")), "wrap");
 			panel.add(liste);
 			JOptionPane.showMessageDialog(null, panel,
@@ -413,21 +409,21 @@ public class Predicates {
 
 		@Override
 		public boolean apply(Bouteille bouteille, Object compare, int type) {
-			if (!(compare instanceof Vignoble) || bouteille.getVignoble() == null) {
+			if (!(compare instanceof VignobleJaxb) || bouteille.getVignoble() == null) {
 				return false;
 			}
-			Vignoble compareVignoble = (Vignoble) compare;
-			final Vignoble vignoble = bouteille.getVignoble();
-			if (!compareVignoble.getCountry().equals(vignoble.getCountry())) {
+			VignobleJaxb compareVignobleJaxb = (VignobleJaxb) compare;
+			final VignobleJaxb vignobleJaxb = bouteille.getVignoble();
+			if (!compareVignobleJaxb.getCountry().equals(vignobleJaxb.getCountry())) {
 				return false;
 			}
-			if (!compareVignoble.getName().isEmpty() && !compareVignoble.getName().equals(vignoble.getName())) {
+			if (!compareVignobleJaxb.getName().isEmpty() && !compareVignobleJaxb.getName().equals(vignobleJaxb.getName())) {
 				return false;
 			}
-			if (!compareVignoble.getAOC().isEmpty() && !compareVignoble.getAOC().equals(vignoble.getAOC())) {
+			if (!compareVignobleJaxb.getAOC().isEmpty() && !compareVignobleJaxb.getAOC().equals(vignobleJaxb.getAOC())) {
 				return false;
 			}
-			if (!compareVignoble.getIGP().isEmpty() && !compareVignoble.getIGP().equals(vignoble.getIGP())) {
+			if (!compareVignobleJaxb.getIGP().isEmpty() && !compareVignobleJaxb.getIGP().equals(vignobleJaxb.getIGP())) {
 				return false;
 			}
 			return true;
@@ -459,8 +455,8 @@ public class Predicates {
 			JOptionPane.showMessageDialog(null, panelVignobles,
 					"",
 					JOptionPane.PLAIN_MESSAGE);
-			final Vignoble selectedVignoble = panelVignobles.getSelectedVignoble();
-			return new ValueSearch(selectedVignoble, selectedVignoble.getSearchLabel());
+			final VignobleJaxb selectedVignobleJaxb = panelVignobles.getSelectedVignoble();
+			return new ValueSearch(selectedVignobleJaxb, selectedVignobleJaxb.getSearchLabel());
 		}
 	};
 

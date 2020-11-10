@@ -18,7 +18,7 @@ import mycellar.StateEditor;
 import mycellar.StateRenderer;
 import mycellar.TabEvent;
 import mycellar.ToolTipRenderer;
-import mycellar.core.datas.jaxb.Vignoble;
+import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
@@ -54,6 +54,7 @@ import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,8 +68,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.0
- * @since 09/11/20
+ * @version 8.1
+ * @since 10/11/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -325,7 +326,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       @Override
       void setValue(Bouteille b, Object value) {
-        Vignoble v = b.getVignoble();
+        VignobleJaxb v = b.getVignoble();
         if (v == null) {
           return;
         }
@@ -346,7 +347,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       @Override
       void setValue(Bouteille b, Object value) {
-        Vignoble v = b.getVignoble();
+        VignobleJaxb v = b.getVignoble();
         if (v == null) {
           return;
         }
@@ -464,23 +465,15 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     add(m_oDeleteButton, "align right, wrap");
 
-
     for (Rangement r : Program.getCave()) {
       m_oPlaceCbx.addItem(r.getNom());
     }
 
-    for (BottleColor bottleColor : BottleColor.values()) {
-      colorCbx.addItem(bottleColor);
-    }
-
-    for (BottlesStatus bottlesStatus : BottlesStatus.values()) {
-      statusCbx.addItem(bottlesStatus);
-    }
+    Arrays.stream(BottleColor.values()).forEach(colorCbx::addItem);
+    Arrays.stream(BottlesStatus.values()).forEach(statusCbx::addItem);
 
     m_oTypeCbx.addItem("");
-    for (String type : MyCellarBottleContenance.getList()) {
-      m_oTypeCbx.addItem(type);
-    }
+    MyCellarBottleContenance.getList().forEach(m_oTypeCbx::addItem);
     
     verifyStatusCbx.addItem(NONE);
     verifyStatusCbx.addItem(VALIDATED);

@@ -4,14 +4,14 @@ import mycellar.Bouteille;
 import mycellar.JCompletionComboBox;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.datas.jaxb.Vignoble;
+import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.actions.ManageVineyardAction;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.vignobles.CountryVignobles;
-import mycellar.core.datas.jaxb.Vignobles;
+import mycellar.core.datas.jaxb.VignoblesJaxb;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -34,8 +34,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 09/11/20
+ * @version 1.0
+ * @since 10/11/20
  */
 public class PanelVignobles extends JPanel {
 
@@ -128,7 +128,8 @@ public class PanelVignobles extends JPanel {
 					comboAppelationAOC.addItem(NO_APPELATION_JAXB);
 					comboAppelationIGP.addItem("");
 					CountryVignobles.getVignobles(country)
-						.ifPresent(vignobles -> vignobles.getVignoble().forEach(comboVignoble::addItem));
+						.ifPresent(vignoblesJaxb -> vignoblesJaxb.getCountryVignobleJaxbList()
+								.forEach(comboVignoble::addItem));
 				}
 		});
 
@@ -256,48 +257,48 @@ public class PanelVignobles extends JPanel {
 	}
 
 	public void initializeVignobles(final Bouteille bottle) {
-		Vignoble vignoble = bottle.getVignoble();
-		if (vignoble == null) {
+		VignobleJaxb vignobleJaxb = bottle.getVignoble();
+		if (vignobleJaxb == null) {
 			return;
 		}
 
 		Country country = null;
-		if (Program.FRANCE.getId().equals(vignoble.country) || "fr".equals(vignoble.country)) {
+		if (Program.FRANCE.getId().equals(vignobleJaxb.country) || "fr".equals(vignobleJaxb.country)) {
 			country = Program.FRANCE;
-		} else if (vignoble.country != null) {
-			country = Countries.findByIdOrLabel(vignoble.country);
+		} else if (vignobleJaxb.country != null) {
+			country = Countries.findByIdOrLabel(vignobleJaxb.country);
 		}
 
-		Vignobles vignobles = null;
+		VignoblesJaxb vignoblesJaxb = null;
 		if (country != null) {
 			comboCountry.setSelectedItem(country);
-			vignobles = CountryVignobles.getVignobles(country).orElse(null);
+			vignoblesJaxb = CountryVignobles.getVignobles(country).orElse(null);
 		}
 
-		if (vignobles != null) {
-			Optional<CountryVignobleJaxb> countryVignoble = vignobles.findVignoble(vignoble);
+		if (vignoblesJaxb != null) {
+			Optional<CountryVignobleJaxb> countryVignoble = vignoblesJaxb.findVignoble(vignobleJaxb);
 			if (countryVignoble.isPresent()) {
 				comboVignoble.setSelectedItem(countryVignoble.get());
 			} else {
-				Debug("ERROR: Unable to find vignoble: " + vignoble.getName());
+				Debug("ERROR: Unable to find vignoble: " + vignobleJaxb.getName());
 			}
 		}
 
-		if (vignoble.getAOC() != null) {
-			comboAppelationAOC.setSelectedItem(vignoble.getAOC());
+		if (vignobleJaxb.getAOC() != null) {
+			comboAppelationAOC.setSelectedItem(vignobleJaxb.getAOC());
 		}
 
-		if (vignoble.getIGP() != null) {
-			comboAppelationIGP.setSelectedItem(vignoble.getIGP());
+		if (vignobleJaxb.getIGP() != null) {
+			comboAppelationIGP.setSelectedItem(vignobleJaxb.getIGP());
 		}
 	}
 
-	public Vignoble getSelectedVignoble() {
-		Vignoble vignoble = new Vignoble();
-		vignoble.setCountry(getCountry());
-		vignoble.setName(getVignoble());
-		vignoble.setAOC(getAOC());
-		vignoble.setIGP(getIGP());
-		return vignoble;
+	public VignobleJaxb getSelectedVignoble() {
+		VignobleJaxb vignobleJaxb = new VignobleJaxb();
+		vignobleJaxb.setCountry(getCountry());
+		vignobleJaxb.setName(getVignoble());
+		vignobleJaxb.setAOC(getAOC());
+		vignobleJaxb.setIGP(getIGP());
+		return vignobleJaxb;
 	}
 }

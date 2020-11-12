@@ -4,13 +4,13 @@ import mycellar.Bouteille;
 import mycellar.JCompletionComboBox;
 import mycellar.Program;
 import mycellar.Start;
+import mycellar.core.datas.jaxb.CountryJaxb;
+import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.actions.ManageVineyardAction;
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
-import mycellar.vignobles.CountryVignobles;
+import mycellar.vignobles.CountryVignobleController;
 import mycellar.core.datas.jaxb.VignobleListJaxb;
 import net.miginfocom.swing.MigLayout;
 
@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static mycellar.Program.NO_APPELATION_JAXB;
+import static mycellar.Program.NO_APPELATION;
 import static mycellar.Program.NO_COUNTRY;
 import static mycellar.Program.NO_VIGNOBLE;
 import static mycellar.Program.toCleanString;
@@ -41,7 +41,7 @@ public class PanelVignobles extends JPanel {
 
 	private static final long serialVersionUID = -3053382428338158563L;
 
-	private final JCompletionComboBox<Country> comboCountry;
+	private final JCompletionComboBox<CountryJaxb> comboCountry;
 	private final JCompletionComboBox<CountryVignobleJaxb> comboVignoble;
 	private final JCompletionComboBox<AppelationJaxb> comboAppelationAOC;
 	private final JCompletionComboBox<String> comboAppelationIGP;
@@ -113,21 +113,21 @@ public class PanelVignobles extends JPanel {
 						comboAppelationAOC.removeAllItems();
 						comboAppelationIGP.removeAllItems();
 						comboVignoble.addItem(NO_VIGNOBLE);
-						comboAppelationAOC.addItem(NO_APPELATION_JAXB);
+						comboAppelationAOC.addItem(NO_APPELATION);
 						comboAppelationIGP.addItem("");
 						comboVignoble.setSelectedItem("");
-						comboAppelationAOC.setSelectedItem(NO_APPELATION_JAXB);
+						comboAppelationAOC.setSelectedItem(NO_APPELATION);
 						comboAppelationIGP.setSelectedItem("");
 						return;
 					}
-					final Country country = (Country)e.getItem();
+					final CountryJaxb countryJaxb = (CountryJaxb)e.getItem();
 					comboVignoble.removeAllItems();
 					comboAppelationAOC.removeAllItems();
 					comboAppelationIGP.removeAllItems();
 					comboVignoble.addItem(NO_VIGNOBLE);
-					comboAppelationAOC.addItem(NO_APPELATION_JAXB);
+					comboAppelationAOC.addItem(NO_APPELATION);
 					comboAppelationIGP.addItem("");
-					CountryVignobles.getVignobles(country)
+					CountryVignobleController.getVignobles(countryJaxb)
 						.ifPresent(vignobleListJaxb -> vignobleListJaxb.getCountryVignobleJaxbList()
 								.forEach(comboVignoble::addItem));
 				}
@@ -137,14 +137,14 @@ public class PanelVignobles extends JPanel {
 
 				if(e.getStateChange() == ItemEvent.SELECTED) {
 					if(e.getItem() instanceof String) {
-						comboAppelationAOC.setSelectedItem(NO_APPELATION_JAXB);
+						comboAppelationAOC.setSelectedItem(NO_APPELATION);
 						comboAppelationIGP.setSelectedItem("");
 						return;
 					}
 					final CountryVignobleJaxb vignoble = (CountryVignobleJaxb)e.getItem();
 					comboAppelationAOC.removeAllItems();
 					comboAppelationIGP.removeAllItems();
-					comboAppelationAOC.addItem(NO_APPELATION_JAXB);
+					comboAppelationAOC.addItem(NO_APPELATION);
 					comboAppelationIGP.addItem("");
 					List<String> itemsIGP = new ArrayList<>();
 					for(AppelationJaxb appelationJaxb : vignoble.getSortedUnmodifiableAppelation()) {
@@ -182,7 +182,7 @@ public class PanelVignobles extends JPanel {
 			if(comboCountry.getItemCount() == 0) {
 				comboCountry.addItem(NO_COUNTRY);
 			}
-			for(Country c : Program.getCountries()) {
+			for(CountryJaxb c : Program.getCountries()) {
 				if(!comboCountry.hasItem(c)) {
 					comboCountry.addItem(c);
 				}
@@ -204,8 +204,8 @@ public class PanelVignobles extends JPanel {
 
 	public String getCountry() {
 		Object o = comboCountry.getEditor().getItem();
-		if(o instanceof Country) {
-			return toCleanString(((Country) o).getId());
+		if(o instanceof CountryJaxb) {
+			return toCleanString(((CountryJaxb) o).getId());
 		}
 		return toCleanString(o);
 	}
@@ -262,17 +262,17 @@ public class PanelVignobles extends JPanel {
 			return;
 		}
 
-		Country country = null;
+		CountryJaxb countryJaxb = null;
 		if (Program.FRANCE.getId().equals(vignobleJaxb.country) || "fr".equals(vignobleJaxb.country)) {
-			country = Program.FRANCE;
+			countryJaxb = Program.FRANCE;
 		} else if (vignobleJaxb.country != null) {
-			country = Countries.findByIdOrLabel(vignobleJaxb.country);
+			countryJaxb = CountryListJaxb.findByIdOrLabel(vignobleJaxb.country);
 		}
 
 		VignobleListJaxb vignobleListJaxb = null;
-		if (country != null) {
-			comboCountry.setSelectedItem(country);
-			vignobleListJaxb = CountryVignobles.getVignobles(country).orElse(null);
+		if (countryJaxb != null) {
+			comboCountry.setSelectedItem(countryJaxb);
+			vignobleListJaxb = CountryVignobleController.getVignobles(countryJaxb).orElse(null);
 		}
 
 		if (vignobleListJaxb != null) {

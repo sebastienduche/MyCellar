@@ -17,15 +17,15 @@ import mycellar.core.MyLinkedHashMap;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.jaxb.AppelationJaxb;
+import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
+import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
 import mycellar.showfile.ShowFile;
-import mycellar.vignobles.CountryVignobles;
+import mycellar.vignobles.CountryVignobleController;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -52,6 +52,7 @@ import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -110,13 +111,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.2
- * @since 09/11/20
+ * @version 23.3
+ * @since 12/11/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.6.9.3";
+	public static final String INTERNAL_VERSION = "3.7.0.8";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -169,10 +170,12 @@ public final class Program {
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;
 
-	public static final Country FRANCE = new Country("FRA", "France");
-	public static final Country NO_COUNTRY = new Country("");
+	public static final String FRA = "FRA";
+	public static final String ITA = "ITA";
+	public static final CountryJaxb FRANCE = new CountryJaxb(FRA, "France");
+	public static final CountryJaxb NO_COUNTRY = new CountryJaxb("");
 	public static final CountryVignobleJaxb NO_VIGNOBLE = new CountryVignobleJaxb();
-	public static final AppelationJaxb NO_APPELATION_JAXB = new AppelationJaxb();
+	public static final AppelationJaxb NO_APPELATION = new AppelationJaxb();
 	private static final List<File> DIR_TO_DELETE = new LinkedList<>();
 	private static boolean modified = false;
 	private static boolean listCaveModified = false;
@@ -652,7 +655,7 @@ public final class Program {
 
 		getStorage().saveHistory();
 		getStorage().saveWorksheet();
-		CountryVignobles.save();
+		CountryVignobleController.save();
 		ListeBouteille.writeXML();
 
 		myCellarFile.saveAs(file);
@@ -832,8 +835,8 @@ public final class Program {
 		// Sauvegarde avant de charger le nouveau fichier
 		closeFile();
 		
-		CountryVignobles.init();
-		Countries.init();
+		CountryVignobleController.init();
+		CountryListJaxb.init();
 
 		if (isNewFile) {
 			// Nouveau fichier de bouteilles
@@ -883,7 +886,7 @@ public final class Program {
 		if(!getErrors().isEmpty()) {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
-		CountryVignobles.load();
+		CountryVignobleController.load();
 
 		if(myCellarFile.isFileSavable()) {
 			list.addFirst(file.getAbsolutePath());
@@ -954,7 +957,7 @@ public final class Program {
 			if (!getCave().isEmpty()) {
 				getStorage().saveHistory();
 				getStorage().saveWorksheet();
-				CountryVignobles.save();
+				CountryVignobleController.save();
 				if (newFile != null) {
 					myCellarFile.saveAs(newFile);
 				} else {
@@ -980,8 +983,8 @@ public final class Program {
 		TABBED_PANE.removeAll();
 		if (myCellarFile.exists()) {
 			getStorage().close();
-			CountryVignobles.close();
-			Countries.close();
+			CountryVignobleController.close();
+			CountryListJaxb.close();
 			Search.clearResults();
 		}
 		clearObjectsVariables();
@@ -1328,8 +1331,8 @@ public final class Program {
 		}
 	}
 
-	public static List<Country> getCountries() {
-		return Countries.getInstance().getCountries();
+	public static List<CountryJaxb> getCountries() {
+		return CountryListJaxb.getInstance().getCountries();
 	}
 
 	public static int findTab(ImageIcon image) {
@@ -1804,19 +1807,18 @@ public final class Program {
   }
 
 	public static String readFirstLineText(final File f) {
-		if(f == null) {
+		if (f == null || !f.exists()) {
 			return "";
 		}
-		if(!f.getName().toLowerCase().endsWith(".txt")) {
+		if (!f.getName().toLowerCase().endsWith(".txt")) {
 			return "";
 		}
 		Debug("Program: Reading first line of file " + f.getName());
 		try (var scanner = new Scanner(f)){
 			if(scanner.hasNextLine()) {
-				String line = scanner.nextLine();
-				return line.strip();
+				return scanner.nextLine().strip();
 			}
-		} catch (IOException e) {
+		} catch (FileNotFoundException e) {
 			showException(e, true);
 		}
 		return "";
@@ -1847,7 +1849,7 @@ public final class Program {
 
 		// format with grouping separator and decimal separator.
 		// always print first digit before comma, and two digits after comma.
-		return new DecimalFormat("###0.00",dfs);
+		return new DecimalFormat("###0.00", dfs);
 	  }
 	  
 	public static String bigDecimalToString(final BigDecimal value, final Locale locale) {

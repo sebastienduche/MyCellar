@@ -12,7 +12,7 @@ import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.jaxb.VignobleJaxb;
-import mycellar.vignobles.CountryVignobles;
+import mycellar.vignobles.CountryVignobleController;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -41,8 +41,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.5
- * @since 10/11/20
+ * @version 6.6
+ * @since 12/11/20
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -422,8 +422,8 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		bottle.setType(demie);
 		bottle.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp, null));
 		bottle.setStatus(status);
-		CountryVignobles.addVignobleFromBottle(bottle);
-		CountryVignobles.setRebuildNeeded();
+		CountryVignobleController.addVignobleFromBottle(bottle);
+		CountryVignobleController.setRebuildNeeded();
 		if (isCaisse) {
 			lieu_num = Integer.parseInt(m_num_lieu.getItemAt(lieu_num));
 			bottle.setNumLieu(lieu_num);

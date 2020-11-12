@@ -1,9 +1,8 @@
 package mycellar;
 
 import mycellar.core.datas.jaxb.AppelationJaxb;
-import mycellar.countries.Country;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
-import mycellar.vignobles.CountryVignobles;
+import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -17,8 +16,8 @@ import java.util.List;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 1.0
- * @since 11/11/20
+ * @version 1.1
+ * @since 12/11/20
  */
 
 class VineyardTableModel extends DefaultTableModel {
@@ -27,7 +26,6 @@ class VineyardTableModel extends DefaultTableModel {
 	static final int ACTION = 2;
 	private List<AppelationJaxb> appelationJaxbs;
 	private CountryVignobleJaxb vignoble;
-	private Country country;
 	private boolean modified = false;
 	
 	@Override
@@ -89,11 +87,11 @@ class VineyardTableModel extends DefaultTableModel {
 		switch(column) {
 		case 0:
 			setModified(true);
-			CountryVignobles.renameAOC(country, vignoble, appelationJaxb, (String)aValue);
+			CountryVignobleController.renameAOC(vignoble, appelationJaxb, (String)aValue);
 			break;
 		case 1:
 			setModified(true);
-			CountryVignobles.renameIGP(country, vignoble, appelationJaxb, (String)aValue);
+			CountryVignobleController.renameIGP(vignoble, appelationJaxb, (String)aValue);
 			break;
 		case 2:
 			String name = appelationJaxb.getAOC() != null ? appelationJaxb.getAOC() : appelationJaxb.getIGP();
@@ -101,8 +99,8 @@ class VineyardTableModel extends DefaultTableModel {
 				return;
 			}
 
-			CountryVignobles.rebuild();
-			if (CountryVignobles.isAppellationUsed(appelationJaxb)) {
+			CountryVignobleController.rebuild();
+			if (CountryVignobleController.isAppellationUsed(appelationJaxb)) {
 				JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteAppellation"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -113,10 +111,9 @@ class VineyardTableModel extends DefaultTableModel {
 		}
 	}
 	
-	void setAppellations(Country country, CountryVignobleJaxb vignoble, List<AppelationJaxb> appelationJaxbs) {
+	void setAppellations(CountryVignobleJaxb vignoble, List<AppelationJaxb> appelationJaxbs) {
 		this.appelationJaxbs = appelationJaxbs;
 		this.vignoble = vignoble;
-		this.country = country;
 		fireTableDataChanged();
 	}
 

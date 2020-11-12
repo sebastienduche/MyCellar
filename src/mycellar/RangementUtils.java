@@ -3,8 +3,8 @@ package mycellar;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarSettings;
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
+import mycellar.core.datas.jaxb.CountryListJaxb;
+import mycellar.core.datas.jaxb.CountryJaxb;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -45,8 +45,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 06/11/20
+ * @version 2.8
+ * @since 12/11/20
  */
 public final class RangementUtils {
 
@@ -213,7 +213,7 @@ public final class RangementUtils {
 						td.appendChild(doc.createTextNode(BottleColor.getColor(b.getColor()).toString()));
 					} else if (field == MyCellarFields.COUNTRY) {
 						if (b.getVignoble() != null) {
-							Country c = Countries.findbyId(b.getVignoble().getCountry()).orElse(null);
+							CountryJaxb c = CountryListJaxb.findbyId(b.getVignoble().getCountry()).orElse(null);
 							if (c != null) {
 								td.appendChild(doc.createTextNode(c.toString()));
 							}

@@ -9,8 +9,6 @@
 package mycellar.core.datas.jaxb;
 
 import mycellar.Program;
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,8 +23,8 @@ import java.io.Serializable;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 11/11/20
+ * @version 1.4
+ * @since 12/11/20
  */
 
 /**
@@ -211,7 +209,7 @@ public class VignobleJaxb implements Serializable {
 		StringBuilder sb = new StringBuilder();
 		sb.append("VignobleJaxb [country=");
 		if (country != null) {
-			Country c = Countries.findByIdOrLabel(country);
+			CountryJaxb c = CountryListJaxb.findByIdOrLabel(country);
 			if (c != null) {
 				sb.append(c.getId());
 			} else {
@@ -238,7 +236,7 @@ public class VignobleJaxb implements Serializable {
 	public String getSearchLabel() {
 		StringBuilder sb = new StringBuilder();
 		if (country != null) {
-			Country c = Countries.findByIdOrLabel(country);
+			CountryJaxb c = CountryListJaxb.findByIdOrLabel(country);
 			if (c != null) {
 				sb.append(c.getLabel());
 			} else {

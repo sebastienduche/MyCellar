@@ -18,6 +18,8 @@ import mycellar.StateEditor;
 import mycellar.StateRenderer;
 import mycellar.TabEvent;
 import mycellar.ToolTipRenderer;
+import mycellar.core.datas.jaxb.CountryJaxb;
+import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
@@ -31,8 +33,6 @@ import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.worksheet.WorkSheetData;
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -68,8 +68,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.1
- * @since 10/11/20
+ * @version 8.2
+ * @since 12/11/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -302,9 +302,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (b.getVignoble() == null) {
           return "";
         }
-        Country country = Countries.findbyId(b.getVignoble().getCountry()).orElse(null);
-        if (country != null) {
-          return country.getLabel();
+        CountryJaxb countryJaxb = CountryListJaxb.findbyId(b.getVignoble().getCountry()).orElse(null);
+        if (countryJaxb != null) {
+          return countryJaxb.getLabel();
         }
         return b.getVignoble().getCountry();
       }

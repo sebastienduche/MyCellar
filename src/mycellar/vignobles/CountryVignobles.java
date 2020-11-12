@@ -5,7 +5,7 @@ import mycellar.Program;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
-import mycellar.core.datas.jaxb.VignoblesJaxb;
+import mycellar.core.datas.jaxb.VignobleListJaxb;
 import mycellar.countries.Countries;
 import mycellar.countries.Country;
 
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -22,33 +23,33 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.3
- * @since 10/11/20
+ * @version 2.4
+ * @since 12/11/20
  */
 
 public final class CountryVignobles {
 
 	private static final String FRA = "FRA";
 	private static final String ITA = "ITA";
-	private final Map<Country, VignoblesJaxb> countryToVignobles = new HashMap<>();
+	private final Map<Country, VignobleListJaxb> countryToVignobles = new HashMap<>();
 
 	private final Map<String, VignobleJaxb> mapCountryVignobleIDToVignoble = new HashMap<>();
-	private final List<VignobleJaxb> usedVignoblesList = new LinkedList<>();
-	private final List<String> usedAppellationsList = new LinkedList<>();
+	private final Map<Long, Long> mapBottleAppelationIDToAppelationID = new HashMap<>();
+	private final List<Long> usedVignoblesIDList = new LinkedList<>();
 
 	private static final CountryVignobles INSTANCE = new CountryVignobles();
 	private static boolean rebuildNeeded = false;
 
 	private CountryVignobles() {
-		Countries.findbyId(FRA).ifPresent(country -> countryToVignobles.put(country, VignoblesJaxb.loadFrance()));
-		Countries.findbyId(ITA).ifPresent(country -> countryToVignobles.put(country, VignoblesJaxb.loadItalie()));
+		Countries.findbyId(FRA).ifPresent(country -> countryToVignobles.put(country, VignobleListJaxb.loadFrance()));
+		Countries.findbyId(ITA).ifPresent(country -> countryToVignobles.put(country, VignobleListJaxb.loadItalie()));
 		setRebuildNeeded();
 	}
 
 	public static void init() {
 		INSTANCE.countryToVignobles.clear();
-		Countries.findbyId(FRA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, VignoblesJaxb.loadFrance()));
-		Countries.findbyId(ITA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, VignoblesJaxb.loadItalie()));
+		Countries.findbyId(FRA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, VignobleListJaxb.loadFrance()));
+		Countries.findbyId(ITA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, VignobleListJaxb.loadItalie()));
 		setRebuildNeeded();
 	}
 
@@ -58,16 +59,16 @@ public final class CountryVignobles {
 	}
 
 	public static void load() {
-		VignoblesJaxb.loadAllCountries(INSTANCE.countryToVignobles);
+		VignobleListJaxb.loadAllCountries(INSTANCE.countryToVignobles);
 		setRebuildNeeded();
 		rebuild();
 	}
 
-	public static Optional<VignoblesJaxb> getVignobles(Country country) {
+	public static Optional<VignobleListJaxb> getVignobles(Country country) {
 		return Optional.ofNullable(INSTANCE.countryToVignobles.get(country));
 	}
 
-	public static Optional<VignoblesJaxb> createVignoblesCountry(Country country) {
+	public static Optional<VignobleListJaxb> createVignoblesCountry(Country country) {
 		Debug("Creating country... " + country.getName());
 		if (country.getId() == null) {
 			generateCountryId(country);
@@ -76,17 +77,17 @@ public final class CountryVignobles {
 			Debug("ERROR: the country already exist: " + country.getName());
 			return Optional.empty();
 		}
-		VignoblesJaxb vignoblesJaxb = new VignoblesJaxb();
-		vignoblesJaxb.init();
-		INSTANCE.countryToVignobles.put(country, vignoblesJaxb);
+		VignobleListJaxb vignobleListJaxb = new VignobleListJaxb();
+		vignobleListJaxb.init();
+		INSTANCE.countryToVignobles.put(country, vignobleListJaxb);
 		Debug("Creating country End");
-		return Optional.of(vignoblesJaxb);
+		return Optional.of(vignobleListJaxb);
 	}
 
 	public static void deleteCountry(Country country) {
 		Debug("Deleting country... " + country.getName());
 		INSTANCE.countryToVignobles.remove(country);
-		boolean resul = VignoblesJaxb.delete(country);
+		boolean resul = VignobleListJaxb.delete(country);
 		Debug("Deleting country End with resul=" + resul);
 	}
 
@@ -114,21 +115,41 @@ public final class CountryVignobles {
 			return;
 		}
 		Debug("rebuild...");
-		INSTANCE.usedVignoblesList.clear();
+		INSTANCE.usedVignoblesIDList.clear();
 		INSTANCE.mapCountryVignobleIDToVignoble.clear();
-		INSTANCE.usedAppellationsList.clear();
-		for (Bouteille b : Program.getStorage().getAllList()) {
-			VignobleJaxb vignobleJaxb = b.getVignoble();
-			if (vignobleJaxb != null && !INSTANCE.usedVignoblesList.contains(vignobleJaxb)) {
-				INSTANCE.usedVignoblesList.add(vignobleJaxb);
+		INSTANCE.mapBottleAppelationIDToAppelationID.clear();
+		List<VignobleJaxb> vignobleJaxbList = Program.getStorage().getAllList()
+				.stream()
+				.map(Bouteille::getVignoble)
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
+
+		vignobleJaxbList.forEach(vignobleJaxb -> {
+			if (!INSTANCE.usedVignoblesIDList.contains(vignobleJaxb.getId())) {
+				INSTANCE.usedVignoblesIDList.add(vignobleJaxb.getId());
+				addVignoble(vignobleJaxb);
 			}
 			createVignobleInMap(vignobleJaxb);
-		}
-		for (VignobleJaxb v : INSTANCE.usedVignoblesList) {
-			addVignoble(v);
-		}
+			mapAppelation(vignobleJaxb);
+		});
+
+//		Program.getStorage().getAllList()
+//				.stream()
+//				.map(Bouteille::getVignoble)
+//				.filter(Objects::nonNull)
+//				.forEach(CountryVignobles::createVignobleInMap);
+//
+//		vignobleJaxbList
+//				.forEach(CountryVignobles::mapAppelation);
 		rebuildNeeded = false;
 		Debug("rebuild... End");
+	}
+
+	private static void mapAppelation(VignobleJaxb vignobleJaxb) {
+		Countries.findbyId(vignobleJaxb.getCountry())
+				.flatMap(CountryVignobles::getVignobles)
+				.flatMap(vignobleListJaxb -> vignobleListJaxb.findAppelation(vignobleJaxb))
+				.ifPresent(appelationJaxb -> INSTANCE.mapBottleAppelationIDToAppelationID.put(vignobleJaxb.getId(), appelationJaxb.getId()));
 	}
 
 	public static void createVignobleInMap(final VignobleJaxb vignobleJaxb) {
@@ -137,22 +158,22 @@ public final class CountryVignobles {
 		}
 
 		Countries.findbyId(vignobleJaxb.getCountry()).ifPresent(country -> {
-			VignoblesJaxb vignoblesJaxb = getVignobles(country)
+			VignobleListJaxb vignobleListJaxb = getVignobles(country)
 					.orElse(createVignoblesCountry(country)
 							.orElse(null));
-			if (vignoblesJaxb == null) {
+			if (vignobleListJaxb == null) {
 				Debug("ERROR: createVignobleInMap: Unable to create a VignobleCoutry!");
 				return;
 			}
-			Optional<CountryVignobleJaxb> countryVignoble = vignoblesJaxb.findVignobleWithAppelation(vignobleJaxb);
+			Optional<CountryVignobleJaxb> countryVignoble = vignobleListJaxb.findVignobleWithAppelation(vignobleJaxb);
 			boolean found = true;
 			if (countryVignoble.isEmpty()) {
-				countryVignoble = vignoblesJaxb.findVignoble(vignobleJaxb);
+				countryVignoble = vignobleListJaxb.findVignoble(vignobleJaxb);
 				found = false;
 				if (countryVignoble.isEmpty()) {
-					vignoblesJaxb.addVignoble(vignobleJaxb);
+					vignobleListJaxb.addVignoble(vignobleJaxb);
 				}
-				countryVignoble = vignoblesJaxb.findVignoble(vignobleJaxb);
+				countryVignoble = vignobleListJaxb.findVignoble(vignobleJaxb);
 			}
 			if (countryVignoble.isEmpty()) {
 				Debug("ERROR: Unable to find vignoble " + vignobleJaxb);
@@ -165,18 +186,12 @@ public final class CountryVignobles {
 				appelationJaxb.setIGP(vignobleJaxb.getIGP());
 				if (!appelationJaxb.isEmpty()) {
 					countryVignoble.get().add(appelationJaxb);
-					countryVignoble = vignoblesJaxb.findVignobleWithAppelation(vignobleJaxb);
+					countryVignoble = vignobleListJaxb.findVignobleWithAppelation(vignobleJaxb);
 				}
 			}
 			if (countryVignoble.isEmpty() && !appelationJaxb.isEmpty()) {
 				Debug("ERROR: Unable to find created vignoble " + vignobleJaxb);
 				return;
-			}
-
-			final AppelationJaxb appellation = vignoblesJaxb.findAppelation(vignobleJaxb);
-			final String val = vignobleJaxb.toString();
-			if (appellation != null && !appellation.isEmpty() && !INSTANCE.usedAppellationsList.contains(val)) {
-				INSTANCE.usedAppellationsList.add(val);
 			}
 
 			if (countryVignoble.isPresent() && !countryVignoble.get().isEmpty()) {
@@ -188,14 +203,11 @@ public final class CountryVignobles {
 
 	public static boolean isVignobleUsed(Country country, CountryVignobleJaxb vignoble) {
 		VignobleJaxb vigne = INSTANCE.mapCountryVignobleIDToVignoble.get(new CountryVignobleID(country, vignoble).getId());
-		return vigne != null && vigne.getCountry().equalsIgnoreCase(country.getId()) && INSTANCE.usedVignoblesList.contains(vigne);
+		return vigne != null && vigne.getCountry().equalsIgnoreCase(country.getId()) && INSTANCE.usedVignoblesIDList.contains(vigne.getId());
 	}
 
-	public static boolean isAppellationUsed(Country country, CountryVignobleJaxb countryVignobleJaxb, AppelationJaxb appellation) {
-		var aop = appellation.getAOP() != null ? appellation.getAOP() : appellation.getAOC();
-		var igp = appellation.getIGP() != null ? appellation.getIGP() : "";
-		VignobleJaxb vignobleJaxb = new VignobleJaxb(country.getId(), countryVignobleJaxb.getName(), appellation.getAOC(), igp, aop);
-		return INSTANCE.usedAppellationsList.contains(vignobleJaxb.toString());
+	public static boolean isAppellationUsed(AppelationJaxb appellation) {
+		return INSTANCE.mapBottleAppelationIDToAppelationID.containsValue(appellation.getId());
 	}
 
 	public static void renameVignoble(final Country country, final CountryVignobleJaxb countryVignobleJaxb, final String name) {
@@ -205,7 +217,7 @@ public final class CountryVignobles {
 			Debug("ERROR: Unable to rename vignoble: " + countryVignobleJaxb.getName());
 			return;
 		}
-		if (INSTANCE.usedVignoblesList.contains(bouteilleVignobleJaxb)) {
+		if (INSTANCE.usedVignoblesIDList.contains(bouteilleVignobleJaxb.getId())) {
 			LinkedList<Bouteille> list = Program.getStorage().getAllList();
 			for (Bouteille b : list) {
 				VignobleJaxb v = b.getVignoble();
@@ -226,26 +238,17 @@ public final class CountryVignobles {
 			appelationJaxb.setAOC(name);
 			return;
 		}
-		// TODO RENAME DOES NOT WORK
-		if (INSTANCE.usedVignoblesList.contains(vigne)) {
+		if (INSTANCE.usedVignoblesIDList.contains(vigne.getId())) {
 			LinkedList<Bouteille> list = Program.getStorage().getAllList();
 			list.stream()
 					.map(Bouteille::getVignoble)
 					.filter(Objects::nonNull)
-					.filter(vignoble -> vignoble.equals(vigne))
+					.filter(vignoble -> vignoble.getId() == vigne.getId() || vignoble.equals(vigne))
 					.forEach(vignoble -> {
 						if (vignoble.getAOC() != null && vignoble.getAOC().equals(appelationJaxb.getAOC())) {
 							vignoble.setAOC(name);
 						}
 					});
-//			for (Bouteille b : list) {
-//				Vignoble v = b.getVignoble();
-//				if (v != null && v.equals(vigne)) {
-//					if (v.getAOC() != null && v.getAOC().equals(appelation.getAOC())) {
-//						v.setAOC(name);
-//					}
-//				}
-//			}
 		}
 		vigne.setAOC(name);
 		appelationJaxb.setAOC(name);
@@ -260,7 +263,7 @@ public final class CountryVignobles {
 			Debug("ERROR: Unable to rename IGP: " + countryVignobleJaxb.getName());
 			return;
 		}
-		if (INSTANCE.usedVignoblesList.contains(vigne)) {
+		if (INSTANCE.usedVignoblesIDList.contains(vigne.getId())) {
 			LinkedList<Bouteille> list = Program.getStorage().getAllList();
 			list.stream()
 					.map(Bouteille::getVignoble)
@@ -271,14 +274,6 @@ public final class CountryVignobles {
 							vignoble.setIGP(name);
 						}
 					});
-//			for (Bouteille b : list) {
-//				Vignoble v = b.getVignoble();
-//				if(v != null && v.equals(vigne)) {
-//					if (v.getIGP() != null && v.getIGP().equals(appelation.getIGP())) {
-//						v.setIGP(name);
-//					}
-//				}
-//			}
 		}
 		vigne.setIGP(name);
 		appelationJaxb.setIGP(name);
@@ -295,14 +290,14 @@ public final class CountryVignobles {
 			if (getVignobles(country).isEmpty()) {
 				createVignoblesCountry(country);
 			}
-			final VignoblesJaxb vignoblesJaxb = getVignobles(country).orElse(null);
-			if (vignoblesJaxb == null) {
+			final VignobleListJaxb vignobleListJaxb = getVignobles(country).orElse(null);
+			if (vignobleListJaxb == null) {
 				Debug("ERROR: addVignoble: Unable to find vignobles for country " + country);
 				return;
 			}
-			Optional<CountryVignobleJaxb> countryVignoble = vignoblesJaxb.findVignobleWithAppelation(bouteilleVignobleJaxb);
+			Optional<CountryVignobleJaxb> countryVignoble = vignobleListJaxb.findVignobleWithAppelation(bouteilleVignobleJaxb);
 			if (countryVignoble.isEmpty()) {
-				Optional<CountryVignobleJaxb> vignoble = vignoblesJaxb.findVignoble(bouteilleVignobleJaxb);
+				Optional<CountryVignobleJaxb> vignoble = vignobleListJaxb.findVignoble(bouteilleVignobleJaxb);
 				if (vignoble.isPresent() && !bouteilleVignobleJaxb.isAppellationEmpty()) {
 					AppelationJaxb appelationJaxb = new AppelationJaxb();
 					appelationJaxb.setAOC(bouteilleVignobleJaxb.getAOC());
@@ -310,41 +305,38 @@ public final class CountryVignobles {
 					appelationJaxb.setIGP(bouteilleVignobleJaxb.getIGP());
 					vignoble.get().add(appelationJaxb);
 				} else if (vignoble.isEmpty()) {
-					vignoblesJaxb.addVignoble(bouteilleVignobleJaxb);
+					vignobleListJaxb.addVignoble(bouteilleVignobleJaxb);
 				}
 			} else {
-				AppelationJaxb ap = vignoblesJaxb.findAppelation(bouteilleVignobleJaxb);
-				bouteilleVignobleJaxb.setValues(ap);
+				vignobleListJaxb.findAppelation(bouteilleVignobleJaxb)
+						.ifPresent(bouteilleVignobleJaxb::setValues);
 				INSTANCE.mapCountryVignobleIDToVignoble.put(new CountryVignobleID(country, countryVignoble.get()).getId(), bouteilleVignobleJaxb);
 			}
 		}	else {
 			country = new Country(bouteilleVignobleJaxb.getCountry());
 			generateCountryId(country);
-			VignoblesJaxb vignoblesJaxb = new VignoblesJaxb();
-			vignoblesJaxb.init();
-			vignoblesJaxb.addVignoble(bouteilleVignobleJaxb);
+			VignobleListJaxb vignobleListJaxb = new VignobleListJaxb();
+			vignobleListJaxb.init();
+			vignobleListJaxb.addVignoble(bouteilleVignobleJaxb);
 			Countries.add(country);
-			INSTANCE.countryToVignobles.put(country, vignoblesJaxb);
+			INSTANCE.countryToVignobles.put(country, vignobleListJaxb);
 		}
-		if (!INSTANCE.usedVignoblesList.contains(bouteilleVignobleJaxb)) {
-			INSTANCE.usedVignoblesList.add(bouteilleVignobleJaxb);
-		}
-		String val = bouteilleVignobleJaxb.toString();
-		if (!INSTANCE.usedAppellationsList.contains(val)) {
-			INSTANCE.usedAppellationsList.add(val);
+		if (!INSTANCE.usedVignoblesIDList.contains(bouteilleVignobleJaxb.getId())) {
+			INSTANCE.usedVignoblesIDList.add(bouteilleVignobleJaxb.getId());
 		}
 	}
 
 	public static void addVignobleFromBottle(final Bouteille wine) {
 		Debug("addVignobleFromBottle...");
 		addVignoble(wine.getVignoble());
+		setRebuildNeeded();
 		Debug("addVignobleFromBottle... End");
 	}
 
 	public static void save() {
 		Debug("Saving...");
 		for (Country c : INSTANCE.countryToVignobles.keySet()){
-			VignoblesJaxb.save(c, INSTANCE.countryToVignobles.get(c));
+			VignobleListJaxb.save(c, INSTANCE.countryToVignobles.get(c));
 		}
 		Debug("Saved");
 	}
@@ -361,13 +353,11 @@ public final class CountryVignobles {
 	public static void setRebuildNeeded() {
 		rebuildNeeded = true;
 	}
+	public static boolean isRebuildNeeded() {
+		return rebuildNeeded;
+	}
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	private static void Debug(String sText) {
-		Program.Debug("CountryVignobles: " + sText );
+		Program.Debug("CountryVignobles: " + sText);
 	}
 }

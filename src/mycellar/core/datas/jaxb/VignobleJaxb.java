@@ -25,13 +25,13 @@ import java.io.Serializable;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 09/11/20
+ * @version 1.3
+ * @since 11/11/20
  */
 
 /**
  * <p>This class is linked to the Vignoble that contains the Bouteille object
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -47,23 +47,23 @@ import java.io.Serializable;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-	"country",
-    "name",
-    "aoc",
-    "igp",
-    "aop",
+		"country",
+		"name",
+		"aoc",
+		"igp",
+		"aop",
 		"id",
 })
 @XmlRootElement(name = "vignoble")
 public class VignobleJaxb implements Serializable {
 
 	private static final long serialVersionUID = -4668411717652334826L;
-	
+
 	@XmlElement(required = true)
 	public String country;
 	@XmlElement()
@@ -77,9 +77,9 @@ public class VignobleJaxb implements Serializable {
 
 	@XmlElement()
 	private long id;
-    
-    public VignobleJaxb() {
-    	id = Program.generateID();
+
+	public VignobleJaxb() {
+		id = Program.generateID();
 	}
 
 	public VignobleJaxb(String country, String name, String aoc, String igp) {
@@ -99,46 +99,50 @@ public class VignobleJaxb implements Serializable {
 		id = Program.generateID();
 	}
 
-		public String getCountry() {
-        return country;
-    }
-  	public void setCountry(String country) {
-        this.country = country;
-    }
-    
-		public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public String getAOC() {
-        return aoc;
-    }
-    public void setAOC(String aoc) {
-        this.aoc = aoc;
-    }
+	public String getCountry() {
+		return country;
+	}
+	public void setCountry(String country) {
+		this.country = country;
+	}
 
-    public String getIGP() {
-        return igp;
-    }
-    public void setIGP(String igp) {
-        this.igp = igp;
-    }
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getAOP() {
-        return aop;
-    }
-    public void setAOP(String aop) {
-        this.aop = aop;
-    }
-    
-    public boolean isAppellationEmpty() {
-    	return (aoc == null || aoc.isEmpty())
-    			&& (aop == null || aop.isEmpty())
-    			&& (igp == null || igp.isEmpty());
-    }
+	public String getAOC() {
+		return aoc;
+	}
+	public void setAOC(String aoc) {
+		this.aoc = aoc;
+	}
+
+	public String getIGP() {
+		return igp;
+	}
+	public void setIGP(String igp) {
+		this.igp = igp;
+	}
+
+	public String getAOP() {
+		return aop;
+	}
+	public void setAOP(String aop) {
+		this.aop = aop;
+	}
+
+	public boolean isAppellationEmpty() {
+		return (aoc == null || aoc.isEmpty())
+				&& (aop == null || aop.isEmpty())
+				&& (igp == null || igp.isEmpty());
+	}
 
 	@Override
 	public int hashCode() {

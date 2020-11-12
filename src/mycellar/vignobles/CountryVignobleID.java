@@ -9,8 +9,8 @@ import mycellar.countries.Country;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 09/11/20
+ * @version 0.3
+ * @since 11/11/20
  */
 
 public class CountryVignobleID {
@@ -18,7 +18,7 @@ public class CountryVignobleID {
   private final String id;
 
   CountryVignobleID(Country country, CountryVignobleJaxb vignoble) {
-    id = country.getId() + "-" + vignoble.getName();
+    id = country.getId() + "-" + vignoble.getId();
   }
 
   public String getId() {

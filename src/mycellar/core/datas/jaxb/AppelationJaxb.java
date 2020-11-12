@@ -21,27 +21,27 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
 		aoc = "";
 		id = Program.generateID();
 	}
-	
+
 	public String getAOC() {
 		return aoc;
 	}
-	
+
 	public void setAOC(String aOC) {
 		aoc = aOC;
 	}
-	
+
 	public String getAOP() {
 		return aop;
 	}
-	
+
 	public void setAOP(String aOP) {
 		aop = aOP;
 	}
-	
+
 	public String getIGP() {
 		return igp;
 	}
-	
+
 	public void setIGP(String iGP) {
 		igp = iGP;
 	}
@@ -49,7 +49,7 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
 	public long getId() {
 		return id;
 	}
- 
+
 	@Override
 	public String toString() {
 		return aoc;
@@ -84,37 +84,17 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
 		} else if (!aoc.equals(other.aoc)) {
 			return false;
 		}
-		//if(other.AOP ! = null && other.AOP)
-		/*if (AOP == null) {
-			if (other.AOP != null)
-				return false;
-		} else if (!AOP.equals(other.AOP))
-			return false;*/
 		if (igp == null || igp.isEmpty()) {
 			return other.igp == null || other.igp.isEmpty();
-		} else return igp.equals(other.igp);
+		} else {
+			return igp.equals(other.igp);
+		}
 	}
- 
+
 	public boolean isEmpty() {
-    	return (aoc == null || aoc.isEmpty())
-    			&& (aop == null || aop.isEmpty())
-    			&& (igp == null || igp.isEmpty());
-    }
-	
-	public String getKeyString() {
-		StringBuilder sb = new StringBuilder();
-		if(aoc != null) {
-			sb.append(aoc);
-		}
-		sb.append("-");
-		if(aop != null) {
-			sb.append(aop);
-		}
-		sb.append("-");
-		if(igp != null) {
-			sb.append(igp);
-		}
-		return sb.toString();
+		return (aoc == null || aoc.isEmpty())
+				&& (aop == null || aop.isEmpty())
+				&& (igp == null || igp.isEmpty());
 	}
 
 	void makeItClean() {

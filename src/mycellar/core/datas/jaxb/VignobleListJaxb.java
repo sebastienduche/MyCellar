@@ -31,13 +31,13 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.9
- * @since 10/11/20
+ * @version 2.0
+ * @since 11/11/20
  */
 
 @XmlRootElement(name = "vignobles")
 @XmlAccessorType (XmlAccessType.FIELD)
-public class VignoblesJaxb
+public class VignobleListJaxb
 {
 	private static final String VIGNOBLE = ".vignoble";
 	private static final String TEXT = ".txt";
@@ -47,7 +47,7 @@ public class VignoblesJaxb
 
 	private long id;
 
-	public VignoblesJaxb() {
+	public VignobleListJaxb() {
 		id = Program.generateID();
 	}
 
@@ -66,23 +66,23 @@ public class VignoblesJaxb
 		}
 	}
 
-	public static VignoblesJaxb loadFrance() {
-		VignoblesJaxb vignoblesJaxb = null;
+	public static VignobleListJaxb loadFrance() {
+		VignobleListJaxb vignobleListJaxb = null;
 		if (Program.hasWorkDir()) {
-			vignoblesJaxb = loadById("FRA");
+			vignobleListJaxb = loadById("FRA");
 		}
-		return (vignoblesJaxb != null) ? vignoblesJaxb : load("resources/vignobles.xml");
+		return (vignobleListJaxb != null) ? vignobleListJaxb : load("resources/vignobles.xml");
 	}
 
-	public static VignoblesJaxb loadItalie() {
-		VignoblesJaxb vignoblesJaxb = null;
+	public static VignobleListJaxb loadItalie() {
+		VignobleListJaxb vignobleListJaxb = null;
 		if (Program.hasWorkDir()) {
-			vignoblesJaxb = loadById("ITA");
+			vignobleListJaxb = loadById("ITA");
 		}
-		return (vignoblesJaxb != null) ? vignoblesJaxb : load("resources/italie.xml");
+		return (vignobleListJaxb != null) ? vignobleListJaxb : load("resources/italie.xml");
 	}
 
-	private static VignoblesJaxb loadById(String id) {
+	private static VignobleListJaxb loadById(String id) {
 		final Country country = Countries.findbyId(id).orElse(null);
 		if (country != null) {
 			File f = new File(Program.getWorkDir(true), country.getId() + VIGNOBLE);
@@ -93,23 +93,23 @@ public class VignoblesJaxb
 		return null;
 	}
 
-	private static VignoblesJaxb load(File file) {
+	private static VignobleListJaxb load(File file) {
 		Debug("Loading JAXB File " + file.getAbsolutePath());
 		if (!file.exists()) {
 			return null;
 		}
-		VignoblesJaxb vignoblesJaxb;
+		VignobleListJaxb vignobleListJaxb;
 		try {
-			JAXBContext jc = JAXBContext.newInstance(VignoblesJaxb.class);
+			JAXBContext jc = JAXBContext.newInstance(VignobleListJaxb.class);
 			Unmarshaller u = jc.createUnmarshaller();
-			vignoblesJaxb = (VignoblesJaxb)u.unmarshal(new FileInputStream(file));
+			vignobleListJaxb = (VignobleListJaxb)u.unmarshal(new FileInputStream(file));
 		} catch (Exception e) {
 			Program.showException(e);
 			return null;
 		}
-		vignoblesJaxb.checkAvaibility();
-		Collections.sort(vignoblesJaxb.countryVignobleJaxbList);
-		for (CountryVignobleJaxb vignoble: vignoblesJaxb.countryVignobleJaxbList) {
+		vignobleListJaxb.checkAvaibility();
+		Collections.sort(vignobleListJaxb.countryVignobleJaxbList);
+		for (CountryVignobleJaxb vignoble: vignobleListJaxb.countryVignobleJaxbList) {
 			vignoble.checkAvaibility();
 			for (AppelationJaxb appelationJaxb : vignoble.getUnmodifiableAppelation()) {
 				appelationJaxb.makeItClean();
@@ -117,10 +117,10 @@ public class VignoblesJaxb
 			vignoble.makeItClean();
 		}
 		Debug("Loading JAXB File Done");
-		return vignoblesJaxb;
+		return vignobleListJaxb;
 	}
 
-	public static void loadAllCountries(Map<Country, VignoblesJaxb> map) {
+	public static void loadAllCountries(Map<Country, VignobleListJaxb> map) {
 		Debug("Loading All countries");
 		map.clear();
 		File dir = new File(Program.getWorkDir(true));
@@ -151,15 +151,15 @@ public class VignoblesJaxb
 				if (!map.containsKey(country)) {
 					map.put(country, load(f));
 				} else {
-					VignoblesJaxb loadedVignoblesJaxb = load(f);
-					if (loadedVignoblesJaxb != null) {
-						VignoblesJaxb vignoblesJaxb = map.get(country);
-						for (CountryVignobleJaxb vignoble : vignoblesJaxb.countryVignobleJaxbList) {
-							if (!loadedVignoblesJaxb.countryVignobleJaxbList.contains(vignoble)) {
-								loadedVignoblesJaxb.countryVignobleJaxbList.add(vignoble);
+					VignobleListJaxb loadedVignobleListJaxb = load(f);
+					if (loadedVignobleListJaxb != null) {
+						VignobleListJaxb vignobleListJaxb = map.get(country);
+						for (CountryVignobleJaxb vignoble : vignobleListJaxb.countryVignobleJaxbList) {
+							if (!loadedVignobleListJaxb.countryVignobleJaxbList.contains(vignoble)) {
+								loadedVignobleListJaxb.countryVignobleJaxbList.add(vignoble);
 							}
 							else {
-								CountryVignobleJaxb countryVignobleJaxb = loadedVignoblesJaxb.countryVignobleJaxbList.get(loadedVignoblesJaxb.countryVignobleJaxbList.indexOf(vignoble));
+								CountryVignobleJaxb countryVignobleJaxb = loadedVignobleListJaxb.countryVignobleJaxbList.get(loadedVignobleListJaxb.countryVignobleJaxbList.indexOf(vignoble));
 								if (vignoble.getUnmodifiableAppelation() != null) {
 									vignoble.getUnmodifiableAppelation().forEach(countryVignobleJaxb::add);
 								} else {
@@ -174,32 +174,31 @@ public class VignoblesJaxb
 		Debug("Loading All countries Done");
 	}
 
-	private static VignoblesJaxb load(final String ressource) {
+	private static VignobleListJaxb load(final String ressource) {
 		Debug("Loading vignoble from resource: " + ressource);
-		VignoblesJaxb vignoblesJaxb = null;
+		VignobleListJaxb vignobleListJaxb = null;
 		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(VignoblesJaxb.class);
+			JAXBContext jaxbContext = JAXBContext.newInstance(VignobleListJaxb.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-			//We had written this file in marshalling example
-			URL stream = VignoblesJaxb.class.getClassLoader().getResource(ressource);
+			URL stream = VignobleListJaxb.class.getClassLoader().getResource(ressource);
 			if (stream == null) {
 				Debug("Vignobles: Missing resource " + ressource);
 				return null;
 			}
-			vignoblesJaxb = (VignoblesJaxb) jaxbUnmarshaller.unmarshal(stream);
+			vignobleListJaxb = (VignobleListJaxb) jaxbUnmarshaller.unmarshal(stream);
 		} catch (Exception e){
 			Program.showException(e);
 		}
 
-		if (vignoblesJaxb != null) {
-			Collections.sort(vignoblesJaxb.countryVignobleJaxbList);
+		if (vignobleListJaxb != null) {
+			Collections.sort(vignobleListJaxb.countryVignobleJaxbList);
 		}
 		Debug("Loading vignoble Done");
-		return vignoblesJaxb;
+		return vignobleListJaxb;
 	}
 
-	public static boolean save(Country country, VignoblesJaxb vignoblesJaxb) {
+	public static boolean save(Country country, VignobleListJaxb vignobleListJaxb) {
 		Debug("Writing Country File: " + country.getId());
 		File fText = new File(Program.getWorkDir(true), country.getId() + TEXT);
 		try (FileWriter writer = new FileWriter(fText);
@@ -211,10 +210,10 @@ public class VignoblesJaxb
 		}
 		File f = new File(Program.getWorkDir(true), country.getId() + VIGNOBLE);
 		try {
-			JAXBContext jc = JAXBContext.newInstance(VignoblesJaxb.class);
+			JAXBContext jc = JAXBContext.newInstance(VignobleListJaxb.class);
 			Marshaller m = jc.createMarshaller();
 			m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			m.marshal(vignoblesJaxb, new StreamResult(f));
+			m.marshal(vignobleListJaxb, new StreamResult(f));
 		} catch (Exception e) {
 			Program.showException(e);
 			return false;
@@ -238,8 +237,8 @@ public class VignoblesJaxb
 		}
 	}
 
-	public Optional<CountryVignobleJaxb> findVignoble(final VignobleJaxb v) {
-		return countryVignobleJaxbList.stream().filter(countryVignoble -> v.getName().equals(countryVignoble.getName())).findFirst();
+	public Optional<CountryVignobleJaxb> findVignoble(final VignobleJaxb vignobleJaxb) {
+		return countryVignobleJaxbList.stream().filter(countryVignoble -> vignobleJaxb.getName().equals(countryVignoble.getName())).findFirst();
 	}
 
 	public Optional<CountryVignobleJaxb> findVignobleWithAppelation(final VignobleJaxb vignobleJaxb) {
@@ -257,7 +256,7 @@ public class VignoblesJaxb
 		return Optional.empty();
 	}
 
-	public AppelationJaxb findAppelation(final VignobleJaxb vignobleJaxb) {
+	public Optional<AppelationJaxb> findAppelation(final VignobleJaxb vignobleJaxb) {
 		CountryVignobleJaxb vigne = new CountryVignobleJaxb();
 		vigne.setName(vignobleJaxb.getName());
 		final AppelationJaxb appelationJaxbToReturn = new AppelationJaxb();
@@ -267,14 +266,15 @@ public class VignoblesJaxb
 
 		int index = countryVignobleJaxbList.indexOf(vigne);
 		if (index != -1) {
-			final CountryVignobleJaxb vignoble1 = countryVignobleJaxbList.get(index);
+			final CountryVignobleJaxb countryVignobleJaxb = countryVignobleJaxbList.get(index);
 
-			if (vignoble1.getUnmodifiableAppelation().contains(appelationJaxbToReturn)) {
-				return appelationJaxbToReturn;
+			final int index1 = countryVignobleJaxb.getUnmodifiableAppelation().indexOf(appelationJaxbToReturn);
+			if (index1 != -1) {
+				return Optional.of(countryVignobleJaxb.getUnmodifiableAppelation().get(index1));
 			}
 		}
 		Debug("ERROR findAppelation " + vignobleJaxb.toString());
-		return null;
+		return Optional.empty();
 	}
 
 	public void addVignoble(final VignobleJaxb vignobleJaxb) {
@@ -309,11 +309,6 @@ public class VignoblesJaxb
 		countryVignobleJaxbList.remove(vigne);
 	}
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	private static void Debug(String sText) {
 		Program.Debug("Vignobles: " + sText);
 	}

@@ -17,8 +17,8 @@ import java.util.List;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.9
- * @since 09/11/20
+ * @version 1.0
+ * @since 11/11/20
  */
 
 class VineyardTableModel extends DefaultTableModel {
@@ -102,7 +102,7 @@ class VineyardTableModel extends DefaultTableModel {
 			}
 
 			CountryVignobles.rebuild();
-			if (CountryVignobles.isAppellationUsed(country, vignoble, appelationJaxb)) {
+			if (CountryVignobles.isAppellationUsed(appelationJaxb)) {
 				JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteAppellation"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 				return;
 			}

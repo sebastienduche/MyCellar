@@ -30,6 +30,10 @@ public class CountryVignobleJaxb implements Comparable<CountryVignobleJaxb>
 		id = Program.generateID();
 	}
 
+	public long getId() {
+		return id;
+	}
+
 	List<AppelationJaxb> getUnmodifiableAppelation() {
 		return Collections.unmodifiableList(appelationJaxb);
 	}

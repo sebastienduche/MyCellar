@@ -11,7 +11,7 @@ import mycellar.countries.Country;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.vignobles.CountryVignobles;
-import mycellar.core.datas.jaxb.VignoblesJaxb;
+import mycellar.core.datas.jaxb.VignobleListJaxb;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -34,8 +34,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 10/11/20
+ * @version 1.1
+ * @since 12/11/20
  */
 public class PanelVignobles extends JPanel {
 
@@ -128,7 +128,7 @@ public class PanelVignobles extends JPanel {
 					comboAppelationAOC.addItem(NO_APPELATION_JAXB);
 					comboAppelationIGP.addItem("");
 					CountryVignobles.getVignobles(country)
-						.ifPresent(vignoblesJaxb -> vignoblesJaxb.getCountryVignobleJaxbList()
+						.ifPresent(vignobleListJaxb -> vignobleListJaxb.getCountryVignobleJaxbList()
 								.forEach(comboVignoble::addItem));
 				}
 		});
@@ -269,14 +269,14 @@ public class PanelVignobles extends JPanel {
 			country = Countries.findByIdOrLabel(vignobleJaxb.country);
 		}
 
-		VignoblesJaxb vignoblesJaxb = null;
+		VignobleListJaxb vignobleListJaxb = null;
 		if (country != null) {
 			comboCountry.setSelectedItem(country);
-			vignoblesJaxb = CountryVignobles.getVignobles(country).orElse(null);
+			vignobleListJaxb = CountryVignobles.getVignobles(country).orElse(null);
 		}
 
-		if (vignoblesJaxb != null) {
-			Optional<CountryVignobleJaxb> countryVignoble = vignoblesJaxb.findVignoble(vignobleJaxb);
+		if (vignobleListJaxb != null) {
+			Optional<CountryVignobleJaxb> countryVignoble = vignobleListJaxb.findVignoble(vignobleJaxb);
 			if (countryVignoble.isPresent()) {
 				comboVignoble.setSelectedItem(countryVignoble.get());
 			} else {

@@ -13,7 +13,7 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 26.8
+ * @version 26.9
  * @since 06/11/20
  */
 public class Rangement implements Comparable<Rangement> {
@@ -429,7 +429,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param wine Bouteille: Bouteille à ajouter
 	 */
 	private boolean putWineStandard(Bouteille wine) {
-		Debug("putWineStandard: "+wine.getNom()+" "+wine.getEmplacement()+" "+wine.getNumLieu()+" "+wine.getLigne()+" "+wine.getColonne());
+		Debug("putWineStandard: " + wine.getNom() + " " + wine.getEmplacement() + " " + wine.getNumLieu() + " " + wine.getLigne() + " " + wine.getColonne());
 
 		int num_empl = wine.getNumLieu();
 		int line = wine.getLigne();
@@ -767,6 +767,8 @@ public class Rangement implements Comparable<Rangement> {
 	}
 
 	void updatePlace(List<Part> listPart) {
+	  Debug("Updating the list of places: ");
+	  listPart.forEach(part -> Debug(part.toString()));
 		setPlace(listPart);
 		Program.setListCaveModified();
 		Program.setModified();

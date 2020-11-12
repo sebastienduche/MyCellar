@@ -340,8 +340,8 @@ public class Bouteille implements Serializable{
 		 int n;
 		 try {
 			 n = Integer.parseInt(year);
-		 } catch (NumberFormatException e) {
-			 Debug("ERROR: Unable to parse '" + year + "'!");
+		 } catch(NumberFormatException e) {
+			 Debug("ERROR: Unable to parse year '" + year + "'!");
 			 return false;
 		 }
 

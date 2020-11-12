@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.1
+ * @version 21.2
  * @since 12/11/20
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
@@ -674,6 +674,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 				}
 			}
 		}
+
+		StringBuilder sb = new StringBuilder();
+    panelRequest.getPredicates().forEach(p -> sb.append(p.toString()));
+    Debug(sb.toString());
 		Debug(MODEL.getRowCount() + " bottle(s) found");
 		updateLabelBottleNumber();
 		Debug("Search by request Done");

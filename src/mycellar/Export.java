@@ -33,6 +33,7 @@ import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,8 +46,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.0
- * @since 02/09/20
+ * @version 9.1
+ * @since 14/10/20
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -66,17 +67,18 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	private static final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private static final char EXPORT = Program.getLabel("EXPORT").charAt(0);
 	private final JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
-	private List<Bouteille> bottles = null;
+	private final List<Bouteille> bottles;
 	static final long serialVersionUID = 240706;
 
 	/**
 	 * Export: Constructeur pour l'export.
 	 */
 	public Export() {
+			bottles = Program.getStorage().getAllList();
 		try {
 			initialize();
 		}
-		catch (Exception e) {
+		catch (RuntimeException e) {
 			Program.showException(e);
 		}
 	}
@@ -86,12 +88,12 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	 *
 	 * @param bottles LinkedList<Bouteille>: Bottles to export
 	 */
-	public Export(List<Bouteille> bottles) {
+	public Export(final List<Bouteille> bottles) {
 		this.bottles = bottles;
 		try {
 			initialize();
 		}
-		catch (Exception e) {
+		catch (RuntimeException e) {
 			Program.showException(e);
 		}
 	}
@@ -351,14 +353,9 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					return;
 				}
 
-				boolean ok;
-				if (null == bottles) {
-					ok = ListeBouteille.writeXML(aFile);
-				}	else {
-					ListeBouteille liste = new ListeBouteille();
-					bottles.forEach(bouteille -> liste.getBouteille().add(bouteille));
-					ok = ListeBouteille.writeXML(liste, aFile);
-				}
+				ListeBouteille liste = new ListeBouteille();
+				bottles.forEach(bouteille -> liste.getBouteille().add(bouteille));
+				boolean ok = ListeBouteille.writeXML(liste, aFile);
 				if (ok) {
 					end.setText(Program.getLabel("Infos154")); //"Export termine."
 					openit.setEnabled(true);
@@ -373,9 +370,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					valider.setEnabled(true);
 					return;
 				}
-				if (null == bottles) {
-					bottles = Program.getStorage().getAllList();
-				}
+
 				if (RangementUtils.write_HTML(aFile, bottles, Program.getHTMLColumns())) {
 					end.setText(Program.getLabel("Infos154")); //"Export termine."
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), aFile.getAbsolutePath()), true);
@@ -391,9 +386,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					valider.setEnabled(true);
 					return;
 				}
-				if (null == bottles) {
-					bottles = Program.getStorage().getAllList();
-				}
+
 				progressBar.setVisible(true);
 				if (RangementUtils.write_CSV(aFile, bottles, progressBar)) {
 					end.setText(Program.getLabel("Infos154")); //"Export termine."
@@ -410,9 +403,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					valider.setEnabled(true);
 					return;
 				}
-				if (null == bottles) {
-					bottles = Program.getStorage().getAllList();
-				}
+
 				progressBar.setVisible(true);
 				if (RangementUtils.write_XLS(aFile, bottles, false, progressBar)) {
 					end.setText(Program.getLabel("Infos154")); //"Export termine."
@@ -431,9 +422,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					valider.setEnabled(true);
 					return;
 				}
-				if (null == bottles) {
-					bottles = Program.getStorage().getAllList();
-				}
+
 				if (exportToPDF(bottles, aFile)) {
 					end.setText(Program.getLabel("Infos154")); //"Export termine."
 					openit.setEnabled(true);
@@ -452,7 +441,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	 * @param nomFichier
 	 * @return
 	 */
-public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
+public static boolean exportToPDF(final List<Bouteille> bottles, File nomFichier) {
 		try {
 			final PDFTools pdf = new PDFTools();
 			pdf.addTitle(20);
@@ -461,7 +450,7 @@ public static boolean exportToPDF(List<Bouteille> bottles, File nomFichier) {
 			pdf.drawTable(pageProperties, Program.getPDFRows(bottles, pdf.getProperties()), Program.getPDFHeader(pdf.getProperties()));
 			pdf.save(nomFichier);
 			Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), nomFichier.getAbsolutePath()), true);
-		} catch (Exception ex) {
+		} catch (IOException | RuntimeException ex) {
 			Program.showException(ex, false);
 			Erreur.showSimpleErreur(Program.getError("Error160"), Program.getError("Error161"));
 			return false;

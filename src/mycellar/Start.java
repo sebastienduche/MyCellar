@@ -1027,7 +1027,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	}
 
 	public void updateMainPanel() {
-		Debug("updateMainPanel: Trying to display PANEL_INFOS...");
 		int count = Program.TABBED_PANE.getTabCount();
 		Program.PANEL_INFOS.setVisible(count == 0);
 		Program.TABBED_PANE.setVisible(count > 0);

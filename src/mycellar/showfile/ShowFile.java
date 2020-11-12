@@ -68,7 +68,7 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.2
+ * @version 8.3
  * @since 12/11/20
  */
 

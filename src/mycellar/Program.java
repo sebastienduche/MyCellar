@@ -26,6 +26,7 @@ import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.CountryVignobleController;
+import mycellar.vignobles.VineyardPanel;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -117,7 +118,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.7.2.8";
+	public static final String INTERNAL_VERSION = "3.7.4.0";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -1319,7 +1320,7 @@ public final class Program {
 		bYearControlCalculated = true;
 	}
 
-	static void updateAllPanels() {
+	public static void updateAllPanels() {
 		UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView());
 		UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView());
 	}

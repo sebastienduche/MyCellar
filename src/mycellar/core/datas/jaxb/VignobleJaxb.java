@@ -23,8 +23,8 @@ import java.io.Serializable;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 12/11/20
+ * @version 1.5
+ * @since 13/11/20
  */
 
 /**
@@ -256,5 +256,12 @@ public class VignobleJaxb implements Serializable {
 			sb.append(igp);
 		}
 		return sb.toString();
+	}
+
+	public static boolean isEmpty(VignobleJaxb vignobleJaxb) {
+		return vignobleJaxb == null ||
+				vignobleJaxb.getCountry() == null ||
+				vignobleJaxb.getCountry().isBlank() ||
+				vignobleJaxb.isAppellationEmpty();
 	}
 }

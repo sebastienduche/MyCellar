@@ -53,8 +53,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.3
- * @since 10/11/20
+ * @version 26.4
+ * @since 13/11/20
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -1317,7 +1317,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			add(new PanelName(),"growx,wrap");
 			add(new PanelPlace(),"growx,wrap");
 			add(new PanelAttribute(),"growx,split 2");
-			add(panelVignobles = new PanelVignobles(false, true),"growx, wrap");
+			add(panelVignobles = new PanelVignobles(false, true, true),"growx, wrap");
 			add(m_labelComment,"growx, wrap");
 			add(m_js_comment,"grow, wrap");
 			add(m_end, "center, hidemode 3, wrap");

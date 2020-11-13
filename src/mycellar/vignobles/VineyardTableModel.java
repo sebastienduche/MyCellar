@@ -1,8 +1,9 @@
-package mycellar;
+package mycellar.vignobles;
 
+import mycellar.Program;
+import mycellar.Start;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
-import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -95,13 +96,13 @@ class VineyardTableModel extends DefaultTableModel {
 			break;
 		case 2:
 			String name = appelationJaxb.getAOC() != null ? appelationJaxb.getAOC() : appelationJaxb.getIGP();
-			if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null, MessageFormat.format(Program.getLabel("VineyardPanel.delAppellationQuestion"), name) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+			CountryVignobleController.rebuild();
+			if (CountryVignobleController.isAppellationUsed(appelationJaxb)) {
+				JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("VineyardPanel.unableDeleteAppellation"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
-			CountryVignobleController.rebuild();
-			if (CountryVignobleController.isAppellationUsed(appelationJaxb)) {
-				JOptionPane.showMessageDialog(null, Program.getLabel("VineyardPanel.unableDeleteAppellation"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
+			if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getLabel("VineyardPanel.delAppellationQuestion"), name) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 				return;
 			}
 			setModified(true);

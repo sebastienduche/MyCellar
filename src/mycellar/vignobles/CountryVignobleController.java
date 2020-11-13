@@ -26,8 +26,8 @@ import static mycellar.Program.ITA;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.4
- * @since 12/11/20
+ * @version 2.5
+ * @since 13/11/20
  */
 
 public final class CountryVignobleController {
@@ -146,7 +146,7 @@ public final class CountryVignobleController {
 	}
 
 	public static void createVignobleInMap(final VignobleJaxb vignobleJaxb) {
-		if (vignobleJaxb == null || vignobleJaxb.getCountry().isEmpty()) {
+		if (VignobleJaxb.isEmpty(vignobleJaxb)) {
 			return;
 		}
 
@@ -278,7 +278,7 @@ public final class CountryVignobleController {
 	}
 
 	private static void addVignoble(final VignobleJaxb bouteilleVignobleJaxb) {
-		if (bouteilleVignobleJaxb == null || bouteilleVignobleJaxb.getCountry() == null || bouteilleVignobleJaxb.getCountry().isEmpty()) {
+		if (VignobleJaxb.isEmpty(bouteilleVignobleJaxb)) {
 			return;
 		}
 		CountryJaxb countryJaxb = CountryListJaxb.findByIdOrLabel(bouteilleVignobleJaxb.getCountry());

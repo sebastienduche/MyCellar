@@ -21,10 +21,10 @@ import java.util.Collection;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 09/11/20
+ * @version 0.9
+ * @since 13/11/20
  */
-public class PanelRequest extends JPanel {
+public final class PanelRequest extends JPanel {
 
 	private static final long serialVersionUID = -1239228393406479587L;
 
@@ -53,16 +53,16 @@ public class PanelRequest extends JPanel {
 		panelOperator.setLayout(new MigLayout());
 		panelOperator.add(new LabelSearch(Predicates.AND, panelOperator, true));
 		panelOperator.add(new LabelSearch(Predicates.OR, panelOperator, true));
-		panelOperator.add(new LabelSearch(Predicates.openParenthesis, panelOperator, true));
-		panelOperator.add(new LabelSearch(Predicates.closeParenthesis, panelOperator, true));
+		panelOperator.add(new LabelSearch(Predicates.OPEN_PARENTHESIS, panelOperator, true));
+		panelOperator.add(new LabelSearch(Predicates.CLOSE_PARENTHESIS, panelOperator, true));
 		panelKeyword.add(new LabelSearch(Predicates.NAME, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.year, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.rangement, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.YEAR, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.RANGEMENT, panelKeyword, true));
 		panelKeyword.add(new LabelSearch(Predicates.COLOR, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.capacity, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.price, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.country, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.SATUS, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.CAPACITY, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.PRICE, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.COUNTRY, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.STATUS, panelKeyword, true));
 		panelKeyword.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Parameters")));
 		panelOperator.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Operators")));
 		add(panelKeyword, "grow");

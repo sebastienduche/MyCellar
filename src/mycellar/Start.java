@@ -11,6 +11,7 @@ import mycellar.core.MyCellarVersion;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.launcher.Server;
 import mycellar.showfile.ShowFile;
+import mycellar.vignobles.VineyardPanel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -50,8 +51,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.7
- * @since 30/10/20
+ * @version 26.8
+ * @since 13/11/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 

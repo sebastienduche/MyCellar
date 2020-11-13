@@ -34,10 +34,10 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 12/11/20
+ * @version 1.2
+ * @since 13/11/20
  */
-public class PanelVignobles extends JPanel {
+public final class PanelVignobles extends JPanel {
 
 	private static final long serialVersionUID = -3053382428338158563L;
 
@@ -46,7 +46,7 @@ public class PanelVignobles extends JPanel {
 	private final JCompletionComboBox<AppelationJaxb> comboAppelationAOC;
 	private final JCompletionComboBox<String> comboAppelationIGP;
 
-	public PanelVignobles(boolean modifyActive, boolean manageButton) {
+	public PanelVignobles(boolean modifyActive, boolean manageButton, boolean editable) {
 
 		MyCellarLabel labelCountry = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Country");
 		MyCellarLabel labelVignoble = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Vignoble");
@@ -95,13 +95,14 @@ public class PanelVignobles extends JPanel {
 			}
 		};
 		comboAppelationIGP.setCaseSensitive(false);
-		comboAppelationIGP.setEditable(true);
 		comboVignoble.setCaseSensitive(false);
-		comboVignoble.setEditable(true);
 		comboCountry.setCaseSensitive(false);
-		comboCountry.setEditable(true);
 		comboAppelationAOC.setCaseSensitive(false);
-		comboAppelationAOC.setEditable(true);
+
+		comboAppelationIGP.setEditable(editable);
+		comboVignoble.setEditable(editable);
+		comboCountry.setEditable(editable);
+		comboAppelationAOC.setEditable(editable);
 		comboCountry.addItem(NO_COUNTRY);
 		Program.getCountries().forEach(comboCountry::addItem);
 
@@ -179,11 +180,11 @@ public class PanelVignobles extends JPanel {
 	public void updateList() {
 		SwingUtilities.invokeLater(() -> {
 			Debug("Updating List...");
-			if(comboCountry.getItemCount() == 0) {
+			if (comboCountry.getItemCount() == 0) {
 				comboCountry.addItem(NO_COUNTRY);
 			}
-			for(CountryJaxb c : Program.getCountries()) {
-				if(!comboCountry.hasItem(c)) {
+			for (CountryJaxb c : Program.getCountries()) {
+				if (!comboCountry.hasItem(c)) {
 					comboCountry.addItem(c);
 				}
 			}
@@ -193,7 +194,7 @@ public class PanelVignobles extends JPanel {
 
 	public void resetCombos() {
 		comboCountry.setSelectedIndex(0);
-		if(comboVignoble.getItemCount() > 0) {
+		if (comboVignoble.getItemCount() > 0) {
 			comboVignoble.setSelectedIndex(0);
 		}
 	}
@@ -204,7 +205,7 @@ public class PanelVignobles extends JPanel {
 
 	public String getCountry() {
 		Object o = comboCountry.getEditor().getItem();
-		if(o instanceof CountryJaxb) {
+		if (o instanceof CountryJaxb) {
 			return toCleanString(((CountryJaxb) o).getId());
 		}
 		return toCleanString(o);

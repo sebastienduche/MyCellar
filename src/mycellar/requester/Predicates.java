@@ -5,6 +5,7 @@ import mycellar.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.Rangement;
+import mycellar.Start;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.PanelVignobles;
@@ -24,8 +25,8 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 10/11/20
+ * @version 1.2
+ * @since 13/11/20
  */
 
 public class Predicates {
@@ -79,7 +80,7 @@ public class Predicates {
 		}
 	};
 
-	public static final IPredicate<Bouteille> SATUS = new IPredicate<>() {
+	public static final IPredicate<Bouteille> STATUS = new IPredicate<>() {
 
 		@Override
 		public boolean apply(Bouteille bottle) {
@@ -202,7 +203,7 @@ public class Predicates {
 		}
 	};
 	
-	public static IPredicate<Bouteille> year = new IPredicate<>() {
+	public static final IPredicate<Bouteille> YEAR = new IPredicate<>() {
 
 		@Override
 		public boolean apply(Bouteille bouteille) {
@@ -240,7 +241,7 @@ public class Predicates {
 		}
 	};
 	
-	public static IPredicate<Bouteille> rangement = new IPredicate<>() {
+	public static final IPredicate<Bouteille> RANGEMENT = new IPredicate<>() {
 
 		@Override
 		public boolean apply(Bouteille bouteille) {
@@ -290,7 +291,7 @@ public class Predicates {
 	};
 	
 	
-	public static IPredicate<Bouteille> capacity = new IPredicate<>() {
+	public static final IPredicate<Bouteille> CAPACITY = new IPredicate<>() {
 
 		@Override
 		public boolean apply(Bouteille bottle) {
@@ -337,7 +338,7 @@ public class Predicates {
 		}
 	};
 
-	public static IPredicate<Bouteille> price = new IPredicate<>() {
+	public static final IPredicate<Bouteille> PRICE = new IPredicate<>() {
 
 		private int type = -1;
 
@@ -400,7 +401,7 @@ public class Predicates {
 		}
 	};
 
-	public static IPredicate<Bouteille> country = new IPredicate<>() {
+	public static final IPredicate<Bouteille> COUNTRY = new IPredicate<>() {
 
 		@Override
 		public boolean apply(Bouteille bouteille) {
@@ -451,8 +452,8 @@ public class Predicates {
 
 		@Override
 		public ValueSearch askforValue() {
-			PanelVignobles panelVignobles = new PanelVignobles(true, false);
-			JOptionPane.showMessageDialog(null, panelVignobles,
+			PanelVignobles panelVignobles = new PanelVignobles(true, false, false);
+			JOptionPane.showMessageDialog(Start.getInstance(), panelVignobles,
 					"",
 					JOptionPane.PLAIN_MESSAGE);
 			final VignobleJaxb selectedVignobleJaxb = panelVignobles.getSelectedVignoble();
@@ -536,7 +537,7 @@ public class Predicates {
 		}
 	};
 	
-	public static IPredicate<AppelationJaxb> openParenthesis = new IPredicate<>() {
+	public static final IPredicate<AppelationJaxb> OPEN_PARENTHESIS = new IPredicate<>() {
 
 		@Override
 		public boolean apply(AppelationJaxb appelationJaxb) {
@@ -574,7 +575,7 @@ public class Predicates {
 		}
 	};
 	
-	public static IPredicate<AppelationJaxb> closeParenthesis = new IPredicate<>() {
+	public static final IPredicate<AppelationJaxb> CLOSE_PARENTHESIS = new IPredicate<>() {
 
 		@Override
 		public boolean apply(AppelationJaxb appelationJaxb) {
@@ -621,7 +622,7 @@ public class Predicates {
 	}
 	
 	static boolean isParenthesisPredicate(IPredicate<?> predicate) {
-		return (predicate != null) && (predicate.equals(openParenthesis) || predicate.equals(closeParenthesis));
+		return (predicate != null) && (predicate.equals(OPEN_PARENTHESIS) || predicate.equals(CLOSE_PARENTHESIS));
 	}
 
 	@SuppressWarnings("rawtypes")

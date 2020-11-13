@@ -1,5 +1,13 @@
-package mycellar;
+package mycellar.vignobles;
 
+import mycellar.Erreur;
+import mycellar.ITabListener;
+import mycellar.MyCellarImage;
+import mycellar.Program;
+import mycellar.Start;
+import mycellar.StateButtonEditor;
+import mycellar.StateButtonRenderer;
+import mycellar.TabEvent;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelType;
@@ -10,7 +18,6 @@ import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleListJaxb;
-import mycellar.vignobles.CountryVignobleController;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -43,7 +50,7 @@ import java.util.Objects;
  * @since 13/11/20
  */
 
-public class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
+public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
 	private static final long serialVersionUID = 2661586945830305901L;
 
@@ -63,50 +70,9 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IU
 		Collections.sort(Program.getCountries());
 		Program.getCountries().forEach(comboCountry::addItem);
 
-		comboCountry.addActionListener((e) -> {
+		comboCountry.addActionListener((e) -> comboCountrySelected());
+		comboVignoble.addActionListener((e) -> comboVignobleSelected());
 
-			comboVignoble.removeAllItems();
-			addVignoble.setEnabled(false);
-			delVignoble.setEnabled(false);
-			renameVignoble.setEnabled(false);
-			addAppellation.setEnabled(false);
-			if(comboCountry.getSelectedItem() != null && comboCountry.getSelectedItem().equals(emptyCountryJaxb)) {
-				model.setAppellations(null, null);
-				return;
-			}
-			addVignoble.setEnabled(true);
-			CountryJaxb countryJaxb = (CountryJaxb) comboCountry.getSelectedItem();
-			CountryVignobleController.getVignobles(countryJaxb)
-				.ifPresentOrElse(vignobleListJaxb1 -> vignobleListJaxb = vignobleListJaxb1, () -> CountryVignobleController.createCountry(countryJaxb)
-					.ifPresentOrElse(vignobleListJaxb1 -> vignobleListJaxb = vignobleListJaxb1,
-							() -> Debug("ERROR: Unable to find country " + countryJaxb.getName())));
-
-			vignobleListJaxb.getCountryVignobleJaxbList().stream()
-					.filter(Objects::nonNull)
-					.forEach(comboVignoble::addItem);
-
-			if (comboVignoble.getItemCount() > 0) {
-				CountryVignobleJaxb countryVignobleJaxb = (CountryVignobleJaxb)comboVignoble.getSelectedItem();
-				if (countryVignobleJaxb != null) {
-					model.setAppellations(countryVignobleJaxb, countryVignobleJaxb.getAppelation());
-				}
-			}	else {
-				model.setAppellations(null, null);
-				addAppellation.setEnabled(false);
-			}
-			comboVignoble.setEnabled(comboVignoble.getItemCount() > 0);
-			delVignoble.setEnabled(comboVignoble.getItemCount() > 0);
-			renameVignoble.setEnabled(comboVignoble.getItemCount() > 0);
-		});
-
-		comboVignoble.addActionListener((e) -> {
-
-			if (comboVignoble.getSelectedItem() != null) {
-				CountryVignobleJaxb countryVignobleJaxb = (CountryVignobleJaxb) comboVignoble.getSelectedItem();
-				model.setAppellations(countryVignobleJaxb, countryVignobleJaxb.getAppelation());
-				addAppellation.setEnabled(true);
-			}
-		});
 		MyCellarLabel labelVineyard = new MyCellarLabel(LabelType.INFO, "166"); // Selectionner un vignoble
 		MyCellarButton addCountry = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.addCountry", new AddCountryAction());
 		MyCellarButton delCountry = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.delCountry", new DelCountryAction());
@@ -147,6 +113,49 @@ public class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IU
 		tc.setCellEditor(new StateButtonEditor());
 		tc.setMinWidth(25);
 		tc.setMaxWidth(25);
+	}
+
+	private void comboCountrySelected() {
+		comboVignoble.removeAllItems();
+		addVignoble.setEnabled(false);
+		delVignoble.setEnabled(false);
+		renameVignoble.setEnabled(false);
+		addAppellation.setEnabled(false);
+		if(comboCountry.getSelectedItem() != null && comboCountry.getSelectedItem().equals(emptyCountryJaxb)) {
+			model.setAppellations(null, null);
+			return;
+		}
+		addVignoble.setEnabled(true);
+		CountryJaxb countryJaxb = (CountryJaxb) comboCountry.getSelectedItem();
+		CountryVignobleController.getVignobles(countryJaxb)
+			.ifPresentOrElse(vignobleListJaxb1 -> vignobleListJaxb = vignobleListJaxb1, () -> CountryVignobleController.createCountry(countryJaxb)
+				.ifPresentOrElse(vignobleListJaxb1 -> vignobleListJaxb = vignobleListJaxb1,
+						() -> Debug("ERROR: Unable to find country " + countryJaxb.getName())));
+
+		vignobleListJaxb.getCountryVignobleJaxbList().stream()
+				.filter(Objects::nonNull)
+				.forEach(comboVignoble::addItem);
+
+		if (comboVignoble.getItemCount() > 0) {
+			CountryVignobleJaxb countryVignobleJaxb = (CountryVignobleJaxb)comboVignoble.getSelectedItem();
+			if (countryVignobleJaxb != null) {
+				model.setAppellations(countryVignobleJaxb, countryVignobleJaxb.getAppelation());
+			}
+		}	else {
+			model.setAppellations(null, null);
+			addAppellation.setEnabled(false);
+		}
+		comboVignoble.setEnabled(comboVignoble.getItemCount() > 0);
+		delVignoble.setEnabled(comboVignoble.getItemCount() > 0);
+		renameVignoble.setEnabled(comboVignoble.getItemCount() > 0);
+	}
+
+	private void comboVignobleSelected() {
+		if (comboVignoble.getSelectedItem() != null) {
+			CountryVignobleJaxb countryVignobleJaxb = (CountryVignobleJaxb) comboVignoble.getSelectedItem();
+			model.setAppellations(countryVignobleJaxb, countryVignobleJaxb.getAppelation());
+			addAppellation.setEnabled(true);
+		}
 	}
 
 	@Override

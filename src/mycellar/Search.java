@@ -216,12 +216,12 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 		tabbedPane.add(Program.getLabel("Infos078"), new PanelPlace());
 		tabbedPane.add(Program.getLabel("Infos219"), panelYear);
 		tabbedPane.add(Program.getLabel("Infos318"), panelRequest);
+
 		add(tabbedPane,"growx");
 		add(new PanelOption(),"wrap");
 		add(scrollpane, "grow, wrap, span 2");
 		add(addToWorksheet,"alignx left, aligny top");
 		add(selectall,"wrap, alignx right, aligny top");
-
 		add(infoLabel, "wrap, span 2, alignx center");
 		add(resul_txt,"wrap, span 2, alignx center");
 		add(modif, "split, span 2, align center");
@@ -271,7 +271,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
 			if (listToSupp.isEmpty()) {
 				//"Aucun vin a supprimer! / Veuillez selectionner les vins a supprimer.");
-				Debug("Erreur: No bottle to delete!");
+				Debug("ERROR: No bottle to delete!");
 				Erreur.showSimpleErreur(Program.getError("Error064", LabelProperty.SINGLE), Program.getError("Error065", LabelProperty.THE_PLURAL), true);
 				return;
 			}

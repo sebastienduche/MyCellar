@@ -41,8 +41,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.6
- * @since 12/11/20
+ * @version 6.7
+ * @since 13/11/20
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -549,7 +549,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		Program.Debug("ManageBottle: " + sText);
 	}
 
-	private final class PanelPlace extends JPanel{
+	private final class PanelPlace extends JPanel {
 		private static final long serialVersionUID = -2601861017578176513L;
 
 		private PanelPlace(){
@@ -569,7 +569,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		}
 	}
 
-	private final class PanelMain extends JPanel{
+	private final class PanelMain extends JPanel {
 		private static final long serialVersionUID = -4824541234206895953L;
 
 		private PanelMain(){
@@ -577,7 +577,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			add(new PanelName(),"growx,wrap");
 			add(new PanelPlace(),"growx,wrap");
 			add(new PanelAttribute(),"growx,split 2");
-			add(panelVignobles = new PanelVignobles(true, true),"growx, wrap");
+			add(panelVignobles = new PanelVignobles(true, true, true),"growx, wrap");
 			add(m_labelComment,"growx, wrap");
 			add(m_js_comment,"grow, wrap");
 			add(m_end, "center, hidemode 3, wrap");

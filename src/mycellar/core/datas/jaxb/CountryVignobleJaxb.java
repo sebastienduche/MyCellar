@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @XmlRootElement(name = "vignoble")
@@ -73,7 +74,10 @@ public class CountryVignobleJaxb implements Comparable<CountryVignobleJaxb>
 	}
 
 	void makeItClean() {
-		appelationJaxb = appelationJaxb.stream().distinct().collect(Collectors.toList());
+		appelationJaxb = appelationJaxb.stream()
+				.filter(Predicate.not(AppelationJaxb::isEmpty))
+				.distinct()
+				.collect(Collectors.toList());
 		id = Program.generateID();
 	}
 
@@ -84,7 +88,7 @@ public class CountryVignobleJaxb implements Comparable<CountryVignobleJaxb>
 	}
 
 	public boolean isEmpty() {
-		return name.isEmpty() && (appelationJaxb == null || appelationJaxb.isEmpty());
+		return name.isBlank() && (appelationJaxb == null || appelationJaxb.isEmpty());
 	}
 
 	@Override

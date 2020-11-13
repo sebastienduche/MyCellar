@@ -6,10 +6,10 @@ import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
-import mycellar.core.datas.jaxb.CountryJaxb;
-import mycellar.core.datas.jaxb.VignobleListJaxb;
 import mycellar.core.datas.jaxb.AppelationJaxb;
+import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
+import mycellar.core.datas.jaxb.VignobleListJaxb;
 import mycellar.vignobles.CountryVignobleController;
 import net.miginfocom.swing.MigLayout;
 
@@ -39,8 +39,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 12/11/20
+ * @version 2.7
+ * @since 13/11/20
  */
 
 public class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {

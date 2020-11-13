@@ -92,15 +92,15 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
 	}
 
 	public boolean isEmpty() {
-		return (aoc == null || aoc.isEmpty())
-				&& (aop == null || aop.isEmpty())
-				&& (igp == null || igp.isEmpty());
+		return (aoc == null || aoc.isBlank())
+				&& (aop == null || aop.isBlank())
+				&& (igp == null || igp.isBlank());
 	}
 
 	void makeItClean() {
 		id = Program.generateID();
 		if (getAOC() != null) {
-			if (getAOP() == null || getAOP().isEmpty()) {
+			if (getAOP() == null || getAOP().isBlank()) {
 				setAOP(getAOC());
 			}
 		} else {

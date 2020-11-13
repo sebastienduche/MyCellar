@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -29,8 +31,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.1
- * @since 12/11/20
+ * @version 2.2
+ * @since 13/11/20
  */
 
 @XmlRootElement(name = "vignobles")
@@ -114,6 +116,9 @@ public class VignobleListJaxb
 			}
 			vignoble.makeItClean();
 		}
+		vignobleListJaxb.countryVignobleJaxbList = vignobleListJaxb.countryVignobleJaxbList.stream()
+				.filter(Predicate.not(CountryVignobleJaxb::isEmpty))
+				.collect(Collectors.toList());
 		Debug("Loading JAXB File Done");
 		return vignobleListJaxb;
 	}
@@ -294,13 +299,13 @@ public class VignobleListJaxb
 	}
 
 	public CountryVignobleJaxb addVignoble(final String name) {
-		Debug("Loading vignoble with name " + name);
+		Debug("Adding vignoble with name " + name);
 		CountryVignobleJaxb vigne = new CountryVignobleJaxb();
 		vigne.setName(name);
 		vigne.setAppelation(new LinkedList<>());
 		countryVignobleJaxbList.add(vigne);
 		Collections.sort(countryVignobleJaxbList);
-		Debug("Loading vignoble Done");
+		Debug("Adding vignoble Done");
 		return vigne;
 	}
 

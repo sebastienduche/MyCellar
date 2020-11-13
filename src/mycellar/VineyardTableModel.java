@@ -16,8 +16,8 @@ import java.util.List;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 1.1
- * @since 12/11/20
+ * @version 1.2
+ * @since 13/11/20
  */
 
 class VineyardTableModel extends DefaultTableModel {
@@ -112,8 +112,8 @@ class VineyardTableModel extends DefaultTableModel {
 	}
 	
 	void setAppellations(CountryVignobleJaxb vignoble, List<AppelationJaxb> appelationJaxbs) {
-		this.appelationJaxbs = appelationJaxbs;
 		this.vignoble = vignoble;
+		this.appelationJaxbs = appelationJaxbs;
 		fireTableDataChanged();
 	}
 

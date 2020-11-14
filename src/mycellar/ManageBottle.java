@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IAddVin;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
@@ -10,7 +11,8 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.MyCellarBottleContenance;
-import mycellar.vignobles.CountryVignobles;
+import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.vignobles.CountryVignobleController;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -26,8 +28,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.text.MessageFormat;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static mycellar.core.LabelProperty.OF_THE_SINGLE;
 
 
 /**
@@ -36,10 +41,10 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.0
- * @since 02/09/20
+ * @version 6.7
+ * @since 13/11/20
  */
-public class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
+public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
 
 
@@ -93,7 +98,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 				}
 			});
 
-			m_nb_bottle.setToolTipText(Program.getLabel("Infos263"));
+			m_nb_bottle.setToolTipText(Program.getLabel("AddVin.NbItemsToAdd", LabelProperty.PLURAL));
 			m_nb_bottle.setValue(1);
 			m_nb_bottle.addChangeListener((e) -> {
 				m_labelStillToAdd.setText("");
@@ -137,10 +142,6 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 
 			initPlaceCombo();
-
-			// Listener sur les combobox
-			// _________________________
-
 			setListeners();
 
 			m_num_lieu.setEnabled(false);
@@ -151,13 +152,13 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			Debug("JbInit Done");
 
 			setBottle(bottle);
-		}	catch (Exception e) {
+		}	catch (RuntimeException e) {
 			Program.showException(e);
 		}
 	}
 
 	public Bouteille getBottle() {
-		return m_laBouteille;
+		return bottle;
 	}
 
 	/**
@@ -223,7 +224,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			m_labelLine.setVisible(!bIsCaisse);
 			m_labelColumn.setVisible(!bIsCaisse);
 			Debug("Lieu_itemStateChanging... Done");
-		}	catch (Exception a) {
+		}	catch (RuntimeException a) {
 			Program.showException(a);
 		}
 	}
@@ -235,7 +236,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 */
 	@Override
 	protected void line_itemStateChanged(ItemEvent e) {
-		if(isListenersDisabled()) {
+		if (isListenersDisabled()) {
 			return;
 		}
 		Debug("Line_itemStateChanging...");
@@ -254,7 +255,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		Debug("Saving...");
 		try {
 			new Thread(this).start();
-		}	catch (Exception a) {
+		}	catch (RuntimeException a) {
 			Program.showException(a);
 		}
 	}
@@ -265,24 +266,21 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 	 * @param bottle Bouteille
 	 */
 	private void setBottle(Bouteille bottle) {
-
 		Debug("Set Bottle...");
 		try {
-			m_laBouteille = bottle;
+			this.bottle = bottle;
 			enableAll(true);
 			m_nb_bottle.setValue(1);
 			m_nb_bottle.setEnabled(false);
 			name.setSelectedItem(bottle.getNom());
 			m_year.setText(bottle.getAnnee());
 			m_noYear.setSelected(bottle.isNonVintage());
-			if(bottle.isNonVintage()) {
+			if (bottle.isNonVintage()) {
 				m_year.setEditable(false);
 			}
 			m_half.removeAllItems();
 			m_half.addItem("");
-			for(String s: MyCellarBottleContenance.getList()) {
-					m_half.addItem(s);
-			}
+			MyCellarBottleContenance.getList().forEach(m_half::addItem);
 			m_half.setSelectedItem(bottle.getType());
 			String half_tmp = "";
 			if (m_half.getSelectedItem() != null) {
@@ -308,14 +306,14 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			selectPlace(bottle);
 			m_end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
 			resetModified();
-		}	catch (Exception e) {
+		}	catch (RuntimeException e) {
 			Program.showException(e);
 		}
 	}
 
 	private void updateStatusAndTime() {
-		statusList.setSelectedItem(BottlesStatus.getStatus(m_laBouteille.getStatus()));
-		lastModified.setText(m_laBouteille.getLastModified());
+		statusList.setSelectedItem(BottlesStatus.getStatus(bottle.getStatus()));
+		lastModified.setText(bottle.getLastModified());
 	}
 
 	@Override
@@ -341,7 +339,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 		String nom = name.getEditor().getItem().toString();
 		String demie = "";
-		if(m_half.getSelectedItem() != null) {
+		if (m_half.getSelectedItem() != null) {
 			demie = m_half.getSelectedItem().toString();
 		}
 
@@ -362,7 +360,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		String aoc = panelVignobles.getAOC();
 		String igp = panelVignobles.getIGP();
 
-		if(!MyCellarControl.checkBottleName(nom)) {
+		if (!MyCellarControl.checkBottleName(nom)) {
 			return false;
 		}
 
@@ -408,61 +406,63 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			}
 		}
 
-		Rangement oldRangement = m_laBouteille.getRangement();
-		int oldNum = m_laBouteille.getNumLieu();
-		int oldLine = m_laBouteille.getLigne();
-		int oldColumn = m_laBouteille.getColonne();
-		m_laBouteille.setAnnee(annee);
-		m_laBouteille.setColor(color);
-		m_laBouteille.setComment(comment1);
-		m_laBouteille.setEmplacement(cave.getNom());
-		m_laBouteille.setMaturity(dateOfC);
-		m_laBouteille.setNom(nom);
-		m_laBouteille.setNumLieu(lieu_num);
-		m_laBouteille.setParker(parker);
-		m_laBouteille.setPrix(prix);
-		m_laBouteille.setType(demie);
-		m_laBouteille.setVignoble(new Vignoble(country, vignoble, aoc, igp, null));
-		m_laBouteille.setStatus(status);
-		CountryVignobles.addVignobleFromBottle(m_laBouteille);
-		CountryVignobles.setRebuildNeeded();
-		if(isCaisse) {
+		Rangement oldRangement = bottle.getRangement();
+		int oldNum = bottle.getNumLieu();
+		int oldLine = bottle.getLigne();
+		int oldColumn = bottle.getColonne();
+		bottle.setAnnee(annee);
+		bottle.setColor(color);
+		bottle.setComment(comment1);
+		bottle.setEmplacement(cave.getNom());
+		bottle.setMaturity(dateOfC);
+		bottle.setNom(nom);
+		bottle.setNumLieu(lieu_num);
+		bottle.setParker(parker);
+		bottle.setPrix(prix);
+		bottle.setType(demie);
+		bottle.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp, null));
+		bottle.setStatus(status);
+		CountryVignobleController.addVignobleFromBottle(bottle);
+		CountryVignobleController.setRebuildNeeded();
+		if (isCaisse) {
 			lieu_num = Integer.parseInt(m_num_lieu.getItemAt(lieu_num));
-			m_laBouteille.setNumLieu(lieu_num);
-			m_laBouteille.setLigne(0);
-			m_laBouteille.setColonne(0);
+			bottle.setNumLieu(lieu_num);
+			bottle.setLigne(0);
+			bottle.setColonne(0);
 		}	else {
-			m_laBouteille.setLigne(line);
-			m_laBouteille.setColonne(column);
+			bottle.setLigne(line);
+			bottle.setColonne(column);
 
-			Bouteille bottleInPlace = cave.getBouteille(m_laBouteille.getNumLieu()-1, m_laBouteille.getLigne()-1, m_laBouteille.getColonne()-1);
-			if(bottleInPlace != null && !bottleInPlace.equals(m_laBouteille)) {
-				Debug("ERROR: Not an empty place, Replace?");
-				String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bottleInPlace.getNom(), bottleInPlace.getAnnee()); //" d&eacute;j&agrave; pr&eacute;sent &agrave; cette place!");
-				String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
-				if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
-					replaceWine(bottleInPlace);
-					m_end.setText(Program.getLabel("Infos075"));
+			Optional<Bouteille> bottleInPlace = cave.getBouteille(bottle);
+			bottleInPlace.ifPresent( bouteille -> {
+				if (!bouteille.equals(bottle)) {
+					Debug("ERROR: Not an empty place, Replace?");
+					String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bouteille.getNom(), bouteille.getAnnee()); //" d&eacute;j&agrave; pr&eacute;sent &agrave; cette place!");
+					String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
+					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+						replaceWine(bouteille);
+						m_end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
+					}
 				}
-			}
+			});
 		}
 
-		m_laBouteille.setModified();
-		Program.getStorage().addHistory(History.MODIFY, m_laBouteille);
+		bottle.setModified();
+		Program.getStorage().addHistory(History.MODIFY, bottle);
 
-		Rangement rangement = m_laBouteille.getRangement();
-		if(!oldRangement.isCaisse()){
+		Rangement rangement = bottle.getRangement();
+		if (!oldRangement.isCaisse()) {
 			oldRangement.clearStock(new Bouteille.BouteilleBuilder("").numPlace(oldNum).line(oldLine).column(oldColumn).build());
 		}
 
 		RangementUtils.putTabStock();
 		Search.updateTable();
 
-		if(!rangement.isCaisse()) {
-			rangement.updateToStock(m_laBouteille);
+		if (!rangement.isCaisse()) {
+			rangement.updateToStock(bottle);
 		}
 
-		m_end.setText(Program.getLabel("Infos144"));
+		m_end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE));
 		Program.updateManagePlacePanel();
 		updateStatusAndTime();
 		resetModified();
@@ -491,17 +491,17 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 
 	private void replaceWine(final Bouteille bToDelete) {
 		//Change wine in a place
-		Program.getStorage().addHistory(History.MODIFY, m_laBouteille);
+		Program.getStorage().addHistory(History.MODIFY, bottle);
 		Program.getStorage().deleteWine(bToDelete);
 
-		m_laBouteille.getRangement().clearStock(m_laBouteille);
+		bottle.getRangement().clearStock(bottle);
 
 		Search.removeBottle(bToDelete);
 		Search.updateTable();
 
-		final Rangement rangement = m_laBouteille.getRangement();
-		if(rangement != null && !rangement.isCaisse()) {
-			rangement.updateToStock(m_laBouteille);
+		final Rangement rangement = bottle.getRangement();
+		if (rangement != null && !rangement.isCaisse()) {
+			rangement.updateToStock(bottle);
 		}
 	}
 
@@ -511,7 +511,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		
 		boolean modified = name.isModified();
 		modified |= m_year.isModified();
-		modified |= (m_noYear.isSelected() != m_laBouteille.isNonVintage());
+		modified |= (m_noYear.isSelected() != bottle.isNonVintage());
 		modified |= m_comment.isModified();
 		modified |= m_maturity.isModified();
 		modified |= m_parker.isModified();
@@ -525,7 +525,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		modified |= m_half.isModified();
 		modified |= panelVignobles.isModified();
 
-		if(modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, Program.getError("Error148") + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+		if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, Program.getError("Error148", OF_THE_SINGLE) + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 			Debug("Don't Quit.");
 			m_add.setEnabled(true);
 			return false;
@@ -549,7 +549,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		Program.Debug("ManageBottle: " + sText);
 	}
 
-	private class PanelPlace extends JPanel{
+	private final class PanelPlace extends JPanel {
 		private static final long serialVersionUID = -2601861017578176513L;
 
 		private PanelPlace(){
@@ -569,7 +569,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 		}
 	}
 
-	private class PanelMain extends JPanel{
+	private final class PanelMain extends JPanel {
 		private static final long serialVersionUID = -4824541234206895953L;
 
 		private PanelMain(){
@@ -577,7 +577,7 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			add(new PanelName(),"growx,wrap");
 			add(new PanelPlace(),"growx,wrap");
 			add(new PanelAttribute(),"growx,split 2");
-			add(panelVignobles = new PanelVignobles(true, true),"growx, wrap");
+			add(panelVignobles = new PanelVignobles(true, true, true),"growx, wrap");
 			add(m_labelComment,"growx, wrap");
 			add(m_js_comment,"grow, wrap");
 			add(m_end, "center, hidemode 3, wrap");
@@ -608,12 +608,10 @@ public class ManageBottle extends MyCellarManageBottles implements Runnable, ITa
 			initPlaceCombo();
 			m_half.removeAllItems();
 			m_half.addItem("");
-			for (String s : MyCellarBottleContenance.getList()) {
-				m_half.addItem(s);
-			}
+			MyCellarBottleContenance.getList().forEach(m_half::addItem);
 			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 			panelVignobles.updateList();
-			selectPlace(m_laBouteille);
+			selectPlace(bottle);
 			setListenersEnabled(true);
 			Debug("updateView Done");
 		});

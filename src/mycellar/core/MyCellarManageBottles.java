@@ -22,6 +22,7 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
+import java.util.Optional;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -29,8 +30,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 02/09/20
+ * @version 3.6
+ * @since 30/10/20
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -44,7 +45,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final MyCellarLabel m_labelLine = new MyCellarLabel(LabelType.INFO, "028");
 	protected final MyCellarLabel m_labelColumn = new MyCellarLabel(LabelType.INFO, "083");
 	private final MyCellarLabel m_labelPrice = new MyCellarLabel(LabelType.INFO, "135");
-	private final MyCellarLabel m_labelNbBottle = new MyCellarLabel(LabelType.INFO, "098", "");
+	private final MyCellarLabel m_labelNbBottle = new MyCellarLabel(LabelType.INFO, "405", LabelProperty.PLURAL);
 	private final MyCellarLabel m_labelMaturity = new MyCellarLabel(LabelType.INFO, "391");
 	private final MyCellarLabel m_labelParker = new MyCellarLabel(LabelType.INFO, "392");
 	private final MyCellarLabel labelStatus = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarManageBottles.status");
@@ -80,7 +81,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected boolean updateView = false;
 	protected MyCellarButton m_chooseCell;
 	protected PanelVignobles panelVignobles;
-	protected Bouteille m_laBouteille = null;
+	protected Bouteille bottle = null;
 	protected char AJOUTER = Program.getLabel("AJOUTER").charAt(0);
 	private char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
 	private final MyCellarLabel m_devise = new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, "€"));
@@ -145,9 +146,9 @@ public abstract class MyCellarManageBottles extends JPanel {
 			}
 
 			Rangement cave = m_lieu.getItemAt(nPlace);
-			Bouteille b;
-			if ((b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1)) != null) {
-				m_labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.getNom())));
+			Optional<Bouteille> b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1);
+			if (b.isPresent()) {
+				m_labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.get().getNom())));
 			} else {
 			  m_labelExist.setText("");
 			}
@@ -421,8 +422,8 @@ public abstract class MyCellarManageBottles extends JPanel {
     			for (int i = 1; i<= nbEmpl; i++) {
     				m_num_lieu.addItem(Integer.toString(i));
     			}
-    			int nbLine = rangement.getNbLignes(bottle.getNumLieu()-1);
-    			int nbColumn = rangement.getNbColonnes(bottle.getNumLieu()-1, bottle.getLigne()-1);
+    			int nbLine = rangement.getNbLignes(bottle.getNumLieu() - 1);
+    			int nbColumn = rangement.getNbColonnes(bottle.getNumLieu() - 1, bottle.getLigne() - 1);
     			for (int i = 1; i<= nbLine; i++) {
     				m_line.addItem(Integer.toString(i));
     			}
@@ -439,7 +440,7 @@ public abstract class MyCellarManageBottles extends JPanel {
     			for (int i = start; i< nbEmpl+start; i++) {
     				m_num_lieu.addItem(Integer.toString(i));
     			}
-    			m_num_lieu.setSelectedIndex(bottle.getNumLieu()-start+1);
+    			m_num_lieu.setSelectedIndex(bottle.getNumLieu() - start + 1);
     		}
     		m_num_lieu.setEnabled(true);
 		}

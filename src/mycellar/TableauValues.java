@@ -1,5 +1,7 @@
 package mycellar;
 
+import mycellar.core.LabelProperty;
+
 import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -11,13 +13,13 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 17/07/19
+ * @version 1.4
+ * @since 19/10/20
  */
 class TableauValues extends AbstractTableModel {
 	public static final int ETAT = 0;
 	static final long serialVersionUID = 220605;
-	private final String[] columnNames = {"", Program.getLabel("Infos105"), Program.getLabel("Infos027"), Program.getLabel("Infos136")};
+	private final String[] columnNames = {"", Program.getLabel("Infos105"), Program.getLabel("Infos027"), Program.getLabel("Infos136", LabelProperty.PLURAL)};
 
 	private final List<Rangement> list = new LinkedList<>();
 	private final List<Boolean> listBoolean = new LinkedList<>();
@@ -58,8 +60,9 @@ class TableauValues extends AbstractTableModel {
 		case 1:
 			return r.getNom();
 		case 2:
-			if (r.isCaisse())
+			if (r.isCaisse()) {
 				return Program.getLabel("Infos024");
+			}
 			int nombre_ligne = 0;
 			for (int k = 0; k < r.getNbEmplacements(); k++) {
 				nombre_ligne += r.getNbLignes(k);
@@ -78,11 +81,7 @@ class TableauValues extends AbstractTableModel {
 					nombre_vin += r.getNbCaseUse(k);
 				}
 			}
-				
-			if (nombre_vin <= 1) {
-				return MessageFormat.format(Program.getLabel("Infos063"), nombre_vin);
-			}
-			return MessageFormat.format(Program.getLabel("Infos064"), nombre_vin);
+			return MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nombre_vin > 1)), nombre_vin);
 		}
 		return "";
 	}

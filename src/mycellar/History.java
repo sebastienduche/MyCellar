@@ -14,17 +14,17 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
-/**
+import static mycellar.Program.DATE_FORMATER;
+
+/*
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 08/07/19
+ * @version 1.1
+ * @since 26/10/20
  */
 
 /**
@@ -52,8 +52,7 @@ import java.util.Date;
 @XmlType(name = "", propOrder = {
     "date",
     "type",
-    "bouteille",
-    "time"
+    "bouteille"
 })
 @XmlRootElement(name = "History")
 public class History {
@@ -61,11 +60,10 @@ public class History {
     @XmlElement(required = true)
     private String date;
     private int type;
-    private Date time;
     @XmlElement(name = "Bouteille", required = true)
     private Bouteille bouteille;
 	
-	public static final int ADD = 0;
+	  public static final int ADD = 0;
     public static final int MODIFY = 1;
     public static final int DEL = 2;
     public static final int VALIDATED = 3;
@@ -80,49 +78,30 @@ public class History {
   public History(Bouteille bouteille, int type) {
     this.bouteille = bouteille;
     this.type = type;
-    final LocalDate now = LocalDate.now();
-    time = new Date(now.getYear(), now.getMonthValue()-1, now.getDayOfMonth());
-    date = now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    date = LocalDate.now().format(DATE_FORMATER);
   }
 
     public History() {}
 
-	/**
-     * Gets the value of the date property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
     public String getDate() {
         return date;
     }
 
-    /**
-     * Sets the value of the date property.
-     * 
-     * @param date
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
+    public LocalDate getLocaleDate() {
+      if (date == null) {
+        return null;
+      }
+      return LocalDate.parse(date, DATE_FORMATER);
+    }
+
     public void setDate(String date) {
         this.date = date;
     }
 
-    /**
-     * Gets the value of the type property.
-     * 
-     */
     public int getType() {
         return type;
     }
 
-    /**
-     * Sets the value of the type property.
-     * 
-     */
     public void setType(int type) {
         this.type = type;
     }
@@ -131,36 +110,11 @@ public class History {
     	return type == DEL;
     }
 
-    Date getTime() {
-		return time;
-	}
-
-	public void setTime(Date time) {
-		this.time = time;
-	}
-
-	/**
-     * Gets the value of the bouteille property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Bouteille }
-     *     
-     */
     public Bouteille getBouteille() {
         return bouteille;
     }
 
-    /**
-     * Sets the value of the bouteille property.
-     * 
-     * @param bouteille
-     *     allowed object is
-     *     {@link Bouteille }
-     *     
-     */
     public void setBouteille(Bouteille bouteille) {
         this.bouteille = bouteille;
     }
-
 }

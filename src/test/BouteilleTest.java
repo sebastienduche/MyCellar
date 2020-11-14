@@ -1,7 +1,7 @@
 package test;
 
 import mycellar.Bouteille;
-import mycellar.Vignoble;
+import mycellar.core.datas.jaxb.VignobleJaxb;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -177,7 +177,7 @@ class BouteilleTest {
 
   @Test
   void getVignoble() {
-    Vignoble v = new Vignoble();
+    VignobleJaxb v = new VignobleJaxb();
     v.setCountry("fr");
     v.setName("vignoble");
     v.setIGP("igp");
@@ -188,7 +188,7 @@ class BouteilleTest {
 
   @Test
   void setVignoble() {
-    Vignoble v = new Vignoble();
+    VignobleJaxb v = new VignobleJaxb();
     v.setCountry("f");
     v.setName("n");
     v.setIGP("i");
@@ -301,7 +301,7 @@ class BouteilleTest {
     assertEquals("m", bouteille.getMaturity());
     assertEquals("1", bouteille.getParker());
     assertEquals(new BigDecimal("23.00"), bouteille.getPrice());
-    Vignoble v = new Vignoble();
+    VignobleJaxb v = new VignobleJaxb();
     v.setCountry("a");
     v.setName("b");
     v.setAOC("c");

@@ -1,10 +1,11 @@
 package mycellar;
 
 import javax.swing.table.AbstractTableModel;
-
 import java.text.MessageFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,15 +17,14 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 06/03/20
+ * @version 2.5
+ * @since 26/10/20
  */
 
 class TableHistoryValues extends AbstractTableModel {
-
-	private static final long serialVersionUID = 2991755646049419440L;
+  private static final long serialVersionUID = 2991755646049419440L;
   static final int SELECT = 0;
-  private static final int DATE = 1;
+  static final int DATE = 1;
   static final int TYPE = 2;
   private static final int LABEL = 3;
   static final int ACTION = 4;
@@ -34,7 +34,7 @@ class TableHistoryValues extends AbstractTableModel {
   private final List<String> columnList = new LinkedList<>();
   private Boolean[] booleanTab = null;
   private final boolean firstcolumn;
-  
+
   TableHistoryValues(boolean firstcolumn){
 	  this.firstcolumn = firstcolumn;
 	  if(firstcolumn) {
@@ -76,7 +76,7 @@ class TableHistoryValues extends AbstractTableModel {
   @Override
   public Object getValueAt(int row, int column) {
 	  History h = displayList.get(row);
-	  if(!firstcolumn) {
+	  if (!firstcolumn) {
       column++;
     }
 	  switch(column)
@@ -86,7 +86,7 @@ class TableHistoryValues extends AbstractTableModel {
 	  case ACTION:
 		  return Boolean.FALSE;
 	  case DATE:
-		  return h.getDate();
+		  return h.getLocaleDate();
 	  case LABEL:
 	  case TYPE:
 	  {
@@ -154,6 +154,10 @@ class TableHistoryValues extends AbstractTableModel {
       column++;
     }
 
+    if (column == DATE) {
+        return LocalDate.class;
+    }
+
     Class<?> dataType = super.getColumnClass(column);
     return dataType;
   }
@@ -167,7 +171,7 @@ class TableHistoryValues extends AbstractTableModel {
    */
   @Override
   public boolean isCellEditable(int row, int column) {
-	  if(!firstcolumn) {
+	  if (!firstcolumn) {
       column++;
     }
     return column == ACTION || column == SELECT;
@@ -182,19 +186,19 @@ class TableHistoryValues extends AbstractTableModel {
    */
   @Override
   public void setValueAt(Object value, int row, int column) {
-	  if(!firstcolumn) {
+	  if (!firstcolumn) {
       column++;
     }
     switch (column) {
       case ACTION:
         History h = displayList.get(row);
         Bouteille bottle = h.getBouteille();
-        if(h.isDeleted()) {
+        if (h.isDeleted()) {
           Program.showBottle(bottle, false);
         } else {
         	Optional<Bouteille> optional = Program.getStorage().getListBouteilles().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst();
         	Program.Debug("Bottle Get ID = "+bottle.getId());
-        	if(optional.isPresent()) {
+        	if (optional.isPresent()) {
             Program.showBottle(optional.get(), true);
           } else {
             Program.showBottle(bottle, false);
@@ -225,16 +229,7 @@ class TableHistoryValues extends AbstractTableModel {
     return fullList;
   }
 
-  /**
-   * getNbData
-   *
-   * @return int
-   */
-  public int getNbData() {
-    return fullList.size();
-  }
-
-  /**
+    /**
    * addHistory: Ajout de l'historique.
    *
    * @param list LinkedList
@@ -244,18 +239,16 @@ class TableHistoryValues extends AbstractTableModel {
       fullList = list;
       displayList = new LinkedList<>();
       booleanTab = new Boolean[list.size()];
-      if(firstcolumn) {
+      if (firstcolumn) {
         displayList.addAll(list);
       } else {
-    	  Iterator<History> it = list.stream().sorted((o1, o2) -> {
-				if(o1.getTime() != null && o2.getTime() != null) {
-          return -o1.getTime().compareTo(o2.getTime());
-        }
-				return -1;
-		}).iterator();
+    	  Iterator<History> it = list
+                  .stream()
+                  .sorted(Comparator.comparing(History::getLocaleDate).reversed())
+                  .iterator();
     	  int n = 0;
     	  while(it.hasNext()) {
-    		  if(n == 10) {
+    		  if (n == 10) {
             break;
           }
     		  displayList.add(it.next());
@@ -265,7 +258,7 @@ class TableHistoryValues extends AbstractTableModel {
       Arrays.fill(booleanTab, Boolean.FALSE);
       fireTableDataChanged();
     }
-    catch (Exception e) {
+    catch (RuntimeException e) {
       Program.showException(e);
     }
   }
@@ -287,15 +280,15 @@ class TableHistoryValues extends AbstractTableModel {
       Arrays.fill(booleanTab, Boolean.FALSE);
       fireTableDataChanged();
     }
-    catch (Exception e) {
+    catch (RuntimeException e) {
       Program.showException(e);
     }
   }
-  
+
   Bouteille getBottle(int row) {
 	  return displayList.get(row).getBouteille();
   }
-  
+
   boolean isBottleDeleted(int row) {
 	  return displayList.get(row).isDeleted();
   }

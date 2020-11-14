@@ -3,8 +3,8 @@ package mycellar;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarSettings;
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
+import mycellar.core.datas.jaxb.CountryListJaxb;
+import mycellar.core.datas.jaxb.CountryJaxb;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -31,6 +31,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static mycellar.core.MyCellarError.ID.CELL_FULL;
+import static mycellar.core.MyCellarError.ID.FULL_BOX;
+import static mycellar.core.MyCellarError.ID.INEXISTING_CELL;
+import static mycellar.core.MyCellarError.ID.INEXISTING_NUM_PLACE;
+import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -38,8 +45,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 02/09/20
+ * @version 2.8
+ * @since 12/11/20
  */
 public final class RangementUtils {
 
@@ -162,10 +169,10 @@ public final class RangementUtils {
 			body.appendChild(table);
 			Element thead = doc.createElement("thead");
 			table.appendChild(thead);
-			if(fields.isEmpty()) {
+			if (fields.isEmpty()) {
 				fields = MyCellarFields.getFieldsList();
 			}
-			for(MyCellarFields field : fields){
+			for (MyCellarFields field : fields) {
 				Element td = doc.createElement("td");
 				thead.appendChild(td);
 				td.appendChild(doc.createTextNode(field.toString()));
@@ -177,56 +184,56 @@ public final class RangementUtils {
 			for (Bouteille b : bouteilles) {
 				Element tr = doc.createElement("tr");
 				tbody.appendChild(tr);
-				for(MyCellarFields field : fields){
+				for (MyCellarFields field : fields) {
 					Element td = doc.createElement("td");
 					tr.appendChild(td);
-					if(field == MyCellarFields.NAME) {
+					if (field == MyCellarFields.NAME) {
 						td.appendChild(doc.createTextNode(b.getNom()));
-					} else if(field == MyCellarFields.YEAR) {
+					} else if (field == MyCellarFields.YEAR) {
 						td.appendChild(doc.createTextNode(b.getAnnee()));
-					} else if(field == MyCellarFields.TYPE) {
+					} else if (field == MyCellarFields.TYPE) {
 						td.appendChild(doc.createTextNode(b.getType()));
-					} else if(field == MyCellarFields.PLACE) {
+					} else if (field == MyCellarFields.PLACE) {
 						td.appendChild(doc.createTextNode(b.getEmplacement()));
-					} else if(field == MyCellarFields.NUM_PLACE) {
+					} else if (field == MyCellarFields.NUM_PLACE) {
 						td.appendChild(doc.createTextNode(Integer.toString(b.getNumLieu())));
-					} else if(field == MyCellarFields.LINE) {
+					} else if (field == MyCellarFields.LINE) {
 						td.appendChild(doc.createTextNode(Integer.toString(b.getLigne())));
-					} else if(field == MyCellarFields.COLUMN) {
+					} else if (field == MyCellarFields.COLUMN) {
 						td.appendChild(doc.createTextNode(Integer.toString(b.getColonne())));
-					} else if(field == MyCellarFields.PRICE) {
+					} else if (field == MyCellarFields.PRICE) {
 						td.appendChild(doc.createTextNode(b.getPrix()));
-					} else if(field == MyCellarFields.COMMENT) {
+					} else if (field == MyCellarFields.COMMENT) {
 						td.appendChild(doc.createTextNode(b.getComment()));
-					} else if(field == MyCellarFields.MATURITY) {
+					} else if (field == MyCellarFields.MATURITY) {
 						td.appendChild(doc.createTextNode(b.getMaturity()));
-					} else if(field == MyCellarFields.PARKER) {
+					} else if (field == MyCellarFields.PARKER) {
 						td.appendChild(doc.createTextNode(b.getParker()));
-					} else if(field == MyCellarFields.COLOR) {
+					} else if (field == MyCellarFields.COLOR) {
 						td.appendChild(doc.createTextNode(BottleColor.getColor(b.getColor()).toString()));
-					} else if(field == MyCellarFields.COUNTRY) {
-						if(b.getVignoble() != null) {
-							Country c = Countries.find(b.getVignoble().getCountry());
-							if(c != null) {
+					} else if (field == MyCellarFields.COUNTRY) {
+						if (b.getVignoble() != null) {
+							CountryJaxb c = CountryListJaxb.findbyId(b.getVignoble().getCountry()).orElse(null);
+							if (c != null) {
 								td.appendChild(doc.createTextNode(c.toString()));
 							}
 						} else {
 							td.appendChild(doc.createTextNode(""));
 						}
-					} else if(field == MyCellarFields.VINEYARD) {
-						if(b.getVignoble() != null) {
+					} else if (field == MyCellarFields.VINEYARD) {
+						if (b.getVignoble() != null) {
 							td.appendChild(doc.createTextNode(b.getVignoble().getName()));
 						} else {
 							td.appendChild(doc.createTextNode(""));
 						}
-					} else if(field == MyCellarFields.AOC) {
-						if(b.getVignoble() != null && b.getVignoble().getAOC() != null) {
+					} else if (field == MyCellarFields.AOC) {
+						if (b.getVignoble() != null && b.getVignoble().getAOC() != null) {
 							td.appendChild(doc.createTextNode(b.getVignoble().getAOC()));
 						} else {
 							td.appendChild(doc.createTextNode(""));
 						}
-					} else if(field == MyCellarFields.IGP) {
-						if(b.getVignoble() != null && b.getVignoble().getIGP() != null) {
+					} else if (field == MyCellarFields.IGP) {
+						if (b.getVignoble() != null && b.getVignoble().getIGP() != null) {
 							td.appendChild(doc.createTextNode(b.getVignoble().getIGP()));
 						} else {
 							td.appendChild(doc.createTextNode(""));
@@ -268,17 +275,17 @@ public final class RangementUtils {
 
 		try {
 			String sDir = file.getParent();
-			if(null != sDir) {
+			if (null != sDir) {
 				File f = new File(sDir);
-				if(!f.exists()) {
+				if (!f.exists()) {
 					Debug("write_XLS: ERROR: directory "+sDir+" don't exist." );
 					Debug("write_XLS: ERROR: Unable to write XLS file" );
 					return false;
 				}
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			Program.showException(e, false);
-			Debug( "write_XLS: ERROR: with file " + file );
+			Debug( "write_XLS: ERROR: with file " + file);
 			return false;
 		}
 
@@ -286,9 +293,9 @@ public final class RangementUtils {
 
 		//Recuperation des colonnes a exporter
 		List<MyCellarFields> fields = MyCellarFields.getFieldsList();
-		int i=0;
-		for(MyCellarFields field : fields) {
-			mapCle.put(field, Program.getCaveConfigBool(MyCellarSettings.SIZE_COL+i+"EXPORT_XLS", true));
+		int i = 0;
+		for (MyCellarFields field : fields) {
+			mapCle.put(field, Program.getCaveConfigBool(MyCellarSettings.SIZE_COL + i + "EXPORT_XLS", true));
 			i++;
 		}
 
@@ -297,7 +304,7 @@ public final class RangementUtils {
 		String title = "";
 		if (isExit) { //Cas sauvegarde XLS Backup
 			num_ligne = 0;
-			for(i= 0; i<fields.size(); i++) {
+			for (i= 0; i<fields.size(); i++) {
 				mapColumnNumber.put(i, i);
 			}
 		}
@@ -307,8 +314,8 @@ public final class RangementUtils {
 			num_ligne = 2; //Affectation des numeros de colonnes
 			i=0;
 			int value = 0;
-			for(MyCellarFields field : fields) {
-				if(mapCle.get(field)) {
+			for (MyCellarFields field : fields) {
+				if (mapCle.get(field)) {
 					mapColumnNumber.put(i, value);
 					value++;
 				}
@@ -353,9 +360,9 @@ public final class RangementUtils {
 
 			i = 0;
 			int columnsCount = 0;
-			if(isExit) {
-				final SXSSFRow row = sheet.createRow(num_ligne);
-				for(MyCellarFields field : fields) {
+			SXSSFRow row = sheet.createRow(num_ligne);
+			if (isExit) {
+				for (MyCellarFields field : fields) {
 					columnsCount++;
 					sheet.trackColumnForAutoSizing(i);
 					final Cell cell = row.createCell(i++);
@@ -363,9 +370,8 @@ public final class RangementUtils {
 					cell.setCellValue(field.toString());
 				}
 			}	else {
-				final SXSSFRow row = sheet.createRow(num_ligne);
-				for(MyCellarFields field : fields) {
-					if(mapCle.get(field)) {
+				for (MyCellarFields field : fields) {
+					if (mapCle.get(field)) {
 						columnsCount++;
 						sheet.trackColumnForAutoSizing(i);
 						final Cell cell = row.createCell(i++);
@@ -385,13 +391,13 @@ public final class RangementUtils {
 				if (progressBar != null) {
 					progressBar.setValue(i);
 				}
-				var row = sheet.createRow(i + num_ligne + 1);
+				row = sheet.createRow(i + num_ligne + 1);
 				row.setRowStyle(cellStyle);
 				for(MyCellarFields field : fields) {
 					String value = MyCellarFields.getValue(field, b);
 					if (isExit || mapCle.get(field)) {
 						final Cell cell = row.createCell(mapColumnNumber.get(j));
-						if(field == MyCellarFields.NUM_PLACE || field == MyCellarFields.LINE || field == MyCellarFields.COLUMN) {
+						if (field == MyCellarFields.NUM_PLACE || field == MyCellarFields.LINE || field == MyCellarFields.COLUMN) {
 							cell.setCellValue(Integer.parseInt(value));
 						} else {
 							cell.setCellValue(value);
@@ -515,10 +521,13 @@ public final class RangementUtils {
 							}
 							final SXSSFRow rowBottle = sheet.createRow(nLine);
 							for (int l = 1; l <= nCol; l++) {
-								final Bouteille b = place.getBouteille(j - 1, k - 1, l - 1);
-								final Cell cellBottle = rowBottle.createCell(l);
-								cellBottle.setCellValue(getLabelToDisplay(b));
-								cellBottle.setCellStyle(cellStyle);
+								final Optional<Bouteille> b = place.getBouteille(j - 1, k - 1, l - 1);
+								int finalL = l;
+								b.ifPresent(bouteille -> {
+									final Cell cellBottle = rowBottle.createCell(finalL);
+									cellBottle.setCellValue(getLabelToDisplay(bouteille));
+									cellBottle.setCellStyle(cellStyle);
+								});
 							}
 						}
 					}
@@ -562,7 +571,7 @@ public final class RangementUtils {
 	public static void findRangementToCreate() {
 
 		final Map<String, LinkedList<Part>> rangements = new HashMap<>();
-		for(var bottle: Program.getStorage().getAllList()) {
+		for (var bottle: Program.getStorage().getAllList()) {
 			updatePlaceMapToCreate(rangements, bottle);
 		}
 		for (var error : Program.getErrors()) {
@@ -612,59 +621,59 @@ public final class RangementUtils {
 			}
 		}
 		Program.getErrors().clear();
-		for(Rangement rangement : Program.getCave()) {
+		for (Rangement rangement : Program.getCave()) {
 			rangement.resetStock();
 		}
 		
-		for(var bouteille : Program.getStorage().getAllList()) {
+		for (var bouteille : Program.getStorage().getAllList()) {
 			// On ignore les bouteilles qui sont dans le stock temporairement
-			if(bouteille.isInTemporaryStock()) {
+			if (bouteille.isInTemporaryStock()) {
 				continue;
 			}
 			Rangement rangement = Program.getCave(bouteille.getEmplacement());
-			if(rangement == null) {
+			if (rangement == null) {
 				// Rangement inexistant
-				Debug("ERROR: Inexisting place: " + bouteille.getNom() + " place: "+bouteille.getEmplacement());
-				Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_PLACE, bouteille, bouteille.getEmplacement()));
+				Debug("ERROR: Inexisting place: " + bouteille.getNom() + " place: " + bouteille.getEmplacement());
+				Program.addError(new MyCellarError(INEXISTING_PLACE, bouteille, bouteille.getEmplacement()));
 				continue;
 			}
-			if(rangement.isCaisse()) {
-				if(!rangement.isExistingNumPlace(bouteille.getNumLieu())) {
+			if (rangement.isCaisse()) {
+				if (!rangement.isExistingNumPlace(bouteille.getNumLieu())) {
 					// Numero de rangement inexistant
-					Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: "+bouteille.getNumLieu() + " for place "+bouteille.getEmplacement());
-					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
+					Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: " + bouteille.getNumLieu() + " for place " + bouteille.getEmplacement());
+					Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 					continue;
 				}
-				if(rangement.hasFreeSpaceInCaisse(bouteille.getNumLieu() - rangement.getStartCaisse())) {
+				if (rangement.hasFreeSpaceInCaisse(bouteille.getNumLieu() - rangement.getStartCaisse())) {
 					rangement.updateToStock(bouteille);
 				} else {
 					// Caisse pleine
-					Debug("ERROR: simple place full for numplace: " + bouteille.getNom() + " numplace: "+bouteille.getNumLieu() + " for place "+bouteille.getEmplacement());
-					Program.addError(new MyCellarError(MyCellarError.ID.FULL_BOX, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
+					Debug("ERROR: simple place full for numplace: " + bouteille.getNom() + " numplace: " + bouteille.getNumLieu() + " for place " + bouteille.getEmplacement());
+					Program.addError(new MyCellarError(FULL_BOX, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 				}
 			} else {
-				Bouteille bottle;
-				if(!rangement.isExistingNumPlace(bouteille.getNumLieu() - 1)) {
+				if (!rangement.isExistingNumPlace(bouteille.getNumLieu() - 1)) {
 					// Numero de rangement inexistant
-					Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: "+ (bouteille.getNumLieu()-1) + " for place "+bouteille.getEmplacement());
-					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement()));
+					Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: "+ (bouteille.getNumLieu() - 1) + " for place " + bouteille.getEmplacement());
+					Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement()));
 					continue;
 				}
-				if(!rangement.isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
+				Optional<Bouteille> bottle;
+				if (!rangement.isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
 					// Cellule inexistante
-					Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: "+(bouteille.getNumLieu()-1)+ ", line: " + (bouteille.getLigne()-1) + ", column:" + (bouteille.getColonne()-1) + " for place "+bouteille.getEmplacement());
-					Program.addError(new MyCellarError(MyCellarError.ID.INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
-				}	else if((bottle = rangement.getBouteille(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) != null && !bottle.equals(bouteille)){
+					Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place "+bouteille.getEmplacement());
+					Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
+				}	else if ((bottle = rangement.getBouteille(bouteille)).isPresent() && !bottle.get().equals(bouteille)){
 					// Cellule occupee
-					Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: "+(bouteille.getNumLieu()-1)+ ", line: " + (bouteille.getLigne()-1) + ", column:" + (bouteille.getColonne()-1) + " for place "+bouteille.getEmplacement());
-					Program.addError(new MyCellarError(MyCellarError.ID.CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
+					Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place "+bouteille.getEmplacement());
+					Program.addError(new MyCellarError(CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 				}	else {
 					rangement.updateToStock(bouteille);
 				}
 			}
 		}
 		// Suppression des bouteilles posant probleme
-		for(var error : Program.getErrors()) {
+		for (var error : Program.getErrors()) {
 			Program.getStorage().deleteWine(error.getBottle());
 			Debug("Error putTabStock: "+error.getBottle());
 		}

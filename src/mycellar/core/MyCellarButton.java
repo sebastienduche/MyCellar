@@ -13,8 +13,8 @@ import javax.swing.JButton;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.6
- * @since 30/08/20
+ * @version 0.7
+ * @since 16/10/20
  */
 
 public class MyCellarButton extends JButton implements IMyCellarComponent {
@@ -24,6 +24,7 @@ public class MyCellarButton extends JButton implements IMyCellarComponent {
 
 	private LabelType type;
 	private String code;
+	private LabelProperty labelProperty;
 	private String value;
 
 	public MyCellarButton(Icon icon) {
@@ -61,6 +62,16 @@ public class MyCellarButton extends JButton implements IMyCellarComponent {
 		MyCellarLabelManagement.add(this);
 		setFont(FONT);
 	}
+
+	public MyCellarButton(LabelType type, String code, LabelProperty labelProperty, Action a) {
+		super(a);
+		this.type = type;
+		this.code = code;
+		this.labelProperty = labelProperty;
+		updateText();
+		MyCellarLabelManagement.add(this);
+		setFont(FONT);
+	}
 	
 	public MyCellarButton(LabelType type, String code, String value, Action a) {
     super(a);
@@ -87,7 +98,7 @@ public class MyCellarButton extends JButton implements IMyCellarComponent {
 
 	@Override
 	public void updateText() {
-     MyCellarLabelManagement.updateText(this, type, code, value);
+     MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
 	}
 
 }

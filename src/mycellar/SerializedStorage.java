@@ -2,7 +2,7 @@ package mycellar;
 
 import mycellar.core.datas.worksheet.WorkSheetData;
 import mycellar.core.datas.worksheet.WorkSheetList;
-import mycellar.vignobles.CountryVignobles;
+import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
 import java.io.File;
@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.0
- * @since 02/09/20
+ * @version 6.1
+ * @since 12/11/20
  */
 
 public class SerializedStorage implements Storage {
@@ -30,14 +30,9 @@ public class SerializedStorage implements Storage {
 
 	private final LinkedList<String> listeUniqueBouteille = new LinkedList<>(); // Liste des noms de bouteille (un seule nom)
 
-	// Private constructor prevents instantiation from other classes
 	private SerializedStorage() {
 	}
 
-	/**
-	 * SingletonHolder is loaded on the first execution of Singleton.getInstance()
-	 * or the first access to SingletonHolder.INSTANCE, not before.
-	 */
 	private static class SerializedStorageHolder {
 		private static final SerializedStorage INSTANCE = new SerializedStorage();
 	}
@@ -154,12 +149,6 @@ public class SerializedStorage implements Storage {
 		HISTORY_LIST.remove(oB);
 	}
 
-
-	/**
-	 * deleteWine: Supression d'une bouteille dans un rangement
-	 *
-	 * @param bottle Bouteille: Bouteille a supprimer
-	 */
 	@Override
 	public boolean deleteWine(Bouteille bottle) {
 
@@ -189,11 +178,6 @@ public class SerializedStorage implements Storage {
 		return true;
 	}
 
-	/**
-	 * addWine: Ajoute une bouteille 
-	 *
-	 * @param wine Bouteille
-	 */
 	@Override
 	public boolean addWine(Bouteille wine) { 
 		if(null == wine) {
@@ -209,36 +193,20 @@ public class SerializedStorage implements Storage {
 		if(!listeUniqueBouteille.contains(wine.getNom())) {
 			listeUniqueBouteille.add(wine.getNom());
 		}
-		CountryVignobles.addVignobleFromBottle(wine);
+		CountryVignobleController.addVignobleFromBottle(wine);
 		return listBouteilles.getBouteille().add(wine);
 	}
 
-	/**
-	 * getAllList: retourne le tableau
-	 *
-	 * @return LinkedList
-	 */
 	@Override
 	public LinkedList<Bouteille> getAllList() {
 		return listBouteilles.getBouteille();
 	}
 
-	/**
-	 * getBottlesCount: retourne le nombre total de bouteilles du fichier
-	 *
-	 * @return int
-	 */
 	@Override
 	public int getBottlesCount() {
 		return listBouteilles.getBouteille().size();
 	}
 
-
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	private static void Debug(String sText) {
 		Program.Debug("SerializedStorage: " + sText);
 	}

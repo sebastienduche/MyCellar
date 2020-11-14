@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -12,8 +13,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 26.6
- * @since 20/10/20
+ * @version 26.9
+ * @since 06/11/20
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -476,7 +477,11 @@ public class Rangement implements Comparable<Rangement> {
 		Program.getStorage().deleteWine(bottle);
 		clearStock(bottle);
 		bottle.setLigne(nNewLine);
-		addWine( bottle );
+		addWine(bottle);
+	}
+
+	public Optional<Bouteille> getBouteille(final Bouteille tempBouteille) {
+		return getBouteille(tempBouteille.getNumLieu() - 1, tempBouteille.getLigne() - 1, tempBouteille.getColonne() - 1);
 	}
 
 	/**
@@ -487,18 +492,19 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param column int: numéro de colonne (0...n)
 	 * @return Bouteille
 	 */
-	public Bouteille getBouteille(int num_empl, int line, int column) {
+	public Optional<Bouteille> getBouteille(int num_empl, int line, int column) {
 		if (isCaisse()) {
 			Debug("ERROR: Function getBouteille can't be called on a simple place!");
-			return null;
+			return Optional.empty();
 		}
 		try {
-			return stockage[num_empl][line][column];
+			final Bouteille bouteille = stockage[num_empl][line][column];
+			return Optional.ofNullable(bouteille);
 		}
 		catch (Exception e) {
 			Program.showException(e);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**

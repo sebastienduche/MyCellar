@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -9,6 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ItemEvent;
+import java.util.Optional;
 
 
 /**
@@ -17,8 +19,8 @@ import java.awt.event.ItemEvent;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 1.9
- * @since 10/10/18
+ * @version 2.2
+ * @since 19/10/20
  */
 
 class MoveLine extends JDialog {
@@ -42,7 +44,7 @@ class MoveLine extends JDialog {
 		titre.setHorizontalAlignment(SwingConstants.CENTER);
 		label_end.setHorizontalAlignment(SwingConstants.CENTER);
 
-		MyCellarLabel label_title = new MyCellarLabel(Program.getLabel("Infos364"));
+		MyCellarLabel label_title = new MyCellarLabel(Program.getLabel("MoveLine.moveFromLine", LabelProperty.PLURAL));
 		MyCellarLabel label_place = new MyCellarLabel(Program.getLabel("Infos081"));
 		MyCellarLabel label_num_place = new MyCellarLabel(Program.getLabel("Infos082"));
 		MyCellarLabel label_old_line = new MyCellarLabel(Program.getLabel("Infos028"));
@@ -53,7 +55,7 @@ class MoveLine extends JDialog {
 
 		place_cbx.addItem(Program.EMPTY_PLACE);
 		for (Rangement r : Program.getCave()) {
-			if(!r.isCaisse()) {
+			if (!r.isCaisse()) {
 				place_cbx.addItem(r);
 			}
 		}
@@ -64,7 +66,7 @@ class MoveLine extends JDialog {
 		validate.addActionListener((e) -> {
 			int nOldSelected = old_line_cbx.getSelectedIndex();
 			int nNewSelected = new_line_cbx.getSelectedIndex();
-			if ( nNewSelected == 0 || nOldSelected == nNewSelected ) {
+			if (nNewSelected == 0 || nOldSelected == nNewSelected) {
 				Erreur.showSimpleErreur(this, Program.getError("Error192"));
 				return;
 			}
@@ -76,26 +78,28 @@ class MoveLine extends JDialog {
 
 				int nOldColumnCount = r.getNbColonnes(nNumLieu - 1, nOldSelected - 1);
 				int nNewColumnCount = r.getNbColonnes(nNumLieu - 1, nNewSelected - 1);
-				if( nOldColumnCount > nNewColumnCount && nNbBottle > nNewColumnCount ) {
+				if(nOldColumnCount > nNewColumnCount && nNbBottle > nNewColumnCount ) {
 					Erreur.showSimpleErreur(this, Program.getError("Error194"));
 					return;
 				}
-				if ( nNbBottle == 0 ) {
-					Erreur.showSimpleErreur(this, Program.getError("Error195"));
+				if (nNbBottle == 0) {
+					Erreur.showSimpleErreur(this, Program.getError("Error195", LabelProperty.PLURAL));
 					return;
 				}
-				if ( nBottle > 0 ) {
-					Erreur.showSimpleErreur(this, Program.getError("Error193"));
+				if (nBottle > 0) {
+					Erreur.showSimpleErreur(this, Program.getError("Error193", LabelProperty.PLURAL));
 					return;
 				}
-				for( int i=1; i<=r.getNbColonnes(nNumLieu - 1, nOldSelected - 1); i++) {
-					Bouteille bottle = r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1);
-					if( bottle != null ) {
-						Program.getStorage().addHistory(History.MODIFY, bottle);
-						r.moveLineWine(bottle, nNewSelected);
+				for (int i=1; i<=r.getNbColonnes(nNumLieu - 1, nOldSelected - 1); i++) {
+					Optional<Bouteille> bottle = r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1);
+					if (bottle.isPresent()) {
+						bottle.ifPresent(bouteille -> {
+							Program.getStorage().addHistory(History.MODIFY, bouteille);
+							r.moveLineWine(bouteille, nNewSelected);
+						});
 					}
 				}
-				label_end.setText(Program.getLabel("Infos366"));
+				label_end.setText(Program.getLabel("MoveLine.ItemsMoved", LabelProperty.THE_PLURAL.withCapital()));
 			}
 		});
 		cancel.addActionListener((e) -> close());
@@ -124,9 +128,6 @@ class MoveLine extends JDialog {
 		setVisible(true);
 	}
 
-	/**
-	 * close
-	 */
 	private void close() {
 		dispose();
 	}
@@ -147,10 +148,10 @@ class MoveLine extends JDialog {
 			return;
 		}
 
-		int nb_emplacement = 0;
 		num_place_cbx.setEnabled(true);
 		boolean bIsCaisse = false;
 		Rangement r;
+		int nb_emplacement = 0;
 		if ((r = (Rangement)place_cbx.getSelectedItem()) != null) {
 			nb_emplacement = r.getNbEmplacements();
 			bIsCaisse = r.isCaisse();

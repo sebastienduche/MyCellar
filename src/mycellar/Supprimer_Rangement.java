@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
@@ -32,11 +33,11 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.9
- * @since 28/08/20
+ * @version 8.1
+ * @since 19/10/20
  */
 
-public class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
+public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
 	private static final long serialVersionUID = 6959053537854600207L;
 	private final MyCellarComboBox<Rangement> choix = new MyCellarComboBox<>();
@@ -144,9 +145,9 @@ public class Supprimer_Rangement extends JPanel implements ITabListener, IMyCell
 					label_final.setText(Program.getLabel("Infos065")); //"Le rangement est vide");
 				}	else {
 					if (nb_case_use_total == 1) {
-						label_final.setText(Program.getLabel("Infos066")); //"Il reste 1 vin dans le rangement!!!");
+						label_final.setText(Program.getLabel("DeletePlace.still1Item", LabelProperty.SINGLE)); //"Il reste 1 vin dans le rangement!!!");
 					}	else {
-						label_final.setText(MessageFormat.format(Program.getLabel("Infos072"), nb_case_use_total)); //Il reste n vins dans le rangement
+						label_final.setText(MessageFormat.format(Program.getLabel("DeletePlace.stillNItems", LabelProperty.PLURAL), nb_case_use_total)); //Il reste n vins dans le rangement
 					}
 				}
 				table.updateUI();
@@ -171,7 +172,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener, IMyCell
 
 			// Verifier l'etat du rangement avant de le supprimer et demander confirmation
 			if (num_select > 0) {
-				if (Program.GetCaveLength() == 1) {
+				if (Program.getCaveLength() == 1) {
 					Erreur.showSimpleErreur(Program.getError("SupprimerRangement.ForbiddenToDelete"));
 					return;
 				}
@@ -191,12 +192,12 @@ public class Supprimer_Rangement extends JPanel implements ITabListener, IMyCell
 					}	else {
 						String nom = cave.getNom();
 						if (nb_case_use_total == 1) {
-							erreur_txt1 = MessageFormat.format(Program.getLabel("Infos073"), nom); //il reste 1 bouteille dans
+							erreur_txt1 = MessageFormat.format(Program.getLabel("DeletePlace.still1ItemIn", LabelProperty.SINGLE), nom); //il reste 1 bouteille dans
 						} else {
-							erreur_txt1 = MessageFormat.format(Program.getLabel("Infos074"), nb_case_use_total, nom); //Il reste n bouteilles dans
+							erreur_txt1 = MessageFormat.format(Program.getLabel("DeletePlace.stillNItemsIn", LabelProperty.PLURAL), nb_case_use_total, nom); //Il reste n bouteilles dans
 						}
 						//"Voulez vous supprimer le rangement et les BOUTEILLES restantes?");
-						String erreur_txt2 = Program.getError("Error039");
+						String erreur_txt2 = Program.getError("Error039", LabelProperty.THE_PLURAL);
 						Debug("MESSAGE: Delete this place " + nom + " and all bottle(s) (" + nb_case_use_total + ")?");
 						if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 							new Thread(() -> {
@@ -257,17 +258,8 @@ public class Supprimer_Rangement extends JPanel implements ITabListener, IMyCell
 		} else if (e.getKeyCode() == PREVIEW && preview.isEnabled()) {
 			preview_actionPerformed(null);
 		} else if (e.getKeyCode() == KeyEvent.VK_F1) {
-			aide_actionPerformed(null);
+			Program.getAide();
 		}
-	}
-
-	/**
-	 * aide_actionPerformed: Aide
-	 *
-	 * @param e ActionEvent
-	 */
-	private void aide_actionPerformed(ActionEvent e) {
-		Program.getAide();
 	}
 
 	/**
@@ -435,10 +427,7 @@ public class Supprimer_Rangement extends JPanel implements ITabListener, IMyCell
 			return nbWine;
 		}
 		String getNbWineLabel() {
-			if(nbWine <= 1) {
-				return MessageFormat.format(Program.getLabel("Infos063"), nbWine);
-			}
-			return MessageFormat.format(Program.getLabel("Infos064"), nbWine);
+			return MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nbWine > 1)), nbWine);
 		}
 		public void setNbWine(int nbWine) {
 			this.nbWine = nbWine;

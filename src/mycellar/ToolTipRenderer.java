@@ -11,8 +11,8 @@ import java.awt.Component;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 02/03/18
+ * @version 0.3
+ * @since 26/10/20
  */
 public class ToolTipRenderer extends DefaultTableCellRenderer {
 	
@@ -32,7 +32,7 @@ public class ToolTipRenderer extends DefaultTableCellRenderer {
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
     Component result = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     if (result instanceof JLabel) {
-       ( (JLabel) result).setToolTipText( (String) table.getValueAt(row, column));
+       ((JLabel)result).setToolTipText(table.getValueAt(row, column).toString());
     }
     return result;
   }

@@ -5,12 +5,14 @@ import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Rangement;
 import mycellar.RangementUtils;
+import mycellar.core.LabelProperty;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -20,8 +22,8 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.0
- * @since 25/06/20
+ * @version 4.3
+ * @since 19/10/20
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -40,7 +42,7 @@ class TableShowValues extends AbstractTableModel {
   private static final int MATURITY = 10;
   private static final int PARKER = 11;
   private static final int NBCOL = 12;
-  private final String[] columnNames = {"", Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
+  private final String[] columnNames = {"", Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
       Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("Infos135"), Program.getLabel("Infos137")
       , Program.getLabel("Infos391"), Program.getLabel("Infos392")};
 
@@ -229,12 +231,13 @@ class TableShowValues extends AbstractTableModel {
             tmpLine--;
           }
           if (rangement != null && rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
-            Bouteille bTemp = null;
+            Optional<Bouteille> bTemp = Optional.empty();
             if (!rangement.isCaisse()) {
               bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
             }
-            if (bTemp != null) {
-              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), bTemp.getAnnee()));
+            if (bTemp.isPresent()) {
+              final Bouteille bouteille = bTemp.get();
+              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
             } else {
               if (column == PLACE) {
                 b.setEmplacement((String) value);
@@ -260,7 +263,7 @@ class TableShowValues extends AbstractTableModel {
             if (rangement != null && rangement.isCaisse()) {
               Erreur.showSimpleErreur(Program.getError("Error154"));
             } else {
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getError("Error015"), JOptionPane.YES_NO_OPTION)) {
+              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getError("Error015"), JOptionPane.YES_NO_OPTION)) {
                 LinkedList<Bouteille> list = new LinkedList<>();
                 list.add(b);
                 Program.modifyBottles(list);

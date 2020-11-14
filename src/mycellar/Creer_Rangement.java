@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
@@ -44,8 +45,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.9
- * @since 20/10/20
+ * @version 14.2
+ * @since 19/10/20
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -54,7 +55,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton(LabelType.INFO, "012", true); //"Toutes les lignes ont le meme nombre de colonnes"
 	private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton(LabelType.INFO, "013", false); //"Toutes les lignes n'ont pas le meme nombre de colonnes"
 	private final MyCellarCheckBox checkLimite = new MyCellarCheckBox(LabelType.INFO, "238"); //limite
-	private final MyCellarLabel label_limite = new MyCellarLabel(LabelType.INFO, "177");
+	private final MyCellarLabel label_limite = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Item", LabelProperty.SINGLE);
 	private final MyCellarSpinner nb_limite = new MyCellarSpinner(1, 999);
 	private boolean islimited = false;
 	private int limite = 0;
@@ -66,7 +67,6 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 	private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox(LabelType.INFO, "024"); //Caisse
 	private final MyCellarLabel label_cree = new MyCellarLabel();
 	private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "155");
-	private final MyCellarButton createButton;
 	private int start_caisse = 0;
 	private final JPanel panelType;
 	private final JPanel panelStartCaisse;
@@ -86,6 +86,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		this.modify = modify;
 		model = new CreerRangementTableModel();
 
+		MyCellarButton createButton;
 		if(modify) {
 		  createButton = new MyCellarButton(LabelType.INFO, "079", new ModifyAction());
 		} else {
@@ -141,11 +142,8 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 		});
 
 		nb_limite.addChangeListener((e) -> {
-				if (Integer.parseInt(nb_limite.getValue().toString()) == 1) {
-					label_limite.setText(Program.getLabel("Infos177"));
-				}	else {
-					label_limite.setText(Program.getLabel("Infos178"));
-				}
+			final int count = Integer.parseInt(nb_limite.getValue().toString());
+			label_limite.setText(Program.getLabel("Main.Item", new LabelProperty(count > 1)));
 			});
 
 		// Alimentation de la liste deroulante du nombre de parties
@@ -311,12 +309,12 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 						String erreur_txt1, erreur_txt2;
 						if (nb_bottle == 1) {
 							Debug("MESSAGE: 1 bottle in this place, modify?");
-							erreur_txt1 = Program.getError("Error136"); //"1 bouteille est presente dans ce rangement.");
-							erreur_txt2 = Program.getError("Error137"); //"Voulez vous changer l'emplacement de cette bouteille?");
+							erreur_txt1 = Program.getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.");
+							erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); //"Voulez vous changer l'emplacement de cette bouteille?");
 						} else {
 							Debug("MESSAGE: " + nb_bottle + " bottles in this place, Modify?");
-							erreur_txt1 = MessageFormat.format(Program.getError("Error094"), nb_bottle); //bouteilles sont presentes dans ce rangement.");
-							erreur_txt2 = Program.getError("Error095"); //"Voulez vous changer l'emplacement de ces bouteilles?");
+							erreur_txt1 = MessageFormat.format(Program.getError("Error094", LabelProperty.PLURAL), nb_bottle); //bouteilles sont presentes dans ce rangement.");
+							erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Voulez vous changer l'emplacement de ces bouteilles?");
 						}
 						if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 							//Modify Name of place
@@ -337,7 +335,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 					} else if (rangement.getStartCaisse() != start_caisse) {
 						// Le numero de la premiere partie a change, renumeroter
 						String erreur_txt1 = MessageFormat.format(Program.getError("CreerRangement.UpdatedBottlePart"), start_caisse, rangement.getStartCaisse());
-						String erreur_txt2 = Program.getError("CreerRangement.AskUpdateBottlePart");
+						String erreur_txt2 = Program.getError("CreerRangement.AskUpdateBottlePart", LabelProperty.PLURAL);
 
 						if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 							//Modify start part number
@@ -448,7 +446,7 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 										  Debug("ERROR: bResul false, skipping column");
 											break;
 										}
-										if (rangement.getBouteille(i, j, k) != null) {
+										if (rangement.getBouteille(i, j, k).isPresent()) {
 											bResul = false;
 											Debug("ERROR: Unable to reduce the size of the number of column");
 											Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error203"), Integer.toString(j + 1), Integer.toString(i + 1)));
@@ -464,14 +462,14 @@ public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPas
 					  Debug("Updating complex place: " + rangement.getNom());
 						String name = rangement.getNom();
 						if (!name.equalsIgnoreCase(nom)) {
-							String erreur_txt1 = Program.getError("Error136"); //"1 bouteille est presente dans ce rangement.");
-							String erreur_txt2 = Program.getError("Error137"); //"Voulez vous changer l'emplacement de cette bouteille?");
+							String erreur_txt1 = Program.getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.");
+							String erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); //"Voulez vous changer l'emplacement de cette bouteille?");
 							if (nbBottles == 1) {
 								Debug("MESSAGE: 1 bottle in this place, modify?");
 							} else {
 								Debug("MESSAGE: " + nbBottles + " bottles in this place, Modify?");
-								erreur_txt1 = MessageFormat.format(Program.getError("Error094"), nbBottles); //bouteilles sont presentes dans ce rangement.");
-								erreur_txt2 = Program.getError("Error095"); //"Voulez vous changer l'emplacement de ces bouteilles?");
+								erreur_txt1 = MessageFormat.format(Program.getError("Error094", LabelProperty.PLURAL), nbBottles); //bouteilles sont presentes dans ce rangement.");
+								erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Voulez vous changer l'emplacement de ces bouteilles?");
 							}
 							if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 								//Modify Name of place

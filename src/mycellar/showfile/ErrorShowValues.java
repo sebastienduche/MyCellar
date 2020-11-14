@@ -4,11 +4,13 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Rangement;
+import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -17,8 +19,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 27/02/20
+ * @version 1.3
+ * @since 19/10/20
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -33,11 +35,11 @@ public class ErrorShowValues extends TableShowValues {
 	private static final int NUM_PLACE = 6;
 	private static final int LINE = 7;
 	private static final int COLUMN = 8;
-	public static final int STATUS = 9;
-	public static final int BUTTON = 10;
+	static final int STATUS = 9;
+	static final int BUTTON = 10;
 	private static final int NBCOL = 11;
-	private final String[] columnNames = {"", Program.getLabel("ErrorShowValues.error"), Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
-			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("ShowFile.Status"), "" };
+	private final String[] columnNames = {"", Program.getLabel("ErrorShowValues.error"), Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
+			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("ShowFile.Status"), ""};
 
 	private Boolean[] status = null;
 	private Boolean[] editable = null;
@@ -174,7 +176,7 @@ public class ErrorShowValues extends TableShowValues {
 				fireTableRowsUpdated(row, row);
 			} else {
 				status[row] = Boolean.FALSE;
-				Erreur.showSimpleErreur(Program.getError("ShowFile.errorAddingBottle"));
+				Erreur.showSimpleErreur(Program.getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
 			}
 			break;
 		case NAME:
@@ -254,12 +256,13 @@ public class ErrorShowValues extends TableShowValues {
 						tmpLine--;
 					}
 					if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
-						Bouteille bTemp = null;
-						if (!rangement.isCaisse())
+						Optional<Bouteille> bTemp = Optional.empty();
+						if (!rangement.isCaisse()) {
 							bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
-						if (bTemp != null) {
+						}
+						if (bTemp.isPresent()) {
 							status[row] = Boolean.FALSE;
-							Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), b.getAnnee()));
+							Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.get().getNom()), b.getAnnee()));
 						} else {
 							if (column == PLACE) {
 								b.setEmplacement((String) value);

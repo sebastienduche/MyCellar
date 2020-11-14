@@ -11,8 +11,8 @@ import java.awt.Font;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.5
- * @since 30/08/20
+ * @version 0.6
+ * @since 16/10/20
  */
 
 public class MyCellarLabel extends JLabel implements IMyCellarComponent {
@@ -23,6 +23,7 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 	private LabelType type;
 	private String code;
 	private String value;
+	private LabelProperty labelProperty;
 
 	@Deprecated
 	public MyCellarLabel() {
@@ -37,6 +38,15 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 	public MyCellarLabel(LabelType type, String code) {
 		this.type = type;
 		this.code = code;
+		updateText();
+		MyCellarLabelManagement.add(this);
+		setFont(FONT);
+	}
+
+	public MyCellarLabel(LabelType type, String code, LabelProperty labelProperty) {
+		this.type = type;
+		this.code = code;
+		this.labelProperty = labelProperty;
 		updateText();
 		MyCellarLabelManagement.add(this);
 		setFont(FONT);
@@ -75,6 +85,6 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
 	@Override
 	public void updateText() {
-	  MyCellarLabelManagement.updateText(this, type, code, value);
+	  MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
 	}
 }

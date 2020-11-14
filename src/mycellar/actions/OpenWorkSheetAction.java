@@ -15,7 +15,8 @@ import java.util.List;
 
 public class OpenWorkSheetAction extends AbstractAction {
 
-	private final List<Bouteille> bouteilles;
+  private static final long serialVersionUID = -2351197475699686315L;
+  private final List<Bouteille> bouteilles;
 
 	public OpenWorkSheetAction() {
 		this(null);

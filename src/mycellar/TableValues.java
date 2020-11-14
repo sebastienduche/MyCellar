@@ -1,8 +1,12 @@
 package mycellar;
 
+import mycellar.core.LabelProperty;
+
 import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
 import java.util.List;
+
+import static mycellar.Program.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -10,8 +14,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 14/10/20
+ * @version 2.9
+ * @since 18/10/20
  */
 class TableValues extends AbstractTableModel {
 
@@ -20,8 +24,8 @@ class TableValues extends AbstractTableModel {
 	static final int SHOW = 7;
 
 	private final List<String> columnNames = List.of("",
-			Program.getLabel("Infos106"), Program.getLabel("Infos189"), Program.getLabel("Infos217"),
-			Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), "");
+			getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Infos189"), getLabel("Infos217"),
+			getLabel("Infos082"), getLabel("Infos028"), getLabel("Infos083"), "");
 
 	private final List<Boolean> listBoolean = new LinkedList<>();
 	private final List<Bouteille> datas = new LinkedList<>();
@@ -78,7 +82,7 @@ class TableValues extends AbstractTableModel {
 				return b.getAnnee();
 			case 3:
 				if (b.isInTemporaryStock()) {
-					return Program.getLabel("Bouteille.TemporaryPlace");
+					return getLabel("Bouteille.TemporaryPlace");
 				}
 				return b.getEmplacement();
 			case 4:
@@ -175,8 +179,8 @@ class TableValues extends AbstractTableModel {
 		return datas;
 	}
 	
-	boolean hasBottle(Bouteille b){
-		return datas.contains(b);
+	boolean hasNotBottle(Bouteille b){
+		return !datas.contains(b);
 	}
 
 	public Bouteille getBouteille(int i){

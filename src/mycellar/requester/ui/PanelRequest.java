@@ -21,10 +21,10 @@ import java.util.Collection;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 15/07/19
+ * @version 0.9
+ * @since 13/11/20
  */
-public class PanelRequest extends JPanel {
+public final class PanelRequest extends JPanel {
 
 	private static final long serialVersionUID = -1239228393406479587L;
 
@@ -37,7 +37,7 @@ public class PanelRequest extends JPanel {
 		labelError.setForeground(Color.red);
 
 		MainChangeListener.setChangeListener((e) -> {
-			if(!CollectionFilter.validatePredicates(getPredicates())) {
+			if (!CollectionFilter.validatePredicates(getPredicates())) {
 				labelError.setText(CollectionFilter.getError());
 				labelError.setVisible(true);
 			} else {
@@ -53,16 +53,16 @@ public class PanelRequest extends JPanel {
 		panelOperator.setLayout(new MigLayout());
 		panelOperator.add(new LabelSearch(Predicates.AND, panelOperator, true));
 		panelOperator.add(new LabelSearch(Predicates.OR, panelOperator, true));
-		panelOperator.add(new LabelSearch(Predicates.openParenthesis, panelOperator, true));
-		panelOperator.add(new LabelSearch(Predicates.closeParenthesis, panelOperator, true));
-		panelKeyword.add(new LabelSearch(Predicates.name, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.year, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.rangement, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.color, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.capacity, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.price, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.country, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.status, panelKeyword, true));
+		panelOperator.add(new LabelSearch(Predicates.OPEN_PARENTHESIS, panelOperator, true));
+		panelOperator.add(new LabelSearch(Predicates.CLOSE_PARENTHESIS, panelOperator, true));
+		panelKeyword.add(new LabelSearch(Predicates.NAME, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.YEAR, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.RANGEMENT, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.COLOR, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.CAPACITY, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.PRICE, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.COUNTRY, panelKeyword, true));
+		panelKeyword.add(new LabelSearch(Predicates.STATUS, panelKeyword, true));
 		panelKeyword.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Parameters")));
 		panelOperator.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Operators")));
 		add(panelKeyword, "grow");
@@ -78,13 +78,13 @@ public class PanelRequest extends JPanel {
 	}
 
 	public Collection<Predicates> getPredicates() {
-		if(panelRequest == null) {
+		if (panelRequest == null) {
 			return null;
 		}
 		Collection<Predicates> predicates = new ArrayList<>();
-		for(int i=0; i<panelRequest.getComponentCount(); i++) {
+		for (int i=0; i<panelRequest.getComponentCount(); i++) {
 			Object obj = panelRequest.getComponent(i);
-			if(obj instanceof LabelSearch) {
+			if (obj instanceof LabelSearch) {
 				LabelSearch label = (LabelSearch)obj;
 				predicates.add(new Predicates(label.getPredicate(), label.getValue(), label.getType()));
 			}

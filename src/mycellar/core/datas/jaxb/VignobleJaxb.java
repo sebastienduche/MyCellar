@@ -6,11 +6,9 @@
 //
 
 
-package mycellar;
+package mycellar.core.datas.jaxb;
 
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
-import mycellar.vignobles.Appelation;
+import mycellar.Program;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,13 +23,13 @@ import java.io.Serializable;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 26/01/19
+ * @version 1.5
+ * @since 13/11/20
  */
 
 /**
  * <p>This class is linked to the Vignoble that contains the Bouteille object
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -47,91 +45,102 @@ import java.io.Serializable;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-	"country",
-    "name",
-    "aoc",
-    "igp",
-    "aop"
+		"country",
+		"name",
+		"aoc",
+		"igp",
+		"aop",
+		"id",
 })
 @XmlRootElement(name = "vignoble")
-public class Vignoble implements Serializable {
+public class VignobleJaxb implements Serializable {
 
 	private static final long serialVersionUID = -4668411717652334826L;
-	
+
 	@XmlElement(required = true)
-    public String country;
-    @XmlElement(required = false)
-    private String name;
-    @XmlElement(name = "AOC", required = false)
-    public String aoc;
-    @XmlElement(name = "IGP", required = false)
-    public String igp;
-    @XmlElement(name = "AOP", required = false)
-    private String aop;
-    
-    public Vignoble() {
+	public String country;
+	@XmlElement()
+	private String name;
+	@XmlElement(name = "AOC")
+	public String aoc;
+	@XmlElement(name = "IGP")
+	public String igp;
+	@XmlElement(name = "AOP")
+	private String aop;
+
+	@XmlElement()
+	private long id;
+
+	public VignobleJaxb() {
+		id = Program.generateID();
 	}
 
-	public Vignoble(String country, String name, String aoc, String igp) {
+	public VignobleJaxb(String country, String name, String aoc, String igp) {
 		this.country = country;
 		this.name = name;
 		this.aoc = aoc;
 		this.igp = igp;
+		id = Program.generateID();
 	}
 
-	public Vignoble(String country, String name, String aoc, String igp, String aop) {
+	public VignobleJaxb(String country, String name, String aoc, String igp, String aop) {
 		this.country = country;
 		this.name = name;
 		this.aoc = aoc;
 		this.igp = igp;
 		this.aop = aop;
+		id = Program.generateID();
 	}
 
-		public String getCountry() {
-        return country;
-    }
-  	public void setCountry(String country) {
-        this.country = country;
-    }
-    
-		public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public String getAOC() {
-        return aoc;
-    }
-    public void setAOC(String aoc) {
-        this.aoc = aoc;
-    }
+	public String getCountry() {
+		return country;
+	}
+	public void setCountry(String country) {
+		this.country = country;
+	}
 
-    public String getIGP() {
-        return igp;
-    }
-    public void setIGP(String igp) {
-        this.igp = igp;
-    }
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getAOP() {
-        return aop;
-    }
-    public void setAOP(String aop) {
-        this.aop = aop;
-    }
-    
-    public boolean isAppellationEmpty() {
-    	return (aoc == null || aoc.isEmpty())
-    			&& (aop == null || aop.isEmpty())
-    			&& (igp == null || igp.isEmpty());
-    }
+	public String getAOC() {
+		return aoc;
+	}
+	public void setAOC(String aoc) {
+		this.aoc = aoc;
+	}
+
+	public String getIGP() {
+		return igp;
+	}
+	public void setIGP(String igp) {
+		this.igp = igp;
+	}
+
+	public String getAOP() {
+		return aop;
+	}
+	public void setAOP(String aop) {
+		this.aop = aop;
+	}
+
+	public boolean isAppellationEmpty() {
+		return (aoc == null || aoc.isEmpty())
+				&& (aop == null || aop.isEmpty())
+				&& (igp == null || igp.isEmpty());
+	}
 
 	@Override
 	public int hashCode() {
@@ -156,7 +165,7 @@ public class Vignoble implements Serializable {
 		if (!getClass().equals(obj.getClass())) {
 			return false;
 		}
-		Vignoble other = (Vignoble) obj;
+		VignobleJaxb other = (VignobleJaxb) obj;
 		if (aoc == null) {
 			if (other.aoc != null) {
 				return false;
@@ -198,10 +207,10 @@ public class Vignoble implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Vignoble [country=");
-		if(country != null) {
-			Country c = Countries.findByIdOrLabel(country);
-			if(c != null) {
+		sb.append("VignobleJaxb [country=");
+		if (country != null) {
+			CountryJaxb c = CountryListJaxb.findByIdOrLabel(country);
+			if (c != null) {
 				sb.append(c.getId());
 			} else {
 				sb.append(country);
@@ -218,7 +227,7 @@ public class Vignoble implements Serializable {
 		return sb.toString();
 	}
 
-	public void setValues(Appelation ap) {
+	public void setValues(AppelationJaxb ap) {
 		aoc = ap.getAOC();
 		aop = ap.getAOP();
 		igp = ap.getIGP();
@@ -226,9 +235,9 @@ public class Vignoble implements Serializable {
 
 	public String getSearchLabel() {
 		StringBuilder sb = new StringBuilder();
-		if(country != null) {
-			Country c = Countries.findByIdOrLabel(country);
-			if(c != null) {
+		if (country != null) {
+			CountryJaxb c = CountryListJaxb.findByIdOrLabel(country);
+			if (c != null) {
 				sb.append(c.getLabel());
 			} else {
 				sb.append(country);
@@ -247,5 +256,12 @@ public class Vignoble implements Serializable {
 			sb.append(igp);
 		}
 		return sb.toString();
+	}
+
+	public static boolean isEmpty(VignobleJaxb vignobleJaxb) {
+		return vignobleJaxb == null ||
+				vignobleJaxb.getCountry() == null ||
+				vignobleJaxb.getCountry().isBlank() ||
+				vignobleJaxb.isAppellationEmpty();
 	}
 }

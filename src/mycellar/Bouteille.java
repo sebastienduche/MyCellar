@@ -9,6 +9,7 @@
 package mycellar;
 
 import mycellar.core.MyCellarFields;
+import mycellar.core.datas.jaxb.VignobleJaxb;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -32,8 +33,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.1
- * @since 02/09/20
+ * @version 5.3
+ * @since 10/11/20
 
  * <p>Java class for anonymous complex type.
  *
@@ -112,7 +113,7 @@ public class Bouteille implements Serializable{
 	@XmlElement(required = true)
 	private String parker;
 	@XmlElement()
-	private Vignoble vignoble;
+	private VignobleJaxb vignoble;
 	@XmlElement()
 	private String color;
 	@XmlElement()
@@ -187,231 +188,107 @@ public class Bouteille implements Serializable{
 		this.id = id;
 	}
 
-	/**
-	 * Gets the value of the nom property.
-	 * 
-	 * @return String
-	 */
 	 public String getNom() {
 		 return nom;
 	 }
 
-	 /**
-	  * Sets the value of the nom property.
-	  * 
-	  * @param nom String
-	  */
 	 public void setNom(String nom) {
 		 this.nom = nom;
 	 }
 
-	 /**
-	  * Gets the value of the annee property.
-	  * 
-	  * @return String
-	  */
 	 public String getAnnee() {
 		 return annee;
 	 }
 
-	 /**
-	  * Sets the value of the annee property.
-	  * 
-	  * @param annee String
-	  */
 	 public void setAnnee(String annee) {
 		 this.annee = annee;
 	 }
 
-	 /**
-	  * Gets the value of the type property.
-	  * 
-	  * @return String
-	  */
 	 public String getType() {
 		 return type;
 	 }
 
-	 /**
-	  * Sets the value of the type property.
-	  * 
-	  * @param type String
-	  */
 	 public void setType(String type) {
 		 this.type = type;
 	 }
 
-	 /**
-	  * Gets the value of the emplacement property.
-	  * 
-	  * @return String
-	  */
 	 public String getEmplacement() {
 		 return emplacement;
 	 }
 
-	 /**
-	  * Sets the value of the emplacement property.
-	  * 
-	  * @param emplacement String
-	  */
 	 public void setEmplacement(String emplacement) {
 		 this.emplacement = emplacement;
 	 }
 
-	 /**
-	  * Gets the value of the numLieu property.
-	  */
 	 public int getNumLieu() {
 		 return numLieu;
 	 }
 
-	 /**
-	  * Sets the value of the numLieu property.
-		*
-		*  @param numLieu
-	  */
 	 public void setNumLieu(int numLieu) {
 		 this.numLieu = numLieu;
 	 }
 
-	 /**
-	  * Gets the value of the ligne property.
-	  */
 	 public int getLigne() {
 		 return ligne;
 	 }
 
-	 /**
-	  * Sets the value of the ligne property.
-	  *
-		* @param ligne
-	  */
 	 public void setLigne(int ligne) {
 		 this.ligne = ligne;
 	 }
 
-	 /**
-	  * Gets the value of the colonne property.
-	  */
 	 public int getColonne() {
 		 return colonne;
 	 }
 
-	 /**
-	  * Sets the value of the colonne property.
-	  *
-		* @param colonne
-	  */
 	 public void setColonne(int colonne) {
 		 this.colonne = colonne;
 	 }
 
-	 /**
-	  * Gets the value of the prix property.
-	  * 
-	  * @return String
-	  */
 	 public String getPrix() {
 		 return prix;
 	 }
 
-	 /**
-	  * Sets the value of the prix property.
-	  * 
-	  * @param prix String
-	  */
 	 public void setPrix(String prix) {
 		 this.prix = prix;
 	 }
 
-	 /**
-	  * Gets the value of the comment property.
-	  * 
-	  * @return String
-	  */
 	 public String getComment() {
 		 return comment;
 	 }
 
-	 /**
-	  * Sets the value of the comment property.
-	  * 
-	  * @param comment String
-	  */
 	 public void setComment(String comment) {
 		 this.comment = comment;
 	 }
 
-	 /**
-	  * Gets the value of the maturity property.
-	  * 
-	  * @return String
-	  */
 	 public String getMaturity() {
 		 return maturity;
 	 }
 
-	 /**
-	  * Sets the value of the maturity property.
-	  * 
-	  * @param maturity String
-	  */
 	 public void setMaturity(String maturity) {
 		 this.maturity = maturity;
 	 }
 
-	 /**
-	  * Gets the value of the parker property.
-	  * 
-	  * @return String
-	  */
 	 public String getParker() {
 		 return parker;
 	 }
 
-	 /**
-	  * Sets the value of the parker property.
-	  * 
-	  * @param parker String
-	  */
 	 public void setParker(String parker) {
 		 this.parker = parker;
 	 }
 
-	 /**
-	  * Gets the value of the color property.
-	  * 
-	  * @return String
-	  */
 	 public String getColor() {
 		 return color;
 	 }
 
-	 /**
-	  * Sets the value of the color property.
-	  * 
-	  * @param color String
-	  */
 	 public void setColor(String color) {
 		 this.color = color;
 	 }
 
-	 /**
-	  * Gets the value of the vignoble property.
-	  * 
-	  * @return Vignoble
-	  */
-	 public Vignoble getVignoble() {
+	 public VignobleJaxb getVignoble() {
 		 return vignoble;
 	 }
 
-	 /**
-	  * Sets the value of the vignoble property.
-	  * 
-	  * @param vignoble Vignoble
-	  */
-	 public void setVignoble(Vignoble vignoble) {
+	 public void setVignoble(VignobleJaxb vignoble) {
 		 this.vignoble = vignoble;
 	 }
 
@@ -482,7 +359,7 @@ public class Bouteille implements Serializable{
 
 	 public double getPriceDouble() {
 		 String price = Program.convertStringFromHTMLString(prix);
-		 if(price.isEmpty()) {
+		 if (price.isEmpty()) {
 			 return 0;
 		 }
 
@@ -496,7 +373,7 @@ public class Bouteille implements Serializable{
 	 
 	 public BigDecimal getPrice() {
 		 String price = Program.convertStringFromHTMLString(prix);
-		 if(price.isEmpty()) {
+		 if (price.isEmpty()) {
 			 return BigDecimal.ZERO;
 		 }
 
@@ -623,7 +500,7 @@ public class Bouteille implements Serializable{
 				 break;
 			 case VINEYARD:
 				 if (getVignoble() == null) {
-					 setVignoble(new Vignoble());
+					 setVignoble(new VignobleJaxb());
 				 }
 				 getVignoble().setName(value);
 				 break;
@@ -632,19 +509,19 @@ public class Bouteille implements Serializable{
 				 break;
 			 case COUNTRY:
 				 if (getVignoble() == null) {
-					 setVignoble(new Vignoble());
+					 setVignoble(new VignobleJaxb());
 				 }
 				 getVignoble().setCountry(value);
 				 break;
 			 case AOC:
 				 if (getVignoble() == null) {
-					 setVignoble(new Vignoble());
+					 setVignoble(new VignobleJaxb());
 				 }
 				 getVignoble().setAOC(value);
 				 break;
 			 case IGP:
 				 if (getVignoble() == null) {
-					 setVignoble(new Vignoble());
+					 setVignoble(new VignobleJaxb());
 				 }
 				 getVignoble().setIGP(value);
 				 break;
@@ -730,10 +607,23 @@ public class Bouteille implements Serializable{
         AOP = nodeAOP.item(0).getTextContent();
       }
     }
-    return new Bouteille.BouteilleBuilder(name).id(id).annee(year).type(type).place(place).numPlace(numLieu)
-        .line(line).column(column).price(price).comment(comment).maturity(maturity).parker(parker)
-				.status(status).lastModified(lastModifed)
-        .color(color).vignoble(country, vignobleName, AOC, IGP, AOP).build();
+    return new Bouteille.BouteilleBuilder(name)
+				.id(id)
+				.annee(year)
+				.type(type)
+				.place(place)
+				.numPlace(numLieu)
+        .line(line)
+				.column(column)
+				.price(price)
+				.comment(comment)
+				.maturity(maturity)
+				.parker(parker)
+				.status(status)
+				.lastModified(lastModifed)
+        .color(color)
+				.vignoble(country, vignobleName, AOC, IGP, AOP)
+				.build();
   }
 
 	 /**
@@ -771,81 +661,112 @@ public class Bouteille implements Serializable{
 
 	 @Override
 	 public boolean equals(Object obj) {
-		 if (this == obj)
+		 if (this == obj) {
 			 return true;
-		 if (obj == null)
+		 }
+		 if (obj == null) {
 			 return false;
-		 if (getClass() != obj.getClass())
+		 }
+		 if (getClass() != obj.getClass()) {
 			 return false;
+		 }
 		 Bouteille other = (Bouteille) obj;
-		 if(id != other.id)
+		 if(id != other.id) {
 			 return false;
+		 }
 		 if (annee == null) {
-			 if (other.annee != null)
+			 if (other.annee != null) {
 				 return false;
-		 } else if (!annee.equals(other.annee))
+			 }
+		 } else if (!annee.equals(other.annee)) {
 			 return false;
-		 if (colonne != other.colonne)
+		 }
+		 if (colonne != other.colonne) {
 			 return false;
+		 }
 		 if (color == null) {
-			 if (other.color != null)
+			 if (other.color != null) {
 				 return false;
-		 } else if (!color.equals(other.color))
+			 }
+		 } else if (!color.equals(other.color)) {
 			 return false;
+		 }
 		 if (comment == null) {
-			 if (other.comment != null)
+			 if (other.comment != null) {
 				 return false;
-		 } else if (!comment.equals(other.comment))
+			 }
+		 } else if (!comment.equals(other.comment)) {
 			 return false;
+		 }
 		 if (emplacement == null) {
-			 if (other.emplacement != null)
+			 if (other.emplacement != null) {
 				 return false;
-		 } else if (!emplacement.equals(other.emplacement))
+			 }
+		 } else if (!emplacement.equals(other.emplacement)) {
 			 return false;
-		 if (ligne != other.ligne)
+		 }
+		 if (ligne != other.ligne) {
 			 return false;
+		 }
 		 if (maturity == null) {
-			 if (other.maturity != null)
+			 if (other.maturity != null) {
 				 return false;
-		 } else if (!maturity.equals(other.maturity))
+			 }
+		 } else if (!maturity.equals(other.maturity)) {
 			 return false;
+		 }
 		 if (nom == null) {
-			 if (other.nom != null)
+			 if (other.nom != null) {
 				 return false;
-		 } else if (!nom.equals(other.nom))
+			 }
+		 } else if (!nom.equals(other.nom)) {
 			 return false;
-		 if (numLieu != other.numLieu)
+		 }
+		 if (numLieu != other.numLieu) {
 			 return false;
+		 }
 		 if (parker == null) {
-			 if (other.parker != null)
+			 if (other.parker != null) {
 				 return false;
-		 } else if (!parker.equals(other.parker))
+			 }
+		 } else if (!parker.equals(other.parker)) {
 			 return false;
+		 }
 		 if (prix == null) {
-			 if (other.prix != null)
+			 if (other.prix != null) {
 				 return false;
-		 } else if (!prix.equals(other.prix))
+			 }
+		 } else if (!prix.equals(other.prix)) {
 			 return false;
+		 }
 		 if (type == null) {
-			 if (other.type != null)
+			 if (other.type != null) {
 				 return false;
-		 } else if (!type.equals(other.type))
+			 }
+		 } else if (!type.equals(other.type)) {
 			 return false;
+		 }
 		 if (vignoble == null) {
-			 if (other.vignoble != null)
+			 if (other.vignoble != null) {
 				 return false;
-		 } else if (!vignoble.equals(other.vignoble))
+			 }
+		 } else if (!vignoble.equals(other.vignoble)) {
 			 return false;
+		 }
 		 if (status == null) {
-			 if (other.status != null)
+			 if (other.status != null) {
 				 return false;
-		 } else if (!status.equals(other.status))
+			 }
+		 } else if (!status.equals(other.status)) {
 			 return false;
+		 }
 		 if (lastModified == null) {
-			 if (other.lastModified != null)
+			 if (other.lastModified != null) {
 				 return false;
-		 } else if (!lastModified.equals(other.lastModified))
+			 }
+		 } else if (!lastModified.equals(other.lastModified)) {
 			 return false;
+		 }
 		 return true;
 	 }
 
@@ -864,7 +785,7 @@ public class Bouteille implements Serializable{
 		 private String maturity;
 		 private String parker;
 		 private String color;
-		 private Vignoble vignoble;
+		 private VignobleJaxb vignoble;
 		 private String status;
 		 private String lastModified;
 
@@ -948,7 +869,7 @@ public class Bouteille implements Serializable{
 		 }
 
 		 public BouteilleBuilder vignoble(String country, String name, String aoc, String igp, String aop) {
-			 vignoble = new Vignoble(country, name, aoc, igp, aop);
+			 vignoble = new VignobleJaxb(country, name, aoc, igp, aop);
 			 return this;
 		 }
 

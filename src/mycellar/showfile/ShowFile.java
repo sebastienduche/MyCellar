@@ -18,9 +18,12 @@ import mycellar.StateEditor;
 import mycellar.StateRenderer;
 import mycellar.TabEvent;
 import mycellar.ToolTipRenderer;
-import mycellar.Vignoble;
+import mycellar.core.datas.jaxb.CountryJaxb;
+import mycellar.core.datas.jaxb.CountryListJaxb;
+import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
@@ -30,8 +33,6 @@ import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.worksheet.WorkSheetData;
-import mycellar.countries.Countries;
-import mycellar.countries.Country;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -53,9 +54,11 @@ import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -65,8 +68,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.5
- * @since 24/10/20
+ * @version 8.3
+ * @since 12/11/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -112,7 +115,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     try {
       initializeStandardColumns();
       jbInit();
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
       Program.showException(e);
     }
   }
@@ -126,7 +129,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     try {
       jbInit();
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
       Program.showException(e);
     }
   }
@@ -299,9 +302,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (b.getVignoble() == null) {
           return "";
         }
-        Country country = Countries.find(b.getVignoble().getCountry());
-        if (country != null) {
-          return country.getLabel();
+        CountryJaxb countryJaxb = CountryListJaxb.findbyId(b.getVignoble().getCountry()).orElse(null);
+        if (countryJaxb != null) {
+          return countryJaxb.getLabel();
         }
         return b.getVignoble().getCountry();
       }
@@ -323,7 +326,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       @Override
       void setValue(Bouteille b, Object value) {
-        Vignoble v = b.getVignoble();
+        VignobleJaxb v = b.getVignoble();
         if (v == null) {
           return;
         }
@@ -344,7 +347,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       @Override
       void setValue(Bouteille b, Object value) {
-        Vignoble v = b.getVignoble();
+        VignobleJaxb v = b.getVignoble();
         if (v == null) {
           return;
         }
@@ -374,7 +377,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       public boolean execute(Bouteille b, int row, int column) {
         if (!Program.isExistingBottle(b)) {
           Debug("Inexisting bottle " + b.getNom() + " [" + b.getId() + "]");
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle"), b.getNom()));
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle", LabelProperty.THE_SINGLE), b.getNom()));
           return false;
         }
         Program.showBottle(b, true);
@@ -417,7 +420,10 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
   public void addWorkingBottles(Collection<Bouteille> bottles) {
     if (bottles != null) {
-      final List<Bouteille> bouteilles = bottles.stream().filter(bouteille -> !workingBottles.contains(bouteille)).collect(Collectors.toList());
+      final List<Bouteille> bouteilles = bottles
+          .stream()
+          .filter(bouteille -> !workingBottles.contains(bouteille))
+          .collect(Collectors.toList());
       for (Bouteille bottle : bouteilles) {
         Program.getStorage().addToWorksheet(bottle);
       }
@@ -459,23 +465,15 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     add(m_oDeleteButton, "align right, wrap");
 
-
     for (Rangement r : Program.getCave()) {
       m_oPlaceCbx.addItem(r.getNom());
     }
 
-    for (BottleColor bottleColor : BottleColor.values()) {
-      colorCbx.addItem(bottleColor);
-    }
-
-    for (BottlesStatus bottlesStatus : BottlesStatus.values()) {
-      statusCbx.addItem(bottlesStatus);
-    }
+    Arrays.stream(BottleColor.values()).forEach(colorCbx::addItem);
+    Arrays.stream(BottlesStatus.values()).forEach(statusCbx::addItem);
 
     m_oTypeCbx.addItem("");
-    for (String type : MyCellarBottleContenance.getList()) {
-      m_oTypeCbx.addItem(type);
-    }
+    MyCellarBottleContenance.getList().forEach(m_oTypeCbx::addItem);
     
     verifyStatusCbx.addItem(NONE);
     verifyStatusCbx.addItem(VALIDATED);
@@ -538,21 +536,13 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       if (o1.isEmpty()) {
         price1 = BigDecimal.ZERO;
       } else {
-        try {
-          price1 = Program.stringToBigDecimal(o1);
-        } catch (NumberFormatException ignored) {
-          price1 = BigDecimal.ZERO;
-        }
+        price1 = Program.safeStringToBigDecimal(o1, BigDecimal.ZERO);
       }
       BigDecimal price2;
       if(o2.isEmpty()) {
         price2 = BigDecimal.ZERO;
       } else {
-        try {
-          price2 = Program.stringToBigDecimal(o2);
-        } catch (NumberFormatException ignored) {
-          price2 = BigDecimal.ZERO;
-        }
+        price2 = Program.safeStringToBigDecimal(o2, BigDecimal.ZERO);
       }
       return price1.compareTo(price2);
     });
@@ -616,14 +606,14 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       if (toDeleteList.isEmpty()) {
         //"Aucun vin a supprimer!");
-        Erreur.showSimpleErreur(Program.getError("Error064"), Program.getError("Error065"), true);
+        Erreur.showSimpleErreur(Program.getError("Error064", LabelProperty.SINGLE), Program.getError("Error065", LabelProperty.THE_PLURAL), true);
       } else {
         String erreur_txt1, erreur_txt2;
         if (toDeleteList.size() == 1) {
-          erreur_txt1 = Program.getError("Error067"); //"1 vin selectionne.");
+          erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); //"1 vin selectionne.");
           erreur_txt2 = Program.getError("Error068"); //"Voulez-vous le supprimer?");
         } else {
-          erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toDeleteList.size()); //vins selectionnes.");
+          erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toDeleteList.size()); //vins selectionnes.");
           erreur_txt2 = Program.getError("Error131"); //"Voulez-vous les supprimer?");
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -682,14 +672,14 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       final LinkedList<Bouteille> toRestoreList = getSelectedBouteilles();
 
       if (toRestoreList.isEmpty()) {
-        Erreur.showSimpleErreur(Program.getLabel("ShowFile.NoBottleToRestore"), Program.getLabel("ShowFile.SelectToRestore"), true);
+        Erreur.showSimpleErreur(Program.getLabel("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), Program.getLabel("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL), true);
       } else {
         String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {
-          erreur_txt1 = Program.getError("Error067"); //"1 vin selectionne.");
+          erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); //"1 vin selectionne.");
           erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
         } else {
-          erreur_txt1 = MessageFormat.format(Program.getError("Error130"), toRestoreList.size()); //vins selectionnes.");
+          erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); //vins selectionnes.");
           erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -702,7 +692,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
                 Program.getStorage().addHistory(History.ADD, b);
                 Program.getStorage().addWine(b);
               } else {
-                if (r.getBouteille(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1) == null) {
+                if (r.getBouteille(b).isEmpty()) {
                   Program.getStorage().addHistory(History.ADD, b);
                   Program.getStorage().addWine(b);
                 } else {
@@ -782,12 +772,17 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     if (b.getEmplacement().compareTo(empl) != 0 || b.getNumLieu() != num_empl || b.getLigne() != line || b.getColonne() != column) {
       // Controle de l'emplacement de la bouteille
       if (rangement != null && rangement.canAddBottle(num_empl, line, column)) {
-        Bouteille bTemp = null;
+        Optional<Bouteille> bTemp = Optional.empty();
         if (!rangement.isCaisse()) {
+          if (num_empl <= 0 || line <= 0 || column <= 0) {
+            Erreur.showSimpleErreur(Program.getError("Error197"));
+            return;
+          }
           bTemp = rangement.getBouteille(num_empl - 1, line - 1, column - 1);
         }
-        if (bTemp != null) {
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.getNom()), bTemp.getAnnee()));
+        if (bTemp.isPresent()) {
+          final Bouteille bouteille = bTemp.get();
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
         } else {
           if (field == MyCellarFields.PLACE) {
             b.setEmplacement((String) value);
@@ -814,7 +809,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (rangement != null && rangement.isCaisse()) {
           Erreur.showSimpleErreur(Program.getError("Error154"));
         } else {
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             Program.showBottle(b, true);
           }
         }
@@ -862,10 +857,12 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       tc.setCellEditor(new StateButtonEditor());
     } else if (isNormal() || isWork()) {
       int i = 0;
+      final int columnCount = tcm.getColumnCount();
       for (ShowFileColumn<?> column : columnsModel) {
-        if (i >= tcm.getColumnCount()) {
-          Debug("ERROR: i >= columnCount : " + i);
-          Debug("ERROR: columsModel = " + columnsModel.size() + "\n" + columnsModel.stream().map(c -> c.getField().toString() + ";"));
+        if (i >= columnCount) {
+          Debug("ERROR: i >= columnCount: Colum: " + column.getField().name() + " " + i + " >= " + columnCount);
+          columnsModel.forEach(showFileColumn -> Debug(showFileColumn.getField().name()));
+          i++;
           continue;
         }
         tc = tcm.getColumn(i);
@@ -999,14 +996,14 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (bottles.isEmpty()) {
           //"Aucun vin a modifier!");
           //"Veuillez selectionner les vins a modifier.");
-          Erreur.showSimpleErreur(Program.getError("Error071"), Program.getError("Error072"), true);
+          Erreur.showSimpleErreur(Program.getError("Error071", LabelProperty.SINGLE), Program.getError("Error072", LabelProperty.THE_PLURAL), true);
         } else {
           Debug("Modifying " + bottles.size() + " bottles...");
           LinkedList<Bouteille> existingBottles = new LinkedList<>();
           for (Bouteille bottle : bottles) {
             if (!Program.isExistingBottle(bottle)) {
               Debug("Inexisting bottle " + bottle.getNom() + " [" + bottle.getId() + "]");
-              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle"), bottle.getNom()));
+              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle", LabelProperty.THE_SINGLE), bottle.getNom()));
             } else {
               existingBottles.add(bottle);
             }
@@ -1034,12 +1031,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
   private class CreatePlacesAction extends AbstractAction {
 
-	private static final long serialVersionUID = -3652414491735669984L;
+	  private static final long serialVersionUID = -3652414491735669984L;
 
-
-	private CreatePlacesAction() {
-    }
-
+	  private CreatePlacesAction() {}
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -1061,7 +1055,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       Program.getStorage().getWorksheetList().clear();
       tv.setBottles(workingBottles);
     }
-
   }
 
   private class RemoveFromWorksheetAction extends AbstractAction {
@@ -1078,9 +1071,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       Program.setModified();
       tv.fireTableDataChanged();
     }
-
   }
-
 
   public void Debug(String text) {
     Program.Debug("ShowFile: " + text);

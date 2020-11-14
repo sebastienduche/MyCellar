@@ -6,11 +6,13 @@ import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.Utils;
+import mycellar.core.LabelProperty;
+
+import java.awt.event.ActionEvent;
+import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
-import java.awt.event.ActionEvent;
-import java.util.LinkedList;
 
 public class OpenAddVinAction extends AbstractAction {
 
@@ -26,7 +28,7 @@ public class OpenAddVinAction extends AbstractAction {
 		SwingUtilities.invokeLater(() -> {
 			if (Program.getAddVin() == null) {
 				final AddVin addVin = Program.createAddVin();
-				Program.TABBED_PANE.addTab(Program.getLabel("Infos131"), MyCellarImage.WINE, addVin);
+				Program.TABBED_PANE.addTab(Program.getLabel("OpenVin.modify1Item", LabelProperty.SINGLE), MyCellarImage.WINE, addVin);
 				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
 			}
 			final AddVin addVin = Program.getAddVin();

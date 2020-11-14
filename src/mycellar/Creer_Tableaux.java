@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
@@ -45,8 +46,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.0
- * @since 02/09/20
+ * @version 7.1
+ * @since 19/10/20
  */
 public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
@@ -300,10 +301,10 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 					String erreur_txt1, erreur_txt2;
 					if (caisseCount == 1) {
 						erreur_txt1 = Program.getError("Error091"); //"Vous avez selectionne un rangement de type Caisse");
-						erreur_txt2 = Program.getError("Error092"); //"Une liste des vins de ce rangement a ete generee.");
+						erreur_txt2 = Program.getError("Error092", LabelProperty.PLURAL); //"Une liste des vins de ce rangement a ete generee.");
 					} else {
 						erreur_txt1 = Program.getError("Error127"); //"Vous avez selectionne des rangements de type Caisse");
-						erreur_txt2 = Program.getError("Error128"); //"Une liste des vins de ces rangements a ete generee.");
+						erreur_txt2 = Program.getError("Error128", LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.");
 					}
 					Erreur.showKeyErreur(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
 				}

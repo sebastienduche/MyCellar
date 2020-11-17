@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.3
- * @since 10/11/20
+ * @version 5.4
+ * @since 17/11/20
 
  * <p>Java class for anonymous complex type.
  *
@@ -363,12 +363,7 @@ public class Bouteille implements Serializable{
 			 return 0;
 		 }
 
-		 try {
-		 	return Program.stringToBigDecimal(price).doubleValue();
-		 }
-		 catch (NumberFormatException ignored) {
-			 return 0;
-		 }
+		 return Program.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
 	 }
 	 
 	 public BigDecimal getPrice() {
@@ -377,12 +372,7 @@ public class Bouteille implements Serializable{
 			 return BigDecimal.ZERO;
 		 }
 
-		 try {
-		 	return Program.stringToBigDecimal(price);
-		 }
-		 catch (NumberFormatException ignored) {
-			 return BigDecimal.ZERO;
-		 }
+		 return Program.safeStringToBigDecimal(price, BigDecimal.ZERO);
 	 }
 
 	public boolean hasPrice() {
@@ -392,8 +382,7 @@ public class Bouteille implements Serializable{
 		}
 		try {
 			Program.stringToBigDecimal(price);
-		}
-		catch (NumberFormatException ignored) {
+		} catch (NumberFormatException ignored) {
 			return false;
 		}
 		return true;

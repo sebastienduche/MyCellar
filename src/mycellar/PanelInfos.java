@@ -22,10 +22,10 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.1
- * @since 26/10/20
+ * @version 2.2
+ * @since 17/11/20
  */
-class PanelInfos extends JPanel {
+final class PanelInfos extends JPanel {
 
 	private static final long serialVersionUID = 7993820887000979660L;
 	private final PanelStats panelStats;
@@ -61,7 +61,7 @@ class PanelInfos extends JPanel {
 	}
 }
 
-class PanelStats extends JPanel {
+final class PanelStats extends JPanel {
 
 	private static final long serialVersionUID = 7438892143990782047L;
 	private final MyCellarLabel bottles = new MyCellarLabel(Program.getLabel("Infos405", LabelProperty.PLURAL));
@@ -71,7 +71,7 @@ class PanelStats extends JPanel {
 	private final PanelStatsModel model = new PanelStatsModel();
 	private final JTable table;
 
-	PanelStats(){
+	PanelStats() {
 		bottlesNb.setFont(Program.FONT_LABEL_BOLD);
 		cellarTotal.setFont(Program.FONT_LABEL_BOLD);
 		table = new JTable(model);
@@ -96,11 +96,12 @@ class PanelStats extends JPanel {
 		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
 		setEnabled(false);
 	}
+
 	void refresh() {
-		int nbBottles = 0;
 		model.clearRows();
-		if(!Program.getCave().isEmpty()) {
-			for(Rangement r: Program.getCave()) {
+		int nbBottles = 0;
+		if (!Program.getCave().isEmpty()) {
+			for (Rangement r: Program.getCave()) {
 				nbBottles += r.getNbCaseUseAll();
 				model.addRow(r, r.getNbCaseUseAll());
 			}
@@ -126,18 +127,18 @@ class PanelStats extends JPanel {
 		cellarTotal.setEnabled(b);
 	}
 
-	private class PanelStatsModel extends DefaultTableModel{
+	private static class PanelStatsModel extends DefaultTableModel {
 		private static final long serialVersionUID = -3683870571523007857L;
 		private final LinkedList<Rangement> names;
 		private final LinkedList<String> values;
 		private final boolean isInit;
-		private PanelStatsModel(){
+		private PanelStatsModel() {
 			names = new LinkedList<>();
 			values = new LinkedList<>();
 			isInit = true;
 		}
 
-		private void addRow(Rangement name, int value){
+		private void addRow(Rangement name, int value) {
 			names.add(name);
 			values.add(Integer.toString(value));
 		}
@@ -157,20 +158,18 @@ class PanelStats extends JPanel {
 
 		@Override
 		public Object getValueAt(int row, int column) {
-			if(column == 0) {
+			if (column == 0) {
 				return names.get(row).getNom();
 			}
-			else if(column == 1) {
+			else if (column == 1) {
 				return values.get(row);
 			}
 			return Boolean.FALSE;
 		}
 
-
-
 		@Override
 		public void setValueAt(Object arg0, int row, int column) {
-			if(column == 2) {
+			if (column == 2) {
 				Rangement r = names.get(row);
 				RangementUtils.putTabStock();
 				LinkedList<Rangement> rangements = new LinkedList<>();
@@ -193,7 +192,7 @@ class PanelStats extends JPanel {
 	}
 }
 
-class PanelHistory extends JPanel {
+final class PanelHistory extends JPanel {
 
 	private static final long serialVersionUID = 7574553715737201783L;
 	private final TableHistoryValues model;
@@ -223,11 +222,12 @@ class PanelHistory extends JPanel {
 		setEnabled(false);
 	}
 
-	void refresh(){
+	void refresh() {
 		SwingUtilities.invokeLater(() -> {
 			model.removeAll();
-			if(!Program.getCave().isEmpty())
+			if (!Program.getCave().isEmpty()) {
 				model.setHistory(Program.getHistory());
+			}
 		});
 	}
 
@@ -238,7 +238,7 @@ class PanelHistory extends JPanel {
 		tc.setCellRenderer(new StateButtonRenderer());
 	}
 
-	void setEnable(boolean b){
+	void setEnable(boolean b) {
 		setEnabled(b);
 	}
 }

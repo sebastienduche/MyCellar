@@ -46,8 +46,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 13/11/20
+ * @version 2.8
+ * @since 17/11/20
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -76,7 +76,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 		MyCellarLabel labelVineyard = new MyCellarLabel(LabelType.INFO, "166"); // Selectionner un vignoble
 		MyCellarButton addCountry = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.addCountry", new AddCountryAction());
 		MyCellarButton delCountry = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.delCountry", new DelCountryAction());
-		setLayout(new MigLayout("", "grow",""));
+		setLayout(new MigLayout("", "grow","[][grow]"));
 		JPanel panelCombos = new JPanel();
 		panelCombos.setLayout(new MigLayout("", "[][][][]", "[][]"));
 		panelCombos.add(labelCountries);
@@ -91,7 +91,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 		add(panelCombos, "wrap");
 		JPanel panelAppellations = new JPanel();
 		panelAppellations.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("Main.Appellations")));
-		panelAppellations.setLayout(new MigLayout("", "grow", "grow"));
+		panelAppellations.setLayout(new MigLayout("", "grow", "[][grow]"));
 		panelAppellations.add(addAppellation, "wrap");
 		JTable tableAppellations = new JTable(model);
 		panelAppellations.add(new JScrollPane(tableAppellations), "grow");

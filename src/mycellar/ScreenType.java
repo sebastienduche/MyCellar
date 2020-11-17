@@ -27,5 +27,6 @@ public enum ScreenType {
   STATS,
   SHOW_ERRORS,
   SHOW_WORKSHEET,
-  ADDVIN;
+  ADDVIN,
+  CAPACITY
 }

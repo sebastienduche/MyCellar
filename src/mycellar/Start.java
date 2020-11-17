@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.actions.ExportPDFAction;
 import mycellar.actions.OpenWorkSheetAction;
+import mycellar.capacity.CapacityPanel;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.LabelProperty;
@@ -793,7 +794,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		version.setFont(new Font("Dialog", Font.PLAIN, 10));
 		update.setFont(new Font("Dialog", Font.PLAIN, 10));
 		update.setBorder(BorderFactory.createEtchedBorder());
-		update.setBackground(Color.CYAN);
+		update.setBackground(Color.LIGHT_GRAY);
 		add(update, "gapleft 20, gaptop 10, hidemode 1, wrap");
 		add(Program.TABBED_PANE, "grow, hidemode 3, wrap");
 		add(Program.PANEL_INFOS, "grow, hidemode 3, wrap");
@@ -1572,24 +1573,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	class CapacityAction extends AbstractAction {
-
-		private static final long serialVersionUID = -7204054967253027549L;
-
-		private CapacityAction() {
-			super(Program.getLabel("Infos400")+"...");
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			new ManageList();
-			Program.updateAllPanels();
-			if (Program.getAddVin() != null) {
-				Program.getAddVin().updateView();
-			}
-		}
-	}
-
 	public void openVineyardPanel() {
 		if (Program.getVineyardPanel() == null) {
 			try {
@@ -1609,6 +1592,46 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, null);
 			Utils.addCloseButton(Program.TABBED_PANE, vineyardPanel);
 			Program.TABBED_PANE.setSelectedComponent(vineyardPanel);
+		}
+		updateMainPanel();
+	}
+
+	class CapacityAction extends AbstractAction {
+
+		private static final long serialVersionUID = -7204054967253027549L;
+
+		private CapacityAction() {
+			super(Program.getLabel("Infos400") + "...");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			openCapacityPanel();
+			if (Program.getAddVin() != null) {
+				Program.getAddVin().updateView();
+			}
+		}
+	}
+
+	public void openCapacityPanel() {
+		if (Program.getCapacityPanel() == null) {
+			try {
+				final CapacityPanel capacityPanel = Program.createCapacityPanel();
+				Program.TABBED_PANE.add(Program.getLabel("Infos400"), capacityPanel);
+				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, null);
+				Utils.addCloseButton(Program.TABBED_PANE, capacityPanel);
+			} catch (RuntimeException e) {
+				Program.showException(e);
+			}
+		}
+		try {
+			Program.TABBED_PANE.setSelectedComponent(Program.getCapacityPanel());
+		} catch (IllegalArgumentException e) {
+			final CapacityPanel capacityPanel = Program.createCapacityPanel();
+			Program.TABBED_PANE.add(Program.getLabel("Infos400"), capacityPanel);
+			Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, null);
+			Utils.addCloseButton(Program.TABBED_PANE, capacityPanel);
+			Program.TABBED_PANE.setSelectedComponent(capacityPanel);
 		}
 		updateMainPanel();
 	}

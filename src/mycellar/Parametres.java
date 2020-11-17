@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.actions.ManageCapacityAction;
 import mycellar.core.Grammar;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
@@ -306,11 +307,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	 * @param e ActionEvent
 	 */
 	private void buttonManageContenance_actionPerformed(ActionEvent e) {
-		new ManageList();
-		if(Program.getAddVin() != null) {
-			Program.getAddVin().setUpdateView();
-			Program.getAddVin().updateView();
-		}
+		new ManageCapacityAction().actionPerformed(null);
 	}
 
 	private void jcb_half_auto_actionPerformed(ActionEvent e) {

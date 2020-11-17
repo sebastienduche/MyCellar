@@ -5,11 +5,11 @@ import mycellar.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.JCompletionComboBox;
-import mycellar.ManageList;
 import mycellar.MyXmlDom;
 import mycellar.Program;
 import mycellar.Rangement;
 import mycellar.RangementUtils;
+import mycellar.actions.ManageCapacityAction;
 import mycellar.core.datas.MyCellarBottleContenance;
 import net.miginfocom.swing.MigLayout;
 
@@ -30,8 +30,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.6
- * @since 30/10/20
+ * @version 3.7
+ * @since 17/11/20
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -209,26 +209,10 @@ public abstract class MyCellarManageBottles extends JPanel {
     m_annee_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
 	}
 
-	/**
-	 * Gestion des listes
-	 * @param e
-	 */
 	protected void manageContenance_actionPerformed(ActionEvent e) {
-		new ManageList();
-		String selected = "";
-		if (m_half.getSelectedItem() != null) {
-			selected = m_half.getSelectedItem().toString();
-		}
-		m_half.removeAllItems();
-		m_half.addItem("");
-		for(String s: MyCellarBottleContenance.getList()) {
-			m_half.addItem(s);
-		}
-		if (name.isModified()) {
-			m_half.setSelectedItem(selected);
-		} else {
-			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
-		}
+		Debug("Manage Capacity...");
+		new ManageCapacityAction().actionPerformed(null);
+		Debug("Manage Capacity... End");
 	}
 	
 	/**

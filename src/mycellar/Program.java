@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.capacity.CapacityPanel;
 import mycellar.core.Grammar;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
@@ -87,6 +88,7 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import static mycellar.ScreenType.ADDVIN;
+import static mycellar.ScreenType.CAPACITY;
 import static mycellar.ScreenType.CELL_ORGANIZER;
 import static mycellar.ScreenType.CHOOSE_CELL;
 import static mycellar.ScreenType.CREATE_PLACE;
@@ -118,7 +120,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.7.4.7";
+	public static final String INTERNAL_VERSION = "3.7.5.5";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -1655,9 +1657,18 @@ public final class Program {
 		return (VineyardPanel) OPENED_OBJECTS.get(VIGNOBLES);
 	}
 
+	static CapacityPanel getCapacityPanel() {
+		return (CapacityPanel) OPENED_OBJECTS.get(CAPACITY);
+	}
+
 	static VineyardPanel createVineyardPanel() {
 		final VineyardPanel vineyardPanel = (VineyardPanel) createOpenedObject(VineyardPanel.class, VIGNOBLES);
 		return vineyardPanel;
+	}
+
+	static CapacityPanel createCapacityPanel() {
+		final CapacityPanel capacityPanel = (CapacityPanel) createOpenedObject(CapacityPanel.class, CAPACITY);
+		return capacityPanel;
 	}
 
 	static ShowFile getShowFile() {

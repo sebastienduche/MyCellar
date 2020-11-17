@@ -36,10 +36,10 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.1
- * @since 30/10/20
+ * @version 12.2
+ * @since 17/11/20
  */
-public class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
+public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
 	private static final long serialVersionUID = -4208146070057957967L;
 	private final MyCellarLabel label_fic_bak;
@@ -52,7 +52,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 	private final MyCellarCheckBox jcb_excel = new MyCellarCheckBox(Program.getLabel("Infos234"), false);
 	private final MyCellarButton buttonResetMessageDialog;
 	private final MyCellarCheckBox jcb_half_auto = new MyCellarCheckBox(Program.getLabel("Infos147"), false);
-	private final MyCellarCheckBox m_jcb_debug = new MyCellarCheckBox(Program.getLabel("Infos337"), false);
 	private final MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox(Program.getLabel("Infos169"), false);
 	private final MyCellarLabel label_annee;
 	private final MyCellarLabel label_annee2;
@@ -98,10 +97,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		annee.setValue(Program.getCaveConfigInt(MyCellarSettings.ANNEE, 50));
 		siecle.setValue(Program.getCaveConfigInt(MyCellarSettings.SIECLE, 19));
 
-		if (Program.getGlobalConfigBool(MyCellarSettings.DEBUG, false)) {
-			m_jcb_debug.setSelected(true);
-		}
-
 		devise.setText(Program.getCaveConfigString(MyCellarSettings.DEVISE,""));
 		Program.getLanguages().forEach(langue::addItem);
 		String the_language = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE,"");
@@ -115,7 +110,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		buttonResetMessageDialog.addActionListener(this::jcb_message_actionPerformed);
 		buttonManageContenance.addActionListener(this::buttonManageContenance_actionPerformed);
 		jcb_half_auto.addActionListener(this::jcb_half_auto_actionPerformed);
-		m_jcb_debug.addActionListener(this::activate_debug_actionPerformed);
 
 		Arrays.stream(Program.Type.values()).forEach(type -> {
 			final ObjectType type1 = new ObjectType(type);
@@ -160,18 +154,21 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		otherPanel.add(buttonResetMessageDialog, "span 2, wrap");
 		otherPanel.add(buttonManageContenance);
 		otherPanel.add(jcb_half_auto, "wrap");
-		otherPanel.add(m_jcb_debug,"wrap");
 		add(otherPanel, "grow, wrap");
 
 		add(valider, "gaptop 15px, center");
 
+		jcb_annee_control.setEnabled(Program.hasFile());
+		jcb_excel.setEnabled(Program.hasFile());
+		devise.setEnabled(Program.hasFile());
+		types.setEnabled(Program.hasFile());
 		
 		boolean excel = Program.getCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
 		file_bak.setEnabled(excel);
 		label_fic_bak.setEnabled(excel);
 		jcb_excel.setSelected(excel);
 		parcourir_excel.setEnabled(excel);
-	
+
 		if (Program.getCaveConfigBool(MyCellarSettings.ANNEE_CTRL, false)) {
 			jcb_annee_control.setSelected(true);
 		}
@@ -187,7 +184,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 		jcb_half_auto.setText(Program.getLabel("Infos147"));
 		parcourir_excel.setToolTipText(Program.getLabel("Infos157"));
 		jcb_annee_control.setText(Program.getLabel("Infos169"));
-		m_jcb_debug.setText(Program.getLabel("Infos337"));
 	}
 
 	/**
@@ -319,12 +315,6 @@ public class Parametres extends JPanel implements ITabListener, ICutCopyPastable
 
 	private void jcb_half_auto_actionPerformed(ActionEvent e) {
 		Program.putCaveConfigBool(MyCellarSettings.TYPE_AUTO, jcb_half_auto.isSelected());
-	}
-
-	private void activate_debug_actionPerformed(ActionEvent e) {
-		final boolean selected = m_jcb_debug.isSelected();
-		Program.putGlobalConfigBool(MyCellarSettings.DEBUG, selected);
-		Program.setDebug(selected);
 	}
 
 	private ObjectType findObjectType(Program.Type type) {

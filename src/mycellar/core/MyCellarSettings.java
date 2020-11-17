@@ -12,6 +12,7 @@ package mycellar.core;
 
 public final class MyCellarSettings {
 
+  @Deprecated
   public static final String DEBUG = "DEBUG";
   public static final String FILE_EXCEL = "FILE_EXCEL";
   public static final String FIC_EXCEL = "FIC_EXCEL";

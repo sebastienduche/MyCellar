@@ -174,38 +174,40 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			for (String arg : args) {
 				parameters = parameters.concat(arg + " ");
 			}
-			int nIndex = parameters.indexOf(OPTIONS_PARAM);
-			if (nIndex == -1) {
-				// demarrage sans options
-				Program.setNewFile(parameters.strip());
-			} else {
-				// demarrage avec options
-				// ______________________
-				String tmp = parameters.substring(0, nIndex);
-				// Recuperation du nom du fichier
-				if (tmp.contains(Program.EXTENSION)) {
-					Program.setNewFile(tmp.strip());
+			if (!parameters.isBlank()) {
+				int nIndex = parameters.indexOf(OPTIONS_PARAM);
+				if (nIndex == -1) {
+					// demarrage sans options
+					Program.setNewFile(parameters.strip());
 				} else {
-					// On prend tous ce qu'il y a apres -opts
-					tmp = parameters.substring(nIndex);
+					// demarrage avec options
+					// ______________________
+					String tmp = parameters.substring(0, nIndex);
+					// Recuperation du nom du fichier
 					if (tmp.contains(Program.EXTENSION)) {
-						// Si l'on trouve l'extension du fichier
-						// on cherche le caractere ' ' qui va separer les
-						// options du nom du fichier
-						String tmp2 = tmp.strip();
-						tmp2 = tmp2.substring(tmp2.indexOf(" "));
-						Program.setNewFile(tmp2.strip());
+						Program.setNewFile(tmp.strip());
+					} else {
+						// On prend tous ce qu'il y a apres -opts
+						tmp = parameters.substring(nIndex);
+						if (tmp.contains(Program.EXTENSION)) {
+							// Si l'on trouve l'extension du fichier
+							// on cherche le caractere ' ' qui va separer les
+							// options du nom du fichier
+							String tmp2 = tmp.strip();
+							tmp2 = tmp2.substring(tmp2.indexOf(" "));
+							Program.setNewFile(tmp2.strip());
+						}
 					}
-				}
-				// Recuperation des options
-				tmp = parameters.substring(nIndex + OPTIONS_PARAM.length()).strip();
-				tmp = tmp.substring(0, tmp.indexOf(" ")).strip();
-				// Options a gerer
-				if (RESTART_COMMAND.equals(tmp)) {
-					// Demarrage avec une nouvelle cave
-					Program.putGlobalConfigBool(MyCellarSettings.STARTUP, false);
-					Program.putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, true);
-					Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
+					// Recuperation des options
+					tmp = parameters.substring(nIndex + OPTIONS_PARAM.length()).strip();
+					tmp = tmp.substring(0, tmp.indexOf(" ")).strip();
+					// Options a gerer
+					if (RESTART_COMMAND.equals(tmp)) {
+						// Demarrage avec une nouvelle cave
+						Program.putGlobalConfigBool(MyCellarSettings.STARTUP, false);
+						Program.putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, true);
+						Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
+					}
 				}
 			}
 
@@ -234,13 +236,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private void startup() {
 		Thread.currentThread().setUncaughtExceptionHandler(this);
 		prefs = Preferences.userNodeForPackage(getClass());
-
-		// Initialisation du mode Debug
-		// ____________________________
-
-		if (Program.getGlobalConfigBool(MyCellarSettings.DEBUG, false)) {
-			Program.setDebug(true);
-		}
 
 		// Controle des MAJ
 		// Appel serveur pour alimenter la derniere version en ligne

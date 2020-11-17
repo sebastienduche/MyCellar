@@ -112,13 +112,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.3
- * @since 12/11/20
+ * @version 23.4
+ * @since 17/11/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.7.4.4";
+	public static final String INTERNAL_VERSION = "3.7.4.7";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -143,7 +143,6 @@ public final class Program {
 
 	private static FileWriter oDebugFile = null;
 	private static File debugFile = null;
-	private static boolean bDebug = false;
 
 	private static final LinkedList<Rangement> RANGEMENTS_LIST = new LinkedList<>();
 	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
@@ -193,7 +192,6 @@ public final class Program {
 	}
 
 	public static void start() throws UnableToOpenFileException {
-		bDebug = true;
 		Debug("===================================================");
 		Debug("Starting MyCellar version: " + VERSION + " Internal: " + INTERNAL_VERSION);
 		// Initialisation du repertoire de travail
@@ -338,14 +336,17 @@ public final class Program {
 	 * Pour nettoyer et mettre a jour le programme
 	 */
 	private static void cleanAndUpgrade() {
-		String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
-		if(sVersion.isEmpty() || sVersion.contains(".")) {
-			putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
+		if (hasFile()) {
+			String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
+			if (sVersion.isEmpty() || sVersion.contains(".")) {
+				putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
+			}
+			final String programType = getCaveConfigString(PROGRAM_TYPE, "");
+			if (programType.isBlank()) {
+				putCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name());
+			}
 		}
-		final String programType = getCaveConfigString(PROGRAM_TYPE, "");
-		if (programType.isBlank()) {
-			putCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name());
-		}
+		CONFIG_GLOBAL.remove(MyCellarSettings.DEBUG);
 
 		//int version = Integer.parseInt(sVersion);
 	}
@@ -395,9 +396,7 @@ public final class Program {
 		Debug("Program: ERROR:");
 		Debug("Program: "+e.toString());
 		Debug("Program: "+error);
-		if (bDebug) {
-			e.printStackTrace();
-		}
+		e.printStackTrace();
 		if (debugFile != null) {
 			try {
 				oDebugFile.flush();
@@ -666,24 +665,7 @@ public final class Program {
 		Debug("Program: Saving all files OK");
 	}
 
-	public static void setDebug(boolean debug) {
-		bDebug = debug;
-	}
-
-	public static boolean isDebug() {
-		return bDebug;
-	}
-
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	public static void Debug(String sText) {
-		if(!bDebug) {
-			return;
-		}
-
 		try {
 			if (oDebugFile == null) {
 				String sDir = System.getProperty("user.home");
@@ -707,7 +689,7 @@ public final class Program {
 	}
 	
 	private static void closeDebug() {
-		if(!bDebug || oDebugFile == null) {
+		if(oDebugFile == null) {
 			return;
 		}
 		

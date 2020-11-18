@@ -53,8 +53,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.4
- * @since 13/11/20
+ * @version 26.5
+ * @since 18/11/20
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -217,7 +217,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			m_lieu.setSelectedIndex(0);
 		}
 		m_labelExist.setText("");
-		Search.updateTable();
+		Program.getSearch().ifPresent(Search::updateTable);
 		panelVignobles.resetCombos();
 		rangementInModif = null;
 		Debug("Reset Values... Done");
@@ -1150,8 +1150,10 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			if (m_lv != null) {
 				m_lv.updateList(listBottleInModification);
 			}
-			Search.removeBottle(bToDelete);
-			Search.updateTable();
+			Program.getSearch().ifPresent(search -> {
+				search.removeBottle(bToDelete);
+				search.updateTable();
+			});
 		}
 		final Rangement r = newBottle.getRangement();
 		if (!r.isCaisse()) {

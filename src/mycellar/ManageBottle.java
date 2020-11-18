@@ -41,8 +41,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.7
- * @since 13/11/20
+ * @version 6.8
+ * @since 18/11/20
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -456,7 +456,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		}
 
 		RangementUtils.putTabStock();
-		Search.updateTable();
+		Program.getSearch().ifPresent(Search::updateTable);
 
 		if (!rangement.isCaisse()) {
 			rangement.updateToStock(bottle);
@@ -496,8 +496,10 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
 		bottle.getRangement().clearStock(bottle);
 
-		Search.removeBottle(bToDelete);
-		Search.updateTable();
+		Program.getSearch().ifPresent(search -> {
+			search.removeBottle(bToDelete);
+			search.updateTable();
+		});
 
 		final Rangement rangement = bottle.getRangement();
 		if (rangement != null && !rangement.isCaisse()) {

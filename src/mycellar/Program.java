@@ -82,6 +82,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.Scanner;
@@ -114,13 +115,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.4
- * @since 17/11/20
+ * @version 23.5
+ * @since 18/11/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.7.5.5";
+	public static final String INTERNAL_VERSION = "3.7.6.0";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -970,7 +971,7 @@ public final class Program {
 			getStorage().close();
 			CountryVignobleController.close();
 			CountryListJaxb.close();
-			Search.clearResults();
+			getSearch().ifPresent(Search::clearResults);
 		}
 		clearObjectsVariables();
 		m_bWorkDirCalculated = false;
@@ -1596,8 +1597,8 @@ public final class Program {
 		return creerRangement;
 	}
 
-	static Search getSearch() {
-		return (Search) OPENED_OBJECTS.get(SEARCH);
+	static Optional<Search> getSearch() {
+		return Optional.ofNullable((Search) OPENED_OBJECTS.get(SEARCH));
 	}
 
 	static Search createSearch() {

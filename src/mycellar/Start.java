@@ -56,8 +56,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.0
- * @since 17/11/20
+ * @version 27.1
+ * @since 18/11/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -216,7 +216,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 			while (splashscreen.isRunning()) {}
 
-			getInstance().startup();
+			SwingUtilities.invokeLater(() -> getInstance().startup());
 		} catch (Exception e) {
 			Program.showException(e);
 			System.exit(998);
@@ -1380,14 +1380,14 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (Program.getSearch() == null) {
+			if (Program.getSearch().isEmpty()) {
 				final Search search = Program.createSearch();
 				Program.TABBED_PANE.add(Program.getLabel("Main.tabSearchSimple"), search);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.SEARCH);
 				Utils.addCloseButton(Program.TABBED_PANE, search);
 			}
 			try {
-				Program.TABBED_PANE.setSelectedComponent(Program.getSearch());
+				Program.TABBED_PANE.setSelectedComponent(Program.getSearch().get());
 			} catch (IllegalArgumentException e) {
 				final Search search = Program.createSearch();
 				Program.TABBED_PANE.add(Program.getLabel("Main.tabSearchSimple"), search);

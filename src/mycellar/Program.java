@@ -121,7 +121,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.7.6.0";
+	public static final String INTERNAL_VERSION = "3.7.6.3";
 	public static final int VERSION = 63;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -274,7 +274,7 @@ public final class Program {
 		myCellarFile = new MyCellarFile(new File(file));
 	}
 
-	static boolean hasFile() {
+	public static boolean hasFile() {
 		return myCellarFile != null;
 	}
 
@@ -1659,7 +1659,7 @@ public final class Program {
 		return (VineyardPanel) OPENED_OBJECTS.get(VIGNOBLES);
 	}
 
-	static CapacityPanel getCapacityPanel() {
+	public static CapacityPanel getCapacityPanel() {
 		return (CapacityPanel) OPENED_OBJECTS.get(CAPACITY);
 	}
 

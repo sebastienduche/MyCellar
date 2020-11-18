@@ -1,9 +1,12 @@
 package mycellar.capacity;
 
 import mycellar.Program;
+import mycellar.Start;
 import mycellar.core.datas.MyCellarBottleContenance;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,16 +16,18 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 17/11/20
+ * @version 0.6
+ * @since 18/11/20
  */
 class CapacityTableModel extends DefaultTableModel {
-  public static final int ETAT = 0;
+  public static final int ETAT = 1;
   static final long serialVersionUID = 220605;
-  private final String[] columnNames = {"", Program.getLabel("Infos401")};
+  private final String[] columnNames = {Program.getLabel("Infos401"), ""};
 
   private final List<Boolean> values;
   private final List<String> list;
+
+  private boolean modify;
 
   CapacityTableModel() {
     list = MyCellarBottleContenance.getList();
@@ -63,7 +68,7 @@ class CapacityTableModel extends DefaultTableModel {
   @Override
   public Object getValueAt(int row, int column) {
     if (column == ETAT) {
-      return values.get(row);
+      return Boolean.FALSE;
     }
     return list.get(row);
   }
@@ -102,7 +107,19 @@ class CapacityTableModel extends DefaultTableModel {
   public void setValueAt(Object value, int row, int column) {
     try {
       if (column == ETAT) {
-        values.set(row, (Boolean) value);
+        final String value1 = list.get(row);
+        if (MyCellarBottleContenance.isContenanceUsed(value1)) {
+          JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("CapacityPanel.unableDeleteCapacity"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
+          return;
+        }
+        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getLabel("CapacityPanel.delCapacityQuestion"), value1) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+          return;
+        }
+        list.remove(value1);
+        fireTableRowsDeleted(row, row);
+        setModify(true);
+        Program.updateAllPanels();
+        Program.getCapacityPanel().updateView();
       }
     } catch (Exception e) {
       Program.showException(e);
@@ -147,6 +164,14 @@ class CapacityTableModel extends DefaultTableModel {
       }
     }
     return indexes;
+  }
+
+  public boolean isModify() {
+    return modify;
+  }
+
+  public void setModify(boolean modify) {
+    this.modify = modify;
   }
 
 }

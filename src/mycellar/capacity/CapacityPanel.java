@@ -4,10 +4,11 @@ import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.StateEditor;
-import mycellar.StateRenderer;
+import mycellar.StateButtonEditor;
+import mycellar.StateButtonRenderer;
 import mycellar.TabEvent;
 import mycellar.core.IMyCellar;
+import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -18,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.util.LinkedList;
@@ -30,11 +32,11 @@ import static mycellar.core.LabelType.INFO;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 17/11/20
+ * @version 1.3
+ * @since 18/11/20
  */
 
-public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar {
+public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 	
 	private static final long serialVersionUID = -116789055896509475L;
 	private final CapacityTableModel model = new CapacityTableModel();
@@ -48,10 +50,10 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
 		JTable table = new JTable(model);
 		TableColumnModel tcm = table.getColumnModel();
 		TableColumn tc = tcm.getColumn(CapacityTableModel.ETAT);
-		tc.setCellRenderer(new StateRenderer());
-		tc.setCellEditor(new StateEditor());
-		tc.setMaxWidth(30);
-		tc.setMinWidth(30);
+		tc.setCellRenderer(new StateButtonRenderer("", MyCellarImage.DELETE));
+		tc.setCellEditor(new StateButtonEditor());
+		tc.setMinWidth(25);
+		tc.setMaxWidth(25);
 		final MyCellarLabel labelDefault = new MyCellarLabel(INFO, "146");
 		final MyCellarButton add = new MyCellarButton(INFO, "071", MyCellarImage.ADD);
 		final MyCellarButton remove = new MyCellarButton(INFO,"051", MyCellarImage.DELETE);
@@ -92,6 +94,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
 			model.addValue(s);
 			defaultComboBox.addItem(s);
 		}
+		Program.updateAllPanels();
 	}
 
 	@Override
@@ -99,11 +102,8 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
 		if (defaultComboBox.getSelectedIndex() != 0) {
 			MyCellarBottleContenance.setDefaultValue((String) defaultComboBox.getSelectedItem());
 		}
-		if (modified) {
-			if (Program.getAddVin() != null) {
-				Program.getAddVin().setUpdateView();
-				Program.getAddVin().updateView();
-			}
+		if (modified || model.isModify()) {
+			Program.setModified();
 		}
 		return true;
 	}
@@ -111,6 +111,22 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
 	@Override
 	public void tabClosed() {
 		modified = false;
+		model.setModify(false);
 		Start.getInstance().updateMainPanel();
+	}
+
+	@Override
+	public void setUpdateView() {
+
+	}
+
+	@Override
+	public void updateView() {
+		SwingUtilities.invokeLater(() -> {
+			defaultComboBox.removeAllItems();
+			defaultComboBox.addItem("");
+			MyCellarBottleContenance.getList().forEach(defaultComboBox::addItem);
+			defaultComboBox.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+		});
 	}
 }

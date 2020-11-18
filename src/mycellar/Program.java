@@ -1241,6 +1241,7 @@ public final class Program {
 			return LanguageFileLoader.getLabel(id);
 		} catch(MissingResourceException e) {
 			if (displayError) {
+			  Debug("Program: ERROR: Missing Label " + id);
 				JOptionPane.showMessageDialog(null, "Missing Label " + id, "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			return id;

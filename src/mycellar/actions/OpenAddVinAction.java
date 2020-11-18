@@ -40,10 +40,10 @@ public class OpenAddVinAction extends AbstractAction {
 				tabIndex = Program.TABBED_PANE.indexOfComponent(addVin);
 			}
 			if (tabIndex != -1) {
-				Program.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel("Infos131"));
+				Program.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL));
 				Program.TABBED_PANE.setSelectedIndex(tabIndex);
 			} else {
-				Program.TABBED_PANE.addTab(Program.getLabel("Infos131"), MyCellarImage.WINE, addVin);
+				Program.TABBED_PANE.addTab(Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL), MyCellarImage.WINE, addVin);
 				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
 			}
 	

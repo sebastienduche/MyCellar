@@ -37,8 +37,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.2
- * @since 17/11/20
+ * @version 12.3
+ * @since 19/11/20
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -52,7 +52,6 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	private final JTextField devise = new JTextField();
 	private final MyCellarCheckBox jcb_excel = new MyCellarCheckBox(Program.getLabel("Infos234"), false);
 	private final MyCellarButton buttonResetMessageDialog;
-	private final MyCellarCheckBox jcb_half_auto = new MyCellarCheckBox(Program.getLabel("Infos147"), false);
 	private final MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox(Program.getLabel("Infos169"), false);
 	private final MyCellarLabel label_annee;
 	private final MyCellarLabel label_annee2;
@@ -103,14 +102,11 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		String the_language = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE,"");
 		langue.setSelectedIndex(Program.getLanguageIndex(the_language));
 
-		jcb_half_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.TYPE_AUTO, false));
-
 		valider.addActionListener(this::valider_actionPerformed);
 		parcourir_excel.addActionListener(this::parcourir_excel_actionPerformed);
 		jcb_excel.addActionListener(this::jcb_excel_actionPerformed);
 		buttonResetMessageDialog.addActionListener(this::jcb_message_actionPerformed);
 		buttonManageContenance.addActionListener(this::buttonManageContenance_actionPerformed);
-		jcb_half_auto.addActionListener(this::jcb_half_auto_actionPerformed);
 
 		Arrays.stream(Program.Type.values()).forEach(type -> {
 			final ObjectType type1 = new ObjectType(type);
@@ -154,7 +150,6 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		otherPanel.setLayout(new MigLayout("","[][]",""));
 		otherPanel.add(buttonResetMessageDialog, "span 2, wrap");
 		otherPanel.add(buttonManageContenance);
-		otherPanel.add(jcb_half_auto, "wrap");
 		add(otherPanel, "grow, wrap");
 
 		add(valider, "gaptop 15px, center");
@@ -182,7 +177,6 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 
 	private void setLabels() {
 		jcb_excel.setText(Program.getLabel("Infos169"));
-		jcb_half_auto.setText(Program.getLabel("Infos147"));
 		parcourir_excel.setToolTipText(Program.getLabel("Infos157"));
 		jcb_annee_control.setText(Program.getLabel("Infos169"));
 	}
@@ -308,10 +302,6 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	 */
 	private void buttonManageContenance_actionPerformed(ActionEvent e) {
 		new ManageCapacityAction().actionPerformed(null);
-	}
-
-	private void jcb_half_auto_actionPerformed(ActionEvent e) {
-		Program.putCaveConfigBool(MyCellarSettings.TYPE_AUTO, jcb_half_auto.isSelected());
 	}
 
 	private ObjectType findObjectType(Program.Type type) {

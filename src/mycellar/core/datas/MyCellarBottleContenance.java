@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 18/11/20
+ * @version 0.6
+ * @since 19/11/20
  */
 public final class MyCellarBottleContenance {
 
@@ -55,8 +55,13 @@ public final class MyCellarBottleContenance {
         .stream()
         .filter(b -> oldValue.equals(b.getType()))
         .forEach(bouteille -> bouteille.setType(newValue));
-    getList().remove(oldValue);
-    getList().add(newValue);
+    final int oldIndex = getList().indexOf(oldValue);
+    final int index = getList().indexOf(newValue);
+    if (index == -1) {
+      getList().set(oldIndex, newValue);
+    } else if (index != oldIndex) {
+      getList().remove(oldIndex);
+    }
   }
 
   public static List<String> getList() {

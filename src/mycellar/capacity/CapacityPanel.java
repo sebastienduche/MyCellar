@@ -9,6 +9,7 @@ import mycellar.StateButtonRenderer;
 import mycellar.TabEvent;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -22,7 +23,6 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.util.LinkedList;
 
 import static mycellar.core.LabelType.INFO;
 
@@ -32,8 +32,8 @@ import static mycellar.core.LabelType.INFO;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 18/11/20
+ * @version 1.4
+ * @since 19/11/20
  */
 
 public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -41,13 +41,13 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
 	private static final long serialVersionUID = -116789055896509475L;
 	private final CapacityTableModel model = new CapacityTableModel();
 	private final MyCellarComboBox<String> defaultComboBox = new MyCellarComboBox<>();
-	private boolean modified;
+	private final JTable table;
 
 	public CapacityPanel() {
 		defaultComboBox.addItem("");
 		MyCellarBottleContenance.getList().forEach(defaultComboBox::addItem);
 		defaultComboBox.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
-		JTable table = new JTable(model);
+		table = new JTable(model);
 		TableColumnModel tcm = table.getColumnModel();
 		TableColumn tc = tcm.getColumn(CapacityTableModel.ETAT);
 		tc.setCellRenderer(new StateButtonRenderer("", MyCellarImage.DELETE));
@@ -56,41 +56,21 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
 		tc.setMaxWidth(25);
 		final MyCellarLabel labelDefault = new MyCellarLabel(INFO, "146");
 		final MyCellarButton add = new MyCellarButton(INFO, "071", MyCellarImage.ADD);
-		final MyCellarButton remove = new MyCellarButton(INFO,"051", MyCellarImage.DELETE);
-		setLayout(new MigLayout("","grow","30px[grow]20px[]30px[]"));
+		final MyCellarLabel info = new MyCellarLabel(INFO,"129", LabelProperty.THE_PLURAL.withCapital());
+		setLayout(new MigLayout("","grow","30px[][][grow]20px[]30px[]"));
+		add(info,"wrap");
+		add(add,"wrap");
 		add(new JScrollPane(table),"grow, wrap");
 		add(labelDefault, "split 2");
 		add(defaultComboBox, "gapleft 5, wrap");
-		add(add,"split 2, center");
-		add(remove,"wrap");
 
 		add.addActionListener((e) -> add());
-		remove.addActionListener((e) -> remove());
-	}
-
-	private void remove() {
-		final LinkedList<Integer> list1 = model.getSelectedRows();
-		if (!list1.isEmpty()) {
-			LinkedList<String> values = model.getSelectedValues();
-			String label = Program.getLabel("Infos129");
-			if (values.size() > 1) {
-				label = Program.getLabel("Infos130");
-			}
-			int resul = JOptionPane.showConfirmDialog(Start.getInstance(), label, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION);
-			if (resul == JOptionPane.YES_OPTION) {
-				modified = true;
-				model.removeValueAt(list1);
-				for (String val: values) {
-					defaultComboBox.removeItem(val);
-				}
-			}
-		}
 	}
 
 	private void add() {
-		String s = JOptionPane.showInputDialog(Start.getInstance(), Program.getLabel("Infos289"),Program.getLabel("Infos402"),JOptionPane.QUESTION_MESSAGE);
-		if (null != s && !s.isEmpty()) {
-			modified = true;
+		String s = Program.toCleanString(JOptionPane.showInputDialog(Start.getInstance(), Program.getLabel("Infos289"), Program.getLabel("Infos402"), JOptionPane.QUESTION_MESSAGE));
+		if (!s.isEmpty()) {
+			Program.setModified();
 			model.addValue(s);
 			defaultComboBox.addItem(s);
 		}
@@ -99,10 +79,13 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
 
 	@Override
 	public boolean tabWillClose(TabEvent event) {
+		if (table.isEditing()) {
+			table.getCellEditor().cancelCellEditing();
+		}
 		if (defaultComboBox.getSelectedIndex() != 0) {
 			MyCellarBottleContenance.setDefaultValue((String) defaultComboBox.getSelectedItem());
 		}
-		if (modified || model.isModify()) {
+		if (model.isModify()) {
 			Program.setModified();
 		}
 		return true;
@@ -110,7 +93,6 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
 
 	@Override
 	public void tabClosed() {
-		modified = false;
 		model.setModify(false);
 		Start.getInstance().updateMainPanel();
 	}

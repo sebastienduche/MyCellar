@@ -7,7 +7,6 @@ import mycellar.core.datas.MyCellarBottleContenance;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.text.MessageFormat;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -16,23 +15,20 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 18/11/20
+ * @version 0.7
+ * @since 19/11/20
  */
 class CapacityTableModel extends DefaultTableModel {
   public static final int ETAT = 1;
   static final long serialVersionUID = 220605;
   private final String[] columnNames = {Program.getLabel("Infos401"), ""};
 
-  private final List<Boolean> values;
   private final List<String> list;
 
   private boolean modify;
 
   CapacityTableModel() {
     list = MyCellarBottleContenance.getList();
-    values = new LinkedList<>();
-    list.forEach(s -> values.add(false));
   }
 
   /**
@@ -93,7 +89,7 @@ class CapacityTableModel extends DefaultTableModel {
    */
   @Override
   public boolean isCellEditable(int row, int column) {
-    return (column == ETAT);
+    return true;
   }
 
   /**
@@ -106,20 +102,29 @@ class CapacityTableModel extends DefaultTableModel {
   @Override
   public void setValueAt(Object value, int row, int column) {
     try {
+      final String oldValue = list.get(row);
       if (column == ETAT) {
-        final String value1 = list.get(row);
-        if (MyCellarBottleContenance.isContenanceUsed(value1)) {
+        if (MyCellarBottleContenance.isContenanceUsed(oldValue)) {
           JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("CapacityPanel.unableDeleteCapacity"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
           return;
         }
-        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getLabel("CapacityPanel.delCapacityQuestion"), value1) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getLabel("CapacityPanel.delCapacityQuestion"), oldValue) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
-        list.remove(value1);
+        list.remove(oldValue);
         fireTableRowsDeleted(row, row);
         setModify(true);
         Program.updateAllPanels();
         Program.getCapacityPanel().updateView();
+      } else {
+        String newValue = Program.toCleanString(value);
+        if (!newValue.isBlank()) {
+          MyCellarBottleContenance.rename(oldValue, newValue);
+          fireTableDataChanged();
+          setModify(true);
+          Program.updateAllPanels();
+          Program.getCapacityPanel().updateView();
+        }
       }
     } catch (Exception e) {
       Program.showException(e);
@@ -129,41 +134,8 @@ class CapacityTableModel extends DefaultTableModel {
   void addValue(String value) {
     if (list != null) {
       list.add(value);
-      values.add(false);
     }
     fireTableDataChanged();
-  }
-
-  void removeValueAt(List<Integer> index) {
-    if (list == null) {
-      return;
-    }
-    for (int i = index.size() - 1; i >= 0; i--) {
-      Integer val = index.get(i);
-      list.remove(val.intValue());
-      values.remove(val.intValue());
-    }
-    fireTableDataChanged();
-  }
-
-  LinkedList<Integer> getSelectedRows() {
-    LinkedList<Integer> indexes = new LinkedList<>();
-    for (int i = 0; i < list.size(); i++) {
-      if (values.get(i).equals(Boolean.TRUE)) {
-        indexes.add(i);
-      }
-    }
-    return indexes;
-  }
-
-  LinkedList<String> getSelectedValues() {
-    LinkedList<String> indexes = new LinkedList<>();
-    for (int i = 0; i < list.size(); i++) {
-      if (values.get(i).equals(Boolean.TRUE)) {
-        indexes.add(list.get(i));
-      }
-    }
-    return indexes;
   }
 
   public boolean isModify() {
@@ -173,5 +145,4 @@ class CapacityTableModel extends DefaultTableModel {
   public void setModify(boolean modify) {
     this.modify = modify;
   }
-
 }

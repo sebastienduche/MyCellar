@@ -30,8 +30,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 17/11/20
+ * @version 3.8
+ * @since 19/11/20
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -57,7 +57,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final MyCellarLabel m_labelStillToAdd = new MyCellarLabel("");
 	protected final MyCellarLabel m_end = new MyCellarLabel(""); // Label pour les résultats
 	protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox("");
-	private final int SIECLE = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
+	private final int siecle = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
 	protected final JModifyComboBox<Rangement> m_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_line = new JModifyComboBox<>();
@@ -82,8 +82,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected MyCellarButton m_chooseCell;
 	protected PanelVignobles panelVignobles;
 	protected Bouteille bottle = null;
-	protected char AJOUTER = Program.getLabel("AJOUTER").charAt(0);
-	private char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
+	protected char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
 	private final MyCellarLabel m_devise = new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, "€"));
 	private boolean listenersEnabled = true;
 	
@@ -91,7 +90,8 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected boolean isEditionMode = false;
 	
 	protected MyCellarManageBottles() {
-		m_preview.setMnemonic(PREVIEW);
+		char previewChar = Program.getLabel("PREVIEW").charAt(0);
+		m_preview.setMnemonic(previewChar);
 		m_preview.setEnabled(false);
 		m_preview.addActionListener(this::preview_actionPerformed);
 
@@ -106,6 +106,38 @@ public abstract class MyCellarManageBottles extends JPanel {
 		statusList.addItem(BottlesStatus.VERIFIED);
 		statusList.addItem(BottlesStatus.TOCHECK);
 	}
+
+	protected void initializeExtraProperties() {
+		enableAll(true);
+		m_nb_bottle.setValue(1);
+		m_nb_bottle.setEnabled(false);
+		name.setSelectedItem(bottle.getNom());
+		m_year.setText(bottle.getAnnee());
+		m_noYear.setSelected(bottle.isNonVintage());
+		if (bottle.isNonVintage()) {
+			m_year.setEditable(false);
+		}
+		m_half.removeAllItems();
+		m_half.addItem("");
+		MyCellarBottleContenance.getList().forEach(m_half::addItem);
+		m_half.setSelectedItem(bottle.getType());
+
+		String half_tmp = "";
+		if (m_half.getSelectedItem() != null) {
+			half_tmp = m_half.getSelectedItem().toString();
+		}
+		if (!half_tmp.equals(bottle.getType()) && !bottle.getType().isEmpty()) {
+			MyCellarBottleContenance.getList().add(bottle.getType());
+			m_half.addItem(bottle.getType());
+			m_half.setSelectedItem(bottle.getType());
+		}
+
+		m_price.setText(Program.convertStringFromHTMLString(bottle.getPrix()));
+		m_comment.setText(bottle.getComment());
+		m_maturity.setText(bottle.getMaturity());
+		m_parker.setText(bottle.getParker());
+		m_colorList.setSelectedItem(BottleColor.getColor(bottle.getColor()));
+	}
 	
 	protected void annee_auto_actionPerformed(ActionEvent e) {
 		Debug("Annee_auto_actionPerformed...");
@@ -113,15 +145,14 @@ public abstract class MyCellarManageBottles extends JPanel {
 			Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
 			
 			if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_FALSE, false)) {
-				String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ((SIECLE + 1) * 100)); //"En decochant cette option, vous dsactivez la transformation");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ((siecle + 1) * 100)); //"En decochant cette option, vous dsactivez la transformation");
 				Erreur.showKeyErreur(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_FALSE);
 			}
-		}
-		else {
+		} else {
 			Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, true);
 
 			if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_TRUE, false)) {
-				String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ((SIECLE + 1) * 100));//"En cochant cette option, vous activez la transformation");
+				String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ((siecle + 1) * 100));//"En cochant cette option, vous activez la transformation");
 				Erreur.showKeyErreur(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_TRUE);
 			}
 		}
@@ -194,18 +225,17 @@ public abstract class MyCellarManageBottles extends JPanel {
 		String annee = m_year.getText();
 		if (m_annee_auto.isSelected() && annee.length() == 2) {
 			int n = Program.getCaveConfigInt(MyCellarSettings.ANNEE, 50);
-			int siecle = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20);
 			if(Program.safeParseInt(annee, -1) > n) {
-				annee = (siecle - 1) + annee;
-			} else {
 				annee = siecle + annee;
+			} else {
+				annee = siecle + 1 + annee;
 			}
 		}
 		return annee;
 	}
 	
 	protected final void setYearAuto() {
-	  m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ((SIECLE + 1) * 100))); //"Annee 00 -> 2000");
+	  m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ((siecle + 1) * 100))); //"Annee 00 -> 2000");
     m_annee_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
 	}
 
@@ -380,7 +410,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		setListenersEnabled(true);
 	}
 	
-	protected void selectPlace(final Bouteille bottle) {
+	protected void selectPlace() {
 		Debug("selectPlaceWithBottle...");
 		setListenersEnabled(false);
 		m_num_lieu.removeAllItems();

@@ -7,7 +7,6 @@ import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
-import mycellar.core.MyCellarSettings;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.MyCellarBottleContenance;
@@ -41,8 +40,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.8
- * @since 18/11/20
+ * @version 6.9
+ * @since 19/11/20
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -108,7 +107,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			});
 
 			m_add.setText(Program.getLabel("ManageBottle.SaveModifications"));
-			m_add.setMnemonic(AJOUTER);
+			m_add.setMnemonic(ajouterChar);
 			m_manageContenance.setText(Program.getLabel("Infos400"));
 
 
@@ -269,41 +268,11 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		Debug("Set Bottle...");
 		try {
 			this.bottle = bottle;
-			enableAll(true);
-			m_nb_bottle.setValue(1);
-			m_nb_bottle.setEnabled(false);
-			name.setSelectedItem(bottle.getNom());
-			m_year.setText(bottle.getAnnee());
-			m_noYear.setSelected(bottle.isNonVintage());
-			if (bottle.isNonVintage()) {
-				m_year.setEditable(false);
-			}
-			m_half.removeAllItems();
-			m_half.addItem("");
-			MyCellarBottleContenance.getList().forEach(m_half::addItem);
-			m_half.setSelectedItem(bottle.getType());
-			String half_tmp = "";
-			if (m_half.getSelectedItem() != null) {
-				half_tmp = m_half.getSelectedItem().toString();
-			}
-
-			final boolean autoAdd = Program.getCaveConfigBool(MyCellarSettings.TYPE_AUTO, false);
-
-			if (autoAdd && half_tmp.compareTo(bottle.getType()) != 0 && !bottle.getType().isEmpty()) {
-				MyCellarBottleContenance.getList().add(bottle.getType());
-				m_half.addItem(bottle.getType());
-				m_half.setSelectedItem(bottle.getType());
-			}
-
-			m_price.setText(Program.convertStringFromHTMLString(bottle.getPrix()));
-			m_comment.setText(bottle.getComment());
-			m_maturity.setText(bottle.getMaturity());
-			m_parker.setText(bottle.getParker());
-			m_colorList.setSelectedItem(BottleColor.getColor(bottle.getColor()));
+			initializeExtraProperties();
 			panelVignobles.initializeVignobles(bottle);
 			updateStatusAndTime();
 
-			selectPlace(bottle);
+			selectPlace();
 			m_end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
 			resetModified();
 		}	catch (RuntimeException e) {
@@ -613,7 +582,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			MyCellarBottleContenance.getList().forEach(m_half::addItem);
 			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 			panelVignobles.updateList();
-			selectPlace(bottle);
+			selectPlace();
 			setListenersEnabled(true);
 			Debug("updateView Done");
 		});

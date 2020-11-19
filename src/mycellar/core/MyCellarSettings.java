@@ -6,8 +6,8 @@ package mycellar.core;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 16/10/20
+ * @version 0.4
+ * @since 19/10/20
  */
 
 public final class MyCellarSettings {
@@ -21,6 +21,7 @@ public final class MyCellarSettings {
   public static final String SIECLE = "SIECLE";
   public static final String DEVISE = "DEVISE";
   public static final String LANGUAGE = "LANGUAGE";
+  @Deprecated
   public static final String TYPE_AUTO = "TYPE_AUTO";
   public static final String DIR = "DIR";
   public static final String DONT_SHOW_INFO = "DONT_SHOW_INFO";

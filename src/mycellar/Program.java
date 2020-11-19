@@ -115,14 +115,14 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.5
- * @since 18/11/20
+ * @version 23.6
+ * @since 19/11/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.7.6.3";
-	public static final int VERSION = 63;
+	public static final String INTERNAL_VERSION = "3.7.7.2";
+	public static final int VERSION = 64;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
@@ -350,6 +350,7 @@ public final class Program {
 			}
 		}
 		CONFIG_GLOBAL.remove(MyCellarSettings.DEBUG);
+		CONFIG_GLOBAL.remove(MyCellarSettings.TYPE_AUTO);
 
 		//int version = Integer.parseInt(sVersion);
 	}

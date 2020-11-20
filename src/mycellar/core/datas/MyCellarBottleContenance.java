@@ -22,13 +22,15 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 06/01/19
+ * @version 0.6
+ * @since 19/11/20
  */
 public final class MyCellarBottleContenance {
 
   private final LinkedList<String> list = new LinkedList<>();
   private String defaultValue;
+  private static final String NORMAL = "75cl";
+  private static final String HALF = "37.5cl";
 
   private MyCellarBottleContenance() {
   }
@@ -37,48 +39,29 @@ public final class MyCellarBottleContenance {
     getInstance().loadFile();
   }
 
-  private void loadFile() {
-    readTypesXml();
-    list.clear();
-    if(Program.getStorage().getAllList() != null) {
-      list.addAll(Program.getStorage().getAllList().stream().map(Bouteille::getType).distinct().collect(Collectors.toList()));
-    }
-    defaultValue = "75cl";
-
-    if(list.isEmpty()) {
-      list.add("75cl");
-      list.add("37.5cl");
-      defaultValue = "75cl";
-    }
-  }
-
   public static void save() {
     getInstance().writeTypeXml();
   }
 
-  private void writeTypeXml() {
+  public static boolean isContenanceUsed(String value) {
+    return Program.getStorage().getAllList()
+        .stream()
+        .map(Bouteille::getType)
+        .anyMatch(value::equals);
+  }
 
-    Debug("writeTypeXml: Writing file");
-    String filename = Program.getXMLTypesFileName();
-    try (var fileWriter = new FileWriter(filename)){
-      //Init XML File
-      fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
-      // Ecriture des types
-      for (String type: list){
-        if(type.equals(defaultValue)) {
-          fileWriter.write("<type value=\""+type+"\" default=\"true\"/>");
-        } else {
-          fileWriter.write("<type value=\""+type+"\"/>");
-        }
-      }
-      fileWriter.write("</MyCellar>");
-      fileWriter.flush();
+  public static void rename(String oldValue, String newValue) {
+    Program.getStorage().getAllList()
+        .stream()
+        .filter(b -> oldValue.equals(b.getType()))
+        .forEach(bouteille -> bouteille.setType(newValue));
+    final int oldIndex = getList().indexOf(oldValue);
+    final int index = getList().indexOf(newValue);
+    if (index == -1) {
+      getList().set(oldIndex, newValue);
+    } else if (index != oldIndex) {
+      getList().remove(oldIndex);
     }
-    catch (IOException ex) {
-      Debug("IOException");
-      Program.showException(ex);
-    }
-    Debug("writeTypeXml: Writing file OK");
   }
 
   public static List<String> getList() {
@@ -93,12 +76,35 @@ public final class MyCellarBottleContenance {
     getInstance().defaultValue = defaultValue;
   }
 
-  private void readTypesXml()  {
+  private void loadFile() {
+    readTypesXml();
+    if(Program.getStorage().getAllList() != null) {
+      final List<String> collect = Program.getStorage().getAllList()
+          .stream()
+          .map(Bouteille::getType)
+          .distinct()
+          .collect(Collectors.toList());
+      for (String val : collect) {
+        if (!list.contains(val)) {
+          list.add(val);
+        }
+      }
+    }
 
+    defaultValue = NORMAL;
+
+    if (list.isEmpty()) {
+      list.add(NORMAL);
+      list.add(HALF);
+    }
+  }
+
+
+  private void readTypesXml()  {
     Debug("readTypesXml: Reading file");
     File file = new File(Program.getXMLTypesFileName());
-    if(!file.exists()) {
-      Debug("WARNING: file '"+Program.getXMLTypesFileName()+"' not found!");
+    if (!file.exists()) {
+      Debug("WARNING: file '" + Program.getXMLTypesFileName() + "' not found!");
       return;
     }
 
@@ -140,6 +146,30 @@ public final class MyCellarBottleContenance {
       Program.showException(e, false);
     }
     Debug("readTypesXml: Reading file OK");
+  }
+
+  private void writeTypeXml() {
+    Debug("writeTypeXml: Writing file");
+    String filename = Program.getXMLTypesFileName();
+    try (var fileWriter = new FileWriter(filename)) {
+      //Init XML File
+      fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
+      // Ecriture des types
+      for (String type: list) {
+        if (type.equals(defaultValue)) {
+          fileWriter.write("<type value=\"" + type + "\" default=\"true\"/>");
+        } else {
+          fileWriter.write("<type value=\"" + type + "\"/>");
+        }
+      }
+      fileWriter.write("</MyCellar>");
+      fileWriter.flush();
+    }
+    catch (IOException ex) {
+      Debug("IOException");
+      Program.showException(ex);
+    }
+    Debug("writeTypeXml: Writing file OK");
   }
 
   /**

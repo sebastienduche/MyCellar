@@ -26,8 +26,8 @@ import static mycellar.Program.ITA;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.5
- * @since 13/11/20
+ * @version 2.6
+ * @since 20/11/20
  */
 
 public final class CountryVignobleController {
@@ -146,10 +146,6 @@ public final class CountryVignobleController {
 	}
 
 	public static void createVignobleInMap(final VignobleJaxb vignobleJaxb) {
-		if (VignobleJaxb.isEmpty(vignobleJaxb)) {
-			return;
-		}
-
 		CountryListJaxb.findbyId(vignobleJaxb.getCountry()).ifPresent(country -> {
 			VignobleListJaxb vignobleListJaxb = getVignobles(country)
 					.orElseGet(() -> createCountry(country)
@@ -169,13 +165,14 @@ public final class CountryVignobleController {
 				countryVignoble = vignobleListJaxb.findVignoble(vignobleJaxb);
 			}
 			if (countryVignoble.isEmpty()) {
-				Debug("ERROR: Unable to find VignobleJaxb " + vignobleJaxb);
+				if (!vignobleJaxb.getName().isBlank()) {
+					Debug("ERROR: Unable to find VignobleJaxb " + vignobleJaxb);
+				}
 				return;
 			}
 			AppelationJaxb appelationJaxb = new AppelationJaxb();
 			if (!found) {
 				appelationJaxb.setAOC(vignobleJaxb.getAOC());
-				appelationJaxb.setAOP(vignobleJaxb.getAOP());
 				appelationJaxb.setIGP(vignobleJaxb.getIGP());
 				if (!appelationJaxb.isEmpty()) {
 					countryVignoble.get().add(appelationJaxb);
@@ -297,7 +294,6 @@ public final class CountryVignobleController {
 				if (vignoble.isPresent() && !bouteilleVignobleJaxb.isAppellationEmpty()) {
 					AppelationJaxb appelationJaxb = new AppelationJaxb();
 					appelationJaxb.setAOC(bouteilleVignobleJaxb.getAOC());
-					appelationJaxb.setAOP(bouteilleVignobleJaxb.getAOP());
 					appelationJaxb.setIGP(bouteilleVignobleJaxb.getIGP());
 					vignoble.get().add(appelationJaxb);
 				} else if (vignoble.isEmpty()) {

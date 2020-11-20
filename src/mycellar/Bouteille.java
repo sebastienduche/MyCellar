@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.3
- * @since 10/11/20
+ * @version 5.5
+ * @since 20/11/20
 
  * <p>Java class for anonymous complex type.
  *
@@ -363,12 +363,7 @@ public class Bouteille implements Serializable{
 			 return 0;
 		 }
 
-		 try {
-		 	return Program.stringToBigDecimal(price).doubleValue();
-		 }
-		 catch (NumberFormatException ignored) {
-			 return 0;
-		 }
+		 return Program.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
 	 }
 	 
 	 public BigDecimal getPrice() {
@@ -377,12 +372,7 @@ public class Bouteille implements Serializable{
 			 return BigDecimal.ZERO;
 		 }
 
-		 try {
-		 	return Program.stringToBigDecimal(price);
-		 }
-		 catch (NumberFormatException ignored) {
-			 return BigDecimal.ZERO;
-		 }
+		 return Program.safeStringToBigDecimal(price, BigDecimal.ZERO);
 	 }
 
 	public boolean hasPrice() {
@@ -392,8 +382,7 @@ public class Bouteille implements Serializable{
 		}
 		try {
 			Program.stringToBigDecimal(price);
-		}
-		catch (NumberFormatException ignored) {
+		} catch (NumberFormatException ignored) {
 			return false;
 		}
 		return true;
@@ -602,10 +591,6 @@ public class Bouteille implements Serializable{
       if (nodeIGP.getLength() == 1) {
         IGP = nodeIGP.item(0).getTextContent();
       }
-      NodeList nodeAOP = vignoble.getElementsByTagName("AOP");
-      if (nodeAOP.getLength() == 1) {
-        AOP = nodeAOP.item(0).getTextContent();
-      }
     }
     return new Bouteille.BouteilleBuilder(name)
 				.id(id)
@@ -622,7 +607,7 @@ public class Bouteille implements Serializable{
 				.status(status)
 				.lastModified(lastModifed)
         .color(color)
-				.vignoble(country, vignobleName, AOC, IGP, AOP)
+				.vignoble(country, vignobleName, AOC, IGP)
 				.build();
   }
 
@@ -868,8 +853,8 @@ public class Bouteille implements Serializable{
 			 return this;
 		 }
 
-		 public BouteilleBuilder vignoble(String country, String name, String aoc, String igp, String aop) {
-			 vignoble = new VignobleJaxb(country, name, aoc, igp, aop);
+		 public BouteilleBuilder vignoble(String country, String name, String aoc, String igp) {
+			 vignoble = new VignobleJaxb(country, name, aoc, igp);
 			 return this;
 		 }
 

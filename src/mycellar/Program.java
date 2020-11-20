@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.capacity.CapacityPanel;
 import mycellar.core.Grammar;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
@@ -81,12 +82,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import static mycellar.ScreenType.ADDVIN;
+import static mycellar.ScreenType.CAPACITY;
 import static mycellar.ScreenType.CELL_ORGANIZER;
 import static mycellar.ScreenType.CHOOSE_CELL;
 import static mycellar.ScreenType.CREATE_PLACE;
@@ -112,14 +115,14 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.3
- * @since 12/11/20
+ * @version 23.6
+ * @since 19/11/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.7.4.1";
-	public static final int VERSION = 63;
+	public static final String INTERNAL_VERSION = "3.7.9.1";
+	public static final int VERSION = 64;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
@@ -143,7 +146,6 @@ public final class Program {
 
 	private static FileWriter oDebugFile = null;
 	private static File debugFile = null;
-	private static boolean bDebug = false;
 
 	private static final LinkedList<Rangement> RANGEMENTS_LIST = new LinkedList<>();
 	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
@@ -173,6 +175,7 @@ public final class Program {
 
 	public static final String FRA = "FRA";
 	public static final String ITA = "ITA";
+	public static final String FR = "fr";
 	public static final CountryJaxb FRANCE = new CountryJaxb(FRA, "France");
 	public static final CountryJaxb NO_COUNTRY = new CountryJaxb("");
 	public static final CountryVignobleJaxb NO_VIGNOBLE = new CountryVignobleJaxb();
@@ -193,7 +196,6 @@ public final class Program {
 	}
 
 	public static void start() throws UnableToOpenFileException {
-		bDebug = true;
 		Debug("===================================================");
 		Debug("Starting MyCellar version: " + VERSION + " Internal: " + INTERNAL_VERSION);
 		// Initialisation du repertoire de travail
@@ -273,7 +275,7 @@ public final class Program {
 		myCellarFile = new MyCellarFile(new File(file));
 	}
 
-	static boolean hasFile() {
+	public static boolean hasFile() {
 		return myCellarFile != null;
 	}
 
@@ -338,14 +340,18 @@ public final class Program {
 	 * Pour nettoyer et mettre a jour le programme
 	 */
 	private static void cleanAndUpgrade() {
-		String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
-		if(sVersion.isEmpty() || sVersion.contains(".")) {
-			putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
+		if (hasFile()) {
+			String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
+			if (sVersion.isEmpty() || sVersion.contains(".")) {
+				putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
+			}
+			final String programType = getCaveConfigString(PROGRAM_TYPE, "");
+			if (programType.isBlank()) {
+				putCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name());
+			}
 		}
-		final String programType = getCaveConfigString(PROGRAM_TYPE, "");
-		if (programType.isBlank()) {
-			putCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name());
-		}
+		CONFIG_GLOBAL.remove(MyCellarSettings.DEBUG);
+		CONFIG_GLOBAL.remove(MyCellarSettings.TYPE_AUTO);
 
 		//int version = Integer.parseInt(sVersion);
 	}
@@ -395,9 +401,7 @@ public final class Program {
 		Debug("Program: ERROR:");
 		Debug("Program: "+e.toString());
 		Debug("Program: "+error);
-		if (bDebug) {
-			e.printStackTrace();
-		}
+		e.printStackTrace();
 		if (debugFile != null) {
 			try {
 				oDebugFile.flush();
@@ -666,24 +670,7 @@ public final class Program {
 		Debug("Program: Saving all files OK");
 	}
 
-	public static void setDebug(boolean debug) {
-		bDebug = debug;
-	}
-
-	public static boolean isDebug() {
-		return bDebug;
-	}
-
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	public static void Debug(String sText) {
-		if(!bDebug) {
-			return;
-		}
-
 		try {
 			if (oDebugFile == null) {
 				String sDir = System.getProperty("user.home");
@@ -707,7 +694,7 @@ public final class Program {
 	}
 	
 	private static void closeDebug() {
-		if(!bDebug || oDebugFile == null) {
+		if(oDebugFile == null) {
 			return;
 		}
 		
@@ -986,7 +973,7 @@ public final class Program {
 			getStorage().close();
 			CountryVignobleController.close();
 			CountryListJaxb.close();
-			Search.clearResults();
+			getSearch().ifPresent(Search::clearResults);
 		}
 		clearObjectsVariables();
 		m_bWorkDirCalculated = false;
@@ -1613,8 +1600,8 @@ public final class Program {
 		return creerRangement;
 	}
 
-	static Search getSearch() {
-		return (Search) OPENED_OBJECTS.get(SEARCH);
+	static Optional<Search> getSearch() {
+		return Optional.ofNullable((Search) OPENED_OBJECTS.get(SEARCH));
 	}
 
 	static Search createSearch() {
@@ -1674,9 +1661,18 @@ public final class Program {
 		return (VineyardPanel) OPENED_OBJECTS.get(VIGNOBLES);
 	}
 
+	public static CapacityPanel getCapacityPanel() {
+		return (CapacityPanel) OPENED_OBJECTS.get(CAPACITY);
+	}
+
 	static VineyardPanel createVineyardPanel() {
 		final VineyardPanel vineyardPanel = (VineyardPanel) createOpenedObject(VineyardPanel.class, VIGNOBLES);
 		return vineyardPanel;
+	}
+
+	static CapacityPanel createCapacityPanel() {
+		final CapacityPanel capacityPanel = (CapacityPanel) createOpenedObject(CapacityPanel.class, CAPACITY);
+		return capacityPanel;
 	}
 
 	static ShowFile getShowFile() {
@@ -1854,9 +1850,9 @@ public final class Program {
 		return new DecimalFormat("###0.00", dfs);
 	  }
 	  
-	public static String bigDecimalToString(final BigDecimal value, final Locale locale) {
-    return getDecimalFormat(locale).format(value);
-  }
+//	public static String bigDecimalToString(final BigDecimal value, final Locale locale) {
+//    return getDecimalFormat(locale).format(value);
+//  }
 
 	public static BigDecimal safeStringToBigDecimal(final String value, BigDecimal defaultValue) {
 		try {

@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.2
- * @since 13/11/20
+ * @version 2.3
+ * @since 20/11/20
  */
 
 @XmlRootElement(name = "vignobles")
@@ -250,29 +250,37 @@ public class VignobleListJaxb
 		if (vignobleToReturn.isPresent()) {
 			final AppelationJaxb appelationJaxb = new AppelationJaxb();
 			appelationJaxb.setAOC(vignobleJaxb.getAOC());
-			appelationJaxb.setAOP(vignobleJaxb.getAOC());
 			appelationJaxb.setIGP(vignobleJaxb.getIGP());
+			if (appelationJaxb.isEmpty()) {
+				return Optional.empty();
+			}
 			if (vignobleToReturn.get().getUnmodifiableAppelation().contains(appelationJaxb)) {
 				return vignobleToReturn;
 			}
 		}
-		Debug("ERROR findVignobleWithAppelation " + vignobleJaxb.toString());
+		if (!vignobleJaxb.getName().isBlank()) {
+			Debug("ERROR findVignobleWithAppelation " + vignobleJaxb.toString());
+		} else if (!vignobleJaxb.getAOC().isBlank() || !vignobleJaxb.getIGP().isBlank()) {
+			Debug("WARNING findVignobleWithAppelation " + vignobleJaxb.toString());
+		}
 		return Optional.empty();
 	}
 
 	public Optional<AppelationJaxb> findAppelation(final VignobleJaxb vignobleJaxb) {
 		CountryVignobleJaxb vigne = new CountryVignobleJaxb();
 		vigne.setName(vignobleJaxb.getName());
-		final AppelationJaxb appelationJaxbToReturn = new AppelationJaxb();
-		appelationJaxbToReturn.setAOC(vignobleJaxb.getAOC());
-		appelationJaxbToReturn.setAOP(vignobleJaxb.getAOC());
-		appelationJaxbToReturn.setIGP(vignobleJaxb.getIGP());
+		final AppelationJaxb appelationJaxbToFind = new AppelationJaxb();
+		appelationJaxbToFind.setAOC(vignobleJaxb.getAOC());
+		appelationJaxbToFind.setIGP(vignobleJaxb.getIGP());
+		if (appelationJaxbToFind.isEmpty()) {
+			return Optional.empty();
+		}
 
 		int index = countryVignobleJaxbList.indexOf(vigne);
 		if (index != -1) {
 			final CountryVignobleJaxb countryVignobleJaxb = countryVignobleJaxbList.get(index);
 
-			final int index1 = countryVignobleJaxb.getUnmodifiableAppelation().indexOf(appelationJaxbToReturn);
+			final int index1 = countryVignobleJaxb.getUnmodifiableAppelation().indexOf(appelationJaxbToFind);
 			if (index1 != -1) {
 				return Optional.of(countryVignobleJaxb.getUnmodifiableAppelation().get(index1));
 			}
@@ -287,8 +295,11 @@ public class VignobleListJaxb
 		vigne.setName(vignobleJaxb.getName());
 		AppelationJaxb appelationJaxb = new AppelationJaxb();
 		appelationJaxb.setAOC(vignobleJaxb.getAOC());
-		appelationJaxb.setAOP(vignobleJaxb.getAOP());
 		appelationJaxb.setIGP(vignobleJaxb.getIGP());
+		if (vigne.getName().isBlank() && appelationJaxb.isEmpty()) {
+			Debug("Add Vignoble cancelled");
+			return;
+		}
 		LinkedList<AppelationJaxb> list = new LinkedList<>();
 		list.add(appelationJaxb);
 		vigne.setAppelation(list);
@@ -316,5 +327,4 @@ public class VignobleListJaxb
 	private static void Debug(String sText) {
 		Program.Debug("VignobleListJaxb: " + sText);
 	}
-
 }

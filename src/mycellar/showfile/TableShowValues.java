@@ -5,6 +5,7 @@ import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Rangement;
 import mycellar.RangementUtils;
+import mycellar.Start;
 import mycellar.core.LabelProperty;
 
 import javax.swing.JOptionPane;
@@ -43,8 +44,8 @@ class TableShowValues extends AbstractTableModel {
   private static final int PARKER = 11;
   private static final int NBCOL = 12;
   private final String[] columnNames = {"", Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
-      Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("Infos135"), Program.getLabel("Infos137")
-      , Program.getLabel("Infos391"), Program.getLabel("Infos392")};
+      Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("Infos135"), Program.getLabel("Infos137"),
+      Program.getLabel("Infos391"), Program.getLabel("Infos392")};
 
   protected Boolean[] values = null;
 
@@ -106,8 +107,9 @@ class TableShowValues extends AbstractTableModel {
         return Program.convertStringFromHTMLString(b.getMaturity());
       case PARKER:
         return b.getParker();
+      default:
+        return "";
     }
-    return "";
   }
 
   /**
@@ -142,7 +144,6 @@ class TableShowValues extends AbstractTableModel {
    */
   @Override
   public void setValueAt(Object value, int row, int column) {
-
     Bouteille b = monVector.get(row);
     switch (column) {
       case ETAT:
@@ -248,9 +249,8 @@ class TableShowValues extends AbstractTableModel {
               } else {
                 b.setColonne(Integer.parseInt((String) value));
               }
-              //values[row][column] = value;
               if (column == PLACE && rangement.isCaisse()) {
-                int nNumEmpl = b.getNumLieu();//Integer.parseInt((String) values[row][NUM_PLACE]);
+                int nNumEmpl = b.getNumLieu();
                 if (nNumEmpl > rangement.getLastNumEmplacement()) {
                   b.setNumLieu(rangement.getFreeNumPlaceInCaisse());
                 }
@@ -263,7 +263,7 @@ class TableShowValues extends AbstractTableModel {
             if (rangement != null && rangement.isCaisse()) {
               Erreur.showSimpleErreur(Program.getError("Error154"));
             } else {
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getError("Error015"), JOptionPane.YES_NO_OPTION)) {
+              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getError("Error015"), JOptionPane.YES_NO_OPTION)) {
                 LinkedList<Bouteille> list = new LinkedList<>();
                 list.add(b);
                 Program.modifyBottles(list);
@@ -283,7 +283,6 @@ class TableShowValues extends AbstractTableModel {
    * @param b LinkedList<Bouteille>
    */
   public void setBottles(LinkedList<Bouteille> b) {
-
     if (b == null) {
       return;
     }

@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OpenWorkSheetAction extends AbstractAction {
+public final class OpenWorkSheetAction extends AbstractAction {
 
   private static final long serialVersionUID = -2351197475699686315L;
   private final List<Bouteille> bouteilles;

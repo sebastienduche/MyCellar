@@ -17,8 +17,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 26/10/20
+ * @version 2.6
+ * @since 20/11/20
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -35,15 +35,17 @@ class TableHistoryValues extends AbstractTableModel {
   private Boolean[] booleanTab = null;
   private final boolean firstcolumn;
 
+  private static final int MAX_ROWS = 10;
+
   TableHistoryValues(boolean firstcolumn){
-	  this.firstcolumn = firstcolumn;
-	  if(firstcolumn) {
+    this.firstcolumn = firstcolumn;
+    if(firstcolumn) {
       columnList.add("");
     }
-	  columnList.add(Program.getLabel("Infos342"));
-	  columnList.add(Program.getLabel("Infos343"));
-	  columnList.add(Program.getLabel("Infos344"));
-	  columnList.add("");
+    columnList.add(Program.getLabel("Infos342"));
+    columnList.add(Program.getLabel("Infos343"));
+    columnList.add(Program.getLabel("Infos344"));
+    columnList.add("");
   }
 
   /**
@@ -75,60 +77,60 @@ class TableHistoryValues extends AbstractTableModel {
    */
   @Override
   public Object getValueAt(int row, int column) {
-	  History h = displayList.get(row);
-	  if (!firstcolumn) {
+    History h = displayList.get(row);
+    if (!firstcolumn) {
       column++;
     }
-	  switch(column)
-	  {
-	  case SELECT:
-		  return booleanTab[row];
-	  case ACTION:
-		  return Boolean.FALSE;
-	  case DATE:
-		  return h.getLocaleDate();
-	  case LABEL:
-	  case TYPE:
-	  {
-		  Bouteille b = h.getBouteille();
-		  String emplacement;
-		  if (b.isInTemporaryStock()) {
-		    emplacement = Program.getLabel("Bouteille.TemporaryPlace");
-		  } else {
-		    emplacement = Program.convertStringFromHTMLString(b.getEmplacement());
-		 }
-      String sType = "";
-      String sLabel = "";
-      switch (h.getType()) {
-        case History.ADD:
-          sType = Program.getLabel("Infos345");
-          sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
-          break;
-        case History.VALIDATED:
-          sType = Program.getLabel("History.Validated");
-          sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
-          break;
-        case History.TOCHECK:
-          sType = Program.getLabel("History.ToCheck");
-          sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
-          break;
-        case History.MODIFY:
-          sType = Program.getLabel("Infos346");
-          sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
-          break;
-        case History.DEL:
-          sType = Program.getLabel("Infos347");
-          sLabel = MessageFormat.format(Program.getLabel("Infos349"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
-          break;
+    switch(column)
+    {
+      case SELECT:
+        return booleanTab[row];
+      case ACTION:
+        return Boolean.FALSE;
+      case DATE:
+        return h.getLocaleDate();
+      case LABEL:
+      case TYPE:
+      {
+        Bouteille b = h.getBouteille();
+        String emplacement;
+        if (b.isInTemporaryStock()) {
+          emplacement = Program.getLabel("Bouteille.TemporaryPlace");
+        } else {
+          emplacement = Program.convertStringFromHTMLString(b.getEmplacement());
+        }
+        String sType = "";
+        String sLabel = "";
+        switch (h.getType()) {
+          case History.ADD:
+            sType = Program.getLabel("Infos345");
+            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            break;
+          case History.VALIDATED:
+            sType = Program.getLabel("History.Validated");
+            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            break;
+          case History.TOCHECK:
+            sType = Program.getLabel("History.ToCheck");
+            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            break;
+          case History.MODIFY:
+            sType = Program.getLabel("Infos346");
+            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            break;
+          case History.DEL:
+            sType = Program.getLabel("Infos347");
+            sLabel = MessageFormat.format(Program.getLabel("Infos349"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            break;
+        }
+        if (column == TYPE) {
+          return sType;
+        }
+        return sLabel;
       }
-      if(column == TYPE) {
-        return sType;
-      }
-      return sLabel;
-	  }
-	  default:
-		  return "";
-	  }
+      default:
+        return "";
+    }
   }
 
   /**
@@ -150,12 +152,12 @@ class TableHistoryValues extends AbstractTableModel {
    */
   @Override
   public Class<?> getColumnClass(int column) {
-    if(!firstcolumn) {
+    if (!firstcolumn) {
       column++;
     }
 
     if (column == DATE) {
-        return LocalDate.class;
+      return LocalDate.class;
     }
 
     Class<?> dataType = super.getColumnClass(column);
@@ -171,7 +173,7 @@ class TableHistoryValues extends AbstractTableModel {
    */
   @Override
   public boolean isCellEditable(int row, int column) {
-	  if (!firstcolumn) {
+    if (!firstcolumn) {
       column++;
     }
     return column == ACTION || column == SELECT;
@@ -186,7 +188,7 @@ class TableHistoryValues extends AbstractTableModel {
    */
   @Override
   public void setValueAt(Object value, int row, int column) {
-	  if (!firstcolumn) {
+    if (!firstcolumn) {
       column++;
     }
     switch (column) {
@@ -196,18 +198,18 @@ class TableHistoryValues extends AbstractTableModel {
         if (h.isDeleted()) {
           Program.showBottle(bottle, false);
         } else {
-        	Optional<Bouteille> optional = Program.getStorage().getListBouteilles().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst();
-        	Program.Debug("Bottle Get ID = "+bottle.getId());
-        	if (optional.isPresent()) {
+          Optional<Bouteille> optional = Program.getStorage().getListBouteilles().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst();
+          Program.Debug("Bottle Get ID = " + bottle.getId());
+          if (optional.isPresent()) {
             Program.showBottle(optional.get(), true);
           } else {
             Program.showBottle(bottle, false);
           }
         }
-      break;
+        break;
       case SELECT:
-    	  booleanTab[row] = (Boolean)value;
-    	  break;
+        booleanTab[row] = (Boolean)value;
+        break;
     }
   }
 
@@ -220,16 +222,11 @@ class TableHistoryValues extends AbstractTableModel {
     fireTableDataChanged();
   }
 
-  /**
-   * getData
-   *
-   * @return List
-   */
-  List<History> getData() {
-    return fullList;
+  History getHistoryAt(int index) {
+    return fullList.get(index);
   }
 
-    /**
+  /**
    * addHistory: Ajout de l'historique.
    *
    * @param list LinkedList
@@ -242,18 +239,18 @@ class TableHistoryValues extends AbstractTableModel {
       if (firstcolumn) {
         displayList.addAll(list);
       } else {
-    	  Iterator<History> it = list
-                  .stream()
-                  .sorted(Comparator.comparing(History::getLocaleDate).reversed())
-                  .iterator();
-    	  int n = 0;
-    	  while(it.hasNext()) {
-    		  if (n == 10) {
+        Iterator<History> it = list
+            .stream()
+            .sorted(Comparator.comparing(History::getLocaleDate).reversed())
+            .iterator();
+        int n = 0;
+        while (it.hasNext()) {
+          if (n == MAX_ROWS) {
             break;
           }
-    		  displayList.add(it.next());
-    		  n++;
-    	  }
+          displayList.add(it.next());
+          n++;
+        }
       }
       Arrays.fill(booleanTab, Boolean.FALSE);
       fireTableDataChanged();
@@ -264,16 +261,16 @@ class TableHistoryValues extends AbstractTableModel {
   }
 
   /**
-   * SetFilter: Filtre l'historique
+   * setFilter: Filtre l'historique
    *
    * @param filter int
    */
-  void SetFilter(int filter) {
+  void setFilter(int filter) {
     try {
       displayList.clear();
       for (History h : fullList) {
         if (filter == -1 || h.getType() == filter) {
-        	displayList.add(h);
+          displayList.add(h);
         }
       }
       booleanTab = new Boolean[displayList.size()];
@@ -286,10 +283,10 @@ class TableHistoryValues extends AbstractTableModel {
   }
 
   Bouteille getBottle(int row) {
-	  return displayList.get(row).getBouteille();
+    return displayList.get(row).getBouteille();
   }
 
   boolean isBottleDeleted(int row) {
-	  return displayList.get(row).isDeleted();
+    return displayList.get(row).isDeleted();
   }
 }

@@ -35,15 +35,15 @@ import java.util.List;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.3
- * @since 26/10/20
+ * @version 4.4
+ * @since 20/11/20
  */
 
-public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
+public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
 	private static final long serialVersionUID = 4778721795659106312L;
 	private final MyCellarComboBox<String> filterCbx = new MyCellarComboBox<>();
-	private final TableHistoryValues tv;
+	private final TableHistoryValues model;
 
 	public ShowHistory() {
 		Debug("Constructor");
@@ -57,10 +57,10 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 		filterCbx.addItemListener(this::filter_itemStateChanged);
 
 		// Remplissage de la table
-		tv = new TableHistoryValues(true);
-		tv.setHistory(Program.getHistory());
+		model = new TableHistoryValues(true);
+		model.setHistory(Program.getHistory());
 
-		JTable table = new JTable(tv);
+		JTable table = new JTable(model);
 		TableColumnModel tcm = table.getColumnModel();
 		TableColumn[] tc1 = new TableColumn[4];
 		for (int w = 0; w < 4; w++) {
@@ -94,7 +94,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 		tc = tcm.getColumn(TableHistoryValues.DATE);
 		tc.setCellRenderer(new DateCellRenderer());
 
-		TableRowSorter<TableHistoryValues> sorter = new TableRowSorter<>(tv);
+		TableRowSorter<TableHistoryValues> sorter = new TableRowSorter<>(model);
 		sorter.setComparator(1, (Comparator<LocalDate>) (o1, o2) -> {
 		  if (o1 == null || o2 == null) {
 			return 1;
@@ -114,14 +114,9 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 		add(new MyCellarButton(LabelType.INFO, "051", new DeleteAction()), "center");
 	}
 
-	/**
-	 * filter_itemStateChanged: Filtre la liste de l'historique
-	 * 
-	 * @param e: ItemEvent
-	 */
 	private void filter_itemStateChanged(ItemEvent e) {
-		Debug("SetFilter");
-		tv.SetFilter(filterCbx.getSelectedIndex() - 1);
+		Debug("setFilter");
+		model.setFilter(filterCbx.getSelectedIndex() - 1);
 	}
 
 	private static void Debug(String sText) {
@@ -153,13 +148,13 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
 			boolean nonExit = false;
 
-			int max_row = tv.getRowCount();
+			int max_row = model.getRowCount();
 			if (max_row != 0) {
 				int row = 0;
 				do {
-					if (Boolean.TRUE.equals(tv.getValueAt(row, TableHistoryValues.SELECT))) {
-						if (tv.isBottleDeleted(row))
-							toRestoreList.add(tv.getBottle(row));
+					if (Boolean.TRUE.equals(model.getValueAt(row, TableHistoryValues.SELECT))) {
+						if (model.isBottleDeleted(row))
+							toRestoreList.add(model.getBottle(row));
 						else {
 							nonExit = true;
 						}
@@ -212,7 +207,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 					}
 				}
 				RangementUtils.putTabStock();
-				tv.setHistory(Program.getHistory());
+				model.setHistory(Program.getHistory());
 			}
 		}
 	}
@@ -231,12 +226,12 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 			Debug("Deleting lines");
 
 			try {
-				int max_row = tv.getRowCount();
+				int max_row = model.getRowCount();
 				int row = 0;
 				LinkedList<History> toDeleteList = new LinkedList<>();
 				do {
-					if (tv.getValueAt(row, TableHistoryValues.SELECT).equals(Boolean.TRUE)) {
-						toDeleteList.add(tv.getData().get(row));
+					if (model.getValueAt(row, TableHistoryValues.SELECT).equals(Boolean.TRUE)) {
+						toDeleteList.add(model.getHistoryAt(row));
 					}
 					row++;
 				} while (row < max_row);
@@ -261,7 +256,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 						for (History b : toDeleteList) {
 							Program.getStorage().removeHistory(b);
 						}
-						tv.setHistory(Program.getHistory());
+						model.setHistory(Program.getHistory());
 					}
 				}
 			} catch (Exception e) {
@@ -274,8 +269,7 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
 		private static final long serialVersionUID = 3079501619032347868L;
 
-		private ClearHistoryAction() {
-		}
+		private ClearHistoryAction() { }
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -287,7 +281,6 @@ public class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 	}
 
 	void refresh() {
-		tv.setHistory(Program.getHistory());
+		model.setHistory(Program.getHistory());
 	}
-
 }

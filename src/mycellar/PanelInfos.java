@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.core.DateCellRenderer;
 import mycellar.core.LabelProperty;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import net.miginfocom.swing.MigLayout;
@@ -22,8 +23,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.2
- * @since 17/11/20
+ * @version 2.3
+ * @since 20/11/20
  */
 final class PanelInfos extends JPanel {
 
@@ -64,8 +65,8 @@ final class PanelInfos extends JPanel {
 final class PanelStats extends JPanel {
 
 	private static final long serialVersionUID = 7438892143990782047L;
-	private final MyCellarLabel bottles = new MyCellarLabel(Program.getLabel("Infos405", LabelProperty.PLURAL));
-	private final MyCellarLabel cellarValue = new MyCellarLabel(Program.getLabel("Infos406"));
+	private final MyCellarLabel bottles = new MyCellarLabel(LabelType.INFO, "405", LabelProperty.PLURAL);
+	private final MyCellarLabel cellarValue = new MyCellarLabel(LabelType.INFO, "406");
 	private final MyCellarLabel bottlesNb = new MyCellarLabel();
 	private final MyCellarLabel cellarTotal = new MyCellarLabel();
 	private final PanelStatsModel model = new PanelStatsModel();
@@ -98,22 +99,24 @@ final class PanelStats extends JPanel {
 	}
 
 	void refresh() {
-		model.clearRows();
-		int nbBottles = 0;
-		if (!Program.getCave().isEmpty()) {
-			for (Rangement r: Program.getCave()) {
-				nbBottles += r.getNbCaseUseAll();
-				model.addRow(r, r.getNbCaseUseAll());
+		SwingUtilities.invokeLater(() -> {
+			model.clearRows();
+			int nbBottles = 0;
+			if (!Program.getCave().isEmpty()) {
+				for (Rangement r: Program.getCave()) {
+					nbBottles += r.getNbCaseUseAll();
+					model.addRow(r, r.getNbCaseUseAll());
+				}
 			}
-		}
-		cellarTotal.setText(Program.getCellarValue() + " " + Program.getCaveConfigString(MyCellarSettings.DEVISE,""));
-		bottlesNb.setText(Integer.toString(nbBottles));
+			cellarTotal.setText(Program.getCellarValue() + " " + Program.getCaveConfigString(MyCellarSettings.DEVISE,""));
+			bottlesNb.setText(Integer.toString(nbBottles));
+		});
 	}
 
 	void setLabels() {
 		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
-		bottles.setText(Program.getLabel("Infos405", LabelProperty.PLURAL));
-		cellarValue.setText(Program.getLabel("Infos406"));
+		bottles.updateText();
+		cellarValue.updateText();
 		TableColumnModel tcm = table.getColumnModel();
 		TableColumn tc = tcm.getColumn(2);
 		tc.setCellRenderer(new StateButtonRenderer());
@@ -179,7 +182,7 @@ final class PanelStats extends JPanel {
 			}
 		}
 
-		private void clearRows(){
+		private void clearRows() {
 			names.clear();
 			values.clear();
 			fireTableDataChanged();
@@ -197,12 +200,22 @@ final class PanelHistory extends JPanel {
 	private static final long serialVersionUID = 7574553715737201783L;
 	private final TableHistoryValues model;
 	private final JTable table;
+	private final JPanel whatNewPanel = new JPanel();
+	private final MyCellarLabel label1 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew1");
+	private final MyCellarLabel label2 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew2");
 
 	PanelHistory() {
 		setLayout(new MigLayout("","[grow]","[]"));
 		model = new TableHistoryValues(false);
 		table = new JTable(model);
-		add(table, "grow");
+		add(table, "grow, wrap");
+		add(new JPanel(), "grow, push, wrap");
+
+		whatNewPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("WhatsNew")));
+		whatNewPanel.setLayout(new MigLayout());
+		whatNewPanel.add(label1, "wrap");
+		whatNewPanel.add(label2, "");
+		add(whatNewPanel, "growx");
 		TableColumnModel tcm = table.getColumnModel();
 		TableColumn tc = tcm.getColumn(TableHistoryValues.ACTION - 1);
 		tc.setCellRenderer(new StateButtonRenderer());
@@ -219,7 +232,7 @@ final class PanelHistory extends JPanel {
 		tc.setCellRenderer(new DateCellRenderer());
 
 		setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos407")));
-		setEnabled(false);
+		setEnable(false);
 	}
 
 	void refresh() {
@@ -236,9 +249,15 @@ final class PanelHistory extends JPanel {
 		TableColumnModel tcm = table.getColumnModel();
 		TableColumn tc = tcm.getColumn(TableHistoryValues.ACTION - 1);
 		tc.setCellRenderer(new StateButtonRenderer());
+		whatNewPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("WhatsNew")));
+		label1.updateText();
+		label2.updateText();
 	}
 
 	void setEnable(boolean b) {
 		setEnabled(b);
+		whatNewPanel.setEnabled(b);
+		label1.setEnabled(b);
+		label2.setEnabled(b);
 	}
 }

@@ -56,8 +56,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.1
- * @since 18/11/20
+ * @version 27.2
+ * @since 20/11/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -640,8 +640,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		news.setText(Program.getLabel("Infos330")); // Nouveautes
 		tocreate.setText(Program.getLabel("Infos267")); // Rangement a creer
 		history.setText(Program.getLabel("Infos341")); // Historique
-		vignobles.setText(Program.getLabel("Infos165")); // Vignobles
-		bottleCapacity.setText(Program.getLabel("Infos400")); // Contenance
+		vignobles.setText(Program.getLabel("Infos165") + "..."); // Vignobles
+		bottleCapacity.setText(Program.getLabel("Infos400") + "..."); // Contenance
 		jMenuImportXmlPlaces.setText(Program.getLabel("Infos367")); // Importer des rangements xml
 		jMenuExportXmlPlaces.setText(Program.getLabel("Infos368")); // Exporter des rangements xml
 		jMenuExportXml.setText(Program.getLabel("Infos408")); // Exporter au format xml
@@ -1564,7 +1564,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -7956676252030557402L;
 
 		private VignoblesAction() {
-			super(Program.getLabel("Infos165"));
+			super(Program.getLabel("Infos165") + "...");
 		}
 
 		@Override

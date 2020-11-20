@@ -984,7 +984,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 							SwingUtilities.invokeLater(() -> update.setVisible(false));
 						}
 					},
-					60000
+					30000
 			);
 		}
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);

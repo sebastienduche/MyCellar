@@ -34,8 +34,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 13/11/20
+ * @version 1.3
+ * @since 20/11/20
  */
 public final class PanelVignobles extends JPanel {
 
@@ -264,7 +264,7 @@ public final class PanelVignobles extends JPanel {
 		}
 
 		CountryJaxb countryJaxb = null;
-		if (Program.FRANCE.getId().equals(vignobleJaxb.country) || "fr".equals(vignobleJaxb.country)) {
+		if (Program.FRANCE.getId().equals(vignobleJaxb.country) || Program.FR.equals(vignobleJaxb.country)) {
 			countryJaxb = Program.FRANCE;
 		} else if (vignobleJaxb.country != null) {
 			countryJaxb = CountryListJaxb.findByIdOrLabel(vignobleJaxb.country);

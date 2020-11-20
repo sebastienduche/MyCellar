@@ -27,7 +27,7 @@ class BouteilleTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+        .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
   }
 
@@ -182,7 +182,6 @@ class BouteilleTest {
     v.setName("vignoble");
     v.setIGP("igp");
     v.setAOC("aoc");
-    v.setAOP("aop");
     assertEquals(v, bouteille.getVignoble());
   }
 
@@ -193,7 +192,6 @@ class BouteilleTest {
     v.setName("n");
     v.setIGP("i");
     v.setAOC("ao");
-    v.setAOP("aop");
     bouteille.setVignoble(v);
     assertEquals(v, bouteille.getVignoble());
   }
@@ -286,7 +284,7 @@ class BouteilleTest {
         .maturity("m")
         .parker("1")
         .price("23")
-        .vignoble("a", "b", "c", "d", "e")
+        .vignoble("fr", "b", "c", "d")
         .build();
     bouteille.update(test);
     assertEquals("b", bouteille.getNom());
@@ -302,12 +300,11 @@ class BouteilleTest {
     assertEquals("1", bouteille.getParker());
     assertEquals(new BigDecimal("23.00"), bouteille.getPrice());
     VignobleJaxb v = new VignobleJaxb();
-    v.setCountry("a");
+    v.setCountry("fr");
     v.setName("b");
     v.setAOC("c");
     v.setIGP("d");
-    v.setAOP("e");
-    assertEquals(v, bouteille.getVignoble());
+    assertEquals(v.toString(), bouteille.getVignoble().toString());
   }
 
   @Test

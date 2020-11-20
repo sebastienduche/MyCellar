@@ -15,14 +15,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static mycellar.Program.FR;
+
 /**
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 12/11/20
+ * @version 0.9
+ * @since 20/11/20
  */
 
 @XmlRootElement(name = "countries")
@@ -32,7 +34,6 @@ public class CountryListJaxb
 	@XmlElement(name = "country")
 	private List<CountryJaxb> countries = null;
 
-	private static final String FR = "fr";
 	private static CountryListJaxb instance = load();
 
 	public static CountryListJaxb getInstance() {
@@ -96,7 +97,7 @@ public class CountryListJaxb
 	}
 
 	public static CountryJaxb findByIdOrLabel(String label) {
-		return findbyId(label).orElse(findByLabel(label).orElse(null));
+		return findbyId(label).orElseGet(() -> findByLabel(label).orElse(null));
 	}
 
 

@@ -52,8 +52,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.6
- * @since 19/11/20
+ * @version 26.7
+ * @since 20/11/20
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -562,7 +562,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 										.parker(parker)
 										.color(color)
 										.status(status)
-										.vignoble(country, vignoble, aoc, igp, aoc).build();
+										.vignoble(country, vignoble, aoc, igp).build();
 					// Add multiple bottle with question
 					if (nb_bottle_rest > 0) {
 						if (m_lieu.isEnabled() || m_num_lieu.isEnabled()) {
@@ -688,7 +688,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 								tmp.setPrix(prix);
 							}
 							if (bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
-								tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp, aoc));
+								tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
 							}
 							tmp.updateStatus();
 
@@ -761,7 +761,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 										tmp.setPrix(prix);
 									}
 									if (bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
-										tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp, aoc));
+										tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
 									}
 									Debug("Adding multiple bottles in simple place...");
 									if (m_bmodify) {
@@ -869,7 +869,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 						.parker(parker)
 						.color(color)
 						.status(status)
-						.vignoble(country, vignoble, aoc, igp, aoc).build();
+						.vignoble(country, vignoble, aoc, igp).build();
 					if (bouteille.isEmpty()) {
 						//Case vide donc ajout
 						if (m_bmodify) {
@@ -908,7 +908,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 											.parker(parker)
 											.color(color)
 											.status(status)
-											.vignoble(country, vignoble, aoc, igp, aoc).build();
+											.vignoble(country, vignoble, aoc, igp).build();
 										Program.getStorage().addHistory(History.ADD, tmp);
 										rangement.addWine(tmp);
 									}
@@ -1039,7 +1039,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 				.parker(parker)
 				.color(color)
 				.status(status)
-				.vignoble(country, vignoble, aoc, igp, aoc).build();
+				.vignoble(country, vignoble, aoc, igp).build();
 			Debug("Replacing bottle...");
 			bottle.update(tmp);
 			// Remplacement de la bouteille
@@ -1064,7 +1064,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 				tmp.setType(demie);
 				tmp.updateStatus();
 				if (!country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
-					tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp, aoc));
+					tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
 				}
 				// Add multiple bottles
 				Debug("Adding multiple bottles...");

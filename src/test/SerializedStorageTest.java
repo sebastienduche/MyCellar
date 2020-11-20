@@ -14,9 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class SerializedStorageTest {
 
-  private Bouteille bouteille;
-  private Bouteille bouteille1;
-  private Bouteille bouteille2;
   private Bouteille bouteille3;
   private Bouteille bouteille4;
   private Bouteille bouteille5;
@@ -25,7 +22,7 @@ class SerializedStorageTest {
   @BeforeEach
   void setUp() {
     serializedStorage = SerializedStorage.getInstance();
-    bouteille = new Bouteille.BouteilleBuilder("bouteille")
+    Bouteille bouteille = new Bouteille.BouteilleBuilder("bouteille")
         .place("place")
         .numPlace(1)
         .line(2)
@@ -37,10 +34,10 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+        .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
 
-    bouteille1 = new Bouteille.BouteilleBuilder("bouteille1")
+    Bouteille bouteille1 = new Bouteille.BouteilleBuilder("bouteille1")
         .place("place")
         .numPlace(1)
         .line(1)
@@ -52,10 +49,10 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+        .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
 
-    bouteille2 = new Bouteille.BouteilleBuilder("bouteille2")
+    Bouteille bouteille2 = new Bouteille.BouteilleBuilder("bouteille2")
         .place("place")
         .numPlace(1)
         .line(2)
@@ -67,7 +64,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+        .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
 
     bouteille3 = new Bouteille.BouteilleBuilder("bouteille3")
@@ -80,7 +77,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+        .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
     bouteille4 = new Bouteille.BouteilleBuilder("bouteille4")
         .place("place3")
@@ -92,7 +89,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+        .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
     bouteille5 = new Bouteille.BouteilleBuilder("bouteille4")
         .place("place3")
@@ -104,7 +101,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+        .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
     serializedStorage.getListBouteilles().getBouteille().add(bouteille);
     serializedStorage.getListBouteilles().getBouteille().add(bouteille1);
@@ -139,7 +136,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+        .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
     serializedStorage.addWine(bouteille6);
     final Bouteille bouteille7 = new Bouteille.BouteilleBuilder("bouteille7")
@@ -154,7 +151,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+        .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
     serializedStorage.addWine(bouteille7);
     assertEquals(8, serializedStorage.getListBouteilles().getBouteille().size());

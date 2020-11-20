@@ -30,10 +30,12 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
 		aoc = aOC;
 	}
 
+	@Deprecated
 	public String getAOP() {
 		return aop;
 	}
 
+	@Deprecated
 	public void setAOP(String aOP) {
 		aop = aOP;
 	}
@@ -99,11 +101,7 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
 
 	void makeItClean() {
 		id = Program.generateID();
-		if (getAOC() != null) {
-			if (getAOP() == null || getAOP().isBlank()) {
-				setAOP(getAOC());
-			}
-		} else {
+		if (getAOC() == null) {
 			setAOC("");
 		}
 		if (getIGP() == null) {

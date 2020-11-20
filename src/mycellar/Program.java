@@ -121,7 +121,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.7.7.2";
+	public static final String INTERNAL_VERSION = "3.7.8.7";
 	public static final int VERSION = 64;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
@@ -175,6 +175,7 @@ public final class Program {
 
 	public static final String FRA = "FRA";
 	public static final String ITA = "ITA";
+	public static final String FR = "fr";
 	public static final CountryJaxb FRANCE = new CountryJaxb(FRA, "France");
 	public static final CountryJaxb NO_COUNTRY = new CountryJaxb("");
 	public static final CountryVignobleJaxb NO_VIGNOBLE = new CountryVignobleJaxb();

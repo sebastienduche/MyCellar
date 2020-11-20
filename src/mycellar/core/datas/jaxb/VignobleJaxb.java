@@ -23,8 +23,8 @@ import java.io.Serializable;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 13/11/20
+ * @version 1.6
+ * @since 20/11/20
  */
 
 /**
@@ -88,15 +88,6 @@ public class VignobleJaxb implements Serializable {
 		id = Program.generateID();
 	}
 
-	public VignobleJaxb(String country, String name, String aoc, String igp, String aop) {
-		this.country = country;
-		this.name = name;
-		this.aoc = aoc;
-		this.igp = igp;
-		this.aop = aop;
-		id = Program.generateID();
-	}
-
 	public long getId() {
 		return id;
 	}
@@ -129,9 +120,11 @@ public class VignobleJaxb implements Serializable {
 		this.igp = igp;
 	}
 
+	@Deprecated
 	public String getAOP() {
 		return aop;
 	}
+	@Deprecated
 	public void setAOP(String aop) {
 		this.aop = aop;
 	}
@@ -220,8 +213,6 @@ public class VignobleJaxb implements Serializable {
 		sb.append(name);
 		sb.append(" aoc=");
 		sb.append(aoc);
-		sb.append(" aop=");
-		sb.append(aop);
 		sb.append(" igp=");
 		sb.append(igp).append("]");
 		return sb.toString();
@@ -229,7 +220,6 @@ public class VignobleJaxb implements Serializable {
 
 	public void setValues(AppelationJaxb ap) {
 		aoc = ap.getAOC();
-		aop = ap.getAOP();
 		igp = ap.getIGP();
 	}
 

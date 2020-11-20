@@ -30,7 +30,7 @@ class MyCellarFieldsTest {
 		        .maturity("maturity")
 		        .parker("100")
 		        .price("123")
-		        .vignoble("fr", "vignoble", "aoc", "igp", "aop")
+		        .vignoble("fr", "vignoble", "aoc", "igp")
 						.status("ToCheck")
 		        .build();
 	}

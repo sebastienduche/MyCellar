@@ -56,8 +56,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.2
- * @since 20/11/20
+ * @version 27.3
+ * @since 24/11/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -162,7 +162,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private Start() {}
 
 	public static void main(String[] args) {
-
 		try {
 			final SplashScreen splashscreen = new SplashScreen();
 			// initialisation
@@ -248,7 +247,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (!Program.hasFile() && !Program.getGlobalConfigBool(MyCellarSettings.STARTUP, false)) {
 			// Language au premier demarrage
 			String lang = System.getProperty("user.language");
-			if("fr".equalsIgnoreCase(lang)) {
+			if(Program.FR.equalsIgnoreCase(lang)) {
 				lang = "F";
 			} else {
 				lang = "U";
@@ -564,7 +563,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * @param toverify boolean
 	 */
 	private void updateFrame(boolean toverify) {
-
+		Debug("UpdateFrame: toVerify=" + toverify);
 		try {
 			boolean bHasVersion = false;
 			if ((null != Program.getCaveConfig() && Program.hasConfigCaveKey(MyCellarSettings.VERSION))
@@ -579,7 +578,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			Program.setProgramType(Program.Type.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
 			Program.setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
 			updateLabels();
-			Debug("Loading Frame ended");
+			Debug("UpdateFrame: Loading Frame ended");
 		} catch (RuntimeException e) {
 			Program.showException(e);
 		}

@@ -22,19 +22,19 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2020</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.1
- * @since 06/03/20
+ * @version 0.2
+ * @since 24/11/20
  */
 public class MyCellarFile {
 
   private File file;
-  private final MyLinkedHashMap configCave;
+  private final MyLinkedHashMap caveConfig;
 
-  private boolean isValid = false;
+  private boolean valid = false;
 
   public MyCellarFile(File file) {
     this.file = file;
-    configCave = new MyLinkedHashMap();
+    caveConfig = new MyLinkedHashMap();
   }
 
   public void unzip() throws UnableToOpenFileException {
@@ -48,16 +48,16 @@ public class MyCellarFile {
       final String absolutePath = file.getAbsolutePath();
       Debug("Unzipping " + absolutePath + " to " +workDir + (unzipOK ? " OK" : " KO"));
       if (!unzipOK) {
-        isValid = false;
+        valid = false;
         throw new UnableToOpenFileException("Unzipping error for file: " + absolutePath);
       }
     } catch (Exception e) {
       Debug("ERROR: Unable to unzip file " + file.getAbsolutePath());
       Program.showException(e, false);
-      isValid = false;
+      valid = false;
       throw new UnableToOpenFileException("Unzipping error: " + e.getMessage());
     }
-    isValid = true;
+    valid = true;
   }
 
   public boolean exists() {
@@ -69,7 +69,7 @@ public class MyCellarFile {
   }
 
   public boolean isValid() {
-    return isValid;
+    return valid;
   }
 
   public void save() {
@@ -87,14 +87,14 @@ public class MyCellarFile {
    */
   private void saveCaveProperties() {
     MyCellarBottleContenance.save();
-    Program.saveProperties(configCave, Program.getConfigFilePath());
+    Program.saveProperties(caveConfig, Program.getConfigFilePath());
   }
   public File getFile() {
     return file;
   }
 
   public MyLinkedHashMap getCaveConfig() {
-    return configCave;
+    return caveConfig;
   }
 
   private static void Debug(String sText) {

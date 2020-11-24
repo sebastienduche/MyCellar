@@ -115,14 +115,14 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.6
- * @since 19/11/20
+ * @version 23.7
+ * @since 24/11/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.7.9.1";
-	public static final int VERSION = 64;
+	public static final String INTERNAL_VERSION = "3.7.9.4";
+	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type type = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
@@ -147,7 +147,7 @@ public final class Program {
 	private static FileWriter oDebugFile = null;
 	private static File debugFile = null;
 
-	private static final LinkedList<Rangement> RANGEMENTS_LIST = new LinkedList<>();
+	private static final LinkedList<Rangement> PLACES = new LinkedList<>();
 	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
 	private static final LinkedList<MyCellarError> ERRORS = new LinkedList<>();
 
@@ -161,7 +161,6 @@ public final class Program {
 	private static boolean m_bGlobalDirCalculated = false;
 
 	public static final String UNTITLED1_SINFO = "Untitled1.sinfo";
-	private static final String DATA_XML = "data.xml";
 	private static final String PREVIEW_XML = "preview.xml";
 	private static final String PREVIEW_HTML = "preview.html";
 	private static final String MY_CELLAR_XML = "MyCellar.xml";
@@ -208,19 +207,13 @@ public final class Program {
 		try {
 			Debug("Program: Initializing Configuration files...");
 			loadProperties();
-			File f = new File(getWorkDir(true) + DATA_XML);
-			if(!f.exists()) {
-				if (!f.createNewFile()) {
-					Debug("Program: ERROR: Unable to create file " + f.getAbsolutePath());
-				}
-			}
 			LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 
 			if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
 				putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
 			}
 			cleanAndUpgrade();
-		} catch (IOException | UnableToOpenFileException | RuntimeException e) {
+		} catch (UnableToOpenFileException | RuntimeException e) {
 			showException(e);
 		}
 	}
@@ -352,6 +345,11 @@ public final class Program {
 		}
 		CONFIG_GLOBAL.remove(MyCellarSettings.DEBUG);
 		CONFIG_GLOBAL.remove(MyCellarSettings.TYPE_AUTO);
+
+		final File file = new File(getWorkDir(true) + "data.xml");
+		if (file.exists()) {
+			file.delete();
+		}
 
 		//int version = Integer.parseInt(sVersion);
 	}
@@ -557,11 +555,11 @@ public final class Program {
 	 * Chargement des donnees XML (Bouteilles et Rangement) ou des donnees serialisees en cas de pb
 	 */
 	static boolean loadObjects() {
-		RANGEMENTS_LIST.clear();
-		boolean load = MyXmlDom.readMyCellarXml("", RANGEMENTS_LIST);
-		if(!load || RANGEMENTS_LIST.isEmpty()) {
-			RANGEMENTS_LIST.clear();
-			RANGEMENTS_LIST.add(DEFAULT_PLACE);
+		PLACES.clear();
+		boolean load = MyXmlDom.readMyCellarXml("", PLACES);
+		if(!load || PLACES.isEmpty()) {
+			PLACES.clear();
+			PLACES.add(DEFAULT_PLACE);
 		}
 		getStorage().loadHistory();
 		getStorage().loadWorksheet();
@@ -711,7 +709,7 @@ public final class Program {
 	 * @return LinkedList<Rangement>
 	 */
 	public static LinkedList<Rangement> getCave() {
-		return RANGEMENTS_LIST;
+		return PLACES;
 	}
 
 
@@ -727,7 +725,7 @@ public final class Program {
 		}
 
 		final String placeName = name.strip();
-		final List<Rangement> list = RANGEMENTS_LIST.stream().filter(rangement -> rangement.getNom().equals(placeName))
+		final List<Rangement> list = PLACES.stream().filter(rangement -> rangement.getNom().equals(placeName))
 				.collect(Collectors.toList());
 		if (list.isEmpty()) {
 			return null;
@@ -744,11 +742,11 @@ public final class Program {
 		if(rangement == null) {
 			return;
 		}
-		RANGEMENTS_LIST.add(rangement);
+		PLACES.add(rangement);
 		setListCaveModified();
 		setModified();
 		Debug("Program: Sorting places...");
-		Collections.sort(RANGEMENTS_LIST);
+		Collections.sort(PLACES);
 	}
 
 	/**
@@ -760,7 +758,7 @@ public final class Program {
 		if(rangement == null) {
 			return;
 		}
-		RANGEMENTS_LIST.remove(rangement);
+		PLACES.remove(rangement);
 		setModified();
 		setListCaveModified();
 	}
@@ -771,11 +769,11 @@ public final class Program {
 	 * @return int
 	 */
 	static int getCaveLength() {
-		return RANGEMENTS_LIST.size();
+		return PLACES.size();
 	}
 
 	public static boolean hasComplexPlace() {
-		return RANGEMENTS_LIST.stream().anyMatch(rangement -> !rangement.isCaisse());
+		return PLACES.stream().anyMatch(rangement -> !rangement.isCaisse());
 	}
 
 	/**
@@ -845,12 +843,6 @@ public final class Program {
 
 		myCellarFile = new MyCellarFile(file);
 		myCellarFile.unzip();
-
-		// Chargement
-		if (!isNewFile && !getDataFile().exists()) {
-			Debug("Program: ERROR: Unable to find file data.xml!!");
-			throw new UnableToOpenFileException("File not found: data.xml");
-		}
 
 		//Chargement des objets Rangement, Bouteilles et History
 		Debug("Program: Reading Places, Bottles & History");
@@ -1196,10 +1188,6 @@ public final class Program {
 
 	static boolean hasConfigGlobalKey(String key) {
 		return CONFIG_GLOBAL.containsKey(key);
-	}
-
-	private static File getDataFile() {
-		return new File(getWorkDir(true) + DATA_XML);
 	}
 
 	static String getXMLPlacesFileName() {

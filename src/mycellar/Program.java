@@ -123,7 +123,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.8.1.5";
+	public static final String INTERNAL_VERSION = "3.8.1.6";
 	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;
@@ -169,6 +169,7 @@ public final class Program {
 	private static final String TYPES_XML = "Types.xml";
 	private static final String BOUTEILLES_XML = "Bouteilles.xml";
 	private static final String CONFIG_INI = "config.ini";
+	public static final String COUNTRIES_XML = "countries.xml";
 	static final String EXTENSION = ".sinfo";
 	public static final String TEXT = ".txt";
 
@@ -341,18 +342,48 @@ public final class Program {
 			if (sVersion.isEmpty() || sVersion.contains(".")) {
 				putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
 			}
-			final String programType = getCaveConfigString(PROGRAM_TYPE, "");
-			if (programType.isBlank()) {
+			final String type = getCaveConfigString(PROGRAM_TYPE, "");
+			if (type.isBlank()) {
 				putCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name());
+			}
+			File file = new File(getWorkDir(true) + "data.xml");
+			if (file.exists()) {
+				Debug("Deleting old file: data.xml");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "Options.txt");
+			if (file.exists()) {
+				Debug("Deleting old file: Options.txt");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "static_all.sinfo");
+			if (file.exists()) {
+				Debug("Deleting old file: static_all.sinfo");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "Errors.log");
+			if (file.exists()) {
+				Debug("Deleting old file: Errors.log");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "other1.ini");
+			if (file.exists()) {
+				Debug("Deleting old file: other1.ini");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "other2.ini");
+			if (file.exists()) {
+				Debug("Deleting old file: other2.ini");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "other3.ini");
+			if (file.exists()) {
+				Debug("Deleting old file: other3.ini");
+				file.delete();
 			}
 		}
 		CONFIG_GLOBAL.remove(MyCellarSettings.DEBUG);
 		CONFIG_GLOBAL.remove(MyCellarSettings.TYPE_AUTO);
-
-		final File file = new File(getWorkDir(true) + "data.xml");
-		if (file.exists()) {
-			file.delete();
-		}
 
 		//int version = Integer.parseInt(sVersion);
 	}
@@ -662,6 +693,7 @@ public final class Program {
 		getStorage().saveHistory();
 		getStorage().saveWorksheet();
 		CountryVignobleController.save();
+		CountryListJaxb.save();
 		ListeBouteille.writeXML();
 
 		myCellarFile.saveAs(file);
@@ -825,7 +857,6 @@ public final class Program {
 		closeFile();
 		
 		CountryVignobleController.init();
-		CountryListJaxb.init();
 
 		if (isNewFile) {
 			// Nouveau fichier de bouteilles
@@ -846,6 +877,8 @@ public final class Program {
 
 		myCellarFile = new MyCellarFile(file);
 		myCellarFile.unzip();
+
+		CountryListJaxb.init();
 
 		//Chargement des objets Rangement, Bouteilles et History
 		Debug("Program: Reading Places, Bottles & History");

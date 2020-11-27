@@ -341,7 +341,7 @@ public final class CountryVignobleController {
 		try {
 			JAXBContext jc = JAXBContext.newInstance(VignobleListJaxb.class);
 			Unmarshaller u = jc.createUnmarshaller();
-			vignobleListJaxb = (VignobleListJaxb)u.unmarshal(new FileInputStream(file));
+			vignobleListJaxb = (VignobleListJaxb) u.unmarshal(new FileInputStream(file));
 		} catch (Exception e) {
 			Program.showException(e);
 			return null;

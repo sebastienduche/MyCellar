@@ -91,17 +91,18 @@ public class VignobleListJaxb
 		return vignobleListJaxb;
 	}
 
-	public static boolean save(CountryJaxb countryJaxb, VignobleListJaxb vignobleListJaxb) {
-		Debug("Writing Country File: " + countryJaxb.getId());
-		File fText = new File(Program.getWorkDir(true), countryJaxb.getId() + TEXT);
+	public static boolean save(final CountryJaxb countryJaxb, final VignobleListJaxb vignobleListJaxb) {
+		final String countryId = countryJaxb.getId();
+		Debug("Writing Country File: " + countryId);
+		File fText = new File(Program.getWorkDir(true), countryId + TEXT);
 		try (FileWriter writer = new FileWriter(fText);
-				 BufferedWriter buffer = new BufferedWriter(writer)){
+				 BufferedWriter buffer = new BufferedWriter(writer)) {
 			buffer.write(countryJaxb.getName());
 		} catch (Exception e) {
 			Program.showException(e);
 			return false;
 		}
-		File f = new File(Program.getWorkDir(true), countryJaxb.getId() + VIGNOBLE);
+		File f = new File(Program.getWorkDir(true), countryId + VIGNOBLE);
 		try {
 			JAXBContext jc = JAXBContext.newInstance(VignobleListJaxb.class);
 			Marshaller m = jc.createMarshaller();
@@ -116,12 +117,13 @@ public class VignobleListJaxb
 	}
 
 	public static boolean delete(CountryJaxb countryJaxb) {
-		Debug("Deleting Country File: " + countryJaxb.getId());
+		final String id = countryJaxb.getId();
+		Debug("Deleting Country File: " + id);
 		try {
-			File fText = new File(Program.getWorkDir(true), countryJaxb.getId() + TEXT);
+			File fText = new File(Program.getWorkDir(true), id + TEXT);
 			Debug("Deleting " + fText.getAbsolutePath());
 			fText.delete();
-			File f = new File(Program.getWorkDir(true), countryJaxb.getId() + VIGNOBLE);
+			File f = new File(Program.getWorkDir(true), id + VIGNOBLE);
 			Debug("Deleting " + f.getAbsolutePath());
 			return f.delete();
 		} catch (Exception e) {

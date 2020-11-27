@@ -99,7 +99,7 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
 				&& (igp == null || igp.isBlank());
 	}
 
-	void makeItClean() {
+	public void makeItClean() {
 		id = Program.generateID();
 		if (getAOC() == null) {
 			setAOC("");

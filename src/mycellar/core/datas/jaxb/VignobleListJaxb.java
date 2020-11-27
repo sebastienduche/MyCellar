@@ -13,17 +13,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.transform.stream.StreamResult;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+
+import static mycellar.Program.TEXT;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -31,16 +29,15 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.3
- * @since 20/11/20
+ * @version 2.4
+ * @since 27/11/20
  */
 
 @XmlRootElement(name = "vignobles")
 @XmlAccessorType (XmlAccessType.FIELD)
 public class VignobleListJaxb
 {
-	private static final String VIGNOBLE = ".vignoble";
-	private static final String TEXT = ".txt";
+	public static final String VIGNOBLE = ".vignoble";
 
 	@XmlElement(name = "vignoble")
 	private List<CountryVignobleJaxb> countryVignobleJaxbList = null;
@@ -55,130 +52,22 @@ public class VignobleListJaxb
 		return countryVignobleJaxbList;
 	}
 
+	public void setCountryVignobleJaxbList(List<CountryVignobleJaxb> list) {
+		countryVignobleJaxbList = list;
+	}
+
 	public void init() {
 		countryVignobleJaxbList = new ArrayList<>();
 		id = Program.generateID();
 	}
 
-	private void checkAvaibility() {
+	public void checkAvaibility() {
 		if (countryVignobleJaxbList == null) {
 			countryVignobleJaxbList = new ArrayList<>();
 		}
 	}
 
-	public static VignobleListJaxb loadFrance() {
-		VignobleListJaxb vignobleListJaxb = null;
-		if (Program.hasWorkDir()) {
-			vignobleListJaxb = loadById("FRA");
-		}
-		return (vignobleListJaxb != null) ? vignobleListJaxb : load("resources/vignobles.xml");
-	}
-
-	public static VignobleListJaxb loadItalie() {
-		VignobleListJaxb vignobleListJaxb = null;
-		if (Program.hasWorkDir()) {
-			vignobleListJaxb = loadById("ITA");
-		}
-		return (vignobleListJaxb != null) ? vignobleListJaxb : load("resources/italie.xml");
-	}
-
-	private static VignobleListJaxb loadById(String id) {
-		final CountryJaxb countryJaxb = CountryListJaxb.findbyId(id).orElse(null);
-		if (countryJaxb != null) {
-			File f = new File(Program.getWorkDir(true), countryJaxb.getId() + VIGNOBLE);
-			if (f.exists()) {
-				return load(f);
-			}
-		}
-		return null;
-	}
-
-	private static VignobleListJaxb load(File file) {
-		Debug("Loading JAXB File " + file.getAbsolutePath());
-		if (!file.exists()) {
-			return null;
-		}
-		VignobleListJaxb vignobleListJaxb;
-		try {
-			JAXBContext jc = JAXBContext.newInstance(VignobleListJaxb.class);
-			Unmarshaller u = jc.createUnmarshaller();
-			vignobleListJaxb = (VignobleListJaxb)u.unmarshal(new FileInputStream(file));
-		} catch (Exception e) {
-			Program.showException(e);
-			return null;
-		}
-		vignobleListJaxb.checkAvaibility();
-		Collections.sort(vignobleListJaxb.countryVignobleJaxbList);
-		for (CountryVignobleJaxb vignoble: vignobleListJaxb.countryVignobleJaxbList) {
-			vignoble.checkAvaibility();
-			for (AppelationJaxb appelationJaxb : vignoble.getUnmodifiableAppelation()) {
-				appelationJaxb.makeItClean();
-			}
-			vignoble.makeItClean();
-		}
-		vignobleListJaxb.countryVignobleJaxbList = vignobleListJaxb.countryVignobleJaxbList.stream()
-				.filter(Predicate.not(CountryVignobleJaxb::isEmpty))
-				.collect(Collectors.toList());
-		Debug("Loading JAXB File Done");
-		return vignobleListJaxb;
-	}
-
-	public static void loadAllCountries(Map<CountryJaxb, VignobleListJaxb> map) {
-		Debug("Loading all countries");
-		map.clear();
-		File dir = new File(Program.getWorkDir(true));
-		CountryListJaxb.findbyId("FRA").ifPresent(country -> map.put(country, loadFrance()));
-		CountryListJaxb.findbyId("ITA").ifPresent(country -> map.put(country, loadItalie()));
-		File[] fileVignobles = dir.listFiles((pathname) -> pathname.getName().endsWith(VIGNOBLE));
-		if (fileVignobles != null) {
-			for (File f : fileVignobles) {
-				String name = f.getName();
-				String id = name.substring(0, name.indexOf(VIGNOBLE));
-				if (!id.equals(id.toUpperCase())) {
-					Debug("Deleting vignoble file with wrong name " + name);
-					f.delete();
-					continue;
-				}
-				name = name.substring(0, name.indexOf(VIGNOBLE));
-				File fText = new File(f.getParent(), name + TEXT);
-				String label = Program.readFirstLineText(fText);
-
-				CountryJaxb countryJaxb = CountryListJaxb.findbyId(name)
-						.orElseGet(() -> CountryListJaxb.findByIdOrLabel(label));
-				if (countryJaxb == null) {
-					countryJaxb = new CountryJaxb(id, label);
-					CountryListJaxb.add(countryJaxb);
-				}
-				if (!label.isEmpty()) {
-					countryJaxb.setName(label);
-				}
-				if (!map.containsKey(countryJaxb)) {
-					map.put(countryJaxb, load(f));
-				} else {
-					VignobleListJaxb loadedVignobleListJaxb = load(f);
-					if (loadedVignobleListJaxb != null) {
-						VignobleListJaxb vignobleListJaxb = map.get(countryJaxb);
-						for (CountryVignobleJaxb vignoble : vignobleListJaxb.countryVignobleJaxbList) {
-							if (!loadedVignobleListJaxb.countryVignobleJaxbList.contains(vignoble)) {
-								loadedVignobleListJaxb.countryVignobleJaxbList.add(vignoble);
-							}
-							else {
-								CountryVignobleJaxb countryVignobleJaxb = loadedVignobleListJaxb.countryVignobleJaxbList.get(loadedVignobleListJaxb.countryVignobleJaxbList.indexOf(vignoble));
-								if (vignoble.getUnmodifiableAppelation() != null) {
-									vignoble.getUnmodifiableAppelation().forEach(countryVignobleJaxb::add);
-								} else {
-									vignoble.setAppelation(new LinkedList<>());
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		Debug("Loading all countries Done");
-	}
-
-	private static VignobleListJaxb load(final String ressource) {
+	public static VignobleListJaxb load(final String ressource) {
 		Debug("Loading vignoble from resource: " + ressource);
 		VignobleListJaxb vignobleListJaxb = null;
 		try {
@@ -327,4 +216,5 @@ public class VignobleListJaxb
 	private static void Debug(String sText) {
 		Program.Debug("VignobleListJaxb: " + sText);
 	}
+
 }

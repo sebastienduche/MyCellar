@@ -35,7 +35,7 @@ public class CountryVignobleJaxb implements Comparable<CountryVignobleJaxb>
 		return id;
 	}
 
-	List<AppelationJaxb> getUnmodifiableAppelation() {
+	public List<AppelationJaxb> getUnmodifiableAppelation() {
 		return Collections.unmodifiableList(appelationJaxb);
 	}
 
@@ -73,7 +73,7 @@ public class CountryVignobleJaxb implements Comparable<CountryVignobleJaxb>
 		return name;
 	}
 
-	void makeItClean() {
+	public void makeItClean() {
 		appelationJaxb = appelationJaxb.stream()
 				.filter(Predicate.not(AppelationJaxb::isEmpty))
 				.distinct()
@@ -81,7 +81,7 @@ public class CountryVignobleJaxb implements Comparable<CountryVignobleJaxb>
 		id = Program.generateID();
 	}
 
-	void checkAvaibility() {
+	public void checkAvaibility() {
 		if (appelationJaxb == null) {
 			appelationJaxb = new ArrayList<>();
 		}

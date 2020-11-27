@@ -123,7 +123,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.8.1.0";
+	public static final String INTERNAL_VERSION = "3.8.1.5";
 	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;
@@ -170,6 +170,7 @@ public final class Program {
 	private static final String BOUTEILLES_XML = "Bouteilles.xml";
 	private static final String CONFIG_INI = "config.ini";
 	static final String EXTENSION = ".sinfo";
+	public static final String TEXT = ".txt";
 
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;

@@ -11,6 +11,8 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.launcher.Server;
+import mycellar.placesmanagement.Creer_Rangement;
+import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
 import net.miginfocom.swing.MigLayout;
@@ -56,8 +58,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.3
- * @since 24/11/20
+ * @version 27.4
+ * @since 27/11/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -307,7 +309,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	/**
 	 * Fonction pour desactiver ou activer toutes les options ou boutons
 	 */
-	void enableAll(boolean enable) {
+	public void enableAll(boolean enable) {
 		jMenuCloseFile.setEnabled(enable);
 		m_oExportButton.setEnabled(enable);
 		m_oStatsButton.setEnabled(enable);

@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,10 +47,10 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.1
- * @since 19/10/20
+ * @version 7.2
+ * @since 27/11/20
  */
-public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
+public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
 	private final MyCellarRadioButton type_XML = new MyCellarRadioButton(LabelType.INFO, "210", false);
 	private final MyCellarRadioButton type_HTML = new MyCellarRadioButton(LabelType.INFO, "211", true);
@@ -59,8 +60,8 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	@SuppressWarnings("deprecation")
 	private final MyCellarLabel end = new MyCellarLabel();
 	private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "152");
-	private final char CREER = Program.getLabel("CREER").charAt(0);
-	private final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
+	private final char creerChar = Program.getLabel("CREER").charAt(0);
+	private final char ouvrirChar = Program.getLabel("OUVRIR").charAt(0);
 	private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126");
 	private final MyCellarButton m_jcb_options = new MyCellarButton(Program.getLabel("Infos193") + "...");
 	static final long serialVersionUID = 260706;
@@ -80,7 +81,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			parameter.addActionListener(this::param_actionPerformed);
 			final MyCellarLabel chooseLabel = new MyCellarLabel(Program.getLabel("Infos096")); //"Selectionner les rangements a generer:");
 			final MyCellarButton create = new MyCellarButton(Program.getLabel("Infos018")); //"Creer");
-			create.setMnemonic(CREER);
+			create.setMnemonic(creerChar);
 
 			final ButtonGroup buttonGroup = new ButtonGroup();
 			buttonGroup.add(type_HTML);
@@ -106,7 +107,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			end.setHorizontalAlignment(SwingConstants.CENTER);
 			end.setForeground(Color.red);
 			end.setFont(Program.FONT_DIALOG_SMALL);
-			preview.setMnemonic(OUVRIR);
+			preview.setMnemonic(ouvrirChar);
 			selectall.setHorizontalAlignment(SwingConstants.RIGHT);
 			selectall.setHorizontalTextPosition(SwingConstants.LEFT);
 			selectall.addActionListener(this::selectall_actionPerformed);
@@ -162,7 +163,7 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 			add(panelTable, "grow");
 			preview.setEnabled(false);
 			Debug("Constructor OK");
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			Program.showException(e);
 		}
 	}
@@ -223,21 +224,21 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 
 			//Verify file type. Is it XML File?
 			if (type_XML.isSelected()) {
-				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XML.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
 					Debug("ERROR: Not a XML File");
 					//"Le fichier saisie ne possede pas une extension XML: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom));
 					return;
 				}
 			} else if (type_HTML.isSelected()) {
-				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_HTML.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_HTML.toString()))) {
 					Debug("ERROR: Not a HTML File");
 					//"Le fichier saisie ne possede pas une extension HTML: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
 					return;
 				}
 			} else if (type_XLS.isSelected()) {
-				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					Debug("ERROR: Not a XLS File");
 					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error34"), nom));
@@ -342,10 +343,10 @@ public class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPast
 	 * @param e KeyEvent
 	 */
 	private void keylistener_actionPerformed(KeyEvent e) {
-		if (e.getKeyCode() == CREER && e.isControlDown()) {
+		if (e.getKeyCode() == creerChar && e.isControlDown()) {
 			create_actionPerformed(null);
 		}
-		if (e.getKeyCode() == OUVRIR && e.isControlDown() && preview.isEnabled()) {
+		if (e.getKeyCode() == ouvrirChar && e.isControlDown() && preview.isEnabled()) {
 			preview_actionPerformed(null);
 		}
 	}

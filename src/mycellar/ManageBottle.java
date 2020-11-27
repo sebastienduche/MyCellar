@@ -40,8 +40,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.0
- * @since 20/11/20
+ * @version 7.1
+ * @since 27/11/20
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -329,7 +329,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		String aoc = panelVignobles.getAOC();
 		String igp = panelVignobles.getIGP();
 
-		if (!MyCellarControl.checkBottleName(nom)) {
+		if (MyCellarControl.hasInvalidBotteName(nom)) {
 			return false;
 		}
 
@@ -339,7 +339,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			annee = m_year.getText();
 
 			// Erreur sur la date
-			if (!MyCellarControl.checkYear(annee)) {
+			if (MyCellarControl.hasInvalidYear(annee)) {
 				m_year.setEditable(true);
 				return false;
 			}	else {
@@ -351,14 +351,14 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		int lieu_select = m_lieu.getSelectedIndex();
 		int lieu_num = m_num_lieu.getSelectedIndex();
 
-		if (!MyCellarControl.checkPlaceNumberGreaterThan0(lieu_select)) {
+		if (MyCellarControl.hasInvalidPlaceNumber(lieu_select)) {
 			return false;
 		}
 
 		Rangement cave = m_lieu.getItemAt(lieu_select);
 		boolean isCaisse = cave.isCaisse();
 
-		if (!MyCellarControl.checkNumLieuNumberGreaterThan0(lieu_num, isCaisse)) {
+		if (MyCellarControl.hasInvalidNumLieuNumber(lieu_num, isCaisse)) {
 			return false;
 		}
 
@@ -366,11 +366,11 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		int column = 0;
 		if (!isCaisse) {
 			line = m_line.getSelectedIndex();
-			if (!MyCellarControl.checkLineNumberGreaterThan0(line)) {
+			if (MyCellarControl.hasInvalidLineNumber(line)) {
 				return false;
 			}
 			column = m_column.getSelectedIndex();
-			if (!MyCellarControl.checkColumnNumberGreaterThan0(column)) {
+			if (MyCellarControl.hasInvalidColumnNumber(column)) {
 				return false;
 			}
 		}

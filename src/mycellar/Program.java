@@ -25,6 +25,8 @@ import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
+import mycellar.placesmanagement.Creer_Rangement;
+import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.CountryVignobleController;
 import mycellar.vignobles.VineyardPanel;
@@ -115,16 +117,16 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.7
- * @since 24/11/20
+ * @version 23.8
+ * @since 27/11/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.7.9.4";
+	public static final String INTERNAL_VERSION = "3.8.1.0";
 	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
-	private static Type type = Type.WINE;
+	private static Type programType = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
 
 	private static MyCellarFile myCellarFile = null;
@@ -134,7 +136,7 @@ public final class Program {
 	public static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
 	static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
 	static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);
-	static final Font FONT_DIALOG_SMALL = new Font("Dialog", Font.BOLD, 12);
+	public static final Font FONT_DIALOG_SMALL = new Font("Dialog", Font.BOLD, 12);
 	public static final Font FONT_LABEL_BOLD = new Font("Arial", Font.BOLD, 12);
 
 	private static final Map<ScreenType, IMyCellar> OPENED_OBJECTS = new EnumMap<>(ScreenType.class);
@@ -219,11 +221,11 @@ public final class Program {
 	}
 
 	static void setProgramType(Type value) {
-		type = value;
+		programType = value;
 	}
 
 	private static String getLabelForType(boolean plural, boolean firstLetterUppercase, Grammar grammar) {
-		return getLabelForType(type, plural, firstLetterUppercase, grammar);
+		return getLabelForType(programType, plural, firstLetterUppercase, grammar);
 	}
 
 	public static String getLabelForType(Type theType, boolean plural, boolean firstLetterUppercase, Grammar grammar) {
@@ -617,7 +619,7 @@ public final class Program {
 	/**
 	 * getAide: Appel de l'aide
 	 */
-	static void getAide() {
+	public static void getAide() {
 
 		File f = new File("./Help/MyCellar.hs");
 		if (f.exists()) {
@@ -738,7 +740,7 @@ public final class Program {
 	 *
 	 * @param rangement Rangement
 	 */
-	static void addCave(Rangement rangement) {
+	public static void addCave(Rangement rangement) {
 		if(rangement == null) {
 			return;
 		}
@@ -754,7 +756,7 @@ public final class Program {
 	 *
 	 * @param rangement Rangement
 	 */
-	 static void removeCave(Rangement rangement) {
+	 public static void removeCave(Rangement rangement) {
 		if(rangement == null) {
 			return;
 		}
@@ -768,7 +770,7 @@ public final class Program {
 	 *
 	 * @return int
 	 */
-	static int getCaveLength() {
+	public static int getCaveLength() {
 		return PLACES.size();
 	}
 
@@ -1331,7 +1333,7 @@ public final class Program {
 		return modified;
 	}
 
-	static void setListCaveModified() {
+	public static void setListCaveModified() {
 		listCaveModified = true;
 	}
 
@@ -1557,7 +1559,7 @@ public final class Program {
 		return supprimerRangement;
 	}
 
-	static void deleteSupprimerRangement() {
+	public static void deleteSupprimerRangement() {
 		OPENED_OBJECTS.remove(SUPPRIMER_RANGEMENT);
 		UPDATABLE_OBJECTS.remove(SUPPRIMER_RANGEMENT);
 	}

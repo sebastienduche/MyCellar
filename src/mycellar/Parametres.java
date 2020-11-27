@@ -37,8 +37,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.3
- * @since 19/11/20
+ * @version 12.4
+ * @since 27/11/20
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -201,7 +201,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 			if (jcb_excel.isSelected()) {
 				Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, true);
 				String fic = file_bak.getText();
-				if (!MyCellarControl.controlExtension(fic, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(fic, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), fic), Program.getError("Error035"));
 					return;
 				} else {

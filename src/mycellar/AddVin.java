@@ -52,8 +52,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.7
- * @since 20/11/20
+ * @version 26.8
+ * @since 27/11/20
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -424,7 +424,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 	private boolean controlBottle() {
 		Debug("Control Bottle...");
 		String nom = name.getEditor().getItem().toString();
-		if (!MyCellarControl.checkBottleName(nom)) {
+		if (MyCellarControl.hasInvalidBotteName(nom)) {
 			return false;
 		}
 
@@ -433,7 +433,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			String annee = m_year.getText();
 
 			// Erreur sur la date
-			if (!MyCellarControl.checkYear(annee)) {
+			if (MyCellarControl.hasInvalidYear(annee)) {
 				m_year.setEditable(true);
 				return false;
 			}
@@ -444,24 +444,24 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		int lieu_selected = m_lieu.getSelectedIndex();
 		int lieu_num_selected = m_num_lieu.getSelectedIndex();
 		if (!m_bmodify) {
-			if (!MyCellarControl.checkPlaceNumberGreaterThan0(lieu_selected)) {
+			if (MyCellarControl.hasInvalidPlaceNumber(lieu_selected)) {
 				return false;
 			}
 		}
 		if (lieu_selected > 0) {
-			if (!MyCellarControl.checkNumLieuNumberGreaterThan0(lieu_num_selected, !m_line.isVisible())) {
+			if (MyCellarControl.hasInvalidNumLieuNumber(lieu_num_selected, !m_line.isVisible())) {
 				m_num_lieu.setEnabled(true);
 				enableAll(true);
 				return false;
 			}
 
 			if (m_line.isVisible()) {
-				if (!MyCellarControl.checkLineNumberGreaterThan0(m_line.getSelectedIndex())) {
+				if (MyCellarControl.hasInvalidLineNumber(m_line.getSelectedIndex())) {
 					m_end.setText("");
 					enableAll(true);
 					return false;
 				}
-				if (!MyCellarControl.checkColumnNumberGreaterThan0(m_column.getSelectedIndex())) {
+				if (MyCellarControl.hasInvalidColumnNumber(m_column.getSelectedIndex())) {
 					m_end.setText("");
 					enableAll(true);
 					return false;

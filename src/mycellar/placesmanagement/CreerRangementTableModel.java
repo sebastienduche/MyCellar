@@ -1,4 +1,8 @@
-package mycellar;
+package mycellar.placesmanagement;
+
+import mycellar.Part;
+import mycellar.Program;
+import mycellar.Row;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.HashMap;
@@ -11,8 +15,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 06/01/19
+ * @version 0.9
+ * @since 27/11/20
  */
 
 class CreerRangementTableModel extends AbstractTableModel {

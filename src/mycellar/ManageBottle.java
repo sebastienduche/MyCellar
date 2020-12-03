@@ -40,8 +40,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.1
- * @since 27/11/20
+ * @version 7.2
+ * @since 03/12/20
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -525,7 +525,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
 		private PanelPlace(){
 			setLayout(new MigLayout("","[]30px[]30px[]30px[]30px[grow]30px[]",""));
-			setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("Infos105")));
+			setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("Infos081")));
 			add(m_labelPlace);
 			add(m_labelNumPlace);
 			add(m_labelLine);

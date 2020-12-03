@@ -6,14 +6,15 @@ package mycellar.core;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 30/10/20
+ * @version 0.4
+ * @since 03/12/20
  */
 public class LabelProperty {
 
   private final boolean plural;
   private final boolean uppercaseFirst;
   private final Grammar grammar;
+  private final boolean doubleQuote;
 
   public static final LabelProperty PLURAL = new LabelProperty(true);
   public static final LabelProperty SINGLE = new LabelProperty(false);
@@ -24,20 +25,33 @@ public class LabelProperty {
   public static final LabelProperty A_SINGLE = new LabelProperty(false, false, Grammar.SINGLE);
 
 
+  private LabelProperty(boolean plural, boolean uppercaseFirst, Grammar grammar, boolean doubleQuote) {
+    this.plural = plural;
+    this.uppercaseFirst = uppercaseFirst;
+    this.grammar = grammar;
+    this.doubleQuote = doubleQuote;
+  }
+
   private LabelProperty(boolean plural, boolean uppercaseFirst, Grammar grammar) {
     this.plural = plural;
     this.uppercaseFirst = uppercaseFirst;
     this.grammar = grammar;
+    doubleQuote = false;
   }
 
   public LabelProperty(boolean plural) {
     this.plural = plural;
     uppercaseFirst = false;
+    doubleQuote = false;
     grammar = Grammar.NONE;
   }
 
   public LabelProperty withCapital() {
     return new LabelProperty(plural, true, grammar);
+  }
+
+  public LabelProperty withDoubleQuote() {
+    return new LabelProperty(plural, uppercaseFirst, grammar, true);
   }
 
   public boolean isPlural() {
@@ -46,6 +60,10 @@ public class LabelProperty {
 
   public boolean isUppercaseFirst() {
     return uppercaseFirst;
+  }
+
+  public boolean isDoubleQuote() {
+    return doubleQuote;
   }
 
   public Grammar getGrammar() {

@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -39,13 +40,13 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.2
- * @since 19/10/20
+ * @version 7.3
+ * @since 03/12/20
  */
-public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
+public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
 	private static final long serialVersionUID = -5333602919958999440L;
-	private final MyCellarLabel comboLabel = new MyCellarLabel();
+	private final MyCellarLabel comboLabel = new MyCellarLabel(LabelType.INFO, "081", LabelProperty.SINGLE.withDoubleQuote());
 	private final MyCellarLabel end = new MyCellarLabel();
 	private final MyCellarLabel moy = new MyCellarLabel();
 	private final MyCellarComboBox<String> listOptions = new MyCellarComboBox<>();
@@ -65,7 +66,6 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 	public Stat() {
 		Debug("Stats");
 		MyCellarLabel definition = new MyCellarLabel(Program.getLabel("Infos174")); //"Type de statistiques:");
-		comboLabel.setText(Program.getLabel("Infos105") + ":"); //"Rangement:");
 		end.setHorizontalAlignment(SwingConstants.RIGHT);
 		moy.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.setLayout(new MigLayout("","[][][grow]",""));
@@ -150,7 +150,7 @@ public class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable 
 				Debug("By place");
 				options.setEnabled(false);
 				panelChart.setPlacesChart(Program.getCave());
-				comboLabel.setText(Program.getLabel("Infos105") + ":"); //"Rangement:");
+				comboLabel.setText(Program.getLabel("Infos081", LabelProperty.SINGLE.withDoubleQuote())); //"Rangement:");
 				listPlaces.removeAllItems();
 				listPlaces.setEnabled(true);
 				listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos182"))); //"Tous les rangements");

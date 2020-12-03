@@ -19,8 +19,8 @@ import java.util.ResourceBundle.Control;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 17/10/19
+ * @version 1.0
+ * @since 03/12/20
  */
 public class LanguageFileLoader {
 
@@ -43,7 +43,7 @@ public class LanguageFileLoader {
 		}
 	}
 	private Language language;
-	
+
 	private ResourceBundle bundleTitle;
 	private ResourceBundle bundleError;
 	private ResourceBundle bundleLanguage;
@@ -136,6 +136,10 @@ public class LanguageFileLoader {
 		return Language.ENGLISH;
 	}
 
+	static boolean isFrench() {
+		return getInstance().language == Language.FRENCH;
+	}
+
 	/**
 	 * Debug
 	 *
@@ -148,33 +152,33 @@ public class LanguageFileLoader {
 
 class UTF8Control extends Control {
 	@Override
-    public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload) throws IOException
-    {
-        // The below is a copy of the default implementation.
-        String bundleName = toBundleName(baseName, locale);
-        String resourceName = toResourceName(bundleName, "properties");
-        ResourceBundle bundle = null;
-        InputStream stream = null;
-        if (reload) {
-            URL url = loader.getResource(resourceName);
-            if (url != null) {
-                URLConnection connection = url.openConnection();
-                if (connection != null) {
-                    connection.setUseCaches(false);
-                    stream = connection.getInputStream();
-                }
-            }
-        } else {
-            stream = loader.getResourceAsStream(resourceName);
-        }
-        if (stream != null) {
-            try {
-                // Only this line is changed to make it to read properties files as UTF-8.
-                bundle = new PropertyResourceBundle(new InputStreamReader(stream, StandardCharsets.UTF_8));
-            } finally {
-                stream.close();
-            }
-        }
-        return bundle;
-    }
+	public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload) throws IOException
+	{
+		// The below is a copy of the default implementation.
+		String bundleName = toBundleName(baseName, locale);
+		String resourceName = toResourceName(bundleName, "properties");
+		ResourceBundle bundle = null;
+		InputStream stream = null;
+		if (reload) {
+			URL url = loader.getResource(resourceName);
+			if (url != null) {
+				URLConnection connection = url.openConnection();
+				if (connection != null) {
+					connection.setUseCaches(false);
+					stream = connection.getInputStream();
+				}
+			}
+		} else {
+			stream = loader.getResourceAsStream(resourceName);
+		}
+		if (stream != null) {
+			try {
+				// Only this line is changed to make it to read properties files as UTF-8.
+				bundle = new PropertyResourceBundle(new InputStreamReader(stream, StandardCharsets.UTF_8));
+			} finally {
+				stream.close();
+			}
+		}
+		return bundle;
+	}
 }

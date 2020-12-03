@@ -58,8 +58,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.4
- * @since 27/11/20
+ * @version 27.5
+ * @since 03/12/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -612,7 +612,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		// differents menus
 		menuFile.setText(Program.getLabel("Infos104")); // Fichier
-		menuPlace.setText(Program.getLabel("Infos105"));
+		menuPlace.setText(Program.getLabel("Infos081"));
 		menuWine.setText(Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital())); // Vin
 		menuTools.setText(Program.getLabel("Infos246"));
 		menuEdition.setText(Program.getLabel("Infos245"));

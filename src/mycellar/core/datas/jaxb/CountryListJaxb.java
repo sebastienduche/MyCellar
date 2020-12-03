@@ -27,8 +27,8 @@ import static mycellar.Program.FR;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.0
- * @since 27/11/20
+ * @version 1.1
+ * @since 03/12/20
  */
 
 @XmlRootElement(name = "countries")
@@ -74,7 +74,7 @@ public class CountryListJaxb
 			JAXBContext jaxbContext = JAXBContext.newInstance(CountryListJaxb.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-			if (f != null) {
+			if (f != null && f.exists()) {
 				Debug("Loading countries file: " + f.getAbsolutePath());
 				countryListJaxb = (CountryListJaxb) jaxbUnmarshaller.unmarshal(f);
 			} else {

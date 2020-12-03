@@ -13,13 +13,13 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 19/10/20
+ * @version 1.5
+ * @since 03/12/20
  */
 class TableauValues extends AbstractTableModel {
 	public static final int ETAT = 0;
 	static final long serialVersionUID = 220605;
-	private final String[] columnNames = {"", Program.getLabel("Infos105"), Program.getLabel("Infos027"), Program.getLabel("Infos136", LabelProperty.PLURAL)};
+	private final String[] columnNames = {"", Program.getLabel("Infos081"), Program.getLabel("Infos027"), Program.getLabel("Infos136", LabelProperty.PLURAL)};
 
 	private final List<Rangement> list = new LinkedList<>();
 	private final List<Boolean> listBoolean = new LinkedList<>();

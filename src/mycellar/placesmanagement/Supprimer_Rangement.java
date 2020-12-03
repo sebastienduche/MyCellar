@@ -45,8 +45,8 @@ import static mycellar.Program.*;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.2
- * @since 27/11/20
+ * @version 8.3
+ * @since 03/12/20
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -100,9 +100,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 		choix.addItemListener(this::choix_itemStateChanged);
 
 		choix.addItem(EMPTY_PLACE);
-		for (Rangement r : getCave()) {
-			choix.addItem(r);
-		}
+		getCave().forEach(choix::addItem);
 		RangementUtils.putTabStock();
 		setVisible(true);
 	}
@@ -193,9 +191,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 					String erreur_txt1;
 					if (nb_case_use_total == 0) {
 						String tmp = cave.getNom();
-						Debug("MESSAGE: Delete this place: "+tmp+"?");
+						Debug("MESSAGE: Delete this place: " + tmp + "?");
 						erreur_txt1 = MessageFormat.format(getError("Error139"), tmp); //Voulez vous supprimer le rangement
-						if( JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+						if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 							removeCave(cave);
 							choix.removeItemAt(num_select);
 							choix.setSelectedIndex(0);
@@ -324,7 +322,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 		private SupprimerModel(List<SupprimerLine> list) {
 			this.list = list;
 			columns = new LinkedList<>();
-			columns.add(new Column(Column.PART, getLabel("Infos059")));
+			columns.add(new Column(Column.PART, getLabel("Infos081")));
 			columns.add(colLine);
 			columns.add(new Column(Column.WINE, getLabel("Infos057")));
 

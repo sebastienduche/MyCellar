@@ -1,5 +1,7 @@
 package mycellar.core;
 
+import mycellar.Program;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -19,6 +21,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   private final LabelType type;
   private final String code;
   private final LabelProperty labelProperty;
+  private String descriptionLabelCode;
 
   public MyCellarAction(LabelType type, String code, LabelProperty labelProperty) {
     this.type = type;
@@ -52,7 +55,11 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   @Override
   public void setText(String text) {
     putValue(Action.NAME, text);
-    putValue(Action.SHORT_DESCRIPTION, text);
+    putValue(Action.SHORT_DESCRIPTION, descriptionLabelCode != null ? Program.getLabel(descriptionLabelCode) : text);
+  }
+
+  public void setDescriptionLabelCode(String code) {
+    descriptionLabelCode = code;
   }
 
   @Override

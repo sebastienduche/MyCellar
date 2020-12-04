@@ -35,8 +35,8 @@ import java.util.List;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.4
- * @since 20/11/20
+ * @version 4.5
+ * @since 04/12/20
  */
 
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
@@ -111,7 +111,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 		add(new JLabel(), "growx");
 		add(new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.Restore", new RestoreAction()), "align right, wrap");
 		add(new JScrollPane(table), "grow, wrap");
-		add(new MyCellarButton(LabelType.INFO, "051", new DeleteAction()), "center");
+		add(new MyCellarButton(LabelType.INFO_OTHER, "Main.Delete", new DeleteAction()), "center");
 	}
 
 	private void filter_itemStateChanged(ItemEvent e) {
@@ -218,7 +218,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
 		private DeleteAction() {
 			super("", MyCellarImage.DELETE);
-			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos051"));
+			putValue(SHORT_DESCRIPTION, Program.getLabel("Main.Delete"));
 		}
 
 		@Override

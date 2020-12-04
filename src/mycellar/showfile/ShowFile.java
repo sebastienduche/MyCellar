@@ -69,8 +69,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.4
- * @since 20/11/20
+ * @version 8.5
+ * @since 04/12/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -438,7 +438,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       deleteButton.setText(Program.getLabel("ShowFile.Restore"));
       deleteButton.setIcon(MyCellarImage.RESTORE);
     } else {
-      deleteButton.setText(Program.getLabel("Infos051"));
+      deleteButton.setText(Program.getLabel("Main.Delete"));
     }
 
     deleteButton.addActionListener((e) -> {

@@ -126,8 +126,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private final JMenuItem statistiques = new JMenuItem();
 	private final JMenuItem tableau = new JMenuItem();
 	private final JMenuItem addPlace = new JMenuItem();
-	private final JMenuItem modifPlace = new JMenuItem();
-	private final JMenuItem delPlace = new JMenuItem();
+	private final MyCellarMenuItem modifPlace = new MyCellarMenuItem(new ModifyPlaceAction());
+	private final MyCellarMenuItem delPlace = new MyCellarMenuItem(new DeletePlaceAction());
 	private final JMenuItem showFile = new JMenuItem();
 	private final JMenuItem showWorksheet = new JMenuItem();
 	private final JMenuItem addWine = new JMenuItem();
@@ -148,7 +148,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private final JMenuItem jMenuExportXml = new JMenuItem();
 	private final JMenuItem openFile = new JMenuItem();
 	private final JMenuItem jMenuCloseFile = new JMenuItem();
-	private final JMenuItem jMenuSetConfig = new JMenuItem();
+	private final MyCellarMenuItem jMenuSetConfig = new MyCellarMenuItem(LabelType.INFO, "374", LabelProperty.SINGLE.withThreeDashes());
 	private final JMenuItem jMenuReopen1 = new JMenuItem();
 	private final JMenuItem jMenuReopen2 = new JMenuItem();
 	private final JMenuItem jMenuReopen3 = new JMenuItem();
@@ -629,8 +629,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		statistiques.setText(Program.getLabel("Infos009")); // Statistiques
 		tableau.setText(Program.getLabel("Infos093")); // Tableaux...
 		addPlace.setText(Program.getLabel("Infos109")); // Ajouter...
-		modifPlace.setText(Program.getLabel("Infos086")); // Modifier...
-		delPlace.setText(Program.getLabel("Infos052")); // Supprimer...
 		addWine.setText(Program.getLabel("Infos109")); // Ajouter...
 		Aide.setText(Program.getLabel("Infos111")); // Aide Contextuelle...
 		saveAs.setText(Program.getLabel("Infos371")); // Sauvegarder
@@ -650,7 +648,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		jMenuExportXmlPlaces.setText(Program.getLabel("Infos368")); // Exporter des rangements xml
 		jMenuExportXml.setText(Program.getLabel("Infos408")); // Exporter au format xml
 		jMenuCloseFile.setText(Program.getLabel("Infos019")); // Fermer...
-		jMenuSetConfig.setText(Program.getLabel("Infos373")); // Modifier les parametres...
 		jMenuCheckUpdate.setText(Program.getLabel("Infos379")); // Verifier mise a jour...
 		jMenuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "")) + Program.EXTENSION);
 		jMenuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "")) + Program.EXTENSION);
@@ -757,8 +754,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		CopyAction copyAction = new CopyAction();
 		PasteAction pasteAction = new PasteAction();
 		AddPlaceAction addPlaceAction = new AddPlaceAction();
-		ModifyPlaceAction modifyPlaceAction = new ModifyPlaceAction();
-		DeletePlaceAction deletePlaceAction = new DeletePlaceAction();
 		ShowFileAction showFileAction = new ShowFileAction();
 		CreateTabAction createTabAction = new CreateTabAction();
 		StatAction statAction = new StatAction();
@@ -823,8 +818,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oPasteButton.setText("");
 		m_oRechercherButton.setAction(searchAction);
 		m_oCreerButton.setAction(addPlaceAction);
-		m_oModifierButton.setAction(modifyPlaceAction);
-		m_oSupprimerButton.setAction(deletePlaceAction);
+		m_oModifierButton.setAction(new ModifyPlaceAction());
+		m_oSupprimerButton.setAction(new DeletePlaceAction());
 		m_oShowFileButton.setAction(showFileAction);
 		m_oTableauxButton.setAction(createTabAction);
 		m_oStatsButton.setAction(statAction);
@@ -834,8 +829,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oWorksheetButton.setAction(new OpenWorkSheetAction());
 		m_oShowTrashButton.setAction(showTrashAction);
 		addPlace.setAction(addPlaceAction);
-		modifPlace.setAction(modifyPlaceAction);
-		delPlace.setAction(deletePlaceAction);
 		addWine.setAction(addWineAction);
 		searchWine.setAction(searchAction);
 		newFile.setAction(newAction);
@@ -1304,12 +1297,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	final class DeletePlaceAction extends AbstractAction {
+	final class DeletePlaceAction extends MyCellarAction {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private DeletePlaceAction() {
-			super(Program.getLabel("Infos052"), MyCellarImage.DELPLACE);
-			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos004"));
+			super(LabelType.INFO_OTHER, "Main.Delete", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.DELPLACE);
+			setDescriptionLabelCode("Infos004");
 		}
 
 		@Override
@@ -1337,12 +1330,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	final class ModifyPlaceAction extends AbstractAction {
+	final class ModifyPlaceAction extends MyCellarAction {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private ModifyPlaceAction() {
-			super(Program.getLabel("Infos086"), MyCellarImage.MODIFYPLACE);
-			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos007"));
+			super(LabelType.INFO, "079", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.MODIFYPLACE);
+			setDescriptionLabelCode("Infos007");
 		}
 
 		@Override

@@ -51,8 +51,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.4
- * @since 18/11/20
+ * @version 21.5
+ * @since 04/12/20
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -135,7 +135,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 			addToWorksheet.addActionListener(this::addToWorksheet_actionPerformed);
 			empty_search.addActionListener(this::empty_search_actionPerformed);
 			export.addActionListener(this::export_actionPerformed);
-			suppr.setText(Program.getLabel("Infos051")); //"Supprimer");
+			suppr.setText(Program.getLabel("Main.Delete")); //"Supprimer");
 			suppr.setMnemonic(deleteKey);
 			MyCellarLabel infoLabel = new MyCellarLabel(LabelType.INFO, "080", LabelProperty.SINGLE); //"Selectionner un(des) vin(s) dans la liste. Cliquer sur \"Modifier\" ou \"Supprimer\"");
 			modif.setText(Program.getLabel("Infos079")); //"Modifier");

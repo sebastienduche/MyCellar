@@ -117,13 +117,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.9
- * @since 03/12/20
+ * @version 24.0
+ * @since 04/12/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.8.2.5";
+	public static final String INTERNAL_VERSION = "3.8.3.4";
 	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;
@@ -1260,6 +1260,9 @@ public final class Program {
 		}
 		String label = getLabel(id, true);
 		label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
+		if (labelProperty.isThreeDashes()) {
+			label += "...";
+		}
 		if (labelProperty.isDoubleQuote()) {
 			label += LanguageFileLoader.isFrench() ? " :" : ":";
 		}

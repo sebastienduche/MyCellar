@@ -6,8 +6,8 @@ package mycellar.core;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 03/12/20
+ * @version 0.5
+ * @since 04/12/20
  */
 public class LabelProperty {
 
@@ -15,6 +15,7 @@ public class LabelProperty {
   private final boolean uppercaseFirst;
   private final Grammar grammar;
   private final boolean doubleQuote;
+  private final boolean threeDashes;
 
   public static final LabelProperty PLURAL = new LabelProperty(true);
   public static final LabelProperty SINGLE = new LabelProperty(false);
@@ -25,11 +26,12 @@ public class LabelProperty {
   public static final LabelProperty A_SINGLE = new LabelProperty(false, false, Grammar.SINGLE);
 
 
-  private LabelProperty(boolean plural, boolean uppercaseFirst, Grammar grammar, boolean doubleQuote) {
+  private LabelProperty(boolean plural, boolean uppercaseFirst, Grammar grammar, boolean doubleQuote, boolean threeDashes) {
     this.plural = plural;
     this.uppercaseFirst = uppercaseFirst;
     this.grammar = grammar;
     this.doubleQuote = doubleQuote;
+    this.threeDashes = threeDashes;
   }
 
   private LabelProperty(boolean plural, boolean uppercaseFirst, Grammar grammar) {
@@ -37,12 +39,14 @@ public class LabelProperty {
     this.uppercaseFirst = uppercaseFirst;
     this.grammar = grammar;
     doubleQuote = false;
+    threeDashes = false;
   }
 
   public LabelProperty(boolean plural) {
     this.plural = plural;
     uppercaseFirst = false;
     doubleQuote = false;
+    threeDashes = false;
     grammar = Grammar.NONE;
   }
 
@@ -51,7 +55,11 @@ public class LabelProperty {
   }
 
   public LabelProperty withDoubleQuote() {
-    return new LabelProperty(plural, uppercaseFirst, grammar, true);
+    return new LabelProperty(plural, uppercaseFirst, grammar, true, false);
+  }
+
+  public LabelProperty withThreeDashes() {
+    return new LabelProperty(plural, uppercaseFirst, grammar, false, true);
   }
 
   public boolean isPlural() {
@@ -64,6 +72,10 @@ public class LabelProperty {
 
   public boolean isDoubleQuote() {
     return doubleQuote;
+  }
+
+  public boolean isThreeDashes() {
+    return threeDashes;
   }
 
   public Grammar getGrammar() {

@@ -1,10 +1,9 @@
 package mycellar.core;
 
-import java.awt.Font;
-
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import java.awt.Font;
 
 /**
  * Titre : Cave à vin
@@ -13,8 +12,8 @@ import javax.swing.JButton;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 0.7
- * @since 16/10/20
+ * @version 0.8
+ * @since 04/12/20
  */
 
 public class MyCellarButton extends JButton implements IMyCellarComponent {
@@ -49,6 +48,15 @@ public class MyCellarButton extends JButton implements IMyCellarComponent {
 	    this.type = type;
 	    this.code = code;
 	    this.value = value;
+	    updateText();
+	    MyCellarLabelManagement.add(this);
+	    setFont(FONT);
+	  }
+
+	  public MyCellarButton(LabelType type, String code, LabelProperty labelProperty) {
+	    this.type = type;
+	    this.code = code;
+	    this.labelProperty = labelProperty;
 	    updateText();
 	    MyCellarLabelManagement.add(this);
 	    setFont(FONT);

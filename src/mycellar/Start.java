@@ -6,7 +6,11 @@ import mycellar.capacity.CapacityPanel;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.LabelProperty;
+import mycellar.core.LabelType;
+import mycellar.core.MyCellarAction;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarLabelManagement;
+import mycellar.core.MyCellarMenuItem;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.UnableToOpenFileException;
@@ -58,8 +62,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.5
- * @since 03/12/20
+ * @version 27.6
+ * @since 04/12/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -129,11 +133,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private final JMenuItem addWine = new JMenuItem();
 	private final JMenuItem searchWine = new JMenuItem();
 	private final JMenuItem Aide = new JMenuItem();
-	private final JMenuItem parameter = new JMenuItem();
+	private final MyCellarMenuItem parameter = new MyCellarMenuItem(new ParametersAction());
 	private final JMenuItem about = new JMenuItem();
 	private final JMenuItem tocreate = new JMenuItem();
 	private final JMenuItem news = new JMenuItem();
-	private final JMenuItem history = new JMenuItem();
+	private final MyCellarMenuItem history = new MyCellarMenuItem(new ShowHistoryAction());
 	private final JMenuItem vignobles = new JMenuItem();
 	private final JMenuItem bottleCapacity = new JMenuItem();
 	private final JMenuItem newFile = new JMenuItem();
@@ -610,6 +614,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		newChar = Program.getLabel("NEW").charAt(0);
 		m_oMenuBar = new JMenuBar();
 
+		MyCellarLabelManagement.updateLabels();
 		// differents menus
 		menuFile.setText(Program.getLabel("Infos104")); // Fichier
 		menuPlace.setText(Program.getLabel("Infos081"));
@@ -636,11 +641,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		showWorksheet.setText(Program.getLabel("ShowFile.Worksheet"));
 		searchWine.setText(Program.getLabel("Main.tabSearch", LabelProperty.SINGLE));
 
-		parameter.setText(Program.getLabel("Infos156")); // Parametres
 		about.setText(Program.getLabel("Infos199")); // A Propos
 		news.setText(Program.getLabel("Infos330")); // Nouveautes
 		tocreate.setText(Program.getLabel("Infos267")); // Rangement a creer
-		history.setText(Program.getLabel("Infos341")); // Historique
 		vignobles.setText(Program.getLabel("Infos165") + "..."); // Vignobles
 		bottleCapacity.setText(Program.getLabel("Infos400") + "..."); // Contenance
 		jMenuImportXmlPlaces.setText(Program.getLabel("Infos367")); // Importer des rangements xml
@@ -753,7 +756,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		CutAction cutAction = new CutAction();
 		CopyAction copyAction = new CopyAction();
 		PasteAction pasteAction = new PasteAction();
-		ParametersAction parameterAction = new ParametersAction();
 		AddPlaceAction addPlaceAction = new AddPlaceAction();
 		ModifyPlaceAction modifyPlaceAction = new ModifyPlaceAction();
 		DeletePlaceAction deletePlaceAction = new DeletePlaceAction();
@@ -831,7 +833,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oManagePlaceButton.setAction(managePlaceAction);
 		m_oWorksheetButton.setAction(new OpenWorkSheetAction());
 		m_oShowTrashButton.setAction(showTrashAction);
-		parameter.setAction(parameterAction);
 		addPlace.setAction(addPlaceAction);
 		modifPlace.setAction(modifyPlaceAction);
 		delPlace.setAction(deletePlaceAction);
@@ -1010,7 +1011,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		quit.addActionListener((e) -> quitter_actionPerformed());
 		about.addActionListener((e) -> about_actionPerformed());
 		news.addActionListener((e) -> news_actionPerformed());
-		history.setAction(new ShowHistoryAction());
 		vignobles.setAction(new VignoblesAction());
 		bottleCapacity.setAction(new CapacityAction());
 
@@ -1527,11 +1527,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	class ShowHistoryAction extends AbstractAction {
+	class ShowHistoryAction extends MyCellarAction {
 		private static final long serialVersionUID = -2981766233846291757L;
 
 		private ShowHistoryAction() {
-			super(Program.getLabel("Infos341"));
+			super(LabelType.INFO, "341", LabelProperty.SINGLE.withThreeDashes());
 		}
 
 		@Override
@@ -1778,13 +1778,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	final class ParametersAction extends AbstractAction {
+	final class ParametersAction extends MyCellarAction {
 
 		private static final long serialVersionUID = -5144284671743409095L;
 
 		private ParametersAction() {
-			super(Program.getLabel("Infos156"), MyCellarImage.PARAMETER);
-			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos156"));
+			super(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PARAMETER);
 		}
 
 		@Override
@@ -1792,7 +1791,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			if (Program.getParametres() == null) {
 				try {
 					final Parametres parametres = Program.createParametres();
-					Program.TABBED_PANE.add(Program.getLabel("Infos193"), parametres);
+					Program.TABBED_PANE.add(Program.getLabel("Infos156"), parametres);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PARAMETER);
 					Utils.addCloseButton(Program.TABBED_PANE, parametres);
 				} catch (RuntimeException e) {
@@ -1803,7 +1802,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				Program.TABBED_PANE.setSelectedComponent(Program.getParametres());
 			} catch (IllegalArgumentException e) {
 				final Parametres parametres = Program.createParametres();
-				Program.TABBED_PANE.add(Program.getLabel("Infos193"), parametres);
+				Program.TABBED_PANE.add(Program.getLabel("Infos156"), parametres);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PARAMETER);
 				Utils.addCloseButton(Program.TABBED_PANE, parametres);
 				Program.TABBED_PANE.setSelectedComponent(parametres);

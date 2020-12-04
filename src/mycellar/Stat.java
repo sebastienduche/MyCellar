@@ -40,8 +40,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.3
- * @since 03/12/20
+ * @version 7.4
+ * @since 04/12/20
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -55,7 +55,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 	private final JPanel panel = new JPanel();
 	private String[] annee;
 	private final PanelChart panelChart = new PanelChart();
-	private final MyCellarButton options = new MyCellarButton(Program.getLabel("Infos156"));
+	private final MyCellarButton options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
 	private final List<StatData> listPrice = new LinkedList<>();
 	private final List<StatData> listYear = new LinkedList<>();
 

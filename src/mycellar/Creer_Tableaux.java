@@ -47,8 +47,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.2
- * @since 27/11/20
+ * @version 7.3
+ * @since 04/12/20
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
@@ -63,7 +63,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 	private final char creerChar = Program.getLabel("CREER").charAt(0);
 	private final char ouvrirChar = Program.getLabel("OUVRIR").charAt(0);
 	private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126");
-	private final MyCellarButton m_jcb_options = new MyCellarButton(Program.getLabel("Infos193") + "...");
+	private final MyCellarButton m_jcb_options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
 	static final long serialVersionUID = 260706;
 
 	/**

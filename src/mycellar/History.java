@@ -23,15 +23,15 @@ import static mycellar.Program.DATE_FORMATER;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 26/10/20
+ * @version 1.2
+ * @since 09/12/20
  */
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -45,8 +45,8 @@ import static mycellar.Program.DATE_FORMATER;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -57,19 +57,19 @@ import static mycellar.Program.DATE_FORMATER;
 @XmlRootElement(name = "History")
 public class History {
 
-    @XmlElement(required = true)
-    private String date;
-    private int type;
-    @XmlElement(name = "Bouteille", required = true)
-    private Bouteille bouteille;
-	
-	  public static final int ADD = 0;
-    public static final int MODIFY = 1;
-    public static final int DEL = 2;
-    public static final int VALIDATED = 3;
-    public static final int TOCHECK = 4;
+  @XmlElement(required = true)
+  private String date;
+  private int type;
+  @XmlElement(name = "Bouteille", required = true)
+  private Bouteille bouteille;
 
-	/**
+  public static final int ADD = 0;
+  public static final int MODIFY = 1;
+  public static final int DEL = 2;
+  public static final int VALIDATED = 3;
+  public static final int TOCHECK = 4;
+
+  /**
    * History: Contructeur avec une bouteille et un type d'action
    *
    * @param bouteille Bouteille
@@ -81,40 +81,44 @@ public class History {
     date = LocalDate.now().format(DATE_FORMATER);
   }
 
-    public History() {}
+  public History() {}
 
-    public String getDate() {
-        return date;
-    }
+  public String getDate() {
+    return date;
+  }
 
-    public LocalDate getLocaleDate() {
-      if (date == null) {
-        return null;
-      }
-      return LocalDate.parse(date, DATE_FORMATER);
+  public LocalDate getLocaleDate() {
+    if (date == null) {
+      return null;
     }
+    return LocalDate.parse(date, DATE_FORMATER);
+  }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
+  public void setDate(String date) {
+    this.date = date;
+  }
 
-    public int getType() {
-        return type;
-    }
+  public int getType() {
+    return type;
+  }
 
-    public void setType(int type) {
-        this.type = type;
-    }
-    
-    boolean isDeleted() {
-    	return type == DEL;
-    }
+  public void setType(int type) {
+    this.type = type;
+  }
 
-    public Bouteille getBouteille() {
-        return bouteille;
-    }
+  boolean isDeleted() {
+    return type == DEL;
+  }
 
-    public void setBouteille(Bouteille bouteille) {
-        this.bouteille = bouteille;
-    }
+  boolean isAddedOrDeleted() {
+    return type == ADD || type == DEL;
+  }
+
+  public Bouteille getBouteille() {
+    return bouteille;
+  }
+
+  public void setBouteille(Bouteille bouteille) {
+    this.bouteille = bouteille;
+  }
 }

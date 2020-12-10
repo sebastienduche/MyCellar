@@ -23,8 +23,8 @@ import static mycellar.Program.DATE_FORMATER;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.2
- * @since 09/12/20
+ * @version 1.3
+ * @since 10/12/20
  */
 
 /**
@@ -40,6 +40,7 @@ import static mycellar.Program.DATE_FORMATER;
  *         &lt;element name="date" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element ref="{}Bouteille"/>
+ *         &lt;element name="totalBottle" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -52,7 +53,8 @@ import static mycellar.Program.DATE_FORMATER;
 @XmlType(name = "", propOrder = {
     "date",
     "type",
-    "bouteille"
+    "bouteille",
+    "totalBottle"
 })
 @XmlRootElement(name = "History")
 public class History {
@@ -62,6 +64,8 @@ public class History {
   private int type;
   @XmlElement(name = "Bouteille", required = true)
   private Bouteille bouteille;
+  @XmlElement
+  private int totalBottle;
 
   public static final int ADD = 0;
   public static final int MODIFY = 1;
@@ -75,9 +79,10 @@ public class History {
    * @param bouteille Bouteille
    * @param type int
    */
-  public History(Bouteille bouteille, int type) {
+  public History(Bouteille bouteille, int type, int totalBottle) {
     this.bouteille = bouteille;
     this.type = type;
+    this.totalBottle = totalBottle;
     date = LocalDate.now().format(DATE_FORMATER);
   }
 
@@ -120,5 +125,17 @@ public class History {
 
   public void setBouteille(Bouteille bouteille) {
     this.bouteille = bouteille;
+  }
+
+  public boolean hasTotalBottle() {
+    return totalBottle > 0;
+  }
+
+  public int getTotalBottle() {
+    return totalBottle;
+  }
+
+  public void setTotalBottle(int totalBottle) {
+    this.totalBottle = totalBottle;
   }
 }

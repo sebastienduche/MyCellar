@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.1
- * @since 12/11/20
+ * @version 6.2
+ * @since 10/12/20
  */
 
 public class SerializedStorage implements Storage {
@@ -27,6 +27,8 @@ public class SerializedStorage implements Storage {
 	private static final HistoryList HISTORY_LIST = new HistoryList();
 	private static final WorkSheetList WORKSHEET_LIST = new WorkSheetList();
 	private ListeBouteille listBouteilles = new ListeBouteille();
+
+	private int bottleCount;
 
 	private final LinkedList<String> listeUniqueBouteille = new LinkedList<>(); // Liste des noms de bouteille (un seule nom)
 
@@ -44,27 +46,32 @@ public class SerializedStorage implements Storage {
 	@Override
 	public void setListBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles = listBouteilles;
+		bottleCount = listBouteilles.getBouteille().size();
 		listeUniqueBouteille.clear();
-		if(this.listBouteilles.bouteille == null) {
+		if (this.listBouteilles.bouteille == null) {
 			this.listBouteilles.bouteille = new LinkedList<>();
 		}
-		for(Bouteille b: this.listBouteilles.bouteille) {
-			if(!listeUniqueBouteille.contains(b.getNom())) {
+		for (Bouteille b : this.listBouteilles.bouteille) {
+			if (!listeUniqueBouteille.contains(b.getNom())) {
 				listeUniqueBouteille.add(b.getNom());
 			}
 		}
 	}
 
+	public int getBottleCount() {
+		return bottleCount;
+	}
 
 	@Override
 	public void addBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles.getBouteille().addAll(listBouteilles.getBouteille());
-		for(Bouteille b: listBouteilles.bouteille) {
+		bottleCount = listBouteilles.getBouteille().size();
+		for (Bouteille b : listBouteilles.bouteille) {
 			final List<History> theBottle = HISTORY_LIST.getHistory().stream().filter(history -> history.getBouteille().getId() == b.getId()).collect(Collectors.toList());
 			if (b.updateID() && !theBottle.isEmpty()) {
 				theBottle.get(0).getBouteille().setId(b.getId());
 			}
-			if(!listeUniqueBouteille.contains(b.getNom())) {
+			if (!listeUniqueBouteille.contains(b.getNom())) {
 				listeUniqueBouteille.add(b.getNom());
 			}
 		}
@@ -84,7 +91,7 @@ public class SerializedStorage implements Storage {
 	@Override
 	public void addHistory(int type, Bouteille bottle) {
 		Program.setModified();
-		HISTORY_LIST.addLast(new History(bottle, type));
+		HISTORY_LIST.addLast(new History(bottle, type, getBottleCount()));
 	}
 
 	@Override
@@ -102,7 +109,7 @@ public class SerializedStorage implements Storage {
 		 * 3 Clear Validated
 		 * 4 Clear To Check
 		 */
-		Debug("Program: Clearing history: "+value);
+		Debug("Program: Clearing history: " + value);
 		String sValue;
 		switch (value) {
 			case -1:
@@ -164,9 +171,9 @@ public class SerializedStorage implements Storage {
 		boolean isCaisse = rangement == null || rangement.isCaisse();
 		final List<Bouteille> resultBouteilles = listBouteilles.getBouteille().stream().filter(
 				bouteille -> emplacement.equals(bouteille.getEmplacement())
-				&& nom.equals(bouteille.getNom())
-				&& numLieu == bouteille.getNumLieu()
-				&& (isCaisse ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(Collectors.toList());
+						&& nom.equals(bouteille.getNom())
+						&& numLieu == bouteille.getNumLieu()
+						&& (isCaisse ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(Collectors.toList());
 		if (resultBouteilles.isEmpty()) {
 			Debug("DeleteWine: Unable to find the wine!");
 			return false;
@@ -175,12 +182,13 @@ public class SerializedStorage implements Storage {
 		final Bouteille bouteille = resultBouteilles.get(0);
 		Debug("DeleteWine: Deleted bottle " + bouteille);
 		listBouteilles.getBouteille().remove(bouteille);
+		bottleCount--;
 		return true;
 	}
 
 	@Override
-	public boolean addWine(Bouteille wine) { 
-		if(null == wine) {
+	public boolean addWine(Bouteille wine) {
+		if (null == wine) {
 			return false;
 		}
 
@@ -190,10 +198,11 @@ public class SerializedStorage implements Storage {
 
 		Program.setModified();
 
-		if(!listeUniqueBouteille.contains(wine.getNom())) {
+		if (!listeUniqueBouteille.contains(wine.getNom())) {
 			listeUniqueBouteille.add(wine.getNom());
 		}
 		CountryVignobleController.addVignobleFromBottle(wine);
+		bottleCount++;
 		return listBouteilles.getBouteille().add(wine);
 	}
 
@@ -220,9 +229,9 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public void loadHistory() {
-		Debug("Loading History...");
+		Debug ("Loading History...");
 		boolean resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + HISTORY_XML));
-		if(!resul) {
+		if (!resul) {
 			HISTORY_LIST.clear();
 			Debug("Loading History KO");
 		} else {
@@ -239,7 +248,7 @@ public class SerializedStorage implements Storage {
 	@Override
 	public void saveWorksheet() {
 		Debug("Saving Worksheet...");
-		 WorkSheetList.writeXML(new File(Program.getWorkDir(true) + WORKSHEET_XML));
+		WorkSheetList.writeXML(new File(Program.getWorkDir(true) + WORKSHEET_XML));
 		Debug("Saving Worksheet OK");
 	}
 
@@ -247,7 +256,7 @@ public class SerializedStorage implements Storage {
 	public void loadWorksheet() {
 		Debug("Loading Worksheet...");
 		boolean resul = WorkSheetList.loadXML(new File(Program.getWorkDir(true) + WORKSHEET_XML));
-		if(!resul) {
+		if (!resul) {
 			WORKSHEET_LIST.clear();
 			Debug("Loading Worksheet KO");
 		} else {
@@ -262,7 +271,7 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public void close() {
-		if(listBouteilles != null) {
+		if (listBouteilles != null) {
 			listBouteilles.resetBouteille();
 		}
 		listeUniqueBouteille.clear();

@@ -57,6 +57,7 @@ import java.util.concurrent.atomic.LongAdder;
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
 	private static final long serialVersionUID = -5333602919958999440L;
+	private static final int PRICE_BRACKET_DEFAULT = 50;
 	private final MyCellarLabel comboLabel = new MyCellarLabel(LabelType.INFO, "081", LabelProperty.SINGLE.withDoubleQuote());
 	private final MyCellarLabel end = new MyCellarLabel();
 	private final MyCellarLabel moy = new MyCellarLabel();
@@ -74,6 +75,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 	private final List<StatData> listNumberBottles = new LinkedList<>();
 	private final ConcurrentMap<Integer, LongAdder> mapDeletedPerYear = new ConcurrentHashMap<>();
 	private final ConcurrentMap<Integer, LongAdder> mapAddedPerYear = new ConcurrentHashMap<>();
+	private boolean allPriceBrackets = true;
 
 	enum StatType {
 		PLACE,
@@ -106,11 +108,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		scroll = new JScrollPane(panel);
 		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		listOptions.addItemListener(this::typeStats_itemStateChanged);
-		listPlaces.addItemListener((e) -> {
-			if (e.getSource().equals(listPlaces) && e.getStateChange() == ItemEvent.SELECTED) {
-				listStatOptionItemStateChanged();
-			}
-		});
+		listPlaces.addItemListener(this::listStatOptionItemStateChanged);
 
 		MyCellarLabel chartType = new MyCellarLabel(Program.getLabel("Stat.chartType"));
 		listChart.addItem(Program.getLabel("Stat.chartBar"));
@@ -142,7 +140,9 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
 	private void chartItemStateChanged(ItemEvent itemEvent) {
 		final MyCellarEnum selectedItem = getSelectedStatType();
-		if (selectedItem == null) return;
+		if (itemEvent.getStateChange() != ItemEvent.SELECTED || selectedItem == null) {
+			return;
+		}
 		if (listChart.getSelectedIndex() == 0) {
 			Debug("Bar Chart");
 			if (selectedItem.getValue() == StatType.YEAR.ordinal()) {
@@ -163,12 +163,13 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 	/**
 	 * typeStats_itemStateChanged: Fonction appelle lors d'un changement dans la
 	 * premiere liste.
-	 *
-	 * @param e ItemEvent
+	 * @param e
 	 */
 	private void typeStats_itemStateChanged(ItemEvent e) {
 		final MyCellarEnum selectedItem = getSelectedStatType();
-		if (selectedItem == null) return;
+		if (e.getStateChange() != ItemEvent.SELECTED || selectedItem == null) {
+			return;
+		}
 		scroll.setVisible(true);
 		listChart.setEnabled(true);
 		if (selectedItem.getValue() == StatType.YEAR.ordinal()) {
@@ -196,17 +197,19 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 	}
 
 	private MyCellarEnum getSelectedStatType() {
-		final MyCellarEnum selectedItem = (MyCellarEnum) listOptions.getSelectedItem();
-		return selectedItem;
+		return (MyCellarEnum) listOptions.getSelectedItem();
 	}
 
 	/**
 	 * listStatOptionItemStateChanged: Fonction appelle lors d'un changement dans la
 	 * seconde liste.
+	 * @param e
 	 */
-	private void listStatOptionItemStateChanged() {
+	private void listStatOptionItemStateChanged(ItemEvent e) {
 		final MyCellarEnum selectedItem = getSelectedStatType();
-		if (selectedItem == null) return;
+		if ((e != null && e.getStateChange() != ItemEvent.SELECTED) || selectedItem == null) {
+			return;
+		}
 		if (selectedItem.getValue() == StatType.PLACE.ordinal()) {
 			if (listPlaces.getSelectedIndex() == 0) {
 				displayAllPlaces();
@@ -228,19 +231,19 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
 	private void displayByPrice() {
 		listPlaces.setEnabled(true);
-		boolean all_bracket = true;
-		if (listPlaces.getSelectedIndex() == 1) {
-			all_bracket = false;
+		boolean all_bracket = listPlaces.getSelectedIndex() == 0;
+		if (all_bracket != allPriceBrackets) {
+			allPriceBrackets = all_bracket;
+			listPrice.clear();
 		}
 		panel.removeAll();
 		panel.repaint();
 
 		options.setEnabled(true);
-		int tranche = Program.getCaveConfigInt(MyCellarSettings.TRANCHE_PRIX, 50);
-
+		int tranche = Program.getCaveConfigInt(MyCellarSettings.TRANCHE_PRIX, PRICE_BRACKET_DEFAULT);
 		if (tranche <= 0) {
-			tranche = 50;
-			Program.putCaveConfigInt(MyCellarSettings.TRANCHE_PRIX, 50);
+			tranche = PRICE_BRACKET_DEFAULT;
+			Program.putCaveConfigInt(MyCellarSettings.TRANCHE_PRIX, PRICE_BRACKET_DEFAULT);
 		}
 
 		if (listPrice.isEmpty()) {
@@ -443,7 +446,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		if (StringUtils.isNumeric(value)) {
 			Program.putCaveConfigInt(MyCellarSettings.TRANCHE_PRIX, Integer.parseInt(value));
 			listPrice.clear();
-			listStatOptionItemStateChanged();
+			listStatOptionItemStateChanged(null);
 		}
 	}
 
@@ -605,7 +608,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		final MyCellarEnum selectedStatType = getSelectedStatType();
 		listPlaces.removeAllItems();
 		fillListOptionsChart(selectedStatType);
-		listStatOptionItemStateChanged();
+		listStatOptionItemStateChanged(null);
 		updateBouteilleCountLabel();
 	}
 

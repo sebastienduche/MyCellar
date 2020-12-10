@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Titre : Cave &agrave; vin
@@ -35,25 +36,25 @@ import java.util.List;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.5
- * @since 04/12/20
+ * @version 4.6
+ * @since 10/12/20
  */
 
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
 	private static final long serialVersionUID = 4778721795659106312L;
-	private final MyCellarComboBox<String> filterCbx = new MyCellarComboBox<>();
+	private final MyCellarComboBox<FilterItem> filterCbx = new MyCellarComboBox<>();
 	private final TableHistoryValues model;
 
 	public ShowHistory() {
 		Debug("Constructor");
 		MyCellarLabel filterLabel = new MyCellarLabel(LabelType.INFO, "350"); // Filtre
-		filterCbx.addItem(Program.getLabel("Infos351"));
-		filterCbx.addItem(Program.getLabel("Infos345"));
-		filterCbx.addItem(Program.getLabel("Infos346"));
-		filterCbx.addItem(Program.getLabel("Infos347"));
-		filterCbx.addItem(Program.getLabel("History.Validated"));
-		filterCbx.addItem(Program.getLabel("History.ToCheck"));
+		filterCbx.addItem(new FilterItem(HistoryState.ALL, Program.getLabel("Infos351")));
+		filterCbx.addItem(new FilterItem(HistoryState.ADD, Program.getLabel("Infos345")));
+		filterCbx.addItem(new FilterItem(HistoryState.MODIFY, Program.getLabel("Infos346")));
+		filterCbx.addItem(new FilterItem(HistoryState.DEL, Program.getLabel("Infos347")));
+		filterCbx.addItem(new FilterItem(HistoryState.VALIDATED, Program.getLabel("History.Validated")));
+		filterCbx.addItem(new FilterItem(HistoryState.TOCHECK, Program.getLabel("History.ToCheck")));
 		filterCbx.addItemListener(this::filter_itemStateChanged);
 
 		// Remplissage de la table
@@ -186,11 +187,11 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 						Rangement r = Program.getCave(b.getEmplacement());
 						if (r != null) {
 							if (r.isCaisse()) {
-								Program.getStorage().addHistory(History.ADD, b);
+								Program.getStorage().addHistory(HistoryState.ADD, b);
 								Program.getStorage().addWine(b);
 							} else {
 								if (r.canAddBottle(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
-									Program.getStorage().addHistory(History.ADD, b);
+									Program.getStorage().addHistory(HistoryState.ADD, b);
 									Program.getStorage().addWine(b);
 								} else {
 									cantRestoreList.add(b);
@@ -273,8 +274,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int filter = filterCbx.getSelectedIndex() - 1;
-			Program.getStorage().clearHistory(filter);
+			Program.getStorage().clearHistory(((FilterItem) Objects.requireNonNull(filterCbx.getSelectedItem())).getHistoryState());
 			filterCbx.setSelectedIndex(0);
 			refresh();
 		}
@@ -282,5 +282,24 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
 	void refresh() {
 		model.setHistory(Program.getHistory());
+	}
+
+	static class FilterItem {
+		private final HistoryState historyState;
+		private final String label;
+
+		public FilterItem(HistoryState historyState, String label) {
+			this.historyState = historyState;
+			this.label = label;
+		}
+
+		public HistoryState getHistoryState() {
+			return historyState;
+		}
+
+		@Override
+		public String toString() {
+			return label;
+		}
 	}
 }

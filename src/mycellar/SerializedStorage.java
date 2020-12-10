@@ -89,9 +89,9 @@ public class SerializedStorage implements Storage {
 
 
 	@Override
-	public void addHistory(int type, Bouteille bottle) {
+	public void addHistory(HistoryState type, Bouteille bottle) {
 		Program.setModified();
-		HISTORY_LIST.addLast(new History(bottle, type, getBottleCount()));
+		HISTORY_LIST.addLast(new History(bottle, type.ordinal(), getBottleCount()));
 	}
 
 	@Override
@@ -101,33 +101,26 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public void clearHistory(int value) {
-		/* -1 Clear All
-		 * 0 Clear Add
-		 * 1 Clear Modify
-		 * 2 Clear Del
-		 * 3 Clear Validated
-		 * 4 Clear To Check
-		 */
-		Debug("Program: Clearing history: " + value);
+	public void clearHistory(HistoryState historyState) {
+		Debug("Program: Clearing history: " + historyState);
 		String sValue;
-		switch (value) {
-			case -1:
+		switch (historyState) {
+			case ALL:
 				sValue = Program.getError("Error182");
 				break;
-			case History.ADD:
+			case ADD:
 				sValue = Program.getError("Error189");
 				break;
-			case History.MODIFY:
+			case MODIFY:
 				sValue = Program.getError("Error191");
 				break;
-			case History.DEL:
+			case DEL:
 				sValue = Program.getError("Error190");
 				break;
-			case History.VALIDATED:
+			case VALIDATED:
 				sValue = Program.getError("Error.HistoryValidatedDelete");
 				break;
-			case History.TOCHECK:
+			case TOCHECK:
 				sValue = Program.getError("Error.HistoryToCheckDelete");
 				break;
 			default:
@@ -139,11 +132,11 @@ public class SerializedStorage implements Storage {
 		}
 
 		Program.setModified();
-		if(value == -1) {
+		if(historyState == HistoryState.ALL) {
 			HISTORY_LIST.clear();
 			return;
 		}
-		final List<History> list = HISTORY_LIST.getHistory().stream().filter(history -> history.getType() == value).collect(Collectors.toList());
+		final List<History> list = HISTORY_LIST.getHistory().stream().filter(history -> history.getType() == historyState.ordinal()).collect(Collectors.toList());
 
 		// Suppression de l'historique
 		for (History h : list) {

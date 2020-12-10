@@ -33,6 +33,7 @@ import java.awt.event.ItemEvent;
 import java.text.Collator;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -43,6 +44,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
+
+import static java.util.function.Predicate.not;
 
 
 /**
@@ -358,6 +361,21 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
 		if (listNumberBottles.isEmpty()) {
 			AtomicInteger i = new AtomicInteger();
+			final Integer nbBottle = Program.getHistory()
+					.stream()
+					.filter(History::hasTotalBottle)
+					.map(History::getTotalBottle)
+					.min(Integer::compareTo).orElse(Program.getNbBouteille());
+			AtomicInteger nb = new AtomicInteger(nbBottle);
+			Program.getHistory()
+					.stream()
+					.filter(History::isAddedOrDeleted)
+					.filter(not(History::hasTotalBottle))
+					.filter(history -> history.getLocaleDate() != null)
+					.sorted(Comparator.comparing(History::getLocaleDate).reversed())
+					.forEach(history -> listNumberBottles.add(new StatData(i.getAndIncrement() + "", history.isDeleted() ? nb.decrementAndGet() : nb.incrementAndGet())));
+
+			Collections.reverse(listNumberBottles);
 			Program.getHistory()
 					.stream()
 					.filter(History::hasTotalBottle)

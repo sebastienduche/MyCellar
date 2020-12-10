@@ -40,8 +40,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.2
- * @since 03/12/20
+ * @version 7.3
+ * @since 10/12/20
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -417,7 +417,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		}
 
 		bottle.setModified();
-		Program.getStorage().addHistory(History.MODIFY, bottle);
+		Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
 
 		Rangement rangement = bottle.getRangement();
 		if (!oldRangement.isCaisse()) {
@@ -460,7 +460,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
 	private void replaceWine(final Bouteille bToDelete) {
 		//Change wine in a place
-		Program.getStorage().addHistory(History.MODIFY, bottle);
+		Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
 		Program.getStorage().deleteWine(bToDelete);
 
 		bottle.getRangement().clearStock(bottle);

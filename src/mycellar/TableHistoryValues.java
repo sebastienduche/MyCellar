@@ -17,8 +17,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 20/11/20
+ * @version 2.7
+ * @since 10/12/20
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -101,26 +101,28 @@ class TableHistoryValues extends AbstractTableModel {
         }
         String sType = "";
         String sLabel = "";
-        switch (h.getType()) {
-          case History.ADD:
+        switch (h.getState()) {
+          case ADD:
             sType = Program.getLabel("Infos345");
             sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
-          case History.VALIDATED:
+          case VALIDATED:
             sType = Program.getLabel("History.Validated");
             sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
-          case History.TOCHECK:
+          case TOCHECK:
             sType = Program.getLabel("History.ToCheck");
             sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
-          case History.MODIFY:
+          case MODIFY:
             sType = Program.getLabel("Infos346");
             sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
-          case History.DEL:
+          case DEL:
             sType = Program.getLabel("Infos347");
             sLabel = MessageFormat.format(Program.getLabel("Infos349"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            break;
+          case ALL:
             break;
         }
         if (column == TYPE) {

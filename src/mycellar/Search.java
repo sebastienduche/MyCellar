@@ -51,8 +51,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.5
- * @since 04/12/20
+ * @version 21.6
+ * @since 10/12/20
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -297,7 +297,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 				SwingUtilities.invokeLater(() -> {
 					for (Bouteille bottle : listToSupp) {
 						model.removeBouteille(bottle);
-						Program.getStorage().addHistory(History.DEL, bottle);
+						Program.getStorage().addHistory(HistoryState.DEL, bottle);
 						Program.getStorage().deleteWine(bottle);
 						Program.setToTrash(bottle);
 						Program.removeBottleTab(bottle);

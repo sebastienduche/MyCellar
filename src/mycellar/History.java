@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import static mycellar.Program.DATE_FORMATER;
 
@@ -67,12 +68,6 @@ public class History {
   @XmlElement
   private int totalBottle;
 
-  public static final int ADD = 0;
-  public static final int MODIFY = 1;
-  public static final int DEL = 2;
-  public static final int VALIDATED = 3;
-  public static final int TOCHECK = 4;
-
   /**
    * History: Contructeur avec une bouteille et un type d'action
    *
@@ -111,12 +106,18 @@ public class History {
     this.type = type;
   }
 
+  public HistoryState getState() {
+    return Arrays.stream(HistoryState.values())
+        .filter(historyState -> historyState.ordinal() == type)
+        .findAny().orElse(HistoryState.ALL);
+  }
+
   boolean isDeleted() {
-    return type == DEL;
+    return type == HistoryState.DEL.ordinal();
   }
 
   boolean isAddedOrDeleted() {
-    return type == ADD || type == DEL;
+    return type == HistoryState.ADD.ordinal() || type == HistoryState.DEL.ordinal();
   }
 
   public Bouteille getBouteille() {

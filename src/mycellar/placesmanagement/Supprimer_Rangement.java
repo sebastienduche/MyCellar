@@ -2,7 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.Erreur;
-import mycellar.History;
+import mycellar.HistoryState;
 import mycellar.ITabListener;
 import mycellar.MyXmlDom;
 import mycellar.Program;
@@ -36,7 +36,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static mycellar.Program.*;
+import static mycellar.Program.EMPTY_PLACE;
+import static mycellar.Program.FONT_DIALOG_SMALL;
+import static mycellar.Program.deleteSupprimerRangement;
+import static mycellar.Program.getAide;
+import static mycellar.Program.getCave;
+import static mycellar.Program.getCaveLength;
+import static mycellar.Program.getError;
+import static mycellar.Program.getLabel;
+import static mycellar.Program.getPreviewXMLFileName;
+import static mycellar.Program.getStorage;
+import static mycellar.Program.open;
+import static mycellar.Program.removeCave;
+import static mycellar.Program.setToTrash;
+import static mycellar.Program.showException;
+import static mycellar.Program.updateAllPanels;
 
 
 /**
@@ -45,8 +59,8 @@ import static mycellar.Program.*;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.4
- * @since 04/12/20
+ * @version 8.5
+ * @since 10/12/20
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -216,7 +230,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 
 								List<Bouteille> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
 									for (Bouteille b : bottleList) {
-									getStorage().addHistory(History.DEL, b);
+									getStorage().addHistory(HistoryState.DEL, b);
 									getStorage().deleteWine(b);
 									setToTrash(b);
 								}

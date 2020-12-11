@@ -33,7 +33,6 @@ import java.awt.event.ItemEvent;
 import java.text.Collator;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -42,10 +41,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
-
-import static java.util.function.Predicate.not;
 
 
 /**
@@ -54,8 +50,8 @@ import static java.util.function.Predicate.not;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.6
- * @since 10/12/20
+ * @version 7.7
+ * @since 11/12/20
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -339,8 +335,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 					.stream()
 					.filter(History::isAddedOrDeleted)
 					.forEach(this::mapToAddedDeletedStat);
-			mapAddedPerYear.forEach((year, value) -> listHistory.add(new StatData(year, Program.getLabel("Stat.in") + " " + year, value.intValue())));
-			mapDeletedPerYear.forEach((year, value) -> listHistory.add(new StatData(year, Program.getLabel("Stat.out") + " " + year, value.intValue())));
+			mapAddedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100, Program.getLabel("Stat.in") + " " + year, value.intValue())));
+			mapDeletedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100 + 1, Program.getLabel("Stat.out") + " " + year, value.intValue())));
 			listHistory.sort(Comparator.comparingInt(o -> o.id));
 		}
 		final JFreeChart chart = panelChart.setDataBarChart(listHistory, Program.getLabel("Stat.inout"));
@@ -360,26 +356,11 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		moy.setText("");
 
 		if (listNumberBottles.isEmpty()) {
-			AtomicInteger i = new AtomicInteger();
-			final Integer nbBottle = Program.getHistory()
-					.stream()
-					.filter(History::hasTotalBottle)
-					.map(History::getTotalBottle)
-					.min(Integer::compareTo).orElse(Program.getNbBouteille());
-			AtomicInteger nb = new AtomicInteger(nbBottle);
-			Program.getHistory()
-					.stream()
-					.filter(History::isAddedOrDeleted)
-					.filter(not(History::hasTotalBottle))
-					.filter(history -> history.getLocaleDate() != null)
-					.sorted(Comparator.comparing(History::getLocaleDate).reversed())
-					.forEach(history -> listNumberBottles.add(new StatData(i.getAndIncrement() + "", history.isDeleted() ? nb.decrementAndGet() : nb.incrementAndGet())));
-
-			Collections.reverse(listNumberBottles);
 			Program.getHistory()
 					.stream()
 					.filter(History::hasTotalBottle)
-					.forEach(history -> listNumberBottles.add(new StatData(i.getAndIncrement() + "", history.getTotalBottle())));
+					.sorted(Comparator.comparing(History::getLocaleDate))
+					.forEach(history -> listNumberBottles.add(new StatData(history.getLocaleDate().format(Program.DATE_FORMATER), history.getTotalBottle())));
 		}
 		panelChart.setLineChart(listNumberBottles, Program.getLabel("Stat.bottleCount", LabelProperty.PLURAL));
 	}

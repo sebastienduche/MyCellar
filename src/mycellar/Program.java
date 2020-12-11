@@ -19,9 +19,9 @@ import mycellar.core.UnableToOpenFileException;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
+import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
-import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
@@ -75,6 +75,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -88,8 +89,10 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static java.util.function.Predicate.not;
 import static mycellar.ScreenType.ADDVIN;
 import static mycellar.ScreenType.CAPACITY;
 import static mycellar.ScreenType.CELL_ORGANIZER;
@@ -117,13 +120,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.0
- * @since 04/12/20
+ * @version 24.1
+ * @since 11/12/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.8.5.0";
+	public static final String INTERNAL_VERSION = "3.8.5.2";
 	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;
@@ -337,10 +340,31 @@ public final class Program {
 	 * Pour nettoyer et mettre a jour le programme
 	 */
 	private static void cleanAndUpgrade() {
+		Debug("Program: clean and upgrade...");
 		if (hasFile()) {
 			String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
 			if (sVersion.isEmpty() || sVersion.contains(".")) {
 				putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
+			}
+			int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
+			Debug("Program: internal file version: " + currentVersion);
+			if (currentVersion < VERSION) {
+				Debug("Program: Updating history");
+				final Integer nbBottle = getHistory()
+						.stream()
+						.filter(History::hasTotalBottle)
+						.map(History::getTotalBottle)
+						.min(Integer::compareTo).orElse(getNbBouteille());
+				AtomicInteger nb = new AtomicInteger(nbBottle);
+				final List<History> historyList = getHistory()
+						.stream()
+						.filter(History::isAddedOrDeleted)
+						.filter(not(History::hasTotalBottle))
+						.filter(history -> history.getLocaleDate() != null)
+						.sorted(Comparator.comparing(History::getLocaleDate).reversed())
+						.collect(Collectors.toList());
+				historyList
+						.forEach(history -> history.setTotalBottle(history.isDeleted() ? nb.getAndIncrement() : nb.getAndDecrement()));
 			}
 			final String type = getCaveConfigString(PROGRAM_TYPE, "");
 			if (type.isBlank()) {
@@ -358,34 +382,34 @@ public final class Program {
 			}
 			file = new File(getWorkDir(true) + "static_all.sinfo");
 			if (file.exists()) {
-				Debug("Deleting old file: static_all.sinfo");
+				Debug("Program: Deleting old file: static_all.sinfo");
 				file.delete();
 			}
 			file = new File(getWorkDir(true) + "Errors.log");
 			if (file.exists()) {
-				Debug("Deleting old file: Errors.log");
+				Debug("Program: Deleting old file: Errors.log");
 				file.delete();
 			}
 			file = new File(getWorkDir(true) + "other1.ini");
 			if (file.exists()) {
-				Debug("Deleting old file: other1.ini");
+				Debug("Program: Deleting old file: other1.ini");
 				file.delete();
 			}
 			file = new File(getWorkDir(true) + "other2.ini");
 			if (file.exists()) {
-				Debug("Deleting old file: other2.ini");
+				Debug("Program: Deleting old file: other2.ini");
 				file.delete();
 			}
 			file = new File(getWorkDir(true) + "other3.ini");
 			if (file.exists()) {
-				Debug("Deleting old file: other3.ini");
+				Debug("Program: Deleting old file: other3.ini");
 				file.delete();
 			}
 		}
 		CONFIG_GLOBAL.remove(MyCellarSettings.DEBUG);
 		CONFIG_GLOBAL.remove(MyCellarSettings.TYPE_AUTO);
 
-		//int version = Integer.parseInt(sVersion);
+		Debug("Program: clean and upgrade... Done");
 	}
 
 

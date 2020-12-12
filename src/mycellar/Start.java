@@ -62,8 +62,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.6
- * @since 04/12/20
+ * @version 27.7
+ * @since 12/12/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -637,7 +637,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		save.setText(Program.getLabel("Infos326"));
 		showFile.setText(Program.getLabel("Infos324"));
 		showWorksheet.setText(Program.getLabel("ShowFile.Worksheet"));
-		searchWine.setText(Program.getLabel("Main.tabSearch", LabelProperty.SINGLE));
+		searchWine.setText(Program.getLabel("Main.tabSearchButton"));
 
 		about.setText(Program.getLabel("Infos199")); // A Propos
 		news.setText(Program.getLabel("Infos330")); // Nouveautes
@@ -676,7 +676,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oShowFileButton.setText(Program.getLabel("Infos324"));
 		m_oTableauxButton.setText(Program.getLabel("Infos008"));
 		m_oAjouterButton.setText(Program.getLabel("Main.tabAdd", LabelProperty.SINGLE));
-		m_oRechercherButton.setText(Program.getLabel("Main.tabSearch", LabelProperty.SINGLE));
+		m_oRechercherButton.setText(Program.getLabel("Main.tabSearchButton"));
 		m_oSupprimerButton.setText(Program.getLabel("Infos004"));
 		version.setText(Program.getLabel("MonthVersion") + Program.INFOS_VERSION + MyCellarVersion.MAIN_VERSION);
 		addWine.setAccelerator(KeyStroke.getKeyStroke(addWineChar, InputEvent.CTRL_DOWN_MASK));
@@ -1368,7 +1368,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private SearchAction() {
-			super(Program.getLabel("Main.tabSearch", LabelProperty.SINGLE), MyCellarImage.SEARCH);
+			super(Program.getLabel("Main.tabSearchButton", LabelProperty.SINGLE), MyCellarImage.SEARCH);
 			putValue(SHORT_DESCRIPTION, Program.getLabel("Main.tabSearch", LabelProperty.SINGLE));
 		}
 

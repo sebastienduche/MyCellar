@@ -126,7 +126,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.8.5.2";
+	public static final String INTERNAL_VERSION = "3.8.5.3";
 	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;

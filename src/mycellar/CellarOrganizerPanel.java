@@ -53,8 +53,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 19/10/20
+ * @version 2.9
+ * @since 10/12/20
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -246,7 +246,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 			for (int i=0; i<stock.getComponentCount(); i++) {
 				 Component c = stock.getComponent(i);
 				 if (c instanceof BouteilleLabel){
-					 Program.getStorage().addHistory(History.DEL, ((BouteilleLabel)c).getBouteille());
+					 Program.getStorage().addHistory(HistoryState.DEL, ((BouteilleLabel)c).getBouteille());
 					 Program.getStorage().getAllList().remove(((BouteilleLabel)c).getBouteille());
 					 Program.setToTrash(((BouteilleLabel)c).getBouteille());
 				 }
@@ -337,9 +337,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 }
 
 
-class RangementCell extends JPanel {
+final class RangementCell extends JPanel {
 	BouteilleLabel draggingLabel;
-	private BouteilleLabel bottle;
+	private BouteilleLabel bouteilleLabel;
 	private final boolean stock;
 	private int placeNum, row, column;
 	private Rangement place;
@@ -401,19 +401,19 @@ class RangementCell extends JPanel {
 
 	void addBottle(BouteilleLabel bouteille) {
 		if (!stock) {
-			bottle = bouteille;
+			bouteilleLabel = bouteille;
 		}
 		add(bouteille, stock ? "wrap" : "grow, gapright 0px");
 	}
 	
 	void removeBottle() {
 		if (!stock) {
-			bottle = null;
+			bouteilleLabel = null;
 		}
 	}
 	
 	BouteilleLabel getBottleLabel() {
-		return bottle;
+		return bouteilleLabel;
 	}
 
 	public int getRow() {
@@ -432,7 +432,7 @@ class RangementCell extends JPanel {
 	
 	int getPlaceNum() {
 		if (place != null && place.isCaisse()) {
-			return placeNum-1;
+			return placeNum - 1;
 		}
 		return placeNum;
 	}
@@ -461,7 +461,7 @@ class RangementCell extends JPanel {
 
 	@Override
 	public String toString() {
-		return "RangementCell [draggingLabel=" + draggingLabel + ", bottle=" + bottle + ", stock=" + stock + ", placeNum=" + placeNum + ", row=" + row
+		return "RangementCell [draggingLabel=" + draggingLabel + ", bottle=" + bouteilleLabel + ", stock=" + stock + ", placeNum=" + placeNum + ", row=" + row
 				+ ", column=" + column + ", place=" + place + ", parent=" + (parent != null ? "Yes" : "No") + "]";
 	}
 
@@ -471,7 +471,7 @@ class RangementCell extends JPanel {
 	
 }
 
-class BouteilleLabel extends JPanel {
+final class BouteilleLabel extends JPanel {
 
 	private static final long serialVersionUID = -3982812616929975895L;
 	private Bouteille bouteille;
@@ -506,7 +506,7 @@ class BouteilleLabel extends JPanel {
 					if (parent instanceof RangementCell) {
 						((RangementCell)parent).remove(BouteilleLabel.this);
 						((RangementCell)parent).updateUI();
-						Program.getStorage().addHistory(History.DEL, bouteille);
+						Program.getStorage().addHistory(HistoryState.DEL, bouteille);
 						Program.getStorage().deleteWine(bouteille);
 						Program.setToTrash(bouteille);
 					}
@@ -662,7 +662,7 @@ class LabelTransferHandler extends TransferHandler {
 			}
 			target.revalidate();
 			if (!target.isStock()) {
-				Program.getStorage().addHistory(History.MODIFY, bouteille);
+				Program.getStorage().addHistory(HistoryState.MODIFY, bouteille);
 			}
 			return true;
 		} catch(UnsupportedFlavorException | IOException ignored) {

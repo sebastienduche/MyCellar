@@ -5,7 +5,7 @@ import mycellar.BottleColor;
 import mycellar.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Erreur;
-import mycellar.History;
+import mycellar.HistoryState;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
@@ -18,9 +18,6 @@ import mycellar.StateEditor;
 import mycellar.StateRenderer;
 import mycellar.TabEvent;
 import mycellar.ToolTipRenderer;
-import mycellar.core.datas.jaxb.CountryJaxb;
-import mycellar.core.datas.jaxb.CountryListJaxb;
-import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
@@ -32,6 +29,9 @@ import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.datas.jaxb.CountryJaxb;
+import mycellar.core.datas.jaxb.CountryListJaxb;
+import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetData;
 import net.miginfocom.swing.MigLayout;
 
@@ -69,8 +69,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.4
- * @since 20/11/20
+ * @version 8.6
+ * @since 10/12/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -395,12 +395,12 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           b.setStatus(BottlesStatus.VERIFIED.name());
           b.setModified();
           Program.setModified();
-          Program.getStorage().addHistory(History.VALIDATED, b);
+          Program.getStorage().addHistory(HistoryState.VALIDATED, b);
         } else if (TOCHECK.equals(status)) {
           b.setStatus(BottlesStatus.TOCHECK.name());
           b.setModified();
           Program.setModified();
-          Program.getStorage().addHistory(History.TOCHECK, b);
+          Program.getStorage().addHistory(HistoryState.TOCHECK, b);
         }
       }
 
@@ -438,7 +438,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       deleteButton.setText(Program.getLabel("ShowFile.Restore"));
       deleteButton.setIcon(MyCellarImage.RESTORE);
     } else {
-      deleteButton.setText(Program.getLabel("Infos051"));
+      deleteButton.setText(Program.getLabel("Main.Delete"));
     }
 
     deleteButton.addActionListener((e) -> {
@@ -621,7 +621,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
             }
           } else {
             for (Bouteille b : toDeleteList) {
-              Program.getStorage().addHistory(History.DEL, b);
+              Program.getStorage().addHistory(HistoryState.DEL, b);
               Program.getStorage().deleteWine(b);
               Program.setToTrash(b);
               if (isWork()) {
@@ -687,11 +687,11 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
             Rangement r = Program.getCave(b.getEmplacement());
             if (r != null) {
               if (r.isCaisse()) {
-                Program.getStorage().addHistory(History.ADD, b);
+                Program.getStorage().addHistory(HistoryState.ADD, b);
                 Program.getStorage().addWine(b);
               } else {
                 if (r.getBouteille(b).isEmpty()) {
-                  Program.getStorage().addHistory(History.ADD, b);
+                  Program.getStorage().addHistory(HistoryState.ADD, b);
                   Program.getStorage().addWine(b);
                 } else {
                   cantRestoreList.add(b);
@@ -803,7 +803,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           RangementUtils.putTabStock();
           Program.setModified();
           b.setModified();
-          Program.getStorage().addHistory(History.MODIFY, b);
+          Program.getStorage().addHistory(HistoryState.MODIFY, b);
         }
       } else {
         if (rangement != null && rangement.isCaisse()) {

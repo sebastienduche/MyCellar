@@ -46,7 +46,8 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,18 +61,18 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.5
- * @since 19/10/20
+ * @version 13.6
+ * @since 27/11/20
  */
-public class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
+public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
 	private static final int COUNT = 18;
 	private final MyCellarButton importe = new MyCellarButton(LabelType.INFO, "011");
 	private final MyCellarRadioButton type_txt = new MyCellarRadioButton(LabelType.INFO, "040", true);
 	private final MyCellarRadioButton type_xls = new MyCellarRadioButton(LabelType.INFO, "041", false);
 	private final MyCellarRadioButton type_xml = new MyCellarRadioButton(LabelType.INFO, "203", false);
-	private final char IMPORT = Program.getLabel("IMPORT").charAt(0);
-	private final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
+	private final char importChar = Program.getLabel("IMPORT").charAt(0);
+	private final char ouvrirChar = Program.getLabel("OUVRIR").charAt(0);
 	private final List<MyCellarComboBox<MyCellarFields>> comboBoxList = new ArrayList<>(COUNT);
 	private final MyCellarCheckBox titre = new MyCellarCheckBox(LabelType.INFO, "038");
 	private final MyCellarLabel textControl2 = new MyCellarLabel(LabelType.INFO, "037");
@@ -92,8 +93,8 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 		openit.setToolTipText(Program.getLabel("Infos152"));
 		MyCellarButton parcourir = new MyCellarButton("...");
 		parcourir.setToolTipText(Program.getLabel("Infos157"));
-		importe.setMnemonic(IMPORT);
-		openit.setMnemonic(OUVRIR);
+		importe.setMnemonic(importChar);
+		openit.setMnemonic(ouvrirChar);
 		importe.setText(Program.getLabel("Infos036")); //"Importer");
 		importe.addActionListener(this::importe_actionPerformed); //"Selectionner les differents champs presents dans le fichier (de gauche a droite)");
 		titre.setHorizontalTextPosition(SwingConstants.LEFT);
@@ -337,7 +338,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				}
 			}
 
-			HashMap<MyCellarFields, Integer> mapFieldCount = new HashMap<>();
+			EnumMap<MyCellarFields, Integer> mapFieldCount = new EnumMap<>(MyCellarFields.class);
 			for (int i = 0; i < nb_choix; i++) {
 				final var comboBox = comboBoxList.get(i);
 				final MyCellarFields selectedField = (MyCellarFields) comboBox.getSelectedItem();
@@ -371,7 +372,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 			}
 
 			if (type_xls.isSelected()) {
-				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					label_progression.setText("");
 					Debug("ERROR: Not a XLS File");
 					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
@@ -380,7 +381,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 					return;
 				}
 			} else if (type_txt.isSelected()) {
-				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_TXT.toString(), Filtre.FILTRE_CSV.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_TXT.toString(), Filtre.FILTRE_CSV.toString()))) {
 					label_progression.setText("");
 					Debug("ERROR: Not a Text File");
 					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
@@ -389,7 +390,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 					return;
 				}
 			} else {
-				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XML.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
 					label_progression.setText("");
 					Debug("ERROR: Not a XML File");
 					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
@@ -524,9 +525,6 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 				Debug("Importing Text File...");
 				String separe;
 				switch (separateur.getSelectedIndex()) {
-					case 0:
-						separe = ";";
-						break;
 					case 1:
 						separe = ":";
 						break;
@@ -536,6 +534,7 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 					case 3:
 						separe = ",";
 						break;
+					case 0:
 					default:
 						separe = ";";
 				}
@@ -584,15 +583,13 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 					}
 				}
 				displayImportDone();
-			}
-			else { //Excel File
+			} else { //Excel File
 				if (!importExcelFile(nom, new_rangement)) {
 					return;
 				}
 			}
 			importe.setEnabled(true);
-		}
-		catch (Exception exc) {
+		} catch (Exception exc) {
 			Program.showException(exc);
 		}
 		if (RangementUtils.putTabStock()) {
@@ -716,10 +713,10 @@ public class Importer extends JPanel implements ITabListener, Runnable, ICutCopy
 	 * @param e KeyEvent
 	 */
 	private void keylistener_actionPerformed(KeyEvent e) {
-		if (e.getKeyCode() == IMPORT && e.isControlDown()) {
+		if (e.getKeyCode() == importChar && e.isControlDown()) {
 			importe_actionPerformed(null);
 		}
-		if (e.getKeyCode() == OUVRIR && e.isControlDown()) {
+		if (e.getKeyCode() == ouvrirChar && e.isControlDown()) {
 			openit_actionPerformed(null);
 		}
 	}

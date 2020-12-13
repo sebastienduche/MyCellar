@@ -4,17 +4,21 @@ import mycellar.Program;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static mycellar.Program.COUNTRIES_XML;
 import static mycellar.Program.FR;
 
 /**
@@ -23,8 +27,8 @@ import static mycellar.Program.FR;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 20/11/20
+ * @version 1.1
+ * @since 03/12/20
  */
 
 @XmlRootElement(name = "countries")
@@ -61,22 +65,55 @@ public class CountryListJaxb
 	}
 
 	private static CountryListJaxb load() {
+		 File f = null;
+		if (Program.hasFile()) {
+			f = new File(Program.getWorkDir(true), COUNTRIES_XML);
+		}
 		CountryListJaxb countryListJaxb = null;
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(CountryListJaxb.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-			//We had written this file in marshalling example
-			URL stream = CountryListJaxb.class.getClassLoader().getResource("resources/countries.xml");
-			if (stream == null) {
-				Program.Debug("CountryListJaxb: ERROR: Vignobles: Missing resource countries.xml");
-				return null;
+			if (f != null && f.exists()) {
+				Debug("Loading countries file: " + f.getAbsolutePath());
+				countryListJaxb = (CountryListJaxb) jaxbUnmarshaller.unmarshal(f);
+			} else {
+				Debug("Loading countries resource file");
+				URL url = CountryListJaxb.class.getClassLoader().getResource("resources/" + COUNTRIES_XML);
+				if (url == null) {
+					Debug("ERROR: Countries: Missing resource " + COUNTRIES_XML);
+					return null;
+				}
+				countryListJaxb = (CountryListJaxb) jaxbUnmarshaller.unmarshal(url);
+				Debug("Loading countries file Done");
 			}
-			countryListJaxb = (CountryListJaxb) jaxbUnmarshaller.unmarshal( stream );
 		} catch (JAXBException | RuntimeException e) {
 			Program.showException(e);
 		}
 		return countryListJaxb;
+	}
+
+	public static boolean save() {
+		if (instance == null) {
+			return false;
+		}
+		Debug("Writing Countries File: " + COUNTRIES_XML);
+		File f = new File(Program.getWorkDir(true), COUNTRIES_XML);
+		try {
+			JAXBContext jc = JAXBContext.newInstance(CountryListJaxb.class);
+			Marshaller m = jc.createMarshaller();
+			m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			m.marshal(instance, new StreamResult(f));
+		} catch (Exception e) {
+			Program.showException(e);
+			return false;
+		}
+		Debug("Writing Countries File Done");
+		return true;
+	}
+
+	private static void Debug(String s) {
+		Program.Debug("CountryListJaxb: " + s);
 	}
 
 	public static Optional<CountryJaxb> findbyId(String id) {

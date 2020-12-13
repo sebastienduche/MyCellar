@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import static mycellar.Program.DATE_FORMATER;
 
@@ -23,15 +24,15 @@ import static mycellar.Program.DATE_FORMATER;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.1
- * @since 26/10/20
+ * @version 1.3
+ * @since 10/12/20
  */
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -40,81 +41,102 @@ import static mycellar.Program.DATE_FORMATER;
  *         &lt;element name="date" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element ref="{}Bouteille"/>
+ *         &lt;element name="totalBottle" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "date",
     "type",
-    "bouteille"
+    "bouteille",
+    "totalBottle"
 })
 @XmlRootElement(name = "History")
 public class History {
 
-    @XmlElement(required = true)
-    private String date;
-    private int type;
-    @XmlElement(name = "Bouteille", required = true)
-    private Bouteille bouteille;
-	
-	  public static final int ADD = 0;
-    public static final int MODIFY = 1;
-    public static final int DEL = 2;
-    public static final int VALIDATED = 3;
-    public static final int TOCHECK = 4;
+  @XmlElement(required = true)
+  private String date;
+  private int type;
+  @XmlElement(name = "Bouteille", required = true)
+  private Bouteille bouteille;
+  @XmlElement
+  private int totalBottle;
 
-	/**
+  /**
    * History: Contructeur avec une bouteille et un type d'action
    *
    * @param bouteille Bouteille
    * @param type int
    */
-  public History(Bouteille bouteille, int type) {
+  public History(Bouteille bouteille, int type, int totalBottle) {
     this.bouteille = bouteille;
     this.type = type;
+    this.totalBottle = totalBottle;
     date = LocalDate.now().format(DATE_FORMATER);
   }
 
-    public History() {}
+  public History() {}
 
-    public String getDate() {
-        return date;
-    }
+  public String getDate() {
+    return date;
+  }
 
-    public LocalDate getLocaleDate() {
-      if (date == null) {
-        return null;
-      }
-      return LocalDate.parse(date, DATE_FORMATER);
+  public LocalDate getLocaleDate() {
+    if (date == null) {
+      return null;
     }
+    return LocalDate.parse(date, DATE_FORMATER);
+  }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
+  public void setDate(String date) {
+    this.date = date;
+  }
 
-    public int getType() {
-        return type;
-    }
+  public int getType() {
+    return type;
+  }
 
-    public void setType(int type) {
-        this.type = type;
-    }
-    
-    boolean isDeleted() {
-    	return type == DEL;
-    }
+  public void setType(int type) {
+    this.type = type;
+  }
 
-    public Bouteille getBouteille() {
-        return bouteille;
-    }
+  public HistoryState getState() {
+    return Arrays.stream(HistoryState.values())
+        .filter(historyState -> historyState.ordinal() == type)
+        .findAny().orElse(HistoryState.ALL);
+  }
 
-    public void setBouteille(Bouteille bouteille) {
-        this.bouteille = bouteille;
-    }
+  boolean isDeleted() {
+    return type == HistoryState.DEL.ordinal();
+  }
+
+  boolean isAddedOrDeleted() {
+    return type == HistoryState.ADD.ordinal() || type == HistoryState.DEL.ordinal();
+  }
+
+  public Bouteille getBouteille() {
+    return bouteille;
+  }
+
+  public void setBouteille(Bouteille bouteille) {
+    this.bouteille = bouteille;
+  }
+
+  public boolean hasTotalBottle() {
+    return totalBottle > 0;
+  }
+
+  public int getTotalBottle() {
+    return totalBottle;
+  }
+
+  public void setTotalBottle(int totalBottle) {
+    this.totalBottle = totalBottle;
+  }
 }

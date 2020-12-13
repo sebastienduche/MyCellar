@@ -19,12 +19,14 @@ import mycellar.core.UnableToOpenFileException;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
+import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
-import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
+import mycellar.placesmanagement.Creer_Rangement;
+import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.CountryVignobleController;
 import mycellar.vignobles.VineyardPanel;
@@ -73,6 +75,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -86,8 +89,10 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static java.util.function.Predicate.not;
 import static mycellar.ScreenType.ADDVIN;
 import static mycellar.ScreenType.CAPACITY;
 import static mycellar.ScreenType.CELL_ORGANIZER;
@@ -115,16 +120,16 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.6
- * @since 19/11/20
+ * @version 24.1
+ * @since 11/12/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.7.9.1";
-	public static final int VERSION = 64;
+	public static final String INTERNAL_VERSION = "3.8.5.3";
+	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
-	private static Type type = Type.WINE;
+	private static Type programType = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
 
 	private static MyCellarFile myCellarFile = null;
@@ -134,7 +139,7 @@ public final class Program {
 	public static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
 	static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
 	static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);
-	static final Font FONT_DIALOG_SMALL = new Font("Dialog", Font.BOLD, 12);
+	public static final Font FONT_DIALOG_SMALL = new Font("Dialog", Font.BOLD, 12);
 	public static final Font FONT_LABEL_BOLD = new Font("Arial", Font.BOLD, 12);
 
 	private static final Map<ScreenType, IMyCellar> OPENED_OBJECTS = new EnumMap<>(ScreenType.class);
@@ -147,7 +152,7 @@ public final class Program {
 	private static FileWriter oDebugFile = null;
 	private static File debugFile = null;
 
-	private static final LinkedList<Rangement> RANGEMENTS_LIST = new LinkedList<>();
+	private static final LinkedList<Rangement> PLACES = new LinkedList<>();
 	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
 	private static final LinkedList<MyCellarError> ERRORS = new LinkedList<>();
 
@@ -161,14 +166,15 @@ public final class Program {
 	private static boolean m_bGlobalDirCalculated = false;
 
 	public static final String UNTITLED1_SINFO = "Untitled1.sinfo";
-	private static final String DATA_XML = "data.xml";
 	private static final String PREVIEW_XML = "preview.xml";
 	private static final String PREVIEW_HTML = "preview.html";
 	private static final String MY_CELLAR_XML = "MyCellar.xml";
 	private static final String TYPES_XML = "Types.xml";
 	private static final String BOUTEILLES_XML = "Bouteilles.xml";
 	private static final String CONFIG_INI = "config.ini";
+	public static final String COUNTRIES_XML = "countries.xml";
 	static final String EXTENSION = ".sinfo";
+	public static final String TEXT = ".txt";
 
 	private static boolean bYearControlCalculated = false;
 	private static boolean bYearControled = false;
@@ -208,29 +214,23 @@ public final class Program {
 		try {
 			Debug("Program: Initializing Configuration files...");
 			loadProperties();
-			File f = new File(getWorkDir(true) + DATA_XML);
-			if(!f.exists()) {
-				if (!f.createNewFile()) {
-					Debug("Program: ERROR: Unable to create file " + f.getAbsolutePath());
-				}
-			}
 			LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 
 			if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
 				putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
 			}
 			cleanAndUpgrade();
-		} catch (IOException | UnableToOpenFileException | RuntimeException e) {
+		} catch (UnableToOpenFileException | RuntimeException e) {
 			showException(e);
 		}
 	}
 
 	static void setProgramType(Type value) {
-		type = value;
+		programType = value;
 	}
 
 	private static String getLabelForType(boolean plural, boolean firstLetterUppercase, Grammar grammar) {
-		return getLabelForType(type, plural, firstLetterUppercase, grammar);
+		return getLabelForType(programType, plural, firstLetterUppercase, grammar);
 	}
 
 	public static String getLabelForType(Type theType, boolean plural, boolean firstLetterUppercase, Grammar grammar) {
@@ -340,20 +340,76 @@ public final class Program {
 	 * Pour nettoyer et mettre a jour le programme
 	 */
 	private static void cleanAndUpgrade() {
+		Debug("Program: clean and upgrade...");
 		if (hasFile()) {
 			String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
 			if (sVersion.isEmpty() || sVersion.contains(".")) {
 				putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
 			}
-			final String programType = getCaveConfigString(PROGRAM_TYPE, "");
-			if (programType.isBlank()) {
+			int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
+			Debug("Program: internal file version: " + currentVersion);
+			if (currentVersion < VERSION) {
+				Debug("Program: Updating history");
+				final Integer nbBottle = getHistory()
+						.stream()
+						.filter(History::hasTotalBottle)
+						.map(History::getTotalBottle)
+						.min(Integer::compareTo).orElse(getNbBouteille());
+				AtomicInteger nb = new AtomicInteger(nbBottle);
+				final List<History> historyList = getHistory()
+						.stream()
+						.filter(History::isAddedOrDeleted)
+						.filter(not(History::hasTotalBottle))
+						.filter(history -> history.getLocaleDate() != null)
+						.sorted(Comparator.comparing(History::getLocaleDate).reversed())
+						.collect(Collectors.toList());
+				historyList
+						.forEach(history -> history.setTotalBottle(history.isDeleted() ? nb.getAndIncrement() : nb.getAndDecrement()));
+			}
+			final String type = getCaveConfigString(PROGRAM_TYPE, "");
+			if (type.isBlank()) {
 				putCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name());
+			}
+			File file = new File(getWorkDir(true) + "data.xml");
+			if (file.exists()) {
+				Debug("Deleting old file: data.xml");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "Options.txt");
+			if (file.exists()) {
+				Debug("Deleting old file: Options.txt");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "static_all.sinfo");
+			if (file.exists()) {
+				Debug("Program: Deleting old file: static_all.sinfo");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "Errors.log");
+			if (file.exists()) {
+				Debug("Program: Deleting old file: Errors.log");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "other1.ini");
+			if (file.exists()) {
+				Debug("Program: Deleting old file: other1.ini");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "other2.ini");
+			if (file.exists()) {
+				Debug("Program: Deleting old file: other2.ini");
+				file.delete();
+			}
+			file = new File(getWorkDir(true) + "other3.ini");
+			if (file.exists()) {
+				Debug("Program: Deleting old file: other3.ini");
+				file.delete();
 			}
 		}
 		CONFIG_GLOBAL.remove(MyCellarSettings.DEBUG);
 		CONFIG_GLOBAL.remove(MyCellarSettings.TYPE_AUTO);
 
-		//int version = Integer.parseInt(sVersion);
+		Debug("Program: clean and upgrade... Done");
 	}
 
 
@@ -557,11 +613,11 @@ public final class Program {
 	 * Chargement des donnees XML (Bouteilles et Rangement) ou des donnees serialisees en cas de pb
 	 */
 	static boolean loadObjects() {
-		RANGEMENTS_LIST.clear();
-		boolean load = MyXmlDom.readMyCellarXml("", RANGEMENTS_LIST);
-		if(!load || RANGEMENTS_LIST.isEmpty()) {
-			RANGEMENTS_LIST.clear();
-			RANGEMENTS_LIST.add(DEFAULT_PLACE);
+		PLACES.clear();
+		boolean load = MyXmlDom.readMyCellarXml("", PLACES);
+		if(!load || PLACES.isEmpty()) {
+			PLACES.clear();
+			PLACES.add(DEFAULT_PLACE);
 		}
 		getStorage().loadHistory();
 		getStorage().loadWorksheet();
@@ -619,7 +675,7 @@ public final class Program {
 	/**
 	 * getAide: Appel de l'aide
 	 */
-	static void getAide() {
+	public static void getAide() {
 
 		File f = new File("./Help/MyCellar.hs");
 		if (f.exists()) {
@@ -661,6 +717,7 @@ public final class Program {
 		getStorage().saveHistory();
 		getStorage().saveWorksheet();
 		CountryVignobleController.save();
+		CountryListJaxb.save();
 		ListeBouteille.writeXML();
 
 		myCellarFile.saveAs(file);
@@ -711,7 +768,7 @@ public final class Program {
 	 * @return LinkedList<Rangement>
 	 */
 	public static LinkedList<Rangement> getCave() {
-		return RANGEMENTS_LIST;
+		return PLACES;
 	}
 
 
@@ -727,7 +784,7 @@ public final class Program {
 		}
 
 		final String placeName = name.strip();
-		final List<Rangement> list = RANGEMENTS_LIST.stream().filter(rangement -> rangement.getNom().equals(placeName))
+		final List<Rangement> list = PLACES.stream().filter(rangement -> rangement.getNom().equals(placeName))
 				.collect(Collectors.toList());
 		if (list.isEmpty()) {
 			return null;
@@ -740,15 +797,15 @@ public final class Program {
 	 *
 	 * @param rangement Rangement
 	 */
-	static void addCave(Rangement rangement) {
+	public static void addCave(Rangement rangement) {
 		if(rangement == null) {
 			return;
 		}
-		RANGEMENTS_LIST.add(rangement);
+		PLACES.add(rangement);
 		setListCaveModified();
 		setModified();
 		Debug("Program: Sorting places...");
-		Collections.sort(RANGEMENTS_LIST);
+		Collections.sort(PLACES);
 	}
 
 	/**
@@ -756,11 +813,11 @@ public final class Program {
 	 *
 	 * @param rangement Rangement
 	 */
-	 static void removeCave(Rangement rangement) {
+	 public static void removeCave(Rangement rangement) {
 		if(rangement == null) {
 			return;
 		}
-		RANGEMENTS_LIST.remove(rangement);
+		PLACES.remove(rangement);
 		setModified();
 		setListCaveModified();
 	}
@@ -770,12 +827,12 @@ public final class Program {
 	 *
 	 * @return int
 	 */
-	static int getCaveLength() {
-		return RANGEMENTS_LIST.size();
+	public static int getCaveLength() {
+		return PLACES.size();
 	}
 
 	public static boolean hasComplexPlace() {
-		return RANGEMENTS_LIST.stream().anyMatch(rangement -> !rangement.isCaisse());
+		return PLACES.stream().anyMatch(rangement -> !rangement.isCaisse());
 	}
 
 	/**
@@ -824,7 +881,6 @@ public final class Program {
 		closeFile();
 		
 		CountryVignobleController.init();
-		CountryListJaxb.init();
 
 		if (isNewFile) {
 			// Nouveau fichier de bouteilles
@@ -846,11 +902,7 @@ public final class Program {
 		myCellarFile = new MyCellarFile(file);
 		myCellarFile.unzip();
 
-		// Chargement
-		if (!isNewFile && !getDataFile().exists()) {
-			Debug("Program: ERROR: Unable to find file data.xml!!");
-			throw new UnableToOpenFileException("File not found: data.xml");
-		}
+		CountryListJaxb.init();
 
 		//Chargement des objets Rangement, Bouteilles et History
 		Debug("Program: Reading Places, Bottles & History");
@@ -1198,10 +1250,6 @@ public final class Program {
 		return CONFIG_GLOBAL.containsKey(key);
 	}
 
-	private static File getDataFile() {
-		return new File(getWorkDir(true) + DATA_XML);
-	}
-
 	static String getXMLPlacesFileName() {
 		return getWorkDir(true) + MY_CELLAR_XML;
 	}
@@ -1235,7 +1283,14 @@ public final class Program {
 			return getLabel(id, true);
 		}
 		String label = getLabel(id, true);
-		return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
+		label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
+		if (labelProperty.isThreeDashes()) {
+			label += "...";
+		}
+		if (labelProperty.isDoubleQuote()) {
+			label += LanguageFileLoader.isFrench() ? " :" : ":";
+		}
+		return label;
 	}
 
 	public static String getLabel(String id, boolean displayError) {
@@ -1343,7 +1398,7 @@ public final class Program {
 		return modified;
 	}
 
-	static void setListCaveModified() {
+	public static void setListCaveModified() {
 		listCaveModified = true;
 	}
 
@@ -1569,7 +1624,7 @@ public final class Program {
 		return supprimerRangement;
 	}
 
-	static void deleteSupprimerRangement() {
+	public static void deleteSupprimerRangement() {
 		OPENED_OBJECTS.remove(SUPPRIMER_RANGEMENT);
 		UPDATABLE_OBJECTS.remove(SUPPRIMER_RANGEMENT);
 	}

@@ -38,8 +38,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 18/10/19
+ * @version 1.1
+ * @since 10/12/20
 
  * <p>Java class for anonymous complex type.
  *
@@ -111,9 +111,10 @@ public class HistoryList {
   }
 
   static boolean loadXML(File f) {
-    Debug("Loading XML File "+f.getAbsolutePath());
-    if(!f.exists())
+    Debug("Loading XML File " + f.getAbsolutePath());
+    if(!f.exists()) {
       return false;
+    }
     try {
       unMarshalXML(f);
       return true;
@@ -139,6 +140,7 @@ public class HistoryList {
     doc.getDocumentElement().normalize();
 
     HistoryList listeHistory = Program.getHistoryList();
+    listeHistory.getHistory().clear();
     NodeList historys = doc.getElementsByTagName("History");
 
     for (int i = 0; i < historys.getLength(); i++) {
@@ -153,7 +155,7 @@ public class HistoryList {
         final NodeList typeElem = historyElem.getElementsByTagName("type");
         for (int j=0; j<typeElem.getLength(); j++) {
           final Node typeNode = typeElem.item(j);
-          if(typeNode.getParentNode().isSameNode(node)) {
+          if (typeNode.getParentNode().isSameNode(node)) {
             history.setType(Integer.parseInt(typeNode.getTextContent()));
           }
         }
@@ -168,10 +170,10 @@ public class HistoryList {
 
   private static void unMarshalXML(File f) throws JAXBException, FileNotFoundException {
     JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
-    Unmarshaller u = jc.createUnmarshaller();
-    HistoryList lb =
-        (HistoryList)u.unmarshal(new FileInputStream(f));
-    Program.getStorage().getHistoryList().getHistory().addAll(lb.getHistory());
+    Unmarshaller unmarshaller = jc.createUnmarshaller();
+    HistoryList historyList = (HistoryList)unmarshaller.unmarshal(new FileInputStream(f));
+    Program.getStorage().getHistoryList().getHistory().clear();
+    Program.getStorage().getHistoryList().getHistory().addAll(historyList.getHistory());
     Debug("Loading JAXB File Done");
   }
 

@@ -6,11 +6,17 @@ import mycellar.capacity.CapacityPanel;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.LabelProperty;
+import mycellar.core.LabelType;
+import mycellar.core.MyCellarAction;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarLabelManagement;
+import mycellar.core.MyCellarMenuItem;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.launcher.Server;
+import mycellar.placesmanagement.Creer_Rangement;
+import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
 import net.miginfocom.swing.MigLayout;
@@ -56,8 +62,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.2
- * @since 20/11/20
+ * @version 27.7
+ * @since 12/12/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -120,18 +126,18 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private final JMenuItem statistiques = new JMenuItem();
 	private final JMenuItem tableau = new JMenuItem();
 	private final JMenuItem addPlace = new JMenuItem();
-	private final JMenuItem modifPlace = new JMenuItem();
-	private final JMenuItem delPlace = new JMenuItem();
+	private final MyCellarMenuItem modifPlace = new MyCellarMenuItem(new ModifyPlaceAction());
+	private final MyCellarMenuItem delPlace = new MyCellarMenuItem(new DeletePlaceAction());
 	private final JMenuItem showFile = new JMenuItem();
 	private final JMenuItem showWorksheet = new JMenuItem();
 	private final JMenuItem addWine = new JMenuItem();
 	private final JMenuItem searchWine = new JMenuItem();
 	private final JMenuItem Aide = new JMenuItem();
-	private final JMenuItem parameter = new JMenuItem();
+	private final MyCellarMenuItem parameter = new MyCellarMenuItem(new ParametersAction());
 	private final JMenuItem about = new JMenuItem();
 	private final JMenuItem tocreate = new JMenuItem();
 	private final JMenuItem news = new JMenuItem();
-	private final JMenuItem history = new JMenuItem();
+	private final MyCellarMenuItem history = new MyCellarMenuItem(new ShowHistoryAction());
 	private final JMenuItem vignobles = new JMenuItem();
 	private final JMenuItem bottleCapacity = new JMenuItem();
 	private final JMenuItem newFile = new JMenuItem();
@@ -142,7 +148,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private final JMenuItem jMenuExportXml = new JMenuItem();
 	private final JMenuItem openFile = new JMenuItem();
 	private final JMenuItem jMenuCloseFile = new JMenuItem();
-	private final JMenuItem jMenuSetConfig = new JMenuItem();
+	private final MyCellarMenuItem jMenuSetConfig = new MyCellarMenuItem(LabelType.INFO, "374", LabelProperty.SINGLE.withThreeDashes());
 	private final JMenuItem jMenuReopen1 = new JMenuItem();
 	private final JMenuItem jMenuReopen2 = new JMenuItem();
 	private final JMenuItem jMenuReopen3 = new JMenuItem();
@@ -162,7 +168,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	private Start() {}
 
 	public static void main(String[] args) {
-
 		try {
 			final SplashScreen splashscreen = new SplashScreen();
 			// initialisation
@@ -248,7 +253,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (!Program.hasFile() && !Program.getGlobalConfigBool(MyCellarSettings.STARTUP, false)) {
 			// Language au premier demarrage
 			String lang = System.getProperty("user.language");
-			if("fr".equalsIgnoreCase(lang)) {
+			if(Program.FR.equalsIgnoreCase(lang)) {
 				lang = "F";
 			} else {
 				lang = "U";
@@ -308,7 +313,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	/**
 	 * Fonction pour desactiver ou activer toutes les options ou boutons
 	 */
-	void enableAll(boolean enable) {
+	public void enableAll(boolean enable) {
 		jMenuCloseFile.setEnabled(enable);
 		m_oExportButton.setEnabled(enable);
 		m_oStatsButton.setEnabled(enable);
@@ -564,7 +569,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * @param toverify boolean
 	 */
 	private void updateFrame(boolean toverify) {
-
+		Debug("UpdateFrame: toVerify=" + toverify);
 		try {
 			boolean bHasVersion = false;
 			if ((null != Program.getCaveConfig() && Program.hasConfigCaveKey(MyCellarSettings.VERSION))
@@ -579,7 +584,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			Program.setProgramType(Program.Type.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
 			Program.setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
 			updateLabels();
-			Debug("Loading Frame ended");
+			Debug("UpdateFrame: Loading Frame ended");
 		} catch (RuntimeException e) {
 			Program.showException(e);
 		}
@@ -609,9 +614,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		newChar = Program.getLabel("NEW").charAt(0);
 		m_oMenuBar = new JMenuBar();
 
+		MyCellarLabelManagement.updateLabels();
 		// differents menus
 		menuFile.setText(Program.getLabel("Infos104")); // Fichier
-		menuPlace.setText(Program.getLabel("Infos105"));
+		menuPlace.setText(Program.getLabel("Infos081"));
 		menuWine.setText(Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital())); // Vin
 		menuTools.setText(Program.getLabel("Infos246"));
 		menuEdition.setText(Program.getLabel("Infos245"));
@@ -623,8 +629,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		statistiques.setText(Program.getLabel("Infos009")); // Statistiques
 		tableau.setText(Program.getLabel("Infos093")); // Tableaux...
 		addPlace.setText(Program.getLabel("Infos109")); // Ajouter...
-		modifPlace.setText(Program.getLabel("Infos086")); // Modifier...
-		delPlace.setText(Program.getLabel("Infos052")); // Supprimer...
 		addWine.setText(Program.getLabel("Infos109")); // Ajouter...
 		Aide.setText(Program.getLabel("Infos111")); // Aide Contextuelle...
 		saveAs.setText(Program.getLabel("Infos371")); // Sauvegarder
@@ -633,20 +637,17 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		save.setText(Program.getLabel("Infos326"));
 		showFile.setText(Program.getLabel("Infos324"));
 		showWorksheet.setText(Program.getLabel("ShowFile.Worksheet"));
-		searchWine.setText(Program.getLabel("Main.tabSearch", LabelProperty.SINGLE));
+		searchWine.setText(Program.getLabel("Main.tabSearchButton"));
 
-		parameter.setText(Program.getLabel("Infos156")); // Parametres
 		about.setText(Program.getLabel("Infos199")); // A Propos
 		news.setText(Program.getLabel("Infos330")); // Nouveautes
 		tocreate.setText(Program.getLabel("Infos267")); // Rangement a creer
-		history.setText(Program.getLabel("Infos341")); // Historique
 		vignobles.setText(Program.getLabel("Infos165") + "..."); // Vignobles
 		bottleCapacity.setText(Program.getLabel("Infos400") + "..."); // Contenance
 		jMenuImportXmlPlaces.setText(Program.getLabel("Infos367")); // Importer des rangements xml
 		jMenuExportXmlPlaces.setText(Program.getLabel("Infos368")); // Exporter des rangements xml
 		jMenuExportXml.setText(Program.getLabel("Infos408")); // Exporter au format xml
 		jMenuCloseFile.setText(Program.getLabel("Infos019")); // Fermer...
-		jMenuSetConfig.setText(Program.getLabel("Infos373")); // Modifier les parametres...
 		jMenuCheckUpdate.setText(Program.getLabel("Infos379")); // Verifier mise a jour...
 		jMenuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "")) + Program.EXTENSION);
 		jMenuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "")) + Program.EXTENSION);
@@ -675,7 +676,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oShowFileButton.setText(Program.getLabel("Infos324"));
 		m_oTableauxButton.setText(Program.getLabel("Infos008"));
 		m_oAjouterButton.setText(Program.getLabel("Main.tabAdd", LabelProperty.SINGLE));
-		m_oRechercherButton.setText(Program.getLabel("Main.tabSearch", LabelProperty.SINGLE));
+		m_oRechercherButton.setText(Program.getLabel("Main.tabSearchButton"));
 		m_oSupprimerButton.setText(Program.getLabel("Infos004"));
 		version.setText(Program.getLabel("MonthVersion") + Program.INFOS_VERSION + MyCellarVersion.MAIN_VERSION);
 		addWine.setAccelerator(KeyStroke.getKeyStroke(addWineChar, InputEvent.CTRL_DOWN_MASK));
@@ -752,10 +753,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		CutAction cutAction = new CutAction();
 		CopyAction copyAction = new CopyAction();
 		PasteAction pasteAction = new PasteAction();
-		ParametersAction parameterAction = new ParametersAction();
 		AddPlaceAction addPlaceAction = new AddPlaceAction();
-		ModifyPlaceAction modifyPlaceAction = new ModifyPlaceAction();
-		DeletePlaceAction deletePlaceAction = new DeletePlaceAction();
 		ShowFileAction showFileAction = new ShowFileAction();
 		CreateTabAction createTabAction = new CreateTabAction();
 		StatAction statAction = new StatAction();
@@ -820,8 +818,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oPasteButton.setText("");
 		m_oRechercherButton.setAction(searchAction);
 		m_oCreerButton.setAction(addPlaceAction);
-		m_oModifierButton.setAction(modifyPlaceAction);
-		m_oSupprimerButton.setAction(deletePlaceAction);
+		m_oModifierButton.setAction(new ModifyPlaceAction());
+		m_oSupprimerButton.setAction(new DeletePlaceAction());
 		m_oShowFileButton.setAction(showFileAction);
 		m_oTableauxButton.setAction(createTabAction);
 		m_oStatsButton.setAction(statAction);
@@ -830,10 +828,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		m_oManagePlaceButton.setAction(managePlaceAction);
 		m_oWorksheetButton.setAction(new OpenWorkSheetAction());
 		m_oShowTrashButton.setAction(showTrashAction);
-		parameter.setAction(parameterAction);
 		addPlace.setAction(addPlaceAction);
-		modifPlace.setAction(modifyPlaceAction);
-		delPlace.setAction(deletePlaceAction);
 		addWine.setAction(addWineAction);
 		searchWine.setAction(searchAction);
 		newFile.setAction(newAction);
@@ -1009,7 +1004,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		quit.addActionListener((e) -> quitter_actionPerformed());
 		about.addActionListener((e) -> about_actionPerformed());
 		news.addActionListener((e) -> news_actionPerformed());
-		history.setAction(new ShowHistoryAction());
 		vignobles.setAction(new VignoblesAction());
 		bottleCapacity.setAction(new CapacityAction());
 
@@ -1303,12 +1297,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	final class DeletePlaceAction extends AbstractAction {
+	final class DeletePlaceAction extends MyCellarAction {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private DeletePlaceAction() {
-			super(Program.getLabel("Infos052"), MyCellarImage.DELPLACE);
-			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos004"));
+			super(LabelType.INFO_OTHER, "Main.Delete", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.DELPLACE);
+			setDescriptionLabelCode("Infos004");
 		}
 
 		@Override
@@ -1336,12 +1330,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	final class ModifyPlaceAction extends AbstractAction {
+	final class ModifyPlaceAction extends MyCellarAction {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private ModifyPlaceAction() {
-			super(Program.getLabel("Infos086"), MyCellarImage.MODIFYPLACE);
-			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos007"));
+			super(LabelType.INFO, "079", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.MODIFYPLACE);
+			setDescriptionLabelCode("Infos007");
 		}
 
 		@Override
@@ -1374,7 +1368,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		private static final long serialVersionUID = -3212527164505184899L;
 
 		private SearchAction() {
-			super(Program.getLabel("Main.tabSearch", LabelProperty.SINGLE), MyCellarImage.SEARCH);
+			super(Program.getLabel("Main.tabSearchButton", LabelProperty.SINGLE), MyCellarImage.SEARCH);
 			putValue(SHORT_DESCRIPTION, Program.getLabel("Main.tabSearch", LabelProperty.SINGLE));
 		}
 
@@ -1526,11 +1520,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	class ShowHistoryAction extends AbstractAction {
+	class ShowHistoryAction extends MyCellarAction {
 		private static final long serialVersionUID = -2981766233846291757L;
 
 		private ShowHistoryAction() {
-			super(Program.getLabel("Infos341"));
+			super(LabelType.INFO, "341", LabelProperty.SINGLE.withThreeDashes());
 		}
 
 		@Override
@@ -1777,13 +1771,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	final class ParametersAction extends AbstractAction {
+	final class ParametersAction extends MyCellarAction {
 
 		private static final long serialVersionUID = -5144284671743409095L;
 
 		private ParametersAction() {
-			super(Program.getLabel("Infos156"), MyCellarImage.PARAMETER);
-			putValue(SHORT_DESCRIPTION, Program.getLabel("Infos156"));
+			super(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PARAMETER);
 		}
 
 		@Override
@@ -1791,7 +1784,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			if (Program.getParametres() == null) {
 				try {
 					final Parametres parametres = Program.createParametres();
-					Program.TABBED_PANE.add(Program.getLabel("Infos193"), parametres);
+					Program.TABBED_PANE.add(Program.getLabel("Infos156"), parametres);
 					Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PARAMETER);
 					Utils.addCloseButton(Program.TABBED_PANE, parametres);
 				} catch (RuntimeException e) {
@@ -1802,7 +1795,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				Program.TABBED_PANE.setSelectedComponent(Program.getParametres());
 			} catch (IllegalArgumentException e) {
 				final Parametres parametres = Program.createParametres();
-				Program.TABBED_PANE.add(Program.getLabel("Infos193"), parametres);
+				Program.TABBED_PANE.add(Program.getLabel("Infos156"), parametres);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PARAMETER);
 				Utils.addCloseButton(Program.TABBED_PANE, parametres);
 				Program.TABBED_PANE.setSelectedComponent(parametres);

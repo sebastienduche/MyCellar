@@ -9,16 +9,23 @@ import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleListJaxb;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static mycellar.Program.FRA;
 import static mycellar.Program.ITA;
+import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -26,8 +33,8 @@ import static mycellar.Program.ITA;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.6
- * @since 20/11/20
+ * @version 2.7
+ * @since 27/11/20
  */
 
 public final class CountryVignobleController {
@@ -42,15 +49,15 @@ public final class CountryVignobleController {
 	private static boolean rebuildNeeded = false;
 
 	private CountryVignobleController() {
-		CountryListJaxb.findbyId(FRA).ifPresent(country -> countryToVignobles.put(country, VignobleListJaxb.loadFrance()));
-		CountryListJaxb.findbyId(ITA).ifPresent(country -> countryToVignobles.put(country, VignobleListJaxb.loadItalie()));
+		CountryListJaxb.findbyId(FRA).ifPresent(country -> countryToVignobles.put(country, loadFrance()));
+		CountryListJaxb.findbyId(ITA).ifPresent(country -> countryToVignobles.put(country, loadItalie()));
 		setRebuildNeeded();
 	}
 
 	public static void init() {
 		INSTANCE.countryToVignobles.clear();
-		CountryListJaxb.findbyId(FRA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, VignobleListJaxb.loadFrance()));
-		CountryListJaxb.findbyId(ITA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, VignobleListJaxb.loadItalie()));
+		CountryListJaxb.findbyId(FRA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, loadFrance()));
+		CountryListJaxb.findbyId(ITA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, loadItalie()));
 		setRebuildNeeded();
 	}
 
@@ -60,7 +67,7 @@ public final class CountryVignobleController {
 	}
 
 	public static void load() {
-		VignobleListJaxb.loadAllCountries(INSTANCE.countryToVignobles);
+		loadAllCountries(INSTANCE.countryToVignobles);
 		setRebuildNeeded();
 		rebuild();
 	}
@@ -323,6 +330,118 @@ public final class CountryVignobleController {
 		addVignoble(wine.getVignoble());
 		setRebuildNeeded();
 		Debug("addVignobleFromBottle... End");
+	}
+
+	private static VignobleListJaxb load(File file) {
+		Debug("Loading JAXB File " + file.getAbsolutePath());
+		if (!file.exists()) {
+			return null;
+		}
+		VignobleListJaxb vignobleListJaxb;
+		try {
+			JAXBContext jc = JAXBContext.newInstance(VignobleListJaxb.class);
+			Unmarshaller u = jc.createUnmarshaller();
+			vignobleListJaxb = (VignobleListJaxb) u.unmarshal(new FileInputStream(file));
+		} catch (Exception e) {
+			Program.showException(e);
+			return null;
+		}
+		vignobleListJaxb.checkAvaibility();
+		Collections.sort(vignobleListJaxb.getCountryVignobleJaxbList());
+		for (CountryVignobleJaxb vignoble: vignobleListJaxb.getCountryVignobleJaxbList()) {
+			vignoble.checkAvaibility();
+			for (AppelationJaxb appelationJaxb : vignoble.getUnmodifiableAppelation()) {
+				appelationJaxb.makeItClean();
+			}
+			vignoble.makeItClean();
+		}
+		vignobleListJaxb.setCountryVignobleJaxbList(vignobleListJaxb.getCountryVignobleJaxbList().stream()
+				.filter(Predicate.not(CountryVignobleJaxb::isEmpty))
+				.collect(Collectors.toList()));
+		Debug("Loading JAXB File Done");
+		return vignobleListJaxb;
+	}
+
+	public static void loadAllCountries(Map<CountryJaxb, VignobleListJaxb> map) {
+		Debug("Loading all countries");
+		map.clear();
+		File dir = new File(Program.getWorkDir(true));
+		CountryListJaxb.findbyId("FRA").ifPresent(country -> map.put(country, loadFrance()));
+		CountryListJaxb.findbyId("ITA").ifPresent(country -> map.put(country, loadItalie()));
+		File[] fileVignobles = dir.listFiles((pathname) -> pathname.getName().endsWith(VIGNOBLE));
+		if (fileVignobles != null) {
+			for (File f : fileVignobles) {
+				String name = f.getName();
+				String id = name.substring(0, name.indexOf(VIGNOBLE));
+				if (!id.equals(id.toUpperCase())) {
+					Debug("Deleting vignoble file with wrong name " + name);
+					f.delete();
+					continue;
+				}
+				name = name.substring(0, name.indexOf(VIGNOBLE));
+				File fText = new File(f.getParent(), name + Program.TEXT);
+				String label = Program.readFirstLineText(fText);
+
+				CountryJaxb countryJaxb = CountryListJaxb.findbyId(name)
+						.orElseGet(() -> CountryListJaxb.findByIdOrLabel(label));
+				if (countryJaxb == null) {
+					countryJaxb = new CountryJaxb(id, label);
+					CountryListJaxb.add(countryJaxb);
+				}
+				if (!label.isEmpty()) {
+					countryJaxb.setName(label);
+				}
+				if (!map.containsKey(countryJaxb)) {
+					map.put(countryJaxb, load(f));
+				} else {
+					VignobleListJaxb loadedVignobleListJaxb = load(f);
+					if (loadedVignobleListJaxb != null) {
+						VignobleListJaxb vignobleListJaxb = map.get(countryJaxb);
+						for (CountryVignobleJaxb vignoble : vignobleListJaxb.getCountryVignobleJaxbList()) {
+							if (!loadedVignobleListJaxb.getCountryVignobleJaxbList().contains(vignoble)) {
+								loadedVignobleListJaxb.getCountryVignobleJaxbList().add(vignoble);
+							}
+							else {
+								CountryVignobleJaxb countryVignobleJaxb = loadedVignobleListJaxb.getCountryVignobleJaxbList().get(loadedVignobleListJaxb.getCountryVignobleJaxbList().indexOf(vignoble));
+								if (vignoble.getUnmodifiableAppelation() != null) {
+									vignoble.getUnmodifiableAppelation().forEach(countryVignobleJaxb::add);
+								} else {
+									vignoble.setAppelation(new LinkedList<>());
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		Debug("Loading all countries Done");
+	}
+
+	public static VignobleListJaxb loadFrance() {
+		VignobleListJaxb vignobleListJaxb = null;
+		if (Program.hasWorkDir()) {
+			vignobleListJaxb = loadById("FRA");
+		}
+		return (vignobleListJaxb != null) ? vignobleListJaxb : VignobleListJaxb.load("resources/vignobles.xml");
+	}
+
+	public static VignobleListJaxb loadItalie() {
+		VignobleListJaxb vignobleListJaxb = null;
+		if (Program.hasWorkDir()) {
+			vignobleListJaxb = loadById("ITA");
+		}
+		return (vignobleListJaxb != null) ? vignobleListJaxb : VignobleListJaxb.load("resources/italie.xml");
+	}
+
+	private static VignobleListJaxb loadById(String id) {
+		final CountryJaxb countryJaxb = CountryListJaxb.findbyId(id).orElse(null);
+		if (countryJaxb != null) {
+			File f = new File(Program.getWorkDir(true), countryJaxb.getId() + VIGNOBLE);
+			if (f.exists()) {
+				return load(f);
+			}
+		}
+		return null;
 	}
 
 	public static void save() {

@@ -19,11 +19,11 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 2.2
- * @since 19/10/20
+ * @version 2.3
+ * @since 10/12/20
  */
 
-class MoveLine extends JDialog {
+final class MoveLine extends JDialog {
 
 	private final MyCellarLabel label_end = new MyCellarLabel();
 	private final MyCellarComboBox<Rangement> place_cbx = new MyCellarComboBox<>();
@@ -94,7 +94,7 @@ class MoveLine extends JDialog {
 					Optional<Bouteille> bottle = r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1);
 					if (bottle.isPresent()) {
 						bottle.ifPresent(bouteille -> {
-							Program.getStorage().addHistory(History.MODIFY, bouteille);
+							Program.getStorage().addHistory(HistoryState.MODIFY, bouteille);
 							r.moveLineWine(bouteille, nNewSelected);
 						});
 					}

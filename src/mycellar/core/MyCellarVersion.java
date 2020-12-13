@@ -12,7 +12,7 @@ import static mycellar.Program.INTERNAL_VERSION;
 
 public class MyCellarVersion {
 
-	public static final String MAIN_VERSION = Program.VERSION + " BI";
+	public static final String MAIN_VERSION = Program.VERSION + " NL";
 
 	public static String getLocalVersion() {
 		// In directory bin

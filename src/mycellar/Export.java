@@ -2,10 +2,12 @@ package mycellar;
 
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarMenuItem;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
@@ -37,6 +39,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -46,8 +49,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.1
- * @since 14/10/20
+ * @version 9.3
+ * @since 04/12/20
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -63,10 +66,10 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton(LabelType.INFO, "248", false);
 	private final MyCellarLabel end = new MyCellarLabel();
 	private final MyCellarButton openit = new MyCellarButton(LabelType.INFO, "152");
-	private final MyCellarButton options = new MyCellarButton(Program.getLabel("Infos193") + "...");
+	private final MyCellarButton options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
 	private static final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private static final char EXPORT = Program.getLabel("EXPORT").charAt(0);
-	private final JMenuItem param = new JMenuItem(Program.getLabel("Infos156"));
+	private final JMenuItem param = new MyCellarMenuItem(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
 	private final List<Bouteille> bottles;
 	static final long serialVersionUID = 240706;
 
@@ -345,7 +348,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			}
 
 			if (MyCellarRadioButtonXML.isSelected()) {
-				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XML.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
 					//"Le fichier saisie ne possede pas une extension XML: " + str_tmp3);
 					end.setText("");
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom));
@@ -363,7 +366,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
 				}
 			}	else if (MyCellarRadioButtonHTML.isSelected()) {
-				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_HTML.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_HTML.toString()))) {
 					//"Le fichier saisie ne possede pas une extension HTML: " + str_tmp3);
 					end.setText("");
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
@@ -379,7 +382,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 					end.setText(Program.getError("Error129")); //"Erreur lors de l'export"
 				}
 			} else if (MyCellarRadioButtonCSV.isSelected()) {
-				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_CSV.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_CSV.toString()))) {
 					//"Le fichier saisie ne possede pas une extension CSV: " + str_tmp3);
 					end.setText("");
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error108"), nom));
@@ -396,7 +399,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				}
 				progressBar.setVisible(false);
 			}	else if (MyCellarRadioButtonXLS.isSelected()) {
-				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					//"Le fichier saisie ne possede pas une extension XLS: " + str_tmp3);
 					end.setText("");
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
@@ -415,7 +418,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				}
 				progressBar.setVisible(false);
 			}	else if (MyCellarRadioButtonPDF.isSelected()) {
-				if (!MyCellarControl.controlExtension(nom, Arrays.asList(Filtre.FILTRE_PDF.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_PDF.toString()))) {
 					//"Le fichier saisie ne possede pas une extension PDF: " + str_tmp3);
 					end.setText("");
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error157"), nom));

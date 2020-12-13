@@ -11,39 +11,39 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 02/09/20
+ * @version 1.6
+ * @since 27/11/20
  */
 
 public final class MyCellarControl {
 
-  static boolean checkBottleName(String name) {
+  static boolean hasInvalidBotteName(String name) {
     if (name == null || name.strip().isEmpty()) {
       Debug("ERROR: Wrong Name");
       Erreur.showSimpleErreur(Program.getError("Error054")); //"Veuillez saisir le nom du vin!"
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
-  static boolean checkYear(String year) {
+  static boolean hasInvalidYear(String year) {
     if (!Bouteille.isValidYear(year)) {
       Debug("ERROR: Wrong date");
       Erreur.showSimpleErreur(Program.getError("Error053")); //"Veuillez saisir une ann&eacute;e valide!"
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
-  static boolean checkPlaceNumberGreaterThan0(int place) {
+  static boolean hasInvalidPlaceNumber(int place) {
     if (place == 0) {
       Debug("ERROR: Wrong Place");
       Erreur.showSimpleErreur(Program.getError("Error055")); //"Veuillez s&eacute;lectionner un emplacement!"
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
-  static boolean checkNumLieuNumberGreaterThan0(int lieu_num, boolean isCaisse) {
+  static boolean hasInvalidNumLieuNumber(int lieu_num, boolean isCaisse) {
     if(lieu_num == 0) {
       Debug("ERROR: Wrong Num Place");
       if (!isCaisse) {
@@ -51,36 +51,36 @@ public final class MyCellarControl {
       }	else {
         Erreur.showSimpleErreur(Program.getError("Error174"));
       }
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
-  static boolean checkLineNumberGreaterThan0(int line) {
+  static boolean hasInvalidLineNumber(int line) {
     if (line == 0) {
       Debug("ERROR: Wrong Line");
       Erreur.showSimpleErreur(Program.getError("Error057")); //"Veuillez s&eacute;lectionner un numero de line!"
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
-  static boolean checkColumnNumberGreaterThan0(int column) {
+  static boolean hasInvalidColumnNumber(int column) {
     if (column == 0) {
       Debug("ERROR: Wrong Column");
       Erreur.showSimpleErreur(Program.getError("Error058")); //"Veuillez s&eacute;lectionner un numero de colonne!"
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
   /**
-   * ctrl_Name Controle le nom saisie pour la creation d'un rangement
+   * ctrlName Controle le nom saisie pour la creation d'un rangement
    *
    * @param name String
    * @return boolean
    */
-  static boolean ctrl_Name(String name) {
+  public static boolean ctrlName(String name) {
 
     Debug("Controling name...");
     if (name == null || name.strip().isEmpty()) {
@@ -143,7 +143,7 @@ public final class MyCellarControl {
    * @param _sName String
    * @return boolean
    */
-  static boolean ctrl_existingName(String _sName) {
+  public static boolean ctrl_existingName(String _sName) {
 
     Debug("Controling existing name...");
     if (Program.getCave(_sName.strip()) != null) {
@@ -198,21 +198,21 @@ public final class MyCellarControl {
    * @param extensions List
    * @return String
    */
-  static boolean controlExtension(final String name, final List<String> extensions) {
+  static boolean hasInvalidExtension(final String name, final List<String> extensions) {
 
     Debug("Controling extension...");
     if (name == null) {
       Debug("ERROR: name is null!");
-      return false;
+      return true;
     }
 
     if (extensions == null) {
       Debug("ERROR: extension is null!");
-      return false;
+      return true;
     }
 
     String nameClean = name.toLowerCase().strip();
-    return extensions.stream().anyMatch(nameClean::endsWith);
+    return extensions.stream().noneMatch(nameClean::endsWith);
   }
 
   /**

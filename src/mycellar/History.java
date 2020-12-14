@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-import static mycellar.Program.DATE_FORMATER;
+import static mycellar.Program.DATE_FORMATER_DDMMYYYY;
 
 /*
  * <p>Titre : Cave à vin</p>
@@ -24,8 +24,8 @@ import static mycellar.Program.DATE_FORMATER;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 10/12/20
+ * @version 1.4
+ * @since 14/12/20
  */
 
 /**
@@ -78,7 +78,7 @@ public class History {
     this.bouteille = bouteille;
     this.type = type;
     this.totalBottle = totalBottle;
-    date = LocalDate.now().format(DATE_FORMATER);
+    date = LocalDate.now().format(DATE_FORMATER_DDMMYYYY);
   }
 
   public History() {}
@@ -91,7 +91,7 @@ public class History {
     if (date == null) {
       return null;
     }
-    return LocalDate.parse(date, DATE_FORMATER);
+    return LocalDate.parse(date, DATE_FORMATER_DDMMYYYY);
   }
 
   public void setDate(String date) {

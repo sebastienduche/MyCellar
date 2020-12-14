@@ -81,12 +81,10 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -120,13 +118,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.1
- * @since 11/12/20
+ * @version 24.2
+ * @since 14/12/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.8.5.3";
+	public static final String INTERNAL_VERSION = "3.8.5.7";
 	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;
@@ -176,9 +174,6 @@ public final class Program {
 	static final String EXTENSION = ".sinfo";
 	public static final String TEXT = ".txt";
 
-	private static boolean bYearControlCalculated = false;
-	private static boolean bYearControled = false;
-
 	public static final String FRA = "FRA";
 	public static final String ITA = "ITA";
 	public static final String FR = "fr";
@@ -193,7 +188,8 @@ public final class Program {
 	private static long localID = 0; // Used for all temp ids (jaxb)
 	public static final MyClipBoard CLIPBOARD = new MyClipBoard();
 
-	public static final DateTimeFormatter DATE_FORMATER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	public static final DateTimeFormatter DATE_FORMATER_DDMMYYYY = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	public static final DateTimeFormatter DATE_FORMATER_DD_MM_YYYY = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
 	enum Type {
 		WINE,
@@ -290,7 +286,7 @@ public final class Program {
 		try {
 			String inputPropCave = getConfigFilePath();
 			File f = new File(inputPropCave);
-			if(!f.exists()) {
+			if (!f.exists()) {
 				if (!f.createNewFile()) {
 					Debug("Program: ERROR: Unable to create file " + f.getAbsolutePath());
 					throw new UnableToOpenFileException("Unable to create file " + f.getAbsolutePath());
@@ -309,14 +305,13 @@ public final class Program {
 		} catch (IOException e) {
 			throw new UnableToOpenFileException("Load properties failed: " + e.getMessage());
 		}
-
 	}
 
 	private static void loadGlobalProperties() throws UnableToOpenFileException {
 		try {
 			Debug("Program: Initializing Configuration files...");
 			File fileIni = new File(getGlobalConfigFilePath());
-			if(!fileIni.exists()) {
+			if (!fileIni.exists()) {
 				if (!fileIni.createNewFile()) {
 					Debug("Program: ERROR: Unable to create file " + fileIni.getAbsolutePath());
 					throw new UnableToOpenFileException("Unable to create file " + fileIni.getAbsolutePath());
@@ -455,8 +450,8 @@ public final class Program {
 		}
 		catch (IOException ignored) {}
 		Debug("Program: ERROR:");
-		Debug("Program: "+e.toString());
-		Debug("Program: "+error);
+		Debug("Program: " + e.toString());
+		Debug("Program: " + error);
 		e.printStackTrace();
 		if (debugFile != null) {
 			try {
@@ -615,7 +610,7 @@ public final class Program {
 	static boolean loadObjects() {
 		PLACES.clear();
 		boolean load = MyXmlDom.readMyCellarXml("", PLACES);
-		if(!load || PLACES.isEmpty()) {
+		if (!load || PLACES.isEmpty()) {
 			PLACES.clear();
 			PLACES.add(DEFAULT_PLACE);
 		}
@@ -626,11 +621,7 @@ public final class Program {
 	}
 	
 	static int getMaxPrice() {
-		OptionalDouble i = getStorage().getAllList().stream().mapToDouble(Bouteille::getPriceDouble).max();
-		if(i.isPresent()) {
-			return (int) i.getAsDouble();
-		}
-		return 0;
+		return (int) getStorage().getAllList().stream().mapToDouble(Bouteille::getPriceDouble).max().orElse(0);
 	}
 	
 	static int getCellarValue() {
@@ -676,7 +667,6 @@ public final class Program {
 	 * getAide: Appel de l'aide
 	 */
 	public static void getAide() {
-
 		File f = new File("./Help/MyCellar.hs");
 		if (f.exists()) {
 			try {
@@ -710,7 +700,7 @@ public final class Program {
 
 		saveGlobalProperties();
 
-		if(isListCaveModified()) {
+		if (isListCaveModified()) {
 			MyXmlDom.writeMyCellarXml(getCave(), "");
 		}
 
@@ -731,15 +721,16 @@ public final class Program {
 		try {
 			if (oDebugFile == null) {
 				String sDir = System.getProperty("user.home");
-				if(!sDir.isEmpty())
+				if (!sDir.isEmpty()) {
 					sDir += File.separator + "MyCellarDebug";
+				}
 				File f_obj = new File( sDir );
 				boolean ok = true;
-				if(!f_obj.exists()) {
+				if (!f_obj.exists()) {
 					ok = f_obj.mkdir();
 				}
 				if (ok) {
-					String sDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+					String sDate = LocalDate.now().format(DATE_FORMATER_DD_MM_YYYY);
 					debugFile = new File(sDir, "Debug-" + sDate + ".log");
 					oDebugFile = new FileWriter(debugFile, true);
 				}
@@ -840,7 +831,7 @@ public final class Program {
 	 */
 	static void newFile() {
 		final File file = new File(getWorkDir(true) + UNTITLED1_SINFO);
-		if(file.exists()) {
+		if (file.exists()) {
 			file.delete();
 		}
 		try {
@@ -923,12 +914,12 @@ public final class Program {
 		MyCellarBottleContenance.load();
 
 		RangementUtils.putTabStock();
-		if(!getErrors().isEmpty()) {
+		if (!getErrors().isEmpty()) {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
 		CountryVignobleController.load();
 
-		if(myCellarFile.isFileSavable()) {
+		if (myCellarFile.isFileSavable()) {
 			list.addFirst(file.getAbsolutePath());
 		}
 
@@ -949,7 +940,7 @@ public final class Program {
 	 * closeFile: Fermeture du fichier.
 	 */
 	static void closeFile() {
-		if (myCellarFile == null) {
+		if (!hasFile()) {
 			Debug("Program: closeFile: File already closed!");
 			return;
 		}
@@ -990,7 +981,7 @@ public final class Program {
 				return;
 			}
 
-			if(isListCaveModified()) {
+			if (isListCaveModified()) {
 				MyXmlDom.writeMyCellarXml(getCave(), "");
 			}
 
@@ -1142,7 +1133,6 @@ public final class Program {
 		}
 
 		String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-
 		m_sWorkDir += File.separator + time;
 
 		f_obj = new File(m_sWorkDir);
@@ -1160,15 +1150,14 @@ public final class Program {
 	}
 
 	static String getShortFilename() {
-		if (myCellarFile == null) {
-			return getShortFilename(UNTITLED1_SINFO);
+		if (hasFile()) {
+			return getShortFilename(myCellarFile.getFile().getAbsolutePath());
 		}
-		return getShortFilename(myCellarFile.getFile().getAbsolutePath());
+		return "";
 	}
 
 	static String getShortFilename(String sFilename) {
-		String tmp = sFilename;
-		tmp = tmp.replaceAll("\\\\", "/");
+		String tmp = sFilename.replaceAll("\\\\", "/");
 		int ind1 = tmp.lastIndexOf("/");
 		int ind2 = tmp.indexOf(EXTENSION);
 		if (ind1 != -1 && ind2 != -1) {
@@ -1239,7 +1228,7 @@ public final class Program {
 	}
 
 	static MyLinkedHashMap getCaveConfig() {
-		return myCellarFile == null ? null : myCellarFile.getCaveConfig();
+		return hasFile() ? myCellarFile.getCaveConfig() : null;
 	}
 
 	static boolean hasConfigCaveKey(String key) {
@@ -1349,18 +1338,11 @@ public final class Program {
 	}
 
 	public static boolean hasYearControl() {
-		if (bYearControlCalculated) {
-			return bYearControled;
-		}
-		bYearControled = getCaveConfigBool(MyCellarSettings.ANNEE_CTRL, false);
-		bYearControlCalculated = true;
-		return bYearControled;
+		return getCaveConfigBool(MyCellarSettings.ANNEE_CTRL, false);
 	}
 
-	static void setYearControl(boolean b) {
-		bYearControled = b;
-		putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, bYearControled);
-		bYearControlCalculated = true;
+	static void setYearControl(boolean yearControl) {
+		putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, yearControl);
 	}
 
 	public static void updateAllPanels() {
@@ -1380,7 +1362,7 @@ public final class Program {
 	}
 
 	public static int findTab(ImageIcon image) {
-		for(int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+		for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
 			try {
 				if (TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image)) {
 					return i;
@@ -1591,7 +1573,7 @@ public final class Program {
 		String [] fields = s.split(";");
 		for (String field : fields) {
 			for (MyCellarFields f : MyCellarFields.getFieldsList()) {
-				if(f.name().equals(field)) {
+				if (f.name().equals(field)) {
 					cols.add(f);
 					break;
 				}
@@ -1889,21 +1871,21 @@ public final class Program {
 		return getStorage().getHistoryList().getHistory();
 	}
 	
-	private static DecimalFormat getDecimalFormat(final Locale locale) {
-		final DecimalFormatSymbols dfs = new DecimalFormatSymbols();
-
-		if (Locale.UK.equals(locale) || Locale.US.equals(locale)) {
-		  dfs.setGroupingSeparator(',');
-		  dfs.setDecimalSeparator('.');
-		} else {
-		  dfs.setGroupingSeparator('.');
-		  dfs.setDecimalSeparator(',');
-		}
+//	private static DecimalFormat getDecimalFormat(final Locale locale) {
+//		final DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+//
+//		if (Locale.UK.equals(locale) || Locale.US.equals(locale)) {
+//		  dfs.setGroupingSeparator(',');
+//		  dfs.setDecimalSeparator('.');
+//		} else {
+//		  dfs.setGroupingSeparator('.');
+//		  dfs.setDecimalSeparator(',');
+//		}
 
 		// format with grouping separator and decimal separator.
 		// always print first digit before comma, and two digits after comma.
-		return new DecimalFormat("###0.00", dfs);
-	  }
+//		return new DecimalFormat("###0.00", dfs);
+//	  }
 	  
 //	public static String bigDecimalToString(final BigDecimal value, final Locale locale) {
 //    return getDecimalFormat(locale).format(value);

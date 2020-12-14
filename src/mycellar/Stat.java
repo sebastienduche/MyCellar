@@ -50,8 +50,8 @@ import java.util.concurrent.atomic.LongAdder;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.7
- * @since 11/12/20
+ * @version 7.8
+ * @since 14/12/20
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -360,7 +360,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 					.stream()
 					.filter(History::hasTotalBottle)
 					.sorted(Comparator.comparing(History::getLocaleDate))
-					.forEach(history -> listNumberBottles.add(new StatData(history.getLocaleDate().format(Program.DATE_FORMATER), history.getTotalBottle())));
+					.forEach(history -> listNumberBottles.add(new StatData(history.getLocaleDate().format(Program.DATE_FORMATER_DDMMYYYY), history.getTotalBottle())));
 		}
 		panelChart.setLineChart(listNumberBottles, Program.getLabel("Stat.bottleCount", LabelProperty.PLURAL));
 	}

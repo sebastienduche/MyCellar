@@ -31,21 +31,11 @@ import mycellar.showfile.ShowFile;
 import mycellar.vignobles.CountryVignobleController;
 import mycellar.vignobles.VineyardPanel;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.net.util.Base64;
+import org.apache.commons.text.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.kohsuke.github.GHGistBuilder;
+import org.kohsuke.github.GitHub;
 
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -53,14 +43,12 @@ import javax.swing.JTabbedPane;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -76,7 +64,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -118,13 +105,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.2
- * @since 14/12/20
+ * @version 24.3
+ * @since 16/12/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.8.5.7";
+	public static final String INTERNAL_VERSION = "3.8.6.0";
 	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;
@@ -443,12 +430,6 @@ public final class Program {
 		if (_bShowWindowErrorAndExit) {
 			JOptionPane.showMessageDialog(Start.getInstance(), e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		try (var fileWriter = new FileWriter(getGlobalDir()+"Errors.log")){
-			fileWriter.write(e.toString());
-			fileWriter.write(error);
-			fileWriter.flush();
-		}
-		catch (IOException ignored) {}
 		Debug("Program: ERROR:");
 		Debug("Program: " + e.toString());
 		Debug("Program: " + error);
@@ -460,7 +441,10 @@ public final class Program {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			sendMail(error, debugFile);
+			try {
+				sendErrorToGitHub(e.toString(), debugFile);
+			} catch (IOException ignored) {
+			}
 			oDebugFile = null;
 		}
 
@@ -469,101 +453,20 @@ public final class Program {
 		}
 	}
 
-	private static void sendMail(String error, File filename) {
-		try (var stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
-			 var reader = new BufferedReader(stream)) {
-			String line = reader.readLine();
-			reader.close();
-			stream.close();
-			String decoded = new String(Base64.decodeBase64(line.getBytes()));
-			final String[] values = decoded.split("/");
-
-			String to = values[0];
-			String from = values[1];
-
-			// create some properties and get the default Session
-			Properties props = System.getProperties();
-
-			props.put("mail.smtp.auth", "true");
-			props.put("mail.smtp.starttls.enable", "true");
-			props.put("mail.smtp.host", "smtp.gmail.com");
-			props.put("mail.smtp.port", "587");
-
-			Session session = Session.getInstance(props, new Authenticator() {
-				@Override
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(from, values[2]);
-				}
-			});
-			session.setDebug(false);
-
-			// create a message
-			MimeMessage msg = new MimeMessage(session);
-			msg.setFrom(new InternetAddress(from));
-			InternetAddress[] address = {new InternetAddress(to)};
-			msg.setRecipients(Message.RecipientType.TO, address);
-			msg.setSubject("Problem");
-
-			// create and fill the first message part
-			MimeBodyPart mbp1 = new MimeBodyPart();
-			mbp1.setText(error);
-
-			// create the second message part
-			MimeBodyPart mbp2 = new MimeBodyPart();
-
-			// attach the file to the message
-			if(filename != null) {
-				mbp2.attachFile(filename);
+	private static void sendErrorToGitHub(String error, File filename) throws IOException {
+		StringBuilder stringBuilder = new StringBuilder();
+		try (var scanner = new Scanner(filename)) {
+			while (scanner.hasNextLine()) {
+				stringBuilder.append(scanner.nextLine().strip()).append("\n");
 			}
-
-			/*
-			 * Use the following approach instead of the above line if
-			 * you want to control the MIME type of the attached file.
-			 * Normally you should never need to do this.
-			 *
-		    FileDataSource fds = new FileDataSource(filename) {
-			public String getContentType() {
-			    return "application/octet-stream";
-			}
-		    };
-		    mbp2.setDataHandler(new DataHandler(fds));
-		    mbp2.setFileName(fds.getName());
-			 */
-
-			// create the Multipart and add its parts to it
-			Multipart mp = new MimeMultipart();
-			mp.addBodyPart(mbp1);
-			if(filename != null)
-				mp.addBodyPart(mbp2);
-
-			// add the Multipart to the message
-			msg.setContent(mp);
-
-			// set the Date: header
-			msg.setSentDate(new Date());
-
-			/*
-			 * If you want to control the Content-Transfer-Encoding
-			 * of the attached file, do the following.  Normally you
-			 * should never need to do this.
-			 *
-		    msg.saveChanges();
-		    mbp2.setHeader("Content-Transfer-Encoding", "base64");
-			 */
-
-			// send the message
-			Transport.send(msg);
-
-		} catch (MessagingException mex) {
-			mex.printStackTrace();
-			Exception ex;
-			if ((ex = mex.getNextException()) != null) {
-				ex.printStackTrace();
-			}
+		} catch (FileNotFoundException e) {
+			return;
 		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
+		final GitHub gitHub = GitHub.connect("sebastienduche", "b879ec5a49a9bfbb20a89735270b1b96c94aa19d");
+		final GHGistBuilder gist = gitHub.createGist();
+		gist.description(error)
+				.file("Debug.log", stringBuilder.toString())
+				.create();
 	}
 
 	public static LinkedList<Bouteille> getTrash() {
@@ -583,11 +486,11 @@ public final class Program {
 	}
 
 	static String convertToHTMLString(String s) {
-		return StringEscapeUtils.escapeHtml(s);
+		return StringEscapeUtils.escapeHtml4(s);
 	}
 
 	public static String convertStringFromHTMLString(String s) {
-		return StringEscapeUtils.unescapeHtml(s);
+		return StringEscapeUtils.unescapeHtml4(s);
 	}
 
 	public static String removeAccents(String s) {

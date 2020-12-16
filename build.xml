@@ -5,17 +5,20 @@
     <target name="create_run_jar">
     	<delete dir="./Build/lib"/>
 		<mkdir dir="./Build/lib"/>
-		<copy file="./lib/commons-io-2.1.jar" todir="./Build/lib"/>
-		<copy file="./lib/commons-lang-2.1.jar" todir="./Build/lib"/>
+		<copy file="./lib/commons-io-2.4.jar" todir="./Build/lib"/>
+		<copy file="./lib/commons-lang3-3.9.jar" todir="./Build/lib"/>
 		<copy file="./lib/commons-logging.jar" todir="./Build/lib"/>
 		<copy file="./lib/commons-net-3.0.1.jar" todir="./Build/lib"/>
+		<copy file="./lib/commons-text-1.9.jar" todir="./Build/lib"/>
+		<copy file="./lib/github-api-1.117.jar" todir="./Build/lib"/>
+		<copy file="./lib/jackson-annotations-2.10.2.jar" todir="./Build/lib"/>
+		<copy file="./lib/jackson-core-2.10.2.jar" todir="./Build/lib"/>
+		<copy file="./lib/jackson-databind-2.10.2.jar" todir="./Build/lib"/>
 		<copy file="./lib/jcommon-1.0.18.jar" todir="./Build/lib"/>
 		<copy file="./lib/jdom1.0.jar" todir="./Build/lib"/>
 		<copy file="./lib/jfreechart-1.0.15.jar" todir="./Build/lib"/>
-		<copy file="./lib/mailapi.jar" todir="./Build/lib"/>
 		<copy file="./lib/miglayout-4.0-swing.jar" todir="./Build/lib"/>
 		<copy file="./lib/pdfbox-app-2.0.5.jar" todir="./Build/lib"/>
-		<copy file="./lib/smtp.jar" todir="./Build/lib"/>
 		<copy file="./lib/commons-collections4-4.2.jar" todir="./Build/lib"/>
 		<copy file="./lib/commons-compress-1.18.jar" todir="./Build/lib"/>
 		<copy file="./lib/poi-4.0.0.jar" todir="./Build/lib"/>

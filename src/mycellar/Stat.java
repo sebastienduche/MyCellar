@@ -10,7 +10,7 @@ import mycellar.core.MyCellarEnum;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import net.miginfocom.swing.MigLayout;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -50,8 +50,8 @@ import java.util.concurrent.atomic.LongAdder;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.8
- * @since 14/12/20
+ * @version 7.9
+ * @since 16/12/20
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 

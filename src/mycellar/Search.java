@@ -13,6 +13,8 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.ui.PanelRequest;
 import mycellar.vignobles.CountryVignobleController;
@@ -775,14 +777,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					}
 				} //Fin for
 			} //Fin for
-//			Debug(model.getRowCount() + " bottle(s) found");
-//			updateLabelBottleNumber();
-//
-//			if (model.getRowCount() > 0) {
-//				modif.setEnabled(true);
-//				suppr.setEnabled(true);
-//			}
-//			resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminee.");
 		} else {
 			//Type armoire
 			if (!multi.isSelected()) {

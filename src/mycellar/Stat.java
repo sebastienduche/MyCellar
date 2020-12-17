@@ -10,6 +10,8 @@ import mycellar.core.MyCellarEnum;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.datas.history.History;
+import mycellar.placesmanagement.Part;
+import mycellar.placesmanagement.Rangement;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.jfree.chart.ChartFactory;

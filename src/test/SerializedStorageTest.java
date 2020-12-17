@@ -2,7 +2,7 @@ package test;
 
 import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.Rangement;
+import mycellar.placesmanagement.Rangement;
 import mycellar.SerializedStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package mycellar.core;
 
-import mycellar.Rangement;
+import mycellar.placesmanagement.Rangement;
 
 public interface IAddVin {
 

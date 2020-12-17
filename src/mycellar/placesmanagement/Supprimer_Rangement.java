@@ -6,8 +6,6 @@ import mycellar.core.datas.history.HistoryState;
 import mycellar.ITabListener;
 import mycellar.MyXmlDom;
 import mycellar.Program;
-import mycellar.Rangement;
-import mycellar.RangementUtils;
 import mycellar.Start;
 import mycellar.TabEvent;
 import mycellar.core.IMyCellar;
@@ -144,7 +142,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 						// Description du nombre de ligne par partie
 						nb_case_use_total = 0;
 						for (int i = 0; i < num_emplacement; i++) {
-							SupprimerLine line = new SupprimerLine("", i + 1, rangement.getNbLignes(i), rangement.getNbCaseUse(i));
+							SupprimerLine line = new SupprimerLine(i + 1, rangement.getNbLignes(i), rangement.getNbCaseUse(i));
 							listSupprimer.add(line);
 							nb_case_use_total += rangement.getNbCaseUse(i);
 						}
@@ -154,7 +152,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 						Debug("Selecting Box place...");
 						nb_case_use_total = 0;
 						for (int i = 0; i < num_emplacement; i++) {
-							SupprimerLine line = new SupprimerLine("", i + start_caisse, 0, rangement.getNbCaseUse(i));
+							SupprimerLine line = new SupprimerLine(i + start_caisse, 0, rangement.getNbCaseUse(i));
 							listSupprimer.add(line);
 							nb_case_use_total += rangement.getNbCaseUse(i);
 						}
@@ -409,52 +407,29 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 	}
 
 	static class SupprimerLine {
-		private String place;
-		private int numPart;
-		private int nbLine;
-		private int nbWine;
+		private final int numPart;
+		private final int nbLine;
+		private final int nbWine;
 
-		private SupprimerLine(String place, int numPart, int nbLine, int nbWine) {
-			this.place = place;
+		private SupprimerLine(int numPart, int nbLine, int nbWine) {
 			this.numPart = numPart;
 			this.nbLine = nbLine;
 			this.nbWine = nbWine;
 		}
-		public String getPlace() {
-			return place;
-		}
-		public void setPlace(String place) {
-			this.place = place;
-		}
-		public int getNumPart() {
-			return numPart;
-		}
+
 		String getNumPartLabel() {
 			return getLabel("Infos029") + " " + numPart;
 		}
-		public void setNumPart(int numPart) {
-			this.numPart = numPart;
-		}
-		public int getNbLine() {
-			return nbLine;
-		}
+
 		String getNbLineLabel() {
 			if(nbLine <= 1) {
 				return MessageFormat.format(getLabel("Infos060"), nbLine);
 			}
 			return MessageFormat.format(getLabel("Infos061"), nbLine);
 		}
-		public void setNbLine(int nbLine) {
-			this.nbLine = nbLine;
-		}
-		public int getNbWine() {
-			return nbWine;
-		}
+
 		String getNbWineLabel() {
 			return MessageFormat.format(getLabel("Main.severalItems", new LabelProperty(nbWine > 1)), nbWine);
-		}
-		public void setNbWine(int nbWine) {
-			this.nbWine = nbWine;
 		}
 	}
 

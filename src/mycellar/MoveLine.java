@@ -5,6 +5,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.placesmanagement.Rangement;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;

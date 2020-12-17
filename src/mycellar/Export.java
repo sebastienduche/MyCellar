@@ -13,6 +13,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
 import mycellar.pdf.PDFPageProperties;
 import mycellar.pdf.PDFTools;
+import mycellar.placesmanagement.RangementUtils;
 import mycellar.showfile.ManageColumnModel;
 import mycellar.xls.XLSOptions;
 import net.miginfocom.swing.MigLayout;
@@ -49,8 +50,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.3
- * @since 04/12/20
+ * @version 9.4
+ * @since 17/12/20
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 

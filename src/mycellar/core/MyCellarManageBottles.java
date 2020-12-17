@@ -7,8 +7,8 @@ import mycellar.Erreur;
 import mycellar.JCompletionComboBox;
 import mycellar.MyXmlDom;
 import mycellar.Program;
-import mycellar.Rangement;
-import mycellar.RangementUtils;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import mycellar.actions.ManageCapacityAction;
 import mycellar.core.datas.MyCellarBottleContenance;
 import net.miginfocom.swing.MigLayout;
@@ -30,8 +30,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.8
- * @since 19/11/20
+ * @version 3.9
+ * @since 17/12/20
  */
 public abstract class MyCellarManageBottles extends JPanel {
 

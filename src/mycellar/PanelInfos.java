@@ -5,6 +5,8 @@ import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -23,8 +25,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.3
- * @since 20/11/20
+ * @version 2.4
+ * @since 17/12/20
  */
 final class PanelInfos extends JPanel {
 

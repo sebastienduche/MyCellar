@@ -10,6 +10,7 @@ package mycellar;
 
 import mycellar.core.MyCellarFields;
 import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.placesmanagement.Rangement;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -33,8 +34,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.5
- * @since 20/11/20
+ * @version 5.6
+ * @since 17/12/20
 
  * <p>Java class for anonymous complex type.
  *
@@ -431,12 +432,12 @@ public class Bouteille implements Serializable{
 	 	setLastModified(LocalDateTime.now());
 	 }
 
-	void setCreated() {
+	public void setCreated() {
 		setStatus(BottlesStatus.CREATED.name());
 		setLastModified(LocalDateTime.now());
 	}
 
-	boolean hasNoStatus() {
+	public boolean hasNoStatus() {
 		return status.isEmpty() || status.equals(BottlesStatus.NONE.name());
 	}
 

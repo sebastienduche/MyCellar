@@ -1,4 +1,4 @@
-package mycellar;
+package mycellar.placesmanagement;
 
 import java.util.LinkedList;
 

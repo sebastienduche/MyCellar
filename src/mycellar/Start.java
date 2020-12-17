@@ -16,6 +16,8 @@ import mycellar.core.MyCellarVersion;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.launcher.Server;
 import mycellar.placesmanagement.Creer_Rangement;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
@@ -62,8 +64,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.7
- * @since 12/12/20
+ * @version 27.8
+ * @since 17/12/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 

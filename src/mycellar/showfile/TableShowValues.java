@@ -3,8 +3,8 @@ package mycellar.showfile;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
-import mycellar.Rangement;
-import mycellar.RangementUtils;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import mycellar.Start;
 import mycellar.core.LabelProperty;
 
@@ -23,8 +23,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.3
- * @since 19/10/20
+ * @version 4.4
+ * @since 17/12/20
  */
 
 class TableShowValues extends AbstractTableModel {

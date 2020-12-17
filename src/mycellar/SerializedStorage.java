@@ -5,6 +5,7 @@ import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.worksheet.WorkSheetData;
 import mycellar.core.datas.worksheet.WorkSheetList;
+import mycellar.placesmanagement.Rangement;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;

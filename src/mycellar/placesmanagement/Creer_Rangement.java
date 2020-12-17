@@ -5,11 +5,7 @@ import mycellar.ITabListener;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarImage;
 import mycellar.MyXmlDom;
-import mycellar.Part;
 import mycellar.Program;
-import mycellar.Rangement;
-import mycellar.RangementUtils;
-import mycellar.Row;
 import mycellar.Start;
 import mycellar.TabEvent;
 import mycellar.actions.OpenShowErrorsAction;
@@ -57,8 +53,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.3
- * @since 27/11/20
+ * @version 14.4
+ * @since 17/12/20
  */
 public class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 

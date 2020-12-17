@@ -4,7 +4,7 @@ import mycellar.BottleColor;
 import mycellar.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.Rangement;
+import mycellar.placesmanagement.Rangement;
 import mycellar.Start;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
@@ -25,8 +25,8 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 13/11/20
+ * @version 1.3
+ * @since 17/12/20
  */
 
 public class Predicates {

@@ -1,8 +1,8 @@
 package test;
 
 import mycellar.Bouteille;
-import mycellar.Part;
-import mycellar.Rangement;
+import mycellar.placesmanagement.Part;
+import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,6 @@ import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RangementTest {

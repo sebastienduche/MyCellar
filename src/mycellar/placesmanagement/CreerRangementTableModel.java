@@ -1,8 +1,6 @@
 package mycellar.placesmanagement;
 
-import mycellar.Part;
 import mycellar.Program;
-import mycellar.Row;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.HashMap;
@@ -15,8 +13,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 27/11/20
+ * @version 1.0
+ * @since 17/12/20
  */
 
 class CreerRangementTableModel extends AbstractTableModel {
@@ -170,10 +168,6 @@ class CreerRangementTableModel extends AbstractTableModel {
 		rows = parts;
 		updateValues();
 		fireTableDataChanged();
-	}
-
-	public boolean isSameColumnNumber() {
-		return sameColumnNumber;
 	}
 
 	void setSameColumnNumber(boolean sameColumnNumber) {

@@ -28,6 +28,8 @@ import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
 import mycellar.placesmanagement.Creer_Rangement;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.CountryVignobleController;
@@ -113,7 +115,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.8.7.8";
+	public static final String INTERNAL_VERSION = "3.8.9.6";
 	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;
@@ -483,7 +485,7 @@ public final class Program {
 		return ERRORS;
 	}
 
-	static void addError(MyCellarError error) {
+	public static void addError(MyCellarError error) {
 		ERRORS.add(error);
 	}
 

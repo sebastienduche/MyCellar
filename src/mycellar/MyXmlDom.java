@@ -1,6 +1,8 @@
 package mycellar;
 
 import mycellar.core.LabelProperty;
+import mycellar.placesmanagement.Part;
+import mycellar.placesmanagement.Rangement;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -27,8 +29,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : SebInformatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @since 20/10/20
- * @version 2.7
+ * @version 2.8
+ * @since 17/12/20
  */
 
 public class MyXmlDom {
@@ -76,11 +78,10 @@ public class MyXmlDom {
 						// C'est une caisse
 						int nNumStart = Integer.parseInt(place.getAttribute("NumStart"));
 						int nNbLimit = Integer.parseInt(place.getAttribute("NbLimit"));
-						boolean bLimit = false;
-						bLimit = (nNbLimit > 0);
 						if (names.contains(sName)) {
 							Debug("WARNING: Rangement name '" + sName + "' already used!");
 						} else {
+							boolean bLimit = (nNbLimit > 0);
 							final Rangement caisse = new Rangement.CaisseBuilder(sName)
 									.nb_emplacement(nPlace)
 									.start_caisse(nNumStart)
@@ -147,19 +148,19 @@ public class MyXmlDom {
 	/**
 	 * writeMyCellarXml
 	 *
-	 * @param _oCave LinkedList<Rangement>
+	 * @param rangements LinkedList<Rangement>
 	 */
-	static void writeMyCellarXml(List<Rangement> _oCave, String _sFilename) {
+	static void writeMyCellarXml(List<Rangement> rangements, String sFilename) {
 		Debug("writeMyCellarXml: Writing file");
 		String filename = Program.getXMLPlacesFileName();
-		if (!_sFilename.isEmpty()) {
-			filename = _sFilename;
+		if (!sFilename.isEmpty()) {
+			filename = sFilename;
 		}
 		try (var oFile = new FileWriter(filename)){
 			//Init XML File
 			oFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
 			// Ecriture des rangements
-			for (Rangement r : _oCave){
+			for (Rangement r : rangements){
 				if (r != null) {
 					oFile.write(r.toXml());
 				}

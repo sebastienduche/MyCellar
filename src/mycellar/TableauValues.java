@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.LabelProperty;
+import mycellar.placesmanagement.Rangement;
 
 import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
@@ -13,8 +14,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 03/12/20
+ * @version 1.6
+ * @since 17/12/20
  */
 class TableauValues extends AbstractTableModel {
 	public static final int ETAT = 0;

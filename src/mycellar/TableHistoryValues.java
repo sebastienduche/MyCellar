@@ -1,5 +1,7 @@
 package mycellar;
 
+import mycellar.core.datas.history.History;
+
 import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
 import java.time.LocalDate;
@@ -9,7 +11,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -17,8 +18,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 10/12/20
+ * @version 2.8
+ * @since 17/12/20
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -37,9 +38,9 @@ class TableHistoryValues extends AbstractTableModel {
 
   private static final int MAX_ROWS = 10;
 
-  TableHistoryValues(boolean firstcolumn){
+  TableHistoryValues(boolean firstcolumn) {
     this.firstcolumn = firstcolumn;
-    if(firstcolumn) {
+    if (firstcolumn) {
       columnList.add("");
     }
     columnList.add(Program.getLabel("Infos342"));
@@ -81,8 +82,7 @@ class TableHistoryValues extends AbstractTableModel {
     if (!firstcolumn) {
       column++;
     }
-    switch(column)
-    {
+    switch(column) {
       case SELECT:
         return booleanTab[row];
       case ACTION:
@@ -200,13 +200,11 @@ class TableHistoryValues extends AbstractTableModel {
         if (h.isDeleted()) {
           Program.showBottle(bottle, false);
         } else {
-          Optional<Bouteille> optional = Program.getStorage().getListBouteilles().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst();
           Program.Debug("Bottle Get ID = " + bottle.getId());
-          if (optional.isPresent()) {
-            Program.showBottle(optional.get(), true);
-          } else {
-            Program.showBottle(bottle, false);
-          }
+          Program.getStorage().getListBouteilles().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst()
+              .ifPresentOrElse(
+                  bouteille -> Program.showBottle(bouteille, true),
+                  () -> Program.showBottle(bottle, false));
         }
         break;
       case SELECT:

@@ -7,6 +7,8 @@ import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.datas.history.History;
+import mycellar.core.datas.history.HistoryState;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -36,8 +38,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.6
- * @since 10/12/20
+ * @version 4.7
+ * @since 17/12/20
  */
 
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {

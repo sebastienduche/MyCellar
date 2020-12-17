@@ -17,6 +17,8 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.datas.history.History;
+import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
@@ -105,13 +107,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.3
- * @since 16/12/20
+ * @version 24.4
+ * @since 17/12/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.8.6.0";
+	public static final String INTERNAL_VERSION = "3.8.7.8";
 	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;
@@ -1762,7 +1764,7 @@ public final class Program {
 		return "";
 	}
 	
-	static HistoryList getHistoryList() {
+	public static HistoryList getHistoryList() {
 		return getStorage().getHistoryList();
 	}
 

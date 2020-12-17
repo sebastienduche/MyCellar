@@ -537,7 +537,7 @@ public class Bouteille implements Serializable{
 		return Program.TEMP_PLACE.equalsIgnoreCase(emplacement);
 	}
 
-  static Bouteille getBouteilleFromXML(Element bouteilleElem) {
+  public static Bouteille getBouteilleFromXML(Element bouteilleElem) {
     NodeList nodeId = bouteilleElem.getElementsByTagName("id");
     final int id = Integer.parseInt(nodeId.item(0).getTextContent());
     NodeList nodeName = bouteilleElem.getElementsByTagName("nom");

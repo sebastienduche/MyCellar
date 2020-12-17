@@ -1,5 +1,8 @@
 package mycellar;
 
+import mycellar.core.datas.history.History;
+import mycellar.core.datas.history.HistoryList;
+import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.worksheet.WorkSheetList;
 
 import java.util.LinkedList;
@@ -10,8 +13,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 10/12/20
+ * @version 2.0
+ * @since 17/12/20
  */
 
 public interface Storage {

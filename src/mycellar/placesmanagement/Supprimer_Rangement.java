@@ -2,7 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.Erreur;
-import mycellar.HistoryState;
+import mycellar.core.datas.history.HistoryState;
 import mycellar.ITabListener;
 import mycellar.MyXmlDom;
 import mycellar.Program;
@@ -59,8 +59,8 @@ import static mycellar.Program.updateAllPanels;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.5
- * @since 10/12/20
+ * @version 8.6
+ * @since 17/12/20
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {

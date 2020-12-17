@@ -1,5 +1,8 @@
 package mycellar;
 
+import mycellar.core.datas.history.History;
+import mycellar.core.datas.history.HistoryList;
+import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.worksheet.WorkSheetData;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.vignobles.CountryVignobleController;
@@ -16,8 +19,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.2
- * @since 10/12/20
+ * @version 6.3
+ * @since 17/12/20
  */
 
 public class SerializedStorage implements Storage {

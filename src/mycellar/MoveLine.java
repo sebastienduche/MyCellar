@@ -4,6 +4,7 @@ import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.datas.history.HistoryState;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
@@ -19,8 +20,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 2.3
- * @since 10/12/20
+ * @version 2.4
+ * @since 17/12/20
  */
 
 final class MoveLine extends JDialog {

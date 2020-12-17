@@ -10,7 +10,7 @@ import java.io.IOException;
 public class Encode {
 
 	public static void main(String[] args) {
-		String buf = "textTopEncode";
+		String buf = args[0];
 		byte[] to = Base64.encodeBase64(buf.getBytes());
 		try {
 			FileOutputStream writer = new FileOutputStream("MyCellar.dat");

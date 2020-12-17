@@ -35,8 +35,9 @@ import mycellar.showfile.ShowFile;
 import mycellar.vignobles.CountryVignobleController;
 import mycellar.vignobles.VineyardPanel;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.net.util.Base64;
+import org.apache.commons.text.StringEscapeUtils;
 import org.kohsuke.github.GHGistBuilder;
 import org.kohsuke.github.GitHub;
 
@@ -47,12 +48,14 @@ import javax.swing.JTabbedPane;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -466,11 +469,22 @@ public final class Program {
 		} catch (FileNotFoundException e) {
 			return;
 		}
-		final GitHub gitHub = GitHub.connect("sebastienduche", "b879ec5a49a9bfbb20a89735270b1b96c94aa19d");
-		final GHGistBuilder gist = gitHub.createGist();
-		gist.description(error)
-				.file("Debug.log", stringBuilder.toString())
-				.create();
+		try (var stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
+				 var reader = new BufferedReader(stream)) {
+			String line = reader.readLine();
+			reader.close();
+			stream.close();
+			String decoded = new String(Base64.decodeBase64(line.getBytes()));
+			final String[] values = decoded.split("/");
+
+			final GitHub gitHub = GitHub.connect(values[0], values[1]);
+			final GHGistBuilder gist = gitHub.createGist();
+			gist.description(error)
+					.file("Debug.log", stringBuilder.toString())
+					.create();
+		} catch (IOException | RuntimeException e) {
+			Debug("Program: ERROR while reading MyCellar.dat: " + e.getMessage());
+		}
 	}
 
 	public static LinkedList<Bouteille> getTrash() {

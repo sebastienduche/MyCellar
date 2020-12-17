@@ -18,6 +18,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.io.File;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -175,12 +176,10 @@ final class PanelStats extends JPanel {
 		@Override
 		public void setValueAt(Object arg0, int row, int column) {
 			if (column == 2) {
-				Rangement r = names.get(row);
+				Rangement rangement = names.get(row);
 				RangementUtils.putTabStock();
-				LinkedList<Rangement> rangements = new LinkedList<>();
-				rangements.add(r);
-				MyXmlDom.writeRangements("", rangements, false);
-				Program.open( new File(Program.getPreviewXMLFileName()) );
+				MyXmlDom.writeRangements("", List.of(rangement), false);
+				Program.open(new File(Program.getPreviewXMLFileName()));
 			}
 		}
 

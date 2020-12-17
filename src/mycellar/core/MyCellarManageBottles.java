@@ -7,10 +7,10 @@ import mycellar.Erreur;
 import mycellar.JCompletionComboBox;
 import mycellar.MyXmlDom;
 import mycellar.Program;
-import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.actions.ManageCapacityAction;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
@@ -21,7 +21,8 @@ import java.awt.event.ItemEvent;
 import java.io.File;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -253,10 +254,8 @@ public abstract class MyCellarManageBottles extends JPanel {
 	private void preview_actionPerformed(ActionEvent e) {
 		Debug("Previewing...");
 		RangementUtils.putTabStock();
-		final LinkedList<Rangement> rangements = new LinkedList<>();
-		rangements.add((Rangement) m_lieu.getSelectedItem());
-		MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
-		Program.open( new File(Program.getPreviewXMLFileName()) );
+		MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), List.of((Rangement) Objects.requireNonNull(m_lieu.getSelectedItem())), false);
+		Program.open(new File(Program.getPreviewXMLFileName()));
 		Debug("Previewing... End");
 	}
 

@@ -178,10 +178,10 @@ public class MyXmlDom {
 	 * writeRangements: Ecriture des Rangements pour l'export XML/HTML
 	 *
 	 * @param filename String : Fichier
-	 * @param rangements LinkedList<Rangement>: Liste des rangements
+	 * @param rangements List<Rangement>: Liste des rangements
 	 */
 	public static void writeRangements(String filename, List<Rangement> rangements, boolean preview){
-		Debug("writeRangement: Writing file");
+		Debug("writeRangements: Writing file");
 		if (filename.isEmpty()) {
 			filename = Program.getPreviewXMLFileName();
 		}

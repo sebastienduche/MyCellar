@@ -53,8 +53,8 @@ import java.util.concurrent.atomic.LongAdder;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.0
- * @since 17/12/20
+ * @version 8.1
+ * @since 18/12/20
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -377,7 +377,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		options.setEnabled(false);
 		PlaceComboItem placeComboItem = (PlaceComboItem) listPlaces.getSelectedItem();
 		int nbBottle = 0;
-		if (placeComboItem!= null && placeComboItem.getRangement() != null) {
+		if (placeComboItem != null && placeComboItem.getRangement() != null) {
 			Rangement cave = placeComboItem.getRangement();
 			panelChart.setPlaceChart(cave);
 			nbBottle = cave.getNbCaseUseAll();
@@ -424,7 +424,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 	private void displayNbBottlePlace(Rangement cave) {
 		for (int j = 0; j < cave.getNbEmplacements(); j++) {
 			panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos179"), (j + 1)))); //Emplacement
-			panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(cave.getNbCaseUseAll() > 1)),cave.getNbCaseUseAll())),"span 2, align right, wrap"); //"bouteille");
+			panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(cave.getNbCaseUseAll() > 1)),cave.getNbCaseUse(j))),"span 2, align right, wrap"); //"bouteille");
 		}
 	}
 
@@ -509,7 +509,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 			}
 			DefaultPieDataset dataset = new DefaultPieDataset();
 			for (Part part: rangement.getPlace()) {
-				dataset.setValue(MessageFormat.format(Program.getLabel("Infos179"),part.getNum()), rangement.getNbCaseUse(part.getNum() - 1));
+				dataset.setValue(MessageFormat.format(Program.getLabel("Infos179"), part.getNum() + 1), rangement.getNbCaseUse(part.getNum()));
 			}
 			JFreeChart chart = ChartFactory.createPieChart(rangement.getNom(),          // chart title
 					dataset,                // data

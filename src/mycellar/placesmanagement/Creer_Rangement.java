@@ -54,8 +54,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.4
- * @since 17/12/20
+ * @version 14.5
+ * @since 18/12/20
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -131,23 +131,24 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		});
 
 		nb_parties.addChangeListener((e) -> {
-			if (!m_caisse_chk.isSelected()) {
-				int top = Integer.parseInt(nb_parties.getValue().toString());
-				if (top > listPart.size()) {
-					while (listPart.size() < top) {
-						Part part = new Part(listPart.size() + 1);
-						listPart.add(part);
-						if (m_jrb_dif_column_number.isSelected()) {
-							part.setRows(1);
-						}
-					}
-				} else {
-					while (listPart.size() > top) {
-						listPart.removeLast();
+			if (m_caisse_chk.isSelected()) {
+				return;
+			}
+			int newValue = Integer.parseInt(nb_parties.getValue().toString());
+			if (newValue > listPart.size()) {
+				while (listPart.size() < newValue) {
+					Part part = new Part(listPart.size() + 1);
+					listPart.add(part);
+					if (m_jrb_dif_column_number.isSelected()) {
+						part.setRows(1);
 					}
 				}
-				model.setValues(listPart);
+			} else {
+				while (listPart.size() > newValue) {
+					listPart.removeLast();
+				}
 			}
+			model.setValues(listPart);
 		});
 
 		nb_limite.addChangeListener((e) -> {

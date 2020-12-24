@@ -266,6 +266,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_TXT);
 		}	else if (type_xls.isSelected()) {
+			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		}	else if (type_xml.isSelected()) {
@@ -374,7 +375,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 			}
 
 			if (type_xls.isSelected()) {
-				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					label_progression.setText("");
 					Debug("ERROR: Not a XLS File");
 					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);

@@ -49,8 +49,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.4
- * @since 17/12/20
+ * @version 7.5
+ * @since 24/12/20
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
@@ -182,16 +182,16 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		if (type_XML.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
+			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
 		} else if (type_HTML.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
+			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
 		} else if (type_XLS.isSelected()) {
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
+			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
@@ -240,10 +240,10 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 					return;
 				}
 			} else if (type_XLS.isSelected()) {
-				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					Debug("ERROR: Not a XLS File");
 					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error34"), nom));
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
 					return;
 				}
 			}

@@ -50,8 +50,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.4
- * @since 17/12/20
+ * @version 9.5
+ * @since 24/12/20
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -204,7 +204,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		if (MyCellarRadioButtonPDF.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
 		} else if (MyCellarRadioButtonXLS.isSelected()) {
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
+			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		} else if (MyCellarRadioButtonCSV.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
@@ -400,7 +400,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				}
 				progressBar.setVisible(false);
 			}	else if (MyCellarRadioButtonXLS.isSelected()) {
-				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					//"Le fichier saisie ne possede pas une extension XLS: " + str_tmp3);
 					end.setText("");
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));

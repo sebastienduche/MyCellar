@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelProperty;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.history.HistoryState;
@@ -20,8 +21,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.3
- * @since 17/12/20
+ * @version 6.4
+ * @since 29/12/20
  */
 
 public class SerializedStorage implements Storage {
@@ -122,10 +123,10 @@ public class SerializedStorage implements Storage {
 				sValue = Program.getError("Error190");
 				break;
 			case VALIDATED:
-				sValue = Program.getError("Error.HistoryValidatedDelete");
+				sValue = Program.getError("Error.HistoryValidatedDelete", LabelProperty.OF_THE_PLURAL);
 				break;
 			case TOCHECK:
-				sValue = Program.getError("Error.HistoryToCheckDelete");
+				sValue = Program.getError("Error.HistoryToCheckDelete", LabelProperty.OF_THE_PLURAL);
 				break;
 			default:
 				sValue = "";

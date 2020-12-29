@@ -54,8 +54,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.5
- * @since 18/12/20
+ * @version 14.6
+ * @since 29/12/20
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -97,9 +97,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
 		MyCellarButton createButton;
 		if (modify) {
-		  createButton = new MyCellarButton(LabelType.INFO, "079", new ModifyAction());
+			createButton = new MyCellarButton(LabelType.INFO, "079", new ModifyAction());
 		} else {
-		  createButton = new MyCellarButton(LabelType.INFO, "018", new CreateAction());
+			createButton = new MyCellarButton(LabelType.INFO, "018", new CreateAction());
 		}
 
 		createButton.setMnemonic(CREER);
@@ -115,9 +115,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		label_cree.setFont(Program.FONT_DIALOG_SMALL);
 		label_cree.setText("");
 		label_cree.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		preview.addActionListener(this::preview_actionPerformed);
-		m_caisse_chk.addItemListener(this::checkbox1_itemStateChanged);
+		m_caisse_chk.addItemListener(this::simplePlace_itemStateChanged);
 		checkLimite.addItemListener(this::checkbox2_itemStateChanged);
 
 		nom_obj.addActionListener((e) -> label_cree.setText(""));
@@ -130,31 +130,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 			}
 		});
 
-		nb_parties.addChangeListener((e) -> {
-			if (m_caisse_chk.isSelected()) {
-				return;
-			}
-			int newValue = Integer.parseInt(nb_parties.getValue().toString());
-			if (newValue > listPart.size()) {
-				while (listPart.size() < newValue) {
-					Part part = new Part(listPart.size() + 1);
-					listPart.add(part);
-					if (m_jrb_dif_column_number.isSelected()) {
-						part.setRows(1);
-					}
-				}
-			} else {
-				while (listPart.size() > newValue) {
-					listPart.removeLast();
-				}
-			}
-			model.setValues(listPart);
-		});
+		nb_parties.addChangeListener((e) -> updatePartList());
 
 		nb_limite.addChangeListener((e) -> {
 			final int count = Integer.parseInt(nb_limite.getValue().toString());
 			label_limite.setText(Program.getLabel("Main.Item", new LabelProperty(count > 1)));
-			});
+		});
 
 		// Alimentation de la liste deroulante du nombre de parties
 		nb_parties.setValue(1);
@@ -163,7 +144,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		nb_start_caisse.setVisible(false);
 		//Alimentation du Spinner limite_caisse
 		nb_limite.setValue(1);
-		
+
 		setLayout(new MigLayout("","[grow][grow]","[][]"));
 
 		if (modify) {
@@ -185,12 +166,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		panelType.setLayout(new GridLayout(0,2));
 		panelType.add(m_jrb_same_column_number);
 		panelType.add(m_jrb_dif_column_number);
-		
+
 		panelStartCaisse = new JPanel();
 		panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos272"),0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
 		panelStartCaisse.setLayout(new MigLayout("","[]","[]"));
 		panelStartCaisse.add(nb_start_caisse, "wmin 50");
-		
+
 		panelLimite = new JPanel();
 		panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos274"),0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
 		panelLimite.setLayout(new MigLayout("","[][]","[]"));
@@ -209,7 +190,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos023"),0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
 		panelPartie.setLayout(new MigLayout("","[]","[]"));
 		panelPartie.add(nb_parties, "wmin 50");
-		
+
 		JPanel panelPartiesConfig = new JPanel();
 		panelPartiesConfig.setLayout(new MigLayout("","[][]","[grow]"));
 		panelPartiesConfig.add(panelType,"growy, hidemode 3, gapright 30");
@@ -222,7 +203,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		add(label_cree, "center, span 2, wrap");
 		add(createButton, "span 2, split 2, center");
 		add(preview);
-		
+
 		m_jrb_dif_column_number.addItemListener((e) -> model.setSameColumnNumber(!m_jrb_dif_column_number.isSelected()));
 		model.setSameColumnNumber(true);
 
@@ -232,6 +213,27 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
 		m_caisse_chk.setSelected(true);
 		setVisible(true);
+	}
+
+	private void updatePartList() {
+		if (m_caisse_chk.isSelected()) {
+			return;
+		}
+		int newValue = Integer.parseInt(nb_parties.getValue().toString());
+		if (newValue > listPart.size()) {
+			while (listPart.size() < newValue) {
+				Part part = new Part(listPart.size() + 1);
+				listPart.add(part);
+				if (m_jrb_dif_column_number.isSelected()) {
+					part.setRows(1);
+				}
+			}
+		} else {
+			while (listPart.size() > newValue) {
+				listPart.removeLast();
+			}
+		}
+		model.setValues(listPart);
 	}
 
 	private void comboPlace_itemStateChanged(ItemEvent e) {
@@ -361,19 +363,19 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 				Debug("Modifications completed");
 				label_cree.setText(Program.getError("Error123")); //"Rangement modifie.");
 			}	else {
-			  boolean bResul = true;
+				boolean bResul = true;
 				// Rangement complexe
 				Debug("Modifying complex place...");
 				int nbBottles = rangement.getNbCaseUseAll();
 				for (Part p : listPart) {
 					if (p.getRows().isEmpty()) {
-					  Debug("ERROR: Wrong number of lines on part: " + p.getNum());
+						Debug("ERROR: Wrong number of lines on part: " + p.getNum());
 						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrect sur la partie
 						return;
 					}
 					for (Row r : p.getRows()) {
 						if (r.getCol() == 0) {
-						  Debug("ERROR: Wrong number of columns on part:  " + p.getNum());
+							Debug("ERROR: Wrong number of columns on part:  " + p.getNum());
 							Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrect sur la partie
 							return;
 						}
@@ -402,7 +404,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 					}
 					for (int i = 0; i < listPart.size(); i++) {
 						if (!bResul) {
-						  Debug("ERROR: bResul false, skipping part");
+							Debug("ERROR: bResul false, skipping part");
 							continue;
 						}
 						Part part = listPart.get(i);
@@ -426,7 +428,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 						if (bResul) {
 							for (int j = 0; j < part.getRowSize(); j++) {
 								if (!bResul) {
-								  Debug("ERROR: bResul false, skipping row");
+									Debug("ERROR: bResul false, skipping row");
 									break;
 								}
 								int nbCol = -1;
@@ -437,7 +439,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 								if (nbCol > newNbCol) {
 									for (int k = newNbCol; k < nbCol; k++) {
 										if (!bResul) {
-										  Debug("ERROR: bResul false, skipping column");
+											Debug("ERROR: bResul false, skipping column");
 											break;
 										}
 										if (rangement.getBouteille(i, j, k).isPresent()) {
@@ -453,7 +455,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 					}
 
 					if (bResul) {
-					  Debug("Updating complex place: " + rangement.getNom());
+						Debug("Updating complex place: " + rangement.getNom());
 						String name = rangement.getNom();
 						if (!name.equalsIgnoreCase(nom)) {
 							String erreur_txt1 = Program.getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.");
@@ -489,13 +491,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 				}
 			}
 			new Timer().schedule(
-			        new TimerTask() {
-			            @Override
-			            public void run() {
-			            	SwingUtilities.invokeLater(() -> label_cree.setText(""));
-			            }
-			        }, 
-			        5000 
+					new TimerTask() {
+						@Override
+						public void run() {
+							SwingUtilities.invokeLater(() -> label_cree.setText(""));
+						}
+					},
+					5000
 			);
 		}
 		catch (Exception exc) {
@@ -515,7 +517,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	}
 
 	private void putTabStock() {
-		if(!RangementUtils.putTabStock()) {
+		if (!RangementUtils.putTabStock()) {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
 	}
@@ -524,115 +526,107 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	 * button1_actionPerformed: Boutton Creer
 	 */
 	private void create_actionPerformed() {
-		try {
-			Debug("create_actionPerforming...");
-			String nom = nom_obj.getText().strip();
+		Debug("create_actionPerforming...");
+		String nom = nom_obj.getText().strip();
 
-			//Controle si le nom est deja utilise
-			boolean bResul = MyCellarControl.ctrl_existingName(nom);
-			// Controles sur le nom (format, longueur...)
-			bResul &= MyCellarControl.ctrlName(nom);
+		//Controle si le nom est deja utilise
+		boolean bResul = MyCellarControl.ctrl_existingName(nom);
+		// Controles sur le nom (format, longueur...)
+		bResul &= MyCellarControl.ctrlName(nom);
 
-			if (m_caisse_chk.isSelected()) {
-				Debug("Creating a simple place...");
-				//Creation d'un rangement de type "Caisse"
-				int nbPart = Integer.parseInt(nb_parties.getValue().toString());
-				start_caisse = Integer.parseInt(nb_start_caisse.getValue().toString());
-				islimited = checkLimite.isSelected();
-				limite = Integer.parseInt(nb_limite.getValue().toString());
+		if (m_caisse_chk.isSelected()) {
+			Debug("Creating a simple place...");
+			//Creation d'un rangement de type "Caisse"
+			int nbPart = Integer.parseInt(nb_parties.getValue().toString());
+			start_caisse = Integer.parseInt(nb_start_caisse.getValue().toString());
+			islimited = checkLimite.isSelected();
+			limite = Integer.parseInt(nb_limite.getValue().toString());
 
-				if (bResul) {
-					Debug("Creating...");
-					final Rangement caisse = new Rangement.CaisseBuilder(nom)
-							.nb_emplacement(nbPart)
-							.start_caisse(start_caisse)
-							.limit(islimited)
-							.limite_caisse(limite).build();
-					Program.addCave(caisse);
-					Debug("Creation of '" + nom + "' completed.");
-					nom_obj.setText("");
-					label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
-					Program.updateAllPanels();
+			if (bResul) {
+				Debug("Creating...");
+				final Rangement caisse = new Rangement.CaisseBuilder(nom)
+						.nb_emplacement(nbPart)
+						.start_caisse(start_caisse)
+						.limit(islimited)
+						.limite_caisse(limite).build();
+				Program.addCave(caisse);
+				Debug("Creation of '" + nom + "' completed.");
+				nom_obj.setText("");
+				label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
+				Program.updateAllPanels();
+			}
+		}	else {
+			Debug("Creating complex place...");
+			for (Part p: listPart) {
+				if (p.getRows().isEmpty()) {
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrect sur la partie
+					bResul = false;
 				}
-			}	else {
-				Debug("Creating complex place...");
-				for (Part p: listPart) {
-					if (p.getRows().isEmpty()) {
-						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrect sur la partie
+				for (Row r: p.getRows()) {
+					if (r.getCol() == 0) {
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrect sur la partie
 						bResul = false;
 					}
-					for (Row r: p.getRows()) {
-						if (r.getCol() == 0) {
-							Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrect sur la partie
-							bResul = false;
-						}
-					}
 				}
-				//Type rangement
-				if (m_jrb_dif_column_number.isSelected()) {
-					Debug("Creating with different column number...");
+			}
+			//Type rangement
+			if (m_jrb_dif_column_number.isSelected()) {
+				Debug("Creating with different column number...");
 
-					// Creation du rangement
-					if (bResul) {
-						Debug("Creating place...");
-						Program.addCave(new Rangement(nom, listPart));
-						Debug("Creating "+nom+" completed.");
-						label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
-						nom_obj.setText("");
-						Program.updateAllPanels();
-					}
-					//Fin test check
-				}	else { // Si check1
-					Debug("Creating place with same column number");
-					// Recuperation du nombre de ligne par partie
-					if (bResul) {
-						Program.addCave(new Rangement(nom, listPart));
-						Debug("Creating '" + nom + "' completed.");
-						label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
-						nom_obj.setText("");
-						Program.updateAllPanels();
-					}
+				// Creation du rangement
+				if (bResul) {
+					Debug("Creating place...");
+					Program.addCave(new Rangement(nom, listPart));
+					Debug("Creating "+nom+" completed.");
+					label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
+					nom_obj.setText("");
+					Program.updateAllPanels();
+				}
+				//Fin test check
+			}	else { // Si check1
+				Debug("Creating place with same column number");
+				// Recuperation du nombre de ligne par partie
+				if (bResul) {
+					Program.addCave(new Rangement(nom, listPart));
+					Debug("Creating '" + nom + "' completed.");
+					label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
+					nom_obj.setText("");
+					Program.updateAllPanels();
 				}
 			}
-			if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false) && bResul) {
-				Erreur.showKeyErreur(Program.getError("Error164"), "", MyCellarSettings.DONT_SHOW_CREATE_MESS);
-			}
-			if (bResul) {
-				Start.getInstance().enableAll(true);
-			}
-		} catch (Exception exc) {
-			Program.showException(exc);
+		}
+		if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false) && bResul) {
+			Erreur.showKeyErreur(Program.getError("Error164"), "", MyCellarSettings.DONT_SHOW_CREATE_MESS);
+		}
+		if (bResul) {
+			Start.getInstance().enableAll(true);
 		}
 	}
 
 	/**
-	 * checkbox1_itemStateChanged: Case a cocher pour choisir un rangement de type
+	 * simplePlace_itemStateChanged: Case a cocher pour choisir un rangement de type
 	 * Caisse ou non
 	 *
 	 * @param e ItemEvent
 	 */
-	private void checkbox1_itemStateChanged(ItemEvent e) {
+	private void simplePlace_itemStateChanged(ItemEvent e) {
 		label_cree.setText("");
-		try {
-		  boolean checked = m_caisse_chk.isSelected();
-		  preview.setEnabled(!checked);
-		  panelType.setVisible(!checked);
-		  panelTable.setVisible(!checked);
-		  nb_start_caisse.setVisible(checked);
-      panelStartCaisse.setVisible(checked);
-      panelLimite.setVisible(checked);
-		  checkLimite.setVisible(true);
-			if (m_caisse_chk.isSelected()) {
-				
-				final boolean checkLimiteSelected = checkLimite.isSelected();
-				label_limite.setVisible(checkLimiteSelected);
-				nb_limite.setVisible(checkLimiteSelected);
-			}	else {
-				preview.setEnabled(true);
-				nb_parties.setValue(1);
-			}
-		} catch (Exception exc) {
-			Program.showException(exc);
+		boolean checked = m_caisse_chk.isSelected();
+		preview.setEnabled(!checked);
+		panelType.setVisible(!checked);
+		panelTable.setVisible(!checked);
+		nb_start_caisse.setVisible(checked);
+		panelStartCaisse.setVisible(checked);
+		panelLimite.setVisible(checked);
+		checkLimite.setVisible(true);
+		if (m_caisse_chk.isSelected()) {
+			final boolean checkLimiteSelected = checkLimite.isSelected();
+			label_limite.setVisible(checkLimiteSelected);
+			nb_limite.setVisible(checkLimiteSelected);
+		}	else {
+			preview.setEnabled(true);
+			nb_parties.setValue(1);
+			updatePartList();
 		}
 	}
 
@@ -654,35 +648,31 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	 * @param e ActionEvent
 	 */
 	private void preview_actionPerformed(ActionEvent e) {
-		try {
-			if (!m_caisse_chk.isSelected()) {
-				// Controle du nom
-				String nom = nom_obj.getText().strip();
-				if (!MyCellarControl.ctrlName(nom)) {
+		if (!m_caisse_chk.isSelected()) {
+			// Controle du nom
+			String nom = nom_obj.getText().strip();
+			if (!MyCellarControl.ctrlName(nom)) {
+				return;
+			}
+
+			for (Part p : listPart) {
+				if (p.getRows().isEmpty()) {
+					//"Erreur nombre de lignes incorrect sur la partie
+					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum()), Program.getError("Error109"));
 					return;
 				}
-
-				for (Part p : listPart) {
-					if (p.getRows().isEmpty()) {
-						//"Erreur nombre de lignes incorrect sur la partie
-						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum()), Program.getError("Error109"));
+				for (Row r : p.getRows()) {
+					if (r.getCol() == 0) {
+						//"Erreur nombre de colonnes incorrect sur la partie
+						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()), Program.getError("Error109"));
 						return;
 					}
-					for (Row r : p.getRows()) {
-						if (r.getCol() == 0) {
-							//"Erreur nombre de colonnes incorrect sur la partie
-							Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()), Program.getError("Error109"));
-							return;
-						}
-					}
 				}
-
-				// Creation du rangement
-				MyXmlDom.writeRangements("", List.of(new Rangement(nom, listPart)), true);
-				Program.open(new File(Program.getPreviewXMLFileName()));
 			}
-		}	catch (Exception exc) {
-			Program.showException(exc);
+
+			// Creation du rangement
+			MyXmlDom.writeRangements("", List.of(new Rangement(nom, listPart)), true);
+			Program.open(new File(Program.getPreviewXMLFileName()));
 		}
 	}
 
@@ -692,7 +682,6 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	 * @param e KeyEvent
 	 */
 	private void keylistener_actionPerformed(KeyEvent e) {
-		
 		if ((e.getKeyCode() == CREER && e.isControlDown()) || e.getKeyCode() == KeyEvent.VK_ENTER) {
 			create_actionPerformed();
 		}
@@ -714,10 +703,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	public boolean tabWillClose(TabEvent event) {
 		if (!nom_obj.getText().strip().isEmpty()) {
 			String label = Program.getError("Error146");
-			if(modify) {
+			if (modify) {
 				label = Program.getError("Error147");
 			}
-			if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, label + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+			if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, label + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 				return false;
 			}
 		}
@@ -726,7 +715,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		comboPlace.setSelectedIndex(0);
 		return true;
 	}
-	
+
 	@Override
 	public void tabClosed() {
 		Start.getInstance().updateMainPanel();
@@ -763,30 +752,30 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	}
 
 	class CreateAction extends AbstractAction {
-    private static final long serialVersionUID = 3560817063990123326L;
+		private static final long serialVersionUID = 3560817063990123326L;
 
-    CreateAction() {
-	    super("", MyCellarImage.ADD);
-	  }
+		CreateAction() {
+			super("", MyCellarImage.ADD);
+		}
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      create_actionPerformed();
-    }
-	  
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			create_actionPerformed();
+		}
+
 	}
-	
-class ModifyAction extends AbstractAction {
-  private static final long serialVersionUID = 546778254003860608L;
 
-  ModifyAction() {
-      super("", MyCellarImage.ADD);
-    }
+	class ModifyAction extends AbstractAction {
+		private static final long serialVersionUID = 546778254003860608L;
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      modifyPlace();
-    }
-    
-  }
+		ModifyAction() {
+			super("", MyCellarImage.ADD);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			modifyPlace();
+		}
+
+	}
 }

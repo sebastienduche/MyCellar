@@ -119,7 +119,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 public final class Program {
 
 	public static final String INTERNAL_VERSION = "3.9.1.7";
-	public static final int VERSION = 65;
+	public static final int VERSION = 66;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
@@ -338,7 +338,7 @@ public final class Program {
 			int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
 			Debug("Program: internal file version: " + currentVersion);
 			// TODO REMOVE WHEN VERSION 70
-			if (currentVersion < 66) {
+			if (currentVersion < 70) {
 				Debug("Program: Updating history");
 				final Integer nbBottle = getHistory()
 						.stream()
@@ -360,6 +360,7 @@ public final class Program {
 			if (type.isBlank()) {
 				putCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name());
 			}
+			// TODO REMOVE WHEN VERSION 70
 			File file = new File(getWorkDir(true) + "data.xml");
 			if (file.exists()) {
 				Debug("Deleting old file: data.xml");

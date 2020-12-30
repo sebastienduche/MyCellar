@@ -56,6 +56,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static mycellar.Program.toCleanString;
+
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -63,8 +65,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.8
- * @since 29/12/20
+ * @version 13.9
+ * @since 30/12/20
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -291,9 +293,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 	 * @param e ActionEvent
 	 */
 	private void openit_actionPerformed(ActionEvent e) {
-
 		Debug("openit_actionPerforming...");
-		final String nom = file.getText().strip();
+		final String nom = toCleanString(file.getText());
 		if (!nom.isEmpty()) {
 			File f = new File(nom);
 			file.setText(f.getAbsolutePath());
@@ -316,11 +317,10 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 	@Override
 	public void run() {
 		try {
-			Debug("Running...");
 			Debug("Importing...");
 			importe.setEnabled(false);
 
-			String nom = file.getText().strip();
+			String nom = toCleanString(file.getText());
 			if (nom.isEmpty()) {
 				//Erreur le nom ne doit pas etre vide
 				Debug("ERROR: filename cannot be empty");
@@ -465,7 +465,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 				key_properties[nb_caisse + 1] = MyCellarSettings.RANGEMENT_NAME;
 				default_value[nb_caisse + 1] = "";
 				type_objet[nb_caisse + 1] = "JTextField";
-				MyOptions myoptions = new MyOptions(title, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
+				MyOptions myoptions = new MyOptions(title, "", message2, List.of(titre_properties), List.of(default_value), List.of(key_properties), List.of(type_objet), Program.getCaveConfig(), false);
 				myoptions.setVisible(true);
 				int num_r = Program.getCaveConfigInt(MyCellarSettings.RANGEMENT_DEFAULT, -1);
 				if (num_r == Program.getCaveLength()) {
@@ -538,7 +538,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 						separe = ";";
 				}
 
-				try(var reader = new BufferedReader(new FileReader(f))) {
+				try (var reader = new BufferedReader(new FileReader(f))) {
 					String line = reader.readLine();
 					if (line != null) {
 						if (line.split(separe).length <= 1) {
@@ -596,6 +596,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 		} else {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
+		Debug("Importing... End");
 	}
 
 	private void displayImportDone() {

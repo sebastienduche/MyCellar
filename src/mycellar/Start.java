@@ -49,12 +49,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 
+import static mycellar.Program.toCleanString;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 /**
@@ -64,8 +67,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.8
- * @since 17/12/20
+ * @version 27.9
+ * @since 30/12/20
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -186,7 +189,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				int nIndex = parameters.indexOf(OPTIONS_PARAM);
 				if (nIndex == -1) {
 					// demarrage sans options
-					Program.setNewFile(parameters.strip());
+					Program.setNewFile(toCleanString(parameters));
 				} else {
 					// demarrage avec options
 					// ______________________
@@ -539,9 +542,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
 			String fic = nomFichier.getAbsolutePath();
-			if (!fic.strip().toLowerCase().endsWith(".xml")) {
-				fic = fic.concat(".xml");
-			}
+			fic = MyCellarControl.controlAndUpdateExtension(fic, ".xml");
 			MyXmlDom.writeMyCellarXml(Program.getCave(), fic);
 		}
 	}
@@ -557,9 +558,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();
 			String fic = nomFichier.getAbsolutePath();
-			if (!fic.strip().toLowerCase().endsWith(".xml")) {
-				fic = fic.concat(".xml");
-			}
+			fic = MyCellarControl.controlAndUpdateExtension(fic, ".xml");
 			ListeBouteille.writeXML(new File(fic));
 		}
 	}
@@ -1077,7 +1076,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	private void menuSetConfig_actionPerformed() {
 		try {
-			String[] type_objet = { "JTextField" };
+			List<String> type_objet = Collections.singletonList("JTextField");
 			String titre = Program.getLabel("Infos374");
 			String message1 = Program.getLabel("Infos375");
 			MyOptions myoptions = new MyOptions(titre, message1, type_objet, "",

@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static mycellar.Program.toCleanString;
+
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -54,8 +56,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.6
- * @since 29/12/20
+ * @version 14.7
+ * @since 30/12/20
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -287,7 +289,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 				return;
 			}
 
-			final String nom = nom_obj.getText().strip();
+			final String nom = toCleanString(nom_obj.getText());
 			// Controle sur le nom
 			if(!MyCellarControl.ctrlName(nom)) {
 				return;
@@ -527,7 +529,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	 */
 	private void create_actionPerformed() {
 		Debug("create_actionPerforming...");
-		String nom = nom_obj.getText().strip();
+		String nom = toCleanString(nom_obj.getText());
 
 		//Controle si le nom est deja utilise
 		boolean bResul = MyCellarControl.ctrl_existingName(nom);
@@ -650,7 +652,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	private void preview_actionPerformed(ActionEvent e) {
 		if (!m_caisse_chk.isSelected()) {
 			// Controle du nom
-			String nom = nom_obj.getText().strip();
+			String nom = toCleanString(nom_obj.getText());
 			if (!MyCellarControl.ctrlName(nom)) {
 				return;
 			}
@@ -701,7 +703,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
 	@Override
 	public boolean tabWillClose(TabEvent event) {
-		if (!nom_obj.getText().strip().isEmpty()) {
+		if (!toCleanString(nom_obj.getText()).isEmpty()) {
 			String label = Program.getError("Error146");
 			if (modify) {
 				label = Program.getError("Error147");

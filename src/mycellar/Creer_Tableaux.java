@@ -40,8 +40,11 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static mycellar.Program.toCleanString;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -49,8 +52,8 @@ import java.util.TimerTask;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.5
- * @since 24/12/20
+ * @version 7.6
+ * @since 30/12/20
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
@@ -215,7 +218,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 	private void create_actionPerformed(ActionEvent e) {
 		try {
 			Debug("create_actionPerforming...");
-			String nom = name.getText().strip();
+			String nom = toCleanString(name.getText());
 
 			if (!MyCellarControl.controlPath(nom)) {
 				return;
@@ -396,26 +399,17 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 		Debug("param_actionPerforming...");
 		String titre = Program.getLabel("Infos310");
 		String message2 = Program.getLabel("Infos309");
-		String[] titre_properties = {
+		List<String> titre_properties = List.of(
 				Program.getLabel("Infos210"),
 				Program.getLabel("Infos211"),
-				Program.getLabel("Infos233") };
-		String[] key_properties = {
+				Program.getLabel("Infos233"));
+		List<String> key_properties = List.of(
 				MyCellarSettings.CREATE_TAB_DEFAULT,
 				MyCellarSettings.CREATE_TAB_DEFAULT,
-				MyCellarSettings.CREATE_TAB_DEFAULT	};
-		String val = Program.getCaveConfigString(key_properties[0], "1");
-		String[] default_value = { "false", "false", "false" };
-		if ("0".equals(val)) {
-			default_value[0] = "true";
-		}
-		if ("1".equals(val)) {
-			default_value[1] = "true";
-		}
-		if ("2".equals(val)) {
-			default_value[2] = "true";
-		}
-		String[] type_objet = {"MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton"};
+				MyCellarSettings.CREATE_TAB_DEFAULT);
+		String val = Program.getCaveConfigString(key_properties.get(0), "1");
+		List<String> default_value = List.of("0".equals(val) ? "true" : "false", "1".equals(val) ? "true" : "false", "2".equals(val) ? "true" : "false");
+		List<String> type_objet = List.of("MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton");
 		MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
 		myoptions.setVisible(true);
 	}

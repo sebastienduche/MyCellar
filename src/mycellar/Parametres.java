@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static mycellar.Program.toCleanString;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 
@@ -38,8 +39,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.5
- * @since 24/12/20
+ * @version 12.6
+ * @since 30/12/20
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -212,7 +213,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 				Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
 			}
 
-			Program.putCaveConfigString(MyCellarSettings.DEVISE, devise.getText().strip());
+			Program.putCaveConfigString(MyCellarSettings.DEVISE, toCleanString(devise.getText()));
 			try {
 				int val = Integer.parseInt(annee.getValue().toString());
 				Program.putCaveConfigInt(MyCellarSettings.ANNEE, val);

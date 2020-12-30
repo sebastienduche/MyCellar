@@ -112,13 +112,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.4
- * @since 17/12/20
+ * @version 24.5
+ * @since 30/12/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.9.0.7";
+	public static final String INTERNAL_VERSION = "3.9.1.7";
 	public static final int VERSION = 65;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;
@@ -337,7 +337,8 @@ public final class Program {
 			}
 			int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
 			Debug("Program: internal file version: " + currentVersion);
-			if (currentVersion < VERSION) {
+			// TODO REMOVE WHEN VERSION 70
+			if (currentVersion < 66) {
 				Debug("Program: Updating history");
 				final Integer nbBottle = getHistory()
 						.stream()
@@ -426,14 +427,12 @@ public final class Program {
 	 * @param e Exception
 	 */
 	public static void showException(Throwable e, boolean _bShowWindowErrorAndExit) {
-		StackTraceElement[] st =  e.getStackTrace();
+		StackTraceElement[] st = e.getStackTrace();
 		String error = "";
 		for (StackTraceElement s : st) {
 			error = error.concat("\n" + s);
 		}
-		if(error.contains("javax.swing.plaf.synth.SynthContext.getPainter(SynthContext.java:171)")
-				|| error.contains("javax.swing.LayoutComparator.compare"))
-			_bShowWindowErrorAndExit = false;
+
 		if (_bShowWindowErrorAndExit) {
 			JOptionPane.showMessageDialog(Start.getInstance(), e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
@@ -464,7 +463,7 @@ public final class Program {
 		StringBuilder stringBuilder = new StringBuilder();
 		try (var scanner = new Scanner(filename)) {
 			while (scanner.hasNextLine()) {
-				stringBuilder.append(scanner.nextLine().strip()).append("\n");
+				stringBuilder.append(toCleanString(scanner.nextLine())).append("\n");
 			}
 		} catch (FileNotFoundException e) {
 			return;
@@ -1771,8 +1770,8 @@ public final class Program {
 		}
 		Debug("Program: Reading first line of file " + f.getName());
 		try (var scanner = new Scanner(f)){
-			if(scanner.hasNextLine()) {
-				return scanner.nextLine().strip();
+			if (scanner.hasNextLine()) {
+				return toCleanString(scanner.nextLine());
 			}
 		} catch (FileNotFoundException e) {
 			showException(e, true);

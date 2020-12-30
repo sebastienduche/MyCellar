@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static mycellar.Program.toCleanString;
 import static mycellar.core.MyCellarError.ID.CELL_FULL;
 import static mycellar.core.MyCellarError.ID.FULL_BOX;
 import static mycellar.core.MyCellarError.ID.INEXISTING_CELL;
@@ -48,8 +49,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 17/12/20
+ * @version 3.1
+ * @since 30/12/20
  */
 public final class RangementUtils {
 
@@ -543,7 +544,7 @@ public final class RangementUtils {
 		if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL3, false)) {
 			sTitle.append(" ").append(b.getPrix()).append(Program.getCaveConfigString(MyCellarSettings.DEVISE, ""));
 		}
-		return sTitle.toString().strip();
+		return toCleanString(sTitle);
 	}
 
 	/**

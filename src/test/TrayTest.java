@@ -1,5 +1,7 @@
 package test;
 
+import mycellar.MyCellarImage;
+
 import java.awt.AWTException;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
@@ -7,50 +9,48 @@ import java.awt.TrayIcon.MessageType;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import mycellar.MyCellarImage;
-
 public class TrayTest {
-	
+
 	private boolean run = false;
-	private TrayIcon icon;
-	
+	private final TrayIcon trayIcon;
+
 	public TrayTest() {
-		icon = new TrayIcon(MyCellarImage.ADD.getImage());
-		
+		trayIcon = new TrayIcon(MyCellarImage.ADD.getImage());
+
 	}
-	
+
 	TrayIcon getTrayIcon() {
-		return icon;
+		return trayIcon;
 	}
-	
+
 	public void displayMessage(String title, String message) {
-		
+
 		Timer tim = new Timer();
-		
+
 		tim.schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        	if(run) {
-                        		tim.cancel();
-                        		SystemTray.getSystemTray().remove(icon);
-                        		return;
-                        	}
-                            icon.displayMessage(
-                                    title,
-                                    message,
-                                    MessageType.INFO
-                            );
-                            run = true;
-                    }
-                },
-                0,
-                5_000
-        );
+				new TimerTask() {
+					@Override
+					public void run() {
+						if(run) {
+							tim.cancel();
+							SystemTray.getSystemTray().remove(trayIcon);
+							return;
+						}
+						trayIcon.displayMessage(
+								title,
+								message,
+								MessageType.INFO
+						);
+						run = true;
+					}
+				},
+				0,
+				5_000
+		);
 	}
 
 	public static void main(String[] args) throws AWTException {
-		
+
 		TrayTest test = new TrayTest();
 		SystemTray.getSystemTray().add(test.getTrayIcon());
 		test.displayMessage("", "Bienvenue");

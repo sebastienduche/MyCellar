@@ -1,8 +1,6 @@
 package mycellar.placesmanagement;
 
-import mycellar.Part;
 import mycellar.Program;
-import mycellar.Row;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.HashMap;
@@ -15,8 +13,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 27/11/20
+ * @version 1.1
+ * @since 29/12/20
  */
 
 class CreerRangementTableModel extends AbstractTableModel {
@@ -46,13 +44,13 @@ class CreerRangementTableModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		if(sameColumnNumber) {
+		if (sameColumnNumber) {
 			return rows.size();
 		} else {
 			int count = 0;
-			for(Part p : rows) {
-				if( p.getRowSize() == 0) {
-					count += 1;
+			for (Part p : rows) {
+				if (p.getRowSize() == 0) {
+					count++;
 				} else {
 					count += p.getRowSize();
 				}
@@ -63,18 +61,18 @@ class CreerRangementTableModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int row, int col) {
-		if(sameColumnNumber) {
+		if (sameColumnNumber) {
 			Part p = rows.get(row);
 			if(p == null) {
 				return "";
 			}
-			switch(col){
+			switch(col) {
 			case NAME:
-				return  Program.getLabel("Infos029") + " " + p.getNum();
+				return Program.getLabel("Infos029") + " " + p.getNum();
 			case ROW:
 				return p.getRows().size();
 			case COLUMN:
-				if(p.getRowSize() > 0) {
+				if (p.getRowSize() > 0) {
 					return p.getRow(0).getCol();
 				}
 				return "0";
@@ -83,16 +81,16 @@ class CreerRangementTableModel extends AbstractTableModel {
 			int part = mapPart.get(row);
 			int line = mapLine.get(row);
 			Part p = rows.get(part);
-			if(p == null) {
+			if (p == null) {
 				return "";
 			}
-			switch(col){
+			switch(col) {
 			case NAME:
 				return Program.getLabel("Infos029") + " " + p.getNum() + " " + Program.getLabel("Infos027");
 			case ROW:
 				return line;
 			case COLUMN:
-				if(p.getRow(line - 1) != null) {
+				if (p.getRow(line - 1) != null) {
 					return p.getRow(line - 1).getCol();
 				}
 				return "0";
@@ -117,7 +115,7 @@ class CreerRangementTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object arg0, int row, int col) {
 		Part p;
-		if(sameColumnNumber) {
+		if (sameColumnNumber) {
 			p = rows.get(row);
 		}	else {
 			// Récupération du numéro de la partie
@@ -125,38 +123,34 @@ class CreerRangementTableModel extends AbstractTableModel {
 			int part = mapPart.get(row);
 			p = rows.get(part);
 		}
-		if(p == null) {
+		if (p == null) {
 			return;
 		}
-		switch(col){
+		switch(col) {
 		case ROW:
-			int nRow;
-			try{
-				nRow = Integer.parseInt((String)arg0);
-			}catch(NumberFormatException e) {
+			int nRow = Program.safeParseInt((String) arg0, -1);
+			if (nRow == -1) {
 				return;
 			}
 			p.setRows(nRow);
-			if(!sameColumnNumber) {
+			if (!sameColumnNumber) {
 				updateValues();
 				fireTableDataChanged();
 				fireTableStructureChanged();
 			} else if (p.getRowSize() > 0){
 				final int nCol = p.getRow(0).getCol();
-				for(Row r: p.getRows()) {
+				for (Row r: p.getRows()) {
 					r.setCol(nCol);
 				}
 			}
 			return;
 		case COLUMN:
-			int nCol;
-			try{
-				nCol = Integer.parseInt((String)arg0);
-			}catch(NumberFormatException e) {
+			int nCol = Program.safeParseInt((String) arg0, -1);
+			if (nCol == -1) {
 				return;
 			}
-			if(sameColumnNumber) {
-				for(Row r: p.getRows()) {
+			if (sameColumnNumber) {
+				for (Row r: p.getRows()) {
 					r.setCol(nCol);
 				}
 			} else {
@@ -166,14 +160,10 @@ class CreerRangementTableModel extends AbstractTableModel {
 		}
 	}
 	
-	public void setValues(List<Part> parts){
+	public void setValues(List<Part> parts) {
 		rows = parts;
 		updateValues();
 		fireTableDataChanged();
-	}
-
-	public boolean isSameColumnNumber() {
-		return sameColumnNumber;
 	}
 
 	void setSameColumnNumber(boolean sameColumnNumber) {
@@ -186,24 +176,24 @@ class CreerRangementTableModel extends AbstractTableModel {
 		mapPart = new HashMap<>();
 		int index = 0;
 		int numPart = 0;
-		for(Part p: rows) {
-			if(sameColumnNumber) {
+		for (Part part: rows) {
+			if (sameColumnNumber) {
 				// On positionne le nombre de colonne de la première ligne sur toute les lignes
-				for( Row r: p.getRows()) {
-					r.setCol(p.getRow(0).getCol());
+				for (Row r: part.getRows()) {
+					r.setCol(part.getRow(0).getCol());
 				}
 			}
 			int line = 1;
-			for(@SuppressWarnings("unused") Row r: p.getRows()) {
+			for (@SuppressWarnings("unused") Row r: part.getRows()) {
 				mapPart.put(index, numPart);
 				mapLine.put(index, line);
 				line++;
 				index++;
 			}
-			if(p.getRowSize() == 0) {
+			if (part.getRowSize() == 0) {
 				mapPart.put(index, numPart);
 				mapLine.put(index, line);
-				p.setRows(1);
+				part.setRows(1);
 				index++;
 			}
 			numPart++;
@@ -228,6 +218,4 @@ class Column {
 	public String getLabel() {
 		return label;
 	}
-	
-	
 }

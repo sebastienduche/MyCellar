@@ -15,7 +15,10 @@ import mycellar.core.MyCellarRuntimeException;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -52,8 +55,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.9
- * @since 10/12/20
+ * @version 27.0
+ * @since 17/12/20
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -219,7 +222,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		Program.getSearch().ifPresent(Search::updateTable);
 		panelVignobles.resetCombos();
 		rangementInModif = null;
-		Debug("Reset Values... Done");
+		Debug("Reset Values... End");
 	}
 
 	/**
@@ -272,7 +275,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 				}
 			}
 			managePlaceCombos();
-			Debug("Lieu_itemStateChanging... Done");
+			Debug("Lieu_itemStateChanging... End");
 		});
 	}
 
@@ -291,7 +294,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			m_labelExist.setText("");
 
 			initColumnCombo();
-			Debug("Line_itemStateChanging... Done");
+			Debug("Line_itemStateChanging... End");
 		});
 	}
 
@@ -361,7 +364,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		}	catch (RuntimeException e) {
 			Program.showException(e);
 		}
-		Debug("Set Bottle... Done");
+		Debug("Set Bottle... End");
 	}
 
 	/**
@@ -418,7 +421,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		}	catch (RuntimeException e) {
 			Program.showException(e);
 		}
-		Debug("setBottlesInModification... Done");
+		Debug("setBottlesInModification... End");
 	}
 
 	private boolean controlBottle() {
@@ -468,7 +471,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 				}
 			}
 		}
-		Debug("Control Bottle... Done");
+		Debug("Control Bottle... End");
 		return true;
 	}
 
@@ -572,7 +575,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 								//Add several bottles in Caisse
 								Debug("Adding multiple bottles in the same place: YES");
 								
-								if (rangement.isLimited() && (rangement.getNbCaseUse(lieu_num_selected-1) + nb_bottle_rest) >= rangement.getNbColonnesStock()) {
+								if (rangement.isLimited() && (rangement.getNbCaseUse(lieu_num_selected - 1) + nb_bottle_rest) >= rangement.getNbColonnesStock()) {
 									Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
 								} else {
 									for (int j = 0; j <= nb_bottle_rest; j++) {
@@ -649,7 +652,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 								m_colorList.setSelectedItem(BottleColor.NONE);
 								statusList.setSelectedItem(BottlesStatus.NONE);
 							}	else {
-								Debug("ERROR: Adding bottle");
+								Debug("ERROR: Adding bottle: Storage full");
 								m_bbottle_add = false;
 								Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error151"), rangement.getNom()),
 										Program.getError("Error153"));
@@ -659,7 +662,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 					}
 				}	else { //if(! m_bmulti) Multi == true => Modification de plusieurs vins vers une caisse
 					//Recuperation des differentes bouteilles
-					Debug("Modifying multiple bottles to a Caisse");
+					Debug("Modifying multiple bottles to a Simple place");
 					resul = true;
 					if (!bModifyPlace) {
 						Debug("Modifying without changing place");
@@ -824,7 +827,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			}	else {
 				// Ajout dans une Armoire
 				if (m_bmulti) { //On ne peut pas deplacer plusieurs bouteilles vers une armoire
-					Debug("ERROR: Unable to move multiple bottles to an Armoire");
+					Debug("ERROR: Unable to move multiple bottles to a Complex place");
 					m_end.setText("");
 					String nomRangement = rangement != null ? rangement.getNom() : "";
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error104", PLURAL), nomRangement), Program.getError("Error105")); //"Veuillez selectionner un rangement de type caisse.");//Impossible de deplacer plusieurs bouteilles dans
@@ -891,7 +894,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 									nb_free_space = nb_bottle_rest + 1;
 								}
 								if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(Program.getError("Error175", PLURAL), nb_free_space), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
-									Debug("Putting multiple bottle in close place");
+									Debug("Putting multiple bottle in chosen place");
 									m_nnb_bottle_add_only_one_place = nb_free_space;
 									nb_bottle_rest = nb_bottle_rest - nb_free_space + 1;
 									for (int z = 1; z < nb_free_space; z++) {
@@ -1091,7 +1094,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 				}
 			}
 		}
-		Debug("modifyOneOrSeveralBottlesWithoutPlaceModification... Done");
+		Debug("modifyOneOrSeveralBottlesWithoutPlaceModification... End");
 		return m_bbottle_add;
 	}
 
@@ -1128,7 +1131,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		if (!r.isCaisse()) {
 			r.updateToStock(newBottle);
 		}
-		Debug("replaceWine... Done");
+		Debug("replaceWine... End");
 	}
 
 	private void doAfterRun() {
@@ -1159,7 +1162,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		}
 		
 		Program.TABBED_PANE.setTitleAt(Program.TABBED_PANE.getSelectedIndex(), Program.getLabel("Main.tabAdd", A_SINGLE));
-		Debug("Do After Run... Done");
+		Debug("Do After Run... End");
 	}
 
 	private void reInitAddVin() {
@@ -1209,7 +1212,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		setBeforeLabelsVisible(false);
 		clearValues();
 		reInitAddVin();
-		Debug("runExit... Done");
+		Debug("runExit... End");
 		return true;
 	}
 
@@ -1218,7 +1221,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		bottle = null;
 		listBottleInModification = null;
 		reInitAddVin();
-		Debug("ReInit... Done");
+		Debug("ReInit... End");
 	}
 
   @Override

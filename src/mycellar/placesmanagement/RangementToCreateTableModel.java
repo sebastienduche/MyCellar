@@ -1,6 +1,5 @@
 package mycellar.placesmanagement;
 
-import mycellar.Part;
 import mycellar.Program;
 
 import javax.swing.table.AbstractTableModel;
@@ -14,8 +13,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 27/11/20
+ * @version 0.3
+ * @since 17/12/20
  */
 public class RangementToCreateTableModel extends AbstractTableModel {
 

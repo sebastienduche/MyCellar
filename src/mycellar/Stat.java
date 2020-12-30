@@ -9,8 +9,11 @@ import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarEnum;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
+import mycellar.core.datas.history.History;
+import mycellar.placesmanagement.Part;
+import mycellar.placesmanagement.Rangement;
 import net.miginfocom.swing.MigLayout;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -50,8 +53,8 @@ import java.util.concurrent.atomic.LongAdder;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.7
- * @since 11/12/20
+ * @version 8.1
+ * @since 18/12/20
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -360,7 +363,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 					.stream()
 					.filter(History::hasTotalBottle)
 					.sorted(Comparator.comparing(History::getLocaleDate))
-					.forEach(history -> listNumberBottles.add(new StatData(history.getLocaleDate().format(Program.DATE_FORMATER), history.getTotalBottle())));
+					.forEach(history -> listNumberBottles.add(new StatData(history.getLocaleDate().format(Program.DATE_FORMATER_DDMMYYYY), history.getTotalBottle())));
 		}
 		panelChart.setLineChart(listNumberBottles, Program.getLabel("Stat.bottleCount", LabelProperty.PLURAL));
 	}
@@ -374,7 +377,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		options.setEnabled(false);
 		PlaceComboItem placeComboItem = (PlaceComboItem) listPlaces.getSelectedItem();
 		int nbBottle = 0;
-		if (placeComboItem!= null && placeComboItem.getRangement() != null) {
+		if (placeComboItem != null && placeComboItem.getRangement() != null) {
 			Rangement cave = placeComboItem.getRangement();
 			panelChart.setPlaceChart(cave);
 			nbBottle = cave.getNbCaseUseAll();
@@ -421,7 +424,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 	private void displayNbBottlePlace(Rangement cave) {
 		for (int j = 0; j < cave.getNbEmplacements(); j++) {
 			panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos179"), (j + 1)))); //Emplacement
-			panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(cave.getNbCaseUseAll() > 1)),cave.getNbCaseUseAll())),"span 2, align right, wrap"); //"bouteille");
+			panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(cave.getNbCaseUseAll() > 1)),cave.getNbCaseUse(j))),"span 2, align right, wrap"); //"bouteille");
 		}
 	}
 
@@ -506,7 +509,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 			}
 			DefaultPieDataset dataset = new DefaultPieDataset();
 			for (Part part: rangement.getPlace()) {
-				dataset.setValue(MessageFormat.format(Program.getLabel("Infos179"),part.getNum()), rangement.getNbCaseUse(part.getNum() - 1));
+				dataset.setValue(MessageFormat.format(Program.getLabel("Infos179"), part.getNum() + 1), rangement.getNbCaseUse(part.getNum()));
 			}
 			JFreeChart chart = ChartFactory.createPieChart(rangement.getNom(),          // chart title
 					dataset,                // data

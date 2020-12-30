@@ -8,6 +8,9 @@ import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.datas.history.HistoryState;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.activation.ActivationDataFlavor;
@@ -53,8 +56,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.9
- * @since 10/12/20
+ * @version 3.0
+ * @since 17/12/20
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -104,10 +107,12 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 		if (addvin == null) {
 			armoires.add(Program.EMPTY_PLACE);
 		}
-		for (Rangement r : Program.getCave()) {
-			if (addvin == null || !r.isCaisse()) {
-				armoires.add(r);
-				comboRangement.addItem(r);
+		if (addvin == null) {
+			for (Rangement r : Program.getCave()) {
+				if (!r.isCaisse()) {
+					armoires.add(r);
+					comboRangement.addItem(r);
+				}
 			}
 		}
 		
@@ -204,7 +209,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 							JPanel panel;
 							if (rangement.isExistingCell(i, k, j)) {
 								RangementCell cell;
-								if(cellChooser) {
+								if (cellChooser) {
 									cell = new RangementCell(rangement, i, k, j, panelCellar);
 								} else {
 									cell = new RangementCell(handler, th, rangement, i, k, j, panelCellar);
@@ -245,7 +250,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 	  	}
 			for (int i=0; i<stock.getComponentCount(); i++) {
 				 Component c = stock.getComponent(i);
-				 if (c instanceof BouteilleLabel){
+				 if (c instanceof BouteilleLabel) {
 					 Program.getStorage().addHistory(HistoryState.DEL, ((BouteilleLabel)c).getBouteille());
 					 Program.getStorage().getAllList().remove(((BouteilleLabel)c).getBouteille());
 					 Program.setToTrash(((BouteilleLabel)c).getBouteille());
@@ -339,7 +344,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 
 final class RangementCell extends JPanel {
 	BouteilleLabel draggingLabel;
-	private BouteilleLabel bouteilleLabel;
+	private BouteilleLabel bottleLabel;
 	private final boolean stock;
 	private int placeNum, row, column;
 	private Rangement place;
@@ -401,19 +406,19 @@ final class RangementCell extends JPanel {
 
 	void addBottle(BouteilleLabel bouteille) {
 		if (!stock) {
-			bouteilleLabel = bouteille;
+			bottleLabel = bouteille;
 		}
 		add(bouteille, stock ? "wrap" : "grow, gapright 0px");
 	}
 	
 	void removeBottle() {
 		if (!stock) {
-			bouteilleLabel = null;
+			bottleLabel = null;
 		}
 	}
 	
 	BouteilleLabel getBottleLabel() {
-		return bouteilleLabel;
+		return bottleLabel;
 	}
 
 	public int getRow() {
@@ -461,7 +466,7 @@ final class RangementCell extends JPanel {
 
 	@Override
 	public String toString() {
-		return "RangementCell [draggingLabel=" + draggingLabel + ", bottle=" + bouteilleLabel + ", stock=" + stock + ", placeNum=" + placeNum + ", row=" + row
+		return "RangementCell [draggingLabel=" + draggingLabel + ", bottle=" + bottleLabel + ", stock=" + stock + ", placeNum=" + placeNum + ", row=" + row
 				+ ", column=" + column + ", place=" + place + ", parent=" + (parent != null ? "Yes" : "No") + "]";
 	}
 

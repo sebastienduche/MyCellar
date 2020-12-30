@@ -26,8 +26,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
+import static mycellar.Program.toCleanString;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 
@@ -37,8 +39,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.4
- * @since 27/11/20
+ * @version 12.6
+ * @since 30/12/20
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -189,8 +191,8 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	private void valider_actionPerformed(ActionEvent e) {
 		try {
 			modifyLanguage();
-			if (!types.getSelectedItem().equals(objectType)) {
-				final Program.Type type = ((ObjectType) types.getSelectedItem()).getType();
+			if (!Objects.equals(types.getSelectedItem(), objectType)) {
+				final Program.Type type = ((ObjectType) Objects.requireNonNull(types.getSelectedItem())).getType();
 				Program.putCaveConfigString(PROGRAM_TYPE, type.name());
 				Program.setProgramType(type);
 				if (LanguageFileLoader.getInstance().isLoaded()) {
@@ -201,7 +203,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 			if (jcb_excel.isSelected()) {
 				Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, true);
 				String fic = file_bak.getText();
-				if (MyCellarControl.hasInvalidExtension(fic, Arrays.asList(Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+				if (MyCellarControl.hasInvalidExtension(fic, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), fic), Program.getError("Error035"));
 					return;
 				} else {
@@ -211,7 +213,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 				Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
 			}
 
-			Program.putCaveConfigString(MyCellarSettings.DEVISE, devise.getText().strip());
+			Program.putCaveConfigString(MyCellarSettings.DEVISE, toCleanString(devise.getText()));
 			try {
 				int val = Integer.parseInt(annee.getValue().toString());
 				Program.putCaveConfigInt(MyCellarSettings.ANNEE, val);
@@ -239,6 +241,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
+		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
 		int retour_jfc = boiteFichier.showOpenDialog(this);
 		if (retour_jfc == JFileChooser.APPROVE_OPTION) {
 			File nomFichier = boiteFichier.getSelectedFile();

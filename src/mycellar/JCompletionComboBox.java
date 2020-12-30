@@ -4,7 +4,7 @@
 
 package mycellar;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
@@ -33,8 +33,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 02/09/20
+ * @version 0.7
+ * @since 16/12/20
  */
 
 /**

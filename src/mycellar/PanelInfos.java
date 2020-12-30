@@ -5,6 +5,8 @@ import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -16,6 +18,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.io.File;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -23,8 +26,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2013</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.3
- * @since 20/11/20
+ * @version 2.4
+ * @since 17/12/20
  */
 final class PanelInfos extends JPanel {
 
@@ -173,12 +176,10 @@ final class PanelStats extends JPanel {
 		@Override
 		public void setValueAt(Object arg0, int row, int column) {
 			if (column == 2) {
-				Rangement r = names.get(row);
+				Rangement rangement = names.get(row);
 				RangementUtils.putTabStock();
-				LinkedList<Rangement> rangements = new LinkedList<>();
-				rangements.add(r);
-				MyXmlDom.writeRangements("", rangements, false);
-				Program.open( new File(Program.getPreviewXMLFileName()) );
+				MyXmlDom.writeRangements("", List.of(rangement), false);
+				Program.open(new File(Program.getPreviewXMLFileName()));
 			}
 		}
 

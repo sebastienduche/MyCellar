@@ -5,12 +5,12 @@ import mycellar.BottleColor;
 import mycellar.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Erreur;
-import mycellar.HistoryState;
+import mycellar.core.datas.history.HistoryState;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.Rangement;
-import mycellar.RangementUtils;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import mycellar.Start;
 import mycellar.StateButtonEditor;
 import mycellar.StateButtonRenderer;
@@ -69,8 +69,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.6
- * @since 10/12/20
+ * @version 8.7
+ * @since 17/12/20
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {

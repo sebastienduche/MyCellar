@@ -17,6 +17,8 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.datas.history.History;
+import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
@@ -26,26 +28,19 @@ import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
 import mycellar.placesmanagement.Creer_Rangement;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.CountryVignobleController;
 import mycellar.vignobles.VineyardPanel;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.Base64;
+import org.apache.commons.text.StringEscapeUtils;
+import org.kohsuke.github.GHGistBuilder;
+import org.kohsuke.github.GitHub;
 
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -76,17 +71,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalDouble;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -120,14 +112,14 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.1
- * @since 11/12/20
+ * @version 24.5
+ * @since 30/12/20
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.8.5.3";
-	public static final int VERSION = 65;
+	public static final String INTERNAL_VERSION = "3.9.1.7";
+	public static final int VERSION = 66;
 	static final String INFOS_VERSION = " 2020 v";
 	private static Type programType = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
@@ -176,9 +168,6 @@ public final class Program {
 	static final String EXTENSION = ".sinfo";
 	public static final String TEXT = ".txt";
 
-	private static boolean bYearControlCalculated = false;
-	private static boolean bYearControled = false;
-
 	public static final String FRA = "FRA";
 	public static final String ITA = "ITA";
 	public static final String FR = "fr";
@@ -193,7 +182,8 @@ public final class Program {
 	private static long localID = 0; // Used for all temp ids (jaxb)
 	public static final MyClipBoard CLIPBOARD = new MyClipBoard();
 
-	public static final DateTimeFormatter DATE_FORMATER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	public static final DateTimeFormatter DATE_FORMATER_DDMMYYYY = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	public static final DateTimeFormatter DATE_FORMATER_DD_MM_YYYY = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
 	enum Type {
 		WINE,
@@ -290,7 +280,7 @@ public final class Program {
 		try {
 			String inputPropCave = getConfigFilePath();
 			File f = new File(inputPropCave);
-			if(!f.exists()) {
+			if (!f.exists()) {
 				if (!f.createNewFile()) {
 					Debug("Program: ERROR: Unable to create file " + f.getAbsolutePath());
 					throw new UnableToOpenFileException("Unable to create file " + f.getAbsolutePath());
@@ -309,14 +299,13 @@ public final class Program {
 		} catch (IOException e) {
 			throw new UnableToOpenFileException("Load properties failed: " + e.getMessage());
 		}
-
 	}
 
 	private static void loadGlobalProperties() throws UnableToOpenFileException {
 		try {
 			Debug("Program: Initializing Configuration files...");
 			File fileIni = new File(getGlobalConfigFilePath());
-			if(!fileIni.exists()) {
+			if (!fileIni.exists()) {
 				if (!fileIni.createNewFile()) {
 					Debug("Program: ERROR: Unable to create file " + fileIni.getAbsolutePath());
 					throw new UnableToOpenFileException("Unable to create file " + fileIni.getAbsolutePath());
@@ -348,7 +337,8 @@ public final class Program {
 			}
 			int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
 			Debug("Program: internal file version: " + currentVersion);
-			if (currentVersion < VERSION) {
+			// TODO REMOVE WHEN VERSION 70
+			if (currentVersion < 70) {
 				Debug("Program: Updating history");
 				final Integer nbBottle = getHistory()
 						.stream()
@@ -370,6 +360,7 @@ public final class Program {
 			if (type.isBlank()) {
 				putCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name());
 			}
+			// TODO REMOVE WHEN VERSION 70
 			File file = new File(getWorkDir(true) + "data.xml");
 			if (file.exists()) {
 				Debug("Deleting old file: data.xml");
@@ -437,26 +428,18 @@ public final class Program {
 	 * @param e Exception
 	 */
 	public static void showException(Throwable e, boolean _bShowWindowErrorAndExit) {
-		StackTraceElement[] st =  e.getStackTrace();
+		StackTraceElement[] st = e.getStackTrace();
 		String error = "";
 		for (StackTraceElement s : st) {
 			error = error.concat("\n" + s);
 		}
-		if(error.contains("javax.swing.plaf.synth.SynthContext.getPainter(SynthContext.java:171)")
-				|| error.contains("javax.swing.LayoutComparator.compare"))
-			_bShowWindowErrorAndExit = false;
+
 		if (_bShowWindowErrorAndExit) {
 			JOptionPane.showMessageDialog(Start.getInstance(), e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		try (var fileWriter = new FileWriter(getGlobalDir()+"Errors.log")){
-			fileWriter.write(e.toString());
-			fileWriter.write(error);
-			fileWriter.flush();
-		}
-		catch (IOException ignored) {}
 		Debug("Program: ERROR:");
-		Debug("Program: "+e.toString());
-		Debug("Program: "+error);
+		Debug("Program: " + e.toString());
+		Debug("Program: " + error);
 		e.printStackTrace();
 		if (debugFile != null) {
 			try {
@@ -465,7 +448,10 @@ public final class Program {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			sendMail(error, debugFile);
+			try {
+				sendErrorToGitHub(e.toString(), debugFile);
+			} catch (IOException ignored) {
+			}
 			oDebugFile = null;
 		}
 
@@ -474,100 +460,30 @@ public final class Program {
 		}
 	}
 
-	private static void sendMail(String error, File filename) {
+	private static void sendErrorToGitHub(String error, File filename) throws IOException {
+		StringBuilder stringBuilder = new StringBuilder();
+		try (var scanner = new Scanner(filename)) {
+			while (scanner.hasNextLine()) {
+				stringBuilder.append(toCleanString(scanner.nextLine())).append("\n");
+			}
+		} catch (FileNotFoundException e) {
+			return;
+		}
 		try (var stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
-			 var reader = new BufferedReader(stream)) {
+				 var reader = new BufferedReader(stream)) {
 			String line = reader.readLine();
 			reader.close();
 			stream.close();
 			String decoded = new String(Base64.decodeBase64(line.getBytes()));
 			final String[] values = decoded.split("/");
 
-			String to = values[0];
-			String from = values[1];
-
-			// create some properties and get the default Session
-			Properties props = System.getProperties();
-
-			props.put("mail.smtp.auth", "true");
-			props.put("mail.smtp.starttls.enable", "true");
-			props.put("mail.smtp.host", "smtp.gmail.com");
-			props.put("mail.smtp.port", "587");
-
-			Session session = Session.getInstance(props, new Authenticator() {
-				@Override
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(from, values[2]);
-				}
-			});
-			session.setDebug(false);
-
-			// create a message
-			MimeMessage msg = new MimeMessage(session);
-			msg.setFrom(new InternetAddress(from));
-			InternetAddress[] address = {new InternetAddress(to)};
-			msg.setRecipients(Message.RecipientType.TO, address);
-			msg.setSubject("Problem");
-
-			// create and fill the first message part
-			MimeBodyPart mbp1 = new MimeBodyPart();
-			mbp1.setText(error);
-
-			// create the second message part
-			MimeBodyPart mbp2 = new MimeBodyPart();
-
-			// attach the file to the message
-			if(filename != null) {
-				mbp2.attachFile(filename);
-			}
-
-			/*
-			 * Use the following approach instead of the above line if
-			 * you want to control the MIME type of the attached file.
-			 * Normally you should never need to do this.
-			 *
-		    FileDataSource fds = new FileDataSource(filename) {
-			public String getContentType() {
-			    return "application/octet-stream";
-			}
-		    };
-		    mbp2.setDataHandler(new DataHandler(fds));
-		    mbp2.setFileName(fds.getName());
-			 */
-
-			// create the Multipart and add its parts to it
-			Multipart mp = new MimeMultipart();
-			mp.addBodyPart(mbp1);
-			if(filename != null)
-				mp.addBodyPart(mbp2);
-
-			// add the Multipart to the message
-			msg.setContent(mp);
-
-			// set the Date: header
-			msg.setSentDate(new Date());
-
-			/*
-			 * If you want to control the Content-Transfer-Encoding
-			 * of the attached file, do the following.  Normally you
-			 * should never need to do this.
-			 *
-		    msg.saveChanges();
-		    mbp2.setHeader("Content-Transfer-Encoding", "base64");
-			 */
-
-			// send the message
-			Transport.send(msg);
-
-		} catch (MessagingException mex) {
-			mex.printStackTrace();
-			Exception ex;
-			if ((ex = mex.getNextException()) != null) {
-				ex.printStackTrace();
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
+			final GitHub gitHub = GitHub.connect(values[0], values[1]);
+			final GHGistBuilder gist = gitHub.createGist();
+			gist.description(error)
+					.file("Debug.log", stringBuilder.toString())
+					.create();
+		} catch (IOException | RuntimeException e) {
+			Debug("Program: ERROR while reading MyCellar.dat: " + e.getMessage());
 		}
 	}
 
@@ -583,16 +499,16 @@ public final class Program {
 		return ERRORS;
 	}
 
-	static void addError(MyCellarError error) {
+	public static void addError(MyCellarError error) {
 		ERRORS.add(error);
 	}
 
 	static String convertToHTMLString(String s) {
-		return StringEscapeUtils.escapeHtml(s);
+		return StringEscapeUtils.escapeHtml4(s);
 	}
 
 	public static String convertStringFromHTMLString(String s) {
-		return StringEscapeUtils.unescapeHtml(s);
+		return StringEscapeUtils.unescapeHtml4(s);
 	}
 
 	public static String removeAccents(String s) {
@@ -615,7 +531,7 @@ public final class Program {
 	static boolean loadObjects() {
 		PLACES.clear();
 		boolean load = MyXmlDom.readMyCellarXml("", PLACES);
-		if(!load || PLACES.isEmpty()) {
+		if (!load || PLACES.isEmpty()) {
 			PLACES.clear();
 			PLACES.add(DEFAULT_PLACE);
 		}
@@ -626,11 +542,7 @@ public final class Program {
 	}
 	
 	static int getMaxPrice() {
-		OptionalDouble i = getStorage().getAllList().stream().mapToDouble(Bouteille::getPriceDouble).max();
-		if(i.isPresent()) {
-			return (int) i.getAsDouble();
-		}
-		return 0;
+		return (int) getStorage().getAllList().stream().mapToDouble(Bouteille::getPriceDouble).max().orElse(0);
 	}
 	
 	static int getCellarValue() {
@@ -676,7 +588,6 @@ public final class Program {
 	 * getAide: Appel de l'aide
 	 */
 	public static void getAide() {
-
 		File f = new File("./Help/MyCellar.hs");
 		if (f.exists()) {
 			try {
@@ -710,7 +621,7 @@ public final class Program {
 
 		saveGlobalProperties();
 
-		if(isListCaveModified()) {
+		if (isListCaveModified()) {
 			MyXmlDom.writeMyCellarXml(getCave(), "");
 		}
 
@@ -731,15 +642,16 @@ public final class Program {
 		try {
 			if (oDebugFile == null) {
 				String sDir = System.getProperty("user.home");
-				if(!sDir.isEmpty())
+				if (!sDir.isEmpty()) {
 					sDir += File.separator + "MyCellarDebug";
+				}
 				File f_obj = new File( sDir );
 				boolean ok = true;
-				if(!f_obj.exists()) {
+				if (!f_obj.exists()) {
 					ok = f_obj.mkdir();
 				}
 				if (ok) {
-					String sDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+					String sDate = LocalDate.now().format(DATE_FORMATER_DD_MM_YYYY);
 					debugFile = new File(sDir, "Debug-" + sDate + ".log");
 					oDebugFile = new FileWriter(debugFile, true);
 				}
@@ -840,7 +752,7 @@ public final class Program {
 	 */
 	static void newFile() {
 		final File file = new File(getWorkDir(true) + UNTITLED1_SINFO);
-		if(file.exists()) {
+		if (file.exists()) {
 			file.delete();
 		}
 		try {
@@ -923,12 +835,12 @@ public final class Program {
 		MyCellarBottleContenance.load();
 
 		RangementUtils.putTabStock();
-		if(!getErrors().isEmpty()) {
+		if (!getErrors().isEmpty()) {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
 		CountryVignobleController.load();
 
-		if(myCellarFile.isFileSavable()) {
+		if (myCellarFile.isFileSavable()) {
 			list.addFirst(file.getAbsolutePath());
 		}
 
@@ -949,7 +861,7 @@ public final class Program {
 	 * closeFile: Fermeture du fichier.
 	 */
 	static void closeFile() {
-		if (myCellarFile == null) {
+		if (!hasFile()) {
 			Debug("Program: closeFile: File already closed!");
 			return;
 		}
@@ -990,7 +902,7 @@ public final class Program {
 				return;
 			}
 
-			if(isListCaveModified()) {
+			if (isListCaveModified()) {
 				MyXmlDom.writeMyCellarXml(getCave(), "");
 			}
 
@@ -1142,7 +1054,6 @@ public final class Program {
 		}
 
 		String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-
 		m_sWorkDir += File.separator + time;
 
 		f_obj = new File(m_sWorkDir);
@@ -1160,15 +1071,14 @@ public final class Program {
 	}
 
 	static String getShortFilename() {
-		if (myCellarFile == null) {
-			return getShortFilename(UNTITLED1_SINFO);
+		if (hasFile()) {
+			return getShortFilename(myCellarFile.getFile().getAbsolutePath());
 		}
-		return getShortFilename(myCellarFile.getFile().getAbsolutePath());
+		return "";
 	}
 
 	static String getShortFilename(String sFilename) {
-		String tmp = sFilename;
-		tmp = tmp.replaceAll("\\\\", "/");
+		String tmp = sFilename.replaceAll("\\\\", "/");
 		int ind1 = tmp.lastIndexOf("/");
 		int ind2 = tmp.indexOf(EXTENSION);
 		if (ind1 != -1 && ind2 != -1) {
@@ -1239,7 +1149,7 @@ public final class Program {
 	}
 
 	static MyLinkedHashMap getCaveConfig() {
-		return myCellarFile == null ? null : myCellarFile.getCaveConfig();
+		return hasFile() ? myCellarFile.getCaveConfig() : null;
 	}
 
 	static boolean hasConfigCaveKey(String key) {
@@ -1349,18 +1259,11 @@ public final class Program {
 	}
 
 	public static boolean hasYearControl() {
-		if (bYearControlCalculated) {
-			return bYearControled;
-		}
-		bYearControled = getCaveConfigBool(MyCellarSettings.ANNEE_CTRL, false);
-		bYearControlCalculated = true;
-		return bYearControled;
+		return getCaveConfigBool(MyCellarSettings.ANNEE_CTRL, false);
 	}
 
-	static void setYearControl(boolean b) {
-		bYearControled = b;
-		putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, bYearControled);
-		bYearControlCalculated = true;
+	static void setYearControl(boolean yearControl) {
+		putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, yearControl);
 	}
 
 	public static void updateAllPanels() {
@@ -1380,7 +1283,7 @@ public final class Program {
 	}
 
 	public static int findTab(ImageIcon image) {
-		for(int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+		for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
 			try {
 				if (TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image)) {
 					return i;
@@ -1591,7 +1494,7 @@ public final class Program {
 		String [] fields = s.split(";");
 		for (String field : fields) {
 			for (MyCellarFields f : MyCellarFields.getFieldsList()) {
-				if(f.name().equals(field)) {
+				if (f.name().equals(field)) {
 					cols.add(f);
 					break;
 				}
@@ -1868,8 +1771,8 @@ public final class Program {
 		}
 		Debug("Program: Reading first line of file " + f.getName());
 		try (var scanner = new Scanner(f)){
-			if(scanner.hasNextLine()) {
-				return scanner.nextLine().strip();
+			if (scanner.hasNextLine()) {
+				return toCleanString(scanner.nextLine());
 			}
 		} catch (FileNotFoundException e) {
 			showException(e, true);
@@ -1877,7 +1780,7 @@ public final class Program {
 		return "";
 	}
 	
-	static HistoryList getHistoryList() {
+	public static HistoryList getHistoryList() {
 		return getStorage().getHistoryList();
 	}
 
@@ -1889,21 +1792,21 @@ public final class Program {
 		return getStorage().getHistoryList().getHistory();
 	}
 	
-	private static DecimalFormat getDecimalFormat(final Locale locale) {
-		final DecimalFormatSymbols dfs = new DecimalFormatSymbols();
-
-		if (Locale.UK.equals(locale) || Locale.US.equals(locale)) {
-		  dfs.setGroupingSeparator(',');
-		  dfs.setDecimalSeparator('.');
-		} else {
-		  dfs.setGroupingSeparator('.');
-		  dfs.setDecimalSeparator(',');
-		}
+//	private static DecimalFormat getDecimalFormat(final Locale locale) {
+//		final DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+//
+//		if (Locale.UK.equals(locale) || Locale.US.equals(locale)) {
+//		  dfs.setGroupingSeparator(',');
+//		  dfs.setDecimalSeparator('.');
+//		} else {
+//		  dfs.setGroupingSeparator('.');
+//		  dfs.setDecimalSeparator(',');
+//		}
 
 		// format with grouping separator and decimal separator.
 		// always print first digit before comma, and two digits after comma.
-		return new DecimalFormat("###0.00", dfs);
-	  }
+//		return new DecimalFormat("###0.00", dfs);
+//	  }
 	  
 //	public static String bigDecimalToString(final BigDecimal value, final Locale locale) {
 //    return getDecimalFormat(locale).format(value);

@@ -14,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import static mycellar.Program.toCleanString;
+
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -21,8 +23,8 @@ import java.awt.event.KeyEvent;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 30/10/20
+ * @version 1.8
+ * @since 30/12/20
  */
 public class Options extends JDialog {
   private final MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
@@ -109,7 +111,7 @@ public class Options extends JDialog {
    */
   private void valider_actionPerformed(ActionEvent e) {
     if (property) {
-      Program.putCaveConfigString(cle, value.getText().strip());
+      Program.putCaveConfigString(cle, toCleanString(value.getText()));
     }
     dispose();
   }
@@ -131,7 +133,7 @@ public class Options extends JDialog {
    * @return String
    */
   public String getValue() {
-    return value.getText().strip();
+    return toCleanString(value.getText());
   }
 
 }

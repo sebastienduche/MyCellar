@@ -12,6 +12,9 @@ import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.core.datas.history.HistoryState;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.ui.PanelRequest;
 import mycellar.vignobles.CountryVignobleController;
@@ -51,8 +54,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.6
- * @since 10/12/20
+ * @version 21.7
+ * @since 17/12/20
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -774,14 +777,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					}
 				} //Fin for
 			} //Fin for
-//			Debug(model.getRowCount() + " bottle(s) found");
-//			updateLabelBottleNumber();
-//
-//			if (model.getRowCount() > 0) {
-//				modif.setEnabled(true);
-//				suppr.setEnabled(true);
-//			}
-//			resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminee.");
 		} else {
 			//Type armoire
 			if (!multi.isSelected()) {

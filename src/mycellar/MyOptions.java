@@ -20,6 +20,10 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Collections;
+import java.util.List;
+
+import static mycellar.Program.toCleanString;
 
 
 /**
@@ -28,23 +32,22 @@ import java.awt.event.KeyListener;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.4
- * @since 02/09/20
+ * @version 2.5
+ * @since 30/12/20
  */
 class MyOptions extends JDialog {
   @SuppressWarnings("deprecation")
-private final MyCellarLabel textControl3 = new MyCellarLabel();
+  private final MyCellarLabel textControl3 = new MyCellarLabel();
   private final ButtonGroup cbg = new ButtonGroup();
   private static final int LARGEUR = 420;
   private JComponent[] value;
   private JTextField[] labelEdit;
-  private final String[] cle;
+  private final List<String> cle;
   private int taille_value = 0;
   private final MyLinkedHashMap config;
   private String[] resul;
   private final boolean bCancel;
   private boolean bIsLabelEdit = false;
-  static final long serialVersionUID = 030107;
 
   /**
    * MyOptions: Constructeur pour la fenêtre d'option
@@ -52,14 +55,14 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
    * @param title String: Titre de la fenêtre.
    * @param message String: Message de la fenêtre.
    * @param message2 String: Message de la fenêtre.
-   * @param propriete String[]: Propriété à renseigner.
-   * @param default_value String[]: Valeur par défaut.
-   * @param cle2 String[]: Clé de la propriété.
-   * @param type_objet String[]: Type des objets à ajouter.
+   * @param propriete : Propriété à renseigner.
+   * @param default_value : Valeur par défaut.
+   * @param cle2 : Clé de la propriété.
+   * @param type_objet : Type des objets à ajouter.
    * @param config1 MyLinkedHashMap
    */
-  MyOptions(String title, String message, String message2, String[] propriete, String[] default_value, String[] cle2, String[] type_objet,
-                   MyLinkedHashMap config1, boolean cancel) {
+  MyOptions(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> cle2, List<String> type_objet,
+            MyLinkedHashMap config1, boolean cancel) {
 
     super(Start.getInstance(), "", true);
     config = config1;
@@ -78,23 +81,23 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
    *
    * @param title String: Titre de la fenêtre.
    * @param message String: Message de la fenêtre.
-   * @param type_objet String[]: Type des objets à ajouter.
+   * @param type_objet : Type des objets à ajouter.
    * @param erreur String: texte de l'erreur
    * @param config1 MyLinkedHashMap
    * @param cancel boolean
    * @param isLabelEdit boolean 
    */
-  MyOptions(String title, String message, String[] type_objet, String erreur,
-                   MyLinkedHashMap config1, boolean cancel, boolean isLabelEdit) {
+  MyOptions(String title, String message, List<String> type_objet, String erreur,
+            MyLinkedHashMap config1, boolean cancel, boolean isLabelEdit) {
 
     super(Start.getInstance(), "", true);
     config = config1;
-    cle = new String[] { "" };
+    cle = Collections.singletonList("");
     bCancel = cancel;
     bIsLabelEdit = isLabelEdit;
     textControl3.setText(erreur);
     try {
-      jbInit(title, message, "", new String[]{ "" }, new String[]{ "" }, type_objet);
+      jbInit(title, message, "", Collections.singletonList(""), Collections.singletonList(""), type_objet);
     }
     catch (Exception e) {
       Program.showException(e);
@@ -107,14 +110,14 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
    * @param title String: Titre de la fenêtre.
    * @param message String: Message de la fenêtre.
    * @param message2 String: Message de la fenêtre.
-   * @param propriete String: Propriété à renseigner.
-   * @param default_value String: Valeur par défaut.
-   * @param type_objet String: Type des objets à ajouter.
+   * @param propriete : Propriété à renseigner.
+   * @param default_value : Valeur par défaut.
+   * @param type_objet : Type des objets à ajouter.
    * @throws Exception
    */
-  private void jbInit(String title, String message, String message2, String[] propriete, String[] default_value, String[] type_objet) {
+  private void jbInit(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> type_objet) {
 
-    taille_value = propriete.length;
+    taille_value = propriete.size();
     MyCellarLabel[] label_value = new MyCellarLabel[taille_value];
     resul = new String[taille_value];
     value = new JComponent[taille_value];
@@ -135,34 +138,34 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(SwingConstants.CENTER);
     valider.setMnemonic('O');
-    
-    for (int i = 0; i < taille_value; i++) {
+
+    for (int i = 0; i < propriete.size(); i++) {
       value[i] = null;
       labelEdit[i] = new JTextField();
-      if (type_objet[i].equals("JTextField")) {
-        value[i] = new JTextField(default_value[i]);
+      if (type_objet.get(i).equals("JTextField")) {
+        value[i] = new JTextField(default_value.get(i));
       }
-      if (type_objet[i].equals("MyCellarSpinner")) {
+      if (type_objet.get(i).equals("MyCellarSpinner")) {
         final MyCellarSpinner jspi = new MyCellarSpinner(0, 99999);
-        jspi.setValue(Integer.parseInt(default_value[i]));
+        jspi.setValue(Integer.parseInt(default_value.get(i)));
         value[i] = jspi;
       }
-      if (type_objet[i].equals("MyCellarCheckBox")) {
+      if (type_objet.get(i).equals("MyCellarCheckBox")) {
         boolean bool = false;
-        if (default_value[i].equals("true")) {
+        if (default_value.get(i).equals("true")) {
           bool = true;
         }
         value[i] = new MyCellarCheckBox("", bool);
       }
-      if (type_objet[i].equals("MyCellarRadioButton")) {
+      if (type_objet.get(i).equals("MyCellarRadioButton")) {
         boolean bool = false;
-        if (default_value[i].equals("true")) {
+        if (default_value.get(i).equals("true")) {
           bool = true;
         }
         value[i] = new MyCellarRadioButton("", bool);
         value[i].setEnabled(false);
         if (i > 0) {
-          if (type_objet[i - 1].equals("MyCellarRadioButton") && cle[i - 1].equals(cle[i])) {
+          if (type_objet.get(i - 1).equals("MyCellarRadioButton") && cle.get(i - 1).equals(cle.get(i))) {
             cbg.add( (MyCellarRadioButton) value[i - 1]);
             cbg.add( (MyCellarRadioButton) value[i]);
             value[i - 1].setEnabled(true);
@@ -170,8 +173,8 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
           }
         }
       }
-      label_value[i] = new MyCellarLabel(propriete[i]);
-      if (type_objet[i].equals("MyCellarLabel")) {
+      label_value[i] = new MyCellarLabel(propriete.get(i));
+      if (type_objet.get(i).equals("MyCellarLabel")) {
         label_value[i].setForeground(Color.red);
       }
     }
@@ -198,19 +201,19 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
     getContentPane().add(definition, "span 2, wrap");
     getContentPane().add(definition2, "span 2, wrap");
     for (int i = 0; i < taille_value; i++) {
-      if (type_objet[i].equals("MyCellarLabel")) {
+      if (type_objet.get(i).equals("MyCellarLabel")) {
         getContentPane().add(label_value[i], "wrap");
       }
       else {
-    	if(bIsLabelEdit)
-    		getContentPane().add(labelEdit[i], "grow");
-    	else
-    		getContentPane().add(label_value[i], "grow");
+        if(bIsLabelEdit)
+          getContentPane().add(labelEdit[i], "grow");
+        else
+          getContentPane().add(label_value[i], "grow");
         getContentPane().add(value[i], "grow, wrap, gapleft 15px");
       }
     }
     getContentPane().add(textControl3, "wrap");
-    
+
     if (bCancel) {
       getContentPane().add(valider, "span 2, split 2, center");
       getContentPane().add(annuler, "");
@@ -230,33 +233,33 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
       String defaut = null;
       int nb_jradio = 0;
       for (int i = 0; i < taille_value; i++) {
-    	  if(bIsLabelEdit) {
-    		  JTextField jtf = labelEdit[i];
-    		  cle[i] = jtf.getText().strip();
-    	  }
+        if(bIsLabelEdit) {
+          JTextField jtf = labelEdit[i];
+          cle.set(i, toCleanString(jtf.getText()));
+        }
         if (value[i] instanceof JTextField) {
           JTextField jtex = (JTextField) value[i];
-          resul[i] = jtex.getText().strip();
-          if (config != null && !cle[i].isEmpty()) {
-            config.put(cle[i], resul[i]);
+          resul[i] = toCleanString(jtex.getText());
+          if (config != null && !cle.get(i).isEmpty()) {
+            config.put(cle.get(i), resul[i]);
           }
           if (defaut == null) {
-            defaut = jtex.getText().strip();
+            defaut = toCleanString(jtex.getText());
           }
         }
         if (value[i] instanceof MyCellarSpinner) {
           MyCellarSpinner jspi = (MyCellarSpinner) value[i];
           resul[i] = jspi.getValue().toString();
-          if (config != null && !cle[i].isEmpty()){
-            config.put(cle[i], resul[i]);
+          if (config != null && !cle.get(i).isEmpty()) {
+            config.put(cle.get(i), resul[i]);
           }
         }
         if (value[i] instanceof MyCellarCheckBox) {
           MyCellarCheckBox jchk = (MyCellarCheckBox) value[i];
           if (jchk.isSelected()) {
             resul[i] = defaut;
-            if (config != null && !cle[i].isEmpty()){
-              config.put(cle[i], defaut);
+            if (config != null && !cle.get(i).isEmpty()) {
+              config.put(cle.get(i), defaut);
             }
           }
         }
@@ -264,8 +267,8 @@ private final MyCellarLabel textControl3 = new MyCellarLabel();
           MyCellarRadioButton jrb = (MyCellarRadioButton) value[i];
           if (jrb.isSelected()) {
             resul[i] = Integer.toString(nb_jradio);
-            if (config != null && !cle[i].isEmpty()) {
-              config.put(cle[i], resul[i]);
+            if (config != null && !cle.get(i).isEmpty()) {
+              config.put(cle.get(i), resul[i]);
             }
           }
           nb_jradio++;

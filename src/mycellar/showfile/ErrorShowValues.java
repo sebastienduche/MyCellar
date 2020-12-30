@@ -3,7 +3,7 @@ package mycellar.showfile;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
-import mycellar.Rangement;
+import mycellar.placesmanagement.Rangement;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
 
@@ -19,8 +19,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.3
- * @since 19/10/20
+ * @version 1.4
+ * @since 17/12/20
  */
 
 public class ErrorShowValues extends TableShowValues {

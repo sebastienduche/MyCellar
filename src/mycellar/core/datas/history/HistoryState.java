@@ -1,4 +1,4 @@
-package mycellar;
+package mycellar.core.datas.history;
 
 public enum HistoryState {
   ADD,

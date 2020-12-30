@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import java.util.LinkedList;
 
-public class Test extends JFrame {
+public final class Test extends JFrame {
 
 	LinkedList<String> list = new LinkedList<String>();
 	TextFieldPopup text;

@@ -14,8 +14,8 @@ import static mycellar.Program.getLabel;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.9
- * @since 18/10/20
+ * @version 3.0
+ * @since 23/01/21
  */
 class TableValues extends AbstractTableModel {
 
@@ -170,9 +170,11 @@ class TableValues extends AbstractTableModel {
 	 */
 	void removeBouteille(Bouteille bouteille) {
 		int index = datas.indexOf(bouteille);
-		datas.remove(bouteille);
-		listBoolean.remove(index);
-		fireTableDataChanged();
+		if(index != -1) {
+			datas.remove(bouteille);
+			listBoolean.remove(index);
+			fireTableDataChanged();
+		}
 	}
 
 	public List<Bouteille> getDatas(){

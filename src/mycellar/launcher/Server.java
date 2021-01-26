@@ -12,13 +12,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static mycellar.launcher.Server.Action.DOWNLOAD;
 import static mycellar.launcher.Server.Action.GET_VERSION;
@@ -31,8 +34,8 @@ import static mycellar.launcher.Server.Action.NONE;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 2.7
- * @since 15/01/21
+ * @version 2.8
+ * @since 26/01/21
  */
 
 public class Server implements Runnable {
@@ -49,7 +52,6 @@ public class Server implements Runnable {
 	private Action action = NONE;
 
 	private static final LinkedList<FileType> FILE_TYPES = new LinkedList<>();
-	private static final Deque<String> LIST_FILE_TO_REMOVE = new LinkedList<>();
 
 	private boolean downloadError = false;
 
@@ -91,7 +93,7 @@ public class Server implements Runnable {
 				Files.createDirectory(f.toPath());
 			}
 
-			downloadError = downloadFromGitHub(f);
+			downloadError = downloadFromGitHub();
 		} catch (Exception e) {
 			showException(e);
 			downloadError = true;
@@ -135,15 +137,9 @@ public class Server implements Runnable {
 						md5 = sFile.substring(index+1).trim();
 						sFile = sFile.substring(0, index);
 					}
-					// Suppression de fichier commençant par -
-					final boolean fileToDelete = sFile.indexOf('-') == 0;
-					Debug("sFile... " + sFile + " " + (fileToDelete ? "to delete" : ""));
-					if (fileToDelete) {
-						LIST_FILE_TO_REMOVE.add(sFile.substring(1));
-					} else {
-						boolean lib = (!sFile.contains(MY_CELLAR) && sFile.endsWith(".jar"));
-						FILE_TYPES.add(new FileType(sFile, md5, lib));
-					}
+					Debug("sFile... " + sFile);
+					boolean lib = (!sFile.contains(MY_CELLAR) && sFile.endsWith(".jar"));
+					FILE_TYPES.add(new FileType(sFile, md5, lib));
 					sFile = bufferedReader.readLine();
 				}
 			}
@@ -153,7 +149,7 @@ public class Server implements Runnable {
 		}
 	}
 
-	void downloadVersion() {
+	public void downloadVersion() {
 		Debug("Downloading version from GitHub...");
 		downloadFromServer();
 		if (downloadError) {
@@ -186,7 +182,20 @@ public class Server implements Runnable {
 		return (serverVersion.compareTo(MyCellarVersion.getLocalVersion()) > 0);
 	}
 
-	private boolean downloadFromGitHub(File destination) {
+	private List<String> getLibFiles() {
+		try {
+			return Files.walk(Path.of("./lib"), 1, FileVisitOption.FOLLOW_LINKS)
+					.map(Path::toFile)
+					.filter(File::isFile)
+					.map(File::getName)
+					.collect(Collectors.toList());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new ArrayList<>();
+	}
+
+	private boolean downloadFromGitHub() {
 		MyCellarLauncherLoading download;
 		try {
 			download = new MyCellarLauncherLoading("Downloading...");
@@ -199,9 +208,16 @@ public class Server implements Runnable {
 
 		downloadError = false;
 		try {
+			final List<String> jarsOnServer = FILE_TYPES
+					.stream()
+					.map(FileType::getFile)
+					.collect(Collectors.toList());
+			final List<String> libFiles = getLibFiles();
+			libFiles.removeAll(jarsOnServer);
 			// Creation des fichiers pour lister les fichiers à supprimer
-			for (String fileNameToRemove : LIST_FILE_TO_REMOVE) {
-				Debug("Creating file to delete... "+fileNameToRemove);
+			File destination = new File(DOWNLOAD_DIRECTORY);
+			for (String fileNameToRemove : libFiles) {
+				Debug("Creating file to delete... " + fileNameToRemove);
 				new File(destination, fileNameToRemove + ".myCellar").createNewFile();
 			}
 			Debug("Connecting to GitHub...");
@@ -215,11 +231,15 @@ public class Server implements Runnable {
 				FileType fType = FILE_TYPES.get(i);
 				String name = fType.getFile();
 				String serverMd5 = fType.getMd5();
+				final File file = new File(destination, name);
+				if (file.exists()) {
+					Debug("Skipping downloading file: " + name);
+					continue;
+				}
 				downloadError = false;
-				Debug("Downloading... "+name);
+				Debug("Downloading... " + name);
 
 				download.setValue(20 + i * percent);
-				final File file = new File(destination, name);
 				try {
 					String dir = "";
 					if (fType.isForLibDirectory()) {
@@ -341,6 +361,11 @@ public class Server implements Runnable {
 		}
 		catch (Exception ignored) {}
 	}
+
+//	public void testPopulateList() {
+//		FILE_TYPES.add(new FileType("github-api-1.117.jar", "", true));
+//		FILE_TYPES.add(new FileType("commons-lang3-3.9.jar", "", true));
+//	}
 
 	/**
 	 * showException

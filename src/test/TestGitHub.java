@@ -21,4 +21,9 @@ public class TestGitHub {
 		}
 	}
 
+	private static void testUpdateFromGitHub() {
+//		Server.getInstance().testPopulateList();
+		Server.getInstance().downloadVersion();
+	}
+
 }

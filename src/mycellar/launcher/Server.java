@@ -94,7 +94,7 @@ public class Server implements Runnable {
 			}
 
 			downloadError = downloadFromGitHub();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			showException(e);
 			downloadError = true;
 		}
@@ -109,7 +109,7 @@ public class Server implements Runnable {
 				serverVersion = in.readLine();
 				availableVersion = in.readLine();
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			showException(e);
 		}
 	}
@@ -145,7 +145,7 @@ public class Server implements Runnable {
 				}
 			}
 			Debug("GitHub version: " + serverVersion + "/" + availableVersion);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			showException(e);
 		}
 	}
@@ -167,7 +167,7 @@ public class Server implements Runnable {
 			try {
 				action = GET_VERSION;
 				new Thread(this).start();
-			} catch (Exception a) {
+			} catch (RuntimeException a) {
 				showException(a);
 			}
 		}
@@ -232,10 +232,10 @@ public class Server implements Runnable {
 				percent = 80 / size;
 			}
 			for (int i = 0; i < size; i++) {
-				FileType fType = FILE_TYPES.get(i);
-				String name = fType.getFile();
-				String serverMd5 = fType.getMd5();
-				if (fType.isForLibDirectory()) {
+				FileType fileType = FILE_TYPES.get(i);
+				String name = fileType.getFile();
+				String serverMd5 = fileType.getMd5();
+				if (fileType.isForLibDirectory()) {
 					File libFile = new File(LIB_DIRECTORY, name);
 					if (libFile.exists()) {
 						String localMd5 = getMD5Checksum(libFile.getAbsolutePath());
@@ -249,12 +249,12 @@ public class Server implements Runnable {
 				}
 				downloadError = false;
 				Debug("Downloading... " + name);
-
 				download.setValue(20 + i * percent);
+
 				final File file = new File(destination, name);
 				try {
 					String serverDirectory = "";
-					if (fType.isForLibDirectory()) {
+					if (fileType.isForLibDirectory()) {
 						serverDirectory = LIB_DIRECTORY + File.separator;
 					}
 					downloadFileFromGitHub(serverDirectory + name, file);

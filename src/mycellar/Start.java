@@ -67,12 +67,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.9
- * @since 30/12/20
+ * @version 28.0
+ * @since 27/01/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 	private static final String RESTART_COMMAND = "restart";
+	private static final String DOWNLOAD_COMMAND = "download";
 	private static final String OPTIONS_PARAM = "-opts=";
 
 	private final JButton m_oSupprimerButton = new JButton();
@@ -210,14 +211,20 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 						}
 					}
 					// Recuperation des options
-					tmp = parameters.substring(nIndex + OPTIONS_PARAM.length()).strip();
-					tmp = tmp.substring(0, tmp.indexOf(" ")).strip();
+					tmp = parameters.substring(nIndex + OPTIONS_PARAM.length()).strip().toLowerCase();
+					if (tmp.indexOf(' ') != -1) {
+						tmp = tmp.substring(0, tmp.indexOf(' ')).strip();
+					}
 					// Options a gerer
 					if (RESTART_COMMAND.equals(tmp)) {
 						// Demarrage avec une nouvelle cave
 						Program.putGlobalConfigBool(MyCellarSettings.STARTUP, false);
 						Program.putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, true);
 						Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
+					} else if (DOWNLOAD_COMMAND.equals(tmp)) {
+					Debug("Download a new versiob and exit");
+						Server.getInstance().downloadVersion();
+						System.exit(3);
 					}
 				}
 			}

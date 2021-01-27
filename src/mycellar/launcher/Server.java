@@ -63,7 +63,7 @@ public class Server implements Runnable {
 
 	private static final String DOWNLOAD_DIRECTORY = "download";
 	private static final String MY_CELLAR = "MyCellar";
-	private static final String LIB = "lib";
+	private static final String LIB_DIRECTORY = "lib";
 	private static final String MY_CELLAR_DEBUG = "MyCellarDebug";
 
 	private Server() {}
@@ -209,6 +209,9 @@ public class Server implements Runnable {
 
 		downloadError = false;
 		try {
+			if (FILE_TYPES.isEmpty()) {
+				checkVersion();
+			}
 			final List<String> jarsOnServer = FILE_TYPES
 					.stream()
 					.map(FileType::getFile)
@@ -232,24 +235,27 @@ public class Server implements Runnable {
 				FileType fType = FILE_TYPES.get(i);
 				String name = fType.getFile();
 				String serverMd5 = fType.getMd5();
-				final File file = new File(destination, name);
-				if (file.exists()) {
-					String localMd5 = getMD5Checksum(file.getAbsolutePath());
-					if (localMd5.equals(serverMd5)) {
-						Debug("Skipping downloading file: " + name + " Md5 OK");
-						continue;
-					}	else {
-						Debug("Need to download file: " + name + " " + serverMd5 + " " + localMd5 + " KO");
+				if (fType.isForLibDirectory()) {
+					File libFile = new File(LIB_DIRECTORY, name);
+					if (libFile.exists()) {
+						String localMd5 = getMD5Checksum(libFile.getAbsolutePath());
+						if (localMd5.equals(serverMd5)) {
+							Debug("Skipping downloading file: " + name + " Md5 OK");
+							continue;
+						}	else {
+							Debug("Need to download file: " + name + " " + serverMd5 + " " + localMd5 + " KO");
+						}
 					}
 				}
 				downloadError = false;
 				Debug("Downloading... " + name);
 
 				download.setValue(20 + i * percent);
+				final File file = new File(destination, name);
 				try {
 					String serverDirectory = "";
 					if (fType.isForLibDirectory()) {
-						serverDirectory = LIB + File.separator;
+						serverDirectory = LIB_DIRECTORY + File.separator;
 					}
 					downloadFileFromGitHub(serverDirectory + name, file);
 				} catch (IOException e) {

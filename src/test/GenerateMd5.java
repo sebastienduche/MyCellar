@@ -26,10 +26,11 @@ public class GenerateMd5 {
 			writer.write("MyCellar.jar@" + checksum + "\n");
 			writer.write("Finish.html\n");
 			getLibFiles()
-					.forEach(s -> {
+					.forEach(libFile -> {
 						try {
-							writer.write(s + "\n");
-						} catch (IOException e) {
+							String md5 = getMD5Checksum("./Build/lib/" + libFile);
+							writer.write(libFile + "@" + md5 + "\n");
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					});

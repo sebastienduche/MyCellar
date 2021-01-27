@@ -34,8 +34,8 @@ import static mycellar.launcher.Server.Action.NONE;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 2.8
- * @since 26/01/21
+ * @version 2.9
+ * @since 27/01/21
  */
 
 public class Server implements Runnable {
@@ -129,18 +129,19 @@ public class Server implements Runnable {
 			try (var bufferedReader = new BufferedReader(new FileReader(myCellarVersion))) {
 				serverVersion = bufferedReader.readLine();
 				availableVersion = bufferedReader.readLine();
-				String sFile = bufferedReader.readLine();
-				while (sFile != null && !sFile.isEmpty()) {
-					int index = sFile.indexOf('@');
+				String file = bufferedReader.readLine();
+				while (file != null && !file.isEmpty()) {
+					int index = file.indexOf('@');
 					String md5 = "";
 					if (index != -1) {
-						md5 = sFile.substring(index+1).trim();
-						sFile = sFile.substring(0, index);
+						final String[] split = file.split("@");
+						file = split[0];
+						md5 = split[1];
 					}
-					Debug("sFile... " + sFile);
-					boolean lib = (!sFile.contains(MY_CELLAR) && sFile.endsWith(".jar"));
-					FILE_TYPES.add(new FileType(sFile, md5, lib));
-					sFile = bufferedReader.readLine();
+					Debug("sFile... " + file);
+					boolean lib = (!file.contains(MY_CELLAR) && file.endsWith(".jar"));
+					FILE_TYPES.add(new FileType(file, md5, lib));
+					file = bufferedReader.readLine();
 				}
 			}
 			Debug("GitHub version: " + serverVersion + "/" + availableVersion);
@@ -233,19 +234,24 @@ public class Server implements Runnable {
 				String serverMd5 = fType.getMd5();
 				final File file = new File(destination, name);
 				if (file.exists()) {
-					Debug("Skipping downloading file: " + name);
-					continue;
+					String localMd5 = getMD5Checksum(file.getAbsolutePath());
+					if (localMd5.equals(serverMd5)) {
+						Debug("Skipping downloading file: " + name + " Md5 OK");
+						continue;
+					}	else {
+						Debug("Need to download file: " + name + " " + serverMd5 + " " + localMd5 + " KO");
+					}
 				}
 				downloadError = false;
 				Debug("Downloading... " + name);
 
 				download.setValue(20 + i * percent);
 				try {
-					String dir = "";
+					String serverDirectory = "";
 					if (fType.isForLibDirectory()) {
-						dir = LIB + File.separator;
+						serverDirectory = LIB + File.separator;
 					}
-					downloadFileFromGitHub(dir + name, file);
+					downloadFileFromGitHub(serverDirectory + name, file);
 				} catch (IOException e) {
 					showException(e);
 					Debug("Error Downloading " + name);
@@ -346,10 +352,10 @@ public class Server implements Runnable {
 			if (debugFile == null) {
 				String sDir = System.getProperty("user.home");
 				if (!sDir.isEmpty()) {
-					sDir +=  File.separator + MY_CELLAR_DEBUG;
+					sDir += File.separator + MY_CELLAR_DEBUG;
 				}
 				File f_obj = new File(sDir);
-				if(!f_obj.exists()) {
+				if (!f_obj.exists()) {
 					Files.createDirectory(f_obj.toPath());
 				}
 				Calendar oCal = Calendar.getInstance();
@@ -378,23 +384,23 @@ public class Server implements Runnable {
 			error = error.concat("\n" + element);
 		}
 		String sDir = System.getProperty("user.home");
-		if(!sDir.isEmpty()) {
+		if (!sDir.isEmpty()) {
 			sDir += File.separator + MY_CELLAR_DEBUG;
 		}
-		try(var fileWriter = new FileWriter(sDir + File.separator + "Errors.log")) {
+		try (var fileWriter = new FileWriter(sDir + File.separator + "Errors.log")) {
 			fileWriter.write(e.toString());
 			fileWriter.write(error);
 			fileWriter.flush();
 		}
 		catch (IOException ignored) {}
 		Debug("Server: ERROR:");
-		Debug("Server: "+e.toString());
-		Debug("Server: "+error);
+		Debug("Server: " + e.toString());
+		Debug("Server: " + error);
 		e.printStackTrace();
 	}
 
 	private static boolean isRedirected(Map<String, List<String>> header) {
-		if(header == null) {
+		if (header == null) {
 			return false;
 		}
 		try {

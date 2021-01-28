@@ -112,13 +112,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.5
- * @since 30/12/20
+ * @version 24.6
+ * @since 28/01/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.9.2.1";
+	public static final String INTERNAL_VERSION = "3.9.2.7";
 	public static final int VERSION = 67;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -1789,7 +1789,7 @@ public final class Program {
 	}
 	
 	public static List<History> getHistory() {
-		return getStorage().getHistoryList().getHistory();
+		return Collections.unmodifiableList(getStorage().getHistoryList().getHistory());
 	}
 	
 //	private static DecimalFormat getDecimalFormat(final Locale locale) {

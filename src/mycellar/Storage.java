@@ -13,8 +13,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 17/12/20
+ * @version 2.1
+ * @since 28/01/21
  */
 
 public interface Storage {
@@ -27,7 +27,9 @@ public interface Storage {
 	void addToWorksheet(Bouteille oB);
 
 	void removeHistory(History oB);
+	void removeFromWorksheet(Bouteille oB);
 	void clearHistory(HistoryState historyState);
+	void clearWorksheet();
 	void saveHistory();
 	void loadHistory();
 	void saveWorksheet();

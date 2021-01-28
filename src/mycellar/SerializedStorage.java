@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.4
- * @since 29/12/20
+ * @version 6.5
+ * @since 28/01/21
  */
 
 public class SerializedStorage implements Storage {
@@ -34,6 +34,8 @@ public class SerializedStorage implements Storage {
 	private ListeBouteille listBouteilles = new ListeBouteille();
 
 	private int bottleCount;
+	private boolean worksheetModified = false;
+	private boolean historyModified = false;
 
 	private final LinkedList<String> listeUniqueBouteille = new LinkedList<>(); // Liste des noms de bouteille (un seule nom)
 
@@ -95,14 +97,34 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public void addHistory(HistoryState type, Bouteille bottle) {
+		historyModified = true;
 		Program.setModified();
-		HISTORY_LIST.addLast(new History(bottle, type.ordinal(), getBottleCount()));
+		HISTORY_LIST.add(new History(bottle, type.ordinal(), getBottleCount()));
 	}
 
 	@Override
 	public void addToWorksheet(Bouteille bottle) {
+		worksheetModified = true;
 		Program.setModified();
 		WORKSHEET_LIST.add(new WorkSheetData(bottle));
+	}
+
+	@Override
+	public void removeFromWorksheet(Bouteille bottle) {
+		worksheetModified = true;
+		Program.setModified();
+		final List<WorkSheetData> collect = WORKSHEET_LIST.getWorsheet()
+				.stream()
+				.filter(workSheetData -> workSheetData.getBouteilleId() == bottle.getId())
+				.collect(Collectors.toList());
+		WORKSHEET_LIST.getWorsheet().removeAll(collect);
+	}
+
+	@Override
+	public void clearWorksheet() {
+		worksheetModified = true;
+		Program.setModified();
+		WORKSHEET_LIST.getWorsheet().clear();
 	}
 
 	@Override
@@ -137,20 +159,20 @@ public class SerializedStorage implements Storage {
 		}
 
 		Program.setModified();
+		historyModified = true;
 		if(historyState == HistoryState.ALL) {
 			HISTORY_LIST.clear();
 			return;
 		}
-		final List<History> list = HISTORY_LIST.getHistory().stream().filter(history -> history.getType() == historyState.ordinal()).collect(Collectors.toList());
-
-		// Suppression de l'historique
-		for (History h : list) {
-			removeHistory(h);
-		}
+		HISTORY_LIST.getHistory()
+				.stream()
+				.filter(history -> history.getType() == historyState.ordinal())
+				.forEach(this::removeHistory);
 	}
 
 	@Override
 	public void removeHistory(History oB) {
+		historyModified = true;
 		HISTORY_LIST.remove(oB);
 	}
 
@@ -220,13 +242,17 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public void saveHistory() {
-		Debug("Saving History...");
-		HistoryList.writeXML(new File(Program.getWorkDir(true) + HISTORY_XML));
-		Debug("Saving History OK");
+		if (historyModified) {
+			historyModified = false;
+			Debug("Saving History...");
+			HistoryList.writeXML(new File(Program.getWorkDir(true) + HISTORY_XML));
+			Debug("Saving History OK");
+		}
 	}
 
 	@Override
 	public void loadHistory() {
+		historyModified = false;
 		Debug ("Loading History...");
 		boolean resul = HistoryList.loadXML(new File(Program.getWorkDir(true) + HISTORY_XML));
 		if (!resul) {
@@ -245,13 +271,17 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public void saveWorksheet() {
-		Debug("Saving Worksheet...");
-		WorkSheetList.writeXML(new File(Program.getWorkDir(true) + WORKSHEET_XML));
-		Debug("Saving Worksheet OK");
+		if (worksheetModified) {
+			worksheetModified = false;
+			Debug("Saving Worksheet...");
+			WorkSheetList.writeXML(new File(Program.getWorkDir(true) + WORKSHEET_XML));
+			Debug("Saving Worksheet OK");
+		}
 	}
 
 	@Override
 	public void loadWorksheet() {
+		worksheetModified = false;
 		Debug("Loading Worksheet...");
 		boolean resul = WorkSheetList.loadXML(new File(Program.getWorkDir(true) + WORKSHEET_XML));
 		if (!resul) {

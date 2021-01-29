@@ -33,8 +33,8 @@ import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.7
- * @since 27/11/20
+ * @version 2.8
+ * @since 29/01/21
  */
 
 public final class CountryVignobleController {
@@ -48,13 +48,17 @@ public final class CountryVignobleController {
 	private static final CountryVignobleController INSTANCE = new CountryVignobleController();
 	private static boolean rebuildNeeded = false;
 
+	private boolean modified;
+
 	private CountryVignobleController() {
+		modified = false;
 		CountryListJaxb.findbyId(FRA).ifPresent(country -> countryToVignobles.put(country, loadFrance()));
 		CountryListJaxb.findbyId(ITA).ifPresent(country -> countryToVignobles.put(country, loadItalie()));
 		setRebuildNeeded();
 	}
 
 	public static void init() {
+		INSTANCE.modified = false;
 		INSTANCE.countryToVignobles.clear();
 		CountryListJaxb.findbyId(FRA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, loadFrance()));
 		CountryListJaxb.findbyId(ITA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, loadItalie()));
@@ -62,14 +66,21 @@ public final class CountryVignobleController {
 	}
 
 	public static void close() {
+		INSTANCE.modified = false;
 		INSTANCE.countryToVignobles.clear();
 		setRebuildNeeded();
 	}
 
 	public static void load() {
 		loadAllCountries(INSTANCE.countryToVignobles);
+		INSTANCE.modified = false;
 		setRebuildNeeded();
 		rebuild();
+	}
+
+	public static void setModified() {
+		INSTANCE.modified = true;
+		Program.setModified();
 	}
 
 	public static Optional<VignobleListJaxb> getVignobles(CountryJaxb countryJaxb) {
@@ -87,6 +98,7 @@ public final class CountryVignobleController {
 		}
 		VignobleListJaxb vignobleListJaxb = new VignobleListJaxb();
 		vignobleListJaxb.init();
+		INSTANCE.modified = true;
 		INSTANCE.countryToVignobles.put(countryJaxb, vignobleListJaxb);
 		Debug("Creating country End");
 		return Optional.of(vignobleListJaxb);
@@ -94,12 +106,13 @@ public final class CountryVignobleController {
 
 	public static void deleteCountry(CountryJaxb countryJaxb) {
 		Debug("Deleting country... " + countryJaxb.getName());
+		INSTANCE.modified = true;
 		INSTANCE.countryToVignobles.remove(countryJaxb);
 		boolean resul = VignobleListJaxb.delete(countryJaxb);
-		Debug("Deleting country End with resul=" + resul);
+		Debug("Deleting country End with resul = " + resul);
 	}
 
-	public static void generateCountryId(CountryJaxb countryJaxb) {
+	private static void generateCountryId(CountryJaxb countryJaxb) {
 		String id = Program.removeAccents(countryJaxb.getName()).toUpperCase() + "000";
 		id = id.substring(0, 3);
 
@@ -167,7 +180,9 @@ public final class CountryVignobleController {
 				countryVignoble = vignobleListJaxb.findVignoble(vignobleJaxb);
 				found = false;
 				if (countryVignoble.isEmpty()) {
-					vignobleListJaxb.addVignoble(vignobleJaxb);
+					if (vignobleListJaxb.addVignoble(vignobleJaxb)) {
+						INSTANCE.modified = true;
+					}
 				}
 				countryVignoble = vignobleListJaxb.findVignoble(vignobleJaxb);
 			}
@@ -182,6 +197,7 @@ public final class CountryVignobleController {
 				appelationJaxb.setAOC(vignobleJaxb.getAOC());
 				appelationJaxb.setIGP(vignobleJaxb.getIGP());
 				if (!appelationJaxb.isEmpty()) {
+					INSTANCE.modified = true;
 					countryVignoble.get().add(appelationJaxb);
 					countryVignoble = vignobleListJaxb.findVignobleWithAppelation(vignobleJaxb);
 				}
@@ -211,6 +227,7 @@ public final class CountryVignobleController {
 		VignobleJaxb bouteilleVignobleJaxb = INSTANCE.mapCountryVignobleIDToVignoble.get(countryVignobleJaxb.getId());
 		final String oldName = countryVignobleJaxb.getName();
 		countryVignobleJaxb.setName(name);
+		INSTANCE.modified = true;
 		if (bouteilleVignobleJaxb == null) {
 			Debug("WARNING: No bottles to modify with Vignoble name: " + oldName);
 			return;
@@ -233,6 +250,7 @@ public final class CountryVignobleController {
 		VignobleJaxb vigne = INSTANCE.mapCountryVignobleIDToVignoble.get(countryVignobleJaxb.getId());
 		final String oldName = appelationJaxb.getAOC();
 		appelationJaxb.setAOC(name);
+		INSTANCE.modified = true;
 		if (vigne == null) {
 			Debug("WARNING: No bottles to modify with AOC name: " + oldName);
 			return;
@@ -259,6 +277,7 @@ public final class CountryVignobleController {
 		VignobleJaxb vigne = INSTANCE.mapCountryVignobleIDToVignoble.get(countryVignobleJaxb.getId());
 		final String oldName = appelationJaxb.getIGP();
 		appelationJaxb.setIGP(name);
+		INSTANCE.modified = true;
 		if (vigne == null) {
 			Debug("WARNING: No bottles to modify with IGP name: " + oldName);
 			return;
@@ -303,8 +322,11 @@ public final class CountryVignobleController {
 					appelationJaxb.setAOC(bouteilleVignobleJaxb.getAOC());
 					appelationJaxb.setIGP(bouteilleVignobleJaxb.getIGP());
 					vignoble.get().add(appelationJaxb);
+					INSTANCE.modified = true;
 				} else if (vignoble.isEmpty()) {
-					vignobleListJaxb.addVignoble(bouteilleVignobleJaxb);
+					if (vignobleListJaxb.addVignoble(bouteilleVignobleJaxb)) {
+						INSTANCE.modified = true;
+					}
 				}
 			} else {
 				vignobleListJaxb.findAppelation(bouteilleVignobleJaxb)
@@ -312,6 +334,7 @@ public final class CountryVignobleController {
 				INSTANCE.mapCountryVignobleIDToVignoble.put(countryVignoble.get().getId(), bouteilleVignobleJaxb);
 			}
 		}	else {
+			INSTANCE.modified = true;
 			countryJaxb = new CountryJaxb(bouteilleVignobleJaxb.getCountry());
 			generateCountryId(countryJaxb);
 			VignobleListJaxb vignobleListJaxb = new VignobleListJaxb();
@@ -445,11 +468,14 @@ public final class CountryVignobleController {
 	}
 
 	public static void save() {
-		Debug("Saving...");
-		for (CountryJaxb c : INSTANCE.countryToVignobles.keySet()){
-			VignobleListJaxb.save(c, INSTANCE.countryToVignobles.get(c));
+		if (INSTANCE.modified) {
+			Debug("Saving...");
+			for (CountryJaxb c : INSTANCE.countryToVignobles.keySet()) {
+				VignobleListJaxb.save(c, INSTANCE.countryToVignobles.get(c));
+			}
+			Debug("Saved");
+			INSTANCE.modified = false;
 		}
-		Debug("Saved");
 	}
 
 	public static boolean hasCountryWithName(final String country) {

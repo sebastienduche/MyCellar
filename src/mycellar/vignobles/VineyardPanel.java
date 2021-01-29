@@ -46,8 +46,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 17/11/20
+ * @version 2.9
+ * @since 29/01/21
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -189,7 +189,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 					comboVignoble.setSelectedItem(countryVignobleJaxb);
 					delVignoble.setEnabled(true);
 					renameVignoble.setEnabled(true);
-					Program.setModified();
+					CountryVignobleController.setModified();
 				}
 			}
 		}
@@ -220,7 +220,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 				delVignoble.setEnabled(comboVignoble.getItemCount() > 0);
 				renameVignoble.setEnabled(comboVignoble.getItemCount() > 0);
 				vignobleListJaxb.delVignoble(countryVignobleJaxb);
-				Program.setModified();
+				CountryVignobleController.setModified();
 			}
 		}
 	}
@@ -240,7 +240,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 				if (val != null && !val.isEmpty()) {
 					CountryVignobleController.renameVignoble(countryVignobleJaxb, val);
 					comboVignoble.updateUI();
-					Program.setModified();
+					CountryVignobleController.setModified();
 				}
 			}
 		}
@@ -284,7 +284,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 				CountryJaxb countryJaxb = new CountryJaxb(val);
 				CountryVignobleController.createCountry(countryJaxb);
 				comboCountry.addItem(countryJaxb);
-				Program.setModified();
+				CountryVignobleController.setModified();
 			}
 		}
 	}
@@ -316,26 +316,17 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 				}
 				CountryVignobleController.deleteCountry(countryJaxb);
 				comboCountry.removeItem(countryJaxb);
-				Program.setModified();
+				CountryVignobleController.setModified();
 			});
 		}
 	}
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	private static void Debug(String sText) {
-		Program.Debug("VineyardPanel: " + sText );
+		Program.Debug("VineyardPanel: " + sText);
 	}
 
 	@Override
 	public boolean tabWillClose(TabEvent event) {
-		if(model.isModified()) {
-			Program.setModified();
-			model.setModified(false);
-		}
 		return true;
 	}
 

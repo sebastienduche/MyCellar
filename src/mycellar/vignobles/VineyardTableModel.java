@@ -17,8 +17,8 @@ import java.util.List;
  * Société : Seb Informatique
  * 
  * @author Sébastien Duché
- * @version 1.2
- * @since 13/11/20
+ * @version 1.3
+ * @since 29/01/21
  */
 
 class VineyardTableModel extends DefaultTableModel {
@@ -27,8 +27,7 @@ class VineyardTableModel extends DefaultTableModel {
 	static final int ACTION = 2;
 	private List<AppelationJaxb> appelationJaxbs;
 	private CountryVignobleJaxb vignoble;
-	private boolean modified = false;
-	
+
 	@Override
 	public boolean isCellEditable(int row, int column) {
 		return true;
@@ -41,7 +40,7 @@ class VineyardTableModel extends DefaultTableModel {
 	
 	@Override
 	public String getColumnName(int column) {
-		switch(column) {
+		switch (column) {
 		case 0:
 			return Program.getLabel("Main.AppelationAOC");
 		case 1:
@@ -53,7 +52,7 @@ class VineyardTableModel extends DefaultTableModel {
 	
 	@Override
 	public int getRowCount() {
-		if(appelationJaxbs == null) {
+		if (appelationJaxbs == null) {
 			return 0;
 		}
 		return appelationJaxbs.size();
@@ -66,7 +65,7 @@ class VineyardTableModel extends DefaultTableModel {
 		}
 		
 		AppelationJaxb appelationJaxb = appelationJaxbs.get(row);
-		switch(column) {
+		switch (column) {
 		case 0:
 			return appelationJaxb.getAOC();
 		case 1:
@@ -85,13 +84,13 @@ class VineyardTableModel extends DefaultTableModel {
 		}
 		
 		AppelationJaxb appelationJaxb = appelationJaxbs.get(row);
-		switch(column) {
+		switch (column) {
 		case 0:
-			setModified(true);
+			CountryVignobleController.setModified();
 			CountryVignobleController.renameAOC(vignoble, appelationJaxb, (String)aValue);
 			break;
 		case 1:
-			setModified(true);
+			CountryVignobleController.setModified();
 			CountryVignobleController.renameIGP(vignoble, appelationJaxb, (String)aValue);
 			break;
 		case 2:
@@ -105,7 +104,7 @@ class VineyardTableModel extends DefaultTableModel {
 			if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getLabel("VineyardPanel.delAppellationQuestion"), name) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 				return;
 			}
-			setModified(true);
+			CountryVignobleController.setModified();
 			appelationJaxbs.remove(appelationJaxb);
 			fireTableDataChanged();
 			break;
@@ -118,18 +117,9 @@ class VineyardTableModel extends DefaultTableModel {
 		fireTableDataChanged();
 	}
 
-	public boolean isModified() {
-		return modified;
-	}
-
-	public void setModified(boolean modified) {
-		this.modified = modified;
-	}
-
 	void addAppellation(AppelationJaxb appellation) {
 		appelationJaxbs.add(appellation);
 		fireTableDataChanged();
-		modified = true;
+		CountryVignobleController.setModified();
 	}
-
 }

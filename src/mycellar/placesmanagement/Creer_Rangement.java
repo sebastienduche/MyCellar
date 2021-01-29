@@ -291,7 +291,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
 			final String nom = toCleanString(nom_obj.getText());
 			// Controle sur le nom
-			if(!MyCellarControl.ctrlName(nom)) {
+			if (!MyCellarControl.ctrlName(nom)) {
 				return;
 			}
 
@@ -345,16 +345,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 						}
 					}
 				}
-				// Pas de bouteilles a modifier
 				nom_obj.setText("");
 				updatePlace(nom, nbPart, rangement);
-				label_cree.setText(Program.getError("Error123"));
 				updateView();
 				Program.updateAllPanels();
 				Debug("Modifications completed");
 				label_cree.setText(Program.getError("Error123")); //"Rangement modifie.");
 			}	else {
-				boolean bResul = true;
 				// Rangement complexe
 				Debug("Modifying complex place...");
 				int nbBottles = rangement.getNbCaseUseAll();
@@ -393,6 +390,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 							return;
 						}
 					}
+					boolean bResul = true;
 					for (int i = 0; i < listPart.size(); i++) {
 						if (!bResul) {
 							Debug("ERROR: bResul false, skipping part");
@@ -514,7 +512,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	}
 
 	/**
-	 * button1_actionPerformed: Boutton Creer
+	 * Boutton Creer
 	 */
 	private void create_actionPerformed() {
 		Debug("create_actionPerforming...");
@@ -548,12 +546,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 			}
 		}	else {
 			Debug("Creating complex place...");
-			for (Part p: listPart) {
+			for (Part p : listPart) {
 				if (p.getRows().isEmpty()) {
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrect sur la partie
 					bResul = false;
 				}
-				for (Row r: p.getRows()) {
+				for (Row r : p.getRows()) {
 					if (r.getCol() == 0) {
 						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrect sur la partie
 						bResul = false;
@@ -681,11 +679,6 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		}
 	}
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	private static void Debug(String sText) {
 		Program.Debug("Creer_Rangement: " + sText);
 	}
@@ -753,7 +746,6 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		public void actionPerformed(ActionEvent e) {
 			create_actionPerformed();
 		}
-
 	}
 
 	class ModifyAction extends AbstractAction {
@@ -767,6 +759,5 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		public void actionPerformed(ActionEvent e) {
 			modifyPlace();
 		}
-
 	}
 }

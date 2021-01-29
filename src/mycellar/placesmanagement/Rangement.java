@@ -16,8 +16,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 27.1
- * @since 17/12/20
+ * @version 27.2
+ * @since 29/01/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -68,7 +68,7 @@ public class Rangement implements Comparable<Rangement> {
 		caisse = true;
 
 		storageCaisse = new HashMap<>(nb_emplacements);
-		for (int i=start_caisse; i<start_caisse+nb_emplacements; i++) {
+		for (int i = start_caisse; i < start_caisse+nb_emplacements; i++) {
 			storageCaisse.put(i, new ArrayList<>());
 		}
 	}
@@ -362,7 +362,7 @@ public class Rangement implements Comparable<Rangement> {
 	 */
 	public int getNbCaseUseAll() {
 		int resul = 0;
-		for (int i=0; i<nb_emplacements; i++) {
+		for (int i = 0; i < nb_emplacements; i++) {
 			resul += getNbCaseUse(i);
 		}
 		return resul;
@@ -409,10 +409,10 @@ public class Rangement implements Comparable<Rangement> {
 		wine.setLigne(0);
 		wine.setColonne(0);
 
-		Debug("putWineCaisse: "+wine.getNom()+" "+wine.getEmplacement()+" "+num_empl);
+		Debug("putWineCaisse: " + wine.getNom() + " " + wine.getEmplacement() + " " + num_empl);
 
 		try {
-			int nb_vin = getNbCaseUse(num_empl-start_caisse);
+			int nb_vin = getNbCaseUse(num_empl - start_caisse);
 			if (limited && nb_vin == nbColonnesStock) {
 				return false;
 			}
@@ -553,9 +553,9 @@ public class Rangement implements Comparable<Rangement> {
 	}
 
 	public boolean isSameColumnNumber() {
-		for (int i=0; i<nb_emplacements; i++){
+		for (int i = 0; i < nb_emplacements; i++){
 			int nbCol = 0;
-			for (int j=0; j<getNbLignes(i);j++){
+			for (int j = 0; j < getNbLignes(i); j++){
 				if (nbCol == 0) {
 					nbCol = getNbColonnes(i, j);
 					continue;
@@ -613,9 +613,9 @@ public class Rangement implements Comparable<Rangement> {
 	
 	public boolean canAddBottle(Bouteille b) {
 		if (isCaisse()) {
-			return canAddBottle(b.getNumLieu(), 0, 0);
+			return canAddBottle(b.getNumLieu() - start_caisse, 0, 0);
 		}
-		return canAddBottle(b.getNumLieu()-1, b.getLigne()-1, b.getColonne()-1);
+		return canAddBottle(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1);
 	}
 
 	/**
@@ -627,8 +627,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return
 	 */
 	public boolean canAddBottle(int _nEmpl, int _nLine, int _nCol) {
-		
-		if (_nEmpl < start_caisse || _nEmpl >= getNbEmplacements() + start_caisse) {
+		if (_nEmpl < 0 || _nEmpl >= getNbEmplacements()) {
 			return false;
 		}
 		if (isCaisse()) {
@@ -707,7 +706,7 @@ public class Rangement implements Comparable<Rangement> {
 		}
 		nb_emplacements = nbEmplacements;
 		storageCaisse = new HashMap<>(nbEmplacements);
-		for (int i = start_caisse; i < start_caisse+nbEmplacements; i++) {
+		for (int i = start_caisse; i < start_caisse + nbEmplacements; i++) {
 			storageCaisse.put(i, new ArrayList<>());
 		}
 	}
@@ -761,7 +760,7 @@ public class Rangement implements Comparable<Rangement> {
 		for (Part p : listePartie) {
 			Part part = new Part(p.getNum());
 			listPart.add(part);
-			for (int j=0; j<p.getRowSize(); j++) {
+			for (int j = 0; j < p.getRowSize(); j++) {
 				part.setRows(p.getRowSize());
 				part.getRow(j).setCol(p.getRow(j).getCol());
 			}
@@ -813,20 +812,25 @@ public class Rangement implements Comparable<Rangement> {
 	}
 
 	public boolean isSame(Rangement r) {
-		if(!getNom().equals(r.getNom()))
+		if (!getNom().equals(r.getNom())) {
 			return false;
-		if(getNbEmplacements() != r.getNbEmplacements())
+		}
+		if (getNbEmplacements() != r.getNbEmplacements()) {
 			return false;
-		if(isCaisse() != r.isCaisse())
+		}
+		if (isCaisse() != r.isCaisse()) {
 			return false;
-		if(!isCaisse()) {
-			for(int i=0; i<getNbEmplacements(); i++) {
+		}
+		if (!isCaisse()) {
+			for (int i = 0; i < getNbEmplacements(); i++) {
 				int lignes = getNbLignes(i);
-				if(lignes != r.getNbLignes(i))
+				if (lignes != r.getNbLignes(i)) {
 					return false;
-				for(int j=0; j<lignes; j++) {
-					if(getNbColonnes(i, j) != r.getNbColonnes(i, j))
+				}
+				for (int j = 0; j < lignes; j++) {
+					if (getNbColonnes(i, j) != r.getNbColonnes(i, j)) {
 						return false;
+					}
 				}
 			}
 		}

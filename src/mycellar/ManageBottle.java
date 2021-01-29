@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.actions.ChooseCellAction;
+import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.IAddVin;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
@@ -43,8 +44,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.4
- * @since 17/12/20
+ * @version 7.5
+ * @since 29/01/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -281,6 +282,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		}	catch (RuntimeException e) {
 			Program.showException(e);
 		}
+		Debug("Set Bottle... Done");
 	}
 
 	private void updateStatusAndTime() {
@@ -427,7 +429,9 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			oldRangement.clearStock(new Bouteille.BouteilleBuilder("").numPlace(oldNum).line(oldLine).column(oldColumn).build());
 		}
 
-		RangementUtils.putTabStock();
+		if (!RangementUtils.putTabStock()) {
+			new OpenShowErrorsAction().actionPerformed(null);
+		}
 		Program.getSearch().ifPresent(Search::updateTable);
 
 		if (!rangement.isCaisse()) {
@@ -506,7 +510,9 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		}
 
 		Debug("Quitting...");
-		RangementUtils.putTabStock();
+		if (!RangementUtils.putTabStock()) {
+			new OpenShowErrorsAction().actionPerformed(null);
+		}
 		m_colorList.setSelectedItem(BottleColor.NONE);
 		statusList.setSelectedItem(BottlesStatus.NONE);
     clearValues();

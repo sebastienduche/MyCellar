@@ -56,8 +56,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.7
- * @since 30/12/20
+ * @version 14.8
+ * @since 29/01/21
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -332,12 +332,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 						if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 							//Modify Name of place
 							Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
-							nom_obj.setText("");
-							label_cree.setText(Program.getError("Error123"));
 						}
-						updatePlace(nom, nbPart, rangement);
-						updateView();
-						Program.updateAllPanels();
 					} else if (rangement.getStartCaisse() != start_caisse) {
 						// Le numero de la premiere partie a change, renumeroter
 						String erreur_txt1 = MessageFormat.format(Program.getError("CreerRangement.UpdatedBottlePart"), start_caisse, rangement.getStartCaisse());
@@ -347,21 +342,15 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 							//Modify start part number
 							final int difference = start_caisse - rangement.getStartCaisse();
 							Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setNumLieu(b.getNumLieu() + difference));
-							nom_obj.setText("");
-							label_cree.setText(Program.getError("Error123"));
 						}
-						updatePlace(nom, nbPart, rangement);
-						updateView();
-						Program.updateAllPanels();
 					}
-				} else {
-					// Pas de bouteilles a modifier
-					nom_obj.setText("");
-					updatePlace(nom, nbPart, rangement);
-					label_cree.setText(Program.getError("Error123"));
-					updateView();
-					Program.updateAllPanels();
 				}
+				// Pas de bouteilles a modifier
+				nom_obj.setText("");
+				updatePlace(nom, nbPart, rangement);
+				label_cree.setText(Program.getError("Error123"));
+				updateView();
+				Program.updateAllPanels();
 				Debug("Modifications completed");
 				label_cree.setText(Program.getError("Error123")); //"Rangement modifie.");
 			}	else {

@@ -617,7 +617,9 @@ public final class Program {
 	 * @param file File
 	 */
 	static void saveAs(File file) {
+		Debug("Program: -------------------");
 		Debug("Program: Saving all files...");
+		Debug("Program: -------------------");
 
 		saveGlobalProperties();
 
@@ -635,7 +637,9 @@ public final class Program {
 
 		modified = false;
 		listCaveModified = false;
+		Debug("Program: -------------------");
 		Debug("Program: Saving all files OK");
+		Debug("Program: -------------------");
 	}
 
 	public static void Debug(String sText) {
@@ -782,12 +786,14 @@ public final class Program {
 		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN2,""));
 		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN3,""));
 		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN4,""));
+		Debug("Program: -------------------");
 		if (isNewFile) {
 			Debug("Program: openFile: Creating new file");
 		} else {
 			Debug("Program: openFile: Opening file: " + file.getAbsolutePath());
 			list.remove(file.getAbsolutePath());
 		}
+		Debug("Program: -------------------");
 
 		// Sauvegarde avant de charger le nouveau fichier
 		closeFile();
@@ -855,6 +861,9 @@ public final class Program {
 		saveGlobalProperties();
 		modified = false;
 		listCaveModified = false;
+		Debug("Program: ----------------");
+		Debug("Program: Open a File Done");
+		Debug("Program: ----------------");
 	}
 
 	/**

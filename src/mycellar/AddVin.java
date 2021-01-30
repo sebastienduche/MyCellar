@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.Bouteille.BouteilleBuilder;
 import mycellar.actions.ChooseCellAction;
+import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
@@ -55,8 +56,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.0
- * @since 17/12/20
+ * @version 27.1
+ * @since 30/01/21
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -733,7 +734,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 						}	else {
 							nLieuNum = Integer.parseInt(m_num_lieu.getItemAt(lieu_num_selected));
 							int nbbottle = listBottleInModification.size();
-							if (rangement.isLimited() && (rangement.getNbCaseUse(nLieuNum) + nbbottle) > rangement.getNbColonnesStock()) {
+							if (rangement.isLimited() && (rangement.getNbCaseUse(lieu_num_selected - 1) + nbbottle) > rangement.getNbColonnesStock()) {
 								Debug("ERROR: Not enough place!");
 								Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
 								m_lieu.setEnabled(true);
@@ -1206,7 +1207,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
 		Debug("Quitting...");
 
-		RangementUtils.putTabStock();
+		if (!RangementUtils.putTabStock()) {
+			new OpenShowErrorsAction().actionPerformed(null);
+		}
 		m_colorList.setSelectedItem(BottleColor.NONE);
 		statusList.setSelectedItem(BottlesStatus.NONE);
 		setBeforeLabelsVisible(false);

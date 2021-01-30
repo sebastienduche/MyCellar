@@ -16,8 +16,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 27.2
- * @since 29/01/21
+ * @version 27.3
+ * @since 30/01/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -68,7 +68,7 @@ public class Rangement implements Comparable<Rangement> {
 		caisse = true;
 
 		storageCaisse = new HashMap<>(nb_emplacements);
-		for (int i = start_caisse; i < start_caisse+nb_emplacements; i++) {
+		for (int i = start_caisse; i < start_caisse + nb_emplacements; i++) {
 			storageCaisse.put(i, new ArrayList<>());
 		}
 	}
@@ -315,13 +315,11 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return int
 	 */
 	public int getNbCaseUse(int emplacement) {
-		
 		if (isCaisse()) {
 			return getNbCaseUseCaisse(emplacement + start_caisse);
 		}
 
 		int resul = 0;
-
 		try {
 			int nb_ligne = getNbLignes(emplacement);
 			for (int j = 0; j < nb_ligne; j++) {
@@ -774,6 +772,25 @@ public class Rangement implements Comparable<Rangement> {
 		setPlace(listPart);
 		Program.setListCaveModified();
 		Program.setModified();
+	}
+
+	/**
+	 * getNumberOfBottlesPerPlace: retourne le nombre de case utilisée par partie
+	 *
+	 * @return Map: le numero d'emplacement commence toujours à 0
+	 */
+	public Map<Integer, Integer> getNumberOfBottlesPerPlace() {
+		Map<Integer, Integer> numberOfBottlesPerPlace = new HashMap<>(nb_emplacements);
+		if (isCaisse()) {
+			for (int i = 0; i < nb_emplacements; i++) {
+				numberOfBottlesPerPlace.put(i, getNbCaseUseCaisse(i + start_caisse));
+			}
+		} else {
+			for (int i = 0; i < nb_emplacements; i++) {
+				numberOfBottlesPerPlace.put(i, getNbCaseUse(i));
+			}
+		}
+		return numberOfBottlesPerPlace;
 	}
 
 	@Override

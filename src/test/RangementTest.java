@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -570,6 +571,25 @@ class RangementTest {
     assertFalse(caisse.canAddBottle(b));
     assertFalse(caisse.hasFreeSpaceInCaisse(0));
     assertTrue(caisse.hasFreeSpaceInCaisse(1));
+  }
+
+  @Test
+  void getNumberOfBottlesPerPlace() {
+   Map<Integer, Integer> numberOfBottlesPerPlace = caisseLimit.getNumberOfBottlesPerPlace();
+    assertTrue(numberOfBottlesPerPlace.get(0) == 0);
+    assertTrue(numberOfBottlesPerPlace.get(1) == 0);
+    Bouteille b = new Bouteille();
+    b.setNom("B21");
+    b.setNumLieu(1);
+    caisseLimit.addWine(b);
+    numberOfBottlesPerPlace = caisseLimit.getNumberOfBottlesPerPlace();
+    assertTrue(numberOfBottlesPerPlace.get(0) == 1);
+    assertTrue(numberOfBottlesPerPlace.get(1) == 0);
+    b = new Bouteille();
+    b.setNom("B1");
+    updateToArmoire1x3x3(b, 1, 1);
+    numberOfBottlesPerPlace = armoire1x3x3.getNumberOfBottlesPerPlace();
+    assertTrue(numberOfBottlesPerPlace.get(0) == 1);
   }
 
   @Test

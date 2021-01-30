@@ -29,8 +29,8 @@ import static mycellar.Program.TEXT;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.4
- * @since 27/11/20
+ * @version 2.5
+ * @since 29/01/21
  */
 
 @XmlRootElement(name = "vignobles")
@@ -180,7 +180,7 @@ public class VignobleListJaxb
 		return Optional.empty();
 	}
 
-	public void addVignoble(final VignobleJaxb vignobleJaxb) {
+	public boolean addVignoble(final VignobleJaxb vignobleJaxb) {
 		Debug("Add Vignoble " + vignobleJaxb);
 		CountryVignobleJaxb vigne = new CountryVignobleJaxb();
 		vigne.setName(vignobleJaxb.getName());
@@ -189,7 +189,7 @@ public class VignobleListJaxb
 		appelationJaxb.setIGP(vignobleJaxb.getIGP());
 		if (vigne.getName().isBlank() && appelationJaxb.isEmpty()) {
 			Debug("Add Vignoble cancelled");
-			return;
+			return false;
 		}
 		LinkedList<AppelationJaxb> list = new LinkedList<>();
 		list.add(appelationJaxb);
@@ -198,6 +198,7 @@ public class VignobleListJaxb
 		CountryVignobleController.createVignobleInMap(vignobleJaxb);
 		Collections.sort(countryVignobleJaxbList);
 		Debug("Add vignoble Done");
+		return true;
 	}
 
 	public CountryVignobleJaxb addVignoble(final String name) {

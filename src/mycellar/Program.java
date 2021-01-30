@@ -112,14 +112,14 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.5
- * @since 30/12/20
+ * @version 24.6
+ * @since 28/01/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.9.1.9";
-	public static final int VERSION = 66;
+	public static final String INTERNAL_VERSION = "3.9.3.7";
+	public static final int VERSION = 67;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
@@ -617,7 +617,9 @@ public final class Program {
 	 * @param file File
 	 */
 	static void saveAs(File file) {
+		Debug("Program: -------------------");
 		Debug("Program: Saving all files...");
+		Debug("Program: -------------------");
 
 		saveGlobalProperties();
 
@@ -635,7 +637,9 @@ public final class Program {
 
 		modified = false;
 		listCaveModified = false;
+		Debug("Program: -------------------");
 		Debug("Program: Saving all files OK");
+		Debug("Program: -------------------");
 	}
 
 	public static void Debug(String sText) {
@@ -782,12 +786,14 @@ public final class Program {
 		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN2,""));
 		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN3,""));
 		list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN4,""));
+		Debug("Program: -------------------");
 		if (isNewFile) {
 			Debug("Program: openFile: Creating new file");
 		} else {
 			Debug("Program: openFile: Opening file: " + file.getAbsolutePath());
 			list.remove(file.getAbsolutePath());
 		}
+		Debug("Program: -------------------");
 
 		// Sauvegarde avant de charger le nouveau fichier
 		closeFile();
@@ -855,6 +861,9 @@ public final class Program {
 		saveGlobalProperties();
 		modified = false;
 		listCaveModified = false;
+		Debug("Program: ----------------");
+		Debug("Program: Open a File Done");
+		Debug("Program: ----------------");
 	}
 
 	/**
@@ -1789,7 +1798,7 @@ public final class Program {
 	}
 	
 	public static List<History> getHistory() {
-		return getStorage().getHistoryList().getHistory();
+		return Collections.unmodifiableList(getStorage().getHistoryList().getHistory());
 	}
 	
 //	private static DecimalFormat getDecimalFormat(final Locale locale) {

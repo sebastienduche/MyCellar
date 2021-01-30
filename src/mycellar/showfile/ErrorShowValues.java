@@ -19,8 +19,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 17/12/20
+ * @version 1.5
+ * @since 29/01/21
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -254,6 +254,8 @@ public class ErrorShowValues extends TableShowValues {
 						tmpNumEmpl--;
 						tmpCol--;
 						tmpLine--;
+					} else {
+						tmpNumEmpl -= rangement.getStartCaisse();
 					}
 					if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
 						Optional<Bouteille> bTemp = Optional.empty();

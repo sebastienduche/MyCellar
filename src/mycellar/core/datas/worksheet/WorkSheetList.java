@@ -40,8 +40,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 18/10/19
+ * @version 0.3
+ * @since 28/01/21
 
  *
  */
@@ -76,14 +76,18 @@ public class WorkSheetList {
   }
 
   public static boolean loadXML(File f) {
-    Debug("Loading XML File "+f.getAbsolutePath());
-    if(!f.exists())
+    Debug("Loading XML File " + f.getAbsolutePath());
+    if (!f.exists()) {
       return false;
+    }
     try {
       unMarshalXML(f);
       return true;
-    } catch (Exception e) {
+    } catch (FileNotFoundException | JAXBException e) {
       Debug("ERROR: Unable to Unmarshall JAXB File");
+      Program.showException(e, false);
+    } catch (RuntimeException e) {
+      Debug("ERROR: Unexpected Error");
       Program.showException(e, false);
     }
     Debug("Manual loading of the XML file");
@@ -140,6 +144,6 @@ public class WorkSheetList {
    * @param sText String
    */
   private static void Debug(String sText) {
-    Program.Debug("WorksheetList: " + sText );
+    Program.Debug("WorksheetList: " + sText);
   }
 }

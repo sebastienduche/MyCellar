@@ -44,6 +44,7 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,8 +57,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.8
- * @since 29/01/21
+ * @version 14.9
+ * @since 30/01/21
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -291,7 +292,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
 			final String nom = toCleanString(nom_obj.getText());
 			// Controle sur le nom
-			if(!MyCellarControl.ctrlName(nom)) {
+			if (!MyCellarControl.ctrlName(nom)) {
 				return;
 			}
 
@@ -305,9 +306,11 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 				int nbPart = nb_parties.getIntValue();
 
 				if (rangement.getNbEmplacements() > nbPart) {
+					final Map<Integer, Integer> numberOfBottlesPerPlace = rangement.getNumberOfBottlesPerPlace();
+
 					// Controle que les emplacements supprimes sont vides
 					for (int i = nbPart; i < rangement.getNbEmplacements(); i++) {
-						if (rangement.getNbCaseUse(nbPart) > 0) {
+						if (numberOfBottlesPerPlace.get(i) > 0) {
 							Debug("ERROR: Unable to delete simple place part with bottles!");
 							Erreur.showSimpleErreur(MessageFormat.format(Program.getError("CreerRangement.CantDeletePartCaisse"), (i + rangement.getStartCaisse())));
 							return;
@@ -345,16 +348,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 						}
 					}
 				}
-				// Pas de bouteilles a modifier
 				nom_obj.setText("");
 				updatePlace(nom, nbPart, rangement);
-				label_cree.setText(Program.getError("Error123"));
 				updateView();
 				Program.updateAllPanels();
 				Debug("Modifications completed");
 				label_cree.setText(Program.getError("Error123")); //"Rangement modifie.");
 			}	else {
-				boolean bResul = true;
 				// Rangement complexe
 				Debug("Modifying complex place...");
 				int nbBottles = rangement.getNbCaseUseAll();
@@ -393,6 +393,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 							return;
 						}
 					}
+					boolean bResul = true;
 					for (int i = 0; i < listPart.size(); i++) {
 						if (!bResul) {
 							Debug("ERROR: bResul false, skipping part");
@@ -514,7 +515,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	}
 
 	/**
-	 * button1_actionPerformed: Boutton Creer
+	 * Boutton Creer
 	 */
 	private void create_actionPerformed() {
 		Debug("create_actionPerforming...");
@@ -548,12 +549,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 			}
 		}	else {
 			Debug("Creating complex place...");
-			for (Part p: listPart) {
+			for (Part p : listPart) {
 				if (p.getRows().isEmpty()) {
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrect sur la partie
 					bResul = false;
 				}
-				for (Row r: p.getRows()) {
+				for (Row r : p.getRows()) {
 					if (r.getCol() == 0) {
 						Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrect sur la partie
 						bResul = false;
@@ -681,11 +682,6 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		}
 	}
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	private static void Debug(String sText) {
 		Program.Debug("Creer_Rangement: " + sText);
 	}
@@ -753,7 +749,6 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		public void actionPerformed(ActionEvent e) {
 			create_actionPerformed();
 		}
-
 	}
 
 	class ModifyAction extends AbstractAction {
@@ -767,6 +762,5 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		public void actionPerformed(ActionEvent e) {
 			modifyPlace();
 		}
-
 	}
 }

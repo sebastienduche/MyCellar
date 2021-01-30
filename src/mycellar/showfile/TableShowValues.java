@@ -23,8 +23,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.4
- * @since 17/12/20
+ * @version 4.5
+ * @since 29/01/21
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -226,10 +226,14 @@ class TableShowValues extends AbstractTableModel {
           int tmpNumEmpl = num_empl;
           int tmpLine = line;
           int tmpCol = column1;
-          if (rangement != null && !rangement.isCaisse()) {
-            tmpNumEmpl--;
-            tmpCol--;
-            tmpLine--;
+          if (rangement != null) {
+            if (!rangement.isCaisse()) {
+              tmpNumEmpl--;
+              tmpCol--;
+              tmpLine--;
+            } else {
+              tmpNumEmpl -= rangement.getStartCaisse();
+            }
           }
           if (rangement != null && rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<Bouteille> bTemp = Optional.empty();

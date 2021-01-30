@@ -31,8 +31,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.9
- * @since 17/12/20
+ * @version 4.0
+ * @since 29/01/21
  */
 public abstract class MyCellarManageBottles extends JPanel {
 
@@ -486,7 +486,9 @@ public abstract class MyCellarManageBottles extends JPanel {
 		this.listenersEnabled = listenersEnabled;
 	}
 
-	protected static void Debug(String s) {}
+	protected static void Debug(String s) {
+		Program.Debug("MyCellarManageBottles: " + s);
+	}
 
 	protected abstract void lieu_itemStateChanged(ItemEvent e);
 

@@ -41,8 +41,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 17/12/20
+ * @version 1.3
+ * @since 28/01/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -101,12 +101,12 @@ public class HistoryList {
     return history;
   }
 
-  public void addLast(History history) {
-    getHistory().add(history);
+  public void add(History historyObj) {
+    getHistory().add(historyObj);
   }
 
-  public void remove(History history) {
-    getHistory().remove(history);
+  public void remove(History historyObj) {
+    getHistory().remove(historyObj);
   }
 
   public void clear() {
@@ -115,14 +115,17 @@ public class HistoryList {
 
   public static boolean loadXML(File f) {
     Debug("Loading XML File " + f.getAbsolutePath());
-    if(!f.exists()) {
+    if (!f.exists()) {
       return false;
     }
     try {
       unMarshalXML(f);
       return true;
-    } catch (Exception e) {
+    } catch (FileNotFoundException | JAXBException e) {
       Debug("ERROR: Unable to Unmarshall JAXB File");
+      Program.showException(e, false);
+    } catch (RuntimeException e) {
+      Debug("ERROR: Unexpected Error");
       Program.showException(e, false);
     }
     Debug("Manual loading of the XML file");

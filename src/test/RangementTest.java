@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -500,9 +501,11 @@ class RangementTest {
     caisse.addWine(b);
     assertFalse(caisse.canAddBottle(0, 0, 0));
     assertTrue(caisse.canAddBottle(1, 0, 0));
-    assertTrue(caisse.canAddBottle(b));
+    assertFalse(caisse.canAddBottle(b));
     b.setNumLieu(0);
     assertFalse(caisse.canAddBottle(b));
+    b.setNumLieu(2);
+    assertTrue(caisse.canAddBottle(b));
     LinkedList<Rangement> list = new LinkedList<>();
     list.add(armoire1x3x3);
     list.add(armoire1x3x3Builder);
@@ -539,15 +542,54 @@ class RangementTest {
   }
 
   @Test
+  void putTabStock() {
+    Rangement caisse = new Rangement.CaisseBuilder("caisse").nb_emplacement(2).start_caisse(1).limit(true).limite_caisse(2).build();
+    assertTrue(caisse.hasFreeSpaceInCaisse(0));
+    Bouteille b = new Bouteille();
+    b.setNom("B20");
+    b.setNumLieu(1);
+    caisse.addWine(b);
+    assertTrue(caisse.hasFreeSpaceInCaisse(0));
+    assertTrue(caisse.getNbCaseUse(0) == 1);
+    assertTrue(caisse.canAddBottle(0, 0, 0));
+    assertTrue(caisse.canAddBottle(1, 0, 0));
+    assertTrue(caisse.canAddBottle(b));
+    assertTrue(caisse.hasFreeSpaceInCaisse(b.getNumLieu() - caisse.getStartCaisse()));
+    b.setNumLieu(0);
+    assertFalse(caisse.canAddBottle(b));
+  }
+
+  @Test
   void hasFreeSpaceInCaisse() {
     Rangement caisse = new Rangement.CaisseBuilder("caisse").nb_emplacement(2).start_caisse(1).limit(true).limite_caisse(1).build();
     assertTrue(caisse.hasFreeSpaceInCaisse(1));
     Bouteille b = new Bouteille();
     b.setNom("B21");
     b.setNumLieu(1);
+    assertTrue(caisse.canAddBottle(b));
     caisse.addWine(b);
+    assertFalse(caisse.canAddBottle(b));
     assertFalse(caisse.hasFreeSpaceInCaisse(0));
     assertTrue(caisse.hasFreeSpaceInCaisse(1));
+  }
+
+  @Test
+  void getNumberOfBottlesPerPlace() {
+   Map<Integer, Integer> numberOfBottlesPerPlace = caisseLimit.getNumberOfBottlesPerPlace();
+    assertTrue(numberOfBottlesPerPlace.get(0) == 0);
+    assertTrue(numberOfBottlesPerPlace.get(1) == 0);
+    Bouteille b = new Bouteille();
+    b.setNom("B21");
+    b.setNumLieu(1);
+    caisseLimit.addWine(b);
+    numberOfBottlesPerPlace = caisseLimit.getNumberOfBottlesPerPlace();
+    assertTrue(numberOfBottlesPerPlace.get(0) == 1);
+    assertTrue(numberOfBottlesPerPlace.get(1) == 0);
+    b = new Bouteille();
+    b.setNom("B1");
+    updateToArmoire1x3x3(b, 1, 1);
+    numberOfBottlesPerPlace = armoire1x3x3.getNumberOfBottlesPerPlace();
+    assertTrue(numberOfBottlesPerPlace.get(0) == 1);
   }
 
   @Test

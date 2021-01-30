@@ -49,8 +49,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 30/12/20
+ * @version 3.2
+ * @since 29/01/21
  */
 public final class RangementUtils {
 
@@ -630,7 +630,7 @@ public final class RangementUtils {
 					rangement.updateToStock(bouteille);
 				} else {
 					// Caisse pleine
-					Debug("ERROR: simple place full for numplace: " + bouteille.getNom() + " numplace: " + bouteille.getNumLieu() + " for place " + bouteille.getEmplacement());
+					Debug("ERROR: simple place full for bottle: " + bouteille.getNom() + " numplace: " + bouteille.getNumLieu() + " for place " + bouteille.getEmplacement() + " ");
 					Program.addError(new MyCellarError(FULL_BOX, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 				}
 			} else {
@@ -656,8 +656,7 @@ public final class RangementUtils {
 		}
 		// Suppression des bouteilles posant probleme
 		for (var error : Program.getErrors()) {
-			Program.getStorage().deleteWine(error.getBottle());
-			Debug("Error putTabStock: "+error.getBottle());
+			Debug("Error putTabStock: " + error.getBottle());
 		}
 		Debug("putTabStock Done");
 		return Program.getErrors().isEmpty();

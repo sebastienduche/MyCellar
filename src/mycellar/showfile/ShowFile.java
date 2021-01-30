@@ -69,8 +69,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.7
- * @since 17/12/20
+ * @version 8.9
+ * @since 28/01/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -1051,9 +1051,10 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     @Override
     public void actionPerformed(ActionEvent e) {
       workingBottles.clear();
-      Program.setModified();
-      Program.getStorage().getWorksheetList().clear();
-      model.setBottles(workingBottles);
+      SwingUtilities.invokeLater(() -> {
+        Program.getStorage().clearWorksheet();
+        model.setBottles(workingBottles);
+      });
     }
   }
 
@@ -1067,6 +1068,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     @Override
     public void actionPerformed(ActionEvent e) {
       SwingUtilities.invokeLater(() -> {
+        getSelectedBouteilles().forEach(Program.getStorage()::removeFromWorksheet);
         workingBottles.removeAll(getSelectedBouteilles());
         Program.setModified();
         model.fireTableDataChanged();

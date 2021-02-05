@@ -3,9 +3,9 @@ package mycellar.showfile;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
-import mycellar.placesmanagement.Rangement;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
+import mycellar.placesmanagement.Rangement;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -19,8 +19,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 29/01/21
+ * @version 1.6
+ * @since 05/02/21
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -46,46 +46,28 @@ public class ErrorShowValues extends TableShowValues {
 
 	private List<MyCellarError> errors = new LinkedList<>();
 
-	/**
-	 * getRowCount
-	 *
-	 * @return int
-	 */
 	@Override
 	public int getRowCount() {
 		return errors.size();
 	}
 
-	/**
-	 * getColumnCount
-	 *
-	 * @return int
-	 */
 	@Override
 	public int getColumnCount() {
 		return NBCOL;
 	}
 
-	/**
-	 * getValueAt
-	 *
-	 * @param row int
-	 * @param column int
-	 * @return Object
-	 */
 	@Override
 	public Object getValueAt(int row, int column) {
-		if(errors.size() <= row) {
+		if (errors.size() <= row) {
 			return null;
 		}
 		MyCellarError error = errors.get(row);
 		Bouteille b = error.getBottle();
-		switch(column) {
+		switch (column) {
 			case ETAT:
 				return values[row];
 			case NAME:
-				String nom = b.getNom();
-				return Program.convertStringFromHTMLString(nom);
+				return Program.convertStringFromHTMLString(b.getNom());
 			case YEAR:
 				return b.getAnnee();
 			case TYPE:
@@ -99,7 +81,7 @@ public class ErrorShowValues extends TableShowValues {
 			case COLUMN:
 				return Integer.toString(b.getColonne());
 			case STATUS:
-				if(error.isStatus()) {
+				if (error.isStatus()) {
 					return Program.getLabel("ShowFile.Added");
 				}
 				return status[row] ? Program.getLabel("Main.OK") : Program.getLabel("Main.KO");
@@ -107,31 +89,19 @@ public class ErrorShowValues extends TableShowValues {
 				return true;
 			case ERROR:
 				return Program.convertStringFromHTMLString(error.getErrorMessage());
+			default:
+				return "";
 		}
-		return "";
 	}
 
-	/**
-	 * getColumnName
-	 *
-	 * @param column int
-	 * @return String
-	 */
 	@Override
 	public String getColumnName(int column) {
 		return columnNames[column];
 	}
 
-	/**
-	 * isCellEditable
-	 *
-	 * @param row int
-	 * @param column int
-	 * @return boolean
-	 */
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		if(Boolean.FALSE.equals(editable[row])) {
+		if (Boolean.FALSE.equals(editable[row])) {
 			return false;
 		}
 		if (column == ETAT 
@@ -149,13 +119,6 @@ public class ErrorShowValues extends TableShowValues {
 		return false;
 	}
 
-	/**
-	 * setValueAt
-	 *
-	 * @param value Object
-	 * @param row int
-	 * @param column int
-	 */
 	@Override
 	public void setValueAt(Object value, int row, int column) {
 
@@ -168,7 +131,7 @@ public class ErrorShowValues extends TableShowValues {
 			break;
 		case BUTTON:
 			rangement = b.getRangement();
-			if(rangement != null && rangement.canAddBottle(b)) {
+			if (rangement != null && rangement.canAddBottle(b)) {
 				error.setSolved(true);
 				Program.getStorage().addWine(b);
 				editable[row] = Boolean.FALSE;
@@ -186,9 +149,9 @@ public class ErrorShowValues extends TableShowValues {
 			b.setType((String)value);
 			break;
 		case YEAR:
-			if( Program.hasYearControl() && !Bouteille.isValidYear( (String) value) )
+			if (Program.hasYearControl() && !Bouteille.isValidYear((String) value)) {
 				Erreur.showSimpleErreur(Program.getError("Error053"));
-			else{
+			} else {
 				b.setAnnee((String)value);	
 			}
 			break;
@@ -298,12 +261,7 @@ public class ErrorShowValues extends TableShowValues {
 		}
 	}
 
-	/**
-	 * setErrors: Ajout des erreurs.
-	 *
-	 * @param b LinkedList<MyCellarError>
-	 */
-	public void setErrors(LinkedList<MyCellarError> b) {
+	public void setErrors(List<MyCellarError> b) {
 		values = new Boolean[b.size()];
 		status = new Boolean[b.size()];
 		editable = new Boolean[b.size()];

@@ -112,13 +112,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.6
- * @since 28/01/21
+ * @version 24.7
+ * @since 05/02/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.9.3.7";
+	public static final String INTERNAL_VERSION = "3.9.4.0";
 	public static final int VERSION = 67;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -144,9 +144,9 @@ public final class Program {
 	private static FileWriter oDebugFile = null;
 	private static File debugFile = null;
 
-	private static final LinkedList<Rangement> PLACES = new LinkedList<>();
-	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
-	private static final LinkedList<MyCellarError> ERRORS = new LinkedList<>();
+	private static final List<Rangement> PLACES = new LinkedList<>();
+	private static final List<Bouteille> TRASH = new LinkedList<>();
+	private static final List<MyCellarError> ERRORS = new LinkedList<>();
 
 	static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").build();
 	public static final Rangement EMPTY_PLACE = new Rangement.CaisseBuilder("").build();
@@ -274,6 +274,18 @@ public final class Program {
 	}
 	private static String getGlobalConfigFilePath() {
 		return getGlobalDir() + CONFIG_INI;
+	}
+
+	public static List<Bouteille> getTrash() {
+		return TRASH;
+	}
+
+	public static void setToTrash(Bouteille b) {
+		TRASH.add(b);
+	}
+
+	public static List<MyCellarError> getErrors() {
+		return ERRORS;
 	}
 
 	private static void loadProperties() throws UnableToOpenFileException {
@@ -467,6 +479,7 @@ public final class Program {
 				stringBuilder.append(toCleanString(scanner.nextLine())).append("\n");
 			}
 		} catch (FileNotFoundException e) {
+			Debug("Program: ERROR Unable to send file to GitHub: " + e.getMessage());
 			return;
 		}
 		try (var stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
@@ -485,18 +498,6 @@ public final class Program {
 		} catch (IOException | RuntimeException e) {
 			Debug("Program: ERROR while reading MyCellar.dat: " + e.getMessage());
 		}
-	}
-
-	public static LinkedList<Bouteille> getTrash() {
-		return TRASH;
-	}
-
-	public static void setToTrash(Bouteille b) {
-		TRASH.add(b);
-	}
-	
-	public static LinkedList<MyCellarError> getErrors() {
-		return ERRORS;
 	}
 
 	public static void addError(MyCellarError error) {
@@ -678,15 +679,9 @@ public final class Program {
 		
 	}
 
-	/**
-	 * GetCave
-	 *
-	 * @return LinkedList<Rangement>
-	 */
-	public static LinkedList<Rangement> getCave() {
+	public static List<Rangement> getCave() {
 		return PLACES;
 	}
-
 
 	/**
 	 * GetCave

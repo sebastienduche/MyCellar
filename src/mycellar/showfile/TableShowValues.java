@@ -3,10 +3,10 @@ package mycellar.showfile;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
-import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.Start;
 import mycellar.core.LabelProperty;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
@@ -23,8 +23,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.5
- * @since 29/01/21
+ * @version 4.6
+ * @since 05/02/21
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -51,24 +51,14 @@ class TableShowValues extends AbstractTableModel {
 
   List<Bouteille> monVector = new LinkedList<>();
 
-  /**
-   * getRowCount
-   *
-   * @return int
-   */
   @Override
   public int getRowCount() {
     return monVector.size();
   }
 
-  /**
-   * getColumnCount
-   *
-   * @return int
-   */
   @Override
   public int getColumnCount() {
-    return NBCOL;
+    return columnNames.length;
   }
 
   /**
@@ -112,36 +102,16 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  /**
-   * getColumnName
-   *
-   * @param column int
-   * @return String
-   */
   @Override
   public String getColumnName(int column) {
     return columnNames[column];
   }
 
-  /**
-   * isCellEditable
-   *
-   * @param row    int
-   * @param column int
-   * @return boolean
-   */
   @Override
   public boolean isCellEditable(int row, int column) {
     return ETAT == column;
   }
 
-  /**
-   * setValueAt
-   *
-   * @param value  Object
-   * @param row    int
-   * @param column int
-   */
   @Override
   public void setValueAt(Object value, int row, int column) {
     Bouteille b = monVector.get(row);
@@ -281,12 +251,7 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  /**
-   * setBottles: Ajout des bouteilles.
-   *
-   * @param b LinkedList<Bouteille>
-   */
-  public void setBottles(LinkedList<Bouteille> b) {
+  public void setBottles(List<Bouteille> b) {
     if (b == null) {
       return;
     }

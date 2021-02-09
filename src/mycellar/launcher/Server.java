@@ -34,8 +34,8 @@ import static mycellar.launcher.Server.Action.NONE;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 2.9
- * @since 27/01/21
+ * @version 3.0
+ * @since 09/02/21
  */
 
 public class Server implements Runnable {
@@ -84,13 +84,14 @@ public class Server implements Runnable {
 		}
 	}
 
-	private void downloadFromServer() {
+	private File downloadFromServer() {
 		action = NONE;
 		downloadError = false;
+		File downloadDirectory = null;
 		try {
-			File f = new File(DOWNLOAD_DIRECTORY);
-			if (!f.exists()) {
-				Files.createDirectory(f.toPath());
+			downloadDirectory = new File(DOWNLOAD_DIRECTORY);
+			if (!downloadDirectory.exists()) {
+				Files.createDirectory(downloadDirectory.toPath());
 			}
 
 			downloadError = downloadFromGitHub();
@@ -98,6 +99,7 @@ public class Server implements Runnable {
 			showException(e);
 			downloadError = true;
 		}
+		return downloadDirectory;
 	}
 
 	private void getVersionFromServer() {
@@ -150,12 +152,14 @@ public class Server implements Runnable {
 		}
 	}
 
-	public void downloadVersion() {
+	public File downloadVersion() {
 		Debug("Downloading version from GitHub...");
-		downloadFromServer();
+		File downloadDirectory = downloadFromServer();
 		if (downloadError) {
-			new File(DOWNLOAD_DIRECTORY).deleteOnExit();
+			downloadDirectory.deleteOnExit();
+			return null;
 		}
+		return downloadDirectory;
 	}
 
 	public String getAvailableVersion() {

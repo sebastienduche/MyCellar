@@ -112,13 +112,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.7
- * @since 05/02/21
+ * @version 24.8
+ * @since 09/02/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.9.4.0";
+	public static final String INTERNAL_VERSION = "3.9.4.3";
 	public static final int VERSION = 67;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -461,7 +461,7 @@ public final class Program {
 				e1.printStackTrace();
 			}
 			try {
-				sendErrorToGitHub(e.toString(), debugFile);
+				sendErrorToGitHub(e, debugFile);
 			} catch (IOException ignored) {
 			}
 			oDebugFile = null;
@@ -472,9 +472,9 @@ public final class Program {
 		}
 	}
 
-	private static void sendErrorToGitHub(String error, File filename) throws IOException {
+	private static void sendErrorToGitHub(Throwable exception, File file) throws IOException {
 		StringBuilder stringBuilder = new StringBuilder();
-		try (var scanner = new Scanner(filename)) {
+		try (var scanner = new Scanner(file)) {
 			while (scanner.hasNextLine()) {
 				stringBuilder.append(toCleanString(scanner.nextLine())).append("\n");
 			}
@@ -492,11 +492,11 @@ public final class Program {
 
 			final GitHub gitHub = GitHub.connect(values[0], values[1]);
 			final GHGistBuilder gist = gitHub.createGist();
-			gist.description(error)
+			gist.description(exception.toString())
 					.file("Debug.log", stringBuilder.toString())
 					.create();
 		} catch (IOException | RuntimeException e) {
-			Debug("Program: ERROR while reading MyCellar.dat: " + e.getMessage());
+			Debug("Program: ERROR while creating a Gist: " + e.getMessage());
 		}
 	}
 

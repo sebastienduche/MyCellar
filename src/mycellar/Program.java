@@ -112,13 +112,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.8
- * @since 09/02/21
+ * @version 24.9
+ * @since 11/02/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.9.4.3";
+	public static final String INTERNAL_VERSION = "3.9.5.1";
 	public static final int VERSION = 67;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -461,7 +461,7 @@ public final class Program {
 				e1.printStackTrace();
 			}
 			try {
-				sendErrorToGitHub(e, debugFile);
+				sendErrorToGitHub(e.toString(), debugFile);
 			} catch (IOException ignored) {
 			}
 			oDebugFile = null;
@@ -472,7 +472,7 @@ public final class Program {
 		}
 	}
 
-	private static void sendErrorToGitHub(Throwable exception, File file) throws IOException {
+	private static void sendErrorToGitHub(String title, File file) throws IOException {
 		StringBuilder stringBuilder = new StringBuilder();
 		try (var scanner = new Scanner(file)) {
 			while (scanner.hasNextLine()) {
@@ -492,7 +492,7 @@ public final class Program {
 
 			final GitHub gitHub = GitHub.connect(values[0], values[1]);
 			final GHGistBuilder gist = gitHub.createGist();
-			gist.description(exception.toString())
+			gist.description(title)
 					.file("Debug.log", stringBuilder.toString())
 					.create();
 		} catch (IOException | RuntimeException e) {
@@ -625,7 +625,7 @@ public final class Program {
 		saveGlobalProperties();
 
 		if (isListCaveModified()) {
-			MyXmlDom.writeMyCellarXml(getCave(), "");
+			MyXmlDom.writeMyCellarXml(PLACES, "");
 		}
 
 		getStorage().saveHistory();
@@ -725,7 +725,7 @@ public final class Program {
 	 * @param rangement Rangement
 	 */
 	 public static void removeCave(Rangement rangement) {
-		if(rangement == null) {
+		if (rangement == null) {
 			return;
 		}
 		PLACES.remove(rangement);
@@ -733,11 +733,6 @@ public final class Program {
 		setListCaveModified();
 	}
 
-	/**
-	 * GetCaveLength
-	 *
-	 * @return int
-	 */
 	public static int getCaveLength() {
 		return PLACES.size();
 	}
@@ -824,13 +819,6 @@ public final class Program {
 			throw new UnableToOpenFileException("Error while reading objects.");
 		}
 
-		Debug("Program: Checking place count");
-		long i = getCave().stream().filter(Objects::nonNull).count();
-		if (i != getCaveLength()) {
-			Debug("Program: Place Count: Program=" + getCaveLength() + " cave=" + i);
-			throw new UnableToOpenFileException("Place Count: Program=" + getCaveLength() + " cave=" + i);
-		}
-
 		loadProperties();
 
 		MyCellarBottleContenance.load();
@@ -907,10 +895,10 @@ public final class Program {
 			}
 
 			if (isListCaveModified()) {
-				MyXmlDom.writeMyCellarXml(getCave(), "");
+				MyXmlDom.writeMyCellarXml(PLACES, "");
 			}
 
-			if (!getCave().isEmpty()) {
+			if (!PLACES.isEmpty()) {
 				getStorage().saveHistory();
 				getStorage().saveWorksheet();
 				CountryVignobleController.save();
@@ -948,9 +936,7 @@ public final class Program {
 		TRASH.clear();
 		modified = false;
 		listCaveModified = false;
-		if (getCave() != null) {
-			getCave().clear();
-		}
+		PLACES.clear();
 		DEFAULT_PLACE.resetStock();
 		EMPTY_PLACE.resetStock();
 		myCellarFile = null;

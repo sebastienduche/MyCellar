@@ -69,8 +69,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.9
- * @since 28/01/21
+ * @version 9.0
+ * @since 11/02/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -463,9 +463,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     add(deleteButton, "align right, wrap");
 
-    for (Rangement r : Program.getCave()) {
-      placeCbx.addItem(r.getNom());
-    }
+    Program.getCave().forEach(rangement -> placeCbx.addItem(rangement.getNom()));
 
     Arrays.stream(BottleColor.values()).forEach(colorCbx::addItem);
     Arrays.stream(BottlesStatus.values()).forEach(statusCbx::addItem);

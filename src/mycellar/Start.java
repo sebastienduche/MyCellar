@@ -67,8 +67,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.0
- * @since 27/01/21
+ * @version 28.1
+ * @since 11/02/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -317,7 +317,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			showFile.setEnabled(false);
 			showWorksheet.setEnabled(false);
 		} else if (Program.getCaveLength() == 0) {
-			Program.getCave().add(Program.DEFAULT_PLACE);
+			Program.addCave(Program.DEFAULT_PLACE);
 		}
 		enableAll(true);
 	}

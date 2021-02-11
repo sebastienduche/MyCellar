@@ -34,8 +34,8 @@ import static mycellar.launcher.Server.Action.NONE;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 3.0
- * @since 09/02/21
+ * @version 3.1
+ * @since 11/02/21
  */
 
 public class Server implements Runnable {
@@ -75,7 +75,7 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 		if (GET_VERSION.equals(action)) {
-			getVersionFromServer();
+			checkVersion();
 		} else if (DOWNLOAD.equals(action)) {
 			downloadFromServer();
 		}
@@ -102,20 +102,6 @@ public class Server implements Runnable {
 		return downloadDirectory;
 	}
 
-	private void getVersionFromServer() {
-		serverVersion = "";
-		action = NONE;
-		try {
-			final File myCellarVersion = downloadMyCellarVersionTxt();
-			try (var in = new BufferedReader(new FileReader(myCellarVersion))) {
-				serverVersion = in.readLine();
-				availableVersion = in.readLine();
-			}
-		} catch (IOException e) {
-			showException(e);
-		}
-	}
-
 	private File downloadMyCellarVersionTxt() throws IOException {
 		final File myCellarVersion = File.createTempFile("MyCellarVersion", "txt");
 		myCellarVersion.deleteOnExit();
@@ -124,8 +110,10 @@ public class Server implements Runnable {
 	}
 
 	void checkVersion() {
-		Debug("Checking Version from GitHub...");
+		Debug("Checking version from GitHub...");
 		serverVersion = "";
+		action = NONE;
+		FILE_TYPES.clear();
 		try {
 			final File myCellarVersion = downloadMyCellarVersionTxt();
 			try (var bufferedReader = new BufferedReader(new FileReader(myCellarVersion))) {
@@ -140,7 +128,7 @@ public class Server implements Runnable {
 						file = split[0];
 						md5 = split[1];
 					}
-					Debug("sFile... " + file);
+					Debug("File... " + file);
 					boolean lib = (!file.contains(MY_CELLAR) && file.endsWith(".jar"));
 					FILE_TYPES.add(new FileType(file, md5, lib));
 					file = bufferedReader.readLine();

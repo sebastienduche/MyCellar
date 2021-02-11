@@ -25,8 +25,8 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 17/12/20
+ * @version 1.4
+ * @since 11/02/21
  */
 
 public class Predicates {
@@ -278,9 +278,7 @@ public class Predicates {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "grow", "[]"));
 			JComboBox<Rangement> liste = new JComboBox<>();
-			for (Rangement r : Program.getCave()) {
-				liste.addItem(r);
-			}
+			Program.getCave().forEach(liste::addItem);
 			panel.add(new JLabel(Program.getLabel("Predicates.SelectPlace")), "wrap");
 			panel.add(liste);
 			JOptionPane.showMessageDialog(null, panel,

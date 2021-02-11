@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 
 /**
@@ -21,8 +22,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 2.4
- * @since 17/12/20
+ * @version 2.5
+ * @since 11/02/21
  */
 
 final class MoveLine extends JDialog {
@@ -56,11 +57,7 @@ final class MoveLine extends JDialog {
 		MyCellarButton cancel = new MyCellarButton(Program.getLabel("Infos019"));
 
 		place_cbx.addItem(Program.EMPTY_PLACE);
-		for (Rangement r : Program.getCave()) {
-			if (!r.isCaisse()) {
-				place_cbx.addItem(r);
-			}
-		}
+		Program.getCave().stream().filter(Predicate.not(Rangement::isCaisse)).forEach(place_cbx::addItem);
 		num_place_cbx.setEnabled(false);
 		old_line_cbx.setEnabled(false);
 		new_line_cbx.setEnabled(false);

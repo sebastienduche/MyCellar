@@ -52,8 +52,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.6
- * @since 30/12/20
+ * @version 7.8
+ * @since 11/02/21
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
@@ -105,9 +105,8 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 			type_HTML.addActionListener(this::jradio_actionPerformed);
 			type_XLS.addActionListener(this::jradio_actionPerformed);
 
-			for (Rangement r : Program.getCave()) {
-				tv.addRangement(r);
-			}
+			Program.getCave().forEach(tv::addRangement);
+
 			JScrollPane jScrollPane = new JScrollPane(table);
 			end.setHorizontalAlignment(SwingConstants.CENTER);
 			end.setForeground(Color.red);
@@ -466,9 +465,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 	public void updateView() {
 		SwingUtilities.invokeLater(() -> {
 			tv.removeAll();
-			for (Rangement r : Program.getCave()) {
-				tv.addRangement(r);
-			}
+			Program.getCave().forEach(tv::addRangement);
 		});
 	}
 }

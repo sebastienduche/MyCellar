@@ -49,8 +49,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 29/01/21
+ * @version 3.3
+ * @since 11/02/21
  */
 public final class RangementUtils {
 
@@ -415,7 +415,7 @@ public final class RangementUtils {
 
 		Debug("write_XLSTab: writing file: " + file);
 		try (var workbook = new SXSSFWorkbook(100);
-				 var output = new FileOutputStream(new File(file))) { //Creation du fichier
+				 var output = new FileOutputStream(file)) { //Creation du fichier
 			String title = Program.getCaveConfigString(MyCellarSettings.XLS_TAB_TITLE, "");
 			boolean onePlacePerSheet = Program.getCaveConfigBool(MyCellarSettings.ONE_PER_SHEET_XLS, false);
 
@@ -603,9 +603,7 @@ public final class RangementUtils {
 			}
 		}
 		Program.getErrors().clear();
-		for (Rangement rangement : Program.getCave()) {
-			rangement.resetStock();
-		}
+		Program.getCave().forEach(Rangement::resetStock);
 		
 		for (var bouteille : Program.getStorage().getAllList()) {
 			// On ignore les bouteilles qui sont dans le stock temporairement

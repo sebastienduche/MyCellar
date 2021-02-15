@@ -14,6 +14,7 @@ import mycellar.core.MyCellarMenuItem;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.UnableToOpenFileException;
+import mycellar.core.UnableToOpenMyCellarFileException;
 import mycellar.launcher.Server;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Rangement;
@@ -67,8 +68,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.1
- * @since 11/02/21
+ * @version 28.2
+ * @since 15/02/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -276,7 +277,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			Program.putGlobalConfigBool(MyCellarSettings.STARTUP, true);
 		}
 
-		// Parametrage
 		if (Program.hasFile()) {
 			loadFile();
 		} else {
@@ -291,7 +291,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * Permet de charger un fichier sans avoir a recharger la Frame
 	 */
 	private void loadFile() {
-
 		updateFrame(true);
 
 		// Contruction de la Frame
@@ -445,11 +444,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * Actions realises apres l'ouverture d'un fichier
 	 */
 	private void postOpenFile() {
-		try {
-			loadFile();
-		} catch (RuntimeException e) {
-			Program.showException(e);
-		}
+		loadFile();
 		Program.updateAllPanels();
 		updateMainPanel();
 		Program.PANEL_INFOS.setEnable(true);
@@ -465,15 +460,14 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	/**
 	 * Ouverture d'un fichier
 	 *
-	 * @param sFile
+	 * @param file
 	 */
-	private void reOpenFile(String sFile) {
+	private void reOpenFile(String file) {
 		try {
 			enableAll(false);
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			if (!sFile.isEmpty()) {
-				Program.openaFile(new File(sFile));
-				postOpenFile();
+			if (!file.isEmpty()) {
+				openFile(file);
 			} else {
 				enableAll(false);
 				Program.updateAllPanels();
@@ -481,11 +475,18 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				setTitle(Program.getLabel("Infos001"));
 			}
 		} catch (UnableToOpenFileException e) {
-			Erreur.showSimpleErreur(Program.getError("Error.LoadingFile"));
+			if (!(e instanceof UnableToOpenMyCellarFileException)) {
+				Erreur.showSimpleErreur(Program.getError("Error.LoadingFile"));
+			}
 			Program.showException(e, false);
 		} finally {
 			setCursor(Cursor.getDefaultCursor());
 		}
+	}
+
+	private void openFile(String file) throws UnableToOpenFileException {
+		Program.openaFile(new File(file));
+		postOpenFile();
 	}
 
 	/**
@@ -1154,10 +1155,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 						setTitle(Program.getLabel("Infos001"));
 						return;
 					}
-					String fic = file.getAbsolutePath();
-					fic = MyCellarControl.controlAndUpdateExtension(fic, Filtre.FILTRE_SINFO);
-					Program.openaFile(new File(fic));
-					postOpenFile();
+					String fic = MyCellarControl.controlAndUpdateExtension(file.getAbsolutePath(), Filtre.FILTRE_SINFO);
+					openFile(fic);
 				}
 			} catch (UnableToOpenFileException e) {
 				Erreur.showSimpleErreur(Program.getError("Error.LoadingFile"));

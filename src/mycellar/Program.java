@@ -16,6 +16,7 @@ import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.UnableToOpenFileException;
+import mycellar.core.UnableToOpenMyCellarFileException;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
@@ -112,13 +113,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.9
- * @since 11/02/21
+ * @version 25.0
+ * @since 15/02/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.9.5.1";
+	public static final String INTERNAL_VERSION = "3.9.5.5";
 	public static final int VERSION = 67;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -804,7 +805,7 @@ public final class Program {
 			// On a deja enleve un element de la liste
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN4, "");
 			saveGlobalProperties();
-			throw new UnableToOpenFileException("File not found: " + file.getAbsolutePath());
+			throw new UnableToOpenMyCellarFileException("File not found: " + file.getAbsolutePath());
 		}
 
 		myCellarFile = new MyCellarFile(file);

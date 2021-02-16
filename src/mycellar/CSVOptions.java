@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -23,8 +24,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 01/11/19
+ * @version 2.3
+ * @since 16/02/21
  */
 final class CSVOptions extends JDialog {
 	private final MyCellarCheckBox[] export;
@@ -58,20 +59,20 @@ final class CSVOptions extends JDialog {
 		panel.setBorder(BorderFactory.createEtchedBorder());
 		panel.setLayout(new MigLayout("","grow",""));
 		panel.setFont(Program.FONT_PANEL);
-		MyCellarLabel info_separator = new MyCellarLabel(Program.getLabel("Infos034") + ":"); //Séparateur
+		MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO, "034"); //Séparateur
 		listColumns = MyCellarFields.getFieldsList();
 		nb_colonnes = listColumns.size();
-		final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
 		export = new MyCellarCheckBox[nb_colonnes];
+		final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
 		for (int i = 0; i < nb_colonnes; i++) {
-			export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
+			export[i] = new MyCellarCheckBox(LabelType.INFO, "261");
 			export[i].setSelected(Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0) == 1);
 			colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
 		}
 		JPanel jPanel2 = new JPanel();
 		jPanel2.setLayout(new MigLayout("","[grow][grow]",""));
 		jPanel2.setFont(Program.FONT_PANEL);
-		MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
+		MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
 		separator.addItem(Program.getLabel("Infos002"));
 		separator.addItem(Program.getLabel("Infos042"));
 		separator.addItem(Program.getLabel("Infos043"));
@@ -92,7 +93,7 @@ final class CSVOptions extends JDialog {
 				break;
 		}
 		valider.addActionListener(this::valider_actionPerformed);
-		MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos055"));
+		MyCellarButton annuler = new MyCellarButton(LabelType.INFO, "055");
 		annuler.addActionListener((e) -> dispose());
 
 		add(info_separator, "split 2");
@@ -102,8 +103,8 @@ final class CSVOptions extends JDialog {
 		jScrollPane1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
 		add(jScrollPane1, "grow, gaptop 15px, wrap");
 		for (int i = 0; i < nb_colonnes; i++) {
-			jPanel2.add(colonnes[i],"grow");
-			jPanel2.add(export[i],"wrap");
+			jPanel2.add(colonnes[i], "grow");
+			jPanel2.add(export[i], "wrap");
 		}
 
 		add(valider, "gaptop 15px, split 2, center");
@@ -125,18 +126,18 @@ final class CSVOptions extends JDialog {
 		}
 		int separ_select = separator.getSelectedIndex();
 		switch (separ_select) {
-		case 0:
-			Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ",");
-			break;
-		case 1:
-			Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ";");
-			break;
-		case 2:
-			Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ":");
-			break;
-		case 3:
-			Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, "/");
-			break;
+			case 0:
+				Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ",");
+				break;
+			case 1:
+				Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ";");
+				break;
+			case 2:
+				Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ":");
+				break;
+			case 3:
+				Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, "/");
+				break;
 		}
 		dispose();
 	}

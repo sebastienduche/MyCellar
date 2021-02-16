@@ -78,14 +78,14 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 	public Creer_Tableaux() {
 		Debug("Constructor");
 		try {
-			final MyCellarLabel fileLabel = new MyCellarLabel(Program.getLabel("Infos095")); //"Nom du fichier genere:");
+			final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO, "095"); //"Nom du fichier genere:");
 			m_jcb_options.addActionListener(this::options_actionPerformed);
 			final MyCellarButton browse = new MyCellarButton("...");
 			browse.addActionListener(this::browse_actionPerformed);
-			final MyCellarButton parameter = new MyCellarButton(Program.getLabel("Main.Parameters"));
+			final MyCellarButton parameter = new MyCellarButton(LabelType.INFO_OTHER, "Main.Parameters");
 			parameter.addActionListener(this::param_actionPerformed);
-			final MyCellarLabel chooseLabel = new MyCellarLabel(Program.getLabel("Infos096")); //"Selectionner les rangements a generer:");
-			final MyCellarButton create = new MyCellarButton(Program.getLabel("Infos018")); //"Creer");
+			final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO, "096"); //"Selectionner les rangements a generer:");
+			final MyCellarButton create = new MyCellarButton(LabelType.INFO, "018"); //"Creer");
 			create.setMnemonic(creerChar);
 
 			final ButtonGroup buttonGroup = new ButtonGroup();
@@ -140,9 +140,9 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 					break;
 			}
 
-			setLayout(new MigLayout("","grow","[][][grow]"));
+			setLayout(new MigLayout("", "grow", "[][][grow]"));
 			final JPanel panelFile = new JPanel();
-			panelFile.setLayout(new MigLayout("","grow",""));
+			panelFile.setLayout(new MigLayout("", "grow", ""));
 			panelFile.add(fileLabel, "wrap");
 			panelFile.add(name, "grow, split 3");
 			panelFile.add(browse);

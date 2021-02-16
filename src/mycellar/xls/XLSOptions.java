@@ -2,12 +2,10 @@ package mycellar.xls;
 
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;
 
@@ -21,20 +19,28 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import static mycellar.core.LabelType.INFO;
+import static mycellar.core.LabelType.INFO_OTHER;
+import static mycellar.core.MyCellarSettings.BOLD_XLS;
+import static mycellar.core.MyCellarSettings.SIZE_COL;
+import static mycellar.core.MyCellarSettings.TEXT_SIZE_XLS;
+import static mycellar.core.MyCellarSettings.TITLE_SIZE_XLS;
+import static mycellar.core.MyCellarSettings.XLS_TITLE;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 05/07/20
+ * @version 2.1
+ * @since 16/02/21
  */
-final public class XLSOptions extends JDialog {
+public final class XLSOptions extends JDialog {
 
   private static final long serialVersionUID = 5307297932934344545L;
   private final MyCellarSpinner titleSize = new MyCellarSpinner(1, 999);
-  private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox(LabelType.INFO, "257");
+  private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox(INFO, "257");
   private final MyCellarCheckBox[] export;
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner textSize = new MyCellarSpinner(1, 999);
@@ -44,8 +50,8 @@ final public class XLSOptions extends JDialog {
    * XLSOptions: Constructeur pour la fenêtre d'options.
    */
   public XLSOptions() {
-	  setModal(true);
-	  setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    setModal(true);
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(Program.getLabel("Infos268"));
     addKeyListener(new KeyAdapter() {
       @Override
@@ -56,41 +62,41 @@ final public class XLSOptions extends JDialog {
       }
     });
 
-    setLayout(new MigLayout("","grow",""));
+    setLayout(new MigLayout("", "grow", ""));
 
     JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
-    jPanel1.setLayout(new MigLayout("","grow",""));
+    jPanel1.setLayout(new MigLayout("", "grow", ""));
     jPanel1.setFont(Program.FONT_PANEL);
-    pdf_title.setText(Program.getCaveConfigString(MyCellarSettings.XLS_TITLE, ""));
+    pdf_title.setText(Program.getCaveConfigString(XLS_TITLE, ""));
 
-    titleSize.setValue(Program.getCaveConfigInt(MyCellarSettings.TITLE_SIZE_XLS, 10));
-    textSize.setValue(Program.getCaveConfigInt(MyCellarSettings.TEXT_SIZE_XLS, 10));
+    titleSize.setValue(Program.getCaveConfigInt(TITLE_SIZE_XLS, 10));
+    textSize.setValue(Program.getCaveConfigInt(TEXT_SIZE_XLS, 10));
 
-    MyCellarCheckBox1.setSelected(Program.getCaveConfigBool(MyCellarSettings.BOLD_XLS, false));
+    MyCellarCheckBox1.setSelected(Program.getCaveConfigBool(BOLD_XLS, false));
     List<MyCellarFields> columns = MyCellarFields.getFieldsList();
     nb_colonnes = columns.size();
-    MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     export = new MyCellarCheckBox[nb_colonnes];
+    MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
-      export[i].setSelected(1 == Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT_XLS", 0));
+      export[i] = new MyCellarCheckBox(INFO, "261");
+      export[i].setSelected(1 == Program.getCaveConfigInt(SIZE_COL + i + "EXPORT_XLS", 0));
       colonnes[i] = new MyCellarLabel(columns.get(i).toString());
-     
+
     }
     JPanel jPanel2 = new JPanel();
-    jPanel2.setLayout(new MigLayout("","[grow][grow]",""));
+    jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));
     jPanel2.setFont(Program.FONT_PANEL);
-    MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
+    MyCellarButton valider = new MyCellarButton(INFO_OTHER, "Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos055"));
+    MyCellarButton annuler = new MyCellarButton(INFO, "055");
     annuler.addActionListener((e) -> dispose());
     MyCellarLabel MyCellarLabel6 = new MyCellarLabel("pt");
-    MyCellarLabel MyCellarLabel7 = new MyCellarLabel(Program.getLabel("Infos256")); //Taille du texte
+    MyCellarLabel MyCellarLabel7 = new MyCellarLabel(INFO, "256"); //Taille du texte
     MyCellarLabel MyCellarLabel8 = new MyCellarLabel("pt");
-    
-    MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("Infos270")); //Titre du XLS
-    MyCellarLabel MyCellarLabel3 = new MyCellarLabel(Program.getLabel("Infos256")); //Taille du texte
+
+    MyCellarLabel MyCellarLabel2 = new MyCellarLabel(INFO, "270"); //Titre du XLS
+    MyCellarLabel MyCellarLabel3 = new MyCellarLabel(INFO, "256"); //Taille du texte
     jPanel1.add(MyCellarLabel2, "split 2");
     jPanel1.add(pdf_title, "grow, wrap");
     jPanel1.add(MyCellarLabel3, "split 6");
@@ -121,16 +127,16 @@ final public class XLSOptions extends JDialog {
    */
   private void valider_actionPerformed(ActionEvent e) {
     try {
-      Program.putCaveConfigString(MyCellarSettings.XLS_TITLE, pdf_title.getText());
-      Program.putCaveConfigString(MyCellarSettings.TITLE_SIZE_XLS, titleSize.getValue().toString());
-      Program.putCaveConfigString(MyCellarSettings.TEXT_SIZE_XLS, textSize.getValue().toString());
-      Program.putCaveConfigBool(MyCellarSettings.BOLD_XLS, MyCellarCheckBox1.isSelected());
+      Program.putCaveConfigString(XLS_TITLE, pdf_title.getText());
+      Program.putCaveConfigString(TITLE_SIZE_XLS, titleSize.getValue().toString());
+      Program.putCaveConfigString(TEXT_SIZE_XLS, textSize.getValue().toString());
+      Program.putCaveConfigBool(BOLD_XLS, MyCellarCheckBox1.isSelected());
       for (int i = 0; i < nb_colonnes; i++) {
-        Program.putCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT_XLS", export[i].isSelected() ? 1 : 0);
+        Program.putCaveConfigInt(SIZE_COL + i + "EXPORT_XLS", export[i].isSelected() ? 1 : 0);
       }
       dispose();
     }
-    catch (Exception exc) {
+    catch (RuntimeException exc) {
       Program.showException(exc);
     }
   }

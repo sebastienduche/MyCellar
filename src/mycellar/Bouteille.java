@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.6
- * @since 17/12/20
+ * @version 5.7
+ * @since 18/02/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -580,8 +580,8 @@ public class Bouteille implements Serializable{
 			lastModifed = nodeLAstModified.item(0).getTextContent();
 		}
     NodeList nodeVigobleName = vignoble.getElementsByTagName("name");
-    String vignobleName, AOC, IGP, AOP;
-    vignobleName = AOC = AOP = IGP = "";
+    String vignobleName, AOC, IGP;
+    vignobleName = AOC = IGP = "";
     if (nodeVignoble.getLength() == 1) {
       vignobleName = nodeVigobleName.item(0).getTextContent();
       NodeList nodeAOC = vignoble.getElementsByTagName("AOC");

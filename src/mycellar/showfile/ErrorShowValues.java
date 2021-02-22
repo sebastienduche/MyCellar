@@ -19,8 +19,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.6
- * @since 05/02/21
+ * @version 1.7
+ * @since 22/02/21
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -104,11 +104,11 @@ public class ErrorShowValues extends TableShowValues {
 		if (Boolean.FALSE.equals(editable[row])) {
 			return false;
 		}
-		if (column == ETAT 
-				|| column == NAME 
-				|| column == TYPE 
-				|| column == YEAR 
-				|| column == PRICE 
+		if (column == ETAT
+				|| column == NAME
+				|| column == TYPE
+				|| column == YEAR
+				|| column == PRICE
 				|| column == PLACE
 				|| column == NUM_PLACE
 				|| column == LINE
@@ -126,93 +126,94 @@ public class ErrorShowValues extends TableShowValues {
 		Bouteille b = error.getBottle();
 		Rangement rangement;
 		switch (column) {
-		case ETAT:
-			values[row] = (Boolean)value;
-			break;
-		case BUTTON:
-			rangement = b.getRangement();
-			if (rangement != null && rangement.canAddBottle(b)) {
-				error.setSolved(true);
-				Program.getStorage().addWine(b);
-				editable[row] = Boolean.FALSE;
-				error.setStatus(true);
-				fireTableRowsUpdated(row, row);
-			} else {
-				status[row] = Boolean.FALSE;
-				Erreur.showSimpleErreur(Program.getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
-			}
-			break;
-		case NAME:
-			b.setNom((String)value);
-			break;
-		case TYPE:
-			b.setType((String)value);
-			break;
-		case YEAR:
-			if (Program.hasYearControl() && !Bouteille.isValidYear((String) value)) {
-				Erreur.showSimpleErreur(Program.getError("Error053"));
-			} else {
-				b.setAnnee((String)value);	
-			}
-			break;
-		case PLACE:
-		case NUM_PLACE:
-		case LINE:
-		case COLUMN: {
-			String empl_old = b.getEmplacement();
-			int num_empl_old = b.getNumLieu();
-			int line_old = b.getLigne();
-			int column_old = b.getColonne();
-			rangement = Program.getCave(empl_old);
-			boolean bError = false;
-			int nValueToCheck = -1;
-			String empl = empl_old;
-			int num_empl = num_empl_old;
-			int line = line_old;
-			int column1 = column_old;
+			case ETAT:
+				values[row] = (Boolean)value;
+				break;
+			case BUTTON:
+				rangement = b.getRangement();
+				if (rangement != null && rangement.canAddBottle(b)) {
+					error.setSolved(true);
+					Program.getStorage().addWine(b);
+					editable[row] = Boolean.FALSE;
+					error.setStatus(true);
+					fireTableRowsUpdated(row, row);
+				} else {
+					status[row] = Boolean.FALSE;
+					Erreur.showSimpleErreur(Program.getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
+				}
+				break;
+			case NAME:
+				b.setNom((String)value);
+				break;
+			case TYPE:
+				b.setType((String)value);
+				break;
+			case YEAR:
+				if (Program.hasYearControl() && !Bouteille.isValidYear((String) value)) {
+					Erreur.showSimpleErreur(Program.getError("Error053"));
+				} else {
+					b.setAnnee((String)value);
+				}
+				break;
+			case PLACE:
+			case NUM_PLACE:
+			case LINE:
+			case COLUMN: {
+				String empl_old = b.getEmplacement();
+				int num_empl_old = b.getNumLieu();
+				int line_old = b.getLigne();
+				int column_old = b.getColonne();
+				rangement = b.getRangement();
+				boolean bError = false;
+				int nValueToCheck = -1;
+				String empl = empl_old;
+				int num_empl = num_empl_old;
+				int line = line_old;
+				int column1 = column_old;
 
-			if (column == PLACE) {
-				empl = (String)value; 
-				rangement = Program.getCave(empl);
-			} else if (column == NUM_PLACE) {
-				try {
-					num_empl = Integer.parseInt((String)value);
-					nValueToCheck = num_empl;
-				} catch (NumberFormatException e) {
-					Erreur.showSimpleErreur(Program.getError("Error196"));
-					bError = true;
+				if (column == PLACE) {
+					empl = (String) value;
+					if (Program.isExistingPlace(empl)) {
+						rangement = Program.getCave(empl);
+					}
+				} else if (column == NUM_PLACE) {
+					try {
+						num_empl = Integer.parseInt((String)value);
+						nValueToCheck = num_empl;
+					} catch (NumberFormatException e) {
+						Erreur.showSimpleErreur(Program.getError("Error196"));
+						bError = true;
+					}
+				} else if (column == LINE) {
+					try {
+						line = Integer.parseInt((String)value);
+						nValueToCheck = line;
+					} catch (NumberFormatException e) {
+						Erreur.showSimpleErreur(Program.getError("Error196"));
+						bError = true;
+					}
+				} else {
+					try {
+						column1 = Integer.parseInt((String)value);
+						nValueToCheck = column1;
+					} catch (NumberFormatException e) {
+						Erreur.showSimpleErreur(Program.getError("Error196"));
+						bError = true;
+					}
 				}
-			} else if (column == LINE) {
-				try {
-					line = Integer.parseInt((String)value);
-					nValueToCheck = line;
-				} catch (NumberFormatException e) {
-					Erreur.showSimpleErreur(Program.getError("Error196"));
-					bError = true;
-				}
-			} else {
-				try {
-					column1 = Integer.parseInt((String)value);
-					nValueToCheck = column1;
-				} catch (NumberFormatException e) {
-					Erreur.showSimpleErreur(Program.getError("Error196"));
-					bError = true;
-				}
-			}
 
-			if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
-				if (rangement != null && !rangement.isCaisse() && nValueToCheck <= 0) {
-					Erreur.showSimpleErreur(Program.getError("Error197"));
-					bError = true;
+				if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
+					if (!rangement.isCaisse() && nValueToCheck <= 0) {
+						Erreur.showSimpleErreur(Program.getError("Error197"));
+						bError = true;
+					}
 				}
-			}
 
-			if (!bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
-				// Controle de l'emplacement de la bouteille
-				int tmpNumEmpl = num_empl;
-				int tmpLine = line;
-				int tmpCol = column1;
-				if (rangement != null) {
+				if (!bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
+					// Controle de l'emplacement de la bouteille
+					int tmpNumEmpl = num_empl;
+					int tmpLine = line;
+					int tmpCol = column1;
 					if (!rangement.isCaisse()) {
 						tmpNumEmpl--;
 						tmpCol--;
@@ -252,28 +253,25 @@ public class ErrorShowValues extends TableShowValues {
 						status[row] = Boolean.FALSE;
 					}
 				}
-			} else {
-				status[row] = Boolean.FALSE;
+				fireTableRowsUpdated(row, row);
 			}
-			fireTableRowsUpdated(row, row);
-		}
-		break;
+			break;
 		}
 	}
 
-	public void setErrors(List<MyCellarError> b) {
-		values = new Boolean[b.size()];
-		status = new Boolean[b.size()];
-		editable = new Boolean[b.size()];
-		errors = b;
-		for (int i = 0; i < b.size(); i++) {
+	public void setErrors(List<MyCellarError> myCellarErrors) {
+		values = new Boolean[myCellarErrors.size()];
+		status = new Boolean[myCellarErrors.size()];
+		editable = new Boolean[myCellarErrors.size()];
+		errors = myCellarErrors;
+		for (int i = 0; i < myCellarErrors.size(); i++) {
 			values[i] = Boolean.FALSE;
 			status[i] = Boolean.FALSE;
 			editable[i] = Boolean.TRUE;
 		}
 		fireTableDataChanged();
 	}
-	
+
 	@Override
 	public Bouteille getBottle(int i) {
 		return errors.get(i).getBottle();

@@ -113,13 +113,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.0
- * @since 15/02/21
+ * @version 25.1
+ * @since 22/02/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.9.6.8";
+	public static final String INTERNAL_VERSION = "3.9.7.9";
 	public static final int VERSION = 68;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -684,6 +684,15 @@ public final class Program {
 		return PLACES;
 	}
 
+	public static boolean isExistingPlace(final String name) {
+		if (name == null || name.strip().isEmpty()) {
+			return false;
+		}
+
+		final String placeName = name.strip();
+		return PLACES.stream().anyMatch(rangement -> rangement.getNom().equals(placeName));
+	}
+
 	/**
 	 * GetCave
 	 *
@@ -691,16 +700,8 @@ public final class Program {
 	 * @return Rangement
 	 */
 	public static Rangement getCave(final String name) {
-		if (name == null || name.strip().isEmpty()) {
-			return null;
-		}
-
 		final String placeName = name.strip();
-		final List<Rangement> list = PLACES.stream().filter(rangement -> rangement.getNom().equals(placeName))
-				.collect(Collectors.toList());
-		if (list.isEmpty()) {
-			return null;
-		}
+		final List<Rangement> list = PLACES.stream().filter(rangement -> rangement.getNom().equals(placeName)).collect(Collectors.toList());
 		return list.get(0);
 	}
 	
@@ -710,7 +711,7 @@ public final class Program {
 	 * @param rangement Rangement
 	 */
 	public static void addCave(Rangement rangement) {
-		if(rangement == null) {
+		if (rangement == null) {
 			return;
 		}
 		PLACES.add(rangement);

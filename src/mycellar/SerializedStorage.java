@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.5
- * @since 28/01/21
+ * @version 6.6
+ * @since 22/02/21
  */
 
 public class SerializedStorage implements Storage {
@@ -154,13 +154,13 @@ public class SerializedStorage implements Storage {
 				sValue = "";
 		}
 
-		if( JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+		if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 			return;
 		}
 
 		Program.setModified();
 		historyModified = true;
-		if(historyState == HistoryState.ALL) {
+		if (historyState == HistoryState.ALL) {
 			HISTORY_LIST.clear();
 			return;
 		}
@@ -187,7 +187,7 @@ public class SerializedStorage implements Storage {
 		final int colonne = bottle.getColonne();
 
 		Debug("DeleteWine: Trying deleting bottle " + nom.strip() + " " + annee + " " + emplacement.strip() + " " + numLieu + " " + ligne + " " + colonne);
-		Rangement rangement = Program.getCave(emplacement);
+		Rangement rangement = bottle.getRangement();
 		boolean isCaisse = rangement == null || rangement.isCaisse();
 		final List<Bouteille> resultBouteilles = listBouteilles.getBouteille().stream().filter(
 				bouteille -> emplacement.equals(bouteille.getEmplacement())

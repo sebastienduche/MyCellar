@@ -11,8 +11,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 27/11/20
+ * @version 1.7
+ * @since 22/02/21
  */
 
 public final class MyCellarControl {
@@ -44,7 +44,7 @@ public final class MyCellarControl {
   }
 
   static boolean hasInvalidNumLieuNumber(int lieu_num, boolean isCaisse) {
-    if(lieu_num == 0) {
+    if (lieu_num == 0) {
       Debug("ERROR: Wrong Num Place");
       if (!isCaisse) {
         Erreur.showSimpleErreur(Program.getError("Error056"));
@@ -140,13 +140,13 @@ public final class MyCellarControl {
   /**
    * ctrl_existingName Controle si le nom renseigne est deja utilise
    *
-   * @param _sName String
+   * @param name String
    * @return boolean
    */
-  public static boolean ctrl_existingName(String _sName) {
+  public static boolean ctrl_existingName(String name) {
 
-    Debug("Controling existing name...");
-    if (Program.getCave(_sName.strip()) != null) {
+    Debug("Controlling existing name...");
+    if (Program.isExistingPlace(name)) {
       Debug("ERROR: Name already use!");
       Erreur.showSimpleErreur(Program.getError("Error037"));//Le nom est d&eacute;j&agrave; utilis&eacute;
       return false;
@@ -175,7 +175,7 @@ public final class MyCellarControl {
    */
   public static String controlAndUpdateExtension(final String name, final String extension) {
 
-    Debug("Controling extension...");
+    Debug("Controlling extension...");
     if (name == null) {
       Debug("ERROR: name is null!");
       return "";
@@ -200,7 +200,7 @@ public final class MyCellarControl {
    */
   static boolean hasInvalidExtension(final String name, final List<String> extensions) {
 
-    Debug("Controling extension...");
+    Debug("Controlling extension...");
     if (name == null) {
       Debug("ERROR: name is null!");
       return true;

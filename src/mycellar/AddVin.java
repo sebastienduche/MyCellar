@@ -55,8 +55,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.2
- * @since 18/02/21
+ * @version 27.3
+ * @since 22/02/21
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -68,7 +68,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 	private final MyCellarLabel m_avant3 = new MyCellarLabel(); // Pour la Modification 
 	private final MyCellarLabel m_avant4 = new MyCellarLabel(); // Pour la Modification 
 	private final MyCellarLabel m_avant5 = new MyCellarLabel(); // Pour la Modification
-	//private String m_sb_empl; //Pour la Modification
 	private int m_nb_num, m_nb_lig, m_nb_col; //Pour la Modification
 	private Rangement rangementInModif;
 	private ListVin m_lv;
@@ -695,7 +694,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 								Debug("Adding bottle...");
 								Program.getStorage().addHistory(HistoryState.ADD, tmp);
 								//Ajout des bouteilles
-								if (Program.getCave(tmp.getEmplacement()).addWine(tmp)) {
+								if (tmp.getRangement().addWine(tmp)) {
 									m_bbottle_add = true;
 									resetValues();
 									if (m_half.getItemCount() > 1) {
@@ -760,10 +759,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 									}
 									Debug("Adding multiple bottles in simple place...");
 									if (m_bmodify) {
-										Rangement r = Program.getCave(tmp.getEmplacement());
-										if (r != null) {
+										if (tmp.isInExistingPlace()) {
 											Debug("Delete from stock");
-											r.clearStock(tmp);
+											tmp.getRangement().clearStock(tmp);
 										}
 									}
 									//Ajout des bouteilles dans la caisse
@@ -822,7 +820,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 				if (m_bmulti) { //On ne peut pas deplacer plusieurs bouteilles vers une armoire
 					Debug("ERROR: Unable to move multiple bottles to a Complex place");
 					m_end.setText("");
-					String nomRangement = rangement != null ? rangement.getNom() : "";
+					String nomRangement = rangement.getNom();
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error104", PLURAL), nomRangement), Program.getError("Error105")); //"Veuillez selectionner un rangement de type caisse.");//Impossible de deplacer plusieurs bouteilles dans
 					enableAll(true);
 				}	else {

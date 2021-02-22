@@ -69,8 +69,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.0
- * @since 11/02/21
+ * @version 9.1
+ * @since 22/02/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -89,7 +89,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private final MyCellarButton reloadButton = new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.reloadErrors", new ReloadErrorsAction());
   private final MyCellarButton removeFromWorksheetButton = new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.removeFromWorksheet", new RemoveFromWorksheetAction());
   private final MyCellarButton clearWorksheetButton = new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.clearWorksheet", new ClearWorksheetAction());
-  private final MyCellarComboBox<String> placeCbx = new MyCellarComboBox<>();
+  private final MyCellarComboBox<Rangement> placeCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottleColor> colorCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottlesStatus> statusCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<String> typeCbx = new MyCellarComboBox<>();
@@ -463,7 +463,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     add(deleteButton, "align right, wrap");
 
-    Program.getCave().forEach(rangement -> placeCbx.addItem(rangement.getNom()));
+    Program.getCave().forEach(placeCbx::addItem);
 
     Arrays.stream(BottleColor.values()).forEach(colorCbx::addItem);
     Arrays.stream(BottlesStatus.values()).forEach(statusCbx::addItem);
@@ -682,8 +682,8 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           LinkedList<Bouteille> cantRestoreList = new LinkedList<>();
           for (Bouteille b : toRestoreList) {
             Program.getTrash().remove(b);
-            Rangement r = Program.getCave(b.getEmplacement());
-            if (r != null) {
+            if (b.isInExistingPlace()) {
+              Rangement r = b.getRangement();
               if (r.isCaisse()) {
                 Program.getStorage().addHistory(HistoryState.ADD, b);
                 Program.getStorage().addWine(b);
@@ -732,13 +732,13 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     int column = b.getColonne();
 
     if (field == MyCellarFields.PLACE) {
-      empl = (String) value;
-      rangement = Program.getCave(empl);
+      rangement = (Rangement) value;
+      empl = rangement.getNom();
     } else if (field == MyCellarFields.NUM_PLACE) {
       try {
         num_empl = Integer.parseInt((String) value);
         nValueToCheck = num_empl;
-      } catch (Exception e) {
+      } catch (NumberFormatException e) {
         Erreur.showSimpleErreur(Program.getError("Error196"));
         return;
       }
@@ -746,7 +746,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       try {
         line = Integer.parseInt((String) value);
         nValueToCheck = line;
-      } catch (Exception e) {
+      } catch (NumberFormatException e) {
         Erreur.showSimpleErreur(Program.getError("Error196"));
         return;
       }
@@ -754,7 +754,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       try {
         column = Integer.parseInt((String) value);
         nValueToCheck = column;
-      } catch (Exception e) {
+      } catch (NumberFormatException e) {
         Erreur.showSimpleErreur(Program.getError("Error196"));
         return;
       }
@@ -783,7 +783,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
         } else {
           if (field == MyCellarFields.PLACE) {
-            b.setEmplacement((String) value);
+            b.setEmplacement(((Rangement) value).getNom());
           } else if (field == MyCellarFields.NUM_PLACE) {
             b.setNumLieu(Integer.parseInt((String) value));
           } else if (field == MyCellarFields.LINE) {
@@ -831,7 +831,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     updateView = false;
     placeCbx.removeAllItems();
-    Program.getCave().forEach(rangement -> placeCbx.addItem(rangement.getNom()));
+    Program.getCave().forEach(placeCbx::addItem);
 
     typeCbx.removeAllItems();
     typeCbx.addItem("");
@@ -866,7 +866,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         tc = tcm.getColumn(i);
         if (column.getField().equals(MyCellarFields.PLACE)) {
           tc.setCellEditor(new DefaultCellEditor(placeCbx));
-        } else if (column.getField().equals(MyCellarFields.PLACE)) {
+        } else if (column.getField().equals(MyCellarFields.TYPE)) {
           tc.setCellEditor(new DefaultCellEditor(typeCbx));
         } else if (column.getField().equals(MyCellarFields.COLOR)) {
           tc.setCellEditor(new DefaultCellEditor(colorCbx));
@@ -987,10 +987,8 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
       try {
         LinkedList<Bouteille> bottles = getSelectedBouteilles();
-
         if (bottles.isEmpty()) {
           //"Aucun vin a modifier!");
           //"Veuillez selectionner les vins a modifier.");

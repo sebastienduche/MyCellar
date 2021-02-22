@@ -23,8 +23,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.6
- * @since 05/02/21
+ * @version 4.7
+ * @since 22/02/21
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -42,7 +42,6 @@ class TableShowValues extends AbstractTableModel {
   private static final int COMMENT = 9;
   private static final int MATURITY = 10;
   private static final int PARKER = 11;
-  private static final int NBCOL = 12;
   private final String[] columnNames = {"", Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
       Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("Infos135"), Program.getLabel("Infos137"),
       Program.getLabel("Infos391"), Program.getLabel("Infos392")};
@@ -61,13 +60,6 @@ class TableShowValues extends AbstractTableModel {
     return columnNames.length;
   }
 
-  /**
-   * getValueAt
-   *
-   * @param row    int
-   * @param column int
-   * @return Object
-   */
   @Override
   public Object getValueAt(int row, int column) {
     Bouteille b = monVector.get(row);
@@ -157,7 +149,9 @@ class TableShowValues extends AbstractTableModel {
         String empl = b.getEmplacement();
         if (column == PLACE) {
           empl = (String) value;
-          rangement = Program.getCave(empl);
+          if (Program.isExistingPlace(empl)) {
+            rangement = Program.getCave(empl);
+          }
         } else if (column == NUM_PLACE) {
           try {
             num_empl = Integer.parseInt((String) value);
@@ -185,7 +179,7 @@ class TableShowValues extends AbstractTableModel {
         }
 
         if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
-          if (rangement != null && !rangement.isCaisse() && nValueToCheck <= 0) {
+          if (!rangement.isCaisse() && nValueToCheck <= 0) {
             Erreur.showSimpleErreur(Program.getError("Error197"));
             bError = true;
           }
@@ -196,16 +190,14 @@ class TableShowValues extends AbstractTableModel {
           int tmpNumEmpl = num_empl;
           int tmpLine = line;
           int tmpCol = column1;
-          if (rangement != null) {
-            if (!rangement.isCaisse()) {
-              tmpNumEmpl--;
-              tmpCol--;
-              tmpLine--;
-            } else {
-              tmpNumEmpl -= rangement.getStartCaisse();
-            }
+          if (!rangement.isCaisse()) {
+            tmpNumEmpl--;
+            tmpCol--;
+            tmpLine--;
+          } else {
+            tmpNumEmpl -= rangement.getStartCaisse();
           }
-          if (rangement != null && rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
+          if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<Bouteille> bTemp = Optional.empty();
             if (!rangement.isCaisse()) {
               bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
@@ -234,7 +226,7 @@ class TableShowValues extends AbstractTableModel {
               RangementUtils.putTabStock();
             }
           } else {
-            if (rangement != null && rangement.isCaisse()) {
+            if (rangement.isCaisse()) {
               Erreur.showSimpleErreur(Program.getError("Error154"));
             } else {
               if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getError("Error015"), JOptionPane.YES_NO_OPTION)) {

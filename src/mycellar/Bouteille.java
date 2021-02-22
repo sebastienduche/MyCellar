@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.7
- * @since 18/02/21
+ * @version 5.8
+ * @since 22/02/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -755,6 +755,10 @@ public class Bouteille implements Serializable{
 		 }
 		 return true;
 	 }
+
+	public boolean isInExistingPlace() {
+	 	return Program.isExistingPlace(emplacement);
+	}
 
 
 	public static class BouteilleBuilder {

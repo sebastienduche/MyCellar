@@ -11,8 +11,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 22/02/21
+ * @version 1.8
+ * @since 05/03/21
  */
 
 public final class MyCellarControl {
@@ -27,7 +27,7 @@ public final class MyCellarControl {
   }
 
   static boolean hasInvalidYear(String year) {
-    if (!Bouteille.isValidYear(year)) {
+    if (Bouteille.isInvalidYear(year)) {
       Debug("ERROR: Wrong date");
       Erreur.showSimpleErreur(Program.getError("Error053")); //"Veuillez saisir une ann&eacute;e valide!"
       return true;

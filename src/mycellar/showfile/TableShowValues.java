@@ -23,8 +23,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.7
- * @since 22/02/21
+ * @version 4.8
+ * @since 05/03/21
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -130,7 +130,7 @@ class TableShowValues extends AbstractTableModel {
         b.setComment(Program.convertStringFromHTMLString((String) value));
         break;
       case YEAR:
-        if (Program.hasYearControl() && !Bouteille.isValidYear((String) value)) {
+        if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
           Erreur.showSimpleErreur(Program.getError("Error053"));
         } else {
           b.setAnnee((String) value);

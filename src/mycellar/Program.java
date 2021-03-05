@@ -119,7 +119,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.9.7.9";
+	public static final String INTERNAL_VERSION = "3.9.8.4";
 	public static final int VERSION = 68;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -1783,26 +1783,6 @@ public final class Program {
 	public static List<History> getHistory() {
 		return Collections.unmodifiableList(getStorage().getHistoryList().getHistory());
 	}
-	
-//	private static DecimalFormat getDecimalFormat(final Locale locale) {
-//		final DecimalFormatSymbols dfs = new DecimalFormatSymbols();
-//
-//		if (Locale.UK.equals(locale) || Locale.US.equals(locale)) {
-//		  dfs.setGroupingSeparator(',');
-//		  dfs.setDecimalSeparator('.');
-//		} else {
-//		  dfs.setGroupingSeparator('.');
-//		  dfs.setDecimalSeparator(',');
-//		}
-
-		// format with grouping separator and decimal separator.
-		// always print first digit before comma, and two digits after comma.
-//		return new DecimalFormat("###0.00", dfs);
-//	  }
-	  
-//	public static String bigDecimalToString(final BigDecimal value, final Locale locale) {
-//    return getDecimalFormat(locale).format(value);
-//  }
 
 	public static BigDecimal safeStringToBigDecimal(final String value, BigDecimal defaultValue) {
 		try {

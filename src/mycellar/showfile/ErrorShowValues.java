@@ -108,7 +108,6 @@ public class ErrorShowValues extends TableShowValues {
 				|| column == NAME
 				|| column == TYPE
 				|| column == YEAR
-				|| column == PRICE
 				|| column == PLACE
 				|| column == NUM_PLACE
 				|| column == LINE
@@ -127,7 +126,7 @@ public class ErrorShowValues extends TableShowValues {
 		Rangement rangement;
 		switch (column) {
 			case ETAT:
-				values[row] = (Boolean)value;
+				values[row] = (Boolean) value;
 				break;
 			case BUTTON:
 				rangement = b.getRangement();
@@ -143,16 +142,16 @@ public class ErrorShowValues extends TableShowValues {
 				}
 				break;
 			case NAME:
-				b.setNom((String)value);
+				b.setNom((String) value);
 				break;
 			case TYPE:
-				b.setType((String)value);
+				b.setType((String) value);
 				break;
 			case YEAR:
-				if (Program.hasYearControl() && !Bouteille.isValidYear((String) value)) {
+				if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
 					Erreur.showSimpleErreur(Program.getError("Error053"));
 				} else {
-					b.setAnnee((String)value);
+					b.setAnnee((String) value);
 				}
 				break;
 			case PLACE:
@@ -178,7 +177,7 @@ public class ErrorShowValues extends TableShowValues {
 					}
 				} else if (column == NUM_PLACE) {
 					try {
-						num_empl = Integer.parseInt((String)value);
+						num_empl = Integer.parseInt((String) value);
 						nValueToCheck = num_empl;
 					} catch (NumberFormatException e) {
 						Erreur.showSimpleErreur(Program.getError("Error196"));
@@ -186,7 +185,7 @@ public class ErrorShowValues extends TableShowValues {
 					}
 				} else if (column == LINE) {
 					try {
-						line = Integer.parseInt((String)value);
+						line = Integer.parseInt((String) value);
 						nValueToCheck = line;
 					} catch (NumberFormatException e) {
 						Erreur.showSimpleErreur(Program.getError("Error196"));
@@ -194,7 +193,7 @@ public class ErrorShowValues extends TableShowValues {
 					}
 				} else {
 					try {
-						column1 = Integer.parseInt((String)value);
+						column1 = Integer.parseInt((String) value);
 						nValueToCheck = column1;
 					} catch (NumberFormatException e) {
 						Erreur.showSimpleErreur(Program.getError("Error196"));
@@ -232,20 +231,20 @@ public class ErrorShowValues extends TableShowValues {
 						} else {
 							if (column == PLACE) {
 								b.setEmplacement((String) value);
+								if (rangement.isCaisse()) {
+									int nNumEmpl = b.getNumLieu();
+									if (nNumEmpl > rangement.getLastNumEmplacement()) {
+										b.setNumLieu(rangement.getFreeNumPlaceInCaisse());
+									}
+									b.setLigne(0);
+									b.setColonne(0);
+								}
 							} else if (column == NUM_PLACE) {
 								b.setNumLieu(Integer.parseInt((String) value));
 							} else if (column == LINE) {
 								b.setLigne(Integer.parseInt((String) value));
-							} else if (column == COLUMN) {
+							} else {
 								b.setColonne(Integer.parseInt((String) value));
-							}
-							if (column == PLACE && rangement.isCaisse()) {
-								int nNumEmpl = b.getNumLieu();
-								if (nNumEmpl > rangement.getLastNumEmplacement()) {
-									b.setNumLieu(rangement.getFreeNumPlaceInCaisse());
-								}
-								b.setLigne(0);
-								b.setColonne(0);
 							}
 							status[row] = Boolean.TRUE;
 						}

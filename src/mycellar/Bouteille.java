@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.8
- * @since 22/02/21
+ * @version 5.9
+ * @since 05/03/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -330,24 +330,24 @@ public class Bouteille implements Serializable{
 		 }
 	 }
 
-	 public static boolean isValidYear(String year) {
+	 public static boolean isInvalidYear(String year) {
 		 year = year.strip();
 		 if (year.compareToIgnoreCase(NON_VINTAGE) == 0) {
-			 return true;
+			 return false;
 		 }
 		 if (!Program.hasYearControl()) {
-			 return true;
+			 return false;
 		 }
 		 int n;
 		 try {
 			 n = Integer.parseInt(year);
-		 } catch(NumberFormatException e) {
+		 } catch (NumberFormatException e) {
 			 Debug("ERROR: Unable to parse year '" + year + "'!");
-			 return false;
+			 return true;
 		 }
 
 		 int current_year = LocalDate.now().getYear();
-		 return year.length() != 4 || n <= current_year;
+		 return year.length() == 4 && n > current_year;
 	 }
 
 	 static boolean isNonVintageYear(String year) {

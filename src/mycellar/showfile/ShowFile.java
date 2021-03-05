@@ -69,8 +69,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.1
- * @since 22/02/21
+ * @version 9.2
+ * @since 05/03/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -159,7 +159,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       @Override
       void setValue(Bouteille b, Object value) {
-        if (Program.hasYearControl() && !Bouteille.isValidYear((String) value)) {
+        if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
           Erreur.showSimpleErreur(Program.getError("Error053"));
         } else {
           super.setValue(b, value);

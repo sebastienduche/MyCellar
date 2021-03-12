@@ -2,6 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.Program;
+import mycellar.core.datas.Place;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +17,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 27.3
- * @since 30/01/21
+ * @version 27.4
+ * @since 12/03/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -636,6 +637,10 @@ public class Rangement implements Comparable<Rangement> {
 			return false;
 		}
 		return !(_nCol < 0 || _nCol >= getNbColonnes(_nEmpl, _nLine));
+	}
+
+	public boolean canAddBottle(Place place) {
+		return canAddBottle(place.getPlaceNum() - 1, place.getLine() - 1, place.getColumn() - 1);
 	}
 	
 	/**

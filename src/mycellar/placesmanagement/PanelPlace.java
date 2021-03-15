@@ -39,7 +39,7 @@ public final class PanelPlace extends JPanel {
   protected final JModifyComboBox<String> line = new JModifyComboBox<>();
   protected final JModifyComboBox<String> column = new JModifyComboBox<>();
   protected final MyCellarLabel m_labelExist = new MyCellarLabel();
-  private final MyCellarLabel m_avant1 = new MyCellarLabel(); // Pour la Modification
+  private final MyCellarLabel m_avant1 = new MyCellarLabel(LabelType.INFO, "091"); // Pour la Modification
   private final MyCellarLabel m_avant2 = new MyCellarLabel(); // Pour la Modification
   private final MyCellarLabel m_avant3 = new MyCellarLabel(); // Pour la Modification
   private final MyCellarLabel m_avant4 = new MyCellarLabel(); // Pour la Modification
@@ -47,6 +47,7 @@ public final class PanelPlace extends JPanel {
   protected MyCellarButton m_chooseCell;
   protected final MyCellarButton m_preview = new MyCellarButton(LabelType.INFO, "138");
   private boolean listenersEnabled = true;
+  private Bouteille bottle;
 
   public PanelPlace(Rangement rangement) {
     this(rangement, false);
@@ -80,6 +81,7 @@ public final class PanelPlace extends JPanel {
     add(m_avant5, "hidemode 3");
     initPlaceCombo();
     setListeners();
+    setBeforeLabelsVisible(false);
     place.setSelectedItem(rangement);
   }
 
@@ -107,6 +109,93 @@ public final class PanelPlace extends JPanel {
       }
     }
 //    m_chooseCell.setEnabled(complex);
+  }
+
+  public void setBottle(Bouteille bottle) {
+    this.bottle = bottle;
+    m_avant2.setText(bottle.getEmplacement());
+    m_avant3.setText(Integer.toString(bottle.getNumLieu()));
+    m_avant4.setText(Integer.toString(bottle.getLigne()));
+    m_avant5.setText(Integer.toString(bottle.getColonne()));
+    setBeforeLabelsVisible(true);
+  }
+
+  public void removeBottle() {
+    bottle = null;
+    setBeforeLabelsVisible(false);
+  }
+
+  private void setBeforeLabelsVisible(boolean b) {
+    m_avant1.setVisible(b);
+    m_avant2.setVisible(b);
+    m_avant3.setVisible(b);
+    m_avant4.setVisible(b);
+    m_avant5.setVisible(b);
+  }
+
+  public void enableAll(boolean enable) {
+    place.setEnabled(enable);
+    numPlace.setEnabled(enable && place.getSelectedIndex() > 0);
+    line.setEnabled(enable && numPlace.getSelectedIndex() > 0);
+    column.setEnabled(enable && line.getSelectedIndex() > 0);
+    if (m_chooseCell != null) {
+      m_chooseCell.setEnabled(enable && Program.hasComplexPlace());
+    }
+  }
+
+  public void updateView() {
+    place.removeAllItems();
+    initPlaceCombo();
+  }
+
+  public void selectPlace(Bouteille bouteille) {
+    final Rangement rangement = bouteille.getRangement();
+    if (rangement != null) {
+      selectPlace(rangement, bouteille.getNumLieu(), bouteille.getLigne(), bouteille.getColonne());
+    }
+  }
+
+  public void selectPlace(Rangement rangement, int placeNum, int row, int col) {
+    setListenersEnabled(false);
+    for (int i=0; i<place.getItemCount(); i++) {
+      if (rangement.equals(place.getItemAt(i))){
+        place.setSelectedIndex(i);
+        break;
+      }
+    }
+    m_labelExist.setText("");
+
+    m_preview.setEnabled(true);
+    int nbEmpl = rangement.getNbEmplacements();
+    int nbLine = rangement.getNbLignes(placeNum);
+    int nbColumn = rangement.getNbColonnes(placeNum, row);
+    numPlace.removeAllItems();
+    column.removeAllItems();
+    line.removeAllItems();
+    numPlace.addItem("");
+    line.addItem("");
+    column.addItem("");
+    numPlace.setEnabled(true);
+    line.setEnabled(true);
+    column.setEnabled(true);
+    for (int i = 1; i <= nbEmpl; i++) {
+      numPlace.addItem(Integer.toString(i));
+    }
+    for (int i = 1; i <= nbLine; i++) {
+      line.addItem(Integer.toString(i));
+    }
+    for (int i = 1; i <= nbColumn; i++) {
+      column.addItem(Integer.toString(i));
+    }
+    numPlace.setSelectedIndex(placeNum + 1);
+    line.setSelectedIndex(row + 1);
+    column.setSelectedIndex(col + 1);
+    boolean simplePlace = rangement.isCaisse();
+    m_labelLine.setVisible(!simplePlace);
+    m_labelColumn.setVisible(!simplePlace);
+    line.setVisible(!simplePlace);
+    column.setVisible(!simplePlace);
+    setListenersEnabled(true);
   }
 
   protected void setListeners() {

@@ -2,7 +2,6 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.core.datas.Place;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,8 +16,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 27.4
- * @since 12/03/21
+ * @version 27.5
+ * @since 15/03/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -646,7 +645,7 @@ public class Rangement implements Comparable<Rangement> {
 	/**
 	 * Indique si le numero du lieu existe
 	 * 
-	 * @param numPlace Numero d'emplacement (0, n)
+	 * @param numPlace Numero d'emplacement (startCaisse, n)
 	 * @return
 	 */
 	boolean isInexistingNumPlace(int numPlace) {

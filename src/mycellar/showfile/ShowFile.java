@@ -26,7 +26,7 @@ import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.datas.MyCellarBottleContenance;
-import mycellar.core.datas.Place;
+import mycellar.placesmanagement.Place;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
@@ -71,8 +71,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.3
- * @since 12/03/21
+ * @version 9.4
+ * @since 15/03/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -764,19 +764,20 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
     Place place = null;
     if (field == MyCellarFields.PLACE) {
+      placeCbx.setSelectedIndex(0);
       if (!rangement.isCaisse()) {
-        final PanelPlace panelPlace = new PanelPlace(rangement);
+        final PanelPlace panelPlace = new PanelPlace(rangement, true);
         JOptionPane.showMessageDialog(Start.getInstance(), panelPlace,
             "",
             JOptionPane.PLAIN_MESSAGE);
         final Optional<Place> selectedPlace = panelPlace.getSelectedPlace();
         if (selectedPlace.isPresent()) {
           place = selectedPlace.get();
-          rangement = Program.getCave(place.getName());
-          empl = place.getName();
-          num_empl = place.getPlaceNum();
-          line = place.getLine();
-          column = place.getColumn();
+          rangement = place.getRangement();
+          empl = rangement.getNom();
+          num_empl = place.getPlaceNumIndex();
+          line = place.getLineIndex();
+          column = place.getColumnIndex();
         }
       }
     }
@@ -793,11 +794,11 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       if (rangement != null && (rangement.canAddBottle(num_empl, line, column) || (place != null && rangement.canAddBottle(place)))) {
         Optional<Bouteille> bTemp = Optional.empty();
         if (!rangement.isCaisse()) {
-          if (num_empl <= 0 || line <= 0 || column <= 0) {
+          if (num_empl < 0 || line < 0 || column < 0) {
             Erreur.showSimpleErreur(Program.getError("Error197"));
             return;
           }
-          bTemp = rangement.getBouteille(num_empl - 1, line - 1, column - 1);
+          bTemp = rangement.getBouteille(num_empl, line, column);
         }
         if (bTemp.isPresent()) {
           final Bouteille bouteille = bTemp.get();
@@ -806,9 +807,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           if (field == MyCellarFields.PLACE) {
             if (place != null) {
               b.setEmplacement(empl);
-              b.setNumLieu(num_empl);
-              b.setLigne(line);
-              b.setColonne(column);
+              b.setNumLieu(place.getPlaceNum());
+              b.setLigne(place.getLine());
+              b.setColonne(place.getColumn());
             } else {
               b.setEmplacement(((Rangement) value).getNom());
             }
@@ -886,7 +887,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       final int columnCount = tcm.getColumnCount();
       for (ShowFileColumn<?> column : columnsModel) {
         if (i >= columnCount) {
-          Debug("ERROR: i >= columnCount: Colum: " + column.getField().name() + " " + i + " >= " + columnCount);
+          Debug("ERROR: i >= columnCount: Column: " + column.getField().name() + " " + i + " >= " + columnCount);
           columnsModel.forEach(showFileColumn -> Debug(showFileColumn.getField().name()));
           i++;
           continue;

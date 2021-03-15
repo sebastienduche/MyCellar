@@ -6,10 +6,10 @@ import mycellar.core.JModifyComboBox;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
-import mycellar.core.datas.Place;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
@@ -25,8 +25,8 @@ import java.util.Optional;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 12/03/21
+ * @version 0.2
+ * @since 15/03/21
  */
 public final class PanelPlace extends JPanel {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -49,6 +49,10 @@ public final class PanelPlace extends JPanel {
   private boolean listenersEnabled = true;
 
   public PanelPlace(Rangement rangement) {
+    this(rangement, false);
+  }
+
+  public PanelPlace(Rangement rangement, boolean newLineForError) {
     setLayout(new MigLayout("","[]30px[]30px[]30px[]30px[grow]30px[]",""));
     setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
     add(m_labelPlace);
@@ -59,9 +63,16 @@ public final class PanelPlace extends JPanel {
     add(numPlace);
     add(line);
     add(column);
-    add(m_labelExist, "hidemode 3");
+    if (!newLineForError) {
+      add(m_labelExist, "hidemode 3");
+    } else {
+      add(new JLabel());
+    }
 //    add(m_chooseCell, "alignx right");
     add(m_preview, "alignx right, wrap");
+    if (newLineForError) {
+      add(m_labelExist, "hidemode 3, span 6, wrap");
+    }
     add(m_avant1, "hidemode 3,split 2");
     add(m_avant2, "hidemode 3");
     add(m_avant3, "hidemode 3");
@@ -79,10 +90,11 @@ public final class PanelPlace extends JPanel {
       return Optional.empty();
     }
 
-    if (rangement.isCaisse()) {
-      return Optional.of(new Place(rangement.getNom(), numPlace.getSelectedIndex()));
-    }
-    return Optional.of(new Place(rangement.getNom(), numPlace.getSelectedIndex(), line.getSelectedIndex(), column.getSelectedIndex()));
+    return new Place.PlaceBuilder(rangement)
+        .withNumPlace(numPlace.getSelectedIndex())
+        .withLine(line.getSelectedIndex())
+        .withColumn(column.getSelectedIndex())
+        .build();
   }
 
   protected void initPlaceCombo() {

@@ -9,6 +9,8 @@ import mycellar.MyXmlDom;
 import mycellar.Program;
 import mycellar.actions.ManageCapacityAction;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.placesmanagement.PanelPlace;
+import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
@@ -31,10 +33,10 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.0
- * @since 29/01/21
+ * @version 4.1
+ * @since 16/03/21
  */
-public abstract class MyCellarManageBottles extends JPanel {
+public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
 	private static final long serialVersionUID = 3056306291164598750L;
 	
@@ -63,6 +65,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	protected final JModifyComboBox<String> m_num_lieu = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_line = new JModifyComboBox<>();
 	protected final JModifyComboBox<String> m_column = new JModifyComboBox<>();
+	protected final PanelPlace panelPlace = new PanelPlace();
 	protected final MyCellarLabel m_labelExist = new MyCellarLabel();
 	protected MyCellarButton m_add;
 	protected MyCellarButton m_cancel;
@@ -189,6 +192,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 	}
 	
 	public void enableAll(boolean enable) {
+		panelPlace.enableAll(enable);
 		m_lieu.setEnabled(enable);
 		m_num_lieu.setEnabled(enable && m_lieu.getSelectedIndex() > 0);
 		m_line.setEnabled(enable && m_num_lieu.getSelectedIndex() > 0);
@@ -320,6 +324,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 			}
 			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 			panelVignobles.updateList();
+			panelPlace.updateView();
 			Debug("updateView Done");
 		});
 	}
@@ -362,13 +367,12 @@ public abstract class MyCellarManageBottles extends JPanel {
 	
 	/**
 	 * Select a place in the lists (used from CellarOrganizerPanel)
-	 * @param rangement
 	 * @param place
-	 * @param row
-	 * @param column
 	 */
-	public void selectPlace(Rangement rangement, int place, int row, int column) {
+	@Override
+	public void selectPlace(Place place) {
 		setListenersEnabled(false);
+		final Rangement rangement = place.getRangement();
 		for (int i=0; i<m_lieu.getItemCount(); i++) {
 			if (rangement.equals(m_lieu.getItemAt(i))){
 				m_lieu.setSelectedIndex(i);
@@ -379,8 +383,8 @@ public abstract class MyCellarManageBottles extends JPanel {
 
 		m_preview.setEnabled(true);
 		int nbEmpl = rangement.getNbEmplacements();
-		int nbLine = rangement.getNbLignes(place);
-		int nbColumn = rangement.getNbColonnes(place, row);
+		int nbLine = rangement.getNbLignes(place.getPlaceNumIndex());
+		int nbColumn = rangement.getNbColonnes(place.getPlaceNumIndex(), place.getLineIndex());
 		m_num_lieu.removeAllItems();
 		m_column.removeAllItems();
 		m_line.removeAllItems();
@@ -399,9 +403,9 @@ public abstract class MyCellarManageBottles extends JPanel {
 		for(int i = 1; i<= nbColumn; i++) {
 			m_column.addItem(Integer.toString(i));
 		}
-		m_num_lieu.setSelectedIndex(place+1);
-		m_line.setSelectedIndex(row+1);
-		m_column.setSelectedIndex(column+1);
+		m_num_lieu.setSelectedIndex(place.getPlaceNum());
+		m_line.setSelectedIndex(place.getLine());
+		m_column.setSelectedIndex(place.getColumn());
 		m_labelLine.setVisible(true);
 		m_labelColumn.setVisible(true);
 		m_line.setVisible(true);
@@ -475,6 +479,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 		m_lieu.setSelectedIndex(0);
 		m_labelExist.setText("");
 		m_nb_bottle.setValue(1);
+		panelPlace.clear();
 		panelVignobles.resetCountrySelected();
 	}
 	
@@ -484,6 +489,7 @@ public abstract class MyCellarManageBottles extends JPanel {
 
 	protected void setListenersEnabled(boolean listenersEnabled) {
 		this.listenersEnabled = listenersEnabled;
+		panelPlace.setListenersEnabled(listenersEnabled);
 	}
 
 	protected static void Debug(String s) {

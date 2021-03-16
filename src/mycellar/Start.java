@@ -3,7 +3,7 @@ package mycellar;
 import mycellar.actions.ExportPDFAction;
 import mycellar.actions.OpenWorkSheetAction;
 import mycellar.capacity.CapacityPanel;
-import mycellar.core.IAddVin;
+import mycellar.core.IPlace;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
@@ -1811,10 +1811,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
-	public void openCellChooserPanel(IAddVin addvin) {
+	public void openCellChooserPanel(IPlace iPlace) {
 		if (Program.getCellChoosePanel() == null) {
 			try {
-				final CellarOrganizerPanel chooseCellPanel = Program.createChooseCellPanel(addvin);
+				final CellarOrganizerPanel chooseCellPanel = Program.createChooseCellPanel(iPlace);
 				Program.TABBED_PANE.add(Program.getLabel("Main.ChooseCell"), chooseCellPanel);
 				Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
 				Utils.addCloseButton(Program.TABBED_PANE, chooseCellPanel);
@@ -1824,9 +1824,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		}
 		try {
 			Program.TABBED_PANE.setSelectedComponent(Program.getCellChoosePanel());
-			Program.getCellChoosePanel().setAddVin(addvin);
+			Program.getCellChoosePanel().setIPlace(iPlace);
 		} catch (IllegalArgumentException e) {
-			final CellarOrganizerPanel chooseCellPanel = Program.createChooseCellPanel(addvin);
+			final CellarOrganizerPanel chooseCellPanel = Program.createChooseCellPanel(iPlace);
 			Program.TABBED_PANE.add(Program.getLabel("Main.ChooseCell"), chooseCellPanel);
 			Program.TABBED_PANE.setIconAt(Program.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
 			Utils.addCloseButton(Program.TABBED_PANE, chooseCellPanel);

@@ -11,6 +11,7 @@ import mycellar.TabEvent;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
@@ -58,10 +59,10 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.0
- * @since 16/02/21
+ * @version 15.1
+ * @since 16/03/21
  */
-public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
+public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
 	private final MyCellarComboBox<Rangement> comboPlace = new MyCellarComboBox<>();
 	private final JTextField nom_obj = new JTextField();
@@ -241,6 +242,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	}
 
 	private void comboPlace_itemStateChanged(ItemEvent e) {
+		if (!modify) {
+			return;
+		}
 		final Rangement rangement = (Rangement) e.getItem();
 		if (Program.EMPTY_PLACE.equals(rangement)) {
 			nom_obj.setText("");
@@ -709,6 +713,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		Start.getInstance().updateMainPanel();
 	}
 
+	@Override
+	public void setUpdateView() {}
+
+	@Override
 	public void updateView() {
 		comboPlace.removeAllItems();
 		comboPlace.addItem(Program.EMPTY_PLACE);

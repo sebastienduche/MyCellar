@@ -71,8 +71,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.4
- * @since 15/03/21
+ * @version 9.5
+ * @since 16/03/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -859,6 +859,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       return;
     }
     updateView = false;
+    model.fireTableStructureChanged();
     placeCbx.removeAllItems();
     Program.getCave().forEach(placeCbx::addItem);
 

@@ -2,6 +2,8 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.Program;
+import mycellar.actions.ChooseCellAction;
+import mycellar.core.IPlace;
 import mycellar.core.JModifyComboBox;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
@@ -25,64 +27,66 @@ import java.util.Optional;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 15/03/21
+ * @version 0.3
+ * @since 16/03/21
  */
-public final class PanelPlace extends JPanel {
+public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
-  private final MyCellarLabel m_labelPlace = new MyCellarLabel(LabelType.INFO, "208");
-  private final MyCellarLabel m_labelNumPlace = new MyCellarLabel(LabelType.INFO, "082");
-  private final MyCellarLabel m_labelLine = new MyCellarLabel(LabelType.INFO, "028");
-  private final MyCellarLabel m_labelColumn = new MyCellarLabel(LabelType.INFO, "083");
+  private final MyCellarLabel labelNumPlace = new MyCellarLabel(LabelType.INFO, "082");
+  private final MyCellarLabel labelLine = new MyCellarLabel(LabelType.INFO, "028");
+  private final MyCellarLabel labelColumn = new MyCellarLabel(LabelType.INFO, "083");
   protected final JModifyComboBox<Rangement> place = new JModifyComboBox<>();
   protected final JModifyComboBox<String> numPlace = new JModifyComboBox<>();
   protected final JModifyComboBox<String> line = new JModifyComboBox<>();
   protected final JModifyComboBox<String> column = new JModifyComboBox<>();
-  protected final MyCellarLabel m_labelExist = new MyCellarLabel();
-  private final MyCellarLabel m_avant1 = new MyCellarLabel(LabelType.INFO, "091"); // Pour la Modification
-  private final MyCellarLabel m_avant2 = new MyCellarLabel(); // Pour la Modification
-  private final MyCellarLabel m_avant3 = new MyCellarLabel(); // Pour la Modification
-  private final MyCellarLabel m_avant4 = new MyCellarLabel(); // Pour la Modification
-  private final MyCellarLabel m_avant5 = new MyCellarLabel(); // Pour la Modification
-  protected MyCellarButton m_chooseCell;
-  protected final MyCellarButton m_preview = new MyCellarButton(LabelType.INFO, "138");
+  protected final MyCellarLabel labelExist = new MyCellarLabel();
+  private final MyCellarLabel before1 = new MyCellarLabel(LabelType.INFO, "091"); // Pour la Modification
+  private final MyCellarLabel before2 = new MyCellarLabel(); // Pour la Modification
+  private final MyCellarLabel before3 = new MyCellarLabel(); // Pour la Modification
+  private final MyCellarLabel before4 = new MyCellarLabel(); // Pour la Modification
+  private final MyCellarLabel before5 = new MyCellarLabel(); // Pour la Modification
+  protected MyCellarButton chooseCell;
+  protected final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "138");
   private boolean listenersEnabled = true;
-  private Bouteille bottle;
 
-  public PanelPlace(Rangement rangement) {
-    this(rangement, false);
+  public PanelPlace() {
+    this(null, false);
   }
 
   public PanelPlace(Rangement rangement, boolean newLineForError) {
+    chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
     setLayout(new MigLayout("","[]30px[]30px[]30px[]30px[grow]30px[]",""));
     setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
-    add(m_labelPlace);
-    add(m_labelNumPlace);
-    add(m_labelLine);
-    add(m_labelColumn, "wrap");
+    add(new MyCellarLabel(LabelType.INFO, "208"));
+    add(labelNumPlace);
+    add(labelLine);
+    add(labelColumn, "wrap");
     add(place);
     add(numPlace);
     add(line);
     add(column);
     if (!newLineForError) {
-      add(m_labelExist, "hidemode 3");
+      add(labelExist, "hidemode 3");
     } else {
       add(new JLabel());
     }
-//    add(m_chooseCell, "alignx right");
-    add(m_preview, "alignx right, wrap");
+    add(chooseCell, "alignx right");
+    add(preview, "alignx right, wrap");
     if (newLineForError) {
-      add(m_labelExist, "hidemode 3, span 6, wrap");
+      add(labelExist, "hidemode 3, span 6, wrap");
     }
-    add(m_avant1, "hidemode 3,split 2");
-    add(m_avant2, "hidemode 3");
-    add(m_avant3, "hidemode 3");
-    add(m_avant4, "hidemode 3");
-    add(m_avant5, "hidemode 3");
+    add(before1, "hidemode 3,split 2");
+    add(before2, "hidemode 3");
+    add(before3, "hidemode 3");
+    add(before4, "hidemode 3");
+    add(before5, "hidemode 3");
     initPlaceCombo();
     setListeners();
     setBeforeLabelsVisible(false);
-    place.setSelectedItem(rangement);
+    if (rangement != null) {
+      place.setSelectedItem(rangement);
+    }
+    managePlaceCombos();
   }
 
   public Optional<Place> getSelectedPlace() {
@@ -101,74 +105,125 @@ public final class PanelPlace extends JPanel {
 
   protected void initPlaceCombo() {
     place.addItem(Program.EMPTY_PLACE);
-    boolean complex = false;
-    for (Rangement rangement : Program.getCave()) {
-      place.addItem(rangement);
-      if (!rangement.isCaisse()) {
-        complex = true;
-      }
-    }
-//    m_chooseCell.setEnabled(complex);
+    Program.getCave()
+        .forEach(place::addItem);
+    chooseCell.setEnabled(Program.hasComplexPlace());
   }
 
-  public void setBottle(Bouteille bottle) {
-    this.bottle = bottle;
-    m_avant2.setText(bottle.getEmplacement());
-    m_avant3.setText(Integer.toString(bottle.getNumLieu()));
-    m_avant4.setText(Integer.toString(bottle.getLigne()));
-    m_avant5.setText(Integer.toString(bottle.getColonne()));
+  public void managePlaceCombos() {
+    place.setEnabled(true);
+    preview.setEnabled(false);
+    if (place.getItemCount() == 2) {
+      if (place.getSelectedIndex() == 0) {
+        place.setSelectedIndex(1);
+      }
+      place.setEnabled(false);
+      Rangement r = (Rangement) place.getSelectedItem();
+      if (numPlace.getItemCount() == 2) {
+        if (numPlace.getSelectedIndex() == 0) {
+          numPlace.setSelectedIndex(1);
+        }
+        numPlace.setEnabled(false);
+      }
+      setLineColumnVisible(r);
+    } else {
+      place.setEnabled(true);
+      numPlace.setEnabled(false);
+      line.setVisible(false);
+      column.setVisible(false);
+      labelLine.setVisible(false);
+      labelColumn.setVisible(false);
+      if (place.getSelectedIndex() > 0) {
+        numPlace.setEnabled(true);
+        Rangement r = (Rangement) place.getSelectedItem();
+        if (numPlace.getItemCount() == 2) {
+          if (numPlace.getSelectedIndex() == 0) {
+            numPlace.setSelectedIndex(1);
+          }
+          numPlace.setEnabled(false);
+        }
+        setLineColumnVisible(r);
+      }
+    }
+  }
+
+  private void setLineColumnVisible(Rangement r) {
+    if (r == null) {
+      return;
+    }
+    boolean visible = !r.isCaisse();
+    line.setVisible(visible);
+    column.setVisible(visible);
+    labelLine.setVisible(visible);
+    labelColumn.setVisible(visible);
+  }
+
+  public void setBeforeBottle(Bouteille bottle) {
+    before2.setText(bottle.getEmplacement());
+    before3.setText(Integer.toString(bottle.getNumLieu()));
+    before4.setText(Integer.toString(bottle.getLigne()));
+    before5.setText(Integer.toString(bottle.getColonne()));
     setBeforeLabelsVisible(true);
   }
 
-  public void removeBottle() {
-    bottle = null;
+  public void clearBeforeBottle() {
     setBeforeLabelsVisible(false);
   }
 
+  public void setBottle(Bouteille bottle) {
+    selectPlace(bottle);
+  }
+
   private void setBeforeLabelsVisible(boolean b) {
-    m_avant1.setVisible(b);
-    m_avant2.setVisible(b);
-    m_avant3.setVisible(b);
-    m_avant4.setVisible(b);
-    m_avant5.setVisible(b);
+    before1.setVisible(b);
+    before2.setVisible(b);
+    before3.setVisible(b);
+    before4.setVisible(b);
+    before5.setVisible(b);
   }
 
   public void enableAll(boolean enable) {
-    place.setEnabled(enable);
-    numPlace.setEnabled(enable && place.getSelectedIndex() > 0);
+    place.setEnabled(place.getItemCount() > 2 || place.getSelectedIndex() != 1);
+    numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1));
     line.setEnabled(enable && numPlace.getSelectedIndex() > 0);
     column.setEnabled(enable && line.getSelectedIndex() > 0);
-    if (m_chooseCell != null) {
-      m_chooseCell.setEnabled(enable && Program.hasComplexPlace());
+    if (chooseCell != null) {
+      chooseCell.setEnabled(enable && Program.hasComplexPlace());
     }
+  }
+
+  public void clear() {
+    place.setSelectedIndex(0);
   }
 
   public void updateView() {
+    setListenersEnabled(false);
     place.removeAllItems();
+    setListenersEnabled(true);
     initPlaceCombo();
+    managePlaceCombos();
   }
 
   public void selectPlace(Bouteille bouteille) {
-    final Rangement rangement = bouteille.getRangement();
-    if (rangement != null) {
-      selectPlace(rangement, bouteille.getNumLieu(), bouteille.getLigne(), bouteille.getColonne());
-    }
+    bouteille.getPlace().ifPresent(this::selectPlace);
   }
 
-  public void selectPlace(Rangement rangement, int placeNum, int row, int col) {
+  @Override
+  public void selectPlace(Place placeRangement) {
     setListenersEnabled(false);
-    for (int i=0; i<place.getItemCount(); i++) {
-      if (rangement.equals(place.getItemAt(i))){
-        place.setSelectedIndex(i);
-        break;
-      }
-    }
-    m_labelExist.setText("");
+    final Rangement rangement = placeRangement.getRangement();
+    place.setSelectedItem(rangement);
+//    for (int i=0; i<place.getItemCount(); i++) {
+//      if (rangement.equals(place.getItemAt(i))) {
+//        place.setSelectedIndex(i);
+//        break;
+//      }
+//    }
+    labelExist.setText("");
 
-    m_preview.setEnabled(true);
-    int nbEmpl = rangement.getNbEmplacements();
-    int nbLine = rangement.getNbLignes(placeNum);
-    int nbColumn = rangement.getNbColonnes(placeNum, row);
+    preview.setEnabled(!rangement.isCaisse());
+    int nbLine = rangement.getNbLignes(placeRangement.getPlaceNumIndex());
+    int nbColumn = rangement.getNbColonnes(placeRangement.getPlaceNumIndex(), placeRangement.getLineIndex());
     numPlace.removeAllItems();
     column.removeAllItems();
     line.removeAllItems();
@@ -178,7 +233,7 @@ public final class PanelPlace extends JPanel {
     numPlace.setEnabled(true);
     line.setEnabled(true);
     column.setEnabled(true);
-    for (int i = 1; i <= nbEmpl; i++) {
+    for (int i = rangement.getFirstNumEmplacement(); i < rangement.getLastNumEmplacement(); i++) {
       numPlace.addItem(Integer.toString(i));
     }
     for (int i = 1; i <= nbLine; i++) {
@@ -187,12 +242,13 @@ public final class PanelPlace extends JPanel {
     for (int i = 1; i <= nbColumn; i++) {
       column.addItem(Integer.toString(i));
     }
-    numPlace.setSelectedIndex(placeNum + 1);
-    line.setSelectedIndex(row + 1);
-    column.setSelectedIndex(col + 1);
+    numPlace.setSelectedIndex(placeRangement.getPlaceNumIndexForCombo());
+    line.setSelectedIndex(placeRangement.getLine());
+    column.setSelectedIndex(placeRangement.getColumn());
+
     boolean simplePlace = rangement.isCaisse();
-    m_labelLine.setVisible(!simplePlace);
-    m_labelColumn.setVisible(!simplePlace);
+    labelLine.setVisible(!simplePlace);
+    labelColumn.setVisible(!simplePlace);
     line.setVisible(!simplePlace);
     column.setVisible(!simplePlace);
     setListenersEnabled(true);
@@ -209,7 +265,7 @@ public final class PanelPlace extends JPanel {
     return !listenersEnabled;
   }
 
-  protected void setListenersEnabled(boolean listenersEnabled) {
+  public void setListenersEnabled(boolean listenersEnabled) {
     this.listenersEnabled = listenersEnabled;
   }
 
@@ -218,60 +274,48 @@ public final class PanelPlace extends JPanel {
       return;
     }
     Debug("Lieu_itemStateChanging...");
-    try {
-      int lieu_select = place.getSelectedIndex();
+    int lieu_select = place.getSelectedIndex();
+    Rangement rangement = (Rangement) place.getSelectedItem();
+    Objects.requireNonNull(rangement);
 
-      m_labelExist.setText("");
+    labelExist.setText("");
 
-      if (lieu_select == 0) {
-        m_preview.setEnabled(false);
-        numPlace.setEnabled(false);
-        line.setEnabled(false);
-        column.setEnabled(false);
-      }	else {
-        m_preview.setEnabled(true);
-        numPlace.setEnabled(true);
-      }
-
-      boolean bIsCaisse = false;
-      int nb_emplacement = 0;
-      int start_caisse = 0;
-      if (lieu_select > 0) {
-        Rangement cave = place.getItemAt(lieu_select);
-        nb_emplacement = cave.getNbEmplacements();
-        bIsCaisse = cave.isCaisse();
-        start_caisse = cave.getStartCaisse();
-      }
-      numPlace.removeAllItems();
-      numPlace.addItem("");
-      if (bIsCaisse) { //Type caisse
-        m_preview.setEnabled(false);
-        for (int i = 0; i < nb_emplacement; i++) {
-          numPlace.addItem(Integer.toString(i + start_caisse));
-        }
-        numPlace.setVisible(true);
-        m_labelNumPlace.setText(Program.getLabel("Infos158")); //"Numero de caisse");
-        if (nb_emplacement == 1) {
-          numPlace.setSelectedIndex(1);
-        }
-      }	else {
-        line.removeAllItems();
-        column.removeAllItems();
-        for (int i = 1; i <= nb_emplacement; i++) {
-          numPlace.addItem(Integer.toString(i));
-        }
-        m_labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu");
-      }
-      m_labelNumPlace.setVisible(true);
-      numPlace.setVisible(true);
-      line.setVisible(!bIsCaisse);
-      column.setVisible(!bIsCaisse);
-      m_labelLine.setVisible(!bIsCaisse);
-      m_labelColumn.setVisible(!bIsCaisse);
-      Debug("Lieu_itemStateChanging... Done");
-    }	catch (RuntimeException a) {
-      Program.showException(a);
+    boolean caisse = false;
+    labelNumPlace.setVisible(true);
+    numPlace.setVisible(true);
+    if (lieu_select == 0) {
+      numPlace.setEnabled(false);
+      line.setEnabled(false);
+      column.setEnabled(false);
+    }	else {
+      numPlace.setEnabled(true);
+      caisse = rangement.isCaisse();
     }
+    preview.setEnabled(!caisse);
+
+    numPlace.removeAllItems();
+    numPlace.addItem("");
+    line.removeAllItems();
+    column.removeAllItems();
+    for (int i = rangement.getFirstNumEmplacement(); i < rangement.getLastNumEmplacement(); i++) {
+      numPlace.addItem(Integer.toString(i));
+    }
+
+    if (caisse) {
+      labelNumPlace.setText(Program.getLabel("Infos158")); //"Numero de caisse");
+      if (rangement.getNbEmplacements() == 1) {
+        numPlace.setSelectedIndex(1);
+      }
+    }	else {
+      labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu");
+    }
+    boolean visible = lieu_select > 0;
+    visible &= !caisse;
+    line.setVisible(visible);
+    column.setVisible(visible);
+    labelLine.setVisible(visible);
+    labelColumn.setVisible(visible);
+    Debug("Lieu_itemStateChanging... Done");
   }
 
   private void num_lieu_itemStateChanged(ItemEvent e) {
@@ -283,7 +327,7 @@ public final class PanelPlace extends JPanel {
       int num_select = numPlace.getSelectedIndex();
       int lieu_select = place.getSelectedIndex();
 
-      m_labelExist.setText("");
+      labelExist.setText("");
 
       if (num_select == 0) {
         line.setEnabled(false);
@@ -310,6 +354,7 @@ public final class PanelPlace extends JPanel {
     int num_select = line.getSelectedIndex();
     int emplacement = numPlace.getSelectedIndex();
     int lieu_select = place.getSelectedIndex();
+    labelExist.setText("");
     column.setEnabled(num_select != 0);
     int nb_col = 0;
     if (num_select > 0) {
@@ -338,9 +383,9 @@ public final class PanelPlace extends JPanel {
       Rangement cave = place.getItemAt(nPlace);
       Optional<Bouteille> b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1);
       if (b.isPresent()) {
-        m_labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.get().getNom())));
+        labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.get().getNom())));
       } else {
-        m_labelExist.setText("");
+        labelExist.setText("");
       }
       Debug("Column_itemStateChanging... End");
     });

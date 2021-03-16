@@ -2,7 +2,6 @@ package mycellar;
 
 import mycellar.actions.ChooseCellAction;
 import mycellar.actions.OpenShowErrorsAction;
-import mycellar.core.IAddVin;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
@@ -44,10 +43,10 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.5
- * @since 29/01/21
+ * @version 7.6
+ * @since 16/03/21
  */
-public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, IUpdatable {
+public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
 
 
@@ -277,6 +276,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			updateStatusAndTime();
 
 			selectPlace();
+			panelPlace.setBottle(bottle);
 			m_end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
 			resetModified();
 		}	catch (RuntimeException e) {
@@ -532,34 +532,35 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 	private final class PanelPlace extends JPanel {
 		private static final long serialVersionUID = -2601861017578176513L;
 
-		private PanelPlace(){
-			setLayout(new MigLayout("","[]30px[]30px[]30px[]30px[grow]30px[]",""));
+		private PanelPlace() {
+			setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));
 			setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("Infos081")));
 			add(m_labelPlace);
 			add(m_labelNumPlace);
 			add(m_labelLine);
-			add(m_labelColumn,"wrap");
+			add(m_labelColumn, "wrap");
 			add(m_lieu);
 			add(m_num_lieu);
 			add(m_line);
 			add(m_column);
-			add(m_labelExist,"hidemode 3");
-			add(m_chooseCell,"alignx right");
-			add(m_preview,"alignx right, wrap");
+			add(m_labelExist, "hidemode 3");
+			add(m_chooseCell, "alignx right");
+			add(m_preview, "alignx right, wrap");
 		}
 	}
 
 	private final class PanelMain extends JPanel {
 		private static final long serialVersionUID = -4824541234206895953L;
 
-		private PanelMain(){
+		private PanelMain() {
 			setLayout(new MigLayout("","grow","[][][]10px[][grow]10px[][]"));
-			add(new PanelName(),"growx,wrap");
-			add(new PanelPlace(),"growx,wrap");
-			add(new PanelAttribute(),"growx,split 2");
-			add(panelVignobles = new PanelVignobles(true, true, true),"growx, wrap");
-			add(m_labelComment,"growx, wrap");
-			add(m_js_comment,"grow, wrap");
+			add(new PanelName(), "growx,wrap");
+			add(new PanelPlace(), "growx,wrap");
+			add(panelPlace, "growx,wrap");
+			add(new PanelAttribute(), "growx,split 2");
+			add(panelVignobles = new PanelVignobles(true, true, true), "growx, wrap");
+			add(m_labelComment, "growx, wrap");
+			add(m_js_comment, "grow, wrap");
 			add(m_end, "center, hidemode 3, wrap");
 			add(m_add, "center");
 		}
@@ -591,6 +592,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			MyCellarBottleContenance.getList().forEach(m_half::addItem);
 			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 			panelVignobles.updateList();
+			panelPlace.updateView();
 			selectPlace();
 			setListenersEnabled(true);
 			Debug("updateView Done");

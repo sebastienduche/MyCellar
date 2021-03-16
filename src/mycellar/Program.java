@@ -4,7 +4,7 @@ import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.Grammar;
-import mycellar.core.IAddVin;
+import mycellar.core.IPlace;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
@@ -113,13 +113,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.1
- * @since 22/02/21
+ * @version 25.2
+ * @since 16/03/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.9.9.3";
+	public static final String INTERNAL_VERSION = "4.0.0.5";
 	public static final int VERSION = 68;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -149,9 +149,10 @@ public final class Program {
 	private static final List<Bouteille> TRASH = new LinkedList<>();
 	private static final List<MyCellarError> ERRORS = new LinkedList<>();
 
+	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
 	static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").build();
 	public static final Rangement EMPTY_PLACE = new Rangement.CaisseBuilder("").build();
-	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
+	public static final Rangement STOCK_PLACE = new Rangement.CaisseBuilder(TEMP_PLACE).build();
 
 	private static String m_sWorkDir = null;
 	private static String m_sGlobalDir = null;
@@ -701,6 +702,9 @@ public final class Program {
 	 */
 	public static Rangement getCave(final String name) {
 		final String placeName = name.strip();
+		if (TEMP_PLACE.equals(placeName)) {
+			return STOCK_PLACE;
+		}
 		final List<Rangement> list = PLACES.stream().filter(rangement -> rangement.getNom().equals(placeName)).collect(Collectors.toList());
 		return list.get(0);
 	}
@@ -1546,6 +1550,7 @@ public final class Program {
 		if (creerRangement == null) {
 			creerRangement = new Creer_Rangement(true);
 			OPENED_OBJECTS.put(MODIFY_PLACE, creerRangement);
+			UPDATABLE_OBJECTS.put(MODIFY_PLACE, creerRangement);
 		}
 		return creerRangement;
 	}
@@ -1704,10 +1709,10 @@ public final class Program {
 		return (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL);
 	}
 
-	static CellarOrganizerPanel createChooseCellPanel(IAddVin addVin) {
+	static CellarOrganizerPanel createChooseCellPanel(IPlace iPlace) {
 		CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL);
 		if (cellarOrganizerPanel == null) {
-			cellarOrganizerPanel = new CellarOrganizerPanel(addVin);
+			cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
 			OPENED_OBJECTS.put(CHOOSE_CELL, cellarOrganizerPanel);
 			UPDATABLE_OBJECTS.put(CHOOSE_CELL, cellarOrganizerPanel);
 		}

@@ -11,8 +11,8 @@ import java.util.Optional;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 15/03/21
+ * @version 0.3
+ * @since 16/03/21
  */
 
 public class Place {
@@ -48,6 +48,13 @@ public class Place {
 
   public int getColumn() {
     return column;
+  }
+
+  public int getPlaceNumIndexForCombo() {
+    if (isSimplePlace()) {
+      return placeNum - rangement.getStartCaisse() + 1;
+    }
+    return placeNum;
   }
 
   /** Zero based */

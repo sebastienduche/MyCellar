@@ -3,7 +3,6 @@ package mycellar;
 import mycellar.Bouteille.BouteilleBuilder;
 import mycellar.actions.ChooseCellAction;
 import mycellar.actions.OpenShowErrorsAction;
-import mycellar.core.IAddVin;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
@@ -55,10 +54,10 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.3
- * @since 22/02/21
+ * @version 27.4
+ * @since 16/03/21
  */
-public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, IAddVin, ICutCopyPastable, IMyCellar, IUpdatable {
+public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
 	private static final long serialVersionUID = -8925831759212999905L;
 	private boolean m_bmodify = false; // Pour la Modification
@@ -1153,6 +1152,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			remove(m_lv);
 			m_lv = null;
 		}
+		panelPlace.managePlaceCombos();
 		enableAll(true);
 		m_bmodify = false;
 		setBeforeLabelsVisible(false);
@@ -1270,14 +1270,15 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 	private final class PanelMain extends JPanel{
 		private static final long serialVersionUID = -4824541234206895953L;
 
-		private PanelMain(){
+		private PanelMain() {
 			setLayout(new MigLayout("","grow","[][][]10px[][grow]10px[][]"));
-			add(new PanelName(),"growx,wrap");
-			add(new PanelPlace(),"growx,wrap");
-			add(new PanelAttribute(),"growx,split 2");
-			add(panelVignobles = new PanelVignobles(false, true, true),"growx, wrap");
-			add(m_labelComment,"growx, wrap");
-			add(m_js_comment,"grow, wrap");
+			add(new PanelName(), "growx, wrap");
+			add(new PanelPlace(), "growx,wrap");
+			add(panelPlace, "growx, wrap");
+			add(new PanelAttribute(), "growx,split 2");
+			add(panelVignobles = new PanelVignobles(false, true, true), "growx, wrap");
+			add(m_labelComment, "growx, wrap");
+			add(m_js_comment, "grow, wrap");
 			add(m_end, "center, hidemode 3, wrap");
 			add(m_add, "center, split 2");
 			add(m_cancel);

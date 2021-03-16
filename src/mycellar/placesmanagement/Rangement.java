@@ -16,8 +16,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 27.5
- * @since 15/03/21
+ * @version 27.6
+ * @since 16/03/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -697,6 +697,18 @@ public class Rangement implements Comparable<Rangement> {
 			return getStartCaisse() + getNbEmplacements();
 		}
 		return getNbEmplacements();
+	}
+
+	/**
+	 * Retourne le premier emplacement utilisable
+	 *
+	 * @return
+	 */
+	public int getFirstNumEmplacement() {
+		if (isCaisse()) {
+			return getStartCaisse();
+		}
+		return 1;
 	}
 
 	/**

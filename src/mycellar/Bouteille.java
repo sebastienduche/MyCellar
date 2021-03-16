@@ -10,6 +10,7 @@ package mycellar;
 
 import mycellar.core.MyCellarFields;
 import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -34,8 +36,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.9
- * @since 05/03/21
+ * @version 6.0
+ * @since 16/03/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -158,7 +160,7 @@ public class Bouteille implements Serializable{
 		lastModified = b.getLastModified();
 	}
 
-	public Bouteille(BouteilleBuilder builder){
+	public Bouteille(BouteilleBuilder builder) {
 		if (builder.id == 0) {
 			id = Program.getNewID();
 		} else {
@@ -399,6 +401,14 @@ public class Bouteille implements Serializable{
 
 	 public boolean isPinkWine() {
 		 return BottleColor.getColor(color) == BottleColor.PINK;
+	 }
+
+	 public Optional<Place> getPlace() {
+		return new Place.PlaceBuilder(getRangement())
+				.withNumPlace(getNumLieu())
+				.withLine(getLigne())
+				.withColumn(getColonne())
+				.build();
 	 }
 
 	 @Override

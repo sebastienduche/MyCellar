@@ -330,6 +330,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			lastModified.setText(bottle.getLastModified());
 			panelVignobles.initializeVignobles(bottle);
 
+			panelPlace.clear();
+			panelPlace.setBeforeBottle(bottle);
 			m_avant1.setText(Program.getLabel("Infos091")); //"Avant");
 			m_avant2.setText(bottle.getEmplacement());
 			m_avant3.setText(Integer.toString(bottle.getNumLieu()));
@@ -377,6 +379,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
 			resetValues();
 			if (m_bmulti) {
+				panelPlace.clearBeforeBottle();
 				name.setSelectedItem(MessageFormat.format(Program.getLabel("AddVin.NbItemsSelected", LabelProperty.PLURAL), listBottleInModification.size())); //" bouteilles selectionnees");
 				name.setEnabled(false);
 				m_annee_auto.setEnabled(false);
@@ -1193,6 +1196,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		}
 		m_colorList.setSelectedItem(BottleColor.NONE);
 		statusList.setSelectedItem(BottlesStatus.NONE);
+		panelPlace.clear();
 		setBeforeLabelsVisible(false);
 		clearValues();
 		reInitAddVin();

@@ -1,7 +1,7 @@
 package mycellar;
 
-import mycellar.core.IPlace;
 import mycellar.core.IMyCellar;
+import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
@@ -222,13 +222,13 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 							panelCellar.add(panel);
 						}
 					}
-					placePanel.add(new MyCellarLabel(Program.getLabel("Infos029")+" "+(i+1)), i>0 ? "newline, gaptop 30, wrap" : "wrap");
+					placePanel.add(new MyCellarLabel(Program.getLabel("Infos029") + " " + (i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
 					placePanel.add(panelCellar, "grow");
 				}
 
-				Program.getStorage().getAllList().stream().
-						filter(bouteille -> bouteille.getEmplacement().endsWith(rangement.getNom())).
-						forEach(bouteille -> {
+				Program.getStorage().getAllList().stream()
+						.filter(bouteille -> bouteille.getEmplacement().endsWith(rangement.getNom()))
+						.forEach(bouteille -> {
 							JPanel[][] place = places.get(bouteille.getNumLieu() - 1);
 							((RangementCell)place[bouteille.getLigne()-1][bouteille.getColonne()-1]).addBottle(new BouteilleLabel(bouteille));
 						});
@@ -271,11 +271,11 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 				return false;
 			}
 			if (selectedCell != null) {
-				iPlace.selectPlace(new Place.PlaceBuilder(rangement)
+				new Place.PlaceBuilder(rangement)
 						.withNumPlace(selectedCell.getPlaceNum())
 						.withLine(selectedCell.getRow())
 						.withColumn(selectedCell.getColumn())
-						.build().get());
+						.build().ifPresent(iPlace::selectPlace);
 			}
 			Program.deleteChooseCellPanel();
 		}
@@ -365,7 +365,7 @@ final class RangementCell extends JPanel {
 		if (place.isCaisse()) {
 			width = 400;
 		}
-		setLayout(new MigLayout("","0px[align left, ::"+width+", grow]0px","0px[align center, 20::, grow]0px"));
+		setLayout(new MigLayout("","0px[align left, ::" + width + ", grow]0px","0px[align center, 20::, grow]0px"));
 		this.row = row;
 		this.column = column;
 		this.placeNum = placeNum;
@@ -387,7 +387,7 @@ final class RangementCell extends JPanel {
 		if (place.isCaisse()) {
 			width = 400;
 		}
-		setLayout(new MigLayout("","0px[align left, ::"+width+", grow]0px","0px[align center, 20::, grow]0px"));
+		setLayout(new MigLayout("","0px[align left, ::" + width + ", grow]0px","0px[align center, 20::, grow]0px"));
 		this.row = row;
 		this.column = column;
 		this.place = place;

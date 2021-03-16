@@ -50,10 +50,10 @@ public final class PanelPlace extends JPanel implements IPlace {
   private boolean listenersEnabled = true;
 
   public PanelPlace() {
-    this(null, false);
+    this(null, false, true);
   }
 
-  public PanelPlace(Rangement rangement, boolean newLineForError) {
+  public PanelPlace(Rangement rangement, boolean newLineForError, boolean chooseCellVisible) {
     chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
     setLayout(new MigLayout("","[]30px[]30px[]30px[]30px[grow]30px[]",""));
     setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
@@ -70,7 +70,9 @@ public final class PanelPlace extends JPanel implements IPlace {
     } else {
       add(new JLabel());
     }
-    add(chooseCell, "alignx right");
+    if (chooseCellVisible) {
+      add(chooseCell, "alignx right");
+    }
     add(preview, "alignx right, wrap");
     if (newLineForError) {
       add(labelExist, "hidemode 3, span 6, wrap");
@@ -156,6 +158,12 @@ public final class PanelPlace extends JPanel implements IPlace {
     column.setVisible(visible);
     labelLine.setVisible(visible);
     labelColumn.setVisible(visible);
+    if (!before4.getText().isBlank()) {
+      before4.setVisible(visible);
+    }
+    if (!before5.getText().isBlank()) {
+      before5.setVisible(visible);
+    }
   }
 
   public void setBeforeBottle(Bouteille bottle) {
@@ -167,6 +175,10 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void clearBeforeBottle() {
+    before2.setText("");
+    before3.setText("");
+    before4.setText("");
+    before5.setText("");
     setBeforeLabelsVisible(false);
   }
 
@@ -178,12 +190,12 @@ public final class PanelPlace extends JPanel implements IPlace {
     before1.setVisible(b);
     before2.setVisible(b);
     before3.setVisible(b);
-    before4.setVisible(b);
-    before5.setVisible(b);
+    before4.setVisible(b && labelLine.isVisible());
+    before5.setVisible(b && labelColumn.isVisible());
   }
 
   public void enableAll(boolean enable) {
-    place.setEnabled(place.getItemCount() > 2 || place.getSelectedIndex() != 1);
+    place.setEnabled(enable && (place.getItemCount() > 2 || place.getSelectedIndex() != 1));
     numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1));
     line.setEnabled(enable && numPlace.getSelectedIndex() > 0);
     column.setEnabled(enable && line.getSelectedIndex() > 0);
@@ -194,6 +206,7 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   public void clear() {
     place.setSelectedIndex(0);
+    clearBeforeBottle();
   }
 
   public void updateView() {
@@ -213,12 +226,6 @@ public final class PanelPlace extends JPanel implements IPlace {
     setListenersEnabled(false);
     final Rangement rangement = placeRangement.getRangement();
     place.setSelectedItem(rangement);
-//    for (int i=0; i<place.getItemCount(); i++) {
-//      if (rangement.equals(place.getItemAt(i))) {
-//        place.setSelectedIndex(i);
-//        break;
-//      }
-//    }
     labelExist.setText("");
 
     preview.setEnabled(!rangement.isCaisse());
@@ -309,12 +316,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     }	else {
       labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu");
     }
-    boolean visible = lieu_select > 0;
-    visible &= !caisse;
-    line.setVisible(visible);
-    column.setVisible(visible);
-    labelLine.setVisible(visible);
-    labelColumn.setVisible(visible);
+    setLineColumnVisible(rangement);
     Debug("Lieu_itemStateChanging... Done");
   }
 

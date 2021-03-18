@@ -59,8 +59,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 16/03/21
+ * @version 3.3
+ * @since 17/03/21
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -271,11 +271,11 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 				return false;
 			}
 			if (selectedCell != null) {
-				new Place.PlaceBuilder(rangement)
+				iPlace.selectPlace(new Place.PlaceBuilder(rangement)
 						.withNumPlace(selectedCell.getPlaceNum())
 						.withLine(selectedCell.getRow())
 						.withColumn(selectedCell.getColumn())
-						.build().ifPresent(iPlace::selectPlace);
+						.build());
 			}
 			Program.deleteChooseCellPanel();
 		}

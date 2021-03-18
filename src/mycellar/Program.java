@@ -113,13 +113,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.2
- * @since 16/03/21
+ * @version 25.3
+ * @since 18/03/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.0.0.5";
+	public static final String INTERNAL_VERSION = "4.0.1.7";
 	public static final int VERSION = 68;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -1272,6 +1272,10 @@ public final class Program {
 		if (managePlace != null) {
 			managePlace.setUpdateView();
 		}
+	}
+
+	static void updatePanelsWithoutBottles() {
+		UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView());
 	}
 
 	public static List<CountryJaxb> getCountries() {

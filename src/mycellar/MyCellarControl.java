@@ -1,5 +1,7 @@
 package mycellar;
 
+import mycellar.placesmanagement.Place;
+
 import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -11,8 +13,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 05/03/21
+ * @version 1.9
+ * @since 17/03/21
  */
 
 public final class MyCellarControl {
@@ -34,8 +36,9 @@ public final class MyCellarControl {
     }
     return false;
   }
-  static boolean hasInvalidPlaceNumber(int place) {
-    if (place == 0) {
+
+  public static boolean hasInvalidPlace(Place place) {
+    if (Program.EMPTY_PLACE.equals(place.getRangement())) {
       Debug("ERROR: Wrong Place");
       Erreur.showSimpleErreur(Program.getError("Error055")); //"Veuillez s&eacute;lectionner un emplacement!"
       return true;
@@ -43,20 +46,21 @@ public final class MyCellarControl {
     return false;
   }
 
-  static boolean hasInvalidNumLieuNumber(int lieu_num, boolean isCaisse) {
-    if (lieu_num == 0) {
+  public static boolean hasInvalidNumLieuNumber(int lieu_num, boolean isCaisse) {
+    if (isCaisse && lieu_num < 0) {
       Debug("ERROR: Wrong Num Place");
-      if (!isCaisse) {
-        Erreur.showSimpleErreur(Program.getError("Error056"));
-      }	else {
-        Erreur.showSimpleErreur(Program.getError("Error174"));
-      }
+      Erreur.showSimpleErreur(Program.getError("Error174"));
+      return true;
+    }
+    if (!isCaisse && lieu_num == 0) {
+      Debug("ERROR: Wrong Num Place");
+      Erreur.showSimpleErreur(Program.getError("Error056"));
       return true;
     }
     return false;
   }
 
-  static boolean hasInvalidLineNumber(int line) {
+  public static boolean hasInvalidLineNumber(int line) {
     if (line == 0) {
       Debug("ERROR: Wrong Line");
       Erreur.showSimpleErreur(Program.getError("Error057")); //"Veuillez s&eacute;lectionner un numero de line!"
@@ -65,7 +69,7 @@ public final class MyCellarControl {
     return false;
   }
 
-  static boolean hasInvalidColumnNumber(int column) {
+  public static boolean hasInvalidColumnNumber(int column) {
     if (column == 0) {
       Debug("ERROR: Wrong Column");
       Erreur.showSimpleErreur(Program.getError("Error058")); //"Veuillez s&eacute;lectionner un numero de colonne!"
@@ -81,10 +85,8 @@ public final class MyCellarControl {
    * @return boolean
    */
   public static boolean ctrlName(String name) {
-
     Debug("Controling name...");
     if (name == null || name.strip().isEmpty()) {
-      //Erreur le nom ne doit pas &ecirc;tre vide
       Debug("ERROR: Name cannot be empty!");
       Erreur.showSimpleErreur(Program.getError("Error010"));
       return false;

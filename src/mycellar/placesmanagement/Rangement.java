@@ -16,8 +16,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 27.6
- * @since 16/03/21
+ * @version 27.7
+ * @since 18/03/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -63,7 +63,7 @@ public class Rangement implements Comparable<Rangement> {
 		} else {
 			nbColonnesStock = -1;
 		}
-		
+
 		stock_nblign = 1;
 		caisse = true;
 
@@ -117,7 +117,7 @@ public class Rangement implements Comparable<Rangement> {
 	public int getNbEmplacements() {
 		return nb_emplacements;
 	}
-	
+
 	public void setNbEmplacements(int nb_emplacements) {
 		this.nb_emplacements = nb_emplacements;
 	}
@@ -175,7 +175,7 @@ public class Rangement implements Comparable<Rangement> {
 
 	/**
 	 * Indique si la cellule demandée existe
-	 * 
+	 *
 	 * @param emplacement
 	 * @param ligne
 	 * @param col
@@ -525,6 +525,17 @@ public class Rangement implements Comparable<Rangement> {
 		}
 	}
 
+	public void clearComplexStock(Place place) {
+		if (isCaisse()) {
+			return;
+		}
+		try {
+			stockage[place.getPlaceNumIndex()][place.getLineIndex()][place.getLineIndex()] = null;
+		} catch (Exception e) {
+			Program.showException(e);
+		}
+	}
+
 	/**
 	 * getBouteilleCaisseAt: retourne la bouteille se trouvant à un emplacement précis
 	 *
@@ -584,10 +595,10 @@ public class Rangement implements Comparable<Rangement> {
 		StringBuilder sText = new StringBuilder();
 		if (isCaisse()) {
 			sText.append("<place name=\"\" IsCaisse=\"true\" NbPlace=\"")
-			.append(getNbEmplacements())
-			.append("\" NumStart=\"")
-			.append(getStartCaisse())
-			.append("\"");
+					.append(getNbEmplacements())
+					.append("\" NumStart=\"")
+					.append(getStartCaisse())
+					.append("\"");
 			if (isLimited()) {
 				sText.append(" NbLimit=\"").append(getNbColonnesStock()).append("\">");
 			} else {
@@ -595,8 +606,8 @@ public class Rangement implements Comparable<Rangement> {
 			}
 		} else {
 			sText.append("<place name=\"\" IsCaisse=\"false\" NbPlace=\"")
-			.append(getNbEmplacements())
-			.append("\">\n");
+					.append(getNbEmplacements())
+					.append("\">\n");
 			for (int i=0; i<getNbEmplacements(); i++) {
 				sText.append("<internal-place NbLine=\"").append(getNbLignes(i)).append("\">\n");
 				for (int j=0; j<getNbLignes(i); j++) {
@@ -608,7 +619,7 @@ public class Rangement implements Comparable<Rangement> {
 		sText.append("<name><![CDATA[").append(getNom()).append("]]></name></place>");
 		return sText.toString();
 	}
-	
+
 	public boolean canAddBottle(Bouteille b) {
 		if (isCaisse()) {
 			return canAddBottle(b.getNumLieu() - start_caisse, 0, 0);
@@ -618,7 +629,7 @@ public class Rangement implements Comparable<Rangement> {
 
 	/**
 	 * Indique si l'on peut ajouter une bouteille dans un rangement
-	 * 
+	 *
 	 * @param _nEmpl Numero d'emplacement (0, n)
 	 * @param _nLine Numero de ligne (0, n)
 	 * @param _nCol Numero de colonne (0, n)
@@ -641,10 +652,10 @@ public class Rangement implements Comparable<Rangement> {
 	public boolean canAddBottle(Place place) {
 		return canAddBottle(place.getPlaceNum() - 1, place.getLine() - 1, place.getColumn() - 1);
 	}
-	
+
 	/**
 	 * Indique si le numero du lieu existe
-	 * 
+	 *
 	 * @param numPlace Numero d'emplacement (startCaisse, n)
 	 * @return
 	 */
@@ -656,7 +667,7 @@ public class Rangement implements Comparable<Rangement> {
 	/**
 	 * HasFreeSpaceInCaisse Indique si l'on peut encore ajouter des
 	 * bouteilles dans une caisse
-	 * 
+	 *
 	 * @param _nEmpl (0...n)
 	 * @return
 	 */
@@ -689,7 +700,7 @@ public class Rangement implements Comparable<Rangement> {
 
 	/**
 	 * Retourne le dernier emplacement utilisable
-	 * 
+	 *
 	 * @return
 	 */
 	public int getLastNumEmplacement() {
@@ -724,7 +735,7 @@ public class Rangement implements Comparable<Rangement> {
 			storageCaisse.put(i, new ArrayList<>());
 		}
 	}
-	
+
 	/**
 	 * Réinitialisation du stockage
 	 */
@@ -783,8 +794,8 @@ public class Rangement implements Comparable<Rangement> {
 	}
 
 	public void updatePlace(List<Part> listPart) {
-	  Debug("Updating the list of places: ");
-	  listPart.forEach(part -> Debug(part.toString()));
+		Debug("Updating the list of places: ");
+		listPart.forEach(part -> Debug(part.toString()));
 		setPlace(listPart);
 		Program.setListCaveModified();
 		Program.setModified();

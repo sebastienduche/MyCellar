@@ -27,7 +27,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -36,8 +35,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.0
- * @since 16/03/21
+ * @version 6.1
+ * @since 17/03/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -403,9 +402,9 @@ public class Bouteille implements Serializable{
 		 return BottleColor.getColor(color) == BottleColor.PINK;
 	 }
 
-	 public Optional<Place> getPlace() {
+	 public Place getPlace() {
 		return new Place.PlaceBuilder(getRangement())
-				.withNumPlace(getNumLieu())
+				.withNumPlaces(getNumLieu(), getNumLieu())
 				.withLine(getLigne())
 				.withColumn(getColonne())
 				.build();

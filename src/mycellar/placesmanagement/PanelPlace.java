@@ -1,6 +1,8 @@
 package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
+import mycellar.MyCellarControl;
+import mycellar.MyXmlDom;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IPlace;
@@ -15,8 +17,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.io.File;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,8 +32,8 @@ import java.util.Optional;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 16/03/21
+ * @version 0.5
+ * @since 18/03/21
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -54,6 +59,9 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public PanelPlace(Rangement rangement, boolean newLineForError, boolean chooseCellVisible) {
+    char previewChar = Program.getLabel("PREVIEW").charAt(0);
+    preview.setMnemonic(previewChar);
+    preview.addActionListener(this::preview_actionPerformed);
     chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
     setLayout(new MigLayout("","[]30px[]30px[]30px[]30px[grow]30px[]",""));
     setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
@@ -91,15 +99,13 @@ public final class PanelPlace extends JPanel implements IPlace {
     managePlaceCombos();
   }
 
-  public Optional<Place> getSelectedPlace() {
+  public Place getSelectedPlace() {
     final Rangement rangement = (Rangement) place.getSelectedItem();
     Objects.requireNonNull(rangement);
-    if (Program.EMPTY_PLACE.equals(rangement)) {
-      return Optional.empty();
-    }
 
     return new Place.PlaceBuilder(rangement)
         .withNumPlace(numPlace.getSelectedIndex())
+        .withNumPlaceSimplePlace(numPlace.getItemCount() > 0 ? Objects.requireNonNull(numPlace.getSelectedItem()).toString() : "-1")
         .withLine(line.getSelectedIndex())
         .withColumn(column.getSelectedIndex())
         .build();
@@ -107,8 +113,7 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   protected void initPlaceCombo() {
     place.addItem(Program.EMPTY_PLACE);
-    Program.getCave()
-        .forEach(place::addItem);
+    Program.getCave().forEach(place::addItem);
     chooseCell.setEnabled(Program.hasComplexPlace());
   }
 
@@ -186,7 +191,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     selectPlace(bottle);
   }
 
-  private void setBeforeLabelsVisible(boolean b) {
+  public void setBeforeLabelsVisible(boolean b) {
     before1.setVisible(b);
     before2.setVisible(b);
     before3.setVisible(b);
@@ -196,7 +201,7 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   public void enableAll(boolean enable) {
     place.setEnabled(enable && (place.getItemCount() > 2 || place.getSelectedIndex() != 1));
-    numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1));
+    numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((Rangement)place.getSelectedItem()).isCaisse()));
     line.setEnabled(enable && numPlace.getSelectedIndex() > 0);
     column.setEnabled(enable && line.getSelectedIndex() > 0);
     if (chooseCell != null) {
@@ -207,6 +212,8 @@ public final class PanelPlace extends JPanel implements IPlace {
   public void clear() {
     place.setSelectedIndex(0);
     clearBeforeBottle();
+    labelExist.setText("");
+    managePlaceCombos();
   }
 
   public void updateView() {
@@ -218,7 +225,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void selectPlace(Bouteille bouteille) {
-    bouteille.getPlace().ifPresent(this::selectPlace);
+    selectPlace(bouteille.getPlace());
   }
 
   @Override
@@ -242,6 +249,9 @@ public final class PanelPlace extends JPanel implements IPlace {
     column.setEnabled(true);
     for (int i = rangement.getFirstNumEmplacement(); i < rangement.getLastNumEmplacement(); i++) {
       numPlace.addItem(Integer.toString(i));
+    }
+    if (!rangement.isCaisse()) { // Need the last place number for complex places
+      numPlace.addItem(Integer.toString(rangement.getLastNumEmplacement()));
     }
     for (int i = 1; i <= nbLine; i++) {
       line.addItem(Integer.toString(i));
@@ -274,6 +284,14 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   public void setListenersEnabled(boolean listenersEnabled) {
     this.listenersEnabled = listenersEnabled;
+  }
+
+  private void preview_actionPerformed(ActionEvent e) {
+    Debug("Previewing...");
+    RangementUtils.putTabStock();
+    MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
+    Program.open(new File(Program.getPreviewXMLFileName()));
+    Debug("Previewing... End");
   }
 
   protected void lieu_itemStateChanged(ItemEvent e) {
@@ -314,6 +332,8 @@ public final class PanelPlace extends JPanel implements IPlace {
         numPlace.setSelectedIndex(1);
       }
     }	else {
+      // Need the last place number for complex places
+      numPlace.addItem(Integer.toString(rangement.getLastNumEmplacement()));
       labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu");
     }
     setLineColumnVisible(rangement);
@@ -395,5 +415,71 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   protected static void Debug(String sText) {
     Program.Debug("PanelPlace: " + sText);
+  }
+
+  public void setModifyActive(boolean enable) {
+    place.setModifyActive(enable);
+    numPlace.setModifyActive(enable);
+    line.setModifyActive(enable);
+    column.setModifyActive(enable);
+  }
+
+  public void enableSimplePlace(boolean enable) {
+    place.setEnabled(enable);
+    numPlace.setEnabled(enable);
+  }
+
+  public void enablePlace(boolean enable) {
+    place.setEnabled(enable);
+  }
+
+  public boolean hasSelecedPlace() {
+    return place.getSelectedIndex() > 0;
+  }
+
+  public void clearModified() {
+    place.setModified(false);
+    numPlace.setModified(false);
+    line.setModified(false);
+    column.setModified(false);
+  }
+
+  public boolean isModified() {
+    boolean modified = place.isModified();
+    modified |= numPlace.isModified();
+    modified |= line.isModified();
+    modified |= column.isModified();
+    return modified;
+  }
+
+  public boolean performValidation(boolean isModification) {
+    final Place placeWithoutValidation = getSelectedPlace();
+    if (!isModification) {
+      if (MyCellarControl.hasInvalidPlace(placeWithoutValidation)) {
+        return false;
+      }
+    }
+    if (placeWithoutValidation.hasPlace()) {
+      if (MyCellarControl.hasInvalidNumLieuNumber(placeWithoutValidation.getPlaceNum(), placeWithoutValidation.isSimplePlace())) {
+        enableAll(true);
+        return false;
+      }
+
+      if (!placeWithoutValidation.isSimplePlace()) {
+        if (MyCellarControl.hasInvalidLineNumber(placeWithoutValidation.getLine())) {
+          enableAll(true);
+          return false;
+        }
+        if (MyCellarControl.hasInvalidColumnNumber(placeWithoutValidation.getColumn())) {
+          enableAll(true);
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  public boolean isPlaceModified() {
+    return place.getSelectedIndex() > 0;
   }
 }

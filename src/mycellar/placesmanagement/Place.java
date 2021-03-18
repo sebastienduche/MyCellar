@@ -2,8 +2,6 @@ package mycellar.placesmanagement;
 
 import mycellar.Program;
 
-import java.util.Optional;
-
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -11,25 +9,28 @@ import java.util.Optional;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 16/03/21
+ * @version 0.4
+ * @since 17/03/21
  */
 
 public class Place {
 
   private final Rangement rangement;
   private final int placeNum;
+  private final int placeNumValueSimplePlace; // Value as displayed in the combo
   private int line;
   private int column;
 
-  private Place(Rangement rangement, int placeNum) {
+  private Place(Rangement rangement, int placeNum, int placeNumValueSimplePlace) {
     this.rangement = rangement;
     this.placeNum = placeNum;
+    this.placeNumValueSimplePlace = placeNumValueSimplePlace;
   }
 
-  private Place(Rangement rangement, int placeNum, int line, int column) {
+  private Place(Rangement rangement, int placeNum, int placeNumValueSimplePlace, int line, int column) {
     this.rangement = rangement;
     this.placeNum = placeNum;
+    this.placeNumValueSimplePlace = placeNumValueSimplePlace;
     this.line = line;
     this.column = column;
   }
@@ -39,6 +40,9 @@ public class Place {
   }
 
   public int getPlaceNum() {
+    if (isSimplePlace()) {
+      return placeNumValueSimplePlace;
+    }
     return placeNum;
   }
 
@@ -60,7 +64,7 @@ public class Place {
   /** Zero based */
   public int getPlaceNumIndex() {
     if (isSimplePlace()) {
-      return placeNum - rangement.getStartCaisse();
+      return getPlaceNumValueSimplePlace() - 1;
     }
     return placeNum - 1;
   }
@@ -79,10 +83,19 @@ public class Place {
     return rangement.isCaisse();
   }
 
+  public int getPlaceNumValueSimplePlace() {
+    return placeNumValueSimplePlace;
+  }
+
+  public boolean hasPlace() {
+    return !Program.EMPTY_PLACE.equals(rangement);
+  }
+
   public static class PlaceBuilder {
 
     protected final Rangement rangement;
-    public int numPlace;
+    private int numPlace;
+    private int numPlaceSimplePlace;
     private int line;
     private int column;
 
@@ -92,6 +105,17 @@ public class Place {
 
     public PlaceBuilder withNumPlace(int numPlace) {
       this.numPlace = numPlace;
+      return this;
+    }
+
+    public PlaceBuilder withNumPlaces(int numPlace, int numPlaceSimplePlace) {
+      this.numPlace = numPlace;
+      this.numPlaceSimplePlace = numPlaceSimplePlace;
+      return this;
+    }
+
+    public PlaceBuilder withNumPlaceSimplePlace(String numPlaceSimplePlace) {
+      this.numPlaceSimplePlace = Program.safeParseInt(numPlaceSimplePlace, -1);
       return this;
     }
 
@@ -105,33 +129,11 @@ public class Place {
       return this;
     }
 
-    public Optional<Place> build() {
-      if (!validate()) {
-        return Optional.empty();
-      }
+    public Place build() {
       if (rangement.isCaisse()) {
-        return Optional.of(new Place(rangement, numPlace));
+        return new Place(rangement, numPlace, numPlaceSimplePlace);
       }
-      return Optional.of(new Place(rangement, numPlace, line, column));
+      return new Place(rangement, numPlace, numPlaceSimplePlace, line, column);
     }
-
-    public boolean validate() {
-      if (rangement.isCaisse()) {
-        final boolean result = !rangement.isInexistingNumPlace(numPlace);
-        if (!result) {
-          Debug("Place: ERROR: Inexisting num place '" + numPlace + "' in " + rangement.getNom());
-        }
-        return result;
-      }
-      final boolean existingCell = rangement.isExistingCell(numPlace - 1, line - 1, column - 1);
-      if (!existingCell) {
-        Debug("ERROR: Inexisting cell: numplace: " + (numPlace - 1) + ", line: " + (line - 1) + ", column:" + (column - 1) + " in " + rangement.getNom());
-      }
-      return existingCell;
-    }
-  }
-
-  private static void Debug(String sText) {
-    Program.Debug("Rangement: " + sText);
   }
 }

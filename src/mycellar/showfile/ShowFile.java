@@ -71,8 +71,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.5
- * @since 16/03/21
+ * @version 9.6
+ * @since 17/03/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -459,12 +459,13 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       add(clearWorksheetButton, "align right");
       add(removeFromWorksheetButton, "align right");
       add(modifyButton, "align right");
-    } else if (isError()){
+    } else if (isError()) {
       add(createPlacesButton, "align right, split 3");
       add(reloadButton, "align right");
     }
     add(deleteButton, "align right, wrap");
 
+    placeCbx.addItem(Program.EMPTY_PLACE);
     Program.getCave().forEach(placeCbx::addItem);
 
     Arrays.stream(BottleColor.values()).forEach(colorCbx::addItem);
@@ -770,14 +771,15 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         JOptionPane.showMessageDialog(Start.getInstance(), panelPlace,
             Program.getLabel("Main.ChooseCell"),
             JOptionPane.PLAIN_MESSAGE);
-        final Optional<Place> selectedPlace = panelPlace.getSelectedPlace();
-        if (selectedPlace.isPresent()) {
-          place = selectedPlace.get();
+        place = panelPlace.getSelectedPlace();
+        if (place.hasPlace()) {
           rangement = place.getRangement();
           empl = rangement.getNom();
           num_empl = place.getPlaceNumIndex();
           line = place.getLineIndex();
           column = place.getColumnIndex();
+        } else {
+          num_empl = -1;
         }
       }
     }

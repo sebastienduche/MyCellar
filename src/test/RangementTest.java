@@ -1,6 +1,7 @@
 package test;
 
 import mycellar.Bouteille;
+import mycellar.Program;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,6 +65,14 @@ class RangementTest {
     } catch (Exception ignored) {
     }
     rangement = new Rangement.CaisseBuilder("test").build();
+
+    Program.addCave(caisseLimit);
+    Program.addCave(caisseNoLimit);
+    Program.addCave(armoire1x3x3);
+    Program.addCave(armoire1x3x3Builder);
+    Program.addCave(armoire2x2_3x22545);
+    Program.addCave(armoire2x2_3x22545Builder);
+    Program.addCave(rangement);
   }
 
   @Test

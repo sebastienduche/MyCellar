@@ -40,8 +40,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.7
- * @since 17/03/21
+ * @version 7.8
+ * @since 23/03/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -293,21 +293,20 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		CountryVignobleController.addVignobleFromBottle(bottle);
 		CountryVignobleController.setRebuildNeeded();
 		if (isCaisse) {
-			lieu_num = place.getPlaceNumValueSimplePlace();
+			lieu_num = place.getPlaceNum();
 			bottle.setNumLieu(lieu_num);
 			bottle.setLigne(0);
 			bottle.setColonne(0);
 		}	else {
-			bottle.setNumLieu(lieu_num);
-			bottle.setLigne(line);
-			bottle.setColonne(column);
-
-			Optional<Bouteille> bottleInPlace = cave.getBouteille(bottle);
+			Optional<Bouteille> bottleInPlace = cave.getBouteille(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build());
 			if (bottleInPlace.isPresent()) {
 				if (!askToReplaceBottle(bottleInPlace.get())) {
 					return false;
 				}
 			}
+			bottle.setNumLieu(lieu_num);
+			bottle.setLigne(line);
+			bottle.setColonne(column);
 		}
 
 		bottle.setModified();

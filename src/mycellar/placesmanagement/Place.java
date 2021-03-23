@@ -9,28 +9,27 @@ import mycellar.Program;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 17/03/21
+ * @version 0.5
+ * @since 23/03/21
  */
 
 public class Place {
 
   private final Rangement rangement;
   private final int placeNum;
-  private final int placeNumValueSimplePlace; // Value as displayed in the combo
-  private int line;
-  private int column;
+  private final int line;
+  private final int column;
 
-  private Place(Rangement rangement, int placeNum, int placeNumValueSimplePlace) {
+  private Place(Rangement rangement, int placeNum) {
     this.rangement = rangement;
     this.placeNum = placeNum;
-    this.placeNumValueSimplePlace = placeNumValueSimplePlace;
+    line = -1;
+    column = -1;
   }
 
-  private Place(Rangement rangement, int placeNum, int placeNumValueSimplePlace, int line, int column) {
+  private Place(Rangement rangement, int placeNum, int line, int column) {
     this.rangement = rangement;
     this.placeNum = placeNum;
-    this.placeNumValueSimplePlace = placeNumValueSimplePlace;
     this.line = line;
     this.column = column;
   }
@@ -40,9 +39,6 @@ public class Place {
   }
 
   public int getPlaceNum() {
-    if (isSimplePlace()) {
-      return placeNumValueSimplePlace;
-    }
     return placeNum;
   }
 
@@ -54,17 +50,10 @@ public class Place {
     return column;
   }
 
-  public int getPlaceNumIndexForCombo() {
-    if (isSimplePlace()) {
-      return placeNum - rangement.getStartCaisse() + 1;
-    }
-    return placeNum;
-  }
-
   /** Zero based */
   public int getPlaceNumIndex() {
     if (isSimplePlace()) {
-      return getPlaceNumValueSimplePlace() - 1;
+      return placeNum - rangement.getStartCaisse();
     }
     return placeNum - 1;
   }
@@ -83,10 +72,6 @@ public class Place {
     return rangement.isCaisse();
   }
 
-  public int getPlaceNumValueSimplePlace() {
-    return placeNumValueSimplePlace;
-  }
-
   public boolean hasPlace() {
     return !Program.EMPTY_PLACE.equals(rangement);
   }
@@ -95,7 +80,6 @@ public class Place {
 
     protected final Rangement rangement;
     private int numPlace;
-    private int numPlaceSimplePlace;
     private int line;
     private int column;
 
@@ -105,17 +89,6 @@ public class Place {
 
     public PlaceBuilder withNumPlace(int numPlace) {
       this.numPlace = numPlace;
-      return this;
-    }
-
-    public PlaceBuilder withNumPlaces(int numPlace, int numPlaceSimplePlace) {
-      this.numPlace = numPlace;
-      this.numPlaceSimplePlace = numPlaceSimplePlace;
-      return this;
-    }
-
-    public PlaceBuilder withNumPlaceSimplePlace(String numPlaceSimplePlace) {
-      this.numPlaceSimplePlace = Program.safeParseInt(numPlaceSimplePlace, -1);
       return this;
     }
 
@@ -131,9 +104,9 @@ public class Place {
 
     public Place build() {
       if (rangement.isCaisse()) {
-        return new Place(rangement, numPlace, numPlaceSimplePlace);
+        return new Place(rangement, numPlace);
       }
-      return new Place(rangement, numPlace, numPlaceSimplePlace, line, column);
+      return new Place(rangement, numPlace, line, column);
     }
   }
 }

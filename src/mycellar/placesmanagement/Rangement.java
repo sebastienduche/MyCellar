@@ -16,8 +16,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 27.7
- * @since 18/03/21
+ * @version 27.8
+ * @since 23/03/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -320,21 +320,20 @@ public class Rangement implements Comparable<Rangement> {
 		}
 
 		int resul = 0;
-		try {
-			int nb_ligne = getNbLignes(emplacement);
-			for (int j = 0; j < nb_ligne; j++) {
-				int nb_colonne = getNbColonnes(emplacement, j);
-				for (int i = 0; i < nb_colonne; i++) {
-					if (stockage[emplacement][j][i] != null) {
-						resul++;
-					}
+		int nb_ligne = getNbLignes(emplacement);
+		for (int j = 0; j < nb_ligne; j++) {
+			int nb_colonne = getNbColonnes(emplacement, j);
+			for (int i = 0; i < nb_colonne; i++) {
+				if (stockage[emplacement][j][i] != null) {
+					resul++;
 				}
 			}
 		}
-		catch (Exception e) {
-			Program.showException(e);
-		}
 		return resul;
+	}
+
+	public int getNbCaseUse(Place place) {
+		return getNbCaseUse(place.getPlaceNumIndex());
 	}
 
 	/**
@@ -508,6 +507,10 @@ public class Rangement implements Comparable<Rangement> {
 		return Optional.empty();
 	}
 
+	public Optional<Bouteille> getBouteille(Place place) {
+		return getBouteille(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
+	}
+
 	/**
 	 * Vide la case
 	 *
@@ -650,7 +653,7 @@ public class Rangement implements Comparable<Rangement> {
 	}
 
 	public boolean canAddBottle(Place place) {
-		return canAddBottle(place.getPlaceNum() - 1, place.getLine() - 1, place.getColumn() - 1);
+		return canAddBottle(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
 	}
 
 	/**
@@ -671,12 +674,17 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param _nEmpl (0...n)
 	 * @return
 	 */
+	@Deprecated
 	public boolean hasFreeSpaceInCaisse(int _nEmpl) {
 		if (!isCaisse()) {
 			return false;
 		}
 
 		return !isLimited() || getNbCaseUse(_nEmpl) != getNbColonnesStock();
+	}
+
+	public boolean hasFreeSpaceInCaisse(Place place) {
+		return isCaisse() && (!isLimited() || getNbCaseUseCaisse(place.getPlaceNum()) != getNbColonnesStock());
 
 	}
 

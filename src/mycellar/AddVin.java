@@ -49,8 +49,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.5
- * @since 17/03/21
+ * @version 27.6
+ * @since 23/03/21
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -356,11 +356,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			Place place = panelPlace.getSelectedPlace();
 			Rangement rangement = place.getRangement();
 			Objects.requireNonNull(rangement);
-			boolean bModifyPlace = true;
 			if (!place.hasPlace() && m_bmodify) {
 				//Si aucun emplacement n'a ete selectionne (modif du nom)
 				place = bottle.getPlace();
-				bModifyPlace = false;
 				if (rangementInModif != null) {
 					rangement = rangementInModif;
 				}
@@ -370,10 +368,12 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			m_end.setText(Program.getLabel("Infos312"));
 			boolean m_bbottle_add = false;
 			boolean resul = true;
-			if (bIsCaisse) {
+			if (!panelPlace.hasSelecedPlace() && m_bmodify) {
+				m_bbottle_add = modifyOneOrSeveralBottlesWithoutPlaceModification(prix, comment1, dateOfC, parker, color, status, country, vignoble, aoc, igp, annee, nom, demie);
+			} else if (bIsCaisse) {
 				//Caisse
 				Debug("Is a Caisse");
-				if (!rangement.hasFreeSpaceInCaisse(place.getPlaceNumIndex())) {
+				if (!rangement.hasFreeSpaceInCaisse(place)) {
 					Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
 					m_end.setText("");
 					return;
@@ -401,8 +401,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 								//Add several bottles in Caisse
 								Debug("Adding multiple bottles in the same place: YES");
 
-								if (rangement.isLimited() && (rangement.getNbCaseUse(place.getPlaceNumIndex()) + nb_bottle_rest) >= rangement.getNbColonnesStock()) {
+								if (rangement.isLimited() && (rangement.getNbCaseUse(place) + nb_bottle_rest) >= rangement.getNbColonnesStock()) {
 									Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
+									m_end.setText("");
 								} else {
 									for (int j = 0; j <= nb_bottle_rest; j++) {
 										Bouteille b = new Bouteille(bouteille);
@@ -421,7 +422,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 								setStillNbBottle(nb_bottle_rest);
 							}
 						} else { //Un seul rangement simple
-							if (rangement.isLimited() && (rangement.getNbCaseUse(place.getPlaceNumIndex()) + nb_bottle_rest + 1) > rangement.getNbColonnesStock()) {
+							if (rangement.isLimited() && (rangement.getNbCaseUse(place) + nb_bottle_rest + 1) > rangement.getNbColonnesStock()) {
 								resul = false;
 								Debug("ERROR: This caisse is full. Unable to add all bottles in the same place!");
 								m_bbottle_add = false;
@@ -474,7 +475,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 					//Recuperation des differentes bouteilles
 					Debug("Modifying multiple bottles to a Simple place");
 					resul = true;
-					if (!bModifyPlace) {
+					if (!place.hasPlace()) {
 						Debug("Modifying without changing place");
 						boolean bOneBottle = listBottleInModification.size() == 1;
 						// Modification sans changement de lieu 10/05/08
@@ -531,88 +532,76 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 						}
 					} else {
 						Debug("Modifying with changing place");
-						if (place.getPlaceNumIndexForCombo() == 0) {
-							resul = false;
-							Debug("ERROR: Wrong place number");
-							Erreur.showSimpleErreur(Program.getError("Error056"));
+						int nbbottle = listBottleInModification.size();
+						if (rangement.isLimited() && (rangement.getNbCaseUse(place) + nbbottle) > rangement.getNbColonnesStock()) {
+							Debug("ERROR: Not enough place!");
+							Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
 							panelPlace.enableSimplePlace(true);
 							m_add.setEnabled(true);
 							m_end.setText("");
 						} else {
-							int nbbottle = listBottleInModification.size();
-							if (rangement.isLimited() && (rangement.getNbCaseUse(place.getPlaceNumIndex()) + nbbottle) > rangement.getNbColonnesStock()) {
-								Debug("ERROR: Not enough place!");
-								Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
-								panelPlace.enableSimplePlace(true);
-								m_add.setEnabled(true);
-								m_end.setText("");
-							} else {
-								boolean bOneBottle = listBottleInModification.size() == 1;
-								for (Bouteille tmp : listBottleInModification) {
-									if (bOneBottle || !comment1.isEmpty()) {
-										tmp.setComment(comment1);
+							boolean bOneBottle = listBottleInModification.size() == 1;
+							for (Bouteille tmp : listBottleInModification) {
+								if (bOneBottle || !comment1.isEmpty()) {
+									tmp.setComment(comment1);
+								}
+								if (bOneBottle || !dateOfC.isEmpty()) {
+									tmp.setMaturity(dateOfC);
+								}
+								if (bOneBottle || !parker.isEmpty()) {
+									tmp.setParker(parker);
+								}
+								if (bOneBottle || m_colorList.isModified()) {
+									tmp.setColor(color);
+								}
+								if (bOneBottle || statusList.isModified()) {
+									tmp.setStatus(status);
+								}
+								if (bOneBottle || !demie.isEmpty()) {
+									tmp.setType(demie);
+								}
+								if (bOneBottle || !prix.isEmpty()) {
+									tmp.setPrix(prix);
+								}
+								if (bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
+									tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
+								}
+								Debug("Adding multiple bottles in simple place...");
+								if (m_bmodify && tmp.isInExistingPlace()) {
+									Debug("Delete from stock");
+									tmp.getRangement().clearStock(tmp);
+								}
+								//Ajout des bouteilles dans la caisse
+								tmp.setEmplacement(rangement.getNom());
+								tmp.setNumLieu(place.getPlaceNum());
+								tmp.setLigne(0);
+								tmp.setColonne(0);
+								tmp.updateStatus();
+								tmp.getRangement().updateToStock(tmp);
+								Debug("Bottle updated.");
+								Program.getStorage().addHistory(m_bmodify ? HistoryState.MODIFY : HistoryState.ADD, tmp);
+								if (m_bmodify) {
+									m_bbottle_add = true;
+									resetValues();
+									if (m_half.getItemCount() > 1) {
+										m_half.setSelectedIndex(1);
 									}
-									if (bOneBottle || !dateOfC.isEmpty()) {
-										tmp.setMaturity(dateOfC);
-									}
-									if (bOneBottle || !parker.isEmpty()) {
-										tmp.setParker(parker);
-									}
-									if (bOneBottle || m_colorList.isModified()) {
-										tmp.setColor(color);
-									}
-									if (bOneBottle || statusList.isModified()) {
-										tmp.setStatus(status);
-									}
-									if (bOneBottle || !demie.isEmpty()) {
-										tmp.setType(demie);
-									}
-									if (bOneBottle || !prix.isEmpty()) {
-										tmp.setPrix(prix);
-									}
-									if (bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
-										tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
-									}
-									Debug("Adding multiple bottles in simple place...");
-									if (m_bmodify && tmp.isInExistingPlace()) {
-										Debug("Delete from stock");
-										tmp.getRangement().clearStock(tmp);
-									}
-									//Ajout des bouteilles dans la caisse
-									tmp.setEmplacement(rangement.getNom());
-									tmp.setNumLieu(place.getPlaceNumValueSimplePlace());
-									tmp.setLigne(0);
-									tmp.setColonne(0);
-									tmp.updateStatus();
-									tmp.getRangement().updateToStock(tmp);
-									Debug("Bottle updated.");
-									Program.getStorage().addHistory(m_bmodify ? HistoryState.MODIFY : HistoryState.ADD, tmp);
-									if (m_bmodify) {
+								} else {
+									if (rangement.addWine(tmp)) {
 										m_bbottle_add = true;
 										resetValues();
 										if (m_half.getItemCount() > 1) {
 											m_half.setSelectedIndex(1);
 										}
-									} else {
-										if (rangement.addWine(tmp)) {
-											m_bbottle_add = true;
-											resetValues();
-											if (m_half.getItemCount() > 1) {
-												m_half.setSelectedIndex(1);
-											}
-											m_labelStillToAdd.setText("");
-										}
+										m_labelStillToAdd.setText("");
 									}
 								}
 							}
 						}
 					}
 				}
-			} else if (!panelPlace.hasSelecedPlace()) {
-				m_bbottle_add = modifyOneOrSeveralBottlesWithoutPlaceModification(prix, comment1, dateOfC, parker, color, status, country, vignoble, aoc, igp, annee, nom, demie);
 			}	else {
 				// Ajout dans une Armoire
-				Objects.requireNonNull(rangement);
 				if (m_bmulti) { //On ne peut pas deplacer plusieurs bouteilles vers une armoire
 					Debug("ERROR: Unable to move multiple bottles to a Complex place");
 					m_end.setText("");

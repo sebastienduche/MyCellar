@@ -71,8 +71,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.6
- * @since 17/03/21
+ * @version 9.7
+ * @since 23/03/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -775,9 +775,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (place.hasPlace()) {
           rangement = place.getRangement();
           empl = rangement.getNom();
-          num_empl = place.getPlaceNumIndex();
-          line = place.getLineIndex();
-          column = place.getColumnIndex();
+          num_empl = place.getPlaceNum();
+          line = place.getLine();
+          column = place.getColumn();
         } else {
           num_empl = -1;
         }
@@ -793,28 +793,23 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
     if (b.getEmplacement().compareTo(empl) != 0 || b.getNumLieu() != num_empl || b.getLigne() != line || b.getColonne() != column) {
       // Controle de l'emplacement de la bouteille
-      if (rangement != null && (rangement.canAddBottle(num_empl, line, column) || (place != null && rangement.canAddBottle(place)))) {
+      if (place == null) {
+        place = new Place.PlaceBuilder(rangement != null ? rangement : Program.EMPTY_PLACE).withNumPlace(num_empl).withLine(line).withColumn(column).build();
+      }
+      if (rangement != null && (place != null && rangement.canAddBottle(place))) {
         Optional<Bouteille> bTemp = Optional.empty();
         if (!rangement.isCaisse()) {
-          if (num_empl < 0 || line < 0 || column < 0) {
-            Erreur.showSimpleErreur(Program.getError("Error197"));
-            return;
-          }
-          bTemp = rangement.getBouteille(num_empl, line, column);
+          bTemp = rangement.getBouteille(place);
         }
         if (bTemp.isPresent()) {
           final Bouteille bouteille = bTemp.get();
           Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
         } else {
           if (field == MyCellarFields.PLACE) {
-            if (place != null) {
-              b.setEmplacement(empl);
-              b.setNumLieu(place.getPlaceNum());
-              b.setLigne(place.getLine());
-              b.setColonne(place.getColumn());
-            } else {
-              b.setEmplacement(((Rangement) value).getNom());
-            }
+            b.setEmplacement(empl);
+            b.setNumLieu(place.getPlaceNum());
+            b.setLigne(place.getLine());
+            b.setColonne(place.getColumn());
           } else if (field == MyCellarFields.NUM_PLACE) {
             b.setNumLieu(Integer.parseInt((String) value));
           } else if (field == MyCellarFields.LINE) {

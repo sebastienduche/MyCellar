@@ -17,7 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class BouteilleTest {
 
   private Bouteille bouteille;
+  private Bouteille bouteilleCaisse;
   private Rangement armoire1x3x3;
+  private Rangement caisse;
 
   @BeforeEach
   void setUp() {
@@ -41,7 +43,17 @@ class BouteilleTest {
         .nb_emplacement(new int[]{3})
         .sameColumnsNumber(new int[]{3})
         .build();
+    caisse = new Rangement.CaisseBuilder("caisse")
+        .nb_emplacement(1)
+        .start_caisse(1)
+        .build();
+    bouteilleCaisse = new Bouteille.BouteilleBuilder("bouteille")
+        .place("caisse")
+        .numPlace(1)
+        .build();
+
     Program.addCave(armoire1x3x3);
+    Program.addCave(caisse);
   }
 
   @Test
@@ -327,11 +339,15 @@ class BouteilleTest {
 
   @Test
   void getPlace() {
-    final Place place = bouteille.getPlace();
+    Place place = bouteille.getPlace();
     assertEquals(armoire1x3x3, place.getRangement());
     assertEquals(1, place.getPlaceNum());
     assertEquals(2, place.getLine());
     assertEquals(3, place.getColumn());
+
+    place = bouteilleCaisse.getPlace();
+    assertEquals(caisse, place.getRangement());
+    assertEquals(1, place.getPlaceNum());
   }
 
   @Test

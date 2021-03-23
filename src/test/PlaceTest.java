@@ -18,9 +18,13 @@ class PlaceTest {
 
   @BeforeEach
   void setUp() {
-    caisseNoLimit = new Rangement.CaisseBuilder("caisseNoLimit").build();
+    caisseNoLimit = new Rangement.CaisseBuilder("caisseNoLimit").build(); // 1 emplacement : 0
     // Caisse avec 2 emplacements commençant à 1 et limité à 6 bouteilles
-    caisseLimit = new Rangement.CaisseBuilder("caisseLimit").nb_emplacement(2).start_caisse(1).limit(true).limite_caisse(6).build();
+    caisseLimit = new Rangement.CaisseBuilder("caisseLimit")
+        .nb_emplacement(2) // 1 , 2
+        .start_caisse(1)
+        .limit(true)
+        .limite_caisse(6).build();
     armoire1x3x3 = new Rangement.RangementBuilder("armoire1x3x3")
         .nb_emplacement(new int[]{3})
         .sameColumnsNumber(new int[]{3})
@@ -32,33 +36,20 @@ class PlaceTest {
 
   @Test
   void testSimplePlace() {
-    Place placeNoLimit = new Place.PlaceBuilder(caisseNoLimit).withNumPlaces(1, 1).build();
-    assertEquals(1, placeNoLimit.getPlaceNum());
-    assertEquals(1, placeNoLimit.getPlaceNumValueSimplePlace());
+    Place placeNoLimit = new Place.PlaceBuilder(caisseNoLimit).withNumPlace(0).build();
+    assertEquals(0, placeNoLimit.getPlaceNum());
     assertEquals(0, placeNoLimit.getPlaceNumIndex());
-    assertEquals(2, placeNoLimit.getPlaceNumIndexForCombo());
     assertEquals(caisseNoLimit, placeNoLimit.getRangement());
     assertTrue(placeNoLimit.isSimplePlace());
   }
 
   @Test
   void testSimplePlaceLimit() {
-    Place placeLimit = new Place.PlaceBuilder(caisseLimit).withNumPlaces(1, 1).build();
-    assertEquals(1, placeLimit.getPlaceNum());
-    assertEquals(1, placeLimit.getPlaceNumValueSimplePlace());
-    assertEquals(0, placeLimit.getPlaceNumIndex());
-    assertEquals(1, placeLimit.getPlaceNumIndexForCombo());
+    Place placeLimit = new Place.PlaceBuilder(caisseLimit).withNumPlace(2).build();
+    assertEquals(2, placeLimit.getPlaceNum());
+    assertEquals(1, placeLimit.getPlaceNumIndex());
     assertEquals(caisseLimit, placeLimit.getRangement());
     assertTrue(placeLimit.isSimplePlace());
-  }
-
-  @Test
-  void testSimplePlaceLimit2() {
-    Place placeLimit2 = new Place.PlaceBuilder(caisseLimit).withNumPlaces(1, 2).build();
-    assertEquals(2, placeLimit2.getPlaceNum());
-    assertEquals(2, placeLimit2.getPlaceNumValueSimplePlace());
-    assertEquals(1, placeLimit2.getPlaceNumIndex());
-    assertEquals(1, placeLimit2.getPlaceNumIndexForCombo());
   }
 
   @Test

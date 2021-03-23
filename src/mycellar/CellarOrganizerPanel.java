@@ -59,8 +59,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 17/03/21
+ * @version 3.4
+ * @since 23/03/21
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -310,7 +310,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 			comboRangement.removeAllItems();
 			comboRangement.addItem(Program.EMPTY_PLACE);
 			for (Rangement r : Program.getCave()) {
-				if (!r.isCaisse()) {
+				if (iPlace == null || !r.isCaisse()) {
 					armoires.add(r);
 					comboRangement.addItem(r);
 				}

@@ -49,8 +49,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 22/02/21
+ * @version 3.5
+ * @since 23/03/21
  */
 public final class RangementUtils {
 
@@ -623,7 +623,7 @@ public final class RangementUtils {
 					Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 					continue;
 				}
-				if (rangement.hasFreeSpaceInCaisse(bouteille.getNumLieu() - rangement.getStartCaisse())) {
+				if (rangement.hasFreeSpaceInCaisse(bouteille.getPlace())) {
 					rangement.updateToStock(bouteille);
 				} else {
 					// Caisse pleine

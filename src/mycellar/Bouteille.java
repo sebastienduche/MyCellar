@@ -35,8 +35,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.1
- * @since 17/03/21
+ * @version 6.2
+ * @since 23/03/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -404,7 +404,7 @@ public class Bouteille implements Serializable{
 
 	 public Place getPlace() {
 		return new Place.PlaceBuilder(getRangement())
-				.withNumPlaces(getNumLieu(), getNumLieu())
+				.withNumPlace(getNumLieu())
 				.withLine(getLigne())
 				.withColumn(getColonne())
 				.build();

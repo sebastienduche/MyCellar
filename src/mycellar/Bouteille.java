@@ -8,6 +8,7 @@
 
 package mycellar;
 
+import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarFields;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.Place;
@@ -35,8 +36,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.2
- * @since 23/03/21
+ * @version 6.7
+ * @since 08/04/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -88,7 +89,7 @@ import java.util.stream.Collectors;
 		"lastModified"
 })
 @XmlRootElement(name = "Bouteille")
-public class Bouteille implements Serializable{
+public class Bouteille implements IMyCellarObject, Serializable {
 
 	private static final long serialVersionUID = 7443323147347096230L;
 

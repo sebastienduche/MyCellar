@@ -52,8 +52,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.6
- * @since 30/12/20
+ * @version 7.8
+ * @since 11/02/21
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
@@ -78,14 +78,14 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 	public Creer_Tableaux() {
 		Debug("Constructor");
 		try {
-			final MyCellarLabel fileLabel = new MyCellarLabel(Program.getLabel("Infos095")); //"Nom du fichier genere:");
+			final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO, "095"); //"Nom du fichier genere:");
 			m_jcb_options.addActionListener(this::options_actionPerformed);
 			final MyCellarButton browse = new MyCellarButton("...");
 			browse.addActionListener(this::browse_actionPerformed);
-			final MyCellarButton parameter = new MyCellarButton(Program.getLabel("Main.Parameters"));
+			final MyCellarButton parameter = new MyCellarButton(LabelType.INFO_OTHER, "Main.Parameters");
 			parameter.addActionListener(this::param_actionPerformed);
-			final MyCellarLabel chooseLabel = new MyCellarLabel(Program.getLabel("Infos096")); //"Selectionner les rangements a generer:");
-			final MyCellarButton create = new MyCellarButton(Program.getLabel("Infos018")); //"Creer");
+			final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO, "096"); //"Selectionner les rangements a generer:");
+			final MyCellarButton create = new MyCellarButton(LabelType.INFO, "018"); //"Creer");
 			create.setMnemonic(creerChar);
 
 			final ButtonGroup buttonGroup = new ButtonGroup();
@@ -105,9 +105,8 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 			type_HTML.addActionListener(this::jradio_actionPerformed);
 			type_XLS.addActionListener(this::jradio_actionPerformed);
 
-			for (Rangement r : Program.getCave()) {
-				tv.addRangement(r);
-			}
+			Program.getCave().forEach(tv::addRangement);
+
 			JScrollPane jScrollPane = new JScrollPane(table);
 			end.setHorizontalAlignment(SwingConstants.CENTER);
 			end.setForeground(Color.red);
@@ -141,9 +140,9 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 					break;
 			}
 
-			setLayout(new MigLayout("","grow","[][][grow]"));
+			setLayout(new MigLayout("", "grow", "[][][grow]"));
 			final JPanel panelFile = new JPanel();
-			panelFile.setLayout(new MigLayout("","grow",""));
+			panelFile.setLayout(new MigLayout("", "grow", ""));
 			panelFile.add(fileLabel, "wrap");
 			panelFile.add(name, "grow, split 3");
 			panelFile.add(browse);
@@ -466,9 +465,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 	public void updateView() {
 		SwingUtilities.invokeLater(() -> {
 			tv.removeAll();
-			for (Rangement r : Program.getCave()) {
-				tv.addRangement(r);
-			}
+			Program.getCave().forEach(tv::addRangement);
 		});
 	}
 }

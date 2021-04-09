@@ -16,8 +16,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 27.3
- * @since 30/01/21
+ * @version 27.8
+ * @since 23/03/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -63,7 +63,7 @@ public class Rangement implements Comparable<Rangement> {
 		} else {
 			nbColonnesStock = -1;
 		}
-		
+
 		stock_nblign = 1;
 		caisse = true;
 
@@ -117,7 +117,7 @@ public class Rangement implements Comparable<Rangement> {
 	public int getNbEmplacements() {
 		return nb_emplacements;
 	}
-	
+
 	public void setNbEmplacements(int nb_emplacements) {
 		this.nb_emplacements = nb_emplacements;
 	}
@@ -175,7 +175,7 @@ public class Rangement implements Comparable<Rangement> {
 
 	/**
 	 * Indique si la cellule demandée existe
-	 * 
+	 *
 	 * @param emplacement
 	 * @param ligne
 	 * @param col
@@ -320,21 +320,20 @@ public class Rangement implements Comparable<Rangement> {
 		}
 
 		int resul = 0;
-		try {
-			int nb_ligne = getNbLignes(emplacement);
-			for (int j = 0; j < nb_ligne; j++) {
-				int nb_colonne = getNbColonnes(emplacement, j);
-				for (int i = 0; i < nb_colonne; i++) {
-					if (stockage[emplacement][j][i] != null) {
-						resul++;
-					}
+		int nb_ligne = getNbLignes(emplacement);
+		for (int j = 0; j < nb_ligne; j++) {
+			int nb_colonne = getNbColonnes(emplacement, j);
+			for (int i = 0; i < nb_colonne; i++) {
+				if (stockage[emplacement][j][i] != null) {
+					resul++;
 				}
 			}
 		}
-		catch (Exception e) {
-			Program.showException(e);
-		}
 		return resul;
+	}
+
+	public int getNbCaseUse(Place place) {
+		return getNbCaseUse(place.getPlaceNumIndex());
 	}
 
 	/**
@@ -508,6 +507,10 @@ public class Rangement implements Comparable<Rangement> {
 		return Optional.empty();
 	}
 
+	public Optional<Bouteille> getBouteille(Place place) {
+		return getBouteille(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
+	}
+
 	/**
 	 * Vide la case
 	 *
@@ -522,6 +525,17 @@ public class Rangement implements Comparable<Rangement> {
 			} catch (Exception e) {
 				Program.showException(e);
 			}
+		}
+	}
+
+	public void clearComplexStock(Place place) {
+		if (isCaisse()) {
+			return;
+		}
+		try {
+			stockage[place.getPlaceNumIndex()][place.getLineIndex()][place.getLineIndex()] = null;
+		} catch (Exception e) {
+			Program.showException(e);
 		}
 	}
 
@@ -584,10 +598,10 @@ public class Rangement implements Comparable<Rangement> {
 		StringBuilder sText = new StringBuilder();
 		if (isCaisse()) {
 			sText.append("<place name=\"\" IsCaisse=\"true\" NbPlace=\"")
-			.append(getNbEmplacements())
-			.append("\" NumStart=\"")
-			.append(getStartCaisse())
-			.append("\"");
+					.append(getNbEmplacements())
+					.append("\" NumStart=\"")
+					.append(getStartCaisse())
+					.append("\"");
 			if (isLimited()) {
 				sText.append(" NbLimit=\"").append(getNbColonnesStock()).append("\">");
 			} else {
@@ -595,8 +609,8 @@ public class Rangement implements Comparable<Rangement> {
 			}
 		} else {
 			sText.append("<place name=\"\" IsCaisse=\"false\" NbPlace=\"")
-			.append(getNbEmplacements())
-			.append("\">\n");
+					.append(getNbEmplacements())
+					.append("\">\n");
 			for (int i=0; i<getNbEmplacements(); i++) {
 				sText.append("<internal-place NbLine=\"").append(getNbLignes(i)).append("\">\n");
 				for (int j=0; j<getNbLignes(i); j++) {
@@ -608,7 +622,7 @@ public class Rangement implements Comparable<Rangement> {
 		sText.append("<name><![CDATA[").append(getNom()).append("]]></name></place>");
 		return sText.toString();
 	}
-	
+
 	public boolean canAddBottle(Bouteille b) {
 		if (isCaisse()) {
 			return canAddBottle(b.getNumLieu() - start_caisse, 0, 0);
@@ -618,7 +632,7 @@ public class Rangement implements Comparable<Rangement> {
 
 	/**
 	 * Indique si l'on peut ajouter une bouteille dans un rangement
-	 * 
+	 *
 	 * @param _nEmpl Numero d'emplacement (0, n)
 	 * @param _nLine Numero de ligne (0, n)
 	 * @param _nCol Numero de colonne (0, n)
@@ -637,11 +651,15 @@ public class Rangement implements Comparable<Rangement> {
 		}
 		return !(_nCol < 0 || _nCol >= getNbColonnes(_nEmpl, _nLine));
 	}
-	
+
+	public boolean canAddBottle(Place place) {
+		return canAddBottle(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
+	}
+
 	/**
 	 * Indique si le numero du lieu existe
-	 * 
-	 * @param numPlace Numero d'emplacement (0, n)
+	 *
+	 * @param numPlace Numero d'emplacement (startCaisse, n)
 	 * @return
 	 */
 	boolean isInexistingNumPlace(int numPlace) {
@@ -652,16 +670,21 @@ public class Rangement implements Comparable<Rangement> {
 	/**
 	 * HasFreeSpaceInCaisse Indique si l'on peut encore ajouter des
 	 * bouteilles dans une caisse
-	 * 
+	 *
 	 * @param _nEmpl (0...n)
 	 * @return
 	 */
+	@Deprecated
 	public boolean hasFreeSpaceInCaisse(int _nEmpl) {
 		if (!isCaisse()) {
 			return false;
 		}
 
 		return !isLimited() || getNbCaseUse(_nEmpl) != getNbColonnesStock();
+	}
+
+	public boolean hasFreeSpaceInCaisse(Place place) {
+		return isCaisse() && (!isLimited() || getNbCaseUseCaisse(place.getPlaceNum()) != getNbColonnesStock());
 
 	}
 
@@ -685,7 +708,7 @@ public class Rangement implements Comparable<Rangement> {
 
 	/**
 	 * Retourne le dernier emplacement utilisable
-	 * 
+	 *
 	 * @return
 	 */
 	public int getLastNumEmplacement() {
@@ -693,6 +716,18 @@ public class Rangement implements Comparable<Rangement> {
 			return getStartCaisse() + getNbEmplacements();
 		}
 		return getNbEmplacements();
+	}
+
+	/**
+	 * Retourne le premier emplacement utilisable
+	 *
+	 * @return
+	 */
+	public int getFirstNumEmplacement() {
+		if (isCaisse()) {
+			return getStartCaisse();
+		}
+		return 1;
 	}
 
 	/**
@@ -708,7 +743,7 @@ public class Rangement implements Comparable<Rangement> {
 			storageCaisse.put(i, new ArrayList<>());
 		}
 	}
-	
+
 	/**
 	 * Réinitialisation du stockage
 	 */
@@ -767,8 +802,8 @@ public class Rangement implements Comparable<Rangement> {
 	}
 
 	public void updatePlace(List<Part> listPart) {
-	  Debug("Updating the list of places: ");
-	  listPart.forEach(part -> Debug(part.toString()));
+		Debug("Updating the list of places: ");
+		listPart.forEach(part -> Debug(part.toString()));
 		setPlace(listPart);
 		Program.setListCaveModified();
 		Program.setModified();

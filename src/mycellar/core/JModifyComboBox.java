@@ -1,10 +1,8 @@
 package mycellar.core;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
 import mycellar.Start;
-import mycellar.core.MyCellarComboBox;
+
+import java.awt.event.ItemEvent;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -12,8 +10,8 @@ import mycellar.core.MyCellarComboBox;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 21/01/17
+ * @version 0.4
+ * @since 12/03/21
  */
 
 public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
@@ -23,7 +21,7 @@ public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
 	private boolean modified;
 	private boolean active;
 
-	JModifyComboBox() {
+	public JModifyComboBox() {
 		modified = false;
 		active = true;
 		addItemListener(itemEvent -> {

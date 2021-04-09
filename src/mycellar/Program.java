@@ -4,7 +4,7 @@ import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.Grammar;
-import mycellar.core.IAddVin;
+import mycellar.core.IPlace;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
@@ -16,6 +16,7 @@ import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.UnableToOpenFileException;
+import mycellar.core.UnableToOpenMyCellarFileException;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
@@ -112,14 +113,14 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.6
- * @since 28/01/21
+ * @version 25.3
+ * @since 18/03/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "3.9.3.7";
-	public static final int VERSION = 67;
+	public static final String INTERNAL_VERSION = "4.0.3.1";
+	public static final int VERSION = 68;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
@@ -144,13 +145,14 @@ public final class Program {
 	private static FileWriter oDebugFile = null;
 	private static File debugFile = null;
 
-	private static final LinkedList<Rangement> PLACES = new LinkedList<>();
-	private static final LinkedList<Bouteille> TRASH = new LinkedList<>();
-	private static final LinkedList<MyCellarError> ERRORS = new LinkedList<>();
+	private static final List<Rangement> PLACES = new LinkedList<>();
+	private static final List<Bouteille> TRASH = new LinkedList<>();
+	private static final List<MyCellarError> ERRORS = new LinkedList<>();
 
+	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
 	static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").build();
 	public static final Rangement EMPTY_PLACE = new Rangement.CaisseBuilder("").build();
-	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
+	public static final Rangement STOCK_PLACE = new Rangement.CaisseBuilder(TEMP_PLACE).build();
 
 	private static String m_sWorkDir = null;
 	private static String m_sGlobalDir = null;
@@ -274,6 +276,18 @@ public final class Program {
 	}
 	private static String getGlobalConfigFilePath() {
 		return getGlobalDir() + CONFIG_INI;
+	}
+
+	public static List<Bouteille> getTrash() {
+		return TRASH;
+	}
+
+	public static void setToTrash(Bouteille b) {
+		TRASH.add(b);
+	}
+
+	public static List<MyCellarError> getErrors() {
+		return ERRORS;
 	}
 
 	private static void loadProperties() throws UnableToOpenFileException {
@@ -460,13 +474,14 @@ public final class Program {
 		}
 	}
 
-	private static void sendErrorToGitHub(String error, File filename) throws IOException {
+	private static void sendErrorToGitHub(String title, File file) throws IOException {
 		StringBuilder stringBuilder = new StringBuilder();
-		try (var scanner = new Scanner(filename)) {
+		try (var scanner = new Scanner(file)) {
 			while (scanner.hasNextLine()) {
 				stringBuilder.append(toCleanString(scanner.nextLine())).append("\n");
 			}
 		} catch (FileNotFoundException e) {
+			Debug("Program: ERROR Unable to send file to GitHub: " + e.getMessage());
 			return;
 		}
 		try (var stream = new InputStreamReader(Program.class.getClassLoader().getResourceAsStream("resources/MyCellar.dat"));
@@ -479,24 +494,12 @@ public final class Program {
 
 			final GitHub gitHub = GitHub.connect(values[0], values[1]);
 			final GHGistBuilder gist = gitHub.createGist();
-			gist.description(error)
+			gist.description(title)
 					.file("Debug.log", stringBuilder.toString())
 					.create();
 		} catch (IOException | RuntimeException e) {
-			Debug("Program: ERROR while reading MyCellar.dat: " + e.getMessage());
+			Debug("Program: ERROR while creating a Gist: " + e.getMessage());
 		}
-	}
-
-	public static LinkedList<Bouteille> getTrash() {
-		return TRASH;
-	}
-
-	public static void setToTrash(Bouteille b) {
-		TRASH.add(b);
-	}
-	
-	public static LinkedList<MyCellarError> getErrors() {
-		return ERRORS;
 	}
 
 	public static void addError(MyCellarError error) {
@@ -624,7 +627,7 @@ public final class Program {
 		saveGlobalProperties();
 
 		if (isListCaveModified()) {
-			MyXmlDom.writeMyCellarXml(getCave(), "");
+			MyXmlDom.writeMyCellarXml(PLACES, "");
 		}
 
 		getStorage().saveHistory();
@@ -678,15 +681,18 @@ public final class Program {
 		
 	}
 
-	/**
-	 * GetCave
-	 *
-	 * @return LinkedList<Rangement>
-	 */
-	public static LinkedList<Rangement> getCave() {
+	public static List<Rangement> getCave() {
 		return PLACES;
 	}
 
+	public static boolean isExistingPlace(final String name) {
+		if (name == null || name.strip().isEmpty()) {
+			return false;
+		}
+
+		final String placeName = name.strip();
+		return PLACES.stream().anyMatch(rangement -> rangement.getNom().equals(placeName));
+	}
 
 	/**
 	 * GetCave
@@ -695,16 +701,11 @@ public final class Program {
 	 * @return Rangement
 	 */
 	public static Rangement getCave(final String name) {
-		if (name == null || name.strip().isEmpty()) {
-			return null;
-		}
-
 		final String placeName = name.strip();
-		final List<Rangement> list = PLACES.stream().filter(rangement -> rangement.getNom().equals(placeName))
-				.collect(Collectors.toList());
-		if (list.isEmpty()) {
-			return null;
+		if (TEMP_PLACE.equals(placeName)) {
+			return STOCK_PLACE;
 		}
+		final List<Rangement> list = PLACES.stream().filter(rangement -> rangement.getNom().equals(placeName)).collect(Collectors.toList());
 		return list.get(0);
 	}
 	
@@ -714,7 +715,7 @@ public final class Program {
 	 * @param rangement Rangement
 	 */
 	public static void addCave(Rangement rangement) {
-		if(rangement == null) {
+		if (rangement == null) {
 			return;
 		}
 		PLACES.add(rangement);
@@ -730,7 +731,7 @@ public final class Program {
 	 * @param rangement Rangement
 	 */
 	 public static void removeCave(Rangement rangement) {
-		if(rangement == null) {
+		if (rangement == null) {
 			return;
 		}
 		PLACES.remove(rangement);
@@ -738,11 +739,6 @@ public final class Program {
 		setListCaveModified();
 	}
 
-	/**
-	 * GetCaveLength
-	 *
-	 * @return int
-	 */
 	public static int getCaveLength() {
 		return PLACES.size();
 	}
@@ -814,7 +810,7 @@ public final class Program {
 			// On a deja enleve un element de la liste
 			putGlobalConfigString(MyCellarSettings.LAST_OPEN4, "");
 			saveGlobalProperties();
-			throw new UnableToOpenFileException("File not found: " + file.getAbsolutePath());
+			throw new UnableToOpenMyCellarFileException("File not found: " + file.getAbsolutePath());
 		}
 
 		myCellarFile = new MyCellarFile(file);
@@ -827,13 +823,6 @@ public final class Program {
 		if (!loadObjects()) {
 			Debug("Program: ERROR Reading Objects KO");
 			throw new UnableToOpenFileException("Error while reading objects.");
-		}
-
-		Debug("Program: Checking place count");
-		long i = getCave().stream().filter(Objects::nonNull).count();
-		if (i != getCaveLength()) {
-			Debug("Program: Place Count: Program=" + getCaveLength() + " cave=" + i);
-			throw new UnableToOpenFileException("Place Count: Program=" + getCaveLength() + " cave=" + i);
 		}
 
 		loadProperties();
@@ -912,10 +901,10 @@ public final class Program {
 			}
 
 			if (isListCaveModified()) {
-				MyXmlDom.writeMyCellarXml(getCave(), "");
+				MyXmlDom.writeMyCellarXml(PLACES, "");
 			}
 
-			if (!getCave().isEmpty()) {
+			if (!PLACES.isEmpty()) {
 				getStorage().saveHistory();
 				getStorage().saveWorksheet();
 				CountryVignobleController.save();
@@ -953,9 +942,7 @@ public final class Program {
 		TRASH.clear();
 		modified = false;
 		listCaveModified = false;
-		if (getCave() != null) {
-			getCave().clear();
-		}
+		PLACES.clear();
 		DEFAULT_PLACE.resetStock();
 		EMPTY_PLACE.resetStock();
 		myCellarFile = null;
@@ -1287,6 +1274,10 @@ public final class Program {
 		}
 	}
 
+	static void updatePanelsWithoutBottles() {
+		UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView());
+	}
+
 	public static List<CountryJaxb> getCountries() {
 		return CountryListJaxb.getInstance().getCountries();
 	}
@@ -1563,6 +1554,7 @@ public final class Program {
 		if (creerRangement == null) {
 			creerRangement = new Creer_Rangement(true);
 			OPENED_OBJECTS.put(MODIFY_PLACE, creerRangement);
+			UPDATABLE_OBJECTS.put(MODIFY_PLACE, creerRangement);
 		}
 		return creerRangement;
 	}
@@ -1721,10 +1713,10 @@ public final class Program {
 		return (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL);
 	}
 
-	static CellarOrganizerPanel createChooseCellPanel(IAddVin addVin) {
+	static CellarOrganizerPanel createChooseCellPanel(IPlace iPlace) {
 		CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL);
 		if (cellarOrganizerPanel == null) {
-			cellarOrganizerPanel = new CellarOrganizerPanel(addVin);
+			cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
 			OPENED_OBJECTS.put(CHOOSE_CELL, cellarOrganizerPanel);
 			UPDATABLE_OBJECTS.put(CHOOSE_CELL, cellarOrganizerPanel);
 		}
@@ -1800,26 +1792,6 @@ public final class Program {
 	public static List<History> getHistory() {
 		return Collections.unmodifiableList(getStorage().getHistoryList().getHistory());
 	}
-	
-//	private static DecimalFormat getDecimalFormat(final Locale locale) {
-//		final DecimalFormatSymbols dfs = new DecimalFormatSymbols();
-//
-//		if (Locale.UK.equals(locale) || Locale.US.equals(locale)) {
-//		  dfs.setGroupingSeparator(',');
-//		  dfs.setDecimalSeparator('.');
-//		} else {
-//		  dfs.setGroupingSeparator('.');
-//		  dfs.setDecimalSeparator(',');
-//		}
-
-		// format with grouping separator and decimal separator.
-		// always print first digit before comma, and two digits after comma.
-//		return new DecimalFormat("###0.00", dfs);
-//	  }
-	  
-//	public static String bigDecimalToString(final BigDecimal value, final Locale locale) {
-//    return getDecimalFormat(locale).format(value);
-//  }
 
 	public static BigDecimal safeStringToBigDecimal(final String value, BigDecimal defaultValue) {
 		try {

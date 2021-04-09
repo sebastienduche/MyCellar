@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.LabelProperty;
+import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
@@ -13,6 +14,7 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 
 /**
@@ -21,8 +23,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 2.4
- * @since 17/12/20
+ * @version 2.6
+ * @since 16/02/21
  */
 
 final class MoveLine extends JDialog {
@@ -39,28 +41,24 @@ final class MoveLine extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(Program.getLabel("Infos363"));
 		setLayout(new MigLayout("","[]","[]20px[]10px[][]10px[][]20px[]10px[]"));
-		MyCellarLabel titre = new MyCellarLabel(Program.getLabel("Infos363"));
+		MyCellarLabel titre = new MyCellarLabel(LabelType.INFO, "363");
 		titre.setForeground(Color.red);
 		label_end.setForeground(Color.red);
 		titre.setFont(Program.FONT_DIALOG);
 		titre.setHorizontalAlignment(SwingConstants.CENTER);
 		label_end.setHorizontalAlignment(SwingConstants.CENTER);
 
-		MyCellarLabel label_title = new MyCellarLabel(Program.getLabel("MoveLine.moveFromLine", LabelProperty.PLURAL));
-		MyCellarLabel label_place = new MyCellarLabel(Program.getLabel("Infos081"));
-		MyCellarLabel label_num_place = new MyCellarLabel(Program.getLabel("Infos082"));
-		MyCellarLabel label_old_line = new MyCellarLabel(Program.getLabel("Infos028"));
-		MyCellarLabel label_new_line = new MyCellarLabel(Program.getLabel("Infos362"));
+		MyCellarLabel label_title = new MyCellarLabel(LabelType.INFO_OTHER, "MoveLine.moveFromLine", LabelProperty.PLURAL);
+		MyCellarLabel label_place = new MyCellarLabel(LabelType.INFO, "081");
+		MyCellarLabel label_num_place = new MyCellarLabel(LabelType.INFO, "082");
+		MyCellarLabel label_old_line = new MyCellarLabel(LabelType.INFO, "028");
+		MyCellarLabel label_new_line = new MyCellarLabel(LabelType.INFO, "362");
 
-		MyCellarButton validate = new MyCellarButton(Program.getLabel("Infos315"));
-		MyCellarButton cancel = new MyCellarButton(Program.getLabel("Infos019"));
+		MyCellarButton validate = new MyCellarButton(LabelType.INFO, "315");
+		MyCellarButton cancel = new MyCellarButton(LabelType.INFO, "019");
 
 		place_cbx.addItem(Program.EMPTY_PLACE);
-		for (Rangement r : Program.getCave()) {
-			if (!r.isCaisse()) {
-				place_cbx.addItem(r);
-			}
-		}
+		Program.getCave().stream().filter(Predicate.not(Rangement::isCaisse)).forEach(place_cbx::addItem);
 		num_place_cbx.setEnabled(false);
 		old_line_cbx.setEnabled(false);
 		new_line_cbx.setEnabled(false);
@@ -109,19 +107,19 @@ final class MoveLine extends JDialog {
 		num_place_cbx.addItemListener(this::num_lieu_itemStateChanged);
 		old_line_cbx.addItemListener(this::old_line_itemStateChanged);
 
-		add(titre,"align center, span 3, wrap");
-		add(label_title,"span 3, wrap");
-		add(label_place,"");
-		add(label_num_place, "");
-		add(label_old_line,"wrap");
-		add(place_cbx,"");
-		add(num_place_cbx,"");
-		add(old_line_cbx,"wrap");
-		add(label_new_line,"wrap");
-		add(new_line_cbx,"wrap");
-		add(label_end,"span 3,wrap");
-		add(validate,"span 3, split, align center");
-		add(cancel,"");
+		add(titre, "align center, span 3, wrap");
+		add(label_title, "span 3, wrap");
+		add(label_place);
+		add(label_num_place);
+		add(label_old_line, "wrap");
+		add(place_cbx);
+		add(num_place_cbx);
+		add(old_line_cbx, "wrap");
+		add(label_new_line, "wrap");
+		add(new_line_cbx, "wrap");
+		add(label_end, "span 3,wrap");
+		add(validate, "span 3, split, align center");
+		add(cancel);
 
 		setSize(320,280);
 		setResizable(true);
@@ -184,8 +182,7 @@ final class MoveLine extends JDialog {
 	private void old_line_itemStateChanged(ItemEvent e) {
 		Debug("old_line_itemStateChanging...");
 		label_end.setText("");
-		int num_select = old_line_cbx.getSelectedIndex();
-		new_line_cbx.setEnabled(num_select != 0);
+		new_line_cbx.setEnabled(old_line_cbx.getSelectedIndex() != 0);
 	}
 
 	/**

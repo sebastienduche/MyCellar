@@ -3,10 +3,10 @@ package mycellar.showfile;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
-import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.Start;
 import mycellar.core.LabelProperty;
+import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
@@ -23,8 +23,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.5
- * @since 29/01/21
+ * @version 4.8
+ * @since 05/03/21
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -42,7 +42,6 @@ class TableShowValues extends AbstractTableModel {
   private static final int COMMENT = 9;
   private static final int MATURITY = 10;
   private static final int PARKER = 11;
-  private static final int NBCOL = 12;
   private final String[] columnNames = {"", Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
       Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("Infos135"), Program.getLabel("Infos137"),
       Program.getLabel("Infos391"), Program.getLabel("Infos392")};
@@ -51,33 +50,16 @@ class TableShowValues extends AbstractTableModel {
 
   List<Bouteille> monVector = new LinkedList<>();
 
-  /**
-   * getRowCount
-   *
-   * @return int
-   */
   @Override
   public int getRowCount() {
     return monVector.size();
   }
 
-  /**
-   * getColumnCount
-   *
-   * @return int
-   */
   @Override
   public int getColumnCount() {
-    return NBCOL;
+    return columnNames.length;
   }
 
-  /**
-   * getValueAt
-   *
-   * @param row    int
-   * @param column int
-   * @return Object
-   */
   @Override
   public Object getValueAt(int row, int column) {
     Bouteille b = monVector.get(row);
@@ -112,36 +94,16 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  /**
-   * getColumnName
-   *
-   * @param column int
-   * @return String
-   */
   @Override
   public String getColumnName(int column) {
     return columnNames[column];
   }
 
-  /**
-   * isCellEditable
-   *
-   * @param row    int
-   * @param column int
-   * @return boolean
-   */
   @Override
   public boolean isCellEditable(int row, int column) {
     return ETAT == column;
   }
 
-  /**
-   * setValueAt
-   *
-   * @param value  Object
-   * @param row    int
-   * @param column int
-   */
   @Override
   public void setValueAt(Object value, int row, int column) {
     Bouteille b = monVector.get(row);
@@ -168,7 +130,7 @@ class TableShowValues extends AbstractTableModel {
         b.setComment(Program.convertStringFromHTMLString((String) value));
         break;
       case YEAR:
-        if (Program.hasYearControl() && !Bouteille.isValidYear((String) value)) {
+        if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
           Erreur.showSimpleErreur(Program.getError("Error053"));
         } else {
           b.setAnnee((String) value);
@@ -187,7 +149,9 @@ class TableShowValues extends AbstractTableModel {
         String empl = b.getEmplacement();
         if (column == PLACE) {
           empl = (String) value;
-          rangement = Program.getCave(empl);
+          if (Program.isExistingPlace(empl)) {
+            rangement = Program.getCave(empl);
+          }
         } else if (column == NUM_PLACE) {
           try {
             num_empl = Integer.parseInt((String) value);
@@ -215,7 +179,7 @@ class TableShowValues extends AbstractTableModel {
         }
 
         if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
-          if (rangement != null && !rangement.isCaisse() && nValueToCheck <= 0) {
+          if (!rangement.isCaisse() && nValueToCheck <= 0) {
             Erreur.showSimpleErreur(Program.getError("Error197"));
             bError = true;
           }
@@ -226,16 +190,14 @@ class TableShowValues extends AbstractTableModel {
           int tmpNumEmpl = num_empl;
           int tmpLine = line;
           int tmpCol = column1;
-          if (rangement != null) {
-            if (!rangement.isCaisse()) {
-              tmpNumEmpl--;
-              tmpCol--;
-              tmpLine--;
-            } else {
-              tmpNumEmpl -= rangement.getStartCaisse();
-            }
+          if (!rangement.isCaisse()) {
+            tmpNumEmpl--;
+            tmpCol--;
+            tmpLine--;
+          } else {
+            tmpNumEmpl -= rangement.getStartCaisse();
           }
-          if (rangement != null && rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
+          if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<Bouteille> bTemp = Optional.empty();
             if (!rangement.isCaisse()) {
               bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
@@ -264,7 +226,7 @@ class TableShowValues extends AbstractTableModel {
               RangementUtils.putTabStock();
             }
           } else {
-            if (rangement != null && rangement.isCaisse()) {
+            if (rangement.isCaisse()) {
               Erreur.showSimpleErreur(Program.getError("Error154"));
             } else {
               if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getError("Error015"), JOptionPane.YES_NO_OPTION)) {
@@ -281,12 +243,7 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  /**
-   * setBottles: Ajout des bouteilles.
-   *
-   * @param b LinkedList<Bouteille>
-   */
-  public void setBottles(LinkedList<Bouteille> b) {
+  public void setBottles(List<Bouteille> b) {
     if (b == null) {
       return;
     }

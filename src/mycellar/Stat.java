@@ -46,6 +46,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.LongAdder;
 
+import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
+
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -53,8 +55,8 @@ import java.util.concurrent.atomic.LongAdder;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.1
- * @since 18/12/20
+ * @version 8.2
+ * @since 16/02/21
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -88,10 +90,10 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
 	public Stat() {
 		Debug("Stats");
-		MyCellarLabel definition = new MyCellarLabel(Program.getLabel("Infos174")); //"Type de statistiques:");
+		MyCellarLabel definition = new MyCellarLabel(LabelType.INFO, "174"); //"Type de statistiques:");
 		end.setHorizontalAlignment(SwingConstants.RIGHT);
 		moy.setHorizontalAlignment(SwingConstants.RIGHT);
-		panel.setLayout(new MigLayout("","[][][grow]",""));
+		panel.setLayout(new MigLayout("", "[][][grow]", ""));
 		panel.setFont(Program.FONT_PANEL);
 		Program.getCave().forEach(this::displayPlace);
 
@@ -112,13 +114,13 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		listOptions.addItemListener(this::typeStats_itemStateChanged);
 		listPlaces.addItemListener(this::listStatOptionItemStateChanged);
 
-		MyCellarLabel chartType = new MyCellarLabel(Program.getLabel("Stat.chartType"));
+		MyCellarLabel chartType = new MyCellarLabel(LabelType.INFO_OTHER, "Stat.chartType");
 		listChart.addItem(Program.getLabel("Stat.chartBar"));
 		listChart.addItem(Program.getLabel("Stat.chartPie"));
 		listChart.addItemListener(this::chartItemStateChanged);
 		listChart.setEnabled(listOptions.getSelectedIndex() != 0);
 
-		setLayout(new MigLayout("","[][][grow]", "[][][]20px[grow][][]"));
+		setLayout(new MigLayout("", "[][][grow]", "[][][]20px[grow][][]"));
 		add(definition);
 		add(listOptions, "wrap");
 		add(comboLabel);
@@ -242,10 +244,10 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		panel.repaint();
 
 		options.setEnabled(true);
-		int tranche = Program.getCaveConfigInt(MyCellarSettings.TRANCHE_PRIX, PRICE_BRACKET_DEFAULT);
+		int tranche = Program.getCaveConfigInt(TRANCHE_PRIX, PRICE_BRACKET_DEFAULT);
 		if (tranche <= 0) {
 			tranche = PRICE_BRACKET_DEFAULT;
-			Program.putCaveConfigInt(MyCellarSettings.TRANCHE_PRIX, PRICE_BRACKET_DEFAULT);
+			Program.putCaveConfigInt(TRANCHE_PRIX, PRICE_BRACKET_DEFAULT);
 		}
 
 		if (listPrice.isEmpty()) {
@@ -392,7 +394,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		final int nbCaseUseAll = cave.getNbCaseUseAll();
 		final MyCellarLabel list_num_empl;
 		if (nbEmplacements == 1) {
-			list_num_empl = new MyCellarLabel(Program.getLabel("Infos175")); //"1 emplacement");
+			list_num_empl = new MyCellarLabel(LabelType.INFO, "175"); //"1 emplacement");
 		} else {
 			list_num_empl = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), nbEmplacements)); //"emplacements");
 		}
@@ -446,7 +448,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		options.setSelected(false);
 		String value = JOptionPane.showInputDialog(this, Program.getLabel("Infos194"));
 		if (StringUtils.isNumeric(value)) {
-			Program.putCaveConfigInt(MyCellarSettings.TRANCHE_PRIX, Integer.parseInt(value));
+			Program.putCaveConfigInt(TRANCHE_PRIX, Integer.parseInt(value));
 			listPrice.clear();
 			listStatOptionItemStateChanged(null);
 		}

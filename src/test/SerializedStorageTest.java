@@ -2,12 +2,12 @@ package test;
 
 import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.placesmanagement.Rangement;
 import mycellar.SerializedStorage;
+import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -110,7 +110,7 @@ class SerializedStorageTest {
     serializedStorage.getListBouteilles().getBouteille().add(bouteille4);
     serializedStorage.getListBouteilles().getBouteille().add(bouteille5);
     serializedStorage.getListBouteilles().getBouteille().add(new Bouteille(bouteille5));
-    final LinkedList<Rangement> cave = Program.getCave();
+    final List<Rangement> cave = Program.getCave();
     final Rangement caisse = new Rangement.CaisseBuilder("place3").nb_emplacement(10).build();
     final Rangement place = new Rangement.RangementBuilder("place").nb_emplacement(new int[] {3}).sameColumnsNumber(new int[] {3}).build();
     cave.add(caisse);

@@ -1,22 +1,30 @@
 package test;
 
 import mycellar.Bouteille;
+import mycellar.Program;
 import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.placesmanagement.Place;
+import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BouteilleTest {
 
   private Bouteille bouteille;
+  private Bouteille bouteilleCaisse;
+  private Rangement armoire1x3x3;
+  private Rangement caisse;
 
   @BeforeEach
   void setUp() {
     bouteille = new Bouteille.BouteilleBuilder("bouteille")
-        .place("place")
+        .place("armoire1x3x3")
         .numPlace(1)
         .line(2)
         .column(3)
@@ -29,6 +37,23 @@ class BouteilleTest {
         .price("123")
         .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
+
+    // Caisse avec 2 emplacements commençant à 1 et limité à 6 bouteilles
+    armoire1x3x3 = new Rangement.RangementBuilder("armoire1x3x3")
+        .nb_emplacement(new int[]{3})
+        .sameColumnsNumber(new int[]{3})
+        .build();
+    caisse = new Rangement.CaisseBuilder("caisse")
+        .nb_emplacement(1)
+        .start_caisse(1)
+        .build();
+    bouteilleCaisse = new Bouteille.BouteilleBuilder("bouteille")
+        .place("caisse")
+        .numPlace(1)
+        .build();
+
+    Program.addCave(armoire1x3x3);
+    Program.addCave(caisse);
   }
 
   @Test
@@ -78,7 +103,7 @@ class BouteilleTest {
 
   @Test
   void getEmplacement() {
-    assertEquals("place", bouteille.getEmplacement());
+    assertEquals("armoire1x3x3", bouteille.getEmplacement());
   }
 
   @Test
@@ -305,6 +330,24 @@ class BouteilleTest {
     v.setAOC("c");
     v.setIGP("d");
     assertEquals(v.toString(), bouteille.getVignoble().toString());
+  }
+
+  @Test
+  void getRangement() {
+    assertEquals(armoire1x3x3 ,bouteille.getRangement());
+  }
+
+  @Test
+  void getPlace() {
+    Place place = bouteille.getPlace();
+    assertEquals(armoire1x3x3, place.getRangement());
+    assertEquals(1, place.getPlaceNum());
+    assertEquals(2, place.getLine());
+    assertEquals(3, place.getColumn());
+
+    place = bouteilleCaisse.getPlace();
+    assertEquals(caisse, place.getRangement());
+    assertEquals(1, place.getPlaceNum());
   }
 
   @Test

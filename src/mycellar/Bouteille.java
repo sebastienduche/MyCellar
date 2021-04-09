@@ -8,8 +8,10 @@
 
 package mycellar;
 
+import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarFields;
 import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -34,8 +36,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.6
- * @since 17/12/20
+ * @version 6.7
+ * @since 08/04/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -87,7 +89,7 @@ import java.util.stream.Collectors;
 		"lastModified"
 })
 @XmlRootElement(name = "Bouteille")
-public class Bouteille implements Serializable{
+public class Bouteille implements IMyCellarObject, Serializable {
 
 	private static final long serialVersionUID = 7443323147347096230L;
 
@@ -158,7 +160,7 @@ public class Bouteille implements Serializable{
 		lastModified = b.getLastModified();
 	}
 
-	public Bouteille(BouteilleBuilder builder){
+	public Bouteille(BouteilleBuilder builder) {
 		if (builder.id == 0) {
 			id = Program.getNewID();
 		} else {
@@ -330,24 +332,24 @@ public class Bouteille implements Serializable{
 		 }
 	 }
 
-	 public static boolean isValidYear(String year) {
+	 public static boolean isInvalidYear(String year) {
 		 year = year.strip();
 		 if (year.compareToIgnoreCase(NON_VINTAGE) == 0) {
-			 return true;
+			 return false;
 		 }
 		 if (!Program.hasYearControl()) {
-			 return true;
+			 return false;
 		 }
 		 int n;
 		 try {
 			 n = Integer.parseInt(year);
-		 } catch(NumberFormatException e) {
+		 } catch (NumberFormatException e) {
 			 Debug("ERROR: Unable to parse year '" + year + "'!");
-			 return false;
+			 return true;
 		 }
 
 		 int current_year = LocalDate.now().getYear();
-		 return year.length() != 4 || n <= current_year;
+		 return year.length() == 4 && n > current_year;
 	 }
 
 	 static boolean isNonVintageYear(String year) {
@@ -399,6 +401,14 @@ public class Bouteille implements Serializable{
 
 	 public boolean isPinkWine() {
 		 return BottleColor.getColor(color) == BottleColor.PINK;
+	 }
+
+	 public Place getPlace() {
+		return new Place.PlaceBuilder(getRangement())
+				.withNumPlace(getNumLieu())
+				.withLine(getLigne())
+				.withColumn(getColonne())
+				.build();
 	 }
 
 	 @Override
@@ -580,8 +590,8 @@ public class Bouteille implements Serializable{
 			lastModifed = nodeLAstModified.item(0).getTextContent();
 		}
     NodeList nodeVigobleName = vignoble.getElementsByTagName("name");
-    String vignobleName, AOC, IGP, AOP;
-    vignobleName = AOC = AOP = IGP = "";
+    String vignobleName, AOC, IGP;
+    vignobleName = AOC = IGP = "";
     if (nodeVignoble.getLength() == 1) {
       vignobleName = nodeVigobleName.item(0).getTextContent();
       NodeList nodeAOC = vignoble.getElementsByTagName("AOC");
@@ -755,6 +765,10 @@ public class Bouteille implements Serializable{
 		 }
 		 return true;
 	 }
+
+	public boolean isInExistingPlace() {
+	 	return Program.isExistingPlace(emplacement);
+	}
 
 
 	public static class BouteilleBuilder {

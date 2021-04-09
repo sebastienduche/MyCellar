@@ -34,8 +34,8 @@ import static mycellar.launcher.Server.Action.NONE;
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
  * @author Sébastien Duché
- * @version 2.9
- * @since 27/01/21
+ * @version 3.1
+ * @since 11/02/21
  */
 
 public class Server implements Runnable {
@@ -75,7 +75,7 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 		if (GET_VERSION.equals(action)) {
-			getVersionFromServer();
+			checkVersion();
 		} else if (DOWNLOAD.equals(action)) {
 			downloadFromServer();
 		}
@@ -84,13 +84,14 @@ public class Server implements Runnable {
 		}
 	}
 
-	private void downloadFromServer() {
+	private File downloadFromServer() {
 		action = NONE;
 		downloadError = false;
+		File downloadDirectory = null;
 		try {
-			File f = new File(DOWNLOAD_DIRECTORY);
-			if (!f.exists()) {
-				Files.createDirectory(f.toPath());
+			downloadDirectory = new File(DOWNLOAD_DIRECTORY);
+			if (!downloadDirectory.exists()) {
+				Files.createDirectory(downloadDirectory.toPath());
 			}
 
 			downloadError = downloadFromGitHub();
@@ -98,20 +99,7 @@ public class Server implements Runnable {
 			showException(e);
 			downloadError = true;
 		}
-	}
-
-	private void getVersionFromServer() {
-		serverVersion = "";
-		action = NONE;
-		try {
-			final File myCellarVersion = downloadMyCellarVersionTxt();
-			try (var in = new BufferedReader(new FileReader(myCellarVersion))) {
-				serverVersion = in.readLine();
-				availableVersion = in.readLine();
-			}
-		} catch (IOException e) {
-			showException(e);
-		}
+		return downloadDirectory;
 	}
 
 	private File downloadMyCellarVersionTxt() throws IOException {
@@ -122,8 +110,10 @@ public class Server implements Runnable {
 	}
 
 	void checkVersion() {
-		Debug("Checking Version from GitHub...");
+		Debug("Checking version from GitHub...");
 		serverVersion = "";
+		action = NONE;
+		FILE_TYPES.clear();
 		try {
 			final File myCellarVersion = downloadMyCellarVersionTxt();
 			try (var bufferedReader = new BufferedReader(new FileReader(myCellarVersion))) {
@@ -138,7 +128,7 @@ public class Server implements Runnable {
 						file = split[0];
 						md5 = split[1];
 					}
-					Debug("sFile... " + file);
+					Debug("File... " + file);
 					boolean lib = (!file.contains(MY_CELLAR) && file.endsWith(".jar"));
 					FILE_TYPES.add(new FileType(file, md5, lib));
 					file = bufferedReader.readLine();
@@ -150,12 +140,14 @@ public class Server implements Runnable {
 		}
 	}
 
-	public void downloadVersion() {
+	public File downloadVersion() {
 		Debug("Downloading version from GitHub...");
-		downloadFromServer();
+		File downloadDirectory = downloadFromServer();
 		if (downloadError) {
-			new File(DOWNLOAD_DIRECTORY).deleteOnExit();
+			downloadDirectory.deleteOnExit();
+			return null;
 		}
+		return downloadDirectory;
 	}
 
 	public String getAvailableVersion() {

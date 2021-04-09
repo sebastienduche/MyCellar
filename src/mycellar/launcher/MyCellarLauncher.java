@@ -16,60 +16,70 @@ import static javax.swing.JOptionPane.showMessageDialog;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.4
- * @since 13/03/19
+ * @version 1.5
+ * @since 09/02/21
  */
 class MyCellarLauncher {
 
+	private static final String MYCELLAR_EXTENSION = ".myCellar";
+	private static final String LIB_DIRECTORY = "lib";
+	private static final String MYCELLAR_JAR = "MyCellar.jar";
+	private static final String CONFIG_DIR = "config";
+	private static final String INI_EXTENSION = "ini";
+	private static final String JAR_EXTENSION = "jar";
+
 	private MyCellarLauncher() {
-		
+
 		Thread updateThread = new Thread(() -> {
 					Server.getInstance().checkVersion();
 					if (!Server.getInstance().hasAvailableUpdate()) {
 						return;
 					}
-					Server.getInstance().downloadVersion();
-					MyCellarVersion.setLocalVersion(Server.getInstance().getServerVersion());
+					File downloadDirectory = Server.getInstance().downloadVersion();
 
-					File f = new File("download");
-        		if (f.isDirectory()) {
-        			try {
-        				Server.Debug("Installing new version...");
-        				final File[] fList = f.listFiles();
-        				if (fList != null) {
-									for (File file : fList) {
-										String name = file.getName();
-										if (name.endsWith(".myCellar")) {
-											name = name.substring(0, name.indexOf(".myCellar"));
-											Server.Debug("Delete file " + name);
-											FileUtils.deleteQuietly(new File("lib", name));
-										} else if (file.getName().endsWith("ini")) {
-											Server.Debug("Copying file " + file.getName() + " to config dir");
-											FileUtils.copyFileToDirectory(file, new File("config"));
-										} else if (file.getName().endsWith("jar") && !file.getName().equalsIgnoreCase("MyCellar.jar")) {
-											Server.Debug("Copying file " + file.getName() + " to lib dir");
-											FileUtils.copyFileToDirectory(file, new File("lib"));
+					if (downloadDirectory != null && downloadDirectory.isDirectory()) {
+						try {
+							MyCellarVersion.setLocalVersion(Server.getInstance().getServerVersion());
+							Server.Debug("Installing new version...");
+							final File[] fList = downloadDirectory.listFiles();
+							if (fList != null) {
+								for (File file : fList) {
+									String fileName = file.getName();
+									if (fileName.endsWith(MYCELLAR_EXTENSION)) {
+										fileName = fileName.substring(0, fileName.indexOf(MYCELLAR_EXTENSION));
+										Server.Debug("Delete file " + fileName);
+										FileUtils.deleteQuietly(new File(LIB_DIRECTORY, fileName));
+									} else {
+										if (fileName.endsWith(INI_EXTENSION)) {
+											Server.Debug("Copying file " + fileName + " to config dir");
+											FileUtils.copyFileToDirectory(file, new File(CONFIG_DIR));
 										} else {
-											Server.Debug("Copying file " + file.getName() + " to current dir");
-											FileUtils.copyFileToDirectory(file, new File("."));
+											if (fileName.endsWith(JAR_EXTENSION) && !fileName.equalsIgnoreCase(MYCELLAR_JAR)) {
+												Server.Debug("Copying file " + fileName + " to lib dir");
+												FileUtils.copyFileToDirectory(file, new File(LIB_DIRECTORY));
+											} else {
+												Server.Debug("Copying file " + fileName + " to current dir");
+												FileUtils.copyFileToDirectory(file, new File("."));
+											}
 										}
 									}
-								} else {
-        					Server.Debug("ERROR: Unable to list files");
 								}
-        				FileUtils.deleteDirectory(f);
-        				Server.Debug("Installing new version... Done");
-        			} catch(IOException e) {
-        				showException(e);
-        			}
-        		} else {
-        			Server.Debug("ERROR: Missing download directory");
+							} else {
+								Server.Debug("ERROR: Unable to list files");
+							}
+							FileUtils.deleteDirectory(downloadDirectory);
+							Server.Debug("Installing new version... Done");
+						} catch(IOException e) {
+							showException(e);
 						}
-        		System.exit(0);
+					} else {
+						Server.Debug("ERROR: Missing download directory");
+					}
+					System.exit(0);
         });
 
         try {
-					var pb = new ProcessBuilder("java","-Dfile.encoding=UTF8","-jar","MyCellar.jar");
+					var pb = new ProcessBuilder("java","-Dfile.encoding=UTF8","-jar", MYCELLAR_JAR);
 					pb.redirectErrorStream(true);
 					Process p = pb.start();
 					p.waitFor();

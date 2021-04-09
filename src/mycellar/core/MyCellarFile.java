@@ -22,8 +22,8 @@ import java.util.zip.ZipOutputStream;
  * <p>Copyright : Copyright (c) 2020</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.2
- * @since 24/11/20
+ * @version 0.3
+ * @since 15/02/21
  */
 public class MyCellarFile {
 
@@ -39,14 +39,14 @@ public class MyCellarFile {
 
   public void unzip() throws UnableToOpenFileException {
     if(!file.exists()) {
-      throw new UnableToOpenFileException("File doesn't exist: " + file.getAbsolutePath());
+      throw new UnableToOpenMyCellarFileException("File doesn't exist: " + file.getAbsolutePath());
     }
     try {
       // Dezippage
       final String workDir = Program.getWorkDir(false);
       boolean unzipOK = unzipDir(workDir);
       final String absolutePath = file.getAbsolutePath();
-      Debug("Unzipping " + absolutePath + " to " +workDir + (unzipOK ? " OK" : " KO"));
+      Debug("Unzipping " + absolutePath + " to " + workDir + (unzipOK ? " OK" : " KO"));
       if (!unzipOK) {
         valid = false;
         throw new UnableToOpenFileException("Unzipping error for file: " + absolutePath);

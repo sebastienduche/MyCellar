@@ -11,8 +11,8 @@ import mycellar.TabEvent;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
@@ -49,6 +49,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static mycellar.Program.toCleanString;
+import static mycellar.core.LabelType.INFO;
+import static mycellar.core.LabelType.INFO_OTHER;
 
 
 /**
@@ -57,17 +59,17 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.9
- * @since 30/01/21
+ * @version 15.1
+ * @since 16/03/21
  */
-public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
+public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
 	private final MyCellarComboBox<Rangement> comboPlace = new MyCellarComboBox<>();
 	private final JTextField nom_obj = new JTextField();
-	private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton(LabelType.INFO, "012", true); //"Toutes les lignes ont le meme nombre de colonnes"
-	private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton(LabelType.INFO, "013", false); //"Toutes les lignes n'ont pas le meme nombre de colonnes"
-	private final MyCellarCheckBox checkLimite = new MyCellarCheckBox(LabelType.INFO, "238"); //limite
-	private final MyCellarLabel label_limite = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Item", LabelProperty.SINGLE);
+	private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton(INFO, "012", true); //"Toutes les lignes ont le meme nombre de colonnes"
+	private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton(INFO, "013", false); //"Toutes les lignes n'ont pas le meme nombre de colonnes"
+	private final MyCellarCheckBox checkLimite = new MyCellarCheckBox(INFO, "238"); //limite
+	private final MyCellarLabel label_limite = new MyCellarLabel(INFO_OTHER, "Main.Item", LabelProperty.SINGLE);
 	private final MyCellarSpinner nb_limite = new MyCellarSpinner(1, 999);
 	private boolean islimited = false;
 	private int limite = 0;
@@ -76,9 +78,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	private static final char CREER = Program.getLabel("CREER").charAt(0);
 	private static final char PREVIEW = Program.getLabel("PREVIEW").charAt(0);
 	private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner(0, 99);
-	private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox(LabelType.INFO, "024"); //Caisse
+	private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox(INFO, "024"); //Caisse
 	private final MyCellarLabel label_cree = new MyCellarLabel();
-	private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "155");
+	private final MyCellarButton preview = new MyCellarButton(INFO, "155");
 	private int start_caisse = 0;
 	private final JPanel panelType;
 	private final JPanel panelStartCaisse;
@@ -100,9 +102,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
 		MyCellarButton createButton;
 		if (modify) {
-			createButton = new MyCellarButton(LabelType.INFO, "079", new ModifyAction());
+			createButton = new MyCellarButton(INFO, "079", new ModifyAction());
 		} else {
-			createButton = new MyCellarButton(LabelType.INFO, "018", new CreateAction());
+			createButton = new MyCellarButton(INFO, "018", new CreateAction());
 		}
 
 		createButton.setMnemonic(CREER);
@@ -148,20 +150,20 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		//Alimentation du Spinner limite_caisse
 		nb_limite.setValue(1);
 
-		setLayout(new MigLayout("","[grow][grow]","[][]"));
+		setLayout(new MigLayout("", "[grow][grow]", "[][]"));
 
 		if (modify) {
-			MyCellarLabel labelModify = new MyCellarLabel(Program.getLabel("Infos226")); //"Selectionner le rangement a modifier:"
+			MyCellarLabel labelModify = new MyCellarLabel(INFO, "226"); //"Selectionner le rangement a modifier:"
 			JPanel panelModify = new JPanel();
 			panelModify.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"",0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
-			panelModify.setLayout(new MigLayout("","[]","[]"));
+			panelModify.setLayout(new MigLayout("", "[]", "[]"));
 			panelModify.add(labelModify, "split 2");
 			panelModify.add(comboPlace);
 			add(panelModify, "span 2, wrap");
 		}
-		MyCellarLabel labelName = new MyCellarLabel(Program.getLabel("Infos020")); //"Nom du rangement:");
+		MyCellarLabel labelName = new MyCellarLabel(INFO, "020"); //"Nom du rangement:");
 		add(labelName, "span 2, split 3");
-		add(nom_obj,"growx");
+		add(nom_obj, "growx");
 		add(m_caisse_chk, "wrap");
 
 		panelType = new JPanel();
@@ -172,12 +174,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
 		panelStartCaisse = new JPanel();
 		panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos272"),0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
-		panelStartCaisse.setLayout(new MigLayout("","[]","[]"));
+		panelStartCaisse.setLayout(new MigLayout("", "[]", "[]"));
 		panelStartCaisse.add(nb_start_caisse, "wmin 50");
 
 		panelLimite = new JPanel();
 		panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos274"),0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
-		panelLimite.setLayout(new MigLayout("","[][]","[]"));
+		panelLimite.setLayout(new MigLayout("", "[][]", "[]"));
 		panelLimite.add(checkLimite, "gapright 10");
 		panelLimite.add(nb_limite, "split 2, wmin 50, hidemode 3");
 		panelLimite.add(label_limite, "hidemode 3");
@@ -186,20 +188,20 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		model.setValues(listPart);
 
 		panelTable = new JPanel();
-		panelTable.setLayout(new MigLayout("","[grow]","[grow]"));
+		panelTable.setLayout(new MigLayout("", "[grow]", "[grow]"));
 		panelTable.add(new JScrollPane(tableParties), "grow");
 
 		JPanel panelPartie = new JPanel();
 		panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),Program.getLabel("Infos023"),0,0,Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
-		panelPartie.setLayout(new MigLayout("","[]","[]"));
+		panelPartie.setLayout(new MigLayout("", "[]", "[]"));
 		panelPartie.add(nb_parties, "wmin 50");
 
 		JPanel panelPartiesConfig = new JPanel();
-		panelPartiesConfig.setLayout(new MigLayout("","[][]","[grow]"));
-		panelPartiesConfig.add(panelType,"growy, hidemode 3, gapright 30");
-		panelPartiesConfig.add(panelPartie,"growx, wmin 150, gapright 30");
-		panelPartiesConfig.add(panelStartCaisse,"growx, wmin 250, hidemode 3, gapright 30");
-		panelPartiesConfig.add(panelLimite,"growx, wmin 250, hidemode 3, gapright 30");
+		panelPartiesConfig.setLayout(new MigLayout("", "[][]", "[grow]"));
+		panelPartiesConfig.add(panelType, "growy, hidemode 3, gapright 30");
+		panelPartiesConfig.add(panelPartie, "growx, wmin 150, gapright 30");
+		panelPartiesConfig.add(panelStartCaisse, "growx, wmin 250, hidemode 3, gapright 30");
+		panelPartiesConfig.add(panelLimite, "growx, wmin 250, hidemode 3, gapright 30");
 
 		add(panelPartiesConfig, "span 2, wrap, hidemode 3");
 		add(panelTable, "span 2, grow, wrap, hidemode 3");
@@ -240,6 +242,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 	}
 
 	private void comboPlace_itemStateChanged(ItemEvent e) {
+		if (!modify) {
+			return;
+		}
 		final Rangement rangement = (Rangement) e.getItem();
 		if (Program.EMPTY_PLACE.equals(rangement)) {
 			nom_obj.setText("");
@@ -569,7 +574,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 				if (bResul) {
 					Debug("Creating place...");
 					Program.addCave(new Rangement(nom, listPart));
-					Debug("Creating "+nom+" completed.");
+					Debug("Creating " + nom + " completed.");
 					label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
 					nom_obj.setText("");
 					Program.updateAllPanels();
@@ -708,6 +713,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 		Start.getInstance().updateMainPanel();
 	}
 
+	@Override
+	public void setUpdateView() {}
+
+	@Override
 	public void updateView() {
 		comboPlace.removeAllItems();
 		comboPlace.addItem(Program.EMPTY_PLACE);

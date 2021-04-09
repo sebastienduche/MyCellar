@@ -40,8 +40,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.7
- * @since 17/12/20
+ * @version 4.8
+ * @since 22/02/21
  */
 
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
@@ -188,8 +188,8 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					LinkedList<Bouteille> cantRestoreList = new LinkedList<>();
 					for (Bouteille b : toRestoreList) {
-						Rangement r = Program.getCave(b.getEmplacement());
-						if (r != null) {
+						if (b.isInExistingPlace()) {
+							Rangement r = b.getRangement();
 							if (r.isCaisse()) {
 								Program.getStorage().addHistory(HistoryState.ADD, b);
 								Program.getStorage().addWine(b);

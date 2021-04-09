@@ -49,8 +49,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 29/01/21
+ * @version 3.5
+ * @since 23/03/21
  */
 public final class RangementUtils {
 
@@ -289,8 +289,7 @@ public final class RangementUtils {
 			for (i= 0; i<fields.size(); i++) {
 				mapColumnNumber.put(i, i);
 			}
-		}
-		else { // Export XLS
+		} else { // Export XLS
 			title = Program.getCaveConfigString(MyCellarSettings.XLS_TITLE, ""); //Recuperation du titre du XLS
 
 			num_ligne = 2; //Affectation des numeros de colonnes
@@ -389,7 +388,7 @@ public final class RangementUtils {
 				}
 				i++;
 			}
-			for (i=0; i<columnsCount; i++) {
+			for (i = 0; i < columnsCount; i++) {
 				sheet.autoSizeColumn(i);
 			}
 			workbook.write(output);
@@ -415,7 +414,7 @@ public final class RangementUtils {
 
 		Debug("write_XLSTab: writing file: " + file);
 		try (var workbook = new SXSSFWorkbook(100);
-				 var output = new FileOutputStream(new File(file))) { //Creation du fichier
+				 var output = new FileOutputStream(file)) { //Creation du fichier
 			String title = Program.getCaveConfigString(MyCellarSettings.XLS_TAB_TITLE, "");
 			boolean onePlacePerSheet = Program.getCaveConfigBool(MyCellarSettings.ONE_PER_SHEET_XLS, false);
 
@@ -444,7 +443,6 @@ public final class RangementUtils {
 			//proprietes du texte
 			size = Program.getCaveConfigInt(MyCellarSettings.TEXT_TAB_SIZE_XLS, 10);
 
-			int nNbCol = 0;
 			int nNbLinePart = Program.getCaveConfigInt(MyCellarSettings.EMPTY_LINE_PART_XLS, 1);
 			int nNbLinePlace = Program.getCaveConfigInt(MyCellarSettings.EMPTY_LINE_PLACE_XLS, 3);
 
@@ -460,6 +458,7 @@ public final class RangementUtils {
 
 			int nLine = 3;
 			boolean firstSheet = true;
+			int nNbCol = 0;
 			for (Rangement place : _oPlace) {
 				if (onePlacePerSheet) {
 					if (firstSheet) {
@@ -566,7 +565,7 @@ public final class RangementUtils {
 
 	private static void updatePlaceMapToCreate(final Map<String, LinkedList<Part>> rangements, final Bouteille bottle) {
 		final String place = bottle.getEmplacement();
-		if (place != null && !place.isEmpty() && Program.getCave(place) == null) {
+		if (place != null && !place.isEmpty() && !Program.isExistingPlace(place)) {
 			if (!rangements.containsKey(place)) {
 				rangements.put(place, new LinkedList<>());
 			} else {
@@ -603,22 +602,20 @@ public final class RangementUtils {
 			}
 		}
 		Program.getErrors().clear();
-		for (Rangement rangement : Program.getCave()) {
-			rangement.resetStock();
-		}
+		Program.getCave().forEach(Rangement::resetStock);
 		
 		for (var bouteille : Program.getStorage().getAllList()) {
 			// On ignore les bouteilles qui sont dans le stock temporairement
 			if (bouteille.isInTemporaryStock()) {
 				continue;
 			}
-			Rangement rangement = Program.getCave(bouteille.getEmplacement());
-			if (rangement == null) {
+			if (!bouteille.isInExistingPlace()) {
 				// Rangement inexistant
 				Debug("ERROR: Inexisting place: " + bouteille.getNom() + " place: " + bouteille.getEmplacement());
 				Program.addError(new MyCellarError(INEXISTING_PLACE, bouteille, bouteille.getEmplacement()));
 				continue;
 			}
+			final Rangement rangement = bouteille.getRangement();
 			if (rangement.isCaisse()) {
 				if (rangement.isInexistingNumPlace(bouteille.getNumLieu())) {
 					// Numero de rangement inexistant
@@ -626,7 +623,7 @@ public final class RangementUtils {
 					Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 					continue;
 				}
-				if (rangement.hasFreeSpaceInCaisse(bouteille.getNumLieu() - rangement.getStartCaisse())) {
+				if (rangement.hasFreeSpaceInCaisse(bouteille.getPlace())) {
 					rangement.updateToStock(bouteille);
 				} else {
 					// Caisse pleine
@@ -643,11 +640,11 @@ public final class RangementUtils {
 				Optional<Bouteille> bottle;
 				if (!rangement.isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
 					// Cellule inexistante
-					Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place "+bouteille.getEmplacement());
+					Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
 					Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 				}	else if ((bottle = rangement.getBouteille(bouteille)).isPresent() && !bottle.get().equals(bouteille)){
 					// Cellule occupee
-					Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place "+bouteille.getEmplacement());
+					Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
 					Program.addError(new MyCellarError(CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
 				}	else {
 					rangement.updateToStock(bouteille);

@@ -65,8 +65,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.9
- * @since 30/12/20
+ * @version 14.0
+ * @since 22/02/21
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -495,13 +495,11 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 							}
 						}	while (nom1.isEmpty());
 						if (resul) {
-							Rangement rangement;
 							do {
 								// Controle de l'existance du rangement
-								rangement = null;
+								resul = true;
 								if (!nom1.isEmpty()) {
-									rangement = Program.getCave(nom1);
-									if (rangement != null) {
+									if (Program.isExistingPlace(nom1)) {
 										Options options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
 												Program.getError("Error037"), false);
 										options.setVisible(true);
@@ -509,7 +507,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 										resul = false;
 									}
 								}
-							}	while (rangement != null);
+							}	while (!resul);
 						}
 					}	while (!resul);
 					Debug("Creating new place with name: "+nom1);
@@ -670,7 +668,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 		}	catch (Exception e) {
 			Program.showException(e, false);
 			label_progression.setText("");
-			Debug("ERROR: "+e.toString());
+			Debug("ERROR: " + e.toString());
 			Erreur.showSimpleErreur(Program.getError("Error082"));
 			importe.setEnabled(true);
 			return false;

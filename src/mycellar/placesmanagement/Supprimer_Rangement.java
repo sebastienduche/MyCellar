@@ -58,8 +58,8 @@ import static mycellar.Program.updateAllPanels;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.6
- * @since 17/12/20
+ * @version 8.7
+ * @since 16/02/21
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -76,16 +76,12 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 	private boolean updateView = false;
 	private final SupprimerModel model;
 
-	/**
-	 * Supprimer_Rangement: Constructeur pour Supprimer un rangement
-	 *
-	 */
 	public Supprimer_Rangement() {
 
 		Debug("Initializing...");
-		setLayout(new MigLayout("","[grow]","20px[]15px[]15px[]"));
-		MyCellarLabel textControl2 = new MyCellarLabel(getLabel("Infos054")); //"Veuillez selectionner le rangement a supprimer:");
-		MyCellarButton supprimer = new MyCellarButton(getLabel("Main.Delete")); //"Supprimer");
+		setLayout(new MigLayout("", "[grow]", "20px[]15px[]15px[]"));
+		MyCellarLabel textControl2 = new MyCellarLabel(LabelType.INFO, "054"); //"Veuillez selectionner le rangement a supprimer:");
+		MyCellarButton supprimer = new MyCellarButton(LabelType.INFO_OTHER, "Main.Delete"); //"Supprimer");
 		supprimer.setMnemonic(supprimerChar);
 		preview.setMnemonic(previewChar);
 

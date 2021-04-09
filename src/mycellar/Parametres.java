@@ -1,7 +1,6 @@
 package mycellar;
 
 import mycellar.actions.ManageCapacityAction;
-import mycellar.core.Grammar;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.LabelType;
@@ -23,14 +22,9 @@ import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 import static mycellar.Program.toCleanString;
-import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 
 /**
@@ -39,16 +33,14 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.6
- * @since 30/12/20
+ * @version 12.7
+ * @since 09/04/21
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
 	private static final long serialVersionUID = -4208146070057957967L;
 	private final MyCellarLabel label_fic_bak;
 	private final MyCellarComboBox<String> langue = new MyCellarComboBox<>();
-	private final MyCellarComboBox<ObjectType> types = new MyCellarComboBox<>();
-	private final List<ObjectType> objectTypes = new ArrayList<>();
 	private final MyCellarButton parcourir_excel = new MyCellarButton("..."); //Parcourir
 	private final JTextField file_bak = new JTextField();
 	private final JTextField devise = new JTextField();
@@ -60,7 +52,6 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	private final MyCellarLabel label_siecle;
 	private final MyCellarSpinner annee = new MyCellarSpinner(0, 99);
 	private final MyCellarSpinner siecle = new MyCellarSpinner(18, 99);
-	private final ObjectType objectType;
 
 	/**
 	 * Parametres: Constructeur: pour la fenetre des parametres.
@@ -70,7 +61,6 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		setLayout(new MigLayout("","grow",""));
 		label_fic_bak = new MyCellarLabel(LabelType.INFO, "162"); //"Nom du fichier Excel:");
 		MyCellarLabel label_langue = new MyCellarLabel(LabelType.INFO, "231"); //"Choix de la langue:");
-		MyCellarLabel label_objectType = new MyCellarLabel(LabelType.INFO_OTHER, "Parameters.typeLabel");
 		MyCellarLabel label_devise = new MyCellarLabel(LabelType.INFO, "163");
 		label_annee = new MyCellarLabel(LabelType.INFO, "292");
 		label_annee2 = new MyCellarLabel(LabelType.INFO, "293");
@@ -110,15 +100,6 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		buttonResetMessageDialog.addActionListener(this::jcb_message_actionPerformed);
 		buttonManageContenance.addActionListener(this::buttonManageContenance_actionPerformed);
 
-		Arrays.stream(Program.Type.values()).forEach(type -> {
-			final ObjectType type1 = new ObjectType(type);
-			objectTypes.add(type1);
-			types.addItem(type1);
-		});
-
-		objectType = findObjectType(Program.Type.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
-		types.setSelectedItem(objectType);
-
 		JPanel dateControlPanel = new JPanel();
 		JPanel generalPanel = new JPanel();
 		JPanel excelPanel = new JPanel();
@@ -132,8 +113,6 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		generalPanel.add(langue, "gapleft 10");
 		generalPanel.add(label_devise);
 		generalPanel.add(devise, "w 100:100:100, wrap");
-		generalPanel.add(label_objectType);
-		generalPanel.add(types, "gapleft 10");
 		add(generalPanel, "grow, wrap");
 		excelPanel.setLayout(new MigLayout("","[100:100:100][][grow]",""));
 		excelPanel.add(jcb_excel);
@@ -159,8 +138,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		jcb_annee_control.setEnabled(Program.hasFile());
 		jcb_excel.setEnabled(Program.hasFile());
 		devise.setEnabled(Program.hasFile());
-		types.setEnabled(Program.hasFile());
-		
+
 		boolean excel = Program.getCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
 		file_bak.setEnabled(excel);
 		label_fic_bak.setEnabled(excel);
@@ -191,15 +169,6 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	private void valider_actionPerformed(ActionEvent e) {
 		try {
 			modifyLanguage();
-			if (!Objects.equals(types.getSelectedItem(), objectType)) {
-				final Program.Type type = ((ObjectType) Objects.requireNonNull(types.getSelectedItem())).getType();
-				Program.putCaveConfigString(PROGRAM_TYPE, type.name());
-				Program.setProgramType(type);
-				if (LanguageFileLoader.getInstance().isLoaded()) {
-					setLabels();
-				}
-				Program.setLanguage(LanguageFileLoader.getLanguage(Program.getLanguage(langue.getSelectedIndex()).charAt(0)));
-			}
 			if (jcb_excel.isSelected()) {
 				Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, true);
 				String fic = file_bak.getText();
@@ -307,11 +276,6 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		new ManageCapacityAction().actionPerformed(null);
 	}
 
-	private ObjectType findObjectType(Program.Type type) {
-		final Optional<ObjectType> first = objectTypes.stream().filter(objectType -> objectType.getType() == type).findFirst();
-		return first.orElse(null);
-	}
-
 	@Override
 	public boolean tabWillClose(TabEvent event) {
 		return true;
@@ -345,22 +309,5 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	public void paste() {
 		String fullText = file_bak.getText();
 		file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(file_bak.getSelectionEnd()));
-	}
-
-	static class ObjectType {
-		private final Program.Type type;
-
-		public ObjectType(Program.Type type) {
-			this.type = type;
-		}
-
-		@Override
-		public String toString() {
-			return Program.getLabelForType(type, true, true, Grammar.NONE);
-		}
-
-		public Program.Type getType() {
-			return type;
-		}
 	}
 }

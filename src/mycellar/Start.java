@@ -3,11 +3,13 @@ package mycellar;
 import mycellar.actions.ExportPDFAction;
 import mycellar.actions.OpenWorkSheetAction;
 import mycellar.capacity.CapacityPanel;
-import mycellar.core.IPlace;
+import mycellar.core.Grammar;
 import mycellar.core.ICutCopyPastable;
+import mycellar.core.IPlace;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarAction;
+import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.MyCellarMenuItem;
@@ -34,6 +36,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -50,9 +53,13 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Predicate;
@@ -68,8 +75,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.2
- * @since 15/02/21
+ * @version 28.3
+ * @since 09/04/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1178,6 +1185,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			Debug("newFileAction: Creating a new file...");
+			PanelObjectType panelObjectType = new PanelObjectType();
+			JOptionPane.showMessageDialog(getInstance(), panelObjectType,
+					"",
+					JOptionPane.PLAIN_MESSAGE);
+			Program.putGlobalConfigString(PROGRAM_TYPE, panelObjectType.getSelectedType().name());
 			Program.newFile();
 			postOpenFile();
 			Debug("newFileAction: Creating a new file OK");
@@ -1838,5 +1850,56 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	@Override
 	public void uncaughtException(Thread t, Throwable e) {
 		Program.showException(e, true);
+	}
+
+	private final class PanelObjectType extends JPanel {
+
+		private final MyCellarComboBox<ObjectType> types = new MyCellarComboBox<>();
+		MyCellarLabel label_objectType = new MyCellarLabel(LabelType.INFO_OTHER, "Parameters.typeLabel");
+		private final List<ObjectType> objectTypes = new ArrayList<>();
+
+		private PanelObjectType() {
+			Arrays.stream(Program.Type.values())
+					.filter(type -> !type.equals(Program.Type.BOOK))
+					.forEach(type -> {
+				final ObjectType type1 = new ObjectType(type);
+				objectTypes.add(type1);
+				types.addItem(type1);
+			});
+
+			ObjectType objectType = findObjectType(Program.Type.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
+			types.setSelectedItem(objectType);
+
+			setLayout(new MigLayout("", "[grow]", "[]25px[]"));
+			add(new MyCellarLabel(Program.getLabel("Start.selectTypeObject")), "span 2, wrap");
+			add(label_objectType);
+			add(types);
+		}
+
+		private ObjectType findObjectType(Program.Type type) {
+			final Optional<ObjectType> first = objectTypes.stream().filter(objectType -> objectType.getType() == type).findFirst();
+			return first.orElse(null);
+		}
+
+		public Program.Type getSelectedType() {
+			return ((ObjectType) Objects.requireNonNull(types.getSelectedItem())).getType();
+		}
+	}
+
+	static class ObjectType {
+		private final Program.Type type;
+
+		public ObjectType(Program.Type type) {
+			this.type = type;
+		}
+
+		@Override
+		public String toString() {
+			return Program.getLabelForType(type, true, true, Grammar.NONE);
+		}
+
+		public Program.Type getType() {
+			return type;
+		}
 	}
 }

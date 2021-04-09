@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
@@ -55,8 +56,8 @@ import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.2
- * @since 16/02/21
+ * @version 8.3
+ * @since 09/04/21
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -254,7 +255,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 			Map<Integer, Integer> mapPrixCount = new HashMap<>();
 			int ss_prix = 0;
 
-			for (Bouteille b : Program.getStorage().getAllList()) {
+			for (IMyCellarObject b : Program.getStorage().getAllList()) {
 				if (!b.hasPrice()) {
 					ss_prix++;
 					continue;

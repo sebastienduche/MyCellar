@@ -3,6 +3,7 @@ package mycellar.showfile;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
 import mycellar.placesmanagement.Rangement;
@@ -19,8 +20,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.7
- * @since 22/02/21
+ * @version 1.8
+ * @since 09/04/21
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -62,7 +63,7 @@ public class ErrorShowValues extends TableShowValues {
 			return null;
 		}
 		MyCellarError error = errors.get(row);
-		Bouteille b = error.getBottle();
+		IMyCellarObject b = error.getMyCellarObject();
 		switch (column) {
 			case ETAT:
 				return values[row];
@@ -122,7 +123,7 @@ public class ErrorShowValues extends TableShowValues {
 	public void setValueAt(Object value, int row, int column) {
 
 		MyCellarError error = errors.get(row);
-		Bouteille b = error.getBottle();
+		IMyCellarObject b = error.getMyCellarObject();
 		Rangement rangement;
 		switch (column) {
 			case ETAT:
@@ -221,7 +222,7 @@ public class ErrorShowValues extends TableShowValues {
 						tmpNumEmpl -= rangement.getStartCaisse();
 					}
 					if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
-						Optional<Bouteille> bTemp = Optional.empty();
+						Optional<IMyCellarObject> bTemp = Optional.empty();
 						if (!rangement.isCaisse()) {
 							bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
 						}
@@ -272,8 +273,8 @@ public class ErrorShowValues extends TableShowValues {
 	}
 
 	@Override
-	public Bouteille getBottle(int i) {
-		return errors.get(i).getBottle();
+	public IMyCellarObject getMyCellarObject(int i) {
+		return errors.get(i).getMyCellarObject();
 	}
 
 }

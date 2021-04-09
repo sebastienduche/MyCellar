@@ -36,8 +36,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 08/04/21
+ * @version 0.2
+ * @since 09/04/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -56,7 +56,8 @@ import java.util.stream.Collectors;
     "genre",
     "duration",
     "status",
-    "lastModified"
+    "lastModified",
+    "tracks"
 })
 @XmlRootElement(name = "Music")
 public class Music implements IMyCellarObject, Serializable {
@@ -148,12 +149,24 @@ public class Music implements IMyCellarObject, Serializable {
     lastModified = builder.lastModified;
   }
 
+  @Override
   public int getId() {
     return id;
   }
 
+  @Override
   public void setId(int id) {
     this.id = id;
+  }
+
+  @Override
+  public String getNom() {
+    return getTitle();
+  }
+
+  @Override
+  public void setNom(String value) {
+    setTitle(value);
   }
 
   public String getTitle() {
@@ -164,54 +177,67 @@ public class Music implements IMyCellarObject, Serializable {
     this.title = title;
   }
 
+  @Override
   public String getAnnee() {
     return annee;
   }
 
+  @Override
   public void setAnnee(String annee) {
     this.annee = annee;
   }
 
+  @Override
   public String getType() {
     return type;
   }
 
+  @Override
   public void setType(String type) {
     this.type = type;
   }
 
+  @Override
   public String getEmplacement() {
     return emplacement;
   }
 
+  @Override
   public void setEmplacement(String emplacement) {
     this.emplacement = emplacement;
   }
 
+  @Override
   public int getNumLieu() {
     return numLieu;
   }
 
+  @Override
   public void setNumLieu(int numLieu) {
     this.numLieu = numLieu;
   }
 
+  @Override
   public int getLigne() {
     return ligne;
   }
 
+  @Override
   public void setLigne(int ligne) {
     this.ligne = ligne;
   }
 
+  @Override
   public int getColonne() {
     return colonne;
   }
 
+  @Override
   public void setColonne(int colonne) {
     this.colonne = colonne;
   }
 
+  @Override
   public String getPrix() {
     return prix;
   }
@@ -220,6 +246,7 @@ public class Music implements IMyCellarObject, Serializable {
     this.prix = prix;
   }
 
+  @Override
   public String getComment() {
     return comment;
   }
@@ -268,15 +295,18 @@ public class Music implements IMyCellarObject, Serializable {
     this.genre = genre;
   }
 
+  @Override
   public String getStatus() {
     return status;
   }
 
+  @Override
   public void setStatus(String status) {
     this.status = status;
   }
 
-  String getLastModified() {
+  @Override
+  public String getLastModified() {
     return lastModified;
   }
 
@@ -286,10 +316,12 @@ public class Music implements IMyCellarObject, Serializable {
     this.lastModified = dateFormat.format(lastModified);
   }
 
+  @Override
   public Rangement getRangement() {
     return Program.getCave(emplacement);
   }
 
+  @Override
   public int getAnneeInt() {
     if (annee.isEmpty()) {
       return 0;
@@ -319,6 +351,7 @@ public class Music implements IMyCellarObject, Serializable {
     return year.length() == 4 && n > current_year;
   }
 
+  @Override
   public double getPriceDouble() {
     String price = Program.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
@@ -328,6 +361,7 @@ public class Music implements IMyCellarObject, Serializable {
     return Program.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
   }
 
+  @Override
   public BigDecimal getPrice() {
     String price = Program.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
@@ -337,6 +371,7 @@ public class Music implements IMyCellarObject, Serializable {
     return Program.safeStringToBigDecimal(price, BigDecimal.ZERO);
   }
 
+  @Override
   public boolean hasPrice() {
     String price = Program.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
@@ -350,6 +385,7 @@ public class Music implements IMyCellarObject, Serializable {
     return true;
   }
 
+  @Override
   public Place getPlace() {
     return new Place.PlaceBuilder(getRangement())
         .withNumPlace(getNumLieu())
@@ -363,38 +399,41 @@ public class Music implements IMyCellarObject, Serializable {
     return title;
   }
 
-  public void update(final Music b) {
-    setTitle(b.getTitle());
-    setAnnee(b.getAnnee());
-    setColonne(b.getColonne());
-    setComment(b.getComment());
-    setEmplacement(b.getEmplacement());
-    setLigne(b.getLigne());
-    setArtist(b.getArtist());
-    setNumLieu(b.getNumLieu());
-    setComposer(b.getComposer());
-    setGenre(b.getGenre());
-    setPrix(b.getPrix());
-    setType(b.getType());
-    setDuration(b.getDuration());
-    setTracks(b.getTracks());
-    if (b.hasNoStatus()) {
+  public void update(final Music music) {
+    setTitle(music.getTitle());
+    setAnnee(music.getAnnee());
+    setColonne(music.getColonne());
+    setComment(music.getComment());
+    setEmplacement(music.getEmplacement());
+    setLigne(music.getLigne());
+    setArtist(music.getArtist());
+    setNumLieu(music.getNumLieu());
+    setComposer(music.getComposer());
+    setGenre(music.getGenre());
+    setPrix(music.getPrix());
+    setType(music.getType());
+    setDuration(music.getDuration());
+    setTracks(music.getTracks());
+    if (music.hasNoStatus()) {
       setStatus(BottlesStatus.MODIFIED.name());
     } else {
-      setStatus(b.getStatus());
+      setStatus(music.getStatus());
     }
     setLastModified(LocalDateTime.now());
   }
 
+  @Override
   public void setModified() {
     setLastModified(LocalDateTime.now());
   }
 
+  @Override
   public void setCreated() {
     setStatus(BottlesStatus.CREATED.name());
     setLastModified(LocalDateTime.now());
   }
 
+  @Override
   public boolean hasNoStatus() {
     return status.isEmpty() || status.equals(BottlesStatus.NONE.name());
   }
@@ -403,6 +442,7 @@ public class Music implements IMyCellarObject, Serializable {
     return status.isEmpty() || status.equals(BottlesStatus.NONE.name()) || status.equals(BottlesStatus.CREATED.name());
   }
 
+  @Override
   public void updateStatus() {
     if (canChangeStatus()) {
       status = BottlesStatus.MODIFIED.name();
@@ -410,6 +450,7 @@ public class Music implements IMyCellarObject, Serializable {
     setModified();
   }
 
+  @Override
   public void setValue(MyCellarFields field, String value) {
     setModified();
     switch (field) {
@@ -450,6 +491,7 @@ public class Music implements IMyCellarObject, Serializable {
         if (getTracks() == null) {
           setTracks(new Tracks());
         }
+        Program.throwNotImplementedForMusic(this);
 //        getTracks().setName(value);
         break;
       case COLOR:
@@ -459,18 +501,21 @@ public class Music implements IMyCellarObject, Serializable {
         if (getTracks() == null) {
           setTracks(new Tracks());
         }
+        Program.throwNotImplementedForMusic(this);
 //        getTracks().setCountry(value);
         break;
       case AOC:
         if (getTracks() == null) {
           setTracks(new Tracks());
         }
+        Program.throwNotImplementedForMusic(this);
 //        getTracks().setAOC(value);
         break;
       case IGP:
         if (getTracks() == null) {
           setTracks(new Tracks());
         }
+        Program.throwNotImplementedForMusic(this);
 //        getTracks().setIGP(value);
         break;
       case STATUS:
@@ -481,9 +526,10 @@ public class Music implements IMyCellarObject, Serializable {
     }
   }
 
-  boolean updateID() {
+  @Override
+  public boolean updateID() {
     if (id != -1) {
-      final List<Bouteille> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
+      final List<IMyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
       if(bouteilles.size() == 1 && bouteilles.get(0).equals(this)) {
         return false;
       }
@@ -492,6 +538,7 @@ public class Music implements IMyCellarObject, Serializable {
     return true;
   }
 
+  @Override
   public boolean isInTemporaryStock() {
     return Program.TEMP_PLACE.equalsIgnoreCase(emplacement);
   }
@@ -725,6 +772,7 @@ public class Music implements IMyCellarObject, Serializable {
     return true;
   }
 
+  @Override
   public boolean isInExistingPlace() {
     return Program.isExistingPlace(emplacement);
   }
@@ -835,6 +883,7 @@ public class Music implements IMyCellarObject, Serializable {
 
     public MusicBuilder tracks(String country, String name, String aoc, String igp) {
       tracks = new Tracks();
+      Program.throwNotImplementedForMusic(new Music());
       return this;
     }
 

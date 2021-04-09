@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
@@ -23,8 +24,8 @@ import java.util.function.Predicate;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 2.6
- * @since 16/02/21
+ * @version 2.7
+ * @since 09/04/21
  */
 
 final class MoveLine extends JDialog {
@@ -91,7 +92,7 @@ final class MoveLine extends JDialog {
 					return;
 				}
 				for (int i=1; i<=r.getNbColonnes(nNumLieu - 1, nOldSelected - 1); i++) {
-					Optional<Bouteille> bottle = r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1);
+					Optional<IMyCellarObject> bottle = r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1);
 					if (bottle.isPresent()) {
 						bottle.ifPresent(bouteille -> {
 							Program.getStorage().addHistory(HistoryState.MODIFY, bouteille);

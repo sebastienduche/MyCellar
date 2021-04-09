@@ -1,6 +1,6 @@
 package mycellar.showfile;
 
-import mycellar.Bouteille;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarFields;
 
 import java.util.ArrayList;
@@ -12,8 +12,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.8
- * @since 07/07/19
+ * @version 0.9
+ * @since 09/04/21
  */
 
 public class ShowFileModel extends TableShowValues {
@@ -34,7 +34,7 @@ public class ShowFileModel extends TableShowValues {
 			if (showFileColumn.isButton()) {
 				return Boolean.TRUE;
 			}
-			Bouteille b = monVector.get(row);
+			IMyCellarObject b = monVector.get(row);
 			return showFileColumn.getDisplayValue(b);
 		}
 		return null;
@@ -42,7 +42,7 @@ public class ShowFileModel extends TableShowValues {
 
 	@Override
 	public void setValueAt(Object value, int row, int column) {
-		Bouteille b = monVector.get(row);
+		IMyCellarObject b = monVector.get(row);
 		if (!list.get(column).execute(b, row, column)) {
 			fireTableRowsUpdated(row, row);
 			return;
@@ -73,7 +73,7 @@ public class ShowFileModel extends TableShowValues {
 		ShowFileColumn<?> col = list.get(column);
 		if(col.getField() == MyCellarFields.LINE
 			|| col.getField() == MyCellarFields.COLUMN) {
-			Bouteille b = monVector.get(row);
+			IMyCellarObject b = monVector.get(row);
 			return !b.getRangement().isCaisse();
 		}
 		return col.isEditable();

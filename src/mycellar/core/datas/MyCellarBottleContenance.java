@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 19/11/20
+ * @version 0.7
+ * @since 09/04/21
  */
 public final class MyCellarBottleContenance {
 
@@ -46,6 +46,7 @@ public final class MyCellarBottleContenance {
   public static boolean isContenanceUsed(String value) {
     return Program.getStorage().getAllList()
         .stream()
+        .map(myCellarObject -> (Bouteille)myCellarObject)
         .map(Bouteille::getType)
         .anyMatch(value::equals);
   }
@@ -54,6 +55,7 @@ public final class MyCellarBottleContenance {
     Program.getStorage().getAllList()
         .stream()
         .filter(b -> oldValue.equals(b.getType()))
+        .map(myCellarObject -> (Bouteille)myCellarObject)
         .forEach(bouteille -> bouteille.setType(newValue));
     final int oldIndex = getList().indexOf(oldValue);
     final int index = getList().indexOf(newValue);
@@ -81,6 +83,7 @@ public final class MyCellarBottleContenance {
     if(Program.getStorage().getAllList() != null) {
       final List<String> collect = Program.getStorage().getAllList()
           .stream()
+          .map(myCellarObject -> (Bouteille)myCellarObject)
           .map(Bouteille::getType)
           .distinct()
           .collect(Collectors.toList());

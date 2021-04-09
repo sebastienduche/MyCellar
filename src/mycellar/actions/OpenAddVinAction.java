@@ -1,25 +1,24 @@
 package mycellar.actions;
 
 import mycellar.AddVin;
-import mycellar.Bouteille;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.Utils;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
-
-import java.awt.event.ActionEvent;
-import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
+import java.awt.event.ActionEvent;
+import java.util.LinkedList;
 
 public class OpenAddVinAction extends AbstractAction {
 
 	private static final long serialVersionUID = 6187152928186377148L;
-	private final LinkedList<Bouteille> listToModify;
+	private final LinkedList<? extends IMyCellarObject> listToModify;
 	
-	public OpenAddVinAction(LinkedList<Bouteille> listToModify) {
+	public OpenAddVinAction(LinkedList<? extends IMyCellarObject> listToModify) {
 		this.listToModify = listToModify;
 	}
 	
@@ -33,7 +32,7 @@ public class OpenAddVinAction extends AbstractAction {
 			}
 			final AddVin addVin = Program.getAddVin();
 			addVin.setBottles(listToModify);
-	
+
 			int tabIndex = Program.findTab(MyCellarImage.WINE);
 			// Seconde verification
 			if (tabIndex != -1) {
@@ -46,7 +45,7 @@ public class OpenAddVinAction extends AbstractAction {
 				Program.TABBED_PANE.addTab(Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL), MyCellarImage.WINE, addVin);
 				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
 			}
-	
+
 			Utils.addCloseButton(Program.TABBED_PANE, addVin);
 			Start.getInstance().updateMainPanel();
 		});

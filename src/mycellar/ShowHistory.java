@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.core.DateCellRenderer;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
@@ -40,8 +41,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.8
- * @since 22/02/21
+ * @version 4.9
+ * @since 09/04/21
  */
 
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
@@ -149,7 +150,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			LinkedList<Bouteille> toRestoreList = new LinkedList<>();
+			LinkedList<IMyCellarObject> toRestoreList = new LinkedList<>();
 
 			boolean nonExit = false;
 
@@ -186,8 +187,8 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 				}
 				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-					LinkedList<Bouteille> cantRestoreList = new LinkedList<>();
-					for (Bouteille b : toRestoreList) {
+					LinkedList<IMyCellarObject> cantRestoreList = new LinkedList<>();
+					for (IMyCellarObject b : toRestoreList) {
 						if (b.isInExistingPlace()) {
 							Rangement r = b.getRangement();
 							if (r.isCaisse()) {

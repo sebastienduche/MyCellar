@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Rangement;
@@ -29,8 +30,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : SebInformatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 17/12/20
+ * @version 2.9
+ * @since 09/04/21
  */
 
 public class MyXmlDom {
@@ -225,7 +226,7 @@ public class MyXmlDom {
 							if(preview) {
 								vin_name.setTextContent(Program.getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
 							}else {
-    							Bouteille b = rangement.getBouteilleCaisseAt(i, j);
+    							IMyCellarObject b = rangement.getBouteilleCaisseAt(i, j);
     							if(b != null)
     								vin_name.setTextContent(b.getNom());
     							else
@@ -255,7 +256,7 @@ public class MyXmlDom {
 							if(preview) {
 								vin_name.setTextContent(Program.getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
 							}else {
-    							Optional<Bouteille> b = rangement.getBouteille(i, j, k);
+    							Optional<IMyCellarObject> b = rangement.getBouteille(i, j, k);
     							if(b.isPresent())
     								vin_name.setTextContent(b.get().getNom());
     							else

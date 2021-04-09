@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
@@ -40,8 +41,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.8
- * @since 23/03/21
+ * @version 7.9
+ * @since 09/04/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -298,7 +299,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			bottle.setLigne(0);
 			bottle.setColonne(0);
 		}	else {
-			Optional<Bouteille> bottleInPlace = cave.getBouteille(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build());
+			Optional<IMyCellarObject> bottleInPlace = cave.getBouteille(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build());
 			if (bottleInPlace.isPresent()) {
 				if (!askToReplaceBottle(bottleInPlace.get())) {
 					return false;
@@ -335,7 +336,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		return true;
 	}
 
-	private boolean askToReplaceBottle(Bouteille bouteille) {
+	private boolean askToReplaceBottle(IMyCellarObject bouteille) {
 		if (!bouteille.equals(bottle)) {
 			Debug("ERROR: Not an empty place, Replace?");
 			String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bouteille.getNom(), bouteille.getAnnee());
@@ -365,7 +366,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		Start.setPaneModified(false);
 	}
 
-	private void replaceWine(final Bouteille bToDelete) {
+	private void replaceWine(final IMyCellarObject bToDelete) {
 		//Change wine in a place
 		Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
 		Program.getStorage().deleteWine(bToDelete);

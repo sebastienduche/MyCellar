@@ -1,6 +1,5 @@
 package mycellar.core;
 
-import mycellar.Bouteille;
 import mycellar.Program;
 
 import java.text.MessageFormat;
@@ -12,15 +11,15 @@ import java.util.Objects;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.6
- * @since 25/10/18
+ * @version 0.7
+ * @since 09/04/21
  */
 
 public class MyCellarError {
 
 	private final ID error;
 	private boolean status;
-	private final Bouteille bottle;
+	private final IMyCellarObject myCellarObject;
 	private final String place;
 	private final int numLieu;
 	private boolean solved;
@@ -33,27 +32,27 @@ public class MyCellarError {
 		CELL_FULL
 	}
 	
-	public MyCellarError(ID error, Bouteille bottle, String place, int numLieu) {
+	public MyCellarError(ID error, IMyCellarObject myCellarObject, String place, int numLieu) {
 		this.error = error;
-		this.bottle = bottle;
+		this.myCellarObject = myCellarObject;
 		this.place = place;
 		this.numLieu = numLieu;
 		status = false;
 		solved = false;
 	}
 
-	public MyCellarError(ID error, Bouteille bottle, String place) {
+	public MyCellarError(ID error, IMyCellarObject myCellarObject, String place) {
 		this.error = error;
-		this.bottle = bottle;
+		this.myCellarObject = myCellarObject;
 		this.place = place;
 		numLieu = -1;
 		status = false;
 		solved = false;
 	}
 
-	public MyCellarError(ID error, Bouteille bottle) {
+	public MyCellarError(ID error, IMyCellarObject myCellarObject) {
 		this.error = error;
-		this.bottle = bottle;
+		this.myCellarObject = myCellarObject;
 		place = "";
 		numLieu = -1;
 		status = false;
@@ -81,8 +80,8 @@ public class MyCellarError {
 		return error;
 	}
 	
-	public Bouteille getBottle() {
-		return bottle;
+	public IMyCellarObject getMyCellarObject() {
+		return myCellarObject;
 	}
 	
 	public boolean isStatus() {
@@ -108,13 +107,13 @@ public class MyCellarError {
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof MyCellarError) {
-			return bottle.equals(((MyCellarError)obj).bottle);
+			return myCellarObject.equals(((MyCellarError)obj).myCellarObject);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(error, status, bottle);
+		return Objects.hash(error, status, myCellarObject);
 	}
 }

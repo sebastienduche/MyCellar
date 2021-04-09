@@ -36,8 +36,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.7
- * @since 08/04/21
+ * @version 6.8
+ * @since 09/04/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -183,70 +183,87 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		lastModified = builder.lastModified;
 	}
 	
+	@Override
 	public int getId() {
 		return id;
 	}
 	
+	@Override
 	public void setId(int id) {
 		this.id = id;
 	}
 
+	 @Override
 	 public String getNom() {
 		 return nom;
 	 }
 
-	 public void setNom(String nom) {
+	 @Override
+   public void setNom(String nom) {
 		 this.nom = nom;
 	 }
 
+	 @Override
 	 public String getAnnee() {
 		 return annee;
 	 }
 
+	 @Override
 	 public void setAnnee(String annee) {
 		 this.annee = annee;
 	 }
 
+	 @Override
 	 public String getType() {
 		 return type;
 	 }
 
+	 @Override
 	 public void setType(String type) {
 		 this.type = type;
 	 }
 
+	 @Override
 	 public String getEmplacement() {
 		 return emplacement;
 	 }
 
+	 @Override
 	 public void setEmplacement(String emplacement) {
 		 this.emplacement = emplacement;
 	 }
 
+	 @Override
 	 public int getNumLieu() {
 		 return numLieu;
 	 }
 
+	 @Override
 	 public void setNumLieu(int numLieu) {
 		 this.numLieu = numLieu;
 	 }
 
+	 @Override
 	 public int getLigne() {
 		 return ligne;
 	 }
 
+	 @Override
 	 public void setLigne(int ligne) {
 		 this.ligne = ligne;
 	 }
 
+	 @Override
 	 public int getColonne() {
 		 return colonne;
 	 }
 
+	 @Override
 	 public void setColonne(int colonne) {
 		 this.colonne = colonne;
 	 }
 
+	 @Override
 	 public String getPrix() {
 		 return prix;
 	 }
@@ -255,6 +272,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		 this.prix = prix;
 	 }
 
+	 @Override
 	 public String getComment() {
 		 return comment;
 	 }
@@ -295,15 +313,18 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		 this.vignoble = vignoble;
 	 }
 
+	@Override
 	public String getStatus() {
 		return status;
 	}
 
+	@Override
 	public void setStatus(String status) {
 		this.status = status;
 	}
 
-	String getLastModified() {
+	@Override
+	public String getLastModified() {
 		return lastModified;
 	}
 
@@ -313,10 +334,12 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		this.lastModified = dateFormat.format(lastModified);
 	}
 
+	 @Override
 	 public Rangement getRangement() {
 		 return Program.getCave(emplacement);
 	 }
 
+	 @Override
 	 public int getAnneeInt() {
 		 if (annee.isEmpty()) {
 			 return 0;
@@ -360,6 +383,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		 return isNonVintageYear(annee);
 	 }
 
+	 @Override
 	 public double getPriceDouble() {
 		 String price = Program.convertStringFromHTMLString(prix);
 		 if (price.isEmpty()) {
@@ -369,6 +393,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		 return Program.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
 	 }
 	 
+	 @Override
 	 public BigDecimal getPrice() {
 		 String price = Program.convertStringFromHTMLString(prix);
 		 if (price.isEmpty()) {
@@ -378,6 +403,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		 return Program.safeStringToBigDecimal(price, BigDecimal.ZERO);
 	 }
 
+	@Override
 	public boolean hasPrice() {
 		String price = Program.convertStringFromHTMLString(prix);
 		if (price.isEmpty()) {
@@ -403,6 +429,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		 return BottleColor.getColor(color) == BottleColor.PINK;
 	 }
 
+	 @Override
 	 public Place getPlace() {
 		return new Place.PlaceBuilder(getRangement())
 				.withNumPlace(getNumLieu())
@@ -438,15 +465,18 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		 setLastModified(LocalDateTime.now());
 	 }
 
+	 @Override
 	 public void setModified() {
 	 	setLastModified(LocalDateTime.now());
 	 }
 
+	@Override
 	public void setCreated() {
 		setStatus(BottlesStatus.CREATED.name());
 		setLastModified(LocalDateTime.now());
 	}
 
+	@Override
 	public boolean hasNoStatus() {
 		return status.isEmpty() || status.equals(BottlesStatus.NONE.name());
 	}
@@ -455,6 +485,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		return status.isEmpty() || status.equals(BottlesStatus.NONE.name()) || status.equals(BottlesStatus.CREATED.name());
 	}
 
+	@Override
 	public void updateStatus() {
 	 	if (canChangeStatus()) {
 	 		status = BottlesStatus.MODIFIED.name();
@@ -462,6 +493,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 	 	setModified();
 	}
 
+	 @Override
 	 public void setValue(MyCellarFields field, String value) {
 	 	setModified();
 		 switch (field) {
@@ -533,9 +565,10 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		 }
 	 }
 
-	 boolean updateID() {
+	 @Override
+	 public boolean updateID() {
 	 	if (id != -1) {
-			final List<Bouteille> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
+			final List<IMyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
 			if(bouteilles.size() == 1 && bouteilles.get(0).equals(this)) {
 				return false;
 			}
@@ -544,6 +577,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 	 	return true;
 	 }
 
+	 @Override
 	 public boolean isInTemporaryStock() {
 		return Program.TEMP_PLACE.equalsIgnoreCase(emplacement);
 	}
@@ -766,6 +800,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		 return true;
 	 }
 
+	@Override
 	public boolean isInExistingPlace() {
 	 	return Program.isExistingPlace(emplacement);
 	}

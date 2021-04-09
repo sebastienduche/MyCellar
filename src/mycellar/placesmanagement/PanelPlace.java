@@ -5,6 +5,7 @@ import mycellar.MyCellarControl;
 import mycellar.MyXmlDom;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IPlace;
 import mycellar.core.JModifyComboBox;
 import mycellar.core.LabelType;
@@ -32,8 +33,8 @@ import java.util.Optional;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 23/03/21
+ * @version 0.7
+ * @since 09/04/21
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -406,7 +407,7 @@ public final class PanelPlace extends JPanel implements IPlace {
       }
 
       Rangement cave = place.getItemAt(nPlace);
-      Optional<Bouteille> b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1);
+      Optional<IMyCellarObject> b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1);
       if (b.isPresent()) {
         labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.get().getNom())));
       } else {

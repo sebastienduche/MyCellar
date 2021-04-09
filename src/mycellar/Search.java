@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.actions.OpenWorkSheetAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
@@ -54,8 +55,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.8
- * @since 16/02/21
+ * @version 21.9
+ * @since 09/04/21
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -254,7 +255,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 	private void export_actionPerformed(ActionEvent e) {
 		try {
 			Debug("Exporting...");
-			List<Bouteille> v = model.getDatas();
+			List<IMyCellarObject> v = model.getDatas();
 			Export expor = new Export(v);
 			JDialog dialog = new JDialog();
 			dialog.add(expor);
@@ -534,8 +535,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 		Debug("Searching with regexp: " + regexToSearch);
 		final Pattern p = Pattern.compile(regexToSearch, Pattern.CASE_INSENSITIVE);
 		boolean already_found = false;
-		List<Bouteille> bouteillesToAdd = new LinkedList<>();
-		for (Bouteille bottle : Program.getStorage().getAllList()) {
+		List<IMyCellarObject> bouteillesToAdd = new LinkedList<>();
+		for (IMyCellarObject bottle : Program.getStorage().getAllList()) {
 			Matcher m = p.matcher(bottle.getNom());
 			if (m.matches()) {
 				if (model.hasNotBottle(bottle)) {
@@ -698,11 +699,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 	private void searchByRequest() {
 		Debug("Search by request");
 		CountryVignobleController.rebuild();
-		Collection<Bouteille> bouteilles = CollectionFilter.select(Program.getStorage().getAllList() , panelRequest.getPredicates()).getResults();
+		Collection<? extends IMyCellarObject> bouteilles = CollectionFilter.select(Program.getStorage().getAllList() , panelRequest.getPredicates()).getResults();
 		boolean already_found = false;
-		List<Bouteille> bouteilleList = new LinkedList<>();
+		List<IMyCellarObject> bouteilleList = new LinkedList<>();
 		if (bouteilles != null) {
-			for (Bouteille b : bouteilles) {
+			for (IMyCellarObject b : bouteilles) {
 				if (model.hasNotBottle(b)) {
 					bouteilleList.add(b);
 				} else {
@@ -743,7 +744,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
 		Rangement rangement = lieu.getItemAt(lieu_select);
 		boolean already_found = false;
-		List<Bouteille> bouteilleList = new LinkedList<>();
+		List<IMyCellarObject> bouteilleList = new LinkedList<>();
 		if (rangement.isCaisse()) {
 			//Pour la caisse
 			int lieu_num = num_lieu.getSelectedIndex();
@@ -761,7 +762,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 			for (int x = start_boucle; x < boucle_toutes; x++) {
 				int nb_bottles = rangement.getNbCaseUse(x - 1);
 				for (int l = 0; l < nb_bottles; l++) {
-					Bouteille b = rangement.getBouteilleCaisseAt(x - 1, l); //lieu_num
+					IMyCellarObject b = rangement.getBouteilleCaisseAt(x - 1, l); //lieu_num
 					if (b != null) {
 						if (model.hasNotBottle(b)) {
 							bouteilleList.add(b);
@@ -800,7 +801,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					enableDefaultButtons();
 					return;
 				}
-				Optional<Bouteille> b = rangement.getBouteille(lieu_num - 1, ligne - 1, colonne - 1);
+				Optional<IMyCellarObject> b = rangement.getBouteille(lieu_num - 1, ligne - 1, colonne - 1);
 				resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
 
 				if (b.isEmpty()) {
@@ -811,7 +812,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					modif.setEnabled(false);
 					suppr.setEnabled(false);
 				}	else {
-					final Bouteille bouteille = b.get();
+					final IMyCellarObject bouteille = b.get();
 					if (model.hasNotBottle(bouteille)) {
 						bouteilleList.add(bouteille);
 					} else {
@@ -866,9 +867,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					for (int j = j_deb; j <= j_fin; j++) {
 						int nb_colonnes = rangement.getNbColonnes(i - 1, j - 1);
 						for (int k = 1; k <= nb_colonnes; k++) {
-							Optional<Bouteille> b = rangement.getBouteille(i - 1, j - 1, k - 1);
+							Optional<IMyCellarObject> b = rangement.getBouteille(i - 1, j - 1, k - 1);
 							if (b.isPresent()) {
-								final Bouteille bouteille = b.get();
+								final IMyCellarObject bouteille = b.get();
 								//Ajout de la bouteille dans la liste si elle n'y ait pas deja
 								if (model.hasNotBottle(bouteille)) {
 									bouteilleList.add(bouteille);
@@ -916,8 +917,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
 		resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
 		boolean already_found = false;
-		List<Bouteille> bouteilleList = new ArrayList<>();
-		for (Bouteille b : Program.getStorage().getAllList()) {
+		List<IMyCellarObject> bouteilleList = new ArrayList<>();
+		for (IMyCellarObject b : Program.getStorage().getAllList()) {
 			if (b == null) {
 				continue;
 			}
@@ -1148,7 +1149,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 		Program.getCave().forEach(lieu::addItem);
 	}
 
-	void removeBottle(Bouteille bottleToDelete) {
+	void removeBottle(IMyCellarObject bottleToDelete) {
 		SwingUtilities.invokeLater(() -> {
 			model.removeBouteille(bottleToDelete);
 			updateLabelBottleNumber();

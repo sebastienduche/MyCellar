@@ -9,6 +9,8 @@
 package mycellar.core.datas.history;
 
 import mycellar.Bouteille;
+import mycellar.Music;
+import mycellar.core.IMyCellarObject;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,8 +28,8 @@ import static mycellar.Program.DATE_FORMATER_DDMMYYYY;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 17/12/20
+ * @version 1.6
+ * @since 09/04/21
  */
 
 /**
@@ -57,7 +59,8 @@ import static mycellar.Program.DATE_FORMATER_DDMMYYYY;
     "date",
     "type",
     "bouteille",
-    "totalBottle"
+    "totalBottle",
+    "music"
 })
 @XmlRootElement(name = "History")
 public class History {
@@ -65,19 +68,25 @@ public class History {
   @XmlElement(required = true)
   private String date;
   private int type;
-  @XmlElement(name = "Bouteille", required = true)
+  @XmlElement(name = "Bouteille")
   private Bouteille bouteille;
   @XmlElement
   private int totalBottle;
+  @XmlElement
+  private Music music;
 
   /**
-   * History: Contructeur avec une bouteille et un type d'action
+   * History: Contructeur avec un object et un type d'action
    *
-   * @param bouteille Bouteille
+   * @param myCellarObject IMyCellarObject
    * @param type int
    */
-  public History(Bouteille bouteille, int type, int totalBottle) {
-    this.bouteille = bouteille;
+  public History(IMyCellarObject myCellarObject, int type, int totalBottle) {
+    if (myCellarObject instanceof Bouteille) {
+      bouteille = (Bouteille) myCellarObject;
+    } else if (myCellarObject instanceof Music) {
+      music = (Music) myCellarObject;
+    }
     this.type = type;
     this.totalBottle = totalBottle;
     date = LocalDate.now().format(DATE_FORMATER_DDMMYYYY);
@@ -126,8 +135,16 @@ public class History {
     return bouteille;
   }
 
+  public Music getMusic() {
+    return music;
+  }
+
   public void setBouteille(Bouteille bouteille) {
     this.bouteille = bouteille;
+  }
+
+  public void setMusic(Music music) {
+    this.music = music;
   }
 
   public boolean hasTotalBottle() {

@@ -3,6 +3,7 @@ package test;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.SerializedStorage;
+import mycellar.core.IMyCellarObject;
 import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -123,7 +124,7 @@ class SerializedStorageTest {
     assertEquals(7, serializedStorage.getListBouteilles().getBouteille().size());
     serializedStorage.deleteWine(bouteille3);
     assertEquals(6, serializedStorage.getListBouteilles().getBouteille().size());
-    for (Bouteille b : serializedStorage.getListBouteilles().getBouteille()) {
+    for (IMyCellarObject b : serializedStorage.getListBouteilles().getBouteille()) {
       assertNotEquals("bouteille3", b.getNom());
     }
     final Bouteille bouteille6 = new Bouteille.BouteilleBuilder("bouteille6")

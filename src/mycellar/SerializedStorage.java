@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
@@ -21,8 +22,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.6
- * @since 22/02/21
+ * @version 6.7
+ * @since 09/04/21
  */
 
 public class SerializedStorage implements Storage {
@@ -58,7 +59,7 @@ public class SerializedStorage implements Storage {
 		if (this.listBouteilles.bouteille == null) {
 			this.listBouteilles.bouteille = new LinkedList<>();
 		}
-		for (Bouteille b : this.listBouteilles.bouteille) {
+		for (IMyCellarObject b : this.listBouteilles.bouteille) {
 			if (!listeUniqueBouteille.contains(b.getNom())) {
 				listeUniqueBouteille.add(b.getNom());
 			}
@@ -73,7 +74,7 @@ public class SerializedStorage implements Storage {
 	public void addBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles.getBouteille().addAll(listBouteilles.getBouteille());
 		bottleCount = listBouteilles.getBouteille().size();
-		for (Bouteille b : listBouteilles.bouteille) {
+		for (IMyCellarObject b : listBouteilles.bouteille) {
 			final List<History> theBottle = HISTORY_LIST.getHistory().stream().filter(history -> history.getBouteille().getId() == b.getId()).collect(Collectors.toList());
 			if (b.updateID() && !theBottle.isEmpty()) {
 				theBottle.get(0).getBouteille().setId(b.getId());
@@ -96,26 +97,26 @@ public class SerializedStorage implements Storage {
 
 
 	@Override
-	public void addHistory(HistoryState type, Bouteille bottle) {
+	public void addHistory(HistoryState type, IMyCellarObject myCellarObject) {
 		historyModified = true;
 		Program.setModified();
-		HISTORY_LIST.add(new History(bottle, type.ordinal(), getBottleCount()));
+		HISTORY_LIST.add(new History(myCellarObject, type.ordinal(), getBottleCount()));
 	}
 
 	@Override
-	public void addToWorksheet(Bouteille bottle) {
+	public void addToWorksheet(IMyCellarObject myCellarObject) {
 		worksheetModified = true;
 		Program.setModified();
-		WORKSHEET_LIST.add(new WorkSheetData(bottle));
+		WORKSHEET_LIST.add(new WorkSheetData(myCellarObject));
 	}
 
 	@Override
-	public void removeFromWorksheet(Bouteille bottle) {
+	public void removeFromWorksheet(IMyCellarObject myCellarObject) {
 		worksheetModified = true;
 		Program.setModified();
 		final List<WorkSheetData> collect = WORKSHEET_LIST.getWorsheet()
 				.stream()
-				.filter(workSheetData -> workSheetData.getBouteilleId() == bottle.getId())
+				.filter(workSheetData -> workSheetData.getBouteilleId() == myCellarObject.getId())
 				.collect(Collectors.toList());
 		WORKSHEET_LIST.getWorsheet().removeAll(collect);
 	}
@@ -177,29 +178,30 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public boolean deleteWine(Bouteille bottle) {
+	public boolean deleteWine(IMyCellarObject myCellarObject) {
 
-		final String nom = bottle.getNom();
-		final String annee = bottle.getAnnee();
-		final String emplacement = bottle.getEmplacement();
-		final int numLieu = bottle.getNumLieu();
-		final int ligne = bottle.getLigne();
-		final int colonne = bottle.getColonne();
+		final String nom = myCellarObject.getNom();
+		final String annee = myCellarObject.getAnnee();
+		final String emplacement = myCellarObject.getEmplacement();
+		final int numLieu = myCellarObject.getNumLieu();
+		final int ligne = myCellarObject.getLigne();
+		final int colonne = myCellarObject.getColonne();
 
-		Debug("DeleteWine: Trying deleting bottle " + nom.strip() + " " + annee + " " + emplacement.strip() + " " + numLieu + " " + ligne + " " + colonne);
-		Rangement rangement = bottle.getRangement();
+		Debug("DeleteWine: Trying deleting myCellarObject " + nom.strip() + " " + annee + " " + emplacement.strip() + " " + numLieu + " " + ligne + " " + colonne);
+		Rangement rangement = myCellarObject.getRangement();
 		boolean isCaisse = rangement == null || rangement.isCaisse();
-		final List<Bouteille> resultBouteilles = listBouteilles.getBouteille().stream().filter(
-				bouteille -> emplacement.equals(bouteille.getEmplacement())
-						&& nom.equals(bouteille.getNom())
-						&& numLieu == bouteille.getNumLieu()
-						&& (isCaisse ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(Collectors.toList());
+		final List<IMyCellarObject> resultBouteilles = listBouteilles.getBouteille().stream()
+				.filter(
+						bouteille -> emplacement.equals(bouteille.getEmplacement())
+								&& nom.equals(bouteille.getNom())
+								&& numLieu == bouteille.getNumLieu()
+								&& (isCaisse ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(Collectors.toList());
 		if (resultBouteilles.isEmpty()) {
 			Debug("DeleteWine: Unable to find the wine!");
 			return false;
 		}
 		Program.setModified();
-		final Bouteille bouteille = resultBouteilles.get(0);
+		final IMyCellarObject bouteille = resultBouteilles.get(0);
 		Debug("DeleteWine: Deleted bottle " + bouteille);
 		listBouteilles.getBouteille().remove(bouteille);
 		bottleCount--;
@@ -207,28 +209,48 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public boolean addWine(Bouteille wine) {
-		if (null == wine) {
+	public boolean addWine(IMyCellarObject myCellarObject) {
+		if (null == myCellarObject) {
 			return false;
 		}
 
-		wine.setModified();
+		myCellarObject.setModified();
 
-		Debug("AddWine: Adding bottle " + wine.getNom() + " " + wine.getAnnee() + " " + wine.getEmplacement() + " " + wine.getNumLieu() + " " + wine.getLigne() + " " + wine.getColonne());
+			Debug("AddWine: Adding bottle " + myCellarObject.getNom() + " " + myCellarObject.getAnnee() + " " + myCellarObject.getEmplacement() + " " + myCellarObject.getNumLieu() + " " + myCellarObject.getLigne() + " " + myCellarObject.getColonne());
 
-		Program.setModified();
+			Program.setModified();
 
-		if (!listeUniqueBouteille.contains(wine.getNom())) {
-			listeUniqueBouteille.add(wine.getNom());
-		}
-		CountryVignobleController.addVignobleFromBottle(wine);
-		bottleCount++;
-		return listBouteilles.getBouteille().add(wine);
+			if (!listeUniqueBouteille.contains(myCellarObject.getNom())) {
+				listeUniqueBouteille.add(myCellarObject.getNom());
+			}
+			if (myCellarObject instanceof Bouteille) {
+				CountryVignobleController.addVignobleFromBottle((Bouteille) myCellarObject);
+			}
+			bottleCount++;
+			if (myCellarObject instanceof Music) {
+				return listBouteilles.getMusic().add((Music) myCellarObject);
+			} else {
+				assert myCellarObject instanceof Bouteille;
+				return listBouteilles.getBouteille().add((Bouteille) myCellarObject);
+			}
 	}
 
 	@Override
-	public LinkedList<Bouteille> getAllList() {
+	public List<? extends IMyCellarObject> getAllList() {
+		if (!listBouteilles.getMusic().isEmpty()) {
+			return listBouteilles.getMusic();
+		}
 		return listBouteilles.getBouteille();
+	}
+
+	@Override
+	public boolean add(IMyCellarObject myCellarObject) {
+		if (myCellarObject instanceof Bouteille) {
+			return listBouteilles.getBouteille().add((Bouteille) myCellarObject);
+		} else if (myCellarObject instanceof Music) {
+			return listBouteilles.getMusic().add((Music) myCellarObject);
+		}
+		return false;
 	}
 
 	@Override

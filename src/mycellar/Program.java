@@ -4,6 +4,7 @@ import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.Grammar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IPlace;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
@@ -36,6 +37,7 @@ import mycellar.showfile.ShowFile;
 import mycellar.vignobles.CountryVignobleController;
 import mycellar.vignobles.VineyardPanel;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.Base64;
 import org.apache.commons.text.StringEscapeUtils;
@@ -113,14 +115,14 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.3
- * @since 18/03/21
+ * @version 25.4
+ * @since 09/04/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.0.3.1";
-	public static final int VERSION = 68;
+	public static final String INTERNAL_VERSION = "4.0.6.8";
+	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
@@ -146,7 +148,7 @@ public final class Program {
 	private static File debugFile = null;
 
 	private static final List<Rangement> PLACES = new LinkedList<>();
-	private static final List<Bouteille> TRASH = new LinkedList<>();
+	private static final List<IMyCellarObject> TRASH = new LinkedList<>();
 	private static final List<MyCellarError> ERRORS = new LinkedList<>();
 
 	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
@@ -278,11 +280,11 @@ public final class Program {
 		return getGlobalDir() + CONFIG_INI;
 	}
 
-	public static List<Bouteille> getTrash() {
+	public static List<IMyCellarObject> getTrash() {
 		return TRASH;
 	}
 
-	public static void setToTrash(Bouteille b) {
+	public static void setToTrash(IMyCellarObject b) {
 		TRASH.add(b);
 	}
 
@@ -339,7 +341,7 @@ public final class Program {
 
 	/**
 	 * cleanAndUpgrade
-	 * 
+	 *
 	 * Pour nettoyer et mettre a jour le programme
 	 */
 	private static void cleanAndUpgrade() {
@@ -543,19 +545,19 @@ public final class Program {
 		load = ListeBouteille.loadXML();
 		return load;
 	}
-	
+
 	static int getMaxPrice() {
-		return (int) getStorage().getAllList().stream().mapToDouble(Bouteille::getPriceDouble).max().orElse(0);
+		return (int) getStorage().getAllList().stream().mapToDouble(IMyCellarObject::getPriceDouble).max().orElse(0);
 	}
-	
+
 	static int getCellarValue() {
-		return (int) getStorage().getAllList().stream().mapToDouble(Bouteille::getPriceDouble).sum();
+		return (int) getStorage().getAllList().stream().mapToDouble(IMyCellarObject::getPriceDouble).sum();
 	}
 
 	static int getNbBouteille() {
 		return getStorage().getAllList().size();
 	}
-	
+
 	/**
 	 * getNbBouteilleAnnee: retourne le nombre de bouteilles d'une annee
 	 *
@@ -565,17 +567,19 @@ public final class Program {
 	static int getNbBouteilleAnnee(int an) {
 		return (int) getStorage().getAllList().stream().filter(bouteille -> bouteille.getAnneeInt() == an).count();
 	}
-	
+
 	static int[] getAnnees() {
-		return getStorage().getAllList().stream().mapToInt(Bouteille::getAnneeInt).distinct().toArray();
+		return getStorage().getAllList().stream().mapToInt(IMyCellarObject::getAnneeInt).distinct().toArray();
 	}
-	
+
 	/**
 	 * getNbAutreAnnee
 	 * @return int
 	 */
 	static int getNbAutreAnnee() {
-		return (int) getStorage().getAllList().stream().filter(bouteille -> bouteille.getAnneeInt() < 1000).count();
+		return (int) getStorage().getAllList().stream()
+				.map(myCellarObject -> (Bouteille)myCellarObject)
+				.filter(bouteille -> bouteille.getAnneeInt() < 1000).count();
 	}
 
 	/**
@@ -583,7 +587,9 @@ public final class Program {
 	 * @return int
 	 */
 	static int getNbNonVintage() {
-		return (int) getStorage().getAllList().stream().filter(bouteille -> Bouteille.isNonVintageYear(bouteille.getAnnee())).count();
+		return (int) getStorage().getAllList().stream()
+				.map(myCellarObject -> (Bouteille)myCellarObject)
+				.filter(bouteille -> Bouteille.isNonVintageYear(bouteille.getAnnee())).count();
 	}
 
 
@@ -668,17 +674,17 @@ public final class Program {
 		}
 		catch (Exception ignored) {}
 	}
-	
+
 	private static void closeDebug() {
 		if(oDebugFile == null) {
 			return;
 		}
-		
+
 		try {
 			oDebugFile.flush();
 			oDebugFile.close();
 		} catch (IOException ignored) {}
-		
+
 	}
 
 	public static List<Rangement> getCave() {
@@ -708,7 +714,7 @@ public final class Program {
 		final List<Rangement> list = PLACES.stream().filter(rangement -> rangement.getNom().equals(placeName)).collect(Collectors.toList());
 		return list.get(0);
 	}
-	
+
 	/**
 	 * addCave
 	 *
@@ -730,7 +736,7 @@ public final class Program {
 	 *
 	 * @param rangement Rangement
 	 */
-	 public static void removeCave(Rangement rangement) {
+	public static void removeCave(Rangement rangement) {
 		if (rangement == null) {
 			return;
 		}
@@ -793,7 +799,7 @@ public final class Program {
 
 		// Sauvegarde avant de charger le nouveau fichier
 		closeFile();
-		
+
 		CountryVignobleController.init();
 
 		if (isNewFile) {
@@ -924,7 +930,7 @@ public final class Program {
 				//Ecriture Excel
 				final String file_excel = getCaveConfigString(MyCellarSettings.FILE_EXCEL, "");
 				Debug("Program: Writing backup Excel file: " + file_excel);
-				final List<Bouteille> bouteilles = Collections.unmodifiableList(getStorage().getAllList());
+				final List<IMyCellarObject> bouteilles = Collections.unmodifiableList(getStorage().getAllList());
 				Thread writingExcel = new Thread(() -> RangementUtils.write_XLS(new File(file_excel), bouteilles, true, null));
 				Runtime.getRuntime().addShutdownHook(writingExcel);
 			}
@@ -1204,7 +1210,7 @@ public final class Program {
 			return LanguageFileLoader.getLabel(id);
 		} catch(MissingResourceException e) {
 			if (displayError) {
-			  Debug("Program: ERROR: Missing Label " + id);
+				Debug("Program: ERROR: Missing Label " + id);
 				JOptionPane.showMessageDialog(null, "Missing Label " + id, "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			return id;
@@ -1337,16 +1343,17 @@ public final class Program {
 		return properties;
 	}
 
-	static List<PDFRow> getPDFRows(List<Bouteille> list, PDFProperties properties) {
+	static List<PDFRow> getPDFRows(List<? extends IMyCellarObject> list, PDFProperties properties) {
 		LinkedList<PDFRow> rows = new LinkedList<>();
 		LinkedList<PDFColumn> columns = properties.getColumns();
-		PDFRow row;
-		for (Bouteille b : list) {
-			row = new PDFRow();
+		for (IMyCellarObject myCellarObject : list) {
+			throwNotImplementedForMusic(myCellarObject);
+			Bouteille b = (Bouteille) myCellarObject;
+			PDFRow row = new PDFRow();
 			for (PDFColumn column : columns) {
 				if (column.getField().equals(MyCellarFields.NAME)) {
 					row.addCell(b.getNom());
-				}	else if (column.getField().equals(MyCellarFields.YEAR)) {
+				} else if (column.getField().equals(MyCellarFields.YEAR)) {
 					row.addCell(b.getAnnee());
 				} else if (column.getField().equals(MyCellarFields.TYPE)) {
 					row.addCell(b.getType());
@@ -1372,19 +1379,19 @@ public final class Program {
 					} else {
 						row.addCell("");
 					}
-				}	else if (column.getField().equals(MyCellarFields.VINEYARD)) {
+				} else if (column.getField().equals(MyCellarFields.VINEYARD)) {
 					if (b.getVignoble() != null) {
 						row.addCell(b.getVignoble().getName());
 					} else {
 						row.addCell("");
 					}
-				}	else if (column.getField().equals(MyCellarFields.AOC)) {
+				} else if (column.getField().equals(MyCellarFields.AOC)) {
 					if (b.getVignoble() != null) {
 						row.addCell(b.getVignoble().getAOC());
 					} else {
 						row.addCell("");
 					}
-				}	else if (column.getField().equals(MyCellarFields.IGP)) {
+				} else if (column.getField().equals(MyCellarFields.IGP)) {
 					if (b.getVignoble() != null) {
 						row.addCell(b.getVignoble().getIGP());
 					} else {
@@ -1392,7 +1399,7 @@ public final class Program {
 					}
 				} else if (column.getField().equals(MyCellarFields.COLOR)) {
 					row.addCell(BottleColor.getColor(b.getColor()).toString());
-				}	else if (column.getField().equals(MyCellarFields.STATUS)) {
+				} else if (column.getField().equals(MyCellarFields.STATUS)) {
 					row.addCell(BottlesStatus.getStatus(b.getStatus()).toString());
 				}
 			}
@@ -1417,18 +1424,18 @@ public final class Program {
 		LocalDateTime monthsAgo = LocalDateTime.now().minusMonths(2);
 		String[] files = f.list((dir, name) -> {
 			String date = "";
-				if (name.startsWith("Debug-") && name.endsWith(".log")) {
-					date = name.substring(6, name.indexOf(".log"));
-				}
-				if (name.startsWith("DebugFtp-") && name.endsWith(".log")) {
-					date = name.substring(9, name.indexOf(".log"));
-				}
-				if (!date.isEmpty()) {
-					String[] fields = date.split("-");
-					LocalDateTime dateTime = now.withMonth(Integer.parseInt(fields[1])).withDayOfMonth(Integer.parseInt(fields[0])).withYear(Integer.parseInt(fields[2]));
-					return dateTime.isBefore(monthsAgo);
-				}
-				return false;
+			if (name.startsWith("Debug-") && name.endsWith(".log")) {
+				date = name.substring(6, name.indexOf(".log"));
+			}
+			if (name.startsWith("DebugFtp-") && name.endsWith(".log")) {
+				date = name.substring(9, name.indexOf(".log"));
+			}
+			if (!date.isEmpty()) {
+				String[] fields = date.split("-");
+				LocalDateTime dateTime = now.withMonth(Integer.parseInt(fields[1])).withDayOfMonth(Integer.parseInt(fields[0])).withYear(Integer.parseInt(fields[2]));
+				return dateTime.isBefore(monthsAgo);
+			}
+			return false;
 		});
 
 		if (files != null) {
@@ -1439,16 +1446,16 @@ public final class Program {
 			}
 		}
 	}
-	
+
 	private static void cleanTempDirs() {
-	  String sDir = System.getProperty("user.home") + File.separator + "MyCellar";
+		String sDir = System.getProperty("user.home") + File.separator + "MyCellar";
 
-    File file = new File(sDir);
-    if (!file.exists()) {
-      return;
-    }
+		File file = new File(sDir);
+		if (!file.exists()) {
+			return;
+		}
 
-    long time = Long.parseLong(LocalDateTime.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+		long time = Long.parseLong(LocalDateTime.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
 
 		final String[] list = file.list();
 		if (list != null) {
@@ -1489,7 +1496,7 @@ public final class Program {
 	}
 
 	static ArrayList<MyCellarFields> getHTMLColumns() {
-	ArrayList<MyCellarFields> cols = new ArrayList<>();
+		ArrayList<MyCellarFields> cols = new ArrayList<>();
 		String s = getCaveConfigString(MyCellarSettings.HTMLEXPORT_COLUMN, "");
 		String [] fields = s.split(";");
 		for (String field : fields) {
@@ -1755,13 +1762,13 @@ public final class Program {
 		});
 	}
 
-  static boolean isCutCopyPastTab() {
-    return TABBED_PANE.getSelectedComponent() != null && TABBED_PANE.getSelectedComponent() instanceof ICutCopyPastable;
-  }
+	static boolean isCutCopyPastTab() {
+		return TABBED_PANE.getSelectedComponent() != null && TABBED_PANE.getSelectedComponent() instanceof ICutCopyPastable;
+	}
 
-  static <T> T getSelectedComponent(Class<T> className) {
-	  return className.cast(TABBED_PANE.getSelectedComponent());
-  }
+	static <T> T getSelectedComponent(Class<T> className) {
+		return className.cast(TABBED_PANE.getSelectedComponent());
+	}
 
 	public static String readFirstLineText(final File f) {
 		if (f == null || !f.exists()) {
@@ -1780,7 +1787,7 @@ public final class Program {
 		}
 		return "";
 	}
-	
+
 	public static HistoryList getHistoryList() {
 		return getStorage().getHistoryList();
 	}
@@ -1788,7 +1795,7 @@ public final class Program {
 	public static WorkSheetList getWorksheetList() {
 		return getStorage().getWorksheetList();
 	}
-	
+
 	public static List<History> getHistory() {
 		return Collections.unmodifiableList(getStorage().getHistoryList().getHistory());
 	}
@@ -1800,23 +1807,23 @@ public final class Program {
 			return defaultValue;
 		}
 	}
-  
-  public static BigDecimal stringToBigDecimal(final String value) throws NumberFormatException {
-	  StringBuilder buf = new StringBuilder();
-	  for(int i=0; i<value.length(); i++) {
-		  char c = value.charAt(i);
-		  if (c == ' ') {
-			  continue;
-		  }
-		  if (c == ',' || c == '.') {
-			  buf.append('.');
-		  }
-		  if (Character.isDigit(c)) {
-			  buf.append(c);
-		  }
-	  }
+
+	public static BigDecimal stringToBigDecimal(final String value) throws NumberFormatException {
+		StringBuilder buf = new StringBuilder();
+		for(int i=0; i<value.length(); i++) {
+			char c = value.charAt(i);
+			if (c == ' ') {
+				continue;
+			}
+			if (c == ',' || c == '.') {
+				buf.append('.');
+			}
+			if (Character.isDigit(c)) {
+				buf.append(c);
+			}
+		}
 		return new BigDecimal(buf.toString()).setScale(2, RoundingMode.HALF_UP);
-  }
+	}
 
 	static int getNewID() {
 		if (nextID == -1) {
@@ -1828,7 +1835,7 @@ public final class Program {
 		return nextID;
 	}
 
-	public static void modifyBottles(LinkedList<Bouteille> listToModify) {
+	public static void modifyBottles(LinkedList<? extends IMyCellarObject> listToModify) {
 		if (listToModify == null || listToModify.isEmpty()) {
 			return;
 		}
@@ -1838,8 +1845,9 @@ public final class Program {
 			new OpenAddVinAction(listToModify).actionPerformed(null);
 		}
 	}
-	
-	public static void showBottle(Bouteille bottle, boolean edit) {
+
+	public static void showBottle(IMyCellarObject bottle, boolean edit) {
+		throwNotImplementedForMusic(bottle);
 		for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
 			Component tab = TABBED_PANE.getComponentAt(i);
 			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
@@ -1847,7 +1855,7 @@ public final class Program {
 				return;
 			}
 		}
-		ManageBottle manage = new ManageBottle(bottle);
+		ManageBottle manage = new ManageBottle((Bouteille) bottle);
 		manage.enableAll(edit);
 		UPDATABLE_BOTTLES.put(bottle.getId(), manage);
 		String bottleName = bottle.getNom();
@@ -1860,6 +1868,12 @@ public final class Program {
 		Start.getInstance().updateMainPanel();
 	}
 
+	public static void throwNotImplementedForMusic(IMyCellarObject myCellarObject) {
+		if (myCellarObject instanceof Music) {
+			throw new NotImplementedException("Not implemented For Music");
+		}
+	}
+
 	static void removeBottleTab(Bouteille bottle) {
 		for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
 			Component tab = TABBED_PANE.getComponentAt(i);
@@ -1870,11 +1884,11 @@ public final class Program {
 		}
 	}
 
-	public static List<Bouteille> getExistingBottles(List<Integer> bouteilles) {
+	public static List<IMyCellarObject> getExistingBottles(List<Integer> bouteilles) {
 		return getStorage().getAllList().stream().filter(bouteille -> bouteilles.contains(bouteille.getId())).collect(Collectors.toList());
 	}
 
-	public static boolean isExistingBottle(Bouteille bouteille) {
+	public static boolean isExistingBottle(IMyCellarObject bouteille) {
 		return getStorage().getAllList().stream().anyMatch(bouteille1 -> bouteille1.getId() == bouteille.getId());
 	}
 
@@ -1891,7 +1905,7 @@ public final class Program {
 	}
 
 	static void exit() {
-	  cleanTempDirs();
+		cleanTempDirs();
 		deleteTempFiles();
 		cleanDebugFiles();
 		Debug("Program: MyCellar End");

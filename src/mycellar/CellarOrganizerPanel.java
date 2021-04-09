@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
@@ -59,8 +60,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 23/03/21
+ * @version 3.5
+ * @since 09/04/21
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -483,10 +484,10 @@ final class RangementCell extends JPanel {
 final class BouteilleLabel extends JPanel {
 
 	private static final long serialVersionUID = -3982812616929975895L;
-	private Bouteille bouteille;
+	private IMyCellarObject bouteille;
 	private final MyCellarLabel label = new MyCellarLabel();
 
-	BouteilleLabel(final Bouteille bouteille) {
+	BouteilleLabel(final IMyCellarObject bouteille) {
 		super();
 		this.bouteille = bouteille;
 		int width = 100;
@@ -495,12 +496,14 @@ final class BouteilleLabel extends JPanel {
 			width = 400;
 		}
 		setLayout(new MigLayout("", "5px[" + width + ":" + width + ":" + width + "][10:10:10]0px", "0px[align center, grow]0px"));
-		if (bouteille.isWhiteWine()) {
-			label.setIcon(MyCellarImage.WHITEWINE);
-		} else if (bouteille.isPinkWine()) {
-			label.setIcon(MyCellarImage.PINKWINE);
-		} else {
-			label.setIcon(MyCellarImage.BLACKWINE);
+		if (bouteille instanceof Bouteille) {
+			if (((Bouteille) bouteille).isWhiteWine()) {
+				label.setIcon(MyCellarImage.WHITEWINE);
+			} else if (((Bouteille) bouteille).isPinkWine()) {
+				label.setIcon(MyCellarImage.PINKWINE);
+			} else {
+				label.setIcon(MyCellarImage.BLACKWINE);
+			}
 		}
 		label.setText("<html>" + bouteille.getNom() + "</html>");
 		add(label, "grow");
@@ -532,7 +535,7 @@ final class BouteilleLabel extends JPanel {
 		return label.getIcon();
 	}
 
-	public Bouteille getBouteille() {
+	public IMyCellarObject getBouteille() {
 		return bouteille;
 	}
 
@@ -657,7 +660,7 @@ class LabelTransferHandler extends TransferHandler {
 		try {
 			final RangementCell src = (RangementCell)support.getTransferable().getTransferData(localObjectFlavor);
 			final BouteilleLabel bouteilleLabel = new BouteilleLabel(src.draggingLabel.getBouteille());
-			final Bouteille bouteille = bouteilleLabel.getBouteille();
+			final IMyCellarObject bouteille = bouteilleLabel.getBouteille();
 			bouteille.setLigne(target.getRow());
 			bouteille.setColonne(target.getColumn());
 			bouteille.setNumLieu(target.getPlaceNum());

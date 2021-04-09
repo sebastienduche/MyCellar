@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.IMyCellarObject;
 import mycellar.core.datas.history.History;
 
 import javax.swing.table.AbstractTableModel;
@@ -18,8 +19,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 17/12/20
+ * @version 2.9
+ * @since 09/04/21
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -92,7 +93,7 @@ class TableHistoryValues extends AbstractTableModel {
       case LABEL:
       case TYPE:
       {
-        Bouteille b = h.getBouteille();
+        IMyCellarObject b = h.getBouteille();
         String emplacement;
         if (b.isInTemporaryStock()) {
           emplacement = Program.getLabel("Bouteille.TemporaryPlace");
@@ -196,7 +197,7 @@ class TableHistoryValues extends AbstractTableModel {
     switch (column) {
       case ACTION:
         History h = displayList.get(row);
-        Bouteille bottle = h.getBouteille();
+        IMyCellarObject bottle = h.getBouteille();
         if (h.isDeleted()) {
           Program.showBottle(bottle, false);
         } else {
@@ -282,7 +283,7 @@ class TableHistoryValues extends AbstractTableModel {
     }
   }
 
-  Bouteille getBottle(int row) {
+  IMyCellarObject getBottle(int row) {
     return displayList.get(row).getBouteille();
   }
 

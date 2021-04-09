@@ -2,8 +2,8 @@ package mycellar.core;
 
 import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
+import mycellar.core.datas.jaxb.CountryListJaxb;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,8 +14,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 12/11/20
+ * @version 1.5
+ * @since 09/04/21
  */
 
 public enum MyCellarFields {
@@ -47,54 +47,56 @@ public enum MyCellarFields {
 		this.label = label;
 	}
 
-  public static String getValue(MyCellarFields field, Bouteille b) {
-		if (b == null) {
+  public static String getValue(MyCellarFields field, IMyCellarObject myCellarObject) {
+		if (myCellarObject == null) {
 			return "";
 		}
+		Program.throwNotImplementedForMusic(myCellarObject);
+		Bouteille b = (Bouteille) myCellarObject;
 		String value = "";
-		if(field == NAME) {
+		if (field == NAME) {
 			value = b.getNom();
-		} else if(field == YEAR) {
+		} else if (field == YEAR) {
 			value = b.getAnnee();
-		} else if(field == TYPE) {
+		} else if (field == TYPE) {
 			value = b.getType();
-		} else if(field == PLACE) {
+		} else if (field == PLACE) {
 			value = b.getEmplacement();
-		} else if(field == NUM_PLACE) {
+		} else if (field == NUM_PLACE) {
 			value = Integer.toString(b.getNumLieu());
-		} else if(field == LINE) {
+		} else if (field == LINE) {
 			value = Integer.toString(b.getLigne());
-		} else if(field == COLUMN) {
+		} else if (field == COLUMN) {
 			value = Integer.toString(b.getColonne());
-		} else if(field == PRICE) {
+		} else if (field == PRICE) {
 			value = b.getPrix();
-		} else if(field == COMMENT) {
+		} else if (field == COMMENT) {
 			value = b.getComment();
-		} else if(field == MATURITY) {
+		} else if (field == MATURITY) {
 			value = b.getMaturity();
-		} else if(field == PARKER) {
+		} else if (field == PARKER) {
 			value = b.getParker();
-		} else if(field == COLOR) {
+		} else if (field == COLOR) {
 			value = b.getColor();
-		} else if(field == STATUS) {
+		} else if (field == STATUS) {
 			value = b.getStatus();
-		} else if(field == COUNTRY) {
-			if(b.getVignoble() != null) {
+		} else if (field == COUNTRY) {
+			if (b.getVignoble() != null) {
 				CountryJaxb c = CountryListJaxb.findbyId(b.getVignoble().getCountry()).orElse(null);
-				if(c != null) {
+				if (c != null) {
 					value = c.toString();
 				}
 			}
-		} else if(field == VINEYARD) {
-			if(b.getVignoble() != null) {
+		} else if (field == VINEYARD) {
+			if (b.getVignoble() != null) {
 				value = b.getVignoble().getName();
 			}
-		}else if(field == AOC) {
-			if(b.getVignoble() != null && b.getVignoble().getAOC() != null) {
+		}else if (field == AOC) {
+			if (b.getVignoble() != null && b.getVignoble().getAOC() != null) {
 				value = b.getVignoble().getAOC();
 			}
-		}	else if(field == IGP) {
-			if(b.getVignoble() != null && b.getVignoble().getIGP() != null) {
+		}	else if (field == IGP) {
+			if (b.getVignoble() != null && b.getVignoble().getIGP() != null) {
 				value = b.getVignoble().getIGP();
 			}
 		}

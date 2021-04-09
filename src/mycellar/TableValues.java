@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 
 import javax.swing.table.AbstractTableModel;
@@ -14,8 +15,8 @@ import static mycellar.Program.getLabel;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 23/01/21
+ * @version 3.1
+ * @since 09/04/21
  */
 class TableValues extends AbstractTableModel {
 
@@ -28,7 +29,7 @@ class TableValues extends AbstractTableModel {
 			getLabel("Infos082"), getLabel("Infos028"), getLabel("Infos083"), "");
 
 	private final List<Boolean> listBoolean = new LinkedList<>();
-	private final List<Bouteille> datas = new LinkedList<>();
+	private final List<IMyCellarObject> datas = new LinkedList<>();
 
 	/**
 	 * getRowCount
@@ -70,7 +71,8 @@ class TableValues extends AbstractTableModel {
 			Program.Debug("TableValues: Error listBoolean index " + row + " > " + datas.size());
 			return "";
 		}
-		Bouteille b = datas.get(row);
+		Program.throwNotImplementedForMusic(datas.get(row));
+		Bouteille b = (Bouteille) datas.get(row);
 		switch(column)
 		{
 			case ETAT:
@@ -132,7 +134,7 @@ class TableValues extends AbstractTableModel {
 	public void setValueAt(Object value, int row, int column) {
 		switch (column) {
 			case SHOW:
-				Bouteille bottle = datas.get(row);
+				IMyCellarObject bottle = datas.get(row);
 				Program.showBottle(bottle, true);
 				break;
 			case ETAT:
@@ -146,7 +148,7 @@ class TableValues extends AbstractTableModel {
 	 *
 	 * @param b Bouteille
 	 */
-	void addBouteille(Bouteille b) {
+	void addBouteille(IMyCellarObject b) {
 		if(b != null) {
 			datas.add(b);
 			listBoolean.add(Boolean.FALSE);
@@ -166,9 +168,9 @@ class TableValues extends AbstractTableModel {
 	/**
 	 * removeBouteille: Suppression d'une bouteille.
 	 *
-	 * @param bouteille Bouteille
+	 * @param bouteille IMyCellarObject
 	 */
-	void removeBouteille(Bouteille bouteille) {
+	void removeBouteille(IMyCellarObject bouteille) {
 		int index = datas.indexOf(bouteille);
 		if(index != -1) {
 			datas.remove(bouteille);
@@ -177,15 +179,15 @@ class TableValues extends AbstractTableModel {
 		}
 	}
 
-	public List<Bouteille> getDatas(){
+	public List<IMyCellarObject> getDatas() {
 		return datas;
 	}
 	
-	boolean hasNotBottle(Bouteille b){
+	boolean hasNotBottle(IMyCellarObject b) {
 		return !datas.contains(b);
 	}
 
-	public Bouteille getBouteille(int i){
-		return datas.get(i);
+	public Bouteille getBouteille(int i) {
+		return (Bouteille) datas.get(i);
 	}
 }

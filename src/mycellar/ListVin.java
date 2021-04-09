@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
@@ -24,8 +25,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.8
- * @since 16/10/20
+ * @version 3.9
+ * @since 09/04/21
  */
 class ListVin extends JPanel {
   private ListValues listValues;
@@ -39,7 +40,7 @@ class ListVin extends JPanel {
    * @param bottle LinkedList<Bouteille>: Liste des bouteilles.
    * @param addVin
    */
-  ListVin(List<Bouteille> bottle, final AddVin addVin) {
+  ListVin(List<? extends IMyCellarObject> bottle, final AddVin addVin) {
 
     try {
       this.addVin = addVin;
@@ -103,7 +104,7 @@ class ListVin extends JPanel {
   /**
    * setBottles: Mise à jour de la liste des vins
    */
-  public void setBottles(List<Bouteille> bottles) {
+  public void setBottles(List<? extends IMyCellarObject> bottles) {
 	  listValues.setBouteilles(bottles);
   }
 

@@ -1,6 +1,5 @@
 package mycellar.placesmanagement;
 
-import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyXmlDom;
@@ -8,6 +7,7 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.TabEvent;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
@@ -58,8 +58,8 @@ import static mycellar.Program.updateAllPanels;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.7
- * @since 16/02/21
+ * @version 8.8
+ * @since 09/04/21
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -225,8 +225,8 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 							//Suppression des bouteilles presentes dans le rangement
 							String tmp_nom = cave.getNom();
 
-							List<Bouteille> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
-							for (Bouteille b : bottleList) {
+							List<IMyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
+							for (IMyCellarObject b : bottleList) {
 								getStorage().addHistory(HistoryState.DEL, b);
 								getStorage().deleteWine(b);
 								setToTrash(b);

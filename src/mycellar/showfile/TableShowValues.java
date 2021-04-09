@@ -4,6 +4,7 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Start;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
@@ -23,8 +24,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.8
- * @since 05/03/21
+ * @version 4.9
+ * @since 09/04/21
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -48,7 +49,7 @@ class TableShowValues extends AbstractTableModel {
 
   protected Boolean[] values = null;
 
-  List<Bouteille> monVector = new LinkedList<>();
+  List<? extends IMyCellarObject> monVector = new LinkedList<>();
 
   @Override
   public int getRowCount() {
@@ -62,7 +63,8 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public Object getValueAt(int row, int column) {
-    Bouteille b = monVector.get(row);
+    Program.throwNotImplementedForMusic(monVector.get(row));
+    Bouteille b = (Bouteille) monVector.get(row);
     switch (column) {
       case ETAT:
         return values[row];
@@ -106,7 +108,8 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public void setValueAt(Object value, int row, int column) {
-    Bouteille b = monVector.get(row);
+    Program.throwNotImplementedForMusic(monVector.get(row));
+    Bouteille b = (Bouteille) monVector.get(row);
     switch (column) {
       case ETAT:
         values[row] = (Boolean) value;
@@ -198,12 +201,12 @@ class TableShowValues extends AbstractTableModel {
             tmpNumEmpl -= rangement.getStartCaisse();
           }
           if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
-            Optional<Bouteille> bTemp = Optional.empty();
+            Optional<IMyCellarObject> bTemp = Optional.empty();
             if (!rangement.isCaisse()) {
               bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
             }
             if (bTemp.isPresent()) {
-              final Bouteille bouteille = bTemp.get();
+              final IMyCellarObject bouteille = bTemp.get();
               Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
             } else {
               if (column == PLACE) {
@@ -243,7 +246,7 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  public void setBottles(List<Bouteille> b) {
+  public void setBottles(List<? extends IMyCellarObject> b) {
     if (b == null) {
       return;
     }
@@ -258,7 +261,7 @@ class TableShowValues extends AbstractTableModel {
   /**
    * getBouteille: Récupération d'une bouteille.
    */
-  public Bouteille getBottle(int i) {
+  public IMyCellarObject getMyCellarObject(int i) {
     return monVector.get(i);
   }
 

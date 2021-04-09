@@ -8,6 +8,7 @@
 
 package mycellar;
 
+import mycellar.core.IMyCellarObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,8 +39,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 16/07/18
+ * @version 1.1
+ * @since 09/04/21
  *
  * <p>Java class for anonymous complex type.
  *
@@ -61,14 +62,18 @@ import java.util.LinkedList;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-		"bouteille"
+		"bouteille",
+		"music"
 })
 @XmlRootElement(name = "ListeBouteille")
 @XmlSeeAlso(Bouteille.class)
 public class ListeBouteille {
 
-	@XmlElement(name = "Bouteille", required = true)
+	@XmlElement(name = "Bouteille")
 	LinkedList<Bouteille> bouteille;
+
+	@XmlElement
+	LinkedList<Music> music;
 
 	/**
 	 * Gets the value of the bouteille property.
@@ -98,6 +103,17 @@ public class ListeBouteille {
 		}
 		return bouteille;
 	}
+
+	public LinkedList<Music> getMusic() {
+		if (music == null) {
+			music = new LinkedList<>();
+		}
+		return music;
+	}
+
+//	public void setMusic(List<Music> music) {
+//		this.music = music;
+//	}
 
 	void resetBouteille() {
 		bouteille = null;
@@ -180,5 +196,15 @@ public class ListeBouteille {
 	 */
 	public static void Debug(String sText) {
 		Program.Debug("ListeBouteille: " + sText );
+	}
+
+	public void add(IMyCellarObject myCellarObject) {
+		if (myCellarObject instanceof Bouteille) {
+			getBouteille().add((Bouteille) myCellarObject);
+		} else if (myCellarObject instanceof Music) {
+			getMusic().add((Music) myCellarObject);
+		} else {
+			throw new IllegalArgumentException("Not Implemented");
+		}
 	}
 }

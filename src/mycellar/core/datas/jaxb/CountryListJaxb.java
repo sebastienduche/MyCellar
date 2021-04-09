@@ -82,7 +82,9 @@ public class CountryListJaxb
 				URL url = CountryListJaxb.class.getClassLoader().getResource("resources/" + COUNTRIES_XML);
 				if (url == null) {
 					Debug("ERROR: Countries: Missing resource " + COUNTRIES_XML);
-					return null;
+					countryListJaxb = new CountryListJaxb();
+					countryListJaxb.setCountries(new ArrayList<>());
+					return countryListJaxb;
 				}
 				countryListJaxb = (CountryListJaxb) jaxbUnmarshaller.unmarshal(url);
 				Debug("Loading countries file Done");

@@ -1,6 +1,8 @@
 package mycellar;
 
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.bottle.BottleColor;
+import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;

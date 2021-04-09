@@ -1,7 +1,7 @@
 package mycellar.requester;
 
-import mycellar.BottleColor;
-import mycellar.BottlesStatus;
+import mycellar.core.bottle.BottleColor;
+import mycellar.core.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.placesmanagement.Rangement;

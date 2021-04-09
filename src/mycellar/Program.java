@@ -3,6 +3,8 @@ package mycellar;
 import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.capacity.CapacityPanel;
+import mycellar.core.bottle.BottleColor;
+import mycellar.core.BottlesStatus;
 import mycellar.core.Grammar;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.IPlace;

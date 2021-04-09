@@ -1,6 +1,6 @@
 package mycellar.placesmanagement;
 
-import mycellar.BottleColor;
+import mycellar.core.bottle.BottleColor;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;

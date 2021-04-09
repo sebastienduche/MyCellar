@@ -1,12 +1,11 @@
 package mycellar.core;
 
-import mycellar.BottleColor;
-import mycellar.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.JCompletionComboBox;
 import mycellar.Program;
 import mycellar.actions.ManageCapacityAction;
+import mycellar.core.bottle.BottleColor;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;

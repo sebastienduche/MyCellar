@@ -1,4 +1,6 @@
-package mycellar;
+package mycellar.core;
+
+import mycellar.Program;
 
 public enum BottlesStatus {
 	NONE(""),

@@ -8,6 +8,8 @@
 
 package mycellar;
 
+import mycellar.core.bottle.BottleColor;
+import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarFields;
 import mycellar.core.datas.jaxb.VignobleJaxb;

@@ -2,6 +2,8 @@ package mycellar;
 
 import mycellar.Bouteille.BouteilleBuilder;
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.bottle.BottleColor;
+import mycellar.core.BottlesStatus;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IMyCellarObject;

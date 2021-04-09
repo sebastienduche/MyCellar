@@ -601,20 +601,20 @@ class RangementTest {
   @Test
   void getNumberOfBottlesPerPlace() {
    Map<Integer, Integer> numberOfBottlesPerPlace = caisseLimit.getNumberOfBottlesPerPlace();
-    assertEquals(0, numberOfBottlesPerPlace.get(0));
-    assertEquals(0, numberOfBottlesPerPlace.get(1));
+    assertEquals(0, (int)numberOfBottlesPerPlace.get(0));
+    assertEquals(0, (int)numberOfBottlesPerPlace.get(1));
     Bouteille b = new Bouteille();
     b.setNom("B21");
     b.setNumLieu(1);
     caisseLimit.addWine(b);
     numberOfBottlesPerPlace = caisseLimit.getNumberOfBottlesPerPlace();
-    assertEquals(1, numberOfBottlesPerPlace.get(0));
-    assertEquals(0, numberOfBottlesPerPlace.get(1));
+    assertEquals(1, (int)numberOfBottlesPerPlace.get(0));
+    assertEquals(0, (int)numberOfBottlesPerPlace.get(1));
     b = new Bouteille();
     b.setNom("B1");
     updateToArmoire1x3x3(b, 1, 1);
     numberOfBottlesPerPlace = armoire1x3x3.getNumberOfBottlesPerPlace();
-    assertEquals(1, numberOfBottlesPerPlace.get(0));
+    assertEquals(1, (int)numberOfBottlesPerPlace.get(0));
   }
 
   @Test

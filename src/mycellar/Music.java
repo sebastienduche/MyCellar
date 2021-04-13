@@ -11,7 +11,9 @@ package mycellar;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarFields;
+import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
+import mycellar.core.music.MusicSupport;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import org.w3c.dom.Element;
@@ -27,6 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -37,8 +40,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 09/04/21
+ * @version 0.3
+ * @since 13/04/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -574,9 +577,25 @@ public class Music implements IMyCellarObject, Serializable {
     NodeList nodeDuration = bouteilleElem.getElementsByTagName("duration");
     final String duration = nodeDuration.item(0).getTextContent();
     NodeList nodeTracks = bouteilleElem.getElementsByTagName("tracks");
-    final Element tracks = (Element) nodeTracks.item(0);
-//    NodeList nodeCountry = tracks.getElementsByTagName("country");
-//    final String country = nodeCountry.item(0).getTextContent();
+    List<Track> trackList = new LinkedList<>();
+    for (int i = 0; i < nodeTracks.getLength(); i++) {
+      final Element tracks = (Element) nodeTracks.item(0);
+      NodeList nodeNumber = tracks.getElementsByTagName("number");
+      final int trackNumber = Integer.parseInt(nodeNumber.item(0).getTextContent());
+      NodeList nodeLabel = tracks.getElementsByTagName("label");
+      final String trackLabel = nodeLabel.item(0).getTextContent();
+      NodeList nodeTrackDuration = tracks.getElementsByTagName("duration");
+      final String trackDuration = nodeTrackDuration.item(0).getTextContent();
+      NodeList nodeComnment = tracks.getElementsByTagName("comment");
+      final String trackComment = nodeComnment.item(0).getTextContent();
+      final Track track = new Track();
+      track.setNumber(trackNumber);
+      track.setLabel(trackLabel);
+      track.setDuration(trackDuration);
+      track.setComment(trackComment);
+      trackList.add(track);
+    }
+
     NodeList nodeStatus = bouteilleElem.getElementsByTagName("status");
     String status = "";
     if (nodeStatus.getLength() > 0) {
@@ -587,24 +606,11 @@ public class Music implements IMyCellarObject, Serializable {
     if (nodeLAstModified.getLength() > 0) {
       lastModifed = nodeLAstModified.item(0).getTextContent();
     }
-//    NodeList nodeVigobleName = vignoble.getElementsByTagName("name");
-//    String vignobleName, AOC, IGP;
-//    vignobleName = AOC = IGP = "";
-//    if (nodeTracks.getLength() == 1) {
-//      vignobleName = nodeVigobleName.item(0).getTextContent();
-//      NodeList nodeAOC = vignoble.getElementsByTagName("AOC");
-//      if (nodeAOC.getLength() == 1) {
-//        AOC = nodeAOC.item(0).getTextContent();
-//      }
-//      NodeList nodeIGP = vignoble.getElementsByTagName("IGP");
-//      if (nodeIGP.getLength() == 1) {
-//        IGP = nodeIGP.item(0).getTextContent();
-//      }
-//    }
-    return new Music.MusicBuilder(name)
+
+    return new MusicBuilder(name)
         .id(id)
         .annee(year)
-        .type(type)
+        .supportType(MusicSupport.valueOf(type))
         .place(place)
         .numPlace(numLieu)
         .line(line)
@@ -617,7 +623,7 @@ public class Music implements IMyCellarObject, Serializable {
         .status(status)
         .lastModified(lastModifed)
         .duration(duration)
-//        .vignoble(country, vignobleName, AOC, IGP)
+        .tracks(trackList)
         .build();
   }
 
@@ -817,8 +823,8 @@ public class Music implements IMyCellarObject, Serializable {
       return this;
     }
 
-    public MusicBuilder type(String type) {
-      this.type = type;
+    public MusicBuilder supportType(MusicSupport musicSupport) {
+      type = musicSupport.name();
       return this;
     }
 
@@ -882,9 +888,27 @@ public class Music implements IMyCellarObject, Serializable {
       return this;
     }
 
-    public MusicBuilder tracks(String country, String name, String aoc, String igp) {
-      tracks = new Tracks();
-      Program.throwNotImplementedForMusic(new Music());
+    public MusicBuilder tracks(List<Track> trackList) {
+      if (tracks == null) {
+        tracks = new Tracks();
+        tracks.setTracks(trackList);
+      } else {
+        tracks.getTracks().addAll(trackList);
+      }
+      return this;
+    }
+
+    public MusicBuilder track(int number, String label, String duration, String comment) {
+      if (tracks == null) {
+        tracks = new Tracks();
+        tracks.setTracks(new LinkedList<>());
+      }
+      final Track track = new Track();
+      track.setNumber(number);
+      track.setLabel(label);
+      track.setDuration(duration);
+      track.setComment(comment);
+      tracks.getTracks().add(track);
       return this;
     }
 

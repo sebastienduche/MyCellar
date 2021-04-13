@@ -11,6 +11,7 @@ public class Track
   private Integer number;
   private String label;
   private String duration;
+  private String comment;
 
   public Integer getNumber() {
     return number;
@@ -34,5 +35,14 @@ public class Track
 
   public void setDuration(String duration) {
     this.duration = duration;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public Track setComment(String comment) {
+    this.comment = comment;
+    return this;
   }
 }

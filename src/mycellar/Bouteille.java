@@ -38,8 +38,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.8
- * @since 09/04/21
+ * @version 6.9
+ * @since 14/04/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -611,20 +611,20 @@ public class Bouteille implements IMyCellarObject, Serializable {
     final String parker = nodeParker.item(0).getTextContent();
     NodeList nodeColor = bouteilleElem.getElementsByTagName("color");
     final String color = nodeColor.item(0).getTextContent();
-    NodeList nodeVignoble = bouteilleElem.getElementsByTagName("vignoble");
-    final Element vignoble = (Element) nodeVignoble.item(0);
-    NodeList nodeCountry = vignoble.getElementsByTagName("country");
-    final String country = nodeCountry.item(0).getTextContent();
-		NodeList nodeStatus = vignoble.getElementsByTagName("status");
+		NodeList nodeStatus = bouteilleElem.getElementsByTagName("status");
 		String status = "";
 		if (nodeStatus.getLength() > 0) {
 			status = nodeStatus.item(0).getTextContent();
 		}
-		NodeList nodeLAstModified = vignoble.getElementsByTagName("lastModified");
+		NodeList nodeLastModified = bouteilleElem.getElementsByTagName("lastModified");
 		String lastModifed = "";
-		if (nodeLAstModified.getLength() > 0) {
-			lastModifed = nodeLAstModified.item(0).getTextContent();
+		if (nodeLastModified.getLength() > 0) {
+			lastModifed = nodeLastModified.item(0).getTextContent();
 		}
+    NodeList nodeVignoble = bouteilleElem.getElementsByTagName("vignoble");
+    final Element vignoble = (Element) nodeVignoble.item(0);
+    NodeList nodeCountry = vignoble.getElementsByTagName("country");
+    final String country = nodeCountry.item(0).getTextContent();
     NodeList nodeVigobleName = vignoble.getElementsByTagName("name");
     String vignobleName, AOC, IGP;
     vignobleName = AOC = IGP = "";

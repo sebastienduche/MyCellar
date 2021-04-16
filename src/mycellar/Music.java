@@ -40,8 +40,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 13/04/21
+ * @version 0.4
+ * @since 16/04/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
     "tracks"
 })
 @XmlRootElement(name = "Music")
-public class Music implements IMyCellarObject, Serializable {
+public class Music implements IMyCellarObject<Music>, Serializable {
 
   private static final long serialVersionUID = 7443323147347096231L;
 
@@ -398,6 +398,14 @@ public class Music implements IMyCellarObject, Serializable {
         .build();
   }
 
+  public void setMusicSupport(MusicSupport musicSupport) {
+    setType(musicSupport.name());
+  }
+
+  public MusicSupport getMusicSupport() {
+    return MusicSupport.getSupport(getType());
+  }
+
   @Override
   public String toString() {
     return title;
@@ -547,36 +555,41 @@ public class Music implements IMyCellarObject, Serializable {
     return Program.TEMP_PLACE.equalsIgnoreCase(emplacement);
   }
 
-  public static Music getBouteilleFromXML(Element bouteilleElem) {
-    NodeList nodeId = bouteilleElem.getElementsByTagName("id");
+  public static Music fromXml(Element element) {
+    return new Music().fromXmlElemnt(element);
+  }
+
+  @Override
+  public Music fromXmlElemnt(Element element) {
+    NodeList nodeId = element.getElementsByTagName("id");
     final int id = Integer.parseInt(nodeId.item(0).getTextContent());
-    NodeList nodeName = bouteilleElem.getElementsByTagName("nom");
+    NodeList nodeName = element.getElementsByTagName("nom");
     final String name = nodeName.item(0).getTextContent();
-    NodeList nodeAnnee = bouteilleElem.getElementsByTagName("annee");
+    NodeList nodeAnnee = element.getElementsByTagName("annee");
     final String year = nodeAnnee.item(0).getTextContent();
-    NodeList nodeType = bouteilleElem.getElementsByTagName("type");
+    NodeList nodeType = element.getElementsByTagName("type");
     final String type = nodeType.item(0).getTextContent();
-    NodeList nodePlace = bouteilleElem.getElementsByTagName("emplacement");
+    NodeList nodePlace = element.getElementsByTagName("emplacement");
     final String place = nodePlace.item(0).getTextContent();
-    NodeList nodeNumLieu = bouteilleElem.getElementsByTagName("num_lieu");
+    NodeList nodeNumLieu = element.getElementsByTagName("num_lieu");
     final int numLieu = Integer.parseInt(nodeNumLieu.item(0).getTextContent());
-    NodeList nodeLine = bouteilleElem.getElementsByTagName("ligne");
+    NodeList nodeLine = element.getElementsByTagName("ligne");
     final int line = Integer.parseInt(nodeLine.item(0).getTextContent());
-    NodeList nodeColumn = bouteilleElem.getElementsByTagName("colonne");
+    NodeList nodeColumn = element.getElementsByTagName("colonne");
     final int column = Integer.parseInt(nodeColumn.item(0).getTextContent());
-    NodeList nodePrice = bouteilleElem.getElementsByTagName("prix");
+    NodeList nodePrice = element.getElementsByTagName("prix");
     final String price = nodePrice.item(0).getTextContent();
-    NodeList nodeComment = bouteilleElem.getElementsByTagName("comment");
+    NodeList nodeComment = element.getElementsByTagName("comment");
     final String comment = nodeComment.item(0).getTextContent();
-    NodeList nodeArtist = bouteilleElem.getElementsByTagName("artist");
+    NodeList nodeArtist = element.getElementsByTagName("artist");
     final String artist = nodeArtist.item(0).getTextContent();
-    NodeList nodeComposer = bouteilleElem.getElementsByTagName("composer");
+    NodeList nodeComposer = element.getElementsByTagName("composer");
     final String composer = nodeComposer.item(0).getTextContent();
-    NodeList nodeGenre = bouteilleElem.getElementsByTagName("genre");
+    NodeList nodeGenre = element.getElementsByTagName("genre");
     final String genre = nodeGenre.item(0).getTextContent();
-    NodeList nodeDuration = bouteilleElem.getElementsByTagName("duration");
+    NodeList nodeDuration = element.getElementsByTagName("duration");
     final String duration = nodeDuration.item(0).getTextContent();
-    NodeList nodeTracks = bouteilleElem.getElementsByTagName("tracks");
+    NodeList nodeTracks = element.getElementsByTagName("tracks");
     List<Track> trackList = new LinkedList<>();
     for (int i = 0; i < nodeTracks.getLength(); i++) {
       final Element tracks = (Element) nodeTracks.item(0);
@@ -596,12 +609,12 @@ public class Music implements IMyCellarObject, Serializable {
       trackList.add(track);
     }
 
-    NodeList nodeStatus = bouteilleElem.getElementsByTagName("status");
+    NodeList nodeStatus = element.getElementsByTagName("status");
     String status = "";
     if (nodeStatus.getLength() > 0) {
       status = nodeStatus.item(0).getTextContent();
     }
-    NodeList nodeLAstModified = bouteilleElem.getElementsByTagName("lastModified");
+    NodeList nodeLAstModified = element.getElementsByTagName("lastModified");
     String lastModifed = "";
     if (nodeLAstModified.getLength() > 0) {
       lastModifed = nodeLAstModified.item(0).getTextContent();
@@ -610,7 +623,7 @@ public class Music implements IMyCellarObject, Serializable {
     return new MusicBuilder(name)
         .id(id)
         .annee(year)
-        .supportType(MusicSupport.valueOf(type))
+        .musicSupport(MusicSupport.valueOf(type))
         .place(place)
         .numPlace(numLieu)
         .line(line)
@@ -823,7 +836,7 @@ public class Music implements IMyCellarObject, Serializable {
       return this;
     }
 
-    public MusicBuilder supportType(MusicSupport musicSupport) {
+    public MusicBuilder musicSupport(MusicSupport musicSupport) {
       type = musicSupport.name();
       return this;
     }

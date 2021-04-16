@@ -38,8 +38,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.9
- * @since 14/04/21
+ * @version 7.0
+ * @since 16/04/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -584,44 +584,49 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		return Program.TEMP_PLACE.equalsIgnoreCase(emplacement);
 	}
 
-  public static Bouteille getBouteilleFromXML(Element bouteilleElem) {
-    NodeList nodeId = bouteilleElem.getElementsByTagName("id");
+	public static Bouteille fromXml(Element element) {
+		return new Bouteille().fromXmlElemnt(element);
+	}
+
+	@Override
+	public Bouteille fromXmlElemnt(Element element) {
+    NodeList nodeId = element.getElementsByTagName("id");
     final int id = Integer.parseInt(nodeId.item(0).getTextContent());
-    NodeList nodeName = bouteilleElem.getElementsByTagName("nom");
+    NodeList nodeName = element.getElementsByTagName("nom");
     final String name = nodeName.item(0).getTextContent();
-    NodeList nodeAnnee = bouteilleElem.getElementsByTagName("annee");
+    NodeList nodeAnnee = element.getElementsByTagName("annee");
     final String year = nodeAnnee.item(0).getTextContent();
-    NodeList nodeType = bouteilleElem.getElementsByTagName("type");
+    NodeList nodeType = element.getElementsByTagName("type");
     final String type = nodeType.item(0).getTextContent();
-    NodeList nodePlace = bouteilleElem.getElementsByTagName("emplacement");
+    NodeList nodePlace = element.getElementsByTagName("emplacement");
     final String place = nodePlace.item(0).getTextContent();
-    NodeList nodeNumLieu = bouteilleElem.getElementsByTagName("num_lieu");
+    NodeList nodeNumLieu = element.getElementsByTagName("num_lieu");
     final int numLieu = Integer.parseInt(nodeNumLieu.item(0).getTextContent());
-    NodeList nodeLine = bouteilleElem.getElementsByTagName("ligne");
+    NodeList nodeLine = element.getElementsByTagName("ligne");
     final int line = Integer.parseInt(nodeLine.item(0).getTextContent());
-    NodeList nodeColumn = bouteilleElem.getElementsByTagName("colonne");
+    NodeList nodeColumn = element.getElementsByTagName("colonne");
     final int column = Integer.parseInt(nodeColumn.item(0).getTextContent());
-    NodeList nodePrice = bouteilleElem.getElementsByTagName("prix");
+    NodeList nodePrice = element.getElementsByTagName("prix");
     final String price = nodePrice.item(0).getTextContent();
-    NodeList nodeComment = bouteilleElem.getElementsByTagName("comment");
+    NodeList nodeComment = element.getElementsByTagName("comment");
     final String comment = nodeComment.item(0).getTextContent();
-    NodeList nodeMaturity = bouteilleElem.getElementsByTagName("maturity");
+    NodeList nodeMaturity = element.getElementsByTagName("maturity");
     final String maturity = nodeMaturity.item(0).getTextContent();
-    NodeList nodeParker = bouteilleElem.getElementsByTagName("parker");
+    NodeList nodeParker = element.getElementsByTagName("parker");
     final String parker = nodeParker.item(0).getTextContent();
-    NodeList nodeColor = bouteilleElem.getElementsByTagName("color");
+    NodeList nodeColor = element.getElementsByTagName("color");
     final String color = nodeColor.item(0).getTextContent();
-		NodeList nodeStatus = bouteilleElem.getElementsByTagName("status");
+		NodeList nodeStatus = element.getElementsByTagName("status");
 		String status = "";
 		if (nodeStatus.getLength() > 0) {
 			status = nodeStatus.item(0).getTextContent();
 		}
-		NodeList nodeLastModified = bouteilleElem.getElementsByTagName("lastModified");
+		NodeList nodeLastModified = element.getElementsByTagName("lastModified");
 		String lastModifed = "";
 		if (nodeLastModified.getLength() > 0) {
 			lastModifed = nodeLastModified.item(0).getTextContent();
 		}
-    NodeList nodeVignoble = bouteilleElem.getElementsByTagName("vignoble");
+    NodeList nodeVignoble = element.getElementsByTagName("vignoble");
     final Element vignoble = (Element) nodeVignoble.item(0);
     NodeList nodeCountry = vignoble.getElementsByTagName("country");
     final String country = nodeCountry.item(0).getTextContent();
@@ -639,7 +644,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
         IGP = nodeIGP.item(0).getTextContent();
       }
     }
-    return new Bouteille.BouteilleBuilder(name)
+    return new BouteilleBuilder(name)
 				.id(id)
 				.annee(year)
 				.type(type)

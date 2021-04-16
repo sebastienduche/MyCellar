@@ -3,6 +3,7 @@ package mycellar.core.datas.jaxb.tracks;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Objects;
 
 @XmlRootElement(name = "track")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -44,5 +45,28 @@ public class Track
   public Track setComment(String comment) {
     this.comment = comment;
     return this;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Track track = (Track) o;
+    return Objects.equals(number, track.number) && Objects.equals(label, track.label) && Objects.equals(duration, track.duration) && Objects.equals(comment, track.comment);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(number, label, duration, comment);
+  }
+
+  @Override
+  public String toString() {
+    return "Track{" +
+        "number=" + number +
+        ", label='" + label + '\'' +
+        ", duration='" + duration + '\'' +
+        ", comment='" + comment + '\'' +
+        '}';
   }
 }

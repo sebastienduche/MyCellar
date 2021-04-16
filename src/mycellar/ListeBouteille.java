@@ -39,8 +39,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 09/04/21
+ * @version 1.2
+ * @since 16/04/21
  *
  * <p>Java class for anonymous complex type.
  *
@@ -52,6 +52,7 @@ import java.util.LinkedList;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{}Bouteille" maxOccurs="unbounded"/>
+ *         &lt;element ref="{}Music" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -111,10 +112,6 @@ public class ListeBouteille {
 		return music;
 	}
 
-//	public void setMusic(List<Music> music) {
-//		this.music = music;
-//	}
-
 	void resetBouteille() {
 		bouteille = null;
 	}
@@ -126,7 +123,7 @@ public class ListeBouteille {
 	}
 
 	static boolean loadXML(File f) {
-		Debug("Loading XML File "+f.getAbsolutePath());
+		Debug("Loading XML File " + f.getAbsolutePath());
 		if(!f.exists())
 			return false;
 		try {
@@ -161,7 +158,18 @@ public class ListeBouteille {
 
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element bouteilleElem = (Element) node;
-				listeBouteille.getBouteille().add(Bouteille.getBouteilleFromXML(bouteilleElem));
+				listeBouteille.getBouteille().add(Bouteille.fromXml(bouteilleElem));
+			}
+		}
+
+		NodeList musics = doc.getElementsByTagName("Music");
+
+		for (int i = 0; i < musics.getLength(); i++) {
+			Node node = musics.item(i);
+
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element musicElem = (Element) node;
+				listeBouteille.getMusic().add(Music.fromXml(musicElem));
 			}
 		}
 		Program.getStorage().setListBouteilles(listeBouteille);
@@ -195,10 +203,10 @@ public class ListeBouteille {
 	 * @param sText String
 	 */
 	public static void Debug(String sText) {
-		Program.Debug("ListeBouteille: " + sText );
+		Program.Debug("ListeBouteille: " + sText);
 	}
 
-	public void add(IMyCellarObject myCellarObject) {
+	public void add(IMyCellarObject<?> myCellarObject) {
 		if (myCellarObject instanceof Bouteille) {
 			getBouteille().add((Bouteille) myCellarObject);
 		} else if (myCellarObject instanceof Music) {

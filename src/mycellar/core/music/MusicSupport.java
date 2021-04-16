@@ -20,8 +20,8 @@ public enum MusicSupport {
 		return label;
 	}
 	
-	public static MusicSupport getStatus(String value) {
-		if(value.isEmpty()) {
+	public static MusicSupport getSupport(String value) {
+		if (value == null || value.isEmpty()) {
 			return NONE;
 		}
 		try {

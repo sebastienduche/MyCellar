@@ -420,7 +420,7 @@ class BouteilleTest {
     Document doc = dBuilder.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
     doc.getDocumentElement().normalize();
     NodeList nodeList = doc.getElementsByTagName("Bouteille");
-    final Bouteille bouteilleFromXML = Bouteille.getBouteilleFromXML((Element) nodeList.item(0));
+    final Bouteille bouteilleFromXML = Bouteille.fromXml((Element) nodeList.item(0));
     assertEquals(id, bouteilleFromXML.getId());
     assertEquals(name, bouteilleFromXML.getNom());
     assertEquals(year, bouteilleFromXML.getAnnee());

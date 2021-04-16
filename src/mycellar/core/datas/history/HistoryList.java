@@ -9,6 +9,7 @@
 package mycellar.core.datas.history;
 
 import mycellar.Bouteille;
+import mycellar.Music;
 import mycellar.MyXmlDom;
 import mycellar.Program;
 import org.w3c.dom.Document;
@@ -41,8 +42,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 28/01/21
+ * @version 1.4
+ * @since 16/04/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -166,8 +167,16 @@ public class HistoryList {
           }
         }
         final NodeList bouteilleElem = historyElem.getElementsByTagName("Bouteille");
-        Bouteille bouteille = Bouteille.getBouteilleFromXML((Element)bouteilleElem.item(0));
-        history.setBouteille(bouteille);
+        if (bouteilleElem.getLength() == 1) {
+          Bouteille bouteille = Bouteille.fromXml((Element) bouteilleElem.item(0));
+          history.setBouteille(bouteille);
+        } else {
+          final NodeList musicElem = historyElem.getElementsByTagName("Music");
+          if (musicElem.getLength() == 1) {
+            final Music music = Music.fromXml((Element) musicElem.item(0));
+            history.setMusic(music);
+          }
+        }
         listeHistory.getHistory().add(history);
       }
     }
@@ -193,6 +202,6 @@ public class HistoryList {
    * @param sText String
    */
   private static void Debug(String sText) {
-    Program.Debug("HistoryList: " + sText );
+    Program.Debug("HistoryList: " + sText);
   }
 }

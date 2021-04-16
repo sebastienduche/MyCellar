@@ -4,7 +4,7 @@ import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import net.miginfocom.swing.MigLayout;
@@ -24,8 +24,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 16/02/21
+ * @version 2.4
+ * @since 16/04/21
  */
 final class CSVOptions extends JDialog {
 	private final MyCellarCheckBox[] export;

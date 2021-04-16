@@ -1,4 +1,4 @@
-package mycellar.core.bottle;
+package mycellar.core.common.bottle;
 
 import mycellar.Program;
 

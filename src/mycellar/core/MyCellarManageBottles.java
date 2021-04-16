@@ -5,7 +5,7 @@ import mycellar.Erreur;
 import mycellar.JCompletionComboBox;
 import mycellar.Program;
 import mycellar.actions.ManageCapacityAction;
-import mycellar.core.bottle.BottleColor;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
@@ -24,8 +24,8 @@ import java.text.NumberFormat;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.2
- * @since 17/03/21
+ * @version 4.3
+ * @since 16/04/21
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 

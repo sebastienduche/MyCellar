@@ -2,7 +2,7 @@ package mycellar;
 
 import mycellar.Bouteille.BouteilleBuilder;
 import mycellar.actions.OpenShowErrorsAction;
-import mycellar.core.bottle.BottleColor;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.BottlesStatus;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
@@ -52,8 +52,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.7
- * @since 09/04/21
+ * @version 27.8
+ * @since 16/04/21
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 

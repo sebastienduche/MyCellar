@@ -2,7 +2,7 @@ package mycellar.showfile;
 
 
 import mycellar.Music;
-import mycellar.core.bottle.BottleColor;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Erreur;
@@ -25,7 +25,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarEnum;
 import mycellar.core.MyCellarError;
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.history.HistoryState;
@@ -33,7 +33,7 @@ import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetData;
-import mycellar.core.music.MusicSupport;
+import mycellar.core.common.music.MusicSupport;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
@@ -96,6 +96,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private final MyCellarButton clearWorksheetButton = new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.clearWorksheet", new ClearWorksheetAction());
   private final MyCellarComboBox<Rangement> placeCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottleColor> colorCbx = new MyCellarComboBox<>();
+  private final MyCellarComboBox<MusicSupport> musicSupportCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottlesStatus> statusCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<String> typeCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<MyCellarEnum> verifyStatusCbx = new MyCellarComboBox<>();
@@ -176,13 +177,15 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         return b.getAnnee();
       }
     });
-    columns.add(new ShowFileColumn<>(MyCellarFields.TYPE) {
+    if (Program.isWineType()) {
+      columns.add(new ShowFileColumn<>(MyCellarFields.TYPE) {
 
-      @Override
-      Object getDisplayValue(IMyCellarObject b) {
-        return b.getType();
-      }
-    });
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          return b.getType();
+        }
+      });
+    }
     columns.add(new ShowFileColumn<>(MyCellarFields.PLACE) {
 
       @Override
@@ -549,6 +552,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     placeCbx.addItem(Program.EMPTY_PLACE);
     Program.getCave().forEach(placeCbx::addItem);
 
+    Arrays.stream(MusicSupport.values()).forEach(musicSupportCbx::addItem);
     Arrays.stream(BottleColor.values()).forEach(colorCbx::addItem);
     Arrays.stream(BottlesStatus.values()).forEach(statusCbx::addItem);
 
@@ -978,6 +982,8 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           tc.setCellEditor(new DefaultCellEditor(typeCbx));
         } else if (column.getField().equals(MyCellarFields.COLOR)) {
           tc.setCellEditor(new DefaultCellEditor(colorCbx));
+        } else if (column.getField().equals(MyCellarFields.SUPPORT)) {
+          tc.setCellEditor(new DefaultCellEditor(musicSupportCbx));
         } else if (column.getField().equals(MyCellarFields.STATUS)) {
           tc.setCellEditor(new DefaultCellEditor(statusCbx));
         } else if (column.isButton()) {

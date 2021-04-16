@@ -3,7 +3,7 @@ package mycellar;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
@@ -26,8 +26,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 28/06/20
+ * @version 3.1
+ * @since 16/04/21
  */
 final class PDFOptions extends JDialog {
   private final MyCellarSpinner titleSize = new MyCellarSpinner(1, 99);

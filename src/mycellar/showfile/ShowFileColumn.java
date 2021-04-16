@@ -2,7 +2,7 @@ package mycellar.showfile;
 
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +13,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 09/04/21
+ * @version 1.3
+ * @since 16/04/21
  */
 
 abstract class ShowFileColumn<T> {

@@ -2,7 +2,7 @@ package mycellar.showfile;
 
 import mycellar.Erreur;
 import mycellar.Program;
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.Arrays;
@@ -15,8 +15,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 09/08/19
+ * @version 0.7
+ * @since 16/04/21
  */
 
 public class ManageColumnModel extends DefaultTableModel {

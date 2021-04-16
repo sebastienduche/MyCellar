@@ -1,6 +1,6 @@
 package mycellar.pdf;
 
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 
 import java.util.LinkedList;
 
@@ -10,8 +10,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 26/09/18
+ * @version 0.5
+ * @since 16/04/21
  */
 
 public class PDFProperties {
@@ -20,7 +20,7 @@ public class PDFProperties {
 	private int titleSize;
 	private int fontSize;
 	private boolean border;
-	private final LinkedList<PDFColumn> column = new LinkedList<>();
+	private final LinkedList<PDFColumn> columns = new LinkedList<>();
 	private boolean boldTitle;
 	
 	public PDFProperties(String title, int titleSize, int fontSize, boolean border, boolean boldTitle) {
@@ -64,19 +64,19 @@ public class PDFProperties {
 	}
 	
 	public void addColumn(MyCellarFields field, int index, int size, String title) {
-		column.add(new PDFColumn(field, index, size, title));
+		columns.add(new PDFColumn(field, index, size, title));
 	}
 	
 	public LinkedList<PDFColumn> getColumns() {
-		return column;
+		return columns;
 	}
 
 	float getColumnWidth(int i) {
-		return column.get(i).getWidth();
+		return columns.get(i).getWidth();
 	}
 	
 	public String getColumnTitle(int i) {
-		return column.get(i).getTitle();
+		return columns.get(i).getTitle();
 	}
 
 	public boolean isBoldTitle() {
@@ -89,7 +89,7 @@ public class PDFProperties {
 
 	float getTotalColumnWidth() {
 		int val = 0;
-		for(PDFColumn c : column) {
+		for(PDFColumn c : columns) {
 			val += c.getWidth();
 		}
 		return val;

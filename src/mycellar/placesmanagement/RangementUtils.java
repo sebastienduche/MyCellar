@@ -1,12 +1,12 @@
 package mycellar.placesmanagement;
 
-import mycellar.core.bottle.BottleColor;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -51,8 +51,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.6
- * @since 09/04/21
+ * @version 3.7
+ * @since 16/04/21
  */
 public final class RangementUtils {
 

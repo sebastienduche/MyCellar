@@ -15,8 +15,8 @@ import static mycellar.Program.getLabel;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 09/04/21
+ * @version 3.2
+ * @since 16/04/21
  */
 class TableValues extends AbstractTableModel {
 
@@ -71,28 +71,27 @@ class TableValues extends AbstractTableModel {
 			Program.Debug("TableValues: Error listBoolean index " + row + " > " + datas.size());
 			return "";
 		}
-		Program.throwNotImplementedForMusic(datas.get(row));
-		Bouteille b = (Bouteille) datas.get(row);
+		final IMyCellarObject myCellarObject = datas.get(row);
 		switch(column)
 		{
 			case ETAT:
 				return listBoolean.get(row);
 			case 1:
-				String nom = b.getNom();
+				String nom = myCellarObject.getNom();
 				return Program.convertStringFromHTMLString(nom);
 			case 2:
-				return b.getAnnee();
+				return myCellarObject.getAnnee();
 			case 3:
-				if (b.isInTemporaryStock()) {
+				if (myCellarObject.isInTemporaryStock()) {
 					return getLabel("Bouteille.TemporaryPlace");
 				}
-				return b.getEmplacement();
+				return myCellarObject.getEmplacement();
 			case 4:
-				return Integer.toString(b.getNumLieu());
+				return Integer.toString(myCellarObject.getNumLieu());
 			case 5:
-				return Integer.toString(b.getLigne());
+				return Integer.toString(myCellarObject.getLigne());
 			case 6:
-				return Integer.toString(b.getColonne());
+				return Integer.toString(myCellarObject.getColonne());
 			case SHOW:
 				return Boolean.FALSE;
 			default:

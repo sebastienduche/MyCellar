@@ -3,7 +3,7 @@ package test;
 import mycellar.Music;
 import mycellar.Program;
 import mycellar.core.datas.jaxb.tracks.Track;
-import mycellar.core.music.MusicSupport;
+import mycellar.core.common.music.MusicSupport;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;

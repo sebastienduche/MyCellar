@@ -1,7 +1,7 @@
 package mycellar.showfile;
 
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.9
- * @since 09/04/21
+ * @version 1.0
+ * @since 16/04/21
  */
 
 public class ShowFileModel extends TableShowValues {

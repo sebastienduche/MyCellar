@@ -8,10 +8,10 @@
 
 package mycellar;
 
-import mycellar.core.bottle.BottleColor;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;

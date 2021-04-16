@@ -1,5 +1,6 @@
 package mycellar.core;
 
+import mycellar.core.common.MyCellarFields;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import org.w3c.dom.Element;

@@ -17,7 +17,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.core.UnableToOpenMyCellarFileException;
-import mycellar.core.music.MusicSupport;
+import mycellar.core.common.music.MusicSupport;
 import mycellar.launcher.Server;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Rangement;
@@ -76,8 +76,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.3
- * @since 09/04/21
+ * @version 28.4
+ * @since 16/04/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 

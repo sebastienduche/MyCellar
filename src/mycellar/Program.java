@@ -3,23 +3,21 @@ package mycellar;
 import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.capacity.CapacityPanel;
-import mycellar.core.bottle.BottleColor;
-import mycellar.core.BottlesStatus;
 import mycellar.core.Grammar;
-import mycellar.core.IMyCellarObject;
-import mycellar.core.IPlace;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
+import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
-import mycellar.core.MyCellarFields;
 import mycellar.core.MyCellarFile;
 import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.core.UnableToOpenMyCellarFileException;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
@@ -123,7 +121,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.0.8.0";
+	public static final String INTERNAL_VERSION = "4.0.9.9";
 	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -1361,57 +1359,7 @@ public final class Program {
 			Bouteille b = (Bouteille) myCellarObject;
 			PDFRow row = new PDFRow();
 			for (PDFColumn column : columns) {
-				if (column.getField().equals(MyCellarFields.NAME)) {
-					row.addCell(b.getNom());
-				} else if (column.getField().equals(MyCellarFields.YEAR)) {
-					row.addCell(b.getAnnee());
-				} else if (column.getField().equals(MyCellarFields.TYPE)) {
-					row.addCell(b.getType());
-				} else if (column.getField().equals(MyCellarFields.PLACE)) {
-					row.addCell(b.getEmplacement());
-				} else if (column.getField().equals(MyCellarFields.NUM_PLACE)) {
-					row.addCell(Integer.toString(b.getNumLieu()));
-				} else if (column.getField().equals(MyCellarFields.LINE)) {
-					row.addCell(Integer.toString(b.getLigne()));
-				} else if (column.getField().equals(MyCellarFields.COLUMN)) {
-					row.addCell(Integer.toString(b.getColonne()));
-				} else if (column.getField().equals(MyCellarFields.PRICE)) {
-					row.addCell(b.getPrix());
-				} else if (column.getField().equals(MyCellarFields.COMMENT)) {
-					row.addCell(b.getComment());
-				} else if (column.getField().equals(MyCellarFields.MATURITY)) {
-					row.addCell(b.getMaturity());
-				} else if (column.getField().equals(MyCellarFields.PARKER)) {
-					row.addCell(b.getParker());
-				} else if (column.getField().equals(MyCellarFields.COUNTRY)) {
-					if (b.getVignoble() != null) {
-						row.addCell(b.getVignoble().getCountry());
-					} else {
-						row.addCell("");
-					}
-				} else if (column.getField().equals(MyCellarFields.VINEYARD)) {
-					if (b.getVignoble() != null) {
-						row.addCell(b.getVignoble().getName());
-					} else {
-						row.addCell("");
-					}
-				} else if (column.getField().equals(MyCellarFields.AOC)) {
-					if (b.getVignoble() != null) {
-						row.addCell(b.getVignoble().getAOC());
-					} else {
-						row.addCell("");
-					}
-				} else if (column.getField().equals(MyCellarFields.IGP)) {
-					if (b.getVignoble() != null) {
-						row.addCell(b.getVignoble().getIGP());
-					} else {
-						row.addCell("");
-					}
-				} else if (column.getField().equals(MyCellarFields.COLOR)) {
-					row.addCell(BottleColor.getColor(b.getColor()).toString());
-				} else if (column.getField().equals(MyCellarFields.STATUS)) {
-					row.addCell(BottlesStatus.getStatus(b.getStatus()).toString());
-				}
+				row.addCell(MyCellarFields.getValue(column.getField(), myCellarObject));
 			}
 			rows.add(row);
 		}

@@ -1,4 +1,4 @@
-package mycellar.core.music;
+package mycellar.core.common.music;
 
 import mycellar.Program;
 

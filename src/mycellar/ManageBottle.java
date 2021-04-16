@@ -1,7 +1,7 @@
 package mycellar;
 
 import mycellar.actions.OpenShowErrorsAction;
-import mycellar.core.bottle.BottleColor;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
@@ -43,8 +43,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.9
- * @since 09/04/21
+ * @version 8.0
+ * @since 16/04/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;

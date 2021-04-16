@@ -1,7 +1,10 @@
 package test;
 
 import mycellar.Bouteille;
-import mycellar.core.MyCellarFields;
+import mycellar.Music;
+import mycellar.core.BottlesStatus;
+import mycellar.core.common.MyCellarFields;
+import mycellar.core.common.music.MusicSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MyCellarFieldsTest {
 
 	private Bouteille bouteille;
+	private Music music;
 	
 	@BeforeEach
 	void setUp() {
@@ -30,12 +34,29 @@ class MyCellarFieldsTest {
 		        .parker("100")
 		        .price("123")
 		        .vignoble("fr", "vignoble", "aoc", "igp")
-						.status("ToCheck")
+						.status("TOCHECK")
 		        .build();
+
+		music = new Music.MusicBuilder("music")
+				.place("armoire1x3x3")
+				.numPlace(1)
+				.line(2)
+				.column(3)
+				.genre("genre")
+				.musicSupport(MusicSupport.CD)
+				.annee("2018")
+				.artist("artist")
+				.composer("composer")
+				.comment("comment")
+				.duration("duration")
+				.price("123")
+				.track(1, "label", "duration", "comment")
+				.status("TOCHECK")
+				.build();
 	}
 	
 	@Test
-	void testGetValue() {
+	void testGetValueBouteille() {
 		assertEquals("", MyCellarFields.getValue(MyCellarFields.NAME, null));
 		assertEquals("bouteille", MyCellarFields.getValue(MyCellarFields.NAME, bouteille));
 		assertEquals("place", MyCellarFields.getValue(MyCellarFields.PLACE, bouteille));
@@ -47,7 +68,7 @@ class MyCellarFieldsTest {
 		assertEquals("Red", MyCellarFields.getValue(MyCellarFields.COLOR, bouteille));
 		assertEquals("comment", MyCellarFields.getValue(MyCellarFields.COMMENT, bouteille));
 		assertEquals("maturity", MyCellarFields.getValue(MyCellarFields.MATURITY, bouteille));
-		assertEquals("ToCheck", MyCellarFields.getValue(MyCellarFields.STATUS, bouteille));
+		assertEquals(BottlesStatus.TOCHECK.toString(), MyCellarFields.getValue(MyCellarFields.STATUS, bouteille));
 		assertEquals("100", MyCellarFields.getValue(MyCellarFields.PARKER, bouteille));
 		assertEquals("123", MyCellarFields.getValue(MyCellarFields.PRICE, bouteille));
 		assertEquals("France", MyCellarFields.getValue(MyCellarFields.COUNTRY, bouteille));
@@ -56,6 +77,38 @@ class MyCellarFieldsTest {
 		assertEquals("igp", MyCellarFields.getValue(MyCellarFields.IGP, bouteille));
 		assertEquals("", MyCellarFields.getValue(MyCellarFields.EMPTY, bouteille));
 		assertEquals("", MyCellarFields.getValue(MyCellarFields.USELESS, bouteille));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.STYLE, bouteille));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.COMPOSER, bouteille));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.ARTIST, bouteille));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.SUPPORT, bouteille));
+	}
+
+	@Test
+	void testGetValueMusic() {
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.NAME, null));
+		assertEquals("music", MyCellarFields.getValue(MyCellarFields.NAME, music));
+		assertEquals("armoire1x3x3", MyCellarFields.getValue(MyCellarFields.PLACE, music));
+		assertEquals("1", MyCellarFields.getValue(MyCellarFields.NUM_PLACE, music));
+		assertEquals("2", MyCellarFields.getValue(MyCellarFields.LINE, music));
+		assertEquals("3", MyCellarFields.getValue(MyCellarFields.COLUMN, music));
+		assertEquals("CD", MyCellarFields.getValue(MyCellarFields.TYPE, music));
+		assertEquals("2018", MyCellarFields.getValue(MyCellarFields.YEAR, music));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.COLOR, music));
+		assertEquals("comment", MyCellarFields.getValue(MyCellarFields.COMMENT, music));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.MATURITY, music));
+		assertEquals(BottlesStatus.TOCHECK.toString(), MyCellarFields.getValue(MyCellarFields.STATUS, music));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.PARKER, music));
+		assertEquals("123", MyCellarFields.getValue(MyCellarFields.PRICE, music));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.COUNTRY, music));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.VINEYARD, music));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.AOC, music));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.IGP, music));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.EMPTY, music));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.USELESS, music));
+		assertEquals("genre", MyCellarFields.getValue(MyCellarFields.STYLE, music));
+		assertEquals("composer", MyCellarFields.getValue(MyCellarFields.COMPOSER, music));
+		assertEquals("artist", MyCellarFields.getValue(MyCellarFields.ARTIST, music));
+		assertEquals("CD", MyCellarFields.getValue(MyCellarFields.SUPPORT, music));
 	}
 
 	@Test

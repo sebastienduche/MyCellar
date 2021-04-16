@@ -1,8 +1,12 @@
-package mycellar.core;
+package mycellar.core.common;
 
 import mycellar.Bouteille;
 import mycellar.Music;
 import mycellar.Program;
+import mycellar.core.BottlesStatus;
+import mycellar.core.IMyCellarObject;
+import mycellar.core.LabelProperty;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 
@@ -45,101 +49,119 @@ public enum MyCellarFields {
 	// Pour l'import de donnees
 	EMPTY(""),
 	USELESS(Program.getLabel("Infos271"));
-	
+
 	private final String label;
-	
+
 	MyCellarFields(String label) {
 		this.label = label;
 	}
 
-  public static String getValue(MyCellarFields field, IMyCellarObject myCellarObject) {
+	public static String getValue(MyCellarFields field, IMyCellarObject myCellarObject) {
 		if (myCellarObject == null) {
 			return "";
 		}
-		Program.throwNotImplementedForMusic(myCellarObject);
-		String value = "";
 		if (field == NAME) {
-			value = myCellarObject.getNom();
-		} else if (field == YEAR) {
-			value = myCellarObject.getAnnee();
-		} else if (field == TYPE) {
-			value = myCellarObject.getType();
-		} else if (field == PLACE) {
-			value = myCellarObject.getEmplacement();
-		} else if (field == NUM_PLACE) {
-			value = Integer.toString(myCellarObject.getNumLieu());
-		} else if (field == LINE) {
-			value = Integer.toString(myCellarObject.getLigne());
-		} else if (field == COLUMN) {
-			value = Integer.toString(myCellarObject.getColonne());
-		} else if (field == PRICE) {
-			value = myCellarObject.getPrix();
-		} else if (field == COMMENT) {
-			value = myCellarObject.getComment();
-		} else if (field == MATURITY) {
+			return myCellarObject.getNom();
+		}
+		if (field == YEAR) {
+			return myCellarObject.getAnnee();
+		}
+		if (field == TYPE) {
+			return myCellarObject.getType();
+		}
+		if (field == PLACE) {
+			return myCellarObject.getEmplacement();
+		}
+		if (field == NUM_PLACE) {
+			return Integer.toString(myCellarObject.getNumLieu());
+		}
+		if (field == LINE) {
+			return Integer.toString(myCellarObject.getLigne());
+		}
+		if (field == COLUMN) {
+			return Integer.toString(myCellarObject.getColonne());
+		}
+		if (field == PRICE) {
+			return myCellarObject.getPrix();
+		}
+		if (field == COMMENT) {
+			return myCellarObject.getComment();
+		}
+		if (field == MATURITY) {
 			if (myCellarObject instanceof Bouteille) {
-				value = ((Bouteille) myCellarObject).getMaturity();
+				return ((Bouteille) myCellarObject).getMaturity();
 			}
-		} else if (field == PARKER) {
+		}
+		if (field == PARKER) {
 			if (myCellarObject instanceof Bouteille) {
-				value = ((Bouteille) myCellarObject).getParker();
+				return ((Bouteille) myCellarObject).getParker();
 			}
-		} else if (field == COLOR) {
+		}
+		if (field == COLOR) {
 			if (myCellarObject instanceof Bouteille) {
-				value = ((Bouteille) myCellarObject).getColor();
+				return BottleColor.getColor(((Bouteille) myCellarObject).getColor()).toString();
 			}
-		} else if (field == STATUS) {
-			value = myCellarObject.getStatus();
-		} else if (field == STYLE) {
+		}
+		if (field == STATUS) {
+			return BottlesStatus.getStatus(myCellarObject.getStatus()).toString();
+		}
+		if (field == STYLE) {
 			if (myCellarObject instanceof Music) {
-				value = ((Music) myCellarObject).getGenre();
+				return ((Music) myCellarObject).getGenre();
 			}
-		} else if (field == COMPOSER) {
+		}
+		if (field == COMPOSER) {
 			if (myCellarObject instanceof Music) {
-				value = ((Music) myCellarObject).getComposer();
+				return ((Music) myCellarObject).getComposer();
 			}
-		} else if (field == ARTIST) {
+		}
+		if (field == ARTIST) {
 			if (myCellarObject instanceof Music) {
-				value = ((Music) myCellarObject).getArtist();
+				return ((Music) myCellarObject).getArtist();
 			}
-		} else if (field == SUPPORT) {
+		}
+		if (field == SUPPORT) {
 			if (myCellarObject instanceof Music) {
-				value = ((Music) myCellarObject).getMusicSupport().name();
+				return ((Music) myCellarObject).getMusicSupport().name();
 			}
-		} else if (field == COUNTRY) {
+		}
+		if (field == COUNTRY) {
 			if (myCellarObject instanceof Bouteille) {
 				Bouteille bouteille = (Bouteille) myCellarObject;
 				if (bouteille.getVignoble() != null) {
 					CountryJaxb c = CountryListJaxb.findbyId(bouteille.getVignoble().getCountry()).orElse(null);
 					if (c != null) {
-						value = c.toString();
+						return c.toString();
 					}
-				}
-			}
-		} else if (field == VINEYARD) {
-			if (myCellarObject instanceof Bouteille) {
-				Bouteille bouteille = (Bouteille) myCellarObject;
-				if (bouteille.getVignoble() != null) {
-					value = bouteille.getVignoble().getName();
-				}
-			}
-		}else if (field == AOC) {
-			if (myCellarObject instanceof Bouteille) {
-				Bouteille bouteille = (Bouteille) myCellarObject;
-					if (bouteille.getVignoble() != null && bouteille.getVignoble().getAOC() != null) {
-						value = bouteille.getVignoble().getAOC();
-					}
-				}
-		}	else if (field == IGP) {
-			if (myCellarObject instanceof Bouteille) {
-				Bouteille bouteille = (Bouteille) myCellarObject;
-				if (bouteille.getVignoble() != null && bouteille.getVignoble().getIGP() != null) {
-					value = bouteille.getVignoble().getIGP();
 				}
 			}
 		}
-		return value;
-  }
+		if (field == VINEYARD) {
+			if (myCellarObject instanceof Bouteille) {
+				Bouteille bouteille = (Bouteille) myCellarObject;
+				if (bouteille.getVignoble() != null) {
+					return bouteille.getVignoble().getName();
+				}
+			}
+		}
+		if (field == AOC) {
+			if (myCellarObject instanceof Bouteille) {
+				Bouteille bouteille = (Bouteille) myCellarObject;
+				if (bouteille.getVignoble() != null && bouteille.getVignoble().getAOC() != null) {
+					return bouteille.getVignoble().getAOC();
+				}
+			}
+		}
+		if (field == IGP) {
+			if (myCellarObject instanceof Bouteille) {
+				Bouteille bouteille = (Bouteille) myCellarObject;
+				if (bouteille.getVignoble() != null && bouteille.getVignoble().getIGP() != null) {
+					return bouteille.getVignoble().getIGP();
+				}
+			}
+		}
+		return "";
+	}
 
 	public static boolean hasSpecialHTMLCharacters(MyCellarFields field) {
 		return field != null && (field.equals(NAME) || field.equals(TYPE) || field.equals(COMMENT) || field.equals(PRICE) || field.equals(PLACE));
@@ -149,18 +171,18 @@ public enum MyCellarFields {
 		return field != null && !(field.equals(EMPTY) || field.equals(USELESS));
 	}
 
-  @Override
+	@Override
 	public String toString() {
 		return label;
 	}
-	
+
 	private static final List<MyCellarFields> FIELDSFORIMPORT_WINE = Arrays.asList(
 			NAME, YEAR, TYPE, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, MATURITY, PARKER, COLOR,
 			COUNTRY, VINEYARD, AOC, IGP
 	);
 
 	private static final List<MyCellarFields> FIELDSFORIMPORT_MUSIC = Arrays.asList(
-			NAME, YEAR, TYPE, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, ARTIST, COMPOSER, STYLE, SUPPORT
+			NAME, YEAR, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, ARTIST, COMPOSER, STYLE, SUPPORT
 	);
 
 	private static final List<MyCellarFields> FIELDS_WINE = Arrays.asList(
@@ -169,7 +191,7 @@ public enum MyCellarFields {
 	);
 
 	private static final List<MyCellarFields> FIELDS_MUSIC = Arrays.asList(
-			NAME, YEAR, TYPE, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, STATUS, ARTIST, COMPOSER, STYLE, SUPPORT
+			NAME, YEAR, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, STATUS, ARTIST, COMPOSER, STYLE, SUPPORT
 	);
 
 	public static List<MyCellarFields> getFieldsList() {

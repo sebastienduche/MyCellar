@@ -6,7 +6,7 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarMenuItem;
 import mycellar.core.MyCellarRadioButton;
@@ -53,8 +53,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.7
- * @since 09/04/21
+ * @version 9.8
+ * @since 16/04/21
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 

@@ -4,7 +4,7 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;
@@ -33,8 +33,8 @@ import static mycellar.core.MyCellarSettings.XLS_TITLE;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 16/02/21
+ * @version 2.2
+ * @since 16/04/21
  */
 public final class XLSOptions extends JDialog {
 

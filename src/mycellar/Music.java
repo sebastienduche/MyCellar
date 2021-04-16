@@ -10,10 +10,10 @@ package mycellar;
 
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
-import mycellar.core.music.MusicSupport;
+import mycellar.core.common.music.MusicSupport;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import org.w3c.dom.Element;

@@ -1,6 +1,7 @@
 package mycellar.requester;
 
-import mycellar.core.bottle.BottleColor;
+import mycellar.core.IMyCellarObject;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Program;
@@ -25,8 +26,8 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 11/02/21
+ * @version 1.5
+ * @since 16/04/21
  */
 
 public class Predicates {
@@ -80,15 +81,15 @@ public class Predicates {
 		}
 	};
 
-	public static final IPredicate<Bouteille> STATUS = new IPredicate<>() {
+	public static final IPredicate<IMyCellarObject> STATUS = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Bouteille bottle) {
+		public boolean apply(IMyCellarObject bottle) {
 			return apply(bottle, "", -1);
 		}
 
 		@Override
-		public boolean apply(Bouteille bottle, Object compare, int type) {
+		public boolean apply(IMyCellarObject bottle, Object compare, int type) {
 			final String status = bottle.getStatus();
 			final BottlesStatus bottlesStatus = (BottlesStatus) compare;
 			if (status.isEmpty() && BottlesStatus.NONE.equals(bottlesStatus)) {
@@ -134,28 +135,28 @@ public class Predicates {
 		}
 	};
 
-	public static final IPredicate<Bouteille> NAME = new IPredicate<>() {
+	public static final IPredicate<IMyCellarObject> NAME = new IPredicate<>() {
 		
 		private int type = -1;
 
 		@Override
-		public boolean apply(Bouteille bouteille) {
+		public boolean apply(IMyCellarObject bouteille) {
 			return apply(bouteille, "", -1);
 		}
 
 		@Override
-		public boolean apply(Bouteille bouteille, Object compare, int type) {
+		public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
 			if (type == 0) {
     			if (compare instanceof String) {
-    				return bouteille.getNom() != null && bouteille.getNom().startsWith((String)compare);
+    				return myCellarObject.getNom() != null && myCellarObject.getNom().startsWith((String)compare);
     			}
 			} else if (type == 1) {
     			if (compare instanceof String) {
-    				return bouteille.getNom() != null && bouteille.getNom().endsWith((String)compare);
+    				return myCellarObject.getNom() != null && myCellarObject.getNom().endsWith((String)compare);
     			}
 			} else if (type == 2) {
 				if (compare instanceof String) {
-					return bouteille.getNom() != null && bouteille.getNom().contains((String)compare);
+					return myCellarObject.getNom() != null && myCellarObject.getNom().contains((String)compare);
 				}
 			}
 			return false;
@@ -203,16 +204,16 @@ public class Predicates {
 		}
 	};
 	
-	public static final IPredicate<Bouteille> YEAR = new IPredicate<>() {
+	public static final IPredicate<IMyCellarObject> YEAR = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Bouteille bouteille) {
-			return apply(bouteille, "", -1);
+		public boolean apply(IMyCellarObject myCellarObject) {
+			return apply(myCellarObject, "", -1);
 		}
 
 		@Override
-		public boolean apply(Bouteille bouteille, Object compare, int type) {
-			return (compare instanceof String) && bouteille.getAnnee() != null && bouteille.getAnnee().equals(compare);
+		public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
+			return (compare instanceof String) && myCellarObject.getAnnee() != null && myCellarObject.getAnnee().equals(compare);
 		}
 		
 		@Override
@@ -241,16 +242,16 @@ public class Predicates {
 		}
 	};
 	
-	public static final IPredicate<Bouteille> RANGEMENT = new IPredicate<>() {
+	public static final IPredicate<IMyCellarObject> RANGEMENT = new IPredicate<>() {
 
 		@Override
-		public boolean apply(Bouteille bouteille) {
-			return apply(bouteille, "", -1);
+		public boolean apply(IMyCellarObject myCellarObject) {
+			return apply(myCellarObject, "", -1);
 		}
 
 		@Override
-		public boolean apply(Bouteille bouteille, Object compare, int type) {
-			return (compare instanceof String) && bouteille.getEmplacement() != null && bouteille.getEmplacement().equals(compare);
+		public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
+			return (compare instanceof String) && myCellarObject.getEmplacement() != null && myCellarObject.getEmplacement().equals(compare);
 		}
 		
 		@Override
@@ -336,25 +337,25 @@ public class Predicates {
 		}
 	};
 
-	public static final IPredicate<Bouteille> PRICE = new IPredicate<>() {
+	public static final IPredicate<IMyCellarObject> PRICE = new IPredicate<>() {
 
 		private int type = -1;
 
 		@Override
-		public boolean apply(Bouteille bouteille) {
-			return apply(bouteille, "", -1);
+		public boolean apply(IMyCellarObject myCellarObject) {
+			return apply(myCellarObject, "", -1);
 		}
 
 		@Override
-		public boolean apply(Bouteille bouteille, Object compare, int type) {
+		public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
 			if (type == 0) {
 				if (compare instanceof String) {
-					return bouteille.getPrice().compareTo(BigDecimal.ZERO) != 0 && bouteille.getPrice().compareTo(new BigDecimal((String)compare)) < 0;
+					return myCellarObject.getPrice().compareTo(BigDecimal.ZERO) != 0 && myCellarObject.getPrice().compareTo(new BigDecimal((String)compare)) < 0;
 				}
 			}
 			else if (type == 1) {
 				if (compare instanceof String) {
-					return bouteille.getPrice().compareTo(BigDecimal.ZERO) != 0 && bouteille.getPrice().compareTo(new BigDecimal((String)compare)) > 0;
+					return myCellarObject.getPrice().compareTo(BigDecimal.ZERO) != 0 && myCellarObject.getPrice().compareTo(new BigDecimal((String)compare)) > 0;
 				}
 			}
 			return false;

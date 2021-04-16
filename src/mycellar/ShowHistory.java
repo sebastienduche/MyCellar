@@ -41,8 +41,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.9
- * @since 09/04/21
+ * @version 5.0
+ * @since 16/04/21
  */
 
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
@@ -160,7 +160,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 				do {
 					if (Boolean.TRUE.equals(model.getValueAt(row, TableHistoryValues.SELECT))) {
 						if (model.isBottleDeleted(row))
-							toRestoreList.add(model.getBottle(row));
+							toRestoreList.add(model.getObject(row));
 						else {
 							nonExit = true;
 						}

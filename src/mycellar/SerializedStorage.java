@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.7
- * @since 09/04/21
+ * @version 6.8
+ * @since 16/04/21
  */
 
 public class SerializedStorage implements Storage {
@@ -74,13 +74,21 @@ public class SerializedStorage implements Storage {
 	public void addBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles.getBouteille().addAll(listBouteilles.getBouteille());
 		bottleCount = listBouteilles.getBouteille().size();
-		for (IMyCellarObject b : listBouteilles.bouteille) {
-			final List<History> theBottle = HISTORY_LIST.getHistory().stream().filter(history -> history.getBouteille().getId() == b.getId()).collect(Collectors.toList());
-			if (b.updateID() && !theBottle.isEmpty()) {
-				theBottle.get(0).getBouteille().setId(b.getId());
+		for (IMyCellarObject myCellarObject : listBouteilles.bouteille) {
+			if (Program.isWineType()) {
+				final List<History> theBottle = HISTORY_LIST.getHistory().stream().filter(history -> history.getBouteille().getId() == myCellarObject.getId()).collect(Collectors.toList());
+				if (myCellarObject.updateID() && !theBottle.isEmpty()) {
+					theBottle.get(0).getBouteille().setId(myCellarObject.getId());
+				}
 			}
-			if (!listeUniqueBouteille.contains(b.getNom())) {
-				listeUniqueBouteille.add(b.getNom());
+			if (Program.isMusicType()) {
+				final List<History> theMusic = HISTORY_LIST.getHistory().stream().filter(history -> history.getMusic().getId() == myCellarObject.getId()).collect(Collectors.toList());
+				if (myCellarObject.updateID() && !theMusic.isEmpty()) {
+					theMusic.get(0).getMusic().setId(myCellarObject.getId());
+				}
+			}
+			if (!listeUniqueBouteille.contains(myCellarObject.getNom())) {
+				listeUniqueBouteille.add(myCellarObject.getNom());
 			}
 		}
 	}

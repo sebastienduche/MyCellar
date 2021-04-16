@@ -368,7 +368,7 @@ public final class Program {
 						.stream()
 						.filter(History::hasTotalBottle)
 						.map(History::getTotalBottle)
-						.min(Integer::compareTo).orElse(getNbBouteille());
+						.min(Integer::compareTo).orElse(getNbItems());
 				AtomicInteger nb = new AtomicInteger(nbBottle);
 				final List<History> historyList = getHistory()
 						.stream()
@@ -562,7 +562,7 @@ public final class Program {
 		return (int) getStorage().getAllList().stream().mapToDouble(IMyCellarObject::getPriceDouble).sum();
 	}
 
-	static int getNbBouteille() {
+	static int getNbItems() {
 		return getStorage().getAllList().size();
 	}
 
@@ -586,7 +586,6 @@ public final class Program {
 	 */
 	static int getNbAutreAnnee() {
 		return (int) getStorage().getAllList().stream()
-				.map(myCellarObject -> (Bouteille)myCellarObject)
 				.filter(bouteille -> bouteille.getAnneeInt() < 1000).count();
 	}
 
@@ -596,7 +595,6 @@ public final class Program {
 	 */
 	static int getNbNonVintage() {
 		return (int) getStorage().getAllList().stream()
-				.map(myCellarObject -> (Bouteille)myCellarObject)
 				.filter(bouteille -> Bouteille.isNonVintageYear(bouteille.getAnnee())).count();
 	}
 

@@ -93,7 +93,12 @@ class TableHistoryValues extends AbstractTableModel {
       case LABEL:
       case TYPE:
       {
-        IMyCellarObject b = h.getBouteille();
+        IMyCellarObject b;
+        if (Program.isMusicType()) {
+          b = h.getMusic();
+        } else {
+          b = h.getBouteille();
+        }
         String emplacement;
         if (b.isInTemporaryStock()) {
           emplacement = Program.getLabel("Bouteille.TemporaryPlace");
@@ -196,16 +201,20 @@ class TableHistoryValues extends AbstractTableModel {
     }
     switch (column) {
       case ACTION:
-        History h = displayList.get(row);
-        IMyCellarObject bottle = h.getBouteille();
-        if (h.isDeleted()) {
-          Program.showBottle(bottle, false);
-        } else {
-          Program.Debug("Bottle Get ID = " + bottle.getId());
-          Program.getStorage().getListBouteilles().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst()
-              .ifPresentOrElse(
-                  bouteille -> Program.showBottle(bouteille, true),
-                  () -> Program.showBottle(bottle, false));
+        if (Program.isWineType()) {
+          History h = displayList.get(row);
+          IMyCellarObject bottle = h.getBouteille();
+          if (h.isDeleted()) {
+            Program.showBottle(bottle, false);
+          } else {
+            Program.Debug("Bottle Get ID = " + bottle.getId());
+            Program.getStorage().getListBouteilles().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst()
+                .ifPresentOrElse(
+                    bouteille -> Program.showBottle(bouteille, true),
+                    () -> Program.showBottle(bottle, false));
+          }
+        } else if (Program.isMusicType()) {
+          Program.throwNotImplementedForMusic(new Music());
         }
         break;
       case SELECT:
@@ -283,7 +292,10 @@ class TableHistoryValues extends AbstractTableModel {
     }
   }
 
-  IMyCellarObject getBottle(int row) {
+  IMyCellarObject getObject(int row) {
+    if (Program.isMusicType()) {
+      return displayList.get(row).getMusic();
+    }
     return displayList.get(row).getBouteille();
   }
 

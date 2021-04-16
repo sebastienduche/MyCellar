@@ -56,8 +56,8 @@ import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.3
- * @since 09/04/21
+ * @version 8.4
+ * @since 16/04/21
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -139,7 +139,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 	}
 
 	private void updateBouteilleCountLabel() {
-		int nb_bottle = Program.getNbBouteille();
+		int nb_bottle = Program.getNbItems();
 		end.setText(MessageFormat.format(Program.getLabel("Infos180", new LabelProperty(nb_bottle > 1)), nb_bottle)); //Nombre de bouteille total:
 	}
 
@@ -313,7 +313,9 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 					listYear.add(new StatData(an, Program.getNbBouteilleAnnee(year)));
 				}
 			}
-			listYear.add(new StatData(Program.getLabel("Infos390"), Program.getNbNonVintage()));
+			if (Program.isWineType()) {
+				listYear.add(new StatData(Program.getLabel("Infos390"), Program.getNbNonVintage()));
+			}
 			listYear.add(new StatData(Program.getLabel("Infos225"), Program.getNbAutreAnnee()));
 		}
 		for (StatData data: listYear) {
@@ -327,7 +329,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		} else {
 			panelChart.setDataPieChart(listYear, Program.getLabel("Infos184"));
 		}
-		end.setText(MessageFormat.format(Program.getLabel("Infos098", LabelProperty.PLURAL), Program.getNbBouteille()));
+		end.setText(MessageFormat.format(Program.getLabel("Infos098", LabelProperty.PLURAL), Program.getNbItems()));
 	}
 
 	private void displayHistory() {

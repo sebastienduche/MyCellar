@@ -563,7 +563,7 @@ public class Music implements IMyCellarObject<Music>, Serializable {
   public Music fromXmlElemnt(Element element) {
     NodeList nodeId = element.getElementsByTagName("id");
     final int id = Integer.parseInt(nodeId.item(0).getTextContent());
-    NodeList nodeName = element.getElementsByTagName("nom");
+    NodeList nodeName = element.getElementsByTagName("title");
     final String name = nodeName.item(0).getTextContent();
     NodeList nodeAnnee = element.getElementsByTagName("annee");
     final String year = nodeAnnee.item(0).getTextContent();

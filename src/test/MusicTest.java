@@ -8,11 +8,18 @@ import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -342,75 +349,77 @@ class MusicTest {
 
   @Test
   void getMusicFromXML() throws ParserConfigurationException, IOException, SAXException {
-//    final int id = 1987;
-//    final String name = "Aalto PS 04";
-//    final String year = "2004";
-//    final String type = "75cl";
-//    final String place = "Courlon 3a";
-//    final int numPlace = 0;
-//    final int line = 1;
-//    final int column = 2;
-//    final String price = "75";
-//    final String comment = "comment";
-//    final String maturity = "2018-2030";
-//    final String parker = "89";
-//    final String country = "ESP";
-//    final String vignoble = "Castilla y Leon";
-//    final String aoc = "Ribera del Duero";
-//    final String igp = "Ribera del Duero";
-//    final String color = "RED";
-//    final String status = "MODIFIED";
-//    final String lastModified = "17-11-2020 12:08";
-//    String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-//        "<ListeMusic><Music>\n" +
-//        "        <id>" + id + "</id>\n" +
-//        "        <nom>" + name + "</nom>\n" +
-//        "        <annee>" + year + "</annee>\n" +
-//        "        <type>" + type + "</type>\n" +
-//        "        <emplacement>" + place + "</emplacement>\n" +
-//        "        <num_lieu>" + numPlace + "</num_lieu>\n" +
-//        "        <ligne>" + line + "</ligne>\n" +
-//        "        <colonne>" + column + "</colonne>\n" +
-//        "        <prix>" + price + "</prix>\n" +
-//        "        <comment>" + comment + "</comment>\n" +
-//        "        <maturity>" + maturity + "</maturity>\n" +
-//        "        <parker>" + parker + "</parker>\n" +
-//        "        <vignoble>\n" +
-//        "            <country>" + country + "</country>\n" +
-//        "            <name>" + vignoble + "</name>\n" +
-//        "            <AOC>" + aoc + "</AOC>\n" +
-//        "            <IGP>" + igp + "</IGP>\n" +
-//        "            <AOP></AOP>\n" +
-//        "            <id>27618</id>\n" +
-//        "        </vignoble>\n" +
-//        "        <color>" + color + "</color>\n" +
-//        "        <status>" + status + "</status>\n" +
-//        "        <lastModified>" + lastModified + "</lastModified>\n" +
-//        "    </Music></ListeMusic>";
-//    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-//    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-//    Document doc = dBuilder.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
-//    doc.getDocumentElement().normalize();
-//    NodeList nodeList = doc.getElementsByTagName("Music");
-//    final Music musicFromXML = Music.getMusicFromXML((Element) nodeList.item(0));
-//    assertEquals(id, musicFromXML.getId());
-//    assertEquals(name, musicFromXML.getNom());
-//    assertEquals(year, musicFromXML.getAnnee());
-//    assertEquals(type, musicFromXML.getType());
-//    assertEquals(place, musicFromXML.getEmplacement());
-//    assertEquals(numPlace, musicFromXML.getNumLieu());
-//    assertEquals(line, musicFromXML.getLigne());
-//    assertEquals(column, musicFromXML.getColonne());
-//    assertEquals(price, musicFromXML.getPrix());
-//    assertEquals(comment, musicFromXML.getComment());
-//    assertEquals(maturity, musicFromXML.getMaturity());
-//    assertEquals(parker, musicFromXML.getParker());
-//    assertEquals(color, musicFromXML.getColor());
-//    assertEquals(status, musicFromXML.getStatus());
-//    assertEquals(lastModified, musicFromXML.getLastModified());
-//    assertEquals(country, musicFromXML.getVignoble().getCountry());
-//    assertEquals(vignoble, musicFromXML.getVignoble().getName());
-//    assertEquals(aoc, musicFromXML.getVignoble().getAOC());
-//    assertEquals(igp, musicFromXML.getVignoble().getIGP());
+    final int id = 1987;
+    final String name = "Aalto PS 04";
+    final String year = "2004";
+    final String type = "CD";
+    final String place = "Courlon 3a";
+    final int numPlace = 0;
+    final int line = 1;
+    final int column = 2;
+    final String price = "75";
+    final String comment = "comment";
+    final String artist = "2018-2030";
+    final String composer = "89";
+    final int trackNumber = 1;
+    final String label = "Castilla y Leon";
+    final String trackDuration = "Ribera del Duero";
+    final String trackComnment = "Ribera del Duero";
+    final String genre = "RED";
+    final String duration = "duration";
+    final String status = "MODIFIED";
+    final String lastModified = "17-11-2020 12:08";
+    String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        "<ListeMusic><Music>\n" +
+        "        <id>" + id + "</id>\n" +
+        "        <title>" + name + "</title>\n" +
+        "        <annee>" + year + "</annee>\n" +
+        "        <type>" + type + "</type>\n" +
+        "        <emplacement>" + place + "</emplacement>\n" +
+        "        <num_lieu>" + numPlace + "</num_lieu>\n" +
+        "        <ligne>" + line + "</ligne>\n" +
+        "        <colonne>" + column + "</colonne>\n" +
+        "        <prix>" + price + "</prix>\n" +
+        "        <comment>" + comment + "</comment>\n" +
+        "        <artist>" + artist + "</artist>\n" +
+        "        <composer>" + composer + "</composer>\n" +
+        "        <tracks>\n" +
+        "        <track>\n" +
+        "            <number>" + trackNumber + "</number>\n" +
+        "            <label>" + label + "</label>\n" +
+        "            <duration>" + trackDuration + "</duration>\n" +
+        "            <comment>" + trackComnment + "</comment>\n" +
+        "        </track>\n" +
+        "        </tracks>\n" +
+        "        <genre>" + genre + "</genre>\n" +
+        "        <duration>" + duration + "</duration>\n" +
+        "        <status>" + status + "</status>\n" +
+        "        <lastModified>" + lastModified + "</lastModified>\n" +
+        "    </Music></ListeMusic>";
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    Document doc = dBuilder.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+    doc.getDocumentElement().normalize();
+    NodeList nodeList = doc.getElementsByTagName("Music");
+    final Music musicFromXML = Music.fromXml((Element) nodeList.item(0));
+    assertEquals(id, musicFromXML.getId());
+    assertEquals(name, musicFromXML.getNom());
+    assertEquals(year, musicFromXML.getAnnee());
+    assertEquals(type, musicFromXML.getType());
+    assertEquals(place, musicFromXML.getEmplacement());
+    assertEquals(numPlace, musicFromXML.getNumLieu());
+    assertEquals(line, musicFromXML.getLigne());
+    assertEquals(column, musicFromXML.getColonne());
+    assertEquals(price, musicFromXML.getPrix());
+    assertEquals(comment, musicFromXML.getComment());
+    assertEquals(artist, musicFromXML.getArtist());
+    assertEquals(composer, musicFromXML.getComposer());
+    assertEquals(genre, musicFromXML.getGenre());
+    assertEquals(status, musicFromXML.getStatus());
+    assertEquals(lastModified, musicFromXML.getLastModified());
+    assertEquals(trackNumber, musicFromXML.getTracks().getTracks().get(0).getNumber());
+    assertEquals(label, musicFromXML.getTracks().getTracks().get(0).getLabel());
+    assertEquals(trackDuration, musicFromXML.getTracks().getTracks().get(0).getDuration());
+    assertEquals(trackComnment, musicFromXML.getTracks().getTracks().get(0).getComment());
   }
 }

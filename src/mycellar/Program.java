@@ -117,13 +117,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.4
- * @since 09/04/21
+ * @version 25.5
+ * @since 16/04/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.0.7.7";
+	public static final String INTERNAL_VERSION = "4.0.8.0";
 	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -194,7 +194,7 @@ public final class Program {
 	enum Type {
 		WINE,
 		BOOK,
-		DISC
+		MUSIC
 	}
 
 	public static void start() throws UnableToOpenFileException {
@@ -223,6 +223,14 @@ public final class Program {
 
 	static void setProgramType(Type value) {
 		programType = value;
+	}
+
+	public static boolean isMusicType() {
+		return programType == Type.MUSIC;
+	}
+
+	public static boolean isWineType() {
+		return programType == Type.WINE;
 	}
 
 	private static String getLabelForType(boolean plural, boolean firstLetterUppercase, Grammar grammar) {
@@ -255,7 +263,7 @@ public final class Program {
 			case BOOK:
 				value = getLabel("Program." + prefix + "book" + postfix);
 				break;
-			case DISC:
+			case MUSIC:
 				value = getLabel("Program." + prefix + "disc" + postfix);
 				break;
 			default:

@@ -1,6 +1,7 @@
 package mycellar.showfile;
 
 
+import mycellar.Music;
 import mycellar.core.bottle.BottleColor;
 import mycellar.core.BottlesStatus;
 import mycellar.Bouteille;
@@ -32,6 +33,7 @@ import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetData;
+import mycellar.core.music.MusicSupport;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
@@ -72,8 +74,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.8
- * @since 09/04/21
+ * @version 9.9
+ * @since 16/04/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -252,39 +254,100 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         return Program.convertStringFromHTMLString(b.getComment());
       }
     });
-    columns.add(new ShowFileColumn<>(MyCellarFields.MATURITY) {
+    if (Program.isWineType()) {
+      columns.add(new ShowFileColumn<>(MyCellarFields.MATURITY) {
 
-      @Override
-      Object getDisplayValue(IMyCellarObject b) {
-        Program.throwNotImplementedForMusic(b);
-        return Program.convertStringFromHTMLString(((Bouteille) b).getMaturity());
-      }
-    });
-    columns.add(new ShowFileColumn<>(MyCellarFields.PARKER) {
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          Program.throwNotImplementedForMusic(b);
+          return Program.convertStringFromHTMLString(((Bouteille) b).getMaturity());
+        }
+      });
+      columns.add(new ShowFileColumn<>(MyCellarFields.PARKER) {
 
-      @Override
-      Object getDisplayValue(IMyCellarObject b) {
-        Program.throwNotImplementedForMusic(b);
-        return ((Bouteille) b).getParker();
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          Program.throwNotImplementedForMusic(b);
+          return ((Bouteille) b).getParker();
 
-      }
-    });
-    columns.add(new ShowFileColumn<>(MyCellarFields.COLOR) {
+        }
+      });
+      columns.add(new ShowFileColumn<>(MyCellarFields.COLOR) {
 
-      @Override
-      void setValue(IMyCellarObject b, Object value) {
-        Program.throwNotImplementedForMusic(b);
-        b.setModified();
-        Program.setModified();
-        ((Bouteille) b).setColor(((BottleColor) value).name());
-      }
+        @Override
+        void setValue(IMyCellarObject b, Object value) {
+          Program.throwNotImplementedForMusic(b);
+          b.setModified();
+          Program.setModified();
+          ((Bouteille) b).setColor(((BottleColor) value).name());
+        }
 
-      @Override
-      Object getDisplayValue(IMyCellarObject b) {
-        Program.throwNotImplementedForMusic(b);
-        return BottleColor.getColor(((Bouteille) b).getColor());
-      }
-    });
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          Program.throwNotImplementedForMusic(b);
+          return BottleColor.getColor(((Bouteille) b).getColor());
+        }
+      });
+    } else if (Program.isMusicType()) {
+      columns.add(new ShowFileColumn<>(MyCellarFields.SUPPORT) {
+
+        @Override
+        void setValue(IMyCellarObject b, Object value) {
+          b.setModified();
+          Program.setModified();
+          ((Music) b).setMusicSupport((MusicSupport) value);
+        }
+
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          return ((Music) b).getMusicSupport();
+        }
+      });
+      columns.add(new ShowFileColumn<>(MyCellarFields.STYLE) {
+
+        @Override
+        void setValue(IMyCellarObject b, Object value) {
+          b.setModified();
+          Program.setModified();
+          ((Music) b).setGenre((String) value);
+        }
+
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          return ((Music) b).getGenre();
+        }
+      });
+
+      columns.add(new ShowFileColumn<>(MyCellarFields.COMPOSER) {
+
+        @Override
+        void setValue(IMyCellarObject b, Object value) {
+          b.setModified();
+          Program.setModified();
+          ((Music) b).setComposer((String) value);
+        }
+
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          return ((Music) b).getComposer();
+        }
+      });
+
+      columns.add(new ShowFileColumn<>(MyCellarFields.ARTIST) {
+
+        @Override
+        void setValue(IMyCellarObject b, Object value) {
+          b.setModified();
+          Program.setModified();
+          ((Music) b).setArtist((String) value);
+        }
+
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          return ((Music) b).getArtist();
+        }
+      });
+    }
     if (!isWork()) {
       columns.add(new ShowFileColumn<>(MyCellarFields.STATUS) {
 
@@ -301,85 +364,90 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         }
       });
     }
-    columns.add(new ShowFileColumn<>(MyCellarFields.COUNTRY, 100, false) {
 
-      @Override
-      void setValue(IMyCellarObject b, Object value) {}
+    if (Program.isWineType()) {
+      columns.add(new ShowFileColumn<>(MyCellarFields.COUNTRY, 100, false) {
 
-      @Override
-      Object getDisplayValue(IMyCellarObject b) {
-        Program.throwNotImplementedForMusic(b);
-        Bouteille bouteille = (Bouteille) b;
-        if (bouteille.getVignoble() == null) {
-          return "";
+        @Override
+        void setValue(IMyCellarObject b, Object value) {
         }
-        CountryJaxb countryJaxb = CountryListJaxb.findbyId(bouteille.getVignoble().getCountry()).orElse(null);
-        if (countryJaxb != null) {
-          return countryJaxb.getLabel();
-        }
-        return bouteille.getVignoble().getCountry();
-      }
-    });
-    columns.add(new ShowFileColumn<>(MyCellarFields.VINEYARD, 100, false) {
 
-      @Override
-      void setValue(IMyCellarObject b, Object value) {}
-
-      @Override
-      Object getDisplayValue(IMyCellarObject b) {
-        Program.throwNotImplementedForMusic(b);
-        if (((Bouteille) b).getVignoble() == null) {
-          return "";
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          Program.throwNotImplementedForMusic(b);
+          Bouteille bouteille = (Bouteille) b;
+          if (bouteille.getVignoble() == null) {
+            return "";
+          }
+          CountryJaxb countryJaxb = CountryListJaxb.findbyId(bouteille.getVignoble().getCountry()).orElse(null);
+          if (countryJaxb != null) {
+            return countryJaxb.getLabel();
+          }
+          return bouteille.getVignoble().getCountry();
         }
-        return ((Bouteille) b).getVignoble().getName();
-      }
-    });
-    columns.add(new ShowFileColumn<>(MyCellarFields.AOC, 100, false) {
+      });
+      columns.add(new ShowFileColumn<>(MyCellarFields.VINEYARD, 100, false) {
 
-      @Override
-      void setValue(IMyCellarObject b, Object value) {
-        Program.throwNotImplementedForMusic(b);
-        VignobleJaxb v = ((Bouteille) b).getVignoble();
-        if (v == null) {
-          return;
+        @Override
+        void setValue(IMyCellarObject b, Object value) {
         }
-        b.setModified();
-        Program.setModified();
-        v.setAOC((String) value);
-      }
 
-      @Override
-      Object getDisplayValue(IMyCellarObject b) {
-        Program.throwNotImplementedForMusic(b);
-        if (((Bouteille) b).getVignoble() == null) {
-          return "";
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          Program.throwNotImplementedForMusic(b);
+          if (((Bouteille) b).getVignoble() == null) {
+            return "";
+          }
+          return ((Bouteille) b).getVignoble().getName();
         }
-        return ((Bouteille) b).getVignoble().getAOC();
-      }
-    });
-    columns.add(new ShowFileColumn<>(MyCellarFields.IGP, 100, false) {
+      });
+      columns.add(new ShowFileColumn<>(MyCellarFields.AOC, 100, false) {
 
-      @Override
-      void setValue(IMyCellarObject b, Object value) {
-        Program.throwNotImplementedForMusic(b);
-        VignobleJaxb v = ((Bouteille) b).getVignoble();
-        if (v == null) {
-          return;
+        @Override
+        void setValue(IMyCellarObject b, Object value) {
+          Program.throwNotImplementedForMusic(b);
+          VignobleJaxb v = ((Bouteille) b).getVignoble();
+          if (v == null) {
+            return;
+          }
+          b.setModified();
+          Program.setModified();
+          v.setAOC((String) value);
         }
-        b.setModified();
-        Program.setModified();
-        v.setIGP((String) value);
-      }
 
-      @Override
-      Object getDisplayValue(IMyCellarObject b) {
-        Program.throwNotImplementedForMusic(b);
-        if (((Bouteille) b).getVignoble() == null) {
-          return "";
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          Program.throwNotImplementedForMusic(b);
+          if (((Bouteille) b).getVignoble() == null) {
+            return "";
+          }
+          return ((Bouteille) b).getVignoble().getAOC();
         }
-        return ((Bouteille) b).getVignoble().getIGP();
-      }
-    });
+      });
+      columns.add(new ShowFileColumn<>(MyCellarFields.IGP, 100, false) {
+
+        @Override
+        void setValue(IMyCellarObject b, Object value) {
+          Program.throwNotImplementedForMusic(b);
+          VignobleJaxb v = ((Bouteille) b).getVignoble();
+          if (v == null) {
+            return;
+          }
+          b.setModified();
+          Program.setModified();
+          v.setIGP((String) value);
+        }
+
+        @Override
+        Object getDisplayValue(IMyCellarObject b) {
+          Program.throwNotImplementedForMusic(b);
+          if (((Bouteille) b).getVignoble() == null) {
+            return "";
+          }
+          return ((Bouteille) b).getVignoble().getIGP();
+        }
+      });
+    }
     modifyButtonColumn = new ShowFileColumn<>(100, true, Program.getLabel("Infos360")) {
       @Override
       void setValue(IMyCellarObject b, Object value) {}

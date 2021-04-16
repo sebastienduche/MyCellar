@@ -17,6 +17,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.core.UnableToOpenMyCellarFileException;
+import mycellar.core.music.MusicSupport;
 import mycellar.launcher.Server;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Rangement;
@@ -452,6 +453,22 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 */
 	private void postOpenFile() {
 		loadFile();
+		// TODO REMOVE
+		if (Program.isMusicType()) {
+			Program.getStorage().getListBouteilles().getMusic().add(new Music.MusicBuilder("music")
+					.place(Program.DEFAULT_PLACE.getNom())
+					.numPlace(0)
+					.genre("genre")
+					.musicSupport(MusicSupport.CD)
+					.annee("2018")
+					.artist("artist")
+					.composer("composer")
+					.comment("comment")
+					.duration("duration")
+					.price("123")
+					.track(1, "label", "duration", "comment")
+					.build());
+		}
 		Program.updateAllPanels();
 		updateMainPanel();
 		Program.PANEL_INFOS.setEnable(true);

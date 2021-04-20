@@ -97,8 +97,8 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
 	protected void clearValues() {
 		panelWineAttribute.clearValues();
-		panelGeneral.clear();
-		panelPlace.clear();
+		panelGeneral.clearValues();
+		panelPlace.resetValues();
 		panelVignobles.resetCountrySelected();
 	}
 

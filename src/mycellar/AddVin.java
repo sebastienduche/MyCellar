@@ -114,7 +114,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
 		Program.getSearch().ifPresent(Search::updateTable);
 		panelVignobles.resetCombos();
-		panelPlace.clear();
+		panelPlace.resetValues();
 		rangementInModif = null;
 		Debug("Reset Values... End");
 	}
@@ -154,7 +154,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			panelWineAttribute.setStatus(bottle);
 			panelVignobles.initializeVignobles(this.bottle);
 
-			panelPlace.clear();
+			panelPlace.resetValues();
 			panelPlace.setBeforeBottle(this.bottle);
 			m_add.setText(Program.getLabel("Infos079"));
 			rangementInModif = bottle.getRangement();
@@ -563,7 +563,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
 						if (nb_bottle_rest > 0) {
 							panelWineAttribute.setStillNbItems(nb_bottle_rest);
-							panelPlace.clear();
+							panelPlace.resetValues();
 						} else {
 							resetValues();
 							if (m_bmodify) {
@@ -798,7 +798,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
 		panelWineAttribute.runExit();
-		panelPlace.clear();
+		panelPlace.resetValues();
 		clearValues();
 		reInitAddVin();
 		Debug("runExit... End");

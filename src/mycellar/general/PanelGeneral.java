@@ -42,13 +42,12 @@ import static mycellar.core.LabelProperty.SINGLE;
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
-  protected final MyCellarLabel m_contenance = new MyCellarLabel(LabelType.INFO, "134");
-  protected final MyCellarButton m_manageContenance = new MyCellarButton(LabelType.INFO, "400");
+  protected final MyCellarButton manageContenance = new MyCellarButton(LabelType.INFO, "400");
   protected JCompletionComboBox<String> name;
-  protected final JModifyTextField m_year = new JModifyTextField();
-  protected final JModifyComboBox<String> m_half = new JModifyComboBox<>();
-  protected final MyCellarCheckBox m_noYear = new MyCellarCheckBox(LabelType.INFO, "399");
-  protected final MyCellarCheckBox m_annee_auto = new MyCellarCheckBox("");
+  protected final JModifyTextField year = new JModifyTextField();
+  protected final JModifyComboBox<String> type = new JModifyComboBox<>();
+  protected final MyCellarCheckBox noYear = new MyCellarCheckBox(LabelType.INFO, "399");
+  protected final MyCellarCheckBox yearAuto = new MyCellarCheckBox("");
   private final int siecle = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
   private IMyCellarObject myCellarObject;
   private boolean multi;
@@ -66,14 +65,14 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     setLayout(new MigLayout("", "[grow]30px[]10px[]10px[]30px[]10px[]", ""));
     add(new MyCellarLabel(LabelType.INFO, "208"), "grow");
     add(new MyCellarLabel(LabelType.INFO, "189"));
-    add(m_annee_auto);
-    add(m_contenance, "wrap");
+    add(yearAuto);
+    add(new MyCellarLabel(LabelType.INFO, "134"), "wrap");
     add(name, "grow");
-    add(m_year, "width min(100,10%)");
-    add(m_noYear);
-    add(m_half, "push");
+    add(year, "width min(100,10%)");
+    add(noYear);
+    add(type, "push");
     if (Program.isWineType()) {
-      add(m_manageContenance);
+      add(manageContenance);
     }
   }
 
@@ -83,29 +82,29 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
   public void initializeExtraProperties() {
     name.setSelectedItem(myCellarObject.getNom());
-    m_year.setText(myCellarObject.getAnnee());
+    year.setText(myCellarObject.getAnnee());
     final boolean nonVintage = myCellarObject.isNonVintage();
-    m_noYear.setSelected(nonVintage);
-    m_year.setEditable(!nonVintage);
-    m_half.removeAllItems();
-    m_half.addItem("");
-    MyCellarBottleContenance.getList().forEach(m_half::addItem);
-    m_half.setSelectedItem(myCellarObject.getType());
+    noYear.setSelected(nonVintage);
+    year.setEditable(!nonVintage);
+    type.removeAllItems();
+    type.addItem("");
+    MyCellarBottleContenance.getList().forEach(type::addItem);
+    type.setSelectedItem(myCellarObject.getType());
 
     String half_tmp = "";
-    if (m_half.getSelectedItem() != null) {
-      half_tmp = m_half.getSelectedItem().toString();
+    if (type.getSelectedItem() != null) {
+      half_tmp = type.getSelectedItem().toString();
     }
     if (!half_tmp.equals(myCellarObject.getType()) && !myCellarObject.getType().isEmpty()) {
       MyCellarBottleContenance.getList().add(myCellarObject.getType());
-      m_half.addItem(myCellarObject.getType());
-      m_half.setSelectedItem(myCellarObject.getType());
+      type.addItem(myCellarObject.getType());
+      type.setSelectedItem(myCellarObject.getType());
     }
   }
 
   protected void annee_auto_actionPerformed(ActionEvent e) {
     Debug("Annee_auto_actionPerformed...");
-    if (!m_annee_auto.isSelected()) {
+    if (!yearAuto.isSelected()) {
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_FALSE, false)) {
@@ -124,61 +123,61 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   }
 
   public void enableAll(boolean enable) {
-    m_half.setEnabled(enable && !multi);
+    type.setEnabled(enable && !multi);
     name.setEnabled(enable && !multi);
-    m_year.setEditable(enable && !m_noYear.isSelected());
-    m_noYear.setEnabled(enable);
-    m_annee_auto.setEnabled(enable);
-    m_manageContenance.setEnabled(enable);
+    year.setEditable(enable && !noYear.isSelected());
+    noYear.setEnabled(enable);
+    yearAuto.setEnabled(enable);
+    manageContenance.setEnabled(enable);
   }
 
   public void setEditable(boolean editable) {
-    m_half.setEnabled(editable);
+    type.setEnabled(editable);
     name.setEditable(editable);
-    m_year.setEditable(editable);
+    year.setEditable(editable);
   }
 
   public void resetMulti(int itemCount) {
     if (multi) {
       name.setSelectedItem(MessageFormat.format(Program.getLabel("AddVin.NbItemsSelected", LabelProperty.PLURAL), itemCount)); //" bouteilles selectionnees");
       name.setEnabled(false);
-      m_annee_auto.setEnabled(false);
-      m_noYear.setEnabled(false);
-      m_year.setEditable(false);
-      if (m_half.getItemCount() > 0) {
-        m_half.setSelectedIndex(0);
+      yearAuto.setEnabled(false);
+      noYear.setEnabled(false);
+      year.setEditable(false);
+      if (type.getItemCount() > 0) {
+        type.setSelectedIndex(0);
       }
     }
   }
 
   public String getYear() {
 
-    if (m_noYear.isSelected()) {
+    if (noYear.isSelected()) {
       return Bouteille.NON_VINTAGE;
     }
 
-    String annee = m_year.getText();
-    if (m_annee_auto.isSelected() && annee.length() == 2) {
+    String annee = year.getText();
+    if (yearAuto.isSelected() && annee.length() == 2) {
       int n = Program.getCaveConfigInt(MyCellarSettings.ANNEE, 50);
       if (Program.safeParseInt(annee, -1) > n) {
         annee = siecle + annee;
       } else {
-        annee = siecle + 1 + annee;
+        annee = (siecle + 1) + annee;
       }
     }
     return annee;
   }
 
   protected final void setYearAuto() {
-    m_annee_auto.setText(MessageFormat.format(Program.getLabel("Infos117"), ((siecle + 1) * 100))); //"Annee 00 -> 2000");
-    m_annee_auto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
+    yearAuto.setText(MessageFormat.format(Program.getLabel("Infos117"), ((siecle + 1) * 100))); //"Annee 00 -> 2000");
+    yearAuto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
   }
 
   public void updateView() {
-    m_half.removeAllItems();
-    m_half.addItem("");
-    MyCellarBottleContenance.getList().forEach(m_half::addItem);
-    m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+    type.removeAllItems();
+    type.addItem("");
+    MyCellarBottleContenance.getList().forEach(type::addItem);
+    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
   }
 
   public PanelGeneral setMyCellarObject(IMyCellarObject myCellarObject) {
@@ -190,9 +189,9 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     this.multi = multi;
   }
 
-  public void clear() {
+  public void clearValues() {
     name.setSelectedIndex(0);
-    m_year.setText("");
+    year.setText("");
   }
 
   protected static void Debug(String s) {
@@ -200,32 +199,32 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   }
 
   public void setModifyActive(boolean b) {
-    m_year.setModifyActive(b);
-    m_half.setModifyActive(b);
+    year.setModifyActive(b);
+    type.setModifyActive(b);
   }
 
   public void initValues() {
     initNameCombo();
 
-    m_half.addItem("");
-    MyCellarBottleContenance.getList().forEach(m_half::addItem);
-    m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+    type.addItem("");
+    MyCellarBottleContenance.getList().forEach(type::addItem);
+    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 
     setYearAuto();
     initYearAndContenance();
   }
 
   private void initYearAndContenance() {
-    m_manageContenance.addActionListener(this::manageContenance_actionPerformed);
-    m_annee_auto.addActionListener(this::annee_auto_actionPerformed);
+    manageContenance.addActionListener(this::manageContenance_actionPerformed);
+    yearAuto.addActionListener(this::annee_auto_actionPerformed);
 
-    m_noYear.addActionListener((e) -> {
-      if (m_noYear.isSelected()) {
-        m_year.setText(Bouteille.NON_VINTAGE);
-        m_year.setEditable(false);
+    noYear.addActionListener((e) -> {
+      if (noYear.isSelected()) {
+        year.setText(Bouteille.NON_VINTAGE);
+        year.setEditable(false);
       }	else {
-        m_year.setText("");
-        m_year.setEditable(true);
+        year.setText("");
+        year.setEditable(true);
       }
     });
   }
@@ -236,9 +235,9 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     Debug("Manage Capacity... End");
   }
 
-  public void setMouseListener(PopupListener popup_l) {
-    name.addMouseListener(popup_l);
-    m_year.addMouseListener(popup_l);
+  public void setMouseListener(PopupListener popupListener) {
+    name.addMouseListener(popupListener);
+    year.addMouseListener(popupListener);
   }
 
   public void resetValues() {
@@ -248,18 +247,18 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
     name.setEnabled(true);
     name.setEditable(true);
-    if (m_noYear.isSelected()) {
-      m_year.setText(Bouteille.NON_VINTAGE);
+    if (noYear.isSelected()) {
+      year.setText(Bouteille.NON_VINTAGE);
     } else {
-      m_year.setText("");
+      year.setText("");
     }
     if (multi) {
-      if (m_half.getItemCount() > 0) {
-        m_half.setSelectedIndex(0);
+      if (type.getItemCount() > 0) {
+        type.setSelectedIndex(0);
       }
     } else {
-      if (m_half.getItemCount() > 1) {
-        m_half.setSelectedIndex(1);
+      if (type.getItemCount() > 1) {
+        type.setSelectedIndex(1);
       }
     }
   }
@@ -271,35 +270,35 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     }
 
     // Controle de la date
-    if (!multi && (m_year.isEditable() || !m_noYear.isSelected())) {
-      String annee = m_year.getText();
+    if (!multi && (year.isEditable() || !noYear.isSelected())) {
+      String annee = year.getText();
 
       // Erreur sur la date
       if (MyCellarControl.hasInvalidYear(annee)) {
-        m_year.setEditable(true);
+        year.setEditable(true);
         return false;
       }
       annee = getYear();
-      m_year.setText(annee);
+      year.setText(annee);
     }
     return true;
   }
 
   public String updateYear() {
-    String year = "";
-    if (!multi && (m_year.isEditable() || m_noYear.isSelected())) {
-      year = getYear();
-      m_year.setText(year);
+    String value = "";
+    if (!multi && (year.isEditable() || noYear.isSelected())) {
+      value = getYear();
+      year.setText(value);
     }
-    return year;
+    return value;
   }
 
   public String getType() {
-    return m_half.getSelectedItem() != null ? m_half.getSelectedItem().toString() : "";
+    return type.getSelectedItem() != null ? type.getSelectedItem().toString() : "";
   }
 
   public void setTypeDefault() {
-    m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
   }
 
   public boolean runExit(boolean modify) {
@@ -311,7 +310,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
         erreur_txt1 = Program.getError("Error148", name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return false;
       }
@@ -347,13 +346,13 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   public void initializeForEdition() {
     initNameCombo();
 
-    m_half.removeAllItems();
-    m_half.addItem("");
-    MyCellarBottleContenance.getList().forEach(m_half::addItem);
-    m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+    type.removeAllItems();
+    type.addItem("");
+    MyCellarBottleContenance.getList().forEach(type::addItem);
+    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
 
     setYearAuto();
-    m_manageContenance.setText(Program.getLabel("Infos400"));
+    manageContenance.setText(Program.getLabel("Infos400"));
 
     initYearAndContenance();
   }
@@ -369,15 +368,15 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
   public void resetModified(boolean b) {
     name.setModified(b);
-    m_year.setModified(b);
-    m_half.setModified(b);
+    year.setModified(b);
+    type.setModified(b);
   }
 
   public boolean isModified(IMyCellarObject myCellarObject) {
     boolean modified = name.isModified();
-    modified |= m_year.isModified();
-    modified |= (m_noYear.isSelected() != myCellarObject.isNonVintage());
-    modified |= m_half.isModified();
+    modified |= year.isModified();
+    modified |= (noYear.isSelected() != myCellarObject.isNonVintage());
+    modified |= type.isModified();
     return modified;
   }
 }

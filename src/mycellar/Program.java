@@ -121,7 +121,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.1.1.1";
+	public static final String INTERNAL_VERSION = "4.1.1.3";
 	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -613,7 +613,7 @@ public final class Program {
 		}
 	}
 
-	static char getDecimalSeparator() {
+	public static char getDecimalSeparator() {
 		DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
 		DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
 		return symbols.getDecimalSeparator();

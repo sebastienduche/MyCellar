@@ -1,12 +1,11 @@
 package mycellar.core;
 
+import mycellar.Start;
+
+import javax.swing.JFormattedTextField;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.Format;
-
-import javax.swing.JFormattedTextField;
-
-import mycellar.Start;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -14,8 +13,8 @@ import mycellar.Start;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.4
- * @since 28/08/20
+ * @version 0.5
+ * @since 20/04/21
  */
 
 public class JModifyFormattedTextField extends JFormattedTextField {
@@ -23,21 +22,21 @@ public class JModifyFormattedTextField extends JFormattedTextField {
 	private static final long serialVersionUID = -7364848812779720027L;
 	
 	private boolean modified;
-	private boolean active;
+	private boolean modifyActive;
 
-	JModifyFormattedTextField(Format format) {
+	public JModifyFormattedTextField(Format format) {
 		super(format);
 		init();
 	}
 	
 	private void init() {
 		modified = false;
-		active = true;
+		modifyActive = true;
 		addKeyListener(new KeyListener() {
 			
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				if(active){
+				if(modifyActive) {
     				modified = true;
     				doAfterModify();
 				}	
@@ -53,7 +52,7 @@ public class JModifyFormattedTextField extends JFormattedTextField {
 		});
 	}
 	
-	private void doAfterModify(){
+	private void doAfterModify() {
 		Start.setPaneModified(true);
 	}
 	
@@ -65,8 +64,8 @@ public class JModifyFormattedTextField extends JFormattedTextField {
 		this.modified = modified;
 	}
 
-	public void setModifyActive(boolean active) {
-		this.active = active;
+	public void setModifyActive(boolean modifyActive) {
+		this.modifyActive = modifyActive;
 	}
 
 }

@@ -1,7 +1,6 @@
 package mycellar;
 
 import mycellar.actions.OpenShowErrorsAction;
-import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
@@ -9,7 +8,6 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
-import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.Place;
@@ -24,8 +22,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.Timer;
@@ -60,39 +56,16 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		try {
 			Debug("Constructor with Bottle");
 			panelGeneral.initializeForEdition();
-
-			m_price.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyTyped(KeyEvent e) {
-					if (e.getKeyChar() == ',' || e.getKeyChar() == '.') {
-						e.consume();
-						char sep = Program.getDecimalSeparator();
-						String text = m_price.getText();
-						m_price.setText(text+sep);
-					}
-				}
-			});
-
-			m_nb_bottle.setToolTipText(Program.getLabel("AddVin.NbItemsToAdd", LabelProperty.PLURAL));
-			m_nb_bottle.setValue(1);
-			m_nb_bottle.addChangeListener((e) -> {
-				m_labelStillToAdd.setText("");
-				if (Integer.parseInt(m_nb_bottle.getValue().toString()) <= 0) {
-					m_nb_bottle.setValue(1);
-				}
-			});
+			panelWineAttribute.initValues();
 
 			m_add.setText(Program.getLabel("ManageBottle.SaveModifications"));
 			m_add.setMnemonic(ajouterChar);
 
 			PopupListener popup_l = new PopupListener();
 			panelGeneral.setMouseListener(popup_l);
-			m_price.addMouseListener(popup_l);
+			panelWineAttribute.setMouseListener(popup_l);
 			m_comment.addMouseListener(popup_l);
-			m_maturity.addMouseListener(popup_l);
-			m_parker.addMouseListener(popup_l);
 
-			m_labelStillToAdd.setForeground(Color.red);
 			m_end.setForeground(Color.red);
 			m_end.setHorizontalAlignment(SwingConstants.CENTER);
 			setLayout(new BorderLayout());
@@ -149,8 +122,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 	}
 
 	private void updateStatusAndTime() {
-		statusList.setSelectedItem(BottlesStatus.getStatus(bottle.getStatus()));
-		lastModified.setText(bottle.getLastModified());
+		panelWineAttribute.updateStatusAndTime(bottle);
 	}
 
 	@Override
@@ -177,18 +149,12 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		String nom = panelGeneral.getObjectName();
 		String demie = panelGeneral.getType();
 
-		String prix = m_price.getText();
+		String prix = panelWineAttribute.getPrice();
 		String comment1 = m_comment.getText();
-		String dateOfC = m_maturity.getText();
-		String parker = m_parker.getText();
-		String color = "";
-		if (m_colorList.getSelectedItem() != null) {
-			color = ((BottleColor)m_colorList.getSelectedItem()).name();
-		}
-		String status = BottlesStatus.MODIFIED.name();
-		if (statusList.isModified() && statusList.getSelectedItem() != null) {
-			status = ((BottlesStatus)statusList.getSelectedItem()).name();
-		}
+		String dateOfC = panelWineAttribute.getMaturity();
+		String parker =panelWineAttribute.getParker();
+		String color = panelWineAttribute.getColor();
+		String status = panelWineAttribute.getStatus();
 		String country = panelVignobles.getCountry();
 		String vignoble = panelVignobles.getVignoble();
 		String aoc = panelVignobles.getAOC();
@@ -299,12 +265,8 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
 	private void resetModified() {
 		panelGeneral.resetModified(false);
+		panelWineAttribute.resetModified(false);
 		m_comment.setModified(false);
-		m_maturity.setModified(false);
-		m_parker.setModified(false);
-		m_colorList.setModified(false);
-		statusList.setModified(false);
-		m_price.setModified(false);
 		panelVignobles.setModified(false);
 		panelPlace.clearModified();
 		Start.setPaneModified(false);
@@ -334,11 +296,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
 		boolean modified = panelGeneral.isModified(bottle);
 		modified |= m_comment.isModified();
-		modified |= m_maturity.isModified();
-		modified |= m_parker.isModified();
-		modified |= m_colorList.isModified();
-		modified |= statusList.isModified();
-		modified |= m_price.isModified();
+		modified |= panelWineAttribute.isModified();
 		modified |= panelPlace.isModified();
 		modified |= panelVignobles.isModified();
 
@@ -352,8 +310,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		if (!RangementUtils.putTabStock()) {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
-		m_colorList.setSelectedItem(BottleColor.NONE);
-		statusList.setSelectedItem(BottlesStatus.NONE);
+		panelWineAttribute.runExit();
 		clearValues();
 		Debug("Quitting... Done");
 		return true;
@@ -375,7 +332,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			setLayout(new MigLayout("","grow","[][][]10px[][grow]10px[][]"));
 			add(panelGeneral, "growx,wrap");
 			add(panelPlace, "growx,wrap");
-			add(new PanelAttribute(), "growx,split 2");
+			add(panelWineAttribute, "growx,split 2");
 			add(panelVignobles = new PanelVignobles(true, true, true), "growx, wrap");
 			add(m_labelComment, "growx, wrap");
 			add(m_js_comment, "grow, wrap");

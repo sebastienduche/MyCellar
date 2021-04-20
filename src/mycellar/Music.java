@@ -498,42 +498,22 @@ public class Music implements IMyCellarObject<Music>, Serializable {
       case COMMENT:
         setComment(value);
         break;
-      case MATURITY:
+      case ARTIST:
         setArtist(value);
         break;
+      case AOC:
+      case IGP:
       case PARKER:
-        setComposer(value);
-        break;
       case VINEYARD:
-        if (getTracks() == null) {
-          setTracks(new Tracks());
-        }
+      case MATURITY:
         Program.throwNotImplementedForMusic(this);
 //        getTracks().setName(value);
         break;
-      case COLOR:
+      case DURATION:
         setDuration(value);
         break;
-      case COUNTRY:
-        if (getTracks() == null) {
-          setTracks(new Tracks());
-        }
-        Program.throwNotImplementedForMusic(this);
-//        getTracks().setCountry(value);
-        break;
-      case AOC:
-        if (getTracks() == null) {
-          setTracks(new Tracks());
-        }
-        Program.throwNotImplementedForMusic(this);
-//        getTracks().setAOC(value);
-        break;
-      case IGP:
-        if (getTracks() == null) {
-          setTracks(new Tracks());
-        }
-        Program.throwNotImplementedForMusic(this);
-//        getTracks().setIGP(value);
+      case COMPOSER:
+        setComposer(value);
         break;
       case STATUS:
         setStatus(value);

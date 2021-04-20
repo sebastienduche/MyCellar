@@ -4,6 +4,7 @@ package mycellar;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
@@ -65,8 +66,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.1
- * @since 16/04/21
+ * @version 14.2
+ * @since 20/04/21
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -557,7 +558,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 					int maxNumPlace = 0;
 					while (line != null) {
 						String []lu = line.split(separe);
-						Bouteille bottle = new Bouteille();
+						IMyCellarObject bottle = createObject();
 						bottle.updateID();
 						for (int i = 0; i < lu.length; i++) {
 							String value = lu[i];
@@ -597,6 +598,17 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 		Debug("Importing... End");
 	}
 
+	private IMyCellarObject createObject() {
+		if (Program.isWineType()) {
+			return new Bouteille();
+		}
+		if (Program.isMusicType()) {
+			return new Music();
+		}
+		Program.throwNotImplementedForMusic(new Music());
+		return null;
+	}
+
 	private void displayImportDone() {
 		label_progression.setText(Program.getLabel("Infos200"));
 		new Timer().schedule(
@@ -634,7 +646,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 					continue;
 				}
 				if (count > 0) {
-					Bouteille bottle = new Bouteille();
+					IMyCellarObject bottle = createObject();
 					bottle.updateID();
 
 					int i = 0;

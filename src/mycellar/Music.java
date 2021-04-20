@@ -40,8 +40,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 16/04/21
+ * @version 0.5
+ * @since 20/04/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -396,6 +396,11 @@ public class Music implements IMyCellarObject<Music>, Serializable {
         .withLine(getLigne())
         .withColumn(getColonne())
         .build();
+  }
+
+  @Override
+  public boolean isNonVintage() {
+    return false;
   }
 
   public void setMusicSupport(MusicSupport musicSupport) {

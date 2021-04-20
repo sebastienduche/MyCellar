@@ -1,7 +1,6 @@
 package mycellar;
 
 import mycellar.actions.OpenShowErrorsAction;
-import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
@@ -10,7 +9,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
-import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.Place;
@@ -27,9 +26,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseListener;
 import java.text.MessageFormat;
-import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -43,8 +40,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.0
- * @since 16/04/21
+ * @version 8.1
+ * @since 20/04/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -62,29 +59,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
 		try {
 			Debug("Constructor with Bottle");
-			LinkedList<String> list = new LinkedList<>();
-			list.add("");
-			list.addAll(Program.getStorage().getBottleNames());
-			String[] bottlesName = new String[0];
-			bottlesName = list.toArray(bottlesName);
-			name = new JCompletionComboBox<>(bottlesName) {
-				private static final long serialVersionUID = 8137073557763181546L;
-
-				@Override
-				protected void doAfterModify() {
-					super.doAfterModify();
-					Start.setPaneModified(true);
-				}
-			};
-			name.setCaseSensitive(false);
-			name.setEditable(true);
-
-			m_half.removeAllItems();
-			m_half.addItem("");
-			MyCellarBottleContenance.getList().forEach(m_half::addItem);
-			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
-
-			setYearAuto();
+			panelGeneral.initializeForEdition();
 
 			m_price.addKeyListener(new KeyAdapter() {
 				@Override
@@ -109,12 +84,9 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
 			m_add.setText(Program.getLabel("ManageBottle.SaveModifications"));
 			m_add.setMnemonic(ajouterChar);
-			m_manageContenance.setText(Program.getLabel("Infos400"));
 
-
-			MouseListener popup_l = new PopupListener();
-			name.addMouseListener(popup_l);
-			m_year.addMouseListener(popup_l);
+			PopupListener popup_l = new PopupListener();
+			panelGeneral.setMouseListener(popup_l);
 			m_price.addMouseListener(popup_l);
 			m_comment.addMouseListener(popup_l);
 			m_maturity.addMouseListener(popup_l);
@@ -127,18 +99,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			add(new PanelMain(), BorderLayout.CENTER);
 
 			m_add.addActionListener((e) -> saving());
-			m_manageContenance.addActionListener(this::manageContenance_actionPerformed);
-			m_annee_auto.addActionListener(this::annee_auto_actionPerformed);
 
-			m_noYear.addActionListener((e) -> {
-				if (m_noYear.isSelected()) {
-					m_year.setText(Bouteille.NON_VINTAGE);
-					m_year.setEditable(false);
-				}	else {
-					m_year.setText("");
-					m_year.setEditable(true);
-				}
-			});
 			setVisible(true);
 			Debug("JbInit Done");
 
@@ -173,6 +134,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		Debug("Set Bottle...");
 		try {
 			this.bottle = bottle;
+			panelGeneral.setMyCellarObject(bottle);
 			initializeExtraProperties();
 			panelVignobles.initializeVignobles(bottle);
 			updateStatusAndTime();
@@ -212,11 +174,8 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 	public boolean save() {
 		Debug("Saving...");
 
-		String nom = name.getEditor().getItem().toString();
-		String demie = "";
-		if (m_half.getSelectedItem() != null) {
-			demie = m_half.getSelectedItem().toString();
-		}
+		String nom = panelGeneral.getObjectName();
+		String demie = panelGeneral.getType();
 
 		String prix = m_price.getText();
 		String comment1 = m_comment.getText();
@@ -235,23 +194,8 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		String aoc = panelVignobles.getAOC();
 		String igp = panelVignobles.getIGP();
 
-		if (MyCellarControl.hasInvalidBotteName(nom)) {
+		if (!panelGeneral.performValidation()) {
 			return false;
-		}
-
-		// Controle de la date
-		String annee = "";
-		if (m_year.isEditable() || m_noYear.isSelected()) {
-			annee = m_year.getText();
-
-			// Erreur sur la date
-			if (MyCellarControl.hasInvalidYear(annee)) {
-				m_year.setEditable(true);
-				return false;
-			}	else {
-				annee = getYear();
-				m_year.setText(annee);
-			}
 		}
 
 		final Place place = panelPlace.getSelectedPlace();
@@ -282,7 +226,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		}
 
 		Place oldPlace = bottle.getPlace();
-		bottle.setAnnee(annee);
+		bottle.setAnnee(panelGeneral.getYear());
 		bottle.setColor(color);
 		bottle.setComment(comment1);
 		bottle.setEmplacement(cave.getNom());
@@ -343,7 +287,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			Debug("ERROR: Not an empty place, Replace?");
 			String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bouteille.getNom(), bouteille.getAnnee());
 			String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
-			if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+			if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
 				replaceWine(bouteille);
 				m_end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
 			} else {
@@ -354,15 +298,13 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 	}
 
 	private void resetModified() {
-		name.setModified(false);
-		m_year.setModified(false);
+		panelGeneral.resetModified(false);
 		m_comment.setModified(false);
 		m_maturity.setModified(false);
 		m_parker.setModified(false);
 		m_colorList.setModified(false);
 		statusList.setModified(false);
 		m_price.setModified(false);
-		m_half.setModified(false);
 		panelVignobles.setModified(false);
 		panelPlace.clearModified();
 		Start.setPaneModified(false);
@@ -390,9 +332,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		Debug("Processing Quit...");
 		m_add.setEnabled(false);
 
-		boolean modified = name.isModified();
-		modified |= m_year.isModified();
-		modified |= (m_noYear.isSelected() != bottle.isNonVintage());
+		boolean modified = panelGeneral.isModified(bottle);
 		modified |= m_comment.isModified();
 		modified |= m_maturity.isModified();
 		modified |= m_parker.isModified();
@@ -400,7 +340,6 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		modified |= statusList.isModified();
 		modified |= m_price.isModified();
 		modified |= panelPlace.isModified();
-		modified |= m_half.isModified();
 		modified |= panelVignobles.isModified();
 
 		if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error148", OF_THE_SINGLE) + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
@@ -434,7 +373,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
 		private PanelMain() {
 			setLayout(new MigLayout("","grow","[][][]10px[][grow]10px[][]"));
-			add(new PanelName(), "growx,wrap");
+			add(panelGeneral, "growx,wrap");
 			add(panelPlace, "growx,wrap");
 			add(new PanelAttribute(), "growx,split 2");
 			add(panelVignobles = new PanelVignobles(true, true, true), "growx, wrap");
@@ -464,10 +403,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			Debug("updateView...");
 			panelPlace.setListenersEnabled(false);
 			updateView = false;
-			m_half.removeAllItems();
-			m_half.addItem("");
-			MyCellarBottleContenance.getList().forEach(m_half::addItem);
-			m_half.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+			panelGeneral.updateView();
 			panelVignobles.updateList();
 			panelPlace.updateView();
 			panelPlace.selectPlace(bottle);

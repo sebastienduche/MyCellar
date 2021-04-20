@@ -13,13 +13,13 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 17/03/21
+ * @version 2.0
+ * @since 20/04/21
  */
 
 public final class MyCellarControl {
 
-  static boolean hasInvalidBotteName(String name) {
+  public static boolean hasInvalidBotteName(String name) {
     if (name == null || name.strip().isEmpty()) {
       Debug("ERROR: Wrong Name");
       Erreur.showSimpleErreur(Program.getError("Error054")); //"Veuillez saisir le nom du vin!"
@@ -28,7 +28,7 @@ public final class MyCellarControl {
     return false;
   }
 
-  static boolean hasInvalidYear(String year) {
+  public static boolean hasInvalidYear(String year) {
     if (Bouteille.isInvalidYear(year)) {
       Debug("ERROR: Wrong date");
       Erreur.showSimpleErreur(Program.getError("Error053")); //"Veuillez saisir une ann&eacute;e valide!"

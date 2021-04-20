@@ -115,13 +115,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.5
- * @since 16/04/21
+ * @version 25.6
+ * @since 20/04/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.0.9.9";
+	public static final String INTERNAL_VERSION = "4.1.1.1";
 	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -827,6 +827,9 @@ public final class Program {
 
 		myCellarFile = new MyCellarFile(file);
 		myCellarFile.unzip();
+		loadProperties();
+		setProgramType(Program.Type.valueOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
+
 
 		CountryListJaxb.init();
 
@@ -836,8 +839,6 @@ public final class Program {
 			Debug("Program: ERROR Reading Objects KO");
 			throw new UnableToOpenFileException("Error while reading objects.");
 		}
-
-		loadProperties();
 
 		MyCellarBottleContenance.load();
 
@@ -855,7 +856,6 @@ public final class Program {
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN4, list.pop());
-		setProgramType(Program.Type.valueOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
 
 		putCaveConfigString(MyCellarSettings.DIR, file.getParent());
 

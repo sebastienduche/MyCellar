@@ -13,8 +13,8 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 16/04/21
+ * @version 0.3
+ * @since 20/04/21
  */
 public interface IMyCellarObject<T> {
   void setId(int id);
@@ -88,4 +88,6 @@ public interface IMyCellarObject<T> {
   void setAnnee(String value);
 
   T fromXmlElemnt(Element element);
+
+  boolean isNonVintage();
 }

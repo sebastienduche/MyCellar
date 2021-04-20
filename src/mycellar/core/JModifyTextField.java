@@ -1,12 +1,11 @@
 package mycellar.core;
 
+import mycellar.Start;
+
+import javax.swing.JTextField;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Objects;
-
-import javax.swing.JTextField;
-
-import mycellar.Start;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -14,8 +13,8 @@ import mycellar.Start;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.5
- * @since 02/09/20
+ * @version 0.6
+ * @since 20/04/21
  */
 
 public class JModifyTextField extends JTextField {
@@ -23,16 +22,16 @@ public class JModifyTextField extends JTextField {
 	private static final long serialVersionUID = 7663077125632345441L;
 
 	private boolean modified;
-	private boolean active;
+	private boolean modifyActive;
 	
-	JModifyTextField() {
+	public JModifyTextField() {
 		modified = false;
-		active = true;
+		modifyActive = true;
 		addKeyListener(new KeyListener() {
 			
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				if(active) {
+				if(modifyActive) {
     				modified = true;
     				doAfterModify();
 				}
@@ -61,11 +60,11 @@ public class JModifyTextField extends JTextField {
 	}
 	
 	public boolean isModifyActive() {
-		return active;
+		return modifyActive;
 	}
 
-	public void setModifyActive(boolean active) {
-		this.active = active;
+	public void setModifyActive(boolean modifyActive) {
+		this.modifyActive = modifyActive;
 	}
 
 	@Override

@@ -38,8 +38,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.0
- * @since 16/04/21
+ * @version 7.1
+ * @since 20/04/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -381,6 +381,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 		 return (year.compareToIgnoreCase(NON_VINTAGE) == 0);
 	 }
 
+	 @Override
 	 public boolean isNonVintage() {
 		 return isNonVintageYear(annee);
 	 }

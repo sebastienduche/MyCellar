@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static mycellar.Program.throwNotImplementedForMusic;
+import static mycellar.Program.throwNotImplementedIfNotFor;
 import static mycellar.Program.toCleanString;
 import static mycellar.core.MyCellarError.ID.CELL_FULL;
 import static mycellar.core.MyCellarError.ID.FULL_BOX;
@@ -52,8 +52,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 16/04/21
+ * @version 3.8
+ * @since 22/04/21
  */
 public final class RangementUtils {
 
@@ -134,7 +134,7 @@ public final class RangementUtils {
 	 *
 	 *  @return int
 	 */
-	public static boolean write_HTML(final File fichier, final List<? extends IMyCellarObject> bouteilles, List<MyCellarFields> fields) {
+	public static boolean write_HTML(final File fichier, final List<? extends MyCellarObject> bouteilles, List<MyCellarFields> fields) {
 
 		Debug("write_HTML: writing file: " + fichier.getAbsolutePath());
 		try{
@@ -169,8 +169,8 @@ public final class RangementUtils {
 			Element tbody = doc.createElement("tbody");
 			table.appendChild(tbody);
 
-			for (IMyCellarObject myCellarObject : bouteilles) {
-				throwNotImplementedForMusic(myCellarObject);
+			for (MyCellarObject myCellarObject : bouteilles) {
+				throwNotImplementedIfNotFor(myCellarObject, Bouteille.class);
 				Bouteille b = (Bouteille) myCellarObject;
 				Element tr = doc.createElement("tr");
 				tbody.appendChild(tr);

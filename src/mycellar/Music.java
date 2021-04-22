@@ -40,8 +40,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 20/04/21
+ * @version 0.6
+ * @since 22/04/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -506,7 +506,7 @@ public class Music extends MyCellarObject implements Serializable {
       case PARKER:
       case VINEYARD:
       case MATURITY:
-        Program.throwNotImplementedForMusic(this);
+        Program.throwNotImplementedIfNotFor(this, Bouteille.class);
 //        getTracks().setName(value);
         break;
       case DURATION:

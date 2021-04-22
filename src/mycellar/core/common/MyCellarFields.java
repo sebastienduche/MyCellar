@@ -19,8 +19,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 20/04/21
+ * @version 1.8
+ * @since 22/04/21
  */
 
 public enum MyCellarFields {
@@ -207,7 +207,7 @@ public enum MyCellarFields {
 		if (Program.isMusicType()) {
 			return FIELDS_MUSIC;
 		}
-		Program.throwNotImplementedForMusic(new Music());
+		Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
 		return null;
 	}
 
@@ -218,7 +218,7 @@ public enum MyCellarFields {
 		if (Program.isMusicType()) {
 			return FIELDSFORIMPORT_MUSIC;
 		}
-		Program.throwNotImplementedForMusic(new Music());
+		Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
 		return null;
 	}
 }

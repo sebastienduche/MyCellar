@@ -2,7 +2,6 @@ package mycellar;
 
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
@@ -54,8 +53,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.8
- * @since 16/04/21
+ * @version 9.9
+ * @since 22/04/21
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -440,12 +439,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		valider.setEnabled(true);
 	}
 
-	/**
-	 * @param bottles
-	 * @param nomFichier
-	 * @return
-	 */
-	public static boolean exportToPDF(final List<? extends IMyCellarObject> bottles, File nomFichier) {
+	public static boolean exportToPDF(final List<? extends MyCellarObject> bottles, File nomFichier) {
 		try {
 			final PDFTools pdf = new PDFTools();
 			pdf.addTitle(20);

@@ -66,8 +66,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.2
- * @since 20/04/21
+ * @version 14.3
+ * @since 22/04/21
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -605,7 +605,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 		if (Program.isMusicType()) {
 			return new Music();
 		}
-		Program.throwNotImplementedForMusic(new Music());
+		Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
 		return null;
 	}
 

@@ -25,8 +25,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.9
- * @since 09/04/21
+ * @version 5.0
+ * @since 22/04/21
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -64,7 +64,7 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public Object getValueAt(int row, int column) {
-    Program.throwNotImplementedForMusic(monVector.get(row));
+    Program.throwNotImplementedIfNotFor(monVector.get(row), Bouteille.class);
     Bouteille b = (Bouteille) monVector.get(row);
     switch (column) {
       case ETAT:
@@ -109,7 +109,7 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public void setValueAt(Object value, int row, int column) {
-    Program.throwNotImplementedForMusic(monVector.get(row));
+    Program.throwNotImplementedIfNotFor(monVector.get(row), Bouteille.class);
     Bouteille b = (Bouteille) monVector.get(row);
     switch (column) {
       case ETAT:

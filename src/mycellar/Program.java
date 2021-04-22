@@ -116,13 +116,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.6
- * @since 20/04/21
+ * @version 25.7
+ * @since 22/04/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.1.1.5";
+	public static final String INTERNAL_VERSION = "4.1.2.4";
 	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -463,7 +463,7 @@ public final class Program {
 			JOptionPane.showMessageDialog(Start.getInstance(), e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		Debug("Program: ERROR:");
-		Debug("Program: " + e.toString());
+		Debug("Program: " + e);
 		Debug("Program: " + error);
 		e.printStackTrace();
 		if (debugFile != null) {
@@ -615,8 +615,7 @@ public final class Program {
 	}
 
 	public static char getDecimalSeparator() {
-		DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
-		DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
+		DecimalFormatSymbols symbols = ((DecimalFormat)DecimalFormat.getInstance()).getDecimalFormatSymbols();
 		return symbols.getDecimalSeparator();
 	}
 
@@ -1350,12 +1349,10 @@ public final class Program {
 		return properties;
 	}
 
-	static List<PDFRow> getPDFRows(List<? extends IMyCellarObject> list, PDFProperties properties) {
+	static List<PDFRow> getPDFRows(List<? extends MyCellarObject> list, PDFProperties properties) {
 		LinkedList<PDFRow> rows = new LinkedList<>();
 		LinkedList<PDFColumn> columns = properties.getColumns();
-		for (IMyCellarObject myCellarObject : list) {
-			throwNotImplementedForMusic(myCellarObject);
-			Bouteille b = (Bouteille) myCellarObject;
+		for (MyCellarObject myCellarObject : list) {
 			PDFRow row = new PDFRow();
 			for (PDFColumn column : columns) {
 				row.addCell(MyCellarFields.getValue(column.getField(), myCellarObject));
@@ -1792,7 +1789,7 @@ public final class Program {
 		return nextID;
 	}
 
-	public static void modifyBottles(LinkedList<? extends IMyCellarObject> listToModify) {
+	public static void modifyBottles(LinkedList<? extends MyCellarObject> listToModify) {
 		if (listToModify == null || listToModify.isEmpty()) {
 			return;
 		}
@@ -1803,8 +1800,8 @@ public final class Program {
 		}
 	}
 
-	public static void showBottle(IMyCellarObject bottle, boolean edit) {
-		throwNotImplementedForMusic(bottle);
+	public static void showBottle(MyCellarObject bottle, boolean edit) {
+		throwNotImplementedIfNotFor(bottle, Bouteille.class);
 		for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
 			Component tab = TABBED_PANE.getComponentAt(i);
 			if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
@@ -1825,9 +1822,9 @@ public final class Program {
 		Start.getInstance().updateMainPanel();
 	}
 
-	public static void throwNotImplementedForMusic(IMyCellarObject myCellarObject) {
-		if (myCellarObject instanceof Music) {
-			throw new NotImplementedException("Not implemented For Music");
+	public static void throwNotImplementedIfNotFor(MyCellarObject myCellarObject, Class<?> aClass) {
+		if (!aClass.isInstance(myCellarObject)) {
+			throw new NotImplementedException("Not implemented For " + aClass);
 		}
 	}
 

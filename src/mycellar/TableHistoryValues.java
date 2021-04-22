@@ -20,8 +20,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.9
- * @since 09/04/21
+ * @version 3.0
+ * @since 22/04/21
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -204,7 +204,7 @@ class TableHistoryValues extends AbstractTableModel {
       case ACTION:
         if (Program.isWineType()) {
           History h = displayList.get(row);
-          IMyCellarObject bottle = h.getBouteille();
+          MyCellarObject bottle = h.getBouteille();
           if (h.isDeleted()) {
             Program.showBottle(bottle, false);
           } else {
@@ -215,7 +215,7 @@ class TableHistoryValues extends AbstractTableModel {
                     () -> Program.showBottle(bottle, false));
           }
         } else if (Program.isMusicType()) {
-          Program.throwNotImplementedForMusic(new Music());
+          Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
         }
         break;
       case SELECT:

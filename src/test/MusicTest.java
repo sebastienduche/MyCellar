@@ -417,7 +417,7 @@ class MusicTest {
     assertEquals(genre, musicFromXML.getGenre());
     assertEquals(status, musicFromXML.getStatus());
     assertEquals(lastModified, musicFromXML.getLastModified());
-    assertEquals(trackNumber, musicFromXML.getTracks().getTracks().get(0).getNumber());
+    assertEquals(trackNumber, (int)musicFromXML.getTracks().getTracks().get(0).getNumber());
     assertEquals(label, musicFromXML.getTracks().getTracks().get(0).getLabel());
     assertEquals(trackDuration, musicFromXML.getTracks().getTracks().get(0).getDuration());
     assertEquals(trackComnment, musicFromXML.getTracks().getTracks().get(0).getComment());

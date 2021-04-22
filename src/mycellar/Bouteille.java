@@ -8,6 +8,7 @@
 
 package mycellar;
 
+import mycellar.core.MyCellarObject;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
@@ -91,7 +92,7 @@ import java.util.stream.Collectors;
 		"lastModified"
 })
 @XmlRootElement(name = "Bouteille")
-public class Bouteille implements IMyCellarObject, Serializable {
+public class Bouteille extends MyCellarObject implements Serializable {
 
 	private static final long serialVersionUID = 7443323147347096230L;
 

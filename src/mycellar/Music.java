@@ -9,11 +9,11 @@
 package mycellar;
 
 import mycellar.core.BottlesStatus;
-import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
+import mycellar.core.common.music.MusicSupport;
 import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
-import mycellar.core.common.music.MusicSupport;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import org.w3c.dom.Element;
@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
     "tracks"
 })
 @XmlRootElement(name = "Music")
-public class Music implements IMyCellarObject<Music>, Serializable {
+public class Music extends MyCellarObject implements Serializable {
 
   private static final long serialVersionUID = 7443323147347096231L;
 
@@ -526,7 +526,7 @@ public class Music implements IMyCellarObject<Music>, Serializable {
   @Override
   public boolean updateID() {
     if (id != -1) {
-      final List<IMyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
+      final List<MyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
       if(bouteilles.size() == 1 && bouteilles.get(0).equals(this)) {
         return false;
       }

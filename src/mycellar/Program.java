@@ -13,6 +13,7 @@ import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFile;
 import mycellar.core.MyCellarLabelManagement;
+import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.UnableToOpenFileException;
@@ -148,7 +149,7 @@ public final class Program {
 	private static File debugFile = null;
 
 	private static final List<Rangement> PLACES = new LinkedList<>();
-	private static final List<IMyCellarObject> TRASH = new LinkedList<>();
+	private static final List<MyCellarObject> TRASH = new LinkedList<>();
 	private static final List<MyCellarError> ERRORS = new LinkedList<>();
 
 	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
@@ -288,11 +289,11 @@ public final class Program {
 		return getGlobalDir() + CONFIG_INI;
 	}
 
-	public static List<IMyCellarObject> getTrash() {
+	public static List<MyCellarObject> getTrash() {
 		return TRASH;
 	}
 
-	public static void setToTrash(IMyCellarObject b) {
+	public static void setToTrash(MyCellarObject b) {
 		TRASH.add(b);
 	}
 
@@ -1840,11 +1841,11 @@ public final class Program {
 		}
 	}
 
-	public static List<IMyCellarObject> getExistingBottles(List<Integer> bouteilles) {
+	public static List<MyCellarObject> getExistingBottles(List<Integer> bouteilles) {
 		return getStorage().getAllList().stream().filter(bouteille -> bouteilles.contains(bouteille.getId())).collect(Collectors.toList());
 	}
 
-	public static boolean isExistingBottle(IMyCellarObject bouteille) {
+	public static boolean isExistingBottle(MyCellarObject bouteille) {
 		return getStorage().getAllList().stream().anyMatch(bouteille1 -> bouteille1.getId() == bouteille.getId());
 	}
 

@@ -19,7 +19,7 @@ public class MyCellarError {
 
 	private final ID error;
 	private boolean status;
-	private final IMyCellarObject myCellarObject;
+	private final MyCellarObject myCellarObject;
 	private final String place;
 	private final int numLieu;
 	private boolean solved;
@@ -32,7 +32,7 @@ public class MyCellarError {
 		CELL_FULL
 	}
 	
-	public MyCellarError(ID error, IMyCellarObject myCellarObject, String place, int numLieu) {
+	public MyCellarError(ID error, MyCellarObject myCellarObject, String place, int numLieu) {
 		this.error = error;
 		this.myCellarObject = myCellarObject;
 		this.place = place;
@@ -41,7 +41,7 @@ public class MyCellarError {
 		solved = false;
 	}
 
-	public MyCellarError(ID error, IMyCellarObject myCellarObject, String place) {
+	public MyCellarError(ID error, MyCellarObject myCellarObject, String place) {
 		this.error = error;
 		this.myCellarObject = myCellarObject;
 		this.place = place;
@@ -50,7 +50,7 @@ public class MyCellarError {
 		solved = false;
 	}
 
-	public MyCellarError(ID error, IMyCellarObject myCellarObject) {
+	public MyCellarError(ID error, MyCellarObject myCellarObject) {
 		this.error = error;
 		this.myCellarObject = myCellarObject;
 		place = "";
@@ -80,7 +80,7 @@ public class MyCellarError {
 		return error;
 	}
 	
-	public IMyCellarObject getMyCellarObject() {
+	public MyCellarObject getMyCellarObject() {
 		return myCellarObject;
 	}
 	

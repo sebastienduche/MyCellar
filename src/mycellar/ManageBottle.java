@@ -1,11 +1,11 @@
 package mycellar;
 
 import mycellar.actions.OpenShowErrorsAction;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
+import mycellar.core.MyCellarObject;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.history.HistoryState;
@@ -211,7 +211,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			bottle.setLigne(0);
 			bottle.setColonne(0);
 		}	else {
-			Optional<IMyCellarObject> bottleInPlace = cave.getBouteille(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build());
+			Optional<MyCellarObject> bottleInPlace = cave.getBouteille(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build());
 			if (bottleInPlace.isPresent()) {
 				if (!askToReplaceBottle(bottleInPlace.get())) {
 					return false;
@@ -248,7 +248,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		return true;
 	}
 
-	private boolean askToReplaceBottle(IMyCellarObject bouteille) {
+	private boolean askToReplaceBottle(MyCellarObject bouteille) {
 		if (!bouteille.equals(bottle)) {
 			Debug("ERROR: Not an empty place, Replace?");
 			String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bouteille.getNom(), bouteille.getAnnee());
@@ -272,7 +272,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		Start.setPaneModified(false);
 	}
 
-	private void replaceWine(final IMyCellarObject bToDelete) {
+	private void replaceWine(final MyCellarObject bToDelete) {
 		//Change wine in a place
 		Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
 		Program.getStorage().deleteWine(bToDelete);

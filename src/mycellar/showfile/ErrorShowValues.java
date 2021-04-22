@@ -6,6 +6,7 @@ import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
+import mycellar.core.MyCellarObject;
 import mycellar.placesmanagement.Rangement;
 
 import java.text.MessageFormat;
@@ -123,7 +124,7 @@ public class ErrorShowValues extends TableShowValues {
 	public void setValueAt(Object value, int row, int column) {
 
 		MyCellarError error = errors.get(row);
-		IMyCellarObject b = error.getMyCellarObject();
+		MyCellarObject b = error.getMyCellarObject();
 		Rangement rangement;
 		switch (column) {
 			case ETAT:
@@ -222,7 +223,7 @@ public class ErrorShowValues extends TableShowValues {
 						tmpNumEmpl -= rangement.getStartCaisse();
 					}
 					if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
-						Optional<IMyCellarObject> bTemp = Optional.empty();
+						Optional<MyCellarObject> bTemp = Optional.empty();
 						if (!rangement.isCaisse()) {
 							bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
 						}
@@ -273,7 +274,7 @@ public class ErrorShowValues extends TableShowValues {
 	}
 
 	@Override
-	public IMyCellarObject getMyCellarObject(int i) {
+	public MyCellarObject getMyCellarObject(int i) {
 		return errors.get(i).getMyCellarObject();
 	}
 

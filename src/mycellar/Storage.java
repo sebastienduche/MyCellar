@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.history.HistoryState;
@@ -25,11 +25,11 @@ public interface Storage {
 	void addBouteilles(ListeBouteille listBouteilles);
 	ListeBouteille getListBouteilles();
 	LinkedList<String> getBottleNames();
-	void addHistory(HistoryState historyState, IMyCellarObject myCellarObject);
-	void addToWorksheet(IMyCellarObject myCellarObject);
+	void addHistory(HistoryState historyState, MyCellarObject myCellarObject);
+	void addToWorksheet(MyCellarObject myCellarObject);
 
 	void removeHistory(History oB);
-	void removeFromWorksheet(IMyCellarObject myCellarObject);
+	void removeFromWorksheet(MyCellarObject myCellarObject);
 	void clearHistory(HistoryState historyState);
 	void clearWorksheet();
 	void saveHistory();
@@ -38,12 +38,12 @@ public interface Storage {
 	void loadWorksheet();
 	HistoryList getHistoryList();
 	WorkSheetList getWorksheetList();
-	boolean deleteWine(IMyCellarObject myCellarObject);
+	boolean deleteWine(MyCellarObject myCellarObject);
 
-	boolean addWine(IMyCellarObject myCellarObject);
+	boolean addWine(MyCellarObject myCellarObject);
 	int getBottlesCount();
 
-	List<? extends IMyCellarObject> getAllList();
-	boolean add(IMyCellarObject myCellarObject);
+	List<? extends MyCellarObject> getAllList();
+	boolean add(MyCellarObject myCellarObject);
 	void close();
 }

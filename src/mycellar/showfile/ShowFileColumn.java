@@ -2,6 +2,7 @@ package mycellar.showfile;
 
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
 
 import java.util.HashMap;
@@ -99,14 +100,14 @@ abstract class ShowFileColumn<T> {
 		this.editable = editable;
 	}
 
-	void setValue(IMyCellarObject b, Object value) {
+	void setValue(MyCellarObject b, Object value) {
 		if (value instanceof String) {
 			b.setValue(field, (String) value);
 			Program.setModified();
 			b.updateStatus();
 		}
 	}
-	abstract Object getDisplayValue(IMyCellarObject b);
+	abstract Object getDisplayValue(MyCellarObject b);
 
 	boolean isButton() {
 		return type == Type.BUTTON;
@@ -132,11 +133,11 @@ abstract class ShowFileColumn<T> {
 		this.buttonLabel = buttonLabel;
 	}
 
-	public boolean execute(IMyCellarObject b, int row, int column) {
+	public boolean execute(MyCellarObject b, int row, int column) {
 		return true;
 	}
 
-	T getMapValue(IMyCellarObject b) {
+	T getMapValue(MyCellarObject b) {
 		if (value.containsKey(b.getId())) {
 			return value.get(b.getId());
 		}

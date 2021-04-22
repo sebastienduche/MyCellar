@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
+import mycellar.core.MyCellarObject;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Rangement;
 import org.w3c.dom.Element;
@@ -256,7 +257,7 @@ public class MyXmlDom {
 							if(preview) {
 								vin_name.setTextContent(Program.getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
 							}else {
-    							Optional<IMyCellarObject> b = rangement.getBouteille(i, j, k);
+    							Optional<MyCellarObject> b = rangement.getBouteille(i, j, k);
     							if(b.isPresent())
     								vin_name.setTextContent(b.get().getNom());
     							else

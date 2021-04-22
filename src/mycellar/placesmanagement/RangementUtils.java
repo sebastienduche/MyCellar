@@ -1,13 +1,14 @@
 package mycellar.placesmanagement;
 
-import mycellar.core.common.bottle.BottleColor;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
-import mycellar.core.common.MyCellarFields;
+import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
+import mycellar.core.common.MyCellarFields;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -506,7 +507,7 @@ public final class RangementUtils {
 							}
 							final SXSSFRow rowBottle = sheet.createRow(nLine);
 							for (int l = 1; l <= nCol; l++) {
-								final Optional<IMyCellarObject> b = place.getBouteille(j - 1, k - 1, l - 1);
+								final Optional<MyCellarObject> b = place.getBouteille(j - 1, k - 1, l - 1);
 								int finalL = l;
 								b.ifPresent(bouteille -> {
 									final Cell cellBottle = rowBottle.createCell(finalL);
@@ -641,7 +642,7 @@ public final class RangementUtils {
 					Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement()));
 					continue;
 				}
-				Optional<IMyCellarObject> bottle;
+				Optional<MyCellarObject> bottle;
 				if (!rangement.isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
 					// Cellule inexistante
 					Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());

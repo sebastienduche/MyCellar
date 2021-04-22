@@ -3,7 +3,6 @@ package mycellar.core;
 import mycellar.core.common.MyCellarFields;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
-import org.w3c.dom.Element;
 
 import java.math.BigDecimal;
 
@@ -16,7 +15,7 @@ import java.math.BigDecimal;
  * @version 0.3
  * @since 20/04/21
  */
-public interface IMyCellarObject<T> {
+public interface IMyCellarObject {
   void setId(int id);
 
   int getId();
@@ -86,8 +85,6 @@ public interface IMyCellarObject<T> {
   void setType(String value);
 
   void setAnnee(String value);
-
-  T fromXmlElemnt(Element element);
 
   boolean isNonVintage();
 }

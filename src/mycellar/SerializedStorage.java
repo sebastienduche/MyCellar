@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
@@ -59,7 +59,7 @@ public class SerializedStorage implements Storage {
 		if (this.listBouteilles.bouteille == null) {
 			this.listBouteilles.bouteille = new LinkedList<>();
 		}
-		for (IMyCellarObject b : this.listBouteilles.bouteille) {
+		for (MyCellarObject b : this.listBouteilles.bouteille) {
 			if (!listeUniqueBouteille.contains(b.getNom())) {
 				listeUniqueBouteille.add(b.getNom());
 			}
@@ -74,7 +74,7 @@ public class SerializedStorage implements Storage {
 	public void addBouteilles(ListeBouteille listBouteilles) {
 		this.listBouteilles.getBouteille().addAll(listBouteilles.getBouteille());
 		bottleCount = listBouteilles.getBouteille().size();
-		for (IMyCellarObject myCellarObject : listBouteilles.bouteille) {
+		for (MyCellarObject myCellarObject : listBouteilles.bouteille) {
 			if (Program.isWineType()) {
 				final List<History> theBottle = HISTORY_LIST.getHistory().stream().filter(history -> history.getBouteille().getId() == myCellarObject.getId()).collect(Collectors.toList());
 				if (myCellarObject.updateID() && !theBottle.isEmpty()) {
@@ -105,21 +105,21 @@ public class SerializedStorage implements Storage {
 
 
 	@Override
-	public void addHistory(HistoryState type, IMyCellarObject myCellarObject) {
+	public void addHistory(HistoryState type, MyCellarObject myCellarObject) {
 		historyModified = true;
 		Program.setModified();
 		HISTORY_LIST.add(new History(myCellarObject, type.ordinal(), getBottleCount()));
 	}
 
 	@Override
-	public void addToWorksheet(IMyCellarObject myCellarObject) {
+	public void addToWorksheet(MyCellarObject myCellarObject) {
 		worksheetModified = true;
 		Program.setModified();
 		WORKSHEET_LIST.add(new WorkSheetData(myCellarObject));
 	}
 
 	@Override
-	public void removeFromWorksheet(IMyCellarObject myCellarObject) {
+	public void removeFromWorksheet(MyCellarObject myCellarObject) {
 		worksheetModified = true;
 		Program.setModified();
 		final List<WorkSheetData> collect = WORKSHEET_LIST.getWorsheet()
@@ -186,7 +186,7 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public boolean deleteWine(IMyCellarObject myCellarObject) {
+	public boolean deleteWine(MyCellarObject myCellarObject) {
 
 		final String nom = myCellarObject.getNom();
 		final String annee = myCellarObject.getAnnee();
@@ -198,7 +198,7 @@ public class SerializedStorage implements Storage {
 		Debug("DeleteWine: Trying deleting myCellarObject " + nom.strip() + " " + annee + " " + emplacement.strip() + " " + numLieu + " " + ligne + " " + colonne);
 		Rangement rangement = myCellarObject.getRangement();
 		boolean isCaisse = rangement == null || rangement.isCaisse();
-		final List<IMyCellarObject> resultBouteilles = listBouteilles.getBouteille().stream()
+		final List<MyCellarObject> resultBouteilles = listBouteilles.getBouteille().stream()
 				.filter(
 						bouteille -> emplacement.equals(bouteille.getEmplacement())
 								&& nom.equals(bouteille.getNom())
@@ -209,7 +209,7 @@ public class SerializedStorage implements Storage {
 			return false;
 		}
 		Program.setModified();
-		final IMyCellarObject bouteille = resultBouteilles.get(0);
+		final MyCellarObject bouteille = resultBouteilles.get(0);
 		Debug("DeleteWine: Deleted bottle " + bouteille);
 		listBouteilles.getBouteille().remove(bouteille);
 		bottleCount--;
@@ -217,7 +217,7 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public boolean addWine(IMyCellarObject myCellarObject) {
+	public boolean addWine(MyCellarObject myCellarObject) {
 		if (null == myCellarObject) {
 			return false;
 		}
@@ -244,7 +244,7 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public List<? extends IMyCellarObject> getAllList() {
+	public List<? extends MyCellarObject> getAllList() {
 		if (!listBouteilles.getMusic().isEmpty()) {
 			return listBouteilles.getMusic();
 		}
@@ -252,7 +252,7 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public boolean add(IMyCellarObject myCellarObject) {
+	public boolean add(MyCellarObject myCellarObject) {
 		if (myCellarObject instanceof Bouteille) {
 			return listBouteilles.getBouteille().add((Bouteille) myCellarObject);
 		} else if (myCellarObject instanceof Music) {

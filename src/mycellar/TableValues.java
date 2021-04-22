@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 import mycellar.core.LabelProperty;
 
 import javax.swing.table.AbstractTableModel;
@@ -29,7 +29,7 @@ class TableValues extends AbstractTableModel {
 			getLabel("Infos082"), getLabel("Infos028"), getLabel("Infos083"), "");
 
 	private final List<Boolean> listBoolean = new LinkedList<>();
-	private final List<IMyCellarObject> datas = new LinkedList<>();
+	private final List<MyCellarObject> datas = new LinkedList<>();
 
 	/**
 	 * getRowCount
@@ -71,7 +71,7 @@ class TableValues extends AbstractTableModel {
 			Program.Debug("TableValues: Error listBoolean index " + row + " > " + datas.size());
 			return "";
 		}
-		final IMyCellarObject myCellarObject = datas.get(row);
+		final MyCellarObject myCellarObject = datas.get(row);
 		switch(column)
 		{
 			case ETAT:
@@ -133,7 +133,7 @@ class TableValues extends AbstractTableModel {
 	public void setValueAt(Object value, int row, int column) {
 		switch (column) {
 			case SHOW:
-				IMyCellarObject bottle = datas.get(row);
+				MyCellarObject bottle = datas.get(row);
 				Program.showBottle(bottle, true);
 				break;
 			case ETAT:
@@ -147,7 +147,7 @@ class TableValues extends AbstractTableModel {
 	 *
 	 * @param b Bouteille
 	 */
-	void addBouteille(IMyCellarObject b) {
+	void addBouteille(MyCellarObject b) {
 		if(b != null) {
 			datas.add(b);
 			listBoolean.add(Boolean.FALSE);
@@ -167,9 +167,9 @@ class TableValues extends AbstractTableModel {
 	/**
 	 * removeBouteille: Suppression d'une bouteille.
 	 *
-	 * @param bouteille IMyCellarObject
+	 * @param bouteille MyCellarObject
 	 */
-	void removeBouteille(IMyCellarObject bouteille) {
+	void removeBouteille(MyCellarObject bouteille) {
 		int index = datas.indexOf(bouteille);
 		if(index != -1) {
 			datas.remove(bouteille);
@@ -178,11 +178,11 @@ class TableValues extends AbstractTableModel {
 		}
 	}
 
-	public List<IMyCellarObject> getDatas() {
+	public List<MyCellarObject> getDatas() {
 		return datas;
 	}
 	
-	boolean hasNotBottle(IMyCellarObject b) {
+	boolean hasNotBottle(MyCellarObject b) {
 		return !datas.contains(b);
 	}
 

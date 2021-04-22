@@ -10,6 +10,7 @@ import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarManageBottles;
+import mycellar.core.MyCellarObject;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.history.HistoryState;
@@ -487,7 +488,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 					int colonne = place.getColumn();
 
 					int nb_free_space = 0;
-					Optional<IMyCellarObject> bouteille = Optional.empty();
+					Optional<MyCellarObject> bouteille = Optional.empty();
 					if (m_bmodify && !panelPlace.isPlaceModified()) { //Si aucune modification du Lieu
 						lieu_num_selected = m_nb_num;
 						ligne = m_nb_lig;
@@ -580,7 +581,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 						m_bbottle_add = true;
 					}	else { // La case n'est pas vide
 						Debug("WARNING: Not an empty place, Replace?");
-						final IMyCellarObject bouteille1 = bouteille.get();
+						final MyCellarObject bouteille1 = bouteille.get();
 						String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), bouteille1.getNom(), bouteille1.getAnnee()); //" deja present a cette place!");
 						String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
 						if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
@@ -706,7 +707,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		return m_bbottle_add;
 	}
 
-	private void replaceWine(final IMyCellarObject newBottle, boolean modify, final IMyCellarObject bToDelete) {
+	private void replaceWine(final MyCellarObject newBottle, boolean modify, final MyCellarObject bToDelete) {
 		Debug("replaceWine...");
 		//Change wine in a place
 		Program.getStorage().addHistory(modify ? HistoryState.MODIFY : HistoryState.ADD, newBottle);

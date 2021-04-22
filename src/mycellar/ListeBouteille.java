@@ -8,7 +8,7 @@
 
 package mycellar;
 
-import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -206,7 +206,7 @@ public class ListeBouteille {
 		Program.Debug("ListeBouteille: " + sText);
 	}
 
-	public void add(IMyCellarObject<?> myCellarObject) {
+	public void add(MyCellarObject myCellarObject) {
 		if (myCellarObject instanceof Bouteille) {
 			getBouteille().add((Bouteille) myCellarObject);
 		} else if (myCellarObject instanceof Music) {

@@ -2,7 +2,7 @@ package mycellar;
 
 import mycellar.core.DateCellRenderer;
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
@@ -150,7 +150,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			LinkedList<IMyCellarObject> toRestoreList = new LinkedList<>();
+			LinkedList<MyCellarObject> toRestoreList = new LinkedList<>();
 
 			boolean nonExit = false;
 
@@ -187,8 +187,8 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 				}
 				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-					LinkedList<IMyCellarObject> cantRestoreList = new LinkedList<>();
-					for (IMyCellarObject b : toRestoreList) {
+					LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
+					for (MyCellarObject b : toRestoreList) {
 						if (b.isInExistingPlace()) {
 							Rangement r = b.getRangement();
 							if (r.isCaisse()) {

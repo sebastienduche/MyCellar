@@ -1,13 +1,13 @@
 package mycellar;
 
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
@@ -484,10 +484,10 @@ final class RangementCell extends JPanel {
 final class BouteilleLabel extends JPanel {
 
 	private static final long serialVersionUID = -3982812616929975895L;
-	private IMyCellarObject bouteille;
+	private MyCellarObject bouteille;
 	private final MyCellarLabel label = new MyCellarLabel();
 
-	BouteilleLabel(final IMyCellarObject bouteille) {
+	BouteilleLabel(final MyCellarObject bouteille) {
 		super();
 		this.bouteille = bouteille;
 		int width = 100;
@@ -535,7 +535,7 @@ final class BouteilleLabel extends JPanel {
 		return label.getIcon();
 	}
 
-	public IMyCellarObject getBouteille() {
+	public MyCellarObject getBouteille() {
 		return bouteille;
 	}
 
@@ -660,7 +660,7 @@ class LabelTransferHandler extends TransferHandler {
 		try {
 			final RangementCell src = (RangementCell)support.getTransferable().getTransferData(localObjectFlavor);
 			final BouteilleLabel bouteilleLabel = new BouteilleLabel(src.draggingLabel.getBouteille());
-			final IMyCellarObject bouteille = bouteilleLabel.getBouteille();
+			final MyCellarObject bouteille = bouteilleLabel.getBouteille();
 			bouteille.setLigne(target.getRow());
 			bouteille.setColonne(target.getColumn());
 			bouteille.setNumLieu(target.getPlaceNum());

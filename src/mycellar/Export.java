@@ -6,12 +6,13 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
-import mycellar.core.common.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarMenuItem;
+import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.core.common.MyCellarFields;
 import mycellar.pdf.PDFPageProperties;
 import mycellar.pdf.PDFTools;
 import mycellar.placesmanagement.RangementUtils;
@@ -74,7 +75,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	private static final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private static final char EXPORT = Program.getLabel("EXPORT").charAt(0);
 	private final JMenuItem param = new MyCellarMenuItem(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
-	private final List<? extends IMyCellarObject> bottles;
+	private final List<? extends MyCellarObject> bottles;
 	static final long serialVersionUID = 240706;
 
 	/**
@@ -95,7 +96,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	 *
 	 * @param bottles LinkedList<>: Bottles to export
 	 */
-	public Export(final List<IMyCellarObject> bottles) {
+	public Export(final List<MyCellarObject> bottles) {
 		this.bottles = bottles;
 		try {
 			initialize();
@@ -360,7 +361,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			}
 
 			ListeBouteille liste = new ListeBouteille();
-			bottles.forEach(bouteille -> liste.add(bouteille));
+			bottles.forEach(liste::add);
 			boolean ok = ListeBouteille.writeXML(liste, aFile);
 			if (ok) {
 				end.setText(Program.getLabel("Infos154")); //"Export termine."

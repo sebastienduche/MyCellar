@@ -7,13 +7,13 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.TabEvent;
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.HistoryState;
 import net.miginfocom.swing.MigLayout;
 
@@ -225,8 +225,8 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 							//Suppression des bouteilles presentes dans le rangement
 							String tmp_nom = cave.getNom();
 
-							List<IMyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
-							for (IMyCellarObject b : bottleList) {
+							List<MyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
+							for (MyCellarObject b : bottleList) {
 								getStorage().addHistory(HistoryState.DEL, b);
 								getStorage().deleteWine(b);
 								setToTrash(b);

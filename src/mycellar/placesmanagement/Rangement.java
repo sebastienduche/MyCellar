@@ -2,7 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,10 +28,10 @@ public class Rangement implements Comparable<Rangement> {
 	private int stock_nblign; //Nombre max de lignes pour tous les emplacements
 	private boolean caisse; //Indique si le rangement est une caisse
 	private int start_caisse; //Indique l'indice de démarrage des caisses
-	private IMyCellarObject[][][] stockage; //Stocke les vins du rangement: stockage[nb_emplacements][stock_nblign][stock_nbcol]
+	private MyCellarObject[][][] stockage; //Stocke les vins du rangement: stockage[nb_emplacements][stock_nblign][stock_nbcol]
 	private boolean limited; //Indique si une limite de caisse est activée
 	private List<Part> listePartie = null;
-	private Map<Integer, ArrayList<IMyCellarObject>> storageCaisse;
+	private Map<Integer, ArrayList<MyCellarObject>> storageCaisse;
 
 	/**
 	 * Rangement: Constructeur de création d'un rangement de type Armoire
@@ -373,7 +373,7 @@ public class Rangement implements Comparable<Rangement> {
 	 *
 	 * @return int
 	 */
-	public boolean addWine(IMyCellarObject wine) {
+	public boolean addWine(MyCellarObject wine) {
 		if (wine.hasNoStatus()) {
 			wine.setCreated();
 		}
@@ -402,7 +402,7 @@ public class Rangement implements Comparable<Rangement> {
 	 *
 	 * @return int
 	 */
-	private boolean putWineCaisse(IMyCellarObject wine) {
+	private boolean putWineCaisse(MyCellarObject wine) {
 		int num_empl = wine.getNumLieu();
 		wine.setLigne(0);
 		wine.setColonne(0);
@@ -429,7 +429,7 @@ public class Rangement implements Comparable<Rangement> {
 	 *
 	 * @param wine Bouteille: Bouteille à ajouter
 	 */
-	private boolean putWineStandard(IMyCellarObject wine) {
+	private boolean putWineStandard(MyCellarObject wine) {
 		Debug("putWineStandard: " + wine.getNom() + " " + wine.getEmplacement() + " " + wine.getNumLieu() + " " + wine.getLigne() + " " + wine.getColonne());
 
 		int num_empl = wine.getNumLieu();
@@ -451,7 +451,7 @@ public class Rangement implements Comparable<Rangement> {
 	 *
 	 * @param wine Bouteille: Bouteille à changer
 	 */
-	public void updateToStock(IMyCellarObject wine) {
+	public void updateToStock(MyCellarObject wine) {
 		if (isCaisse()) {
 			storageCaisse.get(wine.getNumLieu()).add(wine);
 			return;
@@ -474,14 +474,14 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param bottle Bouteille: Bouteille à déplacer
 	 * @param nNewLine int: nouveau numéro de ligne
 	 */
-	public void moveLineWine(IMyCellarObject bottle, int nNewLine) {
+	public void moveLineWine(MyCellarObject bottle, int nNewLine) {
 		Program.getStorage().deleteWine(bottle);
 		clearStock(bottle);
 		bottle.setLigne(nNewLine);
 		addWine(bottle);
 	}
 
-	public Optional<IMyCellarObject> getBouteille(final IMyCellarObject tempBouteille) {
+	public Optional<MyCellarObject> getBouteille(final MyCellarObject tempBouteille) {
 		return getBouteille(tempBouteille.getNumLieu() - 1, tempBouteille.getLigne() - 1, tempBouteille.getColonne() - 1);
 	}
 
@@ -493,13 +493,13 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param column int: numéro de colonne (0...n)
 	 * @return Bouteille
 	 */
-	public Optional<IMyCellarObject> getBouteille(int num_empl, int line, int column) {
+	public Optional<MyCellarObject> getBouteille(int num_empl, int line, int column) {
 		if (isCaisse()) {
 			Debug("ERROR: Function getBouteille can't be called on a simple place!");
 			return Optional.empty();
 		}
 		try {
-			final IMyCellarObject bouteille = stockage[num_empl][line][column];
+			final MyCellarObject bouteille = stockage[num_empl][line][column];
 			return Optional.ofNullable(bouteille);
 		}
 		catch (Exception e) {
@@ -508,7 +508,7 @@ public class Rangement implements Comparable<Rangement> {
 		return Optional.empty();
 	}
 
-	public Optional<IMyCellarObject> getBouteille(Place place) {
+	public Optional<MyCellarObject> getBouteille(Place place) {
 		return getBouteille(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
 	}
 
@@ -517,7 +517,7 @@ public class Rangement implements Comparable<Rangement> {
 	 *
 	 * @param bottle Bouteille
 	 */
-	public void clearStock(IMyCellarObject bottle) {
+	public void clearStock(MyCellarObject bottle) {
 		if (isCaisse()) {
 			storageCaisse.get(bottle.getNumLieu()).remove(bottle);
 		} else {
@@ -547,7 +547,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @param index int: index de la bouteille (0...n)
 	 * @return Bouteille
 	 */
-	public IMyCellarObject getBouteilleCaisseAt(int num_empl, int index) {
+	public MyCellarObject getBouteilleCaisseAt(int num_empl, int index) {
 		try {
 			return storageCaisse.get(num_empl + start_caisse).get(index);
 		} catch (Exception e) {
@@ -624,7 +624,7 @@ public class Rangement implements Comparable<Rangement> {
 		return sText.toString();
 	}
 
-	public boolean canAddBottle(IMyCellarObject b) {
+	public boolean canAddBottle(MyCellarObject b) {
 		if (isCaisse()) {
 			return canAddBottle(b.getNumLieu() - start_caisse, 0, 0);
 		}

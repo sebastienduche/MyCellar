@@ -6,6 +6,7 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
+import mycellar.core.MyCellarObject;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 
@@ -49,7 +50,7 @@ class TableShowValues extends AbstractTableModel {
 
   protected Boolean[] values = null;
 
-  List<? extends IMyCellarObject> monVector = new LinkedList<>();
+  List<? extends MyCellarObject> monVector = new LinkedList<>();
 
   @Override
   public int getRowCount() {
@@ -201,7 +202,7 @@ class TableShowValues extends AbstractTableModel {
             tmpNumEmpl -= rangement.getStartCaisse();
           }
           if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
-            Optional<IMyCellarObject> bTemp = Optional.empty();
+            Optional<MyCellarObject> bTemp = Optional.empty();
             if (!rangement.isCaisse()) {
               bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
             }
@@ -246,7 +247,7 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  public void setBottles(List<? extends IMyCellarObject> b) {
+  public void setBottles(List<? extends MyCellarObject> b) {
     if (b == null) {
       return;
     }
@@ -261,7 +262,7 @@ class TableShowValues extends AbstractTableModel {
   /**
    * getBouteille: Récupération d'une bouteille.
    */
-  public IMyCellarObject getMyCellarObject(int i) {
+  public MyCellarObject getMyCellarObject(int i) {
     return monVector.get(i);
   }
 

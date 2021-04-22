@@ -1,6 +1,7 @@
 package mycellar.showfile;
 
 import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class ShowFileModel extends TableShowValues {
 
 	private static final long serialVersionUID = -3120339216315975530L;
 
-	private List<ShowFileColumn<?>> list = new ArrayList<>();
+	private List<ShowFileColumn> list = new ArrayList<>();
 
 	@Override
 	public int getColumnCount() {
@@ -30,11 +31,11 @@ public class ShowFileModel extends TableShowValues {
 	@Override
 	public Object getValueAt(int row, int column) {
 		if(row < monVector.size()) {
-			final ShowFileColumn<?> showFileColumn = list.get(column);
+			final ShowFileColumn showFileColumn = list.get(column);
 			if (showFileColumn.isButton()) {
 				return Boolean.TRUE;
 			}
-			IMyCellarObject b = monVector.get(row);
+			MyCellarObject b = monVector.get(row);
 			return showFileColumn.getDisplayValue(b);
 		}
 		return null;
@@ -42,7 +43,7 @@ public class ShowFileModel extends TableShowValues {
 
 	@Override
 	public void setValueAt(Object value, int row, int column) {
-		IMyCellarObject b = monVector.get(row);
+		MyCellarObject b = monVector.get(row);
 		if (!list.get(column).execute(b, row, column)) {
 			fireTableRowsUpdated(row, row);
 			return;
@@ -70,7 +71,7 @@ public class ShowFileModel extends TableShowValues {
 	 */
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		ShowFileColumn<?> col = list.get(column);
+		ShowFileColumn col = list.get(column);
 		if(col.getField() == MyCellarFields.LINE
 			|| col.getField() == MyCellarFields.COLUMN) {
 			IMyCellarObject b = monVector.get(row);
@@ -84,12 +85,12 @@ public class ShowFileModel extends TableShowValues {
 		fireTableStructureChanged();
 	}
 	
-	public void setColumns(List<ShowFileColumn<?>> cols) {
+	public void setColumns(List<ShowFileColumn> cols) {
 		list = cols;
 		fireTableStructureChanged();
 	}
 
-	public List<ShowFileColumn<?>> getColumns() {
+	public List<ShowFileColumn> getColumns() {
 		return list;
 	}
 }

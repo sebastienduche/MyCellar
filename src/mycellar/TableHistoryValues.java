@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 
 import javax.swing.table.AbstractTableModel;
@@ -292,7 +293,7 @@ class TableHistoryValues extends AbstractTableModel {
     }
   }
 
-  IMyCellarObject getObject(int row) {
+  MyCellarObject getObject(int row) {
     if (Program.isMusicType()) {
       return displayList.get(row).getMusic();
     }

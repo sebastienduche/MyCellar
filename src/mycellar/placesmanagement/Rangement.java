@@ -17,8 +17,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 27.9
- * @since 09/04/21
+ * @version 28.0
+ * @since 21/04/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -667,16 +667,8 @@ public class Rangement implements Comparable<Rangement> {
 		return numPlace < start_caisse || numPlace >= getNbEmplacements() + start_caisse;
 	}
 
-
-	/**
-	 * HasFreeSpaceInCaisse Indique si l'on peut encore ajouter des
-	 * bouteilles dans une caisse
-	 *
-	 * @param _nEmpl (0...n)
-	 * @return
-	 */
 	@Deprecated
-	public boolean hasFreeSpaceInCaisse(int _nEmpl) {
+	private boolean hasFreeSpaceInCaisse(int _nEmpl) {
 		if (!isCaisse()) {
 			return false;
 		}
@@ -684,6 +676,10 @@ public class Rangement implements Comparable<Rangement> {
 		return !isLimited() || getNbCaseUse(_nEmpl) != getNbColonnesStock();
 	}
 
+	/**
+	 * HasFreeSpaceInCaisse Indique si l'on peut encore ajouter des
+	 * bouteilles dans une caisse
+	 */
 	public boolean hasFreeSpaceInCaisse(Place place) {
 		return isCaisse() && (!isLimited() || getNbCaseUseCaisse(place.getPlaceNum()) != getNbColonnesStock());
 

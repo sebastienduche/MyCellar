@@ -1,7 +1,6 @@
 package mycellar.core;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -9,8 +8,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 31/08/20
+ * @version 0.8
+ * @since 21/04/21
  */
 
 public class MyLinkedHashMap extends LinkedHashMap<String,Object> {

@@ -15,8 +15,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 16/04/21
+ * @version 0.8
+ * @since 21/04/21
  */
 
 public class ManageColumnModel extends DefaultTableModel {
@@ -33,7 +33,7 @@ public class ManageColumnModel extends DefaultTableModel {
 		Arrays.fill(values, Boolean.FALSE);
 		for(Object c : cols) {
 			if(c instanceof ShowFileColumn) {
-				final int index = list.indexOf(((ShowFileColumn) c).getField());
+				final int index = list.indexOf(((ShowFileColumn<?>) c).getField());
 				if (index != -1) {
 					values[index] = Boolean.TRUE;
 				}

@@ -2,7 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Erreur;
 import mycellar.ITabListener;
-import mycellar.MyXmlDom;
+import mycellar.general.XmlUtils;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.TabEvent;
@@ -257,7 +257,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 				preview.setEnabled(false);
 				return;
 			}
-			MyXmlDom.writeRangements("", List.of((Rangement) Objects.requireNonNull(choix.getSelectedItem())), false);
+			XmlUtils.writeRangements("", List.of((Rangement) Objects.requireNonNull(choix.getSelectedItem())), false);
 			open(new File(getPreviewXMLFileName()));
 		}	catch (Exception exc) {
 			showException(exc);

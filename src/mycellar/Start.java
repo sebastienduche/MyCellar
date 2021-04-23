@@ -18,6 +18,7 @@ import mycellar.core.MyCellarVersion;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.core.UnableToOpenMyCellarFileException;
 import mycellar.core.common.music.MusicSupport;
+import mycellar.general.XmlUtils;
 import mycellar.launcher.Server;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Rangement;
@@ -441,8 +442,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			}
 			File f = new File(fic);
 			LinkedList<Rangement> cave = new LinkedList<>();
-			if (f.exists() && MyXmlDom.readMyCellarXml(fic, cave)) {
-				MyXmlDom.writeMyCellarXml(cave, "");
+			if (f.exists() && XmlUtils.readMyCellarXml(fic, cave)) {
+				XmlUtils.writeMyCellarXml(cave, "");
 				Program.loadObjects();
 			}
 		}
@@ -575,7 +576,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			File nomFichier = boiteFichier.getSelectedFile();
 			String fic = nomFichier.getAbsolutePath();
 			fic = MyCellarControl.controlAndUpdateExtension(fic, ".xml");
-			MyXmlDom.writeMyCellarXml(Program.getCave(), fic);
+			XmlUtils.writeMyCellarXml(Program.getCave(), fic);
 		}
 	}
 

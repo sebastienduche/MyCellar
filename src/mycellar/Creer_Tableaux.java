@@ -11,6 +11,7 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.xls.XLSTabOptions;
@@ -279,10 +280,10 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 			// Export XML
 			if (type_XML.isSelected()) {
 				Debug("Exporting in XML in progress...");
-				MyXmlDom.writeRangements(nom, rangements, false);
+				XmlUtils.writeRangements(nom, rangements, false);
 			} else if (type_HTML.isSelected()) {
 				Debug("Exporting in HTML in progress...");
-				MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
+				XmlUtils.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
 
 				TransformerFactory tFactory = TransformerFactory.newInstance();
 

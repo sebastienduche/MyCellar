@@ -5,6 +5,7 @@ import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
+import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
@@ -178,7 +179,7 @@ final class PanelStats extends JPanel {
 			if (column == 2) {
 				Rangement rangement = names.get(row);
 				RangementUtils.putTabStock();
-				MyXmlDom.writeRangements("", List.of(rangement), false);
+				XmlUtils.writeRangements("", List.of(rangement), false);
 				Program.open(new File(Program.getPreviewXMLFileName()));
 			}
 		}

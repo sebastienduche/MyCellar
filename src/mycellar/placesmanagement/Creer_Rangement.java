@@ -4,7 +4,7 @@ import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarImage;
-import mycellar.MyXmlDom;
+import mycellar.general.XmlUtils;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.TabEvent;
@@ -668,7 +668,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 			}
 
 			// Creation du rangement
-			MyXmlDom.writeRangements("", List.of(new Rangement(nom, listPart)), true);
+			XmlUtils.writeRangements("", List.of(new Rangement(nom, listPart)), true);
 			Program.open(new File(Program.getPreviewXMLFileName()));
 		}
 	}

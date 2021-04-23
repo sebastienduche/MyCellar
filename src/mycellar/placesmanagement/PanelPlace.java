@@ -2,7 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.MyCellarControl;
-import mycellar.MyXmlDom;
+import mycellar.general.XmlUtils;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IPlace;
@@ -291,7 +291,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   private void preview_actionPerformed(ActionEvent e) {
     Debug("Previewing...");
     RangementUtils.putTabStock();
-    MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
+    XmlUtils.writeRangements(Program.getPreviewXMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
     Program.open(new File(Program.getPreviewXMLFileName()));
     Debug("Previewing... End");
   }

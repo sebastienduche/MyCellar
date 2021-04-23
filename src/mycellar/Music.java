@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static mycellar.general.XmlUtils.getTextContent;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -660,17 +662,6 @@ public class Music extends MyCellarObject implements Serializable {
         .rating(rating)
         .file(file)
         .build();
-  }
-
-  private String getTextContent(NodeList nodeList) {
-    return getTextContent(nodeList, "");
-  }
-
-  private String getTextContent(NodeList nodeList, String defaultValue) {
-    if (nodeList.getLength() > 0) {
-      return nodeList.item(0).getTextContent();
-    }
-    return defaultValue;
   }
 
   /**

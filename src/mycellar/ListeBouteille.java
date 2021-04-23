@@ -9,6 +9,7 @@
 package mycellar;
 
 import mycellar.core.MyCellarObject;
+import mycellar.general.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -186,15 +187,15 @@ public class ListeBouteille {
 	}
 
 	static boolean writeXML() {
-		return MyXmlDom.writeXML(Program.getStorage().getListBouteilles(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
+		return XmlUtils.writeXML(Program.getStorage().getListBouteilles(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
 	}
 
 	static boolean writeXML(File f) {
-		return MyXmlDom.writeXML(Program.getStorage().getListBouteilles(), f, ObjectFactory.class);
+		return XmlUtils.writeXML(Program.getStorage().getListBouteilles(), f, ObjectFactory.class);
 	}
 
 	static boolean writeXML(ListeBouteille liste, File f) {
-		return MyXmlDom.writeXML(liste, f, ObjectFactory.class);
+		return XmlUtils.writeXML(liste, f, ObjectFactory.class);
 	}
 
 	/**

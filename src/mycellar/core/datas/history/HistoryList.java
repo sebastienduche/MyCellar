@@ -10,7 +10,7 @@ package mycellar.core.datas.history;
 
 import mycellar.Bouteille;
 import mycellar.Music;
-import mycellar.MyXmlDom;
+import mycellar.general.XmlUtils;
 import mycellar.Program;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -193,7 +193,7 @@ public class HistoryList {
   }
 
   public static void writeXML(File f) {
-    MyXmlDom.writeXML(Program.getHistoryList(), f, HistoryFactory.class);
+    XmlUtils.writeXML(Program.getHistoryList(), f, HistoryFactory.class);
   }
 
   /**

@@ -27,6 +27,7 @@ import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
+import mycellar.general.XmlUtils;
 import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
@@ -122,7 +123,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.1.3.9";
+	public static final String INTERNAL_VERSION = "4.1.4.0";
 	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -517,7 +518,7 @@ public final class Program {
 		ERRORS.add(error);
 	}
 
-	static String convertToHTMLString(String s) {
+	public static String convertToHTMLString(String s) {
 		return StringEscapeUtils.escapeHtml4(s);
 	}
 
@@ -544,7 +545,7 @@ public final class Program {
 	 */
 	static boolean loadObjects() {
 		PLACES.clear();
-		boolean load = MyXmlDom.readMyCellarXml("", PLACES);
+		boolean load = XmlUtils.readMyCellarXml("", PLACES);
 		if (!load || PLACES.isEmpty()) {
 			PLACES.clear();
 			PLACES.add(DEFAULT_PLACE);
@@ -639,7 +640,7 @@ public final class Program {
 		saveGlobalProperties();
 
 		if (isListCaveModified()) {
-			MyXmlDom.writeMyCellarXml(PLACES, "");
+			XmlUtils.writeMyCellarXml(PLACES, "");
 		}
 
 		getStorage().saveHistory();
@@ -913,7 +914,7 @@ public final class Program {
 			}
 
 			if (isListCaveModified()) {
-				MyXmlDom.writeMyCellarXml(PLACES, "");
+				XmlUtils.writeMyCellarXml(PLACES, "");
 			}
 
 			if (!PLACES.isEmpty()) {
@@ -1168,7 +1169,7 @@ public final class Program {
 		return CONFIG_GLOBAL.containsKey(key);
 	}
 
-	static String getXMLPlacesFileName() {
+	public static String getXMLPlacesFileName() {
 		return getWorkDir(true) + MY_CELLAR_XML;
 	}
 

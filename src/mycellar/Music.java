@@ -40,15 +40,19 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 22/04/21
+ * @version 0.7
+ * @since 23/04/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "id",
     "title",
     "annee",
-    "type",
+    "kind",
+    "diskNumber",
+    "diskCount",
+    "rating",
+    "file",
     "emplacement",
     "numLieu",
     "ligne",
@@ -75,10 +79,9 @@ public class Music extends MyCellarObject implements Serializable {
   @XmlElement(required = true)
   private String annee;
   @XmlElement(required = true)
-  private String type;
+  private String kind;
   @XmlElement(required = true)
   private String emplacement;
-  @XmlElement(name = "num_lieu")
   private int numLieu;
   private int ligne;
   private int colonne;
@@ -100,9 +103,17 @@ public class Music extends MyCellarObject implements Serializable {
   private String status;
   @XmlElement()
   private String lastModified;
+  @XmlElement()
+  private int diskNumber;
+  @XmlElement()
+  private int diskCount;
+  @XmlElement()
+  private int rating;
+  @XmlElement()
+  private String file;
 
   public Music() {
-    title = type = emplacement = prix = comment = annee = artist = composer = duration = genre = "";
+    title = kind = emplacement = prix = comment = annee = artist = composer = duration = genre = file = "";
     tracks = null;
     status = "";
     lastModified = null;
@@ -113,7 +124,7 @@ public class Music extends MyCellarObject implements Serializable {
     id = Program.getNewID();
     title = music.getTitle();
     annee = music.getAnnee();
-    type = music.getType();
+    kind = music.getKind();
     emplacement = music.getEmplacement();
     numLieu = music.getNumLieu();
     ligne = music.getLigne();
@@ -127,6 +138,10 @@ public class Music extends MyCellarObject implements Serializable {
     tracks = music.getTracks();
     status = music.getStatus();
     lastModified = music.getLastModified();
+    diskNumber = music.getDiskNumber();
+    diskCount = music.getDiskCount();
+    rating = music.getRating();
+    file = music.getFile();
   }
 
   public Music(MusicBuilder builder) {
@@ -137,7 +152,7 @@ public class Music extends MyCellarObject implements Serializable {
     }
     title = builder.nom;
     annee = builder.annee;
-    type = builder.type;
+    kind = builder.type;
     emplacement = builder.emplacement;
     numLieu = builder.numLieu;
     ligne = builder.ligne;
@@ -151,6 +166,10 @@ public class Music extends MyCellarObject implements Serializable {
     tracks = builder.tracks;
     status = builder.status;
     lastModified = builder.lastModified;
+    diskNumber = builder.diskNumber;
+    diskCount = builder.diskCount;
+    rating = builder.rating;
+    file = builder.file;
   }
 
   @Override
@@ -192,13 +211,13 @@ public class Music extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public String getType() {
-    return type;
+  public String getKind() {
+    return kind;
   }
 
   @Override
-  public void setType(String type) {
-    this.type = type;
+  public void setKind(String kind) {
+    this.kind = kind;
   }
 
   @Override
@@ -314,6 +333,38 @@ public class Music extends MyCellarObject implements Serializable {
     return lastModified;
   }
 
+  public int getDiskNumber() {
+    return diskNumber;
+  }
+
+  public void setDiskNumber(int diskNumber) {
+    this.diskNumber = diskNumber;
+  }
+
+  public int getDiskCount() {
+    return diskCount;
+  }
+
+  public void setDiskCount(int diskCount) {
+    this.diskCount = diskCount;
+  }
+
+  public int getRating() {
+    return rating;
+  }
+
+  public void setRating(int rating) {
+    this.rating = rating;
+  }
+
+  public String getFile() {
+    return file;
+  }
+
+  public void setFile(String file) {
+    this.file = file;
+  }
+
   private void setLastModified(LocalDateTime lastModified) {
     String ddMmYyyyHhMm = "dd-MM-yyyy HH:mm";
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(ddMmYyyyHhMm);
@@ -404,11 +455,11 @@ public class Music extends MyCellarObject implements Serializable {
   }
 
   public void setMusicSupport(MusicSupport musicSupport) {
-    setType(musicSupport.name());
+    setKind(musicSupport.name());
   }
 
   public MusicSupport getMusicSupport() {
-    return MusicSupport.getSupport(getType());
+    return MusicSupport.getSupport(getKind());
   }
 
   @Override
@@ -428,7 +479,7 @@ public class Music extends MyCellarObject implements Serializable {
     setComposer(music.getComposer());
     setGenre(music.getGenre());
     setPrix(music.getPrix());
-    setType(music.getType());
+    setKind(music.getKind());
     setDuration(music.getDuration());
     setTracks(music.getTracks());
     if (music.hasNoStatus()) {
@@ -437,6 +488,10 @@ public class Music extends MyCellarObject implements Serializable {
       setStatus(music.getStatus());
     }
     setLastModified(LocalDateTime.now());
+    setDiskCount(music.getDiskCount());
+    setDiskNumber(music.getDiskNumber());
+    setRating(music.getRating());
+    setFile(music.getFile());
   }
 
   @Override
@@ -478,7 +533,7 @@ public class Music extends MyCellarObject implements Serializable {
         setAnnee(value);
         break;
       case TYPE:
-        setType(value);
+        setKind(value);
         break;
       case PLACE:
         setEmplacement(value);
@@ -546,46 +601,28 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public Music fromXmlElemnt(Element element) {
-    NodeList nodeId = element.getElementsByTagName("id");
-    final int id = Integer.parseInt(nodeId.item(0).getTextContent());
-    NodeList nodeName = element.getElementsByTagName("title");
-    final String name = nodeName.item(0).getTextContent();
-    NodeList nodeAnnee = element.getElementsByTagName("annee");
-    final String year = nodeAnnee.item(0).getTextContent();
-    NodeList nodeType = element.getElementsByTagName("type");
-    final String type = nodeType.item(0).getTextContent();
-    NodeList nodePlace = element.getElementsByTagName("emplacement");
-    final String place = nodePlace.item(0).getTextContent();
-    NodeList nodeNumLieu = element.getElementsByTagName("num_lieu");
-    final int numLieu = Integer.parseInt(nodeNumLieu.item(0).getTextContent());
-    NodeList nodeLine = element.getElementsByTagName("ligne");
-    final int line = Integer.parseInt(nodeLine.item(0).getTextContent());
-    NodeList nodeColumn = element.getElementsByTagName("colonne");
-    final int column = Integer.parseInt(nodeColumn.item(0).getTextContent());
-    NodeList nodePrice = element.getElementsByTagName("prix");
-    final String price = nodePrice.item(0).getTextContent();
-    NodeList nodeComment = element.getElementsByTagName("comment");
-    final String comment = nodeComment.item(0).getTextContent();
-    NodeList nodeArtist = element.getElementsByTagName("artist");
-    final String artist = nodeArtist.item(0).getTextContent();
-    NodeList nodeComposer = element.getElementsByTagName("composer");
-    final String composer = nodeComposer.item(0).getTextContent();
-    NodeList nodeGenre = element.getElementsByTagName("genre");
-    final String genre = nodeGenre.item(0).getTextContent();
-    NodeList nodeDuration = element.getElementsByTagName("duration");
-    final String duration = nodeDuration.item(0).getTextContent();
+    final int id = Integer.parseInt(getTextContent(element.getElementsByTagName("id"), "-1"));
+    final String name = getTextContent(element.getElementsByTagName("title"));
+    final String year = getTextContent(element.getElementsByTagName("annee"));
+    final String type = getTextContent(element.getElementsByTagName("type"));
+    final String place = getTextContent(element.getElementsByTagName("emplacement"));
+    final int numLieu = Integer.parseInt(getTextContent(element.getElementsByTagName("num_lieu"), "0"));
+    final int line = Integer.parseInt(getTextContent(element.getElementsByTagName("ligne"), "0"));
+    final int column = Integer.parseInt(getTextContent(element.getElementsByTagName("colonne"), "0"));
+    final String price = getTextContent(element.getElementsByTagName("prix"));
+    final String comment = getTextContent(element.getElementsByTagName("comment"));
+    final String artist = getTextContent(element.getElementsByTagName("artist"));
+    final String composer = getTextContent(element.getElementsByTagName("composer"));
+    final String genre = getTextContent(element.getElementsByTagName("genre"));
+    final String duration = getTextContent(element.getElementsByTagName("duration"));
     NodeList nodeTracks = element.getElementsByTagName("tracks");
     List<Track> trackList = new LinkedList<>();
     for (int i = 0; i < nodeTracks.getLength(); i++) {
-      final Element tracks = (Element) nodeTracks.item(0);
-      NodeList nodeNumber = tracks.getElementsByTagName("number");
-      final int trackNumber = Integer.parseInt(nodeNumber.item(0).getTextContent());
-      NodeList nodeLabel = tracks.getElementsByTagName("label");
-      final String trackLabel = nodeLabel.item(0).getTextContent();
-      NodeList nodeTrackDuration = tracks.getElementsByTagName("duration");
-      final String trackDuration = nodeTrackDuration.item(0).getTextContent();
-      NodeList nodeComnment = tracks.getElementsByTagName("comment");
-      final String trackComment = nodeComnment.item(0).getTextContent();
+      final Element tracks = (Element) nodeTracks.item(i);
+      final int trackNumber = Integer.parseInt(getTextContent(tracks.getElementsByTagName("number"), "0"));
+      final String trackLabel = getTextContent(tracks.getElementsByTagName("label"));
+      final String trackDuration = getTextContent(tracks.getElementsByTagName("duration"));
+      final String trackComment = getTextContent(tracks.getElementsByTagName("comment"));
       final Track track = new Track();
       track.setNumber(trackNumber);
       track.setLabel(trackLabel);
@@ -594,16 +631,12 @@ public class Music extends MyCellarObject implements Serializable {
       trackList.add(track);
     }
 
-    NodeList nodeStatus = element.getElementsByTagName("status");
-    String status = "";
-    if (nodeStatus.getLength() > 0) {
-      status = nodeStatus.item(0).getTextContent();
-    }
-    NodeList nodeLAstModified = element.getElementsByTagName("lastModified");
-    String lastModifed = "";
-    if (nodeLAstModified.getLength() > 0) {
-      lastModifed = nodeLAstModified.item(0).getTextContent();
-    }
+    String status = getTextContent(element.getElementsByTagName("status"));
+    String lastModifed = getTextContent(element.getElementsByTagName("lastModified"));
+    String file = getTextContent(element.getElementsByTagName("file"));
+    int diskNumber = Integer.parseInt(getTextContent(element.getElementsByTagName("diskNumber"), "1"));
+    int diskCount = Integer.parseInt(getTextContent(element.getElementsByTagName("diskCount"), "1"));
+    int rating = Integer.parseInt(getTextContent(element.getElementsByTagName("rating"), "0"));
 
     return new MusicBuilder(name)
         .id(id)
@@ -622,7 +655,22 @@ public class Music extends MyCellarObject implements Serializable {
         .lastModified(lastModifed)
         .duration(duration)
         .tracks(trackList)
+        .diskNumber(diskNumber)
+        .diskCount(diskCount)
+        .rating(rating)
+        .file(file)
         .build();
+  }
+
+  private String getTextContent(NodeList nodeList) {
+    return getTextContent(nodeList, "");
+  }
+
+  private String getTextContent(NodeList nodeList, String defaultValue) {
+    if (nodeList.getLength() > 0) {
+      return nodeList.item(0).getTextContent();
+    }
+    return defaultValue;
   }
 
   /**
@@ -640,7 +688,11 @@ public class Music extends MyCellarObject implements Serializable {
     int result = 1;
     result = prime * result + ((annee == null) ? 0 : annee.hashCode());
     result = prime * result + colonne;
+    result = prime * result + diskCount;
+    result = prime * result + diskNumber;
+    result = prime * result + rating;
     result = prime * result + ((duration == null) ? 0 : duration.hashCode());
+    result = prime * result + ((file == null) ? 0 : file.hashCode());
     result = prime * result + ((comment == null) ? 0 : comment.hashCode());
     result = prime * result
         + ((emplacement == null) ? 0 : emplacement.hashCode());
@@ -652,7 +704,7 @@ public class Music extends MyCellarObject implements Serializable {
     result = prime * result + ((composer == null) ? 0 : composer.hashCode());
     result = prime * result + ((genre == null) ? 0 : genre.hashCode());
     result = prime * result + ((prix == null) ? 0 : prix.hashCode());
-    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    result = prime * result + ((kind == null) ? 0 : kind.hashCode());
     result = prime * result + ((tracks == null) ? 0 : tracks.hashCode());
     result = prime * result + ((status == null) ? 0 : status.hashCode());
     result = prime * result + ((lastModified == null) ? 0 : lastModified.hashCode());
@@ -746,11 +798,11 @@ public class Music extends MyCellarObject implements Serializable {
     } else if (!prix.equals(other.prix)) {
       return false;
     }
-    if (type == null) {
-      if (other.type != null) {
+    if (kind == null) {
+      if (other.kind != null) {
         return false;
       }
-    } else if (!type.equals(other.type)) {
+    } else if (!kind.equals(other.kind)) {
       return false;
     }
     if (tracks == null) {
@@ -772,6 +824,22 @@ public class Music extends MyCellarObject implements Serializable {
         return false;
       }
     } else if (!lastModified.equals(other.lastModified)) {
+      return false;
+    }
+    if (diskNumber != other.diskNumber) {
+      return false;
+    }
+    if (diskCount != other.diskCount) {
+      return false;
+    }
+    if (rating != other.rating) {
+      return false;
+    }
+    if (file == null) {
+      if (other.file != null) {
+        return false;
+      }
+    } else if (!file.equals(other.file)) {
       return false;
     }
     return true;
@@ -801,11 +869,15 @@ public class Music extends MyCellarObject implements Serializable {
     private Tracks tracks;
     private String status;
     private String lastModified;
+    private int diskNumber;
+    private int diskCount;
+    private int rating;
+    private String file;
 
     public MusicBuilder(String nom) {
       this.nom = nom;
       id = numLieu = ligne = colonne = 0;
-      type = emplacement = prix = comment = annee = artist = composer = duration = genre = "";
+      type = emplacement = prix = comment = annee = artist = composer = duration = genre = file = "";
       tracks = null;
       status = "";
       lastModified = null;
@@ -883,6 +955,26 @@ public class Music extends MyCellarObject implements Serializable {
 
     public MusicBuilder lastModified(String lastModified) {
       this.lastModified = lastModified;
+      return this;
+    }
+
+    public MusicBuilder diskNumber(int diskNumber) {
+      this.diskNumber = diskNumber;
+      return this;
+    }
+
+    public MusicBuilder diskCount(int diskCount) {
+      this.diskCount = diskCount;
+      return this;
+    }
+
+    public MusicBuilder rating(int rating) {
+      this.rating = rating;
+      return this;
+    }
+
+    public MusicBuilder file(String file) {
+      this.file = file;
       return this;
     }
 

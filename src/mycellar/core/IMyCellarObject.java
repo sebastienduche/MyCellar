@@ -12,8 +12,8 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 20/04/21
+ * @version 0.4
+ * @since 23/04/21
  */
 public interface IMyCellarObject {
   void setId(int id);
@@ -52,7 +52,7 @@ public interface IMyCellarObject {
 
   String getAnnee();
 
-  String getType();
+  String getKind();
 
   String getPrix();
 
@@ -82,7 +82,7 @@ public interface IMyCellarObject {
 
   void setNom(String value);
 
-  void setType(String value);
+  void setKind(String value);
 
   void setAnnee(String value);
 

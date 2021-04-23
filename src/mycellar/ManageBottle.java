@@ -36,8 +36,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.1
- * @since 20/04/21
+ * @version 8.2
+ * @since 23/04/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -200,7 +200,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		bottle.setNom(nom);
 		bottle.setParker(parker);
 		bottle.setPrix(prix);
-		bottle.setType(demie);
+		bottle.setKind(demie);
 		bottle.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
 		bottle.setStatus(status);
 		CountryVignobleController.addVignobleFromBottle(bottle);

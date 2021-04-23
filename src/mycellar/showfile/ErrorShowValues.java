@@ -21,8 +21,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.8
- * @since 09/04/21
+ * @version 1.9
+ * @since 23/04/21
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -73,7 +73,7 @@ public class ErrorShowValues extends TableShowValues {
 			case YEAR:
 				return b.getAnnee();
 			case TYPE:
-				return b.getType();
+				return b.getKind();
 			case PLACE:
 				return Program.convertStringFromHTMLString(b.getEmplacement());
 			case NUM_PLACE:
@@ -147,7 +147,7 @@ public class ErrorShowValues extends TableShowValues {
 				b.setNom((String) value);
 				break;
 			case TYPE:
-				b.setType((String) value);
+				b.setKind((String) value);
 				break;
 			case YEAR:
 				if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {

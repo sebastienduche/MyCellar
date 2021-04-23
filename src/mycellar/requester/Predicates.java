@@ -26,8 +26,8 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 16/04/21
+ * @version 1.6
+ * @since 23/04/21
  */
 
 public class Predicates {
@@ -299,7 +299,7 @@ public class Predicates {
 
 		@Override
 		public boolean apply(Bouteille bottle, Object compare, int type) {
-			return bottle.getType().equals(compare);
+			return bottle.getKind().equals(compare);
 		}
 
 		@Override

@@ -102,13 +102,13 @@ class BouteilleTest {
 
   @Test
   void getType() {
-    assertEquals("type", bouteille.getType());
+    assertEquals("type", bouteille.getKind());
   }
 
   @Test
   void setType() {
-    bouteille.setType("test");
-    assertEquals("test", bouteille.getType());
+    bouteille.setKind("test");
+    assertEquals("test", bouteille.getKind());
   }
 
   @Test
@@ -327,7 +327,7 @@ class BouteilleTest {
     assertEquals(9, bouteille.getNumLieu());
     assertEquals(99, bouteille.getLigne());
     assertEquals(999, bouteille.getColonne());
-    assertEquals("t", bouteille.getType());
+    assertEquals("t", bouteille.getKind());
     assertEquals("2", bouteille.getAnnee());
     assertEquals("R", bouteille.getColor());
     assertEquals("c", bouteille.getComment());
@@ -424,7 +424,7 @@ class BouteilleTest {
     assertEquals(id, bouteilleFromXML.getId());
     assertEquals(name, bouteilleFromXML.getNom());
     assertEquals(year, bouteilleFromXML.getAnnee());
-    assertEquals(type, bouteilleFromXML.getType());
+    assertEquals(type, bouteilleFromXML.getKind());
     assertEquals(place, bouteilleFromXML.getEmplacement());
     assertEquals(numPlace, bouteilleFromXML.getNumLieu());
     assertEquals(line, bouteilleFromXML.getLigne());

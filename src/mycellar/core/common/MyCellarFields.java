@@ -19,8 +19,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 22/04/21
+ * @version 1.9
+ * @since 23/04/21
  */
 
 public enum MyCellarFields {
@@ -68,7 +68,7 @@ public enum MyCellarFields {
 			return myCellarObject.getAnnee();
 		}
 		if (field == TYPE) {
-			return myCellarObject.getType();
+			return myCellarObject.getKind();
 		}
 		if (field == PLACE) {
 			return myCellarObject.getEmplacement();

@@ -52,8 +52,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.8
- * @since 22/04/21
+ * @version 3.9
+ * @since 23/04/21
  */
 public final class RangementUtils {
 
@@ -182,7 +182,7 @@ public final class RangementUtils {
 					} else if (field == MyCellarFields.YEAR) {
 						td.appendChild(doc.createTextNode(b.getAnnee()));
 					} else if (field == MyCellarFields.TYPE) {
-						td.appendChild(doc.createTextNode(b.getType()));
+						td.appendChild(doc.createTextNode(b.getKind()));
 					} else if (field == MyCellarFields.PLACE) {
 						td.appendChild(doc.createTextNode(b.getEmplacement()));
 					} else if (field == MyCellarFields.NUM_PLACE) {
@@ -543,7 +543,7 @@ public final class RangementUtils {
 			sTitle.append(" ").append(b.getAnnee());
 		}
 		if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL2, false)) {
-			sTitle.append(" ").append(b.getType());
+			sTitle.append(" ").append(b.getKind());
 		}
 		if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL3, false)) {
 			sTitle.append(" ").append(b.getPrix()).append(Program.getCaveConfigString(MyCellarSettings.DEVISE, ""));

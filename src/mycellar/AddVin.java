@@ -45,8 +45,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.9
- * @since 20/04/21
+ * @version 28.0
+ * @since 23/04/21
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -383,7 +383,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 								tmp.setStatus(status);
 							}
 							if (bOneBottle || !demie.isEmpty()) {
-								tmp.setType(demie);
+								tmp.setKind(demie);
 							}
 							if (bOneBottle || !prix.isEmpty()) {
 								tmp.setPrix(prix);
@@ -438,7 +438,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 									tmp.setStatus(status);
 								}
 								if (bOneBottle || !demie.isEmpty()) {
-									tmp.setType(demie);
+									tmp.setKind(demie);
 								}
 								if (bOneBottle || !prix.isEmpty()) {
 									tmp.setPrix(prix);
@@ -677,7 +677,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 				tmp.setMaturity(dateOfC);
 				tmp.setParker(parker);
 				tmp.setColor(color);
-				tmp.setType(demie);
+				tmp.setKind(demie);
 				tmp.updateStatus();
 				if (!country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
 					tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));

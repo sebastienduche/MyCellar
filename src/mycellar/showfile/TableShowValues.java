@@ -25,8 +25,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 5.0
- * @since 22/04/21
+ * @version 5.1
+ * @since 23/04/21
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -75,7 +75,7 @@ class TableShowValues extends AbstractTableModel {
       case YEAR:
         return b.getAnnee();
       case TYPE:
-        return b.getType();
+        return b.getKind();
       case PLACE:
         return Program.convertStringFromHTMLString(b.getEmplacement());
       case NUM_PLACE:
@@ -122,7 +122,7 @@ class TableShowValues extends AbstractTableModel {
         b.setPrix((String) value);
         break;
       case TYPE:
-        b.setType((String) value);
+        b.setKind((String) value);
         break;
       case MATURITY:
         b.setMaturity(Program.convertStringFromHTMLString((String) value));

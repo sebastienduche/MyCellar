@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.7
- * @since 09/04/21
+ * @version 0.8
+ * @since 23/04/21
  */
 public final class MyCellarBottleContenance {
 
@@ -47,16 +47,16 @@ public final class MyCellarBottleContenance {
     return Program.getStorage().getAllList()
         .stream()
         .map(myCellarObject -> (Bouteille)myCellarObject)
-        .map(Bouteille::getType)
+        .map(Bouteille::getKind)
         .anyMatch(value::equals);
   }
 
   public static void rename(String oldValue, String newValue) {
     Program.getStorage().getAllList()
         .stream()
-        .filter(b -> oldValue.equals(b.getType()))
+        .filter(b -> oldValue.equals(b.getKind()))
         .map(myCellarObject -> (Bouteille)myCellarObject)
-        .forEach(bouteille -> bouteille.setType(newValue));
+        .forEach(bouteille -> bouteille.setKind(newValue));
     final int oldIndex = getList().indexOf(oldValue);
     final int index = getList().indexOf(newValue);
     if (index == -1) {
@@ -84,7 +84,7 @@ public final class MyCellarBottleContenance {
       final List<String> collect = Program.getStorage().getAllList()
           .stream()
           .map(myCellarObject -> (Bouteille)myCellarObject)
-          .map(Bouteille::getType)
+          .map(Bouteille::getKind)
           .distinct()
           .collect(Collectors.toList());
       for (String val : collect) {

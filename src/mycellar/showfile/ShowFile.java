@@ -74,8 +74,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.0
- * @since 22/04/21
+ * @version 10.1
+ * @since 23/04/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -182,7 +182,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         Object getDisplayValue(MyCellarObject b) {
-          return b.getType();
+          return b.getKind();
         }
       });
     }

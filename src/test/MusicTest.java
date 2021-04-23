@@ -47,6 +47,10 @@ class MusicTest {
         .comment("comment")
         .duration("duration")
         .price("123")
+        .diskNumber(1)
+        .diskCount(2)
+        .rating(5)
+        .file("file")
         .track(1, "label", "duration", "comment")
         .build();
 
@@ -103,14 +107,14 @@ class MusicTest {
   }
 
   @Test
-  void getType() {
-    assertEquals("CD", music.getType());
+  void getKind() {
+    assertEquals("CD", music.getKind());
   }
 
   @Test
-  void setType() {
-    music.setType("test");
-    assertEquals("test", music.getType());
+  void setKind() {
+    music.setKind("test");
+    assertEquals("test", music.getKind());
   }
 
   @Test
@@ -121,9 +125,9 @@ class MusicTest {
   @Test
   void setMusicSupport() {
     music.setMusicSupport(MusicSupport.K7);
-    assertEquals("K7", music.getType());
+    assertEquals("K7", music.getKind());
     assertEquals(MusicSupport.K7, music.getMusicSupport());
-    music.setType(null);
+    music.setKind(null);
     assertEquals(MusicSupport.NONE, music.getMusicSupport());
   }
 
@@ -183,6 +187,39 @@ class MusicTest {
   }
 
   @Test
+  void getDiskNumber() {
+    assertEquals(1, music.getDiskNumber());
+  }
+
+  @Test
+  void setDiskNumber() {
+    music.setDiskNumber(9);
+    assertEquals(9, music.getDiskNumber());
+  }
+
+  @Test
+  void getDiskCount() {
+    assertEquals(2, music.getDiskCount());
+  }
+
+  @Test
+  void setDiskCount() {
+    music.setDiskCount(9);
+    assertEquals(9, music.getDiskCount());
+  }
+
+  @Test
+  void getRating() {
+    assertEquals(5, music.getRating());
+  }
+
+  @Test
+  void setRating() {
+    music.setRating(9);
+    assertEquals(9, music.getRating());
+  }
+
+  @Test
   void getPrix() {
     assertEquals("123", music.getPrix());
   }
@@ -191,6 +228,17 @@ class MusicTest {
   void setPrix() {
     music.setPrix("999");
     assertEquals("999", music.getPrix());
+  }
+
+  @Test
+  void getFile() {
+    assertEquals("file", music.getFile());
+  }
+
+  @Test
+  void setFile() {
+    music.setFile("999");
+    assertEquals("999", music.getFile());
   }
 
   @Test
@@ -296,6 +344,10 @@ class MusicTest {
         .genre("1")
         .price("23")
         .duration("dr")
+        .diskCount(3)
+        .diskNumber(2)
+        .rating(0)
+        .file("test")
         .track(1, "label", "duration", "comment")
         .build();
     music.update(test);
@@ -304,7 +356,7 @@ class MusicTest {
     assertEquals(9, music.getNumLieu());
     assertEquals(99, music.getLigne());
     assertEquals(999, music.getColonne());
-    assertEquals("DIGITAL", music.getType());
+    assertEquals("DIGITAL", music.getKind());
     assertEquals("2", music.getAnnee());
     assertEquals(MusicSupport.DIGITAL, music.getMusicSupport());
     assertEquals("c", music.getComment());
@@ -312,6 +364,10 @@ class MusicTest {
     assertEquals("R", music.getComposer());
     assertEquals("1", music.getGenre());
     assertEquals("dr", music.getDuration());
+    assertEquals("test", music.getFile());
+    assertEquals(3, music.getDiskCount());
+    assertEquals(2, music.getDiskNumber());
+    assertEquals(0, music.getRating());
     assertEquals(new BigDecimal("23.00"), music.getPrice());
     Track v = new Track();
     v.setNumber(1);
@@ -369,6 +425,10 @@ class MusicTest {
     final String duration = "duration";
     final String status = "MODIFIED";
     final String lastModified = "17-11-2020 12:08";
+    final int diskNumber = 1;
+    final int diskCount = 2;
+    final int rating = 3;
+    final String file = "file";
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
         "<ListeMusic><Music>\n" +
         "        <id>" + id + "</id>\n" +
@@ -376,13 +436,17 @@ class MusicTest {
         "        <annee>" + year + "</annee>\n" +
         "        <type>" + type + "</type>\n" +
         "        <emplacement>" + place + "</emplacement>\n" +
-        "        <num_lieu>" + numPlace + "</num_lieu>\n" +
+        "        <numLieu>" + numPlace + "</numLieu>\n" +
         "        <ligne>" + line + "</ligne>\n" +
         "        <colonne>" + column + "</colonne>\n" +
         "        <prix>" + price + "</prix>\n" +
         "        <comment>" + comment + "</comment>\n" +
         "        <artist>" + artist + "</artist>\n" +
         "        <composer>" + composer + "</composer>\n" +
+        "        <diskNumber>" + diskNumber + "</diskNumber>\n" +
+        "        <diskCount>" + diskCount + "</diskCount>\n" +
+        "        <rating>" + rating + "</rating>\n" +
+        "        <file>" + file + "</file>\n" +
         "        <tracks>\n" +
         "        <track>\n" +
         "            <number>" + trackNumber + "</number>\n" +
@@ -405,7 +469,7 @@ class MusicTest {
     assertEquals(id, musicFromXML.getId());
     assertEquals(name, musicFromXML.getNom());
     assertEquals(year, musicFromXML.getAnnee());
-    assertEquals(type, musicFromXML.getType());
+    assertEquals(type, musicFromXML.getKind());
     assertEquals(place, musicFromXML.getEmplacement());
     assertEquals(numPlace, musicFromXML.getNumLieu());
     assertEquals(line, musicFromXML.getLigne());
@@ -416,6 +480,10 @@ class MusicTest {
     assertEquals(composer, musicFromXML.getComposer());
     assertEquals(genre, musicFromXML.getGenre());
     assertEquals(status, musicFromXML.getStatus());
+    assertEquals(diskCount, musicFromXML.getDiskCount());
+    assertEquals(diskNumber, musicFromXML.getDiskNumber());
+    assertEquals(rating, musicFromXML.getRating());
+    assertEquals(file, musicFromXML.getFile());
     assertEquals(lastModified, musicFromXML.getLastModified());
     assertEquals(trackNumber, (int)musicFromXML.getTracks().getTracks().get(0).getNumber());
     assertEquals(label, musicFromXML.getTracks().getTracks().get(0).getLabel());

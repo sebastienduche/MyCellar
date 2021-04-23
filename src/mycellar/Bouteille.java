@@ -39,8 +39,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.1
- * @since 20/04/21
+ * @version 7.2
+ * @since 23/04/21
 
  * <p>Java class for anonymous complex type.
  *
@@ -148,7 +148,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 		id = Program.getNewID();
 		nom = b.getNom();
 		annee = b.getAnnee();
-		type = b.getType();
+		type = b.getKind();
 		emplacement = b.getEmplacement();
 		numLieu = b.getNumLieu();
 		ligne = b.getLigne();
@@ -217,13 +217,13 @@ public class Bouteille extends MyCellarObject implements Serializable {
 	 }
 
 	 @Override
-	 public String getType() {
+	 public String getKind() {
 		 return type;
 	 }
 
 	 @Override
-	 public void setType(String type) {
-		 this.type = type;
+	 public void setKind(String kind) {
+		 this.type = kind;
 	 }
 
 	 @Override
@@ -458,7 +458,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 		 setNumLieu(b.getNumLieu());
 		 setParker(b.getParker());
 		 setPrix(b.getPrix());
-		 setType(b.getType());
+		 setKind(b.getKind());
 		 setColor(b.getColor());
 		 setVignoble(b.getVignoble());
 		 if (b.hasNoStatus()) {
@@ -508,7 +508,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 				 setAnnee(value);
 				 break;
 			 case TYPE:
-				 setType(value);
+				 setKind(value);
 				 break;
 			 case PLACE:
 				 setEmplacement(value);

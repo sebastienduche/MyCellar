@@ -37,8 +37,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 20/04/21
+ * @version 0.2
+ * @since 23/04/21
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -89,16 +89,16 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     type.removeAllItems();
     type.addItem("");
     MyCellarBottleContenance.getList().forEach(type::addItem);
-    type.setSelectedItem(myCellarObject.getType());
+    type.setSelectedItem(myCellarObject.getKind());
 
     String half_tmp = "";
     if (type.getSelectedItem() != null) {
       half_tmp = type.getSelectedItem().toString();
     }
-    if (!half_tmp.equals(myCellarObject.getType()) && !myCellarObject.getType().isEmpty()) {
-      MyCellarBottleContenance.getList().add(myCellarObject.getType());
-      type.addItem(myCellarObject.getType());
-      type.setSelectedItem(myCellarObject.getType());
+    if (!half_tmp.equals(myCellarObject.getKind()) && !myCellarObject.getKind().isEmpty()) {
+      MyCellarBottleContenance.getList().add(myCellarObject.getKind());
+      type.addItem(myCellarObject.getKind());
+      type.setSelectedItem(myCellarObject.getKind());
     }
   }
 

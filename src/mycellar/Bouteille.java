@@ -564,6 +564,15 @@ public class Bouteille extends MyCellarObject implements Serializable {
 			 case STATUS:
 				 setStatus(value);
 				 break;
+			 case DISK_NUMBER:
+			 case DISK_COUNT:
+			 case RATING:
+			 case FILE:
+			 case COMPOSER:
+			 case ARTIST:
+			 case SUPPORT:
+				 Program.throwNotImplementedIfNotFor(this, Music.class);
+				 break;
 			 default:
 				 break;
 		 }

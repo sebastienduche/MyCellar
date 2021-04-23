@@ -46,6 +46,10 @@ public enum MyCellarFields {
 	ARTIST(Program.getLabel("Main.Artist")),
 	SUPPORT(Program.getLabel("Main.Support")),
 	DURATION(Program.getLabel("Main.Duration")),
+	DISK_NUMBER(Program.getLabel("Main.DiskNumber")),
+	DISK_COUNT(Program.getLabel("Main.DiskCount")),
+	RATING(Program.getLabel("Main.Rating")),
+	FILE(Program.getLabel("Main.File")),
 
 	// Pour l'import de donnees
 	EMPTY(""),
@@ -129,6 +133,26 @@ public enum MyCellarFields {
 		if (field == DURATION) {
 			if (myCellarObject instanceof Music) {
 				return ((Music) myCellarObject).getDuration();
+			}
+		}
+		if (field == FILE) {
+			if (myCellarObject instanceof Music) {
+				return ((Music) myCellarObject).getFile();
+			}
+		}
+		if (field == DISK_COUNT) {
+			if (myCellarObject instanceof Music) {
+				return Integer.toString(((Music) myCellarObject).getDiskCount());
+			}
+		}
+		if (field == DISK_NUMBER) {
+			if (myCellarObject instanceof Music) {
+				return Integer.toString(((Music) myCellarObject).getDiskNumber());
+			}
+		}
+		if (field == RATING) {
+			if (myCellarObject instanceof Music) {
+				return Integer.toString(((Music) myCellarObject).getRating());
 			}
 		}
 		if (field == COUNTRY) {

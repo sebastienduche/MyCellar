@@ -558,14 +558,6 @@ public class Music extends MyCellarObject implements Serializable {
       case ARTIST:
         setArtist(value);
         break;
-      case AOC:
-      case IGP:
-      case PARKER:
-      case VINEYARD:
-      case MATURITY:
-        Program.throwNotImplementedIfNotFor(this, Bouteille.class);
-//        getTracks().setName(value);
-        break;
       case DURATION:
         setDuration(value);
         break;
@@ -574,6 +566,25 @@ public class Music extends MyCellarObject implements Serializable {
         break;
       case STATUS:
         setStatus(value);
+        break;
+      case DISK_NUMBER:
+        setDiskNumber(Double.valueOf(value).intValue());
+        break;
+      case DISK_COUNT:
+        setDiskCount(Double.valueOf(value).intValue());
+        break;
+      case RATING:
+        setRating(Double.valueOf(value).intValue());
+        break;
+      case FILE:
+        setFile(value);
+        break;
+      case AOC:
+      case IGP:
+      case PARKER:
+      case VINEYARD:
+      case MATURITY:
+        Program.throwNotImplementedIfNotFor(this, Bouteille.class);
         break;
       default:
         break;

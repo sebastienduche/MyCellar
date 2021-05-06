@@ -163,7 +163,7 @@ public final class MyCellarControl {
    * @param filtre Filtre
    * @return String
    */
-  static String controlAndUpdateExtension(final String name, final Filtre filtre) {
+  public static String controlAndUpdateExtension(final String name, final Filtre filtre) {
     return controlAndUpdateExtension(name, filtre.toString());
 
   }
@@ -200,7 +200,7 @@ public final class MyCellarControl {
    * @param extensions List
    * @return String
    */
-  static boolean hasInvalidExtension(final String name, final List<String> extensions) {
+  public static boolean hasInvalidExtension(final String name, final List<String> extensions) {
 
     Debug("Controlling extension...");
     if (name == null) {

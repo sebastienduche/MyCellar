@@ -123,7 +123,7 @@ public class ListeBouteille {
 		return loadXML(f);
 	}
 
-	static boolean loadXML(File f) {
+	public static boolean loadXML(File f) {
 		Debug("Loading XML File " + f.getAbsolutePath());
 		if(!f.exists())
 			return false;

@@ -19,6 +19,7 @@ import mycellar.core.UnableToOpenFileException;
 import mycellar.core.UnableToOpenMyCellarFileException;
 import mycellar.core.common.music.MusicSupport;
 import mycellar.general.XmlUtils;
+import mycellar.importer.Importer;
 import mycellar.launcher.Server;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Rangement;

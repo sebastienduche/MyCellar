@@ -35,7 +35,7 @@ import static mycellar.Program.toCleanString;
  * @version 2.5
  * @since 30/12/20
  */
-class MyOptions extends JDialog {
+public class MyOptions extends JDialog {
   @SuppressWarnings("deprecation")
   private final MyCellarLabel textControl3 = new MyCellarLabel();
   private final ButtonGroup cbg = new ButtonGroup();
@@ -61,8 +61,8 @@ class MyOptions extends JDialog {
    * @param type_objet : Type des objets à ajouter.
    * @param config1 MyLinkedHashMap
    */
-  MyOptions(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> cle2, List<String> type_objet,
-            MyLinkedHashMap config1, boolean cancel) {
+  public MyOptions(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> cle2, List<String> type_objet,
+                   MyLinkedHashMap config1, boolean cancel) {
 
     super(Start.getInstance(), "", true);
     config = config1;

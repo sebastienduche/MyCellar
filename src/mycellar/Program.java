@@ -28,6 +28,7 @@ import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.general.XmlUtils;
+import mycellar.importer.Importer;
 import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFRow;
@@ -1157,7 +1158,7 @@ public final class Program {
 		Objects.requireNonNull(getCaveConfig()).put(key, value);
 	}
 
-	static MyLinkedHashMap getCaveConfig() {
+	public static MyLinkedHashMap getCaveConfig() {
 		return hasFile() ? myCellarFile.getCaveConfig() : null;
 	}
 

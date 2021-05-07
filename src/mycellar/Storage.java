@@ -21,10 +21,10 @@ import java.util.List;
 
 public interface Storage {
 	
-	void setListBouteilles(ListeBouteille listBouteilles);
+	void setListMyCellarObject(ListeBouteille listMyCellarObject);
 	void addBouteilles(ListeBouteille listBouteilles);
-	ListeBouteille getListBouteilles();
-	LinkedList<String> getBottleNames();
+	ListeBouteille getListMyCellarObject();
+	LinkedList<String> getDistinctNames();
 	void addHistory(HistoryState historyState, MyCellarObject myCellarObject);
 	void addToWorksheet(MyCellarObject myCellarObject);
 

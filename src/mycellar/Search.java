@@ -117,7 +117,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 				empty_search.setSelected(true);
 			}
 
-			name = new TextFieldPopup(Program.getStorage().getBottleNames(), 150) {
+			name = new TextFieldPopup(Program.getStorage().getDistinctNames(), 150) {
 				@Override
 				public void doAfterValidate() {
 					new Thread(Search.this).start();

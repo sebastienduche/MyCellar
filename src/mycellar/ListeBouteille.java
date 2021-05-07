@@ -40,8 +40,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 16/04/21
+ * @version 1.3
+ * @since 07/05/21
  *
  * <p>Java class for anonymous complex type.
  *
@@ -173,7 +173,7 @@ public class ListeBouteille {
 				listeBouteille.getMusic().add(Music.fromXml(musicElem));
 			}
 		}
-		Program.getStorage().setListBouteilles(listeBouteille);
+		Program.getStorage().setListMyCellarObject(listeBouteille);
 		Debug("Loading Manually File Done");
 	}
 
@@ -187,33 +187,50 @@ public class ListeBouteille {
 	}
 
 	static boolean writeXML() {
-		return XmlUtils.writeXML(Program.getStorage().getListBouteilles(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
+		return XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
 	}
 
 	static boolean writeXML(File f) {
-		return XmlUtils.writeXML(Program.getStorage().getListBouteilles(), f, ObjectFactory.class);
+		return XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), f, ObjectFactory.class);
 	}
 
 	static boolean writeXML(ListeBouteille liste, File f) {
 		return XmlUtils.writeXML(liste, f, ObjectFactory.class);
 	}
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
-	public static void Debug(String sText) {
-		Program.Debug("ListeBouteille: " + sText);
+	public int getItemsCount() {
+		if (Program.isWineType()) {
+			return bouteille.size();
+		}
+		if (Program.isMusicType()) {
+			return music.size();
+		}
+		Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+		return -1;
 	}
 
-	public void add(MyCellarObject myCellarObject) {
+	public boolean add(MyCellarObject myCellarObject) {
 		if (myCellarObject instanceof Bouteille) {
-			getBouteille().add((Bouteille) myCellarObject);
+			return getBouteille().add((Bouteille) myCellarObject);
 		} else if (myCellarObject instanceof Music) {
-			getMusic().add((Music) myCellarObject);
+			return getMusic().add((Music) myCellarObject);
 		} else {
-			throw new IllegalArgumentException("Not Implemented");
+			Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+			return false;
 		}
+	}
+
+	public void remove(MyCellarObject myCellarObject) {
+		if (myCellarObject instanceof Bouteille) {
+			getBouteille().remove((Bouteille) myCellarObject);
+		} else if (myCellarObject instanceof Music) {
+			getMusic().remove((Music) myCellarObject);
+		} else {
+			Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+		}
+	}
+
+	public static void Debug(String sText) {
+		Program.Debug("ListeBouteille: " + sText);
 	}
 }

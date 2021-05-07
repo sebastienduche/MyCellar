@@ -695,7 +695,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 			}
 		}	catch (IOException e) {
 			label_progression.setText("");
-			Debug("ERROR: File not found (IO): "+nom);
+			Debug("ERROR: File not found: " + nom);
 			//Fichier non trouve
 			//"Verifier le chemin");
 			Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
@@ -704,7 +704,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 		}	catch (Exception e) {
 			Program.showException(e, false);
 			label_progression.setText("");
-			Debug("ERROR: " + e.toString());
+			Debug("ERROR: " + e);
 			Erreur.showSimpleErreur(Program.getError("Error082"));
 			importe.setEnabled(true);
 			return false;
@@ -727,14 +727,14 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 		try {
 			list = new ItunesLibraryImporter().loadItunesLibrary(f);
 		} catch (NoITunesFileException e) {
-			Debug(e.toString());
+			Debug("ERROR" + e);
 			Erreur.showSimpleErreur(Program.getError("Import.NotITunesFile"));
 			label_progression.setText("");
 			importe.setEnabled(true);
 			return;
 		}
 		list.forEach(music -> music.setEmplacement(Program.DEFAULT_PLACE.getNom()));
-		Program.getStorage().getListBouteilles().getMusic().addAll(list);
+		Program.getStorage().getListMyCellarObject().getMusic().addAll(list);
 		showImportDone();
 	}
 

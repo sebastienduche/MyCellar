@@ -243,7 +243,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   public void resetValues() {
     name.removeAllItems();
     name.addItem("");
-    Program.getStorage().getBottleNames().forEach(name::addItem);
+    Program.getStorage().getDistinctNames().forEach(name::addItem);
 
     name.setEnabled(true);
     name.setEditable(true);
@@ -360,7 +360,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   private void initNameCombo() {
     LinkedList<String> list = new LinkedList<>();
     list.add("");
-    list.addAll(Program.getStorage().getBottleNames());
+    list.addAll(Program.getStorage().getDistinctNames());
     list.forEach(name::addItem);
     name.setCaseSensitive(false);
     name.setEditable(true);

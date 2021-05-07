@@ -209,7 +209,7 @@ class TableHistoryValues extends AbstractTableModel {
             Program.showBottle(bottle, false);
           } else {
             Program.Debug("Bottle Get ID = " + bottle.getId());
-            Program.getStorage().getListBouteilles().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst()
+            Program.getStorage().getListMyCellarObject().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst()
                 .ifPresentOrElse(
                     bouteille -> Program.showBottle(bouteille, true),
                     () -> Program.showBottle(bottle, false));

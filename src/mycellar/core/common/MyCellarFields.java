@@ -19,7 +19,7 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
+ * @version 2.0
  * @since 23/04/21
  */
 
@@ -50,6 +50,8 @@ public enum MyCellarFields {
 	DISK_COUNT(Program.getLabel("Main.DiskCount")),
 	RATING(Program.getLabel("Main.Rating")),
 	FILE(Program.getLabel("Main.File")),
+	EXTERNAL_ID(Program.getLabel("Main.ExternalId")),
+	ALBUM(Program.getLabel("Main.Album")),
 
 	// Pour l'import de donnees
 	EMPTY(""),
@@ -155,6 +157,16 @@ public enum MyCellarFields {
 				return Integer.toString(((Music) myCellarObject).getRating());
 			}
 		}
+		if (field == EXTERNAL_ID) {
+			if (myCellarObject instanceof Music) {
+				return Integer.toString(((Music) myCellarObject).getExternalId());
+			}
+		}
+		if (field == ALBUM) {
+			if (myCellarObject instanceof Music) {
+				return ((Music) myCellarObject).getAlbum();
+			}
+		}
 		if (field == COUNTRY) {
 			if (myCellarObject instanceof Bouteille) {
 				Bouteille bouteille = (Bouteille) myCellarObject;
@@ -212,7 +224,7 @@ public enum MyCellarFields {
 	);
 
 	private static final List<MyCellarFields> FIELDSFORIMPORT_MUSIC = Arrays.asList(
-			NAME, YEAR, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, ARTIST, COMPOSER, STYLE, SUPPORT, DURATION
+			NAME, YEAR, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, ARTIST, COMPOSER, STYLE, SUPPORT, DURATION, EXTERNAL_ID, ALBUM
 	);
 
 	private static final List<MyCellarFields> FIELDS_WINE = Arrays.asList(
@@ -221,7 +233,7 @@ public enum MyCellarFields {
 	);
 
 	private static final List<MyCellarFields> FIELDS_MUSIC = Arrays.asList(
-			NAME, YEAR, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, STATUS, ARTIST, COMPOSER, STYLE, SUPPORT, DURATION
+			NAME, YEAR, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, STATUS, ARTIST, COMPOSER, STYLE, SUPPORT, DURATION, EXTERNAL_ID, ALBUM
 	);
 
 	public static List<MyCellarFields> getFieldsList() {

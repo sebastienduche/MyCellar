@@ -51,6 +51,8 @@ class MusicTest {
         .diskCount(2)
         .rating(5)
         .file("file")
+        .album("album")
+        .externalId(999)
         .track(1, "label", "duration", "comment")
         .build();
 
@@ -85,6 +87,17 @@ class MusicTest {
   }
 
   @Test
+  void getExternalId() {
+    assertEquals(999, music.getExternalId());
+  }
+
+  @Test
+  void setExternalId() {
+    music.setExternalId(1234);
+    assertEquals(1234, music.getExternalId());
+  }
+
+  @Test
   void getNom() {
     assertEquals("music", music.getNom());
   }
@@ -104,6 +117,17 @@ class MusicTest {
   void setAnnee() {
     music.setAnnee("2020");
     assertEquals("2020", music.getAnnee());
+  }
+
+  @Test
+  void getAlbum() {
+    assertEquals("album", music.getAlbum());
+  }
+
+  @Test
+  void setAlbum() {
+    music.setAlbum("Album");
+    assertEquals("Album", music.getAlbum());
   }
 
   @Test
@@ -348,11 +372,14 @@ class MusicTest {
         .diskNumber(2)
         .rating(0)
         .file("test")
+        .externalId(10)
+        .album("a")
         .track(1, "label", "duration", "comment")
         .build();
     music.update(test);
     assertEquals("b", music.getNom());
     assertEquals("p", music.getEmplacement());
+    assertEquals(10, music.getExternalId());
     assertEquals(9, music.getNumLieu());
     assertEquals(99, music.getLigne());
     assertEquals(999, music.getColonne());
@@ -365,6 +392,7 @@ class MusicTest {
     assertEquals("1", music.getGenre());
     assertEquals("dr", music.getDuration());
     assertEquals("test", music.getFile());
+    assertEquals("a", music.getAlbum());
     assertEquals(3, music.getDiskCount());
     assertEquals(2, music.getDiskNumber());
     assertEquals(0, music.getRating());
@@ -406,9 +434,11 @@ class MusicTest {
   @Test
   void getMusicFromXML() throws ParserConfigurationException, IOException, SAXException {
     final int id = 1987;
+    final int externalId = 2000;
     final String name = "Aalto PS 04";
     final String year = "2004";
     final String type = "CD";
+    final String album = "album";
     final String place = "Courlon 3a";
     final int numPlace = 0;
     final int line = 1;
@@ -432,6 +462,7 @@ class MusicTest {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
         "<ListeMusic><Music>\n" +
         "        <id>" + id + "</id>\n" +
+        "        <external_id>" + externalId + "</external_id>\n" +
         "        <title>" + name + "</title>\n" +
         "        <annee>" + year + "</annee>\n" +
         "        <type>" + type + "</type>\n" +
@@ -447,6 +478,7 @@ class MusicTest {
         "        <diskCount>" + diskCount + "</diskCount>\n" +
         "        <rating>" + rating + "</rating>\n" +
         "        <file>" + file + "</file>\n" +
+        "        <album>" + album + "</album>\n" +
         "        <tracks>\n" +
         "        <track>\n" +
         "            <number>" + trackNumber + "</number>\n" +
@@ -467,6 +499,7 @@ class MusicTest {
     NodeList nodeList = doc.getElementsByTagName("Music");
     final Music musicFromXML = Music.fromXml((Element) nodeList.item(0));
     assertEquals(id, musicFromXML.getId());
+    assertEquals(externalId, musicFromXML.getExternalId());
     assertEquals(name, musicFromXML.getNom());
     assertEquals(year, musicFromXML.getAnnee());
     assertEquals(type, musicFromXML.getKind());
@@ -484,6 +517,7 @@ class MusicTest {
     assertEquals(diskNumber, musicFromXML.getDiskNumber());
     assertEquals(rating, musicFromXML.getRating());
     assertEquals(file, musicFromXML.getFile());
+    assertEquals(album, musicFromXML.getAlbum());
     assertEquals(lastModified, musicFromXML.getLastModified());
     assertEquals(trackNumber, (int)musicFromXML.getTracks().getTracks().get(0).getNumber());
     assertEquals(label, musicFromXML.getTracks().getTracks().get(0).getLabel());

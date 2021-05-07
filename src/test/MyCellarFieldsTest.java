@@ -56,6 +56,8 @@ class MyCellarFieldsTest {
 				.diskCount(2)
 				.rating(5)
 				.file("file")
+				.album("album")
+				.externalId(999)
 				.build();
 	}
 	
@@ -89,6 +91,8 @@ class MyCellarFieldsTest {
 		assertEquals("", MyCellarFields.getValue(MyCellarFields.DISK_NUMBER, bouteille));
 		assertEquals("", MyCellarFields.getValue(MyCellarFields.RATING, bouteille));
 		assertEquals("", MyCellarFields.getValue(MyCellarFields.FILE, bouteille));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.EXTERNAL_ID, bouteille));
+		assertEquals("", MyCellarFields.getValue(MyCellarFields.ALBUM, bouteille));
 	}
 
 	@Test
@@ -121,6 +125,8 @@ class MyCellarFieldsTest {
 		assertEquals("1", MyCellarFields.getValue(MyCellarFields.DISK_NUMBER, music));
 		assertEquals("5", MyCellarFields.getValue(MyCellarFields.RATING, music));
 		assertEquals("file", MyCellarFields.getValue(MyCellarFields.FILE, music));
+		assertEquals("999", MyCellarFields.getValue(MyCellarFields.EXTERNAL_ID, music));
+		assertEquals("album", MyCellarFields.getValue(MyCellarFields.ALBUM, music));
 	}
 
 	@Test
@@ -169,6 +175,8 @@ class MyCellarFieldsTest {
 		assertTrue(MyCellarFields.isRealField(MyCellarFields.IGP));
 		assertFalse(MyCellarFields.isRealField(MyCellarFields.EMPTY));
 		assertFalse(MyCellarFields.isRealField(MyCellarFields.USELESS));
+		assertTrue(MyCellarFields.isRealField(MyCellarFields.EXTERNAL_ID));
+		assertTrue(MyCellarFields.isRealField(MyCellarFields.ALBUM));
 	}
 
 	@Test

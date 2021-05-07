@@ -42,12 +42,13 @@ import static mycellar.general.XmlUtils.getTextContent;
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
+ * @version 0.8
  * @since 23/04/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "id",
+    "externalId",
     "title",
     "annee",
     "kind",
@@ -64,6 +65,7 @@ import static mycellar.general.XmlUtils.getTextContent;
     "artist",
     "composer",
     "genre",
+    "album",
     "duration",
     "status",
     "lastModified",
@@ -75,6 +77,7 @@ public class Music extends MyCellarObject implements Serializable {
   private static final long serialVersionUID = 7443323147347096231L;
 
   private int id;
+  private int externalId;
 
   @XmlElement(required = true)
   private String title;
@@ -113,9 +116,11 @@ public class Music extends MyCellarObject implements Serializable {
   private int rating;
   @XmlElement()
   private String file;
+  @XmlElement()
+  private String album;
 
   public Music() {
-    title = kind = emplacement = prix = comment = annee = artist = composer = duration = genre = file = "";
+    title = kind = emplacement = prix = comment = annee = artist = composer = duration = genre = file = album = "";
     tracks = null;
     status = "";
     lastModified = null;
@@ -124,6 +129,7 @@ public class Music extends MyCellarObject implements Serializable {
   public Music(Music music) {
     Objects.requireNonNull(music);
     id = Program.getNewID();
+    externalId = music.getExternalId();
     title = music.getTitle();
     annee = music.getAnnee();
     kind = music.getKind();
@@ -144,6 +150,7 @@ public class Music extends MyCellarObject implements Serializable {
     diskCount = music.getDiskCount();
     rating = music.getRating();
     file = music.getFile();
+    album = music.getAlbum();
   }
 
   public Music(MusicBuilder builder) {
@@ -152,6 +159,7 @@ public class Music extends MyCellarObject implements Serializable {
     } else {
       id = builder.id;
     }
+    externalId = builder.externalId;
     title = builder.nom;
     annee = builder.annee;
     kind = builder.type;
@@ -172,6 +180,7 @@ public class Music extends MyCellarObject implements Serializable {
     diskCount = builder.diskCount;
     rating = builder.rating;
     file = builder.file;
+    album = builder.album;
   }
 
   @Override
@@ -367,6 +376,22 @@ public class Music extends MyCellarObject implements Serializable {
     this.file = file;
   }
 
+  public int getExternalId() {
+    return externalId;
+  }
+
+  public void setExternalId(int externalId) {
+    this.externalId = externalId;
+  }
+
+  public String getAlbum() {
+    return album;
+  }
+
+  public void setAlbum(String album) {
+    this.album = album;
+  }
+
   private void setLastModified(LocalDateTime lastModified) {
     String ddMmYyyyHhMm = "dd-MM-yyyy HH:mm";
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(ddMmYyyyHhMm);
@@ -494,6 +519,8 @@ public class Music extends MyCellarObject implements Serializable {
     setDiskNumber(music.getDiskNumber());
     setRating(music.getRating());
     setFile(music.getFile());
+    setExternalId(music.getExternalId());
+    setAlbum(music.getAlbum());
   }
 
   @Override
@@ -579,6 +606,12 @@ public class Music extends MyCellarObject implements Serializable {
       case FILE:
         setFile(value);
         break;
+      case EXTERNAL_ID:
+        setExternalId(Integer.parseInt(value));
+        break;
+      case ALBUM:
+        setAlbum(value);
+        break;
       case AOC:
       case IGP:
       case PARKER:
@@ -615,9 +648,11 @@ public class Music extends MyCellarObject implements Serializable {
   @Override
   public Music fromXmlElemnt(Element element) {
     final int id = Integer.parseInt(getTextContent(element.getElementsByTagName("id"), "-1"));
+    final int externalId = Integer.parseInt(getTextContent(element.getElementsByTagName("external_id"), "-1"));
     final String name = getTextContent(element.getElementsByTagName("title"));
     final String year = getTextContent(element.getElementsByTagName("annee"));
     final String type = getTextContent(element.getElementsByTagName("type"));
+    final String album = getTextContent(element.getElementsByTagName("album"));
     final String place = getTextContent(element.getElementsByTagName("emplacement"));
     final int numLieu = Integer.parseInt(getTextContent(element.getElementsByTagName("num_lieu"), "0"));
     final int line = Integer.parseInt(getTextContent(element.getElementsByTagName("ligne"), "0"));
@@ -653,6 +688,7 @@ public class Music extends MyCellarObject implements Serializable {
 
     return new MusicBuilder(name)
         .id(id)
+        .externalId(externalId)
         .annee(year)
         .musicSupport(MusicSupport.valueOf(type))
         .place(place)
@@ -672,6 +708,7 @@ public class Music extends MyCellarObject implements Serializable {
         .diskCount(diskCount)
         .rating(rating)
         .file(file)
+        .album(album)
         .build();
   }
 
@@ -689,6 +726,7 @@ public class Music extends MyCellarObject implements Serializable {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((annee == null) ? 0 : annee.hashCode());
+    result = prime * result + externalId;
     result = prime * result + colonne;
     result = prime * result + diskCount;
     result = prime * result + diskNumber;
@@ -710,6 +748,7 @@ public class Music extends MyCellarObject implements Serializable {
     result = prime * result + ((tracks == null) ? 0 : tracks.hashCode());
     result = prime * result + ((status == null) ? 0 : status.hashCode());
     result = prime * result + ((lastModified == null) ? 0 : lastModified.hashCode());
+    result = prime * result + ((album == null) ? 0 : album.hashCode());
     return result;
   }
 
@@ -728,83 +767,26 @@ public class Music extends MyCellarObject implements Serializable {
     if(id != other.id) {
       return false;
     }
-    if (annee == null) {
-      if (other.annee != null) {
-        return false;
-      }
-    } else if (!annee.equals(other.annee)) {
+    if(externalId != other.externalId) {
       return false;
     }
+    if (equalsValue(annee, other.annee)) return false;
+    if (equalsValue(duration, other.duration)) return false;
+    if (equalsValue(comment, other.comment)) return false;
+    if (equalsValue(emplacement, other.emplacement)) return false;
+    if (equalsValue(artist, other.artist)) return false;
+    if (equalsValue(title, other.title)) return false;
+    if (equalsValue(composer, other.composer)) return false;
+    if (equalsValue(genre, other.genre)) return false;
+    if (equalsValue(prix, other.prix)) return false;
+    if (equalsValue(kind, other.kind)) return false;
     if (colonne != other.colonne) {
-      return false;
-    }
-    if (duration == null) {
-      if (other.duration != null) {
-        return false;
-      }
-    } else if (!duration.equals(other.duration)) {
-      return false;
-    }
-    if (comment == null) {
-      if (other.comment != null) {
-        return false;
-      }
-    } else if (!comment.equals(other.comment)) {
-      return false;
-    }
-    if (emplacement == null) {
-      if (other.emplacement != null) {
-        return false;
-      }
-    } else if (!emplacement.equals(other.emplacement)) {
       return false;
     }
     if (ligne != other.ligne) {
       return false;
     }
-    if (artist == null) {
-      if (other.artist != null) {
-        return false;
-      }
-    } else if (!artist.equals(other.artist)) {
-      return false;
-    }
-    if (title == null) {
-      if (other.title != null) {
-        return false;
-      }
-    } else if (!title.equals(other.title)) {
-      return false;
-    }
     if (numLieu != other.numLieu) {
-      return false;
-    }
-    if (composer == null) {
-      if (other.composer != null) {
-        return false;
-      }
-    } else if (!composer.equals(other.composer)) {
-      return false;
-    }
-    if (genre == null) {
-      if (other.genre != null) {
-        return false;
-      }
-    } else if (!genre.equals(other.genre)) {
-      return false;
-    }
-    if (prix == null) {
-      if (other.prix != null) {
-        return false;
-      }
-    } else if (!prix.equals(other.prix)) {
-      return false;
-    }
-    if (kind == null) {
-      if (other.kind != null) {
-        return false;
-      }
-    } else if (!kind.equals(other.kind)) {
       return false;
     }
     if (tracks == null) {
@@ -814,20 +796,8 @@ public class Music extends MyCellarObject implements Serializable {
     } else if (!tracks.equals(other.tracks)) {
       return false;
     }
-    if (status == null) {
-      if (other.status != null) {
-        return false;
-      }
-    } else if (!status.equals(other.status)) {
-      return false;
-    }
-    if (lastModified == null) {
-      if (other.lastModified != null) {
-        return false;
-      }
-    } else if (!lastModified.equals(other.lastModified)) {
-      return false;
-    }
+    if (equalsValue(status, other.status)) return false;
+    if (equalsValue(lastModified, other.lastModified)) return false;
     if (diskNumber != other.diskNumber) {
       return false;
     }
@@ -837,14 +807,19 @@ public class Music extends MyCellarObject implements Serializable {
     if (rating != other.rating) {
       return false;
     }
-    if (file == null) {
-      if (other.file != null) {
-        return false;
-      }
-    } else if (!file.equals(other.file)) {
-      return false;
-    }
+    if (equalsValue(file, other.file)) return false;
     return true;
+  }
+
+  private boolean equalsValue(String value, String other) {
+    if (value == null) {
+      if (other != null) {
+        return true;
+      }
+    } else if (!value.equals(other)) {
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -854,6 +829,7 @@ public class Music extends MyCellarObject implements Serializable {
 
 
   public static class MusicBuilder {
+    private int externalId;
     private int id;
     private final String nom;
     private String annee;
@@ -875,11 +851,12 @@ public class Music extends MyCellarObject implements Serializable {
     private int diskCount;
     private int rating;
     private String file;
+    private String album;
 
     public MusicBuilder(String nom) {
       this.nom = nom;
-      id = numLieu = ligne = colonne = 0;
-      type = emplacement = prix = comment = annee = artist = composer = duration = genre = file = "";
+      id = numLieu = ligne = colonne = externalId = 0;
+      type = emplacement = prix = comment = annee = artist = composer = duration = genre = file = album = "";
       tracks = null;
       status = "";
       lastModified = null;
@@ -977,6 +954,16 @@ public class Music extends MyCellarObject implements Serializable {
 
     public MusicBuilder file(String file) {
       this.file = file;
+      return this;
+    }
+
+    public MusicBuilder externalId(int externalId) {
+      this.externalId = externalId;
+      return this;
+    }
+
+    public MusicBuilder album(String album) {
+      this.album = album;
       return this;
     }
 

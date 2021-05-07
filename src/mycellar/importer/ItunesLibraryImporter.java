@@ -17,11 +17,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <p>Titre : Cave &agrave; vin</p>
+ * <p>Description : Votre description</p>
+ * <p>Copyright : Copyright (c) 2021</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.2
+ * @since 07/05/21
+ */
 public class ItunesLibraryImporter {
 
   private static final Map<String, MusicInfo> MUSIC_INFO_MAP = new HashMap<>();
   static {
-    MUSIC_INFO_MAP.put("Track ID", new MusicInfo("integer", null));
+    MUSIC_INFO_MAP.put("Track ID", new MusicInfo("integer", MyCellarFields.EXTERNAL_ID));
     MUSIC_INFO_MAP.put("Track Number", new MusicInfo("integer", null));
     MUSIC_INFO_MAP.put("Year", new MusicInfo("integer", MyCellarFields.YEAR));
     MUSIC_INFO_MAP.put("Disc Number", new MusicInfo("integer", MyCellarFields.DISK_NUMBER));
@@ -36,7 +45,7 @@ public class ItunesLibraryImporter {
     MUSIC_INFO_MAP.put("Date Added", new MusicInfo("date", null));
     MUSIC_INFO_MAP.put("Location", new MusicInfo("string", MyCellarFields.FILE));
     MUSIC_INFO_MAP.put("Artist", new MusicInfo("string", MyCellarFields.ARTIST));
-    MUSIC_INFO_MAP.put("Album", new MusicInfo("string", null));
+    MUSIC_INFO_MAP.put("Album", new MusicInfo("string", MyCellarFields.ALBUM));
     MUSIC_INFO_MAP.put("Composer", new MusicInfo("string", MyCellarFields.COMPOSER));
   }
   List<Music> list = new LinkedList<>();

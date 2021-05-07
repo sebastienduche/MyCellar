@@ -66,6 +66,7 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -78,8 +79,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.3
- * @since 22/04/21
+ * @version 14.4
+ * @since 07/05/21
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -88,6 +89,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 	private final MyCellarRadioButton type_txt = new MyCellarRadioButton(LabelType.INFO, "040", true);
 	private final MyCellarRadioButton type_xls = new MyCellarRadioButton(LabelType.INFO, "041", false);
 	private final MyCellarRadioButton type_xml = new MyCellarRadioButton(LabelType.INFO, "203", false);
+	private final MyCellarRadioButton type_iTunes = new MyCellarRadioButton(LabelType.INFO_OTHER, "Import.iTunes", false);
 	private final char importChar = Program.getLabel("IMPORT").charAt(0);
 	private final char ouvrirChar = Program.getLabel("OUVRIR").charAt(0);
 	private final List<MyCellarComboBox<MyCellarFields>> comboBoxList = new ArrayList<>(COUNT);
@@ -122,11 +124,14 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 		checkboxGroup1.add(type_txt);
 		checkboxGroup1.add(type_xls);
 		checkboxGroup1.add(type_xml);
+		if (Program.isMusicType()) {
+			checkboxGroup1.add(type_iTunes);
+			type_iTunes.addItemListener(this::type_itemStateChanged);
+		}
 		type_txt.addItemListener(this::type_itemStateChanged);
 		openit.addActionListener(this::openit_actionPerformed);
 		parcourir.addActionListener(this::parcourir_actionPerformed);
 		type_xls.addItemListener(this::type_itemStateChanged);
-
 		type_xml.addItemListener(this::type_itemStateChanged);
 
 		addKeyListener(new KeyAdapter() {
@@ -148,6 +153,9 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 		panelFileType.add(type_txt);
 		panelFileType.add(type_xls, "gapleft 15px");
 		panelFileType.add(type_xml, "gapleft 15px");
+		if (Program.isMusicType()) {
+			panelFileType.add(type_iTunes, "gapleft 15px");
+		}
 		panelFileType.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos039")));
 		panelType.add(panelFileType);
 		JPanel panelSeparator = new JPanel();
@@ -170,10 +178,10 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 		JPanel panelChoix = new JPanel();
 		panelChoix.setLayout(new MigLayout("","[][][][]",""));
 		panelChoix.add(textControl2, "span 4,wrap");
-		for (int i=0; i<COUNT; i++) {
+		for (int i = 0; i < COUNT; i++) {
 			MyCellarComboBox<MyCellarFields> combo = new MyCellarComboBox<>();
 			combo.addItem(MyCellarFields.EMPTY);
-			MyCellarFields.getFieldsListForImportAndWorksheet()
+			Objects.requireNonNull(MyCellarFields.getFieldsListForImportAndWorksheet())
 					.forEach(combo::addItem);
 			if (i < COUNT - 1) {
 				int index = i + 1;
@@ -207,7 +215,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 		label_progression.setText("");
 		label2.setVisible(type_txt.isSelected());
 		separateur.setVisible(type_txt.isSelected());
-		boolean typeXml = type_xml.isSelected();
+		boolean typeXml = type_xml.isSelected() || type_iTunes.isSelected();
 		comboBoxList.forEach(c -> c.setVisible(!typeXml));
 		titre.setVisible(!typeXml);
 		textControl2.setVisible(!typeXml);
@@ -280,7 +288,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-		}	else if (type_xml.isSelected()) {
+		}	else if (type_xml.isSelected() || type_iTunes.isSelected()) {
 			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
 		}
 
@@ -344,18 +352,20 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 			}
 
 			int nb_choix = 0;
-			for (var combo : comboBoxList) {
-				if (combo.getSelectedIndex() != 0) {
-					nb_choix++;
-				}
-			}
-
 			EnumMap<MyCellarFields, Integer> mapFieldCount = new EnumMap<>(MyCellarFields.class);
-			for (int i = 0; i < nb_choix; i++) {
-				final var comboBox = comboBoxList.get(i);
-				final MyCellarFields selectedField = (MyCellarFields) comboBox.getSelectedItem();
-				if (MyCellarFields.isRealField(selectedField)) {
-					mapFieldCount.put(selectedField, mapFieldCount.getOrDefault(selectedField, 0) + 1);
+			if (type_xls.isSelected() || type_txt.isSelected()) {
+				for (var combo : comboBoxList) {
+					if (combo.getSelectedIndex() != 0) {
+						nb_choix++;
+					}
+				}
+
+				for (int i = 0; i < nb_choix; i++) {
+					final var comboBox = comboBoxList.get(i);
+					final MyCellarFields selectedField = (MyCellarFields) comboBox.getSelectedItem();
+					if (MyCellarFields.isRealField(selectedField)) {
+						mapFieldCount.put(selectedField, mapFieldCount.getOrDefault(selectedField, 0) + 1);
+					}
 				}
 			}
 
@@ -373,7 +383,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 				return;
 			}
 
-			if (!type_xml.isSelected() && nb_choix == 0) {
+			if ((type_xls.isSelected() || type_txt.isSelected()) && nb_choix == 0) {
 				label_progression.setText("");
 				Debug("ERROR: No field selected");
 				//"Aucun champs selectionnes");
@@ -387,7 +397,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					label_progression.setText("");
 					Debug("ERROR: Not a XLS File");
-					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom), Program.getError("Error035"));
 					importe.setEnabled(true);
 					return;
@@ -396,7 +405,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_TXT.toString(), Filtre.FILTRE_CSV.toString()))) {
 					label_progression.setText("");
 					Debug("ERROR: Not a Text File");
-					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error023"), nom), Program.getError("Error024"));
 					importe.setEnabled(true);
 					return;
@@ -405,7 +413,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 				if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
 					label_progression.setText("");
 					Debug("ERROR: Not a XML File");
-					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error204"), nom), Program.getError("Error205"));
 					importe.setEnabled(true);
 					return;
@@ -417,6 +424,11 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 				return;
 			}
 
+			if (type_iTunes.isSelected()) {
+				importFromITunes(f);
+				return;
+			}
+
 			boolean isMoreThanOne = false;
 			for (var key: mapFieldCount.keySet()) {
 				if (mapFieldCount.get(key) > 1) {
@@ -424,7 +436,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 					break;
 				}
 			}
-			Rangement new_rangement = null;
 			if (isMoreThanOne) {
 				label_progression.setText("");
 				Debug("ERROR: fields cannot be selected more than one time");
@@ -445,6 +456,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 				return;
 			}
 
+			Rangement new_rangement = null;
 			if (mapFieldCount.get(MyCellarFields.PLACE) == null) {
 				label_progression.setText("");
 				Debug("ERROR: No place defined, a place will be create");
@@ -706,6 +718,27 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 	private void importFromXML(File f) {
 		label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
 		ListeBouteille.loadXML(f);
+		showImportDone();
+	}
+
+	private void importFromITunes(File f) {
+		label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
+		final List<Music> list;
+		try {
+			list = new ItunesLibraryImporter().loadItunesLibrary(f);
+		} catch (NoITunesFileException e) {
+			Debug(e.toString());
+			Erreur.showSimpleErreur(Program.getError("Import.NotITunesFile"));
+			label_progression.setText("");
+			importe.setEnabled(true);
+			return;
+		}
+		list.forEach(music -> music.setEmplacement(Program.DEFAULT_PLACE.getNom()));
+		Program.getStorage().getListBouteilles().getMusic().addAll(list);
+		showImportDone();
+	}
+
+	private void showImportDone() {
 		importe.setEnabled(true);
 		label_progression.setText(Program.getLabel("Infos035")); //"Import Termine");
 		new Timer().schedule(

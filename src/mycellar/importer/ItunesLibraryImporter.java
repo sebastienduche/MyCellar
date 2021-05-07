@@ -2,6 +2,7 @@ package mycellar.importer;
 
 import mycellar.Music;
 import mycellar.core.common.MyCellarFields;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -68,7 +69,7 @@ public class ItunesLibraryImporter {
     }
   }
 
-  public List<Music> loadItunesLibrary(File file)  {
+  public List<Music> loadItunesLibrary(File file) throws NoITunesFileException {
     if (!file.exists()) {
       return Collections.emptyList();
     }
@@ -78,6 +79,8 @@ public class ItunesLibraryImporter {
       var dBuilder = dbFactory.newDocumentBuilder();
       var doc = dBuilder.parse(file);
       doc.getDocumentElement().normalize();
+
+      checkValidItunesFile(doc);
 
       final Node deepestDictElement = findDeepestDictElement(doc.getDocumentElement());
       final Node parentDictNode = deepestDictElement.getParentNode();
@@ -98,9 +101,17 @@ public class ItunesLibraryImporter {
           list.add(music);
         }
       }
-    } catch (IOException | SAXException | ParserConfigurationException ignored) {
+    } catch (IOException | SAXException | ParserConfigurationException e) {
+      throw new NoITunesFileException("Error", e);
     }
     return list;
+  }
+
+  private void checkValidItunesFile(Document doc) throws NoITunesFileException {
+    final NodeList dict1 = doc.getElementsByTagName("dict");
+    if (dict1.getLength() == 0) {
+      throw new NoITunesFileException("No lines found");
+    }
   }
 
   private void setValueToMusic(Node keyNode, Music music) {

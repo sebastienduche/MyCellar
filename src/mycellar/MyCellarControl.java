@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelProperty;
 import mycellar.placesmanagement.Place;
 
 import java.io.File;
@@ -13,8 +14,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 20/04/21
+ * @version 2.1
+ * @since 07/05/21
  */
 
 public final class MyCellarControl {
@@ -22,7 +23,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidBotteName(String name) {
     if (name == null || name.strip().isEmpty()) {
       Debug("ERROR: Wrong Name");
-      Erreur.showSimpleErreur(Program.getError("Error054")); //"Veuillez saisir le nom du vin!"
+      Erreur.showSimpleErreur(Program.getError("Error054", LabelProperty.OF_THE_SINGLE)); //"Veuillez saisir le nom du vin!"
       return true;
     }
     return false;

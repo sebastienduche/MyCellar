@@ -78,8 +78,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.4
- * @since 16/04/21
+ * @version 28.5
+ * @since 07/05/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1205,9 +1205,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		public void actionPerformed(ActionEvent arg0) {
 			Debug("newFileAction: Creating a new file...");
 			PanelObjectType panelObjectType = new PanelObjectType();
-			JOptionPane.showMessageDialog(getInstance(), panelObjectType,
+			if (JOptionPane.CANCEL_OPTION == JOptionPane.showConfirmDialog(getInstance(), panelObjectType,
 					"",
-					JOptionPane.PLAIN_MESSAGE);
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
+				return;
+			}
 			Program.putGlobalConfigString(PROGRAM_TYPE, panelObjectType.getSelectedType().name());
 			Program.newFile();
 			postOpenFile();

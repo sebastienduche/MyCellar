@@ -118,13 +118,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.7
- * @since 22/04/21
+ * @version 25.8
+ * @since 07/05/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.1.4.4";
+	public static final String INTERNAL_VERSION = "4.1.4.8";
 	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -155,7 +155,7 @@ public final class Program {
 	private static final List<MyCellarError> ERRORS = new LinkedList<>();
 
 	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
-	static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").build();
+	public static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").build();
 	public static final Rangement EMPTY_PLACE = new Rangement.CaisseBuilder("").build();
 	public static final Rangement STOCK_PLACE = new Rangement.CaisseBuilder(TEMP_PLACE).build();
 
@@ -842,13 +842,15 @@ public final class Program {
 			throw new UnableToOpenFileException("Error while reading objects.");
 		}
 
-		MyCellarBottleContenance.load();
+		if (isWineType()) {
+			MyCellarBottleContenance.load();
+			CountryVignobleController.load();
+		}
 
 		RangementUtils.putTabStock();
 		if (!getErrors().isEmpty()) {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
-		CountryVignobleController.load();
 
 		if (myCellarFile.isFileSavable()) {
 			list.addFirst(file.getAbsolutePath());

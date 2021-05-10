@@ -74,8 +74,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.1
- * @since 23/04/21
+ * @version 10.2
+ * @since 10/05/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -88,7 +88,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   @SuppressWarnings("deprecation")
   private final MyCellarLabel titleLabel = new MyCellarLabel();
   private final MyCellarButton createPlacesButton = new MyCellarButton(LabelType.INFO, "267", new CreatePlacesAction());
-  private final MyCellarButton manageButton = new MyCellarButton(LabelType.INFO_OTHER, "Main.Columns", new ManageColumnAction());
+  private final MyCellarButton manageColumnsButton = new MyCellarButton(LabelType.INFO_OTHER, "Main.Columns", new ManageColumnsAction());
   private final MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
   private final MyCellarButton modifyButton = new MyCellarButton(LabelType.INFO, "079", new ModifyBottlesAction());
   private final MyCellarButton reloadButton = new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.reloadErrors", new ReloadErrorsAction());
@@ -350,6 +350,51 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           return ((Music) b).getArtist();
         }
       });
+
+      columns.add(new ShowFileColumn<>(MyCellarFields.DURATION) {
+
+        @Override
+        void setValue(MyCellarObject b, Object value) {
+          b.setModified();
+          Program.setModified();
+          ((Music) b).setDuration((String) value);
+        }
+
+        @Override
+        Object getDisplayValue(MyCellarObject b) {
+          return ((Music) b).getDuration();
+        }
+      });
+
+      columns.add(new ShowFileColumn<>(MyCellarFields.EXTERNAL_ID) {
+
+        @Override
+        void setValue(MyCellarObject b, Object value) {
+          b.setModified();
+          Program.setModified();
+          ((Music) b).setExternalId((Integer) value);
+        }
+
+        @Override
+        Object getDisplayValue(MyCellarObject b) {
+          return ((Music) b).getExternalId();
+        }
+      });
+
+      columns.add(new ShowFileColumn<>(MyCellarFields.ALBUM) {
+
+        @Override
+        void setValue(MyCellarObject b, Object value) {
+          b.setModified();
+          Program.setModified();
+          ((Music) b).setAlbum((String) value);
+        }
+
+        @Override
+        Object getDisplayValue(MyCellarObject b) {
+          return ((Music) b).getAlbum();
+        }
+      });
     }
     if (!isWork()) {
       columns.add(new ShowFileColumn<>(MyCellarFields.STATUS) {
@@ -536,10 +581,10 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     });
     add(titleLabel, "align left");
     if (isNormal()) {
-      add(manageButton, "align right, split 3");
+      add(manageColumnsButton, "align right, split 3");
       add(modifyButton, "align right");
     } else if (isWork()) {
-      add(manageButton, "align right, split 5");
+      add(manageColumnsButton, "align right, split 5");
       add(clearWorksheetButton, "align right");
       add(removeFromWorksheetButton, "align right");
       add(modifyButton, "align right");
@@ -1023,11 +1068,11 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     Start.getInstance().updateMainPanel();
   }
 
-  private class ManageColumnAction extends AbstractAction {
+  private class ManageColumnsAction extends AbstractAction {
 
     private static final long serialVersionUID = 8165964725562440277L;
 
-    private ManageColumnAction() {
+    private ManageColumnsAction() {
     }
 
     @Override
@@ -1041,15 +1086,16 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       }
       List<ShowFileColumn<?>> cols = ((ShowFileModel) model).getColumns();
       final List<ShowFileColumn<?>> showFileColumns = cols.stream().filter(ShowFileColumn::isDefault).collect(Collectors.toList());
+      assert list != null;
       ManageColumnModel modelColumn = new ManageColumnModel(list, showFileColumns);
-      JTable table = new JTable(modelColumn);
-      TableColumnModel tcm = table.getColumnModel();
+      JTable jTable = new JTable(modelColumn);
+      TableColumnModel tcm = jTable.getColumnModel();
       TableColumn tc = tcm.getColumn(0);
       tc.setCellRenderer(new StateRenderer());
       tc.setCellEditor(new StateEditor());
       tc.setMinWidth(25);
       tc.setMaxWidth(25);
-      panel.add(new JScrollPane(table));
+      panel.add(new JScrollPane(jTable));
       JOptionPane.showMessageDialog(Start.getInstance(), panel, Program.getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
       List<Integer> properties = modelColumn.getSelectedColumns();
       if (!properties.isEmpty()) {

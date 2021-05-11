@@ -278,7 +278,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 						.withColumn(selectedCell.getColumn())
 						.build());
 			}
-			Program.deleteChooseCellPanel();
+			ProgramPanels.deleteChooseCellPanel();
 		}
 		return true;
 	}

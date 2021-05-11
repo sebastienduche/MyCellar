@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 
 import static mycellar.Program.EMPTY_PLACE;
 import static mycellar.Program.FONT_DIALOG_SMALL;
-import static mycellar.Program.deleteSupprimerRangement;
+import static mycellar.ProgramPanels.deleteSupprimerRangement;
 import static mycellar.Program.getAide;
 import static mycellar.Program.getCave;
 import static mycellar.Program.getCaveLength;
@@ -49,7 +49,7 @@ import static mycellar.Program.open;
 import static mycellar.Program.removeCave;
 import static mycellar.Program.setToTrash;
 import static mycellar.Program.showException;
-import static mycellar.Program.updateAllPanels;
+import static mycellar.ProgramPanels.updateAllPanels;
 
 
 /**

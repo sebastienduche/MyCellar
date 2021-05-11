@@ -2,6 +2,7 @@ package mycellar.actions;
 
 import mycellar.MyCellarImage;
 import mycellar.Program;
+import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.Utils;
 import mycellar.showfile.ShowFile;
@@ -20,24 +21,24 @@ public class OpenShowErrorsAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		SwingUtilities.invokeLater(() -> {
-			if(Program.getShowErrors() == null) {
-				final ShowFile showErrors = Program.createShowErrors();
-				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, showErrors);
-				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
+			if(ProgramPanels.getShowErrors() == null) {
+				final ShowFile showErrors = ProgramPanels.createShowErrors();
+				ProgramPanels.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, showErrors);
+				ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount()-1);
 			}
-			final ShowFile showErrors = Program.getShowErrors();
+			final ShowFile showErrors = ProgramPanels.getShowErrors();
 			showErrors.updateView();
-			int tabIndex = Program.findTab(MyCellarImage.ERROR);
+			int tabIndex = ProgramPanels.findTab(MyCellarImage.ERROR);
 			if(tabIndex != -1) {
-				Program.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel("ShowFile.ErrorTitle"));
-				Program.TABBED_PANE.setSelectedIndex(tabIndex);
+				ProgramPanels.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel("ShowFile.ErrorTitle"));
+				ProgramPanels.TABBED_PANE.setSelectedIndex(tabIndex);
 			}
 			else {
-				Program.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, showErrors);
-				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
+				ProgramPanels.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, showErrors);
+				ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount()-1);
 			}
 	
-			Utils.addCloseButton(Program.TABBED_PANE, showErrors);
+			Utils.addCloseButton(ProgramPanels.TABBED_PANE, showErrors);
 			Start.getInstance().updateMainPanel();
 		});
 	}

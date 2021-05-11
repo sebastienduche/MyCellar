@@ -3,6 +3,7 @@ package mycellar.actions;
 import mycellar.AddVin;
 import mycellar.MyCellarImage;
 import mycellar.Program;
+import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.Utils;
 import mycellar.core.IMyCellarObject;
@@ -25,28 +26,28 @@ public class OpenAddVinAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		SwingUtilities.invokeLater(() -> {
-			if (Program.getAddVin() == null) {
-				final AddVin addVin = Program.createAddVin();
-				Program.TABBED_PANE.addTab(Program.getLabel("OpenVin.modify1Item", LabelProperty.SINGLE), MyCellarImage.WINE, addVin);
-				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
+			if (ProgramPanels.getAddVin() == null) {
+				final AddVin addVin = ProgramPanels.createAddVin();
+				ProgramPanels.TABBED_PANE.addTab(Program.getLabel("OpenVin.modify1Item", LabelProperty.SINGLE), MyCellarImage.WINE, addVin);
+				ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount()-1);
 			}
-			final AddVin addVin = Program.getAddVin();
+			final AddVin addVin = ProgramPanels.getAddVin();
 			addVin.setBottles(listToModify);
 
-			int tabIndex = Program.findTab(MyCellarImage.WINE);
+			int tabIndex = ProgramPanels.findTab(MyCellarImage.WINE);
 			// Seconde verification
 			if (tabIndex != -1) {
-				tabIndex = Program.TABBED_PANE.indexOfComponent(addVin);
+				tabIndex = ProgramPanels.TABBED_PANE.indexOfComponent(addVin);
 			}
 			if (tabIndex != -1) {
-				Program.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL));
-				Program.TABBED_PANE.setSelectedIndex(tabIndex);
+				ProgramPanels.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL));
+				ProgramPanels.TABBED_PANE.setSelectedIndex(tabIndex);
 			} else {
-				Program.TABBED_PANE.addTab(Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL), MyCellarImage.WINE, addVin);
-				Program.TABBED_PANE.setSelectedIndex(Program.TABBED_PANE.getTabCount()-1);
+				ProgramPanels.TABBED_PANE.addTab(Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL), MyCellarImage.WINE, addVin);
+				ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount()-1);
 			}
 
-			Utils.addCloseButton(Program.TABBED_PANE, addVin);
+			Utils.addCloseButton(ProgramPanels.TABBED_PANE, addVin);
 			Start.getInstance().updateMainPanel();
 		});
 	}

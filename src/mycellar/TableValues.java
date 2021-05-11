@@ -134,7 +134,7 @@ class TableValues extends AbstractTableModel {
 		switch (column) {
 			case SHOW:
 				MyCellarObject bottle = datas.get(row);
-				Program.showBottle(bottle, true);
+				ProgramPanels.showBottle(bottle, true);
 				break;
 			case ETAT:
 				listBoolean.set(row, (Boolean)value);

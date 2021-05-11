@@ -1,6 +1,6 @@
 package mycellar.core.datas.jaxb;
 
-import mycellar.Program;
+import mycellar.core.IdGenerator;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -19,7 +19,7 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
 
 	public AppelationJaxb() {
 		aoc = "";
-		id = Program.generateID();
+		id = IdGenerator.generateID();
 	}
 
 	public String getAOC() {
@@ -100,7 +100,7 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
 	}
 
 	public void makeItClean() {
-		id = Program.generateID();
+		id = IdGenerator.generateID();
 		if (getAOC() == null) {
 			setAOC("");
 		}

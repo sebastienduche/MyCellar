@@ -113,7 +113,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
 		m_comment.setText("");
 
-		Program.getSearch().ifPresent(Search::updateTable);
+		ProgramPanels.getSearch().ifPresent(Search::updateTable);
 		panelVignobles.resetCombos();
 		panelPlace.resetValues();
 		rangementInModif = null;
@@ -726,7 +726,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			if (m_lv != null) {
 				m_lv.updateList(listBottleInModification);
 			}
-			Program.getSearch().ifPresent(search -> {
+			ProgramPanels.getSearch().ifPresent(search -> {
 				search.removeBottle(bToDelete);
 				search.updateTable();
 			});
@@ -742,7 +742,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		Debug("Do After Run...");
 		bottle = null;
 		panelGeneral.setMyCellarObject(null);
-		Program.updateManagePlacePanel();
+		ProgramPanels.updateManagePlacePanel();
 		panelVignobles.updateList();
 		new Timer().schedule(
 				new TimerTask() {
@@ -766,7 +766,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			reInitAddVin();
 		}
 
-		Program.TABBED_PANE.setTitleAt(Program.TABBED_PANE.getSelectedIndex(), Program.getLabel("Main.tabAdd", A_SINGLE));
+		ProgramPanels.TABBED_PANE.setTitleAt(ProgramPanels.TABBED_PANE.getSelectedIndex(), Program.getLabel("Main.tabAdd", A_SINGLE));
 		Debug("Do After Run... End");
 	}
 
@@ -859,7 +859,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
 	@Override
 	public boolean tabWillClose(TabEvent event) {
-		return Program.getAddVin().runExit();
+		return ProgramPanels.getAddVin().runExit();
 	}
 
 	@Override

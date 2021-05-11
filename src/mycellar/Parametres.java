@@ -284,7 +284,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	@Override
 	public void tabClosed() {
 		Start.getInstance().updateMainPanel();
-		Program.deleteParametres();
+		ProgramPanels.deleteParametres();
 	}
 
 	@Override

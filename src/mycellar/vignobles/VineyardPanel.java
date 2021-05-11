@@ -4,6 +4,7 @@ import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
+import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.StateButtonEditor;
 import mycellar.StateButtonRenderer;
@@ -334,7 +335,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 	public void tabClosed() {
 		comboCountry.setSelectedIndex(0);
 		model.setAppellations(null, null);
-		Program.updateAllPanels();
+		ProgramPanels.updateAllPanels();
 		Start.getInstance().updateMainPanel();
 	}
 

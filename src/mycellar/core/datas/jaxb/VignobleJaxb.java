@@ -8,7 +8,7 @@
 
 package mycellar.core.datas.jaxb;
 
-import mycellar.Program;
+import mycellar.core.IdGenerator;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -77,7 +77,7 @@ public class VignobleJaxb implements Serializable {
 	private long id;
 
 	public VignobleJaxb() {
-		id = Program.generateID();
+		id = IdGenerator.generateID();
 	}
 
 	public VignobleJaxb(String country, String name, String aoc, String igp) {
@@ -85,7 +85,7 @@ public class VignobleJaxb implements Serializable {
 		this.name = name;
 		this.aoc = aoc;
 		this.igp = igp;
-		id = Program.generateID();
+		id = IdGenerator.generateID();
 	}
 
 	public long getId() {

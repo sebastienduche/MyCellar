@@ -232,7 +232,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		if (!RangementUtils.putTabStock()) {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}
-		Program.getSearch().ifPresent(Search::updateTable);
+		ProgramPanels.getSearch().ifPresent(Search::updateTable);
 
 		Rangement rangement = bottle.getRangement();
 		if (!rangement.isCaisse()) {
@@ -240,7 +240,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		}
 
 		m_end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE));
-		Program.updatePanelsWithoutBottles();
+		ProgramPanels.updatePanelsWithoutBottles();
 		updateStatusAndTime();
 		resetModified();
 		Debug("Saving... Done");
@@ -279,7 +279,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
 		bottle.getRangement().clearStock(bottle);
 
-		Program.getSearch().ifPresent(search -> {
+		ProgramPanels.getSearch().ifPresent(search -> {
 			search.removeBottle(bToDelete);
 			search.updateTable();
 		});

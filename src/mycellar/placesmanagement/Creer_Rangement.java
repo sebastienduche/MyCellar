@@ -6,6 +6,7 @@ import mycellar.MyCellarControl;
 import mycellar.MyCellarImage;
 import mycellar.general.XmlUtils;
 import mycellar.Program;
+import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.TabEvent;
 import mycellar.actions.OpenShowErrorsAction;
@@ -356,7 +357,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 				nom_obj.setText("");
 				updatePlace(nom, nbPart, rangement);
 				updateView();
-				Program.updateAllPanels();
+				ProgramPanels.updateAllPanels();
 				Debug("Modifications completed");
 				label_cree.setText(Program.getError("Error123")); //"Rangement modifie.");
 			}	else {
@@ -384,7 +385,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 					putTabStock();
 					nom_obj.setText("");
 					updateView();
-					Program.updateAllPanels();
+					ProgramPanels.updateAllPanels();
 					label_cree.setText(Program.getError("Error123"));
 				} else {
 					if (rangement.getNbEmplacements() > listPart.size()) {
@@ -471,7 +472,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 								Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
 								nom_obj.setText("");
 								updateView();
-								Program.updateAllPanels();
+								ProgramPanels.updateAllPanels();
 							} else {
 								rangement.setNom(nom);
 								rangement.updatePlace(listPart);
@@ -550,7 +551,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 				Debug("Creation of '" + nom + "' completed.");
 				nom_obj.setText("");
 				label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
-				Program.updateAllPanels();
+				ProgramPanels.updateAllPanels();
 			}
 		}	else {
 			Debug("Creating complex place...");
@@ -577,7 +578,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 					Debug("Creating " + nom + " completed.");
 					label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
 					nom_obj.setText("");
-					Program.updateAllPanels();
+					ProgramPanels.updateAllPanels();
 				}
 				//Fin test check
 			}	else { // Si check1
@@ -588,7 +589,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 					Debug("Creating '" + nom + "' completed.");
 					label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
 					nom_obj.setText("");
-					Program.updateAllPanels();
+					ProgramPanels.updateAllPanels();
 				}
 			}
 		}

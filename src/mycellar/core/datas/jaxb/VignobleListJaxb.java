@@ -1,6 +1,7 @@
 package mycellar.core.datas.jaxb;
 
 import mycellar.Program;
+import mycellar.core.IdGenerator;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.xml.bind.JAXBContext;
@@ -45,7 +46,7 @@ public class VignobleListJaxb
 	private long id;
 
 	public VignobleListJaxb() {
-		id = Program.generateID();
+		id = IdGenerator.generateID();
 	}
 
 	public List<CountryVignobleJaxb> getCountryVignobleJaxbList() {
@@ -58,7 +59,7 @@ public class VignobleListJaxb
 
 	public void init() {
 		countryVignobleJaxbList = new ArrayList<>();
-		id = Program.generateID();
+		id = IdGenerator.generateID();
 	}
 
 	public void checkAvaibility() {

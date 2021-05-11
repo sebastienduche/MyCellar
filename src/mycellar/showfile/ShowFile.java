@@ -7,6 +7,7 @@ import mycellar.ITabListener;
 import mycellar.Music;
 import mycellar.MyCellarImage;
 import mycellar.Program;
+import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.StateButtonEditor;
 import mycellar.StateButtonRenderer;
@@ -512,7 +513,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle", LabelProperty.THE_SINGLE), myCellarObject.getNom()));
           return false;
         }
-        Program.showBottle(myCellarObject, true);
+        ProgramPanels.showBottle(myCellarObject, true);
         return false;
       }
     };
@@ -964,7 +965,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           Erreur.showSimpleErreur(Program.getError("Error154"));
         } else {
           if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-            Program.showBottle(b, true);
+        	  ProgramPanels.showBottle(b, true);
           }
         }
       }

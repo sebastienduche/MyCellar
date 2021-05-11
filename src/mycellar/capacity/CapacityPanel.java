@@ -3,6 +3,7 @@ package mycellar.capacity;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
+import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.StateButtonEditor;
 import mycellar.StateButtonRenderer;
@@ -74,7 +75,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
 			model.addValue(s);
 			defaultComboBox.addItem(s);
 		}
-		Program.updateAllPanels();
+		ProgramPanels.updateAllPanels();
 	}
 
 	@Override

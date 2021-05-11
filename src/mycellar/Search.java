@@ -305,11 +305,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 						Program.getStorage().addHistory(HistoryState.DEL, bottle);
 						Program.getStorage().deleteWine(bottle);
 						Program.setToTrash(bottle);
-						Program.removeBottleTab(bottle);
+						ProgramPanels.removeBottleTab(bottle);
 					}
 
 					RangementUtils.putTabStock();
-					Program.updateManagePlacePanel();
+					ProgramPanels.updateManagePlacePanel();
 
 					if (listToSupp.size() == 1) {
 						resul_txt.setText(Program.getLabel("Search.1ItemDeleted", LabelProperty.SINGLE));

@@ -206,13 +206,13 @@ class TableHistoryValues extends AbstractTableModel {
           History h = displayList.get(row);
           MyCellarObject bottle = h.getBouteille();
           if (h.isDeleted()) {
-            Program.showBottle(bottle, false);
+        	  ProgramPanels.showBottle(bottle, false);
           } else {
             Program.Debug("Bottle Get ID = " + bottle.getId());
             Program.getStorage().getListMyCellarObject().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst()
                 .ifPresentOrElse(
-                    bouteille -> Program.showBottle(bouteille, true),
-                    () -> Program.showBottle(bottle, false));
+                    bouteille -> ProgramPanels.showBottle(bouteille, true),
+                    () -> ProgramPanels.showBottle(bottle, false));
           }
         } else if (Program.isMusicType()) {
           Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);

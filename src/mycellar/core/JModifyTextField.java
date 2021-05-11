@@ -17,36 +17,36 @@ import java.util.Objects;
  * @since 20/04/21
  */
 
-public class JModifyTextField extends JTextField {
+public final class JModifyTextField extends JTextField {
 
 	private static final long serialVersionUID = 7663077125632345441L;
 
 	private boolean modified;
 	private boolean modifyActive;
-	
+
 	public JModifyTextField() {
 		modified = false;
 		modifyActive = true;
 		addKeyListener(new KeyListener() {
-			
+
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				if(modifyActive) {
-    				modified = true;
-    				doAfterModify();
+					modified = true;
+					doAfterModify();
 				}
 			}
-			
+
 			@Override
 			public void keyReleased(KeyEvent arg0) {
 			}
-			
+
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 			}
 		});
 	}
-	
+
 	private void doAfterModify() {
 		Start.setPaneModified(true);
 	}
@@ -58,7 +58,7 @@ public class JModifyTextField extends JTextField {
 	public void setModified(boolean modified) {
 		this.modified = modified;
 	}
-	
+
 	public boolean isModifyActive() {
 		return modifyActive;
 	}

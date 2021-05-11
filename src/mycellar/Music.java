@@ -647,30 +647,30 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public Music fromXmlElemnt(Element element) {
-    final int id = Integer.parseInt(getTextContent(element.getElementsByTagName("id"), "-1"));
-    final int externalId = Integer.parseInt(getTextContent(element.getElementsByTagName("external_id"), "-1"));
+    final int elemId = Integer.parseInt(getTextContent(element.getElementsByTagName("id"), "-1"));
+    final int elemExternalId = Integer.parseInt(getTextContent(element.getElementsByTagName("external_id"), "-1"));
     final String name = getTextContent(element.getElementsByTagName("title"));
     final String year = getTextContent(element.getElementsByTagName("annee"));
     final String type = getTextContent(element.getElementsByTagName("type"));
-    final String album = getTextContent(element.getElementsByTagName("album"));
+    final String elemAlbum = getTextContent(element.getElementsByTagName("album"));
     final String place = getTextContent(element.getElementsByTagName("emplacement"));
-    final int numLieu = Integer.parseInt(getTextContent(element.getElementsByTagName("num_lieu"), "0"));
+    final int elemNumLieu = Integer.parseInt(getTextContent(element.getElementsByTagName("num_lieu"), "0"));
     final int line = Integer.parseInt(getTextContent(element.getElementsByTagName("ligne"), "0"));
     final int column = Integer.parseInt(getTextContent(element.getElementsByTagName("colonne"), "0"));
     final String price = getTextContent(element.getElementsByTagName("prix"));
-    final String comment = getTextContent(element.getElementsByTagName("comment"));
-    final String artist = getTextContent(element.getElementsByTagName("artist"));
-    final String composer = getTextContent(element.getElementsByTagName("composer"));
-    final String genre = getTextContent(element.getElementsByTagName("genre"));
-    final String duration = getTextContent(element.getElementsByTagName("duration"));
+    final String elemComment = getTextContent(element.getElementsByTagName("comment"));
+    final String elemArtist = getTextContent(element.getElementsByTagName("artist"));
+    final String elemComposer = getTextContent(element.getElementsByTagName("composer"));
+    final String elemGenre = getTextContent(element.getElementsByTagName("genre"));
+    final String elemDuration = getTextContent(element.getElementsByTagName("duration"));
     NodeList nodeTracks = element.getElementsByTagName("tracks");
     List<Track> trackList = new LinkedList<>();
     for (int i = 0; i < nodeTracks.getLength(); i++) {
-      final Element tracks = (Element) nodeTracks.item(i);
-      final int trackNumber = Integer.parseInt(getTextContent(tracks.getElementsByTagName("number"), "0"));
-      final String trackLabel = getTextContent(tracks.getElementsByTagName("label"));
-      final String trackDuration = getTextContent(tracks.getElementsByTagName("duration"));
-      final String trackComment = getTextContent(tracks.getElementsByTagName("comment"));
+      final Element elemTracks = (Element) nodeTracks.item(i);
+      final int trackNumber = Integer.parseInt(getTextContent(elemTracks.getElementsByTagName("number"), "0"));
+      final String trackLabel = getTextContent(elemTracks.getElementsByTagName("label"));
+      final String trackDuration = getTextContent(elemTracks.getElementsByTagName("duration"));
+      final String trackComment = getTextContent(elemTracks.getElementsByTagName("comment"));
       final Track track = new Track();
       track.setNumber(trackNumber);
       track.setLabel(trackLabel);
@@ -679,36 +679,36 @@ public class Music extends MyCellarObject implements Serializable {
       trackList.add(track);
     }
 
-    String status = getTextContent(element.getElementsByTagName("status"));
+    String elemStatus = getTextContent(element.getElementsByTagName("status"));
     String lastModifed = getTextContent(element.getElementsByTagName("lastModified"));
-    String file = getTextContent(element.getElementsByTagName("file"));
-    int diskNumber = Integer.parseInt(getTextContent(element.getElementsByTagName("diskNumber"), "1"));
-    int diskCount = Integer.parseInt(getTextContent(element.getElementsByTagName("diskCount"), "1"));
-    int rating = Integer.parseInt(getTextContent(element.getElementsByTagName("rating"), "0"));
+    String elemFile = getTextContent(element.getElementsByTagName("file"));
+    int elemDiskNumber = Integer.parseInt(getTextContent(element.getElementsByTagName("diskNumber"), "1"));
+    int elemDiskCount = Integer.parseInt(getTextContent(element.getElementsByTagName("diskCount"), "1"));
+    int elemRating = Integer.parseInt(getTextContent(element.getElementsByTagName("rating"), "0"));
 
     return new MusicBuilder(name)
-        .id(id)
-        .externalId(externalId)
+        .id(elemId)
+        .externalId(elemExternalId)
         .annee(year)
         .musicSupport(MusicSupport.valueOf(type))
         .place(place)
-        .numPlace(numLieu)
+        .numPlace(elemNumLieu)
         .line(line)
         .column(column)
         .price(price)
-        .comment(comment)
-        .artist(artist)
-        .composer(composer)
-        .genre(genre)
-        .status(status)
+        .comment(elemComment)
+        .artist(elemArtist)
+        .composer(elemComposer)
+        .genre(elemGenre)
+        .status(elemStatus)
         .lastModified(lastModifed)
-        .duration(duration)
+        .duration(elemDuration)
         .tracks(trackList)
-        .diskNumber(diskNumber)
-        .diskCount(diskCount)
-        .rating(rating)
-        .file(file)
-        .album(album)
+        .diskNumber(elemDiskNumber)
+        .diskCount(elemDiskCount)
+        .rating(elemRating)
+        .file(elemFile)
+        .album(elemAlbum)
         .build();
   }
 
@@ -809,17 +809,6 @@ public class Music extends MyCellarObject implements Serializable {
     }
     if (equalsValue(file, other.file)) return false;
     return true;
-  }
-
-  private boolean equalsValue(String value, String other) {
-    if (value == null) {
-      if (other != null) {
-        return true;
-      }
-    } else if (!value.equals(other)) {
-      return true;
-    }
-    return false;
   }
 
   @Override

@@ -3,10 +3,10 @@ package mycellar;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
-import mycellar.core.common.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
+import mycellar.core.common.MyCellarFields;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -67,15 +67,16 @@ final class PDFOptions extends JDialog {
     if (Program.getCaveConfigBool(MyCellarSettings.BOLD, false)) {
       boldCheck.setSelected(true);
     }
-  
+
     if (Program.getCaveConfigBool(MyCellarSettings.BORDER, false)) {
       borderCheck.setSelected(true);
     }
     List<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
+    assert listColumns != null;
     nb_colonnes = listColumns.size();
-    final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     col_size = new MyCellarSpinner[nb_colonnes];
     export = new MyCellarCheckBox[nb_colonnes];
+    MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
       export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
       export[i].setSelected(1 == Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT", 0));
@@ -97,20 +98,20 @@ final class PDFOptions extends JDialog {
     jPanel1.add(new MyCellarLabel(LabelType.INFO, "256"), "split 4"); //Taille du texte
     jPanel1.add(titleSize);
     jPanel1.add(new MyCellarLabel("pt"));
-    jPanel1.add(boldCheck, "grow, align right");   
+    jPanel1.add(boldCheck, "grow, align right");
     add(jPanel1, "grow, wrap");
     jPanel2.add(new MyCellarLabel(LabelType.INFO, "256"), "split 4, span 3");
     jPanel2.add(textSize);
     jPanel2.add(new MyCellarLabel("pt"));
     jPanel2.add(borderCheck, "push, align right, gapbottom 15px");
-    
+
     for (int i = 0; i < nb_colonnes; i++) {
       jPanel2.add(colonnes[i], "newline");
       jPanel2.add(col_size[i], "split 2");
       jPanel2.add(new MyCellarLabel("cm"));
       jPanel2.add(export[i], "push, align right");
     }
-    
+
     JScrollPane jScrollPane1 = new JScrollPane(jPanel2);
     jScrollPane1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
     add(jScrollPane1, "grow, wrap");
@@ -144,8 +145,10 @@ final class PDFOptions extends JDialog {
       if (col_size_max > 19) {
         Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Infos273"), col_size_max), true);
       }
-    }
-    catch (Exception exc) {
+    } catch (NumberFormatException e1) {
+      Program.Debug("PDFOptions: ERROR: " + e1.getMessage());
+      Program.showException(e1);
+    } catch (RuntimeException exc) {
       Program.showException(exc);
     }
   }

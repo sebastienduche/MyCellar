@@ -8,11 +8,11 @@
 
 package mycellar;
 
-import mycellar.core.MyCellarObject;
-import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
@@ -185,136 +185,136 @@ public class Bouteille extends MyCellarObject implements Serializable {
 		status = builder.status;
 		lastModified = builder.lastModified;
 	}
-	
+
 	@Override
 	public int getId() {
 		return id;
 	}
-	
+
 	@Override
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	 @Override
-	 public String getNom() {
-		 return nom;
-	 }
+	@Override
+	public String getNom() {
+		return nom;
+	}
 
-	 @Override
-   public void setNom(String nom) {
-		 this.nom = nom;
-	 }
+	@Override
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
 
-	 @Override
-	 public String getAnnee() {
-		 return annee;
-	 }
+	@Override
+	public String getAnnee() {
+		return annee;
+	}
 
-	 @Override
-	 public void setAnnee(String annee) {
-		 this.annee = annee;
-	 }
+	@Override
+	public void setAnnee(String annee) {
+		this.annee = annee;
+	}
 
-	 @Override
-	 public String getKind() {
-		 return type;
-	 }
+	@Override
+	public String getKind() {
+		return type;
+	}
 
-	 @Override
-	 public void setKind(String kind) {
-		 this.type = kind;
-	 }
+	@Override
+	public void setKind(String kind) {
+		this.type = kind;
+	}
 
-	 @Override
-	 public String getEmplacement() {
-		 return emplacement;
-	 }
+	@Override
+	public String getEmplacement() {
+		return emplacement;
+	}
 
-	 @Override
-	 public void setEmplacement(String emplacement) {
-		 this.emplacement = emplacement;
-	 }
+	@Override
+	public void setEmplacement(String emplacement) {
+		this.emplacement = emplacement;
+	}
 
-	 @Override
-	 public int getNumLieu() {
-		 return numLieu;
-	 }
+	@Override
+	public int getNumLieu() {
+		return numLieu;
+	}
 
-	 @Override
-	 public void setNumLieu(int numLieu) {
-		 this.numLieu = numLieu;
-	 }
+	@Override
+	public void setNumLieu(int numLieu) {
+		this.numLieu = numLieu;
+	}
 
-	 @Override
-	 public int getLigne() {
-		 return ligne;
-	 }
+	@Override
+	public int getLigne() {
+		return ligne;
+	}
 
-	 @Override
-	 public void setLigne(int ligne) {
-		 this.ligne = ligne;
-	 }
+	@Override
+	public void setLigne(int ligne) {
+		this.ligne = ligne;
+	}
 
-	 @Override
-	 public int getColonne() {
-		 return colonne;
-	 }
+	@Override
+	public int getColonne() {
+		return colonne;
+	}
 
-	 @Override
-	 public void setColonne(int colonne) {
-		 this.colonne = colonne;
-	 }
+	@Override
+	public void setColonne(int colonne) {
+		this.colonne = colonne;
+	}
 
-	 @Override
-	 public String getPrix() {
-		 return prix;
-	 }
+	@Override
+	public String getPrix() {
+		return prix;
+	}
 
-	 public void setPrix(String prix) {
-		 this.prix = prix;
-	 }
+	public void setPrix(String prix) {
+		this.prix = prix;
+	}
 
-	 @Override
-	 public String getComment() {
-		 return comment;
-	 }
+	@Override
+	public String getComment() {
+		return comment;
+	}
 
-	 public void setComment(String comment) {
-		 this.comment = comment;
-	 }
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 
-	 public String getMaturity() {
-		 return maturity;
-	 }
+	public String getMaturity() {
+		return maturity;
+	}
 
-	 public void setMaturity(String maturity) {
-		 this.maturity = maturity;
-	 }
+	public void setMaturity(String maturity) {
+		this.maturity = maturity;
+	}
 
-	 public String getParker() {
-		 return parker;
-	 }
+	public String getParker() {
+		return parker;
+	}
 
-	 public void setParker(String parker) {
-		 this.parker = parker;
-	 }
+	public void setParker(String parker) {
+		this.parker = parker;
+	}
 
-	 public String getColor() {
-		 return color;
-	 }
+	public String getColor() {
+		return color;
+	}
 
-	 public void setColor(String color) {
-		 this.color = color;
-	 }
+	public void setColor(String color) {
+		this.color = color;
+	}
 
-	 public VignobleJaxb getVignoble() {
-		 return vignoble;
-	 }
+	public VignobleJaxb getVignoble() {
+		return vignoble;
+	}
 
-	 public void setVignoble(VignobleJaxb vignoble) {
-		 this.vignoble = vignoble;
-	 }
+	public void setVignoble(VignobleJaxb vignoble) {
+		this.vignoble = vignoble;
+	}
 
 	@Override
 	public String getStatus() {
@@ -337,75 +337,75 @@ public class Bouteille extends MyCellarObject implements Serializable {
 		this.lastModified = dateFormat.format(lastModified);
 	}
 
-	 @Override
-	 public Rangement getRangement() {
-		 return Program.getCave(emplacement);
-	 }
+	@Override
+	public Rangement getRangement() {
+		return Program.getCave(emplacement);
+	}
 
-	 @Override
-	 public int getAnneeInt() {
-		 if (annee.isEmpty()) {
-			 return 0;
-		 }
-		 if (isNonVintageYear(annee)) {
-			 return NON_VINTAGE_INT;
-		 }
-		 try {
-			 int anneeInt = Integer.parseInt(annee);
-			 return anneeInt;
-		 } catch(NumberFormatException e) {
-			 return 0;
-		 }
-	 }
+	@Override
+	public int getAnneeInt() {
+		if (annee.isEmpty()) {
+			return 0;
+		}
+		if (isNonVintageYear(annee)) {
+			return NON_VINTAGE_INT;
+		}
+		try {
+			int anneeInt = Integer.parseInt(annee);
+			return anneeInt;
+		} catch(NumberFormatException e) {
+			return 0;
+		}
+	}
 
-	 public static boolean isInvalidYear(String year) {
-		 year = year.strip();
-		 if (year.compareToIgnoreCase(NON_VINTAGE) == 0) {
-			 return false;
-		 }
-		 if (!Program.hasYearControl()) {
-			 return false;
-		 }
-		 int n;
-		 try {
-			 n = Integer.parseInt(year);
-		 } catch (NumberFormatException e) {
-			 Debug("ERROR: Unable to parse year '" + year + "'!");
-			 return true;
-		 }
+	public static boolean isInvalidYear(String year) {
+		year = year.strip();
+		if (year.compareToIgnoreCase(NON_VINTAGE) == 0) {
+			return false;
+		}
+		if (!Program.hasYearControl()) {
+			return false;
+		}
+		int n;
+		try {
+			n = Integer.parseInt(year);
+		} catch (NumberFormatException e) {
+			Debug("ERROR: Unable to parse year '" + year + "'!");
+			return true;
+		}
 
-		 int current_year = LocalDate.now().getYear();
-		 return year.length() == 4 && n > current_year;
-	 }
+		int current_year = LocalDate.now().getYear();
+		return year.length() == 4 && n > current_year;
+	}
 
-	 static boolean isNonVintageYear(String year) {
-		 return (year.compareToIgnoreCase(NON_VINTAGE) == 0);
-	 }
+	static boolean isNonVintageYear(String year) {
+		return (year.compareToIgnoreCase(NON_VINTAGE) == 0);
+	}
 
-	 @Override
-	 public boolean isNonVintage() {
-		 return isNonVintageYear(annee);
-	 }
+	@Override
+	public boolean isNonVintage() {
+		return isNonVintageYear(annee);
+	}
 
-	 @Override
-	 public double getPriceDouble() {
-		 String price = Program.convertStringFromHTMLString(prix);
-		 if (price.isEmpty()) {
-			 return 0;
-		 }
+	@Override
+	public double getPriceDouble() {
+		String price = Program.convertStringFromHTMLString(prix);
+		if (price.isEmpty()) {
+			return 0;
+		}
 
-		 return Program.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
-	 }
-	 
-	 @Override
-	 public BigDecimal getPrice() {
-		 String price = Program.convertStringFromHTMLString(prix);
-		 if (price.isEmpty()) {
-			 return BigDecimal.ZERO;
-		 }
+		return Program.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
+	}
 
-		 return Program.safeStringToBigDecimal(price, BigDecimal.ZERO);
-	 }
+	@Override
+	public BigDecimal getPrice() {
+		String price = Program.convertStringFromHTMLString(prix);
+		if (price.isEmpty()) {
+			return BigDecimal.ZERO;
+		}
+
+		return Program.safeStringToBigDecimal(price, BigDecimal.ZERO);
+	}
 
 	@Override
 	public boolean hasPrice() {
@@ -420,59 +420,59 @@ public class Bouteille extends MyCellarObject implements Serializable {
 		}
 		return true;
 	}
-	 
-	 public boolean isRedWine() {
-		 return BottleColor.getColor(color) == BottleColor.RED;
-	 }
-	 
-	 public boolean isWhiteWine() {
-		 return BottleColor.getColor(color) == BottleColor.WHITE;
-	 }
 
-	 public boolean isPinkWine() {
-		 return BottleColor.getColor(color) == BottleColor.PINK;
-	 }
+	public boolean isRedWine() {
+		return BottleColor.getColor(color) == BottleColor.RED;
+	}
 
-	 @Override
-	 public Place getPlace() {
+	public boolean isWhiteWine() {
+		return BottleColor.getColor(color) == BottleColor.WHITE;
+	}
+
+	public boolean isPinkWine() {
+		return BottleColor.getColor(color) == BottleColor.PINK;
+	}
+
+	@Override
+	public Place getPlace() {
 		return new Place.PlaceBuilder(getRangement())
 				.withNumPlace(getNumLieu())
 				.withLine(getLigne())
 				.withColumn(getColonne())
 				.build();
-	 }
+	}
 
-	 @Override
-	 public String toString() {
-		 return nom;
-	 }
+	@Override
+	public String toString() {
+		return nom;
+	}
 
-	 public void update(final Bouteille b) {
-		 setNom(b.getNom());
-		 setAnnee(b.getAnnee());
-		 setColonne(b.getColonne());
-		 setComment(b.getComment());
-		 setEmplacement(b.getEmplacement());
-		 setLigne(b.getLigne());
-		 setMaturity(b.getMaturity());
-		 setNumLieu(b.getNumLieu());
-		 setParker(b.getParker());
-		 setPrix(b.getPrix());
-		 setKind(b.getKind());
-		 setColor(b.getColor());
-		 setVignoble(b.getVignoble());
-		 if (b.hasNoStatus()) {
-			 setStatus(BottlesStatus.MODIFIED.name());
-		 } else {
-		 	setStatus(b.getStatus());
-		 }
-		 setLastModified(LocalDateTime.now());
-	 }
+	public void update(final Bouteille b) {
+		setNom(b.getNom());
+		setAnnee(b.getAnnee());
+		setColonne(b.getColonne());
+		setComment(b.getComment());
+		setEmplacement(b.getEmplacement());
+		setLigne(b.getLigne());
+		setMaturity(b.getMaturity());
+		setNumLieu(b.getNumLieu());
+		setParker(b.getParker());
+		setPrix(b.getPrix());
+		setKind(b.getKind());
+		setColor(b.getColor());
+		setVignoble(b.getVignoble());
+		if (b.hasNoStatus()) {
+			setStatus(BottlesStatus.MODIFIED.name());
+		} else {
+			setStatus(b.getStatus());
+		}
+		setLastModified(LocalDateTime.now());
+	}
 
-	 @Override
-	 public void setModified() {
-	 	setLastModified(LocalDateTime.now());
-	 }
+	@Override
+	public void setModified() {
+		setLastModified(LocalDateTime.now());
+	}
 
 	@Override
 	public void setCreated() {
@@ -491,107 +491,107 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
 	@Override
 	public void updateStatus() {
-	 	if (canChangeStatus()) {
-	 		status = BottlesStatus.MODIFIED.name();
+		if (canChangeStatus()) {
+			status = BottlesStatus.MODIFIED.name();
 		}
-	 	setModified();
+		setModified();
 	}
 
-	 @Override
-	 public void setValue(MyCellarFields field, String value) {
-	 	setModified();
-		 switch (field) {
-			 case NAME:
-				 setNom(value);
-				 break;
-			 case YEAR:
-				 setAnnee(value);
-				 break;
-			 case TYPE:
-				 setKind(value);
-				 break;
-			 case PLACE:
-				 setEmplacement(value);
-				 break;
-			 case NUM_PLACE:
-				 setNumLieu(Double.valueOf(value).intValue());
-				 break;
-			 case LINE:
-				 setLigne(Double.valueOf(value).intValue());
-				 break;
-			 case COLUMN:
-				 setColonne(Double.valueOf(value).intValue());
-				 break;
-			 case PRICE:
-				 setPrix(value);
-				 break;
-			 case COMMENT:
-				 setComment(value);
-				 break;
-			 case MATURITY:
-				 setMaturity(value);
-				 break;
-			 case PARKER:
-				 setParker(value);
-				 break;
-			 case VINEYARD:
-				 if (getVignoble() == null) {
-					 setVignoble(new VignobleJaxb());
-				 }
-				 getVignoble().setName(value);
-				 break;
-			 case COLOR:
-				 setColor(value);
-				 break;
-			 case COUNTRY:
-				 if (getVignoble() == null) {
-					 setVignoble(new VignobleJaxb());
-				 }
-				 getVignoble().setCountry(value);
-				 break;
-			 case AOC:
-				 if (getVignoble() == null) {
-					 setVignoble(new VignobleJaxb());
-				 }
-				 getVignoble().setAOC(value);
-				 break;
-			 case IGP:
-				 if (getVignoble() == null) {
-					 setVignoble(new VignobleJaxb());
-				 }
-				 getVignoble().setIGP(value);
-				 break;
-			 case STATUS:
-				 setStatus(value);
-				 break;
-			 case DISK_NUMBER:
-			 case DISK_COUNT:
-			 case RATING:
-			 case FILE:
-			 case COMPOSER:
-			 case ARTIST:
-			 case SUPPORT:
-				 Program.throwNotImplementedIfNotFor(this, Music.class);
-				 break;
-			 default:
-				 break;
-		 }
-	 }
+	@Override
+	public void setValue(MyCellarFields field, String value) {
+		setModified();
+		switch (field) {
+			case NAME:
+				setNom(value);
+				break;
+			case YEAR:
+				setAnnee(value);
+				break;
+			case TYPE:
+				setKind(value);
+				break;
+			case PLACE:
+				setEmplacement(value);
+				break;
+			case NUM_PLACE:
+				setNumLieu(Double.valueOf(value).intValue());
+				break;
+			case LINE:
+				setLigne(Double.valueOf(value).intValue());
+				break;
+			case COLUMN:
+				setColonne(Double.valueOf(value).intValue());
+				break;
+			case PRICE:
+				setPrix(value);
+				break;
+			case COMMENT:
+				setComment(value);
+				break;
+			case MATURITY:
+				setMaturity(value);
+				break;
+			case PARKER:
+				setParker(value);
+				break;
+			case VINEYARD:
+				if (getVignoble() == null) {
+					setVignoble(new VignobleJaxb());
+				}
+				getVignoble().setName(value);
+				break;
+			case COLOR:
+				setColor(value);
+				break;
+			case COUNTRY:
+				if (getVignoble() == null) {
+					setVignoble(new VignobleJaxb());
+				}
+				getVignoble().setCountry(value);
+				break;
+			case AOC:
+				if (getVignoble() == null) {
+					setVignoble(new VignobleJaxb());
+				}
+				getVignoble().setAOC(value);
+				break;
+			case IGP:
+				if (getVignoble() == null) {
+					setVignoble(new VignobleJaxb());
+				}
+				getVignoble().setIGP(value);
+				break;
+			case STATUS:
+				setStatus(value);
+				break;
+			case DISK_NUMBER:
+			case DISK_COUNT:
+			case RATING:
+			case FILE:
+			case COMPOSER:
+			case ARTIST:
+			case SUPPORT:
+				Program.throwNotImplementedIfNotFor(this, Music.class);
+				break;
+			default:
+				break;
+		}
+	}
 
-	 @Override
-	 public boolean updateID() {
-	 	if (id != -1) {
+	@Override
+	public boolean updateID() {
+		if (id != -1) {
 			final List<IMyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
 			if(bouteilles.size() == 1 && bouteilles.get(0).equals(this)) {
 				return false;
 			}
 		}
-		 id = Program.getNewID();
-	 	return true;
-	 }
+		id = Program.getNewID();
+		return true;
+	}
 
-	 @Override
-	 public boolean isInTemporaryStock() {
+	@Override
+	public boolean isInTemporaryStock() {
 		return Program.TEMP_PLACE.equalsIgnoreCase(emplacement);
 	}
 
@@ -601,334 +601,268 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
 	@Override
 	public Bouteille fromXmlElemnt(Element element) {
-    NodeList nodeId = element.getElementsByTagName("id");
-    final int id = Integer.parseInt(nodeId.item(0).getTextContent());
-    NodeList nodeName = element.getElementsByTagName("nom");
-    final String name = nodeName.item(0).getTextContent();
-    NodeList nodeAnnee = element.getElementsByTagName("annee");
-    final String year = nodeAnnee.item(0).getTextContent();
-    NodeList nodeType = element.getElementsByTagName("type");
-    final String type = nodeType.item(0).getTextContent();
-    NodeList nodePlace = element.getElementsByTagName("emplacement");
-    final String place = nodePlace.item(0).getTextContent();
-    NodeList nodeNumLieu = element.getElementsByTagName("num_lieu");
-    final int numLieu = Integer.parseInt(nodeNumLieu.item(0).getTextContent());
-    NodeList nodeLine = element.getElementsByTagName("ligne");
-    final int line = Integer.parseInt(nodeLine.item(0).getTextContent());
-    NodeList nodeColumn = element.getElementsByTagName("colonne");
-    final int column = Integer.parseInt(nodeColumn.item(0).getTextContent());
-    NodeList nodePrice = element.getElementsByTagName("prix");
-    final String price = nodePrice.item(0).getTextContent();
-    NodeList nodeComment = element.getElementsByTagName("comment");
-    final String comment = nodeComment.item(0).getTextContent();
-    NodeList nodeMaturity = element.getElementsByTagName("maturity");
-    final String maturity = nodeMaturity.item(0).getTextContent();
-    NodeList nodeParker = element.getElementsByTagName("parker");
-    final String parker = nodeParker.item(0).getTextContent();
-    NodeList nodeColor = element.getElementsByTagName("color");
-    final String color = nodeColor.item(0).getTextContent();
+		NodeList nodeId = element.getElementsByTagName("id");
+		final int elemId = Integer.parseInt(nodeId.item(0).getTextContent());
+		NodeList nodeName = element.getElementsByTagName("nom");
+		final String name = nodeName.item(0).getTextContent();
+		NodeList nodeAnnee = element.getElementsByTagName("annee");
+		final String year = nodeAnnee.item(0).getTextContent();
+		NodeList nodeType = element.getElementsByTagName("type");
+		final String elemType = nodeType.item(0).getTextContent();
+		NodeList nodePlace = element.getElementsByTagName("emplacement");
+		final String place = nodePlace.item(0).getTextContent();
+		NodeList nodeNumLieu = element.getElementsByTagName("num_lieu");
+		final int elemNumLieu = Integer.parseInt(nodeNumLieu.item(0).getTextContent());
+		NodeList nodeLine = element.getElementsByTagName("ligne");
+		final int line = Integer.parseInt(nodeLine.item(0).getTextContent());
+		NodeList nodeColumn = element.getElementsByTagName("colonne");
+		final int column = Integer.parseInt(nodeColumn.item(0).getTextContent());
+		NodeList nodePrice = element.getElementsByTagName("prix");
+		final String price = nodePrice.item(0).getTextContent();
+		NodeList nodeComment = element.getElementsByTagName("comment");
+		final String elemComment = nodeComment.item(0).getTextContent();
+		NodeList nodeMaturity = element.getElementsByTagName("maturity");
+		final String elemMaturity = nodeMaturity.item(0).getTextContent();
+		NodeList nodeParker = element.getElementsByTagName("parker");
+		final String elemParker = nodeParker.item(0).getTextContent();
+		NodeList nodeColor = element.getElementsByTagName("color");
+		final String elemColor = nodeColor.item(0).getTextContent();
 		NodeList nodeStatus = element.getElementsByTagName("status");
-		String status = "";
+		String elemStatus = "";
 		if (nodeStatus.getLength() > 0) {
-			status = nodeStatus.item(0).getTextContent();
+			elemStatus = nodeStatus.item(0).getTextContent();
 		}
 		NodeList nodeLastModified = element.getElementsByTagName("lastModified");
 		String lastModifed = "";
 		if (nodeLastModified.getLength() > 0) {
 			lastModifed = nodeLastModified.item(0).getTextContent();
 		}
-    NodeList nodeVignoble = element.getElementsByTagName("vignoble");
-    final Element vignoble = (Element) nodeVignoble.item(0);
-    NodeList nodeCountry = vignoble.getElementsByTagName("country");
-    final String country = nodeCountry.item(0).getTextContent();
-    NodeList nodeVigobleName = vignoble.getElementsByTagName("name");
-    String vignobleName, AOC, IGP;
-    vignobleName = AOC = IGP = "";
-    if (nodeVignoble.getLength() == 1) {
-      vignobleName = nodeVigobleName.item(0).getTextContent();
-      NodeList nodeAOC = vignoble.getElementsByTagName("AOC");
-      if (nodeAOC.getLength() == 1) {
-        AOC = nodeAOC.item(0).getTextContent();
-      }
-      NodeList nodeIGP = vignoble.getElementsByTagName("IGP");
-      if (nodeIGP.getLength() == 1) {
-        IGP = nodeIGP.item(0).getTextContent();
-      }
-    }
-    return new BouteilleBuilder(name)
-				.id(id)
+		NodeList nodeVignoble = element.getElementsByTagName("vignoble");
+		final Element elemVignoble = (Element) nodeVignoble.item(0);
+		NodeList nodeCountry = elemVignoble.getElementsByTagName("country");
+		final String country = nodeCountry.item(0).getTextContent();
+		NodeList nodeVigobleName = elemVignoble.getElementsByTagName("name");
+		String vignobleName, AOC, IGP;
+		vignobleName = AOC = IGP = "";
+		if (nodeVignoble.getLength() == 1) {
+			vignobleName = nodeVigobleName.item(0).getTextContent();
+			NodeList nodeAOC = elemVignoble.getElementsByTagName("AOC");
+			if (nodeAOC.getLength() == 1) {
+				AOC = nodeAOC.item(0).getTextContent();
+			}
+			NodeList nodeIGP = elemVignoble.getElementsByTagName("IGP");
+			if (nodeIGP.getLength() == 1) {
+				IGP = nodeIGP.item(0).getTextContent();
+			}
+		}
+		return new BouteilleBuilder(name)
+				.id(elemId)
 				.annee(year)
-				.type(type)
+				.type(elemType)
 				.place(place)
-				.numPlace(numLieu)
-        .line(line)
+				.numPlace(elemNumLieu)
+				.line(line)
 				.column(column)
 				.price(price)
-				.comment(comment)
-				.maturity(maturity)
-				.parker(parker)
-				.status(status)
+				.comment(elemComment)
+				.maturity(elemMaturity)
+				.parker(elemParker)
+				.status(elemStatus)
 				.lastModified(lastModifed)
-        .color(color)
+				.color(elemColor)
 				.vignoble(country, vignobleName, AOC, IGP)
 				.build();
-  }
+	}
 
-	 /**
-	  * Debug
-	  *
-	  * @param sText String
-	  */
-	 private static void Debug(String sText) {
-		 Program.Debug("Bouteille: " + sText);
-	 }
+	/**
+	 * Debug
+	 *
+	 * @param sText String
+	 */
+	private static void Debug(String sText) {
+		Program.Debug("Bouteille: " + sText);
+	}
 
-	 @Override
-	 public int hashCode() {
-		 final int prime = 31;
-		 int result = 1;
-		 result = prime * result + ((annee == null) ? 0 : annee.hashCode());
-		 result = prime * result + colonne;
-		 result = prime * result + ((color == null) ? 0 : color.hashCode());
-		 result = prime * result + ((comment == null) ? 0 : comment.hashCode());
-		 result = prime * result
-				 + ((emplacement == null) ? 0 : emplacement.hashCode());
-		 result = prime * result + ligne;
-		 result = prime * result
-				 + ((maturity == null) ? 0 : maturity.hashCode());
-		 result = prime * result + ((nom == null) ? 0 : nom.hashCode());
-		 result = prime * result + numLieu;
-		 result = prime * result + ((parker == null) ? 0 : parker.hashCode());
-		 result = prime * result + ((prix == null) ? 0 : prix.hashCode());
-		 result = prime * result + ((type == null) ? 0 : type.hashCode());
-		 result = prime * result + ((vignoble == null) ? 0 : vignoble.hashCode());
-		 result = prime * result + ((status == null) ? 0 : status.hashCode());
-		 result = prime * result + ((lastModified == null) ? 0 : lastModified.hashCode());
-		 return result;
-	 }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((annee == null) ? 0 : annee.hashCode());
+		result = prime * result + colonne;
+		result = prime * result + ((color == null) ? 0 : color.hashCode());
+		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+		result = prime * result
+				+ ((emplacement == null) ? 0 : emplacement.hashCode());
+		result = prime * result + ligne;
+		result = prime * result
+				+ ((maturity == null) ? 0 : maturity.hashCode());
+		result = prime * result + ((nom == null) ? 0 : nom.hashCode());
+		result = prime * result + numLieu;
+		result = prime * result + ((parker == null) ? 0 : parker.hashCode());
+		result = prime * result + ((prix == null) ? 0 : prix.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((vignoble == null) ? 0 : vignoble.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((lastModified == null) ? 0 : lastModified.hashCode());
+		return result;
+	}
 
-	 @Override
-	 public boolean equals(Object obj) {
-		 if (this == obj) {
-			 return true;
-		 }
-		 if (obj == null) {
-			 return false;
-		 }
-		 if (getClass() != obj.getClass()) {
-			 return false;
-		 }
-		 Bouteille other = (Bouteille) obj;
-		 if(id != other.id) {
-			 return false;
-		 }
-		 if (annee == null) {
-			 if (other.annee != null) {
-				 return false;
-			 }
-		 } else if (!annee.equals(other.annee)) {
-			 return false;
-		 }
-		 if (colonne != other.colonne) {
-			 return false;
-		 }
-		 if (color == null) {
-			 if (other.color != null) {
-				 return false;
-			 }
-		 } else if (!color.equals(other.color)) {
-			 return false;
-		 }
-		 if (comment == null) {
-			 if (other.comment != null) {
-				 return false;
-			 }
-		 } else if (!comment.equals(other.comment)) {
-			 return false;
-		 }
-		 if (emplacement == null) {
-			 if (other.emplacement != null) {
-				 return false;
-			 }
-		 } else if (!emplacement.equals(other.emplacement)) {
-			 return false;
-		 }
-		 if (ligne != other.ligne) {
-			 return false;
-		 }
-		 if (maturity == null) {
-			 if (other.maturity != null) {
-				 return false;
-			 }
-		 } else if (!maturity.equals(other.maturity)) {
-			 return false;
-		 }
-		 if (nom == null) {
-			 if (other.nom != null) {
-				 return false;
-			 }
-		 } else if (!nom.equals(other.nom)) {
-			 return false;
-		 }
-		 if (numLieu != other.numLieu) {
-			 return false;
-		 }
-		 if (parker == null) {
-			 if (other.parker != null) {
-				 return false;
-			 }
-		 } else if (!parker.equals(other.parker)) {
-			 return false;
-		 }
-		 if (prix == null) {
-			 if (other.prix != null) {
-				 return false;
-			 }
-		 } else if (!prix.equals(other.prix)) {
-			 return false;
-		 }
-		 if (type == null) {
-			 if (other.type != null) {
-				 return false;
-			 }
-		 } else if (!type.equals(other.type)) {
-			 return false;
-		 }
-		 if (vignoble == null) {
-			 if (other.vignoble != null) {
-				 return false;
-			 }
-		 } else if (!vignoble.equals(other.vignoble)) {
-			 return false;
-		 }
-		 if (status == null) {
-			 if (other.status != null) {
-				 return false;
-			 }
-		 } else if (!status.equals(other.status)) {
-			 return false;
-		 }
-		 if (lastModified == null) {
-			 if (other.lastModified != null) {
-				 return false;
-			 }
-		 } else if (!lastModified.equals(other.lastModified)) {
-			 return false;
-		 }
-		 return true;
-	 }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Bouteille other = (Bouteille) obj;
+		if(id != other.id) {
+			return false;
+		}
+		if (equalsValue(annee, other.annee)) return false;
+		if (equalsValue(color, other.color)) return false;
+		if (equalsValue(comment, other.comment)) return false;
+		if (equalsValue(emplacement, other.emplacement)) return false;
+		if (equalsValue(maturity, other.maturity)) return false;
+		if (equalsValue(nom, other.nom)) return false;
+		if (equalsValue(parker, other.parker)) return false;
+		if (equalsValue(prix, other.prix)) return false;
+		if (equalsValue(type, other.type)) return false;
+		if (equalsValue(status, other.status)) return false;
+		if (equalsValue(lastModified, other.lastModified)) return false;
+		if (colonne != other.colonne) {
+			return false;
+		}
+		if (ligne != other.ligne) {
+			return false;
+		}
+		if (numLieu != other.numLieu) {
+			return false;
+		}
+		if (vignoble == null) {
+			if (other.vignoble != null) {
+				return false;
+			}
+		} else if (!vignoble.equals(other.vignoble)) {
+			return false;
+		}
+		return true;
+	}
 
 	@Override
 	public boolean isInExistingPlace() {
-	 	return Program.isExistingPlace(emplacement);
+		return Program.isExistingPlace(emplacement);
 	}
 
 
 	public static class BouteilleBuilder {
-		 private int id;
-		 private final String nom;
-		 private String annee;
-		 private String type;
-		 private String emplacement;
-		 private int numLieu;
-		 private int ligne;
-		 private int colonne;
-		 private String prix;
-		 private String comment;
-		 private String maturity;
-		 private String parker;
-		 private String color;
-		 private VignobleJaxb vignoble;
-		 private String status;
-		 private String lastModified;
+		private int id;
+		private final String nom;
+		private String annee;
+		private String type;
+		private String emplacement;
+		private int numLieu;
+		private int ligne;
+		private int colonne;
+		private String prix;
+		private String comment;
+		private String maturity;
+		private String parker;
+		private String color;
+		private VignobleJaxb vignoble;
+		private String status;
+		private String lastModified;
 
-		 public BouteilleBuilder(String nom) {
-			 this.nom = nom;
-			 id = numLieu = ligne = colonne = 0;
-			 type = emplacement = prix = comment = annee = maturity = parker = color = "";
-			 vignoble = null;
-			 status = "";
-			 lastModified = null;
-		 }
+		public BouteilleBuilder(String nom) {
+			this.nom = nom;
+			id = numLieu = ligne = colonne = 0;
+			type = emplacement = prix = comment = annee = maturity = parker = color = "";
+			vignoble = null;
+			status = "";
+			lastModified = null;
+		}
 
-		 private BouteilleBuilder id(int id) {
-			 this.id = id;
-			 return this;
-		 }
+		private BouteilleBuilder id(int id) {
+			this.id = id;
+			return this;
+		}
 
-		 public BouteilleBuilder annee(String annee) {
-			 this.annee = annee;
-			 return this;
-		 }
+		public BouteilleBuilder annee(String annee) {
+			this.annee = annee;
+			return this;
+		}
 
-		 public BouteilleBuilder type(String type) {
-			 this.type = type;
-			 return this;
-		 }
+		public BouteilleBuilder type(String type) {
+			this.type = type;
+			return this;
+		}
 
-		 public BouteilleBuilder place(String place) {
-			 emplacement = place;
-			 return this;
-		 }
+		public BouteilleBuilder place(String place) {
+			emplacement = place;
+			return this;
+		}
 
-		 public BouteilleBuilder numPlace(int num) {
-			 numLieu = num;
-			 return this;
-		 }
+		public BouteilleBuilder numPlace(int num) {
+			numLieu = num;
+			return this;
+		}
 
-		 public BouteilleBuilder line(int num) {
-			 ligne = num;
-			 return this;
-		 }
+		public BouteilleBuilder line(int num) {
+			ligne = num;
+			return this;
+		}
 
-		 public BouteilleBuilder column(int num) {
-			 colonne = num;
-			 return this;
-		 }
+		public BouteilleBuilder column(int num) {
+			colonne = num;
+			return this;
+		}
 
-		 public BouteilleBuilder price(String price) {
-			 prix = price;
-			 return this;
-		 }
+		public BouteilleBuilder price(String price) {
+			prix = price;
+			return this;
+		}
 
-		 public BouteilleBuilder comment(String comment) {
-			 this.comment = comment;
-			 return this;
-		 }
+		public BouteilleBuilder comment(String comment) {
+			this.comment = comment;
+			return this;
+		}
 
-		 public BouteilleBuilder maturity(String maturity) {
-			 this.maturity = maturity;
-			 return this;
-		 }
+		public BouteilleBuilder maturity(String maturity) {
+			this.maturity = maturity;
+			return this;
+		}
 
-		 public BouteilleBuilder parker(String parker) {
-			 this.parker = parker;
-			 return this;
-		 }
+		public BouteilleBuilder parker(String parker) {
+			this.parker = parker;
+			return this;
+		}
 
-		 public BouteilleBuilder color(String color) {
-			 this.color = color;
-			 return this;
-		 }
+		public BouteilleBuilder color(String color) {
+			this.color = color;
+			return this;
+		}
 
-		 public BouteilleBuilder status(String status) {
-			 this.status = status;
-			 return this;
-		 }
+		public BouteilleBuilder status(String status) {
+			this.status = status;
+			return this;
+		}
 
-		 public BouteilleBuilder lastModified(String lastModified) {
-			 this.lastModified = lastModified;
-			 return this;
-		 }
+		public BouteilleBuilder lastModified(String lastModified) {
+			this.lastModified = lastModified;
+			return this;
+		}
 
-		 public BouteilleBuilder vignoble(String country, String name, String aoc, String igp) {
-			 vignoble = new VignobleJaxb(country, name, aoc, igp);
-			 return this;
-		 }
+		public BouteilleBuilder vignoble(String country, String name, String aoc, String igp) {
+			vignoble = new VignobleJaxb(country, name, aoc, igp);
+			return this;
+		}
 
-		 public Bouteille build() {
-			 return new Bouteille(this);
-		 }
-	 }
+		public Bouteille build() {
+			return new Bouteille(this);
+		}
+	}
 
 }

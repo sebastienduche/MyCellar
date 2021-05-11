@@ -1,23 +1,22 @@
 package mycellar.core;
 
-import java.awt.Font;
-
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
+import java.awt.Font;
 
 /**
  * Titre : Cave à vin
  * Description : Votre description
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
- * 
+ *
  * @author Sébastien Duché
  * @version 0.6
  * @since 18/10/20
  */
 
-public class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
+public final class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
 
 	private static final long serialVersionUID = 2584507081563652083L;
 	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
@@ -44,24 +43,24 @@ public class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
 		MyCellarLabelManagement.add(this);
 		setFont(FONT);
 	}
-	
+
 	public MyCellarCheckBox(LabelType type, String code, LabelProperty labelProperty) {
-    this.type = type;
-    this.code = code;
-    this.labelProperty = labelProperty;
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT);
-  }
-	
+		this.type = type;
+		this.code = code;
+		this.labelProperty = labelProperty;
+		updateText();
+		MyCellarLabelManagement.add(this);
+		setFont(FONT);
+	}
+
 	public MyCellarCheckBox(LabelType type, String code, String value) {
-    this.type = type;
-    this.code = code;
-    this.value = value;
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT);
-  }
+		this.type = type;
+		this.code = code;
+		this.value = value;
+		updateText();
+		MyCellarLabelManagement.add(this);
+		setFont(FONT);
+	}
 
 	public MyCellarCheckBox(Action a) {
 		super(a);
@@ -90,7 +89,7 @@ public class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
 
 	@Override
 	public void updateText() {
-	  MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
+		MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
 	}
 
 }

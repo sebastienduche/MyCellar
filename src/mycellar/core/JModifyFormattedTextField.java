@@ -20,7 +20,7 @@ import java.text.Format;
 public class JModifyFormattedTextField extends JFormattedTextField {
 
 	private static final long serialVersionUID = -7364848812779720027L;
-	
+
 	private boolean modified;
 	private boolean modifyActive;
 
@@ -28,34 +28,34 @@ public class JModifyFormattedTextField extends JFormattedTextField {
 		super(format);
 		init();
 	}
-	
+
 	private void init() {
 		modified = false;
 		modifyActive = true;
 		addKeyListener(new KeyListener() {
-			
+
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				if(modifyActive) {
-    				modified = true;
-    				doAfterModify();
-				}	
+				if (modifyActive) {
+					modified = true;
+					doAfterModify();
+				}
 			}
-			
+
 			@Override
 			public void keyReleased(KeyEvent arg0) {
 			}
-			
+
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 			}
 		});
 	}
-	
+
 	private void doAfterModify() {
 		Start.setPaneModified(true);
 	}
-	
+
 	public boolean isModified() {
 		return modified;
 	}

@@ -22,7 +22,7 @@ public class MyLinkedHashMap extends LinkedHashMap<String,Object> {
     try {
       return super.get(cle).toString();
     }
-    catch (Exception e) {
+    catch (RuntimeException e) {
       return null;
     }
   }

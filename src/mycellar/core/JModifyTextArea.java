@@ -1,11 +1,10 @@
 package mycellar.core;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import mycellar.Start;
 
 import javax.swing.JTextArea;
-
-import mycellar.Start;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -17,7 +16,7 @@ import mycellar.Start;
  * @since 28/08/20
  */
 
-public class JModifyTextArea extends JTextArea {
+public final class JModifyTextArea extends JTextArea {
 
 	private static final long serialVersionUID = 7858711227949516336L;
 
@@ -32,8 +31,8 @@ public class JModifyTextArea extends JTextArea {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				if (active) {
-    				modified = true;
-    				doAfterModify();
+					modified = true;
+					doAfterModify();
 				}
 			}
 
@@ -59,7 +58,7 @@ public class JModifyTextArea extends JTextArea {
 	public void setModified(boolean modified) {
 		this.modified = modified;
 	}
-	
+
 	public boolean isModifyActive() {
 		return active;
 	}

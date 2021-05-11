@@ -12,7 +12,7 @@ import javax.swing.JMenuItem;
  * @version 0.1
  * @since 04/12/20
  */
-public class MyCellarMenuItem extends JMenuItem implements IMyCellarComponent {
+public final class MyCellarMenuItem extends JMenuItem implements IMyCellarComponent {
 
   private final LabelType type;
   private final String code;

@@ -212,7 +212,7 @@ public abstract class TextFieldPopup extends JPanel {
 		public void keyReleased(KeyEvent e) {}
 	}
 
-	class MyJMenuItem extends MyCellarLabel {
+	final class MyJMenuItem extends MyCellarLabel {
 
 		private static final long serialVersionUID = -463113999199742853L;
 		private final Color blue = new Color(51,153,255);

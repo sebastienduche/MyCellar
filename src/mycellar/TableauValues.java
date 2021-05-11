@@ -122,7 +122,7 @@ class TableauValues extends AbstractTableModel {
 		try {
 			listBoolean.set(row, (Boolean)value);
 		}
-		catch (Exception e) {
+		catch (RuntimeException e) {
 			Program.showException(e);
 		}
 	}

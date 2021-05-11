@@ -25,10 +25,10 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 3.9
- * @since 09/04/21
+ * @version 4.0
+ * @since 11/05/21
  */
-class ListVin extends JPanel {
+final class ListVin extends JPanel {
   private ListValues listValues;
 
   private AddVin addVin;
@@ -84,7 +84,7 @@ class ListVin extends JPanel {
         add(scrollpane,"grow,wrap,width min(100,200)");
         add(MyCellarLabel2,"width min(100,200)");
         setVisible(true);
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
       Program.showException(e);
     }
   }

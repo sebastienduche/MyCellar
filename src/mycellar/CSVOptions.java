@@ -61,6 +61,7 @@ final class CSVOptions extends JDialog {
 		panel.setFont(Program.FONT_PANEL);
 		MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO, "034"); //Séparateur
 		listColumns = MyCellarFields.getFieldsList();
+		assert listColumns != null;
 		nb_colonnes = listColumns.size();
 		export = new MyCellarCheckBox[nb_colonnes];
 		final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];

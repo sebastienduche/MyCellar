@@ -15,21 +15,13 @@ import java.awt.Component;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.4
- * @since 29/08/19
+ * @version 2.5
+ * @since 11/05/21
  */
 public class Erreur {
 	private final JCheckBox checkNotShow = new JCheckBox(Program.getLabel("Infos213"));
-	static final long serialVersionUID = 230405;
-	private static final Erreur INSTANCE = new Erreur();
 
-	private Erreur() {
-
-	}
-
-	private static Erreur getInstance() {
-		return INSTANCE;
-	}
+	private Erreur() {}
 
 	/**
 	 * Erreur: Constructeur d'un message d'erreur simple.
@@ -66,7 +58,7 @@ public class Erreur {
 	 * @param texte2 String: Message 2
 	 */
 	public static void showSimpleErreur(String texte1, String texte2) {
-			getInstance().initialize(texte1, texte2, false, null);
+			new Erreur().initialize(texte1, texte2, false, null);
 	}
 
 	/**
@@ -77,7 +69,7 @@ public class Erreur {
 	 *               @param information String: Titre de la fenêtre
 	 */
 	public static void showSimpleErreur(String texte1, String texte2, boolean information) {
-		getInstance().initialize(texte1, texte2, information, null);
+		new Erreur().initialize(texte1, texte2, information, null);
 	}
 
 	/**
@@ -88,7 +80,7 @@ public class Erreur {
 	 * @param key String: Nom de la Clé
 	 */
 	public static void showKeyErreur(String texte1, String texte2, String key) {
-		getInstance().initialize(texte1, texte2, true, key);
+		new Erreur().initialize(texte1, texte2, true, key);
 	}
 
 	private void initialize(String texte1, String texte2, boolean information, String keyword) {

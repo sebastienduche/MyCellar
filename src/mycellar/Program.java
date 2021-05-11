@@ -118,13 +118,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.8
- * @since 07/05/21
+ * @version 25.9
+ * @since 11/05/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.1.5.3";
+	public static final String INTERNAL_VERSION = "4.1.5.5";
 	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -258,15 +258,13 @@ public final class Program {
 				break;
 		}
 		switch (theType) {
-			case WINE:
-				value = getLabel("Program." + prefix + "wine" + postfix);
-				break;
 			case BOOK:
 				value = getLabel("Program." + prefix + "book" + postfix);
 				break;
 			case MUSIC:
 				value = getLabel("Program." + prefix + "disc" + postfix);
 				break;
+			case WINE:
 			default:
 				value = getLabel("Program." + prefix + "wine" + postfix);
 		}
@@ -323,6 +321,8 @@ public final class Program {
 					putCaveConfigString(MyCellarSettings.DEVISE, "\u20ac");
 				}
 			}
+		} catch (FileNotFoundException e) {
+			throw new UnableToOpenFileException("File not found: " + e.getMessage());
 		} catch (IOException e) {
 			throw new UnableToOpenFileException("Load properties failed: " + e.getMessage());
 		}
@@ -345,6 +345,8 @@ public final class Program {
 				//Initialisation de la Map contenant config
 				properties.forEach((key, value) -> putGlobalConfigString(key.toString(), value.toString()));
 			}
+		} catch (FileNotFoundException e) {
+			throw new UnableToOpenFileException("File not found: " + e.getMessage());
 		} catch (IOException e) {
 			throw new UnableToOpenFileException("Load properties failed: " + e.getMessage());
 		}
@@ -391,37 +393,37 @@ public final class Program {
 			File file = new File(getWorkDir(true) + "data.xml");
 			if (file.exists()) {
 				Debug("Deleting old file: data.xml");
-				file.delete();
+				FileUtils.deleteQuietly(file);
 			}
 			file = new File(getWorkDir(true) + "Options.txt");
 			if (file.exists()) {
 				Debug("Deleting old file: Options.txt");
-				file.delete();
+				FileUtils.deleteQuietly(file);
 			}
 			file = new File(getWorkDir(true) + "static_all.sinfo");
 			if (file.exists()) {
 				Debug("Program: Deleting old file: static_all.sinfo");
-				file.delete();
+				FileUtils.deleteQuietly(file);
 			}
 			file = new File(getWorkDir(true) + "Errors.log");
 			if (file.exists()) {
 				Debug("Program: Deleting old file: Errors.log");
-				file.delete();
+				FileUtils.deleteQuietly(file);
 			}
 			file = new File(getWorkDir(true) + "other1.ini");
 			if (file.exists()) {
 				Debug("Program: Deleting old file: other1.ini");
-				file.delete();
+				FileUtils.deleteQuietly(file);
 			}
 			file = new File(getWorkDir(true) + "other2.ini");
 			if (file.exists()) {
 				Debug("Program: Deleting old file: other2.ini");
-				file.delete();
+				FileUtils.deleteQuietly(file);
 			}
 			file = new File(getWorkDir(true) + "other3.ini");
 			if (file.exists()) {
 				Debug("Program: Deleting old file: other3.ini");
-				file.delete();
+				FileUtils.deleteQuietly(file);
 			}
 		}
 		CONFIG_GLOBAL.remove(MyCellarSettings.DEBUG);
@@ -678,8 +680,7 @@ public final class Program {
 			}
 			oDebugFile.write("[" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "]: " + sText + "\n");
 			oDebugFile.flush();
-		}
-		catch (Exception ignored) {}
+		} catch (IOException ignored) {}
 	}
 
 	private static void closeDebug() {
@@ -766,10 +767,12 @@ public final class Program {
 	static void newFile() {
 		final File file = new File(getWorkDir(true) + UNTITLED1_SINFO);
 		if (file.exists()) {
-			file.delete();
+			FileUtils.deleteQuietly(file);
 		}
 		try {
-			file.createNewFile();
+			if (!file.createNewFile()) {
+				Debug("ERROR: Unable to create file: " + file.getAbsolutePath());
+			}
 		} catch (IOException e) {
 			showException(e);
 		}
@@ -900,11 +903,11 @@ public final class Program {
 
 		File f = new File(getPreviewXMLFileName());
 		if (f.exists()) {
-			f.delete();
+			FileUtils.deleteQuietly(f);
 		}
 		f = new File(getPreviewHTMLFileName());
 		if (f.exists()) {
-			f.delete();
+			FileUtils.deleteQuietly(f);
 		}
 
 		getErrors().clear();
@@ -978,7 +981,7 @@ public final class Program {
 			try {
 				Debug("Program: closeFile: Deleting work directory: " + f.getAbsolutePath());
 				FileUtils.deleteDirectory(f);
-			} catch(Exception e) {
+			} catch(IOException e) {
 				Debug("Program: Error deleting " + f.getAbsolutePath());
 				Debug("Program: " + e.getMessage());
 			}
@@ -1001,7 +1004,7 @@ public final class Program {
 			String key = o.toString();
 			properties.put(key, map.getString(key));
 		}
-		try (var outputStream = new FileOutputStream(file)){
+		try (var outputStream = new FileOutputStream(file)) {
 			properties.store(outputStream, null);
 		} catch (IOException e) {
 			showException(e);
@@ -1025,7 +1028,9 @@ public final class Program {
 		}
 		File f_obj = new File(m_sGlobalDir);
 		if (!f_obj.exists()) {
-			f_obj.mkdir();
+			if (!f_obj.mkdir()) {
+				Debug("ERROR: Unable to create directoy : " + f_obj.getAbsolutePath());
+			}
 		}
 
 		return m_sGlobalDir + File.separator;
@@ -1061,7 +1066,9 @@ public final class Program {
 		}
 		File f_obj = new File(m_sWorkDir);
 		if (!f_obj.exists()) {
-			f_obj.mkdir();
+			if (!f_obj.mkdir()) {
+				Debug("ERROR: Unable to create directoy : " + f_obj.getAbsolutePath());
+			}
 		}
 
 		String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
@@ -1069,7 +1076,9 @@ public final class Program {
 
 		f_obj = new File(m_sWorkDir);
 		if (!f_obj.exists()) {
-			f_obj.mkdir();
+			if (!f_obj.mkdir()) {
+				Debug("ERROR: Unable to create directoy : " + f_obj.getAbsolutePath());
+			}
 		}
 
 		Debug("Program: work directory: " + m_sWorkDir);
@@ -1333,7 +1342,7 @@ public final class Program {
 
 		PDFProperties properties = new PDFProperties(title, titleSize, textSize, border, boldTitle);
 
-		int nbCol = MyCellarFields.getFieldsList().size();
+		int nbCol = Objects.requireNonNull(MyCellarFields.getFieldsList()).size();
 		int countColumn = 0;
 		for (int i=0; i<nbCol; i++) {
 			int export = getCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT", 0);
@@ -1457,10 +1466,13 @@ public final class Program {
 		String s = getCaveConfigString(MyCellarSettings.HTMLEXPORT_COLUMN, "");
 		String [] fields = s.split(";");
 		for (String field : fields) {
-			for (MyCellarFields f : MyCellarFields.getFieldsList()) {
-				if (f.name().equals(field)) {
-					cols.add(f);
-					break;
+			List<MyCellarFields> fieldsList = MyCellarFields.getFieldsList();
+			if (null != fieldsList) {
+				for (MyCellarFields f : fieldsList) {
+					if (f.name().equals(field)) {
+						cols.add(f);
+						break;
+					}
 				}
 			}
 		}

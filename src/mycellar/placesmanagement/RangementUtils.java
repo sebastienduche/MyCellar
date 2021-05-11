@@ -23,11 +23,13 @@ import org.w3c.dom.Element;
 import javax.swing.JProgressBar;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,6 +38,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static mycellar.Program.throwNotImplementedIfNotFor;
@@ -52,8 +55,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.9
- * @since 23/04/21
+ * @version 4.0
+ * @since 11/05/21
  */
 public final class RangementUtils {
 
@@ -72,7 +75,7 @@ public final class RangementUtils {
 		String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ";");
 
 		final EnumMap<MyCellarFields, Boolean> map = new EnumMap<>(MyCellarFields.class);
-		for (var field : MyCellarFields.getFieldsList()) {
+		for (var field : Objects.requireNonNull(MyCellarFields.getFieldsList())) {
 			map.put(field, Program.getCaveConfigBool(MyCellarSettings.EXPORT_CSV + field.name(), false));
 		}
 
@@ -160,6 +163,7 @@ public final class RangementUtils {
 			if (fields.isEmpty()) {
 				fields = MyCellarFields.getFieldsList();
 			}
+			assert fields != null;
 			for (MyCellarFields field : fields) {
 				Element td = doc.createElement("td");
 				thead.appendChild(td);
@@ -238,6 +242,10 @@ public final class RangementUtils {
 			Debug("ParserConfigurationException");
 			Program.showException(e, false);
 			return false;
+		} catch (TransformerConfigurationException e) {
+			Debug("TransformerConfigurationException");
+			Program.showException(e, false);
+			return false;
 		} catch (TransformerException e) {
 			Debug("TransformerException");
 			Program.showException(e, false);
@@ -270,7 +278,7 @@ public final class RangementUtils {
 					return false;
 				}
 			}
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			Program.showException(e, false);
 			Debug( "write_XLS: ERROR: with file " + file);
 			return false;
@@ -281,6 +289,7 @@ public final class RangementUtils {
 		//Recuperation des colonnes a exporter
 		List<MyCellarFields> fields = MyCellarFields.getFieldsList();
 		int i = 0;
+		assert fields != null;
 		for (MyCellarFields field : fields) {
 			mapCle.put(field, Program.getCaveConfigBool(MyCellarSettings.SIZE_COL + i + "EXPORT_XLS", true));
 			i++;
@@ -400,8 +409,12 @@ public final class RangementUtils {
 			if (progressBar != null) {
 				progressBar.setValue(progressBar.getMaximum());
 			}
-		}
-		catch (IOException ex) {
+		} catch (FileNotFoundException e) {
+			Debug("ERROR: File not found : " + e.getMessage());
+			Program.showException(e, false);
+			return false;
+		} catch (IOException ex) {
+			Debug("ERROR: " + ex.getMessage());
 			Program.showException(ex, false);
 			return false;
 		}
@@ -525,7 +538,11 @@ public final class RangementUtils {
 			}
 
 			workbook.write(output);
-		}	catch (IOException ex) {
+		} catch (FileNotFoundException e) {
+			Debug("ERROR: File not found : " + e.getMessage());
+			Program.showException(e, false);
+		} catch (IOException ex) {
+			Debug("ERROR: " + ex.getMessage());
 			Program.showException(ex, false);
 		}
 	}

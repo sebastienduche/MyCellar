@@ -28,6 +28,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -36,7 +38,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -293,7 +297,10 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 				try (var htmlFile = new FileOutputStream(nom)) {
 					var transformer = tFactory.newTransformer(xslDoc);
 					transformer.transform(xmlDoc, new StreamResult(htmlFile));
-				} catch (Exception e1) {
+				} catch (FileNotFoundException e1) {
+					Debug("ERROR: File not found : " + e1.getMessage());
+					Program.showException(e1);
+				} catch (IOException e1) {
 					Program.showException(e1);
 				}
 			} else if (type_XLS.isSelected()) {
@@ -326,7 +333,13 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 					5000
 			);
 			preview.setEnabled(true);
-		}	catch (Exception exc) {
+		} catch (TransformerConfigurationException e1) {
+			Debug("ERROR: TransformerConfigurationException : " + e1.getMessage());
+			Program.showException(e1);
+		} catch (TransformerException e1) {
+			Debug("ERROR: TransformerException : " + e1.getMessage());
+			Program.showException(e1);
+		} catch (Exception exc) {
 			Program.showException(exc);
 		}
 	}

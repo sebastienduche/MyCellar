@@ -33,6 +33,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
@@ -318,7 +319,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 				});
 			}
 			Debug("Deleting Done");
-		}	catch (Exception exc) {
+		} catch (HeadlessException e1) {
+			Debug("ERROR: Why this error? " + e1.getMessage());
+			Program.showException(e1);
+		} catch (RuntimeException exc) {
 			Program.showException(exc);
 		}
 	}

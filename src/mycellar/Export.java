@@ -269,6 +269,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			options.setSelected(false);
 		}	else if(MyCellarRadioButtonHTML.isSelected()) {
 			List<MyCellarFields> fieldsList = MyCellarFields.getFieldsList();
+			assert fieldsList != null;
 			ManageColumnModel modelColumn = new ManageColumnModel(fieldsList, Program.getHTMLColumns());
 			JTable table = new JTable(modelColumn);
 			TableColumnModel tcm = table.getColumnModel();
@@ -343,7 +344,12 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		File aFile = new File(nom);
 		if (aFile.exists()) {
 			// Existing file. replace?
-			if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getError("Export.replaceFileQuestion"), aFile.getAbsolutePath()), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+			if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(
+					Start.getInstance(),
+					MessageFormat.format(Program.getError("Export.replaceFileQuestion"), aFile.getAbsolutePath()),
+					Program.getLabel("Infos049"),
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE)) {
 				end.setText("");
 				valider.setEnabled(true);
 				return;

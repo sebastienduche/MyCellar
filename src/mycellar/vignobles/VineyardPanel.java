@@ -4,7 +4,6 @@ import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.StateButtonEditor;
 import mycellar.StateButtonRenderer;
@@ -19,6 +18,7 @@ import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleListJaxb;
+import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;

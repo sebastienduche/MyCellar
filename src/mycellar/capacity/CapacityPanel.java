@@ -3,7 +3,6 @@ package mycellar.capacity;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.StateButtonEditor;
 import mycellar.StateButtonRenderer;
@@ -15,6 +14,7 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JOptionPane;
@@ -38,7 +38,7 @@ import static mycellar.core.LabelType.INFO;
  */
 
 public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
-	
+
 	private static final long serialVersionUID = -116789055896509475L;
 	private final CapacityTableModel model = new CapacityTableModel();
 	private final MyCellarComboBox<String> defaultComboBox = new MyCellarComboBox<>();

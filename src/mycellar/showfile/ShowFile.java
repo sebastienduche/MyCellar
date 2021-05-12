@@ -7,7 +7,6 @@ import mycellar.ITabListener;
 import mycellar.Music;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.StateButtonEditor;
 import mycellar.StateButtonRenderer;
@@ -35,6 +34,7 @@ import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetData;
+import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
@@ -965,7 +965,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           Erreur.showSimpleErreur(Program.getError("Error154"));
         } else {
           if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-        	  ProgramPanels.showBottle(b, true);
+            ProgramPanels.showBottle(b, true);
           }
         }
       }

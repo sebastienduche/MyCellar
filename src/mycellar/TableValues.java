@@ -1,7 +1,8 @@
 package mycellar;
 
-import mycellar.core.MyCellarObject;
 import mycellar.core.LabelProperty;
+import mycellar.core.MyCellarObject;
+import mycellar.general.ProgramPanels;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
@@ -181,7 +182,7 @@ class TableValues extends AbstractTableModel {
 	public List<MyCellarObject> getDatas() {
 		return datas;
 	}
-	
+
 	boolean hasNotBottle(MyCellarObject b) {
 		return !datas.contains(b);
 	}

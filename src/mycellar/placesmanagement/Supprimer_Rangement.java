@@ -2,7 +2,6 @@ package mycellar.placesmanagement;
 
 import mycellar.Erreur;
 import mycellar.ITabListener;
-import mycellar.general.XmlUtils;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.TabEvent;
@@ -15,6 +14,7 @@ import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.general.XmlUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JOptionPane;
@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 
 import static mycellar.Program.EMPTY_PLACE;
 import static mycellar.Program.FONT_DIALOG_SMALL;
-import static mycellar.ProgramPanels.deleteSupprimerRangement;
 import static mycellar.Program.getAide;
 import static mycellar.Program.getCave;
 import static mycellar.Program.getCaveLength;
@@ -49,7 +48,8 @@ import static mycellar.Program.open;
 import static mycellar.Program.removeCave;
 import static mycellar.Program.setToTrash;
 import static mycellar.Program.showException;
-import static mycellar.ProgramPanels.updateAllPanels;
+import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
+import static mycellar.general.ProgramPanels.updateAllPanels;
 
 
 /**

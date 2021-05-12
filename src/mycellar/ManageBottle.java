@@ -10,6 +10,7 @@ import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
@@ -82,7 +83,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		}
 	}
 
-	protected Bouteille getBottle() {
+	public Bouteille getBottle() {
 		return bottle;
 	}
 

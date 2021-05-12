@@ -3,6 +3,7 @@ package mycellar;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
+import mycellar.general.ProgramPanels;
 
 import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
@@ -206,7 +207,7 @@ class TableHistoryValues extends AbstractTableModel {
           History h = displayList.get(row);
           MyCellarObject bottle = h.getBouteille();
           if (h.isDeleted()) {
-        	  ProgramPanels.showBottle(bottle, false);
+            ProgramPanels.showBottle(bottle, false);
           } else {
             Program.Debug("Bottle Get ID = " + bottle.getId());
             Program.getStorage().getListMyCellarObject().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst()

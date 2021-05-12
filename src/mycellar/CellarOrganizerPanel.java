@@ -9,6 +9,7 @@ import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;

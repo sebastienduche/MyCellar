@@ -11,6 +11,7 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
 import mycellar.core.PopupListener;
+import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -85,7 +86,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		file_bak.addMouseListener(popup_l);
 		devise.addMouseListener(popup_l);
 		file_bak.setText(Program.getCaveConfigString(MyCellarSettings.FILE_EXCEL,""));
-		
+
 		annee.setValue(Program.getCaveConfigInt(MyCellarSettings.ANNEE, 50));
 		siecle.setValue(Program.getCaveConfigInt(MyCellarSettings.SIECLE, 19));
 
@@ -249,7 +250,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 			Program.putGlobalConfigString(MyCellarSettings.LANGUAGE, thelangue);
 			Program.setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
 			if (LanguageFileLoader.getInstance().isLoaded()) {
-					setLabels();
+				setLabels();
 			} else {
 				langue.setSelectedIndex(0);
 				Program.setLanguage(LanguageFileLoader.Language.FRENCH);

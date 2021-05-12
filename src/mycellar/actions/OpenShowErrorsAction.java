@@ -2,9 +2,9 @@ package mycellar.actions;
 
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.Utils;
+import mycellar.general.ProgramPanels;
 import mycellar.showfile.ShowFile;
 
 import javax.swing.AbstractAction;
@@ -17,7 +17,7 @@ public class OpenShowErrorsAction extends AbstractAction {
 
 	public OpenShowErrorsAction() {
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		SwingUtilities.invokeLater(() -> {
@@ -37,7 +37,7 @@ public class OpenShowErrorsAction extends AbstractAction {
 				ProgramPanels.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, showErrors);
 				ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount()-1);
 			}
-	
+
 			Utils.addCloseButton(ProgramPanels.TABBED_PANE, showErrors);
 			Start.getInstance().updateMainPanel();
 		});

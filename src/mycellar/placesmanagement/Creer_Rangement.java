@@ -4,9 +4,7 @@ import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarImage;
-import mycellar.general.XmlUtils;
 import mycellar.Program;
-import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.TabEvent;
 import mycellar.actions.OpenShowErrorsAction;
@@ -22,6 +20,8 @@ import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
 import mycellar.core.PopupListener;
+import mycellar.general.ProgramPanels;
+import mycellar.general.XmlUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;

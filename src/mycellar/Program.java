@@ -22,6 +22,7 @@ import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
+import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.pdf.PDFColumn;
 import mycellar.pdf.PDFProperties;
@@ -516,7 +517,7 @@ public final class Program {
 		return (int) getStorage().getAllList().stream().mapToDouble(IMyCellarObject::getPriceDouble).max().orElse(0);
 	}
 
-	static int getCellarValue() {
+	public static int getCellarValue() {
 		return (int) getStorage().getAllList().stream().mapToDouble(IMyCellarObject::getPriceDouble).sum();
 	}
 
@@ -1401,8 +1402,6 @@ public final class Program {
 		return cols;
 	}
 
-	
-
 	public static String readFirstLineText(final File f) {
 		if (f == null || !f.exists()) {
 			return "";
@@ -1507,7 +1506,7 @@ public final class Program {
 	static boolean isFileSavable() {
 		return myCellarFile != null && myCellarFile.isFileSavable();
 	}
-	
+
 	public static void throwNotImplementedIfNotFor(MyCellarObject myCellarObject, Class<?> aClass) {
 		if (!aClass.isInstance(myCellarObject)) {
 			throw new NotImplementedException("Not implemented For " + aClass);

@@ -3,11 +3,11 @@ package mycellar.actions;
 import mycellar.AddVin;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.Utils;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
+import mycellar.general.ProgramPanels;
 
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
@@ -18,11 +18,11 @@ public class OpenAddVinAction extends AbstractAction {
 
 	private static final long serialVersionUID = 6187152928186377148L;
 	private final LinkedList<? extends IMyCellarObject> listToModify;
-	
+
 	public OpenAddVinAction(LinkedList<? extends IMyCellarObject> listToModify) {
 		this.listToModify = listToModify;
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		SwingUtilities.invokeLater(() -> {

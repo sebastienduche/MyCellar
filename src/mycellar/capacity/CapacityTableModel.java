@@ -1,9 +1,9 @@
 package mycellar.capacity;
 
 import mycellar.Program;
-import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.general.ProgramPanels;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;

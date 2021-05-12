@@ -14,6 +14,7 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.requester.CollectionFilter;

@@ -3,9 +3,9 @@ package mycellar.actions;
 import mycellar.Bouteille;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.ProgramPanels;
 import mycellar.Start;
 import mycellar.Utils;
+import mycellar.general.ProgramPanels;
 import mycellar.showfile.ShowFile;
 
 import javax.swing.AbstractAction;
@@ -16,8 +16,8 @@ import java.util.List;
 
 public final class OpenWorkSheetAction extends AbstractAction {
 
-  private static final long serialVersionUID = -2351197475699686315L;
-  private final List<Bouteille> bouteilles;
+	private static final long serialVersionUID = -2351197475699686315L;
+	private final List<Bouteille> bouteilles;
 
 	public OpenWorkSheetAction() {
 		this(null);
@@ -27,7 +27,7 @@ public final class OpenWorkSheetAction extends AbstractAction {
 		putValue(SHORT_DESCRIPTION, Program.getLabel("ShowFile.Worksheet"));
 		bouteilles = list != null ? list : new ArrayList<>();
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		SwingUtilities.invokeLater(() -> {
@@ -47,7 +47,7 @@ public final class OpenWorkSheetAction extends AbstractAction {
 				ProgramPanels.TABBED_PANE.addTab(Program.getLabel("ShowFile.Worksheet"), MyCellarImage.WORK, showWorksheet);
 				ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount()-1);
 			}
-	
+
 			Utils.addCloseButton(ProgramPanels.TABBED_PANE, showWorksheet);
 			Start.getInstance().updateMainPanel();
 			showWorksheet.addWorkingBottles(bouteilles);

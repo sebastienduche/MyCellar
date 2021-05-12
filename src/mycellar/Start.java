@@ -17,6 +17,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.UnableToOpenFileException;
 import mycellar.core.UnableToOpenMyCellarFileException;
+import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.importer.Importer;
 import mycellar.launcher.Server;
@@ -232,7 +233,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 						Program.putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, true);
 						Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
 					} else if (DOWNLOAD_COMMAND.equals(tmp)) {
-					Debug("Download a new versiob and exit");
+						Debug("Download a new version and exit");
 						Server.getInstance().downloadVersion();
 						System.exit(3);
 					}
@@ -1866,10 +1867,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			Arrays.stream(Program.Type.values())
 					.filter(type -> !type.equals(Program.Type.BOOK))
 					.forEach(type -> {
-				final ObjectType type1 = new ObjectType(type);
-				objectTypes.add(type1);
-				types.addItem(type1);
-			});
+						final ObjectType type1 = new ObjectType(type);
+						objectTypes.add(type1);
+						types.addItem(type1);
+					});
 
 			ObjectType objectType = findObjectType(Program.Type.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
 			types.setSelectedItem(objectType);

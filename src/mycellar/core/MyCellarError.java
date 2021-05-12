@@ -24,7 +24,7 @@ public class MyCellarError {
 	private final int numLieu;
 	private boolean solved;
 
-	public enum ID{
+	public enum ID {
 		INEXISTING_PLACE,
 		INEXISTING_NUM_PLACE,
 		FULL_BOX,
@@ -106,7 +106,7 @@ public class MyCellarError {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof MyCellarError) {
+		if (obj instanceof MyCellarError) {
 			return myCellarObject.equals(((MyCellarError)obj).myCellarObject);
 		}
 		return false;

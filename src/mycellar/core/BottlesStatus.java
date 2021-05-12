@@ -21,13 +21,13 @@ public enum BottlesStatus {
 	}
 	
 	public static BottlesStatus getStatus(String value) {
-		if(value.isEmpty()) {
+		if (value.isEmpty()) {
 			return NONE;
 		}
 		try {
 			return valueOf(value);
-		}catch(Exception e) {
-			if(value.equals(CREATED.label)) {
+		} catch (IllegalArgumentException e) {
+			if (value.equals(CREATED.label)) {
 				return CREATED;
 			}	else if(value.equals(MODIFIED.label)) {
 				return MODIFIED;

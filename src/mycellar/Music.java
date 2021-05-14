@@ -16,6 +16,8 @@ import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
+
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -42,8 +44,8 @@ import static mycellar.general.XmlUtils.getTextContent;
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 23/04/21
+ * @version 0.9
+ * @since 14/05/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -431,6 +433,23 @@ public class Music extends MyCellarObject implements Serializable {
 
     int current_year = LocalDate.now().getYear();
     return year.length() == 4 && n > current_year;
+  }
+  
+  public String getFormattedDuration() {
+	  if (duration != null) {
+		  int value = Program.safeParseInt(duration, 0);
+		  value /= 1000;
+		  int hour = value / 3600;
+		  int newValue = value - (hour * 3600); 
+		  int minute = newValue / 60;
+		  int second = newValue - (minute * 60);
+		  if (hour > 0) {
+			  return hour + ":" + StringUtils.leftPad(Integer.toString(minute), 2, "0") + ":" + StringUtils.leftPad(Integer.toString(second), 2, "0");
+		  } else {
+			  return minute + ":" + StringUtils.leftPad(Integer.toString(second), 2, "0");
+		  }
+	  }
+	  return duration;
   }
 
   @Override

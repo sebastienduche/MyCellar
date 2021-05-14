@@ -75,8 +75,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.2
- * @since 10/05/21
+ * @version 10.3
+ * @since 14/05/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -358,12 +358,13 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         void setValue(MyCellarObject b, Object value) {
           b.setModified();
           Program.setModified();
+          Erreur.showSimpleErreur("Missing implementation");
           ((Music) b).setDuration((String) value);
         }
 
         @Override
         Object getDisplayValue(MyCellarObject b) {
-          return ((Music) b).getDuration();
+          return ((Music) b).getFormattedDuration();
         }
       });
 

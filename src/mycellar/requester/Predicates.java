@@ -1,9 +1,11 @@
 package mycellar.requester;
 
 import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.BottlesStatus;
 import mycellar.Bouteille;
+import mycellar.Music;
 import mycellar.Program;
 import mycellar.placesmanagement.Rangement;
 import mycellar.Start;
@@ -26,8 +28,8 @@ import java.math.BigDecimal;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 23/04/21
+ * @version 1.7
+ * @since 14/05/21
  */
 
 public class Predicates {
@@ -203,6 +205,81 @@ public class Predicates {
 			return new ValueSearch(JOptionPane.showInputDialog(panel));
 		}
 	};
+	
+	public static final IPredicate<MyCellarObject> ARTIST = new IPredicate<>() {
+		
+		private int type = -1;
+
+		@Override
+		public boolean apply(MyCellarObject music) {
+			return apply(music, "", -1);
+		}
+
+		@Override
+		public boolean apply(MyCellarObject myCellarObject, Object compare, int type) {
+			Program.throwNotImplementedIfNotFor(myCellarObject, Music.class);
+			Music music = (Music) myCellarObject;
+			if (music.getArtist() == null) {
+				return false;
+			}
+			if (type == 0) {
+    			if (compare instanceof String) {
+    				return music.getArtist().startsWith((String)compare);
+    			}
+			} else if (type == 1) {
+    			if (compare instanceof String) {
+    				return music.getArtist().endsWith((String)compare);
+    			}
+			} else if (type == 2) {
+				if (compare instanceof String) {
+					return music.getArtist().contains((String)compare);
+				}
+			}
+			return false;
+		}
+		
+		@Override
+		public boolean isValueRequired() {
+			return true;
+		}
+
+		@Override
+		public int getType() {
+			return type;
+		}
+
+		@Override
+		public boolean isEmptyValueForbidden() {
+			return true;
+		}
+		
+		@Override
+		public String getName() {
+			String label = Program.getLabel("Predicates.Artist");
+			if (type == 0) {
+				label += Program.getLabel("Predicates.StartWith");
+			} else if (type == 1) {
+				label += Program.getLabel("Predicates.EndWith");
+			} else if (type == 2) {
+				label += Program.getLabel("Predicates.Contains");
+			}
+			return label;
+		}
+		
+		@Override
+		public ValueSearch askforValue() {
+			type = 0;
+			JPanel panel = new JPanel();
+			JComboBox<String> combo = new JComboBox<>();
+			combo.addItem(Program.getLabel("Predicates.StartWith"));
+			combo.addItem(Program.getLabel("Predicates.EndWith"));
+			combo.addItem(Program.getLabel("Predicates.Contains"));
+			combo.addItemListener((e) -> type = combo.getSelectedIndex());
+			panel.add(combo);
+			return new ValueSearch(JOptionPane.showInputDialog(panel));
+		}
+	};
+	
 	
 	public static final IPredicate<IMyCellarObject> YEAR = new IPredicate<>() {
 

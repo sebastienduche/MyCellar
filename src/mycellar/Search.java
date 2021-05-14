@@ -57,8 +57,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 21.9
- * @since 09/04/21
+ * @version 22.0
+ * @since 14/05/21
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -703,7 +703,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
 	private void searchByRequest() {
 		Debug("Search by request");
-		CountryVignobleController.rebuild();
+		if (Program.isWineType()) {
+			CountryVignobleController.rebuild();
+		}
 		Collection<? extends MyCellarObject> bouteilles = CollectionFilter.select(Program.getStorage().getAllList() , panelRequest.getPredicates()).getResults();
 		boolean already_found = false;
 		List<MyCellarObject> bouteilleList = new LinkedList<>();

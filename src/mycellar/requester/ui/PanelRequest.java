@@ -21,8 +21,8 @@ import java.util.Collection;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 13/11/20
+ * @version 1.0
+ * @since 14/05/21
  */
 public final class PanelRequest extends JPanel {
 
@@ -58,10 +58,14 @@ public final class PanelRequest extends JPanel {
 		panelKeyword.add(new LabelSearch(Predicates.NAME, panelKeyword, true));
 		panelKeyword.add(new LabelSearch(Predicates.YEAR, panelKeyword, true));
 		panelKeyword.add(new LabelSearch(Predicates.RANGEMENT, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.COLOR, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.CAPACITY, panelKeyword, true));
+		if (Program.isWineType()) {
+			panelKeyword.add(new LabelSearch(Predicates.COLOR, panelKeyword, true));
+			panelKeyword.add(new LabelSearch(Predicates.CAPACITY, panelKeyword, true));
+			panelKeyword.add(new LabelSearch(Predicates.COUNTRY, panelKeyword, true));
+		} else if (Program.isMusicType()) {
+			panelKeyword.add(new LabelSearch(Predicates.ARTIST, panelKeyword, true));
+		}
 		panelKeyword.add(new LabelSearch(Predicates.PRICE, panelKeyword, true));
-		panelKeyword.add(new LabelSearch(Predicates.COUNTRY, panelKeyword, true));
 		panelKeyword.add(new LabelSearch(Predicates.STATUS, panelKeyword, true));
 		panelKeyword.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Parameters")));
 		panelOperator.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("PanelRequest.Operators")));

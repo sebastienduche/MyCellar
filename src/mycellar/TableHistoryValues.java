@@ -21,8 +21,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 22/04/21
+ * @version 3.1
+ * @since 15/05/21
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -100,6 +100,9 @@ class TableHistoryValues extends AbstractTableModel {
           b = h.getMusic();
         } else {
           b = h.getBouteille();
+        }
+        if(b == null) {
+        	return "";
         }
         String emplacement;
         if (b.isInTemporaryStock()) {

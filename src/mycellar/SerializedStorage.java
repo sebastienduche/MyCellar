@@ -97,8 +97,7 @@ public class SerializedStorage implements Storage {
 					distinctNames.add(myCellarObject.getNom());
 				}
 			}
-		}
-		if (Program.isMusicType()) {
+		} else if (Program.isMusicType()) {
 			listMyCellarObject.getMusic().addAll(listBouteille.getMusic());
 			for (MyCellarObject myCellarObject : listMyCellarObject.music) {
 				final List<History> theMusic = HISTORY_LIST.getHistory().stream().filter(history -> history.getMusic().getId() == myCellarObject.getId()).collect(Collectors.toList());

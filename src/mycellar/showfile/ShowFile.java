@@ -27,7 +27,9 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
+import mycellar.core.common.music.DurationConverter;
 import mycellar.core.common.music.MusicSupport;
+import mycellar.core.common.music.PanelDuration;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.CountryJaxb;
@@ -75,8 +77,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.3
- * @since 14/05/21
+ * @version 10.4
+ * @since 15/05/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -353,18 +355,25 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       });
 
       columns.add(new ShowFileColumn<>(MyCellarFields.DURATION) {
-
+        
         @Override
-        void setValue(MyCellarObject b, Object value) {
-          b.setModified();
-          Program.setModified();
-          Erreur.showSimpleErreur("Missing implementation");
-          ((Music) b).setDuration((String) value);
-        }
+        public boolean execute(MyCellarObject b, int row, int column) {
+        	Program.throwNotImplementedIfNotFor(b, Music.class);
+        	Music music = (Music) b;
+        	PanelDuration panelDuration = new PanelDuration(DurationConverter.getTimeFromDisplay((String)getDisplayValue(music)));
+        	if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), panelDuration,
+                    Program.getLabel("Main.ChooseDuration"), JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE)) {
+        		b.setModified();
+        		Program.setModified();
+        		music.setDuration(DurationConverter.getValueFromTime(panelDuration.getTime()));
+        	}
+        	return false;
+    	}
 
         @Override
         Object getDisplayValue(MyCellarObject b) {
-          return ((Music) b).getFormattedDuration();
+          return DurationConverter.getFormattedDisplay(((Music) b).getDuration());
         }
       });
 
@@ -1031,6 +1040,8 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           tc.setCellEditor(new DefaultCellEditor(colorCbx));
         } else if (column.getField().equals(MyCellarFields.SUPPORT)) {
           tc.setCellEditor(new DefaultCellEditor(musicSupportCbx));
+        } else if (column.getField().equals(MyCellarFields.DURATION)) {
+            tc.setCellEditor(new SimpleButtonEditor());
         } else if (column.getField().equals(MyCellarFields.STATUS)) {
           tc.setCellEditor(new DefaultCellEditor(statusCbx));
         } else if (column.isButton()) {

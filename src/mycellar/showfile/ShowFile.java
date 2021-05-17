@@ -355,21 +355,21 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       });
 
       columns.add(new ShowFileColumn<>(MyCellarFields.DURATION) {
-        
+
         @Override
         public boolean execute(MyCellarObject b, int row, int column) {
-        	Program.throwNotImplementedIfNotFor(b, Music.class);
-        	Music music = (Music) b;
-        	PanelDuration panelDuration = new PanelDuration(DurationConverter.getTimeFromDisplay((String)getDisplayValue(music)));
-        	if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), panelDuration,
-                    Program.getLabel("Main.ChooseDuration"), JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE)) {
-        		b.setModified();
-        		Program.setModified();
-        		music.setDuration(DurationConverter.getValueFromTime(panelDuration.getTime()));
-        	}
-        	return false;
-    	}
+          Program.throwNotImplementedIfNotFor(b, Music.class);
+          Music music = (Music) b;
+          PanelDuration panelDuration = new PanelDuration(DurationConverter.getTimeFromDisplay((String)getDisplayValue(music)));
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), panelDuration,
+              Program.getLabel("Main.ChooseDuration"), JOptionPane.OK_CANCEL_OPTION,
+              JOptionPane.PLAIN_MESSAGE)) {
+            b.setModified();
+            Program.setModified();
+            music.setDuration(DurationConverter.getValueFromTime(panelDuration.getTime()));
+          }
+          return false;
+        }
 
         @Override
         Object getDisplayValue(MyCellarObject b) {
@@ -1041,7 +1041,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         } else if (column.getField().equals(MyCellarFields.SUPPORT)) {
           tc.setCellEditor(new DefaultCellEditor(musicSupportCbx));
         } else if (column.getField().equals(MyCellarFields.DURATION)) {
-            tc.setCellEditor(new SimpleButtonEditor());
+          tc.setCellEditor(new SimpleButtonEditor());
         } else if (column.getField().equals(MyCellarFields.STATUS)) {
           tc.setCellEditor(new DefaultCellEditor(statusCbx));
         } else if (column.isButton()) {

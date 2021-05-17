@@ -1,7 +1,7 @@
 package mycellar;
 
-import mycellar.core.MyCellarObject;
 import mycellar.core.LabelProperty;
+import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.history.HistoryState;

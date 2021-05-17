@@ -1,18 +1,18 @@
 package mycellar.requester;
 
-import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
-import mycellar.core.common.bottle.BottleColor;
-import mycellar.core.BottlesStatus;
 import mycellar.Bouteille;
 import mycellar.Music;
 import mycellar.Program;
-import mycellar.placesmanagement.Rangement;
 import mycellar.Start;
+import mycellar.core.BottlesStatus;
+import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
+import mycellar.core.PanelVignobles;
+import mycellar.core.common.bottle.BottleColor;
+import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
-import mycellar.core.PanelVignobles;
-import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.placesmanagement.Rangement;
 import mycellar.requester.ui.ValueSearch;
 import net.miginfocom.swing.MigLayout;
 
@@ -77,8 +77,8 @@ public class Predicates {
 			panel.add(new JLabel(Program.getLabel("Predicates.SelectColor")), "wrap");
 			panel.add(liste);
 			JOptionPane.showMessageDialog(null, panel,
-			        "",
-			        JOptionPane.PLAIN_MESSAGE);
+					"",
+					JOptionPane.PLAIN_MESSAGE);
 			return new ValueSearch(liste.getSelectedItem());
 		}
 	};
@@ -138,7 +138,7 @@ public class Predicates {
 	};
 
 	public static final IPredicate<IMyCellarObject> NAME = new IPredicate<>() {
-		
+
 		private int type = -1;
 
 		@Override
@@ -149,13 +149,13 @@ public class Predicates {
 		@Override
 		public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
 			if (type == 0) {
-    			if (compare instanceof String) {
-    				return myCellarObject.getNom() != null && myCellarObject.getNom().startsWith((String)compare);
-    			}
+				if (compare instanceof String) {
+					return myCellarObject.getNom() != null && myCellarObject.getNom().startsWith((String)compare);
+				}
 			} else if (type == 1) {
-    			if (compare instanceof String) {
-    				return myCellarObject.getNom() != null && myCellarObject.getNom().endsWith((String)compare);
-    			}
+				if (compare instanceof String) {
+					return myCellarObject.getNom() != null && myCellarObject.getNom().endsWith((String)compare);
+				}
 			} else if (type == 2) {
 				if (compare instanceof String) {
 					return myCellarObject.getNom() != null && myCellarObject.getNom().contains((String)compare);
@@ -163,7 +163,7 @@ public class Predicates {
 			}
 			return false;
 		}
-		
+
 		@Override
 		public boolean isValueRequired() {
 			return true;
@@ -178,7 +178,7 @@ public class Predicates {
 		public boolean isEmptyValueForbidden() {
 			return true;
 		}
-		
+
 		@Override
 		public String getName() {
 			String label = Program.getLabel("Predicates.Name");
@@ -191,7 +191,7 @@ public class Predicates {
 			}
 			return label;
 		}
-		
+
 		@Override
 		public ValueSearch askforValue() {
 			type = 0;
@@ -205,9 +205,9 @@ public class Predicates {
 			return new ValueSearch(JOptionPane.showInputDialog(panel));
 		}
 	};
-	
+
 	public static final IPredicate<MyCellarObject> ARTIST = new IPredicate<>() {
-		
+
 		private int type = -1;
 
 		@Override
@@ -223,13 +223,13 @@ public class Predicates {
 				return false;
 			}
 			if (type == 0) {
-    			if (compare instanceof String) {
-    				return music.getArtist().startsWith((String)compare);
-    			}
+				if (compare instanceof String) {
+					return music.getArtist().startsWith((String)compare);
+				}
 			} else if (type == 1) {
-    			if (compare instanceof String) {
-    				return music.getArtist().endsWith((String)compare);
-    			}
+				if (compare instanceof String) {
+					return music.getArtist().endsWith((String)compare);
+				}
 			} else if (type == 2) {
 				if (compare instanceof String) {
 					return music.getArtist().contains((String)compare);
@@ -237,7 +237,7 @@ public class Predicates {
 			}
 			return false;
 		}
-		
+
 		@Override
 		public boolean isValueRequired() {
 			return true;
@@ -252,7 +252,7 @@ public class Predicates {
 		public boolean isEmptyValueForbidden() {
 			return true;
 		}
-		
+
 		@Override
 		public String getName() {
 			String label = Program.getLabel("Predicates.Artist");
@@ -265,7 +265,7 @@ public class Predicates {
 			}
 			return label;
 		}
-		
+
 		@Override
 		public ValueSearch askforValue() {
 			type = 0;
@@ -279,8 +279,8 @@ public class Predicates {
 			return new ValueSearch(JOptionPane.showInputDialog(panel));
 		}
 	};
-	
-	
+
+
 	public static final IPredicate<IMyCellarObject> YEAR = new IPredicate<>() {
 
 		@Override
@@ -292,12 +292,12 @@ public class Predicates {
 		public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
 			return (compare instanceof String) && myCellarObject.getAnnee() != null && myCellarObject.getAnnee().equals(compare);
 		}
-		
+
 		@Override
 		public boolean isValueRequired() {
 			return true;
 		}
-		
+
 		@Override
 		public String getName() {
 			return Program.getLabel("Predicates.Year");
@@ -312,13 +312,13 @@ public class Predicates {
 		public boolean isEmptyValueForbidden() {
 			return true;
 		}
-		
+
 		@Override
 		public ValueSearch askforValue() {
 			return new ValueSearch(JOptionPane.showInputDialog(getName()));
 		}
 	};
-	
+
 	public static final IPredicate<IMyCellarObject> RANGEMENT = new IPredicate<>() {
 
 		@Override
@@ -330,12 +330,12 @@ public class Predicates {
 		public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
 			return (compare instanceof String) && myCellarObject.getEmplacement() != null && myCellarObject.getEmplacement().equals(compare);
 		}
-		
+
 		@Override
 		public boolean isValueRequired() {
 			return true;
 		}
-		
+
 		@Override
 		public String getName() {
 			return Program.getLabel("Predicates.Place");
@@ -350,7 +350,7 @@ public class Predicates {
 		public boolean isEmptyValueForbidden() {
 			return true;
 		}
-		
+
 		@Override
 		public ValueSearch askforValue() {
 			JPanel panel = new JPanel();
@@ -360,13 +360,13 @@ public class Predicates {
 			panel.add(new JLabel(Program.getLabel("Predicates.SelectPlace")), "wrap");
 			panel.add(liste);
 			JOptionPane.showMessageDialog(null, panel,
-			        "",
-			        JOptionPane.PLAIN_MESSAGE);
+					"",
+					JOptionPane.PLAIN_MESSAGE);
 			return new ValueSearch(((Rangement)liste.getSelectedItem()).getNom());
 		}
 	};
-	
-	
+
+
 	public static final IPredicate<Bouteille> CAPACITY = new IPredicate<>() {
 
 		@Override
@@ -408,8 +408,8 @@ public class Predicates {
 			panel.add(new JLabel(Program.getLabel("Predicates.SelectSize")), "wrap");
 			panel.add(liste);
 			JOptionPane.showMessageDialog(null, panel,
-			        "",
-			        JOptionPane.PLAIN_MESSAGE);
+					"",
+					JOptionPane.PLAIN_MESSAGE);
 			return new ValueSearch(liste.getSelectedItem());
 		}
 	};
@@ -586,12 +586,12 @@ public class Predicates {
 		public boolean apply(AppelationJaxb appelationJaxb, Object compare, int type) {
 			return true;
 		}
-		
+
 		@Override
 		public boolean isValueRequired() {
 			return false;
 		}
-		
+
 		@Override
 		public String getName() {
 			return Program.getLabel("Predicates.Or");
@@ -606,13 +606,13 @@ public class Predicates {
 		public boolean isEmptyValueForbidden() {
 			return true;
 		}
-		
+
 		@Override
 		public ValueSearch askforValue() {
 			return null;
 		}
 	};
-	
+
 	public static final IPredicate<AppelationJaxb> OPEN_PARENTHESIS = new IPredicate<>() {
 
 		@Override
@@ -624,12 +624,12 @@ public class Predicates {
 		public boolean apply(AppelationJaxb appelationJaxb, Object compare, int type) {
 			return true;
 		}
-		
+
 		@Override
 		public boolean isValueRequired() {
 			return false;
 		}
-		
+
 		@Override
 		public String getName() {
 			return "(";
@@ -644,13 +644,13 @@ public class Predicates {
 		public boolean isEmptyValueForbidden() {
 			return true;
 		}
-		
+
 		@Override
 		public ValueSearch askforValue() {
 			return null;
 		}
 	};
-	
+
 	public static final IPredicate<AppelationJaxb> CLOSE_PARENTHESIS = new IPredicate<>() {
 
 		@Override
@@ -662,12 +662,12 @@ public class Predicates {
 		public boolean apply(AppelationJaxb appelationJaxb, Object compare, int type) {
 			return true;
 		}
-		
+
 		@Override
 		public boolean isValueRequired() {
 			return false;
 		}
-		
+
 		@Override
 		public String getName() {
 			return ")";
@@ -682,21 +682,21 @@ public class Predicates {
 		public boolean isEmptyValueForbidden() {
 			return true;
 		}
-		
+
 		@Override
 		public ValueSearch askforValue() {
 			return null;
 		}
 	};
-	
+
 	static boolean isFieldPredicate(IPredicate<?> predicate) {
 		return (predicate != null) && !isKeywordPredicate(predicate) && !isParenthesisPredicate(predicate);
 	}
-	
+
 	static boolean isKeywordPredicate(IPredicate<?> predicate) {
 		return (predicate != null) && (predicate.equals(AND) || predicate.equals(OR));
 	}
-	
+
 	static boolean isParenthesisPredicate(IPredicate<?> predicate) {
 		return (predicate != null) && (predicate.equals(OPEN_PARENTHESIS) || predicate.equals(CLOSE_PARENTHESIS));
 	}
@@ -724,7 +724,7 @@ public class Predicates {
 	public int getType() {
 		return type;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

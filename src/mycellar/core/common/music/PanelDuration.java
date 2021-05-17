@@ -1,13 +1,12 @@
 package mycellar.core.common.music;
 
-import java.time.LocalDateTime;
-
-import javax.swing.JPanel;
-
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;
+
+import javax.swing.JPanel;
+import java.time.LocalDateTime;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -18,11 +17,11 @@ import net.miginfocom.swing.MigLayout;
  * @version 0.1
  * @since 15/05/21
  */
-public class PanelDuration extends JPanel {
-	
-	private MyCellarSpinner hour = new MyCellarSpinner(0, 23);
-	private MyCellarSpinner minute = new MyCellarSpinner(0, 59);
-	private MyCellarSpinner second = new MyCellarSpinner(0, 59);
+public final class PanelDuration extends JPanel {
+
+	private final MyCellarSpinner hour = new MyCellarSpinner(0, 23);
+	private final MyCellarSpinner minute = new MyCellarSpinner(0, 59);
+	private final MyCellarSpinner second = new MyCellarSpinner(0, 59);
 
 	public PanelDuration(LocalDateTime time) {
 		setLayout(new MigLayout("","[][][]",""));
@@ -36,7 +35,7 @@ public class PanelDuration extends JPanel {
 		minute.setValue(time.getMinute());
 		second.setValue(time.getSecond());
 	}
-	
+
 	public LocalDateTime getTime() {
 		return LocalDateTime.of(2000, 1, 1, hour.getIntValue(), minute.getIntValue(), second.getIntValue());
 	}

@@ -102,7 +102,7 @@ class TableHistoryValues extends AbstractTableModel {
           b = h.getBouteille();
         }
         if(b == null) {
-        	return "";
+          return "";
         }
         String emplacement;
         if (b.isInTemporaryStock()) {

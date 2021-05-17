@@ -116,7 +116,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 			types.addItem(type1);
 		});
 
-		objectType = findObjectType(Program.Type.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
+		objectType = findObjectType(Program.Type.typeOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
 		types.setSelectedItem(objectType);
 
 		JPanel dateControlPanel = new JPanel();

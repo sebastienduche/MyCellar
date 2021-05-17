@@ -300,7 +300,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		}	else {
 			Optional<Bouteille> bottleInPlace = cave.getBouteille(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build());
 			if (bottleInPlace.isPresent()) {
-				if (!askToReplaceBottle(bottleInPlace.get())) {
+				if (!askToReplaceBottle(bottleInPlace.get(), oldPlace)) {
 					return false;
 				}
 			}
@@ -335,13 +335,13 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		return true;
 	}
 
-	private boolean askToReplaceBottle(Bouteille bouteille) {
+	private boolean askToReplaceBottle(Bouteille bouteille, Place oldPlace) {
 		if (!bouteille.equals(bottle)) {
 			Debug("ERROR: Not an empty place, Replace?");
 			String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bouteille.getNom(), bouteille.getAnnee());
 			String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
 			if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
-				replaceWine(bouteille);
+				replaceWine(bouteille, oldPlace);
 				m_end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
 			} else {
 				return false;
@@ -365,12 +365,12 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		Start.setPaneModified(false);
 	}
 
-	private void replaceWine(final Bouteille bToDelete) {
+	private void replaceWine(final Bouteille bToDelete, Place oldPlace) {
 		//Change wine in a place
 		Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
 		Program.getStorage().deleteWine(bToDelete);
 
-		bottle.getRangement().clearStock(bottle);
+		oldPlace.getRangement().clearStock(bottle);
 
 		Program.getSearch().ifPresent(search -> {
 			search.removeBottle(bToDelete);

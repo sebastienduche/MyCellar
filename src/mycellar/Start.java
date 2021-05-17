@@ -590,7 +590,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				Program.initConf();
 			}
 			String thelangue = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
-			Program.setProgramType(Program.Type.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
+			Program.setProgramType(Program.Type.typeOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
 			Program.setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
 			updateLabels();
 			Debug("UpdateFrame: Loading Frame ended");

@@ -851,7 +851,7 @@ public final class Program {
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
 		putGlobalConfigString(MyCellarSettings.LAST_OPEN4, list.pop());
-		setProgramType(Program.Type.valueOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
+		setProgramType(Program.Type.typeOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
 
 		putCaveConfigString(MyCellarSettings.DIR, file.getParent());
 

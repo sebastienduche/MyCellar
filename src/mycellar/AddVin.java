@@ -4,11 +4,11 @@ import mycellar.Bouteille.BouteilleBuilder;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
 import mycellar.core.PanelVignobles;
@@ -31,6 +31,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.text.MessageFormat;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Timer;
@@ -46,8 +47,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.0
- * @since 23/04/21
+ * @version 28.1
+ * @since 19/05/21
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -80,28 +81,24 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		m_add.setMnemonic(ajouterChar);
 		panelGeneral.initValues();
 		panelWineAttribute.initValues();
-		try {
 
-			// Init des valeurs pour modification
-			m_nb_num = m_nb_lig = m_nb_col = -1;
+		// Init des valeurs pour modification
+		m_nb_num = m_nb_lig = m_nb_col = -1;
 
-			m_add.setText(Program.getLabel("Infos071"));
+		m_add.setText(Program.getLabel("Infos071"));
 
-			PopupListener popup_l = new PopupListener();
-			panelGeneral.setMouseListener(popup_l);
-			panelWineAttribute.setMouseListener(popup_l);
-			m_comment.addMouseListener(popup_l);
+		PopupListener popup_l = new PopupListener();
+		panelGeneral.setMouseListener(popup_l);
+		panelWineAttribute.setMouseListener(popup_l);
+		m_comment.addMouseListener(popup_l);
 
-			m_end.setForeground(Color.red);
-			m_end.setHorizontalAlignment(SwingConstants.CENTER);
-			setLayout(new BorderLayout());
-			add(new PanelMain(), BorderLayout.CENTER);
+		m_end.setForeground(Color.red);
+		m_end.setHorizontalAlignment(SwingConstants.CENTER);
+		setLayout(new BorderLayout());
+		add(new PanelMain(), BorderLayout.CENTER);
 
-			setVisible(true);
-			Debug("Constructor End");
-		} catch (RuntimeException e) {
-			Program.showException(e);
-		}
+		setVisible(true);
+		Debug("Constructor End");
 	}
 
 	/**
@@ -124,18 +121,18 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 	/**
 	 * setBottles: Fonction de chargement de plusieurs vins pour la classe ListVin
 	 *
-	 * @param bottles LinkedList<Bouteille>
+	 * @param myCellarObjects LinkedList<MyCellarObject>
 	 */
-	public void setBottles(LinkedList<? extends IMyCellarObject> bottles) {
+	public void setBottles(List<MyCellarObject> myCellarObjects) {
 		Debug("Set Bottles...");
 		if (m_lv == null) {
-			m_lv = new ListVin(bottles, this);
+			m_lv = new ListVin(myCellarObjects, this);
 			add(m_lv, BorderLayout.WEST);
 		}	else {
-			m_lv.setBottles(bottles);
+			m_lv.setBottles(myCellarObjects);
 		}
 
-		setBottle((Bouteille) bottles.getFirst());
+		setBottle((Bouteille) myCellarObjects.get(0));
 	}
 
 	/**
@@ -624,7 +621,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 			if (resul) {
 				doAfterRun();
 			}
-		} catch (RuntimeException e) {
+		} catch (RuntimeException | MyCellarException e) {
 			Program.showException(e);
 		}
 	}
@@ -641,7 +638,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 																																		String igp,
 																																		String annee,
 																																		String nom,
-																																		String demie) {
+																																		String demie) throws MyCellarException {
 		Debug("modifyOneOrSeveralBottlesWithoutPlaceModification...");
 		boolean m_bbottle_add = false;
 		if (!m_bmulti) {
@@ -708,7 +705,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		return m_bbottle_add;
 	}
 
-	private void replaceWine(final MyCellarObject newBottle, boolean modify, final MyCellarObject bToDelete) {
+	private void replaceWine(final MyCellarObject newBottle, boolean modify, final MyCellarObject bToDelete) throws MyCellarException {
 		Debug("replaceWine...");
 		//Change wine in a place
 		Program.getStorage().addHistory(modify ? HistoryState.MODIFY : HistoryState.ADD, newBottle);

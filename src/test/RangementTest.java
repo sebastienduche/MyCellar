@@ -2,6 +2,7 @@ package test;
 
 import mycellar.Bouteille;
 import mycellar.Program;
+import mycellar.core.MyCellarException;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
@@ -342,7 +343,7 @@ class RangementTest {
   }
 
   @Test
-  void getNbCaseUseAll() {
+  void getNbCaseUseAll() throws MyCellarException {
     assertEquals(0, armoire1x3x3.getNbCaseUseAll());
     assertEquals(0, armoire1x3x3Builder.getNbCaseUseAll());
     assertEquals(0, armoire2x2_3x22545.getNbCaseUseAll());
@@ -380,7 +381,7 @@ class RangementTest {
   }
 
   @Test
-  void getNbCaseUseForCaisse() {
+  void getNbCaseUseForCaisse() throws MyCellarException {
     assertEquals(0, caisseLimit.getNbCaseUse(1));
     assertEquals(0, caisseNoLimit.getNbCaseUse(0));
     Bouteille b = new Bouteille();
@@ -410,7 +411,7 @@ class RangementTest {
   }
 
   @Test
-  void addWine() {
+  void addWine() throws MyCellarException {
     Bouteille b = addAndRemoveBottle();
     b.setEmplacement("caisseLimit");
     caisseLimit.addWine(b);
@@ -419,7 +420,7 @@ class RangementTest {
     assertEquals(0, caisseLimit.getNbCaseUse(1));
   }
 
-  private Bouteille addAndRemoveBottle() {
+  private Bouteille addAndRemoveBottle() throws MyCellarException {
     Bouteille b = new Bouteille();
     b.setNom("B12");
     updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", armoire2x2_3x22545);
@@ -431,7 +432,7 @@ class RangementTest {
   }
 
   @Test
-  void removeWine() {
+  void removeWine() throws MyCellarException {
     Bouteille b = addAndRemoveBottle();
     caisseLimit.addWine(b);
     assertEquals(1, caisseLimit.getNbCaseUse(1));
@@ -440,7 +441,7 @@ class RangementTest {
   }
 
   @Test
-  void updateToStock() {
+  void updateToStock() throws MyCellarException {
     Bouteille b = new Bouteille();
     b.setNom("B13");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);
@@ -457,12 +458,12 @@ class RangementTest {
   }
 
   @Test
-  void moveLineWine() {
+  void moveLineWine() throws MyCellarException {
     Bouteille b = new Bouteille();
     b.setNom("B15");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);
     assertEquals(b, armoire1x3x3.getBouteille(0, 0, 1).get());
-    armoire1x3x3.moveLineWine(b, 2);
+    armoire1x3x3.moveLine(b, 2);
     assertTrue(armoire1x3x3.getBouteille(0, 0, 1).isEmpty());
     assertEquals(b, armoire1x3x3.getBouteille(0, 1, 1).get());
   }
@@ -487,7 +488,7 @@ class RangementTest {
   }
 
   @Test
-  void clearStock() {
+  void clearStock() throws MyCellarException {
     Bouteille b = new Bouteille();
     b.setNom("B18");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);

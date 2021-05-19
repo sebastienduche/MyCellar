@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.LabelProperty;
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
@@ -23,8 +24,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.9
- * @since 07/05/21
+ * @version 7.0
+ * @since 19/05/21
  */
 
 public class SerializedStorage implements Storage {
@@ -205,7 +206,7 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public boolean deleteWine(MyCellarObject myCellarObject) {
+	public boolean deleteWine(MyCellarObject myCellarObject) throws MyCellarException {
 
 		final String nom = myCellarObject.getNom();
 		final String annee = myCellarObject.getAnnee();
@@ -215,24 +216,39 @@ public class SerializedStorage implements Storage {
 		final int colonne = myCellarObject.getColonne();
 
 		Debug("DeleteWine: Trying deleting myCellarObject " + nom.strip() + " " + annee + " " + emplacement.strip() + " " + numLieu + " " + ligne + " " + colonne);
-		Rangement rangement = myCellarObject.getRangement();
-		boolean isCaisse = rangement == null || rangement.isCaisse();
-		final List<MyCellarObject> resultBouteilles = listMyCellarObject.getBouteille().stream()
-				.filter(
-						bouteille -> emplacement.equals(bouteille.getEmplacement())
-								&& nom.equals(bouteille.getNom())
-								&& numLieu == bouteille.getNumLieu()
-								&& (isCaisse ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(Collectors.toList());
-		if (resultBouteilles.isEmpty()) {
-			Debug("DeleteWine: Unable to find the wine!");
-			return false;
+		boolean found = listMyCellarObject.remove(myCellarObject);
+		if (found) {
+			Debug("DeleteWine: Deleted by equals. " + myCellarObject);
+		} else {
+			final List<MyCellarObject> collect = getAllList().stream().filter(bouteille -> bouteille.getId() == myCellarObject.getId()).collect(Collectors.toList());
+			if (collect.isEmpty()) {
+				found = false;
+			} else if (collect.size() == 1) {
+				Debug("DeleteWine: Deleted by Id. " + myCellarObject);
+				found = listMyCellarObject.remove(collect.get(0));
+			} else {
+				Rangement rangement = myCellarObject.getRangement();
+				boolean isCaisse = rangement == null || rangement.isCaisse();
+				final List<MyCellarObject> resultBouteilles = getAllList().stream()
+						.filter(
+								bouteille -> emplacement.equals(bouteille.getEmplacement())
+										&& nom.equals(bouteille.getNom())
+										&& numLieu == bouteille.getNumLieu()
+										&& (isCaisse ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(Collectors.toList());
+				if (resultBouteilles.isEmpty()) {
+					Debug("ERROR: DeleteWine: Unable to find the object!");
+					throw new MyCellarException("Unable to delete object: " + myCellarObject);
+				} else {
+					found = listMyCellarObject.remove(resultBouteilles.get(0));
+				}
+			}
 		}
-		Program.setModified();
-		final MyCellarObject myCellarObject1 = resultBouteilles.get(0);
-		Debug("DeleteWine: Deleted object " + myCellarObject1);
-		listMyCellarObject.remove(myCellarObject1);
-		itemsCount--;
-		return true;
+
+		if (found) {
+			Program.setModified();
+			itemsCount--;
+		}
+		return found;
 	}
 
 	@Override

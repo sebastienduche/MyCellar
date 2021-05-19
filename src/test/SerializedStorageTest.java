@@ -4,6 +4,7 @@ import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.SerializedStorage;
 import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarException;
 import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -120,7 +121,7 @@ class SerializedStorageTest {
   }
 
   @Test
-  void deleteWine() {
+  void deleteWine() throws MyCellarException {
     assertEquals(7, serializedStorage.getListMyCellarObject().getBouteille().size());
     serializedStorage.deleteWine(bouteille3);
     assertEquals(6, serializedStorage.getListMyCellarObject().getBouteille().size());

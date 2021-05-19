@@ -81,13 +81,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.0
- * @since 11/05/21
+ * @version 26.1
+ * @since 19/05/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.1.6.9";
+	public static final String INTERNAL_VERSION = "4.1.8.5";
 	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -1475,7 +1475,7 @@ public final class Program {
 		return nextID;
 	}
 
-	public static void modifyBottles(LinkedList<? extends MyCellarObject> listToModify) {
+	public static void modifyBottles(LinkedList<MyCellarObject> listToModify) {
 		if (listToModify == null || listToModify.isEmpty()) {
 			return;
 		}

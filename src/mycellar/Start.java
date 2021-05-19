@@ -10,6 +10,7 @@ import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarAction;
 import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.MyCellarMenuItem;
@@ -78,8 +79,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.5
- * @since 07/05/21
+ * @version 28.6
+ * @since 19/05/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1231,7 +1232,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				Program.save();
 				setEnabled(true);
-			} catch (RuntimeException e) {
+			} catch (RuntimeException | MyCellarException e) {
 				Program.showException(e);
 			} finally {
 				setCursor(Cursor.getDefaultCursor());

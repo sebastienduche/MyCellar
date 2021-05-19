@@ -4,6 +4,7 @@ import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
 import mycellar.core.PanelVignobles;
@@ -37,8 +38,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.2
- * @since 23/04/21
+ * @version 8.3
+ * @since 19/05/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
 	private static final long serialVersionUID = 5330256984954964913L;
@@ -128,23 +129,27 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
 	@Override
 	public void run() {
-		save();
-		new Timer().schedule(
-				new TimerTask() {
-					@Override
-					public void run() {
-						SwingUtilities.invokeLater(() -> {
-							Debug("Set Text ...");
-							m_end.setText("");
-							Debug("Set Text Done");
-						});
-					}
-				},
-				5000
-		);
+		try {
+			save();
+			new Timer().schedule(
+					new TimerTask() {
+						@Override
+						public void run() {
+							SwingUtilities.invokeLater(() -> {
+								Debug("Set Text ...");
+								m_end.setText("");
+								Debug("Set Text Done");
+							});
+						}
+					},
+					5000
+			);
+		} catch (MyCellarException e) {
+			Program.showException(e);
+		}
 	}
 
-	public boolean save() {
+	public boolean save() throws MyCellarException {
 		Debug("Saving...");
 
 		String nom = panelGeneral.getObjectName();
@@ -249,7 +254,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		return true;
 	}
 
-	private boolean askToReplaceBottle(MyCellarObject bouteille, Place oldPlace) {
+	private boolean askToReplaceBottle(MyCellarObject bouteille, Place oldPlace) throws MyCellarException {
 		if (!bouteille.equals(bottle)) {
 			Debug("ERROR: Not an empty place, Replace?");
 			String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bouteille.getNom(), bouteille.getAnnee());
@@ -273,7 +278,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 		Start.setPaneModified(false);
 	}
 
-	private void replaceWine(final MyCellarObject bToDelete, Place oldPlace) {
+	private void replaceWine(final MyCellarObject bToDelete, Place oldPlace) throws MyCellarException {
 		//Change wine in a place
 		Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
 		Program.getStorage().deleteWine(bToDelete);

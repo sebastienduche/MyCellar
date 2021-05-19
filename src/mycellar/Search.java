@@ -9,6 +9,7 @@ import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
@@ -57,8 +58,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.0
- * @since 14/05/21
+ * @version 22.1
+ * @since 19/05/21
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -304,7 +305,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					for (Bouteille bottle : listToSupp) {
 						model.removeBouteille(bottle);
 						Program.getStorage().addHistory(HistoryState.DEL, bottle);
-						Program.getStorage().deleteWine(bottle);
+						try {
+							Program.getStorage().deleteWine(bottle);
+						} catch (MyCellarException myCellarException) {
+							Program.showException(myCellarException);
+						}
 						Program.setToTrash(bottle);
 						ProgramPanels.removeBottleTab(bottle);
 					}
@@ -594,7 +599,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 				Debug("modif_actionPerforming...");
 				int max_row = model.getRowCount();
 				int row = 0;
-				final LinkedList<Bouteille> listToModify = new LinkedList<>();
+				final LinkedList<MyCellarObject> listToModify = new LinkedList<>();
 				do {
 					if ((boolean) model.getValueAt(row, TableValues.ETAT)) {
 						listToModify.add(model.getBouteille(row));
@@ -606,7 +611,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 					//"Aucun vin a modifier! / Veuillez selectionner les vins a modifier.");
 					Erreur.showSimpleErreur(Program.getError("Error071", LabelProperty.SINGLE), Program.getError("Error072", LabelProperty.THE_PLURAL), true);
 				} else {
-					Debug("Modifying " + listToModify.size() + " bottle(s)...");
+					Debug("Modifying " + listToModify.size() + " object(s)...");
 					Program.modifyBottles(listToModify);
 				}
 			} catch (RuntimeException exc) {

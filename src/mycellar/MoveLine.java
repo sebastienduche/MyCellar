@@ -1,9 +1,11 @@
 package mycellar;
 
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.HistoryState;
@@ -14,8 +16,11 @@ import javax.swing.JDialog;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ItemEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 /**
@@ -24,8 +29,8 @@ import java.util.function.Predicate;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Société : SebInformatique</p>
  * @author Sébastien Duché
- * @version 2.7
- * @since 09/04/21
+ * @version 2.8
+ * @since 19/05/21
  */
 
 final class MoveLine extends JDialog {
@@ -91,14 +96,23 @@ final class MoveLine extends JDialog {
 					Erreur.showSimpleErreur(this, Program.getError("Error193", LabelProperty.PLURAL));
 					return;
 				}
+				List<MyCellarObject> notMoved = new ArrayList<>();
 				for (int i=1; i<=r.getNbColonnes(nNumLieu - 1, nOldSelected - 1); i++) {
 					Optional<MyCellarObject> bottle = r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1);
 					if (bottle.isPresent()) {
 						bottle.ifPresent(bouteille -> {
 							Program.getStorage().addHistory(HistoryState.MODIFY, bouteille);
-							r.moveLineWine(bouteille, nNewSelected);
+							try {
+								r.moveLine(bouteille, nNewSelected);
+							} catch (MyCellarException myCellarException) {
+								notMoved.add(bouteille);
+							}
 						});
 					}
+				}
+				if (!notMoved.isEmpty()) {
+					final String value = notMoved.stream().map(IMyCellarObject::getNom).collect(Collectors.joining(", "));
+					Erreur.showSimpleErreur(Program.getError("MoveLine.UnableToMove", LabelProperty.PLURAL), value);
 				}
 				label_end.setText(Program.getLabel("MoveLine.ItemsMoved", LabelProperty.THE_PLURAL.withCapital()));
 			}

@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
@@ -15,8 +16,8 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 09/04/21
+ * @version 2.3
+ * @since 19/05/21
  */
 
 public interface Storage {
@@ -38,7 +39,7 @@ public interface Storage {
 	void loadWorksheet();
 	HistoryList getHistoryList();
 	WorkSheetList getWorksheetList();
-	boolean deleteWine(MyCellarObject myCellarObject);
+	boolean deleteWine(MyCellarObject myCellarObject) throws MyCellarException;
 
 	boolean addWine(MyCellarObject myCellarObject);
 	int getBottlesCount();

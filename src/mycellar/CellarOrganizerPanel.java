@@ -6,6 +6,7 @@ import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.HistoryState;
@@ -61,8 +62,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.5
- * @since 09/04/21
+ * @version 3.6
+ * @since 19/05/21
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -520,7 +521,11 @@ final class BouteilleLabel extends JPanel {
 						((RangementCell)parent).remove(BouteilleLabel.this);
 						((RangementCell)parent).updateUI();
 						Program.getStorage().addHistory(HistoryState.DEL, bouteille);
-						Program.getStorage().deleteWine(bouteille);
+						try {
+							Program.getStorage().deleteWine(bouteille);
+						} catch (MyCellarException e) {
+							Program.showException(e);
+						}
 						Program.setToTrash(bouteille);
 					}
 				}

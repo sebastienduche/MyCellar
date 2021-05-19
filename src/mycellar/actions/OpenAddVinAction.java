@@ -5,8 +5,8 @@ import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.Utils;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
+import mycellar.core.MyCellarObject;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.AbstractAction;
@@ -17,9 +17,9 @@ import java.util.LinkedList;
 public class OpenAddVinAction extends AbstractAction {
 
 	private static final long serialVersionUID = 6187152928186377148L;
-	private final LinkedList<? extends IMyCellarObject> listToModify;
+	private final LinkedList<MyCellarObject> listToModify;
 
-	public OpenAddVinAction(LinkedList<? extends IMyCellarObject> listToModify) {
+	public OpenAddVinAction(LinkedList<MyCellarObject> listToModify) {
 		this.listToModify = listToModify;
 	}
 

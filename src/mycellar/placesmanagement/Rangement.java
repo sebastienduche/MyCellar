@@ -2,6 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.Program;
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarObject;
 
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 28.0
- * @since 21/04/21
+ * @version 28.1
+ * @since 18/05/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -390,7 +391,7 @@ public class Rangement implements Comparable<Rangement> {
 	 *
 	 * @return int
 	 */
-	public void removeWine(Bouteille wine) {
+	public void removeWine(MyCellarObject wine) throws MyCellarException {
 		clearStock(wine);
 		Program.getStorage().deleteWine(wine);
 	}
@@ -469,16 +470,16 @@ public class Rangement implements Comparable<Rangement> {
 
 
 	/**
-	 * moveLineWine: Déplacement d'une bouteille dans un rangement
+	 * moveLine: Déplacement d'un objet dans un rangement
 	 *
-	 * @param bottle Bouteille: Bouteille à déplacer
+	 * @param myCellarObject MyCellarObject: Objet à déplacer
 	 * @param nNewLine int: nouveau numéro de ligne
 	 */
-	public void moveLineWine(MyCellarObject bottle, int nNewLine) {
-		Program.getStorage().deleteWine(bottle);
-		clearStock(bottle);
-		bottle.setLigne(nNewLine);
-		addWine(bottle);
+	public void moveLine(MyCellarObject myCellarObject, int nNewLine) throws MyCellarException {
+		Program.getStorage().deleteWine(myCellarObject);
+		clearStock(myCellarObject);
+		myCellarObject.setLigne(nNewLine);
+		addWine(myCellarObject);
 	}
 
 	public Optional<MyCellarObject> getBouteille(final MyCellarObject tempBouteille) {

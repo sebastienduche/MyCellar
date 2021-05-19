@@ -30,8 +30,8 @@ import static mycellar.Program.TEXT;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.5
- * @since 29/01/21
+ * @version 2.6
+ * @since 19/05/21
  */
 
 @XmlRootElement(name = "vignobles")
@@ -127,7 +127,7 @@ public class VignobleListJaxb
 			File f = new File(Program.getWorkDir(true), id + VIGNOBLE);
 			Debug("Deleting " + f.getAbsolutePath());
 			return f.delete();
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			Program.showException(e);
 			return false;
 		}
@@ -151,9 +151,9 @@ public class VignobleListJaxb
 			}
 		}
 		if (!vignobleJaxb.getName().isBlank()) {
-			Debug("ERROR findVignobleWithAppelation " + vignobleJaxb.toString());
+			Debug("ERROR findVignobleWithAppelation " + vignobleJaxb);
 		} else if (!vignobleJaxb.getAOC().isBlank() || !vignobleJaxb.getIGP().isBlank()) {
-			Debug("WARNING findVignobleWithAppelation " + vignobleJaxb.toString());
+			Debug("WARNING findVignobleWithAppelation " + vignobleJaxb);
 		}
 		return Optional.empty();
 	}
@@ -177,7 +177,7 @@ public class VignobleListJaxb
 				return Optional.of(countryVignobleJaxb.getUnmodifiableAppelation().get(index1));
 			}
 		}
-		Debug("ERROR findAppelation " + vignobleJaxb.toString());
+		Debug("ERROR findAppelation " + vignobleJaxb);
 		return Optional.empty();
 	}
 

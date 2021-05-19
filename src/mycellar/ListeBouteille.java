@@ -40,8 +40,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 07/05/21
+ * @version 1.4
+ * @since 19/05/21
  *
  * <p>Java class for anonymous complex type.
  *
@@ -220,14 +220,15 @@ public class ListeBouteille {
 		}
 	}
 
-	public void remove(MyCellarObject myCellarObject) {
+	public boolean remove(MyCellarObject myCellarObject) {
 		if (myCellarObject instanceof Bouteille) {
-			getBouteille().remove((Bouteille) myCellarObject);
+			return getBouteille().remove((Bouteille) myCellarObject);
 		} else if (myCellarObject instanceof Music) {
-			getMusic().remove((Music) myCellarObject);
+			return getMusic().remove((Music) myCellarObject);
 		} else {
 			Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
 		}
+		return false;
 	}
 
 	public static void Debug(String sText) {

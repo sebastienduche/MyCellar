@@ -2,17 +2,20 @@ package mycellar.core;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 import java.awt.Font;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Titre : Cave à vin
  * Description : Votre description
  * Copyright : Copyright (c) 2011
  * Société : Seb Informatique
- * 
+ *
  * @author Sébastien Duché
- * @version 0.6
- * @since 16/10/20
+ * @version 0.7
+ * @since 20/05/21
  */
 
 public class MyCellarLabel extends JLabel implements IMyCellarComponent {
@@ -51,14 +54,14 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 		MyCellarLabelManagement.add(this);
 		setFont(FONT);
 	}
-	
+
 	public MyCellarLabel(LabelType type, String code, String value) {
-	  this.type = type;
-    this.code = code;
-    this.value = value;
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT);
+		this.type = type;
+		this.code = code;
+		this.value = value;
+		updateText();
+		MyCellarLabelManagement.add(this);
+		setFont(FONT);
 	}
 
 	public MyCellarLabel(Icon image) {
@@ -85,6 +88,21 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
 	@Override
 	public void updateText() {
-	  MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
+		MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
+	}
+
+	public void setText(String text, boolean autoHide) {
+		super.setText(text);
+		if (autoHide) {
+			new Timer().schedule(
+					new TimerTask() {
+						@Override
+						public void run() {
+							SwingUtilities.invokeLater(() -> setText(""));
+						}
+					},
+					5000
+			);
+		}
 	}
 }

@@ -33,7 +33,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -46,8 +45,6 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static mycellar.Program.toCleanString;
 import static mycellar.core.LabelType.INFO;
@@ -60,8 +57,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.1
- * @since 16/03/21
+ * @version 15.2
+ * @since 20/05/21
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -247,16 +244,15 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 			return;
 		}
 		final Rangement rangement = (Rangement) e.getItem();
+		label_cree.setText("");
 		if (Program.EMPTY_PLACE.equals(rangement)) {
 			nom_obj.setText("");
-			label_cree.setText("");
 			model.setValues(new LinkedList<>());
 			enableAll(false);
 			return;
 		}
 
 		enableAll(true);
-		label_cree.setText("");
 		nom_obj.setText(rangement.getNom());
 		m_caisse_chk.setSelected(rangement.isCaisse());
 		m_caisse_chk.setEnabled(false);
@@ -359,7 +355,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 				updateView();
 				ProgramPanels.updateAllPanels();
 				Debug("Modifications completed");
-				label_cree.setText(Program.getError("Error123")); //"Rangement modifie.");
+				label_cree.setText(Program.getError("Error123"), true); //"Rangement modifie.");
 			}	else {
 				// Rangement complexe
 				Debug("Modifying complex place...");
@@ -386,7 +382,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 					nom_obj.setText("");
 					updateView();
 					ProgramPanels.updateAllPanels();
-					label_cree.setText(Program.getError("Error123"));
+					label_cree.setText(Program.getError("Error123"), true);
 				} else {
 					if (rangement.getNbEmplacements() > listPart.size()) {
 						int nb = 0;
@@ -484,21 +480,11 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 					}
 					if (bResul) {
 						comboPlace.setSelectedIndex(0);
-						label_cree.setText(Program.getError("Error123"));
+						label_cree.setText(Program.getError("Error123"), true);
 					}
 				}
 			}
-			new Timer().schedule(
-					new TimerTask() {
-						@Override
-						public void run() {
-							SwingUtilities.invokeLater(() -> label_cree.setText(""));
-						}
-					},
-					5000
-			);
-		}
-		catch (Exception exc) {
+		} catch (Exception exc) {
 			Program.showException(exc);
 		}
 	}
@@ -550,7 +536,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 				Program.addCave(caisse);
 				Debug("Creation of '" + nom + "' completed.");
 				nom_obj.setText("");
-				label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
+				label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.");
 				ProgramPanels.updateAllPanels();
 			}
 		}	else {
@@ -576,7 +562,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 					Debug("Creating place...");
 					Program.addCave(new Rangement(nom, listPart));
 					Debug("Creating " + nom + " completed.");
-					label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
+					label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.");
 					nom_obj.setText("");
 					ProgramPanels.updateAllPanels();
 				}
@@ -587,7 +573,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 				if (bResul) {
 					Program.addCave(new Rangement(nom, listPart));
 					Debug("Creating '" + nom + "' completed.");
-					label_cree.setText(Program.getLabel("Infos090")); //"Rangement cree.");
+					label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.");
 					nom_obj.setText("");
 					ProgramPanels.updateAllPanels();
 				}

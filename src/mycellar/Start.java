@@ -64,8 +64,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 
@@ -79,8 +77,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.6
- * @since 19/05/21
+ * @version 28.7
+ * @since 20/05/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -991,16 +989,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		update.setVisible(bUpdateAvailable);
 		if (bUpdateAvailable) {
-			update.setText(MessageFormat.format(Program.getLabel("Infos385"), Server.getInstance().getAvailableVersion(), MyCellarVersion.MAIN_VERSION + "-" + Program.INTERNAL_VERSION));
-			new Timer().schedule(
-					new TimerTask() {
-						@Override
-						public void run() {
-							SwingUtilities.invokeLater(() -> update.setVisible(false));
-						}
-					},
-					30000
-			);
+			update.setText(MessageFormat.format(Program.getLabel("Infos385"), Server.getInstance().getAvailableVersion(), MyCellarVersion.MAIN_VERSION + "-" + Program.INTERNAL_VERSION), true, 30000);
 		}
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		m_bHasFrameBuilded = true;

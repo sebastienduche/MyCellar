@@ -25,7 +25,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -34,8 +33,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static mycellar.core.LabelProperty.A_SINGLE;
 import static mycellar.core.LabelProperty.PLURAL;
@@ -47,8 +44,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.1
- * @since 19/05/21
+ * @version 28.2
+ * @since 20/05/21
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -300,7 +297,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 										Program.getStorage().addHistory(HistoryState.ADD, b);
 										rangement.addWine(b);
 									}
-									m_end.setText(MessageFormat.format(Program.getLabel("AddVin.NItemAdded", LabelProperty.PLURAL), (nb_bottle_rest + 1)));
+									m_end.setText(MessageFormat.format(Program.getLabel("AddVin.NItemAdded", LabelProperty.PLURAL), (nb_bottle_rest + 1)), true);
 									resetValues();
 								}
 							} else {
@@ -308,7 +305,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 								//Add a single bottle in Caisse
 								Program.getStorage().addHistory(HistoryState.ADD, bouteille);
 								rangement.addWine(bouteille);
-								m_end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
+								m_end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE), true);
 								panelWineAttribute.setStillNbItems(nb_bottle_rest);
 							}
 						} else { //Un seul rangement simple
@@ -587,7 +584,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 							if (m_bmodify) {
 								bottle.update(tmp);
 							}
-							m_end.setText(m_bmodify ? Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE) : Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
+							m_end.setText(m_bmodify ? Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE) : Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE), true);
 							resetValues();
 						} else {
 							m_end.setText(Program.getLabel("AddVin.NotSaved", LabelProperty.THE_SINGLE));
@@ -604,13 +601,13 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 						m_lv.updateList(listBottleInModification);
 					}
 					if (listBottleInModification.size() == 1) {
-						m_end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE)); //"1 bouteille modifiee");
+						m_end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true); //"1 bouteille modifiee");
 					} else {
 						m_end.setText(MessageFormat.format(Program.getLabel("AddVin.NItemModified", LabelProperty.PLURAL), listBottleInModification.size())); //" bouteilles modifiees");
 					}
 				}	else {
 					if (m_nnb_bottle_add_only_one_place == 0) {
-						m_end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE)); //"1 bouteille ajoutee");
+						m_end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE), true); //"1 bouteille ajoutee");
 					}	else {
 						m_end.setText(MessageFormat.format(Program.getLabel("AddVin.NItemAdded", LabelProperty.PLURAL), m_nnb_bottle_add_only_one_place)); //"x bouteilles ajoutees");
 						m_nnb_bottle_add_only_one_place = 0;
@@ -742,15 +739,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 		panelGeneral.setMyCellarObject(null);
 		ProgramPanels.updateManagePlacePanel();
 		panelVignobles.updateList();
-		new Timer().schedule(
-				new TimerTask() {
-					@Override
-					public void run() {
-						SwingUtilities.invokeLater(() -> m_end.setText(""));
-					}
-				},
-				5000
-		);
 		if (!m_bmodify) {
 			return;
 		}

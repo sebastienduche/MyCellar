@@ -46,8 +46,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static mycellar.Program.toCleanString;
 
@@ -57,8 +55,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.8
- * @since 11/02/21
+ * @version 7.9
+ * @since 20/05/21
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
@@ -322,16 +320,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 					Erreur.showKeyErreur(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
 				}
 			}
-			end.setText(Program.getLabel("Infos097")); //"Fichier genere.");
-			new Timer().schedule(
-					new TimerTask() {
-						@Override
-						public void run() {
-							SwingUtilities.invokeLater(() -> end.setText(""));
-						}
-					},
-					5000
-			);
+			end.setText(Program.getLabel("Infos097"), true); //"Fichier genere.");
 			preview.setEnabled(true);
 		} catch (TransformerConfigurationException e1) {
 			Debug("ERROR: TransformerConfigurationException : " + e1.getMessage());
@@ -427,12 +416,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 		myoptions.setVisible(true);
 	}
 
-
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	private static void Debug(String sText) {
 		Program.Debug("Creer_Tableaux: " + sText);
 	}

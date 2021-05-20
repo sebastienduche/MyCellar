@@ -26,8 +26,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.text.MessageFormat;
 import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static mycellar.core.LabelProperty.OF_THE_SINGLE;
 
@@ -131,19 +129,6 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 	public void run() {
 		try {
 			save();
-			new Timer().schedule(
-					new TimerTask() {
-						@Override
-						public void run() {
-							SwingUtilities.invokeLater(() -> {
-								Debug("Set Text ...");
-								m_end.setText("");
-								Debug("Set Text Done");
-							});
-						}
-					},
-					5000
-			);
 		} catch (MyCellarException e) {
 			Program.showException(e);
 		}
@@ -248,7 +233,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 			rangement.updateToStock(bottle);
 		}
 
-		m_end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE));
+		m_end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
 		ProgramPanels.updatePanelsWithoutBottles();
 		updateStatusAndTime();
 		resetModified();

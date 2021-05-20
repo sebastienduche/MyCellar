@@ -92,6 +92,10 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 	}
 
 	public void setText(String text, boolean autoHide) {
+		setText(text, autoHide, 5000);
+	}
+
+	public void setText(String text, boolean autoHide, int delay) {
 		super.setText(text);
 		if (autoHide) {
 			new Timer().schedule(
@@ -101,7 +105,7 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 							SwingUtilities.invokeLater(() -> setText(""));
 						}
 					},
-					5000
+					delay
 			);
 		}
 	}

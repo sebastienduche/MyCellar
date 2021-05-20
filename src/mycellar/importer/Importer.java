@@ -44,7 +44,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -67,8 +66,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static mycellar.Program.toCleanString;
 
@@ -79,8 +76,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.4
- * @since 07/05/21
+ * @version 14.5
+ * @since 20/05/21
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -634,16 +631,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 	}
 
 	private void displayImportDone() {
-		label_progression.setText(Program.getLabel("Infos200"));
-		new Timer().schedule(
-				new TimerTask() {
-					@Override
-					public void run() {
-						SwingUtilities.invokeLater(() -> label_progression.setText(""));
-					}
-				},
-				5000
-		);
+		label_progression.setText(Program.getLabel("Infos200"), true);
 		Debug("Import OK.");
 	}
 
@@ -740,16 +728,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
 	private void showImportDone() {
 		importe.setEnabled(true);
-		label_progression.setText(Program.getLabel("Infos035")); //"Import Termine");
-		new Timer().schedule(
-				new TimerTask() {
-					@Override
-					public void run() {
-						SwingUtilities.invokeLater(() -> label_progression.setText(""));
-					}
-				},
-				5000
-		);
+		label_progression.setText(Program.getLabel("Infos035"), true); //"Import Termine");
 		if (!RangementUtils.putTabStock()) {
 			new OpenShowErrorsAction().actionPerformed(null);
 		}

@@ -81,13 +81,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.1
- * @since 19/05/21
+ * @version 26.2
+ * @since 20/05/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.1.8.8";
+	public static final String INTERNAL_VERSION = "4.1.8.9";
 	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -322,7 +322,9 @@ public final class Program {
 	 */
 	private static void cleanAndUpgrade() {
 		Debug("Program: clean and upgrade...");
-		if (hasFile()) {
+		if (!hasFile()) {
+			return;
+		}
 			String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
 			if (sVersion.isEmpty() || sVersion.contains(".")) {
 				putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
@@ -350,7 +352,7 @@ public final class Program {
 			}
 			final String type = getCaveConfigString(PROGRAM_TYPE, "");
 			if (type.isBlank()) {
-				putCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name());
+				putCaveConfigString(PROGRAM_TYPE, Type.WINE.name());
 			}
 			// TODO REMOVE WHEN VERSION 70
 			File file = new File(getWorkDir(true) + "data.xml");
@@ -388,13 +390,22 @@ public final class Program {
 				Debug("Program: Deleting old file: other3.ini");
 				FileUtils.deleteQuietly(file);
 			}
-		}
 		CONFIG_GLOBAL.remove(MyCellarSettings.DEBUG);
 		CONFIG_GLOBAL.remove(MyCellarSettings.TYPE_AUTO);
 
 		Debug("Program: clean and upgrade... Done");
 	}
 
+	private static void checkFileVersion() throws UnableToOpenMyCellarFileException {
+		if (!hasFile()) {
+			return;
+		}
+		int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
+		if (currentVersion > VERSION) {
+			Erreur.showSimpleErreur(getError("Program.NotSupportedVersion"));
+			throw new UnableToOpenMyCellarFileException("The file version '" + currentVersion + "' is not supported by this program version: " + VERSION);
+		}
+	}
 
 	/**
 	 * setLanguage
@@ -795,6 +806,7 @@ public final class Program {
 		myCellarFile = new MyCellarFile(file);
 		myCellarFile.unzip();
 		loadProperties();
+		checkFileVersion();
 		setProgramType(Program.Type.valueOf(getCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name())));
 
 

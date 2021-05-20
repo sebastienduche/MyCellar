@@ -9,8 +9,8 @@ import mycellar.Program;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 23/03/21
+ * @version 0.6
+ * @since 20/05/21
  */
 
 public class Place {
@@ -108,5 +108,15 @@ public class Place {
       }
       return new Place(rangement, numPlace, line, column);
     }
+  }
+
+  @Override
+  public String toString() {
+    return "Place{" +
+        "rangement=" + rangement +
+        ", placeNum=" + placeNum +
+        ", line=" + line +
+        ", column=" + column +
+        '}';
   }
 }

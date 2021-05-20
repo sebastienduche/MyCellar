@@ -5,11 +5,14 @@ import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
+import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.CountryListJaxb;
+import mycellar.general.ProgramPanels;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -55,12 +58,33 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Copyright : Copyright (c) 2017</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.0
- * @since 11/05/21
+ * @version 4.1
+ * @since 20/05/21
  */
 public final class RangementUtils {
 
 	private RangementUtils() {}
+
+	public static void replaceObject(MyCellarObject oldObject, MyCellarObject newObject, Place newObjectPreviousPlace) throws MyCellarException {
+		Debug("Replace objet '" + oldObject + "' by '" + newObject + "' previous place: " + newObjectPreviousPlace + " current name " + newObject.getPlace());
+		Program.getStorage().addHistory(HistoryState.DEL, oldObject);
+		Program.getStorage().deleteWine(oldObject);
+
+		if (newObjectPreviousPlace != null) {
+			newObjectPreviousPlace.getRangement().clearStock(newObject, newObjectPreviousPlace);
+		}
+
+		ProgramPanels.getSearch().ifPresent(search -> {
+			search.removeBottle(oldObject);
+			search.updateTable();
+		});
+
+		final Rangement rangement = newObject.getRangement();
+		if (!rangement.isCaisse()) {
+			rangement.updateToStock(newObject);
+		}
+		Debug("Replace object End");
+	}
 
 	/**
 	 * write_CSV: Ecriture d'un fichier CSV

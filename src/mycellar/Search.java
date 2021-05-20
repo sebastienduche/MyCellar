@@ -58,8 +58,8 @@ import java.util.regex.Pattern;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.1
- * @since 19/05/21
+ * @version 22.2
+ * @since 20/05/21
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -1161,14 +1161,14 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 		Program.getCave().forEach(lieu::addItem);
 	}
 
-	void removeBottle(MyCellarObject bottleToDelete) {
+	public void removeBottle(MyCellarObject bottleToDelete) {
 		SwingUtilities.invokeLater(() -> {
 			model.removeBouteille(bottleToDelete);
 			updateLabelBottleNumber();
 		});
 	}
 
-	void updateTable() {
+	public void updateTable() {
 		SwingUtilities.invokeLater(model::fireTableDataChanged);
 	}
 

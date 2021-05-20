@@ -18,8 +18,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 28.1
- * @since 18/05/21
+ * @version 28.2
+ * @since 20/05/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -392,7 +392,7 @@ public class Rangement implements Comparable<Rangement> {
 	 * @return int
 	 */
 	public void removeWine(MyCellarObject wine) throws MyCellarException {
-		clearStock(wine);
+		clearStock(wine, wine.getPlace());
 		Program.getStorage().deleteWine(wine);
 	}
 
@@ -477,7 +477,7 @@ public class Rangement implements Comparable<Rangement> {
 	 */
 	public void moveLine(MyCellarObject myCellarObject, int nNewLine) throws MyCellarException {
 		Program.getStorage().deleteWine(myCellarObject);
-		clearStock(myCellarObject);
+		clearStock(myCellarObject, myCellarObject.getPlace());
 		myCellarObject.setLigne(nNewLine);
 		addWine(myCellarObject);
 	}
@@ -518,15 +518,11 @@ public class Rangement implements Comparable<Rangement> {
 	 *
 	 * @param bottle Bouteille
 	 */
-	public void clearStock(MyCellarObject bottle) {
+	public void clearStock(MyCellarObject bottle, Place place) {
 		if (isCaisse()) {
-			storageCaisse.get(bottle.getNumLieu()).remove(bottle);
+			storageCaisse.get(place.getPlaceNum()).remove(bottle);
 		} else {
-			try {
-				stockage[bottle.getNumLieu() - 1][bottle.getLigne() - 1][bottle.getColonne() - 1] = null;
-			} catch (Exception e) {
-				Program.showException(e);
-			}
+			clearComplexStock(place);
 		}
 	}
 
@@ -535,7 +531,7 @@ public class Rangement implements Comparable<Rangement> {
 			return;
 		}
 		try {
-			stockage[place.getPlaceNumIndex()][place.getLineIndex()][place.getLineIndex()] = null;
+			stockage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = null;
 		} catch (Exception e) {
 			Program.showException(e);
 		}

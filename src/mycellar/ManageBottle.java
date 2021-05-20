@@ -269,19 +269,8 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 	private void replaceWine(final MyCellarObject bToDelete, Place oldPlace) throws MyCellarException {
 		//Change wine in a place
 		Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
-		Program.getStorage().deleteWine(bToDelete);
 
-		oldPlace.getRangement().clearStock(bottle);
-
-		ProgramPanels.getSearch().ifPresent(search -> {
-			search.removeBottle(bToDelete);
-			search.updateTable();
-		});
-
-		final Rangement rangement = bottle.getRangement();
-		if (!rangement.isCaisse()) {
-			rangement.updateToStock(bottle);
-		}
+		RangementUtils.replaceObject(bToDelete, bottle, oldPlace);
 	}
 
 	private boolean runExit() {

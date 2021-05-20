@@ -332,7 +332,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 						if (m_bmodify) {
 							//Suppression de la bouteille lors de la modification
 							Debug("Updating bottle when modifying");
-							bottle.getRangement().clearStock(bottle);
+							bottle.getRangement().clearStock(bottle, bottle.getPlace());
 							bottle.update(bouteille);
 							Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
 						} else {
@@ -444,7 +444,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 								Debug("Adding multiple bottles in simple place...");
 								if (m_bmodify && tmp.isInExistingPlace()) {
 									Debug("Delete from stock");
-									tmp.getRangement().clearStock(tmp);
+									tmp.getRangement().clearStock(tmp, tmp.getPlace());
 								}
 								//Ajout des bouteilles dans la caisse
 								tmp.setEmplacement(rangement.getNom());
@@ -685,12 +685,12 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 					Program.getStorage().deleteWine(tmp);
 					if (!rangement.isCaisse()) { //Si ce n'est pas une caisse on supprime de stockage
 						Debug("is Not a Caisse. Delete from stock");
-						rangement.clearStock(tmp);
+						rangement.clearComplexStock(tmp.getPlace());
 					}
 				}
 				//Ajout des bouteilles dans la caisse
 				Debug("Adding bottle...");
-				Program.getStorage().addHistory( m_bmodify? HistoryState.MODIFY : HistoryState.ADD, tmp);
+				Program.getStorage().addHistory(m_bmodify ? HistoryState.MODIFY : HistoryState.ADD, tmp);
 				//Ajout des bouteilles dans ALL
 				if (rangement.addWine(tmp)) {
 					m_bbottle_add = true;
@@ -703,34 +703,21 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 	}
 
 	private void replaceWine(final MyCellarObject newBottle, boolean modify, final MyCellarObject bToDelete) throws MyCellarException {
-		Debug("replaceWine...");
+		Debug("ReplaceWine...");
 		//Change wine in a place
 		Program.getStorage().addHistory(modify ? HistoryState.MODIFY : HistoryState.ADD, newBottle);
-		Program.getStorage().addHistory(HistoryState.DEL, bToDelete);
-		Program.getStorage().deleteWine(bToDelete);
+		Place oldPace = null;
+		if (modify && bottle != null) {
+			oldPace = bottle.getPlace();
+		}
+		RangementUtils.replaceObject(bToDelete, newBottle, oldPace);
 		if (!modify) {
 			Program.getStorage().addWine(newBottle);
-		}	else {
-			if (bottle != null) {
-				Rangement r = bottle.getRangement();
-				if (!r.isCaisse()) {
-					r.clearStock(bottle);
-				}
-			}
-
-			if (m_lv != null) {
-				m_lv.updateList(listBottleInModification);
-			}
-			ProgramPanels.getSearch().ifPresent(search -> {
-				search.removeBottle(bToDelete);
-				search.updateTable();
-			});
+		}	else if (m_lv != null) {
+			m_lv.updateList(listBottleInModification);
+			m_lv.updateList(List.of((Bouteille) bToDelete));
 		}
-		Rangement r = newBottle.getRangement();
-		if (!r.isCaisse()) {
-			r.updateToStock(newBottle);
-		}
-		Debug("replaceWine... End");
+		Debug("ReplaceWine... End");
 	}
 
 	private void doAfterRun() {

@@ -1178,13 +1178,13 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			Debug("newFileAction: Creating a new file...");
-			PanelObjectType panelObjectType = new PanelObjectType();
-			if (JOptionPane.CANCEL_OPTION == JOptionPane.showConfirmDialog(getInstance(), panelObjectType,
-					"",
-					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
-				return;
-			}
-			Program.putGlobalConfigString(PROGRAM_TYPE, panelObjectType.getSelectedType().name());
+//			PanelObjectType panelObjectType = new PanelObjectType();
+//			if (JOptionPane.CANCEL_OPTION == JOptionPane.showConfirmDialog(getInstance(), panelObjectType,
+//					"",
+//					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
+//				return;
+//			}
+//			Program.putGlobalConfigString(PROGRAM_TYPE, panelObjectType.getSelectedType().name());
 			Program.newFile();
 			postOpenFile();
 			Debug("newFileAction: Creating a new file OK");

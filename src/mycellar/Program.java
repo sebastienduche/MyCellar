@@ -81,13 +81,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.2
- * @since 20/05/21
+ * @version 26.3
+ * @since 21/05/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.1.9.3";
+	public static final String INTERNAL_VERSION = "4.1.9.5";
 	public static final int VERSION = 69;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -555,7 +555,7 @@ public final class Program {
 	}
 
 	static int[] getAnnees() {
-		return getStorage().getAllList().stream().mapToInt(IMyCellarObject::getAnneeInt).distinct().toArray();
+		return getStorage().getAllList().stream().mapToInt(IMyCellarObject::getAnneeInt).distinct().sorted().toArray();
 	}
 
 	/**

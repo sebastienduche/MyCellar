@@ -41,10 +41,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
-import java.text.Collator;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -213,7 +211,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
 			tabbedPane.addChangeListener((e) -> {
 				JTabbedPane pane = (JTabbedPane) e.getSource();
-				if (pane.getSelectedComponent().equals(panelYear)){
+				if (pane.getSelectedComponent().equals(panelYear)) {
 					panelYear.fillYear();
 				}
 			});
@@ -1101,17 +1099,17 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 			add(labelYear, "wrap");
 			add(year);
 		}
-		private void fillYear(){
+		private void fillYear() {
 			year.removeAllItems();
 			int[] an_array = Program.getAnnees();
-			String[] mes_string = new String[an_array.length];
-			for (int y = 0; y < an_array.length; y++) {
-				mes_string[y] = Integer.toString(an_array[y]);
-			}
-			Arrays.sort(mes_string, Collator.getInstance());
-			for (String s : mes_string) {
-				if (Integer.parseInt(s) > 1000 && Integer.parseInt(s) < 9000) {
-					year.addItem(s);
+//			String[] mes_string = new String[an_array.length];
+//			for (int y = 0; y < an_array.length; y++) {
+//				mes_string[y] = Integer.toString(an_array[y]);
+//			}
+//			Arrays.sort(mes_string, Collator.getInstance());
+			for (int s : an_array) {
+				if (s > 1000 && s < 9000) {
+					year.addItem(Integer.toString(s));
 				}
 			}
 			year.addItem(Program.getLabel("Infos390")); //NV
@@ -1158,6 +1156,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 		lieu.removeAllItems();
 		lieu.addItem(Program.EMPTY_PLACE);
 		Program.getCave().forEach(lieu::addItem);
+		panelYear.fillYear();
 	}
 
 	public void removeBottle(MyCellarObject bottleToDelete) {

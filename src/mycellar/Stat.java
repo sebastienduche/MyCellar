@@ -34,7 +34,6 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.text.Collator;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -56,8 +55,8 @@ import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.4
- * @since 16/04/21
+ * @version 8.5
+ * @since 21/05/21
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -179,13 +178,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		listChart.setEnabled(true);
 		if (selectedItem.getValue() == StatType.YEAR.ordinal()) {
 			Debug("By year");
-			int[] annees = Program.getAnnees();
-			annee = new String[annees.length];
-			int i = 0;
-			for (int an : annees) {
-				annee[i++] = Integer.toString(an);
-			}
-			Arrays.sort(annee, Collator.getInstance());
+			annee = Arrays.stream(Program.getAnnees()).mapToObj(Integer::toString).toArray(String[]::new);
 		}
 		fillListOptionsChart(selectedItem);
 		if (selectedItem.getValue() == StatType.PLACE.ordinal()) {

@@ -14,8 +14,8 @@ import java.util.TimerTask;
  * Société : Seb Informatique
  *
  * @author Sébastien Duché
- * @version 0.7
- * @since 20/05/21
+ * @version 0.8
+ * @since 23/05/21
  */
 
 public class MyCellarLabel extends JLabel implements IMyCellarComponent {
@@ -90,19 +90,27 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 	public void updateText() {
 		MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
 	}
-
-	public void setText(String text, boolean autoHide) {
-		setText(text, autoHide, 5000);
+	
+	private void hide(boolean visible) {
+		if (visible) { 
+			setText("");
+		} else {
+			setVisible(false);
+		}
 	}
 
-	public void setText(String text, boolean autoHide, int delay) {
+	public void setText(String text, boolean autoHide) {
+		setText(text, autoHide, 5000, true);
+	}
+
+	public void setText(String text, boolean autoHide, int delay, boolean visible) {
 		super.setText(text);
 		if (autoHide) {
 			new Timer().schedule(
 					new TimerTask() {
 						@Override
 						public void run() {
-							SwingUtilities.invokeLater(() -> setText(""));
+							SwingUtilities.invokeLater(() -> hide(visible));
 						}
 					},
 					delay

@@ -77,8 +77,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.4
- * @since 15/05/21
+ * @version 10.5
+ * @since 23/05/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -1022,12 +1022,13 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       tc.setCellRenderer(new StateButtonRenderer(Program.getLabel("Infos071"), MyCellarImage.ADD));
       tc.setCellEditor(new StateButtonEditor());
     } else if (isNormal() || isWork()) {
+      List<ShowFileColumn<?>> cols = filterColumns(columnsModel);
       int i = 0;
       final int columnCount = tcm.getColumnCount();
-      for (ShowFileColumn<?> column : columnsModel) {
+      for (ShowFileColumn<?> column : cols) {
         if (i >= columnCount) {
           Debug("ERROR: i >= columnCount: Column: " + column.getField().name() + " " + i + " >= " + columnCount);
-          columnsModel.forEach(showFileColumn -> Debug(showFileColumn.getField().name()));
+          Debug("----");
           i++;
           continue;
         }
@@ -1065,7 +1066,43 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
 
-  @Override
+  private List<ShowFileColumn<?>> filterColumns(List<ShowFileColumn<?>> columnsModel) {
+	  String savedColumns;
+      if (isWork()) {
+        model.setBottles(workingBottles);
+        savedColumns = Program.getShowColumnsWork();
+      } else {
+        model.setBottles(Program.getStorage().getAllList());
+        savedColumns = Program.getShowColumns();
+      }
+      List<ShowFileColumn<?>> cols = new ArrayList<>();
+      if (!savedColumns.isEmpty()) {
+        String[] values = savedColumns.split(";");
+        for (ShowFileColumn<?> c : columns) {
+          for (String s : values) {
+            if (s.equals(c.getField().name())) {
+              cols.add(c);
+            }
+          }
+        }
+      }
+      if (cols.isEmpty()) {
+        cols = columns.stream().filter((field) ->
+            !field.getField().equals(MyCellarFields.VINEYARD)
+                && !field.getField().equals(MyCellarFields.AOC)
+                && !field.getField().equals(MyCellarFields.IGP)
+                && !field.getField().equals(MyCellarFields.COUNTRY)).collect(Collectors.toList());
+      } else {
+        cols.add(0, checkBoxStartColumn);
+        cols.add(modifyButtonColumn);
+        if (isWork()) {
+          cols.add(checkedButtonColumn);
+        }
+      }
+      return cols;
+}
+
+@Override
   public boolean tabWillClose(TabEvent event) {
     if (isError()) {
       if (Program.getErrors().stream().anyMatch(MyCellarError::isNotSolved)) {
@@ -1125,11 +1162,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           cols.add(checkedButtonColumn);
         }
       }
-      if (!cols.isEmpty()) {
-        ((ShowFileModel) model).removeAllColumns();
-        ((ShowFileModel) model).setColumns(cols);
-        updateModel(cols);
-      }
       int i = 0;
       StringBuilder buffer = new StringBuilder();
       for (ShowFileColumn<?> c : cols) {
@@ -1146,6 +1178,11 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         Program.saveShowColumnsWork(buffer.toString());
       } else {
         Program.saveShowColumns(buffer.toString());
+      }
+      if (!cols.isEmpty()) {
+        ((ShowFileModel) model).removeAllColumns();
+        ((ShowFileModel) model).setColumns(cols);
+        updateModel(cols);
       }
     }
   }

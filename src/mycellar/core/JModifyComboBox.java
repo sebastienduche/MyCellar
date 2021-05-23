@@ -25,8 +25,8 @@ public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
 		modified = false;
 		active = true;
 		addItemListener(itemEvent -> {
-			if(itemEvent.getStateChange() == ItemEvent.SELECTED) {
-				if(active) {
+			if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
+				if (active) {
 					modified = true;
 					doAfterModify();
 				}
@@ -41,7 +41,7 @@ public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
 	public void setModified(boolean modified) {
 		this.modified = modified;
 	}
-	
+
 	public boolean isModifyActive() {
 		return active;
 	}

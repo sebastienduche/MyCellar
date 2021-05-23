@@ -4,7 +4,9 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Start;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
+import mycellar.core.MyCellarObject;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 
@@ -23,8 +25,8 @@ import java.util.Optional;
  * <p>Society : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.8
- * @since 05/03/21
+ * @version 5.2
+ * @since 19/05/21
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -48,7 +50,7 @@ class TableShowValues extends AbstractTableModel {
 
   protected Boolean[] values = null;
 
-  List<Bouteille> monVector = new LinkedList<>();
+  List<? extends MyCellarObject> monVector = new LinkedList<>();
 
   @Override
   public int getRowCount() {
@@ -62,7 +64,8 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public Object getValueAt(int row, int column) {
-    Bouteille b = monVector.get(row);
+    Program.throwNotImplementedIfNotFor(monVector.get(row), Bouteille.class);
+    Bouteille b = (Bouteille) monVector.get(row);
     switch (column) {
       case ETAT:
         return values[row];
@@ -72,7 +75,7 @@ class TableShowValues extends AbstractTableModel {
       case YEAR:
         return b.getAnnee();
       case TYPE:
-        return b.getType();
+        return b.getKind();
       case PLACE:
         return Program.convertStringFromHTMLString(b.getEmplacement());
       case NUM_PLACE:
@@ -106,7 +109,8 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public void setValueAt(Object value, int row, int column) {
-    Bouteille b = monVector.get(row);
+    Program.throwNotImplementedIfNotFor(monVector.get(row), Bouteille.class);
+    Bouteille b = (Bouteille) monVector.get(row);
     switch (column) {
       case ETAT:
         values[row] = (Boolean) value;
@@ -118,7 +122,7 @@ class TableShowValues extends AbstractTableModel {
         b.setPrix((String) value);
         break;
       case TYPE:
-        b.setType((String) value);
+        b.setKind((String) value);
         break;
       case MATURITY:
         b.setMaturity(Program.convertStringFromHTMLString((String) value));
@@ -198,12 +202,12 @@ class TableShowValues extends AbstractTableModel {
             tmpNumEmpl -= rangement.getStartCaisse();
           }
           if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
-            Optional<Bouteille> bTemp = Optional.empty();
+            Optional<MyCellarObject> bTemp = Optional.empty();
             if (!rangement.isCaisse()) {
               bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
             }
             if (bTemp.isPresent()) {
-              final Bouteille bouteille = bTemp.get();
+              final IMyCellarObject bouteille = bTemp.get();
               Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
             } else {
               if (column == PLACE) {
@@ -230,7 +234,7 @@ class TableShowValues extends AbstractTableModel {
               Erreur.showSimpleErreur(Program.getError("Error154"));
             } else {
               if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getError("Error015"), JOptionPane.YES_NO_OPTION)) {
-                LinkedList<Bouteille> list = new LinkedList<>();
+                LinkedList<MyCellarObject> list = new LinkedList<>();
                 list.add(b);
                 Program.modifyBottles(list);
               }
@@ -243,7 +247,7 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  public void setBottles(List<Bouteille> b) {
+  public void setBottles(List<? extends MyCellarObject> b) {
     if (b == null) {
       return;
     }
@@ -258,7 +262,7 @@ class TableShowValues extends AbstractTableModel {
   /**
    * getBouteille: Récupération d'une bouteille.
    */
-  public Bouteille getBottle(int i) {
+  public MyCellarObject getMyCellarObject(int i) {
     return monVector.get(i);
   }
 

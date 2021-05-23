@@ -1,6 +1,6 @@
 package mycellar.core.datas.worksheet;
 
-import mycellar.Bouteille;
+import mycellar.core.IMyCellarObject;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,8 +13,8 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 06/07/19
+ * @version 0.2
+ * @since 09/04/21
  */
 
 
@@ -30,7 +30,7 @@ public class WorkSheetData {
   public WorkSheetData() {
   }
 
-  public WorkSheetData(Bouteille bouteille) {
+  public WorkSheetData(IMyCellarObject bouteille) {
     bouteilleId = bouteille.getId();
   }
 

@@ -7,8 +7,18 @@ import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -92,13 +102,13 @@ class BouteilleTest {
 
   @Test
   void getType() {
-    assertEquals("type", bouteille.getType());
+    assertEquals("type", bouteille.getKind());
   }
 
   @Test
   void setType() {
-    bouteille.setType("test");
-    assertEquals("test", bouteille.getType());
+    bouteille.setKind("test");
+    assertEquals("test", bouteille.getKind());
   }
 
   @Test
@@ -317,7 +327,7 @@ class BouteilleTest {
     assertEquals(9, bouteille.getNumLieu());
     assertEquals(99, bouteille.getLigne());
     assertEquals(999, bouteille.getColonne());
-    assertEquals("t", bouteille.getType());
+    assertEquals("t", bouteille.getKind());
     assertEquals("2", bouteille.getAnnee());
     assertEquals("R", bouteille.getColor());
     assertEquals("c", bouteille.getComment());
@@ -359,6 +369,76 @@ class BouteilleTest {
   }
 
   @Test
-  void getBouteilleFromXML() {
+  void getBouteilleFromXML() throws ParserConfigurationException, IOException, SAXException {
+    final int id = 1987;
+    final String name = "Aalto PS 04";
+    final String year = "2004";
+    final String type = "75cl";
+    final String place = "Courlon 3a";
+    final int numPlace = 0;
+    final int line = 1;
+    final int column = 2;
+    final String price = "75";
+    final String comment = "comment";
+    final String maturity = "2018-2030";
+    final String parker = "89";
+    final String country = "ESP";
+    final String vignoble = "Castilla y Leon";
+    final String aoc = "Ribera del Duero";
+    final String igp = "Ribera del Duero";
+    final String color = "RED";
+    final String status = "MODIFIED";
+    final String lastModified = "17-11-2020 12:08";
+    String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        "<ListeBouteille><Bouteille>\n" +
+        "        <id>" + id + "</id>\n" +
+        "        <nom>" + name + "</nom>\n" +
+        "        <annee>" + year + "</annee>\n" +
+        "        <type>" + type + "</type>\n" +
+        "        <emplacement>" + place + "</emplacement>\n" +
+        "        <num_lieu>" + numPlace + "</num_lieu>\n" +
+        "        <ligne>" + line + "</ligne>\n" +
+        "        <colonne>" + column + "</colonne>\n" +
+        "        <prix>" + price + "</prix>\n" +
+        "        <comment>" + comment + "</comment>\n" +
+        "        <maturity>" + maturity + "</maturity>\n" +
+        "        <parker>" + parker + "</parker>\n" +
+        "        <vignoble>\n" +
+        "            <country>" + country + "</country>\n" +
+        "            <name>" + vignoble + "</name>\n" +
+        "            <AOC>" + aoc + "</AOC>\n" +
+        "            <IGP>" + igp + "</IGP>\n" +
+        "            <AOP></AOP>\n" +
+        "            <id>27618</id>\n" +
+        "        </vignoble>\n" +
+        "        <color>" + color + "</color>\n" +
+        "        <status>" + status + "</status>\n" +
+        "        <lastModified>" + lastModified + "</lastModified>\n" +
+        "    </Bouteille></ListeBouteille>";
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    Document doc = dBuilder.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+    doc.getDocumentElement().normalize();
+    NodeList nodeList = doc.getElementsByTagName("Bouteille");
+    final Bouteille bouteilleFromXML = Bouteille.fromXml((Element) nodeList.item(0));
+    assertEquals(id, bouteilleFromXML.getId());
+    assertEquals(name, bouteilleFromXML.getNom());
+    assertEquals(year, bouteilleFromXML.getAnnee());
+    assertEquals(type, bouteilleFromXML.getKind());
+    assertEquals(place, bouteilleFromXML.getEmplacement());
+    assertEquals(numPlace, bouteilleFromXML.getNumLieu());
+    assertEquals(line, bouteilleFromXML.getLigne());
+    assertEquals(column, bouteilleFromXML.getColonne());
+    assertEquals(price, bouteilleFromXML.getPrix());
+    assertEquals(comment, bouteilleFromXML.getComment());
+    assertEquals(maturity, bouteilleFromXML.getMaturity());
+    assertEquals(parker, bouteilleFromXML.getParker());
+    assertEquals(color, bouteilleFromXML.getColor());
+    assertEquals(status, bouteilleFromXML.getStatus());
+    assertEquals(lastModified, bouteilleFromXML.getLastModified());
+    assertEquals(country, bouteilleFromXML.getVignoble().getCountry());
+    assertEquals(vignoble, bouteilleFromXML.getVignoble().getName());
+    assertEquals(aoc, bouteilleFromXML.getVignoble().getAOC());
+    assertEquals(igp, bouteilleFromXML.getVignoble().getIGP());
   }
 }

@@ -2,7 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.MyCellarControl;
-import mycellar.MyXmlDom;
+import mycellar.general.XmlUtils;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IPlace;
@@ -23,7 +23,6 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -32,8 +31,8 @@ import java.util.Optional;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 23/03/21
+ * @version 0.8
+ * @since 20/04/21
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -209,7 +208,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     }
   }
 
-  public void clear() {
+  public void resetValues() {
     place.setSelectedIndex(0);
     clearBeforeBottle();
     labelExist.setText("");
@@ -292,7 +291,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   private void preview_actionPerformed(ActionEvent e) {
     Debug("Previewing...");
     RangementUtils.putTabStock();
-    MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
+    XmlUtils.writeRangements(Program.getPreviewXMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
     Program.open(new File(Program.getPreviewXMLFileName()));
     Debug("Previewing... End");
   }
@@ -406,12 +405,9 @@ public final class PanelPlace extends JPanel implements IPlace {
       }
 
       Rangement cave = place.getItemAt(nPlace);
-      Optional<Bouteille> b = cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1);
-      if (b.isPresent()) {
-        labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(b.get().getNom())));
-      } else {
-        labelExist.setText("");
-      }
+      labelExist.setText("");
+      cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1)
+          .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(myCellarObject.getNom()))));
       Debug("Column_itemStateChanging... End");
     });
   }

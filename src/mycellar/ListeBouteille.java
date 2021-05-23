@@ -8,6 +8,8 @@
 
 package mycellar;
 
+import mycellar.core.MyCellarObject;
+import mycellar.general.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,8 +40,8 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 16/07/18
+ * @version 1.4
+ * @since 19/05/21
  *
  * <p>Java class for anonymous complex type.
  *
@@ -51,6 +53,7 @@ import java.util.LinkedList;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{}Bouteille" maxOccurs="unbounded"/>
+ *         &lt;element ref="{}Music" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -61,14 +64,18 @@ import java.util.LinkedList;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-		"bouteille"
+		"bouteille",
+		"music"
 })
 @XmlRootElement(name = "ListeBouteille")
 @XmlSeeAlso(Bouteille.class)
 public class ListeBouteille {
 
-	@XmlElement(name = "Bouteille", required = true)
+	@XmlElement(name = "Bouteille")
 	LinkedList<Bouteille> bouteille;
+
+	@XmlElement
+	LinkedList<Music> music;
 
 	/**
 	 * Gets the value of the bouteille property.
@@ -99,6 +106,13 @@ public class ListeBouteille {
 		return bouteille;
 	}
 
+	public LinkedList<Music> getMusic() {
+		if (music == null) {
+			music = new LinkedList<>();
+		}
+		return music;
+	}
+
 	void resetBouteille() {
 		bouteille = null;
 	}
@@ -109,8 +123,8 @@ public class ListeBouteille {
 		return loadXML(f);
 	}
 
-	static boolean loadXML(File f) {
-		Debug("Loading XML File "+f.getAbsolutePath());
+	public static boolean loadXML(File f) {
+		Debug("Loading XML File " + f.getAbsolutePath());
 		if(!f.exists())
 			return false;
 		try {
@@ -145,10 +159,21 @@ public class ListeBouteille {
 
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element bouteilleElem = (Element) node;
-				listeBouteille.getBouteille().add(Bouteille.getBouteilleFromXML(bouteilleElem));
+				listeBouteille.getBouteille().add(Bouteille.fromXml(bouteilleElem));
 			}
 		}
-		Program.getStorage().setListBouteilles(listeBouteille);
+
+		NodeList musics = doc.getElementsByTagName("Music");
+
+		for (int i = 0; i < musics.getLength(); i++) {
+			Node node = musics.item(i);
+
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element musicElem = (Element) node;
+				listeBouteille.getMusic().add(Music.fromXml(musicElem));
+			}
+		}
+		Program.getStorage().setListMyCellarObject(listeBouteille);
 		Debug("Loading Manually File Done");
 	}
 
@@ -162,23 +187,51 @@ public class ListeBouteille {
 	}
 
 	static boolean writeXML() {
-		return MyXmlDom.writeXML(Program.getStorage().getListBouteilles(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
+		return XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
 	}
 
 	static boolean writeXML(File f) {
-		return MyXmlDom.writeXML(Program.getStorage().getListBouteilles(), f, ObjectFactory.class);
+		return XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), f, ObjectFactory.class);
 	}
 
 	static boolean writeXML(ListeBouteille liste, File f) {
-		return MyXmlDom.writeXML(liste, f, ObjectFactory.class);
+		return XmlUtils.writeXML(liste, f, ObjectFactory.class);
 	}
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
+	public int getItemsCount() {
+		if (Program.isWineType()) {
+			return bouteille.size();
+		}
+		if (Program.isMusicType()) {
+			return music.size();
+		}
+		Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+		return -1;
+	}
+
+	public boolean add(MyCellarObject myCellarObject) {
+		if (myCellarObject instanceof Bouteille) {
+			return getBouteille().add((Bouteille) myCellarObject);
+		} else if (myCellarObject instanceof Music) {
+			return getMusic().add((Music) myCellarObject);
+		} else {
+			Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+			return false;
+		}
+	}
+
+	public boolean remove(MyCellarObject myCellarObject) {
+		if (myCellarObject instanceof Bouteille) {
+			return getBouteille().remove((Bouteille) myCellarObject);
+		} else if (myCellarObject instanceof Music) {
+			return getMusic().remove((Music) myCellarObject);
+		} else {
+			Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+		}
+		return false;
+	}
+
 	public static void Debug(String sText) {
-		Program.Debug("ListeBouteille: " + sText );
+		Program.Debug("ListeBouteille: " + sText);
 	}
 }

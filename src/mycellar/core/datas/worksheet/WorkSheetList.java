@@ -8,7 +8,7 @@
 
 package mycellar.core.datas.worksheet;
 
-import mycellar.MyXmlDom;
+import mycellar.general.XmlUtils;
 import mycellar.Program;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -135,7 +135,7 @@ public class WorkSheetList {
   }
 
   public static void writeXML(File f) {
-    MyXmlDom.writeXML(Program.getWorksheetList(), f, WorkSheetFactory.class);
+    XmlUtils.writeXML(Program.getWorksheetList(), f, WorkSheetFactory.class);
   }
 
   /**

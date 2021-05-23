@@ -2,6 +2,7 @@ package mycellar.vignobles;
 
 import mycellar.Bouteille;
 import mycellar.Program;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
@@ -33,8 +34,8 @@ import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 2.8
- * @since 29/01/21
+ * @version 2.9
+ * @since 09/04/21
  */
 
 public final class CountryVignobleController {
@@ -141,6 +142,7 @@ public final class CountryVignobleController {
 		INSTANCE.mapBottleAppellationIDToAppellationID.clear();
 		List<VignobleJaxb> vignobleJaxbList = Program.getStorage().getAllList()
 				.stream()
+				.map(myCellarObject -> (Bouteille)myCellarObject)
 				.map(Bouteille::getVignoble)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
@@ -233,9 +235,9 @@ public final class CountryVignobleController {
 			return;
 		}
 		if (INSTANCE.usedVignoblesIDList.contains(bouteilleVignobleJaxb.getId())) {
-			LinkedList<Bouteille> list = Program.getStorage().getAllList();
-			for (Bouteille b : list) {
-				VignobleJaxb v = b.getVignoble();
+			List<? extends IMyCellarObject> list = Program.getStorage().getAllList();
+			for (IMyCellarObject b : list) {
+				VignobleJaxb v = ((Bouteille)b).getVignoble();
 				if (v != null && v.getName().equals(bouteilleVignobleJaxb.getName())) {
 					v.setName(name);
 				}
@@ -256,8 +258,9 @@ public final class CountryVignobleController {
 			return;
 		}
 		if (INSTANCE.usedVignoblesIDList.contains(vigne.getId())) {
-			LinkedList<Bouteille> list = Program.getStorage().getAllList();
+			List<? extends IMyCellarObject> list = Program.getStorage().getAllList();
 			list.stream()
+					.map(myCellarObject -> (Bouteille)myCellarObject)
 					.map(Bouteille::getVignoble)
 					.filter(Objects::nonNull)
 					.filter(vignoble -> vignoble.getId() == vigne.getId() || vignoble.equals(vigne))
@@ -283,8 +286,9 @@ public final class CountryVignobleController {
 			return;
 		}
 		if (INSTANCE.usedVignoblesIDList.contains(vigne.getId())) {
-			LinkedList<Bouteille> list = Program.getStorage().getAllList();
+			List<? extends IMyCellarObject> list = Program.getStorage().getAllList();
 			list.stream()
+					.map(myCellarObject -> (Bouteille)myCellarObject)
 					.map(Bouteille::getVignoble)
 					.filter(Objects::nonNull)
 					.filter(vignoble -> vignoble.equals(vigne))

@@ -1,8 +1,9 @@
 package mycellar.showfile;
 
-import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.core.MyCellarFields;
+import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
+import mycellar.core.common.MyCellarFields;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +14,8 @@ import java.util.Map;
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Societe : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 09/08/19
+ * @version 1.3
+ * @since 16/04/21
  */
 
 abstract class ShowFileColumn<T> {
@@ -99,14 +100,14 @@ abstract class ShowFileColumn<T> {
 		this.editable = editable;
 	}
 
-	void setValue(Bouteille b, Object value) {
+	void setValue(MyCellarObject b, Object value) {
 		if (value instanceof String) {
 			b.setValue(field, (String) value);
 			Program.setModified();
 			b.updateStatus();
 		}
 	}
-	abstract Object getDisplayValue(Bouteille b);
+	abstract Object getDisplayValue(MyCellarObject b);
 
 	boolean isButton() {
 		return type == Type.BUTTON;
@@ -132,11 +133,11 @@ abstract class ShowFileColumn<T> {
 		this.buttonLabel = buttonLabel;
 	}
 
-	public boolean execute(Bouteille b, int row, int column) {
+	public boolean execute(MyCellarObject b, int row, int column) {
 		return true;
 	}
 
-	T getMapValue(Bouteille b) {
+	T getMapValue(MyCellarObject b) {
 		if (value.containsKey(b.getId())) {
 			return value.get(b.getId());
 		}
@@ -146,7 +147,7 @@ abstract class ShowFileColumn<T> {
 		return null;
 	}
 
-	void setMapValue(Bouteille b, T value) {
+	void setMapValue(IMyCellarObject b, T value) {
 		this.value.put(b.getId(), value);
 	}
 

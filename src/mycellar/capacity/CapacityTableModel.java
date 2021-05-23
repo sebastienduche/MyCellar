@@ -3,6 +3,7 @@ package mycellar.capacity;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.general.ProgramPanels;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -114,16 +115,16 @@ class CapacityTableModel extends DefaultTableModel {
         list.remove(oldValue);
         fireTableRowsDeleted(row, row);
         setModify(true);
-        Program.updateAllPanels();
-        Program.getCapacityPanel().updateView();
+        ProgramPanels.updateAllPanels();
+        ProgramPanels.getCapacityPanel().updateView();
       } else {
         String newValue = Program.toCleanString(value);
         if (!newValue.isBlank()) {
           MyCellarBottleContenance.rename(oldValue, newValue);
           fireTableDataChanged();
           setModify(true);
-          Program.updateAllPanels();
-          Program.getCapacityPanel().updateView();
+          ProgramPanels.updateAllPanels();
+          ProgramPanels.getCapacityPanel().updateView();
         }
       }
     } catch (Exception e) {

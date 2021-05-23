@@ -1,6 +1,6 @@
 package mycellar.pdf;
 
-import mycellar.core.MyCellarFields;
+import mycellar.core.common.MyCellarFields;
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -8,8 +8,8 @@ import mycellar.core.MyCellarFields;
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 08/06/18
+ * @version 0.4
+ * @since 16/04/21
  */
 
 public class PDFColumn {

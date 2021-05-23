@@ -7,6 +7,7 @@ import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.placesmanagement.Rangement;
@@ -24,6 +25,7 @@ import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.text.MessageFormat;
@@ -40,8 +42,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.8
- * @since 22/02/21
+ * @version 5.0
+ * @since 16/04/21
  */
 
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
@@ -72,18 +74,18 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 			tc1[w] = tcm.getColumn(w);
 			tc1[w].setCellRenderer(new ToolTipRenderer());
 			switch (w) {
-			case 0:
-				tc1[w].setMinWidth(30);
-				break;
+				case 0:
+					tc1[w].setMinWidth(30);
+					break;
 				case 1:
-				tc1[w].setMinWidth(100);
-				break;
+					tc1[w].setMinWidth(100);
+					break;
 				case 2:
-				tc1[w].setMinWidth(100);
-				break;
+					tc1[w].setMinWidth(100);
+					break;
 				case 3:
-				tc1[w].setMinWidth(350);
-				break;
+					tc1[w].setMinWidth(350);
+					break;
 			}
 		}
 		TableColumn tc = tcm.getColumn(TableHistoryValues.SELECT);
@@ -101,10 +103,10 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
 		TableRowSorter<TableHistoryValues> sorter = new TableRowSorter<>(model);
 		sorter.setComparator(1, (Comparator<LocalDate>) (o1, o2) -> {
-		  if (o1 == null || o2 == null) {
-			return 1;
-		  }
-		  return o1.compareTo(o2);
+			if (o1 == null || o2 == null) {
+				return 1;
+			}
+			return o1.compareTo(o2);
 		});
 		table.setRowSorter(sorter);
 		sorter.setSortKeys(List.of(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
@@ -138,7 +140,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 		Start.getInstance().updateMainPanel();
 	}
 
-	private class RestoreAction extends AbstractAction {
+	private final class RestoreAction extends AbstractAction {
 
 		private static final long serialVersionUID = 4095399581910695568L;
 
@@ -149,7 +151,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			LinkedList<Bouteille> toRestoreList = new LinkedList<>();
+			LinkedList<MyCellarObject> toRestoreList = new LinkedList<>();
 
 			boolean nonExit = false;
 
@@ -159,7 +161,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 				do {
 					if (Boolean.TRUE.equals(model.getValueAt(row, TableHistoryValues.SELECT))) {
 						if (model.isBottleDeleted(row))
-							toRestoreList.add(model.getBottle(row));
+							toRestoreList.add(model.getObject(row));
 						else {
 							nonExit = true;
 						}
@@ -186,8 +188,8 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 				}
 				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-					LinkedList<Bouteille> cantRestoreList = new LinkedList<>();
-					for (Bouteille b : toRestoreList) {
+					LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
+					for (MyCellarObject b : toRestoreList) {
 						if (b.isInExistingPlace()) {
 							Rangement r = b.getRangement();
 							if (r.isCaisse()) {
@@ -217,7 +219,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 		}
 	}
 
-	class DeleteAction extends AbstractAction {
+	final class DeleteAction extends AbstractAction {
 
 		private static final long serialVersionUID = -1982193809982154836L;
 
@@ -264,12 +266,15 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 						model.setHistory(Program.getHistory());
 					}
 				}
-			} catch (Exception e) {
+			} catch (HeadlessException e) {
+				Debug("ERROR: Why this exception again? " + e.getMessage());
+				Program.showException(e);
+			} catch (RuntimeException e) {
 				Program.showException(e);
 			}
 		}
 	}
-	
+
 	class ClearHistoryAction extends AbstractAction {
 
 		private static final long serialVersionUID = 3079501619032347868L;

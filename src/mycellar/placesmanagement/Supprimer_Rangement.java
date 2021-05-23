@@ -1,9 +1,7 @@
 package mycellar.placesmanagement;
 
-import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.ITabListener;
-import mycellar.MyXmlDom;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.TabEvent;
@@ -13,8 +11,11 @@ import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.general.XmlUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JOptionPane;
@@ -37,7 +38,6 @@ import java.util.stream.Collectors;
 
 import static mycellar.Program.EMPTY_PLACE;
 import static mycellar.Program.FONT_DIALOG_SMALL;
-import static mycellar.Program.deleteSupprimerRangement;
 import static mycellar.Program.getAide;
 import static mycellar.Program.getCave;
 import static mycellar.Program.getCaveLength;
@@ -49,7 +49,8 @@ import static mycellar.Program.open;
 import static mycellar.Program.removeCave;
 import static mycellar.Program.setToTrash;
 import static mycellar.Program.showException;
-import static mycellar.Program.updateAllPanels;
+import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
+import static mycellar.general.ProgramPanels.updateAllPanels;
 
 
 /**
@@ -58,8 +59,8 @@ import static mycellar.Program.updateAllPanels;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.7
- * @since 16/02/21
+ * @version 8.9
+ * @since 19/05/21
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -225,10 +226,14 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 							//Suppression des bouteilles presentes dans le rangement
 							String tmp_nom = cave.getNom();
 
-							List<Bouteille> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
-							for (Bouteille b : bottleList) {
+							List<MyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
+							for (MyCellarObject b : bottleList) {
 								getStorage().addHistory(HistoryState.DEL, b);
-								getStorage().deleteWine(b);
+								try {
+									getStorage().deleteWine(b);
+								} catch (MyCellarException myCellarException) {
+									Program.showException(myCellarException);
+								}
 								setToTrash(b);
 							}
 							removeCave(cave);
@@ -257,7 +262,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 				preview.setEnabled(false);
 				return;
 			}
-			MyXmlDom.writeRangements("", List.of((Rangement) Objects.requireNonNull(choix.getSelectedItem())), false);
+			XmlUtils.writeRangements("", List.of((Rangement) Objects.requireNonNull(choix.getSelectedItem())), false);
 			open(new File(getPreviewXMLFileName()));
 		}	catch (Exception exc) {
 			showException(exc);

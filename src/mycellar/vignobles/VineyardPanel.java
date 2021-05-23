@@ -18,6 +18,7 @@ import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleListJaxb;
+import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -334,7 +335,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 	public void tabClosed() {
 		comboCountry.setSelectedIndex(0);
 		model.setAppellations(null, null);
-		Program.updateAllPanels();
+		ProgramPanels.updateAllPanels();
 		Start.getInstance().updateMainPanel();
 	}
 

@@ -1,4 +1,11 @@
 package mycellar;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+
 /**
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
@@ -8,18 +15,12 @@ package mycellar;
  * @version 0.9
  * @since 07/07/19
  */
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
-
 public final class MyCellarImage {
-	
-	private static final MyCellarImage instance = new MyCellarImage();
-	
+
+	private static final MyCellarImage INSTANCE = new MyCellarImage();
+
 	private static MyCellarImage getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 	public static final ImageIcon NEW = getInstance().getImage("new.gif");
@@ -55,17 +56,17 @@ public final class MyCellarImage {
 	public static final ImageIcon WARNING = getInstance().getImage("problem.png");
 
 	private ImageIcon getImage(final String filename) {
-		URL stream = getClass().getClassLoader().getResource("resources/"+filename);
-		if(stream == null) {
-			Program.Debug("MyCellarImage: Missing resource "+filename);
+		URL stream = getClass().getClassLoader().getResource("resources/" + filename);
+		if (stream == null) {
+			Program.Debug("MyCellarImage: Missing resource " + filename);
 			return null;
 		}
-		BufferedImage image = null;
 		try {
-			image = ImageIO.read(stream);
+			BufferedImage image = ImageIO.read(stream);
+			return new ImageIcon(image);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return new ImageIcon(image);
+		return null;
 	}
 }

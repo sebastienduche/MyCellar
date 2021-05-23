@@ -33,11 +33,11 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 16/12/20
+ * @version 0.8
+ * @since 20/04/21
  */
 
-/**
+/*
  * A {@link JComboBox} with an auto-populating history feature. 
  * 
  * @author Francois RITALY / HR Access Solutions
@@ -60,10 +60,6 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 		// flag to indicate if setSelectedItem has been called
 		// subsequent calls to remove/insertString should be ignored
 		private boolean selecting = false;
-
-//		private boolean hitBackspace = false;
-
-//		private boolean hitBackspaceOnSelection;
 
 		private final boolean hidePopupOnFocusLoss;
 		
@@ -136,16 +132,6 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 			doAfterModify();
 			if (comboBox.isDisplayable()) {
 				comboBox.setPopupVisible(true);
-			}
-//			hitBackspace = false;
-			// determine if the pressed key is backspace (needed by the remove
-			// method)
-			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-//				JTextComponent editor = (JTextComponent) comboBox.getEditor()
-//						.getEditorComponent();
-//				hitBackspace = true;
-//				hitBackspaceOnSelection = editor.getSelectionStart() != editor
-//						.getSelectionEnd();
 			}
 		}
 
@@ -287,17 +273,6 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 		init();
 	}
 
-	/**
-	 * Creates a new instance of JCompletionComboBox.
-	 * 
-	 * @param items
-	 */
-	JCompletionComboBox(T[] items) {
-		super(items);
-
-		init();
-	}
-
 	private void init() {
 		addItemListener((arg0) -> {
 				if(arg0.getStateChange() == ItemEvent.SELECTED) {
@@ -423,12 +398,4 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 	public String getText() {
 		return getEditor().getItem().toString().strip();
 	}
-
-//	public boolean isHandleSelectionChange() {
-//		return handleSelectionChange;
-//	}
-//
-//	public void setHandleSelectionChange(boolean handleSelectionChange) {
-//		this.handleSelectionChange = handleSelectionChange;
-//	}
 }

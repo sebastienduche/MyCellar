@@ -1,6 +1,8 @@
 package mycellar;
 
 import mycellar.core.LabelProperty;
+import mycellar.core.MyCellarException;
+import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.history.HistoryState;
@@ -11,6 +13,7 @@ import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
 import java.io.File;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,8 +24,8 @@ import java.util.stream.Collectors;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.6
- * @since 22/02/21
+ * @version 7.0
+ * @since 19/05/21
  */
 
 public class SerializedStorage implements Storage {
@@ -31,13 +34,13 @@ public class SerializedStorage implements Storage {
 	private static final String WORKSHEET_XML = "worksheet.xml";
 	private static final HistoryList HISTORY_LIST = new HistoryList();
 	private static final WorkSheetList WORKSHEET_LIST = new WorkSheetList();
-	private ListeBouteille listBouteilles = new ListeBouteille();
+	private ListeBouteille listMyCellarObject = new ListeBouteille();
 
-	private int bottleCount;
+	private int itemsCount;
 	private boolean worksheetModified = false;
 	private boolean historyModified = false;
 
-	private final LinkedList<String> listeUniqueBouteille = new LinkedList<>(); // Liste des noms de bouteille (un seule nom)
+	private final LinkedList<String> distinctNames = new LinkedList<>(); // Liste des noms de bouteille (un seule nom)
 
 	private SerializedStorage() {
 	}
@@ -51,71 +54,97 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public void setListBouteilles(ListeBouteille listBouteilles) {
-		this.listBouteilles = listBouteilles;
-		bottleCount = listBouteilles.getBouteille().size();
-		listeUniqueBouteille.clear();
-		if (this.listBouteilles.bouteille == null) {
-			this.listBouteilles.bouteille = new LinkedList<>();
+	public void setListMyCellarObject(ListeBouteille listMyCellarObject) {
+		this.listMyCellarObject = listMyCellarObject;
+		distinctNames.clear();
+		if (Program.isWineType()) {
+			if (this.listMyCellarObject.bouteille == null) {
+				this.listMyCellarObject.bouteille = new LinkedList<>();
+			}
+			for (MyCellarObject b : this.listMyCellarObject.bouteille) {
+				if (!distinctNames.contains(b.getNom())) {
+					distinctNames.add(b.getNom());
+				}
+			}
+		} else if (Program.isMusicType()) {
+			if (this.listMyCellarObject.music == null) {
+				this.listMyCellarObject.music = new LinkedList<>();
+			}
+			for (MyCellarObject b : this.listMyCellarObject.music) {
+				if (!distinctNames.contains(b.getNom())) {
+					distinctNames.add(b.getNom());
+				}
+			}
+		} else {
+			Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
 		}
-		for (Bouteille b : this.listBouteilles.bouteille) {
-			if (!listeUniqueBouteille.contains(b.getNom())) {
-				listeUniqueBouteille.add(b.getNom());
+		itemsCount = listMyCellarObject.getItemsCount();
+	}
+
+	public int getItemsCount() {
+		return itemsCount;
+	}
+
+	@Override
+	public void addBouteilles(ListeBouteille listBouteille) {
+		if (Program.isWineType()) {
+			listMyCellarObject.getBouteille().addAll(listBouteille.getBouteille());
+			for (MyCellarObject myCellarObject : listMyCellarObject.bouteille) {
+				final List<History> theBottle = HISTORY_LIST.getHistory().stream().filter(history -> history.getBouteille().getId() == myCellarObject.getId()).collect(Collectors.toList());
+				if (myCellarObject.updateID() && !theBottle.isEmpty()) {
+					theBottle.get(0).getBouteille().setId(myCellarObject.getId());
+				}
+				if (!distinctNames.contains(myCellarObject.getNom())) {
+					distinctNames.add(myCellarObject.getNom());
+				}
+			}
+		} else if (Program.isMusicType()) {
+			listMyCellarObject.getMusic().addAll(listBouteille.getMusic());
+			for (MyCellarObject myCellarObject : listMyCellarObject.music) {
+				final List<History> theMusic = HISTORY_LIST.getHistory().stream().filter(history -> history.getMusic().getId() == myCellarObject.getId()).collect(Collectors.toList());
+				if (myCellarObject.updateID() && !theMusic.isEmpty()) {
+					theMusic.get(0).getMusic().setId(myCellarObject.getId());
+				}
+				if (!distinctNames.contains(myCellarObject.getNom())) {
+					distinctNames.add(myCellarObject.getNom());
+				}
 			}
 		}
-	}
-
-	public int getBottleCount() {
-		return bottleCount;
+		itemsCount = listMyCellarObject.getItemsCount();
 	}
 
 	@Override
-	public void addBouteilles(ListeBouteille listBouteilles) {
-		this.listBouteilles.getBouteille().addAll(listBouteilles.getBouteille());
-		bottleCount = listBouteilles.getBouteille().size();
-		for (Bouteille b : listBouteilles.bouteille) {
-			final List<History> theBottle = HISTORY_LIST.getHistory().stream().filter(history -> history.getBouteille().getId() == b.getId()).collect(Collectors.toList());
-			if (b.updateID() && !theBottle.isEmpty()) {
-				theBottle.get(0).getBouteille().setId(b.getId());
-			}
-			if (!listeUniqueBouteille.contains(b.getNom())) {
-				listeUniqueBouteille.add(b.getNom());
-			}
-		}
+	public ListeBouteille getListMyCellarObject() {
+		return listMyCellarObject;
 	}
 
 	@Override
-	public ListeBouteille getListBouteilles() {
-		return listBouteilles;
-	}
-
-	@Override
-	public LinkedList<String> getBottleNames() {
-		return listeUniqueBouteille;
+	public LinkedList<String> getDistinctNames() {
+		return distinctNames;
 	}
 
 
 	@Override
-	public void addHistory(HistoryState type, Bouteille bottle) {
+	public void addHistory(HistoryState type, MyCellarObject myCellarObject) {
 		historyModified = true;
 		Program.setModified();
-		HISTORY_LIST.add(new History(bottle, type.ordinal(), getBottleCount()));
+		HISTORY_LIST.add(new History(myCellarObject, type.ordinal(), getItemsCount()));
 	}
 
 	@Override
-	public void addToWorksheet(Bouteille bottle) {
+	public void addToWorksheet(MyCellarObject myCellarObject) {
 		worksheetModified = true;
 		Program.setModified();
-		WORKSHEET_LIST.add(new WorkSheetData(bottle));
+		WORKSHEET_LIST.add(new WorkSheetData(myCellarObject));
 	}
 
 	@Override
-	public void removeFromWorksheet(Bouteille bottle) {
+	public void removeFromWorksheet(MyCellarObject myCellarObject) {
 		worksheetModified = true;
 		Program.setModified();
 		final List<WorkSheetData> collect = WORKSHEET_LIST.getWorsheet()
 				.stream()
-				.filter(workSheetData -> workSheetData.getBouteilleId() == bottle.getId())
+				.filter(workSheetData -> workSheetData.getBouteilleId() == myCellarObject.getId())
 				.collect(Collectors.toList());
 		WORKSHEET_LIST.getWorsheet().removeAll(collect);
 	}
@@ -177,63 +206,100 @@ public class SerializedStorage implements Storage {
 	}
 
 	@Override
-	public boolean deleteWine(Bouteille bottle) {
+	public boolean deleteWine(MyCellarObject myCellarObject) throws MyCellarException {
 
-		final String nom = bottle.getNom();
-		final String annee = bottle.getAnnee();
-		final String emplacement = bottle.getEmplacement();
-		final int numLieu = bottle.getNumLieu();
-		final int ligne = bottle.getLigne();
-		final int colonne = bottle.getColonne();
+		final String nom = myCellarObject.getNom();
+		final String annee = myCellarObject.getAnnee();
+		final String emplacement = myCellarObject.getEmplacement();
+		final int numLieu = myCellarObject.getNumLieu();
+		final int ligne = myCellarObject.getLigne();
+		final int colonne = myCellarObject.getColonne();
 
-		Debug("DeleteWine: Trying deleting bottle " + nom.strip() + " " + annee + " " + emplacement.strip() + " " + numLieu + " " + ligne + " " + colonne);
-		Rangement rangement = bottle.getRangement();
-		boolean isCaisse = rangement == null || rangement.isCaisse();
-		final List<Bouteille> resultBouteilles = listBouteilles.getBouteille().stream().filter(
-				bouteille -> emplacement.equals(bouteille.getEmplacement())
-						&& nom.equals(bouteille.getNom())
-						&& numLieu == bouteille.getNumLieu()
-						&& (isCaisse ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(Collectors.toList());
-		if (resultBouteilles.isEmpty()) {
-			Debug("DeleteWine: Unable to find the wine!");
-			return false;
+		Debug("DeleteWine: Trying deleting myCellarObject " + nom.strip() + " " + annee + " " + emplacement.strip() + " " + numLieu + " " + ligne + " " + colonne);
+		boolean found = listMyCellarObject.remove(myCellarObject);
+		if (found) {
+			Debug("DeleteWine: Deleted by equals. " + myCellarObject);
+		} else {
+			final List<MyCellarObject> collect = getAllList().stream().filter(bouteille -> bouteille.getId() == myCellarObject.getId()).collect(Collectors.toList());
+			if (collect.isEmpty()) {
+				found = false;
+			} else if (collect.size() == 1) {
+				Debug("DeleteWine: Deleted by Id. " + myCellarObject);
+				found = listMyCellarObject.remove(collect.get(0));
+			} else {
+				Rangement rangement = myCellarObject.getRangement();
+				boolean isCaisse = rangement == null || rangement.isCaisse();
+				final List<MyCellarObject> resultBouteilles = getAllList().stream()
+						.filter(
+								bouteille -> emplacement.equals(bouteille.getEmplacement())
+										&& nom.equals(bouteille.getNom())
+										&& numLieu == bouteille.getNumLieu()
+										&& (isCaisse ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(Collectors.toList());
+				if (resultBouteilles.isEmpty()) {
+					Debug("ERROR: DeleteWine: Unable to find the object!");
+					throw new MyCellarException("Unable to delete object: " + myCellarObject);
+				} else {
+					found = listMyCellarObject.remove(resultBouteilles.get(0));
+				}
+			}
 		}
-		Program.setModified();
-		final Bouteille bouteille = resultBouteilles.get(0);
-		Debug("DeleteWine: Deleted bottle " + bouteille);
-		listBouteilles.getBouteille().remove(bouteille);
-		bottleCount--;
-		return true;
+
+		if (found) {
+			Program.setModified();
+			itemsCount--;
+		}
+		return found;
 	}
 
 	@Override
-	public boolean addWine(Bouteille wine) {
-		if (null == wine) {
+	public boolean addWine(MyCellarObject myCellarObject) {
+		if (null == myCellarObject) {
 			return false;
 		}
 
-		wine.setModified();
+		myCellarObject.setModified();
 
-		Debug("AddWine: Adding bottle " + wine.getNom() + " " + wine.getAnnee() + " " + wine.getEmplacement() + " " + wine.getNumLieu() + " " + wine.getLigne() + " " + wine.getColonne());
+		Debug("AddWine: Adding bottle " + myCellarObject.getNom() + " " + myCellarObject.getAnnee() + " " + myCellarObject.getEmplacement() + " " + myCellarObject.getNumLieu() + " " + myCellarObject.getLigne() + " " + myCellarObject.getColonne());
 
 		Program.setModified();
 
-		if (!listeUniqueBouteille.contains(wine.getNom())) {
-			listeUniqueBouteille.add(wine.getNom());
+		if (!distinctNames.contains(myCellarObject.getNom())) {
+			distinctNames.add(myCellarObject.getNom());
 		}
-		CountryVignobleController.addVignobleFromBottle(wine);
-		bottleCount++;
-		return listBouteilles.getBouteille().add(wine);
+		if (myCellarObject instanceof Bouteille) {
+			CountryVignobleController.addVignobleFromBottle((Bouteille) myCellarObject);
+		}
+		itemsCount++;
+		return listMyCellarObject.add(myCellarObject);
 	}
 
 	@Override
-	public LinkedList<Bouteille> getAllList() {
-		return listBouteilles.getBouteille();
+	public List<? extends MyCellarObject> getAllList() {
+		if (Program.isMusicType()) {
+			return listMyCellarObject.getMusic();
+		}
+		if (Program.isWineType()) {
+			return listMyCellarObject.getBouteille();
+		}
+		Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+		return Collections.emptyList();
+	}
+
+	@Override
+	public boolean add(MyCellarObject myCellarObject) {
+		if (myCellarObject instanceof Bouteille) {
+			return listMyCellarObject.getBouteille().add((Bouteille) myCellarObject);
+		} else if (myCellarObject instanceof Music) {
+			return listMyCellarObject.getMusic().add((Music) myCellarObject);
+		} else {
+			Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+		}
+		return false;
 	}
 
 	@Override
 	public int getBottlesCount() {
-		return listBouteilles.getBouteille().size();
+		return listMyCellarObject.getBouteille().size();
 	}
 
 	private static void Debug(String sText) {
@@ -299,9 +365,9 @@ public class SerializedStorage implements Storage {
 
 	@Override
 	public void close() {
-		if (listBouteilles != null) {
-			listBouteilles.resetBouteille();
+		if (listMyCellarObject != null) {
+			listMyCellarObject.resetBouteille();
 		}
-		listeUniqueBouteille.clear();
+		distinctNames.clear();
 	}
 }

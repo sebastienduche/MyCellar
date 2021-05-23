@@ -2,7 +2,9 @@ package test;
 
 import mycellar.Bouteille;
 import mycellar.Program;
+import mycellar.core.MyCellarException;
 import mycellar.placesmanagement.Part;
+import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -249,10 +251,10 @@ class RangementTest {
     b3.setEmplacement("armoire1x3x3");
     armoire1x3x3.updateToStock(b3);
     assertEquals(2, armoire1x3x3.getNbCaseUseLigne(0, 2));
-    armoire1x3x3.clearStock(b);
-    armoire1x3x3.clearStock(b1);
-    armoire1x3x3.clearStock(b2);
-    armoire1x3x3.clearStock(b3);
+    armoire1x3x3.clearStock(b, b.getPlace());
+    armoire1x3x3.clearStock(b1, b1.getPlace());
+    armoire1x3x3.clearStock(b2, b2.getPlace());
+    armoire1x3x3.clearStock(b3, b3.getPlace());
     assertEquals(0, armoire1x3x3.getNbCaseUseLigne(0, 0));
     assertEquals(0, armoire1x3x3.getNbCaseUseLigne(0, 1));
     assertEquals(0, armoire1x3x3.getNbCaseUseLigne(0, 2));
@@ -260,7 +262,7 @@ class RangementTest {
     b.setNom("B5");
     updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", armoire2x2_3x22545);
     assertEquals(1, armoire2x2_3x22545.getNbCaseUseLigne(1, 0));
-    armoire2x2_3x22545.clearStock(b);
+    armoire2x2_3x22545.clearStock(b, b.getPlace());
     assertEquals(0, armoire2x2_3x22545.getNbCaseUseLigne(1, 0));
   }
 
@@ -308,9 +310,10 @@ class RangementTest {
     b1.setNom("B28");
     updateToArmoire1x3x3(b1, 1, 3);
     assertEquals(1, armoire1x3x3.getNbCaseFreeCoteLigne(0, 0, 1));
-    armoire1x3x3.clearStock(b);
-    armoire1x3x3.clearStock(b1);
+    armoire1x3x3.clearStock(b, b.getPlace());
+    armoire1x3x3.clearStock(b1, b1.getPlace());
     b = new Bouteille();
+    b.setEmplacement(armoire2x2_3x22545.getNom());
     b.setNom("B6");
     b.setNumLieu(2);
     b.setLigne(1);
@@ -318,7 +321,7 @@ class RangementTest {
     armoire2x2_3x22545.addWine(b);
     assertEquals(1, armoire2x2_3x22545.getNbCaseFreeCoteLigne(1, 0, 0));
     assertEquals(3, armoire2x2_3x22545.getNbCaseFreeCoteLigne(1, 0, 2));
-    armoire2x2_3x22545.clearStock(b);
+    armoire2x2_3x22545.clearStock(b, b.getPlace());
     assertEquals(5, armoire2x2_3x22545.getNbCaseFreeCoteLigne(1, 0, 0));
   }
 
@@ -335,13 +338,13 @@ class RangementTest {
     updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", armoire2x2_3x22545);
     assertEquals(0, armoire2x2_3x22545.getNbCaseUse(0));
     assertEquals(1, armoire2x2_3x22545.getNbCaseUse(1));
-    armoire2x2_3x22545.clearStock(b);
+    armoire2x2_3x22545.clearStock(b, b.getPlace());
     assertEquals(0, armoire2x2_3x22545.getNbCaseUse(0));
     assertEquals(0, armoire2x2_3x22545.getNbCaseUse(0));
   }
 
   @Test
-  void getNbCaseUseAll() {
+  void getNbCaseUseAll() throws MyCellarException {
     assertEquals(0, armoire1x3x3.getNbCaseUseAll());
     assertEquals(0, armoire1x3x3Builder.getNbCaseUseAll());
     assertEquals(0, armoire2x2_3x22545.getNbCaseUseAll());
@@ -379,7 +382,7 @@ class RangementTest {
   }
 
   @Test
-  void getNbCaseUseForCaisse() {
+  void getNbCaseUseForCaisse() throws MyCellarException {
     assertEquals(0, caisseLimit.getNbCaseUse(1));
     assertEquals(0, caisseNoLimit.getNbCaseUse(0));
     Bouteille b = new Bouteille();
@@ -409,7 +412,7 @@ class RangementTest {
   }
 
   @Test
-  void addWine() {
+  void addWine() throws MyCellarException {
     Bouteille b = addAndRemoveBottle();
     b.setEmplacement("caisseLimit");
     caisseLimit.addWine(b);
@@ -418,7 +421,7 @@ class RangementTest {
     assertEquals(0, caisseLimit.getNbCaseUse(1));
   }
 
-  private Bouteille addAndRemoveBottle() {
+  private Bouteille addAndRemoveBottle() throws MyCellarException {
     Bouteille b = new Bouteille();
     b.setNom("B12");
     updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", armoire2x2_3x22545);
@@ -430,7 +433,7 @@ class RangementTest {
   }
 
   @Test
-  void removeWine() {
+  void removeWine() throws MyCellarException {
     Bouteille b = addAndRemoveBottle();
     caisseLimit.addWine(b);
     assertEquals(1, caisseLimit.getNbCaseUse(1));
@@ -439,7 +442,7 @@ class RangementTest {
   }
 
   @Test
-  void updateToStock() {
+  void updateToStock() throws MyCellarException {
     Bouteille b = new Bouteille();
     b.setNom("B13");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);
@@ -450,18 +453,18 @@ class RangementTest {
     updateToArmoire1x3x3(b1, 1, 2);
     assertEquals(b1, armoire1x3x3.getBouteille(0, 0, 1).get());
     assertEquals(b1, armoire1x3x3.getBouteille(b1).get());
-    armoire1x3x3.clearStock(b1);
+    armoire1x3x3.clearStock(b1, b.getPlace());
     assertTrue(armoire1x3x3.getBouteille(0, 0, 1).isEmpty());
     armoire1x3x3.removeWine(b);
   }
 
   @Test
-  void moveLineWine() {
+  void moveLineWine() throws MyCellarException {
     Bouteille b = new Bouteille();
     b.setNom("B15");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);
     assertEquals(b, armoire1x3x3.getBouteille(0, 0, 1).get());
-    armoire1x3x3.moveLineWine(b, 2);
+    armoire1x3x3.moveLine(b, 2);
     assertTrue(armoire1x3x3.getBouteille(0, 0, 1).isEmpty());
     assertEquals(b, armoire1x3x3.getBouteille(0, 1, 1).get());
   }
@@ -478,15 +481,15 @@ class RangementTest {
     updateToArmoire(b1, 2, 2, 3, "armoire2x2_3x22545", armoire2x2_3x22545);
     assertEquals(b1, armoire2x2_3x22545.getBouteille(1, 1, 2).get());
     assertEquals(b1, armoire2x2_3x22545.getBouteille(b1.getPlace()).get());
-    armoire1x3x3.clearStock(b);
-    armoire2x2_3x22545.clearStock(b1);
+    armoire1x3x3.clearStock(b, b.getPlace());
+    armoire2x2_3x22545.clearStock(b1, b1.getPlace());
     assertTrue(armoire1x3x3.getBouteille(0, 0, 1).isEmpty());
     assertTrue(armoire1x3x3.getBouteille(b.getPlace()).isEmpty());
     assertTrue(armoire2x2_3x22545.getBouteille(b1.getPlace()).isEmpty());
   }
 
   @Test
-  void clearStock() {
+  void clearStock() throws MyCellarException {
     Bouteille b = new Bouteille();
     b.setNom("B18");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);
@@ -495,8 +498,8 @@ class RangementTest {
     b1.setNom("B19");
     updateToArmoire(b1, 2, 2, 3, "armoire2x2_3x22545", armoire2x2_3x22545);
     assertEquals(b1, armoire2x2_3x22545.getBouteille(1, 1, 2).get());
-    armoire1x3x3.clearStock(b);
-    armoire2x2_3x22545.clearStock(b1);
+    armoire1x3x3.clearStock(b, b.getPlace());
+    armoire2x2_3x22545.clearStock(b1, b1.getPlace());
     assertTrue(armoire1x3x3.getBouteille(0, 0, 1).isEmpty());
     assertTrue(armoire2x2_3x22545.getBouteille(1, 1, 2).isEmpty());
     armoire2x2_3x22545.removeWine(b1);
@@ -514,7 +517,7 @@ class RangementTest {
   @Test
   void canAddBottle() {
     Rangement caisse = new Rangement.CaisseBuilder("caisse").nb_emplacement(2).start_caisse(1).limit(true).limite_caisse(1).build();
-    assertTrue(caisse.hasFreeSpaceInCaisse(1));
+    assertTrue(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(1).build()));
     Bouteille b = new Bouteille();
     b.setNom("B20");
     b.setNumLieu(1);
@@ -565,13 +568,13 @@ class RangementTest {
   void putTabStock() {
     Rangement caisse = new Rangement.CaisseBuilder("caisse").nb_emplacement(2).start_caisse(1).limit(true).limite_caisse(2).build();
     Program.addCave(caisse);
-    assertTrue(caisse.hasFreeSpaceInCaisse(0));
+    assertTrue(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(1).build()));
     Bouteille b = new Bouteille();
     b.setNom("B20");
     b.setEmplacement("caisse");
     b.setNumLieu(1);
     caisse.addWine(b);
-    assertTrue(caisse.hasFreeSpaceInCaisse(0));
+    assertTrue(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(1).build()));
     assertEquals(1, caisse.getNbCaseUse(0));
     assertTrue(caisse.canAddBottle(0, 0, 0));
     assertTrue(caisse.canAddBottle(1, 0, 0));
@@ -585,7 +588,7 @@ class RangementTest {
   void hasFreeSpaceInCaisse() {
     Rangement caisse = new Rangement.CaisseBuilder("caisse").nb_emplacement(2).start_caisse(1).limit(true).limite_caisse(1).build();
     Program.addCave(caisse);
-    assertTrue(caisse.hasFreeSpaceInCaisse(1));
+    assertTrue(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(1).build()));
     Bouteille b = new Bouteille();
     b.setNom("B21");
     b.setEmplacement("caisse");
@@ -593,8 +596,8 @@ class RangementTest {
     assertTrue(caisse.canAddBottle(b));
     caisse.addWine(b);
     assertFalse(caisse.canAddBottle(b));
-    assertFalse(caisse.hasFreeSpaceInCaisse(0));
-    assertTrue(caisse.hasFreeSpaceInCaisse(1));
+    assertFalse(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(1).build()));
+    assertTrue(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(2).build()));
     assertFalse(caisse.hasFreeSpaceInCaisse(b.getPlace()));
   }
 
@@ -622,7 +625,7 @@ class RangementTest {
     assertEquals(1, caisseLimit.getFreeNumPlaceInCaisse());
     assertEquals(0, caisseNoLimit.getFreeNumPlaceInCaisse());
     Rangement caisse = new Rangement.CaisseBuilder("caisse").nb_emplacement(2).start_caisse(1).limit(true).limite_caisse(1).build();
-    assertTrue(caisse.hasFreeSpaceInCaisse(1));
+    assertTrue(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(2).build()));
     Bouteille b = new Bouteille();
     b.setNom("B22");
     b.setNumLieu(1);
@@ -648,29 +651,30 @@ class RangementTest {
   @Test
   void complexCaisse() {
     Rangement caisse = new Rangement.CaisseBuilder("caisse").nb_emplacement(1).start_caisse(0).limit(true).limite_caisse(3).build();
-    assertTrue(caisse.hasFreeSpaceInCaisse(0));
+    Program.addCave(caisse);
+    assertTrue(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(0).build()));
     Bouteille b = new Bouteille();
     b.setNom("B24");
     b.setNumLieu(0);
     b.setEmplacement("caisse");
     caisse.addWine(b);
-    assertTrue(caisse.hasFreeSpaceInCaisse(0));
+    assertTrue(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(0).build()));
     Bouteille b1 = new Bouteille();
     b1.setNom("B25");
     b1.setNumLieu(0);
     b1.setEmplacement("caisse");
     caisse.addWine(b1);
-    assertTrue(caisse.hasFreeSpaceInCaisse(0));
+    assertTrue(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(0).build()));
     Bouteille b2 = new Bouteille();
     b2.setNom("B26");
     b2.setNumLieu(0);
     b2.setEmplacement("caisse");
     caisse.addWine(b2);
-    assertFalse(caisse.hasFreeSpaceInCaisse(0));
-    caisse.clearStock(b1);
-    assertTrue(caisse.hasFreeSpaceInCaisse(0));
+    assertFalse(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(0).build()));
+    caisse.clearStock(b1, b1.getPlace());
+    assertTrue(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(0).build()));
     caisse.addWine(b1);
-    assertFalse(caisse.hasFreeSpaceInCaisse(0));
+    assertFalse(caisse.hasFreeSpaceInCaisse(new Place.PlaceBuilder(caisse).withNumPlace(0).build()));
   }
 
   @Test

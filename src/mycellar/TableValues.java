@@ -1,6 +1,8 @@
 package mycellar;
 
 import mycellar.core.LabelProperty;
+import mycellar.core.MyCellarObject;
+import mycellar.general.ProgramPanels;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
@@ -14,8 +16,8 @@ import static mycellar.Program.getLabel;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 23/01/21
+ * @version 3.2
+ * @since 16/04/21
  */
 class TableValues extends AbstractTableModel {
 
@@ -28,7 +30,7 @@ class TableValues extends AbstractTableModel {
 			getLabel("Infos082"), getLabel("Infos028"), getLabel("Infos083"), "");
 
 	private final List<Boolean> listBoolean = new LinkedList<>();
-	private final List<Bouteille> datas = new LinkedList<>();
+	private final List<MyCellarObject> datas = new LinkedList<>();
 
 	/**
 	 * getRowCount
@@ -70,27 +72,27 @@ class TableValues extends AbstractTableModel {
 			Program.Debug("TableValues: Error listBoolean index " + row + " > " + datas.size());
 			return "";
 		}
-		Bouteille b = datas.get(row);
+		final MyCellarObject myCellarObject = datas.get(row);
 		switch(column)
 		{
 			case ETAT:
 				return listBoolean.get(row);
 			case 1:
-				String nom = b.getNom();
+				String nom = myCellarObject.getNom();
 				return Program.convertStringFromHTMLString(nom);
 			case 2:
-				return b.getAnnee();
+				return myCellarObject.getAnnee();
 			case 3:
-				if (b.isInTemporaryStock()) {
+				if (myCellarObject.isInTemporaryStock()) {
 					return getLabel("Bouteille.TemporaryPlace");
 				}
-				return b.getEmplacement();
+				return myCellarObject.getEmplacement();
 			case 4:
-				return Integer.toString(b.getNumLieu());
+				return Integer.toString(myCellarObject.getNumLieu());
 			case 5:
-				return Integer.toString(b.getLigne());
+				return Integer.toString(myCellarObject.getLigne());
 			case 6:
-				return Integer.toString(b.getColonne());
+				return Integer.toString(myCellarObject.getColonne());
 			case SHOW:
 				return Boolean.FALSE;
 			default:
@@ -132,8 +134,8 @@ class TableValues extends AbstractTableModel {
 	public void setValueAt(Object value, int row, int column) {
 		switch (column) {
 			case SHOW:
-				Bouteille bottle = datas.get(row);
-				Program.showBottle(bottle, true);
+				MyCellarObject bottle = datas.get(row);
+				ProgramPanels.showBottle(bottle, true);
 				break;
 			case ETAT:
 				listBoolean.set(row, (Boolean)value);
@@ -146,7 +148,7 @@ class TableValues extends AbstractTableModel {
 	 *
 	 * @param b Bouteille
 	 */
-	void addBouteille(Bouteille b) {
+	void addBouteille(MyCellarObject b) {
 		if(b != null) {
 			datas.add(b);
 			listBoolean.add(Boolean.FALSE);
@@ -166,9 +168,9 @@ class TableValues extends AbstractTableModel {
 	/**
 	 * removeBouteille: Suppression d'une bouteille.
 	 *
-	 * @param bouteille Bouteille
+	 * @param bouteille MyCellarObject
 	 */
-	void removeBouteille(Bouteille bouteille) {
+	void removeBouteille(MyCellarObject bouteille) {
 		int index = datas.indexOf(bouteille);
 		if(index != -1) {
 			datas.remove(bouteille);
@@ -177,15 +179,15 @@ class TableValues extends AbstractTableModel {
 		}
 	}
 
-	public List<Bouteille> getDatas(){
+	public List<MyCellarObject> getDatas() {
 		return datas;
 	}
-	
-	boolean hasNotBottle(Bouteille b){
+
+	boolean hasNotBottle(MyCellarObject b) {
 		return !datas.contains(b);
 	}
 
-	public Bouteille getBouteille(int i){
-		return datas.get(i);
+	public Bouteille getBouteille(int i) {
+		return (Bouteille) datas.get(i);
 	}
 }

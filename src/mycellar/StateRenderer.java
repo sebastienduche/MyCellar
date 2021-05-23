@@ -16,19 +16,12 @@ import java.awt.Component;
  */
 public class StateRenderer extends JCheckBox implements TableCellRenderer {
 
-	static final long serialVersionUID = 301005;
+  static final long serialVersionUID = 301005;
   /**
    * StateRenderer
    */
   public StateRenderer() {
     super();
-  }
-
-  /**
-   * StateRenderer
-   */
-  public StateRenderer(String label) {
-    super(label);
   }
 
   /**
@@ -45,20 +38,14 @@ public class StateRenderer extends JCheckBox implements TableCellRenderer {
   @Override
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
-    try {
-      if (isSelected) {
-        setForeground(table.getSelectionForeground());
-        super.setBackground(table.getSelectionBackground());
-      }
-      else {
-        setForeground(table.getForeground());
-        setBackground(table.getBackground());
-      }
-      boolean isSelect = ( (Boolean) value);
-      setSelected(isSelect);
+    if (isSelected) {
+      setForeground(table.getSelectionForeground());
+      super.setBackground(table.getSelectionBackground());
+    } else {
+      setForeground(table.getForeground());
+      setBackground(table.getBackground());
     }
-    catch (NullPointerException npe) {
-    }
+    setSelected((Boolean)value);
     return this;
   }
 }

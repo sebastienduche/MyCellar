@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.core.LabelProperty;
 import mycellar.placesmanagement.Place;
 
 import java.io.File;
@@ -13,22 +14,22 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 17/03/21
+ * @version 2.1
+ * @since 07/05/21
  */
 
 public final class MyCellarControl {
 
-  static boolean hasInvalidBotteName(String name) {
+  public static boolean hasInvalidBotteName(String name) {
     if (name == null || name.strip().isEmpty()) {
       Debug("ERROR: Wrong Name");
-      Erreur.showSimpleErreur(Program.getError("Error054")); //"Veuillez saisir le nom du vin!"
+      Erreur.showSimpleErreur(Program.getError("Error054", LabelProperty.OF_THE_SINGLE)); //"Veuillez saisir le nom du vin!"
       return true;
     }
     return false;
   }
 
-  static boolean hasInvalidYear(String year) {
+  public static boolean hasInvalidYear(String year) {
     if (Bouteille.isInvalidYear(year)) {
       Debug("ERROR: Wrong date");
       Erreur.showSimpleErreur(Program.getError("Error053")); //"Veuillez saisir une ann&eacute;e valide!"
@@ -163,7 +164,7 @@ public final class MyCellarControl {
    * @param filtre Filtre
    * @return String
    */
-  static String controlAndUpdateExtension(final String name, final Filtre filtre) {
+  public static String controlAndUpdateExtension(final String name, final Filtre filtre) {
     return controlAndUpdateExtension(name, filtre.toString());
 
   }
@@ -200,7 +201,7 @@ public final class MyCellarControl {
    * @param extensions List
    * @return String
    */
-  static boolean hasInvalidExtension(final String name, final List<String> extensions) {
+  public static boolean hasInvalidExtension(final String name, final List<String> extensions) {
 
     Debug("Controlling extension...");
     if (name == null) {

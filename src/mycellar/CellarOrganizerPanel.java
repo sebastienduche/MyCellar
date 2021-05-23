@@ -6,8 +6,11 @@ import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
+import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
@@ -59,8 +62,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 23/03/21
+ * @version 3.6
+ * @since 19/05/21
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -277,7 +280,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 						.withColumn(selectedCell.getColumn())
 						.build());
 			}
-			Program.deleteChooseCellPanel();
+			ProgramPanels.deleteChooseCellPanel();
 		}
 		return true;
 	}
@@ -483,10 +486,10 @@ final class RangementCell extends JPanel {
 final class BouteilleLabel extends JPanel {
 
 	private static final long serialVersionUID = -3982812616929975895L;
-	private Bouteille bouteille;
+	private MyCellarObject bouteille;
 	private final MyCellarLabel label = new MyCellarLabel();
 
-	BouteilleLabel(final Bouteille bouteille) {
+	BouteilleLabel(final MyCellarObject bouteille) {
 		super();
 		this.bouteille = bouteille;
 		int width = 100;
@@ -495,12 +498,14 @@ final class BouteilleLabel extends JPanel {
 			width = 400;
 		}
 		setLayout(new MigLayout("", "5px[" + width + ":" + width + ":" + width + "][10:10:10]0px", "0px[align center, grow]0px"));
-		if (bouteille.isWhiteWine()) {
-			label.setIcon(MyCellarImage.WHITEWINE);
-		} else if (bouteille.isPinkWine()) {
-			label.setIcon(MyCellarImage.PINKWINE);
-		} else {
-			label.setIcon(MyCellarImage.BLACKWINE);
+		if (bouteille instanceof Bouteille) {
+			if (((Bouteille) bouteille).isWhiteWine()) {
+				label.setIcon(MyCellarImage.WHITEWINE);
+			} else if (((Bouteille) bouteille).isPinkWine()) {
+				label.setIcon(MyCellarImage.PINKWINE);
+			} else {
+				label.setIcon(MyCellarImage.BLACKWINE);
+			}
 		}
 		label.setText("<html>" + bouteille.getNom() + "</html>");
 		add(label, "grow");
@@ -516,7 +521,11 @@ final class BouteilleLabel extends JPanel {
 						((RangementCell)parent).remove(BouteilleLabel.this);
 						((RangementCell)parent).updateUI();
 						Program.getStorage().addHistory(HistoryState.DEL, bouteille);
-						Program.getStorage().deleteWine(bouteille);
+						try {
+							Program.getStorage().deleteWine(bouteille);
+						} catch (MyCellarException e) {
+							Program.showException(e);
+						}
 						Program.setToTrash(bouteille);
 					}
 				}
@@ -532,7 +541,7 @@ final class BouteilleLabel extends JPanel {
 		return label.getIcon();
 	}
 
-	public Bouteille getBouteille() {
+	public MyCellarObject getBouteille() {
 		return bouteille;
 	}
 
@@ -657,7 +666,7 @@ class LabelTransferHandler extends TransferHandler {
 		try {
 			final RangementCell src = (RangementCell)support.getTransferable().getTransferData(localObjectFlavor);
 			final BouteilleLabel bouteilleLabel = new BouteilleLabel(src.draggingLabel.getBouteille());
-			final Bouteille bouteille = bouteilleLabel.getBouteille();
+			final MyCellarObject bouteille = bouteilleLabel.getBouteille();
 			bouteille.setLigne(target.getRow());
 			bouteille.setColonne(target.getColumn());
 			bouteille.setNumLieu(target.getPlaceNum());

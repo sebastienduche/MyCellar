@@ -1,4 +1,6 @@
-package mycellar;
+package mycellar.core.common.bottle;
+
+import mycellar.Program;
 
 public enum BottleColor {
 	NONE(""),

@@ -1,6 +1,6 @@
 package mycellar.core.datas.jaxb;
 
-import mycellar.Program;
+import mycellar.core.IdGenerator;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,7 +28,7 @@ public class CountryVignobleJaxb implements Comparable<CountryVignobleJaxb>
 
 	public CountryVignobleJaxb() {
 		name = "";
-		id = Program.generateID();
+		id = IdGenerator.generateID();
 	}
 
 	public long getId() {
@@ -78,7 +78,7 @@ public class CountryVignobleJaxb implements Comparable<CountryVignobleJaxb>
 				.filter(Predicate.not(AppelationJaxb::isEmpty))
 				.distinct()
 				.collect(Collectors.toList());
-		id = Program.generateID();
+		id = IdGenerator.generateID();
 	}
 
 	public void checkAvaibility() {

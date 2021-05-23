@@ -63,7 +63,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   }
 
   @Override
-  public void updateText() {
+  public final void updateText() {
     MyCellarLabelManagement.updateText(this, type, code, null, labelProperty);
   }
 }

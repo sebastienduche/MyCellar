@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
@@ -33,7 +34,6 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.text.Collator;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -55,8 +55,8 @@ import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.2
- * @since 16/02/21
+ * @version 8.5
+ * @since 21/05/21
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -138,7 +138,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 	}
 
 	private void updateBouteilleCountLabel() {
-		int nb_bottle = Program.getNbBouteille();
+		int nb_bottle = Program.getNbItems();
 		end.setText(MessageFormat.format(Program.getLabel("Infos180", new LabelProperty(nb_bottle > 1)), nb_bottle)); //Nombre de bouteille total:
 	}
 
@@ -178,13 +178,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		listChart.setEnabled(true);
 		if (selectedItem.getValue() == StatType.YEAR.ordinal()) {
 			Debug("By year");
-			int[] annees = Program.getAnnees();
-			annee = new String[annees.length];
-			int i = 0;
-			for (int an : annees) {
-				annee[i++] = Integer.toString(an);
-			}
-			Arrays.sort(annee, Collator.getInstance());
+			annee = Arrays.stream(Program.getAnnees()).mapToObj(Integer::toString).toArray(String[]::new);
 		}
 		fillListOptionsChart(selectedItem);
 		if (selectedItem.getValue() == StatType.PLACE.ordinal()) {
@@ -254,7 +248,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 			Map<Integer, Integer> mapPrixCount = new HashMap<>();
 			int ss_prix = 0;
 
-			for (Bouteille b : Program.getStorage().getAllList()) {
+			for (IMyCellarObject b : Program.getStorage().getAllList()) {
 				if (!b.hasPrice()) {
 					ss_prix++;
 					continue;
@@ -312,7 +306,9 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 					listYear.add(new StatData(an, Program.getNbBouteilleAnnee(year)));
 				}
 			}
-			listYear.add(new StatData(Program.getLabel("Infos390"), Program.getNbNonVintage()));
+			if (Program.isWineType()) {
+				listYear.add(new StatData(Program.getLabel("Infos390"), Program.getNbNonVintage()));
+			}
 			listYear.add(new StatData(Program.getLabel("Infos225"), Program.getNbAutreAnnee()));
 		}
 		for (StatData data: listYear) {
@@ -326,7 +322,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 		} else {
 			panelChart.setDataPieChart(listYear, Program.getLabel("Infos184"));
 		}
-		end.setText(MessageFormat.format(Program.getLabel("Infos098", LabelProperty.PLURAL), Program.getNbBouteille()));
+		end.setText(MessageFormat.format(Program.getLabel("Infos098", LabelProperty.PLURAL), Program.getNbItems()));
 	}
 
 	private void displayHistory() {

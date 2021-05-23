@@ -3,6 +3,8 @@ package test;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.SerializedStorage;
+import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarException;
 import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -103,13 +105,13 @@ class SerializedStorageTest {
         .price("123")
         .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
-    serializedStorage.getListBouteilles().getBouteille().add(bouteille);
-    serializedStorage.getListBouteilles().getBouteille().add(bouteille1);
-    serializedStorage.getListBouteilles().getBouteille().add(bouteille2);
-    serializedStorage.getListBouteilles().getBouteille().add(bouteille3);
-    serializedStorage.getListBouteilles().getBouteille().add(bouteille4);
-    serializedStorage.getListBouteilles().getBouteille().add(bouteille5);
-    serializedStorage.getListBouteilles().getBouteille().add(new Bouteille(bouteille5));
+    serializedStorage.getListMyCellarObject().getBouteille().add(bouteille);
+    serializedStorage.getListMyCellarObject().getBouteille().add(bouteille1);
+    serializedStorage.getListMyCellarObject().getBouteille().add(bouteille2);
+    serializedStorage.getListMyCellarObject().getBouteille().add(bouteille3);
+    serializedStorage.getListMyCellarObject().getBouteille().add(bouteille4);
+    serializedStorage.getListMyCellarObject().getBouteille().add(bouteille5);
+    serializedStorage.getListMyCellarObject().getBouteille().add(new Bouteille(bouteille5));
     final List<Rangement> cave = Program.getCave();
     final Rangement caisse = new Rangement.CaisseBuilder("place3").nb_emplacement(10).build();
     final Rangement place = new Rangement.RangementBuilder("place").nb_emplacement(new int[] {3}).sameColumnsNumber(new int[] {3}).build();
@@ -119,11 +121,11 @@ class SerializedStorageTest {
   }
 
   @Test
-  void deleteWine() {
-    assertEquals(7, serializedStorage.getListBouteilles().getBouteille().size());
+  void deleteWine() throws MyCellarException {
+    assertEquals(7, serializedStorage.getListMyCellarObject().getBouteille().size());
     serializedStorage.deleteWine(bouteille3);
-    assertEquals(6, serializedStorage.getListBouteilles().getBouteille().size());
-    for (Bouteille b : serializedStorage.getListBouteilles().getBouteille()) {
+    assertEquals(6, serializedStorage.getListMyCellarObject().getBouteille().size());
+    for (IMyCellarObject b : serializedStorage.getListMyCellarObject().getBouteille()) {
       assertNotEquals("bouteille3", b.getNom());
     }
     final Bouteille bouteille6 = new Bouteille.BouteilleBuilder("bouteille6")
@@ -154,13 +156,13 @@ class SerializedStorageTest {
         .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
     serializedStorage.addWine(bouteille7);
-    assertEquals(8, serializedStorage.getListBouteilles().getBouteille().size());
+    assertEquals(8, serializedStorage.getListMyCellarObject().getBouteille().size());
     serializedStorage.deleteWine(bouteille6);
     serializedStorage.deleteWine(bouteille7);
-    assertEquals(6, serializedStorage.getListBouteilles().getBouteille().size());
+    assertEquals(6, serializedStorage.getListMyCellarObject().getBouteille().size());
     serializedStorage.deleteWine(bouteille4);
     serializedStorage.deleteWine(bouteille5);
-    assertEquals(4, serializedStorage.getListBouteilles().getBouteille().size());
+    assertEquals(4, serializedStorage.getListMyCellarObject().getBouteille().size());
   }
 
 }

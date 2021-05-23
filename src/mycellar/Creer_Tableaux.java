@@ -11,6 +11,7 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.xls.XLSTabOptions;
@@ -27,6 +28,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -35,14 +38,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static mycellar.Program.toCleanString;
 
@@ -52,8 +55,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.8
- * @since 11/02/21
+ * @version 7.9
+ * @since 20/05/21
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 	private final JTextField name = new JTextField();
@@ -279,10 +282,10 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 			// Export XML
 			if (type_XML.isSelected()) {
 				Debug("Exporting in XML in progress...");
-				MyXmlDom.writeRangements(nom, rangements, false);
+				XmlUtils.writeRangements(nom, rangements, false);
 			} else if (type_HTML.isSelected()) {
 				Debug("Exporting in HTML in progress...");
-				MyXmlDom.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
+				XmlUtils.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
 
 				TransformerFactory tFactory = TransformerFactory.newInstance();
 
@@ -292,7 +295,10 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 				try (var htmlFile = new FileOutputStream(nom)) {
 					var transformer = tFactory.newTransformer(xslDoc);
 					transformer.transform(xmlDoc, new StreamResult(htmlFile));
-				} catch (Exception e1) {
+				} catch (FileNotFoundException e1) {
+					Debug("ERROR: File not found : " + e1.getMessage());
+					Program.showException(e1);
+				} catch (IOException e1) {
 					Program.showException(e1);
 				}
 			} else if (type_XLS.isSelected()) {
@@ -314,18 +320,15 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 					Erreur.showKeyErreur(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
 				}
 			}
-			end.setText(Program.getLabel("Infos097")); //"Fichier genere.");
-			new Timer().schedule(
-					new TimerTask() {
-						@Override
-						public void run() {
-							SwingUtilities.invokeLater(() -> end.setText(""));
-						}
-					},
-					5000
-			);
+			end.setText(Program.getLabel("Infos097"), true); //"Fichier genere.");
 			preview.setEnabled(true);
-		}	catch (Exception exc) {
+		} catch (TransformerConfigurationException e1) {
+			Debug("ERROR: TransformerConfigurationException : " + e1.getMessage());
+			Program.showException(e1);
+		} catch (TransformerException e1) {
+			Debug("ERROR: TransformerException : " + e1.getMessage());
+			Program.showException(e1);
+		} catch (Exception exc) {
 			Program.showException(exc);
 		}
 	}
@@ -413,12 +416,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 		myoptions.setVisible(true);
 	}
 
-
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	private static void Debug(String sText) {
 		Program.Debug("Creer_Tableaux: " + sText);
 	}

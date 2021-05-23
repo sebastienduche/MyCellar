@@ -1,11 +1,14 @@
 package mycellar;
 
+import mycellar.core.MyCellarException;
+import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.worksheet.WorkSheetList;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -13,21 +16,21 @@ import java.util.LinkedList;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 28/01/21
+ * @version 2.3
+ * @since 19/05/21
  */
 
 public interface Storage {
 	
-	void setListBouteilles(ListeBouteille listBouteilles);
+	void setListMyCellarObject(ListeBouteille listMyCellarObject);
 	void addBouteilles(ListeBouteille listBouteilles);
-	ListeBouteille getListBouteilles();
-	LinkedList<String> getBottleNames();
-	void addHistory(HistoryState historyState, Bouteille oB);
-	void addToWorksheet(Bouteille oB);
+	ListeBouteille getListMyCellarObject();
+	LinkedList<String> getDistinctNames();
+	void addHistory(HistoryState historyState, MyCellarObject myCellarObject);
+	void addToWorksheet(MyCellarObject myCellarObject);
 
 	void removeHistory(History oB);
-	void removeFromWorksheet(Bouteille oB);
+	void removeFromWorksheet(MyCellarObject myCellarObject);
 	void clearHistory(HistoryState historyState);
 	void clearWorksheet();
 	void saveHistory();
@@ -36,11 +39,12 @@ public interface Storage {
 	void loadWorksheet();
 	HistoryList getHistoryList();
 	WorkSheetList getWorksheetList();
-	boolean deleteWine(Bouteille oB);
+	boolean deleteWine(MyCellarObject myCellarObject) throws MyCellarException;
 
-	boolean addWine(Bouteille oB);
+	boolean addWine(MyCellarObject myCellarObject);
 	int getBottlesCount();
 
-	LinkedList<Bouteille> getAllList();
+	List<? extends MyCellarObject> getAllList();
+	boolean add(MyCellarObject myCellarObject);
 	void close();
 }

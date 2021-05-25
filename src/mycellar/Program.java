@@ -62,17 +62,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static java.util.function.Predicate.not;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 /**
@@ -81,14 +78,14 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.3
- * @since 21/05/21
+ * @version 26.4
+ * @since 25/05/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.1.9.8";
-	public static final int VERSION = 69;
+	public static final String INTERNAL_VERSION = "4.2.0.0";
+	public static final int VERSION = 70;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
@@ -331,67 +328,11 @@ public final class Program {
 			}
 			int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
 			Debug("Program: internal file version: " + currentVersion);
-			// TODO REMOVE WHEN VERSION 70
-			if (currentVersion < 70) {
-				Debug("Program: Updating history");
-				final Integer nbBottle = getHistory()
-						.stream()
-						.filter(History::hasTotalBottle)
-						.map(History::getTotalBottle)
-						.min(Integer::compareTo).orElse(getNbItems());
-				AtomicInteger nb = new AtomicInteger(nbBottle);
-				final List<History> historyList = getHistory()
-						.stream()
-						.filter(History::isAddedOrDeleted)
-						.filter(not(History::hasTotalBottle))
-						.filter(history -> history.getLocaleDate() != null)
-						.sorted(Comparator.comparing(History::getLocaleDate).reversed())
-						.collect(Collectors.toList());
-				historyList
-						.forEach(history -> history.setTotalBottle(history.isDeleted() ? nb.getAndIncrement() : nb.getAndDecrement()));
-			}
+
 			final String type = getCaveConfigString(PROGRAM_TYPE, "");
 			if (type.isBlank()) {
 				putCaveConfigString(PROGRAM_TYPE, Type.WINE.name());
 			}
-			// TODO REMOVE WHEN VERSION 70
-			File file = new File(getWorkDir(true) + "data.xml");
-			if (file.exists()) {
-				Debug("Deleting old file: data.xml");
-				FileUtils.deleteQuietly(file);
-			}
-			file = new File(getWorkDir(true) + "Options.txt");
-			if (file.exists()) {
-				Debug("Deleting old file: Options.txt");
-				FileUtils.deleteQuietly(file);
-			}
-			file = new File(getWorkDir(true) + "static_all.sinfo");
-			if (file.exists()) {
-				Debug("Program: Deleting old file: static_all.sinfo");
-				FileUtils.deleteQuietly(file);
-			}
-			file = new File(getWorkDir(true) + "Errors.log");
-			if (file.exists()) {
-				Debug("Program: Deleting old file: Errors.log");
-				FileUtils.deleteQuietly(file);
-			}
-			file = new File(getWorkDir(true) + "other1.ini");
-			if (file.exists()) {
-				Debug("Program: Deleting old file: other1.ini");
-				FileUtils.deleteQuietly(file);
-			}
-			file = new File(getWorkDir(true) + "other2.ini");
-			if (file.exists()) {
-				Debug("Program: Deleting old file: other2.ini");
-				FileUtils.deleteQuietly(file);
-			}
-			file = new File(getWorkDir(true) + "other3.ini");
-			if (file.exists()) {
-				Debug("Program: Deleting old file: other3.ini");
-				FileUtils.deleteQuietly(file);
-			}
-		CONFIG_GLOBAL.remove(MyCellarSettings.DEBUG);
-		CONFIG_GLOBAL.remove(MyCellarSettings.TYPE_AUTO);
 
 		Debug("Program: clean and upgrade... Done");
 	}

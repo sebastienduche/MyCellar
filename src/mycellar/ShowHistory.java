@@ -15,6 +15,7 @@ import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
+import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
@@ -50,7 +51,6 @@ import java.util.Objects;
  * @version 5.0
  * @since 16/04/21
  */
-
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
 	private static final long serialVersionUID = 4778721795659106312L;
@@ -165,7 +165,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 				int row = 0;
 				do {
 					if (Boolean.TRUE.equals(model.getValueAt(row, TableHistoryValues.SELECT))) {
-						if (model.isBottleDeleted(row))
+						if (model.isDeleted(row))
 							toRestoreList.add(model.getObject(row));
 						else {
 							nonExit = true;

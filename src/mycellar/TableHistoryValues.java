@@ -98,8 +98,11 @@ class TableHistoryValues extends AbstractTableModel {
         IMyCellarObject b;
         if (Program.isMusicType()) {
           b = h.getMusic();
-        } else {
+        } else if (Program.isWineType()) {
           b = h.getBouteille();
+        } else {
+          b = null;
+          Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
         }
         if(b == null) {
           return "";
@@ -146,23 +149,11 @@ class TableHistoryValues extends AbstractTableModel {
     }
   }
 
-  /**
-   * getColumnName
-   *
-   * @param column int
-   * @return String
-   */
   @Override
   public String getColumnName(int column) {
     return columnList.get(column);
   }
 
-  /**
-   * getColumnClass
-   *
-   * @param column int
-   * @return Class
-   */
   @Override
   public Class<?> getColumnClass(int column) {
     if (!firstcolumn) {
@@ -177,13 +168,6 @@ class TableHistoryValues extends AbstractTableModel {
     return dataType;
   }
 
-  /**
-   * isCellEditable
-   *
-   * @param row int
-   * @param column int
-   * @return boolean
-   */
   @Override
   public boolean isCellEditable(int row, int column) {
     if (!firstcolumn) {
@@ -192,13 +176,6 @@ class TableHistoryValues extends AbstractTableModel {
     return column == ACTION || column == SELECT;
   }
 
-  /**
-   * setValueAt
-   *
-   * @param value Object
-   * @param row int
-   * @param column int
-   */
   @Override
   public void setValueAt(Object value, int row, int column) {
     if (!firstcolumn) {
@@ -219,6 +196,8 @@ class TableHistoryValues extends AbstractTableModel {
                     () -> ProgramPanels.showBottle(bottle, false));
           }
         } else if (Program.isMusicType()) {
+          Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+        } else {
           Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
         }
         break;
@@ -242,7 +221,7 @@ class TableHistoryValues extends AbstractTableModel {
   }
 
   /**
-   * addHistory: Ajout de l'historique.
+   * setHistory: Ajout de l'historique.
    *
    * @param list LinkedList
    */
@@ -300,11 +279,14 @@ class TableHistoryValues extends AbstractTableModel {
   MyCellarObject getObject(int row) {
     if (Program.isMusicType()) {
       return displayList.get(row).getMusic();
+    } else if (Program.isWineType()) {
+      return displayList.get(row).getBouteille();
     }
-    return displayList.get(row).getBouteille();
+    Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+    return null;
   }
 
-  boolean isBottleDeleted(int row) {
+  boolean isDeleted(int row) {
     return displayList.get(row).isDeleted();
   }
 }

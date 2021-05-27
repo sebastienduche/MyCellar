@@ -20,6 +20,7 @@ import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
+import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;

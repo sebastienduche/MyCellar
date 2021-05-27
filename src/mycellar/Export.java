@@ -13,8 +13,10 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
 import mycellar.core.TabEvent;
 import mycellar.core.common.MyCellarFields;
+import mycellar.core.storage.ListeBouteille;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
+import mycellar.pdf.PDFOptions;
 import mycellar.pdf.PDFPageProperties;
 import mycellar.pdf.PDFTools;
 import mycellar.placesmanagement.RangementUtils;
@@ -77,14 +79,11 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	private static final char OUVRIR = Program.getLabel("OUVRIR").charAt(0);
 	private static final char EXPORT = Program.getLabel("EXPORT").charAt(0);
 	private final JMenuItem param = new MyCellarMenuItem(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
-	private final List<? extends MyCellarObject> bottles;
+	private final List<? extends MyCellarObject> myCellarObjects;
 	static final long serialVersionUID = 240706;
 
-	/**
-	 * Export: Constructeur pour l'export.
-	 */
 	public Export() {
-		bottles = Program.getStorage().getAllList();
+		myCellarObjects = Program.getStorage().getAllList();
 		try {
 			initialize();
 		}
@@ -96,16 +95,11 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 	/**
 	 * Export: Constructeur pour l'export.
 	 *
-	 * @param bottles LinkedList<>: Bottles to export
+	 * @param myCellarObjects LinkedList<>: objects to export
 	 */
-	public Export(final List<MyCellarObject> bottles) {
-		this.bottles = bottles;
-		try {
-			initialize();
-		}
-		catch (RuntimeException e) {
-			Program.showException(e);
-		}
+	public Export(final List<MyCellarObject> myCellarObjects) {
+		this.myCellarObjects = myCellarObjects;
+		initialize();
 	}
 
 	/**
@@ -138,8 +132,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
 		valider.setMnemonic(EXPORT);
 
-
-		valider.addActionListener((e) -> valider_actionPerformed());
+		valider.addActionListener((e) -> export());
 		options.addActionListener((e) -> options_actionPerformed());
 		browse.addActionListener((e) -> browse_actionPerformed());
 
@@ -192,10 +185,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		setVisible(true);
 	}
 
-	/**
-	 * valider_actionPerformed: Fonction d'export.
-	 */
-	private void valider_actionPerformed() {
+	private void export() {
 		new Thread(this).start();
 	}
 
@@ -296,24 +286,16 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 		}
 	}
 
-	/**
-	 * keylistener_actionPerformed: Ecouteur du clavier.
-	 *
-	 * @param e KeyEvent
-	 */
 	private void keylistener_actionPerformed(KeyEvent e) {
 		if (e.getKeyCode() == OUVRIR && openit.isEnabled()) {
 			openit_actionPerformed();
 		}	else if (e.getKeyCode() == EXPORT) {
-			valider_actionPerformed();
+			export();
 		}	else if (e.getKeyCode() == KeyEvent.VK_F1) {
 			aide_actionPerformed();
 		}
 	}
 
-	/**
-	 * jradio_actionPerformed: Bouton radio.
-	 */
 	private void jradio_actionPerformed() {
 		end.setText("");
 		options.setEnabled(!MyCellarRadioButtonXML.isSelected());
@@ -329,7 +311,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
 
 	/**
-	 * run: Execution des taches.
+	 * run: Export
 	 */
 	@Override
 	public void run() {
@@ -369,7 +351,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			}
 
 			ListeBouteille liste = new ListeBouteille();
-			bottles.forEach(liste::add);
+			myCellarObjects.forEach(liste::add);
 			boolean ok = ListeBouteille.writeXML(liste, aFile);
 			if (ok) {
 				end.setText(Program.getLabel("Infos154")); //"Export termine."
@@ -386,7 +368,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				return;
 			}
 
-			if (RangementUtils.write_HTML(aFile, bottles, Program.getHTMLColumns())) {
+			if (RangementUtils.write_HTML(aFile, myCellarObjects, Program.getHTMLColumns())) {
 				end.setText(Program.getLabel("Infos154")); //"Export termine."
 				Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), aFile.getAbsolutePath()), true);
 				openit.setEnabled(true);
@@ -403,7 +385,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			}
 
 			progressBar.setVisible(true);
-			if (RangementUtils.write_CSV(aFile, bottles, progressBar)) {
+			if (RangementUtils.write_CSV(aFile, myCellarObjects, progressBar)) {
 				end.setText(Program.getLabel("Infos154")); //"Export termine."
 				Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), aFile.getAbsolutePath()),
 						Program.getLabel("Export.CSVInfo"), true);
@@ -420,7 +402,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 			}
 
 			progressBar.setVisible(true);
-			if (RangementUtils.write_XLS(aFile, bottles, false, progressBar)) {
+			if (RangementUtils.write_XLS(aFile, myCellarObjects, false, progressBar)) {
 				end.setText(Program.getLabel("Infos154")); //"Export termine."
 				Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Main.savedFile"), aFile.getAbsolutePath()), true);
 				openit.setEnabled(true);
@@ -438,7 +420,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 				return;
 			}
 
-			if (exportToPDF(bottles, aFile)) {
+			if (exportToPDF(myCellarObjects, aFile)) {
 				end.setText(Program.getLabel("Infos154")); //"Export termine."
 				openit.setEnabled(true);
 			} else {

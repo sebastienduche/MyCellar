@@ -18,6 +18,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
+import mycellar.core.storage.ListeBouteille;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.importer.Importer;

@@ -4,10 +4,11 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2012.03.18 at 06:16:55 PM CET 
 //
+package mycellar.core.storage;
 
-
-package mycellar;
-
+import mycellar.Bouteille;
+import mycellar.Music;
+import mycellar.Program;
 import mycellar.core.MyCellarObject;
 import mycellar.general.XmlUtils;
 import org.w3c.dom.Document;
@@ -117,7 +118,7 @@ public class ListeBouteille {
 		bouteille = null;
 	}
 
-	static boolean loadXML() {
+	public static boolean loadXML() {
 		Debug("Loading JAXB File");
 		File f = new File(Program.getXMLBottlesFileName());
 		return loadXML(f);
@@ -186,15 +187,15 @@ public class ListeBouteille {
 		Debug("Loading JAXB File Done");
 	}
 
-	static boolean writeXML() {
+	public static boolean writeXML() {
 		return XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
 	}
 
-	static boolean writeXML(File f) {
+	public static boolean writeXML(File f) {
 		return XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), f, ObjectFactory.class);
 	}
 
-	static boolean writeXML(ListeBouteille liste, File f) {
+	public static boolean writeXML(ListeBouteille liste, File f) {
 		return XmlUtils.writeXML(liste, f, ObjectFactory.class);
 	}
 

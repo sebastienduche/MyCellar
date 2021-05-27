@@ -4,9 +4,9 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2012.03.18 at 07:47:59 PM CET 
 //
+package mycellar.core.storage;
 
-
-package mycellar;
+import mycellar.Bouteille;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

@@ -22,6 +22,9 @@ import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
+import mycellar.core.storage.ListeBouteille;
+import mycellar.core.storage.SerializedStorage;
+import mycellar.core.storage.Storage;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.pdf.PDFColumn;
@@ -1104,7 +1107,7 @@ public final class Program {
 		return getWorkDir(true) + TYPES_XML;
 	}
 
-	static String getXMLBottlesFileName() {
+	public static String getXMLBottlesFileName() {
 		return getWorkDir(true) + BOUTEILLES_XML;
 	}
 

@@ -5,14 +5,12 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Filtre;
 import mycellar.ITabListener;
-import mycellar.ListeBouteille;
 import mycellar.Music;
 import mycellar.MyCellarControl;
 import mycellar.MyOptions;
 import mycellar.Options;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.TabEvent;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
@@ -26,8 +24,10 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.core.TabEvent;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.storage.ListeBouteille;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
@@ -727,6 +727,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 	}
 
 	private void showImportDone() {
+		Debug("Importing... End");
 		importe.setEnabled(true);
 		label_progression.setText(Program.getLabel("Infos035"), true); //"Import Termine");
 		if (!RangementUtils.putTabStock()) {
@@ -755,11 +756,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 		}
 	}
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
 	private static void Debug(String sText) {
 		Program.Debug("Importer: " + sText);
 	}

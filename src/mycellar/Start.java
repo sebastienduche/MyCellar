@@ -77,8 +77,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.8
- * @since 23/05/21
+ * @version 28.9
+ * @since 27/05/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -282,14 +282,14 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			}
 			Program.putGlobalConfigString(MyCellarSettings.LANGUAGE, lang);
 
-			updateFrame(true);
+			Program.initConf();
 			Program.putGlobalConfigBool(MyCellarSettings.STARTUP, true);
 		}
 
 		if (Program.hasFile()) {
 			loadFile();
 		} else {
-			updateFrame(false);
+			Program.initConf();
 			afficheFrame();
 			enableAll(false);
 		}
@@ -300,7 +300,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * Permet de charger un fichier sans avoir a recharger la Frame
 	 */
 	private void loadFile() {
-		updateFrame(true);
+		Program.initConf();
 
 		// Contruction de la Frame
 		Debug("Showing Frame");
@@ -577,34 +577,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			String fic = nomFichier.getAbsolutePath();
 			fic = MyCellarControl.controlAndUpdateExtension(fic, ".xml");
 			ListeBouteille.writeXML(new File(fic));
-		}
-	}
-
-	/**
-	 * updateFrame: Met a jour tous les champs avec la langue selectionnee. Met
-	 * a jour tous les parametres suite au chargement d'un fichier
-	 *
-	 * @param toverify boolean
-	 */
-	private void updateFrame(boolean toverify) {
-		Debug("UpdateFrame: toVerify=" + toverify);
-		try {
-			boolean bHasVersion = false;
-			if ((null != Program.getCaveConfig() && Program.hasConfigCaveKey(MyCellarSettings.VERSION))
-					|| Program.hasConfigGlobalKey(MyCellarSettings.VERSION)) {
-				bHasVersion = true;
-			}
-
-			if (!bHasVersion || toverify) {
-				Program.initConf();
-			}
-			String thelangue = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
-			Program.setProgramType(Program.Type.typeOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
-			Program.setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
-			updateLabels();
-			Debug("UpdateFrame: Loading Frame ended");
-		} catch (RuntimeException e) {
-			Program.showException(e);
 		}
 	}
 

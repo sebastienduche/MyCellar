@@ -56,6 +56,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
 import java.text.Normalizer;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -78,13 +79,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.4
- * @since 25/05/21
+ * @version 26.5
+ * @since 27/05/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.2.0.0";
+	public static final String INTERNAL_VERSION = "4.2.0.2";
 	public static final int VERSION = 70;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -176,6 +177,10 @@ public final class Program {
 			if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
 				putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
 			}
+
+			String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
+			setProgramType(Program.Type.typeOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
+			setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
 			cleanAndUpgrade();
 		} catch (UnableToOpenFileException | RuntimeException e) {
 			showException(e);
@@ -533,7 +538,7 @@ public final class Program {
 	}
 
 	public static char getDecimalSeparator() {
-		DecimalFormatSymbols symbols = ((DecimalFormat)DecimalFormat.getInstance()).getDecimalFormatSymbols();
+		DecimalFormatSymbols symbols = ((DecimalFormat) NumberFormat.getInstance()).getDecimalFormatSymbols();
 		return symbols.getDecimalSeparator();
 	}
 

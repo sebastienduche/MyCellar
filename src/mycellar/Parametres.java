@@ -11,6 +11,7 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
 import mycellar.core.PopupListener;
+import mycellar.core.TabEvent;
 import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 

@@ -14,7 +14,12 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.core.TabEvent;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.core.tablecomponents.ButtonCellEditor;
+import mycellar.core.tablecomponents.ButtonCellRenderer;
+import mycellar.core.tablecomponents.CheckboxCellEditor;
+import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
@@ -188,13 +193,13 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 				}
 			}
 			TableColumn tc = tcm.getColumn(TableValues.ETAT);
-			tc.setCellRenderer(new StateRenderer());
-			tc.setCellEditor(new StateEditor());
+			tc.setCellRenderer(new CheckboxCellRenderer());
+			tc.setCellEditor(new CheckboxCellEditor());
 			tc.setMinWidth(25);
 			tc.setMaxWidth(25);
 			tc = tcm.getColumn(TableValues.SHOW);
-			tc.setCellRenderer(new StateButtonRenderer());
-			tc.setCellEditor(new StateButtonEditor());
+			tc.setCellRenderer(new ButtonCellRenderer());
+			tc.setCellEditor(new ButtonCellEditor());
 			JScrollPane scrollpane = new JScrollPane(table);
 			modif.addActionListener(this::modif_actionPerformed);
 			resul_txt.setForeground(Color.red);

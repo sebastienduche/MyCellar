@@ -2,7 +2,7 @@
  * @ 1996-2009 HR Access Solutions. All rights reserved
  * ******************************************************/
 
-package mycellar;
+package mycellar.core;
 
 import org.apache.commons.lang3.Validate;
 
@@ -33,23 +33,23 @@ import java.util.List;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 20/04/21
+ * @version 0.9
+ * @since 27/05/21
  */
 
 /*
- * A {@link JComboBox} with an auto-populating history feature. 
- * 
+ * A {@link JComboBox} with an auto-populating history feature.
+ *
  * @author Francois RITALY / HR Access Solutions
  */
 public class JCompletionComboBox<T> extends JComboBox<T> {
 
 	private static final long serialVersionUID = -7209698149395632434L;
-	
+
 
 	/**
 	 * Custom {@link Document} to implement the history feature.
-	 * 
+	 *
 	 * @author Francois RITALY / HR Access Solutions
 	 */
 	private static final class ComboDocument extends PlainDocument implements
@@ -62,13 +62,13 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 		private boolean selecting = false;
 
 		private final boolean hidePopupOnFocusLoss;
-		
+
 		private boolean caseSensitive;
 
 		private final JComboBox<?> comboBox;
-		
+
 		private boolean modified;
-		
+
 		private final List<Object> objectList = new LinkedList<>();
 
 		private ComboDocument(JComboBox<?> comboBox) {
@@ -95,26 +95,26 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 		private boolean isCaseSensitive() {
 			return caseSensitive;
 		}
-		
+
 		private boolean isModified() {
 			return modified;
 		}
-		
+
 		private void setModified(boolean modified) {
 			this.modified = modified;
 		}
-		
+
 		private void doAfterModify(){
 		}
-		
+
 		private boolean hasItem(Object o) {
 			return objectList.contains(o);
 		}
-		
+
 		private void addItem(Object o) {
 			objectList.add(o);
 		}
-		
+
 		private void removeItem(Object o) {
 			objectList.remove(o);
 		}
@@ -187,14 +187,14 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 			}
 			// insert the string into the document
 			super.insertString(offs, str, a);
-			
+
 			// lookup and select a matching item
 			Object item = lookupItem(getText(0, getLength()));
 
 			if (item != null) {
 				setSelectedItem(item);
 				setText(item.toString());
-				
+
 				// select the completed part
 				highlightCompletedText(offs + str.length());
 			}
@@ -252,16 +252,16 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 					}
 				}
 			}
-			
+
 			// no item starts with the pattern => return null
 			return null;
 		}
 	}
-	
+
 	private Object lastSelectedItem;
-	
+
 	private boolean handleSelectionChange = false;
-	
+
 	private ComboDocument document;
 
 	/**
@@ -275,10 +275,10 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 
 	private void init() {
 		addItemListener((arg0) -> {
-				if(arg0.getStateChange() == ItemEvent.SELECTED) {
-					setModified(true);
-					doAfterModify();
-				}
+			if(arg0.getStateChange() == ItemEvent.SELECTED) {
+				setModified(true);
+				doAfterModify();
+			}
 		});
 		document = new ComboDocument(this);
 
@@ -290,28 +290,28 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 			document.setText(selected.toString());
 		}
 		document.highlightCompletedText(0);
-		
+
 		setRenderer(new DefaultListCellRenderer() {
 			private static final long serialVersionUID = -7728351788449961901L;
 
 			@Override
 			public Component getListCellRendererComponent(JList jlist,
-					Object obj, int i, boolean isSelected, boolean flag1) {
-				
+																										Object obj, int i, boolean isSelected, boolean flag1) {
+
 				Component c = super.getListCellRendererComponent(jlist, obj, i, isSelected, flag1);
-				
+
 				if ((lastSelectedItem != null) && (lastSelectedItem.equals(obj))) {
 					c.setForeground(Color.BLUE);
 				} else {
 					c.setForeground(Color.BLACK);
 				}
 				setForeground(isSelected ? Color.WHITE : Color.BLACK);
-				
+
 				return c;
 			}
 		});
 	}
-	
+
 	public void setCaseSensitive(boolean caseSensitive) {
 		document.setCaseSensitive(caseSensitive);
 	}
@@ -319,11 +319,11 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 	public boolean isCaseSensitive() {
 		return document.isCaseSensitive();
 	}
-	
+
 	public boolean isModified() {
 		return document.isModified();
 	}
-	
+
 	public void setModified(boolean modified) {
 		document.setModified(modified);
 	}
@@ -331,38 +331,38 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 	protected void doAfterModify(){
 		document.doAfterModify();
 	}
-	
+
 	public boolean hasItem(Object o) {
 		return document.hasItem(o);
 	}
-	
+
 	@Override
 	public void addItem(T obj) {
 		super.addItem(obj);
 		document.addItem(obj);
-		
+
 		if (handleSelectionChange) {
 			// Memoriser le dernier objet ajoute a la liste afin de le mettre en
 			// evidence dans la combobox
 			this.lastSelectedItem = obj;
 		}
 	}
-	
+
 	@Override
 	public void setSelectedItem(Object obj) {
 		super.setSelectedItem(obj);
-		
+
 		if (handleSelectionChange) {
 			// Memoriser le dernier objet ajoute a la liste afin de le mettre en
 			// evidence dans la combobox. Le cas ou obj == null est gere
 			lastSelectedItem = obj;
 		}
 	}
-	
+
 	@Override
 	public void setSelectedIndex(int i) {
 		super.setSelectedIndex(i);
-		
+
 		if (handleSelectionChange) {
 			// Memoriser le dernier objet ajoute a la liste afin de le mettre en
 			// evidence dans la combobox. Retournera null si i est non valide
@@ -370,25 +370,25 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 			lastSelectedItem = getItemAt(i);
 		}
 	}
-	
+
 	@Override
 	public void removeItem(Object obj) {
 		super.removeItem(obj);
 		document.removeItem(obj);
-		
+
 		if (handleSelectionChange && (lastSelectedItem != null) && lastSelectedItem.equals(obj)) {
 			// Supprimer la selection
 			lastSelectedItem = null;
 		}
 	}
-	
+
 	@Override
 	public void removeItemAt(int i) {
 		Object removedItem = getItemAt(i);
-		
+
 		super.removeItemAt(i);
 		document.removeItem(removedItem);
-		
+
 		if (handleSelectionChange && (removedItem != null) && removedItem.equals(lastSelectedItem)) {
 			// Supprimer la selection
 			lastSelectedItem = null;

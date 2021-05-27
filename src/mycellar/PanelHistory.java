@@ -3,6 +3,8 @@ package mycellar;
 import mycellar.core.DateCellRenderer;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.tablecomponents.ButtonCellEditor;
+import mycellar.core.tablecomponents.ButtonCellRenderer;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -35,8 +37,8 @@ public final class PanelHistory extends JPanel {
     add(whatNewPanel, "growx");
     TableColumnModel tcm = table.getColumnModel();
     TableColumn tc = tcm.getColumn(TableHistoryValues.ACTION - 1);
-    tc.setCellRenderer(new StateButtonRenderer());
-    tc.setCellEditor(new StateButtonEditor());
+    tc.setCellRenderer(new ButtonCellRenderer());
+    tc.setCellEditor(new ButtonCellEditor());
     tc.setMinWidth(100);
     tc.setMaxWidth(100);
     tc = tcm.getColumn(TableHistoryValues.TYPE - 1);
@@ -65,7 +67,7 @@ public final class PanelHistory extends JPanel {
     setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos407")));
     TableColumnModel tcm = table.getColumnModel();
     TableColumn tc = tcm.getColumn(TableHistoryValues.ACTION - 1);
-    tc.setCellRenderer(new StateButtonRenderer());
+    tc.setCellRenderer(new ButtonCellRenderer());
     whatNewPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("WhatsNew")));
     label1.updateText();
     label2.updateText();

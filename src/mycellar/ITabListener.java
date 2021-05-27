@@ -4,6 +4,8 @@
 
 package mycellar;
 
+import mycellar.core.TabEvent;
+
 import java.util.EventListener;
 
 /**

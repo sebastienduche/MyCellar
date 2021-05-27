@@ -4,7 +4,7 @@ import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.TabEvent;
+import mycellar.core.TabEvent;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;

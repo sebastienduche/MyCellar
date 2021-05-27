@@ -5,9 +5,9 @@ import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.StateButtonEditor;
-import mycellar.StateButtonRenderer;
-import mycellar.TabEvent;
+import mycellar.core.tablecomponents.ButtonCellEditor;
+import mycellar.core.tablecomponents.ButtonCellRenderer;
+import mycellar.core.TabEvent;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelType;
@@ -110,8 +110,8 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 		sorter.sort();
 		TableColumnModel tcm = tableAppellations.getColumnModel();
 		TableColumn tc = tcm.getColumn(VineyardTableModel.ACTION);
-		tc.setCellRenderer(new StateButtonRenderer("", MyCellarImage.DELETE));
-		tc.setCellEditor(new StateButtonEditor());
+		tc.setCellRenderer(new ButtonCellRenderer("", MyCellarImage.DELETE));
+		tc.setCellEditor(new ButtonCellEditor());
 		tc.setMinWidth(25);
 		tc.setMaxWidth(25);
 	}

@@ -2,6 +2,8 @@ package mycellar.core;
 
 import mycellar.Program;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.exceptions.UnableToOpenFileException;
+import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

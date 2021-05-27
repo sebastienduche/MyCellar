@@ -33,7 +33,6 @@ package mycellar.core;
 
 import mycellar.ITabListener;
 import mycellar.Program;
-import mycellar.TabEvent;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;

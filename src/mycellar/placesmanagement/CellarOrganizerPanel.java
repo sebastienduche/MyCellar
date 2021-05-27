@@ -5,7 +5,7 @@ import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.TabEvent;
+import mycellar.core.TabEvent;
 import mycellar.core.IMyCellar;
 import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;

@@ -8,8 +8,13 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarObject;
+import mycellar.core.TabEvent;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.core.tablecomponents.ButtonCellEditor;
+import mycellar.core.tablecomponents.ButtonCellRenderer;
+import mycellar.core.tablecomponents.CheckboxCellEditor;
+import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
@@ -89,13 +94,13 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 			}
 		}
 		TableColumn tc = tcm.getColumn(TableHistoryValues.SELECT);
-		tc.setCellRenderer(new StateRenderer());
-		tc.setCellEditor(new StateEditor());
+		tc.setCellRenderer(new CheckboxCellRenderer());
+		tc.setCellEditor(new CheckboxCellEditor());
 		tc.setMinWidth(30);
 		tc.setMaxWidth(30);
 		tc = tcm.getColumn(TableHistoryValues.ACTION);
-		tc.setCellRenderer(new StateButtonRenderer());
-		tc.setCellEditor(new StateButtonEditor());
+		tc.setCellRenderer(new ButtonCellRenderer());
+		tc.setCellEditor(new ButtonCellEditor());
 		tc.setMinWidth(100);
 		tc.setMaxWidth(100);
 		tc = tcm.getColumn(TableHistoryValues.DATE);

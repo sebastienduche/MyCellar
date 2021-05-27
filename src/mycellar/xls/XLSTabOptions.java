@@ -2,8 +2,8 @@ package mycellar.xls;
 
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.StateEditor;
-import mycellar.StateRenderer;
+import mycellar.core.tablecomponents.CheckboxCellEditor;
+import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
@@ -112,8 +112,8 @@ public final class XLSTabOptions extends JDialog {
     JTable table = new JTable(tv);
     TableColumnModel tcm = table.getColumnModel();
     TableColumn tc = tcm.getColumn(XLSOptionsValues.ETAT);
-    tc.setCellRenderer(new StateRenderer());
-    tc.setCellEditor(new StateEditor());
+    tc.setCellRenderer(new CheckboxCellRenderer());
+    tc.setCellEditor(new CheckboxCellEditor());
     table.getColumnModel().getColumn(0).setMinWidth(20);
     table.getColumnModel().getColumn(0).setMaxWidth(20);
     table.getColumnModel().getColumn(1).setWidth(440);

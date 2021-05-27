@@ -8,11 +8,11 @@ import mycellar.Music;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.StateButtonEditor;
-import mycellar.StateButtonRenderer;
-import mycellar.StateEditor;
-import mycellar.StateRenderer;
-import mycellar.TabEvent;
+import mycellar.core.tablecomponents.ButtonCellEditor;
+import mycellar.core.tablecomponents.ButtonCellRenderer;
+import mycellar.core.tablecomponents.CheckboxCellEditor;
+import mycellar.core.tablecomponents.CheckboxCellRenderer;
+import mycellar.core.TabEvent;
 import mycellar.ToolTipRenderer;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellar;
@@ -712,8 +712,8 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       }
     }
     TableColumn tc = tcm.getColumn(TableShowValues.ETAT);
-    tc.setCellRenderer(new StateRenderer());
-    tc.setCellEditor(new StateEditor());
+    tc.setCellRenderer(new CheckboxCellRenderer());
+    tc.setCellEditor(new CheckboxCellEditor());
     tc.setMinWidth(25);
     tc.setMaxWidth(25);
     updateModel(cols);
@@ -1019,8 +1019,8 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       tc = tcm.getColumn(ErrorShowValues.STATUS);
       tc.setCellRenderer(new FontBoldTableCellRenderer());
       tc = tcm.getColumn(ErrorShowValues.BUTTON);
-      tc.setCellRenderer(new StateButtonRenderer(Program.getLabel("Infos071"), MyCellarImage.ADD));
-      tc.setCellEditor(new StateButtonEditor());
+      tc.setCellRenderer(new ButtonCellRenderer(Program.getLabel("Infos071"), MyCellarImage.ADD));
+      tc.setCellEditor(new ButtonCellEditor());
     } else if (isNormal() || isWork()) {
       List<ShowFileColumn<?>> cols = filterColumns(columnsModel);
       int i = 0;
@@ -1046,13 +1046,13 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         } else if (column.getField().equals(MyCellarFields.STATUS)) {
           tc.setCellEditor(new DefaultCellEditor(statusCbx));
         } else if (column.isButton()) {
-          tc.setCellRenderer(new StateButtonRenderer(column.getButtonLabel()));
-          tc.setCellEditor(new StateButtonEditor());
+          tc.setCellRenderer(new ButtonCellRenderer(column.getButtonLabel()));
+          tc.setCellEditor(new ButtonCellEditor());
           tc.setMinWidth(column.getWidth());
           tc.setMaxWidth(column.getWidth());
         } else if (column.isCheckBox()) {
-          tc.setCellRenderer(new StateRenderer());
-          tc.setCellEditor(new StateEditor());
+          tc.setCellRenderer(new CheckboxCellRenderer());
+          tc.setCellEditor(new CheckboxCellEditor());
           tc.setMinWidth(column.getWidth());
           tc.setMaxWidth(column.getWidth());
         } else if (checkedButtonColumn.equals(column)) {
@@ -1141,8 +1141,8 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       JTable jTable = new JTable(modelColumn);
       TableColumnModel tcm = jTable.getColumnModel();
       TableColumn tc = tcm.getColumn(0);
-      tc.setCellRenderer(new StateRenderer());
-      tc.setCellEditor(new StateEditor());
+      tc.setCellRenderer(new CheckboxCellRenderer());
+      tc.setCellEditor(new CheckboxCellEditor());
       tc.setMinWidth(25);
       tc.setMaxWidth(25);
       panel.add(new JScrollPane(jTable));

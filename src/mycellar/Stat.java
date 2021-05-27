@@ -10,6 +10,7 @@ import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarEnum;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
+import mycellar.core.TabEvent;
 import mycellar.core.datas.history.History;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Rangement;

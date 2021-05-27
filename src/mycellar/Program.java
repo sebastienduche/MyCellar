@@ -11,8 +11,6 @@ import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
-import mycellar.core.UnableToOpenFileException;
-import mycellar.core.UnableToOpenMyCellarFileException;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.history.History;
@@ -22,6 +20,8 @@ import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
+import mycellar.core.exceptions.UnableToOpenFileException;
+import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.pdf.PDFColumn;
@@ -85,7 +85,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.2.0.5";
+	public static final String INTERNAL_VERSION = "4.2.0.9";
 	public static final int VERSION = 70;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -327,17 +327,17 @@ public final class Program {
 		if (!hasFile()) {
 			return;
 		}
-			String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
-			if (sVersion.isEmpty() || sVersion.contains(".")) {
-				putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
-			}
-			int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
-			Debug("Program: internal file version: " + currentVersion);
+		String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
+		if (sVersion.isEmpty() || sVersion.contains(".")) {
+			putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
+		}
+		int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
+		Debug("Program: internal file version: " + currentVersion);
 
-			final String type = getCaveConfigString(PROGRAM_TYPE, "");
-			if (type.isBlank()) {
-				putCaveConfigString(PROGRAM_TYPE, Type.WINE.name());
-			}
+		final String type = getCaveConfigString(PROGRAM_TYPE, "");
+		if (type.isBlank()) {
+			putCaveConfigString(PROGRAM_TYPE, Type.WINE.name());
+		}
 
 		Debug("Program: clean and upgrade... Done");
 	}

@@ -6,7 +6,7 @@ import mycellar.MyCellarControl;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.TabEvent;
+import mycellar.core.TabEvent;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;

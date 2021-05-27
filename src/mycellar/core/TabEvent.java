@@ -2,13 +2,13 @@
  * � 1996-2009 HR Access Solutions. All rights reserved
  * ******************************************************/
 
-package mycellar;
+package mycellar.core;
 
 import java.util.EventObject;
 
 /**
  * An event triggered by a tab when it's about to close.
- * 
+ *
  * @author Fran�ois RITALY / HR Access Solutions
  */
 public class TabEvent extends EventObject {
@@ -17,7 +17,7 @@ public class TabEvent extends EventObject {
 
 	/**
 	 * Creates a new instance of TabEvent.
-	 * 
+	 *
 	 * @param source
 	 */
 	public TabEvent(Object source) {

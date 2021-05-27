@@ -2,7 +2,7 @@ package mycellar.general;
 
 import mycellar.Bouteille;
 import mycellar.Erreur;
-import mycellar.JCompletionComboBox;
+import mycellar.core.JCompletionComboBox;
 import mycellar.MyCellarControl;
 import mycellar.Program;
 import mycellar.Start;

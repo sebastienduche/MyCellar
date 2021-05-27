@@ -1,7 +1,6 @@
 package mycellar.core;
 
 import mycellar.Bouteille;
-import mycellar.JCompletionComboBox;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.datas.jaxb.CountryJaxb;

@@ -12,7 +12,7 @@ import mycellar.MyOptions;
 import mycellar.Options;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.TabEvent;
+import mycellar.core.TabEvent;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;

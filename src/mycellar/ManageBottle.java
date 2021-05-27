@@ -9,6 +9,7 @@ import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
 import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
+import mycellar.core.TabEvent;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.general.ProgramPanels;

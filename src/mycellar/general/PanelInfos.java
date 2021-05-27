@@ -2,8 +2,8 @@ package mycellar.general;
 
 import mycellar.PanelHistory;
 import mycellar.Program;
-import mycellar.StateButtonEditor;
-import mycellar.StateButtonRenderer;
+import mycellar.core.tablecomponents.ButtonCellEditor;
+import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarLabel;
@@ -86,8 +86,8 @@ final class PanelStats extends JPanel {
 		table.getColumnModel().getColumn(1).setMaxWidth(40);
 		TableColumnModel tcm = table.getColumnModel();
 		TableColumn tc = tcm.getColumn(2);
-		tc.setCellRenderer(new StateButtonRenderer());
-		tc.setCellEditor(new StateButtonEditor());
+		tc.setCellRenderer(new ButtonCellRenderer());
+		tc.setCellEditor(new ButtonCellEditor());
 		tc.setMinWidth(100);
 		tc.setMaxWidth(100);
 		setLayout(new MigLayout("","[grow]","[]"));
@@ -125,7 +125,7 @@ final class PanelStats extends JPanel {
 		cellarValue.updateText();
 		TableColumnModel tcm = table.getColumnModel();
 		TableColumn tc = tcm.getColumn(2);
-		tc.setCellRenderer(new StateButtonRenderer());
+		tc.setCellRenderer(new ButtonCellRenderer());
 	}
 
 	void setEnable(boolean b){

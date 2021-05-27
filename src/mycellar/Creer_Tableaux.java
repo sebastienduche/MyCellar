@@ -11,6 +11,9 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.core.TabEvent;
+import mycellar.core.tablecomponents.CheckboxCellEditor;
+import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
@@ -99,8 +102,8 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 			table.setAutoCreateRowSorter(true);
 			TableColumnModel tcm = table.getColumnModel();
 			TableColumn tc = tcm.getColumn(TableauValues.ETAT);
-			tc.setCellRenderer(new StateRenderer());
-			tc.setCellEditor(new StateEditor());
+			tc.setCellRenderer(new CheckboxCellRenderer());
+			tc.setCellEditor(new CheckboxCellEditor());
 			tc.setMinWidth(25);
 			tc.setMaxWidth(25);
 

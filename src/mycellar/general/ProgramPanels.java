@@ -2,7 +2,6 @@ package mycellar.general;
 
 import mycellar.AddVin;
 import mycellar.Bouteille;
-import mycellar.CellarOrganizerPanel;
 import mycellar.Creer_Tableaux;
 import mycellar.Export;
 import mycellar.ManageBottle;
@@ -22,6 +21,7 @@ import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarObject;
 import mycellar.importer.Importer;
+import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.showfile.ShowFile;
@@ -57,6 +57,15 @@ import static mycellar.ScreenType.STATS;
 import static mycellar.ScreenType.SUPPRIMER_RANGEMENT;
 import static mycellar.ScreenType.VIGNOBLES;
 
+/**
+ * <p>Titre : Cave à vin</p>
+ * <p>Description : Votre description</p>
+ * <p>Copyright : Copyright (c) 2012</p>
+ * <p>Société : Seb Informatique</p>
+ * @author Sébastien Duché
+ * @version 0.2
+ * @since 27/05/21
+ */
 public class ProgramPanels {
 
 	public static final PanelInfos PANEL_INFOS = new PanelInfos();

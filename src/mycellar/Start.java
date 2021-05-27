@@ -22,6 +22,7 @@ import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.importer.Importer;
 import mycellar.launcher.Server;
+import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;

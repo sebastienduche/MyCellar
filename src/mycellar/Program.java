@@ -85,7 +85,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.2.0.2";
+	public static final String INTERNAL_VERSION = "4.2.0.5";
 	public static final int VERSION = 70;
 	static final String INFOS_VERSION = " 2021 v";
 	private static Type programType = Type.WINE;
@@ -108,7 +108,7 @@ public final class Program {
 	private static final List<MyCellarObject> TRASH = new LinkedList<>();
 	private static final List<MyCellarError> ERRORS = new LinkedList<>();
 
-	static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
+	public static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
 	public static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").build();
 	public static final Rangement EMPTY_PLACE = new Rangement.CaisseBuilder("").build();
 	public static final Rangement STOCK_PLACE = new Rangement.CaisseBuilder(TEMP_PLACE).build();

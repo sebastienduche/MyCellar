@@ -1,5 +1,7 @@
 package mycellar;
 
+import mycellar.core.JButtonTabComponent;
+
 import javax.swing.JTabbedPane;
 import java.awt.Component;
 import java.awt.event.InputEvent;
@@ -12,13 +14,13 @@ import java.awt.event.KeyEvent;
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 0.3
- * @since 24/10/20
+ * @version 0.4
+ * @since 27/05/21
  */
 public final class Utils {
 
   public static void addCloseButton(final JTabbedPane tabbedPane,
-      final Component component) {
+                                    final Component component) {
 
     //if (!DISABLE_TAB_COMPONENT) {
     // Ne pas afficher les composants d'onglets si ça a été

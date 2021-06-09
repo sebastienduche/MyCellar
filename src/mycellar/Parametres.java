@@ -27,6 +27,16 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 
 import static mycellar.Program.toCleanString;
+import static mycellar.core.MyCellarSettings.ANNEE;
+import static mycellar.core.MyCellarSettings.DEVISE;
+import static mycellar.core.MyCellarSettings.DIR;
+import static mycellar.core.MyCellarSettings.DONT_SHOW_CREATE_MESS;
+import static mycellar.core.MyCellarSettings.DONT_SHOW_INFO;
+import static mycellar.core.MyCellarSettings.DONT_SHOW_TAB_MESS;
+import static mycellar.core.MyCellarSettings.FIC_EXCEL;
+import static mycellar.core.MyCellarSettings.FILE_EXCEL;
+import static mycellar.core.MyCellarSettings.LANGUAGE;
+import static mycellar.core.MyCellarSettings.SIECLE;
 
 
 /**
@@ -35,8 +45,8 @@ import static mycellar.Program.toCleanString;
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.7
- * @since 09/04/21
+ * @version 12.8
+ * @since 09/06/21
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -55,10 +65,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	private final MyCellarSpinner annee = new MyCellarSpinner(0, 99);
 	private final MyCellarSpinner siecle = new MyCellarSpinner(18, 99);
 
-	/**
-	 * Parametres: Constructeur: pour la fenetre des parametres.
-	 *
-	 */
+
 	public Parametres() {
 		setLayout(new MigLayout("","grow",""));
 		label_fic_bak = new MyCellarLabel(LabelType.INFO, "162"); //"Nom du fichier Excel:");
@@ -69,7 +76,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		label_siecle = new MyCellarLabel(LabelType.INFO, "295");
 		jcb_excel.setText(Program.getLabel("Infos169"));
 		buttonResetMessageDialog = new MyCellarButton(LabelType.INFO, "160");
-		MyCellarButton buttonManageContenance = new MyCellarButton(LabelType.INFO, "400");
+		MyCellarButton buttonManageContenance = new MyCellarButton(LabelType.INFO, "400", new ManageCapacityAction());
 		MyCellarButton valider = new MyCellarButton(LabelType.INFO, "315");
 		parcourir_excel.setToolTipText(Program.getLabel("Infos157"));
 		jcb_annee_control.setText(Program.getLabel("Infos169"));
@@ -86,21 +93,20 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		PopupListener popup_l = new PopupListener();
 		file_bak.addMouseListener(popup_l);
 		devise.addMouseListener(popup_l);
-		file_bak.setText(Program.getCaveConfigString(MyCellarSettings.FILE_EXCEL,""));
+		file_bak.setText(Program.getCaveConfigString(FILE_EXCEL,""));
 
-		annee.setValue(Program.getCaveConfigInt(MyCellarSettings.ANNEE, 50));
-		siecle.setValue(Program.getCaveConfigInt(MyCellarSettings.SIECLE, 19));
+		annee.setValue(Program.getCaveConfigInt(ANNEE, 50));
+		siecle.setValue(Program.getCaveConfigInt(SIECLE, 19));
 
-		devise.setText(Program.getCaveConfigString(MyCellarSettings.DEVISE,""));
+		devise.setText(Program.getCaveConfigString(DEVISE,""));
 		Program.getLanguages().forEach(langue::addItem);
-		String the_language = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE,"");
+		String the_language = Program.getGlobalConfigString(LANGUAGE,"");
 		langue.setSelectedIndex(Program.getLanguageIndex(the_language));
 
 		valider.addActionListener(this::valider_actionPerformed);
 		parcourir_excel.addActionListener(this::parcourir_excel_actionPerformed);
 		jcb_excel.addActionListener(this::jcb_excel_actionPerformed);
 		buttonResetMessageDialog.addActionListener(this::jcb_message_actionPerformed);
-		buttonManageContenance.addActionListener(this::buttonManageContenance_actionPerformed);
 
 		JPanel dateControlPanel = new JPanel();
 		JPanel generalPanel = new JPanel();
@@ -141,7 +147,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		jcb_excel.setEnabled(Program.hasFile());
 		devise.setEnabled(Program.hasFile());
 
-		boolean excel = Program.getCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
+		boolean excel = Program.getCaveConfigBool(FIC_EXCEL, false);
 		file_bak.setEnabled(excel);
 		label_fic_bak.setEnabled(excel);
 		jcb_excel.setSelected(excel);
@@ -172,24 +178,24 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		try {
 			modifyLanguage();
 			if (jcb_excel.isSelected()) {
-				Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, true);
+				Program.putCaveConfigBool(FIC_EXCEL, true);
 				String fic = file_bak.getText();
 				if (MyCellarControl.hasInvalidExtension(fic, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
 					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), fic), Program.getError("Error035"));
 					return;
 				} else {
-					Program.putCaveConfigString(MyCellarSettings.FILE_EXCEL, fic);
+					Program.putCaveConfigString(FILE_EXCEL, fic);
 				}
 			} else {
-				Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
+				Program.putCaveConfigBool(FIC_EXCEL, false);
 			}
 
-			Program.putCaveConfigString(MyCellarSettings.DEVISE, toCleanString(devise.getText()));
+			Program.putCaveConfigString(DEVISE, toCleanString(devise.getText()));
 			try {
 				int val = Integer.parseInt(annee.getValue().toString());
-				Program.putCaveConfigInt(MyCellarSettings.ANNEE, val);
+				Program.putCaveConfigInt(ANNEE, val);
 				val = Integer.parseInt(siecle.getValue().toString());
-				Program.putCaveConfigInt(MyCellarSettings.SIECLE, val);
+				Program.putCaveConfigInt(SIECLE, val);
 			}
 			catch (NumberFormatException ignored) {}
 
@@ -208,13 +214,12 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	 * @param e ActionEvent
 	 */
 	private void parcourir_excel_actionPerformed(ActionEvent e) {
-		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR,""));
+		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(DIR,""));
 		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
 		boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
-		int retour_jfc = boiteFichier.showOpenDialog(this);
-		if (retour_jfc == JFileChooser.APPROVE_OPTION) {
+		if (JFileChooser.APPROVE_OPTION == boiteFichier.showOpenDialog(this)) {
 			File nomFichier = boiteFichier.getSelectedFile();
 			if (nomFichier == null) {
 				setCursor(Cursor.getDefaultCursor());
@@ -226,8 +231,8 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 			Filtre filtre = (Filtre)boiteFichier.getFileFilter();
 			fic = MyCellarControl.controlAndUpdateExtension(fic, filtre);
 			file_bak.setText(fic);
-			Program.putCaveConfigString(MyCellarSettings.FILE_EXCEL, fic);
-			Program.putCaveConfigString(MyCellarSettings.DIR, boiteFichier.getCurrentDirectory().toString());
+			Program.putCaveConfigString(FILE_EXCEL, fic);
+			Program.putCaveConfigString(DIR, boiteFichier.getCurrentDirectory().toString());
 		}
 	}
 
@@ -237,45 +242,31 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 		parcourir_excel.setEnabled(jcb_excel.isSelected());
 	}
 
-
 	/**
 	 * Modification de la langue a la fermeture de la boite de dialogue
 	 */
 	private void modifyLanguage() {
-		try {
-			String thelangue = Program.getLanguage(langue.getSelectedIndex());
-			String currentLanguage = Program.getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
-			if(thelangue.equals(currentLanguage)) {
-				return;
-			}
-			Program.putGlobalConfigString(MyCellarSettings.LANGUAGE, thelangue);
-			Program.setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
-			if (LanguageFileLoader.getInstance().isLoaded()) {
-				setLabels();
-			} else {
-				langue.setSelectedIndex(0);
-				Program.setLanguage(LanguageFileLoader.Language.FRENCH);
-				JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", JOptionPane.ERROR_MESSAGE);
-			}
-		} catch (RuntimeException e) {
-			Program.showException(e);
+		String thelangue = Program.getLanguage(langue.getSelectedIndex());
+		String currentLanguage = Program.getGlobalConfigString(LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
+		if (thelangue.equals(currentLanguage)) {
+			return;
+		}
+		Program.putGlobalConfigString(LANGUAGE, thelangue);
+		Program.setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
+		if (LanguageFileLoader.getInstance().isLoaded()) {
+			setLabels();
+		} else {
+			langue.setSelectedIndex(0);
+			Program.setLanguage(LanguageFileLoader.Language.FRENCH);
+			JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	private void jcb_message_actionPerformed(ActionEvent e) {
-		Program.putCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false);
-		Program.putCaveConfigBool(MyCellarSettings.DONT_SHOW_TAB_MESS, false);
-		Program.putCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false);
+		Program.putCaveConfigBool(DONT_SHOW_INFO, false);
+		Program.putCaveConfigBool(DONT_SHOW_TAB_MESS, false);
+		Program.putCaveConfigBool(DONT_SHOW_CREATE_MESS, false);
 		buttonResetMessageDialog.setEnabled(false);
-	}
-
-	/**
-	 * Gestion des contenus
-	 *
-	 * @param e ActionEvent
-	 */
-	private void buttonManageContenance_actionPerformed(ActionEvent e) {
-		new ManageCapacityAction().actionPerformed(null);
 	}
 
 	@Override
@@ -293,7 +284,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	public void cut() {
 		String text = file_bak.getSelectedText();
 		String fullText = file_bak.getText();
-		if(text != null) {
+		if (text != null) {
 			file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + fullText.substring(file_bak.getSelectionEnd()));
 			Program.CLIPBOARD.copier(text);
 		}
@@ -302,7 +293,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 	@Override
 	public void copy() {
 		String text = file_bak.getSelectedText();
-		if(text != null) {
+		if (text != null) {
 			Program.CLIPBOARD.copier(text);
 		}
 	}

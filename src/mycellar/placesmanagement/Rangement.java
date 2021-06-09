@@ -18,8 +18,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 28.2
- * @since 20/05/21
+ * @version 28.3
+ * @since 09/06/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -33,6 +33,7 @@ public class Rangement implements Comparable<Rangement> {
 	private boolean limited; //Indique si une limite de caisse est activée
 	private List<Part> listePartie = null;
 	private Map<Integer, ArrayList<MyCellarObject>> storageCaisse;
+	private boolean defaultPlace = false;
 
 	/**
 	 * Rangement: Constructeur de création d'un rangement de type Armoire
@@ -601,9 +602,14 @@ public class Rangement implements Comparable<Rangement> {
 					.append(getStartCaisse())
 					.append("\"");
 			if (isLimited()) {
-				sText.append(" NbLimit=\"").append(getNbColonnesStock()).append("\">");
+				sText.append(" NbLimit=\"").append(getNbColonnesStock()).append("\"");
 			} else {
-				sText.append(" NbLimit=\"0\">");
+				sText.append(" NbLimit=\"0\"");
+			}
+			if (isDefaultPlace()) {
+				sText.append(" default=\"true\">");
+			} else {
+				sText.append(" default=\"false\">");
 			}
 		} else {
 			sText.append("<place name=\"\" IsCaisse=\"false\" NbPlace=\"")
@@ -883,6 +889,14 @@ public class Rangement implements Comparable<Rangement> {
 		return true;
 	}
 
+	public boolean isDefaultPlace() {
+		return defaultPlace;
+	}
+
+	public void setDefaultPlace(boolean defaultPlace) {
+		this.defaultPlace = defaultPlace;
+	}
+
 	public static class RangementBuilder {
 		private final String nom;
 		private final List<Part> partList;
@@ -957,6 +971,7 @@ public class Rangement implements Comparable<Rangement> {
 		private int start_caisse;
 		private boolean isLimit;
 		private int limite_caisse;
+		private boolean defaultPlace;
 
 		public CaisseBuilder(String nom) {
 			this.nom = nom;
@@ -964,6 +979,7 @@ public class Rangement implements Comparable<Rangement> {
 			start_caisse = 0;
 			isLimit = false;
 			limite_caisse = -1;
+			defaultPlace = false;
 		}
 
 		public CaisseBuilder nb_emplacement(int nb_emplacement) {
@@ -986,8 +1002,15 @@ public class Rangement implements Comparable<Rangement> {
 			return this;
 		}
 
+		public CaisseBuilder setDefaultPlace(boolean defaultPlace) {
+			this.defaultPlace = defaultPlace;
+			return this;
+		}
+
 		public Rangement build() {
-			return new Rangement(nom, nb_emplacement, start_caisse, isLimit, limite_caisse);
+			final Rangement rangement = new Rangement(nom, nb_emplacement, start_caisse, isLimit, limite_caisse);
+			rangement.setDefaultPlace(defaultPlace);
+			return rangement;
 		}
 	}
 }

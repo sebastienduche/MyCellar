@@ -79,8 +79,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.9
- * @since 27/05/21
+ * @version 29.0
+ * @since 09/06/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1117,8 +1117,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 				JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR, ""));
 				boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
 				boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
-				int retour_jfc = boiteFichier.showOpenDialog(null);
-				if (retour_jfc == JFileChooser.APPROVE_OPTION) {
+				if (JFileChooser.APPROVE_OPTION == boiteFichier.showOpenDialog(null)) {
 					File file = boiteFichier.getSelectedFile();
 					if (file == null) {
 						setCursor(Cursor.getDefaultCursor());

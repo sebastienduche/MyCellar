@@ -32,8 +32,8 @@ import java.util.Optional;
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : SebInformatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 23/04/21
+ * @version 3.1
+ * @since 09/06/21
  */
 
 public class XmlUtils {
@@ -82,6 +82,8 @@ public class XmlUtils {
 
 					Element place = (Element) nNode;
 					boolean bIsCaisse = Boolean.parseBoolean(place.getAttribute("IsCaisse"));
+					final String aDefault = place.getAttribute("default");
+					boolean isDefault = !aDefault.isBlank() && Boolean.parseBoolean(aDefault);
 					int nPlace = Integer.parseInt(place.getAttribute("NbPlace"));
 					String sName = place.getAttribute("name");
 					if (sName.isEmpty()) {
@@ -100,7 +102,8 @@ public class XmlUtils {
 									.nb_emplacement(nPlace)
 									.start_caisse(nNumStart)
 									.limit(bLimit)
-									.limite_caisse(nNbLimit).build();
+									.limite_caisse(nNbLimit)
+									.setDefaultPlace(isDefault).build();
 							rangementList.add(caisse);
 							names.add(sName);
 						}
@@ -170,11 +173,11 @@ public class XmlUtils {
 		if (!sFilename.isEmpty()) {
 			filename = sFilename;
 		}
-		try (var oFile = new FileWriter(filename)){
+		try (var oFile = new FileWriter(filename)) {
 			//Init XML File
 			oFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
 			// Ecriture des rangements
-			for (Rangement r : rangements){
+			for (Rangement r : rangements) {
 				if (r != null) {
 					oFile.write(r.toXml());
 				}

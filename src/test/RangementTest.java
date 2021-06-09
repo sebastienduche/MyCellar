@@ -722,4 +722,18 @@ class RangementTest {
     Rangement r5 = new Rangement("r", list);
     assertFalse(r2.isSame(r5));
   }
+
+  @Test
+  void toXml() {
+    final String s = armoire1x3x3.toXml();
+    final String s1 = caisseLimit.toXml();
+    assertEquals("<place name=\"\" IsCaisse=\"false\" NbPlace=\"1\">\n" +
+        "<internal-place NbLine=\"3\">\n" +
+        "<line NbColumn=\"3\"/>\n" +
+        "<line NbColumn=\"3\"/>\n" +
+        "<line NbColumn=\"3\"/>\n" +
+        "</internal-place>\n" +
+        "<name><![CDATA[armoire1x3x3]]></name></place>", s);
+    assertEquals("<place name=\"\" IsCaisse=\"true\" NbPlace=\"2\" NumStart=\"1\" NbLimit=\"6\" default=\"false\"><name><![CDATA[caisseLimit]]></name></place>", s1);
+  }
 }

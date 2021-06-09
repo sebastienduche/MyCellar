@@ -82,15 +82,17 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.5
- * @since 27/05/21
+ * @version 26.6
+ * @since 09/06/21
  */
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.2.0.9";
+	public static final String INTERNAL_VERSION = "4.2.1.4";
 	public static final int VERSION = 70;
 	static final String INFOS_VERSION = " 2021 v";
+	public static final String DEFAULT_STORAGE_EN = "Default storage";
+	public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
 	private static Type programType = Type.WINE;
 	private static final String KEY_TYPE = "<KEY>";
 
@@ -112,7 +114,7 @@ public final class Program {
 	private static final List<MyCellarError> ERRORS = new LinkedList<>();
 
 	public static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
-	public static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").build();
+	public static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").setDefaultPlace(true).build();
 	public static final Rangement EMPTY_PLACE = new Rangement.CaisseBuilder("").build();
 	public static final Rangement STOCK_PLACE = new Rangement.CaisseBuilder(TEMP_PLACE).build();
 
@@ -340,6 +342,13 @@ public final class Program {
 		final String type = getCaveConfigString(PROGRAM_TYPE, "");
 		if (type.isBlank()) {
 			putCaveConfigString(PROGRAM_TYPE, Type.WINE.name());
+		}
+
+		if (currentVersion < 71) {
+			getCave().stream().filter(rangement ->
+				isDefaultStorageName(rangement, rangement.getNom()))
+					.findFirst()
+					.ifPresent(rangement -> rangement.setDefaultPlace(true));
 		}
 
 		Debug("Program: clean and upgrade... Done");
@@ -628,7 +637,13 @@ public final class Program {
 		}
 
 		final String placeName = name.strip();
-		return PLACES.stream().anyMatch(rangement -> rangement.getNom().equals(placeName));
+		final boolean found = PLACES.stream().anyMatch(rangement -> rangement.getNom().equals(placeName));
+		if (!found) {
+			if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
+				return true;
+			}
+		}
+		return found;
 	}
 
 	/**
@@ -642,8 +657,18 @@ public final class Program {
 		if (TEMP_PLACE.equals(placeName)) {
 			return STOCK_PLACE;
 		}
-		final List<Rangement> list = PLACES.stream().filter(rangement -> rangement.getNom().equals(placeName)).collect(Collectors.toList());
+		final List<Rangement> list = PLACES.stream().filter(rangement -> filterOnPlaceName(rangement, placeName)).collect(Collectors.toList());
 		return list.get(0);
+	}
+
+	private static boolean filterOnPlaceName(Rangement rangement, String placeName) {
+		return rangement.getNom().equals(placeName) || isDefaultStorageName(rangement, placeName);
+	}
+
+	private static boolean isDefaultStorageName(Rangement rangement, String placeName) {
+		return rangement.isDefaultPlace() &&
+				(rangement.getNom().equals(DEFAULT_STORAGE_EN) || rangement.getNom().equals(DEFAULT_STORAGE_FR)) &&
+				(placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
 	}
 
 	/**

@@ -1,6 +1,6 @@
 package test;
 
-import mycellar.launcher.Server;
+import mycellar.launcher.MyCellarServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class TestGitHub {
 		File f = new File("Test.jar");
 		System.out.println(f.getAbsolutePath());
 		try {
-			Server.getInstance().downloadFileFromGitHub("MyCellar.jar", f);
+			MyCellarServer.getInstance().downloadFileFromGitHub("MyCellar.jar", f);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -23,7 +23,7 @@ public class TestGitHub {
 
 	private static void testUpdateFromGitHub() {
 //		Server.getInstance().testPopulateList();
-		Server.getInstance().downloadVersion();
+		MyCellarServer.getInstance().downloadVersion();
 	}
 
 }

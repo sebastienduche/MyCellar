@@ -16,8 +16,8 @@ import static javax.swing.JOptionPane.showMessageDialog;
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
  * @author Sébastien Duché
- * @version 1.5
- * @since 09/02/21
+ * @version 1.6
+ * @since 08/07/21
  */
 class MyCellarLauncher {
 
@@ -31,49 +31,49 @@ class MyCellarLauncher {
 	private MyCellarLauncher() {
 
 		Thread updateThread = new Thread(() -> {
-					Server.getInstance().checkVersion();
-					if (!Server.getInstance().hasAvailableUpdate()) {
+					MyCellarServer.getInstance().checkVersion();
+					if (!MyCellarServer.getInstance().hasAvailableUpdate(MyCellarVersion.getLocalVersion())) {
 						return;
 					}
-					File downloadDirectory = Server.getInstance().downloadVersion();
+					File downloadDirectory = MyCellarServer.getInstance().downloadVersion();
 
 					if (downloadDirectory != null && downloadDirectory.isDirectory()) {
 						try {
-							MyCellarVersion.setLocalVersion(Server.getInstance().getServerVersion());
-							Server.Debug("Installing new version...");
+							MyCellarVersion.setLocalVersion(MyCellarServer.getInstance().getServerVersion());
+							MyCellarServer.Debug("Installing new version...");
 							final File[] fList = downloadDirectory.listFiles();
 							if (fList != null) {
 								for (File file : fList) {
 									String fileName = file.getName();
 									if (fileName.endsWith(MYCELLAR_EXTENSION)) {
 										fileName = fileName.substring(0, fileName.indexOf(MYCELLAR_EXTENSION));
-										Server.Debug("Delete file " + fileName);
+										MyCellarServer.Debug("Delete file " + fileName);
 										FileUtils.deleteQuietly(new File(LIB_DIRECTORY, fileName));
 									} else {
 										if (fileName.endsWith(INI_EXTENSION)) {
-											Server.Debug("Copying file " + fileName + " to config dir");
+											MyCellarServer.Debug("Copying file " + fileName + " to config dir");
 											FileUtils.copyFileToDirectory(file, new File(CONFIG_DIR));
 										} else {
 											if (fileName.endsWith(JAR_EXTENSION) && !fileName.equalsIgnoreCase(MYCELLAR_JAR)) {
-												Server.Debug("Copying file " + fileName + " to lib dir");
+												MyCellarServer.Debug("Copying file " + fileName + " to lib dir");
 												FileUtils.copyFileToDirectory(file, new File(LIB_DIRECTORY));
 											} else {
-												Server.Debug("Copying file " + fileName + " to current dir");
+												MyCellarServer.Debug("Copying file " + fileName + " to current dir");
 												FileUtils.copyFileToDirectory(file, new File("."));
 											}
 										}
 									}
 								}
 							} else {
-								Server.Debug("ERROR: Unable to list files");
+								MyCellarServer.Debug("ERROR: Unable to list files");
 							}
 							FileUtils.deleteDirectory(downloadDirectory);
-							Server.Debug("Installing new version... Done");
+							MyCellarServer.Debug("Installing new version... Done");
 						} catch(IOException e) {
 							showException(e);
 						}
 					} else {
-						Server.Debug("ERROR: Missing download directory");
+						MyCellarServer.Debug("ERROR: Missing download directory");
 					}
 					System.exit(0);
         });

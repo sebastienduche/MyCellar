@@ -88,7 +88,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-	public static final String INTERNAL_VERSION = "4.2.1.4";
+	public static final String INTERNAL_VERSION = "4.2.1.7";
 	public static final int VERSION = 70;
 	static final String INFOS_VERSION = " 2021 v";
 	public static final String DEFAULT_STORAGE_EN = "Default storage";

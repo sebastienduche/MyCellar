@@ -22,7 +22,7 @@ import mycellar.core.storage.ListeBouteille;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.importer.Importer;
-import mycellar.launcher.Server;
+import mycellar.launcher.MyCellarServer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Rangement;
@@ -79,8 +79,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.0
- * @since 09/06/21
+ * @version 29.1
+ * @since 08/07/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -235,7 +235,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 						Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
 					} else if (DOWNLOAD_COMMAND.equals(tmp)) {
 						Debug("Download a new version and exit");
-						Server.getInstance().downloadVersion();
+						MyCellarServer.getInstance().downloadVersion();
 						System.exit(3);
 					}
 				}
@@ -269,7 +269,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		// Controle des MAJ
 		// Appel serveur pour alimenter la derniere version en ligne
-		Server.getInstance().getServerVersion();
+		MyCellarServer.getInstance().getServerVersion();
 
 		// Demarrage
 		// _________
@@ -864,7 +864,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 			setIconImage(MyCellarImage.ICON.getImage());
 		}
 
-		boolean bUpdateAvailable = Server.getInstance().hasAvailableUpdate();
+		boolean bUpdateAvailable = MyCellarServer.getInstance().hasAvailableUpdate(MyCellarVersion.getLocalVersion());
 
 		// Ajout du Menu
 		Aide.setAccelerator(KeyStroke.getKeyStroke("F1"));
@@ -963,7 +963,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
 		update.setVisible(bUpdateAvailable);
 		if (bUpdateAvailable) {
-			update.setText(MessageFormat.format(Program.getLabel("Infos385"), Server.getInstance().getAvailableVersion(), MyCellarVersion.MAIN_VERSION + "-" + Program.INTERNAL_VERSION), true, 30000, false);
+			update.setText(MessageFormat.format(Program.getLabel("Infos385"), MyCellarServer.getInstance().getAvailableVersion(), MyCellarVersion.MAIN_VERSION + "-" + Program.INTERNAL_VERSION), true, 30000, false);
 		}
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		m_bHasFrameBuilded = true;
@@ -1073,8 +1073,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 	 * menuCheckUpdate_actionPerformed: Recherche de mises a jour
 	 */
 	private void menuCheckUpdate_actionPerformed() {
-		if (Server.getInstance().hasAvailableUpdate()) {
-			Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Infos384"), Server.getInstance().getAvailableVersion(), Program.INTERNAL_VERSION), true);
+		if (MyCellarServer.getInstance().hasAvailableUpdate(MyCellarVersion.getLocalVersion())) {
+			Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Infos384"), MyCellarServer.getInstance().getAvailableVersion(), Program.INTERNAL_VERSION), true);
 		} else {
 			Erreur.showSimpleErreur(Program.getLabel("Infos388"), true);
 		}

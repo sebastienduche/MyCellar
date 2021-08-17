@@ -51,8 +51,6 @@ import static mycellar.Program.DATE_FORMATER_DDMMYYYY;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -79,7 +77,7 @@ public class History {
    * History: Contructeur avec un object et un type d'action
    *
    * @param myCellarObject IMyCellarObject
-   * @param type int
+   * @param type           int
    */
   public History(IMyCellarObject myCellarObject, int type, int totalBottle) {
     if (myCellarObject instanceof Bouteille) {
@@ -92,10 +90,15 @@ public class History {
     date = LocalDate.now().format(DATE_FORMATER_DDMMYYYY);
   }
 
-  public History() {}
+  public History() {
+  }
 
   public String getDate() {
     return date;
+  }
+
+  public void setDate(String date) {
+    this.date = date;
   }
 
   public LocalDate getLocaleDate() {
@@ -103,10 +106,6 @@ public class History {
       return null;
     }
     return LocalDate.parse(date, DATE_FORMATER_DDMMYYYY);
-  }
-
-  public void setDate(String date) {
-    this.date = date;
   }
 
   public int getType() {
@@ -135,12 +134,12 @@ public class History {
     return bouteille;
   }
 
-  public Music getMusic() {
-    return music;
-  }
-
   public void setBouteille(Bouteille bouteille) {
     this.bouteille = bouteille;
+  }
+
+  public Music getMusic() {
+    return music;
   }
 
   public void setMusic(Music music) {

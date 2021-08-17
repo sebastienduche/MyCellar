@@ -15,36 +15,55 @@ import java.util.List;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 2.3
  * @since 19/05/21
  */
 
 public interface Storage {
-	
-	void setListMyCellarObject(ListeBouteille listMyCellarObject);
-	void addBouteilles(ListeBouteille listBouteilles);
-	ListeBouteille getListMyCellarObject();
-	LinkedList<String> getDistinctNames();
-	void addHistory(HistoryState historyState, MyCellarObject myCellarObject);
-	void addToWorksheet(MyCellarObject myCellarObject);
 
-	void removeHistory(History oB);
-	void removeFromWorksheet(MyCellarObject myCellarObject);
-	void clearHistory(HistoryState historyState);
-	void clearWorksheet();
-	void saveHistory();
-	void loadHistory();
-	void saveWorksheet();
-	void loadWorksheet();
-	HistoryList getHistoryList();
-	WorkSheetList getWorksheetList();
-	boolean deleteWine(MyCellarObject myCellarObject) throws MyCellarException;
+  void addBouteilles(ListeBouteille listBouteilles);
 
-	boolean addWine(MyCellarObject myCellarObject);
-	int getBottlesCount();
+  ListeBouteille getListMyCellarObject();
 
-	List<? extends MyCellarObject> getAllList();
-	boolean add(MyCellarObject myCellarObject);
-	void close();
+  void setListMyCellarObject(ListeBouteille listMyCellarObject);
+
+  LinkedList<String> getDistinctNames();
+
+  void addHistory(HistoryState historyState, MyCellarObject myCellarObject);
+
+  void addToWorksheet(MyCellarObject myCellarObject);
+
+  void removeHistory(History oB);
+
+  void removeFromWorksheet(MyCellarObject myCellarObject);
+
+  void clearHistory(HistoryState historyState);
+
+  void clearWorksheet();
+
+  void saveHistory();
+
+  void loadHistory();
+
+  void saveWorksheet();
+
+  void loadWorksheet();
+
+  HistoryList getHistoryList();
+
+  WorkSheetList getWorksheetList();
+
+  boolean deleteWine(MyCellarObject myCellarObject) throws MyCellarException;
+
+  boolean addWine(MyCellarObject myCellarObject);
+
+  int getBottlesCount();
+
+  List<? extends MyCellarObject> getAllList();
+
+  boolean add(MyCellarObject myCellarObject);
+
+  void close();
 }

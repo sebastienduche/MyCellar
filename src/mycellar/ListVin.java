@@ -26,15 +26,15 @@ import java.util.List;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 4.1
  * @since 27/05/21
  */
 final class ListVin extends JPanel {
-  private ListValues listValues;
-
-  private AddVin addVin;
   static final long serialVersionUID = 10805;
+  private ListValues listValues;
+  private AddVin addVin;
 
   /**
    * ListVin: Constructeur avec liste des bouteilles
@@ -56,7 +56,7 @@ final class ListVin extends JPanel {
       tc1.setCellRenderer(new ToolTipRenderer());
       ListSelectionModel rowSM = table.getSelectionModel();
       rowSM.setSelectionInterval(0, 0);
-      rowSM.addListSelectionListener( (e) -> {
+      rowSM.addListSelectionListener((e) -> {
         //Ignore extra messages.
         ListSelectionModel lsm = (ListSelectionModel) e.getSource();
         if (!lsm.isSelectionEmpty()) {
@@ -76,14 +76,14 @@ final class ListVin extends JPanel {
       MyCellarLabel MyCellarLabel2 = new MyCellarLabel(Program.getLabel("ListVin.selectItems", LabelProperty.SINGLE));
 
       scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-      setLayout(new MigLayout("","grow","[grow][]"));
+      setLayout(new MigLayout("", "grow", "[grow][]"));
       MyCellarLabel textControl1 = new MyCellarLabel(LabelType.INFO_OTHER, "ListVin.listProblems", LabelProperty.PLURAL);
       textControl1.setForeground(Color.red);
       textControl1.setFont(new Font("Dialog", Font.BOLD, 13));
       textControl1.setHorizontalAlignment(SwingConstants.CENTER);
 
-      add(scrollpane,"grow,wrap,width min(100,200)");
-      add(MyCellarLabel2,"width min(100,200)");
+      add(scrollpane, "grow,wrap,width min(100,200)");
+      add(MyCellarLabel2, "width min(100,200)");
       setVisible(true);
     } catch (RuntimeException e) {
       Program.showException(e);
@@ -96,7 +96,7 @@ final class ListVin extends JPanel {
    * @param remove LinkedList<Bouteille>: Bouteilles à supprimer
    */
   void updateList(List<Bouteille> remove) {
-    for(Bouteille b: remove) {
+    for (Bouteille b : remove) {
       listValues.removeBouteille(b);
     }
   }

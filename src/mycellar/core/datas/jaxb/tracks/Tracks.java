@@ -7,9 +7,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlRootElement(name = "tracks")
-@XmlAccessorType (XmlAccessType.FIELD)
-public class Tracks
-{
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Tracks {
   @XmlElement(name = "track")
   private List<Track> tracks = null;
 

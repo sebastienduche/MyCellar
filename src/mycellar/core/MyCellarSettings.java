@@ -5,6 +5,7 @@ package mycellar.core;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.6
  * @since 25/05/21
@@ -68,5 +69,6 @@ public final class MyCellarSettings {
   public static final String ANNEE_AUTO_FALSE = "ANNEE_AUTO_FALSE";
   public static final String ANNEE_AUTO_TRUE = "ANNEE_AUTO_TRUE";
 
-  private MyCellarSettings() {}
+  private MyCellarSettings() {
+  }
 }

@@ -2,12 +2,12 @@ package mycellar.xls;
 
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.tablecomponents.CheckboxCellEditor;
-import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSpinner;
+import mycellar.core.tablecomponents.CheckboxCellEditor;
+import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -46,11 +46,13 @@ import static mycellar.core.MyCellarSettings.XLS_TAB_TITLE;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 1.7
  * @since 16/02/21
  */
 public final class XLSTabOptions extends JDialog {
+  static final long serialVersionUID = 260706;
   private static final int LARGEUR = 480;
   private static final int HAUTEUR = 550;
   private final MyCellarSpinner title_size = new MyCellarSpinner(1, 99);
@@ -63,7 +65,6 @@ public final class XLSTabOptions extends JDialog {
   private final MyCellarSpinner empty_line_place = new MyCellarSpinner(1, 99);
   private final MyCellarLabel empty_line_place_label;
   private final XLSOptionsValues tv;
-  static final long serialVersionUID = 260706;
 
   /**
    * XLSOptions: Constructeur pour la fenêtre d'options.
@@ -81,7 +82,8 @@ public final class XLSTabOptions extends JDialog {
     });
     addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e) {dispose();
+      public void windowClosing(WindowEvent e) {
+        dispose();
       }
     });
 
@@ -199,8 +201,8 @@ public final class XLSTabOptions extends JDialog {
     Program.putCaveConfigBool(ONE_PER_SHEET_XLS, onePlacePerSheetCheckBox.isSelected());
 
     // Options des colonnes
-    for ( int i=0; i<tv.getRowCount(); i++){
-      Program.putCaveConfigBool(XLSTAB_COL + i, ((Boolean)tv.getValueAt(i, XLSOptionsValues.ETAT)));
+    for (int i = 0; i < tv.getRowCount(); i++) {
+      Program.putCaveConfigBool(XLSTAB_COL + i, ((Boolean) tv.getValueAt(i, XLSOptionsValues.ETAT)));
     }
     dispose();
   }

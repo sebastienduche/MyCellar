@@ -10,6 +10,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
@@ -23,15 +24,15 @@ import java.util.zip.ZipOutputStream;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2020</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.3
  * @since 15/02/21
  */
 public class MyCellarFile {
 
-  private File file;
   private final MyLinkedHashMap caveConfig;
-
+  private File file;
   private boolean valid = false;
 
   public MyCellarFile(File file) {
@@ -39,127 +40,8 @@ public class MyCellarFile {
     caveConfig = new MyLinkedHashMap();
   }
 
-  public void unzip() throws UnableToOpenFileException {
-    if(!file.exists()) {
-      throw new UnableToOpenMyCellarFileException("File doesn't exist: " + file.getAbsolutePath());
-    }
-    try {
-      // Dezippage
-      final String workDir = Program.getWorkDir(false);
-      boolean unzipOK = unzipDir(workDir);
-      final String absolutePath = file.getAbsolutePath();
-      Debug("Unzipping " + absolutePath + " to " + workDir + (unzipOK ? " OK" : " KO"));
-      if (!unzipOK) {
-        valid = false;
-        throw new UnableToOpenFileException("Unzipping error for file: " + absolutePath);
-      }
-    } catch (Exception e) {
-      Debug("ERROR: Unable to unzip file " + file.getAbsolutePath());
-      Program.showException(e, false);
-      valid = false;
-      throw new UnableToOpenFileException("Unzipping error: " + e.getMessage());
-    }
-    valid = true;
-  }
-
-  public boolean exists() {
-    return file.exists() && file.canWrite();
-  }
-
-  public boolean isFileSavable() {
-    return !file.getName().endsWith(Program.UNTITLED1_SINFO) && exists();
-  }
-
-  public boolean isValid() {
-    return valid;
-  }
-
-  public void save() {
-    saveAs(file);
-  }
-
-  public void saveAs(File newFile) {
-    saveCaveProperties();
-    zipDir(newFile);
-    file = newFile;
-  }
-
-  /**
-   * Save Properties for current cave
-   */
-  private void saveCaveProperties() {
-    MyCellarBottleContenance.save();
-    Program.saveProperties(caveConfig, Program.getConfigFilePath());
-  }
-  public File getFile() {
-    return file;
-  }
-
-  public MyLinkedHashMap getCaveConfig() {
-    return caveConfig;
-  }
-
   private static void Debug(String sText) {
     Program.Debug("MyCellarFile: " + sText);
-  }
-
-  /**
-   * unzipDir: Dezippe une archive dans un repertoire
-   *
-   * @param dest_dir String
-   * @return boolean
-   */
-  private boolean unzipDir(String dest_dir) {
-    try {
-      String fileName = file.getAbsolutePath();
-      Debug("Unzip: Archive " + fileName);
-      // ouverture fichier entree
-
-      var fileInputStream = new FileInputStream(file);
-      // ouverture fichier de buffer
-      var bufferedInputStream = new BufferedInputStream(fileInputStream);
-      // ouverture archive Zip d'entree
-      try(var zipInputStream = new ZipInputStream(bufferedInputStream)) {
-        // entree Zip
-        ZipEntry entry;
-        // parcours des entrees de l'archive
-        int BUFFER = 2048;
-        while ((entry = zipInputStream.getNextEntry()) != null) {
-          // affichage du nom de l'entree
-          // creation fichier
-          File f = new File(dest_dir);
-          boolean ok = true;
-          if (!f.exists()) {
-            ok = f.mkdir();
-          }
-          if (ok) {
-            var fileOutputStream = new FileOutputStream(dest_dir + File.separator + entry.getName());
-            Debug("Unzip: File " + dest_dir + File.separator + entry.getName());
-            // affectation buffer de sortie
-            try (var bufferOutputStream = new BufferedOutputStream(fileOutputStream, BUFFER)) {
-              // ecriture sur disque
-              int count;
-              byte[] data = new byte[BUFFER];
-              while ((count = zipInputStream.read(data, 0, BUFFER)) != -1) {
-                bufferOutputStream.write(data, 0, count);
-              }
-              // vidage du tampon
-              bufferOutputStream.flush();
-            }
-            fileOutputStream.close();
-          }
-        }
-      }
-      bufferedInputStream.close();
-      fileInputStream.close();
-    }
-    catch (Exception e) {
-      Debug("Unzip: Archive Error");
-      Debug(e.getMessage());
-      return false;
-    }
-    Debug("Unzip: Archive OK");
-    return true;
   }
 
   /**
@@ -180,7 +62,7 @@ public class MyCellarFile {
       // creation d'un buffer d'ecriture
       var buff = new BufferedOutputStream(checksum);
       // creation d'un flux d'ecriture Zip
-      try(var out = new ZipOutputStream(buff)) {
+      try (var out = new ZipOutputStream(buff)) {
         // specification de la methode de compression
         out.setMethod(ZipOutputStream.DEFLATED);
         // specifier la qualite de la compression 0..9
@@ -229,11 +111,129 @@ public class MyCellarFile {
       buff.close();
       checksum.close();
       dest.close();
-    }
-    catch (Exception e) {
+    } catch (IOException e) {
       Debug("zipDir: Error while zipping");
       Program.showException(e, false);
     }
     Debug("zipDir OK");
+  }
+
+  public void unzip() throws UnableToOpenFileException {
+    if (!file.exists()) {
+      throw new UnableToOpenMyCellarFileException("File doesn't exist: " + file.getAbsolutePath());
+    }
+    try {
+      // Dezippage
+      final String workDir = Program.getWorkDir(false);
+      boolean unzipOK = unzipDir(workDir);
+      final String absolutePath = file.getAbsolutePath();
+      Debug("Unzipping " + absolutePath + " to " + workDir + (unzipOK ? " OK" : " KO"));
+      if (!unzipOK) {
+        valid = false;
+        throw new UnableToOpenFileException("Unzipping error for file: " + absolutePath);
+      }
+    } catch (UnableToOpenFileException e) {
+      Debug("ERROR: Unable to unzip file " + file.getAbsolutePath());
+      Program.showException(e, false);
+      valid = false;
+      throw new UnableToOpenFileException("Unzipping error: " + e.getMessage());
+    }
+    valid = true;
+  }
+
+  public boolean exists() {
+    return file.exists() && file.canWrite();
+  }
+
+  public boolean isFileSavable() {
+    return !file.getName().endsWith(Program.UNTITLED1_SINFO) && exists();
+  }
+
+  public boolean isValid() {
+    return valid;
+  }
+
+  public void save() {
+    saveAs(file);
+  }
+
+  public void saveAs(File newFile) {
+    saveCaveProperties();
+    zipDir(newFile);
+    file = newFile;
+  }
+
+  /**
+   * Save Properties for current cave
+   */
+  private void saveCaveProperties() {
+    MyCellarBottleContenance.save();
+    Program.saveProperties(caveConfig, Program.getConfigFilePath());
+  }
+
+  public File getFile() {
+    return file;
+  }
+
+  public MyLinkedHashMap getCaveConfig() {
+    return caveConfig;
+  }
+
+  /**
+   * unzipDir: Dezippe une archive dans un repertoire
+   *
+   * @param dest_dir String
+   * @return boolean
+   */
+  private boolean unzipDir(String dest_dir) {
+    try {
+      String fileName = file.getAbsolutePath();
+      Debug("Unzip: Archive " + fileName);
+      // ouverture fichier entree
+
+      var fileInputStream = new FileInputStream(file);
+      // ouverture fichier de buffer
+      var bufferedInputStream = new BufferedInputStream(fileInputStream);
+      // ouverture archive Zip d'entree
+      try (var zipInputStream = new ZipInputStream(bufferedInputStream)) {
+        // entree Zip
+        ZipEntry entry;
+        // parcours des entrees de l'archive
+        int BUFFER = 2048;
+        while ((entry = zipInputStream.getNextEntry()) != null) {
+          // affichage du nom de l'entree
+          // creation fichier
+          File f = new File(dest_dir);
+          boolean ok = true;
+          if (!f.exists()) {
+            ok = f.mkdir();
+          }
+          if (ok) {
+            var fileOutputStream = new FileOutputStream(dest_dir + File.separator + entry.getName());
+            Debug("Unzip: File " + dest_dir + File.separator + entry.getName());
+            // affectation buffer de sortie
+            try (var bufferOutputStream = new BufferedOutputStream(fileOutputStream, BUFFER)) {
+              // ecriture sur disque
+              int count;
+              byte[] data = new byte[BUFFER];
+              while ((count = zipInputStream.read(data, 0, BUFFER)) != -1) {
+                bufferOutputStream.write(data, 0, count);
+              }
+              // vidage du tampon
+              bufferOutputStream.flush();
+            }
+            fileOutputStream.close();
+          }
+        }
+      }
+      bufferedInputStream.close();
+      fileInputStream.close();
+    } catch (IOException e) {
+      Debug("Unzip: Archive Error");
+      Debug(e.getMessage());
+      return false;
+    }
+    Debug("Unzip: Archive OK");
+    return true;
   }
 }

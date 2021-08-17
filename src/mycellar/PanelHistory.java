@@ -24,7 +24,7 @@ public final class PanelHistory extends JPanel {
   private final MyCellarLabel label2 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew2");
 
   public PanelHistory() {
-    setLayout(new MigLayout("","[grow]","[]"));
+    setLayout(new MigLayout("", "[grow]", "[]"));
     model = new TableHistoryValues(false);
     table = new JTable(model);
     add(table, "grow, wrap");

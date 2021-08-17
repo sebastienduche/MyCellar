@@ -22,30 +22,31 @@ import static mycellar.Program.toCleanString;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 1.8
  * @since 30/12/20
  */
 public class Options extends JDialog {
-  private final MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
-  private final MyCellarLabel textControl3 = new MyCellarLabel();
+  static final long serialVersionUID = 190305;
   private static final int LARGEUR = 420;
   private static final int HAUTEUR = 230;
+  private final MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
+  private final MyCellarLabel textControl3 = new MyCellarLabel();
   private final JTextField value = new JTextField();
   private final String cle;
   private final boolean property;
-  static final long serialVersionUID = 190305;
 
   /**
    * Options: Constructeur pour la fenêtre d'option
    *
-   * @param title String: Titre de la fenêtre.
-   * @param message String: Message de la fenêtre.
-   * @param propriete String: Propriété à renseigner.
+   * @param title         String: Titre de la fenêtre.
+   * @param message       String: Message de la fenêtre.
+   * @param propriete     String: Propriété à renseigner.
    * @param default_value String: Valeur par défaut.
-   * @param key String: Clé de la propiété.
-   * @param textError String: Texte de l'erreur.
-   * @param isAProperty boolean: true si c'est une propiété.
+   * @param key           String: Clé de la propiété.
+   * @param textError     String: Texte de l'erreur.
+   * @param isAProperty   boolean: true si c'est une propiété.
    */
   public Options(String title, String message, String propriete, String default_value, String key, String textError, boolean isAProperty) {
 
@@ -55,8 +56,7 @@ public class Options extends JDialog {
     textControl3.setText(textError);
     try {
       jbInit(title, message, propriete, default_value);
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       Program.showException(e);
     }
   }
@@ -64,9 +64,9 @@ public class Options extends JDialog {
   /**
    * jbInit: Fonction d'initialisation.
    *
-   * @param title String: Titre de la fenêtre.
-   * @param message String: Message de la fenêtre.
-   * @param propriete String: Propriété à renseigner.
+   * @param title         String: Titre de la fenêtre.
+   * @param message       String: Message de la fenêtre.
+   * @param propriete     String: Propriété à renseigner.
    * @param default_value String: Valeur par défaut.
    * @throws Exception
    */
@@ -94,7 +94,7 @@ public class Options extends JDialog {
 
     setSize(LARGEUR, HAUTEUR);
     setLocationRelativeTo(Start.getInstance());
-    setLayout(new MigLayout("","grow",""));
+    setLayout(new MigLayout("", "grow", ""));
     getContentPane().add(textControl1, "grow, wrap");
     getContentPane().add(definition, "gaptop 15px, grow, wrap");
     getContentPane().add(textControl3, "grow, wrap");

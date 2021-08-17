@@ -10,8 +10,8 @@ package mycellar.core.datas.history;
 
 import mycellar.Bouteille;
 import mycellar.Music;
-import mycellar.general.XmlUtils;
 import mycellar.Program;
+import mycellar.general.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,10 +41,11 @@ import java.util.List;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 1.4
  * @since 16/04/21
-
+ *
  * <p>Java class for anonymous complex type.
  *
  * <p>The following schema fragment specifies the expected content contained within this class.
@@ -60,8 +61,6 @@ import java.util.List;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -72,47 +71,6 @@ public class HistoryList {
 
   @XmlElement(name = "History", required = true)
   private List<History> history;
-
-  /**
-   * Gets the value of the history property.
-   *
-   * <p>
-   * This accessor method returns a reference to the live list,
-   * not a snapshot. Therefore any modification you make to the
-   * returned list will be present inside the JAXB object.
-   * This is why there is not a <CODE>set</CODE> method for the history property.
-   *
-   * <p>
-   * For example, to add a new item, do as follows:
-   * <pre>
-   *    getHistory().add(newItem);
-   * </pre>
-   *
-   *
-   * <p>
-   * Objects of the following type(s) are allowed in the list
-   * {@link History }
-   *
-   *
-   */
-  public List<History> getHistory() {
-    if (history == null) {
-      history = new ArrayList<>();
-    }
-    return history;
-  }
-
-  public void add(History historyObj) {
-    getHistory().add(historyObj);
-  }
-
-  public void remove(History historyObj) {
-    getHistory().remove(historyObj);
-  }
-
-  public void clear() {
-    getHistory().clear();
-  }
 
   public static boolean loadXML(File f) {
     Debug("Loading XML File " + f.getAbsolutePath());
@@ -160,7 +118,7 @@ public class HistoryList {
         String date = dateElem.item(0).getTextContent();
         history.setDate(date);
         final NodeList typeElem = historyElem.getElementsByTagName("type");
-        for (int j=0; j<typeElem.getLength(); j++) {
+        for (int j = 0; j < typeElem.getLength(); j++) {
           final Node typeNode = typeElem.item(j);
           if (typeNode.getParentNode().isSameNode(node)) {
             history.setType(Integer.parseInt(typeNode.getTextContent()));
@@ -186,7 +144,7 @@ public class HistoryList {
   private static void unMarshalXML(File f) throws JAXBException, FileNotFoundException {
     JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
     Unmarshaller unmarshaller = jc.createUnmarshaller();
-    HistoryList historyList = (HistoryList)unmarshaller.unmarshal(new FileInputStream(f));
+    HistoryList historyList = (HistoryList) unmarshaller.unmarshal(new FileInputStream(f));
     Program.getStorage().getHistoryList().getHistory().clear();
     Program.getStorage().getHistoryList().getHistory().addAll(historyList.getHistory());
     Debug("Loading JAXB File Done");
@@ -203,5 +161,44 @@ public class HistoryList {
    */
   private static void Debug(String sText) {
     Program.Debug("HistoryList: " + sText);
+  }
+
+  /**
+   * Gets the value of the history property.
+   *
+   * <p>
+   * This accessor method returns a reference to the live list,
+   * not a snapshot. Therefore any modification you make to the
+   * returned list will be present inside the JAXB object.
+   * This is why there is not a <CODE>set</CODE> method for the history property.
+   *
+   * <p>
+   * For example, to add a new item, do as follows:
+   * <pre>
+   *    getHistory().add(newItem);
+   * </pre>
+   *
+   *
+   * <p>
+   * Objects of the following type(s) are allowed in the list
+   * {@link History }
+   */
+  public List<History> getHistory() {
+    if (history == null) {
+      history = new ArrayList<>();
+    }
+    return history;
+  }
+
+  public void add(History historyObj) {
+    getHistory().add(historyObj);
+  }
+
+  public void remove(History historyObj) {
+    getHistory().remove(historyObj);
+  }
+
+  public void clear() {
+    getHistory().clear();
   }
 }

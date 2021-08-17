@@ -2,7 +2,6 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.MyCellarControl;
-import mycellar.general.XmlUtils;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IPlace;
@@ -10,6 +9,7 @@ import mycellar.core.JModifyComboBox;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
+import mycellar.general.XmlUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -36,23 +36,23 @@ import java.util.Objects;
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
+  private static final ComboItem NONE = new ComboItem(-1, "");
+  private final JModifyComboBox<Rangement> place = new JModifyComboBox<>();
+  private final JModifyComboBox<ComboItem> numPlace = new JModifyComboBox<>();
+  private final JModifyComboBox<ComboItem> line = new JModifyComboBox<>();
+  private final JModifyComboBox<ComboItem> column = new JModifyComboBox<>();
+  private final MyCellarLabel labelExist = new MyCellarLabel();
+  private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "138");
   private final MyCellarLabel labelNumPlace = new MyCellarLabel(LabelType.INFO, "082");
   private final MyCellarLabel labelLine = new MyCellarLabel(LabelType.INFO, "028");
   private final MyCellarLabel labelColumn = new MyCellarLabel(LabelType.INFO, "083");
-  protected final JModifyComboBox<Rangement> place = new JModifyComboBox<>();
-  protected final JModifyComboBox<ComboItem> numPlace = new JModifyComboBox<>();
-  protected final JModifyComboBox<ComboItem> line = new JModifyComboBox<>();
-  protected final JModifyComboBox<ComboItem> column = new JModifyComboBox<>();
-  protected final MyCellarLabel labelExist = new MyCellarLabel();
   private final MyCellarLabel before1 = new MyCellarLabel(LabelType.INFO, "091"); // Pour la Modification
   private final MyCellarLabel before2 = new MyCellarLabel(); // Pour la Modification
   private final MyCellarLabel before3 = new MyCellarLabel(); // Pour la Modification
   private final MyCellarLabel before4 = new MyCellarLabel(); // Pour la Modification
   private final MyCellarLabel before5 = new MyCellarLabel(); // Pour la Modification
-  protected MyCellarButton chooseCell;
-  protected final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "138");
+  private final MyCellarButton chooseCell;
   private boolean listenersEnabled = true;
-  private static final ComboItem NONE = new ComboItem(-1, "");
 
   public PanelPlace() {
     this(null, false, true);
@@ -63,7 +63,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     preview.setMnemonic(previewChar);
     preview.addActionListener(this::preview_actionPerformed);
     chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
-    setLayout(new MigLayout("","[]30px[]30px[]30px[]30px[grow]30px[]",""));
+    setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));
     setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
     add(new MyCellarLabel(LabelType.INFO, "208"));
     add(labelNumPlace);
@@ -99,18 +99,22 @@ public final class PanelPlace extends JPanel implements IPlace {
     managePlaceCombos();
   }
 
+  private static void Debug(String sText) {
+    Program.Debug("PanelPlace: " + sText);
+  }
+
   public Place getSelectedPlace() {
     final Rangement rangement = (Rangement) place.getSelectedItem();
     Objects.requireNonNull(rangement);
 
     return new Place.PlaceBuilder(rangement)
-        .withNumPlace(numPlace.getItemCount() > 0 ? ((ComboItem)Objects.requireNonNull(numPlace.getSelectedItem())).getValue() : -1)
+        .withNumPlace(numPlace.getItemCount() > 0 ? ((ComboItem) Objects.requireNonNull(numPlace.getSelectedItem())).getValue() : -1)
         .withLine(line.getSelectedIndex())
         .withColumn(column.getSelectedIndex())
         .build();
   }
 
-  protected void initPlaceCombo() {
+  private void initPlaceCombo() {
     place.addItem(Program.EMPTY_PLACE);
     Program.getCave().forEach(place::addItem);
     chooseCell.setEnabled(Program.hasComplexPlace());
@@ -200,7 +204,7 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   public void enableAll(boolean enable) {
     place.setEnabled(enable && (place.getItemCount() > 2 || place.getSelectedIndex() != 1));
-    numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((Rangement)place.getSelectedItem()).isCaisse()));
+    numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((Rangement) place.getSelectedItem()).isCaisse()));
     line.setEnabled(enable && numPlace.getSelectedIndex() > 0);
     column.setEnabled(enable && line.getSelectedIndex() > 0);
     if (chooseCell != null) {
@@ -273,14 +277,14 @@ public final class PanelPlace extends JPanel implements IPlace {
     setListenersEnabled(true);
   }
 
-  protected void setListeners() {
+  private void setListeners() {
     place.addItemListener(this::lieu_itemStateChanged);
     numPlace.addItemListener(this::num_lieu_itemStateChanged);
     line.addItemListener(this::line_itemStateChanged);
     column.addItemListener(this::column_itemStateChanged);
   }
 
-  protected boolean isListenersDisabled() {
+  private boolean isListenersDisabled() {
     return !listenersEnabled;
   }
 
@@ -296,7 +300,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     Debug("Previewing... End");
   }
 
-  protected void lieu_itemStateChanged(ItemEvent e) {
+  private void lieu_itemStateChanged(ItemEvent e) {
     if (isListenersDisabled()) {
       return;
     }
@@ -314,7 +318,7 @@ public final class PanelPlace extends JPanel implements IPlace {
       numPlace.setEnabled(false);
       line.setEnabled(false);
       column.setEnabled(false);
-    }	else {
+    } else {
       numPlace.setEnabled(true);
       caisse = rangement.isCaisse();
     }
@@ -333,7 +337,7 @@ public final class PanelPlace extends JPanel implements IPlace {
       if (rangement.getNbEmplacements() == 1) {
         numPlace.setSelectedIndex(1);
       }
-    }	else {
+    } else {
       // Need the last place number for complex places
       numPlace.addItem(new ComboItem(rangement.getLastNumEmplacement()));
       labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu");
@@ -356,7 +360,7 @@ public final class PanelPlace extends JPanel implements IPlace {
       if (num_select == 0) {
         line.setEnabled(false);
         column.setEnabled(false);
-      }	else {
+      } else {
         line.setEnabled(true);
         Rangement rangement = place.getItemAt(lieu_select);
         if (!rangement.isCaisse()) {
@@ -374,7 +378,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     });
   }
 
-  protected void line_itemStateChanged(ItemEvent e) {
+  private void line_itemStateChanged(ItemEvent e) {
     int num_select = line.getSelectedIndex();
     int emplacement = numPlace.getSelectedIndex();
     int lieu_select = place.getSelectedIndex();
@@ -410,10 +414,6 @@ public final class PanelPlace extends JPanel implements IPlace {
           .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(myCellarObject.getNom()))));
       Debug("Column_itemStateChanging... End");
     });
-  }
-
-  protected static void Debug(String sText) {
-    Program.Debug("PanelPlace: " + sText);
   }
 
   public void setModifyActive(boolean enable) {
@@ -508,8 +508,12 @@ public final class PanelPlace extends JPanel implements IPlace {
 
     @Override
     public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+        return true;
+      }
+      if (o == null || !Objects.equals(getClass(), o.getClass())) {
+        return false;
+      }
       ComboItem comboItem = (ComboItem) o;
       return value == comboItem.value;
     }

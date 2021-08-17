@@ -5,6 +5,7 @@ package mycellar.requester.ui;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2019</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.1
  * @since 08/03/19

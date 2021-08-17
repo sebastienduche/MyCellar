@@ -10,6 +10,7 @@ import java.awt.Component;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.5
  * @since 27/05/21
@@ -26,7 +27,7 @@ public class CheckboxCellRenderer extends JCheckBox implements TableCellRenderer
       setForeground(table.getForeground());
       setBackground(table.getBackground());
     }
-    setSelected((Boolean)value);
+    setSelected((Boolean) value);
     return this;
   }
 }

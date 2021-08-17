@@ -2,13 +2,13 @@ package mycellar.general;
 
 import mycellar.Bouteille;
 import mycellar.Erreur;
-import mycellar.core.JCompletionComboBox;
 import mycellar.MyCellarControl;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellarObject;
+import mycellar.core.JCompletionComboBox;
 import mycellar.core.JModifyComboBox;
 import mycellar.core.JModifyTextField;
 import mycellar.core.LabelProperty;
@@ -36,19 +36,20 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.2
  * @since 23/04/21
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
-  protected final MyCellarButton manageContenance = new MyCellarButton(LabelType.INFO, "400");
-  protected JCompletionComboBox<String> name;
-  protected final JModifyTextField year = new JModifyTextField();
-  protected final JModifyComboBox<String> type = new JModifyComboBox<>();
-  protected final MyCellarCheckBox noYear = new MyCellarCheckBox(LabelType.INFO, "399");
-  protected final MyCellarCheckBox yearAuto = new MyCellarCheckBox("");
+  private final MyCellarButton manageContenance = new MyCellarButton(LabelType.INFO, "400");
+  private final JModifyTextField year = new JModifyTextField();
+  private final JModifyComboBox<String> type = new JModifyComboBox<>();
+  private final MyCellarCheckBox noYear = new MyCellarCheckBox(LabelType.INFO, "399");
+  private final MyCellarCheckBox yearAuto = new MyCellarCheckBox("");
   private final int siecle = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
+  private final JCompletionComboBox<String> name;
   private IMyCellarObject myCellarObject;
   private boolean multi;
 
@@ -74,6 +75,10 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     if (Program.isWineType()) {
       add(manageContenance);
     }
+  }
+
+  private static void Debug(String s) {
+    Program.Debug("PanelGeneral: " + s);
   }
 
   public String getObjectName() {
@@ -102,7 +107,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     }
   }
 
-  protected void annee_auto_actionPerformed(ActionEvent e) {
+  private void annee_auto_actionPerformed(ActionEvent e) {
     Debug("Annee_auto_actionPerformed...");
     if (!yearAuto.isSelected()) {
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
@@ -168,7 +173,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     return annee;
   }
 
-  protected final void setYearAuto() {
+  private void setYearAuto() {
     yearAuto.setText(MessageFormat.format(Program.getLabel("Infos117"), ((siecle + 1) * 100))); //"Annee 00 -> 2000");
     yearAuto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
   }
@@ -192,10 +197,6 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   public void clearValues() {
     name.setSelectedIndex(0);
     year.setText("");
-  }
-
-  protected static void Debug(String s) {
-    Program.Debug("PanelGeneral: " + s);
   }
 
   public void setModifyActive(boolean b) {
@@ -222,14 +223,14 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       if (noYear.isSelected()) {
         year.setText(Bouteille.NON_VINTAGE);
         year.setEditable(false);
-      }	else {
+      } else {
         year.setText("");
         year.setEditable(true);
       }
     });
   }
 
-  protected void manageContenance_actionPerformed(ActionEvent e) {
+  private void manageContenance_actionPerformed(ActionEvent e) {
     Debug("Manage Capacity...");
     new ManageCapacityAction().actionPerformed(null);
     Debug("Manage Capacity... End");
@@ -306,7 +307,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       String erreur_txt1;
       if (!modify) {
         erreur_txt1 = Program.getError("Error144", SINGLE.withCapital());
-      }	else {
+      } else {
         erreur_txt1 = Program.getError("Error148", name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
       }
       Debug("Message: Confirm to Quit?");

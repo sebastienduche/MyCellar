@@ -21,6 +21,7 @@ import java.util.Map;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.6
  * @since 17/12/20
@@ -38,7 +39,7 @@ public final class RangementCreationDialog extends JDialog {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setModal(true);
     setTitle(Program.getLabel("Infos267"));
-    setLayout(new MigLayout("","grow",""));
+    setLayout(new MigLayout("", "grow", ""));
     setResizable(false);
     model = new RangementToCreateTableModel(map);
     JTable table = new JTable(model);
@@ -62,6 +63,15 @@ public final class RangementCreationDialog extends JDialog {
 
   }
 
+  /**
+   * Debug
+   *
+   * @param sText String
+   */
+  public static void Debug(String sText) {
+    Program.Debug("RangementCreationDialog: " + sText);
+  }
+
   private void valider_actionPerformed(ActionEvent actionEvent) {
     map.keySet().forEach(name -> {
       final LinkedList<Part> parts = map.get(name);
@@ -83,14 +93,5 @@ public final class RangementCreationDialog extends JDialog {
     });
     end.setText(MessageFormat.format(Program.getLabel("RangementToCreateTableModel.end"), map.size()));
     model.clear();
-  }
-
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
-  public static void Debug(String sText) {
-    Program.Debug("RangementCreationDialog: " + sText);
   }
 }

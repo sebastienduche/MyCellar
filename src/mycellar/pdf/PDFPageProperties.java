@@ -7,6 +7,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.2
  * @since 08/06/18
@@ -14,77 +15,77 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 
 public class PDFPageProperties {
 
-	private float marginTop;
-	private float marginBottom;
-	private float marginLeft;
-	private float marginRight;
-	private PDFont font;
-	private int fontSize;
-	private float startTop;
-	
-	public PDFPageProperties(float marginTop, float marginBottom, float marginLeft, float marginRight, PDFont font, int fontSize) {
-		this.marginTop = marginTop;
-		this.marginBottom = marginBottom;
-		this.marginLeft = marginLeft;
-		this.marginRight = marginRight;
-		this.font = font;
-		this.fontSize = fontSize;
-		startTop = marginTop;
-	}
+  private float marginTop;
+  private float marginBottom;
+  private float marginLeft;
+  private float marginRight;
+  private PDFont font;
+  private int fontSize;
+  private float startTop;
 
-	float getMarginTop() {
-		return marginTop;
-	}
+  public PDFPageProperties(float marginTop, float marginBottom, float marginLeft, float marginRight, PDFont font, int fontSize) {
+    this.marginTop = marginTop;
+    this.marginBottom = marginBottom;
+    this.marginLeft = marginLeft;
+    this.marginRight = marginRight;
+    this.font = font;
+    this.fontSize = fontSize;
+    startTop = marginTop;
+  }
 
-	public void setMarginTop(float marginTop) {
-		this.marginTop = marginTop;
-	}
+  float getMarginTop() {
+    return marginTop;
+  }
 
-	float getMarginBottom() {
-		return marginBottom;
-	}
+  public void setMarginTop(float marginTop) {
+    this.marginTop = marginTop;
+  }
 
-	public void setMarginBottom(float marginBottom) {
-		this.marginBottom = marginBottom;
-	}
+  float getMarginBottom() {
+    return marginBottom;
+  }
 
-	float getMarginLeft() {
-		return marginLeft;
-	}
+  public void setMarginBottom(float marginBottom) {
+    this.marginBottom = marginBottom;
+  }
 
-	public void setMarginLeft(float marginLeft) {
-		this.marginLeft = marginLeft;
-	}
+  float getMarginLeft() {
+    return marginLeft;
+  }
 
-	float getMarginRight() {
-		return marginRight;
-	}
+  public void setMarginLeft(float marginLeft) {
+    this.marginLeft = marginLeft;
+  }
 
-	public void setMarginRight(float marginRight) {
-		this.marginRight = marginRight;
-	}
+  float getMarginRight() {
+    return marginRight;
+  }
 
-	public PDFont getFont() {
-		return font;
-	}
+  public void setMarginRight(float marginRight) {
+    this.marginRight = marginRight;
+  }
 
-	public void setFont(PDFont font) {
-		this.font = font;
-	}
+  public PDFont getFont() {
+    return font;
+  }
 
-	int getFontSize() {
-		return fontSize;
-	}
+  public void setFont(PDFont font) {
+    this.font = font;
+  }
 
-	public void setFontSize(int fontSize) {
-		this.fontSize = fontSize;
-	}
+  int getFontSize() {
+    return fontSize;
+  }
 
-	float getStartTop() {
-		return startTop;
-	}
+  public void setFontSize(int fontSize) {
+    this.fontSize = fontSize;
+  }
 
-	public void setStartTop(float startTop) {
-		this.startTop = startTop;
-	}
+  float getStartTop() {
+    return startTop;
+  }
+
+  public void setStartTop(float startTop) {
+    this.startTop = startTop;
+  }
 }

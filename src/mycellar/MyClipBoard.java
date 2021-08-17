@@ -13,6 +13,7 @@ import java.io.IOException;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.1
  * @since 17/04/05
@@ -22,7 +23,8 @@ public class MyClipBoard {
   /**
    * MyClipBoard: Constructeur par defaut.
    */
-  public MyClipBoard() {}
+  public MyClipBoard() {
+  }
 
   /**
    * copier: Copie un texte.
@@ -48,7 +50,8 @@ public class MyClipBoard {
       return (String) content.getTransferData(DataFlavor.stringFlavor);
     } catch (UnsupportedFlavorException | IOException e) {
       Program.Debug("MyClipBoard: ERROR: " + e.getMessage());
-    } catch (Throwable ignored) {}
+    } catch (Throwable ignored) {
+    }
     return "";
   }
 

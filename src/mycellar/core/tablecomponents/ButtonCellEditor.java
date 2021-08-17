@@ -13,6 +13,7 @@ import java.util.EventObject;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.4
  * @since 27/05/21

@@ -61,143 +61,143 @@ import java.awt.event.MouseListener;
  */
 public final class JButtonTabComponent extends JPanel {
 
-	private static final long serialVersionUID = -3455621665205397725L;
+  private static final long serialVersionUID = -3455621665205397725L;
+  private static final MouseListener MOUSE_LISTENER = new MouseAdapter() {
+    @Override
+    public void mouseEntered(MouseEvent e) {
+      Component component = e.getComponent();
+      if (component instanceof AbstractButton) {
+        AbstractButton button = (AbstractButton) component;
+        button.setBorderPainted(true);
+      }
+    }
 
-	private final JTabbedPane pane;
+    @Override
+    public void mouseExited(MouseEvent e) {
+      Component component = e.getComponent();
+      if (component instanceof AbstractButton) {
+        AbstractButton button = (AbstractButton) component;
+        button.setBorderPainted(false);
+      }
+    }
+  };
+  private final JTabbedPane pane;
 
-	public JButtonTabComponent(final JTabbedPane pane) {
-		// unset default FlowLayout' gaps
-		super(new FlowLayout(FlowLayout.LEFT, 0, 0));
-		if (pane == null) {
-			throw new NullPointerException("TabbedPane is null"); //$NON-NLS-1$
-		}
-		this.pane = pane;
-		setOpaque(false);
+  public JButtonTabComponent(final JTabbedPane pane) {
+    // unset default FlowLayout' gaps
+    super(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    if (pane == null) {
+      throw new NullPointerException("TabbedPane is null"); //$NON-NLS-1$
+    }
+    this.pane = pane;
+    setOpaque(false);
 
-		// make JLabel read titles from JTabbedPane
-		JLabel label = new JLabel() {
-			private static final long serialVersionUID = 262648555562361924L;
-			@Override
-			public String getText() {
-				int i = pane.indexOfTabComponent(JButtonTabComponent.this);
-				if (i != -1) {
-					return pane.getTitleAt(i);
-				}
-				return null;
-			}
-			@Override
-			public Icon getIcon() {
-				int i = pane.indexOfTabComponent(JButtonTabComponent.this);
-				if (i != -1) {
-					return pane.getIconAt(i);
-				}
-				return null;
-			}
-		};
+    // make JLabel read titles from JTabbedPane
+    JLabel label = new JLabel() {
+      private static final long serialVersionUID = 262648555562361924L;
 
-		add(label);
-		// add more space between the label and the button
-		label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-		// tab button
-		JButton button = new TabButton();
-		add(button);
-		// add more space to the top of the component
-		setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
-	}
+      @Override
+      public String getText() {
+        int i = pane.indexOfTabComponent(JButtonTabComponent.this);
+        if (i != -1) {
+          return pane.getTitleAt(i);
+        }
+        return null;
+      }
 
-	private final class TabButton extends JButton implements ActionListener {
+      @Override
+      public Icon getIcon() {
+        int i = pane.indexOfTabComponent(JButtonTabComponent.this);
+        if (i != -1) {
+          return pane.getIconAt(i);
+        }
+        return null;
+      }
+    };
 
-		private static final long serialVersionUID = 76516458718107537L;
+    add(label);
+    // add more space between the label and the button
+    label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+    // tab button
+    JButton button = new TabButton();
+    add(button);
+    // add more space to the top of the component
+    setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+  }
 
-		private TabButton() {
-			int size = 17;
-			setPreferredSize(new Dimension(size, size));
-			setToolTipText(Program.getLabel("Infos019")); //$NON-NLS-1$
-			// Make the button looks the same for all Laf's
-			setUI(new BasicButtonUI());
-			// Make it transparent
-			setContentAreaFilled(false);
-			// No need to be focusable
-			setFocusable(false);
-			setBorder(BorderFactory.createEtchedBorder());
-			setBorderPainted(false);
-			// Making nice rollover effect
-			// we use the same listener for all buttons
-			addMouseListener(MOUSE_LISTENER);
-			setRolloverEnabled(true);
-			// Close the proper tab by clicking the button
-			addActionListener(this);
-		}
+  private final class TabButton extends JButton implements ActionListener {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			int i = pane.indexOfTabComponent(JButtonTabComponent.this);
-			if (i != -1) {
-				Component component = pane.getComponentAt(i);
+    private static final long serialVersionUID = 76516458718107537L;
 
-				if (component instanceof ITabListener) {
-					ITabListener listener = (ITabListener) component;
+    private TabButton() {
+      int size = 17;
+      setPreferredSize(new Dimension(size, size));
+      setToolTipText(Program.getLabel("Infos019")); //$NON-NLS-1$
+      // Make the button looks the same for all Laf's
+      setUI(new BasicButtonUI());
+      // Make it transparent
+      setContentAreaFilled(false);
+      // No need to be focusable
+      setFocusable(false);
+      setBorder(BorderFactory.createEtchedBorder());
+      setBorderPainted(false);
+      // Making nice rollover effect
+      // we use the same listener for all buttons
+      addMouseListener(MOUSE_LISTENER);
+      setRolloverEnabled(true);
+      // Close the proper tab by clicking the button
+      addActionListener(this);
+    }
 
-					// Notifier le composant du JTabbedPane que le tab qui le
-					// contient va se fermer
-					if (!listener.tabWillClose(new TabEvent(pane))) {
-						// Le listener a mis son v�to a la fermeture, ne rien
-						// faire
-						Program.Debug("Not Closing Tab");
-						return;
-					}
-					pane.remove(i);
-					listener.tabClosed();
-				}
-				else
-					pane.remove(i);
-			}
-		}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      int i = pane.indexOfTabComponent(JButtonTabComponent.this);
+      if (i != -1) {
+        Component component = pane.getComponentAt(i);
 
-		// we don't want to update UI for this button
-		@Override
-		public void updateUI() {
-		}
+        if (component instanceof ITabListener) {
+          ITabListener listener = (ITabListener) component;
 
-		// paint the cross
-		@Override
-		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Graphics2D g2 = (Graphics2D) g.create();
-			// shift the image for pressed buttons
-			if (getModel().isPressed()) {
-				g2.translate(1, 1);
-			}
-			g2.setStroke(new BasicStroke(2));
-			g2.setColor(Color.BLACK);
-			if (getModel().isRollover()) {
-				g2.setColor(Color.MAGENTA);
-			}
-			int delta = 6;
-			g2.drawLine(delta, delta, getWidth() - delta - 1, getHeight()
-					- delta - 1);
-			g2.drawLine(getWidth() - delta - 1, delta, delta, getHeight()
-					- delta - 1);
-			g2.dispose();
-		}
-	}
+          // Notifier le composant du JTabbedPane que le tab qui le
+          // contient va se fermer
+          if (!listener.tabWillClose(new TabEvent(pane))) {
+            // Le listener a mis son v�to a la fermeture, ne rien
+            // faire
+            Program.Debug("Not Closing Tab");
+            return;
+          }
+          pane.remove(i);
+          listener.tabClosed();
+        } else
+          pane.remove(i);
+      }
+    }
 
-	private static final MouseListener MOUSE_LISTENER = new MouseAdapter() {
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			Component component = e.getComponent();
-			if (component instanceof AbstractButton) {
-				AbstractButton button = (AbstractButton) component;
-				button.setBorderPainted(true);
-			}
-		}
-		@Override
-		public void mouseExited(MouseEvent e) {
-			Component component = e.getComponent();
-			if (component instanceof AbstractButton) {
-				AbstractButton button = (AbstractButton) component;
-				button.setBorderPainted(false);
-			}
-		}
-	};
+    // we don't want to update UI for this button
+    @Override
+    public void updateUI() {
+    }
+
+    // paint the cross
+    @Override
+    protected void paintComponent(Graphics g) {
+      super.paintComponent(g);
+      Graphics2D g2 = (Graphics2D) g.create();
+      // shift the image for pressed buttons
+      if (getModel().isPressed()) {
+        g2.translate(1, 1);
+      }
+      g2.setStroke(new BasicStroke(2));
+      g2.setColor(Color.BLACK);
+      if (getModel().isRollover()) {
+        g2.setColor(Color.MAGENTA);
+      }
+      int delta = 6;
+      g2.drawLine(delta, delta, getWidth() - delta - 1, getHeight()
+          - delta - 1);
+      g2.drawLine(getWidth() - delta - 1, delta, delta, getHeight()
+          - delta - 1);
+      g2.dispose();
+    }
+  }
 }

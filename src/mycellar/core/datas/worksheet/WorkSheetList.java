@@ -8,8 +8,8 @@
 
 package mycellar.core.datas.worksheet;
 
-import mycellar.general.XmlUtils;
 import mycellar.Program;
+import mycellar.general.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,11 +39,10 @@ import java.util.List;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.3
  * @since 28/01/21
-
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -54,26 +53,6 @@ public class WorkSheetList {
 
   @XmlElement(name = "worksheet", required = true)
   private List<WorkSheetData> worksheet;
-
-
-  public List<WorkSheetData> getWorsheet() {
-    if (worksheet == null) {
-      worksheet = new ArrayList<>();
-    }
-    return worksheet;
-  }
-
-  public void add(WorkSheetData workSheetData) {
-    getWorsheet().add(workSheetData);
-  }
-
-  public void remove(WorkSheetData workSheetData) {
-    getWorsheet().remove(workSheetData);
-  }
-
-  public void clear() {
-    getWorsheet().clear();
-  }
 
   public static boolean loadXML(File f) {
     Debug("Loading XML File " + f.getAbsolutePath());
@@ -129,7 +108,7 @@ public class WorkSheetList {
     JAXBContext jc = JAXBContext.newInstance(WorkSheetFactory.class);
     Unmarshaller u = jc.createUnmarshaller();
     WorkSheetList lb =
-        (WorkSheetList)u.unmarshal(new FileInputStream(f));
+        (WorkSheetList) u.unmarshal(new FileInputStream(f));
     Program.getStorage().getWorksheetList().getWorsheet().addAll(lb.getWorsheet());
     Debug("Loading JAXB File Done");
   }
@@ -145,5 +124,24 @@ public class WorkSheetList {
    */
   private static void Debug(String sText) {
     Program.Debug("WorksheetList: " + sText);
+  }
+
+  public List<WorkSheetData> getWorsheet() {
+    if (worksheet == null) {
+      worksheet = new ArrayList<>();
+    }
+    return worksheet;
+  }
+
+  public void add(WorkSheetData workSheetData) {
+    getWorsheet().add(workSheetData);
+  }
+
+  public void remove(WorkSheetData workSheetData) {
+    getWorsheet().remove(workSheetData);
+  }
+
+  public void clear() {
+    getWorsheet().clear();
   }
 }

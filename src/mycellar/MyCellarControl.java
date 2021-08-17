@@ -13,6 +13,7 @@ import java.util.List;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 2.1
  * @since 07/05/21
@@ -160,7 +161,7 @@ public final class MyCellarControl {
   /**
    * controlAndUpdateExtension Controle si le nom renseigne a la bonne extension et retourne le nom modifie
    *
-   * @param name String
+   * @param name   String
    * @param filtre Filtre
    * @return String
    */
@@ -172,7 +173,7 @@ public final class MyCellarControl {
   /**
    * controlAndUpdateExtension Controle si le nom renseigne a la bonne extension et retourne le nom modifie
    *
-   * @param name String
+   * @param name      String
    * @param extension String
    * @return String
    */
@@ -197,7 +198,7 @@ public final class MyCellarControl {
   /**
    * controlExtension Controle si le nom renseigne a la bonne extension
    *
-   * @param name String
+   * @param name       String
    * @param extensions List
    * @return String
    */

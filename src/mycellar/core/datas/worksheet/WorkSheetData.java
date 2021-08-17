@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.2
  * @since 09/04/21

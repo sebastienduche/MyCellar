@@ -22,6 +22,7 @@ import java.io.Serializable;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 1.6
  * @since 20/11/20
@@ -50,208 +51,213 @@ import java.io.Serializable;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-		"country",
-		"name",
-		"aoc",
-		"igp",
-		"aop",
-		"id",
+    "country",
+    "name",
+    "aoc",
+    "igp",
+    "aop",
+    "id",
 })
 @XmlRootElement(name = "vignoble")
 public class VignobleJaxb implements Serializable {
 
-	private static final long serialVersionUID = -4668411717652334826L;
+  private static final long serialVersionUID = -4668411717652334826L;
 
-	@XmlElement(required = true)
-	public String country;
-	@XmlElement()
-	private String name;
-	@XmlElement(name = "AOC")
-	public String aoc;
-	@XmlElement(name = "IGP")
-	public String igp;
-	@XmlElement(name = "AOP")
-	private String aop;
+  @XmlElement(required = true)
+  public String country;
+  @XmlElement(name = "AOC")
+  public String aoc;
+  @XmlElement(name = "IGP")
+  public String igp;
+  @XmlElement()
+  private String name;
+  @XmlElement(name = "AOP")
+  private String aop;
 
-	@XmlElement()
-	private long id;
+  @XmlElement()
+  private long id;
 
-	public VignobleJaxb() {
-		id = IdGenerator.generateID();
-	}
+  public VignobleJaxb() {
+    id = IdGenerator.generateID();
+  }
 
-	public VignobleJaxb(String country, String name, String aoc, String igp) {
-		this.country = country;
-		this.name = name;
-		this.aoc = aoc;
-		this.igp = igp;
-		id = IdGenerator.generateID();
-	}
+  public VignobleJaxb(String country, String name, String aoc, String igp) {
+    this.country = country;
+    this.name = name;
+    this.aoc = aoc;
+    this.igp = igp;
+    id = IdGenerator.generateID();
+  }
 
-	public long getId() {
-		return id;
-	}
+  public static boolean isEmpty(VignobleJaxb vignobleJaxb) {
+    return vignobleJaxb == null ||
+        vignobleJaxb.getCountry() == null ||
+        vignobleJaxb.getCountry().isBlank() ||
+        vignobleJaxb.isAppellationEmpty();
+  }
 
-	public String getCountry() {
-		return country;
-	}
-	public void setCountry(String country) {
-		this.country = country;
-	}
+  public long getId() {
+    return id;
+  }
 
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getCountry() {
+    return country;
+  }
 
-	public String getAOC() {
-		return aoc;
-	}
-	public void setAOC(String aoc) {
-		this.aoc = aoc;
-	}
+  public void setCountry(String country) {
+    this.country = country;
+  }
 
-	public String getIGP() {
-		return igp;
-	}
-	public void setIGP(String igp) {
-		this.igp = igp;
-	}
+  public String getName() {
+    return name;
+  }
 
-	@Deprecated
-	public String getAOP() {
-		return aop;
-	}
-	@Deprecated
-	public void setAOP(String aop) {
-		this.aop = aop;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public boolean isAppellationEmpty() {
-		return (aoc == null || aoc.isEmpty())
-				&& (aop == null || aop.isEmpty())
-				&& (igp == null || igp.isEmpty());
-	}
+  public String getAOC() {
+    return aoc;
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((aoc == null) ? 0 : aoc.hashCode());
-		result = prime * result + ((aop == null) ? 0 : aop.hashCode());
-		result = prime * result + ((country == null) ? 0 : country.hashCode());
-		result = prime * result + ((igp == null) ? 0 : igp.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
+  public void setAOC(String aoc) {
+    this.aoc = aoc;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!getClass().equals(obj.getClass())) {
-			return false;
-		}
-		VignobleJaxb other = (VignobleJaxb) obj;
-		if (aoc == null) {
-			if (other.aoc != null) {
-				return false;
-			}
-		} else if (!aoc.equals(other.aoc)) {
-			return false;
-		}
-		if (aop == null) {
-			if (other.aop != null) {
-				return false;
-			}
-		} else if (!aop.equals(other.aop)) {
-			return false;
-		}
-		if (country == null) {
-			if (other.country != null) {
-				return false;
-			}
-		} else if (!country.equals(other.country)) {
-			return false;
-		}
-		if (igp == null) {
-			if (other.igp != null) {
-				return false;
-			}
-		} else if (!igp.equals(other.igp)) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		return true;
-	}
+  public String getIGP() {
+    return igp;
+  }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("VignobleJaxb [country=");
-		if (country != null) {
-			CountryJaxb c = CountryListJaxb.findByIdOrLabel(country);
-			if (c != null) {
-				sb.append(c.getId());
-			} else {
-				sb.append(country);
-			}
-		}
-		sb.append(" name=");
-		sb.append(name);
-		sb.append(" aoc=");
-		sb.append(aoc);
-		sb.append(" igp=");
-		sb.append(igp).append("]");
-		return sb.toString();
-	}
+  public void setIGP(String igp) {
+    this.igp = igp;
+  }
 
-	public void setValues(AppelationJaxb ap) {
-		aoc = ap.getAOC();
-		igp = ap.getIGP();
-	}
+  @Deprecated
+  public String getAOP() {
+    return aop;
+  }
 
-	public String getSearchLabel() {
-		StringBuilder sb = new StringBuilder();
-		if (country != null) {
-			CountryJaxb c = CountryListJaxb.findByIdOrLabel(country);
-			if (c != null) {
-				sb.append(c.getLabel());
-			} else {
-				sb.append(country);
-			}
-		}
-		if (name != null && !name.isEmpty()) {
-			sb.append("-");
-			sb.append(name);
-		}
-		if (aoc != null && !aoc.isEmpty()) {
-			sb.append("-");
-			sb.append(aoc);
-		}
-		if (igp != null && !igp.isEmpty()) {
-			sb.append("-");
-			sb.append(igp);
-		}
-		return sb.toString();
-	}
+  @Deprecated
+  public void setAOP(String aop) {
+    this.aop = aop;
+  }
 
-	public static boolean isEmpty(VignobleJaxb vignobleJaxb) {
-		return vignobleJaxb == null ||
-				vignobleJaxb.getCountry() == null ||
-				vignobleJaxb.getCountry().isBlank() ||
-				vignobleJaxb.isAppellationEmpty();
-	}
+  public boolean isAppellationEmpty() {
+    return (aoc == null || aoc.isEmpty())
+        && (aop == null || aop.isEmpty())
+        && (igp == null || igp.isEmpty());
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((aoc == null) ? 0 : aoc.hashCode());
+    result = prime * result + ((aop == null) ? 0 : aop.hashCode());
+    result = prime * result + ((country == null) ? 0 : country.hashCode());
+    result = prime * result + ((igp == null) ? 0 : igp.hashCode());
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (!getClass().equals(obj.getClass())) {
+      return false;
+    }
+    VignobleJaxb other = (VignobleJaxb) obj;
+    if (aoc == null) {
+      if (other.aoc != null) {
+        return false;
+      }
+    } else if (!aoc.equals(other.aoc)) {
+      return false;
+    }
+    if (aop == null) {
+      if (other.aop != null) {
+        return false;
+      }
+    } else if (!aop.equals(other.aop)) {
+      return false;
+    }
+    if (country == null) {
+      if (other.country != null) {
+        return false;
+      }
+    } else if (!country.equals(other.country)) {
+      return false;
+    }
+    if (igp == null) {
+      if (other.igp != null) {
+        return false;
+      }
+    } else if (!igp.equals(other.igp)) {
+      return false;
+    }
+    if (name == null) {
+      if (other.name != null) {
+        return false;
+      }
+    } else if (!name.equals(other.name)) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("VignobleJaxb [country=");
+    if (country != null) {
+      CountryJaxb c = CountryListJaxb.findByIdOrLabel(country);
+      if (c != null) {
+        sb.append(c.getId());
+      } else {
+        sb.append(country);
+      }
+    }
+    sb.append(" name=");
+    sb.append(name);
+    sb.append(" aoc=");
+    sb.append(aoc);
+    sb.append(" igp=");
+    sb.append(igp).append("]");
+    return sb.toString();
+  }
+
+  public void setValues(AppelationJaxb ap) {
+    aoc = ap.getAOC();
+    igp = ap.getIGP();
+  }
+
+  public String getSearchLabel() {
+    StringBuilder sb = new StringBuilder();
+    if (country != null) {
+      CountryJaxb c = CountryListJaxb.findByIdOrLabel(country);
+      if (c != null) {
+        sb.append(c.getLabel());
+      } else {
+        sb.append(country);
+      }
+    }
+    if (name != null && !name.isEmpty()) {
+      sb.append("-");
+      sb.append(name);
+    }
+    if (aoc != null && !aoc.isEmpty()) {
+      sb.append("-");
+      sb.append(aoc);
+    }
+    if (igp != null && !igp.isEmpty()) {
+      sb.append("-");
+      sb.append(igp);
+    }
+    return sb.toString();
+  }
 }

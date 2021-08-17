@@ -20,26 +20,25 @@ import java.util.List;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 3.1
  * @since 15/05/21
  */
 
 class TableHistoryValues extends AbstractTableModel {
-  private static final long serialVersionUID = 2991755646049419440L;
   static final int SELECT = 0;
   static final int DATE = 1;
   static final int TYPE = 2;
-  private static final int LABEL = 3;
   static final int ACTION = 4;
-
+  private static final long serialVersionUID = 2991755646049419440L;
+  private static final int LABEL = 3;
+  private static final int MAX_ROWS = 10;
+  private final List<String> columnList = new LinkedList<>();
+  private final boolean firstcolumn;
   private List<History> fullList = new ArrayList<>();
   private List<History> displayList = new LinkedList<>();
-  private final List<String> columnList = new LinkedList<>();
   private Boolean[] booleanTab = null;
-  private final boolean firstcolumn;
-
-  private static final int MAX_ROWS = 10;
 
   TableHistoryValues(boolean firstcolumn) {
     this.firstcolumn = firstcolumn;
@@ -75,7 +74,7 @@ class TableHistoryValues extends AbstractTableModel {
   /**
    * getValueAt
    *
-   * @param row int
+   * @param row    int
    * @param column int
    * @return Object
    */
@@ -85,7 +84,7 @@ class TableHistoryValues extends AbstractTableModel {
     if (!firstcolumn) {
       column++;
     }
-    switch(column) {
+    switch (column) {
       case SELECT:
         return booleanTab[row];
       case ACTION:
@@ -93,8 +92,7 @@ class TableHistoryValues extends AbstractTableModel {
       case DATE:
         return h.getLocaleDate();
       case LABEL:
-      case TYPE:
-      {
+      case TYPE: {
         IMyCellarObject b;
         if (Program.isMusicType()) {
           b = h.getMusic();
@@ -104,7 +102,7 @@ class TableHistoryValues extends AbstractTableModel {
           b = null;
           Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
         }
-        if(b == null) {
+        if (b == null) {
           return "";
         }
         String emplacement;
@@ -202,7 +200,7 @@ class TableHistoryValues extends AbstractTableModel {
         }
         break;
       case SELECT:
-        booleanTab[row] = (Boolean)value;
+        booleanTab[row] = (Boolean) value;
         break;
     }
   }
@@ -248,8 +246,7 @@ class TableHistoryValues extends AbstractTableModel {
       }
       Arrays.fill(booleanTab, Boolean.FALSE);
       fireTableDataChanged();
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       Program.showException(e);
     }
   }
@@ -270,8 +267,7 @@ class TableHistoryValues extends AbstractTableModel {
       booleanTab = new Boolean[displayList.size()];
       Arrays.fill(booleanTab, Boolean.FALSE);
       fireTableDataChanged();
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       Program.showException(e);
     }
   }

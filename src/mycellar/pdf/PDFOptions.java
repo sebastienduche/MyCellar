@@ -28,11 +28,13 @@ import java.util.List;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 3.1
  * @since 16/04/21
  */
 public final class PDFOptions extends JDialog {
+  static final long serialVersionUID = 110805;
   private final MyCellarSpinner titleSize = new MyCellarSpinner(1, 99);
   private final MyCellarCheckBox boldCheck = new MyCellarCheckBox(LabelType.INFO, "257");
   private final MyCellarCheckBox borderCheck = new MyCellarCheckBox(LabelType.INFO, "264");
@@ -41,7 +43,6 @@ public final class PDFOptions extends JDialog {
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner textSize = new MyCellarSpinner(1, 99);
   private final int nb_colonnes;
-  static final long serialVersionUID = 110805;
 
   public PDFOptions() {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -56,11 +57,11 @@ public final class PDFOptions extends JDialog {
       }
     });
 
-    setLayout(new MigLayout("", "grow",""));
+    setLayout(new MigLayout("", "grow", ""));
 
     JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
-    jPanel1.setLayout(new MigLayout("","grow",""));
+    jPanel1.setLayout(new MigLayout("", "grow", ""));
     jPanel1.setFont(Program.FONT_PANEL);
     pdf_title.setText(Program.getCaveConfigString(MyCellarSettings.PDF_TITLE, ""));
 
@@ -89,7 +90,7 @@ public final class PDFOptions extends JDialog {
       col_size[i].setValue(Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i, 5));
     }
     JPanel jPanel2 = new JPanel();
-    jPanel2.setLayout(new MigLayout("", "[grow][grow][grow]",""));
+    jPanel2.setLayout(new MigLayout("", "[grow][grow][grow]", ""));
     jPanel2.setFont(Program.FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
     valider.addActionListener(this::valider_actionPerformed);

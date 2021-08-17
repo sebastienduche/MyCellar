@@ -19,76 +19,77 @@ import java.util.List;
  * <p>Description : Gestionnaire de placement</p>
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci�t� : Seb Informatique</p>
+ *
  * @author S�bastien Duch�
  * @version 0.9
  * @since 20/12/05
- *
- *  Derni�res corrections et am�liorations:
- *  v 0.9
- *  Ajout de l'option de positionnement automatique au centre des JLabel qui peuvent occuper une ligne enti�re et 
- *  qui ont les propri�t�s HorizontalAlignment == CENTER et redimensionnable. Cette option est active par d�faut
- *  et peux �tre modifi� avec enableAutoResizeCenteredColumn() et disableAutoResizeCenteredColumn(). Cette option 
- *  doit �tre positionn�e avant l'ajout des composants.
- *  v 0.8
- *  Correction sur le dimensionnement de la fen�tre lors de l'appel de setMinimumWidthForJLabelColumn(int).
- *  Si le JLabel poss�de un alignement CENTER, on n'adapte pas sa largeur afin qu'il reste tel quel.
- *  ajout de la variable space_bottom pour param�trer l'espace entre la derni�re ligne et la fin du composant.
- *  v 0.7
- *  D�veloppement des fonctions setMinimumWidthForJLabelColumn(int) et setMinimumWidthForAllJLabelColumn()
- *  permetant le redimensionnement automatique des JLabel � leur taille minimale pour l'affichage de leur texte.
- *  v 0.6
- *  Correction d'une erreur sur le calcul de taille de la fen�tre principal dans certains cas
- *  v 0.5
- *  Prise en compte des espacements entre colonnes pour le calcul optimal des largeurs de ces derni�res.
- *  Remplacement du +25 dans la variable size_width de UpdateLocation par +space_column
- *
- *  Description:
- *  Cette classe a �t� d�velopp� afin de simplifier le positionnement des composants. J'ai voulu associer
- *  la simplicit� du positionnement (x,y) et du dimensionnement des composants (comme utilis� avec le XYLayout
- *  de Borland ou le setLayout(null) ) avec la possibilit� d'avoir un redimensionnement horizontal automatique
- *  des composants lors de l'agrandissement/r�duction du panneau principal (comme dans le GridBagLayout ou
- *  le GridLayout).
- *
- *  Dans cette version de la classe, seule le redimensionnement horizontal des composants est disponible.
- *  Le positionnement des composants se r�alise comme si l'on mettait les composants dans un tableau (ligne i,
- *  colonne j) avec la posibilit� d'avoir des cellules fusionn�s (par exemple un composant sera ajout� en ligne 1,
- *  colonne 2 et occupera 1 ligne et 3 colonnes). Pour faire cela, on peut utiliser les 2 fonctions suivantes:
- *
- *  void add(JComponent c, int width, int row, int column, boolean isresizable) throws Exception;
- *    Cette fonction ajoute un JComponent qui aura une largeur minimale (width) et sera positionn� sur la ligne
- *    (row) et la colonne (column). isresizable doit �tre positionn� � true pour la taille du composant varie
- *    suivant lorsque la largeur du JPanel principal varie. Le composant n'occupera qu'une seule cellule.
- *
- *  void add(JComponent c, int width, int row, int column, int nb_row, int nb_col, boolean isresizable) throws Exception;
- *    Cette fonction ajoute un JComponent qui aura une largeur minimale (width) et sera positionn� sur la ligne
- *    (row) et la colonne (column). De plus il occupera n lignes (nb_row) et m colonnes (nb_col).
- *    isresizable fonctionne comme indiqu� pr�c�dement.
- *
- *  Lorsque des composants sont ajout�s, les fonctions updateSizeColumn et updateLocation sont appel�es.
- *  updateSizeColumn:
- *    Cette fonction calcule la largeur minimale que doit avoir chaque colonne afin que tous les composants soit
- *    plac�s au plus pr�s les uns des autres en tenant compte des composants redimensionn�s...
- *
- *  updateLocation:
- *    Cette fonction positionne chaque composant (coordonn�es x,y) en fonction de la ligne et la colonne o� il se
- *    trouve avec un largeur fixe ou d�pendant de la largeur du composant principal. La largeur d'un composant ne sera
- *    jamais inf�rieure � sa largeur minimale (width dans les fonctions add).
- *
- *  setMinimumWidthForJLabelColumn(int column):
- *    Cette fonction permet de redimensionner la colonne (column) � sa taille minimale pour que tous le texte des JLabel
- *    soit lisible. Si la colonne sp�cifi�e contient uniquement des JLabel, la colonne prendra pour largeur celle du JLabel
- *    avec le texte le plus long. Si la colonne contient aussi d'autres composants plus grand que les JLabel, 2 r�gles sont
- *    utilis�es:
- *      1) Si le composant (non JLabel) n'est pas redimensionable, alors la colonne aura la largeur du plus grand composant.
- *      2) Si le composant (non JLabel) est redimensionable, celui-ci s'adaptera � la taille de la colonne m�me si cette taille
- *         est inf�rieure � la taille minimale sp�cifi�e lors de l'ajout.
- *
- *  setMinimumWidthForAllJLabelColumn:
- *    Cette fonction fait appel � la fonction setMinimumWidthForJLabelColumn(int column) pour toute les colonnes de la fen�tre.
- *
- *  enableAutoResizeCenteredColumn et disableAutoResizeCenteredColumn:
- *    Active et Desactive l'option de positionnement automatique au centre des JLabel occupant toute une ligne et poss�dant un
- *    alignement Centr� et l'option redimensionnable � true.
+ * <p>
+ * Derni�res corrections et am�liorations:
+ * v 0.9
+ * Ajout de l'option de positionnement automatique au centre des JLabel qui peuvent occuper une ligne enti�re et
+ * qui ont les propri�t�s HorizontalAlignment == CENTER et redimensionnable. Cette option est active par d�faut
+ * et peux �tre modifi� avec enableAutoResizeCenteredColumn() et disableAutoResizeCenteredColumn(). Cette option
+ * doit �tre positionn�e avant l'ajout des composants.
+ * v 0.8
+ * Correction sur le dimensionnement de la fen�tre lors de l'appel de setMinimumWidthForJLabelColumn(int).
+ * Si le JLabel poss�de un alignement CENTER, on n'adapte pas sa largeur afin qu'il reste tel quel.
+ * ajout de la variable space_bottom pour param�trer l'espace entre la derni�re ligne et la fin du composant.
+ * v 0.7
+ * D�veloppement des fonctions setMinimumWidthForJLabelColumn(int) et setMinimumWidthForAllJLabelColumn()
+ * permetant le redimensionnement automatique des JLabel � leur taille minimale pour l'affichage de leur texte.
+ * v 0.6
+ * Correction d'une erreur sur le calcul de taille de la fen�tre principal dans certains cas
+ * v 0.5
+ * Prise en compte des espacements entre colonnes pour le calcul optimal des largeurs de ces derni�res.
+ * Remplacement du +25 dans la variable size_width de UpdateLocation par +space_column
+ * <p>
+ * Description:
+ * Cette classe a �t� d�velopp� afin de simplifier le positionnement des composants. J'ai voulu associer
+ * la simplicit� du positionnement (x,y) et du dimensionnement des composants (comme utilis� avec le XYLayout
+ * de Borland ou le setLayout(null) ) avec la possibilit� d'avoir un redimensionnement horizontal automatique
+ * des composants lors de l'agrandissement/r�duction du panneau principal (comme dans le GridBagLayout ou
+ * le GridLayout).
+ * <p>
+ * Dans cette version de la classe, seule le redimensionnement horizontal des composants est disponible.
+ * Le positionnement des composants se r�alise comme si l'on mettait les composants dans un tableau (ligne i,
+ * colonne j) avec la posibilit� d'avoir des cellules fusionn�s (par exemple un composant sera ajout� en ligne 1,
+ * colonne 2 et occupera 1 ligne et 3 colonnes). Pour faire cela, on peut utiliser les 2 fonctions suivantes:
+ * <p>
+ * void add(JComponent c, int width, int row, int column, boolean isresizable) throws Exception;
+ * Cette fonction ajoute un JComponent qui aura une largeur minimale (width) et sera positionn� sur la ligne
+ * (row) et la colonne (column). isresizable doit �tre positionn� � true pour la taille du composant varie
+ * suivant lorsque la largeur du JPanel principal varie. Le composant n'occupera qu'une seule cellule.
+ * <p>
+ * void add(JComponent c, int width, int row, int column, int nb_row, int nb_col, boolean isresizable) throws Exception;
+ * Cette fonction ajoute un JComponent qui aura une largeur minimale (width) et sera positionn� sur la ligne
+ * (row) et la colonne (column). De plus il occupera n lignes (nb_row) et m colonnes (nb_col).
+ * isresizable fonctionne comme indiqu� pr�c�dement.
+ * <p>
+ * Lorsque des composants sont ajout�s, les fonctions updateSizeColumn et updateLocation sont appel�es.
+ * updateSizeColumn:
+ * Cette fonction calcule la largeur minimale que doit avoir chaque colonne afin que tous les composants soit
+ * plac�s au plus pr�s les uns des autres en tenant compte des composants redimensionn�s...
+ * <p>
+ * updateLocation:
+ * Cette fonction positionne chaque composant (coordonn�es x,y) en fonction de la ligne et la colonne o� il se
+ * trouve avec un largeur fixe ou d�pendant de la largeur du composant principal. La largeur d'un composant ne sera
+ * jamais inf�rieure � sa largeur minimale (width dans les fonctions add).
+ * <p>
+ * setMinimumWidthForJLabelColumn(int column):
+ * Cette fonction permet de redimensionner la colonne (column) � sa taille minimale pour que tous le texte des JLabel
+ * soit lisible. Si la colonne sp�cifi�e contient uniquement des JLabel, la colonne prendra pour largeur celle du JLabel
+ * avec le texte le plus long. Si la colonne contient aussi d'autres composants plus grand que les JLabel, 2 r�gles sont
+ * utilis�es:
+ * 1) Si le composant (non JLabel) n'est pas redimensionable, alors la colonne aura la largeur du plus grand composant.
+ * 2) Si le composant (non JLabel) est redimensionable, celui-ci s'adaptera � la taille de la colonne m�me si cette taille
+ * est inf�rieure � la taille minimale sp�cifi�e lors de l'ajout.
+ * <p>
+ * setMinimumWidthForAllJLabelColumn:
+ * Cette fonction fait appel � la fonction setMinimumWidthForJLabelColumn(int column) pour toute les colonnes de la fen�tre.
+ * <p>
+ * enableAutoResizeCenteredColumn et disableAutoResizeCenteredColumn:
+ * Active et Desactive l'option de positionnement automatique au centre des JLabel occupant toute une ligne et poss�dant un
+ * alignement Centr� et l'option redimensionnable � true.
  */
 
 public class XYGridLayout implements ComponentListener {
@@ -154,13 +155,13 @@ public class XYGridLayout implements ComponentListener {
   /**
    * XYGridLayout
    *
-   * @param c JFrame
-   * @param line_height1 int Hauteur des lignes (defaut 25)
-   * @param space_line1 int Espace libre s�parant 2 lignes (defaut 5)
+   * @param c             JFrame
+   * @param line_height1  int Hauteur des lignes (defaut 25)
+   * @param space_line1   int Espace libre s�parant 2 lignes (defaut 5)
    * @param space_column1 int Espace libre s�parant 2 colonnes (defaut 5);
-   * @param space_top1 int Espace libre entre le haut du composant principal et la premi�re ligne(defaut 5)
-   * @param space_left1 int Espace libre entre la gauche du composant principal et la premi�re colonne (defaut 5)
-   * @param space_right1 int Espace libre entre la droite du composant principal et la derni�re colonne (defaut 5)
+   * @param space_top1    int Espace libre entre le haut du composant principal et la premi�re ligne(defaut 5)
+   * @param space_left1   int Espace libre entre la gauche du composant principal et la premi�re colonne (defaut 5)
+   * @param space_right1  int Espace libre entre la droite du composant principal et la derni�re colonne (defaut 5)
    * @param space_bottom1 int Espace libre entre le bas du composant principal et la derni�re ligne (defaut 15)
    */
   public XYGridLayout(JFrame c, int line_height1, int space_line1, int space_column1, int space_top1, int space_left1, int space_right1,
@@ -174,13 +175,13 @@ public class XYGridLayout implements ComponentListener {
   /**
    * XYGridLayout
    *
-   * @param c JDialog
-   * @param line_height1 int Hauteur des lignes (defaut 25)
-   * @param space_line1 int Espace libre s�parant 2 lignes (defaut 5)
+   * @param c             JDialog
+   * @param line_height1  int Hauteur des lignes (defaut 25)
+   * @param space_line1   int Espace libre s�parant 2 lignes (defaut 5)
    * @param space_column1 int Espace libre s�parant 2 colonnes (defaut 5);
-   * @param space_top1 int Espace libre entre le haut du composant principal et la premi�re ligne(defaut 5)
-   * @param space_left1 int Espace libre entre la gauche du composant principal et la premi�re colonne (defaut 5)
-   * @param space_right1 int Espace libre entre la droite du composant principal et la derni�re colonne (defaut 5)
+   * @param space_top1    int Espace libre entre le haut du composant principal et la premi�re ligne(defaut 5)
+   * @param space_left1   int Espace libre entre la gauche du composant principal et la premi�re colonne (defaut 5)
+   * @param space_right1  int Espace libre entre la droite du composant principal et la derni�re colonne (defaut 5)
    * @param space_bottom1 int Espace libre entre le bas du composant principal et la derni�re ligne (defaut 15)
    */
   public XYGridLayout(JDialog c, int line_height1, int space_line1, int space_column1, int space_top1, int space_left1, int space_right1,
@@ -194,13 +195,13 @@ public class XYGridLayout implements ComponentListener {
   /**
    * XYGridLayout
    *
-   * @param c JPanel
-   * @param line_height1 int Hauteur des lignes (defaut 25)
-   * @param space_line1 int Espace libre s�parant 2 lignes (defaut 5)
+   * @param c             JPanel
+   * @param line_height1  int Hauteur des lignes (defaut 25)
+   * @param space_line1   int Espace libre s�parant 2 lignes (defaut 5)
    * @param space_column1 int Espace libre s�parant 2 colonnes (defaut 5);
-   * @param space_top1 int Espace libre entre le haut du composant principal et la premi�re ligne(defaut 5)
-   * @param space_left1 int Espace libre entre la gauche du composant principal et la premi�re colonne (defaut 5)
-   * @param space_right1 int Espace libre entre la droite du composant principal et la derni�re colonne (defaut 5)
+   * @param space_top1    int Espace libre entre le haut du composant principal et la premi�re ligne(defaut 5)
+   * @param space_left1   int Espace libre entre la gauche du composant principal et la premi�re colonne (defaut 5)
+   * @param space_right1  int Espace libre entre la droite du composant principal et la derni�re colonne (defaut 5)
    * @param space_bottom1 int Espace libre entre le bas du composant principal et la derni�re ligne (defaut 15)
    */
   public XYGridLayout(JPanel c, int line_height1, int space_line1, int space_column1, int space_top1, int space_left1, int space_right1,
@@ -270,7 +271,7 @@ public class XYGridLayout implements ComponentListener {
     space_right = space_right1;
     space_bottom = space_bottom1;
   }
-  
+
   /*
    * add Ajout de composant sur une ligne et une colonne sans possibilit� de redimensionnement
    *
@@ -280,7 +281,7 @@ public class XYGridLayout implements ComponentListener {
    * @param column int Num�ro de la colonne o� ajouter le composant (0...n)
    */
   public void add(JComponent c, int width, int row, int column) throws Exception {
-  	add(c, width, row, column, false);
+    add(c, width, row, column, false);
   }
 
   /*
@@ -308,8 +309,7 @@ public class XYGridLayout implements ComponentListener {
     int size_column = 0;
     try {
       size_column = Integer.parseInt(sizecolumn.get(column));
-    }
-    catch (IndexOutOfBoundsException ioobe) {
+    } catch (IndexOutOfBoundsException ioobe) {
       sizecolumn.add("0");
     }
     //On redimensionne la colonne si n�cessaire
@@ -377,12 +377,11 @@ public class XYGridLayout implements ComponentListener {
     int size_column = 0;
     try {
       size_column = Integer.parseInt(sizecolumn.get(column));
-    }
-    catch (IndexOutOfBoundsException ioobe) {
+    } catch (IndexOutOfBoundsException ioobe) {
       sizecolumn.add("0");
     }
     //On redimensionne la colonne si n�cessaire
-    if ( (size_column == 0 || size_column < width) && nb_col == 1) {
+    if ((size_column == 0 || size_column < width) && nb_col == 1) {
       sizecolumn.set(column, Integer.toString(width));
     }
 
@@ -393,9 +392,9 @@ public class XYGridLayout implements ComponentListener {
       size_max += Integer.parseInt(sizecolumn.get(i));
     }
     if (size_max < width) {
-      size = Integer.parseInt(sizecolumn.get( (column + nb_col - 1)));
+      size = Integer.parseInt(sizecolumn.get((column + nb_col - 1)));
       size += (width - size_max);
-      sizecolumn.set( (column + nb_col - 1), Integer.toString(size));
+      sizecolumn.set((column + nb_col - 1), Integer.toString(size));
     }
 
     size = 0;
@@ -476,8 +475,7 @@ public class XYGridLayout implements ComponentListener {
           //pour les JLabel size_tot contient d�j� la taille min obligatoire et pour les autres composants on s'autorise � r�duire leur largeur afin de s'adapter � la colonne
           if (auto_resize && b) {
             list_min_size.set(i, Integer.toString(size_tot));
-          }
-          else { //Sinon on utilise l'option par d�faut: Redimensionnement de la colonne pour contenir le composant
+          } else { //Sinon on utilise l'option par d�faut: Redimensionnement de la colonne pour contenir le composant
             max_size_col[col + nb_col - 1] += (width - size_tot);
           }
           //Fin Am�lioration v 0.7
@@ -485,22 +483,22 @@ public class XYGridLayout implements ComponentListener {
         //Am�lioration v 0.9
         //Si l'option de redimensionnement des JLabel centr� est active (true par d�faut)
         //Si le composant est un JLabel on va regarder si l'a les propri�t�s pour �tre redimensionn�e � la largeur de la fen�tre
-        if (auto_resize_centered_JLabel && comp instanceof JLabel){
-        	//On r�cup�re le nombre de colonne
+        if (auto_resize_centered_JLabel && comp instanceof JLabel) {
+          //On r�cup�re le nombre de colonne
           int max_nb_col = sizecolumn.size();
           //On ne compte pas la derni�re si elle est vide
-          if (Integer.parseInt(sizecolumn.get(max_nb_col-1)) == 0){
-        	  max_nb_col--;
+          if (Integer.parseInt(sizecolumn.get(max_nb_col - 1)) == 0) {
+            max_nb_col--;
           }
           JLabel aLabel = (JLabel) comp;
           //Si le JLabel d�bute sur la premi�re colonne est se termine sur la derni�re et qu'il peux �tre redimensionn� et qu'il est centr�
-          if (col == 0 && nb_col == max_nb_col && resizable.get(i) && aLabel.getHorizontalAlignment() == JLabel.CENTER){
-        		size_tot = 0;
-        		for (int j = 0; j < nb_col; j++) {
-          		size_tot += max_size_col[j];
-        		}
-        		//Alors on affecte au JLabel la taille de la fen�tre comme taille mini pour qu'il reste centr�
-        		list_min_size.set(i, Integer.toString(size_tot));
+          if (col == 0 && nb_col == max_nb_col && resizable.get(i) && aLabel.getHorizontalAlignment() == JLabel.CENTER) {
+            size_tot = 0;
+            for (int j = 0; j < nb_col; j++) {
+              size_tot += max_size_col[j];
+            }
+            //Alors on affecte au JLabel la taille de la fen�tre comme taille mini pour qu'il reste centr�
+            list_min_size.set(i, Integer.toString(size_tot));
           }
         }
         //Fin Am�lioration v 0.9
@@ -543,7 +541,7 @@ public class XYGridLayout implements ComponentListener {
       comp.setLocation(size_tot, (row * (line_height + space_line)) + space_top);
 
       size_width = size_tot + width + space_right + space_column; // correction v 0.5
-      size_height = y_loc + ( (nb_row + 1) * line_height) + space_bottom; // correction v 0.8
+      size_height = y_loc + ((nb_row + 1) * line_height) + space_bottom; // correction v 0.8
       //On affecte la taille maximale pour la largeur de la fen�tre (correction v 0.6)
       if (size_width > max_size_width) {
         max_size_width = size_width;
@@ -618,8 +616,7 @@ public class XYGridLayout implements ComponentListener {
                 for (int z = y; z < tab_resize[i].length; z++) {
                   if (same_comp && tab_resize[i][z] == 1) {
                     tab_resize[i][z] = 0;
-                  }
-                  else {
+                  } else {
                     same_comp = false;
                   }
                 }
@@ -629,8 +626,7 @@ public class XYGridLayout implements ComponentListener {
                   if (z != y) { //On ne retraite pas la case [i][y]
                     if (same_comp && tab_resize[i][z] == 1) {
                       tab_resize[i][z] = 0;
-                    }
-                    else {
+                    } else {
                       same_comp = false;
                     }
                   }
@@ -674,8 +670,7 @@ public class XYGridLayout implements ComponentListener {
                 for (int z = tmp_num_col; z < tab_resize[i].length; z++) {
                   if (same_comp && tab_resize[i][z] == 1) {
                     tab_resize[i][z] = 0;
-                  }
-                  else {
+                  } else {
                     same_comp = false;
                   }
                 }
@@ -685,8 +680,7 @@ public class XYGridLayout implements ComponentListener {
                   if (z != tmp_num_col) { //On ne retraite pas la case [i][tmp_num_col]
                     if (same_comp && tab_resize[i][z] == 1) {
                       tab_resize[i][z] = 0;
-                    }
-                    else {
+                    } else {
                       same_comp = false;
                     }
                   }
@@ -725,10 +719,10 @@ public class XYGridLayout implements ComponentListener {
               tmp_size_available += Integer.parseInt(sizecolumn.get(j));
             }
             //On ajoute l'espace entre chaque colonne
-            tmp_size_available += ( (tmp_nb_col - 1) * space_column);
+            tmp_size_available += ((tmp_nb_col - 1) * space_column);
             //Si la taille minimale offerte n'est pas suffisante, on agrandit la derni�re colonne
             if (tmp_size_available < Integer.parseInt(list_min_size.get(i))) {
-              min_col_size[ (tmp_num_col + tmp_nb_col - 1)] += (Integer.parseInt(list_min_size.get(i)) - tmp_size_available);
+              min_col_size[(tmp_num_col + tmp_nb_col - 1)] += (Integer.parseInt(list_min_size.get(i)) - tmp_size_available);
             }
           }
         }
@@ -762,8 +756,7 @@ public class XYGridLayout implements ComponentListener {
         }
         //Appel de la mise � jour du positionnement
         updateLocation(false);
-      }
-      else {
+      } else {
         //La taille est plus petite que la taille minimale. On met la taille minimale
         for (int i = 0; i < list.size(); i++) {
           JComponent comp = list.get(i);
@@ -987,10 +980,10 @@ public class XYGridLayout implements ComponentListener {
         for (int i = 0; i < list.size(); i++) {
           JComponent comp = list.get(i);
           //Si le composant n'est pas un JLabel et qu'il est situ� dans la colonne sp�cifi�e ou chevauche la colonne sp�cifi�e
-          if (! (comp instanceof JLabel) &&
+          if (!(comp instanceof JLabel) &&
               (Integer.parseInt(list_column.get(i)) == column ||
-               (Integer.parseInt(list_column.get(i)) <= column &&
-                Integer.parseInt(list_nb_column.get(i)) + Integer.parseInt(list_column.get(i)) > column))) {
+                  (Integer.parseInt(list_column.get(i)) <= column &&
+                      Integer.parseInt(list_nb_column.get(i)) + Integer.parseInt(list_column.get(i)) > column))) {
             //On met � jour la taille du composant
             Boolean b = resizable.get(i);
             //Si le composant peux �tre redimensionn�
@@ -1024,7 +1017,7 @@ public class XYGridLayout implements ComponentListener {
       setMinimumWidthForJLabelColumn(i);
     }
   }
-  
+
   /*
    * enableAutoResizeCenteredColumn Active le redimensionnement automatique des JLabel avec les propri�t�s suivantes:
    *  - Le JLabel peux �tre redimensionn� (resizable == true)
@@ -1033,14 +1026,14 @@ public class XYGridLayout implements ComponentListener {
    *
    */
   public void enableAutoResizeCenteredColumn() {
-  	auto_resize_centered_JLabel = true;
+    auto_resize_centered_JLabel = true;
   }
-  
+
   /*
    * disableAutoResizeCenteredColumn D�sactive le redimensionnement automatique des JLabel a positionner avant l'ajout des composants
    *
    */
   public void disableAutoResizeCenteredColumn() {
-  	auto_resize_centered_JLabel = false;
+    auto_resize_centered_JLabel = false;
   }
 }

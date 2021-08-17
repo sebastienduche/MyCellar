@@ -21,16 +21,17 @@ import java.util.stream.Collectors;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.8
  * @since 23/04/21
  */
 public final class MyCellarBottleContenance {
 
-  private final LinkedList<String> list = new LinkedList<>();
-  private String defaultValue;
   private static final String NORMAL = "75cl";
   private static final String HALF = "37.5cl";
+  private final LinkedList<String> list = new LinkedList<>();
+  private String defaultValue;
 
   private MyCellarBottleContenance() {
   }
@@ -46,7 +47,7 @@ public final class MyCellarBottleContenance {
   public static boolean isContenanceUsed(String value) {
     return Program.getStorage().getAllList()
         .stream()
-        .map(myCellarObject -> (Bouteille)myCellarObject)
+        .map(myCellarObject -> (Bouteille) myCellarObject)
         .map(Bouteille::getKind)
         .anyMatch(value::equals);
   }
@@ -55,7 +56,7 @@ public final class MyCellarBottleContenance {
     Program.getStorage().getAllList()
         .stream()
         .filter(b -> oldValue.equals(b.getKind()))
-        .map(myCellarObject -> (Bouteille)myCellarObject)
+        .map(myCellarObject -> (Bouteille) myCellarObject)
         .forEach(bouteille -> bouteille.setKind(newValue));
     final int oldIndex = getList().indexOf(oldValue);
     final int index = getList().indexOf(newValue);
@@ -78,12 +79,25 @@ public final class MyCellarBottleContenance {
     getInstance().defaultValue = defaultValue;
   }
 
+  /**
+   * Debug
+   *
+   * @param sText String
+   */
+  private static void Debug(String sText) {
+    Program.Debug("MyCellarBottleContenance: " + sText);
+  }
+
+  public static MyCellarBottleContenance getInstance() {
+    return LazyHolder.INSTANCE;
+  }
+
   private void loadFile() {
     readTypesXml();
-    if(Program.getStorage().getAllList() != null) {
+    if (Program.getStorage().getAllList() != null) {
       final List<String> collect = Program.getStorage().getAllList()
           .stream()
-          .map(myCellarObject -> (Bouteille)myCellarObject)
+          .map(myCellarObject -> (Bouteille) myCellarObject)
           .map(Bouteille::getKind)
           .distinct()
           .collect(Collectors.toList());
@@ -102,8 +116,7 @@ public final class MyCellarBottleContenance {
     }
   }
 
-
-  private void readTypesXml()  {
+  private void readTypesXml() {
     Debug("readTypesXml: Reading file");
     File file = new File(Program.getXMLTypesFileName());
     if (!file.exists()) {
@@ -137,8 +150,7 @@ public final class MyCellarBottleContenance {
           }
         }
       }
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       Debug("IOException");
       Program.showException(e, false);
     } catch (ParserConfigurationException e) {
@@ -158,7 +170,7 @@ public final class MyCellarBottleContenance {
       //Init XML File
       fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
       // Ecriture des types
-      for (String type: list) {
+      for (String type : list) {
         if (type.equals(defaultValue)) {
           fileWriter.write("<type value=\"" + type + "\" default=\"true\"/>");
         } else {
@@ -167,28 +179,14 @@ public final class MyCellarBottleContenance {
       }
       fileWriter.write("</MyCellar>");
       fileWriter.flush();
-    }
-    catch (IOException ex) {
+    } catch (IOException ex) {
       Debug("IOException");
       Program.showException(ex);
     }
     Debug("writeTypeXml: Writing file OK");
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
-  private static void Debug(String sText) {
-    Program.Debug("MyCellarBottleContenance: " + sText);
-  }
-
   private static class LazyHolder {
     private static final MyCellarBottleContenance INSTANCE = new MyCellarBottleContenance();
-  }
-
-  public static MyCellarBottleContenance getInstance() {
-    return LazyHolder.INSTANCE;
   }
 }

@@ -14,6 +14,7 @@ import java.awt.Component;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.7
  * @since 27/05/21
@@ -47,8 +48,7 @@ public class ButtonCellRenderer extends JButton implements TableCellRenderer {
     if (isSelected) {
       setForeground(table.getSelectionForeground());
       super.setBackground(table.getSelectionBackground());
-    }
-    else {
+    } else {
       setForeground(table.getForeground());
       setBackground(table.getBackground());
     }
@@ -56,10 +56,10 @@ public class ButtonCellRenderer extends JButton implements TableCellRenderer {
     setSelected(isSelect);
     setFont(Program.FONT_PANEL);
     setText(label);
-    if(image != null) {
+    if (image != null) {
       setIcon(image);
     }
 
     return this;
-}
+  }
 }

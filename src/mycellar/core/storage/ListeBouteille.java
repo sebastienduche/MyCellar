@@ -40,6 +40,7 @@ import java.util.LinkedList;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2012</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 1.4
  * @since 19/05/21
@@ -60,179 +61,175 @@ import java.util.LinkedList;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-		"bouteille",
-		"music"
+    "bouteille",
+    "music"
 })
 @XmlRootElement(name = "ListeBouteille")
 @XmlSeeAlso(Bouteille.class)
 public class ListeBouteille {
 
-	@XmlElement(name = "Bouteille")
-	LinkedList<Bouteille> bouteille;
+  @XmlElement(name = "Bouteille")
+  LinkedList<Bouteille> bouteille;
 
-	@XmlElement
-	LinkedList<Music> music;
+  @XmlElement
+  LinkedList<Music> music;
 
-	/**
-	 * Gets the value of the bouteille property.
-	 *
-	 * <p>
-	 * This accessor method returns a reference to the live list,
-	 * not a snapshot. Therefore any modification you make to the
-	 * returned list will be present inside the JAXB object.
-	 * This is why there is not a <CODE>set</CODE> method for the bouteille property.
-	 *
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * <pre>
-	 *    getBouteille().add(newItem);
-	 * </pre>
-	 *
-	 *
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * {@link Bouteille }
-	 *
-	 *
-	 */
-	public LinkedList<Bouteille> getBouteille() {
-		if (bouteille == null) {
-			bouteille = new LinkedList<>();
-		}
-		return bouteille;
-	}
+  public static boolean loadXML() {
+    Debug("Loading JAXB File");
+    File f = new File(Program.getXMLBottlesFileName());
+    return loadXML(f);
+  }
 
-	public LinkedList<Music> getMusic() {
-		if (music == null) {
-			music = new LinkedList<>();
-		}
-		return music;
-	}
+  public static boolean loadXML(File f) {
+    Debug("Loading XML File " + f.getAbsolutePath());
+    if (!f.exists())
+      return false;
+    try {
+      unMarshalXML(f);
+      return true;
+    } catch (FileNotFoundException | JAXBException e) {
+      Debug("ERROR: Unable to Unmarshall JAXB File");
+      Program.showException(e, false);
+    }
+    Debug("Manual loading of the XML file");
+    try {
+      manualLoadXML(f);
+    } catch (ParserConfigurationException | IOException | SAXException e) {
+      Debug("ERROR: Unable to load manually File");
+      Program.showException(e);
+      return false;
+    }
+    return true;
+  }
 
-	void resetBouteille() {
-		bouteille = null;
-	}
+  private static void manualLoadXML(File f) throws ParserConfigurationException, IOException, SAXException {
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    Document doc = dBuilder.parse(f);
+    doc.getDocumentElement().normalize();
 
-	public static boolean loadXML() {
-		Debug("Loading JAXB File");
-		File f = new File(Program.getXMLBottlesFileName());
-		return loadXML(f);
-	}
+    ListeBouteille listeBouteille = new ListeBouteille();
+    NodeList bouteilles = doc.getElementsByTagName("Bouteille");
 
-	public static boolean loadXML(File f) {
-		Debug("Loading XML File " + f.getAbsolutePath());
-		if(!f.exists())
-			return false;
-		try {
-			unMarshalXML(f);
-			return true;
-		} catch (Exception e) {
-			Debug("ERROR: Unable to Unmarshall JAXB File");
-			Program.showException(e, false);
-		}
-		Debug("Manual loading of the XML file");
-		try {
-			manualLoadXML(f);
-		} catch (ParserConfigurationException | IOException | SAXException e) {
-			Debug("ERROR: Unable to load manually File");
-			Program.showException(e);
-			return false;
-		}
-		return true;
-	}
+    for (int i = 0; i < bouteilles.getLength(); i++) {
+      Node node = bouteilles.item(i);
 
-	private static void manualLoadXML(File f) throws ParserConfigurationException, IOException, SAXException {
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(f);
-		doc.getDocumentElement().normalize();
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element bouteilleElem = (Element) node;
+        listeBouteille.getBouteille().add(Bouteille.fromXml(bouteilleElem));
+      }
+    }
 
-		ListeBouteille listeBouteille = new ListeBouteille();
-		NodeList bouteilles = doc.getElementsByTagName("Bouteille");
+    NodeList musics = doc.getElementsByTagName("Music");
 
-		for (int i = 0; i < bouteilles.getLength(); i++) {
-			Node node = bouteilles.item(i);
+    for (int i = 0; i < musics.getLength(); i++) {
+      Node node = musics.item(i);
 
-			if (node.getNodeType() == Node.ELEMENT_NODE) {
-				Element bouteilleElem = (Element) node;
-				listeBouteille.getBouteille().add(Bouteille.fromXml(bouteilleElem));
-			}
-		}
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+        Element musicElem = (Element) node;
+        listeBouteille.getMusic().add(Music.fromXml(musicElem));
+      }
+    }
+    Program.getStorage().setListMyCellarObject(listeBouteille);
+    Debug("Loading Manually File Done");
+  }
 
-		NodeList musics = doc.getElementsByTagName("Music");
+  private static void unMarshalXML(File f) throws JAXBException, FileNotFoundException {
+    JAXBContext jc = JAXBContext.newInstance(ObjectFactory.class);
+    Unmarshaller u = jc.createUnmarshaller();
+    ListeBouteille lb =
+        (ListeBouteille) u.unmarshal(new FileInputStream(f));
+    Program.getStorage().addBouteilles(lb);
+    Debug("Loading JAXB File Done");
+  }
 
-		for (int i = 0; i < musics.getLength(); i++) {
-			Node node = musics.item(i);
+  public static boolean writeXML() {
+    return XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
+  }
 
-			if (node.getNodeType() == Node.ELEMENT_NODE) {
-				Element musicElem = (Element) node;
-				listeBouteille.getMusic().add(Music.fromXml(musicElem));
-			}
-		}
-		Program.getStorage().setListMyCellarObject(listeBouteille);
-		Debug("Loading Manually File Done");
-	}
+  public static void writeXML(File f) {
+    XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), f, ObjectFactory.class);
+  }
 
-	private static void unMarshalXML(File f) throws JAXBException, FileNotFoundException {
-		JAXBContext jc = JAXBContext.newInstance(ObjectFactory.class);
-		Unmarshaller u = jc.createUnmarshaller();
-		ListeBouteille lb =
-				(ListeBouteille)u.unmarshal(new FileInputStream(f));
-		Program.getStorage().addBouteilles(lb);
-		Debug("Loading JAXB File Done");
-	}
+  public static boolean writeXML(ListeBouteille liste, File f) {
+    return XmlUtils.writeXML(liste, f, ObjectFactory.class);
+  }
 
-	public static boolean writeXML() {
-		return XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
-	}
+  public static void Debug(String sText) {
+    Program.Debug("ListeBouteille: " + sText);
+  }
 
-	public static boolean writeXML(File f) {
-		return XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), f, ObjectFactory.class);
-	}
+  /**
+   * Gets the value of the bouteille property.
+   *
+   * <p>
+   * This accessor method returns a reference to the live list,
+   * not a snapshot. Therefore any modification you make to the
+   * returned list will be present inside the JAXB object.
+   * This is why there is not a <CODE>set</CODE> method for the bouteille property.
+   *
+   * <p>
+   * For example, to add a new item, do as follows:
+   * <pre>
+   *    getBouteille().add(newItem);
+   * </pre>
+   *
+   *
+   * <p>
+   * Objects of the following type(s) are allowed in the list
+   * {@link Bouteille }
+   */
+  public LinkedList<Bouteille> getBouteille() {
+    if (bouteille == null) {
+      bouteille = new LinkedList<>();
+    }
+    return bouteille;
+  }
 
-	public static boolean writeXML(ListeBouteille liste, File f) {
-		return XmlUtils.writeXML(liste, f, ObjectFactory.class);
-	}
+  public LinkedList<Music> getMusic() {
+    if (music == null) {
+      music = new LinkedList<>();
+    }
+    return music;
+  }
 
-	public int getItemsCount() {
-		if (Program.isWineType()) {
-			return bouteille.size();
-		}
-		if (Program.isMusicType()) {
-			return music.size();
-		}
-		Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
-		return -1;
-	}
+  void resetBouteille() {
+    bouteille = null;
+  }
 
-	public boolean add(MyCellarObject myCellarObject) {
-		if (myCellarObject instanceof Bouteille) {
-			return getBouteille().add((Bouteille) myCellarObject);
-		} else if (myCellarObject instanceof Music) {
-			return getMusic().add((Music) myCellarObject);
-		} else {
-			Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
-			return false;
-		}
-	}
+  public int getItemsCount() {
+    if (Program.isWineType()) {
+      return bouteille.size();
+    }
+    if (Program.isMusicType()) {
+      return music.size();
+    }
+    Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+    return -1;
+  }
 
-	public boolean remove(MyCellarObject myCellarObject) {
-		if (myCellarObject instanceof Bouteille) {
-			return getBouteille().remove((Bouteille) myCellarObject);
-		} else if (myCellarObject instanceof Music) {
-			return getMusic().remove((Music) myCellarObject);
-		} else {
-			Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
-		}
-		return false;
-	}
+  public boolean add(MyCellarObject myCellarObject) {
+    if (myCellarObject instanceof Bouteille) {
+      return getBouteille().add((Bouteille) myCellarObject);
+    } else if (myCellarObject instanceof Music) {
+      return getMusic().add((Music) myCellarObject);
+    } else {
+      Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+      return false;
+    }
+  }
 
-	public static void Debug(String sText) {
-		Program.Debug("ListeBouteille: " + sText);
-	}
+  public boolean remove(MyCellarObject myCellarObject) {
+    if (myCellarObject instanceof Bouteille) {
+      return getBouteille().remove((Bouteille) myCellarObject);
+    } else if (myCellarObject instanceof Music) {
+      return getMusic().remove((Music) myCellarObject);
+    } else {
+      Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+    }
+    return false;
+  }
 }

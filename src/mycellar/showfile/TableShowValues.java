@@ -31,16 +31,16 @@ import java.util.Optional;
 
 class TableShowValues extends AbstractTableModel {
 
-  private static final long serialVersionUID = 1183158496820687240L;
   public static final int ETAT = 0;
-  private static final int NAME = 1;
   public static final int YEAR = 2;
   static final int TYPE = 3;
   static final int PLACE = 4;
+  static final int PRICE = 8;
+  private static final long serialVersionUID = 1183158496820687240L;
+  private static final int NAME = 1;
   private static final int NUM_PLACE = 5;
   private static final int LINE = 6;
   private static final int COLUMN = 7;
-  static final int PRICE = 8;
   private static final int COMMENT = 9;
   private static final int MATURITY = 10;
   private static final int PARKER = 11;

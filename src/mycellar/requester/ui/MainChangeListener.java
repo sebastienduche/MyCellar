@@ -7,27 +7,28 @@ import javax.swing.event.ChangeListener;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2014</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.1
  * @since 11/06/14
  */
 public class MainChangeListener {
-    
-    private ChangeListener cl;
-    
-    private static final MainChangeListener instance = new MainChangeListener();
-    
-    private MainChangeListener(){}
-    
-    public MainChangeListener getInstance() {
-        return instance;
-    }
-    
-    public static ChangeListener getChangeListener(){
-        return instance.cl;
-    }
-    
-    public static void setChangeListener(ChangeListener cl){
-        instance.cl = cl;
-    }
+
+  private static final MainChangeListener INSTANCE = new MainChangeListener();
+  private ChangeListener cl;
+
+  private MainChangeListener() {
+  }
+
+  public static ChangeListener getChangeListener() {
+    return INSTANCE.cl;
+  }
+
+  public static void setChangeListener(ChangeListener cl) {
+    INSTANCE.cl = cl;
+  }
+
+  public MainChangeListener getInstance() {
+    return INSTANCE;
+  }
 }

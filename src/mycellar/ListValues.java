@@ -11,6 +11,7 @@ import java.util.List;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 1.2
  * @since 09/04/21
@@ -43,14 +44,14 @@ class ListValues extends AbstractTableModel {
   /**
    * getValueAt
    *
-   * @param row int
+   * @param row    int
    * @param column int
    * @return Object
    */
   @Override
   public Object getValueAt(int row, int column) {
-	  if(list == null || list.isEmpty())
-		  return null;
+    if (list == null || list.isEmpty())
+      return null;
     return list.get(row).getNom();
   }
 
@@ -68,7 +69,7 @@ class ListValues extends AbstractTableModel {
   /**
    * isCellEditable
    *
-   * @param row int
+   * @param row    int
    * @param column int
    * @return boolean
    */
@@ -80,8 +81,8 @@ class ListValues extends AbstractTableModel {
   /**
    * setValueAt
    *
-   * @param value Object
-   * @param row int
+   * @param value  Object
+   * @param row    int
    * @param column int
    */
   @Override
@@ -94,8 +95,8 @@ class ListValues extends AbstractTableModel {
    * @param b LinkedList<Bouteille>
    */
   public void setBouteilles(List<? extends IMyCellarObject> b) {
-	  list = b;
-	  fireTableDataChanged();
+    list = b;
+    fireTableDataChanged();
   }
 
   /**
@@ -104,13 +105,13 @@ class ListValues extends AbstractTableModel {
    * @param num Bouteille: bouteille.
    */
   public void removeBouteille(Bouteille num) {
-	  list.remove(num);
-	  fireTableDataChanged();
+    list.remove(num);
+    fireTableDataChanged();
   }
 
-public Bouteille getBouteille(int x) {
-	return (Bouteille) list.get(x);
-}
+  public Bouteille getBouteille(int x) {
+    return (Bouteille) list.get(x);
+  }
 
 
 }

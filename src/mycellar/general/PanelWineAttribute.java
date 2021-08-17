@@ -28,6 +28,7 @@ import java.text.NumberFormat;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.1
  * @since 20/04/21
@@ -35,15 +36,15 @@ import java.text.NumberFormat;
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;
 
-  protected final MyCellarLabel labelStillToAdd = new MyCellarLabel("");
-  protected final MyCellarLabel lastModified = new MyCellarLabel("");
+  private final MyCellarLabel labelStillToAdd = new MyCellarLabel("");
+  private final MyCellarLabel lastModified = new MyCellarLabel("");
 
-  protected final JModifyFormattedTextField price = new JModifyFormattedTextField(NumberFormat.getNumberInstance());
-  protected final JModifyTextField maturity = new JModifyTextField();
-  protected final JModifyTextField parker = new JModifyTextField();
-  protected final JModifyComboBox<BottleColor> colorList = new JModifyComboBox<>();
-  protected final MyCellarSpinner nbItems = new MyCellarSpinner(1, 999);
-  protected final JModifyComboBox<BottlesStatus> statusList = new JModifyComboBox<>();
+  private final JModifyFormattedTextField price = new JModifyFormattedTextField(NumberFormat.getNumberInstance());
+  private final JModifyTextField maturity = new JModifyTextField();
+  private final JModifyTextField parker = new JModifyTextField();
+  private final JModifyComboBox<BottleColor> colorList = new JModifyComboBox<>();
+  private final MyCellarSpinner nbItems = new MyCellarSpinner(1, 999);
+  private final JModifyComboBox<BottlesStatus> statusList = new JModifyComboBox<>();
 
   public PanelWineAttribute() {
     colorList.addItem(BottleColor.NONE);
@@ -57,19 +58,19 @@ public final class PanelWineAttribute extends JPanel {
     statusList.addItem(BottlesStatus.VERIFIED);
     statusList.addItem(BottlesStatus.TOCHECK);
 
-    setLayout(new MigLayout("","[]30px[]30px[]",""));
+    setLayout(new MigLayout("", "[]30px[]30px[]", ""));
     add(new MyCellarLabel(LabelType.INFO, "391"));
     add(new MyCellarLabel(LabelType.INFO, "392"));
-    add(new MyCellarLabel(LabelType.INFO_OTHER, "AddVin.Color"),"wrap");
-    add(maturity,"width min(200,40%)");
-    add(parker,"width min(150,30%)");
-    add(colorList,"wrap, width min(150,30%)");
-    add(new MyCellarLabel(LabelType.INFO, "135"),"wrap");
-    add(price,"width min(100,45%), split 2");
-    add(new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, "€")),"gapleft 5px");
-    add(new MyCellarLabel(LabelType.INFO, "405", LabelProperty.PLURAL),"split, span 2");
-    add(nbItems,"width min(50,10%)");
-    add(labelStillToAdd,"wrap");
+    add(new MyCellarLabel(LabelType.INFO_OTHER, "AddVin.Color"), "wrap");
+    add(maturity, "width min(200,40%)");
+    add(parker, "width min(150,30%)");
+    add(colorList, "wrap, width min(150,30%)");
+    add(new MyCellarLabel(LabelType.INFO, "135"), "wrap");
+    add(price, "width min(100,45%), split 2");
+    add(new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, "€")), "gapleft 5px");
+    add(new MyCellarLabel(LabelType.INFO, "405", LabelProperty.PLURAL), "split, span 2");
+    add(nbItems, "width min(50,10%)");
+    add(labelStillToAdd, "wrap");
     add(new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarManageBottles.status"));
     add(new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarManageBottles.lastModified"), "wrap");
     add(statusList, "width min(150,30%)");
@@ -125,11 +126,11 @@ public final class PanelWineAttribute extends JPanel {
     price.addKeyListener(new KeyAdapter() {
       @Override
       public void keyTyped(KeyEvent e) {
-        if(e.getKeyChar() == ',' || e.getKeyChar() == '.') {
+        if (e.getKeyChar() == ',' || e.getKeyChar() == '.') {
           e.consume();
           char sep = Program.getDecimalSeparator();
           String text = price.getText();
-          price.setText(text+sep);
+          price.setText(text + sep);
         }
       }
     });
@@ -168,7 +169,7 @@ public final class PanelWineAttribute extends JPanel {
   }
 
   public String getParker() {
-    return  parker.getText();
+    return parker.getText();
   }
 
   public String getColor() {
@@ -180,9 +181,14 @@ public final class PanelWineAttribute extends JPanel {
 
   public String getStatus() {
     if (statusList.isModified() && statusList.getSelectedItem() != null) {
-      return ((BottlesStatus)statusList.getSelectedItem()).name();
+      return ((BottlesStatus) statusList.getSelectedItem()).name();
     }
     return BottlesStatus.MODIFIED.name();
+  }
+
+  public void setStatus(IMyCellarObject myCellarObject) {
+    statusList.setSelectedItem(BottlesStatus.getStatus(myCellarObject.getStatus()));
+    lastModified.setText(myCellarObject.getLastModified());
   }
 
   public void resetModified(boolean b) {
@@ -207,11 +213,6 @@ public final class PanelWineAttribute extends JPanel {
     statusList.setSelectedItem(BottlesStatus.NONE);
   }
 
-  public void setStatus(IMyCellarObject myCellarObject) {
-    statusList.setSelectedItem(BottlesStatus.getStatus(myCellarObject.getStatus()));
-    lastModified.setText(myCellarObject.getLastModified());
-  }
-
   public int getNbItems() {
     return Integer.parseInt(nbItems.getValue().toString());
   }
@@ -219,6 +220,7 @@ public final class PanelWineAttribute extends JPanel {
   public JModifyComboBox<BottleColor> getColorList() {
     return colorList;
   }
+
   public JModifyComboBox<BottlesStatus> getStatusList() {
     return statusList;
   }

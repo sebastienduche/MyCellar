@@ -15,36 +15,36 @@ import java.awt.Font;
  */
 public final class MyCellarRadioButton extends JRadioButton implements IMyCellarComponent {
 
-	private static final long serialVersionUID = 5420315767498997450L;
-	private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
+  private static final long serialVersionUID = 5420315767498997450L;
+  private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
-	private LabelType type;
-	private String code;
-	private String value;
-	private LabelProperty labelProperty;
+  private LabelType type;
+  private String code;
+  private String value;
+  private LabelProperty labelProperty;
 
-	@Deprecated
-	public MyCellarRadioButton() {
-		setFont(FONT);
-	}
+  @Deprecated
+  public MyCellarRadioButton() {
+    setFont(FONT);
+  }
 
-	public MyCellarRadioButton(LabelType type, String code, boolean selected) {
-		super("", selected);
-		this.type = type;
-		this.code = code;
-		updateText();
-		MyCellarLabelManagement.add(this);
-		setFont(FONT);
-	}
+  public MyCellarRadioButton(LabelType type, String code, boolean selected) {
+    super("", selected);
+    this.type = type;
+    this.code = code;
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT);
+  }
 
-	@Deprecated
-	public MyCellarRadioButton(String text, boolean selected) {
-		super(text, selected);
-		setFont(FONT);
-	}
+  @Deprecated
+  public MyCellarRadioButton(String text, boolean selected) {
+    super(text, selected);
+    setFont(FONT);
+  }
 
-	@Override
-	public void updateText() {
-		MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
-	}
+  @Override
+  public void updateText() {
+    MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
+  }
 }

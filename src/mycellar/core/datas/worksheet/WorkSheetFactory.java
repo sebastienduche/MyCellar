@@ -15,27 +15,24 @@ import javax.xml.bind.annotation.XmlRegistry;
 class WorkSheetFactory {
 
 
-    /**
-     * Create a new WorkSheetFactory that can be used to create new instances of schema derived classes for package: generated
-     *
-     */
-    public WorkSheetFactory() {
-    }
+  /**
+   * Create a new WorkSheetFactory that can be used to create new instances of schema derived classes for package: generated
+   */
+  public WorkSheetFactory() {
+  }
 
-    /**
-     * Create an instance of {@link WorkSheetList }
-     *
-     */
-    public WorkSheetList createWorkSheetList() {
-        return new WorkSheetList();
-    }
+  /**
+   * Create an instance of {@link WorkSheetList }
+   */
+  public WorkSheetList createWorkSheetList() {
+    return new WorkSheetList();
+  }
 
-    /**
-     * Create an instance of {@link WorkSheetData }
-     *
-     */
-    public WorkSheetData createWorkSheet() {
-        return new WorkSheetData();
-    }
+  /**
+   * Create an instance of {@link WorkSheetData }
+   */
+  public WorkSheetData createWorkSheet() {
+    return new WorkSheetData();
+  }
 
 }

@@ -13,7 +13,7 @@ import com.sebastienduche.Server;
  * @since 08/07/21
  */
 
-public class MyCellarServer extends Server implements Runnable {
+public class MyCellarServer extends Server {
 
 	private static final MyCellarServer INSTANCE = new MyCellarServer();
 
@@ -28,4 +28,5 @@ public class MyCellarServer extends Server implements Runnable {
 	public static void Debug(String sText) {
 		getInstance().debug(sText);
 	}
+
 }

@@ -99,10 +99,7 @@ public class MyCellarError {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj instanceof MyCellarError) {
-      return myCellarObject.equals(((MyCellarError) obj).myCellarObject);
-    }
-    return false;
+    return obj instanceof MyCellarError && myCellarObject.equals(((MyCellarError) obj).myCellarObject);
   }
 
   @Override

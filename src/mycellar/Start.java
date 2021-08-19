@@ -695,7 +695,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     importation.setAccelerator(KeyStroke.getKeyStroke(importChar, InputEvent.CTRL_DOWN_MASK));
     exportation.setAccelerator(KeyStroke.getKeyStroke(exportChar, InputEvent.CTRL_DOWN_MASK));
     modifPlace.setAccelerator(KeyStroke.getKeyStroke(modifyChar, InputEvent.CTRL_DOWN_MASK));
-    quit.setAccelerator(KeyStroke.getKeyStroke(this.quitChar, InputEvent.CTRL_DOWN_MASK));
+    quit.setAccelerator(KeyStroke.getKeyStroke(quitChar, InputEvent.CTRL_DOWN_MASK));
     SwingUtilities.updateComponentTreeUI(this);
     String tmp = Program.getShortFilename();
     Program.DEFAULT_PLACE.setNom(Program.getLabel("Program.DefaultPlace"));
@@ -1708,7 +1708,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class CutAction extends AbstractAction {
+  static final class CutAction extends AbstractAction {
     private static final long serialVersionUID = -8024045169612180263L;
 
     private CutAction() {
@@ -1724,7 +1724,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class CopyAction extends AbstractAction {
+  static final class CopyAction extends AbstractAction {
     private static final long serialVersionUID = -4416042464174203695L;
 
     private CopyAction() {
@@ -1740,7 +1740,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class PasteAction extends AbstractAction {
+  static final class PasteAction extends AbstractAction {
     private static final long serialVersionUID = 7152419581737782003L;
 
     private PasteAction() {
@@ -1823,7 +1823,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  private final class PanelObjectType extends JPanel {
+  private static final class PanelObjectType extends JPanel {
 
     private final MyCellarComboBox<ObjectType> types = new MyCellarComboBox<>();
     private final List<ObjectType> objectTypes = new ArrayList<>();

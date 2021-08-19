@@ -83,8 +83,6 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           tc1[w].setMinWidth(30);
           break;
         case 1:
-          tc1[w].setMinWidth(100);
-          break;
         case 2:
           tc1[w].setMinWidth(100);
           break;

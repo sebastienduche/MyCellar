@@ -584,11 +584,7 @@ public final class Program {
           sDir += File.separator + "MyCellarDebug";
         }
         File f_obj = new File(sDir);
-        boolean ok = true;
-        if (!f_obj.exists()) {
-          ok = f_obj.mkdir();
-        }
-        if (ok) {
+        if (f_obj.exists() || f_obj.mkdir()) {
           String sDate = LocalDate.now().format(DATE_FORMATER_DD_MM_YYYY);
           debugFile = new File(sDir, "Debug-" + sDate + ".log");
           oDebugFile = new FileWriter(debugFile, true);

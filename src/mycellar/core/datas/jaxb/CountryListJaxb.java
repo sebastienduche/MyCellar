@@ -97,7 +97,7 @@ public class CountryListJaxb {
       Marshaller m = jc.createMarshaller();
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
       m.marshal(instance, new StreamResult(f));
-    } catch (Exception e) {
+    } catch (JAXBException e) {
       Program.showException(e);
       return false;
     }

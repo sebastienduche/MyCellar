@@ -807,18 +807,12 @@ public class Music extends MyCellarObject implements Serializable {
     } else if (!tracks.equals(other.tracks)) {
       return false;
     }
-    if (equalsValue(status, other.status)) return false;
-    if (equalsValue(lastModified, other.lastModified)) return false;
-    if (diskNumber != other.diskNumber) {
-      return false;
-    }
-    if (diskCount != other.diskCount) {
-      return false;
-    }
-    if (rating != other.rating) {
-      return false;
-    }
-    return !equalsValue(file, other.file);
+    return !equalsValue(status, other.status) &&
+        !equalsValue(lastModified, other.lastModified) &&
+        diskNumber == other.diskNumber &&
+        diskCount == other.diskCount &&
+        rating == other.rating &&
+        !equalsValue(file, other.file);
   }
 
   @Override

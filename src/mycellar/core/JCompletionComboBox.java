@@ -47,7 +47,7 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
 
   private static final long serialVersionUID = -7209698149395632434L;
   private Object lastSelectedItem;
-  private boolean handleSelectionChange = false;
+  private final boolean handleSelectionChange = false;
   private ComboDocument document;
 
   /**
@@ -130,7 +130,7 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
     if (handleSelectionChange) {
       // Memoriser le dernier objet ajoute a la liste afin de le mettre en
       // evidence dans la combobox
-      this.lastSelectedItem = obj;
+      lastSelectedItem = obj;
     }
   }
 

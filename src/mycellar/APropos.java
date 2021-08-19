@@ -26,10 +26,10 @@ import java.awt.Toolkit;
  * <p>Société : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 1.6
- * @since 25/06/20
+ * @version 1.7
+ * @since 19/08/21
  */
-class APropos extends JDialog {
+final class APropos extends JDialog {
   static final long serialVersionUID = 150505;
   private final MyCellarButton ok = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
   private final MyCellarLabel MyCellarLabel1 = new MyCellarLabel("MyCellar");

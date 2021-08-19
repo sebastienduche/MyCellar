@@ -256,7 +256,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public void setKind(String kind) {
-    this.type = kind;
+    type = kind;
   }
 
   @Override

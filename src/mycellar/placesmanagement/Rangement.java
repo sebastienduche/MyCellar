@@ -606,10 +606,7 @@ public class Rangement implements Comparable<Rangement> {
       return !(isLimited() && !hasFreeSpaceInCaisse(_nEmpl));
     }
 
-    if (_nLine < 0 || _nLine >= getNbLignes(_nEmpl)) {
-      return false;
-    }
-    return !(_nCol < 0 || _nCol >= getNbColonnes(_nEmpl, _nLine));
+    return _nLine >= 0 && _nLine < getNbLignes(_nEmpl) && !(_nCol < 0 || _nCol >= getNbColonnes(_nEmpl, _nLine));
   }
 
   public boolean canAddBottle(Place place) {
@@ -628,11 +625,8 @@ public class Rangement implements Comparable<Rangement> {
 
   @Deprecated
   private boolean hasFreeSpaceInCaisse(int _nEmpl) {
-    if (!isCaisse()) {
-      return false;
-    }
+    return isCaisse() && (!isLimited() || getNbCaseUse(_nEmpl) != getNbColonnesStock());
 
-    return !isLimited() || getNbCaseUse(_nEmpl) != getNbColonnesStock();
   }
 
   /**

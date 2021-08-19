@@ -108,9 +108,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Program.Debug("AddVin: " + sText);
   }
 
-  /**
-   * Remise &agrave; z&eacute;ro des champs saisissable
-   */
   private void resetValues() {
     Debug("Reset Values...");
     panelGeneral.resetValues();
@@ -322,7 +319,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
               if (rangement.isLimited() && (rangement.getNbCaseUse(place) + nb_bottle_rest + 1) > rangement.getNbColonnesStock()) {
                 resul = false;
                 Debug("ERROR: This caisse is full. Unable to add all bottles in the same place!");
-                m_bbottle_add = false;
                 Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
                 m_end.setText("");
               } else {
@@ -338,27 +334,24 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           } // Fin de l'ajout de plusieurs bouteilles restantes
 
           if (nb_bottle_rest == 0) {
-            boolean addReturn = true;
             if (m_bmodify) {
               //Suppression de la bouteille lors de la modification
               Debug("Updating bottle when modifying");
               bottle.getRangement().clearStock(bottle, bottle.getPlace());
               bottle.update(bouteille);
               Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
+              m_bbottle_add = true;
             } else {
               //Ajout de la bouteille
               Debug("Adding bottle...");
               Program.getStorage().addHistory(HistoryState.ADD, bouteille);
-              addReturn = rangement.addWine(bouteille);
+              m_bbottle_add = rangement.addWine(bouteille);
             }
 
-            //Ajout dans ALL
-            if (addReturn) {
-              m_bbottle_add = true;
+            if (m_bbottle_add) {
               resetValues();
             } else {
               Debug("ERROR: Adding bottle: Storage full");
-              m_bbottle_add = false;
               Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error151"), rangement.getNom()), Program.getError("Error153"));
               resul = false;
             }
@@ -366,7 +359,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         } else { //if(! m_bmulti) Multi == true => Modification de plusieurs vins vers une caisse
           //Recuperation des differentes bouteilles
           Debug("Modifying multiple bottles to a Simple place");
-          resul = true;
           if (!place.hasPlace()) {
             Debug("Modifying without changing place");
             boolean bOneBottle = listBottleInModification.size() == 1;

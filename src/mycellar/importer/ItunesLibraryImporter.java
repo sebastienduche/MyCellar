@@ -52,7 +52,7 @@ public class ItunesLibraryImporter {
     MUSIC_INFO_MAP.put("Composer", new MusicInfo("string", MyCellarFields.COMPOSER));
   }
 
-  List<Music> list = new LinkedList<>();
+  private final List<Music> list = new LinkedList<>();
 
   public List<Music> loadItunesLibrary(File file) throws NoITunesFileException {
     if (!file.exists()) {

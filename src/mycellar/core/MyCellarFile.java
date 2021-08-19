@@ -204,11 +204,7 @@ public class MyCellarFile {
           // affichage du nom de l'entree
           // creation fichier
           File f = new File(dest_dir);
-          boolean ok = true;
-          if (!f.exists()) {
-            ok = f.mkdir();
-          }
-          if (ok) {
+          if (f.exists() || f.mkdir()) {
             var fileOutputStream = new FileOutputStream(dest_dir + File.separator + entry.getName());
             Debug("Unzip: File " + dest_dir + File.separator + entry.getName());
             // affectation buffer de sortie

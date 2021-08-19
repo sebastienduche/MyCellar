@@ -240,21 +240,21 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
       if (type_XML.isSelected()) {
         if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
           Debug("ERROR: Not a XML File");
-          //"Le fichier saisie ne possede pas une extension XML: " + str_tmp3);
+          //"Le fichier saisi ne possede pas une extension XML: " + str_tmp3);
           Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom));
           return;
         }
       } else if (type_HTML.isSelected()) {
         if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_HTML.toString()))) {
           Debug("ERROR: Not a HTML File");
-          //"Le fichier saisie ne possede pas une extension HTML: " + str_tmp3);
+          //"Le fichier saisi ne possede pas une extension HTML: " + str_tmp3);
           Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
           return;
         }
       } else if (type_XLS.isSelected()) {
         if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
           Debug("ERROR: Not a XLS File");
-          //"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
+          //"Le fichier saisi ne possede pas une extension Excel: " + str_tmp3);
           Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
           return;
         }

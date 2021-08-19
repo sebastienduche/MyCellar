@@ -21,7 +21,7 @@ import java.util.Objects;
  * @version 0.4
  * @since 08/03/19
  */
-class LabelSearch extends JPanel {
+final class LabelSearch extends JPanel {
 
   private static final long serialVersionUID = 3361283505652395494L;
   private final IPredicate<?> predicate;
@@ -174,20 +174,24 @@ class LabelSearch extends JPanel {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (!Objects.equals(getClass(), obj.getClass()))
+    }
+    if (!Objects.equals(getClass(), obj.getClass())) {
       return false;
+    }
+    assert obj instanceof LabelSearch;
     LabelSearch other = (LabelSearch) obj;
     if (label == null) {
-      if (other.label != null)
+      if (other.label != null) {
         return false;
-    } else if (!label.equals(other.label))
+      }
+    } else if (!label.equals(other.label)) {
       return false;
-    if (!other.copy)
-      return false;
-    return true;
+    }
+    return other.copy;
   }
 }

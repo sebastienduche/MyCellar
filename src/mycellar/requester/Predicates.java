@@ -95,10 +95,7 @@ public class Predicates {
     public boolean apply(IMyCellarObject bottle, Object compare, int type) {
       final String status = bottle.getStatus();
       final BottlesStatus bottlesStatus = (BottlesStatus) compare;
-      if (status.isEmpty() && BottlesStatus.NONE.equals(bottlesStatus)) {
-        return true;
-      }
-      return status.equals(bottlesStatus.name());
+      return (status.isEmpty() && BottlesStatus.NONE.equals(bottlesStatus)) || status.equals(bottlesStatus.name());
     }
 
     @Override
@@ -491,19 +488,10 @@ public class Predicates {
       }
       VignobleJaxb compareVignobleJaxb = (VignobleJaxb) compare;
       final VignobleJaxb vignobleJaxb = bouteille.getVignoble();
-      if (!compareVignobleJaxb.getCountry().equals(vignobleJaxb.getCountry())) {
-        return false;
-      }
-      if (!compareVignobleJaxb.getName().isEmpty() && !compareVignobleJaxb.getName().equals(vignobleJaxb.getName())) {
-        return false;
-      }
-      if (!compareVignobleJaxb.getAOC().isEmpty() && !compareVignobleJaxb.getAOC().equals(vignobleJaxb.getAOC())) {
-        return false;
-      }
-      if (!compareVignobleJaxb.getIGP().isEmpty() && !compareVignobleJaxb.getIGP().equals(vignobleJaxb.getIGP())) {
-        return false;
-      }
-      return true;
+      return compareVignobleJaxb.getCountry().equals(vignobleJaxb.getCountry()) &&
+          (compareVignobleJaxb.getName().isEmpty() || compareVignobleJaxb.getName().equals(vignobleJaxb.getName())) &&
+          (compareVignobleJaxb.getAOC().isEmpty() || compareVignobleJaxb.getAOC().equals(vignobleJaxb.getAOC())) &&
+          (compareVignobleJaxb.getIGP().isEmpty() || compareVignobleJaxb.getIGP().equals(vignobleJaxb.getIGP()));
     }
 
     @Override

@@ -5,6 +5,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -306,12 +307,7 @@ public class XYGridLayout implements ComponentListener {
         sizecolumn.add("0");
       }
     }
-    int size_column = 0;
-    try {
-      size_column = Integer.parseInt(sizecolumn.get(column));
-    } catch (IndexOutOfBoundsException ioobe) {
-      sizecolumn.add("0");
-    }
+    int size_column = Integer.parseInt(sizecolumn.get(column));
     //On redimensionne la colonne si n�cessaire
     if (size_column == 0 || size_column < width) {
       sizecolumn.set(column, Integer.toString(width));
@@ -374,12 +370,7 @@ public class XYGridLayout implements ComponentListener {
         sizecolumn.add("0");
       }
     }
-    int size_column = 0;
-    try {
-      size_column = Integer.parseInt(sizecolumn.get(column));
-    } catch (IndexOutOfBoundsException ioobe) {
-      sizecolumn.add("0");
-    }
+    int size_column = Integer.parseInt(sizecolumn.get(column));
     //On redimensionne la colonne si n�cessaire
     if ((size_column == 0 || size_column < width) && nb_col == 1) {
       sizecolumn.set(column, Integer.toString(width));
@@ -432,13 +423,13 @@ public class XYGridLayout implements ComponentListener {
    * @param setsize boolean indique si la taille minimale de la fen�tre doit �tre calcul�e
    */
   private void updateSizeColumn(boolean setsize) {
-    //On met toute les tailles des colonnes dans un tableau
-    int size_col[] = new int[sizecolumn.size()];
+    //On met toutes les tailles des colonnes dans un tableau
+    int[] size_col = new int[sizecolumn.size()];
     for (int i = 0; i < size_col.length; i++) {
       size_col[i] = Integer.parseInt(sizecolumn.get(i));
     }
     //On r�cup�re les tailles maximales des colonnes demand�s par les composants
-    int max_size_col[] = new int[sizecolumn.size()];
+    int[] max_size_col = new int[sizecolumn.size()];
     //On traite d'abord les composants tenants sur une colonne
     for (int i = 0; i < list.size(); i++) {
       JComponent comp = list.get(i);
@@ -461,7 +452,7 @@ public class XYGridLayout implements ComponentListener {
       int width = comp.getSize().width;
       int col = Integer.parseInt(list_column.get(i));
       int nb_col = Integer.parseInt(list_nb_column.get(i));
-      //On supprime la taille des espacement entre colonne pour calculer correctement les tailles des colonnes
+      //On supprime la taille des espacements entre colonne pour calculer correctement les tailles des colonnes
       width -= (nb_col - 1) * space_column;
       if (nb_col > 1) {
         int size_tot = 0;
@@ -471,11 +462,11 @@ public class XYGridLayout implements ComponentListener {
         if (size_tot < width) {
           //Am�lioration v 0.7
           Boolean b = resizable.get(i);
-          //Si l'on est en train d'ex�cuter setMinimumWidthForJLabelColumn et que le composant peux �tre redimensionn� alors c'est la taille minimale du composant que l'on modifie
+          //Si l'on est en train d'ex�cuter setMinimumWidthForJLabelColumn et que le composant peut etre redimensionne alors c'est la taille minimale du composant que l'on modifie
           //pour les JLabel size_tot contient d�j� la taille min obligatoire et pour les autres composants on s'autorise � r�duire leur largeur afin de s'adapter � la colonne
           if (auto_resize && b) {
             list_min_size.set(i, Integer.toString(size_tot));
-          } else { //Sinon on utilise l'option par d�faut: Redimensionnement de la colonne pour contenir le composant
+          } else { //Sinon on utilise l'option par defaut: Redimensionnement de la colonne pour contenir le composant
             max_size_col[col + nb_col - 1] += (width - size_tot);
           }
           //Fin Am�lioration v 0.7
@@ -484,15 +475,15 @@ public class XYGridLayout implements ComponentListener {
         //Si l'option de redimensionnement des JLabel centr� est active (true par d�faut)
         //Si le composant est un JLabel on va regarder si l'a les propri�t�s pour �tre redimensionn�e � la largeur de la fen�tre
         if (auto_resize_centered_JLabel && comp instanceof JLabel) {
-          //On r�cup�re le nombre de colonne
+          //On r�cup�re le nombre de colonnes
           int max_nb_col = sizecolumn.size();
           //On ne compte pas la derni�re si elle est vide
           if (Integer.parseInt(sizecolumn.get(max_nb_col - 1)) == 0) {
             max_nb_col--;
           }
           JLabel aLabel = (JLabel) comp;
-          //Si le JLabel d�bute sur la premi�re colonne est se termine sur la derni�re et qu'il peux �tre redimensionn� et qu'il est centr�
-          if (col == 0 && nb_col == max_nb_col && resizable.get(i) && aLabel.getHorizontalAlignment() == JLabel.CENTER) {
+          //Si le JLabel d�bute sur la premi�re colonne est se termine sur la derni�re et qu'il peut �tre redimensionn� et qu'il est centr�
+          if (col == 0 && nb_col == max_nb_col && resizable.get(i) && aLabel.getHorizontalAlignment() == SwingConstants.CENTER) {
             size_tot = 0;
             for (int j = 0; j < nb_col; j++) {
               size_tot += max_size_col[j];
@@ -518,8 +509,8 @@ public class XYGridLayout implements ComponentListener {
    * @param setsize boolean True uniquement lors de l'ajout de composants
    */
   private void updateLocation(boolean setsize) {
-    //On met toute les tailles des colonnes dans un tableau
-    int size_col[] = new int[sizecolumn.size()];
+    //On met toutes les tailles des colonnes dans un tableau
+    int[] size_col = new int[sizecolumn.size()];
     for (int i = 0; i < size_col.length; i++) {
       size_col[i] = Integer.parseInt(sizecolumn.get(i));
     }
@@ -551,7 +542,7 @@ public class XYGridLayout implements ComponentListener {
     if (setsize) {
       size_width = max_size_width;
       //On d�finit la taille minimale du composant principal
-      // Si la taille de la fen�tre est plus grande que la taille minimale calcul� et qu'on l'on est pas dans setMinimumWidthForJLabelColumn
+      // Si la taille de la fen�tre est plus grande que la taille minimale calcul� et qu'on l'on n'est pas dans setMinimumWidthForJLabelColumn
       if (the_window.getSize().width > size_width && !auto_resize) { // Correction v 0.8
         size_width = the_window.getSize().width;
       }
@@ -572,10 +563,10 @@ public class XYGridLayout implements ComponentListener {
     int dif_width = jframe_width - size_width;
     //On ne redimensionne que s'il y a reellement eu un redimensionnement du composant principal
     if (dif_width != 0) {
-      //Si la fen�tre est plus grande que la taille minimale autoris�e, on peux redimensionner
+      //Si la fen�tre est plus grande que la taille minimale autorisee, on peut redimensionner
       if (min_width < jframe_width) {
-        //Les colonnes contiennent-elles des composants devant �tre redimensionn�s?
-        boolean can_resize[] = new boolean[sizecolumn.size()];
+        //Les colonnes contiennent-elles des composants devant etre redimensionn�s?
+        boolean[] can_resize = new boolean[sizecolumn.size()];
         //On s'occupe d'abord des composants tenant sur une colonne
         for (int i = 0; i < list.size(); i++) {
           Boolean b = resizable.get(i);
@@ -609,7 +600,7 @@ public class XYGridLayout implements ComponentListener {
           if (can_resize[y]) {
             for (int i = 0; i < tab_resize.length; i++) {
               if (tab_resize[i][y] == 1) {
-                //Ce composant sera redimensionn� donc on peux mettre toutes les cases qu'il occupe � 0
+                //Ce composant sera redimensionn� donc on peut mettre toutes les cases qu'il occupe � 0
                 boolean same_comp = true;
                 //On met � 0 les cases qui appartiennent au composant
                 //1�re partie cases � partir de la case courante
@@ -646,8 +637,8 @@ public class XYGridLayout implements ComponentListener {
           //Somme des colonnes
           for (int i = 0; i < tab_resize[0].length; i++) {
             int sum = 0;
-            for (int j = 0; j < tab_resize.length; j++) {
-              sum += tab_resize[j][i];
+            for (int[] ints : tab_resize) {
+              sum += ints[i];
             }
             //Si la somme est sup�rieur � 0 ou qu'elle est �gale � celle d'une pr�c�dente colonne
             if (sum > 0 && sum >= max) {
@@ -693,13 +684,13 @@ public class XYGridLayout implements ComponentListener {
 
         //Calcul du nombre de colonnes pouvant �tre redimensionn�
         int nb_can_resize = 0;
-        for (int i = 0; i < can_resize.length; i++) {
-          if (can_resize[i]) {
+        for (boolean value : can_resize) {
+          if (value) {
             nb_can_resize++;
           }
         }
         //Taille minimale des colonnes: On g�re d'abord les composants tenant sur 1 colonne
-        int min_col_size[] = new int[sizecolumn.size()];
+        int[] min_col_size = new int[sizecolumn.size()];
         for (int i = 0; i < list.size(); i++) {
           //Si le composant tient sur une colonne et que sa taille minimale n�cessaire est sup�rieur � la taille min de sa col, on modifie la taille min de la colonne
           if (Integer.parseInt(list_nb_column.get(i)) <= 1 &&
@@ -945,7 +936,7 @@ public class XYGridLayout implements ComponentListener {
     if (column >= 0) {
       auto_resize = true;
       boolean isJLabelmodified = false;
-      JLabel aLabel = null;
+      JLabel aLabel;
       int column_size = 0;
       //On parcourt la liste des composants
       for (int i = 0; i < list.size(); i++) {
@@ -954,7 +945,7 @@ public class XYGridLayout implements ComponentListener {
         if (comp instanceof JLabel && Integer.parseInt(list_column.get(i)) == column) {
           aLabel = (JLabel) comp;
           //On v�rifie que l'alignement n'est pas CENTER pour eviter que le JLabel ne soit pas centr�
-          if (aLabel.getHorizontalAlignment() != JLabel.CENTER) { //correction v 0.8
+          if (aLabel.getHorizontalAlignment() != SwingConstants.CENTER) { //correction v 0.8
             //On r�cup�re le FontMetrics en fonction de la Font du JLabel
             FontMetrics metrics = container.getFontMetrics(aLabel.getFont());
             //On r�cup�re la largeur du message du JLabel

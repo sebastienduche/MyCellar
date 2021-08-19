@@ -8,12 +8,9 @@ public abstract class MyCellarObject implements IMyCellarObject {
 
   protected boolean equalsValue(String value, String other) {
     if (value == null) {
-      if (other != null) {
-        return true;
-      }
-    } else if (!value.equals(other)) {
-      return true;
+      return other != null;
+    } else {
+      return !value.equals(other);
     }
-    return false;
   }
 }

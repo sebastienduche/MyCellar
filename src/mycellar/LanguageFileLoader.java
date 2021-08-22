@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
@@ -20,8 +21,8 @@ import java.util.ResourceBundle.Control;
  * <p>Société : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 1.0
- * @since 03/12/20
+ * @version 1.1
+ * @since 22/08/21
  */
 public class LanguageFileLoader {
 
@@ -30,6 +31,7 @@ public class LanguageFileLoader {
   private static final String CODE_LANG = "CodeLang";
   private Language language;
   private ResourceBundle bundleTitle;
+  private ResourceBundle bundleMusicTitle;
   private ResourceBundle bundleError;
   private ResourceBundle bundleLanguage;
   private LanguageFileLoader() {
@@ -44,6 +46,11 @@ public class LanguageFileLoader {
     if (INSTANCE.bundleTitle == null) {
       Debug("ERROR: Labels' map not intialized!");
       return "";
+    }
+    if (Program.isMusicType()) {
+    	try {
+    	  return INSTANCE.bundleMusicTitle.getString(_id);
+    	} catch(MissingResourceException e) {}
     }
     return INSTANCE.bundleTitle.getString(_id);
   }
@@ -104,11 +111,6 @@ public class LanguageFileLoader {
     return getInstance().language == Language.FRENCH;
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
   private static void Debug(String sText) {
     Program.Debug("LanguageFileLoader: " + sText);
   }
@@ -125,6 +127,7 @@ public class LanguageFileLoader {
     }
     bundleTitle = ResourceBundle.getBundle("title", locale, new UTF8Control());
     bundleError = ResourceBundle.getBundle("error", locale, new UTF8Control());
+    bundleMusicTitle = ResourceBundle.getBundle("music", locale, new UTF8Control());
     bundleLanguage = ResourceBundle.getBundle("language", Locale.FRENCH, new UTF8Control());
   }
 

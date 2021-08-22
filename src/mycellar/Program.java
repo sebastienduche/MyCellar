@@ -12,6 +12,7 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.common.MyCellarFields;
+import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
@@ -83,13 +84,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.6
- * @since 09/06/21
+ * @version 26.7
+ * @since 22/08/21
  */
 
 public final class Program {
 
-  public static final String INTERNAL_VERSION = "4.2.1.7";
+  public static final String INTERNAL_VERSION = "4.2.2.4";
   public static final int VERSION = 70;
   public static final String DEFAULT_STORAGE_EN = "Default storage";
   public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
@@ -127,6 +128,7 @@ public final class Program {
   private static final String PREVIEW_HTML = "preview.html";
   private static final String MY_CELLAR_XML = "MyCellar.xml";
   private static final String TYPES_XML = "Types.xml";
+  private static final String TYPES_MUSIC_XML = "music_types.xml";
   private static final String BOUTEILLES_XML = "Bouteilles.xml";
   private static final String CONFIG_INI = "config.ini";
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
@@ -778,6 +780,8 @@ public final class Program {
     if (isWineType()) {
       MyCellarBottleContenance.load();
       CountryVignobleController.load();
+    } else if (isMusicType()) {
+    	MyCellarMusicSupport.load();
     }
 
     RangementUtils.putTabStock();
@@ -1115,6 +1119,10 @@ public final class Program {
   public static String getXMLTypesFileName() {
     return getWorkDir(true) + TYPES_XML;
   }
+  
+  public static String getXMLMusicTypesFileName() {
+	    return getWorkDir(true) + TYPES_MUSIC_XML;
+	  }
 
   public static String getXMLBottlesFileName() {
     return getWorkDir(true) + BOUTEILLES_XML;

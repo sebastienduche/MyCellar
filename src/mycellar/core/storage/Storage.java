@@ -7,7 +7,6 @@ import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.worksheet.WorkSheetList;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -17,8 +16,8 @@ import java.util.List;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 19/05/21
+ * @version 2.4
+ * @since 22/08/21
  */
 
 public interface Storage {
@@ -29,7 +28,7 @@ public interface Storage {
 
   void setListMyCellarObject(ListeBouteille listMyCellarObject);
 
-  LinkedList<String> getDistinctNames();
+  List<String> getDistinctNames();
 
   void addHistory(HistoryState historyState, MyCellarObject myCellarObject);
 

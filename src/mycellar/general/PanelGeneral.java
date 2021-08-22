@@ -18,6 +18,7 @@ import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import net.miginfocom.swing.MigLayout;
 
@@ -38,8 +39,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 23/04/21
+ * @version 0.3
+ * @since 22/08/21
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -93,7 +94,11 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     year.setEditable(!nonVintage);
     type.removeAllItems();
     type.addItem("");
-    MyCellarBottleContenance.getList().forEach(type::addItem);
+    if (Program.isMusicType()) {
+    	MyCellarMusicSupport.getList().forEach(type::addItem);
+    } else {
+    	MyCellarBottleContenance.getList().forEach(type::addItem);
+    }
     type.setSelectedItem(myCellarObject.getKind());
 
     String half_tmp = "";
@@ -101,7 +106,11 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       half_tmp = type.getSelectedItem().toString();
     }
     if (!half_tmp.equals(myCellarObject.getKind()) && !myCellarObject.getKind().isEmpty()) {
-      MyCellarBottleContenance.getList().add(myCellarObject.getKind());
+      if (Program.isMusicType()) {
+      	MyCellarMusicSupport.getList().add(myCellarObject.getKind());
+      } else {
+    	  MyCellarBottleContenance.getList().add(myCellarObject.getKind());
+      }
       type.addItem(myCellarObject.getKind());
       type.setSelectedItem(myCellarObject.getKind());
     }
@@ -181,8 +190,13 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   public void updateView() {
     type.removeAllItems();
     type.addItem("");
-    MyCellarBottleContenance.getList().forEach(type::addItem);
-    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+    if (Program.isMusicType()) {
+    	MyCellarMusicSupport.getList().forEach(type::addItem);
+        type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
+    } else {
+	    MyCellarBottleContenance.getList().forEach(type::addItem);
+	    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+    }
   }
 
   public PanelGeneral setMyCellarObject(IMyCellarObject myCellarObject) {
@@ -208,8 +222,13 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     initNameCombo();
 
     type.addItem("");
-    MyCellarBottleContenance.getList().forEach(type::addItem);
-    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+    if (Program.isMusicType()) {
+    	MyCellarMusicSupport.getList().forEach(type::addItem);
+        type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
+    } else {
+	    MyCellarBottleContenance.getList().forEach(type::addItem);
+	    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+    }
 
     setYearAuto();
     initYearAndContenance();
@@ -299,7 +318,11 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   }
 
   public void setTypeDefault() {
-    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+	  if (Program.isMusicType()) {
+		  type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
+	  } else {
+		  type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+	  }
   }
 
   public boolean runExit(boolean modify) {
@@ -349,8 +372,13 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
     type.removeAllItems();
     type.addItem("");
-    MyCellarBottleContenance.getList().forEach(type::addItem);
-    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+    if (Program.isMusicType()) {
+    	MyCellarMusicSupport.getList().forEach(type::addItem);
+        type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
+    } else {
+	    MyCellarBottleContenance.getList().forEach(type::addItem);
+	    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+    }
 
     setYearAuto();
     manageContenance.setText(Program.getLabel("Infos400"));

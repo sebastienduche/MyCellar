@@ -26,6 +26,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
 import mycellar.core.TabEvent;
 import mycellar.core.common.MyCellarFields;
+import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.placesmanagement.Rangement;
@@ -77,8 +78,8 @@ import static mycellar.Program.toCleanString;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.5
- * @since 20/05/21
+ * @version 14.6
+ * @since 22/08/21
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -617,7 +618,11 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       Program.showException(exc);
     }
     if (RangementUtils.putTabStock()) {
-      MyCellarBottleContenance.load();
+    	if (Program.isMusicType()) {
+    		MyCellarMusicSupport.load();
+    	} else {
+    		MyCellarBottleContenance.load();
+    	}
     } else {
       new OpenShowErrorsAction().actionPerformed(null);
     }

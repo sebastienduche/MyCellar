@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.0
- * @since 19/05/21
+ * @version 7.1
+ * @since 22/08/21
  */
 
 public class SerializedStorage implements Storage {
@@ -121,8 +121,11 @@ public class SerializedStorage implements Storage {
   }
 
   @Override
-  public LinkedList<String> getDistinctNames() {
-    return distinctNames;
+  public List<String> getDistinctNames() {
+    return distinctNames
+    		.stream()
+    		.map(value -> value.length() > 50 ? value.substring(0, 50) : value)
+    		.collect(Collectors.toList());
   }
 
 

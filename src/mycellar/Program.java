@@ -781,7 +781,7 @@ public final class Program {
       MyCellarBottleContenance.load();
       CountryVignobleController.load();
     } else if (isMusicType()) {
-    	MyCellarMusicSupport.load();
+      MyCellarMusicSupport.load();
     }
 
     RangementUtils.putTabStock();
@@ -1119,10 +1119,10 @@ public final class Program {
   public static String getXMLTypesFileName() {
     return getWorkDir(true) + TYPES_XML;
   }
-  
+
   public static String getXMLMusicTypesFileName() {
-	    return getWorkDir(true) + TYPES_MUSIC_XML;
-	  }
+    return getWorkDir(true) + TYPES_MUSIC_XML;
+  }
 
   public static String getXMLBottlesFileName() {
     return getWorkDir(true) + BOUTEILLES_XML;

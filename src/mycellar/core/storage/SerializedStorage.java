@@ -38,7 +38,8 @@ public class SerializedStorage implements Storage {
   private static final String WORKSHEET_XML = "worksheet.xml";
   private static final HistoryList HISTORY_LIST = new HistoryList();
   private static final WorkSheetList WORKSHEET_LIST = new WorkSheetList();
-  private final LinkedList<String> distinctNames = new LinkedList<>(); // Liste des noms de bouteille (un seule nom)
+  private static final int DISTINCT_NAME_LENGTH = 50;
+  private final List<String> distinctNames = new LinkedList<>(); // Liste des noms de bouteille (un seul nom)
   private ListeBouteille listMyCellarObject = new ListeBouteille();
   private int itemsCount;
   private boolean worksheetModified = false;
@@ -123,9 +124,9 @@ public class SerializedStorage implements Storage {
   @Override
   public List<String> getDistinctNames() {
     return distinctNames
-    		.stream()
-    		.map(value -> value.length() > 50 ? value.substring(0, 50) : value)
-    		.collect(Collectors.toList());
+        .stream()
+        .map(value -> value.length() > DISTINCT_NAME_LENGTH ? value.substring(0, DISTINCT_NAME_LENGTH) : value)
+        .collect(Collectors.toList());
   }
 
 

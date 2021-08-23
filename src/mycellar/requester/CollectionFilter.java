@@ -152,9 +152,9 @@ public class CollectionFilter<T> {
           }
           if (!previous.equals(predicate.getPredicate())) {
             if (Predicates.AND.equals(previous)) {
-              INSTANCE.and(predicatesToDo);
+              and(predicatesToDo);
             } else if (Predicates.OR.equals(previous)) {
-              INSTANCE.or(predicatesToDo);
+              or(predicatesToDo);
             }
             predicatesToDo.clear();
           }
@@ -169,7 +169,7 @@ public class CollectionFilter<T> {
 
       if (previous != null) {
         if (Predicates.AND.equals(previous)) {
-          INSTANCE.and(predicatesToDo);
+          and(predicatesToDo);
         } else if (Predicates.OR.equals(previous)) {
           Collection resultTmp = result;
           select(src, predicatesToDo);

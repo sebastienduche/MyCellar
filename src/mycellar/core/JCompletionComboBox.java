@@ -46,8 +46,8 @@ import java.util.List;
 public class JCompletionComboBox<T> extends JComboBox<T> {
 
   private static final long serialVersionUID = -7209698149395632434L;
-  private Object lastSelectedItem;
   private final boolean handleSelectionChange = false;
+  private Object lastSelectedItem;
   private ComboDocument document;
 
   /**

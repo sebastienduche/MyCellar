@@ -618,11 +618,11 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       Program.showException(exc);
     }
     if (RangementUtils.putTabStock()) {
-    	if (Program.isMusicType()) {
-    		MyCellarMusicSupport.load();
-    	} else {
-    		MyCellarBottleContenance.load();
-    	}
+      if (Program.isMusicType()) {
+        MyCellarMusicSupport.load();
+      } else {
+        MyCellarBottleContenance.load();
+      }
     } else {
       new OpenShowErrorsAction().actionPerformed(null);
     }

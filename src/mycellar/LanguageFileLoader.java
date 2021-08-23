@@ -34,6 +34,7 @@ public class LanguageFileLoader {
   private ResourceBundle bundleMusicTitle;
   private ResourceBundle bundleError;
   private ResourceBundle bundleLanguage;
+
   private LanguageFileLoader() {
     loadLanguageFiles(Language.ENGLISH);
   }
@@ -48,9 +49,10 @@ public class LanguageFileLoader {
       return "";
     }
     if (Program.isMusicType()) {
-    	try {
-    	  return INSTANCE.bundleMusicTitle.getString(_id);
-    	} catch(MissingResourceException e) {}
+      try {
+        return INSTANCE.bundleMusicTitle.getString(_id);
+      } catch (MissingResourceException ignored) {
+      }
     }
     return INSTANCE.bundleTitle.getString(_id);
   }

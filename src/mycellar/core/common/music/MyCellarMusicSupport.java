@@ -92,7 +92,7 @@ public final class MyCellarMusicSupport {
   }
 
   private void loadFile() {
-	Arrays.asList(MusicSupport.values()).forEach(support -> list.add(support.toString()));
+    Arrays.asList(MusicSupport.values()).forEach(support -> list.add(support.toString()));
     readTypesXml();
     if (Program.getStorage().getAllList() != null) {
       final List<String> collect = Program.getStorage().getAllList()
@@ -107,9 +107,7 @@ public final class MyCellarMusicSupport {
           list.add(val);
         }
       }
-      if (list.contains("")) {
-    	  list.remove("");
-      }
+      list.remove("");
     }
 
     defaultValue = MusicSupport.DIGITAL.toString();

@@ -46,8 +46,6 @@ import java.io.Serializable;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -75,7 +73,7 @@ public class VignobleJaxb implements Serializable {
   private String aop;
 
   @XmlElement()
-  private long id;
+  private final long id;
 
   public VignobleJaxb() {
     id = IdGenerator.generateID();

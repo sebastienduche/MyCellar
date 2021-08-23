@@ -4,6 +4,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -50,7 +51,7 @@ class MyCellarLauncherLoading extends JDialog {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     setTitle("Loading...");
     setLocation((screenSize.width - 270) / 2, (screenSize.height - 75) / 2);
-    label = new JLabel(txt, JLabel.CENTER);
+    label = new JLabel(txt, SwingConstants.CENTER);
     jProgressBar1.setMinimum(0);
     jProgressBar1.setMaximum(100);
     getContentPane().setLayout(gridBagLayout1);

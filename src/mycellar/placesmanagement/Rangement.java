@@ -282,7 +282,7 @@ public class Rangement implements Comparable<Rangement> {
         resul += 1;
       }
     }
-  return resul;
+    return resul;
   }
 
   /**

@@ -1180,6 +1180,88 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
+  static final class CutAction extends AbstractAction {
+    private static final long serialVersionUID = -8024045169612180263L;
+
+    private CutAction() {
+      super(Program.getLabel("Infos241"), MyCellarImage.CUT);
+      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos241"));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      if (ProgramPanels.isCutCopyPastTab()) {
+        ProgramPanels.getSelectedComponent(ICutCopyPastable.class).cut();
+      }
+    }
+  }
+
+  static final class CopyAction extends AbstractAction {
+    private static final long serialVersionUID = -4416042464174203695L;
+
+    private CopyAction() {
+      super(Program.getLabel("Infos242"), MyCellarImage.COPY);
+      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos242"));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      if (ProgramPanels.isCutCopyPastTab()) {
+        ProgramPanels.getSelectedComponent(ICutCopyPastable.class).copy();
+      }
+    }
+  }
+
+  static final class PasteAction extends AbstractAction {
+    private static final long serialVersionUID = 7152419581737782003L;
+
+    private PasteAction() {
+      super(Program.getLabel("Infos243"), MyCellarImage.PASTE);
+      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos243"));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      if (ProgramPanels.isCutCopyPastTab()) {
+        ProgramPanels.getSelectedComponent(ICutCopyPastable.class).paste();
+      }
+    }
+  }
+
+  private static final class PanelObjectType extends JPanel {
+
+    private final MyCellarComboBox<ObjectType> types = new MyCellarComboBox<>();
+    private final List<ObjectType> objectTypes = new ArrayList<>();
+    MyCellarLabel label_objectType = new MyCellarLabel(LabelType.INFO_OTHER, "Parameters.typeLabel");
+
+    private PanelObjectType() {
+      Arrays.stream(Program.Type.values())
+          .filter(type -> !type.equals(Program.Type.BOOK))
+          .forEach(type -> {
+            final ObjectType type1 = new ObjectType(type);
+            objectTypes.add(type1);
+            types.addItem(type1);
+          });
+
+      ObjectType objectType = findObjectType(Program.Type.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
+      types.setSelectedItem(objectType);
+
+      setLayout(new MigLayout("", "[grow]", "[]25px[]"));
+      add(new MyCellarLabel(Program.getLabel("Start.selectTypeObject")), "span 2, wrap");
+      add(label_objectType);
+      add(types);
+    }
+
+    private ObjectType findObjectType(Program.Type type) {
+      final Optional<ObjectType> first = objectTypes.stream().filter(objectType -> objectType.getType() == type).findFirst();
+      return first.orElse(null);
+    }
+
+    public Program.Type getSelectedType() {
+      return ((ObjectType) Objects.requireNonNull(types.getSelectedItem())).getType();
+    }
+  }
+
   final class OpenAction extends AbstractAction {
     private static final long serialVersionUID = -3212527164505184899L;
 
@@ -1708,54 +1790,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  static final class CutAction extends AbstractAction {
-    private static final long serialVersionUID = -8024045169612180263L;
-
-    private CutAction() {
-      super(Program.getLabel("Infos241"), MyCellarImage.CUT);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos241"));
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.isCutCopyPastTab()) {
-        ProgramPanels.getSelectedComponent(ICutCopyPastable.class).cut();
-      }
-    }
-  }
-
-  static final class CopyAction extends AbstractAction {
-    private static final long serialVersionUID = -4416042464174203695L;
-
-    private CopyAction() {
-      super(Program.getLabel("Infos242"), MyCellarImage.COPY);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos242"));
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.isCutCopyPastTab()) {
-        ProgramPanels.getSelectedComponent(ICutCopyPastable.class).copy();
-      }
-    }
-  }
-
-  static final class PasteAction extends AbstractAction {
-    private static final long serialVersionUID = 7152419581737782003L;
-
-    private PasteAction() {
-      super(Program.getLabel("Infos243"), MyCellarImage.PASTE);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos243"));
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.isCutCopyPastTab()) {
-        ProgramPanels.getSelectedComponent(ICutCopyPastable.class).paste();
-      }
-    }
-  }
-
   final class ManagePlaceAction extends AbstractAction {
 
     private static final long serialVersionUID = -5144284671743409095L;
@@ -1820,40 +1854,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
         ProgramPanels.TABBED_PANE.setSelectedComponent(parametres);
       }
       updateMainPanel();
-    }
-  }
-
-  private static final class PanelObjectType extends JPanel {
-
-    private final MyCellarComboBox<ObjectType> types = new MyCellarComboBox<>();
-    private final List<ObjectType> objectTypes = new ArrayList<>();
-    MyCellarLabel label_objectType = new MyCellarLabel(LabelType.INFO_OTHER, "Parameters.typeLabel");
-
-    private PanelObjectType() {
-      Arrays.stream(Program.Type.values())
-          .filter(type -> !type.equals(Program.Type.BOOK))
-          .forEach(type -> {
-            final ObjectType type1 = new ObjectType(type);
-            objectTypes.add(type1);
-            types.addItem(type1);
-          });
-
-      ObjectType objectType = findObjectType(Program.Type.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
-      types.setSelectedItem(objectType);
-
-      setLayout(new MigLayout("", "[grow]", "[]25px[]"));
-      add(new MyCellarLabel(Program.getLabel("Start.selectTypeObject")), "span 2, wrap");
-      add(label_objectType);
-      add(types);
-    }
-
-    private ObjectType findObjectType(Program.Type type) {
-      final Optional<ObjectType> first = objectTypes.stream().filter(objectType -> objectType.getType() == type).findFirst();
-      return first.orElse(null);
-    }
-
-    public Program.Type getSelectedType() {
-      return ((ObjectType) Objects.requireNonNull(types.getSelectedItem())).getType();
     }
   }
 }

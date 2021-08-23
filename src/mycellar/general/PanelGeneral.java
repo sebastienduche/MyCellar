@@ -95,9 +95,9 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     type.removeAllItems();
     type.addItem("");
     if (Program.isMusicType()) {
-    	MyCellarMusicSupport.getList().forEach(type::addItem);
+      MyCellarMusicSupport.getList().forEach(type::addItem);
     } else {
-    	MyCellarBottleContenance.getList().forEach(type::addItem);
+      MyCellarBottleContenance.getList().forEach(type::addItem);
     }
     type.setSelectedItem(myCellarObject.getKind());
 
@@ -106,13 +106,17 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       half_tmp = type.getSelectedItem().toString();
     }
     if (!half_tmp.equals(myCellarObject.getKind()) && !myCellarObject.getKind().isEmpty()) {
-      if (Program.isMusicType()) {
-      	MyCellarMusicSupport.getList().add(myCellarObject.getKind());
-      } else {
-    	  MyCellarBottleContenance.getList().add(myCellarObject.getKind());
-      }
+      addItemToTheList();
       type.addItem(myCellarObject.getKind());
       type.setSelectedItem(myCellarObject.getKind());
+    }
+  }
+
+  private void addItemToTheList() {
+    if (Program.isMusicType()) {
+      MyCellarMusicSupport.getList().add(myCellarObject.getKind());
+    } else {
+      MyCellarBottleContenance.getList().add(myCellarObject.getKind());
     }
   }
 
@@ -188,14 +192,18 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   }
 
   public void updateView() {
+    loadTypeComboBox();
+  }
+
+  private void loadTypeComboBox() {
     type.removeAllItems();
     type.addItem("");
     if (Program.isMusicType()) {
-    	MyCellarMusicSupport.getList().forEach(type::addItem);
-        type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
+      MyCellarMusicSupport.getList().forEach(type::addItem);
+      type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
     } else {
-	    MyCellarBottleContenance.getList().forEach(type::addItem);
-	    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+      MyCellarBottleContenance.getList().forEach(type::addItem);
+      type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
     }
   }
 
@@ -221,14 +229,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   public void initValues() {
     initNameCombo();
 
-    type.addItem("");
-    if (Program.isMusicType()) {
-    	MyCellarMusicSupport.getList().forEach(type::addItem);
-        type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
-    } else {
-	    MyCellarBottleContenance.getList().forEach(type::addItem);
-	    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
-    }
+    loadTypeComboBox();
 
     setYearAuto();
     initYearAndContenance();
@@ -318,11 +319,11 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   }
 
   public void setTypeDefault() {
-	  if (Program.isMusicType()) {
-		  type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
-	  } else {
-		  type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
-	  }
+    if (Program.isMusicType()) {
+      type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
+    } else {
+      type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+    }
   }
 
   public boolean runExit(boolean modify) {
@@ -369,16 +370,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
   public void initializeForEdition() {
     initNameCombo();
-
-    type.removeAllItems();
-    type.addItem("");
-    if (Program.isMusicType()) {
-    	MyCellarMusicSupport.getList().forEach(type::addItem);
-        type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
-    } else {
-	    MyCellarBottleContenance.getList().forEach(type::addItem);
-	    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
-    }
+    loadTypeComboBox();
 
     setYearAuto();
     manageContenance.setText(Program.getLabel("Infos400"));

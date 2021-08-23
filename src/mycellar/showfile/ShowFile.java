@@ -1118,6 +1118,19 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     WORK
   }
 
+  private static class CreatePlacesAction extends AbstractAction {
+
+    private static final long serialVersionUID = -3652414491735669984L;
+
+    private CreatePlacesAction() {
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      RangementUtils.findRangementToCreate();
+    }
+  }
+
   private class ManageColumnsAction extends AbstractAction {
 
     private static final long serialVersionUID = 8165964725562440277L;
@@ -1229,19 +1242,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     public void actionPerformed(ActionEvent e) {
       RangementUtils.putTabStock();
       ((ErrorShowValues) model).setErrors(Program.getErrors());
-    }
-  }
-
-  private static class CreatePlacesAction extends AbstractAction {
-
-    private static final long serialVersionUID = -3652414491735669984L;
-
-    private CreatePlacesAction() {
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      RangementUtils.findRangementToCreate();
     }
   }
 

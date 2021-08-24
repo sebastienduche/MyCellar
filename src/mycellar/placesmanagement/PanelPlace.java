@@ -9,6 +9,7 @@ import mycellar.core.JModifyComboBox;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarObject;
 import mycellar.general.XmlUtils;
 import net.miginfocom.swing.MigLayout;
 
@@ -31,8 +32,8 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 20/04/21
+ * @version 0.9
+ * @since 23/08/21
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -174,7 +175,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     }
   }
 
-  public void setBeforeBottle(Bouteille bottle) {
+  public void setBeforeBottle(MyCellarObject bottle) {
     before2.setText(bottle.getEmplacement());
     before3.setText(Integer.toString(bottle.getNumLieu()));
     before4.setText(Integer.toString(bottle.getLigne()));
@@ -227,8 +228,8 @@ public final class PanelPlace extends JPanel implements IPlace {
     managePlaceCombos();
   }
 
-  public void selectPlace(Bouteille bouteille) {
-    selectPlace(bouteille.getPlace());
+  public void selectPlace(MyCellarObject cellarObject) {
+    selectPlace(cellarObject.getPlace());
   }
 
   @Override

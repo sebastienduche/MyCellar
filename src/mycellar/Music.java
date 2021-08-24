@@ -8,6 +8,7 @@ import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -36,8 +37,8 @@ import static mycellar.general.XmlUtils.getTextContent;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 14/05/21
+ * @version 1.0
+ * @since 23/08/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -730,6 +731,11 @@ public class Music extends MyCellarObject implements Serializable {
         .file(elemFile)
         .album(elemAlbum)
         .build();
+  }
+
+  @Override
+  public void update(Bouteille bouteille) {
+    throw new NotImplementedException("Update not implemented");
   }
 
   @Override

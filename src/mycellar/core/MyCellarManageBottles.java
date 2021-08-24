@@ -1,6 +1,5 @@
 package mycellar.core;
 
-import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.general.PanelGeneral;
 import mycellar.general.PanelWineAttribute;
@@ -18,8 +17,8 @@ import javax.swing.SwingUtilities;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.4
- * @since 20/04/21
+ * @version 4.5
+ * @since 23/08/21
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
@@ -36,7 +35,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected final JScrollPane m_js_comment = new JScrollPane(m_comment);
   protected boolean updateView = false;
   protected PanelVignobles panelVignobles;
-  protected Bouteille bottle = null;
+  protected MyCellarObject bottle = null;
   protected char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
 
   protected boolean m_bmulti = false; //Pour ListVin

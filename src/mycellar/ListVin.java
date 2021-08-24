@@ -4,6 +4,7 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarObject;
 import mycellar.core.tablecomponents.ToolTipRenderer;
 import net.miginfocom.swing.MigLayout;
 
@@ -28,8 +29,8 @@ import java.util.List;
  * <p>Société : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 4.1
- * @since 27/05/21
+ * @version 4.2
+ * @since 23/0/21
  */
 final class ListVin extends JPanel {
   static final long serialVersionUID = 10805;
@@ -62,7 +63,7 @@ final class ListVin extends JPanel {
         if (!lsm.isSelectionEmpty()) {
           int minSelectedRow = lsm.getMinSelectionIndex();
           int maxSelectedRow = lsm.getMaxSelectionIndex();
-          LinkedList<Bouteille> list = new LinkedList<>();
+          LinkedList<MyCellarObject> list = new LinkedList<>();
           for (int x = minSelectedRow; x <= maxSelectedRow; x++) {
             if (lsm.isSelectedIndex(x)) {
               list.add(listValues.getBouteille(x));
@@ -93,10 +94,10 @@ final class ListVin extends JPanel {
   /**
    * updateList: Mise à jour de la liste des vins
    *
-   * @param remove LinkedList<Bouteille>: Bouteilles à supprimer
+   * @param remove LinkedList<MyCellarObject>: objets à supprimer
    */
-  void updateList(List<Bouteille> remove) {
-    for (Bouteille b : remove) {
+  void updateList(List<MyCellarObject> remove) {
+    for (MyCellarObject b : remove) {
       listValues.removeBouteille(b);
     }
   }

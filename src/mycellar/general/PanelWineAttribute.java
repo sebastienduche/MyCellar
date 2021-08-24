@@ -10,6 +10,7 @@ import mycellar.core.JModifyTextField;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarLabel;
+import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSpinner;
 import mycellar.core.PopupListener;
@@ -30,8 +31,8 @@ import java.text.NumberFormat;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 20/04/21
+ * @version 0.2
+ * @since 23/08/21
  */
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;
@@ -77,15 +78,18 @@ public final class PanelWineAttribute extends JPanel {
     add(lastModified);
   }
 
-  public void initializeExtraProperties(Bouteille bottle, boolean m_bmulti, boolean isEditionMode) {
+  public void initializeExtraProperties(MyCellarObject myCellarObject, boolean m_bmulti, boolean isEditionMode) {
     enableAll(true, m_bmulti, isEditionMode);
     nbItems.setValue(1);
     nbItems.setEnabled(false);
 
-    price.setText(Program.convertStringFromHTMLString(bottle.getPrix()));
-    maturity.setText(bottle.getMaturity());
-    parker.setText(bottle.getParker());
-    colorList.setSelectedItem(BottleColor.getColor(bottle.getColor()));
+    price.setText(Program.convertStringFromHTMLString(myCellarObject.getPrix()));
+    if (Program.isWineType()) {
+      Bouteille bottle = (Bouteille) myCellarObject;
+      maturity.setText(bottle.getMaturity());
+      parker.setText(bottle.getParker());
+      colorList.setSelectedItem(BottleColor.getColor(bottle.getColor()));
+    }
   }
 
   public void enableAll(boolean enable, boolean multi, boolean isEditionMode) {

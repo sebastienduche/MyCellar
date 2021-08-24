@@ -40,8 +40,8 @@ import java.util.stream.Collectors;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.2
- * @since 23/04/21
+ * @version 7.3
+ * @since 23/08/21
  *
  * <p>Java class for anonymous complex type.
  *
@@ -456,6 +456,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
     return nom;
   }
 
+  @Override
   public void update(final Bouteille b) {
     setNom(b.getNom());
     setAnnee(b.getAnnee());

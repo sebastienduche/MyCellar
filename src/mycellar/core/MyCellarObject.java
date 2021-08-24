@@ -1,5 +1,6 @@
 package mycellar.core;
 
+import mycellar.Bouteille;
 import org.w3c.dom.Element;
 
 public abstract class MyCellarObject implements IMyCellarObject {
@@ -13,4 +14,6 @@ public abstract class MyCellarObject implements IMyCellarObject {
       return !value.equals(other);
     }
   }
+
+  public abstract void update(Bouteille bouteille);
 }

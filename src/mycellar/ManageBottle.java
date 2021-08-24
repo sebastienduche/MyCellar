@@ -38,8 +38,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.4
- * @since 20/05/21
+ * @version 8.5
+ * @since 23/08/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -93,7 +93,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     Program.Debug("ManageBottle: " + sText);
   }
 
-  public Bouteille getBottle() {
+  public MyCellarObject getBottle() {
     return bottle;
   }
 
@@ -102,13 +102,15 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
    *
    * @param bottle Bouteille
    */
-  private void setBottle(Bouteille bottle) {
+  private void setBottle(MyCellarObject bottle) {
     Debug("Set Bottle...");
     try {
       this.bottle = bottle;
       panelGeneral.setMyCellarObject(bottle);
       initializeExtraProperties();
-      panelVignobles.initializeVignobles(bottle);
+      if (Program.isWineType()) {
+        panelVignobles.initializeVignobles((Bouteille) bottle);
+      }
       updateStatusAndTime();
 
       panelPlace.selectPlace(bottle);
@@ -214,18 +216,21 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       }
     }
     bottle.setAnnee(panelGeneral.getYear());
-    bottle.setColor(color);
-    bottle.setComment(comment1);
+    if (Program.isWineType()) {
+      Bouteille bTemp = (Bouteille) bottle;
+      bTemp.setColor(color);
+      bTemp.setComment(comment1);
+      bTemp.setMaturity(dateOfC);
+      bTemp.setParker(parker);
+      bTemp.setPrix(prix);
+      bTemp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
+      CountryVignobleController.addVignobleFromBottle(bTemp);
+      CountryVignobleController.setRebuildNeeded();
+    }
     bottle.setEmplacement(cave.getNom());
-    bottle.setMaturity(dateOfC);
     bottle.setNom(nom);
-    bottle.setParker(parker);
-    bottle.setPrix(prix);
     bottle.setKind(demie);
-    bottle.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
     bottle.setStatus(status);
-    CountryVignobleController.addVignobleFromBottle(bottle);
-    CountryVignobleController.setRebuildNeeded();
 
     bottle.setModified();
     Program.getStorage().addHistory(HistoryState.MODIFY, bottle);

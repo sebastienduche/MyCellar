@@ -46,8 +46,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.2
- * @since 20/05/21
+ * @version 28.3
+ * @since 23/08/21
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -57,7 +57,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   private int m_nb_num, m_nb_lig, m_nb_col; //Pour la Modification
   private Rangement rangementInModif;
   private ListVin m_lv;
-  private LinkedList<Bouteille> listBottleInModification; //Pour enlever dans ListVin
+  private LinkedList<MyCellarObject> listBottleInModification; //Pour enlever dans ListVin
   private int m_nnb_bottle_add_only_one_place = 0;
 
   /**
@@ -136,15 +136,15 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       m_lv.setBottles(myCellarObjects);
     }
 
-    setBottle((Bouteille) myCellarObjects.get(0));
+    setBottle(myCellarObjects.get(0));
   }
 
   /**
    * setBottle: Fonction de chargement d'un vin pour la classe ListVin
    *
-   * @param bottle Bouteille
+   * @param bottle MyCellarObject
    */
-  private void setBottle(Bouteille bottle) {
+  private void setBottle(MyCellarObject bottle) {
     Debug("Set Bottle...");
     try {
       this.bottle = bottle;
@@ -155,7 +155,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       m_bmodify = true;
       initializeExtraProperties();
       panelWineAttribute.setStatus(bottle);
-      panelVignobles.initializeVignobles(this.bottle);
+      if (Program.isWineType()) {
+        panelVignobles.initializeVignobles((Bouteille) this.bottle);
+      }
 
       panelPlace.resetValues();
       panelPlace.setBeforeBottle(this.bottle);
@@ -173,10 +175,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
   /**
    * setBottlesInModification: Fonction pour le chargement de vins pour la classe ListVin.
-   *
-   * @param bouteilles LinkedList<Bouteille>: Liste des bouteilles
    */
-  void setBottlesInModification(LinkedList<Bouteille> bouteilles) {
+  void setBottlesInModification(LinkedList<MyCellarObject> bouteilles) {
     Debug("setBottlesInModification...");
     try {
       m_bmulti = bouteilles.size() > 1;
@@ -363,31 +363,36 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
             Debug("Modifying without changing place");
             boolean bOneBottle = listBottleInModification.size() == 1;
             // Modification sans changement de lieu 10/05/08
-            for (Bouteille tmp : listBottleInModification) {
-              if (bOneBottle || !comment1.isEmpty()) {
-                tmp.setComment(comment1);
+            for (MyCellarObject tmp : listBottleInModification) {
+              if (Program.isWineType()) {
+                Bouteille bTemp = (Bouteille) tmp;
+                if (bOneBottle || !comment1.isEmpty()) {
+                  bTemp.setComment(comment1);
+                }
+                if (bOneBottle || !dateOfC.isEmpty()) {
+                  bTemp.setMaturity(dateOfC);
+                }
+                if (bOneBottle || !parker.isEmpty()) {
+                  bTemp.setParker(parker);
+                }
+                if (bOneBottle || panelWineAttribute.getColorList().isModified()) {
+                  bTemp.setColor(color);
+                }
+                if (bOneBottle || !prix.isEmpty()) {
+                  bTemp.setPrix(prix);
+                }
+                if (bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
+                  bTemp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
+                }
               }
-              if (bOneBottle || !dateOfC.isEmpty()) {
-                tmp.setMaturity(dateOfC);
-              }
-              if (bOneBottle || !parker.isEmpty()) {
-                tmp.setParker(parker);
-              }
-              if (bOneBottle || panelWineAttribute.getColorList().isModified()) {
-                tmp.setColor(color);
-              }
+
               if (bOneBottle || panelWineAttribute.getStatusList().isModified()) {
                 tmp.setStatus(status);
               }
               if (bOneBottle || !demie.isEmpty()) {
                 tmp.setKind(demie);
               }
-              if (bOneBottle || !prix.isEmpty()) {
-                tmp.setPrix(prix);
-              }
-              if (bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
-                tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
-              }
+
               tmp.updateStatus();
 
               if (m_bmodify) {
@@ -418,30 +423,33 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
               m_end.setText("");
             } else {
               boolean bOneBottle = listBottleInModification.size() == 1;
-              for (Bouteille tmp : listBottleInModification) {
-                if (bOneBottle || !comment1.isEmpty()) {
-                  tmp.setComment(comment1);
-                }
-                if (bOneBottle || !dateOfC.isEmpty()) {
-                  tmp.setMaturity(dateOfC);
-                }
-                if (bOneBottle || !parker.isEmpty()) {
-                  tmp.setParker(parker);
-                }
-                if (bOneBottle || panelWineAttribute.getColorList().isModified()) {
-                  tmp.setColor(color);
+              for (MyCellarObject tmp : listBottleInModification) {
+                if (Program.isWineType()) {
+                  Bouteille bTemp = (Bouteille) tmp;
+                  if (bOneBottle || !comment1.isEmpty()) {
+                    bTemp.setComment(comment1);
+                  }
+                  if (bOneBottle || !dateOfC.isEmpty()) {
+                    bTemp.setMaturity(dateOfC);
+                  }
+                  if (bOneBottle || !parker.isEmpty()) {
+                    bTemp.setParker(parker);
+                  }
+                  if (bOneBottle || panelWineAttribute.getColorList().isModified()) {
+                    bTemp.setColor(color);
+                  }
+                  if (bOneBottle || !prix.isEmpty()) {
+                    bTemp.setPrix(prix);
+                  }
+                  if (bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
+                    bTemp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
+                  }
                 }
                 if (bOneBottle || panelWineAttribute.getStatusList().isModified()) {
                   tmp.setStatus(status);
                 }
                 if (bOneBottle || !demie.isEmpty()) {
                   tmp.setKind(demie);
-                }
-                if (bOneBottle || !prix.isEmpty()) {
-                  tmp.setPrix(prix);
-                }
-                if (bOneBottle || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
-                  tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
                 }
                 Debug("Adding multiple bottles in simple place...");
                 if (m_bmodify && tmp.isInExistingPlace()) {
@@ -667,18 +675,21 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       // Modification de bouteilles dans Armoire sans changement de lieu
       Debug("Modifying multiple bottles in Armoire without changing place");
       // Modification sans changement de lieu 11/05/08
-      for (Bouteille tmp : listBottleInModification) {
+      for (MyCellarObject tmp : listBottleInModification) {
         Rangement rangement = tmp.getRangement();
-        tmp.setPrix(prix);
-        tmp.setComment(comment);
-        tmp.setMaturity(dateOfC);
-        tmp.setParker(parker);
-        tmp.setColor(color);
+        if (Program.isWineType()) {
+          Bouteille bTemp = (Bouteille) tmp;
+          bTemp.setPrix(prix);
+          bTemp.setComment(comment);
+          bTemp.setMaturity(dateOfC);
+          bTemp.setParker(parker);
+          bTemp.setColor(color);
+          if (!country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
+            bTemp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
+          }
+        }
         tmp.setKind(demie);
         tmp.updateStatus();
-        if (!country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
-          tmp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
-        }
         // Add multiple bottles
         Debug("Adding multiple bottles...");
         if (m_bmodify) {
@@ -819,11 +830,16 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     private static final long serialVersionUID = -4824541234206895953L;
 
     private PanelMain() {
+      panelVignobles = new PanelVignobles(false, true, true);
       setLayout(new MigLayout("", "grow", "[][][]10px[][grow]10px[][]"));
       add(panelGeneral, "growx, wrap");
       add(panelPlace, "growx, wrap");
       add(panelWineAttribute, "growx,split 2");
-      add(panelVignobles = new PanelVignobles(false, true, true), "growx, wrap");
+      if (Program.isWineType()) {
+        add(panelVignobles, "growx, wrap");
+      } else {
+        add(new JPanel(), "growx, wrap");
+      }
       add(m_labelComment, "growx, wrap");
       add(m_js_comment, "grow, wrap");
       add(m_end, "center, hidemode 3, wrap");

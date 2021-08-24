@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.IMyCellarObject;
+import mycellar.core.MyCellarObject;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
@@ -13,8 +14,8 @@ import java.util.List;
  * <p>Société : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 1.2
- * @since 09/04/21
+ * @version 1.3
+ * @since 23/08/21
  */
 class ListValues extends AbstractTableModel {
   static final long serialVersionUID = 200505;
@@ -100,11 +101,11 @@ class ListValues extends AbstractTableModel {
   }
 
   /**
-   * removeBouteille: Suppression d'une bouteille de la liste.
+   * removeBouteille: Suppression d'un objet de la liste.
    *
-   * @param num Bouteille: bouteille.
+   * @param num MyCellarObject
    */
-  public void removeBouteille(Bouteille num) {
+  public void removeBouteille(MyCellarObject num) {
     list.remove(num);
     fireTableDataChanged();
   }

@@ -42,8 +42,8 @@ import java.util.LinkedList;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 19/05/21
+ * @version 1.5
+ * @since 24/08/21
  *
  * <p>Java class for anonymous complex type.
  *
@@ -198,6 +198,10 @@ public class ListeBouteille {
 
   void resetBouteille() {
     bouteille = null;
+  }
+
+  void resetMusic() {
+    music = null;
   }
 
   public int getItemsCount() {

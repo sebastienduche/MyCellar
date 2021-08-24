@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.1
- * @since 22/08/21
+ * @version 7.2
+ * @since 24/08/21
  */
 
 public class SerializedStorage implements Storage {
@@ -39,7 +39,9 @@ public class SerializedStorage implements Storage {
   private static final HistoryList HISTORY_LIST = new HistoryList();
   private static final WorkSheetList WORKSHEET_LIST = new WorkSheetList();
   private static final int DISTINCT_NAME_LENGTH = 50;
-  private final List<String> distinctNames = new LinkedList<>(); // Liste des noms de bouteille (un seul nom)
+  private final List<String> distinctNames = new LinkedList<>(); // Liste des noms
+  private final List<String> distinctComposers = new LinkedList<>(); // Liste des composers
+  private final List<String> distinctArtists = new LinkedList<>(); // Liste des artists
   private ListeBouteille listMyCellarObject = new ListeBouteille();
   private int itemsCount;
   private boolean worksheetModified = false;
@@ -75,13 +77,19 @@ public class SerializedStorage implements Storage {
       }
     } else if (Program.isMusicType()) {
       listMyCellarObject.getMusic().addAll(listBouteille.getMusic());
-      for (MyCellarObject myCellarObject : listMyCellarObject.music) {
+      for (Music myCellarObject : listMyCellarObject.music) {
         final List<History> theMusic = HISTORY_LIST.getHistory().stream().filter(history -> history.getMusic().getId() == myCellarObject.getId()).collect(Collectors.toList());
         if (myCellarObject.updateID() && !theMusic.isEmpty()) {
           theMusic.get(0).getMusic().setId(myCellarObject.getId());
         }
         if (!distinctNames.contains(myCellarObject.getNom())) {
           distinctNames.add(myCellarObject.getNom());
+        }
+        if (!distinctComposers.contains(myCellarObject.getComposer())) {
+          distinctComposers.add(myCellarObject.getComposer());
+        }
+        if (!distinctArtists.contains(myCellarObject.getArtist())) {
+          distinctArtists.add(myCellarObject.getArtist());
         }
       }
     }
@@ -97,6 +105,8 @@ public class SerializedStorage implements Storage {
   public void setListMyCellarObject(ListeBouteille listMyCellarObject) {
     this.listMyCellarObject = listMyCellarObject;
     distinctNames.clear();
+    distinctComposers.clear();
+    distinctArtists.clear();
     if (Program.isWineType()) {
       if (this.listMyCellarObject.bouteille == null) {
         this.listMyCellarObject.bouteille = new LinkedList<>();
@@ -110,9 +120,15 @@ public class SerializedStorage implements Storage {
       if (this.listMyCellarObject.music == null) {
         this.listMyCellarObject.music = new LinkedList<>();
       }
-      for (MyCellarObject b : this.listMyCellarObject.music) {
+      for (Music b : this.listMyCellarObject.music) {
         if (!distinctNames.contains(b.getNom())) {
           distinctNames.add(b.getNom());
+        }
+        if (!distinctComposers.contains(b.getComposer())) {
+          distinctComposers.add(b.getComposer());
+        }
+        if (!distinctArtists.contains(b.getArtist())) {
+          distinctArtists.add(b.getArtist());
         }
       }
     } else {
@@ -124,6 +140,22 @@ public class SerializedStorage implements Storage {
   @Override
   public List<String> getDistinctNames() {
     return distinctNames
+        .stream()
+        .map(value -> value.length() > DISTINCT_NAME_LENGTH ? value.substring(0, DISTINCT_NAME_LENGTH) : value)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<String> getDistinctComposers() {
+    return distinctComposers
+        .stream()
+        .map(value -> value.length() > DISTINCT_NAME_LENGTH ? value.substring(0, DISTINCT_NAME_LENGTH) : value)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<String> getDistinctArtists() {
+    return distinctArtists
         .stream()
         .map(value -> value.length() > DISTINCT_NAME_LENGTH ? value.substring(0, DISTINCT_NAME_LENGTH) : value)
         .collect(Collectors.toList());
@@ -272,6 +304,15 @@ public class SerializedStorage implements Storage {
     if (myCellarObject instanceof Bouteille) {
       CountryVignobleController.addVignobleFromBottle((Bouteille) myCellarObject);
     }
+    if (myCellarObject instanceof Music) {
+      Music music = (Music) myCellarObject;
+      if (!distinctComposers.contains(music.getComposer())) {
+        distinctComposers.add(music.getComposer());
+      }
+      if (!distinctArtists.contains(music.getArtist())) {
+        distinctArtists.add(music.getArtist());
+      }
+    }
     itemsCount++;
     return listMyCellarObject.add(myCellarObject);
   }
@@ -365,8 +406,11 @@ public class SerializedStorage implements Storage {
   public void close() {
     if (listMyCellarObject != null) {
       listMyCellarObject.resetBouteille();
+      listMyCellarObject.resetMusic();
     }
     distinctNames.clear();
+    distinctComposers.clear();
+    distinctArtists.clear();
   }
 
   private static class SerializedStorageHolder {

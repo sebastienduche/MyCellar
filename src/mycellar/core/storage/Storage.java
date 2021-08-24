@@ -16,8 +16,8 @@ import java.util.List;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 22/08/21
+ * @version 2.5
+ * @since 24/08/21
  */
 
 public interface Storage {
@@ -65,4 +65,8 @@ public interface Storage {
   boolean add(MyCellarObject myCellarObject);
 
   void close();
+
+  List<String> getDistinctComposers();
+
+  List<String> getDistinctArtists();
 }

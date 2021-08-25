@@ -286,7 +286,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     //Change wine in a place
     Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
 
-    RangementUtils.replaceObject(bToDelete, bottle, oldPlace);
+    RangementUtils.replaceMyCellarObject(bToDelete, bottle, oldPlace);
   }
 
   private boolean runExit() {

@@ -67,7 +67,7 @@ public final class RangementUtils {
   private RangementUtils() {
   }
 
-  public static void replaceObject(MyCellarObject oldObject, MyCellarObject newObject, Place newObjectPreviousPlace) throws MyCellarException {
+  public static void replaceMyCellarObject(MyCellarObject oldObject, MyCellarObject newObject, Place newObjectPreviousPlace) throws MyCellarException {
     Debug("Replace objet '" + oldObject + "' by '" + newObject + "' previous place: " + newObjectPreviousPlace + " current name " + newObject.getPlace());
     Program.getStorage().addHistory(HistoryState.DEL, oldObject);
     Program.getStorage().deleteWine(oldObject);

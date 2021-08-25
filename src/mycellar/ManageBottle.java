@@ -53,27 +53,27 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   public ManageBottle(Bouteille bottle) {
     super();
     isEditionMode = true;
-    m_add = new MyCellarButton(MyCellarImage.SAVE);
+    addButton = new MyCellarButton(MyCellarImage.SAVE);
 
     try {
       Debug("Constructor with Bottle");
       panelGeneral.initializeForEdition();
       panelWineAttribute.initValues();
 
-      m_add.setText(Program.getLabel("ManageBottle.SaveModifications"));
-      m_add.setMnemonic(ajouterChar);
+      addButton.setText(Program.getLabel("ManageBottle.SaveModifications"));
+      addButton.setMnemonic(ajouterChar);
 
       PopupListener popup_l = new PopupListener();
       panelGeneral.setMouseListener(popup_l);
       panelWineAttribute.setMouseListener(popup_l);
-      m_comment.addMouseListener(popup_l);
+      comment.addMouseListener(popup_l);
 
-      m_end.setForeground(Color.red);
-      m_end.setHorizontalAlignment(SwingConstants.CENTER);
+      end.setForeground(Color.red);
+      end.setHorizontalAlignment(SwingConstants.CENTER);
       setLayout(new BorderLayout());
       add(new PanelMain(), BorderLayout.CENTER);
 
-      m_add.addActionListener((e) -> saving());
+      addButton.addActionListener((e) -> saving());
 
       setVisible(true);
       Debug("JbInit Done");
@@ -114,7 +114,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       updateStatusAndTime();
 
       panelPlace.selectPlace(bottle);
-      m_end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
+      end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
       resetModified();
     } catch (RuntimeException e) {
       Program.showException(e);
@@ -154,7 +154,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     String demie = panelGeneral.getType();
 
     String prix = panelWineAttribute.getPrice();
-    String comment1 = m_comment.getText();
+    String comment1 = comment.getText();
     String dateOfC = panelWineAttribute.getMaturity();
     String parker = panelWineAttribute.getParker();
     String color = panelWineAttribute.getColor();
@@ -249,7 +249,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       rangement.updateToStock(bottle);
     }
 
-    m_end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
+    end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
     ProgramPanels.updatePanelsWithoutBottles();
     updateStatusAndTime();
     resetModified();
@@ -265,7 +265,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
-        m_end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
+        end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
       } else {
         return false;
       }
@@ -276,7 +276,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   private void resetModified() {
     panelGeneral.resetModified(false);
     panelWineAttribute.resetModified(false);
-    m_comment.setModified(false);
+    comment.setModified(false);
     panelVignobles.setModified(false);
     panelPlace.clearModified();
     Start.setPaneModified(false);
@@ -291,17 +291,17 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
   private boolean runExit() {
     Debug("Processing Quit...");
-    m_add.setEnabled(false);
+    addButton.setEnabled(false);
 
     boolean modified = panelGeneral.isModified(bottle);
-    modified |= m_comment.isModified();
+    modified |= comment.isModified();
     modified |= panelWineAttribute.isModified();
     modified |= panelPlace.isModified();
     modified |= panelVignobles.isModified();
 
     if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error148", OF_THE_SINGLE) + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
       Debug("Don't Quit.");
-      m_add.setEnabled(true);
+      addButton.setEnabled(true);
       return false;
     }
 
@@ -352,10 +352,10 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       add(panelPlace, "growx,wrap");
       add(panelWineAttribute, "growx,split 2");
       add(panelVignobles = new PanelVignobles(true, true, true), "growx, wrap");
-      add(m_labelComment, "growx, wrap");
-      add(m_js_comment, "grow, wrap");
-      add(m_end, "center, hidemode 3, wrap");
-      add(m_add, "center");
+      add(labelComment, "growx, wrap");
+      add(scrollPaneComment, "grow, wrap");
+      add(end, "center, hidemode 3, wrap");
+      add(addButton, "center");
     }
   }
 

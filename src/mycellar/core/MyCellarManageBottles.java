@@ -17,28 +17,28 @@ import javax.swing.SwingUtilities;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.5
- * @since 23/08/21
+ * @version 4.6
+ * @since 24/08/21
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
   private static final long serialVersionUID = 3056306291164598750L;
 
-  protected final MyCellarLabel m_labelComment = new MyCellarLabel(LabelType.INFO, "137");
-  protected final MyCellarLabel m_end = new MyCellarLabel(""); // Label pour les résultats
+  protected final MyCellarLabel labelComment = new MyCellarLabel(LabelType.INFO, "137");
+  protected final MyCellarLabel end = new MyCellarLabel(""); // Label pour les résultats
   protected final PanelPlace panelPlace = new PanelPlace();
   protected final PanelGeneral panelGeneral = new PanelGeneral();
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
-  protected MyCellarButton m_add;
-  protected MyCellarButton m_cancel;
-  protected JModifyTextArea m_comment = new JModifyTextArea();
-  protected final JScrollPane m_js_comment = new JScrollPane(m_comment);
+  protected MyCellarButton addButton;
+  protected MyCellarButton cancelButton;
+  protected JModifyTextArea comment = new JModifyTextArea();
+  protected final JScrollPane scrollPaneComment = new JScrollPane(comment);
   protected boolean updateView = false;
   protected PanelVignobles panelVignobles;
   protected MyCellarObject bottle = null;
   protected char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
 
-  protected boolean m_bmulti = false; //Pour ListVin
+  protected boolean multi = false; //Pour ListVin
   protected boolean isEditionMode = false;
 
   protected MyCellarManageBottles() {
@@ -51,22 +51,22 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected void initializeExtraProperties() {
     enableAll(true);
     panelGeneral.initializeExtraProperties();
-    panelWineAttribute.initializeExtraProperties(bottle, m_bmulti, isEditionMode);
+    panelWineAttribute.initializeExtraProperties(bottle, multi, isEditionMode);
 
-    m_comment.setText(bottle.getComment());
+    comment.setText(bottle.getComment());
   }
 
   public void enableAll(boolean enable) {
     panelPlace.enableAll(enable);
     panelGeneral.enableAll(enable);
-    panelWineAttribute.enableAll(enable, m_bmulti, isEditionMode);
-    m_add.setEnabled(enable);
-    if (m_cancel != null) {
-      m_cancel.setEnabled(enable);
+    panelWineAttribute.enableAll(enable, multi, isEditionMode);
+    addButton.setEnabled(enable);
+    if (cancelButton != null) {
+      cancelButton.setEnabled(enable);
     }
-    m_comment.setEditable(enable);
+    comment.setEditable(enable);
     panelVignobles.enableAll(enable);
-    m_end.setVisible(enable);
+    end.setVisible(enable);
   }
 
   public void setUpdateView() {

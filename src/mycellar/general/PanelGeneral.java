@@ -40,8 +40,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 24/08/21
+ * @version 0.5
+ * @since 26/08/21
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -55,7 +55,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   private JCompletionComboBox<String> artist;
   private JCompletionComboBox<String> composer;
   private IMyCellarObject myCellarObject;
-  private boolean multi;
+  private boolean severalItems;
 
   public PanelGeneral() {
     name = new JCompletionComboBox<>() {
@@ -176,11 +176,11 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   }
 
   public void enableAll(boolean enable) {
-    type.setEnabled(enable && !multi);
-    name.setEnabled(enable && !multi);
+    type.setEnabled(enable && !severalItems);
+    name.setEnabled(enable && !severalItems);
     if (Program.isMusicType()) {
-      composer.setEnabled(enable && !multi);
-      artist.setEnabled(enable && !multi);
+      composer.setEnabled(enable && !severalItems);
+      artist.setEnabled(enable && !severalItems);
     }
     year.setEditable(enable && !noYear.isSelected());
     noYear.setEnabled(enable);
@@ -198,8 +198,8 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     }
   }
 
-  public void resetMulti(int itemCount) {
-    if (multi) {
+  public void setViewToSeveralItemsMode(int itemCount) {
+    if (itemCount > 1) {
       name.setSelectedItem(MessageFormat.format(Program.getLabel("AddVin.NbItemsSelected", LabelProperty.PLURAL), itemCount)); //" bouteilles selectionnees");
       name.setEnabled(false);
       if (Program.isMusicType()) {
@@ -259,8 +259,8 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     return this;
   }
 
-  public void setMulti(boolean multi) {
-    this.multi = multi;
+  public void setSeveralItems(boolean severalItems) {
+    this.severalItems = severalItems;
   }
 
   public void clearValues() {
@@ -342,7 +342,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     } else {
       year.setText("");
     }
-    if (multi) {
+    if (severalItems) {
       if (type.getItemCount() > 0) {
         type.setSelectedIndex(0);
       }
@@ -360,7 +360,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     }
 
     // Controle de la date
-    if (!multi && (year.isEditable() || !noYear.isSelected())) {
+    if (!severalItems && (year.isEditable() || !noYear.isSelected())) {
       String annee = year.getText();
 
       // Erreur sur la date
@@ -376,7 +376,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
   public String updateYear() {
     String value = "";
-    if (!multi && (year.isEditable() || noYear.isSelected())) {
+    if (!severalItems && (year.isEditable() || noYear.isSelected())) {
       value = getYear();
       year.setText(value);
     }

@@ -17,8 +17,8 @@ import javax.swing.SwingUtilities;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.6
- * @since 24/08/21
+ * @version 4.7
+ * @since 26/08/21
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
@@ -31,14 +31,14 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
   protected MyCellarButton addButton;
   protected MyCellarButton cancelButton;
-  protected JModifyTextArea comment = new JModifyTextArea();
-  protected final JScrollPane scrollPaneComment = new JScrollPane(comment);
+  protected JModifyTextArea commentTextArea = new JModifyTextArea();
+  protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
   protected boolean updateView = false;
   protected PanelVignobles panelVignobles;
   protected MyCellarObject bottle = null;
   protected char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
 
-  protected boolean multi = false; //Pour ListVin
+  protected boolean severalItems = false; //Pour ListVin
   protected boolean isEditionMode = false;
 
   protected MyCellarManageBottles() {
@@ -51,20 +51,20 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected void initializeExtraProperties() {
     enableAll(true);
     panelGeneral.initializeExtraProperties();
-    panelWineAttribute.initializeExtraProperties(bottle, multi, isEditionMode);
+    panelWineAttribute.initializeExtraProperties(bottle, severalItems, isEditionMode);
 
-    comment.setText(bottle.getComment());
+    commentTextArea.setText(bottle.getComment());
   }
 
   public void enableAll(boolean enable) {
     panelPlace.enableAll(enable);
     panelGeneral.enableAll(enable);
-    panelWineAttribute.enableAll(enable, multi, isEditionMode);
+    panelWineAttribute.enableAll(enable, severalItems, isEditionMode);
     addButton.setEnabled(enable);
     if (cancelButton != null) {
       cancelButton.setEnabled(enable);
     }
-    comment.setEditable(enable);
+    commentTextArea.setEditable(enable);
     panelVignobles.enableAll(enable);
     end.setVisible(enable);
   }

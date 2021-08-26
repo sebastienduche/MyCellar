@@ -8,7 +8,6 @@ import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -37,8 +36,8 @@ import static mycellar.general.XmlUtils.getTextContent;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 23/08/21
+ * @version 1.1
+ * @since 26/08/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -519,35 +518,6 @@ public class Music extends MyCellarObject implements Serializable {
     return title;
   }
 
-  public void update(final Music music) {
-    setTitle(music.getTitle());
-    setAnnee(music.getAnnee());
-    setColonne(music.getColonne());
-    setComment(music.getComment());
-    setEmplacement(music.getEmplacement());
-    setLigne(music.getLigne());
-    setArtist(music.getArtist());
-    setNumLieu(music.getNumLieu());
-    setComposer(music.getComposer());
-    setGenre(music.getGenre());
-    setPrix(music.getPrix());
-    setKind(music.getKind());
-    setDuration(music.getDuration());
-    setTracks(music.getTracks());
-    if (music.hasNoStatus()) {
-      setStatus(BottlesStatus.MODIFIED.name());
-    } else {
-      setStatus(music.getStatus());
-    }
-    setLastModified(LocalDateTime.now());
-    setDiskCount(music.getDiskCount());
-    setDiskNumber(music.getDiskNumber());
-    setRating(music.getRating());
-    setFile(music.getFile());
-    setExternalId(music.getExternalId());
-    setAlbum(music.getAlbum());
-  }
-
   @Override
   public void setModified() {
     setLastModified(LocalDateTime.now());
@@ -734,8 +704,34 @@ public class Music extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public void update(Bouteille bouteille) {
-    throw new NotImplementedException("Update not implemented");
+  public void update(MyCellarObject myCellarObject) {
+    Music music = (Music) myCellarObject;
+    setTitle(music.getTitle());
+    setAnnee(music.getAnnee());
+    setColonne(music.getColonne());
+    setComment(music.getComment());
+    setEmplacement(music.getEmplacement());
+    setLigne(music.getLigne());
+    setArtist(music.getArtist());
+    setNumLieu(music.getNumLieu());
+    setComposer(music.getComposer());
+    setGenre(music.getGenre());
+    setPrix(music.getPrix());
+    setKind(music.getKind());
+    setDuration(music.getDuration());
+    setTracks(music.getTracks());
+    if (music.hasNoStatus()) {
+      setStatus(BottlesStatus.MODIFIED.name());
+    } else {
+      setStatus(music.getStatus());
+    }
+    setLastModified(LocalDateTime.now());
+    setDiskCount(music.getDiskCount());
+    setDiskNumber(music.getDiskNumber());
+    setRating(music.getRating());
+    setFile(music.getFile());
+    setExternalId(music.getExternalId());
+    setAlbum(music.getAlbum());
   }
 
   @Override

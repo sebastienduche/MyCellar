@@ -38,8 +38,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.5
- * @since 23/08/21
+ * @version 8.6
+ * @since 26/08/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -66,7 +66,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       PopupListener popup_l = new PopupListener();
       panelGeneral.setMouseListener(popup_l);
       panelWineAttribute.setMouseListener(popup_l);
-      comment.addMouseListener(popup_l);
+      commentTextArea.addMouseListener(popup_l);
 
       end.setForeground(Color.red);
       end.setHorizontalAlignment(SwingConstants.CENTER);
@@ -154,7 +154,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     String demie = panelGeneral.getType();
 
     String prix = panelWineAttribute.getPrice();
-    String comment1 = comment.getText();
+    String comment1 = commentTextArea.getText();
     String dateOfC = panelWineAttribute.getMaturity();
     String parker = panelWineAttribute.getParker();
     String color = panelWineAttribute.getColor();
@@ -276,7 +276,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   private void resetModified() {
     panelGeneral.resetModified(false);
     panelWineAttribute.resetModified(false);
-    comment.setModified(false);
+    commentTextArea.setModified(false);
     panelVignobles.setModified(false);
     panelPlace.clearModified();
     Start.setPaneModified(false);
@@ -294,7 +294,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     addButton.setEnabled(false);
 
     boolean modified = panelGeneral.isModified(bottle);
-    modified |= comment.isModified();
+    modified |= commentTextArea.isModified();
     modified |= panelWineAttribute.isModified();
     modified |= panelPlace.isModified();
     modified |= panelVignobles.isModified();

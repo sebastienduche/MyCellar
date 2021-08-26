@@ -22,8 +22,8 @@ import java.util.List;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 15/05/21
+ * @version 3.2
+ * @since 26/08/21
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -51,33 +51,16 @@ class TableHistoryValues extends AbstractTableModel {
     columnList.add("");
   }
 
-  /**
-   * getRowCount
-   *
-   * @return int
-   */
   @Override
   public int getRowCount() {
     return displayList.size();
   }
 
-  /**
-   * getColumnCount
-   *
-   * @return int
-   */
   @Override
   public int getColumnCount() {
     return columnList.size();
   }
 
-  /**
-   * getValueAt
-   *
-   * @param row    int
-   * @param column int
-   * @return Object
-   */
   @Override
   public Object getValueAt(int row, int column) {
     History h = displayList.get(row);
@@ -100,7 +83,7 @@ class TableHistoryValues extends AbstractTableModel {
           b = h.getBouteille();
         } else {
           b = null;
-          Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+          Program.throwNotImplemented();
         }
         if (b == null) {
           return "";
@@ -181,8 +164,8 @@ class TableHistoryValues extends AbstractTableModel {
     }
     switch (column) {
       case ACTION:
+        History h = displayList.get(row);
         if (Program.isWineType()) {
-          History h = displayList.get(row);
           MyCellarObject bottle = h.getBouteille();
           if (h.isDeleted()) {
             ProgramPanels.showBottle(bottle, false);
@@ -194,9 +177,18 @@ class TableHistoryValues extends AbstractTableModel {
                     () -> ProgramPanels.showBottle(bottle, false));
           }
         } else if (Program.isMusicType()) {
-          Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+          MyCellarObject music = h.getMusic();
+          if (h.isDeleted()) {
+            ProgramPanels.showBottle(music, false);
+          } else {
+            Program.Debug("Music Get ID = " + music.getId());
+            Program.getStorage().getListMyCellarObject().getBouteille().stream().filter(b -> b.getId() == music.getId()).findFirst()
+                .ifPresentOrElse(
+                    m -> ProgramPanels.showBottle(m, true),
+                    () -> ProgramPanels.showBottle(music, false));
+          }
         } else {
-          Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+          Program.throwNotImplemented();
         }
         break;
       case SELECT:

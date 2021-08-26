@@ -84,13 +84,13 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.7
- * @since 22/08/21
+ * @version 26.8
+ * @since 26/08/21
  */
 
 public final class Program {
 
-  public static final String INTERNAL_VERSION = "4.2.2.1";
+  public static final String INTERNAL_VERSION = "4.2.3.1";
   public static final int VERSION = 70;
   public static final String DEFAULT_STORAGE_EN = "Default storage";
   public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
@@ -1496,6 +1496,10 @@ public final class Program {
     if (!aClass.isInstance(myCellarObject)) {
       throw new NotImplementedException("Not implemented For " + aClass);
     }
+  }
+
+  public static void throwNotImplemented() {
+    throw new NotImplementedException("Not implemented yet!");
   }
 
   enum Type {

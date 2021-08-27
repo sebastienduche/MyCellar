@@ -64,8 +64,8 @@ import static mycellar.ScreenType.VIGNOBLES;
  * <p>Société : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 0.3
- * @since 26/08/21
+ * @version 0.4
+ * @since 27/08/21
  */
 public class ProgramPanels {
 
@@ -371,7 +371,6 @@ public class ProgramPanels {
   }
 
   public static void showBottle(MyCellarObject myCellarObject, boolean edit) {
-    Program.throwNotImplementedIfNotFor(myCellarObject, Bouteille.class);
     for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
       Component tab = TABBED_PANE.getComponentAt(i);
       if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(myCellarObject)) {
@@ -379,7 +378,7 @@ public class ProgramPanels {
         return;
       }
     }
-    ManageBottle manage = new ManageBottle((Bouteille) myCellarObject);
+    ManageBottle manage = new ManageBottle(myCellarObject);
     manage.enableAll(edit);
     UPDATABLE_BOTTLES.put(myCellarObject.getId(), manage);
     String bottleName = myCellarObject.getNom();

@@ -1,6 +1,5 @@
 package mycellar.placesmanagement;
 
-import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarObject;
@@ -20,8 +19,8 @@ import java.util.Optional;
  * <p>Société : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 28.3
- * @since 09/06/21
+ * @version 28.4
+ * @since 27/08/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -31,7 +30,7 @@ public class Rangement implements Comparable<Rangement> {
   private int stock_nblign; //Nombre max de lignes pour tous les emplacements
   private boolean caisse; //Indique si le rangement est une caisse
   private int start_caisse; //Indique l'indice de démarrage des caisses
-  private MyCellarObject[][][] stockage; //Stocke les vins du rangement: stockage[nb_emplacements][stock_nblign][stock_nbcol]
+  private MyCellarObject[][][] stockage; //Stocke les objets du rangement: stockage[nb_emplacements][stock_nblign][stock_nbcol]
   private boolean limited; //Indique si une limite de caisse est activée
   private List<Part> listePartie = null;
   private Map<Integer, ArrayList<MyCellarObject>> storageCaisse;
@@ -473,15 +472,15 @@ public class Rangement implements Comparable<Rangement> {
    * @param num_empl int: numéro d'emplacement (0...n)
    * @param line     int: numéro de ligne (0...n)
    * @param column   int: numéro de colonne (0...n)
-   * @return Bouteille
+   * @return MyCellarObject
    */
   public Optional<MyCellarObject> getBouteille(int num_empl, int line, int column) {
     if (isCaisse()) {
       Debug("ERROR: Function getBouteille can't be called on a simple place!");
       return Optional.empty();
     }
-    final MyCellarObject bouteille = stockage[num_empl][line][column];
-    return Optional.ofNullable(bouteille);
+    final MyCellarObject myCellarObject = stockage[num_empl][line][column];
+    return Optional.ofNullable(myCellarObject);
   }
 
   public Optional<MyCellarObject> getBouteille(Place place) {
@@ -491,11 +490,11 @@ public class Rangement implements Comparable<Rangement> {
   /**
    * Vide la case
    *
-   * @param bottle Bouteille
+   * @param myCellarObject MyCellarObject
    */
-  public void clearStock(MyCellarObject bottle, Place place) {
+  public void clearStock(MyCellarObject myCellarObject, Place place) {
     if (isCaisse()) {
-      storageCaisse.get(place.getPlaceNum()).remove(bottle);
+      storageCaisse.get(place.getPlaceNum()).remove(myCellarObject);
     } else {
       clearComplexStock(place);
     }
@@ -513,7 +512,7 @@ public class Rangement implements Comparable<Rangement> {
    *
    * @param num_empl int: numéro d'emplacement (0...n)
    * @param index    int: index de la bouteille (0...n)
-   * @return Bouteille
+   * @return MyCellarObject
    */
   public MyCellarObject getBouteilleCaisseAt(int num_empl, int index) {
     return storageCaisse.get(num_empl + start_caisse).get(index);
@@ -702,7 +701,7 @@ public class Rangement implements Comparable<Rangement> {
     if (isCaisse()) {
       updateCaisse(nb_emplacements);
     } else {
-      stockage = new Bouteille[nb_emplacements][stock_nblign][nbColonnesStock];
+      stockage = new MyCellarObject[nb_emplacements][stock_nblign][nbColonnesStock];
     }
   }
 
@@ -750,7 +749,7 @@ public class Rangement implements Comparable<Rangement> {
     limited = false;
     caisse = false;
 
-    stockage = new Bouteille[nb_emplacements][stock_nblign][nbColonnesStock];
+    stockage = new MyCellarObject[nb_emplacements][stock_nblign][nbColonnesStock];
   }
 
   public void updatePlace(List<Part> listPart) {
@@ -762,7 +761,7 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * getNumberOfBottlesPerPlace: retourne le nombre de case utilisée par partie
+   * getNumberOfBottlesPerPlace: retourne le nombre de cases utilisées par partie
    *
    * @return Map: le numero d'emplacement commence toujours à 0
    */
@@ -865,15 +864,15 @@ public class Rangement implements Comparable<Rangement> {
       partList = new LinkedList<>();
     }
 
-    public RangementBuilder nb_emplacement(int[] linesByEmplacement) {
-      nb_emplacement = linesByEmplacement.length;
-      this.linesByEmplacement = linesByEmplacement;
+    public RangementBuilder nb_emplacement(int[] values) {
+      nb_emplacement = values.length;
+      linesByEmplacement = values;
       return this;
     }
 
-    public RangementBuilder sameColumnsNumber(int[] nb_columnsByEmplacement) {
+    public RangementBuilder sameColumnsNumber(int[] values) {
       sameColumns = true;
-      this.nb_columnsByEmplacement = nb_columnsByEmplacement;
+      nb_columnsByEmplacement = values;
       return this;
     }
 
@@ -934,13 +933,13 @@ public class Rangement implements Comparable<Rangement> {
       defaultPlace = false;
     }
 
-    public CaisseBuilder nb_emplacement(int nb_emplacement) {
-      this.nb_emplacement = nb_emplacement;
+    public CaisseBuilder nb_emplacement(int value) {
+      nb_emplacement = value;
       return this;
     }
 
-    public CaisseBuilder start_caisse(int start_caisse) {
-      this.start_caisse = start_caisse;
+    public CaisseBuilder start_caisse(int value) {
+      start_caisse = value;
       return this;
     }
 
@@ -949,8 +948,8 @@ public class Rangement implements Comparable<Rangement> {
       return this;
     }
 
-    public CaisseBuilder limite_caisse(int limite_caisse) {
-      this.limite_caisse = limite_caisse;
+    public CaisseBuilder limite_caisse(int value) {
+      limite_caisse = value;
       return this;
     }
 

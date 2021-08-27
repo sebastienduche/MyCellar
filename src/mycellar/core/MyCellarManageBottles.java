@@ -5,6 +5,7 @@ import mycellar.general.PanelGeneral;
 import mycellar.general.PanelWineAttribute;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -17,8 +18,8 @@ import javax.swing.SwingUtilities;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.7
- * @since 26/08/21
+ * @version 4.8
+ * @since 27/08/21
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
@@ -105,6 +106,32 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
     panelGeneral.clearValues();
     panelPlace.resetValues();
     panelVignobles.resetCountrySelected();
+  }
+
+  public final class PanelMain extends JPanel {
+    private static final long serialVersionUID = -4824541234206895953L;
+
+    public PanelMain(boolean withCancelButton) {
+      panelVignobles = new PanelVignobles(false, true, true);
+      setLayout(new MigLayout("", "grow", "[][][]10px[][grow]10px[][]"));
+      add(panelGeneral, "growx, wrap");
+      add(panelPlace, "growx, wrap");
+      add(panelWineAttribute, "growx, split 2");
+      if (Program.isWineType()) {
+        add(panelVignobles, "growx, wrap");
+      } else {
+        add(new JPanel(), "growx, wrap");
+      }
+      add(labelComment, "growx, wrap");
+      add(scrollPaneComment, "grow, wrap");
+      add(end, "center, hidemode 3, wrap");
+      if (withCancelButton) {
+        add(addButton, "center, split 2");
+        add(cancelButton);
+      } else {
+        add(addButton, "center");
+      }
+    }
   }
 
 }

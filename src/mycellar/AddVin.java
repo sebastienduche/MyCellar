@@ -11,7 +11,6 @@ import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
-import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
 import mycellar.core.TabEvent;
 import mycellar.core.datas.history.HistoryState;
@@ -20,11 +19,9 @@ import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -46,8 +43,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.5
- * @since 26/08/21
+ * @version 28.6
+ * @since 27/08/21
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -93,7 +90,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     end.setForeground(Color.red);
     end.setHorizontalAlignment(SwingConstants.CENTER);
     setLayout(new BorderLayout());
-    add(new PanelMain(), BorderLayout.CENTER);
+    add(new PanelMain(true), BorderLayout.CENTER);
 
     setVisible(true);
     Debug("Constructor End");
@@ -916,27 +913,27 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Start.getInstance().updateMainPanel();
   }
 
-  private final class PanelMain extends JPanel {
-    private static final long serialVersionUID = -4824541234206895953L;
-
-    private PanelMain() {
-      panelVignobles = new PanelVignobles(false, true, true);
-      setLayout(new MigLayout("", "grow", "[][][]10px[][grow]10px[][]"));
-      add(panelGeneral, "growx, wrap");
-      add(panelPlace, "growx, wrap");
-      add(panelWineAttribute, "growx, split 2");
-      if (Program.isWineType()) {
-        add(panelVignobles, "growx, wrap");
-      } else {
-        add(new JPanel(), "growx, wrap");
-      }
-      add(labelComment, "growx, wrap");
-      add(scrollPaneComment, "grow, wrap");
-      add(end, "center, hidemode 3, wrap");
-      add(addButton, "center, split 2");
-      add(cancelButton);
-    }
-  }
+//  private final class PanelMain extends JPanel {
+//    private static final long serialVersionUID = -4824541234206895953L;
+//
+//    private PanelMain() {
+//      panelVignobles = new PanelVignobles(false, true, true);
+//      setLayout(new MigLayout("", "grow", "[][][]10px[][grow]10px[][]"));
+//      add(panelGeneral, "growx, wrap");
+//      add(panelPlace, "growx, wrap");
+//      add(panelWineAttribute, "growx, split 2");
+//      if (Program.isWineType()) {
+//        add(panelVignobles, "growx, wrap");
+//      } else {
+//        add(new JPanel(), "growx, wrap");
+//      }
+//      add(labelComment, "growx, wrap");
+//      add(scrollPaneComment, "grow, wrap");
+//      add(end, "center, hidemode 3, wrap");
+//      add(addButton, "center, split 2");
+//      add(cancelButton);
+//    }
+//  }
 
   class AddAction extends AbstractAction {
 

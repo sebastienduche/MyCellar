@@ -211,9 +211,9 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 
     if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
       File file = boiteFichier.getSelectedFile();
-      String nom = file.getAbsolutePath();
       Program.putCaveConfigString(MyCellarSettings.DIR, boiteFichier.getCurrentDirectory().toString());
       Filtre filtre = (Filtre) boiteFichier.getFileFilter();
+      String nom = file.getAbsolutePath();
       nom = MyCellarControl.controlAndUpdateExtension(nom, filtre);
       name.setText(nom);
     }

@@ -65,7 +65,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 
@@ -79,8 +78,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.1
- * @since 08/07/21
+ * @version 29.2
+ * @since 10/09/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -314,7 +313,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
   }
 
   /**
-   * Permet de charger un fichier sans avoir a recharger la Frame
+   * Permet de charger un fichier
    */
   private void loadFile() {
     Program.initConf();
@@ -467,7 +466,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
   }
 
   /**
-   * Actions realises apres l'ouverture d'un fichier
+   * Actions realisees apres l'ouverture d'un fichier
    */
   private void postOpenFile() {
     loadFile();
@@ -582,8 +581,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
   }
 
   /**
-   * exportXml_actionPerformed: Permet d'exporter la liste des vins au format
-   * xml
+   * exportXml_actionPerformed: Permet d'exporter la liste des objets au format xml
    */
   private void exportXml_actionPerformed() {
     JFileChooser boiteFichier = new JFileChooser();
@@ -706,9 +704,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  /**
-   * aide_actionPerformed: Aide
-   */
   private void aide_actionPerformed() {
     Program.getAide();
   }
@@ -961,17 +956,14 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     jMenuCut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
     jMenuCopy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
     jMenuPaste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
-    // Ajouter les menu sur la bar de menu
     m_oMenuBar.add(menuFile);
     m_oMenuBar.add(menuEdition);
     m_oMenuBar.add(menuPlace);
     m_oMenuBar.add(menuWine);
     m_oMenuBar.add(menuTools);
     m_oMenuBar.add(menuAbout);
-    // Ajouter la bar du menu a la frame
     setJMenuBar(m_oMenuBar);
 
-    // Chargement du Frame
     if (!m_bHasListener) {
       setListeners();
     }
@@ -1232,7 +1224,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
     private final MyCellarComboBox<ObjectType> types = new MyCellarComboBox<>();
     private final List<ObjectType> objectTypes = new ArrayList<>();
-    MyCellarLabel label_objectType = new MyCellarLabel(LabelType.INFO_OTHER, "Parameters.typeLabel");
 
     private PanelObjectType() {
       Arrays.stream(Program.Type.values())
@@ -1248,13 +1239,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
       setLayout(new MigLayout("", "[grow]", "[]25px[]"));
       add(new MyCellarLabel(Program.getLabel("Start.selectTypeObject")), "span 2, wrap");
-      add(label_objectType);
+      add(new MyCellarLabel(LabelType.INFO_OTHER, "Parameters.typeLabel"));
       add(types);
     }
 
     private ObjectType findObjectType(Program.Type type) {
-      final Optional<ObjectType> first = objectTypes.stream().filter(objectType -> objectType.getType() == type).findFirst();
-      return first.orElse(null);
+      return objectTypes.stream().filter(objectType -> objectType.getType() == type).findFirst().orElse(null);
     }
 
     public Program.Type getSelectedType() {

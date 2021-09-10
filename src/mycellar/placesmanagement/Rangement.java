@@ -13,14 +13,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 28.4
- * @since 27/08/21
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 28.5
+ * @since 10/09/21
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -29,15 +29,15 @@ public class Rangement implements Comparable<Rangement> {
   private int nbColonnesStock; //Nombre max de colonnes pour tous les emplacements
   private int stock_nblign; //Nombre max de lignes pour tous les emplacements
   private boolean caisse; //Indique si le rangement est une caisse
-  private int start_caisse; //Indique l'indice de démarrage des caisses
+  private int start_caisse; //Indique l'indice de d&eacute;marrage des caisses
   private MyCellarObject[][][] stockage; //Stocke les objets du rangement: stockage[nb_emplacements][stock_nblign][stock_nbcol]
-  private boolean limited; //Indique si une limite de caisse est activée
+  private boolean limited; //Indique si une limite de caisse est activ&eacute;e
   private List<Part> listePartie = null;
   private Map<Integer, ArrayList<MyCellarObject>> storageCaisse;
   private boolean defaultPlace = false;
 
   /**
-   * Rangement: Constructeur de création d'un rangement de type Armoire
+   * Rangement: Constructeur de cr&eacute;ation d'un rangement de type Armoire
    *
    * @param nom      String: nom du rangement
    * @param listPart LinkedList<Part>: liste des parties
@@ -52,9 +52,9 @@ public class Rangement implements Comparable<Rangement> {
    *
    * @param nom            String: nom du rangement
    * @param nb_emplacement int: nombre d'emplacement
-   * @param start_caisse   int: Numéro de démarrage de l'indice des caisses
-   * @param isLimit        boolean: Limite de caisse activée?
-   * @param limite_caisse  int: Capacité pour la limite
+   * @param start_caisse   int: Num&eacute;ro de d&eacute;marrage de l'indice des caisses
+   * @param isLimit        boolean: Limite de caisse activ&eacute;e?
+   * @param limite_caisse  int: Capacit&eacute; pour la limite
    */
   private Rangement(String nom, int nb_emplacement, int start_caisse, boolean isLimit, int limite_caisse) {
     this.nom = nom.strip();
@@ -77,11 +77,6 @@ public class Rangement implements Comparable<Rangement> {
     }
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
   private static void Debug(String sText) {
     Program.Debug("Rangement: " + sText);
   }
@@ -96,7 +91,7 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * setNom: Met à jour le nom du rangement
+   * setNom: Met &agrave; jour le nom du rangement
    *
    * @param name String
    */
@@ -105,7 +100,7 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * getStartCaisse: retourne l'indice de démarrage d'une caisse
+   * getStartCaisse: retourne l'indice de d&eacute;marrage d'une caisse
    *
    * @return int
    */
@@ -114,7 +109,7 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * setStartCaisse: Positionne l'indice de démarrage d'une caisse
+   * setStartCaisse: Positionne l'indice de d&eacute;marrage d'une caisse
    *
    * @return int
    */
@@ -136,7 +131,7 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * getNbColonnesStock: retourne le nombre de colonnes autorisé par le stock
+   * getNbColonnesStock: retourne le nombre de colonnes autoris&eacute; par le stock
    *
    * @return int
    */
@@ -163,7 +158,7 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * setNbBottleInCaisse: Positionne le nombre de bouteilles disponible dans une Caisse si elle est limité
+   * setNbBottleInCaisse: Positionne le nombre de bouteilles disponible dans une Caisse si elle est limit&eacute;
    *
    * @return boolean
    */
@@ -176,7 +171,7 @@ public class Rangement implements Comparable<Rangement> {
   /**
    * getNbLignes: retourne le nombre de lignes d'un emplacement
    *
-   * @param emplacement int: numéro de l'emplacement (0...n)
+   * @param emplacement int: num&eacute;ro de l'emplacement (0...n)
    * @return int
    */
   public int getNbLignes(int emplacement) {
@@ -187,7 +182,7 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * Indique si la cellule demandée existe
+   * Indique si la cellule demand&eacute;e existe
    *
    * @param emplacement
    * @param ligne
@@ -212,8 +207,8 @@ public class Rangement implements Comparable<Rangement> {
   /**
    * getNbColonnes: retourne le nombre de colonnes sur la ligne d'un emplacement
    *
-   * @param emplacement int: numéro d'emplacement (0...n)
-   * @param ligne       int: numéro de ligne (0...n)
+   * @param emplacement int: num&eacute;ro d'emplacement (0...n)
+   * @param ligne       int: num&eacute;ro de ligne (0...n)
    * @return int
    */
   public int getNbColonnes(int emplacement, int ligne) {
@@ -230,7 +225,7 @@ public class Rangement implements Comparable<Rangement> {
   /**
    * getNbColonnesMax: retourne le nombre maximal de colonnes d'un emplacement
    *
-   * @param emplacement int: numéro d'emplacement (0...n)
+   * @param emplacement int: num&eacute;ro d'emplacement (0...n)
    * @return int
    */
   public int getNbColonnesMax(int emplacement) {
@@ -262,11 +257,11 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * getNbCaseUseLigne: retourne le nombre de cases utilisées dans une ligne d'un
+   * getNbCaseUseLigne: retourne le nombre de cases utilis&eacute;es dans une ligne d'un
    * emplacement
    *
-   * @param emplacement int: numéro de l'emplacement (0...n)
-   * @param ligne       int: numéro de ligne (0...n)
+   * @param emplacement int: num&eacute;ro de l'emplacement (0...n)
+   * @param ligne       int: num&eacute;ro de ligne (0...n)
    * @return int
    */
   public int getNbCaseUseLigne(int emplacement, int ligne) {
@@ -285,12 +280,12 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * getNbCaseFreeCoteLigne: retourne le nombre de cases libre côte à côte dans une ligne d'un
-   * emplacement à partir de la colonne indiquée
+   * getNbCaseFreeCoteLigne: retourne le nombre de cases libre côte &agrave; côte dans une ligne d'un
+   * emplacement &agrave; partir de la colonne indiqu&eacute;e
    *
-   * @param emplacement int: numéro de l'emplacement (0...n)
-   * @param ligne       int: numéro de ligne (0...n)
-   * @param colonne     int: numéro de colonne (0...n)
+   * @param emplacement int: num&eacute;ro de l'emplacement (0...n)
+   * @param ligne       int: num&eacute;ro de ligne (0...n)
+   * @param colonne     int: num&eacute;ro de colonne (0...n)
    * @return int
    */
   public int getNbCaseFreeCoteLigne(int emplacement, int ligne, int colonne) {
@@ -311,10 +306,10 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * getNbCaseUse: retourne le nombre de case utilisée dans toutes les lignes
+   * getNbCaseUse: retourne le nombre de case utilis&eacute;e dans toutes les lignes
    * d'un emplacement
    *
-   * @param emplacement int: numéro d'emplacement (0...n)
+   * @param emplacement int: num&eacute;ro d'emplacement (0...n)
    * @return int
    */
   public int getNbCaseUse(int emplacement) {
@@ -340,10 +335,10 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * getNbCaseUseCaisse: retourne le nombre de case utilisée dans toutes les lignes
+   * getNbCaseUseCaisse: retourne le nombre de case utilis&eacute;e dans toutes les lignes
    * d'une caisse
    *
-   * @param emplacement int: numéro d'emplacement (start_caisse...n)
+   * @param emplacement int: num&eacute;ro d'emplacement (start_caisse...n)
    * @return int
    */
   private int getNbCaseUseCaisse(int emplacement) {
@@ -356,7 +351,7 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * getNbCaseUseAll: Nombre de case utilisée dans toutes les lignes
+   * getNbCaseUseAll: Nombre de case utilis&eacute;e dans toutes les lignes
    *
    * @return int
    */
@@ -371,7 +366,7 @@ public class Rangement implements Comparable<Rangement> {
   /**
    * addWine: Ajout d'une bouteille
    *
-   * @param wine Bouteille: bouteille à ajouter
+   * @param wine MyCellarObject: objet &agrave; ajouter
    * @return int
    */
   public boolean addWine(MyCellarObject wine) {
@@ -381,13 +376,14 @@ public class Rangement implements Comparable<Rangement> {
     if (isCaisse()) {
       return putWineCaisse(wine);
     }
-    return putWineStandard(wine);
+    putWineStandard(wine);
+    return true;
   }
 
   /**
    * removeWine: Suppression d'une bouteille
    *
-   * @param wine Bouteille: bouteille à supprimer
+   * @param wine MyCellarObject: objet &agrave; supprimer
    * @return int
    */
   public void removeWine(MyCellarObject wine) throws MyCellarException {
@@ -398,7 +394,7 @@ public class Rangement implements Comparable<Rangement> {
   /**
    * putWine: Ajout d'une bouteille dans une caisse
    *
-   * @param wine Bouteille: bouteille à ajouter
+   * @param wine MyCellarObject: objet &agrave; ajouter
    * @return int
    */
   private boolean putWineCaisse(MyCellarObject wine) {
@@ -420,9 +416,9 @@ public class Rangement implements Comparable<Rangement> {
   /**
    * putWineStandard: Ajout d'une bouteille dans un rangement non caisse
    *
-   * @param wine Bouteille: Bouteille à ajouter
+   * @param wine MyCellarObject: Object to add
    */
-  private boolean putWineStandard(MyCellarObject wine) {
+  private void putWineStandard(MyCellarObject wine) {
     Debug("putWineStandard: " + wine.getNom() + " " + wine.getEmplacement() + " " + wine.getNumLieu() + " " + wine.getLigne() + " " + wine.getColonne());
 
     int num_empl = wine.getNumLieu();
@@ -430,13 +426,12 @@ public class Rangement implements Comparable<Rangement> {
     int column = wine.getColonne();
     stockage[num_empl - 1][line - 1][column - 1] = wine;
     Program.getStorage().addWine(wine);
-    return true;
   }
 
   /**
    * updateToStock: Change une bouteille dans le stock
    *
-   * @param wine Bouteille: Bouteille à changer
+   * @param wine MyCellarObject: objet &agrave; changer
    */
   public void updateToStock(MyCellarObject wine) {
     if (isCaisse()) {
@@ -450,10 +445,10 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * moveLine: Déplacement d'un objet dans un rangement
+   * moveLine: D&eacute;placement d'un objet dans un rangement
    *
-   * @param myCellarObject MyCellarObject: Objet à déplacer
-   * @param nNewLine       int: nouveau numéro de ligne
+   * @param myCellarObject MyCellarObject: Objet &agrave; d&eacute;placer
+   * @param nNewLine       int: nouveau num&eacute;ro de ligne
    */
   public void moveLine(MyCellarObject myCellarObject, int nNewLine) throws MyCellarException {
     Program.getStorage().deleteWine(myCellarObject);
@@ -467,11 +462,11 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * getBouteille: retourne la bouteille se trouvant à un emplacement précis dans une armoire
+   * getBouteille: retourne la bouteille se trouvant &agrave; un emplacement pr&eacute;cis dans une armoire
    *
-   * @param num_empl int: numéro d'emplacement (0...n)
-   * @param line     int: numéro de ligne (0...n)
-   * @param column   int: numéro de colonne (0...n)
+   * @param num_empl int: num&eacute;ro d'emplacement (0...n)
+   * @param line     int: num&eacute;ro de ligne (0...n)
+   * @param column   int: num&eacute;ro de colonne (0...n)
    * @return MyCellarObject
    */
   public Optional<MyCellarObject> getBouteille(int num_empl, int line, int column) {
@@ -508,9 +503,9 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * getBouteilleCaisseAt: retourne la bouteille se trouvant à un emplacement précis
+   * getBouteilleCaisseAt: retourne la bouteille se trouvant &agrave; un emplacement pr&eacute;cis
    *
-   * @param num_empl int: numéro d'emplacement (0...n)
+   * @param num_empl int: num&eacute;ro d'emplacement (0...n)
    * @param index    int: index de la bouteille (0...n)
    * @return MyCellarObject
    */
@@ -640,8 +635,6 @@ public class Rangement implements Comparable<Rangement> {
 
   /**
    * Retourne le premier emplacement ou se trouve de la place ou -1
-   *
-   * @return
    */
   public int getFreeNumPlaceInCaisse() {
     if (!isCaisse()) {
@@ -658,8 +651,6 @@ public class Rangement implements Comparable<Rangement> {
 
   /**
    * Retourne le dernier emplacement utilisable
-   *
-   * @return
    */
   public int getLastNumEmplacement() {
     if (isCaisse()) {
@@ -670,8 +661,6 @@ public class Rangement implements Comparable<Rangement> {
 
   /**
    * Retourne le premier emplacement utilisable
-   *
-   * @return
    */
   public int getFirstNumEmplacement() {
     if (isCaisse()) {
@@ -681,7 +670,7 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * Réinitialisation du stockage pour les caisses
+   * R&eacute;initialisation du stockage pour les caisses
    */
   public void updateCaisse(int nbEmplacements) {
     if (!isCaisse()) {
@@ -695,7 +684,7 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * Réinitialisation du stockage
+   * R&eacute;initialisation du stockage
    */
   public void resetStock() {
     if (isCaisse()) {
@@ -761,9 +750,9 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   /**
-   * getNumberOfBottlesPerPlace: retourne le nombre de cases utilisées par partie
+   * getNumberOfBottlesPerPlace: retourne le nombre de cases utilis&eacute;es par partie
    *
-   * @return Map: le numero d'emplacement commence toujours à 0
+   * @return Map: le numero d'emplacement commence toujours &agrave; 0
    */
   public Map<Integer, Integer> getNumberOfBottlesPerPlace() {
     Map<Integer, Integer> numberOfBottlesPerPlace = new HashMap<>(nb_emplacements);

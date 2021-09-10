@@ -15,13 +15,14 @@ import java.util.Map;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 16/04/21
+ * @version 1.4
+ * @since 10/09/21
  */
 
 abstract class ShowFileColumn<T> {
 
   private final Map<Integer, T> value = new HashMap<>();
+  private T defaultValue = null;
   private MyCellarFields field;
   private int width;
   private boolean editable;
@@ -56,12 +57,13 @@ abstract class ShowFileColumn<T> {
     seType(Type.BUTTON);
   }
 
-  ShowFileColumn(int width, boolean editable, boolean checkbox, String checkBoxLabel) {
+  ShowFileColumn(int width, boolean editable, boolean checkbox, String checkBoxLabel, T defaultValue) {
     this.width = width;
     setEditable(editable);
     setButtonLabel(checkBoxLabel);
     if (checkbox) {
       seType(Type.CHECK);
+      this.defaultValue = defaultValue;
     } else {
       seType(Type.DEFAULT);
     }
@@ -144,7 +146,7 @@ abstract class ShowFileColumn<T> {
       return value.get(b.getId());
     }
     if (isCheckBox()) {
-      return (T) Boolean.FALSE;
+      return defaultValue;
     }
     return null;
   }

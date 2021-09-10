@@ -16,8 +16,8 @@ import java.util.LinkedList;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 13/11/20
+ * @version 0.8
+ * @since 10/09/21
  */
 
 @SuppressWarnings(value = {"rawtypes", "unchecked"})
@@ -127,15 +127,14 @@ public class CollectionFilter<T> {
         if (first) {
           // Dans le cas du premier passage, on conserve la liste
           // Elle servira pour les intersections et unions des elements suivant
-          resultTmp = result;
         } else {
           if (Predicates.AND.equals(last)) {
             intersect(resultTmp);
           } else if (Predicates.OR.equals(last)) {
             union(resultTmp);
           }
-          resultTmp = result;
         }
+        resultTmp = result;
         first = false;
       }
     } else {

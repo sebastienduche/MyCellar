@@ -32,12 +32,12 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
   protected MyCellarButton addButton;
   protected MyCellarButton cancelButton;
-  protected JModifyTextArea commentTextArea = new JModifyTextArea();
+  protected final JModifyTextArea commentTextArea = new JModifyTextArea();
   protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
   protected boolean updateView = false;
   protected PanelVignobles panelVignobles;
   protected MyCellarObject bottle = null;
-  protected char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
+  protected final char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
 
   protected boolean severalItems = false; //Pour ListVin
   protected boolean isEditionMode = false;

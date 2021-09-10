@@ -454,7 +454,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     SwingUtilities.invokeLater(() -> {
       try {
         Debug("Line_itemStateChanging...");
-        int nb_col = 0;
         int num_select = line.getSelectedIndex();
         int emplacement = num_lieu.getSelectedIndex();
         int lieu_select = lieu.getSelectedIndex();
@@ -464,6 +463,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         column.setEnabled(num_select > 0);
 
         resul_txt.setText("");
+        int nb_col = 0;
         if (num_select > 0) {
           nb_col = rangement.getNbColonnes(emplacement - 1, num_select - 1);
         }
@@ -577,10 +577,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   }
 
   private StringBuilder replaceCharInSearch(StringBuilder regex, String searchValue, String replaceValue) {
-    int lastIndex = 0;
     String search = regex.toString();
     regex = new StringBuilder();
     int index = search.indexOf(searchValue);
+    int lastIndex = 0;
     while (index != -1) {
       regex.append(search, lastIndex, index);
       regex.append(replaceValue);
@@ -863,13 +863,13 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         //Recherche toutes les bouteilles d'un emplacement
         int nb_empl = rangement.getNbEmplacements();
         int i_deb = 1;
-        int j_deb = 1;
         int i_fin = nb_empl;
-        int j_fin = 0;
         if (allBottlesState == AllBottlesState.PART) {
           i_deb = lieu_num;
           i_fin = lieu_num;
         }
+        int j_deb = 1;
+        int j_fin = 0;
         if (allBottlesState == AllBottlesState.LINE) {
           i_deb = lieu_num;
           i_fin = lieu_num;
@@ -884,12 +884,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           for (int j = j_deb; j <= j_fin; j++) {
             int nb_colonnes = rangement.getNbColonnes(i - 1, j - 1);
             for (int k = 1; k <= nb_colonnes; k++) {
-              Optional<MyCellarObject> b = rangement.getBouteille(i - 1, j - 1, k - 1);
-              if (b.isPresent()) {
-                final MyCellarObject bouteille = b.get();
+              MyCellarObject myCellarObject = rangement.getBouteille(i - 1, j - 1, k - 1).orElse(null);
+              if (myCellarObject != null) {
                 //Ajout de la bouteille dans la liste si elle n'y ait pas deja
-                if (model.hasNotBottle(bouteille)) {
-                  bouteilleList.add(bouteille);
+                if (model.hasNotBottle(myCellarObject)) {
+                  bouteilleList.add(myCellarObject);
                 } else {
                   already_found = true;
                 }

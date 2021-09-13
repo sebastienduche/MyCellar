@@ -7,6 +7,7 @@ import mycellar.core.common.MyCellarFields;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -22,45 +23,45 @@ import java.util.Map;
 abstract class ShowFileColumn<T> {
 
   private final Map<Integer, T> value = new HashMap<>();
+  private final int width;
+  private final boolean editable;
   private T defaultValue = null;
   private MyCellarFields field;
-  private int width;
-  private boolean editable;
   private Type type;
   private String buttonLabel;
 
   ShowFileColumn(MyCellarFields field) {
     this.field = field;
     width = 100;
-    setEditable(true);
+    editable = true;
     seType(Type.DEFAULT);
   }
 
   ShowFileColumn(MyCellarFields field, int width) {
     this.field = field;
     this.width = width;
-    setEditable(true);
+    editable = true;
     seType(Type.DEFAULT);
   }
 
   ShowFileColumn(MyCellarFields field, int width, boolean editable) {
     this.field = field;
     this.width = width;
-    setEditable(editable);
+    this.editable = editable;
     seType(Type.DEFAULT);
   }
 
   ShowFileColumn(int width, boolean editable, String buttonLabel) {
     this.width = width;
     this.buttonLabel = buttonLabel;
-    setEditable(editable);
+    this.editable = editable;
     seType(Type.BUTTON);
   }
 
   ShowFileColumn(int width, boolean editable, boolean checkbox, String checkBoxLabel, T defaultValue) {
     this.width = width;
-    setEditable(editable);
-    setButtonLabel(checkBoxLabel);
+    this.editable = editable;
+    buttonLabel = checkBoxLabel;
     if (checkbox) {
       seType(Type.CHECK);
       this.defaultValue = defaultValue;
@@ -69,7 +70,7 @@ abstract class ShowFileColumn<T> {
     }
   }
 
-  String getLabel() {
+  String getColumnName() {
     if (!isDefault()) {
       return "";
     }
@@ -83,35 +84,26 @@ abstract class ShowFileColumn<T> {
     return field;
   }
 
-  void setField(MyCellarFields field) {
-    this.field = field;
-  }
-
   int getWidth() {
     return width;
-  }
-
-  void setWidth(int width) {
-    this.width = width;
   }
 
   boolean isEditable() {
     return editable;
   }
 
-  private void setEditable(boolean editable) {
-    this.editable = editable;
+  abstract void setValue(MyCellarObject b, T value);
+  abstract Object getDisplayValue(MyCellarObject b);
+
+  void setModelValue(MyCellarObject myCellarObject, Object value) {
+    setValue(myCellarObject, (T) value);
   }
 
-  void setValue(MyCellarObject b, Object value) {
-    if (value instanceof String) {
-      b.setValue(field, (String) value);
+  void setStringValue(MyCellarObject b, String value) {
+      b.setValue(field, value);
       Program.setModified();
       b.updateStatus();
-    }
   }
-
-  abstract Object getDisplayValue(MyCellarObject b);
 
   boolean isButton() {
     return type == Type.BUTTON;
@@ -131,10 +123,6 @@ abstract class ShowFileColumn<T> {
 
   String getButtonLabel() {
     return buttonLabel;
-  }
-
-  private void setButtonLabel(String buttonLabel) {
-    this.buttonLabel = buttonLabel;
   }
 
   public boolean execute(MyCellarObject b, int row, int column) {
@@ -159,5 +147,27 @@ abstract class ShowFileColumn<T> {
     BUTTON,
     CHECK,
     DEFAULT
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ShowFileColumn<?> that = (ShowFileColumn<?>) o;
+    return field == that.field && type == that.type && Objects.equals(buttonLabel, that.buttonLabel);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(field, type, buttonLabel);
+  }
+
+  @Override
+  public String toString() {
+    return "ShowFileColumn{" +
+        "field=" + field +
+        ", type=" + type +
+        ", buttonLabel='" + buttonLabel + '\'' +
+        '}';
   }
 }

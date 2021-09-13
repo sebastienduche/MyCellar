@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Society : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 1.1
- * @since 10/05/21
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 1.2
+ * @since 13/09/21
  */
 
 public class ShowFileModel extends TableShowValues {
@@ -49,7 +49,7 @@ public class ShowFileModel extends TableShowValues {
       fireTableRowsUpdated(row, row);
       return;
     }
-    columns.get(column).setValue(b, value);
+    columns.get(column).setModelValue(b, value);
   }
 
   /**
@@ -60,7 +60,7 @@ public class ShowFileModel extends TableShowValues {
    */
   @Override
   public String getColumnName(int column) {
-    return columns.get(column).getLabel();
+    return columns.get(column).getColumnName();
   }
 
   /**

@@ -12,12 +12,14 @@
 <STRONG>Description :</STRONG><BR>
 Programme de gestion de Cave à vins.
 <HR>
-    <STRONG>Développements et corrections de la version 70 ?? (release 4.2.2.4)</STRONG><BR>
+    <STRONG>Développements et corrections de la version 70 ?? (release 4.2.4.7)</STRONG><BR>
 </span>
 <UL><LI>Program: Correction d'un problème de chargement du fichier ayant un rangement par défaut créer avec une langue différente
     <LI>Server: Externalisation de sa gestion
-    <LI>AddVin: Limite la longueur du nom affiché dans la liste de nom à 50 caractères.
+    <LI>AddVin: Limite la longueur du nom affiché dans la liste de nom à 100 caractères
     <LI>Music: Gestion des supports (début)
+    <LI>Worksheet: Correction d'un problème lors du changement des colonnes affichées
+    <LI>Worksheet: L'affichage pouvait être vide lorsque l'on ne changeait pas les colonnes selectionnées
     </LI></UL>
 <STRONG>Développements et corrections de la version 69 BI (release 4.1.9.8)</STRONG><BR>
 <UL><LI>AddVin: Centralisation de differents composants
@@ -116,14 +118,14 @@ Programme de gestion de Cave à vins.
     <LI>Start: Un fichier ne contenant que le rangement par défaut s'ouvrait en erreur sur les bouteilles
     <LI>AddVin: Un plantage pouvait survenir lors de la saisie d'une appellation
     <LI>ManageList: La boite de dialogue d'ajout d'une contenance ne s'affichait pas au premier plan
-    <LI>Export: Le champs 'Status' pouvait être présent plusieurs fois dans la boite d'Options
+    <LI>Export: Le champ 'Status' pouvait être présent plusieurs fois dans la boite d'Options
     <LI>Worksheet: La liste des colonnes affichait à tort la colonne 'Status'
     <LI>All: Début de simplification de la gestion des libellés et traductions
     <LI>All: Limitation de la longueur du nom affiché dans l'onglet
     <LI>Search: Certains caractères spéciaux n'étaient pas reconnus pour la recherche
     </LI></UL>
 <STRONG>Développements et corrections de la version 60 BD (release 3.4.1.9)</STRONG><BR>
-<UL><LI>AddVin: Le champs de saisie du vin était désactivé suite à une modification de bouteille
+<UL><LI>AddVin: Le champ de saisie du vin était désactivé suite à une modification de bouteille
     <LI>MyCellarOrganiserPanel: La liste déroulant n'affichait pas le rangement sélectionné lors de son ouverture
     <LI>Search: La recherche avec des caractères spéciaux ne fonctionnait plus
     <LI>All: Nouvelle gestion des onglets ouverts et devant être mis à jour
@@ -373,13 +375,13 @@ Programme de gestion de Cave à vins.
     <LI>Vignobles: Correction d'un problème de création d'identifiant unique pour un pays
     <LI>Vignobles: Enregistrement du libellé d'un pays dans un fichier texte
     <LI>Program: Correction d'un problème de compression de fichier avec le même identifiant
-    <LI>Predicates: Gestion des différentes options de recherche sur le nom en un seul champs
+    <LI>Predicates: Gestion des différentes options de recherche sur le nom en un seul champ
     <LI>AddVin: Disparition du message d'information après 5 secondes
     <LI>AddVin: Un nouveau pays saisi n'était pas présent dans la liste après enregistrement de la bouteille
     <LI>VineyardPanel: Activation / Désactivation des boutons en fonction des options possibles
     <LI>ManageBottle: La sélection du pays ne se faisait plus lors de la modification d'une bouteille
     <LI>AddVin: La saisie d'une année était possible alors que la case "Sans année" était active
-    <LI>VineyardPanel: Il n'était pas possible de modifier l'IGP après une ajout de vignoble
+    <LI>VineyardPanel: Il n'était pas possible de modifier l'IGP après un ajout de vignoble
     <LI>AddVin: Tri des pays
     <LI>VineyardPanel: Correction d'un problème de renommage des appelations
 </UL>
@@ -662,7 +664,7 @@ Programme de gestion de Cave à vins.
 </UL>
 <STRONG>Développements et corrections de la version 2.4a MB (release 1.6.3.4)</STRONG><BR>
 <UL>
-    <LI>All: Gestion du nouveau champs "Appellation"
+    <LI>All: Gestion du nouveau champ "Appellation"
     <LI>AddVin: Centralisation de la gestion de la hauteur de la fenêtre
     <LI>Paramètres: Suppression des données des champs "Autres" en fermeture de la fenêtre après désactivation
 </UL>
@@ -679,10 +681,10 @@ Programme de gestion de Cave à vins.
     <LI>Start: L'ouverture d'un fichier existant après le démarrage avec un nouveau fichier ne fonctionnait pas
     <LI>Start: Les fichiers en cours de création étaient référencés dans les derniers fichiers ouverts à tort
     <LI>Rangement: Plantage à l'ajout de multiples bouteilles dans une caisse si la taille était mal gérée
-    <LI>All: Gestion du nouveau champs "Maturité"
-    <LI>All: Gestion du nouveau champs "Notation Parker"
+    <LI>All: Gestion du nouveau champ "Maturité"
+    <LI>All: Gestion du nouveau champ "Notation Parker"
     <LI>Paramètres: Les paramètres inutiles à Mac Os sont cachés
-    <LI>Paramètres: Modification du champs "Fichier" pour afficher le nom complet du fichier ouvert
+    <LI>Paramètres: Modification du champ "Fichier" pour afficher le nom complet du fichier ouvert
     <LI>ShowFile: Agrandissement de la fenêtre en largeur
     <LI>All: Supression de propriétés du fichier INI inutiles
 </UL>
@@ -775,7 +777,7 @@ Programme de gestion de Cave à vins.
 <STRONG>Développements et corrections de la version 1.9a LR (release 1.2.5.5)</STRONG><BR>
 <UL>
     <LI>Start: Possibilité de modifier manuellement des paramètres internes du fichier INI
-    <LI>Start: Possibilité de redimensionner le champs Commentaires en hauteur
+    <LI>Start: Possibilité de redimensionner le champ "Commentaires" en hauteur
 </UL>
 <STRONG>Développements et corrections de la version 1.9 LR (release 1.2.5.1)</STRONG><BR>
 <UL>
@@ -852,7 +854,7 @@ Programme de gestion de Cave à vins.
     <LI>All: Suppression du contrôle sur la longueur du nom d'un rangement
     <LI>MyXmlDom: Gestion XML du format de sauvegarde des rangements au lieu d'un format texte
     <LI>Control: Centralisation des contrôles
-    <LI>Creer_Tableaux: Possibilité d'ajouter champs (année / type de bouteille / prix) dans l'export XLS/ODS
+    <LI>Creer_Tableaux: Possibilité d'ajouter des champs (année / type de bouteille / prix) dans l'export XLS/ODS
     <LI>Paramètres: Possibilité d'activer/désactiver la trace
     <LI>All: Support de l'extension OpenDocument Spreadsheet (ods)
     <LI>Creer_Tableaux: Possibilité de choisir un mode de fonctionnement par défaut via leur menu Options

@@ -77,8 +77,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.7
- * @since 13/09/21
+ * @version 10.8
+ * @since 14/09/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -1189,7 +1189,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       }
       List<ShowFileColumn<?>> cols = ((ShowFileModel) model).getColumns();
       final List<ShowFileColumn<?>> showFileColumns = cols.stream().filter(ShowFileColumn::isDefault).collect(Collectors.toList());
-      assert list != null;
       ManageColumnModel modelColumn = new ManageColumnModel(list, showFileColumns);
       JTable jTable = new JTable(modelColumn);
       TableColumnModel tcm = jTable.getColumnModel();
@@ -1252,22 +1251,23 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     public void actionPerformed(ActionEvent e) {
       LinkedList<MyCellarObject> bottles = getSelectedBouteilles();
       if (bottles.isEmpty()) {
-        //"Aucun vin à modifier!");
-        //"Veuillez selectionner les vins à modifier.");
+        //"Aucun vin a modifier!");
+        //"Veuillez selectionner les vins a modifier.");
         Erreur.showSimpleErreur(Program.getError("Error071", LabelProperty.SINGLE), Program.getError("Error072", LabelProperty.THE_PLURAL), true);
-      } else {
-        Debug("Modifying " + bottles.size() + " bottles...");
-        LinkedList<MyCellarObject> existingBottles = new LinkedList<>();
-        for (MyCellarObject bottle : bottles) {
-          if (!Program.isExistingBottle(bottle)) {
-            Debug("Inexisting bottle " + bottle.getNom() + " [" + bottle.getId() + "]");
-            Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle", LabelProperty.THE_SINGLE), bottle.getNom()));
-          } else {
-            existingBottles.add(bottle);
-          }
-        }
-        Program.modifyBottles(existingBottles);
+        return;
       }
+
+      Debug("Modifying " + bottles.size() + " bottles...");
+      LinkedList<MyCellarObject> existingBottles = new LinkedList<>();
+      for (MyCellarObject bottle : bottles) {
+        if (!Program.isExistingBottle(bottle)) {
+          Debug("Inexisting bottle " + bottle.getNom() + " [" + bottle.getId() + "]");
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("ShowFile.InexisitingBottle", LabelProperty.THE_SINGLE), bottle.getNom()));
+        } else {
+          existingBottles.add(bottle);
+        }
+      }
+      Program.modifyBottles(existingBottles);
     }
   }
 

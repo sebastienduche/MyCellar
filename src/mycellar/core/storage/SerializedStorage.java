@@ -38,7 +38,7 @@ public class SerializedStorage implements Storage {
   private static final String WORKSHEET_XML = "worksheet.xml";
   private static final HistoryList HISTORY_LIST = new HistoryList();
   private static final WorkSheetList WORKSHEET_LIST = new WorkSheetList();
-  private static final int DISTINCT_NAME_LENGTH = 50;
+  private static final int DISTINCT_NAME_LENGTH = 100;
   private final List<String> distinctNames = new LinkedList<>(); // Liste des noms
   private final List<String> distinctComposers = new LinkedList<>(); // Liste des composers
   private final List<String> distinctArtists = new LinkedList<>(); // Liste des artists

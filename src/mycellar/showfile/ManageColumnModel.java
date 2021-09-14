@@ -16,8 +16,8 @@ import java.util.List;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 10/05/21
+ * @version 1.0
+ * @since 14/09/21
  */
 
 public class ManageColumnModel extends DefaultTableModel {
@@ -37,6 +37,7 @@ public class ManageColumnModel extends DefaultTableModel {
         final int index = list.indexOf(((ShowFileColumn<?>) c).getField());
         if (index != -1) {
           values[index] = Boolean.TRUE;
+          selectedColumns.add(list.get(index).ordinal());
         }
       } else if (c instanceof MyCellarFields) {
         final int index = list.indexOf(c);

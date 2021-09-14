@@ -11,6 +11,7 @@ import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,8 +21,8 @@ import java.util.List;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 23/04/21
+ * @version 2.1
+ * @since 14/09/21
  */
 
 public enum MyCellarFields {
@@ -236,7 +237,7 @@ public enum MyCellarFields {
       return FIELDS_MUSIC;
     }
     Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
-    return null;
+    return Collections.emptyList();
   }
 
   public static List<MyCellarFields> getFieldsListForImportAndWorksheet() {
@@ -247,7 +248,7 @@ public enum MyCellarFields {
       return FIELDSFORIMPORT_MUSIC;
     }
     Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
-    return null;
+    return Collections.emptyList();
   }
 
   @Override

@@ -236,7 +236,7 @@ public enum MyCellarFields {
     if (Program.isMusicType()) {
       return FIELDS_MUSIC;
     }
-    Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+    Program.throwNotImplementedForNewType();
     return Collections.emptyList();
   }
 
@@ -247,7 +247,7 @@ public enum MyCellarFields {
     if (Program.isMusicType()) {
       return FIELDSFORIMPORT_MUSIC;
     }
-    Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+    Program.throwNotImplementedForNewType();
     return Collections.emptyList();
   }
 

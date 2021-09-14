@@ -211,7 +211,7 @@ public class ListeBouteille {
     if (Program.isMusicType()) {
       return music.size();
     }
-    Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+    Program.throwNotImplementedForNewType();
     return -1;
   }
 
@@ -221,7 +221,7 @@ public class ListeBouteille {
     } else if (myCellarObject instanceof Music) {
       return getMusic().add((Music) myCellarObject);
     } else {
-      Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+      Program.throwNotImplementedForNewType();
       return false;
     }
   }
@@ -232,7 +232,7 @@ public class ListeBouteille {
     } else if (myCellarObject instanceof Music) {
       return getMusic().remove((Music) myCellarObject);
     } else {
-      Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+      Program.throwNotImplementedForNewType();
     }
     return false;
   }

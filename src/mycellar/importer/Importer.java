@@ -636,7 +636,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     if (Program.isMusicType()) {
       return new Music();
     }
-    Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+    Program.throwNotImplementedForNewType();
     return null;
   }
 

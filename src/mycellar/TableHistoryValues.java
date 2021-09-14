@@ -270,7 +270,7 @@ class TableHistoryValues extends AbstractTableModel {
     } else if (Program.isWineType()) {
       return displayList.get(row).getBouteille();
     }
-    Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+    Program.throwNotImplementedForNewType();
     return null;
   }
 

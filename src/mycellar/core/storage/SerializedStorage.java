@@ -132,7 +132,7 @@ public class SerializedStorage implements Storage {
         }
       }
     } else {
-      Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+      Program.throwNotImplementedForNewType();
     }
     itemsCount = listMyCellarObject.getItemsCount();
   }
@@ -325,7 +325,7 @@ public class SerializedStorage implements Storage {
     if (Program.isWineType()) {
       return listMyCellarObject.getBouteille();
     }
-    Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+    Program.throwNotImplementedForNewType();
     return Collections.emptyList();
   }
 
@@ -336,7 +336,7 @@ public class SerializedStorage implements Storage {
     } else if (myCellarObject instanceof Music) {
       return listMyCellarObject.getMusic().add((Music) myCellarObject);
     } else {
-      Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+      Program.throwNotImplementedForNewType();
     }
     return false;
   }

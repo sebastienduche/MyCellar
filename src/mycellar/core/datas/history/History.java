@@ -10,6 +10,7 @@ package mycellar.core.datas.history;
 
 import mycellar.Bouteille;
 import mycellar.Music;
+import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -18,7 +19,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
-import java.util.Arrays;
 
 import static mycellar.Program.DATE_FORMATER_DDMMYYYY;
 
@@ -84,6 +84,8 @@ public class History {
       bouteille = (Bouteille) myCellarObject;
     } else if (myCellarObject instanceof Music) {
       music = (Music) myCellarObject;
+    } else {
+      Program.throwNotImplementedForNewType();
     }
     this.type = type;
     this.totalBottle = totalBottle;
@@ -117,9 +119,8 @@ public class History {
   }
 
   public HistoryState getState() {
-    return Arrays.stream(HistoryState.values())
-        .filter(historyState -> historyState.ordinal() == type)
-        .findAny().orElse(HistoryState.ALL);
+    HistoryState state = HistoryState.findState(type);
+    return state == null ? HistoryState.ALL : state;
   }
 
   public boolean isDeleted() {

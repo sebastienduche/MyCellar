@@ -1498,6 +1498,10 @@ public final class Program {
     }
   }
 
+  public static void throwNotImplementedForNewType() {
+    throw new NotImplementedException("Not implemented For New Type");
+  }
+
   public static void throwNotImplemented() {
     throw new NotImplementedException("Not implemented yet!");
   }

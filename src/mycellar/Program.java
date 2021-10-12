@@ -165,6 +165,7 @@ public final class Program {
 
       String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
       setProgramType(Program.Type.typeOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
+      Debug("Program: Type of managed object: " + programType);
       setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
       cleanAndUpgrade();
     } catch (UnableToOpenFileException | RuntimeException e) {
@@ -346,13 +347,8 @@ public final class Program {
     }
   }
 
-  /**
-   * setLanguage
-   *
-   * @param lang Language
-   */
   static void setLanguage(LanguageFileLoader.Language lang) {
-    Debug("Program: Set Language : " + lang);
+    Debug("Program: Set Language: " + lang);
     MyCellarLabelManagement.updateLabels();
     ProgramPanels.TABBED_PANE.removeAll();
     ProgramPanels.clearObjectsVariables();
@@ -366,11 +362,6 @@ public final class Program {
     showException(e, true);
   }
 
-  /**
-   * showException
-   *
-   * @param e Exception
-   */
   public static void showException(Throwable e, boolean _bShowWindowErrorAndExit) {
     StackTraceElement[] st = e.getStackTrace();
     String error = "";
@@ -485,28 +476,17 @@ public final class Program {
     return getStorage().getAllList().size();
   }
 
-  /**
-   * getNbBouteilleAnnee: retourne le nombre de bouteilles d'une annee
-   *
-   * @param an int: annee souhaitee
-   * @return int
-   */
-  static int getNbBouteilleAnnee(int an) {
-    return (int) getStorage().getAllList().stream().filter(bouteille -> bouteille.getAnneeInt() == an).count();
+  static int getTotalObjectForYear(int year) {
+    return (int) getStorage().getAllList().stream().filter(myCellarObject -> myCellarObject.getAnneeInt() == year).count();
   }
 
-  static int[] getAnnees() {
+  static int[] getYearsArray() {
     return getStorage().getAllList().stream().mapToInt(IMyCellarObject::getAnneeInt).distinct().sorted().toArray();
   }
 
-  /**
-   * getNbAutreAnnee
-   *
-   * @return int
-   */
-  static int getNbAutreAnnee() {
+  static int getTotalOtherYears() {
     return (int) getStorage().getAllList().stream()
-        .filter(bouteille -> bouteille.getAnneeInt() < 1000).count();
+        .filter(myCellarObject -> myCellarObject.getAnneeInt() < 1000).count();
   }
 
   /**
@@ -750,7 +730,7 @@ public final class Program {
     }
 
     if (!file.exists()) {
-      Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), file.getAbsolutePath())); //Fichier non trouve);
+      Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), file.getAbsolutePath())); // File not found
 
       putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
       putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
@@ -923,7 +903,7 @@ public final class Program {
   static void saveGlobalProperties() {
     Debug("Program: Saving Global Properties");
     saveProperties(CONFIG_GLOBAL, getGlobalConfigFilePath());
-    Debug("Program: Saving Global Properties OK");
+    Debug("Program: Saving Global Properties Done");
   }
 
   public static void saveProperties(final MyLinkedHashMap map, final String file) {
@@ -959,18 +939,13 @@ public final class Program {
     File f_obj = new File(m_sGlobalDir);
     if (!f_obj.exists()) {
       if (!f_obj.mkdir()) {
-        Debug("ERROR: Unable to create directoy : " + f_obj.getAbsolutePath());
+        Debug("ERROR: Unable to create directoy: " + f_obj.getAbsolutePath());
       }
     }
 
     return m_sGlobalDir + File.separator;
   }
 
-  /**
-   * hasWorkDir: Indique si le repertoire de travail existe.
-   *
-   * @return
-   */
   public static boolean hasWorkDir() {
     return m_bWorkDirCalculated;
   }
@@ -978,12 +953,12 @@ public final class Program {
   /**
    * getWorkDir: Retourne le nom du repertoire de travail.
    *
-   * @param _bWithEndSlash
+   * @param withEndSlash
    * @return
    */
-  public static String getWorkDir(boolean _bWithEndSlash) {
+  public static String getWorkDir(boolean withEndSlash) {
     if (m_bWorkDirCalculated) {
-      if (_bWithEndSlash) {
+      if (withEndSlash) {
         return m_sWorkDir + File.separator;
       }
       return m_sWorkDir;
@@ -999,7 +974,7 @@ public final class Program {
     File f_obj = new File(m_sWorkDir);
     if (!f_obj.exists()) {
       if (!f_obj.mkdir()) {
-        Debug("ERROR: Unable to create directoy : " + f_obj.getAbsolutePath());
+        Debug("ERROR: Unable to create directoy: " + f_obj.getAbsolutePath());
       }
     }
 
@@ -1009,14 +984,14 @@ public final class Program {
     f_obj = new File(m_sWorkDir);
     if (!f_obj.exists()) {
       if (!f_obj.mkdir()) {
-        Debug("ERROR: Unable to create directoy : " + f_obj.getAbsolutePath());
+        Debug("ERROR: Unable to create directoy: " + f_obj.getAbsolutePath());
       }
     }
 
     Debug("Program: work directory: " + m_sWorkDir);
     DIR_TO_DELETE.add(new File(m_sWorkDir));
 
-    if (_bWithEndSlash) {
+    if (withEndSlash) {
       return m_sWorkDir + File.separator;
     }
     return m_sWorkDir;

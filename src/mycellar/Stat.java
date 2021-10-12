@@ -178,7 +178,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listChart.setEnabled(true);
     if (selectedItem.getValue() == StatType.YEAR.ordinal()) {
       Debug("By year");
-      annee = Arrays.stream(Program.getAnnees()).mapToObj(Integer::toString).toArray(String[]::new);
+      annee = Arrays.stream(Program.getYearsArray()).mapToObj(Integer::toString).toArray(String[]::new);
     }
     fillListOptionsChart(selectedItem);
     if (selectedItem.getValue() == StatType.PLACE.ordinal()) {
@@ -304,13 +304,13 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       for (String an : annee) {
         int year = Integer.parseInt(an.strip());
         if (year > 1000 && year < 9000) {
-          listYear.add(new StatData(an, Program.getNbBouteilleAnnee(year)));
+          listYear.add(new StatData(an, Program.getTotalObjectForYear(year)));
         }
       }
       if (Program.isWineType()) {
         listYear.add(new StatData(Program.getLabel("Infos390"), Program.getNbNonVintage()));
       }
-      listYear.add(new StatData(Program.getLabel("Infos225"), Program.getNbAutreAnnee()));
+      listYear.add(new StatData(Program.getLabel("Infos225"), Program.getTotalOtherYears()));
     }
     for (StatData data : listYear) {
       panel.add(new MyCellarLabel(data.getName()));

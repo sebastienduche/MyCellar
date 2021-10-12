@@ -292,7 +292,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       final LinkedList<Bouteille> listToSupp = getSelectedBouteilles();
 
       if (listToSupp.isEmpty()) {
-        //"Aucun vin a supprimer! / Veuillez selectionner les vins a supprimer.");
+        // No objet to delete / Select...
         Debug("ERROR: No bottle to delete!");
         Erreur.showSimpleErreur(Program.getError("Error064", LabelProperty.SINGLE), Program.getError("Error065", LabelProperty.THE_PLURAL), true);
         return;
@@ -613,7 +613,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         } while (row < max_row);
 
         if (listToModify.isEmpty()) {
-          //"Aucun vin a modifier! / Veuillez selectionner les vins a modifier.");
+          //"No object to modify / Select...
           Erreur.showSimpleErreur(Program.getError("Error071", LabelProperty.SINGLE), Program.getError("Error072", LabelProperty.THE_PLURAL), true);
         } else {
           Debug("Modifying " + listToModify.size() + " object(s)...");
@@ -627,7 +627,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   /**
    * multi_itemStateChanged: Fonction pour activer la recheche sur plusieurs
-   * lieu / numero de lieu / ligne.
+   * lieus / numero de lieu / ligne.
    *
    * @param e ItemEvent
    */
@@ -800,7 +800,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         if (lieu_num == 0) {
           Debug("ERROR: No Num place selected");
           resul_txt.setText("");
-          Erreur.showSimpleErreur(Program.getError("Error056")); //"Veuillez selectionner un numero d'emplacement!";
+          Erreur.showSimpleErreur(Program.getError("Error056")); //"Veuillez selectionner un numero d'emplacement
           enableDefaultButtons();
           return;
         }
@@ -837,7 +837,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           }
         }
       } else { //multi.getState == true
-        //Cas recherche toutes bouteille (lieu, num_lieu, ligne)
+        //Cas recherche toute bouteille (lieu, num_lieu, ligne)
         int lieu_num = num_lieu.getSelectedIndex();
         int ligne = line.getSelectedIndex();
         if (allBottlesState != AllBottlesState.PLACE) {
@@ -1180,13 +1180,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
     private void fillYear() {
       year.removeAllItems();
-      int[] an_array = Program.getAnnees();
-//			String[] mes_string = new String[an_array.length];
-//			for (int y = 0; y < an_array.length; y++) {
-//				mes_string[y] = Integer.toString(an_array[y]);
-//			}
-//			Arrays.sort(mes_string, Collator.getInstance());
-      for (int s : an_array) {
+      int[] years = Program.getYearsArray();
+      for (int s : years) {
         if (s > 1000 && s < 9000) {
           year.addItem(Integer.toString(s));
         }

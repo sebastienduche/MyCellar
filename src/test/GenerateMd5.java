@@ -1,7 +1,5 @@
 package test;
 
-import mycellar.Program;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -16,14 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static mycellar.ProgramConstants.INTERNAL_VERSION;
+import static mycellar.ProgramConstants.VERSION;
+
 public class GenerateMd5 {
 
   public static void main(String[] args) {
     try (FileWriter writer = new FileWriter("./Build/MyCellarVersion.txt")) {
       System.out.println("Building Build/MyCellarVersion.txt");
       String checksum = getMD5Checksum("./Build/MyCellar.jar");
-      writer.write(Program.INTERNAL_VERSION + "\n");
-      writer.write(Program.VERSION + "\n");
+      writer.write(INTERNAL_VERSION + "\n");
+      writer.write(VERSION + "\n");
       writer.write("MyCellar.jar@" + checksum + "\n");
       writer.write("Finish.html\n");
       getLibFiles()

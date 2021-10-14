@@ -24,15 +24,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import static mycellar.Program.TEXT;
+import static mycellar.ProgramConstants.TEXT;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2014</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 2.6
  * @since 19/05/21
  */

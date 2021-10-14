@@ -18,16 +18,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static mycellar.Program.COUNTRIES_XML;
-import static mycellar.Program.FR;
+import static mycellar.ProgramConstants.COUNTRIES_XML;
+import static mycellar.ProgramConstants.FR;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 1.1
  * @since 03/12/20
  */

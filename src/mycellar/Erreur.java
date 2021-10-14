@@ -8,6 +8,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.Component;
 
+import static mycellar.ProgramConstants.FONT_BOUTTON_SMALL;
+
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -89,7 +91,7 @@ public class Erreur {
     JPanel panel = new JPanel();
     panel.setLayout(new MigLayout("", "grow", "[]"));
     MyCellarLabel label2 = new MyCellarLabel(texte2);
-    checkNotShow.setFont(Program.FONT_BOUTTON_SMALL);
+    checkNotShow.setFont(FONT_BOUTTON_SMALL);
     panel.add(new MyCellarLabel(texte1));
     panel.add(label2, "newline, hidemode 3");
     panel.add(checkNotShow, "newline, hidemode 3, gaptop 15px");
@@ -97,7 +99,6 @@ public class Erreur {
     label2.setVisible(!texte2.isEmpty());
     JOptionPane.showMessageDialog(Start.getInstance(), panel, information ? Program.getError("Error032") : Program.getError("Error015"), information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
     if (checkNotShow.isSelected()) {
-      //Ecriture dans un fichier pour ne plus afficher le message
       Program.putCaveConfigBool(keyword, true);
     }
   }

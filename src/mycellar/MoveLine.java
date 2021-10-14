@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static mycellar.ProgramConstants.FONT_DIALOG;
+
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -50,7 +52,7 @@ final class MoveLine extends JDialog {
     MyCellarLabel titre = new MyCellarLabel(LabelType.INFO, "363");
     titre.setForeground(Color.red);
     label_end.setForeground(Color.red);
-    titre.setFont(Program.FONT_DIALOG);
+    titre.setFont(FONT_DIALOG);
     titre.setHorizontalAlignment(SwingConstants.CENTER);
     label_end.setHorizontalAlignment(SwingConstants.CENTER);
 

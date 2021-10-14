@@ -45,7 +45,6 @@ import org.kohsuke.github.GitHub;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import java.awt.Desktop;
-import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -75,6 +74,23 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import static mycellar.ProgramConstants.BOUTEILLES_XML;
+import static mycellar.ProgramConstants.CONFIG_INI;
+import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
+import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
+import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
+import static mycellar.ProgramConstants.EXTENSION;
+import static mycellar.ProgramConstants.FRA;
+import static mycellar.ProgramConstants.INTERNAL_VERSION;
+import static mycellar.ProgramConstants.KEY_TYPE;
+import static mycellar.ProgramConstants.MY_CELLAR_XML;
+import static mycellar.ProgramConstants.PREVIEW_HTML;
+import static mycellar.ProgramConstants.PREVIEW_XML;
+import static mycellar.ProgramConstants.TEMP_PLACE;
+import static mycellar.ProgramConstants.TYPES_MUSIC_XML;
+import static mycellar.ProgramConstants.TYPES_XML;
+import static mycellar.ProgramConstants.UNTITLED1_SINFO;
+import static mycellar.ProgramConstants.VERSION;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 /**
@@ -90,47 +106,21 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-  public static final String INTERNAL_VERSION = "4.2.6.1";
-  public static final int VERSION = 70;
-  public static final String DEFAULT_STORAGE_EN = "Default storage";
-  public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
-  public static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
-  public static final Font FONT_DIALOG_SMALL = new Font("Dialog", Font.BOLD, 12);
-  public static final Font FONT_LABEL_BOLD = new Font("Arial", Font.BOLD, 12);
-  public static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
   public static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").setDefaultPlace(true).build();
   public static final Rangement EMPTY_PLACE = new Rangement.CaisseBuilder("").build();
   public static final Rangement STOCK_PLACE = new Rangement.CaisseBuilder(TEMP_PLACE).build();
-  public static final String UNTITLED1_SINFO = "Untitled1.sinfo";
-  public static final String COUNTRIES_XML = "countries.xml";
-  public static final String TEXT = ".txt";
-  public static final String FRA = "FRA";
-  public static final String ITA = "ITA";
-  public static final String FR = "fr";
+
   public static final CountryJaxb FRANCE = new CountryJaxb(FRA, "France");
   public static final CountryJaxb NO_COUNTRY = new CountryJaxb("");
   public static final CountryVignobleJaxb NO_VIGNOBLE = new CountryVignobleJaxb();
   public static final AppelationJaxb NO_APPELATION = new AppelationJaxb();
   public static final MyClipBoard CLIPBOARD = new MyClipBoard();
-  public static final DateTimeFormatter DATE_FORMATER_DDMMYYYY = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-  public static final DateTimeFormatter DATE_FORMATER_DD_MM_YYYY = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-  static final String INFOS_VERSION = " 2021 v";
-  static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
-  static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);
-  static final String EXTENSION = ".sinfo";
-  private static final String KEY_TYPE = "<KEY>";
+
   // Manage global config
   private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
   private static final List<Rangement> PLACES = new LinkedList<>();
   private static final List<MyCellarObject> TRASH = new LinkedList<>();
   private static final List<MyCellarError> ERRORS = new LinkedList<>();
-  private static final String PREVIEW_XML = "preview.xml";
-  private static final String PREVIEW_HTML = "preview.html";
-  private static final String MY_CELLAR_XML = "MyCellar.xml";
-  private static final String TYPES_XML = "Types.xml";
-  private static final String TYPES_MUSIC_XML = "music_types.xml";
-  private static final String BOUTEILLES_XML = "Bouteilles.xml";
-  private static final String CONFIG_INI = "config.ini";
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
   private static Type programType = Type.WINE;
   private static MyCellarFile myCellarFile = null;
@@ -593,21 +583,6 @@ public final class Program {
 
   public static List<Rangement> getCave() {
     return PLACES;
-  }
-
-  public static boolean isExistingPlace(final String name) {
-    if (name == null || name.strip().isEmpty()) {
-      return false;
-    }
-
-    final String placeName = name.strip();
-    final boolean found = PLACES.stream().anyMatch(rangement -> rangement.getNom().equals(placeName));
-    if (!found) {
-      if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
-        return true;
-      }
-    }
-    return found;
   }
 
   /**

@@ -15,15 +15,16 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 1.8
  * @since 30/12/20
  */
@@ -75,7 +76,7 @@ public class Options extends JDialog {
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     setTitle(title);
     MyCellarLabel textControl1 = new MyCellarLabel(title);
-    textControl1.setFont(Program.FONT_DIALOG_SMALL);
+    textControl1.setFont(FONT_DIALOG_SMALL);
     textControl1.setForeground(Color.red);
     textControl1.setHorizontalAlignment(SwingConstants.CENTER);
     MyCellarLabel definition = new MyCellarLabel(message);

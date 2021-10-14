@@ -24,15 +24,16 @@ import java.util.Collections;
 import java.util.List;
 
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 2.5
  * @since 30/12/20
  */
@@ -116,7 +117,7 @@ public class MyOptions extends JDialog {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(title);
     MyCellarLabel textControl1 = new MyCellarLabel(title);
-    textControl1.setFont(Program.FONT_DIALOG_SMALL);
+    textControl1.setFont(FONT_DIALOG_SMALL);
     textControl1.setForeground(Color.red);
     textControl1.setText(title);
     textControl1.setHorizontalAlignment(SwingConstants.CENTER);

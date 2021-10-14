@@ -26,17 +26,18 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static mycellar.Program.FRA;
-import static mycellar.Program.ITA;
+import static mycellar.ProgramConstants.FRA;
+import static mycellar.ProgramConstants.ITA;
+import static mycellar.ProgramConstants.TEXT;
 import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2014</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 2.9
  * @since 09/04/21
  */
@@ -406,7 +407,7 @@ public final class CountryVignobleController {
           continue;
         }
         name = name.substring(0, name.indexOf(VIGNOBLE));
-        File fText = new File(f.getParent(), name + Program.TEXT);
+        File fText = new File(f.getParent(), name + TEXT);
         String label = Program.readFirstLineText(fText);
 
         CountryJaxb countryJaxb = CountryListJaxb.findbyId(name)
@@ -446,7 +447,7 @@ public final class CountryVignobleController {
   public static VignobleListJaxb loadFrance() {
     VignobleListJaxb vignobleListJaxb = null;
     if (Program.hasWorkDir()) {
-      vignobleListJaxb = loadById("FRA");
+      vignobleListJaxb = loadById(FRA);
     }
     return (vignobleListJaxb != null) ? vignobleListJaxb : VignobleListJaxb.load("resources/vignobles.xml");
   }
@@ -454,7 +455,7 @@ public final class CountryVignobleController {
   public static VignobleListJaxb loadItalie() {
     VignobleListJaxb vignobleListJaxb = null;
     if (Program.hasWorkDir()) {
-      vignobleListJaxb = loadById("ITA");
+      vignobleListJaxb = loadById(ITA);
     }
     return (vignobleListJaxb != null) ? vignobleListJaxb : VignobleListJaxb.load("resources/italie.xml");
   }

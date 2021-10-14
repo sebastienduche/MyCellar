@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.core.LabelType.INFO;
 import static mycellar.core.LabelType.INFO_OTHER;
 import static mycellar.core.MyCellarSettings.BOLD_TAB_XLS;
@@ -42,12 +43,12 @@ import static mycellar.core.MyCellarSettings.XLS_TAB_TITLE;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 1.7
  * @since 16/02/21
  */
@@ -91,7 +92,7 @@ public final class XLSTabOptions extends JDialog {
 
     final JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
-    jPanel1.setFont(Program.FONT_PANEL);
+    jPanel1.setFont(FONT_PANEL);
     jPanel1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos331")));
     MyCellarLabel MyCellarLabel2 = new MyCellarLabel(INFO, "270"); //Titre du XLS
     String xls_title = Program.getCaveConfigString(XLS_TAB_TITLE, "");
@@ -128,7 +129,7 @@ public final class XLSTabOptions extends JDialog {
     tv.addString(Program.getLabel("Infos135"), Program.getCaveConfigBool(XLSTAB_COL3, false));
 
     final JPanel jPanel2 = new JPanel();
-    jPanel2.setFont(Program.FONT_PANEL);
+    jPanel2.setFont(FONT_PANEL);
     jPanel2.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos332")));
     MyCellarButton valider = new MyCellarButton(INFO_OTHER, "Main.OK");
     valider.addActionListener(this::valider_actionPerformed);

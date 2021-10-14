@@ -14,6 +14,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
+
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -33,8 +35,7 @@ public final class PanelRequest extends JPanel {
   private final MyCellarLabel labelError = new MyCellarLabel();
 
   public PanelRequest() {
-
-    labelError.setFont(Program.FONT_LABEL_BOLD);
+    labelError.setFont(FONT_LABEL_BOLD);
     labelError.setForeground(Color.red);
 
     MainChangeListener.setChangeListener((e) -> {

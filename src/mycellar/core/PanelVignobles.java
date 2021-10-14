@@ -20,20 +20,20 @@ import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static mycellar.Program.NO_APPELATION;
 import static mycellar.Program.NO_COUNTRY;
 import static mycellar.Program.NO_VIGNOBLE;
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.FR;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2017</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 1.3
  * @since 20/11/20
  */
@@ -267,7 +267,7 @@ public final class PanelVignobles extends JPanel {
     }
 
     CountryJaxb countryJaxb = null;
-    if (Program.FRANCE.getId().equals(vignobleJaxb.country) || Program.FR.equals(vignobleJaxb.country)) {
+    if (Program.FRANCE.getId().equals(vignobleJaxb.country) || FR.equals(vignobleJaxb.country)) {
       countryJaxb = Program.FRANCE;
     } else if (vignobleJaxb.country != null) {
       countryJaxb = CountryListJaxb.findByIdOrLabel(vignobleJaxb.country);
@@ -280,12 +280,8 @@ public final class PanelVignobles extends JPanel {
     }
 
     if (vignobleListJaxb != null) {
-      Optional<CountryVignobleJaxb> countryVignoble = vignobleListJaxb.findVignoble(vignobleJaxb);
-      if (countryVignoble.isPresent()) {
-        comboVignoble.setSelectedItem(countryVignoble.get());
-      } else {
-        Debug("ERROR: Unable to find vignoble: " + vignobleJaxb.getName());
-      }
+      vignobleListJaxb.findVignoble(vignobleJaxb).ifPresentOrElse(comboVignoble::setSelectedItem,
+          () -> Debug("ERROR: Unable to find vignoble: " + vignobleJaxb.getName()));
     }
 
     if (vignobleJaxb.getAOC() != null) {

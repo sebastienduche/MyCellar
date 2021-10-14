@@ -50,6 +50,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 
 
 /**
@@ -125,7 +126,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   private void initialize() {
 
     MyCellarLabel nameLabel = new MyCellarLabel(LabelType.INFO, "149"); //Nom du fichier:
-    end.setFont(Program.FONT_DIALOG_SMALL);
+    end.setFont(FONT_DIALOG_SMALL);
     openit.setMnemonic(OUVRIR);
     openit.addActionListener((e) -> openit_actionPerformed());
     parameters.addActionListener((e) -> param_actionPerformed());
@@ -318,9 +319,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     options.setEnabled(!MyCellarRadioButtonXML.isSelected());
   }
 
-  /**
-   * aide_actionPerformed: Aide
-   */
   private void aide_actionPerformed() {
     Program.getAide();
   }

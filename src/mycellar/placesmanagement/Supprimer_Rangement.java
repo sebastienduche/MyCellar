@@ -37,7 +37,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static mycellar.Program.EMPTY_PLACE;
-import static mycellar.Program.FONT_DIALOG_SMALL;
 import static mycellar.Program.getAide;
 import static mycellar.Program.getCave;
 import static mycellar.Program.getCaveLength;
@@ -48,6 +47,7 @@ import static mycellar.Program.getStorage;
 import static mycellar.Program.open;
 import static mycellar.Program.removeCave;
 import static mycellar.Program.setToTrash;
+import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
 import static mycellar.general.ProgramPanels.updateAllPanels;
 
@@ -78,11 +78,10 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   private boolean updateView = false;
 
   public Supprimer_Rangement() {
-
     Debug("Initializing...");
     setLayout(new MigLayout("", "[grow]", "20px[]15px[]15px[]"));
-    MyCellarLabel textControl2 = new MyCellarLabel(LabelType.INFO, "054"); //"Veuillez selectionner le rangement a supprimer:");
-    MyCellarButton supprimer = new MyCellarButton(LabelType.INFO_OTHER, "Main.Delete"); //"Supprimer");
+    MyCellarLabel textControl2 = new MyCellarLabel(LabelType.INFO, "054"); //Select place to delete
+    MyCellarButton supprimer = new MyCellarButton(LabelType.INFO_OTHER, "Main.Delete");
     supprimer.setMnemonic(supprimerChar);
     preview.setMnemonic(previewChar);
 
@@ -173,9 +172,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         label_final.setText(getLabel("Infos065")); //"Le rangement est vide");
       } else {
         if (nb_case_use_total == 1) {
-          label_final.setText(getLabel("DeletePlace.still1Item", LabelProperty.SINGLE)); //"Il reste 1 vin dans le rangement!!!");
+          label_final.setText(getLabel("DeletePlace.still1Item", LabelProperty.SINGLE));
         } else {
-          label_final.setText(MessageFormat.format(getLabel("DeletePlace.stillNItems", LabelProperty.PLURAL), nb_case_use_total)); //Il reste n vins dans le rangement
+          label_final.setText(MessageFormat.format(getLabel("DeletePlace.stillNItems", LabelProperty.PLURAL), nb_case_use_total));
         }
       }
       table.updateUI();
@@ -222,7 +221,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         } else {
           error = MessageFormat.format(getLabel("DeletePlace.stillNItemsIn", LabelProperty.PLURAL), nb_case_use_total, nom); //Il reste n bouteilles dans
         }
-        //"Voulez-vous supprimer le rangement et les BOUTEILLES restantes?");
+        // Delete place and objects in the place
         String erreur_txt2 = getError("Error039", LabelProperty.THE_PLURAL);
         Debug("MESSAGE: Delete this place " + nom + " and all bottle(s) (" + nb_case_use_total + ")?");
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + " " + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -297,9 +296,6 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     updateView = true;
   }
 
-  /**
-   * Mise a jour de la liste des rangements
-   */
   @Override
   public void updateView() {
     if (!updateView) {

@@ -47,6 +47,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.LongAdder;
 
+import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
+import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
 
 
@@ -89,7 +91,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     end.setHorizontalAlignment(SwingConstants.RIGHT);
     moy.setHorizontalAlignment(SwingConstants.RIGHT);
     panel.setLayout(new MigLayout("", "[][][grow]", ""));
-    panel.setFont(Program.FONT_PANEL);
+    panel.setFont(FONT_PANEL);
     Program.getCave().forEach(this::displayPlace);
 
     updateBouteilleCountLabel();
@@ -138,7 +140,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
   private void updateBouteilleCountLabel() {
     int nb_bottle = Program.getNbItems();
-    end.setText(MessageFormat.format(Program.getLabel("Infos180", new LabelProperty(nb_bottle > 1)), nb_bottle)); //Nombre de bouteille total:
+    end.setText(MessageFormat.format(Program.getLabel("Infos180", new LabelProperty(nb_bottle > 1)), nb_bottle)); //Nombre de bouteilles totl
   }
 
   private void chartItemStateChanged(ItemEvent itemEvent) {
@@ -362,7 +364,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           .stream()
           .filter(History::hasTotalBottle)
           .sorted(Comparator.comparing(History::getLocaleDate))
-          .forEach(history -> listNumberBottles.add(new StatData(history.getLocaleDate().format(Program.DATE_FORMATER_DDMMYYYY), history.getTotalBottle())));
+          .forEach(history -> listNumberBottles.add(new StatData(history.getLocaleDate().format(DATE_FORMATER_DDMMYYYY), history.getTotalBottle())));
     }
     panelChart.setLineChart(listNumberBottles, Program.getLabel("Stat.bottleCount", LabelProperty.PLURAL));
   }
@@ -391,11 +393,11 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     final int nbCaseUseAll = cave.getNbCaseUseAll();
     final MyCellarLabel list_num_empl;
     if (nbEmplacements == 1) {
-      list_num_empl = new MyCellarLabel(LabelType.INFO, "175"); //"1 emplacement");
+      list_num_empl = new MyCellarLabel(LabelType.INFO, "175"); //"1 emplacement
     } else {
-      list_num_empl = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), nbEmplacements)); //"emplacements");
+      list_num_empl = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), nbEmplacements)); //"emplacements
     }
-    final MyCellarLabel list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll)); //"bouteille");
+    final MyCellarLabel list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll)); //"bouteille
     panel.add(list_num_empl);
     panel.add(list_nb_bottle, "span 2, align right, wrap");
     if (!cave.isCaisse()) {

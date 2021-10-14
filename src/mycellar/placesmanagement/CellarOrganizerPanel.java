@@ -57,7 +57,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static mycellar.Program.TEMP_PLACE;
+import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.core.LabelType.INFO_OTHER;
 
 /**

@@ -23,13 +23,15 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
+
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2013</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 2.4
  * @since 17/12/20
  */
@@ -80,8 +82,8 @@ final class PanelStats extends JPanel {
   private final JTable table;
 
   PanelStats() {
-    bottlesNb.setFont(Program.FONT_LABEL_BOLD);
-    cellarTotal.setFont(Program.FONT_LABEL_BOLD);
+    bottlesNb.setFont(FONT_LABEL_BOLD);
+    cellarTotal.setFont(FONT_LABEL_BOLD);
     table = new JTable(model);
     table.getColumnModel().getColumn(1).setMinWidth(40);
     table.getColumnModel().getColumn(1).setMaxWidth(40);

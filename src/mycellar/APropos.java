@@ -3,7 +3,6 @@ package mycellar;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarVersion;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ImageIcon;
@@ -17,6 +16,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+
+import static mycellar.ProgramConstants.INTERNAL_VERSION;
+import static mycellar.ProgramConstants.MAIN_VERSION;
 
 
 /**
@@ -34,8 +36,8 @@ final class APropos extends JDialog {
   private final MyCellarButton ok = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
   private final MyCellarLabel MyCellarLabel1 = new MyCellarLabel("MyCellar");
   private final MyCellarLabel MyCellarLabel2 = new MyCellarLabel("Copyright: S.Duché");
-  private final MyCellarLabel MyCellarLabel3 = new MyCellarLabel("Release: " + Program.INTERNAL_VERSION);
-  private final MyCellarLabel MyCellarLabel4 = new MyCellarLabel("Version: " + MyCellarVersion.MAIN_VERSION);
+  private final MyCellarLabel MyCellarLabel3 = new MyCellarLabel("Release: " + INTERNAL_VERSION);
+  private final MyCellarLabel MyCellarLabel4 = new MyCellarLabel("Version: " + MAIN_VERSION);
 
   APropos() {
     super(new JFrame(), Program.getLabel("Infos198"), true);
@@ -66,7 +68,7 @@ final class APropos extends JDialog {
   }
 
   /**
-   * APropos: Constructeur de l'image.
+   * Constructeur de l'image.
    */
   private static class IconPanel extends JPanel {
     static final long serialVersionUID = 1505051;

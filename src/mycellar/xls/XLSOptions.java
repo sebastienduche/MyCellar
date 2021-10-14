@@ -19,6 +19,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.core.LabelType.INFO;
 import static mycellar.core.LabelType.INFO_OTHER;
 import static mycellar.core.MyCellarSettings.BOLD_XLS;
@@ -68,7 +69,7 @@ public final class XLSOptions extends JDialog {
     JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
     jPanel1.setLayout(new MigLayout("", "grow", ""));
-    jPanel1.setFont(Program.FONT_PANEL);
+    jPanel1.setFont(FONT_PANEL);
     pdf_title.setText(Program.getCaveConfigString(XLS_TITLE, ""));
 
     titleSize.setValue(Program.getCaveConfigInt(TITLE_SIZE_XLS, 10));
@@ -87,7 +88,7 @@ public final class XLSOptions extends JDialog {
     }
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));
-    jPanel2.setFont(Program.FONT_PANEL);
+    jPanel2.setFont(FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(INFO_OTHER, "Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
     MyCellarButton annuler = new MyCellarButton(INFO, "055");

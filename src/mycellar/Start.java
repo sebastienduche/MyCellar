@@ -69,6 +69,14 @@ import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.DOWNLOAD_COMMAND;
+import static mycellar.ProgramConstants.EXTENSION;
+import static mycellar.ProgramConstants.FR;
+import static mycellar.ProgramConstants.INFOS_VERSION;
+import static mycellar.ProgramConstants.INTERNAL_VERSION;
+import static mycellar.ProgramConstants.MAIN_VERSION;
+import static mycellar.ProgramConstants.OPTIONS_PARAM;
+import static mycellar.ProgramConstants.RESTART_COMMAND;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 /**
@@ -84,9 +92,6 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
   static final long serialVersionUID = 501073;
-  private static final String RESTART_COMMAND = "restart";
-  private static final String DOWNLOAD_COMMAND = "download";
-  private static final String OPTIONS_PARAM = "-opts=";
   private static final Start INSTANCE = new Start();
   final JMenu menuTools = new JMenu();
   private final JButton m_oSupprimerButton = new JButton();
@@ -200,12 +205,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
           // ______________________
           String tmp = parameters.substring(0, nIndex);
           // Recuperation du nom du fichier
-          if (tmp.contains(Program.EXTENSION)) {
+          if (tmp.contains(EXTENSION)) {
             Program.setNewFile(tmp.strip());
           } else {
-            // On prend tous ce qu'il y a apres -opts
+            // On prend tout ce qu'il y a apres -opts
             tmp = parameters.substring(nIndex);
-            if (tmp.contains(Program.EXTENSION)) {
+            if (tmp.contains(EXTENSION)) {
               // Si l'on trouve l'extension du fichier
               // on cherche le caractere ' ' qui va separer les
               // options du nom du fichier
@@ -289,9 +294,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     // _________
 
     if (!Program.hasFile() && !Program.getGlobalConfigBool(MyCellarSettings.STARTUP, false)) {
-      // Language au premier demarrage
+      // Langue au premier demarrage
       String lang = System.getProperty("user.language");
-      if (Program.FR.equalsIgnoreCase(lang)) {
+      if (FR.equalsIgnoreCase(lang)) {
         lang = "F";
       } else {
         lang = "U";
@@ -654,10 +659,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     jMenuExportXml.setText(Program.getLabel("Infos408")); // Exporter au format xml
     jMenuCloseFile.setText(Program.getLabel("Infos019")); // Fermer...
     jMenuCheckUpdate.setText(Program.getLabel("Infos379")); // Verifier mise a jour...
-    jMenuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "")) + Program.EXTENSION);
-    jMenuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "")) + Program.EXTENSION);
-    jMenuReopen3.setText("3 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "")) + Program.EXTENSION);
-    jMenuReopen4.setText("4 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, "")) + Program.EXTENSION);
+    jMenuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "")) + EXTENSION);
+    jMenuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "")) + EXTENSION);
+    jMenuReopen3.setText("3 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "")) + EXTENSION);
+    jMenuReopen4.setText("4 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, "")) + EXTENSION);
     jMenuReopen1.setAccelerator(KeyStroke.getKeyStroke('1', InputEvent.CTRL_DOWN_MASK));
     jMenuReopen2.setAccelerator(KeyStroke.getKeyStroke('2', InputEvent.CTRL_DOWN_MASK));
     jMenuReopen3.setAccelerator(KeyStroke.getKeyStroke('3', InputEvent.CTRL_DOWN_MASK));
@@ -683,7 +688,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     m_oAjouterButton.setText(Program.getLabel("Main.tabAdd", LabelProperty.SINGLE));
     m_oRechercherButton.setText(Program.getLabel("Main.tabSearchButton"));
     m_oSupprimerButton.setText(Program.getLabel("Infos004"));
-    version.setText(Program.getLabel("MonthVersion") + Program.INFOS_VERSION + MyCellarVersion.MAIN_VERSION);
+    version.setText(Program.getLabel("MonthVersion") + INFOS_VERSION + MAIN_VERSION);
     addWine.setAccelerator(KeyStroke.getKeyStroke(addWineChar, InputEvent.CTRL_DOWN_MASK));
     addPlace.setAccelerator(KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
     delPlace.setAccelerator(KeyStroke.getKeyStroke(deleteChar, InputEvent.CTRL_DOWN_MASK));
@@ -970,7 +975,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
     update.setVisible(bUpdateAvailable);
     if (bUpdateAvailable) {
-      update.setText(MessageFormat.format(Program.getLabel("Infos385"), MyCellarServer.getInstance().getAvailableVersion(), MyCellarVersion.MAIN_VERSION + "-" + Program.INTERNAL_VERSION), true, 30000, false);
+      update.setText(MessageFormat.format(Program.getLabel("Infos385"), MyCellarServer.getInstance().getAvailableVersion(), MAIN_VERSION + "-" + INTERNAL_VERSION), true, 30000, false);
     }
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     m_bHasFrameBuilded = true;
@@ -1064,12 +1069,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     myoptions.setVisible(true);
   }
 
-  /**
-   * menuCheckUpdate_actionPerformed: Recherche de mises a jour
-   */
   private void menuCheckUpdate_actionPerformed() {
     if (MyCellarServer.getInstance().hasAvailableUpdate(MyCellarVersion.getLocalVersion())) {
-      Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Infos384"), MyCellarServer.getInstance().getAvailableVersion(), Program.INTERNAL_VERSION), true);
+      Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Infos384"), MyCellarServer.getInstance().getAvailableVersion(), INTERNAL_VERSION), true);
     } else {
       Erreur.showSimpleErreur(Program.getLabel("Infos388"), true);
     }

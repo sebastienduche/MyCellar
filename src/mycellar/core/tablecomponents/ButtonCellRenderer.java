@@ -8,6 +8,8 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 
+import static mycellar.ProgramConstants.FONT_PANEL;
+
 
 /**
  * <p>Titre : Cave à vin</p>
@@ -54,7 +56,7 @@ public class ButtonCellRenderer extends JButton implements TableCellRenderer {
     }
     boolean isSelect = (Boolean) value;
     setSelected(isSelect);
-    setFont(Program.FONT_PANEL);
+    setFont(FONT_PANEL);
     setText(label);
     if (image != null) {
       setIcon(image);

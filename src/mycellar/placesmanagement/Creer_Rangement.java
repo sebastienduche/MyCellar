@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.Map;
 
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.core.LabelType.INFO;
 import static mycellar.core.LabelType.INFO_OTHER;
 
@@ -116,7 +118,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     cbg.add(m_jrb_dif_column_number);
     m_jrb_same_column_number.addItemListener((e) -> model.setSameColumnNumber(m_jrb_same_column_number.isSelected()));
     label_cree.setForeground(Color.red);
-    label_cree.setFont(Program.FONT_DIALOG_SMALL);
+    label_cree.setFont(FONT_DIALOG_SMALL);
     label_cree.setText("");
     label_cree.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -154,7 +156,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     if (modify) {
       MyCellarLabel labelModify = new MyCellarLabel(INFO, "226"); //"Selec the place to modify"
       JPanel panelModify = new JPanel();
-      panelModify.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "", 0, 0, Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
+      panelModify.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "", 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
       panelModify.setLayout(new MigLayout("", "[]", "[]"));
       panelModify.add(labelModify, "split 2");
       panelModify.add(comboPlace);
@@ -166,18 +168,18 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     add(m_caisse_chk, "wrap");
 
     panelType = new JPanel();
-    panelType.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), Program.getLabel("Infos021"), 0, 0, Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelType.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), Program.getLabel("Infos021"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelType.setLayout(new GridLayout(0, 2));
     panelType.add(m_jrb_same_column_number);
     panelType.add(m_jrb_dif_column_number);
 
     panelStartCaisse = new JPanel();
-    panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), Program.getLabel("Infos272"), 0, 0, Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), Program.getLabel("Infos272"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelStartCaisse.setLayout(new MigLayout("", "[]", "[]"));
     panelStartCaisse.add(nb_start_caisse, "wmin 50");
 
     panelLimite = new JPanel();
-    panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), Program.getLabel("Infos274"), 0, 0, Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), Program.getLabel("Infos274"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelLimite.setLayout(new MigLayout("", "[][]", "[]"));
     panelLimite.add(checkLimite, "gapright 10");
     panelLimite.add(nb_limite, "split 2, wmin 50, hidemode 3");
@@ -191,7 +193,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     panelTable.add(new JScrollPane(tableParties), "grow");
 
     JPanel panelPartie = new JPanel();
-    panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), Program.getLabel("Infos023"), 0, 0, Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), Program.getLabel("Infos023"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelPartie.setLayout(new MigLayout("", "[]", "[]"));
     panelPartie.add(nb_parties, "wmin 50");
 

@@ -527,7 +527,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
                 // Controle de l'existance du rangement
                 resul = true;
                 if (!nom1.isEmpty()) {
-                  if (Program.isExistingPlace(nom1)) {
+                  if (RangementUtils.isExistingPlace(nom1)) {
                     Options options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
                         Program.getError("Error037"), false);
                     options.setVisible(true);

@@ -44,8 +44,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static mycellar.Program.getCave;
 import static mycellar.Program.throwNotImplementedIfNotFor;
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
+import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
+import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.core.MyCellarError.ID.CELL_FULL;
 import static mycellar.core.MyCellarError.ID.FULL_BOX;
 import static mycellar.core.MyCellarError.ID.INEXISTING_CELL;
@@ -609,7 +613,7 @@ public final class RangementUtils {
 
   private static void updatePlaceMapToCreate(final Map<String, LinkedList<Part>> rangements, final IMyCellarObject bottle) {
     final String place = bottle.getEmplacement();
-    if (place != null && !place.isEmpty() && !Program.isExistingPlace(place)) {
+    if (place != null && !place.isEmpty() && !isExistingPlace(place)) {
       if (!rangements.containsKey(place)) {
         rangements.put(place, new LinkedList<>());
       } else {
@@ -629,6 +633,21 @@ public final class RangementUtils {
         }
       }
     }
+  }
+
+  public static boolean isExistingPlace(final String name) {
+    if (name == null || name.strip().isEmpty()) {
+      return false;
+    }
+
+    final String placeName = name.strip();
+    final boolean found = getCave().stream().anyMatch(rangement -> rangement.getNom().equals(placeName));
+    if (!found) {
+      if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
+        return true;
+      }
+    }
+    return found;
   }
 
   /**
@@ -703,13 +722,12 @@ public final class RangementUtils {
     return Program.getErrors().isEmpty();
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
   private static void Debug(String sText) {
     Program.Debug("RangementUtils: " + sText);
+  }
+
+  public static boolean isTemporaryPlace(String place) {
+    return TEMP_PLACE.equalsIgnoreCase(place);
   }
 }
 

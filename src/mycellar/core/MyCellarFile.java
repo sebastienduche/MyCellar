@@ -19,13 +19,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import static mycellar.ProgramConstants.UNTITLED1_SINFO;
+
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2020</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.3
  * @since 15/02/21
  */
@@ -78,7 +80,7 @@ public class MyCellarFile {
           for (String file : files) {
             final String workDir1 = Program.getWorkDir(true);
             f = new File(workDir1 + file);
-            if (f.isDirectory() || Program.UNTITLED1_SINFO.compareTo(file) == 0) {
+            if (f.isDirectory() || UNTITLED1_SINFO.compareTo(file) == 0) {
               continue;
             }
             // creation d'un flux de lecture
@@ -146,7 +148,7 @@ public class MyCellarFile {
   }
 
   public boolean isFileSavable() {
-    return !file.getName().endsWith(Program.UNTITLED1_SINFO) && exists();
+    return !file.getName().endsWith(UNTITLED1_SINFO) && exists();
   }
 
   public boolean isValid() {

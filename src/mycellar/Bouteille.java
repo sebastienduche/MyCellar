@@ -16,6 +16,7 @@ import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -28,10 +29,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -365,9 +367,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
   }
 
   private void setLastModified(LocalDateTime lastModified) {
-    String ddMmYyyyHhMm = "dd-MM-yyyy HH:mm";
-    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(ddMmYyyyHhMm);
-    this.lastModified = dateFormat.format(lastModified);
+    this.lastModified = DATE_FORMATER_DD_MM_YYYY_HH_MM.format(lastModified);
   }
 
   @Override
@@ -603,7 +603,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public boolean isInTemporaryStock() {
-    return Program.TEMP_PLACE.equalsIgnoreCase(emplacement);
+    return RangementUtils.isTemporaryPlace(emplacement);
   }
 
   @Override
@@ -747,7 +747,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public boolean isInExistingPlace() {
-    return Program.isExistingPlace(emplacement);
+    return RangementUtils.isExistingPlace(emplacement);
   }
 
 

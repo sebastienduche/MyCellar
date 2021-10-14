@@ -153,7 +153,7 @@ class TableShowValues extends AbstractTableModel {
         String empl = b.getEmplacement();
         if (column == PLACE) {
           empl = (String) value;
-          if (Program.isExistingPlace(empl)) {
+          if (RangementUtils.isExistingPlace(empl)) {
             rangement = Program.getCave(empl);
           }
         } else if (column == NUM_PLACE) {

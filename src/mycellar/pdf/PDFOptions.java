@@ -23,6 +23,8 @@ import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.util.List;
 
+import static mycellar.ProgramConstants.FONT_PANEL;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -62,7 +64,7 @@ public final class PDFOptions extends JDialog {
     JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
     jPanel1.setLayout(new MigLayout("", "grow", ""));
-    jPanel1.setFont(Program.FONT_PANEL);
+    jPanel1.setFont(FONT_PANEL);
     pdf_title.setText(Program.getCaveConfigString(MyCellarSettings.PDF_TITLE, ""));
 
     titleSize.setValue(Program.getCaveConfigInt(MyCellarSettings.TITLE_SIZE, 10));
@@ -91,7 +93,7 @@ public final class PDFOptions extends JDialog {
     }
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow][grow]", ""));
-    jPanel2.setFont(Program.FONT_PANEL);
+    jPanel2.setFont(FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
     valider.addActionListener(this::valider_actionPerformed);
     MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos055"));

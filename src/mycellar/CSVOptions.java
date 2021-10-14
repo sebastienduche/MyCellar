@@ -18,6 +18,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import static mycellar.ProgramConstants.FONT_PANEL;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -59,7 +61,7 @@ final class CSVOptions extends JDialog {
     JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setLayout(new MigLayout("", "grow", ""));
-    panel.setFont(Program.FONT_PANEL);
+    panel.setFont(FONT_PANEL);
     MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO, "034"); //Séparateur
     listColumns = MyCellarFields.getFieldsList();
     assert listColumns != null;
@@ -73,7 +75,7 @@ final class CSVOptions extends JDialog {
     }
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));
-    jPanel2.setFont(Program.FONT_PANEL);
+    jPanel2.setFont(FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
     separator.addItem(Program.getLabel("Infos002"));
     separator.addItem(Program.getLabel("Infos042"));
@@ -116,11 +118,6 @@ final class CSVOptions extends JDialog {
     Debug("JbInit OK");
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
   public static void Debug(String sText) {
     Program.Debug("CSVOptions: " + sText);
   }

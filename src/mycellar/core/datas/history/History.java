@@ -20,14 +20,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
 
-import static mycellar.Program.DATE_FORMATER_DDMMYYYY;
+import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
 
 /*
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
+ * @author S&eacute;bastien Duch&eacute;
  * @version 1.6
  * @since 09/04/21
  */

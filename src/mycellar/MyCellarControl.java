@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.core.LabelProperty;
 import mycellar.placesmanagement.Place;
+import mycellar.placesmanagement.RangementUtils;
 
 import java.io.File;
 import java.nio.file.InvalidPathException;
@@ -148,7 +149,7 @@ public final class MyCellarControl {
    */
   public static boolean ctrl_existingName(String name) {
     Debug("Controlling existing name...");
-    if (Program.isExistingPlace(name)) {
+    if (RangementUtils.isExistingPlace(name)) {
       Debug("ERROR: Name already use!");
       Erreur.showSimpleErreur(Program.getError("Error037")); // Name already used
       return false;

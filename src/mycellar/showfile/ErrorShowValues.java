@@ -8,6 +8,7 @@ import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarObject;
 import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -16,12 +17,12 @@ import java.util.Optional;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
- * <p>Society : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 1.9
  * @since 23/04/21
  */
@@ -168,7 +169,7 @@ public class ErrorShowValues extends TableShowValues {
 
         if (column == PLACE) {
           empl = (String) value;
-          if (Program.isExistingPlace(empl)) {
+          if (RangementUtils.isExistingPlace(empl)) {
             rangement = Program.getCave(empl);
           }
         } else if (column == NUM_PLACE) {

@@ -40,8 +40,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 26/08/21
+ * @version 0.6
+ * @since 14/10/21
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -162,14 +162,14 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_FALSE, false)) {
         String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ((siecle + 1) * 100)); //"En decochant cette option, vous dsactivez la transformation");
-        Erreur.showKeyErreur(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_FALSE);
+        Erreur.showInformationMessageWithKey(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_FALSE);
       }
     } else {
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, true);
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_TRUE, false)) {
         String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ((siecle + 1) * 100));//"En cochant cette option, vous activez la transformation");
-        Erreur.showKeyErreur(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_TRUE);
+        Erreur.showInformationMessageWithKey(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_TRUE);
       }
     }
     Debug("Annee_auto_actionPerformed...End");

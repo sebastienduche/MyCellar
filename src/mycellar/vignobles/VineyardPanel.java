@@ -40,6 +40,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static mycellar.MyCellarUtils.isDefined;
+
 /**
  * Titre : Cave &agrave; vin
  * Description : Votre description
@@ -47,8 +49,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 16/02/21
+ * @version 3.1
+ * @since 14/10/21
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -198,7 +200,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
     @Override
     public void actionPerformed(ActionEvent e) {
       String val = JOptionPane.showInputDialog(Program.getLabel("VineyardPanel.addVignobleQuestion"));
-      if (val != null && !val.isEmpty()) {
+      if (isDefined(val)) {
         CountryVignobleJaxb countryVignobleJaxb = new CountryVignobleJaxb();
         countryVignobleJaxb.setName(val);
         if (!vignobleListJaxb.getCountryVignobleJaxbList().contains(countryVignobleJaxb)) {
@@ -256,7 +258,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
       CountryVignobleJaxb countryVignobleJaxb = (CountryVignobleJaxb) comboVignoble.getSelectedItem();
       if (countryVignobleJaxb != null) {
         String val = JOptionPane.showInputDialog(MessageFormat.format(Program.getLabel("VineyardPanel.renameVignobleQuestion"), countryVignobleJaxb.getName()));
-        if (val != null && !val.isEmpty()) {
+        if (isDefined(val)) {
           CountryVignobleController.renameVignoble(countryVignobleJaxb, val);
           comboVignoble.updateUI();
           CountryVignobleController.setModified();
@@ -276,7 +278,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
     @Override
     public void actionPerformed(ActionEvent e) {
       String val = JOptionPane.showInputDialog(Program.getLabel("VineyardPanel.addAppellationQuestion"));
-      if (val != null && !val.isEmpty()) {
+      if (isDefined(val)) {
         AppelationJaxb v = new AppelationJaxb();
         v.setAOC(val);
         model.addAppellation(v);
@@ -295,7 +297,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
     @Override
     public void actionPerformed(ActionEvent e) {
       String val = JOptionPane.showInputDialog(Program.getLabel("VineyardPanel.addCountryQuestion"));
-      if (val != null && !val.isEmpty()) {
+      if (isDefined(val)) {
         if (CountryVignobleController.hasCountryWithName(val)) {
           Erreur.showSimpleErreur(Program.getError("VineyardPanel.CountryExist"));
           return;

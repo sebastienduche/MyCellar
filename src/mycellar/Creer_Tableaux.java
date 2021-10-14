@@ -59,8 +59,8 @@ import static mycellar.Program.toCleanString;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.9
- * @since 20/05/21
+ * @version 8.0
+ * @since 14/10/21
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
@@ -78,9 +78,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   private final MyCellarButton m_jcb_options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
   private JTable table;
 
-  /**
-   * Creer_Tableaux: Constructeur pour la creation des tableaux.
-   */
   public Creer_Tableaux() {
     Debug("Constructor");
     try {
@@ -271,8 +268,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 
       if (count == 0) {
         Debug("ERROR: No place selected");
-        //"Aucun rangement selectionne!");
-        //"Veuillez selectionner les rangements a generer.");
         Erreur.showSimpleErreur(Program.getError("Error089"), Program.getError("Error090"), true);
         return;
       }
@@ -286,7 +281,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
       } while (row < max_row);
 
       long caisseCount = 0;
-      // Export XML
       if (type_XML.isSelected()) {
         Debug("Exporting in XML in progress...");
         XmlUtils.writeRangements(nom, rangements, false);
@@ -324,7 +318,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
             erreur_txt1 = Program.getError("Error127"); //"Vous avez selectionne des rangements de type Caisse");
             erreur_txt2 = Program.getError("Error128", LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.");
           }
-          Erreur.showKeyErreur(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
+          Erreur.showInformationMessageWithKey(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
         }
       }
       end.setText(Program.getLabel("Infos097"), true); //"Fichier genere.");
@@ -384,7 +378,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
    * @param e ActionEvent
    */
   private void options_actionPerformed(ActionEvent e) {
-
     XLSTabOptions oXLSTabOptions = new XLSTabOptions();
     oXLSTabOptions.setVisible(true);
     m_jcb_options.setSelected(false);

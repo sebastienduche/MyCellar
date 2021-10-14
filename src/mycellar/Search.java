@@ -63,8 +63,8 @@ import java.util.regex.Pattern;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.3
- * @since 21/05/21
+ * @version 22.4
+ * @since 14/10/21
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -249,11 +249,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     });
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
   private static void Debug(String sText) {
     Program.Debug("Search: " + sText);
   }
@@ -301,10 +296,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       String erreur_txt2;
       if (listToSupp.size() == 1) {
         erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); //"1 vin selectionne.");
-        erreur_txt2 = Program.getError("Error068"); //"Voulez-vous le supprimer?");
+        erreur_txt2 = Program.getError("Error068"); // Delete it ?
       } else {
         erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), listToSupp.size()); //vins selectionnes.");
-        erreur_txt2 = Program.getError("Error131"); //"Voulez-vous les supprimer?");
+        erreur_txt2 = Program.getError("Error131"); //" Delete them ?
       }
       int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       if (resul == JOptionPane.YES_OPTION) {
@@ -479,12 +474,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     });
   }
 
-
-  /**
-   * cherche_actionPerformed: Fonction de recherche.
-   *
-   * @param e ActionEvent
-   */
   private void cherche_actionPerformed(ActionEvent e) {
     try {
       Debug("Cherche_actionPerforming...");
@@ -527,14 +516,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     Debug("emptyRows End");
   }
 
-  /**
-   * searchByText: Fonction interne de recherche par nom.
-   */
   private void searchByText() {
     Debug("Searching by text with pattern");
-    //Recherche saisie
     String search = name.getText();
-//		model.removeAll();
     Debug("Preparing statement...");
 
     StringBuilder regex = new StringBuilder(search);
@@ -691,7 +675,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false)) {
         //"Lorsqu'une bouteille recherchee est deja presente dans la liste");
         //"des vins trouves, elle n'est pas ajoutee en double.");
-        Erreur.showKeyErreur(Program.getError("Error133", LabelProperty.A_SINGLE), Program.getError("Error134"), MyCellarSettings.DONT_SHOW_INFO);
+        Erreur.showInformationMessageWithKey(Program.getError("Error133", LabelProperty.A_SINGLE), Program.getError("Error134"), MyCellarSettings.DONT_SHOW_INFO);
       }
     }
     resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminee.");
@@ -966,11 +950,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     });
   }
 
-  /**
-   * keylistener_actionPerformed: Ecoute clavier.
-   *
-   * @param e KeyEvent
-   */
   private void keylistener_actionPerformed(KeyEvent e) {
     if ((e.getKeyCode() == rechercheKey && e.isControlDown()) || e.getKeyCode() == KeyEvent.VK_ENTER) {
       cherche_actionPerformed(null);

@@ -90,7 +90,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-  public static final String INTERNAL_VERSION = "4.2.4.7";
+  public static final String INTERNAL_VERSION = "4.2.6.1";
   public static final int VERSION = 70;
   public static final String DEFAULT_STORAGE_EN = "Default storage";
   public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
@@ -921,9 +921,7 @@ public final class Program {
   }
 
   /**
-   * getGlobalDir: Retourne le nom du repertoire des proprietes globales.
-   *
-   * @return
+   * Retourne le nom du repertoire des proprietes globales.
    */
   private static String getGlobalDir() {
     if (m_bGlobalDirCalculated) {
@@ -951,10 +949,9 @@ public final class Program {
   }
 
   /**
-   * getWorkDir: Retourne le nom du repertoire de travail.
+   * Retourne le nom du repertoire de travail.
    *
    * @param withEndSlash
-   * @return
    */
   public static String getWorkDir(boolean withEndSlash) {
     if (m_bWorkDirCalculated) {

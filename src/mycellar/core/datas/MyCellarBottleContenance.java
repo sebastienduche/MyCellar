@@ -16,13 +16,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static mycellar.MyCellarUtils.isDefined;
+
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2018</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.8
  * @since 23/04/21
  */
@@ -138,9 +140,9 @@ public final class MyCellarBottleContenance {
 
         if (nNode.getNodeType() == Node.ELEMENT_NODE) {
           Element type = (Element) nNode;
-          // Récupération des noeuds des types
+          // Get node types
           String value = type.getAttribute("value");
-          if (null != value && !value.isEmpty()) {
+          if (isDefined(value)) {
             if (type.hasAttribute("default")) {
               defaultValue = value;
             }

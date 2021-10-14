@@ -8,6 +8,8 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static mycellar.MyCellarUtils.isNullOrEmpty;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -15,16 +17,16 @@ import java.util.List;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 07/05/21
+ * @version 2.2
+ * @since 14/10/21
  */
 
 public final class MyCellarControl {
 
   public static boolean hasInvalidBotteName(String name) {
-    if (name == null || name.strip().isEmpty()) {
+    if (isNullOrEmpty(name)) {
       Debug("ERROR: Wrong Name");
-      Erreur.showSimpleErreur(Program.getError("Error054", LabelProperty.OF_THE_SINGLE)); //"Veuillez saisir le nom du vin!"
+      Erreur.showSimpleErreur(Program.getError("Error054", LabelProperty.OF_THE_SINGLE)); // Enter the name
       return true;
     }
     return false;
@@ -33,7 +35,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidYear(String year) {
     if (Bouteille.isInvalidYear(year)) {
       Debug("ERROR: Wrong date");
-      Erreur.showSimpleErreur(Program.getError("Error053")); //"Veuillez saisir une ann&eacute;e valide!"
+      Erreur.showSimpleErreur(Program.getError("Error053")); // Enter a valid year
       return true;
     }
     return false;
@@ -42,7 +44,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidPlace(Place place) {
     if (Program.EMPTY_PLACE.equals(place.getRangement())) {
       Debug("ERROR: Wrong Place");
-      Erreur.showSimpleErreur(Program.getError("Error055")); //"Veuillez s&eacute;lectionner un emplacement!"
+      Erreur.showSimpleErreur(Program.getError("Error055")); // Select a place
       return true;
     }
     return false;
@@ -65,7 +67,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidLineNumber(int line) {
     if (line == 0) {
       Debug("ERROR: Wrong Line");
-      Erreur.showSimpleErreur(Program.getError("Error057")); //"Veuillez s&eacute;lectionner un numero de line!"
+      Erreur.showSimpleErreur(Program.getError("Error057")); // Enter a line number
       return true;
     }
     return false;
@@ -74,21 +76,21 @@ public final class MyCellarControl {
   public static boolean hasInvalidColumnNumber(int column) {
     if (column == 0) {
       Debug("ERROR: Wrong Column");
-      Erreur.showSimpleErreur(Program.getError("Error058")); //"Veuillez s&eacute;lectionner un numero de colonne!"
+      Erreur.showSimpleErreur(Program.getError("Error058")); // Enter a column number
       return true;
     }
     return false;
   }
 
   /**
-   * ctrlName Controle le nom saisie pour la creation d'un rangement
+   * ctrlName Controle le nom saisi pour la creation d'un rangement
    *
    * @param name String
    * @return boolean
    */
   public static boolean ctrlName(String name) {
     Debug("Controling name...");
-    if (name == null || name.strip().isEmpty()) {
+    if (isNullOrEmpty(name)) {
       Debug("ERROR: Name cannot be empty!");
       Erreur.showSimpleErreur(Program.getError("Error010"));
       return false;
@@ -121,10 +123,8 @@ public final class MyCellarControl {
    * @return boolean
    */
   static boolean controlPath(String path) {
-
     Debug("Controling path...");
-    if (null == path || path.strip().isEmpty()) {
-      //Erreur le nom ne doit pas &ecirc;tre vide
+    if (isNullOrEmpty(path)) {
       Debug("ERROR: Name cannot be empty!");
       Erreur.showSimpleErreur(Program.getError("MyCellarControl.emptyPath"));
       return false;
@@ -137,7 +137,6 @@ public final class MyCellarControl {
       Erreur.showSimpleErreur(Program.getError("MyCellarControl.invalidPath"));
       return false;
     }
-
     return true;
   }
 
@@ -148,18 +147,17 @@ public final class MyCellarControl {
    * @return boolean
    */
   public static boolean ctrl_existingName(String name) {
-
     Debug("Controlling existing name...");
     if (Program.isExistingPlace(name)) {
       Debug("ERROR: Name already use!");
-      Erreur.showSimpleErreur(Program.getError("Error037"));//Le nom est d&eacute;j&agrave; utilis&eacute;
+      Erreur.showSimpleErreur(Program.getError("Error037")); // Name already used
       return false;
     }
     return true;
   }
 
   /**
-   * controlAndUpdateExtension Controle si le nom renseigne a la bonne extension et retourne le nom modifie
+   * Check if the filename contains the extension and add it if needed
    *
    * @param name   String
    * @param filtre Filtre
@@ -167,43 +165,30 @@ public final class MyCellarControl {
    */
   public static String controlAndUpdateExtension(final String name, final Filtre filtre) {
     return controlAndUpdateExtension(name, filtre.toString());
-
   }
 
   /**
-   * controlAndUpdateExtension Controle si le nom renseigne a la bonne extension et retourne le nom modifie
+   * Check if the filename contains the extension and add it if needed
    *
    * @param name      String
    * @param extension String
    * @return String
    */
   public static String controlAndUpdateExtension(final String name, final String extension) {
-
-    Debug("Controlling extension...");
-    if (name == null) {
-      Debug("ERROR: name is null!");
-      return "";
-    }
-
-    if (extension == null) {
-      Debug("ERROR: extension is null!");
-      return name;
-    }
-    if (!name.toLowerCase().strip().endsWith(extension.toLowerCase().strip())) {
+    if (hasInvalidExtension(name, List.of(extension))) {
       return name + extension.toLowerCase();
     }
     return name;
   }
 
   /**
-   * controlExtension Controle si le nom renseigne a la bonne extension
+   * Check if the filename contains one of the file extensions
    *
    * @param name       String
    * @param extensions List
    * @return String
    */
   public static boolean hasInvalidExtension(final String name, final List<String> extensions) {
-
     Debug("Controlling extension...");
     if (name == null) {
       Debug("ERROR: name is null!");
@@ -219,11 +204,6 @@ public final class MyCellarControl {
     return extensions.stream().noneMatch(nameClean::endsWith);
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
   private static void Debug(String sText) {
     Program.Debug("Control: " + sText);
   }

@@ -2,6 +2,8 @@ package mycellar.core;
 
 import java.util.LinkedHashMap;
 
+import static mycellar.MyCellarUtils.isDefined;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -9,8 +11,8 @@ import java.util.LinkedHashMap;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 21/04/21
+ * @version 0.9
+ * @since 14/10/21
  */
 
 public class MyLinkedHashMap extends LinkedHashMap<String, Object> {
@@ -32,7 +34,7 @@ public class MyLinkedHashMap extends LinkedHashMap<String, Object> {
     if (super.containsKey(cle)) {
       return get(cle).toString();
     } else {
-      if (defaut != null && !defaut.isEmpty()) {
+      if (isDefined(defaut)) {
         put(cle, defaut);
       }
     }

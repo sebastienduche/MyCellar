@@ -18,20 +18,19 @@ import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
 /**
- * <p>Titre : Cave à Vins</p>
- * <p>Description : </p>
+ * <p>Titre : Cave &agrave; vin</p>
+ * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2005</p>
- * <p>Société : SebInformatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 2.8
- * @since 19/05/21
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 2.9
+ * @since 14/10/21
  */
 
 final class MoveLine extends JDialog {
@@ -99,17 +98,14 @@ final class MoveLine extends JDialog {
         }
         List<MyCellarObject> notMoved = new ArrayList<>();
         for (int i = 1; i <= r.getNbColonnes(nNumLieu - 1, nOldSelected - 1); i++) {
-          Optional<MyCellarObject> bottle = r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1);
-          if (bottle.isPresent()) {
-            bottle.ifPresent(bouteille -> {
-              Program.getStorage().addHistory(HistoryState.MODIFY, bouteille);
-              try {
-                r.moveLine(bouteille, nNewSelected);
-              } catch (MyCellarException myCellarException) {
-                notMoved.add(bouteille);
-              }
-            });
-          }
+          r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1).ifPresent(myCellarObject -> {
+            Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
+            try {
+              r.moveLine(myCellarObject, nNewSelected);
+            } catch (MyCellarException myCellarException) {
+              notMoved.add(myCellarObject);
+            }
+          });
         }
         if (!notMoved.isEmpty()) {
           final String value = notMoved.stream().map(IMyCellarObject::getNom).collect(Collectors.joining(", "));
@@ -144,11 +140,6 @@ final class MoveLine extends JDialog {
     setVisible(true);
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
   public static void Debug(String sText) {
     Program.Debug("MoveLine: " + sText);
   }

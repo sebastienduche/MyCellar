@@ -58,8 +58,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.2
- * @since 20/05/21
+ * @version 15.3
+ * @since 14/10/21
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -152,7 +152,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     setLayout(new MigLayout("", "[grow][grow]", "[][]"));
 
     if (modify) {
-      MyCellarLabel labelModify = new MyCellarLabel(INFO, "226"); //"Selectionner le rangement a modifier:"
+      MyCellarLabel labelModify = new MyCellarLabel(INFO, "226"); //"Selec the place to modify"
       JPanel panelModify = new JPanel();
       panelModify.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "", 0, 0, Program.FONT_PANEL), BorderFactory.createEmptyBorder()));
       panelModify.setLayout(new MigLayout("", "[]", "[]"));
@@ -160,7 +160,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       panelModify.add(comboPlace);
       add(panelModify, "span 2, wrap");
     }
-    MyCellarLabel labelName = new MyCellarLabel(INFO, "020"); //"Nom du rangement:");
+    MyCellarLabel labelName = new MyCellarLabel(INFO, "020"); //"Nom du rangement");
     add(labelName, "span 2, split 3");
     add(nom_obj, "growx");
     add(m_caisse_chk, "wrap");
@@ -332,11 +332,11 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           if (nb_bottle == 1) {
             Debug("MESSAGE: 1 bottle in this place, modify?");
             erreur_txt1 = Program.getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.");
-            erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); //"Voulez vous changer l'emplacement de cette bouteille?");
+            erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); // Change the place of this object;
           } else {
             Debug("MESSAGE: " + nb_bottle + " bottles in this place, Modify?");
             erreur_txt1 = MessageFormat.format(Program.getError("Error094", LabelProperty.PLURAL), nb_bottle); //bouteilles sont presentes dans ce rangement.");
-            erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Voulez vous changer l'emplacement de ces bouteilles?");
+            erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Change the place of these objects");
           }
           if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             //Modify Name of place
@@ -581,7 +581,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       }
     }
     if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false) && bResul) {
-      Erreur.showKeyErreur(Program.getError("Error164"), "", MyCellarSettings.DONT_SHOW_CREATE_MESS);
+      Erreur.showInformationMessageWithKey(Program.getError("Error164"), "", MyCellarSettings.DONT_SHOW_CREATE_MESS);
     }
     if (bResul) {
       Start.getInstance().enableAll(true);
@@ -642,13 +642,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
       for (Part p : listPart) {
         if (p.getRows().isEmpty()) {
-          //"Erreur nombre de lignes incorrect sur la partie
+          // Wrong lines number in part
           Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum()), Program.getError("Error109"));
           return;
         }
         for (Row r : p.getRows()) {
           if (r.getCol() == 0) {
-            //"Erreur nombre de colonnes incorrect sur la partie
+            //  Wrong columns number in part
             Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()), Program.getError("Error109"));
             return;
           }

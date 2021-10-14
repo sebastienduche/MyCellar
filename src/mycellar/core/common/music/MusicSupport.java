@@ -1,5 +1,6 @@
 package mycellar.core.common.music;
 
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 
 public enum MusicSupport {
@@ -16,7 +17,7 @@ public enum MusicSupport {
   }
 
   public static MusicSupport getSupport(String value) {
-    if (value == null || value.isEmpty()) {
+    if (MyCellarUtils.isNullOrEmpty(value)) {
       return NONE;
     }
     try {

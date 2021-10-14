@@ -20,14 +20,14 @@ import java.awt.Toolkit;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 1.7
- * @since 19/08/21
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 1.8
+ * @since 14/10/21
  */
 final class APropos extends JDialog {
   static final long serialVersionUID = 150505;
@@ -37,21 +37,15 @@ final class APropos extends JDialog {
   private final MyCellarLabel MyCellarLabel3 = new MyCellarLabel("Release: " + Program.INTERNAL_VERSION);
   private final MyCellarLabel MyCellarLabel4 = new MyCellarLabel("Version: " + MyCellarVersion.MAIN_VERSION);
 
-  /**
-   * APropos: Constructeur pour la fenêtre d'A Propos.
-   */
   APropos() {
     super(new JFrame(), Program.getLabel("Infos198"), true);
-    jbInit();
+    init();
     pack();
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     setLocation((screenSize.width - getSize().width) / 2, (screenSize.height - getSize().height) / 2);
   }
 
-  /**
-   * jbInit: Fonction d'initialisation de la fenètre.
-   */
-  private void jbInit() {
+  private void init() {
     IconPanel ip = new IconPanel(MyCellarImage.ICON);
     ok.addActionListener((e) -> dispose());
     MyCellarLabel1.setForeground(Color.red);

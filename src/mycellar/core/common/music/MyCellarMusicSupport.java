@@ -1,6 +1,7 @@
 package mycellar.core.common.music;
 
 import mycellar.Music;
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -18,14 +19,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2018</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Copyright : Copyright (c) 2021</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 0.1
- * @since 22/08/21
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.2
+ * @since 14/10/21
  */
 public final class MyCellarMusicSupport {
 
@@ -138,7 +139,7 @@ public final class MyCellarMusicSupport {
           Element type = (Element) nNode;
           // Récupération des noeuds des types
           String value = type.getAttribute("value");
-          if (null != value && !value.isEmpty()) {
+          if (MyCellarUtils.isDefined(value)) {
             if (type.hasAttribute("default")) {
               defaultValue = value;
             }

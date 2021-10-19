@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static mycellar.MyCellarUtils.assertObjectType;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 
 /**
@@ -42,8 +43,8 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.4
- * @since 26/08/21
+ * @version 7.5
+ * @since 16/10/21
  *
  * <p>Java class for anonymous complex type.
  *
@@ -478,6 +479,18 @@ public class Bouteille extends MyCellarObject implements Serializable {
       setStatus(b.getStatus());
     }
     setLastModified(LocalDateTime.now());
+  }
+
+  @Override
+  public Bouteille cast(MyCellarObject myCellarObject) {
+    assertObjectType(myCellarObject, Bouteille.class);
+    return (Bouteille) myCellarObject;
+  }
+
+  @Override
+  public Bouteille castCopy(MyCellarObject myCellarObject) {
+    assertObjectType(myCellarObject, Bouteille.class);
+    return new Bouteille((Bouteille) myCellarObject);
   }
 
   @Override

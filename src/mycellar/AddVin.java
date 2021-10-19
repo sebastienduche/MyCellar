@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static mycellar.MyCellarUtils.nonNullValue;
 import static mycellar.core.LabelProperty.A_SINGLE;
 import static mycellar.core.LabelProperty.PLURAL;
 
@@ -43,8 +44,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.6
- * @since 27/08/21
+ * @version 28.7
+ * @since 19/10/21
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -58,7 +59,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   private int nb_bottle_add_only_one_place = 0;
 
   /**
-   * AddVin: Constructeur pour l'ajout de vins
+   * Constructeur pour l'ajout de vins
    */
   public AddVin() {
     super();
@@ -115,7 +116,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   }
 
   /**
-   * setBottles: Fonction de chargement de plusieurs vins pour la classe ListVin
+   * Fonction de chargement de plusieurs vins pour la classe ListVin
    *
    * @param myCellarObjects LinkedList<MyCellarObject>
    */
@@ -132,7 +133,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   }
 
   /**
-   * setBottle: Fonction de chargement d'un vin pour la classe ListVin
+   * Fonction de chargement d'un vin pour la classe ListVin
    *
    * @param cellarObject MyCellarObject
    */
@@ -166,7 +167,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   }
 
   /**
-   * setBottlesInModification: Fonction pour le chargement de vins pour la classe ListVin.
+   * Fonction pour le chargement de vins pour la classe ListVin.
    */
   void setBottlesInModification(LinkedList<MyCellarObject> myCellarObjects) {
     Debug("setBottlesInModification...");
@@ -255,7 +256,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       boolean m_bbottle_add = false;
       boolean resul = true;
       if (!panelPlace.hasSelecedPlace() && isModify) {
-        m_bbottle_add = modifyOneOrSeveralBottlesWithoutPlaceModification(prix, comment, dateOfC, parker, color, status, country, vignoble, aoc, igp, annee, nom, demie);
+        m_bbottle_add = modifyOneOrSeveralBottlesWithoutPlaceModification(prix, comment, status, country, vignoble, aoc, igp, annee, nom, demie);
       } else if (bIsCaisse) {
         //Caisse
         Debug("Is a Caisse");
@@ -290,11 +291,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
                   for (int j = 0; j <= nb_bottle_rest; j++) {
                     MyCellarObject copy = null;
                     if (Program.isWineType()) {
-                      assert newMyCellarObject instanceof Bouteille;
-                      copy = new Bouteille((Bouteille) newMyCellarObject);
+                      copy = new Bouteille().castCopy(newMyCellarObject);
                     } else if (Program.isMusicType()) {
-                      assert newMyCellarObject instanceof Music;
-                      copy = new Music((Music) newMyCellarObject);
+                      copy = new Music().castCopy(newMyCellarObject);
                     } else {
                       Program.throwNotImplemented();
                     }
@@ -323,11 +322,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
                 for (int z = 0; z < nb_bottle_rest; z++) {
                   MyCellarObject copy = null;
                   if (Program.isWineType()) {
-                    assert newMyCellarObject instanceof Bouteille;
-                    copy = new Bouteille((Bouteille) newMyCellarObject);
+                    copy = new Bouteille().castCopy(newMyCellarObject);
                   } else if (Program.isMusicType()) {
-                    assert newMyCellarObject instanceof Music;
-                    copy = new Music((Music) newMyCellarObject);
+                    copy = new Music().castCopy(newMyCellarObject);
                   } else {
                     Program.throwNotImplemented();
                   }
@@ -362,7 +359,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
               resul = false;
             }
           }
-        } else { //if(! m_bmulti) Multi == true => Modification de plusieurs vins vers une caisse
+        } else { //if(! m_bmulti) Modification de plusieurs vins vers une caisse
           //Recuperation des differentes bouteilles
           Debug("Modifying multiple bottles to a Simple place");
           if (!place.hasPlace()) {
@@ -555,7 +552,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           } else { // La case n'est pas vide
             Debug("WARNING: Not an empty place, Replace?");
             final MyCellarObject myCellarObject = bouteilleOptional.get();
-            String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), myCellarObject.getNom(), myCellarObject.getAnnee()); //" deja present a cette place!");
+            String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), myCellarObject.getNom(), myCellarObject.getAnnee()); // deja present a cette place
             String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
             if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
               replaceWine(newMyCellarObject, isModify, myCellarObject);
@@ -700,9 +697,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
   private boolean modifyOneOrSeveralBottlesWithoutPlaceModification(String prix,
                                                                     String comment,
-                                                                    String dateOfC,
-                                                                    String parker,
-                                                                    String color,
                                                                     String status,
                                                                     String country,
                                                                     String vignoble,
@@ -712,27 +706,16 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
                                                                     String nom,
                                                                     String demie) throws MyCellarException {
     Debug("modifyOneOrSeveralBottlesWithoutPlaceModification...");
+    String color = panelWineAttribute.getColorIfModified();
+    String maturity = panelWineAttribute.getMaturityIfModified();
+    String parker = panelWineAttribute.getParkerIfModified();
     boolean m_bbottle_add = false;
     if (!severalItems) {
       // Modification d'une bouteille dans Armoire sans changement de lieu
       Debug("Modifying one bottle in Armoire without changing place");
-//      Bouteille tmp = new BouteilleBuilder(nom)
-//          .annee(annee)
-//          .type(demie)
-//          .place(bottle.getEmplacement())
-//          .numPlace(bottle.getNumLieu())
-//          .line(bottle.getLigne())
-//          .column(bottle.getColonne())
-//          .price(prix)
-//          .comment(comment)
-//          .maturity(dateOfC)
-//          .parker(parker)
-//          .color(color)
-//          .status(status)
-//          .vignoble(country, vignoble, aoc, igp).build();
       MyCellarObject tmp = null;
       if (Program.isWineType()) {
-        tmp = createBouteille(nom, annee, demie, null, bottle.getRangement(), bottle.getNumLieu(), bottle.getLigne(), bottle.getColonne(), prix, comment, dateOfC, parker, color, status, country, vignoble, aoc, igp);
+        tmp = createBouteille(nom, annee, demie, null, bottle.getRangement(), bottle.getNumLieu(), bottle.getLigne(), bottle.getColonne(), prix, comment, maturity, parker, color, status, country, vignoble, aoc, igp);
       } else if (Program.isMusicType()) {
         tmp = createMusic(nom, annee, demie, null, bottle.getRangement(), bottle.getNumLieu(), bottle.getLigne(), bottle.getColonne(), prix, comment, status);
       } else {
@@ -751,18 +734,17 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       for (MyCellarObject tmp : listBottleInModification) {
         Rangement rangement = tmp.getRangement();
         if (Program.isWineType()) {
-          Bouteille bTemp = (Bouteille) tmp;
+          Bouteille bTemp = new Bouteille().cast(tmp);
           bTemp.setPrix(prix);
           bTemp.setComment(comment);
-          bTemp.setMaturity(dateOfC);
-          bTemp.setParker(parker);
-          bTemp.setColor(color);
+          bTemp.setMaturity(nonNullValue(maturity, bTemp.getMaturity()));
+          bTemp.setParker(nonNullValue(parker, bTemp.getParker()));
+          bTemp.setColor(nonNullValue(color, bTemp.getColor()));
           if (!country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
             bTemp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
           }
-        } if (Program.isMusicType()) {
-          assert tmp instanceof Music;
-          Music bTemp = (Music) tmp;
+        } else if (Program.isMusicType()) {
+          Music bTemp = new Music().cast(tmp);
           bTemp.setPrix(prix);
           bTemp.setComment(comment);
           Program.throwNotImplementedIfNotFor(tmp, Music.class);

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static mycellar.MyCellarUtils.assertObjectType;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 import static mycellar.general.XmlUtils.getTextContent;
 
@@ -37,8 +38,8 @@ import static mycellar.general.XmlUtils.getTextContent;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 26/08/21
+ * @version 1.2
+ * @since 16/10/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -700,6 +701,18 @@ public class Music extends MyCellarObject implements Serializable {
         .file(elemFile)
         .album(elemAlbum)
         .build();
+  }
+
+  @Override
+  public Music cast(MyCellarObject myCellarObject) {
+    assertObjectType(myCellarObject, Music.class);
+    return (Music) myCellarObject;
+  }
+
+  @Override
+  public Music castCopy(MyCellarObject myCellarObject) {
+    assertObjectType(myCellarObject, Music.class);
+    return new Music((Music) myCellarObject);
   }
 
   @Override

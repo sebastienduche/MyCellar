@@ -31,8 +31,8 @@ import java.text.NumberFormat;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 23/08/21
+ * @version 0.3
+ * @since 16/10/21
  */
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;
@@ -172,8 +172,21 @@ public final class PanelWineAttribute extends JPanel {
     return maturity.getText();
   }
 
+  public String getMaturityIfModified() {
+    if (maturity.isModified()) {
+      return maturity.getText();
+    }
+    return null;
+  }
+
   public String getParker() {
     return parker.getText();
+  }
+  public String getParkerIfModified() {
+    if (parker.isModified()) {
+      return parker.getText();
+    }
+    return null;
   }
 
   public String getColor() {
@@ -181,6 +194,13 @@ public final class PanelWineAttribute extends JPanel {
       return ((BottleColor) colorList.getSelectedItem()).name();
     }
     return "";
+  }
+
+  public String getColorIfModified() {
+    if (colorList.isModified() && colorList.getSelectedItem() != null) {
+      return ((BottleColor) colorList.getSelectedItem()).name();
+    }
+    return null;
   }
 
   public String getStatus() {

@@ -18,15 +18,15 @@ import javax.swing.SwingUtilities;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.8
- * @since 27/08/21
+ * @version 4.9
+ * @since 20/10/21
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
   private static final long serialVersionUID = 3056306291164598750L;
 
   protected final MyCellarLabel labelComment = new MyCellarLabel(LabelType.INFO, "137");
-  protected final MyCellarLabel end = new MyCellarLabel(""); // Label pour les résultats
+  protected final MyCellarLabel end = new MyCellarLabel(""); // Label pour les resultats
   protected final PanelPlace panelPlace = new PanelPlace();
   protected final PanelGeneral panelGeneral = new PanelGeneral();
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
@@ -74,9 +74,6 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
     updateView = true;
   }
 
-  /**
-   * Mise a jour de la liste des rangements
-   */
   public void updateView() {
     if (!updateView) {
       return;

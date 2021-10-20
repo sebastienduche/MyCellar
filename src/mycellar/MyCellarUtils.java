@@ -22,7 +22,7 @@ public final class MyCellarUtils {
     return !isNullOrEmpty(value);
   }
 
-  public static String nonNullValue(String value, String defaultValue) {
+  public static String nonNullValueOrDefault(String value, String defaultValue) {
     return value == null ? defaultValue : value;
   }
 

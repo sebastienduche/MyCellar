@@ -31,8 +31,8 @@ import java.text.NumberFormat;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 16/10/21
+ * @version 0.4
+ * @since 20/10/21
  */
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;
@@ -109,9 +109,9 @@ public final class PanelWineAttribute extends JPanel {
   }
 
   public void setModifyActive() {
-    price.setModifyActive(false);
-    maturity.setModifyActive(false);
-    parker.setModifyActive(false);
+    price.setModifyActive(true);
+    maturity.setModifyActive(true);
+    parker.setModifyActive(true);
     colorList.setModifyActive(true);
     statusList.setModifyActive(true);
   }
@@ -168,6 +168,13 @@ public final class PanelWineAttribute extends JPanel {
     return price.getText();
   }
 
+  public String getPriceIfModified() {
+    if (price.isModified()) {
+      return price.getText();
+    }
+    return null;
+  }
+
   public String getMaturity() {
     return maturity.getText();
   }
@@ -193,7 +200,7 @@ public final class PanelWineAttribute extends JPanel {
     if (colorList.getSelectedItem() != null) {
       return ((BottleColor) colorList.getSelectedItem()).name();
     }
-    return "";
+    return BottleColor.NONE.name();
   }
 
   public String getColorIfModified() {

@@ -36,7 +36,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
   protected boolean updateView = false;
   protected PanelVignobles panelVignobles;
-  protected MyCellarObject bottle = null;
+  protected MyCellarObject myCellarObject = null;
   protected final char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
 
   protected boolean severalItems = false; //Pour ListVin
@@ -52,9 +52,9 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected void initializeExtraProperties() {
     enableAll(true);
     panelGeneral.initializeExtraProperties();
-    panelWineAttribute.initializeExtraProperties(bottle, severalItems, isEditionMode);
+    panelWineAttribute.initializeExtraProperties(myCellarObject, severalItems, isEditionMode);
 
-    commentTextArea.setText(bottle.getComment());
+    commentTextArea.setText(myCellarObject.getComment());
   }
 
   public void enableAll(boolean enable) {

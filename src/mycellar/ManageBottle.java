@@ -23,7 +23,6 @@ import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.text.MessageFormat;
-import java.util.Optional;
 
 import static mycellar.core.LabelProperty.OF_THE_SINGLE;
 
@@ -35,15 +34,14 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.7
- * @since 27/08/21
+ * @version 8.8
+ * @since 20/10/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
 
-
   /**
-   * ManageBottle: Constructeur pour la modification de vins
+   * Constructeur pour la modification de vins
    *
    * @param bottle
    */
@@ -81,37 +79,32 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
   protected static void Debug(String sText) {
     Program.Debug("ManageBottle: " + sText);
   }
 
   public MyCellarObject getBottle() {
-    return bottle;
+    return myCellarObject;
   }
 
   /**
-   * setBottle: Fonction de chargement d'un vin
+   * Fonction de chargement d'un vin
    *
-   * @param bottle Bouteille
+   * @param cellarObject Bouteille
    */
-  private void setBottle(MyCellarObject bottle) {
+  private void setBottle(MyCellarObject cellarObject) {
     Debug("Set Bottle...");
     try {
-      this.bottle = bottle;
-      panelGeneral.setMyCellarObject(bottle);
+      myCellarObject = cellarObject;
+      panelGeneral.setMyCellarObject(cellarObject);
       initializeExtraProperties();
       if (Program.isWineType()) {
-        panelVignobles.initializeVignobles((Bouteille) bottle);
+        panelVignobles.initializeVignobles((Bouteille) cellarObject);
       }
       updateStatusAndTime();
 
-      panelPlace.selectPlace(bottle);
-      end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
+      panelPlace.selectPlace(cellarObject);
+      end.setText(Program.getLabel("Infos092")); //"Saisir les modifications
       resetModified();
     } catch (RuntimeException e) {
       Program.showException(e);
@@ -132,7 +125,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   }
 
   private void updateStatusAndTime() {
-    panelWineAttribute.updateStatusAndTime(bottle);
+    panelWineAttribute.updateStatusAndTime(myCellarObject);
   }
 
   @Override
@@ -192,29 +185,29 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       }
     }
 
-    Place oldPlace = bottle.getPlace();
+    Place oldPlace = myCellarObject.getPlace();
     if (isCaisse) {
       lieu_num = place.getPlaceNum();
-      bottle.setNumLieu(lieu_num);
-      bottle.setLigne(0);
-      bottle.setColonne(0);
+      myCellarObject.setNumLieu(lieu_num);
+      myCellarObject.setLigne(0);
+      myCellarObject.setColonne(0);
     } else {
-      bottle.setNumLieu(lieu_num);
-      bottle.setLigne(line);
-      bottle.setColonne(column);
-      Optional<MyCellarObject> bottleInPlace = cave.getBouteille(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build());
-      if (bottleInPlace.isPresent()) {
-        if (!askToReplaceBottle(bottleInPlace.get(), oldPlace)) {
-          bottle.setNumLieu(oldPlace.getPlaceNum());
-          bottle.setLigne(oldPlace.getLine());
-          bottle.setColonne(oldPlace.getColumn());
+      myCellarObject.setNumLieu(lieu_num);
+      myCellarObject.setLigne(line);
+      myCellarObject.setColonne(column);
+      MyCellarObject bottleInPlace = cave.getBouteille(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build()).orElse(null);
+      if (bottleInPlace != null) {
+        if (!askToReplaceBottle(bottleInPlace, oldPlace)) {
+          myCellarObject.setNumLieu(oldPlace.getPlaceNum());
+          myCellarObject.setLigne(oldPlace.getLine());
+          myCellarObject.setColonne(oldPlace.getColumn());
           return false;
         }
       }
     }
-    bottle.setAnnee(panelGeneral.getYear());
+    myCellarObject.setAnnee(panelGeneral.getYear());
     if (Program.isWineType()) {
-      Bouteille bTemp = (Bouteille) bottle;
+      Bouteille bTemp = (Bouteille) myCellarObject;
       bTemp.setColor(color);
       bTemp.setComment(comment1);
       bTemp.setMaturity(dateOfC);
@@ -224,13 +217,13 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       CountryVignobleController.addVignobleFromBottle(bTemp);
       CountryVignobleController.setRebuildNeeded();
     }
-    bottle.setEmplacement(cave.getNom());
-    bottle.setNom(nom);
-    bottle.setKind(demie);
-    bottle.setStatus(status);
+    myCellarObject.setEmplacement(cave.getNom());
+    myCellarObject.setNom(nom);
+    myCellarObject.setKind(demie);
+    myCellarObject.setStatus(status);
 
-    bottle.setModified();
-    Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
+    myCellarObject.setModified();
+    Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
 
     if (!oldPlace.isSimplePlace()) {
       oldPlace.getRangement().clearComplexStock(oldPlace);
@@ -241,9 +234,9 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
     ProgramPanels.getSearch().ifPresent(Search::updateTable);
 
-    Rangement rangement = bottle.getRangement();
+    Rangement rangement = myCellarObject.getRangement();
     if (!rangement.isCaisse()) {
-      rangement.updateToStock(bottle);
+      rangement.updateToStock(myCellarObject);
     }
 
     end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
@@ -256,7 +249,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   }
 
   private boolean askToReplaceBottle(MyCellarObject bouteille, Place oldPlace) throws MyCellarException {
-    if (!bouteille.equals(bottle)) {
+    if (!bouteille.equals(myCellarObject)) {
       Debug("ERROR: Not an empty place, Replace?");
       String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), bouteille.getNom(), bouteille.getAnnee());
       String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
@@ -281,16 +274,15 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
   private void replaceWine(final MyCellarObject bToDelete, Place oldPlace) throws MyCellarException {
     //Change wine in a place
-    Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
-
-    RangementUtils.replaceMyCellarObject(bToDelete, bottle, oldPlace);
+    Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
+    RangementUtils.replaceMyCellarObject(bToDelete, myCellarObject, oldPlace);
   }
 
   private boolean runExit() {
     Debug("Processing Quit...");
     addButton.setEnabled(false);
 
-    boolean modified = panelGeneral.isModified(bottle);
+    boolean modified = panelGeneral.isModified(myCellarObject);
     modified |= commentTextArea.isModified();
     modified |= panelWineAttribute.isModified();
     modified |= panelPlace.isModified();
@@ -334,31 +326,9 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       panelGeneral.updateView();
       panelVignobles.updateList();
       panelPlace.updateView();
-      panelPlace.selectPlace(bottle);
+      panelPlace.selectPlace(myCellarObject);
       panelPlace.setListenersEnabled(true);
       Debug("updateView Done");
     });
   }
-
-//  private final class PanelMain extends JPanel {
-//    private static final long serialVersionUID = -4824541234206895953L;
-//
-//    private PanelMain() {
-//      panelVignobles = new PanelVignobles(true, true, true);
-//      setLayout(new MigLayout("", "grow", "[][][]10px[][grow]10px[][]"));
-//      add(panelGeneral, "growx,wrap");
-//      add(panelPlace, "growx,wrap");
-//      add(panelWineAttribute, "growx,split 2");
-//      if (Program.isWineType()) {
-//        add(panelVignobles, "growx, wrap");
-//      } else {
-//        add(new JPanel(), "growx, wrap");
-//      }
-//      add(labelComment, "growx, wrap");
-//      add(scrollPaneComment, "grow, wrap");
-//      add(end, "center, hidemode 3, wrap");
-//      add(addButton, "center");
-//    }
-//  }
-
 }

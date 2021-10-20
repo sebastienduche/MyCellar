@@ -40,8 +40,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 14/10/21
+ * @version 0.7
+ * @since 20/10/21
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -200,7 +200,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
   public void setViewToSeveralItemsMode(int itemCount) {
     if (itemCount > 1) {
-      name.setSelectedItem(MessageFormat.format(Program.getLabel("AddVin.NbItemsSelected", LabelProperty.PLURAL), itemCount)); //" bouteilles selectionnees");
+      name.setSelectedItem(MessageFormat.format(Program.getLabel("AddVin.NbItemsSelected", LabelProperty.PLURAL), itemCount)); //" bouteilles selectionnees
       name.setEnabled(false);
       if (Program.isMusicType()) {
         composer.setEnabled(false);

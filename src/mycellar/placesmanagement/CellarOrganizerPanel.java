@@ -67,8 +67,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 27/05/21
+ * @version 3.8
+ * @since 21/10/21
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -113,17 +113,16 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     if (iPlace == null) {
       armoires.add(Program.EMPTY_PLACE);
     }
-    for (Rangement r : Program.getCave()) {
-      if (iPlace == null || !r.isCaisse()) {
-        armoires.add(r);
-        comboRangement.addItem(r);
+    for (Rangement rangement1 : Program.getCave()) {
+      if (iPlace == null || !rangement1.isCaisse()) {
+        armoires.add(rangement1);
+        comboRangement.addItem(rangement1);
       }
     }
 
     comboRangement.addItemListener((item) -> {
       if (item.getStateChange() == ItemEvent.SELECTED) {
-        Rangement r = (Rangement) comboRangement.getSelectedItem();
-        setRangement(r);
+        setRangement((Rangement) comboRangement.getSelectedItem());
       }
     });
 
@@ -152,11 +151,11 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     }
   }
 
-  private void setRangement(final Rangement rangement) {
-    if (rangement == null) {
+  private void setRangement(final Rangement rangement1) {
+    if (rangement1 == null) {
       return;
     }
-    this.rangement = rangement;
+    rangement = rangement1;
     move.setEnabled(rangement.isCaisse());
     SwingUtilities.invokeLater(() -> {
       CELLS_LIST.clear();

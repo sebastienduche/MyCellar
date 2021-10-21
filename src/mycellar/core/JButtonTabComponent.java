@@ -61,6 +61,8 @@ import java.awt.event.MouseListener;
  */
 public final class JButtonTabComponent extends JPanel {
 
+  private final int indexToGoBack;
+
   private static final long serialVersionUID = -3455621665205397725L;
   private static final MouseListener MOUSE_LISTENER = new MouseAdapter() {
     @Override
@@ -83,11 +85,12 @@ public final class JButtonTabComponent extends JPanel {
   };
   private final JTabbedPane pane;
 
-  public JButtonTabComponent(final JTabbedPane pane) {
+  public JButtonTabComponent(final JTabbedPane pane, int indexToGoBack) {
     // unset default FlowLayout' gaps
     super(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    this.indexToGoBack = indexToGoBack;
     if (pane == null) {
-      throw new NullPointerException("TabbedPane is null"); //$NON-NLS-1$
+      throw new NullPointerException("TabbedPane is null");
     }
     this.pane = pane;
     setOpaque(false);
@@ -132,7 +135,7 @@ public final class JButtonTabComponent extends JPanel {
     private TabButton() {
       int size = 17;
       setPreferredSize(new Dimension(size, size));
-      setToolTipText(Program.getLabel("Infos019")); //$NON-NLS-1$
+      setToolTipText(Program.getLabel("Infos019"));
       // Make the button looks the same for all Laf's
       setUI(new BasicButtonUI());
       // Make it transparent
@@ -161,15 +164,18 @@ public final class JButtonTabComponent extends JPanel {
           // Notifier le composant du JTabbedPane que le tab qui le
           // contient va se fermer
           if (!listener.tabWillClose(new TabEvent(pane))) {
-            // Le listener a mis son v�to a la fermeture, ne rien
-            // faire
+            // Le listener a mis son veto pour la fermeture, ne rien faire
             Program.Debug("Not Closing Tab");
             return;
           }
           pane.remove(i);
           listener.tabClosed();
-        } else
+        } else {
           pane.remove(i);
+        }
+        if (indexToGoBack != -1 && pane.getTabCount() > indexToGoBack) {
+          pane.setSelectedIndex(indexToGoBack);
+        }
       }
     }
 
@@ -193,10 +199,8 @@ public final class JButtonTabComponent extends JPanel {
         g2.setColor(Color.MAGENTA);
       }
       int delta = 6;
-      g2.drawLine(delta, delta, getWidth() - delta - 1, getHeight()
-          - delta - 1);
-      g2.drawLine(getWidth() - delta - 1, delta, delta, getHeight()
-          - delta - 1);
+      g2.drawLine(delta, delta, getWidth() - delta - 1, getHeight() - delta - 1);
+      g2.drawLine(getWidth() - delta - 1, delta, delta, getHeight() - delta - 1);
       g2.dispose();
     }
   }

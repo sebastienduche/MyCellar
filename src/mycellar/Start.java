@@ -86,8 +86,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.2
- * @since 10/09/21
+ * @version 29.3
+ * @since 21/10/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -658,7 +658,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     jMenuExportXmlPlaces.setText(Program.getLabel("Infos368")); // Exporter des rangements xml
     jMenuExportXml.setText(Program.getLabel("Infos408")); // Exporter au format xml
     jMenuCloseFile.setText(Program.getLabel("Infos019")); // Fermer...
-    jMenuCheckUpdate.setText(Program.getLabel("Infos379")); // Verifier mise a jour...
+    jMenuCheckUpdate.setText(Program.getLabel("Infos379")); // Check update
     jMenuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "")) + EXTENSION);
     jMenuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "")) + EXTENSION);
     jMenuReopen3.setText("3 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "")) + EXTENSION);
@@ -1129,12 +1129,13 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
   }
 
   public void openCellChooserPanel(IPlace iPlace) {
+    final int selectedTabIndex = ProgramPanels.getSelectedTabIndex() + 1;
     if (ProgramPanels.getCellChoosePanel() == null) {
       try {
         final CellarOrganizerPanel chooseCellPanel = ProgramPanels.createChooseCellPanel(iPlace);
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Main.ChooseCell"), chooseCellPanel);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, chooseCellPanel);
+        ProgramPanels.TABBED_PANE.insertTab(Program.getLabel("Main.ChooseCell"), null, chooseCellPanel, null, selectedTabIndex);
+        ProgramPanels.TABBED_PANE.setIconAt(selectedTabIndex, MyCellarImage.PLACE);
+        Utils.addCloseButton(ProgramPanels.TABBED_PANE, chooseCellPanel, ProgramPanels.getSelectedTabIndex());
       } catch (RuntimeException e) {
         Program.showException(e);
       }
@@ -1144,9 +1145,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
       ProgramPanels.getCellChoosePanel().setIPlace(iPlace);
     } catch (IllegalArgumentException e) {
       final CellarOrganizerPanel chooseCellPanel = ProgramPanels.createChooseCellPanel(iPlace);
-      ProgramPanels.TABBED_PANE.add(Program.getLabel("Main.ChooseCell"), chooseCellPanel);
-      ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-      Utils.addCloseButton(ProgramPanels.TABBED_PANE, chooseCellPanel);
+      ProgramPanels.TABBED_PANE.insertTab(Program.getLabel("Main.ChooseCell"), null, chooseCellPanel, null, selectedTabIndex);
+      ProgramPanels.TABBED_PANE.setIconAt(selectedTabIndex, MyCellarImage.PLACE);
+      Utils.addCloseButton(ProgramPanels.TABBED_PANE, chooseCellPanel, ProgramPanels.getSelectedTabIndex());
       ProgramPanels.TABBED_PANE.setSelectedComponent(chooseCellPanel);
     }
     updateMainPanel();

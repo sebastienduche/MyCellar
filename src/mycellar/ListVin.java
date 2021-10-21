@@ -29,8 +29,8 @@ import java.util.List;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.2
- * @since 23/0/21
+ * @version 4.3
+ * @since 21/10/21
  */
 final class ListVin extends JPanel {
   static final long serialVersionUID = 10805;
@@ -101,8 +101,8 @@ final class ListVin extends JPanel {
     listValues.setBouteilles(bottles);
   }
 
-  int getListSize() {
-    return listValues.getRowCount();
+  boolean isEmpty() {
+    return listValues.getRowCount() == 0;
   }
 
 }

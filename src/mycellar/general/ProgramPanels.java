@@ -58,14 +58,14 @@ import static mycellar.ScreenType.SUPPRIMER_RANGEMENT;
 import static mycellar.ScreenType.VIGNOBLES;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2012</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 0.4
- * @since 27/08/21
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.5
+ * @since 21/10/21
  */
 public class ProgramPanels {
 
@@ -86,6 +86,10 @@ public class ProgramPanels {
       }
     }
     return -1;
+  }
+
+  public static int getSelectedTabIndex() {
+    return TABBED_PANE.getSelectedIndex();
   }
 
   public static void updateSelectedTab() {

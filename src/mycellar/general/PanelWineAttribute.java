@@ -31,8 +31,8 @@ import java.text.NumberFormat;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 20/10/21
+ * @version 0.5
+ * @since 21/10/21
  */
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;
@@ -210,11 +210,11 @@ public final class PanelWineAttribute extends JPanel {
     return null;
   }
 
-  public String getStatus() {
+  public String getStatusIfModified() {
     if (statusList.isModified() && statusList.getSelectedItem() != null) {
       return ((BottlesStatus) statusList.getSelectedItem()).name();
     }
-    return BottlesStatus.MODIFIED.name();
+    return null;
   }
 
   public void setStatus(IMyCellarObject myCellarObject) {

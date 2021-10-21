@@ -23,12 +23,12 @@ import java.util.List;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 4.2
  * @since 23/0/21
  */
@@ -38,9 +38,9 @@ final class ListVin extends JPanel {
   private AddVin addVin;
 
   /**
-   * ListVin: Constructeur avec liste des bouteilles
+   * Constructeur avec liste des bouteilles
    *
-   * @param bottle LinkedList<Bouteille>: Liste des bouteilles.
+   * @param bottle LinkedList<IMyCellarObject>: Liste des objets.
    * @param addVin
    */
   ListVin(List<? extends IMyCellarObject> bottle, final AddVin addVin) {
@@ -91,30 +91,16 @@ final class ListVin extends JPanel {
     }
   }
 
-  /**
-   * updateList: Mise à jour de la liste des vins
-   *
-   * @param remove LinkedList<MyCellarObject>: objets à supprimer
-   */
   void updateList(List<MyCellarObject> remove) {
     for (MyCellarObject b : remove) {
       listValues.removeBouteille(b);
     }
   }
 
-  /**
-   * setBottles: Mise à jour de la liste des vins
-   */
   public void setBottles(List<? extends IMyCellarObject> bottles) {
     listValues.setBouteilles(bottles);
   }
 
-
-  /**
-   * getListSize: Retourne le nombre de lignes de la liste.
-   *
-   * @return int
-   */
   int getListSize() {
     return listValues.getRowCount();
   }

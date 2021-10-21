@@ -40,8 +40,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 20/10/21
+ * @version 0.8
+ * @since 21/10/21
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -385,6 +385,13 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
   public String getType() {
     return type.getSelectedItem() != null ? type.getSelectedItem().toString() : "";
+  }
+
+  public String getTypeIfModified() {
+    if (type.isModified()) {
+      return getType();
+    }
+    return null;
   }
 
   public void setTypeDefault() {

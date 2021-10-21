@@ -34,8 +34,8 @@ import static mycellar.ProgramConstants.FR;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 20/11/20
+ * @version 1.4
+ * @since 21/11/20
  */
 public final class PanelVignobles extends JPanel {
 
@@ -291,6 +291,10 @@ public final class PanelVignobles extends JPanel {
     if (vignobleJaxb.getIGP() != null) {
       comboAppelationIGP.setSelectedItem(vignobleJaxb.getIGP());
     }
+    comboCountry.setModified(false);
+    comboVignoble.setModified(false);
+    comboAppelationAOC.setModified(false);
+    comboAppelationIGP.setModified(false);
   }
 
   public VignobleJaxb getSelectedVignoble() {

@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.BottlesStatus;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
@@ -24,6 +25,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.text.MessageFormat;
 
+import static mycellar.MyCellarUtils.nonNullValueOrDefault;
 import static mycellar.core.LabelProperty.OF_THE_SINGLE;
 
 
@@ -34,8 +36,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.8
- * @since 20/10/21
+ * @version 8.9
+ * @since 21/10/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -58,10 +60,10 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       addButton.setText(Program.getLabel("ManageBottle.SaveModifications"));
       addButton.setMnemonic(ajouterChar);
 
-      PopupListener popup_l = new PopupListener();
-      panelGeneral.setMouseListener(popup_l);
-      panelWineAttribute.setMouseListener(popup_l);
-      commentTextArea.addMouseListener(popup_l);
+      PopupListener popupListener = new PopupListener();
+      panelGeneral.setMouseListener(popupListener);
+      panelWineAttribute.setMouseListener(popupListener);
+      commentTextArea.addMouseListener(popupListener);
 
       end.setForeground(Color.red);
       end.setHorizontalAlignment(SwingConstants.CENTER);
@@ -90,7 +92,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   /**
    * Fonction de chargement d'un vin
    *
-   * @param cellarObject Bouteille
+   * @param cellarObject
    */
   private void setBottle(MyCellarObject cellarObject) {
     Debug("Set Bottle...");
@@ -112,20 +114,15 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     Debug("Set Bottle... Done");
   }
 
+  private void updateStatusAndTime() {
+    panelWineAttribute.updateStatusAndTime(myCellarObject);
+  }
+
   /**
    * saving: Fonction de sauvegarde
    */
   private void saving() {
-    Debug("Saving...");
-    try {
-      new Thread(this).start();
-    } catch (RuntimeException a) {
-      Program.showException(a);
-    }
-  }
-
-  private void updateStatusAndTime() {
-    panelWineAttribute.updateStatusAndTime(myCellarObject);
+    new Thread(this).start();
   }
 
   @Override
@@ -148,7 +145,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     String dateOfC = panelWineAttribute.getMaturity();
     String parker = panelWineAttribute.getParker();
     String color = panelWineAttribute.getColor();
-    String status = panelWineAttribute.getStatus();
+    String status = nonNullValueOrDefault(panelWineAttribute.getStatusIfModified(),  BottlesStatus.MODIFIED.name());
     String country = panelVignobles.getCountry();
     String vignoble = panelVignobles.getVignoble();
     String aoc = panelVignobles.getAOC();
@@ -252,7 +249,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     if (!bouteille.equals(myCellarObject)) {
       Debug("ERROR: Not an empty place, Replace?");
       String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), bouteille.getNom(), bouteille.getAnnee());
-      String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
+      String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
         end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
@@ -300,7 +297,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
     panelWineAttribute.runExit();
     clearValues();
-    Debug("Quitting... Done");
+    Debug("Quitting... End");
     return true;
   }
 
@@ -328,7 +325,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       panelPlace.updateView();
       panelPlace.selectPlace(myCellarObject);
       panelPlace.setListenersEnabled(true);
-      Debug("updateView Done");
+      Debug("updateView End");
     });
   }
 }

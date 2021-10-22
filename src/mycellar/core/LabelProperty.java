@@ -5,17 +5,12 @@ package mycellar.core;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.5
  * @since 04/12/20
  */
 public class LabelProperty {
-
-  private final boolean plural;
-  private final boolean uppercaseFirst;
-  private final Grammar grammar;
-  private final boolean doubleQuote;
-  private final boolean threeDashes;
 
   public static final LabelProperty PLURAL = new LabelProperty(true);
   public static final LabelProperty SINGLE = new LabelProperty(false);
@@ -24,6 +19,11 @@ public class LabelProperty {
   public static final LabelProperty THE_PLURAL = new LabelProperty(true, false, Grammar.THE);
   public static final LabelProperty OF_THE_PLURAL = new LabelProperty(true, false, Grammar.OF_THE);
   public static final LabelProperty A_SINGLE = new LabelProperty(false, false, Grammar.SINGLE);
+  private final boolean plural;
+  private final boolean uppercaseFirst;
+  private final Grammar grammar;
+  private final boolean doubleQuote;
+  private final boolean threeDashes;
 
 
   private LabelProperty(boolean plural, boolean uppercaseFirst, Grammar grammar, boolean doubleQuote, boolean threeDashes) {

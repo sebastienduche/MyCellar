@@ -7,8 +7,7 @@ import java.util.Objects;
 
 @XmlRootElement(name = "track")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Track
-{
+public class Track {
   private Integer number;
   private String label;
   private String duration;
@@ -49,8 +48,12 @@ public class Track
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || !Objects.equals(getClass(), o.getClass())) {
+      return false;
+    }
     Track track = (Track) o;
     return Objects.equals(number, track.number) && Objects.equals(label, track.label) && Objects.equals(duration, track.duration) && Objects.equals(comment, track.comment);
   }

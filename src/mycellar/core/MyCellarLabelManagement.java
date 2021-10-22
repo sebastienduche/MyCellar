@@ -1,16 +1,17 @@
 package mycellar.core;
 
+import mycellar.Program;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import mycellar.Program;
 
 /**
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.2
  * @since 16/10/20
@@ -19,11 +20,11 @@ import mycellar.Program;
 public class MyCellarLabelManagement {
 
   private static final List<IMyCellarComponent> LABEL_LIST = new ArrayList<>();
-  
+
   static void add(IMyCellarComponent component) {
     LABEL_LIST.add(component);
   }
-  
+
   static void updateText(IMyCellarComponent component, LabelType type, String code, String value, LabelProperty labelProperty) {
     if (value == null) {
       switch (type) {
@@ -57,7 +58,7 @@ public class MyCellarLabelManagement {
       }
     }
   }
-  
+
   public static void updateLabels() {
     LABEL_LIST.forEach(IMyCellarComponent::updateText);
   }

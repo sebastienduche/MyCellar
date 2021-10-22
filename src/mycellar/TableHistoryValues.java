@@ -20,26 +20,25 @@ import java.util.List;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 15/05/21
+ * @version 3.2
+ * @since 26/08/21
  */
 
 class TableHistoryValues extends AbstractTableModel {
-  private static final long serialVersionUID = 2991755646049419440L;
   static final int SELECT = 0;
   static final int DATE = 1;
   static final int TYPE = 2;
-  private static final int LABEL = 3;
   static final int ACTION = 4;
-
+  private static final long serialVersionUID = 2991755646049419440L;
+  private static final int LABEL = 3;
+  private static final int MAX_ROWS = 10;
+  private final List<String> columnList = new LinkedList<>();
+  private final boolean firstcolumn;
   private List<History> fullList = new ArrayList<>();
   private List<History> displayList = new LinkedList<>();
-  private final List<String> columnList = new LinkedList<>();
   private Boolean[] booleanTab = null;
-  private final boolean firstcolumn;
-
-  private static final int MAX_ROWS = 10;
 
   TableHistoryValues(boolean firstcolumn) {
     this.firstcolumn = firstcolumn;
@@ -52,40 +51,23 @@ class TableHistoryValues extends AbstractTableModel {
     columnList.add("");
   }
 
-  /**
-   * getRowCount
-   *
-   * @return int
-   */
   @Override
   public int getRowCount() {
     return displayList.size();
   }
 
-  /**
-   * getColumnCount
-   *
-   * @return int
-   */
   @Override
   public int getColumnCount() {
     return columnList.size();
   }
 
-  /**
-   * getValueAt
-   *
-   * @param row int
-   * @param column int
-   * @return Object
-   */
   @Override
   public Object getValueAt(int row, int column) {
     History h = displayList.get(row);
     if (!firstcolumn) {
       column++;
     }
-    switch(column) {
+    switch (column) {
       case SELECT:
         return booleanTab[row];
       case ACTION:
@@ -93,15 +75,17 @@ class TableHistoryValues extends AbstractTableModel {
       case DATE:
         return h.getLocaleDate();
       case LABEL:
-      case TYPE:
-      {
+      case TYPE: {
         IMyCellarObject b;
         if (Program.isMusicType()) {
           b = h.getMusic();
-        } else {
+        } else if (Program.isWineType()) {
           b = h.getBouteille();
+        } else {
+          b = null;
+          Program.throwNotImplemented();
         }
-        if(b == null) {
+        if (b == null) {
           return "";
         }
         String emplacement;
@@ -146,23 +130,11 @@ class TableHistoryValues extends AbstractTableModel {
     }
   }
 
-  /**
-   * getColumnName
-   *
-   * @param column int
-   * @return String
-   */
   @Override
   public String getColumnName(int column) {
     return columnList.get(column);
   }
 
-  /**
-   * getColumnClass
-   *
-   * @param column int
-   * @return Class
-   */
   @Override
   public Class<?> getColumnClass(int column) {
     if (!firstcolumn) {
@@ -177,13 +149,6 @@ class TableHistoryValues extends AbstractTableModel {
     return dataType;
   }
 
-  /**
-   * isCellEditable
-   *
-   * @param row int
-   * @param column int
-   * @return boolean
-   */
   @Override
   public boolean isCellEditable(int row, int column) {
     if (!firstcolumn) {
@@ -192,13 +157,6 @@ class TableHistoryValues extends AbstractTableModel {
     return column == ACTION || column == SELECT;
   }
 
-  /**
-   * setValueAt
-   *
-   * @param value Object
-   * @param row int
-   * @param column int
-   */
   @Override
   public void setValueAt(Object value, int row, int column) {
     if (!firstcolumn) {
@@ -206,8 +164,8 @@ class TableHistoryValues extends AbstractTableModel {
     }
     switch (column) {
       case ACTION:
+        History h = displayList.get(row);
         if (Program.isWineType()) {
-          History h = displayList.get(row);
           MyCellarObject bottle = h.getBouteille();
           if (h.isDeleted()) {
             ProgramPanels.showBottle(bottle, false);
@@ -219,11 +177,22 @@ class TableHistoryValues extends AbstractTableModel {
                     () -> ProgramPanels.showBottle(bottle, false));
           }
         } else if (Program.isMusicType()) {
-          Program.throwNotImplementedIfNotFor(new Music(), Bouteille.class);
+          MyCellarObject music = h.getMusic();
+          if (h.isDeleted()) {
+            ProgramPanels.showBottle(music, false);
+          } else {
+            Program.Debug("Music Get ID = " + music.getId());
+            Program.getStorage().getListMyCellarObject().getBouteille().stream().filter(b -> b.getId() == music.getId()).findFirst()
+                .ifPresentOrElse(
+                    m -> ProgramPanels.showBottle(m, true),
+                    () -> ProgramPanels.showBottle(music, false));
+          }
+        } else {
+          Program.throwNotImplemented();
         }
         break;
       case SELECT:
-        booleanTab[row] = (Boolean)value;
+        booleanTab[row] = (Boolean) value;
         break;
     }
   }
@@ -242,7 +211,7 @@ class TableHistoryValues extends AbstractTableModel {
   }
 
   /**
-   * addHistory: Ajout de l'historique.
+   * setHistory: Ajout de l'historique.
    *
    * @param list LinkedList
    */
@@ -269,8 +238,7 @@ class TableHistoryValues extends AbstractTableModel {
       }
       Arrays.fill(booleanTab, Boolean.FALSE);
       fireTableDataChanged();
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       Program.showException(e);
     }
   }
@@ -291,8 +259,7 @@ class TableHistoryValues extends AbstractTableModel {
       booleanTab = new Boolean[displayList.size()];
       Arrays.fill(booleanTab, Boolean.FALSE);
       fireTableDataChanged();
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       Program.showException(e);
     }
   }
@@ -300,11 +267,14 @@ class TableHistoryValues extends AbstractTableModel {
   MyCellarObject getObject(int row) {
     if (Program.isMusicType()) {
       return displayList.get(row).getMusic();
+    } else if (Program.isWineType()) {
+      return displayList.get(row).getBouteille();
     }
-    return displayList.get(row).getBouteille();
+    Program.throwNotImplementedForNewType();
+    return null;
   }
 
-  boolean isBottleDeleted(int row) {
+  boolean isDeleted(int row) {
     return displayList.get(row).isDeleted();
   }
 }

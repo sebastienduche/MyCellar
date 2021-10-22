@@ -23,6 +23,7 @@ import java.util.Map;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.2
  * @since 07/05/21
@@ -30,6 +31,7 @@ import java.util.Map;
 public class ItunesLibraryImporter {
 
   private static final Map<String, MusicInfo> MUSIC_INFO_MAP = new HashMap<>();
+
   static {
     MUSIC_INFO_MAP.put("Track ID", new MusicInfo("integer", MyCellarFields.EXTERNAL_ID));
     MUSIC_INFO_MAP.put("Track Number", new MusicInfo("integer", null));
@@ -49,25 +51,8 @@ public class ItunesLibraryImporter {
     MUSIC_INFO_MAP.put("Album", new MusicInfo("string", MyCellarFields.ALBUM));
     MUSIC_INFO_MAP.put("Composer", new MusicInfo("string", MyCellarFields.COMPOSER));
   }
-  List<Music> list = new LinkedList<>();
 
-  static class MusicInfo {
-    private final String type;
-    private final MyCellarFields field;
-
-    public MusicInfo(String type, MyCellarFields field) {
-      this.type = type;
-      this.field = field;
-    }
-
-    public String getType() {
-      return type;
-    }
-
-    public MyCellarFields getField() {
-      return field;
-    }
-  }
+  private final List<Music> list = new LinkedList<>();
 
   public List<Music> loadItunesLibrary(File file) throws NoITunesFileException {
     if (!file.exists()) {
@@ -84,7 +69,7 @@ public class ItunesLibraryImporter {
 
       final Node deepestDictElement = findDeepestDictElement(doc.getDocumentElement());
       final Node parentDictNode = deepestDictElement.getParentNode();
-      NodeList dict = ((Element)parentDictNode).getElementsByTagName("dict");
+      NodeList dict = ((Element) parentDictNode).getElementsByTagName("dict");
 
       for (int i = 0; i < dict.getLength(); i++) {
         Node dictElement = dict.item(i);
@@ -129,6 +114,24 @@ public class ItunesLibraryImporter {
       }
     }
     return element;
+  }
+
+  static class MusicInfo {
+    private final String type;
+    private final MyCellarFields field;
+
+    public MusicInfo(String type, MyCellarFields field) {
+      this.type = type;
+      this.field = field;
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    public MyCellarFields getField() {
+      return field;
+    }
   }
 
 

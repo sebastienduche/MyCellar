@@ -35,7 +35,7 @@ class RangementTest {
     LinkedList<Part> list = new LinkedList<>();
     list.add(partie);
     partie.setRows(3);
-    for(int i=0; i<3; i++) {
+    for (int i = 0; i < 3; i++) {
       partie.getRow(i).setCol(3);
     }
     armoire1x3x3 = new Rangement("armoire1x3x3", list);
@@ -47,7 +47,7 @@ class RangementTest {
     list = new LinkedList<>();
     list.add(partie);
     partie.setRows(2);
-    for(int i=0; i<2; i++) {
+    for (int i = 0; i < 2; i++) {
       partie.getRow(i).setCol(2);
     }
     partie = new Part(1);
@@ -59,10 +59,10 @@ class RangementTest {
     armoire2x2_3x22545 = new Rangement("armoire2x2_3x22545", list);
     try {
       armoire2x2_3x22545Builder = new Rangement.RangementBuilder("armoire2x2_3x22545")
-          .nb_emplacement(new int[]{2,3})
+          .nb_emplacement(new int[]{2, 3})
           .differentColumnsNumber()
-          .columnsNumberForPart(0, new int[]{2,2})
-          .columnsNumberForPart(1, new int[]{5,4,5})
+          .columnsNumberForPart(0, new int[]{2, 2})
+          .columnsNumberForPart(1, new int[]{5, 4, 5})
           .build();
     } catch (Exception ignored) {
     }
@@ -149,8 +149,8 @@ class RangementTest {
 
   @Test
   void isExistingCell() {
-    for(int i=0; i<3; i++) {
-      for(int j=0; j<3; j++) {
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
         assertTrue(armoire1x3x3.isExistingCell(0, i, j));
         assertTrue(armoire1x3x3Builder.isExistingCell(0, i, j));
       }
@@ -169,11 +169,11 @@ class RangementTest {
     list.add(armoire2x2_3x22545Builder);
     for (Rangement r : list) {
       int emplacementMax = r.getNbEmplacements();
-      for (int i=0; i<emplacementMax; i++) {
+      for (int i = 0; i < emplacementMax; i++) {
         int ligneMax = r.getNbLignes(i);
-        for (int j=0; j<ligneMax; j++) {
+        for (int j = 0; j < ligneMax; j++) {
           int colMax = r.getNbColonnes(i, j);
-          for (int k=0; k<colMax; k++) {
+          for (int k = 0; k < colMax; k++) {
             assertTrue(r.isExistingCell(i, j, k));
           }
           assertFalse(r.isExistingCell(i, j, colMax));
@@ -291,11 +291,11 @@ class RangementTest {
     list.add(armoire2x2_3x22545Builder);
     for (Rangement r : list) {
       int emplacementMax = r.getNbEmplacements();
-      for (int i=0; i<emplacementMax; i++) {
+      for (int i = 0; i < emplacementMax; i++) {
         int ligneMax = r.getNbLignes(i);
-        for (int j=0; j<ligneMax; j++) {
+        for (int j = 0; j < ligneMax; j++) {
           int colMax = r.getNbColonnes(i, j);
-          for (int k=0; k<colMax; k++) {
+          for (int k = 0; k < colMax; k++) {
             assertEquals(colMax - k, r.getNbCaseFreeCoteLigne(i, j, k));
           }
         }
@@ -536,11 +536,11 @@ class RangementTest {
     list.add(armoire2x2_3x22545Builder);
     for (Rangement r : list) {
       int emplacementMax = r.getNbEmplacements();
-      for (int i=0; i<emplacementMax; i++) {
+      for (int i = 0; i < emplacementMax; i++) {
         int ligneMax = r.getNbLignes(i);
-        for (int j=0; j<ligneMax; j++) {
+        for (int j = 0; j < ligneMax; j++) {
           int colMax = r.getNbColonnes(i, j);
-          for (int k=0; k<colMax; k++) {
+          for (int k = 0; k < colMax; k++) {
             assertTrue(r.canAddBottle(i, j, k));
           }
           assertFalse(r.canAddBottle(i, j, colMax));
@@ -603,21 +603,21 @@ class RangementTest {
 
   @Test
   void getNumberOfBottlesPerPlace() {
-   Map<Integer, Integer> numberOfBottlesPerPlace = caisseLimit.getNumberOfBottlesPerPlace();
-    assertEquals(0, (int)numberOfBottlesPerPlace.get(0));
-    assertEquals(0, (int)numberOfBottlesPerPlace.get(1));
+    Map<Integer, Integer> numberOfBottlesPerPlace = caisseLimit.getNumberOfBottlesPerPlace();
+    assertEquals(0, (int) numberOfBottlesPerPlace.get(0));
+    assertEquals(0, (int) numberOfBottlesPerPlace.get(1));
     Bouteille b = new Bouteille();
     b.setNom("B21");
     b.setNumLieu(1);
     caisseLimit.addWine(b);
     numberOfBottlesPerPlace = caisseLimit.getNumberOfBottlesPerPlace();
-    assertEquals(1, (int)numberOfBottlesPerPlace.get(0));
-    assertEquals(0, (int)numberOfBottlesPerPlace.get(1));
+    assertEquals(1, (int) numberOfBottlesPerPlace.get(0));
+    assertEquals(0, (int) numberOfBottlesPerPlace.get(1));
     b = new Bouteille();
     b.setNom("B1");
     updateToArmoire1x3x3(b, 1, 1);
     numberOfBottlesPerPlace = armoire1x3x3.getNumberOfBottlesPerPlace();
-    assertEquals(1, (int)numberOfBottlesPerPlace.get(0));
+    assertEquals(1, (int) numberOfBottlesPerPlace.get(0));
   }
 
   @Test
@@ -721,5 +721,19 @@ class RangementTest {
     partie.getRow(0).setCol(3);
     Rangement r5 = new Rangement("r", list);
     assertFalse(r2.isSame(r5));
+  }
+
+  @Test
+  void toXml() {
+    final String s = armoire1x3x3.toXml();
+    final String s1 = caisseLimit.toXml();
+    assertEquals("<place name=\"\" IsCaisse=\"false\" NbPlace=\"1\">\n" +
+        "<internal-place NbLine=\"3\">\n" +
+        "<line NbColumn=\"3\"/>\n" +
+        "<line NbColumn=\"3\"/>\n" +
+        "<line NbColumn=\"3\"/>\n" +
+        "</internal-place>\n" +
+        "<name><![CDATA[armoire1x3x3]]></name></place>", s);
+    assertEquals("<place name=\"\" IsCaisse=\"true\" NbPlace=\"2\" NumStart=\"1\" NbLimit=\"6\" default=\"false\"><name><![CDATA[caisseLimit]]></name></place>", s1);
   }
 }

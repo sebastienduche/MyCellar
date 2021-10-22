@@ -2,8 +2,8 @@ package test;
 
 import mycellar.Music;
 import mycellar.Program;
-import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.common.music.MusicSupport;
+import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
@@ -407,7 +407,7 @@ class MusicTest {
 
   @Test
   void getRangement() {
-    assertEquals(armoire1x3x3 ,music.getRangement());
+    assertEquals(armoire1x3x3, music.getRangement());
   }
 
   @Test
@@ -519,7 +519,7 @@ class MusicTest {
     assertEquals(file, musicFromXML.getFile());
     assertEquals(album, musicFromXML.getAlbum());
     assertEquals(lastModified, musicFromXML.getLastModified());
-    assertEquals(trackNumber, (int)musicFromXML.getTracks().getTracks().get(0).getNumber());
+    assertEquals(trackNumber, (int) musicFromXML.getTracks().getTracks().get(0).getNumber());
     assertEquals(label, musicFromXML.getTracks().getTracks().get(0).getLabel());
     assertEquals(trackDuration, musicFromXML.getTracks().getTracks().get(0).getDuration());
     assertEquals(trackComnment, musicFromXML.getTracks().getTracks().get(0).getComment());

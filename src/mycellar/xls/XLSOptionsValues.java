@@ -1,9 +1,6 @@
 package mycellar.xls;
 
 import javax.swing.table.AbstractTableModel;
-
-import mycellar.Program;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,17 +9,18 @@ import java.util.List;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2006</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.3
  * @since 14/06/20
  */
 class XLSOptionsValues extends AbstractTableModel {
   public static final int ETAT = 0;
-  private final String[] columnNames = {"",""};
+  static final long serialVersionUID = 260706;
+  private final String[] columnNames = {"", ""};
   private final List<String> oVector = new LinkedList<>();
   private final List<Boolean> oBoolVector = new LinkedList<>();
-  private Object[][] values = { { false, "" } };
-  static final long serialVersionUID = 260706;
+  private Object[][] values = {{false, ""}};
 
   /**
    * getRowCount
@@ -47,7 +45,7 @@ class XLSOptionsValues extends AbstractTableModel {
   /**
    * getValueAt
    *
-   * @param row int
+   * @param row    int
    * @param column int
    * @return Object
    */
@@ -83,7 +81,7 @@ class XLSOptionsValues extends AbstractTableModel {
   /**
    * isCellEditable
    *
-   * @param row int
+   * @param row    int
    * @param column int
    * @return boolean
    */
@@ -95,24 +93,19 @@ class XLSOptionsValues extends AbstractTableModel {
   /**
    * setValueAt
    *
-   * @param value Object
-   * @param row int
+   * @param value  Object
+   * @param row    int
    * @param column int
    */
   @Override
   public void setValueAt(Object value, int row, int column) {
-    try {
-      values[row][column] = value;
-    }
-    catch (Exception e) {
-      Program.showException(e);
-    }
+    values[row][column] = value;
   }
 
   /**
    * addString
    *
-   * @param _sText String
+   * @param _sText  String
    * @param _bState boolean
    */
   public void addString(String _sText, boolean _bState) {
@@ -120,7 +113,7 @@ class XLSOptionsValues extends AbstractTableModel {
     oVector.add(_sText);
     oBoolVector.add(_bState);
     values = new Object[oVector.size()][2];
-    for ( int i = 0; i < oVector.size(); i++ ){
+    for (int i = 0; i < oVector.size(); i++) {
       values[i][1] = oVector.get(i);
       values[i][0] = oBoolVector.get(i);
     }
@@ -130,7 +123,6 @@ class XLSOptionsValues extends AbstractTableModel {
    * removeAll: Supprime toute les lignes
    */
   public void removeAll() {
-
     values = new Object[1][2];
     values[0][0] = false;
     values[0][1] = "";

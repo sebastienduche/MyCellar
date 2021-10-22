@@ -11,6 +11,9 @@ import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.PopupListener;
+import mycellar.core.TabEvent;
+import mycellar.core.tablecomponents.CheckboxCellEditor;
+import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
@@ -48,421 +51,412 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.9
- * @since 20/05/21
+ * @version 8.0
+ * @since 14/10/21
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
-	private final JTextField name = new JTextField();
-	private final MyCellarRadioButton type_XML = new MyCellarRadioButton(LabelType.INFO, "210", false);
-	private final MyCellarRadioButton type_HTML = new MyCellarRadioButton(LabelType.INFO, "211", true);
-	private final MyCellarRadioButton type_XLS = new MyCellarRadioButton(LabelType.INFO, "233", false);
-	private JTable table;
-	private final TableauValues tv = new TableauValues();
-	@SuppressWarnings("deprecation")
-	private final MyCellarLabel end = new MyCellarLabel();
-	private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "152");
-	private final char creerChar = Program.getLabel("CREER").charAt(0);
-	private final char ouvrirChar = Program.getLabel("OUVRIR").charAt(0);
-	private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126");
-	private final MyCellarButton m_jcb_options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
-	static final long serialVersionUID = 260706;
+  static final long serialVersionUID = 260706;
+  private final JTextField name = new JTextField();
+  private final MyCellarRadioButton type_XML = new MyCellarRadioButton(LabelType.INFO, "210", false);
+  private final MyCellarRadioButton type_HTML = new MyCellarRadioButton(LabelType.INFO, "211", true);
+  private final MyCellarRadioButton type_XLS = new MyCellarRadioButton(LabelType.INFO, "233", false);
+  private final TableauValues tv = new TableauValues();
+  @SuppressWarnings("deprecation")
+  private final MyCellarLabel end = new MyCellarLabel();
+  private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "152");
+  private final char creerChar = Program.getLabel("CREER").charAt(0);
+  private final char ouvrirChar = Program.getLabel("OUVRIR").charAt(0);
+  private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126");
+  private final MyCellarButton m_jcb_options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
+  private JTable table;
 
-	/**
-	 * Creer_Tableaux: Constructeur pour la creation des tableaux.
-	 *
-	 */
-	public Creer_Tableaux() {
-		Debug("Constructor");
-		try {
-			final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO, "095"); //"Nom du fichier genere:");
-			m_jcb_options.addActionListener(this::options_actionPerformed);
-			final MyCellarButton browse = new MyCellarButton("...");
-			browse.addActionListener(this::browse_actionPerformed);
-			final MyCellarButton parameter = new MyCellarButton(LabelType.INFO_OTHER, "Main.Parameters");
-			parameter.addActionListener(this::param_actionPerformed);
-			final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO, "096"); //"Selectionner les rangements a generer:");
-			final MyCellarButton create = new MyCellarButton(LabelType.INFO, "018"); //"Creer");
-			create.setMnemonic(creerChar);
+  public Creer_Tableaux() {
+    Debug("Constructor");
+    try {
+      final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO, "095"); //"Nom du fichier genere:");
+      m_jcb_options.addActionListener(this::options_actionPerformed);
+      final MyCellarButton browse = new MyCellarButton("...");
+      browse.addActionListener(this::browse_actionPerformed);
+      final MyCellarButton parameter = new MyCellarButton(LabelType.INFO_OTHER, "Main.Parameters");
+      parameter.addActionListener(this::param_actionPerformed);
+      final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO, "096"); //"Selectionner les rangements a generer:");
+      final MyCellarButton create = new MyCellarButton(LabelType.INFO, "018"); //"Creer");
+      create.setMnemonic(creerChar);
 
-			final ButtonGroup buttonGroup = new ButtonGroup();
-			buttonGroup.add(type_HTML);
-			buttonGroup.add(type_XML);
-			buttonGroup.add(type_XLS);
-			table = new JTable(tv);
-			table.setAutoCreateRowSorter(true);
-			TableColumnModel tcm = table.getColumnModel();
-			TableColumn tc = tcm.getColumn(TableauValues.ETAT);
-			tc.setCellRenderer(new StateRenderer());
-			tc.setCellEditor(new StateEditor());
-			tc.setMinWidth(25);
-			tc.setMaxWidth(25);
+      final ButtonGroup buttonGroup = new ButtonGroup();
+      buttonGroup.add(type_HTML);
+      buttonGroup.add(type_XML);
+      buttonGroup.add(type_XLS);
+      table = new JTable(tv);
+      table.setAutoCreateRowSorter(true);
+      TableColumnModel tcm = table.getColumnModel();
+      TableColumn tc = tcm.getColumn(TableauValues.ETAT);
+      tc.setCellRenderer(new CheckboxCellRenderer());
+      tc.setCellEditor(new CheckboxCellEditor());
+      tc.setMinWidth(25);
+      tc.setMaxWidth(25);
 
-			type_XML.addActionListener(this::jradio_actionPerformed);
-			type_HTML.addActionListener(this::jradio_actionPerformed);
-			type_XLS.addActionListener(this::jradio_actionPerformed);
+      type_XML.addActionListener(this::jradio_actionPerformed);
+      type_HTML.addActionListener(this::jradio_actionPerformed);
+      type_XLS.addActionListener(this::jradio_actionPerformed);
 
-			Program.getCave().forEach(tv::addRangement);
+      Program.getCave().forEach(tv::addRangement);
 
-			JScrollPane jScrollPane = new JScrollPane(table);
-			end.setHorizontalAlignment(SwingConstants.CENTER);
-			end.setForeground(Color.red);
-			end.setFont(Program.FONT_DIALOG_SMALL);
-			preview.setMnemonic(ouvrirChar);
-			selectall.setHorizontalAlignment(SwingConstants.RIGHT);
-			selectall.setHorizontalTextPosition(SwingConstants.LEFT);
-			selectall.addActionListener(this::selectall_actionPerformed);
-			preview.addActionListener(this::preview_actionPerformed);
-			create.addActionListener(this::create_actionPerformed);
-			addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyPressed(KeyEvent e) {
-					keylistener_actionPerformed(e);
-				}
-			});
+      JScrollPane jScrollPane = new JScrollPane(table);
+      end.setHorizontalAlignment(SwingConstants.CENTER);
+      end.setForeground(Color.red);
+      end.setFont(FONT_DIALOG_SMALL);
+      preview.setMnemonic(ouvrirChar);
+      selectall.setHorizontalAlignment(SwingConstants.RIGHT);
+      selectall.setHorizontalTextPosition(SwingConstants.LEFT);
+      selectall.addActionListener(this::selectall_actionPerformed);
+      preview.addActionListener(this::preview_actionPerformed);
+      create.addActionListener(this::create_actionPerformed);
+      addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+          keylistener_actionPerformed(e);
+        }
+      });
 
-			name.addMouseListener(new PopupListener());
+      name.addMouseListener(new PopupListener());
 
-			m_jcb_options.setEnabled(false);
-			switch (Program.getCaveConfigInt(MyCellarSettings.CREATE_TAB_DEFAULT, 1)) {
-				case 0:
-					type_XML.setSelected(true);
-					break;
-				case 1:
-					type_HTML.setSelected(true);
-					break;
-				case 2:
-					type_XLS.setSelected(true);
-					m_jcb_options.setEnabled(true);
-					break;
-			}
+      m_jcb_options.setEnabled(false);
+      switch (Program.getCaveConfigInt(MyCellarSettings.CREATE_TAB_DEFAULT, 1)) {
+        case 0:
+          type_XML.setSelected(true);
+          break;
+        case 1:
+          type_HTML.setSelected(true);
+          break;
+        case 2:
+          type_XLS.setSelected(true);
+          m_jcb_options.setEnabled(true);
+          break;
+      }
 
-			setLayout(new MigLayout("", "grow", "[][][grow]"));
-			final JPanel panelFile = new JPanel();
-			panelFile.setLayout(new MigLayout("", "grow", ""));
-			panelFile.add(fileLabel, "wrap");
-			panelFile.add(name, "grow, split 3");
-			panelFile.add(browse);
-			panelFile.add(parameter, "push");
-			add(panelFile, "grow, wrap");
-			final JPanel panelType = new JPanel();
-			panelType.setLayout(new MigLayout("","[grow][grow][grow]",""));
-			panelType.add(type_XML);
-			panelType.add(type_HTML);
-			panelType.add(type_XLS, "split 2");
-			panelType.add(m_jcb_options, "push");
-			panelType.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos151")));
-			add(panelType, "grow, wrap");
-			final JPanel panelTable = new JPanel();
-			panelTable.setLayout(new MigLayout("","grow","grow"));
-			panelTable.add(chooseLabel,"wrap");
-			panelTable.add(jScrollPane, "grow, wrap");
-			panelTable.add(selectall, "grow, push, wrap");
-			panelTable.add(end, "grow, center, hidemode 3, wrap");
-			panelTable.add(create, "gaptop 15px, split 2, center");
-			panelTable.add(preview);
-			add(panelTable, "grow");
-			preview.setEnabled(false);
-			Debug("Constructor OK");
-		} catch (RuntimeException e) {
-			Program.showException(e);
-		}
-	}
+      setLayout(new MigLayout("", "grow", "[][][grow]"));
+      final JPanel panelFile = new JPanel();
+      panelFile.setLayout(new MigLayout("", "grow", ""));
+      panelFile.add(fileLabel, "wrap");
+      panelFile.add(name, "grow, split 3");
+      panelFile.add(browse);
+      panelFile.add(parameter, "push");
+      add(panelFile, "grow, wrap");
+      final JPanel panelType = new JPanel();
+      panelType.setLayout(new MigLayout("", "[grow][grow][grow]", ""));
+      panelType.add(type_XML);
+      panelType.add(type_HTML);
+      panelType.add(type_XLS, "split 2");
+      panelType.add(m_jcb_options, "push");
+      panelType.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos151")));
+      add(panelType, "grow, wrap");
+      final JPanel panelTable = new JPanel();
+      panelTable.setLayout(new MigLayout("", "grow", "grow"));
+      panelTable.add(chooseLabel, "wrap");
+      panelTable.add(jScrollPane, "grow, wrap");
+      panelTable.add(selectall, "grow, push, wrap");
+      panelTable.add(end, "grow, center, hidemode 3, wrap");
+      panelTable.add(create, "gaptop 15px, split 2, center");
+      panelTable.add(preview);
+      add(panelTable, "grow");
+      preview.setEnabled(false);
+      Debug("Constructor OK");
+    } catch (RuntimeException e) {
+      Program.showException(e);
+    }
+  }
 
-	/**
-	 * browse_actionPerformed: Bouton parcourir.
-	 *
-	 * @param e ActionEvent
-	 */
-	private void browse_actionPerformed(ActionEvent e) {
+  private static void Debug(String sText) {
+    Program.Debug("Creer_Tableaux: " + sText);
+  }
 
-		Debug("browse_actionPerforming...");
-		JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR,""));
-		boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
-		if (type_XML.isSelected()) {
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
-		} else if (type_HTML.isSelected()) {
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-		} else if (type_XLS.isSelected()) {
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
-			boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-		}
+  /**
+   * browse_actionPerformed: Bouton parcourir.
+   *
+   * @param e ActionEvent
+   */
+  private void browse_actionPerformed(ActionEvent e) {
 
-		if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-			File file = boiteFichier.getSelectedFile();
-			String nom = file.getAbsolutePath();
-			Program.putCaveConfigString(MyCellarSettings.DIR, boiteFichier.getCurrentDirectory().toString());
-			Filtre filtre = (Filtre) boiteFichier.getFileFilter();
-			nom = MyCellarControl.controlAndUpdateExtension(nom, filtre);
-			name.setText(nom);
-		}
-	}
+    Debug("browse_actionPerforming...");
+    JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR, ""));
+    boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
+    if (type_XML.isSelected()) {
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
+    } else if (type_HTML.isSelected()) {
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
+    } else if (type_XLS.isSelected()) {
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
+      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
+    }
 
-	/**
-	 * create_actionPerformed: Fonction de creation des tableaux.
-	 *
-	 * @param e ActionEvent
-	 */
-	private void create_actionPerformed(ActionEvent e) {
-		try {
-			Debug("create_actionPerforming...");
-			String nom = toCleanString(name.getText());
+    if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+      File file = boiteFichier.getSelectedFile();
+      Program.putCaveConfigString(MyCellarSettings.DIR, boiteFichier.getCurrentDirectory().toString());
+      Filtre filtre = (Filtre) boiteFichier.getFileFilter();
+      String nom = file.getAbsolutePath();
+      nom = MyCellarControl.controlAndUpdateExtension(nom, filtre);
+      name.setText(nom);
+    }
+  }
 
-			if (!MyCellarControl.controlPath(nom)) {
-				return;
-			}
+  /**
+   * create_actionPerformed: Fonction de creation des tableaux.
+   *
+   * @param e ActionEvent
+   */
+  private void create_actionPerformed(ActionEvent e) {
+    try {
+      Debug("create_actionPerforming...");
+      String nom = toCleanString(name.getText());
 
-			File path = new File(nom);
-			name.setText(path.getAbsolutePath());
+      if (!MyCellarControl.controlPath(nom)) {
+        return;
+      }
 
-			//Verify file type. Is it XML File?
-			if (type_XML.isSelected()) {
-				if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
-					Debug("ERROR: Not a XML File");
-					//"Le fichier saisie ne possede pas une extension XML: " + str_tmp3);
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom));
-					return;
-				}
-			} else if (type_HTML.isSelected()) {
-				if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_HTML.toString()))) {
-					Debug("ERROR: Not a HTML File");
-					//"Le fichier saisie ne possede pas une extension HTML: " + str_tmp3);
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
-					return;
-				}
-			} else if (type_XLS.isSelected()) {
-				if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
-					Debug("ERROR: Not a XLS File");
-					//"Le fichier saisie ne possede pas une extension Excel: " + str_tmp3);
-					Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
-					return;
-				}
-			}
-			int count = 0;
-			int max_row = tv.getRowCount();
-			int row = 0;
-			do {
-				if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
-					count++;
-				}
-				row++;
-			}	while (row < max_row);
+      File path = new File(nom);
+      name.setText(path.getAbsolutePath());
 
-			if (count == 0) {
-				Debug("ERROR: No place selected");
-				//"Aucun rangement selectionne!");
-				//"Veuillez selectionner les rangements a generer.");
-				Erreur.showSimpleErreur(Program.getError("Error089"), Program.getError("Error090"), true);
-				return;
-			}
-			row = 0;
-			LinkedList<Rangement> rangements = new LinkedList<>();
-			do {
-				if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
-					rangements.add(tv.getRangementAt(row));
-				}
-				row++;
-			}	while (row < max_row);
+      //Verify file type. Is it XML File?
+      if (type_XML.isSelected()) {
+        if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
+          Debug("ERROR: Not a XML File");
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom));
+          return;
+        }
+      } else if (type_HTML.isSelected()) {
+        if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_HTML.toString()))) {
+          Debug("ERROR: Not a HTML File");
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
+          return;
+        }
+      } else if (type_XLS.isSelected()) {
+        if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+          Debug("ERROR: Not a XLS File");
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
+          return;
+        }
+      }
+      int count = 0;
+      int max_row = tv.getRowCount();
+      int row = 0;
+      do {
+        if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
+          count++;
+        }
+        row++;
+      } while (row < max_row);
 
-			long caisseCount = 0;
-			// Export XML
-			if (type_XML.isSelected()) {
-				Debug("Exporting in XML in progress...");
-				XmlUtils.writeRangements(nom, rangements, false);
-			} else if (type_HTML.isSelected()) {
-				Debug("Exporting in HTML in progress...");
-				XmlUtils.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
+      if (count == 0) {
+        Debug("ERROR: No place selected");
+        Erreur.showSimpleErreur(Program.getError("Error089"), Program.getError("Error090"), true);
+        return;
+      }
+      row = 0;
+      LinkedList<Rangement> rangements = new LinkedList<>();
+      do {
+        if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
+          rangements.add(tv.getRangementAt(row));
+        }
+        row++;
+      } while (row < max_row);
 
-				TransformerFactory tFactory = TransformerFactory.newInstance();
+      long caisseCount = 0;
+      if (type_XML.isSelected()) {
+        Debug("Exporting in XML in progress...");
+        XmlUtils.writeRangements(nom, rangements, false);
+      } else if (type_HTML.isSelected()) {
+        Debug("Exporting in HTML in progress...");
+        XmlUtils.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
 
-				StreamSource xslDoc = new StreamSource("resources/Rangement.xsl");
-				StreamSource xmlDoc = new StreamSource(Program.getPreviewXMLFileName());
+        TransformerFactory tFactory = TransformerFactory.newInstance();
 
-				try (var htmlFile = new FileOutputStream(nom)) {
-					var transformer = tFactory.newTransformer(xslDoc);
-					transformer.transform(xmlDoc, new StreamResult(htmlFile));
-				} catch (FileNotFoundException e1) {
-					Debug("ERROR: File not found : " + e1.getMessage());
-					Program.showException(e1);
-				} catch (IOException e1) {
-					Program.showException(e1);
-				}
-			} else if (type_XLS.isSelected()) {
-				Debug("Exporting in XLS in progress...");
-				caisseCount = rangements.stream().filter(Rangement::isCaisse).count();
-				RangementUtils.write_XLSTab( nom, rangements);
-			}
+        StreamSource xslDoc = new StreamSource("resources/Rangement.xsl");
+        StreamSource xmlDoc = new StreamSource(Program.getPreviewXMLFileName());
 
-			if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_TAB_MESS, false)) {
-				if (caisseCount > 0) {
-					String erreur_txt1, erreur_txt2;
-					if (caisseCount == 1) {
-						erreur_txt1 = Program.getError("Error091"); //"Vous avez selectionne un rangement de type Caisse");
-						erreur_txt2 = Program.getError("Error092", LabelProperty.PLURAL); //"Une liste des vins de ce rangement a ete generee.");
-					} else {
-						erreur_txt1 = Program.getError("Error127"); //"Vous avez selectionne des rangements de type Caisse");
-						erreur_txt2 = Program.getError("Error128", LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.");
-					}
-					Erreur.showKeyErreur(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
-				}
-			}
-			end.setText(Program.getLabel("Infos097"), true); //"Fichier genere.");
-			preview.setEnabled(true);
-		} catch (TransformerConfigurationException e1) {
-			Debug("ERROR: TransformerConfigurationException : " + e1.getMessage());
-			Program.showException(e1);
-		} catch (TransformerException e1) {
-			Debug("ERROR: TransformerException : " + e1.getMessage());
-			Program.showException(e1);
-		} catch (Exception exc) {
-			Program.showException(exc);
-		}
-	}
+        try (var htmlFile = new FileOutputStream(nom)) {
+          var transformer = tFactory.newTransformer(xslDoc);
+          transformer.transform(xmlDoc, new StreamResult(htmlFile));
+        } catch (FileNotFoundException e1) {
+          Debug("ERROR: File not found : " + e1.getMessage());
+          Program.showException(e1);
+        } catch (IOException e1) {
+          Program.showException(e1);
+        }
+      } else if (type_XLS.isSelected()) {
+        Debug("Exporting in XLS in progress...");
+        caisseCount = rangements.stream().filter(Rangement::isCaisse).count();
+        RangementUtils.write_XLSTab(nom, rangements);
+      }
 
-	/**
-	 * preview_actionPerformed: Visualiser les rangements.
-	 *
-	 * @param e ActionEvent
-	 */
-	private void preview_actionPerformed(ActionEvent e) {
-		Debug("preview_actionPerforming...");
-		String path = name.getText();
-		Program.open(new File(path));
-	}
+      if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_TAB_MESS, false)) {
+        if (caisseCount > 0) {
+          String erreur_txt1, erreur_txt2;
+          if (caisseCount == 1) {
+            erreur_txt1 = Program.getError("Error091"); //"Vous avez selectionne un rangement de type Caisse");
+            erreur_txt2 = Program.getError("Error092", LabelProperty.PLURAL); //"Une liste des vins de ce rangement a ete generee.");
+          } else {
+            erreur_txt1 = Program.getError("Error127"); //"Vous avez selectionne des rangements de type Caisse");
+            erreur_txt2 = Program.getError("Error128", LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.");
+          }
+          Erreur.showInformationMessageWithKey(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
+        }
+      }
+      end.setText(Program.getLabel("Infos097"), true); //"Fichier genere.");
+      preview.setEnabled(true);
+    } catch (TransformerConfigurationException e1) {
+      Debug("ERROR: TransformerConfigurationException : " + e1.getMessage());
+      Program.showException(e1);
+    } catch (TransformerException e1) {
+      Debug("ERROR: TransformerException : " + e1.getMessage());
+      Program.showException(e1);
+    } catch (Exception exc) {
+      Program.showException(exc);
+    }
+  }
 
-	/**
-	 * keylistener_actionPerformed: Foncion d'ecoute des touches.
-	 *
-	 * @param e KeyEvent
-	 */
-	private void keylistener_actionPerformed(KeyEvent e) {
-		if (e.getKeyCode() == creerChar && e.isControlDown()) {
-			create_actionPerformed(null);
-		}
-		if (e.getKeyCode() == ouvrirChar && e.isControlDown() && preview.isEnabled()) {
-			preview_actionPerformed(null);
-		}
-	}
+  /**
+   * preview_actionPerformed: Visualiser les rangements.
+   *
+   * @param e ActionEvent
+   */
+  private void preview_actionPerformed(ActionEvent e) {
+    Debug("preview_actionPerforming...");
+    String path = name.getText();
+    Program.open(new File(path));
+  }
 
-	/**
-	 * selectall_actionPerformed: Permet de selectionner toutes les lignes de la
-	 * JTable
-	 *
-	 * @param e ActionEvent
-	 */
-	private void selectall_actionPerformed(ActionEvent e) {
-		for (int i = 0; i < tv.getRowCount(); i++) {
-			tv.setValueAt(selectall.isSelected(), i, 0);
-		}
-		table.updateUI();
-	}
+  /**
+   * keylistener_actionPerformed: Foncion d'ecoute des touches.
+   *
+   * @param e KeyEvent
+   */
+  private void keylistener_actionPerformed(KeyEvent e) {
+    if (e.getKeyCode() == creerChar && e.isControlDown()) {
+      create_actionPerformed(null);
+    }
+    if (e.getKeyCode() == ouvrirChar && e.isControlDown() && preview.isEnabled()) {
+      preview_actionPerformed(null);
+    }
+  }
 
-	/**
-	 * options_actionPerformed: Appel de la fenetre d'options.
-	 *
-	 * @param e ActionEvent
-	 */
-	private void options_actionPerformed(ActionEvent e) {
+  /**
+   * selectall_actionPerformed: Permet de selectionner toutes les lignes de la
+   * JTable
+   *
+   * @param e ActionEvent
+   */
+  private void selectall_actionPerformed(ActionEvent e) {
+    for (int i = 0; i < tv.getRowCount(); i++) {
+      tv.setValueAt(selectall.isSelected(), i, 0);
+    }
+    table.updateUI();
+  }
 
-		XLSTabOptions oXLSTabOptions = new XLSTabOptions();
-		oXLSTabOptions.setVisible(true);
-		m_jcb_options.setSelected(false);
-	}
+  /**
+   * options_actionPerformed: Appel de la fenetre d'options.
+   *
+   * @param e ActionEvent
+   */
+  private void options_actionPerformed(ActionEvent e) {
+    XLSTabOptions oXLSTabOptions = new XLSTabOptions();
+    oXLSTabOptions.setVisible(true);
+    m_jcb_options.setSelected(false);
+  }
 
-	/**
-	 * jradio_actionPerformed: Bouton radio.
-	 *
-	 * @param e ActionEvent
-	 */
-	private void jradio_actionPerformed(ActionEvent e) {
-		m_jcb_options.setEnabled(type_XLS.isSelected());
-	}
+  /**
+   * jradio_actionPerformed: Bouton radio.
+   *
+   * @param e ActionEvent
+   */
+  private void jradio_actionPerformed(ActionEvent e) {
+    m_jcb_options.setEnabled(type_XLS.isSelected());
+  }
 
-	/**
-	 * param_actionPerformed: Appelle la fenetre de parametres.
-	 *
-	 * @param e ActionEvent
-	 */
-	private void param_actionPerformed(ActionEvent e) {
-		Debug("param_actionPerforming...");
-		String titre = Program.getLabel("Infos310");
-		String message2 = Program.getLabel("Infos309");
-		List<String> titre_properties = List.of(
-				Program.getLabel("Infos210"),
-				Program.getLabel("Infos211"),
-				Program.getLabel("Infos233"));
-		List<String> key_properties = List.of(
-				MyCellarSettings.CREATE_TAB_DEFAULT,
-				MyCellarSettings.CREATE_TAB_DEFAULT,
-				MyCellarSettings.CREATE_TAB_DEFAULT);
-		String val = Program.getCaveConfigString(key_properties.get(0), "1");
-		List<String> default_value = List.of("0".equals(val) ? "true" : "false", "1".equals(val) ? "true" : "false", "2".equals(val) ? "true" : "false");
-		List<String> type_objet = List.of("MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton");
-		MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
-		myoptions.setVisible(true);
-	}
+  /**
+   * param_actionPerformed: Appelle la fenetre de parametres.
+   *
+   * @param e ActionEvent
+   */
+  private void param_actionPerformed(ActionEvent e) {
+    Debug("param_actionPerforming...");
+    String titre = Program.getLabel("Infos310");
+    String message2 = Program.getLabel("Infos309");
+    List<String> titre_properties = List.of(
+        Program.getLabel("Infos210"),
+        Program.getLabel("Infos211"),
+        Program.getLabel("Infos233"));
+    List<String> key_properties = List.of(
+        MyCellarSettings.CREATE_TAB_DEFAULT,
+        MyCellarSettings.CREATE_TAB_DEFAULT,
+        MyCellarSettings.CREATE_TAB_DEFAULT);
+    String val = Program.getCaveConfigString(key_properties.get(0), "1");
+    List<String> default_value = List.of("0".equals(val) ? "true" : "false", "1".equals(val) ? "true" : "false", "2".equals(val) ? "true" : "false");
+    List<String> type_objet = List.of("MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton");
+    MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
+    myoptions.setVisible(true);
+  }
 
-	private static void Debug(String sText) {
-		Program.Debug("Creer_Tableaux: " + sText);
-	}
+  @Override
+  public void cut() {
+    String text = name.getSelectedText();
+    String fullText = name.getText();
+    if (text != null) {
+      name.setText(fullText.substring(0, name.getSelectionStart()) + fullText.substring(name.getSelectionEnd()));
+      Program.CLIPBOARD.copier(text);
+    }
+  }
 
-	@Override
-	public void cut() {
-		String text = name.getSelectedText();
-		String fullText = name.getText();
-		if (text != null) {
-			name.setText(fullText.substring(0, name.getSelectionStart()) + fullText.substring(name.getSelectionEnd()));
-			Program.CLIPBOARD.copier(text);
-		}
-	}
+  @Override
+  public void copy() {
+    String text = name.getSelectedText();
+    if (text != null) {
+      Program.CLIPBOARD.copier(text);
+    }
+  }
 
-	@Override
-	public void copy() {
-		String text = name.getSelectedText();
-		if (text != null) {
-			Program.CLIPBOARD.copier(text);
-		}
-	}
+  @Override
+  public void paste() {
+    String fullText = name.getText();
+    name.setText(fullText.substring(0, name.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(name.getSelectionEnd()));
+  }
 
-	@Override
-	public void paste() {
-		String fullText = name.getText();
-		name.setText(fullText.substring(0, name.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(name.getSelectionEnd()));
-	}
+  @Override
+  public boolean tabWillClose(TabEvent event) {
+    return true;
+  }
 
-	@Override
-	public boolean tabWillClose(TabEvent event) {
-		return true;
-	}
+  @Override
+  public void tabClosed() {
+    Start.getInstance().updateMainPanel();
+  }
 
-	@Override
-	public void tabClosed() {
-		Start.getInstance().updateMainPanel();
-	}
+  @Override
+  public void setUpdateView() {
+  }
 
-	@Override
-	public void setUpdateView() {
-	}
-
-	@Override
-	public void updateView() {
-		SwingUtilities.invokeLater(() -> {
-			tv.removeAll();
-			Program.getCave().forEach(tv::addRangement);
-		});
-	}
+  @Override
+  public void updateView() {
+    SwingUtilities.invokeLater(() -> {
+      tv.removeAll();
+      Program.getCave().forEach(tv::addRangement);
+    });
+  }
 }

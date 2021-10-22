@@ -11,49 +11,49 @@ import java.util.TimerTask;
 
 public class TrayTest {
 
-	private boolean run = false;
-	private final TrayIcon trayIcon;
+  private final TrayIcon trayIcon;
+  private boolean run = false;
 
-	public TrayTest() {
-		trayIcon = new TrayIcon(MyCellarImage.ADD.getImage());
+  public TrayTest() {
+    trayIcon = new TrayIcon(MyCellarImage.ADD.getImage());
 
-	}
+  }
 
-	TrayIcon getTrayIcon() {
-		return trayIcon;
-	}
+  public static void main(String[] args) throws AWTException {
 
-	public void displayMessage(String title, String message) {
+    TrayTest test = new TrayTest();
+    SystemTray.getSystemTray().add(test.getTrayIcon());
+    test.displayMessage("", "Bienvenue");
+  }
 
-		Timer tim = new Timer();
+  TrayIcon getTrayIcon() {
+    return trayIcon;
+  }
 
-		tim.schedule(
-				new TimerTask() {
-					@Override
-					public void run() {
-						if(run) {
-							tim.cancel();
-							SystemTray.getSystemTray().remove(trayIcon);
-							return;
-						}
-						trayIcon.displayMessage(
-								title,
-								message,
-								MessageType.INFO
-						);
-						run = true;
-					}
-				},
-				0,
-				5_000
-		);
-	}
+  public void displayMessage(String title, String message) {
 
-	public static void main(String[] args) throws AWTException {
+    Timer tim = new Timer();
 
-		TrayTest test = new TrayTest();
-		SystemTray.getSystemTray().add(test.getTrayIcon());
-		test.displayMessage("", "Bienvenue");
-	}
+    tim.schedule(
+        new TimerTask() {
+          @Override
+          public void run() {
+            if (run) {
+              tim.cancel();
+              SystemTray.getSystemTray().remove(trayIcon);
+              return;
+            }
+            trayIcon.displayMessage(
+                title,
+                message,
+                MessageType.INFO
+            );
+            run = true;
+          }
+        },
+        0,
+        5_000
+    );
+  }
 
 }

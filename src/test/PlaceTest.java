@@ -92,7 +92,7 @@ class PlaceTest {
     assertEquals(2, armoire1x3x3.getNbCaseUseAll());
     final Place oldb2Place = b2.getPlace();
     b2.setColonne(1);
-    RangementUtils.replaceObject(b1, b2, oldb2Place);
+    RangementUtils.replaceMyCellarObject(b1, b2, oldb2Place);
     assertEquals(1, armoire1x3x3.getNbCaseUseAll());
     assertEquals("b2", armoire1x3x3.getBouteille(0, 0, 0).get().getNom());
     assertTrue(armoire1x3x3.getBouteille(0, 0, 1).isEmpty());
@@ -120,7 +120,7 @@ class PlaceTest {
     assertEquals(1, armoire2x3x3.getNbCaseUseAll());
     final Place oldb2Place = b2.getPlace();
     b2.setEmplacement(armoire1x3x3.getNom());
-    RangementUtils.replaceObject(b1, b2, oldb2Place);
+    RangementUtils.replaceMyCellarObject(b1, b2, oldb2Place);
     assertEquals(1, armoire1x3x3.getNbCaseUseAll());
     assertEquals(0, armoire2x3x3.getNbCaseUseAll());
     assertEquals("b2", armoire1x3x3.getBouteille(0, 0, 0).get().getNom());

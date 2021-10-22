@@ -12,8 +12,20 @@
 <STRONG>Description :</STRONG><BR>
 Programme de gestion de Cave à vins.
 <HR>
-    <STRONG>Développements et corrections de la version 69 BI (release 4.1.9.8)</STRONG><BR>
+    <STRONG>Développements et corrections de la version 70 ?? (release 4.2.9.8)</STRONG><BR>
 </span>
+<UL><LI>Program: Correction d'un problème de chargement du fichier ayant un rangement par défaut créer avec une langue différente
+    <LI>Server: Externalisation de sa gestion
+    <LI>AddVin: Limite la longueur du nom affiché dans la liste de nom à 100 caractères
+    <LI>Music: Gestion des supports (début)
+    <LI>Worksheet: Correction d'un problème lors du changement des colonnes affichées
+    <LI>Worksheet: L'affichage pouvait être vide lorsque l'on ne changeait pas les colonnes selectionnées
+    <LI>AddVin: Lors de la modification de plusieurs objets simultanement, les valeurs pouvaient être mises à blanc à tort
+    <LI>AddVin: Un nouvel objet pouvait avoir le statut 'Modifié' au lieu de 'Créé'
+    <LI>AddVin: Navigation vers l'onglet d'ajout d'un objet lors de la fermeture de l'onglet pour choisir une case
+    <LI>All: Le temoin indiquant une modification pouvait s'afficher sans vrai modifications
+    </LI></UL>
+<STRONG>Développements et corrections de la version 69 BI (release 4.1.9.8)</STRONG><BR>
 <UL><LI>AddVin: Centralisation de differents composants
     <LI>Music: Initialisation de la gestion des musiques
     <LI>Start: Chargement des propriétés du fichier avant les données
@@ -29,7 +41,7 @@ Programme de gestion de Cave à vins.
     <LI>ShowFile: La liste ne se réaffichait pas correctement après la modification d'un objet
     </LI></UL>
 <STRONG>Développements et corrections de la version 68 BI (release 4.0.3.0)</STRONG><BR>
-<UL><LI>Start: Correction d'une double erreur affichée lorsque le ficher à ouvrir n'existe pas
+<UL><LI>Start: Correction d'une double erreur affichée lorsque le fichier à ouvrir n'existe pas
     <LI>ShowFile: Affichage d'une boite de dialogue pour changer le rangement d'un vin
     <LI>AddVin: Le bouton pour sélectionner une case d'un rangement ne fonctionnait plus
     <LI>ModifierRangement: La liste des rangements ne se mettait pas automatiquement à jour
@@ -44,22 +56,22 @@ Programme de gestion de Cave à vins.
     <LI>Start: Ajout d'une option de démarrage pour forcer le téléchargment de la dernière version
     <LI>History/Worksheet/Vignobles: Les fichiers ne sont sauvegardés que si les données ont changés
     <LI>All: Correction d'un problème sur la gestion des caisses dont la première étagère n'a pas le numéro 0
-    <LI>Creer_Rangement: Il était possible de réduire le nombre d'étagère d'une caisse alors qu'elles possédaient des bouteilles. Les bouteilles étaient perdues
+    <LI>Creer_Rangement: Il était possible de réduire le nombre d'étagères d'une caisse alors qu'elles possédaient des bouteilles. Les bouteilles étaient perdues
     <LI>AddVin: La modification de plusieurs bouteilles vers une caissse pouvaient faire planter le programme
     </LI></UL>
 <STRONG>Développements et corrections de la version 66 CO (release 3.9.1.9)</STRONG><BR>
-<UL><LI>Start: La barre de titre affichait un nom de fichier lorsqu'aucun fichier n'était ouvert
+<UL><LI>Start: La barre de titre affichait un nom de fichier lorsque aucun fichier n'était ouvert
     <LI>All: Mise à jour des librairies externes
     <LI>All: Les informations de plantages du programme sont désormais envoyées sur GitHub
     <LI>Statistiques: Plantage lors de la sélection d'un rangement complexe
     <LI>All: Les fichiers avec extensions XLS n'étaient plus gérés
-    <LI>Creer Rangement: La ligne pour saisir le nombre de colonne n'était pas visible lors de la première configuration d'unn rangement complexe
-    <LI>ManageBottle: Lors d'une remplacement d'une bouteille par une autre, le programme pouvait planter
+    <LI>Creer Rangement: La ligne pour saisir le nombre de colonnes n'était pas visible lors de la première configuration d'unn rangement complexe
+    <LI>ManageBottle: Lors d'un remplacement d'une bouteille par une autre, le programme pouvait planter
     <LI>Creer_Rangement: La modification des rangements simples avec bouteilles ne fontionnait plus
     </LI></UL>
 <STRONG>Développements et corrections de la version 65 NL (release 3.8.5.3)</STRONG><BR>
 <UL><LI>Countries: Stockage de la liste des pays dans le fichier ouvert
-    <LI>All: Gestion des libellés avec des double points
+    <LI>All: Gestion des libellés avec des doubles points
     <LI>All: Gestion des libellés avec des points de suspensions
     <LI>Statistiques: Ajout d'un graphique pour afficher le nombre de bouteilles entrées et sorties par années
     <LI>Statistiques: Ajout d'un graphique sur l'évolution du nombre de bouteilles
@@ -110,18 +122,18 @@ Programme de gestion de Cave à vins.
     <LI>Start: Un fichier ne contenant que le rangement par défaut s'ouvrait en erreur sur les bouteilles
     <LI>AddVin: Un plantage pouvait survenir lors de la saisie d'une appellation
     <LI>ManageList: La boite de dialogue d'ajout d'une contenance ne s'affichait pas au premier plan
-    <LI>Export: Le champs 'Status' pouvait être présent plusieurs fois dans la boite d'Options
+    <LI>Export: Le champ 'Status' pouvait être présent plusieurs fois dans la boite d'Options
     <LI>Worksheet: La liste des colonnes affichait à tort la colonne 'Status'
     <LI>All: Début de simplification de la gestion des libellés et traductions
     <LI>All: Limitation de la longueur du nom affiché dans l'onglet
     <LI>Search: Certains caractères spéciaux n'étaient pas reconnus pour la recherche
     </LI></UL>
 <STRONG>Développements et corrections de la version 60 BD (release 3.4.1.9)</STRONG><BR>
-<UL><LI>AddVin: Le champs de saisie du vin était désactivé suite à une modification de bouteille
+<UL><LI>AddVin: Le champ de saisie du vin était désactivé suite à une modification de bouteille
     <LI>MyCellarOrganiserPanel: La liste déroulant n'affichait pas le rangement sélectionné lors de son ouverture
     <LI>Search: La recherche avec des caractères spéciaux ne fonctionnait plus
     <LI>All: Nouvelle gestion des onglets ouverts et devant être mis à jour
-    <LI>Worksheet: La réouverture de l'onglet après l'ouverture d'un 2eme fichier faisait planter
+    <LI>Worksheet: La réouverture de l'onglet après l'ouverture d'un 2ᵉ fichier faisait planter
     <LI>Worksheet: La modification de plusieurs champs n'était pas détectée lors de la fermeture du fichier sans sauvegarder
     <LI>Worksheet: L'affichage de la boite de sélection des colonnes faisait planter
     <LI>MYCellarOrganiser: Le déplacement d'une bouteille ne modifiait pas le status
@@ -132,14 +144,14 @@ Programme de gestion de Cave à vins.
     <LI>AddVin: La tentative d'ajout de plusieurs bouteilles dans le seul rangement limité plantait
     <LI>AddVin: Une erreur sur la date pouvait se produire alors que la case "Sans Date" était cochée
     <LI>Search: Sélection automatique du vin lors de la saisie s'il n'y a qu'un seul vin disponible
-    <LI>Search: La recherche peut être exécuter via la touche Enter lors de la saisie
+    <LI>Search: La recherche peut être exécuté via la touche Enter lors de la saisie
     <LI>Stats: Simplification du code
     <LI>All: Utilisation de builder pour les rangements
     <LI>SerializeStorage: Simplification de la suppression d'une bouteille
     <LI>ShowFile: Possibilité d'avoir une feuille de travail accessible depuis la recherche ou un menu
     <LI>Worksheet: Possibilité d'ajouter des bouteilles depuis la recherche
     <LI>Worksheet: Possibilité de marquer "Valide" une bouteille
-    <LI>Worksheet: Possibilité de marquer "A vérifier" une bouteille
+    <LI>Worksheet: Possibilité de marquer "À vérifier" une bouteille
     <LI>Bouteille: Ajout des propriétés Status et Date de dernière modification
     <LI>All: Status: Créer / Modifié / Vérifier / A contrôler
     <LI>AddVin: Positionnement automatique du status "Créer" lors de l'ajout d'une bouteille
@@ -154,14 +166,14 @@ Programme de gestion de Cave à vins.
     <LI>PanelVignobles/Search: Amélioration du code
     <LI>Search: Ajout de la recherche avancée par pays/vignoble/appelation
     <LI>AddVin: Le déplacement de plusieurs bouteilles depuis un rangement complexe vers un rangement simple ne réinialisait pas la ligne et la colonne
-    <LI>Program: Une erreur se produisait en fin de mois si le nombre de jour était supérieur au précédent mois, lors du nettoyage des anciens fichiers de log
+    <LI>Program: Une erreur se produisait en fin de mois si le nombre de jours était supérieur au précédent mois, lors du nettoyage des anciens fichiers de log
     <LI>CellarOrganiser: Le déplacement depuis une caisse vers le stock ne fonctionnait pas
     <LI>CellarOrganiser: Le déplacement depuis le stock vers une caisse ne fonctionnait pas
     <LI>CellarOrganiser: Il pouvait ne pas y avoir de case disponible dans une caisse à tort
     <LI>CellarOrganiser: La bouteille déplacée pouvait être dupliquée
     <LI>Vignobles: La modification du vignoble d'une bouteille n'était pas prise en compte lors d'une tentative de suppression de vignoble
     <LI>Vignobles: La modification du vignoble d'une bouteille n'était pas prise en compte lors de la recherche
-    <LI>Vignobles: Détections des mise à jour de vignobles
+    <LI>Vignobles: Détections des mises à jour de vignobles
     <LI>Export XLS: A la fin de l'export, le fichier restait verrouillé en écriture tant que le programme s'exécutait
     </LI></UL>
 <STRONG>Développements et corrections de la version 5.7 ZE (release 3.2.2.4)</STRONG><BR>
@@ -205,7 +217,7 @@ Programme de gestion de Cave à vins.
     <LI>All: Suppression de l'extension HTM
     <LI>Creer_Tableaux: Possibilité de trier les données
     <LI>All: Centrage de toutes les boites de dialogues
-    <LI>All: Nouvelle librairies pour la gestion des fichiers Excel
+    <LI>All: Nouvelles librairies pour la gestion des fichiers Excel
     <LI>All: Centralisation de la gestion des extensions de fichiers
     <LI>All: Import/Export Excel: Utilisation de la librairie Apache POI
     <LI>Start: La valeur de la cave n'était pas réinitialisé à la fermeture du fichier
@@ -367,13 +379,13 @@ Programme de gestion de Cave à vins.
     <LI>Vignobles: Correction d'un problème de création d'identifiant unique pour un pays
     <LI>Vignobles: Enregistrement du libellé d'un pays dans un fichier texte
     <LI>Program: Correction d'un problème de compression de fichier avec le même identifiant
-    <LI>Predicates: Gestion des différentes options de recherche sur le nom en un seul champs
+    <LI>Predicates: Gestion des différentes options de recherche sur le nom en un seul champ
     <LI>AddVin: Disparition du message d'information après 5 secondes
     <LI>AddVin: Un nouveau pays saisi n'était pas présent dans la liste après enregistrement de la bouteille
     <LI>VineyardPanel: Activation / Désactivation des boutons en fonction des options possibles
     <LI>ManageBottle: La sélection du pays ne se faisait plus lors de la modification d'une bouteille
     <LI>AddVin: La saisie d'une année était possible alors que la case "Sans année" était active
-    <LI>VineyardPanel: Il n'était pas possible de modifier l'IGP après une ajout de vignoble
+    <LI>VineyardPanel: Il n'était pas possible de modifier l'IGP après un ajout de vignoble
     <LI>AddVin: Tri des pays
     <LI>VineyardPanel: Correction d'un problème de renommage des appelations
 </UL>
@@ -382,11 +394,11 @@ Programme de gestion de Cave à vins.
     <LI>Vignobles: Correction d'un problème lors de la création d'une appelation dans un nouveau vignoble
     <LI>ManageBottle: Correction de l'ajout d'un nouveau vignoble lors de la modification d'une bouteille
     <LI>AddVin: La question sur l'ajout de plusieurs bouteilles étaient affiché à tort lorsqu'il y avait qu'une bouteille
-    <LI>Search: La recherche avancé plantait si aucune sélection n'était faite
+    <LI>Search: La recherche avancée plantait si aucune sélection n'était faite
     <LI>Search: Correction d'un plantage lorsque la zone de saisie de recherche était vide et que l'on utilisait les flèches de navigation
-    <LI>Search: La liste des vins trouvées n'étaient pas mise à jour si l'une des bouteilles étaient supprimée lors d'une modification
+    <LI>Search: La liste des vins trouvés n'étaient pas mise à jour si l'une des bouteilles étaient supprimée lors d'une modification
     <LI>CellarOrganizerPanel: Correction d'un plantage lorsque l'on changeait de rangement avec des bouteilles dans le stock
-    <LI>CellarOrganizerPanel: Possibilité de déplacer des bouteilles présents dans une caisse
+    <LI>CellarOrganizerPanel: Possibilité de déplacer des bouteilles présentes dans une caisse
     <LI>CellarOrganizerPanel: Possibilité de déplacer toutes les bouteilles d'une caisse dans le stock en une fois
     <LI>CellarOrganizerPanel: La liste des rangements n'était pas mise à jour après un ajout/suppression de rangement
 </UL>
@@ -414,7 +426,7 @@ Programme de gestion de Cave à vins.
 </UL>
 <STRONG>Développements et corrections de la version 4.4 AR (release 2.3.4.3)</STRONG><BR>
 <UL>
-    <LI>All: Suppression de l'option "Tous Fichiers" dans les boite de sélection de fichier
+    <LI>All: Suppression de l'option "Tous Fichiers" dans les boites de sélection de fichier
     <LI>Vignobles: Correction d'un problème d'ajout de pays vides
     <LI>Program: Suppression des fichiers de log de plus de 2 mois
     <LI>ShowFile: Ajout de la possibilité de sélectionner les colonnes à afficher
@@ -498,11 +510,11 @@ Programme de gestion de Cave à vins.
 <STRONG>Développements et corrections de la version 3.6 HO (release 2.1.0.6)</STRONG><BR>
 <UL>
     <LI>ManageBottle: Possibilité d'afficher les bouteilles dans des onglets séparés
-    <LI>ManageBottle: Détection des modification avant fermeture de l'onglet
+    <LI>ManageBottle: Détection des modifications avant fermeture de l'onglet
     <LI>Start: Ajout d'un astérisque au niveau de la bouteille lorsqu'elle est modifiée
     <LI>Start: Sauvegarde des bouteilles ouverte modifiées lors d'une demande de sauvegarde
     <LI>Program: La gestion des contenances à la création d'une cave n'était pas initialisée
-    <LI>Program: Changement de format pour le gestion des contenances
+    <LI>Program: Changement de format pour la gestion des contenances
     <LI>ShowFile: Possibilité de changer le type des bouteilles
 </UL>
 <STRONG>Développements et corrections de la version 3.5 HA (release 2.0.3.8)</STRONG><BR>
@@ -553,7 +565,7 @@ Programme de gestion de Cave à vins.
     <LI>ManagePlace: Ajout de la possibilité de gérer les armoires par Drag&Drop
     <LI>All:Gestion de la poubelle
     <LI>ShowFile/Poubelle: Possibilité de restaurer les vins supprimés
-    <LI>AddVin: Le nombre de bouteille à ajouter n'était pas remis à 1 après la fermeture
+    <LI>AddVin: Le nombre de bouteilles à ajouter n'était pas remis à 1 après la fermeture
     <LI>AddVin: Le champ de saisie du nom du vin contient la liste des noms existant
     <LI>All: En création de fichier, création d'un rangement Stock par défaut
     <LI>PanelInfos: Correction de la bouteille affichée dans les détails des dernières actions
@@ -573,7 +585,7 @@ Programme de gestion de Cave à vins.
     <LI>MyCellarLauncher: Gestion des fichiers jar au téléchargement
     <LI>MyCellarLauncher: Amélioration du lancement de l'application après l'installation
     <LI>MyCellarLauncher: Ajout d'une boite de dialogue pour indiquer que l'installation est en cours
-    <LI>Server: Récupération des fichier mis à jour dans le sous répertoire MyCellar
+    <LI>Server: Récupération des fichiers mis à jour dans le sous répertoire MyCellar
 </UL>
 <STRONG>Développements et corrections de la version 3.0 GA (release 1.8.6.7)</STRONG><BR>
 <UL>
@@ -652,11 +664,11 @@ Programme de gestion de Cave à vins.
     <LI>Paramètres: La sauvegarde des paramètres de couleurs n'était pas correcte
     <LI>Importer: L'importation de données ne fonctionnait plus. Simplification du code.
     <LI>Start: Réécriture de la recherche des rangements à créer
-    <LI>Stats: Ajout d'un menu et on ajout d'une action pour reconstruire les statistiques
+    <LI>Stats: Ajout d'un menu et ajout d'une action pour reconstruire les statistiques
 </UL>
 <STRONG>Développements et corrections de la version 2.4a MB (release 1.6.3.4)</STRONG><BR>
 <UL>
-    <LI>All: Gestion du nouveau champs "Appellation"
+    <LI>All: Gestion du nouveau champ "Appellation"
     <LI>AddVin: Centralisation de la gestion de la hauteur de la fenêtre
     <LI>Paramètres: Suppression des données des champs "Autres" en fermeture de la fenêtre après désactivation
 </UL>
@@ -673,10 +685,10 @@ Programme de gestion de Cave à vins.
     <LI>Start: L'ouverture d'un fichier existant après le démarrage avec un nouveau fichier ne fonctionnait pas
     <LI>Start: Les fichiers en cours de création étaient référencés dans les derniers fichiers ouverts à tort
     <LI>Rangement: Plantage à l'ajout de multiples bouteilles dans une caisse si la taille était mal gérée
-    <LI>All: Gestion du nouveau champs "Maturité"
-    <LI>All: Gestion du nouveau champs "Notation Parker"
+    <LI>All: Gestion du nouveau champ "Maturité"
+    <LI>All: Gestion du nouveau champ "Notation Parker"
     <LI>Paramètres: Les paramètres inutiles à Mac Os sont cachés
-    <LI>Paramètres: Modification du champs "Fichier" pour afficher le nom complet du fichier ouvert
+    <LI>Paramètres: Modification du champ "Fichier" pour afficher le nom complet du fichier ouvert
     <LI>ShowFile: Agrandissement de la fenêtre en largeur
     <LI>All: Supression de propriétés du fichier INI inutiles
 </UL>
@@ -692,7 +704,7 @@ Programme de gestion de Cave à vins.
     <LI>Program: Gestion centralisée de l'ouverture d'un programme externe
     <LI>Server: Modification de la gestion des connections
     <LI>Server: Téléchargement de tous les fichiers requis dans le répertoire download
-    <LI>MyCellarLauncher: Gestion de l'installation des mises à jours et démarrage de l'application
+    <LI>MyCellarLauncher: Gestion de l'installation des mises à jour et démarrage de l'application
     <LI>Program: Contôle des noms des rangements interdit les noms identiques avec des casses différentes
     <LI>Program: Impossible de créer un nouveau fichier
 </UL>
@@ -707,7 +719,7 @@ Programme de gestion de Cave à vins.
     <LI>Paramètres: L'affichage des options n'était pas possible juste après la création d'un nouveau fichier
     <LI>Paramètres: Il n'était pas possible de lire le chemin complet du fichier
     <LI>Paramètres: Ajout d'un bouton "Annuler" pour fermer sans rien faire
-    <LI>All: Suppression de la fausse bouteille créé au démarrage avec le paramètre associé
+    <LI>All: Suppression de la fausse bouteille créée au démarrage avec le paramètre associé
     <LI>Rangement: Création d'un constructeur par copie avec changement du nom
     <LI>Search: Les résultats de la recherche avancée n'étaient plus affichés
     <LI>Search: Ajout d'un bouton en bout de ligne pour afficher les propriétés de la bouteille
@@ -715,13 +727,13 @@ Programme de gestion de Cave à vins.
     <LI>Paramètres: Suppression de l'option de création d'une cave au prochain démarrage
     <LI>Start: Application du Look&Feel au chargement du fichier
     <LI>Search: Plantage lors de la tentative de suppression sans aucune sélection
-    <Li>Search: Désactivation des boutons "Supprimer" et "Modifier" lorsqu'aucun résultat n'est trouvé
+    <Li>Search: Désactivation des boutons "Supprimer" et "Modifier" lorsque aucun résultat n'est trouvé
     <LI>All: Centralisation des icones et fichiers XSL dans le répertoire des resources
     <LI>Program: Changement de l'icone
     <LI>Program: Déplacement du fichier de contrôle d'ouverture du programme (isRunning)
     <LI>Program: Génération d'un répertoire temporaire pour chaque fichier
     <LI>Search: Affichage du nombre de bouteilles après une suppression
-    <LI>Program: La liste des derniers fichiers ouvert n'était pas correctement alimenté
+    <LI>Program: La liste des derniers fichiers ouverts n'était pas correctement alimenté
 </UL>
 <STRONG>Développements et corrections de la version 2.1 GA (release 1.3.2.9)</STRONG><BR>
 <UL>
@@ -740,7 +752,7 @@ Programme de gestion de Cave à vins.
 
 <STRONG>Développements et corrections de la version 2.0 BM (release 1.3.1.9)</STRONG><BR>
 <UL>
-    <LI>Start: Certaines commandes n'étaient pas activées après la chargement d'un fichier
+    <LI>Start: Certaines commandes n'étaient pas activées après le chargement d'un fichier
     <LI>AddVin: Le libellé d'informations n'était pas toujours visible
     <LI>All: Blindage de l'utilisation des ressources INI
     <LI>All: Gestion séparée des ressources INI propres au programme de celles spécifiques à chaque cave
@@ -769,7 +781,7 @@ Programme de gestion de Cave à vins.
 <STRONG>Développements et corrections de la version 1.9a LR (release 1.2.5.5)</STRONG><BR>
 <UL>
     <LI>Start: Possibilité de modifier manuellement des paramètres internes du fichier INI
-    <LI>Start: Possibilité de redimensionner le champs Commentaires en hauteur
+    <LI>Start: Possibilité de redimensionner le champ "Commentaires" en hauteur
 </UL>
 <STRONG>Développements et corrections de la version 1.9 LR (release 1.2.5.1)</STRONG><BR>
 <UL>
@@ -811,7 +823,7 @@ Programme de gestion de Cave à vins.
 <STRONG>Développements et corrections de la version 1.7a LR (release 1.2.2.1)</STRONG><BR>
 <UL>
     <LI>AddVin: La modification sans changement d'emplacement d'une bouteille d'une amoire ne fonctionnait plus
-    <LI>AddVin: La modification multiple de bouteilles de plusieurs emplacement différents pouvait planter
+    <LI>AddVin: La modification multiple de bouteilles de plusieurs emplacements différents pouvait planter
     <LI>Program: Le nom du fichier de Debug avait un numéro de mois incorrect
 </UL>
 <STRONG>Développements et corrections de la version 1.7 BM (release 1.2.1.9)</STRONG><BR>
@@ -824,7 +836,7 @@ Programme de gestion de Cave à vins.
 </UL>
 <STRONG>Développements et corrections de la version 1.6a BM (release 1.1.9.5)</STRONG><BR>
 <UL>
-    <LI>Search: La liste des anciennes recherches n'était pas limité par le nombre d'ancienne recherches autorisées
+    <LI>Search: La liste des anciennes recherches n'était pas limité par le nombre d'anciennes recherches autorisées
     <LI>ShowFile: Erreur d'affichage lorsque l'année n'était pas saisie
     <LI>Search: Erreur d'affichage dans les résultats lorsque l'année n'était pas saisie
 </UL>
@@ -846,7 +858,7 @@ Programme de gestion de Cave à vins.
     <LI>All: Suppression du contrôle sur la longueur du nom d'un rangement
     <LI>MyXmlDom: Gestion XML du format de sauvegarde des rangements au lieu d'un format texte
     <LI>Control: Centralisation des contrôles
-    <LI>Creer_Tableaux: Possibilité d'ajouter champs (année / type de bouteille / prix) dans l'export XLS/ODS
+    <LI>Creer_Tableaux: Possibilité d'ajouter des champs (année / type de bouteille / prix) dans l'export XLS/ODS
     <LI>Paramètres: Possibilité d'activer/désactiver la trace
     <LI>All: Support de l'extension OpenDocument Spreadsheet (ods)
     <LI>Creer_Tableaux: Possibilité de choisir un mode de fonctionnement par défaut via leur menu Options
@@ -897,13 +909,13 @@ Programme de gestion de Cave à vins.
 </UL>
 <STRONG>Développements et corrections de la version 1.2b (release 1.0.8.2)</STRONG><BR>
 <UL>
-    <LI>BadPlace: La colonne attendu lors de la sélection des lignes n'était plus la bonne
+    <LI>BadPlace: La colonne attendue lors de la sélection des lignes n'était plus la bonne
     <LI>Rangement: Les noms de rangements avec caractères spéciaux pouvaient poser problème à l'enregistrement
     <LI>All: Les caractères Unicode dans le prix n'étaient pas gérés et perturbait l'affichage et les statistiques
 </UL>
 <STRONG>Développements et corrections de la version 1.2a (release 1.0.7.8)</STRONG><BR>
 <UL>
-    <LI>Export: Non affichage du vin créé par défaut lors de l'export d'un fichier vide
+    <LI>Export: Non-affichage du vin créé par défaut lors de l'export d'un fichier vide
     <LI>Search: La colonne servant à sélectionner des lignes est maintenant une case à cocher en première colonne
     <LI>Search: Affectation d'une largeur par défaut pour les colonnes du résultat
     <LI>Search: En annulation de suppression de bouteilles, la recherche n'est plus réinitialisé à vide
@@ -913,12 +925,12 @@ Programme de gestion de Cave à vins.
     <LI>AddVin: Possibilité d'ajouter plusieurs bouteilles côte à côte dans un rangement complexe
     <LI>All: AMELIORATION MAJEURE: Adaptation du code pour que la liste des vins ne soit géré que par un seul objet statique et non plus une copie de la liste par rangement
     <LI>Search: Modification de la recherche fullText pour permettre l'utilisation multiple des caractères générique. Implémentation avec Regex & Pattern
-    <LI>Stats: Nouvelle implémentation de la gestion des décimal avec la Locale et BigDecimal
+    <LI>Stats: Nouvelle implémentation de la gestion des décimals avec la Locale et BigDecimal
     <LI>All: AMELIORATION MAJEURE: Implémentation de la sérialisation pour toutes les bouteilles: le fichier XML devient Backup: Enorme accélération du chargement (1sec pour charger 10000 bouteilles)
     <LI>All: Nouvelle gestion des années: Un objet statique regroupe les années présentes dans le programme ainsi que le nombre de bouteilles liées à cette année. Meilleure gestion de la liste pour Stats & Search
     <LI>All: Tous les textes et options sont gérés de façon centrale par Jakarta Commons Configuration au lieu du java.util.Properties avec une LinkedHashMap personalisée
-    <LI>All: Tests de charge: Performances (Ajout de 10000 bouteilles (8 sec), Suppression de 10000 bouteilles (1 min 25 sec au lieu de 1 min 31 sec), Recherche de 10000 bouteilles ( 1 min 20 au lieu de 1 min 50))
-    <LI>Start && Program: AMELIORATION MAJEURE: Fichier unique compressé regroupant tous les fichiers nécessaire à la gestion d'une cave
+    <LI>All: Tests de charge: Performances (Ajout de 10000 bouteilles (8 sec), Suppression de 10000 bouteilles (1 min 25 sec au lieu de 1 min 31 sec), Recherche de 10000 bouteilles (1 min 20 au lieu de 1 min 50))
+    <LI>Start && Program: AMELIORATION MAJEURE: Fichier unique compressé regroupant tous les fichiers nécessaires à la gestion d'une cave
     <LI>Search: Développement d'une recherche avancée: Possibilité d'utiliser les noms des champs (NAME, YEAR...) et de séparer chaque argument par AND ou OR
     <LI>Start: Compatibilité assurée avec les versions précédentes
     <LI>Parametres: Possibilité de choisir entre les différents Look&Feel
@@ -934,20 +946,20 @@ Programme de gestion de Cave à vins.
     <LI>AddVin && Parametres: Donner la possibilité de choisir le format des champs Other
     <LI>AddVin: Corrections lors de la modification d'un vin vers un emplacement utilisé
     <LI>All: Création de la liste pour la contenance des bouteilles à la place d'une valeur booléenne (Demie bouteille Vrai/faux)
-    <LI>Export: Suppression des options liés à la valeur booléenne
+    <LI>Export: Suppression des options liées à la valeur booléenne
     <LI>Suppression de l'objet ExportOptions devenu inutile
     <LI>MyOptions: Possibilité de définir une valeur min, max et par défaut pour les champs Other "Nombre Entier"
     <LI>Paramètres: Possibilité de vider les champs Other "Liste" ainsi que les alimenter automatiquement
     <LI>All: Corrections et améliorations mineures (Interface, Statistiques, Démarrage...)
     <LI>Stats: Correction du comptage du nombre de bouteilles après une modification
-    <LI>All: Tests de charge: Amélioration des performances (Ajout de 10000 bouteilles (6 sec au lieu de 7sec), Suppression de 10000 bouteilles (1 min 31 sec au lieu de 8 min 50 sec), Recherche de 10000 bouteilles ( 1 min 50 au lieu de 2 min 16)) et optimisation du code
-    <LI>Importer: Suppression de quelques contrôles restrictif inutiles pour plus de souplesse
+    <LI>All: Tests de charge: Amélioration des performances (Ajout de 10000 bouteilles (6 sec au lieu de 7sec), Suppression de 10000 bouteilles (1 min 31 sec au lieu de 8 min 50 sec), Recherche de 10000 bouteilles (1 min 50 au lieu de 2 min 16)) et optimisation du code
+    <LI>Importer: Suppression de quelques contrôles restrictifs inutiles pour plus de souplesse
     <LI>Stats: Amélioration de la prise en compte des spérateurs dans les nombres en fonction de la localisation
     <LI>Paramètres: Ajout du paramétrage de l'année de transformation et du siècle et Possibilité de désactiver le contrôle de l'année
     <LI>AddVin: Possibilité de spécifier des valeurs par défaut pour les listes
     <LI>Stats: Ajout du prix moyen des bouteilles ainsi que la possibilité de l'afficher que les tranches de prix contenant des bouteilles
     <LI>Stats: Prise en compte des centimes dans les prix
-    <LI>Creer_Rangement , Search , Export: Possibilité de choisir un mode de fonctionnement par défaut via leur menu Options
+    <LI>Creer_Rangement, Search, Export: Possibilité de choisir un mode de fonctionnement par défaut via leur menu Options
     <LI>AddVin: Ajout d'un contrôle d'année pour celles supérieures à l'année courante
     <LI>AddVin: Lors de l'ajout de plusieurs bouteilles avec un seul rangement, il n'y a plus de message de confirmation d'ajout de toutes les bouteilles au même endroit
     <LI>Export: Possibilité de choisir le séparateur pour le format CSV
@@ -966,7 +978,7 @@ Programme de gestion de Cave à vins.
     <LI>Rangement: Gestion des caractères spéciaux.
     <LI>Search: Possibilté de faire une recherche dans toutes les caisses portant le même nom.
     <LI>Creer_Rangement: Possibilité de prévisualiser un rangement avant de le créer.
-    <LI>Search: Recherche sur (tous le rangement, tous le num_lieu, toute la ligne)
+    <LI>Search: Recherche sur (tout le rangement, tous le num_lieu, toute la ligne)
     <LI>Paramètrage de la longueur du nom d'un rangement au démarrage + mettre message en création de rangement
     <LI>Importer: Donner la possibilité de visualiser le fichier que l'on veut importer
     <LI>Rangement: Faire une fonction de tri alphabétique des rangements
@@ -979,8 +991,8 @@ Programme de gestion de Cave à vins.
     <LI>Search: Implémentation "Select All"
     <LI>AddVin: Permettre de modifier plusieurs vins d'un coup.
     <LI>ListVin + Search: Pb sur code_vin pour caisse
-    <LI>Tous: Ne recharger en quittant que si des modif ont été effectués
-    <LI>Rangement: Exception lancé lorsque l'on essaie d'accéder à une case du tableau dispo mais non autorisée
+    <LI>Tous: Ne recharger en quittant que si des modifs ont été effectués
+    <LI>Rangement: Exception lancée lorsque l'on essaie d'accéder à une case du tableau dispo mais non autorisée
     <LI>AddVin: Remplacer ligne de saisie par un champ multi-lignes
     <LI>Export: Faire un outil pour exporter les données en format XML, CSV ou HTML
     <LI>Export: Convertir avec spec_char dans write_XML et write_HTML

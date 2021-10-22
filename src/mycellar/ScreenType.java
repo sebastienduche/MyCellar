@@ -5,6 +5,7 @@ package mycellar;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2020</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.1
  * @since 03/11/20

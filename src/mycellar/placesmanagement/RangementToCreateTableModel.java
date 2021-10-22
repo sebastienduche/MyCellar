@@ -12,6 +12,7 @@ import java.util.Map;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2018</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.3
  * @since 17/12/20
@@ -26,6 +27,7 @@ public class RangementToCreateTableModel extends AbstractTableModel {
     list = new LinkedList<>();
     list.addAll(map.keySet());
   }
+
   @Override
   public int getRowCount() {
     return map.size();

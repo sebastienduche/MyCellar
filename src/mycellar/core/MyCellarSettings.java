@@ -5,15 +5,14 @@ package mycellar.core;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2016</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
- * @version 0.5
- * @since 20/04/21
+ * @version 0.6
+ * @since 25/05/21
  */
 
 public final class MyCellarSettings {
 
-  @Deprecated
-  public static final String DEBUG = "DEBUG";
   public static final String FILE_EXCEL = "FILE_EXCEL";
   public static final String FIC_EXCEL = "FIC_EXCEL";
   public static final String ANNEE = "ANNEE";
@@ -21,8 +20,6 @@ public final class MyCellarSettings {
   public static final String SIECLE = "SIECLE";
   public static final String DEVISE = "DEVISE";
   public static final String LANGUAGE = "LANGUAGE";
-  @Deprecated
-  public static final String TYPE_AUTO = "TYPE_AUTO";
   public static final String DIR = "DIR";
   public static final String DONT_SHOW_INFO = "DONT_SHOW_INFO";
   public static final String DONT_SHOW_TAB_MESS = "DONT_SHOW_TAB_MESS";
@@ -72,5 +69,6 @@ public final class MyCellarSettings {
   public static final String ANNEE_AUTO_FALSE = "ANNEE_AUTO_FALSE";
   public static final String ANNEE_AUTO_TRUE = "ANNEE_AUTO_TRUE";
 
-  private MyCellarSettings() {}
+  private MyCellarSettings() {
+  }
 }

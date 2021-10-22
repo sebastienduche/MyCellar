@@ -1,7 +1,5 @@
 package test;
 
-import mycellar.Program;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -11,9 +9,13 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static mycellar.ProgramConstants.INTERNAL_VERSION;
+import static mycellar.ProgramConstants.VERSION;
 
 public class GenerateMd5 {
 
@@ -21,8 +23,8 @@ public class GenerateMd5 {
     try (FileWriter writer = new FileWriter("./Build/MyCellarVersion.txt")) {
       System.out.println("Building Build/MyCellarVersion.txt");
       String checksum = getMD5Checksum("./Build/MyCellar.jar");
-      writer.write(Program.INTERNAL_VERSION + "\n");
-      writer.write(Program.VERSION + "\n");
+      writer.write(INTERNAL_VERSION + "\n");
+      writer.write(VERSION + "\n");
       writer.write("MyCellar.jar@" + checksum + "\n");
       writer.write("Finish.html\n");
       getLibFiles()
@@ -37,7 +39,7 @@ public class GenerateMd5 {
       writer.flush();
       System.out.println("Checksum");
       System.out.println(checksum);
-    } catch (Exception e) {
+    } catch (IOException | NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
   }
@@ -55,7 +57,7 @@ public class GenerateMd5 {
     return new ArrayList<>();
   }
 
-  private static byte[] createChecksum(String filename) throws Exception {
+  private static byte[] createChecksum(String filename) throws IOException, NoSuchAlgorithmException {
     try (InputStream fis = new FileInputStream(filename)) {
 
       byte[] buffer = new byte[1024];
@@ -73,7 +75,7 @@ public class GenerateMd5 {
 
   // see this How-to for a faster way to convert
   // a byte array to a HEX string
-  private static String getMD5Checksum(String filename) throws Exception {
+  private static String getMD5Checksum(String filename) throws IOException, NoSuchAlgorithmException {
     byte[] b = createChecksum(filename);
     StringBuilder result = new StringBuilder();
     for (byte value : b) {

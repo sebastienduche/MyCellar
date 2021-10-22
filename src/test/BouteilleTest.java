@@ -344,7 +344,7 @@ class BouteilleTest {
 
   @Test
   void getRangement() {
-    assertEquals(armoire1x3x3 ,bouteille.getRangement());
+    assertEquals(armoire1x3x3, bouteille.getRangement());
   }
 
   @Test

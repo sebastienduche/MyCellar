@@ -1,14 +1,15 @@
 package mycellar;
 
 import mycellar.actions.OpenShowErrorsAction;
+import mycellar.core.BottlesStatus;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
-import mycellar.core.PanelVignobles;
 import mycellar.core.PopupListener;
+import mycellar.core.TabEvent;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.general.ProgramPanels;
@@ -16,17 +17,15 @@ import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.vignobles.CountryVignobleController;
-import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.text.MessageFormat;
-import java.util.Optional;
 
+import static mycellar.MyCellarUtils.nonNullValueOrDefault;
 import static mycellar.core.LabelProperty.OF_THE_SINGLE;
 
 
@@ -35,321 +34,298 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2005</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.4
- * @since 20/05/21
+ * @version 9.0
+ * @since 22/10/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
-	private static final long serialVersionUID = 5330256984954964913L;
+  private static final long serialVersionUID = 5330256984954964913L;
 
+  /**
+   * Constructeur pour la modification de vins
+   *
+   * @param bottle
+   */
+  public ManageBottle(MyCellarObject bottle) {
+    super();
+    isEditionMode = true;
+    addButton = new MyCellarButton(MyCellarImage.SAVE);
 
-	/**
-	 * ManageBottle: Constructeur pour la modification de vins
-	 *
-	 * @param bottle
-	 */
-	public ManageBottle(Bouteille bottle) {
-		super();
-		isEditionMode = true;
-		m_add = new MyCellarButton(MyCellarImage.SAVE);
+    try {
+      Debug("Constructor with Bottle");
+      panelGeneral.initializeForEdition();
+      panelWineAttribute.initValues();
 
-		try {
-			Debug("Constructor with Bottle");
-			panelGeneral.initializeForEdition();
-			panelWineAttribute.initValues();
+      addButton.setText(Program.getLabel("ManageBottle.SaveModifications"));
+      addButton.setMnemonic(ajouterChar);
 
-			m_add.setText(Program.getLabel("ManageBottle.SaveModifications"));
-			m_add.setMnemonic(ajouterChar);
+      PopupListener popupListener = new PopupListener();
+      panelGeneral.setMouseListener(popupListener);
+      panelWineAttribute.setMouseListener(popupListener);
+      commentTextArea.addMouseListener(popupListener);
 
-			PopupListener popup_l = new PopupListener();
-			panelGeneral.setMouseListener(popup_l);
-			panelWineAttribute.setMouseListener(popup_l);
-			m_comment.addMouseListener(popup_l);
+      end.setForeground(Color.red);
+      end.setHorizontalAlignment(SwingConstants.CENTER);
+      setLayout(new BorderLayout());
+      add(new PanelMain(false), BorderLayout.CENTER);
 
-			m_end.setForeground(Color.red);
-			m_end.setHorizontalAlignment(SwingConstants.CENTER);
-			setLayout(new BorderLayout());
-			add(new PanelMain(), BorderLayout.CENTER);
+      addButton.addActionListener((e) -> saving());
 
-			m_add.addActionListener((e) -> saving());
+      setVisible(true);
+      Debug("JbInit Done");
 
-			setVisible(true);
-			Debug("JbInit Done");
+      setBottle(bottle);
+    } catch (RuntimeException e) {
+      Program.showException(e);
+    }
+  }
 
-			setBottle(bottle);
-		}	catch (RuntimeException e) {
-			Program.showException(e);
-		}
-	}
+  protected static void Debug(String sText) {
+    Program.Debug("ManageBottle: " + sText);
+  }
 
-	public Bouteille getBottle() {
-		return bottle;
-	}
+  public MyCellarObject getBottle() {
+    return myCellarObject;
+  }
 
-	/**
-	 * saving: Fonction de sauvegarde
-	 */
-	private void saving() {
-		Debug("Saving...");
-		try {
-			new Thread(this).start();
-		}	catch (RuntimeException a) {
-			Program.showException(a);
-		}
-	}
+  /**
+   * Fonction de chargement d'un vin
+   *
+   * @param cellarObject
+   */
+  private void setBottle(MyCellarObject cellarObject) {
+    Debug("Set Bottle...");
+    try {
+      myCellarObject = cellarObject;
+      panelGeneral.setMyCellarObject(cellarObject);
+      initializeExtraProperties();
+      if (Program.isWineType()) {
+        panelVignobles.initializeVignobles((Bouteille) cellarObject);
+      }
+      updateStatusAndTime();
 
-	/**
-	 * setBottle: Fonction de chargement d'un vin
-	 *
-	 * @param bottle Bouteille
-	 */
-	private void setBottle(Bouteille bottle) {
-		Debug("Set Bottle...");
-		try {
-			this.bottle = bottle;
-			panelGeneral.setMyCellarObject(bottle);
-			initializeExtraProperties();
-			panelVignobles.initializeVignobles(bottle);
-			updateStatusAndTime();
+      panelPlace.selectPlace(cellarObject);
+      end.setText(Program.getLabel("Infos092")); //"Saisir les modifications
+      resetModified();
+    } catch (RuntimeException e) {
+      Program.showException(e);
+    }
+    Debug("Set Bottle... Done");
+  }
 
-			panelPlace.selectPlace(bottle);
-			m_end.setText(Program.getLabel("Infos092")); //"Saisir les modifications");
-			resetModified();
-		}	catch (RuntimeException e) {
-			Program.showException(e);
-		}
-		Debug("Set Bottle... Done");
-	}
+  private void updateStatusAndTime() {
+    panelWineAttribute.updateStatusAndTime(myCellarObject);
+  }
 
-	private void updateStatusAndTime() {
-		panelWineAttribute.updateStatusAndTime(bottle);
-	}
+  /**
+   * saving: Fonction de sauvegarde
+   */
+  private void saving() {
+    new Thread(this).start();
+  }
 
-	@Override
-	public void run() {
-		try {
-			save();
-		} catch (MyCellarException e) {
-			Program.showException(e);
-		}
-	}
+  @Override
+  public void run() {
+    try {
+      save();
+    } catch (MyCellarException e) {
+      Program.showException(e);
+    }
+  }
 
-	public boolean save() throws MyCellarException {
-		Debug("Saving...");
+  public boolean save() throws MyCellarException {
+    Debug("Saving...");
 
-		String nom = panelGeneral.getObjectName();
-		String demie = panelGeneral.getType();
+    String nom = panelGeneral.getObjectName();
+    String demie = panelGeneral.getType();
 
-		String prix = panelWineAttribute.getPrice();
-		String comment1 = m_comment.getText();
-		String dateOfC = panelWineAttribute.getMaturity();
-		String parker =panelWineAttribute.getParker();
-		String color = panelWineAttribute.getColor();
-		String status = panelWineAttribute.getStatus();
-		String country = panelVignobles.getCountry();
-		String vignoble = panelVignobles.getVignoble();
-		String aoc = panelVignobles.getAOC();
-		String igp = panelVignobles.getIGP();
+    String prix = panelWineAttribute.getPrice();
+    String comment1 = commentTextArea.getText();
+    String dateOfC = panelWineAttribute.getMaturity();
+    String parker = panelWineAttribute.getParker();
+    String color = panelWineAttribute.getColor();
+    String status = nonNullValueOrDefault(panelWineAttribute.getStatusIfModified(),  BottlesStatus.MODIFIED.name());
+    String country = panelVignobles.getCountry();
+    String vignoble = panelVignobles.getVignoble();
+    String aoc = panelVignobles.getAOC();
+    String igp = panelVignobles.getIGP();
 
-		if (!panelGeneral.performValidation()) {
-			return false;
-		}
+    if (!panelGeneral.performValidation()) {
+      return false;
+    }
 
-		final Place place = panelPlace.getSelectedPlace();
+    final Place place = panelPlace.getSelectedPlace();
 
-		if (MyCellarControl.hasInvalidPlace(place)) {
-			return false;
-		}
+    if (MyCellarControl.hasInvalidPlace(place)) {
+      return false;
+    }
 
-		int lieu_num = place.getPlaceNum();
-		Rangement cave = place.getRangement();
-		boolean isCaisse = cave.isCaisse();
+    int lieu_num = place.getPlaceNum();
+    Rangement cave = place.getRangement();
+    boolean isCaisse = cave.isCaisse();
 
-		if (MyCellarControl.hasInvalidNumLieuNumber(lieu_num, isCaisse)) {
-			return false;
-		}
+    if (MyCellarControl.hasInvalidNumLieuNumber(lieu_num, isCaisse)) {
+      return false;
+    }
 
-		int line = 0;
-		int column = 0;
-		if (!isCaisse) {
-			line = place.getLine();
-			if (MyCellarControl.hasInvalidLineNumber(line)) {
-				return false;
-			}
-			column = place.getColumn();
-			if (MyCellarControl.hasInvalidColumnNumber(column)) {
-				return false;
-			}
-		}
+    int line = 0;
+    int column = 0;
+    if (!isCaisse) {
+      line = place.getLine();
+      if (MyCellarControl.hasInvalidLineNumber(line)) {
+        return false;
+      }
+      column = place.getColumn();
+      if (MyCellarControl.hasInvalidColumnNumber(column)) {
+        return false;
+      }
+    }
 
-		Place oldPlace = bottle.getPlace();
-		if (isCaisse) {
-			lieu_num = place.getPlaceNum();
-			bottle.setNumLieu(lieu_num);
-			bottle.setLigne(0);
-			bottle.setColonne(0);
-		}	else {
-			bottle.setNumLieu(lieu_num);
-			bottle.setLigne(line);
-			bottle.setColonne(column);
-			Optional<MyCellarObject> bottleInPlace = cave.getBouteille(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build());
-			if (bottleInPlace.isPresent()) {
-				if (!askToReplaceBottle(bottleInPlace.get(), oldPlace)) {
-					bottle.setNumLieu(oldPlace.getPlaceNum());
-					bottle.setLigne(oldPlace.getLine());
-					bottle.setColonne(oldPlace.getColumn());
-					return false;
-				}
-			}
-		}
-		bottle.setAnnee(panelGeneral.getYear());
-		bottle.setColor(color);
-		bottle.setComment(comment1);
-		bottle.setEmplacement(cave.getNom());
-		bottle.setMaturity(dateOfC);
-		bottle.setNom(nom);
-		bottle.setParker(parker);
-		bottle.setPrix(prix);
-		bottle.setKind(demie);
-		bottle.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
-		bottle.setStatus(status);
-		CountryVignobleController.addVignobleFromBottle(bottle);
-		CountryVignobleController.setRebuildNeeded();
+    Place oldPlace = myCellarObject.getPlace();
+    if (isCaisse) {
+      lieu_num = place.getPlaceNum();
+      myCellarObject.setNumLieu(lieu_num);
+      myCellarObject.setLigne(0);
+      myCellarObject.setColonne(0);
+    } else {
+      myCellarObject.setNumLieu(lieu_num);
+      myCellarObject.setLigne(line);
+      myCellarObject.setColonne(column);
+      MyCellarObject bottleInPlace = cave.getBouteille(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build()).orElse(null);
+      if (bottleInPlace != null) {
+        if (!askToReplaceBottle(bottleInPlace, oldPlace)) {
+          myCellarObject.setNumLieu(oldPlace.getPlaceNum());
+          myCellarObject.setLigne(oldPlace.getLine());
+          myCellarObject.setColonne(oldPlace.getColumn());
+          return false;
+        }
+      }
+    }
+    myCellarObject.setAnnee(panelGeneral.getYear());
+    if (Program.isWineType()) {
+      Bouteille bTemp = (Bouteille) myCellarObject;
+      bTemp.setColor(color);
+      bTemp.setComment(comment1);
+      bTemp.setMaturity(dateOfC);
+      bTemp.setParker(parker);
+      bTemp.setPrix(prix);
+      bTemp.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
+      CountryVignobleController.addVignobleFromBottle(bTemp);
+      CountryVignobleController.setRebuildNeeded();
+    }
+    myCellarObject.setEmplacement(cave.getNom());
+    myCellarObject.setNom(nom);
+    myCellarObject.setKind(demie);
+    myCellarObject.setStatus(status);
 
-		bottle.setModified();
-		Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
+    myCellarObject.setModified();
+    Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
 
-		if (!oldPlace.isSimplePlace()) {
-			oldPlace.getRangement().clearComplexStock(oldPlace);
-		}
+    if (!oldPlace.isSimplePlace()) {
+      oldPlace.getRangement().clearComplexStock(oldPlace);
+    }
 
-		if (!RangementUtils.putTabStock()) {
-			new OpenShowErrorsAction().actionPerformed(null);
-		}
-		ProgramPanels.getSearch().ifPresent(Search::updateTable);
+    if (!RangementUtils.putTabStock()) {
+      new OpenShowErrorsAction().actionPerformed(null);
+    }
+    ProgramPanels.getSearch().ifPresent(Search::updateTable);
 
-		Rangement rangement = bottle.getRangement();
-		if (!rangement.isCaisse()) {
-			rangement.updateToStock(bottle);
-		}
+    Rangement rangement = myCellarObject.getRangement();
+    if (!rangement.isCaisse()) {
+      rangement.updateToStock(myCellarObject);
+    }
 
-		m_end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
-		ProgramPanels.updatePanelsWithoutBottles();
-		updateStatusAndTime();
-		resetModified();
-		Debug("Saving... Done");
+    end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
+    ProgramPanels.updatePanelsWithoutBottles();
+    updateStatusAndTime();
+    resetModified();
+    Debug("Saving... Done");
 
-		return true;
-	}
+    return true;
+  }
 
-	private boolean askToReplaceBottle(MyCellarObject bouteille, Place oldPlace) throws MyCellarException {
-		if (!bouteille.equals(bottle)) {
-			Debug("ERROR: Not an empty place, Replace?");
-			String erreur_txt1 = MessageFormat.format(Program.getError("Error059"),bouteille.getNom(), bouteille.getAnnee());
-			String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?");
-			if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
-				replaceWine(bouteille, oldPlace);
-				m_end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
-			} else {
-				return false;
-			}
-		}
-		return true;
-	}
+  private boolean askToReplaceBottle(MyCellarObject bouteille, Place oldPlace) throws MyCellarException {
+    if (!bouteille.equals(myCellarObject)) {
+      Debug("ERROR: Not an empty place, Replace?");
+      String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), bouteille.getNom(), bouteille.getAnnee());
+      String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+        replaceWine(bouteille, oldPlace);
+        end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
+      } else {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	private void resetModified() {
-		panelGeneral.resetModified(false);
-		panelWineAttribute.resetModified(false);
-		m_comment.setModified(false);
-		panelVignobles.setModified(false);
-		panelPlace.clearModified();
-		Start.setPaneModified(false);
-	}
+  private void resetModified() {
+    panelGeneral.resetModified(false);
+    panelWineAttribute.resetModified(false);
+    commentTextArea.setModified(false);
+    panelVignobles.setModified(false);
+    panelPlace.clearModified();
+    ProgramPanels.setSelectedPaneModified(false);
+  }
 
-	private void replaceWine(final MyCellarObject bToDelete, Place oldPlace) throws MyCellarException {
-		//Change wine in a place
-		Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
+  private void replaceWine(final MyCellarObject bToDelete, Place oldPlace) throws MyCellarException {
+    //Change wine in a place
+    Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
+    RangementUtils.replaceMyCellarObject(bToDelete, myCellarObject, oldPlace);
+  }
 
-		RangementUtils.replaceObject(bToDelete, bottle, oldPlace);
-	}
+  private boolean runExit() {
+    Debug("Processing Quit...");
+    addButton.setEnabled(false);
 
-	private boolean runExit() {
-		Debug("Processing Quit...");
-		m_add.setEnabled(false);
+    boolean modified = panelGeneral.isModified(myCellarObject);
+    modified |= commentTextArea.isModified();
+    modified |= panelWineAttribute.isModified();
+    modified |= panelPlace.isModified();
+    modified |= panelVignobles.isModified();
 
-		boolean modified = panelGeneral.isModified(bottle);
-		modified |= m_comment.isModified();
-		modified |= panelWineAttribute.isModified();
-		modified |= panelPlace.isModified();
-		modified |= panelVignobles.isModified();
+    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error148", OF_THE_SINGLE) + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+      Debug("Don't Quit.");
+      addButton.setEnabled(true);
+      return false;
+    }
 
-		if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error148", OF_THE_SINGLE) + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
-			Debug("Don't Quit.");
-			m_add.setEnabled(true);
-			return false;
-		}
+    Debug("Quitting...");
+    if (!RangementUtils.putTabStock()) {
+      new OpenShowErrorsAction().actionPerformed(null);
+    }
+    panelWineAttribute.runExit();
+    clearValues();
+    Debug("Quitting... End");
+    return true;
+  }
 
-		Debug("Quitting...");
-		if (!RangementUtils.putTabStock()) {
-			new OpenShowErrorsAction().actionPerformed(null);
-		}
-		panelWineAttribute.runExit();
-		clearValues();
-		Debug("Quitting... Done");
-		return true;
-	}
+  @Override
+  public boolean tabWillClose(TabEvent event) {
+    return runExit();
+  }
 
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
-	protected static void Debug(String sText) {
-		Program.Debug("ManageBottle: " + sText);
-	}
+  @Override
+  public void tabClosed() {
+    Start.getInstance().updateMainPanel();
+  }
 
-	private final class PanelMain extends JPanel {
-		private static final long serialVersionUID = -4824541234206895953L;
-
-		private PanelMain() {
-			setLayout(new MigLayout("","grow","[][][]10px[][grow]10px[][]"));
-			add(panelGeneral, "growx,wrap");
-			add(panelPlace, "growx,wrap");
-			add(panelWineAttribute, "growx,split 2");
-			add(panelVignobles = new PanelVignobles(true, true, true), "growx, wrap");
-			add(m_labelComment, "growx, wrap");
-			add(m_js_comment, "grow, wrap");
-			add(m_end, "center, hidemode 3, wrap");
-			add(m_add, "center");
-		}
-	}
-
-	@Override
-	public boolean tabWillClose(TabEvent event) {
-		return runExit();
-	}
-
-	@Override
-	public void tabClosed() {
-		Start.getInstance().updateMainPanel();
-	}
-
-	@Override
-	public void updateView() {
-		if (!updateView) {
-			return;
-		}
-		SwingUtilities.invokeLater(() -> {
-			Debug("updateView...");
-			panelPlace.setListenersEnabled(false);
-			updateView = false;
-			panelGeneral.updateView();
-			panelVignobles.updateList();
-			panelPlace.updateView();
-			panelPlace.selectPlace(bottle);
-			panelPlace.setListenersEnabled(true);
-			Debug("updateView Done");
-		});
-	}
-
+  @Override
+  public void updateView() {
+    if (!updateView) {
+      return;
+    }
+    SwingUtilities.invokeLater(() -> {
+      Debug("updateView...");
+      panelPlace.setListenersEnabled(false);
+      updateView = false;
+      panelGeneral.updateView();
+      panelVignobles.updateList();
+      panelPlace.updateView();
+      panelPlace.selectPlace(myCellarObject);
+      panelPlace.setListenersEnabled(true);
+      Debug("updateView End");
+    });
+  }
 }

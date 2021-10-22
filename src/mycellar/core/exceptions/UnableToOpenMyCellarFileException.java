@@ -1,4 +1,4 @@
-package mycellar.core;
+package mycellar.core.exceptions;
 
 public class UnableToOpenMyCellarFileException extends UnableToOpenFileException {
 

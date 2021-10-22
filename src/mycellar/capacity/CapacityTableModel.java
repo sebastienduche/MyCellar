@@ -15,6 +15,7 @@ import java.util.List;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.7
  * @since 19/11/20
@@ -58,7 +59,7 @@ class CapacityTableModel extends DefaultTableModel {
   /**
    * getValueAt
    *
-   * @param row int
+   * @param row    int
    * @param column int
    * @return Object
    */
@@ -84,7 +85,7 @@ class CapacityTableModel extends DefaultTableModel {
   /**
    * isCellEditable
    *
-   * @param row int
+   * @param row    int
    * @param column int
    * @return boolean
    */
@@ -96,39 +97,35 @@ class CapacityTableModel extends DefaultTableModel {
   /**
    * setValueAt
    *
-   * @param value Object
-   * @param row int
+   * @param value  Object
+   * @param row    int
    * @param column int
    */
   @Override
   public void setValueAt(Object value, int row, int column) {
-    try {
-      final String oldValue = list.get(row);
-      if (column == ETAT) {
-        if (MyCellarBottleContenance.isContenanceUsed(oldValue)) {
-          JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("CapacityPanel.unableDeleteCapacity"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getLabel("CapacityPanel.delCapacityQuestion"), oldValue) , Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
-          return;
-        }
-        list.remove(oldValue);
-        fireTableRowsDeleted(row, row);
+    final String oldValue = list.get(row);
+    if (column == ETAT) {
+      if (MyCellarBottleContenance.isContenanceUsed(oldValue)) {
+        JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("CapacityPanel.unableDeleteCapacity"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
+        return;
+      }
+      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getLabel("CapacityPanel.delCapacityQuestion"), oldValue), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+        return;
+      }
+      list.remove(oldValue);
+      fireTableRowsDeleted(row, row);
+      setModify(true);
+      ProgramPanels.updateAllPanels();
+      ProgramPanels.getCapacityPanel().updateView();
+    } else {
+      String newValue = Program.toCleanString(value);
+      if (!newValue.isBlank()) {
+        MyCellarBottleContenance.rename(oldValue, newValue);
+        fireTableDataChanged();
         setModify(true);
         ProgramPanels.updateAllPanels();
         ProgramPanels.getCapacityPanel().updateView();
-      } else {
-        String newValue = Program.toCleanString(value);
-        if (!newValue.isBlank()) {
-          MyCellarBottleContenance.rename(oldValue, newValue);
-          fireTableDataChanged();
-          setModify(true);
-          ProgramPanels.updateAllPanels();
-          ProgramPanels.getCapacityPanel().updateView();
-        }
       }
-    } catch (Exception e) {
-      Program.showException(e);
     }
   }
 

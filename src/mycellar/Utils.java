@@ -1,5 +1,7 @@
 package mycellar;
 
+import mycellar.core.JButtonTabComponent;
+
 import javax.swing.JTabbedPane;
 import java.awt.Component;
 import java.awt.event.InputEvent;
@@ -7,29 +9,29 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2012</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
- * @version 0.3
- * @since 24/10/20
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.5
+ * @since 21/10/21
  */
 public final class Utils {
 
   public static void addCloseButton(final JTabbedPane tabbedPane,
-      final Component component) {
+                                    final Component component) {
+    addCloseButton(tabbedPane, component, -1);
+  }
 
-    //if (!DISABLE_TAB_COMPONENT) {
-    // Ne pas afficher les composants d'onglets si ça a été
-    // explicitement demandé (ne fonctionne pas avec tous les look and
-    // feels)
+  public static void addCloseButton(final JTabbedPane tabbedPane,
+                                    final Component component, int indexToGoBack) {
     final int index = tabbedPane.indexOfComponent(component);
     if (index != -1) {
       tabbedPane.setTabComponentAt(index,
-          new JButtonTabComponent(tabbedPane));
+          new JButtonTabComponent(tabbedPane, indexToGoBack));
     }
-    //}
 
     tabbedPane.addKeyListener(new KeyAdapter() {
       @Override
@@ -41,10 +43,13 @@ public final class Utils {
           if ((tabbedPane.getSelectedIndex() != -1)
               && (tabbedPane.getSelectedComponent().equals(component))) {
 
-            // Un onglet est actif, supprimer le composant concerné
+            // Un onglet est actif, supprimer le composant
             tabbedPane.remove(component);
+            if (indexToGoBack != -1 && tabbedPane.getTabCount() > indexToGoBack) {
+              tabbedPane.setSelectedIndex(indexToGoBack);
+            }
 
-            // Se déréférencer en tant que listener
+            // Se deferencer en tant que listener
             tabbedPane.removeKeyListener(this);
 
             e.consume();

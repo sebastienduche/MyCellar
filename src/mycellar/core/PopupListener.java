@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
  * @version 0.4
  * @since 04/07/18
@@ -42,6 +43,7 @@ public class PopupListener extends MouseAdapter {
   public void mousePressed(MouseEvent e) {
     maybeShowPopup(e);
   }
+
   @Override
   public void mouseClicked(MouseEvent e) {
     maybeShowPopup(e);
@@ -53,40 +55,38 @@ public class PopupListener extends MouseAdapter {
       if (jtf.isEnabled() && jtf.isVisible()) {
         textField = (JComponent) e.getComponent();
       }
+    } catch (RuntimeException ee) {
+      return;
     }
-    catch (Exception ee) {return;}
 
-    try {
-      if (e.getButton() == MouseEvent.BUTTON3) {
-        if (textField.isFocusable() && textField.isEnabled()) {
-          textField.requestFocus();
-          if (textField instanceof JTextField) {
-            couper.setEnabled(((JTextField)textField).getSelectedText() != null);
-            copier.setEnabled(((JTextField)textField).getSelectedText() != null);
-          } else if (textField instanceof JTextArea) {
-            couper.setEnabled(((JTextArea)textField).getSelectedText() != null);
-            copier.setEnabled(((JTextArea)textField).getSelectedText() != null);
-          }
-          if (textField.isVisible()) {
-            popup.show(e.getComponent(), e.getX(), e.getY());
-          }
+    if (e.getButton() == MouseEvent.BUTTON3) {
+      if (textField.isFocusable() && textField.isEnabled()) {
+        textField.requestFocus();
+        if (textField instanceof JTextField) {
+          couper.setEnabled(((JTextField) textField).getSelectedText() != null);
+          copier.setEnabled(((JTextField) textField).getSelectedText() != null);
+        } else if (textField instanceof JTextArea) {
+          couper.setEnabled(((JTextArea) textField).getSelectedText() != null);
+          copier.setEnabled(((JTextArea) textField).getSelectedText() != null);
+        }
+        if (textField.isVisible()) {
+          popup.show(e.getComponent(), e.getX(), e.getY());
         }
       }
-      /*if (e.getButton() == MouseEvent.BUTTON1) {
-        if (jtf.isFocusable() && jtf.isEnabled()) {
-          jtf.requestFocus();
-          if (jtf.getSelectedText() == null) {
-            cut.setEnabled(false);
-            copy.setEnabled(false);
-          }
-          else {
-            cut.setEnabled(true);
-            copy.setEnabled(true);
-          }
-        }
-      }*/
     }
-    catch (Exception ignored) {}
+    /*if (e.getButton() == MouseEvent.BUTTON1) {
+      if (jtf.isFocusable() && jtf.isEnabled()) {
+        jtf.requestFocus();
+        if (jtf.getSelectedText() == null) {
+          cut.setEnabled(false);
+          copy.setEnabled(false);
+        }
+        else {
+          cut.setEnabled(true);
+          copy.setEnabled(true);
+        }
+      }
+    }*/
   }
 
   /**

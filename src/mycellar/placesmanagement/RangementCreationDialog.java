@@ -16,12 +16,15 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.Map;
 
+import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2018</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
+ * <p>Copyright : Copyright (c) 20018/p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.6
  * @since 17/12/20
  */
@@ -38,13 +41,13 @@ public final class RangementCreationDialog extends JDialog {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setModal(true);
     setTitle(Program.getLabel("Infos267"));
-    setLayout(new MigLayout("","grow",""));
+    setLayout(new MigLayout("", "grow", ""));
     setResizable(false);
     model = new RangementToCreateTableModel(map);
     JTable table = new JTable(model);
     end.setHorizontalAlignment(SwingConstants.CENTER);
     end.setForeground(Color.red);
-    end.setFont(Program.FONT_DIALOG_SMALL);
+    end.setFont(FONT_DIALOG_SMALL);
     add(new JScrollPane(table), "grow, wrap");
     add(end, "grow, wrap");
 
@@ -58,8 +61,11 @@ public final class RangementCreationDialog extends JDialog {
     setSize(600, 500);
     setLocationRelativeTo(Start.getInstance());
     setVisible(true);
-    Debug("Constructor OK");
+    Debug("Constructor End");
+  }
 
+  public static void Debug(String sText) {
+    Program.Debug("RangementCreationDialog: " + sText);
   }
 
   private void valider_actionPerformed(ActionEvent actionEvent) {
@@ -83,14 +89,5 @@ public final class RangementCreationDialog extends JDialog {
     });
     end.setText(MessageFormat.format(Program.getLabel("RangementToCreateTableModel.end"), map.size()));
     model.clear();
-  }
-
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
-  public static void Debug(String sText) {
-    Program.Debug("RangementCreationDialog: " + sText);
   }
 }

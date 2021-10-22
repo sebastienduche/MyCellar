@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
@@ -18,167 +19,168 @@ import java.util.ResourceBundle.Control;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2011</p>
  * <p>Société : Seb Informatique</p>
+ *
  * @author Sébastien Duché
- * @version 1.0
- * @since 03/12/20
+ * @version 1.1
+ * @since 22/08/21
  */
 public class LanguageFileLoader {
 
-	private static final LanguageFileLoader INSTANCE = new LanguageFileLoader();
-	private static final String LANGUAGE = "Language";
-	private static final String CODE_LANG = "CodeLang";
+  private static final LanguageFileLoader INSTANCE = new LanguageFileLoader();
+  private static final String LANGUAGE = "Language";
+  private static final String CODE_LANG = "CodeLang";
+  private Language language;
+  private ResourceBundle bundleTitle;
+  private ResourceBundle bundleMusicTitle;
+  private ResourceBundle bundleError;
+  private ResourceBundle bundleLanguage;
 
-	enum Language {
-		FRENCH('F'),
-		ENGLISH('U');
+  private LanguageFileLoader() {
+    loadLanguageFiles(Language.ENGLISH);
+  }
 
-		private final char language;
+  public static LanguageFileLoader getInstance() {
+    return INSTANCE;
+  }
 
-		Language(char language) {
-			this.language = language;
-		}
+  public static String getLabel(String _id) {
+    if (INSTANCE.bundleTitle == null) {
+      Debug("ERROR: Labels' map not intialized!");
+      return "";
+    }
+    if (Program.isMusicType()) {
+      try {
+        return INSTANCE.bundleMusicTitle.getString(_id);
+      } catch (MissingResourceException ignored) {
+      }
+    }
+    return INSTANCE.bundleTitle.getString(_id);
+  }
 
-		public char getLanguage() {
-			return language;
-		}
-	}
-	private Language language;
+  public static String getError(String _id) {
+    if (INSTANCE.bundleError == null) {
+      Debug("ERROR: Errors' map not intialized!");
+      return "";
+    }
+    return INSTANCE.bundleError.getString(_id);
+  }
 
-	private ResourceBundle bundleTitle;
-	private ResourceBundle bundleError;
-	private ResourceBundle bundleLanguage;
+  static int getLanguageIndex(String language) {
+    if (INSTANCE.bundleLanguage == null) {
+      Debug("ERROR: Language' map not intialized!");
+      return -1;
+    }
+    int i = 1;
+    while (INSTANCE.bundleLanguage.containsKey(CODE_LANG + i)) {
+      String string = INSTANCE.bundleLanguage.getString(CODE_LANG + i);
+      if (string.equalsIgnoreCase(language)) {
+        return i - 1;
+      }
+      i++;
+    }
+    return -1;
+  }
 
-	private LanguageFileLoader() {
-		loadLanguageFiles(Language.ENGLISH);
-	}
+  static String getLanguageFromIndex(int index) {
+    return INSTANCE.bundleLanguage.getString(CODE_LANG + (index + 1));
+  }
 
-	public static LanguageFileLoader getInstance(){
-		return INSTANCE;
-	}
+  static List<String> getLanguages() {
+    ArrayList<String> list = new ArrayList<>();
+    if (INSTANCE.bundleLanguage == null) {
+      Debug("ERROR: Language' map not intialized!");
+      return list;
+    }
+    int i = 1;
+    while (INSTANCE.bundleLanguage.containsKey(LANGUAGE + i)) {
+      list.add(INSTANCE.bundleLanguage.getString(LANGUAGE + i));
+      i++;
+    }
+    return list;
+  }
 
+  static Language getLanguage(char language) {
+    if (language == Language.ENGLISH.getLanguage()) {
+      return Language.ENGLISH;
+    }
+    if (language == Language.FRENCH.getLanguage()) {
+      return Language.FRENCH;
+    }
+    return Language.ENGLISH;
+  }
 
-	void loadLanguageFiles(Language language) {
-		if (this.language == language) {
-			return;
-		}
-		this.language = language;
-		Debug( "Loading labels' map in " + language);
-		Locale locale = Locale.FRENCH;
-		if(language == Language.ENGLISH) {
-			locale = Locale.ENGLISH;
-		}
-		bundleTitle = ResourceBundle.getBundle("title", locale, new UTF8Control());
-		bundleError = ResourceBundle.getBundle("error", locale, new UTF8Control());
-		bundleLanguage = ResourceBundle.getBundle("language", Locale.FRENCH, new UTF8Control());
-	}
+  static boolean isFrench() {
+    return getInstance().language == Language.FRENCH;
+  }
 
-	boolean isLoaded() {
-		return bundleError != null && bundleLanguage != null && bundleTitle != null;
-	}
+  private static void Debug(String sText) {
+    Program.Debug("LanguageFileLoader: " + sText);
+  }
 
-	public static String getLabel(String _id) {
-		if(INSTANCE.bundleTitle == null) {
-			Debug("ERROR: Labels' map not intialized!");
-			return "";
-		}
-		return INSTANCE.bundleTitle.getString(_id);
-	}
+  void loadLanguageFiles(Language language) {
+    if (this.language == language) {
+      return;
+    }
+    this.language = language;
+    Debug("Loading labels' map in " + language);
+    Locale locale = Locale.FRENCH;
+    if (language == Language.ENGLISH) {
+      locale = Locale.ENGLISH;
+    }
+    bundleTitle = ResourceBundle.getBundle("title", locale, new UTF8Control());
+    bundleError = ResourceBundle.getBundle("error", locale, new UTF8Control());
+    bundleMusicTitle = ResourceBundle.getBundle("music", locale, new UTF8Control());
+    bundleLanguage = ResourceBundle.getBundle("language", Locale.FRENCH, new UTF8Control());
+  }
 
-	public static String getError(String _id) {
-		if(INSTANCE.bundleError == null) {
-			Debug("ERROR: Errors' map not intialized!");
-			return "";
-		}
-		return INSTANCE.bundleError.getString(_id);
-	}
+  boolean isLoaded() {
+    return bundleError != null && bundleLanguage != null && bundleTitle != null;
+  }
 
-	static int getLanguageIndex(String language) {
-		if(INSTANCE.bundleLanguage == null) {
-			Debug("ERROR: Language' map not intialized!");
-			return -1;
-		}
-		int i = 1;
-		while (INSTANCE.bundleLanguage.containsKey(CODE_LANG + i)) {
-			String string = INSTANCE.bundleLanguage.getString(CODE_LANG + i);
-			if (string.equalsIgnoreCase(language)) {
-				return i - 1;
-			}
-			i++;
-		}
-		return -1;
-	}
+  enum Language {
+    FRENCH('F'),
+    ENGLISH('U');
 
-	static String getLanguageFromIndex(int index) {
-		return INSTANCE.bundleLanguage.getString(CODE_LANG + (index + 1));
-	}
+    private final char language;
 
-	static List<String> getLanguages() {
-		ArrayList<String> list = new ArrayList<>();
-		if(INSTANCE.bundleLanguage == null) {
-			Debug("ERROR: Language' map not intialized!");
-			return list;
-		}
-		int i = 1;
-		while (INSTANCE.bundleLanguage.containsKey(LANGUAGE + i)) {
-			list.add(INSTANCE.bundleLanguage.getString(LANGUAGE + i));
-			i++;
-		}
-		return list;
-	}
+    Language(char language) {
+      this.language = language;
+    }
 
-	static Language getLanguage(char language) {
-		if (language == Language.ENGLISH.getLanguage()) {
-			return Language.ENGLISH;
-		}
-		if (language == Language.FRENCH.getLanguage()) {
-			return Language.FRENCH;
-		}
-		return Language.ENGLISH;
-	}
-
-	static boolean isFrench() {
-		return getInstance().language == Language.FRENCH;
-	}
-
-	/**
-	 * Debug
-	 *
-	 * @param sText String
-	 */
-	private static void Debug(String sText) {
-		Program.Debug("LanguageFileLoader: " + sText);
-	}
+    public char getLanguage() {
+      return language;
+    }
+  }
 }
 
 class UTF8Control extends Control {
-	@Override
-	public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload) throws IOException
-	{
-		// The below is a copy of the default implementation.
-		String bundleName = toBundleName(baseName, locale);
-		String resourceName = toResourceName(bundleName, "properties");
-		ResourceBundle bundle = null;
-		InputStream stream = null;
-		if (reload) {
-			URL url = loader.getResource(resourceName);
-			if (url != null) {
-				URLConnection connection = url.openConnection();
-				if (connection != null) {
-					connection.setUseCaches(false);
-					stream = connection.getInputStream();
-				}
-			}
-		} else {
-			stream = loader.getResourceAsStream(resourceName);
-		}
-		if (stream != null) {
-			try {
-				// Only this line is changed to make it to read properties files as UTF-8.
-				bundle = new PropertyResourceBundle(new InputStreamReader(stream, StandardCharsets.UTF_8));
-			} finally {
-				stream.close();
-			}
-		}
-		return bundle;
-	}
+  @Override
+  public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload) throws IOException {
+    // The below is a copy of the default implementation.
+    String bundleName = toBundleName(baseName, locale);
+    String resourceName = toResourceName(bundleName, "properties");
+    ResourceBundle bundle = null;
+    InputStream stream = null;
+    if (reload) {
+      URL url = loader.getResource(resourceName);
+      if (url != null) {
+        URLConnection connection = url.openConnection();
+        if (connection != null) {
+          connection.setUseCaches(false);
+          stream = connection.getInputStream();
+        }
+      }
+    } else {
+      stream = loader.getResourceAsStream(resourceName);
+    }
+    if (stream != null) {
+      try {
+        // Only this line is changed to make it to read properties files as UTF-8.
+        bundle = new PropertyResourceBundle(new InputStreamReader(stream, StandardCharsets.UTF_8));
+      } finally {
+        stream.close();
+      }
+    }
+    return bundle;
+  }
 }

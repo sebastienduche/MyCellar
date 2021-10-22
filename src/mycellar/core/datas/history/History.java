@@ -10,6 +10,7 @@ package mycellar.core.datas.history;
 
 import mycellar.Bouteille;
 import mycellar.Music;
+import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -18,16 +19,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
-import java.util.Arrays;
 
-import static mycellar.Program.DATE_FORMATER_DDMMYYYY;
+import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
 
 /*
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
+ * @author S&eacute;bastien Duch&eacute;
  * @version 1.6
  * @since 09/04/21
  */
@@ -51,8 +52,6 @@ import static mycellar.Program.DATE_FORMATER_DDMMYYYY;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -79,23 +78,30 @@ public class History {
    * History: Contructeur avec un object et un type d'action
    *
    * @param myCellarObject IMyCellarObject
-   * @param type int
+   * @param type           int
    */
   public History(IMyCellarObject myCellarObject, int type, int totalBottle) {
     if (myCellarObject instanceof Bouteille) {
       bouteille = (Bouteille) myCellarObject;
     } else if (myCellarObject instanceof Music) {
       music = (Music) myCellarObject;
+    } else {
+      Program.throwNotImplementedForNewType();
     }
     this.type = type;
     this.totalBottle = totalBottle;
     date = LocalDate.now().format(DATE_FORMATER_DDMMYYYY);
   }
 
-  public History() {}
+  public History() {
+  }
 
   public String getDate() {
     return date;
+  }
+
+  public void setDate(String date) {
+    this.date = date;
   }
 
   public LocalDate getLocaleDate() {
@@ -103,10 +109,6 @@ public class History {
       return null;
     }
     return LocalDate.parse(date, DATE_FORMATER_DDMMYYYY);
-  }
-
-  public void setDate(String date) {
-    this.date = date;
   }
 
   public int getType() {
@@ -118,9 +120,8 @@ public class History {
   }
 
   public HistoryState getState() {
-    return Arrays.stream(HistoryState.values())
-        .filter(historyState -> historyState.ordinal() == type)
-        .findAny().orElse(HistoryState.ALL);
+    HistoryState state = HistoryState.findState(type);
+    return state == null ? HistoryState.ALL : state;
   }
 
   public boolean isDeleted() {
@@ -135,12 +136,12 @@ public class History {
     return bouteille;
   }
 
-  public Music getMusic() {
-    return music;
-  }
-
   public void setBouteille(Bouteille bouteille) {
     this.bouteille = bouteille;
+  }
+
+  public Music getMusic() {
+    return music;
   }
 
   public void setMusic(Music music) {

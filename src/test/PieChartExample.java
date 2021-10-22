@@ -9,8 +9,9 @@ import org.jfree.data.general.PieDataset;
 import org.jfree.util.Rotation;
 
 import javax.swing.JFrame;
+import java.awt.Dimension;
 
-public class PieChartExample extends JFrame {
+public final class PieChartExample extends JFrame {
 
   private static final long serialVersionUID = 1L;
 
@@ -23,7 +24,7 @@ public class PieChartExample extends JFrame {
     // we put the chart into a panel
     ChartPanel chartPanel = new ChartPanel(chart);
     // default size
-    chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+    chartPanel.setPreferredSize(new Dimension(500, 270));
     // add it to our application
     setContentPane(chartPanel);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -31,8 +32,14 @@ public class PieChartExample extends JFrame {
 
   }
 
-  /** * Creates a sample dataset */
-  private  PieDataset createDataset() {
+  public static void main(String[] args) {
+    new PieChartExample("Test", "Seb");
+  }
+
+  /**
+   * Creates a sample dataset
+   */
+  private PieDataset createDataset() {
     DefaultPieDataset result = new DefaultPieDataset();
     result.setValue("Linux", 29);
     result.setValue("Mac", 20);
@@ -40,7 +47,9 @@ public class PieChartExample extends JFrame {
     return result;
   }
 
-  /** * Creates a chart */
+  /**
+   * Creates a chart
+   */
   private JFreeChart createChart(PieDataset dataset, String title) {
 
     JFreeChart chart = ChartFactory.createPieChart3D(title,          // chart title
@@ -55,9 +64,5 @@ public class PieChartExample extends JFrame {
     plot.setForegroundAlpha(0.5f);
     return chart;
 
-  }
-
-  public static void main(String [] args) {
-    new PieChartExample("Test", "Seb");
   }
 } 

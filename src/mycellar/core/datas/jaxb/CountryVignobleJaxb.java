@@ -15,119 +15,115 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @XmlRootElement(name = "vignoble")
-@XmlAccessorType (XmlAccessType.FIELD)
-public class CountryVignobleJaxb implements Comparable<CountryVignobleJaxb>
-{
-	@XmlElement(name = "appelation")
-	private List<AppelationJaxb> appelationJaxb = null;
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CountryVignobleJaxb implements Comparable<CountryVignobleJaxb> {
+  @XmlElement(name = "appelation")
+  private List<AppelationJaxb> appelationJaxb = null;
 
-	@XmlAttribute
-	private String name;
+  @XmlAttribute
+  private String name;
 
-	private long id;
+  private long id;
 
-	public CountryVignobleJaxb() {
-		name = "";
-		id = IdGenerator.generateID();
-	}
+  public CountryVignobleJaxb() {
+    name = "";
+    id = IdGenerator.generateID();
+  }
 
-	public long getId() {
-		return id;
-	}
+  public long getId() {
+    return id;
+  }
 
-	public List<AppelationJaxb> getUnmodifiableAppelation() {
-		return Collections.unmodifiableList(appelationJaxb);
-	}
+  public List<AppelationJaxb> getUnmodifiableAppelation() {
+    return Collections.unmodifiableList(appelationJaxb);
+  }
 
-	public List<AppelationJaxb> getSortedUnmodifiableAppelation() {
-		if (appelationJaxb == null) {
-			return Collections.emptyList();
-		}
-		Collections.sort(appelationJaxb);
-		return Collections.unmodifiableList(appelationJaxb);
-	}
+  public List<AppelationJaxb> getSortedUnmodifiableAppelation() {
+    if (appelationJaxb == null) {
+      return Collections.emptyList();
+    }
+    Collections.sort(appelationJaxb);
+    return Collections.unmodifiableList(appelationJaxb);
+  }
 
-	public List<AppelationJaxb> getAppelation() {
-		return appelationJaxb;
-	}
+  public List<AppelationJaxb> getAppelation() {
+    return appelationJaxb;
+  }
 
-	public void setAppelation(List<AppelationJaxb> appelationJaxb) {
-		this.appelationJaxb = appelationJaxb;
-	}
+  public void setAppelation(List<AppelationJaxb> appelationJaxb) {
+    this.appelationJaxb = appelationJaxb;
+  }
 
-	public void add(final AppelationJaxb _appelationJaxb) {
-		if (_appelationJaxb == null) {
-			return;
-		}
-		_appelationJaxb.makeItClean();
-		if (!appelationJaxb.contains(_appelationJaxb)) {
-			appelationJaxb.add(_appelationJaxb);
-		}
-	}
+  public void add(final AppelationJaxb _appelationJaxb) {
+    if (_appelationJaxb == null) {
+      return;
+    }
+    _appelationJaxb.makeItClean();
+    if (!appelationJaxb.contains(_appelationJaxb)) {
+      appelationJaxb.add(_appelationJaxb);
+    }
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void makeItClean() {
-		appelationJaxb = appelationJaxb.stream()
-				.filter(Predicate.not(AppelationJaxb::isEmpty))
-				.distinct()
-				.collect(Collectors.toList());
-		id = IdGenerator.generateID();
-	}
+  public void makeItClean() {
+    appelationJaxb = appelationJaxb.stream()
+        .filter(Predicate.not(AppelationJaxb::isEmpty))
+        .distinct()
+        .collect(Collectors.toList());
+    id = IdGenerator.generateID();
+  }
 
-	public void checkAvaibility() {
-		if (appelationJaxb == null) {
-			appelationJaxb = new ArrayList<>();
-		}
-	}
+  public void checkAvaibility() {
+    if (appelationJaxb == null) {
+      appelationJaxb = new ArrayList<>();
+    }
+  }
 
-	public boolean isEmpty() {
-		return name.isBlank() && (appelationJaxb == null || appelationJaxb.isEmpty());
-	}
+  public boolean isEmpty() {
+    return name.isBlank() && (appelationJaxb == null || appelationJaxb.isEmpty());
+  }
 
-	@Override
-	public String toString() {
-		return name;
-	}
+  @Override
+  public String toString() {
+    return name;
+  }
 
-	@Override
-	public int compareTo(CountryVignobleJaxb vignoble) {
-		if (getName() == null || vignoble.getName() == null) {
-			return -1;
-		}
-		return getName().compareTo(vignoble.getName());
-	}
+  @Override
+  public int compareTo(CountryVignobleJaxb vignoble) {
+    if (getName() == null || vignoble.getName() == null) {
+      return -1;
+    }
+    return getName().compareTo(vignoble.getName());
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		CountryVignobleJaxb other = (CountryVignobleJaxb) obj;
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		return true;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (!Objects.equals(getClass(), obj.getClass())) {
+      return false;
+    }
+    CountryVignobleJaxb other = (CountryVignobleJaxb) obj;
+    if (name == null) {
+      return other.name == null;
+    } else {
+      return name.equals(other.name);
+    }
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(appelationJaxb, name);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(appelationJaxb, name);
+  }
 }

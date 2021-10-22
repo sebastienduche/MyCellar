@@ -2,12 +2,12 @@ package mycellar.xls;
 
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.StateEditor;
-import mycellar.StateRenderer;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSpinner;
+import mycellar.core.tablecomponents.CheckboxCellEditor;
+import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.core.LabelType.INFO;
 import static mycellar.core.LabelType.INFO_OTHER;
 import static mycellar.core.MyCellarSettings.BOLD_TAB_XLS;
@@ -42,15 +43,17 @@ import static mycellar.core.MyCellarSettings.XLS_TAB_TITLE;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
- * <p>Société : Seb Informatique</p>
- * @author Sébastien Duché
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
+ * @author S&eacute;bastien Duch&eacute;
  * @version 1.7
  * @since 16/02/21
  */
 public final class XLSTabOptions extends JDialog {
+  static final long serialVersionUID = 260706;
   private static final int LARGEUR = 480;
   private static final int HAUTEUR = 550;
   private final MyCellarSpinner title_size = new MyCellarSpinner(1, 99);
@@ -63,7 +66,6 @@ public final class XLSTabOptions extends JDialog {
   private final MyCellarSpinner empty_line_place = new MyCellarSpinner(1, 99);
   private final MyCellarLabel empty_line_place_label;
   private final XLSOptionsValues tv;
-  static final long serialVersionUID = 260706;
 
   /**
    * XLSOptions: Constructeur pour la fenêtre d'options.
@@ -81,7 +83,8 @@ public final class XLSTabOptions extends JDialog {
     });
     addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e) {dispose();
+      public void windowClosing(WindowEvent e) {
+        dispose();
       }
     });
 
@@ -89,7 +92,7 @@ public final class XLSTabOptions extends JDialog {
 
     final JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
-    jPanel1.setFont(Program.FONT_PANEL);
+    jPanel1.setFont(FONT_PANEL);
     jPanel1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos331")));
     MyCellarLabel MyCellarLabel2 = new MyCellarLabel(INFO, "270"); //Titre du XLS
     String xls_title = Program.getCaveConfigString(XLS_TAB_TITLE, "");
@@ -112,8 +115,8 @@ public final class XLSTabOptions extends JDialog {
     JTable table = new JTable(tv);
     TableColumnModel tcm = table.getColumnModel();
     TableColumn tc = tcm.getColumn(XLSOptionsValues.ETAT);
-    tc.setCellRenderer(new StateRenderer());
-    tc.setCellEditor(new StateEditor());
+    tc.setCellRenderer(new CheckboxCellRenderer());
+    tc.setCellEditor(new CheckboxCellEditor());
     table.getColumnModel().getColumn(0).setMinWidth(20);
     table.getColumnModel().getColumn(0).setMaxWidth(20);
     table.getColumnModel().getColumn(1).setWidth(440);
@@ -126,7 +129,7 @@ public final class XLSTabOptions extends JDialog {
     tv.addString(Program.getLabel("Infos135"), Program.getCaveConfigBool(XLSTAB_COL3, false));
 
     final JPanel jPanel2 = new JPanel();
-    jPanel2.setFont(Program.FONT_PANEL);
+    jPanel2.setFont(FONT_PANEL);
     jPanel2.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos332")));
     MyCellarButton valider = new MyCellarButton(INFO_OTHER, "Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
@@ -199,8 +202,8 @@ public final class XLSTabOptions extends JDialog {
     Program.putCaveConfigBool(ONE_PER_SHEET_XLS, onePlacePerSheetCheckBox.isSelected());
 
     // Options des colonnes
-    for ( int i=0; i<tv.getRowCount(); i++){
-      Program.putCaveConfigBool(XLSTAB_COL + i, ((Boolean)tv.getValueAt(i, XLSOptionsValues.ETAT)));
+    for (int i = 0; i < tv.getRowCount(); i++) {
+      Program.putCaveConfigBool(XLSTAB_COL + i, ((Boolean) tv.getValueAt(i, XLSOptionsValues.ETAT)));
     }
     dispose();
   }

@@ -50,7 +50,9 @@ public class Place {
     return column;
   }
 
-  /** Zero based */
+  /**
+   * Zero based
+   */
   public int getPlaceNumIndex() {
     if (isSimplePlace()) {
       return placeNum - rangement.getStartCaisse();
@@ -58,12 +60,16 @@ public class Place {
     return placeNum - 1;
   }
 
-  /** Zero based */
+  /**
+   * Zero based
+   */
   public int getLineIndex() {
     return line - 1;
   }
 
-  /** Zero based */
+  /**
+   * Zero based
+   */
   public int getColumnIndex() {
     return column - 1;
   }
@@ -74,6 +80,16 @@ public class Place {
 
   public boolean hasPlace() {
     return !Program.EMPTY_PLACE.equals(rangement);
+  }
+
+  @Override
+  public String toString() {
+    return "Place{" +
+        "rangement=" + rangement +
+        ", placeNum=" + placeNum +
+        ", line=" + line +
+        ", column=" + column +
+        '}';
   }
 
   public static class PlaceBuilder {
@@ -108,15 +124,5 @@ public class Place {
       }
       return new Place(rangement, numPlace, line, column);
     }
-  }
-
-  @Override
-  public String toString() {
-    return "Place{" +
-        "rangement=" + rangement +
-        ", placeNum=" + placeNum +
-        ", line=" + line +
-        ", column=" + column +
-        '}';
   }
 }

@@ -4,9 +4,9 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.MyCellarButton;
 import mycellar.core.MyCellarCheckBox;
-import mycellar.core.common.MyCellarFields;
 import mycellar.core.MyCellarLabel;
 import mycellar.core.MyCellarSpinner;
+import mycellar.core.common.MyCellarFields;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -19,6 +19,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.core.LabelType.INFO;
 import static mycellar.core.LabelType.INFO_OTHER;
 import static mycellar.core.MyCellarSettings.BOLD_XLS;
@@ -32,6 +33,7 @@ import static mycellar.core.MyCellarSettings.XLS_TITLE;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
  * @version 2.2
  * @since 16/04/21
@@ -67,7 +69,7 @@ public final class XLSOptions extends JDialog {
     JPanel jPanel1 = new JPanel();
     jPanel1.setBorder(BorderFactory.createEtchedBorder());
     jPanel1.setLayout(new MigLayout("", "grow", ""));
-    jPanel1.setFont(Program.FONT_PANEL);
+    jPanel1.setFont(FONT_PANEL);
     pdf_title.setText(Program.getCaveConfigString(XLS_TITLE, ""));
 
     titleSize.setValue(Program.getCaveConfigInt(TITLE_SIZE_XLS, 10));
@@ -86,7 +88,7 @@ public final class XLSOptions extends JDialog {
     }
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));
-    jPanel2.setFont(Program.FONT_PANEL);
+    jPanel2.setFont(FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(INFO_OTHER, "Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
     MyCellarButton annuler = new MyCellarButton(INFO, "055");
@@ -135,8 +137,7 @@ public final class XLSOptions extends JDialog {
         Program.putCaveConfigInt(SIZE_COL + i + "EXPORT_XLS", export[i].isSelected() ? 1 : 0);
       }
       dispose();
-    }
-    catch (RuntimeException exc) {
+    } catch (RuntimeException exc) {
       Program.showException(exc);
     }
   }

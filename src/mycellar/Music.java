@@ -8,6 +8,7 @@ import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.RangementUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -21,12 +22,13 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static mycellar.MyCellarUtils.assertObjectType;
+import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 import static mycellar.general.XmlUtils.getTextContent;
 
 /**
@@ -34,9 +36,10 @@ import static mycellar.general.XmlUtils.getTextContent;
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2021</p>
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 14/05/21
+ * @version 1.2
+ * @since 16/10/21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -174,6 +177,36 @@ public class Music extends MyCellarObject implements Serializable {
     rating = builder.rating;
     file = builder.file;
     album = builder.album;
+  }
+
+  public static boolean isInvalidYear(String year) {
+    year = year.strip();
+    if (!Program.hasYearControl()) {
+      return false;
+    }
+    int n;
+    try {
+      n = Integer.parseInt(year);
+    } catch (NumberFormatException e) {
+      Debug("ERROR: Unable to parse year '" + year + "'!");
+      return true;
+    }
+
+    int current_year = LocalDate.now().getYear();
+    return year.length() == 4 && n > current_year;
+  }
+
+  public static Music fromXml(Element element) {
+    return new Music().fromXmlElemnt(element);
+  }
+
+  /**
+   * Debug
+   *
+   * @param sText String
+   */
+  private static void Debug(String sText) {
+    Program.Debug("Music: " + sText);
   }
 
   @Override
@@ -337,6 +370,10 @@ public class Music extends MyCellarObject implements Serializable {
     return lastModified;
   }
 
+  private void setLastModified(LocalDateTime lastModified) {
+    this.lastModified = DATE_FORMATER_DD_MM_YYYY_HH_MM.format(lastModified);
+  }
+
   public int getDiskNumber() {
     return diskNumber;
   }
@@ -385,12 +422,6 @@ public class Music extends MyCellarObject implements Serializable {
     this.album = album;
   }
 
-  private void setLastModified(LocalDateTime lastModified) {
-    String ddMmYyyyHhMm = "dd-MM-yyyy HH:mm";
-    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(ddMmYyyyHhMm);
-    this.lastModified = dateFormat.format(lastModified);
-  }
-
   @Override
   public Rangement getRangement() {
     return Program.getCave(emplacement);
@@ -404,26 +435,9 @@ public class Music extends MyCellarObject implements Serializable {
     try {
       int anneeInt = Integer.parseInt(annee);
       return anneeInt;
-    } catch(NumberFormatException e) {
+    } catch (NumberFormatException e) {
       return 0;
     }
-  }
-
-  public static boolean isInvalidYear(String year) {
-    year = year.strip();
-    if (!Program.hasYearControl()) {
-      return false;
-    }
-    int n;
-    try {
-      n = Integer.parseInt(year);
-    } catch (NumberFormatException e) {
-      Debug("ERROR: Unable to parse year '" + year + "'!");
-      return true;
-    }
-
-    int current_year = LocalDate.now().getYear();
-    return year.length() == 4 && n > current_year;
   }
 
   public String getFormattedDuration() {
@@ -491,46 +505,17 @@ public class Music extends MyCellarObject implements Serializable {
     return false;
   }
 
-  public void setMusicSupport(MusicSupport musicSupport) {
-    setKind(musicSupport.name());
-  }
-
   public MusicSupport getMusicSupport() {
     return MusicSupport.getSupport(getKind());
+  }
+
+  public void setMusicSupport(MusicSupport musicSupport) {
+    setKind(musicSupport.name());
   }
 
   @Override
   public String toString() {
     return title;
-  }
-
-  public void update(final Music music) {
-    setTitle(music.getTitle());
-    setAnnee(music.getAnnee());
-    setColonne(music.getColonne());
-    setComment(music.getComment());
-    setEmplacement(music.getEmplacement());
-    setLigne(music.getLigne());
-    setArtist(music.getArtist());
-    setNumLieu(music.getNumLieu());
-    setComposer(music.getComposer());
-    setGenre(music.getGenre());
-    setPrix(music.getPrix());
-    setKind(music.getKind());
-    setDuration(music.getDuration());
-    setTracks(music.getTracks());
-    if (music.hasNoStatus()) {
-      setStatus(BottlesStatus.MODIFIED.name());
-    } else {
-      setStatus(music.getStatus());
-    }
-    setLastModified(LocalDateTime.now());
-    setDiskCount(music.getDiskCount());
-    setDiskNumber(music.getDiskNumber());
-    setRating(music.getRating());
-    setFile(music.getFile());
-    setExternalId(music.getExternalId());
-    setAlbum(music.getAlbum());
   }
 
   @Override
@@ -638,7 +623,7 @@ public class Music extends MyCellarObject implements Serializable {
   public boolean updateID() {
     if (id != -1) {
       final List<MyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
-      if(bouteilles.size() == 1 && bouteilles.get(0).equals(this)) {
+      if (bouteilles.size() == 1 && bouteilles.get(0).equals(this)) {
         return false;
       }
     }
@@ -648,11 +633,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public boolean isInTemporaryStock() {
-    return Program.TEMP_PLACE.equalsIgnoreCase(emplacement);
-  }
-
-  public static Music fromXml(Element element) {
-    return new Music().fromXmlElemnt(element);
+    return RangementUtils.isTemporaryPlace(emplacement);
   }
 
   @Override
@@ -722,13 +703,47 @@ public class Music extends MyCellarObject implements Serializable {
         .build();
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
-  private static void Debug(String sText) {
-    Program.Debug("Music: " + sText);
+  @Override
+  public Music cast(MyCellarObject myCellarObject) {
+    assertObjectType(myCellarObject, Music.class);
+    return (Music) myCellarObject;
+  }
+
+  @Override
+  public Music castCopy(MyCellarObject myCellarObject) {
+    assertObjectType(myCellarObject, Music.class);
+    return new Music((Music) myCellarObject);
+  }
+
+  @Override
+  public void update(MyCellarObject myCellarObject) {
+    Music music = (Music) myCellarObject;
+    setTitle(music.getTitle());
+    setAnnee(music.getAnnee());
+    setColonne(music.getColonne());
+    setComment(music.getComment());
+    setEmplacement(music.getEmplacement());
+    setLigne(music.getLigne());
+    setArtist(music.getArtist());
+    setNumLieu(music.getNumLieu());
+    setComposer(music.getComposer());
+    setGenre(music.getGenre());
+    setPrix(music.getPrix());
+    setKind(music.getKind());
+    setDuration(music.getDuration());
+    setTracks(music.getTracks());
+    if (music.hasNoStatus()) {
+      setStatus(BottlesStatus.MODIFIED.name());
+    } else {
+      setStatus(music.getStatus());
+    }
+    setLastModified(LocalDateTime.now());
+    setDiskCount(music.getDiskCount());
+    setDiskNumber(music.getDiskNumber());
+    setRating(music.getRating());
+    setFile(music.getFile());
+    setExternalId(music.getExternalId());
+    setAlbum(music.getAlbum());
   }
 
   @Override
@@ -770,14 +785,14 @@ public class Music extends MyCellarObject implements Serializable {
     if (obj == null) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (!Objects.equals(getClass(), obj.getClass())) {
       return false;
     }
     Music other = (Music) obj;
-    if(id != other.id) {
+    if (id != other.id) {
       return false;
     }
-    if(externalId != other.externalId) {
+    if (externalId != other.externalId) {
       return false;
     }
     if (equalsValue(annee, other.annee)) return false;
@@ -806,31 +821,24 @@ public class Music extends MyCellarObject implements Serializable {
     } else if (!tracks.equals(other.tracks)) {
       return false;
     }
-    if (equalsValue(status, other.status)) return false;
-    if (equalsValue(lastModified, other.lastModified)) return false;
-    if (diskNumber != other.diskNumber) {
-      return false;
-    }
-    if (diskCount != other.diskCount) {
-      return false;
-    }
-    if (rating != other.rating) {
-      return false;
-    }
-    if (equalsValue(file, other.file)) return false;
-    return true;
+    return !equalsValue(status, other.status) &&
+        !equalsValue(lastModified, other.lastModified) &&
+        diskNumber == other.diskNumber &&
+        diskCount == other.diskCount &&
+        rating == other.rating &&
+        !equalsValue(file, other.file);
   }
 
   @Override
   public boolean isInExistingPlace() {
-    return Program.isExistingPlace(emplacement);
+    return RangementUtils.isExistingPlace(emplacement);
   }
 
 
   public static class MusicBuilder {
+    private final String nom;
     private int externalId;
     private int id;
-    private final String nom;
     private String annee;
     private String type;
     private String emplacement;

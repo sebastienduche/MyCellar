@@ -155,6 +155,9 @@ public final class PanelWineAttribute extends JPanel {
     lastModified.setText("");
     colorList.setModified(false);
     statusList.setModified(false);
+    price.setModified(false);
+    maturity.setModified(false);
+    parker.setModified(false);
     nbItems.setValue(1);
     labelStillToAdd.setText("");
   }

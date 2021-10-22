@@ -97,6 +97,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     panelWineAttribute.resetValues();
 
     commentTextArea.setText("");
+    commentTextArea.setModified(false);
 
     ProgramPanels.getSearch().ifPresent(Search::updateTable);
     panelVignobles.resetCombos();
@@ -171,10 +172,10 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   }
 
   private boolean performValidations() {
-    Debug("Control Bottle...");
+    Debug("Perform validations...");
     boolean validations = panelGeneral.performValidation();
     validations &= panelPlace.performValidation(isModify);
-    Debug("Control Bottle... End");
+    Debug("Perform validations... End");
     return validations;
   }
 
@@ -186,6 +187,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       if (!performValidations()) {
         end.setText("");
         enableAll(true);
+        Debug("ERROR: Validations failed");
         return;
       }
       Debug("Adding / Modifying...");
@@ -222,6 +224,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         if (!rangement.hasFreeSpaceInCaisse(place)) {
           Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
           end.setText("");
+          Debug("ERROR: No free spaces");
           return;
         }
 
@@ -315,6 +318,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           int colonne = place.getColumn();
 
           if (isModify && !panelPlace.isPlaceModified()) { //Si aucune modification du Lieu
+            Debug("ERROR: Shouldn't come here");
             throw new RuntimeException("Shouldn't happen!");
 //            lieu_num_selected = nbNumForModif;
 //            ligne = nbLineForModif;
@@ -329,11 +333,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
               nb_free_space = rangement.getNbCaseFreeCoteLigne(lieu_num_selected - 1, ligne - 1, colonne - 1);
             }
           }
-          //Creation de la nouvelle bouteille
           Debug("Creating new bottle...");
           MyCellarObject newMyCellarObject = createMyCellarObject(annee, null, rangement, lieu_num_selected, ligne, colonne);
           if (myCellarObjectFound == null) {
-            //Case vide donc ajout
             if (isModify) {
               Debug("Empty case: Modifying bottle");
               final Place oldPLace = myCellarObject.getPlace();
@@ -424,6 +426,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     } catch (MyCellarException e) {
       Program.showException(e);
     }
+    Debug("Running End");
   }
 
   private boolean modifySeveralObjectsInSimplePlace(Place place, Rangement rangement) {
@@ -756,7 +759,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     }
 
     Debug("Quitting...");
-
     if (!RangementUtils.putTabStock()) {
       new OpenShowErrorsAction().actionPerformed(null);
     }

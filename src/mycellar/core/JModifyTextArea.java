@@ -23,17 +23,19 @@ public final class JModifyTextArea extends JTextArea {
 
   private boolean modified;
   private boolean active;
+  private boolean listenerEnable;
 
   JModifyTextArea() {
     modified = false;
     active = true;
+    listenerEnable = true;
     addKeyListener(new KeyListener() {
 
       @Override
       public void keyTyped(KeyEvent arg0) {
-        if (active) {
+        if (active && listenerEnable) {
           modified = true;
-          doAfterModify();
+          ProgramPanels.setSelectedPaneModified(true);
         }
       }
 
@@ -47,11 +49,6 @@ public final class JModifyTextArea extends JTextArea {
     });
   }
 
-
-  private void doAfterModify() {
-    ProgramPanels.setSelectedPaneModified(true);
-  }
-
   public boolean isModified() {
     return modified;
   }
@@ -60,11 +57,15 @@ public final class JModifyTextArea extends JTextArea {
     this.modified = modified;
   }
 
-  public boolean isModifyActive() {
+  public boolean isActive() {
     return active;
   }
 
-  public void setModifyActive(boolean active) {
+  public void setActive(boolean active) {
     this.active = active;
+  }
+
+  public void setListenerEnable(boolean listenerEnable) {
+    this.listenerEnable = listenerEnable;
   }
 }

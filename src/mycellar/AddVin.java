@@ -68,7 +68,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     panelPlace.setModifyActive(true);
     panelGeneral.setModifyActive(true);
     panelWineAttribute.setModifyActive();
-    commentTextArea.setModifyActive(true);
+    commentTextArea.setActive(true);
     addButton.setMnemonic(ajouterChar);
     panelGeneral.initValues();
     panelWineAttribute.initValues();
@@ -314,7 +314,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           int ligne = place.getLine();
           int colonne = place.getColumn();
 
-          if ((isModify && !panelPlace.isPlaceModified())) { //Si aucune modification du Lieu
+          if (isModify && !panelPlace.isPlaceModified()) { //Si aucune modification du Lieu
             throw new RuntimeException("Shouldn't happen!");
 //            lieu_num_selected = nbNumForModif;
 //            ligne = nbLineForModif;
@@ -322,7 +322,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           }
           int nb_free_space = 0;
           MyCellarObject myCellarObjectFound = null;
-          if (!(isModify && !panelPlace.isPlaceModified())) { //Si Ajout bouteille ou modification du lieu
+          if (!isModify || panelPlace.isPlaceModified()) { //Si Ajout bouteille ou modification du lieu
             Debug("Adding bottle or modifying place");
             myCellarObjectFound = rangement.getBouteille(lieu_num_selected - 1, ligne - 1, colonne - 1).orElse(null);
             if (myCellarObjectFound == null) {

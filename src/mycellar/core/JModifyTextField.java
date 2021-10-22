@@ -17,22 +17,23 @@ import java.util.Objects;
  * @version 0.7
  * @since 22/10/21
  */
-
 public final class JModifyTextField extends JTextField {
 
   private static final long serialVersionUID = 7663077125632345441L;
 
   private boolean modified;
-  private boolean modifyActive;
+  private boolean active;
+  private boolean listenerEnable;
 
   public JModifyTextField() {
     modified = false;
-    modifyActive = true;
+    active = true;
+    listenerEnable = true;
     addKeyListener(new KeyListener() {
 
       @Override
       public void keyTyped(KeyEvent arg0) {
-        if (modifyActive) {
+        if (active && listenerEnable) {
           modified = true;
           doAfterModify();
         }
@@ -60,16 +61,20 @@ public final class JModifyTextField extends JTextField {
     this.modified = modified;
   }
 
-  public boolean isModifyActive() {
-    return modifyActive;
+  public boolean isActive() {
+    return active;
   }
 
-  public void setModifyActive(boolean modifyActive) {
-    this.modifyActive = modifyActive;
+  public void setActive(boolean active) {
+    this.active = active;
   }
 
   @Override
   public String getText() {
     return Objects.requireNonNull(super.getText()).strip();
+  }
+
+  public void setListenerEnable(boolean listenerEnable) {
+    this.listenerEnable = listenerEnable;
   }
 }

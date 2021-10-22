@@ -8,12 +8,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Titre : Cave à vin
- * Description : Votre description
- * Copyright : Copyright (c) 2011
- * Société : Seb Informatique
+ * <p>Titre : Cave &agrave; vin</p>
+ * <p>Description : Votre description</p>
+ * <p>Copyright : Copyright (c) 2011</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.8
  * @since 23/05/21
  */

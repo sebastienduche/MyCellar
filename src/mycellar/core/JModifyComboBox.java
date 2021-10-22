@@ -21,15 +21,17 @@ public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
 
   private boolean modified;
   private boolean active;
+  private boolean listenerEnable;
 
   public JModifyComboBox() {
     modified = false;
     active = true;
+    listenerEnable = true;
     addItemListener(itemEvent -> {
       if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-        if (active) {
+        if (active && listenerEnable) {
           modified = true;
-          doAfterModify();
+          ProgramPanels.setSelectedPaneModified(true);
         }
       }
     });
@@ -43,15 +45,15 @@ public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
     this.modified = modified;
   }
 
-  public boolean isModifyActive() {
+  public boolean isActive() {
     return active;
   }
 
-  public void setModifyActive(boolean active) {
+  public void setActive(boolean active) {
     this.active = active;
   }
 
-  private void doAfterModify() {
-    ProgramPanels.setSelectedPaneModified(true);
+  public void setListenerEnable(boolean listenerEnable) {
+    this.listenerEnable = listenerEnable;
   }
 }

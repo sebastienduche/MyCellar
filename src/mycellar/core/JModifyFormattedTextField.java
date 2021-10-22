@@ -18,28 +18,26 @@ import java.text.Format;
  * @since 22/10/21
  */
 
-public class JModifyFormattedTextField extends JFormattedTextField {
+public final class JModifyFormattedTextField extends JFormattedTextField {
 
   private static final long serialVersionUID = -7364848812779720027L;
 
   private boolean modified;
-  private boolean modifyActive;
+  private boolean active;
+  private boolean listenerEnable;
 
   public JModifyFormattedTextField(Format format) {
     super(format);
-    init();
-  }
-
-  private void init() {
     modified = false;
-    modifyActive = true;
+    active = true;
+    listenerEnable = true;
     addKeyListener(new KeyListener() {
 
       @Override
       public void keyTyped(KeyEvent arg0) {
-        if (modifyActive) {
+        if (active && listenerEnable) {
           modified = true;
-          doAfterModify();
+          ProgramPanels.setSelectedPaneModified(true);
         }
       }
 
@@ -53,10 +51,6 @@ public class JModifyFormattedTextField extends JFormattedTextField {
     });
   }
 
-  private void doAfterModify() {
-    ProgramPanels.setSelectedPaneModified(true);
-  }
-
   public boolean isModified() {
     return modified;
   }
@@ -65,8 +59,11 @@ public class JModifyFormattedTextField extends JFormattedTextField {
     this.modified = modified;
   }
 
-  public void setModifyActive(boolean modifyActive) {
-    this.modifyActive = modifyActive;
+  public void setActive(boolean active) {
+    this.active = active;
   }
 
+  public void setListenerEnable(boolean listenerEnable) {
+    this.listenerEnable = listenerEnable;
+  }
 }

@@ -423,6 +423,7 @@ public class ProgramPanels {
     if (modify) {
       if (!title.endsWith("*")) {
         TABBED_PANE.setTitleAt(index, title + "*");
+        TABBED_PANE.updateUI();
       }
     } else {
       if (title.endsWith("*")) {

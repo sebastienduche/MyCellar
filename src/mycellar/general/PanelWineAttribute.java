@@ -31,8 +31,8 @@ import java.text.NumberFormat;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 21/10/21
+ * @version 0.6
+ * @since 22/10/21
  */
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;
@@ -109,11 +109,11 @@ public final class PanelWineAttribute extends JPanel {
   }
 
   public void setModifyActive() {
-    price.setModifyActive(true);
-    maturity.setModifyActive(true);
-    parker.setModifyActive(true);
-    colorList.setModifyActive(true);
-    statusList.setModifyActive(true);
+    price.setActive(true);
+    maturity.setActive(true);
+    parker.setActive(true);
+    colorList.setActive(true);
+    statusList.setActive(true);
   }
 
   public void initValues() {

@@ -42,16 +42,16 @@ public final class PanelPlace extends JPanel implements IPlace {
   private final JModifyComboBox<ComboItem> numPlace = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> line = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> column = new JModifyComboBox<>();
-  private final MyCellarLabel labelExist = new MyCellarLabel();
+  private final MyCellarLabel labelExist = new MyCellarLabel("");
   private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "138");
   private final MyCellarLabel labelNumPlace = new MyCellarLabel(LabelType.INFO, "082");
   private final MyCellarLabel labelLine = new MyCellarLabel(LabelType.INFO, "028");
   private final MyCellarLabel labelColumn = new MyCellarLabel(LabelType.INFO, "083");
   private final MyCellarLabel before1 = new MyCellarLabel(LabelType.INFO, "091"); // Pour la Modification
-  private final MyCellarLabel previousPlaceLabel = new MyCellarLabel(); // Pour la Modification
-  private final MyCellarLabel previousNumPlaceLabel = new MyCellarLabel(); // Pour la Modification
-  private final MyCellarLabel previousLineLabel = new MyCellarLabel(); // Pour la Modification
-  private final MyCellarLabel previousColumnLabel = new MyCellarLabel(); // Pour la Modification
+  private final MyCellarLabel previousPlaceLabel = new MyCellarLabel(""); // Pour la Modification
+  private final MyCellarLabel previousNumPlaceLabel = new MyCellarLabel(""); // Pour la Modification
+  private final MyCellarLabel previousLineLabel = new MyCellarLabel(""); // Pour la Modification
+  private final MyCellarLabel previousColumnLabel = new MyCellarLabel(""); // Pour la Modification
   private final MyCellarButton chooseCell;
   private boolean listenersEnabled = true;
 
@@ -91,8 +91,10 @@ public final class PanelPlace extends JPanel implements IPlace {
     add(previousNumPlaceLabel, "hidemode 3");
     add(previousLineLabel, "hidemode 3");
     add(previousColumnLabel, "hidemode 3");
+    setListenersEnabled(false);
     initPlaceCombo();
     setListeners();
+    setListenersEnabled(true);
     setBeforeLabelsVisible(false);
     if (rangement != null) {
       place.setSelectedItem(rangement);
@@ -292,6 +294,10 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   public void setListenersEnabled(boolean listenersEnabled) {
     this.listenersEnabled = listenersEnabled;
+    place.setListenerEnable(listenersEnabled);
+    numPlace.setListenerEnable(listenersEnabled);
+    line.setListenerEnable(listenersEnabled);
+    column.setListenerEnable(listenersEnabled);
   }
 
   private void preview_actionPerformed(ActionEvent e) {
@@ -406,12 +412,12 @@ public final class PanelPlace extends JPanel implements IPlace {
       int nLine = line.getSelectedIndex();
       int nColumn = column.getSelectedIndex();
 
+      labelExist.setText("");
       if (nPlace < 1 || nNumLieu < 1 || nLine < 1 || nColumn < 1) {
         return;
       }
 
       Rangement cave = place.getItemAt(nPlace);
-      labelExist.setText("");
       cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1)
           .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(myCellarObject.getNom()))));
       Debug("Column_itemStateChanging... End");
@@ -419,10 +425,10 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void setModifyActive(boolean enable) {
-    place.setModifyActive(enable);
-    numPlace.setModifyActive(enable);
-    line.setModifyActive(enable);
-    column.setModifyActive(enable);
+    place.setActive(enable);
+    numPlace.setActive(enable);
+    line.setActive(enable);
+    column.setActive(enable);
   }
 
   public void enableSimplePlace(boolean enable) {

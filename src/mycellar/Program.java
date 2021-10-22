@@ -100,8 +100,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.8
- * @since 26/08/21
+ * @version 26.9
+ * @since 22/10/21
  */
 
 public final class Program {
@@ -543,6 +543,7 @@ public final class Program {
 
     modified = false;
     listCaveModified = false;
+    ProgramPanels.setAllPanesModified(false);
     Debug("Program: -------------------");
     Debug("Program: Saving all files OK");
     Debug("Program: -------------------");

@@ -86,8 +86,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.3
- * @since 21/10/21
+ * @version 29.4
+ * @since 22/10/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -260,23 +260,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
   private static void Debug(String sText) {
     Program.Debug("Start: " + sText);
-  }
-
-  public static void setPaneModified(boolean modify) {
-    if (ProgramPanels.TABBED_PANE.getSelectedComponent() != null) {
-      int index = ProgramPanels.TABBED_PANE.getSelectedIndex();
-      String title = ProgramPanels.TABBED_PANE.getTitleAt(index);
-      if (modify) {
-        if (!title.endsWith("*")) {
-          ProgramPanels.TABBED_PANE.setTitleAt(index, title + "*");
-        }
-      } else {
-        if (title.endsWith("*")) {
-          title = title.substring(0, title.length() - 1);
-        }
-        ProgramPanels.TABBED_PANE.setTitleAt(index, title);
-      }
-    }
   }
 
   /**

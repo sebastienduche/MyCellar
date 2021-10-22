@@ -1,20 +1,20 @@
 package mycellar.core;
 
-import mycellar.Start;
+import mycellar.general.ProgramPanels;
 
 import javax.swing.JTextArea;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2005</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 0.4
- * @since 28/08/20
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.5
+ * @since 22/10/21
  */
 
 public final class JModifyTextArea extends JTextArea {
@@ -49,7 +49,7 @@ public final class JModifyTextArea extends JTextArea {
 
 
   private void doAfterModify() {
-    Start.setPaneModified(true);
+    ProgramPanels.setSelectedPaneModified(true);
   }
 
   public boolean isModified() {

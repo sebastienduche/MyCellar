@@ -36,8 +36,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.9
- * @since 21/10/21
+ * @version 9.0
+ * @since 22/10/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -266,7 +266,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     commentTextArea.setModified(false);
     panelVignobles.setModified(false);
     panelPlace.clearModified();
-    Start.setPaneModified(false);
+    ProgramPanels.setSelectedPaneModified(false);
   }
 
   private void replaceWine(final MyCellarObject bToDelete, Place oldPlace) throws MyCellarException {

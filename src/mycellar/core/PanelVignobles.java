@@ -2,7 +2,6 @@ package mycellar.core;
 
 import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.actions.ManageVineyardAction;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
@@ -10,6 +9,7 @@ import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleListJaxb;
+import mycellar.general.ProgramPanels;
 import mycellar.vignobles.CountryVignobleController;
 import net.miginfocom.swing.MigLayout;
 
@@ -34,8 +34,8 @@ import static mycellar.ProgramConstants.FR;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 21/11/20
+ * @version 1.5
+ * @since 22/10/21
  */
 public final class PanelVignobles extends JPanel {
 
@@ -60,7 +60,7 @@ public final class PanelVignobles extends JPanel {
       protected void doAfterModify() {
         super.doAfterModify();
         if (modifyActive) {
-          Start.setPaneModified(true);
+          ProgramPanels.setSelectedPaneModified(true);
         }
       }
     };
@@ -71,7 +71,7 @@ public final class PanelVignobles extends JPanel {
       protected void doAfterModify() {
         super.doAfterModify();
         if (modifyActive) {
-          Start.setPaneModified(true);
+          ProgramPanels.setSelectedPaneModified(true);
         }
       }
     };
@@ -82,7 +82,7 @@ public final class PanelVignobles extends JPanel {
       protected void doAfterModify() {
         super.doAfterModify();
         if (modifyActive) {
-          Start.setPaneModified(true);
+          ProgramPanels.setSelectedPaneModified(true);
         }
       }
     };
@@ -93,7 +93,7 @@ public final class PanelVignobles extends JPanel {
       protected void doAfterModify() {
         super.doAfterModify();
         if (modifyActive) {
-          Start.setPaneModified(true);
+          ProgramPanels.setSelectedPaneModified(true);
         }
       }
     };

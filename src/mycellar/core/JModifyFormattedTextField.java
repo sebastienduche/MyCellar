@@ -1,6 +1,6 @@
 package mycellar.core;
 
-import mycellar.Start;
+import mycellar.general.ProgramPanels;
 
 import javax.swing.JFormattedTextField;
 import java.awt.event.KeyEvent;
@@ -8,14 +8,14 @@ import java.awt.event.KeyListener;
 import java.text.Format;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2005</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 0.5
- * @since 20/04/21
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.6
+ * @since 22/10/21
  */
 
 public class JModifyFormattedTextField extends JFormattedTextField {
@@ -54,7 +54,7 @@ public class JModifyFormattedTextField extends JFormattedTextField {
   }
 
   private void doAfterModify() {
-    Start.setPaneModified(true);
+    ProgramPanels.setSelectedPaneModified(true);
   }
 
   public boolean isModified() {

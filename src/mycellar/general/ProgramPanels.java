@@ -64,8 +64,8 @@ import static mycellar.ScreenType.VIGNOBLES;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 21/10/21
+ * @version 0.6
+ * @since 22/10/21
  */
 public class ProgramPanels {
 
@@ -402,6 +402,33 @@ public class ProgramPanels {
         TABBED_PANE.removeTabAt(i);
         return;
       }
+    }
+  }
+
+  public static void setSelectedPaneModified(boolean modify) {
+    if (TABBED_PANE.getSelectedComponent() != null) {
+      int index = TABBED_PANE.getSelectedIndex();
+      setPaneModified(index, modify);
+    }
+  }
+
+  public static void setAllPanesModified(boolean modify) {
+    for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+      setPaneModified(i, modify);
+    }
+  }
+
+  private static void setPaneModified(int index, boolean modify) {
+    String title = TABBED_PANE.getTitleAt(index);
+    if (modify) {
+      if (!title.endsWith("*")) {
+        TABBED_PANE.setTitleAt(index, title + "*");
+      }
+    } else {
+      if (title.endsWith("*")) {
+        title = title.substring(0, title.length() - 1);
+      }
+      TABBED_PANE.setTitleAt(index, title);
     }
   }
 }

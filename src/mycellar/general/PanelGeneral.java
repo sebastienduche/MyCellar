@@ -64,7 +64,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       @Override
       protected void doAfterModify() {
         super.doAfterModify();
-        Start.setPaneModified(true);
+        ProgramPanels.setSelectedPaneModified(true);
       }
     };
     if (Program.isMusicType()) {
@@ -74,7 +74,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
         @Override
         protected void doAfterModify() {
           super.doAfterModify();
-          Start.setPaneModified(true);
+          ProgramPanels.setSelectedPaneModified(true);
         }
       };
 
@@ -84,7 +84,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
         @Override
         protected void doAfterModify() {
           super.doAfterModify();
-          Start.setPaneModified(true);
+          ProgramPanels.setSelectedPaneModified(true);
         }
       };
     }

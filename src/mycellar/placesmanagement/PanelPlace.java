@@ -32,8 +32,8 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 23/08/21
+ * @version 1.0
+ * @since 22/10/21
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -48,10 +48,10 @@ public final class PanelPlace extends JPanel implements IPlace {
   private final MyCellarLabel labelLine = new MyCellarLabel(LabelType.INFO, "028");
   private final MyCellarLabel labelColumn = new MyCellarLabel(LabelType.INFO, "083");
   private final MyCellarLabel before1 = new MyCellarLabel(LabelType.INFO, "091"); // Pour la Modification
-  private final MyCellarLabel before2 = new MyCellarLabel(); // Pour la Modification
-  private final MyCellarLabel before3 = new MyCellarLabel(); // Pour la Modification
-  private final MyCellarLabel before4 = new MyCellarLabel(); // Pour la Modification
-  private final MyCellarLabel before5 = new MyCellarLabel(); // Pour la Modification
+  private final MyCellarLabel previousPlaceLabel = new MyCellarLabel(); // Pour la Modification
+  private final MyCellarLabel previousNumPlaceLabel = new MyCellarLabel(); // Pour la Modification
+  private final MyCellarLabel previousLineLabel = new MyCellarLabel(); // Pour la Modification
+  private final MyCellarLabel previousColumnLabel = new MyCellarLabel(); // Pour la Modification
   private final MyCellarButton chooseCell;
   private boolean listenersEnabled = true;
 
@@ -87,10 +87,10 @@ public final class PanelPlace extends JPanel implements IPlace {
       add(labelExist, "hidemode 3, span 6, wrap");
     }
     add(before1, "hidemode 3,split 2");
-    add(before2, "hidemode 3");
-    add(before3, "hidemode 3");
-    add(before4, "hidemode 3");
-    add(before5, "hidemode 3");
+    add(previousPlaceLabel, "hidemode 3");
+    add(previousNumPlaceLabel, "hidemode 3");
+    add(previousLineLabel, "hidemode 3");
+    add(previousColumnLabel, "hidemode 3");
     initPlaceCombo();
     setListeners();
     setBeforeLabelsVisible(false);
@@ -167,27 +167,28 @@ public final class PanelPlace extends JPanel implements IPlace {
     column.setVisible(visible);
     labelLine.setVisible(visible);
     labelColumn.setVisible(visible);
-    if (!before4.getText().isBlank()) {
-      before4.setVisible(visible);
+    if (!previousLineLabel.getText().isBlank()) {
+      previousLineLabel.setVisible(visible);
     }
-    if (!before5.getText().isBlank()) {
-      before5.setVisible(visible);
+    if (!previousColumnLabel.getText().isBlank()) {
+      previousColumnLabel.setVisible(visible);
     }
   }
 
-  public void setBeforeBottle(MyCellarObject bottle) {
-    before2.setText(bottle.getEmplacement());
-    before3.setText(Integer.toString(bottle.getNumLieu()));
-    before4.setText(Integer.toString(bottle.getLigne()));
-    before5.setText(Integer.toString(bottle.getColonne()));
+  public void setBeforeBottle(MyCellarObject myCellarObject) {
+    setLineColumnVisible(myCellarObject.getRangement());
+    previousPlaceLabel.setText(myCellarObject.getEmplacement());
+    previousNumPlaceLabel.setText(Integer.toString(myCellarObject.getNumLieu()));
+    previousLineLabel.setText(Integer.toString(myCellarObject.getLigne()));
+    previousColumnLabel.setText(Integer.toString(myCellarObject.getColonne()));
     setBeforeLabelsVisible(true);
   }
 
   public void clearBeforeBottle() {
-    before2.setText("");
-    before3.setText("");
-    before4.setText("");
-    before5.setText("");
+    previousPlaceLabel.setText("");
+    previousNumPlaceLabel.setText("");
+    previousLineLabel.setText("");
+    previousColumnLabel.setText("");
     setBeforeLabelsVisible(false);
   }
 
@@ -197,10 +198,10 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   public void setBeforeLabelsVisible(boolean b) {
     before1.setVisible(b);
-    before2.setVisible(b);
-    before3.setVisible(b);
-    before4.setVisible(b && labelLine.isVisible());
-    before5.setVisible(b && labelColumn.isVisible());
+    previousPlaceLabel.setVisible(b);
+    previousNumPlaceLabel.setVisible(b);
+    previousLineLabel.setVisible(b && labelLine.isVisible());
+    previousColumnLabel.setVisible(b && labelColumn.isVisible());
   }
 
   public void enableAll(boolean enable) {

@@ -44,8 +44,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.9
- * @since 21/10/21
+ * @version 29.0
+ * @since 22/10/21
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -65,8 +65,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     addButton = new MyCellarButton(LabelType.INFO, "071", new AddAction());
     cancelButton = new MyCellarButton(LabelType.INFO, "055", new CancelAction());
 
-    panelPlace.setModifyActive(false);
-    panelGeneral.setModifyActive(false);
+    panelPlace.setModifyActive(true);
+    panelGeneral.setModifyActive(true);
     panelWineAttribute.setModifyActive();
     commentTextArea.setModifyActive(true);
     addButton.setMnemonic(ajouterChar);
@@ -190,6 +190,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       }
       Debug("Adding / Modifying...");
 
+      final String annee = panelGeneral.updateYear(); // Keep it here before it become not editable
       if (isModify) {
         //On grise les champs en cours de modif
         Debug("Modifying in Progress...");
@@ -197,7 +198,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         enableAll(false);
       }
 
-      final String annee = panelGeneral.updateYear();
       int countStillToAdd = panelWineAttribute.getNbItems();
       Place place = panelPlace.getSelectedPlace();
       Rangement rangement = place.getRangement();
@@ -736,6 +736,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     if (listVin != null) {
       remove(listVin);
       listVin = null;
+      ProgramPanels.TABBED_PANE.setTitleAt(ProgramPanels.TABBED_PANE.getSelectedIndex(), Program.getLabel("Main.tabAdd", A_SINGLE));
     }
     panelGeneral.setSeveralItems(severalItems);
     panelPlace.managePlaceCombos();
@@ -743,7 +744,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     isModify = false;
     panelPlace.setBeforeLabelsVisible(false);
     addButton.setText(Program.getLabel("Infos071"));
-    ProgramPanels.TABBED_PANE.setTitleAt(ProgramPanels.TABBED_PANE.getSelectedIndex(), Program.getLabel("Main.tabAdd", A_SINGLE));
   }
 
   private boolean runExit() {

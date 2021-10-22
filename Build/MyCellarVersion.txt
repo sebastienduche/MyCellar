@@ -1,6 +1,6 @@
-4.1.9.8
-69
-MyCellar.jar@38702e58f17b588c843bdb5b414dc86b
+4.2.9.8
+70
+MyCellar.jar@3c6b1a714220877f885cb2dc624bf496
 Finish.html
 activation-1.0.2.jar@618e03383015bc1c14e90102361aa33f
 commons-collections4-4.2.jar@b290524be8a0dbb6521df95f4ce80c8d
@@ -11,6 +11,7 @@ commons-logging.jar@8a507817b28077e0478add944c64586a
 commons-net-3.0.1.jar@920c3efc7f8d4d887936ddc3fc9a8316
 commons-text-1.9.jar@c1c130c369aa86bfe4f7a7a920bc0223
 github-api-1.117.jar@f995910ad384073046df181a5dd48014
+GitHubServer.jar@c34aec0d7d537b140652230034170893
 jackson-annotations-2.10.2.jar@d9e46501509b1751d64c495ab088a6cf
 jackson-core-2.10.2.jar@5514a46e38331f8c8262ea63bf36483e
 jackson-databind-2.10.2.jar@057751b4e2dd1104be8caad6e9a3e589

@@ -87,6 +87,7 @@ import static mycellar.ProgramConstants.MY_CELLAR_XML;
 import static mycellar.ProgramConstants.PREVIEW_HTML;
 import static mycellar.ProgramConstants.PREVIEW_XML;
 import static mycellar.ProgramConstants.TEMP_PLACE;
+import static mycellar.ProgramConstants.THREE_DOTS;
 import static mycellar.ProgramConstants.TYPES_MUSIC_XML;
 import static mycellar.ProgramConstants.TYPES_XML;
 import static mycellar.ProgramConstants.UNTITLED1_SINFO;
@@ -100,8 +101,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 26.9
- * @since 22/10/21
+ * @version 27.0
+ * @since 26/10/21
  */
 
 public final class Program {
@@ -126,10 +127,10 @@ public final class Program {
   private static MyCellarFile myCellarFile = null;
   private static FileWriter oDebugFile = null;
   private static File debugFile = null;
-  private static String m_sWorkDir = null;
-  private static String m_sGlobalDir = null;
-  private static boolean m_bWorkDirCalculated = false;
-  private static boolean m_bGlobalDirCalculated = false;
+  private static String workDir = null;
+  private static String globalDir = null;
+  private static boolean workDirCalculated = false;
+  private static boolean globalDirCalculated = false;
   private static boolean modified = false;
   private static boolean listCaveModified = false;
   private static int nextID = -1;
@@ -479,19 +480,11 @@ public final class Program {
         .filter(myCellarObject -> myCellarObject.getAnneeInt() < 1000).count();
   }
 
-  /**
-   * getNbNonVintage
-   *
-   * @return int
-   */
   static int getNbNonVintage() {
     return (int) getStorage().getAllList().stream()
         .filter(bouteille -> Bouteille.isNonVintageYear(bouteille.getAnnee())).count();
   }
 
-  /**
-   * getAide: Appel de l'aide
-   */
   public static void getAide() {
     File f = new File("./Help/MyCellar.hs");
     if (f.exists()) {
@@ -623,7 +616,6 @@ public final class Program {
     PLACES.add(rangement);
     setListCaveModified();
     setModified();
-    Debug("Program: Sorting places...");
     Collections.sort(PLACES);
   }
 
@@ -847,7 +839,7 @@ public final class Program {
       ProgramPanels.getSearch().ifPresent(Search::clearResults);
     }
     ProgramPanels.clearObjectsVariables();
-    m_bWorkDirCalculated = false;
+    workDirCalculated = false;
     TRASH.clear();
     modified = false;
     listCaveModified = false;
@@ -900,28 +892,28 @@ public final class Program {
    * Retourne le nom du repertoire des proprietes globales.
    */
   private static String getGlobalDir() {
-    if (m_bGlobalDirCalculated) {
-      return m_sGlobalDir + File.separator;
+    if (globalDirCalculated) {
+      return globalDir + File.separator;
     }
-    m_bGlobalDirCalculated = true;
+    globalDirCalculated = true;
     String sDir = System.getProperty("user.home");
     if (sDir.isEmpty()) {
-      m_sGlobalDir = "./Object/Global";
+      globalDir = "./Object/Global";
     } else {
-      m_sGlobalDir = sDir + "/MyCellar/Global";
+      globalDir = sDir + "/MyCellar/Global";
     }
-    File f_obj = new File(m_sGlobalDir);
-    if (!f_obj.exists()) {
-      if (!f_obj.mkdir()) {
-        Debug("ERROR: Unable to create directoy: " + f_obj.getAbsolutePath());
+    File file = new File(globalDir);
+    if (!file.exists()) {
+      if (!file.mkdir()) {
+        Debug("ERROR: Unable to create directoy: " + file.getAbsolutePath());
       }
     }
 
-    return m_sGlobalDir + File.separator;
+    return globalDir + File.separator;
   }
 
   public static boolean hasWorkDir() {
-    return m_bWorkDirCalculated;
+    return workDirCalculated;
   }
 
   /**
@@ -930,44 +922,44 @@ public final class Program {
    * @param withEndSlash
    */
   public static String getWorkDir(boolean withEndSlash) {
-    if (m_bWorkDirCalculated) {
+    if (workDirCalculated) {
       if (withEndSlash) {
-        return m_sWorkDir + File.separator;
+        return workDir + File.separator;
       }
-      return m_sWorkDir;
+      return workDir;
     }
-    m_bWorkDirCalculated = true;
+    workDirCalculated = true;
     Debug("Program: Calculating work directory.");
     String sDir = System.getProperty("user.home");
     if (sDir.isEmpty()) {
-      m_sWorkDir = "." + File.separator + "Object";
+      workDir = "." + File.separator + "Object";
     } else {
-      m_sWorkDir = sDir + File.separator + "MyCellar";
+      workDir = sDir + File.separator + "MyCellar";
     }
-    File f_obj = new File(m_sWorkDir);
-    if (!f_obj.exists()) {
-      if (!f_obj.mkdir()) {
-        Debug("ERROR: Unable to create directoy: " + f_obj.getAbsolutePath());
+    File file = new File(workDir);
+    if (!file.exists()) {
+      if (!file.mkdir()) {
+        Debug("ERROR: Unable to create directoy: " + file.getAbsolutePath());
       }
     }
 
     String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-    m_sWorkDir += File.separator + time;
+    workDir += File.separator + time;
 
-    f_obj = new File(m_sWorkDir);
-    if (!f_obj.exists()) {
-      if (!f_obj.mkdir()) {
-        Debug("ERROR: Unable to create directoy: " + f_obj.getAbsolutePath());
+    file = new File(workDir);
+    if (!file.exists()) {
+      if (!file.mkdir()) {
+        Debug("ERROR: Unable to create directoy: " + file.getAbsolutePath());
       }
     }
 
-    Debug("Program: work directory: " + m_sWorkDir);
-    DIR_TO_DELETE.add(new File(m_sWorkDir));
+    Debug("Program: work directory: " + workDir);
+    DIR_TO_DELETE.add(new File(workDir));
 
     if (withEndSlash) {
-      return m_sWorkDir + File.separator;
+      return workDir + File.separator;
     }
-    return m_sWorkDir;
+    return workDir;
   }
 
   static String getShortFilename() {
@@ -1099,7 +1091,7 @@ public final class Program {
     String label = getLabel(id, true);
     label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
     if (labelProperty.isThreeDashes()) {
-      label += "...";
+      label += THREE_DOTS;
     }
     if (labelProperty.isDoubleQuote()) {
       label += LanguageFileLoader.isFrench() ? " :" : ":";

@@ -21,14 +21,10 @@ import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
-import mycellar.importer.Importer;
 import mycellar.launcher.MyCellarServer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
-import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.Supprimer_Rangement;
-import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
 import net.miginfocom.swing.MigLayout;
 
@@ -78,6 +74,8 @@ import static mycellar.ProgramConstants.MAIN_VERSION;
 import static mycellar.ProgramConstants.OPTIONS_PARAM;
 import static mycellar.ProgramConstants.RESTART_COMMAND;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
+import static mycellar.general.ProgramPanels.addTab;
+import static mycellar.general.ProgramPanels.selectOrAddTab;
 
 /**
  * Titre : Cave &agrave; vin
@@ -86,8 +84,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.4
- * @since 22/10/21
+ * @version 30.0
+ * @since 26/10/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1354,34 +1352,20 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
   final class AddWineAction extends AbstractAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Main.tabAdd";
 
     private AddWineAction() {
-      super(Program.getLabel("Main.tabAdd", LabelProperty.SINGLE), MyCellarImage.WINE);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Main.tabAdd", LabelProperty.SINGLE));
+      super(Program.getLabel(LABEL, LabelProperty.SINGLE), MyCellarImage.WINE);
+      putValue(SHORT_DESCRIPTION, Program.getLabel(LABEL, LabelProperty.SINGLE));
       putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getAddVin() == null) {
-        try {
-          final AddVin addVin = ProgramPanels.createAddVin();
-          ProgramPanels.TABBED_PANE.add(Program.getLabel("Main.tabAdd", LabelProperty.SINGLE), addVin);
-          ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.WINE);
-          Utils.addCloseButton(ProgramPanels.TABBED_PANE, addVin);
-        } catch (RuntimeException e) {
-          Program.showException(e);
-        }
+        addTab(ProgramPanels.createAddVin(), LABEL, MyCellarImage.WINE);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getAddVin());
-      } catch (IllegalArgumentException e) {
-        final AddVin addVin = ProgramPanels.getAddVin();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Main.tabAdd", LabelProperty.SINGLE), addVin);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.WINE);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, addVin);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(addVin);
-      }
+      selectOrAddTab(ProgramPanels.getAddVin(), LABEL, MyCellarImage.WINE);
       ProgramPanels.getAddVin().reInit();
       updateMainPanel();
     }
@@ -1389,72 +1373,45 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
   final class AddPlaceAction extends AbstractAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Infos010";
 
     private AddPlaceAction() {
       super(Program.getLabel("Infos109"), MyCellarImage.PLACE);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos010"));
+      putValue(SHORT_DESCRIPTION, Program.getLabel(LABEL));
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getCreerRangement() == null) {
-        try {
-          final Creer_Rangement creerRangement = ProgramPanels.createCreerRangement();
-          ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos010"), creerRangement);
-          ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-          Utils.addCloseButton(ProgramPanels.TABBED_PANE, creerRangement);
-        } catch (RuntimeException e) {
-          Program.showException(e);
-        }
+        addTab(ProgramPanels.createCreerRangement(), LABEL, MyCellarImage.PLACE);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getCreerRangement());
-      } catch (IllegalArgumentException e) {
-        final Creer_Rangement creerRangement = ProgramPanels.createCreerRangement();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos010"), creerRangement);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, creerRangement);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(creerRangement);
-      }
+      selectOrAddTab(ProgramPanels.getAddVin(), LABEL, MyCellarImage.PLACE);
       updateMainPanel();
     }
   }
 
   final class DeletePlaceAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Infos004";
 
     private DeletePlaceAction() {
       super(LabelType.INFO_OTHER, "Main.Delete", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.DELPLACE);
-      setDescriptionLabelCode("Infos004");
+      setDescriptionLabelCode(LABEL);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getSupprimerRangement() == null) {
-        try {
-          final Supprimer_Rangement supprimerRangement = ProgramPanels.createSupprimerRangement();
-          ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos004"), supprimerRangement);
-          ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.DELPLACE);
-          Utils.addCloseButton(ProgramPanels.TABBED_PANE, supprimerRangement);
-        } catch (RuntimeException e) {
-          Program.showException(e);
-        }
+        addTab(ProgramPanels.createSupprimerRangement(), LABEL, MyCellarImage.DELPLACE);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getSupprimerRangement());
-      } catch (IllegalArgumentException e) {
-        final Supprimer_Rangement supprimerRangement = ProgramPanels.createSupprimerRangement();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos004"), supprimerRangement);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.DELPLACE);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, supprimerRangement);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(supprimerRangement);
-      }
+      selectOrAddTab(ProgramPanels.getSupprimerRangement(), LABEL, MyCellarImage.DELPLACE);
       updateMainPanel();
     }
   }
 
   final class ModifyPlaceAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Infos007";
 
     private ModifyPlaceAction() {
       super(LabelType.INFO, "079", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.MODIFYPLACE);
@@ -1464,31 +1421,17 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getModifierRangement() == null) {
-        try {
-          final Creer_Rangement modifierRangement = ProgramPanels.createModifierRangement();
-          ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos007"), modifierRangement);
-          ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.MODIFYPLACE);
-          Utils.addCloseButton(ProgramPanels.TABBED_PANE, modifierRangement);
-        } catch (RuntimeException e) {
-          Program.showException(e);
-        }
+        addTab(ProgramPanels.createModifierRangement(), LABEL, MyCellarImage.MODIFYPLACE);
       }
+      selectOrAddTab(ProgramPanels.getModifierRangement(), LABEL, MyCellarImage.MODIFYPLACE);
       ProgramPanels.getModifierRangement().updateView();
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getModifierRangement());
-      } catch (IllegalArgumentException e) {
-        final Creer_Rangement modifierRangement = ProgramPanels.createModifierRangement();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos007"), modifierRangement);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.MODIFYPLACE);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, modifierRangement);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(modifierRangement);
-      }
       updateMainPanel();
     }
   }
 
   final class SearchAction extends AbstractAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Main.tabSearchSimple";
 
     private SearchAction() {
       super(Program.getLabel("Main.tabSearchButton", LabelProperty.SINGLE), MyCellarImage.SEARCH);
@@ -1498,6 +1441,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getSearch().isEmpty()) {
+        addTab(ProgramPanels.createSearch(), LABEL, MyCellarImage.SEARCH);
+      }
+      selectOrAddTab(ProgramPanels.getSearch().get(), LABEL, MyCellarImage.SEARCH);
+      updateMainPanel();
+/*      if (ProgramPanels.getSearch().isEmpty()) {
         final Search search = ProgramPanels.createSearch();
         ProgramPanels.TABBED_PANE.add(Program.getLabel("Main.tabSearchSimple"), search);
         ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.SEARCH);
@@ -1512,71 +1460,51 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
         Utils.addCloseButton(ProgramPanels.TABBED_PANE, search);
         ProgramPanels.TABBED_PANE.setSelectedComponent(search);
       }
-      updateMainPanel();
+      updateMainPanel();*/
     }
   }
 
   final class CreateTabAction extends AbstractAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Infos008";
 
     private CreateTabAction() {
       super(Program.getLabel("Infos093"), MyCellarImage.TABLE);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos008"));
+      putValue(SHORT_DESCRIPTION, Program.getLabel(LABEL));
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getCreerTableaux() == null) {
-        final Creer_Tableaux creerTableaux = ProgramPanels.createCreerTableaux();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos008"), creerTableaux);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.TABLE);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, creerTableaux);
+        addTab(ProgramPanels.createCreerTableaux(), LABEL, MyCellarImage.TABLE);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getCreerTableaux());
-      } catch (IllegalArgumentException e) {
-        final Creer_Tableaux creerTableaux = ProgramPanels.createCreerTableaux();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos008"), creerTableaux);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.TABLE);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, creerTableaux);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(creerTableaux);
-      }
+      selectOrAddTab(ProgramPanels.getCreerTableaux(), LABEL, MyCellarImage.TABLE);
       updateMainPanel();
     }
   }
 
   final class ImportFileAction extends AbstractAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Infos011";
 
     private ImportFileAction() {
       super(Program.getLabel("Infos107"), MyCellarImage.IMPORT);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos011"));
+      putValue(SHORT_DESCRIPTION, Program.getLabel(LABEL));
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-
       if (ProgramPanels.getImporter() == null) {
-        final Importer importer = ProgramPanels.createImporter();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos011"), importer);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.IMPORT);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, importer);
+        addTab(ProgramPanels.createImporter(), LABEL, MyCellarImage.IMPORT);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getImporter());
-      } catch (IllegalArgumentException e) {
-        final Importer importer = ProgramPanels.createImporter();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos011"), importer);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.IMPORT);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, importer);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(importer);
-      }
+      selectOrAddTab(ProgramPanels.getImporter(), LABEL, MyCellarImage.IMPORT);
       updateMainPanel();
     }
   }
 
   final class ExportFileAction extends AbstractAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Infos148";
 
     private ExportFileAction() {
       super(Program.getLabel("Infos108"), MyCellarImage.EXPORT);
@@ -1586,58 +1514,28 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getExport() == null) {
-        try {
-          final Export export = ProgramPanels.createExport();
-          ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos148"), export);
-          ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.EXPORT);
-          Utils.addCloseButton(ProgramPanels.TABBED_PANE, export);
-        } catch (RuntimeException e) {
-          Program.showException(e);
-        }
+        addTab(ProgramPanels.createExport(), LABEL, MyCellarImage.EXPORT);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getExport());
-      } catch (IllegalArgumentException e) {
-        final Export export = ProgramPanels.createExport();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos148"), export);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.EXPORT);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, export);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(export);
-      }
+      selectOrAddTab(ProgramPanels.getExport(), LABEL, MyCellarImage.EXPORT);
       updateMainPanel();
     }
   }
 
   final class StatAction extends AbstractAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Infos009";
 
     private StatAction() {
       super(Program.getLabel("Infos009"), MyCellarImage.STATS);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos009"));
+      putValue(SHORT_DESCRIPTION, Program.getLabel(LABEL));
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getStat() == null) {
-        try {
-          final Stat stat = ProgramPanels.createStat();
-          stat.setVisible(true);
-          ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos009"), stat);
-          ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.STATS);
-          Utils.addCloseButton(ProgramPanels.TABBED_PANE, stat);
-        } catch (RuntimeException e) {
-          Program.showException(e);
-        }
+        addTab(ProgramPanels.createStat(), LABEL, MyCellarImage.STATS);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getStat());
-      } catch (IllegalArgumentException e) {
-        final Stat stat = ProgramPanels.createStat();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos009"), stat);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.STATS);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, stat);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(stat);
-      }
+      selectOrAddTab(ProgramPanels.getStat(), LABEL, MyCellarImage.STATS);
       ProgramPanels.getStat().updateView();
       updateMainPanel();
     }
@@ -1645,6 +1543,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
   class ShowHistoryAction extends MyCellarAction {
     private static final long serialVersionUID = -2981766233846291757L;
+    private static final String LABEL = "Infos341";
 
     private ShowHistoryAction() {
       super(LabelType.INFO, "341", LabelProperty.SINGLE.withThreeDashes());
@@ -1653,24 +1552,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getShowHistory() == null) {
-        try {
-          final ShowHistory showHistory = ProgramPanels.createShowHistory();
-          ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos341"), showHistory);
-          ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, null);
-          Utils.addCloseButton(ProgramPanels.TABBED_PANE, showHistory);
-        } catch (RuntimeException e) {
-          Program.showException(e);
-        }
+        addTab(ProgramPanels.createShowHistory(), LABEL, null);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getShowHistory());
-      } catch (IllegalArgumentException e) {
-        final ShowHistory showHistory = ProgramPanels.createShowHistory();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos341"), showHistory);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, null);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, showHistory);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(showHistory);
-      }
+      selectOrAddTab(ProgramPanels.getShowHistory(), LABEL, null);
       ProgramPanels.getShowHistory().refresh();
       updateMainPanel();
     }
@@ -1709,6 +1593,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
   final class ShowFileAction extends AbstractAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Infos325";
 
     private ShowFileAction() {
       super(Program.getLabel("Infos324"), MyCellarImage.SHOW);
@@ -1718,91 +1603,55 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getShowFile() == null) {
-        final ShowFile showfile = ProgramPanels.createShowFile();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos325"), showfile);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.SHOW);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, showfile);
+        addTab(ProgramPanels.createShowFile(), LABEL, MyCellarImage.SHOW);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getShowFile());
-      } catch (IllegalArgumentException e) {
-        final ShowFile showfile = ProgramPanels.createShowFile();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos325"), showfile);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.SHOW);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, showfile);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(showfile);
-      }
+      selectOrAddTab(ProgramPanels.getShowFile(), LABEL, MyCellarImage.SHOW);
       updateMainPanel();
     }
   }
 
   final class ShowTrashAction extends AbstractAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Main.ShowTrash";
 
     private ShowTrashAction() {
       super("", MyCellarImage.TRASH);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Main.ShowTrash"));
+      putValue(SHORT_DESCRIPTION, Program.getLabel(LABEL));
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getShowTrash() == null) {
-        final ShowFile showTrash = ProgramPanels.createShowTrash();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Main.ShowTrash"), showTrash);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.TRASH);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, showTrash);
+        addTab(ProgramPanels.createShowTrash(), LABEL, MyCellarImage.TRASH);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getShowTrash());
-      } catch (IllegalArgumentException e) {
-        final ShowFile showTrash = ProgramPanels.createShowTrash();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Main.ShowTrash"), showTrash);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.TRASH);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, showTrash);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(showTrash);
-      }
+      selectOrAddTab(ProgramPanels.getShowTrash(), LABEL, MyCellarImage.TRASH);
       ProgramPanels.getShowTrash().updateView();
       updateMainPanel();
     }
   }
 
   final class ManagePlaceAction extends AbstractAction {
-
     private static final long serialVersionUID = -5144284671743409095L;
+    private static final String LABEL = "Main.ManagePlace";
 
     private ManagePlaceAction() {
       super(Program.getLabel("Main.ManagePlace"), MyCellarImage.PLACE);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Main.ManagePlace"));
+      putValue(SHORT_DESCRIPTION, Program.getLabel(LABEL));
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getCellarOrganizerPanel() == null) {
-        try {
-          final CellarOrganizerPanel cellarOrganizerPanel = ProgramPanels.createCellarOrganizerPanel();
-          ProgramPanels.TABBED_PANE.add(Program.getLabel("Main.ManagePlace"), cellarOrganizerPanel);
-          ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-          Utils.addCloseButton(ProgramPanels.TABBED_PANE, cellarOrganizerPanel);
-        } catch (RuntimeException e) {
-          Program.showException(e);
-        }
+        addTab(ProgramPanels.createCellarOrganizerPanel(), LABEL, MyCellarImage.PLACE);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getCellarOrganizerPanel());
-      } catch (IllegalArgumentException e) {
-        final CellarOrganizerPanel cellarOrganizerPanel = ProgramPanels.createCellarOrganizerPanel();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Main.ManagePlace"), cellarOrganizerPanel);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.PLACE);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, cellarOrganizerPanel);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(cellarOrganizerPanel);
-      }
+      selectOrAddTab(ProgramPanels.getCellarOrganizerPanel(), LABEL, MyCellarImage.PLACE);
       updateMainPanel();
     }
   }
 
   final class ParametersAction extends MyCellarAction {
-
     private static final long serialVersionUID = -5144284671743409095L;
+    private static final String LABEL = "Infos156";
 
     private ParametersAction() {
       super(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PARAMETER);
@@ -1811,24 +1660,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getParametres() == null) {
-        try {
-          final Parametres parametres = ProgramPanels.createParametres();
-          ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos156"), parametres);
-          ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.PARAMETER);
-          Utils.addCloseButton(ProgramPanels.TABBED_PANE, parametres);
-        } catch (RuntimeException e) {
-          Program.showException(e);
-        }
+        addTab(ProgramPanels.createParametres(), LABEL, MyCellarImage.PARAMETER);
       }
-      try {
-        ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getParametres());
-      } catch (IllegalArgumentException e) {
-        final Parametres parametres = ProgramPanels.createParametres();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos156"), parametres);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, MyCellarImage.PARAMETER);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, parametres);
-        ProgramPanels.TABBED_PANE.setSelectedComponent(parametres);
-      }
+      selectOrAddTab(ProgramPanels.getParametres(), LABEL, MyCellarImage.PARAMETER);
       updateMainPanel();
     }
   }

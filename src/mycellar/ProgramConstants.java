@@ -10,12 +10,12 @@ import java.time.format.DateTimeFormatter;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 14/10/21
+ * @version 0.2
+ * @since 26/10/21
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.2.9.8";
+  public static final String INTERNAL_VERSION = "4.3.0.2";
   public static final int VERSION = 71;
   public static final String MAIN_VERSION = VERSION + " ZE";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
@@ -33,6 +33,8 @@ public final class ProgramConstants {
   public static final DateTimeFormatter DATE_FORMATER_DDMMYYYY = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   public static final DateTimeFormatter DATE_FORMATER_DD_MM_YYYY = DateTimeFormatter.ofPattern("dd-MM-yyyy");
   public static final DateTimeFormatter DATE_FORMATER_DD_MM_YYYY_HH_MM = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+  public static final String STAR = "*";
+  public static final String THREE_DOTS = "...";
   static final String INFOS_VERSION = " 2021 v";
   static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
   static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);

@@ -84,14 +84,20 @@ import static mycellar.ProgramConstants.FRA;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
 import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.MY_CELLAR_XML;
+import static mycellar.ProgramConstants.ON;
+import static mycellar.ProgramConstants.ONE;
+import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.PREVIEW_HTML;
 import static mycellar.ProgramConstants.PREVIEW_XML;
+import static mycellar.ProgramConstants.SLASH;
 import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.ProgramConstants.THREE_DOTS;
+import static mycellar.ProgramConstants.TIMESTAMP_PATTERN;
 import static mycellar.ProgramConstants.TYPES_MUSIC_XML;
 import static mycellar.ProgramConstants.TYPES_XML;
 import static mycellar.ProgramConstants.UNTITLED1_SINFO;
 import static mycellar.ProgramConstants.VERSION;
+import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 /**
@@ -111,7 +117,7 @@ public final class Program {
   public static final Rangement EMPTY_PLACE = new Rangement.CaisseBuilder("").build();
   public static final Rangement STOCK_PLACE = new Rangement.CaisseBuilder(TEMP_PLACE).build();
 
-  public static final CountryJaxb FRANCE = new CountryJaxb(FRA, "France");
+  public static final CountryJaxb FRANCE = new CountryJaxb(FRA, ProgramConstants.FRANCE);
   public static final CountryJaxb NO_COUNTRY = new CountryJaxb("");
   public static final CountryVignobleJaxb NO_VIGNOBLE = new CountryVignobleJaxb();
   public static final AppelationJaxb NO_APPELATION = new AppelationJaxb();
@@ -154,7 +160,7 @@ public final class Program {
         putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
       }
 
-      String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "F");
+      String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
       setProgramType(Program.Type.typeOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
       Debug("Program: Type of managed object: " + programType);
       setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
@@ -306,7 +312,7 @@ public final class Program {
       return;
     }
     String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
-    if (sVersion.isEmpty() || sVersion.contains(".")) {
+    if (sVersion.isEmpty() || sVersion.contains(ONE_DOT)) {
       putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
     }
     int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
@@ -402,7 +408,7 @@ public final class Program {
       reader.close();
       stream.close();
       String decoded = new String(Base64.decodeBase64(line.getBytes()));
-      final String[] values = decoded.split("/");
+      final String[] values = decoded.split(SLASH);
 
       final GitHub gitHub = GitHub.connect(values[0], values[1]);
       final GHGistBuilder gist = gitHub.createGist();
@@ -943,7 +949,7 @@ public final class Program {
       }
     }
 
-    String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+    String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(TIMESTAMP_PATTERN));
     workDir += File.separator + time;
 
     file = new File(workDir);
@@ -997,8 +1003,8 @@ public final class Program {
 
   public static boolean getCaveConfigBool(String key, boolean defaultValue) {
     if (null != getCaveConfig()) {
-      final String value = getCaveConfig().getString(key, defaultValue ? "1" : "0");
-      return ("1".equals(value) || "ON".equalsIgnoreCase(value));
+      final String value = getCaveConfig().getString(key, defaultValue ? ONE : ZERO);
+      return (ONE.equals(value) || ON.equalsIgnoreCase(value));
     }
     Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
     return defaultValue;
@@ -1025,12 +1031,12 @@ public final class Program {
   }
 
   static void putGlobalConfigBool(String key, boolean value) {
-    CONFIG_GLOBAL.put(key, value ? "1" : "0");
+    CONFIG_GLOBAL.put(key, value ? ONE : ZERO);
   }
 
   public static void putCaveConfigBool(String key, boolean value) {
     if (null != getCaveConfig()) {
-      getCaveConfig().put(key, value ? "1" : "0");
+      getCaveConfig().put(key, value ? ONE : ZERO);
     } else {
       Debug("Program: ERROR: Unable to put value in configCave: [" + key + " - " + value + "]");
     }
@@ -1270,7 +1276,7 @@ public final class Program {
       return;
     }
 
-    long time = Long.parseLong(LocalDateTime.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+    long time = Long.parseLong(LocalDateTime.now().minusMonths(2).format(DateTimeFormatter.ofPattern(TIMESTAMP_PATTERN)));
 
     final String[] list = file.list();
     if (list != null) {

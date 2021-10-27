@@ -26,6 +26,9 @@ public class MyCellarLabelManagement {
   }
 
   static void updateText(IMyCellarComponent component, LabelType type, String code, String value, LabelProperty labelProperty) {
+    if (type == null || code == null) {
+      return;
+    }
     if (value == null) {
       switch (type) {
         case INFO:
@@ -40,6 +43,7 @@ public class MyCellarLabelManagement {
         case ERROR_OTHER:
           component.setText(Program.getError(code, labelProperty));
           break;
+        default:
       }
     } else {
       switch (type) {
@@ -55,6 +59,7 @@ public class MyCellarLabelManagement {
         case ERROR_OTHER:
           component.setText(MessageFormat.format(Program.getError(code, labelProperty), value).strip());
           break;
+        default:
       }
     }
   }

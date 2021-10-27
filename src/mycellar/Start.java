@@ -615,19 +615,19 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     menuEdition.setText(Program.getLabel("Infos245"));
 
     // differents choix de chaque menu
-    menuImport.setText(Program.getLabel("Infos107")); // Import...
-    menuQuit.setText(Program.getLabel("Infos003")); // Quitter
-    menuExport.setText(Program.getLabel("Infos108")); // Export...
-    menuStats.setText(Program.getLabel("Infos009")); // Statistiques
-    menuTable.setText(Program.getLabel("Infos093")); // Tableaux...
-    menuAddPlace.setText(Program.getLabel("Infos109")); // Ajouter...
-    menuAddObject.setText(Program.getLabel("Infos109")); // Ajouter...
-    menuHelp.setText(Program.getLabel("Infos111")); // Aide Contextuelle...
-    menuSaveAs.setText(Program.getLabel("Infos371")); // Sauvegarder
-    menuNewFile.setText(Program.getLabel("Infos378"));
-    menuOpenFile.setText(Program.getLabel("Infos372"));
-    menuSave.setText(Program.getLabel("Infos326"));
-    menuShowFile.setText(Program.getLabel("Infos324"));
+//    menuImport.setText(Program.getLabel("Infos107")); // Import...
+//    menuQuit.setText(Program.getLabel("Infos003")); // Quitter
+//    menuExport.setText(Program.getLabel("Infos108")); // Export...
+//    menuStats.setText(Program.getLabel("Infos009")); // Statistiques
+//    menuTable.setText(Program.getLabel("Infos093")); // Tableaux...
+//    menuAddPlace.setText(Program.getLabel("Infos109")); // Ajouter...
+//    menuAddObject.setText(Program.getLabel("Infos109")); // Ajouter...
+//    menuHelp.setText(Program.getLabel("Infos111")); // Aide Contextuelle...
+//    menuSaveAs.setText(Program.getLabel("Infos371")); // Sauvegarder
+//    menuNewFile.setText(Program.getLabel("Infos378"));
+//    menuOpenFile.setText(Program.getLabel("Infos372"));
+//    menuSave.setText(Program.getLabel("Infos326"));
+//    menuShowFile.setText(Program.getLabel("Infos324"));
     menuShowWorksheet.setText(Program.getLabel("ShowFile.Worksheet"));
     menuSearch.setText(Program.getLabel("Main.tabSearchButton"));
 
@@ -734,14 +734,8 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
       return;
     }
 
-    NewAction newAction = new NewAction();
-    OpenAction openAction = new OpenAction();
-    SaveAction saveAction = new SaveAction();
     SaveAsAction saveAsAction = new SaveAsAction();
     SearchAction searchAction = new SearchAction();
-    CutAction cutAction = new CutAction();
-    CopyAction copyAction = new CopyAction();
-    PasteAction pasteAction = new PasteAction();
     AddPlaceAction addPlaceAction = new AddPlaceAction();
     ShowFileAction showFileAction = new ShowFileAction();
     CreateTabAction createTabAction = new CreateTabAction();
@@ -791,20 +785,13 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
     addButton.setAction(addWineAction);
     menuAddObject.setAction(addWineAction);
-    newButton.setAction(newAction);
-    newButton.setText("");
-    openButton.setAction(openAction);
-    openButton.setText("");
-    buttonSave.setAction(saveAction);
-    buttonSave.setText("");
+    newButton.setAction(new NewAction(false));
+    openButton.setAction(new OpenAction(false));
+    buttonSave.setAction(new SaveAction(false));
     buttonPdf.setAction(new ExportPDFAction());
-    buttonPdf.setText("");
-    cutButton.setAction(cutAction);
-    copyButton.setAction(copyAction);
-    pasteButton.setAction(pasteAction);
-    cutButton.setText("");
-    copyButton.setText("");
-    pasteButton.setText("");
+    cutButton.setAction(new CutAction(false));
+    copyButton.setAction(new CopyAction(false));
+    pasteButton.setAction(new PasteAction(false));
     searchButton.setAction(searchAction);
     createButton.setAction(addPlaceAction);
     modifyButton.setAction(new ModifyPlaceAction());
@@ -820,18 +807,18 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     menuAddPlace.setAction(addPlaceAction);
     menuAddObject.setAction(addWineAction);
     menuSearch.setAction(searchAction);
-    menuNewFile.setAction(newAction);
-    menuOpenFile.setAction(openAction);
-    menuSave.setAction(saveAction);
+    menuNewFile.setAction(new NewAction(true));
+    menuOpenFile.setAction(new OpenAction(true));
+    menuSave.setAction(new SaveAction(true));
     menuSaveAs.setAction(saveAsAction);
     menuImport.setAction(importFileAction);
     menuExport.setAction(exportFileAction);
     menuStats.setAction(statAction);
     menuTable.setAction(createTabAction);
     menuShowFile.setAction(showFileAction);
-    menuCut.setAction(cutAction);
-    menuCopy.setAction(copyAction);
-    menuPaste.setAction(pasteAction);
+    menuCut.setAction(new CutAction(true));
+    menuCopy.setAction(new CopyAction(true));
+    menuPaste.setAction(new PasteAction(true));
     menuShowWorksheet.setAction(new OpenWorkSheetAction());
 
     JToolBar toolBar = new JToolBar();
@@ -1151,9 +1138,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
   static final class CutAction extends MyCellarAction {
     private static final long serialVersionUID = -8024045169612180263L;
 
-    private CutAction() {
+    private CutAction(boolean withText) {
       super(LabelType.INFO, "241", LabelProperty.SINGLE, MyCellarImage.CUT);
       setDescriptionLabelCode("Infos241");
+      setWithText(withText);
     }
 
     @Override
@@ -1167,9 +1155,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
   static final class CopyAction extends MyCellarAction {
     private static final long serialVersionUID = -4416042464174203695L;
 
-    private CopyAction() {
+    private CopyAction(boolean withText) {
       super(LabelType.INFO, "242", LabelProperty.SINGLE, MyCellarImage.COPY);
       setDescriptionLabelCode("Infos242");
+      setWithText(withText);
     }
 
     @Override
@@ -1183,9 +1172,10 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
   static final class PasteAction extends MyCellarAction {
     private static final long serialVersionUID = 7152419581737782003L;
 
-    private PasteAction() {
+    private PasteAction(boolean withText) {
       super(LabelType.INFO, "243", LabelProperty.SINGLE, MyCellarImage.PASTE);
       setDescriptionLabelCode("Infos243");
+      setWithText(withText);
     }
 
     @Override
@@ -1228,12 +1218,13 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class OpenAction extends AbstractAction {
+  final class OpenAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
 
-    private OpenAction() {
-      super(Program.getLabel("Infos372"), MyCellarImage.OPEN);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos372"));
+    private OpenAction(boolean withText) {
+      super(LabelType.INFO, "372", LabelProperty.SINGLE, MyCellarImage.OPEN);
+      setDescriptionLabelCode("Infos372");
+      setWithText(withText);
     }
 
     @Override
@@ -1266,12 +1257,13 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class NewAction extends AbstractAction {
+  final class NewAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
 
-    private NewAction() {
-      super(Program.getLabel("Infos378"), MyCellarImage.NEW);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos378"));
+    private NewAction(boolean withText) {
+      super(LabelType.INFO, "378", MyCellarImage.NEW);
+      setDescriptionLabelCode("Infos378");
+      setWithText(withText);
     }
 
     @Override
@@ -1290,12 +1282,13 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class SaveAction extends AbstractAction {
+  final class SaveAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
 
-    private SaveAction() {
-      super(Program.getLabel("Infos326"), MyCellarImage.SAVE);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos326"));
+    private SaveAction(boolean withText) {
+      super(LabelType.INFO, "326", MyCellarImage.SAVE);
+      setDescriptionLabelCode("Infos326");
+      setWithText(withText);
     }
 
     @Override
@@ -1328,12 +1321,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class SaveAsAction extends AbstractAction {
+  final class SaveAsAction extends MyCellarAction {
     private static final long serialVersionUID = -2340786091568284033L;
 
     private SaveAsAction() {
-      super(Program.getLabel("Infos371"), MyCellarImage.SAVEAS);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos371"));
+      super(LabelType.INFO, "371", MyCellarImage.SAVEAS);
+      setDescriptionLabelCode("Infos371");
     }
 
     @Override
@@ -1347,7 +1340,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     private static final String LABEL = "Main.tabAdd";
 
     private AddWineAction() {
-      super(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE, MyCellarImage.WINE);
+      super(LabelType.INFO_OTHER, LABEL, MyCellarImage.WINE);
       putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
       setDescriptionLabelCode(LABEL);
     }
@@ -1368,7 +1361,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     private static final String LABEL = "Infos010";
 
     private AddPlaceAction() {
-      super(LabelType.INFO, "109", LabelProperty.SINGLE, MyCellarImage.PLACE);
+      super(LabelType.INFO, "109", MyCellarImage.PLACE);
       setDescriptionLabelCode(LABEL);
     }
 
@@ -1426,7 +1419,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     private static final String LABEL = "Main.tabSearchSimple";
 
     private SearchAction() {
-      super(LabelType.INFO_OTHER, "Main.tabSearchButton", LabelProperty.SINGLE, MyCellarImage.SEARCH);
+      super(LabelType.INFO_OTHER, "Main.tabSearchButton", MyCellarImage.SEARCH);
       setDescriptionLabelCode("Main.tabSearch");
     }
 
@@ -1440,13 +1433,13 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class CreateTabAction extends AbstractAction {
+  final class CreateTabAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Infos008";
 
     private CreateTabAction() {
-      super(Program.getLabel("Infos008"), MyCellarImage.TABLE);
-      putValue(SHORT_DESCRIPTION, Program.getLabel(LABEL));
+      super(LabelType.INFO, "008", MyCellarImage.TABLE);
+      setDescriptionLabelCode(LABEL);
     }
 
     @Override
@@ -1459,13 +1452,13 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class ImportFileAction extends AbstractAction {
+  final class ImportFileAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Infos011";
 
     private ImportFileAction() {
-      super(Program.getLabel("Infos107"), MyCellarImage.IMPORT);
-      putValue(SHORT_DESCRIPTION, Program.getLabel(LABEL));
+      super(LabelType.INFO, "107", MyCellarImage.IMPORT);
+      setDescriptionLabelCode(LABEL);
     }
 
     @Override
@@ -1478,13 +1471,13 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class ExportFileAction extends AbstractAction {
+  final class ExportFileAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Infos148";
 
     private ExportFileAction() {
-      super(Program.getLabel("Infos108"), MyCellarImage.EXPORT);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos125"));
+      super(LabelType.INFO, "108", LabelProperty.SINGLE, MyCellarImage.EXPORT);
+      setDescriptionLabelCode(LABEL);
     }
 
     @Override
@@ -1497,13 +1490,13 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class StatAction extends AbstractAction {
+  final class StatAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Infos009";
 
     private StatAction() {
-      super(Program.getLabel("Infos009"), MyCellarImage.STATS);
-      putValue(SHORT_DESCRIPTION, Program.getLabel(LABEL));
+      super(LabelType.INFO, "009", MyCellarImage.STATS);
+      setDescriptionLabelCode(LABEL);
     }
 
     @Override
@@ -1536,12 +1529,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  class VignoblesAction extends AbstractAction {
+  class VignoblesAction extends MyCellarAction {
 
     private static final long serialVersionUID = -7956676252030557402L;
 
     private VignoblesAction() {
-      super(Program.getLabel("Infos165") + "...");
+      super(LabelType.INFO, "165", LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override
@@ -1550,12 +1543,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  class CapacityAction extends AbstractAction {
+  class CapacityAction extends MyCellarAction {
 
     private static final long serialVersionUID = -7204054967253027549L;
 
     private CapacityAction() {
-      super(Program.getLabel("Infos400") + "...");
+      super(LabelType.INFO, "400", LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override
@@ -1567,13 +1560,13 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class ShowFileAction extends AbstractAction {
+  final class ShowFileAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Infos325";
 
     private ShowFileAction() {
-      super(Program.getLabel("Infos324"), MyCellarImage.SHOW);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Infos324"));
+      super(LabelType.INFO, "324", MyCellarImage.SHOW);
+      setDescriptionLabelCode(LABEL);
     }
 
     @Override
@@ -1606,12 +1599,12 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     }
   }
 
-  final class ManagePlaceAction extends AbstractAction {
+  final class ManagePlaceAction extends MyCellarAction {
     private static final long serialVersionUID = -5144284671743409095L;
     private static final String LABEL = "Main.ManagePlace";
 
     private ManagePlaceAction() {
-      super(Program.getLabel("Main.ManagePlace"), MyCellarImage.PLACE);
+      super(LabelType.INFO_OTHER, "Main.ManagePlace", MyCellarImage.PLACE);
       putValue(SHORT_DESCRIPTION, Program.getLabel(LABEL));
     }
 

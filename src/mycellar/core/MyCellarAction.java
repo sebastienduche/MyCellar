@@ -22,6 +22,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   private final String code;
   private final LabelProperty labelProperty;
   private String descriptionLabelCode;
+  private boolean withText = true;
 
   public MyCellarAction(LabelType type, String code, LabelProperty labelProperty) {
     this.type = type;
@@ -40,6 +41,10 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
     MyCellarLabelManagement.add(this);
   }
 
+  public MyCellarAction(LabelType type, String code, Icon icon) {
+    this(type, code, LabelProperty.SINGLE, icon);
+  }
+
   public LabelType getType() {
     return type;
   }
@@ -54,12 +59,19 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
 
   @Override
   public void setText(String text) {
-    putValue(Action.NAME, text);
+    putValue(Action.NAME, withText ? text : "");
     putValue(Action.SHORT_DESCRIPTION, descriptionLabelCode != null ? Program.getLabel(descriptionLabelCode, labelProperty) : text);
   }
 
   public void setDescriptionLabelCode(String code) {
     descriptionLabelCode = code;
+  }
+
+  public void setWithText(boolean withText) {
+    this.withText = withText;
+    if (!withText) {
+      setText("");
+    }
   }
 
   @Override

@@ -18,6 +18,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.FONT_PANEL;
 
 /**
@@ -27,8 +28,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 16/04/21
+ * @version 2.5
+ * @since 27/10/21
  */
 final class CSVOptions extends JDialog {
   static final long serialVersionUID = 230705;
@@ -37,9 +38,6 @@ final class CSVOptions extends JDialog {
   private final int nb_colonnes;
   private final List<MyCellarFields> listColumns;
 
-  /**
-   * CSVOptions: Constructeur pour la fenêtre d'options.
-   */
   CSVOptions() {
 
     Debug("Constructor");
@@ -81,9 +79,9 @@ final class CSVOptions extends JDialog {
     separator.addItem(Program.getLabel("Infos042"));
     separator.addItem(Program.getLabel("Infos043"));
     separator.addItem(Program.getLabel("Infos044"));
-    String key = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ",");
+    String key = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
     switch (key) {
-      case ";":
+      case COLUMNS_SEPARATOR:
         separator.setSelectedIndex(1);
         break;
       case ":":
@@ -138,7 +136,7 @@ final class CSVOptions extends JDialog {
         Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ",");
         break;
       case 1:
-        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ";");
+        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
         break;
       case 2:
         Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ":");

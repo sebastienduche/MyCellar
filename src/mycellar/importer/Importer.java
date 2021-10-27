@@ -69,6 +69,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 
 
 /**
@@ -78,8 +79,8 @@ import static mycellar.Program.toCleanString;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.6
- * @since 22/08/21
+ * @version 14.7
+ * @since 27/10/21
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -102,9 +103,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private final JTextField file = new JTextField();
 
 
-  /**
-   * Importer: Constructeur
-   */
   public Importer() {
     Debug("Constructor");
     MyCellarButton openit = new MyCellarButton(LabelType.INFO, "152");
@@ -273,12 +271,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     return bottle;
   }
 
-  /**
-   * parcourir_actionPerformed: Permet de parcourir les repertoires pour trouver
-   * le fichier a importer
-   *
-   * @param e ActionEvent
-   */
   private void parcourir_actionPerformed(ActionEvent e) {
 
     Debug("parcourir_actionPerforming...");
@@ -300,7 +292,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
         Erreur.showSimpleErreur(Program.getError("FileNotFound"));
-        Debug("ERROR: parcourir: File not found during Opening!");
+        Debug("ERROR: browseFile: File not found during Opening!");
         return;
       }
       Program.putCaveConfigString(MyCellarSettings.DIR, boiteFichier.getCurrentDirectory().toString());
@@ -308,6 +300,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       Filtre filtre = (Filtre) boiteFichier.getFileFilter();
       fic = MyCellarControl.controlAndUpdateExtension(fic, filtre);
       file.setText(fic);
+      Debug("parcourir_actionPerforming... End");
     }
   }
 
@@ -389,7 +382,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if ((type_xls.isSelected() || type_txt.isSelected()) && nb_choix == 0) {
         label_progression.setText("");
         Debug("ERROR: No field selected");
-        //"Aucun champs selectionnes");
+        //"Aucuns champs selectionnes");
         //"Veuillez selectionner des champs pour que les donnees soient traitees");
         Erreur.showSimpleErreur(Program.getError("Error025"), Program.getError("Error026"));
         importe.setEnabled(true);
@@ -503,7 +496,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             do {
               // Controle sur le nom
               resul = true;
-              if (nom1.contains("\"") || nom1.contains(";") || nom1.contains("<") || nom1.contains(">") || nom1.contains("?") || nom1.contains("\\") ||
+              if (nom1.contains("\"") || nom1.contains(COLUMNS_SEPARATOR) || nom1.contains("<") || nom1.contains(">") || nom1.contains("?") || nom1.contains("\\") ||
                   nom1.contains("/") || nom1.contains("|") || nom1.contains("*")) {
                 Options options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
                     Program.getError("Error126"), false);
@@ -561,7 +554,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             break;
           case 0:
           default:
-            separe = ";";
+            separe = COLUMNS_SEPARATOR;
         }
 
         try (var reader = new BufferedReader(new FileReader(f))) {
@@ -752,11 +745,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     return MyCellarFields.USELESS;
   }
 
-  /**
-   * keylistener_actionPerformed: Ecouteur de touche
-   *
-   * @param e KeyEvent
-   */
   private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == importChar && e.isControlDown()) {
       importe_actionPerformed(null);

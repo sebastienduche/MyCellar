@@ -7,14 +7,14 @@ import javax.swing.Action;
 import javax.swing.Icon;
 
 /**
- * Titre : Cave à vin
+ * Titre : Cave &agrave; vin
  * Description : Votre description
  * Copyright : Copyright (c) 2020
- * Société : Seb Informatique
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
- * @version 0.1
- * @since 04/12/20
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.2
+ * @since 27/10/21
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
@@ -55,7 +55,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   @Override
   public void setText(String text) {
     putValue(Action.NAME, text);
-    putValue(Action.SHORT_DESCRIPTION, descriptionLabelCode != null ? Program.getLabel(descriptionLabelCode) : text);
+    putValue(Action.SHORT_DESCRIPTION, descriptionLabelCode != null ? Program.getLabel(descriptionLabelCode, labelProperty) : text);
   }
 
   public void setDescriptionLabelCode(String code) {
@@ -65,5 +65,15 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   @Override
   public final void updateText() {
     MyCellarLabelManagement.updateText(this, type, code, null, labelProperty);
+  }
+
+  @Override
+  public MyCellarAction clone() {
+    try {
+      MyCellarAction clone = (MyCellarAction) super.clone();
+      return clone;
+    } catch (CloneNotSupportedException e) {
+      throw new AssertionError();
+    }
   }
 }

@@ -68,8 +68,8 @@ import static mycellar.ScreenType.VIGNOBLES;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 26/10/21
+ * @version 0.8
+ * @since 27/10/21
  */
 public class ProgramPanels {
 
@@ -453,6 +453,15 @@ public class ProgramPanels {
       Utils.addCloseButton(TABBED_PANE, component);
     } catch (RuntimeException e) {
       Program.showException(e);
+    }
+  }
+
+  public static void updateVisibility() {
+    int count = TABBED_PANE.getTabCount();
+    PANEL_INFOS.setVisible(count == 0);
+    TABBED_PANE.setVisible(count > 0);
+    if (count == 0) {
+      PANEL_INFOS.refresh();
     }
   }
 }

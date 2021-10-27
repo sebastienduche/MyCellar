@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.3.0.2";
+  public static final String INTERNAL_VERSION = "4.3.1.2";
   public static final int VERSION = 71;
   public static final String MAIN_VERSION = VERSION + " ZE";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
@@ -34,6 +34,7 @@ public final class ProgramConstants {
   public static final String ONE = "1";
   public static final String ZERO = "0";
   public static final String ON = "ON";
+  public static final String COLUMNS_SEPARATOR = ";";
   public static final DateTimeFormatter DATE_FORMATER_DDMMYYYY = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   public static final DateTimeFormatter DATE_FORMATER_DD_MM_YYYY = DateTimeFormatter.ofPattern("dd-MM-yyyy");
   public static final DateTimeFormatter DATE_FORMATER_DD_MM_YYYY_HH_MM = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");

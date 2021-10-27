@@ -70,6 +70,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -77,8 +79,8 @@ import java.util.stream.Collectors;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.8
- * @since 14/09/21
+ * @version 10.9
+ * @since 27/10/21
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -672,7 +674,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       }
       cols = new ArrayList<>();
       if (!savedColumns.isEmpty()) {
-        String[] values = savedColumns.split(";");
+        String[] values = savedColumns.split(COLUMNS_SEPARATOR);
         for (ShowFileColumn<?> c : columns) {
           for (String s : values) {
             if (s.equals(c.getField().name())) {
@@ -1102,7 +1104,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     List<ShowFileColumn<?>> cols = new ArrayList<>();
     if (!savedColumns.isEmpty()) {
-      String[] values = savedColumns.split(";");
+      String[] values = savedColumns.split(COLUMNS_SEPARATOR);
       for (ShowFileColumn<?> c : columns) {
         for (String s : values) {
           if (s.equals(c.getField().name())) {

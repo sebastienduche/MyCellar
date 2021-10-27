@@ -47,6 +47,7 @@ import java.util.Optional;
 import static mycellar.Program.getCave;
 import static mycellar.Program.throwNotImplementedIfNotFor;
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
 import static mycellar.ProgramConstants.TEMP_PLACE;
@@ -63,8 +64,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.1
- * @since 20/05/21
+ * @version 4.2
+ * @since 27/10/21
  */
 public final class RangementUtils {
 
@@ -102,7 +103,7 @@ public final class RangementUtils {
    */
   public static boolean write_CSV(final File fichier, final List<? extends IMyCellarObject> all, final JProgressBar progressBar) {
 
-    String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ";");
+    String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
 
     final EnumMap<MyCellarFields, Boolean> map = new EnumMap<>(MyCellarFields.class);
     for (var field : Objects.requireNonNull(MyCellarFields.getFieldsList())) {

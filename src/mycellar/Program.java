@@ -75,6 +75,7 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.BOUTEILLES_XML;
+import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.CONFIG_INI;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
@@ -107,8 +108,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.0
- * @since 26/10/21
+ * @version 27.1
+ * @since 27/10/21
  */
 
 public final class Program {
@@ -1309,7 +1310,7 @@ public final class Program {
     StringBuilder s = new StringBuilder();
     for (MyCellarFields f : cols) {
       if (s.length() != 0) {
-        s.append(";");
+        s.append(COLUMNS_SEPARATOR);
       }
       s.append(f.name());
     }
@@ -1319,7 +1320,7 @@ public final class Program {
   static ArrayList<MyCellarFields> getHTMLColumns() {
     ArrayList<MyCellarFields> cols = new ArrayList<>();
     String s = getCaveConfigString(MyCellarSettings.HTMLEXPORT_COLUMN, "");
-    String[] fields = s.split(";");
+    String[] fields = s.split(COLUMNS_SEPARATOR);
     for (String field : fields) {
       List<MyCellarFields> fieldsList = MyCellarFields.getFieldsList();
       if (null != fieldsList) {

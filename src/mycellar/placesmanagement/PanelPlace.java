@@ -389,6 +389,9 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   private void line_itemStateChanged(ItemEvent e) {
+	  if (isListenersDisabled()) {
+	      return;
+	    }
 	  SwingUtilities.invokeLater(() -> {
 	  Debug("Line_itemStateChanging...");
     int num_select = line.getSelectedIndex();
@@ -411,6 +414,9 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   private void column_itemStateChanged(ItemEvent e) {
+	  if (isListenersDisabled()) {
+	      return;
+	    }
     SwingUtilities.invokeLater(() -> {
       Debug("Column_itemStateChanging...");
       int nPlace = place.getSelectedIndex();
@@ -494,6 +500,10 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   public boolean isPlaceModified() {
     return place.getSelectedIndex() > 0;
+  }
+  
+  public void resetLabelEnd() {
+	  labelExist.setText("");
   }
 
   private static class ComboItem {

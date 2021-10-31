@@ -32,8 +32,8 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 22/10/21
+ * @version 1.1
+ * @since 31/10/21
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -351,7 +351,7 @@ public final class PanelPlace extends JPanel implements IPlace {
       labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu");
     }
     setLineColumnVisible(rangement);
-    Debug("Lieu_itemStateChanging... Done");
+    Debug("Lieu_itemStateChanging... End");
   }
 
   private void num_lieu_itemStateChanged(ItemEvent e) {
@@ -387,6 +387,8 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   private void line_itemStateChanged(ItemEvent e) {
+	SwingUtilities.invokeLater(() -> {
+		Debug("Line_itemStateChanging...");
     int num_select = line.getSelectedIndex();
     int emplacement = numPlace.getSelectedIndex();
     int lieu_select = place.getSelectedIndex();
@@ -402,6 +404,8 @@ public final class PanelPlace extends JPanel implements IPlace {
     for (int i = 1; i <= nb_col; i++) {
       column.addItem(new ComboItem(i));
     }
+    Debug("Line_itemStateChanging... End");
+	});
   }
 
   private void column_itemStateChanged(ItemEvent e) {

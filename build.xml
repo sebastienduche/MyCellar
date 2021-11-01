@@ -25,7 +25,7 @@
 		<copy file="./lib/poi-ooxml-4.0.0.jar" todir="./Build/lib"/>
 		<copy file="./lib/poi-ooxml-schemas-4.0.0.jar" todir="./Build/lib"/>
 		<copy file="./lib/xmlbeans-3.0.1.jar" todir="./Build/lib"/>
-		<copy file="./lib/GitHubServer.jar" todir="./Build/lib"/>
+		<copy file="./lib/GitHubServer-2.0.jar" todir="./Build/lib"/>
     	<!-- 5.7 -->
     	<copy file="./lib/activation-1.0.2.jar" todir="./Build/lib"/>
     	<copy file="./lib/jaxb-api-2.3.0.jar" todir="./Build/lib"/>

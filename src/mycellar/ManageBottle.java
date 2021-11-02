@@ -36,8 +36,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.0
- * @since 22/10/21
+ * @version 9.1
+ * @since 31/10/21
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -252,6 +252,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
+        panelPlace.resetLabelEnd();
         end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
       } else {
         return false;

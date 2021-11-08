@@ -80,6 +80,7 @@ import static mycellar.ProgramConstants.CONFIG_INI;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
+import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.EXTENSION;
 import static mycellar.ProgramConstants.FRA;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
@@ -108,8 +109,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.1
- * @since 27/10/21
+ * @version 27.2
+ * @since 08/11/21
  */
 
 public final class Program {
@@ -151,10 +152,22 @@ public final class Program {
     LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
   }
 
-  static void initConf() {
+  static void loadPropertiesAndSetProgramType() {
     try {
       Debug("Program: Initializing Configuration files...");
-      loadProperties();
+      if (loadProperties()) {
+        setProgramType(Program.Type.typeOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
+      } else {
+        setProgramType(Program.Type.typeOf(getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name())));
+      }
+    } catch (UnableToOpenFileException e) {
+      showException(e);
+    }
+  }
+
+  static void initializeLanguageProgramType() {
+    try {
+      Debug("Program: Initializing Language and Program type");
       LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
 
       if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
@@ -162,11 +175,10 @@ public final class Program {
       }
 
       String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
-      setProgramType(Program.Type.typeOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
       Debug("Program: Type of managed object: " + programType);
       setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
       cleanAndUpgrade();
-    } catch (UnableToOpenFileException | RuntimeException e) {
+    } catch (RuntimeException e) {
       showException(e);
     }
   }
@@ -251,50 +263,50 @@ public final class Program {
     return ERRORS;
   }
 
-  private static void loadProperties() throws UnableToOpenFileException {
+  private static boolean loadProperties() throws UnableToOpenFileException {
     try {
-      String inputPropCave = getConfigFilePath();
-      File f = new File(inputPropCave);
+      String configFilePath = getConfigFilePath();
+      File f = new File(configFilePath);
       if (!f.exists()) {
         if (!f.createNewFile()) {
           Debug("Program: ERROR: Unable to create file " + f.getAbsolutePath());
           throw new UnableToOpenFileException("Unable to create file " + f.getAbsolutePath());
         }
-      } else {
-        FileInputStream inputStream = new FileInputStream(inputPropCave);
-        Properties properties = new Properties();
-        properties.load(inputStream);
-        inputStream.close();
-        properties.forEach((key, value) -> putCaveConfigString(key.toString(), value.toString()));
-        if (properties.isEmpty()) {
-          // Initialisation de la devise pour les nouveaux fichiers
-          putCaveConfigString(MyCellarSettings.DEVISE, "\u20ac");
-        }
+        return false;
       }
+      FileInputStream inputStream = new FileInputStream(configFilePath);
+      Properties properties = new Properties();
+      properties.load(inputStream);
+      inputStream.close();
+      properties.forEach((key, value) -> putCaveConfigString(key.toString(), value.toString()));
+      if (properties.isEmpty()) {
+        // Initialisation de la devise pour les nouveaux fichiers
+        putCaveConfigString(MyCellarSettings.DEVISE, EURO);
+      }
+      Debug("Program: Properties loaded: " + configFilePath);
     } catch (FileNotFoundException e) {
       throw new UnableToOpenFileException("File not found: " + e.getMessage());
     } catch (IOException e) {
       throw new UnableToOpenFileException("Load properties failed: " + e.getMessage());
     }
+    return true;
   }
 
   private static void loadGlobalProperties() throws UnableToOpenFileException {
     try {
-      Debug("Program: Initializing Configuration files...");
+      Debug("Program: Initializing Global Configuration files...");
       File fileIni = new File(getGlobalConfigFilePath());
-      if (!fileIni.exists()) {
-        if (!fileIni.createNewFile()) {
-          Debug("Program: ERROR: Unable to create file " + fileIni.getAbsolutePath());
-          throw new UnableToOpenFileException("Unable to create file " + fileIni.getAbsolutePath());
-        }
-      } else {
-        FileInputStream inputStream = new FileInputStream(fileIni);
-        Properties properties = new Properties();
-        properties.load(inputStream);
-        inputStream.close();
-        //Initialisation de la Map contenant config
-        properties.forEach((key, value) -> putGlobalConfigString(key.toString(), value.toString()));
+      if (!fileIni.exists() && !fileIni.createNewFile()) {
+        Debug("Program: ERROR: Unable to create file " + fileIni.getAbsolutePath());
+        throw new UnableToOpenFileException("Unable to create file " + fileIni.getAbsolutePath());
       }
+      FileInputStream inputStream = new FileInputStream(fileIni);
+      Properties properties = new Properties();
+      properties.load(inputStream);
+      inputStream.close();
+      //Initialisation de la Map contenant config
+      properties.forEach((key, value) -> putGlobalConfigString(key.toString(), value.toString()));
+      Debug("Program: Global Properties loaded: " + fileIni);
     } catch (FileNotFoundException e) {
       throw new UnableToOpenFileException("File not found: " + e.getMessage());
     } catch (IOException e) {
@@ -308,10 +320,10 @@ public final class Program {
    * Pour nettoyer et mettre a jour le programme
    */
   private static void cleanAndUpgrade() {
-    Debug("Program: clean and upgrade...");
     if (!hasFile()) {
       return;
     }
+    Debug("Program: clean and upgrade...");
     String sVersion = getCaveConfigString(MyCellarSettings.VERSION, "");
     if (sVersion.isEmpty() || sVersion.contains(ONE_DOT)) {
       putCaveConfigInt(MyCellarSettings.VERSION, VERSION);
@@ -330,7 +342,6 @@ public final class Program {
           .findFirst()
           .ifPresent(rangement -> rangement.setDefaultPlace(true));
     }
-
     Debug("Program: clean and upgrade... Done");
   }
 
@@ -718,10 +729,8 @@ public final class Program {
 
     myCellarFile = new MyCellarFile(file);
     myCellarFile.unzip();
-    loadProperties();
+    loadPropertiesAndSetProgramType();
     checkFileVersion();
-    setProgramType(Program.Type.valueOf(getCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name())));
-
 
     CountryListJaxb.init();
 
@@ -1051,7 +1060,7 @@ public final class Program {
     return hasFile() ? myCellarFile.getCaveConfig() : null;
   }
 
-  static boolean hasConfigCaveKey(String key) {
+  public static boolean hasConfigCaveKey(String key) {
     return null != getCaveConfig() && getCaveConfig().containsKey(key);
   }
 

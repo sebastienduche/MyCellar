@@ -85,8 +85,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.1
- * @since 27/10/21
+ * @version 30.2
+ * @since 08/11/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -275,7 +275,9 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     // Demarrage
     // _________
 
-    if (!Program.hasFile() && !Program.getGlobalConfigBool(MyCellarSettings.STARTUP, false)) {
+    Program.initializeLanguageProgramType();
+    boolean hasFile = Program.hasFile();
+    if (!hasFile && !Program.getGlobalConfigBool(MyCellarSettings.STARTUP, false)) {
       // Langue au premier demarrage
       String lang = System.getProperty("user.language");
       if (FR.equalsIgnoreCase(lang)) {
@@ -284,53 +286,18 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
         lang = "U";
       }
       Program.putGlobalConfigString(MyCellarSettings.LANGUAGE, lang);
-
-      Program.initConf();
       Program.putGlobalConfigBool(MyCellarSettings.STARTUP, true);
     }
 
-    if (Program.hasFile()) {
-      loadFile();
-    } else {
-      Program.initConf();
-      afficheFrame();
-      enableAll(false);
-    }
-    setVisible(true);
-  }
-
-  /**
-   * Permet de charger un fichier
-   */
-  private void loadFile() {
-    Program.initConf();
-
-    // Contruction de la Frame
-    Debug("Showing Frame");
     afficheFrame();
-
-    if (!Program.hasFile()) {
-      Debug("ERROR: Unable to Load Empty File: Use Load command");
-      modifyButton.setEnabled(false);
-      importButton.setEnabled(false);
-      showFileButton.setEnabled(false);
-      showTrashButton.setEnabled(false);
-      menuImport.setEnabled(false);
-      createButton.setEnabled(false);
-      menuSave.setEnabled(false);
-      buttonSave.setEnabled(false);
-      buttonPdf.setEnabled(false);
-      menuSaveAs.setEnabled(false);
-      menuAddPlace.setEnabled(false);
-      menuExportXmlPlaces.setEnabled(false);
-      menuImportXmlPlaces.setEnabled(false);
-      menuExportXml.setEnabled(false);
-      menuShowFile.setEnabled(false);
-      menuShowWorksheet.setEnabled(false);
-    } else if (Program.getCaveLength() == 0) {
-      Program.addCave(Program.DEFAULT_PLACE);
+    if (hasFile) {
+      Program.loadPropertiesAndSetProgramType();
+      if (Program.getCaveLength() == 0) {
+        Program.addCave(Program.DEFAULT_PLACE);
+      }
     }
-    enableAll(true);
+    enableAll(hasFile);
+    setVisible(true);
   }
 
   /**
@@ -456,7 +423,11 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
    * Actions realisees apres l'ouverture d'un fichier
    */
   private void postOpenFile() {
-    loadFile();
+    Program.loadPropertiesAndSetProgramType();
+    if (Program.getCaveLength() == 0) {
+      Program.addCave(Program.DEFAULT_PLACE);
+    }
+    enableAll(true);
     ProgramPanels.updateAllPanels();
     updateMainPanel();
     ProgramPanels.PANEL_INFOS.setEnable(true);

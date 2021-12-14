@@ -29,7 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,8 +58,8 @@ import static mycellar.general.ProgramPanels.updateAllPanels;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.9
- * @since 19/05/21
+ * @version 9.0
+ * @since 14/12/21
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -262,7 +261,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       return;
     }
     XmlUtils.writeRangements("", List.of((Rangement) Objects.requireNonNull(choix.getSelectedItem())), false);
-    open(new File(getPreviewXMLFileName()));
+    open(getPreviewXMLFileName(), false);
   }
 
   /**

@@ -40,7 +40,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,8 +59,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.3
- * @since 14/10/21
+ * @version 15.4
+ * @since 14/12/21
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -659,7 +658,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
       // Creation du rangement
       XmlUtils.writeRangements("", List.of(new Rangement(nom, listPart)), true);
-      Program.open(new File(Program.getPreviewXMLFileName()));
+      Program.open(Program.getPreviewXMLFileName(), false);
     }
   }
 

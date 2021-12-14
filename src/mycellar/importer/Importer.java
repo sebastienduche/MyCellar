@@ -79,8 +79,8 @@ import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.7
- * @since 27/10/21
+ * @version 14.8
+ * @since 14/12/21
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -315,16 +315,10 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     if (!nom.isEmpty()) {
       File f = new File(nom);
       file.setText(f.getAbsolutePath());
-      if (!f.exists()) {
-        //Insertion classe Erreur
+      if (!Program.open(nom, true)) {
         label_progression.setText("");
-        var name = f.getAbsolutePath();
-        Debug("ERROR: File not found: " + name);
-        //Fichier non trouve Verifier le chemin");
-        Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), name), Program.getError("Error022"));
-        return;
+        Debug("ERROR: File not found: " + f.getAbsolutePath());
       }
-      Program.open(f);
     }
   }
 

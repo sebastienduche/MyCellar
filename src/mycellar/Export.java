@@ -60,8 +60,8 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.9
- * @since 22/04/21
+ * @version 10.0
+ * @since 14/12/21
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -246,15 +246,8 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
    */
   private void openit_actionPerformed() {
     String nom = toCleanString(file.getText());
-    if (!nom.isEmpty()) {
-      File f = new File(nom);
-      if (!f.exists() || f.isDirectory()) {
-        end.setText("");
-        //Fichier non trouve Verifier le chemin
-        Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
-        return;
-      }
-      Program.open(f);
+    if (!Program.open(nom, true)) {
+      end.setText("");
     }
   }
 

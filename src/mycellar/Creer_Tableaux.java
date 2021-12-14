@@ -60,8 +60,8 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.0
- * @since 14/10/21
+ * @version 8.1
+ * @since 14/12/21
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
@@ -339,8 +339,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
    */
   private void preview_actionPerformed(ActionEvent e) {
     Debug("preview_actionPerforming...");
-    String path = name.getText();
-    Program.open(new File(path));
+    Program.open(name.getText(), false);
   }
 
   /**

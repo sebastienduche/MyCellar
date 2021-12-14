@@ -19,7 +19,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,8 +32,8 @@ import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 08/11/21
+ * @version 2.6
+ * @since 14/12/21
  */
 public final class PanelInfos extends JPanel {
 
@@ -190,7 +189,7 @@ final class PanelStats extends JPanel {
         Rangement rangement = names.get(row);
         RangementUtils.putTabStock();
         XmlUtils.writeRangements("", List.of(rangement), false);
-        Program.open(new File(Program.getPreviewXMLFileName()));
+        Program.open(Program.getPreviewXMLFileName(), false);
       }
     }
 

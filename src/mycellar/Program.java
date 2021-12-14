@@ -74,6 +74,7 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.ProgramConstants.BOUTEILLES_XML;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.CONFIG_INI;
@@ -1159,18 +1160,29 @@ public final class Program {
     return LanguageFileLoader.getLanguageFromIndex(val);
   }
 
-  public static void open(File file) {
-    if (file != null) {
-      try {
-        if (System.getProperty("os.name").startsWith("Mac")) {
-          Runtime.getRuntime().exec("/usr/bin/open " + file.getAbsolutePath());
-        } else {
-          Desktop.getDesktop().browse(file.toURI());
-        }
-      } catch (IOException e) {
-        showException(e, true);
+  public static boolean open(String filename, boolean check) {
+    if (isNullOrEmpty(filename)) {
+      return false;
+    }
+    File file = new File(filename.trim());
+    if (check) {
+      if (!file.exists() || file.isDirectory()) {
+        //Fichier non trouve Verifier le chemin
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), filename), getError("Error022"));
+        return false;
       }
     }
+
+    try {
+      if (System.getProperty("os.name").startsWith("Mac")) {
+        Runtime.getRuntime().exec("/usr/bin/open " + file.getAbsolutePath());
+      } else {
+        Desktop.getDesktop().browse(file.toURI());
+      }
+    } catch (IOException e) {
+      showException(e, true);
+    }
+    return true;
   }
 
   public static boolean hasYearControl() {

@@ -20,7 +20,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.io.File;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
@@ -32,8 +31,8 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 31/10/21
+ * @version 1.2
+ * @since 14/12/21
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -304,7 +303,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     Debug("Previewing...");
     RangementUtils.putTabStock();
     XmlUtils.writeRangements(Program.getPreviewXMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
-    Program.open(new File(Program.getPreviewXMLFileName()));
+    Program.open(Program.getPreviewXMLFileName(), false);
     Debug("Previewing... End");
   }
 

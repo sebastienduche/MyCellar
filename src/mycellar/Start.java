@@ -384,7 +384,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
    * news_actionPerformed: Affiche les nouveautes de la release
    */
   private void news_actionPerformed() {
-    Program.open(new File("Finish.html"));
+    Program.open("Finish.html", false);
   }
 
   /**

@@ -373,7 +373,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         int nb_ligne = 0;
         Rangement rangement = lieu.getItemAt(lieu_select);
         if (num_select > 0) {
-          nb_ligne = rangement.getNbLignes(num_select - 1);
+          nb_ligne = rangement.getLineCountAt(num_select - 1);
         }
         line.removeAllItems();
         column.removeAllItems();
@@ -413,19 +413,19 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           multi.setEnabled(true);
 
           num_lieu.removeAllItems();
-          final boolean caisse = rangement.isCaisse();
+          final boolean caisse = rangement.isSimplePlace();
           if (caisse) {
             multi.setEnabled(false);
             num_lieu.addItem(Program.getLabel("Infos223")); //"Toutes");
-            for (int i = 0; i < rangement.getNbEmplacements(); i++) {
-              num_lieu.addItem(Integer.toString(i + rangement.getStartCaisse()));
+            for (int i = 0; i < rangement.getNbParts(); i++) {
+              num_lieu.addItem(Integer.toString(i + rangement.getStartSimplePlace()));
             }
             label4.setText(Program.getLabel("Infos158")); //"Numero de caisse");
           } else {
             line.removeAllItems();
             column.removeAllItems();
             num_lieu.addItem("");
-            for (int i = 1; i <= rangement.getNbEmplacements(); i++) {
+            for (int i = 1; i <= rangement.getNbParts(); i++) {
               num_lieu.addItem(Integer.toString(i));
             }
             label4.setText(Program.getLabel("Infos082")); //"Numero du lieu");
@@ -463,7 +463,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         resul_txt.setText("");
         int nb_col = 0;
         if (num_select > 0) {
-          nb_col = rangement.getNbColonnes(emplacement - 1, num_select - 1);
+          nb_col = rangement.getColumnCountAt(emplacement - 1, num_select - 1);
         }
         column.removeAllItems();
         column.addItem("");
@@ -749,11 +749,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     Rangement rangement = lieu.getItemAt(lieu_select);
     boolean already_found = false;
     List<MyCellarObject> bouteilleList = new LinkedList<>();
-    if (rangement.isCaisse()) {
+    if (rangement.isSimplePlace()) {
       //Pour la caisse
       int lieu_num = num_lieu.getSelectedIndex();
       resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
-      int nb_empl_cave = rangement.getNbEmplacements();
+      int nb_empl_cave = rangement.getNbParts();
       int boucle_toutes;
       int start_boucle;
       if (lieu_num == 0) { //New
@@ -764,9 +764,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         boucle_toutes = lieu_num + 1;
       }
       for (int x = start_boucle; x < boucle_toutes; x++) {
-        int nb_bottles = rangement.getNbCaseUse(x - 1);
+        int nb_bottles = rangement.getTotalCellUsed(x - 1);
         for (int l = 0; l < nb_bottles; l++) {
-          MyCellarObject b = rangement.getBouteilleCaisseAt(x - 1, l); //lieu_num
+          MyCellarObject b = rangement.getObjectSimplePlaceAt(x - 1, l); //lieu_num
           if (b != null) {
             if (model.hasNotBottle(b)) {
               bouteilleList.add(b);
@@ -807,7 +807,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         }
         resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
 
-        final MyCellarObject myCellarObject = rangement.getBouteille(lieu_num - 1, ligne - 1, colonne - 1).orElse(null);
+        final MyCellarObject myCellarObject = rangement.getObject(lieu_num - 1, ligne - 1, colonne - 1).orElse(null);
         if (myCellarObject == null) {
           resul_txt.setText(Program.getLabel("Infos224")); //"Echec de la recherche.
           Erreur.showSimpleErreur(Program.getError("Error066", LabelProperty.SINGLE)); //Aucune bouteille trouve
@@ -847,7 +847,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         }
         resul_txt.setText(Program.getLabel("Infos087")); //Recherche en cours...
         //Recherche toutes les bouteilles d'un emplacement
-        int nb_empl = rangement.getNbEmplacements();
+        int nb_empl = rangement.getNbParts();
         int i_deb = 1;
         int i_fin = nb_empl;
         if (allBottlesState == AllBottlesState.PART) {
@@ -863,14 +863,14 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           j_fin = ligne;
         }
         for (int i = i_deb; i <= i_fin; i++) {
-          int nb_lignes = rangement.getNbLignes(i - 1);
+          int nb_lignes = rangement.getLineCountAt(i - 1);
           if (allBottlesState != AllBottlesState.LINE) {
             j_fin = nb_lignes;
           }
           for (int j = j_deb; j <= j_fin; j++) {
-            int nb_colonnes = rangement.getNbColonnes(i - 1, j - 1);
+            int nb_colonnes = rangement.getColumnCountAt(i - 1, j - 1);
             for (int k = 1; k <= nb_colonnes; k++) {
-              MyCellarObject myCellarObject = rangement.getBouteille(i - 1, j - 1, k - 1).orElse(null);
+              MyCellarObject myCellarObject = rangement.getObject(i - 1, j - 1, k - 1).orElse(null);
               if (myCellarObject != null) {
                 //Ajout de la bouteille dans la liste si elle n'y ait pas deja
                 if (model.hasNotBottle(myCellarObject)) {

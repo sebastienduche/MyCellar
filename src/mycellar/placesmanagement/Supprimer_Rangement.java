@@ -139,27 +139,27 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       Rangement rangement = (Rangement) choix.getSelectedItem();
       // Nombre d'emplacements
       if (rangement != null) {
-        int num_emplacement = rangement.getNbEmplacements();
+        int num_emplacement = rangement.getNbParts();
 
-        if (!rangement.isCaisse()) {
+        if (!rangement.isSimplePlace()) {
           model.setCaisse(false);
           Debug("Selecting standard place...");
           // Description du nombre de lignes par partie
           nb_case_use_total = 0;
           for (int i = 0; i < num_emplacement; i++) {
-            SupprimerLine line = new SupprimerLine(i + 1, rangement.getNbLignes(i), rangement.getNbCaseUse(i));
+            SupprimerLine line = new SupprimerLine(i + 1, rangement.getLineCountAt(i), rangement.getTotalCellUsed(i));
             listSupprimer.add(line);
-            nb_case_use_total += rangement.getNbCaseUse(i);
+            nb_case_use_total += rangement.getTotalCellUsed(i);
           }
         } else { //Pour caisse
-          int start_caisse = rangement.getStartCaisse();
+          int start_caisse = rangement.getStartSimplePlace();
           model.setCaisse(true);
           Debug("Selecting Box place...");
           nb_case_use_total = 0;
           for (int i = 0; i < num_emplacement; i++) {
-            SupprimerLine line = new SupprimerLine(i + start_caisse, 0, rangement.getNbCaseUse(i));
+            SupprimerLine line = new SupprimerLine(i + start_caisse, 0, rangement.getTotalCellUsed(i));
             listSupprimer.add(line);
-            nb_case_use_total += rangement.getNbCaseUse(i);
+            nb_case_use_total += rangement.getTotalCellUsed(i);
           }
         }
       }
@@ -205,7 +205,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       }
       String error;
       if (nb_case_use_total == 0) {
-        String tmp = cave.getNom();
+        String tmp = cave.getName();
         Debug("MESSAGE: Delete this place: " + tmp + "?");
         error = MessageFormat.format(getError("Error139"), tmp); //Voulez vous supprimer le rangement
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -215,7 +215,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
           updateAllPanels();
         }
       } else {
-        String nom = cave.getNom();
+        String nom = cave.getName();
         if (nb_case_use_total == 1) {
           error = MessageFormat.format(getLabel("DeletePlace.still1ItemIn", LabelProperty.SINGLE), nom); //il reste 1 bouteille dans
         } else {
@@ -227,7 +227,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           new Thread(() -> {
             //Suppression des bouteilles presentes dans le rangement
-            String tmp_nom = cave.getNom();
+            String tmp_nom = cave.getName();
 
             List<MyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
             for (MyCellarObject b : bottleList) {

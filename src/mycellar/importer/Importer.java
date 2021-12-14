@@ -457,7 +457,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         //Un rangement par defaut va etre cree.
         Erreur.showSimpleErreur(Program.getError("Error140"), Program.getError("Error141"), true);
 
-        int nb_caisse = (int) Program.getCave().stream().filter(Rangement::isCaisse).count();
+        int nb_caisse = (int) Program.getCave().stream().filter(Rangement::isSimplePlace).count();
 
         String title = Program.getLabel("Infos010");
         String message2 = Program.getLabel("Infos308");
@@ -467,8 +467,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         String[] type_objet = new String[nb_caisse + 2];
         int j = 0;
         for (Rangement cave : Program.getCave()) {
-          if (cave.isCaisse()) {
-            titre_properties[j] = cave.getNom();
+          if (cave.isSimplePlace()) {
+            titre_properties[j] = cave.getName();
             key_properties[j] = MyCellarSettings.RANGEMENT_DEFAULT;
             default_value[j] = "false";
             type_objet[j] = "MyCellarRadioButton";
@@ -529,7 +529,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             }
           } while (!resul);
           Debug("Creating new place with name: " + nom1);
-          new_rangement = new Rangement.CaisseBuilder(nom1).build();
+          new_rangement = new Rangement.SimplePlaceBuilder(nom1).build();
           Program.addCave(new_rangement);
         } else {
           new_rangement = Program.getCave().get(num_r);
@@ -590,8 +590,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
               }
             }
             if ((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
-              bottle.setEmplacement(new_rangement.getNom());
-              new_rangement.setNbEmplacements(maxNumPlace + 1);
+              bottle.setEmplacement(new_rangement.getName());
+              new_rangement.setNbParts(maxNumPlace + 1);
             }
             Program.getStorage().addWine(bottle);
             line = reader.readLine();
@@ -673,8 +673,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             }
 
             if ((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && rangement != null) {
-              bottle.setEmplacement(rangement.getNom());
-              rangement.setNbEmplacements(maxNumPlace + 1);
+              bottle.setEmplacement(rangement.getName());
+              rangement.setNbParts(maxNumPlace + 1);
             }
             i++;
           }
@@ -721,7 +721,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       importe.setEnabled(true);
       return;
     }
-    list.forEach(music -> music.setEmplacement(Program.DEFAULT_PLACE.getNom()));
+    list.forEach(music -> music.setEmplacement(Program.DEFAULT_PLACE.getName()));
     Program.getStorage().getListMyCellarObject().getMusic().addAll(list);
     showImportDone();
   }

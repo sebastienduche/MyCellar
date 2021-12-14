@@ -55,7 +55,7 @@ public class Place {
    */
   public int getPlaceNumIndex() {
     if (isSimplePlace()) {
-      return placeNum - rangement.getStartCaisse();
+      return placeNum - rangement.getStartSimplePlace();
     }
     return placeNum - 1;
   }
@@ -75,7 +75,7 @@ public class Place {
   }
 
   public boolean isSimplePlace() {
-    return rangement.isCaisse();
+    return rangement.isSimplePlace();
   }
 
   public boolean hasPlace() {
@@ -119,7 +119,7 @@ public class Place {
     }
 
     public Place build() {
-      if (rangement.isCaisse()) {
+      if (rangement.isSimplePlace()) {
         return new Place(rangement, numPlace);
       }
       return new Place(rangement, numPlace, line, column);

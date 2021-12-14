@@ -114,8 +114,8 @@ final class PanelStats extends JPanel {
       int nbBottles = 0;
       if (!Program.getCave().isEmpty()) {
         for (Rangement r : Program.getCave()) {
-          nbBottles += r.getNbCaseUseAll();
-          model.addRow(r, r.getNbCaseUseAll());
+          nbBottles += r.getTotalCountCellUsed();
+          model.addRow(r, r.getTotalCountCellUsed());
         }
       }
       String devise = EURO;
@@ -177,7 +177,7 @@ final class PanelStats extends JPanel {
     @Override
     public Object getValueAt(int row, int column) {
       if (column == 0) {
-        return names.get(row).getNom();
+        return names.get(row).getName();
       } else if (column == 1) {
         return values.get(row);
       }

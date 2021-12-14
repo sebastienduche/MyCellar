@@ -266,7 +266,7 @@ public class SerializedStorage implements Storage {
         found = listMyCellarObject.remove(collect.get(0));
       } else {
         Rangement rangement = myCellarObject.getRangement();
-        boolean isCaisse = rangement == null || rangement.isCaisse();
+        boolean isCaisse = rangement == null || rangement.isSimplePlace();
         final List<MyCellarObject> resultBouteilles = getAllList().stream()
             .filter(
                 bouteille -> emplacement.equals(bouteille.getEmplacement())

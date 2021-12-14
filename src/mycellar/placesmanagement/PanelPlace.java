@@ -164,7 +164,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     if (r == null) {
       return;
     }
-    boolean visible = !r.isCaisse();
+    boolean visible = !r.isSimplePlace();
     line.setVisible(visible);
     column.setVisible(visible);
     labelLine.setVisible(visible);
@@ -208,7 +208,7 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   public void enableAll(boolean enable) {
     place.setEnabled(enable && (place.getItemCount() > 2 || place.getSelectedIndex() != 1));
-    numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((Rangement) Objects.requireNonNull(place.getSelectedItem())).isCaisse()));
+    numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((Rangement) Objects.requireNonNull(place.getSelectedItem())).isSimplePlace()));
     line.setEnabled(enable && numPlace.getSelectedIndex() > 0);
     column.setEnabled(enable && line.getSelectedIndex() > 0);
     if (chooseCell != null) {
@@ -242,7 +242,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     place.setSelectedItem(rangement);
     labelExist.setText("");
 
-    preview.setEnabled(!rangement.isCaisse());
+    preview.setEnabled(!rangement.isSimplePlace());
     numPlace.removeAllItems();
     column.removeAllItems();
     line.removeAllItems();
@@ -252,17 +252,17 @@ public final class PanelPlace extends JPanel implements IPlace {
     numPlace.setEnabled(true);
     line.setEnabled(true);
     column.setEnabled(true);
-    for (int i = rangement.getFirstNumEmplacement(); i < rangement.getLastNumEmplacement(); i++) {
+    for (int i = rangement.getFirstPartNumber(); i < rangement.getLastPartNumber(); i++) {
       numPlace.addItem(new ComboItem(i));
     }
-    if (!rangement.isCaisse()) { // Need the last place number for complex places
-      numPlace.addItem(new ComboItem(rangement.getLastNumEmplacement()));
+    if (!rangement.isSimplePlace()) { // Need the last place number for complex places
+      numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
     }
     numPlace.setSelectedItem(new ComboItem(placeRangement.getPlaceNum()));
 
-    if (!rangement.isCaisse()) {
-      int nbLine = rangement.getNbLignes(placeRangement.getPlaceNumIndex());
-      int nbColumn = rangement.getNbColonnes(placeRangement.getPlaceNumIndex(), placeRangement.getLineIndex());
+    if (!rangement.isSimplePlace()) {
+      int nbLine = rangement.getLineCountAt(placeRangement.getPlaceNumIndex());
+      int nbColumn = rangement.getColumnCountAt(placeRangement.getPlaceNumIndex(), placeRangement.getLineIndex());
       for (int i = 1; i <= nbLine; i++) {
         line.addItem(new ComboItem(i));
       }
@@ -273,7 +273,7 @@ public final class PanelPlace extends JPanel implements IPlace {
       column.setSelectedItem(new ComboItem(placeRangement.getColumn()));
     }
 
-    boolean simplePlace = rangement.isCaisse();
+    boolean simplePlace = rangement.isSimplePlace();
     labelLine.setVisible(!simplePlace);
     labelColumn.setVisible(!simplePlace);
     line.setVisible(!simplePlace);
@@ -329,7 +329,7 @@ public final class PanelPlace extends JPanel implements IPlace {
       column.setEnabled(false);
     } else {
       numPlace.setEnabled(true);
-      caisse = rangement.isCaisse();
+      caisse = rangement.isSimplePlace();
     }
     preview.setEnabled(!caisse);
 
@@ -337,18 +337,18 @@ public final class PanelPlace extends JPanel implements IPlace {
     numPlace.addItem(NONE);
     line.removeAllItems();
     column.removeAllItems();
-    for (int i = rangement.getFirstNumEmplacement(); i < rangement.getLastNumEmplacement(); i++) {
+    for (int i = rangement.getFirstPartNumber(); i < rangement.getLastPartNumber(); i++) {
       numPlace.addItem(new ComboItem(i));
     }
 
     if (caisse) {
       labelNumPlace.setText(Program.getLabel("Infos158")); //"Numero de caisse
-      if (rangement.getNbEmplacements() == 1) {
+      if (rangement.getNbParts() == 1) {
         numPlace.setSelectedIndex(1);
       }
     } else {
       // Need the last place number for complex places
-      numPlace.addItem(new ComboItem(rangement.getLastNumEmplacement()));
+      numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
       labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu
     }
     setLineColumnVisible(rangement);
@@ -373,8 +373,8 @@ public final class PanelPlace extends JPanel implements IPlace {
       } else {
         line.setEnabled(true);
         Rangement rangement = place.getItemAt(lieu_select);
-        if (!rangement.isCaisse()) {
-          int nb_ligne = rangement.getNbLignes(num_select - 1);
+        if (!rangement.isSimplePlace()) {
+          int nb_ligne = rangement.getLineCountAt(num_select - 1);
           line.removeAllItems();
           column.removeAllItems();
           line.addItem(NONE);
@@ -402,7 +402,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     int nb_col = 0;
     if (num_select > 0) {
       Rangement cave = place.getItemAt(lieu_select);
-      nb_col = cave.getNbColonnes(emplacement - 1, num_select - 1);
+      nb_col = cave.getColumnCountAt(emplacement - 1, num_select - 1);
     }
     column.removeAllItems();
     column.addItem(NONE);
@@ -430,7 +430,7 @@ public final class PanelPlace extends JPanel implements IPlace {
       }
 
       Rangement cave = place.getItemAt(nPlace);
-      cave.getBouteille(nNumLieu - 1, nLine - 1, nColumn - 1)
+      cave.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
           .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(myCellarObject.getNom()))));
       Debug("Column_itemStateChanging... End");
     });

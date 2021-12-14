@@ -164,7 +164,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
     int lieu_num = place.getPlaceNum();
     Rangement cave = place.getRangement();
-    boolean isCaisse = cave.isCaisse();
+    boolean isCaisse = cave.isSimplePlace();
 
     if (MyCellarControl.hasInvalidNumLieuNumber(lieu_num, isCaisse)) {
       return false;
@@ -193,7 +193,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       myCellarObject.setNumLieu(lieu_num);
       myCellarObject.setLigne(line);
       myCellarObject.setColonne(column);
-      MyCellarObject bottleInPlace = cave.getBouteille(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build()).orElse(null);
+      MyCellarObject bottleInPlace = cave.getObject(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build()).orElse(null);
       if (bottleInPlace != null) {
         if (!askToReplaceBottle(bottleInPlace, oldPlace)) {
           myCellarObject.setNumLieu(oldPlace.getPlaceNum());
@@ -215,7 +215,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       CountryVignobleController.addVignobleFromBottle(bTemp);
       CountryVignobleController.setRebuildNeeded();
     }
-    myCellarObject.setEmplacement(cave.getNom());
+    myCellarObject.setEmplacement(cave.getName());
     myCellarObject.setNom(nom);
     myCellarObject.setKind(demie);
     myCellarObject.setStatus(status);
@@ -233,7 +233,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     ProgramPanels.getSearch().ifPresent(Search::updateTable);
 
     Rangement rangement = myCellarObject.getRangement();
-    if (!rangement.isCaisse()) {
+    if (!rangement.isSimplePlace()) {
       rangement.updateToStock(myCellarObject);
     }
 

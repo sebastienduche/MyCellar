@@ -360,7 +360,7 @@ public class Predicates {
       JOptionPane.showMessageDialog(null, panel,
           "",
           JOptionPane.PLAIN_MESSAGE);
-      return new ValueSearch(((Rangement) liste.getSelectedItem()).getNom());
+      return new ValueSearch(((Rangement) liste.getSelectedItem()).getName());
     }
   };
 

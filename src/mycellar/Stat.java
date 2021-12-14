@@ -382,16 +382,16 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     if (placeComboItem != null && placeComboItem.getRangement() != null) {
       Rangement cave = placeComboItem.getRangement();
       panelChart.setPlaceChart(cave);
-      nbBottle = cave.getNbCaseUseAll();
-      panel.add(new MyCellarLabel(cave.getNom()));
+      nbBottle = cave.getTotalCountCellUsed();
+      panel.add(new MyCellarLabel(cave.getName()));
       displayPlace(cave);
     }
     end.setText(MessageFormat.format(Program.getLabel("Infos098", LabelProperty.PLURAL), nbBottle));
   }
 
   private void displayPlace(Rangement cave) {
-    final int nbEmplacements = cave.getNbEmplacements();
-    final int nbCaseUseAll = cave.getNbCaseUseAll();
+    final int nbEmplacements = cave.getNbParts();
+    final int nbCaseUseAll = cave.getTotalCountCellUsed();
     final MyCellarLabel list_num_empl;
     if (nbEmplacements == 1) {
       list_num_empl = new MyCellarLabel(LabelType.INFO, "175"); //"1 emplacement
@@ -401,7 +401,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     final MyCellarLabel list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll)); //"bouteille
     panel.add(list_num_empl);
     panel.add(list_nb_bottle, "span 2, align right, wrap");
-    if (!cave.isCaisse()) {
+    if (!cave.isSimplePlace()) {
       displayNbBottlePlace(cave);
     }
     panel.add(new JSeparator(), "span 3, wrap");
@@ -415,8 +415,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
     int nbBottle = 0;
     for (Rangement cave : Program.getCave()) {
-      panel.add(new MyCellarLabel(cave.getNom()));
-      nbBottle += cave.getNbCaseUseAll();
+      panel.add(new MyCellarLabel(cave.getName()));
+      nbBottle += cave.getTotalCountCellUsed();
       displayPlace(cave);
     }
     moy.setText("");
@@ -424,9 +424,9 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   }
 
   private void displayNbBottlePlace(Rangement cave) {
-    for (int j = 0; j < cave.getNbEmplacements(); j++) {
+    for (int j = 0; j < cave.getNbParts(); j++) {
       panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos179"), (j + 1)))); //Emplacement
-      panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(cave.getNbCaseUseAll() > 1)), cave.getNbCaseUse(j))), "span 2, align right, wrap"); //"bouteille");
+      panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(cave.getTotalCountCellUsed() > 1)), cave.getTotalCellUsed(j))), "span 2, align right, wrap"); //"bouteille");
     }
   }
 
@@ -535,7 +535,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       DefaultPieDataset dataset = new DefaultPieDataset();
       rangements.stream()
           .filter(Objects::nonNull)
-          .forEach(rangement -> dataset.setValue(rangement.getNom(), rangement.getNbCaseUseAll()));
+          .forEach(rangement -> dataset.setValue(rangement.getName(), rangement.getTotalCountCellUsed()));
 
       JFreeChart chart = ChartFactory.createPieChart(Program.getLabel("Infos182"),          // chart title
           dataset,                // data
@@ -550,14 +550,14 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
     private void setPlaceChart(Rangement rangement) {
       removeAll();
-      if (rangement.isCaisse()) {
+      if (rangement.isSimplePlace()) {
         return;
       }
       DefaultPieDataset dataset = new DefaultPieDataset();
       for (Part part : rangement.getPlace()) {
-        dataset.setValue(MessageFormat.format(Program.getLabel("Infos179"), part.getNum() + 1), rangement.getNbCaseUse(part.getNum()));
+        dataset.setValue(MessageFormat.format(Program.getLabel("Infos179"), part.getNum() + 1), rangement.getTotalCellUsed(part.getNum()));
       }
-      JFreeChart chart = ChartFactory.createPieChart(rangement.getNom(),          // chart title
+      JFreeChart chart = ChartFactory.createPieChart(rangement.getName(),          // chart title
           dataset,                // data
           false,                   // include legend
           true,
@@ -653,7 +653,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
     private PlaceComboItem(Rangement rangement) {
       this.rangement = rangement;
-      label = rangement.getNom();
+      label = rangement.getName();
     }
 
     private PlaceComboItem(String label) {

@@ -118,9 +118,9 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 
 public final class Program {
 
-  public static final Rangement DEFAULT_PLACE = new Rangement.CaisseBuilder("").setDefaultPlace(true).build();
-  public static final Rangement EMPTY_PLACE = new Rangement.CaisseBuilder("").build();
-  public static final Rangement STOCK_PLACE = new Rangement.CaisseBuilder(TEMP_PLACE).build();
+  public static final Rangement DEFAULT_PLACE = new Rangement.SimplePlaceBuilder("").setDefaultPlace(true).build();
+  public static final Rangement EMPTY_PLACE = new Rangement.SimplePlaceBuilder("").build();
+  public static final Rangement STOCK_PLACE = new Rangement.SimplePlaceBuilder(TEMP_PLACE).build();
 
   public static final CountryJaxb FRANCE = new CountryJaxb(FRA, ProgramConstants.FRANCE);
   public static final CountryJaxb NO_COUNTRY = new CountryJaxb("");
@@ -344,7 +344,7 @@ public final class Program {
 
     if (currentVersion < 71) {
       getCave().stream().filter(rangement ->
-              isDefaultStorageName(rangement, rangement.getNom()))
+              isDefaultStorageName(rangement, rangement.getName()))
           .findFirst()
           .ifPresent(rangement -> rangement.setDefaultPlace(true));
     }
@@ -619,12 +619,12 @@ public final class Program {
   }
 
   private static boolean filterOnPlaceName(Rangement rangement, String placeName) {
-    return rangement.getNom().equals(placeName) || isDefaultStorageName(rangement, placeName);
+    return rangement.getName().equals(placeName) || isDefaultStorageName(rangement, placeName);
   }
 
   private static boolean isDefaultStorageName(Rangement rangement, String placeName) {
     return rangement.isDefaultPlace() &&
-        (rangement.getNom().equals(DEFAULT_STORAGE_EN) || rangement.getNom().equals(DEFAULT_STORAGE_FR)) &&
+        (rangement.getName().equals(DEFAULT_STORAGE_EN) || rangement.getName().equals(DEFAULT_STORAGE_FR)) &&
         (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
 
@@ -662,7 +662,7 @@ public final class Program {
   }
 
   public static boolean hasComplexPlace() {
-    return PLACES.stream().anyMatch(rangement -> !rangement.isCaisse());
+    return PLACES.stream().anyMatch(rangement -> !rangement.isSimplePlace());
   }
 
   /**

@@ -127,7 +127,7 @@ public class ErrorShowValues extends TableShowValues {
         break;
       case BUTTON:
         rangement = b.getRangement();
-        if (rangement != null && rangement.canAddBottle(b)) {
+        if (rangement != null && rangement.canAddObjectAt(b)) {
           error.setSolved(true);
           Program.getStorage().addWine(b);
           editable[row] = Boolean.FALSE;
@@ -199,7 +199,7 @@ public class ErrorShowValues extends TableShowValues {
         }
 
         if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
-          if (!rangement.isCaisse() && nValueToCheck <= 0) {
+          if (!rangement.isSimplePlace() && nValueToCheck <= 0) {
             Erreur.showSimpleErreur(Program.getError("Error197"));
             bError = true;
           }
@@ -210,17 +210,17 @@ public class ErrorShowValues extends TableShowValues {
           int tmpNumEmpl = num_empl;
           int tmpLine = line;
           int tmpCol = column1;
-          if (!rangement.isCaisse()) {
+          if (!rangement.isSimplePlace()) {
             tmpNumEmpl--;
             tmpCol--;
             tmpLine--;
           } else {
-            tmpNumEmpl -= rangement.getStartCaisse();
+            tmpNumEmpl -= rangement.getStartSimplePlace();
           }
-          if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
+          if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
-            if (!rangement.isCaisse()) {
-              bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
+            if (!rangement.isSimplePlace()) {
+              bTemp = rangement.getObject(num_empl - 1, line - 1, column1 - 1);
             }
             if (bTemp.isPresent()) {
               status[row] = Boolean.FALSE;
@@ -228,10 +228,10 @@ public class ErrorShowValues extends TableShowValues {
             } else {
               if (column == PLACE) {
                 b.setEmplacement((String) value);
-                if (rangement.isCaisse()) {
+                if (rangement.isSimplePlace()) {
                   int nNumEmpl = b.getNumLieu();
-                  if (nNumEmpl > rangement.getLastNumEmplacement()) {
-                    b.setNumLieu(rangement.getFreeNumPlaceInCaisse());
+                  if (nNumEmpl > rangement.getLastPartNumber()) {
+                    b.setNumLieu(rangement.getFreeNumPlaceInSimplePlace());
                   }
                   b.setLigne(0);
                   b.setColonne(0);

@@ -88,7 +88,7 @@ public final class RangementUtils {
     });
 
     final Rangement rangement = newObject.getRangement();
-    if (!rangement.isCaisse()) {
+    if (!rangement.isSimplePlace()) {
       rangement.updateToStock(newObject);
     }
     Debug("Replace object End");
@@ -508,11 +508,11 @@ public final class RangementUtils {
       for (Rangement place : _oPlace) {
         if (onePlacePerSheet) {
           if (firstSheet) {
-            workbook.setSheetName(0, place.getNom());
+            workbook.setSheetName(0, place.getName());
             firstSheet = false;
           } else {
             sheet = workbook.createSheet();
-            workbook.setSheetName(count++, place.getNom());
+            workbook.setSheetName(count++, place.getName());
           }
           nLine = 0;
         }
@@ -520,17 +520,17 @@ public final class RangementUtils {
         final SXSSFRow rowPlace = sheet.createRow(nLine);
         final Cell cellPlace = rowPlace.createCell(1);
         cellPlace.setCellStyle(cellStyle);
-        cellPlace.setCellValue(place.getNom());
-        for (int j = 1; j <= place.getNbEmplacements(); j++) {
+        cellPlace.setCellValue(place.getName());
+        for (int j = 1; j <= place.getNbParts(); j++) {
           if (j == 1) {
             nLine++;
           } else {
             nLine += nNbLinePart;
           }
-          if (place.isCaisse()) {
-            for (int k = 0; k < place.getNbCaseUse(j - 1); k++) {
+          if (place.isSimplePlace()) {
+            for (int k = 0; k < place.getTotalCellUsed(j - 1); k++) {
               nLine++;
-              final IMyCellarObject b = place.getBouteilleCaisseAt(j - 1, k);
+              final IMyCellarObject b = place.getObjectSimplePlaceAt(j - 1, k);
               if (b != null) {
                 // Contenu de la cellule
                 final SXSSFRow rowBottle = sheet.createRow(nLine);
@@ -540,15 +540,15 @@ public final class RangementUtils {
               }
             }
           } else {
-            for (int k = 1; k <= place.getNbLignes(j - 1); k++) {
+            for (int k = 1; k <= place.getLineCountAt(j - 1); k++) {
               nLine++;
-              int nCol = place.getNbColonnes(j - 1, k - 1);
+              int nCol = place.getColumnCountAt(j - 1, k - 1);
               if (nCol > nNbCol) {
                 nNbCol = nCol;
               }
               final SXSSFRow rowBottle = sheet.createRow(nLine);
               for (int l = 1; l <= nCol; l++) {
-                final Optional<MyCellarObject> b = place.getBouteille(j - 1, k - 1, l - 1);
+                final Optional<MyCellarObject> b = place.getObject(j - 1, k - 1, l - 1);
                 int finalL = l;
                 b.ifPresent(bouteille -> {
                   final Cell cellBottle = rowBottle.createCell(finalL);
@@ -643,7 +643,7 @@ public final class RangementUtils {
     }
 
     final String placeName = name.strip();
-    final boolean found = getCave().stream().anyMatch(rangement -> rangement.getNom().equals(placeName));
+    final boolean found = getCave().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
     if (!found) {
       if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
         return true;
@@ -681,14 +681,14 @@ public final class RangementUtils {
         continue;
       }
       final Rangement rangement = bouteille.getRangement();
-      if (rangement.isCaisse()) {
+      if (rangement.isSimplePlace()) {
         if (rangement.isInexistingNumPlace(bouteille.getNumLieu())) {
           // Numero de rangement inexistant
           Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: " + bouteille.getNumLieu() + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
           continue;
         }
-        if (rangement.hasFreeSpaceInCaisse(bouteille.getPlace())) {
+        if (rangement.hasFreeSpaceInSimplePlace(bouteille.getPlace())) {
           rangement.updateToStock(bouteille);
         } else {
           // Caisse pleine
@@ -707,7 +707,7 @@ public final class RangementUtils {
           // Cellule inexistante
           Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
-        } else if ((bottle = rangement.getBouteille(bouteille)).isPresent() && !bottle.get().equals(bouteille)) {
+        } else if ((bottle = rangement.getObject(bouteille)).isPresent() && !bottle.get().equals(bouteille)) {
           // Cellule occupee
           Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));

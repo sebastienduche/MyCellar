@@ -115,7 +115,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       armoires.add(Program.EMPTY_PLACE);
     }
     for (Rangement rangement1 : Program.getCave()) {
-      if (iPlace == null || !rangement1.isCaisse()) {
+      if (iPlace == null || !rangement1.isSimplePlace()) {
         armoires.add(rangement1);
         comboRangement.addItem(rangement1);
       }
@@ -157,7 +157,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       return;
     }
     rangement = rangement1;
-    move.setEnabled(rangement.isCaisse());
+    move.setEnabled(rangement.isSimplePlace());
     SwingUtilities.invokeLater(() -> {
       CELLS_LIST.clear();
       placePanel.removeAll();
@@ -166,12 +166,12 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         placePanel.updateUI();
         return;
       }
-      if (rangement.isCaisse()) {
+      if (rangement.isSimplePlace()) {
         HashMap<Integer, Integer> mapEmplSize = new HashMap<>();
-        for (int i = 0; i < rangement.getNbEmplacements(); i++) {
-          int empl = i + rangement.getStartCaisse();
+        for (int i = 0; i < rangement.getNbParts(); i++) {
+          int empl = i + rangement.getStartSimplePlace();
           mapEmplSize.put(empl, 0);
-          int nb = rangement.getNbCaseUse(i);
+          int nb = rangement.getTotalCellUsed(i);
           if (nb == 0) {
             nb = 1;
           }
@@ -195,18 +195,18 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         }
 
         Program.getStorage().getAllList().stream()
-            .filter(bouteille -> bouteille.getEmplacement().endsWith(rangement.getNom())).collect(Collectors.toList())
+            .filter(bouteille -> bouteille.getEmplacement().endsWith(rangement.getName())).collect(Collectors.toList())
             .forEach(b -> {
-              JPanel[][] place = places.get(b.getNumLieu() - rangement.getStartCaisse());
+              JPanel[][] place = places.get(b.getNumLieu() - rangement.getStartSimplePlace());
               int line = mapEmplSize.get(b.getNumLieu());
               ((RangementCell) place[line++][0]).addBottle(new BouteilleLabel(b));
               mapEmplSize.put(b.getNumLieu(), line);
             });
       } else {
-        for (int i = 0; i < rangement.getNbEmplacements(); i++) {
+        for (int i = 0; i < rangement.getNbParts(); i++) {
           JPanel[][] place;
-          places.add(place = new JPanel[rangement.getNbLignes(i)][rangement.getNbColonnesMax(i)]);
-          JPanel panelCellar = new JPanel(new GridLayout(rangement.getNbLignes(i), rangement.getNbColonnesStock()));
+          places.add(place = new JPanel[rangement.getLineCountAt(i)][rangement.getMaxColumCountAt(i)]);
+          JPanel panelCellar = new JPanel(new GridLayout(rangement.getLineCountAt(i), rangement.getNbColumnsStock()));
 
           for (int k = 0; k < place.length; k++) {
             for (int j = 0; j < place[k].length; j++) {
@@ -231,7 +231,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         }
 
         Program.getStorage().getAllList().stream()
-            .filter(bouteille -> bouteille.getEmplacement().endsWith(rangement.getNom()))
+            .filter(bouteille -> bouteille.getEmplacement().endsWith(rangement.getName()))
             .forEach(bouteille -> {
               JPanel[][] place = places.get(bouteille.getNumLieu() - 1);
               ((RangementCell) place[bouteille.getLigne() - 1][bouteille.getColonne() - 1]).addBottle(new BouteilleLabel(bouteille));
@@ -314,7 +314,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       comboRangement.removeAllItems();
       comboRangement.addItem(Program.EMPTY_PLACE);
       for (Rangement r : Program.getCave()) {
-        if (iPlace == null || !r.isCaisse()) {
+        if (iPlace == null || !r.isSimplePlace()) {
           armoires.add(r);
           comboRangement.addItem(r);
         }
@@ -366,7 +366,7 @@ final class RangementCell extends JPanel {
     setTransferHandler(handler);
     setBorder(BorderFactory.createEtchedBorder());
     int width = 100;
-    if (place.isCaisse()) {
+    if (place.isSimplePlace()) {
       width = 400;
     }
     setLayout(new MigLayout("", "0px[align left, ::" + width + ", grow]0px", "0px[align center, 20::, grow]0px"));
@@ -388,7 +388,7 @@ final class RangementCell extends JPanel {
     stock = false;
     setBorder(BorderFactory.createEtchedBorder());
     int width = 100;
-    if (place.isCaisse()) {
+    if (place.isSimplePlace()) {
       width = 400;
     }
     setLayout(new MigLayout("", "0px[align left, ::" + width + ", grow]0px", "0px[align center, 20::, grow]0px"));
@@ -430,21 +430,21 @@ final class RangementCell extends JPanel {
   }
 
   public int getRow() {
-    if (place != null && place.isCaisse()) {
+    if (place != null && place.isSimplePlace()) {
       return -1;
     }
     return row + 1;
   }
 
   public int getColumn() {
-    if (place != null && place.isCaisse()) {
+    if (place != null && place.isSimplePlace()) {
       return -1;
     }
     return column + 1;
   }
 
   int getPlaceNum() {
-    if (place != null && place.isCaisse()) {
+    if (place != null && place.isSimplePlace()) {
       return placeNum - 1;
     }
     return placeNum + 1;
@@ -459,7 +459,7 @@ final class RangementCell extends JPanel {
   }
 
   String getPlaceName() {
-    return place != null ? place.getNom() : TEMP_PLACE;
+    return place != null ? place.getName() : TEMP_PLACE;
   }
 
   RangementCell createNewCell() {
@@ -469,7 +469,7 @@ final class RangementCell extends JPanel {
   }
 
   public boolean isCaisse() {
-    return place != null && place.isCaisse();
+    return place != null && place.isSimplePlace();
   }
 
   @Override
@@ -495,7 +495,7 @@ final class BouteilleLabel extends JPanel {
     this.bouteille = bouteille;
     int width = 100;
     Rangement r = bouteille.getRangement();
-    if (r != null && r.isCaisse()) {
+    if (r != null && r.isSimplePlace()) {
       width = 400;
     }
     setLayout(new MigLayout("", "5px[" + width + ":" + width + ":" + width + "][10:10:10]0px", "0px[align center, grow]0px"));

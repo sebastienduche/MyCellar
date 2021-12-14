@@ -60,14 +60,14 @@ class TableauValues extends AbstractTableModel {
       case 0:
         return listBoolean.get(row);
       case 1:
-        return r.getNom();
+        return r.getName();
       case 2:
-        if (r.isCaisse()) {
+        if (r.isSimplePlace()) {
           return Program.getLabel("Infos024");
         }
         int nombre_ligne = 0;
-        for (int k = 0; k < r.getNbEmplacements(); k++) {
-          nombre_ligne += r.getNbLignes(k);
+        for (int k = 0; k < r.getNbParts(); k++) {
+          nombre_ligne += r.getLineCountAt(k);
         }
         if (nombre_ligne <= 1) {
           return MessageFormat.format(Program.getLabel("Infos060"), nombre_ligne);
@@ -75,11 +75,11 @@ class TableauValues extends AbstractTableModel {
         return MessageFormat.format(Program.getLabel("Infos061"), nombre_ligne);
       case 3:
         int nombre_vin = 0;
-        if (r.isCaisse()) {
-          nombre_vin = r.getNbCaseUseAll();
+        if (r.isSimplePlace()) {
+          nombre_vin = r.getTotalCountCellUsed();
         } else {
-          for (int k = 0; k < r.getNbEmplacements(); k++) {
-            nombre_vin += r.getNbCaseUse(k);
+          for (int k = 0; k < r.getNbParts(); k++) {
+            nombre_vin += r.getTotalCellUsed(k);
           }
         }
         return MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nombre_vin > 1)), nombre_vin);

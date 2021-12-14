@@ -308,7 +308,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuCloseFile.setEnabled(enable);
     exportButton.setEnabled(enable);
     statsButton.setEnabled(enable);
-    managePlaceButton.setEnabled(enable && Program.getCave().stream().anyMatch(Predicate.not(Rangement::isCaisse)));
+    managePlaceButton.setEnabled(enable && Program.getCave().stream().anyMatch(Predicate.not(Rangement::isSimplePlace)));
     worksheetButton.setEnabled(enable);
     tableButton.setEnabled(enable);
     m_oSupprimerButton.setEnabled(enable);
@@ -641,7 +641,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuQuit.setAccelerator(KeyStroke.getKeyStroke(quitChar, InputEvent.CTRL_DOWN_MASK));
     SwingUtilities.updateComponentTreeUI(this);
     String tmp = Program.getShortFilename();
-    Program.DEFAULT_PLACE.setNom(Program.getLabel("Program.DefaultPlace"));
+    Program.DEFAULT_PLACE.setName(Program.getLabel("Program.DefaultPlace"));
     if (tmp.isEmpty()) {
       setTitle(Program.getLabel("Infos001"));
     } else {
@@ -947,7 +947,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   public void updateMainPanel() {
     ProgramPanels.updateVisibility();
-    managePlaceButton.setEnabled(Program.getCave().stream().anyMatch(Predicate.not(Rangement::isCaisse)));
+    managePlaceButton.setEnabled(Program.getCave().stream().anyMatch(Predicate.not(Rangement::isSimplePlace)));
   }
 
   /**

@@ -99,11 +99,11 @@ public class XmlUtils {
               Debug("WARNING: Rangement name '" + sName + "' already used!");
             } else {
               boolean bLimit = (nNbLimit > 0);
-              final Rangement caisse = new Rangement.CaisseBuilder(sName)
-                  .nb_emplacement(nPlace)
-                  .start_caisse(nNumStart)
-                  .limit(bLimit)
-                  .limite_caisse(nNbLimit)
+              final Rangement caisse = new Rangement.SimplePlaceBuilder(sName)
+                  .nbParts(nPlace)
+                  .startSimplePlace(nNumStart)
+                  .limited(bLimit)
+                  .limit(nNbLimit)
                   .setDefaultPlace(isDefault).build();
               rangementList.add(caisse);
               names.add(sName);
@@ -172,17 +172,15 @@ public class XmlUtils {
     if (isNullOrEmpty(filename)) {
       filename = Program.getXMLPlacesFileName();
     }
-    try (var oFile = new FileWriter(filename)) {
+    try (var fileWriter = new FileWriter(filename)) {
       //Init XML File
-      oFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
+      fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
       // Ecriture des rangements
       for (Rangement r : rangements) {
-        if (r != null) {
-          oFile.write(r.toXml());
-        }
+        fileWriter.write(r.toXml());
       }
-      oFile.write("</MyCellar>");
-      oFile.flush();
+      fileWriter.write("</MyCellar>");
+      fileWriter.flush();
     } catch (IOException ex) {
       Program.showException(ex);
     }
@@ -219,20 +217,20 @@ public class XmlUtils {
         Element r = doc.createElement("rangement");
         root.appendChild(r);
         Element name = doc.createElement("name");
-        name.setTextContent(rangement.getNom());
+        name.setTextContent(rangement.getName());
         r.appendChild(name);
 
-        if (rangement.isCaisse()) {
+        if (rangement.isSimplePlace()) {
           r.setAttribute("columns", "1");
-          for (int i = 0; i < rangement.getNbEmplacements(); i++) {
+          for (int i = 0; i < rangement.getNbParts(); i++) {
             Element partie = doc.createElement("partie");
             r.appendChild(partie);
             name = doc.createElement("nom-partie");
-            name.setTextContent(Program.getLabel("Infos029") + SPACE + (i + rangement.getStartCaisse()));
+            name.setTextContent(Program.getLabel("Infos029") + SPACE + (i + rangement.getStartSimplePlace()));
             partie.appendChild(name);
             Element caisse = doc.createElement("caisse");
             partie.appendChild(caisse);
-            for (int j = 0; j < rangement.getNbCaseUse(i); j++) {
+            for (int j = 0; j < rangement.getTotalCellUsed(i); j++) {
               Element vin = doc.createElement("vin");
               caisse.appendChild(vin);
               Element vin_name = doc.createElement("vin1");
@@ -240,7 +238,7 @@ public class XmlUtils {
               if (preview) {
                 vin_name.setTextContent(Program.getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
               } else {
-                IMyCellarObject b = rangement.getBouteilleCaisseAt(i, j);
+                IMyCellarObject b = rangement.getObjectSimplePlaceAt(i, j);
                 if (b != null)
                   vin_name.setTextContent(b.getNom());
                 else
@@ -249,16 +247,16 @@ public class XmlUtils {
             }
           }
         } else {
-          r.setAttribute("columns", Integer.toString(rangement.getNbColonnesMax()));
-          for (int i = 0; i < rangement.getNbEmplacements(); i++) {
+          r.setAttribute("columns", Integer.toString(rangement.getMaxColumCountAt()));
+          for (int i = 0; i < rangement.getNbParts(); i++) {
             Element partie = doc.createElement("partie");
             r.appendChild(partie);
             name = doc.createElement("nom-partie");
-            name.setTextContent(Program.getLabel("Infos029") + SPACE + (i + rangement.getStartCaisse() + 1));
+            name.setTextContent(Program.getLabel("Infos029") + SPACE + (i + rangement.getStartSimplePlace() + 1));
             partie.appendChild(name);
-            int lig = rangement.getNbLignes(i);
+            int lig = rangement.getLineCountAt(i);
             for (int j = 0; j < lig; j++) {
-              int col = rangement.getNbColonnes(i, j);
+              int col = rangement.getColumnCountAt(i, j);
               Element ligne = doc.createElement("ligne");
               partie.appendChild(ligne);
               for (int k = 0; k < col; k++) {
@@ -269,7 +267,7 @@ public class XmlUtils {
                 if (preview) {
                   vin_name.setTextContent(Program.getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
                 } else {
-                  rangement.getBouteille(i, j, k)
+                  rangement.getObject(i, j, k)
                       .ifPresentOrElse(myCellarObject -> vin_name.setTextContent(myCellarObject.getNom()), () -> vin_name.setTextContent("-"));
                 }
               }

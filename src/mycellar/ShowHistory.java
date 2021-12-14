@@ -220,11 +220,11 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           for (MyCellarObject b : toRestoreList) {
             if (b.isInExistingPlace()) {
               Rangement r = b.getRangement();
-              if (r.isCaisse()) {
+              if (r.isSimplePlace()) {
                 Program.getStorage().addHistory(HistoryState.ADD, b);
                 Program.getStorage().addWine(b);
               } else {
-                if (r.canAddBottle(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
+                if (r.canAddObjectAt(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
                   Program.getStorage().addHistory(HistoryState.ADD, b);
                   Program.getStorage().addWine(b);
                 } else {

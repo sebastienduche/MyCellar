@@ -302,7 +302,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
         }
       } else if (type_XLS.isSelected()) {
         Debug("Exporting in XLS in progress...");
-        caisseCount = rangements.stream().filter(Rangement::isCaisse).count();
+        caisseCount = rangements.stream().filter(Rangement::isSimplePlace).count();
         RangementUtils.write_XLSTab(nom, rangements);
       }
 

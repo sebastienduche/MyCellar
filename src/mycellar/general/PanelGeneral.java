@@ -40,8 +40,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 22/10/21
+ * @version 1.0
+ * @since 14/12/21
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -93,7 +93,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     add(new MyCellarLabel(LabelType.INFO, "189"));
     add(yearAuto);
     add(new MyCellarLabel(LabelType.INFO, "134"), "wrap");
-    add(name, "grow");
+    add(name, "growx");
     add(year, "width min(100,10%)");
     add(noYear);
     add(type, "push");
@@ -102,12 +102,12 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     } else if (Program.isMusicType()) {
       JPanel panelArtistComposer = new JPanel();
       panelArtistComposer.setBounds(0, 0, 0, 0);
-      panelArtistComposer.setLayout(new MigLayout("","0px[grow][grow]0px"));
+      panelArtistComposer.setLayout(new MigLayout("","0px[]10px[]0px"));
       panelArtistComposer.add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Artist"), "grow");
       panelArtistComposer.add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Composer"), "grow, wrap");
-      panelArtistComposer.add(artist, "grow");
-      panelArtistComposer.add(composer, "grow");
-      add(panelArtistComposer, "newline, grow");
+      panelArtistComposer.add(artist, "width min(100,10%)");
+      panelArtistComposer.add(composer, "width min(100,10%)");
+      add(panelArtistComposer, "span 5, newline");
     }
   }
 

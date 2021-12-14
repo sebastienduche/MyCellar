@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.2
- * @since 24/08/21
+ * @version 7.3
+ * @since 14/12/21
  */
 
 public class SerializedStorage implements Storage {
@@ -39,6 +39,7 @@ public class SerializedStorage implements Storage {
   private static final HistoryList HISTORY_LIST = new HistoryList();
   private static final WorkSheetList WORKSHEET_LIST = new WorkSheetList();
   private static final int DISTINCT_NAME_LENGTH = 100;
+  private static final int DISTINCT_COMPOSER_ARTIST_LENGTH = 75;
   private final List<String> distinctNames = new LinkedList<>(); // Liste des noms
   private final List<String> distinctComposers = new LinkedList<>(); // Liste des composers
   private final List<String> distinctArtists = new LinkedList<>(); // Liste des artists
@@ -149,7 +150,7 @@ public class SerializedStorage implements Storage {
   public List<String> getDistinctComposers() {
     return distinctComposers
         .stream()
-        .map(value -> value.length() > DISTINCT_NAME_LENGTH ? value.substring(0, DISTINCT_NAME_LENGTH) : value)
+        .map(value -> value.length() > DISTINCT_COMPOSER_ARTIST_LENGTH ? value.substring(0, DISTINCT_COMPOSER_ARTIST_LENGTH) : value)
         .collect(Collectors.toList());
   }
 
@@ -157,7 +158,7 @@ public class SerializedStorage implements Storage {
   public List<String> getDistinctArtists() {
     return distinctArtists
         .stream()
-        .map(value -> value.length() > DISTINCT_NAME_LENGTH ? value.substring(0, DISTINCT_NAME_LENGTH) : value)
+        .map(value -> value.length() > DISTINCT_COMPOSER_ARTIST_LENGTH ? value.substring(0, DISTINCT_COMPOSER_ARTIST_LENGTH) : value)
         .collect(Collectors.toList());
   }
 

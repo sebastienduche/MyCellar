@@ -46,7 +46,8 @@ public final class PanelPlace extends JPanel implements IPlace {
   private final MyCellarLabel labelNumPlace = new MyCellarLabel(LabelType.INFO, "082");
   private final MyCellarLabel labelLine = new MyCellarLabel(LabelType.INFO, "028");
   private final MyCellarLabel labelColumn = new MyCellarLabel(LabelType.INFO, "083");
-  private final MyCellarLabel before1 = new MyCellarLabel(LabelType.INFO, "091"); // Pour la Modification
+
+  private final MyCellarLabel beforeLabel = new MyCellarLabel(LabelType.INFO, "091"); // Pour la Modification
   private final MyCellarLabel previousPlaceLabel = new MyCellarLabel(""); // Pour la Modification
   private final MyCellarLabel previousNumPlaceLabel = new MyCellarLabel(""); // Pour la Modification
   private final MyCellarLabel previousLineLabel = new MyCellarLabel(""); // Pour la Modification
@@ -85,7 +86,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     if (newLineForError) {
       add(labelExist, "hidemode 3, span 6, wrap");
     }
-    add(before1, "hidemode 3,split 2");
+    add(beforeLabel, "hidemode 3,split 2");
     add(previousPlaceLabel, "hidemode 3");
     add(previousNumPlaceLabel, "hidemode 3");
     add(previousLineLabel, "hidemode 3");
@@ -198,7 +199,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void setBeforeLabelsVisible(boolean b) {
-    before1.setVisible(b);
+    beforeLabel.setVisible(b);
     previousPlaceLabel.setVisible(b);
     previousNumPlaceLabel.setVisible(b);
     previousLineLabel.setVisible(b && labelLine.isVisible());
@@ -207,7 +208,7 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   public void enableAll(boolean enable) {
     place.setEnabled(enable && (place.getItemCount() > 2 || place.getSelectedIndex() != 1));
-    numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((Rangement) place.getSelectedItem()).isCaisse()));
+    numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((Rangement) Objects.requireNonNull(place.getSelectedItem())).isCaisse()));
     line.setEnabled(enable && numPlace.getSelectedIndex() > 0);
     column.setEnabled(enable && line.getSelectedIndex() > 0);
     if (chooseCell != null) {
@@ -341,14 +342,14 @@ public final class PanelPlace extends JPanel implements IPlace {
     }
 
     if (caisse) {
-      labelNumPlace.setText(Program.getLabel("Infos158")); //"Numero de caisse");
+      labelNumPlace.setText(Program.getLabel("Infos158")); //"Numero de caisse
       if (rangement.getNbEmplacements() == 1) {
         numPlace.setSelectedIndex(1);
       }
     } else {
       // Need the last place number for complex places
       numPlace.addItem(new ComboItem(rangement.getLastNumEmplacement()));
-      labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu");
+      labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu
     }
     setLineColumnVisible(rangement);
     Debug("Lieu_itemStateChanging... End");

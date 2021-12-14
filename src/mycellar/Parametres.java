@@ -69,8 +69,8 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 
   public Parametres() {
     setLayout(new MigLayout("", "grow", ""));
-    label_fic_bak = new MyCellarLabel(LabelType.INFO, "162"); //"Nom du fichier Excel:");
-    MyCellarLabel label_langue = new MyCellarLabel(LabelType.INFO, "231"); //"Choix de la langue:");
+    label_fic_bak = new MyCellarLabel(LabelType.INFO, "162"); //"Nom du fichier Excel:"
+    MyCellarLabel label_langue = new MyCellarLabel(LabelType.INFO, "231"); //"Choix de la langue:"
     MyCellarLabel label_devise = new MyCellarLabel(LabelType.INFO, "163");
     label_annee = new MyCellarLabel(LabelType.INFO, "292");
     label_annee2 = new MyCellarLabel(LabelType.INFO, "293");
@@ -258,7 +258,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     } else {
       langue.setSelectedIndex(0);
       Program.setLanguage(LanguageFileLoader.Language.FRENCH);
-      JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall the application.", "Error", JOptionPane.ERROR_MESSAGE);
     }
   }
 

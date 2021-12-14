@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 
+import static mycellar.ProgramConstants.DOUBLE_DOT;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -33,13 +35,13 @@ public class DurationConverter {
     int second = newValue - (minute * SECOND_IN_MINUTE);
     if (hour > 0) {
       return hour +
-          ":" +
+          DOUBLE_DOT +
           StringUtils.leftPad(Integer.toString(minute), 2, "0") +
-          ":" +
+          DOUBLE_DOT +
           StringUtils.leftPad(Integer.toString(second), 2, "0");
     } else {
       return minute +
-          ":" +
+          DOUBLE_DOT +
           StringUtils.leftPad(Integer.toString(second), 2, "0");
     }
   }
@@ -48,7 +50,7 @@ public class DurationConverter {
     if (duration == null) {
       return "";
     }
-    String[] values = duration.split(":");
+    String[] values = duration.split(DOUBLE_DOT);
     int value = 0;
     int i = 0;
     if (values.length == 3) {
@@ -64,7 +66,7 @@ public class DurationConverter {
     if (duration == null) {
       return null;
     }
-    String[] values = duration.split(":");
+    String[] values = duration.split(DOUBLE_DOT);
     int i = 0;
     int hour = 0;
     if (values.length == 3) {

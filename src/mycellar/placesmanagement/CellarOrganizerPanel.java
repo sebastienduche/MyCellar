@@ -57,6 +57,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.core.LabelType.INFO_OTHER;
 
@@ -189,7 +190,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
             CELLS_LIST.add(cell);
             panelCellar.add(cell, "growx, wrap");
           }
-          placePanel.add(new MyCellarLabel(Program.getLabel("Infos029") + " " + empl), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarLabel(Program.getLabel("Infos029") + SPACE + empl), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 
@@ -225,7 +226,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
               panelCellar.add(panel);
             }
           }
-          placePanel.add(new MyCellarLabel(Program.getLabel("Infos029") + " " + (i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarLabel(Program.getLabel("Infos029") + SPACE + (i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 

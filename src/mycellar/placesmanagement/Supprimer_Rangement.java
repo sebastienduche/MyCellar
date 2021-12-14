@@ -47,6 +47,7 @@ import static mycellar.Program.open;
 import static mycellar.Program.removeCave;
 import static mycellar.Program.setToTrash;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.SPACE;
 import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
 import static mycellar.general.ProgramPanels.updateAllPanels;
 
@@ -168,7 +169,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       label_final.setHorizontalAlignment(SwingConstants.CENTER);
       Debug("There is (are) " + nb_case_use_total + " bottle(s) in this place!");
       if (nb_case_use_total == 0) {
-        label_final.setText(getLabel("Infos065")); //"Le rangement est vide");
+        label_final.setText(getLabel("Infos065")); //"Le rangement est vide
       } else {
         if (nb_case_use_total == 1) {
           label_final.setText(getLabel("DeletePlace.still1Item", LabelProperty.SINGLE));
@@ -223,7 +224,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         // Delete place and objects in the place
         String erreur_txt2 = getError("Error039", LabelProperty.THE_PLURAL);
         Debug("MESSAGE: Delete this place " + nom + " and all bottle(s) (" + nb_case_use_total + ")?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + " " + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           new Thread(() -> {
             //Suppression des bouteilles presentes dans le rangement
             String tmp_nom = cave.getNom();
@@ -410,7 +411,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
 
     String getNumPartLabel() {
-      return getLabel("Infos029") + " " + numPart;
+      return getLabel("Infos029") + SPACE + numPart;
     }
 
     String getNbLineLabel() {

@@ -71,6 +71,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
+import static mycellar.ProgramConstants.SPACE;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -788,7 +789,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toDeleteList.size()); //vins selectionnes.");
           erreur_txt2 = Program.getError("Error131"); //"Voulez-vous les supprimer?");
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           if (isError()) {
             for (MyCellarObject b : toDeleteList) {
               Program.getErrors().remove(new MyCellarError(MyCellarError.ID.INEXISTING_PLACE, b));
@@ -853,7 +854,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); //vins selectionnes.");
         erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
       }
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
         for (MyCellarObject b : toRestoreList) {
           Program.getTrash().remove(b);

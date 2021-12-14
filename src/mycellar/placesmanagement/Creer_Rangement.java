@@ -48,6 +48,7 @@ import java.util.Map;
 import static mycellar.Program.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.FONT_PANEL;
+import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.LabelType.INFO;
 import static mycellar.core.LabelType.INFO_OTHER;
 
@@ -315,7 +316,6 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       if (rangement.getNbEmplacements() > nbPart) {
         final Map<Integer, Integer> numberOfBottlesPerPlace = rangement.getNumberOfBottlesPerPlace();
 
-        // Controle que les emplacements supprimes sont vides
         for (int i = nbPart; i < rangement.getNbEmplacements(); i++) {
           if (numberOfBottlesPerPlace.get(i) > 0) {
             Debug("ERROR: Unable to delete simple place part with bottles!");
@@ -339,7 +339,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
             erreur_txt1 = MessageFormat.format(Program.getError("Error094", LabelProperty.PLURAL), nb_bottle); //bouteilles sont presentes dans ce rangement.");
             erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Change the place of these objects");
           }
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             //Modify Name of place
             Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
           }
@@ -348,7 +348,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           String erreur_txt1 = MessageFormat.format(Program.getError("CreerRangement.UpdatedBottlePart"), start_caisse, rangement.getStartCaisse());
           String erreur_txt2 = Program.getError("CreerRangement.AskUpdateBottlePart", LabelProperty.PLURAL);
 
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             //Modify start part number
             final int difference = start_caisse - rangement.getStartCaisse();
             Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setNumLieu(b.getNumLieu() + difference));
@@ -368,13 +368,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       for (Part p : listPart) {
         if (p.getRows().isEmpty()) {
           Debug("ERROR: Wrong number of lines on part: " + p.getNum());
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrect sur la partie
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrectes sur la partie
           return;
         }
         for (Row r : p.getRows()) {
           if (r.getCol() == 0) {
             Debug("ERROR: Wrong number of columns on part:  " + p.getNum());
-            Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrect sur la partie
+            Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrectes sur la partie
             return;
           }
         }
@@ -421,7 +421,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
               bResul = false;
               Debug("ERROR: Unable to reduce the number of row");
               Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error202"), Integer.toString(i + 1)));
-              // Impossible de reduire le nombre de ligne de la partie, bouteilles presentes
+              // Impossible de reduire le nombre de lignes de la partie, bouteilles presentes
             }
           }
           if (bResul) {
@@ -458,15 +458,15 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           String name = rangement.getNom();
           if (!name.equalsIgnoreCase(nom)) {
             String erreur_txt1 = Program.getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.");
-            String erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); //"Voulez vous changer l'emplacement de cette bouteille?");
+            String erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); //"Voulez-vous changer l'emplacement de cette bouteille?");
             if (nbBottles == 1) {
               Debug("MESSAGE: 1 bottle in this place, modify?");
             } else {
               Debug("MESSAGE: " + nbBottles + " bottles in this place, Modify?");
               erreur_txt1 = MessageFormat.format(Program.getError("Error094", LabelProperty.PLURAL), nbBottles); //bouteilles sont presentes dans ce rangement.");
-              erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Voulez vous changer l'emplacement de ces bouteilles?");
+              erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Voulez-vous changer l'emplacement de ces bouteilles?");
             }
-            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
               //Modify Name of place
               rangement.setNom(nom);
               rangement.updatePlace(listPart);
@@ -683,7 +683,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       if (modify) {
         label = Program.getError("Error147");
       }
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, label + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, label + SPACE + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }
     }

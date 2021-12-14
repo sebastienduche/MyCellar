@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static mycellar.MyCellarUtils.assertObjectType;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
+import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.general.XmlUtils.getTextContent;
 
 /**
@@ -449,9 +450,9 @@ public class Music extends MyCellarObject implements Serializable {
       int minute = newValue / 60;
       int second = newValue - (minute * 60);
       if (hour > 0) {
-        return hour + ":" + StringUtils.leftPad(Integer.toString(minute), 2, "0") + ":" + StringUtils.leftPad(Integer.toString(second), 2, "0");
+        return hour + DOUBLE_DOT + StringUtils.leftPad(Integer.toString(minute), 2, "0") + DOUBLE_DOT + StringUtils.leftPad(Integer.toString(second), 2, "0");
       } else {
-        return minute + ":" + StringUtils.leftPad(Integer.toString(second), 2, "0");
+        return minute + DOUBLE_DOT + StringUtils.leftPad(Integer.toString(second), 2, "0");
       }
     }
     return duration;

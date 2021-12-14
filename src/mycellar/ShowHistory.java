@@ -41,6 +41,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import static mycellar.ProgramConstants.SPACE;
+
 /**
  * Titre : Cave &agrave; vin
  * Description : Votre description
@@ -212,7 +214,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); // vins selectionnes.");
           erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
           for (MyCellarObject b : toRestoreList) {
@@ -283,7 +285,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
             erreur_txt2 = Program.getError("Error131"); // "Voulez-vous les supprimer?");
           }
           Debug(toDeleteList.size() + " line(s) selected");
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"),
               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             Debug("Deleting lines...");
             for (History b : toDeleteList) {

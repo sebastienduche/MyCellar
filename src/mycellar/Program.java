@@ -81,6 +81,7 @@ import static mycellar.ProgramConstants.CONFIG_INI;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
+import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.EXTENSION;
 import static mycellar.ProgramConstants.FRA;
@@ -93,6 +94,7 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.PREVIEW_HTML;
 import static mycellar.ProgramConstants.PREVIEW_XML;
 import static mycellar.ProgramConstants.SLASH;
+import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.ProgramConstants.THREE_DOTS;
 import static mycellar.ProgramConstants.TIMESTAMP_PATTERN;
@@ -990,8 +992,8 @@ public final class Program {
   }
 
   static String getShortFilename(String sFilename) {
-    String tmp = sFilename.replaceAll("\\\\", "/");
-    int ind1 = tmp.lastIndexOf("/");
+    String tmp = sFilename.replaceAll("\\\\", SLASH);
+    int ind1 = tmp.lastIndexOf(SLASH);
     int ind2 = tmp.indexOf(EXTENSION);
     if (ind1 != -1 && ind2 != -1) {
       tmp = tmp.substring(ind1 + 1, ind2);
@@ -1114,7 +1116,7 @@ public final class Program {
       label += THREE_DOTS;
     }
     if (labelProperty.isDoubleQuote()) {
-      label += LanguageFileLoader.isFrench() ? " :" : ":";
+      label += LanguageFileLoader.isFrench() ? SPACE + DOUBLE_DOT : DOUBLE_DOT;
     }
     return label;
   }

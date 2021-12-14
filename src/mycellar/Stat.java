@@ -49,6 +49,7 @@ import java.util.concurrent.atomic.LongAdder;
 
 import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
 import static mycellar.ProgramConstants.FONT_PANEL;
+import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
 
 
@@ -339,8 +340,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           .stream()
           .filter(History::isAddedOrDeleted)
           .forEach(this::mapToAddedDeletedStat);
-      mapAddedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100, Program.getLabel("Stat.in") + " " + year, value.intValue())));
-      mapDeletedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100 + 1, Program.getLabel("Stat.out") + " " + year, value.intValue())));
+      mapAddedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100, Program.getLabel("Stat.in") + SPACE + year, value.intValue())));
+      mapDeletedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100 + 1, Program.getLabel("Stat.out") + SPACE + year, value.intValue())));
       listHistory.sort(Comparator.comparingInt(o -> o.id));
     }
     final JFreeChart chart = panelChart.setDataBarChart(listHistory, Program.getLabel("Stat.inout"));

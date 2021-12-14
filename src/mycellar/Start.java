@@ -72,6 +72,7 @@ import static mycellar.ProgramConstants.INTERNAL_VERSION;
 import static mycellar.ProgramConstants.MAIN_VERSION;
 import static mycellar.ProgramConstants.OPTIONS_PARAM;
 import static mycellar.ProgramConstants.RESTART_COMMAND;
+import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.STAR;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.general.ProgramPanels.addTab;
@@ -87,11 +88,10 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * @version 30.3
  * @since 14/12/21
  */
-public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
+public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
   static final long serialVersionUID = 501073;
   private static final Start INSTANCE = new Start();
-  final JMenu menuTools = new JMenu();
   private final JButton m_oSupprimerButton = new JButton();
   private final JButton addButton = new JButton();
   private final JButton searchButton = new JButton();
@@ -119,6 +119,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
   private final JMenu menuPlace = new JMenu();
   private final JMenu menuEdition = new JMenu();
   private final JMenu menuWine = new JMenu();
+  private final JMenu menuTools = new JMenu();
   private final JMenu menuAbout = new JMenu("?");
   // differents choix de chaque menu
   private final JMenuItem menuImport = new JMenuItem();
@@ -191,7 +192,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
       String parameters = "";
 
       for (String arg : args) {
-        parameters = parameters.concat(arg + " ");
+        parameters = parameters.concat(arg + SPACE);
       }
       if (!parameters.isBlank()) {
         int nIndex = parameters.indexOf(OPTIONS_PARAM);
@@ -213,7 +214,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
               // on cherche le caractere ' ' qui va separer les
               // options du nom du fichier
               String tmp2 = tmp.strip();
-              tmp2 = tmp2.substring(tmp2.indexOf(" "));
+              tmp2 = tmp2.substring(tmp2.indexOf(SPACE));
               Program.setNewFile(tmp2.strip());
             }
           }
@@ -584,19 +585,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     menuEdition.setText(Program.getLabel("Infos245"));
 
     // differents choix de chaque menu
-//    menuImport.setText(Program.getLabel("Infos107")); // Import...
-//    menuQuit.setText(Program.getLabel("Infos003")); // Quitter
-//    menuExport.setText(Program.getLabel("Infos108")); // Export...
-//    menuStats.setText(Program.getLabel("Infos009")); // Statistiques
-//    menuTable.setText(Program.getLabel("Infos093")); // Tableaux...
-//    menuAddPlace.setText(Program.getLabel("Infos109")); // Ajouter...
-//    menuAddObject.setText(Program.getLabel("Infos109")); // Ajouter...
-//    menuHelp.setText(Program.getLabel("Infos111")); // Aide Contextuelle...
-//    menuSaveAs.setText(Program.getLabel("Infos371")); // Sauvegarder
-//    menuNewFile.setText(Program.getLabel("Infos378"));
-//    menuOpenFile.setText(Program.getLabel("Infos372"));
-//    menuSave.setText(Program.getLabel("Infos326"));
-//    menuShowFile.setText(Program.getLabel("Infos324"));
     menuShowWorksheet.setText(Program.getLabel("ShowFile.Worksheet"));
     menuSearch.setText(Program.getLabel("Main.tabSearchButton"));
 
@@ -669,7 +657,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
    */
   private void afficheFrame() {
     if (m_bHasFrameBuilded) {
-      // On ne recontruit que le menu Fichier pour remettre a jour la
+      // On ne reconstruit que le menu Fichier pour remettre a jour la
       // liste des fichiers ouverts recement
       menuFile.removeAll();
       menuFile.add(menuNewFile);
@@ -1085,6 +1073,14 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
   @Override
   public void uncaughtException(Thread t, Throwable e) {
     Program.showException(e, true);
+  }
+
+  public void addToMenuTools(JMenuItem menuItem) {
+    menuTools.add(menuItem);
+  }
+
+  public void removeFromMenuTools(JMenuItem menuItem) {
+    menuTools.remove(menuItem);
   }
 
   static class ObjectType {

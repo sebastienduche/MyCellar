@@ -3,7 +3,6 @@ package mycellar.general;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
-import mycellar.core.MyCellarObject;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Rangement;
 import org.w3c.dom.Element;
@@ -25,7 +24,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
+
+import static mycellar.MyCellarUtils.isNullOrEmpty;
+import static mycellar.ProgramConstants.SPACE;
 
 /**
  * <p>Titre : </p>
@@ -34,8 +35,8 @@ import java.util.Optional;
  * <p>Soci&eacute;t&eacute; : SebInformatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 09/06/21
+ * @version 3.2
+ * @since 14/12/21
  */
 
 public class XmlUtils {
@@ -54,12 +55,11 @@ public class XmlUtils {
   /**
    * readMyCellarXml: Lit le fichier MyCellar.xml des rangements
    */
-  public static boolean readMyCellarXml(String _sFileName, final List<Rangement> rangementList) {
+  public static boolean readMyCellarXml(String filename, final List<Rangement> rangementList) {
     Debug("readMyCellarXml: Reading file");
     rangementList.clear();
-    String filename = Program.getXMLPlacesFileName();
-    if (!_sFileName.isEmpty()) {
-      filename = _sFileName;
+    if (isNullOrEmpty(filename)) {
+      filename = Program.getXMLPlacesFileName();
     }
 
     File file = new File(filename);
@@ -167,11 +167,10 @@ public class XmlUtils {
    *
    * @param rangements LinkedList<Rangement>
    */
-  public static void writeMyCellarXml(List<Rangement> rangements, String sFilename) {
+  public static void writeMyCellarXml(List<Rangement> rangements, String filename) {
     Debug("writeMyCellarXml: Writing file");
-    String filename = Program.getXMLPlacesFileName();
-    if (!sFilename.isEmpty()) {
-      filename = sFilename;
+    if (isNullOrEmpty(filename)) {
+      filename = Program.getXMLPlacesFileName();
     }
     try (var oFile = new FileWriter(filename)) {
       //Init XML File
@@ -198,7 +197,7 @@ public class XmlUtils {
    */
   public static void writeRangements(String filename, List<Rangement> rangements, boolean preview) {
     Debug("writeRangements: Writing file");
-    if (filename.isEmpty()) {
+    if (isNullOrEmpty(filename)) {
       filename = Program.getPreviewXMLFileName();
     }
     try {
@@ -229,7 +228,7 @@ public class XmlUtils {
             Element partie = doc.createElement("partie");
             r.appendChild(partie);
             name = doc.createElement("nom-partie");
-            name.setTextContent(Program.getLabel("Infos029") + " " + (i + rangement.getStartCaisse()));
+            name.setTextContent(Program.getLabel("Infos029") + SPACE + (i + rangement.getStartCaisse()));
             partie.appendChild(name);
             Element caisse = doc.createElement("caisse");
             partie.appendChild(caisse);
@@ -255,7 +254,7 @@ public class XmlUtils {
             Element partie = doc.createElement("partie");
             r.appendChild(partie);
             name = doc.createElement("nom-partie");
-            name.setTextContent(Program.getLabel("Infos029") + " " + (i + rangement.getStartCaisse() + 1));
+            name.setTextContent(Program.getLabel("Infos029") + SPACE + (i + rangement.getStartCaisse() + 1));
             partie.appendChild(name);
             int lig = rangement.getNbLignes(i);
             for (int j = 0; j < lig; j++) {
@@ -270,11 +269,8 @@ public class XmlUtils {
                 if (preview) {
                   vin_name.setTextContent(Program.getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
                 } else {
-                  Optional<MyCellarObject> b = rangement.getBouteille(i, j, k);
-                  if (b.isPresent())
-                    vin_name.setTextContent(b.get().getNom());
-                  else
-                    vin_name.setTextContent("-");
+                  rangement.getBouteille(i, j, k)
+                      .ifPresentOrElse(myCellarObject -> vin_name.setTextContent(myCellarObject.getNom()), () -> vin_name.setTextContent("-"));
                 }
               }
             }

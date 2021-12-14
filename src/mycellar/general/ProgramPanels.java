@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.STAR;
 import static mycellar.ProgramConstants.THREE_DOTS;
 import static mycellar.ScreenType.ADDVIN;
@@ -391,7 +392,7 @@ public class ProgramPanels {
     UPDATABLE_BOTTLES.put(myCellarObject.getId(), manage);
     String bottleName = myCellarObject.getNom();
     if (bottleName.length() > 30) {
-      bottleName = bottleName.substring(0, 30) + " " + THREE_DOTS;
+      bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
     }
     TABBED_PANE.addTab(bottleName, MyCellarImage.WINE, manage);
     TABBED_PANE.setSelectedIndex(TABBED_PANE.getTabCount() - 1);

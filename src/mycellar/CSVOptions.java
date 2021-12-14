@@ -19,7 +19,10 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
+import static mycellar.ProgramConstants.COMMA;
+import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.FONT_PANEL;
+import static mycellar.ProgramConstants.SLASH;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -84,10 +87,10 @@ final class CSVOptions extends JDialog {
       case COLUMNS_SEPARATOR:
         separator.setSelectedIndex(1);
         break;
-      case ":":
+      case DOUBLE_DOT:
         separator.setSelectedIndex(2);
         break;
-      case "/":
+      case SLASH:
         separator.setSelectedIndex(3);
         break;
       default:
@@ -133,16 +136,16 @@ final class CSVOptions extends JDialog {
     int separ_select = separator.getSelectedIndex();
     switch (separ_select) {
       case 0:
-        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ",");
+        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COMMA);
         break;
       case 1:
         Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
         break;
       case 2:
-        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ":");
+        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, DOUBLE_DOT);
         break;
       case 3:
-        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, "/");
+        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, SLASH);
         break;
     }
     dispose();

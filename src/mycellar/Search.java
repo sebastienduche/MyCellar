@@ -57,6 +57,7 @@ import java.util.regex.Pattern;
 
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.FONT_PANEL;
+import static mycellar.ProgramConstants.SPACE;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -247,7 +248,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         name.requestFocusInWindow();
       }
 
-      Start.getInstance().menuTools.add(moveLine);
+      Start.getInstance().addToMenuTools(moveLine);
     });
   }
 
@@ -303,7 +304,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), listToSupp.size()); //vins selectionnes.");
         erreur_txt2 = Program.getError("Error131"); //" Delete them ?
       }
-      int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       if (resul == JOptionPane.YES_OPTION) {
         SwingUtilities.invokeLater(() -> {
           for (Bouteille bottle : listToSupp) {
@@ -1046,7 +1047,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   @Override
   public void tabClosed() {
-    Start.getInstance().menuTools.remove(moveLine);
+    Start.getInstance().removeFromMenuTools(moveLine);
     Start.getInstance().updateMainPanel();
   }
 

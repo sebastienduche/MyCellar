@@ -24,6 +24,8 @@ import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 
+import static mycellar.ProgramConstants.EURO;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -68,7 +70,7 @@ public final class PanelWineAttribute extends JPanel {
     add(colorList, "wrap, width min(150,30%)");
     add(new MyCellarLabel(LabelType.INFO, "135"), "wrap");
     add(price, "width min(100,45%), split 2");
-    add(new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, "€")), "gapleft 5px");
+    add(new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, EURO)), "gapleft 5px");
     add(new MyCellarLabel(LabelType.INFO, "405", LabelProperty.PLURAL), "split, span 2");
     add(nbItems, "width min(50,10%)");
     add(labelStillToAdd, "wrap");

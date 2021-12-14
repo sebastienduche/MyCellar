@@ -43,6 +43,9 @@ public final class ProgramConstants {
   public static final String THREE_DOTS = "...";
   public static final String ONE_DOT = ".";
   public static final String SLASH = "/";
+  public static final String COMMA = ",";
+  public static final String DOUBLE_DOT = ":";
+  public static final String SPACE = " ";
   public static final String EURO = "\u20ac";
 
   static final String INFOS_VERSION = " 2021 v";

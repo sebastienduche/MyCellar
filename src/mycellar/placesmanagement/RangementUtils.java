@@ -50,6 +50,7 @@ import static mycellar.Program.toCleanString;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
+import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.core.MyCellarError.ID.CELL_FULL;
 import static mycellar.core.MyCellarError.ID.FULL_BOX;
@@ -584,13 +585,13 @@ public final class RangementUtils {
       sTitle.append(b.getNom());
     }
     if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL1, false)) {
-      sTitle.append(" ").append(b.getAnnee());
+      sTitle.append(SPACE).append(b.getAnnee());
     }
     if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL2, false)) {
-      sTitle.append(" ").append(b.getKind());
+      sTitle.append(SPACE).append(b.getKind());
     }
     if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL3, false)) {
-      sTitle.append(" ").append(b.getPrix()).append(Program.getCaveConfigString(MyCellarSettings.DEVISE, ""));
+      sTitle.append(SPACE).append(b.getPrix()).append(Program.getCaveConfigString(MyCellarSettings.DEVISE, ""));
     }
     return toCleanString(sTitle);
   }

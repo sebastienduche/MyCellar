@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.text.MessageFormat;
 
 import static mycellar.MyCellarUtils.nonNullValueOrDefault;
+import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.LabelProperty.OF_THE_SINGLE;
 
 
@@ -286,7 +287,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     modified |= panelPlace.isModified();
     modified |= panelVignobles.isModified();
 
-    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error148", OF_THE_SINGLE) + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error148", OF_THE_SINGLE) + SPACE + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
       Debug("Don't Quit.");
       addButton.setEnabled(true);
       return false;

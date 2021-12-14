@@ -24,6 +24,7 @@ import java.util.List;
 
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
+import static mycellar.ProgramConstants.SPACE;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -121,7 +122,7 @@ final class PanelStats extends JPanel {
       if (Program.hasConfigCaveKey(MyCellarSettings.DEVISE)) {
         devise = Program.getCaveConfigString(MyCellarSettings.DEVISE, EURO);
       }
-      cellarTotal.setText(Program.getCellarValue() + " " + devise);
+      cellarTotal.setText(Program.getCellarValue() + SPACE + devise);
       bottlesNb.setText(Integer.toString(nbBottles));
     });
   }

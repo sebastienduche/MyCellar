@@ -70,6 +70,9 @@ import java.util.Objects;
 
 import static mycellar.Program.toCleanString;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
+import static mycellar.ProgramConstants.COMMA;
+import static mycellar.ProgramConstants.DOUBLE_DOT;
+import static mycellar.ProgramConstants.SLASH;
 
 
 /**
@@ -112,7 +115,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     importe.setMnemonic(importChar);
     openit.setMnemonic(ouvrirChar);
     importe.setText(Program.getLabel("Infos036")); //"Importer");
-    importe.addActionListener(this::importe_actionPerformed); //"Selectionner les differents champs presents dans le fichier (de gauche a droite)");
+    importe.addActionListener(this::importe_actionPerformed); //"Selectionner les differents champs presents dans le fichier (de gauche a droite)
     titre.setHorizontalTextPosition(SwingConstants.LEFT);
     label_progression.setForeground(Color.red);
     label_progression.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -376,8 +379,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if ((type_xls.isSelected() || type_txt.isSelected()) && nb_choix == 0) {
         label_progression.setText("");
         Debug("ERROR: No field selected");
-        //"Aucuns champs selectionnes");
-        //"Veuillez selectionner des champs pour que les donnees soient traitees");
+        //"Aucuns champs selectionnes
+        //"Veuillez selectionner des champs pour que les donnees soient traitees
         Erreur.showSimpleErreur(Program.getError("Error025"), Program.getError("Error026"));
         importe.setEnabled(true);
         return;
@@ -429,8 +432,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (isMoreThanOne) {
         label_progression.setText("");
         Debug("ERROR: fields cannot be selected more than one time");
-        //"Un champ ne doit pas etre selectionne 2 fois.");
-        //"Veuillez choisir un champ different pour chaque colonne.");
+        //"Un champ ne doit pas etre selectionne 2 fois.
+        //"Veuillez choisir un champ different pour chaque colonne.
         Erreur.showSimpleErreur(Program.getError("Error017"), Program.getError("Error018"));
         importe.setEnabled(true);
         return;
@@ -484,14 +487,14 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         myoptions.setVisible(true);
         int num_r = Program.getCaveConfigInt(MyCellarSettings.RANGEMENT_DEFAULT, -1);
         if (num_r == Program.getCaveLength()) {
-          String nom1 = Program.getCaveConfigString(MyCellarSettings.RANGEMENT_NAME, ""); //Program.options.getValue();
+          String nom1 = Program.getCaveConfigString(MyCellarSettings.RANGEMENT_NAME, "");
           boolean resul;
           do {
             do {
               // Controle sur le nom
               resul = true;
               if (nom1.contains("\"") || nom1.contains(COLUMNS_SEPARATOR) || nom1.contains("<") || nom1.contains(">") || nom1.contains("?") || nom1.contains("\\") ||
-                  nom1.contains("/") || nom1.contains("|") || nom1.contains("*")) {
+                  nom1.contains(SLASH) || nom1.contains("|") || nom1.contains("*")) {
                 Options options = new Options(Program.getLabel("Infos020"), Program.getLabel("Infos230"), Program.getLabel("Infos020"), "", nom1,
                     Program.getError("Error126"), false);
                 options.setVisible(true);
@@ -538,13 +541,13 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         String separe;
         switch (separateur.getSelectedIndex()) {
           case 1:
-            separe = ":";
+            separe = DOUBLE_DOT;
             break;
           case 2:
-            separe = "/";
+            separe = SLASH;
             break;
           case 3:
-            separe = ",";
+            separe = COMMA;
             break;
           case 0:
           default:
@@ -557,8 +560,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             if (line.split(separe).length <= 1) {
               label_progression.setText("");
               Debug("ERROR: No separator found");
-              //"Le separateur selectionne n'a pas ete trouve.");
-              //"Veuillez selectionner le separateur utilise dans votre fichier.");
+              //"Le separateur selectionne n'a pas ete trouve.
+              //"Veuillez selectionner le separateur utilise dans votre fichier.
               Erreur.showSimpleErreur(Program.getError("Error042"), Program.getError("Error043"));
               importe.setEnabled(true);
               reader.close();
@@ -568,7 +571,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           if (titre.isSelected()) {
             line = reader.readLine();
           }
-          label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
+          label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...
           int maxNumPlace = 0;
           while (line != null) {
             String[] lu = line.split(separe);
@@ -701,13 +704,13 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   }
 
   private void importFromXML(File f) {
-    label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
+    label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...
     ListeBouteille.loadXML(f);
     showImportDone();
   }
 
   private void importFromITunes(File f) {
-    label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...");
+    label_progression.setText(Program.getLabel("Infos089")); //"Import en cours...
     final List<Music> list;
     try {
       list = new ItunesLibraryImporter().loadItunesLibrary(f);
@@ -726,7 +729,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private void showImportDone() {
     Debug("Importing... End");
     importe.setEnabled(true);
-    label_progression.setText(Program.getLabel("Infos035"), true); //"Import Termine");
+    label_progression.setText(Program.getLabel("Infos035"), true); //"Import Termine
     if (!RangementUtils.putTabStock()) {
       new OpenShowErrorsAction().actionPerformed(null);
     }

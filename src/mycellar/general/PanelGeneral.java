@@ -29,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 
+import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.LabelProperty.OF_THE_PLURAL;
 import static mycellar.core.LabelProperty.OF_THE_SINGLE;
 import static mycellar.core.LabelProperty.SINGLE;
@@ -411,7 +412,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
         erreur_txt1 = Program.getError("Error148", name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return false;
       }

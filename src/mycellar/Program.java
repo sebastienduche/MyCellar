@@ -74,6 +74,7 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import static mycellar.Filtre.EXTENSION_SINFO;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.ProgramConstants.BOUTEILLES_XML;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
@@ -83,7 +84,6 @@ import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
 import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.EURO;
-import static mycellar.ProgramConstants.EXTENSION;
 import static mycellar.ProgramConstants.FRA;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
 import static mycellar.ProgramConstants.KEY_TYPE;
@@ -954,7 +954,7 @@ public final class Program {
     Debug("Program: Calculating work directory.");
     String sDir = System.getProperty("user.home");
     if (sDir.isEmpty()) {
-      workDir = "." + File.separator + "Object";
+      workDir = ONE_DOT + File.separator + "Object";
     } else {
       workDir = sDir + File.separator + "MyCellar";
     }
@@ -994,7 +994,7 @@ public final class Program {
   static String getShortFilename(String sFilename) {
     String tmp = sFilename.replaceAll("\\\\", SLASH);
     int ind1 = tmp.lastIndexOf(SLASH);
-    int ind2 = tmp.indexOf(EXTENSION);
+    int ind2 = tmp.indexOf(ONE_DOT + EXTENSION_SINFO);
     if (ind1 != -1 && ind2 != -1) {
       tmp = tmp.substring(ind1 + 1, ind2);
     }

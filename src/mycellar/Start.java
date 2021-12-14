@@ -63,13 +63,14 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 
+import static mycellar.Filtre.EXTENSION_SINFO;
 import static mycellar.Program.toCleanString;
 import static mycellar.ProgramConstants.DOWNLOAD_COMMAND;
-import static mycellar.ProgramConstants.EXTENSION;
 import static mycellar.ProgramConstants.FR;
 import static mycellar.ProgramConstants.INFOS_VERSION;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
 import static mycellar.ProgramConstants.MAIN_VERSION;
+import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.OPTIONS_PARAM;
 import static mycellar.ProgramConstants.RESTART_COMMAND;
 import static mycellar.ProgramConstants.SPACE;
@@ -204,12 +205,12 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
           // ______________________
           String tmp = parameters.substring(0, nIndex);
           // Recuperation du nom du fichier
-          if (tmp.contains(EXTENSION)) {
+          if (tmp.contains(ONE_DOT + EXTENSION_SINFO)) {
             Program.setNewFile(tmp.strip());
           } else {
             // On prend tout ce qu'il y a apres -opts
             tmp = parameters.substring(nIndex);
-            if (tmp.contains(EXTENSION)) {
+            if (tmp.contains(ONE_DOT + EXTENSION_SINFO)) {
               // Si l'on trouve l'extension du fichier
               // on cherche le caractere ' ' qui va separer les
               // options du nom du fichier
@@ -406,7 +407,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
         return;
       }
       String fic = nomFichier.getAbsolutePath();
-      int index = fic.indexOf(".");
+      int index = fic.indexOf(ONE_DOT);
       if (index == -1) {
         fic = fic.concat(".xml");
       }
@@ -598,10 +599,10 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuExportXml.setText(Program.getLabel("Infos408")); // Exporter au format xml
     menuCloseFile.setText(Program.getLabel("Infos019")); // Fermer...
     menuCheckUpdate.setText(Program.getLabel("Infos379")); // Check update
-    menuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "")) + EXTENSION);
-    menuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "")) + EXTENSION);
-    menuReopen3.setText("3 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "")) + EXTENSION);
-    menuReopen4.setText("4 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, "")) + EXTENSION);
+    menuReopen1.setText("1 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN1, "")) + ONE_DOT + EXTENSION_SINFO);
+    menuReopen2.setText("2 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN2, "")) + ONE_DOT + EXTENSION_SINFO);
+    menuReopen3.setText("3 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN3, "")) + ONE_DOT + EXTENSION_SINFO);
+    menuReopen4.setText("4 - " + Program.getShortFilename(Program.getGlobalConfigString(MyCellarSettings.LAST_OPEN4, "")) + ONE_DOT + EXTENSION_SINFO);
     menuReopen1.setAccelerator(KeyStroke.getKeyStroke('1', InputEvent.CTRL_DOWN_MASK));
     menuReopen2.setAccelerator(KeyStroke.getKeyStroke('2', InputEvent.CTRL_DOWN_MASK));
     menuReopen3.setAccelerator(KeyStroke.getKeyStroke('3', InputEvent.CTRL_DOWN_MASK));

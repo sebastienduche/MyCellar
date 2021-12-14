@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.3.2.7";
+  public static final String INTERNAL_VERSION = "4.3.2.9";
   public static final int VERSION = 71;
   public static final String MAIN_VERSION = VERSION + " ZE";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
@@ -51,7 +51,6 @@ public final class ProgramConstants {
   static final String INFOS_VERSION = " 2021 v";
   static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
   static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);
-  static final String EXTENSION = ".sinfo";
   static final String KEY_TYPE = "<KEY>";
   static final String PREVIEW_XML = "preview.xml";
   static final String PREVIEW_HTML = "preview.html";

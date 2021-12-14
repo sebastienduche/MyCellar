@@ -109,8 +109,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.2
- * @since 08/11/21
+ * @version 27.3
+ * @since 14/12/21
  */
 
 public final class Program {
@@ -154,7 +154,7 @@ public final class Program {
 
   static void loadPropertiesAndSetProgramType() {
     try {
-      Debug("Program: Initializing Configuration files...");
+      Debug("Program: Initializing Configuration files and Program type");
       if (loadProperties()) {
         setProgramType(Program.Type.typeOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
       } else {
@@ -163,6 +163,9 @@ public final class Program {
     } catch (UnableToOpenFileException e) {
       showException(e);
     }
+    String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
+    Debug("Program: Type of managed object: " + programType);
+    setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
   }
 
   static void initializeLanguageProgramType() {

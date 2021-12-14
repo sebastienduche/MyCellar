@@ -12,7 +12,6 @@ import mycellar.core.MyCellarAction;
 import mycellar.core.MyCellarComboBox;
 import mycellar.core.MyCellarException;
 import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.MyCellarMenuItem;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
@@ -85,8 +84,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.2
- * @since 08/11/21
+ * @version 30.3
+ * @since 14/12/21
  */
 public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -247,7 +246,7 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
       Program.showException(e);
       System.exit(998);
     } catch (ExceptionInInitializerError a) {
-      JOptionPane.showMessageDialog(null, "Error during program initialisation!!\nProgram files corrupted!!\nPlease reinstall program.",
+      JOptionPane.showMessageDialog(null, "Error during program initialisation!!\nProgram files corrupted!!\nPlease reinstall the program.",
           "Error", JOptionPane.ERROR_MESSAGE);
       System.exit(999);
     }
@@ -577,7 +576,6 @@ public class Start extends JFrame implements Thread.UncaughtExceptionHandler {
     newChar = Program.getLabel("NEW").charAt(0);
     m_oMenuBar = new JMenuBar();
 
-    MyCellarLabelManagement.updateLabels();
     // differents menus
     menuFile.setText(Program.getLabel("Infos104")); // Fichier
     menuPlace.setText(Program.getLabel("Infos081"));

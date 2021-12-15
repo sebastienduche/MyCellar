@@ -1,6 +1,6 @@
 package mycellar.requester.ui;
 
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.requester.IPredicate;
 
 import javax.swing.BorderFactory;
@@ -12,12 +12,12 @@ import java.awt.FlowLayout;
 import java.util.Objects;
 
 /**
- * <p>Titre : Cave à vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2014</p>
- * <p>Société : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2014
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.4
  * @since 08/03/19
  */

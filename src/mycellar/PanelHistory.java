@@ -1,8 +1,8 @@
 package mycellar;
 
-import mycellar.core.DateCellRenderer;
+import mycellar.core.tablecomponents.DateCellRenderer;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
 import net.miginfocom.swing.MigLayout;

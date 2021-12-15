@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JCheckBox;

@@ -2,8 +2,8 @@ package mycellar.placesmanagement;
 
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;

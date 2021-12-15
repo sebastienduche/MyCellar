@@ -1,8 +1,8 @@
 package mycellar;
 
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
@@ -28,6 +28,7 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * @version 1.8
  * @since 30/12/20
  */
+@Deprecated
 public class Options extends JDialog {
   static final long serialVersionUID = 190305;
   private static final int LARGEUR = 420;
@@ -38,39 +39,14 @@ public class Options extends JDialog {
   private final String cle;
   private final boolean property;
 
-  /**
-   * Options: Constructeur pour la fenêtre d'option
-   *
-   * @param title         String: Titre de la fenêtre.
-   * @param message       String: Message de la fenêtre.
-   * @param propriete     String: Propriété à renseigner.
-   * @param default_value String: Valeur par défaut.
-   * @param key           String: Clé de la propiété.
-   * @param textError     String: Texte de l'erreur.
-   * @param isAProperty   boolean: true si c'est une propiété.
-   */
   public Options(String title, String message, String propriete, String default_value, String key, String textError, boolean isAProperty) {
-
     super(new JFrame(), "", true);
     cle = key;
     property = isAProperty;
     textControl3.setText(textError);
-    try {
-      jbInit(title, message, propriete, default_value);
-    } catch (RuntimeException e) {
-      Program.showException(e);
-    }
+    jbInit(title, message, propriete, default_value);
   }
 
-  /**
-   * jbInit: Fonction d'initialisation.
-   *
-   * @param title         String: Titre de la fenêtre.
-   * @param message       String: Message de la fenêtre.
-   * @param propriete     String: Propriété à renseigner.
-   * @param default_value String: Valeur par défaut.
-   * @throws Exception
-   */
   private void jbInit(String title, String message, String propriete, String default_value) {
 
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -105,11 +81,6 @@ public class Options extends JDialog {
     setResizable(false);
   }
 
-  /**
-   * valider_actionPerformed: Valider la propriété et quitter.
-   *
-   * @param e ActionEvent
-   */
   private void valider_actionPerformed(ActionEvent e) {
     if (property) {
       Program.putCaveConfigString(cle, toCleanString(value.getText()));
@@ -117,22 +88,12 @@ public class Options extends JDialog {
     dispose();
   }
 
-  /**
-   * keylistener_actionPerformed: Ecoute clavier
-   *
-   * @param e KeyEvent
-   */
   private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
       valider_actionPerformed(null);
     }
   }
 
-  /**
-   * getValue: Retourne la valeur définie pour la propriété.
-   *
-   * @return String
-   */
   public String getValue() {
     return toCleanString(value.getText());
   }

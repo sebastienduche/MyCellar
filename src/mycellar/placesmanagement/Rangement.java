@@ -1,7 +1,7 @@
 package mycellar.placesmanagement;
 
 import mycellar.Program;
-import mycellar.core.MyCellarException;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.MyCellarObject;
 
 import java.util.ArrayList;

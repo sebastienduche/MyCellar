@@ -1,4 +1,9 @@
-package mycellar.core;
+package mycellar.core.uicomponents;
+
+import mycellar.core.IMyCellarComponent;
+import mycellar.core.LabelProperty;
+import mycellar.core.LabelType;
+import mycellar.core.MyCellarLabelManagement;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -6,12 +11,12 @@ import javax.swing.JCheckBox;
 import java.awt.Font;
 
 /**
- * Titre : Cave à vin
+ * Titre : Cave &agrave; vin
  * Description : Votre description
  * Copyright : Copyright (c) 2011
- * Société : Seb Informatique
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.6
  * @since 18/10/20
  */

@@ -2,10 +2,10 @@ package mycellar.xls;
 
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarSpinner;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import net.miginfocom.swing.MigLayout;
@@ -67,9 +67,6 @@ public final class XLSTabOptions extends JDialog {
   private final MyCellarLabel empty_line_place_label;
   private final XLSOptionsValues tv;
 
-  /**
-   * XLSOptions: Constructeur pour la fenêtre d'options.
-   */
   public XLSTabOptions() {
     setModal(true);
     tv = new XLSOptionsValues();
@@ -142,7 +139,7 @@ public final class XLSTabOptions extends JDialog {
     MyCellarLabel pt_label3 = new MyCellarLabel("px");
     MyCellarLabel empty_line_part_label = new MyCellarLabel(INFO, "334"); //nb ligne entre partie
     empty_line_place_label = new MyCellarLabel(INFO, "335"); //nb lignes entre rangement
-    //Colonnes à utiliser
+    //Colonnes
     MyCellarLabel column_label = new MyCellarLabel(INFO, "338");
 
     if (Program.getCaveConfigBool(ONE_PER_SHEET_XLS, false)) {
@@ -186,11 +183,6 @@ public final class XLSTabOptions extends JDialog {
     empty_line_place.setVisible(!b);
   }
 
-  /**
-   * valider_actionPerformed: Valider les modifications et quitter.
-   *
-   * @param e ActionEvent
-   */
   private void valider_actionPerformed(ActionEvent e) {
     Program.putCaveConfigString(XLS_TAB_TITLE, pdf_title.getText());
     Program.putCaveConfigString(TITLE_TAB_SIZE_XLS, title_size.getValue().toString());
@@ -208,11 +200,6 @@ public final class XLSTabOptions extends JDialog {
     dispose();
   }
 
-  /**
-   * keylistener_actionPerformed: Fonction d'écoute clavier.
-   *
-   * @param e KeyEvent
-   */
   private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
       valider_actionPerformed(null);

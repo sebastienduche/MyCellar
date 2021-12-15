@@ -1,6 +1,6 @@
 package mycellar.core;
 
-interface IMyCellarComponent {
+public interface IMyCellarComponent {
 
   void setText(String text);
 

@@ -2,7 +2,7 @@ package test;
 
 import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.core.MyCellarException;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;

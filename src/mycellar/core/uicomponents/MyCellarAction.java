@@ -1,6 +1,10 @@
-package mycellar.core;
+package mycellar.core.uicomponents;
 
 import mycellar.Program;
+import mycellar.core.IMyCellarComponent;
+import mycellar.core.LabelProperty;
+import mycellar.core.LabelType;
+import mycellar.core.MyCellarLabelManagement;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

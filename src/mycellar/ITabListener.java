@@ -1,17 +1,17 @@
 /* *******************************************************
- * � 1996-2009 HR Access Solutions. All rights reserved
+ * (c) 1996-2009 HR Access Solutions. All rights reserved
  * ******************************************************/
 
 package mycellar;
 
-import mycellar.core.TabEvent;
+import mycellar.core.uicomponents.TabEvent;
 
 import java.util.EventListener;
 
 /**
  * A listener notified when a tab is about to close.
  *
- * @author Fran�ois RITALY / HR Access Solutions
+ * @author Francois RITALY / HR Access Solutions
  */
 public interface ITabListener extends EventListener {
 

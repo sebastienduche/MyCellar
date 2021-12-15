@@ -1,4 +1,4 @@
-package mycellar.core;
+package mycellar.core.uicomponents;
 
 import mycellar.general.ProgramPanels;
 
@@ -25,7 +25,7 @@ public final class JModifyTextArea extends JTextArea {
   private boolean active;
   private boolean listenerEnable;
 
-  JModifyTextArea() {
+  public JModifyTextArea() {
     modified = false;
     active = true;
     listenerEnable = true;

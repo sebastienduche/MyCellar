@@ -1,7 +1,7 @@
 package mycellar.requester.ui;
 
 import mycellar.Program;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.Predicates;
 import net.miginfocom.swing.MigLayout;

@@ -2,10 +2,10 @@ package mycellar.xls;
 
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarSpinner;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.common.MyCellarFields;
 import net.miginfocom.swing.MigLayout;
 
@@ -42,15 +42,12 @@ public final class XLSOptions extends JDialog {
 
   private static final long serialVersionUID = 5307297932934344545L;
   private final MyCellarSpinner titleSize = new MyCellarSpinner(1, 999);
-  private final MyCellarCheckBox MyCellarCheckBox1 = new MyCellarCheckBox(INFO, "257");
+  private final MyCellarCheckBox myCellarCheckBox = new MyCellarCheckBox(INFO, "257");
   private final MyCellarCheckBox[] export;
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner textSize = new MyCellarSpinner(1, 999);
   private final int nb_colonnes;
 
-  /**
-   * XLSOptions: Constructeur pour la fenêtre d'options.
-   */
   public XLSOptions() {
     setModal(true);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -75,7 +72,7 @@ public final class XLSOptions extends JDialog {
     titleSize.setValue(Program.getCaveConfigInt(TITLE_SIZE_XLS, 10));
     textSize.setValue(Program.getCaveConfigInt(TEXT_SIZE_XLS, 10));
 
-    MyCellarCheckBox1.setSelected(Program.getCaveConfigBool(BOLD_XLS, false));
+    myCellarCheckBox.setSelected(Program.getCaveConfigBool(BOLD_XLS, false));
     List<MyCellarFields> columns = MyCellarFields.getFieldsList();
     nb_colonnes = columns.size();
     export = new MyCellarCheckBox[nb_colonnes];
@@ -104,7 +101,7 @@ public final class XLSOptions extends JDialog {
     jPanel1.add(MyCellarLabel3, "split 6");
     jPanel1.add(titleSize);
     jPanel1.add(MyCellarLabel6);
-    jPanel1.add(MyCellarCheckBox1);
+    jPanel1.add(myCellarCheckBox);
     add(jPanel1, "grow, wrap");
     jPanel2.add(MyCellarLabel7, "split 3, span 2");
     jPanel2.add(textSize);
@@ -132,7 +129,7 @@ public final class XLSOptions extends JDialog {
       Program.putCaveConfigString(XLS_TITLE, pdf_title.getText());
       Program.putCaveConfigString(TITLE_SIZE_XLS, titleSize.getValue().toString());
       Program.putCaveConfigString(TEXT_SIZE_XLS, textSize.getValue().toString());
-      Program.putCaveConfigBool(BOLD_XLS, MyCellarCheckBox1.isSelected());
+      Program.putCaveConfigBool(BOLD_XLS, myCellarCheckBox.isSelected());
       for (int i = 0; i < nb_colonnes; i++) {
         Program.putCaveConfigInt(SIZE_COL + i + "EXPORT_XLS", export[i].isSelected() ? 1 : 0);
       }

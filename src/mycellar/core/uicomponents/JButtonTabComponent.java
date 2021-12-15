@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package mycellar.core;
+package mycellar.core.uicomponents;
 
 import mycellar.ITabListener;
 import mycellar.Program;

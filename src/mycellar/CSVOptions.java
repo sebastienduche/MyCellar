@@ -1,10 +1,10 @@
 package mycellar;
 
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import net.miginfocom.swing.MigLayout;
@@ -63,7 +63,7 @@ final class CSVOptions extends JDialog {
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setLayout(new MigLayout("", "grow", ""));
     panel.setFont(FONT_PANEL);
-    MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO, "034"); //Séparateur
+    MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO, "034"); //Separateur
     listColumns = MyCellarFields.getFieldsList();
     assert listColumns != null;
     nb_colonnes = listColumns.size();

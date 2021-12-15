@@ -1,4 +1,4 @@
-package mycellar.core;
+package mycellar.core.tablecomponents;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;

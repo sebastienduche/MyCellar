@@ -7,7 +7,7 @@ import mycellar.Start;
 import mycellar.Utils;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarAction;
+import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.ShowFile;
 

@@ -3,7 +3,7 @@ package test;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarException;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.storage.SerializedStorage;
 import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;

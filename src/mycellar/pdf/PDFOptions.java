@@ -4,11 +4,11 @@ import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.MyCellarSpinner;
+import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.common.MyCellarFields;
 import net.miginfocom.swing.MigLayout;
 

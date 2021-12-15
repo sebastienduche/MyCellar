@@ -1,6 +1,9 @@
 package mycellar.core;
 
 import mycellar.Program;
+import mycellar.core.uicomponents.JModifyTextArea;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.general.PanelGeneral;
 import mycellar.general.PanelWineAttribute;
 import mycellar.placesmanagement.PanelPlace;

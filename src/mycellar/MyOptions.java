@@ -1,11 +1,11 @@
 package mycellar;
 
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarRadioButton;
-import mycellar.core.MyCellarSpinner;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarRadioButton;
+import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.MyLinkedHashMap;
 import net.miginfocom.swing.MigLayout;
 
@@ -51,18 +51,6 @@ public class MyOptions extends JDialog {
   private String[] resul;
   private boolean bIsLabelEdit = false;
 
-  /**
-   * MyOptions: Constructeur pour la fenêtre d'option
-   *
-   * @param title         String: Titre de la fenêtre.
-   * @param message       String: Message de la fenêtre.
-   * @param message2      String: Message de la fenêtre.
-   * @param propriete     : Propriété à renseigner.
-   * @param default_value : Valeur par défaut.
-   * @param cle2          : Clé de la propriété.
-   * @param type_objet    : Type des objets à ajouter.
-   * @param config1       MyLinkedHashMap
-   */
   public MyOptions(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> cle2, List<String> type_objet,
                    MyLinkedHashMap config1, boolean cancel) {
 
@@ -73,17 +61,6 @@ public class MyOptions extends JDialog {
     jbInit(title, message, message2, propriete, default_value, type_objet);
   }
 
-  /**
-   * MyOptions: Constructeur pour la fenêtre d'option
-   *
-   * @param title       String: Titre de la fenêtre.
-   * @param message     String: Message de la fenêtre.
-   * @param type_objet  : Type des objets à ajouter.
-   * @param erreur      String: texte de l'erreur
-   * @param config1     MyLinkedHashMap
-   * @param cancel      boolean
-   * @param isLabelEdit boolean
-   */
   MyOptions(String title, String message, List<String> type_objet, String erreur,
             MyLinkedHashMap config1, boolean cancel, boolean isLabelEdit) {
 
@@ -96,17 +73,6 @@ public class MyOptions extends JDialog {
     jbInit(title, message, "", Collections.singletonList(""), Collections.singletonList(""), type_objet);
   }
 
-  /**
-   * jbInit: Fonction d'initialisation.
-   *
-   * @param title         String: Titre de la fenêtre.
-   * @param message       String: Message de la fenêtre.
-   * @param message2      String: Message de la fenêtre.
-   * @param propriete     : Propriété à renseigner.
-   * @param default_value : Valeur par défaut.
-   * @param type_objet    : Type des objets à ajouter.
-   * @throws Exception
-   */
   private void jbInit(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> type_objet) {
 
     taille_value = propriete.size();
@@ -212,11 +178,6 @@ public class MyOptions extends JDialog {
     setResizable(false);
   }
 
-  /**
-   * valider_actionPerformed: Valider la propriété et quitter.
-   *
-   * @param e ActionEvent
-   */
   private void valider_actionPerformed(ActionEvent e) {
     String defaut = null;
     int nb_jradio = 0;
@@ -267,11 +228,6 @@ public class MyOptions extends JDialog {
     dispose();
   }
 
-  /**
-   * keylistener_actionPerformed: Ecoute clavier
-   *
-   * @param e KeyEvent
-   */
   private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
       valider_actionPerformed(null);

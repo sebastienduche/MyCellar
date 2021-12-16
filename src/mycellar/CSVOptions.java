@@ -23,6 +23,8 @@ import static mycellar.ProgramConstants.COMMA;
 import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SLASH;
+import static mycellar.ProgramConstants.isVK_ENTER;
+import static mycellar.ProgramConstants.isVK_O;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -31,8 +33,8 @@ import static mycellar.ProgramConstants.SLASH;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 27/10/21
+ * @version 2.6
+ * @since 16/12/21
  */
 final class CSVOptions extends JDialog {
   static final long serialVersionUID = 230705;
@@ -51,7 +53,7 @@ final class CSVOptions extends JDialog {
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (isVK_O(e) || isVK_ENTER(e)) {
           valider_actionPerformed(null);
         }
       }
@@ -65,7 +67,6 @@ final class CSVOptions extends JDialog {
     panel.setFont(FONT_PANEL);
     MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO, "034"); //Separateur
     listColumns = MyCellarFields.getFieldsList();
-    assert listColumns != null;
     nb_colonnes = listColumns.size();
     export = new MyCellarCheckBox[nb_colonnes];
     final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
@@ -114,7 +115,7 @@ final class CSVOptions extends JDialog {
 
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
-    setSize(400, 500);
+    pack();
     setLocationRelativeTo(Start.getInstance());
     Debug("JbInit OK");
   }

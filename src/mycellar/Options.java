@@ -15,7 +15,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.CHAR_O;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.isVK_ENTER;
+import static mycellar.ProgramConstants.isVK_O;
 
 
 /**
@@ -25,8 +28,8 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 30/12/20
+ * @version 1.9
+ * @since 16/12/21
  */
 @Deprecated
 public class Options extends JDialog {
@@ -51,15 +54,15 @@ public class Options extends JDialog {
 
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     setTitle(title);
-    MyCellarLabel textControl1 = new MyCellarLabel(title);
-    textControl1.setFont(FONT_DIALOG_SMALL);
-    textControl1.setForeground(Color.red);
-    textControl1.setHorizontalAlignment(SwingConstants.CENTER);
+    MyCellarLabel titleLabel = new MyCellarLabel(title);
+    titleLabel.setFont(FONT_DIALOG_SMALL);
+    titleLabel.setForeground(Color.red);
+    titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
     MyCellarLabel definition = new MyCellarLabel(message);
     MyCellarLabel textControl2 = new MyCellarLabel(propriete);
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(SwingConstants.CENTER);
-    valider.setMnemonic('O');
+    valider.setMnemonic(CHAR_O);
     value.setText(default_value);
     valider.addActionListener(this::valider_actionPerformed);
     addKeyListener(new KeyAdapter() {
@@ -72,7 +75,7 @@ public class Options extends JDialog {
     setSize(LARGEUR, HAUTEUR);
     setLocationRelativeTo(Start.getInstance());
     setLayout(new MigLayout("", "grow", ""));
-    getContentPane().add(textControl1, "grow, wrap");
+    getContentPane().add(titleLabel, "grow, wrap");
     getContentPane().add(definition, "gaptop 15px, grow, wrap");
     getContentPane().add(textControl3, "grow, wrap");
     getContentPane().add(textControl2, "split 2");
@@ -89,7 +92,7 @@ public class Options extends JDialog {
   }
 
   private void keylistener_actionPerformed(KeyEvent e) {
-    if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
+    if (isVK_O(e) || isVK_ENTER(e)) {
       valider_actionPerformed(null);
     }
   }

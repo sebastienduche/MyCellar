@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static mycellar.ProgramConstants.CHAR_DOT;
 import static mycellar.ProgramConstants.ONE_DOT;
 
 /**
@@ -61,7 +62,7 @@ public class Filtre extends FileFilter {
 
     String suffixe = null;
     String s = f.getName();
-    int i = s.lastIndexOf('.');
+    int i = s.lastIndexOf(CHAR_DOT);
     if (i > 0 && i < s.length() - 1) {
       suffixe = s.substring(i + 1).toLowerCase().strip();
     }

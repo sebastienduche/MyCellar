@@ -24,6 +24,8 @@ import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 
+import static mycellar.ProgramConstants.CHAR_COMMA;
+import static mycellar.ProgramConstants.CHAR_DOT;
 import static mycellar.ProgramConstants.EURO;
 
 /**
@@ -132,7 +134,7 @@ public final class PanelWineAttribute extends JPanel {
     price.addKeyListener(new KeyAdapter() {
       @Override
       public void keyTyped(KeyEvent e) {
-        if (e.getKeyChar() == ',' || e.getKeyChar() == '.') {
+        if (e.getKeyChar() == CHAR_COMMA || e.getKeyChar() == CHAR_DOT) {
           e.consume();
           char sep = Program.getDecimalSeparator();
           String text = price.getText();

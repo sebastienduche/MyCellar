@@ -20,6 +20,8 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 
 import static mycellar.ProgramConstants.FONT_PANEL;
+import static mycellar.ProgramConstants.isVK_ENTER;
+import static mycellar.ProgramConstants.isVK_O;
 import static mycellar.core.LabelType.INFO;
 import static mycellar.core.LabelType.INFO_OTHER;
 import static mycellar.core.MyCellarSettings.BOLD_XLS;
@@ -55,7 +57,7 @@ public final class XLSOptions extends JDialog {
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (isVK_O(e) || isVK_ENTER(e)) {
           valider_actionPerformed(null);
         }
       }
@@ -63,10 +65,10 @@ public final class XLSOptions extends JDialog {
 
     setLayout(new MigLayout("", "grow", ""));
 
-    JPanel jPanel1 = new JPanel();
-    jPanel1.setBorder(BorderFactory.createEtchedBorder());
-    jPanel1.setLayout(new MigLayout("", "grow", ""));
-    jPanel1.setFont(FONT_PANEL);
+    JPanel panel = new JPanel();
+    panel.setBorder(BorderFactory.createEtchedBorder());
+    panel.setLayout(new MigLayout("", "grow", ""));
+    panel.setFont(FONT_PANEL);
     pdf_title.setText(Program.getCaveConfigString(XLS_TITLE, ""));
 
     titleSize.setValue(Program.getCaveConfigInt(TITLE_SIZE_XLS, 10));
@@ -83,9 +85,9 @@ public final class XLSOptions extends JDialog {
       colonnes[i] = new MyCellarLabel(columns.get(i).toString());
 
     }
-    JPanel jPanel2 = new JPanel();
-    jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));
-    jPanel2.setFont(FONT_PANEL);
+    JPanel panel1 = new JPanel();
+    panel1.setLayout(new MigLayout("", "[grow][grow]", ""));
+    panel1.setFont(FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(INFO_OTHER, "Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
     MyCellarButton annuler = new MyCellarButton(INFO, "055");
@@ -96,24 +98,24 @@ public final class XLSOptions extends JDialog {
 
     MyCellarLabel MyCellarLabel2 = new MyCellarLabel(INFO, "270"); //Titre du XLS
     MyCellarLabel MyCellarLabel3 = new MyCellarLabel(INFO, "256"); //Taille du texte
-    jPanel1.add(MyCellarLabel2, "split 2");
-    jPanel1.add(pdf_title, "grow, wrap");
-    jPanel1.add(MyCellarLabel3, "split 6");
-    jPanel1.add(titleSize);
-    jPanel1.add(MyCellarLabel6);
-    jPanel1.add(myCellarCheckBox);
-    add(jPanel1, "grow, wrap");
-    jPanel2.add(MyCellarLabel7, "split 3, span 2");
-    jPanel2.add(textSize);
-    jPanel2.add(MyCellarLabel8, "wrap");
+    panel.add(MyCellarLabel2, "split 2");
+    panel.add(pdf_title, "grow, wrap");
+    panel.add(MyCellarLabel3, "split 6");
+    panel.add(titleSize);
+    panel.add(MyCellarLabel6);
+    panel.add(myCellarCheckBox);
+    add(panel, "grow, wrap");
+    panel1.add(MyCellarLabel7, "split 3, span 2");
+    panel1.add(textSize);
+    panel1.add(MyCellarLabel8, "wrap");
     setSize(400, 500);
     for (int i = 0; i < nb_colonnes; i++) {
-      jPanel2.add(colonnes[i], "newline, grow");
-      jPanel2.add(export[i], "push, align right");
+      panel1.add(colonnes[i], "newline, grow");
+      panel1.add(export[i], "push, align right");
     }
-    JScrollPane jScrollPane1 = new JScrollPane(jPanel2);
-    jScrollPane1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
-    add(jScrollPane1, "gaptop 15px, grow, wrap");
+    JScrollPane scrollPane = new JScrollPane(panel1);
+    scrollPane.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
+    add(scrollPane, "gaptop 15px, grow, wrap");
     add(valider, "split 2, center");
     add(annuler);
     setLocationRelativeTo(Start.getInstance());

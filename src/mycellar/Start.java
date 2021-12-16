@@ -65,6 +65,10 @@ import java.util.prefs.Preferences;
 
 import static mycellar.Filtre.EXTENSION_SINFO;
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.CHAR_C;
+import static mycellar.ProgramConstants.CHAR_O;
+import static mycellar.ProgramConstants.CHAR_V;
+import static mycellar.ProgramConstants.CHAR_X;
 import static mycellar.ProgramConstants.DOWNLOAD_COMMAND;
 import static mycellar.ProgramConstants.FR;
 import static mycellar.ProgramConstants.INFOS_VERSION;
@@ -375,16 +379,10 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     System.exit(0);
   }
 
-  /**
-   * about_actionPerformed: Appelle la fenetre d'A Propos.
-   */
   private void about_actionPerformed() {
     new APropos().setVisible(true);
   }
 
-  /**
-   * news_actionPerformed: Affiche les nouveautes de la release
-   */
   private void news_actionPerformed() {
     Program.open("Finish.html", false);
   }
@@ -884,10 +882,10 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuQuit.setAccelerator(KeyStroke.getKeyStroke(quitChar, InputEvent.CTRL_DOWN_MASK));
     menuSave.setAccelerator(KeyStroke.getKeyStroke(saveChar, InputEvent.CTRL_DOWN_MASK));
     menuNewFile.setAccelerator(KeyStroke.getKeyStroke(newChar, InputEvent.CTRL_DOWN_MASK));
-    menuOpenFile.setAccelerator(KeyStroke.getKeyStroke('O', InputEvent.CTRL_DOWN_MASK));
-    menuCut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
-    menuCopy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
-    menuPaste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
+    menuOpenFile.setAccelerator(KeyStroke.getKeyStroke(CHAR_O, InputEvent.CTRL_DOWN_MASK));
+    menuCut.setAccelerator(KeyStroke.getKeyStroke(CHAR_X, InputEvent.CTRL_DOWN_MASK));
+    menuCopy.setAccelerator(KeyStroke.getKeyStroke(CHAR_C, InputEvent.CTRL_DOWN_MASK));
+    menuPaste.setAccelerator(KeyStroke.getKeyStroke(CHAR_V, InputEvent.CTRL_DOWN_MASK));
     m_oMenuBar.add(menuFile);
     m_oMenuBar.add(menuEdition);
     m_oMenuBar.add(menuPlace);

@@ -424,22 +424,19 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   public void cut() {
     String text = name.getEditor().getItem().toString();
     if (text != null) {
-      Program.CLIPBOARD.copier(text);
+      Program.CLIPBOARD.copy(text);
       name.getEditor().setItem("");
     }
   }
 
   @Override
   public void copy() {
-    String text = name.getEditor().getItem().toString();
-    if (text != null) {
-      Program.CLIPBOARD.copier(text);
-    }
+    Program.CLIPBOARD.copy(name.getEditor().getItem().toString());
   }
 
   @Override
   public void paste() {
-    String text = Program.CLIPBOARD.coller();
+    String text = Program.CLIPBOARD.paste();
     if (text != null && !text.isEmpty()) {
       name.getEditor().setItem(text);
     }

@@ -1090,7 +1090,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (text != null) {
         String fullText = name.getText();
         name.setText(fullText.substring(0, name.getSelectionStart()) + fullText.substring(name.getSelectionEnd()));
-        Program.CLIPBOARD.copier(text);
+        Program.CLIPBOARD.copy(text);
       }
     }
   }
@@ -1098,10 +1098,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   @Override
   public void copy() {
     if (tabbedPane.getSelectedIndex() == 0) {
-      String text = name.getSelectedText();
-      if (text != null) {
-        Program.CLIPBOARD.copier(text);
-      }
+      Program.CLIPBOARD.copy(name.getSelectedText());
     }
   }
 
@@ -1109,7 +1106,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   public void paste() {
     if (tabbedPane.getSelectedIndex() == 0) {
       String fullText = name.getText();
-      name.setText(fullText.substring(0, name.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(name.getSelectionEnd()));
+      name.setText(fullText.substring(0, name.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(name.getSelectionEnd()));
     }
   }
 

@@ -273,7 +273,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       options.setSelected(false);
     } else if (MyCellarRadioButtonHTML.isSelected()) {
       List<MyCellarFields> fieldsList = MyCellarFields.getFieldsList();
-      assert fieldsList != null;
       ManageColumnModel modelColumn = new ManageColumnModel(fieldsList, Program.getHTMLColumns());
       JTable table = new JTable(modelColumn);
       TableColumnModel tcm = table.getColumnModel();
@@ -464,22 +463,19 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     String fullText = file.getText();
     if (text != null) {
       file.setText(fullText.substring(0, file.getSelectionStart()) + fullText.substring(file.getSelectionEnd()));
-      Program.CLIPBOARD.copier(text);
+      Program.CLIPBOARD.copy(text);
     }
   }
 
   @Override
   public void copy() {
-    String text = file.getSelectedText();
-    if (text != null) {
-      Program.CLIPBOARD.copier(text);
-    }
+    Program.CLIPBOARD.copy(file.getSelectedText());
   }
 
   @Override
   public void paste() {
     String fullText = file.getText();
-    file.setText(fullText.substring(0, file.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(file.getSelectionEnd()));
+    file.setText(fullText.substring(0, file.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(file.getSelectionEnd()));
   }
 
   @Override

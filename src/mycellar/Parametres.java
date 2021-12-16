@@ -286,21 +286,18 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     String fullText = file_bak.getText();
     if (text != null) {
       file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + fullText.substring(file_bak.getSelectionEnd()));
-      Program.CLIPBOARD.copier(text);
+      Program.CLIPBOARD.copy(text);
     }
   }
 
   @Override
   public void copy() {
-    String text = file_bak.getSelectedText();
-    if (text != null) {
-      Program.CLIPBOARD.copier(text);
-    }
+    Program.CLIPBOARD.copy(file_bak.getSelectedText());
   }
 
   @Override
   public void paste() {
     String fullText = file_bak.getText();
-    file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(file_bak.getSelectionEnd()));
+    file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(file_bak.getSelectionEnd()));
   }
 }

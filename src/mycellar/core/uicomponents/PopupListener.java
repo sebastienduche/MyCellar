@@ -98,10 +98,10 @@ public class PopupListener extends MouseAdapter {
 
     if (textField instanceof JTextField) {
       JTextField jtf = (JTextField) textField;
-      jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
+      jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.paste() + jtf.getText().substring(jtf.getSelectionEnd()));
     } else if (textField instanceof JTextArea) {
       JTextArea jtf = (JTextArea) textField;
-      jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.coller() + jtf.getText().substring(jtf.getSelectionEnd()));
+      jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.paste() + jtf.getText().substring(jtf.getSelectionEnd()));
     }
   }
 
@@ -122,7 +122,7 @@ public class PopupListener extends MouseAdapter {
       jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
     }
 
-    Program.CLIPBOARD.copier(txt);
+    Program.CLIPBOARD.copy(txt);
   }
 
   /**
@@ -140,6 +140,6 @@ public class PopupListener extends MouseAdapter {
       txt = jtf.getSelectedText();
     }
 
-    Program.CLIPBOARD.copier(txt);
+    Program.CLIPBOARD.copy(txt);
   }
 }

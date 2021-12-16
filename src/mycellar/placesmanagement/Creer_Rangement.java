@@ -715,22 +715,19 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     if (text != null) {
       String fullText = nom_obj.getText();
       nom_obj.setText(fullText.substring(0, nom_obj.getSelectionStart()) + fullText.substring(nom_obj.getSelectionEnd()));
-      Program.CLIPBOARD.copier(text);
+      Program.CLIPBOARD.copy(text);
     }
   }
 
   @Override
   public void copy() {
-    String text = nom_obj.getSelectedText();
-    if (text != null) {
-      Program.CLIPBOARD.copier(text);
-    }
+    Program.CLIPBOARD.copy(nom_obj.getSelectedText());
   }
 
   @Override
   public void paste() {
     String fullText = nom_obj.getText();
-    nom_obj.setText(fullText.substring(0, nom_obj.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(nom_obj.getSelectionEnd()));
+    nom_obj.setText(fullText.substring(0, nom_obj.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(nom_obj.getSelectionEnd()));
   }
 
   class CreateAction extends AbstractAction {

@@ -191,41 +191,31 @@ public class MyCellarFile {
     try {
       String fileName = file.getAbsolutePath();
       Debug("Unzip: Archive " + fileName);
-      // ouverture fichier entree
-
-      var fileInputStream = new FileInputStream(file);
-      // ouverture fichier de buffer
-      var bufferedInputStream = new BufferedInputStream(fileInputStream);
-      // ouverture archive Zip d'entree
-      try (var zipInputStream = new ZipInputStream(bufferedInputStream)) {
-        // entree Zip
+      
+      try (var fileInputStream = new FileInputStream(file);
+    	   var bufferedInputStream = new BufferedInputStream(fileInputStream);
+    	   var zipInputStream = new ZipInputStream(bufferedInputStream)) {
         ZipEntry entry;
-        // parcours des entrees de l'archive
         int BUFFER = 2048;
         while ((entry = zipInputStream.getNextEntry()) != null) {
-          // affichage du nom de l'entree
-          // creation fichier
           File f = new File(dest_dir);
           if (f.exists() || f.mkdir()) {
             var fileOutputStream = new FileOutputStream(dest_dir + File.separator + entry.getName());
             Debug("Unzip: File " + dest_dir + File.separator + entry.getName());
-            // affectation buffer de sortie
             try (var bufferOutputStream = new BufferedOutputStream(fileOutputStream, BUFFER)) {
-              // ecriture sur disque
               int count;
               byte[] data = new byte[BUFFER];
               while ((count = zipInputStream.read(data, 0, BUFFER)) != -1) {
                 bufferOutputStream.write(data, 0, count);
               }
-              // vidage du tampon
               bufferOutputStream.flush();
             }
             fileOutputStream.close();
           }
         }
+        bufferedInputStream.close();
+        fileInputStream.close();
       }
-      bufferedInputStream.close();
-      fileInputStream.close();
     } catch (IOException e) {
       Debug("Unzip: Archive Error");
       Debug(e.getMessage());

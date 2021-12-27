@@ -31,8 +31,8 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 14/12/21
+ * @version 1.3
+ * @since 27/12/21
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -237,6 +237,7 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   @Override
   public void selectPlace(Place placeRangement) {
+	  Debug("Select Place...");
     setListenersEnabled(false);
     final Rangement rangement = placeRangement.getRangement();
     place.setSelectedItem(rangement);
@@ -279,6 +280,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     line.setVisible(!simplePlace);
     column.setVisible(!simplePlace);
     setListenersEnabled(true);
+    Debug("Select Place... Done");
   }
 
   private void setListeners() {
@@ -288,8 +290,8 @@ public final class PanelPlace extends JPanel implements IPlace {
     column.addItemListener(this::column_itemStateChanged);
   }
 
-  private boolean isListenersDisabled() {
-    return !listenersEnabled;
+  private boolean isListenersDisabled(ItemEvent e) {
+    return !listenersEnabled || e.getStateChange() == ItemEvent.DESELECTED;
   }
 
   public void setListenersEnabled(boolean listenersEnabled) {
@@ -309,7 +311,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   private void lieu_itemStateChanged(ItemEvent e) {
-    if (isListenersDisabled()) {
+    if (isListenersDisabled(e)) {
       return;
     }
     SwingUtilities.invokeLater(() -> {
@@ -357,7 +359,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   private void num_lieu_itemStateChanged(ItemEvent e) {
-    if (isListenersDisabled()) {
+    if (isListenersDisabled(e)) {
       return;
     }
     SwingUtilities.invokeLater(() -> {
@@ -389,7 +391,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   private void line_itemStateChanged(ItemEvent e) {
-	  if (isListenersDisabled()) {
+	  if (isListenersDisabled(e)) {
 	      return;
 	    }
 	  SwingUtilities.invokeLater(() -> {
@@ -414,7 +416,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   private void column_itemStateChanged(ItemEvent e) {
-	  if (isListenersDisabled()) {
+	  if (isListenersDisabled(e)) {
 	      return;
 	    }
     SwingUtilities.invokeLater(() -> {

@@ -4,7 +4,7 @@ import mycellar.PanelHistory;
 import mycellar.Program;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
@@ -19,11 +19,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
+import static mycellar.ProgramConstants.SPACE;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -32,8 +33,8 @@ import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 17/12/20
+ * @version 2.6
+ * @since 14/12/21
  */
 public final class PanelInfos extends JPanel {
 
@@ -113,11 +114,15 @@ final class PanelStats extends JPanel {
       int nbBottles = 0;
       if (!Program.getCave().isEmpty()) {
         for (Rangement r : Program.getCave()) {
-          nbBottles += r.getNbCaseUseAll();
-          model.addRow(r, r.getNbCaseUseAll());
+          nbBottles += r.getTotalCountCellUsed();
+          model.addRow(r, r.getTotalCountCellUsed());
         }
       }
-      cellarTotal.setText(Program.getCellarValue() + " " + Program.getCaveConfigString(MyCellarSettings.DEVISE, ""));
+      String devise = EURO;
+      if (Program.hasConfigCaveKey(MyCellarSettings.DEVISE)) {
+        devise = Program.getCaveConfigString(MyCellarSettings.DEVISE, EURO);
+      }
+      cellarTotal.setText(Program.getCellarValue() + SPACE + devise);
       bottlesNb.setText(Integer.toString(nbBottles));
     });
   }
@@ -172,7 +177,7 @@ final class PanelStats extends JPanel {
     @Override
     public Object getValueAt(int row, int column) {
       if (column == 0) {
-        return names.get(row).getNom();
+        return names.get(row).getName();
       } else if (column == 1) {
         return values.get(row);
       }
@@ -185,7 +190,7 @@ final class PanelStats extends JPanel {
         Rangement rangement = names.get(row);
         RangementUtils.putTabStock();
         XmlUtils.writeRangements("", List.of(rangement), false);
-        Program.open(new File(Program.getPreviewXMLFileName()));
+        Program.open(Program.getPreviewXMLFileName(), false);
       }
     }
 

@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.JButtonTabComponent;
+import mycellar.core.uicomponents.JButtonTabComponent;
 
 import javax.swing.JTabbedPane;
 import java.awt.Component;

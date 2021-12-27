@@ -3,7 +3,7 @@ package test;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarException;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.storage.SerializedStorage;
 import mycellar.placesmanagement.Rangement;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,8 +113,8 @@ class SerializedStorageTest {
     serializedStorage.getListMyCellarObject().getBouteille().add(bouteille5);
     serializedStorage.getListMyCellarObject().getBouteille().add(new Bouteille(bouteille5));
     final List<Rangement> cave = Program.getCave();
-    final Rangement caisse = new Rangement.CaisseBuilder("place3").nb_emplacement(10).build();
-    final Rangement place = new Rangement.RangementBuilder("place").nb_emplacement(new int[]{3}).sameColumnsNumber(new int[]{3}).build();
+    final Rangement caisse = new Rangement.SimplePlaceBuilder("place3").nbParts(10).build();
+    final Rangement place = new Rangement.RangementBuilder("place").nbParts(new int[]{3}).sameColumnsNumber(new int[]{3}).build();
     cave.add(caisse);
     cave.add(place);
 

@@ -2,7 +2,7 @@
  * @ 1996-2009 HR Access Solutions. All rights reserved
  * ******************************************************/
 
-package mycellar.core;
+package mycellar.core.uicomponents;
 
 import org.apache.commons.lang3.Validate;
 

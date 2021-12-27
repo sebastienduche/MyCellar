@@ -7,10 +7,10 @@ import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.TabEvent;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
@@ -28,12 +28,12 @@ import javax.swing.table.TableColumnModel;
 import static mycellar.core.LabelType.INFO;
 
 /**
- * <p>Titre : Cave à vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Société : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2003
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 1.4
  * @since 19/11/20
  */

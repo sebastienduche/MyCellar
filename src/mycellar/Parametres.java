@@ -4,14 +4,14 @@ import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.MyCellarSpinner;
-import mycellar.core.PopupListener;
-import mycellar.core.TabEvent;
+import mycellar.core.uicomponents.MyCellarSpinner;
+import mycellar.core.uicomponents.PopupListener;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
@@ -69,8 +69,8 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 
   public Parametres() {
     setLayout(new MigLayout("", "grow", ""));
-    label_fic_bak = new MyCellarLabel(LabelType.INFO, "162"); //"Nom du fichier Excel:");
-    MyCellarLabel label_langue = new MyCellarLabel(LabelType.INFO, "231"); //"Choix de la langue:");
+    label_fic_bak = new MyCellarLabel(LabelType.INFO, "162"); //"Nom du fichier Excel:"
+    MyCellarLabel label_langue = new MyCellarLabel(LabelType.INFO, "231"); //"Choix de la langue:"
     MyCellarLabel label_devise = new MyCellarLabel(LabelType.INFO, "163");
     label_annee = new MyCellarLabel(LabelType.INFO, "292");
     label_annee2 = new MyCellarLabel(LabelType.INFO, "293");
@@ -258,7 +258,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     } else {
       langue.setSelectedIndex(0);
       Program.setLanguage(LanguageFileLoader.Language.FRENCH);
-      JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall your language.", "Error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall the application.", "Error", JOptionPane.ERROR_MESSAGE);
     }
   }
 
@@ -286,21 +286,18 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     String fullText = file_bak.getText();
     if (text != null) {
       file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + fullText.substring(file_bak.getSelectionEnd()));
-      Program.CLIPBOARD.copier(text);
+      Program.CLIPBOARD.copy(text);
     }
   }
 
   @Override
   public void copy() {
-    String text = file_bak.getSelectedText();
-    if (text != null) {
-      Program.CLIPBOARD.copier(text);
-    }
+    Program.CLIPBOARD.copy(file_bak.getSelectedText());
   }
 
   @Override
   public void paste() {
     String fullText = file_bak.getText();
-    file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(file_bak.getSelectionEnd()));
+    file_bak.setText(fullText.substring(0, file_bak.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(file_bak.getSelectionEnd()));
   }
 }

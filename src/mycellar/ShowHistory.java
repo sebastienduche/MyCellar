@@ -1,14 +1,14 @@
 package mycellar;
 
-import mycellar.core.DateCellRenderer;
+import mycellar.core.tablecomponents.DateCellRenderer;
 import mycellar.core.IMyCellar;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarObject;
-import mycellar.core.TabEvent;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.tablecomponents.ButtonCellEditor;
@@ -40,6 +40,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+
+import static mycellar.ProgramConstants.SPACE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -212,17 +214,17 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); // vins selectionnes.");
           erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
           for (MyCellarObject b : toRestoreList) {
             if (b.isInExistingPlace()) {
               Rangement r = b.getRangement();
-              if (r.isCaisse()) {
+              if (r.isSimplePlace()) {
                 Program.getStorage().addHistory(HistoryState.ADD, b);
                 Program.getStorage().addWine(b);
               } else {
-                if (r.canAddBottle(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
+                if (r.canAddObjectAt(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
                   Program.getStorage().addHistory(HistoryState.ADD, b);
                   Program.getStorage().addWine(b);
                 } else {
@@ -283,7 +285,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
             erreur_txt2 = Program.getError("Error131"); // "Voulez-vous les supprimer?");
           }
           Debug(toDeleteList.size() + " line(s) selected");
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + erreur_txt2, Program.getLabel("Infos049"),
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"),
               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             Debug("Deleting lines...");
             for (History b : toDeleteList) {

@@ -7,13 +7,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import static mycellar.ProgramConstants.SPACE;
+
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2012</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 1.1
  * @since 29/12/20
  */
@@ -67,7 +69,7 @@ class CreerRangementTableModel extends AbstractTableModel {
       }
       switch (col) {
         case NAME:
-          return Program.getLabel("Infos029") + " " + p.getNum();
+          return Program.getLabel("Infos029") + SPACE + p.getNum();
         case ROW:
           return p.getRows().size();
         case COLUMN:
@@ -85,7 +87,7 @@ class CreerRangementTableModel extends AbstractTableModel {
       }
       switch (col) {
         case NAME:
-          return Program.getLabel("Infos029") + " " + p.getNum() + " " + Program.getLabel("Infos027");
+          return Program.getLabel("Infos029") + SPACE + p.getNum() + SPACE + Program.getLabel("Infos027");
         case ROW:
           return line;
         case COLUMN:

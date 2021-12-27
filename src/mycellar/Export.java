@@ -4,14 +4,14 @@ import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarMenuItem;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarMenuItem;
 import mycellar.core.MyCellarObject;
-import mycellar.core.MyCellarRadioButton;
+import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.PopupListener;
-import mycellar.core.TabEvent;
+import mycellar.core.uicomponents.PopupListener;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
@@ -60,8 +60,8 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.9
- * @since 22/04/21
+ * @version 10.0
+ * @since 14/12/21
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -246,15 +246,8 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
    */
   private void openit_actionPerformed() {
     String nom = toCleanString(file.getText());
-    if (!nom.isEmpty()) {
-      File f = new File(nom);
-      if (!f.exists() || f.isDirectory()) {
-        end.setText("");
-        //Fichier non trouve Verifier le chemin
-        Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), nom), Program.getError("Error022"));
-        return;
-      }
-      Program.open(f);
+    if (!Program.open(nom, true)) {
+      end.setText("");
     }
   }
 
@@ -280,7 +273,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       options.setSelected(false);
     } else if (MyCellarRadioButtonHTML.isSelected()) {
       List<MyCellarFields> fieldsList = MyCellarFields.getFieldsList();
-      assert fieldsList != null;
       ManageColumnModel modelColumn = new ManageColumnModel(fieldsList, Program.getHTMLColumns());
       JTable table = new JTable(modelColumn);
       TableColumnModel tcm = table.getColumnModel();
@@ -471,22 +463,19 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     String fullText = file.getText();
     if (text != null) {
       file.setText(fullText.substring(0, file.getSelectionStart()) + fullText.substring(file.getSelectionEnd()));
-      Program.CLIPBOARD.copier(text);
+      Program.CLIPBOARD.copy(text);
     }
   }
 
   @Override
   public void copy() {
-    String text = file.getSelectedText();
-    if (text != null) {
-      Program.CLIPBOARD.copier(text);
-    }
+    Program.CLIPBOARD.copy(file.getSelectedText());
   }
 
   @Override
   public void paste() {
     String fullText = file.getText();
-    file.setText(fullText.substring(0, file.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(file.getSelectionEnd()));
+    file.setText(fullText.substring(0, file.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(file.getSelectionEnd()));
   }
 
   @Override

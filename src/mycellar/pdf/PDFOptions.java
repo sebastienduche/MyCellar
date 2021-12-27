@@ -4,11 +4,11 @@ import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.MyCellarSpinner;
+import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.common.MyCellarFields;
 import net.miginfocom.swing.MigLayout;
 
@@ -24,6 +24,8 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import static mycellar.ProgramConstants.FONT_PANEL;
+import static mycellar.ProgramConstants.isVK_ENTER;
+import static mycellar.ProgramConstants.isVK_O;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -53,7 +55,7 @@ public final class PDFOptions extends JDialog {
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (isVK_O(e) || isVK_ENTER(e)) {
           valider_actionPerformed(null);
         }
       }
@@ -78,7 +80,6 @@ public final class PDFOptions extends JDialog {
       borderCheck.setSelected(true);
     }
     List<MyCellarFields> listColumns = MyCellarFields.getFieldsList();
-    assert listColumns != null;
     nb_colonnes = listColumns.size();
     col_size = new MyCellarSpinner[nb_colonnes];
     export = new MyCellarCheckBox[nb_colonnes];
@@ -118,9 +119,9 @@ public final class PDFOptions extends JDialog {
       jPanel2.add(export[i], "push, align right");
     }
 
-    JScrollPane jScrollPane1 = new JScrollPane(jPanel2);
-    jScrollPane1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
-    add(jScrollPane1, "grow, wrap");
+    JScrollPane jScrollPane = new JScrollPane(jPanel2);
+    jScrollPane.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
+    add(jScrollPane, "grow, wrap");
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
     setSize(400, 500);

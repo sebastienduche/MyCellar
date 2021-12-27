@@ -15,35 +15,24 @@ import java.io.IOException;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 17/04/05
+ * @version 0.2
+ * @since 16/12/21
  */
 public class MyClipBoard {
 
-  /**
-   * MyClipBoard: Constructeur par defaut.
-   */
   public MyClipBoard() {
   }
 
-  /**
-   * copier: Copie un texte.
-   *
-   * @param text String
-   */
-  public void copier(String text) {
+  public void copy(String text) {
+    if (text == null) {
+      return;
+    }
     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     StringSelection contents = new StringSelection(text);
     clipboard.setContents(contents, null);
   }
 
-  /**
-   * coller: Colle un texte.
-   *
-   * @return String
-   */
-  public String coller() {
-
+  public String paste() {
     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     Transferable content = clipboard.getContents(this);
     try {

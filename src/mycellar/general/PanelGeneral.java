@@ -9,16 +9,16 @@ import mycellar.Start;
 import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.JCompletionComboBox;
-import mycellar.core.JModifyComboBox;
-import mycellar.core.JModifyTextField;
+import mycellar.core.uicomponents.JCompletionComboBox;
+import mycellar.core.uicomponents.JModifyComboBox;
+import mycellar.core.uicomponents.JModifyTextField;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.PopupListener;
+import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import net.miginfocom.swing.MigLayout;
@@ -29,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 
+import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.LabelProperty.OF_THE_PLURAL;
 import static mycellar.core.LabelProperty.OF_THE_SINGLE;
 import static mycellar.core.LabelProperty.SINGLE;
@@ -40,8 +41,8 @@ import static mycellar.core.LabelProperty.SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 22/10/21
+ * @version 1.0
+ * @since 14/12/21
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -93,7 +94,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     add(new MyCellarLabel(LabelType.INFO, "189"));
     add(yearAuto);
     add(new MyCellarLabel(LabelType.INFO, "134"), "wrap");
-    add(name, "grow");
+    add(name, "growx");
     add(year, "width min(100,10%)");
     add(noYear);
     add(type, "push");
@@ -102,12 +103,12 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     } else if (Program.isMusicType()) {
       JPanel panelArtistComposer = new JPanel();
       panelArtistComposer.setBounds(0, 0, 0, 0);
-      panelArtistComposer.setLayout(new MigLayout("","0px[grow][grow]0px"));
+      panelArtistComposer.setLayout(new MigLayout("","0px[]10px[]0px"));
       panelArtistComposer.add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Artist"), "grow");
       panelArtistComposer.add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Composer"), "grow, wrap");
-      panelArtistComposer.add(artist, "grow");
-      panelArtistComposer.add(composer, "grow");
-      add(panelArtistComposer, "newline, grow");
+      panelArtistComposer.add(artist, "width min(100,10%)");
+      panelArtistComposer.add(composer, "width min(100,10%)");
+      add(panelArtistComposer, "span 5, newline");
     }
   }
 
@@ -411,7 +412,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
         erreur_txt1 = Program.getError("Error148", name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + " " + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return false;
       }
@@ -423,22 +424,19 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   public void cut() {
     String text = name.getEditor().getItem().toString();
     if (text != null) {
-      Program.CLIPBOARD.copier(text);
+      Program.CLIPBOARD.copy(text);
       name.getEditor().setItem("");
     }
   }
 
   @Override
   public void copy() {
-    String text = name.getEditor().getItem().toString();
-    if (text != null) {
-      Program.CLIPBOARD.copier(text);
-    }
+    Program.CLIPBOARD.copy(name.getEditor().getItem().toString());
   }
 
   @Override
   public void paste() {
-    String text = Program.CLIPBOARD.coller();
+    String text = Program.CLIPBOARD.paste();
     if (text != null && !text.isEmpty()) {
       name.getEditor().setItem(text);
     }

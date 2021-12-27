@@ -48,14 +48,14 @@ class BouteilleTest {
         .vignoble("fr", "vignoble", "aoc", "igp")
         .build();
 
-    // Caisse avec 2 emplacements commençant à 1 et limité à 6 bouteilles
+    // Caisse avec 2 emplacements commencant a 1 et limite a 6 bouteilles
     armoire1x3x3 = new Rangement.RangementBuilder("armoire1x3x3")
-        .nb_emplacement(new int[]{3})
+        .nbParts(new int[]{3})
         .sameColumnsNumber(new int[]{3})
         .build();
-    caisse = new Rangement.CaisseBuilder("caisse")
-        .nb_emplacement(1)
-        .start_caisse(1)
+    caisse = new Rangement.SimplePlaceBuilder("caisse")
+        .nbParts(1)
+        .startSimplePlace(1)
         .build();
     bouteilleCaisse = new Bouteille.BouteilleBuilder("bouteille")
         .place("caisse")

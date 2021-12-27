@@ -1,16 +1,16 @@
-package mycellar.core;
+package mycellar.core.uicomponents;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Font;
 
 /**
- * Titre : Cave à vin
+ * Titre : Cave &agrave; vin
  * Description : Votre description
  * Copyright : Copyright (c) 2011
- * Société : Seb Informatique
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.5
  * @since 30/08/20
  */

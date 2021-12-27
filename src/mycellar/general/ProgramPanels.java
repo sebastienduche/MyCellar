@@ -19,6 +19,7 @@ import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;
+import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
 import mycellar.importer.Importer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
@@ -27,6 +28,7 @@ import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 import java.awt.Component;
@@ -37,6 +39,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static mycellar.ProgramConstants.SPACE;
+import static mycellar.ProgramConstants.STAR;
+import static mycellar.ProgramConstants.THREE_DOTS;
 import static mycellar.ScreenType.ADDVIN;
 import static mycellar.ScreenType.CAPACITY;
 import static mycellar.ScreenType.CELL_ORGANIZER;
@@ -64,8 +69,8 @@ import static mycellar.ScreenType.VIGNOBLES;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 22/10/21
+ * @version 0.8
+ * @since 27/10/21
  */
 public class ProgramPanels {
 
@@ -387,7 +392,7 @@ public class ProgramPanels {
     UPDATABLE_BOTTLES.put(myCellarObject.getId(), manage);
     String bottleName = myCellarObject.getNom();
     if (bottleName.length() > 30) {
-      bottleName = bottleName.substring(0, 30) + " ...";
+      bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
     }
     TABBED_PANE.addTab(bottleName, MyCellarImage.WINE, manage);
     TABBED_PANE.setSelectedIndex(TABBED_PANE.getTabCount() - 1);
@@ -421,15 +426,43 @@ public class ProgramPanels {
   private static void setPaneModified(int index, boolean modify) {
     String title = TABBED_PANE.getTitleAt(index);
     if (modify) {
-      if (!title.endsWith("*")) {
-        TABBED_PANE.setTitleAt(index, title + "*");
+      if (!title.endsWith(STAR)) {
+        TABBED_PANE.setTitleAt(index, title + STAR);
         TABBED_PANE.updateUI();
       }
     } else {
-      if (title.endsWith("*")) {
+      if (title.endsWith(STAR)) {
         title = title.substring(0, title.length() - 1);
       }
       TABBED_PANE.setTitleAt(index, title);
+    }
+  }
+
+  public static void selectOrAddTab(Component component, String tabLabel, Icon icon) {
+    try {
+      TABBED_PANE.setSelectedComponent(component);
+    } catch (IllegalArgumentException e) {
+      addTab(component, tabLabel, icon);
+      TABBED_PANE.setSelectedComponent(component);
+    }
+  }
+
+  public static void addTab(Component component, String tabLabel, Icon icon) {
+    try {
+      TABBED_PANE.add(Program.getLabel(tabLabel, LabelProperty.SINGLE), component);
+      TABBED_PANE.setIconAt(TABBED_PANE.getTabCount() - 1, icon);
+      Utils.addCloseButton(TABBED_PANE, component);
+    } catch (RuntimeException e) {
+      Program.showException(e);
+    }
+  }
+
+  public static void updateVisibility() {
+    int count = TABBED_PANE.getTabCount();
+    PANEL_INFOS.setVisible(count == 0);
+    TABBED_PANE.setVisible(count > 0);
+    if (count == 0) {
+      PANEL_INFOS.refresh();
     }
   }
 }

@@ -1,12 +1,12 @@
 package mycellar.core;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2016</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.6
  * @since 25/05/21
  */

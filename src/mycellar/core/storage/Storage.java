@@ -1,6 +1,6 @@
 package mycellar.core.storage;
 
-import mycellar.core.MyCellarException;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;

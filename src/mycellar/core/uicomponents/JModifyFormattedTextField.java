@@ -1,4 +1,4 @@
-package mycellar.core;
+package mycellar.core.uicomponents;
 
 import mycellar.general.ProgramPanels;
 

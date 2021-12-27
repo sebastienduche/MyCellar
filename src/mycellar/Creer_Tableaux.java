@@ -5,13 +5,13 @@ import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarRadioButton;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.PopupListener;
-import mycellar.core.TabEvent;
+import mycellar.core.uicomponents.PopupListener;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.general.XmlUtils;
@@ -60,8 +60,8 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.0
- * @since 14/10/21
+ * @version 8.1
+ * @since 14/12/21
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
@@ -302,7 +302,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
         }
       } else if (type_XLS.isSelected()) {
         Debug("Exporting in XLS in progress...");
-        caisseCount = rangements.stream().filter(Rangement::isCaisse).count();
+        caisseCount = rangements.stream().filter(Rangement::isSimplePlace).count();
         RangementUtils.write_XLSTab(nom, rangements);
       }
 
@@ -339,8 +339,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
    */
   private void preview_actionPerformed(ActionEvent e) {
     Debug("preview_actionPerforming...");
-    String path = name.getText();
-    Program.open(new File(path));
+    Program.open(name.getText(), false);
   }
 
   /**
@@ -420,22 +419,19 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     String fullText = name.getText();
     if (text != null) {
       name.setText(fullText.substring(0, name.getSelectionStart()) + fullText.substring(name.getSelectionEnd()));
-      Program.CLIPBOARD.copier(text);
+      Program.CLIPBOARD.copy(text);
     }
   }
 
   @Override
   public void copy() {
-    String text = name.getSelectedText();
-    if (text != null) {
-      Program.CLIPBOARD.copier(text);
-    }
+    Program.CLIPBOARD.copy(name.getSelectedText());
   }
 
   @Override
   public void paste() {
     String fullText = name.getText();
-    name.setText(fullText.substring(0, name.getSelectionStart()) + Program.CLIPBOARD.coller() + fullText.substring(name.getSelectionEnd()));
+    name.setText(fullText.substring(0, name.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(name.getSelectionEnd()));
   }
 
   @Override

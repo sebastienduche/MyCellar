@@ -1,12 +1,12 @@
 package mycellar;
 
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarLabel;
-import mycellar.core.MyCellarRadioButton;
-import mycellar.core.MyCellarSpinner;
 import mycellar.core.MyLinkedHashMap;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarRadioButton;
+import mycellar.core.uicomponents.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ButtonGroup;
@@ -15,8 +15,6 @@ import javax.swing.JDialog;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -24,7 +22,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static mycellar.Program.toCleanString;
+import static mycellar.ProgramConstants.CHAR_O;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.isVK_ENTER;
+import static mycellar.ProgramConstants.isVK_O;
 
 
 /**
@@ -34,79 +35,44 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 30/12/20
+ * @version 2.6
+ * @since 16/12/21
  */
 public class MyOptions extends JDialog {
-  private static final int LARGEUR = 420;
   @SuppressWarnings("deprecation")
   private final MyCellarLabel textControl3 = new MyCellarLabel();
-  private final ButtonGroup cbg = new ButtonGroup();
+  private final ButtonGroup buttonGroup = new ButtonGroup();
   private final List<String> cle;
   private final MyLinkedHashMap config;
-  private final boolean bCancel;
+  private final boolean cancel;
   private JComponent[] value;
   private JTextField[] labelEdit;
   private int taille_value = 0;
   private String[] resul;
-  private boolean bIsLabelEdit = false;
+  private boolean isLabelEdit = false;
 
-  /**
-   * MyOptions: Constructeur pour la fenêtre d'option
-   *
-   * @param title         String: Titre de la fenêtre.
-   * @param message       String: Message de la fenêtre.
-   * @param message2      String: Message de la fenêtre.
-   * @param propriete     : Propriété à renseigner.
-   * @param default_value : Valeur par défaut.
-   * @param cle2          : Clé de la propriété.
-   * @param type_objet    : Type des objets à ajouter.
-   * @param config1       MyLinkedHashMap
-   */
   public MyOptions(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> cle2, List<String> type_objet,
                    MyLinkedHashMap config1, boolean cancel) {
 
     super(Start.getInstance(), "", true);
     config = config1;
     cle = cle2;
-    bCancel = cancel;
+    this.cancel = cancel;
     jbInit(title, message, message2, propriete, default_value, type_objet);
   }
 
-  /**
-   * MyOptions: Constructeur pour la fenêtre d'option
-   *
-   * @param title       String: Titre de la fenêtre.
-   * @param message     String: Message de la fenêtre.
-   * @param type_objet  : Type des objets à ajouter.
-   * @param erreur      String: texte de l'erreur
-   * @param config1     MyLinkedHashMap
-   * @param cancel      boolean
-   * @param isLabelEdit boolean
-   */
   MyOptions(String title, String message, List<String> type_objet, String erreur,
             MyLinkedHashMap config1, boolean cancel, boolean isLabelEdit) {
 
     super(Start.getInstance(), "", true);
     config = config1;
     cle = Collections.singletonList("");
-    bCancel = cancel;
-    bIsLabelEdit = isLabelEdit;
+    this.cancel = cancel;
+    this.isLabelEdit = isLabelEdit;
     textControl3.setText(erreur);
     jbInit(title, message, "", Collections.singletonList(""), Collections.singletonList(""), type_objet);
   }
 
-  /**
-   * jbInit: Fonction d'initialisation.
-   *
-   * @param title         String: Titre de la fenêtre.
-   * @param message       String: Message de la fenêtre.
-   * @param message2      String: Message de la fenêtre.
-   * @param propriete     : Propriété à renseigner.
-   * @param default_value : Valeur par défaut.
-   * @param type_objet    : Type des objets à ajouter.
-   * @throws Exception
-   */
   private void jbInit(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> type_objet) {
 
     taille_value = propriete.size();
@@ -129,7 +95,7 @@ public class MyOptions extends JDialog {
     definition2.setText(message2);
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(SwingConstants.CENTER);
-    valider.setMnemonic('O');
+    valider.setMnemonic(CHAR_O);
 
     for (int i = 0; i < propriete.size(); i++) {
       value[i] = null;
@@ -152,8 +118,8 @@ public class MyOptions extends JDialog {
         value[i].setEnabled(false);
         if (i > 0) {
           if (type_objet.get(i - 1).equals("MyCellarRadioButton") && cle.get(i - 1).equals(cle.get(i))) {
-            cbg.add((MyCellarRadioButton) value[i - 1]);
-            cbg.add((MyCellarRadioButton) value[i]);
+            buttonGroup.add((MyCellarRadioButton) value[i - 1]);
+            buttonGroup.add((MyCellarRadioButton) value[i]);
             value[i - 1].setEnabled(true);
             value[i].setEnabled(true);
           }
@@ -182,10 +148,6 @@ public class MyOptions extends JDialog {
       }
     });
 
-    int hauteur = 200 + (taille_value * 25);
-    setSize(LARGEUR, hauteur);
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    setLocation((screenSize.width - LARGEUR) / 2, (screenSize.height - hauteur) / 2);
     getContentPane().setLayout(new MigLayout("", "[grow][grow]", "[]15px[][]15px[]"));
     getContentPane().add(textControl1, "center, grow, span 2, wrap");
     getContentPane().add(definition, "span 2, wrap");
@@ -194,7 +156,7 @@ public class MyOptions extends JDialog {
       if (type_objet.get(i).equals("MyCellarLabel")) {
         getContentPane().add(label_value[i], "wrap");
       } else {
-        if (bIsLabelEdit)
+        if (isLabelEdit)
           getContentPane().add(labelEdit[i], "grow");
         else
           getContentPane().add(label_value[i], "grow");
@@ -203,25 +165,22 @@ public class MyOptions extends JDialog {
     }
     getContentPane().add(textControl3, "wrap");
 
-    if (bCancel) {
+    if (cancel) {
       getContentPane().add(valider, "span 2, split 2, center");
       getContentPane().add(annuler, "");
     } else {
       getContentPane().add(valider, "span 2, center");
     }
+    pack();
+    setLocationRelativeTo(Start.getInstance());
     setResizable(false);
   }
 
-  /**
-   * valider_actionPerformed: Valider la propriété et quitter.
-   *
-   * @param e ActionEvent
-   */
   private void valider_actionPerformed(ActionEvent e) {
     String defaut = null;
     int nb_jradio = 0;
     for (int i = 0; i < taille_value; i++) {
-      if (bIsLabelEdit) {
+      if (isLabelEdit) {
         JTextField jtf = labelEdit[i];
         cle.set(i, toCleanString(jtf.getText()));
       }
@@ -267,13 +226,8 @@ public class MyOptions extends JDialog {
     dispose();
   }
 
-  /**
-   * keylistener_actionPerformed: Ecoute clavier
-   *
-   * @param e KeyEvent
-   */
   private void keylistener_actionPerformed(KeyEvent e) {
-    if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
+    if (isVK_O(e) || isVK_ENTER(e)) {
       valider_actionPerformed(null);
     }
   }

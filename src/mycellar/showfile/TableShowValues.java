@@ -19,12 +19,12 @@ import java.util.Optional;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>
- * <p>Society : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 5.2
  * @since 19/05/21
  */
@@ -183,7 +183,7 @@ class TableShowValues extends AbstractTableModel {
         }
 
         if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
-          if (!rangement.isCaisse() && nValueToCheck <= 0) {
+          if (!rangement.isSimplePlace() && nValueToCheck <= 0) {
             Erreur.showSimpleErreur(Program.getError("Error197"));
             bError = true;
           }
@@ -194,17 +194,17 @@ class TableShowValues extends AbstractTableModel {
           int tmpNumEmpl = num_empl;
           int tmpLine = line;
           int tmpCol = column1;
-          if (!rangement.isCaisse()) {
+          if (!rangement.isSimplePlace()) {
             tmpNumEmpl--;
             tmpCol--;
             tmpLine--;
           } else {
-            tmpNumEmpl -= rangement.getStartCaisse();
+            tmpNumEmpl -= rangement.getStartSimplePlace();
           }
-          if (rangement.canAddBottle(tmpNumEmpl, tmpLine, tmpCol)) {
+          if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
-            if (!rangement.isCaisse()) {
-              bTemp = rangement.getBouteille(num_empl - 1, line - 1, column1 - 1);
+            if (!rangement.isSimplePlace()) {
+              bTemp = rangement.getObject(num_empl - 1, line - 1, column1 - 1);
             }
             if (bTemp.isPresent()) {
               final IMyCellarObject bouteille = bTemp.get();
@@ -219,10 +219,10 @@ class TableShowValues extends AbstractTableModel {
               } else {
                 b.setColonne(Integer.parseInt((String) value));
               }
-              if (column == PLACE && rangement.isCaisse()) {
+              if (column == PLACE && rangement.isSimplePlace()) {
                 int nNumEmpl = b.getNumLieu();
-                if (nNumEmpl > rangement.getLastNumEmplacement()) {
-                  b.setNumLieu(rangement.getFreeNumPlaceInCaisse());
+                if (nNumEmpl > rangement.getLastPartNumber()) {
+                  b.setNumLieu(rangement.getFreeNumPlaceInSimplePlace());
                 }
                 b.setLigne(0);
                 b.setColonne(0);
@@ -230,7 +230,7 @@ class TableShowValues extends AbstractTableModel {
               RangementUtils.putTabStock();
             }
           } else {
-            if (rangement.isCaisse()) {
+            if (rangement.isSimplePlace()) {
               Erreur.showSimpleErreur(Program.getError("Error154"));
             } else {
               if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error198", LabelProperty.THE_SINGLE), Program.getError("Error015"), JOptionPane.YES_NO_OPTION)) {

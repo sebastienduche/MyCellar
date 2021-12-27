@@ -3,10 +3,10 @@ package mycellar;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarException;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.placesmanagement.Rangement;
@@ -66,7 +66,7 @@ final class MoveLine extends JDialog {
     MyCellarButton cancel = new MyCellarButton(LabelType.INFO, "019");
 
     place_cbx.addItem(Program.EMPTY_PLACE);
-    Program.getCave().stream().filter(Predicate.not(Rangement::isCaisse)).forEach(place_cbx::addItem);
+    Program.getCave().stream().filter(Predicate.not(Rangement::isSimplePlace)).forEach(place_cbx::addItem);
     num_place_cbx.setEnabled(false);
     old_line_cbx.setEnabled(false);
     new_line_cbx.setEnabled(false);
@@ -81,11 +81,11 @@ final class MoveLine extends JDialog {
       int nNumLieu = num_place_cbx.getSelectedIndex();
       Rangement r = (Rangement) place_cbx.getSelectedItem();
       if (r != null && !Program.EMPTY_PLACE.equals(r)) {
-        int nBottle = r.getNbCaseUseLigne(nNumLieu - 1, nNewSelected - 1);
-        int nNbBottle = r.getNbCaseUseLigne(nNumLieu - 1, nOldSelected - 1);
+        int nBottle = r.getNbCaseUseInLine(nNumLieu - 1, nNewSelected - 1);
+        int nNbBottle = r.getNbCaseUseInLine(nNumLieu - 1, nOldSelected - 1);
 
-        int nOldColumnCount = r.getNbColonnes(nNumLieu - 1, nOldSelected - 1);
-        int nNewColumnCount = r.getNbColonnes(nNumLieu - 1, nNewSelected - 1);
+        int nOldColumnCount = r.getColumnCountAt(nNumLieu - 1, nOldSelected - 1);
+        int nNewColumnCount = r.getColumnCountAt(nNumLieu - 1, nNewSelected - 1);
         if (nOldColumnCount > nNewColumnCount && nNbBottle > nNewColumnCount) {
           Erreur.showSimpleErreur(this, Program.getError("Error194"));
           return;
@@ -99,8 +99,8 @@ final class MoveLine extends JDialog {
           return;
         }
         List<MyCellarObject> notMoved = new ArrayList<>();
-        for (int i = 1; i <= r.getNbColonnes(nNumLieu - 1, nOldSelected - 1); i++) {
-          r.getBouteille(nNumLieu - 1, nOldSelected - 1, i - 1).ifPresent(myCellarObject -> {
+        for (int i = 1; i <= r.getColumnCountAt(nNumLieu - 1, nOldSelected - 1); i++) {
+          r.getObject(nNumLieu - 1, nOldSelected - 1, i - 1).ifPresent(myCellarObject -> {
             Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
             try {
               r.moveLine(myCellarObject, nNewSelected);
@@ -171,8 +171,8 @@ final class MoveLine extends JDialog {
     Rangement r;
     int nb_emplacement = 0;
     if ((r = (Rangement) place_cbx.getSelectedItem()) != null) {
-      nb_emplacement = r.getNbEmplacements();
-      bIsCaisse = r.isCaisse();
+      nb_emplacement = r.getNbParts();
+      bIsCaisse = r.isSimplePlace();
     }
     if (bIsCaisse) { //Type caisse
       num_place_cbx.setEnabled(false);
@@ -203,11 +203,6 @@ final class MoveLine extends JDialog {
     new_line_cbx.setEnabled(old_line_cbx.getSelectedIndex() != 0);
   }
 
-  /**
-   * num_lieu_itemStateChanged: Fonction pour la liste des numéros de lieu.
-   *
-   * @param e ItemEvent
-   */
   private void num_lieu_itemStateChanged(ItemEvent e) {
     Debug("Num_lieu_itemStateChanging...");
     label_end.setText("");
@@ -221,8 +216,8 @@ final class MoveLine extends JDialog {
     old_line_cbx.setEnabled(true);
     Rangement r;
     if ((r = (Rangement) place_cbx.getSelectedItem()) != null) {
-      if (!r.isCaisse()) {
-        int nb_ligne = r.getNbLignes(num_select - 1);
+      if (!r.isSimplePlace()) {
+        int nb_ligne = r.getLineCountAt(num_select - 1);
         old_line_cbx.removeAllItems();
         new_line_cbx.removeAllItems();
         old_line_cbx.addItem("");

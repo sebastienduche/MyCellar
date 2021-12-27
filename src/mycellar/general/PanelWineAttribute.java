@@ -4,16 +4,16 @@ import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.JModifyComboBox;
-import mycellar.core.JModifyFormattedTextField;
-import mycellar.core.JModifyTextField;
+import mycellar.core.uicomponents.JModifyComboBox;
+import mycellar.core.uicomponents.JModifyFormattedTextField;
+import mycellar.core.uicomponents.JModifyTextField;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.MyCellarSpinner;
-import mycellar.core.PopupListener;
+import mycellar.core.uicomponents.MyCellarSpinner;
+import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.common.bottle.BottleColor;
 import net.miginfocom.swing.MigLayout;
 
@@ -23,6 +23,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
+
+import static mycellar.ProgramConstants.CHAR_COMMA;
+import static mycellar.ProgramConstants.CHAR_DOT;
+import static mycellar.ProgramConstants.EURO;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -68,7 +72,7 @@ public final class PanelWineAttribute extends JPanel {
     add(colorList, "wrap, width min(150,30%)");
     add(new MyCellarLabel(LabelType.INFO, "135"), "wrap");
     add(price, "width min(100,45%), split 2");
-    add(new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, "€")), "gapleft 5px");
+    add(new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, EURO)), "gapleft 5px");
     add(new MyCellarLabel(LabelType.INFO, "405", LabelProperty.PLURAL), "split, span 2");
     add(nbItems, "width min(50,10%)");
     add(labelStillToAdd, "wrap");
@@ -130,7 +134,7 @@ public final class PanelWineAttribute extends JPanel {
     price.addKeyListener(new KeyAdapter() {
       @Override
       public void keyTyped(KeyEvent e) {
-        if (e.getKeyChar() == ',' || e.getKeyChar() == '.') {
+        if (e.getKeyChar() == CHAR_COMMA || e.getKeyChar() == CHAR_DOT) {
           e.consume();
           char sep = Program.getDecimalSeparator();
           String text = price.getText();

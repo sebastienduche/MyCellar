@@ -1,20 +1,24 @@
-package mycellar.core;
+package mycellar.core.uicomponents;
 
 import mycellar.Program;
+import mycellar.core.IMyCellarComponent;
+import mycellar.core.LabelProperty;
+import mycellar.core.LabelType;
+import mycellar.core.MyCellarLabelManagement;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 
 /**
- * Titre : Cave à vin
+ * Titre : Cave &agrave; vin
  * Description : Votre description
  * Copyright : Copyright (c) 2020
- * Société : Seb Informatique
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
- * @version 0.1
- * @since 04/12/20
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.2
+ * @since 27/10/21
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
@@ -22,6 +26,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   private final String code;
   private final LabelProperty labelProperty;
   private String descriptionLabelCode;
+  private boolean withText = true;
 
   public MyCellarAction(LabelType type, String code, LabelProperty labelProperty) {
     this.type = type;
@@ -40,6 +45,10 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
     MyCellarLabelManagement.add(this);
   }
 
+  public MyCellarAction(LabelType type, String code, Icon icon) {
+    this(type, code, LabelProperty.SINGLE, icon);
+  }
+
   public LabelType getType() {
     return type;
   }
@@ -54,16 +63,33 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
 
   @Override
   public void setText(String text) {
-    putValue(Action.NAME, text);
-    putValue(Action.SHORT_DESCRIPTION, descriptionLabelCode != null ? Program.getLabel(descriptionLabelCode) : text);
+    putValue(Action.NAME, withText ? text : "");
+    putValue(Action.SHORT_DESCRIPTION, descriptionLabelCode != null ? Program.getLabel(descriptionLabelCode, labelProperty) : text);
   }
 
   public void setDescriptionLabelCode(String code) {
     descriptionLabelCode = code;
   }
 
+  public void setWithText(boolean withText) {
+    this.withText = withText;
+    if (!withText) {
+      setText("");
+    }
+  }
+
   @Override
   public final void updateText() {
     MyCellarLabelManagement.updateText(this, type, code, null, labelProperty);
+  }
+
+  @Override
+  public MyCellarAction clone() {
+    try {
+      MyCellarAction clone = (MyCellarAction) super.clone();
+      return clone;
+    } catch (CloneNotSupportedException e) {
+      throw new AssertionError();
+    }
   }
 }

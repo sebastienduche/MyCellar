@@ -1,16 +1,16 @@
-package mycellar.core;
+package mycellar.core.uicomponents;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import java.awt.Font;
 
 /**
- * Titre : Cave à vin
+ * Titre : Cave &agrave; vin
  * Description : Votre description
  * Copyright : Copyright (c) 2011
- * Société : Seb Informatique
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.1
  * @since 16/04/15
  */

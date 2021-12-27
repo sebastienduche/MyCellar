@@ -2,8 +2,8 @@ package mycellar.placesmanagement;
 
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
@@ -79,8 +79,8 @@ public final class RangementCreationDialog extends JDialog {
       if (row == 0) {
         int part = parts.isEmpty() ? 1 : parts.size();
         Debug("Creating place: " + name + " parts: " + part);
-        rangement = new Rangement.CaisseBuilder(name)
-            .nb_emplacement(parts.isEmpty() ? 1 : parts.size()).build();
+        rangement = new Rangement.SimplePlaceBuilder(name)
+            .nbParts(parts.isEmpty() ? 1 : parts.size()).build();
       } else {
         Debug("Creating complex place: " + name + " parts: " + parts);
         rangement = new Rangement(name, parts);

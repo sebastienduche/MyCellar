@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import static mycellar.ProgramConstants.SPACE;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -103,7 +105,7 @@ public class CollectionFilter<T> {
         if (LOGGER.isDebugEnabled()) {
           StringBuilder sb = new StringBuilder();
           for (Predicates p : list) {
-            sb.append(p.toString()).append(" ");
+            sb.append(p.toString()).append(SPACE);
           }
           LOGGER.debug(sb.toString());
         }

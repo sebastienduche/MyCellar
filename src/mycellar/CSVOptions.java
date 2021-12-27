@@ -1,10 +1,10 @@
 package mycellar;
 
 import mycellar.core.LabelType;
-import mycellar.core.MyCellarButton;
-import mycellar.core.MyCellarCheckBox;
-import mycellar.core.MyCellarComboBox;
-import mycellar.core.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import net.miginfocom.swing.MigLayout;
@@ -18,7 +18,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
+import static mycellar.ProgramConstants.COMMA;
+import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.FONT_PANEL;
+import static mycellar.ProgramConstants.SLASH;
+import static mycellar.ProgramConstants.isVK_ENTER;
+import static mycellar.ProgramConstants.isVK_O;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -27,8 +33,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 16/04/21
+ * @version 2.6
+ * @since 16/12/21
  */
 final class CSVOptions extends JDialog {
   static final long serialVersionUID = 230705;
@@ -37,9 +43,6 @@ final class CSVOptions extends JDialog {
   private final int nb_colonnes;
   private final List<MyCellarFields> listColumns;
 
-  /**
-   * CSVOptions: Constructeur pour la fenêtre d'options.
-   */
   CSVOptions() {
 
     Debug("Constructor");
@@ -50,7 +53,7 @@ final class CSVOptions extends JDialog {
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == 'o' || e.getKeyCode() == 'O' || e.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (isVK_O(e) || isVK_ENTER(e)) {
           valider_actionPerformed(null);
         }
       }
@@ -62,9 +65,8 @@ final class CSVOptions extends JDialog {
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setLayout(new MigLayout("", "grow", ""));
     panel.setFont(FONT_PANEL);
-    MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO, "034"); //Séparateur
+    MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO, "034"); //Separateur
     listColumns = MyCellarFields.getFieldsList();
-    assert listColumns != null;
     nb_colonnes = listColumns.size();
     export = new MyCellarCheckBox[nb_colonnes];
     final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
@@ -81,15 +83,15 @@ final class CSVOptions extends JDialog {
     separator.addItem(Program.getLabel("Infos042"));
     separator.addItem(Program.getLabel("Infos043"));
     separator.addItem(Program.getLabel("Infos044"));
-    String key = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ",");
+    String key = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
     switch (key) {
-      case ";":
+      case COLUMNS_SEPARATOR:
         separator.setSelectedIndex(1);
         break;
-      case ":":
+      case DOUBLE_DOT:
         separator.setSelectedIndex(2);
         break;
-      case "/":
+      case SLASH:
         separator.setSelectedIndex(3);
         break;
       default:
@@ -113,7 +115,7 @@ final class CSVOptions extends JDialog {
 
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
-    setSize(400, 500);
+    pack();
     setLocationRelativeTo(Start.getInstance());
     Debug("JbInit OK");
   }
@@ -135,16 +137,16 @@ final class CSVOptions extends JDialog {
     int separ_select = separator.getSelectedIndex();
     switch (separ_select) {
       case 0:
-        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ",");
+        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COMMA);
         break;
       case 1:
-        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ";");
+        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
         break;
       case 2:
-        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, ":");
+        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, DOUBLE_DOT);
         break;
       case 3:
-        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, "/");
+        Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, SLASH);
         break;
     }
     dispose();

@@ -6,26 +6,31 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 /**
- * <p>Titre : Cave à vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2016</p>
- * <p>Société : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2016
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
- * @version 0.2
- * @since 16/10/20
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.3
+ * @since 17/12/21
  */
 
 public class MyCellarLabelManagement {
 
   private static final List<IMyCellarComponent> LABEL_LIST = new ArrayList<>();
 
-  static void add(IMyCellarComponent component) {
+  public static void add(IMyCellarComponent component) {
     LABEL_LIST.add(component);
   }
 
-  static void updateText(IMyCellarComponent component, LabelType type, String code, String value, LabelProperty labelProperty) {
+  public static void updateText(IMyCellarComponent component, LabelType type, String code, String value, LabelProperty labelProperty) {
+    if (type == null || code == null) {
+      return;
+    }
     if (value == null) {
       switch (type) {
         case INFO:
@@ -40,6 +45,8 @@ public class MyCellarLabelManagement {
         case ERROR_OTHER:
           component.setText(Program.getError(code, labelProperty));
           break;
+        default:
+        	throw new NotImplementedException("Not implemented for type: " + type);
       }
     } else {
       switch (type) {
@@ -55,6 +62,8 @@ public class MyCellarLabelManagement {
         case ERROR_OTHER:
           component.setText(MessageFormat.format(Program.getError(code, labelProperty), value).strip());
           break;
+        default:
+        	throw new NotImplementedException("Not implemented for type: " + type);
       }
     }
   }

@@ -1,14 +1,19 @@
-package mycellar.core;
+package mycellar.core.uicomponents;
+
+import mycellar.core.IMyCellarComponent;
+import mycellar.core.LabelProperty;
+import mycellar.core.LabelType;
+import mycellar.core.MyCellarLabelManagement;
 
 import javax.swing.JMenuItem;
 
 /**
- * Titre : Cave à vin
+ * Titre : Cave &agrave; vin
  * Description : Votre description
  * Copyright : Copyright (c) 2020
- * Société : Seb Informatique
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.1
  * @since 04/12/20
  */

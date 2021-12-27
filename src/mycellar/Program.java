@@ -112,8 +112,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.3
- * @since 14/12/21
+ * @version 27.4
+ * @since 27/12/21
  */
 
 public final class Program {
@@ -382,6 +382,10 @@ public final class Program {
     String error = "";
     for (StackTraceElement s : st) {
       error = error.concat("\n" + s);
+    }
+
+    if (error.contains("BasicTabbedPaneUI.tabForCoordinate")) {
+      _bShowWindowErrorAndExit = false;
     }
 
     if (_bShowWindowErrorAndExit) {

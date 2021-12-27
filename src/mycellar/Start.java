@@ -90,8 +90,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.3
- * @since 14/12/21
+ * @version 30.4
+ * @since 27/12/21
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -586,6 +586,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     // differents choix de chaque menu
     menuShowWorksheet.setText(Program.getLabel("ShowFile.Worksheet"));
     menuSearch.setText(Program.getLabel("Main.tabSearchButton"));
+    menuQuit.setText(Program.getLabel("Infos003"));
+    menuHelp.setText(Program.getLabel("Infos111"));
 
     about.setText(Program.getLabel("Infos199")); // A Propos
     menuNews.setText(Program.getLabel("Infos330")); // Nouveautes

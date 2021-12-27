@@ -159,7 +159,7 @@ public final class Program {
     try {
       Debug("Program: Initializing Configuration files and Program type");
       if (loadProperties()) {
-        setProgramType(Program.Type.typeOf(getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
+        setProgramType(Program.Type.typeOf(getCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name())));
       } else {
         setProgramType(Program.Type.typeOf(getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name())));
       }

@@ -218,10 +218,12 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   public void resetValues() {
 	  SwingUtilities.invokeLater(() -> {
+		  setListenersEnabled(false);
     place.setSelectedIndex(0);
     clearBeforeBottle();
     labelExist.setText("");
     managePlaceCombos();
+    setListenersEnabled(true);
 	  });
   }
 
@@ -239,6 +241,7 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   @Override
   public void selectPlace(Place placeRangement) {
+	  SwingUtilities.invokeLater(() -> {
 	  Debug("Select Place...");
     setListenersEnabled(false);
     final Rangement rangement = placeRangement.getRangement();
@@ -283,6 +286,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     column.setVisible(!simplePlace);
     setListenersEnabled(true);
     Debug("Select Place... Done");
+	  });
   }
 
   private void setListeners() {

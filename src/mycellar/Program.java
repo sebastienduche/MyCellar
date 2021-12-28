@@ -23,6 +23,8 @@ import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
+import mycellar.core.language.Language;
+import mycellar.core.language.LanguageFileLoader;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.storage.SerializedStorage;
 import mycellar.core.storage.Storage;
@@ -152,7 +154,7 @@ public final class Program {
     // Initialisation du repertoire de travail
     getWorkDir(false);
     loadGlobalProperties();
-    LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
+    LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
   }
 
   static void loadPropertiesAndSetProgramType() {
@@ -166,23 +168,23 @@ public final class Program {
     } catch (UnableToOpenFileException e) {
       showException(e);
     }
-    String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
+    String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
     Debug("Program: Type of managed object: " + programType);
-    setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
+    setLanguage(Language.getLanguage(thelangue.charAt(0)));
   }
 
   static void initializeLanguageProgramType() {
     try {
       Debug("Program: Initializing Language and Program type");
-      LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
+      LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
 
       if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
-        putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
+        putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
       }
 
-      String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
+      String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
       Debug("Program: Type of managed object: " + programType);
-      setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
+      setLanguage(Language.getLanguage(thelangue.charAt(0)));
       cleanAndUpgrade();
     } catch (RuntimeException e) {
       showException(e);
@@ -362,7 +364,7 @@ public final class Program {
     }
   }
 
-  static void setLanguage(LanguageFileLoader.Language lang) {
+  static void setLanguage(Language lang) {
     Debug("Program: Set Language: " + lang);
     MyCellarLabelManagement.updateLabels();
     ProgramPanels.TABBED_PANE.removeAll();

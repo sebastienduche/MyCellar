@@ -1,4 +1,6 @@
-package mycellar;
+package mycellar.core.language;
+
+import mycellar.Program;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,16 +17,16 @@ import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2011</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 1.1
- * @since 22/08/21
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 1.2
+ * @since 28/12/21
  */
-public class LanguageFileLoader {
+public final class LanguageFileLoader {
 
   private static final LanguageFileLoader INSTANCE = new LanguageFileLoader();
   private static final String LANGUAGE = "Language";
@@ -65,7 +67,7 @@ public class LanguageFileLoader {
     return INSTANCE.bundleError.getString(_id);
   }
 
-  static int getLanguageIndex(String language) {
+  public static int getLanguageIndex(String language) {
     if (INSTANCE.bundleLanguage == null) {
       Debug("ERROR: Language' map not intialized!");
       return -1;
@@ -81,11 +83,11 @@ public class LanguageFileLoader {
     return -1;
   }
 
-  static String getLanguageFromIndex(int index) {
+  public static String getLanguageFromIndex(int index) {
     return INSTANCE.bundleLanguage.getString(CODE_LANG + (index + 1));
   }
 
-  static List<String> getLanguages() {
+  public static List<String> getLanguages() {
     ArrayList<String> list = new ArrayList<>();
     if (INSTANCE.bundleLanguage == null) {
       Debug("ERROR: Language' map not intialized!");
@@ -99,17 +101,7 @@ public class LanguageFileLoader {
     return list;
   }
 
-  static Language getLanguage(char language) {
-    if (language == Language.ENGLISH.getLanguage()) {
-      return Language.ENGLISH;
-    }
-    if (language == Language.FRENCH.getLanguage()) {
-      return Language.FRENCH;
-    }
-    return Language.ENGLISH;
-  }
-
-  static boolean isFrench() {
+  public static boolean isFrench() {
     return getInstance().language == Language.FRENCH;
   }
 
@@ -117,7 +109,7 @@ public class LanguageFileLoader {
     Program.Debug("LanguageFileLoader: " + sText);
   }
 
-  void loadLanguageFiles(Language language) {
+  public void loadLanguageFiles(Language language) {
     if (this.language == language) {
       return;
     }
@@ -133,23 +125,8 @@ public class LanguageFileLoader {
     bundleLanguage = ResourceBundle.getBundle("language", Locale.FRENCH, new UTF8Control());
   }
 
-  boolean isLoaded() {
+  public boolean isLoaded() {
     return bundleError != null && bundleLanguage != null && bundleTitle != null;
-  }
-
-  enum Language {
-    FRENCH('F'),
-    ENGLISH('U');
-
-    private final char language;
-
-    Language(char language) {
-      this.language = language;
-    }
-
-    public char getLanguage() {
-      return language;
-    }
   }
 }
 

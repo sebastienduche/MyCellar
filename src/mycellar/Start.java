@@ -8,16 +8,17 @@ import mycellar.core.ICutCopyPastable;
 import mycellar.core.IPlace;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.uicomponents.MyCellarAction;
-import mycellar.core.uicomponents.MyCellarComboBox;
-import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.uicomponents.MyCellarMenuItem;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
+import mycellar.core.language.Language;
 import mycellar.core.storage.ListeBouteille;
+import mycellar.core.uicomponents.MyCellarAction;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarMenuItem;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.launcher.MyCellarServer;
@@ -555,7 +556,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   void updateLabels() {
     final String quitter = Program.getLabel("QUITTER");
     if (quitter == null || quitter.isEmpty()) {
-      Program.setLanguage(LanguageFileLoader.Language.FRENCH);
+      Program.setLanguage(Language.FRENCH);
       quitChar = Program.getLabel("QUITTER").charAt(0);
     } else {
       quitChar = quitter.charAt(0);

@@ -1,6 +1,5 @@
 package mycellar.placesmanagement;
 
-import mycellar.Bouteille;
 import mycellar.MyCellarControl;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
@@ -64,6 +63,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     preview.setMnemonic(previewChar);
     preview.addActionListener(this::preview_actionPerformed);
     chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
+    initPlaceCombo();
     setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));
     setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
     add(new MyCellarLabel(LabelType.INFO, "208"));
@@ -91,11 +91,10 @@ public final class PanelPlace extends JPanel implements IPlace {
     add(previousNumPlaceLabel, "hidemode 3");
     add(previousLineLabel, "hidemode 3");
     add(previousColumnLabel, "hidemode 3");
-    setListenersEnabled(false);
-    initPlaceCombo();
     setListeners();
     setListenersEnabled(true);
     setBeforeLabelsVisible(false);
+    place.setEnabled(false);
     if (rangement != null) {
       place.setSelectedItem(rangement);
     }
@@ -124,13 +123,13 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void managePlaceCombos() {
-    place.setEnabled(true);
+    place.setEnabled(false);
     preview.setEnabled(false);
     if (place.getItemCount() == 2) {
       if (place.getSelectedIndex() == 0) {
         place.setSelectedIndex(1);
       }
-      place.setEnabled(false);
+    //  place.setEnabled(false);
       Rangement r = (Rangement) place.getSelectedItem();
       if (numPlace.getItemCount() == 2) {
         if (numPlace.getSelectedIndex() == 0) {
@@ -194,10 +193,6 @@ public final class PanelPlace extends JPanel implements IPlace {
     setBeforeLabelsVisible(false);
   }
 
-  public void setBottle(Bouteille bottle) {
-    selectPlace(bottle);
-  }
-
   public void setBeforeLabelsVisible(boolean b) {
     beforeLabel.setVisible(b);
     previousPlaceLabel.setVisible(b);
@@ -228,11 +223,13 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void updateView() {
+	  Debug("Update view...");
     setListenersEnabled(false);
     place.removeAllItems();
     setListenersEnabled(true);
     initPlaceCombo();
     managePlaceCombos();
+    Debug("Update view... Done");
   }
 
   public void selectPlace(MyCellarObject cellarObject) {
@@ -243,6 +240,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   public void selectPlace(Place placeRangement) {
 	  SwingUtilities.invokeLater(() -> {
 	  Debug("Select Place...");
+	  setEnabled(false);
     setListenersEnabled(false);
     final Rangement rangement = placeRangement.getRangement();
     place.setSelectedItem(rangement);
@@ -255,9 +253,6 @@ public final class PanelPlace extends JPanel implements IPlace {
     numPlace.addItem(NONE);
     line.addItem(NONE);
     column.addItem(NONE);
-    numPlace.setEnabled(true);
-    line.setEnabled(true);
-    column.setEnabled(true);
     for (int i = rangement.getFirstPartNumber(); i < rangement.getLastPartNumber(); i++) {
       numPlace.addItem(new ComboItem(i));
     }
@@ -278,7 +273,8 @@ public final class PanelPlace extends JPanel implements IPlace {
       line.setSelectedItem(new ComboItem(placeRangement.getLine()));
       column.setSelectedItem(new ComboItem(placeRangement.getColumn()));
     }
-
+    setEnabled(true);
+    
     boolean simplePlace = rangement.isSimplePlace();
     labelLine.setVisible(!simplePlace);
     labelColumn.setVisible(!simplePlace);
@@ -307,6 +303,13 @@ public final class PanelPlace extends JPanel implements IPlace {
     line.setListenerEnable(listenersEnabled);
     column.setListenerEnable(listenersEnabled);
   }
+  
+  public void setEnabled(boolean listenersEnabled) {
+	    place.setEnabled(listenersEnabled);
+	    numPlace.setEnabled(listenersEnabled);
+	    line.setEnabled(listenersEnabled);
+	    column.setEnabled(listenersEnabled);
+	  }
 
   private void preview_actionPerformed(ActionEvent e) {
     Debug("Previewing...");
@@ -331,14 +334,14 @@ public final class PanelPlace extends JPanel implements IPlace {
     labelNumPlace.setVisible(true);
     numPlace.setVisible(true);
     boolean caisse = false;
-    if (lieu_select == 0) {
+    //if (lieu_select == 0) {
       numPlace.setEnabled(false);
       line.setEnabled(false);
       column.setEnabled(false);
-    } else {
-      numPlace.setEnabled(true);
+    //} else {
+      //numPlace.setEnabled(true);
       caisse = rangement.isSimplePlace();
-    }
+    //}
     preview.setEnabled(!caisse);
 
     numPlace.removeAllItems();
@@ -359,6 +362,9 @@ public final class PanelPlace extends JPanel implements IPlace {
       numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
       labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu
     }
+    if (lieu_select != 0) {
+        numPlace.setEnabled(true);
+      }
     setLineColumnVisible(rangement);
     Debug("Lieu_itemStateChanging... End");
     });

@@ -80,7 +80,6 @@ import static mycellar.ProgramConstants.RESTART_COMMAND;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.STAR;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
-import static mycellar.general.ProgramPanels.addTab;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
 
 /**
@@ -90,8 +89,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.4
- * @since 27/12/21
+ * @version 30.5
+ * @since 28/12/21
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -946,7 +945,6 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   }
 
   public void updateMainPanel() {
-    ProgramPanels.updateVisibility();
     managePlaceButton.setEnabled(Program.getCave().stream().anyMatch(Predicate.not(Rangement::isSimplePlace)));
   }
 
@@ -1314,7 +1312,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getAddVin() == null) {
-        addTab(ProgramPanels.createAddVin(), LABEL, MyCellarImage.WINE);
+    	  selectOrAddTab(ProgramPanels.createAddVin(), LABEL, MyCellarImage.WINE);
       }
       selectOrAddTab(ProgramPanels.getAddVin(), LABEL, MyCellarImage.WINE);
       ProgramPanels.getAddVin().reInit();
@@ -1334,7 +1332,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getCreerRangement() == null) {
-        addTab(ProgramPanels.createCreerRangement(), LABEL, MyCellarImage.PLACE);
+    	  selectOrAddTab(ProgramPanels.createCreerRangement(), LABEL, MyCellarImage.PLACE);
       }
       selectOrAddTab(ProgramPanels.getAddVin(), LABEL, MyCellarImage.PLACE);
       updateMainPanel();
@@ -1353,7 +1351,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getSupprimerRangement() == null) {
-        addTab(ProgramPanels.createSupprimerRangement(), LABEL, MyCellarImage.DELPLACE);
+    	  selectOrAddTab(ProgramPanels.createSupprimerRangement(), LABEL, MyCellarImage.DELPLACE);
       }
       selectOrAddTab(ProgramPanels.getSupprimerRangement(), LABEL, MyCellarImage.DELPLACE);
       updateMainPanel();
@@ -1372,7 +1370,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getModifierRangement() == null) {
-        addTab(ProgramPanels.createModifierRangement(), LABEL, MyCellarImage.MODIFYPLACE);
+    	  selectOrAddTab(ProgramPanels.createModifierRangement(), LABEL, MyCellarImage.MODIFYPLACE);
       }
       selectOrAddTab(ProgramPanels.getModifierRangement(), LABEL, MyCellarImage.MODIFYPLACE);
       ProgramPanels.getModifierRangement().updateView();
@@ -1392,7 +1390,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getSearch().isEmpty()) {
-        addTab(ProgramPanels.createSearch(), LABEL, MyCellarImage.SEARCH);
+    	  selectOrAddTab(ProgramPanels.createSearch(), LABEL, MyCellarImage.SEARCH);
       }
       selectOrAddTab(ProgramPanels.getSearch().get(), LABEL, MyCellarImage.SEARCH);
       updateMainPanel();
@@ -1411,7 +1409,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getCreerTableaux() == null) {
-        addTab(ProgramPanels.createCreerTableaux(), LABEL, MyCellarImage.TABLE);
+    	  selectOrAddTab(ProgramPanels.createCreerTableaux(), LABEL, MyCellarImage.TABLE);
       }
       selectOrAddTab(ProgramPanels.getCreerTableaux(), LABEL, MyCellarImage.TABLE);
       updateMainPanel();
@@ -1430,7 +1428,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getImporter() == null) {
-        addTab(ProgramPanels.createImporter(), LABEL, MyCellarImage.IMPORT);
+    	  selectOrAddTab(ProgramPanels.createImporter(), LABEL, MyCellarImage.IMPORT);
       }
       selectOrAddTab(ProgramPanels.getImporter(), LABEL, MyCellarImage.IMPORT);
       updateMainPanel();
@@ -1449,7 +1447,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getExport() == null) {
-        addTab(ProgramPanels.createExport(), LABEL, MyCellarImage.EXPORT);
+    	  selectOrAddTab(ProgramPanels.createExport(), LABEL, MyCellarImage.EXPORT);
       }
       selectOrAddTab(ProgramPanels.getExport(), LABEL, MyCellarImage.EXPORT);
       updateMainPanel();
@@ -1468,7 +1466,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getStat() == null) {
-        addTab(ProgramPanels.createStat(), LABEL, MyCellarImage.STATS);
+    	  selectOrAddTab(ProgramPanels.createStat(), LABEL, MyCellarImage.STATS);
       }
       selectOrAddTab(ProgramPanels.getStat(), LABEL, MyCellarImage.STATS);
       ProgramPanels.getStat().updateView();
@@ -1487,7 +1485,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getShowHistory() == null) {
-        addTab(ProgramPanels.createShowHistory(), LABEL, null);
+    	  selectOrAddTab(ProgramPanels.createShowHistory(), LABEL, null);
       }
       selectOrAddTab(ProgramPanels.getShowHistory(), LABEL, null);
       ProgramPanels.getShowHistory().refresh();
@@ -1538,7 +1536,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getShowFile() == null) {
-        addTab(ProgramPanels.createShowFile(), LABEL, MyCellarImage.SHOW);
+    	  selectOrAddTab(ProgramPanels.createShowFile(), LABEL, MyCellarImage.SHOW);
       }
       selectOrAddTab(ProgramPanels.getShowFile(), LABEL, MyCellarImage.SHOW);
       updateMainPanel();
@@ -1557,7 +1555,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getShowTrash() == null) {
-        addTab(ProgramPanels.createShowTrash(), LABEL, MyCellarImage.TRASH);
+    	  selectOrAddTab(ProgramPanels.createShowTrash(), LABEL, MyCellarImage.TRASH);
       }
       selectOrAddTab(ProgramPanels.getShowTrash(), LABEL, MyCellarImage.TRASH);
       ProgramPanels.getShowTrash().updateView();
@@ -1577,7 +1575,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getCellarOrganizerPanel() == null) {
-        addTab(ProgramPanels.createCellarOrganizerPanel(), LABEL, MyCellarImage.PLACE);
+    	  selectOrAddTab(ProgramPanels.createCellarOrganizerPanel(), LABEL, MyCellarImage.PLACE);
       }
       selectOrAddTab(ProgramPanels.getCellarOrganizerPanel(), LABEL, MyCellarImage.PLACE);
       updateMainPanel();
@@ -1595,7 +1593,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       if (ProgramPanels.getParametres() == null) {
-        addTab(ProgramPanels.createParametres(), LABEL, MyCellarImage.PARAMETER);
+    	  selectOrAddTab(ProgramPanels.createParametres(), LABEL, MyCellarImage.PARAMETER);
       }
       selectOrAddTab(ProgramPanels.getParametres(), LABEL, MyCellarImage.PARAMETER);
       updateMainPanel();

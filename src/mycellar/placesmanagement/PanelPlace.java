@@ -31,8 +31,8 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 27/12/21
+ * @version 1.4
+ * @since 28/12/21
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -217,10 +217,12 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void resetValues() {
+	  SwingUtilities.invokeLater(() -> {
     place.setSelectedIndex(0);
     clearBeforeBottle();
     labelExist.setText("");
     managePlaceCombos();
+	  });
   }
 
   public void updateView() {

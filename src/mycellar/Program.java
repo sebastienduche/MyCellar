@@ -384,7 +384,7 @@ public final class Program {
       error = error.concat("\n" + s);
     }
 
-    if (error.contains("BasicTabbedPaneUI.tabForCoordinate")) {
+    if (error.contains("tabForCoordinate")) {
       _bShowWindowErrorAndExit = false;
     }
 

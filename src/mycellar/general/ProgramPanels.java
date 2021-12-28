@@ -31,6 +31,8 @@ import mycellar.vignobles.VineyardPanel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+
 import java.awt.Component;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -69,8 +71,8 @@ import static mycellar.ScreenType.VIGNOBLES;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 27/10/21
+ * @version 0.9
+ * @since 28/12/21
  */
 public class ProgramPanels {
 
@@ -108,6 +110,7 @@ public class ProgramPanels {
         iUpdatable.updateView();
       }
     });
+    updateVisibility();
   }
 
   public static boolean isCutCopyPastTab() {
@@ -380,6 +383,7 @@ public class ProgramPanels {
   }
 
   public static void showBottle(MyCellarObject myCellarObject, boolean edit) {
+	  SwingUtilities.invokeLater(() -> {
     for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
       Component tab = TABBED_PANE.getComponentAt(i);
       if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(myCellarObject)) {
@@ -398,9 +402,11 @@ public class ProgramPanels {
     TABBED_PANE.setSelectedIndex(TABBED_PANE.getTabCount() - 1);
     Utils.addCloseButton(TABBED_PANE, manage);
     Start.getInstance().updateMainPanel();
+	  });
   }
 
   public static void removeBottleTab(Bouteille bottle) {
+	  SwingUtilities.invokeLater(() -> {
     for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
       Component tab = TABBED_PANE.getComponentAt(i);
       if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
@@ -408,6 +414,7 @@ public class ProgramPanels {
         return;
       }
     }
+	  });
   }
 
   public static void setSelectedPaneModified(boolean modify) {
@@ -439,30 +446,37 @@ public class ProgramPanels {
   }
 
   public static void selectOrAddTab(Component component, String tabLabel, Icon icon) {
+	  SwingUtilities.invokeLater(() -> {
     try {
       TABBED_PANE.setSelectedComponent(component);
     } catch (IllegalArgumentException e) {
       addTab(component, tabLabel, icon);
-      TABBED_PANE.setSelectedComponent(component);
     }
+	  });
   }
 
-  public static void addTab(Component component, String tabLabel, Icon icon) {
+  private static void addTab(Component component, String tabLabel, Icon icon) {
+	  SwingUtilities.invokeLater(() -> {
     try {
-      TABBED_PANE.add(Program.getLabel(tabLabel, LabelProperty.SINGLE), component);
+      TABBED_PANE.addTab(Program.getLabel(tabLabel, LabelProperty.SINGLE), component);
       TABBED_PANE.setIconAt(TABBED_PANE.getTabCount() - 1, icon);
       Utils.addCloseButton(TABBED_PANE, component);
+      TABBED_PANE.setSelectedComponent(component);
+      updateVisibility();
     } catch (RuntimeException e) {
       Program.showException(e);
     }
+	  });
   }
 
   public static void updateVisibility() {
+	  SwingUtilities.invokeLater(() -> {
     int count = TABBED_PANE.getTabCount();
     PANEL_INFOS.setVisible(count == 0);
     TABBED_PANE.setVisible(count > 0);
     if (count == 0) {
       PANEL_INFOS.refresh();
     }
+	  });
   }
 }

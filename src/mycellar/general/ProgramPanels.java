@@ -32,6 +32,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import java.awt.Component;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -99,17 +100,27 @@ public class ProgramPanels {
   }
 
   public static void updateSelectedTab() {
-    UPDATABLE_OBJECTS.forEach((s, iUpdatable) -> {
-      if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
-        iUpdatable.updateView();
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        return null;
       }
-    });
-    UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> {
-      if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
-        iUpdatable.updateView();
+
+      @Override
+      protected void done() {
+        UPDATABLE_OBJECTS.forEach((s, iUpdatable) -> {
+          if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
+            iUpdatable.updateView();
+          }
+        });
+        UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> {
+          if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
+            iUpdatable.updateView();
+          }
+        });
+        updateVisibility();
       }
-    });
-    updateVisibility();
+    }.execute();
   }
 
   public static boolean isCutCopyPastTab() {
@@ -127,8 +138,18 @@ public class ProgramPanels {
   }
 
   public static void updateAllPanels() {
-    UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView());
-    UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView());
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        return null;
+      }
+
+      @Override
+      protected void done() {
+        UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView());
+        UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView());
+      }
+    }.execute();
   }
 
   public static void updateManagePlacePanel() {
@@ -367,27 +388,43 @@ public class ProgramPanels {
   }
 
   public static void selectOrAddTab(Component component, String tabLabel, Icon icon) {
-    SwingUtilities.invokeLater(() -> {
-      try {
-        TABBED_PANE.setSelectedComponent(component);
-      } catch (IllegalArgumentException e) {
-        addTab(component, tabLabel, icon);
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        return null;
       }
-    });
+
+      @Override
+      protected void done() {
+        try {
+          TABBED_PANE.setSelectedComponent(component);
+        } catch (IllegalArgumentException e) {
+          addTab(component, tabLabel, icon);
+        }
+      }
+    }.execute();
   }
 
   private static void addTab(Component component, String tabLabel, Icon icon) {
-    SwingUtilities.invokeLater(() -> {
-      try {
-        TABBED_PANE.addTab(Program.getLabel(tabLabel, LabelProperty.SINGLE), component);
-        TABBED_PANE.setIconAt(TABBED_PANE.getTabCount() - 1, icon);
-        Utils.addCloseButton(TABBED_PANE, component);
-        TABBED_PANE.setSelectedComponent(component);
-        updateVisibility();
-      } catch (RuntimeException e) {
-        Program.showException(e);
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        return null;
       }
-    });
+
+      @Override
+      protected void done() {
+        try {
+          TABBED_PANE.addTab(Program.getLabel(tabLabel, LabelProperty.SINGLE), component);
+          TABBED_PANE.setIconAt(TABBED_PANE.getTabCount() - 1, icon);
+          Utils.addCloseButton(TABBED_PANE, component);
+          TABBED_PANE.setSelectedComponent(component);
+          updateVisibility();
+        } catch (RuntimeException e) {
+          Program.showException(e);
+        }
+      }
+    }.execute();
   }
 
   public static void updateVisibility() {

@@ -19,8 +19,8 @@ import java.util.List;
 public final class OpenWorkSheetAction extends MyCellarAction {
 
   private static final long serialVersionUID = -2351197475699686315L;
-  private final List<Bouteille> bouteilles;
   private static final String LABEL = "ShowFile.Worksheet";
+  private final List<Bouteille> bouteilles;
 
   public OpenWorkSheetAction() {
     this(null);
@@ -35,12 +35,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     SwingUtilities.invokeLater(() -> {
-      if (ProgramPanels.getShowWorksheet() == null) {
-        final ShowFile showWorksheet = ProgramPanels.createShowWorksheet();
-        ProgramPanels.TABBED_PANE.addTab(Program.getLabel(LABEL), MyCellarImage.WORK, showWorksheet);
-        ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount() - 1);
-      }
-      final ShowFile showWorksheet = ProgramPanels.getShowWorksheet();
+      final ShowFile showWorksheet = ProgramPanels.createShowWorksheet();
       showWorksheet.updateView();
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK);
       if (tabIndex != -1) {

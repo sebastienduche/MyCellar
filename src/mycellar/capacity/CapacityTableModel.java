@@ -11,14 +11,14 @@ import java.text.MessageFormat;
 import java.util.List;
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2003</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 0.7
- * @since 19/11/20
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.8
+ * @since 29/12/21
  */
 class CapacityTableModel extends DefaultTableModel {
   public static final int ETAT = 1;
@@ -33,11 +33,6 @@ class CapacityTableModel extends DefaultTableModel {
     list = MyCellarBottleContenance.getList();
   }
 
-  /**
-   * getRowCount
-   *
-   * @return int
-   */
   @Override
   public int getRowCount() {
     if (list != null) {
@@ -46,23 +41,11 @@ class CapacityTableModel extends DefaultTableModel {
     return 0;
   }
 
-  /**
-   * getColumnCount
-   *
-   * @return int
-   */
   @Override
   public int getColumnCount() {
     return columnNames.length;
   }
 
-  /**
-   * getValueAt
-   *
-   * @param row    int
-   * @param column int
-   * @return Object
-   */
   @Override
   public Object getValueAt(int row, int column) {
     if (column == ETAT) {
@@ -71,36 +54,16 @@ class CapacityTableModel extends DefaultTableModel {
     return list.get(row);
   }
 
-  /**
-   * getColumnName
-   *
-   * @param column int
-   * @return String
-   */
   @Override
   public String getColumnName(int column) {
     return columnNames[column];
   }
 
-  /**
-   * isCellEditable
-   *
-   * @param row    int
-   * @param column int
-   * @return boolean
-   */
   @Override
   public boolean isCellEditable(int row, int column) {
     return true;
   }
 
-  /**
-   * setValueAt
-   *
-   * @param value  Object
-   * @param row    int
-   * @param column int
-   */
   @Override
   public void setValueAt(Object value, int row, int column) {
     final String oldValue = list.get(row);
@@ -116,7 +79,7 @@ class CapacityTableModel extends DefaultTableModel {
       fireTableRowsDeleted(row, row);
       setModify(true);
       ProgramPanels.updateAllPanels();
-      ProgramPanels.getCapacityPanel().updateView();
+      ProgramPanels.createCapacityPanel().updateView();
     } else {
       String newValue = Program.toCleanString(value);
       if (!newValue.isBlank()) {
@@ -124,7 +87,7 @@ class CapacityTableModel extends DefaultTableModel {
         fireTableDataChanged();
         setModify(true);
         ProgramPanels.updateAllPanels();
-        ProgramPanels.getCapacityPanel().updateView();
+        ProgramPanels.createCapacityPanel().updateView();
       }
     }
   }

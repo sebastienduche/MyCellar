@@ -15,7 +15,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -193,14 +193,22 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void resetValues() {
-    SwingUtilities.invokeLater(() -> {
-      setListenersEnabled(false);
-      resetCombos();
-      clearBeforeBottle();
-      labelExist.setText("");
-      managePlaceCombos();
-      setListenersEnabled(true);
-    });
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        return null;
+      }
+
+      @Override
+      protected void done() {
+        setListenersEnabled(false);
+        resetCombos();
+        clearBeforeBottle();
+        labelExist.setText("");
+        managePlaceCombos();
+        setListenersEnabled(true);
+      }
+    }.execute();
   }
 
   private void resetCombos() {
@@ -211,14 +219,24 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void updateView() {
-    Debug("Update view...");
-    setListenersEnabled(false);
-    resetCombos();
-    initPlaceCombo();
-    setListenersEnabled(true);
-    managePlaceCombos();
-    resetLabelEnd();
-    Debug("Update view... Done");
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        return null;
+      }
+
+      @Override
+      protected void done() {
+        Debug("Update view...");
+        setListenersEnabled(false);
+        resetCombos();
+        initPlaceCombo();
+        setListenersEnabled(true);
+        managePlaceCombos();
+        resetLabelEnd();
+        Debug("Update view... Done");
+      }
+    }.execute();
   }
 
   public void selectPlace(MyCellarObject cellarObject) {
@@ -227,51 +245,59 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   @Override
   public void selectPlace(Place placeRangement) {
-    SwingUtilities.invokeLater(() -> {
-      Debug("Select Place...");
-      enableAll(false);
-      setListenersEnabled(false);
-      final Rangement rangement = placeRangement.getRangement();
-      place.setSelectedItem(rangement);
-      labelExist.setText("");
-
-      preview.setEnabled(!rangement.isSimplePlace());
-      numPlace.removeAllItems();
-      column.removeAllItems();
-      line.removeAllItems();
-      numPlace.addItem(NONE);
-      line.addItem(NONE);
-      column.addItem(NONE);
-      for (int i = rangement.getFirstPartNumber(); i < rangement.getLastPartNumber(); i++) {
-        numPlace.addItem(new ComboItem(i));
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        return null;
       }
-      if (!rangement.isSimplePlace()) { // Need the last place number for complex places
-        numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
-      }
-      numPlace.setSelectedItem(new ComboItem(placeRangement.getPlaceNum()));
 
-      if (!rangement.isSimplePlace()) {
-        int nbLine = rangement.getLineCountAt(placeRangement.getPlaceNumIndex());
-        int nbColumn = rangement.getColumnCountAt(placeRangement.getPlaceNumIndex(), placeRangement.getLineIndex());
-        for (int i = 1; i <= nbLine; i++) {
-          line.addItem(new ComboItem(i));
+      @Override
+      protected void done() {
+        Debug("Select Place...");
+        enableAll(false);
+        setListenersEnabled(false);
+        final Rangement rangement = placeRangement.getRangement();
+        place.setSelectedItem(rangement);
+        labelExist.setText("");
+
+        preview.setEnabled(!rangement.isSimplePlace());
+        numPlace.removeAllItems();
+        column.removeAllItems();
+        line.removeAllItems();
+        numPlace.addItem(NONE);
+        line.addItem(NONE);
+        column.addItem(NONE);
+        for (int i = rangement.getFirstPartNumber(); i < rangement.getLastPartNumber(); i++) {
+          numPlace.addItem(new ComboItem(i));
         }
-        for (int i = 1; i <= nbColumn; i++) {
-          column.addItem(new ComboItem(i));
+        if (!rangement.isSimplePlace()) { // Need the last place number for complex places
+          numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
         }
-        line.setSelectedItem(new ComboItem(placeRangement.getLine()));
-        column.setSelectedItem(new ComboItem(placeRangement.getColumn()));
-      }
-      enableAll(true);
+        numPlace.setSelectedItem(new ComboItem(placeRangement.getPlaceNum()));
 
-      boolean simplePlace = rangement.isSimplePlace();
-      labelLine.setVisible(!simplePlace);
-      labelColumn.setVisible(!simplePlace);
-      line.setVisible(!simplePlace);
-      column.setVisible(!simplePlace);
-      setListenersEnabled(true);
-      Debug("Select Place... Done");
-    });
+        if (!rangement.isSimplePlace()) {
+          int nbLine = rangement.getLineCountAt(placeRangement.getPlaceNumIndex());
+          int nbColumn = rangement.getColumnCountAt(placeRangement.getPlaceNumIndex(), placeRangement.getLineIndex());
+          for (int i = 1; i <= nbLine; i++) {
+            line.addItem(new ComboItem(i));
+          }
+          for (int i = 1; i <= nbColumn; i++) {
+            column.addItem(new ComboItem(i));
+          }
+          line.setSelectedItem(new ComboItem(placeRangement.getLine()));
+          column.setSelectedItem(new ComboItem(placeRangement.getColumn()));
+        }
+        enableAll(true);
+
+        boolean simplePlace = rangement.isSimplePlace();
+        labelLine.setVisible(!simplePlace);
+        labelColumn.setVisible(!simplePlace);
+        line.setVisible(!simplePlace);
+        column.setVisible(!simplePlace);
+        setListenersEnabled(true);
+        Debug("Select Place... Done");
+      }
+    }.execute();
   }
 
   private void setListeners() {
@@ -305,118 +331,150 @@ public final class PanelPlace extends JPanel implements IPlace {
     if (isListenersDisabled(e)) {
       return;
     }
-    SwingUtilities.invokeLater(() -> {
-      Debug("Lieu_itemStateChanging...");
-      Rangement rangement = (Rangement) place.getSelectedItem();
-      Objects.requireNonNull(rangement);
-      enableAll(false);
-      labelExist.setText("");
-
-      preview.setEnabled(!rangement.isSimplePlace());
-
-      numPlace.removeAllItems();
-      numPlace.addItem(NONE);
-      line.removeAllItems();
-      column.removeAllItems();
-      for (int i = rangement.getFirstPartNumber(); i < rangement.getLastPartNumber(); i++) {
-        numPlace.addItem(new ComboItem(i));
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        return null;
       }
 
-      if (rangement.isSimplePlace()) {
-        labelNumPlace.setText(Program.getLabel("Infos158")); //"Numero de caisse
-        if (rangement.getNbParts() == 1) {
-          numPlace.setSelectedIndex(1);
+      @Override
+      protected void done() {
+        Debug("Lieu_itemStateChanging...");
+        Rangement rangement = (Rangement) place.getSelectedItem();
+        Objects.requireNonNull(rangement);
+        enableAll(false);
+        labelExist.setText("");
+
+        preview.setEnabled(!rangement.isSimplePlace());
+
+        numPlace.removeAllItems();
+        numPlace.addItem(NONE);
+        line.removeAllItems();
+        column.removeAllItems();
+        for (int i = rangement.getFirstPartNumber(); i < rangement.getLastPartNumber(); i++) {
+          numPlace.addItem(new ComboItem(i));
         }
-      } else {
-        // Need the last place number for complex places
-        numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
-        labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu
+
+        if (rangement.isSimplePlace()) {
+          labelNumPlace.setText(Program.getLabel("Infos158")); //"Numero de caisse
+          if (rangement.getNbParts() == 1) {
+            numPlace.setSelectedIndex(1);
+          }
+        } else {
+          // Need the last place number for complex places
+          numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
+          labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu
+        }
+        setLineColumnVisible(rangement);
+        enableAll(true);
+        Debug("Lieu_itemStateChanging... End");
       }
-      setLineColumnVisible(rangement);
-      enableAll(true);
-      Debug("Lieu_itemStateChanging... End");
-    });
+    }.execute();
   }
 
   private void num_lieu_itemStateChanged(ItemEvent e) {
     if (isListenersDisabled(e)) {
       return;
     }
-    SwingUtilities.invokeLater(() -> {
-      Debug("Num_lieu_itemStateChanging...");
-      enableAll(false);
-      int numPlaceSelectedIndex = numPlace.getSelectedIndex();
-      int placeSelectedIndex = place.getSelectedIndex();
-
-      labelExist.setText("");
-
-      if (numPlaceSelectedIndex != 0) {
-        Rangement rangement = place.getItemAt(placeSelectedIndex);
-        if (!rangement.isSimplePlace()) {
-          int nb_ligne = rangement.getLineCountAt(numPlaceSelectedIndex - 1);
-          line.removeAllItems();
-          column.removeAllItems();
-          line.addItem(NONE);
-          for (int i = 1; i <= nb_ligne; i++) {
-            line.addItem(new ComboItem(i));
-          }
-        }
-      } else {
-        line.reset();
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        return null;
       }
-      enableAll(true);
-      Debug("Num_lieu_itemStateChanging... End");
-    });
+
+      @Override
+      protected void done() {
+        Debug("Num_lieu_itemStateChanging...");
+        enableAll(false);
+        int numPlaceSelectedIndex = numPlace.getSelectedIndex();
+        int placeSelectedIndex = place.getSelectedIndex();
+
+        labelExist.setText("");
+
+        if (numPlaceSelectedIndex != 0) {
+          Rangement rangement = place.getItemAt(placeSelectedIndex);
+          if (!rangement.isSimplePlace()) {
+            int nb_ligne = rangement.getLineCountAt(numPlaceSelectedIndex - 1);
+            line.removeAllItems();
+            column.removeAllItems();
+            line.addItem(NONE);
+            for (int i = 1; i <= nb_ligne; i++) {
+              line.addItem(new ComboItem(i));
+            }
+          }
+        } else {
+          line.reset();
+        }
+        enableAll(true);
+        Debug("Num_lieu_itemStateChanging... End");
+      }
+    }.execute();
   }
 
   private void line_itemStateChanged(ItemEvent e) {
     if (isListenersDisabled(e)) {
       return;
     }
-    SwingUtilities.invokeLater(() -> {
-      Debug("Line_itemStateChanging...");
-      enableAll(false);
-      int num_select = line.getSelectedIndex();
-      int emplacement = numPlace.getSelectedIndex();
-      int lieu_select = place.getSelectedIndex();
-      labelExist.setText("");
-      column.setEnabled(num_select != 0);
-      int nb_col = 0;
-      if (num_select > 0) {
-        Rangement cave = place.getItemAt(lieu_select);
-        nb_col = cave.getColumnCountAt(emplacement - 1, num_select - 1);
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        return null;
       }
-      column.removeAllItems();
-      column.addItem(NONE);
-      for (int i = 1; i <= nb_col; i++) {
-        column.addItem(new ComboItem(i));
+
+      @Override
+      protected void done() {
+        Debug("Line_itemStateChanging...");
+        enableAll(false);
+        int num_select = line.getSelectedIndex();
+        int emplacement = numPlace.getSelectedIndex();
+        int lieu_select = place.getSelectedIndex();
+        labelExist.setText("");
+        column.setEnabled(num_select != 0);
+        int nb_col = 0;
+        if (num_select > 0) {
+          Rangement cave = place.getItemAt(lieu_select);
+          nb_col = cave.getColumnCountAt(emplacement - 1, num_select - 1);
+        }
+        column.removeAllItems();
+        column.addItem(NONE);
+        for (int i = 1; i <= nb_col; i++) {
+          column.addItem(new ComboItem(i));
+        }
+        enableAll(true);
+        Debug("Line_itemStateChanging... End");
       }
-      enableAll(true);
-      Debug("Line_itemStateChanging... End");
-    });
+    }.execute();
   }
 
   private void column_itemStateChanged(ItemEvent e) {
     if (isListenersDisabled(e)) {
       return;
     }
-    SwingUtilities.invokeLater(() -> {
-      Debug("Column_itemStateChanging...");
-      int nPlace = place.getSelectedIndex();
-      int nNumLieu = numPlace.getSelectedIndex();
-      int nLine = line.getSelectedIndex();
-      int nColumn = column.getSelectedIndex();
-
-      labelExist.setText("");
-      if (nPlace < 1 || nNumLieu < 1 || nLine < 1 || nColumn < 1) {
-        return;
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() throws Exception {
+        return null;
       }
 
-      Rangement cave = place.getItemAt(nPlace);
-      cave.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
-          .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(myCellarObject.getNom()))));
-      Debug("Column_itemStateChanging... End");
-    });
+      @Override
+      protected void done() {
+        Debug("Column_itemStateChanging...");
+        int nPlace = place.getSelectedIndex();
+        int nNumLieu = numPlace.getSelectedIndex();
+        int nLine = line.getSelectedIndex();
+        int nColumn = column.getSelectedIndex();
+
+        labelExist.setText("");
+        if (nPlace < 1 || nNumLieu < 1 || nLine < 1 || nColumn < 1) {
+          return;
+        }
+
+        Rangement cave = place.getItemAt(nPlace);
+        cave.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
+            .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(myCellarObject.getNom()))));
+        Debug("Column_itemStateChanging... End");
+      }
+    }.execute();
   }
 
   public void setModifyActive(boolean enable) {

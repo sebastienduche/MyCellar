@@ -216,7 +216,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       boolean objectAdded = false;
       boolean hasNoError = true;
       int nb_bottle_add_only_one_place = 0;
-      if (!panelPlace.hasSelecedPlace() && isModify) {
+      if (!panelPlace.isPlaceModified() && isModify) {
         objectAdded = modifyOneOrSeveralObjectsWithoutPlaceModification(annee);
       } else if (rangement.isSimplePlace()) {
         //Caisse
@@ -739,7 +739,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       ProgramPanels.TABBED_PANE.setTitleAt(ProgramPanels.TABBED_PANE.getSelectedIndex(), Program.getLabel("Main.tabAdd", A_SINGLE));
     }
     panelGeneral.setSeveralItems(severalItems);
-    panelPlace.managePlaceCombos();
+    panelPlace.resetValues();
     enableAll(true);
     isModify = false;
     panelPlace.setBeforeLabelsVisible(false);

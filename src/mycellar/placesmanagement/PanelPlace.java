@@ -117,12 +117,12 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   private void initPlaceCombo() {
+    place.removeAllItems();
     place.addItem(Program.EMPTY_PLACE);
     Program.getCave().forEach(place::addItem);
-    chooseCell.setEnabled(Program.hasComplexPlace());
   }
 
-  public void managePlaceCombos() {
+  private void managePlaceCombos() {
     enableAll(false);
     preview.setEnabled(false);
     if (place.getItemCount() == 2) {
@@ -195,7 +195,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   public void resetValues() {
     SwingUtilities.invokeLater(() -> {
       setListenersEnabled(false);
-      place.setSelectedIndex(0);
+      resetCombos();
       clearBeforeBottle();
       labelExist.setText("");
       managePlaceCombos();
@@ -203,13 +203,21 @@ public final class PanelPlace extends JPanel implements IPlace {
     });
   }
 
+  private void resetCombos() {
+    place.reset();
+    numPlace.reset();
+    line.reset();
+    column.reset();
+  }
+
   public void updateView() {
     Debug("Update view...");
     setListenersEnabled(false);
-    place.removeAllItems();
-    setListenersEnabled(true);
+    resetCombos();
     initPlaceCombo();
+    setListenersEnabled(true);
     managePlaceCombos();
+    resetLabelEnd();
     Debug("Update view... Done");
   }
 
@@ -337,15 +345,15 @@ public final class PanelPlace extends JPanel implements IPlace {
     SwingUtilities.invokeLater(() -> {
       Debug("Num_lieu_itemStateChanging...");
       enableAll(false);
-      int num_select = numPlace.getSelectedIndex();
-      int lieu_select = place.getSelectedIndex();
+      int numPlaceSelectedIndex = numPlace.getSelectedIndex();
+      int placeSelectedIndex = place.getSelectedIndex();
 
       labelExist.setText("");
 
-      if (num_select != 0) {
-        Rangement rangement = place.getItemAt(lieu_select);
+      if (numPlaceSelectedIndex != 0) {
+        Rangement rangement = place.getItemAt(placeSelectedIndex);
         if (!rangement.isSimplePlace()) {
-          int nb_ligne = rangement.getLineCountAt(num_select - 1);
+          int nb_ligne = rangement.getLineCountAt(numPlaceSelectedIndex - 1);
           line.removeAllItems();
           column.removeAllItems();
           line.addItem(NONE);
@@ -353,6 +361,8 @@ public final class PanelPlace extends JPanel implements IPlace {
             line.addItem(new ComboItem(i));
           }
         }
+      } else {
+        line.reset();
       }
       enableAll(true);
       Debug("Num_lieu_itemStateChanging... End");
@@ -425,7 +435,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     place.setEnabled(enable);
   }
 
-  public boolean hasSelecedPlace() {
+  public boolean isPlaceModified() {
     return place.getSelectedIndex() > 0;
   }
 
@@ -469,10 +479,6 @@ public final class PanelPlace extends JPanel implements IPlace {
       }
     }
     return true;
-  }
-
-  public boolean isPlaceModified() {
-    return place.getSelectedIndex() > 0;
   }
 
   public void resetLabelEnd() {

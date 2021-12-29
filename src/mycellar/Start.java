@@ -23,8 +23,10 @@ import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.launcher.MyCellarServer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
+import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
+import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
 import net.miginfocom.swing.MigLayout;
 
@@ -81,7 +83,6 @@ import static mycellar.ProgramConstants.RESTART_COMMAND;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.STAR;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
-import static mycellar.general.ProgramPanels.addTab;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
 
 /**
@@ -91,8 +92,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.4
- * @since 27/12/21
+ * @version 30.6
+ * @since 29/12/21
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -947,7 +948,6 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   }
 
   public void updateMainPanel() {
-    ProgramPanels.updateVisibility();
     managePlaceButton.setEnabled(Program.getCave().stream().anyMatch(Predicate.not(Rangement::isSimplePlace)));
   }
 
@@ -1002,72 +1002,41 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   }
 
   public void openVineyardPanel() {
-    if (ProgramPanels.getVineyardPanel() == null) {
-      try {
-        final VineyardPanel vineyardPanel = ProgramPanels.createVineyardPanel();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos165"), vineyardPanel);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, null);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, vineyardPanel);
-      } catch (RuntimeException e) {
-        Program.showException(e);
-      }
-    }
+    final VineyardPanel vineyardPanel = ProgramPanels.createVineyardPanel();
     try {
-      ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getVineyardPanel());
-    } catch (IllegalArgumentException e) {
-      final VineyardPanel vineyardPanel = ProgramPanels.createVineyardPanel();
       ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos165"), vineyardPanel);
       ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, null);
       Utils.addCloseButton(ProgramPanels.TABBED_PANE, vineyardPanel);
       ProgramPanels.TABBED_PANE.setSelectedComponent(vineyardPanel);
+    } catch (RuntimeException e) {
+      Program.showException(e);
     }
     updateMainPanel();
   }
 
   public void openCapacityPanel() {
-    if (ProgramPanels.getCapacityPanel() == null) {
-      try {
-        final CapacityPanel capacityPanel = ProgramPanels.createCapacityPanel();
-        ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos400"), capacityPanel);
-        ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, null);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, capacityPanel);
-      } catch (RuntimeException e) {
-        Program.showException(e);
-      }
-    }
+    final CapacityPanel capacityPanel = ProgramPanels.createCapacityPanel();
     try {
-      ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getCapacityPanel());
-    } catch (IllegalArgumentException e) {
-      final CapacityPanel capacityPanel = ProgramPanels.createCapacityPanel();
       ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos400"), capacityPanel);
       ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, null);
       Utils.addCloseButton(ProgramPanels.TABBED_PANE, capacityPanel);
       ProgramPanels.TABBED_PANE.setSelectedComponent(capacityPanel);
+    } catch (RuntimeException e) {
+      Program.showException(e);
     }
     updateMainPanel();
   }
 
   public void openCellChooserPanel(IPlace iPlace) {
     final int selectedTabIndex = ProgramPanels.getSelectedTabIndex() + 1;
-    if (ProgramPanels.getCellChoosePanel() == null) {
-      try {
-        final CellarOrganizerPanel chooseCellPanel = ProgramPanels.createChooseCellPanel(iPlace);
-        ProgramPanels.TABBED_PANE.insertTab(Program.getLabel("Main.ChooseCell"), null, chooseCellPanel, null, selectedTabIndex);
-        ProgramPanels.TABBED_PANE.setIconAt(selectedTabIndex, MyCellarImage.PLACE);
-        Utils.addCloseButton(ProgramPanels.TABBED_PANE, chooseCellPanel, ProgramPanels.getSelectedTabIndex());
-      } catch (RuntimeException e) {
-        Program.showException(e);
-      }
-    }
+    final CellarOrganizerPanel chooseCellPanel = ProgramPanels.createChooseCellPanel(iPlace);
     try {
-      ProgramPanels.TABBED_PANE.setSelectedComponent(ProgramPanels.getCellChoosePanel());
-      ProgramPanels.getCellChoosePanel().setIPlace(iPlace);
-    } catch (IllegalArgumentException e) {
-      final CellarOrganizerPanel chooseCellPanel = ProgramPanels.createChooseCellPanel(iPlace);
       ProgramPanels.TABBED_PANE.insertTab(Program.getLabel("Main.ChooseCell"), null, chooseCellPanel, null, selectedTabIndex);
       ProgramPanels.TABBED_PANE.setIconAt(selectedTabIndex, MyCellarImage.PLACE);
       Utils.addCloseButton(ProgramPanels.TABBED_PANE, chooseCellPanel, ProgramPanels.getSelectedTabIndex());
       ProgramPanels.TABBED_PANE.setSelectedComponent(chooseCellPanel);
+    } catch (RuntimeException e) {
+      Program.showException(e);
     }
     updateMainPanel();
   }
@@ -1314,11 +1283,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getAddVin() == null) {
-        addTab(ProgramPanels.createAddVin(), LABEL, MyCellarImage.WINE);
-      }
-      selectOrAddTab(ProgramPanels.getAddVin(), LABEL, MyCellarImage.WINE);
-      ProgramPanels.getAddVin().reInit();
+      final AddVin addVin = ProgramPanels.createAddVin();
+      selectOrAddTab(addVin, LABEL, MyCellarImage.WINE);
+      addVin.reInit();
       updateMainPanel();
     }
   }
@@ -1334,10 +1301,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getCreerRangement() == null) {
-        addTab(ProgramPanels.createCreerRangement(), LABEL, MyCellarImage.PLACE);
-      }
-      selectOrAddTab(ProgramPanels.getAddVin(), LABEL, MyCellarImage.PLACE);
+      selectOrAddTab(ProgramPanels.createCreerRangement(), LABEL, MyCellarImage.PLACE);
       updateMainPanel();
     }
   }
@@ -1353,10 +1317,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getSupprimerRangement() == null) {
-        addTab(ProgramPanels.createSupprimerRangement(), LABEL, MyCellarImage.DELPLACE);
-      }
-      selectOrAddTab(ProgramPanels.getSupprimerRangement(), LABEL, MyCellarImage.DELPLACE);
+      selectOrAddTab(ProgramPanels.createSupprimerRangement(), LABEL, MyCellarImage.DELPLACE);
       updateMainPanel();
     }
   }
@@ -1372,11 +1333,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getModifierRangement() == null) {
-        addTab(ProgramPanels.createModifierRangement(), LABEL, MyCellarImage.MODIFYPLACE);
-      }
-      selectOrAddTab(ProgramPanels.getModifierRangement(), LABEL, MyCellarImage.MODIFYPLACE);
-      ProgramPanels.getModifierRangement().updateView();
+      final Creer_Rangement modifierRangement = ProgramPanels.createModifierRangement();
+      selectOrAddTab(modifierRangement, LABEL, MyCellarImage.MODIFYPLACE);
+      modifierRangement.updateView();
       updateMainPanel();
     }
   }
@@ -1392,10 +1351,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getSearch().isEmpty()) {
-        addTab(ProgramPanels.createSearch(), LABEL, MyCellarImage.SEARCH);
-      }
-      selectOrAddTab(ProgramPanels.getSearch().get(), LABEL, MyCellarImage.SEARCH);
+      selectOrAddTab(ProgramPanels.createSearch(), LABEL, MyCellarImage.SEARCH);
       updateMainPanel();
     }
   }
@@ -1411,10 +1367,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getCreerTableaux() == null) {
-        addTab(ProgramPanels.createCreerTableaux(), LABEL, MyCellarImage.TABLE);
-      }
-      selectOrAddTab(ProgramPanels.getCreerTableaux(), LABEL, MyCellarImage.TABLE);
+      selectOrAddTab(ProgramPanels.createCreerTableaux(), LABEL, MyCellarImage.TABLE);
       updateMainPanel();
     }
   }
@@ -1430,10 +1383,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getImporter() == null) {
-        addTab(ProgramPanels.createImporter(), LABEL, MyCellarImage.IMPORT);
-      }
-      selectOrAddTab(ProgramPanels.getImporter(), LABEL, MyCellarImage.IMPORT);
+      selectOrAddTab(ProgramPanels.createImporter(), LABEL, MyCellarImage.IMPORT);
       updateMainPanel();
     }
   }
@@ -1449,10 +1399,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getExport() == null) {
-        addTab(ProgramPanels.createExport(), LABEL, MyCellarImage.EXPORT);
-      }
-      selectOrAddTab(ProgramPanels.getExport(), LABEL, MyCellarImage.EXPORT);
+      selectOrAddTab(ProgramPanels.createExport(), LABEL, MyCellarImage.EXPORT);
       updateMainPanel();
     }
   }
@@ -1468,11 +1415,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getStat() == null) {
-        addTab(ProgramPanels.createStat(), LABEL, MyCellarImage.STATS);
-      }
-      selectOrAddTab(ProgramPanels.getStat(), LABEL, MyCellarImage.STATS);
-      ProgramPanels.getStat().updateView();
+      final Stat stat = ProgramPanels.createStat();
+      selectOrAddTab(stat, LABEL, MyCellarImage.STATS);
+      stat.updateView();
       updateMainPanel();
     }
   }
@@ -1487,11 +1432,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getShowHistory() == null) {
-        addTab(ProgramPanels.createShowHistory(), LABEL, null);
-      }
-      selectOrAddTab(ProgramPanels.getShowHistory(), LABEL, null);
-      ProgramPanels.getShowHistory().refresh();
+      final ShowHistory showHistory = ProgramPanels.createShowHistory();
+      selectOrAddTab(showHistory, LABEL, null);
+      showHistory.refresh();
       updateMainPanel();
     }
   }
@@ -1521,9 +1464,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     @Override
     public void actionPerformed(ActionEvent arg0) {
       openCapacityPanel();
-      if (ProgramPanels.getAddVin() != null) {
-        ProgramPanels.getAddVin().updateView();
-      }
+      ProgramPanels.createAddVin().updateView();
     }
   }
 
@@ -1538,10 +1479,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getShowFile() == null) {
-        addTab(ProgramPanels.createShowFile(), LABEL, MyCellarImage.SHOW);
-      }
-      selectOrAddTab(ProgramPanels.getShowFile(), LABEL, MyCellarImage.SHOW);
+      selectOrAddTab(ProgramPanels.createShowFile(), LABEL, MyCellarImage.SHOW);
       updateMainPanel();
     }
   }
@@ -1557,11 +1495,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getShowTrash() == null) {
-        addTab(ProgramPanels.createShowTrash(), LABEL, MyCellarImage.TRASH);
-      }
-      selectOrAddTab(ProgramPanels.getShowTrash(), LABEL, MyCellarImage.TRASH);
-      ProgramPanels.getShowTrash().updateView();
+      final ShowFile showTrash = ProgramPanels.createShowTrash();
+      selectOrAddTab(showTrash, LABEL, MyCellarImage.TRASH);
+      showTrash.updateView();
       updateMainPanel();
     }
   }
@@ -1577,10 +1513,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getCellarOrganizerPanel() == null) {
-        addTab(ProgramPanels.createCellarOrganizerPanel(), LABEL, MyCellarImage.PLACE);
-      }
-      selectOrAddTab(ProgramPanels.getCellarOrganizerPanel(), LABEL, MyCellarImage.PLACE);
+      selectOrAddTab(ProgramPanels.createCellarOrganizerPanel(), LABEL, MyCellarImage.PLACE);
       updateMainPanel();
     }
   }
@@ -1595,10 +1528,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (ProgramPanels.getParametres() == null) {
-        addTab(ProgramPanels.createParametres(), LABEL, MyCellarImage.PARAMETER);
-      }
-      selectOrAddTab(ProgramPanels.getParametres(), LABEL, MyCellarImage.PARAMETER);
+      selectOrAddTab(ProgramPanels.createParametres(), LABEL, MyCellarImage.PARAMETER);
       updateMainPanel();
     }
   }

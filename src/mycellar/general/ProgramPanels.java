@@ -31,6 +31,7 @@ import mycellar.vignobles.VineyardPanel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -69,8 +70,8 @@ import static mycellar.ScreenType.VIGNOBLES;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 27/10/21
+ * @version 1.0
+ * @since 29/12/21
  */
 public class ProgramPanels {
 
@@ -108,6 +109,7 @@ public class ProgramPanels {
         iUpdatable.updateView();
       }
     });
+    updateVisibility();
   }
 
   public static boolean isCutCopyPastTab() {
@@ -140,10 +142,6 @@ public class ProgramPanels {
     UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView());
   }
 
-  public static AddVin getAddVin() {
-    return (AddVin) OPENED_OBJECTS.get(ADDVIN);
-  }
-
   public static AddVin createAddVin() {
     AddVin addVin = (AddVin) OPENED_OBJECTS.get(ADDVIN);
     if (addVin == null) {
@@ -152,10 +150,6 @@ public class ProgramPanels {
       UPDATABLE_OBJECTS.put(ADDVIN, addVin);
     }
     return addVin;
-  }
-
-  public static Supprimer_Rangement getSupprimerRangement() {
-    return (Supprimer_Rangement) OPENED_OBJECTS.get(SUPPRIMER_RANGEMENT);
   }
 
   public static Supprimer_Rangement createSupprimerRangement() {
@@ -169,10 +163,6 @@ public class ProgramPanels {
     UPDATABLE_OBJECTS.remove(SUPPRIMER_RANGEMENT);
   }
 
-  public static Creer_Rangement getCreerRangement() {
-    return (Creer_Rangement) OPENED_OBJECTS.get(CREATE_PLACE);
-  }
-
   public static Creer_Rangement createCreerRangement() {
     Creer_Rangement creerRangement = (Creer_Rangement) OPENED_OBJECTS.get(CREATE_PLACE);
     if (creerRangement == null) {
@@ -180,10 +170,6 @@ public class ProgramPanels {
       OPENED_OBJECTS.put(CREATE_PLACE, creerRangement);
     }
     return creerRangement;
-  }
-
-  public static Creer_Rangement getModifierRangement() {
-    return (Creer_Rangement) OPENED_OBJECTS.get(MODIFY_PLACE);
   }
 
   public static Creer_Rangement createModifierRangement() {
@@ -206,36 +192,18 @@ public class ProgramPanels {
     return search;
   }
 
-  public static Creer_Tableaux getCreerTableaux() {
-    return (Creer_Tableaux) OPENED_OBJECTS.get(CREER_TABLEAU);
-  }
-
   public static Creer_Tableaux createCreerTableaux() {
     final Creer_Tableaux creerTableaux = (Creer_Tableaux) createOpenedObject(Creer_Tableaux.class, CREER_TABLEAU);
     UPDATABLE_OBJECTS.put(CREER_TABLEAU, creerTableaux);
     return creerTableaux;
   }
 
-  public static Importer getImporter() {
-    return (Importer) OPENED_OBJECTS.get(IMPORTER);
-  }
-
   public static Importer createImporter() {
-    final Importer importer = (Importer) createOpenedObject(Importer.class, IMPORTER);
-    return importer;
-  }
-
-  public static Export getExport() {
-    return (Export) OPENED_OBJECTS.get(EXPORT);
+    return (Importer) createOpenedObject(Importer.class, IMPORTER);
   }
 
   public static Export createExport() {
-    final Export export = (Export) createOpenedObject(Export.class, EXPORT);
-    return export;
-  }
-
-  public static Stat getStat() {
-    return (Stat) OPENED_OBJECTS.get(STATS);
+    return (Export) createOpenedObject(Export.class, EXPORT);
   }
 
   public static Stat createStat() {
@@ -244,45 +212,22 @@ public class ProgramPanels {
     return stat;
   }
 
-  public static ShowHistory getShowHistory() {
-    return (ShowHistory) OPENED_OBJECTS.get(HISTORY);
-  }
-
   public static ShowHistory createShowHistory() {
-    final ShowHistory showHistory = (ShowHistory) createOpenedObject(ShowHistory.class, HISTORY);
-    return showHistory;
-  }
-
-  public static VineyardPanel getVineyardPanel() {
-    return (VineyardPanel) OPENED_OBJECTS.get(VIGNOBLES);
-  }
-
-  public static CapacityPanel getCapacityPanel() {
-    return (CapacityPanel) OPENED_OBJECTS.get(CAPACITY);
+    return (ShowHistory) createOpenedObject(ShowHistory.class, HISTORY);
   }
 
   public static VineyardPanel createVineyardPanel() {
-    final VineyardPanel vineyardPanel = (VineyardPanel) createOpenedObject(VineyardPanel.class, VIGNOBLES);
-    return vineyardPanel;
+    return (VineyardPanel) createOpenedObject(VineyardPanel.class, VIGNOBLES);
   }
 
   public static CapacityPanel createCapacityPanel() {
-    final CapacityPanel capacityPanel = (CapacityPanel) createOpenedObject(CapacityPanel.class, CAPACITY);
-    return capacityPanel;
-  }
-
-  public static ShowFile getShowFile() {
-    return (ShowFile) OPENED_OBJECTS.get(SHOW_FILE);
+    return (CapacityPanel) createOpenedObject(CapacityPanel.class, CAPACITY);
   }
 
   public static ShowFile createShowFile() {
     final ShowFile showFile = (ShowFile) createOpenedObject(ShowFile.class, SHOW_FILE);
     UPDATABLE_OBJECTS.put(SHOW_FILE, showFile);
     return showFile;
-  }
-
-  public static ShowFile getShowTrash() {
-    return (ShowFile) OPENED_OBJECTS.get(SHOW_TRASH);
   }
 
   public static ShowFile createShowTrash() {
@@ -295,10 +240,6 @@ public class ProgramPanels {
     return showFile;
   }
 
-  public static ShowFile getShowWorksheet() {
-    return (ShowFile) OPENED_OBJECTS.get(SHOW_WORKSHEET);
-  }
-
   public static ShowFile createShowWorksheet() {
     ShowFile showFile = (ShowFile) OPENED_OBJECTS.get(SHOW_WORKSHEET);
     if (showFile == null) {
@@ -307,10 +248,6 @@ public class ProgramPanels {
       UPDATABLE_OBJECTS.put(SHOW_WORKSHEET, showFile);
     }
     return showFile;
-  }
-
-  public static ShowFile getShowErrors() {
-    return (ShowFile) OPENED_OBJECTS.get(SHOW_ERRORS);
   }
 
   public static ShowFile createShowErrors() {
@@ -323,31 +260,18 @@ public class ProgramPanels {
     return showFile;
   }
 
-  public static CellarOrganizerPanel getCellarOrganizerPanel() {
-    return (CellarOrganizerPanel) OPENED_OBJECTS.get(CELL_ORGANIZER);
-  }
-
   public static CellarOrganizerPanel createCellarOrganizerPanel() {
     final CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) createOpenedObject(CellarOrganizerPanel.class, CELL_ORGANIZER);
     UPDATABLE_OBJECTS.put(CELL_ORGANIZER, cellarOrganizerPanel);
     return cellarOrganizerPanel;
   }
 
-  public static Parametres getParametres() {
-    return (Parametres) OPENED_OBJECTS.get(PARAMETRES);
-  }
-
   public static Parametres createParametres() {
-    final Parametres parametres = (Parametres) createOpenedObject(Parametres.class, PARAMETRES);
-    return parametres;
+    return (Parametres) createOpenedObject(Parametres.class, PARAMETRES);
   }
 
   public static void deleteParametres() {
     OPENED_OBJECTS.remove(PARAMETRES);
-  }
-
-  public static CellarOrganizerPanel getCellChoosePanel() {
-    return (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL);
   }
 
   public static CellarOrganizerPanel createChooseCellPanel(IPlace iPlace) {
@@ -380,34 +304,38 @@ public class ProgramPanels {
   }
 
   public static void showBottle(MyCellarObject myCellarObject, boolean edit) {
-    for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
-      Component tab = TABBED_PANE.getComponentAt(i);
-      if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(myCellarObject)) {
-        TABBED_PANE.setSelectedIndex(i);
-        return;
+    SwingUtilities.invokeLater(() -> {
+      for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+        Component tab = TABBED_PANE.getComponentAt(i);
+        if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(myCellarObject)) {
+          TABBED_PANE.setSelectedIndex(i);
+          return;
+        }
       }
-    }
-    ManageBottle manage = new ManageBottle(myCellarObject);
-    manage.enableAll(edit);
-    UPDATABLE_BOTTLES.put(myCellarObject.getId(), manage);
-    String bottleName = myCellarObject.getNom();
-    if (bottleName.length() > 30) {
-      bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
-    }
-    TABBED_PANE.addTab(bottleName, MyCellarImage.WINE, manage);
-    TABBED_PANE.setSelectedIndex(TABBED_PANE.getTabCount() - 1);
-    Utils.addCloseButton(TABBED_PANE, manage);
-    Start.getInstance().updateMainPanel();
+      ManageBottle manage = new ManageBottle(myCellarObject);
+      manage.enableAll(edit);
+      UPDATABLE_BOTTLES.put(myCellarObject.getId(), manage);
+      String bottleName = myCellarObject.getNom();
+      if (bottleName.length() > 30) {
+        bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
+      }
+      TABBED_PANE.addTab(bottleName, MyCellarImage.WINE, manage);
+      TABBED_PANE.setSelectedIndex(TABBED_PANE.getTabCount() - 1);
+      Utils.addCloseButton(TABBED_PANE, manage);
+      Start.getInstance().updateMainPanel();
+    });
   }
 
   public static void removeBottleTab(Bouteille bottle) {
-    for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
-      Component tab = TABBED_PANE.getComponentAt(i);
-      if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
-        TABBED_PANE.removeTabAt(i);
-        return;
+    SwingUtilities.invokeLater(() -> {
+      for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+        Component tab = TABBED_PANE.getComponentAt(i);
+        if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
+          TABBED_PANE.removeTabAt(i);
+          return;
+        }
       }
-    }
+    });
   }
 
   public static void setSelectedPaneModified(boolean modify) {
@@ -439,30 +367,37 @@ public class ProgramPanels {
   }
 
   public static void selectOrAddTab(Component component, String tabLabel, Icon icon) {
-    try {
-      TABBED_PANE.setSelectedComponent(component);
-    } catch (IllegalArgumentException e) {
-      addTab(component, tabLabel, icon);
-      TABBED_PANE.setSelectedComponent(component);
-    }
+    SwingUtilities.invokeLater(() -> {
+      try {
+        TABBED_PANE.setSelectedComponent(component);
+      } catch (IllegalArgumentException e) {
+        addTab(component, tabLabel, icon);
+      }
+    });
   }
 
-  public static void addTab(Component component, String tabLabel, Icon icon) {
-    try {
-      TABBED_PANE.add(Program.getLabel(tabLabel, LabelProperty.SINGLE), component);
-      TABBED_PANE.setIconAt(TABBED_PANE.getTabCount() - 1, icon);
-      Utils.addCloseButton(TABBED_PANE, component);
-    } catch (RuntimeException e) {
-      Program.showException(e);
-    }
+  private static void addTab(Component component, String tabLabel, Icon icon) {
+    SwingUtilities.invokeLater(() -> {
+      try {
+        TABBED_PANE.addTab(Program.getLabel(tabLabel, LabelProperty.SINGLE), component);
+        TABBED_PANE.setIconAt(TABBED_PANE.getTabCount() - 1, icon);
+        Utils.addCloseButton(TABBED_PANE, component);
+        TABBED_PANE.setSelectedComponent(component);
+        updateVisibility();
+      } catch (RuntimeException e) {
+        Program.showException(e);
+      }
+    });
   }
 
   public static void updateVisibility() {
-    int count = TABBED_PANE.getTabCount();
-    PANEL_INFOS.setVisible(count == 0);
-    TABBED_PANE.setVisible(count > 0);
-    if (count == 0) {
-      PANEL_INFOS.refresh();
-    }
+    SwingUtilities.invokeLater(() -> {
+      int count = TABBED_PANE.getTabCount();
+      PANEL_INFOS.setVisible(count == 0);
+      TABBED_PANE.setVisible(count > 0);
+      if (count == 0) {
+        PANEL_INFOS.refresh();
+      }
+    });
   }
 }

@@ -26,16 +26,10 @@ public class OpenAddVinAction extends AbstractAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     SwingUtilities.invokeLater(() -> {
-      if (ProgramPanels.getAddVin() == null) {
-        final AddVin addVin = ProgramPanels.createAddVin();
-        ProgramPanels.TABBED_PANE.addTab(Program.getLabel("OpenVin.modify1Item", LabelProperty.SINGLE), MyCellarImage.WINE, addVin);
-        ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount() - 1);
-      }
-      final AddVin addVin = ProgramPanels.getAddVin();
+      final AddVin addVin = ProgramPanels.createAddVin();
       addVin.setBottles(listToModify);
 
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WINE);
-      // Seconde verification
       if (tabIndex != -1) {
         tabIndex = ProgramPanels.TABBED_PANE.indexOfComponent(addVin);
       }

@@ -150,7 +150,7 @@ public final class Program {
 
   public static void start() throws UnableToOpenFileException {
     Debug("===================================================");
-    Debug("Starting MyCellar version: " + VERSION + " Internal: " + INTERNAL_VERSION);
+    Debug("Starting MyCellar version: " + VERSION + " Internal: " + INTERNAL_VERSION + " " + System.getProperty("java.version"));
     // Initialisation du repertoire de travail
     getWorkDir(false);
     loadGlobalProperties();
@@ -384,10 +384,6 @@ public final class Program {
     String error = "";
     for (StackTraceElement s : st) {
       error = error.concat("\n" + s);
-    }
-
-    if (error.contains("BasicTabbedPaneUI.tabForCoordinate")) {
-      _bShowWindowErrorAndExit = false;
     }
 
     if (_bShowWindowErrorAndExit) {

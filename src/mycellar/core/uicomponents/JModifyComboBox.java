@@ -11,8 +11,8 @@ import java.awt.event.ItemEvent;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 22/10/21
+ * @version 0.6
+ * @since 29/12/21
  */
 
 public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
@@ -35,6 +35,12 @@ public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
         }
       }
     });
+  }
+
+  public void reset() {
+    if (getItemCount() > 0) {
+      setSelectedIndex(0);
+    }
   }
 
   public boolean isModified() {

@@ -74,28 +74,9 @@ public class PopupListener extends MouseAdapter {
         }
       }
     }
-    /*if (e.getButton() == MouseEvent.BUTTON1) {
-      if (jtf.isFocusable() && jtf.isEnabled()) {
-        jtf.requestFocus();
-        if (jtf.getSelectedText() == null) {
-          cut.setEnabled(false);
-          copy.setEnabled(false);
-        }
-        else {
-          cut.setEnabled(true);
-          copy.setEnabled(true);
-        }
-      }
-    }*/
   }
 
-  /**
-   * coller_actionPerformed: Couper
-   *
-   * @param e ActionEvent
-   */
   private void coller_actionPerformed(ActionEvent e) {
-
     if (textField instanceof JTextField) {
       JTextField jtf = (JTextField) textField;
       jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.paste() + jtf.getText().substring(jtf.getSelectionEnd()));
@@ -105,11 +86,6 @@ public class PopupListener extends MouseAdapter {
     }
   }
 
-  /**
-   * couper_actionPerformed: Couper
-   *
-   * @param e ActionEvent
-   */
   private void couper_actionPerformed(ActionEvent e) {
     String txt = "";
     if (textField instanceof JTextField) {
@@ -125,11 +101,6 @@ public class PopupListener extends MouseAdapter {
     Program.CLIPBOARD.copy(txt);
   }
 
-  /**
-   * copier_actionPerformed: Copier
-   *
-   * @param e ActionEvent
-   */
   private void copier_actionPerformed(ActionEvent e) {
     String txt = "";
     if (textField instanceof JTextField) {

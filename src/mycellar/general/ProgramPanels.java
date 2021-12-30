@@ -21,6 +21,7 @@ import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
+import mycellar.core.MyCellarSwingWorker;
 import mycellar.importer.Importer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
@@ -31,7 +32,6 @@ import mycellar.vignobles.VineyardPanel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -70,8 +70,8 @@ import static mycellar.ScreenType.VIGNOBLES;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 29/12/21
+ * @version 1.1
+ * @since 30/12/21
  */
 public class ProgramPanels {
 
@@ -99,17 +99,22 @@ public class ProgramPanels {
   }
 
   public static void updateSelectedTab() {
-    UPDATABLE_OBJECTS.forEach((s, iUpdatable) -> {
-      if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
-        iUpdatable.updateView();
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        UPDATABLE_OBJECTS.forEach((s, iUpdatable) -> {
+          if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
+            iUpdatable.updateView();
+          }
+        });
+        UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> {
+          if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
+            iUpdatable.updateView();
+          }
+        });
+        updateVisibility();
       }
-    });
-    UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> {
-      if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
-        iUpdatable.updateView();
-      }
-    });
-    updateVisibility();
+    }.execute();
   }
 
   public static boolean isCutCopyPastTab() {
@@ -127,8 +132,13 @@ public class ProgramPanels {
   }
 
   public static void updateAllPanels() {
-    UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView());
-    UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView());
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView());
+        UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView());
+      }
+    }.execute();
   }
 
   public static void updateManagePlacePanel() {
@@ -304,38 +314,44 @@ public class ProgramPanels {
   }
 
   public static void showBottle(MyCellarObject myCellarObject, boolean edit) {
-    SwingUtilities.invokeLater(() -> {
-      for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
-        Component tab = TABBED_PANE.getComponentAt(i);
-        if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(myCellarObject)) {
-          TABBED_PANE.setSelectedIndex(i);
-          return;
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+          Component tab = TABBED_PANE.getComponentAt(i);
+          if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(myCellarObject)) {
+            TABBED_PANE.setSelectedIndex(i);
+            return;
+          }
         }
+        ManageBottle manage = new ManageBottle(myCellarObject);
+        manage.enableAll(edit);
+        UPDATABLE_BOTTLES.put(myCellarObject.getId(), manage);
+        String bottleName = myCellarObject.getNom();
+        if (bottleName.length() > 30) {
+          bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
+        }
+        TABBED_PANE.addTab(bottleName, MyCellarImage.WINE, manage);
+        TABBED_PANE.setSelectedIndex(TABBED_PANE.getTabCount() - 1);
+        Utils.addCloseButton(TABBED_PANE, manage);
+        Start.getInstance().updateMainPanel();
       }
-      ManageBottle manage = new ManageBottle(myCellarObject);
-      manage.enableAll(edit);
-      UPDATABLE_BOTTLES.put(myCellarObject.getId(), manage);
-      String bottleName = myCellarObject.getNom();
-      if (bottleName.length() > 30) {
-        bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
-      }
-      TABBED_PANE.addTab(bottleName, MyCellarImage.WINE, manage);
-      TABBED_PANE.setSelectedIndex(TABBED_PANE.getTabCount() - 1);
-      Utils.addCloseButton(TABBED_PANE, manage);
-      Start.getInstance().updateMainPanel();
-    });
+    }.execute();
   }
 
   public static void removeBottleTab(Bouteille bottle) {
-    SwingUtilities.invokeLater(() -> {
-      for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
-        Component tab = TABBED_PANE.getComponentAt(i);
-        if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
-          TABBED_PANE.removeTabAt(i);
-          return;
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+          Component tab = TABBED_PANE.getComponentAt(i);
+          if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
+            TABBED_PANE.removeTabAt(i);
+            return;
+          }
         }
       }
-    });
+    }.execute();
   }
 
   public static void setSelectedPaneModified(boolean modify) {
@@ -352,52 +368,64 @@ public class ProgramPanels {
   }
 
   private static void setPaneModified(int index, boolean modify) {
-    String title = TABBED_PANE.getTitleAt(index);
-    if (modify) {
-      if (!title.endsWith(STAR)) {
-        TABBED_PANE.setTitleAt(index, title + STAR);
-        TABBED_PANE.updateUI();
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        if (TABBED_PANE.getTabCount() <= index) {
+          return;
+        }
+        String title = TABBED_PANE.getTitleAt(index);
+        if (modify) {
+          if (!title.endsWith(STAR)) {
+            TABBED_PANE.setTitleAt(index, title + STAR);
+            TABBED_PANE.updateUI();
+          }
+        } else {
+          if (title.endsWith(STAR)) {
+            title = title.substring(0, title.length() - 1);
+          }
+          TABBED_PANE.setTitleAt(index, title);
+        }
       }
-    } else {
-      if (title.endsWith(STAR)) {
-        title = title.substring(0, title.length() - 1);
-      }
-      TABBED_PANE.setTitleAt(index, title);
-    }
+    }.execute();
   }
 
   public static void selectOrAddTab(Component component, String tabLabel, Icon icon) {
-    SwingUtilities.invokeLater(() -> {
-      try {
-        TABBED_PANE.setSelectedComponent(component);
-      } catch (IllegalArgumentException e) {
-        addTab(component, tabLabel, icon);
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        try {
+          TABBED_PANE.setSelectedComponent(component);
+        } catch (IllegalArgumentException e) {
+          addTab(component, tabLabel, icon);
+        }
       }
-    });
+    }.execute();
   }
 
   private static void addTab(Component component, String tabLabel, Icon icon) {
-    SwingUtilities.invokeLater(() -> {
-      try {
-        TABBED_PANE.addTab(Program.getLabel(tabLabel, LabelProperty.SINGLE), component);
-        TABBED_PANE.setIconAt(TABBED_PANE.getTabCount() - 1, icon);
-        Utils.addCloseButton(TABBED_PANE, component);
-        TABBED_PANE.setSelectedComponent(component);
-        updateVisibility();
-      } catch (RuntimeException e) {
-        Program.showException(e);
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        try {
+          TABBED_PANE.addTab(Program.getLabel(tabLabel, LabelProperty.SINGLE), component);
+          TABBED_PANE.setIconAt(TABBED_PANE.getTabCount() - 1, icon);
+          Utils.addCloseButton(TABBED_PANE, component);
+          TABBED_PANE.setSelectedComponent(component);
+          updateVisibility();
+        } catch (RuntimeException e) {
+          Program.showException(e);
+        }
       }
-    });
+    }.execute();
   }
 
   public static void updateVisibility() {
-    SwingUtilities.invokeLater(() -> {
-      int count = TABBED_PANE.getTabCount();
-      PANEL_INFOS.setVisible(count == 0);
-      TABBED_PANE.setVisible(count > 0);
-      if (count == 0) {
-        PANEL_INFOS.refresh();
-      }
-    });
+    int count = TABBED_PANE.getTabCount();
+    PANEL_INFOS.setVisible(count == 0);
+    TABBED_PANE.setVisible(count > 0);
+    if (count == 0) {
+      PANEL_INFOS.refresh();
+    }
   }
 }

@@ -31,7 +31,7 @@ public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
       if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
         if (active && listenerEnable) {
           modified = true;
-          //ProgramPanels.setSelectedPaneModified(true);
+          ProgramPanels.setSelectedPaneModified(true);
         }
       }
     });

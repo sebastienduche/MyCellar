@@ -38,12 +38,16 @@ public final class OpenWorkSheetAction extends MyCellarAction {
       final ShowFile showWorksheet = ProgramPanels.createShowWorksheet();
       showWorksheet.updateView();
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK);
+      final String label = Program.getLabel(LABEL);
       if (tabIndex != -1) {
-        ProgramPanels.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel(LABEL));
+        ProgramPanels.TABBED_PANE.setTitleAt(tabIndex, label);
         ProgramPanels.TABBED_PANE.setSelectedIndex(tabIndex);
+        ProgramPanels.updateTabLabel(tabIndex, label);
       } else {
-        ProgramPanels.TABBED_PANE.addTab(Program.getLabel(LABEL), MyCellarImage.WORK, showWorksheet);
-        ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount() - 1);
+        ProgramPanels.TABBED_PANE.addTab(label, MyCellarImage.WORK, showWorksheet);
+        final int index = ProgramPanels.TABBED_PANE.getTabCount() - 1;
+        ProgramPanels.TABBED_PANE.setSelectedIndex(index);
+        ProgramPanels.addTabLabel(index, label);
       }
 
       Utils.addCloseButton(ProgramPanels.TABBED_PANE, showWorksheet);

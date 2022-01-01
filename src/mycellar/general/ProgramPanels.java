@@ -35,10 +35,13 @@ import javax.swing.JTabbedPane;
 import java.awt.Component;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.STAR;
@@ -46,7 +49,11 @@ import static mycellar.ProgramConstants.THREE_DOTS;
 import static mycellar.ScreenType.ADDVIN;
 import static mycellar.ScreenType.CAPACITY;
 import static mycellar.ScreenType.CELL_ORGANIZER;
-import static mycellar.ScreenType.CHOOSE_CELL;
+import static mycellar.ScreenType.CHOOSE_CELL0;
+import static mycellar.ScreenType.CHOOSE_CELL1;
+import static mycellar.ScreenType.CHOOSE_CELL2;
+import static mycellar.ScreenType.CHOOSE_CELL3;
+import static mycellar.ScreenType.CHOOSE_CELL4;
 import static mycellar.ScreenType.CREATE_PLACE;
 import static mycellar.ScreenType.CREER_TABLEAU;
 import static mycellar.ScreenType.EXPORT;
@@ -70,13 +77,14 @@ import static mycellar.ScreenType.VIGNOBLES;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 30/12/21
+ * @version 1.2
+ * @since 01/01/22
  */
 public class ProgramPanels {
 
   public static final PanelInfos PANEL_INFOS = new PanelInfos();
   public static final JTabbedPane TABBED_PANE = new JTabbedPane();
+  private static final List<TabLabel> TAB_LABELS = new ArrayList<>();
 
   private static final Map<ScreenType, IMyCellar> OPENED_OBJECTS = new EnumMap<>(ScreenType.class);
   private static final Map<ScreenType, IUpdatable> UPDATABLE_OBJECTS = new EnumMap<>(ScreenType.class);
@@ -285,18 +293,71 @@ public class ProgramPanels {
   }
 
   public static CellarOrganizerPanel createChooseCellPanel(IPlace iPlace) {
-    CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL);
+    CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL0);
     if (cellarOrganizerPanel == null) {
       cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
-      OPENED_OBJECTS.put(CHOOSE_CELL, cellarOrganizerPanel);
-      UPDATABLE_OBJECTS.put(CHOOSE_CELL, cellarOrganizerPanel);
+      OPENED_OBJECTS.put(CHOOSE_CELL0, cellarOrganizerPanel);
+      UPDATABLE_OBJECTS.put(CHOOSE_CELL0, cellarOrganizerPanel);
+      return cellarOrganizerPanel;
     }
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL1);
+    if (cellarOrganizerPanel == null) {
+      cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
+      OPENED_OBJECTS.put(CHOOSE_CELL1, cellarOrganizerPanel);
+      UPDATABLE_OBJECTS.put(CHOOSE_CELL1, cellarOrganizerPanel);
+      return cellarOrganizerPanel;
+    }
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL2);
+    if (cellarOrganizerPanel == null) {
+      cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
+      OPENED_OBJECTS.put(CHOOSE_CELL2, cellarOrganizerPanel);
+      UPDATABLE_OBJECTS.put(CHOOSE_CELL2, cellarOrganizerPanel);
+      return cellarOrganizerPanel;
+    }
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL3);
+    if (cellarOrganizerPanel == null) {
+      cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
+      OPENED_OBJECTS.put(CHOOSE_CELL3, cellarOrganizerPanel);
+      UPDATABLE_OBJECTS.put(CHOOSE_CELL3, cellarOrganizerPanel);
+      return cellarOrganizerPanel;
+    }
+    cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
+    OPENED_OBJECTS.put(CHOOSE_CELL4, cellarOrganizerPanel);
+    UPDATABLE_OBJECTS.put(CHOOSE_CELL4, cellarOrganizerPanel);
     return cellarOrganizerPanel;
   }
 
-  public static void deleteChooseCellPanel() {
-    OPENED_OBJECTS.remove(CHOOSE_CELL);
-    UPDATABLE_OBJECTS.remove(CHOOSE_CELL);
+  public static void deleteChooseCellPanel(IPlace iPlace) {
+    CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL0);
+    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+      OPENED_OBJECTS.remove(CHOOSE_CELL0);
+      UPDATABLE_OBJECTS.remove(CHOOSE_CELL0);
+      return;
+    }
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL1);
+    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+      OPENED_OBJECTS.remove(CHOOSE_CELL1);
+      UPDATABLE_OBJECTS.remove(CHOOSE_CELL1);
+      return;
+    }
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL2);
+    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+      OPENED_OBJECTS.remove(CHOOSE_CELL2);
+      UPDATABLE_OBJECTS.remove(CHOOSE_CELL2);
+      return;
+    }
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL3);
+    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+      OPENED_OBJECTS.remove(CHOOSE_CELL3);
+      UPDATABLE_OBJECTS.remove(CHOOSE_CELL3);
+      return;
+    }
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL4);
+    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+      OPENED_OBJECTS.remove(CHOOSE_CELL4);
+      UPDATABLE_OBJECTS.remove(CHOOSE_CELL4);
+      return;
+    }
   }
 
   private static IMyCellar createOpenedObject(Class<?> className, ScreenType id) {
@@ -332,7 +393,9 @@ public class ProgramPanels {
           bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
         }
         TABBED_PANE.addTab(bottleName, MyCellarImage.WINE, manage);
-        TABBED_PANE.setSelectedIndex(TABBED_PANE.getTabCount() - 1);
+        final int index = TABBED_PANE.getTabCount() - 1;
+        TABBED_PANE.setSelectedIndex(index);
+        addTabLabel(index, bottleName);
         Utils.addCloseButton(TABBED_PANE, manage);
         Start.getInstance().updateMainPanel();
       }
@@ -346,7 +409,7 @@ public class ProgramPanels {
         for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
           Component tab = TABBED_PANE.getComponentAt(i);
           if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
-            TABBED_PANE.removeTabAt(i);
+            removeTabAt(i);
             return;
           }
         }
@@ -374,18 +437,17 @@ public class ProgramPanels {
         if (TABBED_PANE.getTabCount() <= index) {
           return;
         }
-        String title = TABBED_PANE.getTitleAt(index);
-        if (modify) {
-          if (!title.endsWith(STAR)) {
-            TABBED_PANE.setTitleAt(index, title + STAR);
-            TABBED_PANE.updateUI();
-          }
-        } else {
-          if (title.endsWith(STAR)) {
-            title = title.substring(0, title.length() - 1);
-          }
-          TABBED_PANE.setTitleAt(index, title);
+        final List<TabLabel> collect = TAB_LABELS.stream()
+            .filter(tabLabel -> tabLabel.getIndex() == index)
+            .collect(Collectors.toList());
+        if (collect.isEmpty() || collect.get(0).isModified() == modify) {
+          return;
         }
+        Program.Debug("ProgramPanels: " + index + " " + modify);
+        final TabLabel tabLabel = collect.get(0);
+        tabLabel.setModified(modify);
+        TABBED_PANE.setTitleAt(index, tabLabel.getLabel());
+        TABBED_PANE.updateUI();
       }
     }.execute();
   }
@@ -408,8 +470,11 @@ public class ProgramPanels {
       @Override
       protected void done() {
         try {
-          TABBED_PANE.addTab(Program.getLabel(tabLabel, LabelProperty.SINGLE), component);
-          TABBED_PANE.setIconAt(TABBED_PANE.getTabCount() - 1, icon);
+          final String label = Program.getLabel(tabLabel, LabelProperty.SINGLE);
+          TABBED_PANE.addTab(label, component);
+          final int index = TABBED_PANE.getTabCount() - 1;
+          TABBED_PANE.setIconAt(index, icon);
+          addTabLabel(index, label);
           Utils.addCloseButton(TABBED_PANE, component);
           TABBED_PANE.setSelectedComponent(component);
           updateVisibility();
@@ -426,6 +491,80 @@ public class ProgramPanels {
     TABBED_PANE.setVisible(count > 0);
     if (count == 0) {
       PANEL_INFOS.refresh();
+    }
+  }
+
+  public static void addTabLabel(int index, String label) {
+    TAB_LABELS.add(new TabLabel(index, label));
+  }
+
+  public static void insertTabLabel(int index, String label) {
+    TAB_LABELS.stream().filter(tabLabel -> tabLabel.getIndex() >= index).forEach(TabLabel::incrementIndex);
+    TAB_LABELS.add(new TabLabel(index, label));
+  }
+
+  public static void updateTabLabel(int index, String label) {
+    TAB_LABELS.stream()
+        .filter(tabLabel -> tabLabel.getIndex() == index)
+        .forEach(tabLabel -> tabLabel.setLabel(label));
+    TAB_LABELS.add(new TabLabel(index, label));
+  }
+
+  public static void clearTabLabels() {
+    TAB_LABELS.clear();
+  }
+
+  public static void removeSelectedTab() {
+    removeTabAt(TABBED_PANE.getSelectedIndex());
+  }
+
+  public static void removeTabAt(int index) {
+    TABBED_PANE.removeTabAt(index);
+    final List<TabLabel> tabLabels = TAB_LABELS.stream().filter(tabLabel -> tabLabel.getIndex() == index).collect(Collectors.toList());
+    TAB_LABELS.removeAll(tabLabels);
+    TAB_LABELS.stream().filter(tabLabel -> tabLabel.getIndex() > index).forEach(TabLabel::decrementIndex);
+  }
+
+  static class TabLabel {
+    private int index;
+    private String label;
+    private String modifiedLabel;
+    private boolean modified;
+
+    public TabLabel(int index, String label) {
+      this.index = index;
+      this.label = label;
+      modifiedLabel = label + STAR;
+      modified = false;
+    }
+
+    public int getIndex() {
+      return index;
+    }
+
+    public String getLabel() {
+      return modified ? modifiedLabel : label;
+    }
+
+    public void setLabel(String label) {
+      this.label = label;
+      modifiedLabel = label + STAR;
+    }
+
+    public boolean isModified() {
+      return modified;
+    }
+
+    public void setModified(boolean modified) {
+      this.modified = modified;
+    }
+
+    public void decrementIndex() {
+      index--;
+    }
+
+    public void incrementIndex() {
+      index++;
     }
   }
 }

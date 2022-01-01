@@ -30,8 +30,8 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 29/12/21
+ * @version 2.0
+ * @since 01/01/22
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -63,6 +63,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     preview.setMnemonic(previewChar);
     preview.addActionListener(this::preview_actionPerformed);
     chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
+    setModificationDetectionActive(false);
     initPlaceCombo();
     setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));
     setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
@@ -99,6 +100,7 @@ public final class PanelPlace extends JPanel implements IPlace {
       place.setSelectedItem(rangement);
     }
     managePlaceCombos();
+    setModificationDetectionActive(true);
   }
 
   private static void Debug(String sText) {
@@ -307,6 +309,13 @@ public final class PanelPlace extends JPanel implements IPlace {
     column.addItemListener(this::column_itemStateChanged);
   }
 
+  public void setModificationDetectionActive(boolean active) {
+    place.setActive(active);
+    numPlace.setActive(active);
+    line.setActive(active);
+    column.setActive(active);
+  }
+
   private boolean isListenersDisabled(ItemEvent e) {
     return !listenersEnabled || e.getStateChange() == ItemEvent.DESELECTED;
   }
@@ -475,13 +484,6 @@ public final class PanelPlace extends JPanel implements IPlace {
         Debug("Column_itemStateChanging... End");
       }
     }.execute();
-  }
-
-  public void setModifyActive(boolean enable) {
-    place.setActive(enable);
-    numPlace.setActive(enable);
-    line.setActive(enable);
-    column.setActive(enable);
   }
 
   public void enableSimplePlace(boolean enable) {

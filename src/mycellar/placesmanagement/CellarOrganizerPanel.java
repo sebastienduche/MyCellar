@@ -9,14 +9,14 @@ import mycellar.core.IMyCellar;
 import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
-import mycellar.core.uicomponents.MyCellarButton;
-import mycellar.core.uicomponents.MyCellarComboBox;
-import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.PanelCloseButton;
-import mycellar.core.uicomponents.TabEvent;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
@@ -68,8 +68,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.8
- * @since 21/10/21
+ * @version 3.9
+ * @since 01/01/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -281,7 +281,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
             .withColumn(selectedCell.getColumn())
             .build());
       }
-      ProgramPanels.deleteChooseCellPanel();
+      ProgramPanels.deleteChooseCellPanel(iPlace);
     }
     return true;
   }
@@ -295,8 +295,8 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     placePanel.removeAll();
   }
 
-  public void setIPlace(IPlace iPlace) {
-    this.iPlace = iPlace;
+  public IPlace getIPlace() {
+    return iPlace;
   }
 
   @Override

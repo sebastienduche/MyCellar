@@ -12,8 +12,14 @@
 <STRONG>Description :</STRONG><BR>
 Programme de gestion de Cave à vins.
 <HR>
-    <STRONG>Développements et corrections de la version 71 CO (release 4.3.5.3)</STRONG><BR>
+    <STRONG>Développements et corrections de la version 72 ?? (release 4.3.6.9)</STRONG><BR>
 </span>
+<UL>
+    <LI>All: Amélioration de la gestion des composants modifiés
+    <LI>All: Amélioration de la gestion du titre des onglets
+    </LI>
+</UL>
+<STRONG>Développements et corrections de la version 71 CO (release 4.3.5.3)</STRONG><BR></span>
 <UL>
     <LI>All: Quelques libellés de menus et boutons n'etaient pas mis à jour lors du changement de langue et lors du
         chargement
@@ -671,7 +677,8 @@ Programme de gestion de Cave à vins.
     <LI>AddVin:La modification d'un vin ne réinitialisait pas le nombre de bouteilles
     <LI>AddVin:Une erreur lors de la modification réinitialisait le titre de l'onglet et celui du bouton à tort
     <LI>AddVin:Le contrôle sur la validité des dates ne fonctionnait plus
-    <LI>AddVin:Une erreur sur le numero de colonne lors de la modification ne réactivait pas la liste des numéros de colonne
+    <LI>AddVin:Une erreur sur le numero de colonne lors de la modification ne réactivait pas la liste des numéros de
+        colonne
     <LI>AddVin:L'annulation du remplacement d'une bouteille réinitialisait à tort l'affichage
     <LI>AddVin:Des erreurs lors de la modification multiple de bouteilles réinitialisait à tort l'affichage
     <LI>AddVin:La modification multiple des valeurs 'Maturité', 'Parker', 'Appelation' n'était pas prise en compte
@@ -958,7 +965,8 @@ Programme de gestion de Cave à vins.
 <STRONG>Développements et corrections de la version 1.3a (release 1.1.0.2)</STRONG><BR>
 <UL>
     <LI>ShowFile: Il était impossible de rouvrir ShowFile lorsque l'on avait fermé la fenêtre par la croix X
-    <LI>ShowFile: Ajout d'un message indiquant que la sauvegarde a été effectué et grisage des boutons durant la sauvegarde
+    <LI>ShowFile: Ajout d'un message indiquant que la sauvegarde a été effectué et grisage des boutons durant la
+        sauvegarde
     <LI>ShowFile: Lorsque le fichier était sauvegardé plusieurs fois de suite, le contenu se trouvait multiplié par 2^n
     <LI>AddVin: Absence de contrôle en modification d'un vin vers une caisse sans saisir de numéro de rangement
     <LI>Rangement: Correction pour s'assurer que l'on ne dépasse pas la capacité du tableau lors du calcul de place
@@ -995,15 +1003,23 @@ Programme de gestion de Cave à vins.
 <STRONG>Développements et corrections de la version 1.2 (release 1.0.7.2)</STRONG><BR>
 <UL>
     <LI>AddVin: Possibilité d'ajouter plusieurs bouteilles côte à côte dans un rangement complexe
-    <LI>All: AMELIORATION MAJEURE : Adaptation du code pour que la liste des vins ne soit géré que par un seul objet statique et non plus une copie de la liste par rangement
-    <LI>Search: Modification de la recherche fullText pour permettre l'utilisation multiple des caractères générique. Implémentation avec Regex & Pattern
+    <LI>All: AMELIORATION MAJEURE : Adaptation du code pour que la liste des vins ne soit géré que par un seul objet
+        statique et non plus une copie de la liste par rangement
+    <LI>Search: Modification de la recherche fullText pour permettre l'utilisation multiple des caractères générique.
+        Implémentation avec Regex & Pattern
     <LI>Stats: Nouvelle implémentation de la gestion des décimales avec la Locale et BigDecimal
-    <LI>All: AMELIORATION MAJEURE : Implémentation de la sérialisation pour toutes les bouteilles : le fichier XML devient Backup : Enorme accélération du chargement (1sec pour charger 10000 bouteilles)
-    <LI>All: Nouvelle gestion des années : Un objet statique regroupe les années présentes dans le programme ainsi que le nombre de bouteilles liées à cette année. Meilleure gestion de la liste pour Stats & Search
-    <LI>All: Tous les textes et options sont gérés de façon centrale par Jakarta Commons Configuration au lieu du java.util.Properties avec une LinkedHashMap personalisée
-    <LI>All: Tests de charge : Performances (Ajout de 10000 bouteilles (8 sec), Suppression de 10000 bouteilles (1 min 25 sec au lieu de 1 min 31 sec), Recherche de 10000 bouteilles (1 min 20 au lieu de 1 min 50))
-    <LI>Start && Program : AMELIORATION MAJEURE : Fichier unique compressé regroupant tous les fichiers nécessaires à la gestion d'une cave
-    <LI>Search: Développement d'une recherche avancée : Possibilité d'utiliser les noms des champs (NAME, YEAR...) et de séparer chaque argument par AND ou OR
+    <LI>All: AMELIORATION MAJEURE : Implémentation de la sérialisation pour toutes les bouteilles : le fichier XML
+        devient Backup : Enorme accélération du chargement (1sec pour charger 10000 bouteilles)
+    <LI>All: Nouvelle gestion des années : Un objet statique regroupe les années présentes dans le programme ainsi que
+        le nombre de bouteilles liées à cette année. Meilleure gestion de la liste pour Stats & Search
+    <LI>All: Tous les textes et options sont gérés de façon centrale par Jakarta Commons Configuration au lieu du
+        java.util.Properties avec une LinkedHashMap personalisée
+    <LI>All: Tests de charge : Performances (Ajout de 10000 bouteilles (8 sec), Suppression de 10000 bouteilles (1 min
+        25 sec au lieu de 1 min 31 sec), Recherche de 10000 bouteilles (1 min 20 au lieu de 1 min 50))
+    <LI>Start && Program : AMELIORATION MAJEURE : Fichier unique compressé regroupant tous les fichiers nécessaires à la
+        gestion d'une cave
+    <LI>Search: Développement d'une recherche avancée : Possibilité d'utiliser les noms des champs (NAME, YEAR...) et de
+        séparer chaque argument par AND ou OR
     <LI>Start: Compatibilité assurée avec les versions précédentes
     <LI>Parametres: Possibilité de choisir entre les différents Look&Feel
     <LI>Export: Amélioration de l'export CSV pour la gestion des délimiteurs comme valeur
@@ -1027,7 +1043,9 @@ Programme de gestion de Cave à vins.
     <LI>Paramètres: Possibilité de vider les champs Other "Liste" ainsi que les alimenter automatiquement
     <LI>All: Corrections et améliorations mineures (Interface, Statistiques, Démarrage...)
     <LI>Stats: Correction du comptage du nombre de bouteilles après une modification
-    <LI>All: Tests de charge : Amélioration des performances (Ajout de 10000 bouteilles (6 sec au lieu de 7sec), Suppression de 10000 bouteilles (1 min 31 sec au lieu de 8 min 50 sec), Recherche de 10000 bouteilles (1 min 50 au lieu de 2 min 16)) et optimisation du code
+    <LI>All: Tests de charge : Amélioration des performances (Ajout de 10000 bouteilles (6 sec au lieu de 7sec),
+        Suppression de 10000 bouteilles (1 min 31 sec au lieu de 8 min 50 sec), Recherche de 10000 bouteilles (1 min 50
+        au lieu de 2 min 16)) et optimisation du code
     <LI>Importer: Suppression de quelques contrôles restrictifs inutiles pour plus de souplesse
     <LI>Stats: Amélioration de la prise en compte des spérateurs dans les nombres en fonction de la localisation
     <LI>Paramètres: Ajout du paramétrage de l'année de transformation et du siècle et Possibilité de désactiver le
@@ -1036,7 +1054,8 @@ Programme de gestion de Cave à vins.
     <LI>Stats: Ajout du prix moyen des bouteilles ainsi que la possibilité de l'afficher que les tranches de prix
         contenant des bouteilles
     <LI>Stats: Prise en compte des centimes dans les prix
-    <LI>Creer_Rangement, Search, Export : Possibilité de choisir un mode de fonctionnement par défaut via leur menu Options
+    <LI>Creer_Rangement, Search, Export : Possibilité de choisir un mode de fonctionnement par défaut via leur menu
+        Options
     <LI>AddVin: Ajout d'un contrôle d'année pour celles supérieures à l'année courante
     <LI>AddVin: Lors de l'ajout de plusieurs bouteilles avec un seul rangement, il n'y a plus de message de confirmation
         d'ajout de toutes les bouteilles au même endroit
@@ -1088,7 +1107,7 @@ Programme de gestion de Cave à vins.
         paramètre personnels)
     <LI>Rangement: Sérialisation de l'objet
     <LI>Start: Chargement des objets Sérialiser. Chargement du fichier Options.txt en cas de problème
-    <LI>Creer_Rangement: Interdire les caractères (\ / * : "? <    > | )
+    <LI>Creer_Rangement: Interdire les caractères (\ / * : "? < > | )
     <LI>Rangement: Fonction de tri de la liste des vins pour l'export
     <LI>AddVin: Utilisation de JFormattedTextfield pour le prix et JSpinner pour le nombre de bouteilles
     <LI>Importer: Vérifier que le nouveau nom saisi n'existe pas déjà. Mettre toutes les bouteilles dans cet emplacement
@@ -1101,7 +1120,8 @@ Programme de gestion de Cave à vins.
     <LI>Paramètres: mettre option pour réinitialiser "show next time"
     <LI>Start: Gestion du premier démarrage
     <LI>SplashScreen: Ajout de l'écran de démarrage
-    <LI>Message: Message pour confirmer la fermeture de AddVin si vin non ajouté (idem popur creer_rangement, modifier_rangement)
+    <LI>Message: Message pour confirmer la fermeture de AddVin si vin non ajouté (idem popur creer_rangement,
+        modifier_rangement)
     <LI>AddVin: en modification de bouteille, vérifier sélection automatique du rangement unique
     <LI>Rangement: Fonction d'ecriture XLS
     <LI>Start: Possibilité d'écrire un fichier XLS à chaque fermeture de programme si option.

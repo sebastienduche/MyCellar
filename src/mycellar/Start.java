@@ -92,8 +92,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.6
- * @since 29/12/21
+ * @version 30.7
+ * @since 01/01/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -922,7 +922,6 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     ProgramPanels.TABBED_PANE.addChangeListener((arg) -> {
       ProgramPanels.updateSelectedTab();
-      ProgramPanels.TABBED_PANE.getSelectedComponent();
     });
 
     menuQuit.addActionListener((e) -> quitter_actionPerformed());
@@ -997,15 +996,18 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   }
 
   void removeCurrentTab() {
-    ProgramPanels.TABBED_PANE.removeTabAt(ProgramPanels.TABBED_PANE.getSelectedIndex());
+    ProgramPanels.removeSelectedTab();
     updateMainPanel();
   }
 
   public void openVineyardPanel() {
     final VineyardPanel vineyardPanel = ProgramPanels.createVineyardPanel();
     try {
-      ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos165"), vineyardPanel);
-      ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, null);
+      final String label = Program.getLabel("Infos165");
+      final int index = ProgramPanels.TABBED_PANE.getTabCount() - 1;
+      ProgramPanels.TABBED_PANE.add(label, vineyardPanel);
+      ProgramPanels.TABBED_PANE.setIconAt(index, null);
+      ProgramPanels.addTabLabel(index, label);
       Utils.addCloseButton(ProgramPanels.TABBED_PANE, vineyardPanel);
       ProgramPanels.TABBED_PANE.setSelectedComponent(vineyardPanel);
     } catch (RuntimeException e) {
@@ -1017,8 +1019,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   public void openCapacityPanel() {
     final CapacityPanel capacityPanel = ProgramPanels.createCapacityPanel();
     try {
-      ProgramPanels.TABBED_PANE.add(Program.getLabel("Infos400"), capacityPanel);
-      ProgramPanels.TABBED_PANE.setIconAt(ProgramPanels.TABBED_PANE.getTabCount() - 1, null);
+      final int index = ProgramPanels.TABBED_PANE.getTabCount() - 1;
+      final String label = Program.getLabel("Infos400");
+      ProgramPanels.TABBED_PANE.add(label, capacityPanel);
+      ProgramPanels.TABBED_PANE.setIconAt(index, null);
+      ProgramPanels.addTabLabel(index, label);
       Utils.addCloseButton(ProgramPanels.TABBED_PANE, capacityPanel);
       ProgramPanels.TABBED_PANE.setSelectedComponent(capacityPanel);
     } catch (RuntimeException e) {
@@ -1031,8 +1036,10 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     final int selectedTabIndex = ProgramPanels.getSelectedTabIndex() + 1;
     final CellarOrganizerPanel chooseCellPanel = ProgramPanels.createChooseCellPanel(iPlace);
     try {
-      ProgramPanels.TABBED_PANE.insertTab(Program.getLabel("Main.ChooseCell"), null, chooseCellPanel, null, selectedTabIndex);
+      final String label = Program.getLabel("Main.ChooseCell");
+      ProgramPanels.TABBED_PANE.insertTab(label, null, chooseCellPanel, null, selectedTabIndex);
       ProgramPanels.TABBED_PANE.setIconAt(selectedTabIndex, MyCellarImage.PLACE);
+      ProgramPanels.insertTabLabel(selectedTabIndex, label);
       Utils.addCloseButton(ProgramPanels.TABBED_PANE, chooseCellPanel, ProgramPanels.getSelectedTabIndex());
       ProgramPanels.TABBED_PANE.setSelectedComponent(chooseCellPanel);
     } catch (RuntimeException e) {

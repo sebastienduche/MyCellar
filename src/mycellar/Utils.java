@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.uicomponents.JButtonTabComponent;
+import mycellar.general.ProgramPanels;
 
 import javax.swing.JTabbedPane;
 import java.awt.Component;
@@ -15,8 +16,8 @@ import java.awt.event.KeyEvent;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 21/10/21
+ * @version 0.6
+ * @since 01/01/22
  */
 public final class Utils {
 
@@ -45,6 +46,7 @@ public final class Utils {
 
             // Un onglet est actif, supprimer le composant
             tabbedPane.remove(component);
+            ProgramPanels.removeTabAt(tabbedPane.getSelectedIndex());
             if (indexToGoBack != -1 && tabbedPane.getTabCount() > indexToGoBack) {
               tabbedPane.setSelectedIndex(indexToGoBack);
             }

@@ -24,12 +24,16 @@ public class OpenShowErrorsAction extends AbstractAction {
       final ShowFile showErrors = ProgramPanels.createShowErrors();
       showErrors.updateView();
       int tabIndex = ProgramPanels.findTab(MyCellarImage.ERROR);
+      final String label = Program.getLabel("ShowFile.ErrorTitle");
       if (tabIndex != -1) {
-        ProgramPanels.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel("ShowFile.ErrorTitle"));
+        ProgramPanels.TABBED_PANE.setTitleAt(tabIndex, label);
         ProgramPanels.TABBED_PANE.setSelectedIndex(tabIndex);
+        ProgramPanels.updateTabLabel(tabIndex, label);
       } else {
-        ProgramPanels.TABBED_PANE.addTab(Program.getLabel("ShowFile.ErrorTitle"), MyCellarImage.ERROR, showErrors);
-        ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount() - 1);
+        ProgramPanels.TABBED_PANE.addTab(label, MyCellarImage.ERROR, showErrors);
+        final int index = ProgramPanels.TABBED_PANE.getTabCount() - 1;
+        ProgramPanels.TABBED_PANE.setSelectedIndex(index);
+        ProgramPanels.addTabLabel(index, label);
       }
 
       Utils.addCloseButton(ProgramPanels.TABBED_PANE, showErrors);

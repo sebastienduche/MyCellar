@@ -44,8 +44,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.1
- * @since 29/12/21
+ * @version 30.0
+ * @since 01/01/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -63,13 +63,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     myCellarObject = null;
     panelGeneral.setMyCellarObject(null);
     addButton = new MyCellarButton(LabelType.INFO, "071", new AddAction());
+    addButton.setMnemonic(ajouterChar);
     cancelButton = new MyCellarButton(LabelType.INFO, "055", new CancelAction());
 
-    panelPlace.setModifyActive(true);
-    panelGeneral.setModifyActive(true);
-    panelWineAttribute.setModifyActive();
-    commentTextArea.setActive(true);
-    addButton.setMnemonic(ajouterChar);
     panelGeneral.initValues();
     panelWineAttribute.initValues();
 
@@ -83,6 +79,10 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     setLayout(new BorderLayout());
     add(new PanelMain(true), BorderLayout.CENTER);
 
+    panelPlace.setModificationDetectionActive(true);
+    panelGeneral.setModificationDetectionActive(true);
+    panelWineAttribute.setModificationDetectionActive(true);
+    commentTextArea.setActive(true);
     setVisible(true);
     Debug("Constructor End");
   }
@@ -736,7 +736,10 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     if (listVin != null) {
       remove(listVin);
       listVin = null;
-      ProgramPanels.TABBED_PANE.setTitleAt(ProgramPanels.TABBED_PANE.getSelectedIndex(), Program.getLabel("Main.tabAdd", A_SINGLE));
+      final int selectedIndex = ProgramPanels.getSelectedTabIndex();
+      final String label = Program.getLabel("Main.tabAdd", A_SINGLE);
+      ProgramPanels.TABBED_PANE.setTitleAt(selectedIndex, label);
+      ProgramPanels.updateTabLabel(selectedIndex, label);
     }
     panelGeneral.setSeveralItems(severalItems);
     panelPlace.resetValues();

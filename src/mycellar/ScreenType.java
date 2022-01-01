@@ -7,8 +7,8 @@ package mycellar;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 03/11/20
+ * @version 0.2
+ * @since 01/01/22
  */
 public enum ScreenType {
   EXPORT,
@@ -22,7 +22,11 @@ public enum ScreenType {
   VIGNOBLES,
   CREATE_PLACE,
   MODIFY_PLACE,
-  CHOOSE_CELL,
+  CHOOSE_CELL0,
+  CHOOSE_CELL1,
+  CHOOSE_CELL2,
+  CHOOSE_CELL3,
+  CHOOSE_CELL4,
   CELL_ORGANIZER,
   SUPPRIMER_RANGEMENT,
   STATS,

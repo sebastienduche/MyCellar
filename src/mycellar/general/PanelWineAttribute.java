@@ -4,17 +4,17 @@ import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
+import mycellar.core.LabelProperty;
+import mycellar.core.LabelType;
+import mycellar.core.MyCellarObject;
+import mycellar.core.MyCellarSettings;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.JModifyFormattedTextField;
 import mycellar.core.uicomponents.JModifyTextField;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.MyCellarObject;
-import mycellar.core.MyCellarSettings;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.uicomponents.PopupListener;
-import mycellar.core.common.bottle.BottleColor;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
@@ -35,8 +35,8 @@ import static mycellar.ProgramConstants.EURO;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 22/10/21
+ * @version 0.7
+ * @since 01/01/22
  */
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;
@@ -52,6 +52,7 @@ public final class PanelWineAttribute extends JPanel {
   private final JModifyComboBox<BottlesStatus> statusList = new JModifyComboBox<>();
 
   public PanelWineAttribute() {
+    setModificationDetectionActive(false);
     colorList.addItem(BottleColor.NONE);
     colorList.addItem(BottleColor.RED);
     colorList.addItem(BottleColor.PINK);
@@ -80,9 +81,19 @@ public final class PanelWineAttribute extends JPanel {
     add(new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarManageBottles.lastModified"), "wrap");
     add(statusList, "width min(150,30%)");
     add(lastModified);
+    setModificationDetectionActive(true);
+  }
+
+  public void setModificationDetectionActive(boolean active) {
+    price.setActive(active);
+    maturity.setActive(active);
+    parker.setActive(active);
+    colorList.setActive(active);
+    statusList.setActive(active);
   }
 
   public void initializeExtraProperties(MyCellarObject myCellarObject, boolean m_bmulti, boolean isEditionMode) {
+    setModificationDetectionActive(false);
     enableAll(true, m_bmulti, isEditionMode);
     nbItems.setValue(1);
     nbItems.setEnabled(false);
@@ -94,6 +105,7 @@ public final class PanelWineAttribute extends JPanel {
       parker.setText(bottle.getParker());
       colorList.setSelectedItem(BottleColor.getColor(bottle.getColor()));
     }
+    setModificationDetectionActive(true);
   }
 
   public void enableAll(boolean enable, boolean multi, boolean isEditionMode) {
@@ -106,18 +118,12 @@ public final class PanelWineAttribute extends JPanel {
   }
 
   public void clearValues() {
+    setModificationDetectionActive(false);
     parker.setText("");
     price.setText("");
     maturity.setText("");
     nbItems.setValue(1);
-  }
-
-  public void setModifyActive() {
-    price.setActive(true);
-    maturity.setActive(true);
-    parker.setActive(true);
-    colorList.setActive(true);
-    statusList.setActive(true);
+    setModificationDetectionActive(true);
   }
 
   public void initValues() {
@@ -171,6 +177,13 @@ public final class PanelWineAttribute extends JPanel {
     lastModified.setText(bottle.getLastModified());
   }
 
+  public void initStatusAndTime(IMyCellarObject bottle) {
+    setModificationDetectionActive(false);
+    statusList.setSelectedItem(BottlesStatus.getStatus(bottle.getStatus()));
+    lastModified.setText(bottle.getLastModified());
+    setModificationDetectionActive(true);
+  }
+
   public String getPrice() {
     return price.getText();
   }
@@ -196,6 +209,7 @@ public final class PanelWineAttribute extends JPanel {
   public String getParker() {
     return parker.getText();
   }
+
   public String getParkerIfModified() {
     if (parker.isModified()) {
       return parker.getText();
@@ -247,8 +261,10 @@ public final class PanelWineAttribute extends JPanel {
   }
 
   public void runExit() {
+    setModificationDetectionActive(false);
     colorList.setSelectedItem(BottleColor.NONE);
     statusList.setSelectedItem(BottlesStatus.NONE);
+    setModificationDetectionActive(true);
   }
 
   public int getNbItems() {

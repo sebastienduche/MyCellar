@@ -4,14 +4,14 @@ import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
-import mycellar.core.uicomponents.MyCellarButton;
-import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
-import mycellar.core.uicomponents.PopupListener;
-import mycellar.core.uicomponents.TabEvent;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.PopupListener;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
@@ -37,8 +37,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.1
- * @since 31/10/21
+ * @version 9.2
+ * @since 01/01/22
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -104,7 +104,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       if (Program.isWineType()) {
         panelVignobles.initializeVignobles((Bouteille) cellarObject);
       }
-      updateStatusAndTime();
+      initStatusAndTime();
 
       panelPlace.selectPlace(cellarObject);
       end.setText(Program.getLabel("Infos092")); //"Saisir les modifications
@@ -117,6 +117,10 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
   private void updateStatusAndTime() {
     panelWineAttribute.updateStatusAndTime(myCellarObject);
+  }
+
+  private void initStatusAndTime() {
+    panelWineAttribute.initStatusAndTime(myCellarObject);
   }
 
   /**
@@ -146,7 +150,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     String dateOfC = panelWineAttribute.getMaturity();
     String parker = panelWineAttribute.getParker();
     String color = panelWineAttribute.getColor();
-    String status = nonNullValueOrDefault(panelWineAttribute.getStatusIfModified(),  BottlesStatus.MODIFIED.name());
+    String status = nonNullValueOrDefault(panelWineAttribute.getStatusIfModified(), BottlesStatus.MODIFIED.name());
     String country = panelVignobles.getCountry();
     String vignoble = panelVignobles.getVignoble();
     String aoc = panelVignobles.getAOC();
@@ -241,6 +245,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     ProgramPanels.updatePanelsWithoutBottles();
     updateStatusAndTime();
     resetModified();
+    ProgramPanels.setSelectedPaneModified(false);
     Debug("Saving... Done");
 
     return true;
@@ -268,7 +273,6 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     commentTextArea.setModified(false);
     panelVignobles.setModified(false);
     panelPlace.clearModified();
-    ProgramPanels.setSelectedPaneModified(false);
   }
 
   private void replaceWine(final MyCellarObject bToDelete, Place oldPlace) throws MyCellarException {

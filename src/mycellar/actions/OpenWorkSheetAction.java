@@ -50,7 +50,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
         ProgramPanels.addTabLabel(index, label);
       }
 
-      Utils.addCloseButton(ProgramPanels.TABBED_PANE, showWorksheet);
+      Utils.addCloseButtonToTab(showWorksheet);
       Start.getInstance().updateMainPanel();
       showWorksheet.addWorkingBottles(bouteilles);
     });

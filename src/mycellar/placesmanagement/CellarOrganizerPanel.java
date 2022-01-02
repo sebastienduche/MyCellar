@@ -68,21 +68,21 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.9
- * @since 01/01/22
+ * @version 4.0
+ * @since 02/01/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
-  protected static final List<RangementCell> CELLS_LIST = new ArrayList<>();
   private static final long serialVersionUID = -1239228393406479587L;
+  protected final List<RangementCell> rangementCells = new ArrayList<>();
   private final MouseListener handler = new Handler();
-  private final LabelTransferHandler th = new LabelTransferHandler();
   private final List<JPanel[][]> places = new LinkedList<>();
   private final JPanel placePanel = new JPanel();
   private final LinkedList<Rangement> armoires = new LinkedList<>();
   private final MyCellarButton move = new MyCellarButton(INFO_OTHER, "ManageStock.MoveAll", LabelProperty.PLURAL, new MoveAction());
   private final boolean cellChooser;
+  private LabelTransferHandler labelTransferHandler;
   private MyCellarComboBox<Rangement> comboRangement;
   private Rangement rangement;
   private RangementCell stock;
@@ -101,6 +101,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   }
 
   private void init() {
+    labelTransferHandler = new LabelTransferHandler(this);
     if (cellChooser) {
       setLayout(new MigLayout("", "[grow]", "[][]20px[grow]"));
     } else {
@@ -133,7 +134,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       setRangement(r);
     }
 
-    stock = new RangementCell(handler, th);
+    stock = new RangementCell(handler, labelTransferHandler);
     JScrollPane scrollStock = new JScrollPane(stock);
     scrollStock.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     scrollStock.setBorder(BorderFactory.createTitledBorder(Program.getLabel("ManagePlace.Stock")));
@@ -159,7 +160,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     rangement = rangement1;
     move.setEnabled(rangement.isSimplePlace());
     SwingUtilities.invokeLater(() -> {
-      CELLS_LIST.clear();
+      rangementCells.clear();
       placePanel.removeAll();
       places.clear();
       if (Program.EMPTY_PLACE.equals(rangement)) {
@@ -184,10 +185,10 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
             if (cellChooser) {
               cell = new RangementCell(rangement, empl, k, 0, panelCellar);
             } else {
-              cell = new RangementCell(handler, th, rangement, empl, k, 0, panelCellar);
+              cell = new RangementCell(handler, labelTransferHandler, rangement, empl, k, 0, panelCellar);
             }
             place[k][0] = cell;
-            CELLS_LIST.add(cell);
+            rangementCells.add(cell);
             panelCellar.add(cell, "growx, wrap");
           }
           placePanel.add(new MyCellarLabel(Program.getLabel("Infos029") + SPACE + empl), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
@@ -216,10 +217,10 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
                 if (cellChooser) {
                   cell = new RangementCell(rangement, i, k, j, panelCellar);
                 } else {
-                  cell = new RangementCell(handler, th, rangement, i, k, j, panelCellar);
+                  cell = new RangementCell(handler, labelTransferHandler, rangement, i, k, j, panelCellar);
                 }
                 place[k][j] = panel = cell;
-                CELLS_LIST.add(cell);
+                rangementCells.add(cell);
               } else {
                 place[k][j] = panel = new JPanel();
               }
@@ -239,7 +240,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       }
 
       if (cellChooser) {
-        CELLS_LIST.forEach(RangementCell::initButton);
+        rangementCells.forEach(RangementCell::initButton);
       }
       placePanel.updateUI();
     });
@@ -264,7 +265,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     if (cellChooser) {
       int count = 0;
       RangementCell selectedCell = null;
-      for (RangementCell cell : CELLS_LIST) {
+      for (RangementCell cell : rangementCells) {
         if (cell.isToggle()) {
           selectedCell = cell;
           count++;
@@ -289,7 +290,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   @Override
   public void tabClosed() {
     Start.getInstance().updateMainPanel();
-    CELLS_LIST.clear();
+    rangementCells.clear();
     stock.removeAll();
     places.clear();
     placePanel.removeAll();
@@ -333,7 +334,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      for (RangementCell cell : CELLS_LIST) {
+      for (RangementCell cell : rangementCells) {
         BouteilleLabel bottleLabel = cell.getBottleLabel();
         if (bottleLabel != null && bottleLabel.getBouteille() != null) {
           bottleLabel.getBouteille().setEmplacement(TEMP_PLACE);
@@ -580,8 +581,10 @@ class LabelTransferHandler extends TransferHandler {
     }
   };
   private final JWindow window = new JWindow();
+  private final CellarOrganizerPanel cellarOrganizerPanel;
 
-  LabelTransferHandler() {
+  LabelTransferHandler(CellarOrganizerPanel cellarOrganizerPanel) {
+    this.cellarOrganizerPanel = cellarOrganizerPanel;
     localObjectFlavor = new ActivationDataFlavor(
         RangementCell.class, DataFlavor.javaJVMLocalObjectMimeType, "JPanel");
     window.add(label);
@@ -681,7 +684,7 @@ class LabelTransferHandler extends TransferHandler {
       src.draggingLabel.removeBouteille();
       RangementUtils.putTabStock();
       if (target.isCaisse()) {
-        CellarOrganizerPanel.CELLS_LIST.add(target.createNewCell());
+        cellarOrganizerPanel.rangementCells.add(target.createNewCell());
       }
       target.revalidate();
       if (!target.isStock()) {

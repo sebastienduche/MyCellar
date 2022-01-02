@@ -36,7 +36,7 @@ public class OpenShowErrorsAction extends AbstractAction {
         ProgramPanels.addTabLabel(index, label);
       }
 
-      Utils.addCloseButton(ProgramPanels.TABBED_PANE, showErrors);
+      Utils.addCloseButtonToTab(showErrors);
       Start.getInstance().updateMainPanel();
     });
   }

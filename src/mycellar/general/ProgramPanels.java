@@ -356,7 +356,6 @@ public class ProgramPanels {
     if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
       OPENED_OBJECTS.remove(CHOOSE_CELL4);
       UPDATABLE_OBJECTS.remove(CHOOSE_CELL4);
-      return;
     }
   }
 
@@ -396,7 +395,7 @@ public class ProgramPanels {
         final int index = TABBED_PANE.getTabCount() - 1;
         TABBED_PANE.setSelectedIndex(index);
         addTabLabel(index, bottleName);
-        Utils.addCloseButton(TABBED_PANE, manage);
+        Utils.addCloseButtonToTab(manage);
         Start.getInstance().updateMainPanel();
       }
     }.execute();
@@ -443,8 +442,8 @@ public class ProgramPanels {
         if (collect.isEmpty() || collect.get(0).isModified() == modify) {
           return;
         }
-        Program.Debug("ProgramPanels: " + index + " " + modify);
         final TabLabel tabLabel = collect.get(0);
+        Program.Debug("ProgramPanels: " + index + " " + tabLabel.getLabel() + " " + modify);
         tabLabel.setModified(modify);
         TABBED_PANE.setTitleAt(index, tabLabel.getLabel());
         TABBED_PANE.updateUI();
@@ -475,7 +474,7 @@ public class ProgramPanels {
           final int index = TABBED_PANE.getTabCount() - 1;
           TABBED_PANE.setIconAt(index, icon);
           addTabLabel(index, label);
-          Utils.addCloseButton(TABBED_PANE, component);
+          Utils.addCloseButtonToTab(component);
           TABBED_PANE.setSelectedComponent(component);
           updateVisibility();
         } catch (RuntimeException e) {

@@ -223,7 +223,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   public void updateView() {
     new SwingWorker<Void, Void>() {
       @Override
-      protected Void doInBackground() throws Exception {
+      protected Void doInBackground() {
         return null;
       }
 

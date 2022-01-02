@@ -45,7 +45,7 @@ public class OpenAddVinAction extends AbstractAction {
         ProgramPanels.addTabLabel(index, label);
       }
 
-      Utils.addCloseButton(ProgramPanels.TABBED_PANE, addVin);
+      Utils.addCloseButtonToTab(addVin);
       Start.getInstance().updateMainPanel();
     });
   }

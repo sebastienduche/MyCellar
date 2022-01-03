@@ -8,13 +8,16 @@ import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
+import mycellar.core.MyCellarObject;
+import mycellar.core.MyCellarSwingWorker;
+import mycellar.core.UpdateViewType;
+import mycellar.core.datas.history.HistoryState;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
-import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.MyCellarObject;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.core.datas.history.HistoryState;
+import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import net.miginfocom.swing.MigLayout;
 
@@ -49,7 +52,6 @@ import static mycellar.Program.setToTrash;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
-import static mycellar.general.ProgramPanels.updateAllPanels;
 
 
 /**
@@ -59,8 +61,8 @@ import static mycellar.general.ProgramPanels.updateAllPanels;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.0
- * @since 14/12/21
+ * @version 9.1
+ * @since 03/01/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -75,7 +77,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   private final LinkedList<SupprimerLine> listSupprimer = new LinkedList<>();
   private final SupprimerModel model;
   private int nb_case_use_total = 0;
+
   private boolean updateView = false;
+  private UpdateViewType updateViewType;
 
   public Supprimer_Rangement() {
     Debug("Initializing...");
@@ -114,20 +118,10 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     setVisible(true);
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
   private static void Debug(String sText) {
     Program.Debug("Supprimer_Rangement: " + sText);
   }
 
-  /**
-   * choix_itemStateChanged: Methode pour la premiere liste
-   *
-   * @param e ItemEvent
-   */
   private void choix_itemStateChanged(ItemEvent e) {
     Debug("choix_itemStateChanging...");
     listSupprimer.clear();
@@ -184,11 +178,6 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
   }
 
-  /**
-   * supprimer_actionPerformed: methode pour la suppression d'un rangement.
-   *
-   * @param e ActionEvent
-   */
   private void supprimer_actionPerformed(ActionEvent e) {
     Debug("supprimer_actionPerforming...");
     final int num_select = choix.getSelectedIndex();
@@ -212,7 +201,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
           removeCave(cave);
           choix.removeItemAt(num_select);
           choix.setSelectedIndex(0);
-          updateAllPanels();
+          ProgramPanels.updateAllPanelsForUpdatingPlaces();
         }
       } else {
         String nom = cave.getName();
@@ -240,7 +229,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
               setToTrash(b);
             }
             removeCave(cave);
-            updateAllPanels();
+            ProgramPanels.updateAllPanelsForUpdatingPlaces();
           }).start();
           choix.removeItemAt(num_select);
           choix.setSelectedIndex(0);
@@ -249,11 +238,6 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
   }
 
-  /**
-   * preview_actionPerformed: Methode pour visualiser un rangement
-   *
-   * @param e ActionEvent
-   */
   private void preview_actionPerformed(ActionEvent e) {
     Debug("preview_actionPerforming...");
     int num_select = choix.getSelectedIndex();
@@ -265,11 +249,6 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     open(getPreviewXMLFileName(), false);
   }
 
-  /**
-   * keylistener_actionPerformed: Methode d'ecoute clavier.
-   *
-   * @param e KeyEvent
-   */
   private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == supprimerChar) {
       supprimer_actionPerformed(null);
@@ -292,8 +271,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   }
 
   @Override
-  public void setUpdateView() {
+  public void setUpdateView(UpdateViewType updateViewType) {
     updateView = true;
+    this.updateViewType = updateViewType;
   }
 
   @Override
@@ -303,9 +283,16 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
     updateView = false;
     RangementUtils.putTabStock();
-    choix.removeAllItems();
-    choix.addItem(EMPTY_PLACE);
-    getCave().forEach(choix::addItem);
+    if (updateViewType == UpdateViewType.PLACE) {
+      new MyCellarSwingWorker() {
+        @Override
+        protected void done() {
+          choix.removeAllItems();
+          choix.addItem(EMPTY_PLACE);
+          getCave().forEach(choix::addItem);
+        }
+      }.execute();
+    }
   }
 
   static class SupprimerModel extends DefaultTableModel {

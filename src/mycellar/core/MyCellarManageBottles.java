@@ -21,8 +21,8 @@ import javax.swing.SwingUtilities;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.9
- * @since 20/10/21
+ * @version 5.0
+ * @since 03/01/22
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
@@ -33,17 +33,18 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected final PanelPlace panelPlace = new PanelPlace();
   protected final PanelGeneral panelGeneral = new PanelGeneral();
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
-  protected MyCellarButton addButton;
-  protected MyCellarButton cancelButton;
   protected final JModifyTextArea commentTextArea = new JModifyTextArea();
   protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
-  protected boolean updateView = false;
+  protected final char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
+  protected MyCellarButton addButton;
+  protected MyCellarButton cancelButton;
   protected PanelVignobles panelVignobles;
   protected MyCellarObject myCellarObject = null;
-  protected final char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
-
   protected boolean severalItems = false; //Pour ListVin
   protected boolean isEditionMode = false;
+
+  protected boolean updateView = false;
+  private UpdateViewType updateViewType;
 
   protected MyCellarManageBottles() {
   }
@@ -73,8 +74,9 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
     end.setVisible(enable);
   }
 
-  public void setUpdateView() {
+  public void setUpdateView(UpdateViewType updateViewType) {
     updateView = true;
+    this.updateViewType = updateViewType;
   }
 
   public void updateView() {
@@ -86,7 +88,9 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
       updateView = false;
       panelGeneral.updateView();
       panelVignobles.updateList();
-      panelPlace.updateView();
+      if (updateViewType == UpdateViewType.PLACE) {
+        panelPlace.updateView();
+      }
       Debug("updateView Done");
     });
   }

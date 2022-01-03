@@ -7,13 +7,14 @@ import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
+import mycellar.core.UpdateViewType;
+import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.tablecomponents.ButtonCellEditor;
+import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.core.datas.MyCellarBottleContenance;
-import mycellar.core.tablecomponents.ButtonCellEditor;
-import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
@@ -34,8 +35,8 @@ import static mycellar.core.LabelType.INFO;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 19/11/20
+ * @version 1.5
+ * @since 03/01/22
  */
 
 public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -100,8 +101,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   }
 
   @Override
-  public void setUpdateView() {
-
+  public void setUpdateView(UpdateViewType updateViewType) {
   }
 
   @Override

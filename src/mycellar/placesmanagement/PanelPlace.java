@@ -6,6 +6,7 @@ import mycellar.actions.ChooseCellAction;
 import mycellar.core.IPlace;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarObject;
+import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -15,7 +16,6 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -30,8 +30,8 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 01/01/22
+ * @version 2.1
+ * @since 03/01/22
  */
 public final class PanelPlace extends JPanel implements IPlace {
   private static final long serialVersionUID = -2601861017578176513L;
@@ -195,12 +195,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void resetValues() {
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         setListenersEnabled(false);
@@ -221,12 +216,7 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void updateView() {
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Update view...");
@@ -247,12 +237,7 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   @Override
   public void selectPlace(Place placeRangement) {
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Select Place...");
@@ -340,12 +325,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     if (isListenersDisabled(e)) {
       return;
     }
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Lieu_itemStateChanging...");
@@ -385,12 +365,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     if (isListenersDisabled(e)) {
       return;
     }
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Num_lieu_itemStateChanging...");
@@ -424,12 +399,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     if (isListenersDisabled(e)) {
       return;
     }
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Line_itemStateChanging...");
@@ -459,12 +429,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     if (isListenersDisabled(e)) {
       return;
     }
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Column_itemStateChanging...");

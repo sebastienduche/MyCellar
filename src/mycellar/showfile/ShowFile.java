@@ -13,14 +13,10 @@ import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.uicomponents.MyCellarButton;
-import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.MyCellarEnum;
 import mycellar.core.MyCellarError;
-import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarObject;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.core.UpdateViewType;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.common.music.DurationConverter;
@@ -32,11 +28,16 @@ import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetData;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.tablecomponents.ToolTipRenderer;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
@@ -80,8 +81,8 @@ import static mycellar.ProgramConstants.SPACE;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.9
- * @since 27/10/21
+ * @version 11.0
+ * @since 03/01/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -115,6 +116,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private ShowFileColumn<Boolean> checkBoxStartColumn;
   private ShowFileColumn<?> modifyButtonColumn;
   private ShowFileColumn<MyCellarEnum> checkedButtonColumn;
+  private UpdateViewType updateViewType;
 
   public ShowFile() {
     showType = ShowType.NORMAL;
@@ -1012,8 +1014,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   @Override
-  public void setUpdateView() {
+  public void setUpdateView(UpdateViewType updateViewType) {
     updateView = true;
+    this.updateViewType = updateViewType;
   }
 
   /**
@@ -1027,8 +1030,10 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     updateView = false;
     model.fireTableStructureChanged();
-    placeCbx.removeAllItems();
-    Program.getCave().forEach(placeCbx::addItem);
+    if (updateViewType == UpdateViewType.PLACE) {
+      placeCbx.removeAllItems();
+      Program.getCave().forEach(placeCbx::addItem);
+    }
 
     typeCbx.removeAllItems();
     typeCbx.addItem("");

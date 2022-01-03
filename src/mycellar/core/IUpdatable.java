@@ -1,7 +1,7 @@
 package mycellar.core;
 
 public interface IUpdatable {
-  void setUpdateView();
+  void setUpdateView(UpdateViewType updateViewType);
 
   void updateView();
 }

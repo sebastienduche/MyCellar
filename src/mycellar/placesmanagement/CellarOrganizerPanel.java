@@ -11,6 +11,7 @@ import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
 import mycellar.core.PanelCloseButton;
+import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.uicomponents.MyCellarButton;
@@ -68,8 +69,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.0
- * @since 02/01/22
+ * @version 4.1
+ * @since 03/01/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -88,6 +89,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   private RangementCell stock;
   private IPlace iPlace;
   private boolean updateView = false;
+  private UpdateViewType updateViewType;
 
   public CellarOrganizerPanel() {
     cellChooser = false;
@@ -301,15 +303,17 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   }
 
   @Override
-  public void setUpdateView() {
+  public void setUpdateView(UpdateViewType updateViewType) {
     updateView = true;
+    this.updateViewType = updateViewType;
   }
 
   @Override
   public void updateView() {
-    if (!updateView) {
+    if (!updateView || updateViewType != UpdateViewType.PLACE) {
       return;
     }
+    updateView = false;
     SwingUtilities.invokeLater(() -> {
       armoires.clear();
       comboRangement.removeAllItems();

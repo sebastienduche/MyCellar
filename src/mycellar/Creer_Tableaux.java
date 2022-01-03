@@ -5,15 +5,17 @@ import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
+import mycellar.core.MyCellarSettings;
+import mycellar.core.MyCellarSwingWorker;
+import mycellar.core.UpdateViewType;
+import mycellar.core.tablecomponents.CheckboxCellEditor;
+import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
-import mycellar.core.MyCellarSettings;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.core.tablecomponents.CheckboxCellEditor;
-import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
@@ -28,7 +30,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.xml.transform.TransformerConfigurationException;
@@ -60,8 +61,8 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.1
- * @since 14/12/21
+ * @version 8.2
+ * @since 03/01/22
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
@@ -78,6 +79,8 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126");
   private final MyCellarButton m_jcb_options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
   private JTable table;
+  private boolean updateView;
+  private UpdateViewType updateViewType;
 
   public Creer_Tableaux() {
     Debug("Constructor");
@@ -332,21 +335,11 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     }
   }
 
-  /**
-   * preview_actionPerformed: Visualiser les rangements.
-   *
-   * @param e ActionEvent
-   */
   private void preview_actionPerformed(ActionEvent e) {
     Debug("preview_actionPerforming...");
     Program.open(name.getText(), false);
   }
 
-  /**
-   * keylistener_actionPerformed: Foncion d'ecoute des touches.
-   *
-   * @param e KeyEvent
-   */
   private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == creerChar && e.isControlDown()) {
       create_actionPerformed(null);
@@ -356,12 +349,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     }
   }
 
-  /**
-   * selectall_actionPerformed: Permet de selectionner toutes les lignes de la
-   * JTable
-   *
-   * @param e ActionEvent
-   */
   private void selectall_actionPerformed(ActionEvent e) {
     for (int i = 0; i < tv.getRowCount(); i++) {
       tv.setValueAt(selectall.isSelected(), i, 0);
@@ -380,11 +367,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     m_jcb_options.setSelected(false);
   }
 
-  /**
-   * jradio_actionPerformed: Bouton radio.
-   *
-   * @param e ActionEvent
-   */
   private void jradio_actionPerformed(ActionEvent e) {
     m_jcb_options.setEnabled(type_XLS.isSelected());
   }
@@ -445,14 +427,25 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   }
 
   @Override
-  public void setUpdateView() {
+  public void setUpdateView(UpdateViewType updateViewType) {
+    updateView = true;
+    this.updateViewType = updateViewType;
   }
 
   @Override
   public void updateView() {
-    SwingUtilities.invokeLater(() -> {
-      tv.removeAll();
-      Program.getCave().forEach(tv::addRangement);
-    });
+    if (!updateView) {
+      return;
+    }
+    updateView = false;
+    if (updateViewType == UpdateViewType.PLACE) {
+      new MyCellarSwingWorker() {
+        @Override
+        protected void done() {
+          tv.removeAll();
+          Program.getCave().forEach(tv::addRangement);
+        }
+      }.execute();
+    }
   }
 }

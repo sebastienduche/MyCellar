@@ -5,13 +5,14 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
+import mycellar.core.MyCellarEnum;
+import mycellar.core.MyCellarSettings;
+import mycellar.core.UpdateViewType;
+import mycellar.core.datas.history.History;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
-import mycellar.core.MyCellarEnum;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.MyCellarSettings;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.core.datas.history.History;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Rangement;
 import net.miginfocom.swing.MigLayout;
@@ -60,8 +61,8 @@ import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.5
- * @since 21/05/21
+ * @version 8.6
+ * @since 03/01/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -201,12 +202,6 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     return (MyCellarEnum) listOptions.getSelectedItem();
   }
 
-  /**
-   * listStatOptionItemStateChanged: Fonction appelle lors d'un changement dans la
-   * seconde liste.
-   *
-   * @param e
-   */
   private void listStatOptionItemStateChanged(ItemEvent e) {
     final MyCellarEnum selectedItem = getSelectedStatType();
     if ((e != null && e.getStateChange() != ItemEvent.SELECTED) || selectedItem == null) {
@@ -438,11 +433,6 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     }
   }
 
-  /**
-   * options_actionPerformed: Appel de la fenetre d'options.
-   *
-   * @param e ActionEvent
-   */
   private void options_actionPerformed(ActionEvent e) {
     Debug("options_actionPerforming...");
     options.setSelected(false);
@@ -471,7 +461,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   }
 
   @Override
-  public void setUpdateView() {
+  public void setUpdateView(UpdateViewType updateViewType) {
   }
 
   @Override
@@ -482,9 +472,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listHistory.clear();
     mapAddedPerYear.clear();
     mapDeletedPerYear.clear();
-    final MyCellarEnum selectedStatType = getSelectedStatType();
-    listPlaces.removeAllItems();
-    fillListOptionsChart(selectedStatType);
+    fillListOptionsChart(getSelectedStatType());
     listStatOptionItemStateChanged(null);
     updateBouteilleCountLabel();
   }

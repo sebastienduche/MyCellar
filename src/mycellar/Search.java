@@ -6,21 +6,23 @@ import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.uicomponents.MyCellarButton;
-import mycellar.core.uicomponents.MyCellarCheckBox;
-import mycellar.core.uicomponents.MyCellarComboBox;
-import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.uicomponents.PopupListener;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.core.MyCellarSwingWorker;
+import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.tablecomponents.ToolTipRenderer;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.PopupListener;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
@@ -66,14 +68,14 @@ import static mycellar.ProgramConstants.SPACE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.4
- * @since 14/10/21
+ * @version 22.5
+ * @since 03/01/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
   private static final long serialVersionUID = 8497660112193602839L;
   private final TableValues model = new TableValues();
-  private final MyCellarLabel txtNbresul = new MyCellarLabel(LabelType.INFO_OTHER, "Search.bottleFound", LabelProperty.PLURAL.withCapital()); //"Bouteille(s) trouvee(s): ");
+  private final MyCellarLabel txtNbresul = new MyCellarLabel(LabelType.INFO_OTHER, "Search.bottleFound", LabelProperty.PLURAL.withCapital());
   private final MyCellarLabel txtNb = new MyCellarLabel("-");
   private final MyCellarButton suppr = new MyCellarButton(MyCellarImage.DELETE);
   private final MyCellarButton export = new MyCellarButton(MyCellarImage.EXPORT);
@@ -108,12 +110,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final JMenuItem moveLine = new JMenuItem(Program.getLabel("Infos365"));
   private JTable table;
   private TextFieldPopup name;
-  private boolean updateView = false;
   private AllBottlesState allBottlesState = AllBottlesState.PLACE;
+  private boolean updateView = false;
+  private UpdateViewType updateViewType;
 
-  /**
-   * Search: Constructeur via Start.
-   */
   public Search() {
     SwingUtilities.invokeLater(() -> {
       Debug("Constructor");
@@ -351,12 +351,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     }
   }
 
-  /**
-   * num_lieu_itemStateChanged: Fonction appellee lors d'un changement dans la
-   * liste des numeros de lieu.
-   *
-   * @param e ItemEvent
-   */
   private void num_lieu_itemStateChanged(ItemEvent e) {
     SwingUtilities.invokeLater(() -> {
       try {
@@ -388,12 +382,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     });
   }
 
-  /**
-   * lieu_itemStateChanged: Fonction appellee lors d'un changement dans la liste
-   * des emplacements.
-   *
-   * @param e ItemEvent
-   */
   private void lieu_itemStateChanged(ItemEvent e) {
     SwingUtilities.invokeLater(() -> {
       try {
@@ -442,12 +430,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     });
   }
 
-  /**
-   * line_itemStateChanged: Fonction appellee lors d'un changement dans la liste
-   * des numeros de ligne.
-   *
-   * @param e ItemEvent
-   */
   private void line_itemStateChanged(ItemEvent e) {
     SwingUtilities.invokeLater(() -> {
       try {
@@ -490,11 +472,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     }
   }
 
-  /**
-   * vider_actionPerformed: Fonction pour vider la liste de recherche.
-   *
-   * @param e ActionEvent
-   */
   private void vider_actionPerformed(ActionEvent e) {
     try {
       //Efface la recherche
@@ -558,7 +535,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         modif.setEnabled(true);
         suppr.setEnabled(true);
       }
-      resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminee.");
+      resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminee.
       doAfterSearch(finalAlready_found);
     });
   }
@@ -752,7 +729,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     if (rangement.isSimplePlace()) {
       //Pour la caisse
       int lieu_num = num_lieu.getSelectedIndex();
-      resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
+      resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...
       int nb_empl_cave = rangement.getNbParts();
       int boucle_toutes;
       int start_boucle;
@@ -896,7 +873,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         modif.setEnabled(true);
         suppr.setEnabled(true);
       }
-      resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminee.");
+      resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminee.
       doAfterSearch(finalAlready_found);
     });
 
@@ -917,7 +894,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       annee = Program.safeParseInt(sYear, 0);
     }
 
-    resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
+    resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...
     boolean already_found = false;
     List<MyCellarObject> bouteilleList = new ArrayList<>();
     for (MyCellarObject b : Program.getStorage().getAllList()) {
@@ -1031,11 +1008,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     return list;
   }
 
-  /**
-   * empty_search_actionPerformed: Permet de vider automatiquement la recherche
-   *
-   * @param e ActionEvent
-   */
   private void empty_search_actionPerformed(ActionEvent e) {
     Program.putCaveConfigBool(MyCellarSettings.EMPTY_SEARCH, empty_search.isSelected());
   }
@@ -1052,8 +1024,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   }
 
   @Override
-  public void setUpdateView() {
+  public void setUpdateView(UpdateViewType updateViewType) {
     updateView = true;
+    this.updateViewType = updateViewType;
   }
 
   @Override
@@ -1062,10 +1035,17 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       return;
     }
     updateView = false;
-    lieu.removeAllItems();
-    lieu.addItem(Program.EMPTY_PLACE);
-    Program.getCave().forEach(lieu::addItem);
     panelYear.fillYear();
+    if (updateViewType == UpdateViewType.PLACE) {
+      new MyCellarSwingWorker() {
+        @Override
+        protected void done() {
+          lieu.removeAllItems();
+          lieu.addItem(Program.EMPTY_PLACE);
+          Program.getCave().forEach(lieu::addItem);
+        }
+      }.execute();
+    }
   }
 
   public void removeBottle(MyCellarObject bottleToDelete) {

@@ -11,12 +11,13 @@ import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
+import mycellar.core.MyCellarSettings;
+import mycellar.core.UpdateViewType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
-import mycellar.core.MyCellarSettings;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
@@ -60,8 +61,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.4
- * @since 14/12/21
+ * @version 15.5
+ * @since 03/01/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -90,6 +91,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private int limite = 0;
   private LinkedList<Part> listPart = new LinkedList<>();
   private int start_caisse = 0;
+  private UpdateViewType updateViewType;
 
   /**
    * Creer_Rangement: Creation d'un rangement
@@ -306,188 +308,196 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
     Debug("Advanced modifying...");
     if (m_caisse_chk.isSelected()) {
-      Debug("Modifying Simple place...");
-      //Modification d'un rangement de type "Caisse"
-      start_caisse = nb_start_caisse.getIntValue();
-      islimited = checkLimite.isSelected();
-      limite = nb_limite.getIntValue();
-      int nbPart = nb_parties.getIntValue();
-
-      if (rangement.getNbParts() > nbPart) {
-        final Map<Integer, Integer> numberOfBottlesPerPlace = rangement.getNumberOfBottlesPerPlace();
-
-        for (int i = nbPart; i < rangement.getNbParts(); i++) {
-          if (numberOfBottlesPerPlace.get(i) > 0) {
-            Debug("ERROR: Unable to delete simple place part with bottles!");
-            Erreur.showSimpleErreur(MessageFormat.format(Program.getError("CreerRangement.CantDeletePartCaisse"), (i + rangement.getStartSimplePlace())));
-            return;
-          }
-        }
-      }
-
-      int nb_bottle = rangement.getTotalCountCellUsed();
-      if (nb_bottle > 0) {
-        String name = rangement.getName();
-        if (!name.equals(nom)) {
-          String erreur_txt1, erreur_txt2;
-          if (nb_bottle == 1) {
-            Debug("MESSAGE: 1 bottle in this place, modify?");
-            erreur_txt1 = Program.getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.");
-            erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); // Change the place of this object;
-          } else {
-            Debug("MESSAGE: " + nb_bottle + " bottles in this place, Modify?");
-            erreur_txt1 = MessageFormat.format(Program.getError("Error094", LabelProperty.PLURAL), nb_bottle); //bouteilles sont presentes dans ce rangement.");
-            erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Change the place of these objects");
-          }
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-            //Modify Name of place
-            Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
-          }
-        } else if (rangement.getStartSimplePlace() != start_caisse) {
-          // Le numero de la premiere partie a change, renumeroter
-          String erreur_txt1 = MessageFormat.format(Program.getError("CreerRangement.UpdatedBottlePart"), start_caisse, rangement.getStartSimplePlace());
-          String erreur_txt2 = Program.getError("CreerRangement.AskUpdateBottlePart", LabelProperty.PLURAL);
-
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-            //Modify start part number
-            final int difference = start_caisse - rangement.getStartSimplePlace();
-            Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setNumLieu(b.getNumLieu() + difference));
-          }
-        }
-      }
-      nom_obj.setText("");
-      updatePlace(nom, nbPart, rangement);
-      updateView();
-      ProgramPanels.updateAllPanels();
-      Debug("Modifications completed");
-      label_cree.setText(Program.getError("Error123"), true); //"Rangement modifie.");
+      modifySimplePlace(rangement, nom);
     } else {
-      // Rangement complexe
-      Debug("Modifying complex place...");
-      int nbBottles = rangement.getTotalCountCellUsed();
-      for (Part p : listPart) {
-        if (p.getRows().isEmpty()) {
-          Debug("ERROR: Wrong number of lines on part: " + p.getNum());
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrectes sur la partie
+      modifyComplexPlace(rangement, nom);
+    }
+  }
+
+  private void modifySimplePlace(Rangement rangement, String nom) {
+    Debug("Modifying Simple place...");
+    //Modification d'un rangement de type "Caisse"
+    start_caisse = nb_start_caisse.getIntValue();
+    islimited = checkLimite.isSelected();
+    limite = nb_limite.getIntValue();
+    int nbPart = nb_parties.getIntValue();
+
+    if (rangement.getNbParts() > nbPart) {
+      final Map<Integer, Integer> numberOfBottlesPerPlace = rangement.getNumberOfBottlesPerPlace();
+
+      for (int i = nbPart; i < rangement.getNbParts(); i++) {
+        if (numberOfBottlesPerPlace.get(i) > 0) {
+          Debug("ERROR: Unable to delete simple place part with bottles!");
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("CreerRangement.CantDeletePartCaisse"), (i + rangement.getStartSimplePlace())));
           return;
         }
-        for (Row r : p.getRows()) {
-          if (r.getCol() == 0) {
-            Debug("ERROR: Wrong number of columns on part:  " + p.getNum());
-            Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrectes sur la partie
-            return;
-          }
+      }
+    }
+
+    int nb_bottle = rangement.getTotalCountCellUsed();
+    if (nb_bottle > 0) {
+      String name = rangement.getName();
+      if (!name.equals(nom)) {
+        String erreur_txt1, erreur_txt2;
+        if (nb_bottle == 1) {
+          Debug("MESSAGE: 1 bottle in this place, modify?");
+          erreur_txt1 = Program.getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.");
+          erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); // Change the place of this object;
+        } else {
+          Debug("MESSAGE: " + nb_bottle + " bottles in this place, Modify?");
+          erreur_txt1 = MessageFormat.format(Program.getError("Error094", LabelProperty.PLURAL), nb_bottle); //bouteilles sont presentes dans ce rangement.");
+          erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Change the place of these objects");
+        }
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          //Modify Name of place
+          Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
+        }
+      } else if (rangement.getStartSimplePlace() != start_caisse) {
+        // Le numero de la premiere partie a change, renumeroter
+        String erreur_txt1 = MessageFormat.format(Program.getError("CreerRangement.UpdatedBottlePart"), start_caisse, rangement.getStartSimplePlace());
+        String erreur_txt2 = Program.getError("CreerRangement.AskUpdateBottlePart", LabelProperty.PLURAL);
+
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          //Modify start part number
+          final int difference = start_caisse - rangement.getStartSimplePlace();
+          Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setNumLieu(b.getNumLieu() + difference));
         }
       }
+    }
+    nom_obj.setText("");
+    updatePlace(nom, nbPart, rangement);
+    updateView();
+    ProgramPanels.updateAllPanelsForUpdatingPlaces();
+    Debug("Modifications completed");
+    label_cree.setText(Program.getError("Error123"), true); //"Rangement modifie.
+  }
 
-      if (nbBottles == 0) {
-        rangement.setName(nom);
-        rangement.updatePlace(listPart);
-        putTabStock();
-        nom_obj.setText("");
-        updateView();
-        ProgramPanels.updateAllPanels();
-        label_cree.setText(Program.getError("Error123"), true);
-      } else {
-        if (rangement.getNbParts() > listPart.size()) {
+  private void modifyComplexPlace(Rangement rangement, String nom) {
+    // Rangement complexe
+    Debug("Modifying complex place...");
+    int nbBottles = rangement.getTotalCountCellUsed();
+    for (Part p : listPart) {
+      if (p.getRows().isEmpty()) {
+        Debug("ERROR: Wrong number of lines on part: " + p.getNum());
+        Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrectes sur la partie
+        return;
+      }
+      for (Row r : p.getRows()) {
+        if (r.getCol() == 0) {
+          Debug("ERROR: Wrong number of columns on part:  " + p.getNum());
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrectes sur la partie
+          return;
+        }
+      }
+    }
+
+    if (nbBottles == 0) {
+      rangement.setName(nom);
+      rangement.updatePlace(listPart);
+      putTabStock();
+      nom_obj.setText("");
+      updateView();
+      ProgramPanels.updateAllPanelsForUpdatingPlaces();
+      label_cree.setText(Program.getError("Error123"), true);
+    } else {
+      if (rangement.getNbParts() > listPart.size()) {
+        int nb = 0;
+        for (int i = listPart.size(); i < rangement.getNbParts(); i++) {
+          nb += rangement.getTotalCellUsed(i);
+        }
+        if (nb > 0) {
+          Debug("ERROR: Unable to reduce the number of place");
+          Erreur.showSimpleErreur(Program.getError("Error201"));
+          return;
+        }
+      }
+      boolean bResul = true;
+      for (int i = 0; i < listPart.size(); i++) {
+        if (!bResul) {
+          Debug("ERROR: bResul false, skipping part");
+          continue;
+        }
+        Part part = listPart.get(i);
+        int nbRow = -1;
+        if (i < rangement.getNbParts()) {
+          nbRow = rangement.getLineCountAt(i);
+        }
+        int newNbRow = part.getRowSize();
+        if (nbRow > newNbRow) {
           int nb = 0;
-          for (int i = listPart.size(); i < rangement.getNbParts(); i++) {
-            nb += rangement.getTotalCellUsed(i);
+          for (int j = newNbRow; j < nbRow; j++) {
+            nb += rangement.getNbCaseUseInLine(i, j);
           }
           if (nb > 0) {
-            Debug("ERROR: Unable to reduce the number of place");
-            Erreur.showSimpleErreur(Program.getError("Error201"));
-            return;
+            bResul = false;
+            Debug("ERROR: Unable to reduce the number of row");
+            Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error202"), Integer.toString(i + 1)));
+            // Impossible de reduire le nombre de lignes de la partie, bouteilles presentes
           }
         }
-        boolean bResul = true;
-        for (int i = 0; i < listPart.size(); i++) {
-          if (!bResul) {
-            Debug("ERROR: bResul false, skipping part");
-            continue;
-          }
-          Part part = listPart.get(i);
-          int nbRow = -1;
-          if (i < rangement.getNbParts()) {
-            nbRow = rangement.getLineCountAt(i);
-          }
-          int newNbRow = part.getRowSize();
-          if (nbRow > newNbRow) {
-            int nb = 0;
-            for (int j = newNbRow; j < nbRow; j++) {
-              nb += rangement.getNbCaseUseInLine(i, j);
+        if (bResul) {
+          for (int j = 0; j < part.getRowSize(); j++) {
+            if (!bResul) {
+              Debug("ERROR: bResul false, skipping row");
+              break;
             }
-            if (nb > 0) {
-              bResul = false;
-              Debug("ERROR: Unable to reduce the number of row");
-              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error202"), Integer.toString(i + 1)));
-              // Impossible de reduire le nombre de lignes de la partie, bouteilles presentes
+            int nbCol = -1;
+            if (i < rangement.getNbParts() && j < rangement.getLineCountAt(i)) {
+              nbCol = rangement.getColumnCountAt(i, j);
             }
-          }
-          if (bResul) {
-            for (int j = 0; j < part.getRowSize(); j++) {
-              if (!bResul) {
-                Debug("ERROR: bResul false, skipping row");
-                break;
-              }
-              int nbCol = -1;
-              if (i < rangement.getNbParts() && j < rangement.getLineCountAt(i)) {
-                nbCol = rangement.getColumnCountAt(i, j);
-              }
-              int newNbCol = part.getRow(j).getCol();
-              if (nbCol > newNbCol) {
-                for (int k = newNbCol; k < nbCol; k++) {
-                  if (!bResul) {
-                    Debug("ERROR: bResul false, skipping column");
-                    break;
-                  }
-                  if (rangement.getObject(i, j, k).isPresent()) {
-                    bResul = false;
-                    Debug("ERROR: Unable to reduce the size of the number of column");
-                    Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error203"), Integer.toString(j + 1), Integer.toString(i + 1)));
-                    // Impossible de reduire le nombre de colonne de la ligne de la partie, bouteilles presentes
-                  }
+            int newNbCol = part.getRow(j).getCol();
+            if (nbCol > newNbCol) {
+              for (int k = newNbCol; k < nbCol; k++) {
+                if (!bResul) {
+                  Debug("ERROR: bResul false, skipping column");
+                  break;
+                }
+                if (rangement.getObject(i, j, k).isPresent()) {
+                  bResul = false;
+                  Debug("ERROR: Unable to reduce the size of the number of column");
+                  Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error203"), Integer.toString(j + 1), Integer.toString(i + 1)));
+                  // Impossible de reduire le nombre de colonne de la ligne de la partie, bouteilles presentes
                 }
               }
             }
           }
         }
-
-        if (bResul) {
-          Debug("Updating complex place: " + rangement.getName());
-          String name = rangement.getName();
-          if (!name.equalsIgnoreCase(nom)) {
-            String erreur_txt1 = Program.getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.");
-            String erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); //"Voulez-vous changer l'emplacement de cette bouteille?");
-            if (nbBottles == 1) {
-              Debug("MESSAGE: 1 bottle in this place, modify?");
-            } else {
-              Debug("MESSAGE: " + nbBottles + " bottles in this place, Modify?");
-              erreur_txt1 = MessageFormat.format(Program.getError("Error094", LabelProperty.PLURAL), nbBottles); //bouteilles sont presentes dans ce rangement.");
-              erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Voulez-vous changer l'emplacement de ces bouteilles?");
-            }
-            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-              //Modify Name of place
-              rangement.setName(nom);
-              rangement.updatePlace(listPart);
-              Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
-              nom_obj.setText("");
-              updateView();
-              ProgramPanels.updateAllPanels();
-            } else {
-              rangement.setName(nom);
-              rangement.updatePlace(listPart);
-            }
-          } else {
-            rangement.updatePlace(listPart);
-          }
-          putTabStock();
-        }
-        if (bResul) {
-          comboPlace.setSelectedIndex(0);
-          label_cree.setText(Program.getError("Error123"), true);
-        }
       }
+
+      if (!bResul) {
+        return;
+      }
+
+      Debug("Updating complex place: " + rangement.getName());
+      String name = rangement.getName();
+      if (!name.equalsIgnoreCase(nom)) {
+        String erreur_txt1 = Program.getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.");
+        String erreur_txt2 = Program.getError("Error137", LabelProperty.SINGLE); //"Voulez-vous changer l'emplacement de cette bouteille?");
+        if (nbBottles == 1) {
+          Debug("MESSAGE: 1 bottle in this place, modify?");
+        } else {
+          Debug("MESSAGE: " + nbBottles + " bottles in this place, Modify?");
+          erreur_txt1 = MessageFormat.format(Program.getError("Error094", LabelProperty.PLURAL), nbBottles); //bouteilles sont presentes dans ce rangement.");
+          erreur_txt2 = Program.getError("Error095", LabelProperty.PLURAL); //"Voulez-vous changer l'emplacement de ces bouteilles?");
+        }
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          //Modify Name of place
+          rangement.setName(nom);
+          rangement.updatePlace(listPart);
+          Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
+          nom_obj.setText("");
+        } else {
+          rangement.setName(nom);
+          rangement.updatePlace(listPart);
+        }
+      } else {
+        rangement.updatePlace(listPart);
+      }
+      putTabStock();
+      updateView();
+      ProgramPanels.updateAllPanelsForUpdatingPlaces();
+      comboPlace.setSelectedIndex(0);
+      label_cree.setText(Program.getError("Error123"), true);
     }
   }
 
@@ -539,7 +549,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         Debug("Creation of '" + nom + "' completed.");
         nom_obj.setText("");
         label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.");
-        ProgramPanels.updateAllPanels();
+        ProgramPanels.updateAllPanelsForUpdatingPlaces();
       }
     } else {
       Debug("Creating complex place...");
@@ -564,9 +574,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           Debug("Creating place...");
           Program.addCave(new Rangement(nom, listPart));
           Debug("Creating " + nom + " completed.");
-          label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.");
+          label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.
           nom_obj.setText("");
-          ProgramPanels.updateAllPanels();
+          ProgramPanels.updateAllPanelsForUpdatingPlaces();
         }
         //Fin test check
       } else { // Si check1
@@ -575,9 +585,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         if (bResul) {
           Program.addCave(new Rangement(nom, listPart));
           Debug("Creating '" + nom + "' completed.");
-          label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.");
+          label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.
           nom_obj.setText("");
-          ProgramPanels.updateAllPanels();
+          ProgramPanels.updateAllPanelsForUpdatingPlaces();
         }
       }
     }
@@ -628,11 +638,6 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     label_limite.setVisible(checkLimite.isSelected());
   }
 
-  /**
-   * preview_actionPerformed: Permet de previsualiser un rangement avant de le creer.
-   *
-   * @param e ActionEvent
-   */
   private void preview_actionPerformed(ActionEvent e) {
     if (!m_caisse_chk.isSelected()) {
       // Controle du nom
@@ -662,11 +667,6 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     }
   }
 
-  /**
-   * keylistener_actionPerformed: Raccourcis clavier
-   *
-   * @param e KeyEvent
-   */
   private void keylistener_actionPerformed(KeyEvent e) {
     if ((e.getKeyCode() == CREER && e.isControlDown()) || e.getKeyCode() == KeyEvent.VK_ENTER) {
       create_actionPerformed();
@@ -699,14 +699,18 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   }
 
   @Override
-  public void setUpdateView() {
+  public void setUpdateView(UpdateViewType updateViewType) {
+    this.updateViewType = updateViewType;
   }
 
   @Override
   public void updateView() {
-    comboPlace.removeAllItems();
-    comboPlace.addItem(Program.EMPTY_PLACE);
-    Program.getCave().forEach(comboPlace::addItem);
+    if (updateViewType == UpdateViewType.PLACE) {
+      comboPlace.removeAllItems();
+      comboPlace.addItem(Program.EMPTY_PLACE);
+      Program.getCave().forEach(comboPlace::addItem);
+      updateViewType = null;
+    }
   }
 
   @Override

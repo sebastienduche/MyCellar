@@ -44,8 +44,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.0
- * @since 01/01/22
+ * @version 30.1
+ * @since 03/01/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -66,6 +66,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     addButton.setMnemonic(ajouterChar);
     cancelButton = new MyCellarButton(LabelType.INFO, "055", new CancelAction());
 
+    panelGeneral.setModificationDetectionActive(false);
+    panelWineAttribute.setModificationDetectionActive(false);
     panelGeneral.initValues();
     panelWineAttribute.initValues();
 

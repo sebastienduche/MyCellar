@@ -441,21 +441,21 @@ public class ProgramPanels {
   }
 
   private static void setPaneModified(int index, boolean modify) {
+    final List<TabLabel> collect = TAB_LABELS.stream()
+        .filter(tabLabel -> tabLabel.getIndex() == index)
+        .collect(Collectors.toList());
+    if (collect.isEmpty() || collect.get(0).isModified() == modify) {
+      return;
+    }
+    final TabLabel tabLabel = collect.get(0);
+    tabLabel.setModified(modify);
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
         if (TABBED_PANE.getTabCount() <= index) {
           return;
         }
-        final List<TabLabel> collect = TAB_LABELS.stream()
-            .filter(tabLabel -> tabLabel.getIndex() == index)
-            .collect(Collectors.toList());
-        if (collect.isEmpty() || collect.get(0).isModified() == modify) {
-          return;
-        }
-        final TabLabel tabLabel = collect.get(0);
         Program.Debug("ProgramPanels: " + index + " " + tabLabel.getLabel() + " " + modify);
-        tabLabel.setModified(modify);
         TABBED_PANE.setTitleAt(index, tabLabel.getLabel());
         TABBED_PANE.updateUI();
       }

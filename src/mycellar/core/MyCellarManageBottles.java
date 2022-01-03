@@ -86,10 +86,11 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
     SwingUtilities.invokeLater(() -> {
       Debug("updateView...");
       updateView = false;
-      panelGeneral.updateView();
-      panelVignobles.updateList();
       if (updateViewType == UpdateViewType.PLACE) {
         panelPlace.updateView();
+      } else {
+        panelGeneral.updateView();
+        panelVignobles.updateList();
       }
       Debug("updateView Done");
     });

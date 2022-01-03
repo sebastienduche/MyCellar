@@ -223,8 +223,8 @@ public final class PanelPlace extends JPanel implements IPlace {
         setListenersEnabled(false);
         resetCombos();
         initPlaceCombo();
-        setListenersEnabled(true);
         managePlaceCombos();
+        setListenersEnabled(true);
         resetLabelEnd();
         Debug("Update view... Done");
       }

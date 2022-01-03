@@ -26,33 +26,16 @@ class TableauValues extends AbstractTableModel {
   private final List<Rangement> list = new LinkedList<>();
   private final List<Boolean> listBoolean = new LinkedList<>();
 
-  /**
-   * getRowCount
-   *
-   * @return int
-   */
   @Override
   public int getRowCount() {
     return list.size();
   }
 
-  /**
-   * getColumnCount
-   *
-   * @return int
-   */
   @Override
   public int getColumnCount() {
     return 4;
   }
 
-  /**
-   * getValueAt
-   *
-   * @param row    int
-   * @param column int
-   * @return Object
-   */
   @Override
   public Object getValueAt(int row, int column) {
     Rangement r = list.get(row);
@@ -87,36 +70,16 @@ class TableauValues extends AbstractTableModel {
     return "";
   }
 
-  /**
-   * getColumnName
-   *
-   * @param column int
-   * @return String
-   */
   @Override
   public String getColumnName(int column) {
     return columnNames[column];
   }
 
-  /**
-   * isCellEditable
-   *
-   * @param row    int
-   * @param column int
-   * @return boolean
-   */
   @Override
   public boolean isCellEditable(int row, int column) {
     return (column == ETAT);
   }
 
-  /**
-   * setValueAt
-   *
-   * @param value  Object
-   * @param row    int
-   * @param column int
-   */
   @Override
   public void setValueAt(Object value, int row, int column) {
     try {
@@ -126,19 +89,11 @@ class TableauValues extends AbstractTableModel {
     }
   }
 
-  /**
-   * addRangement: Fonction pour l'ajout d'un rangement.
-   *
-   * @param r Rangement
-   */
   void addRangement(Rangement r) {
     list.add(r);
     listBoolean.add(Boolean.FALSE);
   }
 
-  /**
-   * removeAll: Supprime toute les bouteilles.
-   */
   public void removeAll() {
     list.clear();
     listBoolean.clear();

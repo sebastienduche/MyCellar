@@ -444,6 +444,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
         protected void done() {
           tv.removeAll();
           Program.getCave().forEach(tv::addRangement);
+          tv.fireTableDataChanged();
         }
       }.execute();
     }

@@ -1,7 +1,6 @@
 package mycellar.general;
 
 import mycellar.AddVin;
-import mycellar.Bouteille;
 import mycellar.Creer_Tableaux;
 import mycellar.Export;
 import mycellar.ManageBottle;
@@ -184,10 +183,10 @@ public class ProgramPanels {
     }.execute();
   }
 
-  public static void updateManagePlacePanel() {
-    final IUpdatable managePlace = UPDATABLE_OBJECTS.get(CELL_ORGANIZER);
-    if (managePlace != null) {
-      managePlace.setUpdateView(UpdateViewType.ALL);
+  public static void updateCellOrganizerPanel() {
+    final IUpdatable cellOrganizer = UPDATABLE_OBJECTS.get(CELL_ORGANIZER);
+    if (cellOrganizer != null) {
+      cellOrganizer.setUpdateView(UpdateViewType.ALL);
     }
   }
 
@@ -414,7 +413,7 @@ public class ProgramPanels {
       protected void done() {
         for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
           Component tab = TABBED_PANE.getComponentAt(i);
-          if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(myCellarObject)) {
+          if (tab instanceof ManageBottle && ((ManageBottle) tab).getMyCellarObject().equals(myCellarObject)) {
             TABBED_PANE.setSelectedIndex(i);
             return;
           }
@@ -436,13 +435,13 @@ public class ProgramPanels {
     }.execute();
   }
 
-  public static void removeBottleTab(Bouteille bottle) {
+  public static void removeBottleTab(MyCellarObject myCellarObject) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
         for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
           Component tab = TABBED_PANE.getComponentAt(i);
-          if (tab instanceof ManageBottle && ((ManageBottle) tab).getBottle().equals(bottle)) {
+          if (tab instanceof ManageBottle && ((ManageBottle) tab).getMyCellarObject().equals(myCellarObject)) {
             removeTabAt(i);
             return;
           }

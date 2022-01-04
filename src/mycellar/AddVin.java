@@ -44,8 +44,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.1
- * @since 03/01/22
+ * @version 30.2
+ * @since 04/01/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -79,7 +79,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     end.setForeground(Color.red);
     end.setHorizontalAlignment(SwingConstants.CENTER);
     setLayout(new BorderLayout());
-    add(new PanelMain(true), BorderLayout.CENTER);
+    add(new PanelMain(), BorderLayout.CENTER);
 
     panelPlace.setModificationDetectionActive(true);
     panelGeneral.setModificationDetectionActive(true);
@@ -221,7 +221,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       if (!panelPlace.isPlaceModified() && isModify) {
         objectAdded = modifyOneOrSeveralObjectsWithoutPlaceModification(annee);
       } else if (rangement.isSimplePlace()) {
-        //Caisse
         Debug("Is a Caisse");
         if (!rangement.hasFreeSpaceInSimplePlace(place)) {
           Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
@@ -270,6 +269,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
               } else {
                 nb_bottle_add_only_one_place = countStillToAdd;
                 for (int z = 0; z < countStillToAdd - 1; z++) {
+                  Debug("Adding bottle... " + z);
                   MyCellarObject copy = createCopy(newMyCellarObject);
                   Program.getStorage().addHistory(HistoryState.ADD, copy);
                   rangement.addObject(copy);
@@ -714,8 +714,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Debug("Do After Run...");
     myCellarObject = null;
     panelGeneral.setMyCellarObject(null);
-    ProgramPanels.updateManagePlacePanel();
-    panelVignobles.updateList();
+    ProgramPanels.updateCellOrganizerPanel();
+    ProgramPanels.setSelectedPaneModified(false);
     if (!isModify) {
       Debug("Do After Run... End");
       return;

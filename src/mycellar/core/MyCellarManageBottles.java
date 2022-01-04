@@ -119,7 +119,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   public final class PanelMain extends JPanel {
     private static final long serialVersionUID = -4824541234206895953L;
 
-    public PanelMain(boolean withCancelButton) {
+    public PanelMain() {
       panelVignobles = new PanelVignobles(false, true, true);
       setLayout(new MigLayout("", "grow", "[][][]10px[][grow]10px[][]"));
       add(panelGeneral, "growx, wrap");
@@ -133,12 +133,8 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
       add(labelComment, "growx, wrap");
       add(scrollPaneComment, "grow, wrap");
       add(end, "center, hidemode 3, wrap");
-      if (withCancelButton) {
-        add(addButton, "center, split 2");
-        add(cancelButton);
-      } else {
-        add(addButton, "center");
-      }
+      add(addButton, "center, split 2");
+      add(cancelButton);
     }
   }
 

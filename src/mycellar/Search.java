@@ -320,7 +320,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           }
 
           RangementUtils.putTabStock();
-          ProgramPanels.updateManagePlacePanel();
+          ProgramPanels.updateCellOrganizerPanel();
 
           if (listToSupp.size() == 1) {
             resul_txt.setText(Program.getLabel("Search.1ItemDeleted", LabelProperty.SINGLE));

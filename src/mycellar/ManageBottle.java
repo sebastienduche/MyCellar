@@ -43,6 +43,7 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
+  private boolean saveAndExit;
 
   /**
    * Constructeur pour la modification de vins
@@ -53,6 +54,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     super();
     isEditionMode = true;
     addButton = new MyCellarButton(MyCellarImage.SAVE);
+    cancelButton = new MyCellarButton(MyCellarImage.SAVE);
 
     try {
       Debug("Constructor with Bottle");
@@ -60,6 +62,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       panelWineAttribute.initValues();
 
       addButton.setText(Program.getLabel("ManageBottle.SaveModifications"));
+      cancelButton.setText(Program.getLabel("ManageBottle.SaveExitModifications"));
       addButton.setMnemonic(ajouterChar);
 
       PopupListener popupListener = new PopupListener();
@@ -70,9 +73,10 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       end.setForeground(Color.red);
       end.setHorizontalAlignment(SwingConstants.CENTER);
       setLayout(new BorderLayout());
-      add(new PanelMain(false), BorderLayout.CENTER);
+      add(new PanelMain(), BorderLayout.CENTER);
 
       addButton.addActionListener((e) -> saving());
+      cancelButton.addActionListener((e) -> savingExit());
 
       setVisible(true);
       Debug("JbInit Done");
@@ -87,7 +91,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     Program.Debug("ManageBottle: " + sText);
   }
 
-  public MyCellarObject getBottle() {
+  public MyCellarObject getMyCellarObject() {
     return myCellarObject;
   }
 
@@ -128,13 +132,22 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
    * saving: Fonction de sauvegarde
    */
   private void saving() {
+    saveAndExit = false;
+    new Thread(this).start();
+  }
+
+  private void savingExit() {
+    saveAndExit = true;
     new Thread(this).start();
   }
 
   @Override
   public void run() {
     try {
-      save();
+      boolean result = save();
+      if (result && saveAndExit) {
+        ProgramPanels.removeBottleTab(myCellarObject);
+      }
     } catch (MyCellarException e) {
       Program.showException(e);
     }
@@ -285,6 +298,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   private boolean runExit() {
     Debug("Processing Quit...");
     addButton.setEnabled(false);
+    cancelButton.setEnabled(false);
 
     boolean modified = panelGeneral.isModified(myCellarObject);
     modified |= commentTextArea.isModified();
@@ -295,6 +309,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error148", OF_THE_SINGLE) + SPACE + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
       Debug("Don't Quit.");
       addButton.setEnabled(true);
+      cancelButton.setEnabled(true);
       return false;
     }
 

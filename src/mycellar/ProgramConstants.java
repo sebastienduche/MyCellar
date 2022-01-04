@@ -11,12 +11,12 @@ import java.time.format.DateTimeFormatter;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 16/12/21
+ * @version 0.5
+ * @since 04/01/22
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.4.0.0";
+  public static final String INTERNAL_VERSION = "4.4.0.2";
   public static final int VERSION = 72;
   public static final String MAIN_VERSION = VERSION + " CO";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
@@ -55,7 +55,8 @@ public final class ProgramConstants {
   public static final char CHAR_Q = 'Q';
   public static final char CHAR_DOT = '.';
   public static final char CHAR_COMMA = ',';
-
+  public static final String NORMAL = "75cl";
+  public static final String HALF = "37.5cl";
   static final String INFOS_VERSION = " 2021 v";
   static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
   static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);
@@ -67,7 +68,6 @@ public final class ProgramConstants {
   static final String TYPES_MUSIC_XML = "music_types.xml";
   static final String BOUTEILLES_XML = "Bouteilles.xml";
   static final String CONFIG_INI = "config.ini";
-
   static final String RESTART_COMMAND = "restart";
   static final String DOWNLOAD_COMMAND = "download";
   static final String OPTIONS_PARAM = "-opts=";

@@ -68,8 +68,8 @@ import static mycellar.ProgramConstants.SPACE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.5
- * @since 03/01/22
+ * @version 22.6
+ * @since 04/01/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -1036,7 +1036,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     }
     updateView = false;
     panelYear.fillYear();
-    if (updateViewType == UpdateViewType.PLACE) {
+    if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
       new MyCellarSwingWorker() {
         @Override
         protected void done() {

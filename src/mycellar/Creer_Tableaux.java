@@ -61,8 +61,8 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.2
- * @since 03/01/22
+ * @version 8.3
+ * @since 04/01/22
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
@@ -70,7 +70,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   private final MyCellarRadioButton type_XML = new MyCellarRadioButton(LabelType.INFO, "210", false);
   private final MyCellarRadioButton type_HTML = new MyCellarRadioButton(LabelType.INFO, "211", true);
   private final MyCellarRadioButton type_XLS = new MyCellarRadioButton(LabelType.INFO, "233", false);
-  private final TableauValues tv = new TableauValues();
+  private final TableauValues tableauValues = new TableauValues();
   @SuppressWarnings("deprecation")
   private final MyCellarLabel end = new MyCellarLabel();
   private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "152");
@@ -85,21 +85,21 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   public Creer_Tableaux() {
     Debug("Constructor");
     try {
-      final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO, "095"); //"Nom du fichier genere:");
+      final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO, "095"); //"Nom du fichier genere:
       m_jcb_options.addActionListener(this::options_actionPerformed);
       final MyCellarButton browse = new MyCellarButton("...");
       browse.addActionListener(this::browse_actionPerformed);
       final MyCellarButton parameter = new MyCellarButton(LabelType.INFO_OTHER, "Main.Parameters");
       parameter.addActionListener(this::param_actionPerformed);
-      final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO, "096"); //"Selectionner les rangements a generer:");
-      final MyCellarButton create = new MyCellarButton(LabelType.INFO, "018"); //"Creer");
+      final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO, "096"); //"Selectionner les rangements a generer:
+      final MyCellarButton create = new MyCellarButton(LabelType.INFO, "018"); //"Creer
       create.setMnemonic(creerChar);
 
       final ButtonGroup buttonGroup = new ButtonGroup();
       buttonGroup.add(type_HTML);
       buttonGroup.add(type_XML);
       buttonGroup.add(type_XLS);
-      table = new JTable(tv);
+      table = new JTable(tableauValues);
       table.setAutoCreateRowSorter(true);
       TableColumnModel tcm = table.getColumnModel();
       TableColumn tc = tcm.getColumn(TableauValues.ETAT);
@@ -112,7 +112,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
       type_HTML.addActionListener(this::jradio_actionPerformed);
       type_XLS.addActionListener(this::jradio_actionPerformed);
 
-      Program.getCave().forEach(tv::addRangement);
+      Program.getCave().forEach(tableauValues::addRangement);
 
       JScrollPane jScrollPane = new JScrollPane(table);
       end.setHorizontalAlignment(SwingConstants.CENTER);
@@ -183,13 +183,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     Program.Debug("Creer_Tableaux: " + sText);
   }
 
-  /**
-   * browse_actionPerformed: Bouton parcourir.
-   *
-   * @param e ActionEvent
-   */
   private void browse_actionPerformed(ActionEvent e) {
-
     Debug("browse_actionPerforming...");
     JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR, ""));
     boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
@@ -220,11 +214,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     }
   }
 
-  /**
-   * create_actionPerformed: Fonction de creation des tableaux.
-   *
-   * @param e ActionEvent
-   */
   private void create_actionPerformed(ActionEvent e) {
     try {
       Debug("create_actionPerforming...");
@@ -258,10 +247,10 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
         }
       }
       int count = 0;
-      int max_row = tv.getRowCount();
+      int max_row = tableauValues.getRowCount();
       int row = 0;
       do {
-        if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
+        if (tableauValues.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
           count++;
         }
         row++;
@@ -275,8 +264,8 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
       row = 0;
       LinkedList<Rangement> rangements = new LinkedList<>();
       do {
-        if (tv.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
-          rangements.add(tv.getRangementAt(row));
+        if (tableauValues.getValueAt(row, TableauValues.ETAT).toString().equals("true")) {
+          rangements.add(tableauValues.getRangementAt(row));
         }
         row++;
       } while (row < max_row);
@@ -313,16 +302,16 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
         if (caisseCount > 0) {
           String erreur_txt1, erreur_txt2;
           if (caisseCount == 1) {
-            erreur_txt1 = Program.getError("Error091"); //"Vous avez selectionne un rangement de type Caisse");
-            erreur_txt2 = Program.getError("Error092", LabelProperty.PLURAL); //"Une liste des vins de ce rangement a ete generee.");
+            erreur_txt1 = Program.getError("Error091"); //"Vous avez selectionne un rangement de type Caisse
+            erreur_txt2 = Program.getError("Error092", LabelProperty.PLURAL); //"Une liste des vins de ce rangement a ete generee.
           } else {
-            erreur_txt1 = Program.getError("Error127"); //"Vous avez selectionne des rangements de type Caisse");
-            erreur_txt2 = Program.getError("Error128", LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.");
+            erreur_txt1 = Program.getError("Error127"); //"Vous avez selectionne des rangements de type Caisse
+            erreur_txt2 = Program.getError("Error128", LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.
           }
           Erreur.showInformationMessageWithKey(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
         }
       }
-      end.setText(Program.getLabel("Infos097"), true); //"Fichier genere.");
+      end.setText(Program.getLabel("Infos097"), true); //"Fichier genere.
       preview.setEnabled(true);
     } catch (TransformerConfigurationException e1) {
       Debug("ERROR: TransformerConfigurationException : " + e1.getMessage());
@@ -350,17 +339,12 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   }
 
   private void selectall_actionPerformed(ActionEvent e) {
-    for (int i = 0; i < tv.getRowCount(); i++) {
-      tv.setValueAt(selectall.isSelected(), i, 0);
+    for (int i = 0; i < tableauValues.getRowCount(); i++) {
+      tableauValues.setValueAt(selectall.isSelected(), i, 0);
     }
     table.updateUI();
   }
 
-  /**
-   * options_actionPerformed: Appel de la fenetre d'options.
-   *
-   * @param e ActionEvent
-   */
   private void options_actionPerformed(ActionEvent e) {
     XLSTabOptions oXLSTabOptions = new XLSTabOptions();
     oXLSTabOptions.setVisible(true);
@@ -371,11 +355,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     m_jcb_options.setEnabled(type_XLS.isSelected());
   }
 
-  /**
-   * param_actionPerformed: Appelle la fenetre de parametres.
-   *
-   * @param e ActionEvent
-   */
   private void param_actionPerformed(ActionEvent e) {
     Debug("param_actionPerforming...");
     String titre = Program.getLabel("Infos310");
@@ -438,13 +417,13 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
       return;
     }
     updateView = false;
-    if (updateViewType == UpdateViewType.PLACE) {
+    if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
       new MyCellarSwingWorker() {
         @Override
         protected void done() {
-          tv.removeAll();
-          Program.getCave().forEach(tv::addRangement);
-          tv.fireTableDataChanged();
+          tableauValues.removeAll();
+          Program.getCave().forEach(tableauValues::addRangement);
+          tableauValues.fireTableDataChanged();
         }
       }.execute();
     }

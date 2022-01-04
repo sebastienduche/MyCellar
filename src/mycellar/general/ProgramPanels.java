@@ -78,8 +78,8 @@ import static mycellar.ScreenType.VIGNOBLES;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 03/01/22
+ * @version 1.4
+ * @since 04/01/22
  */
 public class ProgramPanels {
 
@@ -144,6 +144,7 @@ public class ProgramPanels {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
+        Program.Debug("ProgramPanels: updateAllPanels");
         UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.ALL));
         UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.ALL));
       }
@@ -154,8 +155,31 @@ public class ProgramPanels {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
+        Program.Debug("ProgramPanels: updateAllPanelsForUpdatingPlaces");
         UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.PLACE));
         UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.PLACE));
+      }
+    }.execute();
+  }
+
+  public static void updateAllPanelsForUpdatingCapacity() {
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        Program.Debug("ProgramPanels: updateAllPanelsForUpdatingCapacity");
+        UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.CAPACITY));
+        UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.CAPACITY));
+      }
+    }.execute();
+  }
+
+  public static void updateAllPanelsForUpdatingVineyard() {
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        Program.Debug("ProgramPanels: updateAllPanelsForUpdatingVineyard");
+        UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.VINEYARD));
+        UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.VINEYARD));
       }
     }.execute();
   }

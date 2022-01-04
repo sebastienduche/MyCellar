@@ -50,8 +50,8 @@ import static mycellar.MyCellarUtils.isDefined;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 03/01/22
+ * @version 3.3
+ * @since 04/01/22
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -186,7 +186,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   public void tabClosed() {
     comboCountry.setSelectedIndex(0);
     model.setAppellations(null, null);
-    ProgramPanels.updateAllPanels();
+    ProgramPanels.updateAllPanelsForUpdatingVineyard();
     Start.getInstance().updateMainPanel();
   }
 

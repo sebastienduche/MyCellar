@@ -6,6 +6,7 @@ import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
+import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.exceptions.MyCellarException;
@@ -37,8 +38,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.2
- * @since 01/01/22
+ * @version 9.3
+ * @since 04/01/22
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -326,9 +327,15 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       Debug("updateView...");
       panelPlace.setListenersEnabled(false);
       updateView = false;
-      panelGeneral.updateView();
-      panelVignobles.updateList();
-      panelPlace.updateView();
+      if (updateViewType == UpdateViewType.CAPACITY || updateViewType == UpdateViewType.ALL) {
+        panelGeneral.updateView();
+      }
+      if (updateViewType == UpdateViewType.VINEYARD || updateViewType == UpdateViewType.ALL) {
+        panelVignobles.updateList();
+      }
+      if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
+        panelPlace.updateView();
+      }
       panelPlace.selectPlace(myCellarObject);
       panelPlace.setListenersEnabled(true);
       Debug("updateView End");

@@ -21,8 +21,8 @@ import javax.swing.SwingUtilities;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.0
- * @since 03/01/22
+ * @version 5.1
+ * @since 04/01/22
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
@@ -44,7 +44,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected boolean isEditionMode = false;
 
   protected boolean updateView = false;
-  private UpdateViewType updateViewType;
+  protected UpdateViewType updateViewType;
 
   protected MyCellarManageBottles() {
   }
@@ -86,10 +86,13 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
     SwingUtilities.invokeLater(() -> {
       Debug("updateView...");
       updateView = false;
-      if (updateViewType == UpdateViewType.PLACE) {
+      if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
         panelPlace.updateView();
-      } else {
+      }
+      if (updateViewType == UpdateViewType.CAPACITY || updateViewType == UpdateViewType.ALL) {
         panelGeneral.updateView();
+      }
+      if (updateViewType == UpdateViewType.VINEYARD || updateViewType == UpdateViewType.ALL) {
         panelVignobles.updateList();
       }
       Debug("updateView Done");

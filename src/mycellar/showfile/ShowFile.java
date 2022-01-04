@@ -1030,14 +1030,16 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     updateView = false;
     model.fireTableStructureChanged();
-    if (updateViewType == UpdateViewType.PLACE) {
+    if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
       placeCbx.removeAllItems();
       Program.getCave().forEach(placeCbx::addItem);
     }
 
-    typeCbx.removeAllItems();
-    typeCbx.addItem("");
-    MyCellarBottleContenance.getList().forEach(typeCbx::addItem);
+    if (updateViewType == UpdateViewType.CAPACITY || updateViewType == UpdateViewType.ALL) {
+      typeCbx.removeAllItems();
+      typeCbx.addItem("");
+      MyCellarBottleContenance.getList().forEach(typeCbx::addItem);
+    }
 
     updateModel(columns);
   }

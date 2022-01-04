@@ -61,8 +61,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.1
- * @since 03/01/22
+ * @version 9.2
+ * @since 04/01/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -283,7 +283,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
     updateView = false;
     RangementUtils.putTabStock();
-    if (updateViewType == UpdateViewType.PLACE) {
+    if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
       new MyCellarSwingWorker() {
         @Override
         protected void done() {

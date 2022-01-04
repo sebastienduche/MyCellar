@@ -2,5 +2,7 @@ package mycellar.core;
 
 public enum UpdateViewType {
   ALL,
-  PLACE
+  PLACE,
+  CAPACITY,
+  VINEYARD
 }

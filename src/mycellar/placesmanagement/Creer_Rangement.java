@@ -12,6 +12,7 @@ import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarSettings;
+import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
@@ -61,8 +62,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.5
- * @since 03/01/22
+ * @version 15.6
+ * @since 04/01/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -705,11 +706,16 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
   @Override
   public void updateView() {
-    if (updateViewType == UpdateViewType.PLACE) {
-      comboPlace.removeAllItems();
-      comboPlace.addItem(Program.EMPTY_PLACE);
-      Program.getCave().forEach(comboPlace::addItem);
+    if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
       updateViewType = null;
+      new MyCellarSwingWorker() {
+        @Override
+        protected void done() {
+          comboPlace.removeAllItems();
+          comboPlace.addItem(Program.EMPTY_PLACE);
+          Program.getCave().forEach(comboPlace::addItem);
+        }
+      }.execute();
     }
   }
 

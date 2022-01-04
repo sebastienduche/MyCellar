@@ -7,6 +7,7 @@ import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
+import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.tablecomponents.ButtonCellEditor;
@@ -22,7 +23,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -35,8 +35,8 @@ import static mycellar.core.LabelType.INFO;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 03/01/22
+ * @version 1.6
+ * @since 04/01/22
  */
 
 public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -45,6 +45,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   private final CapacityTableModel model = new CapacityTableModel();
   private final MyCellarComboBox<String> defaultComboBox = new MyCellarComboBox<>();
   private final JTable table;
+  private UpdateViewType updateViewType;
 
   public CapacityPanel() {
     defaultComboBox.addItem("");
@@ -77,7 +78,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
       model.addValue(s);
       defaultComboBox.addItem(s);
     }
-    ProgramPanels.updateAllPanels();
+    ProgramPanels.updateAllPanelsForUpdatingCapacity();
   }
 
   @Override
@@ -102,15 +103,21 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
 
   @Override
   public void setUpdateView(UpdateViewType updateViewType) {
+    this.updateViewType = updateViewType;
   }
 
   @Override
   public void updateView() {
-    SwingUtilities.invokeLater(() -> {
-      defaultComboBox.removeAllItems();
-      defaultComboBox.addItem("");
-      MyCellarBottleContenance.getList().forEach(defaultComboBox::addItem);
-      defaultComboBox.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
-    });
+    if (updateViewType == UpdateViewType.CAPACITY || updateViewType == UpdateViewType.ALL) {
+      new MyCellarSwingWorker() {
+        @Override
+        protected void done() {
+          defaultComboBox.removeAllItems();
+          defaultComboBox.addItem("");
+          MyCellarBottleContenance.getList().forEach(defaultComboBox::addItem);
+          defaultComboBox.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
+        }
+      }.execute();
+    }
   }
 }

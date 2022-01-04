@@ -69,8 +69,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.1
- * @since 03/01/22
+ * @version 4.2
+ * @since 04/01/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -310,10 +310,13 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 
   @Override
   public void updateView() {
-    if (!updateView || updateViewType != UpdateViewType.PLACE) {
+    if (!updateView) {
       return;
     }
     updateView = false;
+    if (updateViewType != UpdateViewType.PLACE && updateViewType != UpdateViewType.ALL) {
+      return;
+    }
     SwingUtilities.invokeLater(() -> {
       armoires.clear();
       comboRangement.removeAllItems();

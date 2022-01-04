@@ -368,7 +368,6 @@ public final class Program {
     Debug("Program: Set Language: " + lang);
     MyCellarLabelManagement.updateLabels();
     ProgramPanels.removeAll();
-    ProgramPanels.clearObjectsVariables();
     LanguageFileLoader.getInstance().loadLanguageFiles(lang);
     ProgramPanels.PANEL_INFOS.setLabels();
     Start.getInstance().updateLabels();
@@ -860,9 +859,8 @@ public final class Program {
       getStorage().close();
       CountryVignobleController.close();
       CountryListJaxb.close();
-      ProgramPanels.getSearch().ifPresent(Search::clearResults);
+//      ProgramPanels.getSearch().ifPresent(Search::clearResults);
     }
-    ProgramPanels.clearObjectsVariables();
     workDirCalculated = false;
     TRASH.clear();
     modified = false;

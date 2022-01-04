@@ -1019,9 +1019,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     this.updateViewType = updateViewType;
   }
 
-  /**
-   * Mise a jour de la liste des rangements
-   */
   @Override
   public void updateView() {
     refresh();

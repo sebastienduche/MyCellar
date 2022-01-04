@@ -137,12 +137,6 @@ public class ProgramPanels {
     return className.cast(TABBED_PANE.getSelectedComponent());
   }
 
-  public static void clearObjectsVariables() {
-    UPDATABLE_OBJECTS.clear();
-    UPDATABLE_BOTTLES.clear();
-    OPENED_OBJECTS.clear();
-  }
-
   public static void updateAllPanels() {
     new MyCellarSwingWorker() {
       @Override
@@ -608,6 +602,9 @@ public class ProgramPanels {
   public static void removeAll() {
     TABBED_PANE.removeAll();
     TAB_LABELS.clear();
+    UPDATABLE_OBJECTS.clear();
+    UPDATABLE_BOTTLES.clear();
+    OPENED_OBJECTS.clear();
   }
 
   public static boolean runExit() {

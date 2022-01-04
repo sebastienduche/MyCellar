@@ -22,6 +22,7 @@ import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.uicomponents.JButtonTabComponent;
 import mycellar.importer.Importer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
@@ -94,7 +95,7 @@ public class ProgramPanels {
   private static final Map<ScreenType, IUpdatable> UPDATABLE_OBJECTS = new EnumMap<>(ScreenType.class);
   private static final Map<Integer, IUpdatable> UPDATABLE_BOTTLES = new HashMap<>();
 
-  public static int findTab(ImageIcon image) {
+  public static int findTab(ImageIcon image, Component component) {
     for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
       try {
         if (TABBED_PANE.getTabComponentAt(i) != null && TABBED_PANE.getIconAt(i) != null && TABBED_PANE.getIconAt(i).equals(image)) {
@@ -102,6 +103,9 @@ public class ProgramPanels {
         }
       } catch (RuntimeException ignored) {
       }
+    }
+    if (component != null) {
+      return TABBED_PANE.indexOfComponent(component);
     }
     return -1;
   }
@@ -621,6 +625,21 @@ public class ProgramPanels {
 
   public static JTabbedPane getTabbedPane() {
     return TABBED_PANE;
+  }
+
+  public static boolean saveObjects() throws MyCellarException {
+    for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
+      Component tab = TABBED_PANE.getComponentAt(i);
+      if (tab instanceof ManageBottle) {
+        if (TABBED_PANE.getTitleAt(i).endsWith(STAR)) {
+          TABBED_PANE.setSelectedIndex(i);
+        }
+        if (!((ManageBottle) tab).save()) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   static class TabLabel {

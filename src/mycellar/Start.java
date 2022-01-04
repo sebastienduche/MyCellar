@@ -46,7 +46,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -81,7 +80,6 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.OPTIONS_PARAM;
 import static mycellar.ProgramConstants.RESTART_COMMAND;
 import static mycellar.ProgramConstants.SPACE;
-import static mycellar.ProgramConstants.STAR;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
 
@@ -916,9 +914,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       }
     });
 
-    ProgramPanels.getTabbedPane().addChangeListener((arg) -> {
-      ProgramPanels.updateSelectedTab();
-    });
+    ProgramPanels.getTabbedPane().addChangeListener((arg) -> ProgramPanels.updateSelectedTab());
 
     menuQuit.addActionListener((e) -> quitter_actionPerformed());
     about.addActionListener((e) -> about_actionPerformed());
@@ -1221,16 +1217,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
         return;
       }
       try {
-        for (int i = 0; i < ProgramPanels.getTabbedPane().getTabCount(); i++) {
-          Component tab = ProgramPanels.getTabbedPane().getComponentAt(i);
-          if (tab instanceof ManageBottle) {
-            if (ProgramPanels.getTabbedPane().getTitleAt(i).endsWith(STAR)) {
-              ProgramPanels.getTabbedPane().setSelectedIndex(i);
-            }
-            if (!((ManageBottle) tab).save()) {
-              return;
-            }
-          }
+        if (!ProgramPanels.saveObjects()) {
+          return;
         }
         setEnabled(false);
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

@@ -36,7 +36,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
     SwingUtilities.invokeLater(() -> {
       final ShowFile showWorksheet = ProgramPanels.createShowWorksheet();
       showWorksheet.updateView();
-      int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK);
+      int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK, null);
       final String label = Program.getLabel(LABEL);
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);

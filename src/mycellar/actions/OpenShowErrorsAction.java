@@ -22,7 +22,7 @@ public class OpenShowErrorsAction extends AbstractAction {
     SwingUtilities.invokeLater(() -> {
       final ShowFile showErrors = ProgramPanels.createShowErrors();
       showErrors.updateView();
-      int tabIndex = ProgramPanels.findTab(MyCellarImage.ERROR);
+      int tabIndex = ProgramPanels.findTab(MyCellarImage.ERROR, null);
       final String label = Program.getLabel("ShowFile.ErrorTitle");
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);

@@ -114,8 +114,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.5
- * @since 01/01/22
+ * @version 27.6
+ * @since 04/01/22
  */
 
 public final class Program {
@@ -367,8 +367,7 @@ public final class Program {
   static void setLanguage(Language lang) {
     Debug("Program: Set Language: " + lang);
     MyCellarLabelManagement.updateLabels();
-    ProgramPanels.TABBED_PANE.removeAll();
-    ProgramPanels.clearTabLabels();
+    ProgramPanels.removeAll();
     ProgramPanels.clearObjectsVariables();
     LanguageFileLoader.getInstance().loadLanguageFiles(lang);
     ProgramPanels.PANEL_INFOS.setLabels();
@@ -856,8 +855,7 @@ public final class Program {
       }
     }
 
-    ProgramPanels.TABBED_PANE.removeAll();
-    ProgramPanels.clearTabLabels();
+    ProgramPanels.removeAll();
     if (myCellarFile.exists()) {
       getStorage().close();
       CountryVignobleController.close();

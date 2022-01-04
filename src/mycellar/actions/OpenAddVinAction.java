@@ -4,7 +4,6 @@ import mycellar.AddVin;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.Utils;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
 import mycellar.general.ProgramPanels;
@@ -31,21 +30,15 @@ public class OpenAddVinAction extends AbstractAction {
 
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WINE);
       if (tabIndex != -1) {
-        tabIndex = ProgramPanels.TABBED_PANE.indexOfComponent(addVin);
+        tabIndex = ProgramPanels.getTabbedPane().indexOfComponent(addVin);
       }
       final String label = Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL);
       if (tabIndex != -1) {
-        ProgramPanels.TABBED_PANE.setTitleAt(tabIndex, label);
-        ProgramPanels.TABBED_PANE.setSelectedIndex(tabIndex);
-        ProgramPanels.updateTabLabel(tabIndex, label);
+        ProgramPanels.setTitleAt(tabIndex, label);
       } else {
-        ProgramPanels.TABBED_PANE.addTab(label, MyCellarImage.WINE, addVin);
-        final int index = ProgramPanels.TABBED_PANE.getTabCount() - 1;
-        ProgramPanels.TABBED_PANE.setSelectedIndex(index);
-        ProgramPanels.addTabLabel(index, label);
+        ProgramPanels.addTab(label, MyCellarImage.WINE, addVin);
       }
 
-      Utils.addCloseButtonToTab(addVin);
       Start.getInstance().updateMainPanel();
     });
   }

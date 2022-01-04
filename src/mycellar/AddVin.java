@@ -740,8 +740,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       listVin = null;
       final int selectedIndex = ProgramPanels.getSelectedTabIndex();
       final String label = Program.getLabel("Main.tabAdd", A_SINGLE);
-      ProgramPanels.TABBED_PANE.setTitleAt(selectedIndex, label);
-      ProgramPanels.updateTabLabel(selectedIndex, label);
+      ProgramPanels.setTitleAt(selectedIndex, label);
     }
     panelGeneral.setSeveralItems(severalItems);
     panelPlace.resetValues();

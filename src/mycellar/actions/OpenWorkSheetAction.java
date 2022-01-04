@@ -4,7 +4,6 @@ import mycellar.Bouteille;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.Utils;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.uicomponents.MyCellarAction;
@@ -40,17 +39,11 @@ public final class OpenWorkSheetAction extends MyCellarAction {
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK);
       final String label = Program.getLabel(LABEL);
       if (tabIndex != -1) {
-        ProgramPanels.TABBED_PANE.setTitleAt(tabIndex, label);
-        ProgramPanels.TABBED_PANE.setSelectedIndex(tabIndex);
-        ProgramPanels.updateTabLabel(tabIndex, label);
+        ProgramPanels.setTitleAt(tabIndex, label);
       } else {
-        ProgramPanels.TABBED_PANE.addTab(label, MyCellarImage.WORK, showWorksheet);
-        final int index = ProgramPanels.TABBED_PANE.getTabCount() - 1;
-        ProgramPanels.TABBED_PANE.setSelectedIndex(index);
-        ProgramPanels.addTabLabel(index, label);
+        ProgramPanels.addTab(label, MyCellarImage.WORK, showWorksheet);
       }
 
-      Utils.addCloseButtonToTab(showWorksheet);
       Start.getInstance().updateMainPanel();
       showWorksheet.addWorkingBottles(bouteilles);
     });

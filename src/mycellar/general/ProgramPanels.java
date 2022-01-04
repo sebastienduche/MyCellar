@@ -3,6 +3,7 @@ package mycellar.general;
 import mycellar.AddVin;
 import mycellar.Creer_Tableaux;
 import mycellar.Export;
+import mycellar.ITabListener;
 import mycellar.ManageBottle;
 import mycellar.MyCellarImage;
 import mycellar.Parametres;
@@ -12,7 +13,6 @@ import mycellar.Search;
 import mycellar.ShowHistory;
 import mycellar.Start;
 import mycellar.Stat;
-import mycellar.Utils;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
@@ -22,6 +22,7 @@ import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
+import mycellar.core.uicomponents.JButtonTabComponent;
 import mycellar.importer.Importer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
@@ -33,6 +34,9 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 import java.awt.Component;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -83,7 +87,7 @@ import static mycellar.ScreenType.VIGNOBLES;
 public class ProgramPanels {
 
   public static final PanelInfos PANEL_INFOS = new PanelInfos();
-  public static final JTabbedPane TABBED_PANE = new JTabbedPane();
+  private static final JTabbedPane TABBED_PANE = new JTabbedPane();
   private static final List<TabLabel> TAB_LABELS = new ArrayList<>();
 
   private static final Map<ScreenType, IMyCellar> OPENED_OBJECTS = new EnumMap<>(ScreenType.class);
@@ -425,11 +429,7 @@ public class ProgramPanels {
         if (bottleName.length() > 30) {
           bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
         }
-        TABBED_PANE.addTab(bottleName, MyCellarImage.WINE, manage);
-        final int index = TABBED_PANE.getTabCount() - 1;
-        TABBED_PANE.setSelectedIndex(index);
-        addTabLabel(index, bottleName);
-        Utils.addCloseButtonToTab(manage);
+        addTab(bottleName, MyCellarImage.WINE, manage);
         Start.getInstance().updateMainPanel();
       }
     }.execute();
@@ -492,33 +492,45 @@ public class ProgramPanels {
         try {
           TABBED_PANE.setSelectedComponent(component);
         } catch (IllegalArgumentException e) {
-          addTab(component, tabLabel, icon);
+          addTab(Program.getLabel(tabLabel, LabelProperty.SINGLE), icon, component);
         }
       }
     }.execute();
   }
 
-  private static void addTab(Component component, String tabLabel, Icon icon) {
+  public static void insertTab(String title, Icon icon, Component component, int index) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
-        try {
-          final String label = Program.getLabel(tabLabel, LabelProperty.SINGLE);
-          TABBED_PANE.addTab(label, component);
-          final int index = TABBED_PANE.getTabCount() - 1;
-          TABBED_PANE.setIconAt(index, icon);
-          addTabLabel(index, label);
-          Utils.addCloseButtonToTab(component);
-          TABBED_PANE.setSelectedComponent(component);
-          updateVisibility();
-        } catch (RuntimeException e) {
-          Program.showException(e);
-        }
+        TABBED_PANE.insertTab(title, icon, component, null, index);
+        addCloseButtonToTab(component, getSelectedTabIndex(), true);
+        insertTabLabel(index, title);
+        TABBED_PANE.setSelectedIndex(index);
       }
     }.execute();
   }
 
-  public static void updateVisibility() {
+  public static void addTab(String title, Icon icon, Component component) {
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        TABBED_PANE.addTab(title, icon, component);
+        addCloseButtonToTab(component);
+        int index = TABBED_PANE.getTabCount() - 1;
+        addTabLabel(index, title);
+        TABBED_PANE.setSelectedIndex(index);
+        updateVisibility();
+      }
+    }.execute();
+  }
+
+  public static void setTitleAt(int index, String title) {
+    TABBED_PANE.setTitleAt(index, title);
+    updateTabLabel(index, title);
+    TABBED_PANE.setSelectedIndex(index);
+  }
+
+  private static void updateVisibility() {
     int count = TABBED_PANE.getTabCount();
     PANEL_INFOS.setVisible(count == 0);
     TABBED_PANE.setVisible(count > 0);
@@ -527,24 +539,20 @@ public class ProgramPanels {
     }
   }
 
-  public static void addTabLabel(int index, String label) {
+  private static void addTabLabel(int index, String label) {
     TAB_LABELS.add(new TabLabel(index, label));
   }
 
-  public static void insertTabLabel(int index, String label) {
+  private static void insertTabLabel(int index, String label) {
     TAB_LABELS.stream().filter(tabLabel -> tabLabel.getIndex() >= index).forEach(TabLabel::incrementIndex);
     TAB_LABELS.add(new TabLabel(index, label));
   }
 
-  public static void updateTabLabel(int index, String label) {
+  private static void updateTabLabel(int index, String label) {
     TAB_LABELS.stream()
         .filter(tabLabel -> tabLabel.getIndex() == index)
         .forEach(tabLabel -> tabLabel.setLabel(label));
     TAB_LABELS.add(new TabLabel(index, label));
-  }
-
-  public static void clearTabLabels() {
-    TAB_LABELS.clear();
   }
 
   public static void removeSelectedTab() {
@@ -556,6 +564,66 @@ public class ProgramPanels {
     final List<TabLabel> tabLabels = TAB_LABELS.stream().filter(tabLabel -> tabLabel.getIndex() == index).collect(Collectors.toList());
     TAB_LABELS.removeAll(tabLabels);
     TAB_LABELS.stream().filter(tabLabel -> tabLabel.getIndex() > index).forEach(TabLabel::decrementIndex);
+  }
+
+  private static void addCloseButtonToTab(final Component component) {
+    addCloseButtonToTab(component, -1, true);
+  }
+
+  private static void addCloseButtonToTab(final Component component, int indexToGoBack, boolean leftTabDirection) {
+    final int index = TABBED_PANE.indexOfComponent(component);
+    if (index != -1) {
+      TABBED_PANE.setTabComponentAt(index,
+          new JButtonTabComponent(TABBED_PANE, indexToGoBack));
+    }
+
+    TABBED_PANE.addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if ((e.getKeyCode() == KeyEvent.VK_W)
+            && (e.getModifiersEx() == InputEvent.CTRL_DOWN_MASK)) {
+
+          // Ctrl-W permet de fermer les onglets du JTabbedPane
+          final int selectedIndex = TABBED_PANE.getSelectedIndex();
+          if ((selectedIndex != -1)
+              && (TABBED_PANE.getSelectedComponent().equals(component))) {
+
+            // Un onglet est actif, supprimer le composant
+            removeTabAt(selectedIndex);
+            int previousIndex = leftTabDirection ? selectedIndex - 1 : indexToGoBack;
+            if (previousIndex != -1 && TABBED_PANE.getTabCount() > previousIndex) {
+              TABBED_PANE.setSelectedIndex(previousIndex);
+            }
+
+            // Se deferencer en tant que listener
+            TABBED_PANE.removeKeyListener(this);
+
+            e.consume();
+          }
+        }
+      }
+    });
+  }
+
+  public static void removeAll() {
+    TABBED_PANE.removeAll();
+    TAB_LABELS.clear();
+  }
+
+  public static boolean runExit() {
+    for (Component c : TABBED_PANE.getComponents()) {
+      if (c instanceof ITabListener) {
+        if (!((ITabListener) c).tabWillClose(null)) {
+          Program.Debug("ProgramPanels: Exiting progam cancelled!");
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  public static JTabbedPane getTabbedPane() {
+    return TABBED_PANE;
   }
 
   static class TabLabel {

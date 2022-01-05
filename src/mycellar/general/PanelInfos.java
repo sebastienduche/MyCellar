@@ -4,12 +4,11 @@ import mycellar.PanelHistory;
 import mycellar.Program;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -188,7 +187,6 @@ final class PanelStats extends JPanel {
     public void setValueAt(Object arg0, int row, int column) {
       if (column == 2) {
         Rangement rangement = names.get(row);
-        RangementUtils.putTabStock();
         XmlUtils.writeRangements("", List.of(rangement), false);
         Program.open(Program.getPreviewXMLFileName(), false);
       }

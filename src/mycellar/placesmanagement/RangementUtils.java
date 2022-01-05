@@ -5,13 +5,13 @@ import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
-import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.CountryListJaxb;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.general.ProgramPanels;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -65,8 +65,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.2
- * @since 27/10/21
+ * @version 4.3
+ * @since 05/01/22
  */
 public final class RangementUtils {
 
@@ -451,7 +451,7 @@ public final class RangementUtils {
   }
 
   /**
-   * write_XLSTab: Fonction d'ecriture du ficher Excel des tableaux
+   * write_XLSTab: Fonction d'ecriture du fichier Excel des tableaux
    *
    * @param file    String: Fichier a ecrire.
    * @param _oPlace LinkedList: liste de rangements a ecrire
@@ -548,9 +548,8 @@ public final class RangementUtils {
               }
               final SXSSFRow rowBottle = sheet.createRow(nLine);
               for (int l = 1; l <= nCol; l++) {
-                final Optional<MyCellarObject> b = place.getObject(j - 1, k - 1, l - 1);
                 int finalL = l;
-                b.ifPresent(bouteille -> {
+                place.getObject(j - 1, k - 1, l - 1).ifPresent(bouteille -> {
                   final Cell cellBottle = rowBottle.createCell(finalL);
                   cellBottle.setCellValue(getLabelToDisplay(bouteille));
                   cellBottle.setCellStyle(cellStyle);
@@ -596,9 +595,6 @@ public final class RangementUtils {
     return toCleanString(sTitle);
   }
 
-  /**
-   * findRangementToCreate
-   */
   public static void findRangementToCreate() {
 
     final Map<String, LinkedList<Part>> rangements = new HashMap<>();
@@ -638,7 +634,7 @@ public final class RangementUtils {
   }
 
   public static boolean isExistingPlace(final String name) {
-    if (name == null || name.strip().isEmpty()) {
+    if (name == null || name.isBlank()) {
       return false;
     }
 
@@ -716,7 +712,6 @@ public final class RangementUtils {
         }
       }
     }
-    // Suppression des bouteilles posant probleme
     for (var error : Program.getErrors()) {
       Debug("Error putTabStock: " + error.getMyCellarObject());
     }

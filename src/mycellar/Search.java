@@ -25,7 +25,6 @@ import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.ui.PanelRequest;
 import mycellar.vignobles.CountryVignobleController;
@@ -68,8 +67,8 @@ import static mycellar.ProgramConstants.SPACE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 22.6
- * @since 04/01/22
+ * @version 22.7
+ * @since 05/01/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -311,7 +310,12 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             model.removeBouteille(bottle);
             Program.getStorage().addHistory(HistoryState.DEL, bottle);
             try {
-              Program.getStorage().deleteWine(bottle);
+              final Rangement rangement = bottle.getRangement();
+              if (rangement != null) {
+                rangement.removeObject(bottle);
+              } else {
+                Program.getStorage().deleteWine(bottle);
+              }
             } catch (MyCellarException myCellarException) {
               Program.showException(myCellarException);
             }
@@ -319,7 +323,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             ProgramPanels.removeBottleTab(bottle);
           }
 
-          RangementUtils.putTabStock();
           ProgramPanels.updateCellOrganizerPanel();
 
           if (listToSupp.size() == 1) {

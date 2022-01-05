@@ -1,8 +1,8 @@
 package mycellar.placesmanagement;
 
 import mycellar.Program;
-import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.MyCellarObject;
+import mycellar.core.exceptions.MyCellarException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,8 +19,8 @@ import java.util.Optional;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.6
- * @since 14/12/21
+ * @version 28.7
+ * @since 05/01/22
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -39,7 +39,7 @@ public class Rangement implements Comparable<Rangement> {
   /**
    * Constructeur de cr&eacute;ation d'un rangement de type Armoire
    *
-   * @param name      String: nom du rangement
+   * @param name     String: nom du rangement
    * @param listPart LinkedList<Part>: liste des parties
    */
   public Rangement(String name, List<Part> listPart) {
@@ -50,11 +50,11 @@ public class Rangement implements Comparable<Rangement> {
   /**
    * Constructeur: rangement de type caisse
    *
-   * @param name            String: nom du rangement
-   * @param nbPart int: nombre d'emplacement
-   * @param startSimplePlace   int: Num&eacute;ro de d&eacute;marrage de l'indice des caisses
-   * @param isLimit        boolean: Limite de caisse activ&eacute;e?
-   * @param limite_caisse  int: Capacit&eacute; pour la limite
+   * @param name             String: nom du rangement
+   * @param nbPart           int: nombre d'emplacement
+   * @param startSimplePlace int: Num&eacute;ro de d&eacute;marrage de l'indice des caisses
+   * @param isLimit          boolean: Limite de caisse activ&eacute;e?
+   * @param limite_caisse    int: Capacit&eacute; pour la limite
    */
   private Rangement(String name, int nbPart, int startSimplePlace, boolean isLimit, int limite_caisse) {
     this.name = name.strip();
@@ -345,28 +345,24 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   private boolean addObjectSimplePlace(MyCellarObject myCellarObject) {
-    int num_empl = myCellarObject.getNumLieu();
     myCellarObject.setLigne(0);
     myCellarObject.setColonne(0);
 
-    Debug("addObjectSimplePlace: " + myCellarObject.getNom() + " " + myCellarObject.getEmplacement() + " " + num_empl);
+    Debug("addObjectSimplePlace: " + myCellarObject.getNom() + " " + myCellarObject.getEmplacement() + " " + myCellarObject.getNumLieu());
 
+    int num_empl = myCellarObject.getNumLieu();
     int nb_vin = getTotalCellUsed(num_empl - startSimplePlace);
     if (simplePlaceLimited && nb_vin == nbColumnsStock) {
       return false;
     }
-    storageSimplePlace.get(num_empl).add(myCellarObject);
+    updateToStock(myCellarObject);
     Program.getStorage().addWine(myCellarObject);
     return true;
   }
 
   private void addObjectComplexPlace(MyCellarObject myCellarObject) {
     Debug("addObjectComplexPlace: " + myCellarObject.getNom() + " " + myCellarObject.getEmplacement() + " " + myCellarObject.getNumLieu() + " " + myCellarObject.getLigne() + " " + myCellarObject.getColonne());
-
-    int num_empl = myCellarObject.getNumLieu();
-    int line = myCellarObject.getLigne();
-    int column = myCellarObject.getColonne();
-    storage[num_empl - 1][line - 1][column - 1] = myCellarObject;
+    updateToStock(myCellarObject);
     Program.getStorage().addWine(myCellarObject);
   }
 
@@ -393,8 +389,7 @@ public class Rangement implements Comparable<Rangement> {
    * @param nNewLine       int: nouveau num&eacute;ro de ligne
    */
   public void moveLine(MyCellarObject myCellarObject, int nNewLine) throws MyCellarException {
-    Program.getStorage().deleteWine(myCellarObject);
-    clearStock(myCellarObject, myCellarObject.getPlace());
+    removeObject(myCellarObject);
     myCellarObject.setLigne(nNewLine);
     addObject(myCellarObject);
   }

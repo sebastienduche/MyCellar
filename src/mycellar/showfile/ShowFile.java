@@ -81,8 +81,8 @@ import static mycellar.ProgramConstants.SPACE;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.0
- * @since 03/01/22
+ * @version 11.1
+ * @since 05/01/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -780,16 +780,16 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       LinkedList<MyCellarObject> toDeleteList = getSelectedBouteilles();
 
       if (toDeleteList.isEmpty()) {
-        //"Aucun vin a supprimer!");
+        //"Aucun vin a supprimer!
         Erreur.showSimpleErreur(Program.getError("Error064", LabelProperty.SINGLE), Program.getError("Error065", LabelProperty.THE_PLURAL), true);
       } else {
         String erreur_txt1, erreur_txt2;
         if (toDeleteList.size() == 1) {
-          erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); //"1 vin selectionne.");
-          erreur_txt2 = Program.getError("Error068"); //"Voulez-vous le supprimer?");
+          erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); //"1 vin selectionne
+          erreur_txt2 = Program.getError("Error068"); //"Voulez-vous le supprimer?
         } else {
-          erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toDeleteList.size()); //vins selectionnes.");
-          erreur_txt2 = Program.getError("Error131"); //"Voulez-vous les supprimer?");
+          erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toDeleteList.size()); //vins selectionnes.
+          erreur_txt2 = Program.getError("Error131"); //"Voulez-vous les supprimer?
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           if (isError()) {
@@ -799,13 +799,17 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           } else {
             for (MyCellarObject b : toDeleteList) {
               Program.getStorage().addHistory(HistoryState.DEL, b);
-              Program.getStorage().deleteWine(b);
+              final Rangement rangement = b.getRangement();
+              if (rangement != null) {
+                rangement.removeObject(b);
+              } else {
+                Program.getStorage().deleteWine(b);
+              }
               Program.setToTrash(b);
               if (isWork()) {
                 workingBottles.remove(b);
               }
             }
-            RangementUtils.putTabStock();
           }
         }
         refresh();

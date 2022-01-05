@@ -44,8 +44,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.2
- * @since 04/01/22
+ * @version 30.3
+ * @since 05/01/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -673,11 +673,12 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         if (isModify) {
           //Delete Bouteilles
           Debug("Deleting bottles when modifying");
-          Program.getStorage().deleteWine(tmp);
-          if (!rangement.isSimplePlace()) { //Si ce n'est pas une caisse on supprime de stockage
-            Debug("is Not a Caisse. Delete from stock");
-            rangement.clearComplexStock(tmp.getPlace());
-          }
+          rangement.removeObject(tmp);
+//          Program.getStorage().deleteWine(tmp);
+//          if (!rangement.isSimplePlace()) { //Si ce n'est pas une caisse on supprime de stockage
+//            Debug("is Not a Caisse. Delete from stock");
+//            rangement.clearComplexStock(tmp.getPlace());
+//          }
         }
         //Ajout des bouteilles dans la caisse
         Debug("Adding bottle...");

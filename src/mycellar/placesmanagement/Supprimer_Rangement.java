@@ -61,8 +61,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.2
- * @since 04/01/22
+ * @version 9.3
+ * @since 05/01/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -84,7 +84,6 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   public Supprimer_Rangement() {
     Debug("Initializing...");
     setLayout(new MigLayout("", "[grow]", "20px[]15px[]15px[]"));
-    MyCellarLabel textControl2 = new MyCellarLabel(LabelType.INFO, "054"); //Select place to delete
     MyCellarButton supprimer = new MyCellarButton(LabelType.INFO_OTHER, "Main.Delete");
     supprimer.setMnemonic(supprimerChar);
     preview.setMnemonic(previewChar);
@@ -101,7 +100,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     table = new JTable(model);
     JScrollPane scroll = new JScrollPane(table);
 
-    add(textControl2, "split 2, gap");
+    add(new MyCellarLabel(LabelType.INFO, "054"), "split 2, gap"); //Select place to delete
     add(choix, "wrap");
     add(scroll, "grow, wrap");
     add(label_final, "grow, center, wrap");
@@ -109,12 +108,10 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     add(supprimer, "");
 
     preview.addActionListener(this::preview_actionPerformed);
-
     choix.addItemListener(this::choix_itemStateChanged);
 
     choix.addItem(EMPTY_PLACE);
     getCave().forEach(choix::addItem);
-    RangementUtils.putTabStock();
     setVisible(true);
   }
 
@@ -148,7 +145,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         } else { //Pour caisse
           int start_caisse = rangement.getStartSimplePlace();
           model.setCaisse(true);
-          Debug("Selecting Box place...");
+          Debug("Selecting simple place...");
           nb_case_use_total = 0;
           for (int i = 0; i < num_emplacement; i++) {
             SupprimerLine line = new SupprimerLine(i + start_caisse, 0, rangement.getTotalCellUsed(i));
@@ -216,13 +213,11 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           new Thread(() -> {
             //Suppression des bouteilles presentes dans le rangement
-            String tmp_nom = cave.getName();
-
-            List<MyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(tmp_nom)).collect(Collectors.toList());
+            List<MyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(cave.getName())).collect(Collectors.toList());
             for (MyCellarObject b : bottleList) {
               getStorage().addHistory(HistoryState.DEL, b);
               try {
-                getStorage().deleteWine(b);
+                cave.removeObject(b);
               } catch (MyCellarException myCellarException) {
                 Program.showException(myCellarException);
               }
@@ -282,7 +277,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       return;
     }
     updateView = false;
-    RangementUtils.putTabStock();
+//    RangementUtils.putTabStock();
     if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
       new MyCellarSwingWorker() {
         @Override

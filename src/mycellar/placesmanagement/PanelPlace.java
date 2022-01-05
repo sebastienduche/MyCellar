@@ -315,7 +315,6 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   private void preview_actionPerformed(ActionEvent e) {
     Debug("Previewing...");
-    RangementUtils.putTabStock();
     XmlUtils.writeRangements(Program.getPreviewXMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
     Program.open(Program.getPreviewXMLFileName(), false);
     Debug("Previewing... End");

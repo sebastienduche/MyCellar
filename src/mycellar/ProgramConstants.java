@@ -57,7 +57,7 @@ public final class ProgramConstants {
   public static final char CHAR_COMMA = ',';
   public static final String NORMAL = "75cl";
   public static final String HALF = "37.5cl";
-  static final String INFOS_VERSION = " 2021 v";
+  static final String INFOS_VERSION = " 2022 v";
   static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
   static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);
   static final String KEY_TYPE = "<KEY>";

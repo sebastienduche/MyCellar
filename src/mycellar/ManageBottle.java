@@ -272,7 +272,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
-        panelPlace.resetLabelEnd();
+        panelPlace.clearLabelEnd();
         end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
       } else {
         return false;

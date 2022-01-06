@@ -449,7 +449,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         Debug("ERROR: No place defined, a place will be create");
         //Il n'y a pas de rangements definis dans le fichier.
         //Un rangement par defaut va etre cree.
-        Erreur.showSimpleErreur(Program.getError("Error140"), Program.getError("Error141"), true);
+        Erreur.showInformationMessage(Program.getError("Error140"), Program.getError("Error141"));
 
         int nb_caisse = (int) Program.getCave().stream().filter(Rangement::isSimplePlace).count();
 

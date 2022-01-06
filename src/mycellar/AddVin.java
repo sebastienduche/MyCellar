@@ -145,7 +145,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     }
 
     panelPlace.resetValues();
-    panelPlace.setBeforeBottle(myCellarObject);
+    panelPlace.setBeforeObjectLabels(myCellarObject);
     addButton.setText(Program.getLabel("Infos079"));
     rangementInModif = myCellarObject.getRangement();
     end.setText(Program.getLabel("Infos092")); // Saisir les modifications

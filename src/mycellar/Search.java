@@ -285,16 +285,16 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (listToSupp.isEmpty()) {
         // No objet to delete / Select...
         Debug("ERROR: No bottle to delete!");
-        Erreur.showSimpleErreur(Program.getError("Error064", LabelProperty.SINGLE), Program.getError("Error065", LabelProperty.THE_PLURAL), true);
+        Erreur.showInformationMessage(Program.getError("Error064", LabelProperty.SINGLE), Program.getError("Error065", LabelProperty.THE_PLURAL));
         return;
       }
       String erreur_txt1;
       String erreur_txt2;
       if (listToSupp.size() == 1) {
-        erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); //"1 vin selectionne.");
+        erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); //"1 vin selectionne.
         erreur_txt2 = Program.getError("Error068"); // Delete it ?
       } else {
-        erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), listToSupp.size()); //vins selectionnes.");
+        erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), listToSupp.size()); //vins selectionnes.
         erreur_txt2 = Program.getError("Error131"); //" Delete them ?
       }
       int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -575,7 +575,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
         if (listToModify.isEmpty()) {
           //No object to modify / Select...
-          Erreur.showSimpleErreur(Program.getError("Error071", LabelProperty.SINGLE), Program.getError("Error072", LabelProperty.THE_PLURAL), true);
+          Erreur.showInformationMessage(Program.getError("Error071", LabelProperty.SINGLE), Program.getError("Error072", LabelProperty.THE_PLURAL));
         } else {
           Debug("Modifying " + listToModify.size() + " object(s)...");
           Program.modifyBottles(listToModify);
@@ -986,7 +986,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     final LinkedList<Bouteille> list = getSelectedBouteilles();
 
     if (list.isEmpty()) {
-      Erreur.showSimpleErreur(Program.getError("Error.NoWineSelected", LabelProperty.SINGLE), true);
+      Erreur.showInformationMessage(Program.getError("Error.NoWineSelected", LabelProperty.SINGLE));
       return;
     }
     new OpenWorkSheetAction(list).actionPerformed(null);

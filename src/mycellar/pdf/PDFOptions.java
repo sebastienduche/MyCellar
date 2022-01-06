@@ -4,12 +4,12 @@ import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.LabelType;
+import mycellar.core.MyCellarSettings;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.MyCellarSettings;
 import mycellar.core.uicomponents.MyCellarSpinner;
-import mycellar.core.common.MyCellarFields;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -150,7 +150,7 @@ public final class PDFOptions extends JDialog {
       }
       dispose();
       if (col_size_max > 19) {
-        Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Infos273"), col_size_max), true);
+        Erreur.showInformationMessage(MessageFormat.format(Program.getLabel("Infos273"), col_size_max));
       }
     } catch (NumberFormatException e1) {
       Program.Debug("PDFOptions: ERROR: " + e1.getMessage());

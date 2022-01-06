@@ -258,7 +258,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 
       if (count == 0) {
         Debug("ERROR: No place selected");
-        Erreur.showSimpleErreur(Program.getError("Error089"), Program.getError("Error090"), true);
+        Erreur.showInformationMessage(Program.getError("Error089"), Program.getError("Error090"));
         return;
       }
       row = 0;

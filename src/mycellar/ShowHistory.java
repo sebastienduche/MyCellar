@@ -1,21 +1,21 @@
 package mycellar;
 
-import mycellar.core.tablecomponents.DateCellRenderer;
 import mycellar.core.IMyCellar;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.uicomponents.MyCellarButton;
-import mycellar.core.uicomponents.MyCellarComboBox;
-import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarObject;
-import mycellar.core.uicomponents.TabEvent;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
+import mycellar.core.tablecomponents.DateCellRenderer;
 import mycellar.core.tablecomponents.ToolTipRenderer;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
@@ -199,12 +199,12 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
       }
 
       if (nonExit) {
-        Erreur.showSimpleErreur(Program.getLabel("ShowHistory.CantRestoreNonDeleted", LabelProperty.PLURAL), true);
+        Erreur.showInformationMessage(Program.getLabel("ShowHistory.CantRestoreNonDeleted", LabelProperty.PLURAL));
         return;
       }
 
       if (toRestoreList.isEmpty()) {
-        Erreur.showSimpleErreur(Program.getLabel("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), Program.getLabel("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL), true);
+        Erreur.showInformationMessage(Program.getLabel("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), Program.getLabel("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL));
       } else {
         String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {
@@ -272,17 +272,17 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
         } while (row < max_row);
 
         if (toDeleteList.isEmpty()) {
-          // Aucune ligne selectionnee "Veuillez selectionner des lignes a supprimer.");
-          Erreur.showSimpleErreur(Program.getError("Error184"), Program.getError("Error185"), true);
+          // Aucune ligne selectionnee "Veuillez selectionner des lignes a supprimer.
+          Erreur.showInformationMessage(Program.getError("Error184"), Program.getError("Error185"));
           Debug("ERROR: No lines selected");
         } else {
           String erreur_txt1, erreur_txt2;// erreur_txt3, erreur_txt4;
           if (toDeleteList.size() == 1) {
-            erreur_txt1 = Program.getError("Error186"); // "1 ligne selectionnee.");
-            erreur_txt2 = Program.getError("Error188"); // "Voulez-vous la supprimer?");
+            erreur_txt1 = Program.getError("Error186"); // "1 ligne selectionnee.
+            erreur_txt2 = Program.getError("Error188"); // "Voulez-vous la supprimer?
           } else {
             erreur_txt1 = MessageFormat.format(Program.getError("Error187"), toDeleteList.size()); // lignes
-            erreur_txt2 = Program.getError("Error131"); // "Voulez-vous les supprimer?");
+            erreur_txt2 = Program.getError("Error131"); // "Voulez-vous les supprimer?
           }
           Debug(toDeleteList.size() + " line(s) selected");
           if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"),

@@ -111,10 +111,8 @@ public final class RangementUtils {
       map.put(field, Program.getCaveConfigBool(MyCellarSettings.EXPORT_CSV + field.name(), false));
     }
 
-    if (progressBar != null) {
-      progressBar.setMaximum(all.size());
-      progressBar.setMinimum(0);
-    }
+    progressBar.setMaximum(all.size());
+    progressBar.setMinimum(0);
 
     try (var fileWriter = new FileWriter(fichier)) {
 
@@ -129,9 +127,7 @@ public final class RangementUtils {
       fileWriter.write(line.toString());
       int i = 0;
       for (IMyCellarObject b : all) {
-        if (progressBar != null) {
-          progressBar.setValue(i++);
-        }
+        progressBar.setValue(i++);
         line = new StringBuilder();
         final String doubleCote = "\"";
         final String escapedDoubleCote = "\"\"";
@@ -149,10 +145,9 @@ public final class RangementUtils {
         fileWriter.flush();
       }
       fileWriter.flush();
-      if (progressBar != null) {
-        progressBar.setValue(progressBar.getMaximum());
-      }
+      progressBar.setValue(progressBar.getMaximum());
     } catch (IOException ioe) {
+      Debug("ERROR: Error writing CSV \n" + ioe);
       Erreur.showSimpleErreur(Program.getError("Error120"), Program.getError("Error161"));
       return false;
     }
@@ -313,12 +308,11 @@ public final class RangementUtils {
       return false;
     }
 
-    EnumMap<MyCellarFields, Boolean> mapCle = new EnumMap<>(MyCellarFields.class);
-
     //Recuperation des colonnes a exporter
     List<MyCellarFields> fields = MyCellarFields.getFieldsList();
     int i = 0;
     assert fields != null;
+    EnumMap<MyCellarFields, Boolean> mapCle = new EnumMap<>(MyCellarFields.class);
     for (MyCellarFields field : fields) {
       mapCle.put(field, Program.getCaveConfigBool(MyCellarSettings.SIZE_COL + i + "EXPORT_XLS", true));
       i++;
@@ -453,10 +447,10 @@ public final class RangementUtils {
   /**
    * write_XLSTab: Fonction d'ecriture du fichier Excel des tableaux
    *
-   * @param file    String: Fichier a ecrire.
-   * @param _oPlace LinkedList: liste de rangements a ecrire
+   * @param file      String: Fichier a ecrire.
+   * @param placeList LinkedList: liste de rangements a ecrire
    */
-  public static void write_XLSTab(final String file, final List<Rangement> _oPlace) {
+  public static void write_XLSTab(final String file, final List<Rangement> placeList) {
 
     Debug("write_XLSTab: writing file: " + file);
     try (var workbook = new SXSSFWorkbook(100);
@@ -505,7 +499,7 @@ public final class RangementUtils {
       int nLine = 3;
       boolean firstSheet = true;
       int nNbCol = 0;
-      for (Rangement place : _oPlace) {
+      for (Rangement place : placeList) {
         if (onePlacePerSheet) {
           if (firstSheet) {
             workbook.setSheetName(0, place.getName());

@@ -781,7 +781,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       if (toDeleteList.isEmpty()) {
         //"Aucun vin a supprimer!
-        Erreur.showSimpleErreur(Program.getError("Error064", LabelProperty.SINGLE), Program.getError("Error065", LabelProperty.THE_PLURAL), true);
+        Erreur.showInformationMessage(Program.getError("Error064", LabelProperty.SINGLE), Program.getError("Error065", LabelProperty.THE_PLURAL));
       } else {
         String erreur_txt1, erreur_txt2;
         if (toDeleteList.size() == 1) {
@@ -850,7 +850,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     final LinkedList<MyCellarObject> toRestoreList = getSelectedBouteilles();
 
     if (toRestoreList.isEmpty()) {
-      Erreur.showSimpleErreur(Program.getLabel("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), Program.getLabel("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL), true);
+      Erreur.showInformationMessage(Program.getLabel("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), Program.getLabel("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL));
     } else {
       String erreur_txt1, erreur_txt2;
       if (toRestoreList.size() == 1) {
@@ -1262,9 +1262,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     public void actionPerformed(ActionEvent e) {
       LinkedList<MyCellarObject> bottles = getSelectedBouteilles();
       if (bottles.isEmpty()) {
-        //"Aucun vin a modifier!");
-        //"Veuillez selectionner les vins a modifier.");
-        Erreur.showSimpleErreur(Program.getError("Error071", LabelProperty.SINGLE), Program.getError("Error072", LabelProperty.THE_PLURAL), true);
+        //"Aucun vin a modifier!
+        //"Veuillez selectionner les vins a modifier.
+        Erreur.showInformationMessage(Program.getError("Error071", LabelProperty.SINGLE), Program.getError("Error072", LabelProperty.THE_PLURAL));
         return;
       }
 

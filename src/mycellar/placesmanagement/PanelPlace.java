@@ -185,7 +185,7 @@ public class PanelPlace extends JPanel implements IPlace {
     }
   }
 
-  public void setBeforeBottle(MyCellarObject myCellarObject) {
+  public void setBeforeObjectLabels(MyCellarObject myCellarObject) {
     setLineColumnVisible(myCellarObject.getRangement());
     previousPlaceLabel.setText(myCellarObject.getEmplacement());
     previousNumPlaceLabel.setText(Integer.toString(myCellarObject.getNumLieu()));
@@ -194,7 +194,7 @@ public class PanelPlace extends JPanel implements IPlace {
     setBeforeLabelsVisible(true);
   }
 
-  public void clearBeforeBottle() {
+  public void clearBeforeObjectLabels() {
     previousPlaceLabel.setText("");
     previousNumPlaceLabel.setText("");
     previousLineLabel.setText("");
@@ -226,7 +226,7 @@ public class PanelPlace extends JPanel implements IPlace {
       protected void done() {
         setListenersEnabled(false);
         resetCombos();
-        clearBeforeBottle();
+        clearBeforeObjectLabels();
         labelExist.setText("");
         managePlaceCombos();
         setListenersEnabled(true);
@@ -251,7 +251,7 @@ public class PanelPlace extends JPanel implements IPlace {
         initPlaceCombo();
         managePlaceCombos();
         setListenersEnabled(true);
-        resetLabelEnd();
+        clearLabelEnd();
         Debug("Update view... Done");
       }
     }.execute();
@@ -545,7 +545,7 @@ public class PanelPlace extends JPanel implements IPlace {
     return true;
   }
 
-  public void resetLabelEnd() {
+  public void clearLabelEnd() {
     labelExist.setText("");
   }
 

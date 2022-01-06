@@ -985,9 +985,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   private void menuCheckUpdate_actionPerformed() {
     if (MyCellarServer.getInstance().hasAvailableUpdate(MyCellarVersion.getLocalVersion())) {
-      Erreur.showSimpleErreur(MessageFormat.format(Program.getLabel("Infos384"), MyCellarServer.getInstance().getAvailableVersion(), INTERNAL_VERSION), true);
+      Erreur.showInformationMessage(MessageFormat.format(Program.getLabel("Infos384"), MyCellarServer.getInstance().getAvailableVersion(), INTERNAL_VERSION));
     } else {
-      Erreur.showSimpleErreur(Program.getLabel("Infos388"), true);
+      Erreur.showInformationMessage(Program.getLabel("Infos388"));
     }
   }
 

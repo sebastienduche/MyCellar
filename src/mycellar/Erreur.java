@@ -18,13 +18,14 @@ import static mycellar.ProgramConstants.FONT_BOUTTON_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 14/10/21
+ * @version 2.7
+ * @since 06/01/22
  */
 public class Erreur {
   private final JCheckBox checkNotShow = new JCheckBox(Program.getLabel("Infos213"));
 
-  private Erreur() {}
+  private Erreur() {
+  }
 
   /**
    * Error message with one label
@@ -62,7 +63,11 @@ public class Erreur {
    * @param texte2
    */
   public static void showSimpleErreur(String texte1, String texte2) {
-    new Erreur().initialize(texte1, texte2, false, null);
+    new Erreur().initialize(Start.getInstance(), texte1, texte2, false, null);
+  }
+
+  public static void showSimpleErreur(Component target, String texte1, String texte2) {
+    new Erreur().initialize(target, texte1, texte2, false, null);
   }
 
   /**
@@ -73,7 +78,7 @@ public class Erreur {
    * @param information
    */
   public static void showSimpleErreur(String texte1, String texte2, boolean information) {
-    new Erreur().initialize(texte1, texte2, information, null);
+    new Erreur().initialize(Start.getInstance(), texte1, texte2, information, null);
   }
 
   /**
@@ -84,10 +89,10 @@ public class Erreur {
    * @param key
    */
   public static void showInformationMessageWithKey(String texte1, String texte2, String key) {
-    new Erreur().initialize(texte1, texte2, true, key);
+    new Erreur().initialize(Start.getInstance(), texte1, texte2, true, key);
   }
 
-  private void initialize(String texte1, String texte2, boolean information, String keyword) {
+  private void initialize(Component target, String texte1, String texte2, boolean information, String keyword) {
     JPanel panel = new JPanel();
     panel.setLayout(new MigLayout("", "grow", "[]"));
     MyCellarLabel label2 = new MyCellarLabel(texte2);
@@ -97,7 +102,7 @@ public class Erreur {
     panel.add(checkNotShow, "newline, hidemode 3, gaptop 15px");
     checkNotShow.setVisible(MyCellarUtils.isDefined(keyword));
     label2.setVisible(!texte2.isEmpty());
-    JOptionPane.showMessageDialog(Start.getInstance(), panel, information ? Program.getError("Error032") : Program.getError("Error015"), information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(target, panel, information ? Program.getError("Error032") : Program.getError("Error015"), information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
     if (checkNotShow.isSelected()) {
       Program.putCaveConfigBool(keyword, true);
     }

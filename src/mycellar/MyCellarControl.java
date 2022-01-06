@@ -4,6 +4,7 @@ import mycellar.core.LabelProperty;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.RangementUtils;
 
+import java.awt.Component;
 import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -18,8 +19,8 @@ import static mycellar.MyCellarUtils.isNullOrEmpty;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 29/12/21
+ * @version 2.4
+ * @since 06/01/22
  */
 
 public final class MyCellarControl {
@@ -43,41 +44,57 @@ public final class MyCellarControl {
   }
 
   public static boolean hasInvalidPlace(Place place) {
+    return hasInvalidPlace(place, Start.getInstance());
+  }
+
+  public static boolean hasInvalidPlace(Place place, Component component) {
     if (Program.EMPTY_PLACE.equals(place.getRangement())) {
       Debug("ERROR: Wrong Place");
-      Erreur.showSimpleErreur(Program.getError("Error055")); // Select a place
+      Erreur.showSimpleErreur(component, Program.getError("Error055")); // Select a place
       return true;
     }
     return false;
   }
 
-  public static boolean hasInvalidNumLieuNumber(int lieu_num, boolean isCaisse) {
-    if (isCaisse && lieu_num < 0) {
+  public static boolean hasInvalidNumLieuNumber(int placeNum, boolean simplePlace) {
+    return hasInvalidNumLieuNumber(placeNum, simplePlace, null);
+  }
+
+  public static boolean hasInvalidNumLieuNumber(int placeNum, boolean simplePlace, Component component) {
+    if (simplePlace && placeNum < 0) {
       Debug("ERROR: Wrong Num Place");
-      Erreur.showSimpleErreur(Program.getError("Error174"));
+      Erreur.showSimpleErreur(component, Program.getError("Error174"));
       return true;
     }
-    if (!isCaisse && lieu_num <= 0) {
+    if (!simplePlace && placeNum <= 0) {
       Debug("ERROR: Wrong Num Place");
-      Erreur.showSimpleErreur(Program.getError("Error056"));
+      Erreur.showSimpleErreur(component, Program.getError("Error056"));
       return true;
     }
     return false;
   }
 
   public static boolean hasInvalidLineNumber(int line) {
+    return hasInvalidLineNumber(line, null);
+  }
+
+  public static boolean hasInvalidLineNumber(int line, Component component) {
     if (line <= 0) {
       Debug("ERROR: Wrong Line");
-      Erreur.showSimpleErreur(Program.getError("Error057")); // Enter a line number
+      Erreur.showSimpleErreur(component, Program.getError("Error057")); // Enter a line number
       return true;
     }
     return false;
   }
 
   public static boolean hasInvalidColumnNumber(int column) {
+    return hasInvalidColumnNumber(column, null);
+  }
+
+  public static boolean hasInvalidColumnNumber(int column, Component component) {
     if (column <= 0) {
       Debug("ERROR: Wrong Column");
-      Erreur.showSimpleErreur(Program.getError("Error058")); // Enter a column number
+      Erreur.showSimpleErreur(component, Program.getError("Error058")); // Enter a column number
       return true;
     }
     return false;

@@ -185,10 +185,13 @@ public class ProgramPanels {
     }.execute();
   }
 
-  public static void updateCellOrganizerPanel() {
+  public static void updateCellOrganizerPanel(boolean forceUpdate) {
     final IUpdatable cellOrganizer = UPDATABLE_OBJECTS.get(CELL_ORGANIZER);
     if (cellOrganizer != null) {
       cellOrganizer.setUpdateView(UpdateViewType.ALL);
+      if (forceUpdate) {
+        cellOrganizer.updateView();
+      }
     }
   }
 

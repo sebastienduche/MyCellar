@@ -715,7 +715,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Debug("Do After Run...");
     myCellarObject = null;
     panelGeneral.setMyCellarObject(null);
-    ProgramPanels.updateCellOrganizerPanel();
+    ProgramPanels.updateCellOrganizerPanel(false);
     ProgramPanels.setSelectedPaneModified(false);
     if (!isModify) {
       Debug("Do After Run... End");

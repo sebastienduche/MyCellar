@@ -31,7 +31,6 @@ import mycellar.vignobles.CountryVignobleController;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -106,7 +105,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final JTabbedPane tabbedPane = new JTabbedPane();
   private final PanelYear panelYear = new PanelYear();
   private final PanelRequest panelRequest = new PanelRequest();
-  private final JMenuItem moveLine = new JMenuItem(Program.getLabel("Infos365"));
   private JTable table;
   private TextFieldPopup name;
   private AllBottlesState allBottlesState = AllBottlesState.PLACE;
@@ -219,8 +217,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         }
       });
 
-      moveLine.addActionListener((e) -> new MoveLine());
-
       num_lieu.setEnabled(false);
       column.setEnabled(false);
       line.setEnabled(false);
@@ -246,8 +242,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (name.isVisible()) {
         name.requestFocusInWindow();
       }
-
-      Start.getInstance().addToMenuTools(moveLine);
     });
   }
 
@@ -323,7 +317,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             ProgramPanels.removeBottleTab(bottle);
           }
 
-          ProgramPanels.updateCellOrganizerPanel();
+          ProgramPanels.updateCellOrganizerPanel(false);
 
           if (listToSupp.size() == 1) {
             resul_txt.setText(Program.getLabel("Search.1ItemDeleted", LabelProperty.SINGLE));
@@ -1022,7 +1016,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   @Override
   public void tabClosed() {
-    Start.getInstance().removeFromMenuTools(moveLine);
     Start.getInstance().updateMainPanel();
   }
 

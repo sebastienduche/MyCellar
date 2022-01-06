@@ -19,8 +19,8 @@ import java.util.Optional;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.7
- * @since 05/01/22
+ * @version 28.8
+ * @since 06/01/22
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -386,12 +386,15 @@ public class Rangement implements Comparable<Rangement> {
    * D&eacute;placement d'un objet dans un rangement
    *
    * @param myCellarObject MyCellarObject: Objet &agrave; d&eacute;placer
-   * @param nNewLine       int: nouveau num&eacute;ro de ligne
+   * @param newLine        int: nouveau num&eacute;ro de ligne
    */
-  public void moveLine(MyCellarObject myCellarObject, int nNewLine) throws MyCellarException {
-    removeObject(myCellarObject);
-    myCellarObject.setLigne(nNewLine);
-    addObject(myCellarObject);
+  public void moveToLine(MyCellarObject myCellarObject, int newLine) throws MyCellarException {
+    if (!isExistingCell(myCellarObject.getNumLieu() - 1, newLine - 1, myCellarObject.getColonne() - 1)) {
+      throw new MyCellarException("Unable to move this object to a new line: " + myCellarObject);
+    }
+    clearStock(myCellarObject, myCellarObject.getPlace());
+    myCellarObject.setLigne(newLine);
+    updateToStock(myCellarObject);
   }
 
   public Optional<MyCellarObject> getObject(final MyCellarObject myCellarObject) {

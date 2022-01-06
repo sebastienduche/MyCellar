@@ -942,7 +942,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     if (field == MyCellarFields.PLACE) {
       placeCbx.setSelectedIndex(0);
       if (!rangement.isSimplePlace()) {
-        final PanelPlace panelPlace = new PanelPlace(rangement, true, false);
+        final PanelPlace panelPlace = new PanelPlace(rangement, true, false, true, true, false);
         JOptionPane.showMessageDialog(Start.getInstance(), panelPlace,
             Program.getLabel("Main.ChooseCell"),
             JOptionPane.PLAIN_MESSAGE);

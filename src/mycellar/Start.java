@@ -90,8 +90,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.8
- * @since 04/01/22
+ * @version 30.9
+ * @since 06/01/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -135,6 +135,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   private final JMenuItem menuAddPlace = new JMenuItem();
   private final MyCellarMenuItem menuModifPlace = new MyCellarMenuItem(new ModifyPlaceAction());
   private final MyCellarMenuItem menuDelPlace = new MyCellarMenuItem(new DeletePlaceAction());
+  private final JMenuItem movePlaceLine = new JMenuItem(new PlaceMoveLineAction());
   private final JMenuItem menuShowFile = new JMenuItem();
   private final JMenuItem menuShowWorksheet = new JMenuItem();
   private final JMenuItem menuAddObject = new JMenuItem();
@@ -324,6 +325,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuAddObject.setEnabled(enable);
     menuModifPlace.setEnabled(enable);
     menuDelPlace.setEnabled(enable);
+    movePlaceLine.setEnabled(enable);
     menuSearch.setEnabled(enable);
     modifyButton.setEnabled(enable);
     importButton.setEnabled(enable);
@@ -845,6 +847,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuPlace.add(menuAddPlace);
     menuPlace.add(menuModifPlace);
     menuPlace.add(menuDelPlace);
+    menuPlace.addSeparator();
+    menuPlace.add(movePlaceLine);
     menuWine.add(menuAddObject);
     menuWine.add(menuSearch);
     menuEdition.add(menuCut);
@@ -1027,14 +1031,6 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   @Override
   public void uncaughtException(Thread t, Throwable e) {
     Program.showException(e, true);
-  }
-
-  public void addToMenuTools(JMenuItem menuItem) {
-    menuTools.add(menuItem);
-  }
-
-  public void removeFromMenuTools(JMenuItem menuItem) {
-    menuTools.remove(menuItem);
   }
 
   static class ObjectType {
@@ -1294,6 +1290,21 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     public void actionPerformed(ActionEvent arg0) {
       selectOrAddTab(ProgramPanels.createSupprimerRangement(), LABEL, MyCellarImage.DELPLACE);
       updateMainPanel();
+    }
+  }
+
+  final class PlaceMoveLineAction extends MyCellarAction {
+    private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Infos365";
+
+    private PlaceMoveLineAction() {
+      super(LabelType.INFO, "365", LabelProperty.SINGLE.withThreeDashes());
+      setDescriptionLabelCode(LABEL);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      new MoveLine();
     }
   }
 

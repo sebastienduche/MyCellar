@@ -464,7 +464,7 @@ class RangementTest {
     b.setNom("B15");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);
     assertEquals(b, armoire1x3x3.getObject(0, 0, 1).get());
-    armoire1x3x3.moveLine(b, 2);
+    armoire1x3x3.moveToLine(b, 2);
     assertTrue(armoire1x3x3.getObject(0, 0, 1).isEmpty());
     assertEquals(b, armoire1x3x3.getObject(0, 1, 1).get());
   }

@@ -301,7 +301,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (resul == JOptionPane.YES_OPTION) {
         SwingUtilities.invokeLater(() -> {
           for (Bouteille bottle : listToSupp) {
-            model.removeBouteille(bottle);
+            model.removeObject(bottle);
             Program.getStorage().addHistory(HistoryState.DEL, bottle);
             try {
               final Rangement rangement = bottle.getRangement();
@@ -470,13 +470,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   }
 
   private void vider_actionPerformed(ActionEvent e) {
-    try {
-      //Efface la recherche
-      Debug("vider_actionPerforming...");
-      SwingUtilities.invokeLater(this::emptyRows);
-    } catch (RuntimeException ex) {
-      Program.showException(ex);
-    }
+    //Efface la recherche
+    Debug("vider_actionPerforming...");
+    SwingUtilities.invokeLater(this::emptyRows);
   }
 
   private void emptyRows() {
@@ -490,7 +486,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     addToWorksheet.setEnabled(false);
     resul_txt.setText("");
     model.removeAll();
-    Debug("emptyRows End");
+    Debug("emptyRows Done");
   }
 
   private void searchByText() {
@@ -516,7 +512,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     for (MyCellarObject bottle : Program.getStorage().getAllList()) {
       Matcher m = p.matcher(bottle.getNom());
       if (m.matches()) {
-        if (model.hasNotBottle(bottle)) {
+        if (model.hasNotObject(bottle)) {
           bouteillesToAdd.add(bottle);
         } else {
           already_found = true;
@@ -525,7 +521,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     }
     boolean finalAlready_found = already_found;
     SwingUtilities.invokeLater(() -> {
-      bouteillesToAdd.forEach(model::addBouteille);
+      bouteillesToAdd.forEach(model::addObject);
       int nRows = model.getRowCount();
       updateLabelBottleNumber();
       if (nRows > 0) {
@@ -552,12 +548,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     return regex;
   }
 
-
   /**
-   * modif_actionPerformed: Fonction appellee lors d'une modification de
-   * bouteilles.
-   *
-   * @param e ActionEvent
+   * Modify an object
    */
   private void modif_actionPerformed(ActionEvent e) {
     SwingUtilities.invokeLater(() -> {
@@ -650,12 +642,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private void doAfterSearch(boolean already_found) {
     if (already_found) {
       if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false)) {
-        //"Lorsqu'une bouteille recherchee est deja presente dans la liste");
-        //"des vins trouves, elle n'est pas ajoutee en double.");
+        // Don't add object if already in the list
         Erreur.showInformationMessageWithKey(Program.getError("Error133", LabelProperty.A_SINGLE), Program.getError("Error134"), MyCellarSettings.DONT_SHOW_INFO);
       }
     }
-    resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminee.");
+    resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminee.
     if (model.getRowCount() > 0) {
       SwingUtilities.invokeLater(model::fireTableDataChanged);
       export.setEnabled(true);
@@ -682,7 +673,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     List<MyCellarObject> bouteilleList = new LinkedList<>();
     if (bouteilles != null) {
       for (MyCellarObject b : bouteilles) {
-        if (model.hasNotBottle(b)) {
+        if (model.hasNotObject(b)) {
           bouteilleList.add(b);
         } else {
           already_found = true;
@@ -695,7 +686,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     Debug(sb.toString());
     boolean finalAlready_found = already_found;
     SwingUtilities.invokeLater(() -> {
-      bouteilleList.forEach(model::addBouteille);
+      bouteilleList.forEach(model::addObject);
       Debug(model.getRowCount() + " bottle(s) found");
       updateLabelBottleNumber();
       doAfterSearch(finalAlready_found);
@@ -742,7 +733,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         for (int l = 0; l < nb_bottles; l++) {
           MyCellarObject b = rangement.getObjectSimplePlaceAt(x - 1, l); //lieu_num
           if (b != null) {
-            if (model.hasNotBottle(b)) {
+            if (model.hasNotObject(b)) {
               bouteilleList.add(b);
             } else {
               already_found = true;
@@ -768,18 +759,18 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         if (ligne == 0) {
           Debug("ERROR: No Line selected");
           resul_txt.setText("");
-          Erreur.showSimpleErreur(Program.getError("Error057")); //"Veuillez selectionner un numero de ligne!";
+          Erreur.showSimpleErreur(Program.getError("Error057")); //"Veuillez selectionner un numero de ligne!
           enableDefaultButtons();
           return;
         }
         if (colonne == 0) {
           Debug("ERROR: No column selected");
           resul_txt.setText("");
-          Erreur.showSimpleErreur(Program.getError("Error058")); //"Veuillez selectionner un numero de colonne!";
+          Erreur.showSimpleErreur(Program.getError("Error058")); //"Veuillez selectionner un numero de colonne!
           enableDefaultButtons();
           return;
         }
-        resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...");
+        resul_txt.setText(Program.getLabel("Infos087")); //"Recherche en cours...
 
         final MyCellarObject myCellarObject = rangement.getObject(lieu_num - 1, ligne - 1, colonne - 1).orElse(null);
         if (myCellarObject == null) {
@@ -790,7 +781,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           modif.setEnabled(false);
           suppr.setEnabled(false);
         } else {
-          if (model.hasNotBottle(myCellarObject)) {
+          if (model.hasNotObject(myCellarObject)) {
             bouteilleList.add(myCellarObject);
           } else {
             already_found = true;
@@ -847,7 +838,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
               MyCellarObject myCellarObject = rangement.getObject(i - 1, j - 1, k - 1).orElse(null);
               if (myCellarObject != null) {
                 //Ajout de la bouteille dans la liste si elle n'y ait pas deja
-                if (model.hasNotBottle(myCellarObject)) {
+                if (model.hasNotObject(myCellarObject)) {
                   bouteilleList.add(myCellarObject);
                 } else {
                   already_found = true;
@@ -861,9 +852,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
     boolean finalAlready_found = already_found;
     SwingUtilities.invokeLater(() -> {
-      bouteilleList.forEach(model::addBouteille);
+      bouteilleList.forEach(model::addObject);
       final int rowCount = model.getRowCount();
-      Debug(rowCount + " bottle(s) found");
+      Debug(rowCount + " object(s) found");
       updateLabelBottleNumber();
 
       if (rowCount > 0) {
@@ -902,14 +893,14 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       Rangement rangement = b.getRangement();
 
       if (annee == b.getAnneeInt() && nb_year != item_select && rangement != null) {
-        if (model.hasNotBottle(b)) {
+        if (model.hasNotObject(b)) {
           bouteilleList.add(b);
         } else {
           already_found = true;
         }
       } else {
         if (b.getAnneeInt() < 1000 && (nb_year - 1) == item_select) { // Cas Autre
-          if (model.hasNotBottle(b)) {
+          if (model.hasNotObject(b)) {
             bouteilleList.add(b);
           } else {
             already_found = true;
@@ -919,8 +910,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     }
     boolean finalAlready_found = already_found;
     SwingUtilities.invokeLater(() -> {
-      bouteilleList.forEach(model::addBouteille);
-      Debug(model.getRowCount() + " bottle(s) found");
+      bouteilleList.forEach(model::addObject);
+      Debug(model.getRowCount() + " object(s) found");
       updateLabelBottleNumber();
       doAfterSearch(finalAlready_found);
     });
@@ -1046,7 +1037,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   public void removeBottle(MyCellarObject bottleToDelete) {
     SwingUtilities.invokeLater(() -> {
-      model.removeBouteille(bottleToDelete);
+      model.removeObject(bottleToDelete);
       updateLabelBottleNumber();
     });
   }

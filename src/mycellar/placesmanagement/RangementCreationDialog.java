@@ -61,11 +61,11 @@ public final class RangementCreationDialog extends JDialog {
     setSize(600, 500);
     setLocationRelativeTo(Start.getInstance());
     setVisible(true);
-    Debug("Constructor End");
+    Debug("Constructor Done");
   }
 
-  public static void Debug(String sText) {
-    Program.Debug("RangementCreationDialog: " + sText);
+  public static void Debug(String text) {
+    Program.Debug("RangementCreationDialog: " + text);
   }
 
   private void valider_actionPerformed(ActionEvent actionEvent) {

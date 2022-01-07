@@ -321,7 +321,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
     panelWineAttribute.runExit();
     clearValues();
-    Debug("Quitting... End");
+    Debug("Quitting... Done");
     return true;
   }
 
@@ -355,7 +355,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       }
       panelPlace.selectPlace(myCellarObject);
       panelPlace.setListenersEnabled(true);
-      Debug("updateView End");
+      Debug("updateView Done");
     });
   }
 }

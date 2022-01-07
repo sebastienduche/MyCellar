@@ -121,8 +121,8 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     setModificationDetectionActive(true);
   }
 
-  private static void Debug(String s) {
-    Program.Debug("PanelGeneral: " + s);
+  private static void Debug(String text) {
+    Program.Debug("PanelGeneral: " + text);
   }
 
   public void setModificationDetectionActive(boolean active) {
@@ -179,18 +179,18 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_FALSE, false)) {
-        String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ((siecle + 1) * 100)); //"En decochant cette option, vous dsactivez la transformation");
+        String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ((siecle + 1) * 100)); //"En decochant cette option, vous dsactivez la transformation
         Erreur.showInformationMessageWithKey(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_FALSE);
       }
     } else {
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, true);
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_TRUE, false)) {
-        String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ((siecle + 1) * 100));//"En cochant cette option, vous activez la transformation");
+        String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ((siecle + 1) * 100));//"En cochant cette option, vous activez la transformation
         Erreur.showInformationMessageWithKey(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_TRUE);
       }
     }
-    Debug("Annee_auto_actionPerformed...End");
+    Debug("Annee_auto_actionPerformed...Done");
   }
 
   public void enableAll(boolean enable) {
@@ -234,7 +234,6 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   }
 
   public String getYear() {
-
     if (noYear.isSelected()) {
       return Bouteille.NON_VINTAGE;
     }
@@ -252,7 +251,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   }
 
   private void setYearAuto() {
-    yearAuto.setText(MessageFormat.format(Program.getLabel("Infos117"), ((siecle + 1) * 100))); //"Annee 00 -> 2000");
+    yearAuto.setText(MessageFormat.format(Program.getLabel("Infos117"), ((siecle + 1) * 100))); //"Annee 00 -> 2000
     yearAuto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
   }
 
@@ -274,9 +273,8 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     }
   }
 
-  public PanelGeneral setMyCellarObject(IMyCellarObject myCellarObject) {
+  public void setMyCellarObject(IMyCellarObject myCellarObject) {
     this.myCellarObject = myCellarObject;
-    return this;
   }
 
   public void setSeveralItems(boolean severalItems) {
@@ -305,7 +303,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   }
 
   private void initYearAndContenance() {
-    manageContenance.addActionListener(this::manageContenance_actionPerformed);
+    manageContenance.addActionListener((e) -> new ManageCapacityAction().actionPerformed(null));
     yearAuto.addActionListener(this::annee_auto_actionPerformed);
 
     noYear.addActionListener((e) -> {
@@ -317,12 +315,6 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
         year.setEditable(true);
       }
     });
-  }
-
-  private void manageContenance_actionPerformed(ActionEvent e) {
-    Debug("Manage Capacity...");
-    new ManageCapacityAction().actionPerformed(null);
-    Debug("Manage Capacity... End");
   }
 
   public void setMouseListener(PopupListener popupListener) {
@@ -354,6 +346,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       artist.setEnabled(true);
       artist.setEditable(true);
     }
+
     if (noYear.isSelected()) {
       year.setText(Bouteille.NON_VINTAGE);
     } else {
@@ -422,10 +415,10 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   public boolean runExit(boolean modify) {
     if (!name.getText().isEmpty()) {
       String erreur_txt1;
-      if (!modify) {
-        erreur_txt1 = Program.getError("Error144", SINGLE.withCapital());
-      } else {
+      if (modify) {
         erreur_txt1 = Program.getError("Error148", name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
+      } else {
+        erreur_txt1 = Program.getError("Error144", SINGLE.withCapital());
       }
       Debug("Message: Confirm to Quit?");
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {

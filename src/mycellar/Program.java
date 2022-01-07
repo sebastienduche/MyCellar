@@ -1457,7 +1457,7 @@ public final class Program {
     cleanTempDirs();
     deleteTempFiles();
     cleanDebugFiles();
-    Debug("Program: MyCellar End");
+    Debug("Program: MyCellar Ended");
     closeDebug();
   }
 

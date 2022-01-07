@@ -55,7 +55,7 @@ public final class CountryVignobleController {
   private CountryVignobleController() {
     modified = false;
     CountryListJaxb.findbyId(FRA).ifPresent(country -> countryToVignobles.put(country, loadFrance()));
-    CountryListJaxb.findbyId(ITA).ifPresent(country -> countryToVignobles.put(country, loadItalie()));
+    CountryListJaxb.findbyId(ITA).ifPresent(country -> countryToVignobles.put(country, loadItaly()));
     setRebuildNeeded();
   }
 
@@ -63,7 +63,7 @@ public final class CountryVignobleController {
     INSTANCE.modified = false;
     INSTANCE.countryToVignobles.clear();
     CountryListJaxb.findbyId(FRA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, loadFrance()));
-    CountryListJaxb.findbyId(ITA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, loadItalie()));
+    CountryListJaxb.findbyId(ITA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, loadItaly()));
     setRebuildNeeded();
   }
 
@@ -102,7 +102,7 @@ public final class CountryVignobleController {
     vignobleListJaxb.init();
     INSTANCE.modified = true;
     INSTANCE.countryToVignobles.put(countryJaxb, vignobleListJaxb);
-    Debug("Creating country End");
+    Debug("Creating country Done");
     return Optional.of(vignobleListJaxb);
   }
 
@@ -111,7 +111,7 @@ public final class CountryVignobleController {
     INSTANCE.modified = true;
     INSTANCE.countryToVignobles.remove(countryJaxb);
     boolean resul = VignobleListJaxb.delete(countryJaxb);
-    Debug("Deleting country End with resul = " + resul);
+    Debug("Deleting country done with resul = " + resul);
   }
 
   private static void generateCountryId(CountryJaxb countryJaxb) {
@@ -158,7 +158,7 @@ public final class CountryVignobleController {
     });
 
     rebuildNeeded = false;
-    Debug("rebuild... End");
+    Debug("rebuild... Done");
   }
 
   private static void mapAppellation(VignobleJaxb vignobleJaxb) {
@@ -357,7 +357,7 @@ public final class CountryVignobleController {
     Debug("addVignobleFromBottle...");
     addVignoble(wine.getVignoble());
     setRebuildNeeded();
-    Debug("addVignobleFromBottle... End");
+    Debug("addVignobleFromBottle... Done");
   }
 
   private static VignobleListJaxb load(File file) {
@@ -395,7 +395,7 @@ public final class CountryVignobleController {
     map.clear();
     File dir = new File(Program.getWorkDir(true));
     CountryListJaxb.findbyId("FRA").ifPresent(country -> map.put(country, loadFrance()));
-    CountryListJaxb.findbyId("ITA").ifPresent(country -> map.put(country, loadItalie()));
+    CountryListJaxb.findbyId("ITA").ifPresent(country -> map.put(country, loadItaly()));
     File[] fileVignobles = dir.listFiles((pathname) -> pathname.getName().endsWith(VIGNOBLE));
     if (fileVignobles != null) {
       for (File f : fileVignobles) {
@@ -452,7 +452,7 @@ public final class CountryVignobleController {
     return (vignobleListJaxb != null) ? vignobleListJaxb : VignobleListJaxb.load("resources/vignobles.xml");
   }
 
-  public static VignobleListJaxb loadItalie() {
+  public static VignobleListJaxb loadItaly() {
     VignobleListJaxb vignobleListJaxb = null;
     if (Program.hasWorkDir()) {
       vignobleListJaxb = loadById(ITA);
@@ -499,7 +499,7 @@ public final class CountryVignobleController {
     return rebuildNeeded;
   }
 
-  private static void Debug(String sText) {
-    Program.Debug("CountryVignobleController: " + sText);
+  private static void Debug(String text) {
+    Program.Debug("CountryVignobleController: " + text);
   }
 }

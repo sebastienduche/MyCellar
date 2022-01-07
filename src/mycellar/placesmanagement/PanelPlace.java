@@ -343,7 +343,7 @@ public class PanelPlace extends JPanel implements IPlace {
     Debug("Previewing...");
     XmlUtils.writePlacesToHTML(Program.getPreviewHTMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
     Program.open(Program.getPreviewHTMLFileName(), false);
-    Debug("Previewing... End");
+    Debug("Previewing... Done");
   }
 
   private void lieu_itemStateChanged(ItemEvent e) {
@@ -381,7 +381,7 @@ public class PanelPlace extends JPanel implements IPlace {
           labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu
         }
         enableAll(true);
-        Debug("Lieu_itemStateChanging... End");
+        Debug("Lieu_itemStateChanging... Done");
       }
     }.execute();
   }
@@ -417,7 +417,7 @@ public class PanelPlace extends JPanel implements IPlace {
           line.reset();
         }
         enableAll(true);
-        Debug("Num_lieu_itemStateChanging... End");
+        Debug("Num_lieu_itemStateChanging... Done");
       }
     }.execute();
   }
@@ -456,7 +456,7 @@ public class PanelPlace extends JPanel implements IPlace {
           column.addItem(new ComboItem(i));
         }
         enableAll(true);
-        Debug("Line_itemStateChanging... End");
+        Debug("Line_itemStateChanging... Done");
       }
     }.execute();
   }
@@ -486,7 +486,7 @@ public class PanelPlace extends JPanel implements IPlace {
         Rangement rangement = place.getItemAt(nPlace);
         rangement.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
             .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(myCellarObject.getNom()))));
-        Debug("Column_itemStateChanging... End");
+        Debug("Column_itemStateChanging... Done");
       }
     }.execute();
   }

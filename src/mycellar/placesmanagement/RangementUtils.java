@@ -91,7 +91,7 @@ public final class RangementUtils {
     if (!rangement.isSimplePlace()) {
       rangement.updateToStock(newObject);
     }
-    Debug("Replace object End");
+    Debug("Replace object Done");
   }
 
   /**

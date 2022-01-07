@@ -240,7 +240,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       preview.setEnabled(false);
       return;
     }
-    XmlUtils.writeRangements("", List.of((Rangement) Objects.requireNonNull(choix.getSelectedItem())), false);
+    XmlUtils.writePlacesToXML("", List.of((Rangement) Objects.requireNonNull(choix.getSelectedItem())), false);
     open(getPreviewXMLFileName(), false);
   }
 

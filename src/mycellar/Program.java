@@ -1094,7 +1094,7 @@ public final class Program {
     return getGlobalDir() + PREVIEW_XML;
   }
 
-  private static String getPreviewHTMLFileName() {
+  public static String getPreviewHTMLFileName() {
     return getGlobalDir() + PREVIEW_HTML;
   }
 

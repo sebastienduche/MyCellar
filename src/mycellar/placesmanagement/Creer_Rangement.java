@@ -62,8 +62,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.6
- * @since 04/01/22
+ * @version 15.7
+ * @since 07/01/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -662,9 +662,8 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         }
       }
 
-      // Creation du rangement
-      XmlUtils.writeRangements("", List.of(new Rangement(nom, listPart)), true);
-      Program.open(Program.getPreviewXMLFileName(), false);
+      XmlUtils.writePlacesToHTML("", List.of(new Rangement(nom, listPart)), true);
+      Program.open(Program.getPreviewHTMLFileName(), false);
     }
   }
 

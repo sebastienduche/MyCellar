@@ -341,8 +341,8 @@ public class PanelPlace extends JPanel implements IPlace {
 
   private void preview_actionPerformed(ActionEvent e) {
     Debug("Previewing...");
-    XmlUtils.writeRangements(Program.getPreviewXMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
-    Program.open(Program.getPreviewXMLFileName(), false);
+    XmlUtils.writePlacesToHTML(Program.getPreviewHTMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
+    Program.open(Program.getPreviewHTMLFileName(), false);
     Debug("Previewing... End");
   }
 

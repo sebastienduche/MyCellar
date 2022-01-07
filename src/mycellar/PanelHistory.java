@@ -1,10 +1,10 @@
 package mycellar;
 
-import mycellar.core.tablecomponents.DateCellRenderer;
 import mycellar.core.LabelType;
-import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
+import mycellar.core.tablecomponents.DateCellRenderer;
+import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -14,6 +14,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import static mycellar.MyCellarUtils.isDefined;
+
 public final class PanelHistory extends JPanel {
 
   private static final long serialVersionUID = 7574553715737201783L;
@@ -22,6 +24,7 @@ public final class PanelHistory extends JPanel {
   private final JPanel whatNewPanel = new JPanel();
   private final MyCellarLabel label1 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew1");
   private final MyCellarLabel label2 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew2");
+  private final MyCellarLabel label3 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew3");
 
   public PanelHistory() {
     setLayout(new MigLayout("", "[grow]", "[]"));
@@ -33,7 +36,12 @@ public final class PanelHistory extends JPanel {
     whatNewPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("WhatsNew")));
     whatNewPanel.setLayout(new MigLayout());
     whatNewPanel.add(label1, "wrap");
-    whatNewPanel.add(label2, "");
+    if (isDefined(label2.getText())) {
+      whatNewPanel.add(label2, "");
+    }
+    if (isDefined(label3.getText())) {
+      whatNewPanel.add(label3, "newline");
+    }
     add(whatNewPanel, "growx");
     TableColumnModel tcm = table.getColumnModel();
     TableColumn tc = tcm.getColumn(TableHistoryValues.ACTION - 1);
@@ -71,6 +79,7 @@ public final class PanelHistory extends JPanel {
     whatNewPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("WhatsNew")));
     label1.updateText();
     label2.updateText();
+    label3.updateText();
   }
 
   public void setEnable(boolean b) {
@@ -78,5 +87,6 @@ public final class PanelHistory extends JPanel {
     whatNewPanel.setEnabled(b);
     label1.setEnabled(b);
     label2.setEnabled(b);
+    label3.setEnabled(b);
   }
 }

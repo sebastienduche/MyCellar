@@ -19,7 +19,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -35,8 +38,8 @@ import static mycellar.ProgramConstants.SPACE;
  * <p>Soci&eacute;t&eacute; : SebInformatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 14/12/21
+ * @version 3.3
+ * @since 07/01/22
  */
 
 public class XmlUtils {
@@ -188,13 +191,37 @@ public class XmlUtils {
   }
 
   /**
-   * writeRangements: Ecriture des Rangements pour l'export XML/HTML
-   *
-   * @param filename   String : Fichier
-   * @param rangements List<Rangement>: Liste des rangements
+   * Writes content of places in HTML file
    */
-  public static void writeRangements(String filename, List<Rangement> rangements, boolean preview) {
-    Debug("writeRangements: Writing file");
+  public static void writePlacesToHTML(String filename, List<Rangement> rangements, boolean preview) {
+    Debug("writePlacesToHTML: Writing file");
+    writePlacesToXML(Program.getPreviewXMLFileName(), rangements, preview);
+    TransformerFactory tFactory = TransformerFactory.newInstance();
+
+    StreamSource xslDoc = new StreamSource("resources/Rangement.xsl");
+    StreamSource xmlDoc = new StreamSource(Program.getPreviewXMLFileName());
+
+    if (isNullOrEmpty(filename)) {
+      filename = Program.getPreviewHTMLFileName();
+    }
+
+    try (var htmlFile = new FileOutputStream(filename)) {
+      var transformer = tFactory.newTransformer(xslDoc);
+      transformer.transform(xmlDoc, new StreamResult(htmlFile));
+    } catch (FileNotFoundException e1) {
+      Debug("ERROR: File not found : " + e1.getMessage());
+      Program.showException(e1);
+    } catch (IOException | TransformerException e1) {
+      Program.showException(e1);
+    }
+    Debug("writePlacesToHTML: Writing file Done");
+  }
+
+  /**
+   * Writes content of places in XML file
+   */
+  public static void writePlacesToXML(String filename, List<Rangement> places, boolean preview) {
+    Debug("writePlacesToXML: Writing file");
     if (isNullOrEmpty(filename)) {
       filename = Program.getPreviewXMLFileName();
     }
@@ -213,7 +240,7 @@ public class XmlUtils {
           ("xml-stylesheet", "type=\"text/xsl\" href=\"" + dir + "/resources/Rangement.xsl\"");
       doc.insertBefore(pi, rootDoc);
 
-      for (Rangement rangement : rangements) {
+      for (Rangement rangement : places) {
         Element r = doc.createElement("rangement");
         root.appendChild(r);
         Element name = doc.createElement("name");
@@ -288,6 +315,7 @@ public class XmlUtils {
       Debug("TransformerException");
       Program.showException(e, false);
     }
+    Debug("writePlacesToXML: Writing file Done");
   }
 
   public static boolean writeXML(Object o, File f, Class<?> classe) {

@@ -32,19 +32,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,8 +53,8 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.3
- * @since 04/01/22
+ * @version 8.4
+ * @since 07/01/22
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
@@ -217,32 +209,32 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   private void create_actionPerformed(ActionEvent e) {
     try {
       Debug("create_actionPerforming...");
-      String nom = toCleanString(name.getText());
+      String filename = toCleanString(name.getText());
 
-      if (!MyCellarControl.controlPath(nom)) {
+      if (!MyCellarControl.controlPath(filename)) {
         return;
       }
 
-      File path = new File(nom);
+      File path = new File(filename);
       name.setText(path.getAbsolutePath());
 
       //Verify file type. Is it XML File?
       if (type_XML.isSelected()) {
-        if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
+        if (MyCellarControl.hasInvalidExtension(filename, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
           Debug("ERROR: Not a XML File");
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), nom));
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error087"), filename));
           return;
         }
       } else if (type_HTML.isSelected()) {
-        if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_HTML.toString()))) {
+        if (MyCellarControl.hasInvalidExtension(filename, Collections.singletonList(Filtre.FILTRE_HTML.toString()))) {
           Debug("ERROR: Not a HTML File");
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), nom));
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error107"), filename));
           return;
         }
       } else if (type_XLS.isSelected()) {
-        if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+        if (MyCellarControl.hasInvalidExtension(filename, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
           Debug("ERROR: Not a XLS File");
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), nom));
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), filename));
           return;
         }
       }
@@ -273,29 +265,14 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
       long caisseCount = 0;
       if (type_XML.isSelected()) {
         Debug("Exporting in XML in progress...");
-        XmlUtils.writeRangements(nom, rangements, false);
+        XmlUtils.writePlacesToXML(filename, rangements, false);
       } else if (type_HTML.isSelected()) {
         Debug("Exporting in HTML in progress...");
-        XmlUtils.writeRangements(Program.getPreviewXMLFileName(), rangements, false);
-
-        TransformerFactory tFactory = TransformerFactory.newInstance();
-
-        StreamSource xslDoc = new StreamSource("resources/Rangement.xsl");
-        StreamSource xmlDoc = new StreamSource(Program.getPreviewXMLFileName());
-
-        try (var htmlFile = new FileOutputStream(nom)) {
-          var transformer = tFactory.newTransformer(xslDoc);
-          transformer.transform(xmlDoc, new StreamResult(htmlFile));
-        } catch (FileNotFoundException e1) {
-          Debug("ERROR: File not found : " + e1.getMessage());
-          Program.showException(e1);
-        } catch (IOException e1) {
-          Program.showException(e1);
-        }
+        XmlUtils.writePlacesToHTML(filename, rangements, false);
       } else if (type_XLS.isSelected()) {
         Debug("Exporting in XLS in progress...");
         caisseCount = rangements.stream().filter(Rangement::isSimplePlace).count();
-        RangementUtils.write_XLSTab(nom, rangements);
+        RangementUtils.write_XLSTab(filename, rangements);
       }
 
       if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_TAB_MESS, false)) {
@@ -313,12 +290,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
       }
       end.setText(Program.getLabel("Infos097"), true); //"Fichier genere.
       preview.setEnabled(true);
-    } catch (TransformerConfigurationException e1) {
-      Debug("ERROR: TransformerConfigurationException : " + e1.getMessage());
-      Program.showException(e1);
-    } catch (TransformerException e1) {
-      Debug("ERROR: TransformerException : " + e1.getMessage());
-      Program.showException(e1);
     } catch (Exception exc) {
       Program.showException(exc);
     }

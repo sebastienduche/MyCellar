@@ -1,8 +1,6 @@
 package mycellar.requester;
 
 import mycellar.Program;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +24,6 @@ import static mycellar.ProgramConstants.SPACE;
 public class CollectionFilter<T> {
 
   private static final CollectionFilter INSTANCE = new CollectionFilter();
-  private static final Log LOGGER = LogFactory.getLog(CollectionFilter.class);
   private static Collection result = Collections.EMPTY_LIST;
   private static String error = "";
 
@@ -36,7 +33,7 @@ public class CollectionFilter<T> {
   }
 
   /**
-   * Select objects that matches the predicates
+   * Select objects that match the predicates
    *
    * @param src       List to filter
    * @param predicate
@@ -56,7 +53,7 @@ public class CollectionFilter<T> {
   }
 
   /**
-   * Select objects that matches the predicates with the corresponding value
+   * Select objects that match the predicates with the corresponding value
    *
    * @param src       List to filter
    * @param predicate
@@ -78,7 +75,7 @@ public class CollectionFilter<T> {
   }
 
   /**
-   * Select objects that matches the collection of predicates (with keywords between predicates)
+   * Select objects that match the collection of predicates (with keywords between predicates)
    *
    * @param src
    * @param predicates
@@ -90,25 +87,23 @@ public class CollectionFilter<T> {
     }
     result = null;
     for (Predicates p : predicates) {
-      LOGGER.debug(p.toString());
+      Debug(p.toString());
     }
     if (!validatePredicates(predicates)) {
       return INSTANCE;
     }
 
-    LOGGER.debug("Predicates OK");
+    Debug("Predicates OK");
 
     Collection<LinkedList<Predicates>> split = splitPredicates(predicates);
     if (split.size() > 1) {
       for (LinkedList<Predicates> list : split) {
-        LOGGER.debug("Display List");
-        if (LOGGER.isDebugEnabled()) {
-          StringBuilder sb = new StringBuilder();
-          for (Predicates p : list) {
-            sb.append(p.toString()).append(SPACE);
-          }
-          LOGGER.debug(sb.toString());
+        Debug("Display predicates list..");
+        StringBuilder sb = new StringBuilder();
+        for (Predicates p : list) {
+          sb.append(p.toString()).append(SPACE);
         }
+        Debug(sb.toString());
       }
 
       boolean first = true;
@@ -336,7 +331,7 @@ public class CollectionFilter<T> {
   }
 
   /**
-   * Filter the existing list to keep items that are include in the source list
+   * Filter the existing list to keep items that are included in the source list
    *
    * @param src
    * @return
@@ -427,45 +422,45 @@ public class CollectionFilter<T> {
     for (Predicates predicate : predicates) {
       if (first && Predicates.isKeywordPredicate(predicate.getPredicate())) {
         error = Program.getLabel("CollectionFilter.ErrorStart");
-        LOGGER.debug("Cant start by AND/OR");
+        Debug("Cant start by AND/OR");
         return false;
       }
       if (predicate.getPredicate().isValueRequired()) {
         if (predicate.getValue() == null) {
           error = Program.getLabel("CollectionFilter.ErrorValueRequired");
-          LOGGER.debug("Value required for this predicate");
+          Debug("Value required for this predicate");
           return false;
         }
         if (predicate.getPredicate().isEmptyValueForbidden() && predicate.getValue().toString().isEmpty()) {
           error = Program.getLabel("CollectionFilter.ErrorValueRequired");
-          LOGGER.debug("Value required for this predicate");
+          Debug("Value required for this predicate");
           return false;
         }
       }
       if (previous != null) {
         if ((Predicates.OPEN_PARENTHESIS.equals(previous) || Predicates.isKeywordPredicate(previous)) && Predicates.isKeywordPredicate(predicate.getPredicate())) {
           error = Program.getLabel("CollectionFilter.ErrorKeywordParameter");
-          LOGGER.debug("Cant put AND/OR after open parenthesis or keyword");
+          Debug("Cant put AND/OR after open parenthesis or keyword");
           return false;
         }
         if (Predicates.OPEN_PARENTHESIS.equals(previous) && Predicates.isKeywordPredicate(predicate.getPredicate())) {
           error = Program.getLabel("CollectionFilter.ErrorKeywordParenthesis");
-          LOGGER.debug("Cant put keyword after open parenthesis");
+          Debug("Cant put keyword after open parenthesis");
           return false;
         }
         if (Predicates.CLOSE_PARENTHESIS.equals(predicate.getPredicate()) && Predicates.isKeywordPredicate(previous)) {
           error = Program.getLabel("CollectionFilter.ErrorParenthesisKeyword");
-          LOGGER.debug("Cant put close parenthesis after keyword");
+          Debug("Cant put close parenthesis after keyword");
           return false;
         }
         if (Predicates.CLOSE_PARENTHESIS.equals(previous) && !Predicates.isKeywordPredicate(predicate.getPredicate())) {
           error = Program.getLabel("CollectionFilter.ErrorFieldParenthesis");
-          LOGGER.debug("Cant put field after close parenthesis");
+          Debug("Cant put field after close parenthesis");
           return false;
         }
         if (Predicates.isFieldPredicate(predicate.getPredicate()) && Predicates.isFieldPredicate(previous)) {
           error = Program.getLabel("CollectionFilter.ErrorFieldField");
-          LOGGER.debug("Cant put field after field");
+          Debug("Cant put field after field");
           return false;
         }
       }
@@ -480,7 +475,7 @@ public class CollectionFilter<T> {
     }
     if (openParenthesis != closeParenthesis) {
       error = Program.getLabel("CollectionFilter.ErrorParenthesis");
-      LOGGER.debug("Should have the same number of open and close parenthesis");
+      Debug("Should have the same number of open and close parenthesis");
       return false;
     }
     return true;
@@ -542,6 +537,10 @@ public class CollectionFilter<T> {
     }
 
     return predicatesToDo;
+  }
+
+  private static void Debug(String text) {
+    Program.Debug("CollectionFilter: " + text);
   }
 
   /**

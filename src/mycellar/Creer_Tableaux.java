@@ -76,99 +76,95 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 
   public Creer_Tableaux() {
     Debug("Constructor");
-    try {
-      final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO, "095"); //"Nom du fichier genere:
-      m_jcb_options.addActionListener(this::options_actionPerformed);
-      final MyCellarButton browse = new MyCellarButton("...");
-      browse.addActionListener(this::browse_actionPerformed);
-      final MyCellarButton parameter = new MyCellarButton(LabelType.INFO_OTHER, "Main.Parameters");
-      parameter.addActionListener(this::param_actionPerformed);
-      final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO, "096"); //"Selectionner les rangements a generer:
-      final MyCellarButton create = new MyCellarButton(LabelType.INFO, "018"); //"Creer
-      create.setMnemonic(creerChar);
+    final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO, "095"); //"Nom du fichier genere:
+    m_jcb_options.addActionListener(this::options_actionPerformed);
+    final MyCellarButton browse = new MyCellarButton("...");
+    browse.addActionListener(this::browse_actionPerformed);
+    final MyCellarButton parameter = new MyCellarButton(LabelType.INFO_OTHER, "Main.Parameters");
+    parameter.addActionListener(this::param_actionPerformed);
+    final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO, "096"); //"Selectionner les rangements a generer:
+    final MyCellarButton create = new MyCellarButton(LabelType.INFO, "018"); //"Creer
+    create.setMnemonic(creerChar);
 
-      final ButtonGroup buttonGroup = new ButtonGroup();
-      buttonGroup.add(type_HTML);
-      buttonGroup.add(type_XML);
-      buttonGroup.add(type_XLS);
-      table = new JTable(tableauValues);
-      table.setAutoCreateRowSorter(true);
-      TableColumnModel tcm = table.getColumnModel();
-      TableColumn tc = tcm.getColumn(TableauValues.ETAT);
-      tc.setCellRenderer(new CheckboxCellRenderer());
-      tc.setCellEditor(new CheckboxCellEditor());
-      tc.setMinWidth(25);
-      tc.setMaxWidth(25);
+    final ButtonGroup buttonGroup = new ButtonGroup();
+    buttonGroup.add(type_HTML);
+    buttonGroup.add(type_XML);
+    buttonGroup.add(type_XLS);
+    table = new JTable(tableauValues);
+    table.setAutoCreateRowSorter(true);
+    TableColumnModel tcm = table.getColumnModel();
+    TableColumn tc = tcm.getColumn(TableauValues.ETAT);
+    tc.setCellRenderer(new CheckboxCellRenderer());
+    tc.setCellEditor(new CheckboxCellEditor());
+    tc.setMinWidth(25);
+    tc.setMaxWidth(25);
 
-      type_XML.addActionListener(this::jradio_actionPerformed);
-      type_HTML.addActionListener(this::jradio_actionPerformed);
-      type_XLS.addActionListener(this::jradio_actionPerformed);
+    type_XML.addActionListener(this::jradio_actionPerformed);
+    type_HTML.addActionListener(this::jradio_actionPerformed);
+    type_XLS.addActionListener(this::jradio_actionPerformed);
 
-      Program.getCave().forEach(tableauValues::addRangement);
+    Program.getCave().forEach(tableauValues::addRangement);
 
-      JScrollPane jScrollPane = new JScrollPane(table);
-      end.setHorizontalAlignment(SwingConstants.CENTER);
-      end.setForeground(Color.red);
-      end.setFont(FONT_DIALOG_SMALL);
-      preview.setMnemonic(ouvrirChar);
-      selectall.setHorizontalAlignment(SwingConstants.RIGHT);
-      selectall.setHorizontalTextPosition(SwingConstants.LEFT);
-      selectall.addActionListener(this::selectall_actionPerformed);
-      preview.addActionListener(this::preview_actionPerformed);
-      create.addActionListener(this::create_actionPerformed);
-      addKeyListener(new KeyAdapter() {
-        @Override
-        public void keyPressed(KeyEvent e) {
-          keylistener_actionPerformed(e);
-        }
-      });
-
-      name.addMouseListener(new PopupListener());
-
-      m_jcb_options.setEnabled(false);
-      switch (Program.getCaveConfigInt(MyCellarSettings.CREATE_TAB_DEFAULT, 1)) {
-        case 0:
-          type_XML.setSelected(true);
-          break;
-        case 1:
-          type_HTML.setSelected(true);
-          break;
-        case 2:
-          type_XLS.setSelected(true);
-          m_jcb_options.setEnabled(true);
-          break;
+    JScrollPane jScrollPane = new JScrollPane(table);
+    end.setHorizontalAlignment(SwingConstants.CENTER);
+    end.setForeground(Color.red);
+    end.setFont(FONT_DIALOG_SMALL);
+    preview.setMnemonic(ouvrirChar);
+    selectall.setHorizontalAlignment(SwingConstants.RIGHT);
+    selectall.setHorizontalTextPosition(SwingConstants.LEFT);
+    selectall.addActionListener(this::selectall_actionPerformed);
+    preview.addActionListener(this::preview_actionPerformed);
+    create.addActionListener(this::create_actionPerformed);
+    addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        keylistener_actionPerformed(e);
       }
+    });
 
-      setLayout(new MigLayout("", "grow", "[][][grow]"));
-      final JPanel panelFile = new JPanel();
-      panelFile.setLayout(new MigLayout("", "grow", ""));
-      panelFile.add(fileLabel, "wrap");
-      panelFile.add(name, "grow, split 3");
-      panelFile.add(browse);
-      panelFile.add(parameter, "push");
-      add(panelFile, "grow, wrap");
-      final JPanel panelType = new JPanel();
-      panelType.setLayout(new MigLayout("", "[grow][grow][grow]", ""));
-      panelType.add(type_XML);
-      panelType.add(type_HTML);
-      panelType.add(type_XLS, "split 2");
-      panelType.add(m_jcb_options, "push");
-      panelType.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos151")));
-      add(panelType, "grow, wrap");
-      final JPanel panelTable = new JPanel();
-      panelTable.setLayout(new MigLayout("", "grow", "grow"));
-      panelTable.add(chooseLabel, "wrap");
-      panelTable.add(jScrollPane, "grow, wrap");
-      panelTable.add(selectall, "grow, push, wrap");
-      panelTable.add(end, "grow, center, hidemode 3, wrap");
-      panelTable.add(create, "gaptop 15px, split 2, center");
-      panelTable.add(preview);
-      add(panelTable, "grow");
-      preview.setEnabled(false);
-      Debug("Constructor OK");
-    } catch (RuntimeException e) {
-      Program.showException(e);
+    name.addMouseListener(new PopupListener());
+
+    m_jcb_options.setEnabled(false);
+    switch (Program.getCaveConfigInt(MyCellarSettings.CREATE_TAB_DEFAULT, 1)) {
+      case 0:
+        type_XML.setSelected(true);
+        break;
+      case 1:
+        type_HTML.setSelected(true);
+        break;
+      case 2:
+        type_XLS.setSelected(true);
+        m_jcb_options.setEnabled(true);
+        break;
     }
+
+    setLayout(new MigLayout("", "grow", "[][][grow]"));
+    final JPanel panelFile = new JPanel();
+    panelFile.setLayout(new MigLayout("", "grow", ""));
+    panelFile.add(fileLabel, "wrap");
+    panelFile.add(name, "grow, split 3");
+    panelFile.add(browse);
+    panelFile.add(parameter, "push");
+    add(panelFile, "grow, wrap");
+    final JPanel panelType = new JPanel();
+    panelType.setLayout(new MigLayout("", "[grow][grow][grow]", ""));
+    panelType.add(type_XML);
+    panelType.add(type_HTML);
+    panelType.add(type_XLS, "split 2");
+    panelType.add(m_jcb_options, "push");
+    panelType.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos151")));
+    add(panelType, "grow, wrap");
+    final JPanel panelTable = new JPanel();
+    panelTable.setLayout(new MigLayout("", "grow", "grow"));
+    panelTable.add(chooseLabel, "wrap");
+    panelTable.add(jScrollPane, "grow, wrap");
+    panelTable.add(selectall, "grow, push, wrap");
+    panelTable.add(end, "grow, center, hidemode 3, wrap");
+    panelTable.add(create, "gaptop 15px, split 2, center");
+    panelTable.add(preview);
+    add(panelTable, "grow");
+    preview.setEnabled(false);
+    Debug("Constructor Done");
   }
 
   private static void Debug(String sText) {

@@ -109,8 +109,8 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       pdf.save(nomFichier);
       Erreur.showInformationMessage(MessageFormat.format(Program.getLabel("Main.savedFile"), nomFichier.getAbsolutePath()));
     } catch (IOException | RuntimeException ex) {
-      Program.showException(ex, false);
       Erreur.showSimpleErreur(Program.getError("Error160"), Program.getError("Error161"));
+      Program.showException(ex, false);
       return false;
     }
     return true;
@@ -203,7 +203,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
    * browse_actionPerformed: Fonction pour parcourir les repertoires.
    */
   private void browse_actionPerformed() {
-
     end.setText("");
     JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR, ""));
     boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
@@ -294,17 +293,13 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     } else if (e.getKeyCode() == EXPORT) {
       export();
     } else if (e.getKeyCode() == KeyEvent.VK_F1) {
-      aide_actionPerformed();
+      Program.getAide();
     }
   }
 
   private void jradio_actionPerformed() {
     end.setText("");
     options.setEnabled(!MyCellarRadioButtonXML.isSelected());
-  }
-
-  private void aide_actionPerformed() {
-    Program.getAide();
   }
 
   /**
@@ -409,7 +404,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonPDF.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_PDF.toString()))) {
+      if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_PDF.toString()))) {
         //"Le fichier saisi ne possede pas une extension PDF: " + str_tmp3);
         end.setText("");
         Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error157"), nom));
@@ -418,7 +413,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
 
       if (exportToPDF(myCellarObjects, aFile)) {
-        end.setText(Program.getLabel("Infos154")); //"Export termine."
+        end.setText(Program.getLabel("Infos154")); //"Export termine
         openit.setEnabled(true);
       } else {
         end.setText("");

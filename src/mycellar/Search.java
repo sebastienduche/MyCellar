@@ -95,9 +95,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final char exportKey = Program.getLabel("EXPORT").charAt(0);
   private final MyCellarLabel resul_txt = new MyCellarLabel();
   private final MyCellarCheckBox multi = new MyCellarCheckBox(LabelType.INFO_OTHER, "Search.AllBottlesInPlace", LabelProperty.PLURAL);
-  private final String label_empl = Program.getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL); //"Tous les vins de l'emplacement");
-  private final String label_num_empl = Program.getLabel("Search.AllBottlesInPart", LabelProperty.PLURAL); //"Tous les vins du lieu");
-  private final String label_ligne = Program.getLabel("Search.AllBottlesInLine", LabelProperty.PLURAL); //"Tous les vins de la ligne");
+  private final String label_empl = Program.getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL); //"Tous les vins de l'emplacement
+  private final String label_num_empl = Program.getLabel("Search.AllBottlesInPart", LabelProperty.PLURAL); //"Tous les vins du lieu
+  private final String label_ligne = Program.getLabel("Search.AllBottlesInLine", LabelProperty.PLURAL); //"Tous les vins de la ligne
   private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126"); // Tout selectionner
   private final MyCellarButton addToWorksheet = new MyCellarButton(MyCellarImage.WORK);
   private final MyCellarCheckBox empty_search = new MyCellarCheckBox(LabelType.INFO, "275"); //Vider automatiquement
@@ -1132,7 +1132,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         }
       }
       year.addItem(Program.getLabel("Infos390")); //NV
-      year.addItem(Program.getLabel("Infos225")); //"Autre");
+      year.addItem(Program.getLabel("Infos225")); //"Autre
     }
   }
 

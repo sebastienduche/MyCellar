@@ -38,8 +38,8 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.3
- * @since 04/01/22
+ * @version 9.4
+ * @since 07/01/22
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -257,8 +257,10 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
     end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
     ProgramPanels.updatePanelsWithoutBottles();
+    panelWineAttribute.setModificationDetectionActive(false);
     updateStatusAndTime();
     resetModified();
+    panelWineAttribute.setModificationDetectionActive(true);
     ProgramPanels.setSelectedPaneModified(false);
     Debug("Saving... Done");
 

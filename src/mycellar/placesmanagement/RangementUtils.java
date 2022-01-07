@@ -95,14 +95,14 @@ public final class RangementUtils {
   }
 
   /**
-   * write_CSV: Ecriture d'un fichier CSV
+   * Write a CSV file
    *
-   * @param fichier     String: fichier CSV a ecrire
-   * @param all         List<Bouteille>: stock de bouteille
+   * @param file
+   * @param myCellarObjects list of objects to write
    * @param progressBar
    * @return int
    */
-  public static boolean write_CSV(final File fichier, final List<? extends IMyCellarObject> all, final JProgressBar progressBar) {
+  public static boolean write_CSV(final File file, final List<? extends IMyCellarObject> myCellarObjects, final JProgressBar progressBar) {
 
     String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
 
@@ -111,10 +111,10 @@ public final class RangementUtils {
       map.put(field, Program.getCaveConfigBool(MyCellarSettings.EXPORT_CSV + field.name(), false));
     }
 
-    progressBar.setMaximum(all.size());
+    progressBar.setMaximum(myCellarObjects.size());
     progressBar.setMinimum(0);
 
-    try (var fileWriter = new FileWriter(fichier)) {
+    try (var fileWriter = new FileWriter(file)) {
 
       StringBuilder line = new StringBuilder();
       // Title line
@@ -126,7 +126,7 @@ public final class RangementUtils {
       line.append('\n');
       fileWriter.write(line.toString());
       int i = 0;
-      for (IMyCellarObject b : all) {
+      for (IMyCellarObject b : myCellarObjects) {
         progressBar.setValue(i++);
         line = new StringBuilder();
         final String doubleCote = "\"";

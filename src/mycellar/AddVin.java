@@ -44,8 +44,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.3
- * @since 05/01/22
+ * @version 30.4
+ * @since 07/01/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -715,6 +715,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Debug("Do After Run...");
     myCellarObject = null;
     panelGeneral.setMyCellarObject(null);
+    panelPlace.clearModified();
     ProgramPanels.updateCellOrganizerPanel(false);
     ProgramPanels.setSelectedPaneModified(false);
     if (!isModify) {
@@ -745,6 +746,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     }
     panelGeneral.setSeveralItems(severalItems);
     panelPlace.resetValues();
+    panelPlace.clearModified();
     enableAll(true);
     isModify = false;
     panelPlace.setBeforeLabelsVisible(false);
@@ -766,6 +768,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     }
     panelWineAttribute.runExit();
     panelPlace.resetValues();
+    panelPlace.clearModified();
     clearValues();
     reInitAddVin();
     Debug("runExit... End");
@@ -830,8 +833,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      runExit();
-      Start.getInstance().removeCurrentTab();
+      if (runExit()) {
+        Start.getInstance().removeCurrentTab();
+      }
     }
   }
 }

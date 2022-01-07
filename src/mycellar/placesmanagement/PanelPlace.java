@@ -32,8 +32,8 @@ import java.util.function.Predicate;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 06/01/22
+ * @version 2.3
+ * @since 07/01/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -227,7 +227,7 @@ public class PanelPlace extends JPanel implements IPlace {
         setListenersEnabled(false);
         resetCombos();
         clearBeforeObjectLabels();
-        labelExist.setText("");
+        clearLabelEnd();
         managePlaceCombos();
         setListenersEnabled(true);
       }
@@ -358,6 +358,7 @@ public class PanelPlace extends JPanel implements IPlace {
         Objects.requireNonNull(rangement);
         enableAll(false);
         labelExist.setText("");
+        setLineColumnVisible(rangement);
 
         preview.setEnabled(!rangement.isSimplePlace());
 
@@ -379,7 +380,6 @@ public class PanelPlace extends JPanel implements IPlace {
           numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
           labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu
         }
-        setLineColumnVisible(rangement);
         enableAll(true);
         Debug("Lieu_itemStateChanging... End");
       }
@@ -390,6 +390,10 @@ public class PanelPlace extends JPanel implements IPlace {
     if (isListenersDisabled(e)) {
       return;
     }
+    labelExist.setText("");
+    if (!line.isVisible()) {
+      return;
+    }
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
@@ -397,8 +401,6 @@ public class PanelPlace extends JPanel implements IPlace {
         enableAll(false);
         int numPlaceSelectedIndex = numPlace.getSelectedIndex();
         int placeSelectedIndex = place.getSelectedIndex();
-
-        labelExist.setText("");
 
         if (numPlaceSelectedIndex != 0) {
           Rangement rangement = place.getItemAt(placeSelectedIndex);
@@ -430,6 +432,10 @@ public class PanelPlace extends JPanel implements IPlace {
       }
       return;
     }
+    labelExist.setText("");
+    if (!column.isVisible()) {
+      return;
+    }
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
@@ -438,7 +444,6 @@ public class PanelPlace extends JPanel implements IPlace {
         int num_select = line.getSelectedIndex();
         int emplacement = numPlace.getSelectedIndex();
         int lieu_select = place.getSelectedIndex();
-        labelExist.setText("");
         column.setEnabled(num_select != 0);
         int nb_col = 0;
         if (num_select > 0) {
@@ -478,8 +483,8 @@ public class PanelPlace extends JPanel implements IPlace {
           return;
         }
 
-        Rangement cave = place.getItemAt(nPlace);
-        cave.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
+        Rangement rangement = place.getItemAt(nPlace);
+        rangement.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
             .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(myCellarObject.getNom()))));
         Debug("Column_itemStateChanging... End");
       }

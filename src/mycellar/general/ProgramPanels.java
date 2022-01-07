@@ -91,9 +91,9 @@ public class ProgramPanels {
   private static final JTabbedPane TABBED_PANE = new JTabbedPane();
   private static final List<TabLabel> TAB_LABELS = new ArrayList<>();
 
-  private static final Map<ScreenType, IMyCellar> OPENED_OBJECTS = new EnumMap<>(ScreenType.class);
-  private static final Map<ScreenType, IUpdatable> UPDATABLE_OBJECTS = new EnumMap<>(ScreenType.class);
-  private static final Map<Integer, IUpdatable> UPDATABLE_BOTTLES = new HashMap<>();
+  private static final Map<ScreenType, IMyCellar> OPENED_PANELS = new EnumMap<>(ScreenType.class);
+  private static final Map<ScreenType, IUpdatable> UPDATABLE_PANELS = new EnumMap<>(ScreenType.class);
+  private static final Map<Integer, IUpdatable> UPDATABLE_MYCELLAROBJECTS = new HashMap<>();
 
   public static int findTab(ImageIcon image, Component component) {
     for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
@@ -118,12 +118,12 @@ public class ProgramPanels {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
-        UPDATABLE_OBJECTS.forEach((s, iUpdatable) -> {
+        UPDATABLE_PANELS.forEach((s, iUpdatable) -> {
           if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
             iUpdatable.updateView();
           }
         });
-        UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> {
+        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> {
           if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
             iUpdatable.updateView();
           }
@@ -146,8 +146,8 @@ public class ProgramPanels {
       @Override
       protected void done() {
         Program.Debug("ProgramPanels: updateAllPanels");
-        UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.ALL));
-        UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.ALL));
+        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.ALL));
+        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.ALL));
       }
     }.execute();
   }
@@ -157,8 +157,8 @@ public class ProgramPanels {
       @Override
       protected void done() {
         Program.Debug("ProgramPanels: updateAllPanelsForUpdatingPlaces");
-        UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.PLACE));
-        UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.PLACE));
+        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.PLACE));
+        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.PLACE));
       }
     }.execute();
   }
@@ -168,8 +168,8 @@ public class ProgramPanels {
       @Override
       protected void done() {
         Program.Debug("ProgramPanels: updateAllPanelsForUpdatingCapacity");
-        UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.CAPACITY));
-        UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.CAPACITY));
+        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.CAPACITY));
+        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.CAPACITY));
       }
     }.execute();
   }
@@ -179,14 +179,14 @@ public class ProgramPanels {
       @Override
       protected void done() {
         Program.Debug("ProgramPanels: updateAllPanelsForUpdatingVineyard");
-        UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.VINEYARD));
-        UPDATABLE_BOTTLES.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.VINEYARD));
+        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.VINEYARD));
+        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.VINEYARD));
       }
     }.execute();
   }
 
   public static void updateCellOrganizerPanel(boolean forceUpdate) {
-    final IUpdatable cellOrganizer = UPDATABLE_OBJECTS.get(CELL_ORGANIZER);
+    final IUpdatable cellOrganizer = UPDATABLE_PANELS.get(CELL_ORGANIZER);
     if (cellOrganizer != null) {
       cellOrganizer.setUpdateView(UpdateViewType.ALL);
       if (forceUpdate) {
@@ -196,62 +196,62 @@ public class ProgramPanels {
   }
 
   public static void updatePanelsWithoutBottles() {
-    UPDATABLE_OBJECTS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.ALL));
+    UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.ALL));
   }
 
   public static AddVin createAddVin() {
-    AddVin addVin = (AddVin) OPENED_OBJECTS.get(ADDVIN);
+    AddVin addVin = (AddVin) OPENED_PANELS.get(ADDVIN);
     if (addVin == null) {
       addVin = new AddVin();
-      OPENED_OBJECTS.put(ADDVIN, addVin);
-      UPDATABLE_OBJECTS.put(ADDVIN, addVin);
+      OPENED_PANELS.put(ADDVIN, addVin);
+      UPDATABLE_PANELS.put(ADDVIN, addVin);
     }
     return addVin;
   }
 
   public static Supprimer_Rangement createSupprimerRangement() {
     final Supprimer_Rangement supprimerRangement = (Supprimer_Rangement) createOpenedObject(Supprimer_Rangement.class, SUPPRIMER_RANGEMENT);
-    UPDATABLE_OBJECTS.put(SUPPRIMER_RANGEMENT, supprimerRangement);
+    UPDATABLE_PANELS.put(SUPPRIMER_RANGEMENT, supprimerRangement);
     return supprimerRangement;
   }
 
   public static void deleteSupprimerRangement() {
-    OPENED_OBJECTS.remove(SUPPRIMER_RANGEMENT);
-    UPDATABLE_OBJECTS.remove(SUPPRIMER_RANGEMENT);
+    OPENED_PANELS.remove(SUPPRIMER_RANGEMENT);
+    UPDATABLE_PANELS.remove(SUPPRIMER_RANGEMENT);
   }
 
   public static Creer_Rangement createCreerRangement() {
-    Creer_Rangement creerRangement = (Creer_Rangement) OPENED_OBJECTS.get(CREATE_PLACE);
+    Creer_Rangement creerRangement = (Creer_Rangement) OPENED_PANELS.get(CREATE_PLACE);
     if (creerRangement == null) {
       creerRangement = new Creer_Rangement(false);
-      OPENED_OBJECTS.put(CREATE_PLACE, creerRangement);
+      OPENED_PANELS.put(CREATE_PLACE, creerRangement);
     }
     return creerRangement;
   }
 
   public static Creer_Rangement createModifierRangement() {
-    Creer_Rangement creerRangement = (Creer_Rangement) OPENED_OBJECTS.get(MODIFY_PLACE);
+    Creer_Rangement creerRangement = (Creer_Rangement) OPENED_PANELS.get(MODIFY_PLACE);
     if (creerRangement == null) {
       creerRangement = new Creer_Rangement(true);
-      OPENED_OBJECTS.put(MODIFY_PLACE, creerRangement);
-      UPDATABLE_OBJECTS.put(MODIFY_PLACE, creerRangement);
+      OPENED_PANELS.put(MODIFY_PLACE, creerRangement);
+      UPDATABLE_PANELS.put(MODIFY_PLACE, creerRangement);
     }
     return creerRangement;
   }
 
   public static Optional<Search> getSearch() {
-    return Optional.ofNullable((Search) OPENED_OBJECTS.get(SEARCH));
+    return Optional.ofNullable((Search) OPENED_PANELS.get(SEARCH));
   }
 
   public static Search createSearch() {
     final Search search = (Search) createOpenedObject(Search.class, SEARCH);
-    UPDATABLE_OBJECTS.put(SEARCH, search);
+    UPDATABLE_PANELS.put(SEARCH, search);
     return search;
   }
 
   public static Creer_Tableaux createCreerTableaux() {
     final Creer_Tableaux creerTableaux = (Creer_Tableaux) createOpenedObject(Creer_Tableaux.class, CREER_TABLEAU);
-    UPDATABLE_OBJECTS.put(CREER_TABLEAU, creerTableaux);
+    UPDATABLE_PANELS.put(CREER_TABLEAU, creerTableaux);
     return creerTableaux;
   }
 
@@ -265,7 +265,7 @@ public class ProgramPanels {
 
   public static Stat createStat() {
     final Stat stat = (Stat) createOpenedObject(Stat.class, STATS);
-    UPDATABLE_OBJECTS.put(STATS, stat);
+    UPDATABLE_PANELS.put(STATS, stat);
     return stat;
   }
 
@@ -283,43 +283,43 @@ public class ProgramPanels {
 
   public static ShowFile createShowFile() {
     final ShowFile showFile = (ShowFile) createOpenedObject(ShowFile.class, SHOW_FILE);
-    UPDATABLE_OBJECTS.put(SHOW_FILE, showFile);
+    UPDATABLE_PANELS.put(SHOW_FILE, showFile);
     return showFile;
   }
 
   public static ShowFile createShowTrash() {
-    ShowFile showFile = (ShowFile) OPENED_OBJECTS.get(SHOW_TRASH);
+    ShowFile showFile = (ShowFile) OPENED_PANELS.get(SHOW_TRASH);
     if (showFile == null) {
       showFile = new ShowFile(ShowFile.ShowType.TRASH);
-      OPENED_OBJECTS.put(SHOW_TRASH, showFile);
-      UPDATABLE_OBJECTS.put(SHOW_TRASH, showFile);
+      OPENED_PANELS.put(SHOW_TRASH, showFile);
+      UPDATABLE_PANELS.put(SHOW_TRASH, showFile);
     }
     return showFile;
   }
 
   public static ShowFile createShowWorksheet() {
-    ShowFile showFile = (ShowFile) OPENED_OBJECTS.get(SHOW_WORKSHEET);
+    ShowFile showFile = (ShowFile) OPENED_PANELS.get(SHOW_WORKSHEET);
     if (showFile == null) {
       showFile = new ShowFile(ShowFile.ShowType.WORK);
-      OPENED_OBJECTS.put(SHOW_WORKSHEET, showFile);
-      UPDATABLE_OBJECTS.put(SHOW_WORKSHEET, showFile);
+      OPENED_PANELS.put(SHOW_WORKSHEET, showFile);
+      UPDATABLE_PANELS.put(SHOW_WORKSHEET, showFile);
     }
     return showFile;
   }
 
   public static ShowFile createShowErrors() {
-    ShowFile showFile = (ShowFile) OPENED_OBJECTS.get(SHOW_ERRORS);
+    ShowFile showFile = (ShowFile) OPENED_PANELS.get(SHOW_ERRORS);
     if (showFile == null) {
       showFile = new ShowFile(ShowFile.ShowType.ERROR);
-      OPENED_OBJECTS.put(SHOW_ERRORS, showFile);
-      UPDATABLE_OBJECTS.put(SHOW_ERRORS, showFile);
+      OPENED_PANELS.put(SHOW_ERRORS, showFile);
+      UPDATABLE_PANELS.put(SHOW_ERRORS, showFile);
     }
     return showFile;
   }
 
   public static CellarOrganizerPanel createCellarOrganizerPanel() {
     final CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) createOpenedObject(CellarOrganizerPanel.class, CELL_ORGANIZER);
-    UPDATABLE_OBJECTS.put(CELL_ORGANIZER, cellarOrganizerPanel);
+    UPDATABLE_PANELS.put(CELL_ORGANIZER, cellarOrganizerPanel);
     return cellarOrganizerPanel;
   }
 
@@ -328,78 +328,78 @@ public class ProgramPanels {
   }
 
   public static void deleteParametres() {
-    OPENED_OBJECTS.remove(PARAMETRES);
+    OPENED_PANELS.remove(PARAMETRES);
   }
 
   public static CellarOrganizerPanel createChooseCellPanel(IPlace iPlace) {
-    CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL0);
+    CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL0);
     if (cellarOrganizerPanel == null) {
       cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
-      OPENED_OBJECTS.put(CHOOSE_CELL0, cellarOrganizerPanel);
-      UPDATABLE_OBJECTS.put(CHOOSE_CELL0, cellarOrganizerPanel);
+      OPENED_PANELS.put(CHOOSE_CELL0, cellarOrganizerPanel);
+      UPDATABLE_PANELS.put(CHOOSE_CELL0, cellarOrganizerPanel);
       return cellarOrganizerPanel;
     }
-    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL1);
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL1);
     if (cellarOrganizerPanel == null) {
       cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
-      OPENED_OBJECTS.put(CHOOSE_CELL1, cellarOrganizerPanel);
-      UPDATABLE_OBJECTS.put(CHOOSE_CELL1, cellarOrganizerPanel);
+      OPENED_PANELS.put(CHOOSE_CELL1, cellarOrganizerPanel);
+      UPDATABLE_PANELS.put(CHOOSE_CELL1, cellarOrganizerPanel);
       return cellarOrganizerPanel;
     }
-    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL2);
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL2);
     if (cellarOrganizerPanel == null) {
       cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
-      OPENED_OBJECTS.put(CHOOSE_CELL2, cellarOrganizerPanel);
-      UPDATABLE_OBJECTS.put(CHOOSE_CELL2, cellarOrganizerPanel);
+      OPENED_PANELS.put(CHOOSE_CELL2, cellarOrganizerPanel);
+      UPDATABLE_PANELS.put(CHOOSE_CELL2, cellarOrganizerPanel);
       return cellarOrganizerPanel;
     }
-    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL3);
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL3);
     if (cellarOrganizerPanel == null) {
       cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
-      OPENED_OBJECTS.put(CHOOSE_CELL3, cellarOrganizerPanel);
-      UPDATABLE_OBJECTS.put(CHOOSE_CELL3, cellarOrganizerPanel);
+      OPENED_PANELS.put(CHOOSE_CELL3, cellarOrganizerPanel);
+      UPDATABLE_PANELS.put(CHOOSE_CELL3, cellarOrganizerPanel);
       return cellarOrganizerPanel;
     }
     cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
-    OPENED_OBJECTS.put(CHOOSE_CELL4, cellarOrganizerPanel);
-    UPDATABLE_OBJECTS.put(CHOOSE_CELL4, cellarOrganizerPanel);
+    OPENED_PANELS.put(CHOOSE_CELL4, cellarOrganizerPanel);
+    UPDATABLE_PANELS.put(CHOOSE_CELL4, cellarOrganizerPanel);
     return cellarOrganizerPanel;
   }
 
   public static void deleteChooseCellPanel(IPlace iPlace) {
-    CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL0);
+    CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL0);
     if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
-      OPENED_OBJECTS.remove(CHOOSE_CELL0);
-      UPDATABLE_OBJECTS.remove(CHOOSE_CELL0);
+      OPENED_PANELS.remove(CHOOSE_CELL0);
+      UPDATABLE_PANELS.remove(CHOOSE_CELL0);
       return;
     }
-    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL1);
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL1);
     if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
-      OPENED_OBJECTS.remove(CHOOSE_CELL1);
-      UPDATABLE_OBJECTS.remove(CHOOSE_CELL1);
+      OPENED_PANELS.remove(CHOOSE_CELL1);
+      UPDATABLE_PANELS.remove(CHOOSE_CELL1);
       return;
     }
-    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL2);
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL2);
     if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
-      OPENED_OBJECTS.remove(CHOOSE_CELL2);
-      UPDATABLE_OBJECTS.remove(CHOOSE_CELL2);
+      OPENED_PANELS.remove(CHOOSE_CELL2);
+      UPDATABLE_PANELS.remove(CHOOSE_CELL2);
       return;
     }
-    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL3);
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL3);
     if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
-      OPENED_OBJECTS.remove(CHOOSE_CELL3);
-      UPDATABLE_OBJECTS.remove(CHOOSE_CELL3);
+      OPENED_PANELS.remove(CHOOSE_CELL3);
+      UPDATABLE_PANELS.remove(CHOOSE_CELL3);
       return;
     }
-    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_OBJECTS.get(CHOOSE_CELL4);
+    cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL4);
     if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
-      OPENED_OBJECTS.remove(CHOOSE_CELL4);
-      UPDATABLE_OBJECTS.remove(CHOOSE_CELL4);
+      OPENED_PANELS.remove(CHOOSE_CELL4);
+      UPDATABLE_PANELS.remove(CHOOSE_CELL4);
     }
   }
 
   private static IMyCellar createOpenedObject(Class<?> className, ScreenType id) {
-    IMyCellar object = OPENED_OBJECTS.get(id);
+    IMyCellar object = OPENED_PANELS.get(id);
     if (object == null) {
       try {
         Constructor<?> ctor = className.getConstructor();
@@ -407,7 +407,7 @@ public class ProgramPanels {
       } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
         Program.showException(e);
       }
-      OPENED_OBJECTS.put(id, object);
+      OPENED_PANELS.put(id, object);
     }
     return object;
   }
@@ -425,7 +425,7 @@ public class ProgramPanels {
         }
         ManageBottle manage = new ManageBottle(myCellarObject);
         manage.enableAll(edit);
-        UPDATABLE_BOTTLES.put(myCellarObject.getId(), manage);
+        UPDATABLE_MYCELLAROBJECTS.put(myCellarObject.getId(), manage);
         String bottleName = myCellarObject.getNom();
         if (bottleName.length() > 30) {
           bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
@@ -609,9 +609,9 @@ public class ProgramPanels {
   public static void removeAll() {
     TABBED_PANE.removeAll();
     TAB_LABELS.clear();
-    UPDATABLE_OBJECTS.clear();
-    UPDATABLE_BOTTLES.clear();
-    OPENED_OBJECTS.clear();
+    UPDATABLE_PANELS.clear();
+    UPDATABLE_MYCELLAROBJECTS.clear();
+    OPENED_PANELS.clear();
   }
 
   public static boolean runExit() {

@@ -259,12 +259,17 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("ManageStock.ConfirmLost", LabelProperty.PLURAL), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }
+      if (stock.getComponentCount() > 0) {
+        ProgramPanels.updateAllPanels();
+      }
       for (int i = 0; i < stock.getComponentCount(); i++) {
         Component c = stock.getComponent(i);
         if (c instanceof MyCellarObjectDraggingLabel) {
-          Program.getStorage().addHistory(HistoryState.DEL, ((MyCellarObjectDraggingLabel) c).getMyCellarObject());
-          Program.getStorage().getAllList().remove(((MyCellarObjectDraggingLabel) c).getMyCellarObject());
-          Program.setToTrash(((MyCellarObjectDraggingLabel) c).getMyCellarObject());
+          final MyCellarObject myCellarObject = ((MyCellarObjectDraggingLabel) c).getMyCellarObject();
+          Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
+          Program.getStorage().getAllList().remove(myCellarObject);
+          Program.setToTrash(myCellarObject);
+          ProgramPanels.removeBottleTab(myCellarObject);
         }
       }
     }
@@ -565,6 +570,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
               Program.showException(e);
             }
             Program.setToTrash(myCellarObject);
+            ProgramPanels.removeBottleTab(myCellarObject);
           }
         }
       }

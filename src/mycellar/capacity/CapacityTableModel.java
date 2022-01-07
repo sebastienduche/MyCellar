@@ -17,8 +17,8 @@ import java.util.List;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 29/12/21
+ * @version 0.9
+ * @since 03/01/22
  */
 class CapacityTableModel extends DefaultTableModel {
   public static final int ETAT = 1;
@@ -78,7 +78,7 @@ class CapacityTableModel extends DefaultTableModel {
       list.remove(oldValue);
       fireTableRowsDeleted(row, row);
       setModify(true);
-      ProgramPanels.updateAllPanels();
+      ProgramPanels.updateAllPanelsForUpdatingCapacity();
       ProgramPanels.createCapacityPanel().updateView();
     } else {
       String newValue = Program.toCleanString(value);
@@ -86,7 +86,7 @@ class CapacityTableModel extends DefaultTableModel {
         MyCellarBottleContenance.rename(oldValue, newValue);
         fireTableDataChanged();
         setModify(true);
-        ProgramPanels.updateAllPanels();
+        ProgramPanels.updateAllPanelsForUpdatingCapacity();
         ProgramPanels.createCapacityPanel().updateView();
       }
     }

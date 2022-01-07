@@ -6,6 +6,7 @@ import mycellar.actions.ChooseCellAction;
 import mycellar.core.IPlace;
 import mycellar.core.LabelType;
 import mycellar.core.MyCellarObject;
+import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -15,13 +16,14 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
 import javax.swing.border.EtchedBorder;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -30,12 +32,12 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 29/12/21
+ * @version 2.3
+ * @since 07/01/22
  */
-public final class PanelPlace extends JPanel implements IPlace {
+public class PanelPlace extends JPanel implements IPlace {
+  protected static final ComboItem NONE = new ComboItem(-1, "");
   private static final long serialVersionUID = -2601861017578176513L;
-  private static final ComboItem NONE = new ComboItem(-1, "");
   private final JModifyComboBox<Rangement> place = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> numPlace = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> line = new JModifyComboBox<>();
@@ -52,28 +54,43 @@ public final class PanelPlace extends JPanel implements IPlace {
   private final MyCellarLabel previousLineLabel = new MyCellarLabel(""); // Pour la Modification
   private final MyCellarLabel previousColumnLabel = new MyCellarLabel(""); // Pour la Modification
   private final MyCellarButton chooseCell;
+  private final boolean columnComboVisible;
+  private final boolean onlyComplexPlaces;
   private boolean listenersEnabled = true;
 
   public PanelPlace() {
-    this(null, false, true);
+    this(null, false, true, true, true, false);
   }
 
-  public PanelPlace(Rangement rangement, boolean newLineForError, boolean chooseCellVisible) {
+  public PanelPlace(boolean newLineForError, boolean extraActionsVisible, boolean columnComboVisible, boolean onlyComplexPlaces) {
+    this(null, newLineForError, extraActionsVisible, extraActionsVisible, columnComboVisible, onlyComplexPlaces);
+  }
+
+  public PanelPlace(Rangement rangement, boolean newLineForError, boolean chooseCellVisible, boolean previewVisible, boolean columnComboVisible, boolean onlyComplexPlaces) {
+    this.columnComboVisible = columnComboVisible;
+    this.onlyComplexPlaces = onlyComplexPlaces;
     char previewChar = Program.getLabel("PREVIEW").charAt(0);
     preview.setMnemonic(previewChar);
     preview.addActionListener(this::preview_actionPerformed);
     chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
+    setModificationDetectionActive(false);
     initPlaceCombo();
     setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));
     setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
     add(new MyCellarLabel(LabelType.INFO, "208"));
     add(labelNumPlace);
     add(labelLine);
-    add(labelColumn, "wrap");
+    if (columnComboVisible) {
+      add(labelColumn, "wrap");
+    } else {
+      add(new JLabel(), "wrap");
+    }
     add(place);
     add(numPlace);
     add(line);
-    add(column);
+    if (columnComboVisible) {
+      add(column);
+    }
     if (!newLineForError) {
       add(labelExist, "hidemode 3");
     } else {
@@ -82,7 +99,11 @@ public final class PanelPlace extends JPanel implements IPlace {
     if (chooseCellVisible) {
       add(chooseCell, "alignx right");
     }
-    add(preview, "alignx right, wrap");
+    if (previewVisible) {
+      add(preview, "alignx right, wrap");
+    } else {
+      add(new JLabel(), "alignx right, wrap");
+    }
     if (newLineForError) {
       add(labelExist, "hidemode 3, span 6, wrap");
     }
@@ -99,6 +120,7 @@ public final class PanelPlace extends JPanel implements IPlace {
       place.setSelectedItem(rangement);
     }
     managePlaceCombos();
+    setModificationDetectionActive(true);
   }
 
   private static void Debug(String sText) {
@@ -119,7 +141,13 @@ public final class PanelPlace extends JPanel implements IPlace {
   private void initPlaceCombo() {
     place.removeAllItems();
     place.addItem(Program.EMPTY_PLACE);
-    Program.getCave().forEach(place::addItem);
+    if (onlyComplexPlaces) {
+      Program.getCave().stream()
+          .filter(Predicate.not(Rangement::isSimplePlace))
+          .forEach(place::addItem);
+    } else {
+      Program.getCave().forEach(place::addItem);
+    }
   }
 
   private void managePlaceCombos() {
@@ -157,7 +185,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     }
   }
 
-  public void setBeforeBottle(MyCellarObject myCellarObject) {
+  public void setBeforeObjectLabels(MyCellarObject myCellarObject) {
     setLineColumnVisible(myCellarObject.getRangement());
     previousPlaceLabel.setText(myCellarObject.getEmplacement());
     previousNumPlaceLabel.setText(Integer.toString(myCellarObject.getNumLieu()));
@@ -166,7 +194,7 @@ public final class PanelPlace extends JPanel implements IPlace {
     setBeforeLabelsVisible(true);
   }
 
-  public void clearBeforeBottle() {
+  public void clearBeforeObjectLabels() {
     previousPlaceLabel.setText("");
     previousNumPlaceLabel.setText("");
     previousLineLabel.setText("");
@@ -193,18 +221,13 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void resetValues() {
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         setListenersEnabled(false);
         resetCombos();
-        clearBeforeBottle();
-        labelExist.setText("");
+        clearBeforeObjectLabels();
+        clearLabelEnd();
         managePlaceCombos();
         setListenersEnabled(true);
       }
@@ -219,21 +242,16 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public void updateView() {
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Update view...");
         setListenersEnabled(false);
         resetCombos();
         initPlaceCombo();
-        setListenersEnabled(true);
         managePlaceCombos();
-        resetLabelEnd();
+        setListenersEnabled(true);
+        clearLabelEnd();
         Debug("Update view... Done");
       }
     }.execute();
@@ -245,12 +263,7 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   @Override
   public void selectPlace(Place placeRangement) {
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Select Place...");
@@ -307,6 +320,13 @@ public final class PanelPlace extends JPanel implements IPlace {
     column.addItemListener(this::column_itemStateChanged);
   }
 
+  public void setModificationDetectionActive(boolean active) {
+    place.setActive(active);
+    numPlace.setActive(active);
+    line.setActive(active);
+    column.setActive(active);
+  }
+
   private boolean isListenersDisabled(ItemEvent e) {
     return !listenersEnabled || e.getStateChange() == ItemEvent.DESELECTED;
   }
@@ -321,22 +341,16 @@ public final class PanelPlace extends JPanel implements IPlace {
 
   private void preview_actionPerformed(ActionEvent e) {
     Debug("Previewing...");
-    RangementUtils.putTabStock();
-    XmlUtils.writeRangements(Program.getPreviewXMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
-    Program.open(Program.getPreviewXMLFileName(), false);
-    Debug("Previewing... End");
+    XmlUtils.writePlacesToHTML(Program.getPreviewHTMLFileName(), List.of((Rangement) Objects.requireNonNull(place.getSelectedItem())), false);
+    Program.open(Program.getPreviewHTMLFileName(), false);
+    Debug("Previewing... Done");
   }
 
   private void lieu_itemStateChanged(ItemEvent e) {
     if (isListenersDisabled(e)) {
       return;
     }
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Lieu_itemStateChanging...");
@@ -344,6 +358,7 @@ public final class PanelPlace extends JPanel implements IPlace {
         Objects.requireNonNull(rangement);
         enableAll(false);
         labelExist.setText("");
+        setLineColumnVisible(rangement);
 
         preview.setEnabled(!rangement.isSimplePlace());
 
@@ -365,9 +380,8 @@ public final class PanelPlace extends JPanel implements IPlace {
           numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
           labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu
         }
-        setLineColumnVisible(rangement);
         enableAll(true);
-        Debug("Lieu_itemStateChanging... End");
+        Debug("Lieu_itemStateChanging... Done");
       }
     }.execute();
   }
@@ -376,20 +390,17 @@ public final class PanelPlace extends JPanel implements IPlace {
     if (isListenersDisabled(e)) {
       return;
     }
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    labelExist.setText("");
+    if (!line.isVisible()) {
+      return;
+    }
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Num_lieu_itemStateChanging...");
         enableAll(false);
         int numPlaceSelectedIndex = numPlace.getSelectedIndex();
         int placeSelectedIndex = place.getSelectedIndex();
-
-        labelExist.setText("");
 
         if (numPlaceSelectedIndex != 0) {
           Rangement rangement = place.getItemAt(placeSelectedIndex);
@@ -406,7 +417,7 @@ public final class PanelPlace extends JPanel implements IPlace {
           line.reset();
         }
         enableAll(true);
-        Debug("Num_lieu_itemStateChanging... End");
+        Debug("Num_lieu_itemStateChanging... Done");
       }
     }.execute();
   }
@@ -415,12 +426,17 @@ public final class PanelPlace extends JPanel implements IPlace {
     if (isListenersDisabled(e)) {
       return;
     }
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
+    if (!columnComboVisible) {
+      if (line.getSelectedIndex() > 0) {
+        onLineSelected(getSelectedPlace());
       }
-
+      return;
+    }
+    labelExist.setText("");
+    if (!column.isVisible()) {
+      return;
+    }
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Line_itemStateChanging...");
@@ -428,7 +444,6 @@ public final class PanelPlace extends JPanel implements IPlace {
         int num_select = line.getSelectedIndex();
         int emplacement = numPlace.getSelectedIndex();
         int lieu_select = place.getSelectedIndex();
-        labelExist.setText("");
         column.setEnabled(num_select != 0);
         int nb_col = 0;
         if (num_select > 0) {
@@ -441,21 +456,20 @@ public final class PanelPlace extends JPanel implements IPlace {
           column.addItem(new ComboItem(i));
         }
         enableAll(true);
-        Debug("Line_itemStateChanging... End");
+        Debug("Line_itemStateChanging... Done");
       }
     }.execute();
+  }
+
+  public void onLineSelected(Place selectedPlace) {
+    // Can be overridden
   }
 
   private void column_itemStateChanged(ItemEvent e) {
     if (isListenersDisabled(e)) {
       return;
     }
-    new SwingWorker<Void, Void>() {
-      @Override
-      protected Void doInBackground() throws Exception {
-        return null;
-      }
-
+    new MyCellarSwingWorker() {
       @Override
       protected void done() {
         Debug("Column_itemStateChanging...");
@@ -469,19 +483,12 @@ public final class PanelPlace extends JPanel implements IPlace {
           return;
         }
 
-        Rangement cave = place.getItemAt(nPlace);
-        cave.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
+        Rangement rangement = place.getItemAt(nPlace);
+        rangement.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
             .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(myCellarObject.getNom()))));
-        Debug("Column_itemStateChanging... End");
+        Debug("Column_itemStateChanging... Done");
       }
     }.execute();
-  }
-
-  public void setModifyActive(boolean enable) {
-    place.setActive(enable);
-    numPlace.setActive(enable);
-    line.setActive(enable);
-    column.setActive(enable);
   }
 
   public void enableSimplePlace(boolean enable) {
@@ -513,24 +520,28 @@ public final class PanelPlace extends JPanel implements IPlace {
   }
 
   public boolean performValidation(boolean isModification) {
+    return performValidation(isModification, null);
+  }
+
+  public boolean performValidation(boolean isModification, Component component) {
     final Place placeWithoutValidation = getSelectedPlace();
     if (!isModification) {
-      if (MyCellarControl.hasInvalidPlace(placeWithoutValidation)) {
+      if (MyCellarControl.hasInvalidPlace(placeWithoutValidation, component)) {
         return false;
       }
     }
     if (placeWithoutValidation.hasPlace()) {
-      if (MyCellarControl.hasInvalidNumLieuNumber(placeWithoutValidation.getPlaceNum(), placeWithoutValidation.isSimplePlace())) {
+      if (MyCellarControl.hasInvalidNumLieuNumber(placeWithoutValidation.getPlaceNum(), placeWithoutValidation.isSimplePlace(), component)) {
         enableAll(true);
         return false;
       }
 
       if (!placeWithoutValidation.isSimplePlace()) {
-        if (MyCellarControl.hasInvalidLineNumber(placeWithoutValidation.getLine())) {
+        if (MyCellarControl.hasInvalidLineNumber(placeWithoutValidation.getLine(), component)) {
           enableAll(true);
           return false;
         }
-        if (MyCellarControl.hasInvalidColumnNumber(placeWithoutValidation.getColumn())) {
+        if (columnComboVisible && MyCellarControl.hasInvalidColumnNumber(placeWithoutValidation.getColumn(), component)) {
           enableAll(true);
           return false;
         }
@@ -539,11 +550,11 @@ public final class PanelPlace extends JPanel implements IPlace {
     return true;
   }
 
-  public void resetLabelEnd() {
+  public void clearLabelEnd() {
     labelExist.setText("");
   }
 
-  private static class ComboItem {
+  public static class ComboItem {
 
     private final int value;
     private final String label;
@@ -553,7 +564,7 @@ public final class PanelPlace extends JPanel implements IPlace {
       this.label = label;
     }
 
-    ComboItem(int value) {
+    public ComboItem(int value) {
       this.value = value;
       label = Integer.toString(value);
     }

@@ -1,5 +1,6 @@
 package mycellar.actions;
 
+import mycellar.Program;
 import mycellar.Start;
 
 import javax.swing.AbstractAction;
@@ -14,6 +15,8 @@ public class ManageCapacityAction extends AbstractAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    Program.Debug("ManageCapacityAction: Manage Capacity...");
     Start.getInstance().openCapacityPanel();
+    Program.Debug("ManageCapacityAction: Manage Capacity... Done");
   }
 }

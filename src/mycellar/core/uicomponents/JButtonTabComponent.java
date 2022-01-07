@@ -33,6 +33,7 @@ package mycellar.core.uicomponents;
 
 import mycellar.ITabListener;
 import mycellar.Program;
+import mycellar.general.ProgramPanels;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -61,8 +62,6 @@ import java.awt.event.MouseListener;
  */
 public final class JButtonTabComponent extends JPanel {
 
-  private final int indexToGoBack;
-
   private static final long serialVersionUID = -3455621665205397725L;
   private static final MouseListener MOUSE_LISTENER = new MouseAdapter() {
     @Override
@@ -83,6 +82,7 @@ public final class JButtonTabComponent extends JPanel {
       }
     }
   };
+  private final int indexToGoBack;
   private final JTabbedPane pane;
 
   public JButtonTabComponent(final JTabbedPane pane, int indexToGoBack) {
@@ -168,10 +168,10 @@ public final class JButtonTabComponent extends JPanel {
             Program.Debug("Not Closing Tab");
             return;
           }
-          pane.remove(i);
+          ProgramPanels.removeTabAt(i);
           listener.tabClosed();
         } else {
-          pane.remove(i);
+          ProgramPanels.removeTabAt(i);
         }
         if (indexToGoBack != -1 && pane.getTabCount() > indexToGoBack) {
           pane.setSelectedIndex(indexToGoBack);

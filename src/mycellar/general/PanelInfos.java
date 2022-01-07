@@ -4,12 +4,11 @@ import mycellar.PanelHistory;
 import mycellar.Program;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
-import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
+import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -33,8 +32,8 @@ import static mycellar.ProgramConstants.SPACE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 14/12/21
+ * @version 2.7
+ * @since 07/01/22
  */
 public final class PanelInfos extends JPanel {
 
@@ -188,9 +187,8 @@ final class PanelStats extends JPanel {
     public void setValueAt(Object arg0, int row, int column) {
       if (column == 2) {
         Rangement rangement = names.get(row);
-        RangementUtils.putTabStock();
-        XmlUtils.writeRangements("", List.of(rangement), false);
-        Program.open(Program.getPreviewXMLFileName(), false);
+        XmlUtils.writePlacesToHTML("", List.of(rangement), false);
+        Program.open(Program.getPreviewHTMLFileName(), false);
       }
     }
 

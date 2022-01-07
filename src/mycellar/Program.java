@@ -23,6 +23,8 @@ import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
+import mycellar.core.language.Language;
+import mycellar.core.language.LanguageFileLoader;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.storage.SerializedStorage;
 import mycellar.core.storage.Storage;
@@ -112,8 +114,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.4
- * @since 27/12/21
+ * @version 27.6
+ * @since 04/01/22
  */
 
 public final class Program {
@@ -152,7 +154,7 @@ public final class Program {
     // Initialisation du repertoire de travail
     getWorkDir(false);
     loadGlobalProperties();
-    LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
+    LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
   }
 
   static void loadPropertiesAndSetProgramType() {
@@ -166,23 +168,23 @@ public final class Program {
     } catch (UnableToOpenFileException e) {
       showException(e);
     }
-    String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
+    String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
     Debug("Program: Type of managed object: " + programType);
-    setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
+    setLanguage(Language.getLanguage(thelangue.charAt(0)));
   }
 
   static void initializeLanguageProgramType() {
     try {
       Debug("Program: Initializing Language and Program type");
-      LanguageFileLoader.getInstance().loadLanguageFiles(LanguageFileLoader.Language.ENGLISH);
+      LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
 
       if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
-        putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
+        putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
       }
 
-      String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
+      String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
       Debug("Program: Type of managed object: " + programType);
-      setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
+      setLanguage(Language.getLanguage(thelangue.charAt(0)));
       cleanAndUpgrade();
     } catch (RuntimeException e) {
       showException(e);
@@ -362,11 +364,10 @@ public final class Program {
     }
   }
 
-  static void setLanguage(LanguageFileLoader.Language lang) {
+  static void setLanguage(Language lang) {
     Debug("Program: Set Language: " + lang);
     MyCellarLabelManagement.updateLabels();
-    ProgramPanels.TABBED_PANE.removeAll();
-    ProgramPanels.clearObjectsVariables();
+    ProgramPanels.removeAll();
     LanguageFileLoader.getInstance().loadLanguageFiles(lang);
     ProgramPanels.PANEL_INFOS.setLabels();
     Start.getInstance().updateLabels();
@@ -853,14 +854,13 @@ public final class Program {
       }
     }
 
-    ProgramPanels.TABBED_PANE.removeAll();
+    ProgramPanels.removeAll();
     if (myCellarFile.exists()) {
       getStorage().close();
       CountryVignobleController.close();
       CountryListJaxb.close();
-      ProgramPanels.getSearch().ifPresent(Search::clearResults);
+//      ProgramPanels.getSearch().ifPresent(Search::clearResults);
     }
-    ProgramPanels.clearObjectsVariables();
     workDirCalculated = false;
     TRASH.clear();
     modified = false;
@@ -1094,7 +1094,7 @@ public final class Program {
     return getGlobalDir() + PREVIEW_XML;
   }
 
-  private static String getPreviewHTMLFileName() {
+  public static String getPreviewHTMLFileName() {
     return getGlobalDir() + PREVIEW_HTML;
   }
 
@@ -1457,7 +1457,7 @@ public final class Program {
     cleanTempDirs();
     deleteTempFiles();
     cleanDebugFiles();
-    Debug("Program: MyCellar End");
+    Debug("Program: MyCellar Ended");
     closeDebug();
   }
 

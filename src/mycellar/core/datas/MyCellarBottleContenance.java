@@ -14,9 +14,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static mycellar.MyCellarUtils.isDefined;
+import static mycellar.ProgramConstants.HALF;
+import static mycellar.ProgramConstants.NORMAL;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -25,13 +28,11 @@ import static mycellar.MyCellarUtils.isDefined;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 23/04/21
+ * @version 0.9
+ * @since 04/01/22
  */
 public final class MyCellarBottleContenance {
 
-  private static final String NORMAL = "75cl";
-  private static final String HALF = "37.5cl";
   private final LinkedList<String> list = new LinkedList<>();
   private String defaultValue;
 
@@ -81,11 +82,6 @@ public final class MyCellarBottleContenance {
     getInstance().defaultValue = defaultValue;
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
   private static void Debug(String sText) {
     Program.Debug("MyCellarBottleContenance: " + sText);
   }
@@ -102,6 +98,7 @@ public final class MyCellarBottleContenance {
           .map(myCellarObject -> (Bouteille) myCellarObject)
           .map(Bouteille::getKind)
           .distinct()
+          .filter(Predicate.not(String::isBlank))
           .collect(Collectors.toList());
       for (String val : collect) {
         if (!list.contains(val)) {

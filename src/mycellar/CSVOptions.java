@@ -1,12 +1,12 @@
 package mycellar;
 
 import mycellar.core.LabelType;
+import mycellar.core.MyCellarSettings;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.MyCellarSettings;
-import mycellar.core.common.MyCellarFields;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -44,7 +44,6 @@ final class CSVOptions extends JDialog {
   private final List<MyCellarFields> listColumns;
 
   CSVOptions() {
-
     Debug("Constructor");
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setModal(true);
@@ -117,18 +116,13 @@ final class CSVOptions extends JDialog {
     add(annuler);
     pack();
     setLocationRelativeTo(Start.getInstance());
-    Debug("JbInit OK");
+    Debug("Constructor Done");
   }
 
-  public static void Debug(String sText) {
-    Program.Debug("CSVOptions: " + sText);
+  public static void Debug(String text) {
+    Program.Debug("CSVOptions: " + text);
   }
 
-  /**
-   * valider_actionPerformed: Valider les modifications et quitter.
-   *
-   * @param e ActionEvent
-   */
   private void valider_actionPerformed(ActionEvent e) {
     Debug("valider_actionPerforming...");
     for (int i = 0; i < nb_colonnes; i++) {

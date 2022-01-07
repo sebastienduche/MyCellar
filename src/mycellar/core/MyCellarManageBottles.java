@@ -21,8 +21,8 @@ import javax.swing.SwingUtilities;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.9
- * @since 20/10/21
+ * @version 5.1
+ * @since 04/01/22
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
@@ -33,17 +33,18 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected final PanelPlace panelPlace = new PanelPlace();
   protected final PanelGeneral panelGeneral = new PanelGeneral();
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
-  protected MyCellarButton addButton;
-  protected MyCellarButton cancelButton;
   protected final JModifyTextArea commentTextArea = new JModifyTextArea();
   protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
-  protected boolean updateView = false;
+  protected final char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
+  protected MyCellarButton addButton;
+  protected MyCellarButton cancelButton;
   protected PanelVignobles panelVignobles;
   protected MyCellarObject myCellarObject = null;
-  protected final char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
-
   protected boolean severalItems = false; //Pour ListVin
   protected boolean isEditionMode = false;
+
+  protected boolean updateView = false;
+  protected UpdateViewType updateViewType;
 
   protected MyCellarManageBottles() {
   }
@@ -73,8 +74,9 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
     end.setVisible(enable);
   }
 
-  public void setUpdateView() {
+  public void setUpdateView(UpdateViewType updateViewType) {
     updateView = true;
+    this.updateViewType = updateViewType;
   }
 
   public void updateView() {
@@ -84,9 +86,15 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
     SwingUtilities.invokeLater(() -> {
       Debug("updateView...");
       updateView = false;
-      panelGeneral.updateView();
-      panelVignobles.updateList();
-      panelPlace.updateView();
+      if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
+        panelPlace.updateView();
+      }
+      if (updateViewType == UpdateViewType.CAPACITY || updateViewType == UpdateViewType.ALL) {
+        panelGeneral.updateView();
+      }
+      if (updateViewType == UpdateViewType.VINEYARD || updateViewType == UpdateViewType.ALL) {
+        panelVignobles.updateList();
+      }
       Debug("updateView Done");
     });
   }
@@ -111,7 +119,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   public final class PanelMain extends JPanel {
     private static final long serialVersionUID = -4824541234206895953L;
 
-    public PanelMain(boolean withCancelButton) {
+    public PanelMain() {
       panelVignobles = new PanelVignobles(false, true, true);
       setLayout(new MigLayout("", "grow", "[][][]10px[][grow]10px[][]"));
       add(panelGeneral, "growx, wrap");
@@ -125,12 +133,8 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
       add(labelComment, "growx, wrap");
       add(scrollPaneComment, "grow, wrap");
       add(end, "center, hidemode 3, wrap");
-      if (withCancelButton) {
-        add(addButton, "center, split 2");
-        add(cancelButton);
-      } else {
-        add(addButton, "center");
-      }
+      add(addButton, "center, split 2");
+      add(cancelButton);
     }
   }
 

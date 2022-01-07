@@ -12,14 +12,14 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 
 
 /**
- * <p>Titre : Cave à vin</p>
+ * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 2004</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
- * @author Sébastien Duché
- * @version 0.7
- * @since 27/05/21
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.8
+ * @since 05/01/22
  */
 public class ButtonCellRenderer extends JButton implements TableCellRenderer {
 
@@ -53,6 +53,9 @@ public class ButtonCellRenderer extends JButton implements TableCellRenderer {
     } else {
       setForeground(table.getForeground());
       setBackground(table.getBackground());
+    }
+    if (value == null) {
+      return this;
     }
     boolean isSelect = (Boolean) value;
     setSelected(isSelect);

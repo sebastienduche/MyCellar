@@ -4,7 +4,6 @@ import mycellar.Bouteille;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.Utils;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
 import mycellar.core.uicomponents.MyCellarAction;
@@ -37,16 +36,14 @@ public final class OpenWorkSheetAction extends MyCellarAction {
     SwingUtilities.invokeLater(() -> {
       final ShowFile showWorksheet = ProgramPanels.createShowWorksheet();
       showWorksheet.updateView();
-      int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK);
+      int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK, null);
+      final String label = Program.getLabel(LABEL);
       if (tabIndex != -1) {
-        ProgramPanels.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel(LABEL));
-        ProgramPanels.TABBED_PANE.setSelectedIndex(tabIndex);
+        ProgramPanels.setTitleAt(tabIndex, label);
       } else {
-        ProgramPanels.TABBED_PANE.addTab(Program.getLabel(LABEL), MyCellarImage.WORK, showWorksheet);
-        ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount() - 1);
+        ProgramPanels.addTab(label, MyCellarImage.WORK, showWorksheet);
       }
 
-      Utils.addCloseButton(ProgramPanels.TABBED_PANE, showWorksheet);
       Start.getInstance().updateMainPanel();
       showWorksheet.addWorkingBottles(bouteilles);
     });

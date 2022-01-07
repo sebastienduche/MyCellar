@@ -5,13 +5,13 @@ import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
-import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.CountryListJaxb;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.general.ProgramPanels;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -65,8 +65,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.2
- * @since 27/10/21
+ * @version 4.3
+ * @since 05/01/22
  */
 public final class RangementUtils {
 
@@ -91,18 +91,18 @@ public final class RangementUtils {
     if (!rangement.isSimplePlace()) {
       rangement.updateToStock(newObject);
     }
-    Debug("Replace object End");
+    Debug("Replace object Done");
   }
 
   /**
-   * write_CSV: Ecriture d'un fichier CSV
+   * Write a CSV file
    *
-   * @param fichier     String: fichier CSV a ecrire
-   * @param all         List<Bouteille>: stock de bouteille
+   * @param file
+   * @param myCellarObjects list of objects to write
    * @param progressBar
    * @return int
    */
-  public static boolean write_CSV(final File fichier, final List<? extends IMyCellarObject> all, final JProgressBar progressBar) {
+  public static boolean write_CSV(final File file, final List<? extends IMyCellarObject> myCellarObjects, final JProgressBar progressBar) {
 
     String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
 
@@ -111,12 +111,10 @@ public final class RangementUtils {
       map.put(field, Program.getCaveConfigBool(MyCellarSettings.EXPORT_CSV + field.name(), false));
     }
 
-    if (progressBar != null) {
-      progressBar.setMaximum(all.size());
-      progressBar.setMinimum(0);
-    }
+    progressBar.setMaximum(myCellarObjects.size());
+    progressBar.setMinimum(0);
 
-    try (var fileWriter = new FileWriter(fichier)) {
+    try (var fileWriter = new FileWriter(file)) {
 
       StringBuilder line = new StringBuilder();
       // Title line
@@ -128,10 +126,8 @@ public final class RangementUtils {
       line.append('\n');
       fileWriter.write(line.toString());
       int i = 0;
-      for (IMyCellarObject b : all) {
-        if (progressBar != null) {
-          progressBar.setValue(i++);
-        }
+      for (IMyCellarObject b : myCellarObjects) {
+        progressBar.setValue(i++);
         line = new StringBuilder();
         final String doubleCote = "\"";
         final String escapedDoubleCote = "\"\"";
@@ -149,10 +145,9 @@ public final class RangementUtils {
         fileWriter.flush();
       }
       fileWriter.flush();
-      if (progressBar != null) {
-        progressBar.setValue(progressBar.getMaximum());
-      }
+      progressBar.setValue(progressBar.getMaximum());
     } catch (IOException ioe) {
+      Debug("ERROR: Error writing CSV \n" + ioe);
       Erreur.showSimpleErreur(Program.getError("Error120"), Program.getError("Error161"));
       return false;
     }
@@ -313,12 +308,11 @@ public final class RangementUtils {
       return false;
     }
 
-    EnumMap<MyCellarFields, Boolean> mapCle = new EnumMap<>(MyCellarFields.class);
-
     //Recuperation des colonnes a exporter
     List<MyCellarFields> fields = MyCellarFields.getFieldsList();
     int i = 0;
     assert fields != null;
+    EnumMap<MyCellarFields, Boolean> mapCle = new EnumMap<>(MyCellarFields.class);
     for (MyCellarFields field : fields) {
       mapCle.put(field, Program.getCaveConfigBool(MyCellarSettings.SIZE_COL + i + "EXPORT_XLS", true));
       i++;
@@ -451,12 +445,12 @@ public final class RangementUtils {
   }
 
   /**
-   * write_XLSTab: Fonction d'ecriture du ficher Excel des tableaux
+   * write_XLSTab: Fonction d'ecriture du fichier Excel des tableaux
    *
-   * @param file    String: Fichier a ecrire.
-   * @param _oPlace LinkedList: liste de rangements a ecrire
+   * @param file      String: Fichier a ecrire.
+   * @param placeList LinkedList: liste de rangements a ecrire
    */
-  public static void write_XLSTab(final String file, final List<Rangement> _oPlace) {
+  public static void write_XLSTab(final String file, final List<Rangement> placeList) {
 
     Debug("write_XLSTab: writing file: " + file);
     try (var workbook = new SXSSFWorkbook(100);
@@ -505,7 +499,7 @@ public final class RangementUtils {
       int nLine = 3;
       boolean firstSheet = true;
       int nNbCol = 0;
-      for (Rangement place : _oPlace) {
+      for (Rangement place : placeList) {
         if (onePlacePerSheet) {
           if (firstSheet) {
             workbook.setSheetName(0, place.getName());
@@ -548,9 +542,8 @@ public final class RangementUtils {
               }
               final SXSSFRow rowBottle = sheet.createRow(nLine);
               for (int l = 1; l <= nCol; l++) {
-                final Optional<MyCellarObject> b = place.getObject(j - 1, k - 1, l - 1);
                 int finalL = l;
-                b.ifPresent(bouteille -> {
+                place.getObject(j - 1, k - 1, l - 1).ifPresent(bouteille -> {
                   final Cell cellBottle = rowBottle.createCell(finalL);
                   cellBottle.setCellValue(getLabelToDisplay(bouteille));
                   cellBottle.setCellStyle(cellStyle);
@@ -596,9 +589,6 @@ public final class RangementUtils {
     return toCleanString(sTitle);
   }
 
-  /**
-   * findRangementToCreate
-   */
   public static void findRangementToCreate() {
 
     final Map<String, LinkedList<Part>> rangements = new HashMap<>();
@@ -638,7 +628,7 @@ public final class RangementUtils {
   }
 
   public static boolean isExistingPlace(final String name) {
-    if (name == null || name.strip().isEmpty()) {
+    if (name == null || name.isBlank()) {
       return false;
     }
 
@@ -716,7 +706,6 @@ public final class RangementUtils {
         }
       }
     }
-    // Suppression des bouteilles posant probleme
     for (var error : Program.getErrors()) {
       Debug("Error putTabStock: " + error.getMyCellarObject());
     }

@@ -32,11 +32,6 @@ class TableValues extends AbstractTableModel {
   private final List<Boolean> listBoolean = new LinkedList<>();
   private final List<MyCellarObject> datas = new LinkedList<>();
 
-  /**
-   * getRowCount
-   *
-   * @return int
-   */
   @Override
   public int getRowCount() {
     if (datas == null) {
@@ -45,23 +40,11 @@ class TableValues extends AbstractTableModel {
     return datas.size();
   }
 
-  /**
-   * getColumnCount
-   *
-   * @return int
-   */
   @Override
   public int getColumnCount() {
     return columnNames.size();
   }
 
-  /**
-   * getValueAt
-   *
-   * @param row    int
-   * @param column int
-   * @return Object
-   */
   @Override
   public Object getValueAt(int row, int column) {
     if (row >= datas.size()) {
@@ -99,36 +82,16 @@ class TableValues extends AbstractTableModel {
     }
   }
 
-  /**
-   * getColumnName
-   *
-   * @param column int
-   * @return String
-   */
   @Override
   public String getColumnName(int column) {
     return columnNames.get(column);
   }
 
-  /**
-   * isCellEditable
-   *
-   * @param row    int
-   * @param column int
-   * @return boolean
-   */
   @Override
   public boolean isCellEditable(int row, int column) {
     return (column == ETAT || column == SHOW);
   }
 
-  /**
-   * setValueAt
-   *
-   * @param value  Object
-   * @param row    int
-   * @param column int
-   */
   @Override
   public void setValueAt(Object value, int row, int column) {
     switch (column) {
@@ -142,12 +105,8 @@ class TableValues extends AbstractTableModel {
     }
   }
 
-  /**
-   * addBouteille: Ajout d'une bouteille.
-   *
-   * @param b Bouteille
-   */
-  void addBouteille(MyCellarObject b) {
+
+  void addObject(MyCellarObject b) {
     if (b != null) {
       datas.add(b);
       listBoolean.add(Boolean.FALSE);
@@ -155,24 +114,16 @@ class TableValues extends AbstractTableModel {
     }
   }
 
-  /**
-   * removeAll: Vidage de la liste.
-   */
   public void removeAll() {
     datas.clear();
     listBoolean.clear();
     fireTableDataChanged();
   }
 
-  /**
-   * removeBouteille: Suppression d'une bouteille.
-   *
-   * @param bouteille MyCellarObject
-   */
-  void removeBouteille(MyCellarObject bouteille) {
-    int index = datas.indexOf(bouteille);
+  void removeObject(MyCellarObject myCellarObject) {
+    int index = datas.indexOf(myCellarObject);
     if (index != -1) {
-      datas.remove(bouteille);
+      datas.remove(myCellarObject);
       listBoolean.remove(index);
       fireTableDataChanged();
     }
@@ -182,7 +133,7 @@ class TableValues extends AbstractTableModel {
     return datas;
   }
 
-  boolean hasNotBottle(MyCellarObject b) {
+  boolean hasNotObject(MyCellarObject b) {
     return !datas.contains(b);
   }
 

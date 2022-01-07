@@ -11,8 +11,8 @@ import java.awt.event.ItemEvent;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 29/12/21
+ * @version 0.7
+ * @since 07/01/22
  */
 
 public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
@@ -30,8 +30,10 @@ public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
     addItemListener(itemEvent -> {
       if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
         if (active && listenerEnable) {
-          modified = true;
-          ProgramPanels.setSelectedPaneModified(true);
+          if (!modified) {
+            ProgramPanels.setSelectedPaneModified(true);
+            modified = true;
+          }
         }
       }
     });

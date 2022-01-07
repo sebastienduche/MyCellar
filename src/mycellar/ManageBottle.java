@@ -4,14 +4,15 @@ import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
-import mycellar.core.uicomponents.MyCellarButton;
-import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
-import mycellar.core.uicomponents.PopupListener;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.PopupListener;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
@@ -37,11 +38,12 @@ import static mycellar.core.LabelProperty.OF_THE_SINGLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.1
- * @since 31/10/21
+ * @version 9.4
+ * @since 07/01/22
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
+  private boolean saveAndExit;
 
   /**
    * Constructeur pour la modification de vins
@@ -52,6 +54,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     super();
     isEditionMode = true;
     addButton = new MyCellarButton(MyCellarImage.SAVE);
+    cancelButton = new MyCellarButton(MyCellarImage.SAVE);
 
     try {
       Debug("Constructor with Bottle");
@@ -59,6 +62,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       panelWineAttribute.initValues();
 
       addButton.setText(Program.getLabel("ManageBottle.SaveModifications"));
+      cancelButton.setText(Program.getLabel("ManageBottle.SaveExitModifications"));
       addButton.setMnemonic(ajouterChar);
 
       PopupListener popupListener = new PopupListener();
@@ -69,9 +73,10 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       end.setForeground(Color.red);
       end.setHorizontalAlignment(SwingConstants.CENTER);
       setLayout(new BorderLayout());
-      add(new PanelMain(false), BorderLayout.CENTER);
+      add(new PanelMain(), BorderLayout.CENTER);
 
       addButton.addActionListener((e) -> saving());
+      cancelButton.addActionListener((e) -> savingExit());
 
       setVisible(true);
       Debug("JbInit Done");
@@ -86,7 +91,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     Program.Debug("ManageBottle: " + sText);
   }
 
-  public MyCellarObject getBottle() {
+  public MyCellarObject getMyCellarObject() {
     return myCellarObject;
   }
 
@@ -104,7 +109,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       if (Program.isWineType()) {
         panelVignobles.initializeVignobles((Bouteille) cellarObject);
       }
-      updateStatusAndTime();
+      initStatusAndTime();
 
       panelPlace.selectPlace(cellarObject);
       end.setText(Program.getLabel("Infos092")); //"Saisir les modifications
@@ -119,17 +124,30 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     panelWineAttribute.updateStatusAndTime(myCellarObject);
   }
 
+  private void initStatusAndTime() {
+    panelWineAttribute.initStatusAndTime(myCellarObject);
+  }
+
   /**
    * saving: Fonction de sauvegarde
    */
   private void saving() {
+    saveAndExit = false;
+    new Thread(this).start();
+  }
+
+  private void savingExit() {
+    saveAndExit = true;
     new Thread(this).start();
   }
 
   @Override
   public void run() {
     try {
-      save();
+      boolean result = save();
+      if (result && saveAndExit) {
+        ProgramPanels.removeBottleTab(myCellarObject);
+      }
     } catch (MyCellarException e) {
       Program.showException(e);
     }
@@ -146,7 +164,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     String dateOfC = panelWineAttribute.getMaturity();
     String parker = panelWineAttribute.getParker();
     String color = panelWineAttribute.getColor();
-    String status = nonNullValueOrDefault(panelWineAttribute.getStatusIfModified(),  BottlesStatus.MODIFIED.name());
+    String status = nonNullValueOrDefault(panelWineAttribute.getStatusIfModified(), BottlesStatus.MODIFIED.name());
     String country = panelVignobles.getCountry();
     String vignoble = panelVignobles.getVignoble();
     String aoc = panelVignobles.getAOC();
@@ -239,8 +257,11 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
     end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
     ProgramPanels.updatePanelsWithoutBottles();
+    panelWineAttribute.setModificationDetectionActive(false);
     updateStatusAndTime();
     resetModified();
+    panelWineAttribute.setModificationDetectionActive(true);
+    ProgramPanels.setSelectedPaneModified(false);
     Debug("Saving... Done");
 
     return true;
@@ -253,7 +274,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
-        panelPlace.resetLabelEnd();
+        panelPlace.clearLabelEnd();
         end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
       } else {
         return false;
@@ -268,7 +289,6 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     commentTextArea.setModified(false);
     panelVignobles.setModified(false);
     panelPlace.clearModified();
-    ProgramPanels.setSelectedPaneModified(false);
   }
 
   private void replaceWine(final MyCellarObject bToDelete, Place oldPlace) throws MyCellarException {
@@ -280,6 +300,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   private boolean runExit() {
     Debug("Processing Quit...");
     addButton.setEnabled(false);
+    cancelButton.setEnabled(false);
 
     boolean modified = panelGeneral.isModified(myCellarObject);
     modified |= commentTextArea.isModified();
@@ -290,6 +311,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error148", OF_THE_SINGLE) + SPACE + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
       Debug("Don't Quit.");
       addButton.setEnabled(true);
+      cancelButton.setEnabled(true);
       return false;
     }
 
@@ -299,7 +321,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
     panelWineAttribute.runExit();
     clearValues();
-    Debug("Quitting... End");
+    Debug("Quitting... Done");
     return true;
   }
 
@@ -322,12 +344,18 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       Debug("updateView...");
       panelPlace.setListenersEnabled(false);
       updateView = false;
-      panelGeneral.updateView();
-      panelVignobles.updateList();
-      panelPlace.updateView();
+      if (updateViewType == UpdateViewType.CAPACITY || updateViewType == UpdateViewType.ALL) {
+        panelGeneral.updateView();
+      }
+      if (updateViewType == UpdateViewType.VINEYARD || updateViewType == UpdateViewType.ALL) {
+        panelVignobles.updateList();
+      }
+      if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
+        panelPlace.updateView();
+      }
       panelPlace.selectPlace(myCellarObject);
       panelPlace.setListenersEnabled(true);
-      Debug("updateView End");
+      Debug("updateView Done");
     });
   }
 }

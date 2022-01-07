@@ -4,7 +4,6 @@ import mycellar.AddVin;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.Utils;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
 import mycellar.general.ProgramPanels;
@@ -29,19 +28,14 @@ public class OpenAddVinAction extends AbstractAction {
       final AddVin addVin = ProgramPanels.createAddVin();
       addVin.setBottles(listToModify);
 
-      int tabIndex = ProgramPanels.findTab(MyCellarImage.WINE);
+      int tabIndex = ProgramPanels.findTab(MyCellarImage.WINE, addVin);
+      final String label = Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL);
       if (tabIndex != -1) {
-        tabIndex = ProgramPanels.TABBED_PANE.indexOfComponent(addVin);
-      }
-      if (tabIndex != -1) {
-        ProgramPanels.TABBED_PANE.setTitleAt(tabIndex, Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL));
-        ProgramPanels.TABBED_PANE.setSelectedIndex(tabIndex);
+        ProgramPanels.setTitleAt(tabIndex, label);
       } else {
-        ProgramPanels.TABBED_PANE.addTab(Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL), MyCellarImage.WINE, addVin);
-        ProgramPanels.TABBED_PANE.setSelectedIndex(ProgramPanels.TABBED_PANE.getTabCount() - 1);
+        ProgramPanels.addTab(label, MyCellarImage.WINE, addVin);
       }
 
-      Utils.addCloseButton(ProgramPanels.TABBED_PANE, addVin);
       Start.getInstance().updateMainPanel();
     });
   }

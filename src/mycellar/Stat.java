@@ -5,13 +5,14 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
+import mycellar.core.MyCellarEnum;
+import mycellar.core.MyCellarSettings;
+import mycellar.core.UpdateViewType;
+import mycellar.core.datas.history.History;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
-import mycellar.core.MyCellarEnum;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.MyCellarSettings;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.core.datas.history.History;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Rangement;
 import net.miginfocom.swing.MigLayout;
@@ -60,8 +61,8 @@ import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.5
- * @since 21/05/21
+ * @version 8.6
+ * @since 03/01/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -132,16 +133,16 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     add(moy, "span 3, align right, wrap");
     options.setEnabled(false);
 
-    Debug("Stats OK");
+    Debug("Stats Done");
   }
 
-  private static void Debug(String sText) {
-    Program.Debug("Stat: " + sText);
+  private static void Debug(String text) {
+    Program.Debug("Stat: " + text);
   }
 
   private void updateBouteilleCountLabel() {
-    int nb_bottle = Program.getNbItems();
-    end.setText(MessageFormat.format(Program.getLabel("Infos180", new LabelProperty(nb_bottle > 1)), nb_bottle)); //Nombre de bouteilles totl
+    int nbItems = Program.getNbItems();
+    end.setText(MessageFormat.format(Program.getLabel("Infos180", new LabelProperty(nbItems > 1)), nbItems)); // Number of items
   }
 
   private void chartItemStateChanged(ItemEvent itemEvent) {
@@ -201,12 +202,6 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     return (MyCellarEnum) listOptions.getSelectedItem();
   }
 
-  /**
-   * listStatOptionItemStateChanged: Fonction appelle lors d'un changement dans la
-   * seconde liste.
-   *
-   * @param e
-   */
   private void listStatOptionItemStateChanged(ItemEvent e) {
     final MyCellarEnum selectedItem = getSelectedStatType();
     if ((e != null && e.getStateChange() != ItemEvent.SELECTED) || selectedItem == null) {
@@ -318,7 +313,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     for (StatData data : listYear) {
       panel.add(new MyCellarLabel(data.getName()));
       final int dataCount = data.getCount();
-      panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(dataCount > 1)), dataCount)), "span 2, align right, wrap"); //"bouteille");
+      panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(dataCount > 1)), dataCount)), "span 2, align right, wrap");
     }
     panel.updateUI();
     if (listChart.getSelectedIndex() == 0) {
@@ -398,7 +393,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     } else {
       list_num_empl = new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos176"), nbEmplacements)); //"emplacements
     }
-    final MyCellarLabel list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll)); //"bouteille
+    final MyCellarLabel list_nb_bottle = new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll));
     panel.add(list_num_empl);
     panel.add(list_nb_bottle, "span 2, align right, wrap");
     if (!cave.isSimplePlace()) {
@@ -426,7 +421,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   private void displayNbBottlePlace(Rangement cave) {
     for (int j = 0; j < cave.getNbParts(); j++) {
       panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Infos179"), (j + 1)))); //Emplacement
-      panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(cave.getTotalCountCellUsed() > 1)), cave.getTotalCellUsed(j))), "span 2, align right, wrap"); //"bouteille");
+      panel.add(new MyCellarLabel(MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(cave.getTotalCountCellUsed() > 1)), cave.getTotalCellUsed(j))), "span 2, align right, wrap");
     }
   }
 
@@ -438,11 +433,6 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     }
   }
 
-  /**
-   * options_actionPerformed: Appel de la fenetre d'options.
-   *
-   * @param e ActionEvent
-   */
   private void options_actionPerformed(ActionEvent e) {
     Debug("options_actionPerforming...");
     options.setSelected(false);
@@ -471,7 +461,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   }
 
   @Override
-  public void setUpdateView() {
+  public void setUpdateView(UpdateViewType updateViewType) {
   }
 
   @Override
@@ -482,9 +472,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listHistory.clear();
     mapAddedPerYear.clear();
     mapDeletedPerYear.clear();
-    final MyCellarEnum selectedStatType = getSelectedStatType();
-    listPlaces.removeAllItems();
-    fillListOptionsChart(selectedStatType);
+    fillListOptionsChart(getSelectedStatType());
     listStatOptionItemStateChanged(null);
     updateBouteilleCountLabel();
   }
@@ -494,23 +482,23 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listPlaces.setEnabled(false);
     if (selectedStatType.getValue() == StatType.PLACE.ordinal()) {
       listPlaces.setEnabled(true);
-      comboLabel.setText(Program.getLabel("Infos081", LabelProperty.SINGLE.withDoubleQuote())); //"Rangement:");
-      listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos182"))); //"Tous les rangement");
+      comboLabel.setText(Program.getLabel("Infos081", LabelProperty.SINGLE.withDoubleQuote())); //"Rangement:
+      listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos182"))); //"Tous les rangements
       Program.getCave().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
     } else if (selectedStatType.getValue() == StatType.HISTORY.ordinal()) {
       listPlaces.setEnabled(true);
       comboLabel.setText("");
-      listPlaces.addItem(new PlaceComboItem(Program.getLabel("Stat.inout"))); //"Toutes les annees");
+      listPlaces.addItem(new PlaceComboItem(Program.getLabel("Stat.inout"))); //"Toutes les annees
       listPlaces.addItem(new PlaceComboItem(Program.getLabel("Stat.bottleCount", LabelProperty.PLURAL))); //"Nombre de bouteilles;
     } else if (selectedStatType.getValue() == StatType.PRICE.ordinal()) {
       listPlaces.setEnabled(true);
       comboLabel.setText(Program.getLabel("Infos187")); //"Tranche de prix:");
       listPlaces.removeAllItems();
-      listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos188"))); //"Toutes les tranches");
-      listPlaces.addItem(new PlaceComboItem(Program.getLabel("Stat.BracketsWith", LabelProperty.PLURAL))); //"Tranches avec bouteilles");
+      listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos188"))); //"Toutes les tranches
+      listPlaces.addItem(new PlaceComboItem(Program.getLabel("Stat.BracketsWith", LabelProperty.PLURAL))); //"Tranches avec bouteilles
     } else if (selectedStatType.getValue() == StatType.YEAR.ordinal()) {
       comboLabel.setText("");
-      listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos186"))); //"Toutes les annees");
+      listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos186"))); //"Toutes les annees
     }
     listPlaces.setSelectedIndex(0);
   }

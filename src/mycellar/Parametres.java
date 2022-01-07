@@ -4,11 +4,13 @@ import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.LabelType;
+import mycellar.core.MyCellarSettings;
+import mycellar.core.language.Language;
+import mycellar.core.language.LanguageFileLoader;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.MyCellarSettings;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
@@ -247,17 +249,17 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
    */
   private void modifyLanguage() {
     String thelangue = Program.getLanguage(langue.getSelectedIndex());
-    String currentLanguage = Program.getGlobalConfigString(LANGUAGE, "" + LanguageFileLoader.Language.FRENCH.getLanguage());
+    String currentLanguage = Program.getGlobalConfigString(LANGUAGE, "" + Language.FRENCH.getLanguage());
     if (thelangue.equals(currentLanguage)) {
       return;
     }
     Program.putGlobalConfigString(LANGUAGE, thelangue);
-    Program.setLanguage(LanguageFileLoader.getLanguage(thelangue.charAt(0)));
+    Program.setLanguage(Language.getLanguage(thelangue.charAt(0)));
     if (LanguageFileLoader.getInstance().isLoaded()) {
       setLabels();
     } else {
       langue.setSelectedIndex(0);
-      Program.setLanguage(LanguageFileLoader.Language.FRENCH);
+      Program.setLanguage(Language.FRENCH);
       JOptionPane.showMessageDialog(null, "Language corrupted, Default French language selected.\nReinstall the application.", "Error", JOptionPane.ERROR_MESSAGE);
     }
   }

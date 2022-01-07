@@ -181,8 +181,9 @@ class PanelLabelTransferHandler extends TransferHandler {
     LabelSearch l = p.draggingLabel;
     String text = l.getText();
     final DataHandler dh = new DataHandler(c, localObjectFlavor.getMimeType());
-    if (text == null)
+    if (text == null) {
       return dh;
+    }
     final StringSelection ss = new StringSelection(text + "\n");
     return new Transferable() {
       @Override
@@ -222,7 +223,7 @@ class PanelLabelTransferHandler extends TransferHandler {
   @Override
   public int getSourceActions(JComponent c) {
     PanelDAndD p = (PanelDAndD) c;
-    //label.setIcon(p.draggingLabel.getIcon());
+//    label.setIcon(p.draggingLabel.getIcon());
     label.setText(p.draggingLabel.getText());
     window.pack();
     Point pt = p.draggingLabel.getLocation();

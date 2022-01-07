@@ -8,16 +8,17 @@ import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.LabelType;
-import mycellar.core.uicomponents.MyCellarButton;
-import mycellar.core.uicomponents.MyCellarComboBox;
-import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.core.UpdateViewType;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleListJaxb;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
+import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarComboBox;
+import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
@@ -49,8 +50,8 @@ import static mycellar.MyCellarUtils.isDefined;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 14/10/21
+ * @version 3.3
+ * @since 04/01/22
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -166,7 +167,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   }
 
   @Override
-  public void setUpdateView() {
+  public void setUpdateView(UpdateViewType updateViewType) {
   }
 
   @Override
@@ -185,7 +186,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   public void tabClosed() {
     comboCountry.setSelectedIndex(0);
     model.setAppellations(null, null);
-    ProgramPanels.updateAllPanels();
+    ProgramPanels.updateAllPanelsForUpdatingVineyard();
     Start.getInstance().updateMainPanel();
   }
 

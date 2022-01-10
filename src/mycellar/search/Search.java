@@ -118,7 +118,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private JTable table;
   private TextFieldPopup name;
   private AllBottlesState allBottlesState = AllBottlesState.PLACE;
-  private boolean already_found = false;
+  private boolean alreadyFoundItems = false;
   private boolean updateView = false;
   private UpdateViewType updateViewType;
 
@@ -507,8 +507,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private void searchByText() {
     Debug("Searching by text with pattern");
     String search = name.getText();
-    Debug("Preparing statement...");
-
     StringBuilder regex = new StringBuilder(search);
     regex = replaceCharInSearch(regex, "*", ".{0,}");
     regex = replaceCharInSearch(regex, "?", ".{1}");
@@ -525,7 +523,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       @Override
       protected List<MyCellarObject> doInBackground() {
         final Pattern p = Pattern.compile(regexToSearch, Pattern.CASE_INSENSITIVE);
-        already_found = false;
+        alreadyFoundItems = false;
         List<MyCellarObject> list = new LinkedList<>();
         for (MyCellarObject bottle : Program.getStorage().getAllList()) {
           Matcher m = p.matcher(bottle.getNom());
@@ -533,7 +531,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             if (model.hasNotObject(bottle)) {
               list.add(bottle);
             } else {
-              already_found = true;
+              alreadyFoundItems = true;
             }
           }
         }
@@ -646,6 +644,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       selectall.setSelected(false);
       selectall.setEnabled(false);
       addToWorksheet.setEnabled(false);
+      alreadyFoundItems = false;
       if (empty_search.isSelected()) {
         emptyRows();
       }
@@ -664,13 +663,13 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   }
 
   private void doAfterSearch() {
-    if (already_found) {
+    if (alreadyFoundItems) {
       if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false)) {
         // Don't add object if already in the list
         Erreur.showInformationMessageWithKey(Program.getError("Error133", LabelProperty.A_SINGLE), Program.getError("Error134"), MyCellarSettings.DONT_SHOW_INFO);
       }
     }
-    already_found = false;
+    alreadyFoundItems = false;
     resul_txt.setText(Program.getLabel("Infos088")); //"Recherche terminee.
     if (model.getRowCount() > 0) {
       export.setEnabled(true);
@@ -689,6 +688,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private void searchByRequest() {
     Debug("Search by request");
+    StringBuilder sb = new StringBuilder();
+    panelRequest.getPredicates().forEach(p -> sb.append(p.toString()));
+    Debug(sb.toString());
     new MyCellarObjectSwingWorker() {
       @Override
       protected List<MyCellarObject> doInBackground() {
@@ -696,21 +698,16 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           CountryVignobleController.rebuild();
         }
         Collection<? extends MyCellarObject> objects = CollectionFilter.select(Program.getStorage().getAllList(), panelRequest.getPredicates()).getResults();
-        already_found = false;
         List<MyCellarObject> list = new LinkedList<>();
         if (objects != null) {
           for (MyCellarObject b : objects) {
             if (model.hasNotObject(b)) {
               list.add(b);
             } else {
-              already_found = true;
+              alreadyFoundItems = true;
             }
           }
         }
-
-        StringBuilder sb = new StringBuilder();
-        panelRequest.getPredicates().forEach(p -> sb.append(p.toString()));
-        Debug(sb.toString());
         return list;
       }
 
@@ -749,7 +746,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     }
 
     Rangement rangement = lieu.getItemAt(lieu_select);
-    already_found = false;
     List<MyCellarObject> bouteilleList = new LinkedList<>();
     if (rangement.isSimplePlace()) {
       //Pour la caisse
@@ -772,7 +768,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             if (model.hasNotObject(b)) {
               bouteilleList.add(b);
             } else {
-              already_found = true;
+              alreadyFoundItems = true;
             }
           } else {
             Debug("No bottle found in lieuselect-1=" + (lieu_select - 1) + " x-1=" + (x - 1) + " l+1=" + (l + 1));
@@ -819,7 +815,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           if (model.hasNotObject(myCellarObject)) {
             bouteilleList.add(myCellarObject);
           } else {
-            already_found = true;
+            alreadyFoundItems = true;
           }
         }
       } else { //multi.getState == true
@@ -875,7 +871,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
                 if (model.hasNotObject(myCellarObject)) {
                   bouteilleList.add(myCellarObject);
                 } else {
-                  already_found = true;
+                  alreadyFoundItems = true;
                 }
               }
             }
@@ -911,14 +907,13 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           annee = Program.safeParseInt(selectedYear, 0); // It will be 0 for 'Others'
         }
 
-        already_found = false;
         List<MyCellarObject> list = new ArrayList<>();
         for (MyCellarObject b : Program.getStorage().getAllList()) {
           if (annee == b.getAnneeInt()) {
             if (model.hasNotObject(b)) {
               list.add(b);
             } else {
-              already_found = true;
+              alreadyFoundItems = true;
             }
           }
         }

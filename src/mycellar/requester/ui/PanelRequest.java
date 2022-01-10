@@ -24,8 +24,8 @@ import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 14/05/21
+ * @version 1.1
+ * @since 10/01/22
  */
 public final class PanelRequest extends JPanel {
 
@@ -84,9 +84,6 @@ public final class PanelRequest extends JPanel {
   }
 
   public Collection<Predicates> getPredicates() {
-    if (panelRequest == null) {
-      return null;
-    }
     Collection<Predicates> predicates = new ArrayList<>();
     for (int i = 0; i < panelRequest.getComponentCount(); i++) {
       Object obj = panelRequest.getComponent(i);

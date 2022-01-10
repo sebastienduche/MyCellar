@@ -248,7 +248,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     if (!RangementUtils.putTabStock()) {
       new OpenShowErrorsAction().actionPerformed(null);
     }
-    ProgramPanels.getSearch().ifPresent(Search::updateTable);
+    ProgramPanels.updateSearchTable();
 
     Rangement rangement = myCellarObject.getRangement();
     if (!rangement.isSimplePlace()) {

@@ -97,7 +97,7 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 public class Bouteille extends MyCellarObject implements Serializable {
 
   public static final String NON_VINTAGE = "NV";
-  static final int NON_VINTAGE_INT = 9999;
+  public static final int NON_VINTAGE_INT = 9999;
   private static final long serialVersionUID = 7443323147347096230L;
   private int id;
   @XmlElement(required = true)
@@ -205,7 +205,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
     return year.length() == 4 && n > current_year;
   }
 
-  static boolean isNonVintageYear(String year) {
+  public static boolean isNonVintageYear(String year) {
     return (year.compareToIgnoreCase(NON_VINTAGE) == 0);
   }
 

@@ -93,7 +93,7 @@ public abstract class TextFieldPopup extends JPanel {
     popupMenu.updateUI();
   }
 
-  void removeMenu() {
+  public void removeMenu() {
     menu.removeAll();
     menu.updateUI();
     popupMenu.setVisible(false);
@@ -112,11 +112,11 @@ public abstract class TextFieldPopup extends JPanel {
     return list.stream().filter(b -> b.toLowerCase().startsWith(val.toLowerCase())).collect(Collectors.toList());
   }
 
-  void setEditable(boolean b) {
+  public void setEditable(boolean b) {
     textfield.setEditable(b);
   }
 
-  String getSelectedText() {
+  public String getSelectedText() {
     return textfield.getSelectedText();
   }
 

@@ -496,7 +496,7 @@ public final class Program {
     return (int) getStorage().getAllList().stream().filter(myCellarObject -> myCellarObject.getAnneeInt() == year).count();
   }
 
-  static int[] getYearsArray() {
+  public static int[] getYearsArray() {
     return getStorage().getAllList().stream().mapToInt(IMyCellarObject::getAnneeInt).distinct().sorted().toArray();
   }
 

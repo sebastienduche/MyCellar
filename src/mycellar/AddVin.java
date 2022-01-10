@@ -101,7 +101,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     commentTextArea.setText("");
     commentTextArea.setModified(false);
 
-    ProgramPanels.getSearch().ifPresent(Search::updateTable);
+    ProgramPanels.updateSearchTable();
     panelVignobles.resetCombos();
     panelPlace.resetValues();
     rangementInModif = null;

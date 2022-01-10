@@ -9,7 +9,6 @@ import mycellar.MyCellarImage;
 import mycellar.Parametres;
 import mycellar.Program;
 import mycellar.ScreenType;
-import mycellar.Search;
 import mycellar.ShowHistory;
 import mycellar.Start;
 import mycellar.Stat;
@@ -28,6 +27,7 @@ import mycellar.importer.Importer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Supprimer_Rangement;
+import mycellar.search.Search;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
 
@@ -82,8 +82,8 @@ import static mycellar.ScreenType.VIGNOBLES;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 04/01/22
+ * @version 1.5
+ * @since 10/01/22
  */
 public class ProgramPanels {
 
@@ -247,6 +247,13 @@ public class ProgramPanels {
     final Search search = (Search) createOpenedObject(Search.class, SEARCH);
     UPDATABLE_PANELS.put(SEARCH, search);
     return search;
+  }
+
+  public static void updateSearchTable() {
+    final Search search = (Search) OPENED_PANELS.get(SEARCH);
+    if (search != null) {
+      search.updateTable();
+    }
   }
 
   public static Creer_Tableaux createCreerTableaux() {

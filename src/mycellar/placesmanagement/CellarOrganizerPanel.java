@@ -70,8 +70,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.4
- * @since 07/01/22
+ * @version 4.5
+ * @since 12/01/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -562,7 +562,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
                 Program.getStorage().deleteWine(myCellarObject);
               }
               ProgramPanels.getSearch().ifPresent(search -> {
-                search.removeBottle(myCellarObject);
+                search.removeObject(myCellarObject);
                 search.updateTable();
               });
               ProgramPanels.updateAllPanels();

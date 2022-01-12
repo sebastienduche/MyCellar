@@ -65,8 +65,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.3
- * @since 05/01/22
+ * @version 4.4
+ * @since 12/01/22
  */
 public final class RangementUtils {
 
@@ -83,7 +83,7 @@ public final class RangementUtils {
     }
 
     ProgramPanels.getSearch().ifPresent(search -> {
-      search.removeBottle(oldObject);
+      search.removeObject(oldObject);
       search.updateTable();
     });
 

@@ -81,8 +81,8 @@ import static mycellar.ProgramConstants.SPACE;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.1
- * @since 05/01/22
+ * @version 11.2
+ * @since 12/01/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -942,7 +942,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     if (field == MyCellarFields.PLACE) {
       placeCbx.setSelectedIndex(0);
       if (!rangement.isSimplePlace()) {
-        final PanelPlace panelPlace = new PanelPlace(rangement, true, false, true, true, false);
+        final PanelPlace panelPlace = new PanelPlace(rangement, true, false, true, true, false, true, false);
         JOptionPane.showMessageDialog(Start.getInstance(), panelPlace,
             Program.getLabel("Main.ChooseCell"),
             JOptionPane.PLAIN_MESSAGE);

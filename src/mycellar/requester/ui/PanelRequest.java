@@ -24,8 +24,8 @@ import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 10/01/22
+ * @version 1.2
+ * @since 11/01/22
  */
 public final class PanelRequest extends JPanel {
 
@@ -85,11 +85,13 @@ public final class PanelRequest extends JPanel {
 
   public Collection<Predicates> getPredicates() {
     Collection<Predicates> predicates = new ArrayList<>();
-    for (int i = 0; i < panelRequest.getComponentCount(); i++) {
-      Object obj = panelRequest.getComponent(i);
-      if (obj instanceof LabelSearch) {
-        LabelSearch label = (LabelSearch) obj;
-        predicates.add(new Predicates(label.getPredicate(), label.getValue(), label.getType()));
+    if (panelRequest != null) {
+      for (int i = 0; i < panelRequest.getComponentCount(); i++) {
+        Object obj = panelRequest.getComponent(i);
+        if (obj instanceof LabelSearch) {
+          LabelSearch label = (LabelSearch) obj;
+          predicates.add(new Predicates(label.getPredicate(), label.getValue(), label.getType()));
+        }
       }
     }
     return predicates;

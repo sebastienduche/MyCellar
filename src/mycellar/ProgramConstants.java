@@ -48,6 +48,7 @@ public final class ProgramConstants {
   public static final String DOUBLE_DOT = ":";
   public static final String SPACE = " ";
   public static final String EURO = "\u20ac";
+  public static final String DASH = "-";
   public static final char CHAR_O = 'O';
   public static final char CHAR_C = 'C';
   public static final char CHAR_X = 'X';

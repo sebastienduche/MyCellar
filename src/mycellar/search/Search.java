@@ -243,24 +243,18 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
    * @param e ActionEvent
    */
   private void export_actionPerformed(ActionEvent e) {
-    try {
-      Debug("Exporting...");
-      List<MyCellarObject> v = searchTableModel.getDatas();
-      Export expor = new Export(v);
-      JDialog dialog = new JDialog();
-      dialog.add(expor);
-      dialog.pack();
-      dialog.setTitle(Program.getLabel("Infos151"));
-      dialog.setLocationRelativeTo(Start.getInstance());
-      dialog.setModal(true);
-      dialog.setVisible(true);
-      Debug("Export Done");
-    } catch (RuntimeException exc) {
-      Program.showException(exc);
-    }
+    Debug("Exporting...");
+    JDialog dialog = new JDialog();
+    dialog.add(new Export(searchTableModel.getDatas()));
+    dialog.pack();
+    dialog.setTitle(Program.getLabel("Infos151"));
+    dialog.setLocationRelativeTo(Start.getInstance());
+    dialog.setModal(true);
+    dialog.setVisible(true);
+    Debug("Export Done");
   }
 
-  private void deleteActionPerformed(ActionEvent e) {
+  private void deleteActionPerformed(ActionEvent event) {
     try {
       Debug("Deleting...");
       final LinkedList<Bouteille> listToDelete = getSelectedBouteilles();
@@ -310,24 +304,20 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         });
       }
       Debug("Deleting Done");
-    } catch (HeadlessException e1) {
-      Debug("ERROR: Why this error? " + e1.getMessage());
-      Program.showException(e1);
+    } catch (HeadlessException e) {
+      Debug("ERROR: Why this error? " + e.getMessage());
+      Program.showException(e);
     } catch (RuntimeException exc) {
       Program.showException(exc);
     }
   }
 
   private void cherche_actionPerformed(ActionEvent e) {
-    try {
-      Debug("Cherche_actionPerforming...");
-      name.removeMenu();
-      updateLabelObjectNumber(false);
-      resultInfoLabel.setText(Program.getLabel("Infos087")); //"Recherche en cours...
-      new Thread(this).start();
-    } catch (RuntimeException exc) {
-      Program.showException(exc);
-    }
+    Debug("Cherche_actionPerforming...");
+    name.removeMenu();
+    updateLabelObjectNumber(false);
+    resultInfoLabel.setText(Program.getLabel("Infos087")); //"Recherche en cours...
+    new Thread(this).start();
   }
 
   private void emptyRowsActionPerformed(ActionEvent e) {
@@ -555,11 +545,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       enableDefaultButtons();
       return;
     }
-    final Place selectedPlace = panelPlace.getSelectedPlace();
 
-    Rangement rangement = selectedPlace.getRangement();
     final List<MyCellarObject> myCellarObjectList;
-    if (rangement.isSimplePlace()) {
+    if (panelPlace.getSelectedRangement().isSimplePlace()) {
       myCellarObjectList = searchSimplePlace();
     } else {
       myCellarObjectList = searchComplexPlace();
@@ -567,8 +555,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
     SwingUtilities.invokeLater(() -> {
       searchTableModel.addObjects(myCellarObjectList);
-      final int rowCount = searchTableModel.getRowCount();
-      Debug(rowCount + " object(s) found");
+      Debug(searchTableModel.getRowCount() + " object(s) found");
       doAfterSearch();
     });
   }
@@ -639,13 +626,14 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     int nb_empl_cave = rangement.getNbParts();
     int boucle_toutes;
     int start_boucle;
-    if (lieu_num == 0) { //New
+    if (lieu_num == 0) {
       start_boucle = 1;
       boucle_toutes = nb_empl_cave + 1;
     } else {
       start_boucle = lieu_num;
       boucle_toutes = lieu_num + 1;
     }
+
     List<MyCellarObject> myCellarObjectList = new LinkedList<>();
     for (int x = start_boucle; x < boucle_toutes; x++) {
       int totalCellUsed = rangement.getTotalCellUsed(x - 1);

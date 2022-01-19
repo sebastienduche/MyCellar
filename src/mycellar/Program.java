@@ -74,6 +74,7 @@ import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static mycellar.Filtre.EXTENSION_SINFO;
@@ -663,7 +664,7 @@ public final class Program {
   }
 
   public static boolean hasComplexPlace() {
-    return PLACES.stream().anyMatch(rangement -> !rangement.isSimplePlace());
+    return PLACES.stream().anyMatch(Predicate.not(Rangement::isSimplePlace));
   }
 
   /**

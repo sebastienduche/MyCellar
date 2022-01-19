@@ -112,9 +112,9 @@ final class PanelStats extends JPanel {
       model.clearRows();
       int nbBottles = 0;
       if (!Program.getCave().isEmpty()) {
-        for (Rangement r : Program.getCave()) {
-          nbBottles += r.getTotalCountCellUsed();
-          model.addRow(r, r.getTotalCountCellUsed());
+        for (Rangement rangement : Program.getCave()) {
+          nbBottles += rangement.getTotalCountCellUsed();
+          model.addRow(rangement, rangement.getTotalCountCellUsed());
         }
       }
       String devise = EURO;

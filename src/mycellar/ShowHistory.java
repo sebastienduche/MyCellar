@@ -208,32 +208,32 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
       } else {
         String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {
-          erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); // "1 vin selectionne.");
+          erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); // "1 vin selectionne.
           erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
         } else {
-          erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); // vins selectionnes.");
+          erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); // vins selectionnes.
           erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
-          for (MyCellarObject b : toRestoreList) {
-            if (b.isInExistingPlace()) {
-              Rangement r = b.getRangement();
-              if (r.isSimplePlace()) {
-                Program.getStorage().addHistory(HistoryState.ADD, b);
-                Program.getStorage().addWine(b);
+          for (MyCellarObject myCellarObject : toRestoreList) {
+            if (myCellarObject.isInExistingPlace()) {
+              Rangement rangement = myCellarObject.getRangement();
+              if (rangement.isSimplePlace()) {
+                Program.getStorage().addHistory(HistoryState.ADD, myCellarObject);
+                Program.getStorage().addWine(myCellarObject);
               } else {
-                if (r.canAddObjectAt(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
-                  Program.getStorage().addHistory(HistoryState.ADD, b);
-                  Program.getStorage().addWine(b);
+                if (rangement.canAddObjectAt(myCellarObject.getNumLieu() - 1, myCellarObject.getLigne() - 1, myCellarObject.getColonne() - 1)) {
+                  Program.getStorage().addHistory(HistoryState.ADD, myCellarObject);
+                  Program.getStorage().addWine(myCellarObject);
                 } else {
-                  cantRestoreList.add(b);
+                  cantRestoreList.add(myCellarObject);
                 }
               }
             }
-            if (!cantRestoreList.contains(b)) {
-              Program.getTrash().remove(b);
+            if (!cantRestoreList.contains(myCellarObject)) {
+              Program.getTrash().remove(myCellarObject);
             }
           }
 

@@ -155,6 +155,10 @@ public class PanelPlace extends JPanel implements IPlace {
         .build();
   }
 
+  public Rangement getSelectedRangement() {
+    return getSelectedPlace().getRangement();
+  }
+
   private void initPlaceCombo() {
     place.removeAllItems();
     place.addItem(Program.EMPTY_PLACE);

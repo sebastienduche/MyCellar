@@ -38,19 +38,19 @@ class TableauValues extends AbstractTableModel {
 
   @Override
   public Object getValueAt(int row, int column) {
-    Rangement r = list.get(row);
+    Rangement rangement = list.get(row);
     switch (column) {
       case 0:
         return listBoolean.get(row);
       case 1:
-        return r.getName();
+        return rangement.getName();
       case 2:
-        if (r.isSimplePlace()) {
+        if (rangement.isSimplePlace()) {
           return Program.getLabel("Infos024");
         }
         int nombre_ligne = 0;
-        for (int k = 0; k < r.getNbParts(); k++) {
-          nombre_ligne += r.getLineCountAt(k);
+        for (int k = 0; k < rangement.getNbParts(); k++) {
+          nombre_ligne += rangement.getLineCountAt(k);
         }
         if (nombre_ligne <= 1) {
           return MessageFormat.format(Program.getLabel("Infos060"), nombre_ligne);
@@ -58,11 +58,11 @@ class TableauValues extends AbstractTableModel {
         return MessageFormat.format(Program.getLabel("Infos061"), nombre_ligne);
       case 3:
         int nombre_vin = 0;
-        if (r.isSimplePlace()) {
-          nombre_vin = r.getTotalCountCellUsed();
+        if (rangement.isSimplePlace()) {
+          nombre_vin = rangement.getTotalCountCellUsed();
         } else {
-          for (int k = 0; k < r.getNbParts(); k++) {
-            nombre_vin += r.getTotalCellUsed(k);
+          for (int k = 0; k < rangement.getNbParts(); k++) {
+            nombre_vin += rangement.getTotalCellUsed(k);
           }
         }
         return MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nombre_vin > 1)), nombre_vin);

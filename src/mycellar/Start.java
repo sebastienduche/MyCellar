@@ -62,7 +62,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 
 import static mycellar.Filtre.EXTENSION_SINFO;
@@ -313,7 +312,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuCloseFile.setEnabled(enable);
     exportButton.setEnabled(enable);
     statsButton.setEnabled(enable);
-    managePlaceButton.setEnabled(enable && Program.getCave().stream().anyMatch(Predicate.not(Rangement::isSimplePlace)));
+    managePlaceButton.setEnabled(enable && Program.hasComplexPlace());
     worksheetButton.setEnabled(enable);
     tableButton.setEnabled(enable);
     m_oSupprimerButton.setEnabled(enable);
@@ -943,7 +942,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   }
 
   public void updateMainPanel() {
-    managePlaceButton.setEnabled(Program.getCave().stream().anyMatch(Predicate.not(Rangement::isSimplePlace)));
+    managePlaceButton.setEnabled(Program.hasComplexPlace());
   }
 
   /**

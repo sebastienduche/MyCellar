@@ -373,15 +373,15 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     moy.setText("");
     options.setEnabled(false);
     PlaceComboItem placeComboItem = (PlaceComboItem) listPlaces.getSelectedItem();
-    int nbBottle = 0;
+    int nbItems = 0;
     if (placeComboItem != null && placeComboItem.getRangement() != null) {
-      Rangement cave = placeComboItem.getRangement();
-      panelChart.setPlaceChart(cave);
-      nbBottle = cave.getTotalCountCellUsed();
-      panel.add(new MyCellarLabel(cave.getName()));
-      displayPlace(cave);
+      Rangement rangement = placeComboItem.getRangement();
+      panelChart.setPlaceChart(rangement);
+      nbItems = rangement.getTotalCountCellUsed();
+      panel.add(new MyCellarLabel(rangement.getName()));
+      displayPlace(rangement);
     }
-    end.setText(MessageFormat.format(Program.getLabel("Infos098", LabelProperty.PLURAL), nbBottle));
+    end.setText(MessageFormat.format(Program.getLabel("Infos098", LabelProperty.PLURAL), nbItems));
   }
 
   private void displayPlace(Rangement cave) {

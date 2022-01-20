@@ -62,8 +62,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.7
- * @since 07/01/22
+ * @version 15.8
+ * @since 20/01/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -113,8 +113,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
     createButton.setMnemonic(CREER);
     preview.setMnemonic(PREVIEW);
-    comboPlace.addItem(Program.EMPTY_PLACE);
-    Program.getCave().forEach(comboPlace::addItem);
+    initComboPlaces();
     comboPlace.addItemListener(this::comboPlace_itemStateChanged);
     ButtonGroup cbg = new ButtonGroup();
     cbg.add(m_jrb_same_column_number);
@@ -226,6 +225,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
   private static void Debug(String sText) {
     Program.Debug("Creer_Rangement: " + sText);
+  }
+
+  private void initComboPlaces() {
+    comboPlace.removeAllItems();
+    comboPlace.addItem(Program.EMPTY_PLACE);
+    Program.getPlaces().forEach(comboPlace::addItem);
   }
 
   private void updatePartList() {
@@ -710,9 +715,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       new MyCellarSwingWorker() {
         @Override
         protected void done() {
-          comboPlace.removeAllItems();
-          comboPlace.addItem(Program.EMPTY_PLACE);
-          Program.getCave().forEach(comboPlace::addItem);
+          initComboPlaces();
         }
       }.execute();
     }

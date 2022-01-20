@@ -53,8 +53,8 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.4
- * @since 07/01/22
+ * @version 8.5
+ * @since 20/01/22
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
@@ -70,7 +70,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   private final char ouvrirChar = Program.getLabel("OUVRIR").charAt(0);
   private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126");
   private final MyCellarButton m_jcb_options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
-  private JTable table;
+  private final JTable table;
   private boolean updateView;
   private UpdateViewType updateViewType;
 
@@ -103,7 +103,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     type_HTML.addActionListener(this::jradio_actionPerformed);
     type_XLS.addActionListener(this::jradio_actionPerformed);
 
-    Program.getCave().forEach(tableauValues::addRangement);
+    initModelPlaces();
 
     JScrollPane jScrollPane = new JScrollPane(table);
     end.setHorizontalAlignment(SwingConstants.CENTER);
@@ -169,6 +169,11 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 
   private static void Debug(String sText) {
     Program.Debug("Creer_Tableaux: " + sText);
+  }
+
+  private void initModelPlaces() {
+    tableauValues.removeAll();
+    Program.getPlaces().forEach(tableauValues::addRangement);
   }
 
   private void browse_actionPerformed(ActionEvent e) {
@@ -388,8 +393,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
       new MyCellarSwingWorker() {
         @Override
         protected void done() {
-          tableauValues.removeAll();
-          Program.getCave().forEach(tableauValues::addRangement);
+          initModelPlaces();
           tableauValues.fireTableDataChanged();
         }
       }.execute();

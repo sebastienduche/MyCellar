@@ -32,8 +32,8 @@ import static mycellar.ProgramConstants.SPACE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 07/01/22
+ * @version 2.8
+ * @since 20/01/22
  */
 public final class PanelInfos extends JPanel {
 
@@ -111,11 +111,9 @@ final class PanelStats extends JPanel {
     SwingUtilities.invokeLater(() -> {
       model.clearRows();
       int nbBottles = 0;
-      if (!Program.getCave().isEmpty()) {
-        for (Rangement rangement : Program.getCave()) {
-          nbBottles += rangement.getTotalCountCellUsed();
-          model.addRow(rangement, rangement.getTotalCountCellUsed());
-        }
+      for (Rangement rangement : Program.getPlaces()) {
+        nbBottles += rangement.getTotalCountCellUsed();
+        model.addRow(rangement, rangement.getTotalCountCellUsed());
       }
       String devise = EURO;
       if (Program.hasConfigCaveKey(MyCellarSettings.DEVISE)) {

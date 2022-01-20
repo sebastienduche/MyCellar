@@ -81,8 +81,8 @@ import static mycellar.ProgramConstants.SPACE;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.2
- * @since 12/01/22
+ * @version 11.3
+ * @since 20/01/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -640,8 +640,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
     add(deleteButton, "align right, wrap");
 
-    placeCbx.addItem(Program.EMPTY_PLACE);
-    Program.getCave().forEach(placeCbx::addItem);
+    initPlacesCombo();
 
     Arrays.stream(MusicSupport.values()).forEach(musicSupportCbx::addItem);
     Arrays.stream(BottleColor.values()).forEach(colorCbx::addItem);
@@ -1032,8 +1031,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     updateView = false;
     model.fireTableStructureChanged();
     if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
-      placeCbx.removeAllItems();
-      Program.getCave().forEach(placeCbx::addItem);
+      initPlacesCombo();
     }
 
     if (updateViewType == UpdateViewType.CAPACITY || updateViewType == UpdateViewType.ALL) {
@@ -1043,6 +1041,12 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
 
     updateModel(columns);
+  }
+
+  private void initPlacesCombo() {
+    placeCbx.removeAllItems();
+    placeCbx.addItem(Program.EMPTY_PLACE);
+    Program.getPlaces().forEach(placeCbx::addItem);
   }
 
   private void updateModel(List<ShowFileColumn<?>> columnsModel) {

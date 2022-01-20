@@ -34,8 +34,8 @@ import java.util.function.Predicate;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 12/01/22
+ * @version 2.6
+ * @since 20/01/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -163,11 +163,11 @@ public class PanelPlace extends JPanel implements IPlace {
     place.removeAllItems();
     place.addItem(Program.EMPTY_PLACE);
     if (onlyComplexPlaces) {
-      Program.getCave().stream()
+      Program.getPlaces().stream()
           .filter(Predicate.not(Rangement::isSimplePlace))
           .forEach(place::addItem);
     } else {
-      Program.getCave().forEach(place::addItem);
+      Program.getPlaces().forEach(place::addItem);
     }
   }
 

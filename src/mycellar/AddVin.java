@@ -44,8 +44,8 @@ import static mycellar.core.LabelProperty.PLURAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.4
- * @since 07/01/22
+ * @version 30.5
+ * @since 20/01/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -233,7 +233,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           MyCellarObject newMyCellarObject = createMyCellarObject(annee, place, rangement, -1, -1, -1);
           // Add multiple bottle with question
           if (countStillToAdd > 1) {
-            if (Program.getCave().size() == 1) {
+            if (Program.hasOnlyOnePlace()) {
               Debug("Adding multiple objects in the same place?");
               String message = MessageFormat.format(Program.getError("Error061", LabelProperty.PLURAL), countStillToAdd, rangement.getName()); //Voulez vous ajouter les xx bouteilles dans yy
               if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), message, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {

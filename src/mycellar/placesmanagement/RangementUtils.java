@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static mycellar.Program.getCave;
+import static mycellar.Program.getPlaces;
 import static mycellar.Program.throwNotImplementedIfNotFor;
 import static mycellar.Program.toCleanString;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
@@ -65,8 +65,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.4
- * @since 12/01/22
+ * @version 4.5
+ * @since 20/01/22
  */
 public final class RangementUtils {
 
@@ -633,7 +633,7 @@ public final class RangementUtils {
     }
 
     final String placeName = name.strip();
-    final boolean found = getCave().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
+    final boolean found = getPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
     if (!found) {
       if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
         return true;
@@ -657,7 +657,7 @@ public final class RangementUtils {
       }
     }
     Program.getErrors().clear();
-    Program.getCave().forEach(Rangement::resetStock);
+    Program.getPlaces().forEach(Rangement::resetStock);
 
     for (var bouteille : Program.getStorage().getAllList()) {
       // On ignore les bouteilles qui sont dans le stock temporairement

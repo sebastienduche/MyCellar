@@ -115,8 +115,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.6
- * @since 04/01/22
+ * @version 27.7
+ * @since 20/01/22
  */
 
 public final class Program {
@@ -345,8 +345,9 @@ public final class Program {
       putCaveConfigString(PROGRAM_TYPE, Type.WINE.name());
     }
 
+    // TODO Remove when veraion 75
     if (currentVersion < 71) {
-      getCave().stream().filter(rangement ->
+      getPlaces().stream().filter(rangement ->
               isDefaultStorageName(rangement, rangement.getName()))
           .findFirst()
           .ifPresent(rangement -> rangement.setDefaultPlace(true));
@@ -493,6 +494,14 @@ public final class Program {
     return getStorage().getAllList().size();
   }
 
+  public static int getSimplePlaceCount() {
+    return (int) getPlaces().stream().filter(Rangement::isSimplePlace).count();
+  }
+
+  public static List<Rangement> getSimplePlaces() {
+    return getPlaces().stream().filter(Rangement::isSimplePlace).collect(Collectors.toList());
+  }
+
   static int getTotalObjectForYear(int year) {
     return (int) getStorage().getAllList().stream().filter(myCellarObject -> myCellarObject.getAnneeInt() == year).count();
   }
@@ -601,8 +610,16 @@ public final class Program {
 
   }
 
-  public static List<Rangement> getCave() {
+  public static List<Rangement> getPlaces() {
     return PLACES;
+  }
+
+  public static Rangement getPlaceAt(int index) {
+    return PLACES.get(index);
+  }
+
+  public static boolean hasOnlyOnePlace() {
+    return PLACES.size() == 1;
   }
 
   /**

@@ -22,7 +22,7 @@ class PlaceTest {
 
   @BeforeEach
   void setUp() {
-    Program.getCave().clear();
+    Program.getPlaces().clear();
     caisseNoLimit = new Rangement.SimplePlaceBuilder("caisseNoLimit").build(); // 1 emplacement : 0
     // Caisse avec 2 emplacements commencant a 1 et limite a 6 bouteilles
     caisseLimit = new Rangement.SimplePlaceBuilder("caisseLimit")

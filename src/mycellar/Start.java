@@ -89,7 +89,7 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.9
+ * @version 31.0
  * @since 06/01/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
@@ -530,7 +530,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       File nomFichier = boiteFichier.getSelectedFile();
       String fic = nomFichier.getAbsolutePath();
       fic = MyCellarControl.controlAndUpdateExtension(fic, ".xml");
-      XmlUtils.writeMyCellarXml(Program.getCave(), fic);
+      XmlUtils.writeMyCellarXml(Program.getPlaces(), fic);
     }
   }
 

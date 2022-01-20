@@ -70,8 +70,8 @@ import static mycellar.core.LabelType.INFO_OTHER;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.5
- * @since 12/01/22
+ * @version 4.6
+ * @since 20/01/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -215,12 +215,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     if (iPlace == null) {
       complexPlaces.add(Program.EMPTY_PLACE);
     }
-    for (Rangement rangement1 : Program.getCave()) {
-      if (iPlace == null || !rangement1.isSimplePlace()) {
-        complexPlaces.add(rangement1);
-        comboRangement.addItem(rangement1);
-      }
-    }
+    initPlacesCombo();
 
     comboRangement.addItemListener((item) -> {
       if (item.getStateChange() == ItemEvent.SELECTED) {
@@ -250,6 +245,15 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     add(new JScrollPane(placePanel), "grow");
     if (!cellChooser) {
       add(scrollStock, "grow");
+    }
+  }
+
+  private void initPlacesCombo() {
+    for (Rangement rangement1 : Program.getPlaces()) {
+      if (iPlace == null || !rangement1.isSimplePlace()) {
+        complexPlaces.add(rangement1);
+        comboRangement.addItem(rangement1);
+      }
     }
   }
 
@@ -330,12 +334,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       complexPlaces.clear();
       comboRangement.removeAllItems();
       comboRangement.addItem(Program.EMPTY_PLACE);
-      for (Rangement r : Program.getCave()) {
-        if (iPlace == null || !r.isSimplePlace()) {
-          complexPlaces.add(r);
-          comboRangement.addItem(r);
-        }
-      }
+      initPlacesCombo();
     });
     setRangement(rangement);
   }

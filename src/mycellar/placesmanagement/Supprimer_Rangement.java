@@ -40,10 +40,10 @@ import java.util.stream.Collectors;
 
 import static mycellar.Program.EMPTY_PLACE;
 import static mycellar.Program.getAide;
-import static mycellar.Program.getCave;
 import static mycellar.Program.getCaveLength;
 import static mycellar.Program.getError;
 import static mycellar.Program.getLabel;
+import static mycellar.Program.getPlaces;
 import static mycellar.Program.getPreviewXMLFileName;
 import static mycellar.Program.getStorage;
 import static mycellar.Program.open;
@@ -61,8 +61,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.3
- * @since 05/01/22
+ * @version 9.4
+ * @since 20/01/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -111,7 +111,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     choix.addItemListener(this::choix_itemStateChanged);
 
     choix.addItem(EMPTY_PLACE);
-    getCave().forEach(choix::addItem);
+    getPlaces().forEach(choix::addItem);
     setVisible(true);
   }
 
@@ -277,14 +277,13 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       return;
     }
     updateView = false;
-//    RangementUtils.putTabStock();
     if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
       new MyCellarSwingWorker() {
         @Override
         protected void done() {
           choix.removeAllItems();
           choix.addItem(EMPTY_PLACE);
-          getCave().forEach(choix::addItem);
+          getPlaces().forEach(choix::addItem);
         }
       }.execute();
     }

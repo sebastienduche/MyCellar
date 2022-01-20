@@ -61,8 +61,8 @@ import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.6
- * @since 03/01/22
+ * @version 8.7
+ * @since 20/01/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -89,23 +89,23 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
   public Stat() {
     Debug("Stats");
-    MyCellarLabel definition = new MyCellarLabel(LabelType.INFO, "174"); //"Type de statistiques:");
+    MyCellarLabel definition = new MyCellarLabel(LabelType.INFO, "174"); //"Type de statistiques:
     end.setHorizontalAlignment(SwingConstants.RIGHT);
     moy.setHorizontalAlignment(SwingConstants.RIGHT);
     panel.setLayout(new MigLayout("", "[][][grow]", ""));
     panel.setFont(FONT_PANEL);
-    Program.getCave().forEach(this::displayPlace);
+//    Program.getPlaces().forEach(this::displayPlace);
 
     updateBouteilleCountLabel();
 
     options.addActionListener(this::options_actionPerformed);
 
-    listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos182"))); //"Tous les rangement");
-    Program.getCave().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
+    listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos182"))); //"Tous les rangements
+    Program.getPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
 
-    listOptions.addItem(new MyCellarEnum(StatType.PLACE.ordinal(), Program.getLabel("Infos183"))); //"Par Rangement");
-    listOptions.addItem(new MyCellarEnum(StatType.YEAR.ordinal(), Program.getLabel("Infos184"))); //"Par Annee");
-    listOptions.addItem(new MyCellarEnum(StatType.PRICE.ordinal(), Program.getLabel("Infos185"))); //"Par Prix");
+    listOptions.addItem(new MyCellarEnum(StatType.PLACE.ordinal(), Program.getLabel("Infos183"))); //"Par Rangement
+    listOptions.addItem(new MyCellarEnum(StatType.YEAR.ordinal(), Program.getLabel("Infos184"))); //"Par Annee
+    listOptions.addItem(new MyCellarEnum(StatType.PRICE.ordinal(), Program.getLabel("Infos185"))); //"Par Prix
     listOptions.addItem(new MyCellarEnum(StatType.HISTORY.ordinal(), Program.getLabel("Stat.history"))); //Historiques
 
     scroll = new JScrollPane(panel);
@@ -189,7 +189,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       Debug("By place");
       listChart.setEnabled(false);
       options.setEnabled(false);
-      panelChart.setPlacesChart(Program.getCave());
+      panelChart.setPlacesChart();
     } else if (selectedItem.getValue() == StatType.HISTORY.ordinal()) {
       Debug("By history");
       listChart.setEnabled(false);
@@ -404,12 +404,12 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
   private void displayAllPlaces() {
     Debug("All places");
-    panelChart.setPlacesChart(Program.getCave());
+    panelChart.setPlacesChart();
     panel.removeAll();
     panel.repaint();
 
     int nbBottle = 0;
-    for (Rangement cave : Program.getCave()) {
+    for (Rangement cave : Program.getPlaces()) {
       panel.add(new MyCellarLabel(cave.getName()));
       nbBottle += cave.getTotalCountCellUsed();
       displayPlace(cave);
@@ -484,7 +484,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       listPlaces.setEnabled(true);
       comboLabel.setText(Program.getLabel("Infos081", LabelProperty.SINGLE.withDoubleQuote())); //"Rangement:
       listPlaces.addItem(new PlaceComboItem(Program.getLabel("Infos182"))); //"Tous les rangements
-      Program.getCave().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
+      Program.getPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
     } else if (selectedStatType.getValue() == StatType.HISTORY.ordinal()) {
       listPlaces.setEnabled(true);
       comboLabel.setText("");
@@ -516,12 +516,12 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
     private PanelChart() {
       setLayout(new MigLayout("", "grow", "grow"));
-      setPlacesChart(Program.getCave());
+      setPlacesChart();
     }
 
-    private void setPlacesChart(List<Rangement> rangements) {
+    private void setPlacesChart() {
       DefaultPieDataset dataset = new DefaultPieDataset();
-      rangements.stream()
+      Program.getPlaces().stream()
           .filter(Objects::nonNull)
           .forEach(rangement -> dataset.setValue(rangement.getName(), rangement.getTotalCountCellUsed()));
 

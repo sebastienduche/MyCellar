@@ -83,8 +83,8 @@ import static mycellar.ProgramConstants.SLASH;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 14.8
- * @since 14/12/21
+ * @version 14.9
+ * @since 20/01/22
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -451,7 +451,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         //Un rangement par defaut va etre cree.
         Erreur.showInformationMessage(Program.getError("Error140"), Program.getError("Error141"));
 
-        int nb_caisse = (int) Program.getCave().stream().filter(Rangement::isSimplePlace).count();
+        int nb_caisse = Program.getSimplePlaceCount();
 
         String title = Program.getLabel("Infos010");
         String message2 = Program.getLabel("Infos308");
@@ -460,14 +460,12 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         String[] key_properties = new String[nb_caisse + 2];
         String[] type_objet = new String[nb_caisse + 2];
         int j = 0;
-        for (Rangement cave : Program.getCave()) {
-          if (cave.isSimplePlace()) {
-            titre_properties[j] = cave.getName();
-            key_properties[j] = MyCellarSettings.RANGEMENT_DEFAULT;
-            default_value[j] = "false";
-            type_objet[j] = "MyCellarRadioButton";
-            j++;
-          }
+        for (Rangement cave : Program.getSimplePlaces()) {
+          titre_properties[j] = cave.getName();
+          key_properties[j] = MyCellarSettings.RANGEMENT_DEFAULT;
+          default_value[j] = "false";
+          type_objet[j] = "MyCellarRadioButton";
+          j++;
         }
         titre_properties[nb_caisse] = Program.getLabel("Infos289");
         key_properties[nb_caisse] = MyCellarSettings.RANGEMENT_DEFAULT;
@@ -526,7 +524,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           new_rangement = new Rangement.SimplePlaceBuilder(nom1).build();
           Program.addCave(new_rangement);
         } else {
-          new_rangement = Program.getCave().get(num_r);
+          new_rangement = Program.getPlaceAt(num_r);
         }
       }
       if (type_txt.isSelected()) {

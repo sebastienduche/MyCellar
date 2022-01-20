@@ -23,8 +23,8 @@ import java.util.Optional;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 23/04/21
+ * @version 2.0
+ * @since 20/01/22
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -170,7 +170,7 @@ public class ErrorShowValues extends TableShowValues {
         if (column == PLACE) {
           empl = (String) value;
           if (RangementUtils.isExistingPlace(empl)) {
-            rangement = Program.getCave(empl);
+            rangement = Program.getPlaceByName(empl);
           }
         } else if (column == NUM_PLACE) {
           try {

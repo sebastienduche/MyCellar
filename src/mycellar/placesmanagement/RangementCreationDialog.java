@@ -25,8 +25,8 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 17/12/20
+ * @version 0.7
+ * @since 20/01/22
  */
 public final class RangementCreationDialog extends JDialog {
 
@@ -85,7 +85,7 @@ public final class RangementCreationDialog extends JDialog {
         Debug("Creating complex place: " + name + " parts: " + parts);
         rangement = new Rangement(name, parts);
       }
-      Program.addCave(rangement);
+      Program.addPlace(rangement);
     });
     end.setText(MessageFormat.format(Program.getLabel("RangementToCreateTableModel.end"), map.size()));
     model.clear();

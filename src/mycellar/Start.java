@@ -89,8 +89,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.0
- * @since 06/01/22
+ * @version 31.1
+ * @since 20/01/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -297,9 +297,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     afficheFrame();
     if (hasFile) {
       Program.loadPropertiesAndSetProgramType();
-      if (Program.getCaveLength() == 0) {
-        Program.addCave(Program.DEFAULT_PLACE);
-      }
+      Program.addDefaultPlaceIfNeeded();
     }
     enableAll(hasFile);
     setVisible(true);
@@ -410,7 +408,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       LinkedList<Rangement> cave = new LinkedList<>();
       if (f.exists() && XmlUtils.readMyCellarXml(fic, cave)) {
         XmlUtils.writeMyCellarXml(cave, "");
-        Program.loadObjects();
+        Program.loadData();
       }
     }
   }
@@ -420,9 +418,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
    */
   private void postOpenFile() {
     Program.loadPropertiesAndSetProgramType();
-    if (Program.getCaveLength() == 0) {
-      Program.addCave(Program.DEFAULT_PLACE);
-    }
+    Program.addDefaultPlaceIfNeeded();
     enableAll(true);
     ProgramPanels.updateAllPanels();
     updateMainPanel();

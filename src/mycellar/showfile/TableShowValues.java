@@ -25,8 +25,8 @@ import java.util.Optional;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.2
- * @since 19/05/21
+ * @version 5.3
+ * @since 20/01/22
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -154,7 +154,7 @@ class TableShowValues extends AbstractTableModel {
         if (column == PLACE) {
           empl = (String) value;
           if (RangementUtils.isExistingPlace(empl)) {
-            rangement = Program.getCave(empl);
+            rangement = Program.getPlaceByName(empl);
           }
         } else if (column == NUM_PLACE) {
           try {

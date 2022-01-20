@@ -712,7 +712,7 @@ class LabelTransferHandler extends TransferHandler {
       final RangementCell src = (RangementCell) support.getTransferable().getTransferData(localObjectFlavor);
       final MyCellarObjectDraggingLabel bouteilleLabel = new MyCellarObjectDraggingLabel(src.draggingLabel.getMyCellarObject());
       final MyCellarObject bouteille = bouteilleLabel.getMyCellarObject();
-      target.setPlace(Program.getCave(target.getPlaceName()));
+      target.setPlace(Program.getPlaceByName(target.getPlaceName()));
       bouteille.setEmplacement(target.getPlaceName());
       bouteille.setLigne(target.getRow());
       bouteille.setColonne(target.getColumn());

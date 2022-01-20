@@ -40,14 +40,13 @@ import java.util.stream.Collectors;
 
 import static mycellar.Program.EMPTY_PLACE;
 import static mycellar.Program.getAide;
-import static mycellar.Program.getCaveLength;
 import static mycellar.Program.getError;
 import static mycellar.Program.getLabel;
 import static mycellar.Program.getPlaces;
 import static mycellar.Program.getPreviewXMLFileName;
 import static mycellar.Program.getStorage;
 import static mycellar.Program.open;
-import static mycellar.Program.removeCave;
+import static mycellar.Program.removePlace;
 import static mycellar.Program.setToTrash;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.SPACE;
@@ -181,7 +180,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 
     // Verifier l'etat du rangement avant de le supprimer et demander confirmation
     if (num_select > 0) {
-      if (getCaveLength() == 1) {
+      if (Program.hasOnlyOnePlace()) {
         Erreur.showSimpleErreur(getError("SupprimerRangement.ForbiddenToDelete"));
         return;
       }
@@ -195,10 +194,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         Debug("MESSAGE: Delete this place: " + tmp + "?");
         error = MessageFormat.format(getError("Error139"), tmp); //Voulez vous supprimer le rangement
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          removeCave(cave);
-          choix.removeItemAt(num_select);
-          choix.setSelectedIndex(0);
-          ProgramPanels.updateAllPanelsForUpdatingPlaces();
+          removeSelectedPlace(cave, num_select);
         }
       } else {
         String nom = cave.getName();
@@ -211,26 +207,34 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         String erreur_txt2 = getError("Error039", LabelProperty.THE_PLURAL);
         Debug("MESSAGE: Delete this place " + nom + " and all bottle(s) (" + nb_case_use_total + ")?");
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          new Thread(() -> {
-            //Suppression des bouteilles presentes dans le rangement
-            List<MyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(cave.getName())).collect(Collectors.toList());
-            for (MyCellarObject b : bottleList) {
-              getStorage().addHistory(HistoryState.DEL, b);
-              try {
-                cave.removeObject(b);
-              } catch (MyCellarException myCellarException) {
-                Program.showException(myCellarException);
+          new MyCellarSwingWorker() {
+            @Override
+            protected void done() {
+              //Suppression des bouteilles presentes dans le rangement
+              List<MyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(cave.getName())).collect(Collectors.toList());
+              for (MyCellarObject b : bottleList) {
+                getStorage().addHistory(HistoryState.DEL, b);
+                try {
+                  cave.removeObject(b);
+                } catch (MyCellarException myCellarException) {
+                  Program.showException(myCellarException);
+                }
+                setToTrash(b);
               }
-              setToTrash(b);
+              removeSelectedPlace(cave, num_select);
             }
-            removeCave(cave);
-            ProgramPanels.updateAllPanelsForUpdatingPlaces();
-          }).start();
-          choix.removeItemAt(num_select);
-          choix.setSelectedIndex(0);
+          }.execute();
+
         }
       }
     }
+  }
+
+  private void removeSelectedPlace(Rangement cave, int num_select) {
+    removePlace(cave);
+    choix.removeItemAt(num_select);
+    choix.setSelectedIndex(0);
+    ProgramPanels.updateAllPanelsForUpdatingPlaces();
   }
 
   private void preview_actionPerformed(ActionEvent e) {

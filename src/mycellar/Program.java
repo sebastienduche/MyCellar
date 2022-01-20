@@ -467,10 +467,7 @@ public final class Program {
     return value == null ? "" : value.strip();
   }
 
-  /**
-   * Chargement des donnees XML (Bouteilles et Rangement) ou des donnees serialisees en cas de pb
-   */
-  static boolean loadObjects() {
+  static boolean loadData() {
     PLACES.clear();
     boolean load = XmlUtils.readMyCellarXml("", PLACES);
     if (!load || PLACES.isEmpty()) {
@@ -486,7 +483,7 @@ public final class Program {
     return (int) getStorage().getAllList().stream().mapToDouble(IMyCellarObject::getPriceDouble).max().orElse(0);
   }
 
-  public static int getCellarValue() {
+  public static int sumAllPrices() {
     return (int) getStorage().getAllList().stream().mapToDouble(IMyCellarObject::getPriceDouble).sum();
   }
 
@@ -611,7 +608,7 @@ public final class Program {
   }
 
   public static List<Rangement> getPlaces() {
-    return PLACES;
+    return Collections.unmodifiableList(PLACES);
   }
 
   public static Rangement getPlaceAt(int index) {
@@ -622,13 +619,7 @@ public final class Program {
     return PLACES.size() == 1;
   }
 
-  /**
-   * GetCave
-   *
-   * @param name String
-   * @return Rangement
-   */
-  public static Rangement getCave(final String name) {
+  public static Rangement getPlaceByName(final String name) {
     final String placeName = name.strip();
     if (TEMP_PLACE.equals(placeName)) {
       return STOCK_PLACE;
@@ -647,12 +638,7 @@ public final class Program {
         (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
 
-  /**
-   * addCave
-   *
-   * @param rangement Rangement
-   */
-  public static void addCave(Rangement rangement) {
+  public static void addPlace(Rangement rangement) {
     if (rangement == null) {
       return;
     }
@@ -662,12 +648,7 @@ public final class Program {
     Collections.sort(PLACES);
   }
 
-  /**
-   * removeCave
-   *
-   * @param rangement Rangement
-   */
-  public static void removeCave(Rangement rangement) {
+  public static void removePlace(Rangement rangement) {
     if (rangement == null) {
       return;
     }
@@ -676,7 +657,7 @@ public final class Program {
     setListCaveModified();
   }
 
-  public static int getCaveLength() {
+  public static int getPlaceLength() {
     return PLACES.size();
   }
 
@@ -761,7 +742,7 @@ public final class Program {
 
     //Chargement des objets Rangement, Bouteilles et History
     Debug("Program: Reading Places, Bottles & History");
-    if (!loadObjects()) {
+    if (!loadData()) {
       Debug("Program: ERROR Reading Objects KO");
       throw new UnableToOpenFileException("Error while reading objects.");
     }
@@ -1495,6 +1476,12 @@ public final class Program {
 
   public static void throwNotImplemented() {
     throw new NotImplementedException("Not implemented yet!");
+  }
+
+  public static void addDefaultPlaceIfNeeded() {
+    if (getPlaceLength() == 0) {
+      addPlace(DEFAULT_PLACE);
+    }
   }
 
   enum Type {

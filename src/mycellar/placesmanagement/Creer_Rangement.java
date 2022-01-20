@@ -546,55 +546,39 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
       if (bResul) {
         Debug("Creating...");
-        final Rangement caisse = new Rangement.SimplePlaceBuilder(nom)
+        Program.addPlace(new Rangement.SimplePlaceBuilder(nom)
             .nbParts(nbPart)
             .startSimplePlace(start_caisse)
             .limited(islimited)
-            .limit(limite).build();
-        Program.addCave(caisse);
+            .limit(limite).build());
         Debug("Creation of '" + nom + "' completed.");
         nom_obj.setText("");
-        label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.");
+        label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.
         ProgramPanels.updateAllPanelsForUpdatingPlaces();
       }
     } else {
       Debug("Creating complex place...");
       for (Part p : listPart) {
         if (p.getRows().isEmpty()) {
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrect sur la partie
+          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrectes sur la partie
           bResul = false;
         }
         for (Row r : p.getRows()) {
           if (r.getCol() == 0) {
-            Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrect sur la partie
+            Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrectes sur la partie
             bResul = false;
           }
         }
       }
       //Type rangement
       if (m_jrb_dif_column_number.isSelected()) {
-        Debug("Creating with different column number...");
-
-        // Creation du rangement
-        if (bResul) {
-          Debug("Creating place...");
-          Program.addCave(new Rangement(nom, listPart));
-          Debug("Creating " + nom + " completed.");
-          label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.
-          nom_obj.setText("");
-          ProgramPanels.updateAllPanelsForUpdatingPlaces();
-        }
-        //Fin test check
-      } else { // Si check1
+        Debug("Creating with different column number");
+      } else {
         Debug("Creating place with same column number");
-        // Recuperation du nombre de ligne par partie
-        if (bResul) {
-          Program.addCave(new Rangement(nom, listPart));
-          Debug("Creating '" + nom + "' completed.");
-          label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.
-          nom_obj.setText("");
-          ProgramPanels.updateAllPanelsForUpdatingPlaces();
-        }
+      }
+      // Creation du rangement
+      if (bResul) {
+        createPlace(nom);
       }
     }
     if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false) && bResul) {
@@ -603,6 +587,14 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     if (bResul) {
       Start.getInstance().enableAll(true);
     }
+  }
+
+  private void createPlace(String name) {
+    Program.addPlace(new Rangement(name, listPart));
+    Debug("Creating " + name + " completed.");
+    label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.
+    nom_obj.setText("");
+    ProgramPanels.updateAllPanelsForUpdatingPlaces();
   }
 
   /**

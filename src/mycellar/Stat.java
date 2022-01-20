@@ -281,10 +281,10 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       }
     }
     panel.updateUI();
-    end.setText(MessageFormat.format(Program.getLabel("Infos244"), Program.getCellarValue(), Program.getCaveConfigString(MyCellarSettings.DEVISE, "")));
+    end.setText(MessageFormat.format(Program.getLabel("Infos244"), Program.sumAllPrices(), Program.getCaveConfigString(MyCellarSettings.DEVISE, "")));
     final int bottlesCount = Program.getStorage().getBottlesCount();
     if (bottlesCount > 0) {
-      moy.setText(MessageFormat.format(Program.getLabel("Infos300"), (Program.getCellarValue() / bottlesCount), Program.getCaveConfigString(MyCellarSettings.DEVISE, "")));
+      moy.setText(MessageFormat.format(Program.getLabel("Infos300"), (Program.sumAllPrices() / bottlesCount), Program.getCaveConfigString(MyCellarSettings.DEVISE, "")));
     }
     if (listChart.getSelectedIndex() == 0) {
       panelChart.setDataBarChart(listPrice, Program.getLabel("Infos185"));

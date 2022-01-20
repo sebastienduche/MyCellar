@@ -119,7 +119,7 @@ final class PanelStats extends JPanel {
       if (Program.hasConfigCaveKey(MyCellarSettings.DEVISE)) {
         devise = Program.getCaveConfigString(MyCellarSettings.DEVISE, EURO);
       }
-      cellarTotal.setText(Program.getCellarValue() + SPACE + devise);
+      cellarTotal.setText(Program.sumAllPrices() + SPACE + devise);
       bottlesNb.setText(Integer.toString(nbBottles));
     });
   }

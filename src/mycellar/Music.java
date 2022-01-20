@@ -39,8 +39,8 @@ import static mycellar.general.XmlUtils.getTextContent;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 16/10/21
+ * @version 1.3
+ * @since 20/01/22
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -425,7 +425,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public Rangement getRangement() {
-    return Program.getCave(emplacement);
+    return Program.getPlaceByName(emplacement);
   }
 
   @Override

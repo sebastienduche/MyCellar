@@ -478,7 +478,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         MyOptions myoptions = new MyOptions(title, "", message2, List.of(titre_properties), List.of(default_value), List.of(key_properties), List.of(type_objet), Program.getCaveConfig(), false);
         myoptions.setVisible(true);
         int num_r = Program.getCaveConfigInt(MyCellarSettings.RANGEMENT_DEFAULT, -1);
-        if (num_r == Program.getCaveLength()) {
+        if (num_r == Program.getPlaceLength()) {
           String nom1 = Program.getCaveConfigString(MyCellarSettings.RANGEMENT_NAME, "");
           boolean resul;
           do {
@@ -522,7 +522,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           } while (!resul);
           Debug("Creating new place with name: " + nom1);
           new_rangement = new Rangement.SimplePlaceBuilder(nom1).build();
-          Program.addCave(new_rangement);
+          Program.addPlace(new_rangement);
         } else {
           new_rangement = Program.getPlaceAt(num_r);
         }

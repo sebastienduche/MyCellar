@@ -43,8 +43,8 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.5
- * @since 16/10/21
+ * @version 7.6
+ * @since 20/01/22
  *
  * <p>Java class for anonymous complex type.
  *
@@ -373,7 +373,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public Rangement getRangement() {
-    return Program.getCave(emplacement);
+    return Program.getPlaceByName(emplacement);
   }
 
   @Override

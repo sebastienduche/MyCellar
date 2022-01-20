@@ -38,10 +38,10 @@ class PlaceTest {
         .nbParts(new int[]{3, 1})
         .sameColumnsNumber(new int[]{3, 3})
         .build();
-    Program.addCave(caisseLimit);
-    Program.addCave(caisseNoLimit);
-    Program.addCave(armoire1x3x3);
-    Program.addCave(armoire2x3x3);
+    Program.addPlace(caisseLimit);
+    Program.addPlace(caisseNoLimit);
+    Program.addPlace(armoire1x3x3);
+    Program.addPlace(armoire2x3x3);
   }
 
   @Test

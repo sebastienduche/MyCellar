@@ -89,8 +89,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.1
- * @since 20/01/22
+ * @version 31.2
+ * @since 18/02/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -232,8 +232,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
           if (RESTART_COMMAND.equals(tmp)) {
             // Demarrage avec une nouvelle cave
             Program.putGlobalConfigBool(MyCellarSettings.STARTUP, false);
-            Program.putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, true);
-            Program.putCaveConfigBool(MyCellarSettings.FIC_EXCEL, false);
+            Program.putCaveConfigBool(MyCellarSettings.HAS_YEAR_CTRL, true);
+            Program.putCaveConfigBool(MyCellarSettings.HAS_EXCEL_FILE, false);
           } else if (DOWNLOAD_COMMAND.equals(tmp)) {
             Debug("Download a new version and exit");
             MyCellarServer.getInstance().downloadVersion();

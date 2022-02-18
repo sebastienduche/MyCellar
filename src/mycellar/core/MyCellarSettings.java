@@ -7,16 +7,16 @@ package mycellar.core;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 25/05/21
+ * @version 0.7
+ * @since 18/02/22
  */
 
 public final class MyCellarSettings {
 
   public static final String FILE_EXCEL = "FILE_EXCEL";
-  public static final String FIC_EXCEL = "FIC_EXCEL";
+  public static final String HAS_EXCEL_FILE = "FIC_EXCEL";
   public static final String ANNEE = "ANNEE";
-  public static final String ANNEE_CTRL = "ANNEE_CTRL";
+  public static final String HAS_YEAR_CTRL = "ANNEE_CTRL";
   public static final String SIECLE = "SIECLE";
   public static final String DEVISE = "DEVISE";
   public static final String LANGUAGE = "LANGUAGE";

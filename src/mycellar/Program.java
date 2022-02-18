@@ -843,7 +843,7 @@ public final class Program {
       // Sauvegarde des proprietes globales
       saveGlobalProperties();
 
-      if (getCaveConfigBool(MyCellarSettings.FIC_EXCEL, false)) {
+      if (getCaveConfigBool(MyCellarSettings.HAS_EXCEL_FILE, false)) {
         //Ecriture Excel
         final String file_excel = getCaveConfigString(MyCellarSettings.FILE_EXCEL, "");
         Debug("Program: Writing backup Excel file: " + file_excel);
@@ -1187,11 +1187,11 @@ public final class Program {
   }
 
   public static boolean hasYearControl() {
-    return getCaveConfigBool(MyCellarSettings.ANNEE_CTRL, false);
+    return getCaveConfigBool(MyCellarSettings.HAS_YEAR_CTRL, false);
   }
 
   static void setYearControl(boolean yearControl) {
-    putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, yearControl);
+    putCaveConfigBool(MyCellarSettings.HAS_YEAR_CTRL, yearControl);
   }
 
   public static List<CountryJaxb> getCountries() {

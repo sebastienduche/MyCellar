@@ -35,8 +35,8 @@ import static mycellar.core.MyCellarSettings.DIR;
 import static mycellar.core.MyCellarSettings.DONT_SHOW_CREATE_MESS;
 import static mycellar.core.MyCellarSettings.DONT_SHOW_INFO;
 import static mycellar.core.MyCellarSettings.DONT_SHOW_TAB_MESS;
-import static mycellar.core.MyCellarSettings.FIC_EXCEL;
 import static mycellar.core.MyCellarSettings.FILE_EXCEL;
+import static mycellar.core.MyCellarSettings.HAS_EXCEL_FILE;
 import static mycellar.core.MyCellarSettings.LANGUAGE;
 import static mycellar.core.MyCellarSettings.SIECLE;
 
@@ -48,8 +48,8 @@ import static mycellar.core.MyCellarSettings.SIECLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.8
- * @since 09/06/21
+ * @version 12.9
+ * @since 18/02/22
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -150,13 +150,13 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     jcb_excel.setEnabled(Program.hasFile());
     devise.setEnabled(Program.hasFile());
 
-    boolean excel = Program.getCaveConfigBool(FIC_EXCEL, false);
+    boolean excel = Program.getCaveConfigBool(HAS_EXCEL_FILE, false);
     file_bak.setEnabled(excel);
     label_fic_bak.setEnabled(excel);
     jcb_excel.setSelected(excel);
     parcourir_excel.setEnabled(excel);
 
-    if (Program.getCaveConfigBool(MyCellarSettings.ANNEE_CTRL, false)) {
+    if (Program.getCaveConfigBool(MyCellarSettings.HAS_YEAR_CTRL, false)) {
       jcb_annee_control.setSelected(true);
     }
     label_annee.setEnabled(jcb_annee_control.isSelected());
@@ -181,7 +181,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     try {
       modifyLanguage();
       if (jcb_excel.isSelected()) {
-        Program.putCaveConfigBool(FIC_EXCEL, true);
+        Program.putCaveConfigBool(HAS_EXCEL_FILE, true);
         String fic = file_bak.getText();
         if (MyCellarControl.hasInvalidExtension(fic, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
           Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), fic), Program.getError("Error035"));
@@ -190,7 +190,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
           Program.putCaveConfigString(FILE_EXCEL, fic);
         }
       } else {
-        Program.putCaveConfigBool(FIC_EXCEL, false);
+        Program.putCaveConfigBool(HAS_EXCEL_FILE, false);
       }
 
       Program.putCaveConfigString(DEVISE, toCleanString(devise.getText()));

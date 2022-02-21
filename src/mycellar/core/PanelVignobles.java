@@ -24,10 +24,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.Program.NO_APPELATION;
 import static mycellar.Program.NO_COUNTRY;
 import static mycellar.Program.NO_VIGNOBLE;
-import static mycellar.Program.toCleanString;
 import static mycellar.ProgramConstants.FR;
 
 /**

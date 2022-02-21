@@ -399,32 +399,32 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public double getPriceDouble() {
-    String price = Program.convertStringFromHTMLString(prix);
+    String price = MyCellarUtils.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
       return 0;
     }
 
-    return Program.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
+    return MyCellarUtils.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
   }
 
   @Override
   public BigDecimal getPrice() {
-    String price = Program.convertStringFromHTMLString(prix);
+    String price = MyCellarUtils.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
       return BigDecimal.ZERO;
     }
 
-    return Program.safeStringToBigDecimal(price, BigDecimal.ZERO);
+    return MyCellarUtils.safeStringToBigDecimal(price, BigDecimal.ZERO);
   }
 
   @Override
   public boolean hasPrice() {
-    String price = Program.convertStringFromHTMLString(prix);
+    String price = MyCellarUtils.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
       return false;
     }
     try {
-      Program.stringToBigDecimal(price);
+      MyCellarUtils.stringToBigDecimal(price);
     } catch (NumberFormatException ignored) {
       return false;
     }

@@ -1,6 +1,7 @@
 package mycellar.vignobles;
 
 import mycellar.Bouteille;
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.datas.jaxb.AppelationJaxb;
@@ -115,7 +116,7 @@ public final class CountryVignobleController {
   }
 
   private static void generateCountryId(CountryJaxb countryJaxb) {
-    String id = Program.removeAccents(countryJaxb.getName()).toUpperCase() + "000";
+    String id = MyCellarUtils.removeAccents(countryJaxb.getName()).toUpperCase() + "000";
     id = id.substring(0, 3);
 
     boolean found;

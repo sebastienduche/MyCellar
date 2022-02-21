@@ -28,7 +28,7 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
-import static mycellar.Program.toCleanString;
+import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.core.MyCellarSettings.ANNEE;
 import static mycellar.core.MyCellarSettings.DEVISE;
 import static mycellar.core.MyCellarSettings.DIR;
@@ -102,9 +102,9 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     siecle.setValue(Program.getCaveConfigInt(SIECLE, 19));
 
     devise.setText(Program.getCaveConfigString(DEVISE, ""));
-    Program.getLanguages().forEach(langue::addItem);
+    LanguageFileLoader.getLanguages().forEach(langue::addItem);
     String the_language = Program.getGlobalConfigString(LANGUAGE, "");
-    langue.setSelectedIndex(Program.getLanguageIndex(the_language));
+    langue.setSelectedIndex(LanguageFileLoader.getLanguageIndex(the_language));
 
     valider.addActionListener(this::valider_actionPerformed);
     parcourir_excel.addActionListener(this::parcourir_excel_actionPerformed);
@@ -248,7 +248,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
    * Modification de la langue a la fermeture de la boite de dialogue
    */
   private void modifyLanguage() {
-    String thelangue = Program.getLanguage(langue.getSelectedIndex());
+    String thelangue = LanguageFileLoader.getLanguageFromIndex(langue.getSelectedIndex());
     String currentLanguage = Program.getGlobalConfigString(LANGUAGE, "" + Language.FRENCH.getLanguage());
     if (thelangue.equals(currentLanguage)) {
       return;

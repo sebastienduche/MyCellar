@@ -1,5 +1,6 @@
 package mycellar.general;
 
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
@@ -234,7 +235,7 @@ public class XmlUtils {
       doc.appendChild(root);
 
       Element rootDoc = doc.getDocumentElement();
-      String dir = Program.convertToHTMLString(System.getProperty("user.dir"));
+      String dir = MyCellarUtils.convertToHTMLString(System.getProperty("user.dir"));
 
       Node pi = doc.createProcessingInstruction
           ("xml-stylesheet", "type=\"text/xsl\" href=\"" + dir + "/resources/Rangement.xsl\"");

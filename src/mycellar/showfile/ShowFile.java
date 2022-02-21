@@ -71,8 +71,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static mycellar.MyCellarUtils.convertStringFromHTMLString;
+import static mycellar.MyCellarUtils.safeStringToBigDecimal;
+import static mycellar.Program.isWineType;
+import static mycellar.Program.throwNotImplementedIfNotFor;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.core.MyCellarLabelManagement.getError;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -163,7 +168,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       @Override
       Object getDisplayValue(MyCellarObject b) {
-        return Program.convertStringFromHTMLString(b.getNom());
+        return convertStringFromHTMLString(b.getNom());
       }
     });
     columns.add(new ShowFileColumn<String>(MyCellarFields.YEAR, 50) {
@@ -182,7 +187,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         return b.getAnnee();
       }
     });
-    if (Program.isWineType()) {
+    if (isWineType()) {
       columns.add(new ShowFileColumn<String>(MyCellarFields.TYPE) {
 
         @Override
@@ -212,7 +217,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (b.isInTemporaryStock()) {
           return Program.getLabel("Bouteille.TemporaryPlace");
         }
-        return Program.convertStringFromHTMLString(b.getEmplacement());
+        return convertStringFromHTMLString(b.getEmplacement());
       }
     });
     columns.add(new ShowFileColumn<String>(MyCellarFields.NUM_PLACE, 50) {
@@ -266,7 +271,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       @Override
       Object getDisplayValue(MyCellarObject b) {
-        return Program.convertStringFromHTMLString(b.getPrix());
+        return convertStringFromHTMLString(b.getPrix());
       }
     });
     columns.add(new ShowFileColumn<String>(MyCellarFields.COMMENT) {
@@ -278,10 +283,10 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       @Override
       Object getDisplayValue(MyCellarObject b) {
-        return Program.convertStringFromHTMLString(b.getComment());
+        return convertStringFromHTMLString(b.getComment());
       }
     });
-    if (Program.isWineType()) {
+    if (isWineType()) {
       columns.add(new ShowFileColumn<String>(MyCellarFields.MATURITY) {
 
         @Override
@@ -291,8 +296,8 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         Object getDisplayValue(MyCellarObject b) {
-          Program.throwNotImplementedIfNotFor(b, Bouteille.class);
-          return Program.convertStringFromHTMLString(((Bouteille) b).getMaturity());
+          throwNotImplementedIfNotFor(b, Bouteille.class);
+          return convertStringFromHTMLString(((Bouteille) b).getMaturity());
         }
       });
       columns.add(new ShowFileColumn<String>(MyCellarFields.PARKER) {
@@ -304,7 +309,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         Object getDisplayValue(MyCellarObject b) {
-          Program.throwNotImplementedIfNotFor(b, Bouteille.class);
+          throwNotImplementedIfNotFor(b, Bouteille.class);
           return ((Bouteille) b).getParker();
 
         }
@@ -313,7 +318,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         void setValue(MyCellarObject b, BottleColor value) {
-          Program.throwNotImplementedIfNotFor(b, Bouteille.class);
+          throwNotImplementedIfNotFor(b, Bouteille.class);
           b.setModified();
           Program.setModified();
           ((Bouteille) b).setColor(value.name());
@@ -321,7 +326,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         Object getDisplayValue(MyCellarObject b) {
-          Program.throwNotImplementedIfNotFor(b, Bouteille.class);
+          throwNotImplementedIfNotFor(b, Bouteille.class);
           return BottleColor.getColor(((Bouteille) b).getColor());
         }
       });
@@ -389,7 +394,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         public boolean execute(MyCellarObject b, int row, int column) {
-          Program.throwNotImplementedIfNotFor(b, Music.class);
+          throwNotImplementedIfNotFor(b, Music.class);
           Music music = (Music) b;
           PanelDuration panelDuration = new PanelDuration(DurationConverter.getTimeFromDisplay((String) getDisplayValue(music)));
           if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), panelDuration,
@@ -459,7 +464,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       });
     }
 
-    if (Program.isWineType()) {
+    if (isWineType()) {
       columns.add(new ShowFileColumn<>(MyCellarFields.COUNTRY, 100, false) {
 
         @Override
@@ -468,7 +473,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         Object getDisplayValue(MyCellarObject b) {
-          Program.throwNotImplementedIfNotFor(b, Bouteille.class);
+          throwNotImplementedIfNotFor(b, Bouteille.class);
           Bouteille bouteille = (Bouteille) b;
           if (bouteille.getVignoble() == null) {
             return "";
@@ -488,7 +493,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         Object getDisplayValue(MyCellarObject b) {
-          Program.throwNotImplementedIfNotFor(b, Bouteille.class);
+          throwNotImplementedIfNotFor(b, Bouteille.class);
           if (((Bouteille) b).getVignoble() == null) {
             return "";
           }
@@ -499,7 +504,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         void setValue(MyCellarObject b, String value) {
-          Program.throwNotImplementedIfNotFor(b, Bouteille.class);
+          throwNotImplementedIfNotFor(b, Bouteille.class);
           VignobleJaxb v = ((Bouteille) b).getVignoble();
           if (v == null) {
             return;
@@ -511,7 +516,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         Object getDisplayValue(MyCellarObject b) {
-          Program.throwNotImplementedIfNotFor(b, Bouteille.class);
+          throwNotImplementedIfNotFor(b, Bouteille.class);
           if (((Bouteille) b).getVignoble() == null) {
             return "";
           }
@@ -522,7 +527,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         void setValue(MyCellarObject b, String value) {
-          Program.throwNotImplementedIfNotFor(b, Bouteille.class);
+          throwNotImplementedIfNotFor(b, Bouteille.class);
           VignobleJaxb v = ((Bouteille) b).getVignoble();
           if (v == null) {
             return;
@@ -534,7 +539,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
         @Override
         Object getDisplayValue(MyCellarObject b) {
-          Program.throwNotImplementedIfNotFor(b, Bouteille.class);
+          throwNotImplementedIfNotFor(b, Bouteille.class);
           if (((Bouteille) b).getVignoble() == null) {
             return "";
           }
@@ -710,13 +715,13 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       if (o1.isEmpty()) {
         price1 = BigDecimal.ZERO;
       } else {
-        price1 = Program.safeStringToBigDecimal(o1, BigDecimal.ZERO);
+        price1 = safeStringToBigDecimal(o1, BigDecimal.ZERO);
       }
       BigDecimal price2;
       if (o2.isEmpty()) {
         price2 = BigDecimal.ZERO;
       } else {
-        price2 = Program.safeStringToBigDecimal(o2, BigDecimal.ZERO);
+        price2 = safeStringToBigDecimal(o2, BigDecimal.ZERO);
       }
       return price1.compareTo(price2);
     });
@@ -975,7 +980,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (!rangement.isSimplePlace()) {
           final MyCellarObject bouteille = rangement.getObject(place).orElse(null);
           if (bouteille != null) {
-            Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
+            Erreur.showSimpleErreur(MessageFormat.format(getError("Error059"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
             hasObject = true;
           }
         }

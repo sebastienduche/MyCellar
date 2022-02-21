@@ -15,6 +15,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import static mycellar.MyCellarUtils.convertStringFromHTMLString;
+import static mycellar.core.MyCellarLabelManagement.getError;
+import static mycellar.core.MyCellarLabelManagement.getLabel;
+
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -71,13 +75,13 @@ public class ErrorShowValues extends TableShowValues {
       case ETAT:
         return values[row];
       case NAME:
-        return Program.convertStringFromHTMLString(b.getNom());
+        return convertStringFromHTMLString(b.getNom());
       case YEAR:
         return b.getAnnee();
       case TYPE:
         return b.getKind();
       case PLACE:
-        return Program.convertStringFromHTMLString(b.getEmplacement());
+        return convertStringFromHTMLString(b.getEmplacement());
       case NUM_PLACE:
         return Integer.toString(b.getNumLieu());
       case LINE:
@@ -86,13 +90,13 @@ public class ErrorShowValues extends TableShowValues {
         return Integer.toString(b.getColonne());
       case STATUS:
         if (error.isStatus()) {
-          return Program.getLabel("ShowFile.Added");
+          return getLabel("ShowFile.Added");
         }
-        return status[row] ? Program.getLabel("Main.OK") : Program.getLabel("Main.KO");
+        return status[row] ? getLabel("Main.OK") : getLabel("Main.KO");
       case BUTTON:
         return true;
       case ERROR:
-        return Program.convertStringFromHTMLString(error.getErrorMessage());
+        return convertStringFromHTMLString(error.getErrorMessage());
       default:
         return "";
     }
@@ -146,7 +150,7 @@ public class ErrorShowValues extends TableShowValues {
         break;
       case YEAR:
         if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
-          Erreur.showSimpleErreur(Program.getError("Error053"));
+          Erreur.showSimpleErreur(getError("Error053"));
         } else {
           b.setAnnee((String) value);
         }
@@ -177,7 +181,7 @@ public class ErrorShowValues extends TableShowValues {
             num_empl = Integer.parseInt((String) value);
             nValueToCheck = num_empl;
           } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(Program.getError("Error196"));
+            Erreur.showSimpleErreur(getError("Error196"));
             bError = true;
           }
         } else if (column == LINE) {
@@ -185,7 +189,7 @@ public class ErrorShowValues extends TableShowValues {
             line = Integer.parseInt((String) value);
             nValueToCheck = line;
           } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(Program.getError("Error196"));
+            Erreur.showSimpleErreur(getError("Error196"));
             bError = true;
           }
         } else {
@@ -193,14 +197,14 @@ public class ErrorShowValues extends TableShowValues {
             column1 = Integer.parseInt((String) value);
             nValueToCheck = column1;
           } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(Program.getError("Error196"));
+            Erreur.showSimpleErreur(getError("Error196"));
             bError = true;
           }
         }
 
         if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
           if (!rangement.isSimplePlace() && nValueToCheck <= 0) {
-            Erreur.showSimpleErreur(Program.getError("Error197"));
+            Erreur.showSimpleErreur(getError("Error197"));
             bError = true;
           }
         }
@@ -224,7 +228,7 @@ public class ErrorShowValues extends TableShowValues {
             }
             if (bTemp.isPresent()) {
               status[row] = Boolean.FALSE;
-              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.get().getNom()), b.getAnnee()));
+              Erreur.showSimpleErreur(MessageFormat.format(getError("Error059"), convertStringFromHTMLString(bTemp.get().getNom()), b.getAnnee()));
             } else {
               if (column == PLACE) {
                 b.setEmplacement((String) value);

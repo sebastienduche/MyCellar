@@ -43,7 +43,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static mycellar.Program.toCleanString;
+import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 
 /**

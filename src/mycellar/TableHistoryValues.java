@@ -15,6 +15,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import static mycellar.MyCellarUtils.convertStringFromHTMLString;
+import static mycellar.core.MyCellarLabelManagement.getLabel;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -45,9 +48,9 @@ class TableHistoryValues extends AbstractTableModel {
     if (firstcolumn) {
       columnList.add("");
     }
-    columnList.add(Program.getLabel("Infos342"));
-    columnList.add(Program.getLabel("Infos343"));
-    columnList.add(Program.getLabel("Infos344"));
+    columnList.add(getLabel("Infos342"));
+    columnList.add(getLabel("Infos343"));
+    columnList.add(getLabel("Infos344"));
     columnList.add("");
   }
 
@@ -90,32 +93,32 @@ class TableHistoryValues extends AbstractTableModel {
         }
         String emplacement;
         if (b.isInTemporaryStock()) {
-          emplacement = Program.getLabel("Bouteille.TemporaryPlace");
+          emplacement = getLabel("Bouteille.TemporaryPlace");
         } else {
-          emplacement = Program.convertStringFromHTMLString(b.getEmplacement());
+          emplacement = convertStringFromHTMLString(b.getEmplacement());
         }
         String sType = "";
         String sLabel = "";
         switch (h.getState()) {
           case ADD:
-            sType = Program.getLabel("Infos345");
-            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sType = getLabel("Infos345");
+            sLabel = MessageFormat.format(getLabel("Infos348"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case VALIDATED:
-            sType = Program.getLabel("History.Validated");
-            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sType = getLabel("History.Validated");
+            sLabel = MessageFormat.format(getLabel("Infos348"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case TOCHECK:
-            sType = Program.getLabel("History.ToCheck");
-            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sType = getLabel("History.ToCheck");
+            sLabel = MessageFormat.format(getLabel("Infos348"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case MODIFY:
-            sType = Program.getLabel("Infos346");
-            sLabel = MessageFormat.format(Program.getLabel("Infos348"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sType = getLabel("Infos346");
+            sLabel = MessageFormat.format(getLabel("Infos348"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case DEL:
-            sType = Program.getLabel("Infos347");
-            sLabel = MessageFormat.format(Program.getLabel("Infos349"), Program.convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sType = getLabel("Infos347");
+            sLabel = MessageFormat.format(getLabel("Infos349"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case ALL:
             break;

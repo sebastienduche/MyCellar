@@ -1,6 +1,7 @@
 package mycellar.placesmanagement;
 
 import mycellar.MyCellarControl;
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IPlace;
@@ -26,6 +27,8 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+
+import static mycellar.core.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -57,9 +60,9 @@ public class PanelPlace extends JPanel implements IPlace {
   private final MyCellarLabel previousColumnLabel = new MyCellarLabel(""); // Pour la Modification
 
   private final MyCellarCheckBox searchSeveralLocation = new MyCellarCheckBox(LabelType.INFO_OTHER, "Search.AllBottlesInPlace", LabelProperty.PLURAL);
-  private final String labelAllObjectsInPlace = Program.getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL); // Tous les vins de l'emplacement
-  private final String labelAllObjectsInPart = Program.getLabel("Search.AllBottlesInPart", LabelProperty.PLURAL); // Tous les vins du lieu
-  private final String labelAllObjectsInLine = Program.getLabel("Search.AllBottlesInLine", LabelProperty.PLURAL); // Tous les vins de la ligne
+  private final String labelAllObjectsInPlace = getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL); // Tous les vins de l'emplacement
+  private final String labelAllObjectsInPart = getLabel("Search.AllBottlesInPart", LabelProperty.PLURAL); // Tous les vins du lieu
+  private final String labelAllObjectsInLine = getLabel("Search.AllBottlesInLine", LabelProperty.PLURAL); // Tous les vins de la ligne
   private final MyCellarButton chooseCell;
   private final boolean columnComboVisible;
   private final boolean onlyComplexPlaces;
@@ -81,14 +84,14 @@ public class PanelPlace extends JPanel implements IPlace {
     this.onlyComplexPlaces = onlyComplexPlaces;
     this.checkExist = checkExist;
     this.showSeveralLocationCheck = showSeveralLocationCheck;
-    char previewChar = Program.getLabel("PREVIEW").charAt(0);
+    char previewChar = getLabel("PREVIEW").charAt(0);
     preview.setMnemonic(previewChar);
     preview.addActionListener(this::preview_actionPerformed);
     chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
     setModificationDetectionActive(false);
     initPlaceCombo();
     setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));
-    setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
+    setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), getLabel("Infos217")));
     add(new MyCellarLabel(LabelType.INFO, "208"));
     add(labelNumPlace);
     add(labelLine);
@@ -412,14 +415,14 @@ public class PanelPlace extends JPanel implements IPlace {
         searchSeveralLocation.setVisible(!rangement.isSimplePlace());
         if (rangement.isSimplePlace()) {
           severalLocationState = SeveralLocationState.PLACE;
-          labelNumPlace.setText(Program.getLabel("Infos158")); //"Numero de caisse
+          labelNumPlace.setText(getLabel("Infos158")); //"Numero de caisse
           if (rangement.getNbParts() == 1) {
             numPlace.setSelectedIndex(1);
           }
         } else {
           // Need the last place number for complex places
           numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
-          labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu
+          labelNumPlace.setText(getLabel("Infos082")); //"Numero du lieu
         }
         enableAll(true);
         updateMultiCheckboxState();
@@ -530,7 +533,7 @@ public class PanelPlace extends JPanel implements IPlace {
         if (checkExist) {
           Rangement rangement = place.getItemAt(nPlace);
           rangement.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
-              .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(myCellarObject.getNom()))));
+              .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(getLabel("Infos329"), MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom()))));
         }
         Debug("Column_itemStateChanging... Done");
       }

@@ -17,6 +17,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import static mycellar.MyCellarUtils.convertStringFromHTMLString;
+import static mycellar.core.MyCellarLabelManagement.getError;
+
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -71,13 +74,13 @@ class TableShowValues extends AbstractTableModel {
         return values[row];
       case NAME:
         String nom = b.getNom();
-        return Program.convertStringFromHTMLString(nom);
+        return convertStringFromHTMLString(nom);
       case YEAR:
         return b.getAnnee();
       case TYPE:
         return b.getKind();
       case PLACE:
-        return Program.convertStringFromHTMLString(b.getEmplacement());
+        return convertStringFromHTMLString(b.getEmplacement());
       case NUM_PLACE:
         return Integer.toString(b.getNumLieu());
       case LINE:
@@ -87,9 +90,9 @@ class TableShowValues extends AbstractTableModel {
       case PRICE:
         return b.hasPrice() ? b.getPriceDouble() : "";
       case COMMENT:
-        return Program.convertStringFromHTMLString(b.getComment());
+        return convertStringFromHTMLString(b.getComment());
       case MATURITY:
-        return Program.convertStringFromHTMLString(b.getMaturity());
+        return convertStringFromHTMLString(b.getMaturity());
       case PARKER:
         return b.getParker();
       default:
@@ -125,17 +128,17 @@ class TableShowValues extends AbstractTableModel {
         b.setKind((String) value);
         break;
       case MATURITY:
-        b.setMaturity(Program.convertStringFromHTMLString((String) value));
+        b.setMaturity(convertStringFromHTMLString((String) value));
         break;
       case PARKER:
-        b.setParker(Program.convertStringFromHTMLString((String) value));
+        b.setParker(convertStringFromHTMLString((String) value));
         break;
       case COMMENT:
-        b.setComment(Program.convertStringFromHTMLString((String) value));
+        b.setComment(convertStringFromHTMLString((String) value));
         break;
       case YEAR:
         if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
-          Erreur.showSimpleErreur(Program.getError("Error053"));
+          Erreur.showSimpleErreur(getError("Error053"));
         } else {
           b.setAnnee((String) value);
         }
@@ -208,7 +211,7 @@ class TableShowValues extends AbstractTableModel {
             }
             if (bTemp.isPresent()) {
               final IMyCellarObject bouteille = bTemp.get();
-              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
+              Erreur.showSimpleErreur(MessageFormat.format(getError("Error059"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
             } else {
               if (column == PLACE) {
                 b.setEmplacement((String) value);

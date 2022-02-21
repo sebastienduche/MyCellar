@@ -39,7 +39,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.Base64;
-import org.apache.commons.text.StringEscapeUtils;
 import org.kohsuke.github.GHGistBuilder;
 import org.kohsuke.github.GitHub;
 
@@ -54,12 +53,9 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
-import java.text.Normalizer;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -75,8 +71,8 @@ import java.util.Scanner;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static mycellar.Filtre.EXTENSION_SINFO;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
+import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.BOUTEILLES_XML;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.CONFIG_INI;
@@ -401,28 +397,6 @@ public final class Program {
 
   public static void addError(MyCellarError error) {
     ERRORS.add(error);
-  }
-
-  public static String convertToHTMLString(String s) {
-    return StringEscapeUtils.escapeHtml4(s);
-  }
-
-  public static String convertStringFromHTMLString(String s) {
-    return StringEscapeUtils.unescapeHtml4(s);
-  }
-
-  public static String removeAccents(String s) {
-    s = Normalizer.normalize(s, Normalizer.Form.NFD);
-    s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-    return s;
-  }
-
-  public static String toCleanString(final Object o) {
-    if (o == null) {
-      return "";
-    }
-    String value = o.toString();
-    return value == null ? "" : value.strip();
   }
 
   static boolean loadData() {
@@ -816,7 +790,6 @@ public final class Program {
       getStorage().close();
       CountryVignobleController.close();
       CountryListJaxb.close();
-//      ProgramPanels.getSearch().ifPresent(Search::clearResults);
     }
     workDirCalculated = false;
     TRASH.clear();
@@ -943,19 +916,9 @@ public final class Program {
 
   static String getShortFilename() {
     if (hasFile()) {
-      return getShortFilename(myCellarFile.getFile().getAbsolutePath());
+      return MyCellarUtils.getShortFilename(myCellarFile.getFile().getAbsolutePath());
     }
     return "";
-  }
-
-  static String getShortFilename(String sFilename) {
-    String tmp = sFilename.replaceAll("\\\\", SLASH);
-    int ind1 = tmp.lastIndexOf(SLASH);
-    int ind2 = tmp.indexOf(ONE_DOT + EXTENSION_SINFO);
-    if (ind1 != -1 && ind2 != -1) {
-      tmp = tmp.substring(ind1 + 1, ind2);
-    }
-    return tmp;
   }
 
   static String getGlobalConfigString(String key, String defaultValue) {
@@ -1059,32 +1022,24 @@ public final class Program {
     return SerializedStorage.getInstance();
   }
 
+  @Deprecated
   public static String getLabel(String id) {
     return MyCellarLabelManagement.getLabel(id, true);
   }
 
+  @Deprecated
   public static String getLabel(String id, LabelProperty labelProperty) {
     return MyCellarLabelManagement.getLabel(id, labelProperty);
   }
 
+  @Deprecated
   public static String getError(String id, LabelProperty labelProperty) {
     return MyCellarLabelManagement.getError(id, labelProperty);
   }
 
+  @Deprecated
   public static String getError(String id) {
     return MyCellarLabelManagement.getError(id);
-  }
-
-  static List<String> getLanguages() {
-    return LanguageFileLoader.getLanguages();
-  }
-
-  static int getLanguageIndex(String language) {
-    return LanguageFileLoader.getLanguageIndex(language);
-  }
-
-  static String getLanguage(int val) {
-    return LanguageFileLoader.getLanguageFromIndex(val);
   }
 
   public static boolean open(String filename, boolean check) {
@@ -1316,31 +1271,6 @@ public final class Program {
     return Collections.unmodifiableList(getStorage().getHistoryList().getHistory());
   }
 
-  public static BigDecimal safeStringToBigDecimal(final String value, BigDecimal defaultValue) {
-    try {
-      return stringToBigDecimal(value);
-    } catch (NumberFormatException e) {
-      return defaultValue;
-    }
-  }
-
-  public static BigDecimal stringToBigDecimal(final String value) throws NumberFormatException {
-    StringBuilder buf = new StringBuilder();
-    for (int i = 0; i < value.length(); i++) {
-      char c = value.charAt(i);
-      if (c == ' ') {
-        continue;
-      }
-      if (c == ',' || c == '.') {
-        buf.append('.');
-      }
-      if (Character.isDigit(c)) {
-        buf.append(c);
-      }
-    }
-    return new BigDecimal(buf.toString()).setScale(2, RoundingMode.HALF_UP);
-  }
-
   static int getNewID() {
     if (nextID == -1) {
       nextID = getStorage().getBottlesCount();
@@ -1368,14 +1298,6 @@ public final class Program {
 
   public static boolean isExistingBottle(MyCellarObject bouteille) {
     return getStorage().getAllList().stream().anyMatch(bouteille1 -> bouteille1.getId() == bouteille.getId());
-  }
-
-  public static int safeParseInt(String value, int defaultValue) {
-    try {
-      return Integer.parseInt(value);
-    } catch (NumberFormatException ignored) {
-      return defaultValue;
-    }
   }
 
   static void exit() {

@@ -26,7 +26,9 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.core.LabelType.INFO;
+import static mycellar.core.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin
@@ -72,7 +74,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   }
 
   private void add() {
-    String s = Program.toCleanString(JOptionPane.showInputDialog(Start.getInstance(), Program.getLabel("Infos289"), Program.getLabel("Infos402"), JOptionPane.QUESTION_MESSAGE));
+    String s = toCleanString(JOptionPane.showInputDialog(Start.getInstance(), getLabel("Infos289"), getLabel("Infos402"), JOptionPane.QUESTION_MESSAGE));
     if (!s.isEmpty()) {
       Program.setModified();
       model.addValue(s);

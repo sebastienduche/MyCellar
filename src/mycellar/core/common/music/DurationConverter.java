@@ -1,6 +1,6 @@
 package mycellar.core.common.music;
 
-import mycellar.Program;
+import mycellar.MyCellarUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ public class DurationConverter {
     if (duration == null) {
       return "";
     }
-    int value = Program.safeParseInt(duration, 0);
+    int value = MyCellarUtils.safeParseInt(duration, 0);
     value /= MULTIPLICATOR;
     int hour = value / SECOND_IN_HOUR;
     int newValue = value - (hour * SECOND_IN_HOUR);
@@ -54,10 +54,10 @@ public class DurationConverter {
     int value = 0;
     int i = 0;
     if (values.length == 3) {
-      value = Program.safeParseInt(values[i++], 0) * SECOND_IN_HOUR;
+      value = MyCellarUtils.safeParseInt(values[i++], 0) * SECOND_IN_HOUR;
     }
-    value += Program.safeParseInt(values[i++], 0) * SECOND_IN_MINUTE;
-    value += Program.safeParseInt(values[i++], 0);
+    value += MyCellarUtils.safeParseInt(values[i++], 0) * SECOND_IN_MINUTE;
+    value += MyCellarUtils.safeParseInt(values[i++], 0);
     value *= MULTIPLICATOR;
     return Integer.toString(value);
   }
@@ -70,10 +70,10 @@ public class DurationConverter {
     int i = 0;
     int hour = 0;
     if (values.length == 3) {
-      hour = Program.safeParseInt(values[i++], 0);
+      hour = MyCellarUtils.safeParseInt(values[i++], 0);
     }
-    int minute = Program.safeParseInt(values[i++], 0);
-    int second = Program.safeParseInt(values[i++], 0);
+    int minute = MyCellarUtils.safeParseInt(values[i++], 0);
+    int second = MyCellarUtils.safeParseInt(values[i++], 0);
     return LocalDateTime.of(2000, 1, 1, hour, minute, second);
   }
 

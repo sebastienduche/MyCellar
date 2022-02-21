@@ -5,6 +5,7 @@ import mycellar.Erreur;
 import mycellar.Export;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.TextFieldPopup;
@@ -667,7 +668,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         if (Bouteille.isNonVintageYear(selectedYear)) {
           annee = Bouteille.NON_VINTAGE_INT;
         } else {
-          annee = Program.safeParseInt(selectedYear, 0); // It will be 0 for 'Others'
+          annee = MyCellarUtils.safeParseInt(selectedYear, 0); // It will be 0 for 'Others'
         }
 
         List<MyCellarObject> list = new ArrayList<>();

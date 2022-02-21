@@ -21,7 +21,7 @@ import java.awt.event.KeyListener;
 import java.util.Collections;
 import java.util.List;
 
-import static mycellar.Program.toCleanString;
+import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.CHAR_O;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.isVK_ENTER;

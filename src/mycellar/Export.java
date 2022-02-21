@@ -49,7 +49,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static mycellar.Program.toCleanString;
+import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 
 

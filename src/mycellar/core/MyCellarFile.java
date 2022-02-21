@@ -1,5 +1,6 @@
 package mycellar.core;
 
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.exceptions.UnableToOpenFileException;
@@ -88,7 +89,7 @@ public class MyCellarFile {
             // creation d'un tampon de lecture sur ce flux
             try (var bufferedInputStream = new BufferedInputStream(inputStream, BUFFER)) {
               // creation d'en entree Zip pour ce fichier
-              String name = Program.removeAccents(file);
+              String name = MyCellarUtils.removeAccents(file);
               var entry = new ZipEntry(name);
               if (zipEntryList.contains(name)) {
                 continue;
@@ -191,10 +192,10 @@ public class MyCellarFile {
     try {
       String fileName = file.getAbsolutePath();
       Debug("Unzip: Archive " + fileName);
-      
+
       try (var fileInputStream = new FileInputStream(file);
-    	   var bufferedInputStream = new BufferedInputStream(fileInputStream);
-    	   var zipInputStream = new ZipInputStream(bufferedInputStream)) {
+           var bufferedInputStream = new BufferedInputStream(fileInputStream);
+           var zipInputStream = new ZipInputStream(bufferedInputStream)) {
         ZipEntry entry;
         int BUFFER = 2048;
         while ((entry = zipInputStream.getNextEntry()) != null) {

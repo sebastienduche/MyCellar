@@ -443,7 +443,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   public String getFormattedDuration() {
     if (duration != null) {
-      int value = Program.safeParseInt(duration, 0);
+      int value = MyCellarUtils.safeParseInt(duration, 0);
       value /= 1000;
       int hour = value / 3600;
       int newValue = value - (hour * 3600);
@@ -460,32 +460,32 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public double getPriceDouble() {
-    String price = Program.convertStringFromHTMLString(prix);
+    String price = MyCellarUtils.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
       return 0;
     }
 
-    return Program.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
+    return MyCellarUtils.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
   }
 
   @Override
   public BigDecimal getPrice() {
-    String price = Program.convertStringFromHTMLString(prix);
+    String price = MyCellarUtils.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
       return BigDecimal.ZERO;
     }
 
-    return Program.safeStringToBigDecimal(price, BigDecimal.ZERO);
+    return MyCellarUtils.safeStringToBigDecimal(price, BigDecimal.ZERO);
   }
 
   @Override
   public boolean hasPrice() {
-    String price = Program.convertStringFromHTMLString(prix);
+    String price = MyCellarUtils.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
       return false;
     }
     try {
-      Program.stringToBigDecimal(price);
+      MyCellarUtils.stringToBigDecimal(price);
     } catch (NumberFormatException ignored) {
       return false;
     }

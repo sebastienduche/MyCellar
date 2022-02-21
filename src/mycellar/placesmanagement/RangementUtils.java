@@ -2,6 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.Erreur;
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
@@ -44,9 +45,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.Program.getPlaces;
 import static mycellar.Program.throwNotImplementedIfNotFor;
-import static mycellar.Program.toCleanString;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
@@ -135,7 +136,7 @@ public final class RangementUtils {
           if (map.get(field)) {
             String value = MyCellarFields.getValue(field, b);
             if (MyCellarFields.hasSpecialHTMLCharacters(field)) {
-              value = Program.convertStringFromHTMLString(value);
+              value = MyCellarUtils.convertStringFromHTMLString(value);
             }
             line.append(doubleCote).append(value.replaceAll(doubleCote, escapedDoubleCote)).append(doubleCote).append(separator);
           }

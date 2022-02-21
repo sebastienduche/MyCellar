@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 
+import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.ProgramConstants.CHAR_COMMA;
 import static mycellar.ProgramConstants.CHAR_DOT;
 import static mycellar.ProgramConstants.EURO;
@@ -98,7 +99,7 @@ public final class PanelWineAttribute extends JPanel {
     nbItems.setValue(1);
     nbItems.setEnabled(false);
 
-    price.setText(Program.convertStringFromHTMLString(myCellarObject.getPrix()));
+    price.setText(convertStringFromHTMLString(myCellarObject.getPrix()));
     if (Program.isWineType()) {
       Bouteille bottle = (Bouteille) myCellarObject;
       maturity.setText(bottle.getMaturity());

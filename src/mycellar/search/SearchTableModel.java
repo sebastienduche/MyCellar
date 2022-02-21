@@ -1,6 +1,7 @@
 package mycellar.search;
 
 import mycellar.Bouteille;
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
@@ -10,7 +11,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
 import java.util.List;
 
-import static mycellar.Program.getLabel;
+import static mycellar.core.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -63,7 +64,7 @@ class SearchTableModel extends AbstractTableModel {
         return listBoolean.get(row);
       case 1:
         String nom = myCellarObject.getNom();
-        return Program.convertStringFromHTMLString(nom);
+        return MyCellarUtils.convertStringFromHTMLString(nom);
       case 2:
         return myCellarObject.getAnnee();
       case 3:

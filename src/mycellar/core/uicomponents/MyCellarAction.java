@@ -17,58 +17,77 @@ import javax.swing.Icon;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 27/10/21
+ * @version 0.3
+ * @since 21/02/22
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
-  private final LabelType type;
-  private final String code;
-  private final LabelProperty labelProperty;
+  private final LabelType textLabelType;
+  private final String textLabelCode;
+  private final LabelProperty textLabelProperty;
+
+  private LabelType descriptionLabelType;
   private String descriptionLabelCode;
+  private LabelProperty descriptionLabelProperty;
+
+  @Deprecated
+  private String oldDescriptionLabelCode;
   private boolean withText = true;
 
-  public MyCellarAction(LabelType type, String code, LabelProperty labelProperty) {
-    this.type = type;
-    this.code = code;
-    this.labelProperty = labelProperty;
+  public MyCellarAction(LabelType textLabelType, String textLabelCode, LabelProperty textLabelProperty) {
+    this.textLabelType = textLabelType;
+    this.textLabelCode = textLabelCode;
+    this.textLabelProperty = textLabelProperty;
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
-  public MyCellarAction(LabelType type, String code, LabelProperty labelProperty, Icon icon) {
+  public MyCellarAction(LabelType textLabelType, String textLabelCode, LabelProperty textLabelProperty, Icon icon) {
     super("", icon);
-    this.type = type;
-    this.code = code;
-    this.labelProperty = labelProperty;
+    this.textLabelType = textLabelType;
+    this.textLabelCode = textLabelCode;
+    this.textLabelProperty = textLabelProperty;
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
-  public MyCellarAction(LabelType type, String code, Icon icon) {
-    this(type, code, LabelProperty.SINGLE, icon);
+  public MyCellarAction(LabelType textLabelType, String textLabelCode, Icon icon) {
+    this(textLabelType, textLabelCode, LabelProperty.SINGLE, icon);
   }
 
-  public LabelType getType() {
-    return type;
+  public LabelType getTextLabelType() {
+    return textLabelType;
   }
 
-  public String getCode() {
-    return code;
+  public String getTextLabelCode() {
+    return textLabelCode;
   }
 
-  public LabelProperty getLabelProperty() {
-    return labelProperty;
+  public LabelProperty getTextLabelProperty() {
+    return textLabelProperty;
   }
 
   @Override
   public void setText(String text) {
     putValue(Action.NAME, withText ? text : "");
-    putValue(Action.SHORT_DESCRIPTION, descriptionLabelCode != null ? Program.getLabel(descriptionLabelCode, labelProperty) : text);
+    if (oldDescriptionLabelCode != null) {
+      putValue(Action.SHORT_DESCRIPTION, Program.getLabel(oldDescriptionLabelCode, textLabelProperty));
+    } else if (descriptionLabelType != null) {
+      putValue(Action.SHORT_DESCRIPTION, MyCellarLabelManagement.getLabel(descriptionLabelType, descriptionLabelCode, descriptionLabelProperty));
+    } else {
+      putValue(Action.SHORT_DESCRIPTION, text);
+    }
   }
 
+  public void setDescriptionLabel(LabelType labelType, String labelCode, LabelProperty labelProperty) {
+    descriptionLabelType = labelType;
+    descriptionLabelCode = labelCode;
+    descriptionLabelProperty = labelProperty;
+  }
+
+  @Deprecated
   public void setDescriptionLabelCode(String code) {
-    descriptionLabelCode = code;
+    oldDescriptionLabelCode = code;
   }
 
   public void setWithText(boolean withText) {
@@ -80,7 +99,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
 
   @Override
   public final void updateText() {
-    MyCellarLabelManagement.updateText(this, type, code, null, labelProperty);
+    MyCellarLabelManagement.updateText(this, textLabelType, textLabelCode, null, textLabelProperty);
   }
 
   @Override

@@ -33,9 +33,9 @@ public final class MyCellarMenuItem extends JMenuItem implements IMyCellarCompon
 
   public MyCellarMenuItem(MyCellarAction action) {
     super(action);
-    type = action.getType();
-    code = action.getCode();
-    labelProperty = action.getLabelProperty();
+    type = action.getTextLabelType();
+    code = action.getTextLabelCode();
+    labelProperty = action.getTextLabelProperty();
     updateText();
     MyCellarLabelManagement.add(this);
   }

@@ -2,7 +2,6 @@ package mycellar;
 
 import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
-import mycellar.core.Grammar;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
@@ -70,7 +69,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
@@ -85,11 +83,9 @@ import static mycellar.ProgramConstants.CONFIG_INI;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
-import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FRA;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
-import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.MY_CELLAR_XML;
 import static mycellar.ProgramConstants.ON;
 import static mycellar.ProgramConstants.ONE;
@@ -97,9 +93,7 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.PREVIEW_HTML;
 import static mycellar.ProgramConstants.PREVIEW_XML;
 import static mycellar.ProgramConstants.SLASH;
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
-import static mycellar.ProgramConstants.THREE_DOTS;
 import static mycellar.ProgramConstants.TIMESTAMP_PATTERN;
 import static mycellar.ProgramConstants.TYPES_MUSIC_XML;
 import static mycellar.ProgramConstants.TYPES_XML;
@@ -115,8 +109,8 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.7
- * @since 20/01/22
+ * @version 27.8
+ * @since 21/02/22
  */
 
 public final class Program {
@@ -137,7 +131,7 @@ public final class Program {
   private static final List<MyCellarObject> TRASH = new LinkedList<>();
   private static final List<MyCellarError> ERRORS = new LinkedList<>();
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
-  private static Type programType = Type.WINE;
+  private static ProgramType programType = ProgramType.WINE;
   private static MyCellarFile myCellarFile = null;
   private static FileWriter oDebugFile = null;
   private static File debugFile = null;
@@ -162,9 +156,9 @@ public final class Program {
     try {
       Debug("Program: Initializing Configuration files and Program type");
       if (loadProperties()) {
-        setProgramType(Program.Type.typeOf(getCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name())));
+        setProgramType(ProgramType.typeOf(getCaveConfigString(PROGRAM_TYPE, ProgramType.WINE.name())));
       } else {
-        setProgramType(Program.Type.typeOf(getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name())));
+        setProgramType(ProgramType.typeOf(getGlobalConfigString(PROGRAM_TYPE, ProgramType.WINE.name())));
       }
     } catch (UnableToOpenFileException e) {
       showException(e);
@@ -192,56 +186,20 @@ public final class Program {
     }
   }
 
-  static void setProgramType(Type value) {
+  public static ProgramType getProgramType() {
+    return programType;
+  }
+
+  static void setProgramType(ProgramType value) {
     programType = value;
   }
 
   public static boolean isMusicType() {
-    return programType == Type.MUSIC;
+    return programType == ProgramType.MUSIC;
   }
 
   public static boolean isWineType() {
-    return programType == Type.WINE;
-  }
-
-  private static String getLabelForType(boolean plural, boolean firstLetterUppercase, Grammar grammar) {
-    return getLabelForType(programType, plural, firstLetterUppercase, grammar);
-  }
-
-  public static String getLabelForType(Type theType, boolean plural, boolean firstLetterUppercase, Grammar grammar) {
-    String value;
-    String prefix;
-    String postfix = plural ? "s" : "";
-    switch (grammar) {
-      case SINGLE:
-        prefix = plural ? "more" : "one";
-        break;
-      case THE:
-        prefix = "the";
-        break;
-      case OF_THE:
-        prefix = "ofthe";
-        break;
-      case NONE:
-      default:
-        prefix = "";
-        break;
-    }
-    switch (theType) {
-      case BOOK:
-        value = getLabel("Program." + prefix + "book" + postfix);
-        break;
-      case MUSIC:
-        value = getLabel("Program." + prefix + "disc" + postfix);
-        break;
-      case WINE:
-      default:
-        value = getLabel("Program." + prefix + "wine" + postfix);
-    }
-    if (firstLetterUppercase) {
-      value = StringUtils.capitalize(value);
-    }
-    return value;
+    return programType == ProgramType.WINE;
   }
 
   static void setNewFile(String file) {
@@ -342,7 +300,7 @@ public final class Program {
 
     final String type = getCaveConfigString(PROGRAM_TYPE, "");
     if (type.isBlank()) {
-      putCaveConfigString(PROGRAM_TYPE, Type.WINE.name());
+      putCaveConfigString(PROGRAM_TYPE, ProgramType.WINE.name());
     }
 
     // TODO Remove when veraion 75
@@ -368,9 +326,9 @@ public final class Program {
 
   static void setLanguage(Language lang) {
     Debug("Program: Set Language: " + lang);
-    MyCellarLabelManagement.updateLabels();
     ProgramPanels.removeAll();
     LanguageFileLoader.getInstance().loadLanguageFiles(lang);
+    MyCellarLabelManagement.updateLabels();
     ProgramPanels.PANEL_INFOS.setLabels();
     Start.getInstance().updateLabels();
     Start.getInstance().updateMainPanel();
@@ -1102,51 +1060,19 @@ public final class Program {
   }
 
   public static String getLabel(String id) {
-    return getLabel(id, true);
+    return MyCellarLabelManagement.getLabel(id, true);
   }
 
   public static String getLabel(String id, LabelProperty labelProperty) {
-    if (labelProperty == null) {
-      return getLabel(id, true);
-    }
-    String label = getLabel(id, true);
-    label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
-    if (labelProperty.isThreeDashes()) {
-      label += THREE_DOTS;
-    }
-    if (labelProperty.isDoubleQuote()) {
-      label += LanguageFileLoader.isFrench() ? SPACE + DOUBLE_DOT : DOUBLE_DOT;
-    }
-    return label;
-  }
-
-  public static String getLabel(String id, boolean displayError) {
-    try {
-      return LanguageFileLoader.getLabel(id);
-    } catch (MissingResourceException e) {
-      if (displayError) {
-        Debug("Program: ERROR: Missing Label " + id);
-        JOptionPane.showMessageDialog(null, "Missing Label " + id, "Error", JOptionPane.ERROR_MESSAGE);
-      }
-      return id;
-    }
+    return MyCellarLabelManagement.getLabel(id, labelProperty);
   }
 
   public static String getError(String id, LabelProperty labelProperty) {
-    if (labelProperty == null) {
-      return getError(id);
-    }
-    String label = getError(id);
-    return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
+    return MyCellarLabelManagement.getError(id, labelProperty);
   }
 
   public static String getError(String id) {
-    try {
-      return LanguageFileLoader.getError(id);
-    } catch (MissingResourceException e) {
-      JOptionPane.showMessageDialog(null, "Missing Error " + id, "Error", JOptionPane.ERROR_MESSAGE);
-      return id;
-    }
+    return MyCellarLabelManagement.getError(id);
   }
 
   static List<String> getLanguages() {
@@ -1484,17 +1410,4 @@ public final class Program {
     }
   }
 
-  enum Type {
-    WINE,
-    BOOK,
-    MUSIC;
-
-    static Type typeOf(String value) {
-      try {
-        return valueOf(value);
-      } catch (IllegalArgumentException e) {
-        return WINE;
-      }
-    }
-  }
 }

@@ -8,6 +8,7 @@ import mycellar.core.ICutCopyPastable;
 import mycellar.core.IPlace;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
+import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.exceptions.MyCellarException;
@@ -1029,18 +1030,18 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   }
 
   static class ObjectType {
-    private final Program.Type type;
+    private final ProgramType type;
 
-    public ObjectType(Program.Type type) {
+    public ObjectType(ProgramType type) {
       this.type = type;
     }
 
     @Override
     public String toString() {
-      return Program.getLabelForType(type, true, true, Grammar.NONE);
+      return MyCellarLabelManagement.getLabelForType(type, true, true, Grammar.NONE);
     }
 
-    public Program.Type getType() {
+    public ProgramType getType() {
       return type;
     }
   }
@@ -1102,15 +1103,15 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     private final List<ObjectType> objectTypes = new ArrayList<>();
 
     private PanelObjectType() {
-      Arrays.stream(Program.Type.values())
-          .filter(type -> !type.equals(Program.Type.BOOK))
+      Arrays.stream(ProgramType.values())
+          .filter(type -> !type.equals(ProgramType.BOOK))
           .forEach(type -> {
             final ObjectType type1 = new ObjectType(type);
             objectTypes.add(type1);
             types.addItem(type1);
           });
 
-      ObjectType objectType = findObjectType(Program.Type.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name()))));
+      ObjectType objectType = findObjectType(ProgramType.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, Program.getGlobalConfigString(PROGRAM_TYPE, ProgramType.WINE.name()))));
       types.setSelectedItem(objectType);
 
       setLayout(new MigLayout("", "[grow]", "[]25px[]"));
@@ -1119,11 +1120,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       add(types);
     }
 
-    private ObjectType findObjectType(Program.Type type) {
+    private ObjectType findObjectType(ProgramType type) {
       return objectTypes.stream().filter(objectType -> objectType.getType() == type).findFirst().orElse(null);
     }
 
-    public Program.Type getSelectedType() {
+    public ProgramType getSelectedType() {
       return ((ObjectType) Objects.requireNonNull(types.getSelectedItem())).getType();
     }
   }
@@ -1290,11 +1291,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class PlaceMoveLineAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Infos365";
+    private static final String LABEL = "MoveLine.title";
 
     private PlaceMoveLineAction() {
-      super(LabelType.INFO, "365", LabelProperty.SINGLE.withThreeDashes());
-      setDescriptionLabelCode(LABEL);
+      super(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE.withThreeDashes());
+      setDescriptionLabel(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE);
     }
 
     @Override

@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.4.6.5";
+  public static final String INTERNAL_VERSION = "4.4.7.0";
   public static final int VERSION = 73;
   public static final String MAIN_VERSION = VERSION + " BI";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
@@ -59,10 +59,11 @@ public final class ProgramConstants {
   public static final String NORMAL = "75cl";
   public static final String HALF = "37.5cl";
   public static final int IMPORT_COMBO_COUNT = 18;
+  public static final String KEY_TYPE = "<KEY>";
+  public static final String COUNTRY_LABEL_KEY = "Country.";
   static final String INFOS_VERSION = " 2022 v";
   static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
   static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);
-  static final String KEY_TYPE = "<KEY>";
   static final String PREVIEW_XML = "preview.xml";
   static final String PREVIEW_HTML = "preview.html";
   static final String MY_CELLAR_XML = "MyCellar.xml";

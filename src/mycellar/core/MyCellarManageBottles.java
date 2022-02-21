@@ -62,7 +62,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   }
 
   public void enableAll(boolean enable) {
-    panelPlace.enableAll(enable);
+    panelPlace.setEditable(enable);
     panelGeneral.enableAll(enable);
     panelWineAttribute.enableAll(enable, severalItems, isEditionMode);
     addButton.setEnabled(enable);

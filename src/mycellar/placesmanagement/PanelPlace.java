@@ -37,8 +37,8 @@ import static mycellar.core.MyCellarLabelManagement.getLabel;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 20/01/22
+ * @version 2.7
+ * @since 21/02/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -70,6 +70,7 @@ public class PanelPlace extends JPanel implements IPlace {
   private final boolean showSeveralLocationCheck;
   private SeveralLocationState severalLocationState = SeveralLocationState.NONE;
   private boolean listenersEnabled = true;
+private boolean editable = true;
 
   public PanelPlace() {
     this(null, false, true, true, true, false, true, false);
@@ -233,14 +234,19 @@ public class PanelPlace extends JPanel implements IPlace {
     previousLineLabel.setVisible(b && labelLine.isVisible());
     previousColumnLabel.setVisible(b && labelColumn.isVisible());
   }
+  
+  public void setEditable(boolean editable) {
+	  this.editable = editable;
+	  enableAll(editable);
+  }
 
   public void enableAll(boolean enable) {
-    place.setEnabled(enable && (place.getItemCount() > 2 || place.getSelectedIndex() != 1));
-    numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((Rangement) Objects.requireNonNull(place.getSelectedItem())).isSimplePlace()));
-    line.setEnabled(enable && numPlace.getSelectedIndex() > 0);
-    column.setEnabled(enable && line.getSelectedIndex() > 0);
+    place.setEnabled(editable && enable && (place.getItemCount() > 2 || place.getSelectedIndex() != 1));
+    numPlace.setEnabled(editable && enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((Rangement) Objects.requireNonNull(place.getSelectedItem())).isSimplePlace()));
+    line.setEnabled(editable && enable && numPlace.getSelectedIndex() > 0);
+    column.setEnabled(editable && enable && line.getSelectedIndex() > 0);
     if (chooseCell != null) {
-      chooseCell.setEnabled(enable && Program.hasComplexPlace());
+      chooseCell.setEnabled(editable && enable && Program.hasComplexPlace());
     }
   }
 

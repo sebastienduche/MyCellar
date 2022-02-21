@@ -8,7 +8,8 @@ import mycellar.core.MyCellarLabelManagement;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
-import java.awt.Font;
+
+import static mycellar.ProgramConstants.FONT_PANEL;
 
 /**
  * Titre : Cave &agrave; vin
@@ -24,7 +25,6 @@ import java.awt.Font;
 public final class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
 
   private static final long serialVersionUID = 2584507081563652083L;
-  private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
   private LabelType type;
   private String code;
@@ -33,12 +33,12 @@ public final class MyCellarCheckBox extends JCheckBox implements IMyCellarCompon
 
   public MyCellarCheckBox(Icon icon) {
     super(icon);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(String text) {
     super(text);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(LabelType type, String code) {
@@ -46,7 +46,7 @@ public final class MyCellarCheckBox extends JCheckBox implements IMyCellarCompon
     this.code = code;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(LabelType type, String code, LabelProperty labelProperty) {
@@ -55,7 +55,7 @@ public final class MyCellarCheckBox extends JCheckBox implements IMyCellarCompon
     this.labelProperty = labelProperty;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(LabelType type, String code, String value) {
@@ -64,32 +64,32 @@ public final class MyCellarCheckBox extends JCheckBox implements IMyCellarCompon
     this.value = value;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(Action a) {
     super(a);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(Icon icon, boolean selected) {
     super(icon, selected);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(String text, boolean selected) {
     super(text, selected);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(String text, Icon icon) {
     super(text, icon);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(String text, Icon icon, boolean selected) {
     super(text, icon, selected);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   @Override

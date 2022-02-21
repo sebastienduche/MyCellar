@@ -6,7 +6,8 @@ import mycellar.core.LabelType;
 import mycellar.core.MyCellarLabelManagement;
 
 import javax.swing.JRadioButton;
-import java.awt.Font;
+
+import static mycellar.ProgramConstants.FONT_PANEL;
 
 /**
  * Titre : Cave &agrave; vin
@@ -21,7 +22,6 @@ import java.awt.Font;
 public final class MyCellarRadioButton extends JRadioButton implements IMyCellarComponent {
 
   private static final long serialVersionUID = 5420315767498997450L;
-  private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
   private LabelType type;
   private String code;
@@ -30,7 +30,7 @@ public final class MyCellarRadioButton extends JRadioButton implements IMyCellar
 
   @Deprecated
   public MyCellarRadioButton() {
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarRadioButton(LabelType type, String code, boolean selected) {
@@ -39,13 +39,13 @@ public final class MyCellarRadioButton extends JRadioButton implements IMyCellar
     this.code = code;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   @Deprecated
   public MyCellarRadioButton(String text, boolean selected) {
     super(text, selected);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   @Override

@@ -1,7 +1,5 @@
 package mycellar.core;
 
-import mycellar.Program;
-
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -19,12 +17,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
- * <p>Titre : Cave à vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2014</p>
- * <p>Société : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2014
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.3
  * @since 27/05/21
  */
@@ -54,7 +52,7 @@ public abstract class PanelCloseButton extends JButton implements ActionListener
   protected PanelCloseButton() {
     int size = 17;
     setPreferredSize(new Dimension(size, size));
-    setToolTipText(Program.getLabel("Main.Delete"));
+    setToolTipText(MyCellarLabelManagement.getLabel("Main.Delete"));
     // Make the button looks the same for all Laf's
     setUI(new BasicButtonUI());
     // Make it transparent

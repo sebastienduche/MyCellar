@@ -3,7 +3,6 @@ package mycellar;
 import mycellar.actions.ExportPDFAction;
 import mycellar.actions.OpenWorkSheetAction;
 import mycellar.capacity.CapacityPanel;
-import mycellar.core.Grammar;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IPlace;
 import mycellar.core.LabelProperty;
@@ -82,6 +81,7 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.OPTIONS_PARAM;
 import static mycellar.ProgramConstants.RESTART_COMMAND;
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.core.LabelProperty.PLURAL;
 import static mycellar.core.MyCellarLabelManagement.getLabel;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
@@ -1041,7 +1041,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     @Override
     public String toString() {
-      return MyCellarLabelManagement.getLabelForType(type, true, true, Grammar.NONE);
+      return MyCellarLabelManagement.getLabelForType(type, PLURAL.withCapital());
     }
 
     public ProgramType getType() {

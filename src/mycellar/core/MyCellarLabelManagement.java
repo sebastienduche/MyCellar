@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.MissingResourceException;
 
 import static mycellar.ProgramConstants.DOUBLE_DOT;
+import static mycellar.ProgramConstants.ERRORS_LABEL_KEY;
+import static mycellar.ProgramConstants.INFOS_LABEL_KEY;
 import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.THREE_DOTS;
@@ -29,9 +31,6 @@ import static mycellar.ProgramConstants.THREE_DOTS;
 
 public class MyCellarLabelManagement {
 
-  private static final String INFOS = "Infos";
-  private static final String ERRORS = "Errors";
-
   private static final List<IMyCellarComponent> LABEL_LIST = new ArrayList<>();
 
   public static void add(IMyCellarComponent component) {
@@ -40,6 +39,10 @@ public class MyCellarLabelManagement {
 
   public static void updateText(IMyCellarComponent component, LabelType type, String code, String value, LabelProperty labelProperty) {
     component.setText(getLabel(type, code, labelProperty, value));
+  }
+
+  public static String getLabel(LabelType type, String code) {
+    return getLabel(type, code, null, null);
   }
 
   public static String getLabel(LabelType type, String code, LabelProperty labelProperty) {
@@ -54,26 +57,26 @@ public class MyCellarLabelManagement {
     if (labelValue == null) {
       switch (type) {
         case INFO:
-          return Program.getLabel(INFOS + code, labelProperty);
+          return getLabel(INFOS_LABEL_KEY + code, labelProperty);
         case ERROR:
-          return Program.getError(ERRORS + code, labelProperty);
+          return getError(ERRORS_LABEL_KEY + code, labelProperty);
         case INFO_OTHER:
-          return Program.getLabel(code, labelProperty);
+          return getLabel(code, labelProperty);
         case ERROR_OTHER:
-          return Program.getError(code, labelProperty);
+          return getError(code, labelProperty);
         default:
           throw new RuntimeException("Not implemented for type: " + type);
       }
     } else {
       switch (type) {
         case INFO:
-          return MessageFormat.format(Program.getLabel(INFOS + code, labelProperty), labelValue).strip();
+          return MessageFormat.format(getLabel(INFOS_LABEL_KEY + code, labelProperty), labelValue).strip();
         case ERROR:
-          return MessageFormat.format(Program.getError(ERRORS + code, labelProperty), labelValue).strip();
+          return MessageFormat.format(getError(ERRORS_LABEL_KEY + code, labelProperty), labelValue).strip();
         case INFO_OTHER:
-          return MessageFormat.format(Program.getLabel(code, labelProperty), labelValue).strip();
+          return MessageFormat.format(getLabel(code, labelProperty), labelValue).strip();
         case ERROR_OTHER:
-          return MessageFormat.format(Program.getError(code, labelProperty), labelValue).strip();
+          return MessageFormat.format(getError(code, labelProperty), labelValue).strip();
         default:
           throw new RuntimeException("Not implemented for type: " + type);
       }
@@ -93,7 +96,7 @@ public class MyCellarLabelManagement {
       return getLabel(id, true);
     }
     String label = getLabel(id, true);
-    label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
+    label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
     if (labelProperty.isThreeDashes()) {
       label += THREE_DOTS;
     }
@@ -120,7 +123,7 @@ public class MyCellarLabelManagement {
       return getError(id);
     }
     String label = getError(id);
-    return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
+    return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
   }
 
   public static String getError(String id) {
@@ -132,17 +135,17 @@ public class MyCellarLabelManagement {
     }
   }
 
-  public static String getLabelForType(boolean plural, boolean firstLetterUppercase, Grammar grammar) {
-    return getLabelForType(Program.getProgramType(), plural, firstLetterUppercase, grammar);
+  private static String getLabelForType(LabelProperty labelProperty) {
+    return getLabelForType(Program.getProgramType(), labelProperty);
   }
 
-  public static String getLabelForType(ProgramType theType, boolean plural, boolean firstLetterUppercase, Grammar grammar) {
+  public static String getLabelForType(ProgramType programType, LabelProperty labelProperty) {
     String value;
     String prefix;
-    String postfix = plural ? "s" : "";
-    switch (grammar) {
+    String postfix = labelProperty.isPlural() ? "s" : "";
+    switch (labelProperty.getGrammar()) {
       case SINGLE:
-        prefix = plural ? "more" : "one";
+        prefix = labelProperty.isPlural() ? "more" : "one";
         break;
       case THE:
         prefix = "the";
@@ -155,7 +158,7 @@ public class MyCellarLabelManagement {
         prefix = "";
         break;
     }
-    switch (theType) {
+    switch (programType) {
       case BOOK:
         value = getLabel("Program." + prefix + "book" + postfix);
         break;
@@ -166,7 +169,7 @@ public class MyCellarLabelManagement {
       default:
         value = getLabel("Program." + prefix + "wine" + postfix);
     }
-    if (firstLetterUppercase) {
+    if (labelProperty.isUppercaseFirst()) {
       value = StringUtils.capitalize(value);
     }
     return value;

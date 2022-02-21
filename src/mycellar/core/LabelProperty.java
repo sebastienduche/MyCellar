@@ -1,12 +1,12 @@
 package mycellar.core;
 
 /**
- * <p>Titre : Cave à vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2016</p>
- * <p>Société : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2016
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.5
  * @since 04/12/20
  */
@@ -62,23 +62,23 @@ public class LabelProperty {
     return new LabelProperty(plural, uppercaseFirst, grammar, false, true);
   }
 
-  public boolean isPlural() {
+  boolean isPlural() {
     return plural;
   }
 
-  public boolean isUppercaseFirst() {
+  boolean isUppercaseFirst() {
     return uppercaseFirst;
   }
 
-  public boolean isDoubleQuote() {
+  boolean isDoubleQuote() {
     return doubleQuote;
   }
 
-  public boolean isThreeDashes() {
+  boolean isThreeDashes() {
     return threeDashes;
   }
 
-  public Grammar getGrammar() {
+  Grammar getGrammar() {
     return grammar;
   }
 }

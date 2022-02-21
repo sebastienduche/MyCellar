@@ -8,7 +8,8 @@ import mycellar.core.MyCellarLabelManagement;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import java.awt.Font;
+
+import static mycellar.ProgramConstants.FONT_PANEL;
 
 /**
  * Titre : Cave &agrave; vin
@@ -24,7 +25,6 @@ import java.awt.Font;
 public final class MyCellarButton extends JButton implements IMyCellarComponent {
 
   private static final long serialVersionUID = 8395284022737446765L;
-  private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
   private LabelType type;
   private String code;
@@ -33,12 +33,12 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
 
   public MyCellarButton(Icon icon) {
     super(icon);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarButton(String text) {
     super(text);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarButton(LabelType type, String code) {
@@ -46,7 +46,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     this.code = code;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarButton(LabelType type, String code, String value) {
@@ -55,7 +55,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     this.value = value;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarButton(LabelType type, String code, LabelProperty labelProperty) {
@@ -64,7 +64,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     this.labelProperty = labelProperty;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarButton(LabelType type, String code, Action a) {
@@ -73,7 +73,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     this.code = code;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarButton(LabelType type, String code, LabelProperty labelProperty, Action a) {
@@ -83,7 +83,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     this.labelProperty = labelProperty;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarButton(LabelType type, String code, String value, Action a) {
@@ -93,12 +93,12 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     this.value = value;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarButton(String text, Icon icon) {
     super(text, icon);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarButton(LabelType type, String code, Icon icon) {
@@ -106,7 +106,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     this.type = type;
     this.code = code;
     updateText();
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   @Override

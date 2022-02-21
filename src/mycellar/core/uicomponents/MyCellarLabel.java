@@ -8,15 +8,16 @@ import mycellar.core.MyCellarLabelManagement;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
-import java.awt.Font;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static mycellar.ProgramConstants.FONT_PANEL;
+
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2011</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2011
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.8
@@ -26,7 +27,6 @@ import java.util.TimerTask;
 public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
   private static final long serialVersionUID = 4972622436840497820L;
-  private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
   private LabelType type;
   private String code;
@@ -35,12 +35,12 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
   @Deprecated
   public MyCellarLabel() {
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(String text) {
     super(text);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(LabelType type, String code) {
@@ -48,7 +48,7 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
     this.code = code;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(LabelType type, String code, LabelProperty labelProperty) {
@@ -57,7 +57,7 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
     this.labelProperty = labelProperty;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(LabelType type, String code, String value) {
@@ -66,29 +66,29 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
     this.value = value;
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(Icon image) {
     super(image);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   @Deprecated
   public MyCellarLabel(String text, int horizontalAlignment) {
     super(text, horizontalAlignment);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(Icon image, int horizontalAlignment) {
     super(image, horizontalAlignment);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   @Deprecated
   public MyCellarLabel(String text, Icon icon, int horizontalAlignment) {
     super(text, icon, horizontalAlignment);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   @Override

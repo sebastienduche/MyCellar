@@ -2,6 +2,7 @@ package mycellar.core.uicomponents;
 
 import mycellar.MyCellarImage;
 import mycellar.Program;
+import mycellar.core.LabelType;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -11,6 +12,8 @@ import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import static mycellar.core.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin
@@ -25,18 +28,18 @@ import java.awt.event.MouseEvent;
 public class PopupListener extends MouseAdapter {
 
   private final JPopupMenu popup = new JPopupMenu();
-  private final JMenuItem couper = new JMenuItem(Program.getLabel("Infos241"), MyCellarImage.CUT);
-  private final JMenuItem copier = new JMenuItem(Program.getLabel("Infos242"), MyCellarImage.COPY);
-  private final JMenuItem coller = new JMenuItem(Program.getLabel("Infos243"), MyCellarImage.PASTE);
+  private final JMenuItem cut = new JMenuItem(getLabel(LabelType.INFO, "241"), MyCellarImage.CUT);
+  private final JMenuItem copy = new JMenuItem(getLabel(LabelType.INFO, "242"), MyCellarImage.COPY);
   private JComponent textField;
 
   public PopupListener() {
-    popup.add(couper);
-    popup.add(copier);
-    popup.add(coller);
-    couper.addActionListener(this::couper_actionPerformed);
-    copier.addActionListener(this::copier_actionPerformed);
-    coller.addActionListener(this::coller_actionPerformed);
+    popup.add(cut);
+    popup.add(copy);
+    JMenuItem paste = new JMenuItem(getLabel(LabelType.INFO, "243"), MyCellarImage.PASTE);
+    popup.add(paste);
+    cut.addActionListener(this::cut_actionPerformed);
+    copy.addActionListener(this::copy_actionPerformed);
+    paste.addActionListener(this::paste_actionPerformed);
   }
 
   @Override
@@ -63,11 +66,11 @@ public class PopupListener extends MouseAdapter {
       if (textField.isFocusable() && textField.isEnabled()) {
         textField.requestFocus();
         if (textField instanceof JTextField) {
-          couper.setEnabled(((JTextField) textField).getSelectedText() != null);
-          copier.setEnabled(((JTextField) textField).getSelectedText() != null);
+          cut.setEnabled(((JTextField) textField).getSelectedText() != null);
+          copy.setEnabled(((JTextField) textField).getSelectedText() != null);
         } else if (textField instanceof JTextArea) {
-          couper.setEnabled(((JTextArea) textField).getSelectedText() != null);
-          copier.setEnabled(((JTextArea) textField).getSelectedText() != null);
+          cut.setEnabled(((JTextArea) textField).getSelectedText() != null);
+          copy.setEnabled(((JTextArea) textField).getSelectedText() != null);
         }
         if (textField.isVisible()) {
           popup.show(e.getComponent(), e.getX(), e.getY());
@@ -76,7 +79,7 @@ public class PopupListener extends MouseAdapter {
     }
   }
 
-  private void coller_actionPerformed(ActionEvent e) {
+  private void paste_actionPerformed(ActionEvent e) {
     if (textField instanceof JTextField) {
       JTextField jtf = (JTextField) textField;
       jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.paste() + jtf.getText().substring(jtf.getSelectionEnd()));
@@ -86,7 +89,7 @@ public class PopupListener extends MouseAdapter {
     }
   }
 
-  private void couper_actionPerformed(ActionEvent e) {
+  private void cut_actionPerformed(ActionEvent e) {
     String txt = "";
     if (textField instanceof JTextField) {
       JTextField jtf = (JTextField) textField;
@@ -101,7 +104,7 @@ public class PopupListener extends MouseAdapter {
     Program.CLIPBOARD.copy(txt);
   }
 
-  private void copier_actionPerformed(ActionEvent e) {
+  private void copy_actionPerformed(ActionEvent e) {
     String txt = "";
     if (textField instanceof JTextField) {
       JTextField jtf = (JTextField) textField;

@@ -11,10 +11,10 @@ import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2012</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2012
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 1.1
@@ -179,9 +179,10 @@ class CreerRangementTableModel extends AbstractTableModel {
     int numPart = 0;
     for (Part part : rows) {
       if (sameColumnNumber) {
-        // On positionne le nombre de colonne de la première ligne sur toute les lignes
+        // Set the number of columns of the first line to all others lines
+        final int col = part.getRow(0).getCol();
         for (Row r : part.getRows()) {
-          r.setCol(part.getRow(0).getCol());
+          r.setCol(col);
         }
       }
       int line = 1;

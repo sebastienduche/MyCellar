@@ -21,10 +21,10 @@ import static mycellar.core.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 1998</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 1998
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 2.0
@@ -46,8 +46,8 @@ public class ErrorShowValues extends TableShowValues {
   private static final int LINE = 7;
   private static final int COLUMN = 8;
   private static final int NBCOL = 11;
-  private final String[] columnNames = {"", Program.getLabel("ErrorShowValues.error"), Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
-      Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("ShowFile.Status"), ""};
+  private final String[] columnNames = {"", getLabel("ErrorShowValues.error"), getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Infos189"), getLabel("Infos134"), getLabel("Infos217"),
+      getLabel("Infos082"), getLabel("Infos028"), getLabel("Infos083"), getLabel("ShowFile.Status"), ""};
 
   private Boolean[] status = null;
   private Boolean[] editable = null;
@@ -139,7 +139,7 @@ public class ErrorShowValues extends TableShowValues {
           fireTableRowsUpdated(row, row);
         } else {
           status[row] = Boolean.FALSE;
-          Erreur.showSimpleErreur(Program.getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
+          Erreur.showSimpleErreur(getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
         }
         break;
       case NAME:

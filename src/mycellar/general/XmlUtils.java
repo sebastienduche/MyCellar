@@ -31,12 +31,13 @@ import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.core.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : </p>
- * <p>Description : </p>
- * <p>Copyright : Copyright (c) 2006</p>
- * <p>Soci&eacute;t&eacute; : SebInformatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2006
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 3.3
@@ -90,27 +91,27 @@ public class XmlUtils {
           final String aDefault = place.getAttribute("default");
           boolean isDefault = !aDefault.isBlank() && Boolean.parseBoolean(aDefault);
           int nPlace = Integer.parseInt(place.getAttribute("NbPlace"));
-          String sName = place.getAttribute("name");
-          if (sName.isEmpty()) {
-            NodeList placeName = place.getElementsByTagName("name");
-            sName = placeName.item(0).getTextContent();
+          String placeName = place.getAttribute("name");
+          if (placeName.isEmpty()) {
+            NodeList placeNameList = place.getElementsByTagName("name");
+            placeName = placeNameList.item(0).getTextContent();
           }
           if (bIsCaisse) {
             // C'est une caisse
             int nNumStart = Integer.parseInt(place.getAttribute("NumStart"));
             int nNbLimit = Integer.parseInt(place.getAttribute("NbLimit"));
-            if (names.contains(sName)) {
-              Debug("WARNING: Rangement name '" + sName + "' already used!");
+            if (names.contains(placeName)) {
+              Debug("WARNING: Rangement name '" + placeName + "' already used!");
             } else {
               boolean bLimit = (nNbLimit > 0);
-              final Rangement caisse = new Rangement.SimplePlaceBuilder(sName)
+              final Rangement caisse = new Rangement.SimplePlaceBuilder(placeName)
                   .nbParts(nPlace)
                   .startSimplePlace(nNumStart)
                   .limited(bLimit)
                   .limit(nNbLimit)
                   .setDefaultPlace(isDefault).build();
               rangementList.add(caisse);
-              names.add(sName);
+              names.add(placeName);
             }
           } else {
             // C'est un rangement complexe
@@ -138,11 +139,11 @@ public class XmlUtils {
               }
             }
 
-            if (names.contains(sName)) {
-              Debug("WARNING: Rangement name '" + sName + "' already used!");
+            if (names.contains(placeName)) {
+              Debug("WARNING: Rangement name '" + placeName + "' already used!");
             } else {
-              names.add(sName);
-              rangementList.add(new Rangement(sName, listPart));
+              names.add(placeName);
+              rangementList.add(new Rangement(placeName, listPart));
             }
           }
 
@@ -254,7 +255,7 @@ public class XmlUtils {
             Element partie = doc.createElement("partie");
             r.appendChild(partie);
             name = doc.createElement("nom-partie");
-            name.setTextContent(Program.getLabel("Infos029") + SPACE + (i + rangement.getStartSimplePlace()));
+            name.setTextContent(getLabel("Infos029") + SPACE + (i + rangement.getStartSimplePlace()));
             partie.appendChild(name);
             Element caisse = doc.createElement("caisse");
             partie.appendChild(caisse);
@@ -264,7 +265,7 @@ public class XmlUtils {
               Element vin_name = doc.createElement("vin1");
               vin.appendChild(vin_name);
               if (preview) {
-                vin_name.setTextContent(Program.getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
+                vin_name.setTextContent(getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
               } else {
                 IMyCellarObject b = rangement.getObjectSimplePlaceAt(i, j);
                 if (b != null)
@@ -280,7 +281,7 @@ public class XmlUtils {
             Element partie = doc.createElement("partie");
             r.appendChild(partie);
             name = doc.createElement("nom-partie");
-            name.setTextContent(Program.getLabel("Infos029") + SPACE + (i + rangement.getStartSimplePlace() + 1));
+            name.setTextContent(getLabel("Infos029") + SPACE + (i + rangement.getStartSimplePlace() + 1));
             partie.appendChild(name);
             int lig = rangement.getLineCountAt(i);
             for (int j = 0; j < lig; j++) {
@@ -293,7 +294,7 @@ public class XmlUtils {
                 Element vin_name = doc.createElement("vin1");
                 vin.appendChild(vin_name);
                 if (preview) {
-                  vin_name.setTextContent(Program.getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
+                  vin_name.setTextContent(getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
                 } else {
                   rangement.getObject(i, j, k)
                       .ifPresentOrElse(myCellarObject -> vin_name.setTextContent(myCellarObject.getNom()), () -> vin_name.setTextContent("-"));
@@ -334,11 +335,6 @@ public class XmlUtils {
     return true;
   }
 
-  /**
-   * Debug
-   *
-   * @param sText String
-   */
   private static void Debug(String sText) {
     Program.Debug("MyXmlDom: " + sText);
   }

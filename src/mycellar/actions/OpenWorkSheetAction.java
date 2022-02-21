@@ -2,10 +2,10 @@ package mycellar.actions;
 
 import mycellar.Bouteille;
 import mycellar.MyCellarImage;
-import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
+import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.ShowFile;
@@ -27,7 +27,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
 
   public OpenWorkSheetAction(List<Bouteille> list) {
     super(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE, MyCellarImage.WORK);
-    setDescriptionLabelCode(LABEL);
+    setDescriptionLabel(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE);
     bouteilles = list != null ? list : new ArrayList<>();
   }
 
@@ -37,7 +37,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
       final ShowFile showWorksheet = ProgramPanels.createShowWorksheet();
       showWorksheet.updateView();
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK, null);
-      final String label = Program.getLabel(LABEL);
+      final String label = MyCellarLabelManagement.getLabel(LABEL);
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);
       } else {

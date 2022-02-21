@@ -1,6 +1,5 @@
 package mycellar.core.uicomponents;
 
-import mycellar.Program;
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.LabelProperty;
 import mycellar.core.LabelType;
@@ -9,6 +8,8 @@ import mycellar.core.MyCellarLabelManagement;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
+
+import static mycellar.core.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin
@@ -71,9 +72,9 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   public void setText(String text) {
     putValue(Action.NAME, withText ? text : "");
     if (oldDescriptionLabelCode != null) {
-      putValue(Action.SHORT_DESCRIPTION, Program.getLabel(oldDescriptionLabelCode, textLabelProperty));
+      putValue(Action.SHORT_DESCRIPTION, getLabel(oldDescriptionLabelCode, textLabelProperty));
     } else if (descriptionLabelType != null) {
-      putValue(Action.SHORT_DESCRIPTION, MyCellarLabelManagement.getLabel(descriptionLabelType, descriptionLabelCode, descriptionLabelProperty));
+      putValue(Action.SHORT_DESCRIPTION, getLabel(descriptionLabelType, descriptionLabelCode, descriptionLabelProperty));
     } else {
       putValue(Action.SHORT_DESCRIPTION, text);
     }

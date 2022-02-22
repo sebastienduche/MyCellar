@@ -33,7 +33,7 @@ package mycellar.core.uicomponents;
 
 import mycellar.ITabListener;
 import mycellar.Program;
-import mycellar.core.MyCellarLabelManagement;
+import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.AbstractButton;

@@ -6,13 +6,13 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -40,8 +40,6 @@ import java.util.stream.Collectors;
 
 import static mycellar.Program.EMPTY_PLACE;
 import static mycellar.Program.getAide;
-import static mycellar.Program.getError;
-import static mycellar.Program.getLabel;
 import static mycellar.Program.getPlaces;
 import static mycellar.Program.getPreviewXMLFileName;
 import static mycellar.Program.getStorage;
@@ -50,6 +48,8 @@ import static mycellar.Program.removePlace;
 import static mycellar.Program.setToTrash;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
 
 

@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
-import static mycellar.core.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin

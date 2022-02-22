@@ -1,11 +1,11 @@
 package mycellar;
 
 import mycellar.core.IMyCellarObject;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
-import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.MyCellarObject;
 import mycellar.core.tablecomponents.ToolTipRenderer;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
+import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;

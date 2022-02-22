@@ -1,9 +1,10 @@
 package mycellar.core.uicomponents;
 
 import mycellar.core.IMyCellarComponent;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
-import mycellar.core.MyCellarLabelManagement;
+import mycellar.core.text.LabelKey;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
+import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -18,18 +19,15 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 04/12/20
+ * @version 0.9
+ * @since 22/02/22
  */
 
 public final class MyCellarButton extends JButton implements IMyCellarComponent {
 
   private static final long serialVersionUID = 8395284022737446765L;
 
-  private LabelType type;
-  private String code;
-  private LabelProperty labelProperty;
-  private String value;
+  private LabelKey labelKey;
 
   public MyCellarButton(Icon icon) {
     super(icon);
@@ -42,26 +40,21 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
   }
 
   public MyCellarButton(LabelType type, String code) {
-    this.type = type;
-    this.code = code;
+    labelKey = new LabelKey(type, code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
   public MyCellarButton(LabelType type, String code, String value) {
-    this.type = type;
-    this.code = code;
-    this.value = value;
+    labelKey = new LabelKey(type, code, null, value);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
   public MyCellarButton(LabelType type, String code, LabelProperty labelProperty) {
-    this.type = type;
-    this.code = code;
-    this.labelProperty = labelProperty;
+    labelKey = new LabelKey(type, code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -69,8 +62,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
 
   public MyCellarButton(LabelType type, String code, Action a) {
     super(a);
-    this.type = type;
-    this.code = code;
+    labelKey = new LabelKey(type, code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -78,9 +70,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
 
   public MyCellarButton(LabelType type, String code, LabelProperty labelProperty, Action a) {
     super(a);
-    this.type = type;
-    this.code = code;
-    this.labelProperty = labelProperty;
+    labelKey = new LabelKey(type, code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -88,9 +78,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
 
   public MyCellarButton(LabelType type, String code, String value, Action a) {
     super(a);
-    this.type = type;
-    this.code = code;
-    this.value = value;
+    labelKey = new LabelKey(type, code, null, value);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -103,15 +91,14 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
 
   public MyCellarButton(LabelType type, String code, Icon icon) {
     super(icon);
-    this.type = type;
-    this.code = code;
+    labelKey = new LabelKey(type, code);
     updateText();
     setFont(FONT_PANEL);
   }
 
   @Override
   public void updateText() {
-    MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
+    MyCellarLabelManagement.updateText(this, labelKey);
   }
 
 }

@@ -1,6 +1,6 @@
 package mycellar.core.common.music;
 
-import mycellar.core.LabelType;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;

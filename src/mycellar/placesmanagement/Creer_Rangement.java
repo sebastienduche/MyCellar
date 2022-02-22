@@ -10,10 +10,10 @@ import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
-import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
+import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
@@ -51,10 +51,10 @@ import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
-import static mycellar.core.LabelType.INFO;
-import static mycellar.core.LabelType.INFO_OTHER;
-import static mycellar.core.MyCellarLabelManagement.getError;
-import static mycellar.core.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.LabelType.INFO;
+import static mycellar.core.text.LabelType.INFO_OTHER;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**

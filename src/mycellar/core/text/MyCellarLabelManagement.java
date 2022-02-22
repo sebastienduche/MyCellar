@@ -1,7 +1,8 @@
-package mycellar.core;
+package mycellar.core.text;
 
 import mycellar.Program;
 import mycellar.ProgramType;
+import mycellar.core.IMyCellarComponent;
 import mycellar.core.language.LanguageFileLoader;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,8 +26,8 @@ import static mycellar.ProgramConstants.THREE_DOTS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 21/02/22
+ * @version 0.5
+ * @since 22/02/22
  */
 
 public class MyCellarLabelManagement {
@@ -37,19 +38,19 @@ public class MyCellarLabelManagement {
     LABEL_LIST.add(component);
   }
 
-  public static void updateText(IMyCellarComponent component, LabelType type, String code, String value, LabelProperty labelProperty) {
-    component.setText(getLabel(type, code, labelProperty, value));
+  public static void updateText(IMyCellarComponent component, LabelKey labelKey) {
+    component.setText(getLabel(labelKey.getLabelType(), labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue()));
+  }
+
+  public static String getLabel(LabelKey labelKey) {
+    return getLabel(labelKey.getLabelType(), labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue());
   }
 
   public static String getLabel(LabelType type, String code) {
     return getLabel(type, code, null, null);
   }
 
-  public static String getLabel(LabelType type, String code, LabelProperty labelProperty) {
-    return getLabel(type, code, labelProperty, null);
-  }
-
-  public static String getLabel(LabelType type, String code, LabelProperty labelProperty, String labelValue) {
+  private static String getLabel(LabelType type, String code, LabelProperty labelProperty, String labelValue) {
     if (type == null || code == null) {
       return "";
     }
@@ -81,10 +82,6 @@ public class MyCellarLabelManagement {
           throw new RuntimeException("Not implemented for type: " + type);
       }
     }
-  }
-
-  public static void updateLabels() {
-    LABEL_LIST.forEach(IMyCellarComponent::updateText);
   }
 
   public static String getLabel(String id) {
@@ -133,6 +130,11 @@ public class MyCellarLabelManagement {
       JOptionPane.showMessageDialog(null, "Missing Error " + id, "Error", JOptionPane.ERROR_MESSAGE);
       return id;
     }
+  }
+
+
+  public static void updateLabels() {
+    LABEL_LIST.forEach(IMyCellarComponent::updateText);
   }
 
   private static String getLabelForType(LabelProperty labelProperty) {

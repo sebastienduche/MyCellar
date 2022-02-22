@@ -5,10 +5,10 @@ import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IPlace;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import static mycellar.core.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>

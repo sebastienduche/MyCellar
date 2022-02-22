@@ -3,15 +3,15 @@ package mycellar.search;
 import mycellar.Bouteille;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
-import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
+import mycellar.core.text.LabelProperty;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
 import java.util.List;
 
-import static mycellar.core.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin

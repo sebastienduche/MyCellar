@@ -3,13 +3,13 @@ package mycellar;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IUpdatable;
-import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
@@ -28,7 +28,7 @@ import java.text.MessageFormat;
 
 import static mycellar.MyCellarUtils.nonNullValueOrDefault;
 import static mycellar.ProgramConstants.SPACE;
-import static mycellar.core.LabelProperty.OF_THE_SINGLE;
+import static mycellar.core.text.LabelProperty.OF_THE_SINGLE;
 
 
 /**

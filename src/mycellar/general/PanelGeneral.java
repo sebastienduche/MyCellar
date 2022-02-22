@@ -10,11 +10,11 @@ import mycellar.Start;
 import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JCompletionComboBox;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.JModifyTextField;
@@ -31,11 +31,11 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 
 import static mycellar.ProgramConstants.SPACE;
-import static mycellar.core.LabelProperty.OF_THE_PLURAL;
-import static mycellar.core.LabelProperty.OF_THE_SINGLE;
-import static mycellar.core.LabelProperty.THE_SINGLE;
-import static mycellar.core.MyCellarLabelManagement.getError;
-import static mycellar.core.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.LabelProperty.OF_THE_PLURAL;
+import static mycellar.core.text.LabelProperty.OF_THE_SINGLE;
+import static mycellar.core.text.LabelProperty.THE_SINGLE;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>

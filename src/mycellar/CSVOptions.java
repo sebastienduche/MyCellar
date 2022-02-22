@@ -1,8 +1,8 @@
 package mycellar;
 
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;

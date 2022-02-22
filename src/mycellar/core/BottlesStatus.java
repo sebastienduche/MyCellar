@@ -1,6 +1,6 @@
 package mycellar.core;
 
-import static mycellar.core.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public enum BottlesStatus {
   NONE(""),

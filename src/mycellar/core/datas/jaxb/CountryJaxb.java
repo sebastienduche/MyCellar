@@ -1,6 +1,6 @@
 package mycellar.core.datas.jaxb;
 
-import mycellar.core.MyCellarLabelManagement;
+import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

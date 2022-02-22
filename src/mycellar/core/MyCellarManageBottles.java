@@ -1,6 +1,7 @@
 package mycellar.core;
 
 import mycellar.Program;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JModifyTextArea;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;

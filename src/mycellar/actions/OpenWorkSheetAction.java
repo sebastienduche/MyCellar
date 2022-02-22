@@ -3,9 +3,8 @@ package mycellar.actions;
 import mycellar.Bouteille;
 import mycellar.MyCellarImage;
 import mycellar.Start;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
-import mycellar.core.MyCellarLabelManagement;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.ShowFile;
@@ -14,6 +13,8 @@ import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public final class OpenWorkSheetAction extends MyCellarAction {
 
@@ -37,7 +38,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
       final ShowFile showWorksheet = ProgramPanels.createShowWorksheet();
       showWorksheet.updateView();
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK, null);
-      final String label = MyCellarLabelManagement.getLabel(LABEL);
+      final String label = getLabel(LABEL);
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);
       } else {

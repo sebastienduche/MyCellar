@@ -1,9 +1,10 @@
 package mycellar.core.uicomponents;
 
 import mycellar.core.IMyCellarComponent;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
-import mycellar.core.MyCellarLabelManagement;
+import mycellar.core.text.LabelKey;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
+import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -20,18 +21,15 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 23/05/21
+ * @version 0.9
+ * @since 22/02/22
  */
 
 public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
   private static final long serialVersionUID = 4972622436840497820L;
 
-  private LabelType type;
-  private String code;
-  private String value;
-  private LabelProperty labelProperty;
+  private LabelKey labelKey;
 
   @Deprecated
   public MyCellarLabel() {
@@ -44,26 +42,21 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
   }
 
   public MyCellarLabel(LabelType type, String code) {
-    this.type = type;
-    this.code = code;
+    labelKey = new LabelKey(type, code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(LabelType type, String code, LabelProperty labelProperty) {
-    this.type = type;
-    this.code = code;
-    this.labelProperty = labelProperty;
+    labelKey = new LabelKey(type, code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(LabelType type, String code, String value) {
-    this.type = type;
-    this.code = code;
-    this.value = value;
+    labelKey = new LabelKey(type, code, null, value);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -93,7 +86,7 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
   @Override
   public void updateText() {
-    MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
+    MyCellarLabelManagement.updateText(this, labelKey);
   }
 
   private void hide(boolean visible) {

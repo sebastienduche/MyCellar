@@ -5,10 +5,10 @@ import mycellar.Music;
 import mycellar.Program;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.LabelProperty;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
+import mycellar.core.text.LabelProperty;
 
 import java.util.Arrays;
 import java.util.Collections;

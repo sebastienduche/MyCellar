@@ -4,9 +4,9 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarObject;
+import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 
@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
-import static mycellar.core.MyCellarLabelManagement.getError;
-import static mycellar.core.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**

@@ -1,5 +1,7 @@
 package mycellar.core;
 
+import mycellar.core.text.MyCellarLabelManagement;
+
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;

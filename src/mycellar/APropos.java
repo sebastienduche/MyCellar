@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.LabelType;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;

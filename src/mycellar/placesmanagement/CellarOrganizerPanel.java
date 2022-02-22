@@ -9,12 +9,12 @@ import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;
-import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
 import mycellar.core.PanelCloseButton;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -61,7 +61,7 @@ import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
-import static mycellar.core.LabelType.INFO_OTHER;
+import static mycellar.core.text.LabelType.INFO_OTHER;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>

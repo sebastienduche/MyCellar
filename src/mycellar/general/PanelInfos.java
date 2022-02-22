@@ -2,11 +2,11 @@ package mycellar.general;
 
 import mycellar.PanelHistory;
 import mycellar.Program;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.placesmanagement.Rangement;
 import net.miginfocom.swing.MigLayout;

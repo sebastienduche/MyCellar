@@ -3,7 +3,7 @@ package mycellar.general;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.LabelProperty;
+import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Rangement;
 import org.w3c.dom.Element;
@@ -31,7 +31,7 @@ import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.ProgramConstants.SPACE;
-import static mycellar.core.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin

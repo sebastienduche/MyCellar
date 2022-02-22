@@ -9,8 +9,8 @@ import javax.swing.JPanel;
 import java.awt.Component;
 
 import static mycellar.ProgramConstants.FONT_BOUTTON_SMALL;
-import static mycellar.core.MyCellarLabelManagement.getError;
-import static mycellar.core.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**

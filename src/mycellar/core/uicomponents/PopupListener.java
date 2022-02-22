@@ -2,7 +2,7 @@ package mycellar.core.uicomponents;
 
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.core.LabelType;
+import mycellar.core.text.LabelType;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import static mycellar.core.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin

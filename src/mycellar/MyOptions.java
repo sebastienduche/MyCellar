@@ -1,7 +1,7 @@
 package mycellar;
 
-import mycellar.core.LabelType;
 import mycellar.core.MyLinkedHashMap;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -39,6 +39,11 @@ import static mycellar.ProgramConstants.isVK_O;
  * @since 16/12/21
  */
 public class MyOptions extends JDialog {
+  public static final String JTEXT_FIELD = "JTextField";
+  public static final String MY_CELLAR_SPINNER = "MyCellarSpinner";
+  public static final String MY_CELLAR_CHECK_BOX = "MyCellarCheckBox";
+  public static final String MY_CELLAR_RADIO_BUTTON = "MyCellarRadioButton";
+  public static final String MY_CELLAR_LABEL = "MyCellarLabel";
   @SuppressWarnings("deprecation")
   private final MyCellarLabel textControl3 = new MyCellarLabel();
   private final ButtonGroup buttonGroup = new ButtonGroup();
@@ -100,24 +105,27 @@ public class MyOptions extends JDialog {
     for (int i = 0; i < propriete.size(); i++) {
       value[i] = null;
       labelEdit[i] = new JTextField();
-      if (type_objet.get(i).equals("JTextField")) {
+      label_value[i] = new MyCellarLabel(propriete.get(i));
+      if (type_objet.get(i).equals(JTEXT_FIELD)) {
         value[i] = new JTextField(default_value.get(i));
       }
-      if (type_objet.get(i).equals("MyCellarSpinner")) {
+      if (type_objet.get(i).equals(MY_CELLAR_SPINNER)) {
         final MyCellarSpinner jspi = new MyCellarSpinner(0, 99999);
         jspi.setValue(Integer.parseInt(default_value.get(i)));
         value[i] = jspi;
       }
-      if (type_objet.get(i).equals("MyCellarCheckBox")) {
+      if (type_objet.get(i).equals(MY_CELLAR_CHECK_BOX)) {
         boolean bool = default_value.get(i).equals("true");
-        value[i] = new MyCellarCheckBox("", bool);
+        value[i] = new MyCellarCheckBox(propriete.get(i), bool);
+        label_value[i] = new MyCellarLabel();
       }
-      if (type_objet.get(i).equals("MyCellarRadioButton")) {
+      if (type_objet.get(i).equals(MY_CELLAR_RADIO_BUTTON)) {
         boolean bool = default_value.get(i).equals("true");
-        value[i] = new MyCellarRadioButton("", bool);
+        value[i] = new MyCellarRadioButton(propriete.get(i), bool);
         value[i].setEnabled(false);
+        label_value[i] = new MyCellarLabel();
         if (i > 0) {
-          if (type_objet.get(i - 1).equals("MyCellarRadioButton") && cle.get(i - 1).equals(cle.get(i))) {
+          if (type_objet.get(i - 1).equals(MY_CELLAR_RADIO_BUTTON) && cle.get(i - 1).equals(cle.get(i))) {
             buttonGroup.add((MyCellarRadioButton) value[i - 1]);
             buttonGroup.add((MyCellarRadioButton) value[i]);
             value[i - 1].setEnabled(true);
@@ -125,8 +133,8 @@ public class MyOptions extends JDialog {
           }
         }
       }
-      label_value[i] = new MyCellarLabel(propriete.get(i));
-      if (type_objet.get(i).equals("MyCellarLabel")) {
+
+      if (type_objet.get(i).equals(MY_CELLAR_LABEL)) {
         label_value[i].setForeground(Color.red);
       }
     }
@@ -153,7 +161,7 @@ public class MyOptions extends JDialog {
     getContentPane().add(definition, "span 2, wrap");
     getContentPane().add(definition2, "span 2, wrap");
     for (int i = 0; i < taille_value; i++) {
-      if (type_objet.get(i).equals("MyCellarLabel")) {
+      if (type_objet.get(i).equals(MY_CELLAR_LABEL)) {
         getContentPane().add(label_value[i], "wrap");
       } else {
         if (isLabelEdit)

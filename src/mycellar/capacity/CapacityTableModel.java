@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import java.text.MessageFormat;
 import java.util.List;
 
-import static mycellar.core.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin

@@ -2,16 +2,17 @@ package mycellar.actions;
 
 import mycellar.AddVin;
 import mycellar.MyCellarImage;
-import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
+import mycellar.core.text.LabelProperty;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.util.List;
+
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public class OpenAddVinAction extends AbstractAction {
 
@@ -29,7 +30,7 @@ public class OpenAddVinAction extends AbstractAction {
       addVin.setBottles(listToModify);
 
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WINE, addVin);
-      final String label = Program.getLabel("OpenVin.modify1Item", LabelProperty.PLURAL);
+      final String label = getLabel("OpenVin.modify1Item", LabelProperty.PLURAL);
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);
       } else {

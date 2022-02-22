@@ -3,10 +3,10 @@ package mycellar;
 import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.language.Language;
 import mycellar.core.language.LanguageFileLoader;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
@@ -39,6 +39,7 @@ import static mycellar.core.MyCellarSettings.FILE_EXCEL;
 import static mycellar.core.MyCellarSettings.HAS_EXCEL_FILE;
 import static mycellar.core.MyCellarSettings.LANGUAGE;
 import static mycellar.core.MyCellarSettings.SIECLE;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
@@ -59,9 +60,9 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
   private final MyCellarButton parcourir_excel = new MyCellarButton("..."); //Parcourir
   private final JTextField file_bak = new JTextField();
   private final JTextField devise = new JTextField();
-  private final MyCellarCheckBox jcb_excel = new MyCellarCheckBox(Program.getLabel("Infos234"), false);
+  private final MyCellarCheckBox jcb_excel = new MyCellarCheckBox(getLabel("Infos234"), false);
   private final MyCellarButton buttonResetMessageDialog;
-  private final MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox(Program.getLabel("Infos169"), false);
+  private final MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox(getLabel("Infos169"), false);
   private final MyCellarLabel label_annee;
   private final MyCellarLabel label_annee2;
   private final MyCellarLabel label_siecle;
@@ -77,12 +78,12 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     label_annee = new MyCellarLabel(LabelType.INFO, "292");
     label_annee2 = new MyCellarLabel(LabelType.INFO, "293");
     label_siecle = new MyCellarLabel(LabelType.INFO, "295");
-    jcb_excel.setText(Program.getLabel("Infos169"));
+    jcb_excel.setText(getLabel("Infos169"));
     buttonResetMessageDialog = new MyCellarButton(LabelType.INFO, "160");
     MyCellarButton buttonManageContenance = new MyCellarButton(LabelType.INFO, "400", new ManageCapacityAction());
     MyCellarButton valider = new MyCellarButton(LabelType.INFO, "315");
-    parcourir_excel.setToolTipText(Program.getLabel("Infos157"));
-    jcb_annee_control.setText(Program.getLabel("Infos169"));
+    parcourir_excel.setToolTipText(getLabel("Infos157"));
+    jcb_annee_control.setText(getLabel("Infos169"));
     setLabels();
 
     jcb_annee_control.addActionListener((e) -> {
@@ -115,10 +116,10 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     JPanel generalPanel = new JPanel();
     JPanel excelPanel = new JPanel();
     JPanel otherPanel = new JPanel();
-    dateControlPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos294")));
-    generalPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Main.General")));
-    excelPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos234")));
-    otherPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Parameters.Others")));
+    dateControlPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Infos294")));
+    generalPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Main.General")));
+    excelPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Infos234")));
+    otherPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Parameters.Others")));
     generalPanel.setLayout(new MigLayout("", "[][]30px[][]", ""));
     generalPanel.add(label_langue);
     generalPanel.add(langue, "gapleft 10");
@@ -167,9 +168,9 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
   }
 
   private void setLabels() {
-    jcb_excel.setText(Program.getLabel("Infos169"));
-    parcourir_excel.setToolTipText(Program.getLabel("Infos157"));
-    jcb_annee_control.setText(Program.getLabel("Infos169"));
+    jcb_excel.setText(getLabel("Infos169"));
+    parcourir_excel.setToolTipText(getLabel("Infos157"));
+    jcb_annee_control.setText(getLabel("Infos169"));
   }
 
   /**

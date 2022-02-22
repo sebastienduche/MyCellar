@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.LabelProperty;
+import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.RangementUtils;
 

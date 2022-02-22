@@ -53,6 +53,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.LabelType.INFO;
 import static mycellar.core.LabelType.INFO_OTHER;
+import static mycellar.core.MyCellarLabelManagement.getError;
+import static mycellar.core.MyCellarLabelManagement.getLabel;
 
 
 /**
@@ -582,7 +584,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       }
     }
     if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false) && bResul) {
-      Erreur.showInformationMessageWithKey(Program.getError("Error164"), "", MyCellarSettings.DONT_SHOW_CREATE_MESS);
+      Erreur.showInformationMessageWithKey(getError("Error164"), MyCellarSettings.DONT_SHOW_CREATE_MESS);
     }
     if (bResul) {
       Start.getInstance().enableAll(true);
@@ -592,7 +594,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private void createPlace(String name) {
     Program.addPlace(new Rangement(name, listPart));
     Debug("Creating " + name + " completed.");
-    label_cree.setText(Program.getLabel("Infos090"), true); //"Rangement cree.
+    label_cree.setText(getLabel("Infos090"), true); //"Rangement cree.
     nom_obj.setText("");
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
   }

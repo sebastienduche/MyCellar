@@ -182,15 +182,15 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_FALSE, false)) {
-        String erreur_txt1 = MessageFormat.format(Program.getError("Error084"), ((siecle + 1) * 100)); //"En decochant cette option, vous dsactivez la transformation
-        Erreur.showInformationMessageWithKey(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_FALSE);
+        String erreur_txt1 = MessageFormat.format(getError("Error084"), ((siecle + 1) * 100)); //"En decochant cette option, vous dsactivez la transformation
+        Erreur.showInformationMessageWithKey(erreur_txt1, MyCellarSettings.ANNEE_AUTO_FALSE);
       }
     } else {
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, true);
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_TRUE, false)) {
-        String erreur_txt1 = MessageFormat.format(Program.getError("Error086"), ((siecle + 1) * 100));//"En cochant cette option, vous activez la transformation
-        Erreur.showInformationMessageWithKey(erreur_txt1, "", MyCellarSettings.ANNEE_AUTO_TRUE);
+        String erreur_txt1 = MessageFormat.format(getError("Error086"), ((siecle + 1) * 100));//"En cochant cette option, vous activez la transformation
+        Erreur.showInformationMessageWithKey(erreur_txt1, MyCellarSettings.ANNEE_AUTO_TRUE);
       }
     }
     Debug("Annee_auto_actionPerformed...Done");

@@ -70,6 +70,8 @@ import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.core.MyCellarLabelManagement.getError;
+import static mycellar.core.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -78,8 +80,8 @@ import static mycellar.ProgramConstants.SPACE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.0
- * @since 12/01/22
+ * @version 23.1
+ * @since 22/02/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -93,10 +95,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final MyCellarComboBox<String> year = new MyCellarComboBox<>();
   private final MyCellarButton searchButton = new MyCellarButton(LabelType.INFO, "084", MyCellarImage.SEARCH); // Cherche
   private final MyCellarButton emptyRowsButton = new MyCellarButton(LabelType.INFO, "220"); // Effacer resultats
-  private final char searchKey = Program.getLabel("RECHERCHE").charAt(0);
-  private final char modificationKey = Program.getLabel("MODIF").charAt(0);
-  private final char deleteKey = Program.getLabel("SUPPR").charAt(0);
-  private final char exportKey = Program.getLabel("EXPORT").charAt(0);
+  private final char searchKey = getLabel("RECHERCHE").charAt(0);
+  private final char modificationKey = getLabel("MODIF").charAt(0);
+  private final char deleteKey = getLabel("SUPPR").charAt(0);
+  private final char exportKey = getLabel("EXPORT").charAt(0);
   private final MyCellarLabel resultInfoLabel = new MyCellarLabel();
   private final MyCellarCheckBox selectAllCheck = new MyCellarCheckBox(LabelType.INFO, "126"); // Tout selectionner
   private final MyCellarButton addToWorksheetButton = new MyCellarButton(MyCellarImage.WORK);
@@ -128,19 +130,19 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         }
       };
 
-      exportButton.setText(Program.getLabel("Infos120")); // Export the results
+      exportButton.setText(getLabel("Infos120")); // Export the results
       exportButton.setMnemonic(exportKey);
       selectAllCheck.setHorizontalAlignment(SwingConstants.RIGHT);
       selectAllCheck.setHorizontalTextPosition(SwingConstants.LEFT);
 
       selectAllCheck.addActionListener(this::selectall_actionPerformed);
-      addToWorksheetButton.setText(Program.getLabel("Search.AddWorksheet"));
+      addToWorksheetButton.setText(getLabel("Search.AddWorksheet"));
       addToWorksheetButton.addActionListener(this::addToWorksheet_actionPerformed);
       emptySearchCheck.addActionListener(this::empty_search_actionPerformed);
       exportButton.addActionListener(this::export_actionPerformed);
-      deleteButton.setText(Program.getLabel("Main.Delete"));
+      deleteButton.setText(getLabel("Main.Delete"));
       deleteButton.setMnemonic(deleteKey);
-      modifyButton.setText(Program.getLabel("Infos079")); // Modify
+      modifyButton.setText(getLabel("Infos079")); // Modify
       modifyButton.setMnemonic(modificationKey);
       modifyButton.setEnabled(false);
       deleteButton.setEnabled(false);
@@ -208,10 +210,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
       setLayout(new MigLayout("", "[grow][]", "[]10px[][grow][]"));
 
-      tabbedPane.add(Program.getLabel("Infos077"), new PanelName());
-      tabbedPane.add(Program.getLabel("Infos078"), panelPlace);
-      tabbedPane.add(Program.getLabel("Infos219"), panelYear);
-      tabbedPane.add(Program.getLabel("Infos318"), panelRequest);
+      tabbedPane.add(getLabel("Infos077"), new PanelName());
+      tabbedPane.add(getLabel("Infos078"), panelPlace);
+      tabbedPane.add(getLabel("Infos219"), panelYear);
+      tabbedPane.add(getLabel("Infos318"), panelRequest);
 
       add(tabbedPane, "growx");
       add(new PanelOption(), "wrap");
@@ -248,7 +250,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     JDialog dialog = new JDialog();
     dialog.add(new Export(searchTableModel.getDatas()));
     dialog.pack();
-    dialog.setTitle(Program.getLabel("Infos151"));
+    dialog.setTitle(getLabel("Infos151"));
     dialog.setLocationRelativeTo(Start.getInstance());
     dialog.setModal(true);
     dialog.setVisible(true);
@@ -263,19 +265,19 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (listToDelete.isEmpty()) {
         // No objet to delete / Select...
         Debug("ERROR: No bottle to delete!");
-        Erreur.showInformationMessage(Program.getError("Error064", LabelProperty.SINGLE), Program.getError("Error065", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getError("Error064", LabelProperty.SINGLE), getError("Error065", LabelProperty.THE_PLURAL));
         return;
       }
       String erreur_txt1;
       String erreur_txt2;
       if (listToDelete.size() == 1) {
-        erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); // 1 vin selectionne.
-        erreur_txt2 = Program.getError("Error068"); // Delete it ?
+        erreur_txt1 = getError("Error067", LabelProperty.SINGLE); // 1 vin selectionne.
+        erreur_txt2 = getError("Error068"); // Delete it ?
       } else {
-        erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), listToDelete.size()); //vins selectionnes.
-        erreur_txt2 = Program.getError("Error131"); //" Delete them ?
+        erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), listToDelete.size()); //vins selectionnes.
+        erreur_txt2 = getError("Error131"); //" Delete them ?
       }
-      int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       if (resul == JOptionPane.YES_OPTION) {
         SwingUtilities.invokeLater(() -> {
           for (Bouteille bottle : listToDelete) {
@@ -298,9 +300,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           ProgramPanels.updateCellOrganizerPanel(false);
 
           if (listToDelete.size() == 1) {
-            resultInfoLabel.setText(Program.getLabel("Search.1ItemDeleted", LabelProperty.SINGLE));
+            resultInfoLabel.setText(getLabel("Search.1ItemDeleted", LabelProperty.SINGLE));
           } else {
-            resultInfoLabel.setText(MessageFormat.format(Program.getLabel("Search.NItemDeleted", LabelProperty.PLURAL), listToDelete.size()));
+            resultInfoLabel.setText(MessageFormat.format(getLabel("Search.NItemDeleted", LabelProperty.PLURAL), listToDelete.size()));
           }
         });
       }
@@ -317,7 +319,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     Debug("Cherche_actionPerforming...");
     name.removeMenu();
     updateLabelObjectNumber(false);
-    resultInfoLabel.setText(Program.getLabel("Infos087")); //"Recherche en cours...
+    resultInfoLabel.setText(getLabel("Infos087")); //"Recherche en cours...
     new Thread(this).start();
   }
 
@@ -423,7 +425,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
         if (listToModify.isEmpty()) {
           //No object to modify / Select...
-          Erreur.showInformationMessage(Program.getError("Error071", LabelProperty.SINGLE), Program.getError("Error072", LabelProperty.THE_PLURAL));
+          Erreur.showInformationMessage(getError("Error071", LabelProperty.SINGLE), getError("Error072", LabelProperty.THE_PLURAL));
         } else {
           Debug("Modifying " + listToModify.size() + " object(s)...");
           Program.modifyBottles(listToModify);
@@ -470,11 +472,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     if (alreadyFoundItems) {
       if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false)) {
         // Don't add object if already in the list
-        Erreur.showInformationMessageWithKey(Program.getError("Error133", LabelProperty.A_SINGLE), Program.getError("Error134"), MyCellarSettings.DONT_SHOW_INFO);
+        Erreur.showInformationMessageWithKey(getError("Error133", LabelProperty.A_SINGLE), MyCellarSettings.DONT_SHOW_INFO);
       }
     }
     alreadyFoundItems = false;
-    resultInfoLabel.setText(Program.getLabel("Infos088")); //"Recherche terminee.
+    resultInfoLabel.setText(getLabel("Infos088")); //"Recherche terminee.
     if (searchTableModel.getRowCount() > 0) {
       exportButton.setEnabled(true);
       modifyButton.setEnabled(true);
@@ -537,7 +539,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     } else {
       countLabel.setText(DASH);
     }
-    objectFoundCountLabels.setText(Program.getLabel("Search.bottleFound", new LabelProperty(searchTableModel.getRowCount() > 1).withCapital()));
+    objectFoundCountLabels.setText(getLabel("Search.bottleFound", new LabelProperty(searchTableModel.getRowCount() > 1).withCapital()));
   }
 
   private void searchByPlace() {
@@ -570,8 +572,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (myCellarObject == null) {
         searchTableModel.removeAll();
         updateLabelObjectNumber(true);
-        resultInfoLabel.setText(Program.getLabel("Infos224")); //"Echec de la recherche.
-        Erreur.showSimpleErreur(Program.getError("Error066", LabelProperty.SINGLE)); //Aucun objet trouve
+        resultInfoLabel.setText(getLabel("Infos224")); //"Echec de la recherche.
+        Erreur.showSimpleErreur(getError("Error066", LabelProperty.SINGLE)); //Aucun objet trouve
         modifyButton.setEnabled(false);
         deleteButton.setEnabled(false);
       } else {
@@ -760,7 +762,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     final LinkedList<Bouteille> list = getSelectedBouteilles();
 
     if (list.isEmpty()) {
-      Erreur.showInformationMessage(Program.getError("Error.NoWineSelected", LabelProperty.SINGLE));
+      Erreur.showInformationMessage(getError("Error.NoWineSelected", LabelProperty.SINGLE));
       return;
     }
     new OpenWorkSheetAction(list).actionPerformed(null);
@@ -876,8 +878,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           year.addItem(Integer.toString(s));
         }
       }
-      year.addItem(Program.getLabel("Infos390")); // NV
-      year.addItem(Program.getLabel("Infos225")); // Autre
+      year.addItem(getLabel("Infos390")); // NV
+      year.addItem(getLabel("Infos225")); // Autre
     }
   }
 

@@ -70,7 +70,7 @@ public class PanelPlace extends JPanel implements IPlace {
   private final boolean showSeveralLocationCheck;
   private SeveralLocationState severalLocationState = SeveralLocationState.NONE;
   private boolean listenersEnabled = true;
-private boolean editable = true;
+  private boolean editable = true;
 
   public PanelPlace() {
     this(null, false, true, true, true, false, true, false);
@@ -234,10 +234,10 @@ private boolean editable = true;
     previousLineLabel.setVisible(b && labelLine.isVisible());
     previousColumnLabel.setVisible(b && labelColumn.isVisible());
   }
-  
+
   public void setEditable(boolean editable) {
-	  this.editable = editable;
-	  enableAll(editable);
+    this.editable = editable;
+    enableAll(editable);
   }
 
   public void enableAll(boolean enable) {

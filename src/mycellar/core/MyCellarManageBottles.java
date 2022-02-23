@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -36,7 +38,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
   protected final JModifyTextArea commentTextArea = new JModifyTextArea();
   protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
-  protected final char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
+  protected final char ajouterChar = getLabel("AJOUTER").charAt(0);
   protected MyCellarButton addButton;
   protected MyCellarButton cancelButton;
   protected PanelVignobles panelVignobles;

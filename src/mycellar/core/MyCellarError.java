@@ -1,6 +1,6 @@
 package mycellar.core;
 
-import mycellar.Program;
+import mycellar.core.text.MyCellarLabelManagement;
 
 import java.text.MessageFormat;
 import java.util.Objects;
@@ -55,15 +55,15 @@ public class MyCellarError {
   public String getErrorMessage() {
     switch (error) {
       case INEXISTING_PLACE:
-        return MessageFormat.format(Program.getError("MyCellarError.inexistingPlace"), place);
+        return MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingPlace"), place);
       case INEXISTING_NUM_PLACE:
-        return MessageFormat.format(Program.getError("MyCellarError.inexistingNumPlace"), numLieu);
+        return MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingNumPlace"), numLieu);
       case FULL_BOX:
-        return MessageFormat.format(Program.getError("MyCellarError.fullCaisse"), numLieu);
+        return MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.fullCaisse"), numLieu);
       case INEXISTING_CELL:
-        return MessageFormat.format(Program.getError("MyCellarError.inexistingCase"), place);
+        return MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingCase"), place);
       case CELL_FULL:
-        return Program.getError("MyCellarError.occupiedCase");
+        return MyCellarLabelManagement.getError("MyCellarError.occupiedCase");
       default:
         return "";
     }

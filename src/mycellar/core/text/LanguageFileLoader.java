@@ -1,4 +1,4 @@
-package mycellar.core.language;
+package mycellar.core.text;
 
 import mycellar.Program;
 
@@ -17,10 +17,10 @@ import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2011</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2011
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 1.2
@@ -45,26 +45,26 @@ public final class LanguageFileLoader {
     return INSTANCE;
   }
 
-  public static String getLabel(String _id) {
+  static String getLabel(String id) {
     if (INSTANCE.bundleTitle == null) {
       Debug("ERROR: Labels' map not intialized!");
       return "";
     }
     if (Program.isMusicType()) {
       try {
-        return INSTANCE.bundleMusicTitle.getString(_id);
+        return INSTANCE.bundleMusicTitle.getString(id);
       } catch (MissingResourceException ignored) {
       }
     }
-    return INSTANCE.bundleTitle.getString(_id);
+    return INSTANCE.bundleTitle.getString(id);
   }
 
-  public static String getError(String _id) {
+  static String getError(String id) {
     if (INSTANCE.bundleError == null) {
       Debug("ERROR: Errors' map not intialized!");
       return "";
     }
-    return INSTANCE.bundleError.getString(_id);
+    return INSTANCE.bundleError.getString(id);
   }
 
   public static int getLanguageIndex(String language) {

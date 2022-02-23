@@ -3,7 +3,6 @@ package mycellar.core.text;
 import mycellar.Program;
 import mycellar.ProgramType;
 import mycellar.core.IMyCellarComponent;
-import mycellar.core.language.LanguageFileLoader;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.JOptionPane;

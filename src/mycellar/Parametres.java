@@ -4,9 +4,9 @@ import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.language.Language;
-import mycellar.core.language.LanguageFileLoader;
 import mycellar.core.text.LabelType;
+import mycellar.core.text.Language;
+import mycellar.core.text.LanguageFileLoader;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
@@ -39,14 +39,15 @@ import static mycellar.core.MyCellarSettings.FILE_EXCEL;
 import static mycellar.core.MyCellarSettings.HAS_EXCEL_FILE;
 import static mycellar.core.MyCellarSettings.LANGUAGE;
 import static mycellar.core.MyCellarSettings.SIECLE;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2004</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2004
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 12.9
@@ -185,7 +186,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
         Program.putCaveConfigBool(HAS_EXCEL_FILE, true);
         String fic = file_bak.getText();
         if (MyCellarControl.hasInvalidExtension(fic, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), fic), Program.getError("Error035"));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error034"), fic), getError("Error035"));
           return;
         } else {
           Program.putCaveConfigString(FILE_EXCEL, fic);
@@ -226,7 +227,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(Program.getError("FileNotFound"));
+        Erreur.showSimpleErreur(getError("FileNotFound"));
         Program.Debug("ERROR: parcourir_excel: File not found while Opening!");
         return;
       }

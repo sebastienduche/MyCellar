@@ -25,6 +25,7 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SLASH;
 import static mycellar.ProgramConstants.isVK_ENTER;
 import static mycellar.ProgramConstants.isVK_O;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -47,7 +48,7 @@ final class CSVOptions extends JDialog {
     Debug("Constructor");
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setModal(true);
-    setTitle(Program.getLabel("Infos269"));
+    setTitle(getLabel("Infos269"));
 
     addKeyListener(new KeyAdapter() {
       @Override
@@ -78,10 +79,10 @@ final class CSVOptions extends JDialog {
     jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));
     jPanel2.setFont(FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
-    separator.addItem(Program.getLabel("Infos002"));
-    separator.addItem(Program.getLabel("Infos042"));
-    separator.addItem(Program.getLabel("Infos043"));
-    separator.addItem(Program.getLabel("Infos044"));
+    separator.addItem(getLabel("Infos002"));
+    separator.addItem(getLabel("Infos042"));
+    separator.addItem(getLabel("Infos043"));
+    separator.addItem(getLabel("Infos044"));
     String key = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
     switch (key) {
       case COLUMNS_SEPARATOR:
@@ -104,9 +105,9 @@ final class CSVOptions extends JDialog {
     add(info_separator, "split 2");
     add(separator, "wrap");
 
-    JScrollPane jScrollPane1 = new JScrollPane(jPanel2);
-    jScrollPane1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
-    add(jScrollPane1, "grow, gaptop 15px, wrap");
+    JScrollPane scrollPane = new JScrollPane(jPanel2);
+    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Infos258")));
+    add(scrollPane, "grow, gaptop 15px, wrap");
     for (int i = 0; i < nb_colonnes; i++) {
       jPanel2.add(colonnes[i], "grow");
       jPanel2.add(export[i], "wrap");
@@ -128,8 +129,7 @@ final class CSVOptions extends JDialog {
     for (int i = 0; i < nb_colonnes; i++) {
       Program.putCaveConfigBool(MyCellarSettings.EXPORT_CSV + listColumns.get(i).name(), export[i].isSelected());
     }
-    int separ_select = separator.getSelectedIndex();
-    switch (separ_select) {
+    switch (separator.getSelectedIndex()) {
       case 0:
         Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COMMA);
         break;

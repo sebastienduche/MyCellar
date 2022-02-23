@@ -1,6 +1,6 @@
 package mycellar.core.tablecomponents;
 
-import mycellar.Program;
+import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -31,7 +31,7 @@ public class ButtonCellRenderer extends JButton implements TableCellRenderer {
    */
   public ButtonCellRenderer() {
     super();
-    label = Program.getLabel("Infos360");
+    label = MyCellarLabelManagement.getLabel("Infos360");
   }
 
   public ButtonCellRenderer(String label) {

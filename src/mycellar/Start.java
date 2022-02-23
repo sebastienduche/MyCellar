@@ -10,10 +10,10 @@ import mycellar.core.MyCellarVersion;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
-import mycellar.core.language.Language;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.text.LabelType;
+import mycellar.core.text.Language;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.core.uicomponents.MyCellarComboBox;
@@ -83,6 +83,7 @@ import static mycellar.ProgramConstants.RESTART_COMMAND;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.core.text.LabelProperty.PLURAL;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
 
@@ -399,7 +400,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(Program.getError("FileNotFound"));
+        Erreur.showSimpleErreur(getError("FileNotFound"));
         Debug("ERROR: ImportXmlPlace: File not found during Opening!");
         return;
       }
@@ -455,7 +456,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       }
     } catch (UnableToOpenFileException e) {
       if (!(e instanceof UnableToOpenMyCellarFileException)) {
-        Erreur.showSimpleErreur(Program.getError("Error.LoadingFile"));
+        Erreur.showSimpleErreur(getError("Error.LoadingFile"));
       }
       Program.showException(e, false);
     } finally {
@@ -957,7 +958,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(Program.getError("FileNotFound"));
+        Erreur.showSimpleErreur(getError("FileNotFound"));
         Debug("ERROR: menuSaveAs: File not found during Opening!");
         return;
       }
@@ -1054,7 +1055,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private CutAction(boolean withText) {
       super(LabelType.INFO, "241", LabelProperty.SINGLE, MyCellarImage.CUT);
-      setDescriptionLabelCode("Infos241");
+      setDescriptionLabel(LabelType.INFO, "241", LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -1071,7 +1072,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private CopyAction(boolean withText) {
       super(LabelType.INFO, "242", LabelProperty.SINGLE, MyCellarImage.COPY);
-      setDescriptionLabelCode("Infos242");
+      setDescriptionLabel(LabelType.INFO, "242", LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -1088,7 +1089,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private PasteAction(boolean withText) {
       super(LabelType.INFO, "243", LabelProperty.SINGLE, MyCellarImage.PASTE);
-      setDescriptionLabelCode("Infos243");
+      setDescriptionLabel(LabelType.INFO, "243", LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -1137,7 +1138,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private OpenAction(boolean withText) {
       super(LabelType.INFO, "372", LabelProperty.SINGLE, MyCellarImage.OPEN);
-      setDescriptionLabelCode("Infos372");
+      setDescriptionLabel(LabelType.INFO, "372", LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -1152,7 +1153,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
           File file = boiteFichier.getSelectedFile();
           if (file == null) {
             setCursor(Cursor.getDefaultCursor());
-            Erreur.showSimpleErreur(Program.getError("FileNotFound"));
+            Erreur.showSimpleErreur(getError("FileNotFound"));
             Debug("ERROR: OpenAction: File not found during Opening!");
             ProgramPanels.updateAllPanels();
             updateMainPanel();
@@ -1163,7 +1164,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
           openFile(fic);
         }
       } catch (UnableToOpenFileException e) {
-        Erreur.showSimpleErreur(Program.getError("Error.LoadingFile"));
+        Erreur.showSimpleErreur(getError("Error.LoadingFile"));
         Program.showException(e, false);
       } finally {
         setCursor(Cursor.getDefaultCursor());
@@ -1176,7 +1177,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private NewAction(boolean withText) {
       super(LabelType.INFO, "378", MyCellarImage.NEW);
-      setDescriptionLabelCode("Infos378");
+      setDescriptionLabel(LabelType.INFO, "378");
       setWithText(withText);
     }
 
@@ -1201,7 +1202,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private SaveAction(boolean withText) {
       super(LabelType.INFO, "326", MyCellarImage.SAVE);
-      setDescriptionLabelCode("Infos326");
+      setDescriptionLabel(LabelType.INFO, "326");
       setWithText(withText);
     }
 
@@ -1232,7 +1233,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private SaveAsAction() {
       super(LabelType.INFO, "371", MyCellarImage.SAVEAS);
-      setDescriptionLabelCode("Infos371");
+      setDescriptionLabel(LabelType.INFO, "371");
     }
 
     @Override
@@ -1248,7 +1249,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     private AddWineAction() {
       super(LabelType.INFO_OTHER, LABEL, MyCellarImage.WINE);
       putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
-      setDescriptionLabelCode(LABEL);
+      setDescriptionLabel(LabelType.INFO_OTHER, LABEL);
     }
 
     @Override
@@ -1266,7 +1267,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private AddPlaceAction() {
       super(LabelType.INFO, "109", MyCellarImage.PLACE);
-      setDescriptionLabelCode(LABEL);
+      setDescriptionLabel(LabelType.INFO, "010");
     }
 
     @Override
@@ -1282,7 +1283,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private DeletePlaceAction() {
       super(LabelType.INFO_OTHER, "Main.Delete", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.DELPLACE);
-      setDescriptionLabelCode(LABEL);
+      setDescriptionLabel(LabelType.INFO, "004");
     }
 
     @Override
@@ -1313,7 +1314,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private ModifyPlaceAction() {
       super(LabelType.INFO, "079", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.MODIFYPLACE);
-      setDescriptionLabelCode(LABEL);
+      setDescriptionLabel(LabelType.INFO, "007");
     }
 
     @Override
@@ -1331,7 +1332,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private SearchAction() {
       super(LabelType.INFO_OTHER, "Main.tabSearchButton", MyCellarImage.SEARCH);
-      setDescriptionLabelCode("Main.tabSearch");
+      setDescriptionLabel(LabelType.INFO_OTHER, "Main.tabSearch");
     }
 
     @Override
@@ -1347,7 +1348,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private CreateTabAction() {
       super(LabelType.INFO, "008", MyCellarImage.TABLE);
-      setDescriptionLabelCode(LABEL);
+      setDescriptionLabel(LabelType.INFO, "008");
     }
 
     @Override
@@ -1363,7 +1364,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private ImportFileAction() {
       super(LabelType.INFO, "107", MyCellarImage.IMPORT);
-      setDescriptionLabelCode(LABEL);
+      setDescriptionLabel(LabelType.INFO, "011");
     }
 
     @Override
@@ -1379,7 +1380,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private ExportFileAction() {
       super(LabelType.INFO, "108", LabelProperty.SINGLE, MyCellarImage.EXPORT);
-      setDescriptionLabelCode(LABEL);
+      setDescriptionLabel(LabelType.INFO, "148");
     }
 
     @Override
@@ -1395,7 +1396,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private StatAction() {
       super(LabelType.INFO, "009", MyCellarImage.STATS);
-      setDescriptionLabelCode(LABEL);
+      setDescriptionLabel(LabelType.INFO, "009");
     }
 
     @Override
@@ -1459,7 +1460,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     private ShowFileAction() {
       super(LabelType.INFO, "324", MyCellarImage.SHOW);
-      setDescriptionLabelCode(LABEL);
+      setDescriptionLabel(LabelType.INFO, "325");
     }
 
     @Override

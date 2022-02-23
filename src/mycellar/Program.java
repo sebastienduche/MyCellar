@@ -20,12 +20,11 @@ import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
-import mycellar.core.language.Language;
-import mycellar.core.language.LanguageFileLoader;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.storage.SerializedStorage;
 import mycellar.core.storage.Storage;
-import mycellar.core.text.LabelProperty;
+import mycellar.core.text.Language;
+import mycellar.core.text.LanguageFileLoader;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
@@ -97,6 +96,8 @@ import static mycellar.ProgramConstants.UNTITLED1_SINFO;
 import static mycellar.ProgramConstants.VERSION;
 import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -1020,26 +1021,6 @@ public final class Program {
 
   public static Storage getStorage() {
     return SerializedStorage.getInstance();
-  }
-
-  @Deprecated
-  public static String getLabel(String id) {
-    return MyCellarLabelManagement.getLabel(id, true);
-  }
-
-  @Deprecated
-  public static String getLabel(String id, LabelProperty labelProperty) {
-    return MyCellarLabelManagement.getLabel(id, labelProperty);
-  }
-
-  @Deprecated
-  public static String getError(String id, LabelProperty labelProperty) {
-    return MyCellarLabelManagement.getError(id, labelProperty);
-  }
-
-  @Deprecated
-  public static String getError(String id) {
-    return MyCellarLabelManagement.getError(id);
   }
 
   public static boolean open(String filename, boolean check) {

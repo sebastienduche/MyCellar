@@ -30,8 +30,6 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   private String descriptionLabelCode;
   private LabelProperty descriptionLabelProperty;
 
-  @Deprecated
-  private String oldDescriptionLabelCode;
   private boolean withText = true;
 
   public MyCellarAction(LabelType textLabelType, String textLabelCode, LabelProperty textLabelProperty) {
@@ -59,24 +57,21 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   @Override
   public void setText(String text) {
     putValue(Action.NAME, withText ? text : "");
-    if (oldDescriptionLabelCode != null) {
-      putValue(Action.SHORT_DESCRIPTION, getLabel(oldDescriptionLabelCode, labelKey.getLabelProperty()));
-    } else if (descriptionLabelType != null) {
+    if (descriptionLabelType != null) {
       putValue(Action.SHORT_DESCRIPTION, getLabel(new LabelKey(descriptionLabelType, descriptionLabelCode, descriptionLabelProperty)));
     } else {
       putValue(Action.SHORT_DESCRIPTION, text);
     }
   }
 
+  public void setDescriptionLabel(LabelType labelType, String labelCode) {
+    setDescriptionLabel(labelType, labelCode, null);
+  }
+
   public void setDescriptionLabel(LabelType labelType, String labelCode, LabelProperty labelProperty) {
     descriptionLabelType = labelType;
     descriptionLabelCode = labelCode;
     descriptionLabelProperty = labelProperty;
-  }
-
-  @Deprecated
-  public void setDescriptionLabelCode(String code) {
-    oldDescriptionLabelCode = code;
   }
 
   public void setWithText(boolean withText) {

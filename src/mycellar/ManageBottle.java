@@ -29,13 +29,15 @@ import java.text.MessageFormat;
 import static mycellar.MyCellarUtils.nonNullValueOrDefault;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.LabelProperty.OF_THE_SINGLE;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2005</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2005
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 9.4
@@ -61,8 +63,8 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       panelGeneral.initializeForEdition();
       panelWineAttribute.initValues();
 
-      addButton.setText(Program.getLabel("ManageBottle.SaveModifications"));
-      cancelButton.setText(Program.getLabel("ManageBottle.SaveExitModifications"));
+      addButton.setText(getLabel("ManageBottle.SaveModifications"));
+      cancelButton.setText(getLabel("ManageBottle.SaveExitModifications"));
       addButton.setMnemonic(ajouterChar);
 
       PopupListener popupListener = new PopupListener();
@@ -112,7 +114,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       initStatusAndTime();
 
       panelPlace.selectPlace(cellarObject);
-      end.setText(Program.getLabel("Infos092")); //"Saisir les modifications
+      end.setText(getLabel("Infos092")); //"Saisir les modifications
       resetModified();
     } catch (RuntimeException e) {
       Program.showException(e);
@@ -255,7 +257,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       rangement.updateToStock(myCellarObject);
     }
 
-    end.setText(Program.getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
+    end.setText(getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
     ProgramPanels.updatePanelsWithoutBottles();
     panelWineAttribute.setModificationDetectionActive(false);
     updateStatusAndTime();
@@ -270,12 +272,11 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   private boolean askToReplaceBottle(MyCellarObject bouteille, Place oldPlace) throws MyCellarException {
     if (!bouteille.equals(myCellarObject)) {
       Debug("ERROR: Not an empty place, Replace?");
-      String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), bouteille.getNom(), bouteille.getAnnee());
-      String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+      String erreur_txt1 = MessageFormat.format(getError("Error059"), bouteille.getNom(), bouteille.getAnnee());
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + getError("Error060"), getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
         panelPlace.clearLabelEnd();
-        end.setText(Program.getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
+        end.setText(getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
       } else {
         return false;
       }
@@ -308,7 +309,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     modified |= panelPlace.isModified();
     modified |= panelVignobles.isModified();
 
-    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("Error148", OF_THE_SINGLE) + SPACE + Program.getError("Error145"), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error148", OF_THE_SINGLE) + SPACE + getError("Error145"), getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
       Debug("Don't Quit.");
       addButton.setEnabled(true);
       cancelButton.setEnabled(true);

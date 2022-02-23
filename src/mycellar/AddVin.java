@@ -35,14 +35,15 @@ import java.util.Objects;
 import static mycellar.MyCellarUtils.nonNullValueOrDefault;
 import static mycellar.core.text.LabelProperty.A_SINGLE;
 import static mycellar.core.text.LabelProperty.PLURAL;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2005</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2005
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 30.5
@@ -224,7 +225,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       } else if (rangement.isSimplePlace()) {
         Debug("Is a Caisse");
         if (!rangement.hasFreeSpaceInSimplePlace(place)) {
-          Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
+          Erreur.showSimpleErreur(getError("Error154"), getError("Error153"));
           end.setText("");
           Debug("ERROR: No free spaces");
           return;
@@ -236,13 +237,13 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           if (countStillToAdd > 1) {
             if (Program.hasOnlyOnePlace()) {
               Debug("Adding multiple objects in the same place?");
-              String message = MessageFormat.format(Program.getError("Error061", LabelProperty.PLURAL), countStillToAdd, rangement.getName()); //Voulez vous ajouter les xx bouteilles dans yy
+              String message = MessageFormat.format(getError("Error061", LabelProperty.PLURAL), countStillToAdd, rangement.getName()); //Voulez vous ajouter les xx bouteilles dans yy
               if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), message, getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
                 //Add several bottles in Caisse
                 Debug("Adding multiple objects in the same place: YES");
 
                 if (rangement.isSimplePlaceLimited() && (rangement.getTotalCellUsed(place) + countStillToAdd) > rangement.getNbColumnsStock()) {
-                  Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
+                  Erreur.showSimpleErreur(getError("Error154"), getError("Error153"));
                   end.setText("");
                 } else {
                   for (int j = 0; j < countStillToAdd; j++) {
@@ -265,7 +266,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
               if (rangement.isSimplePlaceLimited() && (rangement.getTotalCellUsed(place) + countStillToAdd) > rangement.getNbColumnsStock()) {
                 hasNoError = false;
                 Debug("ERROR: This caisse is full. Unable to add all bottles in the same place!");
-                Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
+                Erreur.showSimpleErreur(getError("Error154"), getError("Error153"));
                 end.setText("");
               } else {
                 nb_bottle_add_only_one_place = countStillToAdd;
@@ -299,7 +300,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
               resetValues();
             } else {
               Debug("ERROR: Adding bottle: Storage full");
-              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error151"), rangement.getName()), Program.getError("Error153"));
+              Erreur.showSimpleErreur(MessageFormat.format(getError("Error151"), rangement.getName()), getError("Error153"));
               hasNoError = false;
             }
           }
@@ -312,7 +313,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           Debug("ERROR: Unable to move multiple bottles to a Complex place");
           end.setText("");
           String nomRangement = rangement.getName();
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error104", PLURAL), nomRangement), Program.getError("Error105")); //"Veuillez selectionner un rangement de type caisse.");//Impossible de deplacer plusieurs bouteilles dans
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error104", PLURAL), nomRangement), getError("Error105")); //"Veuillez selectionner un rangement de type caisse.");//Impossible de deplacer plusieurs bouteilles dans
           enableAll(true);
         } else {
           // Ajout d'une bouteille dans l'armoire
@@ -354,7 +355,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
                 if (nb_free_space > countStillToAdd) {
                   nb_free_space = countStillToAdd;
                 }
-                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getError("Error175", PLURAL), nb_free_space), getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getError("Error175", PLURAL), nb_free_space), getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
                   Debug("Putting multiple bottle in chosen place");
                   nb_bottle_add_only_one_place = nb_free_space;
                   countStillToAdd -= nb_free_space + 1;
@@ -386,8 +387,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
             objectAdded = true;
           } else { // La case n'est pas vide
             Debug("WARNING: Not an empty place, Replace?");
-            String erreur_txt1 = MessageFormat.format(Program.getError("Error059"), myCellarObjectFound.getNom(), myCellarObjectFound.getAnnee()); // deja present a cette place
-            String erreur_txt2 = Program.getError("Error060"); //"Voulez vous le remplacer?
+            String erreur_txt1 = MessageFormat.format(getError("Error059"), myCellarObjectFound.getNom(), myCellarObjectFound.getAnnee()); // deja present a cette place
+            String erreur_txt2 = getError("Error060"); //"Voulez vous le remplacer?
             if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
               replaceWine(newMyCellarObject, myCellarObjectFound);
               end.setText(isModify ? getLabel("AddVin.1ItemModified", LabelProperty.SINGLE) : getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE), true);
@@ -459,7 +460,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       int nbbottle = listBottleInModification.size();
       if (rangement.isSimplePlaceLimited() && (rangement.getTotalCellUsed(place) + nbbottle) > rangement.getNbColumnsStock()) {
         Debug("ERROR: Not enough place!");
-        Erreur.showSimpleErreur(Program.getError("Error154"), Program.getError("Error153"));
+        Erreur.showSimpleErreur(getError("Error154"), getError("Error153"));
         panelPlace.enableSimplePlace(true);
         addButton.setEnabled(true);
         end.setText("");

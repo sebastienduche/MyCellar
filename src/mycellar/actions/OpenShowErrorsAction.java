@@ -1,8 +1,8 @@
 package mycellar.actions;
 
 import mycellar.MyCellarImage;
-import mycellar.Program;
 import mycellar.Start;
+import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.ShowFile;
 
@@ -23,7 +23,7 @@ public class OpenShowErrorsAction extends AbstractAction {
       final ShowFile showErrors = ProgramPanels.createShowErrors();
       showErrors.updateView();
       int tabIndex = ProgramPanels.findTab(MyCellarImage.ERROR, null);
-      final String label = Program.getLabel("ShowFile.ErrorTitle");
+      final String label = MyCellarLabelManagement.getLabel("ShowFile.ErrorTitle");
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);
       } else {

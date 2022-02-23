@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -28,7 +29,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidBotteName(String name) {
     if (isNullOrEmpty(name)) {
       Debug("ERROR: Wrong Name");
-      Erreur.showSimpleErreur(Program.getError("Error054", LabelProperty.OF_THE_SINGLE)); // Enter the name
+      Erreur.showSimpleErreur(getError("Error054", LabelProperty.OF_THE_SINGLE)); // Enter the name
       return true;
     }
     return false;
@@ -37,7 +38,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidYear(String year) {
     if (Bouteille.isInvalidYear(year)) {
       Debug("ERROR: Wrong date");
-      Erreur.showSimpleErreur(Program.getError("Error053")); // Enter a valid year
+      Erreur.showSimpleErreur(getError("Error053")); // Enter a valid year
       return true;
     }
     return false;
@@ -50,7 +51,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidPlace(Place place, Component component) {
     if (Program.EMPTY_PLACE.equals(place.getRangement())) {
       Debug("ERROR: Wrong Place");
-      Erreur.showSimpleErreur(component, Program.getError("Error055")); // Select a place
+      Erreur.showSimpleErreur(component, getError("Error055")); // Select a place
       return true;
     }
     return false;
@@ -63,12 +64,12 @@ public final class MyCellarControl {
   public static boolean hasInvalidNumLieuNumber(int placeNum, boolean simplePlace, Component component) {
     if (simplePlace && placeNum < 0) {
       Debug("ERROR: Wrong Num Place");
-      Erreur.showSimpleErreur(component, Program.getError("Error174"));
+      Erreur.showSimpleErreur(component, getError("Error174"));
       return true;
     }
     if (!simplePlace && placeNum <= 0) {
       Debug("ERROR: Wrong Num Place");
-      Erreur.showSimpleErreur(component, Program.getError("Error056"));
+      Erreur.showSimpleErreur(component, getError("Error056"));
       return true;
     }
     return false;
@@ -81,7 +82,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidLineNumber(int line, Component component) {
     if (line <= 0) {
       Debug("ERROR: Wrong Line");
-      Erreur.showSimpleErreur(component, Program.getError("Error057")); // Enter a line number
+      Erreur.showSimpleErreur(component, getError("Error057")); // Enter a line number
       return true;
     }
     return false;
@@ -94,7 +95,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidColumnNumber(int column, Component component) {
     if (column <= 0) {
       Debug("ERROR: Wrong Column");
-      Erreur.showSimpleErreur(component, Program.getError("Error058")); // Enter a column number
+      Erreur.showSimpleErreur(component, getError("Error058")); // Enter a column number
       return true;
     }
     return false;
@@ -110,7 +111,7 @@ public final class MyCellarControl {
     Debug("Controling name...");
     if (isNullOrEmpty(name)) {
       Debug("ERROR: Name cannot be empty!");
-      Erreur.showSimpleErreur(Program.getError("Error010"));
+      Erreur.showSimpleErreur(getError("Error010"));
       return false;
     }
 
@@ -118,7 +119,7 @@ public final class MyCellarControl {
       Paths.get(name.strip());
     } catch (InvalidPathException e) {
       Debug("ERROR: Forbidden Characters!");
-      Erreur.showSimpleErreur(Program.getError("Error126"));
+      Erreur.showSimpleErreur(getError("Error126"));
       return false;
     }
     return true;
@@ -144,7 +145,7 @@ public final class MyCellarControl {
     Debug("Controling path...");
     if (isNullOrEmpty(path)) {
       Debug("ERROR: Name cannot be empty!");
-      Erreur.showSimpleErreur(Program.getError("MyCellarControl.emptyPath"));
+      Erreur.showSimpleErreur(getError("MyCellarControl.emptyPath"));
       return false;
     }
 
@@ -152,7 +153,7 @@ public final class MyCellarControl {
       Paths.get(path.strip());
     } catch (InvalidPathException e) {
       Debug("ERROR: Forbidden Characters!");
-      Erreur.showSimpleErreur(Program.getError("MyCellarControl.invalidPath"));
+      Erreur.showSimpleErreur(getError("MyCellarControl.invalidPath"));
       return false;
     }
     return true;
@@ -168,7 +169,7 @@ public final class MyCellarControl {
     Debug("Controlling existing name...");
     if (RangementUtils.isExistingPlace(name)) {
       Debug("ERROR: Name already use!");
-      Erreur.showSimpleErreur(Program.getError("Error037")); // Name already used
+      Erreur.showSimpleErreur(getError("Error037")); // Name already used
       return false;
     }
     return true;

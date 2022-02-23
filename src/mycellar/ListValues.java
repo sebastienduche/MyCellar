@@ -7,6 +7,8 @@ import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
 import java.util.List;
 
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -42,7 +44,7 @@ class ListValues extends AbstractTableModel {
 
   @Override
   public String getColumnName(int column) {
-    return Program.getLabel("Infos208");
+    return getLabel("Infos208");
   }
 
   @Override

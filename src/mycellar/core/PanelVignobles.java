@@ -30,6 +30,7 @@ import static mycellar.Program.NO_APPELATION;
 import static mycellar.Program.NO_COUNTRY;
 import static mycellar.Program.NO_VIGNOBLE;
 import static mycellar.ProgramConstants.FR;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -181,7 +182,7 @@ public final class PanelVignobles extends JPanel {
     add(comboAppelationAOC, "w 200:200:, growx");
     add(comboAppelationIGP, "w 200:200:");
 
-    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Program.getLabel("Main.Vignoble")));
+    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel("Main.Vignoble")));
   }
 
   public void updateList() {

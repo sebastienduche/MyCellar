@@ -794,7 +794,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           erreur_txt2 = getError("Error068"); //"Voulez-vous le supprimer?
         } else {
           erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), toDeleteList.size()); //vins selectionnes.
-          erreur_txt2 = getError("Error131"); //"Voulez-vous les supprimer?
+          erreur_txt2 = getError("Error131"); //"Voulez-vous les supprimer ?
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           if (isError()) {
@@ -859,10 +859,10 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     } else {
       String erreur_txt1, erreur_txt2;
       if (toRestoreList.size() == 1) {
-        erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); //"1 vin selectionne.");
+        erreur_txt1 = getError("Error067", LabelProperty.SINGLE); //"1 vin selectionne.
         erreur_txt2 = getLabel("ShowFile.RestoreOne");
       } else {
-        erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); //vins selectionnes.");
+        erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); //vins selectionnes.
         erreur_txt2 = getLabel("ShowFile.RestoreSeveral");
       }
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -922,7 +922,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         num_empl = Integer.parseInt((String) value);
         nValueToCheck = num_empl;
       } catch (NumberFormatException e) {
-        Erreur.showSimpleErreur(Program.getError("Error196"));
+        Erreur.showSimpleErreur(getError("Error196"));
         return;
       }
     } else if (field == MyCellarFields.LINE) {
@@ -930,7 +930,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         line = Integer.parseInt((String) value);
         nValueToCheck = line;
       } catch (NumberFormatException e) {
-        Erreur.showSimpleErreur(Program.getError("Error196"));
+        Erreur.showSimpleErreur(getError("Error196"));
         return;
       }
     } else if (field == MyCellarFields.COLUMN) {
@@ -1274,7 +1274,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       if (bottles.isEmpty()) {
         //"Aucun vin a modifier!
         //"Veuillez selectionner les vins a modifier.
-        Erreur.showInformationMessage(Program.getError("Error071", LabelProperty.SINGLE), getError("Error072", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getError("Error071", LabelProperty.SINGLE), getError("Error072", LabelProperty.THE_PLURAL));
         return;
       }
 

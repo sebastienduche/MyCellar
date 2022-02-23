@@ -14,11 +14,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2016</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2016
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 2.1
@@ -26,38 +28,38 @@ import java.util.List;
  */
 
 public enum MyCellarFields {
-  NAME(Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital())),
-  YEAR(Program.getLabel("Infos189")),
-  TYPE(Program.getLabel("Infos134")),
-  PLACE(Program.getLabel("Infos217")),
-  NUM_PLACE(Program.getLabel("Infos082")),
-  LINE(Program.getLabel("Infos028")),
-  COLUMN(Program.getLabel("Infos083")),
-  PRICE(Program.getLabel("Infos135")),
-  COMMENT(Program.getLabel("Infos137")),
-  MATURITY(Program.getLabel("Infos391")),
-  PARKER(Program.getLabel("Infos392")),
-  COLOR(Program.getLabel("AddVin.Color")),
-  COUNTRY(Program.getLabel("Main.Country")),
-  VINEYARD(Program.getLabel("Main.Vignoble")),
-  AOC(Program.getLabel("Main.AppelationAOC")),
-  IGP(Program.getLabel("Main.AppelationIGP")),
-  STATUS(Program.getLabel("Main.Status")),
-  STYLE(Program.getLabel("Main.Style")),
-  COMPOSER(Program.getLabel("Main.Composer")),
-  ARTIST(Program.getLabel("Main.Artist")),
-  SUPPORT(Program.getLabel("Main.Support")),
-  DURATION(Program.getLabel("Main.Duration")),
-  DISK_NUMBER(Program.getLabel("Main.DiskNumber")),
-  DISK_COUNT(Program.getLabel("Main.DiskCount")),
-  RATING(Program.getLabel("Main.Rating")),
-  FILE(Program.getLabel("Main.File")),
-  EXTERNAL_ID(Program.getLabel("Main.ExternalId")),
-  ALBUM(Program.getLabel("Main.Album")),
+  NAME(getLabel("Main.Item", LabelProperty.SINGLE.withCapital())),
+  YEAR(getLabel("Infos189")),
+  TYPE(getLabel("Infos134")),
+  PLACE(getLabel("Infos217")),
+  NUM_PLACE(getLabel("Infos082")),
+  LINE(getLabel("Infos028")),
+  COLUMN(getLabel("Infos083")),
+  PRICE(getLabel("Infos135")),
+  COMMENT(getLabel("Infos137")),
+  MATURITY(getLabel("Infos391")),
+  PARKER(getLabel("Infos392")),
+  COLOR(getLabel("AddVin.Color")),
+  COUNTRY(getLabel("Main.Country")),
+  VINEYARD(getLabel("Main.Vignoble")),
+  AOC(getLabel("Main.AppelationAOC")),
+  IGP(getLabel("Main.AppelationIGP")),
+  STATUS(getLabel("Main.Status")),
+  STYLE(getLabel("Main.Style")),
+  COMPOSER(getLabel("Main.Composer")),
+  ARTIST(getLabel("Main.Artist")),
+  SUPPORT(getLabel("Main.Support")),
+  DURATION(getLabel("Main.Duration")),
+  DISK_NUMBER(getLabel("Main.DiskNumber")),
+  DISK_COUNT(getLabel("Main.DiskCount")),
+  RATING(getLabel("Main.Rating")),
+  FILE(getLabel("Main.File")),
+  EXTERNAL_ID(getLabel("Main.ExternalId")),
+  ALBUM(getLabel("Main.Album")),
 
   // Pour l'import de donnees
   EMPTY(""),
-  USELESS(Program.getLabel("Infos271"));
+  USELESS(getLabel("Infos271"));
 
   private static final List<MyCellarFields> FIELDSFORIMPORT_WINE = Arrays.asList(
       NAME, YEAR, TYPE, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, MATURITY, PARKER, COLOR,

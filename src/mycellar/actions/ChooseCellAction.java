@@ -1,8 +1,8 @@
 package mycellar.actions;
 
-import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.IPlace;
+import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
@@ -13,7 +13,7 @@ public class ChooseCellAction extends AbstractAction {
   private final IPlace iPlace;
 
   public ChooseCellAction(IPlace iPlace) {
-    super(Program.getLabel("AddVin.ChooseCell"));
+    super(MyCellarLabelManagement.getLabel("AddVin.ChooseCell"));
     this.iPlace = iPlace;
   }
 

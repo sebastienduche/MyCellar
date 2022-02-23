@@ -271,7 +271,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       } else if (cell.getCellType() == CellType.STRING) {
         bottle.add(cell.getStringCellValue());
       } else {
-        throw new UnsupportedOperationException(Program.getError(MessageFormat.format(Program.getError("Importer.unknownCellType"), cell.getCellType())));
+        throw new UnsupportedOperationException(getError(MessageFormat.format(getError("Importer.unknownCellType"), cell.getCellType())));
       }
     }
     return bottle;
@@ -296,7 +296,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(Program.getError("FileNotFound"));
+        Erreur.showSimpleErreur(getError("FileNotFound"));
         Debug("ERROR: browseFile: File not found during Opening!");
         return;
       }
@@ -340,7 +340,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         //Erreur le filename ne doit pas etre vide
         Debug("ERROR: filename cannot be empty");
         resetLabelProgress();
-        Erreur.showSimpleErreur(Program.getError("Error019"));
+        Erreur.showSimpleErreur(getError("Error019"));
         importe.setEnabled(true);
         return;
       }
@@ -371,7 +371,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         resetLabelProgress();
         Debug("ERROR: File not found: " + filename);
         //Fichier non trouve Verifier le chemin
-        Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error020"), filename), Program.getError("Error022"));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), filename), getError("Error022"));
         importe.setEnabled(true);
         return;
       }
@@ -381,7 +381,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         Debug("ERROR: No field selected");
         // Aucuns champs selectionnes
         // Veuillez selectionner des champs pour que les donnees soient traitees
-        Erreur.showSimpleErreur(Program.getError("Error025"), Program.getError("Error026"));
+        Erreur.showSimpleErreur(getError("Error025"), getError("Error026"));
         importe.setEnabled(true);
         return;
       }
@@ -390,7 +390,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         if (MyCellarControl.hasInvalidExtension(filename, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
           resetLabelProgress();
           Debug("ERROR: Not a XLS File");
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error034"), filename), Program.getError("Error035"));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error034"), filename), getError("Error035"));
           importe.setEnabled(true);
           return;
         }
@@ -398,7 +398,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         if (MyCellarControl.hasInvalidExtension(filename, Arrays.asList(Filtre.FILTRE_TXT.toString(), Filtre.FILTRE_CSV.toString()))) {
           resetLabelProgress();
           Debug("ERROR: Not a Text File");
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error023"), filename), Program.getError("Error024"));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error023"), filename), getError("Error024"));
           importe.setEnabled(true);
           return;
         }
@@ -406,7 +406,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         if (MyCellarControl.hasInvalidExtension(filename, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
           resetLabelProgress();
           Debug("ERROR: Not a XML File");
-          Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error204"), filename), Program.getError("Error205"));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error204"), filename), getError("Error205"));
           importe.setEnabled(true);
           return;
         }
@@ -434,7 +434,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         Debug("ERROR: fields cannot be selected more than one time");
         //"Un champ ne doit pas etre selectionne 2 fois.
         //"Veuillez choisir un champ different pour chaque colonne.
-        Erreur.showSimpleErreur(Program.getError("Error017"), Program.getError("Error018"));
+        Erreur.showSimpleErreur(getError("Error017"), getError("Error018"));
         importe.setEnabled(true);
         return;
       }
@@ -444,7 +444,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         Debug("ERROR: No column for wine name");
         //"Aucune colonne n'indique le nom du vin.
         //"Veuillez selectionner une colonne avec le nom du vin
-        Erreur.showSimpleErreur(Program.getError("Error142", LabelProperty.OF_THE_SINGLE), Program.getError("Error143", LabelProperty.SINGLE));
+        Erreur.showSimpleErreur(getError("Error142", LabelProperty.OF_THE_SINGLE), getError("Error143", LabelProperty.SINGLE));
         importe.setEnabled(true);
         return;
       }
@@ -455,7 +455,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         Debug("ERROR: No place defined, a place will be create");
         //Il n'y a pas de rangements definis dans le fichier.
         //Un rangement par defaut va etre cree.
-        Erreur.showInformationMessage(Program.getError("Error140"), Program.getError("Error141"));
+        Erreur.showInformationMessage(getError("Error140"), getError("Error141"));
 
         int nb_caisse = Program.getSimplePlaceCount();
 
@@ -494,7 +494,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
               if (nom1.contains("\"") || nom1.contains(COLUMNS_SEPARATOR) || nom1.contains("<") || nom1.contains(">") || nom1.contains("?") || nom1.contains("\\") ||
                   nom1.contains(SLASH) || nom1.contains("|") || nom1.contains("*")) {
                 Options options = new Options(getLabel("Infos020"), getLabel("Infos230"), getLabel("Infos020"), "", nom1,
-                    Program.getError("Error126"), false);
+                    getError("Error126"), false);
                 options.setVisible(true);
                 nom1 = options.getValue();
                 resul = false;
@@ -504,7 +504,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
               // Controle sur la longueur du filename
               if (nom1.isEmpty()) {
                 Options options = new Options(getLabel("Infos020"), getLabel("Infos230"), getLabel("Infos020"), "", "",
-                    Program.getError("Error010"), false);
+                    getError("Error010"), false);
                 options.setVisible(true);
                 nom1 = options.getValue();
                 resul = false;
@@ -517,7 +517,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
                 if (!nom1.isEmpty()) {
                   if (RangementUtils.isExistingPlace(nom1)) {
                     Options options = new Options(getLabel("Infos020"), getLabel("Infos230"), getLabel("Infos020"), "", nom1,
-                        Program.getError("Error037"), false);
+                        getError("Error037"), false);
                     options.setVisible(true);
                     nom1 = options.getValue();
                     resul = false;
@@ -560,7 +560,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
               Debug("ERROR: No separator found");
               //"Le separateur selectionne n'a pas ete trouve.
               //"Veuillez selectionner le separateur utilise dans votre fichier.
-              Erreur.showSimpleErreur(Program.getError("Error042"), Program.getError("Error043"));
+              Erreur.showSimpleErreur(getError("Error042"), getError("Error043"));
               importe.setEnabled(true);
               reader.close();
               return;
@@ -690,7 +690,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       Program.showException(e, false);
       resetLabelProgress();
       Debug("ERROR: " + e);
-      Erreur.showSimpleErreur(Program.getError("Error082"));
+      Erreur.showSimpleErreur(getError("Error082"));
       importe.setEnabled(true);
       return false;
     }
@@ -713,7 +713,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       list = new ItunesLibraryImporter().loadItunesLibrary(f);
     } catch (NoITunesFileException e) {
       Debug("ERROR" + e);
-      Erreur.showSimpleErreur(Program.getError("Import.NotITunesFile"));
+      Erreur.showSimpleErreur(getError("Import.NotITunesFile"));
       resetLabelProgress();
       importe.setEnabled(true);
       return;

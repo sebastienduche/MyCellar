@@ -21,11 +21,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2011</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2011
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 7.3
@@ -201,28 +204,28 @@ public class SerializedStorage implements Storage {
     String sValue;
     switch (historyState) {
       case ALL:
-        sValue = Program.getError("Error182");
+        sValue = getError("Error182");
         break;
       case ADD:
-        sValue = Program.getError("Error189");
+        sValue = getError("Error189");
         break;
       case MODIFY:
-        sValue = Program.getError("Error191");
+        sValue = getError("Error191");
         break;
       case DEL:
-        sValue = Program.getError("Error190");
+        sValue = getError("Error190");
         break;
       case VALIDATED:
-        sValue = Program.getError("Error.HistoryValidatedDelete", LabelProperty.OF_THE_PLURAL);
+        sValue = getError("Error.HistoryValidatedDelete", LabelProperty.OF_THE_PLURAL);
         break;
       case TOCHECK:
-        sValue = Program.getError("Error.HistoryToCheckDelete", LabelProperty.OF_THE_PLURAL);
+        sValue = getError("Error.HistoryToCheckDelete", LabelProperty.OF_THE_PLURAL);
         break;
       default:
         sValue = "";
     }
 
-    if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+    if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
       return;
     }
 

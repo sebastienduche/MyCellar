@@ -1,4 +1,4 @@
-package mycellar.core.language;
+package mycellar.core.text;
 
 public enum Language {
   FRENCH('F'),
@@ -10,10 +10,6 @@ public enum Language {
     this.language = language;
   }
 
-  public char getLanguage() {
-    return language;
-  }
-
   public static Language getLanguage(char language) {
     if (language == ENGLISH.getLanguage()) {
       return ENGLISH;
@@ -22,5 +18,9 @@ public enum Language {
       return FRENCH;
     }
     return ENGLISH;
+  }
+
+  public char getLanguage() {
+    return language;
   }
 }

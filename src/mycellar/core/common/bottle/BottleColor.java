@@ -1,12 +1,12 @@
 package mycellar.core.common.bottle;
 
-import mycellar.Program;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public enum BottleColor {
   NONE(""),
-  RED(Program.getLabel("BottleColor.red")),
-  PINK(Program.getLabel("BottleColor.pink")),
-  WHITE(Program.getLabel("BottleColor.white"));
+  RED(getLabel("BottleColor.red")),
+  PINK(getLabel("BottleColor.pink")),
+  WHITE(getLabel("BottleColor.white"));
 
   private final String label;
 

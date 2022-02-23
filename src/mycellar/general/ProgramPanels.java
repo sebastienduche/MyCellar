@@ -74,12 +74,13 @@ import static mycellar.ScreenType.SHOW_WORKSHEET;
 import static mycellar.ScreenType.STATS;
 import static mycellar.ScreenType.SUPPRIMER_RANGEMENT;
 import static mycellar.ScreenType.VIGNOBLES;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2012</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2012
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 1.5
@@ -500,7 +501,7 @@ public class ProgramPanels {
         try {
           TABBED_PANE.setSelectedComponent(component);
         } catch (IllegalArgumentException e) {
-          addTab(Program.getLabel(tabLabel, LabelProperty.SINGLE), icon, component);
+          addTab(getLabel(tabLabel, LabelProperty.SINGLE), icon, component);
         }
       }
     }.execute();

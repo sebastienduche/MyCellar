@@ -210,10 +210,10 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
       } else {
         String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {
-          erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); // "1 vin selectionne.
+          erreur_txt1 = getError("Error067", LabelProperty.SINGLE); // "1 vin selectionne.
           erreur_txt2 = getLabel("ShowFile.RestoreOne");
         } else {
-          erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); // vins selectionnes.
+          erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); // vins selectionnes.
           erreur_txt2 = getLabel("ShowFile.RestoreSeveral");
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"),

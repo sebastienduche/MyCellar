@@ -24,12 +24,13 @@ import java.util.List;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2013</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2013
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 2.8
@@ -103,7 +104,7 @@ final class PanelStats extends JPanel {
     bottlesNb.setEnabled(false);
     cellarValue.setEnabled(false);
     cellarTotal.setEnabled(false);
-    setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos404")));
     setEnabled(false);
   }
 
@@ -125,7 +126,7 @@ final class PanelStats extends JPanel {
   }
 
   void setLabels() {
-    setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos404")));
     bottles.updateText();
     cellarValue.updateText();
     TableColumnModel tcm = table.getColumnModel();

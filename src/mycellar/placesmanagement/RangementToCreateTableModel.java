@@ -19,6 +19,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 public class RangementToCreateTableModel extends AbstractTableModel {
 
+
+  private static final long serialVersionUID = -3771006395292367300L;
   private final Map<String, LinkedList<Part>> map;
   private final LinkedList<String> list;
 

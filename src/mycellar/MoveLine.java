@@ -142,7 +142,9 @@ final class MoveLine extends JDialog {
   }
 
   class MoveLinePanelPlace extends PanelPlace {
-    public MoveLinePanelPlace() {
+	private static final long serialVersionUID = 1742129778730101248L;
+
+	public MoveLinePanelPlace() {
       super(false, false, false, true);
     }
 

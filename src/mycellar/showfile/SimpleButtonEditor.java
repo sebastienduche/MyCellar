@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
  */
 public class SimpleButtonEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
 
+  private static final long serialVersionUID = 3260591898396032750L;
   JButton button;
 
   public SimpleButtonEditor() {

@@ -23,6 +23,7 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  */
 public class ButtonCellRenderer extends JButton implements TableCellRenderer {
 
+  private static final long serialVersionUID = -6826155883692278688L;
   private final String label;
   private ImageIcon image;
 

@@ -49,6 +49,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
+  private static final long serialVersionUID = 5905201984124426737L;
   private final MyCellarButton manageContenance = new MyCellarButton(LabelType.INFO, "400");
   private final JModifyTextField year = new JModifyTextField();
   private final JModifyComboBox<String> type = new JModifyComboBox<>();

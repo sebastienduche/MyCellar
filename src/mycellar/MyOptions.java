@@ -39,6 +39,7 @@ import static mycellar.ProgramConstants.isVK_O;
  * @since 16/12/21
  */
 public class MyOptions extends JDialog {
+  private static final long serialVersionUID = -6731924694322085086L;
   public static final String JTEXT_FIELD = "JTextField";
   public static final String MY_CELLAR_SPINNER = "MyCellarSpinner";
   public static final String MY_CELLAR_CHECK_BOX = "MyCellarCheckBox";

@@ -24,6 +24,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
+  private static final long serialVersionUID = -6495907213999756931L;
+
   private final LabelKey labelKey;
 
   private LabelType descriptionLabelType;

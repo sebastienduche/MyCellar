@@ -31,6 +31,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 public final class RangementCreationDialog extends JDialog {
 
+  private static final long serialVersionUID = 5075363436018889969L;
   private final Map<String, LinkedList<Part>> map;
   private final MyCellarLabel end = new MyCellarLabel();
   private final RangementToCreateTableModel model;

@@ -124,7 +124,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       }
 
       name = new TextFieldPopup(Program.getStorage().getDistinctNames(), 150) {
-        @Override
+		private static final long serialVersionUID = 3894902403893114601L;
+
+		@Override
         public void doAfterValidate() {
           new Thread(Search.this).start();
         }

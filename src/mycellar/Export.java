@@ -62,8 +62,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.0
- * @since 14/12/21
+ * @version 10.1
+ * @since 23/02/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -439,7 +439,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     default_value.set(Program.getCaveConfigInt(key_properties.get(0), 0), "true");
 
     List<String> type_objet = List.of("MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton");
-    MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, Program.getCaveConfig(), false);
+    MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, false);
     myoptions.setVisible(true);
   }
 

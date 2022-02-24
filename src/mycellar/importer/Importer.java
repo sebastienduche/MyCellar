@@ -81,14 +81,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2003
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.0
- * @since 18/02/22
+ * @version 15.1
+ * @since 23/02/22
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -481,7 +481,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         key_properties[nb_caisse + 1] = MyCellarSettings.RANGEMENT_NAME;
         default_value[nb_caisse + 1] = "";
         type_objet[nb_caisse + 1] = "JTextField";
-        MyOptions myoptions = new MyOptions(title, "", message2, List.of(titre_properties), List.of(default_value), List.of(key_properties), List.of(type_objet), Program.getCaveConfig(), false);
+        MyOptions myoptions = new MyOptions(title, "", message2, List.of(titre_properties), List.of(default_value), List.of(key_properties), List.of(type_objet), false);
         myoptions.setVisible(true);
         int num_r = Program.getCaveConfigInt(MyCellarSettings.RANGEMENT_DEFAULT, -1);
         if (num_r == Program.getPlaceLength()) {

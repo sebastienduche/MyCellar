@@ -94,8 +94,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.2
- * @since 18/02/22
+ * @version 31.3
+ * @since 23/02/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -979,7 +979,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
    */
   private void menuSetConfig_actionPerformed() {
     MyOptions myoptions = new MyOptions(getLabel("Infos374"), getLabel("Infos375"), Collections.singletonList("JTextField"), "",
-        Program.getCaveConfig(), true, true);
+        true, true);
     myoptions.setVisible(true);
   }
 

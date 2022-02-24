@@ -100,10 +100,10 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2003
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 27.8
@@ -205,6 +205,10 @@ public final class Program {
 
   public static boolean hasFile() {
     return myCellarFile != null;
+  }
+
+  public static MyCellarFile getOpenedFile() {
+    return myCellarFile;
   }
 
   public static String getConfigFilePath() {
@@ -927,8 +931,9 @@ public final class Program {
   }
 
   public static String getCaveConfigString(String key, String defaultValue) {
-    if (null != getCaveConfig()) {
-      return getCaveConfig().getString(key, defaultValue);
+    final MyCellarFile openedFile = getOpenedFile();
+    if (null != openedFile) {
+      return openedFile.getCaveConfig().getString(key, defaultValue);
     }
     Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
     return defaultValue;
@@ -939,8 +944,9 @@ public final class Program {
   }
 
   public static boolean getCaveConfigBool(String key, boolean defaultValue) {
-    if (null != getCaveConfig()) {
-      final String value = getCaveConfig().getString(key, defaultValue ? ONE : ZERO);
+    final MyCellarFile openedFile = getOpenedFile();
+    if (null != openedFile) {
+      final String value = openedFile.getCaveConfig().getString(key, defaultValue ? ONE : ZERO);
       return (ONE.equals(value) || ON.equalsIgnoreCase(value));
     }
     Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
@@ -948,8 +954,9 @@ public final class Program {
   }
 
   public static int getCaveConfigInt(String key, int defaultValue) {
-    if (null != getCaveConfig()) {
-      return getCaveConfig().getInt(key, defaultValue);
+    final MyCellarFile openedFile = getOpenedFile();
+    if (null != openedFile) {
+      return openedFile.getCaveConfig().getInt(key, defaultValue);
     }
     Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
     return defaultValue;
@@ -960,8 +967,9 @@ public final class Program {
   }
 
   public static void putCaveConfigString(String key, String value) {
-    if (null != getCaveConfig()) {
-      getCaveConfig().put(key, value);
+    final MyCellarFile openedFile = getOpenedFile();
+    if (null != openedFile) {
+      openedFile.getCaveConfig().put(key, value);
     } else {
       Debug("Program: ERROR: Unable to put value in configCave: [" + key + " - " + value + "]");
     }
@@ -972,23 +980,22 @@ public final class Program {
   }
 
   public static void putCaveConfigBool(String key, boolean value) {
-    if (null != getCaveConfig()) {
-      getCaveConfig().put(key, value ? ONE : ZERO);
+    final MyCellarFile openedFile = getOpenedFile();
+    if (null != openedFile) {
+      openedFile.getCaveConfig().put(key, value ? ONE : ZERO);
     } else {
       Debug("Program: ERROR: Unable to put value in configCave: [" + key + " - " + value + "]");
     }
   }
 
   public static void putCaveConfigInt(String key, int value) {
-    Objects.requireNonNull(getCaveConfig()).put(key, value);
-  }
-
-  public static MyLinkedHashMap getCaveConfig() {
-    return hasFile() ? myCellarFile.getCaveConfig() : null;
+    final MyCellarFile openedFile = getOpenedFile();
+    Objects.requireNonNull(openedFile).getCaveConfig().put(key, value);
   }
 
   public static boolean hasConfigCaveKey(String key) {
-    return null != getCaveConfig() && getCaveConfig().containsKey(key);
+    final MyCellarFile openedFile = getOpenedFile();
+    return null != openedFile && openedFile.getCaveConfig().containsKey(key);
   }
 
   static boolean hasConfigGlobalKey(String key) {

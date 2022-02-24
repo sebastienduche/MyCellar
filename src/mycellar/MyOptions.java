@@ -35,8 +35,8 @@ import static mycellar.ProgramConstants.isVK_O;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 16/12/21
+ * @version 2.7
+ * @since 23/02/22
  */
 public class MyOptions extends JDialog {
 
@@ -50,7 +50,6 @@ public class MyOptions extends JDialog {
   private final MyCellarLabel textControl3 = new MyCellarLabel();
   private final ButtonGroup buttonGroup = new ButtonGroup();
   private final List<String> cle;
-  private final MyLinkedHashMap config;
   private final boolean cancel;
   private JComponent[] value;
   private JTextField[] labelEdit;
@@ -59,20 +58,18 @@ public class MyOptions extends JDialog {
   private boolean isLabelEdit = false;
 
   public MyOptions(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> cle2, List<String> type_objet,
-                   MyLinkedHashMap config1, boolean cancel) {
+                   boolean cancel) {
 
     super(Start.getInstance(), "", true);
-    config = config1;
     cle = cle2;
     this.cancel = cancel;
     jbInit(title, message, message2, propriete, default_value, type_objet);
   }
 
   MyOptions(String title, String message, List<String> type_objet, String erreur,
-            MyLinkedHashMap config1, boolean cancel, boolean isLabelEdit) {
+            boolean cancel, boolean isLabelEdit) {
 
     super(Start.getInstance(), "", true);
-    config = config1;
     cle = Collections.singletonList("");
     this.cancel = cancel;
     this.isLabelEdit = isLabelEdit;
@@ -187,6 +184,9 @@ public class MyOptions extends JDialog {
   }
 
   private void valider_actionPerformed(ActionEvent e) {
+    if (!Program.hasFile()) {
+      throw new RuntimeException("Unable to save a property because no file is opened");
+    }
     String defaut = null;
     int nb_jradio = 0;
     for (int i = 0; i < taille_value; i++) {
@@ -197,9 +197,7 @@ public class MyOptions extends JDialog {
       if (value[i] instanceof JTextField) {
         JTextField jtex = (JTextField) value[i];
         resul[i] = toCleanString(jtex.getText());
-        if (config != null && !cle.get(i).isEmpty()) {
-          config.put(cle.get(i), resul[i]);
-        }
+        saveInConfig(i, resul[i]);
         if (defaut == null) {
           defaut = toCleanString(jtex.getText());
         }
@@ -207,26 +205,20 @@ public class MyOptions extends JDialog {
       if (value[i] instanceof MyCellarSpinner) {
         MyCellarSpinner jspi = (MyCellarSpinner) value[i];
         resul[i] = jspi.getValue().toString();
-        if (config != null && !cle.get(i).isEmpty()) {
-          config.put(cle.get(i), resul[i]);
-        }
+        saveInConfig(i, resul[i]);
       }
       if (value[i] instanceof MyCellarCheckBox) {
         MyCellarCheckBox jchk = (MyCellarCheckBox) value[i];
         if (jchk.isSelected()) {
           resul[i] = defaut;
-          if (config != null && !cle.get(i).isEmpty()) {
-            config.put(cle.get(i), defaut);
-          }
+          saveInConfig(i, defaut);
         }
       }
       if (value[i] instanceof MyCellarRadioButton) {
         MyCellarRadioButton jrb = (MyCellarRadioButton) value[i];
         if (jrb.isSelected()) {
           resul[i] = Integer.toString(nb_jradio);
-          if (config != null && !cle.get(i).isEmpty()) {
-            config.put(cle.get(i), resul[i]);
-          }
+          saveInConfig(i, resul[i]);
         }
         nb_jradio++;
       } else {
@@ -234,6 +226,13 @@ public class MyOptions extends JDialog {
       }
     }
     dispose();
+  }
+
+  private void saveInConfig(int i, String resul) {
+    final MyLinkedHashMap config = Program.getOpenedFile().getCaveConfig();
+    if (config != null && !cle.get(i).isEmpty()) {
+      config.put(cle.get(i), resul);
+    }
   }
 
   private void keylistener_actionPerformed(KeyEvent e) {

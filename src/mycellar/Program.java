@@ -160,7 +160,7 @@ public final class Program {
     } catch (UnableToOpenFileException e) {
       showException(e);
     }
-    String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
+    String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
     Debug("Program: Type of managed object: " + programType);
     setLanguage(Language.getLanguage(thelangue.charAt(0)));
   }
@@ -170,11 +170,11 @@ public final class Program {
       Debug("Program: Initializing Language and Program type");
       LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
 
-      if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
-        putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
+      if (!hasConfigGlobalKey(MyCellarSettings.GLOBAL_LANGUAGE) || getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "").isEmpty()) {
+        putGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
       }
 
-      String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
+      String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
       Debug("Program: Type of managed object: " + programType);
       setLanguage(Language.getLanguage(thelangue.charAt(0)));
       cleanAndUpgrade();
@@ -635,10 +635,10 @@ public final class Program {
 
   private static void openaFile(File file, boolean isNewFile) throws UnableToOpenFileException {
     LinkedList<String> list = new LinkedList<>();
-    list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN1, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN2, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN3, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN4, ""));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, ""));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, ""));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3, ""));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, ""));
     Debug("Program: -------------------");
     if (isNewFile) {
       Debug("Program: openFile: Creating new file");
@@ -661,11 +661,11 @@ public final class Program {
     if (!file.exists()) {
       Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), file.getAbsolutePath())); // File not found
 
-      putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
-      putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
-      putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
+      putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, list.pop());
+      putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, list.pop());
+      putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3, list.pop());
       // On a deja enleve un element de la liste
-      putGlobalConfigString(MyCellarSettings.LAST_OPEN4, "");
+      putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, "");
       saveGlobalProperties();
       throw new UnableToOpenMyCellarFileException("File not found: " + file.getAbsolutePath());
     }
@@ -700,10 +700,10 @@ public final class Program {
       list.addFirst(file.getAbsolutePath());
     }
 
-    putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
-    putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
-    putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
-    putGlobalConfigString(MyCellarSettings.LAST_OPEN4, list.pop());
+    putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, list.pop());
+    putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, list.pop());
+    putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3, list.pop());
+    putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, list.pop());
 
     putCaveConfigString(MyCellarSettings.DIR, file.getParent());
 

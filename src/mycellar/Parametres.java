@@ -36,8 +36,8 @@ import static mycellar.core.MyCellarSettings.DONT_SHOW_CREATE_MESS;
 import static mycellar.core.MyCellarSettings.DONT_SHOW_INFO;
 import static mycellar.core.MyCellarSettings.DONT_SHOW_TAB_MESS;
 import static mycellar.core.MyCellarSettings.FILE_EXCEL;
+import static mycellar.core.MyCellarSettings.GLOBAL_LANGUAGE;
 import static mycellar.core.MyCellarSettings.HAS_EXCEL_FILE;
-import static mycellar.core.MyCellarSettings.LANGUAGE;
 import static mycellar.core.MyCellarSettings.SIECLE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -105,7 +105,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 
     devise.setText(Program.getCaveConfigString(DEVISE, ""));
     LanguageFileLoader.getLanguages().forEach(langue::addItem);
-    String the_language = Program.getGlobalConfigString(LANGUAGE, "");
+    String the_language = Program.getGlobalConfigString(GLOBAL_LANGUAGE, "");
     langue.setSelectedIndex(LanguageFileLoader.getLanguageIndex(the_language));
 
     valider.addActionListener(this::valider_actionPerformed);
@@ -251,11 +251,11 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
    */
   private void modifyLanguage() {
     String thelangue = LanguageFileLoader.getLanguageFromIndex(langue.getSelectedIndex());
-    String currentLanguage = Program.getGlobalConfigString(LANGUAGE, "" + Language.FRENCH.getLanguage());
+    String currentLanguage = Program.getGlobalConfigString(GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
     if (thelangue.equals(currentLanguage)) {
       return;
     }
-    Program.putGlobalConfigString(LANGUAGE, thelangue);
+    Program.putGlobalConfigString(GLOBAL_LANGUAGE, thelangue);
     Program.setLanguage(Language.getLanguage(thelangue.charAt(0)));
     if (LanguageFileLoader.getInstance().isLoaded()) {
       setLabels();

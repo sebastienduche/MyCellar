@@ -1,5 +1,7 @@
 package mycellar.placesmanagement;
 
+import mycellar.core.text.LabelType;
+
 import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -14,8 +16,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 17/12/20
+ * @version 0.4
+ * @since 24/02/22
  */
 public class RangementToCreateTableModel extends AbstractTableModel {
 
@@ -42,7 +44,7 @@ public class RangementToCreateTableModel extends AbstractTableModel {
   @Override
   public String getColumnName(int column) {
     if (column == 0) {
-      return getLabel("Infos208");
+      return getLabel(LabelType.INFO, "208");
     }
     return "";
   }
@@ -58,7 +60,7 @@ public class RangementToCreateTableModel extends AbstractTableModel {
     for (Part part : parts) {
       row += part.getRowSize();
     }
-    return MessageFormat.format(getLabel("RangementToCreateTableModel.message"), parts.size(), row);
+    return MessageFormat.format(getLabel(LabelType.INFO_OTHER, "RangementToCreateTableModel.message"), parts.size(), row);
   }
 
   public void clear() {

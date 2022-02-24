@@ -166,7 +166,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       panelModify.add(comboPlace);
       add(panelModify, "span 2, wrap");
     }
-    MyCellarLabel labelName = new MyCellarLabel(INFO, "020"); //"Nom du rangement");
+    MyCellarLabel labelName = new MyCellarLabel(INFO, "020"); //"Nom du rangement
     add(labelName, "span 2, split 3");
     add(nom_obj, "growx");
     add(m_caisse_chk, "wrap");
@@ -304,12 +304,11 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     final Rangement rangement = (Rangement) comboPlace.getSelectedItem();
     if (comboPlace.getSelectedIndex() == 0 || rangement == null) {
       Debug("ERROR: Please select a place");
-      Erreur.showSimpleErreur(getError("Error093")); //"Veuillez selectionner un rangement")
+      Erreur.showSimpleErreur(getError("Error093")); //"Veuillez selectionner un rangement
       return;
     }
 
     final String nom = toCleanString(nom_obj.getText());
-    // Controle sur le nom
     if (!MyCellarControl.ctrlName(nom)) {
       return;
     }
@@ -678,10 +677,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (!toCleanString(nom_obj.getText()).isEmpty()) {
-      String label = getError("Error146");
-      if (modify) {
-        label = getError("Error147");
-      }
+      String label = modify ? getLabel("Error147") : getError("Error146");
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, label + SPACE + getError("Error145"), getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }

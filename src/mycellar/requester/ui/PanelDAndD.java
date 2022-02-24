@@ -34,7 +34,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Titre : Cave &agrave; vin
  * <p>Description : Votre description
  * <p>Copyright : Copyright (c) 2014
- * <p>Soci&eacute;t&eacute; : Seb Informatique<
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.4

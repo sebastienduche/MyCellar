@@ -2,6 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Program;
 import mycellar.Start;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
@@ -53,9 +54,9 @@ public final class RangementCreationDialog extends JDialog {
     add(new JScrollPane(table), "grow, wrap");
     add(end, "grow, wrap");
 
-    MyCellarButton valider = new MyCellarButton(getLabel("Infos018"));
+    MyCellarButton valider = new MyCellarButton(LabelType.INFO, "018");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(getLabel("Infos019"));
+    MyCellarButton annuler = new MyCellarButton(LabelType.INFO, "019");
     annuler.addActionListener((e) -> dispose());
 
     add(valider, "gaptop 15px, split 2, center");

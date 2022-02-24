@@ -240,22 +240,8 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
         return;
       }
     }
-    int count = 0;
     int max_row = tableauValues.getRowCount();
     int row = 0;
-    do {
-      if (tableauValues.getValueAt(row, TableauValues.ETAT).equals(Boolean.TRUE)) {
-        count++;
-      }
-      row++;
-    } while (row < max_row);
-
-    if (count == 0) {
-      Debug("ERROR: No place selected");
-      Erreur.showInformationMessage(getError("Error089"), getError("Error090"));
-      return;
-    }
-    row = 0;
     LinkedList<Rangement> rangements = new LinkedList<>();
     do {
       if (tableauValues.getValueAt(row, TableauValues.ETAT).equals(Boolean.TRUE)) {
@@ -264,6 +250,11 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
       row++;
     } while (row < max_row);
 
+    if (rangements.isEmpty()) {
+      Debug("ERROR: No place selected");
+      Erreur.showInformationMessage(getError("Error089"), getError("Error090"));
+      return;
+    }
     long caisseCount = 0;
     if (type_XML.isSelected()) {
       Debug("Exporting in XML in progress...");

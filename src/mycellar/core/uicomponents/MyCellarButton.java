@@ -34,6 +34,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     setFont(FONT_PANEL);
   }
 
+  @Deprecated
   public MyCellarButton(String text) {
     super(text);
     setFont(FONT_PANEL);

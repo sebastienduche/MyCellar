@@ -9,19 +9,19 @@ import java.util.EventObject;
 
 
 /**
- * <p>Titre : Cave à vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 1998</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 1998
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.4
  * @since 27/05/21
  */
 
 public final class ButtonCellEditor extends JButton implements TableCellEditor {
 
-	private static final long serialVersionUID = 3070998772944465050L;
+  private static final long serialVersionUID = 3070998772944465050L;
 
   public ButtonCellEditor() {
     super();
@@ -40,22 +40,20 @@ public final class ButtonCellEditor extends JButton implements TableCellEditor {
   }
 
   private void fireEditingStopped() {
-    CellEditorListener listener;
     Object[] listeners = listenerList.getListenerList();
     for (int i = 0; i < listeners.length; i++) {
       if (listeners[i].equals(CellEditorListener.class)) {
-        listener = (CellEditorListener) listeners[i + 1];
+        CellEditorListener listener = (CellEditorListener) listeners[i + 1];
         listener.editingStopped(changeEvent);
       }
     }
   }
 
   private void fireEditingCanceled() {
-    CellEditorListener listener;
     Object[] listeners = listenerList.getListenerList();
     for (int i = 0; i < listeners.length; i++) {
       if (listeners[i].equals(CellEditorListener.class)) {
-        listener = (CellEditorListener) listeners[i + 1];
+        CellEditorListener listener = (CellEditorListener) listeners[i + 1];
         listener.editingCanceled(changeEvent);
       }
     }

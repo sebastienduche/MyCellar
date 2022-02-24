@@ -74,10 +74,10 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description<
+ * <p>Copyright : Copyright (c) 2003
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 23.1
@@ -88,7 +88,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private static final long serialVersionUID = 8497660112193602839L;
   private final SearchTableModel searchTableModel = new SearchTableModel();
   private final MyCellarLabel objectFoundCountLabels = new MyCellarLabel(LabelType.INFO_OTHER, "Search.bottleFound", LabelProperty.PLURAL.withCapital());
-  private final MyCellarLabel countLabel = new MyCellarLabel("-");
+  private final MyCellarLabel countLabel = new MyCellarLabel(DASH);
   private final MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
   private final MyCellarButton exportButton = new MyCellarButton(MyCellarImage.EXPORT);
   private final MyCellarButton modifyButton = new MyCellarButton(MyCellarImage.WINE);
@@ -124,9 +124,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       }
 
       name = new TextFieldPopup(Program.getStorage().getDistinctNames(), 150) {
-		private static final long serialVersionUID = 3894902403893114601L;
+        private static final long serialVersionUID = 3894902403893114601L;
 
-		@Override
+        @Override
         public void doAfterValidate() {
           new Thread(Search.this).start();
         }

@@ -29,22 +29,23 @@ import static mycellar.ProgramConstants.isVK_O;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2003
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 2.6
  * @since 16/12/21
  */
 public class MyOptions extends JDialog {
-  private static final long serialVersionUID = -6731924694322085086L;
+
   public static final String JTEXT_FIELD = "JTextField";
   public static final String MY_CELLAR_SPINNER = "MyCellarSpinner";
   public static final String MY_CELLAR_CHECK_BOX = "MyCellarCheckBox";
   public static final String MY_CELLAR_RADIO_BUTTON = "MyCellarRadioButton";
   public static final String MY_CELLAR_LABEL = "MyCellarLabel";
+  private static final long serialVersionUID = -6731924694322085086L;
   @SuppressWarnings("deprecation")
   private final MyCellarLabel textControl3 = new MyCellarLabel();
   private final ButtonGroup buttonGroup = new ButtonGroup();

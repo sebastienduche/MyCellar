@@ -20,7 +20,6 @@ import javax.swing.JMenuItem;
  */
 public final class MyCellarMenuItem extends JMenuItem implements IMyCellarComponent {
 
-
   private static final long serialVersionUID = -5930082155200496901L;
   private final LabelKey labelKey;
 

@@ -28,10 +28,10 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2005</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2005
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 3.0
@@ -142,9 +142,9 @@ final class MoveLine extends JDialog {
   }
 
   class MoveLinePanelPlace extends PanelPlace {
-	private static final long serialVersionUID = 1742129778730101248L;
+    private static final long serialVersionUID = 1742129778730101248L;
 
-	public MoveLinePanelPlace() {
+    public MoveLinePanelPlace() {
       super(false, false, false, true);
     }
 

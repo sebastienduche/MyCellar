@@ -41,6 +41,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -58,7 +59,6 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -66,6 +66,7 @@ import java.util.prefs.Preferences;
 
 import static mycellar.Filtre.EXTENSION_SINFO;
 import static mycellar.MyCellarUtils.getShortFilename;
+import static mycellar.MyCellarUtils.isDefined;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.Program.getGlobalConfigString;
 import static mycellar.ProgramConstants.CHAR_C;
@@ -978,9 +979,23 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
    * menuSetConfig_actionPerformed: Modification des parametres internes
    */
   private void menuSetConfig_actionPerformed() {
-    MyOptions myoptions = new MyOptions(getLabel("Infos374"), getLabel("Infos375"), Collections.singletonList("JTextField"), "",
-        true, true);
-    myoptions.setVisible(true);
+    JPanel panel = new JPanel();
+    panel.setLayout(new MigLayout("", "grow"));
+    JTextField key = new JTextField();
+    JTextField value = new JTextField();
+    panel.add(new MyCellarLabel(LabelType.INFO, "375"), "grow, wrap");
+    panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.key"), "split 2");
+    panel.add(key, "grow, wrap");
+    panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.value"), "split 2");
+    panel.add(value, "grow");
+    if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(getInstance(), panel, getLabel(LabelType.INFO, "374"), JOptionPane.OK_CANCEL_OPTION)) {
+      final String parameter = toCleanString(key.getText());
+      final String parameterValue = toCleanString(value.getText());
+      if (isDefined(parameter)) {
+        Program.putGlobalConfigString(parameter, parameterValue);
+        Program.saveGlobalProperties();
+      }
+    }
   }
 
   private void menuCheckUpdate_actionPerformed() {

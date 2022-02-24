@@ -18,7 +18,6 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Collections;
 import java.util.List;
 
 import static mycellar.MyCellarUtils.toCleanString;
@@ -38,7 +37,7 @@ import static mycellar.ProgramConstants.isVK_O;
  * @version 2.7
  * @since 23/02/22
  */
-public class MyOptions extends JDialog {
+public final class MyOptions extends JDialog {
 
   public static final String JTEXT_FIELD = "JTextField";
   public static final String MY_CELLAR_SPINNER = "MyCellarSpinner";
@@ -46,44 +45,19 @@ public class MyOptions extends JDialog {
   public static final String MY_CELLAR_RADIO_BUTTON = "MyCellarRadioButton";
   public static final String MY_CELLAR_LABEL = "MyCellarLabel";
   private static final long serialVersionUID = -6731924694322085086L;
-  @SuppressWarnings("deprecation")
-  private final MyCellarLabel textControl3 = new MyCellarLabel();
-  private final ButtonGroup buttonGroup = new ButtonGroup();
   private final List<String> cle;
-  private final boolean cancel;
-  private JComponent[] value;
-  private JTextField[] labelEdit;
-  private int taille_value = 0;
-  private String[] resul;
-  private boolean isLabelEdit = false;
+  private final JComponent[] value;
+  private final int taille_value;
+  private final String[] resul;
 
   public MyOptions(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> cle2, List<String> type_objet,
                    boolean cancel) {
 
     super(Start.getInstance(), "", true);
     cle = cle2;
-    this.cancel = cancel;
-    jbInit(title, message, message2, propriete, default_value, type_objet);
-  }
-
-  MyOptions(String title, String message, List<String> type_objet, String erreur,
-            boolean cancel, boolean isLabelEdit) {
-
-    super(Start.getInstance(), "", true);
-    cle = Collections.singletonList("");
-    this.cancel = cancel;
-    this.isLabelEdit = isLabelEdit;
-    textControl3.setText(erreur);
-    jbInit(title, message, "", Collections.singletonList(""), Collections.singletonList(""), type_objet);
-  }
-
-  private void jbInit(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> type_objet) {
-
     taille_value = propriete.size();
-    MyCellarLabel[] label_value = new MyCellarLabel[taille_value];
     resul = new String[taille_value];
     value = new JComponent[taille_value];
-    labelEdit = new JTextField[taille_value];
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(title);
     MyCellarLabel textControl1 = new MyCellarLabel(title);
@@ -97,13 +71,14 @@ public class MyOptions extends JDialog {
     MyCellarButton annuler = new MyCellarButton(LabelType.INFO, "055");
     definition.setText(message);
     definition2.setText(message2);
+    MyCellarLabel textControl3 = new MyCellarLabel();
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(SwingConstants.CENTER);
     valider.setMnemonic(CHAR_O);
 
+    MyCellarLabel[] label_value = new MyCellarLabel[taille_value];
     for (int i = 0; i < propriete.size(); i++) {
       value[i] = null;
-      labelEdit[i] = new JTextField();
       label_value[i] = new MyCellarLabel(propriete.get(i));
       if (type_objet.get(i).equals(JTEXT_FIELD)) {
         value[i] = new JTextField(default_value.get(i));
@@ -125,6 +100,7 @@ public class MyOptions extends JDialog {
         label_value[i] = new MyCellarLabel();
         if (i > 0) {
           if (type_objet.get(i - 1).equals(MY_CELLAR_RADIO_BUTTON) && cle.get(i - 1).equals(cle.get(i))) {
+            ButtonGroup buttonGroup = new ButtonGroup();
             buttonGroup.add((MyCellarRadioButton) value[i - 1]);
             buttonGroup.add((MyCellarRadioButton) value[i]);
             value[i - 1].setEnabled(true);
@@ -163,10 +139,7 @@ public class MyOptions extends JDialog {
       if (type_objet.get(i).equals(MY_CELLAR_LABEL)) {
         getContentPane().add(label_value[i], "wrap");
       } else {
-        if (isLabelEdit)
-          getContentPane().add(labelEdit[i], "grow");
-        else
-          getContentPane().add(label_value[i], "grow");
+        getContentPane().add(label_value[i], "grow");
         getContentPane().add(value[i], "grow, wrap, gapleft 15px");
       }
     }
@@ -190,10 +163,6 @@ public class MyOptions extends JDialog {
     String defaut = null;
     int nb_jradio = 0;
     for (int i = 0; i < taille_value; i++) {
-      if (isLabelEdit) {
-        JTextField jtf = labelEdit[i];
-        cle.set(i, toCleanString(jtf.getText()));
-      }
       if (value[i] instanceof JTextField) {
         JTextField jtex = (JTextField) value[i];
         resul[i] = toCleanString(jtex.getText());

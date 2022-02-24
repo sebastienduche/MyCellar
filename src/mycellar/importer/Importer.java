@@ -87,8 +87,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.1
- * @since 23/02/22
+ * @version 15.2
+ * @since 24/02/22
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -271,7 +271,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       } else if (cell.getCellType() == CellType.STRING) {
         bottle.add(cell.getStringCellValue());
       } else {
-        throw new UnsupportedOperationException(getError(MessageFormat.format(getError("Importer.unknownCellType"), cell.getCellType())));
+        throw new UnsupportedOperationException(MessageFormat.format(getError("Importer.unknownCellType"), cell.getCellType()));
       }
     }
     return bottle;
@@ -457,31 +457,31 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         //Un rangement par defaut va etre cree.
         Erreur.showInformationMessage(getError("Error140"), getError("Error141"));
 
-        int nb_caisse = Program.getSimplePlaceCount();
+        int nb_caisse = Program.getSimplePlaceCount() + 2;
 
-        String title = getLabel("Infos010");
-        String message2 = getLabel("Infos308");
-        String[] titre_properties = new String[nb_caisse + 2];
-        String[] default_value = new String[nb_caisse + 2];
-        String[] key_properties = new String[nb_caisse + 2];
-        String[] type_objet = new String[nb_caisse + 2];
-        int j = 0;
-        for (Rangement cave : Program.getSimplePlaces()) {
-          titre_properties[j] = cave.getName();
-          key_properties[j] = MyCellarSettings.RANGEMENT_DEFAULT;
-          default_value[j] = "false";
-          type_objet[j] = "MyCellarRadioButton";
-          j++;
+        String[] titre_properties = new String[nb_caisse];
+        String[] default_value = new String[nb_caisse];
+        String[] key_properties = new String[nb_caisse];
+        String[] type_objet = new String[nb_caisse];
+        int i;
+        List<Rangement> simplePlaces = Program.getSimplePlaces();
+        for (i = 0; i < simplePlaces.size(); i++) {
+          Rangement cave = simplePlaces.get(i);
+          titre_properties[i] = cave.getName();
+          key_properties[i] = MyCellarSettings.RANGEMENT_DEFAULT;
+          default_value[i] = "false";
+          type_objet[i] = MyOptions.MY_CELLAR_RADIO_BUTTON;
         }
-        titre_properties[nb_caisse] = getLabel("Infos289");
-        key_properties[nb_caisse] = MyCellarSettings.RANGEMENT_DEFAULT;
-        default_value[nb_caisse] = "true";
-        type_objet[nb_caisse] = "MyCellarRadioButton";
-        titre_properties[nb_caisse + 1] = getLabel("Infos307");
-        key_properties[nb_caisse + 1] = MyCellarSettings.RANGEMENT_NAME;
-        default_value[nb_caisse + 1] = "";
-        type_objet[nb_caisse + 1] = "JTextField";
-        MyOptions myoptions = new MyOptions(title, "", message2, List.of(titre_properties), List.of(default_value), List.of(key_properties), List.of(type_objet), false);
+        titre_properties[i] = getLabel("Infos289");
+        key_properties[i] = MyCellarSettings.RANGEMENT_DEFAULT;
+        default_value[i] = "true";
+        type_objet[i] = MyOptions.MY_CELLAR_RADIO_BUTTON;
+        i++;
+        titre_properties[i] = getLabel("Infos307");
+        key_properties[i] = MyCellarSettings.RANGEMENT_NAME;
+        default_value[i] = "";
+        type_objet[i] = MyOptions.JTEXT_FIELD;
+        MyOptions myoptions = new MyOptions(getLabel("Infos010"), getLabel("Infos308"), List.of(titre_properties), List.of(default_value), List.of(key_properties), List.of(type_objet), false);
         myoptions.setVisible(true);
         int num_r = Program.getCaveConfigInt(MyCellarSettings.RANGEMENT_DEFAULT, -1);
         if (num_r == Program.getPlaceLength()) {
@@ -493,7 +493,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
               resul = true;
               if (nom1.contains("\"") || nom1.contains(COLUMNS_SEPARATOR) || nom1.contains("<") || nom1.contains(">") || nom1.contains("?") || nom1.contains("\\") ||
                   nom1.contains(SLASH) || nom1.contains("|") || nom1.contains("*")) {
-                Options options = new Options(getLabel("Infos020"), getLabel("Infos230"), getLabel("Infos020"), "", nom1,
+                Options options = new Options(getLabel("Infos020"), getLabel("Infos230"), getLabel("Infos020"), nom1,
                     getError("Error126"), false);
                 options.setVisible(true);
                 nom1 = options.getValue();
@@ -503,7 +503,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             do {
               // Controle sur la longueur du filename
               if (nom1.isEmpty()) {
-                Options options = new Options(getLabel("Infos020"), getLabel("Infos230"), getLabel("Infos020"), "", "",
+                Options options = new Options(getLabel("Infos020"), getLabel("Infos230"), getLabel("Infos020"), nom1,
                     getError("Error010"), false);
                 options.setVisible(true);
                 nom1 = options.getValue();
@@ -516,7 +516,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
                 resul = true;
                 if (!nom1.isEmpty()) {
                   if (RangementUtils.isExistingPlace(nom1)) {
-                    Options options = new Options(getLabel("Infos020"), getLabel("Infos230"), getLabel("Infos020"), "", nom1,
+                    Options options = new Options(getLabel("Infos020"), getLabel("Infos230"), getLabel("Infos020"), nom1,
                         getError("Error037"), false);
                     options.setVisible(true);
                     nom1 = options.getValue();

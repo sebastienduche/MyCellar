@@ -12,6 +12,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.Color;
@@ -34,8 +35,8 @@ import static mycellar.ProgramConstants.isVK_O;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 23/02/22
+ * @version 2.8
+ * @since 24/02/22
  */
 public final class MyOptions extends JDialog {
 
@@ -50,7 +51,7 @@ public final class MyOptions extends JDialog {
   private final int taille_value;
   private final String[] resul;
 
-  public MyOptions(String title, String message, String message2, List<String> propriete, List<String> default_value, List<String> cle2, List<String> type_objet,
+  public MyOptions(String title, String message2, List<String> propriete, List<String> default_value, List<String> cle2, List<String> type_objet,
                    boolean cancel) {
 
     super(Start.getInstance(), "", true);
@@ -65,11 +66,9 @@ public final class MyOptions extends JDialog {
     textControl1.setForeground(Color.red);
     textControl1.setText(title);
     textControl1.setHorizontalAlignment(SwingConstants.CENTER);
-    MyCellarLabel definition = new MyCellarLabel(message);
     MyCellarLabel definition2 = new MyCellarLabel(message2);
     MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
     MyCellarButton annuler = new MyCellarButton(LabelType.INFO, "055");
-    definition.setText(message);
     definition2.setText(message2);
     MyCellarLabel textControl3 = new MyCellarLabel();
     textControl3.setForeground(Color.red);
@@ -133,7 +132,7 @@ public final class MyOptions extends JDialog {
 
     getContentPane().setLayout(new MigLayout("", "[grow][grow]", "[]15px[][]15px[]"));
     getContentPane().add(textControl1, "center, grow, span 2, wrap");
-    getContentPane().add(definition, "span 2, wrap");
+    getContentPane().add(new JLabel(), "span 2, wrap");
     getContentPane().add(definition2, "span 2, wrap");
     for (int i = 0; i < taille_value; i++) {
       if (type_objet.get(i).equals(MY_CELLAR_LABEL)) {

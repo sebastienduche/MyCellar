@@ -327,8 +327,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 
   private void param_actionPerformed(ActionEvent e) {
     Debug("param_actionPerforming...");
-    String titre = getLabel("Infos310");
-    String message2 = getLabel("Infos309");
     List<String> titre_properties = List.of(
         getLabel("Infos210"),
         getLabel("Infos211"),
@@ -339,8 +337,8 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
         MyCellarSettings.CREATE_TAB_DEFAULT);
     String val = Program.getCaveConfigString(key_properties.get(0), "1");
     List<String> default_value = List.of("0".equals(val) ? "true" : "false", "1".equals(val) ? "true" : "false", "2".equals(val) ? "true" : "false");
-    List<String> type_objet = List.of("MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton");
-    MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, false);
+    List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
+    MyOptions myoptions = new MyOptions(getLabel("Infos310"), getLabel("Infos309"), titre_properties, default_value, key_properties, type_objet, false);
     myoptions.setVisible(true);
   }
 

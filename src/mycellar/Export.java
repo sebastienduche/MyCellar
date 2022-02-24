@@ -425,8 +425,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   }
 
   private void param_actionPerformed() {
-    String titre = getLabel("Infos310");
-    String message2 = getLabel("Infos309");
     List<String> titre_properties = List.of(
         getLabel("Infos210"),
         getLabel("Infos211"),
@@ -438,8 +436,8 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT);
     default_value.set(Program.getCaveConfigInt(key_properties.get(0), 0), "true");
 
-    List<String> type_objet = List.of("MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton", "MyCellarRadioButton");
-    MyOptions myoptions = new MyOptions(titre, "", message2, titre_properties, default_value, key_properties, type_objet, false);
+    List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
+    MyOptions myoptions = new MyOptions(getLabel("Infos310"), getLabel("Infos309"), titre_properties, default_value, key_properties, type_objet, false);
     myoptions.setVisible(true);
   }
 

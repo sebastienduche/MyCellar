@@ -308,7 +308,7 @@ public class ProgramPanels {
   public static ShowFile createShowWorksheet() {
     ShowFile showFile = (ShowFile) OPENED_PANELS.get(SHOW_WORKSHEET);
     if (showFile == null) {
-      showFile = new ShowFile(ShowFile.ShowType.WORK);
+      showFile = new ShowFile(ShowFile.ShowType.WORKSHEET);
       OPENED_PANELS.put(SHOW_WORKSHEET, showFile);
       UPDATABLE_PANELS.put(SHOW_WORKSHEET, showFile);
     }

@@ -251,7 +251,7 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  public void setBottles(List<? extends MyCellarObject> b) {
+  public void setMyCellarObjects(List<? extends MyCellarObject> b) {
     if (b == null) {
       return;
     }

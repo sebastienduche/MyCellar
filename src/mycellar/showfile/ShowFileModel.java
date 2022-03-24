@@ -90,8 +90,8 @@ public class ShowFileModel extends TableShowValues {
     return columns;
   }
 
-  public void setColumns(List<ShowFileColumn<?>> cols) {
-    columns = cols;
+  public void setColumns(List<ShowFileColumn<?>> showFileColumns) {
+    columns = showFileColumns;
     fireTableStructureChanged();
   }
 }

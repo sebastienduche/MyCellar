@@ -1280,12 +1280,12 @@ public final class Program {
     }
   }
 
-  public static List<MyCellarObject> getExistingBottles(List<Integer> bouteilles) {
-    return getStorage().getAllList().stream().filter(bouteille -> bouteilles.contains(bouteille.getId())).collect(Collectors.toList());
+  public static List<MyCellarObject> getExistingMyCellarObjects(List<Integer> objectIds) {
+    return getStorage().getAllList().stream().filter(myCellarObject -> objectIds.contains(myCellarObject.getId())).collect(Collectors.toList());
   }
 
-  public static boolean isExistingBottle(MyCellarObject bouteille) {
-    return getStorage().getAllList().stream().anyMatch(bouteille1 -> bouteille1.getId() == bouteille.getId());
+  public static boolean isExistingMyCellarObject(MyCellarObject myCellarObject) {
+    return getStorage().getAllList().stream().anyMatch(myCellarObject1 -> myCellarObject1.getId() == myCellarObject.getId());
   }
 
   static void exit() {

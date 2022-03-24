@@ -75,7 +75,7 @@ public final class PanelInfos extends JPanel {
 final class PanelStats extends JPanel {
 
   private static final long serialVersionUID = 7438892143990782047L;
-  private final MyCellarLabel bottles = new MyCellarLabel(LabelType.INFO, "405", LabelProperty.PLURAL);
+  private final MyCellarLabel bottles = new MyCellarLabel(LabelType.INFO_OTHER, "Main.NumberOfItems", LabelProperty.PLURAL, "");
   private final MyCellarLabel cellarValue = new MyCellarLabel(LabelType.INFO, "406");
   private final MyCellarLabel bottlesNb = new MyCellarLabel();
   private final MyCellarLabel cellarTotal = new MyCellarLabel();

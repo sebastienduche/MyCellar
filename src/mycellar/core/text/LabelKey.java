@@ -14,8 +14,8 @@ public class LabelKey {
    * Soci&eacute;t&eacute; : Seb Informatique
    *
    * @author S&eacute;bastien Duch&eacute;
-   * @version 0.1
-   * @since 22/02/22
+   * @version 0.2
+   * @since 24/03/22
    */
   public LabelKey(LabelType labelType, String key) {
     this.labelType = labelType;
@@ -49,5 +49,9 @@ public class LabelKey {
 
   public String getValue() {
     return value;
+  }
+
+  public void setValue(String value) {
+    this.value = value;
   }
 }

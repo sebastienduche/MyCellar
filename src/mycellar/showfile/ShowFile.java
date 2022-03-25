@@ -66,7 +66,6 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -139,7 +138,10 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     this.showType = showType;
     if (isWorksheet()) {
       initializeStandardColumns();
-      final List<Integer> bouteilles = Program.getWorksheetList().getWorsheet().stream().map(WorkSheetData::getBouteilleId).collect(Collectors.toList());
+      final List<Integer> bouteilles = Program.getWorksheetList().getWorsheet()
+          .stream()
+          .map(WorkSheetData::getBouteilleId)
+          .collect(Collectors.toList());
       workingBottles.addAll(Program.getExistingMyCellarObjects(bouteilles));
     }
     try {
@@ -603,15 +605,15 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
   }
 
-  public void addWorkingBottles(Collection<Bouteille> bottles) {
-    final List<Bouteille> bouteilles = bottles
+  public void addToWorsheet(List<MyCellarObject> list) {
+    final List<MyCellarObject> myCellarObjects = list
         .stream()
         .filter(bouteille -> !workingBottles.contains(bouteille))
         .collect(Collectors.toList());
-    for (Bouteille bottle : bouteilles) {
-      Program.getStorage().addToWorksheet(bottle);
+    for (MyCellarObject myCellarObject : myCellarObjects) {
+      Program.getStorage().addToWorksheet(myCellarObject);
     }
-    workingBottles.addAll(bouteilles);
+    workingBottles.addAll(myCellarObjects);
     model.setMyCellarObjects(workingBottles);
     labelCount.setValue(Integer.toString(model.getRowCount()));
   }

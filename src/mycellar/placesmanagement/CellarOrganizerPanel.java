@@ -276,7 +276,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
           Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
           Program.getStorage().getAllList().remove(myCellarObject);
           Program.setToTrash(myCellarObject);
-          ProgramPanels.removeBottleTab(myCellarObject);
+          ProgramPanels.removeObjectTab(myCellarObject);
         }
       }
     }
@@ -572,7 +572,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
               Program.showException(e);
             }
             Program.setToTrash(myCellarObject);
-            ProgramPanels.removeBottleTab(myCellarObject);
+            ProgramPanels.removeObjectTab(myCellarObject);
           }
         }
       }

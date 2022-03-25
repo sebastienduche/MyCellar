@@ -166,8 +166,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       panelModify.add(comboPlace);
       add(panelModify, "span 2, wrap");
     }
-    MyCellarLabel labelName = new MyCellarLabel(INFO, "020"); //"Nom du rangement
-    add(labelName, "span 2, split 3");
+    add(new MyCellarLabel(INFO, "020"), "span 2, split 3"); // Place name
     add(nom_obj, "growx");
     add(m_caisse_chk, "wrap");
 
@@ -189,12 +188,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     panelLimite.add(nb_limite, "split 2, wmin 50, hidemode 3");
     panelLimite.add(label_limite, "hidemode 3");
 
-    JTable tableParties = new JTable(model);
-    model.setValues(listPart);
-
     panelTable = new JPanel();
     panelTable.setLayout(new MigLayout("", "[grow]", "[grow]"));
-    panelTable.add(new JScrollPane(tableParties), "grow");
+    panelTable.add(new JScrollPane(new JTable(model)), "grow");
+    model.setValues(listPart);
 
     JPanel panelPartie = new JPanel();
     panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("Infos023"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
@@ -278,15 +275,14 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       if (rangement.isSimplePlaceLimited()) {
         nb_limite.setValue(rangement.getNbColumnsStock());
       }
-      nb_parties.setValue(rangement.getNbParts());
       nb_start_caisse.setValue(rangement.getStartSimplePlace());
     } else {
       m_jrb_same_column_number.setSelected(rangement.isSameColumnNumber());
       m_jrb_dif_column_number.setSelected(!rangement.isSameColumnNumber());
       listPart = rangement.getPlace();
       model.setValues(listPart);
-      nb_parties.setValue(rangement.getNbParts());
     }
+    nb_parties.setValue(rangement.getNbParts());
   }
 
   private void enableAll(boolean enable) {
@@ -347,17 +343,20 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       if (!name.equals(nom)) {
         String erreur_txt1, erreur_txt2;
         if (nb_bottle == 1) {
-          Debug("MESSAGE: 1 bottle in this place, modify?");
+          Debug("MESSAGE: 1 object in this place, modify?");
           erreur_txt1 = getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.
           erreur_txt2 = getError("Error137", LabelProperty.SINGLE); // Change the place of this object
         } else {
-          Debug("MESSAGE: " + nb_bottle + " bottles in this place, Modify?");
+          Debug("MESSAGE: " + nb_bottle + " objects in this place, Modify?");
           erreur_txt1 = MessageFormat.format(getError("Error094", LabelProperty.PLURAL), nb_bottle); //bouteilles sont presentes dans ce rangement.
           erreur_txt2 = getError("Error095", LabelProperty.PLURAL); //"Change the place of these objects
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify Name of place
-          Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
+          Program.getStorage().getAllList()
+              .stream()
+              .filter(b -> b.getEmplacement().equals(name))
+              .forEach(b -> b.setEmplacement(nom));
         }
       } else if (rangement.getStartSimplePlace() != start_caisse) {
         // Le numero de la premiere partie a change, renumeroter
@@ -367,7 +366,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify start part number
           final int difference = start_caisse - rangement.getStartSimplePlace();
-          Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setNumLieu(b.getNumLieu() + difference));
+          Program.getStorage().getAllList()
+              .stream()
+              .filter(b -> b.getEmplacement().equals(name))
+              .forEach(b -> b.setNumLieu(b.getNumLieu() + difference));
         }
       }
     }
@@ -418,10 +420,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           return;
         }
       }
-      boolean bResul = true;
+      boolean canContinue = true;
       for (int i = 0; i < listPart.size(); i++) {
-        if (!bResul) {
-          Debug("ERROR: bResul false, skipping part");
+        if (!canContinue) {
+          Debug("ERROR: canContinue false, skipping part");
           continue;
         }
         Part part = listPart.get(i);
@@ -436,16 +438,16 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
             nb += rangement.getNbCaseUseInLine(i, j);
           }
           if (nb > 0) {
-            bResul = false;
-            Debug("ERROR: Unable to reduce the number of row");
+            canContinue = false;
+            Debug("ERROR: Unable to lower the number of row");
             Erreur.showSimpleErreur(MessageFormat.format(getError("Error202"), Integer.toString(i + 1)));
             // Impossible de reduire le nombre de lignes de la partie, bouteilles presentes
           }
         }
-        if (bResul) {
+        if (canContinue) {
           for (int j = 0; j < part.getRowSize(); j++) {
-            if (!bResul) {
-              Debug("ERROR: bResul false, skipping row");
+            if (!canContinue) {
+              Debug("ERROR: canContinue false, skipping row");
               break;
             }
             int nbCol = -1;
@@ -455,12 +457,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
             int newNbCol = part.getRow(j).getCol();
             if (nbCol > newNbCol) {
               for (int k = newNbCol; k < nbCol; k++) {
-                if (!bResul) {
-                  Debug("ERROR: bResul false, skipping column");
+                if (!canContinue) {
+                  Debug("ERROR: canContinue false, skipping column");
                   break;
                 }
                 if (rangement.getObject(i, j, k).isPresent()) {
-                  bResul = false;
+                  canContinue = false;
                   Debug("ERROR: Unable to reduce the size of the number of column");
                   Erreur.showSimpleErreur(MessageFormat.format(getError("Error203"), Integer.toString(j + 1), Integer.toString(i + 1)));
                   // Impossible de reduire le nombre de colonnes de la ligne de la partie, bouteilles presentes
@@ -471,7 +473,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         }
       }
 
-      if (!bResul) {
+      if (!canContinue) {
         return;
       }
 
@@ -481,9 +483,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         String erreur_txt1 = getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.
         String erreur_txt2 = getError("Error137", LabelProperty.SINGLE); //"Voulez-vous changer l'emplacement de cette bouteille ?
         if (nbBottles == 1) {
-          Debug("MESSAGE: 1 bottle in this place, modify?");
+          Debug("MESSAGE: 1 object in this place, modify?");
         } else {
-          Debug("MESSAGE: " + nbBottles + " bottles in this place, Modify?");
+          Debug("MESSAGE: " + nbBottles + " objects in this place, Modify?");
           erreur_txt1 = MessageFormat.format(getError("Error094", LabelProperty.PLURAL), nbBottles); //bouteilles sont presentes dans ce rangement.
           erreur_txt2 = getError("Error095", LabelProperty.PLURAL); //"Voulez-vous changer l'emplacement de ces bouteilles?");
         }
@@ -491,7 +493,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           //Modify Name of place
           rangement.setName(nom);
           rangement.updatePlace(listPart);
-          Program.getStorage().getAllList().stream().filter(b -> b.getEmplacement().equals(name)).forEach(b -> b.setEmplacement(nom));
+          Program.getStorage().getAllList()
+              .stream()
+              .filter(b -> b.getEmplacement().equals(name))
+              .forEach(b -> b.setEmplacement(nom));
           nom_obj.setText("");
         } else {
           rangement.setName(nom);

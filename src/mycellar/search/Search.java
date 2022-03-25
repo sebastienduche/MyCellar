@@ -262,7 +262,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private void deleteActionPerformed(ActionEvent event) {
     try {
       Debug("Deleting...");
-      final LinkedList<Bouteille> listToDelete = getSelectedBouteilles();
+      final List<MyCellarObject> listToDelete = searchTableModel.getSelectedObjects();
 
       if (listToDelete.isEmpty()) {
         // No objet to delete / Select...
@@ -282,21 +282,21 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       if (resul == JOptionPane.YES_OPTION) {
         SwingUtilities.invokeLater(() -> {
-          for (Bouteille bottle : listToDelete) {
-            searchTableModel.removeObject(bottle);
-            Program.getStorage().addHistory(HistoryState.DEL, bottle);
+          for (MyCellarObject myCellarObject : listToDelete) {
+            searchTableModel.removeObject(myCellarObject);
+            Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
-              final Rangement rangement = bottle.getRangement();
+              final Rangement rangement = myCellarObject.getRangement();
               if (rangement != null) {
-                rangement.removeObject(bottle);
+                rangement.removeObject(myCellarObject);
               } else {
-                Program.getStorage().deleteWine(bottle);
+                Program.getStorage().deleteWine(myCellarObject);
               }
             } catch (MyCellarException myCellarException) {
               Program.showException(myCellarException);
             }
-            Program.setToTrash(bottle);
-            ProgramPanels.removeBottleTab(bottle);
+            Program.setToTrash(myCellarObject);
+            ProgramPanels.removeObjectTab(myCellarObject);
           }
 
           ProgramPanels.updateCellOrganizerPanel(false);
@@ -367,7 +367,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         for (MyCellarObject myCellarObject : Program.getStorage().getAllList()) {
           Matcher m = p.matcher(myCellarObject.getNom());
           if (m.matches()) {
-            if (searchTableModel.hasNotObject(myCellarObject)) {
+            if (searchTableModel.doesNotContain(myCellarObject)) {
               list.add(myCellarObject);
             } else {
               alreadyFoundItems = true;
@@ -415,15 +415,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     SwingUtilities.invokeLater(() -> {
       try {
         Debug("modif_actionPerforming...");
-        int max_row = searchTableModel.getRowCount();
-        int row = 0;
-        final LinkedList<MyCellarObject> listToModify = new LinkedList<>();
-        do {
-          if ((boolean) searchTableModel.getValueAt(row, SearchTableModel.ETAT)) {
-            listToModify.add(searchTableModel.getBouteille(row));
-          }
-          row++;
-        } while (row < max_row);
+        final List<MyCellarObject> listToModify = searchTableModel.getSelectedObjects();
 
         if (listToModify.isEmpty()) {
           //No object to modify / Select...
@@ -509,7 +501,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         List<MyCellarObject> list = new LinkedList<>();
         if (objects != null) {
           for (MyCellarObject b : objects) {
-            if (searchTableModel.hasNotObject(b)) {
+            if (searchTableModel.doesNotContain(b)) {
               list.add(b);
             } else {
               alreadyFoundItems = true;
@@ -579,7 +571,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         modifyButton.setEnabled(false);
         deleteButton.setEnabled(false);
       } else {
-        if (searchTableModel.hasNotObject(myCellarObject)) {
+        if (searchTableModel.doesNotContain(myCellarObject)) {
           myCellarObjectList.add(myCellarObject);
         } else {
           alreadyFoundItems = true;
@@ -611,7 +603,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           for (int k = 0; k < nb_colonnes; k++) {
             MyCellarObject myCellarObject = rangement.getObject(i, j, k).orElse(null);
             if (myCellarObject != null) {
-              if (searchTableModel.hasNotObject(myCellarObject)) {
+              if (searchTableModel.doesNotContain(myCellarObject)) {
                 myCellarObjectList.add(myCellarObject);
               } else {
                 alreadyFoundItems = true;
@@ -645,7 +637,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       for (int l = 0; l < totalCellUsed; l++) {
         MyCellarObject b = rangement.getObjectSimplePlaceAt(x - 1, l); //lieu_num
         if (b != null) {
-          if (searchTableModel.hasNotObject(b)) {
+          if (searchTableModel.doesNotContain(b)) {
             myCellarObjectList.add(b);
           } else {
             alreadyFoundItems = true;
@@ -678,7 +670,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         List<MyCellarObject> list = new ArrayList<>();
         for (MyCellarObject b : Program.getStorage().getAllList()) {
           if (annee == b.getAnneeInt()) {
-            if (searchTableModel.hasNotObject(b)) {
+            if (searchTableModel.doesNotContain(b)) {
               list.add(b);
             } else {
               alreadyFoundItems = true;
@@ -761,7 +753,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
    */
   private void addToWorksheet_actionPerformed(ActionEvent e) {
     Debug("addToWorksheet_actionPerforming...");
-    final LinkedList<Bouteille> list = getSelectedBouteilles();
+    final List<MyCellarObject> list = searchTableModel.getSelectedObjects();
 
     if (list.isEmpty()) {
       Erreur.showInformationMessage(getError("Error.NoWineSelected", LabelProperty.SINGLE));
@@ -769,18 +761,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     }
     new OpenWorkSheetAction(list).actionPerformed(null);
     Debug("addToWorksheet_actionPerforming... Done");
-  }
-
-  private LinkedList<Bouteille> getSelectedBouteilles() {
-    int max_row = searchTableModel.getRowCount();
-    final LinkedList<Bouteille> list = new LinkedList<>();
-    // Recuperation du nombre de lignes selectionnees
-    for (int i = 0; i < max_row; i++) {
-      if ((boolean) searchTableModel.getValueAt(i, SearchTableModel.ETAT)) {
-        list.add(searchTableModel.getBouteille(i));
-      }
-    }
-    return list;
   }
 
   private void empty_search_actionPerformed(ActionEvent e) {

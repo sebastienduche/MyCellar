@@ -1,8 +1,8 @@
 package mycellar.actions;
 
-import mycellar.Bouteille;
 import mycellar.MyCellarImage;
 import mycellar.Start;
+import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarAction;
@@ -20,13 +20,13 @@ public final class OpenWorkSheetAction extends MyCellarAction {
 
   private static final long serialVersionUID = -2351197475699686315L;
   private static final String LABEL = "ShowFile.Worksheet";
-  private final List<Bouteille> bouteilles;
+  private final List<MyCellarObject> bouteilles;
 
   public OpenWorkSheetAction() {
     this(null);
   }
 
-  public OpenWorkSheetAction(List<Bouteille> list) {
+  public OpenWorkSheetAction(List<MyCellarObject> list) {
     super(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE, MyCellarImage.WORK);
     setDescriptionLabel(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE);
     bouteilles = list != null ? list : new ArrayList<>();
@@ -46,7 +46,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
       }
 
       Start.getInstance().updateMainPanel();
-      showWorksheet.addWorkingBottles(bouteilles);
+      showWorksheet.addToWorsheet(bouteilles);
     });
   }
 }

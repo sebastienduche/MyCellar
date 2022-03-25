@@ -444,7 +444,7 @@ public class ProgramPanels {
     }.execute();
   }
 
-  public static void removeBottleTab(MyCellarObject myCellarObject) {
+  public static void removeObjectTab(MyCellarObject myCellarObject) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {

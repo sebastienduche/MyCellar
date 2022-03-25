@@ -1269,12 +1269,12 @@ public final class Program {
     return nextID;
   }
 
-  public static void modifyBottles(LinkedList<MyCellarObject> listToModify) {
+  public static void modifyBottles(List<MyCellarObject> listToModify) {
     if (listToModify == null || listToModify.isEmpty()) {
       return;
     }
     if (listToModify.size() == 1) {
-      ProgramPanels.showBottle(listToModify.getFirst(), true);
+      ProgramPanels.showBottle(listToModify.get(0), true);
     } else {
       new OpenAddVinAction(listToModify).actionPerformed(null);
     }

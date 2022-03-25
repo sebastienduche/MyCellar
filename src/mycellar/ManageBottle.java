@@ -148,7 +148,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     try {
       boolean result = save();
       if (result && saveAndExit) {
-        ProgramPanels.removeBottleTab(myCellarObject);
+        ProgramPanels.removeObjectTab(myCellarObject);
       }
     } catch (MyCellarException e) {
       Program.showException(e);

@@ -1,6 +1,5 @@
 package mycellar.search;
 
-import mycellar.Bouteille;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.MyCellarObject;
@@ -8,7 +7,7 @@ import mycellar.core.text.LabelProperty;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -20,20 +19,20 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 10/01/22
+ * @version 3.4
+ * @since 25/03/22
  */
 class SearchTableModel extends AbstractTableModel {
 
-  public static final int ETAT = 0;
+  static final int ETAT = 0;
   static final int SHOW = 7;
   private static final long serialVersionUID = -3899189654755476591L;
   private final List<String> columnNames = List.of("",
       getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Infos189"), getLabel("Infos217"),
       getLabel("Infos082"), getLabel("Infos028"), getLabel("Infos083"), "");
 
-  private final List<Boolean> listBoolean = new LinkedList<>();
-  private final List<MyCellarObject> datas = new LinkedList<>();
+  private final List<Boolean> listBoolean = new ArrayList<>();
+  private final List<MyCellarObject> datas = new ArrayList<>();
 
   @Override
   public int getRowCount() {
@@ -63,8 +62,7 @@ class SearchTableModel extends AbstractTableModel {
       case ETAT:
         return listBoolean.get(row);
       case 1:
-        String nom = myCellarObject.getNom();
-        return MyCellarUtils.convertStringFromHTMLString(nom);
+        return MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom());
       case 2:
         return myCellarObject.getAnnee();
       case 3:
@@ -99,8 +97,7 @@ class SearchTableModel extends AbstractTableModel {
   public void setValueAt(Object value, int row, int column) {
     switch (column) {
       case SHOW:
-        MyCellarObject bottle = datas.get(row);
-        ProgramPanels.showBottle(bottle, true);
+        ProgramPanels.showBottle(datas.get(row), true);
         break;
       case ETAT:
         listBoolean.set(row, (Boolean) value);
@@ -118,7 +115,7 @@ class SearchTableModel extends AbstractTableModel {
     }
   }
 
-  public void removeAll() {
+  void removeAll() {
     datas.clear();
     listBoolean.clear();
     fireTableDataChanged();
@@ -133,15 +130,21 @@ class SearchTableModel extends AbstractTableModel {
     }
   }
 
-  public List<MyCellarObject> getDatas() {
+  List<MyCellarObject> getDatas() {
     return datas;
   }
 
-  boolean hasNotObject(MyCellarObject b) {
+  boolean doesNotContain(MyCellarObject b) {
     return !datas.contains(b);
   }
 
-  public Bouteille getBouteille(int i) {
-    return (Bouteille) datas.get(i);
+  List<MyCellarObject> getSelectedObjects() {
+    List<MyCellarObject> selectedObjects = new ArrayList<>();
+    for (int i = 0; i < listBoolean.size(); i++) {
+      if (listBoolean.get(i)) {
+        selectedObjects.add(datas.get(i));
+      }
+    }
+    return selectedObjects;
   }
 }

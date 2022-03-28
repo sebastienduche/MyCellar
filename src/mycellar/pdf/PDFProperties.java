@@ -5,14 +5,14 @@ import mycellar.core.common.MyCellarFields;
 import java.util.LinkedList;
 
 /**
- * <p>Titre : Cave à vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2016</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2016
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
- * @version 0.5
- * @since 16/04/21
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.6
+ * @since 28/03/22
  */
 
 public class PDFProperties {
@@ -76,9 +76,6 @@ public class PDFProperties {
     return columns.get(i).getWidth();
   }
 
-  public String getColumnTitle(int i) {
-    return columns.get(i).getTitle();
-  }
 
   public boolean isBoldTitle() {
     return boldTitle;
@@ -94,5 +91,13 @@ public class PDFProperties {
       val += c.getWidth();
     }
     return val;
+  }
+
+  PDFRow getPDFHeader() {
+    PDFRow row = new PDFRow();
+    for (PDFColumn column : columns) {
+      row.addCell(column.getTitle());
+    }
+    return row;
   }
 }

@@ -18,6 +18,7 @@ import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.pdf.PDFOptions;
 import mycellar.pdf.PDFPageProperties;
+import mycellar.pdf.PDFProperties;
 import mycellar.pdf.PDFTools;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.showfile.ManageColumnModel;
@@ -62,8 +63,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.1
- * @since 23/02/22
+ * @version 10.2
+ * @since 28/03/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -103,11 +104,12 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
   public static boolean exportToPDF(final List<? extends MyCellarObject> bottles, File nomFichier) {
     try {
-      final PDFTools pdf = new PDFTools();
+      final PDFProperties pdfProperties = Program.getPDFProperties();
+      final PDFTools pdf = new PDFTools(pdfProperties, true);
       pdf.addTitle(20);
-      PDFPageProperties pageProperties = new PDFPageProperties(30, 20, 20, 20, PDType1Font.HELVETICA, pdf.getProperties().getFontSize());
+      PDFPageProperties pageProperties = new PDFPageProperties(30, 20, 20, 20, PDType1Font.HELVETICA, pdfProperties.getFontSize());
       pageProperties.setStartTop(50);
-      pdf.drawTable(pageProperties, Program.getPDFRows(bottles, pdf.getProperties()), Program.getPDFHeader(pdf.getProperties()));
+      pdf.drawTable(pageProperties, Program.getPDFRows(bottles, pdfProperties));
       pdf.save(nomFichier);
       Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.savedFile"), nomFichier.getAbsolutePath()));
     } catch (IOException | RuntimeException ex) {

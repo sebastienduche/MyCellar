@@ -2,6 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Bouteille;
 import mycellar.Erreur;
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
@@ -44,9 +45,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static mycellar.Program.getCave;
+import static mycellar.MyCellarUtils.toCleanString;
+import static mycellar.Program.getPlaces;
 import static mycellar.Program.throwNotImplementedIfNotFor;
-import static mycellar.Program.toCleanString;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
@@ -57,16 +58,18 @@ import static mycellar.core.MyCellarError.ID.FULL_BOX;
 import static mycellar.core.MyCellarError.ID.INEXISTING_CELL;
 import static mycellar.core.MyCellarError.ID.INEXISTING_NUM_PLACE;
 import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2017</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2017
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.3
- * @since 05/01/22
+ * @version 4.5
+ * @since 20/01/22
  */
 public final class RangementUtils {
 
@@ -83,7 +86,7 @@ public final class RangementUtils {
     }
 
     ProgramPanels.getSearch().ifPresent(search -> {
-      search.removeBottle(oldObject);
+      search.removeObject(oldObject);
       search.updateTable();
     });
 
@@ -135,7 +138,7 @@ public final class RangementUtils {
           if (map.get(field)) {
             String value = MyCellarFields.getValue(field, b);
             if (MyCellarFields.hasSpecialHTMLCharacters(field)) {
-              value = Program.convertStringFromHTMLString(value);
+              value = MyCellarUtils.convertStringFromHTMLString(value);
             }
             line.append(doubleCote).append(value.replaceAll(doubleCote, escapedDoubleCote)).append(doubleCote).append(separator);
           }
@@ -148,7 +151,7 @@ public final class RangementUtils {
       progressBar.setValue(progressBar.getMaximum());
     } catch (IOException ioe) {
       Debug("ERROR: Error writing CSV \n" + ioe);
-      Erreur.showSimpleErreur(Program.getError("Error120"), Program.getError("Error161"));
+      Erreur.showSimpleErreur(getError("Error120"), getError("Error161"));
       return false;
     }
     return true;
@@ -178,7 +181,7 @@ public final class RangementUtils {
       style.appendChild(doc.createTextNode("table, td, th { border: 1px solid black; border-collapse:collapse} "
           + "tr:nth-child(even) {background-color: #f2f2f2} "));
       root.appendChild(style);
-      title.appendChild(doc.createTextNode(Program.getLabel("Infos207")));
+      title.appendChild(doc.createTextNode(getLabel("Infos207")));
       Element body = doc.createElement("body");
       root.appendChild(body);
       Element table = doc.createElement("table");
@@ -345,7 +348,7 @@ public final class RangementUtils {
          var output = new FileOutputStream(file)) { //Creation du fichier
       String sheet_title = title;
       if (sheet_title.isEmpty()) {
-        sheet_title = Program.getLabel("Infos389");
+        sheet_title = getLabel("Infos389");
       }
       SXSSFSheet sheet = workbook.createSheet();
       workbook.setSheetName(0, sheet_title);
@@ -459,7 +462,7 @@ public final class RangementUtils {
       boolean onePlacePerSheet = Program.getCaveConfigBool(MyCellarSettings.ONE_PER_SHEET_XLS, false);
 
       if (title.isEmpty()) {
-        title = Program.getLabel("Infos001");
+        title = getLabel("Infos001");
       }
       int count = 0;
       SXSSFSheet sheet = workbook.createSheet();
@@ -633,7 +636,7 @@ public final class RangementUtils {
     }
 
     final String placeName = name.strip();
-    final boolean found = getCave().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
+    final boolean found = getPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
     if (!found) {
       if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
         return true;
@@ -657,7 +660,7 @@ public final class RangementUtils {
       }
     }
     Program.getErrors().clear();
-    Program.getCave().forEach(Rangement::resetStock);
+    Program.getPlaces().forEach(Rangement::resetStock);
 
     for (var bouteille : Program.getStorage().getAllList()) {
       // On ignore les bouteilles qui sont dans le stock temporairement

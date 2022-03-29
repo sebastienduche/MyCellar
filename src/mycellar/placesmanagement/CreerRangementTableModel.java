@@ -1,6 +1,6 @@
 package mycellar.placesmanagement;
 
-import mycellar.Program;
+import mycellar.MyCellarUtils;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.HashMap;
@@ -8,12 +8,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2012</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2012
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 1.1
@@ -33,9 +34,9 @@ class CreerRangementTableModel extends AbstractTableModel {
   private boolean sameColumnNumber = false;
 
   CreerRangementTableModel() {
-    columns.add(new Column(NAME, Program.getLabel("Infos029")));
-    columns.add(new Column(ROW, Program.getLabel("Infos027")));
-    columns.add(new Column(COLUMN, Program.getLabel("Infos026")));
+    columns.add(new Column(NAME, getLabel("Infos029")));
+    columns.add(new Column(ROW, getLabel("Infos027")));
+    columns.add(new Column(COLUMN, getLabel("Infos026")));
   }
 
   @Override
@@ -69,7 +70,7 @@ class CreerRangementTableModel extends AbstractTableModel {
       }
       switch (col) {
         case NAME:
-          return Program.getLabel("Infos029") + SPACE + p.getNum();
+          return getLabel("Infos029") + SPACE + p.getNum();
         case ROW:
           return p.getRows().size();
         case COLUMN:
@@ -87,7 +88,7 @@ class CreerRangementTableModel extends AbstractTableModel {
       }
       switch (col) {
         case NAME:
-          return Program.getLabel("Infos029") + SPACE + p.getNum() + SPACE + Program.getLabel("Infos027");
+          return getLabel("Infos029") + SPACE + p.getNum() + SPACE + getLabel("Infos027");
         case ROW:
           return line;
         case COLUMN:
@@ -119,8 +120,7 @@ class CreerRangementTableModel extends AbstractTableModel {
     if (sameColumnNumber) {
       p = rows.get(row);
     } else {
-      // Récupération du numéro de la partie
-      // puis récupération de la partie correspondante
+      // Get part then the line
       int part = mapPart.get(row);
       p = rows.get(part);
     }
@@ -129,7 +129,7 @@ class CreerRangementTableModel extends AbstractTableModel {
     }
     switch (col) {
       case ROW:
-        int nRow = Program.safeParseInt((String) arg0, -1);
+        int nRow = MyCellarUtils.safeParseInt((String) arg0, -1);
         if (nRow == -1) {
           return;
         }
@@ -146,7 +146,7 @@ class CreerRangementTableModel extends AbstractTableModel {
         }
         return;
       case COLUMN:
-        int nCol = Program.safeParseInt((String) arg0, -1);
+        int nCol = MyCellarUtils.safeParseInt((String) arg0, -1);
         if (nCol == -1) {
           return;
         }
@@ -179,9 +179,10 @@ class CreerRangementTableModel extends AbstractTableModel {
     int numPart = 0;
     for (Part part : rows) {
       if (sameColumnNumber) {
-        // On positionne le nombre de colonne de la première ligne sur toute les lignes
+        // Set the number of columns of the first line to all others lines
+        final int col = part.getRow(0).getCol();
         for (Row r : part.getRows()) {
-          r.setCol(part.getRow(0).getCol());
+          r.setCol(col);
         }
       }
       int line = 1;

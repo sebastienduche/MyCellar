@@ -1,14 +1,16 @@
 package mycellar.core.uicomponents;
 
-import mycellar.Program;
 import mycellar.core.IMyCellarComponent;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
-import mycellar.core.MyCellarLabelManagement;
+import mycellar.core.text.LabelKey;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
+import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
+
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin
@@ -17,58 +19,61 @@ import javax.swing.Icon;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 27/10/21
+ * @version 0.4
+ * @since 22/02/22
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
-  private final LabelType type;
-  private final String code;
-  private final LabelProperty labelProperty;
+  private static final long serialVersionUID = -6495907213999756931L;
+
+  private final LabelKey labelKey;
+
+  private LabelType descriptionLabelType;
   private String descriptionLabelCode;
+  private LabelProperty descriptionLabelProperty;
+
   private boolean withText = true;
 
-  public MyCellarAction(LabelType type, String code, LabelProperty labelProperty) {
-    this.type = type;
-    this.code = code;
-    this.labelProperty = labelProperty;
+  public MyCellarAction(LabelType textLabelType, String textLabelCode, LabelProperty textLabelProperty) {
+    labelKey = new LabelKey(textLabelType, textLabelCode, textLabelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
-  public MyCellarAction(LabelType type, String code, LabelProperty labelProperty, Icon icon) {
+  public MyCellarAction(LabelType textLabelType, String textLabelCode, LabelProperty textLabelProperty, Icon icon) {
     super("", icon);
-    this.type = type;
-    this.code = code;
-    this.labelProperty = labelProperty;
+    labelKey = new LabelKey(textLabelType, textLabelCode, textLabelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
-  public MyCellarAction(LabelType type, String code, Icon icon) {
-    this(type, code, LabelProperty.SINGLE, icon);
+  public MyCellarAction(LabelType textLabelType, String textLabelCode, Icon icon) {
+    this(textLabelType, textLabelCode, LabelProperty.SINGLE, icon);
   }
 
-  public LabelType getType() {
-    return type;
-  }
 
-  public String getCode() {
-    return code;
-  }
-
-  public LabelProperty getLabelProperty() {
-    return labelProperty;
+  public LabelKey getLabelKey() {
+    return labelKey;
   }
 
   @Override
   public void setText(String text) {
     putValue(Action.NAME, withText ? text : "");
-    putValue(Action.SHORT_DESCRIPTION, descriptionLabelCode != null ? Program.getLabel(descriptionLabelCode, labelProperty) : text);
+    if (descriptionLabelType != null) {
+      putValue(Action.SHORT_DESCRIPTION, getLabel(new LabelKey(descriptionLabelType, descriptionLabelCode, descriptionLabelProperty)));
+    } else {
+      putValue(Action.SHORT_DESCRIPTION, text);
+    }
   }
 
-  public void setDescriptionLabelCode(String code) {
-    descriptionLabelCode = code;
+  public void setDescriptionLabel(LabelType labelType, String labelCode) {
+    setDescriptionLabel(labelType, labelCode, null);
+  }
+
+  public void setDescriptionLabel(LabelType labelType, String labelCode, LabelProperty labelProperty) {
+    descriptionLabelType = labelType;
+    descriptionLabelCode = labelCode;
+    descriptionLabelProperty = labelProperty;
   }
 
   public void setWithText(boolean withText) {
@@ -80,7 +85,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
 
   @Override
   public final void updateText() {
-    MyCellarLabelManagement.updateText(this, type, code, null, labelProperty);
+    MyCellarLabelManagement.updateText(this, labelKey);
   }
 
   @Override

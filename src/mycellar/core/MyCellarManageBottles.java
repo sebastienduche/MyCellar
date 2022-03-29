@@ -1,6 +1,7 @@
 package mycellar.core;
 
 import mycellar.Program;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JModifyTextArea;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -13,6 +14,8 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -35,7 +38,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
   protected final JModifyTextArea commentTextArea = new JModifyTextArea();
   protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
-  protected final char ajouterChar = Program.getLabel("AJOUTER").charAt(0);
+  protected final char ajouterChar = getLabel("AJOUTER").charAt(0);
   protected MyCellarButton addButton;
   protected MyCellarButton cancelButton;
   protected PanelVignobles panelVignobles;
@@ -62,7 +65,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
   }
 
   public void enableAll(boolean enable) {
-    panelPlace.enableAll(enable);
+    panelPlace.setEditable(enable);
     panelGeneral.enableAll(enable);
     panelWineAttribute.enableAll(enable, severalItems, isEditionMode);
     addButton.setEnabled(enable);

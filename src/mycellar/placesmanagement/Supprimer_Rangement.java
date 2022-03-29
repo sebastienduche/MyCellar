@@ -6,13 +6,13 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -40,17 +40,16 @@ import java.util.stream.Collectors;
 
 import static mycellar.Program.EMPTY_PLACE;
 import static mycellar.Program.getAide;
-import static mycellar.Program.getCave;
-import static mycellar.Program.getCaveLength;
-import static mycellar.Program.getError;
-import static mycellar.Program.getLabel;
+import static mycellar.Program.getPlaces;
 import static mycellar.Program.getPreviewXMLFileName;
 import static mycellar.Program.getStorage;
 import static mycellar.Program.open;
-import static mycellar.Program.removeCave;
+import static mycellar.Program.removePlace;
 import static mycellar.Program.setToTrash;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
 
 
@@ -61,8 +60,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.3
- * @since 05/01/22
+ * @version 9.4
+ * @since 20/01/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -111,7 +110,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     choix.addItemListener(this::choix_itemStateChanged);
 
     choix.addItem(EMPTY_PLACE);
-    getCave().forEach(choix::addItem);
+    getPlaces().forEach(choix::addItem);
     setVisible(true);
   }
 
@@ -181,7 +180,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 
     // Verifier l'etat du rangement avant de le supprimer et demander confirmation
     if (num_select > 0) {
-      if (getCaveLength() == 1) {
+      if (Program.hasOnlyOnePlace()) {
         Erreur.showSimpleErreur(getError("SupprimerRangement.ForbiddenToDelete"));
         return;
       }
@@ -195,10 +194,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         Debug("MESSAGE: Delete this place: " + tmp + "?");
         error = MessageFormat.format(getError("Error139"), tmp); //Voulez vous supprimer le rangement
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          removeCave(cave);
-          choix.removeItemAt(num_select);
-          choix.setSelectedIndex(0);
-          ProgramPanels.updateAllPanelsForUpdatingPlaces();
+          removeSelectedPlace(cave, num_select);
         }
       } else {
         String nom = cave.getName();
@@ -211,26 +207,34 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         String erreur_txt2 = getError("Error039", LabelProperty.THE_PLURAL);
         Debug("MESSAGE: Delete this place " + nom + " and all bottle(s) (" + nb_case_use_total + ")?");
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          new Thread(() -> {
-            //Suppression des bouteilles presentes dans le rangement
-            List<MyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(cave.getName())).collect(Collectors.toList());
-            for (MyCellarObject b : bottleList) {
-              getStorage().addHistory(HistoryState.DEL, b);
-              try {
-                cave.removeObject(b);
-              } catch (MyCellarException myCellarException) {
-                Program.showException(myCellarException);
+          new MyCellarSwingWorker() {
+            @Override
+            protected void done() {
+              //Suppression des bouteilles presentes dans le rangement
+              List<MyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(cave.getName())).collect(Collectors.toList());
+              for (MyCellarObject b : bottleList) {
+                getStorage().addHistory(HistoryState.DEL, b);
+                try {
+                  cave.removeObject(b);
+                } catch (MyCellarException myCellarException) {
+                  Program.showException(myCellarException);
+                }
+                setToTrash(b);
               }
-              setToTrash(b);
+              removeSelectedPlace(cave, num_select);
             }
-            removeCave(cave);
-            ProgramPanels.updateAllPanelsForUpdatingPlaces();
-          }).start();
-          choix.removeItemAt(num_select);
-          choix.setSelectedIndex(0);
+          }.execute();
+
         }
       }
     }
+  }
+
+  private void removeSelectedPlace(Rangement cave, int num_select) {
+    removePlace(cave);
+    choix.removeItemAt(num_select);
+    choix.setSelectedIndex(0);
+    ProgramPanels.updateAllPanelsForUpdatingPlaces();
   }
 
   private void preview_actionPerformed(ActionEvent e) {
@@ -277,14 +281,13 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       return;
     }
     updateView = false;
-//    RangementUtils.putTabStock();
     if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
       new MyCellarSwingWorker() {
         @Override
         protected void done() {
           choix.removeAllItems();
           choix.addItem(EMPTY_PLACE);
-          getCave().forEach(choix::addItem);
+          getPlaces().forEach(choix::addItem);
         }
       }.execute();
     }

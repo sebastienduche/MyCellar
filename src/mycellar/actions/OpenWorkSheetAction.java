@@ -1,11 +1,10 @@
 package mycellar.actions;
 
-import mycellar.Bouteille;
 import mycellar.MyCellarImage;
-import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
+import mycellar.core.MyCellarObject;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.ShowFile;
@@ -15,19 +14,21 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+
 public final class OpenWorkSheetAction extends MyCellarAction {
 
   private static final long serialVersionUID = -2351197475699686315L;
   private static final String LABEL = "ShowFile.Worksheet";
-  private final List<Bouteille> bouteilles;
+  private final List<MyCellarObject> bouteilles;
 
   public OpenWorkSheetAction() {
     this(null);
   }
 
-  public OpenWorkSheetAction(List<Bouteille> list) {
+  public OpenWorkSheetAction(List<MyCellarObject> list) {
     super(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE, MyCellarImage.WORK);
-    setDescriptionLabelCode(LABEL);
+    setDescriptionLabel(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE);
     bouteilles = list != null ? list : new ArrayList<>();
   }
 
@@ -37,7 +38,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
       final ShowFile showWorksheet = ProgramPanels.createShowWorksheet();
       showWorksheet.updateView();
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK, null);
-      final String label = Program.getLabel(LABEL);
+      final String label = getLabel(LABEL);
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);
       } else {
@@ -45,7 +46,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
       }
 
       Start.getInstance().updateMainPanel();
-      showWorksheet.addWorkingBottles(bouteilles);
+      showWorksheet.addToWorsheet(bouteilles);
     });
   }
 }

@@ -1,6 +1,5 @@
 package mycellar.vignobles;
 
-import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
@@ -10,13 +9,15 @@ import javax.swing.table.DefaultTableModel;
 import java.text.MessageFormat;
 import java.util.List;
 
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+
 /**
- * Titre : Cave à vin
+ * Titre : Cave &agrave; vin
  * Description : Votre description
  * Copyright : Copyright (c) 2015
- * Société : Seb Informatique
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 1.3
  * @since 29/01/21
  */
@@ -42,9 +43,9 @@ class VineyardTableModel extends DefaultTableModel {
   public String getColumnName(int column) {
     switch (column) {
       case 0:
-        return Program.getLabel("Main.AppelationAOC");
+        return getLabel("Main.AppelationAOC");
       case 1:
-        return Program.getLabel("Main.AppelationIGP");
+        return getLabel("Main.AppelationIGP");
       default:
         return "";
     }
@@ -97,11 +98,11 @@ class VineyardTableModel extends DefaultTableModel {
         String name = appelationJaxb.getAOC() != null ? appelationJaxb.getAOC() : appelationJaxb.getIGP();
         CountryVignobleController.rebuild();
         if (CountryVignobleController.isAppellationUsed(appelationJaxb)) {
-          JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("VineyardPanel.unableDeleteAppellation"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteAppellation"), getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
           return;
         }
 
-        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getLabel("VineyardPanel.delAppellationQuestion"), name), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.delAppellationQuestion"), name), getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         CountryVignobleController.setModified();

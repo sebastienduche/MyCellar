@@ -8,12 +8,13 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2014</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2014
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.8
@@ -415,51 +416,51 @@ public class CollectionFilter<T> {
       return true;
     }
     error = null;
+    int closeParenthesis;
+    int openParenthesis = closeParenthesis = 0;
     boolean first = true;
     IPredicate<?> previous = null;
-    int openParenthesis, closeParenthesis;
-    openParenthesis = closeParenthesis = 0;
     for (Predicates predicate : predicates) {
       if (first && Predicates.isKeywordPredicate(predicate.getPredicate())) {
-        error = Program.getLabel("CollectionFilter.ErrorStart");
+        error = getLabel("CollectionFilter.ErrorStart");
         Debug("Cant start by AND/OR");
         return false;
       }
       if (predicate.getPredicate().isValueRequired()) {
         if (predicate.getValue() == null) {
-          error = Program.getLabel("CollectionFilter.ErrorValueRequired");
+          error = getLabel("CollectionFilter.ErrorValueRequired");
           Debug("Value required for this predicate");
           return false;
         }
         if (predicate.getPredicate().isEmptyValueForbidden() && predicate.getValue().toString().isEmpty()) {
-          error = Program.getLabel("CollectionFilter.ErrorValueRequired");
+          error = getLabel("CollectionFilter.ErrorValueRequired");
           Debug("Value required for this predicate");
           return false;
         }
       }
       if (previous != null) {
         if ((Predicates.OPEN_PARENTHESIS.equals(previous) || Predicates.isKeywordPredicate(previous)) && Predicates.isKeywordPredicate(predicate.getPredicate())) {
-          error = Program.getLabel("CollectionFilter.ErrorKeywordParameter");
+          error = getLabel("CollectionFilter.ErrorKeywordParameter");
           Debug("Cant put AND/OR after open parenthesis or keyword");
           return false;
         }
         if (Predicates.OPEN_PARENTHESIS.equals(previous) && Predicates.isKeywordPredicate(predicate.getPredicate())) {
-          error = Program.getLabel("CollectionFilter.ErrorKeywordParenthesis");
+          error = getLabel("CollectionFilter.ErrorKeywordParenthesis");
           Debug("Cant put keyword after open parenthesis");
           return false;
         }
         if (Predicates.CLOSE_PARENTHESIS.equals(predicate.getPredicate()) && Predicates.isKeywordPredicate(previous)) {
-          error = Program.getLabel("CollectionFilter.ErrorParenthesisKeyword");
+          error = getLabel("CollectionFilter.ErrorParenthesisKeyword");
           Debug("Cant put close parenthesis after keyword");
           return false;
         }
         if (Predicates.CLOSE_PARENTHESIS.equals(previous) && !Predicates.isKeywordPredicate(predicate.getPredicate())) {
-          error = Program.getLabel("CollectionFilter.ErrorFieldParenthesis");
+          error = getLabel("CollectionFilter.ErrorFieldParenthesis");
           Debug("Cant put field after close parenthesis");
           return false;
         }
         if (Predicates.isFieldPredicate(predicate.getPredicate()) && Predicates.isFieldPredicate(previous)) {
-          error = Program.getLabel("CollectionFilter.ErrorFieldField");
+          error = getLabel("CollectionFilter.ErrorFieldField");
           Debug("Cant put field after field");
           return false;
         }
@@ -474,7 +475,7 @@ public class CollectionFilter<T> {
       first = false;
     }
     if (openParenthesis != closeParenthesis) {
-      error = Program.getLabel("CollectionFilter.ErrorParenthesis");
+      error = getLabel("CollectionFilter.ErrorParenthesis");
       Debug("Should have the same number of open and close parenthesis");
       return false;
     }

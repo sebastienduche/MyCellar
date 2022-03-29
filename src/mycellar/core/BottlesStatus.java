@@ -1,13 +1,13 @@
 package mycellar.core;
 
-import mycellar.Program;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public enum BottlesStatus {
   NONE(""),
-  CREATED(Program.getLabel("BottlesStatus.created")),
-  MODIFIED(Program.getLabel("BottlesStatus.modified")),
-  VERIFIED(Program.getLabel("BottlesStatus.verified")),
-  TOCHECK(Program.getLabel("BottlesStatus.tocheck"));
+  CREATED(getLabel("BottlesStatus.created")),
+  MODIFIED(getLabel("BottlesStatus.modified")),
+  VERIFIED(getLabel("BottlesStatus.verified")),
+  TOCHECK(getLabel("BottlesStatus.tocheck"));
 
   private final String label;
 

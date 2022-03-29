@@ -3,9 +3,9 @@ package mycellar.pdf;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -26,6 +26,7 @@ import java.util.List;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.isVK_ENTER;
 import static mycellar.ProgramConstants.isVK_O;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -50,7 +51,7 @@ public final class PDFOptions extends JDialog {
 
   public PDFOptions() {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(Program.getLabel("Infos254"));
+    setTitle(getLabel("Infos254"));
     setModal(true);
     addKeyListener(new KeyAdapter() {
       @Override
@@ -85,7 +86,7 @@ public final class PDFOptions extends JDialog {
     export = new MyCellarCheckBox[nb_colonnes];
     MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox(Program.getLabel("Infos261"));
+      export[i] = new MyCellarCheckBox(getLabel("Infos261"));
       export[i].setSelected(1 == Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT", 0));
       col_size[i] = new MyCellarSpinner(1, 99);
       colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
@@ -95,9 +96,9 @@ public final class PDFOptions extends JDialog {
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow][grow]", ""));
     jPanel2.setFont(FONT_PANEL);
-    MyCellarButton valider = new MyCellarButton(Program.getLabel("Main.OK"));
+    MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos055"));
+    MyCellarButton annuler = new MyCellarButton(LabelType.INFO, "055");
     annuler.addActionListener((e) -> dispose());
 
     jPanel1.add(new MyCellarLabel(LabelType.INFO, "255"), "split 2"); //Titre du PDF
@@ -120,7 +121,7 @@ public final class PDFOptions extends JDialog {
     }
 
     JScrollPane jScrollPane = new JScrollPane(jPanel2);
-    jScrollPane.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
+    jScrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Infos258")));
     add(jScrollPane, "grow, wrap");
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
@@ -150,7 +151,7 @@ public final class PDFOptions extends JDialog {
       }
       dispose();
       if (col_size_max > 19) {
-        Erreur.showInformationMessage(MessageFormat.format(Program.getLabel("Infos273"), col_size_max));
+        Erreur.showInformationMessage(MessageFormat.format(getLabel("Infos273"), col_size_max));
       }
     } catch (NumberFormatException e1) {
       Program.Debug("PDFOptions: ERROR: " + e1.getMessage());

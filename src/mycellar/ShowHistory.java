@@ -1,8 +1,6 @@
 package mycellar;
 
 import mycellar.core.IMyCellar;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryState;
@@ -12,6 +10,8 @@ import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.tablecomponents.DateCellRenderer;
 import mycellar.core.tablecomponents.ToolTipRenderer;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin
@@ -62,12 +64,12 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
   public ShowHistory() {
     Debug("Constructor");
     MyCellarLabel filterLabel = new MyCellarLabel(LabelType.INFO, "350"); // Filtre
-    filterCbx.addItem(new FilterItem(HistoryState.ALL, Program.getLabel("Infos351")));
-    filterCbx.addItem(new FilterItem(HistoryState.ADD, Program.getLabel("Infos345")));
-    filterCbx.addItem(new FilterItem(HistoryState.MODIFY, Program.getLabel("Infos346")));
-    filterCbx.addItem(new FilterItem(HistoryState.DEL, Program.getLabel("Infos347")));
-    filterCbx.addItem(new FilterItem(HistoryState.VALIDATED, Program.getLabel("History.Validated")));
-    filterCbx.addItem(new FilterItem(HistoryState.TOCHECK, Program.getLabel("History.ToCheck")));
+    filterCbx.addItem(new FilterItem(HistoryState.ALL, getLabel("Infos351")));
+    filterCbx.addItem(new FilterItem(HistoryState.ADD, getLabel("Infos345")));
+    filterCbx.addItem(new FilterItem(HistoryState.MODIFY, getLabel("Infos346")));
+    filterCbx.addItem(new FilterItem(HistoryState.DEL, getLabel("Infos347")));
+    filterCbx.addItem(new FilterItem(HistoryState.VALIDATED, getLabel("History.Validated")));
+    filterCbx.addItem(new FilterItem(HistoryState.TOCHECK, getLabel("History.ToCheck")));
     filterCbx.addItemListener(this::filter_itemStateChanged);
 
     // Remplissage de la table
@@ -174,7 +176,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
     private RestoreAction() {
       super("", MyCellarImage.RESTORE);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("ShowFile.Restore"));
+      putValue(SHORT_DESCRIPTION, getLabel("ShowFile.Restore"));
     }
 
     @Override
@@ -199,41 +201,41 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
       }
 
       if (nonExit) {
-        Erreur.showInformationMessage(Program.getLabel("ShowHistory.CantRestoreNonDeleted", LabelProperty.PLURAL));
+        Erreur.showInformationMessage(getLabel("ShowHistory.CantRestoreNonDeleted", LabelProperty.PLURAL));
         return;
       }
 
       if (toRestoreList.isEmpty()) {
-        Erreur.showInformationMessage(Program.getLabel("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), Program.getLabel("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getLabel("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), getLabel("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL));
       } else {
         String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {
-          erreur_txt1 = Program.getError("Error067", LabelProperty.SINGLE); // "1 vin selectionne.");
-          erreur_txt2 = Program.getLabel("ShowFile.RestoreOne");
+          erreur_txt1 = getError("Error067", LabelProperty.SINGLE); // "1 vin selectionne.
+          erreur_txt2 = getLabel("ShowFile.RestoreOne");
         } else {
-          erreur_txt1 = MessageFormat.format(Program.getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); // vins selectionnes.");
-          erreur_txt2 = Program.getLabel("ShowFile.RestoreSeveral");
+          erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); // vins selectionnes.
+          erreur_txt2 = getLabel("ShowFile.RestoreSeveral");
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"),
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
-          for (MyCellarObject b : toRestoreList) {
-            if (b.isInExistingPlace()) {
-              Rangement r = b.getRangement();
-              if (r.isSimplePlace()) {
-                Program.getStorage().addHistory(HistoryState.ADD, b);
-                Program.getStorage().addWine(b);
+          for (MyCellarObject myCellarObject : toRestoreList) {
+            if (myCellarObject.isInExistingPlace()) {
+              Rangement rangement = myCellarObject.getRangement();
+              if (rangement.isSimplePlace()) {
+                Program.getStorage().addHistory(HistoryState.ADD, myCellarObject);
+                Program.getStorage().addWine(myCellarObject);
               } else {
-                if (r.canAddObjectAt(b.getNumLieu() - 1, b.getLigne() - 1, b.getColonne() - 1)) {
-                  Program.getStorage().addHistory(HistoryState.ADD, b);
-                  Program.getStorage().addWine(b);
+                if (rangement.canAddObjectAt(myCellarObject.getNumLieu() - 1, myCellarObject.getLigne() - 1, myCellarObject.getColonne() - 1)) {
+                  Program.getStorage().addHistory(HistoryState.ADD, myCellarObject);
+                  Program.getStorage().addWine(myCellarObject);
                 } else {
-                  cantRestoreList.add(b);
+                  cantRestoreList.add(myCellarObject);
                 }
               }
             }
-            if (!cantRestoreList.contains(b)) {
-              Program.getTrash().remove(b);
+            if (!cantRestoreList.contains(myCellarObject)) {
+              Program.getTrash().remove(myCellarObject);
             }
           }
 
@@ -253,7 +255,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
     private DeleteAction() {
       super("", MyCellarImage.DELETE);
-      putValue(SHORT_DESCRIPTION, Program.getLabel("Main.Delete"));
+      putValue(SHORT_DESCRIPTION, getLabel("Main.Delete"));
     }
 
     @Override
@@ -273,19 +275,19 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
         if (toDeleteList.isEmpty()) {
           // Aucune ligne selectionnee "Veuillez selectionner des lignes a supprimer.
-          Erreur.showInformationMessage(Program.getError("Error184"), Program.getError("Error185"));
+          Erreur.showInformationMessage(getError("Error184"), getError("Error185"));
           Debug("ERROR: No lines selected");
         } else {
           String erreur_txt1, erreur_txt2;// erreur_txt3, erreur_txt4;
           if (toDeleteList.size() == 1) {
-            erreur_txt1 = Program.getError("Error186"); // "1 ligne selectionnee.
-            erreur_txt2 = Program.getError("Error188"); // "Voulez-vous la supprimer?
+            erreur_txt1 = getError("Error186"); // "1 ligne selectionnee.
+            erreur_txt2 = getError("Error188"); // "Voulez-vous la supprimer?
           } else {
-            erreur_txt1 = MessageFormat.format(Program.getError("Error187"), toDeleteList.size()); // lignes
-            erreur_txt2 = Program.getError("Error131"); // "Voulez-vous les supprimer?
+            erreur_txt1 = MessageFormat.format(getError("Error187"), toDeleteList.size()); // lignes
+            erreur_txt2 = getError("Error131"); // "Voulez-vous les supprimer?
           }
           Debug(toDeleteList.size() + " line(s) selected");
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, Program.getLabel("Infos049"),
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"),
               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             Debug("Deleting lines...");
             for (History b : toDeleteList) {

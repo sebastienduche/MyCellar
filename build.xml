@@ -3,79 +3,80 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-    	<delete dir="./Build/lib"/>
-		<mkdir dir="./Build/lib"/>
-		<copy file="./lib/commons-io-2.4.jar" todir="./Build/lib"/>
-		<copy file="./lib/commons-lang3-3.9.jar" todir="./Build/lib"/>
-		<copy file="./lib/commons-logging.jar" todir="./Build/lib"/>
-		<copy file="./lib/commons-net-3.0.1.jar" todir="./Build/lib"/>
-		<copy file="./lib/commons-text-1.9.jar" todir="./Build/lib"/>
-		<copy file="./lib/github-api-1.117.jar" todir="./Build/lib"/>
-		<copy file="./lib/jackson-annotations-2.10.2.jar" todir="./Build/lib"/>
-		<copy file="./lib/jackson-core-2.10.2.jar" todir="./Build/lib"/>
-		<copy file="./lib/jackson-databind-2.10.2.jar" todir="./Build/lib"/>
-		<copy file="./lib/jcommon-1.0.18.jar" todir="./Build/lib"/>
-		<copy file="./lib/jdom1.0.jar" todir="./Build/lib"/>
-		<copy file="./lib/jfreechart-1.0.15.jar" todir="./Build/lib"/>
-		<copy file="./lib/miglayout-4.0-swing.jar" todir="./Build/lib"/>
-		<copy file="./lib/pdfbox-app-2.0.5.jar" todir="./Build/lib"/>
-		<copy file="./lib/commons-collections4-4.2.jar" todir="./Build/lib"/>
-		<copy file="./lib/commons-compress-1.18.jar" todir="./Build/lib"/>
-		<copy file="./lib/poi-4.0.0.jar" todir="./Build/lib"/>
-		<copy file="./lib/poi-ooxml-4.0.0.jar" todir="./Build/lib"/>
-		<copy file="./lib/poi-ooxml-schemas-4.0.0.jar" todir="./Build/lib"/>
-		<copy file="./lib/xmlbeans-3.0.1.jar" todir="./Build/lib"/>
-		<copy file="./lib/GitHubServer-2.0.jar" todir="./Build/lib"/>
-    	<!-- 5.7 -->
-    	<copy file="./lib/activation-1.0.2.jar" todir="./Build/lib"/>
-    	<copy file="./lib/jaxb-api-2.3.0.jar" todir="./Build/lib"/>
-    	<copy file="./lib/jaxb-core-2.3.0.1.jar" todir="./Build/lib"/>
-    	<copy file="./lib/jaxb-impl-2.3.1.jar" todir="./Build/lib"/>
+        <delete dir="./Build/lib"/>
+        <mkdir dir="./Build/lib"/>
+        <copy file="./lib/commons-io-2.4.jar" todir="./Build/lib"/>
+        <copy file="./lib/commons-lang3-3.9.jar" todir="./Build/lib"/>
+        <copy file="./lib/commons-logging.jar" todir="./Build/lib"/>
+        <copy file="./lib/commons-net-3.0.1.jar" todir="./Build/lib"/>
+        <copy file="./lib/commons-text-1.9.jar" todir="./Build/lib"/>
+        <copy file="./lib/github-api-1.117.jar" todir="./Build/lib"/>
+        <copy file="./lib/jackson-annotations-2.10.2.jar" todir="./Build/lib"/>
+        <copy file="./lib/jackson-core-2.10.2.jar" todir="./Build/lib"/>
+        <copy file="./lib/jackson-databind-2.10.2.jar" todir="./Build/lib"/>
+        <copy file="./lib/jcommon-1.0.18.jar" todir="./Build/lib"/>
+        <copy file="./lib/jdom1.0.jar" todir="./Build/lib"/>
+        <copy file="./lib/jfreechart-1.0.15.jar" todir="./Build/lib"/>
+        <copy file="./lib/miglayout-4.0-swing.jar" todir="./Build/lib"/>
+        <copy file="./lib/pdfbox-app-2.0.5.jar" todir="./Build/lib"/>
+        <copy file="./lib/commons-collections4-4.2.jar" todir="./Build/lib"/>
+        <copy file="./lib/commons-compress-1.18.jar" todir="./Build/lib"/>
+        <copy file="./lib/poi-4.0.0.jar" todir="./Build/lib"/>
+        <copy file="./lib/poi-ooxml-4.0.0.jar" todir="./Build/lib"/>
+        <copy file="./lib/poi-ooxml-schemas-4.0.0.jar" todir="./Build/lib"/>
+        <copy file="./lib/xmlbeans-3.0.1.jar" todir="./Build/lib"/>
+        <copy file="./lib/GitHubServer-2.0.jar" todir="./Build/lib"/>
+        <copy file="./lib/my-pdf-generator-1.0.jar" todir="./Build/lib"/>
+        <!-- 5.7 -->
+        <copy file="./lib/activation-1.0.2.jar" todir="./Build/lib"/>
+        <copy file="./lib/jaxb-api-2.3.0.jar" todir="./Build/lib"/>
+        <copy file="./lib/jaxb-core-2.3.0.1.jar" todir="./Build/lib"/>
+        <copy file="./lib/jaxb-impl-2.3.1.jar" todir="./Build/lib"/>
 
-    	<path id="compile.classpath">
-    	    <fileset dir="./Build/lib" includes="*.jar"/>
-    	</path>
-    	<property name="dependencies_cp" value="${toString:compile.classpath}" />
+        <path id="compile.classpath">
+            <fileset dir="./Build/lib" includes="*.jar"/>
+        </path>
+        <property name="dependencies_cp" value="${toString:compile.classpath}"/>
 
-    	<manifestclasspath property="jar.classpath" jarfile="./Build/MyCellar.jar">
-	      <classpath refid="compile.classpath"/>
-	    </manifestclasspath>
-    	<mkdir dir="./Build"/>
-    	<jar destfile="./Build/MyCellarLauncher.jar">
+        <manifestclasspath property="jar.classpath" jarfile="./Build/MyCellar.jar">
+            <classpath refid="compile.classpath"/>
+        </manifestclasspath>
+        <mkdir dir="./Build"/>
+        <jar destfile="./Build/MyCellarLauncher.jar">
             <manifest>
-              <attribute name="Main-Class" value="mycellar.launcher.MyCellarLauncher"/>
-							<attribute name="Class-Path" value="${jar.classpath}" />
-            	<attribute name="SplashScreen-Image" value="resources/SebInformatique.jpg"/>
+                <attribute name="Main-Class" value="mycellar.launcher.MyCellarLauncher"/>
+                <attribute name="Class-Path" value="${jar.classpath}"/>
+                <attribute name="SplashScreen-Image" value="resources/SebInformatique.jpg"/>
             </manifest>
             <fileset dir="./bin">
-            	<include name="**/*/*MyCellarLauncher*"/>
-            	<include name="**/*/*Server*"/>
-            	<include name="**/*/*MyCellarVersion*"/>
+                <include name="**/*/*MyCellarLauncher*"/>
+                <include name="**/*/*Server*"/>
+                <include name="**/*/*MyCellarVersion*"/>
             </fileset>
         </jar>
-    	<jar destfile="./Build/MyCellar.jar">
+        <jar destfile="./Build/MyCellar.jar">
             <manifest>
                 <attribute name="Main-Class" value="mycellar.Start"/>
-				<attribute name="Class-Path" value="${jar.classpath}" />
+                <attribute name="Class-Path" value="${jar.classpath}"/>
             </manifest>
             <fileset dir="./bin">
-            	<include name="**/*.class"/>
-            	<include name="**/*/*.class"/>
-            	<include name="**/*.properties"/>
-            	<exclude name="**/*/*MyCellarLauncher*"/>
-            	<exclude name="Test"/>
+                <include name="**/*.class"/>
+                <include name="**/*/*.class"/>
+                <include name="**/*.properties"/>
+                <exclude name="**/*/*MyCellarLauncher*"/>
+                <exclude name="Test"/>
             </fileset>
-        	<fileset dir=".">
-        		<include name="resources"/>
-        		<include name="resources/*"/>
-        	</fileset>
+            <fileset dir=".">
+                <include name="resources"/>
+                <include name="resources/*"/>
+            </fileset>
         </jar>
-    	<delete dir="./Build/config"/>
-    	<mkdir dir="./Build/config"/>
-    	<copydir src="./config" dest="./Build/config"/>
-    	<delete dir="./Build/resources"/>
-    	<copy file="./Finish.html" todir="./Build"/>
-    	<copy file="./MyCellarVersion.txt" todir="./Build"/>
-    	<copy file="./init.bat" todir="./Build"/>
+        <delete dir="./Build/config"/>
+        <mkdir dir="./Build/config"/>
+        <copydir src="./config" dest="./Build/config"/>
+        <delete dir="./Build/resources"/>
+        <copy file="./Finish.html" todir="./Build"/>
+        <copy file="./MyCellarVersion.txt" todir="./Build"/>
+        <copy file="./init.bat" todir="./Build"/>
     </target>
 </project>

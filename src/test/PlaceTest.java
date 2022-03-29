@@ -22,7 +22,7 @@ class PlaceTest {
 
   @BeforeEach
   void setUp() {
-    Program.getCave().clear();
+    Program.getPlaces().clear();
     caisseNoLimit = new Rangement.SimplePlaceBuilder("caisseNoLimit").build(); // 1 emplacement : 0
     // Caisse avec 2 emplacements commencant a 1 et limite a 6 bouteilles
     caisseLimit = new Rangement.SimplePlaceBuilder("caisseLimit")
@@ -38,10 +38,10 @@ class PlaceTest {
         .nbParts(new int[]{3, 1})
         .sameColumnsNumber(new int[]{3, 3})
         .build();
-    Program.addCave(caisseLimit);
-    Program.addCave(caisseNoLimit);
-    Program.addCave(armoire1x3x3);
-    Program.addCave(armoire2x3x3);
+    Program.addPlace(caisseLimit);
+    Program.addPlace(caisseNoLimit);
+    Program.addPlace(armoire1x3x3);
+    Program.addPlace(armoire2x3x3);
   }
 
   @Test

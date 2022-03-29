@@ -1,14 +1,16 @@
 package mycellar.core.uicomponents;
 
 import mycellar.core.IMyCellarComponent;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
-import mycellar.core.MyCellarLabelManagement;
+import mycellar.core.text.LabelKey;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
+import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
-import java.awt.Font;
+
+import static mycellar.ProgramConstants.FONT_PANEL;
 
 /**
  * Titre : Cave &agrave; vin
@@ -17,84 +19,74 @@ import java.awt.Font;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 18/10/20
+ * @version 0.7
+ * @since 22/02/22
  */
 
 public final class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
 
   private static final long serialVersionUID = 2584507081563652083L;
-  private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
-
-  private LabelType type;
-  private String code;
-  private String value;
-  private LabelProperty labelProperty;
+  private LabelKey labelKey;
 
   public MyCellarCheckBox(Icon icon) {
     super(icon);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(String text) {
     super(text);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(LabelType type, String code) {
-    this.type = type;
-    this.code = code;
+    labelKey = new LabelKey(type, code);
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(LabelType type, String code, LabelProperty labelProperty) {
-    this.type = type;
-    this.code = code;
-    this.labelProperty = labelProperty;
+    labelKey = new LabelKey(type, code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(LabelType type, String code, String value) {
-    this.type = type;
-    this.code = code;
-    this.value = value;
+    labelKey = new LabelKey(type, code, null, value);
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(Action a) {
     super(a);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(Icon icon, boolean selected) {
     super(icon, selected);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(String text, boolean selected) {
     super(text, selected);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(String text, Icon icon) {
     super(text, icon);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarCheckBox(String text, Icon icon, boolean selected) {
     super(text, icon, selected);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   @Override
   public void updateText() {
-    MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
+    MyCellarLabelManagement.updateText(this, labelKey);
   }
 
 }

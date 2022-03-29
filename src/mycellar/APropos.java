@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.LabelType;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
@@ -19,6 +19,7 @@ import java.awt.Toolkit;
 
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
 import static mycellar.ProgramConstants.MAIN_VERSION;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
@@ -33,43 +34,36 @@ import static mycellar.ProgramConstants.MAIN_VERSION;
  */
 final class APropos extends JDialog {
   static final long serialVersionUID = 150505;
-  private final MyCellarButton ok = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
-  private final MyCellarLabel MyCellarLabel1 = new MyCellarLabel("MyCellar");
-  private final MyCellarLabel MyCellarLabel2 = new MyCellarLabel("Copyright: S.Duché");
-  private final MyCellarLabel MyCellarLabel3 = new MyCellarLabel("Release: " + INTERNAL_VERSION);
-  private final MyCellarLabel MyCellarLabel4 = new MyCellarLabel("Version: " + MAIN_VERSION);
 
   APropos() {
-    super(new JFrame(), Program.getLabel("Infos198"), true);
-    init();
+    super(new JFrame(), getLabel("Infos198"), true);
+    IconPanel ip = new IconPanel(MyCellarImage.ICON);
+    MyCellarButton ok = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
+    ok.addActionListener((e) -> dispose());
+    MyCellarLabel myCellarLabel1 = new MyCellarLabel("MyCellar");
+    myCellarLabel1.setForeground(Color.red);
+    myCellarLabel1.setHorizontalAlignment(SwingConstants.CENTER);
+    MyCellarLabel myCellarLabel2 = new MyCellarLabel("Copyright: S.Duché");
+    myCellarLabel2.setHorizontalAlignment(SwingConstants.LEFT);
+    MyCellarLabel myCellarLabel3 = new MyCellarLabel("Release: " + INTERNAL_VERSION);
+    myCellarLabel3.setHorizontalAlignment(SwingConstants.LEFT);
+    MyCellarLabel myCellarLabel4 = new MyCellarLabel("Version: " + MAIN_VERSION);
+    myCellarLabel4.setHorizontalAlignment(SwingConstants.LEFT);
+    myCellarLabel1.setFont(new Font("Arial", Font.BOLD, 13));
+    setLayout(new MigLayout("", "[][]", "[]"));
+    add(myCellarLabel1, "center, span 2, wrap");
+    add(myCellarLabel2, "gaptop 20px");
+    add(ip, "spany 3, wmin 64, hmin 64, wrap");
+    add(myCellarLabel3, "wrap");
+    add(myCellarLabel4, "wrap");
+    add(ok, "gaptop 20px, span 2, center");
+
+    setResizable(false);
     pack();
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     setLocation((screenSize.width - getSize().width) / 2, (screenSize.height - getSize().height) / 2);
   }
 
-  private void init() {
-    IconPanel ip = new IconPanel(MyCellarImage.ICON);
-    ok.addActionListener((e) -> dispose());
-    MyCellarLabel1.setForeground(Color.red);
-    MyCellarLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-    MyCellarLabel2.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel3.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel4.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel1.setFont(new Font("Arial", Font.BOLD, 13));
-    setLayout(new MigLayout("", "[][]", "[]"));
-    add(MyCellarLabel1, "center, span 2, wrap");
-    add(MyCellarLabel2, "gaptop 20px");
-    add(ip, "spany 3, wmin 64, hmin 64, wrap");
-    add(MyCellarLabel3, "wrap");
-    add(MyCellarLabel4, "wrap");
-    add(ok, "gaptop 20px, span 2, center");
-
-    setResizable(false);
-  }
-
-  /**
-   * Constructeur de l'image.
-   */
   private static class IconPanel extends JPanel {
     static final long serialVersionUID = 1505051;
     private final ImageIcon img;

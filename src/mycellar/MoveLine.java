@@ -1,12 +1,12 @@
 package mycellar;
 
 import mycellar.core.IMyCellarObject;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -24,12 +24,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.FONT_DIALOG;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2005</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2005
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 3.0
@@ -46,7 +48,7 @@ final class MoveLine extends JDialog {
   MoveLine() {
     setAlwaysOnTop(true);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(Program.getLabel("Infos363"));
+    setTitle(getLabel("Infos363"));
     setLayout(new MigLayout("", "[]", "[]20px[]10px[]10px[][]20px[]10px"));
     MyCellarLabel titre = new MyCellarLabel(LabelType.INFO, "363");
     titre.setForeground(Color.red);
@@ -93,7 +95,7 @@ final class MoveLine extends JDialog {
     final Place selectedPlace = panelPlace.getSelectedPlace();
     int nNewSelected = new_line_cbx.getSelectedIndex();
     if (selectedPlace.getLine() == nNewSelected || nNewSelected == 0) {
-      Erreur.showSimpleErreur(this, Program.getError("Error192"));
+      Erreur.showSimpleErreur(this, getError("Error192"));
       return;
     }
     nNewSelected--; // We need the o bse index for the next calls
@@ -102,18 +104,18 @@ final class MoveLine extends JDialog {
     Rangement rangement = selectedPlace.getRangement();
     int nNbBottle = rangement.getNbCaseUseInLine(nNumLieu, nOldSelected);
     if (nNbBottle == 0) {
-      Erreur.showSimpleErreur(this, Program.getError("Error195", LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getError("Error195", LabelProperty.PLURAL));
       return;
     }
     int nOldColumnCount = rangement.getColumnCountAt(nNumLieu, nOldSelected);
     int nNewColumnCount = rangement.getColumnCountAt(nNumLieu, nNewSelected);
     if (nOldColumnCount > nNewColumnCount && nNbBottle > nNewColumnCount) {
-      Erreur.showSimpleErreur(this, Program.getError("Error194"));
+      Erreur.showSimpleErreur(this, getError("Error194"));
       return;
     }
     int nBottle = rangement.getNbCaseUseInLine(nNumLieu, nNewSelected);
     if (nBottle > 0) {
-      Erreur.showSimpleErreur(this, Program.getError("Error193", LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getError("Error193", LabelProperty.PLURAL));
       return;
     }
     List<MyCellarObject> notMoved = new ArrayList<>();
@@ -129,10 +131,10 @@ final class MoveLine extends JDialog {
     }
     if (!notMoved.isEmpty()) {
       final String value = notMoved.stream().map(IMyCellarObject::getNom).collect(Collectors.joining(", "));
-      Erreur.showSimpleErreur(this, Program.getError("MoveLine.UnableToMove", LabelProperty.PLURAL), value);
+      Erreur.showSimpleErreur(this, getError("MoveLine.UnableToMove", LabelProperty.PLURAL), value);
       Debug("ERROR: Unable to move objects: " + value);
     } else {
-      label_end.setText(Program.getLabel("MoveLine.ItemsMoved", LabelProperty.THE_PLURAL.withCapital()), true);
+      label_end.setText(getLabel("MoveLine.ItemsMoved", LabelProperty.THE_PLURAL.withCapital()), true);
     }
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
     ProgramPanels.updateCellOrganizerPanel(true);
@@ -140,6 +142,8 @@ final class MoveLine extends JDialog {
   }
 
   class MoveLinePanelPlace extends PanelPlace {
+    private static final long serialVersionUID = 1742129778730101248L;
+
     public MoveLinePanelPlace() {
       super(false, false, false, true);
     }

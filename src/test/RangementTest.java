@@ -68,13 +68,13 @@ class RangementTest {
     }
     rangement = new Rangement.SimplePlaceBuilder("test").build();
 
-    Program.addCave(caisseLimit);
-    Program.addCave(caisseNoLimit);
-    Program.addCave(armoire1x3x3);
-    Program.addCave(armoire1x3x3Builder);
-    Program.addCave(armoire2x2_3x22545);
-    Program.addCave(armoire2x2_3x22545Builder);
-    Program.addCave(rangement);
+    Program.addPlace(caisseLimit);
+    Program.addPlace(caisseNoLimit);
+    Program.addPlace(armoire1x3x3);
+    Program.addPlace(armoire1x3x3Builder);
+    Program.addPlace(armoire2x2_3x22545);
+    Program.addPlace(armoire2x2_3x22545Builder);
+    Program.addPlace(rangement);
   }
 
   @Test
@@ -567,7 +567,7 @@ class RangementTest {
   @Test
   void putTabStock() {
     Rangement caisse = new Rangement.SimplePlaceBuilder("caisse").nbParts(2).startSimplePlace(1).limited(true).limit(2).build();
-    Program.addCave(caisse);
+    Program.addPlace(caisse);
     assertTrue(caisse.hasFreeSpaceInSimplePlace(new Place.PlaceBuilder(caisse).withNumPlace(1).build()));
     Bouteille b = new Bouteille();
     b.setNom("B20");
@@ -587,7 +587,7 @@ class RangementTest {
   @Test
   void hasFreeSpaceInCaisse() {
     Rangement caisse = new Rangement.SimplePlaceBuilder("caisse").nbParts(2).startSimplePlace(1).limited(true).limit(1).build();
-    Program.addCave(caisse);
+    Program.addPlace(caisse);
     assertTrue(caisse.hasFreeSpaceInSimplePlace(new Place.PlaceBuilder(caisse).withNumPlace(1).build()));
     Bouteille b = new Bouteille();
     b.setNom("B21");
@@ -651,7 +651,7 @@ class RangementTest {
   @Test
   void complexCaisse() {
     Rangement caisse = new Rangement.SimplePlaceBuilder("caisse").nbParts(1).startSimplePlace(0).limited(true).limit(3).build();
-    Program.addCave(caisse);
+    Program.addPlace(caisse);
     assertTrue(caisse.hasFreeSpaceInSimplePlace(new Place.PlaceBuilder(caisse).withNumPlace(0).build()));
     Bouteille b = new Bouteille();
     b.setNom("B24");

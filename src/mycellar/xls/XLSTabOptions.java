@@ -2,12 +2,12 @@ package mycellar.xls;
 
 import mycellar.Program;
 import mycellar.Start;
+import mycellar.core.tablecomponents.CheckboxCellEditor;
+import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
-import mycellar.core.tablecomponents.CheckboxCellEditor;
-import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -27,8 +27,6 @@ import java.awt.event.WindowEvent;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.isVK_ENTER;
 import static mycellar.ProgramConstants.isVK_O;
-import static mycellar.core.LabelType.INFO;
-import static mycellar.core.LabelType.INFO_OTHER;
 import static mycellar.core.MyCellarSettings.BOLD_TAB_XLS;
 import static mycellar.core.MyCellarSettings.COLUMN_TAB_WIDTH_XLS;
 import static mycellar.core.MyCellarSettings.EMPTY_LINE_PART_XLS;
@@ -42,6 +40,9 @@ import static mycellar.core.MyCellarSettings.XLSTAB_COL1;
 import static mycellar.core.MyCellarSettings.XLSTAB_COL2;
 import static mycellar.core.MyCellarSettings.XLSTAB_COL3;
 import static mycellar.core.MyCellarSettings.XLS_TAB_TITLE;
+import static mycellar.core.text.LabelType.INFO;
+import static mycellar.core.text.LabelType.INFO_OTHER;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
@@ -73,7 +74,7 @@ public final class XLSTabOptions extends JDialog {
     setModal(true);
     xlsOptionsTableValues = new XLSOptionsValues();
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(Program.getLabel("Infos268"));
+    setTitle(getLabel("Infos268"));
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
@@ -92,7 +93,7 @@ public final class XLSTabOptions extends JDialog {
     final JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setFont(FONT_PANEL);
-    panel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos331")));
+    panel.setBorder(BorderFactory.createTitledBorder(getLabel("Infos331")));
     MyCellarLabel titleLabel = new MyCellarLabel(INFO, "270"); //Titre du XLS
     String xls_title = Program.getCaveConfigString(XLS_TAB_TITLE, "");
     pdf_title.setText(xls_title);
@@ -121,14 +122,14 @@ public final class XLSTabOptions extends JDialog {
     table.setSize(460, 100);
     JScrollPane scrollPane = new JScrollPane(table);
 
-    xlsOptionsTableValues.addString(Program.getLabel("Infos132"), Program.getCaveConfigBool(XLSTAB_COL0, true));
-    xlsOptionsTableValues.addString(Program.getLabel("Infos189"), Program.getCaveConfigBool(XLSTAB_COL1, false));
-    xlsOptionsTableValues.addString(Program.getLabel("Infos134"), Program.getCaveConfigBool(XLSTAB_COL2, false));
-    xlsOptionsTableValues.addString(Program.getLabel("Infos135"), Program.getCaveConfigBool(XLSTAB_COL3, false));
+    xlsOptionsTableValues.addString(getLabel("Infos132"), Program.getCaveConfigBool(XLSTAB_COL0, true));
+    xlsOptionsTableValues.addString(getLabel("Infos189"), Program.getCaveConfigBool(XLSTAB_COL1, false));
+    xlsOptionsTableValues.addString(getLabel("Infos134"), Program.getCaveConfigBool(XLSTAB_COL2, false));
+    xlsOptionsTableValues.addString(getLabel("Infos135"), Program.getCaveConfigBool(XLSTAB_COL3, false));
 
     final JPanel panel1 = new JPanel();
     panel1.setFont(FONT_PANEL);
-    panel1.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos332")));
+    panel1.setBorder(BorderFactory.createTitledBorder(getLabel("Infos332")));
     MyCellarButton valider = new MyCellarButton(INFO_OTHER, "Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
     MyCellarButton annuler = new MyCellarButton(INFO, "055");

@@ -1,6 +1,6 @@
 package mycellar.core.datas.jaxb;
 
-import mycellar.Program;
+import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,15 +8,17 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
 
+import static mycellar.ProgramConstants.COUNTRY_LABEL_KEY;
+
 /**
- * <p>Titre : Cave à vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 1998</p>
- * <p>Société : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 1998
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
- * @version 0.4
- * @since 12/11/20
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.5
+ * @since 21/02/22
  */
 
 @XmlRootElement(name = "country")
@@ -61,8 +63,8 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
     if (id == null) {
       return "";
     }
-    String label = Program.getLabel("Country." + id, false);
-    if (label.equals("Country." + id)) {
+    String label = MyCellarLabelManagement.getLabel(COUNTRY_LABEL_KEY + id, false);
+    if (label.equals(COUNTRY_LABEL_KEY + id)) {
       return getName();
     }
     return label;
@@ -95,8 +97,9 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
     }
     CountryJaxb other = (CountryJaxb) obj;
     if (id == null) {
-      if (other.id != null)
+      if (other.id != null) {
         return false;
+      }
     } else if (!id.equals(other.id)) {
       return false;
     }

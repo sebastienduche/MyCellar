@@ -1,12 +1,14 @@
 package mycellar;
 
-import mycellar.core.LabelProperty;
+import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Rangement;
 
 import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
+
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -21,7 +23,7 @@ import java.util.List;
 class TableauValues extends AbstractTableModel {
   public static final int ETAT = 0;
   static final long serialVersionUID = 220605;
-  private final String[] columnNames = {"", Program.getLabel("Infos081"), Program.getLabel("Infos027"), Program.getLabel("Infos136", LabelProperty.PLURAL)};
+  private final String[] columnNames = {"", getLabel("Infos081"), getLabel("Infos027"), getLabel("Infos136", LabelProperty.PLURAL)};
 
   private final List<Rangement> list = new LinkedList<>();
   private final List<Boolean> listBoolean = new LinkedList<>();
@@ -33,39 +35,39 @@ class TableauValues extends AbstractTableModel {
 
   @Override
   public int getColumnCount() {
-    return 4;
+    return columnNames.length;
   }
 
   @Override
   public Object getValueAt(int row, int column) {
-    Rangement r = list.get(row);
+    Rangement rangement = list.get(row);
     switch (column) {
       case 0:
         return listBoolean.get(row);
       case 1:
-        return r.getName();
+        return rangement.getName();
       case 2:
-        if (r.isSimplePlace()) {
-          return Program.getLabel("Infos024");
+        if (rangement.isSimplePlace()) {
+          return getLabel("Infos024");
         }
         int nombre_ligne = 0;
-        for (int k = 0; k < r.getNbParts(); k++) {
-          nombre_ligne += r.getLineCountAt(k);
+        for (int k = 0; k < rangement.getNbParts(); k++) {
+          nombre_ligne += rangement.getLineCountAt(k);
         }
         if (nombre_ligne <= 1) {
-          return MessageFormat.format(Program.getLabel("Infos060"), nombre_ligne);
+          return MessageFormat.format(getLabel("Infos060"), nombre_ligne);
         }
-        return MessageFormat.format(Program.getLabel("Infos061"), nombre_ligne);
+        return MessageFormat.format(getLabel("Infos061"), nombre_ligne);
       case 3:
         int nombre_vin = 0;
-        if (r.isSimplePlace()) {
-          nombre_vin = r.getTotalCountCellUsed();
+        if (rangement.isSimplePlace()) {
+          nombre_vin = rangement.getTotalCountCellUsed();
         } else {
-          for (int k = 0; k < r.getNbParts(); k++) {
-            nombre_vin += r.getTotalCellUsed(k);
+          for (int k = 0; k < rangement.getNbParts(); k++) {
+            nombre_vin += rangement.getTotalCellUsed(k);
           }
         }
-        return MessageFormat.format(Program.getLabel("Main.severalItems", new LabelProperty(nombre_vin > 1)), nombre_vin);
+        return MessageFormat.format(getLabel("Main.severalItems", new LabelProperty(nombre_vin > 1)), nombre_vin);
     }
     return "";
   }

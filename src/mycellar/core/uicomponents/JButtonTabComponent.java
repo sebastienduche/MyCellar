@@ -33,6 +33,7 @@ package mycellar.core.uicomponents;
 
 import mycellar.ITabListener;
 import mycellar.Program;
+import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.AbstractButton;
@@ -135,7 +136,7 @@ public final class JButtonTabComponent extends JPanel {
     private TabButton() {
       int size = 17;
       setPreferredSize(new Dimension(size, size));
-      setToolTipText(Program.getLabel("Infos019"));
+      setToolTipText(MyCellarLabelManagement.getLabel("Infos019"));
       // Make the button looks the same for all Laf's
       setUI(new BasicButtonUI());
       // Make it transparent

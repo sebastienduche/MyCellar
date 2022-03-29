@@ -6,6 +6,7 @@ import mycellar.MyCellarControl;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.core.MyCellarSettings;
+import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
@@ -18,7 +19,7 @@ public class ExportPDFAction extends AbstractAction {
 
   public ExportPDFAction() {
     super("", MyCellarImage.PDF);
-    putValue(SHORT_DESCRIPTION, Program.getLabel("Infos248"));
+    putValue(SHORT_DESCRIPTION, MyCellarLabelManagement.getLabel("Infos248"));
   }
 
   @Override

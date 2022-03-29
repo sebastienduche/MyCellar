@@ -43,8 +43,8 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.5
- * @since 16/10/21
+ * @version 7.6
+ * @since 20/01/22
  *
  * <p>Java class for anonymous complex type.
  *
@@ -97,7 +97,7 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 public class Bouteille extends MyCellarObject implements Serializable {
 
   public static final String NON_VINTAGE = "NV";
-  static final int NON_VINTAGE_INT = 9999;
+  public static final int NON_VINTAGE_INT = 9999;
   private static final long serialVersionUID = 7443323147347096230L;
   private int id;
   @XmlElement(required = true)
@@ -205,7 +205,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
     return year.length() == 4 && n > current_year;
   }
 
-  static boolean isNonVintageYear(String year) {
+  public static boolean isNonVintageYear(String year) {
     return (year.compareToIgnoreCase(NON_VINTAGE) == 0);
   }
 
@@ -373,7 +373,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public Rangement getRangement() {
-    return Program.getCave(emplacement);
+    return Program.getPlaceByName(emplacement);
   }
 
   @Override
@@ -399,32 +399,32 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public double getPriceDouble() {
-    String price = Program.convertStringFromHTMLString(prix);
+    String price = MyCellarUtils.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
       return 0;
     }
 
-    return Program.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
+    return MyCellarUtils.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
   }
 
   @Override
   public BigDecimal getPrice() {
-    String price = Program.convertStringFromHTMLString(prix);
+    String price = MyCellarUtils.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
       return BigDecimal.ZERO;
     }
 
-    return Program.safeStringToBigDecimal(price, BigDecimal.ZERO);
+    return MyCellarUtils.safeStringToBigDecimal(price, BigDecimal.ZERO);
   }
 
   @Override
   public boolean hasPrice() {
-    String price = Program.convertStringFromHTMLString(prix);
+    String price = MyCellarUtils.convertStringFromHTMLString(prix);
     if (price.isEmpty()) {
       return false;
     }
     try {
-      Program.stringToBigDecimal(price);
+      MyCellarUtils.stringToBigDecimal(price);
     } catch (NumberFormatException ignored) {
       return false;
     }

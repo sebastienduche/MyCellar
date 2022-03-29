@@ -1,13 +1,15 @@
 package mycellar.showfile;
 
 import mycellar.Erreur;
-import mycellar.Program;
 import mycellar.core.common.MyCellarFields;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -59,7 +61,7 @@ public class ManageColumnModel extends DefaultTableModel {
     if (column == 0) {
       return "";
     }
-    return Program.getLabel("Main.Column");
+    return getLabel("Main.Column");
   }
 
   @Override
@@ -93,7 +95,7 @@ public class ManageColumnModel extends DefaultTableModel {
       }
     }
     if (selectedColumns.isEmpty()) {
-      Erreur.showSimpleErreur(Program.getError("ManageColumn.ErrorNb"));
+      Erreur.showSimpleErreur(getError("ManageColumn.ErrorNb"));
       values[row] = Boolean.TRUE;
       selectedColumns.add(list.get(row).ordinal());
     }

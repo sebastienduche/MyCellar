@@ -1,13 +1,13 @@
 package mycellar;
 
+import com.sebastienduche.pdf.PDFColumn;
+import com.sebastienduche.pdf.PDFProperties;
+import com.sebastienduche.pdf.PDFRow;
 import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
-import mycellar.core.Grammar;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFile;
-import mycellar.core.MyCellarLabelManagement;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
@@ -23,16 +23,14 @@ import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
-import mycellar.core.language.Language;
-import mycellar.core.language.LanguageFileLoader;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.storage.SerializedStorage;
 import mycellar.core.storage.Storage;
+import mycellar.core.text.Language;
+import mycellar.core.text.LanguageFileLoader;
+import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
-import mycellar.pdf.PDFColumn;
-import mycellar.pdf.PDFProperties;
-import mycellar.pdf.PDFRow;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.vignobles.CountryVignobleController;
@@ -40,7 +38,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.Base64;
-import org.apache.commons.text.StringEscapeUtils;
 import org.kohsuke.github.GHGistBuilder;
 import org.kohsuke.github.GitHub;
 
@@ -55,12 +52,9 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
-import java.text.Normalizer;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -70,25 +64,23 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static mycellar.Filtre.EXTENSION_SINFO;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
+import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.BOUTEILLES_XML;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.CONFIG_INI;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
-import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FRA;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
-import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.MY_CELLAR_XML;
 import static mycellar.ProgramConstants.ON;
 import static mycellar.ProgramConstants.ONE;
@@ -96,9 +88,7 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.PREVIEW_HTML;
 import static mycellar.ProgramConstants.PREVIEW_XML;
 import static mycellar.ProgramConstants.SLASH;
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
-import static mycellar.ProgramConstants.THREE_DOTS;
 import static mycellar.ProgramConstants.TIMESTAMP_PATTERN;
 import static mycellar.ProgramConstants.TYPES_MUSIC_XML;
 import static mycellar.ProgramConstants.TYPES_XML;
@@ -106,16 +96,18 @@ import static mycellar.ProgramConstants.UNTITLED1_SINFO;
 import static mycellar.ProgramConstants.VERSION;
 import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2003
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.6
- * @since 04/01/22
+ * @version 27.9
+ * @since 29/03/22
  */
 
 public final class Program {
@@ -136,7 +128,7 @@ public final class Program {
   private static final List<MyCellarObject> TRASH = new LinkedList<>();
   private static final List<MyCellarError> ERRORS = new LinkedList<>();
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
-  private static Type programType = Type.WINE;
+  private static ProgramType programType = ProgramType.WINE;
   private static MyCellarFile myCellarFile = null;
   private static FileWriter oDebugFile = null;
   private static File debugFile = null;
@@ -161,14 +153,14 @@ public final class Program {
     try {
       Debug("Program: Initializing Configuration files and Program type");
       if (loadProperties()) {
-        setProgramType(Program.Type.typeOf(getCaveConfigString(PROGRAM_TYPE, Program.Type.WINE.name())));
+        setProgramType(ProgramType.typeOf(getCaveConfigString(PROGRAM_TYPE, ProgramType.WINE.name())));
       } else {
-        setProgramType(Program.Type.typeOf(getGlobalConfigString(PROGRAM_TYPE, Program.Type.WINE.name())));
+        setProgramType(ProgramType.typeOf(getGlobalConfigString(PROGRAM_TYPE, ProgramType.WINE.name())));
       }
     } catch (UnableToOpenFileException e) {
       showException(e);
     }
-    String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
+    String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
     Debug("Program: Type of managed object: " + programType);
     setLanguage(Language.getLanguage(thelangue.charAt(0)));
   }
@@ -178,11 +170,11 @@ public final class Program {
       Debug("Program: Initializing Language and Program type");
       LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
 
-      if (!hasConfigGlobalKey(MyCellarSettings.LANGUAGE) || getGlobalConfigString(MyCellarSettings.LANGUAGE, "").isEmpty()) {
-        putGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
+      if (!hasConfigGlobalKey(MyCellarSettings.GLOBAL_LANGUAGE) || getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "").isEmpty()) {
+        putGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
       }
 
-      String thelangue = getGlobalConfigString(MyCellarSettings.LANGUAGE, "" + Language.FRENCH.getLanguage());
+      String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
       Debug("Program: Type of managed object: " + programType);
       setLanguage(Language.getLanguage(thelangue.charAt(0)));
       cleanAndUpgrade();
@@ -191,56 +183,20 @@ public final class Program {
     }
   }
 
-  static void setProgramType(Type value) {
+  public static ProgramType getProgramType() {
+    return programType;
+  }
+
+  static void setProgramType(ProgramType value) {
     programType = value;
   }
 
   public static boolean isMusicType() {
-    return programType == Type.MUSIC;
+    return programType == ProgramType.MUSIC;
   }
 
   public static boolean isWineType() {
-    return programType == Type.WINE;
-  }
-
-  private static String getLabelForType(boolean plural, boolean firstLetterUppercase, Grammar grammar) {
-    return getLabelForType(programType, plural, firstLetterUppercase, grammar);
-  }
-
-  public static String getLabelForType(Type theType, boolean plural, boolean firstLetterUppercase, Grammar grammar) {
-    String value;
-    String prefix;
-    String postfix = plural ? "s" : "";
-    switch (grammar) {
-      case SINGLE:
-        prefix = plural ? "more" : "one";
-        break;
-      case THE:
-        prefix = "the";
-        break;
-      case OF_THE:
-        prefix = "ofthe";
-        break;
-      case NONE:
-      default:
-        prefix = "";
-        break;
-    }
-    switch (theType) {
-      case BOOK:
-        value = getLabel("Program." + prefix + "book" + postfix);
-        break;
-      case MUSIC:
-        value = getLabel("Program." + prefix + "disc" + postfix);
-        break;
-      case WINE:
-      default:
-        value = getLabel("Program." + prefix + "wine" + postfix);
-    }
-    if (firstLetterUppercase) {
-      value = StringUtils.capitalize(value);
-    }
-    return value;
+    return programType == ProgramType.WINE;
   }
 
   static void setNewFile(String file) {
@@ -249,6 +205,10 @@ public final class Program {
 
   public static boolean hasFile() {
     return myCellarFile != null;
+  }
+
+  public static MyCellarFile getOpenedFile() {
+    return myCellarFile;
   }
 
   public static String getConfigFilePath() {
@@ -341,11 +301,12 @@ public final class Program {
 
     final String type = getCaveConfigString(PROGRAM_TYPE, "");
     if (type.isBlank()) {
-      putCaveConfigString(PROGRAM_TYPE, Type.WINE.name());
+      putCaveConfigString(PROGRAM_TYPE, ProgramType.WINE.name());
     }
 
+    // TODO Remove when veraion 75
     if (currentVersion < 71) {
-      getCave().stream().filter(rangement ->
+      getPlaces().stream().filter(rangement ->
               isDefaultStorageName(rangement, rangement.getName()))
           .findFirst()
           .ifPresent(rangement -> rangement.setDefaultPlace(true));
@@ -366,9 +327,9 @@ public final class Program {
 
   static void setLanguage(Language lang) {
     Debug("Program: Set Language: " + lang);
-    MyCellarLabelManagement.updateLabels();
     ProgramPanels.removeAll();
     LanguageFileLoader.getInstance().loadLanguageFiles(lang);
+    MyCellarLabelManagement.updateLabels();
     ProgramPanels.PANEL_INFOS.setLabels();
     Start.getInstance().updateLabels();
     Start.getInstance().updateMainPanel();
@@ -443,32 +404,7 @@ public final class Program {
     ERRORS.add(error);
   }
 
-  public static String convertToHTMLString(String s) {
-    return StringEscapeUtils.escapeHtml4(s);
-  }
-
-  public static String convertStringFromHTMLString(String s) {
-    return StringEscapeUtils.unescapeHtml4(s);
-  }
-
-  public static String removeAccents(String s) {
-    s = Normalizer.normalize(s, Normalizer.Form.NFD);
-    s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-    return s;
-  }
-
-  public static String toCleanString(final Object o) {
-    if (o == null) {
-      return "";
-    }
-    String value = o.toString();
-    return value == null ? "" : value.strip();
-  }
-
-  /**
-   * Chargement des donnees XML (Bouteilles et Rangement) ou des donnees serialisees en cas de pb
-   */
-  static boolean loadObjects() {
+  static boolean loadData() {
     PLACES.clear();
     boolean load = XmlUtils.readMyCellarXml("", PLACES);
     if (!load || PLACES.isEmpty()) {
@@ -484,7 +420,7 @@ public final class Program {
     return (int) getStorage().getAllList().stream().mapToDouble(IMyCellarObject::getPriceDouble).max().orElse(0);
   }
 
-  public static int getCellarValue() {
+  public static int sumAllPrices() {
     return (int) getStorage().getAllList().stream().mapToDouble(IMyCellarObject::getPriceDouble).sum();
   }
 
@@ -492,11 +428,19 @@ public final class Program {
     return getStorage().getAllList().size();
   }
 
+  public static int getSimplePlaceCount() {
+    return (int) getPlaces().stream().filter(Rangement::isSimplePlace).count();
+  }
+
+  public static List<Rangement> getSimplePlaces() {
+    return getPlaces().stream().filter(Rangement::isSimplePlace).collect(Collectors.toList());
+  }
+
   static int getTotalObjectForYear(int year) {
     return (int) getStorage().getAllList().stream().filter(myCellarObject -> myCellarObject.getAnneeInt() == year).count();
   }
 
-  static int[] getYearsArray() {
+  public static int[] getYearsArray() {
     return getStorage().getAllList().stream().mapToInt(IMyCellarObject::getAnneeInt).distinct().sorted().toArray();
   }
 
@@ -600,17 +544,19 @@ public final class Program {
 
   }
 
-  public static List<Rangement> getCave() {
-    return PLACES;
+  public static List<Rangement> getPlaces() {
+    return Collections.unmodifiableList(PLACES);
   }
 
-  /**
-   * GetCave
-   *
-   * @param name String
-   * @return Rangement
-   */
-  public static Rangement getCave(final String name) {
+  public static Rangement getPlaceAt(int index) {
+    return PLACES.get(index);
+  }
+
+  public static boolean hasOnlyOnePlace() {
+    return PLACES.size() == 1;
+  }
+
+  public static Rangement getPlaceByName(final String name) {
     final String placeName = name.strip();
     if (TEMP_PLACE.equals(placeName)) {
       return STOCK_PLACE;
@@ -629,12 +575,7 @@ public final class Program {
         (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
 
-  /**
-   * addCave
-   *
-   * @param rangement Rangement
-   */
-  public static void addCave(Rangement rangement) {
+  public static void addPlace(Rangement rangement) {
     if (rangement == null) {
       return;
     }
@@ -644,12 +585,7 @@ public final class Program {
     Collections.sort(PLACES);
   }
 
-  /**
-   * removeCave
-   *
-   * @param rangement Rangement
-   */
-  public static void removeCave(Rangement rangement) {
+  public static void removePlace(Rangement rangement) {
     if (rangement == null) {
       return;
     }
@@ -658,12 +594,12 @@ public final class Program {
     setListCaveModified();
   }
 
-  public static int getCaveLength() {
+  public static int getPlaceLength() {
     return PLACES.size();
   }
 
   public static boolean hasComplexPlace() {
-    return PLACES.stream().anyMatch(rangement -> !rangement.isSimplePlace());
+    return PLACES.stream().anyMatch(Predicate.not(Rangement::isSimplePlace));
   }
 
   /**
@@ -699,10 +635,10 @@ public final class Program {
 
   private static void openaFile(File file, boolean isNewFile) throws UnableToOpenFileException {
     LinkedList<String> list = new LinkedList<>();
-    list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN1, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN2, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN3, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.LAST_OPEN4, ""));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, ""));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, ""));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3, ""));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, ""));
     Debug("Program: -------------------");
     if (isNewFile) {
       Debug("Program: openFile: Creating new file");
@@ -725,11 +661,11 @@ public final class Program {
     if (!file.exists()) {
       Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), file.getAbsolutePath())); // File not found
 
-      putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
-      putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
-      putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
+      putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, list.pop());
+      putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, list.pop());
+      putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3, list.pop());
       // On a deja enleve un element de la liste
-      putGlobalConfigString(MyCellarSettings.LAST_OPEN4, "");
+      putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, "");
       saveGlobalProperties();
       throw new UnableToOpenMyCellarFileException("File not found: " + file.getAbsolutePath());
     }
@@ -743,7 +679,7 @@ public final class Program {
 
     //Chargement des objets Rangement, Bouteilles et History
     Debug("Program: Reading Places, Bottles & History");
-    if (!loadObjects()) {
+    if (!loadData()) {
       Debug("Program: ERROR Reading Objects KO");
       throw new UnableToOpenFileException("Error while reading objects.");
     }
@@ -764,10 +700,10 @@ public final class Program {
       list.addFirst(file.getAbsolutePath());
     }
 
-    putGlobalConfigString(MyCellarSettings.LAST_OPEN1, list.pop());
-    putGlobalConfigString(MyCellarSettings.LAST_OPEN2, list.pop());
-    putGlobalConfigString(MyCellarSettings.LAST_OPEN3, list.pop());
-    putGlobalConfigString(MyCellarSettings.LAST_OPEN4, list.pop());
+    putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, list.pop());
+    putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, list.pop());
+    putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3, list.pop());
+    putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, list.pop());
 
     putCaveConfigString(MyCellarSettings.DIR, file.getParent());
 
@@ -844,7 +780,7 @@ public final class Program {
       // Sauvegarde des proprietes globales
       saveGlobalProperties();
 
-      if (getCaveConfigBool(MyCellarSettings.FIC_EXCEL, false)) {
+      if (getCaveConfigBool(MyCellarSettings.HAS_EXCEL_FILE, false)) {
         //Ecriture Excel
         final String file_excel = getCaveConfigString(MyCellarSettings.FILE_EXCEL, "");
         Debug("Program: Writing backup Excel file: " + file_excel);
@@ -859,7 +795,6 @@ public final class Program {
       getStorage().close();
       CountryVignobleController.close();
       CountryListJaxb.close();
-//      ProgramPanels.getSearch().ifPresent(Search::clearResults);
     }
     workDirCalculated = false;
     TRASH.clear();
@@ -986,19 +921,9 @@ public final class Program {
 
   static String getShortFilename() {
     if (hasFile()) {
-      return getShortFilename(myCellarFile.getFile().getAbsolutePath());
+      return MyCellarUtils.getShortFilename(myCellarFile.getFile().getAbsolutePath());
     }
     return "";
-  }
-
-  static String getShortFilename(String sFilename) {
-    String tmp = sFilename.replaceAll("\\\\", SLASH);
-    int ind1 = tmp.lastIndexOf(SLASH);
-    int ind2 = tmp.indexOf(ONE_DOT + EXTENSION_SINFO);
-    if (ind1 != -1 && ind2 != -1) {
-      tmp = tmp.substring(ind1 + 1, ind2);
-    }
-    return tmp;
   }
 
   static String getGlobalConfigString(String key, String defaultValue) {
@@ -1006,8 +931,9 @@ public final class Program {
   }
 
   public static String getCaveConfigString(String key, String defaultValue) {
-    if (null != getCaveConfig()) {
-      return getCaveConfig().getString(key, defaultValue);
+    final MyCellarFile openedFile = getOpenedFile();
+    if (null != openedFile) {
+      return openedFile.getCaveConfig().getString(key, defaultValue);
     }
     Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
     return defaultValue;
@@ -1018,8 +944,9 @@ public final class Program {
   }
 
   public static boolean getCaveConfigBool(String key, boolean defaultValue) {
-    if (null != getCaveConfig()) {
-      final String value = getCaveConfig().getString(key, defaultValue ? ONE : ZERO);
+    final MyCellarFile openedFile = getOpenedFile();
+    if (null != openedFile) {
+      final String value = openedFile.getCaveConfig().getString(key, defaultValue ? ONE : ZERO);
       return (ONE.equals(value) || ON.equalsIgnoreCase(value));
     }
     Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
@@ -1027,8 +954,9 @@ public final class Program {
   }
 
   public static int getCaveConfigInt(String key, int defaultValue) {
-    if (null != getCaveConfig()) {
-      return getCaveConfig().getInt(key, defaultValue);
+    final MyCellarFile openedFile = getOpenedFile();
+    if (null != openedFile) {
+      return openedFile.getCaveConfig().getInt(key, defaultValue);
     }
     Debug("Program: ERROR: Calling null configCave for key '" + key + "' and default value '" + defaultValue + "'");
     return defaultValue;
@@ -1039,8 +967,9 @@ public final class Program {
   }
 
   public static void putCaveConfigString(String key, String value) {
-    if (null != getCaveConfig()) {
-      getCaveConfig().put(key, value);
+    final MyCellarFile openedFile = getOpenedFile();
+    if (null != openedFile) {
+      openedFile.getCaveConfig().put(key, value);
     } else {
       Debug("Program: ERROR: Unable to put value in configCave: [" + key + " - " + value + "]");
     }
@@ -1051,23 +980,22 @@ public final class Program {
   }
 
   public static void putCaveConfigBool(String key, boolean value) {
-    if (null != getCaveConfig()) {
-      getCaveConfig().put(key, value ? ONE : ZERO);
+    final MyCellarFile openedFile = getOpenedFile();
+    if (null != openedFile) {
+      openedFile.getCaveConfig().put(key, value ? ONE : ZERO);
     } else {
       Debug("Program: ERROR: Unable to put value in configCave: [" + key + " - " + value + "]");
     }
   }
 
   public static void putCaveConfigInt(String key, int value) {
-    Objects.requireNonNull(getCaveConfig()).put(key, value);
-  }
-
-  public static MyLinkedHashMap getCaveConfig() {
-    return hasFile() ? myCellarFile.getCaveConfig() : null;
+    final MyCellarFile openedFile = getOpenedFile();
+    Objects.requireNonNull(openedFile).getCaveConfig().put(key, value);
   }
 
   public static boolean hasConfigCaveKey(String key) {
-    return null != getCaveConfig() && getCaveConfig().containsKey(key);
+    final MyCellarFile openedFile = getOpenedFile();
+    return null != openedFile && openedFile.getCaveConfig().containsKey(key);
   }
 
   static boolean hasConfigGlobalKey(String key) {
@@ -1102,66 +1030,6 @@ public final class Program {
     return SerializedStorage.getInstance();
   }
 
-  public static String getLabel(String id) {
-    return getLabel(id, true);
-  }
-
-  public static String getLabel(String id, LabelProperty labelProperty) {
-    if (labelProperty == null) {
-      return getLabel(id, true);
-    }
-    String label = getLabel(id, true);
-    label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
-    if (labelProperty.isThreeDashes()) {
-      label += THREE_DOTS;
-    }
-    if (labelProperty.isDoubleQuote()) {
-      label += LanguageFileLoader.isFrench() ? SPACE + DOUBLE_DOT : DOUBLE_DOT;
-    }
-    return label;
-  }
-
-  public static String getLabel(String id, boolean displayError) {
-    try {
-      return LanguageFileLoader.getLabel(id);
-    } catch (MissingResourceException e) {
-      if (displayError) {
-        Debug("Program: ERROR: Missing Label " + id);
-        JOptionPane.showMessageDialog(null, "Missing Label " + id, "Error", JOptionPane.ERROR_MESSAGE);
-      }
-      return id;
-    }
-  }
-
-  public static String getError(String id, LabelProperty labelProperty) {
-    if (labelProperty == null) {
-      return getError(id);
-    }
-    String label = getError(id);
-    return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty.isPlural(), labelProperty.isUppercaseFirst(), labelProperty.getGrammar()));
-  }
-
-  public static String getError(String id) {
-    try {
-      return LanguageFileLoader.getError(id);
-    } catch (MissingResourceException e) {
-      JOptionPane.showMessageDialog(null, "Missing Error " + id, "Error", JOptionPane.ERROR_MESSAGE);
-      return id;
-    }
-  }
-
-  static List<String> getLanguages() {
-    return LanguageFileLoader.getLanguages();
-  }
-
-  static int getLanguageIndex(String language) {
-    return LanguageFileLoader.getLanguageIndex(language);
-  }
-
-  static String getLanguage(int val) {
-    return LanguageFileLoader.getLanguageFromIndex(val);
-  }
-
   public static boolean open(String filename, boolean check) {
     if (isNullOrEmpty(filename)) {
       return false;
@@ -1188,11 +1056,11 @@ public final class Program {
   }
 
   public static boolean hasYearControl() {
-    return getCaveConfigBool(MyCellarSettings.ANNEE_CTRL, false);
+    return getCaveConfigBool(MyCellarSettings.HAS_YEAR_CTRL, false);
   }
 
   static void setYearControl(boolean yearControl) {
-    putCaveConfigBool(MyCellarSettings.ANNEE_CTRL, yearControl);
+    putCaveConfigBool(MyCellarSettings.HAS_YEAR_CTRL, yearControl);
   }
 
   public static List<CountryJaxb> getCountries() {
@@ -1222,7 +1090,7 @@ public final class Program {
     final boolean border = getCaveConfigBool(MyCellarSettings.BORDER, true);
     boolean boldTitle = getCaveConfigBool(MyCellarSettings.BOLD, false);
 
-    PDFProperties properties = new PDFProperties(title, titleSize, textSize, border, boldTitle);
+    PDFProperties properties = new PDFProperties(title, titleSize, textSize, border, boldTitle, 20);
 
     int nbCol = Objects.requireNonNull(MyCellarFields.getFieldsList()).size();
     int countColumn = 0;
@@ -1231,14 +1099,14 @@ public final class Program {
       if (export == 1) {
         countColumn++;
         int sizeCol = getCaveConfigInt(MyCellarSettings.SIZE_COL + i, 5);
-        properties.addColumn(MyCellarFields.getFieldsList().get(i), i, sizeCol, MyCellarFields.getFieldsList().get(i).toString());
+        properties.addColumn(MyCellarFields.getFieldsList().get(i).name(), sizeCol, MyCellarFields.getFieldsList().get(i).toString());
       }
     }
     if (countColumn == 0) {
-      properties.addColumn(MyCellarFields.getFieldsList().get(0), 0, 10, MyCellarFields.getFieldsList().get(0).toString());
-      properties.addColumn(MyCellarFields.getFieldsList().get(1), 1, 2, MyCellarFields.getFieldsList().get(1).toString());
-      properties.addColumn(MyCellarFields.getFieldsList().get(3), 3, 5, MyCellarFields.getFieldsList().get(3).toString());
-      properties.addColumn(MyCellarFields.getFieldsList().get(7), 7, 2, MyCellarFields.getFieldsList().get(7).toString());
+      properties.addColumn(MyCellarFields.getFieldsList().get(0).name(), 10, MyCellarFields.getFieldsList().get(0).toString());
+      properties.addColumn(MyCellarFields.getFieldsList().get(1).name(), 2, MyCellarFields.getFieldsList().get(1).toString());
+      properties.addColumn(MyCellarFields.getFieldsList().get(3).name(), 5, MyCellarFields.getFieldsList().get(3).toString());
+      properties.addColumn(MyCellarFields.getFieldsList().get(7).name(), 2, MyCellarFields.getFieldsList().get(7).toString());
     }
     return properties;
   }
@@ -1254,15 +1122,6 @@ public final class Program {
       rows.add(row);
     }
     return rows;
-  }
-
-  static PDFRow getPDFHeader(PDFProperties properties) {
-    LinkedList<PDFColumn> columns = properties.getColumns();
-    PDFRow row = new PDFRow();
-    for (PDFColumn column : columns) {
-      row.addCell(column.getTitle());
-    }
-    return row;
   }
 
   private static void cleanDebugFiles() {
@@ -1391,31 +1250,6 @@ public final class Program {
     return Collections.unmodifiableList(getStorage().getHistoryList().getHistory());
   }
 
-  public static BigDecimal safeStringToBigDecimal(final String value, BigDecimal defaultValue) {
-    try {
-      return stringToBigDecimal(value);
-    } catch (NumberFormatException e) {
-      return defaultValue;
-    }
-  }
-
-  public static BigDecimal stringToBigDecimal(final String value) throws NumberFormatException {
-    StringBuilder buf = new StringBuilder();
-    for (int i = 0; i < value.length(); i++) {
-      char c = value.charAt(i);
-      if (c == ' ') {
-        continue;
-      }
-      if (c == ',' || c == '.') {
-        buf.append('.');
-      }
-      if (Character.isDigit(c)) {
-        buf.append(c);
-      }
-    }
-    return new BigDecimal(buf.toString()).setScale(2, RoundingMode.HALF_UP);
-  }
-
   static int getNewID() {
     if (nextID == -1) {
       nextID = getStorage().getBottlesCount();
@@ -1426,31 +1260,23 @@ public final class Program {
     return nextID;
   }
 
-  public static void modifyBottles(LinkedList<MyCellarObject> listToModify) {
+  public static void modifyBottles(List<MyCellarObject> listToModify) {
     if (listToModify == null || listToModify.isEmpty()) {
       return;
     }
     if (listToModify.size() == 1) {
-      ProgramPanels.showBottle(listToModify.getFirst(), true);
+      ProgramPanels.showBottle(listToModify.get(0), true);
     } else {
       new OpenAddVinAction(listToModify).actionPerformed(null);
     }
   }
 
-  public static List<MyCellarObject> getExistingBottles(List<Integer> bouteilles) {
-    return getStorage().getAllList().stream().filter(bouteille -> bouteilles.contains(bouteille.getId())).collect(Collectors.toList());
+  public static List<MyCellarObject> getExistingMyCellarObjects(List<Integer> objectIds) {
+    return getStorage().getAllList().stream().filter(myCellarObject -> objectIds.contains(myCellarObject.getId())).collect(Collectors.toList());
   }
 
-  public static boolean isExistingBottle(MyCellarObject bouteille) {
-    return getStorage().getAllList().stream().anyMatch(bouteille1 -> bouteille1.getId() == bouteille.getId());
-  }
-
-  public static int safeParseInt(String value, int defaultValue) {
-    try {
-      return Integer.parseInt(value);
-    } catch (NumberFormatException ignored) {
-      return defaultValue;
-    }
+  public static boolean isExistingMyCellarObject(MyCellarObject myCellarObject) {
+    return getStorage().getAllList().stream().anyMatch(myCellarObject1 -> myCellarObject1.getId() == myCellarObject.getId());
   }
 
   static void exit() {
@@ -1479,17 +1305,10 @@ public final class Program {
     throw new NotImplementedException("Not implemented yet!");
   }
 
-  enum Type {
-    WINE,
-    BOOK,
-    MUSIC;
-
-    static Type typeOf(String value) {
-      try {
-        return valueOf(value);
-      } catch (IllegalArgumentException e) {
-        return WINE;
-      }
+  public static void addDefaultPlaceIfNeeded() {
+    if (getPlaceLength() == 0) {
+      addPlace(DEFAULT_PLACE);
     }
   }
+
 }

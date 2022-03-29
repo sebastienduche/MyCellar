@@ -62,8 +62,8 @@ class BouteilleTest {
         .numPlace(1)
         .build();
 
-    Program.addCave(armoire1x3x3);
-    Program.addCave(caisse);
+    Program.addPlace(armoire1x3x3);
+    Program.addPlace(caisse);
   }
 
   @Test

@@ -1,9 +1,9 @@
 package mycellar;
 
-import mycellar.core.LabelType;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.tablecomponents.DateCellRenderer;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
@@ -15,6 +15,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import static mycellar.MyCellarUtils.isDefined;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public final class PanelHistory extends JPanel {
 
@@ -33,7 +34,7 @@ public final class PanelHistory extends JPanel {
     add(table, "grow, wrap");
     add(new JPanel(), "grow, push, wrap");
 
-    whatNewPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("WhatsNew")));
+    whatNewPanel.setBorder(BorderFactory.createTitledBorder(getLabel("WhatsNew")));
     whatNewPanel.setLayout(new MigLayout());
     whatNewPanel.add(label1, "wrap");
     if (isDefined(label2.getText())) {
@@ -58,25 +59,25 @@ public final class PanelHistory extends JPanel {
     tc = tcm.getColumn(TableHistoryValues.DATE - 1);
     tc.setCellRenderer(new DateCellRenderer());
 
-    setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos407")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos407")));
     setEnable(false);
   }
 
   public void refresh() {
     SwingUtilities.invokeLater(() -> {
       model.removeAll();
-      if (!Program.getCave().isEmpty()) {
+      if (!Program.getPlaces().isEmpty()) {
         model.setHistory(Program.getHistory());
       }
     });
   }
 
   public void setLabels() {
-    setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos407")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos407")));
     TableColumnModel tcm = table.getColumnModel();
     TableColumn tc = tcm.getColumn(TableHistoryValues.ACTION - 1);
     tc.setCellRenderer(new ButtonCellRenderer());
-    whatNewPanel.setBorder(BorderFactory.createTitledBorder(Program.getLabel("WhatsNew")));
+    whatNewPanel.setBorder(BorderFactory.createTitledBorder(getLabel("WhatsNew")));
     label1.updateText();
     label2.updateText();
     label3.updateText();

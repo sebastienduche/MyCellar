@@ -1,7 +1,5 @@
 package mycellar.requester.ui;
 
-import mycellar.Program;
-
 import javax.activation.ActivationDataFlavor;
 import javax.activation.DataHandler;
 import javax.swing.JComponent;
@@ -30,17 +28,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+
 /**
- * <p>Titre : Cave à vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2014</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2014
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.4
  * @since 08/03/19
  */
-public class PanelDAndD extends JPanel {
+public final class PanelDAndD extends JPanel {
 
   private static final long serialVersionUID = -3180057277279430308L;
   private final List<LabelSearch> labels = new ArrayList<>();
@@ -101,9 +101,9 @@ public class PanelDAndD extends JPanel {
     super.remove(comp);
     if (comp instanceof LabelSearch) {
       LabelSearch search = (LabelSearch) comp;
-      // Lorsque l'on est sur un élément qui peut uniquement être déplacé
+      // Lorsque l'on est sur un element qui peut uniquement etre deplace
       // On le supprime de la liste si l'on est sur la source
-      // et on l'ajoute à la source si l'on n'est pas déjà dessus.
+      // et on l'ajoute a la source si l'on n'est pas deja dessus.
       if (!search.isCopy()) {
         if (!target) {
           labels.remove(search);
@@ -116,9 +116,6 @@ public class PanelDAndD extends JPanel {
     }
   }
 
-  public void setChangeListener(ChangeListener l) {
-    listener = l;
-  }
 }
 
 class PanelHandler extends MouseAdapter {
@@ -131,7 +128,7 @@ class PanelHandler extends MouseAdapter {
       if (e.getButton() == MouseEvent.BUTTON3) {
         if (p.isTarget() && labelSearch.getPredicate().isValueRequired()) {
           JPopupMenu popup = new JPopupMenu();
-          JMenuItem menu = new JMenuItem(Program.getLabel("Infos079"));
+          JMenuItem menu = new JMenuItem(getLabel("Infos079"));
           menu.addActionListener((e1) -> {
             labelSearch.setValue(null);
             labelSearch.askForValue();
@@ -223,7 +220,6 @@ class PanelLabelTransferHandler extends TransferHandler {
   @Override
   public int getSourceActions(JComponent c) {
     PanelDAndD p = (PanelDAndD) c;
-//    label.setIcon(p.draggingLabel.getIcon());
     label.setText(p.draggingLabel.getText());
     window.pack();
     Point pt = p.draggingLabel.getLocation();

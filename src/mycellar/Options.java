@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.LabelType;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
@@ -14,7 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import static mycellar.Program.toCleanString;
+import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.CHAR_O;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.isVK_ENTER;
@@ -22,35 +22,30 @@ import static mycellar.ProgramConstants.isVK_O;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2003
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 16/12/21
+ * @version 2.0
+ * @since 24/02/22
  */
 @Deprecated
-public class Options extends JDialog {
+public final class Options extends JDialog {
   static final long serialVersionUID = 190305;
   private static final int LARGEUR = 420;
   private static final int HAUTEUR = 230;
-  private final MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
-  private final MyCellarLabel textControl3 = new MyCellarLabel();
   private final JTextField value = new JTextField();
   private final String cle;
   private final boolean property;
 
-  public Options(String title, String message, String propriete, String default_value, String key, String textError, boolean isAProperty) {
+  public Options(String title, String message, String propriete, String key, String textError, boolean isAProperty) {
     super(new JFrame(), "", true);
     cle = key;
     property = isAProperty;
+    MyCellarLabel textControl3 = new MyCellarLabel();
     textControl3.setText(textError);
-    jbInit(title, message, propriete, default_value);
-  }
-
-  private void jbInit(String title, String message, String propriete, String default_value) {
 
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     setTitle(title);
@@ -62,8 +57,8 @@ public class Options extends JDialog {
     MyCellarLabel textControl2 = new MyCellarLabel(propriete);
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(SwingConstants.CENTER);
+    MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
     valider.setMnemonic(CHAR_O);
-    value.setText(default_value);
     valider.addActionListener(this::valider_actionPerformed);
     addKeyListener(new KeyAdapter() {
       @Override

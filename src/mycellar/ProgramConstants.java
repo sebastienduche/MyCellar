@@ -11,14 +11,14 @@ import java.time.format.DateTimeFormatter;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 04/01/22
+ * @version 0.6
+ * @since 18/02/22
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.4.2.7";
-  public static final int VERSION = 72;
-  public static final String MAIN_VERSION = VERSION + " BI";
+  public static final String INTERNAL_VERSION = "4.5.0.6";
+  public static final int VERSION = 73;
+  public static final String MAIN_VERSION = VERSION + " CG";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
   public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
   public static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
@@ -48,6 +48,7 @@ public final class ProgramConstants {
   public static final String DOUBLE_DOT = ":";
   public static final String SPACE = " ";
   public static final String EURO = "\u20ac";
+  public static final String DASH = "-";
   public static final char CHAR_O = 'O';
   public static final char CHAR_C = 'C';
   public static final char CHAR_X = 'X';
@@ -57,10 +58,14 @@ public final class ProgramConstants {
   public static final char CHAR_COMMA = ',';
   public static final String NORMAL = "75cl";
   public static final String HALF = "37.5cl";
+  public static final int IMPORT_COMBO_COUNT = 18;
+  public static final String KEY_TYPE = "<KEY>";
+  public static final String COUNTRY_LABEL_KEY = "Country.";
+  public static final String INFOS_LABEL_KEY = "Infos";
+  public static final String ERRORS_LABEL_KEY = "Errors";
   static final String INFOS_VERSION = " 2022 v";
   static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
   static final Font FONT_DIALOG = new Font("Dialog", Font.BOLD, 16);
-  static final String KEY_TYPE = "<KEY>";
   static final String PREVIEW_XML = "preview.xml";
   static final String PREVIEW_HTML = "preview.html";
   static final String MY_CELLAR_XML = "MyCellar.xml";

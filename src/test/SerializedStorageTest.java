@@ -112,7 +112,7 @@ class SerializedStorageTest {
     serializedStorage.getListMyCellarObject().getBouteille().add(bouteille4);
     serializedStorage.getListMyCellarObject().getBouteille().add(bouteille5);
     serializedStorage.getListMyCellarObject().getBouteille().add(new Bouteille(bouteille5));
-    final List<Rangement> cave = Program.getCave();
+    final List<Rangement> cave = Program.getPlaces();
     final Rangement caisse = new Rangement.SimplePlaceBuilder("place3").nbParts(10).build();
     final Rangement place = new Rangement.RangementBuilder("place").nbParts(new int[]{3}).sameColumnsNumber(new int[]{3}).build();
     cave.add(caisse);

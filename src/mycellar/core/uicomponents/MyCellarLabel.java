@@ -1,99 +1,99 @@
 package mycellar.core.uicomponents;
 
 import mycellar.core.IMyCellarComponent;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
-import mycellar.core.MyCellarLabelManagement;
+import mycellar.core.text.LabelKey;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
+import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
-import java.awt.Font;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static mycellar.ProgramConstants.FONT_PANEL;
+
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2011</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2011
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 23/05/21
+ * @version 1.0
+ * @since 24/03/22
  */
 
 public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
   private static final long serialVersionUID = 4972622436840497820L;
-  private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
 
-  private LabelType type;
-  private String code;
-  private String value;
-  private LabelProperty labelProperty;
+  private LabelKey labelKey;
 
   @Deprecated
   public MyCellarLabel() {
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(String text) {
     super(text);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(LabelType type, String code) {
-    this.type = type;
-    this.code = code;
+    labelKey = new LabelKey(type, code);
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(LabelType type, String code, LabelProperty labelProperty) {
-    this.type = type;
-    this.code = code;
-    this.labelProperty = labelProperty;
+    labelKey = new LabelKey(type, code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
+  }
+
+  public MyCellarLabel(LabelType type, String code, LabelProperty labelProperty, String value) {
+    labelKey = new LabelKey(type, code, labelProperty, value);
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(LabelType type, String code, String value) {
-    this.type = type;
-    this.code = code;
-    this.value = value;
+    labelKey = new LabelKey(type, code, null, value);
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(Icon image) {
     super(image);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   @Deprecated
   public MyCellarLabel(String text, int horizontalAlignment) {
     super(text, horizontalAlignment);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(Icon image, int horizontalAlignment) {
     super(image, horizontalAlignment);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   @Deprecated
   public MyCellarLabel(String text, Icon icon, int horizontalAlignment) {
     super(text, icon, horizontalAlignment);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   @Override
   public void updateText() {
-    MyCellarLabelManagement.updateText(this, type, code, value, labelProperty);
+    MyCellarLabelManagement.updateText(this, labelKey);
   }
 
   private void hide(boolean visible) {
@@ -122,4 +122,12 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
       );
     }
   }
+
+  public void setValue(String value) {
+    if (labelKey != null) {
+      labelKey.setValue(value);
+      updateText();
+    }
+  }
+
 }

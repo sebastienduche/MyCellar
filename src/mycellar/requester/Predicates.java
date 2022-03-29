@@ -22,15 +22,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.math.BigDecimal;
 
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2014</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2014
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 14/05/21
+ * @version 1.8
+ * @since 20/01/22
  */
 
 public class Predicates {
@@ -54,7 +56,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return Program.getLabel("AddVin.Color");
+      return getLabel("AddVin.Color");
     }
 
     @Override
@@ -75,7 +77,7 @@ public class Predicates {
       for (BottleColor color : BottleColor.values()) {
         liste.addItem(color);
       }
-      panel.add(new JLabel(Program.getLabel("Predicates.SelectColor")), "wrap");
+      panel.add(new JLabel(getLabel("Predicates.SelectColor")), "wrap");
       panel.add(liste);
       JOptionPane.showMessageDialog(null, panel,
           "",
@@ -105,7 +107,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return Program.getLabel("MyCellarManageBottles.status");
+      return getLabel("MyCellarManageBottles.status");
     }
 
     @Override
@@ -126,7 +128,7 @@ public class Predicates {
       for (BottlesStatus status : BottlesStatus.values()) {
         liste.addItem(status);
       }
-      panel.add(new JLabel(Program.getLabel("Predicates.SelectStatus")), "wrap");
+      panel.add(new JLabel(getLabel("Predicates.SelectStatus")), "wrap");
       panel.add(liste);
       JOptionPane.showMessageDialog(null, panel,
           "",
@@ -179,13 +181,13 @@ public class Predicates {
 
     @Override
     public String getName() {
-      String label = Program.getLabel("Predicates.Name");
+      String label = getLabel("Predicates.Name");
       if (type == 0) {
-        label += Program.getLabel("Predicates.StartWith");
+        label += getLabel("Predicates.StartWith");
       } else if (type == 1) {
-        label += Program.getLabel("Predicates.EndWith");
+        label += getLabel("Predicates.EndWith");
       } else if (type == 2) {
-        label += Program.getLabel("Predicates.Contains");
+        label += getLabel("Predicates.Contains");
       }
       return label;
     }
@@ -195,9 +197,9 @@ public class Predicates {
       type = 0;
       JPanel panel = new JPanel();
       JComboBox<String> combo = new JComboBox<>();
-      combo.addItem(Program.getLabel("Predicates.StartWith"));
-      combo.addItem(Program.getLabel("Predicates.EndWith"));
-      combo.addItem(Program.getLabel("Predicates.Contains"));
+      combo.addItem(getLabel("Predicates.StartWith"));
+      combo.addItem(getLabel("Predicates.EndWith"));
+      combo.addItem(getLabel("Predicates.Contains"));
       combo.addItemListener((e) -> type = combo.getSelectedIndex());
       panel.add(combo);
       return new ValueSearch(JOptionPane.showInputDialog(panel));
@@ -253,13 +255,13 @@ public class Predicates {
 
     @Override
     public String getName() {
-      String label = Program.getLabel("Predicates.Artist");
+      String label = getLabel("Predicates.Artist");
       if (type == 0) {
-        label += Program.getLabel("Predicates.StartWith");
+        label += getLabel("Predicates.StartWith");
       } else if (type == 1) {
-        label += Program.getLabel("Predicates.EndWith");
+        label += getLabel("Predicates.EndWith");
       } else if (type == 2) {
-        label += Program.getLabel("Predicates.Contains");
+        label += getLabel("Predicates.Contains");
       }
       return label;
     }
@@ -269,9 +271,9 @@ public class Predicates {
       type = 0;
       JPanel panel = new JPanel();
       JComboBox<String> combo = new JComboBox<>();
-      combo.addItem(Program.getLabel("Predicates.StartWith"));
-      combo.addItem(Program.getLabel("Predicates.EndWith"));
-      combo.addItem(Program.getLabel("Predicates.Contains"));
+      combo.addItem(getLabel("Predicates.StartWith"));
+      combo.addItem(getLabel("Predicates.EndWith"));
+      combo.addItem(getLabel("Predicates.Contains"));
       combo.addItemListener((e) -> type = combo.getSelectedIndex());
       panel.add(combo);
       return new ValueSearch(JOptionPane.showInputDialog(panel));
@@ -298,7 +300,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return Program.getLabel("Predicates.Year");
+      return getLabel("Predicates.Year");
     }
 
     @Override
@@ -336,7 +338,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return Program.getLabel("Predicates.Place");
+      return getLabel("Predicates.Place");
     }
 
     @Override
@@ -354,8 +356,8 @@ public class Predicates {
       JPanel panel = new JPanel();
       panel.setLayout(new MigLayout("", "grow", "[]"));
       JComboBox<Rangement> liste = new JComboBox<>();
-      Program.getCave().forEach(liste::addItem);
-      panel.add(new JLabel(Program.getLabel("Predicates.SelectPlace")), "wrap");
+      Program.getPlaces().forEach(liste::addItem);
+      panel.add(new JLabel(getLabel("Predicates.SelectPlace")), "wrap");
       panel.add(liste);
       JOptionPane.showMessageDialog(null, panel,
           "",
@@ -384,7 +386,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return Program.getLabel("Infos134");
+      return getLabel("Infos134");
     }
 
     @Override
@@ -403,7 +405,7 @@ public class Predicates {
       panel.setLayout(new MigLayout("", "grow", "[]"));
       JComboBox<String> liste = new JComboBox<>();
       MyCellarBottleContenance.getList().forEach(liste::addItem);
-      panel.add(new JLabel(Program.getLabel("Predicates.SelectSize")), "wrap");
+      panel.add(new JLabel(getLabel("Predicates.SelectSize")), "wrap");
       panel.add(liste);
       JOptionPane.showMessageDialog(null, panel,
           "",
@@ -442,11 +444,11 @@ public class Predicates {
 
     @Override
     public String getName() {
-      String label = Program.getLabel("Predicates.Price");
+      String label = getLabel("Predicates.Price");
       if (type == 0) {
-        label += Program.getLabel("Predicates.Smaller");
+        label += getLabel("Predicates.Smaller");
       } else if (type == 1) {
-        label += Program.getLabel("Predicates.Greater");
+        label += getLabel("Predicates.Greater");
       }
       return label;
     }
@@ -466,8 +468,8 @@ public class Predicates {
       type = 0;
       JPanel panel = new JPanel();
       JComboBox<String> combo = new JComboBox<>();
-      combo.addItem(Program.getLabel("Predicates.Smaller"));
-      combo.addItem(Program.getLabel("Predicates.Greater"));
+      combo.addItem(getLabel("Predicates.Smaller"));
+      combo.addItem(getLabel("Predicates.Greater"));
       combo.addItemListener((e) -> type = combo.getSelectedIndex());
       panel.add(combo);
       return new ValueSearch(JOptionPane.showInputDialog(panel));
@@ -501,7 +503,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return Program.getLabel("Predicates.Vignoble");
+      return getLabel("Predicates.Vignoble");
     }
 
     @Override
@@ -544,7 +546,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return Program.getLabel("Predicates.And");
+      return getLabel("Predicates.And");
     }
 
     @Override
@@ -582,7 +584,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return Program.getLabel("Predicates.Or");
+      return getLabel("Predicates.Or");
     }
 
     @Override

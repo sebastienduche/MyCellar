@@ -9,7 +9,6 @@ import mycellar.MyCellarImage;
 import mycellar.Parametres;
 import mycellar.Program;
 import mycellar.ScreenType;
-import mycellar.Search;
 import mycellar.ShowHistory;
 import mycellar.Start;
 import mycellar.Stat;
@@ -18,16 +17,17 @@ import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;
-import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.JButtonTabComponent;
 import mycellar.importer.Importer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Supprimer_Rangement;
+import mycellar.search.Search;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
 
@@ -74,16 +74,17 @@ import static mycellar.ScreenType.SHOW_WORKSHEET;
 import static mycellar.ScreenType.STATS;
 import static mycellar.ScreenType.SUPPRIMER_RANGEMENT;
 import static mycellar.ScreenType.VIGNOBLES;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2012</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2012
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 04/01/22
+ * @version 1.5
+ * @since 10/01/22
  */
 public class ProgramPanels {
 
@@ -249,6 +250,13 @@ public class ProgramPanels {
     return search;
   }
 
+  public static void updateSearchTable() {
+    final Search search = (Search) OPENED_PANELS.get(SEARCH);
+    if (search != null) {
+      search.updateTable();
+    }
+  }
+
   public static Creer_Tableaux createCreerTableaux() {
     final Creer_Tableaux creerTableaux = (Creer_Tableaux) createOpenedObject(Creer_Tableaux.class, CREER_TABLEAU);
     UPDATABLE_PANELS.put(CREER_TABLEAU, creerTableaux);
@@ -300,7 +308,7 @@ public class ProgramPanels {
   public static ShowFile createShowWorksheet() {
     ShowFile showFile = (ShowFile) OPENED_PANELS.get(SHOW_WORKSHEET);
     if (showFile == null) {
-      showFile = new ShowFile(ShowFile.ShowType.WORK);
+      showFile = new ShowFile(ShowFile.ShowType.WORKSHEET);
       OPENED_PANELS.put(SHOW_WORKSHEET, showFile);
       UPDATABLE_PANELS.put(SHOW_WORKSHEET, showFile);
     }
@@ -436,7 +444,7 @@ public class ProgramPanels {
     }.execute();
   }
 
-  public static void removeBottleTab(MyCellarObject myCellarObject) {
+  public static void removeObjectTab(MyCellarObject myCellarObject) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
@@ -493,7 +501,7 @@ public class ProgramPanels {
         try {
           TABBED_PANE.setSelectedComponent(component);
         } catch (IllegalArgumentException e) {
-          addTab(Program.getLabel(tabLabel, LabelProperty.SINGLE), icon, component);
+          addTab(getLabel(tabLabel, LabelProperty.SINGLE), icon, component);
         }
       }
     }.execute();

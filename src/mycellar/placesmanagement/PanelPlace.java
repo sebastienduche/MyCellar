@@ -1,14 +1,17 @@
 package mycellar.placesmanagement;
 
 import mycellar.MyCellarControl;
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
 import mycellar.core.IPlace;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.MyCellarButton;
+import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.general.XmlUtils;
 import net.miginfocom.swing.MigLayout;
@@ -25,6 +28,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+
 /**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
@@ -32,8 +37,8 @@ import java.util.function.Predicate;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 07/01/22
+ * @version 2.7
+ * @since 21/02/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -53,30 +58,41 @@ public class PanelPlace extends JPanel implements IPlace {
   private final MyCellarLabel previousNumPlaceLabel = new MyCellarLabel(""); // Pour la Modification
   private final MyCellarLabel previousLineLabel = new MyCellarLabel(""); // Pour la Modification
   private final MyCellarLabel previousColumnLabel = new MyCellarLabel(""); // Pour la Modification
+
+  private final MyCellarCheckBox searchSeveralLocation = new MyCellarCheckBox(LabelType.INFO_OTHER, "Search.AllBottlesInPlace", LabelProperty.PLURAL);
+  private final String labelAllObjectsInPlace = getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL); // Tous les vins de l'emplacement
+  private final String labelAllObjectsInPart = getLabel("Search.AllBottlesInPart", LabelProperty.PLURAL); // Tous les vins du lieu
+  private final String labelAllObjectsInLine = getLabel("Search.AllBottlesInLine", LabelProperty.PLURAL); // Tous les vins de la ligne
   private final MyCellarButton chooseCell;
   private final boolean columnComboVisible;
   private final boolean onlyComplexPlaces;
+  private final boolean checkExist;
+  private final boolean showSeveralLocationCheck;
+  private SeveralLocationState severalLocationState = SeveralLocationState.NONE;
   private boolean listenersEnabled = true;
+  private boolean editable = true;
 
   public PanelPlace() {
-    this(null, false, true, true, true, false);
+    this(null, false, true, true, true, false, true, false);
   }
 
   public PanelPlace(boolean newLineForError, boolean extraActionsVisible, boolean columnComboVisible, boolean onlyComplexPlaces) {
-    this(null, newLineForError, extraActionsVisible, extraActionsVisible, columnComboVisible, onlyComplexPlaces);
+    this(null, newLineForError, extraActionsVisible, extraActionsVisible, columnComboVisible, onlyComplexPlaces, true, false);
   }
 
-  public PanelPlace(Rangement rangement, boolean newLineForError, boolean chooseCellVisible, boolean previewVisible, boolean columnComboVisible, boolean onlyComplexPlaces) {
+  public PanelPlace(Rangement rangement, boolean newLineForError, boolean chooseCellVisible, boolean previewVisible, boolean columnComboVisible, boolean onlyComplexPlaces, boolean checkExist, boolean showSeveralLocationCheck) {
     this.columnComboVisible = columnComboVisible;
     this.onlyComplexPlaces = onlyComplexPlaces;
-    char previewChar = Program.getLabel("PREVIEW").charAt(0);
+    this.checkExist = checkExist;
+    this.showSeveralLocationCheck = showSeveralLocationCheck;
+    char previewChar = getLabel("PREVIEW").charAt(0);
     preview.setMnemonic(previewChar);
     preview.addActionListener(this::preview_actionPerformed);
     chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
     setModificationDetectionActive(false);
     initPlaceCombo();
     setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));
-    setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), Program.getLabel("Infos217")));
+    setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), getLabel("Infos217")));
     add(new MyCellarLabel(LabelType.INFO, "208"));
     add(labelNumPlace);
     add(labelLine);
@@ -91,7 +107,7 @@ public class PanelPlace extends JPanel implements IPlace {
     if (columnComboVisible) {
       add(column);
     }
-    if (!newLineForError) {
+    if (!newLineForError && checkExist) {
       add(labelExist, "hidemode 3");
     } else {
       add(new JLabel());
@@ -104,7 +120,12 @@ public class PanelPlace extends JPanel implements IPlace {
     } else {
       add(new JLabel(), "alignx right, wrap");
     }
-    if (newLineForError) {
+    if (showSeveralLocationCheck) {
+      searchSeveralLocation.addItemListener(this::severalLocationItemStateChanged);
+      searchSeveralLocation.setVisible(false);
+      add(searchSeveralLocation, "hidemode 3, span 6, wrap");
+    }
+    if (newLineForError && checkExist) {
       add(labelExist, "hidemode 3, span 6, wrap");
     }
     add(beforeLabel, "hidemode 3,split 2");
@@ -138,15 +159,19 @@ public class PanelPlace extends JPanel implements IPlace {
         .build();
   }
 
+  public Rangement getSelectedRangement() {
+    return getSelectedPlace().getRangement();
+  }
+
   private void initPlaceCombo() {
     place.removeAllItems();
     place.addItem(Program.EMPTY_PLACE);
     if (onlyComplexPlaces) {
-      Program.getCave().stream()
+      Program.getPlaces().stream()
           .filter(Predicate.not(Rangement::isSimplePlace))
           .forEach(place::addItem);
     } else {
-      Program.getCave().forEach(place::addItem);
+      Program.getPlaces().forEach(place::addItem);
     }
   }
 
@@ -210,13 +235,36 @@ public class PanelPlace extends JPanel implements IPlace {
     previousColumnLabel.setVisible(b && labelColumn.isVisible());
   }
 
+  public void setEditable(boolean editable) {
+    this.editable = editable;
+    enableAll(editable);
+  }
+
   public void enableAll(boolean enable) {
-    place.setEnabled(enable && (place.getItemCount() > 2 || place.getSelectedIndex() != 1));
-    numPlace.setEnabled(enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((Rangement) Objects.requireNonNull(place.getSelectedItem())).isSimplePlace()));
-    line.setEnabled(enable && numPlace.getSelectedIndex() > 0);
-    column.setEnabled(enable && line.getSelectedIndex() > 0);
+    place.setEnabled(editable && enable && (place.getItemCount() > 2 || place.getSelectedIndex() != 1));
+    numPlace.setEnabled(editable && enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((Rangement) Objects.requireNonNull(place.getSelectedItem())).isSimplePlace()));
+    line.setEnabled(editable && enable && numPlace.getSelectedIndex() > 0);
+    column.setEnabled(editable && enable && line.getSelectedIndex() > 0);
     if (chooseCell != null) {
-      chooseCell.setEnabled(enable && Program.hasComplexPlace());
+      chooseCell.setEnabled(editable && enable && Program.hasComplexPlace());
+    }
+  }
+
+  private void updateMultiCheckboxState() {
+    if (!showSeveralLocationCheck || !searchSeveralLocation.isVisible()) {
+      return;
+    }
+    if (numPlace.getSelectedIndex() == 0) {
+      searchSeveralLocation.setSelected(false);
+      searchSeveralLocation.setText(labelAllObjectsInPlace);
+      severalLocationState = SeveralLocationState.PLACE;
+    } else if (line.getSelectedIndex() == 0) {
+      searchSeveralLocation.setSelected(false);
+      searchSeveralLocation.setText(labelAllObjectsInPart);
+      severalLocationState = SeveralLocationState.PART;
+    } else {
+      searchSeveralLocation.setText(labelAllObjectsInLine);
+      severalLocationState = SeveralLocationState.LINE;
     }
   }
 
@@ -370,17 +418,20 @@ public class PanelPlace extends JPanel implements IPlace {
           numPlace.addItem(new ComboItem(i));
         }
 
+        searchSeveralLocation.setVisible(!rangement.isSimplePlace());
         if (rangement.isSimplePlace()) {
-          labelNumPlace.setText(Program.getLabel("Infos158")); //"Numero de caisse
+          severalLocationState = SeveralLocationState.PLACE;
+          labelNumPlace.setText(getLabel("Infos158")); //"Numero de caisse
           if (rangement.getNbParts() == 1) {
             numPlace.setSelectedIndex(1);
           }
         } else {
           // Need the last place number for complex places
           numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
-          labelNumPlace.setText(Program.getLabel("Infos082")); //"Numero du lieu
+          labelNumPlace.setText(getLabel("Infos082")); //"Numero du lieu
         }
         enableAll(true);
+        updateMultiCheckboxState();
         Debug("Lieu_itemStateChanging... Done");
       }
     }.execute();
@@ -417,6 +468,7 @@ public class PanelPlace extends JPanel implements IPlace {
           line.reset();
         }
         enableAll(true);
+        updateMultiCheckboxState();
         Debug("Num_lieu_itemStateChanging... Done");
       }
     }.execute();
@@ -456,6 +508,7 @@ public class PanelPlace extends JPanel implements IPlace {
           column.addItem(new ComboItem(i));
         }
         enableAll(true);
+        updateMultiCheckboxState();
         Debug("Line_itemStateChanging... Done");
       }
     }.execute();
@@ -483,9 +536,11 @@ public class PanelPlace extends JPanel implements IPlace {
           return;
         }
 
-        Rangement rangement = place.getItemAt(nPlace);
-        rangement.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
-            .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(Program.getLabel("Infos329"), Program.convertStringFromHTMLString(myCellarObject.getNom()))));
+        if (checkExist) {
+          Rangement rangement = place.getItemAt(nPlace);
+          rangement.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
+              .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(getLabel("Infos329"), MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom()))));
+        }
         Debug("Column_itemStateChanging... Done");
       }
     }.execute();
@@ -530,28 +585,79 @@ public class PanelPlace extends JPanel implements IPlace {
         return false;
       }
     }
-    if (placeWithoutValidation.hasPlace()) {
-      if (MyCellarControl.hasInvalidNumLieuNumber(placeWithoutValidation.getPlaceNum(), placeWithoutValidation.isSimplePlace(), component)) {
-        enableAll(true);
-        return false;
-      }
-
-      if (!placeWithoutValidation.isSimplePlace()) {
-        if (MyCellarControl.hasInvalidLineNumber(placeWithoutValidation.getLine(), component)) {
-          enableAll(true);
-          return false;
-        }
-        if (columnComboVisible && MyCellarControl.hasInvalidColumnNumber(placeWithoutValidation.getColumn(), component)) {
-          enableAll(true);
-          return false;
-        }
-      }
+    if (!placeWithoutValidation.hasPlace()) {
+      return true;
+    }
+    if (isSeveralLocationStatePlaceChecked()) {
+      return true;
+    }
+    if (MyCellarControl.hasInvalidNumLieuNumber(placeWithoutValidation.getPlaceNum(), placeWithoutValidation.isSimplePlace(), component)) {
+      enableAll(true);
+      return false;
+    }
+    if (placeWithoutValidation.isSimplePlace()) {
+      return true;
+    }
+    if (isSeveralLocationStatePartChecked()) {
+      return true;
+    }
+    if (MyCellarControl.hasInvalidLineNumber(placeWithoutValidation.getLine(), component)) {
+      enableAll(true);
+      return false;
+    }
+    if (!columnComboVisible || isSeveralLocationStateLineChecked()) {
+      return true;
+    }
+    if (MyCellarControl.hasInvalidColumnNumber(placeWithoutValidation.getColumn(), component)) {
+      enableAll(true);
+      return false;
     }
     return true;
   }
 
   public void clearLabelEnd() {
     labelExist.setText("");
+  }
+
+  public boolean isSeveralLocationStatePlaceChecked() {
+    return showSeveralLocationCheck && isSeveralLocationChecked() && severalLocationState == SeveralLocationState.PLACE;
+  }
+
+  public boolean isSeveralLocationStatePartChecked() {
+    return showSeveralLocationCheck && isSeveralLocationChecked() && severalLocationState == SeveralLocationState.PART;
+  }
+
+  public boolean isSeveralLocationStateLineChecked() {
+    return showSeveralLocationCheck && isSeveralLocationChecked() && severalLocationState == SeveralLocationState.LINE;
+  }
+
+  public boolean isSeveralLocationChecked() {
+    return searchSeveralLocation.isSelected();
+  }
+
+  private void severalLocationItemStateChanged(ItemEvent e) {
+    if (searchSeveralLocation.isSelected()) {
+      if (line.getSelectedIndex() > 0) {
+        column.setEnabled(false);
+      } else if (numPlace.getSelectedIndex() > 0) {
+        column.setEnabled(false);
+        line.setEnabled(false);
+      } else if (place.getSelectedIndex() > 0) {
+        column.setEnabled(false);
+        line.setEnabled(false);
+        numPlace.setEnabled(false);
+      }
+    } else {
+      if (place.getSelectedIndex() != 0 && severalLocationState == SeveralLocationState.PLACE) {
+        numPlace.setEnabled(true);
+      }
+      if (numPlace.getSelectedIndex() != 0 && severalLocationState == SeveralLocationState.PART) {
+        line.setEnabled(true);
+      }
+      if (line.getSelectedIndex() != 0 && severalLocationState == SeveralLocationState.LINE) {
+        column.setEnabled(true);
+      }
+    }
   }
 
   public static class ComboItem {

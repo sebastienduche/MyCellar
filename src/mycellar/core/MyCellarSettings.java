@@ -7,29 +7,29 @@ package mycellar.core;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 25/05/21
+ * @version 0.7
+ * @since 18/02/22
  */
 
 public final class MyCellarSettings {
 
+  public static final String GLOBAL_LANGUAGE = "LANGUAGE";
+  public static final String GLOBAL_LAST_OPEN1 = "LAST_OPEN1";
+  public static final String GLOBAL_LAST_OPEN2 = "LAST_OPEN2";
+  public static final String GLOBAL_LAST_OPEN3 = "LAST_OPEN3";
+  public static final String GLOBAL_LAST_OPEN4 = "LAST_OPEN4";
   public static final String FILE_EXCEL = "FILE_EXCEL";
-  public static final String FIC_EXCEL = "FIC_EXCEL";
+  public static final String HAS_EXCEL_FILE = "FIC_EXCEL";
   public static final String ANNEE = "ANNEE";
-  public static final String ANNEE_CTRL = "ANNEE_CTRL";
+  public static final String HAS_YEAR_CTRL = "ANNEE_CTRL";
   public static final String SIECLE = "SIECLE";
   public static final String DEVISE = "DEVISE";
-  public static final String LANGUAGE = "LANGUAGE";
   public static final String DIR = "DIR";
   public static final String DONT_SHOW_INFO = "DONT_SHOW_INFO";
   public static final String DONT_SHOW_TAB_MESS = "DONT_SHOW_TAB_MESS";
   public static final String DONT_SHOW_CREATE_MESS = "DONT_SHOW_CREATE_MESS";
   public static final String VERSION = "VERSION";
-  public static final String LAST_OPEN1 = "LAST_OPEN1";
-  public static final String LAST_OPEN2 = "LAST_OPEN2";
-  public static final String LAST_OPEN3 = "LAST_OPEN3";
-  public static final String LAST_OPEN4 = "LAST_OPEN4";
-  public static final String STARTUP = "STARTUP";
+  public static final String GLOBAL_STARTUP = "STARTUP";
   public static final String ANNEE_AUTO = "ANNEE_AUTO";
   public static final String PDF_TITLE = "PDF_TITLE";
   public static final String TITLE_SIZE = "TITLE_SIZE";

@@ -2,11 +2,11 @@ package mycellar.general;
 
 import mycellar.PanelHistory;
 import mycellar.Program;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.placesmanagement.Rangement;
 import net.miginfocom.swing.MigLayout;
@@ -24,16 +24,17 @@ import java.util.List;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2013</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2013
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 07/01/22
+ * @version 2.8
+ * @since 20/01/22
  */
 public final class PanelInfos extends JPanel {
 
@@ -74,7 +75,7 @@ public final class PanelInfos extends JPanel {
 final class PanelStats extends JPanel {
 
   private static final long serialVersionUID = 7438892143990782047L;
-  private final MyCellarLabel bottles = new MyCellarLabel(LabelType.INFO, "405", LabelProperty.PLURAL);
+  private final MyCellarLabel bottles = new MyCellarLabel(LabelType.INFO_OTHER, "Main.NumberOfItems", LabelProperty.PLURAL, "");
   private final MyCellarLabel cellarValue = new MyCellarLabel(LabelType.INFO, "406");
   private final MyCellarLabel bottlesNb = new MyCellarLabel();
   private final MyCellarLabel cellarTotal = new MyCellarLabel();
@@ -103,7 +104,7 @@ final class PanelStats extends JPanel {
     bottlesNb.setEnabled(false);
     cellarValue.setEnabled(false);
     cellarTotal.setEnabled(false);
-    setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos404")));
     setEnabled(false);
   }
 
@@ -111,23 +112,21 @@ final class PanelStats extends JPanel {
     SwingUtilities.invokeLater(() -> {
       model.clearRows();
       int nbBottles = 0;
-      if (!Program.getCave().isEmpty()) {
-        for (Rangement r : Program.getCave()) {
-          nbBottles += r.getTotalCountCellUsed();
-          model.addRow(r, r.getTotalCountCellUsed());
-        }
+      for (Rangement rangement : Program.getPlaces()) {
+        nbBottles += rangement.getTotalCountCellUsed();
+        model.addRow(rangement, rangement.getTotalCountCellUsed());
       }
       String devise = EURO;
       if (Program.hasConfigCaveKey(MyCellarSettings.DEVISE)) {
         devise = Program.getCaveConfigString(MyCellarSettings.DEVISE, EURO);
       }
-      cellarTotal.setText(Program.getCellarValue() + SPACE + devise);
+      cellarTotal.setText(Program.sumAllPrices() + SPACE + devise);
       bottlesNb.setText(Integer.toString(nbBottles));
     });
   }
 
   void setLabels() {
-    setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos404")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos404")));
     bottles.updateText();
     cellarValue.updateText();
     TableColumnModel tcm = table.getColumnModel();

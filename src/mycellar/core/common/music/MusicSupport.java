@@ -1,14 +1,15 @@
 package mycellar.core.common.music;
 
 import mycellar.MyCellarUtils;
-import mycellar.Program;
+
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public enum MusicSupport {
   NONE(""),
-  CD(Program.getLabel("MusicSupport.cd")),
-  VINYL(Program.getLabel("MusicSupport.vinyl")),
-  K7(Program.getLabel("MusicSupport.k7")),
-  DIGITAL(Program.getLabel("MusicSupport.digital"));
+  CD(getLabel("MusicSupport.cd")),
+  VINYL(getLabel("MusicSupport.vinyl")),
+  K7(getLabel("MusicSupport.k7")),
+  DIGITAL(getLabel("MusicSupport.digital"));
 
   private final String label;
 

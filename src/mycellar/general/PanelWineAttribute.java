@@ -4,11 +4,11 @@ import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.LabelProperty;
-import mycellar.core.LabelType;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.bottle.BottleColor;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.JModifyFormattedTextField;
 import mycellar.core.uicomponents.JModifyTextField;
@@ -24,15 +24,17 @@ import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 
+import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.ProgramConstants.CHAR_COMMA;
 import static mycellar.ProgramConstants.CHAR_DOT;
 import static mycellar.ProgramConstants.EURO;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2021</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2021
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.7
@@ -98,7 +100,7 @@ public final class PanelWineAttribute extends JPanel {
     nbItems.setValue(1);
     nbItems.setEnabled(false);
 
-    price.setText(Program.convertStringFromHTMLString(myCellarObject.getPrix()));
+    price.setText(convertStringFromHTMLString(myCellarObject.getPrix()));
     if (Program.isWineType()) {
       Bouteille bottle = (Bouteille) myCellarObject;
       maturity.setText(bottle.getMaturity());
@@ -127,7 +129,7 @@ public final class PanelWineAttribute extends JPanel {
   }
 
   public void initValues() {
-    nbItems.setToolTipText(Program.getLabel("AddVin.NbItemsToAdd", LabelProperty.PLURAL));
+    nbItems.setToolTipText(getLabel("AddVin.NbItemsToAdd", LabelProperty.PLURAL));
     nbItems.setValue(1);
     labelStillToAdd.setForeground(Color.red);
     nbItems.addChangeListener((e) -> {
@@ -289,7 +291,7 @@ public final class PanelWineAttribute extends JPanel {
 
   public void setStillNbItems(int count) {
     nbItems.setValue(count);
-    labelStillToAdd.setText(MessageFormat.format(Program.getLabel("AddVin.stillNtoAdd", new LabelProperty(count > 1)), count));
+    labelStillToAdd.setText(MessageFormat.format(getLabel("AddVin.stillNtoAdd", new LabelProperty(count > 1)), count));
   }
 
   public void seNbItemsEnabled(boolean b) {

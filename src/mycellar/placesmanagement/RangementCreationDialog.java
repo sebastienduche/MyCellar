@@ -2,6 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Program;
 import mycellar.Start;
+import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
@@ -17,19 +18,21 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 20018/p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 20018
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 17/12/20
+ * @version 0.7
+ * @since 20/01/22
  */
 public final class RangementCreationDialog extends JDialog {
 
+  private static final long serialVersionUID = 5075363436018889969L;
   private final Map<String, LinkedList<Part>> map;
   private final MyCellarLabel end = new MyCellarLabel();
   private final RangementToCreateTableModel model;
@@ -40,7 +43,7 @@ public final class RangementCreationDialog extends JDialog {
     Debug("Constructor");
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setModal(true);
-    setTitle(Program.getLabel("Infos267"));
+    setTitle(getLabel("Infos267"));
     setLayout(new MigLayout("", "grow", ""));
     setResizable(false);
     model = new RangementToCreateTableModel(map);
@@ -51,9 +54,9 @@ public final class RangementCreationDialog extends JDialog {
     add(new JScrollPane(table), "grow, wrap");
     add(end, "grow, wrap");
 
-    MyCellarButton valider = new MyCellarButton(Program.getLabel("Infos018"));
+    MyCellarButton valider = new MyCellarButton(LabelType.INFO, "018");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(Program.getLabel("Infos019"));
+    MyCellarButton annuler = new MyCellarButton(LabelType.INFO, "019");
     annuler.addActionListener((e) -> dispose());
 
     add(valider, "gaptop 15px, split 2, center");
@@ -85,9 +88,9 @@ public final class RangementCreationDialog extends JDialog {
         Debug("Creating complex place: " + name + " parts: " + parts);
         rangement = new Rangement(name, parts);
       }
-      Program.addCave(rangement);
+      Program.addPlace(rangement);
     });
-    end.setText(MessageFormat.format(Program.getLabel("RangementToCreateTableModel.end"), map.size()));
+    end.setText(MessageFormat.format(getLabel("RangementToCreateTableModel.end"), map.size()));
     model.clear();
   }
 }

@@ -6,12 +6,12 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
-import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
+import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -26,7 +26,9 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import static mycellar.core.LabelType.INFO;
+import static mycellar.MyCellarUtils.toCleanString;
+import static mycellar.core.text.LabelType.INFO;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin
@@ -72,7 +74,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   }
 
   private void add() {
-    String s = Program.toCleanString(JOptionPane.showInputDialog(Start.getInstance(), Program.getLabel("Infos289"), Program.getLabel("Infos402"), JOptionPane.QUESTION_MESSAGE));
+    String s = toCleanString(JOptionPane.showInputDialog(Start.getInstance(), getLabel("Infos289"), getLabel("Infos402"), JOptionPane.QUESTION_MESSAGE));
     if (!s.isEmpty()) {
       Program.setModified();
       model.addValue(s);

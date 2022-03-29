@@ -4,9 +4,9 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarObject;
+import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 
@@ -15,16 +15,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import static mycellar.MyCellarUtils.convertStringFromHTMLString;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 1998</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 1998
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 23/04/21
+ * @version 2.0
+ * @since 20/01/22
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -42,8 +46,8 @@ public class ErrorShowValues extends TableShowValues {
   private static final int LINE = 7;
   private static final int COLUMN = 8;
   private static final int NBCOL = 11;
-  private final String[] columnNames = {"", Program.getLabel("ErrorShowValues.error"), Program.getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), Program.getLabel("Infos189"), Program.getLabel("Infos134"), Program.getLabel("Infos217"),
-      Program.getLabel("Infos082"), Program.getLabel("Infos028"), Program.getLabel("Infos083"), Program.getLabel("ShowFile.Status"), ""};
+  private final String[] columnNames = {"", getLabel("ErrorShowValues.error"), getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Infos189"), getLabel("Infos134"), getLabel("Infos217"),
+      getLabel("Infos082"), getLabel("Infos028"), getLabel("Infos083"), getLabel("ShowFile.Status"), ""};
 
   private Boolean[] status = null;
   private Boolean[] editable = null;
@@ -71,13 +75,13 @@ public class ErrorShowValues extends TableShowValues {
       case ETAT:
         return values[row];
       case NAME:
-        return Program.convertStringFromHTMLString(b.getNom());
+        return convertStringFromHTMLString(b.getNom());
       case YEAR:
         return b.getAnnee();
       case TYPE:
         return b.getKind();
       case PLACE:
-        return Program.convertStringFromHTMLString(b.getEmplacement());
+        return convertStringFromHTMLString(b.getEmplacement());
       case NUM_PLACE:
         return Integer.toString(b.getNumLieu());
       case LINE:
@@ -86,13 +90,13 @@ public class ErrorShowValues extends TableShowValues {
         return Integer.toString(b.getColonne());
       case STATUS:
         if (error.isStatus()) {
-          return Program.getLabel("ShowFile.Added");
+          return getLabel("ShowFile.Added");
         }
-        return status[row] ? Program.getLabel("Main.OK") : Program.getLabel("Main.KO");
+        return status[row] ? getLabel("Main.OK") : getLabel("Main.KO");
       case BUTTON:
         return true;
       case ERROR:
-        return Program.convertStringFromHTMLString(error.getErrorMessage());
+        return convertStringFromHTMLString(error.getErrorMessage());
       default:
         return "";
     }
@@ -135,7 +139,7 @@ public class ErrorShowValues extends TableShowValues {
           fireTableRowsUpdated(row, row);
         } else {
           status[row] = Boolean.FALSE;
-          Erreur.showSimpleErreur(Program.getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
+          Erreur.showSimpleErreur(getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
         }
         break;
       case NAME:
@@ -146,7 +150,7 @@ public class ErrorShowValues extends TableShowValues {
         break;
       case YEAR:
         if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
-          Erreur.showSimpleErreur(Program.getError("Error053"));
+          Erreur.showSimpleErreur(getError("Error053"));
         } else {
           b.setAnnee((String) value);
         }
@@ -170,14 +174,14 @@ public class ErrorShowValues extends TableShowValues {
         if (column == PLACE) {
           empl = (String) value;
           if (RangementUtils.isExistingPlace(empl)) {
-            rangement = Program.getCave(empl);
+            rangement = Program.getPlaceByName(empl);
           }
         } else if (column == NUM_PLACE) {
           try {
             num_empl = Integer.parseInt((String) value);
             nValueToCheck = num_empl;
           } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(Program.getError("Error196"));
+            Erreur.showSimpleErreur(getError("Error196"));
             bError = true;
           }
         } else if (column == LINE) {
@@ -185,7 +189,7 @@ public class ErrorShowValues extends TableShowValues {
             line = Integer.parseInt((String) value);
             nValueToCheck = line;
           } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(Program.getError("Error196"));
+            Erreur.showSimpleErreur(getError("Error196"));
             bError = true;
           }
         } else {
@@ -193,14 +197,14 @@ public class ErrorShowValues extends TableShowValues {
             column1 = Integer.parseInt((String) value);
             nValueToCheck = column1;
           } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(Program.getError("Error196"));
+            Erreur.showSimpleErreur(getError("Error196"));
             bError = true;
           }
         }
 
         if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
           if (!rangement.isSimplePlace() && nValueToCheck <= 0) {
-            Erreur.showSimpleErreur(Program.getError("Error197"));
+            Erreur.showSimpleErreur(getError("Error197"));
             bError = true;
           }
         }
@@ -224,7 +228,7 @@ public class ErrorShowValues extends TableShowValues {
             }
             if (bTemp.isPresent()) {
               status[row] = Boolean.FALSE;
-              Erreur.showSimpleErreur(MessageFormat.format(Program.getError("Error059"), Program.convertStringFromHTMLString(bTemp.get().getNom()), b.getAnnee()));
+              Erreur.showSimpleErreur(MessageFormat.format(getError("Error059"), convertStringFromHTMLString(bTemp.get().getNom()), b.getAnnee()));
             } else {
               if (column == PLACE) {
                 b.setEmplacement((String) value);

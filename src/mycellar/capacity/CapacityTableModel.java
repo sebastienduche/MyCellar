@@ -1,6 +1,6 @@
 package mycellar.capacity;
 
-import mycellar.Program;
+import mycellar.MyCellarUtils;
 import mycellar.Start;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.general.ProgramPanels;
@@ -10,11 +10,13 @@ import javax.swing.table.DefaultTableModel;
 import java.text.MessageFormat;
 import java.util.List;
 
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2003
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.9
@@ -23,7 +25,7 @@ import java.util.List;
 class CapacityTableModel extends DefaultTableModel {
   public static final int ETAT = 1;
   static final long serialVersionUID = 220605;
-  private final String[] columnNames = {Program.getLabel("Infos401"), ""};
+  private final String[] columnNames = {getLabel("Infos401"), ""};
 
   private final List<String> list;
 
@@ -69,10 +71,10 @@ class CapacityTableModel extends DefaultTableModel {
     final String oldValue = list.get(row);
     if (column == ETAT) {
       if (MyCellarBottleContenance.isContenanceUsed(oldValue)) {
-        JOptionPane.showMessageDialog(Start.getInstance(), Program.getLabel("CapacityPanel.unableDeleteCapacity"), Program.getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(Start.getInstance(), getLabel("CapacityPanel.unableDeleteCapacity"), getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
         return;
       }
-      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(Program.getLabel("CapacityPanel.delCapacityQuestion"), oldValue), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("CapacityPanel.delCapacityQuestion"), oldValue), getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
         return;
       }
       list.remove(oldValue);
@@ -81,7 +83,7 @@ class CapacityTableModel extends DefaultTableModel {
       ProgramPanels.updateAllPanelsForUpdatingCapacity();
       ProgramPanels.createCapacityPanel().updateView();
     } else {
-      String newValue = Program.toCleanString(value);
+      String newValue = MyCellarUtils.toCleanString(value);
       if (!newValue.isBlank()) {
         MyCellarBottleContenance.rename(oldValue, newValue);
         fireTableDataChanged();

@@ -9,12 +9,13 @@ import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IPlace;
 import mycellar.core.IUpdatable;
-import mycellar.core.LabelProperty;
 import mycellar.core.MyCellarObject;
 import mycellar.core.PanelCloseButton;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.text.LabelProperty;
+import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -61,17 +62,19 @@ import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
-import static mycellar.core.LabelType.INFO_OTHER;
+import static mycellar.core.text.LabelType.INFO_OTHER;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2014</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 2014
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.4
- * @since 07/01/22
+ * @version 4.6
+ * @since 20/01/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -146,7 +149,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
             rangementCells.add(cell);
             panelCellar.add(cell, "growx, wrap");
           }
-          placePanel.add(new MyCellarLabel(Program.getLabel("Infos029") + SPACE + empl), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarLabel(getLabel("Infos029") + SPACE + empl), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 
@@ -182,7 +185,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
               panelCellar.add(panel);
             }
           }
-          placePanel.add(new MyCellarLabel(Program.getLabel("Infos029") + SPACE + (i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarLabel(getLabel("Infos029") + SPACE + (i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 
@@ -215,12 +218,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     if (iPlace == null) {
       complexPlaces.add(Program.EMPTY_PLACE);
     }
-    for (Rangement rangement1 : Program.getCave()) {
-      if (iPlace == null || !rangement1.isSimplePlace()) {
-        complexPlaces.add(rangement1);
-        comboRangement.addItem(rangement1);
-      }
-    }
+    initPlacesCombo();
 
     comboRangement.addItemListener((item) -> {
       if (item.getStateChange() == ItemEvent.SELECTED) {
@@ -237,7 +235,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     stock = new RangementCell(handler, labelTransferHandler);
     JScrollPane scrollStock = new JScrollPane(stock);
     scrollStock.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    scrollStock.setBorder(BorderFactory.createTitledBorder(Program.getLabel("ManagePlace.Stock")));
+    scrollStock.setBorder(BorderFactory.createTitledBorder(getLabel("ManagePlace.Stock")));
     add(new MyCellarLabel(INFO_OTHER, "ManagePlace.SelectPlace"), "split 3");
     add(comboRangement, "gapleft 10px");
     add(moveAllButton, "gapleft 10px, wrap");
@@ -253,10 +251,19 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     }
   }
 
+  private void initPlacesCombo() {
+    for (Rangement rangement1 : Program.getPlaces()) {
+      if (iPlace == null || !rangement1.isSimplePlace()) {
+        complexPlaces.add(rangement1);
+        comboRangement.addItem(rangement1);
+      }
+    }
+  }
+
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (stock.getComponentCount() > 0) {
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), Program.getError("ManageStock.ConfirmLost", LabelProperty.PLURAL), Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("ManageStock.ConfirmLost", LabelProperty.PLURAL), getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }
       if (stock.getComponentCount() > 0) {
@@ -269,7 +276,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
           Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
           Program.getStorage().getAllList().remove(myCellarObject);
           Program.setToTrash(myCellarObject);
-          ProgramPanels.removeBottleTab(myCellarObject);
+          ProgramPanels.removeObjectTab(myCellarObject);
         }
       }
     }
@@ -283,7 +290,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         }
       }
       if (count > 1) {
-        Erreur.showSimpleErreur(Program.getError("ManageStock.TooManySelected"));
+        Erreur.showSimpleErreur(getError("ManageStock.TooManySelected"));
         return false;
       }
       if (selectedCell != null) {
@@ -330,12 +337,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       complexPlaces.clear();
       comboRangement.removeAllItems();
       comboRangement.addItem(Program.EMPTY_PLACE);
-      for (Rangement r : Program.getCave()) {
-        if (iPlace == null || !r.isSimplePlace()) {
-          complexPlaces.add(r);
-          comboRangement.addItem(r);
-        }
-      }
+      initPlacesCombo();
     });
     setRangement(rangement);
   }
@@ -345,7 +347,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     private static final long serialVersionUID = 6973442058662866086L;
 
     private MoveAction() {
-      super(Program.getLabel("ManageStock.MoveAll", LabelProperty.PLURAL));
+      super(getLabel("ManageStock.MoveAll", LabelProperty.PLURAL));
     }
 
     @Override
@@ -418,7 +420,7 @@ final class RangementCell extends JPanel {
     setBorder(BorderFactory.createEtchedBorder());
     int width = place.isSimplePlace() ? 400 : 100;
     setLayout(new MigLayout("", "0px[align left, ::" + width + ", grow]0px", "0px[align center, 20::, grow]0px"));
-    select.setText(Program.getLabel("ManagePlace.Select"));
+    select.setText(getLabel("ManagePlace.Select"));
   }
 
   public boolean isStock() {
@@ -547,8 +549,8 @@ final class MyCellarObjectDraggingLabel extends JPanel {
 
       @Override
       public void perform() {
-        String mess = MessageFormat.format(Program.getLabel("Main.DeleteWine", LabelProperty.THE_SINGLE), myCellarObject.getNom());
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), mess, Program.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+        String mess = MessageFormat.format(MyCellarLabelManagement.getLabel("Main.DeleteWine", LabelProperty.THE_SINGLE), myCellarObject.getNom());
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), mess, MyCellarLabelManagement.getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
           Component parent = MyCellarObjectDraggingLabel.this.getParent();
           if (parent instanceof RangementCell) {
             ((RangementCell) parent).remove(MyCellarObjectDraggingLabel.this);
@@ -562,7 +564,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
                 Program.getStorage().deleteWine(myCellarObject);
               }
               ProgramPanels.getSearch().ifPresent(search -> {
-                search.removeBottle(myCellarObject);
+                search.removeObject(myCellarObject);
                 search.updateTable();
               });
               ProgramPanels.updateAllPanels();
@@ -570,7 +572,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
               Program.showException(e);
             }
             Program.setToTrash(myCellarObject);
-            ProgramPanels.removeBottleTab(myCellarObject);
+            ProgramPanels.removeObjectTab(myCellarObject);
           }
         }
       }
@@ -713,7 +715,7 @@ class LabelTransferHandler extends TransferHandler {
       final RangementCell src = (RangementCell) support.getTransferable().getTransferData(localObjectFlavor);
       final MyCellarObjectDraggingLabel bouteilleLabel = new MyCellarObjectDraggingLabel(src.draggingLabel.getMyCellarObject());
       final MyCellarObject bouteille = bouteilleLabel.getMyCellarObject();
-      target.setPlace(Program.getCave(target.getPlaceName()));
+      target.setPlace(Program.getPlaceByName(target.getPlaceName()));
       bouteille.setEmplacement(target.getPlaceName());
       bouteille.setLigne(target.getRow());
       bouteille.setColonne(target.getColumn());

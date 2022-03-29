@@ -2,7 +2,8 @@ package mycellar.core.uicomponents;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import java.awt.Font;
+
+import static mycellar.ProgramConstants.FONT_PANEL;
 
 /**
  * Titre : Cave &agrave; vin
@@ -17,14 +18,13 @@ import java.awt.Font;
 public final class MyCellarSpinner extends JSpinner {
 
   private static final long serialVersionUID = -6429351001334594600L;
-  private static final Font FONT = new Font("Arial", Font.PLAIN, 12);
   private final SpinnerNumberModel model;
 
 
   public MyCellarSpinner(int min, int max) {
     model = new SpinnerNumberModel(min, min, max, 1);
     setModel(model);
-    setFont(FONT);
+    setFont(FONT_PANEL);
   }
 
   public int getIntValue() {

@@ -2,11 +2,11 @@ package mycellar.xls;
 
 import mycellar.Program;
 import mycellar.Start;
+import mycellar.core.common.MyCellarFields;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
-import mycellar.core.common.MyCellarFields;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -22,13 +22,14 @@ import java.util.List;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.isVK_ENTER;
 import static mycellar.ProgramConstants.isVK_O;
-import static mycellar.core.LabelType.INFO;
-import static mycellar.core.LabelType.INFO_OTHER;
 import static mycellar.core.MyCellarSettings.BOLD_XLS;
 import static mycellar.core.MyCellarSettings.SIZE_COL;
 import static mycellar.core.MyCellarSettings.TEXT_SIZE_XLS;
 import static mycellar.core.MyCellarSettings.TITLE_SIZE_XLS;
 import static mycellar.core.MyCellarSettings.XLS_TITLE;
+import static mycellar.core.text.LabelType.INFO;
+import static mycellar.core.text.LabelType.INFO_OTHER;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -53,7 +54,7 @@ public final class XLSOptions extends JDialog {
   public XLSOptions() {
     setModal(true);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(Program.getLabel("Infos268"));
+    setTitle(getLabel("Infos268"));
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
@@ -114,7 +115,7 @@ public final class XLSOptions extends JDialog {
       panel1.add(export[i], "push, align right");
     }
     JScrollPane scrollPane = new JScrollPane(panel1);
-    scrollPane.setBorder(BorderFactory.createTitledBorder(Program.getLabel("Infos258")));
+    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Infos258")));
     add(scrollPane, "gaptop 15px, grow, wrap");
     add(valider, "split 2, center");
     add(annuler);

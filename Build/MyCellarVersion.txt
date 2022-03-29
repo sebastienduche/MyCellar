@@ -1,6 +1,6 @@
-4.4.2.7
-72
-MyCellar.jar@116d3e53f641fc5ee24d9b9119d63d1e
+4.5.0.6
+73
+MyCellar.jar@a5e697cc7bb9861475f06698dd14f9ee
 Finish.html
 activation-1.0.2.jar@618e03383015bc1c14e90102361aa33f
 commons-collections4-4.2.jar@b290524be8a0dbb6521df95f4ce80c8d
@@ -22,6 +22,7 @@ jcommon-1.0.18.jar@856a2b8ec0fd0755a0816d2d7fe71e25
 jdom1.0.jar@0b8f97de82fc9529b1028a77125ce4f8
 jfreechart-1.0.15.jar@62ac2bd5b28c3f15c94c6c828487cf25
 miglayout-4.0-swing.jar@4a1e52aec8d8860dba51bfbe5a43e586
+my-pdf-generator-1.0.jar@c061ac6c052c6728e65e5e8d784702a3
 pdfbox-app-2.0.5.jar@601eec6b641f6a7fcb877444a0699604
 poi-4.0.0.jar@1ca4d8cedbdfa632b289f1f783ba9a7e
 poi-ooxml-4.0.0.jar@9f81c33c67a5b38cd87ad38a48261861

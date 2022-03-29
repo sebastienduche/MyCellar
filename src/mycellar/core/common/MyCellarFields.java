@@ -23,8 +23,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 14/09/21
+ * @version 2.2
+ * @since 29/03/22
  */
 
 public enum MyCellarFields {
@@ -79,6 +79,10 @@ public enum MyCellarFields {
 
   MyCellarFields(String label) {
     this.label = label;
+  }
+
+  public static String getValue(String field, IMyCellarObject myCellarObject) {
+    return getValue(valueOf(field), myCellarObject);
   }
 
   public static String getValue(MyCellarFields field, IMyCellarObject myCellarObject) {

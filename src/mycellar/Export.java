@@ -1,5 +1,8 @@
 package mycellar;
 
+import com.sebastienduche.pdf.PDFPageProperties;
+import com.sebastienduche.pdf.PDFProperties;
+import com.sebastienduche.pdf.PDFTools;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.MyCellarObject;
@@ -17,9 +20,6 @@ import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.pdf.PDFOptions;
-import mycellar.pdf.PDFPageProperties;
-import mycellar.pdf.PDFProperties;
-import mycellar.pdf.PDFTools;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.showfile.ManageColumnModel;
 import mycellar.xls.XLSOptions;
@@ -63,8 +63,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.2
- * @since 28/03/22
+ * @version 10.3
+ * @since 29/03/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -105,11 +105,9 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   public static boolean exportToPDF(final List<? extends MyCellarObject> bottles, File nomFichier) {
     try {
       final PDFProperties pdfProperties = Program.getPDFProperties();
-      final PDFTools pdf = new PDFTools(pdfProperties, true);
-      pdf.addTitle(20);
-      PDFPageProperties pageProperties = new PDFPageProperties(30, 20, 20, 20, PDType1Font.HELVETICA, pdfProperties.getFontSize());
-      pageProperties.setStartTop(50);
-      pdf.drawTable(pageProperties, Program.getPDFRows(bottles, pdfProperties));
+      PDFPageProperties pageProperties = new PDFPageProperties(30, 20, 20, 20, PDType1Font.HELVETICA, pdfProperties.getDefaultFontSize(), 50);
+      final PDFTools pdf = new PDFTools(pdfProperties, pageProperties, true);
+      pdf.writeData(Program.getPDFRows(bottles, pdfProperties));
       pdf.save(nomFichier);
       Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.savedFile"), nomFichier.getAbsolutePath()));
     } catch (IOException | RuntimeException ex) {

@@ -1,5 +1,8 @@
 package mycellar;
 
+import com.sebastienduche.pdf.PDFColumn;
+import com.sebastienduche.pdf.PDFProperties;
+import com.sebastienduche.pdf.PDFRow;
 import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.IMyCellarObject;
@@ -28,9 +31,6 @@ import mycellar.core.text.LanguageFileLoader;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
-import mycellar.pdf.PDFColumn;
-import mycellar.pdf.PDFProperties;
-import mycellar.pdf.PDFRow;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.vignobles.CountryVignobleController;
@@ -106,8 +106,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.8
- * @since 21/02/22
+ * @version 27.9
+ * @since 29/03/22
  */
 
 public final class Program {
@@ -1090,7 +1090,7 @@ public final class Program {
     final boolean border = getCaveConfigBool(MyCellarSettings.BORDER, true);
     boolean boldTitle = getCaveConfigBool(MyCellarSettings.BOLD, false);
 
-    PDFProperties properties = new PDFProperties(title, titleSize, textSize, border, boldTitle);
+    PDFProperties properties = new PDFProperties(title, titleSize, textSize, border, boldTitle, 20);
 
     int nbCol = Objects.requireNonNull(MyCellarFields.getFieldsList()).size();
     int countColumn = 0;
@@ -1099,14 +1099,14 @@ public final class Program {
       if (export == 1) {
         countColumn++;
         int sizeCol = getCaveConfigInt(MyCellarSettings.SIZE_COL + i, 5);
-        properties.addColumn(MyCellarFields.getFieldsList().get(i), i, sizeCol, MyCellarFields.getFieldsList().get(i).toString());
+        properties.addColumn(MyCellarFields.getFieldsList().get(i).name(), sizeCol, MyCellarFields.getFieldsList().get(i).toString());
       }
     }
     if (countColumn == 0) {
-      properties.addColumn(MyCellarFields.getFieldsList().get(0), 0, 10, MyCellarFields.getFieldsList().get(0).toString());
-      properties.addColumn(MyCellarFields.getFieldsList().get(1), 1, 2, MyCellarFields.getFieldsList().get(1).toString());
-      properties.addColumn(MyCellarFields.getFieldsList().get(3), 3, 5, MyCellarFields.getFieldsList().get(3).toString());
-      properties.addColumn(MyCellarFields.getFieldsList().get(7), 7, 2, MyCellarFields.getFieldsList().get(7).toString());
+      properties.addColumn(MyCellarFields.getFieldsList().get(0).name(), 10, MyCellarFields.getFieldsList().get(0).toString());
+      properties.addColumn(MyCellarFields.getFieldsList().get(1).name(), 2, MyCellarFields.getFieldsList().get(1).toString());
+      properties.addColumn(MyCellarFields.getFieldsList().get(3).name(), 5, MyCellarFields.getFieldsList().get(3).toString());
+      properties.addColumn(MyCellarFields.getFieldsList().get(7).name(), 2, MyCellarFields.getFieldsList().get(7).toString());
     }
     return properties;
   }
@@ -1122,15 +1122,6 @@ public final class Program {
       rows.add(row);
     }
     return rows;
-  }
-
-  static PDFRow getPDFHeader(PDFProperties properties) {
-    LinkedList<PDFColumn> columns = properties.getColumns();
-    PDFRow row = new PDFRow();
-    for (PDFColumn column : columns) {
-      row.addCell(column.getTitle());
-    }
-    return row;
   }
 
   private static void cleanDebugFiles() {

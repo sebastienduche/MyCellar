@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 21/02/22
+ * @version 2.8
+ * @since 30/03/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -48,10 +48,10 @@ public class PanelPlace extends JPanel implements IPlace {
   private final JModifyComboBox<ComboItem> line = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> column = new JModifyComboBox<>();
   private final MyCellarLabel labelExist = new MyCellarLabel("");
-  private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "138");
-  private final MyCellarLabel labelNumPlace = new MyCellarLabel(LabelType.INFO, "082");
-  private final MyCellarLabel labelLine = new MyCellarLabel(LabelType.INFO, "028");
-  private final MyCellarLabel labelColumn = new MyCellarLabel(LabelType.INFO, "083");
+  private final MyCellarButton preview = new MyCellarButton(LabelType.INFO_OTHER, "Storage.preview");
+  private final MyCellarLabel labelNumPlace = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.numPlace");
+  private final MyCellarLabel labelLine = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.line");
+  private final MyCellarLabel labelColumn = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.column");
 
   private final MyCellarLabel beforeLabel = new MyCellarLabel(LabelType.INFO, "091"); // Pour la Modification
   private final MyCellarLabel previousPlaceLabel = new MyCellarLabel(""); // Pour la Modification
@@ -428,7 +428,7 @@ public class PanelPlace extends JPanel implements IPlace {
         } else {
           // Need the last place number for complex places
           numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
-          labelNumPlace.setText(getLabel("Infos082")); //"Numero du lieu
+          labelNumPlace.setText(getLabel("MyCellarFields.numPlace")); //"Numero du lieu
         }
         enableAll(true);
         updateMultiCheckboxState();

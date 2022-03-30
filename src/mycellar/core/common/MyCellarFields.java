@@ -23,8 +23,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 29/03/22
+ * @version 2.3
+ * @since 30/03/22
  */
 
 public enum MyCellarFields {
@@ -32,9 +32,9 @@ public enum MyCellarFields {
   YEAR(getLabel("Infos189")),
   TYPE(getLabel("Infos134")),
   PLACE(getLabel("Infos217")),
-  NUM_PLACE(getLabel("Infos082")),
-  LINE(getLabel("Infos028")),
-  COLUMN(getLabel("Infos083")),
+  NUM_PLACE(getLabel("MyCellarFields.numPlace")),
+  LINE(getLabel("MyCellarFields.line")),
+  COLUMN(getLabel("MyCellarFields.column")),
   PRICE(getLabel("Infos135")),
   COMMENT(getLabel("Infos137")),
   MATURITY(getLabel("Infos391")),

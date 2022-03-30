@@ -69,7 +69,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   private static final long serialVersionUID = 6959053537854600207L;
   private final MyCellarComboBox<Rangement> choix = new MyCellarComboBox<>();
   private final MyCellarLabel label_final = new MyCellarLabel();
-  private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "138");
+  private final MyCellarButton preview = new MyCellarButton(LabelType.INFO_OTHER, "Storage.preview");
   private final char supprimerChar = getLabel("SUPPR").charAt(0);
   private final char previewChar = getLabel("VISUAL").charAt(0);
   private final JTable table;

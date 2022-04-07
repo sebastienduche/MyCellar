@@ -422,11 +422,14 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     updateMainPanel();
     ProgramPanels.PANEL_INFOS.setEnable(true);
     ProgramPanels.PANEL_INFOS.refresh();
-    String tmp = Program.getShortFilename();
-    if (tmp.isEmpty()) {
+    setApplicationTitle(Program.getShortFilename());
+  }
+
+  private void setApplicationTitle(String filename) {
+    if (filename.isEmpty()) {
       setTitle(getLabel("MyCellar"));
     } else {
-      setTitle(getLabel("MyCellar") + " - [" + tmp + "]");
+      setTitle(getLabel("MyCellar") + " - [" + filename + "]");
     }
   }
 
@@ -445,7 +448,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
         enableAll(false);
         ProgramPanels.updateAllPanels();
         updateMainPanel();
-        setTitle(getLabel("MyCellar"));
+        setApplicationTitle("");
       }
     } catch (UnableToOpenFileException e) {
       if (!(e instanceof UnableToOpenMyCellarFileException)) {
@@ -508,7 +511,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     ProgramPanels.PANEL_INFOS.setEnable(false);
     ProgramPanels.PANEL_INFOS.refresh();
     updateMainPanel();
-    setTitle(getLabel("MyCellar"));
+    setApplicationTitle("");
     setCursor(Cursor.getDefaultCursor());
   }
 
@@ -630,13 +633,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuModifPlace.setAccelerator(KeyStroke.getKeyStroke(modifyChar, InputEvent.CTRL_DOWN_MASK));
     menuQuit.setAccelerator(KeyStroke.getKeyStroke(quitChar, InputEvent.CTRL_DOWN_MASK));
     SwingUtilities.updateComponentTreeUI(this);
-    String tmp = Program.getShortFilename();
     Program.DEFAULT_PLACE.setName(getLabel("Program.DefaultPlace"));
-    if (tmp.isEmpty()) {
-      setTitle(getLabel("MyCellar"));
-    } else {
-      setTitle(getLabel("MyCellar") + " - [" + tmp + "]");
-    }
+    setApplicationTitle(Program.getShortFilename());
   }
 
   private void aide_actionPerformed() {
@@ -689,12 +687,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     ShowTrashAction showTrashAction = new ShowTrashAction();
     AddWineAction addWineAction = new AddWineAction();
 
-    final String tmp = Program.getShortFilename();
-    if (tmp.isEmpty()) {
-      setTitle(getLabel("MyCellar"));
-    } else {
-      setTitle(getLabel("MyCellar") + " - [" + tmp + "]");
-    }
+    setApplicationTitle(Program.getShortFilename());
     setResizable(true);
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     int x = prefs.getInt("Start.x", -1);
@@ -951,7 +944,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
       Program.saveAs(new File(fic));
       setCursor(Cursor.getDefaultCursor());
-      setTitle(getLabel("MyCellar") + " - [" + MyCellarUtils.getShortFilename(fic) + "]");
+      setApplicationTitle(Program.getShortFilename());
       setEnabled(true);
     }
   }
@@ -1153,7 +1146,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
             Debug("ERROR: OpenAction: File not found during Opening!");
             ProgramPanels.updateAllPanels();
             updateMainPanel();
-            setTitle(getLabel("MyCellar"));
+            setApplicationTitle("");
             return;
           }
           String fic = MyCellarControl.controlAndUpdateExtension(file.getAbsolutePath(), Filtre.FILTRE_SINFO);

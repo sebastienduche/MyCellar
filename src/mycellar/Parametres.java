@@ -29,6 +29,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 
 import static mycellar.MyCellarUtils.toCleanString;
+import static mycellar.ProgramConstants.LANGUAGE_F;
 import static mycellar.core.MyCellarSettings.ANNEE;
 import static mycellar.core.MyCellarSettings.DEVISE;
 import static mycellar.core.MyCellarSettings.DIR;
@@ -50,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.9
- * @since 18/02/22
+ * @version 13.0
+ * @since 07/04/22
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -98,14 +99,14 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     PopupListener popup_l = new PopupListener();
     file_bak.addMouseListener(popup_l);
     devise.addMouseListener(popup_l);
-    file_bak.setText(Program.getCaveConfigString(FILE_EXCEL, ""));
+    file_bak.setText(Program.getCaveConfigString(FILE_EXCEL));
 
     annee.setValue(Program.getCaveConfigInt(ANNEE, 50));
     siecle.setValue(Program.getCaveConfigInt(SIECLE, 19));
 
-    devise.setText(Program.getCaveConfigString(DEVISE, ""));
+    devise.setText(Program.getCaveConfigString(DEVISE));
     LanguageFileLoader.getLanguages().forEach(langue::addItem);
-    String the_language = Program.getGlobalConfigString(GLOBAL_LANGUAGE, "");
+    String the_language = Program.getGlobalConfigString(GLOBAL_LANGUAGE);
     langue.setSelectedIndex(LanguageFileLoader.getLanguageIndex(the_language));
 
     valider.addActionListener(this::valider_actionPerformed);
@@ -218,7 +219,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
    * @param e ActionEvent
    */
   private void parcourir_excel_actionPerformed(ActionEvent e) {
-    JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(DIR, ""));
+    JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(DIR));
     boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
     boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
     boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
@@ -251,7 +252,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
    */
   private void modifyLanguage() {
     String thelangue = LanguageFileLoader.getLanguageFromIndex(langue.getSelectedIndex());
-    String currentLanguage = Program.getGlobalConfigString(GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
+    String currentLanguage = Program.getGlobalConfigString(GLOBAL_LANGUAGE, LANGUAGE_F);
     if (thelangue.equals(currentLanguage)) {
       return;
     }

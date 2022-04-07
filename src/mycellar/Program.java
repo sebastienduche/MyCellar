@@ -81,6 +81,7 @@ import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FRA;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
+import static mycellar.ProgramConstants.LANGUAGE_F;
 import static mycellar.ProgramConstants.MY_CELLAR_XML;
 import static mycellar.ProgramConstants.ON;
 import static mycellar.ProgramConstants.ONE;
@@ -106,8 +107,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.9
- * @since 29/03/22
+ * @version 28.0
+ * @since 07/04/22
  */
 
 public final class Program {
@@ -160,7 +161,7 @@ public final class Program {
     } catch (UnableToOpenFileException e) {
       showException(e);
     }
-    String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
+    String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, LANGUAGE_F);
     Debug("Program: Type of managed object: " + programType);
     setLanguage(Language.getLanguage(thelangue.charAt(0)));
   }
@@ -170,11 +171,11 @@ public final class Program {
       Debug("Program: Initializing Language and Program type");
       LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
 
-      if (!hasConfigGlobalKey(MyCellarSettings.GLOBAL_LANGUAGE) || getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "").isEmpty()) {
-        putGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
+      if (!hasConfigGlobalKey(MyCellarSettings.GLOBAL_LANGUAGE) || getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE).isEmpty()) {
+        putGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, LANGUAGE_F);
       }
 
-      String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
+      String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, LANGUAGE_F);
       Debug("Program: Type of managed object: " + programType);
       setLanguage(Language.getLanguage(thelangue.charAt(0)));
       cleanAndUpgrade();
@@ -635,10 +636,10 @@ public final class Program {
 
   private static void openaFile(File file, boolean isNewFile) throws UnableToOpenFileException {
     LinkedList<String> list = new LinkedList<>();
-    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, ""));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4));
     Debug("Program: -------------------");
     if (isNewFile) {
       Debug("Program: openFile: Creating new file");
@@ -926,8 +927,16 @@ public final class Program {
     return "";
   }
 
+  static String getGlobalConfigString(String key) {
+    return CONFIG_GLOBAL.getString(key, "");
+  }
+
   static String getGlobalConfigString(String key, String defaultValue) {
     return CONFIG_GLOBAL.getString(key, defaultValue);
+  }
+
+  public static String getCaveConfigString(String key) {
+    return getCaveConfigString(key, "");
   }
 
   public static String getCaveConfigString(String key, String defaultValue) {

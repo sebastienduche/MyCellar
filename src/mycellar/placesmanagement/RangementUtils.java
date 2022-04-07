@@ -462,7 +462,7 @@ public final class RangementUtils {
       boolean onePlacePerSheet = Program.getCaveConfigBool(MyCellarSettings.ONE_PER_SHEET_XLS, false);
 
       if (title.isEmpty()) {
-        title = getLabel("Infos001");
+        title = getLabel("MyCellar");
       }
       int count = 0;
       SXSSFSheet sheet = workbook.createSheet();

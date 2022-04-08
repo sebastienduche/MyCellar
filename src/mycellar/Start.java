@@ -77,8 +77,6 @@ import static mycellar.ProgramConstants.DOWNLOAD_COMMAND;
 import static mycellar.ProgramConstants.FR;
 import static mycellar.ProgramConstants.INFOS_VERSION;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
-import static mycellar.ProgramConstants.LANGUAGE_F;
-import static mycellar.ProgramConstants.LANGUAGE_U;
 import static mycellar.ProgramConstants.MAIN_VERSION;
 import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.OPTIONS_PARAM;
@@ -97,8 +95,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.4
- * @since 07/04/22
+ * @version 31.5
+ * @since 08/04/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -291,9 +289,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       // Langue au premier demarrage
       String lang = System.getProperty("user.language");
       if (FR.equalsIgnoreCase(lang)) {
-        lang = LANGUAGE_F;
+        lang = Language.FRENCH.toString();
       } else {
-        lang = LANGUAGE_U;
+        lang = Language.ENGLISH.toString();
       }
       Program.putGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, lang);
       Program.putGlobalConfigBool(MyCellarSettings.GLOBAL_STARTUP, true);

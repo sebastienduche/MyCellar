@@ -80,8 +80,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.1
- * @since 22/02/22
+ * @version 23.2
+ * @since 08/04/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -279,7 +279,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), listToDelete.size()); //vins selectionnes.
         erreur_txt2 = getError("Error131"); //" Delete them ?
       }
-      int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       if (resul == JOptionPane.YES_OPTION) {
         SwingUtilities.invokeLater(() -> {
           for (MyCellarObject myCellarObject : listToDelete) {

@@ -39,8 +39,8 @@ import static mycellar.general.XmlUtils.getTextContent;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 20/01/22
+ * @version 1.4
+ * @since 08/04/22
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -460,12 +460,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public double getPriceDouble() {
-    String price = MyCellarUtils.convertStringFromHTMLString(prix);
-    if (price.isEmpty()) {
-      return 0;
-    }
-
-    return MyCellarUtils.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
+    return getPrice().doubleValue();
   }
 
   @Override
@@ -480,12 +475,11 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public boolean hasPrice() {
-    String price = MyCellarUtils.convertStringFromHTMLString(prix);
-    if (price.isEmpty()) {
+    if (prix.isBlank()) {
       return false;
     }
     try {
-      MyCellarUtils.stringToBigDecimal(price);
+      MyCellarUtils.stringToBigDecimal(MyCellarUtils.convertStringFromHTMLString(prix));
     } catch (NumberFormatException ignored) {
       return false;
     }

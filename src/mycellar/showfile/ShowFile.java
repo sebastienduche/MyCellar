@@ -86,8 +86,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.4
- * @since 24/03/22
+ * @version 11.5
+ * @since 08/04/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -798,7 +798,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), toDeleteList.size()); //vins selectionnes.
           erreur_txt2 = getError("Error131"); //"Voulez-vous les supprimer ?
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           if (isError()) {
             for (MyCellarObject b : toDeleteList) {
               Program.getErrors().remove(new MyCellarError(MyCellarError.ID.INEXISTING_PLACE, b));
@@ -867,7 +867,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); //vins selectionnes.
         erreur_txt2 = getLabel("ShowFile.RestoreSeveral");
       }
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
         for (MyCellarObject b : toRestoreList) {
           Program.getTrash().remove(b);
@@ -1017,7 +1017,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (rangement != null && rangement.isSimplePlace()) {
           Erreur.showSimpleErreur(getError("Error154"));
         } else {
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("Error198", LabelProperty.THE_SINGLE), getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("Error198", LabelProperty.THE_SINGLE), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             ProgramPanels.showBottle(b, true);
           }
         }
@@ -1160,7 +1160,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   public boolean tabWillClose(TabEvent event) {
     if (isError()) {
       if (Program.getErrors().stream().anyMatch(MyCellarError::isNotSolved)) {
-        return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), getLabel("ShowFile.QuitErrors"), getLabel("Infos049"), JOptionPane.YES_NO_OPTION);
+        return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), getLabel("ShowFile.QuitErrors"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION);
       }
     }
     RangementUtils.putTabStock();

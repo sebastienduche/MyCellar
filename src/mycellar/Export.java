@@ -63,8 +63,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.3
- * @since 29/03/22
+ * @version 10.4
+ * @since 08/04/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -206,7 +206,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
    */
   private void browse_actionPerformed() {
     end.setText("");
-    JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR, ""));
+    JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR));
     boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
     if (MyCellarRadioButtonPDF.isSelected()) {
       boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
@@ -326,7 +326,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(
           Start.getInstance(),
           MessageFormat.format(getError("Export.replaceFileQuestion"), aFile.getAbsolutePath()),
-          getLabel("Infos049"),
+          getLabel("Main.askConfirmation"),
           JOptionPane.YES_NO_OPTION,
           JOptionPane.QUESTION_MESSAGE)) {
         end.setText("");

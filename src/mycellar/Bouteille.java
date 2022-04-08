@@ -43,8 +43,8 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.6
- * @since 20/01/22
+ * @version 7.7
+ * @since 08/04/22
  *
  * <p>Java class for anonymous complex type.
  *
@@ -399,12 +399,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public double getPriceDouble() {
-    String price = MyCellarUtils.convertStringFromHTMLString(prix);
-    if (price.isEmpty()) {
-      return 0;
-    }
-
-    return MyCellarUtils.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
+    return getPrice().doubleValue();
   }
 
   @Override
@@ -419,12 +414,11 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public boolean hasPrice() {
-    String price = MyCellarUtils.convertStringFromHTMLString(prix);
-    if (price.isEmpty()) {
+    if (prix.isBlank()) {
       return false;
     }
     try {
-      MyCellarUtils.stringToBigDecimal(price);
+      MyCellarUtils.stringToBigDecimal(MyCellarUtils.convertStringFromHTMLString(prix));
     } catch (NumberFormatException ignored) {
       return false;
     }

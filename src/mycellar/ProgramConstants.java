@@ -11,12 +11,12 @@ import java.time.format.DateTimeFormatter;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 07/04/22
+ * @version 0.7
+ * @since 08/04/22
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.5.1.6";
+  public static final String INTERNAL_VERSION = "4.5.4.0";
   public static final int VERSION = 74;
   public static final String MAIN_VERSION = VERSION + " CG";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
@@ -32,8 +32,6 @@ public final class ProgramConstants {
   public static final String FRANCE = "France";
   public static final String ITA = "ITA";
   public static final String FR = "fr";
-  public static final String LANGUAGE_F = "F";
-  public static final String LANGUAGE_U = "U";
   public static final String ONE = "1";
   public static final String ZERO = "0";
   public static final String ON = "ON";

@@ -60,8 +60,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.4
- * @since 20/01/22
+ * @version 9.5
+ * @since 08/04/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -193,7 +193,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         String tmp = cave.getName();
         Debug("MESSAGE: Delete this place: " + tmp + "?");
         error = MessageFormat.format(getError("Error139"), tmp); //Voulez vous supprimer le rangement
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           removeSelectedPlace(cave, num_select);
         }
       } else {
@@ -206,7 +206,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         // Delete place and objects in the place
         String erreur_txt2 = getError("Error039", LabelProperty.THE_PLURAL);
         Debug("MESSAGE: Delete this place " + nom + " and all bottle(s) (" + nb_case_use_total + ")?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + erreur_txt2, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           new MyCellarSwingWorker() {
             @Override
             protected void done() {

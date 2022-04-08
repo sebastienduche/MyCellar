@@ -39,8 +39,8 @@ import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.9
- * @since 09/04/21
+ * @version 3.0
+ * @since 08/04/22
  */
 
 public final class CountryVignobleController {
@@ -395,8 +395,8 @@ public final class CountryVignobleController {
     Debug("Loading all countries");
     map.clear();
     File dir = new File(Program.getWorkDir(true));
-    CountryListJaxb.findbyId("FRA").ifPresent(country -> map.put(country, loadFrance()));
-    CountryListJaxb.findbyId("ITA").ifPresent(country -> map.put(country, loadItaly()));
+    CountryListJaxb.findbyId(FRA).ifPresent(country -> map.put(country, loadFrance()));
+    CountryListJaxb.findbyId(ITA).ifPresent(country -> map.put(country, loadItaly()));
     File[] fileVignobles = dir.listFiles((pathname) -> pathname.getName().endsWith(VIGNOBLE));
     if (fileVignobles != null) {
       for (File f : fileVignobles) {

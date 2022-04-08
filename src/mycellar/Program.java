@@ -81,7 +81,6 @@ import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FRA;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
-import static mycellar.ProgramConstants.LANGUAGE_F;
 import static mycellar.ProgramConstants.MY_CELLAR_XML;
 import static mycellar.ProgramConstants.ON;
 import static mycellar.ProgramConstants.ONE;
@@ -107,8 +106,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.0
- * @since 07/04/22
+ * @version 28.1
+ * @since 08/04/22
  */
 
 public final class Program {
@@ -161,7 +160,7 @@ public final class Program {
     } catch (UnableToOpenFileException e) {
       showException(e);
     }
-    String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, LANGUAGE_F);
+    String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, Language.FRENCH.toString());
     Debug("Program: Type of managed object: " + programType);
     setLanguage(Language.getLanguage(thelangue.charAt(0)));
   }
@@ -172,10 +171,10 @@ public final class Program {
       LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
 
       if (!hasConfigGlobalKey(MyCellarSettings.GLOBAL_LANGUAGE) || getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE).isEmpty()) {
-        putGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, LANGUAGE_F);
+        putGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, Language.FRENCH.toString());
       }
 
-      String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, LANGUAGE_F);
+      String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, Language.FRENCH.toString());
       Debug("Program: Type of managed object: " + programType);
       setLanguage(Language.getLanguage(thelangue.charAt(0)));
       cleanAndUpgrade();
@@ -728,7 +727,7 @@ public final class Program {
     boolean bSave = false;
     File newFile = null;
     if (myCellarFile.exists() && isModified()) {
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("Error199"), getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("Error199"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         bSave = true;
         if (!myCellarFile.isFileSavable()) {
           JFileChooser boiteFichier = new JFileChooser();

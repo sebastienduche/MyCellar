@@ -52,8 +52,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.0
- * @since 16/04/21
+ * @version 5.1
+ * @since 08/04/22
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -65,9 +65,9 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
     Debug("Constructor");
     MyCellarLabel filterLabel = new MyCellarLabel(LabelType.INFO, "350"); // Filtre
     filterCbx.addItem(new FilterItem(HistoryState.ALL, getLabel("Infos351")));
-    filterCbx.addItem(new FilterItem(HistoryState.ADD, getLabel("Infos345")));
-    filterCbx.addItem(new FilterItem(HistoryState.MODIFY, getLabel("Infos346")));
-    filterCbx.addItem(new FilterItem(HistoryState.DEL, getLabel("Infos347")));
+    filterCbx.addItem(new FilterItem(HistoryState.ADD, getLabel("History.Entered")));
+    filterCbx.addItem(new FilterItem(HistoryState.MODIFY, getLabel("History.Modified")));
+    filterCbx.addItem(new FilterItem(HistoryState.DEL, getLabel("History.Exited")));
     filterCbx.addItem(new FilterItem(HistoryState.VALIDATED, getLabel("History.Validated")));
     filterCbx.addItem(new FilterItem(HistoryState.TOCHECK, getLabel("History.ToCheck")));
     filterCbx.addItemListener(this::filter_itemStateChanged);
@@ -216,7 +216,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); // vins selectionnes.
           erreur_txt2 = getLabel("ShowFile.RestoreSeveral");
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"),
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
           for (MyCellarObject myCellarObject : toRestoreList) {
@@ -287,7 +287,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
             erreur_txt2 = getError("Error131"); // "Voulez-vous les supprimer?
           }
           Debug(toDeleteList.size() + " line(s) selected");
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"),
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"),
               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             Debug("Deleting lines...");
             for (History b : toDeleteList) {

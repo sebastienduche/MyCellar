@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.text.MessageFormat;
 import java.util.List;
 
+import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
@@ -18,8 +19,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 29/01/21
+ * @version 1.4
+ * @since 08/04/22
  */
 
 class VineyardTableModel extends DefaultTableModel {
@@ -98,11 +99,11 @@ class VineyardTableModel extends DefaultTableModel {
         String name = appelationJaxb.getAOC() != null ? appelationJaxb.getAOC() : appelationJaxb.getIGP();
         CountryVignobleController.rebuild();
         if (CountryVignobleController.isAppellationUsed(appelationJaxb)) {
-          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteAppellation"), getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteAppellation"), getError("Error015"), JOptionPane.ERROR_MESSAGE);
           return;
         }
 
-        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.delAppellationQuestion"), name), getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.delAppellationQuestion"), name), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         CountryVignobleController.setModified();

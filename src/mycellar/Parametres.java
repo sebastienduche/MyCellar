@@ -29,7 +29,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 
 import static mycellar.MyCellarUtils.toCleanString;
-import static mycellar.ProgramConstants.LANGUAGE_F;
 import static mycellar.core.MyCellarSettings.ANNEE;
 import static mycellar.core.MyCellarSettings.DEVISE;
 import static mycellar.core.MyCellarSettings.DIR;
@@ -51,8 +50,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.0
- * @since 07/04/22
+ * @version 13.1
+ * @since 08/04/22
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -252,7 +251,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
    */
   private void modifyLanguage() {
     String thelangue = LanguageFileLoader.getLanguageFromIndex(langue.getSelectedIndex());
-    String currentLanguage = Program.getGlobalConfigString(GLOBAL_LANGUAGE, LANGUAGE_F);
+    String currentLanguage = Program.getGlobalConfigString(GLOBAL_LANGUAGE, Language.FRENCH.toString());
     if (thelangue.equals(currentLanguage)) {
       return;
     }

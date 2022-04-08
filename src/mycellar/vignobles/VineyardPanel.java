@@ -52,8 +52,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 04/01/22
+ * @version 3.4
+ * @since 08/04/22
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -71,7 +71,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   private VignobleListJaxb vignobleListJaxb = null;
 
   public VineyardPanel() {
-    MyCellarLabel labelCountries = new MyCellarLabel(LabelType.INFO, "218"); // Selectionner un pays
+    MyCellarLabel labelCountries = new MyCellarLabel(LabelType.INFO_OTHER, "VineyardPanel.selectCountry");
     comboCountry.addItem(emptyCountryJaxb);
     Collections.sort(Program.getCountries());
     Program.getCountries().forEach(comboCountry::addItem);
@@ -79,7 +79,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
     comboCountry.addActionListener((e) -> comboCountrySelected());
     comboVignoble.addActionListener((e) -> comboVignobleSelected());
 
-    MyCellarLabel labelVineyard = new MyCellarLabel(LabelType.INFO, "166"); // Selectionner un vignoble
+    MyCellarLabel labelVineyard = new MyCellarLabel(LabelType.INFO_OTHER, "VineyardPanel.selectVineyard");
     MyCellarButton addCountry = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.addCountry", new AddCountryAction());
     MyCellarButton delCountry = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.delCountry", new DelCountryAction());
     setLayout(new MigLayout("", "grow", "[][grow]"));
@@ -234,10 +234,10 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
       if (countryVignobleJaxb != null) {
         CountryVignobleController.rebuild();
         if (CountryVignobleController.isVignobleUsed(countryJaxb, countryVignobleJaxb)) {
-          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteVignoble"), getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteVignoble"), getError("Error015"), JOptionPane.ERROR_MESSAGE);
           return;
         }
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.delVignobleQuestion"), countryVignobleJaxb.getName()), getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.delVignobleQuestion"), countryVignobleJaxb.getName()), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         comboVignoble.removeItemAt(comboVignoble.getSelectedIndex());
@@ -331,11 +331,11 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
         CountryVignobleController.rebuild();
         for (CountryVignobleJaxb countryVignobleJaxb : vignoble.getCountryVignobleJaxbList()) {
           if (CountryVignobleController.isVignobleUsed(countryJaxb, countryVignobleJaxb)) {
-            JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteCountry"), getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteCountry"), getError("Error015"), JOptionPane.ERROR_MESSAGE);
             return;
           }
         }
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.delCountryQuestion"), countryJaxb), getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.delCountryQuestion"), countryJaxb), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         CountryVignobleController.deleteCountry(countryJaxb);

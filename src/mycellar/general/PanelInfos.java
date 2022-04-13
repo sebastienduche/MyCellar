@@ -104,7 +104,7 @@ final class PanelStats extends JPanel {
     bottlesNb.setEnabled(false);
     cellarValue.setEnabled(false);
     cellarTotal.setEnabled(false);
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos404")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos.stats")));
     setEnabled(false);
   }
 
@@ -126,7 +126,7 @@ final class PanelStats extends JPanel {
   }
 
   void setLabels() {
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos404")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos.stats")));
     bottles.updateText();
     cellarValue.updateText();
     TableColumnModel tcm = table.getColumnModel();

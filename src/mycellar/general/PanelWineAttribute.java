@@ -76,7 +76,7 @@ public final class PanelWineAttribute extends JPanel {
     add(new MyCellarLabel(LabelType.INFO, "135"), "wrap");
     add(price, "width min(100,45%), split 2");
     add(new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, EURO)), "gapleft 5px");
-    add(new MyCellarLabel(LabelType.INFO, "405", LabelProperty.PLURAL), "split, span 2");
+    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.NumberOfItems", LabelProperty.PLURAL, ""), "split, span 2");
     add(nbItems, "width min(50,10%)");
     add(labelStillToAdd, "wrap");
     add(new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarManageBottles.status"));

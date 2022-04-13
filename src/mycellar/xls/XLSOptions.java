@@ -91,7 +91,7 @@ public final class XLSOptions extends JDialog {
     panel1.setFont(FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(INFO_OTHER, "Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(INFO, "055");
+    MyCellarButton annuler = new MyCellarButton(INFO_OTHER, "Main.cancel");
     annuler.addActionListener((e) -> dispose());
     MyCellarLabel MyCellarLabel6 = new MyCellarLabel("pt");
     MyCellarLabel MyCellarLabel7 = new MyCellarLabel(INFO, "256"); //Taille du texte

@@ -2,6 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Erreur;
 import mycellar.ITabListener;
+import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.IMyCellar;
@@ -82,8 +83,8 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 
   public Supprimer_Rangement() {
     Debug("Initializing...");
-    setLayout(new MigLayout("", "[grow]", "20px[]15px[]15px[]"));
-    MyCellarButton supprimer = new MyCellarButton(LabelType.INFO_OTHER, "Main.Delete");
+    setLayout(new MigLayout("", "[grow]", "20px[]15px[grow]15px[]"));
+    MyCellarButton supprimer = new MyCellarButton(LabelType.INFO_OTHER, "Main.Delete", MyCellarImage.DELETE);
     supprimer.setMnemonic(supprimerChar);
     preview.setMnemonic(previewChar);
 
@@ -99,7 +100,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     table = new JTable(model);
     JScrollPane scroll = new JScrollPane(table);
 
-    add(new MyCellarLabel(LabelType.INFO, "054"), "split 2, gap"); //Select place to delete
+    add(new MyCellarLabel(LabelType.INFO_OTHER, "PlaceManagement.selectToDelete"), "split 2, gap");
     add(choix, "wrap");
     add(scroll, "grow, wrap");
     add(label_final, "grow, center, wrap");
@@ -159,7 +160,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       label_final.setHorizontalAlignment(SwingConstants.CENTER);
       Debug("There is (are) " + nb_case_use_total + " bottle(s) in this place!");
       if (nb_case_use_total == 0) {
-        label_final.setText(getLabel("Infos065")); //"Le rangement est vide
+        label_final.setText(getLabel("PlaceManagement.emptyPlace"));
       } else {
         if (nb_case_use_total == 1) {
           label_final.setText(getLabel("DeletePlace.still1Item", LabelProperty.SINGLE));
@@ -199,9 +200,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       } else {
         String nom = cave.getName();
         if (nb_case_use_total == 1) {
-          error = MessageFormat.format(getLabel("DeletePlace.still1ItemIn", LabelProperty.SINGLE), nom); //il reste 1 bouteille dans
+          error = MessageFormat.format(getLabel("DeletePlace.still1ItemIn", LabelProperty.SINGLE), nom);
         } else {
-          error = MessageFormat.format(getLabel("DeletePlace.stillNItemsIn", LabelProperty.PLURAL), nb_case_use_total, nom); //Il reste n bouteilles dans
+          error = MessageFormat.format(getLabel("DeletePlace.stillNItemsIn", LabelProperty.PLURAL), nb_case_use_total, nom);
         }
         // Delete place and objects in the place
         String erreur_txt2 = getError("Error039", LabelProperty.THE_PLURAL);

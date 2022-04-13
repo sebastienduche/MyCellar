@@ -66,7 +66,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     panelGeneral.setMyCellarObject(null);
     addButton = new MyCellarButton(LabelType.INFO, "071", new AddAction());
     addButton.setMnemonic(ajouterChar);
-    cancelButton = new MyCellarButton(LabelType.INFO, "055", new CancelAction());
+    cancelButton = new MyCellarButton(LabelType.INFO_OTHER, "Main.cancel", new CancelAction());
 
     panelGeneral.setModificationDetectionActive(false);
     panelWineAttribute.setModificationDetectionActive(false);

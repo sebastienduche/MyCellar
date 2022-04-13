@@ -72,7 +72,7 @@ class CapacityTableModel extends DefaultTableModel {
     final String oldValue = list.get(row);
     if (column == ETAT) {
       if (MyCellarBottleContenance.isContenanceUsed(oldValue)) {
-        JOptionPane.showMessageDialog(Start.getInstance(), getLabel("CapacityPanel.unableDeleteCapacity"), getError("Error015"), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(Start.getInstance(), getLabel("CapacityPanel.unableDeleteCapacity"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
         return;
       }
       if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("CapacityPanel.delCapacityQuestion"), oldValue), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {

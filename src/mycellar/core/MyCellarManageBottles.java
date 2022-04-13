@@ -77,7 +77,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
     end.setVisible(enable);
   }
 
-  public void setUpdateView(UpdateViewType updateViewType) {
+  public void setUpdateViewType(UpdateViewType updateViewType) {
     updateView = true;
     this.updateViewType = updateViewType;
   }

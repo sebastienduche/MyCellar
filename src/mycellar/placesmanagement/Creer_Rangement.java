@@ -699,7 +699,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   }
 
   @Override
-  public void setUpdateView(UpdateViewType updateViewType) {
+  public void setUpdateViewType(UpdateViewType updateViewType) {
     this.updateViewType = updateViewType;
   }
 

@@ -778,7 +778,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   }
 
   @Override
-  public void setUpdateView(UpdateViewType updateViewType) {
+  public void setUpdateViewType(UpdateViewType updateViewType) {
     updateView = true;
     this.updateViewType = updateViewType;
   }

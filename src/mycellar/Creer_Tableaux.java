@@ -365,7 +365,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   }
 
   @Override
-  public void setUpdateView(UpdateViewType updateViewType) {
+  public void setUpdateViewType(UpdateViewType updateViewType) {
     updateView = true;
     this.updateViewType = updateViewType;
   }

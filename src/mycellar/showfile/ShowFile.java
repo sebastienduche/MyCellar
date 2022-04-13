@@ -1026,7 +1026,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   @Override
-  public void setUpdateView(UpdateViewType updateViewType) {
+  public void setUpdateViewType(UpdateViewType updateViewType) {
     updateView = true;
     this.updateViewType = updateViewType;
   }

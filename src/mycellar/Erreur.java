@@ -34,7 +34,7 @@ public class Erreur {
    * @param text
    */
   public static void showSimpleErreur(String text) {
-    JOptionPane.showMessageDialog(Start.getInstance(), text, getError("Error015"), JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(Start.getInstance(), text, getError("Error.error"), JOptionPane.ERROR_MESSAGE);
   }
 
   /**
@@ -44,7 +44,7 @@ public class Erreur {
    * @param text
    */
   public static void showSimpleErreur(Component target, String text) {
-    JOptionPane.showMessageDialog(target, text, getError("Error015"), JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(target, text, getError("Error.error"), JOptionPane.ERROR_MESSAGE);
   }
 
   /**
@@ -106,7 +106,7 @@ public class Erreur {
     panel.add(checkNotShow, "newline, hidemode 3, gaptop 15px");
     checkNotShow.setVisible(MyCellarUtils.isDefined(keyword));
     label2.setVisible(!text2.isEmpty());
-    JOptionPane.showMessageDialog(target, panel, information ? getError("Error032") : getError("Error015"), information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(target, panel, information ? getError("Error032") : getError("Error.error"), information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
     if (checkNotShow.isSelected()) {
       Program.putCaveConfigBool(keyword, true);
     }

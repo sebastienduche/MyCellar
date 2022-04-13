@@ -270,7 +270,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   }
 
   @Override
-  public void setUpdateView(UpdateViewType updateViewType) {
+  public void setUpdateViewType(UpdateViewType updateViewType) {
     updateView = true;
     this.updateViewType = updateViewType;
   }

@@ -319,7 +319,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   }
 
   @Override
-  public void setUpdateView(UpdateViewType updateViewType) {
+  public void setUpdateViewType(UpdateViewType updateViewType) {
     updateView = true;
     this.updateViewType = updateViewType;
   }

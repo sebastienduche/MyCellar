@@ -169,7 +169,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   }
 
   @Override
-  public void setUpdateView(UpdateViewType updateViewType) {
+  public void setUpdateViewType(UpdateViewType updateViewType) {
   }
 
   @Override
@@ -234,7 +234,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
       if (countryVignobleJaxb != null) {
         CountryVignobleController.rebuild();
         if (CountryVignobleController.isVignobleUsed(countryJaxb, countryVignobleJaxb)) {
-          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteVignoble"), getError("Error015"), JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteVignoble"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
           return;
         }
         if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.delVignobleQuestion"), countryVignobleJaxb.getName()), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
@@ -331,7 +331,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
         CountryVignobleController.rebuild();
         for (CountryVignobleJaxb countryVignobleJaxb : vignoble.getCountryVignobleJaxbList()) {
           if (CountryVignobleController.isVignobleUsed(countryJaxb, countryVignobleJaxb)) {
-            JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteCountry"), getError("Error015"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteCountry"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
             return;
           }
         }

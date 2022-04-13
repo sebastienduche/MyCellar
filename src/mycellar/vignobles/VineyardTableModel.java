@@ -99,7 +99,7 @@ class VineyardTableModel extends DefaultTableModel {
         String name = appelationJaxb.getAOC() != null ? appelationJaxb.getAOC() : appelationJaxb.getIGP();
         CountryVignobleController.rebuild();
         if (CountryVignobleController.isAppellationUsed(appelationJaxb)) {
-          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteAppellation"), getError("Error015"), JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteAppellation"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
           return;
         }
 

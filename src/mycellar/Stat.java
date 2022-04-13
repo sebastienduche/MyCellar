@@ -461,7 +461,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   }
 
   @Override
-  public void setUpdateView(UpdateViewType updateViewType) {
+  public void setUpdateViewType(UpdateViewType updateViewType) {
   }
 
   @Override

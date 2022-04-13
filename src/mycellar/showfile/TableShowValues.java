@@ -237,7 +237,7 @@ class TableShowValues extends AbstractTableModel {
             if (rangement.isSimplePlace()) {
               Erreur.showSimpleErreur(getError("Error154"));
             } else {
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error198", LabelProperty.THE_SINGLE), getError("Error015"), JOptionPane.YES_NO_OPTION)) {
+              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error198", LabelProperty.THE_SINGLE), getError("Error.error"), JOptionPane.YES_NO_OPTION)) {
                 LinkedList<MyCellarObject> list = new LinkedList<>();
                 list.add(b);
                 Program.modifyBottles(list);

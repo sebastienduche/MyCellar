@@ -104,7 +104,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   }
 
   @Override
-  public void setUpdateView(UpdateViewType updateViewType) {
+  public void setUpdateViewType(UpdateViewType updateViewType) {
     this.updateViewType = updateViewType;
   }
 

@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 01/01/22
+ * @version 0.8
+ * @since 13/04/22
  */
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;
@@ -159,17 +159,12 @@ public final class PanelWineAttribute extends JPanel {
   }
 
   public void resetValues() {
-    price.setText("");
-    maturity.setText("");
-    parker.setText("");
-    colorList.setSelectedItem(BottleColor.NONE);
-    statusList.setSelectedItem(BottlesStatus.NONE);
+    price.reset();
+    maturity.reset();
+    parker.reset();
+    colorList.reset();
+    statusList.reset();
     lastModified.setText("");
-    colorList.setModified(false);
-    statusList.setModified(false);
-    price.setModified(false);
-    maturity.setModified(false);
-    parker.setModified(false);
     nbItems.setValue(1);
     labelStillToAdd.setText("");
   }

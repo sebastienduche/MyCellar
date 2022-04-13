@@ -1,5 +1,6 @@
 package mycellar.core.uicomponents;
 
+import mycellar.core.IModifyable;
 import mycellar.general.ProgramPanels;
 
 import java.awt.event.ItemEvent;
@@ -11,11 +12,11 @@ import java.awt.event.ItemEvent;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 07/01/22
+ * @version 0.8
+ * @since 13/04/22
  */
 
-public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
+public final class JModifyComboBox<T> extends MyCellarComboBox<T> implements IModifyable {
 
   private static final long serialVersionUID = 833606680694326736L;
 
@@ -39,28 +40,30 @@ public final class JModifyComboBox<T> extends MyCellarComboBox<T> {
     });
   }
 
+  @Override
   public void reset() {
     if (getItemCount() > 0) {
       setSelectedIndex(0);
     }
+    setModified(false);
   }
 
+  @Override
   public boolean isModified() {
     return modified;
   }
 
+  @Override
   public void setModified(boolean modified) {
     this.modified = modified;
   }
 
-  public boolean isActive() {
-    return active;
-  }
-
+  @Override
   public void setActive(boolean active) {
     this.active = active;
   }
 
+  @Override
   public void setListenerEnable(boolean listenerEnable) {
     this.listenerEnable = listenerEnable;
   }

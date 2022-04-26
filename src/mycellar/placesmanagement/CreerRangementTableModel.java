@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
@@ -77,7 +78,9 @@ class CreerRangementTableModel extends AbstractTableModel {
           if (p.getRowSize() > 0) {
             return p.getRow(0).getCol();
           }
-          return "0";
+          return ZERO;
+        default:
+          return "";
       }
     } else {
       int part = mapPart.get(row);
@@ -95,10 +98,11 @@ class CreerRangementTableModel extends AbstractTableModel {
           if (p.getRow(line - 1) != null) {
             return p.getRow(line - 1).getCol();
           }
-          return "0";
+          return ZERO;
+        default:
+          return "";
       }
     }
-    return "";
   }
 
   @Override

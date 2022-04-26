@@ -74,14 +74,14 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private static final char PREVIEW = getLabel("PREVIEW").charAt(0);
   private final MyCellarComboBox<Rangement> comboPlace = new MyCellarComboBox<>();
   private final JTextField nom_obj = new JTextField();
-  private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton(INFO, "012", true); //"Toutes les lignes ont le meme nombre de colonnes"
-  private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton(INFO, "013", false); //"Toutes les lignes n'ont pas le meme nombre de colonnes"
-  private final MyCellarCheckBox checkLimite = new MyCellarCheckBox(INFO, "238"); //limite
+  private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton("CreateStorage.AllLinesSame", true); //"Toutes les lignes ont le meme nombre de colonnes"
+  private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton("CreateStorage.AllLinesNotSame", false); //"Toutes les lignes n'ont pas le meme nombre de colonnes"
+  private final MyCellarCheckBox checkLimite = new MyCellarCheckBox("CreatePlace.ActivateLimit");
   private final MyCellarLabel label_limite = new MyCellarLabel(INFO_OTHER, "Main.Item", LabelProperty.SINGLE);
   private final MyCellarSpinner nb_limite = new MyCellarSpinner(1, 999);
   private final MyCellarSpinner nb_parties = new MyCellarSpinner(1, 99);
   private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner(0, 99);
-  private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox(INFO, "024"); //Caisse
+  private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox("CreateStorage.SimpleStorage");
   private final MyCellarLabel label_cree = new MyCellarLabel();
   private final MyCellarButton preview = new MyCellarButton(INFO, "155");
   private final JPanel panelType;

@@ -23,22 +23,22 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 30/03/22
+ * @version 2.4
+ * @since 26/04/22
  */
 
 public enum MyCellarFields {
   NAME(getLabel("Main.Item", LabelProperty.SINGLE.withCapital())),
-  YEAR(getLabel("Infos189")),
-  TYPE(getLabel("Infos134")),
-  PLACE(getLabel("Infos217")),
+  YEAR(getLabel("Main.Year")),
+  TYPE(getLabel("Main.CapacityOrSupport")),
+  PLACE(getLabel("Main.Storage")),
   NUM_PLACE(getLabel("MyCellarFields.numPlace")),
   LINE(getLabel("MyCellarFields.line")),
   COLUMN(getLabel("MyCellarFields.column")),
-  PRICE(getLabel("Infos135")),
-  COMMENT(getLabel("Infos137")),
-  MATURITY(getLabel("Infos391")),
-  PARKER(getLabel("Infos392")),
+  PRICE(getLabel("Main.Price")),
+  COMMENT(getLabel("Main.Comment")),
+  MATURITY(getLabel("Main.Maturity")),
+  PARKER(getLabel("Main.Rating")),
   COLOR(getLabel("AddVin.Color")),
   COUNTRY(getLabel("Main.Country")),
   VINEYARD(getLabel("Main.Vignoble")),

@@ -46,22 +46,22 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2004</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2004
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 16/02/21
+ * @version 1.8
+ * @since 26/04/22
  */
 public final class XLSTabOptions extends JDialog {
   static final long serialVersionUID = 260706;
   private static final int LARGEUR = 480;
   private static final int HAUTEUR = 550;
   private final MyCellarSpinner title_size = new MyCellarSpinner(1, 99);
-  private final MyCellarCheckBox boldTitleCheckBox = new MyCellarCheckBox(INFO, "257");
-  private final MyCellarCheckBox onePlacePerSheetCheckBox = new MyCellarCheckBox(INFO_OTHER, "XLSOptions.onePlacePerSheet");
+  private final MyCellarCheckBox boldTitleCheckBox = new MyCellarCheckBox("Options.Bold");
+  private final MyCellarCheckBox onePlacePerSheetCheckBox = new MyCellarCheckBox("XLSOptions.onePlacePerSheet");
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner text_size = new MyCellarSpinner(1, 99);
   private final MyCellarSpinner column_size = new MyCellarSpinner(1, 99);
@@ -123,9 +123,9 @@ public final class XLSTabOptions extends JDialog {
     JScrollPane scrollPane = new JScrollPane(table);
 
     xlsOptionsTableValues.addString(getLabel("Infos132"), Program.getCaveConfigBool(XLSTAB_COL0, true));
-    xlsOptionsTableValues.addString(getLabel("Infos189"), Program.getCaveConfigBool(XLSTAB_COL1, false));
-    xlsOptionsTableValues.addString(getLabel("Infos134"), Program.getCaveConfigBool(XLSTAB_COL2, false));
-    xlsOptionsTableValues.addString(getLabel("Infos135"), Program.getCaveConfigBool(XLSTAB_COL3, false));
+    xlsOptionsTableValues.addString(getLabel("Main.Year"), Program.getCaveConfigBool(XLSTAB_COL1, false));
+    xlsOptionsTableValues.addString(getLabel("Main.CapacityOrSupport"), Program.getCaveConfigBool(XLSTAB_COL2, false));
+    xlsOptionsTableValues.addString(getLabel("Main.Price"), Program.getCaveConfigBool(XLSTAB_COL3, false));
 
     final JPanel panel1 = new JPanel();
     panel1.setFont(FONT_PANEL);

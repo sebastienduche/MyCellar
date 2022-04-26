@@ -10,14 +10,14 @@ import java.util.Map;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2018
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2018
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 24/02/22
+ * @version 0.5
+ * @since 26/04/22
  */
 public class RangementToCreateTableModel extends AbstractTableModel {
 
@@ -44,7 +44,7 @@ public class RangementToCreateTableModel extends AbstractTableModel {
   @Override
   public String getColumnName(int column) {
     if (column == 0) {
-      return getLabel(LabelType.INFO, "208");
+      return getLabel(LabelType.INFO_OTHER, "Main.Name");
     }
     return "";
   }

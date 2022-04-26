@@ -29,8 +29,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.4
- * @since 30/03/22
+ * @version 5.5
+ * @since 26/04/22
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -48,9 +48,9 @@ class TableShowValues extends AbstractTableModel {
   private static final int COMMENT = 9;
   private static final int MATURITY = 10;
   private static final int PARKER = 11;
-  private final String[] columnNames = {"", getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Infos189"), getLabel("Infos134"), getLabel("Infos217"),
-      getLabel("MyCellarFields.numPlace"), getLabel("MyCellarFields.line"), getLabel("MyCellarFields.column"), getLabel("Infos135"), getLabel("Infos137"),
-      getLabel("Infos391"), getLabel("Infos392")};
+  private final String[] columnNames = {"", getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
+      getLabel("MyCellarFields.numPlace"), getLabel("MyCellarFields.line"), getLabel("MyCellarFields.column"), getLabel("Main.Price"), getLabel("Main.Comment"),
+      getLabel("Main.Maturity"), getLabel("Main.Rating")};
 
   protected Boolean[] values = null;
 

@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 30/03/22
+ * @version 2.9
+ * @since 26/04/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -59,7 +59,7 @@ public class PanelPlace extends JPanel implements IPlace {
   private final MyCellarLabel previousLineLabel = new MyCellarLabel(""); // Pour la Modification
   private final MyCellarLabel previousColumnLabel = new MyCellarLabel(""); // Pour la Modification
 
-  private final MyCellarCheckBox searchSeveralLocation = new MyCellarCheckBox(LabelType.INFO_OTHER, "Search.AllBottlesInPlace", LabelProperty.PLURAL);
+  private final MyCellarCheckBox searchSeveralLocation = new MyCellarCheckBox("Search.AllBottlesInPlace", LabelProperty.PLURAL);
   private final String labelAllObjectsInPlace = getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL); // Tous les vins de l'emplacement
   private final String labelAllObjectsInPart = getLabel("Search.AllBottlesInPart", LabelProperty.PLURAL); // Tous les vins du lieu
   private final String labelAllObjectsInLine = getLabel("Search.AllBottlesInLine", LabelProperty.PLURAL); // Tous les vins de la ligne
@@ -92,8 +92,8 @@ public class PanelPlace extends JPanel implements IPlace {
     setModificationDetectionActive(false);
     initPlaceCombo();
     setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));
-    setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), getLabel("Infos217")));
-    add(new MyCellarLabel(LabelType.INFO, "208"));
+    setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), getLabel("Main.Storage")));
+    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Name"));
     add(labelNumPlace);
     add(labelLine);
     if (columnComboVisible) {

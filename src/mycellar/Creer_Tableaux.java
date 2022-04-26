@@ -71,7 +71,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   private final MyCellarButton preview = new MyCellarButton(LabelType.INFO_OTHER, "Main.OpenTheFile");
   private final char creerChar = getLabel("CREER").charAt(0);
   private final char ouvrirChar = getLabel("OUVRIR").charAt(0);
-  private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126");
+  private final MyCellarCheckBox selectall = new MyCellarCheckBox("Main.SelectAll");
   private final MyCellarButton m_jcb_options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
   private final JTable table;
   private boolean updateView;

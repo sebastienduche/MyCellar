@@ -299,13 +299,13 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     private static final long serialVersionUID = -3295046126691124148L;
     private final List<SupprimerLine> list;
     private final List<Column> columns;
-    private final Column colLine = new Column(Column.LINE, getLabel("Infos027"));
+    private final Column colLine = new Column(Column.LINE, getLabel("Storage.NumberLines"));
     private boolean isCaisse = false;
 
     private SupprimerModel(List<SupprimerLine> list) {
       this.list = list;
       columns = new LinkedList<>();
-      columns.add(new Column(Column.PART, getLabel("Infos081")));
+      columns.add(new Column(Column.PART, getLabel("Main.Storage")));
       columns.add(colLine);
       columns.add(new Column(Column.WINE, getLabel("Infos057")));
 

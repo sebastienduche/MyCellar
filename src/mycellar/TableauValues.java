@@ -17,13 +17,13 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 17/12/20
+ * @version 1.7
+ * @since 26/04/22
  */
 class TableauValues extends AbstractTableModel {
   public static final int ETAT = 0;
   static final long serialVersionUID = 220605;
-  private final String[] columnNames = {"", getLabel("Infos081"), getLabel("Infos027"), getLabel("Infos136", LabelProperty.PLURAL)};
+  private final String[] columnNames = {"", getLabel("Main.Storage"), getLabel("Storage.NumberLines"), getLabel("Storage.NumberOf", LabelProperty.PLURAL)};
 
   private final List<Rangement> list = new LinkedList<>();
   private final List<Boolean> listBoolean = new LinkedList<>();
@@ -48,7 +48,7 @@ class TableauValues extends AbstractTableModel {
         return rangement.getName();
       case 2:
         if (rangement.isSimplePlace()) {
-          return getLabel("Infos024");
+          return getLabel("CreateStorage.SimpleStorage");
         }
         int nombre_ligne = 0;
         for (int k = 0; k < rangement.getNbParts(); k++) {

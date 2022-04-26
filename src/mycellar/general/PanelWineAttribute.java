@@ -31,14 +31,14 @@ import static mycellar.ProgramConstants.EURO;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2021
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2021
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 25/04/22
+ * @version 0.9
+ * @since 26/04/22
  */
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;
@@ -67,13 +67,13 @@ public final class PanelWineAttribute extends JPanel {
     statusList.addItem(BottlesStatus.TOCHECK);
 
     setLayout(new MigLayout("", "[]30px[]30px[]", ""));
-    add(new MyCellarLabel(LabelType.INFO, "391"));
-    add(new MyCellarLabel(LabelType.INFO, "392"));
+    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Maturity"));
+    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Rating"));
     add(new MyCellarLabel(LabelType.INFO_OTHER, "AddVin.Color"), "wrap");
     add(maturity, "width min(200,40%)");
     add(parker, "width min(150,30%)");
     add(colorList, "wrap, width min(150,30%)");
-    add(new MyCellarLabel(LabelType.INFO, "135"), "wrap");
+    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Price"), "wrap");
     add(price, "width min(100,45%), split 2");
     add(new MyCellarLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, EURO)), "gapleft 5px");
     add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.NumberOfItems", LabelProperty.PLURAL, ""), "split, span 2");

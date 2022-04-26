@@ -569,7 +569,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     // differents menus
     menuFile.setText(getLabel("Infos104")); // Fichier
-    menuPlace.setText(getLabel("Infos081"));
+    menuPlace.setText(getLabel("Main.Storage"));
     menuWine.setText(getLabel("Main.Item", LabelProperty.SINGLE.withCapital())); // Vin
     menuTools.setText(getLabel("Infos246"));
     menuEdition.setText(getLabel("Infos245"));

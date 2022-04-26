@@ -38,14 +38,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2021
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2021
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 08/04/22
+ * @version 1.4
+ * @since 26/04/22
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -53,8 +53,8 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   private final MyCellarButton manageContenance = new MyCellarButton(LabelType.INFO, "400");
   private final JModifyTextField year = new JModifyTextField();
   private final JModifyComboBox<String> type = new JModifyComboBox<>();
-  private final MyCellarCheckBox noYear = new MyCellarCheckBox(LabelType.INFO, "399");
-  private final MyCellarCheckBox yearAuto = new MyCellarCheckBox("");
+  private final MyCellarCheckBox noYear = new MyCellarCheckBox("AddWine.NoYear");
+  private final MyCellarCheckBox yearAuto = new MyCellarCheckBox();
   private final int siecle = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
   private final JCompletionComboBox<String> name;
   private JCompletionComboBox<String> artist;
@@ -102,10 +102,10 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       };
     }
     setLayout(new MigLayout("", "[grow]30px[]10px[]10px[]30px[]10px[]", ""));
-    add(new MyCellarLabel(LabelType.INFO, "208"), "grow");
-    add(new MyCellarLabel(LabelType.INFO, "189"));
+    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Name"), "grow");
+    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Year"));
     add(yearAuto);
-    add(new MyCellarLabel(LabelType.INFO, "134"), "wrap");
+    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.CapacityOrSupport"), "wrap");
     add(name, "growx");
     add(year, "width min(100,10%)");
     add(noYear);

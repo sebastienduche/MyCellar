@@ -69,7 +69,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
   private static final long serialVersionUID = -5333602919958999440L;
   private static final int PRICE_BRACKET_DEFAULT = 50;
-  private final MyCellarLabel comboLabel = new MyCellarLabel(LabelType.INFO, "081", LabelProperty.SINGLE.withDoubleQuote());
+  private final MyCellarLabel comboLabel = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Storage", LabelProperty.SINGLE.withDoubleQuote());
   private final MyCellarLabel end = new MyCellarLabel();
   private final MyCellarLabel moy = new MyCellarLabel();
   private final MyCellarComboBox<MyCellarEnum> listOptions = new MyCellarComboBox<>();
@@ -482,7 +482,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listPlaces.setEnabled(false);
     if (selectedStatType.getValue() == StatType.PLACE.ordinal()) {
       listPlaces.setEnabled(true);
-      comboLabel.setText(getLabel("Infos081", LabelProperty.SINGLE.withDoubleQuote())); //"Rangement:
+      comboLabel.setText(getLabel("Main.Storage", LabelProperty.SINGLE.withDoubleQuote()));
       listPlaces.addItem(new PlaceComboItem(getLabel("Infos182"))); //"Tous les rangements
       Program.getPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
     } else if (selectedStatType.getValue() == StatType.HISTORY.ordinal()) {

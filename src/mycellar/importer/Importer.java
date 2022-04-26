@@ -99,7 +99,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private final char importChar = getLabel("IMPORT").charAt(0);
   private final char ouvrirChar = getLabel("OUVRIR").charAt(0);
   private final List<MyCellarComboBox<MyCellarFields>> comboBoxList = new ArrayList<>(IMPORT_COMBO_COUNT);
-  private final MyCellarCheckBox labelTitle = new MyCellarCheckBox(LabelType.INFO_OTHER, "Import.WithTitle");
+  private final MyCellarCheckBox labelTitle = new MyCellarCheckBox("Import.WithTitle");
   private final MyCellarLabel labelTitle2 = new MyCellarLabel(LabelType.INFO_OTHER, "Import.ChooseColumns");
   @SuppressWarnings("deprecation")
   private final MyCellarLabel label_progression = new MyCellarLabel();

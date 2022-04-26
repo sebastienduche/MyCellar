@@ -31,8 +31,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 20/01/22
+ * @version 1.9
+ * @since 26/04/22
  */
 
 public class Predicates {
@@ -386,7 +386,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("Infos134");
+      return getLabel("Main.CapacityOrSupport");
     }
 
     @Override

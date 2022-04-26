@@ -45,7 +45,7 @@ public final class XLSOptions extends JDialog {
 
   private static final long serialVersionUID = 5307297932934344545L;
   private final MyCellarSpinner titleSize = new MyCellarSpinner(1, 999);
-  private final MyCellarCheckBox myCellarCheckBox = new MyCellarCheckBox(INFO, "257");
+  private final MyCellarCheckBox myCellarCheckBox = new MyCellarCheckBox("Options.Bold");
   private final MyCellarCheckBox[] export;
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner textSize = new MyCellarSpinner(1, 999);
@@ -81,7 +81,7 @@ public final class XLSOptions extends JDialog {
     export = new MyCellarCheckBox[nb_colonnes];
     MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox(INFO_OTHER, "Main.Exported");
+      export[i] = new MyCellarCheckBox("Main.Exported");
       export[i].setSelected(1 == Program.getCaveConfigInt(SIZE_COL + i + "EXPORT_XLS", 0));
       colonnes[i] = new MyCellarLabel(columns.get(i).toString());
 

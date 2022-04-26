@@ -17,8 +17,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 29/12/20
+ * @version 1.2
+ * @since 26/04/22
  */
 
 class CreerRangementTableModel extends AbstractTableModel {
@@ -35,7 +35,7 @@ class CreerRangementTableModel extends AbstractTableModel {
 
   CreerRangementTableModel() {
     columns.add(new Column(NAME, getLabel("Infos029")));
-    columns.add(new Column(ROW, getLabel("Infos027")));
+    columns.add(new Column(ROW, getLabel("Storage.NumberLines")));
     columns.add(new Column(COLUMN, getLabel("Infos026")));
   }
 
@@ -88,7 +88,7 @@ class CreerRangementTableModel extends AbstractTableModel {
       }
       switch (col) {
         case NAME:
-          return getLabel("Infos029") + SPACE + p.getNum() + SPACE + getLabel("Infos027");
+          return getLabel("Infos029") + SPACE + p.getNum() + SPACE + getLabel("Storage.NumberLines");
         case ROW:
           return line;
         case COLUMN:
@@ -178,7 +178,7 @@ class CreerRangementTableModel extends AbstractTableModel {
     int index = 0;
     int numPart = 0;
     for (Part part : rows) {
-      if (sameColumnNumber) {
+      if (sameColumnNumber && part.getRowSize() > 0) {
         // Set the number of columns of the first line to all others lines
         final int col = part.getRow(0).getCol();
         for (Row r : part.getRows()) {

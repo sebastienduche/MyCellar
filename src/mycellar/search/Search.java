@@ -66,6 +66,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static mycellar.MyCellarImage.WORK;
 import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.FONT_PANEL;
@@ -80,8 +81,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.2
- * @since 08/04/22
+ * @version 23.3
+ * @since 26/04/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -100,9 +101,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final char deleteKey = getLabel("SUPPR").charAt(0);
   private final char exportKey = getLabel("EXPORT").charAt(0);
   private final MyCellarLabel resultInfoLabel = new MyCellarLabel();
-  private final MyCellarCheckBox selectAllCheck = new MyCellarCheckBox(LabelType.INFO, "126"); // Tout selectionner
-  private final MyCellarButton addToWorksheetButton = new MyCellarButton(MyCellarImage.WORK);
-  private final MyCellarCheckBox emptySearchCheck = new MyCellarCheckBox(LabelType.INFO, "275"); //Vider automatiquement
+  private final MyCellarCheckBox selectAllCheck = new MyCellarCheckBox("Main.SelectAll");
+  private final MyCellarButton addToWorksheetButton = new MyCellarButton(WORK);
+  private final MyCellarCheckBox emptySearchCheck = new MyCellarCheckBox("Search.ClearAll");
   private final MouseListener popupListener = new PopupListener();
   private final JTabbedPane tabbedPane = new JTabbedPane();
   private final PanelYear panelYear = new PanelYear();

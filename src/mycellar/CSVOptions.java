@@ -71,7 +71,7 @@ final class CSVOptions extends JDialog {
     export = new MyCellarCheckBox[nb_colonnes];
     final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox(LabelType.INFO_OTHER, "Main.Exported");
+      export[i] = new MyCellarCheckBox("Main.Exported");
       export[i].setSelected(Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0) == 1);
       colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
     }

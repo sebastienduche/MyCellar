@@ -18,20 +18,20 @@ import javax.swing.SwingUtilities;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2017</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2017
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.1
- * @since 04/01/22
+ * @version 5.2
+ * @since 26/04/22
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
   private static final long serialVersionUID = 3056306291164598750L;
 
-  protected final MyCellarLabel labelComment = new MyCellarLabel(LabelType.INFO, "137");
+  protected final MyCellarLabel labelComment = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Comment");
   protected final MyCellarLabel end = new MyCellarLabel(""); // Label pour les resultats
   protected final PanelPlace panelPlace = new PanelPlace();
   protected final PanelGeneral panelGeneral = new PanelGeneral();

@@ -41,8 +41,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 public final class PDFOptions extends JDialog {
   static final long serialVersionUID = 110805;
   private final MyCellarSpinner titleSize = new MyCellarSpinner(1, 99);
-  private final MyCellarCheckBox boldCheck = new MyCellarCheckBox(LabelType.INFO, "257");
-  private final MyCellarCheckBox borderCheck = new MyCellarCheckBox(LabelType.INFO, "264");
+  private final MyCellarCheckBox boldCheck = new MyCellarCheckBox("Options.Bold");
+  private final MyCellarCheckBox borderCheck = new MyCellarCheckBox("Options.Border");
   private final MyCellarCheckBox[] export;
   private final MyCellarSpinner[] col_size;
   private final JTextField pdf_title = new JTextField();
@@ -86,7 +86,7 @@ public final class PDFOptions extends JDialog {
     export = new MyCellarCheckBox[nb_colonnes];
     MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox(getLabel("Main.Exported"));
+      export[i] = new MyCellarCheckBox("Main.Exported");
       export[i].setSelected(1 == Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT", 0));
       col_size[i] = new MyCellarSpinner(1, 99);
       colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());

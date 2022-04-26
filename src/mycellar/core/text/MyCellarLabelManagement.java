@@ -25,8 +25,8 @@ import static mycellar.ProgramConstants.THREE_DOTS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 22/02/22
+ * @version 0.6
+ * @since 26/04/22
  */
 
 public class MyCellarLabelManagement {
@@ -64,6 +64,8 @@ public class MyCellarLabelManagement {
           return getLabel(code, labelProperty);
         case ERROR_OTHER:
           return getError(code, labelProperty);
+        case NONE:
+          return code;
         default:
           throw new RuntimeException("Not implemented for type: " + type);
       }
@@ -77,6 +79,8 @@ public class MyCellarLabelManagement {
           return MessageFormat.format(getLabel(code, labelProperty), labelValue).strip();
         case ERROR_OTHER:
           return MessageFormat.format(getError(code, labelProperty), labelValue).strip();
+        case NONE:
+          return code;
         default:
           throw new RuntimeException("Not implemented for type: " + type);
       }

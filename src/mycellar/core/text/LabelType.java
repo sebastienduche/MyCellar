@@ -4,5 +4,6 @@ public enum LabelType {
   INFO,
   ERROR,
   INFO_OTHER,
-  ERROR_OTHER
+  ERROR_OTHER,
+  NONE
 }

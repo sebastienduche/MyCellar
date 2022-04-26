@@ -28,6 +28,7 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
+import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.core.MyCellarSettings.ANNEE;
 import static mycellar.core.MyCellarSettings.DEVISE;
@@ -58,7 +59,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
   private static final long serialVersionUID = -4208146070057957967L;
   private final MyCellarLabel label_fic_bak;
   private final MyCellarComboBox<String> langue = new MyCellarComboBox<>();
-  private final MyCellarButton parcourir_excel = new MyCellarButton("..."); //Parcourir
+  private final MyCellarButton parcourir_excel = new MyCellarButton(OPEN);
   private final JTextField file_bak = new JTextField();
   private final JTextField devise = new JTextField();
   private final MyCellarCheckBox jcb_excel = new MyCellarCheckBox(getLabel("Infos234"), false);

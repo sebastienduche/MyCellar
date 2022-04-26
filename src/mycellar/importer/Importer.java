@@ -69,12 +69,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.CHAR_Q;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.COMMA;
 import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.IMPORT_COMBO_COUNT;
+import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.SLASH;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -94,10 +96,10 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
   static final long serialVersionUID = 280706;
   private final MyCellarButton importe = new MyCellarButton(LabelType.INFO_OTHER, "Import.Title");
-  private final MyCellarRadioButton type_txt = new MyCellarRadioButton(LabelType.INFO_OTHER, "Import.TxtCsv", true);
-  private final MyCellarRadioButton type_xls = new MyCellarRadioButton(LabelType.INFO_OTHER, "Import.Xls", false);
-  private final MyCellarRadioButton type_xml = new MyCellarRadioButton(LabelType.INFO_OTHER, "Import.Xml", false);
-  private final MyCellarRadioButton type_iTunes = new MyCellarRadioButton(LabelType.INFO_OTHER, "Import.iTunes", false);
+  private final MyCellarRadioButton type_txt = new MyCellarRadioButton("Import.TxtCsv", true);
+  private final MyCellarRadioButton type_xls = new MyCellarRadioButton("Import.Xls", false);
+  private final MyCellarRadioButton type_xml = new MyCellarRadioButton("Import.Xml", false);
+  private final MyCellarRadioButton type_iTunes = new MyCellarRadioButton("Import.iTunes", false);
   private final char importChar = getLabel("IMPORT").charAt(0);
   private final char ouvrirChar = getLabel("OUVRIR").charAt(0);
   private final List<MyCellarComboBox<MyCellarFields>> comboBoxList = new ArrayList<>(IMPORT_COMBO_COUNT);
@@ -114,7 +116,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     Debug("Constructor");
     MyCellarButton openit = new MyCellarButton(LabelType.INFO_OTHER, "Main.OpenTheFile");
     openit.setToolTipText(getLabel("Main.OpenTheFile"));
-    MyCellarButton parcourir = new MyCellarButton("...");
+    MyCellarButton parcourir = new MyCellarButton(OPEN);
     parcourir.setToolTipText(getLabel("Main.Browse"));
     importe.setMnemonic(importChar);
     openit.setMnemonic(ouvrirChar);
@@ -467,12 +469,12 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         List<Rangement> simplePlaces = Program.getSimplePlaces();
         for (i = 0; i < simplePlaces.size(); i++) {
           Rangement cave = simplePlaces.get(i);
-          titre_properties[i] = cave.getName();
+          titre_properties[i] = KEY_TYPE + cave.getName();
           key_properties[i] = MyCellarSettings.RANGEMENT_DEFAULT;
           default_value[i] = "false";
           type_objet[i] = MyOptions.MY_CELLAR_RADIO_BUTTON;
         }
-        titre_properties[i] = getLabel("Main.NewValue");
+        titre_properties[i] = "Main.NewValue";
         key_properties[i] = MyCellarSettings.RANGEMENT_DEFAULT;
         default_value[i] = "true";
         type_objet[i] = MyOptions.MY_CELLAR_RADIO_BUTTON;

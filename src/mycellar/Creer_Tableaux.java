@@ -43,6 +43,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -61,9 +62,9 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
   private final JTextField name = new JTextField();
-  private final MyCellarRadioButton type_XML = new MyCellarRadioButton(LabelType.INFO, "210", false);
-  private final MyCellarRadioButton type_HTML = new MyCellarRadioButton(LabelType.INFO, "211", true);
-  private final MyCellarRadioButton type_XLS = new MyCellarRadioButton(LabelType.INFO, "233", false);
+  private final MyCellarRadioButton type_XML = new MyCellarRadioButton("Export.Xml", false);
+  private final MyCellarRadioButton type_HTML = new MyCellarRadioButton("Export.Html", true);
+  private final MyCellarRadioButton type_XLS = new MyCellarRadioButton("Export.Xls", false);
   private final TableauValues tableauValues = new TableauValues();
   @SuppressWarnings("deprecation")
   private final MyCellarLabel end = new MyCellarLabel();
@@ -80,7 +81,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     Debug("Constructor");
     final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO, "095"); //"Nom du fichier genere:
     m_jcb_options.addActionListener(this::options_actionPerformed);
-    final MyCellarButton browse = new MyCellarButton("...");
+    final MyCellarButton browse = new MyCellarButton(OPEN);
     browse.addActionListener(this::browse_actionPerformed);
     final MyCellarButton parameter = new MyCellarButton(LabelType.INFO_OTHER, "Main.Parameters");
     parameter.addActionListener(this::param_actionPerformed);
@@ -319,9 +320,9 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   private void param_actionPerformed(ActionEvent e) {
     Debug("param_actionPerforming...");
     List<String> titre_properties = List.of(
-        getLabel("Infos210"),
-        getLabel("Infos211"),
-        getLabel("Infos233"));
+        "Export.Xml",
+        "Export.Html",
+        "Export.Xls");
     List<String> key_properties = List.of(
         MyCellarSettings.CREATE_TAB_DEFAULT,
         MyCellarSettings.CREATE_TAB_DEFAULT,

@@ -19,8 +19,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 22/02/22
+ * @version 1.0
+ * @since 26/04/22
  */
 
 public final class MyCellarButton extends JButton implements IMyCellarComponent {
@@ -31,12 +31,6 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
 
   public MyCellarButton(Icon icon) {
     super(icon);
-    setFont(FONT_PANEL);
-  }
-
-  @Deprecated
-  public MyCellarButton(String text) {
-    super(text);
     setFont(FONT_PANEL);
   }
 

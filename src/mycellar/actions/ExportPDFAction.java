@@ -19,7 +19,7 @@ public class ExportPDFAction extends AbstractAction {
 
   public ExportPDFAction() {
     super("", MyCellarImage.PDF);
-    putValue(SHORT_DESCRIPTION, MyCellarLabelManagement.getLabel("Infos248"));
+    putValue(SHORT_DESCRIPTION, MyCellarLabelManagement.getLabel("Export.Pdf"));
   }
 
   @Override

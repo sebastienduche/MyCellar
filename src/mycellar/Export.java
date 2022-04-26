@@ -50,6 +50,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -73,14 +74,14 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   private static final char EXPORT = getLabel("EXPORT").charAt(0);
   private final MyCellarButton valider = new MyCellarButton(LabelType.INFO, "153");
   private final JTextField file = new JTextField();
-  private final MyCellarButton browse = new MyCellarButton("...");
+  private final MyCellarButton browse = new MyCellarButton(OPEN);
   private final MyCellarButton parameters = new MyCellarButton(LabelType.INFO_OTHER, "Main.Parameters");
   private final JProgressBar progressBar = new JProgressBar();
-  private final MyCellarRadioButton MyCellarRadioButtonXML = new MyCellarRadioButton(LabelType.INFO, "210", true);
-  private final MyCellarRadioButton MyCellarRadioButtonHTML = new MyCellarRadioButton(LabelType.INFO, "211", false);
-  private final MyCellarRadioButton MyCellarRadioButtonCSV = new MyCellarRadioButton(LabelType.INFO, "212", false);
-  private final MyCellarRadioButton MyCellarRadioButtonXLS = new MyCellarRadioButton(LabelType.INFO, "233", false);
-  private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton(LabelType.INFO, "248", false);
+  private final MyCellarRadioButton MyCellarRadioButtonXML = new MyCellarRadioButton("Export.Xml", true);
+  private final MyCellarRadioButton MyCellarRadioButtonHTML = new MyCellarRadioButton("Export.Html", false);
+  private final MyCellarRadioButton MyCellarRadioButtonCSV = new MyCellarRadioButton("Export.Csv", false);
+  private final MyCellarRadioButton MyCellarRadioButtonXLS = new MyCellarRadioButton("Export.Xls", false);
+  private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton("Export.Pdf", false);
   private final MyCellarLabel end = new MyCellarLabel();
   private final MyCellarButton openit = new MyCellarButton(LabelType.INFO_OTHER, "Main.OpenTheFile");
   private final MyCellarButton options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
@@ -426,11 +427,11 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
   private void param_actionPerformed() {
     List<String> titre_properties = List.of(
-        getLabel("Infos210"),
-        getLabel("Infos211"),
-        getLabel("Infos212"),
-        getLabel("Infos233"),
-        getLabel("Infos248"));
+        "Export.Xml",
+        "Export.Html",
+        "Export.Csv",
+        "Export.Xls",
+        "Export.Pdf");
     ArrayList<String> default_value = new ArrayList<>(List.of("false", "false", "false", "false", "false"));
     List<String> key_properties = List.of(MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT,
         MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT);

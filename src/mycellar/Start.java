@@ -577,7 +577,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     // differents choix de chaque menu
     menuShowWorksheet.setText(getLabel("ShowFile.Worksheet"));
     menuSearch.setText(getLabel("Main.tabSearchButton"));
-    menuQuit.setText(getLabel("Infos003"));
+    menuQuit.setText(getLabel("Main.Exit"));
     menuHelp.setText(getLabel("Infos111"));
 
     about.setText(getLabel("Infos199")); // A Propos

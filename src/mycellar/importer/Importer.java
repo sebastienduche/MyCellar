@@ -41,16 +41,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -71,7 +68,6 @@ import java.util.Objects;
 
 import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
-import static mycellar.ProgramConstants.CHAR_Q;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.COMMA;
 import static mycellar.ProgramConstants.DOUBLE_DOT;
@@ -148,8 +144,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     });
 
     file.addMouseListener(new PopupListener());
-    JMenuItem quitter = new JMenuItem(getLabel("Infos003"));
-    quitter.setAccelerator(KeyStroke.getKeyStroke(CHAR_Q, InputEvent.CTRL_DOWN_MASK));
 
     setLayout(new MigLayout("", "grow", ""));
     JPanel panelType = new JPanel();
@@ -342,7 +336,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         //Erreur le filename ne doit pas etre vide
         Debug("ERROR: filename cannot be empty");
         resetLabelProgress();
-        Erreur.showSimpleErreur(getError("Error019"));
+        Erreur.showSimpleErreur(getError("Error.fileNameShouldntBeEmpty"));
         importe.setEnabled(true);
         return;
       }
@@ -714,7 +708,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     try {
       list = new ItunesLibraryImporter().loadItunesLibrary(f);
     } catch (NoITunesFileException e) {
-      Debug("ERROR" + e);
+      Debug("ERROR:" + e);
       Erreur.showSimpleErreur(getError("Import.NotITunesFile"));
       resetLabelProgress();
       importe.setEnabled(true);

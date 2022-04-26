@@ -38,7 +38,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 0.8
- * @since 13/04/22
+ * @since 25/04/22
  */
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;

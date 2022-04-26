@@ -44,14 +44,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2004
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2004
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.1
- * @since 08/04/22
+ * @version 13.2
+ * @since 26/04/22
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -83,7 +83,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     buttonResetMessageDialog = new MyCellarButton(LabelType.INFO, "160");
     MyCellarButton buttonManageContenance = new MyCellarButton(LabelType.INFO, "400", new ManageCapacityAction());
     MyCellarButton valider = new MyCellarButton(LabelType.INFO, "315");
-    parcourir_excel.setToolTipText(getLabel("Infos157"));
+    parcourir_excel.setToolTipText(getLabel("Main.Browse"));
     jcb_annee_control.setText(getLabel("Infos169"));
     setLabels();
 
@@ -170,7 +170,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 
   private void setLabels() {
     jcb_excel.setText(getLabel("Infos169"));
-    parcourir_excel.setToolTipText(getLabel("Infos157"));
+    parcourir_excel.setToolTipText(getLabel("Main.Browse"));
     jcb_annee_control.setText(getLabel("Infos169"));
   }
 

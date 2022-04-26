@@ -58,14 +58,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2005
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2005
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.9
- * @since 08/04/22
+ * @version 16.0
+ * @since 26/04/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -166,7 +166,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       panelModify.add(comboPlace);
       add(panelModify, "span 2, wrap");
     }
-    add(new MyCellarLabel(INFO, "020"), "span 2, split 3"); // Place name
+    add(new MyCellarLabel(INFO_OTHER, "Import.StorageName"), "span 2, split 3");
     add(nom_obj, "growx");
     add(m_caisse_chk, "wrap");
 

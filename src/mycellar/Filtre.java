@@ -10,14 +10,14 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2011</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2011
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 14/12/21
+ * @version 0.9
+ * @since 26/04/22
  */
 
 public class Filtre extends FileFilter {
@@ -36,7 +36,7 @@ public class Filtre extends FileFilter {
   public static final Filtre FILTRE_XLSX = new Filtre(EXTENSION_XLSX, getLabel("Infos235"));
   public static final Filtre FILTRE_ODS = new Filtre(EXTENSION_ODS, getLabel("Infos336"));
   public static final Filtre FILTRE_HTML = new Filtre(EXTENSION_HTML, getLabel("Infos205"));
-  public static final Filtre FILTRE_XML = new Filtre(EXTENSION_XML, getLabel("Infos203"));
+  public static final Filtre FILTRE_XML = new Filtre(EXTENSION_XML, getLabel("Import.Xml"));
   public static final Filtre FILTRE_PDF = new Filtre(EXTENSION_PDF, getLabel("Infos249"));
   public static final Filtre FILTRE_CSV = new Filtre(EXTENSION_CSV, getLabel("Infos202"));
   public static final Filtre FILTRE_TXT = new Filtre(EXTENSION_TXT, getLabel("Infos201"));

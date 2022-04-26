@@ -57,14 +57,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2004
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2004
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.4
- * @since 08/04/22
+ * @version 10.5
+ * @since 26/04/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -82,7 +82,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   private final MyCellarRadioButton MyCellarRadioButtonXLS = new MyCellarRadioButton(LabelType.INFO, "233", false);
   private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton(LabelType.INFO, "248", false);
   private final MyCellarLabel end = new MyCellarLabel();
-  private final MyCellarButton openit = new MyCellarButton(LabelType.INFO, "152");
+  private final MyCellarButton openit = new MyCellarButton(LabelType.INFO_OTHER, "Main.OpenTheFile");
   private final MyCellarButton options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
   private final JMenuItem param = new MyCellarMenuItem(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
   private final List<? extends MyCellarObject> myCellarObjects;

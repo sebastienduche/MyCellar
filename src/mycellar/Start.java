@@ -95,8 +95,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.5
- * @since 08/04/22
+ * @version 31.6
+ * @since 26/04/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -607,9 +607,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuCopy.setText(getLabel("Infos242"));
     menuPaste.setText(getLabel("Infos243"));
 
-    importButton.setText(getLabel("Infos011")); // Importer
+    importButton.setText(getLabel("Import.Title"));
     exportButton.setText(getLabel("Infos125"));
-    createButton.setText(getLabel("Infos010"));
+    createButton.setText(getLabel("CreateStorage.Title"));
     statsButton.setText(getLabel("Infos009"));
     managePlaceButton.setText(getLabel("Main.ManagePlace"));
     worksheetButton.setText(getLabel("ShowFile.Worksheet"));
@@ -1250,11 +1250,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class AddPlaceAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Infos010";
+    private static final String LABEL = "CreateStorage.Title";
 
     private AddPlaceAction() {
       super(LabelType.INFO, "109", MyCellarImage.PLACE);
-      setDescriptionLabel(LabelType.INFO, "010");
+      setDescriptionLabel(LabelType.INFO_OTHER, LABEL);
     }
 
     @Override
@@ -1347,11 +1347,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class ImportFileAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Infos011";
+    private static final String LABEL = "Import.Title";
 
     private ImportFileAction() {
       super(LabelType.INFO, "107", MyCellarImage.IMPORT);
-      setDescriptionLabel(LabelType.INFO, "011");
+      setDescriptionLabel(LabelType.INFO_OTHER, LABEL);
     }
 
     @Override

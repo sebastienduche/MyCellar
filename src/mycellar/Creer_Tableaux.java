@@ -49,14 +49,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2005
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2005
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.6
- * @since 24/02/22
+ * @version 8.7
+ * @since 26/04/22
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
@@ -67,7 +67,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   private final TableauValues tableauValues = new TableauValues();
   @SuppressWarnings("deprecation")
   private final MyCellarLabel end = new MyCellarLabel();
-  private final MyCellarButton preview = new MyCellarButton(LabelType.INFO, "152");
+  private final MyCellarButton preview = new MyCellarButton(LabelType.INFO_OTHER, "Main.OpenTheFile");
   private final char creerChar = getLabel("CREER").charAt(0);
   private final char ouvrirChar = getLabel("OUVRIR").charAt(0);
   private final MyCellarCheckBox selectall = new MyCellarCheckBox(LabelType.INFO, "126");

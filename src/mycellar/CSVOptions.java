@@ -28,14 +28,14 @@ import static mycellar.ProgramConstants.isVK_O;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2004</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2004
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 16/12/21
+ * @version 2.7
+ * @since 26/04/22
  */
 final class CSVOptions extends JDialog {
   static final long serialVersionUID = 230705;
@@ -65,13 +65,13 @@ final class CSVOptions extends JDialog {
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setLayout(new MigLayout("", "grow", ""));
     panel.setFont(FONT_PANEL);
-    MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO, "034"); //Separateur
+    MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO_OTHER, "Import.Separator");
     listColumns = MyCellarFields.getFieldsList();
     nb_colonnes = listColumns.size();
     export = new MyCellarCheckBox[nb_colonnes];
     final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox(LabelType.INFO, "261");
+      export[i] = new MyCellarCheckBox(LabelType.INFO_OTHER, "Main.Exported");
       export[i].setSelected(Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0) == 1);
       colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
     }
@@ -79,10 +79,10 @@ final class CSVOptions extends JDialog {
     jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));
     jPanel2.setFont(FONT_PANEL);
     MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
-    separator.addItem(getLabel("Infos002"));
-    separator.addItem(getLabel("Infos042"));
-    separator.addItem(getLabel("Infos043"));
-    separator.addItem(getLabel("Infos044"));
+    separator.addItem(getLabel("CSV.SeparatorComma"));
+    separator.addItem(getLabel("CSV.SeparatorDotComma"));
+    separator.addItem(getLabel("CSV.SeparatorDoubleDot"));
+    separator.addItem(getLabel("CSV.SeparatorSlash"));
     String key = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
     switch (key) {
       case COLUMNS_SEPARATOR:

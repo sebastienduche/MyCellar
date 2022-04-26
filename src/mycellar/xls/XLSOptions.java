@@ -32,14 +32,14 @@ import static mycellar.core.text.LabelType.INFO_OTHER;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2004</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2004
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 16/04/21
+ * @version 2.3
+ * @since 26/04/22
  */
 public final class XLSOptions extends JDialog {
 
@@ -81,7 +81,7 @@ public final class XLSOptions extends JDialog {
     export = new MyCellarCheckBox[nb_colonnes];
     MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox(INFO, "261");
+      export[i] = new MyCellarCheckBox(INFO_OTHER, "Main.Exported");
       export[i].setSelected(1 == Program.getCaveConfigInt(SIZE_COL + i + "EXPORT_XLS", 0));
       colonnes[i] = new MyCellarLabel(columns.get(i).toString());
 

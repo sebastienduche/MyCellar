@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 04/01/22
+ * @version 1.7
+ * @since 26/04/22
  */
 
 public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -74,7 +74,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   }
 
   private void add() {
-    String s = toCleanString(JOptionPane.showInputDialog(Start.getInstance(), getLabel("Infos289"), getLabel("Infos402"), JOptionPane.QUESTION_MESSAGE));
+    String s = toCleanString(JOptionPane.showInputDialog(Start.getInstance(), getLabel("Main.NewValue"), getLabel("Infos402"), JOptionPane.QUESTION_MESSAGE));
     if (!s.isEmpty()) {
       Program.setModified();
       model.addValue(s);

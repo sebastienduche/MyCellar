@@ -16,8 +16,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 26/04/22
+ * @version 1.0
+ * @since 29/04/22
  */
 
 public class Filtre extends FileFilter {
@@ -31,15 +31,15 @@ public class Filtre extends FileFilter {
   public static final String EXTENSION_PDF = "pdf";
   public static final String EXTENSION_CSV = "csv";
   public static final String EXTENSION_TXT = "txt";
-  public static final Filtre FILTRE_SINFO = new Filtre(EXTENSION_SINFO, getLabel("Infos313"));
-  public static final Filtre FILTRE_XLS = new Filtre(EXTENSION_XLS, getLabel("Infos235"));
-  public static final Filtre FILTRE_XLSX = new Filtre(EXTENSION_XLSX, getLabel("Infos235"));
-  public static final Filtre FILTRE_ODS = new Filtre(EXTENSION_ODS, getLabel("Infos336"));
-  public static final Filtre FILTRE_HTML = new Filtre(EXTENSION_HTML, getLabel("Infos205"));
-  public static final Filtre FILTRE_XML = new Filtre(EXTENSION_XML, getLabel("Import.Xml"));
-  public static final Filtre FILTRE_PDF = new Filtre(EXTENSION_PDF, getLabel("Infos249"));
-  public static final Filtre FILTRE_CSV = new Filtre(EXTENSION_CSV, getLabel("Infos202"));
-  public static final Filtre FILTRE_TXT = new Filtre(EXTENSION_TXT, getLabel("Infos201"));
+  public static final Filtre FILTRE_SINFO = new Filtre(EXTENSION_SINFO, getLabel("Filter.sinfo"));
+  public static final Filtre FILTRE_XLS = new Filtre(EXTENSION_XLS, getLabel("Filter.xls"));
+  public static final Filtre FILTRE_XLSX = new Filtre(EXTENSION_XLSX, getLabel("Filter.xls"));
+  public static final Filtre FILTRE_ODS = new Filtre(EXTENSION_ODS, getLabel("Filter.ods"));
+  public static final Filtre FILTRE_HTML = new Filtre(EXTENSION_HTML, getLabel("Filter.html"));
+  public static final Filtre FILTRE_XML = new Filtre(EXTENSION_XML, getLabel("Filter.xml"));
+  public static final Filtre FILTRE_PDF = new Filtre(EXTENSION_PDF, getLabel("Filter.pdf"));
+  public static final Filtre FILTRE_CSV = new Filtre(EXTENSION_CSV, getLabel("Filter.csv"));
+  public static final Filtre FILTRE_TXT = new Filtre(EXTENSION_TXT, getLabel("Filter.txt"));
 
   private final List<String> suffixes;
   private final String description;

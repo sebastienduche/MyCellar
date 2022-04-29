@@ -73,8 +73,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.7
- * @since 08/04/22
+ * @version 4.8
+ * @since 29/04/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -149,7 +149,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
             rangementCells.add(cell);
             panelCellar.add(cell, "growx, wrap");
           }
-          placePanel.add(new MyCellarLabel(getLabel("Infos029") + SPACE + empl), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarLabel(getLabel("Storage.Shelve") + SPACE + empl), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 
@@ -185,7 +185,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
               panelCellar.add(panel);
             }
           }
-          placePanel.add(new MyCellarLabel(getLabel("Infos029") + SPACE + (i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarLabel(getLabel("Storage.Shelve") + SPACE + (i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 
@@ -374,6 +374,8 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 
 final class RangementCell extends JPanel {
   private static final long serialVersionUID = -3180057277279430308L;
+  public static final int WIDTH_SIMPLE_PLACE = 400;
+  public static final int WIDTH_COMPLEX_PLACE = 100;
   private final boolean stock;
   private final JToggleButton select = new JToggleButton();
   private final int placeNum;
@@ -396,7 +398,7 @@ final class RangementCell extends JPanel {
     addMouseListener(listener);
     setTransferHandler(handler);
     setBorder(BorderFactory.createEtchedBorder());
-    int width = place.isSimplePlace() ? 400 : 100;
+    int width = place.isSimplePlace() ? WIDTH_SIMPLE_PLACE : WIDTH_COMPLEX_PLACE;
     setLayout(new MigLayout("", "0px[align left, ::" + width + ", grow]0px", "0px[align center, 20::, grow]0px"));
   }
 
@@ -418,7 +420,7 @@ final class RangementCell extends JPanel {
     this.parent = parent;
     stock = false;
     setBorder(BorderFactory.createEtchedBorder());
-    int width = place.isSimplePlace() ? 400 : 100;
+    int width = place.isSimplePlace() ? WIDTH_SIMPLE_PLACE : WIDTH_COMPLEX_PLACE;
     setLayout(new MigLayout("", "0px[align left, ::" + width + ", grow]0px", "0px[align center, 20::, grow]0px"));
     select.setText(getLabel("ManagePlace.Select"));
   }
@@ -597,7 +599,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
 
   @Override
   public String toString() {
-    return "BouteilleLabel [bouteille=" + myCellarObject + "]";
+    return "BouteilleLabel [object=" + myCellarObject + "]";
   }
 }
 

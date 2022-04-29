@@ -61,8 +61,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.5
- * @since 08/04/22
+ * @version 9.6
+ * @since 29/04/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -158,7 +158,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       label_final.setForeground(Color.red);
       label_final.setFont(FONT_DIALOG_SMALL);
       label_final.setHorizontalAlignment(SwingConstants.CENTER);
-      Debug("There is (are) " + nb_case_use_total + " bottle(s) in this place!");
+      Debug("There is (are) " + nb_case_use_total + " object(s) in this place!");
       if (nb_case_use_total == 0) {
         label_final.setText(getLabel("PlaceManagement.emptyPlace"));
       } else {
@@ -185,44 +185,43 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         Erreur.showSimpleErreur(getError("SupprimerRangement.ForbiddenToDelete"));
         return;
       }
-      final Rangement cave = (Rangement) choix.getSelectedItem();
-      if (cave == null) {
+      final Rangement rangement = (Rangement) choix.getSelectedItem();
+      if (rangement == null) {
         return;
       }
       String error;
       if (nb_case_use_total == 0) {
-        String tmp = cave.getName();
-        Debug("MESSAGE: Delete this place: " + tmp + "?");
-        error = MessageFormat.format(getError("Error139"), tmp); //Voulez vous supprimer le rangement
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          removeSelectedPlace(cave, num_select);
+        String name = rangement.getName();
+        Debug("MESSAGE: Delete this place: " + name + "?");
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(getError("Error.questionDeleteStorage"), name), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          removeSelectedPlace(rangement, num_select);
         }
       } else {
-        String nom = cave.getName();
+        String nom = rangement.getName();
         if (nb_case_use_total == 1) {
           error = MessageFormat.format(getLabel("DeletePlace.still1ItemIn", LabelProperty.SINGLE), nom);
         } else {
           error = MessageFormat.format(getLabel("DeletePlace.stillNItemsIn", LabelProperty.PLURAL), nb_case_use_total, nom);
         }
         // Delete place and objects in the place
-        String erreur_txt2 = getError("Error039", LabelProperty.THE_PLURAL);
-        Debug("MESSAGE: Delete this place " + nom + " and all bottle(s) (" + nb_case_use_total + ")?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        String errorPart2 = getError("Error.questionDeleteAllIncludedObjects", LabelProperty.THE_PLURAL);
+        Debug("MESSAGE: Delete this place " + nom + " and all object(s) (" + nb_case_use_total + ")?");
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + errorPart2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           new MyCellarSwingWorker() {
             @Override
             protected void done() {
               //Suppression des bouteilles presentes dans le rangement
-              List<MyCellarObject> bottleList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(cave.getName())).collect(Collectors.toList());
-              for (MyCellarObject b : bottleList) {
+              List<MyCellarObject> myCellarObjectList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(rangement.getName())).collect(Collectors.toList());
+              for (MyCellarObject b : myCellarObjectList) {
                 getStorage().addHistory(HistoryState.DEL, b);
                 try {
-                  cave.removeObject(b);
+                  rangement.removeObject(b);
                 } catch (MyCellarException myCellarException) {
                   Program.showException(myCellarException);
                 }
                 setToTrash(b);
               }
-              removeSelectedPlace(cave, num_select);
+              removeSelectedPlace(rangement, num_select);
             }
           }.execute();
 
@@ -397,14 +396,14 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
 
     String getNumPartLabel() {
-      return getLabel("Infos029") + SPACE + numPart;
+      return getLabel("Storage.Shelve") + SPACE + numPart;
     }
 
     String getNbLineLabel() {
       if (nbLine <= 1) {
-        return MessageFormat.format(getLabel("Infos060"), nbLine);
+        return MessageFormat.format(getLabel("Storage.nbLine"), nbLine);
       }
-      return MessageFormat.format(getLabel("Infos061"), nbLine);
+      return MessageFormat.format(getLabel("Storage.nbLines"), nbLine);
     }
 
     String getNbWineLabel() {

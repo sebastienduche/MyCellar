@@ -18,8 +18,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 26/04/22
+ * @version 1.3
+ * @since 29/04/22
  */
 
 class CreerRangementTableModel extends AbstractTableModel {
@@ -35,9 +35,9 @@ class CreerRangementTableModel extends AbstractTableModel {
   private boolean sameColumnNumber = false;
 
   CreerRangementTableModel() {
-    columns.add(new Column(NAME, getLabel("Infos029")));
+    columns.add(new Column(NAME, getLabel("Storage.Shelve")));
     columns.add(new Column(ROW, getLabel("Storage.NumberLines")));
-    columns.add(new Column(COLUMN, getLabel("Infos026")));
+    columns.add(new Column(COLUMN, getLabel("Storage.NumberColumns")));
   }
 
   @Override
@@ -71,7 +71,7 @@ class CreerRangementTableModel extends AbstractTableModel {
       }
       switch (col) {
         case NAME:
-          return getLabel("Infos029") + SPACE + p.getNum();
+          return getLabel("Storage.Shelve") + SPACE + p.getNum();
         case ROW:
           return p.getRows().size();
         case COLUMN:
@@ -91,7 +91,7 @@ class CreerRangementTableModel extends AbstractTableModel {
       }
       switch (col) {
         case NAME:
-          return getLabel("Infos029") + SPACE + p.getNum() + SPACE + getLabel("Storage.NumberLines");
+          return getLabel("Storage.Shelve") + SPACE + p.getNum() + SPACE + getLabel("Storage.NumberLines");
         case ROW:
           return line;
         case COLUMN:

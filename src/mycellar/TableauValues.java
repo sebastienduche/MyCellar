@@ -11,14 +11,14 @@ import java.util.List;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2003
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 26/04/22
+ * @version 1.8
+ * @since 29/04/22
  */
 class TableauValues extends AbstractTableModel {
   public static final int ETAT = 0;
@@ -55,9 +55,9 @@ class TableauValues extends AbstractTableModel {
           nombre_ligne += rangement.getLineCountAt(k);
         }
         if (nombre_ligne <= 1) {
-          return MessageFormat.format(getLabel("Infos060"), nombre_ligne);
+          return MessageFormat.format(getLabel("Storage.nbLine"), nombre_ligne);
         }
-        return MessageFormat.format(getLabel("Infos061"), nombre_ligne);
+        return MessageFormat.format(getLabel("Storage.nbLines"), nombre_ligne);
       case 3:
         int nombre_vin = 0;
         if (rangement.isSimplePlace()) {

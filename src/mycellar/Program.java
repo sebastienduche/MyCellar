@@ -70,6 +70,7 @@ import java.util.Scanner;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static mycellar.Filtre.FILTRE_TXT;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.BOUTEILLES_XML;
@@ -100,14 +101,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2003
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2003
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.1
- * @since 08/04/22
+ * @version 28.2
+ * @since 29/04/22
  */
 
 public final class Program {
@@ -659,7 +660,7 @@ public final class Program {
     }
 
     if (!file.exists()) {
-      Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), file.getAbsolutePath())); // File not found
+      Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), file.getAbsolutePath()));
 
       putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, list.pop());
       putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, list.pop());
@@ -727,7 +728,7 @@ public final class Program {
     boolean bSave = false;
     File newFile = null;
     if (myCellarFile.exists() && isModified()) {
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("Error199"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("SaveModifications"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         bSave = true;
         if (!myCellarFile.isFileSavable()) {
           JFileChooser boiteFichier = new JFileChooser();
@@ -1046,7 +1047,7 @@ public final class Program {
     if (check) {
       if (!file.exists() || file.isDirectory()) {
         //Fichier non trouve Verifier le chemin
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), filename), getError("Error022"));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), filename), getError("Error.checkFilePath"));
         return false;
       }
     }
@@ -1232,7 +1233,7 @@ public final class Program {
     if (f == null || !f.exists()) {
       return "";
     }
-    if (!f.getName().toLowerCase().endsWith(".txt")) {
+    if (!f.getName().toLowerCase().endsWith(FILTRE_TXT.toString())) {
       return "";
     }
     Debug("Program: Reading first line of file " + f.getName());

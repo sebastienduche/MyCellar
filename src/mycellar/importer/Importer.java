@@ -85,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.3
- * @since 26/04/22
+ * @version 15.4
+ * @since 29/04/22
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -94,7 +94,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private final MyCellarButton importe = new MyCellarButton(LabelType.INFO_OTHER, "Import.Title");
   private final MyCellarRadioButton type_txt = new MyCellarRadioButton("Import.TxtCsv", true);
   private final MyCellarRadioButton type_xls = new MyCellarRadioButton("Import.Xls", false);
-  private final MyCellarRadioButton type_xml = new MyCellarRadioButton("Import.Xml", false);
+  private final MyCellarRadioButton type_xml = new MyCellarRadioButton("Filter.xml", false);
   private final MyCellarRadioButton type_iTunes = new MyCellarRadioButton("Import.iTunes", false);
   private final char importChar = getLabel("IMPORT").charAt(0);
   private final char ouvrirChar = getLabel("OUVRIR").charAt(0);
@@ -367,7 +367,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         resetLabelProgress();
         Debug("ERROR: File not found: " + filename);
         //Fichier non trouve Verifier le chemin
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), filename), getError("Error022"));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), filename), getError("Error.checkFilePath"));
         importe.setEnabled(true);
         return;
       }
@@ -679,7 +679,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       resetLabelProgress();
       Debug("ERROR: File not found: " + nom);
       //Fichier non trouve. Verifier le chemin
-      Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), nom), getError("Error022"));
+      Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), nom), getError("Error.checkFilePath"));
       importe.setEnabled(true);
       return false;
     } catch (Exception e) {

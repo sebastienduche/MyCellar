@@ -33,14 +33,14 @@ import static mycellar.ProgramConstants.FR;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2017</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2017
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 22/10/21
+ * @version 1.6
+ * @since 03/05/22
  */
 public final class PanelVignobles extends JPanel {
 
@@ -169,7 +169,7 @@ public final class PanelVignobles extends JPanel {
       }
     });
 
-    MyCellarButton manageVineyardButton = new MyCellarButton(LabelType.INFO, "165", new ManageVineyardAction());
+    MyCellarButton manageVineyardButton = new MyCellarButton("Main.VineyardManagement", new ManageVineyardAction());
     manageVineyardButton.setVisible(manageButton);
     add(labelCountry, "w 150:150:150, split 2");
     add(labelVignoble, "wrap");

@@ -28,7 +28,6 @@ import static mycellar.core.MyCellarSettings.TEXT_SIZE_XLS;
 import static mycellar.core.MyCellarSettings.TITLE_SIZE_XLS;
 import static mycellar.core.MyCellarSettings.XLS_TITLE;
 import static mycellar.core.text.LabelType.INFO;
-import static mycellar.core.text.LabelType.INFO_OTHER;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
@@ -38,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 26/04/22
+ * @version 2.4
+ * @since 03/05/22
  */
 public final class XLSOptions extends JDialog {
 
@@ -89,9 +88,9 @@ public final class XLSOptions extends JDialog {
     JPanel panel1 = new JPanel();
     panel1.setLayout(new MigLayout("", "[grow][grow]", ""));
     panel1.setFont(FONT_PANEL);
-    MyCellarButton valider = new MyCellarButton(INFO_OTHER, "Main.OK");
+    MyCellarButton valider = new MyCellarButton("Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(INFO_OTHER, "Main.cancel");
+    MyCellarButton annuler = new MyCellarButton("Main.cancel");
     annuler.addActionListener((e) -> dispose());
     MyCellarLabel MyCellarLabel6 = new MyCellarLabel("pt");
     MyCellarLabel MyCellarLabel7 = new MyCellarLabel(INFO, "256"); //Taille du texte

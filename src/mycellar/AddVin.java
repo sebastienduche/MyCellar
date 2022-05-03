@@ -12,7 +12,6 @@ import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
@@ -46,8 +45,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.6
- * @since 08/04/22
+ * @version 30.7
+ * @since 03/05/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -64,9 +63,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Debug("Constructor");
     myCellarObject = null;
     panelGeneral.setMyCellarObject(null);
-    addButton = new MyCellarButton(LabelType.INFO, "071", new AddAction());
+    addButton = new MyCellarButton("Main.Add", new AddAction());
     addButton.setMnemonic(ajouterChar);
-    cancelButton = new MyCellarButton(LabelType.INFO_OTHER, "Main.cancel", new CancelAction());
+    cancelButton = new MyCellarButton("Main.cancel", new CancelAction());
 
     panelGeneral.setModificationDetectionActive(false);
     panelWineAttribute.setModificationDetectionActive(false);
@@ -148,7 +147,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
     panelPlace.resetValues();
     panelPlace.setBeforeObjectLabels(myCellarObject);
-    addButton.setText(getLabel("Infos079"));
+    addButton.setText(getLabel("Main.Modify"));
     rangementInModif = myCellarObject.getRangement();
     end.setText(getLabel("Infos092")); // Saisir les modifications
     Debug("Set Bottle... Done");
@@ -729,7 +728,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       enableAll(true);
       isModify = false;
       panelPlace.setBeforeLabelsVisible(false);
-      addButton.setText(getLabel("Infos071"));
+      addButton.setText(getLabel("Main.Add"));
     } else if (listVin.isEmpty()) {
       reInitAddVin();
     }
@@ -752,7 +751,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     enableAll(true);
     isModify = false;
     panelPlace.setBeforeLabelsVisible(false);
-    addButton.setText(getLabel("Infos071"));
+    addButton.setText(getLabel("Main.Add"));
   }
 
   private boolean runExit() {

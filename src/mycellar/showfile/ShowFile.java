@@ -80,14 +80,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 1998</p>
- * <p>Societe : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 1998
+ * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.5
- * @since 08/04/22
+ * @version 11.6
+ * @since 03/05/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -100,13 +100,13 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   @SuppressWarnings("deprecation")
   private final MyCellarLabel titleLabel = new MyCellarLabel();
   private final MyCellarLabel labelCount = new MyCellarLabel(LabelType.INFO_OTHER, "Main.NumberOfItems", LabelProperty.PLURAL, "");
-  private final MyCellarButton createPlacesButton = new MyCellarButton(LabelType.INFO, "267", new CreatePlacesAction());
-  private final MyCellarButton manageColumnsButton = new MyCellarButton(LabelType.INFO_OTHER, "Main.Columns", new ManageColumnsAction());
+  private final MyCellarButton createPlacesButton = new MyCellarButton("Main.StorageToCreate", new CreatePlacesAction());
+  private final MyCellarButton manageColumnsButton = new MyCellarButton("Main.Columns", new ManageColumnsAction());
   private final MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
-  private final MyCellarButton modifyButton = new MyCellarButton(LabelType.INFO, "079", new ModifyBottlesAction());
-  private final MyCellarButton reloadButton = new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.reloadErrors", new ReloadErrorsAction());
-  private final MyCellarButton removeFromWorksheetButton = new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.removeFromWorksheet", new RemoveFromWorksheetAction());
-  private final MyCellarButton clearWorksheetButton = new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.clearWorksheet", new ClearWorksheetAction());
+  private final MyCellarButton modifyButton = new MyCellarButton("Main.Modify", new ModifyBottlesAction());
+  private final MyCellarButton reloadButton = new MyCellarButton("ShowFile.reloadErrors", new ReloadErrorsAction());
+  private final MyCellarButton removeFromWorksheetButton = new MyCellarButton("ShowFile.removeFromWorksheet", new RemoveFromWorksheetAction());
+  private final MyCellarButton clearWorksheetButton = new MyCellarButton("ShowFile.clearWorksheet", new ClearWorksheetAction());
   private final MyCellarComboBox<Rangement> placeCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottleColor> colorCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<MusicSupport> musicSupportCbx = new MyCellarComboBox<>();
@@ -1069,7 +1069,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       tc = tcm.getColumn(ErrorShowValues.STATUS);
       tc.setCellRenderer(new FontBoldTableCellRenderer());
       tc = tcm.getColumn(ErrorShowValues.BUTTON);
-      tc.setCellRenderer(new ButtonCellRenderer(getLabel("Infos071"), MyCellarImage.ADD));
+      tc.setCellRenderer(new ButtonCellRenderer(getLabel("Main.Add"), MyCellarImage.ADD));
       tc.setCellEditor(new ButtonCellEditor());
     } else if (isNormal() || isWorksheet()) {
       List<ShowFileColumn<?>> cols = filterColumns();

@@ -19,8 +19,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 22/02/22
+ * @version 0.5
+ * @since 03/05/22
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
@@ -28,27 +28,26 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
 
   private final LabelKey labelKey;
 
-  private LabelType descriptionLabelType;
   private String descriptionLabelCode;
   private LabelProperty descriptionLabelProperty;
 
   private boolean withText = true;
 
-  public MyCellarAction(LabelType textLabelType, String textLabelCode, LabelProperty textLabelProperty) {
-    labelKey = new LabelKey(textLabelType, textLabelCode, textLabelProperty);
+  public MyCellarAction(String textLabelCode, LabelProperty textLabelProperty) {
+    labelKey = new LabelKey(LabelType.INFO_OTHER, textLabelCode, textLabelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
-  public MyCellarAction(LabelType textLabelType, String textLabelCode, LabelProperty textLabelProperty, Icon icon) {
+  public MyCellarAction(String textLabelCode, LabelProperty textLabelProperty, Icon icon) {
     super("", icon);
-    labelKey = new LabelKey(textLabelType, textLabelCode, textLabelProperty);
+    labelKey = new LabelKey(LabelType.INFO_OTHER, textLabelCode, textLabelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
-  public MyCellarAction(LabelType textLabelType, String textLabelCode, Icon icon) {
-    this(textLabelType, textLabelCode, LabelProperty.SINGLE, icon);
+  public MyCellarAction(String textLabelCode, Icon icon) {
+    this(textLabelCode, LabelProperty.SINGLE, icon);
   }
 
 
@@ -59,19 +58,14 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   @Override
   public void setText(String text) {
     putValue(Action.NAME, withText ? text : "");
-    if (descriptionLabelType != null) {
-      putValue(Action.SHORT_DESCRIPTION, getLabel(new LabelKey(descriptionLabelType, descriptionLabelCode, descriptionLabelProperty)));
-    } else {
-      putValue(Action.SHORT_DESCRIPTION, text);
-    }
+    putValue(Action.SHORT_DESCRIPTION, getLabel(new LabelKey(LabelType.INFO_OTHER, descriptionLabelCode, descriptionLabelProperty)));
   }
 
-  public void setDescriptionLabel(LabelType labelType, String labelCode) {
-    setDescriptionLabel(labelType, labelCode, null);
+  public void setDescriptionLabel(String labelCode) {
+    setDescriptionLabel(labelCode, null);
   }
 
-  public void setDescriptionLabel(LabelType labelType, String labelCode, LabelProperty labelProperty) {
-    descriptionLabelType = labelType;
+  public void setDescriptionLabel(String labelCode, LabelProperty labelProperty) {
     descriptionLabelCode = labelCode;
     descriptionLabelProperty = labelProperty;
   }

@@ -35,8 +35,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 26/04/22
+ * @version 3.3
+ * @since 03/05/22
  */
 public final class PDFOptions extends JDialog {
   static final long serialVersionUID = 110805;
@@ -96,9 +96,9 @@ public final class PDFOptions extends JDialog {
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow][grow]", ""));
     jPanel2.setFont(FONT_PANEL);
-    MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
+    MyCellarButton valider = new MyCellarButton("Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(LabelType.INFO_OTHER, "Main.cancel");
+    MyCellarButton annuler = new MyCellarButton("Main.cancel");
     annuler.addActionListener((e) -> dispose());
 
     jPanel1.add(new MyCellarLabel(LabelType.INFO, "255"), "split 2"); //Titre du PDF

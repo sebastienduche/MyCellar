@@ -2,7 +2,6 @@ package mycellar.placesmanagement;
 
 import mycellar.Program;
 import mycellar.Start;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
@@ -21,14 +20,14 @@ import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 20018
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 20018
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 20/01/22
+ * @version 0.8
+ * @since 03/05/22
  */
 public final class RangementCreationDialog extends JDialog {
 
@@ -43,7 +42,7 @@ public final class RangementCreationDialog extends JDialog {
     Debug("Constructor");
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setModal(true);
-    setTitle(getLabel("Infos267"));
+    setTitle(getLabel("Main.StorageToCreate"));
     setLayout(new MigLayout("", "grow", ""));
     setResizable(false);
     model = new RangementToCreateTableModel(map);
@@ -54,9 +53,9 @@ public final class RangementCreationDialog extends JDialog {
     add(new JScrollPane(table), "grow, wrap");
     add(end, "grow, wrap");
 
-    MyCellarButton valider = new MyCellarButton(LabelType.INFO, "018");
+    MyCellarButton valider = new MyCellarButton("Main.Create");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(LabelType.INFO, "019");
+    MyCellarButton annuler = new MyCellarButton("Main.Close");
     annuler.addActionListener((e) -> dispose());
 
     add(valider, "gaptop 15px, split 2, center");

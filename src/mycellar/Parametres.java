@@ -51,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.2
- * @since 26/04/22
+ * @version 13.3
+ * @since 03/05/22
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -81,9 +81,9 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     label_annee2 = new MyCellarLabel(LabelType.INFO, "293");
     label_siecle = new MyCellarLabel(LabelType.INFO, "295");
     jcb_excel.setText(getLabel("Infos169"));
-    buttonResetMessageDialog = new MyCellarButton(LabelType.INFO, "160");
-    MyCellarButton buttonManageContenance = new MyCellarButton(LabelType.INFO, "400", new ManageCapacityAction());
-    MyCellarButton valider = new MyCellarButton(LabelType.INFO, "315");
+    buttonResetMessageDialog = new MyCellarButton("Parameter.ActivateHiddenMessage");
+    MyCellarButton buttonManageContenance = new MyCellarButton("Parameter.CapacitiesManagement", new ManageCapacityAction());
+    MyCellarButton valider = new MyCellarButton("Main.Validate");
     parcourir_excel.setToolTipText(getLabel("Main.Browse"));
     jcb_annee_control.setText(getLabel("Infos169"));
     setLabels();

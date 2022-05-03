@@ -4,7 +4,6 @@ import mycellar.MyCellarImage;
 import mycellar.Start;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.ShowFile;
@@ -27,8 +26,8 @@ public final class OpenWorkSheetAction extends MyCellarAction {
   }
 
   public OpenWorkSheetAction(List<MyCellarObject> list) {
-    super(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE, MyCellarImage.WORK);
-    setDescriptionLabel(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE);
+    super(LABEL, LabelProperty.SINGLE, MyCellarImage.WORK);
+    setDescriptionLabel(LABEL, LabelProperty.SINGLE);
     bouteilles = list != null ? list : new ArrayList<>();
   }
 

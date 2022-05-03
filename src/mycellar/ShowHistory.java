@@ -52,8 +52,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.1
- * @since 08/04/22
+ * @version 5.2
+ * @since 03/05/22
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -121,11 +121,11 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
     setLayout(new MigLayout("", "grow", "[][grow][]"));
     add(filterLabel, "split 5");
     add(filterCbx);
-    add(new MyCellarButton(LabelType.INFO_OTHER, "ShowHistory.ClearHistory", new ClearHistoryAction()), "gapleft 10px");
+    add(new MyCellarButton("ShowHistory.ClearHistory", new ClearHistoryAction()), "gapleft 10px");
     add(new JLabel(), "growx");
-    add(new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.Restore", new RestoreAction()), "align right, wrap");
+    add(new MyCellarButton("ShowFile.Restore", new RestoreAction()), "align right, wrap");
     add(new JScrollPane(table), "grow, wrap");
-    add(new MyCellarButton(LabelType.INFO_OTHER, "Main.Delete", new DeleteAction()), "center");
+    add(new MyCellarButton("Main.Delete", new DeleteAction()), "center");
   }
 
   private static void Debug(String sText) {

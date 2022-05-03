@@ -75,14 +75,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description<
- * <p>Copyright : Copyright (c) 2003
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description<
+ * Copyright : Copyright (c) 2003
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.3
- * @since 26/04/22
+ * @version 23.4
+ * @since 03/05/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -94,8 +94,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final MyCellarButton exportButton = new MyCellarButton(MyCellarImage.EXPORT);
   private final MyCellarButton modifyButton = new MyCellarButton(MyCellarImage.WINE);
   private final MyCellarComboBox<String> year = new MyCellarComboBox<>();
-  private final MyCellarButton searchButton = new MyCellarButton(LabelType.INFO, "084", MyCellarImage.SEARCH); // Cherche
-  private final MyCellarButton emptyRowsButton = new MyCellarButton(LabelType.INFO, "220"); // Effacer resultats
+  private final MyCellarButton searchButton = new MyCellarButton("Main.Search", MyCellarImage.SEARCH);
+  private final MyCellarButton emptyRowsButton = new MyCellarButton("Search.Clear");
   private final char searchKey = getLabel("RECHERCHE").charAt(0);
   private final char modificationKey = getLabel("MODIF").charAt(0);
   private final char deleteKey = getLabel("SUPPR").charAt(0);
@@ -145,7 +145,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       exportButton.addActionListener(this::export_actionPerformed);
       deleteButton.setText(getLabel("Main.Delete"));
       deleteButton.setMnemonic(deleteKey);
-      modifyButton.setText(getLabel("Infos079")); // Modify
+      modifyButton.setText(getLabel("Main.Modify"));
       modifyButton.setMnemonic(modificationKey);
       modifyButton.setEnabled(false);
       deleteButton.setEnabled(false);

@@ -31,14 +31,14 @@ import java.util.Objects;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2014
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2014
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 08/03/19
+ * @version 0.5
+ * @since 03/05/22
  */
 public final class PanelDAndD extends JPanel {
 
@@ -128,7 +128,7 @@ class PanelHandler extends MouseAdapter {
       if (e.getButton() == MouseEvent.BUTTON3) {
         if (p.isTarget() && labelSearch.getPredicate().isValueRequired()) {
           JPopupMenu popup = new JPopupMenu();
-          JMenuItem menu = new JMenuItem(getLabel("Infos079"));
+          JMenuItem menu = new JMenuItem(getLabel("Main.Modify"));
           menu.addActionListener((e1) -> {
             labelSearch.setValue(null);
             labelSearch.askForValue();

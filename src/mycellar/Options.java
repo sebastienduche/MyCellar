@@ -1,6 +1,5 @@
 package mycellar;
 
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
@@ -22,14 +21,14 @@ import static mycellar.ProgramConstants.isVK_O;
 
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2003
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2003
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 24/02/22
+ * @version 2.1
+ * @since 03/05/22
  */
 @Deprecated
 public final class Options extends JDialog {
@@ -57,7 +56,7 @@ public final class Options extends JDialog {
     MyCellarLabel textControl2 = new MyCellarLabel(propriete);
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(SwingConstants.CENTER);
-    MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
+    MyCellarButton valider = new MyCellarButton("Main.OK");
     valider.setMnemonic(CHAR_O);
     valider.addActionListener(this::valider_actionPerformed);
     addKeyListener(new KeyAdapter() {

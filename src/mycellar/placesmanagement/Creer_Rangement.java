@@ -64,8 +64,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.0
- * @since 26/04/22
+ * @version 16.1
+ * @since 03/05/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -83,7 +83,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner(0, 99);
   private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox("CreateStorage.SimpleStorage");
   private final MyCellarLabel label_cree = new MyCellarLabel();
-  private final MyCellarButton preview = new MyCellarButton(INFO, "155");
+  private final MyCellarButton preview = new MyCellarButton("CreateStorage.preview");
   private final JPanel panelType;
   private final JPanel panelStartCaisse;
   private final JPanel panelLimite;
@@ -108,9 +108,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
     MyCellarButton createButton;
     if (modify) {
-      createButton = new MyCellarButton(INFO, "079", new ModifyAction());
+      createButton = new MyCellarButton("Main.Modify", new ModifyAction());
     } else {
-      createButton = new MyCellarButton(INFO, "018", new CreateAction());
+      createButton = new MyCellarButton("Main.Create", new CreateAction());
     }
 
     createButton.setMnemonic(CREER);

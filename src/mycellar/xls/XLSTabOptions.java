@@ -41,7 +41,6 @@ import static mycellar.core.MyCellarSettings.XLSTAB_COL2;
 import static mycellar.core.MyCellarSettings.XLSTAB_COL3;
 import static mycellar.core.MyCellarSettings.XLS_TAB_TITLE;
 import static mycellar.core.text.LabelType.INFO;
-import static mycellar.core.text.LabelType.INFO_OTHER;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
@@ -52,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 26/04/22
+ * @version 1.9
+ * @since 03/05/22
  */
 public final class XLSTabOptions extends JDialog {
   static final long serialVersionUID = 260706;
@@ -130,9 +129,9 @@ public final class XLSTabOptions extends JDialog {
     final JPanel panel1 = new JPanel();
     panel1.setFont(FONT_PANEL);
     panel1.setBorder(BorderFactory.createTitledBorder(getLabel("Infos332")));
-    MyCellarButton valider = new MyCellarButton(INFO_OTHER, "Main.OK");
+    MyCellarButton valider = new MyCellarButton("Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(INFO_OTHER, "Main.cancel");
+    MyCellarButton annuler = new MyCellarButton("Main.cancel");
     annuler.addActionListener((e) -> dispose());
     MyCellarLabel pt_label1 = new MyCellarLabel("pt");
     MyCellarLabel MyCellarLabel7 = new MyCellarLabel(INFO, "256"); //Taille du texte

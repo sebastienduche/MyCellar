@@ -1,6 +1,5 @@
 package mycellar;
 
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
@@ -29,8 +28,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 14/10/21
+ * @version 1.9
+ * @since 03/05/22
  */
 final class APropos extends JDialog {
   static final long serialVersionUID = 150505;
@@ -38,7 +37,7 @@ final class APropos extends JDialog {
   APropos() {
     super(new JFrame(), getLabel("Infos198"), true);
     IconPanel ip = new IconPanel(MyCellarImage.ICON);
-    MyCellarButton ok = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
+    MyCellarButton ok = new MyCellarButton("Main.OK");
     ok.addActionListener((e) -> dispose());
     MyCellarLabel myCellarLabel1 = new MyCellarLabel("MyCellar");
     myCellarLabel1.setForeground(Color.red);

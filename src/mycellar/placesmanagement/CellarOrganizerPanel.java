@@ -67,14 +67,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2014
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2014
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.8
- * @since 29/04/22
+ * @version 4.9
+ * @since 03/05/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -85,7 +85,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   private final List<JPanel[][]> places = new LinkedList<>();
   private final JPanel placePanel = new JPanel();
   private final LinkedList<Rangement> complexPlaces = new LinkedList<>();
-  private final MyCellarButton moveAllButton = new MyCellarButton(INFO_OTHER, "ManageStock.MoveAll", LabelProperty.PLURAL, new MoveAction());
+  private final MyCellarButton moveAllButton = new MyCellarButton("ManageStock.MoveAll", LabelProperty.PLURAL, new MoveAction());
   private final boolean cellChooser;
   private LabelTransferHandler labelTransferHandler;
   private MyCellarComboBox<Rangement> comboRangement;

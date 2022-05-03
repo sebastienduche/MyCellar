@@ -85,13 +85,13 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.4
- * @since 29/04/22
+ * @version 15.5
+ * @since 03/05/22
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
   static final long serialVersionUID = 280706;
-  private final MyCellarButton importe = new MyCellarButton(LabelType.INFO_OTHER, "Import.Title");
+  private final MyCellarButton importe = new MyCellarButton("Import.Title");
   private final MyCellarRadioButton type_txt = new MyCellarRadioButton("Import.TxtCsv", true);
   private final MyCellarRadioButton type_xls = new MyCellarRadioButton("Import.Xls", false);
   private final MyCellarRadioButton type_xml = new MyCellarRadioButton("Filter.xml", false);
@@ -110,7 +110,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
   public Importer() {
     Debug("Constructor");
-    MyCellarButton openit = new MyCellarButton(LabelType.INFO_OTHER, "Main.OpenTheFile");
+    MyCellarButton openit = new MyCellarButton("Main.OpenTheFile");
     openit.setToolTipText(getLabel("Main.OpenTheFile"));
     MyCellarButton parcourir = new MyCellarButton(OPEN);
     parcourir.setToolTipText(getLabel("Main.Browse"));

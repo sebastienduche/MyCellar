@@ -64,18 +64,18 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.5
- * @since 26/04/22
+ * @version 10.6
+ * @since 03/05/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
   static final long serialVersionUID = 240706;
   private static final char OUVRIR = getLabel("OUVRIR").charAt(0);
   private static final char EXPORT = getLabel("EXPORT").charAt(0);
-  private final MyCellarButton valider = new MyCellarButton(LabelType.INFO, "153");
+  private final MyCellarButton valider = new MyCellarButton("Main.Export");
   private final JTextField file = new JTextField();
   private final MyCellarButton browse = new MyCellarButton(OPEN);
-  private final MyCellarButton parameters = new MyCellarButton(LabelType.INFO_OTHER, "Main.Parameters");
+  private final MyCellarButton parameters = new MyCellarButton("Main.Parameters");
   private final JProgressBar progressBar = new JProgressBar();
   private final MyCellarRadioButton MyCellarRadioButtonXML = new MyCellarRadioButton("Export.Xml", true);
   private final MyCellarRadioButton MyCellarRadioButtonHTML = new MyCellarRadioButton("Export.Html", false);
@@ -83,9 +83,9 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   private final MyCellarRadioButton MyCellarRadioButtonXLS = new MyCellarRadioButton("Export.Xls", false);
   private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton("Export.Pdf", false);
   private final MyCellarLabel end = new MyCellarLabel();
-  private final MyCellarButton openit = new MyCellarButton(LabelType.INFO_OTHER, "Main.OpenTheFile");
-  private final MyCellarButton options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
-  private final JMenuItem param = new MyCellarMenuItem(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
+  private final MyCellarButton openit = new MyCellarButton("Main.OpenTheFile");
+  private final MyCellarButton options = new MyCellarButton("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
+  private final JMenuItem param = new MyCellarMenuItem(LabelType.INFO_OTHER, "Main.Settings", LabelProperty.SINGLE.withThreeDashes());
   private final List<? extends MyCellarObject> myCellarObjects;
 
   public Export() {

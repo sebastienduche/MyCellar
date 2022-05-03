@@ -82,6 +82,7 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.OPTIONS_PARAM;
 import static mycellar.ProgramConstants.RESTART_COMMAND;
 import static mycellar.ProgramConstants.SPACE;
+import static mycellar.ProgramConstants.UNTITLED;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -95,8 +96,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.6
- * @since 26/04/22
+ * @version 31.7
+ * @since 03/05/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -582,13 +583,13 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     about.setText(getLabel("Infos199")); // A Propos
     menuNews.setText(getLabel("Infos330")); // Nouveautes
-    menuToCreate.setText(getLabel("Infos267")); // Rangement a creer
-    menuVignobles.setText(getLabel("Infos165") + "..."); // Vignobles
-    menuBottleCapacity.setText(getLabel("Infos400") + "..."); // Contenance
+    menuToCreate.setText(getLabel("Main.StorageToCreate"));
+    menuVignobles.setText(getLabel("Main.VineyardManagement") + "...");
+    menuBottleCapacity.setText(getLabel("Parameter.CapacitiesManagement") + "...");
     menuImportXmlPlaces.setText(getLabel("Infos367")); // Importer des rangements xml
     menuExportXmlPlaces.setText(getLabel("Infos368")); // Exporter des rangements xml
     menuExportXml.setText(getLabel("Infos408")); // Exporter au format xml
-    menuCloseFile.setText(getLabel("Infos019")); // Fermer...
+    menuCloseFile.setText(getLabel("Main.Close"));
     menuCheckUpdate.setText(getLabel("Infos379")); // Check update
     menuReopen1.setText("1 - " + getShortFilename(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1)) + ONE_DOT + EXTENSION_SINFO);
     menuReopen2.setText("2 - " + getShortFilename(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2)) + ONE_DOT + EXTENSION_SINFO);
@@ -603,9 +604,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuReopen3.setToolTipText(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3));
     menuReopen4.setToolTipText(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4));
 
-    menuCut.setText(getLabel("Infos241"));
-    menuCopy.setText(getLabel("Infos242"));
-    menuPaste.setText(getLabel("Infos243"));
+    menuCut.setText(getLabel("Main.Cut"));
+    menuCopy.setText(getLabel("Main.Copy"));
+    menuPaste.setText(getLabel("Main.Paste"));
 
     importButton.setText(getLabel("Import.Title"));
     exportButton.setText(getLabel("Infos125"));
@@ -613,12 +614,12 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     statsButton.setText(getLabel("Infos009"));
     managePlaceButton.setText(getLabel("Main.ManagePlace"));
     worksheetButton.setText(getLabel("ShowFile.Worksheet"));
-    modifyButton.setText(getLabel("Infos007"));
-    showFileButton.setText(getLabel("Infos324"));
-    tableButton.setText(getLabel("Infos008"));
+    modifyButton.setText(getLabel("Main.modifyStorage"));
+    showFileButton.setText(getLabel("Main.ShowFile"));
+    tableButton.setText(getLabel("Main.createTable"));
     addButton.setText(getLabel("Main.tabAdd", LabelProperty.SINGLE));
     searchButton.setText(getLabel("Main.tabSearchButton"));
-    deleteButton.setText(getLabel("Infos004"));
+    deleteButton.setText(getLabel("Main.deleteStorage"));
     version.setText(getLabel("MonthVersion") + INFOS_VERSION + MAIN_VERSION);
     menuAddObject.setAccelerator(KeyStroke.getKeyStroke(addWineChar, InputEvent.CTRL_DOWN_MASK));
     menuAddPlace.setAccelerator(KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
@@ -986,7 +987,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   public void openVineyardPanel() {
     final VineyardPanel vineyardPanel = ProgramPanels.createVineyardPanel();
     try {
-      ProgramPanels.addTab(getLabel("Infos165"), null, vineyardPanel);
+      ProgramPanels.addTab(getLabel("Main.VineyardManagement"), null, vineyardPanel);
     } catch (RuntimeException e) {
       Program.showException(e);
     }
@@ -996,7 +997,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   public void openCapacityPanel() {
     final CapacityPanel capacityPanel = ProgramPanels.createCapacityPanel();
     try {
-      ProgramPanels.addTab(getLabel("Infos400"), null, capacityPanel);
+      ProgramPanels.addTab(getLabel("Parameter.CapacitiesManagement"), null, capacityPanel);
     } catch (RuntimeException e) {
       Program.showException(e);
     }
@@ -1039,10 +1040,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   static final class CutAction extends MyCellarAction {
     private static final long serialVersionUID = -8024045169612180263L;
+    private static final String LABEL = "Main.Cut";
 
     private CutAction(boolean withText) {
-      super(LabelType.INFO, "241", LabelProperty.SINGLE, MyCellarImage.CUT);
-      setDescriptionLabel(LabelType.INFO, "241", LabelProperty.SINGLE);
+      super(LABEL, LabelProperty.SINGLE, MyCellarImage.CUT);
+      setDescriptionLabel(LABEL, LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -1056,10 +1058,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   static final class CopyAction extends MyCellarAction {
     private static final long serialVersionUID = -4416042464174203695L;
+    private static final String LABEL = "Main.Copy";
 
     private CopyAction(boolean withText) {
-      super(LabelType.INFO, "242", LabelProperty.SINGLE, MyCellarImage.COPY);
-      setDescriptionLabel(LabelType.INFO, "242", LabelProperty.SINGLE);
+      super(LABEL, LabelProperty.SINGLE, MyCellarImage.COPY);
+      setDescriptionLabel(LABEL, LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -1073,10 +1076,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   static final class PasteAction extends MyCellarAction {
     private static final long serialVersionUID = 7152419581737782003L;
+    private static final String LABEL = "Main.Paste";
 
     private PasteAction(boolean withText) {
-      super(LabelType.INFO, "243", LabelProperty.SINGLE, MyCellarImage.PASTE);
-      setDescriptionLabel(LabelType.INFO, "243", LabelProperty.SINGLE);
+      super(LABEL, LabelProperty.SINGLE, MyCellarImage.PASTE);
+      setDescriptionLabel(LABEL, LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -1122,10 +1126,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class OpenAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Main.Open";
 
     private OpenAction(boolean withText) {
-      super(LabelType.INFO, "372", LabelProperty.SINGLE, MyCellarImage.OPEN);
-      setDescriptionLabel(LabelType.INFO, "372", LabelProperty.SINGLE);
+      super(LABEL, LabelProperty.SINGLE, MyCellarImage.OPEN);
+      setDescriptionLabel(LABEL, LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -1161,10 +1166,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class NewAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Main.New";
 
     private NewAction(boolean withText) {
-      super(LabelType.INFO, "378", MyCellarImage.NEW);
-      setDescriptionLabel(LabelType.INFO, "378");
+      super(LABEL, MyCellarImage.NEW);
+      setDescriptionLabel(LABEL);
       setWithText(withText);
     }
 
@@ -1186,16 +1192,17 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class SaveAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
+    private static final String LABEL = "Main.Save";
 
     private SaveAction(boolean withText) {
-      super(LabelType.INFO, "326", MyCellarImage.SAVE);
-      setDescriptionLabel(LabelType.INFO, "326");
+      super(LABEL, MyCellarImage.SAVE);
+      setDescriptionLabel(LABEL);
       setWithText(withText);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (Program.getShortFilename().startsWith("Untitled")) {
+      if (Program.getShortFilename().startsWith(UNTITLED)) {
         menuSaveAs_actionPerformed();
         return;
       }
@@ -1217,10 +1224,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class SaveAsAction extends MyCellarAction {
     private static final long serialVersionUID = -2340786091568284033L;
+    private static final String LABEL = "Main.SaveAs";
 
     private SaveAsAction() {
-      super(LabelType.INFO, "371", MyCellarImage.SAVEAS);
-      setDescriptionLabel(LabelType.INFO, "371");
+      super(LABEL, MyCellarImage.SAVEAS);
+      setDescriptionLabel(LABEL);
     }
 
     @Override
@@ -1234,9 +1242,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     private static final String LABEL = "Main.tabAdd";
 
     private AddWineAction() {
-      super(LabelType.INFO_OTHER, LABEL, MyCellarImage.WINE);
+      super(LABEL, MyCellarImage.WINE);
       putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
-      setDescriptionLabel(LabelType.INFO_OTHER, LABEL);
+      setDescriptionLabel(LABEL);
     }
 
     @Override
@@ -1253,8 +1261,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     private static final String LABEL = "CreateStorage.Title";
 
     private AddPlaceAction() {
-      super(LabelType.INFO, "109", MyCellarImage.PLACE);
-      setDescriptionLabel(LabelType.INFO_OTHER, LABEL);
+      super("Main.Add", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PLACE);
+      setDescriptionLabel(LABEL);
     }
 
     @Override
@@ -1266,11 +1274,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class DeletePlaceAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Infos004";
+    private static final String LABEL = "Main.deleteStorage";
 
     private DeletePlaceAction() {
-      super(LabelType.INFO_OTHER, "Main.Delete", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.DELPLACE);
-      setDescriptionLabel(LabelType.INFO, "004");
+      super("Main.Delete", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.DELPLACE);
+      setDescriptionLabel(LABEL);
     }
 
     @Override
@@ -1285,8 +1293,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     private static final String LABEL = "MoveLine.title";
 
     private PlaceMoveLineAction() {
-      super(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE.withThreeDashes());
-      setDescriptionLabel(LabelType.INFO_OTHER, LABEL, LabelProperty.SINGLE);
+      super(LABEL, LabelProperty.SINGLE.withThreeDashes());
+      setDescriptionLabel(LABEL, LabelProperty.SINGLE);
     }
 
     @Override
@@ -1297,11 +1305,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class ModifyPlaceAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Infos007";
+    private static final String LABEL = "Main.modifyStorage";
 
     private ModifyPlaceAction() {
-      super(LabelType.INFO, "079", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.MODIFYPLACE);
-      setDescriptionLabel(LabelType.INFO, "007");
+      super("Main.Modify", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.MODIFYPLACE);
+      setDescriptionLabel(LABEL);
     }
 
     @Override
@@ -1318,8 +1326,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     private static final String LABEL = "Main.tabSearchSimple";
 
     private SearchAction() {
-      super(LabelType.INFO_OTHER, "Main.tabSearchButton", MyCellarImage.SEARCH);
-      setDescriptionLabel(LabelType.INFO_OTHER, "Main.tabSearch");
+      super("Main.tabSearchButton", MyCellarImage.SEARCH);
+      setDescriptionLabel("Main.tabSearch");
     }
 
     @Override
@@ -1331,11 +1339,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class CreateTabAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Infos008";
+    private static final String LABEL = "Main.createTable";
 
     private CreateTabAction() {
-      super(LabelType.INFO, "008", MyCellarImage.TABLE);
-      setDescriptionLabel(LabelType.INFO, "008");
+      super(LABEL, MyCellarImage.TABLE);
+      setDescriptionLabel(LABEL);
     }
 
     @Override
@@ -1350,8 +1358,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     private static final String LABEL = "Import.Title";
 
     private ImportFileAction() {
-      super(LabelType.INFO, "107", MyCellarImage.IMPORT);
-      setDescriptionLabel(LabelType.INFO_OTHER, LABEL);
+      super(LABEL, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.IMPORT);
+      setDescriptionLabel(LABEL);
     }
 
     @Override
@@ -1363,11 +1371,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class ExportFileAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Infos148";
+    private static final String LABEL = "Main.FileExport";
 
     private ExportFileAction() {
-      super(LabelType.INFO, "108", LabelProperty.SINGLE, MyCellarImage.EXPORT);
-      setDescriptionLabel(LabelType.INFO, "148");
+      super("Main.Export", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.EXPORT);
+      setDescriptionLabel(LABEL);
     }
 
     @Override
@@ -1379,11 +1387,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class StatAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Infos009";
+    private static final String LABEL = "Main.Statistics";
 
     private StatAction() {
-      super(LabelType.INFO, "009", MyCellarImage.STATS);
-      setDescriptionLabel(LabelType.INFO, "009");
+      super(LABEL, MyCellarImage.STATS);
+      setDescriptionLabel(LABEL);
     }
 
     @Override
@@ -1397,10 +1405,10 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   class ShowHistoryAction extends MyCellarAction {
     private static final long serialVersionUID = -2981766233846291757L;
-    private static final String LABEL = "Infos341";
+    private static final String LABEL = "Main.History";
 
     private ShowHistoryAction() {
-      super(LabelType.INFO, "341", LabelProperty.SINGLE.withThreeDashes());
+      super(LABEL, LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override
@@ -1417,7 +1425,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     private static final long serialVersionUID = -7956676252030557402L;
 
     private VignoblesAction() {
-      super(LabelType.INFO, "165", LabelProperty.SINGLE.withThreeDashes());
+      super("Main.VineyardManagement", LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override
@@ -1431,7 +1439,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     private static final long serialVersionUID = -7204054967253027549L;
 
     private CapacityAction() {
-      super(LabelType.INFO, "400", LabelProperty.SINGLE.withThreeDashes());
+      super("Parameter.CapacitiesManagement", LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override
@@ -1443,11 +1451,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class ShowFileAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Infos325";
+    private static final String LABEL = "Main.FileContent";
 
     private ShowFileAction() {
-      super(LabelType.INFO, "324", MyCellarImage.SHOW);
-      setDescriptionLabel(LabelType.INFO, "325");
+      super("Main.ShowFile", MyCellarImage.SHOW);
+      setDescriptionLabel(LABEL);
     }
 
     @Override
@@ -1480,7 +1488,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     private static final String LABEL = "Main.ManagePlace";
 
     private ManagePlaceAction() {
-      super(LabelType.INFO_OTHER, "Main.ManagePlace", MyCellarImage.PLACE);
+      super(LABEL, MyCellarImage.PLACE);
       putValue(SHORT_DESCRIPTION, getLabel(LABEL));
     }
 
@@ -1493,10 +1501,10 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class ParametersAction extends MyCellarAction {
     private static final long serialVersionUID = -5144284671743409095L;
-    private static final String LABEL = "Infos156";
+    private static final String LABEL = "Main.Settings";
 
     private ParametersAction() {
-      super(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PARAMETER);
+      super(LABEL, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PARAMETER);
     }
 
     @Override

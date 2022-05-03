@@ -34,59 +34,39 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(LabelType type, String code) {
-    labelKey = new LabelKey(type, code);
+  public MyCellarButton(String code) {
+    labelKey = new LabelKey(code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(LabelType type, String code, String value) {
-    labelKey = new LabelKey(type, code, null, value);
+  public MyCellarButton(String code, LabelProperty labelProperty) {
+    labelKey = new LabelKey(LabelType.INFO_OTHER, code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(LabelType type, String code, LabelProperty labelProperty) {
-    labelKey = new LabelKey(type, code, labelProperty);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarButton(LabelType type, String code, Action a) {
+  public MyCellarButton(String code, Action a) {
     super(a);
-    labelKey = new LabelKey(type, code);
+    labelKey = new LabelKey(code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(LabelType type, String code, LabelProperty labelProperty, Action a) {
+  public MyCellarButton(String code, LabelProperty labelProperty, Action a) {
     super(a);
-    labelKey = new LabelKey(type, code, labelProperty);
+    labelKey = new LabelKey(LabelType.INFO_OTHER, code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(LabelType type, String code, String value, Action a) {
-    super(a);
-    labelKey = new LabelKey(type, code, null, value);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarButton(String text, Icon icon) {
-    super(text, icon);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarButton(LabelType type, String code, Icon icon) {
+  public MyCellarButton(String code, Icon icon) {
     super(icon);
-    labelKey = new LabelKey(type, code);
+    labelKey = new LabelKey(code);
     updateText();
     setFont(FONT_PANEL);
   }

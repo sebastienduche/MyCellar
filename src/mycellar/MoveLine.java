@@ -34,8 +34,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 06/01/22
+ * @version 3.2
+ * @since 03/05/22
  */
 
 final class MoveLine extends JDialog {
@@ -60,8 +60,8 @@ final class MoveLine extends JDialog {
 
     MyCellarLabel label_new_line = new MyCellarLabel(LabelType.INFO, "362");
 
-    MyCellarButton validate = new MyCellarButton(LabelType.INFO, "315");
-    MyCellarButton cancel = new MyCellarButton(LabelType.INFO, "019");
+    MyCellarButton validate = new MyCellarButton("Main.Validate");
+    MyCellarButton cancel = new MyCellarButton("Main.Close");
 
     validate.addActionListener((e) -> validateAndSave());
     cancel.addActionListener((e) -> dispose());

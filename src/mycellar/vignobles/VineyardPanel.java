@@ -52,8 +52,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 08/04/22
+ * @version 3.5
+ * @since 03/05/22
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -63,10 +63,10 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   private final MyCellarComboBox<CountryJaxb> comboCountry = new MyCellarComboBox<>();
   private final MyCellarComboBox<CountryVignobleJaxb> comboVignoble = new MyCellarComboBox<>();
   private final CountryJaxb emptyCountryJaxb = new CountryJaxb();
-  private final MyCellarButton addVignoble = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.addVignoble", new AddVignobleAction());
-  private final MyCellarButton delVignoble = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.delVignoble", new DelVignobleAction());
-  private final MyCellarButton renameVignoble = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.renameVignoble", new RenameVignobleAction());
-  private final MyCellarButton addAppellation = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.addAppellation", new AddAppellationAction());
+  private final MyCellarButton addVignoble = new MyCellarButton("VineyardPanel.addVignoble", new AddVignobleAction());
+  private final MyCellarButton delVignoble = new MyCellarButton("VineyardPanel.delVignoble", new DelVignobleAction());
+  private final MyCellarButton renameVignoble = new MyCellarButton("VineyardPanel.renameVignoble", new RenameVignobleAction());
+  private final MyCellarButton addAppellation = new MyCellarButton("VineyardPanel.addAppellation", new AddAppellationAction());
   private final VineyardTableModel model = new VineyardTableModel();
   private VignobleListJaxb vignobleListJaxb = null;
 
@@ -80,8 +80,8 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
     comboVignoble.addActionListener((e) -> comboVignobleSelected());
 
     MyCellarLabel labelVineyard = new MyCellarLabel(LabelType.INFO_OTHER, "VineyardPanel.selectVineyard");
-    MyCellarButton addCountry = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.addCountry", new AddCountryAction());
-    MyCellarButton delCountry = new MyCellarButton(LabelType.INFO_OTHER, "VineyardPanel.delCountry", new DelCountryAction());
+    MyCellarButton addCountry = new MyCellarButton("VineyardPanel.addCountry", new AddCountryAction());
+    MyCellarButton delCountry = new MyCellarButton("VineyardPanel.delCountry", new DelCountryAction());
     setLayout(new MigLayout("", "grow", "[][grow]"));
     JPanel panelCombos = new JPanel();
     panelCombos.setLayout(new MigLayout("", "[][][][]", "[][]"));

@@ -34,8 +34,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 26/04/22
+ * @version 2.8
+ * @since 03/05/22
  */
 final class CSVOptions extends JDialog {
   static final long serialVersionUID = 230705;
@@ -78,7 +78,7 @@ final class CSVOptions extends JDialog {
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));
     jPanel2.setFont(FONT_PANEL);
-    MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
+    MyCellarButton valider = new MyCellarButton("Main.OK");
     separator.addItem(getLabel("CSV.SeparatorComma"));
     separator.addItem(getLabel("CSV.SeparatorDotComma"));
     separator.addItem(getLabel("CSV.SeparatorDoubleDot"));
@@ -99,7 +99,7 @@ final class CSVOptions extends JDialog {
         break;
     }
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(LabelType.INFO_OTHER, "Main.cancel");
+    MyCellarButton annuler = new MyCellarButton("Main.cancel");
     annuler.addActionListener((e) -> dispose());
 
     add(info_separator, "split 2");

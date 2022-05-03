@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 26/04/22
+ * @version 1.8
+ * @since 03/05/22
  */
 
 public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -61,7 +61,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
     tc.setMinWidth(25);
     tc.setMaxWidth(25);
     final MyCellarLabel labelDefault = new MyCellarLabel(INFO, "146");
-    final MyCellarButton add = new MyCellarButton(INFO, "071", MyCellarImage.ADD);
+    final MyCellarButton add = new MyCellarButton("Main.Add", MyCellarImage.ADD);
     final MyCellarLabel info = new MyCellarLabel(INFO, "129", LabelProperty.THE_PLURAL.withCapital());
     setLayout(new MigLayout("", "grow", "30px[][][grow]20px[]30px[]"));
     add(info, "wrap");

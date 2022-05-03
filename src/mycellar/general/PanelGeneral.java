@@ -44,13 +44,13 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 26/04/22
+ * @version 1.5
+ * @since 03/05/22
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
   private static final long serialVersionUID = 5905201984124426737L;
-  private final MyCellarButton manageContenance = new MyCellarButton(LabelType.INFO, "400");
+  private final MyCellarButton manageContenance = new MyCellarButton("Parameter.CapacitiesManagement");
   private final JModifyTextField year = new JModifyTextField();
   private final JModifyComboBox<String> type = new JModifyComboBox<>();
   private final MyCellarCheckBox noYear = new MyCellarCheckBox("AddWine.NoYear");
@@ -462,7 +462,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     loadTypeComboBox();
 
     setYearAuto();
-    manageContenance.setText(getLabel("Infos400"));
+    manageContenance.setText(getLabel("Parameter.CapacitiesManagement"));
 
     initYearAndContenance();
     setModificationDetectionActive(true);

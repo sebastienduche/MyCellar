@@ -5,18 +5,18 @@ import java.awt.event.KeyEvent;
 import java.time.format.DateTimeFormatter;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2003
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 08/04/22
+ * @version 0.8
+ * @since 03/05/22
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.5.8.7";
+  public static final String INTERNAL_VERSION = "4.6.2.2";
   public static final int VERSION = 74;
   public static final String MAIN_VERSION = VERSION + " CG";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
@@ -26,6 +26,7 @@ public final class ProgramConstants {
   public static final Font FONT_LABEL_BOLD = new Font("Arial", Font.BOLD, 12);
   public static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
   public static final String UNTITLED1_SINFO = "Untitled1.sinfo";
+  public static final String UNTITLED = "Untitled";
   public static final String COUNTRIES_XML = "countries.xml";
   public static final String TEXT = ".txt";
   public static final String FRA = "FRA";

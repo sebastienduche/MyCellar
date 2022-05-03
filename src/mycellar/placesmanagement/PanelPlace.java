@@ -31,14 +31,14 @@ import java.util.function.Predicate;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2021</p>
- * <p>Societe : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2021
+ * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.9
- * @since 26/04/22
+ * @version 3.0
+ * @since 03/05/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -48,7 +48,7 @@ public class PanelPlace extends JPanel implements IPlace {
   private final JModifyComboBox<ComboItem> line = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> column = new JModifyComboBox<>();
   private final MyCellarLabel labelExist = new MyCellarLabel("");
-  private final MyCellarButton preview = new MyCellarButton(LabelType.INFO_OTHER, "Storage.preview");
+  private final MyCellarButton preview = new MyCellarButton("Storage.preview");
   private final MyCellarLabel labelNumPlace = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.numPlace");
   private final MyCellarLabel labelLine = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.line");
   private final MyCellarLabel labelColumn = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.column");
@@ -88,7 +88,7 @@ public class PanelPlace extends JPanel implements IPlace {
     char previewChar = getLabel("PREVIEW").charAt(0);
     preview.setMnemonic(previewChar);
     preview.addActionListener(this::preview_actionPerformed);
-    chooseCell = new MyCellarButton(LabelType.INFO_OTHER, "AddVin.ChooseCell", new ChooseCellAction(this));
+    chooseCell = new MyCellarButton("AddVin.ChooseCell", new ChooseCellAction(this));
     setModificationDetectionActive(false);
     initPlaceCombo();
     setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));

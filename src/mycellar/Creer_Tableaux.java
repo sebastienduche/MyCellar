@@ -56,8 +56,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.7
- * @since 26/04/22
+ * @version 8.8
+ * @since 03/05/22
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
@@ -68,11 +68,11 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   private final TableauValues tableauValues = new TableauValues();
   @SuppressWarnings("deprecation")
   private final MyCellarLabel end = new MyCellarLabel();
-  private final MyCellarButton preview = new MyCellarButton(LabelType.INFO_OTHER, "Main.OpenTheFile");
+  private final MyCellarButton preview = new MyCellarButton("Main.OpenTheFile");
   private final char creerChar = getLabel("CREER").charAt(0);
   private final char ouvrirChar = getLabel("OUVRIR").charAt(0);
   private final MyCellarCheckBox selectall = new MyCellarCheckBox("Main.SelectAll");
-  private final MyCellarButton m_jcb_options = new MyCellarButton(LabelType.INFO, "156", LabelProperty.SINGLE.withThreeDashes());
+  private final MyCellarButton m_jcb_options = new MyCellarButton("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
   private final JTable table;
   private boolean updateView;
   private UpdateViewType updateViewType;
@@ -83,10 +83,10 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     m_jcb_options.addActionListener(this::options_actionPerformed);
     final MyCellarButton browse = new MyCellarButton(OPEN);
     browse.addActionListener(this::browse_actionPerformed);
-    final MyCellarButton parameter = new MyCellarButton(LabelType.INFO_OTHER, "Main.Parameters");
+    final MyCellarButton parameter = new MyCellarButton("Main.Parameters");
     parameter.addActionListener(this::param_actionPerformed);
     final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO, "096"); //"Selectionner les rangements a generer:
-    final MyCellarButton create = new MyCellarButton(LabelType.INFO, "018"); //"Creer
+    final MyCellarButton create = new MyCellarButton("Main.Create");
     create.setMnemonic(creerChar);
 
     final ButtonGroup buttonGroup = new ButtonGroup();

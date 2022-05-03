@@ -55,14 +55,14 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2005</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2005
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.6
- * @since 29/04/22
+ * @version 9.7
+ * @since 03/05/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -70,7 +70,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   private static final long serialVersionUID = 6959053537854600207L;
   private final MyCellarComboBox<Rangement> choix = new MyCellarComboBox<>();
   private final MyCellarLabel label_final = new MyCellarLabel();
-  private final MyCellarButton preview = new MyCellarButton(LabelType.INFO_OTHER, "Storage.preview");
+  private final MyCellarButton preview = new MyCellarButton("Storage.preview");
   private final char supprimerChar = getLabel("SUPPR").charAt(0);
   private final char previewChar = getLabel("VISUAL").charAt(0);
   private final JTable table;
@@ -84,7 +84,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   public Supprimer_Rangement() {
     Debug("Initializing...");
     setLayout(new MigLayout("", "[grow]", "20px[]15px[grow]15px[]"));
-    MyCellarButton supprimer = new MyCellarButton(LabelType.INFO_OTHER, "Main.Delete", MyCellarImage.DELETE);
+    MyCellarButton supprimer = new MyCellarButton("Main.Delete", MyCellarImage.DELETE);
     supprimer.setMnemonic(supprimerChar);
     preview.setMnemonic(previewChar);
 

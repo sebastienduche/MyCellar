@@ -96,8 +96,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.7
- * @since 03/05/22
+ * @version 31.8
+ * @since 05/05/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -162,7 +162,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   private final JMenuItem menuExportXml = new JMenuItem();
   private final JMenuItem menuOpenFile = new JMenuItem();
   private final JMenuItem menuCloseFile = new JMenuItem();
-  private final MyCellarMenuItem menuSetConfig = new MyCellarMenuItem(LabelType.INFO_OTHER, "Start.modifyParameter", LabelProperty.SINGLE.withThreeDashes());
+  private final MyCellarMenuItem menuSetConfig = new MyCellarMenuItem("Start.modifyParameter", LabelProperty.SINGLE.withThreeDashes());
   private final JMenuItem menuReopen1 = new JMenuItem();
   private final JMenuItem menuReopen2 = new JMenuItem();
   private final JMenuItem menuReopen3 = new JMenuItem();

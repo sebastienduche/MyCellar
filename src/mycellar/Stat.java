@@ -62,14 +62,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.8
- * @since 03/05/22
+ * @version 8.9
+ * @since 05/05/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
   private static final long serialVersionUID = -5333602919958999440L;
   private static final int PRICE_BRACKET_DEFAULT = 50;
-  private final MyCellarLabel comboLabel = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Storage", LabelProperty.SINGLE.withDoubleQuote());
+  private final MyCellarLabel comboLabel = new MyCellarLabel("Main.Storage", LabelProperty.SINGLE.withDoubleQuote());
   private final MyCellarLabel end = new MyCellarLabel();
   private final MyCellarLabel moy = new MyCellarLabel();
   private final MyCellarComboBox<MyCellarEnum> listOptions = new MyCellarComboBox<>();

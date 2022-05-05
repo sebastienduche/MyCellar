@@ -64,8 +64,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.1
- * @since 03/05/22
+ * @version 16.2
+ * @since 05/05/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -77,7 +77,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton("CreateStorage.AllLinesSame", true); //"Toutes les lignes ont le meme nombre de colonnes"
   private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton("CreateStorage.AllLinesNotSame", false); //"Toutes les lignes n'ont pas le meme nombre de colonnes"
   private final MyCellarCheckBox checkLimite = new MyCellarCheckBox("CreatePlace.ActivateLimit");
-  private final MyCellarLabel label_limite = new MyCellarLabel(INFO_OTHER, "Main.Item", LabelProperty.SINGLE);
+  private final MyCellarLabel label_limite = new MyCellarLabel("Main.Item", LabelProperty.SINGLE);
   private final MyCellarSpinner nb_limite = new MyCellarSpinner(1, 999);
   private final MyCellarSpinner nb_parties = new MyCellarSpinner(1, 99);
   private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner(0, 99);
@@ -171,18 +171,18 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     add(m_caisse_chk, "wrap");
 
     panelType = new JPanel();
-    panelType.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("Infos021"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelType.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("CreateStorage.TypeLines"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelType.setLayout(new GridLayout(0, 2));
     panelType.add(m_jrb_same_column_number);
     panelType.add(m_jrb_dif_column_number);
 
     panelStartCaisse = new JPanel();
-    panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("Infos272"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("CreateStorage.FirstShelveNumber"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelStartCaisse.setLayout(new MigLayout("", "[]", "[]"));
     panelStartCaisse.add(nb_start_caisse, "wmin 50");
 
     panelLimite = new JPanel();
-    panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("Infos274"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("CreateStorage.LimitPerShelve"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelLimite.setLayout(new MigLayout("", "[][]", "[]"));
     panelLimite.add(checkLimite, "gapright 10");
     panelLimite.add(nb_limite, "split 2, wmin 50, hidemode 3");
@@ -194,7 +194,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     model.setValues(listPart);
 
     JPanel panelPartie = new JPanel();
-    panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("Infos023"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("CreateStorage.ShelveNumber"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelPartie.setLayout(new MigLayout("", "[]", "[]"));
     panelPartie.add(nb_parties, "wmin 50");
 

@@ -81,14 +81,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.4
- * @since 03/05/22
+ * @version 23.5
+ * @since 05/05/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
   private static final long serialVersionUID = 8497660112193602839L;
   private final SearchTableModel searchTableModel = new SearchTableModel();
-  private final MyCellarLabel objectFoundCountLabels = new MyCellarLabel(LabelType.INFO_OTHER, "Search.bottleFound", LabelProperty.PLURAL.withCapital());
+  private final MyCellarLabel objectFoundCountLabels = new MyCellarLabel("Search.bottleFound", LabelProperty.PLURAL.withCapital());
   private final MyCellarLabel countLabel = new MyCellarLabel(DASH);
   private final MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
   private final MyCellarButton exportButton = new MyCellarButton(MyCellarImage.EXPORT);
@@ -223,7 +223,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       add(scrollpane, "grow, wrap, span 2");
       add(addToWorksheetButton, "alignx left, aligny top");
       add(selectAllCheck, "wrap, alignx right, aligny top");
-      add(new MyCellarLabel(LabelType.INFO, "080", LabelProperty.SINGLE), "wrap, span 2, alignx center");
+      add(new MyCellarLabel("Search.SelectRows", LabelProperty.SINGLE), "wrap, span 2, alignx center");
       add(resultInfoLabel, "wrap, span 2, alignx center");
       add(modifyButton, "split, span 2, align center");
       add(deleteButton, "wrap");
@@ -253,7 +253,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     JDialog dialog = new JDialog();
     dialog.add(new Export(searchTableModel.getDatas()));
     dialog.pack();
-    dialog.setTitle(getLabel("Infos151"));
+    dialog.setTitle(getLabel("Export.ExportFormat"));
     dialog.setLocationRelativeTo(Start.getInstance());
     dialog.setModal(true);
     dialog.setVisible(true);

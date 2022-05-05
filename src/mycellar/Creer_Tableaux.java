@@ -155,7 +155,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     panelType.add(type_HTML);
     panelType.add(type_XLS, "split 2");
     panelType.add(m_jcb_options, "push");
-    panelType.setBorder(BorderFactory.createTitledBorder(getLabel("Infos151")));
+    panelType.setBorder(BorderFactory.createTitledBorder(getLabel("Export.ExportFormat")));
     add(panelType, "grow, wrap");
     final JPanel panelTable = new JPanel();
     panelTable.setLayout(new MigLayout("", "grow", "grow"));

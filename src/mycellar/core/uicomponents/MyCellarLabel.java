@@ -21,8 +21,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 24/03/22
+ * @version 1.1
+ * @since 05/05/22
  */
 
 public class MyCellarLabel extends JLabel implements IMyCellarComponent {
@@ -48,22 +48,15 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
     setFont(FONT_PANEL);
   }
 
-  public MyCellarLabel(LabelType type, String code, LabelProperty labelProperty) {
-    labelKey = new LabelKey(type, code, labelProperty);
+  public MyCellarLabel(String code, LabelProperty labelProperty) {
+    labelKey = new LabelKey(code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarLabel(LabelType type, String code, LabelProperty labelProperty, String value) {
-    labelKey = new LabelKey(type, code, labelProperty, value);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarLabel(LabelType type, String code, String value) {
-    labelKey = new LabelKey(type, code, null, value);
+  public MyCellarLabel(String code, LabelProperty labelProperty, String value) {
+    labelKey = new LabelKey(LabelType.INFO_OTHER, code, labelProperty, value);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

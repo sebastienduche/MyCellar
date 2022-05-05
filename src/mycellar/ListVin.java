@@ -4,7 +4,6 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
 import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
@@ -31,8 +30,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.3
- * @since 21/10/21
+ * @version 4.4
+ * @since 05/05/22
  */
 final class ListVin extends JPanel {
   static final long serialVersionUID = 10805;
@@ -80,7 +79,7 @@ final class ListVin extends JPanel {
 
       scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
       setLayout(new MigLayout("", "grow", "[grow][]"));
-      MyCellarLabel textControl1 = new MyCellarLabel(LabelType.INFO_OTHER, "ListVin.listProblems", LabelProperty.PLURAL);
+      MyCellarLabel textControl1 = new MyCellarLabel("ListVin.listProblems", LabelProperty.PLURAL);
       textControl1.setForeground(Color.red);
       textControl1.setFont(new Font("Dialog", Font.BOLD, 13));
       textControl1.setHorizontalAlignment(SwingConstants.CENTER);

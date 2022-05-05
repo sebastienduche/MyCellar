@@ -73,8 +73,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.9
- * @since 03/05/22
+ * @version 5.0
+ * @since 05/05/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -241,9 +241,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     add(moveAllButton, "gapleft 10px, wrap");
     moveAllButton.setEnabled(false);
     if (cellChooser) {
-      add(new MyCellarLabel(INFO_OTHER, "ManagePlace.ChooseCell", LabelProperty.THE_SINGLE), "wrap");
+      add(new MyCellarLabel("ManagePlace.ChooseCell", LabelProperty.THE_SINGLE), "wrap");
     } else {
-      add(new MyCellarLabel(INFO_OTHER, "ManagePlace.StockDescription", LabelProperty.PLURAL), "wrap");
+      add(new MyCellarLabel("ManagePlace.StockDescription", LabelProperty.PLURAL), "wrap");
     }
     add(new JScrollPane(placePanel), "grow");
     if (!cellChooser) {

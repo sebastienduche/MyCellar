@@ -27,7 +27,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import static mycellar.MyCellarUtils.toCleanString;
-import static mycellar.core.text.LabelType.INFO;
+import static mycellar.core.text.LabelType.INFO_OTHER;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 03/05/22
+ * @version 1.9
+ * @since 05/05/22
  */
 
 public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -60,9 +60,9 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
     tc.setCellEditor(new ButtonCellEditor());
     tc.setMinWidth(25);
     tc.setMaxWidth(25);
-    final MyCellarLabel labelDefault = new MyCellarLabel(INFO, "146");
+    final MyCellarLabel labelDefault = new MyCellarLabel(INFO_OTHER, "CapacityPanel.Default");
     final MyCellarButton add = new MyCellarButton("Main.Add", MyCellarImage.ADD);
-    final MyCellarLabel info = new MyCellarLabel(INFO, "129", LabelProperty.THE_PLURAL.withCapital());
+    final MyCellarLabel info = new MyCellarLabel("CapacityPanel.ModifyInfo", LabelProperty.THE_PLURAL.withCapital());
     setLayout(new MigLayout("", "grow", "30px[][][grow]20px[]30px[]"));
     add(info, "wrap");
     add(add, "wrap");
@@ -74,7 +74,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   }
 
   private void add() {
-    String s = toCleanString(JOptionPane.showInputDialog(Start.getInstance(), getLabel("Main.NewValue"), getLabel("Infos402"), JOptionPane.QUESTION_MESSAGE));
+    String s = toCleanString(JOptionPane.showInputDialog(Start.getInstance(), getLabel("Main.NewValue"), getLabel("Main.EnterValue"), JOptionPane.QUESTION_MESSAGE));
     if (!s.isEmpty()) {
       Program.setModified();
       model.addValue(s);

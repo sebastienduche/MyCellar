@@ -64,8 +64,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.6
- * @since 03/05/22
+ * @version 10.7
+ * @since 05/05/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -85,7 +85,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   private final MyCellarLabel end = new MyCellarLabel();
   private final MyCellarButton openit = new MyCellarButton("Main.OpenTheFile");
   private final MyCellarButton options = new MyCellarButton("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
-  private final JMenuItem param = new MyCellarMenuItem(LabelType.INFO_OTHER, "Main.Settings", LabelProperty.SINGLE.withThreeDashes());
+  private final JMenuItem param = new MyCellarMenuItem("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
   private final List<? extends MyCellarObject> myCellarObjects;
 
   public Export() {
@@ -120,7 +120,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   }
 
   private void initialize() {
-    MyCellarLabel nameLabel = new MyCellarLabel(LabelType.INFO, "149"); //Nom du fichier:
+    MyCellarLabel nameLabel = new MyCellarLabel(LabelType.INFO_OTHER, "Export.FileName");
     end.setFont(FONT_DIALOG_SMALL);
     openit.setMnemonic(OUVRIR);
     openit.addActionListener((e) -> openit_actionPerformed());
@@ -165,7 +165,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     panelFormat.add(MyCellarRadioButtonXLS);
     panelFormat.add(MyCellarRadioButtonPDF);
     panelFormat.add(options, "w 100:100:100, push");
-    panelFormat.setBorder(BorderFactory.createTitledBorder(getLabel("Infos151")));
+    panelFormat.setBorder(BorderFactory.createTitledBorder(getLabel("Export.ExportFormat")));
     add(panelFormat, "grow, wrap");
     JPanel panelTitle = new JPanel();
     panelTitle.setLayout(new MigLayout("", "grow", ""));

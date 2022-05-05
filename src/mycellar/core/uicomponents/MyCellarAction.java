@@ -3,7 +3,6 @@ package mycellar.core.uicomponents;
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.AbstractAction;
@@ -19,8 +18,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 03/05/22
+ * @version 0.6
+ * @since 05/05/22
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
@@ -34,14 +33,14 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   private boolean withText = true;
 
   public MyCellarAction(String textLabelCode, LabelProperty textLabelProperty) {
-    labelKey = new LabelKey(LabelType.INFO_OTHER, textLabelCode, textLabelProperty);
+    labelKey = new LabelKey(textLabelCode, textLabelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
   public MyCellarAction(String textLabelCode, LabelProperty textLabelProperty, Icon icon) {
     super("", icon);
-    labelKey = new LabelKey(LabelType.INFO_OTHER, textLabelCode, textLabelProperty);
+    labelKey = new LabelKey(textLabelCode, textLabelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
   }
@@ -58,7 +57,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   @Override
   public void setText(String text) {
     putValue(Action.NAME, withText ? text : "");
-    putValue(Action.SHORT_DESCRIPTION, getLabel(new LabelKey(LabelType.INFO_OTHER, descriptionLabelCode, descriptionLabelProperty)));
+    putValue(Action.SHORT_DESCRIPTION, getLabel(new LabelKey(descriptionLabelCode, descriptionLabelProperty)));
   }
 
   public void setDescriptionLabel(String labelCode) {

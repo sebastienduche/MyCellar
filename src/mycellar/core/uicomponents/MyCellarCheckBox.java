@@ -18,8 +18,8 @@ import static mycellar.core.text.LabelType.INFO_OTHER;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 26/04/22
+ * @version 0.9
+ * @since 05/05/22
  */
 
 public final class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
@@ -45,7 +45,7 @@ public final class MyCellarCheckBox extends JCheckBox implements IMyCellarCompon
   }
 
   public MyCellarCheckBox(String code, LabelProperty labelProperty) {
-    labelKey = new LabelKey(INFO_OTHER, code, labelProperty);
+    labelKey = new LabelKey(code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

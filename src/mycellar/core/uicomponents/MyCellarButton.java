@@ -3,7 +3,6 @@ package mycellar.core.uicomponents;
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.Action;
@@ -19,8 +18,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 26/04/22
+ * @version 1.1
+ * @since 05/05/22
  */
 
 public final class MyCellarButton extends JButton implements IMyCellarComponent {
@@ -42,7 +41,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
   }
 
   public MyCellarButton(String code, LabelProperty labelProperty) {
-    labelKey = new LabelKey(LabelType.INFO_OTHER, code, labelProperty);
+    labelKey = new LabelKey(code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -58,7 +57,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
 
   public MyCellarButton(String code, LabelProperty labelProperty, Action a) {
     super(a);
-    labelKey = new LabelKey(LabelType.INFO_OTHER, code, labelProperty);
+    labelKey = new LabelKey(code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

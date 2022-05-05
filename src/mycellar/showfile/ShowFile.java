@@ -33,7 +33,6 @@ import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -86,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.6
- * @since 03/05/22
+ * @version 11.7
+ * @since 05/05/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -99,7 +98,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private static final long serialVersionUID = 1265789936970092250L;
   @SuppressWarnings("deprecation")
   private final MyCellarLabel titleLabel = new MyCellarLabel();
-  private final MyCellarLabel labelCount = new MyCellarLabel(LabelType.INFO_OTHER, "Main.NumberOfItems", LabelProperty.PLURAL, "");
+  private final MyCellarLabel labelCount = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
   private final MyCellarButton createPlacesButton = new MyCellarButton("Main.StorageToCreate", new CreatePlacesAction());
   private final MyCellarButton manageColumnsButton = new MyCellarButton("Main.Columns", new ManageColumnsAction());
   private final MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);

@@ -27,14 +27,14 @@ import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2013
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2013
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 20/01/22
+ * @version 2.9
+ * @since 05/05/22
  */
 public final class PanelInfos extends JPanel {
 
@@ -75,7 +75,7 @@ public final class PanelInfos extends JPanel {
 final class PanelStats extends JPanel {
 
   private static final long serialVersionUID = 7438892143990782047L;
-  private final MyCellarLabel bottles = new MyCellarLabel(LabelType.INFO_OTHER, "Main.NumberOfItems", LabelProperty.PLURAL, "");
+  private final MyCellarLabel bottles = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
   private final MyCellarLabel cellarValue = new MyCellarLabel(LabelType.INFO, "406");
   private final MyCellarLabel bottlesNb = new MyCellarLabel();
   private final MyCellarLabel cellarTotal = new MyCellarLabel();

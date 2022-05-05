@@ -87,6 +87,7 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelCode;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
 
 /**
@@ -611,7 +612,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     importButton.setText(getLabel("Import.Title"));
     exportButton.setText(getLabel("Infos125"));
     createButton.setText(getLabel("CreateStorage.Title"));
-    statsButton.setText(getLabel("Infos009"));
+    statsButton.setText(getLabel("Main.Statistics"));
     managePlaceButton.setText(getLabel("Main.ManagePlace"));
     worksheetButton.setText(getLabel("ShowFile.Worksheet"));
     modifyButton.setText(getLabel("Main.modifyStorage"));
@@ -961,7 +962,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     panel.add(key, "grow, wrap");
     panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.value"), "split 2");
     panel.add(value, "grow");
-    if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(getInstance(), panel, getLabel(LabelType.INFO_OTHER, "Start.modifyParameter"), JOptionPane.OK_CANCEL_OPTION)) {
+    if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(getInstance(), panel, getLabelCode("Start.modifyParameter"), JOptionPane.OK_CANCEL_OPTION)) {
       final String parameter = toCleanString(key.getText());
       final String parameterValue = toCleanString(value.getText());
       if (isDefined(parameter)) {

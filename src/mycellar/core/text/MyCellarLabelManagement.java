@@ -25,8 +25,8 @@ import static mycellar.ProgramConstants.THREE_DOTS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 26/04/22
+ * @version 0.7
+ * @since 05/05/22
  */
 
 public class MyCellarLabelManagement {
@@ -41,15 +41,11 @@ public class MyCellarLabelManagement {
     component.setText(getLabel(labelKey.getLabelType(), labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue()));
   }
 
-  public static String getLabel(LabelKey labelKey) {
-    return getLabel(labelKey.getLabelType(), labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue());
+  public static String getLabelCode(String code) {
+    return getLabel(LabelType.INFO_OTHER, code, null, null);
   }
 
-  public static String getLabel(LabelType type, String code) {
-    return getLabel(type, code, null, null);
-  }
-
-  private static String getLabel(LabelType type, String code, LabelProperty labelProperty, String labelValue) {
+  public static String getLabel(LabelType type, String code, LabelProperty labelProperty, String labelValue) {
     if (type == null || code == null) {
       return "";
     }

@@ -61,8 +61,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.7
- * @since 03/05/22
+ * @version 9.8
+ * @since 05/05/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -306,7 +306,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       columns = new LinkedList<>();
       columns.add(new Column(Column.PART, getLabel("Main.Storage")));
       columns.add(colLine);
-      columns.add(new Column(Column.WINE, getLabel("Infos057")));
+      columns.add(new Column(Column.WINE, getLabel("Main.State")));
 
     }
 

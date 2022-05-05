@@ -1,6 +1,5 @@
 package mycellar.core.tablecomponents;
 
-import mycellar.core.text.LabelType;
 import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.ImageIcon;
@@ -13,14 +12,14 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2004
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2004
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 05/01/22
+ * @version 0.9
+ * @since 05/05/22
  */
 public class ButtonCellRenderer extends JButton implements TableCellRenderer {
 
@@ -31,7 +30,7 @@ public class ButtonCellRenderer extends JButton implements TableCellRenderer {
 
   public ButtonCellRenderer() {
     super();
-    label = MyCellarLabelManagement.getLabel(LabelType.INFO, "360");
+    label = MyCellarLabelManagement.getLabelCode("ShowFile.More");
   }
 
   public ButtonCellRenderer(String label) {

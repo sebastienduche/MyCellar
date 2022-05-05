@@ -51,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.3
- * @since 03/05/22
+ * @version 13.4
+ * @since 05/05/22
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -62,9 +62,9 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
   private final MyCellarButton parcourir_excel = new MyCellarButton(OPEN);
   private final JTextField file_bak = new JTextField();
   private final JTextField devise = new JTextField();
-  private final MyCellarCheckBox jcb_excel = new MyCellarCheckBox(getLabel("Infos234"), false);
+  private final MyCellarCheckBox jcb_excel = new MyCellarCheckBox("Parameter.AutoExportExcel", false);
   private final MyCellarButton buttonResetMessageDialog;
-  private final MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox(getLabel("Infos169"), false);
+  private final MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox("Parameter.Activate", false);
   private final MyCellarLabel label_annee;
   private final MyCellarLabel label_annee2;
   private final MyCellarLabel label_siecle;
@@ -80,12 +80,10 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     label_annee = new MyCellarLabel(LabelType.INFO, "292");
     label_annee2 = new MyCellarLabel(LabelType.INFO, "293");
     label_siecle = new MyCellarLabel(LabelType.INFO, "295");
-    jcb_excel.setText(getLabel("Infos169"));
     buttonResetMessageDialog = new MyCellarButton("Parameter.ActivateHiddenMessage");
     MyCellarButton buttonManageContenance = new MyCellarButton("Parameter.CapacitiesManagement", new ManageCapacityAction());
     MyCellarButton valider = new MyCellarButton("Main.Validate");
     parcourir_excel.setToolTipText(getLabel("Main.Browse"));
-    jcb_annee_control.setText(getLabel("Infos169"));
     setLabels();
 
     jcb_annee_control.addActionListener((e) -> {
@@ -118,9 +116,9 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     JPanel generalPanel = new JPanel();
     JPanel excelPanel = new JPanel();
     JPanel otherPanel = new JPanel();
-    dateControlPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Infos294")));
+    dateControlPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Parameter.DateControl")));
     generalPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Main.General")));
-    excelPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Infos234")));
+    excelPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Parameter.AutoExportExcel")));
     otherPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Parameters.Others")));
     generalPanel.setLayout(new MigLayout("", "[][]30px[][]", ""));
     generalPanel.add(label_langue);
@@ -170,9 +168,9 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
   }
 
   private void setLabels() {
-    jcb_excel.setText(getLabel("Infos169"));
+    jcb_excel.setText(getLabel("Parameter.Activate"));
     parcourir_excel.setToolTipText(getLabel("Main.Browse"));
-    jcb_annee_control.setText(getLabel("Infos169"));
+    jcb_annee_control.setText(getLabel("Parameter.Activate"));
   }
 
   /**

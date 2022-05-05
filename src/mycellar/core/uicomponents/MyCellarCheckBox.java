@@ -9,7 +9,6 @@ import javax.swing.Icon;
 import javax.swing.JCheckBox;
 
 import static mycellar.ProgramConstants.FONT_PANEL;
-import static mycellar.core.text.LabelType.INFO_OTHER;
 
 /**
  * Titre : Cave &agrave; vin
@@ -38,7 +37,15 @@ public final class MyCellarCheckBox extends JCheckBox implements IMyCellarCompon
   }
 
   public MyCellarCheckBox(String code) {
-    labelKey = new LabelKey(INFO_OTHER, code);
+    labelKey = new LabelKey(code);
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT_PANEL);
+  }
+
+  public MyCellarCheckBox(String code, boolean selected) {
+    super("", selected);
+    labelKey = new LabelKey(code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -48,16 +55,6 @@ public final class MyCellarCheckBox extends JCheckBox implements IMyCellarCompon
     labelKey = new LabelKey(code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarCheckBox(String text, boolean selected) {
-    super(text, selected);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarCheckBox(String text, Icon icon, boolean selected) {
-    super(text, icon, selected);
     setFont(FONT_PANEL);
   }
 

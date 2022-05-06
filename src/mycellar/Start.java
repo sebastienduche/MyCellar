@@ -97,8 +97,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.8
- * @since 05/05/22
+ * @version 31.9
+ * @since 06/05/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -163,7 +163,6 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   private final JMenuItem menuExportXml = new JMenuItem();
   private final JMenuItem menuOpenFile = new JMenuItem();
   private final JMenuItem menuCloseFile = new JMenuItem();
-  private final MyCellarMenuItem menuSetConfig = new MyCellarMenuItem("Start.modifyParameter", LabelProperty.SINGLE.withThreeDashes());
   private final JMenuItem menuReopen1 = new JMenuItem();
   private final JMenuItem menuReopen2 = new JMenuItem();
   private final JMenuItem menuReopen3 = new JMenuItem();
@@ -848,7 +847,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuTools.add(menuImportXmlPlaces);
     menuTools.add(menuExportXmlPlaces);
     menuTools.add(menuExportXml);
-    menuTools.add(menuSetConfig);
+    menuTools.add(new MyCellarMenuItem(new SetConfigAction()));
     menuAbout.add(about);
     menuAddObject.setAccelerator(KeyStroke.getKeyStroke(addWineChar, InputEvent.CTRL_DOWN_MASK));
     menuAddPlace.setAccelerator(KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
@@ -913,7 +912,6 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuReopen3.addActionListener((e) -> reopen3_actionPerformed());
     menuReopen4.addActionListener((e) -> reopen4_actionPerformed());
     menuHelp.addActionListener((e) -> aide_actionPerformed());
-    menuSetConfig.addActionListener((e) -> menuSetConfig_actionPerformed());
     menuCheckUpdate.addActionListener((e) -> menuCheckUpdate_actionPerformed());
   }
 
@@ -946,29 +944,6 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       setCursor(Cursor.getDefaultCursor());
       setApplicationTitle(Program.getShortFilename());
       setEnabled(true);
-    }
-  }
-
-  /**
-   * menuSetConfig_actionPerformed: Modification des parametres internes
-   */
-  private void menuSetConfig_actionPerformed() {
-    JPanel panel = new JPanel();
-    panel.setLayout(new MigLayout("", "grow"));
-    JTextField key = new JTextField();
-    JTextField value = new JTextField();
-    panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.parameterToModify"), "grow, wrap");
-    panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.key"), "split 2");
-    panel.add(key, "grow, wrap");
-    panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.value"), "split 2");
-    panel.add(value, "grow");
-    if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(getInstance(), panel, getLabelCode("Start.modifyParameter"), JOptionPane.OK_CANCEL_OPTION)) {
-      final String parameter = toCleanString(key.getText());
-      final String parameterValue = toCleanString(value.getText());
-      if (isDefined(parameter)) {
-        Program.putGlobalConfigString(parameter, parameterValue);
-        Program.saveGlobalProperties();
-      }
     }
   }
 
@@ -1512,6 +1487,35 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     public void actionPerformed(ActionEvent arg0) {
       selectOrAddTab(ProgramPanels.createParametres(), LABEL, MyCellarImage.PARAMETER);
       updateMainPanel();
+    }
+  }
+
+  final class SetConfigAction extends MyCellarAction {
+    private static final long serialVersionUID = -5144284671743409095L;
+
+    private SetConfigAction() {
+      super("Start.modifyParameter", LabelProperty.SINGLE.withThreeDashes());
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      JPanel panel = new JPanel();
+      panel.setLayout(new MigLayout("", "grow"));
+      JTextField key = new JTextField();
+      JTextField value = new JTextField();
+      panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.parameterToModify"), "grow, wrap");
+      panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.key"), "split 2");
+      panel.add(key, "grow, wrap");
+      panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.value"), "split 2");
+      panel.add(value, "grow");
+      if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(getInstance(), panel, getLabelCode("Start.modifyParameter"), JOptionPane.OK_CANCEL_OPTION)) {
+        final String parameter = toCleanString(key.getText());
+        final String parameterValue = toCleanString(value.getText());
+        if (isDefined(parameter)) {
+          Program.putGlobalConfigString(parameter, parameterValue);
+          Program.saveGlobalProperties();
+        }
+      }
     }
   }
 }

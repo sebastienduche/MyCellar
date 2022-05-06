@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
+import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -29,8 +30,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.5
- * @since 26/04/22
+ * @version 5.6
+ * @since 06/05/22
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -161,34 +162,34 @@ class TableShowValues extends AbstractTableModel {
             rangement = Program.getPlaceByName(empl);
           }
         } else if (column == NUM_PLACE) {
-          try {
-            num_empl = Integer.parseInt((String) value);
-            nValueToCheck = num_empl;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            num_empl = i;
+            nValueToCheck = i;
           }
         } else if (column == LINE) {
-          try {
-            line = Integer.parseInt((String) value);
-            nValueToCheck = line;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            line = i;
+            nValueToCheck = i;
           }
         } else {
-          try {
-            column1 = Integer.parseInt((String) value);
-            nValueToCheck = column1;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            column1 = i;
+            nValueToCheck = i;
           }
         }
 
         if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
           if (!rangement.isSimplePlace() && nValueToCheck <= 0) {
-            Erreur.showSimpleErreur(getError("Error197"));
+            Erreur.showSimpleErreur(getError("Error.enterNumericValueAboveZero"));
             bError = true;
           }
         }
@@ -212,7 +213,7 @@ class TableShowValues extends AbstractTableModel {
             }
             if (bTemp.isPresent()) {
               final IMyCellarObject bouteille = bTemp.get();
-              Erreur.showSimpleErreur(MessageFormat.format(getError("Error059"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
+              Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
             } else {
               if (column == PLACE) {
                 b.setEmplacement((String) value);
@@ -235,9 +236,9 @@ class TableShowValues extends AbstractTableModel {
             }
           } else {
             if (rangement.isSimplePlace()) {
-              Erreur.showSimpleErreur(getError("Error154"));
+              Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"));
             } else {
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error198", LabelProperty.THE_SINGLE), getError("Error.error"), JOptionPane.YES_NO_OPTION)) {
+              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getError("Error.error"), JOptionPane.YES_NO_OPTION)) {
                 LinkedList<MyCellarObject> list = new LinkedList<>();
                 list.add(b);
                 Program.modifyBottles(list);

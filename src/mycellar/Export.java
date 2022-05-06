@@ -13,9 +13,9 @@ import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.text.LabelType;
+import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.uicomponents.MyCellarMenuItem;
 import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
@@ -29,7 +29,6 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -40,6 +39,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -64,8 +64,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.7
- * @since 05/05/22
+ * @version 10.8
+ * @since 06/05/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -75,7 +75,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   private final MyCellarButton valider = new MyCellarButton("Main.Export");
   private final JTextField file = new JTextField();
   private final MyCellarButton browse = new MyCellarButton(OPEN);
-  private final MyCellarButton parameters = new MyCellarButton("Main.Parameters");
+  private final MyCellarButton parameters = new MyCellarButton("Main.Parameters", new ParametersAction());
   private final JProgressBar progressBar = new JProgressBar();
   private final MyCellarRadioButton MyCellarRadioButtonXML = new MyCellarRadioButton("Export.Xml", true);
   private final MyCellarRadioButton MyCellarRadioButtonHTML = new MyCellarRadioButton("Export.Html", false);
@@ -84,8 +84,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton("Export.Pdf", false);
   private final MyCellarLabel end = new MyCellarLabel();
   private final MyCellarButton openit = new MyCellarButton("Main.OpenTheFile");
-  private final MyCellarButton options = new MyCellarButton("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
-  private final JMenuItem param = new MyCellarMenuItem("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
+  private final MyCellarButton options = new MyCellarButton("Main.Settings", LabelProperty.SINGLE.withThreeDashes(), new SettingsAction());
   private final List<? extends MyCellarObject> myCellarObjects;
 
   public Export() {
@@ -124,7 +123,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     end.setFont(FONT_DIALOG_SMALL);
     openit.setMnemonic(OUVRIR);
     openit.addActionListener((e) -> openit_actionPerformed());
-    parameters.addActionListener((e) -> param_actionPerformed());
     MyCellarRadioButtonXML.addActionListener((e) -> jradio_actionPerformed());
     MyCellarRadioButtonHTML.addActionListener((e) -> jradio_actionPerformed());
     MyCellarRadioButtonCSV.addActionListener((e) -> jradio_actionPerformed());
@@ -133,7 +131,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     MyCellarRadioButtonXLS.addActionListener((e) -> jradio_actionPerformed());
     MyCellarRadioButtonPDF.addActionListener((e) -> jradio_actionPerformed());
 
-    param.addActionListener((e) -> param_actionPerformed());
     file.addMouseListener(new PopupListener());
 
     final ButtonGroup buttonGroup = new ButtonGroup();
@@ -146,7 +143,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     valider.setMnemonic(EXPORT);
 
     valider.addActionListener((e) -> export());
-    options.addActionListener((e) -> options_actionPerformed());
     browse.addActionListener((e) -> browse_actionPerformed());
 
     addKeyListener(new KeyAdapter() {
@@ -245,51 +241,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     }
   }
 
-  /**
-   * options_actionPerformed: Appel de la fenetre d'options.
-   */
-  private void options_actionPerformed() {
-    end.setText("");
-    if (MyCellarRadioButtonPDF.isSelected()) {
-      PDFOptions ef = new PDFOptions();
-      ef.setAlwaysOnTop(true);
-      ef.setVisible(true);
-      options.setSelected(false);
-    } else if (MyCellarRadioButtonXLS.isSelected()) {
-      XLSOptions xf = new XLSOptions();
-      xf.setAlwaysOnTop(true);
-      xf.setVisible(true);
-      options.setSelected(false);
-    } else if (MyCellarRadioButtonCSV.isSelected()) {
-      CSVOptions cf = new CSVOptions();
-      cf.setAlwaysOnTop(true);
-      cf.setVisible(true);
-      options.setSelected(false);
-    } else if (MyCellarRadioButtonHTML.isSelected()) {
-      List<MyCellarFields> fieldsList = MyCellarFields.getFieldsList();
-      ManageColumnModel modelColumn = new ManageColumnModel(fieldsList, Program.getHTMLColumns());
-      JTable table = new JTable(modelColumn);
-      TableColumnModel tcm = table.getColumnModel();
-      TableColumn tc = tcm.getColumn(0);
-      tc.setCellRenderer(new CheckboxCellRenderer());
-      tc.setCellEditor(new CheckboxCellEditor());
-      tc.setMinWidth(25);
-      tc.setMaxWidth(25);
-      JPanel panel = new JPanel();
-      panel.add(new JScrollPane(table));
-      JOptionPane.showMessageDialog(this, panel, getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
-      Program.setModified();
-      List<Integer> properties = modelColumn.getSelectedColumns();
-      List<MyCellarFields> cols = new ArrayList<>();
-      for (MyCellarFields c : fieldsList) {
-        if (properties.contains(c.ordinal())) {
-          cols.add(c);
-        }
-      }
-      Program.saveHTMLColumns(cols);
-    }
-  }
-
   private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == OUVRIR && openit.isEnabled()) {
       openit_actionPerformed();
@@ -349,7 +300,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       myCellarObjects.forEach(liste::add);
       boolean ok = ListeBouteille.writeXML(liste, aFile);
       if (ok) {
-        end.setText(getLabel("Infos154")); //"Export termine."
+        end.setText(getLabel("Export.Ended"));
         openit.setEnabled(true);
       } else {
         end.setText(getError("Error129")); //"Erreur lors de l'export"
@@ -364,7 +315,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
 
       if (RangementUtils.write_HTML(aFile, myCellarObjects, Program.getHTMLColumns())) {
-        end.setText(getLabel("Infos154")); //"Export termine."
+        end.setText(getLabel("Export.Ended"));
         Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.savedFile"), aFile.getAbsolutePath()));
         openit.setEnabled(true);
       } else {
@@ -381,7 +332,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
       progressBar.setVisible(true);
       if (RangementUtils.write_CSV(aFile, myCellarObjects, progressBar)) {
-        end.setText(getLabel("Infos154")); //"Export termine."
+        end.setText(getLabel("Export.Ended"));
         Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.savedFile"), aFile.getAbsolutePath()),
             getLabel("Export.CSVInfo"));
         openit.setEnabled(true);
@@ -398,7 +349,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
       progressBar.setVisible(true);
       if (RangementUtils.write_XLS(aFile, myCellarObjects, false, progressBar)) {
-        end.setText(getLabel("Infos154")); //"Export termine."
+        end.setText(getLabel("Export.Ended"));
         Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.savedFile"), aFile.getAbsolutePath()));
         openit.setEnabled(true);
       } else {
@@ -416,30 +367,13 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
 
       if (exportToPDF(myCellarObjects, aFile)) {
-        end.setText(getLabel("Infos154")); //"Export termine
+        end.setText(getLabel("Export.Ended"));
         openit.setEnabled(true);
       } else {
         end.setText("");
       }
     }
     valider.setEnabled(true);
-  }
-
-  private void param_actionPerformed() {
-    List<String> titre_properties = List.of(
-        "Export.Xml",
-        "Export.Html",
-        "Export.Csv",
-        "Export.Xls",
-        "Export.Pdf");
-    ArrayList<String> default_value = new ArrayList<>(List.of("false", "false", "false", "false", "false"));
-    List<String> key_properties = List.of(MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT,
-        MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT);
-    default_value.set(Program.getCaveConfigInt(key_properties.get(0), 0), "true");
-
-    List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
-    MyOptions myoptions = new MyOptions(getLabel("Infos310"), getLabel("Infos309"), titre_properties, default_value, key_properties, type_objet, false);
-    myoptions.setVisible(true);
   }
 
   @Override
@@ -473,4 +407,80 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     Start.getInstance().updateMainPanel();
   }
 
+  class SettingsAction extends MyCellarAction {
+    private static final long serialVersionUID = -3212527164505184899L;
+
+    private SettingsAction() {
+      super("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      end.setText("");
+      if (MyCellarRadioButtonPDF.isSelected()) {
+        PDFOptions ef = new PDFOptions();
+        ef.setAlwaysOnTop(true);
+        ef.setVisible(true);
+        options.setSelected(false);
+      } else if (MyCellarRadioButtonXLS.isSelected()) {
+        XLSOptions xf = new XLSOptions();
+        xf.setAlwaysOnTop(true);
+        xf.setVisible(true);
+        options.setSelected(false);
+      } else if (MyCellarRadioButtonCSV.isSelected()) {
+        CSVOptions cf = new CSVOptions();
+        cf.setAlwaysOnTop(true);
+        cf.setVisible(true);
+        options.setSelected(false);
+      } else if (MyCellarRadioButtonHTML.isSelected()) {
+        List<MyCellarFields> fieldsList = MyCellarFields.getFieldsList();
+        ManageColumnModel modelColumn = new ManageColumnModel(fieldsList, Program.getHTMLColumns());
+        JTable table = new JTable(modelColumn);
+        TableColumnModel tcm = table.getColumnModel();
+        TableColumn tc = tcm.getColumn(0);
+        tc.setCellRenderer(new CheckboxCellRenderer());
+        tc.setCellEditor(new CheckboxCellEditor());
+        tc.setMinWidth(25);
+        tc.setMaxWidth(25);
+        JPanel panel = new JPanel();
+        panel.add(new JScrollPane(table));
+        JOptionPane.showMessageDialog(Start.getInstance(), panel, getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
+        Program.setModified();
+        List<Integer> properties = modelColumn.getSelectedColumns();
+        List<MyCellarFields> cols = new ArrayList<>();
+        for (MyCellarFields c : fieldsList) {
+          if (properties.contains(c.ordinal())) {
+            cols.add(c);
+          }
+        }
+        Program.saveHTMLColumns(cols);
+      }
+    }
+  }
+
+  class ParametersAction extends MyCellarAction {
+    private static final long serialVersionUID = -3212527164505184899L;
+
+    private ParametersAction() {
+      super("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      List<String> titre_properties = List.of(
+          "Export.Xml",
+          "Export.Html",
+          "Export.Csv",
+          "Export.Xls",
+          "Export.Pdf");
+      ArrayList<String> default_value = new ArrayList<>(List.of("false", "false", "false", "false", "false"));
+      List<String> key_properties = List.of(MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT,
+          MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT);
+      default_value.set(Program.getCaveConfigInt(key_properties.get(0), 0), "true");
+
+      List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
+      MyOptions myoptions = new MyOptions(getLabel("Infos310"), getLabel("Infos309"), titre_properties, default_value, key_properties, type_objet, false);
+      myoptions.setVisible(true);
+    }
+  }
 }

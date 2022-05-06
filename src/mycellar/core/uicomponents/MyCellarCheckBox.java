@@ -5,7 +5,6 @@ import mycellar.core.text.LabelKey;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.text.MyCellarLabelManagement;
 
-import javax.swing.Icon;
 import javax.swing.JCheckBox;
 
 import static mycellar.ProgramConstants.FONT_PANEL;
@@ -17,19 +16,14 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 05/05/22
+ * @version 1.0
+ * @since 06/05/22
  */
 
 public final class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
 
   private static final long serialVersionUID = 2584507081563652083L;
   private LabelKey labelKey;
-
-  public MyCellarCheckBox(Icon icon) {
-    super(icon);
-    setFont(FONT_PANEL);
-  }
 
   public MyCellarCheckBox() {
     super("");

@@ -51,7 +51,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidPlace(Place place, Component component) {
     if (Program.EMPTY_PLACE.equals(place.getRangement())) {
       Debug("ERROR: Wrong Place");
-      Erreur.showSimpleErreur(component, getError("Error055")); // Select a place
+      Erreur.showSimpleErreur(component, getError("Error.selectStorage"));
       return true;
     }
     return false;

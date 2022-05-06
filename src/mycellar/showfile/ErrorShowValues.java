@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
+import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -27,8 +28,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 26/04/22
+ * @version 2.3
+ * @since 06/05/22
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -177,34 +178,34 @@ public class ErrorShowValues extends TableShowValues {
             rangement = Program.getPlaceByName(empl);
           }
         } else if (column == NUM_PLACE) {
-          try {
-            num_empl = Integer.parseInt((String) value);
-            nValueToCheck = num_empl;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            num_empl = i;
+            nValueToCheck = i;
           }
         } else if (column == LINE) {
-          try {
-            line = Integer.parseInt((String) value);
-            nValueToCheck = line;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            line = i;
+            nValueToCheck = i;
           }
         } else {
-          try {
-            column1 = Integer.parseInt((String) value);
-            nValueToCheck = column1;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            column1 = i;
+            nValueToCheck = i;
           }
         }
 
         if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
           if (!rangement.isSimplePlace() && nValueToCheck <= 0) {
-            Erreur.showSimpleErreur(getError("Error197"));
+            Erreur.showSimpleErreur(getError("Error.enterNumericValueAboveZero"));
             bError = true;
           }
         }
@@ -228,7 +229,7 @@ public class ErrorShowValues extends TableShowValues {
             }
             if (bTemp.isPresent()) {
               status[row] = Boolean.FALSE;
-              Erreur.showSimpleErreur(MessageFormat.format(getError("Error059"), convertStringFromHTMLString(bTemp.get().getNom()), b.getAnnee()));
+              Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(bTemp.get().getNom()), b.getAnnee()));
             } else {
               if (column == PLACE) {
                 b.setEmplacement((String) value);

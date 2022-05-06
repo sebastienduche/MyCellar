@@ -62,8 +62,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.9
- * @since 05/05/22
+ * @version 9.0
+ * @since 06/05/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -104,8 +104,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     Program.getPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
 
     listOptions.addItem(new MyCellarEnum(StatType.PLACE.ordinal(), getLabel("Infos183"))); //"Par Rangement
-    listOptions.addItem(new MyCellarEnum(StatType.YEAR.ordinal(), getLabel("Infos184"))); //"Par Annee
-    listOptions.addItem(new MyCellarEnum(StatType.PRICE.ordinal(), getLabel("Infos185"))); //"Par Prix
+    listOptions.addItem(new MyCellarEnum(StatType.YEAR.ordinal(), getLabel("Stat.Years")));
+    listOptions.addItem(new MyCellarEnum(StatType.PRICE.ordinal(), getLabel("Stat.Prices")));
     listOptions.addItem(new MyCellarEnum(StatType.HISTORY.ordinal(), getLabel("Stat.history"))); //Historiques
 
     scroll = new JScrollPane(panel);
@@ -153,16 +153,16 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     if (listChart.getSelectedIndex() == 0) {
       Debug("Bar Chart");
       if (selectedItem.getValue() == StatType.YEAR.ordinal()) {
-        panelChart.setDataBarChart(listYear, getLabel("Infos184"));
+        panelChart.setDataBarChart(listYear, getLabel("Stat.Years"));
       } else if (selectedItem.getValue() == StatType.PRICE.ordinal()) {
-        panelChart.setDataBarChart(listPrice, getLabel("Infos185"));
+        panelChart.setDataBarChart(listPrice, getLabel("Stat.Prices"));
       }
     } else if (listChart.getSelectedIndex() == 1) {
       Debug("Pie Chart");
       if (selectedItem.getValue() == StatType.YEAR.ordinal()) {
-        panelChart.setDataPieChart(listYear, getLabel("Infos184"));
+        panelChart.setDataPieChart(listYear, getLabel("Stat.Years"));
       } else if (selectedItem.getValue() == StatType.PRICE.ordinal()) {
-        panelChart.setDataPieChart(listPrice, getLabel("Infos185"));
+        panelChart.setDataPieChart(listPrice, getLabel("Stat.Prices"));
       }
     }
   }
@@ -286,11 +286,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     if (bottlesCount > 0) {
       moy.setText(MessageFormat.format(getLabel("Infos300"), (Program.sumAllPrices() / bottlesCount), Program.getCaveConfigString(MyCellarSettings.DEVISE, "")));
     }
-    if (listChart.getSelectedIndex() == 0) {
-      panelChart.setDataBarChart(listPrice, getLabel("Infos185"));
-    } else {
-      panelChart.setDataPieChart(listPrice, getLabel("Infos185"));
-    }
+    panelChart.setDataPieChart(listPrice, getLabel("Stat.Prices"));
   }
 
   private void displayYear() {
@@ -306,9 +302,9 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
         }
       }
       if (Program.isWineType()) {
-        listYear.add(new StatData(getLabel("Infos390"), Program.getNbNonVintage()));
+        listYear.add(new StatData(getLabel("Main.NV"), Program.getNbNonVintage()));
       }
-      listYear.add(new StatData(getLabel("Infos225"), Program.getTotalOtherYears()));
+      listYear.add(new StatData(getLabel("Main.Other"), Program.getTotalOtherYears()));
     }
     for (StatData data : listYear) {
       panel.add(new MyCellarLabel(data.getName()));
@@ -316,11 +312,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       panel.add(new MyCellarLabel(MessageFormat.format(getLabel("Main.severalItems", new LabelProperty(dataCount > 1)), dataCount)), "span 2, align right, wrap");
     }
     panel.updateUI();
-    if (listChart.getSelectedIndex() == 0) {
-      panelChart.setDataBarChart(listYear, getLabel("Infos184"));
-    } else {
-      panelChart.setDataPieChart(listYear, getLabel("Infos184"));
-    }
+    panelChart.setDataPieChart(listYear, getLabel("Stat.Years"));
     end.setText(MessageFormat.format(getLabel("Infos098", LabelProperty.PLURAL), Program.getNbItems()));
   }
 
@@ -492,13 +484,13 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       listPlaces.addItem(new PlaceComboItem(getLabel("Stat.bottleCount", LabelProperty.PLURAL))); //"Nombre de bouteilles;
     } else if (selectedStatType.getValue() == StatType.PRICE.ordinal()) {
       listPlaces.setEnabled(true);
-      comboLabel.setText(getLabel("Infos187")); //"Tranche de prix:");
+      comboLabel.setText(getLabel("Stat.PriceBracket"));
       listPlaces.removeAllItems();
-      listPlaces.addItem(new PlaceComboItem(getLabel("Infos188"))); //"Toutes les tranches
+      listPlaces.addItem(new PlaceComboItem(getLabel("Stat.AllBrackets")));
       listPlaces.addItem(new PlaceComboItem(getLabel("Stat.BracketsWith", LabelProperty.PLURAL))); //"Tranches avec bouteilles
     } else if (selectedStatType.getValue() == StatType.YEAR.ordinal()) {
       comboLabel.setText("");
-      listPlaces.addItem(new PlaceComboItem(getLabel("Infos186"))); //"Toutes les annees
+      listPlaces.addItem(new PlaceComboItem(getLabel("Stat.AllYears")));
     }
     listPlaces.setSelectedIndex(0);
   }

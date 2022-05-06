@@ -19,8 +19,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 05/05/22
+ * @version 0.7
+ * @since 06/05/22
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
@@ -33,21 +33,21 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
 
   private boolean withText = true;
 
-  public MyCellarAction(String textLabelCode, LabelProperty textLabelProperty) {
-    labelKey = new LabelKey(textLabelCode, textLabelProperty);
+  public MyCellarAction(String code, LabelProperty textLabelProperty) {
+    labelKey = new LabelKey(code, textLabelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
-  public MyCellarAction(String textLabelCode, LabelProperty textLabelProperty, Icon icon) {
+  public MyCellarAction(String code, LabelProperty textLabelProperty, Icon icon) {
     super("", icon);
-    labelKey = new LabelKey(textLabelCode, textLabelProperty);
+    labelKey = new LabelKey(code, textLabelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
-  public MyCellarAction(String textLabelCode, Icon icon) {
-    this(textLabelCode, LabelProperty.SINGLE, icon);
+  public MyCellarAction(String code, Icon icon) {
+    this(code, LabelProperty.SINGLE, icon);
   }
 
 

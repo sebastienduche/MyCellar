@@ -10,16 +10,17 @@ import java.text.Normalizer;
 import static mycellar.Filtre.EXTENSION_SINFO;
 import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.SLASH;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2021</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2021
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 19/10/21
+ * @version 0.3
+ * @since 06/05/22
  */
 public final class MyCellarUtils {
 
@@ -46,6 +47,15 @@ public final class MyCellarUtils {
       return Integer.parseInt(value);
     } catch (NumberFormatException ignored) {
       return defaultValue;
+    }
+  }
+
+  public static Integer parseIntOrError(Object value) {
+    try {
+      return Integer.parseInt((String) value);
+    } catch (NumberFormatException e) {
+      Erreur.showSimpleErreur(getError("Error.enterNumericValue"));
+      return null;
     }
   }
 

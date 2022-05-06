@@ -74,8 +74,8 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private static final char PREVIEW = getLabel("PREVIEW").charAt(0);
   private final MyCellarComboBox<Rangement> comboPlace = new MyCellarComboBox<>();
   private final JTextField nom_obj = new JTextField();
-  private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton("CreateStorage.AllLinesSame", true); //"Toutes les lignes ont le meme nombre de colonnes"
-  private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton("CreateStorage.AllLinesNotSame", false); //"Toutes les lignes n'ont pas le meme nombre de colonnes"
+  private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton("CreateStorage.AllLinesSame", true);
+  private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton("CreateStorage.AllLinesNotSame", false);
   private final MyCellarCheckBox checkLimite = new MyCellarCheckBox("CreatePlace.ActivateLimit");
   private final MyCellarLabel label_limite = new MyCellarLabel("Main.Item", LabelProperty.SINGLE);
   private final MyCellarSpinner nb_limite = new MyCellarSpinner(1, 999);

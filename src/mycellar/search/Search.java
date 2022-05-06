@@ -4,7 +4,6 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Export;
 import mycellar.ITabListener;
-import mycellar.MyCellarImage;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.Start;
@@ -66,6 +65,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static mycellar.MyCellarImage.DELETE;
+import static mycellar.MyCellarImage.EXPORT;
+import static mycellar.MyCellarImage.SEARCH;
+import static mycellar.MyCellarImage.WINE;
 import static mycellar.MyCellarImage.WORK;
 import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
@@ -81,8 +84,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.5
- * @since 05/05/22
+ * @version 23.6
+ * @since 06/05/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -90,11 +93,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final SearchTableModel searchTableModel = new SearchTableModel();
   private final MyCellarLabel objectFoundCountLabels = new MyCellarLabel("Search.bottleFound", LabelProperty.PLURAL.withCapital());
   private final MyCellarLabel countLabel = new MyCellarLabel(DASH);
-  private final MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
-  private final MyCellarButton exportButton = new MyCellarButton(MyCellarImage.EXPORT);
-  private final MyCellarButton modifyButton = new MyCellarButton(MyCellarImage.WINE);
+  private final MyCellarButton deleteButton = new MyCellarButton("Main.Delete", DELETE);
+  private final MyCellarButton exportButton = new MyCellarButton("Search.Export", EXPORT);
+  private final MyCellarButton modifyButton = new MyCellarButton("Main.Modify", WINE);
   private final MyCellarComboBox<String> year = new MyCellarComboBox<>();
-  private final MyCellarButton searchButton = new MyCellarButton("Main.Search", MyCellarImage.SEARCH);
+  private final MyCellarButton searchButton = new MyCellarButton("Main.Search", SEARCH);
   private final MyCellarButton emptyRowsButton = new MyCellarButton("Search.Clear");
   private final char searchKey = getLabel("RECHERCHE").charAt(0);
   private final char modificationKey = getLabel("MODIF").charAt(0);
@@ -102,7 +105,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final char exportKey = getLabel("EXPORT").charAt(0);
   private final MyCellarLabel resultInfoLabel = new MyCellarLabel();
   private final MyCellarCheckBox selectAllCheck = new MyCellarCheckBox("Main.SelectAll");
-  private final MyCellarButton addToWorksheetButton = new MyCellarButton(WORK);
+  private final MyCellarButton addToWorksheetButton = new MyCellarButton("Search.AddWorksheet", WORK);
   private final MyCellarCheckBox emptySearchCheck = new MyCellarCheckBox("Search.ClearAll");
   private final MouseListener popupListener = new PopupListener();
   private final JTabbedPane tabbedPane = new JTabbedPane();
@@ -133,19 +136,15 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         }
       };
 
-      exportButton.setText(getLabel("Infos120")); // Export the results
       exportButton.setMnemonic(exportKey);
       selectAllCheck.setHorizontalAlignment(SwingConstants.RIGHT);
       selectAllCheck.setHorizontalTextPosition(SwingConstants.LEFT);
 
       selectAllCheck.addActionListener(this::selectall_actionPerformed);
-      addToWorksheetButton.setText(getLabel("Search.AddWorksheet"));
       addToWorksheetButton.addActionListener(this::addToWorksheet_actionPerformed);
       emptySearchCheck.addActionListener(this::empty_search_actionPerformed);
       exportButton.addActionListener(this::export_actionPerformed);
-      deleteButton.setText(getLabel("Main.Delete"));
       deleteButton.setMnemonic(deleteKey);
-      modifyButton.setText(getLabel("Main.Modify"));
       modifyButton.setMnemonic(modificationKey);
       modifyButton.setEnabled(false);
       deleteButton.setEnabled(false);
@@ -213,10 +212,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
       setLayout(new MigLayout("", "[grow][]", "[]10px[][grow][]"));
 
-      tabbedPane.add(getLabel("Infos077"), new PanelName());
-      tabbedPane.add(getLabel("Infos078"), panelPlace);
-      tabbedPane.add(getLabel("Infos219"), panelYear);
-      tabbedPane.add(getLabel("Infos318"), panelRequest);
+      tabbedPane.add(getLabel("Search.ByName"), new PanelName());
+      tabbedPane.add(getLabel("Search.ByStorage"), panelPlace);
+      tabbedPane.add(getLabel("Search.ByYear"), panelYear);
+      tabbedPane.add(getLabel("Search.AdvancedSearch"), panelRequest);
 
       add(tabbedPane, "growx");
       add(new PanelOption(), "wrap");
@@ -268,17 +267,17 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (listToDelete.isEmpty()) {
         // No objet to delete / Select...
         Debug("ERROR: No bottle to delete!");
-        Erreur.showInformationMessage(getError("Error064", LabelProperty.SINGLE), getError("Error065", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getError("Error.NoItemToDelete", LabelProperty.SINGLE), getError("Error.pleaseSelect", LabelProperty.THE_PLURAL));
         return;
       }
       String erreur_txt1;
       String erreur_txt2;
       if (listToDelete.size() == 1) {
-        erreur_txt1 = getError("Error067", LabelProperty.SINGLE); // 1 vin selectionne.
-        erreur_txt2 = getError("Error068"); // Delete it ?
+        erreur_txt1 = getError("Error.1ItemSelected", LabelProperty.SINGLE);
+        erreur_txt2 = getError("Error.Confirm1Delete");
       } else {
-        erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), listToDelete.size()); //vins selectionnes.
-        erreur_txt2 = getError("Error131"); //" Delete them ?
+        erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), listToDelete.size());
+        erreur_txt2 = getError("Error.confirmNDelete");
       }
       int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       if (resul == JOptionPane.YES_OPTION) {
@@ -322,7 +321,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     Debug("Cherche_actionPerforming...");
     name.removeMenu();
     updateLabelObjectNumber(false);
-    resultInfoLabel.setText(getLabel("Infos087")); //"Recherche en cours...
+    resultInfoLabel.setText(getLabel("Search.InProgress"));
     new Thread(this).start();
   }
 
@@ -419,8 +418,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         final List<MyCellarObject> listToModify = searchTableModel.getSelectedObjects();
 
         if (listToModify.isEmpty()) {
-          //No object to modify / Select...
-          Erreur.showInformationMessage(getError("Error071", LabelProperty.SINGLE), getError("Error072", LabelProperty.THE_PLURAL));
+          Erreur.showInformationMessage(getError("Error.NoItemToModify", LabelProperty.SINGLE), getError("Error.SelectItemToModify", LabelProperty.THE_PLURAL));
         } else {
           Debug("Modifying " + listToModify.size() + " object(s)...");
           Program.modifyBottles(listToModify);
@@ -466,12 +464,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     updateLabelObjectNumber(true);
     if (alreadyFoundItems) {
       if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false)) {
-        // Don't add object if already in the list
-        Erreur.showInformationMessageWithKey(getError("Error133", LabelProperty.A_SINGLE), MyCellarSettings.DONT_SHOW_INFO);
+        Erreur.showInformationMessageWithKey(getError("Error.DontAddTwice", LabelProperty.A_SINGLE), MyCellarSettings.DONT_SHOW_INFO);
       }
     }
     alreadyFoundItems = false;
-    resultInfoLabel.setText(getLabel("Infos088")); //"Recherche terminee.
+    resultInfoLabel.setText(getLabel("Search.Completed"));
     if (searchTableModel.getRowCount() > 0) {
       exportButton.setEnabled(true);
       modifyButton.setEnabled(true);
@@ -567,8 +564,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (myCellarObject == null) {
         searchTableModel.removeAll();
         updateLabelObjectNumber(true);
-        resultInfoLabel.setText(getLabel("Infos224")); //"Echec de la recherche.
-        Erreur.showSimpleErreur(getError("Error066", LabelProperty.SINGLE)); //Aucun objet trouve
+        resultInfoLabel.setText(getLabel("Search.Failed"));
+        Erreur.showSimpleErreur(getError("Error.NoItemFound", LabelProperty.SINGLE)); //Aucun objet trouve
         modifyButton.setEnabled(false);
         deleteButton.setEnabled(false);
       } else {
@@ -838,7 +835,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       name.addMouseListener(popupListener);
       name.setFont(FONT_PANEL);
       setLayout(new MigLayout("", "[grow]", "[]"));
-      add(new MyCellarLabel(LabelType.INFO, "085"), "wrap");
+      add(new MyCellarLabel(LabelType.INFO_OTHER, "Search.Name"), "wrap");
       add(name, "grow");
     }
   }
@@ -848,7 +845,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
     private PanelYear() {
       setLayout(new MigLayout());
-      MyCellarLabel labelYear = new MyCellarLabel(LabelType.INFO, "133");
+      MyCellarLabel labelYear = new MyCellarLabel(LabelType.INFO_OTHER, "Search.Year");
       add(labelYear, "wrap");
       add(year);
     }
@@ -861,8 +858,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           year.addItem(Integer.toString(s));
         }
       }
-      year.addItem(getLabel("Infos390")); // NV
-      year.addItem(getLabel("Infos225")); // Autre
+      year.addItem(getLabel("Main.NV"));
+      year.addItem(getLabel("Main.Other"));
     }
   }
 

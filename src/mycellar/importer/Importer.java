@@ -85,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.5
- * @since 03/05/22
+ * @version 15.6
+ * @since 11/05/22
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -292,7 +292,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(getError("FileNotFound"));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), ""));
         Debug("ERROR: browseFile: File not found during Opening!");
         return;
       }
@@ -440,7 +440,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         Debug("ERROR: No column for wine name");
         //"Aucune colonne n'indique le nom du vin.
         //"Veuillez selectionner une colonne avec le nom du vin
-        Erreur.showSimpleErreur(getError("Error142", LabelProperty.OF_THE_SINGLE), getError("Error143", LabelProperty.SINGLE));
+        Erreur.showSimpleErreur(getError("Error.NoColumnSelectedForName", LabelProperty.OF_THE_SINGLE), getError("Error143", LabelProperty.SINGLE));
         importe.setEnabled(true);
         return;
       }

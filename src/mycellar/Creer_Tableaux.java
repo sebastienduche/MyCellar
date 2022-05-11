@@ -56,8 +56,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.8
- * @since 03/05/22
+ * @version 8.9
+ * @since 11/05/22
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
@@ -79,13 +79,13 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 
   public Creer_Tableaux() {
     Debug("Constructor");
-    final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO, "095"); //"Nom du fichier genere:
+    final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO_OTHER, "CreateTable.FileToGenerate");
     m_jcb_options.addActionListener(this::options_actionPerformed);
     final MyCellarButton browse = new MyCellarButton(OPEN);
     browse.addActionListener(this::browse_actionPerformed);
     final MyCellarButton parameter = new MyCellarButton("Main.Parameters");
     parameter.addActionListener(this::param_actionPerformed);
-    final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO, "096"); //"Selectionner les rangements a generer:
+    final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO_OTHER, "CreateTable.SelectStoragesToGenerate");
     final MyCellarButton create = new MyCellarButton("Main.Create");
     create.setMnemonic(creerChar);
 
@@ -253,7 +253,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 
     if (rangements.isEmpty()) {
       Debug("ERROR: No place selected");
-      Erreur.showInformationMessage(getError("Error089"), getError("Error090"));
+      Erreur.showInformationMessage(getError("Error.NoStorageSelected"), getError("Error.SelectStorageToGenerate"));
       return;
     }
     long caisseCount = 0;
@@ -273,8 +273,8 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
       if (caisseCount > 0) {
         String erreur_txt1, erreur_txt2;
         if (caisseCount == 1) {
-          erreur_txt1 = getError("Error091"); //"Vous avez selectionne un rangement de type Caisse
-          erreur_txt2 = getError("Error092", LabelProperty.PLURAL); //"Une liste des vins de ce rangement a ete generee.
+          erreur_txt1 = getError("Error.SimpleStorageSelected");
+          erreur_txt2 = getError("Error.ListOfItemsInStorageGenerated", LabelProperty.PLURAL);
         } else {
           erreur_txt1 = getError("Error127"); //"Vous avez selectionne des rangements de type Caisse
           erreur_txt2 = getError("Error128", LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.
@@ -282,7 +282,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
         Erreur.showInformationMessageWithKey(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
       }
     }
-    end.setText(getLabel("Infos097"), true); //"Fichier genere.
+    end.setText(getLabel("CreateTable.FileGenrated"), true);
     preview.setEnabled(true);
   }
 
@@ -330,7 +330,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     String val = Program.getCaveConfigString(key_properties.get(0), "1");
     List<String> default_value = List.of("0".equals(val) ? "true" : "false", "1".equals(val) ? "true" : "false", "2".equals(val) ? "true" : "false");
     List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
-    MyOptions myoptions = new MyOptions(getLabel("Infos310"), getLabel("Infos309"), titre_properties, default_value, key_properties, type_objet, false);
+    MyOptions myoptions = new MyOptions(getLabel("Export.Options"), getLabel("Export.selectDefaultMode"), titre_properties, default_value, key_properties, type_objet, false);
     myoptions.setVisible(true);
   }
 

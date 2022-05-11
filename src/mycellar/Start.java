@@ -97,8 +97,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.9
- * @since 06/05/22
+ * @version 32.0
+ * @since 11/05/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -392,7 +392,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(getError("FileNotFound"));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), ""));
         Debug("ERROR: ImportXmlPlace: File not found during Opening!");
         return;
       }
@@ -569,9 +569,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     newChar = getLabel("NEW").charAt(0);
 
     // differents menus
-    menuFile.setText(getLabel("Infos104")); // Fichier
+    menuFile.setText(getLabel("Main.File"));
     menuPlace.setText(getLabel("Main.Storage"));
-    menuWine.setText(getLabel("Main.Item", LabelProperty.SINGLE.withCapital())); // Vin
+    menuWine.setText(getLabel("Main.Item", LabelProperty.SINGLE.withCapital()));
     menuTools.setText(getLabel("Infos246"));
     menuEdition.setText(getLabel("Infos245"));
 
@@ -931,7 +931,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(getError("FileNotFound"));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), ""));
         Debug("ERROR: menuSaveAs: File not found during Opening!");
         return;
       }
@@ -1121,7 +1121,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
           File file = boiteFichier.getSelectedFile();
           if (file == null) {
             setCursor(Cursor.getDefaultCursor());
-            Erreur.showSimpleErreur(getError("FileNotFound"));
+            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), ""));
             Debug("ERROR: OpenAction: File not found during Opening!");
             ProgramPanels.updateAllPanels();
             updateMainPanel();

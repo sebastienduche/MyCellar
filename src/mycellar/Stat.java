@@ -62,8 +62,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.0
- * @since 06/05/22
+ * @version 9.1
+ * @since 11/05/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -381,7 +381,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     final int nbCaseUseAll = cave.getTotalCountCellUsed();
     final MyCellarLabel list_num_empl;
     if (nbEmplacements == 1) {
-      list_num_empl = new MyCellarLabel(LabelType.INFO, "175"); //"1 emplacement
+      list_num_empl = new MyCellarLabel(LabelType.INFO_OTHER, "Stats.1Storage");
     } else {
       list_num_empl = new MyCellarLabel(MessageFormat.format(getLabel("Infos176"), nbEmplacements)); //"emplacements
     }

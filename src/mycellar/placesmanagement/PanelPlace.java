@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 03/05/22
+ * @version 3.1
+ * @since 11/05/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -53,16 +53,16 @@ public class PanelPlace extends JPanel implements IPlace {
   private final MyCellarLabel labelLine = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.line");
   private final MyCellarLabel labelColumn = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.column");
 
-  private final MyCellarLabel beforeLabel = new MyCellarLabel(LabelType.INFO, "091"); // Pour la Modification
+  private final MyCellarLabel beforeLabel = new MyCellarLabel(LabelType.INFO_OTHER, "PanelPlace.Before"); // Pour la Modification
   private final MyCellarLabel previousPlaceLabel = new MyCellarLabel(""); // Pour la Modification
   private final MyCellarLabel previousNumPlaceLabel = new MyCellarLabel(""); // Pour la Modification
   private final MyCellarLabel previousLineLabel = new MyCellarLabel(""); // Pour la Modification
   private final MyCellarLabel previousColumnLabel = new MyCellarLabel(""); // Pour la Modification
 
   private final MyCellarCheckBox searchSeveralLocation = new MyCellarCheckBox("Search.AllBottlesInPlace", LabelProperty.PLURAL);
-  private final String labelAllObjectsInPlace = getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL); // Tous les vins de l'emplacement
-  private final String labelAllObjectsInPart = getLabel("Search.AllBottlesInPart", LabelProperty.PLURAL); // Tous les vins du lieu
-  private final String labelAllObjectsInLine = getLabel("Search.AllBottlesInLine", LabelProperty.PLURAL); // Tous les vins de la ligne
+  private final String labelAllObjectsInPlace = getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL);
+  private final String labelAllObjectsInPart = getLabel("Search.AllBottlesInPart", LabelProperty.PLURAL);
+  private final String labelAllObjectsInLine = getLabel("Search.AllBottlesInLine", LabelProperty.PLURAL);
   private final MyCellarButton chooseCell;
   private final boolean columnComboVisible;
   private final boolean onlyComplexPlaces;
@@ -421,14 +421,14 @@ public class PanelPlace extends JPanel implements IPlace {
         searchSeveralLocation.setVisible(!rangement.isSimplePlace());
         if (rangement.isSimplePlace()) {
           severalLocationState = SeveralLocationState.PLACE;
-          labelNumPlace.setText(getLabel("Infos158")); //"Numero de caisse
+          labelNumPlace.setText(getLabel("PanelPlace.shelveNumber"));
           if (rangement.getNbParts() == 1) {
             numPlace.setSelectedIndex(1);
           }
         } else {
           // Need the last place number for complex places
           numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
-          labelNumPlace.setText(getLabel("MyCellarFields.numPlace")); //"Numero du lieu
+          labelNumPlace.setText(getLabel("MyCellarFields.numPlace"));
         }
         enableAll(true);
         updateMultiCheckboxState();
@@ -539,7 +539,7 @@ public class PanelPlace extends JPanel implements IPlace {
         if (checkExist) {
           Rangement rangement = place.getItemAt(nPlace);
           rangement.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
-              .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(getLabel("Infos329"), MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom()))));
+              .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(getLabel("PanelPlace.CellUsedBy"), MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom()))));
         }
         Debug("Column_itemStateChanging... Done");
       }

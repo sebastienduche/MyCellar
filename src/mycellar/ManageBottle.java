@@ -40,8 +40,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.6
- * @since 06/05/22
+ * @version 9.7
+ * @since 11/05/22
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -114,7 +114,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       initStatusAndTime();
 
       panelPlace.selectPlace(cellarObject);
-      end.setText(getLabel("Infos092")); //"Saisir les modifications
+      end.setText(getLabel("AddVin.EnterChanges"));
       resetModified();
     } catch (RuntimeException e) {
       Program.showException(e);
@@ -309,7 +309,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     modified |= panelPlace.isModified();
     modified |= panelVignobles.isModified();
 
-    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error148", OF_THE_SINGLE) + SPACE + getError("Error145"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
+    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error.modificationIncompleted", OF_THE_SINGLE) + SPACE + getError("Error.confirmQuit"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
       Debug("Don't Quit.");
       addButton.setEnabled(true);
       cancelButton.setEnabled(true);

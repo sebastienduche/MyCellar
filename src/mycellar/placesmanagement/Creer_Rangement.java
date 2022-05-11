@@ -64,8 +64,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.2
- * @since 05/05/22
+ * @version 16.3
+ * @since 11/05/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -349,7 +349,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         } else {
           Debug("MESSAGE: " + nb_bottle + " objects in this place, Modify?");
           erreur_txt1 = MessageFormat.format(getError("Error094", LabelProperty.PLURAL), nb_bottle); //bouteilles sont presentes dans ce rangement.
-          erreur_txt2 = getError("Error095", LabelProperty.PLURAL); //"Change the place of these objects
+          erreur_txt2 = getError("Error.questionChangeStorageItems", LabelProperty.PLURAL);
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify Name of place
@@ -487,7 +487,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         } else {
           Debug("MESSAGE: " + nbBottles + " objects in this place, Modify?");
           erreur_txt1 = MessageFormat.format(getError("Error094", LabelProperty.PLURAL), nbBottles); //bouteilles sont presentes dans ce rangement.
-          erreur_txt2 = getError("Error095", LabelProperty.PLURAL); //"Voulez-vous changer l'emplacement de ces bouteilles?");
+          erreur_txt2 = getError("Error.questionChangeStorageItems", LabelProperty.PLURAL);
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify Name of place
@@ -559,7 +559,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
             .limit(limite).build());
         Debug("Creation of '" + nom + "' completed.");
         nom_obj.setText("");
-        label_cree.setText(getLabel("Infos090"), true); //"Rangement cree.
+        label_cree.setText(getLabel("CreateStorage.created"), true);
         ProgramPanels.updateAllPanelsForUpdatingPlaces();
       }
     } else {
@@ -598,7 +598,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private void createPlace(String name) {
     Program.addPlace(new Rangement(name, listPart));
     Debug("Creating " + name + " completed.");
-    label_cree.setText(getLabel("Infos090"), true); //"Rangement cree.
+    label_cree.setText(getLabel("CreateStorage.created"), true);
     nom_obj.setText("");
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
   }
@@ -683,7 +683,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   public boolean tabWillClose(TabEvent event) {
     if (!toCleanString(nom_obj.getText()).isEmpty()) {
       String label = modify ? getLabel("Error147") : getError("Error146");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, label + SPACE + getError("Error145"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, label + SPACE + getError("Error.confirmQuit"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }
     }

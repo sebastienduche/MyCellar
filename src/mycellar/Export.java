@@ -64,8 +64,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.8
- * @since 06/05/22
+ * @version 10.9
+ * @since 11/05/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -264,7 +264,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     valider.setEnabled(false);
     openit.setEnabled(false);
     String nom = toCleanString(file.getText());
-    end.setText(getLabel("Infos250"));
+    end.setText(getLabel("Export.exportInProgress"));
 
     if (!MyCellarControl.controlPath(nom)) {
       end.setText("");
@@ -303,7 +303,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         end.setText(getLabel("Export.Ended"));
         openit.setEnabled(true);
       } else {
-        end.setText(getError("Error129")); //"Erreur lors de l'export"
+        end.setText(getError("Error.exportError"));
       }
     } else if (MyCellarRadioButtonHTML.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_HTML.toString()))) {
@@ -319,7 +319,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.savedFile"), aFile.getAbsolutePath()));
         openit.setEnabled(true);
       } else {
-        end.setText(getError("Error129")); //"Erreur lors de l'export"
+        end.setText(getError("Error.exportError"));
       }
     } else if (MyCellarRadioButtonCSV.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_CSV.toString()))) {
@@ -353,7 +353,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.savedFile"), aFile.getAbsolutePath()));
         openit.setEnabled(true);
       } else {
-        end.setText(getError("Error129")); //"Erreur lors de l'export"
+        end.setText(getError("Error.exportError"));
         Erreur.showSimpleErreur(getError("Error160"), getError("Error161"));
       }
       progressBar.setVisible(false);
@@ -479,7 +479,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       default_value.set(Program.getCaveConfigInt(key_properties.get(0), 0), "true");
 
       List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
-      MyOptions myoptions = new MyOptions(getLabel("Infos310"), getLabel("Infos309"), titre_properties, default_value, key_properties, type_objet, false);
+      MyOptions myoptions = new MyOptions(getLabel("Export.Options"), getLabel("Export.selectDefaultMode"), titre_properties, default_value, key_properties, type_objet, false);
       myoptions.setVisible(true);
     }
   }

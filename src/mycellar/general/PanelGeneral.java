@@ -44,8 +44,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 03/05/22
+ * @version 1.6
+ * @since 11/05/22
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -183,14 +183,14 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_FALSE, false)) {
-        String erreur_txt1 = MessageFormat.format(getError("Error084"), ((siecle + 1) * 100)); //"En decochant cette option, vous dsactivez la transformation
+        String erreur_txt1 = MessageFormat.format(getError("Error.uncheckTransformTo4digitsYear"), ((siecle + 1) * 100));
         Erreur.showInformationMessageWithKey(erreur_txt1, MyCellarSettings.ANNEE_AUTO_FALSE);
       }
     } else {
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, true);
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_TRUE, false)) {
-        String erreur_txt1 = MessageFormat.format(getError("Error086"), ((siecle + 1) * 100));//"En cochant cette option, vous activez la transformation
+        String erreur_txt1 = MessageFormat.format(getError("Error.checkTransformTo4digitsYear"), ((siecle + 1) * 100));
         Erreur.showInformationMessageWithKey(erreur_txt1, MyCellarSettings.ANNEE_AUTO_TRUE);
       }
     }
@@ -222,7 +222,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
   public void setViewToSeveralItemsMode(int itemCount) {
     if (itemCount > 1) {
-      name.setSelectedItem(MessageFormat.format(getLabel("AddVin.NbItemsSelected", LabelProperty.PLURAL), itemCount)); //" bouteilles selectionnees
+      name.setSelectedItem(MessageFormat.format(getLabel("AddVin.NbItemsSelected", LabelProperty.PLURAL), itemCount));
       name.setEnabled(false);
       if (Program.isMusicType()) {
         composer.setEnabled(false);
@@ -255,7 +255,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
   }
 
   private void setYearAuto() {
-    yearAuto.setText(MessageFormat.format(getLabel("Infos117"), ((siecle + 1) * 100))); //"Annee 00 -> 2000
+    yearAuto.setText(MessageFormat.format(getLabel("PanelGeneral.4digitsYear"), ((siecle + 1) * 100)));
     yearAuto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
   }
 
@@ -420,12 +420,12 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
     if (!name.getText().isEmpty()) {
       String label;
       if (modify) {
-        label = getError("Error148", name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
+        label = getError("Error.modificationIncompleted", name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
       } else {
-        label = getError("Error144", THE_SINGLE.withCapital());
+        label = getError("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), label + SPACE + getError("Error145"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return false;
       }

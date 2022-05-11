@@ -51,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.4
- * @since 05/05/22
+ * @version 13.5
+ * @since 11/05/22
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -226,7 +226,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(getError("FileNotFound"));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), ""));
         Program.Debug("ERROR: parcourir_excel: File not found while Opening!");
         return;
       }

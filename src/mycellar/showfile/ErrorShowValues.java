@@ -151,7 +151,7 @@ public class ErrorShowValues extends TableShowValues {
         break;
       case YEAR:
         if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
-          Erreur.showSimpleErreur(getError("Error053"));
+          Erreur.showSimpleErreur(getError("Error.enterValidYear"));
         } else {
           b.setAnnee((String) value);
         }

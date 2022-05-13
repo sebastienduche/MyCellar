@@ -30,8 +30,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.6
- * @since 06/05/22
+ * @version 5.7
+ * @since 13/05/22
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -140,7 +140,7 @@ class TableShowValues extends AbstractTableModel {
         break;
       case YEAR:
         if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
-          Erreur.showSimpleErreur(getError("Error053"));
+          Erreur.showSimpleErreur(getError("Error.enterValidYear"));
         } else {
           b.setAnnee((String) value);
         }

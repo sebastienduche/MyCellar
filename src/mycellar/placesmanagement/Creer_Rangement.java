@@ -64,8 +64,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.3
- * @since 11/05/22
+ * @version 16.4
+ * @since 13/05/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -300,7 +300,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     final Rangement rangement = (Rangement) comboPlace.getSelectedItem();
     if (comboPlace.getSelectedIndex() == 0 || rangement == null) {
       Debug("ERROR: Please select a place");
-      Erreur.showSimpleErreur(getError("Error093")); //"Veuillez selectionner un rangement
+      Erreur.showSimpleErreur(getError("Error.SelectStorage"));
       return;
     }
 
@@ -344,11 +344,11 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         String erreur_txt1, erreur_txt2;
         if (nb_bottle == 1) {
           Debug("MESSAGE: 1 object in this place, modify?");
-          erreur_txt1 = getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.
-          erreur_txt2 = getError("Error137", LabelProperty.SINGLE); // Change the place of this object
+          erreur_txt1 = getError("Error.1ItemInStorage", LabelProperty.SINGLE);
+          erreur_txt2 = getError("Error.confirmChangeStorage1Item", LabelProperty.SINGLE);
         } else {
           Debug("MESSAGE: " + nb_bottle + " objects in this place, Modify?");
-          erreur_txt1 = MessageFormat.format(getError("Error094", LabelProperty.PLURAL), nb_bottle); //bouteilles sont presentes dans ce rangement.
+          erreur_txt1 = MessageFormat.format(getError("Error.NItemsInStorage", LabelProperty.PLURAL), nb_bottle);
           erreur_txt2 = getError("Error.questionChangeStorageItems", LabelProperty.PLURAL);
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -378,7 +378,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     updateView();
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
     Debug("Modifications completed");
-    label_cree.setText(getError("Error123"), true); //"Rangement modifie.
+    label_cree.setText(getLabel("CreateStorage.storageModified"), true);
   }
 
   private void modifyComplexPlace(Rangement rangement, String nom) {
@@ -388,13 +388,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     for (Part p : listPart) {
       if (p.getRows().isEmpty()) {
         Debug("ERROR: Wrong number of lines on part: " + p.getNum());
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrectes sur la partie
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNum()));
         return;
       }
       for (Row r : p.getRows()) {
         if (r.getCol() == 0) {
-          Debug("ERROR: Wrong number of columns on part:  " + p.getNum());
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrectes sur la partie
+          Debug("ERROR: Wrong number of columns on part: " + p.getNum());
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNum()));
           return;
         }
       }
@@ -407,7 +407,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       nom_obj.setText("");
       updateView();
       ProgramPanels.updateAllPanelsForUpdatingPlaces();
-      label_cree.setText(getError("Error123"), true);
+      label_cree.setText(getLabel("CreateStorage.storageModified"), true);
     } else {
       if (rangement.getNbParts() > listPart.size()) {
         int nb = 0;
@@ -416,7 +416,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         }
         if (nb > 0) {
           Debug("ERROR: Unable to reduce the number of place");
-          Erreur.showSimpleErreur(getError("Error201"));
+          Erreur.showSimpleErreur(getError("Error.removeNotEmptyShelve"));
           return;
         }
       }
@@ -440,8 +440,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           if (nb > 0) {
             canContinue = false;
             Debug("ERROR: Unable to lower the number of row");
-            Erreur.showSimpleErreur(MessageFormat.format(getError("Error202"), Integer.toString(i + 1)));
-            // Impossible de reduire le nombre de lignes de la partie, bouteilles presentes
+            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.removeNotEmptyShelveLines"), Integer.toString(i + 1)));
           }
         }
         if (canContinue) {
@@ -464,8 +463,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
                 if (rangement.getObject(i, j, k).isPresent()) {
                   canContinue = false;
                   Debug("ERROR: Unable to reduce the size of the number of column");
-                  Erreur.showSimpleErreur(MessageFormat.format(getError("Error203"), Integer.toString(j + 1), Integer.toString(i + 1)));
-                  // Impossible de reduire le nombre de colonnes de la ligne de la partie, bouteilles presentes
+                  Erreur.showSimpleErreur(MessageFormat.format(getError("Error.removeNotEmptyShelveLineColumns"), Integer.toString(j + 1), Integer.toString(i + 1)));
                 }
               }
             }
@@ -480,13 +478,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       Debug("Updating complex place: " + rangement.getName());
       String name = rangement.getName();
       if (!name.equalsIgnoreCase(nom)) {
-        String erreur_txt1 = getError("Error136", LabelProperty.SINGLE); //"1 bouteille est presente dans ce rangement.
-        String erreur_txt2 = getError("Error137", LabelProperty.SINGLE); //"Voulez-vous changer l'emplacement de cette bouteille ?
+        String erreur_txt1 = getError("Error.1ItemInStorage", LabelProperty.SINGLE);
+        String erreur_txt2 = getError("Error.confirmChangeStorage1Item", LabelProperty.SINGLE);
         if (nbBottles == 1) {
           Debug("MESSAGE: 1 object in this place, modify?");
         } else {
           Debug("MESSAGE: " + nbBottles + " objects in this place, Modify?");
-          erreur_txt1 = MessageFormat.format(getError("Error094", LabelProperty.PLURAL), nbBottles); //bouteilles sont presentes dans ce rangement.
+          erreur_txt1 = MessageFormat.format(getError("Error.NItemsInStorage", LabelProperty.PLURAL), nbBottles);
           erreur_txt2 = getError("Error.questionChangeStorageItems", LabelProperty.PLURAL);
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -509,7 +507,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       updateView();
       ProgramPanels.updateAllPanelsForUpdatingPlaces();
       comboPlace.setSelectedIndex(0);
-      label_cree.setText(getError("Error123"), true);
+      label_cree.setText(getLabel("CreateStorage.storageModified"), true);
     }
   }
 
@@ -530,9 +528,6 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     }
   }
 
-  /**
-   * Boutton Creer
-   */
   private void create_actionPerformed() {
     Debug("create_actionPerforming...");
     String nom = toCleanString(nom_obj.getText());
@@ -566,12 +561,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       Debug("Creating complex place...");
       for (Part p : listPart) {
         if (p.getRows().isEmpty()) {
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error009"), p.getNum())); //"Erreur nombre de lignes incorrectes sur la partie
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNum()));
           bResul = false;
         }
         for (Row r : p.getRows()) {
           if (r.getCol() == 0) {
-            Erreur.showSimpleErreur(MessageFormat.format(getError("Error004"), p.getNum()));//"Erreur nombre de colonnes incorrectes sur la partie
+            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNum()));
             bResul = false;
           }
         }
@@ -582,13 +577,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       } else {
         Debug("Creating place with same column number");
       }
-      // Creation du rangement
       if (bResul) {
         createPlace(nom);
       }
     }
     if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false) && bResul) {
-      Erreur.showInformationMessageWithKey(getError("Error164"), MyCellarSettings.DONT_SHOW_CREATE_MESS);
+      Erreur.showInformationMessageWithKey(getError("Error.canCreateAnotherStorageSameOptions"), MyCellarSettings.DONT_SHOW_CREATE_MESS);
     }
     if (bResul) {
       Start.getInstance().enableAll(true);
@@ -652,14 +646,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
       for (Part p : listPart) {
         if (p.getRows().isEmpty()) {
-          // Wrong lines number in part
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error009"), p.getNum()), getError("Error109"));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNum()), getError("Error.clickOKBeforePreview"));
           return;
         }
         for (Row r : p.getRows()) {
           if (r.getCol() == 0) {
-            //  Wrong columns number in part
-            Erreur.showSimpleErreur(MessageFormat.format(getError("Error004"), p.getNum()), getError("Error109"));
+            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNum()), getError("Error.clickOKBeforePreview"));
             return;
           }
         }
@@ -682,7 +674,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (!toCleanString(nom_obj.getText()).isEmpty()) {
-      String label = modify ? getLabel("Error147") : getError("Error146");
+      String label = modify ? getLabel("Error.storageModificationIncompleted") : getError("Error.storageCreationIncompleted");
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, label + SPACE + getError("Error.confirmQuit"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }

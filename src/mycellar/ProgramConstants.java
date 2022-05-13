@@ -11,12 +11,12 @@ import java.time.format.DateTimeFormatter;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 03/05/22
+ * @version 0.9
+ * @since 13/05/22
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.6.6.3";
+  public static final String INTERNAL_VERSION = "4.6.7.3";
   public static final int VERSION = 74;
   public static final String MAIN_VERSION = VERSION + " CG";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
@@ -73,6 +73,8 @@ public final class ProgramConstants {
   static final String TYPES_XML = "Types.xml";
   static final String TYPES_MUSIC_XML = "music_types.xml";
   static final String BOUTEILLES_XML = "Bouteilles.xml";
+  public static final String HISTORY_XML = "history.xml";
+  public static final String WORKSHEET_XML = "worksheet.xml";
   static final String CONFIG_INI = "config.ini";
   static final String RESTART_COMMAND = "restart";
   static final String DOWNLOAD_COMMAND = "download";

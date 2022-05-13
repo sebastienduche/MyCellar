@@ -86,8 +86,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.8
- * @since 06/05/22
+ * @version 11.9
+ * @since 13/05/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -180,7 +180,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       @Override
       void setValue(MyCellarObject b, String value) {
         if (Program.hasYearControl() && Bouteille.isInvalidYear(value)) {
-          Erreur.showSimpleErreur(getError("Error053"));
+          Erreur.showSimpleErreur(getError("Error.enterValidYear"));
         } else {
           setStringValue(b, value);
         }
@@ -564,7 +564,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       @Override
       public boolean execute(MyCellarObject myCellarObject, int row, int column) {
         if (!Program.isExistingMyCellarObject(myCellarObject)) {
-          Debug("Inexisting bottle " + myCellarObject.getNom() + " [" + myCellarObject.getId() + "]");
+          Debug("Inexisting object " + myCellarObject.getNom() + " [" + myCellarObject.getId() + "]");
           Erreur.showSimpleErreur(MessageFormat.format(getError("ShowFile.InexisitingBottle", LabelProperty.THE_SINGLE), myCellarObject.getNom()));
           return false;
         }

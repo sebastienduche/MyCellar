@@ -490,7 +490,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
               if (nom1.contains("\"") || nom1.contains(COLUMNS_SEPARATOR) || nom1.contains("<") || nom1.contains(">") || nom1.contains("?") || nom1.contains("\\") ||
                   nom1.contains(SLASH) || nom1.contains("|") || nom1.contains("*")) {
                 Options options = new Options(getLabel("Import.StorageName"), getLabel("Import.FillStorageName"), getLabel("Import.StorageName"), nom1,
-                    getError("Error126"), false);
+                    getError("Error.forbiddenCharacters"), false);
                 options.setVisible(true);
                 nom1 = options.getValue();
                 resul = false;
@@ -500,7 +500,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
               // Controle sur la longueur du filename
               if (nom1.isEmpty()) {
                 Options options = new Options(getLabel("Import.StorageName"), getLabel("Import.FillStorageName"), getLabel("Import.StorageName"), nom1,
-                    getError("Error010"), false);
+                    getError("Error.requireStorageName"), false);
                 options.setVisible(true);
                 nom1 = options.getValue();
                 resul = false;
@@ -513,7 +513,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
                 if (!nom1.isEmpty()) {
                   if (RangementUtils.isExistingPlace(nom1)) {
                     Options options = new Options(getLabel("Import.StorageName"), getLabel("Import.FillStorageName"), getLabel("Import.StorageName"), nom1,
-                        getError("Error037"), false);
+                        getError("Error.storageNameAlreadyUsed"), false);
                     options.setVisible(true);
                     nom1 = options.getValue();
                     resul = false;

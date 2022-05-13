@@ -28,14 +28,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2005
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2005
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 05/05/22
+ * @version 3.4
+ * @since 13/05/22
  */
 
 final class MoveLine extends JDialog {
@@ -48,9 +48,9 @@ final class MoveLine extends JDialog {
   MoveLine() {
     setAlwaysOnTop(true);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(getLabel("Infos363"));
+    setTitle(getLabel("Main.Move"));
     setLayout(new MigLayout("", "[]", "[]20px[]10px[]10px[][]20px[]10px"));
-    MyCellarLabel titre = new MyCellarLabel(LabelType.INFO, "363");
+    MyCellarLabel titre = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Move");
     titre.setForeground(Color.red);
     titre.setFont(FONT_DIALOG);
     titre.setHorizontalAlignment(SwingConstants.CENTER);
@@ -58,7 +58,7 @@ final class MoveLine extends JDialog {
     label_end.setHorizontalAlignment(SwingConstants.CENTER);
     panelPlace.setModificationDetectionActive(false);
 
-    MyCellarLabel label_new_line = new MyCellarLabel(LabelType.INFO, "362");
+    MyCellarLabel label_new_line = new MyCellarLabel(LabelType.INFO_OTHER, "Move.ToLine");
 
     MyCellarButton validate = new MyCellarButton("Main.Validate");
     MyCellarButton cancel = new MyCellarButton("Main.Close");
@@ -95,7 +95,7 @@ final class MoveLine extends JDialog {
     final Place selectedPlace = panelPlace.getSelectedPlace();
     int nNewSelected = new_line_cbx.getSelectedIndex();
     if (selectedPlace.getLine() == nNewSelected || nNewSelected == 0) {
-      Erreur.showSimpleErreur(this, getError("Error192"));
+      Erreur.showSimpleErreur(this, getError("Error.wrongLineNumber"));
       return;
     }
     nNewSelected--; // We need the o bse index for the next calls
@@ -104,18 +104,18 @@ final class MoveLine extends JDialog {
     Rangement rangement = selectedPlace.getRangement();
     int nNbBottle = rangement.getNbCaseUseInLine(nNumLieu, nOldSelected);
     if (nNbBottle == 0) {
-      Erreur.showSimpleErreur(this, getError("Error195", LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getError("Error.noItemsToMove", LabelProperty.PLURAL));
       return;
     }
     int nOldColumnCount = rangement.getColumnCountAt(nNumLieu, nOldSelected);
     int nNewColumnCount = rangement.getColumnCountAt(nNumLieu, nNewSelected);
     if (nOldColumnCount > nNewColumnCount && nNbBottle > nNewColumnCount) {
-      Erreur.showSimpleErreur(this, getError("Error194"));
+      Erreur.showSimpleErreur(this, getError("Error.wrongNewColumnNumber"));
       return;
     }
     int nBottle = rangement.getNbCaseUseInLine(nNumLieu, nNewSelected);
     if (nBottle > 0) {
-      Erreur.showSimpleErreur(this, getError("Error193", LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getError("Error.stillItemsOnLine", LabelProperty.PLURAL));
       return;
     }
     List<MyCellarObject> notMoved = new ArrayList<>();

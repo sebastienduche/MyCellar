@@ -163,9 +163,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         label_final.setText(getLabel("PlaceManagement.emptyPlace"));
       } else {
         if (nb_case_use_total == 1) {
-          label_final.setText(getLabel("DeletePlace.still1Item", LabelProperty.SINGLE));
+          label_final.setText(getLabel("DeletePlace.Still1Item", LabelProperty.SINGLE));
         } else {
-          label_final.setText(MessageFormat.format(getLabel("DeletePlace.stillNItems", LabelProperty.PLURAL), nb_case_use_total));
+          label_final.setText(MessageFormat.format(getLabel("DeletePlace.StillNItems", LabelProperty.PLURAL), nb_case_use_total));
         }
       }
       table.updateUI();
@@ -199,9 +199,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       } else {
         String nom = rangement.getName();
         if (nb_case_use_total == 1) {
-          error = MessageFormat.format(getLabel("DeletePlace.still1ItemIn", LabelProperty.SINGLE), nom);
+          error = MessageFormat.format(getLabel("DeletePlace.Still1ItemIn", LabelProperty.SINGLE), nom);
         } else {
-          error = MessageFormat.format(getLabel("DeletePlace.stillNItemsIn", LabelProperty.PLURAL), nb_case_use_total, nom);
+          error = MessageFormat.format(getLabel("DeletePlace.StillNItemsIn", LabelProperty.PLURAL), nb_case_use_total, nom);
         }
         // Delete place and objects in the place
         String errorPart2 = getError("Error.questionDeleteAllIncludedObjects", LabelProperty.THE_PLURAL);

@@ -28,8 +28,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 06/05/22
+ * @version 2.4
+ * @since 23/05/22
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -47,7 +47,7 @@ public class ErrorShowValues extends TableShowValues {
   private static final int LINE = 7;
   private static final int COLUMN = 8;
   private static final int NBCOL = 11;
-  private final String[] columnNames = {"", getLabel("ErrorShowValues.error"), getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
+  private final String[] columnNames = {"", getLabel("ErrorShowValues.Error"), getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
       getLabel("MyCellarFields.numPlace"), getLabel("MyCellarFields.line"), getLabel("MyCellarFields.column"), getLabel("ShowFile.Status"), ""};
 
   private Boolean[] status = null;

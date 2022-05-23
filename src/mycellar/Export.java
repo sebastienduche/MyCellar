@@ -64,8 +64,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.9
- * @since 11/05/22
+ * @version 11.0
+ * @since 23/05/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -264,7 +264,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     valider.setEnabled(false);
     openit.setEnabled(false);
     String nom = toCleanString(file.getText());
-    end.setText(getLabel("Export.exportInProgress"));
+    end.setText(getLabel("Export.ExportInProgress"));
 
     if (!MyCellarControl.controlPath(nom)) {
       end.setText("");
@@ -479,7 +479,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       default_value.set(Program.getCaveConfigInt(key_properties.get(0), 0), "true");
 
       List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
-      MyOptions myoptions = new MyOptions(getLabel("Export.Options"), getLabel("Export.selectDefaultMode"), titre_properties, default_value, key_properties, type_objet, false);
+      MyOptions myoptions = new MyOptions(getLabel("Export.Options"), getLabel("Export.SelectDefaultMode"), titre_properties, default_value, key_properties, type_objet, false);
       myoptions.setVisible(true);
     }
   }

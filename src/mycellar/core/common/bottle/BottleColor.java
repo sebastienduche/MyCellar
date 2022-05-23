@@ -4,9 +4,9 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public enum BottleColor {
   NONE(""),
-  RED(getLabel("BottleColor.red")),
-  PINK(getLabel("BottleColor.pink")),
-  WHITE(getLabel("BottleColor.white"));
+  RED(getLabel("BottleColor.Red")),
+  PINK(getLabel("BottleColor.Pink")),
+  WHITE(getLabel("BottleColor.White"));
 
   private final String label;
 

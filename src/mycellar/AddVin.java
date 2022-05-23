@@ -45,8 +45,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.9
- * @since 11/05/22
+ * @version 31.0
+ * @since 23/05/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -167,7 +167,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       panelGeneral.setViewToSeveralItemsMode(listBottleInModification.size());
       panelWineAttribute.seNbItemsEnabled(false);
       addButton.setEnabled(true);
-      end.setText(getLabel("AddVin.moveError", LabelProperty.PLURAL)); //"Vous ne pouvez deplacer plusieurs bouteilles que dans une caisse
+      end.setText(getLabel("AddVin.MoveError", LabelProperty.PLURAL));
     } else {
       setBottle(listBottleInModification.getFirst());
     }

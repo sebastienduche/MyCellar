@@ -64,8 +64,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.4
- * @since 13/05/22
+ * @version 16.5
+ * @since 23/05/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -83,7 +83,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner(0, 99);
   private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox("CreateStorage.SimpleStorage");
   private final MyCellarLabel label_cree = new MyCellarLabel();
-  private final MyCellarButton preview = new MyCellarButton("CreateStorage.preview");
+  private final MyCellarButton preview = new MyCellarButton("CreateStorage.Preview");
   private final JPanel panelType;
   private final JPanel panelStartCaisse;
   private final JPanel panelLimite;
@@ -378,7 +378,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     updateView();
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
     Debug("Modifications completed");
-    label_cree.setText(getLabel("CreateStorage.storageModified"), true);
+    label_cree.setText(getLabel("CreateStorage.StorageModified"), true);
   }
 
   private void modifyComplexPlace(Rangement rangement, String nom) {
@@ -407,7 +407,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       nom_obj.setText("");
       updateView();
       ProgramPanels.updateAllPanelsForUpdatingPlaces();
-      label_cree.setText(getLabel("CreateStorage.storageModified"), true);
+      label_cree.setText(getLabel("CreateStorage.StorageModified"), true);
     } else {
       if (rangement.getNbParts() > listPart.size()) {
         int nb = 0;
@@ -507,7 +507,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       updateView();
       ProgramPanels.updateAllPanelsForUpdatingPlaces();
       comboPlace.setSelectedIndex(0);
-      label_cree.setText(getLabel("CreateStorage.storageModified"), true);
+      label_cree.setText(getLabel("CreateStorage.StorageModified"), true);
     }
   }
 
@@ -554,7 +554,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
             .limit(limite).build());
         Debug("Creation of '" + nom + "' completed.");
         nom_obj.setText("");
-        label_cree.setText(getLabel("CreateStorage.created"), true);
+        label_cree.setText(getLabel("CreateStorage.Created"), true);
         ProgramPanels.updateAllPanelsForUpdatingPlaces();
       }
     } else {
@@ -592,7 +592,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private void createPlace(String name) {
     Program.addPlace(new Rangement(name, listPart));
     Debug("Creating " + name + " completed.");
-    label_cree.setText(getLabel("CreateStorage.created"), true);
+    label_cree.setText(getLabel("CreateStorage.Created"), true);
     nom_obj.setText("");
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
   }

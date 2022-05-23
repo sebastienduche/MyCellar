@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 11/05/22
+ * @version 3.2
+ * @since 23/05/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -48,7 +48,7 @@ public class PanelPlace extends JPanel implements IPlace {
   private final JModifyComboBox<ComboItem> line = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> column = new JModifyComboBox<>();
   private final MyCellarLabel labelExist = new MyCellarLabel("");
-  private final MyCellarButton preview = new MyCellarButton("Storage.preview");
+  private final MyCellarButton preview = new MyCellarButton("Storage.Preview");
   private final MyCellarLabel labelNumPlace = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.numPlace");
   private final MyCellarLabel labelLine = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.line");
   private final MyCellarLabel labelColumn = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.column");

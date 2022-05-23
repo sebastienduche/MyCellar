@@ -20,8 +20,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 08/04/22
+ * @version 1.1
+ * @since 23/05/22
  */
 class CapacityTableModel extends DefaultTableModel {
   public static final int ETAT = 1;
@@ -72,10 +72,10 @@ class CapacityTableModel extends DefaultTableModel {
     final String oldValue = list.get(row);
     if (column == ETAT) {
       if (MyCellarBottleContenance.isContenanceUsed(oldValue)) {
-        JOptionPane.showMessageDialog(Start.getInstance(), getLabel("CapacityPanel.unableDeleteCapacity"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(Start.getInstance(), getLabel("CapacityPanel.UnableDeleteCapacity"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
         return;
       }
-      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("CapacityPanel.delCapacityQuestion"), oldValue), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("CapacityPanel.DelCapacityQuestion"), oldValue), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
         return;
       }
       list.remove(oldValue);

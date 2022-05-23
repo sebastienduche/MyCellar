@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 05/05/22
+ * @version 1.1
+ * @since 23/05/22
  */
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;
@@ -286,7 +286,7 @@ public final class PanelWineAttribute extends JPanel {
 
   public void setStillNbItems(int count) {
     nbItems.setValue(count);
-    labelStillToAdd.setText(MessageFormat.format(getLabel("AddVin.stillNtoAdd", new LabelProperty(count > 1)), count));
+    labelStillToAdd.setText(MessageFormat.format(getLabel("AddVin.StillNtoAdd", new LabelProperty(count > 1)), count));
   }
 
   public void seNbItemsEnabled(boolean b) {

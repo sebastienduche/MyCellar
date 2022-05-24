@@ -13,7 +13,6 @@ import java.util.MissingResourceException;
 
 import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.ERRORS_LABEL_KEY;
-import static mycellar.ProgramConstants.INFOS_LABEL_KEY;
 import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.THREE_DOTS;
@@ -25,8 +24,8 @@ import static mycellar.ProgramConstants.THREE_DOTS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 05/05/22
+ * @version 0.8
+ * @since 24/05/22
  */
 
 public class MyCellarLabelManagement {
@@ -52,8 +51,6 @@ public class MyCellarLabelManagement {
 
     if (labelValue == null) {
       switch (type) {
-        case INFO:
-          return getLabel(INFOS_LABEL_KEY + code, labelProperty);
         case ERROR:
           return getError(ERRORS_LABEL_KEY + code, labelProperty);
         case INFO_OTHER:
@@ -67,8 +64,6 @@ public class MyCellarLabelManagement {
       }
     } else {
       switch (type) {
-        case INFO:
-          return MessageFormat.format(getLabel(INFOS_LABEL_KEY + code, labelProperty), labelValue).strip();
         case ERROR:
           return MessageFormat.format(getError(ERRORS_LABEL_KEY + code, labelProperty), labelValue).strip();
         case INFO_OTHER:

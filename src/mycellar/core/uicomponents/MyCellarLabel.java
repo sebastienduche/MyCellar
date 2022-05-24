@@ -35,13 +35,14 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
     setFont(FONT_PANEL);
   }
 
+  @Deprecated
   public MyCellarLabel(String text) {
     super(text);
     setFont(FONT_PANEL);
   }
 
   public MyCellarLabel(LabelType type, String code) {
-    labelKey = new LabelKey(type, code);
+    labelKey = new LabelKey(code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -55,7 +56,7 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
   }
 
   public MyCellarLabel(String code, LabelProperty labelProperty, String value) {
-    labelKey = new LabelKey(LabelType.INFO_OTHER, code, labelProperty, value);
+    labelKey = new LabelKey(code, labelProperty, value);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

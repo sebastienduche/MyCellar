@@ -33,8 +33,8 @@ public class LabelKey {
     this.labelProperty = labelProperty;
   }
 
-  public LabelKey(LabelType labelType, String key, LabelProperty labelProperty, String value) {
-    this.labelType = labelType;
+  public LabelKey(String key, LabelProperty labelProperty, String value) {
+    labelType = LabelType.INFO_OTHER;
     this.key = key;
     this.labelProperty = labelProperty;
     this.value = value;

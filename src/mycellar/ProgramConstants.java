@@ -62,7 +62,6 @@ public final class ProgramConstants {
   public static final int IMPORT_COMBO_COUNT = 18;
   public static final String KEY_TYPE = "<KEY>";
   public static final String COUNTRY_LABEL_KEY = "Country.";
-  public static final String INFOS_LABEL_KEY = "Infos";
   public static final String ERRORS_LABEL_KEY = "Errors";
   static final String INFOS_VERSION = " 2022 v";
   static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);

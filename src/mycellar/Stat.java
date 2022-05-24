@@ -277,7 +277,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       final int priceCount = price.getCount();
       if (all_bracket || priceCount > 0) {
         panel.add(new MyCellarSimpleLabel(price.getName()));
-        panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Main.severalItems", new LabelProperty(priceCount > 1)), priceCount)), "span 2, align right, wrap");
+        panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(priceCount > 1)), priceCount)), "span 2, align right, wrap");
       }
     }
     panel.updateUI();
@@ -309,7 +309,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     for (StatData data : listYear) {
       panel.add(new MyCellarSimpleLabel(data.getName()));
       final int dataCount = data.getCount();
-      panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Main.severalItems", new LabelProperty(dataCount > 1)), dataCount)), "span 2, align right, wrap");
+      panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(dataCount > 1)), dataCount)), "span 2, align right, wrap");
     }
     panel.updateUI();
     panelChart.setDataPieChart(listYear, getLabel("Stats.Years"));
@@ -385,7 +385,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     } else {
       list_num_empl = new MyCellarLabel("Stats.NStorage", LabelProperty.SINGLE, Integer.toString(nbEmplacements));
     }
-    final MyCellarSimpleLabel list_nb_bottle = new MyCellarSimpleLabel(MessageFormat.format(getLabel("Main.severalItems", new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll));
+    final MyCellarSimpleLabel list_nb_bottle = new MyCellarSimpleLabel(MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll));
     panel.add(list_num_empl);
     panel.add(list_nb_bottle, "span 2, align right, wrap");
     if (!cave.isSimplePlace()) {
@@ -413,7 +413,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   private void displayNbBottlePlace(Rangement cave) {
     for (int j = 0; j < cave.getNbParts(); j++) {
       panel.add(new MyCellarLabel("Stats.StorageNumber", LabelProperty.SINGLE, Integer.toString(j + 1)));
-      panel.add(new MyCellarLabel("Main.severalItems", new LabelProperty(cave.getTotalCountCellUsed() > 1), Integer.toString(cave.getTotalCellUsed(j))), "span 2, align right, wrap");
+      panel.add(new MyCellarLabel("Main.SeveralItems", new LabelProperty(cave.getTotalCountCellUsed() > 1), Integer.toString(cave.getTotalCellUsed(j))), "span 2, align right, wrap");
     }
   }
 

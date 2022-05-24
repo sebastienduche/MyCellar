@@ -31,15 +31,15 @@ public class Filtre extends FileFilter {
   public static final String EXTENSION_PDF = "pdf";
   public static final String EXTENSION_CSV = "csv";
   public static final String EXTENSION_TXT = "txt";
-  public static final Filtre FILTRE_SINFO = new Filtre(EXTENSION_SINFO, getLabel("Filter.sinfo"));
-  public static final Filtre FILTRE_XLS = new Filtre(EXTENSION_XLS, getLabel("Filter.xls"));
-  public static final Filtre FILTRE_XLSX = new Filtre(EXTENSION_XLSX, getLabel("Filter.xls"));
-  public static final Filtre FILTRE_ODS = new Filtre(EXTENSION_ODS, getLabel("Filter.ods"));
-  public static final Filtre FILTRE_HTML = new Filtre(EXTENSION_HTML, getLabel("Filter.html"));
-  public static final Filtre FILTRE_XML = new Filtre(EXTENSION_XML, getLabel("Filter.xml"));
-  public static final Filtre FILTRE_PDF = new Filtre(EXTENSION_PDF, getLabel("Filter.pdf"));
-  public static final Filtre FILTRE_CSV = new Filtre(EXTENSION_CSV, getLabel("Filter.csv"));
-  public static final Filtre FILTRE_TXT = new Filtre(EXTENSION_TXT, getLabel("Filter.txt"));
+  public static final Filtre FILTRE_SINFO = new Filtre(EXTENSION_SINFO, getLabel("Filter.Sinfo"));
+  public static final Filtre FILTRE_XLS = new Filtre(EXTENSION_XLS, getLabel("Filter.Xls"));
+  public static final Filtre FILTRE_XLSX = new Filtre(EXTENSION_XLSX, getLabel("Filter.Xls"));
+  public static final Filtre FILTRE_ODS = new Filtre(EXTENSION_ODS, getLabel("Filter.Ods"));
+  public static final Filtre FILTRE_HTML = new Filtre(EXTENSION_HTML, getLabel("Filter.Html"));
+  public static final Filtre FILTRE_XML = new Filtre(EXTENSION_XML, getLabel("Filter.Xml"));
+  public static final Filtre FILTRE_PDF = new Filtre(EXTENSION_PDF, getLabel("Filter.Pdf"));
+  public static final Filtre FILTRE_CSV = new Filtre(EXTENSION_CSV, getLabel("Filter.Csv"));
+  public static final Filtre FILTRE_TXT = new Filtre(EXTENSION_TXT, getLabel("Filter.Txt"));
 
   private final List<String> suffixes;
   private final String description;

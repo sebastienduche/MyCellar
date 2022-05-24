@@ -94,7 +94,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private final MyCellarButton importe = new MyCellarButton("Import.Title");
   private final MyCellarRadioButton type_txt = new MyCellarRadioButton("Import.TxtCsv", true);
   private final MyCellarRadioButton type_xls = new MyCellarRadioButton("Import.Xls", false);
-  private final MyCellarRadioButton type_xml = new MyCellarRadioButton("Filter.xml", false);
+  private final MyCellarRadioButton type_xml = new MyCellarRadioButton("Filter.Xml", false);
   private final MyCellarRadioButton type_iTunes = new MyCellarRadioButton("Import.iTunes", false);
   private final char importChar = getLabel("IMPORT").charAt(0);
   private final char ouvrirChar = getLabel("OUVRIR").charAt(0);

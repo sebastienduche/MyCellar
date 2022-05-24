@@ -67,7 +67,7 @@ public final class MyOptions extends JDialog {
     textControl1.setHorizontalAlignment(SwingConstants.CENTER);
     MyCellarSimpleLabel definition2 = new MyCellarSimpleLabel(message2);
     MyCellarButton valider = new MyCellarButton("Main.OK");
-    MyCellarButton annuler = new MyCellarButton("Main.cancel");
+    MyCellarButton annuler = new MyCellarButton("Main.Cancel");
     definition2.setText(message2);
     MyCellarSimpleLabel textControl3 = new MyCellarSimpleLabel();
     textControl3.setForeground(Color.red);

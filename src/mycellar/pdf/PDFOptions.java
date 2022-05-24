@@ -98,7 +98,7 @@ public final class PDFOptions extends JDialog {
     jPanel2.setFont(FONT_PANEL);
     MyCellarButton valider = new MyCellarButton("Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton("Main.cancel");
+    MyCellarButton annuler = new MyCellarButton("Main.Cancel");
     annuler.addActionListener((e) -> dispose());
 
     jPanel1.add(new MyCellarLabel("PDFOptions.PDFTitle"), "split 2");

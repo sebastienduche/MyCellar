@@ -99,7 +99,7 @@ final class CSVOptions extends JDialog {
         break;
     }
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton("Main.cancel");
+    MyCellarButton annuler = new MyCellarButton("Main.Cancel");
     annuler.addActionListener((e) -> dispose());
 
     add(info_separator, "split 2");

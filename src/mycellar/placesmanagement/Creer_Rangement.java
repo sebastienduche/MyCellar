@@ -75,7 +75,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private final JTextField nom_obj = new JTextField();
   private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton("CreateStorage.AllLinesSame", true);
   private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton("CreateStorage.AllLinesNotSame", false);
-  private final MyCellarCheckBox checkLimite = new MyCellarCheckBox("CreatePlace.ActivateLimit");
+  private final MyCellarCheckBox checkLimite = new MyCellarCheckBox("CreateStorage.ActivateLimit");
   private final MyCellarLabel label_limite = new MyCellarLabel("Main.Item", LabelProperty.SINGLE);
   private final MyCellarSpinner nb_limite = new MyCellarSpinner(1, 999);
   private final MyCellarSpinner nb_parties = new MyCellarSpinner(1, 99);
@@ -157,7 +157,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     setLayout(new MigLayout("", "[grow][grow]", "[][]"));
 
     if (modify) {
-      MyCellarLabel labelModify = new MyCellarLabel("CreatePlace.SelectPlaceToModify");
+      MyCellarLabel labelModify = new MyCellarLabel("CreateStorage.SelectPlaceToModify");
       JPanel panelModify = new JPanel();
       panelModify.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "", 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
       panelModify.setLayout(new MigLayout("", "[]", "[]"));

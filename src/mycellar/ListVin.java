@@ -33,71 +33,66 @@ import java.util.List;
  */
 final class ListVin extends JPanel {
   static final long serialVersionUID = 10805;
-  private ListValues listValues;
-  private AddVin addVin;
+  private final ListValues listValues;
+  private final AddVin addVin;
 
   /**
-   * Constructeur avec liste des bouteilles
+   * Constructeur avec liste d'objets
    *
-   * @param bottle LinkedList<IMyCellarObject>: Liste des objets.
+   * @param myCellarObjects LinkedList<IMyCellarObject>: Liste des objets.
    * @param addVin
    */
-  ListVin(List<? extends IMyCellarObject> bottle, final AddVin addVin) {
+  ListVin(List<? extends IMyCellarObject> myCellarObjects, final AddVin addVin) {
+    this.addVin = addVin;
+    listValues = new ListValues();
+    listValues.setObjects(myCellarObjects);
+    JTable table = new JTable(listValues);
 
-    try {
-      this.addVin = addVin;
-      listValues = new ListValues();
-      listValues.setBouteilles(bottle);
-      JTable table = new JTable(listValues);
+    TableColumnModel tcm = table.getColumnModel();
 
-      TableColumnModel tcm = table.getColumnModel();
-
-      TableColumn tc1 = tcm.getColumn(0);
-      tc1.setCellRenderer(new ToolTipRenderer());
-      ListSelectionModel rowSM = table.getSelectionModel();
-      rowSM.setSelectionInterval(0, 0);
-      rowSM.addListSelectionListener((e) -> {
-        //Ignore extra messages.
-        ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-        if (!lsm.isSelectionEmpty()) {
-          int minSelectedRow = lsm.getMinSelectionIndex();
-          int maxSelectedRow = lsm.getMaxSelectionIndex();
-          LinkedList<MyCellarObject> list = new LinkedList<>();
-          for (int x = minSelectedRow; x <= maxSelectedRow; x++) {
-            if (lsm.isSelectedIndex(x)) {
-              list.add(listValues.getBouteille(x));
-            }
+    TableColumn tc1 = tcm.getColumn(0);
+    tc1.setCellRenderer(new ToolTipRenderer());
+    ListSelectionModel rowSM = table.getSelectionModel();
+    rowSM.setSelectionInterval(0, 0);
+    rowSM.addListSelectionListener((e) -> {
+      //Ignore extra messages.
+      ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+      if (!lsm.isSelectionEmpty()) {
+        int minSelectedRow = lsm.getMinSelectionIndex();
+        int maxSelectedRow = lsm.getMaxSelectionIndex();
+        LinkedList<MyCellarObject> list = new LinkedList<>();
+        for (int x = minSelectedRow; x <= maxSelectedRow; x++) {
+          if (lsm.isSelectedIndex(x)) {
+            list.add(listValues.getObject(x));
           }
-          this.addVin.setBottlesInModification(list);
         }
-      });
+        this.addVin.setObjectsInModification(list);
+      }
+    });
 
-      JScrollPane scrollpane = new JScrollPane(table);
-      MyCellarLabel MyCellarLabel2 = new MyCellarLabel("ListVin.selectItems", LabelProperty.SINGLE);
+    JScrollPane scrollpane = new JScrollPane(table);
+    MyCellarLabel selectItemsLabel = new MyCellarLabel("ListVin.SelectItems", LabelProperty.THE_PLURAL);
 
-      scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-      setLayout(new MigLayout("", "grow", "[grow][]"));
-      MyCellarLabel textControl1 = new MyCellarLabel("ListVin.listProblems", LabelProperty.PLURAL);
-      textControl1.setForeground(Color.red);
-      textControl1.setFont(new Font("Dialog", Font.BOLD, 13));
-      textControl1.setHorizontalAlignment(SwingConstants.CENTER);
+    scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+    setLayout(new MigLayout("", "grow", "[grow][]"));
+    MyCellarLabel listProblemsLabel = new MyCellarLabel("ListVin.ListProblems", LabelProperty.PLURAL);
+    listProblemsLabel.setForeground(Color.red);
+    listProblemsLabel.setFont(new Font("Dialog", Font.BOLD, 13));
+    listProblemsLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-      add(scrollpane, "grow,wrap,width min(100,200)");
-      add(MyCellarLabel2, "width min(100,200)");
-      setVisible(true);
-    } catch (RuntimeException e) {
-      Program.showException(e);
-    }
+    add(scrollpane, "grow,wrap,width min(100,200)");
+    add(selectItemsLabel, "width min(100,200)");
+    setVisible(true);
   }
 
   void updateList(List<MyCellarObject> remove) {
     for (MyCellarObject b : remove) {
-      listValues.removeBouteille(b);
+      listValues.removeObject(b);
     }
   }
 
-  public void setBottles(List<? extends IMyCellarObject> bottles) {
-    listValues.setBouteilles(bottles);
+  public void setObjects(List<? extends IMyCellarObject> myCellarObjects) {
+    listValues.setObjects(myCellarObjects);
   }
 
   boolean isEmpty() {

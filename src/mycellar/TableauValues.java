@@ -67,7 +67,7 @@ class TableauValues extends AbstractTableModel {
             nombre_vin += rangement.getTotalCellUsed(k);
           }
         }
-        return MessageFormat.format(getLabel("Main.severalItems", new LabelProperty(nombre_vin > 1)), nombre_vin);
+        return MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(nombre_vin > 1)), nombre_vin);
     }
     return "";
   }

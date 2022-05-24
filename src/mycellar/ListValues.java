@@ -56,19 +56,18 @@ class ListValues extends AbstractTableModel {
   public void setValueAt(Object value, int row, int column) {
   }
 
-  public void setBouteilles(List<? extends IMyCellarObject> b) {
+  protected void setObjects(List<? extends IMyCellarObject> b) {
     list = b;
     fireTableDataChanged();
   }
 
-  public void removeBouteille(MyCellarObject num) {
+  public void removeObject(MyCellarObject num) {
     list.remove(num);
     fireTableDataChanged();
   }
 
-  public Bouteille getBouteille(int x) {
-    return (Bouteille) list.get(x);
+  public MyCellarObject getObject(int x) {
+    return (MyCellarObject) list.get(x);
   }
-
 
 }

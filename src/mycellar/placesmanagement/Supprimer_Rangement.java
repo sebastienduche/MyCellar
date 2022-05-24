@@ -407,7 +407,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
 
     String getNbWineLabel() {
-      return MessageFormat.format(getLabel("Main.severalItems", new LabelProperty(nbWine > 1)), nbWine);
+      return MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(nbWine > 1)), nbWine);
     }
   }
 

@@ -131,7 +131,7 @@ public final class XLSTabOptions extends JDialog {
     panel1.setBorder(BorderFactory.createTitledBorder(getLabel("XLSOptions.StorageProperties")));
     MyCellarButton valider = new MyCellarButton("Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton("Main.cancel");
+    MyCellarButton annuler = new MyCellarButton("Main.Cancel");
     annuler.addActionListener((e) -> dispose());
     MyCellarSimpleLabel pt_label1 = new MyCellarSimpleLabel("pt");
     MyCellarLabel MyCellarLabel7 = new MyCellarLabel("Options.TextSize");

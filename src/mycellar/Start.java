@@ -84,6 +84,7 @@ import static mycellar.ProgramConstants.RESTART_COMMAND;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.UNTITLED;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
+import static mycellar.core.text.LabelProperty.A_SINGLE;
 import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -577,7 +578,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     // differents choix de chaque menu
     menuShowWorksheet.setText(getLabel("ShowFile.Worksheet"));
-    menuSearch.setText(getLabel("Main.tabSearchButton"));
+    menuSearch.setText(getLabel("Main.TabSearchButton"));
     menuQuit.setText(getLabel("Main.Exit"));
     menuHelp.setText(getLabel("Main.Help"));
 
@@ -614,12 +615,12 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     statsButton.setText(getLabel("Main.Statistics"));
     managePlaceButton.setText(getLabel("Main.ManagePlace"));
     worksheetButton.setText(getLabel("ShowFile.Worksheet"));
-    modifyButton.setText(getLabel("Main.modifyStorage"));
+    modifyButton.setText(getLabel("Main.ModifyStorage"));
     showFileButton.setText(getLabel("Main.ShowFile"));
     tableButton.setText(getLabel("Main.createTable"));
-    addButton.setText(getLabel("Main.tabAdd", LabelProperty.SINGLE));
-    searchButton.setText(getLabel("Main.tabSearchButton"));
-    deleteButton.setText(getLabel("Main.deleteStorage"));
+    addButton.setText(getLabel("Main.TabAdd", LabelProperty.SINGLE));
+    searchButton.setText(getLabel("Main.TabSearchButton"));
+    deleteButton.setText(getLabel("Main.DeleteStorage"));
     version.setText(getLabel("MonthVersion") + INFOS_VERSION + MAIN_VERSION);
     menuAddObject.setAccelerator(KeyStroke.getKeyStroke(addWineChar, InputEvent.CTRL_DOWN_MASK));
     menuAddPlace.setAccelerator(KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
@@ -1215,12 +1216,12 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class AddWineAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Main.tabAdd";
+    private static final String LABEL = "Main.TabAdd";
 
     private AddWineAction() {
       super(LABEL, MyCellarImage.WINE);
       putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
-      setDescriptionLabel(LABEL);
+      setDescriptionLabel(LABEL, A_SINGLE);
     }
 
     @Override
@@ -1250,7 +1251,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class DeletePlaceAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Main.deleteStorage";
+    private static final String LABEL = "Main.DeleteStorage";
 
     private DeletePlaceAction() {
       super("Main.Delete", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.DELPLACE);
@@ -1281,7 +1282,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class ModifyPlaceAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Main.modifyStorage";
+    private static final String LABEL = "Main.ModifyStorage";
 
     private ModifyPlaceAction() {
       super("Main.Modify", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.MODIFYPLACE);
@@ -1299,11 +1300,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class SearchAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "Main.tabSearchSimple";
+    private static final String LABEL = "Main.TabSearchSimple";
 
     private SearchAction() {
-      super("Main.tabSearchButton", MyCellarImage.SEARCH);
-      setDescriptionLabel("Main.tabSearch");
+      super("Main.TabSearchButton", MyCellarImage.SEARCH);
+      setDescriptionLabel("Main.TabSearch", A_SINGLE);
     }
 
     @Override

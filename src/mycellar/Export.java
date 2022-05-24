@@ -109,7 +109,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       final PDFTools pdf = new PDFTools(pdfProperties, pageProperties, true);
       pdf.writeData(Program.getPDFRows(bottles, pdfProperties));
       pdf.save(nomFichier);
-      Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.savedFile"), nomFichier.getAbsolutePath()));
+      Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.SavedFile"), nomFichier.getAbsolutePath()));
     } catch (IOException | RuntimeException ex) {
       Erreur.showSimpleErreur(getError("Error160"), getError("Error161"));
       Program.showException(ex, false);
@@ -316,7 +316,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
       if (RangementUtils.write_HTML(aFile, myCellarObjects, Program.getHTMLColumns())) {
         end.setText(getLabel("Export.Ended"));
-        Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.savedFile"), aFile.getAbsolutePath()));
+        Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.SavedFile"), aFile.getAbsolutePath()));
         openit.setEnabled(true);
       } else {
         end.setText(getError("Error.exportError"));
@@ -333,7 +333,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       progressBar.setVisible(true);
       if (RangementUtils.write_CSV(aFile, myCellarObjects, progressBar)) {
         end.setText(getLabel("Export.Ended"));
-        Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.savedFile"), aFile.getAbsolutePath()),
+        Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.SavedFile"), aFile.getAbsolutePath()),
             getLabel("Export.CSVInfo"));
         openit.setEnabled(true);
       }
@@ -349,7 +349,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       progressBar.setVisible(true);
       if (RangementUtils.write_XLS(aFile, myCellarObjects, false, progressBar)) {
         end.setText(getLabel("Export.Ended"));
-        Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.savedFile"), aFile.getAbsolutePath()));
+        Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.SavedFile"), aFile.getAbsolutePath()));
         openit.setEnabled(true);
       } else {
         end.setText(getError("Error.exportError"));

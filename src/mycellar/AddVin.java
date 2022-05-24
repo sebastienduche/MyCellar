@@ -65,7 +65,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     panelGeneral.setMyCellarObject(null);
     addButton = new MyCellarButton("Main.Add", new AddAction());
     addButton.setMnemonic(ajouterChar);
-    cancelButton = new MyCellarButton("Main.cancel", new CancelAction());
+    cancelButton = new MyCellarButton("Main.Cancel", new CancelAction());
 
     panelGeneral.setModificationDetectionActive(false);
     panelWineAttribute.setModificationDetectionActive(false);
@@ -120,7 +120,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       listVin = new ListVin(myCellarObjects, this);
       add(listVin, BorderLayout.WEST);
     } else {
-      listVin.setBottles(myCellarObjects);
+      listVin.setObjects(myCellarObjects);
     }
 
     setBottle(myCellarObjects.get(0));
@@ -156,7 +156,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   /**
    * Fonction pour le chargement de vins pour la classe ListVin.
    */
-  void setBottlesInModification(LinkedList<MyCellarObject> myCellarObjects) {
+  void setObjectsInModification(LinkedList<MyCellarObject> myCellarObjects) {
     Debug("setBottlesInModification...");
     severalItems = myCellarObjects.size() > 1;
     panelGeneral.setSeveralItems(severalItems);
@@ -742,7 +742,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       remove(listVin);
       listVin = null;
       final int selectedIndex = ProgramPanels.getSelectedTabIndex();
-      final String label = getLabel("Main.tabAdd", A_SINGLE);
+      final String label = getLabel("Main.TabAdd", A_SINGLE);
       ProgramPanels.setTitleAt(selectedIndex, label);
     }
     panelGeneral.setSeveralItems(severalItems);

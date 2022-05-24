@@ -281,7 +281,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
         Erreur.showInformationMessageWithKey(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
       }
     }
-    end.setText(getLabel("CreateTable.FileGenrated"), true);
+    end.setText(getLabel("CreateTable.FileGenerated"), true);
     preview.setEnabled(true);
   }
 

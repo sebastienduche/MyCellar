@@ -51,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.5
- * @since 11/05/22
+ * @version 13.6
+ * @since 24/05/22
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -74,12 +74,12 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 
   public Parametres() {
     setLayout(new MigLayout("", "grow", ""));
-    label_fic_bak = new MyCellarLabel(LabelType.INFO, "162"); //"Nom du fichier Excel:"
-    MyCellarLabel label_langue = new MyCellarLabel(LabelType.INFO, "231"); //"Choix de la langue:"
-    MyCellarLabel label_devise = new MyCellarLabel(LabelType.INFO, "163");
-    label_annee = new MyCellarLabel(LabelType.INFO, "292");
-    label_annee2 = new MyCellarLabel(LabelType.INFO, "293");
-    label_siecle = new MyCellarLabel(LabelType.INFO, "295");
+    label_fic_bak = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.ExcelFile");
+    MyCellarLabel label_langue = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.ChooseLanguage");
+    MyCellarLabel label_devise = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.Currency");
+    label_annee = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.YearGreaterThan");
+    label_annee2 = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.BelongsTo");
+    label_siecle = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.Century");
     buttonResetMessageDialog = new MyCellarButton("Parameter.ActivateHiddenMessage");
     MyCellarButton buttonManageContenance = new MyCellarButton("Parameter.CapacitiesManagement", new ManageCapacityAction());
     MyCellarButton valider = new MyCellarButton("Main.Validate");
@@ -185,7 +185,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
         Program.putCaveConfigBool(HAS_EXCEL_FILE, true);
         String fic = file_bak.getText();
         if (MyCellarControl.hasInvalidExtension(fic, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error034"), fic), getError("Error035"));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.notAnExcelFile"), fic), getError("Error.selectAnExcelFile"));
           return;
         } else {
           Program.putCaveConfigString(FILE_EXCEL, fic);

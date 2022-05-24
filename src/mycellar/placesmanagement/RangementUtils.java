@@ -62,14 +62,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2017
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2017
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.5
- * @since 20/01/22
+ * @version 4.6
+ * @since 24/05/22
  */
 public final class RangementUtils {
 
@@ -181,7 +181,7 @@ public final class RangementUtils {
       style.appendChild(doc.createTextNode("table, td, th { border: 1px solid black; border-collapse:collapse} "
           + "tr:nth-child(even) {background-color: #f2f2f2} "));
       root.appendChild(style);
-      title.appendChild(doc.createTextNode(getLabel("Infos207")));
+      title.appendChild(doc.createTextNode(getLabel("Main.HTMLExport")));
       Element body = doc.createElement("body");
       root.appendChild(body);
       Element table = doc.createElement("table");
@@ -348,7 +348,7 @@ public final class RangementUtils {
          var output = new FileOutputStream(file)) { //Creation du fichier
       String sheet_title = title;
       if (sheet_title.isEmpty()) {
-        sheet_title = getLabel("Infos389");
+        sheet_title = getLabel("Main.NoTitle");
       }
       SXSSFSheet sheet = workbook.createSheet();
       workbook.setSheetName(0, sheet_title);

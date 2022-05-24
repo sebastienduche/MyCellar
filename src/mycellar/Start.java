@@ -97,8 +97,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.0
- * @since 11/05/22
+ * @version 32.1
+ * @since 24/05/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -572,25 +572,25 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuFile.setText(getLabel("Main.File"));
     menuPlace.setText(getLabel("Main.Storage"));
     menuWine.setText(getLabel("Main.Item", LabelProperty.SINGLE.withCapital()));
-    menuTools.setText(getLabel("Infos246"));
-    menuEdition.setText(getLabel("Infos245"));
+    menuTools.setText(getLabel("Main.Tools"));
+    menuEdition.setText(getLabel("Main.Edit"));
 
     // differents choix de chaque menu
     menuShowWorksheet.setText(getLabel("ShowFile.Worksheet"));
     menuSearch.setText(getLabel("Main.tabSearchButton"));
     menuQuit.setText(getLabel("Main.Exit"));
-    menuHelp.setText(getLabel("Infos111"));
+    menuHelp.setText(getLabel("Main.Help"));
 
-    about.setText(getLabel("Infos199")); // A Propos
-    menuNews.setText(getLabel("Infos330")); // Nouveautes
+    about.setText(getLabel("Main.About") + "...");
+    menuNews.setText(getLabel("Main.WhatsNew"));
     menuToCreate.setText(getLabel("Main.StorageToCreate"));
     menuVignobles.setText(getLabel("Main.VineyardManagement") + "...");
     menuBottleCapacity.setText(getLabel("Parameter.CapacitiesManagement") + "...");
-    menuImportXmlPlaces.setText(getLabel("Infos367")); // Importer des rangements xml
-    menuExportXmlPlaces.setText(getLabel("Infos368")); // Exporter des rangements xml
-    menuExportXml.setText(getLabel("Infos408")); // Exporter au format xml
+    menuImportXmlPlaces.setText(getLabel("Main.ImportXMLPlaces"));
+    menuExportXmlPlaces.setText(getLabel("Main.ExportXMLPlaces"));
+    menuExportXml.setText(getLabel("Main.XMLExport"));
     menuCloseFile.setText(getLabel("Main.Close"));
-    menuCheckUpdate.setText(getLabel("Infos379")); // Check update
+    menuCheckUpdate.setText(getLabel("Main.CheckUpdate"));
     menuReopen1.setText("1 - " + getShortFilename(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1)) + ONE_DOT + EXTENSION_SINFO);
     menuReopen2.setText("2 - " + getShortFilename(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2)) + ONE_DOT + EXTENSION_SINFO);
     menuReopen3.setText("3 - " + getShortFilename(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3)) + ONE_DOT + EXTENSION_SINFO);
@@ -609,7 +609,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuPaste.setText(getLabel("Main.Paste"));
 
     importButton.setText(getLabel("Import.Title"));
-    exportButton.setText(getLabel("Infos125"));
+    exportButton.setText(getLabel("Main.ExportFile"));
     createButton.setText(getLabel("CreateStorage.Title"));
     statsButton.setText(getLabel("Main.Statistics"));
     managePlaceButton.setText(getLabel("Main.ManagePlace"));
@@ -880,7 +880,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     update.setVisible(bUpdateAvailable);
     if (bUpdateAvailable) {
-      update.setText(MessageFormat.format(getLabel("Infos385"), MyCellarServer.getInstance().getAvailableVersion(), MAIN_VERSION + "-" + INTERNAL_VERSION), true, 30000, false);
+      update.setText(MessageFormat.format(getLabel("Main.UpdateAvailable"), MyCellarServer.getInstance().getAvailableVersion(), MAIN_VERSION + "-" + INTERNAL_VERSION), true, 30000, false);
     }
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Debug("Display Frame ended");

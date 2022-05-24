@@ -34,8 +34,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 03/05/22
+ * @version 2.9
+ * @since 24/05/22
  */
 final class CSVOptions extends JDialog {
   static final long serialVersionUID = 230705;
@@ -48,7 +48,7 @@ final class CSVOptions extends JDialog {
     Debug("Constructor");
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setModal(true);
-    setTitle(getLabel("Infos269"));
+    setTitle(getLabel("CSVOptions.Title"));
 
     addKeyListener(new KeyAdapter() {
       @Override
@@ -106,7 +106,7 @@ final class CSVOptions extends JDialog {
     add(separator, "wrap");
 
     JScrollPane scrollPane = new JScrollPane(jPanel2);
-    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Infos258")));
+    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Options.TableColumns")));
     add(scrollPane, "grow, gaptop 15px, wrap");
     for (int i = 0; i < nb_colonnes; i++) {
       jPanel2.add(colonnes[i], "grow");

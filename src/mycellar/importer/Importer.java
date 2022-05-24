@@ -85,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.6
- * @since 11/05/22
+ * @version 15.7
+ * @since 24/05/22
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -386,7 +386,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         if (MyCellarControl.hasInvalidExtension(filename, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
           resetLabelProgress();
           Debug("ERROR: Not a XLS File");
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error034"), filename), getError("Error035"));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.notAnExcelFile"), filename), getError("Error.selectAnExcelFile"));
           importe.setEnabled(true);
           return;
         }
@@ -565,7 +565,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           if (labelTitle.isSelected()) {
             line = reader.readLine();
           }
-          label_progression.setText(getLabel("Import.inProgress"));
+          setLabelInProgress();
           int maxNumPlace = 0;
           while (line != null) {
             String[] lu = line.split(separe);
@@ -613,6 +613,10 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     Debug("Importing... Done");
   }
 
+  private void setLabelInProgress() {
+    label_progression.setText(getLabel("Import.InProgress"));
+  }
+
   private MyCellarObject createObject() {
     if (Program.isWineType()) {
       return new Bouteille();
@@ -632,7 +636,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private boolean importExcelFile(final String nom, final Rangement rangement) {
     Debug("Importing XLS file...");
 
-    label_progression.setText(getLabel("Import.inProgress"));
+    setLabelInProgress();
     //Ouverture du fichier Excel
     try (var workbook = new XSSFWorkbook(new FileInputStream(nom))) {
 
@@ -697,13 +701,13 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   }
 
   private void importFromXML(File f) {
-    label_progression.setText(getLabel("Import.inProgress"));
+    setLabelInProgress();
     ListeBouteille.loadXML(f);
     showImportDone();
   }
 
   private void importFromITunes(File f) {
-    label_progression.setText(getLabel("Import.inProgress"));
+    setLabelInProgress();
     final List<Music> list;
     try {
       list = new ItunesLibraryImporter().loadItunesLibrary(f);

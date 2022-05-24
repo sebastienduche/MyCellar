@@ -25,8 +25,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 08/04/22
+ * @version 3.4
+ * @since 24/05/22
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -102,23 +102,23 @@ class TableHistoryValues extends AbstractTableModel {
         switch (h.getState()) {
           case ADD:
             sType = getLabel("History.Entered");
-            sLabel = MessageFormat.format(getLabel("History.labelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sLabel = MessageFormat.format(getLabel("History.LabelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case VALIDATED:
             sType = getLabel("History.Validated");
-            sLabel = MessageFormat.format(getLabel("History.labelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sLabel = MessageFormat.format(getLabel("History.LabelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case TOCHECK:
             sType = getLabel("History.ToCheck");
-            sLabel = MessageFormat.format(getLabel("History.labelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sLabel = MessageFormat.format(getLabel("History.LabelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case MODIFY:
             sType = getLabel("History.Modified");
-            sLabel = MessageFormat.format(getLabel("History.labelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sLabel = MessageFormat.format(getLabel("History.LabelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case DEL:
             sType = getLabel("History.Exited");
-            sLabel = MessageFormat.format(getLabel("History.labelFrom"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sLabel = MessageFormat.format(getLabel("History.LabelFrom"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case ALL:
             break;

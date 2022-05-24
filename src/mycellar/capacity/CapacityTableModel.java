@@ -20,13 +20,13 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 23/05/22
+ * @version 1.2
+ * @since 24/05/22
  */
 class CapacityTableModel extends DefaultTableModel {
   public static final int ETAT = 1;
   static final long serialVersionUID = 220605;
-  private final String[] columnNames = {getLabel("Infos401"), ""};
+  private final String[] columnNames = {getLabel("Main.Values"), ""};
 
   private final List<String> list;
 

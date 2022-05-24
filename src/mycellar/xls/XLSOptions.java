@@ -27,7 +27,7 @@ import static mycellar.core.MyCellarSettings.SIZE_COL;
 import static mycellar.core.MyCellarSettings.TEXT_SIZE_XLS;
 import static mycellar.core.MyCellarSettings.TITLE_SIZE_XLS;
 import static mycellar.core.MyCellarSettings.XLS_TITLE;
-import static mycellar.core.text.LabelType.INFO;
+import static mycellar.core.text.LabelType.INFO_OTHER;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 03/05/22
+ * @version 2.5
+ * @since 24/05/22
  */
 public final class XLSOptions extends JDialog {
 
@@ -53,7 +53,7 @@ public final class XLSOptions extends JDialog {
   public XLSOptions() {
     setModal(true);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(getLabel("Infos268"));
+    setTitle(getLabel("XLSOptions.Title"));
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
@@ -93,11 +93,11 @@ public final class XLSOptions extends JDialog {
     MyCellarButton annuler = new MyCellarButton("Main.cancel");
     annuler.addActionListener((e) -> dispose());
     MyCellarLabel MyCellarLabel6 = new MyCellarLabel("pt");
-    MyCellarLabel MyCellarLabel7 = new MyCellarLabel(INFO, "256"); //Taille du texte
+    MyCellarLabel MyCellarLabel7 = new MyCellarLabel(INFO_OTHER, "Options.TextSize");
     MyCellarLabel MyCellarLabel8 = new MyCellarLabel("pt");
 
-    MyCellarLabel MyCellarLabel2 = new MyCellarLabel(INFO, "270"); //Titre du XLS
-    MyCellarLabel MyCellarLabel3 = new MyCellarLabel(INFO, "256"); //Taille du texte
+    MyCellarLabel MyCellarLabel2 = new MyCellarLabel(INFO_OTHER, "XLSOptions.XLSTitle");
+    MyCellarLabel MyCellarLabel3 = new MyCellarLabel(INFO_OTHER, "Options.TextSize");
     panel.add(MyCellarLabel2, "split 2");
     panel.add(pdf_title, "grow, wrap");
     panel.add(MyCellarLabel3, "split 6");
@@ -114,7 +114,7 @@ public final class XLSOptions extends JDialog {
       panel1.add(export[i], "push, align right");
     }
     JScrollPane scrollPane = new JScrollPane(panel1);
-    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Infos258")));
+    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Options.TableColumns")));
     add(scrollPane, "gaptop 15px, grow, wrap");
     add(valider, "split 2, center");
     add(annuler);

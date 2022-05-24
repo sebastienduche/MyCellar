@@ -35,8 +35,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 03/05/22
+ * @version 3.4
+ * @since 24/05/22
  */
 public final class PDFOptions extends JDialog {
   static final long serialVersionUID = 110805;
@@ -51,7 +51,7 @@ public final class PDFOptions extends JDialog {
 
   public PDFOptions() {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(getLabel("Infos254"));
+    setTitle(getLabel("PDFOptions.Title"));
     setModal(true);
     addKeyListener(new KeyAdapter() {
       @Override
@@ -101,14 +101,14 @@ public final class PDFOptions extends JDialog {
     MyCellarButton annuler = new MyCellarButton("Main.cancel");
     annuler.addActionListener((e) -> dispose());
 
-    jPanel1.add(new MyCellarLabel(LabelType.INFO, "255"), "split 2"); //Titre du PDF
+    jPanel1.add(new MyCellarLabel(LabelType.INFO_OTHER, "PDFOptions.PDFTitle"), "split 2");
     jPanel1.add(pdf_title, "grow, wrap");
-    jPanel1.add(new MyCellarLabel(LabelType.INFO, "256"), "split 4"); //Taille du texte
+    jPanel1.add(new MyCellarLabel(LabelType.INFO_OTHER, "Options.TextSize"), "split 4");
     jPanel1.add(titleSize);
     jPanel1.add(new MyCellarLabel("pt"));
     jPanel1.add(boldCheck, "grow, align right");
     add(jPanel1, "grow, wrap");
-    jPanel2.add(new MyCellarLabel(LabelType.INFO, "256"), "split 4, span 3");
+    jPanel2.add(new MyCellarLabel(LabelType.INFO_OTHER, "Options.TextSize"), "split 4, span 3");
     jPanel2.add(textSize);
     jPanel2.add(new MyCellarLabel("pt"));
     jPanel2.add(borderCheck, "push, align right, gapbottom 15px");
@@ -121,7 +121,7 @@ public final class PDFOptions extends JDialog {
     }
 
     JScrollPane jScrollPane = new JScrollPane(jPanel2);
-    jScrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Infos258")));
+    jScrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Options.TableColumns")));
     add(jScrollPane, "grow, wrap");
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
@@ -151,7 +151,7 @@ public final class PDFOptions extends JDialog {
       }
       dispose();
       if (col_size_max > 19) {
-        Erreur.showInformationMessage(MessageFormat.format(getLabel("Infos273"), col_size_max));
+        Erreur.showInformationMessage(MessageFormat.format(getLabel("PDFOptions.ErrorTotalColumnWidth"), col_size_max));
       }
     } catch (NumberFormatException e1) {
       Program.Debug("PDFOptions: ERROR: " + e1.getMessage());

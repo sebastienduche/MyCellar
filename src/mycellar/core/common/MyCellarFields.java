@@ -17,14 +17,14 @@ import java.util.List;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2016
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2016
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 26/04/22
+ * @version 2.5
+ * @since 24/05/22
  */
 
 public enum MyCellarFields {
@@ -59,7 +59,7 @@ public enum MyCellarFields {
 
   // Pour l'import de donnees
   EMPTY(""),
-  USELESS(getLabel("Infos271"));
+  USELESS(getLabel("Main.Useless"));
 
   private static final List<MyCellarFields> FIELDSFORIMPORT_WINE = Arrays.asList(
       NAME, YEAR, TYPE, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, MATURITY, PARKER, COLOR,

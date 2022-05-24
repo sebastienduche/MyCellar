@@ -52,8 +52,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.3
- * @since 06/05/22
+ * @version 5.4
+ * @since 24/05/22
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -63,8 +63,8 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
   public ShowHistory() {
     Debug("Constructor");
-    MyCellarLabel filterLabel = new MyCellarLabel(LabelType.INFO, "350"); // Filtre
-    filterCbx.addItem(new FilterItem(HistoryState.ALL, getLabel("Infos351")));
+    MyCellarLabel filterLabel = new MyCellarLabel(LabelType.INFO_OTHER, "History.Filter");
+    filterCbx.addItem(new FilterItem(HistoryState.ALL, getLabel("History.None")));
     filterCbx.addItem(new FilterItem(HistoryState.ADD, getLabel("History.Entered")));
     filterCbx.addItem(new FilterItem(HistoryState.MODIFY, getLabel("History.Modified")));
     filterCbx.addItem(new FilterItem(HistoryState.DEL, getLabel("History.Exited")));

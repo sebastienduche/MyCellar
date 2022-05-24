@@ -64,8 +64,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.0
- * @since 23/05/22
+ * @version 11.1
+ * @since 24/05/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -340,9 +340,8 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonXLS.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
-        //"Le fichier saisi ne possede pas une extension XLS: " + str_tmp3);
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error034"), nom));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.notAnExcelFile"), nom));
         valider.setEnabled(true);
         return;
       }

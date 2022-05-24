@@ -51,7 +51,6 @@ import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
-import static mycellar.core.text.LabelType.INFO;
 import static mycellar.core.text.LabelType.INFO_OTHER;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -64,8 +63,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.5
- * @since 23/05/22
+ * @version 16.6
+ * @since 24/05/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -158,7 +157,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     setLayout(new MigLayout("", "[grow][grow]", "[][]"));
 
     if (modify) {
-      MyCellarLabel labelModify = new MyCellarLabel(INFO, "226"); //"Selec the place to modify"
+      MyCellarLabel labelModify = new MyCellarLabel(INFO_OTHER, "CreatePlace.SelectPlaceToModify");
       JPanel panelModify = new JPanel();
       panelModify.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "", 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
       panelModify.setLayout(new MigLayout("", "[]", "[]"));

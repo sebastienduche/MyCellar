@@ -33,8 +33,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.9
- * @since 05/05/22
+ * @version 3.0
+ * @since 24/05/22
  */
 public final class PanelInfos extends JPanel {
 
@@ -76,7 +76,7 @@ final class PanelStats extends JPanel {
 
   private static final long serialVersionUID = 7438892143990782047L;
   private final MyCellarLabel bottles = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
-  private final MyCellarLabel cellarValue = new MyCellarLabel(LabelType.INFO, "406");
+  private final MyCellarLabel cellarValue = new MyCellarLabel(LabelType.INFO_OTHER, "Main.GlobalValue");
   private final MyCellarLabel bottlesNb = new MyCellarLabel();
   private final MyCellarLabel cellarTotal = new MyCellarLabel();
   private final PanelStatsModel model = new PanelStatsModel();
@@ -104,7 +104,7 @@ final class PanelStats extends JPanel {
     bottlesNb.setEnabled(false);
     cellarValue.setEnabled(false);
     cellarTotal.setEnabled(false);
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos.stats")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos.Stats")));
     setEnabled(false);
   }
 
@@ -126,7 +126,7 @@ final class PanelStats extends JPanel {
   }
 
   void setLabels() {
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos.stats")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos.Stats")));
     bottles.updateText();
     cellarValue.updateText();
     TableColumnModel tcm = table.getColumnModel();

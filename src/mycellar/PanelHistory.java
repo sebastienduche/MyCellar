@@ -59,7 +59,7 @@ public final class PanelHistory extends JPanel {
     tc = tcm.getColumn(TableHistoryValues.DATE - 1);
     tc.setCellRenderer(new DateCellRenderer());
 
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos407")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Main.RecentActivity")));
     setEnable(false);
   }
 

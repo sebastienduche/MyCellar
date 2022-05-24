@@ -22,20 +22,20 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 1998</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 1998
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 03/05/22
+ * @version 2.0
+ * @since 24/05/22
  */
 final class APropos extends JDialog {
   static final long serialVersionUID = 150505;
 
   APropos() {
-    super(new JFrame(), getLabel("Infos198"), true);
+    super(new JFrame(), getLabel("Main.About"), true);
     IconPanel ip = new IconPanel(MyCellarImage.ICON);
     MyCellarButton ok = new MyCellarButton("Main.OK");
     ok.addActionListener((e) -> dispose());

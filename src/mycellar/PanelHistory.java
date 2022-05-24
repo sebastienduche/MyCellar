@@ -73,7 +73,7 @@ public final class PanelHistory extends JPanel {
   }
 
   public void setLabels() {
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos407")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Main.RecentActivity")));
     TableColumnModel tcm = table.getColumnModel();
     TableColumn tc = tcm.getColumn(TableHistoryValues.ACTION - 1);
     tc.setCellRenderer(new ButtonCellRenderer());

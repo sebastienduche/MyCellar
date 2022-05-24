@@ -6,10 +6,10 @@ import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
@@ -34,14 +34,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 13/05/22
+ * @version 3.5
+ * @since 24/05/22
  */
 
 final class MoveLine extends JDialog {
 
   private static final long serialVersionUID = 40508;
-  private final MyCellarLabel label_end = new MyCellarLabel();
+  private final MyCellarSimpleLabel label_end = new MyCellarSimpleLabel();
   private final MyCellarComboBox<PanelPlace.ComboItem> new_line_cbx = new MyCellarComboBox<>();
   private final PanelPlace panelPlace = new MoveLinePanelPlace();
 
@@ -50,7 +50,7 @@ final class MoveLine extends JDialog {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(getLabel("Main.Move"));
     setLayout(new MigLayout("", "[]", "[]20px[]10px[]10px[][]20px[]10px"));
-    MyCellarLabel titre = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Move");
+    MyCellarLabel titre = new MyCellarLabel("Main.Move");
     titre.setForeground(Color.red);
     titre.setFont(FONT_DIALOG);
     titre.setHorizontalAlignment(SwingConstants.CENTER);
@@ -58,7 +58,7 @@ final class MoveLine extends JDialog {
     label_end.setHorizontalAlignment(SwingConstants.CENTER);
     panelPlace.setModificationDetectionActive(false);
 
-    MyCellarLabel label_new_line = new MyCellarLabel(LabelType.INFO_OTHER, "Move.ToLine");
+    MyCellarLabel label_new_line = new MyCellarLabel("Move.ToLine");
 
     MyCellarButton validate = new MyCellarButton("Main.Validate");
     MyCellarButton cancel = new MyCellarButton("Main.Close");

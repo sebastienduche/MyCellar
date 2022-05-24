@@ -13,10 +13,10 @@ import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
@@ -61,15 +61,15 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.9
- * @since 23/05/22
+ * @version 10.0
+ * @since 24/05/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
   private static final long serialVersionUID = 6959053537854600207L;
   private final MyCellarComboBox<Rangement> choix = new MyCellarComboBox<>();
-  private final MyCellarLabel label_final = new MyCellarLabel();
+  private final MyCellarSimpleLabel label_final = new MyCellarSimpleLabel();
   private final MyCellarButton preview = new MyCellarButton("Storage.Preview");
   private final char supprimerChar = getLabel("SUPPR").charAt(0);
   private final char previewChar = getLabel("VISUAL").charAt(0);
@@ -100,7 +100,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     table = new JTable(model);
     JScrollPane scroll = new JScrollPane(table);
 
-    add(new MyCellarLabel(LabelType.INFO_OTHER, "PlaceManagement.selectToDelete"), "split 2, gap");
+    add(new MyCellarLabel("PlaceManagement.selectToDelete"), "split 2, gap");
     add(choix, "wrap");
     add(scroll, "grow, wrap");
     add(label_final, "grow, center, wrap");

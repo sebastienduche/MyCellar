@@ -4,7 +4,6 @@ import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.text.LabelType;
 import mycellar.core.text.Language;
 import mycellar.core.text.LanguageFileLoader;
 import mycellar.core.uicomponents.MyCellarButton;
@@ -74,12 +73,12 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 
   public Parametres() {
     setLayout(new MigLayout("", "grow", ""));
-    label_fic_bak = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.ExcelFile");
-    MyCellarLabel label_langue = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.ChooseLanguage");
-    MyCellarLabel label_devise = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.Currency");
-    label_annee = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.YearGreaterThan");
-    label_annee2 = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.BelongsTo");
-    label_siecle = new MyCellarLabel(LabelType.INFO_OTHER, "Parameter.Century");
+    label_fic_bak = new MyCellarLabel("Parameter.ExcelFile");
+    MyCellarLabel label_langue = new MyCellarLabel("Parameter.ChooseLanguage");
+    MyCellarLabel label_devise = new MyCellarLabel("Parameter.Currency");
+    label_annee = new MyCellarLabel("Parameter.YearGreaterThan");
+    label_annee2 = new MyCellarLabel("Parameter.BelongsTo");
+    label_siecle = new MyCellarLabel("Parameter.Century");
     buttonResetMessageDialog = new MyCellarButton("Parameter.ActivateHiddenMessage");
     MyCellarButton buttonManageContenance = new MyCellarButton("Parameter.CapacitiesManagement", new ManageCapacityAction());
     MyCellarButton valider = new MyCellarButton("Main.Validate");

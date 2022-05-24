@@ -12,13 +12,13 @@ import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.text.Language;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarMenuItem;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.launcher.MyCellarServer;
@@ -124,8 +124,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   private final JButton buttonPdf = new JButton();
   private final JButton newButton = new JButton();
   private final JButton openButton = new JButton();
-  private final MyCellarLabel update = new MyCellarLabel("");
-  private final MyCellarLabel version = new MyCellarLabel("");
+  private final MyCellarSimpleLabel update = new MyCellarSimpleLabel();
+  private final MyCellarSimpleLabel version = new MyCellarSimpleLabel();
   // differents menus
   private final JMenu menuFile = new JMenu();
   private final JMenu menuPlace = new JMenu();
@@ -705,7 +705,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     }
     setLayout(new MigLayout("", "[grow]", "[][grow][]"));
 
-    MyCellarLabel copyright = new MyCellarLabel("Copyright S\u00e9bastien D.");
+    MyCellarSimpleLabel copyright = new MyCellarSimpleLabel("Copyright S\u00e9bastien D.");
     copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
     version.setFont(new Font("Dialog", Font.PLAIN, 10));
     update.setFont(new Font("Dialog", Font.PLAIN, 10));
@@ -1086,8 +1086,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       types.setSelectedItem(objectType);
 
       setLayout(new MigLayout("", "[grow]", "[]25px[]"));
-      add(new MyCellarLabel(getLabel("Start.selectTypeObject")), "span 2, wrap");
-      add(new MyCellarLabel(LabelType.INFO_OTHER, "Parameters.typeLabel"));
+      add(new MyCellarLabel("Start.selectTypeObject"), "span 2, wrap");
+      add(new MyCellarLabel("Parameters.typeLabel"));
       add(types);
     }
 
@@ -1503,10 +1503,10 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       panel.setLayout(new MigLayout("", "grow"));
       JTextField key = new JTextField();
       JTextField value = new JTextField();
-      panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.parameterToModify"), "grow, wrap");
-      panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.key"), "split 2");
+      panel.add(new MyCellarLabel("Start.parameterToModify"), "grow, wrap");
+      panel.add(new MyCellarLabel("Start.key"), "split 2");
       panel.add(key, "grow, wrap");
-      panel.add(new MyCellarLabel(LabelType.INFO_OTHER, "Start.value"), "split 2");
+      panel.add(new MyCellarLabel("Start.value"), "split 2");
       panel.add(value, "grow");
       if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(getInstance(), panel, getLabelCode("Start.modifyParameter"), JOptionPane.OK_CANCEL_OPTION)) {
         final String parameter = toCleanString(key.getText());

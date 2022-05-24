@@ -3,7 +3,6 @@ package mycellar;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.tablecomponents.DateCellRenderer;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
@@ -23,9 +22,9 @@ public final class PanelHistory extends JPanel {
   private final TableHistoryValues model;
   private final JTable table;
   private final JPanel whatNewPanel = new JPanel();
-  private final MyCellarLabel label1 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew1");
-  private final MyCellarLabel label2 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew2");
-  private final MyCellarLabel label3 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew3");
+  private final MyCellarLabel label1 = new MyCellarLabel("WhatsNew1");
+  private final MyCellarLabel label2 = new MyCellarLabel("WhatsNew2");
+  private final MyCellarLabel label3 = new MyCellarLabel("WhatsNew3");
 
   public PanelHistory() {
     setLayout(new MigLayout("", "[grow]", "[]"));

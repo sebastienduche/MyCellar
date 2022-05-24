@@ -9,11 +9,11 @@ import mycellar.core.UpdateViewType;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.XmlUtils;
@@ -66,8 +66,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   private final MyCellarRadioButton type_HTML = new MyCellarRadioButton("Export.Html", true);
   private final MyCellarRadioButton type_XLS = new MyCellarRadioButton("Export.Xls", false);
   private final TableauValues tableauValues = new TableauValues();
-  @SuppressWarnings("deprecation")
-  private final MyCellarLabel end = new MyCellarLabel();
+  private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   private final MyCellarButton preview = new MyCellarButton("Main.OpenTheFile");
   private final char creerChar = getLabel("CREER").charAt(0);
   private final char ouvrirChar = getLabel("OUVRIR").charAt(0);
@@ -79,13 +78,13 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 
   public Creer_Tableaux() {
     Debug("Constructor");
-    final MyCellarLabel fileLabel = new MyCellarLabel(LabelType.INFO_OTHER, "CreateTable.FileToGenerate");
+    final MyCellarLabel fileLabel = new MyCellarLabel("CreateTable.FileToGenerate");
     m_jcb_options.addActionListener(this::options_actionPerformed);
     final MyCellarButton browse = new MyCellarButton(OPEN);
     browse.addActionListener(this::browse_actionPerformed);
     final MyCellarButton parameter = new MyCellarButton("Main.Parameters");
     parameter.addActionListener(this::param_actionPerformed);
-    final MyCellarLabel chooseLabel = new MyCellarLabel(LabelType.INFO_OTHER, "CreateTable.SelectStoragesToGenerate");
+    final MyCellarLabel chooseLabel = new MyCellarLabel("CreateTable.SelectStoragesToGenerate");
     final MyCellarButton create = new MyCellarButton("Main.Create");
     create.setMnemonic(creerChar);
 

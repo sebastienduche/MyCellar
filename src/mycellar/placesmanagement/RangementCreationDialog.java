@@ -3,7 +3,7 @@ package mycellar.placesmanagement;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.uicomponents.MyCellarButton;
-import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
@@ -26,14 +26,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 03/05/22
+ * @version 0.9
+ * @since 24/05/22
  */
 public final class RangementCreationDialog extends JDialog {
 
   private static final long serialVersionUID = 5075363436018889969L;
   private final Map<String, LinkedList<Part>> map;
-  private final MyCellarLabel end = new MyCellarLabel();
+  private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   private final RangementToCreateTableModel model;
 
   public RangementCreationDialog(Map<String, LinkedList<Part>> map) {

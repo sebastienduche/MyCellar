@@ -28,7 +28,7 @@ public final class MyCellarRadioButton extends JRadioButton implements IMyCellar
 
   public MyCellarRadioButton(String code, boolean selected) {
     super("", selected);
-    LabelType labelType = LabelType.INFO_OTHER;
+    LabelType labelType = LabelType.LABEL;
     if (code.startsWith(KEY_TYPE)) {
       labelType = LabelType.NONE;
       code = code.substring(KEY_TYPE.length());

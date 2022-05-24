@@ -12,11 +12,11 @@ import mycellar.core.storage.ListeBouteille;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.pdf.PDFOptions;
@@ -82,7 +82,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   private final MyCellarRadioButton MyCellarRadioButtonCSV = new MyCellarRadioButton("Export.Csv", false);
   private final MyCellarRadioButton MyCellarRadioButtonXLS = new MyCellarRadioButton("Export.Xls", false);
   private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton("Export.Pdf", false);
-  private final MyCellarLabel end = new MyCellarLabel();
+  private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   private final MyCellarButton openit = new MyCellarButton("Main.OpenTheFile");
   private final MyCellarButton options = new MyCellarButton("Main.Settings", LabelProperty.SINGLE.withThreeDashes(), new SettingsAction());
   private final List<? extends MyCellarObject> myCellarObjects;
@@ -119,7 +119,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   }
 
   private void initialize() {
-    MyCellarLabel nameLabel = new MyCellarLabel(LabelType.INFO_OTHER, "Export.FileName");
+    MyCellarLabel nameLabel = new MyCellarLabel("Export.FileName");
     end.setFont(FONT_DIALOG_SMALL);
     openit.setMnemonic(OUVRIR);
     openit.addActionListener((e) -> openit_actionPerformed());

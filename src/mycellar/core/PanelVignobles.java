@@ -9,7 +9,6 @@ import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleListJaxb;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JCompletionComboBox;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -39,8 +38,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 03/05/22
+ * @version 1.7
+ * @since 24/05/22
  */
 public final class PanelVignobles extends JPanel {
 
@@ -53,10 +52,10 @@ public final class PanelVignobles extends JPanel {
 
   public PanelVignobles(boolean modifyActive, boolean manageButton, boolean editable) {
 
-    MyCellarLabel labelCountry = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Country");
-    MyCellarLabel labelVignoble = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Vignoble");
-    MyCellarLabel labelAppelationAOC = new MyCellarLabel(LabelType.INFO_OTHER, "Main.AppelationAOC");
-    MyCellarLabel labelAppelationIGP = new MyCellarLabel(LabelType.INFO_OTHER, "Main.AppelationIGP");
+    MyCellarLabel labelCountry = new MyCellarLabel("Main.Country");
+    MyCellarLabel labelVignoble = new MyCellarLabel("Main.Vignoble");
+    MyCellarLabel labelAppelationAOC = new MyCellarLabel("Main.AppelationAOC");
+    MyCellarLabel labelAppelationIGP = new MyCellarLabel("Main.AppelationIGP");
     setLayout(new MigLayout("", "[grow][grow]", ""));
     comboCountry = new JCompletionComboBox<>() {
       private static final long serialVersionUID = 8137073557763181546L;

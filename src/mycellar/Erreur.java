@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JCheckBox;
@@ -98,10 +98,10 @@ public class Erreur {
   private void initialize(Component target, String text1, String text2, boolean information, String keyword) {
     JPanel panel = new JPanel();
     panel.setLayout(new MigLayout("", "grow", "[]"));
-    MyCellarLabel label2 = new MyCellarLabel(text2);
+    MyCellarSimpleLabel label2 = new MyCellarSimpleLabel(text2);
     JCheckBox checkNotShow = new JCheckBox(getLabel("Main.DontShowNextTime"));
     checkNotShow.setFont(FONT_BOUTTON_SMALL);
-    panel.add(new MyCellarLabel(text1));
+    panel.add(new MyCellarSimpleLabel(text1));
     panel.add(label2, "newline, hidemode 3");
     panel.add(checkNotShow, "newline, hidemode 3, gaptop 15px");
     checkNotShow.setVisible(MyCellarUtils.isDefined(keyword));

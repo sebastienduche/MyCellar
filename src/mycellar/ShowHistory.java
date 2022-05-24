@@ -11,7 +11,6 @@ import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.tablecomponents.DateCellRenderer;
 import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -63,7 +62,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
   public ShowHistory() {
     Debug("Constructor");
-    MyCellarLabel filterLabel = new MyCellarLabel(LabelType.INFO_OTHER, "History.Filter");
+    MyCellarLabel filterLabel = new MyCellarLabel("History.Filter");
     filterCbx.addItem(new FilterItem(HistoryState.ALL, getLabel("History.None")));
     filterCbx.addItem(new FilterItem(HistoryState.ADD, getLabel("History.Entered")));
     filterCbx.addItem(new FilterItem(HistoryState.MODIFY, getLabel("History.Modified")));

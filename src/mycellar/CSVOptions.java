@@ -2,11 +2,11 @@ package mycellar;
 
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -65,15 +65,15 @@ final class CSVOptions extends JDialog {
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setLayout(new MigLayout("", "grow", ""));
     panel.setFont(FONT_PANEL);
-    MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO_OTHER, "Import.Separator");
+    MyCellarLabel info_separator = new MyCellarLabel("Import.Separator");
     listColumns = MyCellarFields.getFieldsList();
     nb_colonnes = listColumns.size();
     export = new MyCellarCheckBox[nb_colonnes];
-    final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
+    final MyCellarSimpleLabel[] colonnes = new MyCellarSimpleLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
       export[i] = new MyCellarCheckBox("Main.Exported");
       export[i].setSelected(Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0) == 1);
-      colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
+      colonnes[i] = new MyCellarSimpleLabel(listColumns.get(i).toString());
     }
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));

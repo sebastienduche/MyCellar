@@ -24,11 +24,11 @@ import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
@@ -79,20 +79,20 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin
- * Description : Votre description<
+ * Description : Votre description
  * Copyright : Copyright (c) 2003
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.6
- * @since 06/05/22
+ * @version 23.7
+ * @since 24/05/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
   private static final long serialVersionUID = 8497660112193602839L;
   private final SearchTableModel searchTableModel = new SearchTableModel();
   private final MyCellarLabel objectFoundCountLabels = new MyCellarLabel("Search.bottleFound", LabelProperty.PLURAL.withCapital());
-  private final MyCellarLabel countLabel = new MyCellarLabel(DASH);
+  private final MyCellarSimpleLabel countLabel = new MyCellarSimpleLabel(DASH);
   private final MyCellarButton deleteButton = new MyCellarButton("Main.Delete", DELETE);
   private final MyCellarButton exportButton = new MyCellarButton("Search.Export", EXPORT);
   private final MyCellarButton modifyButton = new MyCellarButton("Main.Modify", WINE);
@@ -103,7 +103,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final char modificationKey = getLabel("MODIF").charAt(0);
   private final char deleteKey = getLabel("SUPPR").charAt(0);
   private final char exportKey = getLabel("EXPORT").charAt(0);
-  private final MyCellarLabel resultInfoLabel = new MyCellarLabel();
+  private final MyCellarSimpleLabel resultInfoLabel = new MyCellarSimpleLabel();
   private final MyCellarCheckBox selectAllCheck = new MyCellarCheckBox("Main.SelectAll");
   private final MyCellarButton addToWorksheetButton = new MyCellarButton("Search.AddWorksheet", WORK);
   private final MyCellarCheckBox emptySearchCheck = new MyCellarCheckBox("Search.ClearAll");
@@ -835,7 +835,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       name.addMouseListener(popupListener);
       name.setFont(FONT_PANEL);
       setLayout(new MigLayout("", "[grow]", "[]"));
-      add(new MyCellarLabel(LabelType.INFO_OTHER, "Search.Name"), "wrap");
+      add(new MyCellarLabel("Search.Name"), "wrap");
       add(name, "grow");
     }
   }
@@ -845,7 +845,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
     private PanelYear() {
       setLayout(new MigLayout());
-      MyCellarLabel labelYear = new MyCellarLabel(LabelType.INFO_OTHER, "Search.Year");
+      MyCellarLabel labelYear = new MyCellarLabel("Search.Year");
       add(labelYear, "wrap");
       add(year);
     }

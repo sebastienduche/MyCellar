@@ -3,7 +3,7 @@ package mycellar.core.text;
 public enum LabelType {
   @Deprecated
   ERROR,
-  INFO_OTHER,
+  LABEL,
   ERROR_OTHER,
   NONE
 }

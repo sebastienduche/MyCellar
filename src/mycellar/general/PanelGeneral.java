@@ -14,7 +14,6 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JCompletionComboBox;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.JModifyTextField;
@@ -44,8 +43,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 11/05/22
+ * @version 1.7
+ * @since 24/05/22
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -102,10 +101,10 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       };
     }
     setLayout(new MigLayout("", "[grow]30px[]10px[]10px[]30px[]10px[]", ""));
-    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Name"), "grow");
-    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Year"));
+    add(new MyCellarLabel("Main.Name"), "grow");
+    add(new MyCellarLabel("Main.Year"));
     add(yearAuto);
-    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.CapacityOrSupport"), "wrap");
+    add(new MyCellarLabel("Main.CapacityOrSupport"), "wrap");
     add(name, "growx");
     add(year, "width min(100,10%)");
     add(noYear);
@@ -116,8 +115,8 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
       JPanel panelArtistComposer = new JPanel();
       panelArtistComposer.setBounds(0, 0, 0, 0);
       panelArtistComposer.setLayout(new MigLayout("", "0px[]10px[]0px"));
-      panelArtistComposer.add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Artist"), "grow");
-      panelArtistComposer.add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Composer"), "grow, wrap");
+      panelArtistComposer.add(new MyCellarLabel("Main.Artist"), "grow");
+      panelArtistComposer.add(new MyCellarLabel("Main.Composer"), "grow, wrap");
       panelArtistComposer.add(artist, "width min(100,10%)");
       panelArtistComposer.add(composer, "width min(100,10%)");
       add(panelArtistComposer, "span 5, newline");

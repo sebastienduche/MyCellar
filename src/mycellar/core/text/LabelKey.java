@@ -14,11 +14,11 @@ public class LabelKey {
    * Soci&eacute;t&eacute; : Seb Informatique
    *
    * @author S&eacute;bastien Duch&eacute;
-   * @version 0.4
-   * @since 05/05/22
+   * @version 0.5
+   * @since 24/05/22
    */
   public LabelKey(String key) {
-    labelType = LabelType.INFO_OTHER;
+    labelType = LabelType.LABEL;
     this.key = key;
   }
 
@@ -28,13 +28,13 @@ public class LabelKey {
   }
 
   public LabelKey(String key, LabelProperty labelProperty) {
-    labelType = LabelType.INFO_OTHER;
+    labelType = LabelType.LABEL;
     this.key = key;
     this.labelProperty = labelProperty;
   }
 
   public LabelKey(String key, LabelProperty labelProperty, String value) {
-    labelType = LabelType.INFO_OTHER;
+    labelType = LabelType.LABEL;
     this.key = key;
     this.labelProperty = labelProperty;
     this.value = value;

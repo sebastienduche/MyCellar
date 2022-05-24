@@ -14,7 +14,6 @@ import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleListJaxb;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -52,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.5
- * @since 03/05/22
+ * @version 3.6
+ * @since 24/05/22
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -71,7 +70,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   private VignobleListJaxb vignobleListJaxb = null;
 
   public VineyardPanel() {
-    MyCellarLabel labelCountries = new MyCellarLabel(LabelType.INFO_OTHER, "VineyardPanel.selectCountry");
+    MyCellarLabel labelCountries = new MyCellarLabel("VineyardPanel.selectCountry");
     comboCountry.addItem(emptyCountryJaxb);
     Collections.sort(Program.getCountries());
     Program.getCountries().forEach(comboCountry::addItem);
@@ -79,7 +78,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
     comboCountry.addActionListener((e) -> comboCountrySelected());
     comboVignoble.addActionListener((e) -> comboVignobleSelected());
 
-    MyCellarLabel labelVineyard = new MyCellarLabel(LabelType.INFO_OTHER, "VineyardPanel.selectVineyard");
+    MyCellarLabel labelVineyard = new MyCellarLabel("VineyardPanel.selectVineyard");
     MyCellarButton addCountry = new MyCellarButton("VineyardPanel.addCountry", new AddCountryAction());
     MyCellarButton delCountry = new MyCellarButton("VineyardPanel.delCountry", new DelCountryAction());
     setLayout(new MigLayout("", "grow", "[][grow]"));

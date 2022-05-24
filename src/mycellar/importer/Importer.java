@@ -22,12 +22,12 @@ import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.placesmanagement.Rangement;
@@ -100,10 +100,9 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private final char ouvrirChar = getLabel("OUVRIR").charAt(0);
   private final List<MyCellarComboBox<MyCellarFields>> comboBoxList = new ArrayList<>(IMPORT_COMBO_COUNT);
   private final MyCellarCheckBox labelTitle = new MyCellarCheckBox("Import.WithTitle");
-  private final MyCellarLabel labelTitle2 = new MyCellarLabel(LabelType.INFO_OTHER, "Import.ChooseColumns");
-  @SuppressWarnings("deprecation")
-  private final MyCellarLabel label_progression = new MyCellarLabel();
-  private final MyCellarLabel label2 = new MyCellarLabel(LabelType.INFO_OTHER, "Import.Separator");
+  private final MyCellarLabel labelTitle2 = new MyCellarLabel("Import.ChooseColumns");
+  private final MyCellarSimpleLabel label_progression = new MyCellarSimpleLabel();
+  private final MyCellarLabel label2 = new MyCellarLabel("Import.Separator");
   private final MyCellarComboBox<String> separateur = new MyCellarComboBox<>();
   private final JTextField file = new JTextField();
 
@@ -166,7 +165,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     add(panelType, "grow, wrap");
     JPanel panelFile = new JPanel();
     panelFile.setLayout(new MigLayout("", "[grow][][]", "[]"));
-    panelFile.add(new MyCellarLabel(LabelType.INFO_OTHER, "Import.Path"), "wrap");
+    panelFile.add(new MyCellarLabel("Import.Path"), "wrap");
     panelFile.add(file, "grow");
     panelFile.add(parcourir);
     panelFile.add(openit);

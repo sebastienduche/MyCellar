@@ -20,18 +20,16 @@ import java.awt.Font;
 import java.util.LinkedList;
 import java.util.List;
 
-import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2004
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2004
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.4
- * @since 05/05/22
+ * @version 4.5
+ * @since 24/05/22
  */
 final class ListVin extends JPanel {
   static final long serialVersionUID = 10805;
@@ -75,7 +73,7 @@ final class ListVin extends JPanel {
       });
 
       JScrollPane scrollpane = new JScrollPane(table);
-      MyCellarLabel MyCellarLabel2 = new MyCellarLabel(getLabel("ListVin.selectItems", LabelProperty.SINGLE));
+      MyCellarLabel MyCellarLabel2 = new MyCellarLabel("ListVin.selectItems", LabelProperty.SINGLE);
 
       scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
       setLayout(new MigLayout("", "grow", "[grow][]"));

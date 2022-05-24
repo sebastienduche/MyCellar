@@ -7,6 +7,7 @@ import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;
 
@@ -40,7 +41,6 @@ import static mycellar.core.MyCellarSettings.XLSTAB_COL1;
 import static mycellar.core.MyCellarSettings.XLSTAB_COL2;
 import static mycellar.core.MyCellarSettings.XLSTAB_COL3;
 import static mycellar.core.MyCellarSettings.XLS_TAB_TITLE;
-import static mycellar.core.text.LabelType.INFO_OTHER;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
@@ -93,10 +93,10 @@ public final class XLSTabOptions extends JDialog {
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setFont(FONT_PANEL);
     panel.setBorder(BorderFactory.createTitledBorder(getLabel("XLSOptions.FileTitle")));
-    MyCellarLabel titleLabel = new MyCellarLabel(INFO_OTHER, "XLSOptions.XLSTitle");
+    MyCellarLabel titleLabel = new MyCellarLabel("XLSOptions.XLSTitle");
     String xls_title = Program.getCaveConfigString(XLS_TAB_TITLE, "");
     pdf_title.setText(xls_title);
-    MyCellarLabel MyCellarLabel3 = new MyCellarLabel(INFO_OTHER, "Options.TextSize");
+    MyCellarLabel MyCellarLabel3 = new MyCellarLabel("Options.TextSize");
 
     onePlacePerSheetCheckBox.addActionListener(e -> updatePlaceSettings(onePlacePerSheetCheckBox.isSelected()));
 
@@ -133,14 +133,14 @@ public final class XLSTabOptions extends JDialog {
     valider.addActionListener(this::valider_actionPerformed);
     MyCellarButton annuler = new MyCellarButton("Main.cancel");
     annuler.addActionListener((e) -> dispose());
-    MyCellarLabel pt_label1 = new MyCellarLabel("pt");
-    MyCellarLabel MyCellarLabel7 = new MyCellarLabel(INFO_OTHER, "Options.TextSize");
-    MyCellarLabel pt_label2 = new MyCellarLabel("pt");
-    MyCellarLabel column_size_label = new MyCellarLabel(INFO_OTHER, "XLSOptions.ColumnsWidth");
-    MyCellarLabel pt_label3 = new MyCellarLabel("px");
-    MyCellarLabel empty_line_part_label = new MyCellarLabel(INFO_OTHER, "XLSOptions.NbLinesBetweenPart");
-    empty_line_place_label = new MyCellarLabel(INFO_OTHER, "XLSOptions.NbLinesBetweenPlace");
-    MyCellarLabel column_label = new MyCellarLabel(INFO_OTHER, "XLSOptions.ColumnsToUse");
+    MyCellarSimpleLabel pt_label1 = new MyCellarSimpleLabel("pt");
+    MyCellarLabel MyCellarLabel7 = new MyCellarLabel("Options.TextSize");
+    MyCellarSimpleLabel pt_label2 = new MyCellarSimpleLabel("pt");
+    MyCellarLabel column_size_label = new MyCellarLabel("XLSOptions.ColumnsWidth");
+    MyCellarSimpleLabel pt_label3 = new MyCellarSimpleLabel("px");
+    MyCellarLabel empty_line_part_label = new MyCellarLabel("XLSOptions.NbLinesBetweenPart");
+    empty_line_place_label = new MyCellarLabel("XLSOptions.NbLinesBetweenPlace");
+    MyCellarLabel column_label = new MyCellarLabel("XLSOptions.ColumnsToUse");
 
     if (Program.getCaveConfigBool(ONE_PER_SHEET_XLS, false)) {
       updatePlaceSettings(true);

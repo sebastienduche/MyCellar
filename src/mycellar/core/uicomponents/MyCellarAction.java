@@ -58,7 +58,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   @Override
   public void setText(String text) {
     putValue(Action.NAME, withText ? text : "");
-    putValue(Action.SHORT_DESCRIPTION, getLabel(LabelType.INFO_OTHER, descriptionLabelCode, descriptionLabelProperty, null));
+    putValue(Action.SHORT_DESCRIPTION, getLabel(LabelType.LABEL, descriptionLabelCode, descriptionLabelProperty, null));
   }
 
   public void setDescriptionLabel(String labelCode) {

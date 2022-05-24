@@ -5,10 +5,10 @@ import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;
 
@@ -84,12 +84,12 @@ public final class PDFOptions extends JDialog {
     nb_colonnes = listColumns.size();
     col_size = new MyCellarSpinner[nb_colonnes];
     export = new MyCellarCheckBox[nb_colonnes];
-    MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
+    MyCellarSimpleLabel[] colonnes = new MyCellarSimpleLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
       export[i] = new MyCellarCheckBox("Main.Exported");
       export[i].setSelected(1 == Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT", 0));
       col_size[i] = new MyCellarSpinner(1, 99);
-      colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
+      colonnes[i] = new MyCellarSimpleLabel(listColumns.get(i).toString());
 
       col_size[i].setValue(Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i, 5));
     }
@@ -101,22 +101,22 @@ public final class PDFOptions extends JDialog {
     MyCellarButton annuler = new MyCellarButton("Main.cancel");
     annuler.addActionListener((e) -> dispose());
 
-    jPanel1.add(new MyCellarLabel(LabelType.INFO_OTHER, "PDFOptions.PDFTitle"), "split 2");
+    jPanel1.add(new MyCellarLabel("PDFOptions.PDFTitle"), "split 2");
     jPanel1.add(pdf_title, "grow, wrap");
-    jPanel1.add(new MyCellarLabel(LabelType.INFO_OTHER, "Options.TextSize"), "split 4");
+    jPanel1.add(new MyCellarLabel("Options.TextSize"), "split 4");
     jPanel1.add(titleSize);
-    jPanel1.add(new MyCellarLabel("pt"));
+    jPanel1.add(new MyCellarSimpleLabel("pt"));
     jPanel1.add(boldCheck, "grow, align right");
     add(jPanel1, "grow, wrap");
-    jPanel2.add(new MyCellarLabel(LabelType.INFO_OTHER, "Options.TextSize"), "split 4, span 3");
+    jPanel2.add(new MyCellarLabel("Options.TextSize"), "split 4, span 3");
     jPanel2.add(textSize);
-    jPanel2.add(new MyCellarLabel("pt"));
+    jPanel2.add(new MyCellarSimpleLabel("pt"));
     jPanel2.add(borderCheck, "push, align right, gapbottom 15px");
 
     for (int i = 0; i < nb_colonnes; i++) {
       jPanel2.add(colonnes[i], "newline");
       jPanel2.add(col_size[i], "split 2");
-      jPanel2.add(new MyCellarLabel("cm"));
+      jPanel2.add(new MyCellarSimpleLabel("cm"));
       jPanel2.add(export[i], "push, align right");
     }
 

@@ -1,7 +1,7 @@
 package mycellar;
 
 import mycellar.core.uicomponents.MyCellarButton;
-import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ImageIcon;
@@ -39,14 +39,14 @@ final class APropos extends JDialog {
     IconPanel ip = new IconPanel(MyCellarImage.ICON);
     MyCellarButton ok = new MyCellarButton("Main.OK");
     ok.addActionListener((e) -> dispose());
-    MyCellarLabel myCellarLabel1 = new MyCellarLabel("MyCellar");
+    MyCellarSimpleLabel myCellarLabel1 = new MyCellarSimpleLabel("MyCellar");
     myCellarLabel1.setForeground(Color.red);
     myCellarLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-    MyCellarLabel myCellarLabel2 = new MyCellarLabel("Copyright: S.Duché");
+    MyCellarSimpleLabel myCellarLabel2 = new MyCellarSimpleLabel("Copyright: S.Duché");
     myCellarLabel2.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel myCellarLabel3 = new MyCellarLabel("Release: " + INTERNAL_VERSION);
+    MyCellarSimpleLabel myCellarLabel3 = new MyCellarSimpleLabel("Release: " + INTERNAL_VERSION);
     myCellarLabel3.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel myCellarLabel4 = new MyCellarLabel("Version: " + MAIN_VERSION);
+    MyCellarSimpleLabel myCellarLabel4 = new MyCellarSimpleLabel("Version: " + MAIN_VERSION);
     myCellarLabel4.setHorizontalAlignment(SwingConstants.LEFT);
     myCellarLabel1.setFont(new Font("Arial", Font.BOLD, 13));
     setLayout(new MigLayout("", "[][]", "[]"));

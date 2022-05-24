@@ -1,10 +1,10 @@
 package mycellar.core;
 
 import mycellar.Program;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JModifyTextArea;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.PanelGeneral;
 import mycellar.general.PanelWineAttribute;
 import mycellar.placesmanagement.PanelPlace;
@@ -24,15 +24,15 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.2
- * @since 26/04/22
+ * @version 5.3
+ * @since 24/05/22
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
   private static final long serialVersionUID = 3056306291164598750L;
 
-  protected final MyCellarLabel labelComment = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Comment");
-  protected final MyCellarLabel end = new MyCellarLabel(""); // Label pour les resultats
+  protected final MyCellarLabel labelComment = new MyCellarLabel("Main.Comment");
+  protected final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   protected final PanelPlace panelPlace = new PanelPlace();
   protected final PanelGeneral panelGeneral = new PanelGeneral();
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();

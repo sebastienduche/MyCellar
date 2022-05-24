@@ -19,6 +19,7 @@ import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
@@ -51,7 +52,6 @@ import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
-import static mycellar.core.text.LabelType.INFO_OTHER;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -81,7 +81,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private final MyCellarSpinner nb_parties = new MyCellarSpinner(1, 99);
   private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner(0, 99);
   private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox("CreateStorage.SimpleStorage");
-  private final MyCellarLabel label_cree = new MyCellarLabel();
+  private final MyCellarSimpleLabel label_cree = new MyCellarSimpleLabel();
   private final MyCellarButton preview = new MyCellarButton("CreateStorage.Preview");
   private final JPanel panelType;
   private final JPanel panelStartCaisse;
@@ -157,7 +157,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     setLayout(new MigLayout("", "[grow][grow]", "[][]"));
 
     if (modify) {
-      MyCellarLabel labelModify = new MyCellarLabel(INFO_OTHER, "CreatePlace.SelectPlaceToModify");
+      MyCellarLabel labelModify = new MyCellarLabel("CreatePlace.SelectPlaceToModify");
       JPanel panelModify = new JPanel();
       panelModify.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "", 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
       panelModify.setLayout(new MigLayout("", "[]", "[]"));
@@ -165,7 +165,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       panelModify.add(comboPlace);
       add(panelModify, "span 2, wrap");
     }
-    add(new MyCellarLabel(INFO_OTHER, "Import.StorageName"), "span 2, split 3");
+    add(new MyCellarLabel("Import.StorageName"), "span 2, split 3");
     add(nom_obj, "growx");
     add(m_caisse_chk, "wrap");
 

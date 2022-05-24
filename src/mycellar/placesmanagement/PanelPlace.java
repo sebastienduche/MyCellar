@@ -8,11 +8,11 @@ import mycellar.core.IPlace;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.XmlUtils;
 import net.miginfocom.swing.MigLayout;
 
@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 23/05/22
+ * @version 3.3
+ * @since 24/05/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -47,17 +47,17 @@ public class PanelPlace extends JPanel implements IPlace {
   private final JModifyComboBox<ComboItem> numPlace = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> line = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> column = new JModifyComboBox<>();
-  private final MyCellarLabel labelExist = new MyCellarLabel("");
+  private final MyCellarSimpleLabel labelExist = new MyCellarSimpleLabel();
   private final MyCellarButton preview = new MyCellarButton("Storage.Preview");
-  private final MyCellarLabel labelNumPlace = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.numPlace");
-  private final MyCellarLabel labelLine = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.line");
-  private final MyCellarLabel labelColumn = new MyCellarLabel(LabelType.INFO_OTHER, "MyCellarFields.column");
+  private final MyCellarLabel labelNumPlace = new MyCellarLabel("MyCellarFields.numPlace");
+  private final MyCellarLabel labelLine = new MyCellarLabel("MyCellarFields.line");
+  private final MyCellarLabel labelColumn = new MyCellarLabel("MyCellarFields.column");
 
-  private final MyCellarLabel beforeLabel = new MyCellarLabel(LabelType.INFO_OTHER, "PanelPlace.Before"); // Pour la Modification
-  private final MyCellarLabel previousPlaceLabel = new MyCellarLabel(""); // Pour la Modification
-  private final MyCellarLabel previousNumPlaceLabel = new MyCellarLabel(""); // Pour la Modification
-  private final MyCellarLabel previousLineLabel = new MyCellarLabel(""); // Pour la Modification
-  private final MyCellarLabel previousColumnLabel = new MyCellarLabel(""); // Pour la Modification
+  private final MyCellarLabel beforeLabel = new MyCellarLabel("PanelPlace.Before"); // Pour la Modification
+  private final MyCellarSimpleLabel previousPlaceLabel = new MyCellarSimpleLabel(); // Pour la Modification
+  private final MyCellarSimpleLabel previousNumPlaceLabel = new MyCellarSimpleLabel(); // Pour la Modification
+  private final MyCellarSimpleLabel previousLineLabel = new MyCellarSimpleLabel(); // Pour la Modification
+  private final MyCellarSimpleLabel previousColumnLabel = new MyCellarSimpleLabel(); // Pour la Modification
 
   private final MyCellarCheckBox searchSeveralLocation = new MyCellarCheckBox("Search.AllBottlesInPlace", LabelProperty.PLURAL);
   private final String labelAllObjectsInPlace = getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL);
@@ -93,7 +93,7 @@ public class PanelPlace extends JPanel implements IPlace {
     initPlaceCombo();
     setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));
     setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), getLabel("Main.Storage")));
-    add(new MyCellarLabel(LabelType.INFO_OTHER, "Main.Name"));
+    add(new MyCellarLabel("Main.Name"));
     add(labelNumPlace);
     add(labelLine);
     if (columnComboVisible) {

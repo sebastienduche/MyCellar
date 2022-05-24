@@ -6,8 +6,8 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.placesmanagement.Rangement;
 import net.miginfocom.swing.MigLayout;
 
@@ -76,9 +76,9 @@ final class PanelStats extends JPanel {
 
   private static final long serialVersionUID = 7438892143990782047L;
   private final MyCellarLabel bottles = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
-  private final MyCellarLabel cellarValue = new MyCellarLabel(LabelType.INFO_OTHER, "Main.GlobalValue");
-  private final MyCellarLabel bottlesNb = new MyCellarLabel();
-  private final MyCellarLabel cellarTotal = new MyCellarLabel();
+  private final MyCellarLabel cellarValue = new MyCellarLabel("Main.GlobalValue");
+  private final MyCellarSimpleLabel bottlesNb = new MyCellarSimpleLabel();
+  private final MyCellarSimpleLabel cellarTotal = new MyCellarSimpleLabel();
   private final PanelStatsModel model = new PanelStatsModel();
   private final JTable table;
 

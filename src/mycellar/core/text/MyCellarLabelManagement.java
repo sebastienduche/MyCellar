@@ -41,7 +41,7 @@ public class MyCellarLabelManagement {
   }
 
   public static String getLabelCode(String code) {
-    return getLabel(LabelType.INFO_OTHER, code, null, null);
+    return getLabel(LabelType.LABEL, code, null, null);
   }
 
   public static String getLabel(LabelType type, String code, LabelProperty labelProperty, String labelValue) {
@@ -53,7 +53,7 @@ public class MyCellarLabelManagement {
       switch (type) {
         case ERROR:
           return getError(ERRORS_LABEL_KEY + code, labelProperty);
-        case INFO_OTHER:
+        case LABEL:
           return getLabel(code, labelProperty);
         case ERROR_OTHER:
           return getError(code, labelProperty);
@@ -66,7 +66,7 @@ public class MyCellarLabelManagement {
       switch (type) {
         case ERROR:
           return MessageFormat.format(getError(ERRORS_LABEL_KEY + code, labelProperty), labelValue).strip();
-        case INFO_OTHER:
+        case LABEL:
           return MessageFormat.format(getLabel(code, labelProperty), labelValue).strip();
         case ERROR_OTHER:
           return MessageFormat.format(getError(code, labelProperty), labelValue).strip();

@@ -36,6 +36,7 @@ import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
@@ -86,8 +87,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.9
- * @since 13/05/22
+ * @version 12.0
+ * @since 24/05/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -97,8 +98,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private static final MyCellarEnum TOCHECK = new MyCellarEnum(2, getLabel("History.ToCheck"));
 
   private static final long serialVersionUID = 1265789936970092250L;
-  @SuppressWarnings("deprecation")
-  private final MyCellarLabel titleLabel = new MyCellarLabel();
+  private final MyCellarSimpleLabel titleLabel = new MyCellarSimpleLabel();
   private final MyCellarLabel labelCount = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
   private final MyCellarButton createPlacesButton = new MyCellarButton("Main.StorageToCreate", new CreatePlacesAction());
   private final MyCellarButton manageColumnsButton = new MyCellarButton("Main.Columns", new ManageColumnsAction());

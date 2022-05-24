@@ -19,6 +19,7 @@ import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
@@ -62,7 +63,6 @@ import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
-import static mycellar.core.text.LabelType.INFO_OTHER;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -73,8 +73,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.0
- * @since 05/05/22
+ * @version 5.1
+ * @since 24/05/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -149,7 +149,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
             rangementCells.add(cell);
             panelCellar.add(cell, "growx, wrap");
           }
-          placePanel.add(new MyCellarLabel(getLabel("Storage.Shelve") + SPACE + empl), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarSimpleLabel(getLabel("Storage.Shelve") + SPACE + empl), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 
@@ -185,7 +185,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
               panelCellar.add(panel);
             }
           }
-          placePanel.add(new MyCellarLabel(getLabel("Storage.Shelve") + SPACE + (i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarSimpleLabel(getLabel("Storage.Shelve") + SPACE + (i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 
@@ -236,7 +236,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     JScrollPane scrollStock = new JScrollPane(stock);
     scrollStock.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     scrollStock.setBorder(BorderFactory.createTitledBorder(getLabel("ManagePlace.Stock")));
-    add(new MyCellarLabel(INFO_OTHER, "ManagePlace.SelectPlace"), "split 3");
+    add(new MyCellarLabel("ManagePlace.SelectPlace"), "split 3");
     add(comboRangement, "gapleft 10px");
     add(moveAllButton, "gapleft 10px, wrap");
     moveAllButton.setEnabled(false);
@@ -523,7 +523,7 @@ final class RangementCell extends JPanel {
 final class MyCellarObjectDraggingLabel extends JPanel {
 
   private static final long serialVersionUID = -3982812616929975895L;
-  private final MyCellarLabel label = new MyCellarLabel();
+  private final MyCellarSimpleLabel label = new MyCellarSimpleLabel();
   private MyCellarObject myCellarObject;
 
   MyCellarObjectDraggingLabel(final MyCellarObject myCellarObject) {
@@ -618,7 +618,7 @@ class Handler extends MouseAdapter {
 class LabelTransferHandler extends TransferHandler {
   private static final long serialVersionUID = -4338469857987642038L;
   private final DataFlavor localObjectFlavor;
-  private final MyCellarLabel label = new MyCellarLabel() {
+  private final MyCellarSimpleLabel label = new MyCellarSimpleLabel() {
     private static final long serialVersionUID = 5065631180392050633L;
 
     @Override

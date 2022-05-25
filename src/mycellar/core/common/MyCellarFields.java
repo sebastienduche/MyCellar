@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
@@ -23,39 +24,39 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 24/05/22
+ * @version 2.6
+ * @since 25/05/22
  */
 
 public enum MyCellarFields {
-  NAME(getLabel("Main.Item", LabelProperty.SINGLE.withCapital())),
-  YEAR(getLabel("Main.Year")),
-  TYPE(getLabel("Main.CapacityOrSupport")),
-  PLACE(getLabel("Main.Storage")),
-  NUM_PLACE(getLabel("MyCellarFields.numPlace")),
-  LINE(getLabel("MyCellarFields.line")),
-  COLUMN(getLabel("MyCellarFields.column")),
-  PRICE(getLabel("Main.Price")),
-  COMMENT(getLabel("Main.Comment")),
-  MATURITY(getLabel("Main.Maturity")),
-  PARKER(getLabel("Main.Rating")),
-  COLOR(getLabel("AddVin.Color")),
-  COUNTRY(getLabel("Main.Country")),
-  VINEYARD(getLabel("Main.Vignoble")),
-  AOC(getLabel("Main.AppelationAOC")),
-  IGP(getLabel("Main.AppelationIGP")),
-  STATUS(getLabel("Main.Status")),
-  STYLE(getLabel("Main.Style")),
-  COMPOSER(getLabel("Main.Composer")),
-  ARTIST(getLabel("Main.Artist")),
-  SUPPORT(getLabel("Main.Support")),
-  DURATION(getLabel("Main.Duration")),
-  DISK_NUMBER(getLabel("Main.DiskNumber")),
-  DISK_COUNT(getLabel("Main.DiskCount")),
-  RATING(getLabel("Main.Rating")),
-  FILE(getLabel("Main.File")),
-  EXTERNAL_ID(getLabel("Main.ExternalId")),
-  ALBUM(getLabel("Main.Album")),
+  NAME("Main.Item", LabelProperty.SINGLE.withCapital()),
+  YEAR("Main.Year"),
+  TYPE("Main.CapacityOrSupport"),
+  PLACE("Main.Storage"),
+  NUM_PLACE("MyCellarFields.numPlace"),
+  LINE("MyCellarFields.line"),
+  COLUMN("MyCellarFields.column"),
+  PRICE("Main.Price"),
+  COMMENT("Main.Comment"),
+  MATURITY("Main.Maturity"),
+  PARKER("Main.Rating"),
+  COLOR("AddVin.Color"),
+  COUNTRY("Main.Country"),
+  VINEYARD("Main.Vignoble"),
+  AOC("Main.AppelationAOC"),
+  IGP("Main.AppelationIGP"),
+  STATUS("Main.Status"),
+  STYLE("Main.Style"),
+  COMPOSER("Main.Composer"),
+  ARTIST("Main.Artist"),
+  SUPPORT("Main.Support"),
+  DURATION("Main.Duration"),
+  DISK_NUMBER("Main.DiskNumber"),
+  DISK_COUNT("Main.DiskCount"),
+  RATING("Main.Rating"),
+  FILE("Main.File"),
+  EXTERNAL_ID("Main.ExternalId"),
+  ALBUM("Main.Album"),
 
   // Pour l'import de donnees
   EMPTY(""),
@@ -75,10 +76,17 @@ public enum MyCellarFields {
   private static final List<MyCellarFields> FIELDS_MUSIC = Arrays.asList(
       NAME, YEAR, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, STATUS, ARTIST, COMPOSER, STYLE, SUPPORT, DURATION, EXTERNAL_ID, ALBUM
   );
-  private final String label;
+  private final String keyLabel;
+  private final LabelProperty labelProperty;
 
-  MyCellarFields(String label) {
-    this.label = label;
+  MyCellarFields(String keyLabel) {
+    this.keyLabel = keyLabel;
+    labelProperty = null;
+  }
+
+  MyCellarFields(String keyLabel, LabelProperty labelProperty) {
+    this.keyLabel = keyLabel;
+    this.labelProperty = labelProperty;
   }
 
   public static String getValue(String field, IMyCellarObject myCellarObject) {
@@ -259,6 +267,9 @@ public enum MyCellarFields {
 
   @Override
   public String toString() {
-    return label;
+    if (isNullOrEmpty(keyLabel)) {
+      return "";
+    }
+    return getLabel(keyLabel, labelProperty);
   }
 }

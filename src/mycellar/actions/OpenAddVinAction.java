@@ -30,7 +30,7 @@ public class OpenAddVinAction extends AbstractAction {
       addVin.setBottles(listToModify);
 
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WINE, addVin);
-      final String label = getLabel("OpenVin.modify1Item", LabelProperty.PLURAL);
+      final String label = getLabel("OpenVin.Modify1Item", LabelProperty.PLURAL);
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);
       } else {

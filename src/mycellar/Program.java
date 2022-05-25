@@ -107,8 +107,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.2
- * @since 29/04/22
+ * @version 28.3
+ * @since 25/05/22
  */
 
 public final class Program {
@@ -728,7 +728,7 @@ public final class Program {
     boolean bSave = false;
     File newFile = null;
     if (myCellarFile.exists() && isModified()) {
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("SaveModifications"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("SaveModifications"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         bSave = true;
         if (!myCellarFile.isFileSavable()) {
           JFileChooser boiteFichier = new JFileChooser();

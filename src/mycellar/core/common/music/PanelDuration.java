@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 24/05/21
+ * @version 0.3
+ * @since 25/05/21
  */
 public final class PanelDuration extends JPanel {
 
@@ -26,9 +26,9 @@ public final class PanelDuration extends JPanel {
 
   public PanelDuration(LocalDateTime time) {
     setLayout(new MigLayout("", "[][][]", ""));
-    add(new MyCellarLabel("PanelDuration.hour"));
-    add(new MyCellarLabel("PanelDuration.minute"));
-    add(new MyCellarLabel("PanelDuration.second"), "wrap");
+    add(new MyCellarLabel("PanelDuration.Hour"));
+    add(new MyCellarLabel("PanelDuration.Minute"));
+    add(new MyCellarLabel("PanelDuration.Second"), "wrap");
     add(hour);
     add(minute);
     add(second);

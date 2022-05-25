@@ -17,8 +17,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 29/04/22
+ * @version 1.9
+ * @since 25/05/22
  */
 class TableauValues extends AbstractTableModel {
   public static final int ETAT = 0;
@@ -55,9 +55,9 @@ class TableauValues extends AbstractTableModel {
           nombre_ligne += rangement.getLineCountAt(k);
         }
         if (nombre_ligne <= 1) {
-          return MessageFormat.format(getLabel("Storage.nbLine"), nombre_ligne);
+          return MessageFormat.format(getLabel("Storage.NbLine"), nombre_ligne);
         }
-        return MessageFormat.format(getLabel("Storage.nbLines"), nombre_ligne);
+        return MessageFormat.format(getLabel("Storage.NbLines"), nombre_ligne);
       case 3:
         int nombre_vin = 0;
         if (rangement.isSimplePlace()) {

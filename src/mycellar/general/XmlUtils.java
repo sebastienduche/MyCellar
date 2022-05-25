@@ -40,8 +40,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 29/04/22
+ * @version 3.5
+ * @since 25/05/22
  */
 
 public class XmlUtils {
@@ -286,7 +286,7 @@ public class XmlUtils {
               Element vin_name = doc.createElement(VIN_1);
               vin.appendChild(vin_name);
               if (preview) {
-                vin_name.setTextContent(getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
+                vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
               } else {
                 IMyCellarObject b = rangement.getObjectSimplePlaceAt(i, j);
                 if (b != null)
@@ -315,7 +315,7 @@ public class XmlUtils {
                 Element vin_name = doc.createElement(VIN_1);
                 vin.appendChild(vin_name);
                 if (preview) {
-                  vin_name.setTextContent(getLabel("MyXmlDom.bottleHere", LabelProperty.A_SINGLE.withCapital()));
+                  vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
                 } else {
                   rangement.getObject(i, j, k)
                       .ifPresentOrElse(myCellarObject -> vin_name.setTextContent(myCellarObject.getNom()), () -> vin_name.setTextContent("-"));

@@ -34,8 +34,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.5
- * @since 24/05/22
+ * @version 3.6
+ * @since 25/05/22
  */
 
 final class MoveLine extends JDialog {
@@ -67,7 +67,7 @@ final class MoveLine extends JDialog {
     cancel.addActionListener((e) -> dispose());
 
     add(titre, "align center, span 3, wrap");
-    add(new MyCellarLabel("MoveLine.moveFromLine", LabelProperty.PLURAL), "span 3, wrap");
+    add(new MyCellarLabel("MoveLine.MoveFromLine", LabelProperty.PLURAL), "span 3, wrap");
     add(panelPlace, "wrap");
     add(label_new_line, "wrap");
     add(new_line_cbx, "wrap");

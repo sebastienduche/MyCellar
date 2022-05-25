@@ -43,8 +43,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 24/05/22
+ * @version 1.8
+ * @since 25/05/22
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable {
 
@@ -424,7 +424,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable {
         label = getError("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return false;
       }

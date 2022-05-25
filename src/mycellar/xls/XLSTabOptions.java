@@ -51,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 24/05/22
+ * @version 2.1
+ * @since 25/05/22
  */
 public final class XLSTabOptions extends JDialog {
   static final long serialVersionUID = 260706;
@@ -60,7 +60,7 @@ public final class XLSTabOptions extends JDialog {
   private static final int HAUTEUR = 550;
   private final MyCellarSpinner title_size = new MyCellarSpinner(1, 99);
   private final MyCellarCheckBox boldTitleCheckBox = new MyCellarCheckBox("Options.Bold");
-  private final MyCellarCheckBox onePlacePerSheetCheckBox = new MyCellarCheckBox("XLSOptions.onePlacePerSheet");
+  private final MyCellarCheckBox onePlacePerSheetCheckBox = new MyCellarCheckBox("XLSOptions.OnePlacePerSheet");
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner text_size = new MyCellarSpinner(1, 99);
   private final MyCellarSpinner column_size = new MyCellarSpinner(1, 99);

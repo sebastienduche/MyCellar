@@ -98,8 +98,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.1
- * @since 24/05/22
+ * @version 32.2
+ * @since 25/05/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -950,9 +950,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   private void menuCheckUpdate_actionPerformed() {
     if (MyCellarServer.getInstance().hasAvailableUpdate(MyCellarVersion.getLocalVersion())) {
-      Erreur.showInformationMessage(MessageFormat.format(getLabel("Start.newVersion"), MyCellarServer.getInstance().getAvailableVersion(), INTERNAL_VERSION));
+      Erreur.showInformationMessage(MessageFormat.format(getLabel("Start.NewVersion"), MyCellarServer.getInstance().getAvailableVersion(), INTERNAL_VERSION));
     } else {
-      Erreur.showInformationMessage(getLabel("Start.noUpdate"));
+      Erreur.showInformationMessage(getLabel("Start.NoUpdate"));
     }
   }
 
@@ -1087,8 +1087,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       types.setSelectedItem(objectType);
 
       setLayout(new MigLayout("", "[grow]", "[]25px[]"));
-      add(new MyCellarLabel("Start.selectTypeObject"), "span 2, wrap");
-      add(new MyCellarLabel("Parameters.typeLabel"));
+      add(new MyCellarLabel("Start.SelectTypeObject"), "span 2, wrap");
+      add(new MyCellarLabel("Parameters.TypeLabel"));
       add(types);
     }
 
@@ -1267,7 +1267,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
   final class PlaceMoveLineAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
-    private static final String LABEL = "MoveLine.title";
+    private static final String LABEL = "MoveLine.Title";
 
     private PlaceMoveLineAction() {
       super(LABEL, LabelProperty.SINGLE.withThreeDashes());
@@ -1495,7 +1495,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     private static final long serialVersionUID = -5144284671743409095L;
 
     private SetConfigAction() {
-      super("Start.modifyParameter", LabelProperty.SINGLE.withThreeDashes());
+      super("Start.ModifyParameter", LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override
@@ -1504,12 +1504,12 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       panel.setLayout(new MigLayout("", "grow"));
       JTextField key = new JTextField();
       JTextField value = new JTextField();
-      panel.add(new MyCellarLabel("Start.parameterToModify"), "grow, wrap");
-      panel.add(new MyCellarLabel("Start.key"), "split 2");
+      panel.add(new MyCellarLabel("Start.ParameterToModify"), "grow, wrap");
+      panel.add(new MyCellarLabel("Start.Key"), "split 2");
       panel.add(key, "grow, wrap");
-      panel.add(new MyCellarLabel("Start.value"), "split 2");
+      panel.add(new MyCellarLabel("Start.Value"), "split 2");
       panel.add(value, "grow");
-      if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(getInstance(), panel, getLabelCode("Start.modifyParameter"), JOptionPane.OK_CANCEL_OPTION)) {
+      if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(getInstance(), panel, getLabelCode("Start.ModifyParameter"), JOptionPane.OK_CANCEL_OPTION)) {
         final String parameter = toCleanString(key.getText());
         final String parameterValue = toCleanString(value.getText());
         if (isDefined(parameter)) {

@@ -25,14 +25,14 @@ import java.math.BigDecimal;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2014
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2014
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 26/04/22
+ * @version 2.0
+ * @since 25/05/22
  */
 
 public class Predicates {
@@ -107,7 +107,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("MyCellarManageBottles.status");
+      return getLabel("MyCellarManageBottles.Status");
     }
 
     @Override

@@ -24,8 +24,8 @@ import static mycellar.ProgramConstants.THREE_DOTS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 24/05/22
+ * @version 0.9
+ * @since 25/05/22
  */
 
 public class MyCellarLabelManagement {
@@ -103,7 +103,7 @@ public class MyCellarLabelManagement {
     } catch (MissingResourceException e) {
       if (displayError) {
         Program.Debug("Program: ERROR: Missing Label " + id);
-        JOptionPane.showMessageDialog(null, "Missing Label " + id, "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Missing Label '" + id + "'", "Error", JOptionPane.ERROR_MESSAGE);
       }
       return id;
     }
@@ -121,7 +121,7 @@ public class MyCellarLabelManagement {
     try {
       return LanguageFileLoader.getError(id);
     } catch (MissingResourceException e) {
-      JOptionPane.showMessageDialog(null, "Missing Error " + id, "Error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "Missing Error '" + id + "'", "Error", JOptionPane.ERROR_MESSAGE);
       return id;
     }
   }

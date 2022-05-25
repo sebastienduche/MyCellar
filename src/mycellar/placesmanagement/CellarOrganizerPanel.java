@@ -73,8 +73,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.1
- * @since 24/05/22
+ * @version 5.2
+ * @since 25/05/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -263,7 +263,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (stock.getComponentCount() > 0) {
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("ManageStock.ConfirmLost", LabelProperty.PLURAL), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("ManageStock.ConfirmLost", LabelProperty.PLURAL), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }
       if (stock.getComponentCount() > 0) {
@@ -552,7 +552,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
       @Override
       public void perform() {
         String mess = MessageFormat.format(MyCellarLabelManagement.getLabel("Main.DeleteWine", LabelProperty.THE_SINGLE), myCellarObject.getNom());
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), mess, MyCellarLabelManagement.getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), mess, MyCellarLabelManagement.getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
           Component parent = MyCellarObjectDraggingLabel.this.getParent();
           if (parent instanceof RangementCell) {
             ((RangementCell) parent).remove(MyCellarObjectDraggingLabel.this);

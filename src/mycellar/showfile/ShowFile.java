@@ -87,8 +87,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.0
- * @since 24/05/22
+ * @version 12.1
+ * @since 25/05/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -104,9 +104,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private final MyCellarButton manageColumnsButton = new MyCellarButton("Main.Columns", new ManageColumnsAction());
   private final MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
   private final MyCellarButton modifyButton = new MyCellarButton("Main.Modify", new ModifyBottlesAction());
-  private final MyCellarButton reloadButton = new MyCellarButton("ShowFile.reloadErrors", new ReloadErrorsAction());
-  private final MyCellarButton removeFromWorksheetButton = new MyCellarButton("ShowFile.removeFromWorksheet", new RemoveFromWorksheetAction());
-  private final MyCellarButton clearWorksheetButton = new MyCellarButton("ShowFile.clearWorksheet", new ClearWorksheetAction());
+  private final MyCellarButton reloadButton = new MyCellarButton("ShowFile.ReloadErrors", new ReloadErrorsAction());
+  private final MyCellarButton removeFromWorksheetButton = new MyCellarButton("ShowFile.RemoveFromWorksheet", new RemoveFromWorksheetAction());
+  private final MyCellarButton clearWorksheetButton = new MyCellarButton("ShowFile.ClearWorksheet", new ClearWorksheetAction());
   private final MyCellarComboBox<Rangement> placeCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottleColor> colorCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<MusicSupport> musicSupportCbx = new MyCellarComboBox<>();
@@ -652,8 +652,11 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
     initPlacesCombo();
 
-    Arrays.stream(MusicSupport.values()).forEach(musicSupportCbx::addItem);
-    Arrays.stream(BottleColor.values()).forEach(colorCbx::addItem);
+    if (Program.isMusicType()) {
+      Arrays.stream(MusicSupport.values()).forEach(musicSupportCbx::addItem);
+    } else if (Program.isWineType()) {
+      Arrays.stream(BottleColor.values()).forEach(colorCbx::addItem);
+    }
     Arrays.stream(BottlesStatus.values()).forEach(statusCbx::addItem);
 
     typeCbx.addItem("");
@@ -671,7 +674,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       model = new ErrorShowValues();
       ((ErrorShowValues) model).setErrors(Program.getErrors());
       table = new JTable(model);
-      titleLabel.setText(getLabel("ShowFile.manageError"));
+      titleLabel.setText(getLabel("ShowFile.ManageError"));
     } else {
       model = new ShowFileModel();
       String savedColumns;
@@ -797,7 +800,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), toDeleteList.size());
           erreur_txt2 = getError("Error.confirmNDelete");
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           if (isError()) {
             for (MyCellarObject b : toDeleteList) {
               Program.getErrors().remove(new MyCellarError(MyCellarError.ID.INEXISTING_PLACE, b));
@@ -866,7 +869,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), toRestoreList.size());
         erreur_txt2 = getLabel("ShowFile.RestoreSeveral");
       }
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
         for (MyCellarObject b : toRestoreList) {
           Program.getTrash().remove(b);
@@ -1013,7 +1016,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (rangement != null && rangement.isSimplePlace()) {
           Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"));
         } else {
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             ProgramPanels.showBottle(b, true);
           }
         }
@@ -1058,13 +1061,13 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     TableColumnModel tcm = table.getColumnModel();
     TableColumn tc;
     if (isError()) {
-      tc = tcm.getColumn(ErrorShowValues.PLACE);
+      tc = tcm.getColumn(ErrorShowValues.Column.PLACE.getIndex());
       tc.setCellEditor(new DefaultCellEditor(placeCbx));
-      tc = tcm.getColumn(ErrorShowValues.TYPE);
+      tc = tcm.getColumn(ErrorShowValues.Column.TYPE.getIndex());
       tc.setCellEditor(new DefaultCellEditor(typeCbx));
-      tc = tcm.getColumn(ErrorShowValues.STATUS);
+      tc = tcm.getColumn(ErrorShowValues.Column.STATUS.getIndex());
       tc.setCellRenderer(new FontBoldTableCellRenderer());
-      tc = tcm.getColumn(ErrorShowValues.BUTTON);
+      tc = tcm.getColumn(ErrorShowValues.Column.BUTTON.getIndex());
       tc.setCellRenderer(new ButtonCellRenderer(getLabel("Main.Add"), MyCellarImage.ADD));
       tc.setCellEditor(new ButtonCellEditor());
     } else if (isNormal() || isWorksheet()) {
@@ -1156,7 +1159,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   public boolean tabWillClose(TabEvent event) {
     if (isError()) {
       if (Program.getErrors().stream().anyMatch(MyCellarError::isNotSolved)) {
-        return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), getLabel("ShowFile.QuitErrors"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION);
+        return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), getLabel("ShowFile.QuitErrors"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION);
       }
     }
     RangementUtils.putTabStock();

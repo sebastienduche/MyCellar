@@ -20,8 +20,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 24/05/22
+ * @version 1.3
+ * @since 25/05/22
  */
 class CapacityTableModel extends DefaultTableModel {
   public static final int ETAT = 1;
@@ -75,7 +75,7 @@ class CapacityTableModel extends DefaultTableModel {
         JOptionPane.showMessageDialog(Start.getInstance(), getLabel("CapacityPanel.UnableDeleteCapacity"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
         return;
       }
-      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("CapacityPanel.DelCapacityQuestion"), oldValue), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("CapacityPanel.DelCapacityQuestion"), oldValue), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
         return;
       }
       list.remove(oldValue);

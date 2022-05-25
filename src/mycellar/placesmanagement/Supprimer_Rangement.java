@@ -61,8 +61,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.0
- * @since 24/05/22
+ * @version 10.1
+ * @since 25/05/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -100,7 +100,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     table = new JTable(model);
     JScrollPane scroll = new JScrollPane(table);
 
-    add(new MyCellarLabel("PlaceManagement.selectToDelete"), "split 2, gap");
+    add(new MyCellarLabel("PlaceManagement.SelectToDelete"), "split 2, gap");
     add(choix, "wrap");
     add(scroll, "grow, wrap");
     add(label_final, "grow, center, wrap");
@@ -160,7 +160,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       label_final.setHorizontalAlignment(SwingConstants.CENTER);
       Debug("There is (are) " + nb_case_use_total + " object(s) in this place!");
       if (nb_case_use_total == 0) {
-        label_final.setText(getLabel("PlaceManagement.emptyPlace"));
+        label_final.setText(getLabel("PlaceManagement.EmptyPlace"));
       } else {
         if (nb_case_use_total == 1) {
           label_final.setText(getLabel("DeletePlace.Still1Item", LabelProperty.SINGLE));
@@ -193,7 +193,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       if (nb_case_use_total == 0) {
         String name = rangement.getName();
         Debug("MESSAGE: Delete this place: " + name + "?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(getError("Error.questionDeleteStorage"), name), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(getError("Error.questionDeleteStorage"), name), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           removeSelectedPlace(rangement, num_select);
         }
       } else {
@@ -206,7 +206,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         // Delete place and objects in the place
         String errorPart2 = getError("Error.questionDeleteAllIncludedObjects", LabelProperty.THE_PLURAL);
         Debug("MESSAGE: Delete this place " + nom + " and all object(s) (" + nb_case_use_total + ")?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + errorPart2, getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + errorPart2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           new MyCellarSwingWorker() {
             @Override
             protected void done() {
@@ -401,9 +401,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 
     String getNbLineLabel() {
       if (nbLine <= 1) {
-        return MessageFormat.format(getLabel("Storage.nbLine"), nbLine);
+        return MessageFormat.format(getLabel("Storage.NbLine"), nbLine);
       }
-      return MessageFormat.format(getLabel("Storage.nbLines"), nbLine);
+      return MessageFormat.format(getLabel("Storage.NbLines"), nbLine);
     }
 
     String getNbWineLabel() {

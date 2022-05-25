@@ -64,8 +64,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.1
- * @since 24/05/22
+ * @version 11.2
+ * @since 25/05/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -278,7 +278,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(
           Start.getInstance(),
           MessageFormat.format(getError("Export.replaceFileQuestion"), aFile.getAbsolutePath()),
-          getLabel("Main.askConfirmation"),
+          getLabel("Main.AskConfirmation"),
           JOptionPane.YES_NO_OPTION,
           JOptionPane.QUESTION_MESSAGE)) {
         end.setText("");

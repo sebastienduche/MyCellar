@@ -62,8 +62,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.3
- * @since 24/05/22
+ * @version 9.4
+ * @since 25/05/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -106,16 +106,16 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listOptions.addItem(new MyCellarEnum(StatType.PLACE.ordinal(), getLabel("Stats.Storages")));
     listOptions.addItem(new MyCellarEnum(StatType.YEAR.ordinal(), getLabel("Stats.Years")));
     listOptions.addItem(new MyCellarEnum(StatType.PRICE.ordinal(), getLabel("Stats.Prices")));
-    listOptions.addItem(new MyCellarEnum(StatType.HISTORY.ordinal(), getLabel("Stats.history")));
+    listOptions.addItem(new MyCellarEnum(StatType.HISTORY.ordinal(), getLabel("Stats.History")));
 
     scroll = new JScrollPane(panel);
     scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     listOptions.addItemListener(this::typeStats_itemStateChanged);
     listPlaces.addItemListener(this::listStatOptionItemStateChanged);
 
-    MyCellarLabel chartType = new MyCellarLabel("Stats.chartType");
-    listChart.addItem(getLabel("Stats.chartBar"));
-    listChart.addItem(getLabel("Stats.chartPie"));
+    MyCellarLabel chartType = new MyCellarLabel("Stats.ChartType");
+    listChart.addItem(getLabel("Stats.ChartBar"));
+    listChart.addItem(getLabel("Stats.ChartPie"));
     listChart.addItemListener(this::chartItemStateChanged);
     listChart.setEnabled(listOptions.getSelectedIndex() != 0);
 
@@ -327,11 +327,11 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           .stream()
           .filter(History::isAddedOrDeleted)
           .forEach(this::mapToAddedDeletedStat);
-      mapAddedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100, getLabel("Stats.in") + SPACE + year, value.intValue())));
-      mapDeletedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100 + 1, getLabel("Stats.out") + SPACE + year, value.intValue())));
+      mapAddedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100, getLabel("Stats.In") + SPACE + year, value.intValue())));
+      mapDeletedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100 + 1, getLabel("Stats.Out") + SPACE + year, value.intValue())));
       listHistory.sort(Comparator.comparingInt(o -> o.id));
     }
-    final JFreeChart chart = panelChart.setDataBarChart(listHistory, getLabel("Stats.inout"));
+    final JFreeChart chart = panelChart.setDataBarChart(listHistory, getLabel("Stats.Inout"));
     CategoryPlot cplot = (CategoryPlot) chart.getPlot();
     ((BarRenderer) cplot.getRenderer()).setBarPainter(new StandardBarPainter());
 
@@ -354,7 +354,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           .sorted(Comparator.comparing(History::getLocaleDate))
           .forEach(history -> listNumberBottles.add(new StatData(history.getLocaleDate().format(DATE_FORMATER_DDMMYYYY), history.getTotalBottle())));
     }
-    panelChart.setLineChart(listNumberBottles, getLabel("Stats.bottleCount", LabelProperty.PLURAL));
+    panelChart.setLineChart(listNumberBottles, getLabel("Stats.BottleCount", LabelProperty.PLURAL));
   }
 
   private void displayOnePlace() {
@@ -480,8 +480,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     } else if (selectedStatType.getValue() == StatType.HISTORY.ordinal()) {
       listPlaces.setEnabled(true);
       comboLabel.setText("");
-      listPlaces.addItem(new PlaceComboItem(getLabel("Stats.inout")));
-      listPlaces.addItem(new PlaceComboItem(getLabel("Stats.bottleCount", LabelProperty.PLURAL)));
+      listPlaces.addItem(new PlaceComboItem(getLabel("Stats.Inout")));
+      listPlaces.addItem(new PlaceComboItem(getLabel("Stats.BottleCount", LabelProperty.PLURAL)));
     } else if (selectedStatType.getValue() == StatType.PRICE.ordinal()) {
       listPlaces.setEnabled(true);
       comboLabel.setText(getLabel("Stats.PriceBracket"));
@@ -572,7 +572,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           .filter(statData -> statData.getCount() > 0)
           .forEach(statData -> dataset.addValue(statData.getCount(), statData.getName(), statData.getName()));
       JFreeChart chart = ChartFactory.createBarChart3D(title,          // chart title
-          "", getLabel("Stats.count"),
+          "", getLabel("Stats.Count"),
           dataset,                // data
           PlotOrientation.VERTICAL,
           true,                   // include legend
@@ -592,7 +592,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       datas.forEach(statData -> dataset.addValue(statData.getCount(), title, statData.getName()));
 
       final JFreeChart chart = ChartFactory.createLineChart(title,
-          null, getLabel("Stats.count"),
+          null, getLabel("Stats.Count"),
           dataset, PlotOrientation.VERTICAL, true, true, false);
       ChartPanel chartPanel = new ChartPanel(chart);
       add(chartPanel, "grow");

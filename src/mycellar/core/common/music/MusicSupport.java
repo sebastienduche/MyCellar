@@ -1,15 +1,14 @@
 package mycellar.core.common.music;
 
-import mycellar.MyCellarUtils;
-
+import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public enum MusicSupport {
   NONE(""),
-  CD(getLabel("MusicSupport.cd")),
-  VINYL(getLabel("MusicSupport.vinyl")),
-  K7(getLabel("MusicSupport.k7")),
-  DIGITAL(getLabel("MusicSupport.digital"));
+  CD("MusicSupport.Cd"),
+  VINYL("MusicSupport.Vinyl"),
+  K7("MusicSupport.K7"),
+  DIGITAL("MusicSupport.Digital");
 
   private final String label;
 
@@ -18,7 +17,7 @@ public enum MusicSupport {
   }
 
   public static MusicSupport getSupport(String value) {
-    if (MyCellarUtils.isNullOrEmpty(value)) {
+    if (isNullOrEmpty(value)) {
       return NONE;
     }
     try {
@@ -39,7 +38,10 @@ public enum MusicSupport {
 
   @Override
   public String toString() {
-    return label;
+    if (isNullOrEmpty(label)) {
+      return "";
+    }
+    return getLabel(label);
   }
 
 }

@@ -38,8 +38,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 24/05/22
+ * @version 1.8
+ * @since 25/05/22
  */
 public final class PanelVignobles extends JPanel {
 
@@ -53,7 +53,7 @@ public final class PanelVignobles extends JPanel {
   public PanelVignobles(boolean modifyActive, boolean manageButton, boolean editable) {
 
     MyCellarLabel labelCountry = new MyCellarLabel("Main.Country");
-    MyCellarLabel labelVignoble = new MyCellarLabel("Main.Vignoble");
+    MyCellarLabel labelVignoble = new MyCellarLabel("Main.Vineyard");
     MyCellarLabel labelAppelationAOC = new MyCellarLabel("Main.AppelationAOC");
     MyCellarLabel labelAppelationIGP = new MyCellarLabel("Main.AppelationIGP");
     setLayout(new MigLayout("", "[grow][grow]", ""));
@@ -181,7 +181,7 @@ public final class PanelVignobles extends JPanel {
     add(comboAppelationAOC, "w 200:200:, growx");
     add(comboAppelationIGP, "w 200:200:");
 
-    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel("Main.Vignoble")));
+    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel("Main.Vineyard")));
   }
 
   public void updateList() {

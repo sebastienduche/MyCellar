@@ -51,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.4
- * @since 24/05/22
+ * @version 5.5
+ * @since 25/05/22
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -215,7 +215,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), toRestoreList.size());
           erreur_txt2 = getLabel("ShowFile.RestoreSeveral");
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"),
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
           for (MyCellarObject myCellarObject : toRestoreList) {
@@ -285,7 +285,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
             erreur_txt2 = getError("Error.confirmNDelete");
           }
           Debug(toDeleteList.size() + " line(s) selected");
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.askConfirmation"),
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"),
               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             Debug("Deleting lines...");
             for (History b : toDeleteList) {

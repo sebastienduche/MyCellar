@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 24/05/22
+ * @version 1.3
+ * @since 25/05/22
  */
 public final class PanelWineAttribute extends JPanel {
   private static final long serialVersionUID = 183053076444982489L;
@@ -79,8 +79,8 @@ public final class PanelWineAttribute extends JPanel {
     add(new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, ""), "split, span 2");
     add(nbItems, "width min(50,10%)");
     add(labelStillToAdd, "wrap");
-    add(new MyCellarLabel("MyCellarManageBottles.status"));
-    add(new MyCellarLabel("MyCellarManageBottles.lastModified"), "wrap");
+    add(new MyCellarLabel("MyCellarManageBottles.Status"));
+    add(new MyCellarLabel("MyCellarManageBottles.LastModified"), "wrap");
     add(statusList, "width min(150,30%)");
     add(lastModified);
     setModificationDetectionActive(true);

@@ -85,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.7
- * @since 24/05/22
+ * @version 15.8
+ * @since 25/05/22
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -95,7 +95,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private final MyCellarRadioButton type_txt = new MyCellarRadioButton("Import.TxtCsv", true);
   private final MyCellarRadioButton type_xls = new MyCellarRadioButton("Import.Xls", false);
   private final MyCellarRadioButton type_xml = new MyCellarRadioButton("Filter.Xml", false);
-  private final MyCellarRadioButton type_iTunes = new MyCellarRadioButton("Import.iTunes", false);
+  private final MyCellarRadioButton type_iTunes = new MyCellarRadioButton("Import.ITunes", false);
   private final char importChar = getLabel("IMPORT").charAt(0);
   private final char ouvrirChar = getLabel("OUVRIR").charAt(0);
   private final List<MyCellarComboBox<MyCellarFields>> comboBoxList = new ArrayList<>(IMPORT_COMBO_COUNT);

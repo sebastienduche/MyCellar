@@ -37,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 24/05/22
+ * @version 3.4
+ * @since 25/05/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -49,9 +49,9 @@ public class PanelPlace extends JPanel implements IPlace {
   private final JModifyComboBox<ComboItem> column = new JModifyComboBox<>();
   private final MyCellarSimpleLabel labelExist = new MyCellarSimpleLabel();
   private final MyCellarButton preview = new MyCellarButton("Storage.Preview");
-  private final MyCellarLabel labelNumPlace = new MyCellarLabel("MyCellarFields.numPlace");
-  private final MyCellarLabel labelLine = new MyCellarLabel("MyCellarFields.line");
-  private final MyCellarLabel labelColumn = new MyCellarLabel("MyCellarFields.column");
+  private final MyCellarLabel labelNumPlace = new MyCellarLabel("MyCellarFields.NumPlace");
+  private final MyCellarLabel labelLine = new MyCellarLabel("MyCellarFields.Line");
+  private final MyCellarLabel labelColumn = new MyCellarLabel("MyCellarFields.Column");
 
   private final MyCellarLabel beforeLabel = new MyCellarLabel("PanelPlace.Before"); // Pour la Modification
   private final MyCellarSimpleLabel previousPlaceLabel = new MyCellarSimpleLabel(); // Pour la Modification
@@ -421,14 +421,14 @@ public class PanelPlace extends JPanel implements IPlace {
         searchSeveralLocation.setVisible(!rangement.isSimplePlace());
         if (rangement.isSimplePlace()) {
           severalLocationState = SeveralLocationState.PLACE;
-          labelNumPlace.setText(getLabel("PanelPlace.shelveNumber"));
+          labelNumPlace.setText(getLabel("PanelPlace.ShelveNumber"));
           if (rangement.getNbParts() == 1) {
             numPlace.setSelectedIndex(1);
           }
         } else {
           // Need the last place number for complex places
           numPlace.addItem(new ComboItem(rangement.getLastPartNumber()));
-          labelNumPlace.setText(getLabel("MyCellarFields.numPlace"));
+          labelNumPlace.setText(getLabel("MyCellarFields.NumPlace"));
         }
         enableAll(true);
         updateMultiCheckboxState();

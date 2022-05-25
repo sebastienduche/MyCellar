@@ -40,8 +40,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.7
- * @since 11/05/22
+ * @version 9.8
+ * @since 25/05/22
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -273,7 +273,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     if (!bouteille.equals(myCellarObject)) {
       Debug("ERROR: Not an empty place, Replace?");
       String erreur_txt1 = MessageFormat.format(getError("Error.alreadyInStorage"), bouteille.getNom(), bouteille.getAnnee());
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + getError("Error.questionReplaceIt"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + getError("Error.questionReplaceIt"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
         panelPlace.clearLabelEnd();
         end.setText(getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
@@ -309,7 +309,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     modified |= panelPlace.isModified();
     modified |= panelVignobles.isModified();
 
-    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error.modificationIncompleted", OF_THE_SINGLE) + SPACE + getError("Error.confirmQuit"), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
+    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error.modificationIncompleted", OF_THE_SINGLE) + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
       Debug("Don't Quit.");
       addButton.setEnabled(true);
       cancelButton.setEnabled(true);

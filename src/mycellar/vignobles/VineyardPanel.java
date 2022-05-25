@@ -51,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.6
- * @since 24/05/22
+ * @version 3.7
+ * @since 25/05/22
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -62,15 +62,15 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   private final MyCellarComboBox<CountryJaxb> comboCountry = new MyCellarComboBox<>();
   private final MyCellarComboBox<CountryVignobleJaxb> comboVignoble = new MyCellarComboBox<>();
   private final CountryJaxb emptyCountryJaxb = new CountryJaxb();
-  private final MyCellarButton addVignoble = new MyCellarButton("VineyardPanel.addVignoble", new AddVignobleAction());
-  private final MyCellarButton delVignoble = new MyCellarButton("VineyardPanel.delVignoble", new DelVignobleAction());
-  private final MyCellarButton renameVignoble = new MyCellarButton("VineyardPanel.renameVignoble", new RenameVignobleAction());
-  private final MyCellarButton addAppellation = new MyCellarButton("VineyardPanel.addAppellation", new AddAppellationAction());
+  private final MyCellarButton addVignoble = new MyCellarButton("VineyardPanel.AddVignoble", new AddVignobleAction());
+  private final MyCellarButton delVignoble = new MyCellarButton("VineyardPanel.DelVignoble", new DelVignobleAction());
+  private final MyCellarButton renameVignoble = new MyCellarButton("VineyardPanel.RenameVignoble", new RenameVignobleAction());
+  private final MyCellarButton addAppellation = new MyCellarButton("VineyardPanel.AddAppellation", new AddAppellationAction());
   private final VineyardTableModel model = new VineyardTableModel();
   private VignobleListJaxb vignobleListJaxb = null;
 
   public VineyardPanel() {
-    MyCellarLabel labelCountries = new MyCellarLabel("VineyardPanel.selectCountry");
+    MyCellarLabel labelCountries = new MyCellarLabel("VineyardPanel.SelectCountry");
     comboCountry.addItem(emptyCountryJaxb);
     Collections.sort(Program.getCountries());
     Program.getCountries().forEach(comboCountry::addItem);
@@ -78,9 +78,9 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
     comboCountry.addActionListener((e) -> comboCountrySelected());
     comboVignoble.addActionListener((e) -> comboVignobleSelected());
 
-    MyCellarLabel labelVineyard = new MyCellarLabel("VineyardPanel.selectVineyard");
-    MyCellarButton addCountry = new MyCellarButton("VineyardPanel.addCountry", new AddCountryAction());
-    MyCellarButton delCountry = new MyCellarButton("VineyardPanel.delCountry", new DelCountryAction());
+    MyCellarLabel labelVineyard = new MyCellarLabel("VineyardPanel.SelectVineyard");
+    MyCellarButton addCountry = new MyCellarButton("VineyardPanel.AddCountry", new AddCountryAction());
+    MyCellarButton delCountry = new MyCellarButton("VineyardPanel.DelCountry", new DelCountryAction());
     setLayout(new MigLayout("", "grow", "[][grow]"));
     JPanel panelCombos = new JPanel();
     panelCombos.setLayout(new MigLayout("", "[][][][]", "[][]"));
@@ -201,7 +201,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      String val = JOptionPane.showInputDialog(getLabel("VineyardPanel.addVignobleQuestion"));
+      String val = JOptionPane.showInputDialog(getLabel("VineyardPanel.AddVignobleQuestion"));
       if (isDefined(val)) {
         CountryVignobleJaxb countryVignobleJaxb = new CountryVignobleJaxb();
         countryVignobleJaxb.setName(val);
@@ -233,10 +233,10 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
       if (countryVignobleJaxb != null) {
         CountryVignobleController.rebuild();
         if (CountryVignobleController.isVignobleUsed(countryJaxb, countryVignobleJaxb)) {
-          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteVignoble"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.UnableDeleteVignoble"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
           return;
         }
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.delVignobleQuestion"), countryVignobleJaxb.getName()), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelVignobleQuestion"), countryVignobleJaxb.getName()), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         comboVignoble.removeItemAt(comboVignoble.getSelectedIndex());
@@ -259,7 +259,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
     public void actionPerformed(ActionEvent e) {
       CountryVignobleJaxb countryVignobleJaxb = (CountryVignobleJaxb) comboVignoble.getSelectedItem();
       if (countryVignobleJaxb != null) {
-        String val = JOptionPane.showInputDialog(MessageFormat.format(getLabel("VineyardPanel.renameVignobleQuestion"), countryVignobleJaxb.getName()));
+        String val = JOptionPane.showInputDialog(MessageFormat.format(getLabel("VineyardPanel.RenameVignobleQuestion"), countryVignobleJaxb.getName()));
         if (isDefined(val)) {
           CountryVignobleController.renameVignoble(countryVignobleJaxb, val);
           comboVignoble.updateUI();
@@ -279,7 +279,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      String val = JOptionPane.showInputDialog(getLabel("VineyardPanel.addAppellationQuestion"));
+      String val = JOptionPane.showInputDialog(getLabel("VineyardPanel.AddAppellationQuestion"));
       if (isDefined(val)) {
         AppelationJaxb v = new AppelationJaxb();
         v.setAOC(val);
@@ -298,7 +298,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      String val = JOptionPane.showInputDialog(getLabel("VineyardPanel.addCountryQuestion"));
+      String val = JOptionPane.showInputDialog(getLabel("VineyardPanel.AddCountryQuestion"));
       if (isDefined(val)) {
         if (CountryVignobleController.hasCountryWithName(val)) {
           Erreur.showSimpleErreur(getError("VineyardPanel.CountryExist"));
@@ -330,11 +330,11 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
         CountryVignobleController.rebuild();
         for (CountryVignobleJaxb countryVignobleJaxb : vignoble.getCountryVignobleJaxbList()) {
           if (CountryVignobleController.isVignobleUsed(countryJaxb, countryVignobleJaxb)) {
-            JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.unableDeleteCountry"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.UnableDeleteCountry"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
             return;
           }
         }
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.delCountryQuestion"), countryJaxb), getLabel("Main.askConfirmation"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelCountryQuestion"), countryJaxb), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         CountryVignobleController.deleteCountry(countryJaxb);

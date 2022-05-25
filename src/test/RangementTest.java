@@ -427,7 +427,7 @@ class RangementTest {
     updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", armoire2x2_3x22545);
     assertEquals(1, armoire2x2_3x22545.getNbCaseUseInLine(1, 0));
     assertEquals(b, armoire2x2_3x22545.getObject(1, 0, 1).get());
-    assertEquals(b, armoire2x2_3x22545.getObject(b).get());
+    assertEquals(b, armoire2x2_3x22545.getObject(b.getPlace()).get());
     armoire2x2_3x22545.removeObject(b);
     return b;
   }
@@ -447,12 +447,12 @@ class RangementTest {
     b.setNom("B13");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", armoire1x3x3);
     assertEquals(b, armoire1x3x3.getObject(0, 0, 1).get());
-    assertEquals(b, armoire1x3x3.getObject(b).get());
+    assertEquals(b, armoire1x3x3.getObject(b.getPlace()).get());
     Bouteille b1 = new Bouteille();
     b1.setNom("B14");
     updateToArmoire1x3x3(b1, 1, 2);
     assertEquals(b1, armoire1x3x3.getObject(0, 0, 1).get());
-    assertEquals(b1, armoire1x3x3.getObject(b1).get());
+    assertEquals(b1, armoire1x3x3.getObject(b1.getPlace()).get());
     armoire1x3x3.clearStock(b1, b.getPlace());
     assertTrue(armoire1x3x3.getObject(0, 0, 1).isEmpty());
     armoire1x3x3.removeObject(b);

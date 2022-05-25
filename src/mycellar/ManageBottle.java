@@ -213,7 +213,11 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       myCellarObject.setNumLieu(lieu_num);
       myCellarObject.setLigne(line);
       myCellarObject.setColonne(column);
-      MyCellarObject bottleInPlace = cave.getObject(new Bouteille.BouteilleBuilder("").numPlace(lieu_num).line(line).column(column).build()).orElse(null);
+	  MyCellarObject bottleInPlace = cave.getObject(new Place.PlaceBuilder(cave)
+            .withNumPlace(lieu_num)
+            .withLine(line)
+            .withColumn(column)
+            .build()).orElse(null);
       if (bottleInPlace != null) {
         if (!askToReplaceBottle(bottleInPlace, oldPlace)) {
           myCellarObject.setNumLieu(oldPlace.getPlaceNum());

@@ -879,7 +879,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
               Program.getStorage().addHistory(HistoryState.ADD, b);
               Program.getStorage().addWine(b);
             } else {
-              if (r.getObject(b).isEmpty()) {
+              if (r.getObject(b.getPlace()).isEmpty()) {
                 Program.getStorage().addHistory(HistoryState.ADD, b);
                 Program.getStorage().addWine(b);
               } else {

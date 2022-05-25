@@ -397,10 +397,6 @@ public class Rangement implements Comparable<Rangement> {
     updateToStock(myCellarObject);
   }
 
-  public Optional<MyCellarObject> getObject(final MyCellarObject myCellarObject) {
-    return getObject(myCellarObject.getNumLieu() - 1, myCellarObject.getLigne() - 1, myCellarObject.getColonne() - 1);
-  }
-
   /**
    * Retourne l'objet se trouvant &agrave; un emplacement pr&eacute;cis dans une armoire
    *

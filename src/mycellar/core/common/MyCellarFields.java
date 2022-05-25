@@ -29,38 +29,38 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 
 public enum MyCellarFields {
-  NAME("Main.Item", LabelProperty.SINGLE.withCapital()),
-  YEAR("Main.Year"),
-  TYPE("Main.CapacityOrSupport"),
-  PLACE("Main.Storage"),
-  NUM_PLACE("MyCellarFields.NumPlace"),
-  LINE("MyCellarFields.Line"),
-  COLUMN("MyCellarFields.Column"),
-  PRICE("Main.Price"),
-  COMMENT("Main.Comment"),
-  MATURITY("Main.Maturity"),
-  PARKER("Main.Rating"),
-  COLOR("AddVin.Color"),
-  COUNTRY("Main.Country"),
-  VINEYARD("Main.Vineyard"),
-  AOC("Main.AppelationAOC"),
-  IGP("Main.AppelationIGP"),
-  STATUS("Main.Status"),
-  STYLE("Main.Style"),
-  COMPOSER("Main.Composer"),
-  ARTIST("Main.Artist"),
-  SUPPORT("Main.Support"),
-  DURATION("Main.Duration"),
-  DISK_NUMBER("Main.DiskNumber"),
-  DISK_COUNT("Main.DiskCount"),
-  RATING("Main.Rating"),
-  FILE("Main.File"),
-  EXTERNAL_ID("Main.ExternalId"),
-  ALBUM("Main.Album"),
+  NAME(0, "Main.Item", LabelProperty.SINGLE.withCapital()),
+  YEAR(1, "Main.Year"),
+  TYPE(2, "Main.CapacityOrSupport"),
+  PLACE(3, "Main.Storage"),
+  NUM_PLACE(4, "MyCellarFields.NumPlace"),
+  LINE(5, "MyCellarFields.Line"),
+  COLUMN(6, "MyCellarFields.Column"),
+  PRICE(7, "Main.Price"),
+  COMMENT(8, "Main.Comment"),
+  MATURITY(9, "Main.Maturity"),
+  PARKER(10, "Main.Rating"),
+  COLOR(11, "AddVin.Color"),
+  COUNTRY(12, "Main.Country"),
+  VINEYARD(13, "Main.Vineyard"),
+  AOC(14, "Main.AppelationAOC"),
+  IGP(15, "Main.AppelationIGP"),
+  STATUS(16, "Main.Status"),
+  STYLE(17, "Main.Style"),
+  COMPOSER(18, "Main.Composer"),
+  ARTIST(19, "Main.Artist"),
+  SUPPORT(20, "Main.Support"),
+  DURATION(21, "Main.Duration"),
+  DISK_NUMBER(22, "Main.DiskNumber"),
+  DISK_COUNT(23, "Main.DiskCount"),
+  RATING(24, "Main.Rating"),
+  FILE(25, "Main.File"),
+  EXTERNAL_ID(26, "Main.ExternalId"),
+  ALBUM(27, "Main.Album"),
 
   // Pour l'import de donnees
-  EMPTY(""),
-  USELESS(getLabel("Main.Useless"));
+  EMPTY(28, ""),
+  USELESS(29, getLabel("Main.Useless"));
 
   private static final List<MyCellarFields> FIELDSFORIMPORT_WINE = Arrays.asList(
       NAME, YEAR, TYPE, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, MATURITY, PARKER, COLOR,
@@ -76,17 +76,24 @@ public enum MyCellarFields {
   private static final List<MyCellarFields> FIELDS_MUSIC = Arrays.asList(
       NAME, YEAR, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, STATUS, ARTIST, COMPOSER, STYLE, SUPPORT, DURATION, EXTERNAL_ID, ALBUM
   );
+  private final int index;
   private final String keyLabel;
   private final LabelProperty labelProperty;
 
-  MyCellarFields(String keyLabel) {
+  MyCellarFields(int index, String keyLabel) {
+    this.index = index;
     this.keyLabel = keyLabel;
     labelProperty = null;
   }
 
-  MyCellarFields(String keyLabel, LabelProperty labelProperty) {
+  MyCellarFields(int index, String keyLabel, LabelProperty labelProperty) {
+    this.index = index;
     this.keyLabel = keyLabel;
     this.labelProperty = labelProperty;
+  }
+
+  public int getIndex() {
+    return index;
   }
 
   public static String getValue(String field, IMyCellarObject myCellarObject) {

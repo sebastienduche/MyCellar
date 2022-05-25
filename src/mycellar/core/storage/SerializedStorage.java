@@ -170,7 +170,7 @@ public class SerializedStorage implements Storage {
   public void addHistory(HistoryState type, MyCellarObject myCellarObject) {
     historyModified = true;
     Program.setModified();
-    HISTORY_LIST.add(new History(myCellarObject, type.ordinal(), getItemsCount()));
+    HISTORY_LIST.add(new History(myCellarObject, type.getIndex(), getItemsCount()));
   }
 
   @Override
@@ -237,7 +237,7 @@ public class SerializedStorage implements Storage {
     }
     HISTORY_LIST.getHistory()
         .stream()
-        .filter(history -> history.getType() == historyState.ordinal())
+        .filter(history -> history.getType() == historyState.getIndex())
         .forEach(this::removeHistory);
   }
 

@@ -53,6 +53,7 @@ import java.util.List;
 import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.core.MyCellarSettings.EXPORT_DEFAULT;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -182,7 +183,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     options.setEnabled(false);
     progressBar.setVisible(false);
 
-    int val = Program.getCaveConfigInt(MyCellarSettings.EXPORT_DEFAULT, 0);
+    int val = Program.getCaveConfigInt(EXPORT_DEFAULT, 0);
 
     MyCellarRadioButtonXML.setSelected(val == 0);
     MyCellarRadioButtonHTML.setSelected(val == 1);
@@ -448,7 +449,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         List<Integer> properties = modelColumn.getSelectedColumns();
         List<MyCellarFields> cols = new ArrayList<>();
         for (MyCellarFields c : fieldsList) {
-          if (properties.contains(c.ordinal())) {
+          if (properties.contains(c.getIndex())) {
             cols.add(c);
           }
         }
@@ -473,8 +474,8 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
           "Export.Xls",
           "Export.Pdf");
       ArrayList<String> default_value = new ArrayList<>(List.of("false", "false", "false", "false", "false"));
-      List<String> key_properties = List.of(MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT,
-          MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT, MyCellarSettings.EXPORT_DEFAULT);
+      List<String> key_properties = List.of(EXPORT_DEFAULT, EXPORT_DEFAULT,
+          EXPORT_DEFAULT, EXPORT_DEFAULT, EXPORT_DEFAULT);
       default_value.set(Program.getCaveConfigInt(key_properties.get(0), 0), "true");
 
       List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);

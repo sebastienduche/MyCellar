@@ -1229,7 +1229,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         cols.add(checkBoxStartColumn);
         Program.setModified();
         for (ShowFileColumn<?> c : columns) {
-          if (properties.contains(c.getField().ordinal())) {
+          if (properties.contains(c.getField().getIndex())) {
             cols.add(c);
           }
         }

@@ -103,10 +103,10 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllStorages")));
     Program.getPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
 
-    listOptions.addItem(new MyCellarEnum(StatType.PLACE.ordinal(), getLabel("Stats.Storages")));
-    listOptions.addItem(new MyCellarEnum(StatType.YEAR.ordinal(), getLabel("Stats.Years")));
-    listOptions.addItem(new MyCellarEnum(StatType.PRICE.ordinal(), getLabel("Stats.Prices")));
-    listOptions.addItem(new MyCellarEnum(StatType.HISTORY.ordinal(), getLabel("Stats.History")));
+    listOptions.addItem(new MyCellarEnum(StatType.PLACE.getIndex(), getLabel("Stats.Storages")));
+    listOptions.addItem(new MyCellarEnum(StatType.YEAR.getIndex(), getLabel("Stats.Years")));
+    listOptions.addItem(new MyCellarEnum(StatType.PRICE.getIndex(), getLabel("Stats.Prices")));
+    listOptions.addItem(new MyCellarEnum(StatType.HISTORY.getIndex(), getLabel("Stats.History")));
 
     scroll = new JScrollPane(panel);
     scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -152,16 +152,16 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     }
     if (listChart.getSelectedIndex() == 0) {
       Debug("Bar Chart");
-      if (selectedItem.getValue() == StatType.YEAR.ordinal()) {
+      if (selectedItem.getValue() == StatType.YEAR.getIndex()) {
         panelChart.setDataBarChart(listYear, getLabel("Stats.Years"));
-      } else if (selectedItem.getValue() == StatType.PRICE.ordinal()) {
+      } else if (selectedItem.getValue() == StatType.PRICE.getIndex()) {
         panelChart.setDataBarChart(listPrice, getLabel("Stats.Prices"));
       }
     } else if (listChart.getSelectedIndex() == 1) {
       Debug("Pie Chart");
-      if (selectedItem.getValue() == StatType.YEAR.ordinal()) {
+      if (selectedItem.getValue() == StatType.YEAR.getIndex()) {
         panelChart.setDataPieChart(listYear, getLabel("Stats.Years"));
-      } else if (selectedItem.getValue() == StatType.PRICE.ordinal()) {
+      } else if (selectedItem.getValue() == StatType.PRICE.getIndex()) {
         panelChart.setDataPieChart(listPrice, getLabel("Stats.Prices"));
       }
     }
@@ -180,17 +180,17 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     }
     scroll.setVisible(true);
     listChart.setEnabled(true);
-    if (selectedItem.getValue() == StatType.YEAR.ordinal()) {
+    if (selectedItem.getValue() == StatType.YEAR.getIndex()) {
       Debug("By year");
       annee = Arrays.stream(Program.getYearsArray()).mapToObj(Integer::toString).toArray(String[]::new);
     }
     fillListOptionsChart(selectedItem);
-    if (selectedItem.getValue() == StatType.PLACE.ordinal()) {
+    if (selectedItem.getValue() == StatType.PLACE.getIndex()) {
       Debug("By place");
       listChart.setEnabled(false);
       options.setEnabled(false);
       panelChart.setPlacesChart();
-    } else if (selectedItem.getValue() == StatType.HISTORY.ordinal()) {
+    } else if (selectedItem.getValue() == StatType.HISTORY.getIndex()) {
       Debug("By history");
       listChart.setEnabled(false);
       options.setEnabled(false);
@@ -207,17 +207,17 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     if ((e != null && e.getStateChange() != ItemEvent.SELECTED) || selectedItem == null) {
       return;
     }
-    if (selectedItem.getValue() == StatType.PLACE.ordinal()) {
+    if (selectedItem.getValue() == StatType.PLACE.getIndex()) {
       if (listPlaces.getSelectedIndex() == 0) {
         displayAllPlaces();
       } else {
         displayOnePlace();
       }
-    } else if (selectedItem.getValue() == StatType.YEAR.ordinal()) {
+    } else if (selectedItem.getValue() == StatType.YEAR.getIndex()) {
       displayYear();
-    } else if (selectedItem.getValue() == StatType.PRICE.ordinal()) {
+    } else if (selectedItem.getValue() == StatType.PRICE.getIndex()) {
       displayByPrice();
-    } else if (selectedItem.getValue() == StatType.HISTORY.ordinal()) {
+    } else if (selectedItem.getValue() == StatType.HISTORY.getIndex()) {
       if (listPlaces.getSelectedIndex() == 0) {
         displayHistory();
       } else {
@@ -472,23 +472,23 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   private void fillListOptionsChart(MyCellarEnum selectedStatType) {
     listPlaces.removeAllItems();
     listPlaces.setEnabled(false);
-    if (selectedStatType.getValue() == StatType.PLACE.ordinal()) {
+    if (selectedStatType.getValue() == StatType.PLACE.getIndex()) {
       listPlaces.setEnabled(true);
       comboLabel.setText(getLabel("Main.Storage", LabelProperty.SINGLE.withDoubleQuote()));
       listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllStorages")));
       Program.getPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
-    } else if (selectedStatType.getValue() == StatType.HISTORY.ordinal()) {
+    } else if (selectedStatType.getValue() == StatType.HISTORY.getIndex()) {
       listPlaces.setEnabled(true);
       comboLabel.setText("");
       listPlaces.addItem(new PlaceComboItem(getLabel("Stats.Inout")));
       listPlaces.addItem(new PlaceComboItem(getLabel("Stats.BottleCount", LabelProperty.PLURAL)));
-    } else if (selectedStatType.getValue() == StatType.PRICE.ordinal()) {
+    } else if (selectedStatType.getValue() == StatType.PRICE.getIndex()) {
       listPlaces.setEnabled(true);
       comboLabel.setText(getLabel("Stats.PriceBracket"));
       listPlaces.removeAllItems();
       listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllBrackets")));
       listPlaces.addItem(new PlaceComboItem(getLabel("Stats.BracketsWith", LabelProperty.PLURAL)));
-    } else if (selectedStatType.getValue() == StatType.YEAR.ordinal()) {
+    } else if (selectedStatType.getValue() == StatType.YEAR.getIndex()) {
       comboLabel.setText("");
       listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllYears")));
     }
@@ -496,10 +496,20 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   }
 
   enum StatType {
-    PLACE,
-    YEAR,
-    PRICE,
-    HISTORY
+    PLACE(0),
+    YEAR(1),
+    PRICE(2),
+    HISTORY(3);
+
+    private final int index;
+
+    StatType(int index) {
+      this.index = index;
+    }
+
+    public int getIndex() {
+      return index;
+    }
   }
 
   private static final class PanelChart extends JPanel {

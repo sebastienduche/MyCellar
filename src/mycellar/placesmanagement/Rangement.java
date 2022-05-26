@@ -13,14 +13,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2003
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.8
- * @since 06/01/22
+ * @version 28.9
+ * @since 26/05/22
  */
 public class Rangement implements Comparable<Rangement> {
 
@@ -195,7 +195,7 @@ public class Rangement implements Comparable<Rangement> {
    */
   public int getMaxColumCountAt(int emplacement) {
     if (isSimplePlace()) {
-      Debug("ERROR: Function getNbColonnesMax can't be called on a simple place!");
+      Debug("ERROR: Function getMaxColumCountAt can't be called on a simple place!");
       return -1;
     }
     return partList.get(emplacement).getRows().stream().mapToInt(Row::getCol).max().getAsInt();
@@ -206,9 +206,9 @@ public class Rangement implements Comparable<Rangement> {
    *
    * @return int
    */
-  public int getMaxColumCountAt() {
+  public int getMaxColumCount() {
     if (isSimplePlace()) {
-      Debug("ERROR: Function getNbColonnesMax can't be called on a simple place!");
+      Debug("ERROR: Function getMaxColumCount can't be called on a simple place!");
       return -1;
     }
     int max = 0;
@@ -340,7 +340,7 @@ public class Rangement implements Comparable<Rangement> {
   }
 
   public void removeObject(MyCellarObject myCellarObject) throws MyCellarException {
-    clearStock(myCellarObject, myCellarObject.getPlace());
+    clearStock(myCellarObject);
     Program.getStorage().deleteWine(myCellarObject);
   }
 
@@ -351,8 +351,8 @@ public class Rangement implements Comparable<Rangement> {
     Debug("addObjectSimplePlace: " + myCellarObject.getNom() + " " + myCellarObject.getEmplacement() + " " + myCellarObject.getNumLieu());
 
     int num_empl = myCellarObject.getNumLieu();
-    int nb_vin = getTotalCellUsed(num_empl - startSimplePlace);
-    if (simplePlaceLimited && nb_vin == nbColumnsStock) {
+    int count = getTotalCellUsed(num_empl - startSimplePlace);
+    if (simplePlaceLimited && count == nbColumnsStock) {
       return false;
     }
     updateToStock(myCellarObject);
@@ -392,7 +392,7 @@ public class Rangement implements Comparable<Rangement> {
     if (!isExistingCell(myCellarObject.getNumLieu() - 1, newLine - 1, myCellarObject.getColonne() - 1)) {
       throw new MyCellarException("Unable to move this object to a new line: " + myCellarObject);
     }
-    clearStock(myCellarObject, myCellarObject.getPlace());
+    clearStock(myCellarObject);
     myCellarObject.setLigne(newLine);
     updateToStock(myCellarObject);
   }
@@ -423,6 +423,10 @@ public class Rangement implements Comparable<Rangement> {
    *
    * @param myCellarObject MyCellarObject
    */
+  public void clearStock(MyCellarObject myCellarObject) {
+	  clearStock(myCellarObject, myCellarObject.getPlace());
+  }
+  
   public void clearStock(MyCellarObject myCellarObject, Place place) {
     if (isSimplePlace()) {
       storageSimplePlace.get(place.getPlaceNum()).remove(myCellarObject);
@@ -682,18 +686,18 @@ public class Rangement implements Comparable<Rangement> {
    *
    * @return Map: le numero d'emplacement commence toujours &agrave; 0
    */
-  public Map<Integer, Integer> getNumberOfBottlesPerPlace() {
-    Map<Integer, Integer> numberOfBottlesPerPlace = new HashMap<>(nbParts);
+  public Map<Integer, Integer> getNumberOfObjectsPerPlace() {
+    Map<Integer, Integer> numberOfObjectsPerPlace = new HashMap<>(nbParts);
     if (isSimplePlace()) {
       for (int i = 0; i < nbParts; i++) {
-        numberOfBottlesPerPlace.put(i, getCountCellUsedInSimplePlace(i + startSimplePlace));
+    	  numberOfObjectsPerPlace.put(i, getCountCellUsedInSimplePlace(i + startSimplePlace));
       }
     } else {
       for (int i = 0; i < nbParts; i++) {
-        numberOfBottlesPerPlace.put(i, getTotalCellUsed(i));
+    	  numberOfObjectsPerPlace.put(i, getTotalCellUsed(i));
       }
     }
-    return numberOfBottlesPerPlace;
+    return numberOfObjectsPerPlace;
   }
 
   @Override

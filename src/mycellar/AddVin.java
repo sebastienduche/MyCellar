@@ -45,8 +45,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.1
- * @since 25/05/22
+ * @version 31.2
+ * @since 26/05/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -284,7 +284,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
             if (isModify) {
               //Suppression de la bouteille lors de la modification
               Debug("Updating bottle when modifying");
-              myCellarObject.getRangement().clearStock(myCellarObject, myCellarObject.getPlace());
+              myCellarObject.getRangement().clearStock(myCellarObject);
               myCellarObject.update(newMyCellarObject);
               Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
               objectAdded = true;
@@ -471,7 +471,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         Debug("Adding multiple bottles in simple place...");
         if (isModify && tmp.isInExistingPlace()) {
           Debug("Delete from stock");
-          tmp.getRangement().clearStock(tmp, tmp.getPlace());
+          tmp.getRangement().clearStock(tmp);
         }
         //Ajout des bouteilles dans la caisse
         tmp.setEmplacement(rangement.getName());

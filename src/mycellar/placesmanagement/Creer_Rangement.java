@@ -63,8 +63,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.7
- * @since 25/05/22
+ * @version 16.8
+ * @since 26/05/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -325,11 +325,11 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     int nbPart = nb_parties.getIntValue();
 
     if (rangement.getNbParts() > nbPart) {
-      final Map<Integer, Integer> numberOfBottlesPerPlace = rangement.getNumberOfBottlesPerPlace();
+      final Map<Integer, Integer> numberOfObjectsPerPlace = rangement.getNumberOfObjectsPerPlace();
 
       for (int i = nbPart; i < rangement.getNbParts(); i++) {
-        if (numberOfBottlesPerPlace.get(i) > 0) {
-          Debug("ERROR: Unable to delete simple place part with bottles!");
+        if (numberOfObjectsPerPlace.get(i) > 0) {
+          Debug("ERROR: Unable to delete simple place part with objects!");
           Erreur.showSimpleErreur(MessageFormat.format(getError("CreerRangement.CantDeletePartCaisse"), (i + rangement.getStartSimplePlace())));
           return;
         }

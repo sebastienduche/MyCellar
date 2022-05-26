@@ -40,8 +40,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.5
- * @since 25/05/22
+ * @version 3.6
+ * @since 26/05/22
  */
 
 public class XmlUtils {
@@ -297,7 +297,7 @@ public class XmlUtils {
             }
           }
         } else {
-          r.setAttribute(COLUMNS, Integer.toString(rangement.getMaxColumCountAt()));
+          r.setAttribute(COLUMNS, Integer.toString(rangement.getMaxColumCount()));
           for (int i = 0; i < rangement.getNbParts(); i++) {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);

@@ -718,6 +718,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       return;
     }
     list.forEach(music -> music.setEmplacement(Program.DEFAULT_PLACE.getName()));
+    list.forEach(music -> music.setEmplacement(Program.NEW_DEFAULT_PLACE.getName()));
     Program.getStorage().getListMyCellarObject().getMusic().addAll(list);
     showImportDone();
   }

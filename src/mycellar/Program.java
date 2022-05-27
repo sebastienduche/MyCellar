@@ -35,6 +35,8 @@ import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.BasicPlace;
 import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.SimplePlace;
+import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import mycellar.vignobles.CountryVignobleController;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -115,7 +117,9 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public final class Program {
 
+  @Deprecated
   public static final Rangement DEFAULT_PLACE = new Rangement.SimplePlaceBuilder("").setDefaultPlace(true).build();
+  public static final SimplePlace NEW_DEFAULT_PLACE = new SimplePlaceBuilder("").setDefaultPlace(true).build();
   public static final Rangement EMPTY_PLACE = new Rangement.SimplePlaceBuilder("").build();
   public static final Rangement STOCK_PLACE = new Rangement.SimplePlaceBuilder(TEMP_PLACE).build();
 
@@ -416,6 +420,12 @@ public final class Program {
       PLACES.clear();
       PLACES.add(DEFAULT_PLACE);
     }
+    NEW_PLACES.clear();
+    load = XmlUtils.readMyCellarXml1("", NEW_PLACES);
+    if (!load || NEW_PLACES.isEmpty()) {
+      NEW_PLACES.clear();
+      NEW_PLACES.add(NEW_DEFAULT_PLACE);
+    }
     getStorage().loadHistory();
     getStorage().loadWorksheet();
     return ListeBouteille.loadXML();
@@ -433,13 +443,23 @@ public final class Program {
     return getStorage().getAllList().size();
   }
 
+  @Deprecated
   public static int getSimplePlaceCount() {
     return (int) getPlaces().stream().filter(Rangement::isSimplePlace).count();
   }
+  
+  public static int getSimplePlaceCount1() {
+	    return (int) getBasicPlaces().stream().filter(BasicPlace::isSimplePlace).count();
+	  }
 
+  @Deprecated
   public static List<Rangement> getSimplePlaces() {
     return getPlaces().stream().filter(Rangement::isSimplePlace).collect(Collectors.toList());
   }
+  
+  public static List<BasicPlace> getSimplePlaces1() {
+	    return getBasicPlaces().stream().filter(BasicPlace::isSimplePlace).collect(Collectors.toList());
+	  }
 
   static int getTotalObjectForYear(int year) {
     return (int) getStorage().getAllList().stream().filter(myCellarObject -> myCellarObject.getAnneeInt() == year).count();
@@ -497,6 +517,7 @@ public final class Program {
     saveGlobalProperties();
 
     if (isListCaveModified()) {
+      XmlUtils.writeMyCellarXml(NEW_PLACES, "");
       XmlUtils.writeMyCellarXml(PLACES, "");
     }
 
@@ -549,16 +570,27 @@ public final class Program {
 
   }
 
+  @Deprecated
   public static List<Rangement> getPlaces() {
     return Collections.unmodifiableList(PLACES);
   }
+  
+  public static List<BasicPlace> getBasicPlaces() {
+	    return Collections.unmodifiableList(NEW_PLACES);
+	  }
 
+  @Deprecated 
   public static Rangement getPlaceAt(int index) {
     return PLACES.get(index);
   }
+  
+  public static BasicPlace getBasicPlaceAt(int index) {
+	    return NEW_PLACES.get(index);
+	  }
 
+  
   public static boolean hasOnlyOnePlace() {
-    return PLACES.size() == 1;
+    return PLACES.size() == 1 || NEW_PLACES.size() == 1;
   }
 
   public static IBasicPlace getPlaceByName(final String name) {
@@ -615,6 +647,7 @@ public final class Program {
 	    Collections.sort(NEW_PLACES);
 	  }
 
+  @Deprecated
   public static void removePlace(Rangement rangement) {
     if (rangement == null) {
       return;
@@ -623,14 +656,28 @@ public final class Program {
     setModified();
     setListCaveModified();
   }
+  
+  public static void removeBasicPlace(BasicPlace rangement) {
+	    if (rangement == null) {
+	      return;
+	    }
+	    NEW_PLACES.remove(rangement);
+	    setModified();
+	    setListCaveModified();
+	  }
 
   public static int getPlaceLength() {
-    return PLACES.size();
+    return Math.max(PLACES.size(), NEW_PLACES.size());
   }
 
+  @Deprecated
   public static boolean hasComplexPlace() {
     return PLACES.stream().anyMatch(Predicate.not(Rangement::isSimplePlace));
   }
+  
+  public static boolean hasComplexPlace1() {
+	    return NEW_PLACES.stream().anyMatch(Predicate.not(BasicPlace::isSimplePlace));
+	  }
 
   /**
    * newFile: Create a new file.
@@ -791,10 +838,11 @@ public final class Program {
       }
 
       if (isListCaveModified()) {
+    	  XmlUtils.writeMyCellarXml(NEW_PLACES, "");
         XmlUtils.writeMyCellarXml(PLACES, "");
       }
 
-      if (!PLACES.isEmpty()) {
+      if (!PLACES.isEmpty() || !NEW_PLACES.isEmpty()) {
         getStorage().saveHistory();
         getStorage().saveWorksheet();
         CountryVignobleController.save();
@@ -831,8 +879,10 @@ public final class Program {
     modified = false;
     listCaveModified = false;
     PLACES.clear();
-    DEFAULT_PLACE.resetStock();
-    EMPTY_PLACE.resetStock();
+    NEW_PLACES.clear();
+    DEFAULT_PLACE.resetStockage();
+    NEW_DEFAULT_PLACE.resetStockage();
+    EMPTY_PLACE.resetStockage();
     myCellarFile = null;
     Debug("Program: closeFile: Closing file Ended");
   }
@@ -1346,6 +1396,7 @@ public final class Program {
   public static void addDefaultPlaceIfNeeded() {
     if (getPlaceLength() == 0) {
       addPlace(DEFAULT_PLACE);
+      addBasicPlace(NEW_DEFAULT_PLACE);
     }
   }
 

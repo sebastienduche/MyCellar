@@ -32,10 +32,7 @@ public class SimplePlace extends BasicPlace {
 		partNumberIncrement = 0;
 		limited = false;
 		maxItemCount = -1;
-		storage = new HashMap<>(this.partCount);
-	    for (int i = 0; i < partCount; i++) {
-	      storage.put(i, new ArrayList<>());
-	    }
+		resetStockage();
 	}
 
 	public int getPartNumberIncrement() {
@@ -149,7 +146,7 @@ public class SimplePlace extends BasicPlace {
 	public String toXml() {
 		StringBuilder sText = new StringBuilder();
 	      sText.append("<place name=\"\" IsCaisse=\"true\" NbPlace=\"")
-	          .append(getPartCount())
+	          .append(partCount)
 	          .append("\" NumStart=\"")
 	          .append(partNumberIncrement)
 	          .append("\"");
@@ -165,6 +162,14 @@ public class SimplePlace extends BasicPlace {
 	      }
 	    sText.append("<name><![CDATA[").append(getName()).append("]]></name></place>");
 	    return sText.toString();
+	}
+
+	@Override
+	public void resetStockage() {
+		storage = new HashMap<>(partCount);
+	    for (int i = 0; i < partCount; i++) {
+	      storage.put(i, new ArrayList<>());
+	    }
 	}
 
 }

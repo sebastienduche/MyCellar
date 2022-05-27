@@ -36,4 +36,5 @@ public interface IBasicPlace {
 	public Optional<MyCellarObject> getObject(int num_empl, int line, int column);
 	public Optional<MyCellarObject> getObject(Place place);
 	public String toXml();
+	public void resetStockage();
 }

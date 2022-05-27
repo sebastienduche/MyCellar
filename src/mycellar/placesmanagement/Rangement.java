@@ -617,9 +617,14 @@ public class Rangement implements Comparable<Rangement>, IBasicPlace {
     }
   }
 
+  @Override
+	public void resetStockage() {
+		resetStock();
+	}
   /**
    * R&eacute;initialisation du stockage
    */
+  @Deprecated
   public void resetStock() {
     if (isSimplePlace()) {
       updateSimplePlace(nbParts);

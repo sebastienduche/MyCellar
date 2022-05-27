@@ -26,6 +26,7 @@ import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.BasicPlace;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
 import net.miginfocom.swing.MigLayout;
@@ -408,6 +409,11 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
         XmlUtils.writeMyCellarXml(cave, "");
         Program.loadData();
       }
+      LinkedList<BasicPlace> basicPlaces = new LinkedList<>();
+      if (f.exists() && XmlUtils.readMyCellarXml1(fic, basicPlaces)) {
+        XmlUtils.writeMyCellarXml(basicPlaces, "");
+        Program.loadData();
+      }
     }
   }
 
@@ -634,6 +640,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuQuit.setAccelerator(KeyStroke.getKeyStroke(quitChar, InputEvent.CTRL_DOWN_MASK));
     SwingUtilities.updateComponentTreeUI(this);
     Program.DEFAULT_PLACE.setName(getLabel("Program.DefaultPlace"));
+    Program.NEW_DEFAULT_PLACE.setName(getLabel("Program.DefaultPlace"));
     setApplicationTitle(Program.getShortFilename());
   }
 

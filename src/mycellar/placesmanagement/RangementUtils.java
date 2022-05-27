@@ -14,6 +14,8 @@ import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.general.ProgramPanels;
+import mycellar.placesmanagement.places.IBasicPlace;
+
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -68,8 +70,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.6
- * @since 24/05/22
+ * @version 4.7
+ * @since 27/05/22
  */
 public final class RangementUtils {
 
@@ -82,7 +84,7 @@ public final class RangementUtils {
     Program.getStorage().deleteWine(oldObject);
 
     if (newObjectPreviousPlace != null) {
-      newObjectPreviousPlace.getRangement().clearStock(newObject, newObjectPreviousPlace);
+      newObjectPreviousPlace.getRangement().clearStorage(newObject, newObjectPreviousPlace);
     }
 
     ProgramPanels.getSearch().ifPresent(search -> {
@@ -90,7 +92,7 @@ public final class RangementUtils {
       search.updateTable();
     });
 
-    final Rangement rangement = newObject.getRangement();
+    final IBasicPlace rangement = newObject.getRangement();
     if (!rangement.isSimplePlace()) {
       rangement.updateToStock(newObject);
     }
@@ -673,7 +675,7 @@ public final class RangementUtils {
         Program.addError(new MyCellarError(INEXISTING_PLACE, bouteille, bouteille.getEmplacement()));
         continue;
       }
-      final Rangement rangement = bouteille.getRangement();
+      final Rangement rangement = (Rangement) bouteille.getRangement();
       if (rangement.isSimplePlace()) {
         if (rangement.isInexistingNumPlace(bouteille.getNumLieu())) {
           // Numero de rangement inexistant

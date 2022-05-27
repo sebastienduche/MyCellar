@@ -35,6 +35,7 @@ import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.IBasicPlace;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.ui.PanelRequest;
 import mycellar.vignobles.CountryVignobleController;
@@ -84,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.8
- * @since 25/05/22
+ * @version 23.9
+ * @since 27/05/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -286,7 +287,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             searchTableModel.removeObject(myCellarObject);
             Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
-              final Rangement rangement = myCellarObject.getRangement();
+              final IBasicPlace rangement = myCellarObject.getRangement();
               if (rangement != null) {
                 rangement.removeObject(myCellarObject);
               } else {
@@ -557,7 +558,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private List<MyCellarObject> searchComplexPlace() {
     final Place selectedPlace = panelPlace.getSelectedPlace();
-    Rangement rangement = selectedPlace.getRangement();
+    IBasicPlace rangement = selectedPlace.getRangement();
     List<MyCellarObject> myCellarObjectList = new LinkedList<>();
     if (!panelPlace.isSeveralLocationChecked()) {
       final MyCellarObject myCellarObject = rangement.getObject(selectedPlace).orElse(null);
@@ -578,7 +579,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     } else {
       // Search all objects
       int placeNumStart = 0;
-      int placeNumEnd = rangement.getNbParts();
+      int placeNumEnd = rangement.getPartCount();
       if (panelPlace.isSeveralLocationStatePartChecked()) {
         placeNumStart = selectedPlace.getPlaceNumIndex();
         placeNumEnd = selectedPlace.getPlaceNum();
@@ -592,12 +593,12 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         lineEnd = selectedPlace.getLine();
       }
       for (int i = placeNumStart; i < placeNumEnd; i++) {
-        int nb_lignes = rangement.getLineCountAt(i);
+        int nb_lignes = ((Rangement)rangement).getLineCountAt(i);
         if (!panelPlace.isSeveralLocationStateLineChecked()) {
           lineEnd = nb_lignes;
         }
         for (int j = lineStart; j < lineEnd; j++) {
-          int nb_colonnes = rangement.getColumnCountAt(i, j);
+          int nb_colonnes = ((Rangement)rangement).getColumnCountAt(i, j);
           for (int k = 0; k < nb_colonnes; k++) {
             MyCellarObject myCellarObject = rangement.getObject(i, j, k).orElse(null);
             if (myCellarObject != null) {
@@ -616,9 +617,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private List<MyCellarObject> searchSimplePlace() {
     final Place selectedPlace = panelPlace.getSelectedPlace();
-    Rangement rangement = selectedPlace.getRangement();
+    IBasicPlace rangement = selectedPlace.getRangement();
     int lieu_num = selectedPlace.getPlaceNumIndex();
-    int nb_empl_cave = rangement.getNbParts();
+    int nb_empl_cave = rangement.getPartCount();
     int boucle_toutes;
     int start_boucle;
     if (lieu_num == 0) {
@@ -631,9 +632,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
     List<MyCellarObject> myCellarObjectList = new LinkedList<>();
     for (int x = start_boucle; x < boucle_toutes; x++) {
-      int totalCellUsed = rangement.getTotalCellUsed(x - 1);
+      int totalCellUsed = rangement.getCountCellUsed(x - 1);
       for (int l = 0; l < totalCellUsed; l++) {
-        MyCellarObject b = rangement.getObjectSimplePlaceAt(x - 1, l); //lieu_num
+        MyCellarObject b = ((Rangement) rangement).getObjectSimplePlaceAt(x - 1, l); //lieu_num
         if (b != null) {
           if (searchTableModel.doesNotContain(b)) {
             myCellarObjectList.add(b);

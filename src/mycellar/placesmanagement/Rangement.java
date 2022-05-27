@@ -3,6 +3,7 @@ package mycellar.placesmanagement;
 import mycellar.Program;
 import mycellar.core.MyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.placesmanagement.places.IBasicPlace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,10 +20,10 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.9
- * @since 26/05/22
+ * @version 29.0
+ * @since 27/05/22
  */
-public class Rangement implements Comparable<Rangement> {
+public class Rangement implements Comparable<Rangement>, IBasicPlace {
 
   private String name;
   private int nbParts; //Nombre d'emplacements
@@ -97,6 +98,7 @@ public class Rangement implements Comparable<Rangement> {
     this.startSimplePlace = startSimplePlace;
   }
 
+  @Deprecated
   public int getNbParts() {
     return nbParts;
   }
@@ -885,5 +887,26 @@ public class Rangement implements Comparable<Rangement> {
       return rangement;
     }
   }
+
+@Override
+public void clearStorage(MyCellarObject myCellarObject, Place place) {
+	clearStock(myCellarObject, place);
+	
+}
+
+@Override
+public int getCountCellUsed(int part) {
+	return getTotalCellUsed(part);
+}
+
+@Override
+public void clearStorage(MyCellarObject myCellarObject) {
+  clearStock(myCellarObject);
+}
+
+@Override
+public int getPartCount() {
+	return nbParts;
+}
 }
 

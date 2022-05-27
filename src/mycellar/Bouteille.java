@@ -15,8 +15,9 @@ import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.IBasicPlace;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -43,8 +44,8 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.7
- * @since 08/04/22
+ * @version 7.8
+ * @since 27/05/22
  *
  * <p>Java class for anonymous complex type.
  *
@@ -372,7 +373,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public Rangement getRangement() {
+  public IBasicPlace getRangement() {
     return Program.getPlaceByName(emplacement);
   }
 

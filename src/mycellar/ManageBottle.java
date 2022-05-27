@@ -17,6 +17,7 @@ import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.IBasicPlace;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
@@ -40,8 +41,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.8
- * @since 25/05/22
+ * @version 9.9
+ * @since 27/05/22
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -183,7 +184,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
 
     int lieu_num = place.getPlaceNum();
-    Rangement cave = place.getRangement();
+    IBasicPlace cave = place.getRangement();
     boolean isCaisse = cave.isSimplePlace();
 
     if (MyCellarControl.hasInvalidNumLieuNumber(lieu_num, isCaisse)) {
@@ -248,7 +249,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
 
     if (!oldPlace.isSimplePlace()) {
-      oldPlace.getRangement().clearComplexStock(oldPlace);
+      ((Rangement)oldPlace.getRangement()).clearComplexStock(oldPlace);
     }
 
     if (!RangementUtils.putTabStock()) {
@@ -256,7 +257,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
     ProgramPanels.updateSearchTable();
 
-    Rangement rangement = myCellarObject.getRangement();
+    IBasicPlace rangement = myCellarObject.getRangement();
     if (!rangement.isSimplePlace()) {
       rangement.updateToStock(myCellarObject);
     }

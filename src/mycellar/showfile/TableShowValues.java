@@ -9,6 +9,7 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.IBasicPlace;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
@@ -30,8 +31,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.8
- * @since 25/05/22
+ * @version 5.9
+ * @since 27/05/22
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -149,7 +150,7 @@ class TableShowValues extends AbstractTableModel {
       case NUM_PLACE:
       case LINE:
       case COLUMN: {
-        Rangement rangement = b.getRangement();
+        IBasicPlace rangement = b.getRangement();
         boolean bError = false;
         int nValueToCheck = -1;
         int num_empl = b.getNumLieu();
@@ -226,8 +227,8 @@ class TableShowValues extends AbstractTableModel {
               }
               if (column == PLACE && rangement.isSimplePlace()) {
                 int nNumEmpl = b.getNumLieu();
-                if (nNumEmpl > rangement.getLastPartNumber()) {
-                  b.setNumLieu(rangement.getFreeNumPlaceInSimplePlace());
+                if (nNumEmpl > ((Rangement) rangement).getLastPartNumber()) {
+                  b.setNumLieu(((Rangement) rangement).getFreeNumPlaceInSimplePlace());
                 }
                 b.setLigne(0);
                 b.setColonne(0);

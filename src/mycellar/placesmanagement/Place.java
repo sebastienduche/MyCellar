@@ -1,40 +1,41 @@
 package mycellar.placesmanagement;
 
 import mycellar.Program;
+import mycellar.placesmanagement.places.IBasicPlace;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2021</p>
- * <p>Societe : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2021
+ * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 20/05/21
+ * @version 0.7
+ * @since 27/05/22
  */
 
 public class Place {
 
-  private final Rangement rangement;
+  private final IBasicPlace rangement;
   private final int placeNum;
   private final int line;
   private final int column;
 
-  private Place(Rangement rangement, int placeNum) {
+  private Place(IBasicPlace rangement, int placeNum) {
     this.rangement = rangement;
     this.placeNum = placeNum;
     line = -1;
     column = -1;
   }
 
-  private Place(Rangement rangement, int placeNum, int line, int column) {
+  private Place(IBasicPlace rangement, int placeNum, int line, int column) {
     this.rangement = rangement;
     this.placeNum = placeNum;
     this.line = line;
     this.column = column;
   }
 
-  public Rangement getRangement() {
+  public IBasicPlace getRangement() {
     return rangement;
   }
 
@@ -94,12 +95,12 @@ public class Place {
 
   public static class PlaceBuilder {
 
-    protected final Rangement rangement;
+    protected final IBasicPlace rangement;
     private int numPlace;
     private int line;
     private int column;
 
-    public PlaceBuilder(Rangement rangement) {
+    public PlaceBuilder(IBasicPlace rangement) {
       this.rangement = rangement;
     }
 

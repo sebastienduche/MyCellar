@@ -15,8 +15,8 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.IBasicPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -51,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.5
- * @since 25/05/22
+ * @version 5.6
+ * @since 27/05/22
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -220,7 +220,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
           for (MyCellarObject myCellarObject : toRestoreList) {
             if (myCellarObject.isInExistingPlace()) {
-              Rangement rangement = myCellarObject.getRangement();
+              IBasicPlace rangement = myCellarObject.getRangement();
               if (rangement.isSimplePlace()) {
                 Program.getStorage().addHistory(HistoryState.ADD, myCellarObject);
                 Program.getStorage().addWine(myCellarObject);

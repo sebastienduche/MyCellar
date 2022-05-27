@@ -33,14 +33,14 @@ import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.general.XmlUtils.getTextContent;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2021</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2021
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 08/04/22
+ * @version 1.5
+ * @since 27/05/22
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -425,7 +425,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public Rangement getRangement() {
-    return Program.getPlaceByName(emplacement);
+    return (Rangement)Program.getPlaceByName(emplacement);
   }
 
   @Override

@@ -22,6 +22,7 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
+import mycellar.placesmanagement.places.IBasicPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.activation.ActivationDataFlavor;
@@ -73,8 +74,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.2
- * @since 25/05/22
+ * @version 5.3
+ * @since 27/05/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -383,11 +384,11 @@ final class RangementCell extends JPanel {
   private final int column;
   MyCellarObjectDraggingLabel draggingLabel;
   private MyCellarObjectDraggingLabel bottleLabel;
-  private Rangement place;
+  private IBasicPlace place;
   private JPanel parent;
   private CellarOrganizerPanel cellarOrganizerPanel;
 
-  RangementCell(MouseListener listener, TransferHandler handler, Rangement place, int placeNum, int row, int column, JPanel parent, CellarOrganizerPanel cellarOrganizerPanel) {
+  RangementCell(MouseListener listener, TransferHandler handler, IBasicPlace place, int placeNum, int row, int column, JPanel parent, CellarOrganizerPanel cellarOrganizerPanel) {
     this.place = place;
     this.placeNum = placeNum;
     this.row = row;
@@ -478,11 +479,11 @@ final class RangementCell extends JPanel {
     return placeNum + 1;
   }
 
-  public Rangement getPlace() {
+  public IBasicPlace getPlace() {
     return place;
   }
 
-  public void setPlace(Rangement place) {
+  public void setPlace(IBasicPlace place) {
     this.place = place;
   }
 
@@ -530,7 +531,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
     super();
     this.myCellarObject = myCellarObject;
     int width = 100;
-    Rangement r = myCellarObject.getRangement();
+    Rangement r = (Rangement)myCellarObject.getRangement();
     if (r != null && r.isSimplePlace()) {
       width = 400;
     }
@@ -559,7 +560,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
             ((RangementCell) parent).updateUI();
             Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
-              final Rangement rangement = myCellarObject.getRangement();
+              final Rangement rangement = (Rangement)myCellarObject.getRangement();
               if (rangement != null) {
                 rangement.removeObject(myCellarObject);
               } else {

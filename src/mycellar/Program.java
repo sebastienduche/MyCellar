@@ -33,6 +33,8 @@ import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.BasicPlace;
+import mycellar.placesmanagement.places.IBasicPlace;
 import mycellar.vignobles.CountryVignobleController;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -107,8 +109,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.3
- * @since 25/05/22
+ * @version 28.4
+ * @since 27/05/22
  */
 
 public final class Program {
@@ -125,7 +127,9 @@ public final class Program {
 
   // Manage global config
   private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
+  @Deprecated
   private static final List<Rangement> PLACES = new LinkedList<>();
+  private static final List<BasicPlace> NEW_PLACES = new LinkedList<>();
   private static final List<MyCellarObject> TRASH = new LinkedList<>();
   private static final List<MyCellarError> ERRORS = new LinkedList<>();
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
@@ -557,25 +561,40 @@ public final class Program {
     return PLACES.size() == 1;
   }
 
-  public static Rangement getPlaceByName(final String name) {
+  public static IBasicPlace getPlaceByName(final String name) {
     final String placeName = name.strip();
     if (TEMP_PLACE.equals(placeName)) {
       return STOCK_PLACE;
     }
     final List<Rangement> list = PLACES.stream().filter(rangement -> filterOnPlaceName(rangement, placeName)).collect(Collectors.toList());
-    return list.get(0);
+    if (!list.isEmpty()) {
+      return list.get(0);
+    }
+    final List<BasicPlace> new_list = NEW_PLACES.stream().filter(rangement -> filterOnBasicPlaceName(rangement, placeName)).collect(Collectors.toList());
+    return new_list.get(0);
   }
 
   private static boolean filterOnPlaceName(Rangement rangement, String placeName) {
     return rangement.getName().equals(placeName) || isDefaultStorageName(rangement, placeName);
   }
+  
+  private static boolean filterOnBasicPlaceName(BasicPlace rangement, String placeName) {
+	    return rangement.getName().equals(placeName) || isDefaultBasicPlaceName(rangement, placeName);
+	  }
 
   private static boolean isDefaultStorageName(Rangement rangement, String placeName) {
     return rangement.isDefaultPlace() &&
         (rangement.getName().equals(DEFAULT_STORAGE_EN) || rangement.getName().equals(DEFAULT_STORAGE_FR)) &&
         (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
+  
+  private static boolean isDefaultBasicPlaceName(BasicPlace rangement, String placeName) {
+	    return rangement.isDefaultPlace() &&
+	        (rangement.getName().equals(DEFAULT_STORAGE_EN) || rangement.getName().equals(DEFAULT_STORAGE_FR)) &&
+	        (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
+	  }
 
+  @Deprecated
   public static void addPlace(Rangement rangement) {
     if (rangement == null) {
       return;
@@ -585,6 +604,16 @@ public final class Program {
     setModified();
     Collections.sort(PLACES);
   }
+  
+  public static void addBasicPlace(BasicPlace rangement) {
+	    if (rangement == null) {
+	      return;
+	    }
+	    NEW_PLACES.add(rangement);
+	    setListCaveModified();
+	    setModified();
+	    Collections.sort(NEW_PLACES);
+	  }
 
   public static void removePlace(Rangement rangement) {
     if (rangement == null) {

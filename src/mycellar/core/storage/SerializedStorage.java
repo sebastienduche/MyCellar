@@ -11,7 +11,7 @@ import mycellar.core.datas.worksheet.WorkSheetData;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.IBasicPlace;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
@@ -33,8 +33,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.6
- * @since 25/05/22
+ * @version 7.7
+ * @since 27/05/22
  */
 
 public class SerializedStorage implements Storage {
@@ -268,7 +268,7 @@ public class SerializedStorage implements Storage {
         Debug("DeleteWine: Deleted by Id. " + myCellarObject);
         found = listMyCellarObject.remove(collect.get(0));
       } else {
-        Rangement rangement = myCellarObject.getRangement();
+        IBasicPlace rangement = myCellarObject.getRangement();
         boolean isCaisse = rangement == null || rangement.isSimplePlace();
         final List<MyCellarObject> resultBouteilles = getAllList().stream()
             .filter(

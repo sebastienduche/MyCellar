@@ -214,11 +214,11 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       myCellarObject.setNumLieu(lieu_num);
       myCellarObject.setLigne(line);
       myCellarObject.setColonne(column);
-	  MyCellarObject bottleInPlace = cave.getObject(new Place.PlaceBuilder(cave)
-            .withNumPlace(lieu_num)
-            .withLine(line)
-            .withColumn(column)
-            .build()).orElse(null);
+      MyCellarObject bottleInPlace = cave.getObject(new Place.PlaceBuilder(cave)
+          .withNumPlace(lieu_num)
+          .withLine(line)
+          .withColumn(column)
+          .build()).orElse(null);
       if (bottleInPlace != null) {
         if (!askToReplaceBottle(bottleInPlace, oldPlace)) {
           myCellarObject.setNumLieu(oldPlace.getPlaceNum());
@@ -249,7 +249,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
 
     if (!oldPlace.isSimplePlace()) {
-      ((Rangement)oldPlace.getRangement()).clearComplexStock(oldPlace);
+      ((Rangement) oldPlace.getRangement()).clearComplexStock(oldPlace);
     }
 
     if (!RangementUtils.putTabStock()) {

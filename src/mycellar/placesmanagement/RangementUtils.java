@@ -15,7 +15,6 @@ import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.places.IAbstractPlace;
-
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;

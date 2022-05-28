@@ -17,7 +17,6 @@ import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.IAbstractPlace;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

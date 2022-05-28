@@ -593,12 +593,12 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         lineEnd = selectedPlace.getLine();
       }
       for (int i = placeNumStart; i < placeNumEnd; i++) {
-        int nb_lignes = ((Rangement)rangement).getLineCountAt(i);
+        int nb_lignes = ((Rangement) rangement).getLineCountAt(i);
         if (!panelPlace.isSeveralLocationStateLineChecked()) {
           lineEnd = nb_lignes;
         }
         for (int j = lineStart; j < lineEnd; j++) {
-          int nb_colonnes = ((Rangement)rangement).getColumnCountAt(i, j);
+          int nb_colonnes = ((Rangement) rangement).getColumnCountAt(i, j);
           for (int k = 0; k < nb_colonnes; k++) {
             MyCellarObject myCellarObject = rangement.getObject(i, j, k).orElse(null);
             if (myCellarObject != null) {

@@ -19,7 +19,6 @@ import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.IAbstractPlace;
 
 import javax.swing.AbstractAction;
@@ -346,7 +345,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
               Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
               if (!rangement.isSimplePlace()) {
                 Debug("Deleting from older complex place");
-                ((Rangement)oldPLace.getRangement()).clearComplexStock(oldPLace);
+                ((Rangement) oldPLace.getRangement()).clearComplexStock(oldPLace);
               }
             } else {
               Debug("Empty case: Adding bottle");

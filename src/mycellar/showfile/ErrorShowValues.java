@@ -268,8 +268,8 @@ public class ErrorShowValues extends TableShowValues {
                 b.setEmplacement((String) value);
                 if (rangement.isSimplePlace()) {
                   int nNumEmpl = b.getNumLieu();
-                  if (nNumEmpl > ((Rangement)rangement).getLastPartNumber()) {
-                    b.setNumLieu(((Rangement)rangement).getFreeNumPlaceInSimplePlace());
+                  if (nNumEmpl > ((Rangement) rangement).getLastPartNumber()) {
+                    b.setNumLieu(((Rangement) rangement).getFreeNumPlaceInSimplePlace());
                   }
                   b.setLigne(0);
                   b.setColonne(0);

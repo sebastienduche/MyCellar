@@ -16,7 +16,7 @@ import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -373,7 +373,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public IBasicPlace getRangement() {
+  public IAbstractPlace getRangement() {
     return Program.getPlaceByName(emplacement);
   }
 

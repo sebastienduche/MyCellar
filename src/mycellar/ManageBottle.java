@@ -17,7 +17,7 @@ import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
@@ -184,7 +184,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
 
     int lieu_num = place.getPlaceNum();
-    IBasicPlace cave = place.getRangement();
+    IAbstractPlace cave = place.getRangement();
     boolean isCaisse = cave.isSimplePlace();
 
     if (MyCellarControl.hasInvalidNumLieuNumber(lieu_num, isCaisse)) {
@@ -257,7 +257,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
     ProgramPanels.updateSearchTable();
 
-    IBasicPlace rangement = myCellarObject.getRangement();
+    IAbstractPlace rangement = myCellarObject.getRangement();
     if (!rangement.isSimplePlace()) {
       rangement.updateToStock(myCellarObject);
     }

@@ -3,7 +3,7 @@ package mycellar.placesmanagement;
 import mycellar.Program;
 import mycellar.core.MyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import java.util.Optional;
  * @version 29.0
  * @since 27/05/22
  */
-public class Rangement implements Comparable<Rangement>, IBasicPlace {
+public class Rangement implements Comparable<Rangement>, IAbstractPlace {
 
   private String name;
   private int nbParts; //Nombre d'emplacements

@@ -1,7 +1,7 @@
 package mycellar.placesmanagement;
 
 import mycellar.Program;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 
 /**
  * Titre : Cave &agrave; vin
@@ -16,26 +16,26 @@ import mycellar.placesmanagement.places.IBasicPlace;
 
 public class Place {
 
-  private final IBasicPlace rangement;
+  private final IAbstractPlace rangement;
   private final int placeNum;
   private final int line;
   private final int column;
 
-  private Place(IBasicPlace rangement, int placeNum) {
+  private Place(IAbstractPlace rangement, int placeNum) {
     this.rangement = rangement;
     this.placeNum = placeNum;
     line = -1;
     column = -1;
   }
 
-  private Place(IBasicPlace rangement, int placeNum, int line, int column) {
+  private Place(IAbstractPlace rangement, int placeNum, int line, int column) {
     this.rangement = rangement;
     this.placeNum = placeNum;
     this.line = line;
     this.column = column;
   }
 
-  public IBasicPlace getRangement() {
+  public IAbstractPlace getRangement() {
     return rangement;
   }
 
@@ -95,12 +95,12 @@ public class Place {
 
   public static class PlaceBuilder {
 
-    protected final IBasicPlace rangement;
+    protected final IAbstractPlace rangement;
     private int numPlace;
     private int line;
     private int column;
 
-    public PlaceBuilder(IBasicPlace rangement) {
+    public PlaceBuilder(IAbstractPlace rangement) {
       this.rangement = rangement;
     }
 

@@ -43,7 +43,7 @@ import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -809,7 +809,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           } else {
             for (MyCellarObject b : toDeleteList) {
               Program.getStorage().addHistory(HistoryState.DEL, b);
-              final IBasicPlace rangement = b.getRangement();
+              final IAbstractPlace rangement = b.getRangement();
               if (rangement != null) {
                 rangement.removeObject(b);
               } else {
@@ -875,7 +875,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         for (MyCellarObject b : toRestoreList) {
           Program.getTrash().remove(b);
           if (b.isInExistingPlace()) {
-            IBasicPlace r = b.getRangement();
+            IAbstractPlace r = b.getRangement();
             if (r.isSimplePlace()) {
               Program.getStorage().addHistory(HistoryState.ADD, b);
               Program.getStorage().addWine(b);
@@ -913,7 +913,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   private void setRangementValue(MyCellarObject b, MyCellarFields field, Object value) {
-	IBasicPlace rangement = b.getRangement();
+	IAbstractPlace rangement = b.getRangement();
     int nValueToCheck = -1;
     String empl = b.getEmplacement();
     int num_empl = b.getNumLieu();

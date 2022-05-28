@@ -14,7 +14,7 @@ import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.general.ProgramPanels;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -92,7 +92,7 @@ public final class RangementUtils {
       search.updateTable();
     });
 
-    final IBasicPlace rangement = newObject.getRangement();
+    final IAbstractPlace rangement = newObject.getRangement();
     if (!rangement.isSimplePlace()) {
       rangement.updateToStock(newObject);
     }

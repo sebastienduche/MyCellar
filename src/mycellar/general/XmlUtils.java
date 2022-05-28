@@ -7,8 +7,8 @@ import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.places.BasicPlace;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 
@@ -195,7 +195,7 @@ public class XmlUtils {
     return true;
   }
   
-  public static boolean readMyCellarXml1(String filename, final List<BasicPlace> rangementList) {
+  public static boolean readMyCellarXml1(String filename, final List<AbstractPlace> rangementList) {
 	    Debug("readMyCellarXml1: Reading file");
 	    rangementList.clear();
 	    if (isNullOrEmpty(filename)) {
@@ -308,7 +308,7 @@ public class XmlUtils {
    *
    * @param rangements LinkedList<IBasicPlace>
    */
-  public static void writeMyCellarXml(List<? extends IBasicPlace> rangements, String filename) {
+  public static void writeMyCellarXml(List<? extends IAbstractPlace> rangements, String filename) {
     Debug("writeMyCellarXml: Writing file");
     if (isNullOrEmpty(filename)) {
       filename = Program.getXMLPlacesFileName();
@@ -317,7 +317,7 @@ public class XmlUtils {
       //Init XML File
       fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
       // Ecriture des rangements
-      for (IBasicPlace r : rangements) {
+      for (IAbstractPlace r : rangements) {
         fileWriter.write(r.toXml());
       }
       fileWriter.write("</MyCellar>");

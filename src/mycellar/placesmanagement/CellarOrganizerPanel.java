@@ -22,7 +22,7 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.activation.ActivationDataFlavor;
@@ -384,11 +384,11 @@ final class RangementCell extends JPanel {
   private final int column;
   MyCellarObjectDraggingLabel draggingLabel;
   private MyCellarObjectDraggingLabel bottleLabel;
-  private IBasicPlace place;
+  private IAbstractPlace place;
   private JPanel parent;
   private CellarOrganizerPanel cellarOrganizerPanel;
 
-  RangementCell(MouseListener listener, TransferHandler handler, IBasicPlace place, int placeNum, int row, int column, JPanel parent, CellarOrganizerPanel cellarOrganizerPanel) {
+  RangementCell(MouseListener listener, TransferHandler handler, IAbstractPlace place, int placeNum, int row, int column, JPanel parent, CellarOrganizerPanel cellarOrganizerPanel) {
     this.place = place;
     this.placeNum = placeNum;
     this.row = row;
@@ -479,11 +479,11 @@ final class RangementCell extends JPanel {
     return placeNum + 1;
   }
 
-  public IBasicPlace getPlace() {
+  public IAbstractPlace getPlace() {
     return place;
   }
 
-  public void setPlace(IBasicPlace place) {
+  public void setPlace(IAbstractPlace place) {
     this.place = place;
   }
 

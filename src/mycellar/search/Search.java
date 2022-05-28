@@ -35,7 +35,7 @@ import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.ui.PanelRequest;
 import mycellar.vignobles.CountryVignobleController;
@@ -287,7 +287,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             searchTableModel.removeObject(myCellarObject);
             Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
-              final IBasicPlace rangement = myCellarObject.getRangement();
+              final IAbstractPlace rangement = myCellarObject.getRangement();
               if (rangement != null) {
                 rangement.removeObject(myCellarObject);
               } else {
@@ -558,7 +558,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private List<MyCellarObject> searchComplexPlace() {
     final Place selectedPlace = panelPlace.getSelectedPlace();
-    IBasicPlace rangement = selectedPlace.getRangement();
+    IAbstractPlace rangement = selectedPlace.getRangement();
     List<MyCellarObject> myCellarObjectList = new LinkedList<>();
     if (!panelPlace.isSeveralLocationChecked()) {
       final MyCellarObject myCellarObject = rangement.getObject(selectedPlace).orElse(null);
@@ -617,7 +617,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private List<MyCellarObject> searchSimplePlace() {
     final Place selectedPlace = panelPlace.getSelectedPlace();
-    IBasicPlace rangement = selectedPlace.getRangement();
+    IAbstractPlace rangement = selectedPlace.getRangement();
     int lieu_num = selectedPlace.getPlaceNumIndex();
     int nb_empl_cave = rangement.getPartCount();
     int boucle_toutes;

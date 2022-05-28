@@ -18,13 +18,13 @@ import mycellar.placesmanagement.Place;
  * @version 0.1
  * @since 27/05/22
  */
-public abstract class BasicPlace implements Comparable<BasicPlace>, IBasicPlace {
+public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstractPlace {
 
 	private String name;
 	protected int partCount;
 	private boolean defaultPlace = false;
 	
-	public BasicPlace(String name) {
+	public AbstractPlace(String name) {
 		this.name = name.strip();
 	}
 
@@ -105,7 +105,7 @@ public abstract class BasicPlace implements Comparable<BasicPlace>, IBasicPlace 
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		BasicPlace other = (BasicPlace) obj;
+		AbstractPlace other = (AbstractPlace) obj;
 		return defaultPlace == other.defaultPlace && Objects.equals(name, other.name) && partCount == other.partCount;
 	}
 	

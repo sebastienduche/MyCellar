@@ -9,7 +9,7 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -157,7 +157,7 @@ public class ErrorShowValues extends TableShowValues {
   public void setValueAt(Object value, int row, int col) {
     MyCellarError error = errors.get(row);
     MyCellarObject b = error.getMyCellarObject();
-    IBasicPlace rangement;
+    IAbstractPlace rangement;
     final Column column = Column.fromIndex(col);
     switch (column) {
       case ETAT:

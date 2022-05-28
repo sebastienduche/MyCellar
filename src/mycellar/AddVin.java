@@ -19,7 +19,8 @@ import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -509,22 +510,22 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     return new Bouteille();
   }
 
-  private MyCellarObject createMyCellarObject(String annee, Place place, IBasicPlace rangement, int numLieu, int line, int column) {
+  private MyCellarObject createMyCellarObject(String annee, Place place, IAbstractPlace basicPlace, int numLieu, int line, int column) {
     if (Program.isWineType()) {
-      return createBouteille(annee, place, rangement, numLieu, line, column);
+      return createBouteille(annee, place, basicPlace, numLieu, line, column);
     }
     if (Program.isMusicType()) {
-      return createMusic(annee, place, rangement, numLieu, line, column);
+      return createMusic(annee, place, basicPlace, numLieu, line, column);
     }
     Program.throwNotImplementedForNewType();
     return new Bouteille();
   }
 
-  private Bouteille createBouteille(String annee, Place place, IBasicPlace rangement, int numLieu, int line, int colonne) {
+  private Bouteille createBouteille(String annee, Place place, IAbstractPlace basicPlace, int numLieu, int line, int colonne) {
     BouteilleBuilder bouteilleBuilder = new BouteilleBuilder(panelGeneral.getObjectName())
         .annee(annee)
         .type(panelGeneral.getType())
-        .place(rangement.getName())
+        .place(basicPlace.getName())
         .numPlace(place != null ? place.getPlaceNum() : numLieu)
         .price(panelWineAttribute.getPrice())
         .comment(commentTextArea.getText())
@@ -542,11 +543,11 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     return bouteilleBuilder.build();
   }
 
-  private Music createMusic(String annee, Place place, IBasicPlace rangement, int numLieu, int line, int colonne) {
+  private Music createMusic(String annee, Place place, IAbstractPlace basicPlace, int numLieu, int line, int colonne) {
     Music.MusicBuilder musicBuilder = new Music.MusicBuilder(panelGeneral.getObjectName())
         .annee(annee)
 //        .type(demie)
-        .place(rangement.getName())
+        .place(basicPlace.getName())
         .numPlace(place != null ? place.getPlaceNum() : numLieu)
         .price(panelWineAttribute.getPrice())
         .comment(commentTextArea.getText())

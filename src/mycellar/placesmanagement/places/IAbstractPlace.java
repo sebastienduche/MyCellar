@@ -16,7 +16,7 @@ import mycellar.placesmanagement.Place;
  * @version 0.1
  * @since 27/05/22
  */
-public interface IBasicPlace {
+public interface IAbstractPlace {
 
 	@Deprecated
     public boolean isSimplePlace();

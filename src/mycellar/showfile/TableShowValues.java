@@ -9,7 +9,7 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
@@ -150,7 +150,7 @@ class TableShowValues extends AbstractTableModel {
       case NUM_PLACE:
       case LINE:
       case COLUMN: {
-        IBasicPlace rangement = b.getRangement();
+        IAbstractPlace rangement = b.getRangement();
         boolean bError = false;
         int nValueToCheck = -1;
         int num_empl = b.getNumLieu();

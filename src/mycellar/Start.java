@@ -26,7 +26,7 @@ import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.places.BasicPlace;
+import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
 import net.miginfocom.swing.MigLayout;
@@ -409,9 +409,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
         XmlUtils.writeMyCellarXml(cave, "");
         Program.loadData();
       }
-      LinkedList<BasicPlace> basicPlaces = new LinkedList<>();
-      if (f.exists() && XmlUtils.readMyCellarXml1(fic, basicPlaces)) {
-        XmlUtils.writeMyCellarXml(basicPlaces, "");
+      LinkedList<AbstractPlace> abstractPlaces = new LinkedList<>();
+      if (f.exists() && XmlUtils.readMyCellarXml1(fic, abstractPlaces)) {
+        XmlUtils.writeMyCellarXml(abstractPlaces, "");
         Program.loadData();
       }
     }

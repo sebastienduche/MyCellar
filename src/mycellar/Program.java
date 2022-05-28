@@ -33,8 +33,8 @@ import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.places.BasicPlace;
-import mycellar.placesmanagement.places.IBasicPlace;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.IAbstractPlace;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import mycellar.vignobles.CountryVignobleController;
@@ -133,7 +133,7 @@ public final class Program {
   private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
   @Deprecated
   private static final List<Rangement> PLACES = new LinkedList<>();
-  private static final List<BasicPlace> NEW_PLACES = new LinkedList<>();
+  private static final List<AbstractPlace> NEW_PLACES = new LinkedList<>();
   private static final List<MyCellarObject> TRASH = new LinkedList<>();
   private static final List<MyCellarError> ERRORS = new LinkedList<>();
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
@@ -449,7 +449,7 @@ public final class Program {
   }
   
   public static int getSimplePlaceCount1() {
-	    return (int) getBasicPlaces().stream().filter(BasicPlace::isSimplePlace).count();
+	    return (int) getBasicPlaces().stream().filter(AbstractPlace::isSimplePlace).count();
 	  }
 
   @Deprecated
@@ -457,8 +457,8 @@ public final class Program {
     return getPlaces().stream().filter(Rangement::isSimplePlace).collect(Collectors.toList());
   }
   
-  public static List<BasicPlace> getSimplePlaces1() {
-	    return getBasicPlaces().stream().filter(BasicPlace::isSimplePlace).collect(Collectors.toList());
+  public static List<AbstractPlace> getSimplePlaces1() {
+	    return getBasicPlaces().stream().filter(AbstractPlace::isSimplePlace).collect(Collectors.toList());
 	  }
 
   static int getTotalObjectForYear(int year) {
@@ -575,7 +575,7 @@ public final class Program {
     return Collections.unmodifiableList(PLACES);
   }
   
-  public static List<BasicPlace> getBasicPlaces() {
+  public static List<AbstractPlace> getBasicPlaces() {
 	    return Collections.unmodifiableList(NEW_PLACES);
 	  }
 
@@ -584,7 +584,7 @@ public final class Program {
     return PLACES.get(index);
   }
   
-  public static BasicPlace getBasicPlaceAt(int index) {
+  public static AbstractPlace getBasicPlaceAt(int index) {
 	    return NEW_PLACES.get(index);
 	  }
 
@@ -593,7 +593,7 @@ public final class Program {
     return PLACES.size() == 1 || NEW_PLACES.size() == 1;
   }
 
-  public static IBasicPlace getPlaceByName(final String name) {
+  public static IAbstractPlace getPlaceByName(final String name) {
     final String placeName = name.strip();
     if (TEMP_PLACE.equals(placeName)) {
       return STOCK_PLACE;
@@ -602,7 +602,7 @@ public final class Program {
     if (!list.isEmpty()) {
       return list.get(0);
     }
-    final List<BasicPlace> new_list = NEW_PLACES.stream().filter(rangement -> filterOnBasicPlaceName(rangement, placeName)).collect(Collectors.toList());
+    final List<AbstractPlace> new_list = NEW_PLACES.stream().filter(rangement -> filterOnBasicPlaceName(rangement, placeName)).collect(Collectors.toList());
     return new_list.get(0);
   }
 
@@ -610,7 +610,7 @@ public final class Program {
     return rangement.getName().equals(placeName) || isDefaultStorageName(rangement, placeName);
   }
   
-  private static boolean filterOnBasicPlaceName(BasicPlace rangement, String placeName) {
+  private static boolean filterOnBasicPlaceName(AbstractPlace rangement, String placeName) {
 	    return rangement.getName().equals(placeName) || isDefaultBasicPlaceName(rangement, placeName);
 	  }
 
@@ -620,7 +620,7 @@ public final class Program {
         (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
   
-  private static boolean isDefaultBasicPlaceName(BasicPlace rangement, String placeName) {
+  private static boolean isDefaultBasicPlaceName(AbstractPlace rangement, String placeName) {
 	    return rangement.isDefaultPlace() &&
 	        (rangement.getName().equals(DEFAULT_STORAGE_EN) || rangement.getName().equals(DEFAULT_STORAGE_FR)) &&
 	        (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
@@ -637,7 +637,7 @@ public final class Program {
     Collections.sort(PLACES);
   }
   
-  public static void addBasicPlace(BasicPlace rangement) {
+  public static void addBasicPlace(AbstractPlace rangement) {
 	    if (rangement == null) {
 	      return;
 	    }
@@ -657,7 +657,7 @@ public final class Program {
     setListCaveModified();
   }
   
-  public static void removeBasicPlace(BasicPlace rangement) {
+  public static void removeBasicPlace(AbstractPlace rangement) {
 	    if (rangement == null) {
 	      return;
 	    }
@@ -676,7 +676,7 @@ public final class Program {
   }
   
   public static boolean hasComplexPlace1() {
-	    return NEW_PLACES.stream().anyMatch(Predicate.not(BasicPlace::isSimplePlace));
+	    return NEW_PLACES.stream().anyMatch(Predicate.not(AbstractPlace::isSimplePlace));
 	  }
 
   /**

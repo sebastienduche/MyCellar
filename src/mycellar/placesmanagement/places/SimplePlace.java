@@ -19,7 +19,7 @@ import mycellar.placesmanagement.Place;
  * @version 0.1
  * @since 27/05/22
  */
-public class SimplePlace extends BasicPlace {
+public class SimplePlace extends AbstractPlace {
 	
 	private int partNumberIncrement;
 	private boolean limited;
@@ -65,7 +65,7 @@ public class SimplePlace extends BasicPlace {
 	}
 
 	@Override
-	public int compareTo(BasicPlace o) {
+	public int compareTo(AbstractPlace o) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

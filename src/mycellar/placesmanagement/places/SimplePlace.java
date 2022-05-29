@@ -16,8 +16,8 @@ import mycellar.placesmanagement.Place;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 27/05/22
+ * @version 0.2
+ * @since 29/05/22
  */
 public class SimplePlace extends AbstractPlace {
 	
@@ -99,6 +99,21 @@ public class SimplePlace extends AbstractPlace {
 	      Debug("ERROR: Function getObject(int, int, int) can't be called on a simple place!");
 	      return Optional.empty();
 	  }
+	
+	public boolean hasFreeSpace(Place place) {
+	    return hasFreeSpace(place.getPlaceNumIndex());
+	  }
+	public boolean hasFreeSpace(int part) {
+	    return (!isLimited() || getCountCellUsed(part) < maxItemCount);
+	  }
+	
+	public Map<Integer, Integer> getNumberOfObjectsPerPlace() {
+	    Map<Integer, Integer> numberOfObjectsPerPlace = new HashMap<>(partCount);
+	      for (int i = 0; i < partCount; i++) {
+	    	  numberOfObjectsPerPlace.put(i, getCountCellUsed(i));
+	      }
+	    return numberOfObjectsPerPlace;
+	  }
 
 	@Override
 	public void updateToStock(MyCellarObject myCellarObject) {
@@ -124,12 +139,11 @@ public class SimplePlace extends AbstractPlace {
 
 	@Override
 	public boolean canAddObjectAt(MyCellarObject b) {
-		return canAddObjectAt(b.getNumLieu(), -1, -1);
+		return canAddObjectAt(b.getNumLieu() - partNumberIncrement, -1, -1);
 	}
 
 	@Override
-	public boolean canAddObjectAt(int tmpNumEmpl, int tmpLine, int tmpCol) {
-		int part = tmpNumEmpl - partNumberIncrement;
+	public boolean canAddObjectAt(int part, int tmpLine, int tmpCol) {
 		if (part < 0 || part >= getPartCount()) {
 		      return false;
 		    }
@@ -170,6 +184,33 @@ public class SimplePlace extends AbstractPlace {
 	    for (int i = 0; i < partCount; i++) {
 	      storage.put(i, new ArrayList<>());
 	    }
+	}
+
+	public int getFreeNumPlace() {
+		for (int i = 0; i < partCount; i++) {
+		      if (hasFreeSpace(i)) {
+		        return i + partNumberIncrement;
+		      }
+		    }
+		    return -1;
+	}
+	
+	public boolean isSame(SimplePlace r) {
+	    if (!getName().equals(r.getName())) {
+	      return false;
+	    }
+	    if (partCount != r.getPartCount()) {
+	      return false;
+	    }
+	    if (isSimplePlace() != r.isSimplePlace()) {
+	      return false;
+	    }
+	    return true;
+	  }
+
+	@Override
+	public int getLastPartNumber() {
+		return partNumberIncrement + partCount;
 	}
 
 }

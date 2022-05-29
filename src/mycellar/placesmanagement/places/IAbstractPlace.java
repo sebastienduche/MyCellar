@@ -1,5 +1,6 @@
 package mycellar.placesmanagement.places;
 
+import java.util.Map;
 import java.util.Optional;
 
 import mycellar.core.MyCellarObject;
@@ -37,4 +38,6 @@ public interface IAbstractPlace {
 	public Optional<MyCellarObject> getObject(Place place);
 	public String toXml();
 	public void resetStockage();
+	public Map<Integer, Integer> getNumberOfObjectsPerPlace();
+	public int getLastPartNumber();
 }

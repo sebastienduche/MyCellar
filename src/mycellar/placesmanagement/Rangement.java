@@ -82,6 +82,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     Program.Debug("Rangement: " + sText);
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -90,6 +91,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     this.name = name.strip();
   }
 
+  @Override
   public int getStartSimplePlace() {
     return startSimplePlace;
   }
@@ -330,6 +332,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     return resul;
   }
 
+  @Override
   public boolean addObject(MyCellarObject myCellarObject) {
     if (myCellarObject.hasNoStatus()) {
       myCellarObject.setCreated();
@@ -341,6 +344,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     return true;
   }
 
+  @Override
   public void removeObject(MyCellarObject myCellarObject) throws MyCellarException {
     clearStock(myCellarObject);
     Program.getStorage().deleteWine(myCellarObject);
@@ -373,6 +377,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    *
    * @param myCellarObject MyCellarObject: objet &agrave; changer
    */
+  @Override
   public void updateToStock(MyCellarObject myCellarObject) {
     if (isSimplePlace()) {
       storageSimplePlace.get(myCellarObject.getNumLieu()).add(myCellarObject);
@@ -407,6 +412,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    * @param column   int: num&eacute;ro de colonne (0...n)
    * @return MyCellarObject
    */
+  @Override
   public Optional<MyCellarObject> getObject(int num_empl, int line, int column) {
     if (isSimplePlace()) {
       Debug("ERROR: Function getObject(int, int, int) can't be called on a simple place!");
@@ -416,6 +422,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     return Optional.ofNullable(myCellarObject);
   }
 
+  @Override
   public Optional<MyCellarObject> getObject(Place place) {
     return getObject(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
   }
@@ -426,9 +433,9 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    * @param myCellarObject MyCellarObject
    */
   public void clearStock(MyCellarObject myCellarObject) {
-	  clearStock(myCellarObject, myCellarObject.getPlace());
+    clearStock(myCellarObject, myCellarObject.getPlace());
   }
-  
+
   public void clearStock(MyCellarObject myCellarObject, Place place) {
     if (isSimplePlace()) {
       storageSimplePlace.get(place.getPlaceNum()).remove(myCellarObject);
@@ -455,6 +462,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     return storageSimplePlace.get(num_empl + startSimplePlace).get(index);
   }
 
+  @Override
   public boolean isSimplePlace() {
     return simplePlace;
   }
@@ -480,6 +488,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    *
    * @return String
    */
+  @Override
   public String toXml() {
     StringBuilder sText = new StringBuilder();
     if (isSimplePlace()) {
@@ -514,6 +523,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     return sText.toString();
   }
 
+  @Override
   public boolean canAddObjectAt(MyCellarObject b) {
     if (isSimplePlace()) {
       return canAddObjectAt(b.getNumLieu() - startSimplePlace, 0, 0);
@@ -529,6 +539,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    * @param _nCol  Numero de colonne (0, n)
    * @return
    */
+  @Override
   public boolean canAddObjectAt(int _nEmpl, int _nLine, int _nCol) {
     if (_nEmpl < 0 || _nEmpl >= getNbParts()) {
       return false;
@@ -540,6 +551,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     return _nLine >= 0 && _nLine < getLineCountAt(_nEmpl) && !(_nCol < 0 || _nCol >= getColumnCountAt(_nEmpl, _nLine));
   }
 
+  @Override
   public boolean canAddObjectAt(Place place) {
     return canAddObjectAt(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
   }
@@ -618,9 +630,10 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
   }
 
   @Override
-	public void resetStockage() {
-		resetStock();
-	}
+  public void resetStockage() {
+    resetStock();
+  }
+
   /**
    * R&eacute;initialisation du stockage
    */
@@ -697,11 +710,11 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     Map<Integer, Integer> numberOfObjectsPerPlace = new HashMap<>(nbParts);
     if (isSimplePlace()) {
       for (int i = 0; i < nbParts; i++) {
-    	  numberOfObjectsPerPlace.put(i, getCountCellUsedInSimplePlace(i + startSimplePlace));
+        numberOfObjectsPerPlace.put(i, getCountCellUsedInSimplePlace(i + startSimplePlace));
       }
     } else {
       for (int i = 0; i < nbParts; i++) {
-    	  numberOfObjectsPerPlace.put(i, getTotalCellUsed(i));
+        numberOfObjectsPerPlace.put(i, getTotalCellUsed(i));
       }
     }
     return numberOfObjectsPerPlace;
@@ -893,25 +906,25 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     }
   }
 
-@Override
-public void clearStorage(MyCellarObject myCellarObject, Place place) {
-	clearStock(myCellarObject, place);
-	
-}
+  @Override
+  public void clearStorage(MyCellarObject myCellarObject, Place place) {
+    clearStock(myCellarObject, place);
 
-@Override
-public int getCountCellUsed(int part) {
-	return getTotalCellUsed(part);
-}
+  }
 
-@Override
-public void clearStorage(MyCellarObject myCellarObject) {
-  clearStock(myCellarObject);
-}
+  @Override
+  public int getCountCellUsed(int part) {
+    return getTotalCellUsed(part);
+  }
 
-@Override
-public int getPartCount() {
-	return nbParts;
-}
+  @Override
+  public void clearStorage(MyCellarObject myCellarObject) {
+    clearStock(myCellarObject);
+  }
+
+  @Override
+  public int getPartCount() {
+    return nbParts;
+  }
 }
 

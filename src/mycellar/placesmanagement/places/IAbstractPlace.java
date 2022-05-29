@@ -14,8 +14,8 @@ import mycellar.placesmanagement.Place;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 27/05/22
+ * @version 0.2
+ * @since 29/05/22
  */
 public interface IAbstractPlace {
 

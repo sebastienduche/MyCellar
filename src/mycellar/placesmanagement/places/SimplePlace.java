@@ -1,13 +1,13 @@
 package mycellar.placesmanagement.places;
 
+import mycellar.Program;
+import mycellar.core.MyCellarObject;
+import mycellar.placesmanagement.Place;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import mycellar.Program;
-import mycellar.core.MyCellarObject;
-import mycellar.placesmanagement.Place;
 
 /**
  * Titre : Cave &agrave; vin

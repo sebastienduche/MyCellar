@@ -11,7 +11,6 @@ import mycellar.placesmanagement.places.ComplexPlaceBuilder;
 import mycellar.placesmanagement.places.IAbstractPlace;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -61,9 +60,9 @@ class RangementTest {
         .sameColumnsNumber(new int[]{3})
         .build();
     complexPlace1x3x3Builder = new ComplexPlaceBuilder("armoire1x3x3")
-            .nbParts(new int[]{3})
-            .sameColumnsNumber(new int[]{3})
-            .build();
+        .nbParts(new int[]{3})
+        .sameColumnsNumber(new int[]{3})
+        .build();
     partie = new Part(0);
     list = new LinkedList<>();
     list.add(partie);
@@ -89,14 +88,14 @@ class RangementTest {
     } catch (Exception ignored) {
     }
     try {
-        complexPlace2x2_3x22545Builder = new ComplexPlaceBuilder("armoire2x2_3x22545")
-            .nbParts(new int[]{2, 3})
-            .differentColumnsNumber()
-            .columnsNumberForPart(0, new int[]{2, 2})
-            .columnsNumberForPart(1, new int[]{5, 4, 5})
-            .build();
-      } catch (Exception ignored) {
-      }
+      complexPlace2x2_3x22545Builder = new ComplexPlaceBuilder("armoire2x2_3x22545")
+          .nbParts(new int[]{2, 3})
+          .differentColumnsNumber()
+          .columnsNumberForPart(0, new int[]{2, 2})
+          .columnsNumberForPart(1, new int[]{5, 4, 5})
+          .build();
+    } catch (Exception ignored) {
+    }
     rangement = new Rangement.SimplePlaceBuilder("test").build();
     complexPlace = new ComplexPlaceBuilder("test").build();
     simplePlace = new SimplePlaceBuilder("test").build();
@@ -269,20 +268,20 @@ class RangementTest {
       assertFalse(r.isExistingCell(emplacementMax, 0, 0));
     }
     for (ComplexPlace r : listPlace) {
-        int emplacementMax = r.getPartCount();
-        for (int i = 0; i < emplacementMax; i++) {
-          int ligneMax = r.getLineCountAt(i);
-          for (int j = 0; j < ligneMax; j++) {
-            int colMax = r.getColumnCountAt(i, j);
-            for (int k = 0; k < colMax; k++) {
-              assertTrue(r.isExistingCell(i, j, k));
-            }
-            assertFalse(r.isExistingCell(i, j, colMax));
+      int emplacementMax = r.getPartCount();
+      for (int i = 0; i < emplacementMax; i++) {
+        int ligneMax = r.getLineCountAt(i);
+        for (int j = 0; j < ligneMax; j++) {
+          int colMax = r.getColumnCountAt(i, j);
+          for (int k = 0; k < colMax; k++) {
+            assertTrue(r.isExistingCell(i, j, k));
           }
-          assertFalse(r.isExistingCell(i, ligneMax, 0));
+          assertFalse(r.isExistingCell(i, j, colMax));
         }
-        assertFalse(r.isExistingCell(emplacementMax, 0, 0));
+        assertFalse(r.isExistingCell(i, ligneMax, 0));
       }
+      assertFalse(r.isExistingCell(emplacementMax, 0, 0));
+    }
   }
 
   @Test
@@ -432,14 +431,14 @@ class RangementTest {
     b.setEmplacement("armoire1x3x3");
     armoire1x3x3.updateToStock(b);
   }
-  
+
   private void updateToComplexPlace1x3x3(Bouteille b, int ligne, int colonne) {
-	    b.setNumLieu(1);
-	    b.setLigne(ligne);
-	    b.setColonne(colonne);
-	    b.setEmplacement("armoire1x3x3");
-	    complexPlace1x3x3.updateToStock(b);
-	  }
+    b.setNumLieu(1);
+    b.setLigne(ligne);
+    b.setColonne(colonne);
+    b.setEmplacement("armoire1x3x3");
+    complexPlace1x3x3.updateToStock(b);
+  }
 
   @Test
   void getNbCaseFreeCoteLigne() {
@@ -643,7 +642,7 @@ class RangementTest {
     assertEquals(0, caisseNoLimit.getTotalCellUsed(0));
     assertEquals(0, caisseNoLimit.getTotalCellUsed(b1.getPlace().getPlaceNumIndex()));
     assertEquals(0, caisseNoLimit.getTotalCellUsed(b1.getPlace()));
-    
+
     assertEquals(0, simplePlaceLimit.getCountCellUsed(1));
     assertEquals(0, simplePlaceNoLimit.getCountCellUsed(0));
     Bouteille b01 = new Bouteille();
@@ -865,20 +864,20 @@ class RangementTest {
       assertFalse(r.canAddObjectAt(emplacementMax, 0, 0));
     }
     for (ComplexPlace r : listPlace) {
-        int emplacementMax = r.getPartCount();
-        for (int i = 0; i < emplacementMax; i++) {
-          int ligneMax = r.getLineCountAt(i);
-          for (int j = 0; j < ligneMax; j++) {
-            int colMax = r.getColumnCountAt(i, j);
-            for (int k = 0; k < colMax; k++) {
-              assertTrue(r.canAddObjectAt(i, j, k));
-            }
-            assertFalse(r.canAddObjectAt(i, j, colMax));
+      int emplacementMax = r.getPartCount();
+      for (int i = 0; i < emplacementMax; i++) {
+        int ligneMax = r.getLineCountAt(i);
+        for (int j = 0; j < ligneMax; j++) {
+          int colMax = r.getColumnCountAt(i, j);
+          for (int k = 0; k < colMax; k++) {
+            assertTrue(r.canAddObjectAt(i, j, k));
           }
-          assertFalse(r.canAddObjectAt(i, ligneMax, 0));
+          assertFalse(r.canAddObjectAt(i, j, colMax));
         }
-        assertFalse(r.canAddObjectAt(emplacementMax, 0, 0));
+        assertFalse(r.canAddObjectAt(i, ligneMax, 0));
       }
+      assertFalse(r.canAddObjectAt(emplacementMax, 0, 0));
+    }
     b = new Bouteille();
     b.setNom("B20bis");
     assertFalse(armoire1x3x3.canAddObjectAt(b));
@@ -910,7 +909,7 @@ class RangementTest {
     SimplePlace simplePlace = new SimplePlaceBuilder("caisse").nbParts(2).startSimplePlace(1).limited(true).limit(2).build();
     Program.addBasicPlace(simplePlace);
     assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(1).build()));
-    
+
     Bouteille b = new Bouteille();
     b.setNom("B20");
     b.setEmplacement("caisse");
@@ -1150,12 +1149,12 @@ class RangementTest {
         "</internal-place>\n" +
         "<name><![CDATA[armoire1x3x3]]></name></place>", s);
     assertEquals("<place name=\"\" IsCaisse=\"false\" NbPlace=\"1\">\n" +
-            "<internal-place NbLine=\"3\">\n" +
-            "<line NbColumn=\"3\"/>\n" +
-            "<line NbColumn=\"3\"/>\n" +
-            "<line NbColumn=\"3\"/>\n" +
-            "</internal-place>\n" +
-            "<name><![CDATA[armoire1x3x3]]></name></place>", complexPlace);
+        "<internal-place NbLine=\"3\">\n" +
+        "<line NbColumn=\"3\"/>\n" +
+        "<line NbColumn=\"3\"/>\n" +
+        "<line NbColumn=\"3\"/>\n" +
+        "</internal-place>\n" +
+        "<name><![CDATA[armoire1x3x3]]></name></place>", complexPlace);
     assertEquals("<place name=\"\" IsCaisse=\"true\" NbPlace=\"2\" NumStart=\"1\" NbLimit=\"6\" default=\"false\"><name><![CDATA[caisseLimit]]></name></place>", s1);
     assertEquals("<place name=\"\" IsCaisse=\"true\" NbPlace=\"2\" NumStart=\"1\" NbLimit=\"6\" default=\"false\"><name><![CDATA[simplePlaceLimit]]></name></place>", simplePlaceLimit.toXml());
   }

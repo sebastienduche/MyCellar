@@ -598,6 +598,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
   /**
    * Retourne le dernier emplacement utilisable
    */
+  @Override
   public int getLastPartNumber() {
     if (isSimplePlace()) {
       return getStartSimplePlace() + getNbParts();
@@ -706,6 +707,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    *
    * @return Map: le numero d'emplacement commence toujours &agrave; 0
    */
+  @Override
   public Map<Integer, Integer> getNumberOfObjectsPerPlace() {
     Map<Integer, Integer> numberOfObjectsPerPlace = new HashMap<>(nbParts);
     if (isSimplePlace()) {

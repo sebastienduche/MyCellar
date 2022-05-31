@@ -3,7 +3,7 @@ package mycellar.placesmanagement;
 import mycellar.Program;
 import mycellar.core.MyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.placesmanagement.places.IAbstractPlace;
+import mycellar.placesmanagement.places.AbstractPlace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,9 +23,8 @@ import java.util.Optional;
  * @version 29.1
  * @since 31/05/22
  */
-public class Rangement implements Comparable<Rangement>, IAbstractPlace {
+public class Rangement extends AbstractPlace {
 
-  private String name;
   private int nbParts; //Nombre d'emplacements
   private int nbColumnsStock; //Nombre max de colonnes pour tous les emplacements
   private int stock_nblign; //Nombre max de lignes pour tous les emplacements
@@ -44,7 +43,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    * @param listPart LinkedList<Part>: liste des parties
    */
   public Rangement(String name, List<Part> listPart) {
-    this.name = name.strip();
+	  super(name);
     setPlace(listPart);
   }
 
@@ -58,7 +57,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    * @param limite_caisse    int: Capacit&eacute; pour la limite
    */
   private Rangement(String name, int nbPart, int startSimplePlace, boolean isLimit, int limite_caisse) {
-    this.name = name.strip();
+    super(name);
     nbParts = nbPart;
     this.startSimplePlace = startSimplePlace;
 
@@ -80,15 +79,6 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
 
   private static void Debug(String sText) {
     Program.Debug("Rangement: " + sText);
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name.strip();
   }
 
   @Override
@@ -721,19 +711,6 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
   }
 
   @Override
-  public String toString() {
-    return name;
-  }
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    return result;
-  }
-
-  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
@@ -744,15 +721,10 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     if (!Objects.equals(getClass(), obj.getClass())) {
       return false;
     }
-    Rangement other = (Rangement) obj;
-    if (name == null) {
-      return other.name == null;
-    } else return name.equals(other.name);
-  }
-
-  @Override
-  public int compareTo(Rangement o) {
-    return getName().compareTo(o.getName());
+    if (super.equals(this) != super.equals(obj)) {
+    	return false;
+    }
+    return true;
   }
 
   public boolean isSame(Rangement r) {

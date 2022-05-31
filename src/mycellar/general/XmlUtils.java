@@ -7,6 +7,8 @@ import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.ComplexPlaceBuilder;
 import mycellar.placesmanagement.places.IAbstractPlace;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
@@ -276,8 +278,9 @@ public class XmlUtils {
               Debug("WARNING: Place name '" + placeName + "' already used!");
             } else {
               names.add(placeName);
-              //rangementList.add(new Rangement(placeName, listPart));
-              throw new NullPointerException("Not Implemented with the new IBasicPlace");
+              ComplexPlace complexPlace = new ComplexPlaceBuilder(placeName)
+            		  .withPartList(listPart).build();
+              rangementList.add(complexPlace);
             }
           }
 

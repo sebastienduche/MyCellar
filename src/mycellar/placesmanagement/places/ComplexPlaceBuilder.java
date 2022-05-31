@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ComplexPlaceBuilder {
   private final String name;
-  private final List<Part> partList;
+  private List<Part> partList;
   private int nbParts;
 
   private boolean sameColumns;
@@ -39,6 +39,11 @@ public class ComplexPlaceBuilder {
     columnsByLines = new int[nbParts][1];
     return this;
   }
+  
+  public ComplexPlaceBuilder withPartList(List<Part> partList) {
+	  this.partList = partList;
+	  return this;
+  }
 
   public ComplexPlaceBuilder columnsNumberForPart(int part, int[] columns) throws Exception {
     if (sameColumns) {
@@ -56,19 +61,21 @@ public class ComplexPlaceBuilder {
   }
 
   public ComplexPlace build() {
-    for (int i = 0; i < nbParts; i++) {
-      Part part = new Part(i);
-      partList.add(part);
-      part.setRows(linesByPart[i]);
-      if (sameColumns) {
-        for (Row row : part.getRows()) {
-          row.setCol(columnsByPart[i]);
-        }
-      } else {
-        for (Row row : part.getRows()) {
-          row.setCol(columnsByLines[i][row.getNum() - 1]);
-        }
-      }
+	  if(partList.isEmpty()) {
+	    for (int i = 0; i < nbParts; i++) {
+	      Part part = new Part(i);
+	      partList.add(part);
+	      part.setRows(linesByPart[i]);
+	      if (sameColumns) {
+	        for (Row row : part.getRows()) {
+	          row.setCol(columnsByPart[i]);
+	        }
+	      } else {
+	        for (Row row : part.getRows()) {
+	          row.setCol(columnsByLines[i][row.getNum() - 1]);
+	        }
+	      }
+	    }
     }
     return new ComplexPlace(name, partList);
   }

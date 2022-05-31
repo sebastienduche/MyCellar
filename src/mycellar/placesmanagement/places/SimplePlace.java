@@ -7,6 +7,7 @@ import mycellar.placesmanagement.Place;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -16,8 +17,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 29/05/22
+ * @version 0.3
+ * @since 31/05/22
  */
 public final class SimplePlace extends AbstractPlace {
 
@@ -65,9 +66,8 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  public int compareTo(AbstractPlace o) {
-    // TODO Auto-generated method stub
-    return 0;
+  public boolean isSimplePlace() {
+    return true;
   }
 
   @Override
@@ -214,4 +214,17 @@ public final class SimplePlace extends AbstractPlace {
     return partNumberIncrement + partCount;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    SimplePlace that = (SimplePlace) o;
+    return partNumberIncrement == that.partNumberIncrement && limited == that.limited && maxItemCount == that.maxItemCount;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), partNumberIncrement, limited, maxItemCount);
+  }
 }

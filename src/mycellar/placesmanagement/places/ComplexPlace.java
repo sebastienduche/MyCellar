@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -20,11 +21,11 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 29/05/22
+ * @version 0.2
+ * @since 31/05/22
  */
 public class ComplexPlace extends AbstractPlace {
- 
+
   private int line;
   private int column;
   private MyCellarObject[][][] storage;
@@ -61,14 +62,8 @@ public class ComplexPlace extends AbstractPlace {
     storage = new MyCellarObject[partCount][line][column];
   }
 
-  public int getNbColumnsStock() {
+  public int getMaxColumnNumber() {
     return column;
-  }
-
-  @Override
-  public int compareTo(AbstractPlace o) {
-    // TODO Auto-generated method stub
-    return 0;
   }
 
   @Override
@@ -288,6 +283,7 @@ public class ComplexPlace extends AbstractPlace {
     return partCount;
   }
 
+  @Deprecated
   public boolean isSame(ComplexPlace r) {
     if (!getName().equals(r.getName())) {
       return false;
@@ -312,4 +308,17 @@ public class ComplexPlace extends AbstractPlace {
     return true;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    ComplexPlace that = (ComplexPlace) o;
+    return line == that.line && column == that.column && Objects.equals(partList, that.partList);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), line, column, partList);
+  }
 }

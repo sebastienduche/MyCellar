@@ -74,8 +74,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.3
- * @since 27/05/22
+ * @version 5.4
+ * @since 31/05/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -128,7 +128,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       }
       if (rangement.isSimplePlace()) {
         HashMap<Integer, Integer> mapEmplSize = new HashMap<>();
-        for (int i = 0; i < rangement.getNbParts(); i++) {
+        for (int i = 0; i < rangement.getPartCount(); i++) {
           int empl = i + rangement.getStartSimplePlace();
           mapEmplSize.put(empl, 0);
           int nb = rangement.getTotalCellUsed(i);
@@ -163,10 +163,10 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
               mapEmplSize.put(b.getNumLieu(), line);
             });
       } else {
-        for (int i = 0; i < rangement.getNbParts(); i++) {
+        for (int i = 0; i < rangement.getPartCount(); i++) {
           JPanel[][] place;
           places.add(place = new JPanel[rangement.getLineCountAt(i)][rangement.getMaxColumCountAt(i)]);
-          JPanel panelCellar = new JPanel(new GridLayout(rangement.getLineCountAt(i), rangement.getNbColumnsStock()));
+          JPanel panelCellar = new JPanel(new GridLayout(rangement.getLineCountAt(i), rangement.getMaxColumnNumber()));
 
           for (int k = 0; k < place.length; k++) {
             for (int j = 0; j < place[k].length; j++) {

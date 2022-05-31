@@ -69,8 +69,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.7
- * @since 27/05/22
+ * @version 4.8
+ * @since 31/05/22
  */
 public final class RangementUtils {
 
@@ -519,7 +519,7 @@ public final class RangementUtils {
         final Cell cellPlace = rowPlace.createCell(1);
         cellPlace.setCellStyle(cellStyle);
         cellPlace.setCellValue(place.getName());
-        for (int j = 1; j <= place.getNbParts(); j++) {
+        for (int j = 1; j <= place.getPartCount(); j++) {
           if (j == 1) {
             nLine++;
           } else {

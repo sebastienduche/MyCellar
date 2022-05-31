@@ -63,8 +63,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.8
- * @since 26/05/22
+ * @version 16.9
+ * @since 31/05/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -270,9 +270,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     m_caisse_chk.setSelected(rangement.isSimplePlace());
     m_caisse_chk.setEnabled(false);
     if (rangement.isSimplePlace()) {
-      checkLimite.setSelected(rangement.isSimplePlaceLimited());
-      if (rangement.isSimplePlaceLimited()) {
-        nb_limite.setValue(rangement.getNbColumnsStock());
+      checkLimite.setSelected(rangement.isLimited());
+      if (rangement.isLimited()) {
+        nb_limite.setValue(rangement.getMaxColumnNumber());
       }
       nb_start_caisse.setValue(rangement.getStartSimplePlace());
     } else {
@@ -281,7 +281,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       listPart = rangement.getPlace();
       model.setValues(listPart);
     }
-    nb_parties.setValue(rangement.getNbParts());
+    nb_parties.setValue(rangement.getPartCount());
   }
 
   private void enableAll(boolean enable) {
@@ -324,10 +324,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     limite = nb_limite.getIntValue();
     int nbPart = nb_parties.getIntValue();
 
-    if (rangement.getNbParts() > nbPart) {
+    if (rangement.getPartCount() > nbPart) {
       final Map<Integer, Integer> numberOfObjectsPerPlace = rangement.getNumberOfObjectsPerPlace();
 
-      for (int i = nbPart; i < rangement.getNbParts(); i++) {
+      for (int i = nbPart; i < rangement.getPartCount(); i++) {
         if (numberOfObjectsPerPlace.get(i) > 0) {
           Debug("ERROR: Unable to delete simple place part with objects!");
           Erreur.showSimpleErreur(MessageFormat.format(getError("CreerRangement.CantDeletePartCaisse"), (i + rangement.getStartSimplePlace())));
@@ -408,9 +408,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       ProgramPanels.updateAllPanelsForUpdatingPlaces();
       label_cree.setText(getLabel("CreateStorage.StorageModified"), true);
     } else {
-      if (rangement.getNbParts() > listPart.size()) {
+      if (rangement.getPartCount() > listPart.size()) {
         int nb = 0;
-        for (int i = listPart.size(); i < rangement.getNbParts(); i++) {
+        for (int i = listPart.size(); i < rangement.getPartCount(); i++) {
           nb += rangement.getTotalCellUsed(i);
         }
         if (nb > 0) {
@@ -427,7 +427,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         }
         Part part = listPart.get(i);
         int nbRow = -1;
-        if (i < rangement.getNbParts()) {
+        if (i < rangement.getPartCount()) {
           nbRow = rangement.getLineCountAt(i);
         }
         int newNbRow = part.getRowSize();
@@ -449,7 +449,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
               break;
             }
             int nbCol = -1;
-            if (i < rangement.getNbParts() && j < rangement.getLineCountAt(i)) {
+            if (i < rangement.getPartCount() && j < rangement.getLineCountAt(i)) {
               nbCol = rangement.getColumnCountAt(i, j);
             }
             int newNbCol = part.getRow(j).getCol();
@@ -512,9 +512,8 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
   private void updatePlace(String nom, int nbPart, Rangement rangement) {
     rangement.setName(nom);
-    rangement.setSimplePlaceLimited(islimited);
+    rangement.setLimited(islimited, limite);
     rangement.setStartSimplePlace(start_caisse);
-    rangement.setNbObjectInSimplePlace(limite);
     rangement.updateSimplePlace(nbPart);
     Program.setListCaveModified();
     Program.setModified();

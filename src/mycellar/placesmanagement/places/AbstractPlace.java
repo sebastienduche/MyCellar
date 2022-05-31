@@ -15,8 +15,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 27/05/22
+ * @version 0.2
+ * @since 31/05/22
  */
 public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstractPlace {
 
@@ -89,7 +89,7 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
 
   @Override
   public boolean isSimplePlace() {
-    return true;
+    return false;
   }
 
   @Override
@@ -100,6 +100,11 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
   @Override
   public int hashCode() {
     return Objects.hash(defaultPlace, name, partCount);
+  }
+
+  @Override
+  public int compareTo(AbstractPlace o) {
+    return getName().compareTo(o.getName());
   }
 
   @Override

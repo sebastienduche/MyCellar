@@ -1,6 +1,7 @@
 package mycellar.placesmanagement;
 
 import java.util.LinkedList;
+import java.util.Objects;
 
 public class Part {
   private final int num;
@@ -51,5 +52,18 @@ public class Part {
     }
     builder.append("]");
     return builder.toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Part part = (Part) o;
+    return num == part.num && Objects.equals(rows, part.rows);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(num, rows);
   }
 }

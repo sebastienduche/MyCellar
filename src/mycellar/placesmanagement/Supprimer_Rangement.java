@@ -61,8 +61,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.1
- * @since 25/05/22
+ * @version 10.2
+ * @since 31/05/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -130,7 +130,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       Rangement rangement = (Rangement) choix.getSelectedItem();
       // Nombre d'emplacements
       if (rangement != null) {
-        int num_emplacement = rangement.getNbParts();
+        int num_emplacement = rangement.getPartCount();
 
         if (!rangement.isSimplePlace()) {
           model.setCaisse(false);

@@ -19,6 +19,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RangementTest {
@@ -118,13 +119,13 @@ class RangementTest {
   }
 
   @Test
-  void getNom() {
+  void getName() {
     assertEquals("caisseNoLimit", caisseNoLimit.getName());
     assertEquals("simplePlaceNoLimit", simplePlaceNoLimit.getName());
   }
 
   @Test
-  void setNom() {
+  void setName() {
     rangement.setName(" toto ");
     assertEquals("toto", rangement.getName());
     simplePlaceNoLimit.setName(" toto ");
@@ -162,41 +163,41 @@ class RangementTest {
   }
 
   @Test
-  void getNbColonnesStock() {
-    assertEquals(3, armoire1x3x3.getNbColumnsStock());
-    assertEquals(3, armoire1x3x3Builder.getNbColumnsStock());
-    assertEquals(5, armoire2x2_3x22545.getNbColumnsStock());
-    assertEquals(5, armoire2x2_3x22545Builder.getNbColumnsStock());
-    assertEquals(3, complexPlace1x3x3.getNbColumnsStock());
-    assertEquals(3, complexPlace1x3x3Builder.getNbColumnsStock());
-    assertEquals(5, complexPlace2x2_3x22545.getNbColumnsStock());
-    assertEquals(5, complexPlace2x2_3x22545Builder.getNbColumnsStock());
+  void getMexColumnNumber() {
+    assertEquals(3, armoire1x3x3.getMaxColumnNumber());
+    assertEquals(3, armoire1x3x3Builder.getMaxColumnNumber());
+    assertEquals(5, armoire2x2_3x22545.getMaxColumnNumber());
+    assertEquals(5, armoire2x2_3x22545Builder.getMaxColumnNumber());
+    assertEquals(3, complexPlace1x3x3.getMaxColumnNumber());
+    assertEquals(3, complexPlace1x3x3Builder.getMaxColumnNumber());
+    assertEquals(5, complexPlace2x2_3x22545.getMaxColumnNumber());
+    assertEquals(5, complexPlace2x2_3x22545Builder.getMaxColumnNumber());
   }
 
   @Test
   void isLimited() {
-    assertTrue(caisseLimit.isSimplePlaceLimited());
-    assertFalse(caisseNoLimit.isSimplePlaceLimited());
+    assertTrue(caisseLimit.isLimited());
+    assertFalse(caisseNoLimit.isLimited());
     assertTrue(simplePlaceLimit.isLimited());
     assertFalse(simplePlaceNoLimit.isLimited());
   }
 
   @Test
   void setLimited() {
-    assertFalse(rangement.isSimplePlaceLimited());
-    rangement.setSimplePlaceLimited(true);
-    assertTrue(rangement.isSimplePlaceLimited());
+    assertFalse(rangement.isLimited());
+    rangement.setLimited(true, 1);
+    assertTrue(rangement.isLimited());
     assertFalse(simplePlace.isLimited());
     simplePlace.setLimited(true, 1);
     assertTrue(simplePlace.isLimited());
   }
 
   @Test
-  void setNbBottleInCaisse() {
-    caisseLimit.setNbObjectInSimplePlace(50);
-    assertEquals(50, caisseLimit.getNbColumnsStock());
-    caisseNoLimit.setNbObjectInSimplePlace(50);
-    assertEquals(-1, caisseNoLimit.getNbColumnsStock());
+  void setMaxItemCount() {
+    caisseLimit.setMaxItemCount(50);
+    assertEquals(50, caisseLimit.getMaxColumnNumber());
+    caisseNoLimit.setMaxItemCount(50);
+    assertEquals(-1, caisseNoLimit.getMaxColumnNumber());
     simplePlaceLimit.setMaxItemCount(50);
     assertEquals(50, simplePlaceLimit.getMaxItemCount());
     simplePlaceNoLimit.setMaxItemCount(50);
@@ -1087,13 +1088,21 @@ class RangementTest {
     assertTrue(complexPlace2x2_3x22545.isSame(complexPlace2x2_3x22545));
     assertTrue(complexPlace2x2_3x22545Builder.isSame(complexPlace2x2_3x22545Builder));
     assertTrue(complexPlace2x2_3x22545Builder.isSame(complexPlace2x2_3x22545));
+    assertEquals(complexPlace1x3x3, complexPlace1x3x3);
+    assertEquals(complexPlace1x3x3Builder, complexPlace1x3x3Builder);
+    assertEquals(complexPlace1x3x3Builder, complexPlace1x3x3);
+    assertEquals(complexPlace2x2_3x22545, complexPlace2x2_3x22545);
+    assertEquals(complexPlace2x2_3x22545Builder, complexPlace2x2_3x22545Builder);
+    assertEquals(complexPlace2x2_3x22545Builder, complexPlace2x2_3x22545);
     assertFalse(armoire1x3x3.isSame(armoire2x2_3x22545));
     Rangement r = new Rangement.SimplePlaceBuilder("r").build();
     Rangement r1 = new Rangement.SimplePlaceBuilder("r").build();
     assertTrue(r.isSame(r1));
+    assertEquals(r, r1);
     SimplePlace simplePlace = new SimplePlaceBuilder("r").build();
     SimplePlace simplePlace1 = new SimplePlaceBuilder("r").build();
     assertTrue(simplePlace.isSame(simplePlace1));
+    assertEquals(simplePlace, simplePlace1);
 
     LinkedList<Part> list = new LinkedList<>();
     Part partie = new Part(0);
@@ -1115,6 +1124,7 @@ class RangementTest {
     ComplexPlace complexPlace3 = new ComplexPlace("r", list);
     assertFalse(r2.isSame(r3));
     assertFalse(complexPlace2.isSame(complexPlace3));
+    assertNotEquals(complexPlace2, complexPlace3);
     list = new LinkedList<>();
     partie = new Part(0);
     list.add(partie);
@@ -1125,6 +1135,7 @@ class RangementTest {
     ComplexPlace complexPlace4 = new ComplexPlace("r", list);
     assertFalse(r2.isSame(r4));
     assertFalse(complexPlace2.isSame(complexPlace4));
+    assertNotEquals(complexPlace2, complexPlace4);
     list = new LinkedList<>();
     partie = new Part(0);
     list.add(partie);
@@ -1134,6 +1145,7 @@ class RangementTest {
     ComplexPlace complexPlace5 = new ComplexPlace("r", list);
     assertFalse(r2.isSame(r5));
     assertFalse(complexPlace2.isSame(complexPlace5));
+    assertNotEquals(complexPlace2, complexPlace5);
   }
 
   @Test

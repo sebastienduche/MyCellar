@@ -62,8 +62,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.4
- * @since 25/05/22
+ * @version 9.5
+ * @since 31/05/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -377,7 +377,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   }
 
   private void displayPlace(Rangement cave) {
-    final int nbEmplacements = cave.getNbParts();
+    final int nbEmplacements = cave.getPartCount();
     final int nbCaseUseAll = cave.getTotalCountCellUsed();
     final MyCellarLabel list_num_empl;
     if (nbEmplacements == 1) {
@@ -411,7 +411,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   }
 
   private void displayNbBottlePlace(Rangement cave) {
-    for (int j = 0; j < cave.getNbParts(); j++) {
+    for (int j = 0; j < cave.getPartCount(); j++) {
       panel.add(new MyCellarLabel("Stats.StorageNumber", LabelProperty.SINGLE, Integer.toString(j + 1)));
       panel.add(new MyCellarLabel("Main.SeveralItems", new LabelProperty(cave.getTotalCountCellUsed() > 1), Integer.toString(cave.getTotalCellUsed(j))), "span 2, align right, wrap");
     }

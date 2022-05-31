@@ -20,8 +20,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.0
- * @since 27/05/22
+ * @version 29.1
+ * @since 31/05/22
  */
 public class Rangement implements Comparable<Rangement>, IAbstractPlace {
 
@@ -100,12 +100,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     this.startSimplePlace = startSimplePlace;
   }
 
-  @Deprecated
-  public int getNbParts() {
-    return nbParts;
-  }
-
-  public void setNbParts(int nbParts) {
+  public void setPartCount(int nbParts) {
     this.nbParts = nbParts;
   }
 
@@ -114,16 +109,21 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    *
    * @return int
    */
-  public int getNbColumnsStock() {
+  public int getMaxColumnNumber() {
     return nbColumnsStock;
   }
 
-  public boolean isSimplePlaceLimited() {
+  public boolean isLimited() {
     return simplePlaceLimited;
   }
 
-  public void setSimplePlaceLimited(boolean simplePlaceLimited) {
+  public void setLimited(boolean simplePlaceLimited, int maxItemCount) {
     this.simplePlaceLimited = simplePlaceLimited;
+    if (simplePlaceLimited) {
+      nbColumnsStock = maxItemCount;
+    } else {
+      nbColumnsStock = -1;
+    }
   }
 
   /**
@@ -131,10 +131,8 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    *
    * @return boolean
    */
-  public void setNbObjectInSimplePlace(int value) {
-    if (simplePlaceLimited && value > 0) {
-      nbColumnsStock = value;
-    }
+  public void setMaxItemCount(int value) {
+    setLimited(simplePlaceLimited, value);
   }
 
   /**
@@ -216,7 +214,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
       return -1;
     }
     int max = 0;
-    for (int i = 0; i < getNbParts(); i++) {
+    for (int i = 0; i < nbParts; i++) {
       int val = getMaxColumCountAt(i);
       if (val > max) {
         max = val;
@@ -493,12 +491,12 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     StringBuilder sText = new StringBuilder();
     if (isSimplePlace()) {
       sText.append("<place name=\"\" IsCaisse=\"true\" NbPlace=\"")
-          .append(getNbParts())
+          .append(nbParts)
           .append("\" NumStart=\"")
           .append(getStartSimplePlace())
           .append("\"");
-      if (isSimplePlaceLimited()) {
-        sText.append(" NbLimit=\"").append(getNbColumnsStock()).append("\"");
+      if (isLimited()) {
+        sText.append(" NbLimit=\"").append(getMaxColumnNumber()).append("\"");
       } else {
         sText.append(" NbLimit=\"0\"");
       }
@@ -509,9 +507,9 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
       }
     } else {
       sText.append("<place name=\"\" IsCaisse=\"false\" NbPlace=\"")
-          .append(getNbParts())
+          .append(nbParts)
           .append("\">\n");
-      for (int i = 0; i < getNbParts(); i++) {
+      for (int i = 0; i < nbParts; i++) {
         sText.append("<internal-place NbLine=\"").append(getLineCountAt(i)).append("\">\n");
         for (int j = 0; j < getLineCountAt(i); j++) {
           sText.append("<line NbColumn=\"").append(getColumnCountAt(i, j)).append("\"/>\n");
@@ -541,11 +539,11 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    */
   @Override
   public boolean canAddObjectAt(int _nEmpl, int _nLine, int _nCol) {
-    if (_nEmpl < 0 || _nEmpl >= getNbParts()) {
+    if (_nEmpl < 0 || _nEmpl >= nbParts) {
       return false;
     }
     if (isSimplePlace()) {
-      return !(isSimplePlaceLimited() && !hasFreeSpaceInSimplePlace(_nEmpl));
+      return !(isLimited() && !hasFreeSpaceInSimplePlace(_nEmpl));
     }
 
     return _nLine >= 0 && _nLine < getLineCountAt(_nEmpl) && !(_nCol < 0 || _nCol >= getColumnCountAt(_nEmpl, _nLine));
@@ -563,12 +561,12 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    * @return
    */
   boolean isInexistingNumPlace(int numPlace) {
-    return numPlace < startSimplePlace || numPlace >= getNbParts() + startSimplePlace;
+    return numPlace < startSimplePlace || numPlace >= nbParts + startSimplePlace;
   }
 
   @Deprecated
   private boolean hasFreeSpaceInSimplePlace(int _nEmpl) {
-    return isSimplePlace() && (!isSimplePlaceLimited() || getTotalCellUsed(_nEmpl) != getNbColumnsStock());
+    return isSimplePlace() && (!isLimited() || getTotalCellUsed(_nEmpl) != getMaxColumnNumber());
   }
 
   /**
@@ -576,7 +574,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
    * bouteilles dans une caisse
    */
   public boolean hasFreeSpaceInSimplePlace(Place place) {
-    return isSimplePlace() && (!isSimplePlaceLimited() || getCountCellUsedInSimplePlace(place.getPlaceNum()) != getNbColumnsStock());
+    return isSimplePlace() && (!isLimited() || getCountCellUsedInSimplePlace(place.getPlaceNum()) != getMaxColumnNumber());
   }
 
   /**
@@ -587,7 +585,7 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
       return -1;
     }
 
-    for (int i = 0; i < getNbParts(); i++) {
+    for (int i = 0; i < nbParts; i++) {
       if (hasFreeSpaceInSimplePlace(i)) {
         return i + startSimplePlace;
       }
@@ -601,9 +599,9 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
   @Override
   public int getLastPartNumber() {
     if (isSimplePlace()) {
-      return getStartSimplePlace() + getNbParts();
+      return getStartSimplePlace() + nbParts;
     }
-    return getNbParts();
+    return nbParts;
   }
 
   /**
@@ -761,14 +759,14 @@ public class Rangement implements Comparable<Rangement>, IAbstractPlace {
     if (!getName().equals(r.getName())) {
       return false;
     }
-    if (getNbParts() != r.getNbParts()) {
+    if (nbParts != r.getPartCount()) {
       return false;
     }
     if (isSimplePlace() != r.isSimplePlace()) {
       return false;
     }
     if (!isSimplePlace()) {
-      for (int i = 0; i < getNbParts(); i++) {
+      for (int i = 0; i < nbParts; i++) {
         int lignes = getLineCountAt(i);
         if (lignes != r.getLineCountAt(i)) {
           return false;

@@ -46,8 +46,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.3
- * @since 27/05/22
+ * @version 31.4
+ * @since 31/05/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -242,7 +242,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
                 //Add several bottles in Caisse
                 Debug("Adding multiple objects in the same place: YES");
 
-                if (rangement.isSimplePlaceLimited() && (rangement.getTotalCellUsed(place) + countStillToAdd) > rangement.getNbColumnsStock()) {
+                if (rangement.isLimited() && (rangement.getTotalCellUsed(place) + countStillToAdd) > rangement.getMaxColumnNumber()) {
                   Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
                   end.setText("");
                 } else {
@@ -263,7 +263,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
                 panelWineAttribute.setStillNbItems(countStillToAdd - 1);
               }
             } else { //Un seul rangement simple
-              if (rangement.isSimplePlaceLimited() && (rangement.getTotalCellUsed(place) + countStillToAdd) > rangement.getNbColumnsStock()) {
+              if (rangement.isLimited() && (rangement.getTotalCellUsed(place) + countStillToAdd) > rangement.getMaxColumnNumber()) {
                 hasNoError = false;
                 Debug("ERROR: This caisse is full. Unable to add all bottles in the same place!");
                 Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
@@ -458,7 +458,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     } else {
       Debug("Modifying with changing place");
       int nbbottle = listBottleInModification.size();
-      if (rangement.isSimplePlaceLimited() && (rangement.getTotalCellUsed(place) + nbbottle) > rangement.getNbColumnsStock()) {
+      if (rangement.isLimited() && (rangement.getTotalCellUsed(place) + nbbottle) > rangement.getMaxColumnNumber()) {
         Debug("ERROR: Not enough place!");
         Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
         panelPlace.enableSimplePlace(true);

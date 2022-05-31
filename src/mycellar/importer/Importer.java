@@ -85,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.8
- * @since 25/05/22
+ * @version 15.9
+ * @since 31/05/22
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -584,7 +584,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             }
             if ((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
               bottle.setEmplacement(new_rangement.getName());
-              new_rangement.setNbParts(maxNumPlace + 1);
+              new_rangement.setPartCount(maxNumPlace + 1);
             }
             Program.getStorage().addWine(bottle);
             line = reader.readLine();
@@ -671,7 +671,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
             if ((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && rangement != null) {
               bottle.setEmplacement(rangement.getName());
-              rangement.setNbParts(maxNumPlace + 1);
+              rangement.setPartCount(maxNumPlace + 1);
             }
             i++;
           }

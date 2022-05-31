@@ -2,7 +2,7 @@ package mycellar.core;
 
 import mycellar.core.common.MyCellarFields;
 import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.places.IAbstractPlace;
+import mycellar.placesmanagement.places.AbstractPlace;
 
 import java.math.BigDecimal;
 
@@ -37,7 +37,7 @@ public interface IMyCellarObject {
 
   double getPriceDouble();
 
-  IAbstractPlace getRangement();
+  AbstractPlace getRangement();
 
   int getNumLieu();
 

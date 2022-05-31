@@ -192,9 +192,6 @@ public class ComplexPlace extends AbstractPlace {
     return (column < nbCol);
   }
 
-  private boolean isInexistingNumPlace(int numPlace) {
-    return numPlace < 0 || numPlace >= partCount;
-  }
 
   public int getMaxColumCountAt(int part) {
     return partList.get(part).getRows().stream().mapToInt(Row::getCol).max().getAsInt();

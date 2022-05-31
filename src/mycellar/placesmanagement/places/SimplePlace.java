@@ -119,6 +119,10 @@ public final class SimplePlace extends AbstractPlace {
   public boolean hasFreeSpace(int part) {
     return (!isLimited() || getCountCellUsed(part) < maxItemCount);
   }
+  
+  public boolean isInexistingNumPlace(int numPlace) {
+	    return numPlace < partNumberIncrement || numPlace >= partCount + partNumberIncrement;
+	  }
 
   @Override
   public Map<Integer, Integer> getNumberOfObjectsPerPlace() {

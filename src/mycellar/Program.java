@@ -570,7 +570,7 @@ public final class Program {
     return PLACES.size() == 1 || NEW_PLACES.size() == 1;
   }
 
-  public static IAbstractPlace getPlaceByName(final String name) {
+  public static AbstractPlace getPlaceByName(final String name) {
     final String placeName = name.strip();
     if (TEMP_PLACE.equals(placeName)) {
       return STOCK_PLACE;

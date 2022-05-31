@@ -679,7 +679,7 @@ public final class RangementUtils {
         Program.addError(new MyCellarError(INEXISTING_PLACE, bouteille, bouteille.getEmplacement()));
         continue;
       }
-      final Rangement rangement = (Rangement) bouteille.getRangement();
+      final AbstractPlace rangement = bouteille.getRangement();
       if (rangement.isSimplePlace()) {
         if (rangement.isInexistingNumPlace(bouteille.getNumLieu())) {
           // Numero de rangement inexistant
@@ -687,7 +687,7 @@ public final class RangementUtils {
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
           continue;
         }
-        if (rangement.hasFreeSpaceInSimplePlace(bouteille.getPlace())) {
+        if (((SimplePlace)rangement).hasFreeSpace(bouteille.getPlace())) {
           rangement.updateToStock(bouteille);
         } else {
           // Caisse pleine
@@ -702,7 +702,7 @@ public final class RangementUtils {
           continue;
         }
         Optional<MyCellarObject> bottle;
-        if (!rangement.isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
+        if (!((ComplexPlace)rangement).isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
           // Cellule inexistante
           Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));

@@ -23,6 +23,7 @@ import java.util.Optional;
  * @version 29.1
  * @since 31/05/22
  */
+@Deprecated
 public class Rangement extends AbstractPlace {
 
   private int nbParts; //Nombre d'emplacements
@@ -551,7 +552,7 @@ public class Rangement extends AbstractPlace {
    * @param numPlace Numero d'emplacement (startCaisse, n)
    * @return
    */
-  boolean isInexistingNumPlace(int numPlace) {
+  public boolean isInexistingNumPlace(int numPlace) {
     return numPlace < startSimplePlace || numPlace >= nbParts + startSimplePlace;
   }
 
@@ -762,6 +763,7 @@ public class Rangement extends AbstractPlace {
     this.defaultPlace = defaultPlace;
   }
 
+  @Deprecated
   public static class RangementBuilder {
     private final String name;
     private final List<Part> partList;
@@ -830,6 +832,7 @@ public class Rangement extends AbstractPlace {
     }
   }
 
+  @Deprecated
   public static class SimplePlaceBuilder {
     private final String name;
     private int nbParts;

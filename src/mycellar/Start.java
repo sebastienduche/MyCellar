@@ -533,7 +533,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       File nomFichier = boiteFichier.getSelectedFile();
       String fic = nomFichier.getAbsolutePath();
       fic = MyCellarControl.controlAndUpdateExtension(fic, Filtre.FILTRE_XML.toString());
-      XmlUtils.writeMyCellarXml(Program.getPlaces(), fic);
+      XmlUtils.writeMyCellarXml(Program.getAbstractPlaces(), fic);
     }
   }
 

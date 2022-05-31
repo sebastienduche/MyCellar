@@ -14,6 +14,8 @@ import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.XmlUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -43,7 +45,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
   private static final long serialVersionUID = -2601861017578176513L;
-  private final JModifyComboBox<Rangement> place = new JModifyComboBox<>();
+  private final JModifyComboBox<AbstractPlace> place = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> numPlace = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> line = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> column = new JModifyComboBox<>();
@@ -167,11 +169,11 @@ public class PanelPlace extends JPanel implements IPlace {
     place.removeAllItems();
     place.addItem(Program.EMPTY_PLACE);
     if (onlyComplexPlaces) {
-      Program.getPlaces().stream()
-          .filter(Predicate.not(Rangement::isSimplePlace))
+      Program.getAbstractPlaces().stream()
+          .filter(Predicate.not(AbstractPlace::isSimplePlace))
           .forEach(place::addItem);
     } else {
-      Program.getPlaces().forEach(place::addItem);
+      Program.getAbstractPlaces().forEach(place::addItem);
     }
   }
 
@@ -454,9 +456,9 @@ public class PanelPlace extends JPanel implements IPlace {
         int placeSelectedIndex = place.getSelectedIndex();
 
         if (numPlaceSelectedIndex != 0) {
-          Rangement rangement = place.getItemAt(placeSelectedIndex);
+          AbstractPlace rangement = place.getItemAt(placeSelectedIndex);
           if (!rangement.isSimplePlace()) {
-            int nb_ligne = rangement.getLineCountAt(numPlaceSelectedIndex - 1);
+            int nb_ligne = ((ComplexPlace)rangement).getLineCountAt(numPlaceSelectedIndex - 1);
             line.removeAllItems();
             column.removeAllItems();
             line.addItem(NONE);
@@ -499,7 +501,7 @@ public class PanelPlace extends JPanel implements IPlace {
         column.setEnabled(num_select != 0);
         int nb_col = 0;
         if (num_select > 0) {
-          Rangement cave = place.getItemAt(lieu_select);
+          ComplexPlace cave = (ComplexPlace) place.getItemAt(lieu_select);
           nb_col = cave.getColumnCountAt(emplacement - 1, num_select - 1);
         }
         column.removeAllItems();
@@ -537,7 +539,7 @@ public class PanelPlace extends JPanel implements IPlace {
         }
 
         if (checkExist) {
-          Rangement rangement = place.getItemAt(nPlace);
+          ComplexPlace rangement = (ComplexPlace) place.getItemAt(nPlace);
           rangement.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
               .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(getLabel("PanelPlace.CellUsedBy"), MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom()))));
         }

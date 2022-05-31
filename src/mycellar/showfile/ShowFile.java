@@ -43,6 +43,7 @@ import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.IAbstractPlace;
 import net.miginfocom.swing.MigLayout;
 
@@ -108,7 +109,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private final MyCellarButton reloadButton = new MyCellarButton("ShowFile.ReloadErrors", new ReloadErrorsAction());
   private final MyCellarButton removeFromWorksheetButton = new MyCellarButton("ShowFile.RemoveFromWorksheet", new RemoveFromWorksheetAction());
   private final MyCellarButton clearWorksheetButton = new MyCellarButton("ShowFile.ClearWorksheet", new ClearWorksheetAction());
-  private final MyCellarComboBox<Rangement> placeCbx = new MyCellarComboBox<>();
+  private final MyCellarComboBox<AbstractPlace> placeCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottleColor> colorCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<MusicSupport> musicSupportCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottlesStatus> statusCbx = new MyCellarComboBox<>();
@@ -1055,7 +1056,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private void initPlacesCombo() {
     placeCbx.removeAllItems();
     placeCbx.addItem(Program.EMPTY_PLACE);
-    Program.getPlaces().forEach(placeCbx::addItem);
+    Program.getAbstractPlaces().forEach(placeCbx::addItem);
   }
 
   private void updateModel() {

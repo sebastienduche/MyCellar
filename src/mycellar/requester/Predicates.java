@@ -13,6 +13,7 @@ import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.requester.ui.ValueSearch;
 import net.miginfocom.swing.MigLayout;
 
@@ -355,8 +356,8 @@ public class Predicates {
     public ValueSearch askforValue() {
       JPanel panel = new JPanel();
       panel.setLayout(new MigLayout("", "grow", "[]"));
-      JComboBox<Rangement> liste = new JComboBox<>();
-      Program.getPlaces().forEach(liste::addItem);
+      JComboBox<AbstractPlace> liste = new JComboBox<>();
+      Program.getAbstractPlaces().forEach(liste::addItem);
       panel.add(new JLabel(getLabel("Predicates.SelectPlace")), "wrap");
       panel.add(liste);
       JOptionPane.showMessageDialog(null, panel,

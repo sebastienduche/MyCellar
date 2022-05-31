@@ -25,6 +25,7 @@ import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -71,7 +72,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   static final long serialVersionUID = 280706;
   private static final char CREER = getLabel("CREER").charAt(0);
   private static final char PREVIEW = getLabel("PREVIEW").charAt(0);
-  private final MyCellarComboBox<Rangement> comboPlace = new MyCellarComboBox<>();
+  private final MyCellarComboBox<AbstractPlace> comboPlace = new MyCellarComboBox<>();
   private final JTextField nom_obj = new JTextField();
   private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton("CreateStorage.AllLinesSame", true);
   private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton("CreateStorage.AllLinesNotSame", false);
@@ -228,7 +229,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private void initComboPlaces() {
     comboPlace.removeAllItems();
     comboPlace.addItem(Program.EMPTY_PLACE);
-    Program.getPlaces().forEach(comboPlace::addItem);
+    Program.getAbstractPlaces().forEach(comboPlace::addItem);
   }
 
   private void updatePartList() {

@@ -9,6 +9,7 @@ import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.AbstractPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -112,7 +113,7 @@ final class PanelStats extends JPanel {
     SwingUtilities.invokeLater(() -> {
       model.clearRows();
       int nbBottles = 0;
-      for (Rangement rangement : Program.getPlaces()) {
+      for (AbstractPlace rangement : Program.getAbstractPlaces()) {
         nbBottles += rangement.getTotalCountCellUsed();
         model.addRow(rangement, rangement.getTotalCountCellUsed());
       }
@@ -144,7 +145,7 @@ final class PanelStats extends JPanel {
 
   private static class PanelStatsModel extends DefaultTableModel {
     private static final long serialVersionUID = -3683870571523007857L;
-    private final LinkedList<Rangement> names;
+    private final LinkedList<AbstractPlace> names;
     private final LinkedList<String> values;
     private final boolean isInit;
 
@@ -154,7 +155,7 @@ final class PanelStats extends JPanel {
       isInit = true;
     }
 
-    private void addRow(Rangement name, int value) {
+    private void addRow(AbstractPlace name, int value) {
       names.add(name);
       values.add(Integer.toString(value));
     }
@@ -185,7 +186,7 @@ final class PanelStats extends JPanel {
     @Override
     public void setValueAt(Object arg0, int row, int column) {
       if (column == 2) {
-        Rangement rangement = names.get(row);
+    	  AbstractPlace rangement = names.get(row);
         XmlUtils.writePlacesToHTML("", List.of(rangement), false);
         Program.open(Program.getPreviewHTMLFileName(), false);
       }

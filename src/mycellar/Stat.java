@@ -14,6 +14,8 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.jfree.chart.ChartFactory;
@@ -101,7 +103,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     options.addActionListener(this::options_actionPerformed);
 
     listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllStorages")));
-    Program.getPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
+    Program.getAbstractPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
 
     listOptions.addItem(new MyCellarEnum(StatType.PLACE.getIndex(), getLabel("Stats.Storages")));
     listOptions.addItem(new MyCellarEnum(StatType.YEAR.getIndex(), getLabel("Stats.Years")));
@@ -367,8 +369,10 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     PlaceComboItem placeComboItem = (PlaceComboItem) listPlaces.getSelectedItem();
     int nbItems = 0;
     if (placeComboItem != null && placeComboItem.getRangement() != null) {
-      Rangement rangement = placeComboItem.getRangement();
-      panelChart.setPlaceChart(rangement);
+      AbstractPlace rangement = placeComboItem.getRangement();
+      if(!rangement.isSimplePlace()) {
+         panelChart.setPlaceChart((ComplexPlace)rangement);
+      }
       nbItems = rangement.getTotalCountCellUsed();
       panel.add(new MyCellarSimpleLabel(rangement.getName()));
       displayPlace(rangement);
@@ -376,7 +380,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     end.setText(MessageFormat.format(getLabel("Stats.Items", LabelProperty.PLURAL), nbItems));
   }
 
-  private void displayPlace(Rangement cave) {
+  private void displayPlace(AbstractPlace cave) {
     final int nbEmplacements = cave.getPartCount();
     final int nbCaseUseAll = cave.getTotalCountCellUsed();
     final MyCellarLabel list_num_empl;
@@ -401,7 +405,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     panel.repaint();
 
     int nbBottle = 0;
-    for (Rangement cave : Program.getPlaces()) {
+    for (AbstractPlace cave : Program.getAbstractPlaces()) {
       panel.add(new MyCellarSimpleLabel(cave.getName()));
       nbBottle += cave.getTotalCountCellUsed();
       displayPlace(cave);
@@ -410,10 +414,10 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     end.setText(MessageFormat.format(getLabel("Stats.TotalItems", new LabelProperty(nbBottle > 1)), nbBottle));
   }
 
-  private void displayNbBottlePlace(Rangement cave) {
+  private void displayNbBottlePlace(AbstractPlace cave) {
     for (int j = 0; j < cave.getPartCount(); j++) {
       panel.add(new MyCellarLabel("Stats.StorageNumber", LabelProperty.SINGLE, Integer.toString(j + 1)));
-      panel.add(new MyCellarLabel("Main.SeveralItems", new LabelProperty(cave.getTotalCountCellUsed() > 1), Integer.toString(cave.getTotalCellUsed(j))), "span 2, align right, wrap");
+      panel.add(new MyCellarLabel("Main.SeveralItems", new LabelProperty(cave.getTotalCountCellUsed() > 1), Integer.toString(cave.getCountCellUsed(j))), "span 2, align right, wrap");
     }
   }
 
@@ -476,7 +480,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       listPlaces.setEnabled(true);
       comboLabel.setText(getLabel("Main.Storage", LabelProperty.SINGLE.withDoubleQuote()));
       listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllStorages")));
-      Program.getPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
+      Program.getAbstractPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
     } else if (selectedStatType.getValue() == StatType.HISTORY.getIndex()) {
       listPlaces.setEnabled(true);
       comboLabel.setText("");
@@ -523,7 +527,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
     private void setPlacesChart() {
       DefaultPieDataset dataset = new DefaultPieDataset();
-      Program.getPlaces().stream()
+      Program.getAbstractPlaces().stream()
           .filter(Objects::nonNull)
           .forEach(rangement -> dataset.setValue(rangement.getName(), rangement.getTotalCountCellUsed()));
 
@@ -538,7 +542,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       add(chartPanel, "grow");
     }
 
-    private void setPlaceChart(Rangement rangement) {
+    private void setPlaceChart(ComplexPlace rangement) {
       removeAll();
       if (rangement.isSimplePlace()) {
         return;
@@ -639,9 +643,9 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   static class PlaceComboItem {
 
     private final String label;
-    private final Rangement rangement;
+    private final AbstractPlace rangement;
 
-    private PlaceComboItem(Rangement rangement) {
+    private PlaceComboItem(AbstractPlace rangement) {
       this.rangement = rangement;
       label = rangement.getName();
     }
@@ -656,7 +660,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       return label;
     }
 
-    public Rangement getRangement() {
+    public AbstractPlace getRangement() {
       return rangement;
     }
   }

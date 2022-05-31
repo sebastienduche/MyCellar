@@ -61,6 +61,19 @@ public class ComplexPlace extends AbstractPlace {
 
     storage = new MyCellarObject[partCount][line][column];
   }
+  
+  public LinkedList<Part> getPlace() {
+	    LinkedList<Part> listPart = new LinkedList<>();
+	    for (Part p : partList) {
+	      Part part = new Part(p.getNum());
+	      listPart.add(part);
+	      for (int j = 0; j < p.getRowSize(); j++) {
+	        part.setRows(p.getRowSize());
+	        part.getRow(j).setCol(p.getRow(j).getCol());
+	      }
+	    }
+	    return listPart;
+	  }
 
   public int getMaxColumnNumber() {
     return column;

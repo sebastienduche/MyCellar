@@ -42,7 +42,7 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
     return partCount;
   }
 
-  protected void setPartCount(int partCount) {
+  public void setPartCount(int partCount) {
     this.partCount = partCount;
   }
 

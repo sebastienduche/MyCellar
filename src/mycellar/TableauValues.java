@@ -2,6 +2,8 @@ package mycellar;
 
 import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
 
 import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
@@ -25,7 +27,7 @@ class TableauValues extends AbstractTableModel {
   static final long serialVersionUID = 220605;
   private final String[] columnNames = {"", getLabel("Main.Storage"), getLabel("Storage.NumberLines"), getLabel("Storage.NumberOf", LabelProperty.PLURAL)};
 
-  private final List<Rangement> list = new LinkedList<>();
+  private final List<AbstractPlace> list = new LinkedList<>();
   private final List<Boolean> listBoolean = new LinkedList<>();
 
   @Override
@@ -40,7 +42,7 @@ class TableauValues extends AbstractTableModel {
 
   @Override
   public Object getValueAt(int row, int column) {
-    Rangement rangement = list.get(row);
+	AbstractPlace rangement = list.get(row);
     switch (column) {
       case 0:
         return listBoolean.get(row);
@@ -52,7 +54,7 @@ class TableauValues extends AbstractTableModel {
         }
         int nombre_ligne = 0;
         for (int k = 0; k < rangement.getPartCount(); k++) {
-          nombre_ligne += rangement.getLineCountAt(k);
+          nombre_ligne += ((ComplexPlace)rangement).getLineCountAt(k);
         }
         if (nombre_ligne <= 1) {
           return MessageFormat.format(getLabel("Storage.NbLine"), nombre_ligne);
@@ -64,7 +66,7 @@ class TableauValues extends AbstractTableModel {
           nombre_vin = rangement.getTotalCountCellUsed();
         } else {
           for (int k = 0; k < rangement.getPartCount(); k++) {
-            nombre_vin += rangement.getTotalCellUsed(k);
+            nombre_vin += ((ComplexPlace)rangement).getTotalCellUsed(k);
           }
         }
         return MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(nombre_vin > 1)), nombre_vin);
@@ -91,7 +93,7 @@ class TableauValues extends AbstractTableModel {
     }
   }
 
-  void addRangement(Rangement r) {
+  void addRangement(AbstractPlace r) {
     list.add(r);
     listBoolean.add(Boolean.FALSE);
   }
@@ -101,7 +103,7 @@ class TableauValues extends AbstractTableModel {
     listBoolean.clear();
   }
 
-  Rangement getRangementAt(int index) {
+  AbstractPlace getRangementAt(int index) {
     return list.get(index);
   }
 }

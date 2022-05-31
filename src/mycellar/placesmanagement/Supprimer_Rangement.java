@@ -20,6 +20,7 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JOptionPane;
@@ -41,7 +42,7 @@ import java.util.stream.Collectors;
 
 import static mycellar.Program.EMPTY_PLACE;
 import static mycellar.Program.getAide;
-import static mycellar.Program.getPlaces;
+import static mycellar.Program.getAbstractPlaces;
 import static mycellar.Program.getPreviewXMLFileName;
 import static mycellar.Program.getStorage;
 import static mycellar.Program.open;
@@ -68,7 +69,7 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
   private static final long serialVersionUID = 6959053537854600207L;
-  private final MyCellarComboBox<Rangement> choix = new MyCellarComboBox<>();
+  private final MyCellarComboBox<AbstractPlace> choix = new MyCellarComboBox<>();
   private final MyCellarSimpleLabel label_final = new MyCellarSimpleLabel();
   private final MyCellarButton preview = new MyCellarButton("Storage.Preview");
   private final char supprimerChar = getLabel("SUPPR").charAt(0);
@@ -111,7 +112,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     choix.addItemListener(this::choix_itemStateChanged);
 
     choix.addItem(EMPTY_PLACE);
-    getPlaces().forEach(choix::addItem);
+    getAbstractPlaces().forEach(choix::addItem);
     setVisible(true);
   }
 
@@ -287,7 +288,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         protected void done() {
           choix.removeAllItems();
           choix.addItem(EMPTY_PLACE);
-          getPlaces().forEach(choix::addItem);
+          getAbstractPlaces().forEach(choix::addItem);
         }
       }.execute();
     }

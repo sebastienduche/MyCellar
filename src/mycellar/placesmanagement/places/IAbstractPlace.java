@@ -58,4 +58,6 @@ public interface IAbstractPlace {
 	public Map<Integer, Integer> getNumberOfObjectsPerPlace();
 
 	public int getLastPartNumber();
+	
+	public int getTotalCountCellUsed();
 }

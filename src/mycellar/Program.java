@@ -313,13 +313,6 @@ public final class Program {
       putCaveConfigString(PROGRAM_TYPE, ProgramType.WINE.name());
     }
 
-    // TODO Remove when veraion 75
-    if (currentVersion < 71) {
-      getPlaces().stream().filter(rangement ->
-              isDefaultStorageName(rangement, rangement.getName()))
-          .findFirst()
-          .ifPresent(rangement -> rangement.setDefaultPlace(true));
-    }
     Debug("Program: clean and upgrade... Done");
   }
 
@@ -414,14 +407,14 @@ public final class Program {
   }
 
   static boolean loadData() {
-    PLACES.clear();
+    /*PLACES.clear();
     boolean load = XmlUtils.readMyCellarXml("", PLACES);
     if (!load || PLACES.isEmpty()) {
       PLACES.clear();
       PLACES.add(DEFAULT_PLACE);
-    }
+    }*/
     NEW_PLACES.clear();
-    load = XmlUtils.readMyCellarXml1("", NEW_PLACES);
+    boolean load = XmlUtils.readMyCellarXml1("", NEW_PLACES);
     if (!load || NEW_PLACES.isEmpty()) {
       NEW_PLACES.clear();
       NEW_PLACES.add(NEW_DEFAULT_PLACE);
@@ -443,22 +436,12 @@ public final class Program {
     return getStorage().getAllList().size();
   }
 
-  @Deprecated
   public static int getSimplePlaceCount() {
-    return (int) getPlaces().stream().filter(Rangement::isSimplePlace).count();
+    return (int) getAbstractPlaces().stream().filter(AbstractPlace::isSimplePlace).count();
   }
 
-  public static int getSimplePlaceCount1() {
-    return (int) getBasicPlaces().stream().filter(AbstractPlace::isSimplePlace).count();
-  }
-
-  @Deprecated
-  public static List<Rangement> getSimplePlaces() {
-    return getPlaces().stream().filter(Rangement::isSimplePlace).collect(Collectors.toList());
-  }
-
-  public static List<AbstractPlace> getSimplePlaces1() {
-    return getBasicPlaces().stream().filter(AbstractPlace::isSimplePlace).collect(Collectors.toList());
+  public static List<AbstractPlace> getSimplePlaces() {
+    return getAbstractPlaces().stream().filter(AbstractPlace::isSimplePlace).collect(Collectors.toList());
   }
 
   static int getTotalObjectForYear(int year) {
@@ -518,7 +501,6 @@ public final class Program {
 
     if (isListCaveModified()) {
       XmlUtils.writeMyCellarXml(NEW_PLACES, "");
-      XmlUtils.writeMyCellarXml(PLACES, "");
     }
 
     getStorage().saveHistory();
@@ -570,21 +552,16 @@ public final class Program {
 
   }
 
-  @Deprecated
+  /*@Deprecated
   public static List<Rangement> getPlaces() {
     return Collections.unmodifiableList(PLACES);
-  }
+  }*/
 
-  public static List<AbstractPlace> getBasicPlaces() {
+  public static List<AbstractPlace> getAbstractPlaces() {
     return Collections.unmodifiableList(NEW_PLACES);
   }
 
-  @Deprecated
-  public static Rangement getPlaceAt(int index) {
-    return PLACES.get(index);
-  }
-
-  public static AbstractPlace getBasicPlaceAt(int index) {
+  public static AbstractPlace getAbstractPlaceAt(int index) {
     return NEW_PLACES.get(index);
   }
 
@@ -626,7 +603,7 @@ public final class Program {
         (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
 
-  @Deprecated
+ /* @Deprecated
   public static void addPlace(Rangement rangement) {
     if (rangement == null) {
       return;
@@ -635,9 +612,9 @@ public final class Program {
     setListCaveModified();
     setModified();
     Collections.sort(PLACES);
-  }
+  }*/
 
-  public static void addBasicPlace(AbstractPlace rangement) {
+  public static void addPlace(AbstractPlace rangement) {
     if (rangement == null) {
       return;
     }
@@ -647,7 +624,7 @@ public final class Program {
     Collections.sort(NEW_PLACES);
   }
 
-  @Deprecated
+  /*@Deprecated
   public static void removePlace(Rangement rangement) {
     if (rangement == null) {
       return;
@@ -655,9 +632,9 @@ public final class Program {
     PLACES.remove(rangement);
     setModified();
     setListCaveModified();
-  }
+  }*/
 
-  public static void removeBasicPlace(AbstractPlace rangement) {
+  public static void removePlace(AbstractPlace rangement) {
     if (rangement == null) {
       return;
     }
@@ -670,12 +647,12 @@ public final class Program {
     return Math.max(PLACES.size(), NEW_PLACES.size());
   }
 
-  @Deprecated
+  /*@Deprecated
   public static boolean hasComplexPlace() {
     return PLACES.stream().anyMatch(Predicate.not(Rangement::isSimplePlace));
-  }
+  }*/
 
-  public static boolean hasComplexPlace1() {
+  public static boolean hasComplexPlace() {
     return NEW_PLACES.stream().anyMatch(Predicate.not(AbstractPlace::isSimplePlace));
   }
 
@@ -839,7 +816,6 @@ public final class Program {
 
       if (isListCaveModified()) {
         XmlUtils.writeMyCellarXml(NEW_PLACES, "");
-        XmlUtils.writeMyCellarXml(PLACES, "");
       }
 
       if (!PLACES.isEmpty() || !NEW_PLACES.isEmpty()) {
@@ -1395,8 +1371,7 @@ public final class Program {
 
   public static void addDefaultPlaceIfNeeded() {
     if (getPlaceLength() == 0) {
-      addPlace(DEFAULT_PLACE);
-      addBasicPlace(NEW_DEFAULT_PLACE);
+      addPlace(NEW_DEFAULT_PLACE);
     }
   }
 

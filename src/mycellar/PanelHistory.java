@@ -65,7 +65,7 @@ public final class PanelHistory extends JPanel {
   public void refresh() {
     SwingUtilities.invokeLater(() -> {
       model.removeAll();
-      if (!Program.getPlaces().isEmpty()) {
+      if (!Program.getAbstractPlaces().isEmpty()) {
         model.setHistory(Program.getHistory());
       }
     });

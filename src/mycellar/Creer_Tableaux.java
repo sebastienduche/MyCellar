@@ -19,6 +19,7 @@ import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.xls.XLSTabOptions;
 import net.miginfocom.swing.MigLayout;
 
@@ -175,7 +176,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
 
   private void initModelPlaces() {
     tableauValues.removeAll();
-    Program.getPlaces().forEach(tableauValues::addRangement);
+    Program.getAbstractPlaces().forEach(tableauValues::addRangement);
   }
 
   private void browse_actionPerformed(ActionEvent e) {
@@ -242,7 +243,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     }
     int max_row = tableauValues.getRowCount();
     int row = 0;
-    LinkedList<Rangement> rangements = new LinkedList<>();
+    LinkedList<AbstractPlace> rangements = new LinkedList<>();
     do {
       if (tableauValues.getValueAt(row, TableauValues.ETAT).equals(Boolean.TRUE)) {
         rangements.add(tableauValues.getRangementAt(row));
@@ -264,7 +265,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
       XmlUtils.writePlacesToHTML(filename, rangements, false);
     } else if (type_XLS.isSelected()) {
       Debug("Exporting in XLS in progress...");
-      caisseCount = rangements.stream().filter(Rangement::isSimplePlace).count();
+      caisseCount = rangements.stream().filter(AbstractPlace::isSimplePlace).count();
       RangementUtils.write_XLSTab(filename, rangements);
     }
 

@@ -32,6 +32,7 @@ import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
 import net.miginfocom.swing.MigLayout;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -444,7 +445,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         return;
       }
 
-      Rangement new_rangement = null;
+      AbstractPlace new_rangement = null;
       if (mapFieldCount.get(MyCellarFields.PLACE) == null) {
         resetLabelProgress();
         Debug("ERROR: No place defined, a place will be create");
@@ -459,9 +460,9 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         String[] key_properties = new String[nb_caisse];
         String[] type_objet = new String[nb_caisse];
         int i;
-        List<Rangement> simplePlaces = Program.getSimplePlaces();
+        List<AbstractPlace> simplePlaces = Program.getSimplePlaces();
         for (i = 0; i < simplePlaces.size(); i++) {
-          Rangement cave = simplePlaces.get(i);
+        	AbstractPlace cave = simplePlaces.get(i);
           titre_properties[i] = KEY_TYPE + cave.getName();
           key_properties[i] = MyCellarSettings.RANGEMENT_DEFAULT;
           default_value[i] = "false";
@@ -525,7 +526,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           new_rangement = new Rangement.SimplePlaceBuilder(nom1).build();
           Program.addPlace(new_rangement);
         } else {
-          new_rangement = Program.getPlaceAt(num_r);
+          new_rangement = Program.getAbstractPlaceAt(num_r);
         }
       }
       if (type_txt.isSelected()) {
@@ -632,7 +633,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     Debug("Import OK.");
   }
 
-  private boolean importExcelFile(final String nom, final Rangement rangement) {
+  private boolean importExcelFile(final String nom, final AbstractPlace rangement) {
     Debug("Importing XLS file...");
 
     setLabelInProgress();

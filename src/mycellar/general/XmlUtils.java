@@ -332,7 +332,7 @@ public class XmlUtils {
   /**
    * Writes content of places in HTML file
    */
-  public static void writePlacesToHTML(String filename, List<Rangement> rangements, boolean preview) {
+  public static void writePlacesToHTML(String filename, List<AbstractPlace> rangements, boolean preview) {
     Debug("writePlacesToHTML: Writing file");
     writePlacesToXML(Program.getPreviewXMLFileName(), rangements, preview);
     TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -359,7 +359,7 @@ public class XmlUtils {
   /**
    * Writes content of places in XML file
    */
-  public static void writePlacesToXML(String filename, List<Rangement> places, boolean preview) {
+  public static void writePlacesToXML(String filename, List<AbstractPlace> places, boolean preview) {
     Debug("writePlacesToXML: Writing file");
     if (isNullOrEmpty(filename)) {
       filename = Program.getPreviewXMLFileName();
@@ -379,7 +379,7 @@ public class XmlUtils {
           ("xml-stylesheet", "type=\"text/xsl\" href=\"" + dir + "/resources/Rangement.xsl\"");
       doc.insertBefore(pi, rootDoc);
 
-      for (Rangement rangement : places) {
+      for (AbstractPlace rangement : places) {
         Element r = doc.createElement(RANGEMENT);
         root.appendChild(r);
         Element name = doc.createElement(NAME);
@@ -396,7 +396,7 @@ public class XmlUtils {
             partie.appendChild(name);
             Element caisse = doc.createElement(CAISSE);
             partie.appendChild(caisse);
-            for (int j = 0; j < rangement.getTotalCellUsed(i); j++) {
+            for (int j = 0; j < rangement.getCountCellUsed(i); j++) {
               Element vin = doc.createElement(VIN);
               caisse.appendChild(vin);
               Element vin_name = doc.createElement(VIN_1);
@@ -404,7 +404,7 @@ public class XmlUtils {
               if (preview) {
                 vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
               } else {
-                IMyCellarObject b = rangement.getObjectSimplePlaceAt(i, j);
+                IMyCellarObject b = ((SimplePlace)rangement).getObjectAt(i, j);
                 if (b != null)
                   vin_name.setTextContent(b.getNom());
                 else
@@ -413,16 +413,17 @@ public class XmlUtils {
             }
           }
         } else {
-          r.setAttribute(COLUMNS, Integer.toString(rangement.getMaxColumCount()));
+        	ComplexPlace complexPlace = (ComplexPlace) rangement;
+          r.setAttribute(COLUMNS, Integer.toString(complexPlace.getMaxColumCount()));
           for (int i = 0; i < rangement.getPartCount(); i++) {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);
             name = doc.createElement(NOM_PARTIE);
             name.setTextContent(getLabel("Storage.Shelve") + SPACE + (i + rangement.getStartSimplePlace() + 1));
             partie.appendChild(name);
-            int lig = rangement.getLineCountAt(i);
+            int lig = complexPlace.getLineCountAt(i);
             for (int j = 0; j < lig; j++) {
-              int col = rangement.getColumnCountAt(i, j);
+              int col = complexPlace.getColumnCountAt(i, j);
               Element ligne = doc.createElement(LIGNE);
               partie.appendChild(ligne);
               for (int k = 0; k < col; k++) {

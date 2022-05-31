@@ -22,6 +22,8 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.IAbstractPlace;
 import net.miginfocom.swing.MigLayout;
 
@@ -85,12 +87,12 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   private final MouseListener handler = new Handler();
   private final List<JPanel[][]> places = new LinkedList<>();
   private final JPanel placePanel = new JPanel();
-  private final LinkedList<Rangement> complexPlaces = new LinkedList<>();
+  private final LinkedList<AbstractPlace> complexPlaces = new LinkedList<>();
   private final MyCellarButton moveAllButton = new MyCellarButton("ManageStock.MoveAll", LabelProperty.PLURAL, new MoveAction());
   private final boolean cellChooser;
   private LabelTransferHandler labelTransferHandler;
-  private MyCellarComboBox<Rangement> comboRangement;
-  private Rangement rangement;
+  private MyCellarComboBox<AbstractPlace> comboRangement;
+  private AbstractPlace rangement;
   private RangementCell stock;
   private IPlace iPlace;
 
@@ -108,11 +110,11 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     init();
   }
 
-  Rangement getRangement() {
+  AbstractPlace getRangement() {
     return rangement;
   }
 
-  void setRangement(final Rangement rangement) {
+  void setRangement(final AbstractPlace rangement) {
     if (rangement == null) {
       return;
     }
@@ -131,7 +133,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         for (int i = 0; i < rangement.getPartCount(); i++) {
           int empl = i + rangement.getStartSimplePlace();
           mapEmplSize.put(empl, 0);
-          int nb = rangement.getTotalCellUsed(i);
+          int nb = rangement.getCountCellUsed(i);
           if (nb == 0) {
             nb = 1;
           }
@@ -163,15 +165,16 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
               mapEmplSize.put(b.getNumLieu(), line);
             });
       } else {
+    	  ComplexPlace complexPlace = (ComplexPlace) rangement;
         for (int i = 0; i < rangement.getPartCount(); i++) {
           JPanel[][] place;
-          places.add(place = new JPanel[rangement.getLineCountAt(i)][rangement.getMaxColumCountAt(i)]);
-          JPanel panelCellar = new JPanel(new GridLayout(rangement.getLineCountAt(i), rangement.getMaxColumnNumber()));
+          places.add(place = new JPanel[complexPlace.getLineCountAt(i)][complexPlace.getMaxColumCountAt(i)]);
+          JPanel panelCellar = new JPanel(new GridLayout(complexPlace.getLineCountAt(i), complexPlace.getMaxColumnNumber()));
 
           for (int k = 0; k < place.length; k++) {
             for (int j = 0; j < place[k].length; j++) {
               JPanel panel;
-              if (rangement.isExistingCell(i, k, j)) {
+              if (complexPlace.isExistingCell(i, k, j)) {
                 RangementCell cell;
                 if (cellChooser) {
                   cell = new RangementCell(rangement, i, k, j, panelCellar);
@@ -228,7 +231,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     });
 
     if (!complexPlaces.isEmpty()) {
-      final Rangement r = complexPlaces.getFirst();
+      final AbstractPlace r = complexPlaces.getFirst();
       comboRangement.setSelectedItem(r);
       setRangement(r);
     }
@@ -253,7 +256,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   }
 
   private void initPlacesCombo() {
-    for (Rangement rangement1 : Program.getPlaces()) {
+    for (AbstractPlace rangement1 : Program.getAbstractPlaces()) {
       if (iPlace == null || !rangement1.isSimplePlace()) {
         complexPlaces.add(rangement1);
         comboRangement.addItem(rangement1);
@@ -413,7 +416,7 @@ final class RangementCell extends JPanel {
     setLayout(new MigLayout("", "[align left, 200:200:200]", "0px[]"));
   }
 
-  RangementCell(Rangement place, int placeNum, int row, int column, JPanel parent) {
+  RangementCell(AbstractPlace place, int placeNum, int row, int column, JPanel parent) {
     this.place = place;
     this.placeNum = placeNum;
     this.row = row;

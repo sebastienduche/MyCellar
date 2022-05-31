@@ -269,6 +269,7 @@ public class Rangement extends AbstractPlace {
    * @param emplacement int: num&eacute;ro d'emplacement (0...n)
    * @return int
    */
+  @Deprecated
   public int getTotalCellUsed(int emplacement) {
     if (isSimplePlace()) {
       return getCountCellUsedInSimplePlace(emplacement + startSimplePlace);

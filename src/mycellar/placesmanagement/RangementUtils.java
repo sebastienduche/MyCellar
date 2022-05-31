@@ -14,7 +14,11 @@ import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.general.ProgramPanels;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.IAbstractPlace;
+import mycellar.placesmanagement.places.SimplePlace;
+
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -47,7 +51,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static mycellar.MyCellarUtils.toCleanString;
-import static mycellar.Program.getPlaces;
+import static mycellar.Program.getAbstractPlaces;
 import static mycellar.Program.throwNotImplementedIfNotFor;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
@@ -454,7 +458,7 @@ public final class RangementUtils {
    * @param file      String: Fichier a ecrire.
    * @param placeList LinkedList: liste de rangements a ecrire
    */
-  public static void write_XLSTab(final String file, final List<Rangement> placeList) {
+  public static void write_XLSTab(final String file, final List<AbstractPlace> placeList) {
 
     Debug("write_XLSTab: writing file: " + file);
     try (var workbook = new SXSSFWorkbook(100);
@@ -503,7 +507,7 @@ public final class RangementUtils {
       int nLine = 3;
       boolean firstSheet = true;
       int nNbCol = 0;
-      for (Rangement place : placeList) {
+      for (AbstractPlace place : placeList) {
         if (onePlacePerSheet) {
           if (firstSheet) {
             workbook.setSheetName(0, place.getName());
@@ -526,9 +530,9 @@ public final class RangementUtils {
             nLine += nNbLinePart;
           }
           if (place.isSimplePlace()) {
-            for (int k = 0; k < place.getTotalCellUsed(j - 1); k++) {
+            for (int k = 0; k < place.getCountCellUsed(j - 1); k++) {
               nLine++;
-              final IMyCellarObject b = place.getObjectSimplePlaceAt(j - 1, k);
+              final IMyCellarObject b = ((SimplePlace)place).getObjectAt(j - 1, k);
               if (b != null) {
                 // Contenu de la cellule
                 final SXSSFRow rowBottle = sheet.createRow(nLine);
@@ -538,9 +542,10 @@ public final class RangementUtils {
               }
             }
           } else {
-            for (int k = 1; k <= place.getLineCountAt(j - 1); k++) {
+        	  ComplexPlace complexPlace = (ComplexPlace) place;
+            for (int k = 1; k <= complexPlace.getLineCountAt(j - 1); k++) {
               nLine++;
-              int nCol = place.getColumnCountAt(j - 1, k - 1);
+              int nCol = complexPlace.getColumnCountAt(j - 1, k - 1);
               if (nCol > nNbCol) {
                 nNbCol = nCol;
               }
@@ -637,7 +642,7 @@ public final class RangementUtils {
     }
 
     final String placeName = name.strip();
-    final boolean found = getPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
+    final boolean found = getAbstractPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
     if (!found) {
       if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
         return true;
@@ -661,7 +666,7 @@ public final class RangementUtils {
       }
     }
     Program.getErrors().clear();
-    Program.getPlaces().forEach(Rangement::resetStock);
+    Program.getAbstractPlaces().forEach(AbstractPlace::resetStockage);
 
     for (var bouteille : Program.getStorage().getAllList()) {
       // On ignore les bouteilles qui sont dans le stock temporairement

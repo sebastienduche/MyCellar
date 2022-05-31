@@ -100,6 +100,17 @@ public final class SimplePlace extends AbstractPlace {
     Debug("ERROR: Function getObject(int, int, int) can't be called on a simple place!");
     return Optional.empty();
   }
+  
+  /**
+   * Retourne l'objet se trouvant &agrave; un emplacement pr&eacute;cis
+   *
+   * @param num_empl int: num&eacute;ro d'emplacement (0...n)
+   * @param index    int: index de l'objet (0...n)
+   * @return MyCellarObject
+   */
+  public MyCellarObject getObjectAt(int num_empl, int index) {
+    return storage.get(num_empl).get(index);
+  }
 
   public boolean hasFreeSpace(Place place) {
     return hasFreeSpace(place.getPlaceNumIndex());
@@ -227,4 +238,13 @@ public final class SimplePlace extends AbstractPlace {
   public int hashCode() {
     return Objects.hash(super.hashCode(), partNumberIncrement, limited, maxItemCount);
   }
+
+@Override
+public int getTotalCountCellUsed() {
+	int resul = 0;
+    for (int i = 0; i < partCount; i++) {
+      resul += getCountCellUsed(i);
+    }
+    return resul;
+}
 }

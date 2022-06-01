@@ -14,8 +14,8 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 13/09/21
+ * @version 1.3
+ * @since 01/06/22
  */
 
 public class ShowFileModel extends TableShowValues {
@@ -31,12 +31,12 @@ public class ShowFileModel extends TableShowValues {
 
   @Override
   public Object getValueAt(int row, int column) {
-    if (row < monVector.size()) {
+    if (row < myCellarObjects.size()) {
       final ShowFileColumn<?> showFileColumn = columns.get(column);
       if (showFileColumn.isButton()) {
         return Boolean.TRUE;
       }
-      MyCellarObject b = monVector.get(row);
+      MyCellarObject b = myCellarObjects.get(row);
       return showFileColumn.getDisplayValue(b);
     }
     return null;
@@ -44,7 +44,7 @@ public class ShowFileModel extends TableShowValues {
 
   @Override
   public void setValueAt(Object value, int row, int column) {
-    MyCellarObject b = monVector.get(row);
+    MyCellarObject b = myCellarObjects.get(row);
     if (!columns.get(column).execute(b, row, column)) {
       fireTableRowsUpdated(row, row);
       return;
@@ -75,7 +75,7 @@ public class ShowFileModel extends TableShowValues {
     ShowFileColumn<?> col = columns.get(column);
     if (col.getField() == MyCellarFields.LINE
         || col.getField() == MyCellarFields.COLUMN) {
-      IMyCellarObject b = monVector.get(row);
+      IMyCellarObject b = myCellarObjects.get(row);
       return !b.getRangement().isSimplePlace();
     }
     return col.isEditable();

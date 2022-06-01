@@ -7,9 +7,9 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.SimplePlace;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -253,7 +253,7 @@ public class ErrorShowValues extends TableShowValues {
             tmpCol--;
             tmpLine--;
           } else {
-            tmpNumEmpl -= rangement.getStartSimplePlace();
+            tmpNumEmpl -= ((SimplePlace) rangement).getPartNumberIncrement();
           }
           if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
@@ -268,8 +268,8 @@ public class ErrorShowValues extends TableShowValues {
                 b.setEmplacement((String) value);
                 if (rangement.isSimplePlace()) {
                   int nNumEmpl = b.getNumLieu();
-                  if (nNumEmpl > ((Rangement) rangement).getLastPartNumber()) {
-                    b.setNumLieu(((Rangement) rangement).getFreeNumPlaceInSimplePlace());
+                  if (nNumEmpl > rangement.getLastPartNumber()) {
+                    b.setNumLieu(((SimplePlace) rangement).getFreeNumPlace());
                   }
                   b.setLigne(0);
                   b.setColonne(0);

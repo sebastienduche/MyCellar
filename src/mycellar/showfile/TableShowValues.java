@@ -7,9 +7,9 @@ import mycellar.Start;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.SimplePlace;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
@@ -56,11 +56,11 @@ class TableShowValues extends AbstractTableModel {
 
   protected Boolean[] values = null;
 
-  List<? extends MyCellarObject> monVector = new LinkedList<>();
+  List<? extends MyCellarObject> myCellarObjects = new LinkedList<>();
 
   @Override
   public int getRowCount() {
-    return monVector.size();
+    return myCellarObjects.size();
   }
 
   @Override
@@ -70,14 +70,13 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public Object getValueAt(int row, int column) {
-    Program.throwNotImplementedIfNotFor(monVector.get(row), Bouteille.class);
-    Bouteille b = (Bouteille) monVector.get(row);
+    Program.throwNotImplementedIfNotFor(myCellarObjects.get(row), Bouteille.class);
+    Bouteille b = (Bouteille) myCellarObjects.get(row);
     switch (column) {
       case ETAT:
         return values[row];
       case NAME:
-        String nom = b.getNom();
-        return convertStringFromHTMLString(nom);
+        return convertStringFromHTMLString(b.getNom());
       case YEAR:
         return b.getAnnee();
       case TYPE:
@@ -115,8 +114,8 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public void setValueAt(Object value, int row, int column) {
-    Program.throwNotImplementedIfNotFor(monVector.get(row), Bouteille.class);
-    Bouteille b = (Bouteille) monVector.get(row);
+    Program.throwNotImplementedIfNotFor(myCellarObjects.get(row), Bouteille.class);
+    Bouteille b = (Bouteille) myCellarObjects.get(row);
     switch (column) {
       case ETAT:
         values[row] = (Boolean) value;
@@ -205,7 +204,7 @@ class TableShowValues extends AbstractTableModel {
             tmpCol--;
             tmpLine--;
           } else {
-            tmpNumEmpl -= rangement.getStartSimplePlace();
+            tmpNumEmpl -= ((SimplePlace) rangement).getPartNumberIncrement();
           }
           if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
@@ -227,8 +226,8 @@ class TableShowValues extends AbstractTableModel {
               }
               if (column == PLACE && rangement.isSimplePlace()) {
                 int nNumEmpl = b.getNumLieu();
-                if (nNumEmpl > ((Rangement) rangement).getLastPartNumber()) {
-                  b.setNumLieu(((Rangement) rangement).getFreeNumPlaceInSimplePlace());
+                if (nNumEmpl > rangement.getLastPartNumber()) {
+                  b.setNumLieu(((SimplePlace) rangement).getFreeNumPlace());
                 }
                 b.setLigne(0);
                 b.setColonne(0);
@@ -253,20 +252,20 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  public void setMyCellarObjects(List<? extends MyCellarObject> b) {
-    if (b == null) {
+  public void setMyCellarObjects(List<? extends MyCellarObject> list) {
+    if (list == null) {
       return;
     }
-    values = new Boolean[b.size()];
-    monVector = b;
-    for (int i = 0; i < b.size(); i++) {
+    values = new Boolean[list.size()];
+    myCellarObjects = list;
+    for (int i = 0; i < list.size(); i++) {
       values[i] = false;
     }
     fireTableDataChanged();
   }
 
   public MyCellarObject getMyCellarObject(int i) {
-    return monVector.get(i);
+    return myCellarObjects.get(i);
   }
 
 }

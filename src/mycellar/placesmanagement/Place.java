@@ -2,6 +2,7 @@ package mycellar.placesmanagement;
 
 import mycellar.Program;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.SimplePlace;
 
 /**
  * Titre : Cave &agrave; vin
@@ -56,7 +57,7 @@ public class Place {
    */
   public int getPlaceNumIndex() {
     if (isSimplePlace()) {
-      return placeNum - abstractPlace.getStartSimplePlace();
+      return placeNum - ((SimplePlace) abstractPlace).getPartNumberIncrement();
     }
     return placeNum - 1;
   }

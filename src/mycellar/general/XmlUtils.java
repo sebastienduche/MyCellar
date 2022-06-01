@@ -391,7 +391,7 @@ public class XmlUtils {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);
             name = doc.createElement(NOM_PARTIE);
-            name.setTextContent(getLabel("Storage.Shelve") + SPACE + (i + rangement.getStartSimplePlace()));
+            name.setTextContent(getLabel("Storage.Shelve") + SPACE + (i + ((SimplePlace) rangement).getPartNumberIncrement()));
             partie.appendChild(name);
             Element caisse = doc.createElement(CAISSE);
             partie.appendChild(caisse);
@@ -418,7 +418,7 @@ public class XmlUtils {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);
             name = doc.createElement(NOM_PARTIE);
-            name.setTextContent(getLabel("Storage.Shelve") + SPACE + (i + rangement.getStartSimplePlace() + 1));
+            name.setTextContent(getLabel("Storage.Shelve") + SPACE + i + 1);
             partie.appendChild(name);
             int lig = complexPlace.getLineCountAt(i);
             for (int j = 0; j < lig; j++) {

@@ -14,16 +14,12 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 31/05/22
+ * @version 0.4
+ * @since 01/06/22
  */
 public interface IAbstractPlace {
 
-  @Deprecated
   public boolean isSimplePlace();
-
-  @Deprecated
-  public int getStartSimplePlace();
 
   public String getName();
 

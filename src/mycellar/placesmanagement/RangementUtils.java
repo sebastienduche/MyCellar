@@ -93,9 +93,9 @@ public final class RangementUtils {
       search.updateTable();
     });
 
-    final AbstractPlace rangement = newObject.getRangement();
-    if (!rangement.isSimplePlace()) {
-      rangement.updateToStock(newObject);
+    final AbstractPlace abstractPlace = newObject.getRangement();
+    if (!abstractPlace.isSimplePlace()) {
+      abstractPlace.updateToStock(newObject);
     }
     Debug("Replace object Done");
   }

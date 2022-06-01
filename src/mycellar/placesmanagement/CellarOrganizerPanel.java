@@ -24,6 +24,7 @@ import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.SimplePlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.activation.ActivationDataFlavor;
@@ -128,11 +129,12 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         return;
       }
       if (rangement.isSimplePlace()) {
+        SimplePlace simplePlace = (SimplePlace) rangement;
         HashMap<Integer, Integer> mapEmplSize = new HashMap<>();
-        for (int i = 0; i < rangement.getPartCount(); i++) {
-          int empl = i + rangement.getStartSimplePlace();
+        for (int i = 0; i < simplePlace.getPartCount(); i++) {
+          int empl = i + simplePlace.getPartNumberIncrement();
           mapEmplSize.put(empl, 0);
-          int nb = rangement.getCountCellUsed(i);
+          int nb = simplePlace.getCountCellUsed(i);
           if (nb == 0) {
             nb = 1;
           }
@@ -143,9 +145,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
           for (int k = 0; k < place.length; k++) {
             RangementCell cell;
             if (cellChooser) {
-              cell = new RangementCell(rangement, empl, k, 0, panelCellar);
+              cell = new RangementCell(simplePlace, empl, k, 0, panelCellar);
             } else {
-              cell = new RangementCell(handler, labelTransferHandler, rangement, empl, k, 0, panelCellar, this);
+              cell = new RangementCell(handler, labelTransferHandler, simplePlace, empl, k, 0, panelCellar, this);
             }
             place[k][0] = cell;
             rangementCells.add(cell);
@@ -156,16 +158,16 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         }
 
         Program.getStorage().getAllList().stream()
-            .filter(bouteille -> bouteille.getEmplacement().endsWith(rangement.getName())).collect(Collectors.toList())
+            .filter(bouteille -> bouteille.getEmplacement().endsWith(simplePlace.getName())).collect(Collectors.toList())
             .forEach(b -> {
-              JPanel[][] place = places.get(b.getNumLieu() - rangement.getStartSimplePlace());
+              JPanel[][] place = places.get(b.getNumLieu() - simplePlace.getPartNumberIncrement());
               int line = mapEmplSize.get(b.getNumLieu());
               ((RangementCell) place[line++][0]).addBottle(new MyCellarObjectDraggingLabel(b));
               mapEmplSize.put(b.getNumLieu(), line);
             });
       } else {
         ComplexPlace complexPlace = (ComplexPlace) rangement;
-        for (int i = 0; i < rangement.getPartCount(); i++) {
+        for (int i = 0; i < complexPlace.getPartCount(); i++) {
           JPanel[][] place;
           places.add(place = new JPanel[complexPlace.getLineCountAt(i)][complexPlace.getMaxColumCountAt(i)]);
           JPanel panelCellar = new JPanel(new GridLayout(complexPlace.getLineCountAt(i), complexPlace.getMaxColumnNumber()));
@@ -176,9 +178,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
               if (complexPlace.isExistingCell(i, k, j)) {
                 RangementCell cell;
                 if (cellChooser) {
-                  cell = new RangementCell(rangement, i, k, j, panelCellar);
+                  cell = new RangementCell(complexPlace, i, k, j, panelCellar);
                 } else {
-                  cell = new RangementCell(handler, labelTransferHandler, rangement, i, k, j, panelCellar, this);
+                  cell = new RangementCell(handler, labelTransferHandler, complexPlace, i, k, j, panelCellar, this);
                 }
                 place[k][j] = panel = cell;
                 rangementCells.add(cell);
@@ -193,7 +195,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         }
 
         Program.getStorage().getAllList().stream()
-            .filter(bouteille -> bouteille.getEmplacement().endsWith(rangement.getName()))
+            .filter(bouteille -> bouteille.getEmplacement().endsWith(complexPlace.getName()))
             .forEach(bouteille -> {
               JPanel[][] place = places.get(bouteille.getNumLieu() - 1);
               ((RangementCell) place[bouteille.getLigne() - 1][bouteille.getColonne() - 1]).addBottle(new MyCellarObjectDraggingLabel(bouteille));
@@ -476,7 +478,7 @@ final class RangementCell extends JPanel {
       return placeNum - 1;
     }
     if (place != null && place.isSimplePlace()) {
-      return placeNum - place.getStartSimplePlace();
+      return placeNum - ((SimplePlace) place).getPartNumberIncrement();
     }
     return placeNum + 1;
   }

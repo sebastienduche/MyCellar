@@ -20,8 +20,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.1
- * @since 31/05/22
+ * @version 29.2
+ * @since 01/06/22
  */
 @Deprecated
 public class Rangement extends AbstractPlace {
@@ -82,7 +82,6 @@ public class Rangement extends AbstractPlace {
     Program.Debug("Rangement: " + sText);
   }
 
-  @Override
   public int getStartSimplePlace() {
     return startSimplePlace;
   }

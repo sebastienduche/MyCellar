@@ -132,12 +132,6 @@ public class ComplexPlace extends AbstractPlace {
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = null;
   }
 
-  @Deprecated
-  @Override
-  public int getStartSimplePlace() {
-    return -1;
-  }
-
   @Override
   public boolean canAddObjectAt(MyCellarObject b) {
     return canAddObjectAt(b.getNumLieu(), -1, -1);

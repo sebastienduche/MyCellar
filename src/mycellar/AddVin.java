@@ -17,7 +17,6 @@ import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -675,7 +674,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         tmp.updateStatus();
         // Add multiple bottles
         Debug("Adding multiple bottles...");
-        Rangement rangement = (Rangement) tmp.getRangement();
+        AbstractPlace rangement = tmp.getRangement();
         if (isModify) {
           //Delete Bouteilles
           Debug("Deleting bottles when modifying");

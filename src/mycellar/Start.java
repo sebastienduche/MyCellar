@@ -24,7 +24,6 @@ import mycellar.general.XmlUtils;
 import mycellar.launcher.MyCellarServer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.showfile.ShowFile;
@@ -99,8 +98,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.3
- * @since 31/05/22
+ * @version 32.4
+ * @since 01/06/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -404,13 +403,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
         fic = fic.concat(Filtre.EXTENSION_XML);
       }
       File f = new File(fic);
-      LinkedList<Rangement> cave = new LinkedList<>();
-      if (f.exists() && XmlUtils.readMyCellarXml(fic, cave)) {
-        XmlUtils.writeMyCellarXml(cave, "");
-        Program.loadData();
-      }
       LinkedList<AbstractPlace> abstractPlaces = new LinkedList<>();
-      if (f.exists() && XmlUtils.readMyCellarXml1(fic, abstractPlaces)) {
+      if (f.exists() && XmlUtils.readMyCellarXml(fic, abstractPlaces)) {
         XmlUtils.writeMyCellarXml(abstractPlaces, "");
         Program.loadData();
       }
@@ -640,7 +634,6 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuQuit.setAccelerator(KeyStroke.getKeyStroke(quitChar, InputEvent.CTRL_DOWN_MASK));
     SwingUtilities.updateComponentTreeUI(this);
     Program.DEFAULT_PLACE.setName(getLabel("Program.DefaultPlace"));
-    Program.NEW_DEFAULT_PLACE.setName(getLabel("Program.DefaultPlace"));
     setApplicationTitle(Program.getShortFilename());
   }
 

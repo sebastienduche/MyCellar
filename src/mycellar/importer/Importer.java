@@ -30,9 +30,9 @@ import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import net.miginfocom.swing.MigLayout;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -86,8 +86,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 15.9
- * @since 31/05/22
+ * @version 16.0
+ * @since 01/06/22
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -523,7 +523,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             }
           } while (!resul);
           Debug("Creating new place with name: " + nom1);
-          new_rangement = new Rangement.SimplePlaceBuilder(nom1).build();
+          new_rangement = new SimplePlaceBuilder(nom1).build();
           Program.addPlace(new_rangement);
         } else {
           new_rangement = Program.getAbstractPlaceAt(num_r);
@@ -719,7 +719,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       return;
     }
     list.forEach(music -> music.setEmplacement(Program.DEFAULT_PLACE.getName()));
-    list.forEach(music -> music.setEmplacement(Program.NEW_DEFAULT_PLACE.getName()));
     Program.getStorage().getListMyCellarObject().getMusic().addAll(list);
     showImportDone();
   }

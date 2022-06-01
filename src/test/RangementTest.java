@@ -638,34 +638,7 @@ class RangementTest {
   }
 
   @Test
-  void getTotalCellUsedSimplePlace() throws MyCellarException {
-    assertEquals(0, caisseLimit.getTotalCellUsed(1));
-    assertEquals(0, caisseNoLimit.getTotalCellUsed(0));
-    Bouteille b = new Bouteille();
-    b.setNom("B10");
-    b.setNumLieu(2);
-    b.setEmplacement("caisseLimit");
-    caisseLimit.addObject(b);
-    assertEquals(1, caisseLimit.getTotalCellUsed(1));
-    assertEquals(1, caisseLimit.getTotalCellUsed(b.getPlace().getPlaceNumIndex()));
-    assertEquals(1, caisseLimit.getTotalCellUsed(b.getPlace()));
-    Bouteille b1 = new Bouteille();
-    b1.setNom("B11");
-    b1.setNumLieu(0);
-    b1.setEmplacement("caisseNoLimit");
-    caisseNoLimit.addObject(b1);
-    assertEquals(1, caisseNoLimit.getTotalCellUsed(0));
-    assertEquals(1, caisseNoLimit.getTotalCellUsed(b1.getPlace().getPlaceNumIndex()));
-    assertEquals(1, caisseNoLimit.getTotalCellUsed(b1.getPlace()));
-    caisseLimit.removeObject(b);
-    assertEquals(0, caisseLimit.getTotalCellUsed(1));
-    assertEquals(0, caisseLimit.getTotalCellUsed(b.getPlace().getPlaceNumIndex()));
-    assertEquals(0, caisseLimit.getTotalCellUsed(b.getPlace()));
-    caisseNoLimit.removeObject(b1);
-    assertEquals(0, caisseNoLimit.getTotalCellUsed(0));
-    assertEquals(0, caisseNoLimit.getTotalCellUsed(b1.getPlace().getPlaceNumIndex()));
-    assertEquals(0, caisseNoLimit.getTotalCellUsed(b1.getPlace()));
-
+  void getCountCellUsed() throws MyCellarException {
     assertEquals(0, simplePlaceLimit.getCountCellUsed(1));
     assertEquals(0, simplePlaceNoLimit.getCountCellUsed(0));
     Bouteille b01 = new Bouteille();
@@ -675,7 +648,7 @@ class RangementTest {
     simplePlaceLimit.addObject(b01);
     assertEquals(1, simplePlaceLimit.getCountCellUsed(1));
     assertEquals(1, simplePlaceLimit.getCountCellUsed(b01.getPlace().getPlaceNumIndex()));
-    assertEquals(1, simplePlaceLimit.getCountCellUsed(b.getPlace()));
+    assertEquals(1, simplePlaceLimit.getCountCellUsed(b01.getPlace()));
     Bouteille b11 = new Bouteille();
     b11.setNom("B11");
     b11.setNumLieu(0);
@@ -928,9 +901,6 @@ class RangementTest {
 
   @Test
   void putTabStock() {
-    Rangement caisse = new Rangement.SimplePlaceBuilder("caisse").nbParts(2).startSimplePlace(1).limited(true).limit(2).build();
-    Program.addPlace(caisse);
-    assertTrue(caisse.hasFreeSpaceInSimplePlace(new Place.PlaceBuilder(caisse).withNumPlace(1).build()));
     SimplePlace simplePlace = new SimplePlaceBuilder("caisse").nbParts(2).startSimplePlace(1).limited(true).limit(2).build();
     Program.addPlace(simplePlace);
     assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(1).build()));
@@ -939,22 +909,14 @@ class RangementTest {
     b.setNom("B20");
     b.setEmplacement("caisse");
     b.setNumLieu(1);
-    caisse.addObject(b);
     simplePlace.addObject(b);
-    assertTrue(caisse.hasFreeSpaceInSimplePlace(new Place.PlaceBuilder(caisse).withNumPlace(1).build()));
     assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(1).build()));
-    assertEquals(1, caisse.getTotalCellUsed(0));
-    assertTrue(caisse.canAddObjectAt(0, 0, 0));
-    assertTrue(caisse.canAddObjectAt(1, 0, 0));
-    assertTrue(caisse.canAddObjectAt(b));
-    assertTrue(caisse.hasFreeSpaceInSimplePlace(b.getPlace()));
     assertEquals(1, simplePlace.getCountCellUsed(0));
     assertTrue(simplePlace.canAddObjectAt(0, 0, 0));
     assertTrue(simplePlace.canAddObjectAt(1, 0, 0));
     assertTrue(simplePlace.canAddObjectAt(b));
     assertTrue(simplePlace.hasFreeSpace(b.getPlace()));
     b.setNumLieu(0);
-    assertFalse(caisse.canAddObjectAt(b));
     assertFalse(simplePlace.canAddObjectAt(b));
   }
 

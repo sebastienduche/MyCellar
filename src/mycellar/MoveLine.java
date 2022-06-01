@@ -13,7 +13,6 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.places.ComplexPlace;
 import net.miginfocom.swing.MigLayout;
 
@@ -102,29 +101,29 @@ final class MoveLine extends JDialog {
     nNewSelected--; // We need the o bse index for the next calls
     int nOldSelected = selectedPlace.getLineIndex();
     int nNumLieu = selectedPlace.getPlaceNumIndex();
-    Rangement rangement = (Rangement) selectedPlace.getAbstractPlace();
-    int nNbBottle = rangement.getNbCaseUseInLine(nNumLieu, nOldSelected);
+    ComplexPlace complexPlace = (ComplexPlace) selectedPlace.getAbstractPlace();
+    int nNbBottle = complexPlace.getNbCaseUseInLine(nNumLieu, nOldSelected);
     if (nNbBottle == 0) {
       Erreur.showSimpleErreur(this, getError("Error.noItemsToMove", LabelProperty.PLURAL));
       return;
     }
-    int nOldColumnCount = rangement.getColumnCountAt(nNumLieu, nOldSelected);
-    int nNewColumnCount = rangement.getColumnCountAt(nNumLieu, nNewSelected);
+    int nOldColumnCount = complexPlace.getColumnCountAt(nNumLieu, nOldSelected);
+    int nNewColumnCount = complexPlace.getColumnCountAt(nNumLieu, nNewSelected);
     if (nOldColumnCount > nNewColumnCount && nNbBottle > nNewColumnCount) {
       Erreur.showSimpleErreur(this, getError("Error.wrongNewColumnNumber"));
       return;
     }
-    int nBottle = rangement.getNbCaseUseInLine(nNumLieu, nNewSelected);
+    int nBottle = complexPlace.getNbCaseUseInLine(nNumLieu, nNewSelected);
     if (nBottle > 0) {
       Erreur.showSimpleErreur(this, getError("Error.stillItemsOnLine", LabelProperty.PLURAL));
       return;
     }
     List<MyCellarObject> notMoved = new ArrayList<>();
     for (int i = 0; i < nOldColumnCount; i++) {
-      rangement.getObject(nNumLieu, nOldSelected, i).ifPresent(myCellarObject -> {
+      complexPlace.getObject(nNumLieu, nOldSelected, i).ifPresent(myCellarObject -> {
         Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
         try {
-          rangement.moveToLine(myCellarObject, new_line_cbx.getSelectedIndex());
+          complexPlace.moveToLine(myCellarObject, new_line_cbx.getSelectedIndex());
         } catch (MyCellarException myCellarException) {
           notMoved.add(myCellarObject);
         }

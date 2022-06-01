@@ -26,6 +26,7 @@ import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -64,8 +65,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.9
- * @since 31/05/22
+ * @version 17.0
+ * @since 01/06/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -546,7 +547,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
       if (bResul) {
         Debug("Creating...");
-        Program.addPlace(new Rangement.SimplePlaceBuilder(nom)
+        Program.addPlace(new SimplePlaceBuilder(nom)
             .nbParts(nbPart)
             .startSimplePlace(start_caisse)
             .limited(islimited)

@@ -5,7 +5,6 @@ import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Part;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
@@ -83,118 +82,7 @@ public class XmlUtils {
     return defaultValue;
   }
 
-  /**
-   * readMyCellarXml: Lit le fichier MyCellar.xml des rangements
-   */
-  @Deprecated
-  public static boolean readMyCellarXml(String filename, final List<Rangement> rangementList) {
-    Debug("readMyCellarXml: Reading file");
-    rangementList.clear();
-    if (isNullOrEmpty(filename)) {
-      filename = Program.getXMLPlacesFileName();
-    }
-
-    File file = new File(filename);
-    if (!file.exists()) {
-      return false;
-    }
-
-    try {
-      final var dbFactory = DocumentBuilderFactory.newInstance();
-      final var dBuilder = dbFactory.newDocumentBuilder();
-      final var doc = dBuilder.parse(file);
-      doc.getDocumentElement().normalize();
-
-      NodeList places = doc.getElementsByTagName(PLACE);
-
-      LinkedList<String> names = new LinkedList<>();
-      for (int i = 0; i < places.getLength(); i++) {
-        Node nNode = places.item(i);
-
-        if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-          Element place = (Element) nNode;
-          boolean bIsCaisse = Boolean.parseBoolean(place.getAttribute(IS_CAISSE));
-          final String aDefault = place.getAttribute(DEFAULT);
-          boolean isDefault = !aDefault.isBlank() && Boolean.parseBoolean(aDefault);
-          int nPlace = Integer.parseInt(place.getAttribute(NB_PLACE));
-          String placeName = place.getAttribute(NAME);
-          if (placeName.isEmpty()) {
-            NodeList placeNameList = place.getElementsByTagName(NAME);
-            placeName = placeNameList.item(0).getTextContent();
-          }
-          if (bIsCaisse) {
-            // C'est une caisse
-            int nNumStart = Integer.parseInt(place.getAttribute(NUM_START));
-            int nNbLimit = Integer.parseInt(place.getAttribute(NB_LIMIT));
-            if (names.contains(placeName)) {
-              Debug("WARNING: Place name '" + placeName + "' already used!");
-            } else {
-              boolean bLimit = (nNbLimit > 0);
-              final Rangement caisse = new Rangement.SimplePlaceBuilder(placeName)
-                  .nbParts(nPlace)
-                  .startSimplePlace(nNumStart)
-                  .limited(bLimit)
-                  .limit(nNbLimit)
-                  .setDefaultPlace(isDefault).build();
-              rangementList.add(caisse);
-              names.add(placeName);
-            }
-          } else {
-            // C'est un rangement complexe
-            // ___________________________
-
-            final LinkedList<Part> listPart = new LinkedList<>();
-            NodeList internalPlaces = place.getElementsByTagName(INTERNAL_PLACE);
-            for (int j = 0; j < internalPlaces.getLength(); j++) {
-              Node nInternal = internalPlaces.item(j);
-              if (nInternal.getNodeType() == Node.ELEMENT_NODE) {
-                Part part = new Part(j);
-                listPart.add(part);
-                Element iPlace = (Element) nInternal;
-                int nLine = Integer.parseInt(iPlace.getAttribute(NB_LINE));
-                part.setRows(nLine);
-                NodeList Line = iPlace.getElementsByTagName(LINE);
-                for (int k = 0; k < Line.getLength(); k++) {
-                  Node nTempLine = Line.item(k);
-                  if (nTempLine.getNodeType() == Node.ELEMENT_NODE) {
-                    Element oLine = (Element) nTempLine;
-                    int nColumn = Integer.parseInt(oLine.getAttribute(NB_COLUMN));
-                    part.getRow(k).setCol(nColumn);
-                  }
-                }
-              }
-            }
-
-            if (names.contains(placeName)) {
-              Debug("WARNING: Place name '" + placeName + "' already used!");
-            } else {
-              names.add(placeName);
-              rangementList.add(new Rangement(placeName, listPart));
-            }
-          }
-
-        }
-      }
-    } catch (IOException e) {
-      Debug("IOException");
-      Program.showException(e, false);
-      return false;
-    } catch (ParserConfigurationException e) {
-      Debug("ParserConfigurationException");
-      Program.showException(e, false);
-      return false;
-    } catch (SAXException e) {
-      Debug("SAXException");
-      Program.showException(e, false);
-      return false;
-    }
-
-    Debug("readMyCellarXml: Reading file OK");
-    return true;
-  }
-
-  public static boolean readMyCellarXml1(String filename, final List<AbstractPlace> rangementList) {
+  public static boolean readMyCellarXml(String filename, final List<AbstractPlace> rangementList) {
     Debug("readMyCellarXml1: Reading file");
     rangementList.clear();
     if (isNullOrEmpty(filename)) {

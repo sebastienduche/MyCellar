@@ -91,8 +91,8 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   private final MyCellarButton moveAllButton = new MyCellarButton("ManageStock.MoveAll", LabelProperty.PLURAL, new MoveAction());
   private final boolean cellChooser;
   private LabelTransferHandler labelTransferHandler;
-  private MyCellarComboBox<AbstractPlace> comboRangement;
-  private AbstractPlace rangement;
+  private MyCellarComboBox<AbstractPlace> abstractPlaceCombo;
+  private AbstractPlace abstractPlace;
   private RangementCell stock;
   private IPlace iPlace;
 
@@ -110,26 +110,26 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     init();
   }
 
-  AbstractPlace getRangement() {
-    return rangement;
+  AbstractPlace getAbstractPlace() {
+    return abstractPlace;
   }
 
-  void setRangement(final AbstractPlace rangement) {
-    if (rangement == null) {
+  void setAbstractPlace(final AbstractPlace abstractPlace) {
+    if (abstractPlace == null) {
       return;
     }
-    this.rangement = rangement;
-    moveAllButton.setEnabled(rangement.isSimplePlace());
+    this.abstractPlace = abstractPlace;
+    moveAllButton.setEnabled(abstractPlace.isSimplePlace());
     SwingUtilities.invokeLater(() -> {
       rangementCells.clear();
       placePanel.removeAll();
       places.clear();
-      if (Program.EMPTY_PLACE.equals(rangement)) {
+      if (Program.EMPTY_PLACE.equals(abstractPlace)) {
         placePanel.updateUI();
         return;
       }
-      if (rangement.isSimplePlace()) {
-        SimplePlace simplePlace = (SimplePlace) rangement;
+      if (abstractPlace.isSimplePlace()) {
+        SimplePlace simplePlace = (SimplePlace) abstractPlace;
         HashMap<Integer, Integer> mapEmplSize = new HashMap<>();
         for (int i = 0; i < simplePlace.getPartCount(); i++) {
           int empl = i + simplePlace.getPartNumberIncrement();
@@ -166,7 +166,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
               mapEmplSize.put(b.getNumLieu(), line);
             });
       } else {
-        ComplexPlace complexPlace = (ComplexPlace) rangement;
+        ComplexPlace complexPlace = (ComplexPlace) abstractPlace;
         for (int i = 0; i < complexPlace.getPartCount(); i++) {
           JPanel[][] place;
           places.add(place = new JPanel[complexPlace.getLineCountAt(i)][complexPlace.getMaxColumCountAt(i)]);
@@ -218,23 +218,23 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     }
 
     placePanel.setLayout(new MigLayout("", "grow", ""));
-    comboRangement = new MyCellarComboBox<>();
-    comboRangement.addItem(Program.EMPTY_PLACE);
+    abstractPlaceCombo = new MyCellarComboBox<>();
+    abstractPlaceCombo.addItem(Program.EMPTY_PLACE);
     if (iPlace == null) {
       complexPlaces.add(Program.EMPTY_PLACE);
     }
     initPlacesCombo();
 
-    comboRangement.addItemListener((item) -> {
+    abstractPlaceCombo.addItemListener((item) -> {
       if (item.getStateChange() == ItemEvent.SELECTED) {
-        setRangement((Rangement) comboRangement.getSelectedItem());
+        setAbstractPlace((AbstractPlace) abstractPlaceCombo.getSelectedItem());
       }
     });
 
     if (!complexPlaces.isEmpty()) {
       final AbstractPlace r = complexPlaces.getFirst();
-      comboRangement.setSelectedItem(r);
-      setRangement(r);
+      abstractPlaceCombo.setSelectedItem(r);
+      setAbstractPlace(r);
     }
 
     stock = new RangementCell(handler, labelTransferHandler);
@@ -242,7 +242,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     scrollStock.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     scrollStock.setBorder(BorderFactory.createTitledBorder(getLabel("ManagePlace.Stock")));
     add(new MyCellarLabel("ManagePlace.SelectPlace"), "split 3");
-    add(comboRangement, "gapleft 10px");
+    add(abstractPlaceCombo, "gapleft 10px");
     add(moveAllButton, "gapleft 10px, wrap");
     moveAllButton.setEnabled(false);
     if (cellChooser) {
@@ -260,7 +260,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     for (AbstractPlace rangement1 : Program.getAbstractPlaces()) {
       if (iPlace == null || !rangement1.isSimplePlace()) {
         complexPlaces.add(rangement1);
-        comboRangement.addItem(rangement1);
+        abstractPlaceCombo.addItem(rangement1);
       }
     }
   }
@@ -299,7 +299,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         return false;
       }
       if (selectedCell != null) {
-        iPlace.selectPlace(new Place.PlaceBuilder(rangement)
+        iPlace.selectPlace(new Place.PlaceBuilder(abstractPlace)
             .withNumPlace(selectedCell.getPlaceNum())
             .withLine(selectedCell.getRow())
             .withColumn(selectedCell.getColumn())
@@ -340,11 +340,11 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     }
     SwingUtilities.invokeLater(() -> {
       complexPlaces.clear();
-      comboRangement.removeAllItems();
-      comboRangement.addItem(Program.EMPTY_PLACE);
+      abstractPlaceCombo.removeAllItems();
+      abstractPlaceCombo.addItem(Program.EMPTY_PLACE);
       initPlacesCombo();
     });
-    setRangement(rangement);
+    setAbstractPlace(abstractPlace);
   }
 
   private class MoveAction extends AbstractAction {
@@ -506,7 +506,7 @@ final class RangementCell extends JPanel {
   }
 
   void updateParent() {
-    cellarOrganizerPanel.setRangement(cellarOrganizerPanel.getRangement());
+    cellarOrganizerPanel.setAbstractPlace(cellarOrganizerPanel.getAbstractPlace());
   }
 
   public boolean isCaisse() {

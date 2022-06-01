@@ -113,10 +113,11 @@ public class ComplexPlace extends AbstractPlace {
 
   @Override
   public void updateToStock(MyCellarObject myCellarObject) {
-    int line = myCellarObject.getLigne();
-    int num_empl = myCellarObject.getNumLieu();
-    int column = myCellarObject.getColonne();
-    storage[num_empl - 1][line - 1][column - 1] = myCellarObject;
+    final Place place = myCellarObject.getPlace();
+//    int line = myCellarObject.getLigne();
+//    int num_empl = myCellarObject.getNumLieu();
+//    int column = myCellarObject.getColonne();
+    storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = myCellarObject;
   }
 
   private static void Debug(String sText) {

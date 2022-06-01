@@ -462,7 +462,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         int i;
         List<AbstractPlace> simplePlaces = Program.getSimplePlaces();
         for (i = 0; i < simplePlaces.size(); i++) {
-        	AbstractPlace cave = simplePlaces.get(i);
+          AbstractPlace cave = simplePlaces.get(i);
           titre_properties[i] = KEY_TYPE + cave.getName();
           key_properties[i] = MyCellarSettings.RANGEMENT_DEFAULT;
           default_value[i] = "false";

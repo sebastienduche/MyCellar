@@ -89,8 +89,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.2
- * @since 27/05/22
+ * @version 12.4
+ * @since 31/05/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -914,7 +914,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   private void setRangementValue(MyCellarObject b, MyCellarFields field, Object value) {
-	IAbstractPlace rangement = b.getRangement();
+    IAbstractPlace rangement = b.getRangement();
     int nValueToCheck = -1;
     String empl = b.getEmplacement();
     int num_empl = b.getNumLieu();
@@ -951,7 +951,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     if (field == MyCellarFields.PLACE) {
       placeCbx.setSelectedIndex(0);
       if (!rangement.isSimplePlace()) {
-        final PanelPlace panelPlace = new PanelPlace((Rangement)rangement, true, false, true, true, false, true, false);
+        final PanelPlace panelPlace = new PanelPlace((Rangement) rangement, true, false, true, true, false, true, false);
         JOptionPane.showMessageDialog(Start.getInstance(), panelPlace,
             getLabel("Main.ChooseCell"),
             JOptionPane.PLAIN_MESSAGE);

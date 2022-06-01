@@ -99,8 +99,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.2
- * @since 25/05/22
+ * @version 32.3
+ * @since 31/05/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 

@@ -1,7 +1,6 @@
 package mycellar;
 
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 
@@ -42,7 +41,7 @@ class TableauValues extends AbstractTableModel {
 
   @Override
   public Object getValueAt(int row, int column) {
-	AbstractPlace rangement = list.get(row);
+    AbstractPlace rangement = list.get(row);
     switch (column) {
       case 0:
         return listBoolean.get(row);
@@ -54,7 +53,7 @@ class TableauValues extends AbstractTableModel {
         }
         int nombre_ligne = 0;
         for (int k = 0; k < rangement.getPartCount(); k++) {
-          nombre_ligne += ((ComplexPlace)rangement).getLineCountAt(k);
+          nombre_ligne += ((ComplexPlace) rangement).getLineCountAt(k);
         }
         if (nombre_ligne <= 1) {
           return MessageFormat.format(getLabel("Storage.NbLine"), nombre_ligne);
@@ -66,7 +65,7 @@ class TableauValues extends AbstractTableModel {
           nombre_vin = rangement.getTotalCountCellUsed();
         } else {
           for (int k = 0; k < rangement.getPartCount(); k++) {
-            nombre_vin += ((ComplexPlace)rangement).getTotalCellUsed(k);
+            nombre_vin += ((ComplexPlace) rangement).getTotalCellUsed(k);
           }
         }
         return MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(nombre_vin > 1)), nombre_vin);

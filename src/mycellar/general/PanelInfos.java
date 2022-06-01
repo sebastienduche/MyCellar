@@ -8,7 +8,6 @@ import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.places.AbstractPlace;
 import net.miginfocom.swing.MigLayout;
 
@@ -34,8 +33,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 24/05/22
+ * @version 3.1
+ * @since 31/05/22
  */
 public final class PanelInfos extends JPanel {
 
@@ -186,7 +185,7 @@ final class PanelStats extends JPanel {
     @Override
     public void setValueAt(Object arg0, int row, int column) {
       if (column == 2) {
-    	  AbstractPlace rangement = names.get(row);
+        AbstractPlace rangement = names.get(row);
         XmlUtils.writePlacesToHTML("", List.of(rangement), false);
         Program.open(Program.getPreviewHTMLFileName(), false);
       }

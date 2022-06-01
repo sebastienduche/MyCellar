@@ -32,8 +32,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 25/05/22
+ * @version 2.1
+ * @since 31/05/22
  */
 
 public class Predicates {

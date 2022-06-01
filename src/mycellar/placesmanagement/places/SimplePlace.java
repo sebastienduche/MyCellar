@@ -100,7 +100,7 @@ public final class SimplePlace extends AbstractPlace {
     Debug("ERROR: Function getObject(int, int, int) can't be called on a simple place!");
     return Optional.empty();
   }
-  
+
   /**
    * Retourne l'objet se trouvant &agrave; un emplacement pr&eacute;cis
    *
@@ -119,10 +119,11 @@ public final class SimplePlace extends AbstractPlace {
   public boolean hasFreeSpace(int part) {
     return (!isLimited() || getCountCellUsed(part) < maxItemCount);
   }
-  
+
+  @Override
   public boolean isInexistingNumPlace(int numPlace) {
-	    return numPlace < partNumberIncrement || numPlace >= partCount + partNumberIncrement;
-	  }
+    return numPlace < partNumberIncrement || numPlace >= partCount + partNumberIncrement;
+  }
 
   @Override
   public Map<Integer, Integer> getNumberOfObjectsPerPlace() {
@@ -243,12 +244,12 @@ public final class SimplePlace extends AbstractPlace {
     return Objects.hash(super.hashCode(), partNumberIncrement, limited, maxItemCount);
   }
 
-@Override
-public int getTotalCountCellUsed() {
-	int resul = 0;
+  @Override
+  public int getTotalCountCellUsed() {
+    int resul = 0;
     for (int i = 0; i < partCount; i++) {
       resul += getCountCellUsed(i);
     }
     return resul;
-}
+  }
 }

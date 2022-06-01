@@ -165,7 +165,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
               mapEmplSize.put(b.getNumLieu(), line);
             });
       } else {
-    	  ComplexPlace complexPlace = (ComplexPlace) rangement;
+        ComplexPlace complexPlace = (ComplexPlace) rangement;
         for (int i = 0; i < rangement.getPartCount(); i++) {
           JPanel[][] place;
           places.add(place = new JPanel[complexPlace.getLineCountAt(i)][complexPlace.getMaxColumCountAt(i)]);

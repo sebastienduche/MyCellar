@@ -279,7 +279,7 @@ public class XmlUtils {
             } else {
               names.add(placeName);
               ComplexPlace complexPlace = new ComplexPlaceBuilder(placeName)
-            		  .withPartList(listPart).build();
+                  .withPartList(listPart).build();
               rangementList.add(complexPlace);
             }
           }
@@ -404,7 +404,7 @@ public class XmlUtils {
               if (preview) {
                 vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
               } else {
-                IMyCellarObject b = ((SimplePlace)rangement).getObjectAt(i, j);
+                IMyCellarObject b = ((SimplePlace) rangement).getObjectAt(i, j);
                 if (b != null)
                   vin_name.setTextContent(b.getNom());
                 else
@@ -413,7 +413,7 @@ public class XmlUtils {
             }
           }
         } else {
-        	ComplexPlace complexPlace = (ComplexPlace) rangement;
+          ComplexPlace complexPlace = (ComplexPlace) rangement;
           r.setAttribute(COLUMNS, Integer.toString(complexPlace.getMaxColumCount()));
           for (int i = 0; i < rangement.getPartCount(); i++) {
             Element partie = doc.createElement(PARTIE);

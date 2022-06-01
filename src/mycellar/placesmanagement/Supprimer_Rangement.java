@@ -41,8 +41,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static mycellar.Program.EMPTY_PLACE;
-import static mycellar.Program.getAide;
 import static mycellar.Program.getAbstractPlaces;
+import static mycellar.Program.getAide;
 import static mycellar.Program.getPreviewXMLFileName;
 import static mycellar.Program.getStorage;
 import static mycellar.Program.open;

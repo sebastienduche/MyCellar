@@ -13,7 +13,6 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.placesmanagement.Part;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import net.miginfocom.swing.MigLayout;
@@ -370,8 +369,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     int nbItems = 0;
     if (placeComboItem != null && placeComboItem.getRangement() != null) {
       AbstractPlace rangement = placeComboItem.getRangement();
-      if(!rangement.isSimplePlace()) {
-         panelChart.setPlaceChart((ComplexPlace)rangement);
+      if (!rangement.isSimplePlace()) {
+        panelChart.setPlaceChart((ComplexPlace) rangement);
       }
       nbItems = rangement.getTotalCountCellUsed();
       panel.add(new MyCellarSimpleLabel(rangement.getName()));

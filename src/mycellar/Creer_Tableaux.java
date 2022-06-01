@@ -17,7 +17,6 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.XmlUtils;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.xls.XLSTabOptions;
@@ -57,8 +56,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.1
- * @since 24/05/22
+ * @version 9.2
+ * @since 31/05/22
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;

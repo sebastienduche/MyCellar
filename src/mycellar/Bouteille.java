@@ -17,7 +17,6 @@ import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
-import mycellar.placesmanagement.places.IAbstractPlace;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -44,8 +43,8 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.8
- * @since 27/05/22
+ * @version 7.9
+ * @since 31/05/22
  *
  * <p>Java class for anonymous complex type.
  *

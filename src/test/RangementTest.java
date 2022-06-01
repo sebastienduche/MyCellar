@@ -97,7 +97,7 @@ class RangementTest {
           .columnsNumberForPart(1, new int[]{5, 4, 5})
           .build();
       complexPlace2x2_3x22545Builder2 = new ComplexPlaceBuilder("armoire2x2_3x22545")
-    		  .withPartList(list).build();
+          .withPartList(list).build();
     } catch (Exception ignored) {
     }
     rangement = new Rangement.SimplePlaceBuilder("test").build();

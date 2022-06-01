@@ -7,7 +7,6 @@ import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.storage.SerializedStorage;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.places.AbstractPlace;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

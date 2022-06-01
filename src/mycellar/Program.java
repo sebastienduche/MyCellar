@@ -34,7 +34,6 @@ import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
-import mycellar.placesmanagement.places.IAbstractPlace;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import mycellar.vignobles.CountryVignobleController;
@@ -111,8 +110,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.4
- * @since 27/05/22
+ * @version 28.5
+ * @since 31/05/22
  */
 
 public final class Program {

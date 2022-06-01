@@ -44,7 +44,7 @@ public class Rangement extends AbstractPlace {
    * @param listPart LinkedList<Part>: liste des parties
    */
   public Rangement(String name, List<Part> listPart) {
-	  super(name);
+    super(name);
     setPlace(listPart);
   }
 
@@ -91,6 +91,7 @@ public class Rangement extends AbstractPlace {
     this.startSimplePlace = startSimplePlace;
   }
 
+  @Override
   public void setPartCount(int nbParts) {
     this.nbParts = nbParts;
   }
@@ -314,6 +315,7 @@ public class Rangement extends AbstractPlace {
    *
    * @return int
    */
+  @Override
   public int getTotalCountCellUsed() {
     int resul = 0;
     for (int i = 0; i < nbParts; i++) {
@@ -552,6 +554,7 @@ public class Rangement extends AbstractPlace {
    * @param numPlace Numero d'emplacement (startCaisse, n)
    * @return
    */
+  @Override
   public boolean isInexistingNumPlace(int numPlace) {
     return numPlace < startSimplePlace || numPlace >= nbParts + startSimplePlace;
   }
@@ -724,7 +727,7 @@ public class Rangement extends AbstractPlace {
       return false;
     }
     if (super.equals(this) != super.equals(obj)) {
-    	return false;
+      return false;
     }
     return true;
   }
@@ -755,10 +758,12 @@ public class Rangement extends AbstractPlace {
     return true;
   }
 
+  @Override
   public boolean isDefaultPlace() {
     return defaultPlace;
   }
 
+  @Override
   public void setDefaultPlace(boolean defaultPlace) {
     this.defaultPlace = defaultPlace;
   }

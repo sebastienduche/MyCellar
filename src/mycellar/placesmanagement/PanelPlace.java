@@ -458,7 +458,7 @@ public class PanelPlace extends JPanel implements IPlace {
         if (numPlaceSelectedIndex != 0) {
           AbstractPlace rangement = place.getItemAt(placeSelectedIndex);
           if (!rangement.isSimplePlace()) {
-            int nb_ligne = ((ComplexPlace)rangement).getLineCountAt(numPlaceSelectedIndex - 1);
+            int nb_ligne = ((ComplexPlace) rangement).getLineCountAt(numPlaceSelectedIndex - 1);
             line.removeAllItems();
             column.removeAllItems();
             line.addItem(NONE);

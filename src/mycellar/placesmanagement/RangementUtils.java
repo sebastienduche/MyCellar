@@ -18,7 +18,6 @@ import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.IAbstractPlace;
 import mycellar.placesmanagement.places.SimplePlace;
-
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -532,7 +531,7 @@ public final class RangementUtils {
           if (place.isSimplePlace()) {
             for (int k = 0; k < place.getCountCellUsed(j - 1); k++) {
               nLine++;
-              final IMyCellarObject b = ((SimplePlace)place).getObjectAt(j - 1, k);
+              final IMyCellarObject b = ((SimplePlace) place).getObjectAt(j - 1, k);
               if (b != null) {
                 // Contenu de la cellule
                 final SXSSFRow rowBottle = sheet.createRow(nLine);
@@ -542,7 +541,7 @@ public final class RangementUtils {
               }
             }
           } else {
-        	  ComplexPlace complexPlace = (ComplexPlace) place;
+            ComplexPlace complexPlace = (ComplexPlace) place;
             for (int k = 1; k <= complexPlace.getLineCountAt(j - 1); k++) {
               nLine++;
               int nCol = complexPlace.getColumnCountAt(j - 1, k - 1);
@@ -687,7 +686,7 @@ public final class RangementUtils {
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
           continue;
         }
-        if (((SimplePlace)rangement).hasFreeSpace(bouteille.getPlace())) {
+        if (((SimplePlace) rangement).hasFreeSpace(bouteille.getPlace())) {
           rangement.updateToStock(bouteille);
         } else {
           // Caisse pleine
@@ -702,7 +701,7 @@ public final class RangementUtils {
           continue;
         }
         Optional<MyCellarObject> bottle;
-        if (!((ComplexPlace)rangement).isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
+        if (!((ComplexPlace) rangement).isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
           // Cellule inexistante
           Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));

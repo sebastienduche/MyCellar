@@ -14,50 +14,50 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 29/05/22
+ * @version 0.3
+ * @since 31/05/22
  */
 public interface IAbstractPlace {
 
-	@Deprecated
-	public boolean isSimplePlace();
+  @Deprecated
+  public boolean isSimplePlace();
 
-	@Deprecated
-	public int getStartSimplePlace();
+  @Deprecated
+  public int getStartSimplePlace();
 
-	public String getName();
+  public String getName();
 
-	public int getPartCount();
+  public int getPartCount();
 
-	public void clearStorage(MyCellarObject myCellarObject);
+  public void clearStorage(MyCellarObject myCellarObject);
 
-	public void clearStorage(MyCellarObject myCellarObject, Place place);
+  public void clearStorage(MyCellarObject myCellarObject, Place place);
 
-	public int getCountCellUsed(int part);
+  public int getCountCellUsed(int part);
 
-	public boolean addObject(MyCellarObject myCellarObject);
+  public boolean addObject(MyCellarObject myCellarObject);
 
-	public void removeObject(MyCellarObject myCellarObject) throws MyCellarException;
+  public void removeObject(MyCellarObject myCellarObject) throws MyCellarException;
 
-	public void updateToStock(MyCellarObject myCellarObject);
+  public void updateToStock(MyCellarObject myCellarObject);
 
-	public boolean canAddObjectAt(MyCellarObject b);
+  public boolean canAddObjectAt(MyCellarObject b);
 
-	public boolean canAddObjectAt(Place place);
+  public boolean canAddObjectAt(Place place);
 
-	public boolean canAddObjectAt(int tmpNumEmpl, int tmpLine, int tmpCol);
+  public boolean canAddObjectAt(int tmpNumEmpl, int tmpLine, int tmpCol);
 
-	public Optional<MyCellarObject> getObject(int num_empl, int line, int column);
+  public Optional<MyCellarObject> getObject(int num_empl, int line, int column);
 
-	public Optional<MyCellarObject> getObject(Place place);
+  public Optional<MyCellarObject> getObject(Place place);
 
-	public String toXml();
+  public String toXml();
 
-	public void resetStockage();
+  public void resetStockage();
 
-	public Map<Integer, Integer> getNumberOfObjectsPerPlace();
+  public Map<Integer, Integer> getNumberOfObjectsPerPlace();
 
-	public int getLastPartNumber();
-	
-	public int getTotalCountCellUsed();
+  public int getLastPartNumber();
+
+  public int getTotalCountCellUsed();
 }

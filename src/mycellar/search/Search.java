@@ -35,7 +35,7 @@ import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.places.IAbstractPlace;
+import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.ui.PanelRequest;
 import mycellar.vignobles.CountryVignobleController;
@@ -85,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 23.9
- * @since 27/05/22
+ * @version 24.0
+ * @since 01/06/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -287,7 +287,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             searchTableModel.removeObject(myCellarObject);
             Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
-              final IAbstractPlace rangement = myCellarObject.getRangement();
+              final AbstractPlace rangement = myCellarObject.getRangement();
               if (rangement != null) {
                 rangement.removeObject(myCellarObject);
               } else {
@@ -558,7 +558,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private List<MyCellarObject> searchComplexPlace() {
     final Place selectedPlace = panelPlace.getSelectedPlace();
-    IAbstractPlace rangement = selectedPlace.getRangement();
+    AbstractPlace rangement = selectedPlace.getAbstractPlace();
     List<MyCellarObject> myCellarObjectList = new LinkedList<>();
     if (!panelPlace.isSeveralLocationChecked()) {
       final MyCellarObject myCellarObject = rangement.getObject(selectedPlace).orElse(null);
@@ -617,7 +617,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private List<MyCellarObject> searchSimplePlace() {
     final Place selectedPlace = panelPlace.getSelectedPlace();
-    IAbstractPlace rangement = selectedPlace.getRangement();
+    AbstractPlace rangement = selectedPlace.getAbstractPlace();
     int lieu_num = selectedPlace.getPlaceNumIndex();
     int nb_empl_cave = rangement.getPartCount();
     int boucle_toutes;

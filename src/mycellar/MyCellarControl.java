@@ -20,8 +20,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 13/05/22
+ * @version 2.6
+ * @since 01/06/22
  */
 
 public final class MyCellarControl {
@@ -49,7 +49,7 @@ public final class MyCellarControl {
   }
 
   public static boolean hasInvalidPlace(Place place, Component component) {
-    if (Program.EMPTY_PLACE.equals(place.getRangement())) {
+    if (Program.EMPTY_PLACE.equals(place.getAbstractPlace())) {
       Debug("ERROR: Wrong Place");
       Erreur.showSimpleErreur(component, getError("Error.selectStorage"));
       return true;

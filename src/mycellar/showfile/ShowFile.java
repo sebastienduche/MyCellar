@@ -44,7 +44,6 @@ import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
-import mycellar.placesmanagement.places.IAbstractPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -89,8 +88,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.4
- * @since 31/05/22
+ * @version 12.5
+ * @since 01/06/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -810,7 +809,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           } else {
             for (MyCellarObject b : toDeleteList) {
               Program.getStorage().addHistory(HistoryState.DEL, b);
-              final IAbstractPlace rangement = b.getRangement();
+              final AbstractPlace rangement = b.getRangement();
               if (rangement != null) {
                 rangement.removeObject(b);
               } else {
@@ -876,7 +875,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         for (MyCellarObject b : toRestoreList) {
           Program.getTrash().remove(b);
           if (b.isInExistingPlace()) {
-            IAbstractPlace r = b.getRangement();
+            AbstractPlace r = b.getRangement();
             if (r.isSimplePlace()) {
               Program.getStorage().addHistory(HistoryState.ADD, b);
               Program.getStorage().addWine(b);
@@ -914,7 +913,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   private void setRangementValue(MyCellarObject b, MyCellarFields field, Object value) {
-    IAbstractPlace rangement = b.getRangement();
+    AbstractPlace rangement = b.getRangement();
     int nValueToCheck = -1;
     String empl = b.getEmplacement();
     int num_empl = b.getNumLieu();
@@ -957,7 +956,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
             JOptionPane.PLAIN_MESSAGE);
         place = panelPlace.getSelectedPlace();
         if (place.hasPlace()) {
-          rangement = (Rangement) place.getRangement();
+          rangement = place.getAbstractPlace();
           empl = rangement.getName();
           num_empl = place.getPlaceNum();
           line = place.getLine();

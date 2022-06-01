@@ -15,9 +15,9 @@ import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.places.IAbstractPlace;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
@@ -41,8 +41,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.9
- * @since 27/05/22
+ * @version 10.0
+ * @since 01/06/22
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -184,7 +184,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
 
     int lieu_num = place.getPlaceNum();
-    IAbstractPlace cave = place.getRangement();
+    AbstractPlace cave = place.getAbstractPlace();
     boolean isCaisse = cave.isSimplePlace();
 
     if (MyCellarControl.hasInvalidNumLieuNumber(lieu_num, isCaisse)) {
@@ -249,7 +249,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
 
     if (!oldPlace.isSimplePlace()) {
-      ((Rangement) oldPlace.getRangement()).clearComplexStock(oldPlace);
+      ((ComplexPlace) oldPlace.getAbstractPlace()).clearStorage(oldPlace);
     }
 
     if (!RangementUtils.putTabStock()) {
@@ -257,7 +257,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
     ProgramPanels.updateSearchTable();
 
-    IAbstractPlace rangement = myCellarObject.getRangement();
+    AbstractPlace rangement = myCellarObject.getRangement();
     if (!rangement.isSimplePlace()) {
       rangement.updateToStock(myCellarObject);
     }

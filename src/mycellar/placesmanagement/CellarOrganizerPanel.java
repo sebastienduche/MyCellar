@@ -24,7 +24,6 @@ import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
-import mycellar.placesmanagement.places.IAbstractPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.activation.ActivationDataFlavor;
@@ -76,8 +75,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.4
- * @since 31/05/22
+ * @version 5.5
+ * @since 01/06/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -387,11 +386,11 @@ final class RangementCell extends JPanel {
   private final int column;
   MyCellarObjectDraggingLabel draggingLabel;
   private MyCellarObjectDraggingLabel bottleLabel;
-  private IAbstractPlace place;
+  private AbstractPlace place;
   private JPanel parent;
   private CellarOrganizerPanel cellarOrganizerPanel;
 
-  RangementCell(MouseListener listener, TransferHandler handler, IAbstractPlace place, int placeNum, int row, int column, JPanel parent, CellarOrganizerPanel cellarOrganizerPanel) {
+  RangementCell(MouseListener listener, TransferHandler handler, AbstractPlace place, int placeNum, int row, int column, JPanel parent, CellarOrganizerPanel cellarOrganizerPanel) {
     this.place = place;
     this.placeNum = placeNum;
     this.row = row;
@@ -482,11 +481,11 @@ final class RangementCell extends JPanel {
     return placeNum + 1;
   }
 
-  public IAbstractPlace getPlace() {
+  public AbstractPlace getPlace() {
     return place;
   }
 
-  public void setPlace(IAbstractPlace place) {
+  public void setPlace(AbstractPlace place) {
     this.place = place;
   }
 

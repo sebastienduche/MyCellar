@@ -14,6 +14,7 @@ import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.ComplexPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
@@ -34,8 +35,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 29/05/22
+ * @version 3.8
+ * @since 01/06/22
  */
 
 final class MoveLine extends JDialog {
@@ -101,7 +102,7 @@ final class MoveLine extends JDialog {
     nNewSelected--; // We need the o bse index for the next calls
     int nOldSelected = selectedPlace.getLineIndex();
     int nNumLieu = selectedPlace.getPlaceNumIndex();
-    Rangement rangement = (Rangement)selectedPlace.getRangement();
+    Rangement rangement = (Rangement) selectedPlace.getAbstractPlace();
     int nNbBottle = rangement.getNbCaseUseInLine(nNumLieu, nOldSelected);
     if (nNbBottle == 0) {
       Erreur.showSimpleErreur(this, getError("Error.noItemsToMove", LabelProperty.PLURAL));
@@ -153,7 +154,7 @@ final class MoveLine extends JDialog {
       new MyCellarSwingWorker() {
         @Override
         protected void done() {
-          int lineCount = ((Rangement)selectedPlace.getRangement()).getLineCountAt(selectedPlace.getPlaceNumIndex());
+          int lineCount = ((ComplexPlace) selectedPlace.getAbstractPlace()).getLineCountAt(selectedPlace.getPlaceNumIndex());
           new_line_cbx.removeAllItems();
           new_line_cbx.addItem(NONE);
           for (int i = 1; i <= lineCount; i++) {

@@ -39,8 +39,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.6
- * @since 31/05/22
+ * @version 3.7
+ * @since 01/06/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -162,7 +162,7 @@ public class PanelPlace extends JPanel implements IPlace {
   }
 
   public Rangement getSelectedRangement() {
-    return (Rangement) getSelectedPlace().getRangement();
+    return (Rangement) getSelectedPlace().getAbstractPlace();
   }
 
   private void initPlaceCombo() {
@@ -319,7 +319,7 @@ public class PanelPlace extends JPanel implements IPlace {
         Debug("Select Place...");
         enableAll(false);
         setListenersEnabled(false);
-        final Rangement rangement = (Rangement) placeRangement.getRangement();
+        final Rangement rangement = (Rangement) placeRangement.getAbstractPlace();
         place.setSelectedItem(rangement);
         labelExist.setText("");
 

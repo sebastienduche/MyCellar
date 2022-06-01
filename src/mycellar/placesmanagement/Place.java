@@ -1,7 +1,7 @@
 package mycellar.placesmanagement;
 
 import mycellar.Program;
-import mycellar.placesmanagement.places.IAbstractPlace;
+import mycellar.placesmanagement.places.AbstractPlace;
 
 /**
  * Titre : Cave &agrave; vin
@@ -10,33 +10,33 @@ import mycellar.placesmanagement.places.IAbstractPlace;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 27/05/22
+ * @version 0.8
+ * @since 01/06/22
  */
 
 public class Place {
 
-  private final IAbstractPlace rangement;
+  private final AbstractPlace abstractPlace;
   private final int placeNum;
   private final int line;
   private final int column;
 
-  private Place(IAbstractPlace rangement, int placeNum) {
-    this.rangement = rangement;
+  private Place(AbstractPlace abstractPlace, int placeNum) {
+    this.abstractPlace = abstractPlace;
     this.placeNum = placeNum;
     line = -1;
     column = -1;
   }
 
-  private Place(IAbstractPlace rangement, int placeNum, int line, int column) {
-    this.rangement = rangement;
+  private Place(AbstractPlace abstractPlace, int placeNum, int line, int column) {
+    this.abstractPlace = abstractPlace;
     this.placeNum = placeNum;
     this.line = line;
     this.column = column;
   }
 
-  public IAbstractPlace getRangement() {
-    return rangement;
+  public AbstractPlace getAbstractPlace() {
+    return abstractPlace;
   }
 
   public int getPlaceNum() {
@@ -56,7 +56,7 @@ public class Place {
    */
   public int getPlaceNumIndex() {
     if (isSimplePlace()) {
-      return placeNum - rangement.getStartSimplePlace();
+      return placeNum - abstractPlace.getStartSimplePlace();
     }
     return placeNum - 1;
   }
@@ -76,17 +76,17 @@ public class Place {
   }
 
   public boolean isSimplePlace() {
-    return rangement.isSimplePlace();
+    return abstractPlace.isSimplePlace();
   }
 
   public boolean hasPlace() {
-    return !Program.EMPTY_PLACE.equals(rangement);
+    return !Program.EMPTY_PLACE.equals(abstractPlace);
   }
 
   @Override
   public String toString() {
     return "Place{" +
-        "rangement=" + rangement +
+        "abstractPlace=" + abstractPlace +
         ", placeNum=" + placeNum +
         ", line=" + line +
         ", column=" + column +
@@ -95,12 +95,12 @@ public class Place {
 
   public static class PlaceBuilder {
 
-    protected final IAbstractPlace rangement;
+    protected final AbstractPlace rangement;
     private int numPlace;
     private int line;
     private int column;
 
-    public PlaceBuilder(IAbstractPlace rangement) {
+    public PlaceBuilder(AbstractPlace rangement) {
       this.rangement = rangement;
     }
 

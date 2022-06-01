@@ -9,7 +9,7 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
-import mycellar.placesmanagement.places.IAbstractPlace;
+import mycellar.placesmanagement.places.AbstractPlace;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -30,8 +30,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 27/05/22
+ * @version 2.7
+ * @since 01/06/22
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -157,7 +157,7 @@ public class ErrorShowValues extends TableShowValues {
   public void setValueAt(Object value, int row, int col) {
     MyCellarError error = errors.get(row);
     MyCellarObject b = error.getMyCellarObject();
-    IAbstractPlace rangement;
+    AbstractPlace rangement;
     final Column column = Column.fromIndex(col);
     switch (column) {
       case ETAT:

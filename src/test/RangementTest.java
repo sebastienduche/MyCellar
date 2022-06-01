@@ -6,9 +6,9 @@ import mycellar.core.exceptions.MyCellarException;
 import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
-import mycellar.placesmanagement.places.IAbstractPlace;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -435,7 +435,7 @@ class RangementTest {
     assertEquals(0, complexPlace2x2_3x22545.getNbCaseUseInLine(1, 0));
   }
 
-  private void updateToArmoire(Bouteille b, int numLieu, int ligne, int colonne, String armoire, IAbstractPlace place) {
+  private void updateToArmoire(Bouteille b, int numLieu, int ligne, int colonne, String armoire, AbstractPlace place) {
     b.setNumLieu(numLieu);
     b.setLigne(ligne);
     b.setColonne(colonne);

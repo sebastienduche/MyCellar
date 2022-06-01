@@ -16,7 +16,6 @@ import mycellar.core.exceptions.MyCellarException;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
-import mycellar.placesmanagement.places.IAbstractPlace;
 import mycellar.placesmanagement.places.SimplePlace;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -72,8 +71,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.8
- * @since 31/05/22
+ * @version 4.9
+ * @since 01/06/22
  */
 public final class RangementUtils {
 
@@ -86,7 +85,7 @@ public final class RangementUtils {
     Program.getStorage().deleteWine(oldObject);
 
     if (newObjectPreviousPlace != null) {
-      newObjectPreviousPlace.getRangement().clearStorage(newObject, newObjectPreviousPlace);
+      newObjectPreviousPlace.getAbstractPlace().clearStorage(newObject, newObjectPreviousPlace);
     }
 
     ProgramPanels.getSearch().ifPresent(search -> {
@@ -94,7 +93,7 @@ public final class RangementUtils {
       search.updateTable();
     });
 
-    final IAbstractPlace rangement = newObject.getRangement();
+    final AbstractPlace rangement = newObject.getRangement();
     if (!rangement.isSimplePlace()) {
       rangement.updateToStock(newObject);
     }

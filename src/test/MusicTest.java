@@ -413,13 +413,13 @@ class MusicTest {
   @Test
   void getPlace() {
     Place place = music.getPlace();
-    assertEquals(armoire1x3x3, place.getRangement());
+    assertEquals(armoire1x3x3, place.getAbstractPlace());
     assertEquals(1, place.getPlaceNum());
     assertEquals(2, place.getLine());
     assertEquals(3, place.getColumn());
 
     place = musicCaisse.getPlace();
-    assertEquals(caisse, place.getRangement());
+    assertEquals(caisse, place.getAbstractPlace());
     assertEquals(1, place.getPlaceNum());
   }
 

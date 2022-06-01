@@ -9,7 +9,6 @@ import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
-import mycellar.placesmanagement.places.IAbstractPlace;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import org.w3c.dom.Element;
@@ -46,8 +45,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 31/05/22
+ * @version 3.8
+ * @since 01/06/22
  */
 
 public class XmlUtils {
@@ -309,7 +308,7 @@ public class XmlUtils {
    *
    * @param rangements LinkedList<IBasicPlace>
    */
-  public static void writeMyCellarXml(List<? extends IAbstractPlace> rangements, String filename) {
+  public static void writeMyCellarXml(List<? extends AbstractPlace> rangements, String filename) {
     Debug("writeMyCellarXml: Writing file");
     if (isNullOrEmpty(filename)) {
       filename = Program.getXMLPlacesFileName();
@@ -318,7 +317,7 @@ public class XmlUtils {
       //Init XML File
       fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
       // Ecriture des rangements
-      for (IAbstractPlace r : rangements) {
+      for (AbstractPlace r : rangements) {
         fileWriter.write(r.toXml());
       }
       fileWriter.write("</MyCellar>");

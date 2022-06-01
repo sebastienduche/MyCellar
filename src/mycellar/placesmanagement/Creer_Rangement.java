@@ -26,6 +26,8 @@ import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import net.miginfocom.swing.MigLayout;
 
@@ -258,9 +260,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     if (!modify) {
       return;
     }
-    final Rangement rangement = (Rangement) e.getItem();
+    final AbstractPlace abstractPlace = (AbstractPlace) e.getItem();
     label_cree.setText("");
-    if (Program.EMPTY_PLACE.equals(rangement)) {
+    if (Program.EMPTY_PLACE.equals(abstractPlace)) {
       nom_obj.setText("");
       model.setValues(new LinkedList<>());
       enableAll(false);
@@ -268,22 +270,24 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     }
 
     enableAll(true);
-    nom_obj.setText(rangement.getName());
-    m_caisse_chk.setSelected(rangement.isSimplePlace());
+    nom_obj.setText(abstractPlace.getName());
+    m_caisse_chk.setSelected(abstractPlace.isSimplePlace());
     m_caisse_chk.setEnabled(false);
-    if (rangement.isSimplePlace()) {
-      checkLimite.setSelected(rangement.isLimited());
-      if (rangement.isLimited()) {
-        nb_limite.setValue(rangement.getMaxColumnNumber());
+    if (abstractPlace.isSimplePlace()) {
+      SimplePlace simplePlace = (SimplePlace) abstractPlace;
+      checkLimite.setSelected(simplePlace.isLimited());
+      if (simplePlace.isLimited()) {
+        nb_limite.setValue(simplePlace.getMaxItemCount());
       }
-      nb_start_caisse.setValue(rangement.getStartSimplePlace());
+      nb_start_caisse.setValue(simplePlace.getPartNumberIncrement());
     } else {
-      m_jrb_same_column_number.setSelected(rangement.isSameColumnNumber());
-      m_jrb_dif_column_number.setSelected(!rangement.isSameColumnNumber());
-      listPart = rangement.getPlace();
+      ComplexPlace complexPlace = (ComplexPlace) abstractPlace;
+      m_jrb_same_column_number.setSelected(complexPlace.isSameColumnNumber());
+      m_jrb_dif_column_number.setSelected(!complexPlace.isSameColumnNumber());
+      listPart = complexPlace.getPlace();
       model.setValues(listPart);
     }
-    nb_parties.setValue(rangement.getPartCount());
+    nb_parties.setValue(abstractPlace.getPartCount());
   }
 
   private void enableAll(boolean enable) {
@@ -298,8 +302,8 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private void modifyPlace() {
     Debug("modifyPlace...");
 
-    final Rangement rangement = (Rangement) comboPlace.getSelectedItem();
-    if (comboPlace.getSelectedIndex() == 0 || rangement == null) {
+    final AbstractPlace abstractPlace = (AbstractPlace) comboPlace.getSelectedItem();
+    if (comboPlace.getSelectedIndex() == 0 || abstractPlace == null) {
       Debug("ERROR: Please select a place");
       Erreur.showSimpleErreur(getError("Error.SelectStorage"));
       return;
@@ -312,13 +316,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
     Debug("Advanced modifying...");
     if (m_caisse_chk.isSelected()) {
-      modifySimplePlace(rangement, nom);
+      modifySimplePlace((SimplePlace) abstractPlace, nom);
     } else {
-      modifyComplexPlace(rangement, nom);
+      modifyComplexPlace((ComplexPlace) abstractPlace, nom);
     }
   }
 
-  private void modifySimplePlace(Rangement rangement, String nom) {
+  private void modifySimplePlace(SimplePlace simplePlace, String nom) {
     Debug("Modifying Simple place...");
     //Modification d'un rangement de type "Caisse"
     start_caisse = nb_start_caisse.getIntValue();
@@ -326,21 +330,21 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     limite = nb_limite.getIntValue();
     int nbPart = nb_parties.getIntValue();
 
-    if (rangement.getPartCount() > nbPart) {
-      final Map<Integer, Integer> numberOfObjectsPerPlace = rangement.getNumberOfObjectsPerPlace();
+    if (simplePlace.getPartCount() > nbPart) {
+      final Map<Integer, Integer> numberOfObjectsPerPlace = simplePlace.getNumberOfObjectsPerPlace();
 
-      for (int i = nbPart; i < rangement.getPartCount(); i++) {
+      for (int i = nbPart; i < simplePlace.getPartCount(); i++) {
         if (numberOfObjectsPerPlace.get(i) > 0) {
           Debug("ERROR: Unable to delete simple place part with objects!");
-          Erreur.showSimpleErreur(MessageFormat.format(getError("CreerRangement.CantDeletePartCaisse"), (i + rangement.getStartSimplePlace())));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("CreerRangement.CantDeletePartCaisse"), (i + simplePlace.getPartNumberIncrement())));
           return;
         }
       }
     }
 
-    int nb_bottle = rangement.getTotalCountCellUsed();
+    int nb_bottle = simplePlace.getTotalCountCellUsed();
     if (nb_bottle > 0) {
-      String name = rangement.getName();
+      String name = simplePlace.getName();
       if (!name.equals(nom)) {
         String erreur_txt1, erreur_txt2;
         if (nb_bottle == 1) {
@@ -359,14 +363,14 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
               .filter(b -> b.getEmplacement().equals(name))
               .forEach(b -> b.setEmplacement(nom));
         }
-      } else if (rangement.getStartSimplePlace() != start_caisse) {
+      } else if (simplePlace.getPartNumberIncrement() != start_caisse) {
         // Le numero de la premiere partie a change, renumeroter
-        String erreur_txt1 = MessageFormat.format(getError("CreerRangement.UpdatedBottlePart"), start_caisse, rangement.getStartSimplePlace());
+        String erreur_txt1 = MessageFormat.format(getError("CreerRangement.UpdatedBottlePart"), start_caisse, simplePlace.getPartNumberIncrement());
         String erreur_txt2 = getError("CreerRangement.AskUpdateBottlePart", LabelProperty.PLURAL);
 
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify start part number
-          final int difference = start_caisse - rangement.getStartSimplePlace();
+          final int difference = start_caisse - simplePlace.getPartNumberIncrement();
           Program.getStorage().getAllList()
               .stream()
               .filter(b -> b.getEmplacement().equals(name))
@@ -375,17 +379,17 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       }
     }
     nom_obj.setText("");
-    updatePlace(nom, nbPart, rangement);
+    updateSimplePlace(nom, nbPart, simplePlace);
     updateView();
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
     Debug("Modifications completed");
     label_cree.setText(getLabel("CreateStorage.StorageModified"), true);
   }
 
-  private void modifyComplexPlace(Rangement rangement, String nom) {
+  private void modifyComplexPlace(ComplexPlace complexPlace, String nom) {
     // Rangement complexe
     Debug("Modifying complex place...");
-    int nbBottles = rangement.getTotalCountCellUsed();
+    int nbBottles = complexPlace.getTotalCountCellUsed();
     for (Part p : listPart) {
       if (p.getRows().isEmpty()) {
         Debug("ERROR: Wrong number of lines on part: " + p.getNum());
@@ -402,18 +406,18 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     }
 
     if (nbBottles == 0) {
-      rangement.setName(nom);
-      rangement.updatePlace(listPart);
+      complexPlace.setName(nom);
+      complexPlace.updatePlace(listPart);
       putTabStock();
       nom_obj.setText("");
       updateView();
       ProgramPanels.updateAllPanelsForUpdatingPlaces();
       label_cree.setText(getLabel("CreateStorage.StorageModified"), true);
     } else {
-      if (rangement.getPartCount() > listPart.size()) {
+      if (complexPlace.getPartCount() > listPart.size()) {
         int nb = 0;
-        for (int i = listPart.size(); i < rangement.getPartCount(); i++) {
-          nb += rangement.getTotalCellUsed(i);
+        for (int i = listPart.size(); i < complexPlace.getPartCount(); i++) {
+          nb += complexPlace.getTotalCellUsed(i);
         }
         if (nb > 0) {
           Debug("ERROR: Unable to reduce the number of place");
@@ -429,14 +433,14 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         }
         Part part = listPart.get(i);
         int nbRow = -1;
-        if (i < rangement.getPartCount()) {
-          nbRow = rangement.getLineCountAt(i);
+        if (i < complexPlace.getPartCount()) {
+          nbRow = complexPlace.getLineCountAt(i);
         }
         int newNbRow = part.getRowSize();
         if (nbRow > newNbRow) {
           int nb = 0;
           for (int j = newNbRow; j < nbRow; j++) {
-            nb += rangement.getNbCaseUseInLine(i, j);
+            nb += complexPlace.getNbCaseUseInLine(i, j);
           }
           if (nb > 0) {
             canContinue = false;
@@ -451,8 +455,8 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
               break;
             }
             int nbCol = -1;
-            if (i < rangement.getPartCount() && j < rangement.getLineCountAt(i)) {
-              nbCol = rangement.getColumnCountAt(i, j);
+            if (i < complexPlace.getPartCount() && j < complexPlace.getLineCountAt(i)) {
+              nbCol = complexPlace.getColumnCountAt(i, j);
             }
             int newNbCol = part.getRow(j).getCol();
             if (nbCol > newNbCol) {
@@ -461,7 +465,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
                   Debug("ERROR: canContinue false, skipping column");
                   break;
                 }
-                if (rangement.getObject(i, j, k).isPresent()) {
+                if (complexPlace.getObject(i, j, k).isPresent()) {
                   canContinue = false;
                   Debug("ERROR: Unable to reduce the size of the number of column");
                   Erreur.showSimpleErreur(MessageFormat.format(getError("Error.removeNotEmptyShelveLineColumns"), Integer.toString(j + 1), Integer.toString(i + 1)));
@@ -476,8 +480,8 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         return;
       }
 
-      Debug("Updating complex place: " + rangement.getName());
-      String name = rangement.getName();
+      Debug("Updating complex place: " + complexPlace.getName());
+      String name = complexPlace.getName();
       if (!name.equalsIgnoreCase(nom)) {
         String erreur_txt1 = getError("Error.1ItemInStorage", LabelProperty.SINGLE);
         String erreur_txt2 = getError("Error.confirmChangeStorage1Item", LabelProperty.SINGLE);
@@ -490,19 +494,19 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify Name of place
-          rangement.setName(nom);
-          rangement.updatePlace(listPart);
+          complexPlace.setName(nom);
+          complexPlace.updatePlace(listPart);
           Program.getStorage().getAllList()
               .stream()
               .filter(b -> b.getEmplacement().equals(name))
               .forEach(b -> b.setEmplacement(nom));
           nom_obj.setText("");
         } else {
-          rangement.setName(nom);
-          rangement.updatePlace(listPart);
+          complexPlace.setName(nom);
+          complexPlace.updatePlace(listPart);
         }
       } else {
-        rangement.updatePlace(listPart);
+        complexPlace.updatePlace(listPart);
       }
       putTabStock();
       updateView();
@@ -512,11 +516,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     }
   }
 
-  private void updatePlace(String nom, int nbPart, Rangement rangement) {
-    rangement.setName(nom);
-    rangement.setLimited(islimited, limite);
-    rangement.setStartSimplePlace(start_caisse);
-    rangement.updateSimplePlace(nbPart);
+  private void updateSimplePlace(String nom, int nbPart, SimplePlace simplePlace) {
+    simplePlace.setName(nom);
+    simplePlace.setLimited(islimited, limite);
+    simplePlace.setPartNumberIncrement(start_caisse);
+    simplePlace.setPartCount(nbPart);
+    simplePlace.resetStockage();
     Program.setListCaveModified();
     Program.setModified();
     putTabStock();

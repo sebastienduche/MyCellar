@@ -12,7 +12,6 @@ import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.requester.ui.ValueSearch;
 import net.miginfocom.swing.MigLayout;
@@ -32,8 +31,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 31/05/22
+ * @version 2.2
+ * @since 01/06/22
  */
 
 public class Predicates {
@@ -363,7 +362,7 @@ public class Predicates {
       JOptionPane.showMessageDialog(null, panel,
           "",
           JOptionPane.PLAIN_MESSAGE);
-      return new ValueSearch(((Rangement) liste.getSelectedItem()).getName());
+      return new ValueSearch(((AbstractPlace) liste.getSelectedItem()).getName());
     }
   };
 

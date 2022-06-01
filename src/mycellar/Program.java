@@ -31,7 +31,6 @@ import mycellar.core.text.LanguageFileLoader;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
-import mycellar.placesmanagement.Rangement;
 import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.SimplePlace;
@@ -128,9 +127,7 @@ public final class Program {
 
   // Manage global config
   private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
-  @Deprecated
-  private static final List<Rangement> PLACES = new LinkedList<>();
-  private static final List<AbstractPlace> NEW_PLACES = new LinkedList<>();
+  private static final List<AbstractPlace> PLACES = new LinkedList<>();
   private static final List<MyCellarObject> TRASH = new LinkedList<>();
   private static final List<MyCellarError> ERRORS = new LinkedList<>();
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
@@ -404,11 +401,11 @@ public final class Program {
   }
 
   static boolean loadData() {
-    NEW_PLACES.clear();
-    boolean load = XmlUtils.readMyCellarXml("", NEW_PLACES);
-    if (!load || NEW_PLACES.isEmpty()) {
-      NEW_PLACES.clear();
-      NEW_PLACES.add(DEFAULT_PLACE);
+    PLACES.clear();
+    boolean load = XmlUtils.readMyCellarXml("", PLACES);
+    if (!load || PLACES.isEmpty()) {
+      PLACES.clear();
+      PLACES.add(DEFAULT_PLACE);
     }
     getStorage().loadHistory();
     getStorage().loadWorksheet();
@@ -491,7 +488,7 @@ public final class Program {
     saveGlobalProperties();
 
     if (isListCaveModified()) {
-      XmlUtils.writeMyCellarXml(NEW_PLACES, "");
+      XmlUtils.writeMyCellarXml(PLACES, "");
     }
 
     getStorage().saveHistory();
@@ -543,22 +540,17 @@ public final class Program {
 
   }
 
-  /*@Deprecated
-  public static List<Rangement> getPlaces() {
-    return Collections.unmodifiableList(PLACES);
-  }*/
-
   public static List<AbstractPlace> getAbstractPlaces() {
-    return Collections.unmodifiableList(NEW_PLACES);
+    return Collections.unmodifiableList(PLACES);
   }
 
   public static AbstractPlace getAbstractPlaceAt(int index) {
-    return NEW_PLACES.get(index);
+    return PLACES.get(index);
   }
 
 
   public static boolean hasOnlyOnePlace() {
-    return PLACES.size() == 1 || NEW_PLACES.size() == 1;
+    return PLACES.size() == 1;
   }
 
   public static AbstractPlace getPlaceByName(final String name) {
@@ -566,26 +558,12 @@ public final class Program {
     if (TEMP_PLACE.equals(placeName)) {
       return STOCK_PLACE;
     }
-    final List<Rangement> list = PLACES.stream().filter(rangement -> filterOnPlaceName(rangement, placeName)).collect(Collectors.toList());
-    if (!list.isEmpty()) {
-      return list.get(0);
-    }
-    final List<AbstractPlace> new_list = NEW_PLACES.stream().filter(rangement -> filterOnAbstractPlaceName(rangement, placeName)).collect(Collectors.toList());
+    final List<AbstractPlace> new_list = PLACES.stream().filter(rangement -> filterOnAbstractPlaceName(rangement, placeName)).collect(Collectors.toList());
     return new_list.get(0);
-  }
-
-  private static boolean filterOnPlaceName(Rangement rangement, String placeName) {
-    return rangement.getName().equals(placeName) || isDefaultStorageName(rangement, placeName);
   }
 
   private static boolean filterOnAbstractPlaceName(AbstractPlace rangement, String placeName) {
     return rangement.getName().equals(placeName) || isDefaultAbstractPlaceName(rangement, placeName);
-  }
-
-  private static boolean isDefaultStorageName(Rangement rangement, String placeName) {
-    return rangement.isDefaultPlace() &&
-        (rangement.getName().equals(DEFAULT_STORAGE_EN) || rangement.getName().equals(DEFAULT_STORAGE_FR)) &&
-        (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
 
   private static boolean isDefaultAbstractPlaceName(AbstractPlace rangement, String placeName) {
@@ -598,27 +576,27 @@ public final class Program {
     if (rangement == null) {
       return;
     }
-    NEW_PLACES.add(rangement);
+    PLACES.add(rangement);
     setListCaveModified();
     setModified();
-    Collections.sort(NEW_PLACES);
+    Collections.sort(PLACES);
   }
 
   public static void removePlace(AbstractPlace rangement) {
     if (rangement == null) {
       return;
     }
-    NEW_PLACES.remove(rangement);
+    PLACES.remove(rangement);
     setModified();
     setListCaveModified();
   }
 
   public static int getPlaceLength() {
-    return Math.max(PLACES.size(), NEW_PLACES.size());
+    return PLACES.size();
   }
 
   public static boolean hasComplexPlace() {
-    return NEW_PLACES.stream().anyMatch(Predicate.not(AbstractPlace::isSimplePlace));
+    return PLACES.stream().anyMatch(Predicate.not(AbstractPlace::isSimplePlace));
   }
 
   /**
@@ -780,10 +758,10 @@ public final class Program {
       }
 
       if (isListCaveModified()) {
-        XmlUtils.writeMyCellarXml(NEW_PLACES, "");
+        XmlUtils.writeMyCellarXml(PLACES, "");
       }
 
-      if (!PLACES.isEmpty() || !NEW_PLACES.isEmpty()) {
+      if (!PLACES.isEmpty()) {
         getStorage().saveHistory();
         getStorage().saveWorksheet();
         CountryVignobleController.save();
@@ -820,7 +798,6 @@ public final class Program {
     modified = false;
     listCaveModified = false;
     PLACES.clear();
-    NEW_PLACES.clear();
     DEFAULT_PLACE.resetStockage();
     EMPTY_PLACE.resetStockage();
     myCellarFile = null;

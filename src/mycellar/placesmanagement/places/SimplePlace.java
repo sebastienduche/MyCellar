@@ -225,6 +225,11 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
+  public int getFirstPartNumber() {
+    return partNumberIncrement;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;

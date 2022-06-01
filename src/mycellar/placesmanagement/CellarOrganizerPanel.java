@@ -535,8 +535,8 @@ final class MyCellarObjectDraggingLabel extends JPanel {
     super();
     this.myCellarObject = myCellarObject;
     int width = 100;
-    Rangement r = (Rangement) myCellarObject.getRangement();
-    if (r != null && r.isSimplePlace()) {
+    AbstractPlace abstractPlace = myCellarObject.getRangement();
+    if (abstractPlace != null && abstractPlace.isSimplePlace()) {
       width = 400;
     }
     setLayout(new MigLayout("", "5px[" + width + ":" + width + ":" + width + "][10:10:10]0px", "0px[align center, grow]0px"));
@@ -564,9 +564,9 @@ final class MyCellarObjectDraggingLabel extends JPanel {
             ((RangementCell) parent).updateUI();
             Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
-              final Rangement rangement = (Rangement) myCellarObject.getRangement();
-              if (rangement != null) {
-                rangement.removeObject(myCellarObject);
+              final AbstractPlace abstractPlace = myCellarObject.getRangement();
+              if (abstractPlace != null) {
+                abstractPlace.removeObject(myCellarObject);
               } else {
                 Program.getStorage().deleteWine(myCellarObject);
               }

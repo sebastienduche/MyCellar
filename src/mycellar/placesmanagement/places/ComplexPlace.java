@@ -133,6 +133,14 @@ public class ComplexPlace extends AbstractPlace {
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = null;
   }
 
+  public void updatePlace(List<Part> listPart) {
+    Debug("Updating the list of places: ");
+    listPart.forEach(part -> Debug(part.toString()));
+    setPlace(listPart);
+    Program.setListCaveModified();
+    Program.setModified();
+  }
+
   @Override
   public boolean canAddObjectAt(MyCellarObject b) {
     return canAddObjectAt(b.getNumLieu(), -1, -1);
@@ -290,6 +298,11 @@ public class ComplexPlace extends AbstractPlace {
   @Override
   public int getLastPartNumber() {
     return partCount;
+  }
+
+  @Override
+  public int getFirstPartNumber() {
+    return 1;
   }
 
   @Deprecated

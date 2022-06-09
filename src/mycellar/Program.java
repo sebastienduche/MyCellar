@@ -109,8 +109,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.6
- * @since 01/06/22
+ * @version 28.7
+ * @since 09/06/22
  */
 
 public final class Program {
@@ -285,11 +285,6 @@ public final class Program {
     }
   }
 
-  /**
-   * cleanAndUpgrade
-   * <p>
-   * Pour nettoyer et mettre a jour le programme
-   */
   private static void cleanAndUpgrade() {
     if (!hasFile()) {
       return;
@@ -572,21 +567,21 @@ public final class Program {
         (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
 
-  public static void addPlace(AbstractPlace rangement) {
-    if (rangement == null) {
+  public static void addPlace(AbstractPlace abstractPlace) {
+    if (abstractPlace == null) {
       return;
     }
-    PLACES.add(rangement);
+    PLACES.add(abstractPlace);
     setListCaveModified();
     setModified();
     Collections.sort(PLACES);
   }
 
-  public static void removePlace(AbstractPlace rangement) {
-    if (rangement == null) {
+  public static void removePlace(AbstractPlace abstractPlace) {
+    if (abstractPlace == null) {
       return;
     }
-    PLACES.remove(rangement);
+    PLACES.remove(abstractPlace);
     setModified();
     setListCaveModified();
   }

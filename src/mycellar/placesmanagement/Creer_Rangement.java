@@ -40,7 +40,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -52,6 +51,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static javax.swing.border.EtchedBorder.RAISED;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
 import static mycellar.ProgramConstants.FONT_PANEL;
@@ -67,8 +67,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.0
- * @since 01/06/22
+ * @version 17.1
+ * @since 09/06/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -77,15 +77,15 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private static final char PREVIEW = getLabel("PREVIEW").charAt(0);
   private final MyCellarComboBox<AbstractPlace> comboPlace = new MyCellarComboBox<>();
   private final JTextField nom_obj = new JTextField();
-  private final MyCellarRadioButton m_jrb_same_column_number = new MyCellarRadioButton("CreateStorage.AllLinesSame", true);
-  private final MyCellarRadioButton m_jrb_dif_column_number = new MyCellarRadioButton("CreateStorage.AllLinesNotSame", false);
-  private final MyCellarCheckBox checkLimite = new MyCellarCheckBox("CreateStorage.ActivateLimit");
+  private final MyCellarRadioButton allLinesSameRadio = new MyCellarRadioButton("CreateStorage.AllLinesSame", true);
+  private final MyCellarRadioButton notAllLinesSameRadio = new MyCellarRadioButton("CreateStorage.AllLinesNotSame", false);
+  private final MyCellarCheckBox isSimplePlaceLimitedCheckbox = new MyCellarCheckBox("CreateStorage.ActivateLimit");
   private final MyCellarLabel label_limite = new MyCellarLabel("Main.Item", LabelProperty.SINGLE);
-  private final MyCellarSpinner nb_limite = new MyCellarSpinner(1, 999);
-  private final MyCellarSpinner nb_parties = new MyCellarSpinner(1, 99);
-  private final MyCellarSpinner nb_start_caisse = new MyCellarSpinner(0, 99);
-  private final MyCellarCheckBox m_caisse_chk = new MyCellarCheckBox("CreateStorage.SimpleStorage");
-  private final MyCellarSimpleLabel label_cree = new MyCellarSimpleLabel();
+  private final MyCellarSpinner simplePlaceLimitSpinner = new MyCellarSpinner(1, 999);
+  private final MyCellarSpinner partCountSpinner = new MyCellarSpinner(1, 99);
+  private final MyCellarSpinner partIncrementSimplePlaceSpinner = new MyCellarSpinner(0, 99);
+  private final MyCellarCheckBox isSimplePlaceCheckbox = new MyCellarCheckBox("CreateStorage.SimpleStorage");
+  private final MyCellarSimpleLabel labelCreated = new MyCellarSimpleLabel();
   private final MyCellarButton preview = new MyCellarButton("CreateStorage.Preview");
   private final JPanel panelType;
   private final JPanel panelStartCaisse;
@@ -94,9 +94,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private final CreerRangementTableModel model;
   private final boolean modify;
   private boolean islimited = false;
-  private int limite = 0;
+  private int simplePlaceLimit = 0;
   private LinkedList<Part> listPart = new LinkedList<>();
-  private int start_caisse = 0;
+  private int partNumberIncrementSimplePlace = 0;
   private UpdateViewType updateViewType;
 
   /**
@@ -121,19 +121,19 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     initComboPlaces();
     comboPlace.addItemListener(this::comboPlace_itemStateChanged);
     ButtonGroup cbg = new ButtonGroup();
-    cbg.add(m_jrb_same_column_number);
-    cbg.add(m_jrb_dif_column_number);
-    m_jrb_same_column_number.addItemListener((e) -> model.setSameColumnNumber(m_jrb_same_column_number.isSelected()));
-    label_cree.setForeground(Color.red);
-    label_cree.setFont(FONT_DIALOG_SMALL);
-    label_cree.setText("");
-    label_cree.setHorizontalAlignment(SwingConstants.CENTER);
+    cbg.add(allLinesSameRadio);
+    cbg.add(notAllLinesSameRadio);
+    allLinesSameRadio.addItemListener((e) -> model.setSameColumnNumber(allLinesSameRadio.isSelected()));
+    labelCreated.setForeground(Color.red);
+    labelCreated.setFont(FONT_DIALOG_SMALL);
+    labelCreated.setText("");
+    labelCreated.setHorizontalAlignment(SwingConstants.CENTER);
 
     preview.addActionListener(this::preview_actionPerformed);
-    m_caisse_chk.addItemListener(this::simplePlace_itemStateChanged);
-    checkLimite.addItemListener(this::checkbox2_itemStateChanged);
+    isSimplePlaceCheckbox.addItemListener(this::simplePlace_itemStateChanged);
+    isSimplePlaceLimitedCheckbox.addItemListener(this::checkbox2_itemStateChanged);
 
-    nom_obj.addActionListener((e) -> label_cree.setText(""));
+    nom_obj.addActionListener((e) -> labelCreated.setText(""));
     nom_obj.addMouseListener(new PopupListener());
 
     addKeyListener(new KeyAdapter() {
@@ -143,27 +143,27 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       }
     });
 
-    nb_parties.addChangeListener((e) -> updatePartList());
+    partCountSpinner.addChangeListener((e) -> updatePartList());
 
-    nb_limite.addChangeListener((e) -> {
-      final int count = Integer.parseInt(nb_limite.getValue().toString());
+    simplePlaceLimitSpinner.addChangeListener((e) -> {
+      final int count = Integer.parseInt(simplePlaceLimitSpinner.getValue().toString());
       label_limite.setText(getLabel("Main.Item", new LabelProperty(count > 1)));
     });
 
-    // Alimentation de la liste deroulante du nombre de parties
-    nb_parties.setValue(1);
-    //Alimentation du Spinner start_caisse
-    nb_start_caisse.setValue(0);
-    nb_start_caisse.setVisible(false);
-    //Alimentation du Spinner limite_caisse
-    nb_limite.setValue(1);
+    // Init part count
+    partCountSpinner.setValue(1);
+    // Init increment value for simple place
+    partIncrementSimplePlaceSpinner.setValue(0);
+    partIncrementSimplePlaceSpinner.setVisible(false);
+    // Init count of allowed items
+    simplePlaceLimitSpinner.setValue(1);
 
     setLayout(new MigLayout("", "[grow][grow]", "[][]"));
 
     if (modify) {
       MyCellarLabel labelModify = new MyCellarLabel("CreateStorage.SelectPlaceToModify");
       JPanel panelModify = new JPanel();
-      panelModify.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "", 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+      panelModify.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), "", 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
       panelModify.setLayout(new MigLayout("", "[]", "[]"));
       panelModify.add(labelModify, "split 2");
       panelModify.add(comboPlace);
@@ -171,24 +171,24 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     }
     add(new MyCellarLabel("Import.StorageName"), "span 2, split 3");
     add(nom_obj, "growx");
-    add(m_caisse_chk, "wrap");
+    add(isSimplePlaceCheckbox, "wrap");
 
     panelType = new JPanel();
-    panelType.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("CreateStorage.TypeLines"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelType.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel("CreateStorage.TypeLines"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelType.setLayout(new GridLayout(0, 2));
-    panelType.add(m_jrb_same_column_number);
-    panelType.add(m_jrb_dif_column_number);
+    panelType.add(allLinesSameRadio);
+    panelType.add(notAllLinesSameRadio);
 
     panelStartCaisse = new JPanel();
-    panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("CreateStorage.FirstShelveNumber"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel("CreateStorage.FirstShelveNumber"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelStartCaisse.setLayout(new MigLayout("", "[]", "[]"));
-    panelStartCaisse.add(nb_start_caisse, "wmin 50");
+    panelStartCaisse.add(partIncrementSimplePlaceSpinner, "wmin 50");
 
     panelLimite = new JPanel();
-    panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("CreateStorage.LimitPerShelve"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel("CreateStorage.LimitPerShelve"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelLimite.setLayout(new MigLayout("", "[][]", "[]"));
-    panelLimite.add(checkLimite, "gapright 10");
-    panelLimite.add(nb_limite, "split 2, wmin 50, hidemode 3");
+    panelLimite.add(isSimplePlaceLimitedCheckbox, "gapright 10");
+    panelLimite.add(simplePlaceLimitSpinner, "split 2, wmin 50, hidemode 3");
     panelLimite.add(label_limite, "hidemode 3");
 
     panelTable = new JPanel();
@@ -197,31 +197,31 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     model.setValues(listPart);
 
     JPanel panelPartie = new JPanel();
-    panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), getLabel("CreateStorage.ShelveNumber"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel("CreateStorage.ShelveNumber"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelPartie.setLayout(new MigLayout("", "[]", "[]"));
-    panelPartie.add(nb_parties, "wmin 50");
+    panelPartie.add(partCountSpinner, "wmin 50");
 
-    JPanel panelPartiesConfig = new JPanel();
-    panelPartiesConfig.setLayout(new MigLayout("", "[][]", "[grow]"));
-    panelPartiesConfig.add(panelType, "growy, hidemode 3, gapright 30");
-    panelPartiesConfig.add(panelPartie, "growx, wmin 150, gapright 30");
-    panelPartiesConfig.add(panelStartCaisse, "growx, wmin 250, hidemode 3, gapright 30");
-    panelPartiesConfig.add(panelLimite, "growx, wmin 250, hidemode 3, gapright 30");
+    JPanel panelPartsConfig = new JPanel();
+    panelPartsConfig.setLayout(new MigLayout("", "[][]", "[grow]"));
+    panelPartsConfig.add(panelType, "growy, hidemode 3, gapright 30");
+    panelPartsConfig.add(panelPartie, "growx, wmin 150, gapright 30");
+    panelPartsConfig.add(panelStartCaisse, "growx, wmin 250, hidemode 3, gapright 30");
+    panelPartsConfig.add(panelLimite, "growx, wmin 250, hidemode 3, gapright 30");
 
-    add(panelPartiesConfig, "span 2, wrap, hidemode 3");
+    add(panelPartsConfig, "span 2, wrap, hidemode 3");
     add(panelTable, "span 2, grow, wrap, hidemode 3");
-    add(label_cree, "center, span 2, wrap");
+    add(labelCreated, "center, span 2, wrap");
     add(createButton, "span 2, split 2, center");
     add(preview);
 
-    m_jrb_dif_column_number.addItemListener((e) -> model.setSameColumnNumber(!m_jrb_dif_column_number.isSelected()));
+    notAllLinesSameRadio.addItemListener((e) -> model.setSameColumnNumber(!notAllLinesSameRadio.isSelected()));
     model.setSameColumnNumber(true);
 
     if (modify) {
       enableAll(false);
     }
 
-    m_caisse_chk.setSelected(true);
+    isSimplePlaceCheckbox.setSelected(true);
     setVisible(true);
   }
 
@@ -236,15 +236,15 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   }
 
   private void updatePartList() {
-    if (m_caisse_chk.isSelected()) {
+    if (isSimplePlaceCheckbox.isSelected()) {
       return;
     }
-    int newValue = Integer.parseInt(nb_parties.getValue().toString());
+    int newValue = Integer.parseInt(partCountSpinner.getValue().toString());
     if (newValue > listPart.size()) {
       while (listPart.size() < newValue) {
         Part part = new Part(listPart.size() + 1);
         listPart.add(part);
-        if (m_jrb_dif_column_number.isSelected()) {
+        if (notAllLinesSameRadio.isSelected()) {
           part.setRows(1);
         }
       }
@@ -261,7 +261,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       return;
     }
     final AbstractPlace abstractPlace = (AbstractPlace) e.getItem();
-    label_cree.setText("");
+    labelCreated.setText("");
     if (Program.EMPTY_PLACE.equals(abstractPlace)) {
       nom_obj.setText("");
       model.setValues(new LinkedList<>());
@@ -271,32 +271,32 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
     enableAll(true);
     nom_obj.setText(abstractPlace.getName());
-    m_caisse_chk.setSelected(abstractPlace.isSimplePlace());
-    m_caisse_chk.setEnabled(false);
+    isSimplePlaceCheckbox.setSelected(abstractPlace.isSimplePlace());
+    isSimplePlaceCheckbox.setEnabled(false);
     if (abstractPlace.isSimplePlace()) {
       SimplePlace simplePlace = (SimplePlace) abstractPlace;
-      checkLimite.setSelected(simplePlace.isLimited());
+      isSimplePlaceLimitedCheckbox.setSelected(simplePlace.isLimited());
       if (simplePlace.isLimited()) {
-        nb_limite.setValue(simplePlace.getMaxItemCount());
+        simplePlaceLimitSpinner.setValue(simplePlace.getMaxItemCount());
       }
-      nb_start_caisse.setValue(simplePlace.getPartNumberIncrement());
+      partIncrementSimplePlaceSpinner.setValue(simplePlace.getPartNumberIncrement());
     } else {
       ComplexPlace complexPlace = (ComplexPlace) abstractPlace;
-      m_jrb_same_column_number.setSelected(complexPlace.isSameColumnNumber());
-      m_jrb_dif_column_number.setSelected(!complexPlace.isSameColumnNumber());
+      allLinesSameRadio.setSelected(complexPlace.isSameColumnNumber());
+      notAllLinesSameRadio.setSelected(!complexPlace.isSameColumnNumber());
       listPart = complexPlace.getPlace();
       model.setValues(listPart);
     }
-    nb_parties.setValue(abstractPlace.getPartCount());
+    partCountSpinner.setValue(abstractPlace.getPartCount());
   }
 
   private void enableAll(boolean enable) {
     nom_obj.setEnabled(enable);
-    m_caisse_chk.setEnabled(enable);
-    nb_limite.setEnabled(enable);
-    checkLimite.setEnabled(enable);
-    nb_parties.setEnabled(enable);
-    nb_start_caisse.setEnabled(enable);
+    isSimplePlaceCheckbox.setEnabled(enable);
+    simplePlaceLimitSpinner.setEnabled(enable);
+    isSimplePlaceLimitedCheckbox.setEnabled(enable);
+    partCountSpinner.setEnabled(enable);
+    partIncrementSimplePlaceSpinner.setEnabled(enable);
   }
 
   private void modifyPlace() {
@@ -315,7 +315,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     }
 
     Debug("Advanced modifying...");
-    if (m_caisse_chk.isSelected()) {
+    if (isSimplePlaceCheckbox.isSelected()) {
       modifySimplePlace((SimplePlace) abstractPlace, nom);
     } else {
       modifyComplexPlace((ComplexPlace) abstractPlace, nom);
@@ -324,11 +324,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
   private void modifySimplePlace(SimplePlace simplePlace, String nom) {
     Debug("Modifying Simple place...");
-    //Modification d'un rangement de type "Caisse"
-    start_caisse = nb_start_caisse.getIntValue();
-    islimited = checkLimite.isSelected();
-    limite = nb_limite.getIntValue();
-    int nbPart = nb_parties.getIntValue();
+    partNumberIncrementSimplePlace = partIncrementSimplePlaceSpinner.getIntValue();
+    islimited = isSimplePlaceLimitedCheckbox.isSelected();
+    simplePlaceLimit = simplePlaceLimitSpinner.getIntValue();
+    int nbPart = partCountSpinner.getIntValue();
 
     if (simplePlace.getPartCount() > nbPart) {
       final Map<Integer, Integer> numberOfObjectsPerPlace = simplePlace.getNumberOfObjectsPerPlace();
@@ -348,7 +347,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       if (!name.equals(nom)) {
         String erreur_txt1, erreur_txt2;
         if (nb_bottle == 1) {
-          Debug("MESSAGE: 1 object in this place, modify?");
+          Debug("MESSAGE: 1 object in this place, Modify?");
           erreur_txt1 = getError("Error.1ItemInStorage", LabelProperty.SINGLE);
           erreur_txt2 = getError("Error.confirmChangeStorage1Item", LabelProperty.SINGLE);
         } else {
@@ -357,20 +356,20 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           erreur_txt2 = getError("Error.questionChangeStorageItems", LabelProperty.PLURAL);
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          //Modify Name of place
+          // Modify Name of place
           Program.getStorage().getAllList()
               .stream()
               .filter(b -> b.getEmplacement().equals(name))
               .forEach(b -> b.setEmplacement(nom));
         }
-      } else if (simplePlace.getPartNumberIncrement() != start_caisse) {
+      } else if (simplePlace.getPartNumberIncrement() != partNumberIncrementSimplePlace) {
         // Le numero de la premiere partie a change, renumeroter
-        String erreur_txt1 = MessageFormat.format(getError("CreerRangement.UpdatedBottlePart"), start_caisse, simplePlace.getPartNumberIncrement());
+        String erreur_txt1 = MessageFormat.format(getError("CreerRangement.UpdatedBottlePart"), partNumberIncrementSimplePlace, simplePlace.getPartNumberIncrement());
         String erreur_txt2 = getError("CreerRangement.AskUpdateBottlePart", LabelProperty.PLURAL);
 
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify start part number
-          final int difference = start_caisse - simplePlace.getPartNumberIncrement();
+          final int difference = partNumberIncrementSimplePlace - simplePlace.getPartNumberIncrement();
           Program.getStorage().getAllList()
               .stream()
               .filter(b -> b.getEmplacement().equals(name))
@@ -383,11 +382,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     updateView();
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
     Debug("Modifications completed");
-    label_cree.setText(getLabel("CreateStorage.StorageModified"), true);
+    labelCreated.setText(getLabel("CreateStorage.StorageModified"), true);
   }
 
   private void modifyComplexPlace(ComplexPlace complexPlace, String nom) {
-    // Rangement complexe
     Debug("Modifying complex place...");
     int nbBottles = complexPlace.getTotalCountCellUsed();
     for (Part p : listPart) {
@@ -412,7 +410,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       nom_obj.setText("");
       updateView();
       ProgramPanels.updateAllPanelsForUpdatingPlaces();
-      label_cree.setText(getLabel("CreateStorage.StorageModified"), true);
+      labelCreated.setText(getLabel("CreateStorage.StorageModified"), true);
     } else {
       if (complexPlace.getPartCount() > listPart.size()) {
         int nb = 0;
@@ -486,7 +484,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         String erreur_txt1 = getError("Error.1ItemInStorage", LabelProperty.SINGLE);
         String erreur_txt2 = getError("Error.confirmChangeStorage1Item", LabelProperty.SINGLE);
         if (nbBottles == 1) {
-          Debug("MESSAGE: 1 object in this place, modify?");
+          Debug("MESSAGE: 1 object in this place, Modify?");
         } else {
           Debug("MESSAGE: " + nbBottles + " objects in this place, Modify?");
           erreur_txt1 = MessageFormat.format(getError("Error.NItemsInStorage", LabelProperty.PLURAL), nbBottles);
@@ -512,14 +510,14 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       updateView();
       ProgramPanels.updateAllPanelsForUpdatingPlaces();
       comboPlace.setSelectedIndex(0);
-      label_cree.setText(getLabel("CreateStorage.StorageModified"), true);
+      labelCreated.setText(getLabel("CreateStorage.StorageModified"), true);
     }
   }
 
-  private void updateSimplePlace(String nom, int nbPart, SimplePlace simplePlace) {
-    simplePlace.setName(nom);
-    simplePlace.setLimited(islimited, limite);
-    simplePlace.setPartNumberIncrement(start_caisse);
+  private void updateSimplePlace(String name, int nbPart, SimplePlace simplePlace) {
+    simplePlace.setName(name);
+    simplePlace.setLimited(islimited, simplePlaceLimit);
+    simplePlace.setPartNumberIncrement(partNumberIncrementSimplePlace);
     simplePlace.setPartCount(nbPart);
     simplePlace.resetStockage();
     Program.setListCaveModified();
@@ -537,29 +535,26 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     Debug("create_actionPerforming...");
     String nom = toCleanString(nom_obj.getText());
 
-    //Controle si le nom est deja utilise
     boolean bResul = MyCellarControl.ctrl_existingName(nom);
-    // Controles sur le nom (format, longueur...)
     bResul &= MyCellarControl.ctrlName(nom);
 
-    if (m_caisse_chk.isSelected()) {
+    if (isSimplePlaceCheckbox.isSelected()) {
       Debug("Creating a simple place...");
-      //Creation d'un rangement de type "Caisse"
-      int nbPart = Integer.parseInt(nb_parties.getValue().toString());
-      start_caisse = Integer.parseInt(nb_start_caisse.getValue().toString());
-      islimited = checkLimite.isSelected();
-      limite = Integer.parseInt(nb_limite.getValue().toString());
+      int nbPart = Integer.parseInt(partCountSpinner.getValue().toString());
+      partNumberIncrementSimplePlace = Integer.parseInt(partIncrementSimplePlaceSpinner.getValue().toString());
+      islimited = isSimplePlaceLimitedCheckbox.isSelected();
+      simplePlaceLimit = Integer.parseInt(simplePlaceLimitSpinner.getValue().toString());
 
       if (bResul) {
         Debug("Creating...");
         Program.addPlace(new SimplePlaceBuilder(nom)
             .nbParts(nbPart)
-            .startSimplePlace(start_caisse)
+            .startSimplePlace(partNumberIncrementSimplePlace)
             .limited(islimited)
-            .limit(limite).build());
+            .limit(simplePlaceLimit).build());
         Debug("Creation of '" + nom + "' completed.");
         nom_obj.setText("");
-        label_cree.setText(getLabel("CreateStorage.Created"), true);
+        labelCreated.setText(getLabel("CreateStorage.Created"), true);
         ProgramPanels.updateAllPanelsForUpdatingPlaces();
       }
     } else {
@@ -577,13 +572,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         }
       }
       //Type rangement
-      if (m_jrb_dif_column_number.isSelected()) {
+      if (notAllLinesSameRadio.isSelected()) {
         Debug("Creating with different column number");
       } else {
         Debug("Creating place with same column number");
       }
       if (bResul) {
-        createPlace(nom);
+        createComplexPlace(nom);
       }
     }
     if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false) && bResul) {
@@ -594,10 +589,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     }
   }
 
-  private void createPlace(String name) {
-    Program.addPlace(new Rangement(name, listPart));
+  private void createComplexPlace(String name) {
+    Program.addPlace(new ComplexPlace(name, listPart));
     Debug("Creating " + name + " completed.");
-    label_cree.setText(getLabel("CreateStorage.Created"), true);
+    labelCreated.setText(getLabel("CreateStorage.Created"), true);
     nom_obj.setText("");
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
   }
@@ -609,22 +604,22 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
    * @param e ItemEvent
    */
   private void simplePlace_itemStateChanged(ItemEvent e) {
-    label_cree.setText("");
-    boolean checked = m_caisse_chk.isSelected();
+    labelCreated.setText("");
+    boolean checked = isSimplePlaceCheckbox.isSelected();
     preview.setEnabled(!checked);
     panelType.setVisible(!checked);
     panelTable.setVisible(!checked);
-    nb_start_caisse.setVisible(checked);
+    partIncrementSimplePlaceSpinner.setVisible(checked);
     panelStartCaisse.setVisible(checked);
     panelLimite.setVisible(checked);
-    checkLimite.setVisible(true);
-    if (m_caisse_chk.isSelected()) {
-      final boolean checkLimiteSelected = checkLimite.isSelected();
+    isSimplePlaceLimitedCheckbox.setVisible(true);
+    if (isSimplePlaceCheckbox.isSelected()) {
+      final boolean checkLimiteSelected = isSimplePlaceLimitedCheckbox.isSelected();
       label_limite.setVisible(checkLimiteSelected);
-      nb_limite.setVisible(checkLimiteSelected);
+      simplePlaceLimitSpinner.setVisible(checkLimiteSelected);
     } else {
       preview.setEnabled(true);
-      nb_parties.setValue(1);
+      partCountSpinner.setValue(1);
       updatePartList();
     }
   }
@@ -636,14 +631,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
    * @param e ItemEvent
    */
   private void checkbox2_itemStateChanged(ItemEvent e) {
-    label_cree.setText("");
-    nb_limite.setVisible(checkLimite.isSelected());
-    label_limite.setVisible(checkLimite.isSelected());
+    labelCreated.setText("");
+    simplePlaceLimitSpinner.setVisible(isSimplePlaceLimitedCheckbox.isSelected());
+    label_limite.setVisible(isSimplePlaceLimitedCheckbox.isSelected());
   }
 
   private void preview_actionPerformed(ActionEvent e) {
-    if (!m_caisse_chk.isSelected()) {
-      // Controle du nom
+    if (!isSimplePlaceCheckbox.isSelected()) {
       String nom = toCleanString(nom_obj.getText());
       if (!MyCellarControl.ctrlName(nom)) {
         return;
@@ -685,7 +679,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       }
     }
     Debug("Quitting...");
-    label_cree.setText("");
+    labelCreated.setText("");
     comboPlace.setSelectedIndex(0);
     return true;
   }

@@ -36,12 +36,15 @@ public interface IAbstractPlace {
 
   public void updateToStock(MyCellarObject myCellarObject);
 
+  @Deprecated
   public boolean canAddObjectAt(MyCellarObject b);
 
   public boolean canAddObjectAt(Place place);
 
+  @Deprecated
   public boolean canAddObjectAt(int tmpNumEmpl, int tmpLine, int tmpCol);
 
+  @Deprecated
   public Optional<MyCellarObject> getObject(int num_empl, int line, int column);
 
   public Optional<MyCellarObject> getObject(Place place);

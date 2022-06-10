@@ -165,7 +165,7 @@ public class ErrorShowValues extends TableShowValues {
         break;
       case BUTTON:
         rangement = b.getAbstractPlace();
-        if (rangement != null && rangement.canAddObjectAt(b)) {
+        if (rangement != null && rangement.canAddObjectAt(b.getPlace())) {
           error.setSolved(true);
           Program.getStorage().addWine(b);
           editable[row] = Boolean.FALSE;

@@ -542,18 +542,23 @@ class RangementTest {
   @Test
   void canAddObjectAt() {
     SimplePlace caisse = new SimplePlaceBuilder("caisse20").nbParts(2).startSimplePlace(1).limited(true).limit(1).build();
-    assertTrue(caisse.hasFreeSpace(new Place.PlaceBuilder(caisse).withNumPlace(1).build()));
+    Program.addPlace(caisse);
+    final Place place = new Place.PlaceBuilder(caisse).withNumPlace(1).build();
+    assertTrue(caisse.hasFreeSpace(place));
     Bouteille b = new Bouteille();
+    b.setEmplacement("caisse20");
     b.setNom("B20");
     b.setNumLieu(1);
     caisse.addObject(b);
     assertFalse(caisse.canAddObjectAt(0, 0, 0));
     assertTrue(caisse.canAddObjectAt(1, 0, 0));
     assertFalse(caisse.canAddObjectAt(b));
+    assertFalse(caisse.canAddObjectAt(place));
     b.setNumLieu(0);
     assertFalse(caisse.canAddObjectAt(b));
     b.setNumLieu(2);
     assertTrue(caisse.canAddObjectAt(b));
+    assertTrue(caisse.canAddObjectAt(b.getPlace()));
     LinkedList<ComplexPlace> listPlace = new LinkedList<>();
     listPlace.add(complexPlace1x3x3);
     listPlace.add(complexPlace1x3x3Builder);
@@ -577,17 +582,26 @@ class RangementTest {
     }
     b = new Bouteille();
     b.setNom("B20bis");
+    b.setEmplacement("caisse20");
     assertFalse(complexPlace1x3x3.canAddObjectAt(b));
+    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlace()));
     assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b));
+    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlace()));
     b.setNumLieu(1);
     assertFalse(complexPlace1x3x3.canAddObjectAt(b));
+    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlace()));
     assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b));
+    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlace()));
     b.setLigne(1);
     assertFalse(complexPlace1x3x3.canAddObjectAt(b));
+    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlace()));
     assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b));
+    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlace()));
     b.setColonne(1);
     assertFalse(complexPlace1x3x3.canAddObjectAt(b));
+    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlace()));
     assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b));
+    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlace()));
   }
 
   @Test

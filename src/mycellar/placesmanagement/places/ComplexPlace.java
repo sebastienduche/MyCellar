@@ -106,17 +106,21 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
+  @Deprecated
   public Optional<MyCellarObject> getObject(int num_empl, int line, int column) {
     final MyCellarObject myCellarObject = storage[num_empl][line][column];
     return Optional.ofNullable(myCellarObject);
   }
 
   @Override
+  public Optional<MyCellarObject> getObject(Place place) {
+    final MyCellarObject myCellarObject = storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()];
+    return Optional.ofNullable(myCellarObject);
+  }
+
+  @Override
   public void updateToStock(MyCellarObject myCellarObject) {
     final Place place = myCellarObject.getPlace();
-//    int line = myCellarObject.getLigne();
-//    int num_empl = myCellarObject.getNumLieu();
-//    int column = myCellarObject.getColonne();
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = myCellarObject;
   }
 
@@ -142,11 +146,13 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
+  @Deprecated
   public boolean canAddObjectAt(MyCellarObject b) {
     return canAddObjectAt(b.getNumLieu(), -1, -1);
   }
 
   @Override
+  @Deprecated
   public boolean canAddObjectAt(int tmpNumEmpl, int tmpLine, int tmpCol) {
     if (tmpNumEmpl < 0 || tmpNumEmpl >= partCount) {
       return false;

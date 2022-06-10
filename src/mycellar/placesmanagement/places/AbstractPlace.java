@@ -5,7 +5,6 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
 
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Titre : Cave &agrave; vin
@@ -78,11 +77,6 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
       resul += getCountCellUsed(i);
     }
     return resul;
-  }
-
-  @Override
-  public Optional<MyCellarObject> getObject(Place place) {
-    return getObject(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
   }
 
   @Override

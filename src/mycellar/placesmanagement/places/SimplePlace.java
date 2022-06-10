@@ -95,9 +95,16 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
+  @Deprecated
   public Optional<MyCellarObject> getObject(int num_empl, int line, int column) {
     Debug("ERROR: Function getObject(int, int, int) can't be called on a simple place!");
     return Optional.empty();
+  }
+
+  @Override
+  public Optional<MyCellarObject> getObject(Place place) {
+    Debug("ERROR: Function getObject(Place) can't be called on a simple place!");
+    throw new RuntimeException("Function getObject(Place) can't be called on a simple place!");
   }
 
   /**
@@ -148,11 +155,13 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
+  @Deprecated
   public boolean canAddObjectAt(MyCellarObject b) {
     return canAddObjectAt(b.getNumLieu() - partNumberIncrement, -1, -1);
   }
 
   @Override
+  @Deprecated
   public boolean canAddObjectAt(int part, int tmpLine, int tmpCol) {
     if (part < 0 || part >= getPartCount()) {
       return false;

@@ -214,7 +214,7 @@ public class PanelPlace extends JPanel implements IPlace {
   }
 
   public void setBeforeObjectLabels(MyCellarObject myCellarObject) {
-    setLineColumnVisible(myCellarObject.getRangement());
+    setLineColumnVisible(myCellarObject.getAbstractPlace());
     previousPlaceLabel.setText(myCellarObject.getEmplacement());
     previousNumPlaceLabel.setText(Integer.toString(myCellarObject.getNumLieu()));
     previousLineLabel.setText(Integer.toString(myCellarObject.getLigne()));

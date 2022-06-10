@@ -424,7 +424,7 @@ public class Music extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public AbstractPlace getRangement() {
+  public AbstractPlace getAbstractPlace() {
     return Program.getPlaceByName(emplacement);
   }
 
@@ -488,7 +488,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public Place getPlace() {
-    return new Place.PlaceBuilder(getRangement())
+    return new Place.PlaceBuilder(getAbstractPlace())
         .withNumPlace(getNumLieu())
         .withLine(getLigne())
         .withColumn(getColonne())

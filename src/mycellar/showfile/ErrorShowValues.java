@@ -164,7 +164,7 @@ public class ErrorShowValues extends TableShowValues {
         values[row] = (Boolean) value;
         break;
       case BUTTON:
-        rangement = b.getRangement();
+        rangement = b.getAbstractPlace();
         if (rangement != null && rangement.canAddObjectAt(b)) {
           error.setSolved(true);
           Program.getStorage().addWine(b);
@@ -197,7 +197,7 @@ public class ErrorShowValues extends TableShowValues {
         int num_empl_old = b.getNumLieu();
         int line_old = b.getLigne();
         int column_old = b.getColonne();
-        rangement = b.getRangement();
+        rangement = b.getAbstractPlace();
         boolean bError = false;
         int nValueToCheck = -1;
         String empl = empl_old;

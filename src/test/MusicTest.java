@@ -410,7 +410,7 @@ class MusicTest {
 
   @Test
   void getRangement() {
-    assertEquals(armoire1x3x3, music.getRangement());
+    assertEquals(armoire1x3x3, music.getAbstractPlace());
   }
 
   @Test

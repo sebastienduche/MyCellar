@@ -150,7 +150,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     panelPlace.resetValues();
     panelPlace.setBeforeObjectLabels(myCellarObject);
     addButton.setText(getLabel("Main.Modify"));
-    placeInModification = myCellarObject.getRangement();
+    placeInModification = myCellarObject.getAbstractPlace();
     end.setText(getLabel("AddVin.EnterChanges"));
     Debug("Set Bottle... Done");
   }
@@ -287,7 +287,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
             if (isModify) {
               //Suppression de la bouteille lors de la modification
               Debug("Updating bottle when modifying");
-              myCellarObject.getRangement().clearStorage(myCellarObject);
+              myCellarObject.getAbstractPlace().clearStorage(myCellarObject);
               myCellarObject.update(newMyCellarObject);
               Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
               objectAdded = true;
@@ -344,7 +344,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
               Debug("Empty case: Modifying bottle");
               final Place oldPLace = myCellarObject.getPlace();
               myCellarObject.update(newMyCellarObject);
-              newMyCellarObject.getRangement().updateToStock(newMyCellarObject);
+              newMyCellarObject.getAbstractPlace().updateToStock(newMyCellarObject);
               Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
               if (!complexPlace.isSimplePlace()) {
                 Debug("Deleting from older complex place");
@@ -452,7 +452,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           Debug("Adding bottle...");
           Program.getStorage().addHistory(HistoryState.ADD, tmp);
           //Ajout des bouteilles
-          if (tmp.getRangement().addObject(tmp)) {
+          if (tmp.getAbstractPlace().addObject(tmp)) {
             objectAdded = true;
           }
         }
@@ -475,7 +475,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         Debug("Adding multiple bottles in simple place...");
         if (isModify && tmp.isInExistingPlace()) {
           Debug("Delete from stock");
-          tmp.getRangement().clearStorage(tmp, tmp.getPlace());
+          tmp.getAbstractPlace().clearStorage(tmp, tmp.getPlace());
         }
         //Ajout des bouteilles dans la caisse
         tmp.setEmplacement(simplePlace.getName());
@@ -483,7 +483,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         tmp.setLigne(0);
         tmp.setColonne(0);
         tmp.updateStatus();
-        tmp.getRangement().updateToStock(tmp);
+        tmp.getAbstractPlace().updateToStock(tmp);
         Debug("Bottle updated.");
         Program.getStorage().addHistory(isModify ? HistoryState.MODIFY : HistoryState.ADD, tmp);
         if (isModify) {
@@ -636,7 +636,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     boolean m_bbottle_add = false;
     if (!severalItems) {
       Debug("Modifying one bottle in Armoire without changing place");
-      MyCellarObject tmp = createMyCellarObject(annee, null, myCellarObject.getRangement(), myCellarObject.getNumLieu(), myCellarObject.getLigne(), myCellarObject.getColonne());
+      MyCellarObject tmp = createMyCellarObject(annee, null, myCellarObject.getAbstractPlace(), myCellarObject.getNumLieu(), myCellarObject.getLigne(), myCellarObject.getColonne());
       Debug("Replacing bottle...");
       myCellarObject.update(tmp);
       Program.getStorage().addHistory(HistoryState.MODIFY, tmp);
@@ -674,7 +674,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         tmp.updateStatus();
         // Add multiple bottles
         Debug("Adding multiple bottles...");
-        AbstractPlace rangement = tmp.getRangement();
+        AbstractPlace rangement = tmp.getAbstractPlace();
         if (isModify) {
           //Delete Bouteilles
           Debug("Deleting bottles when modifying");

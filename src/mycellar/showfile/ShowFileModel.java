@@ -76,7 +76,7 @@ public class ShowFileModel extends TableShowValues {
     if (col.getField() == MyCellarFields.LINE
         || col.getField() == MyCellarFields.COLUMN) {
       IMyCellarObject b = myCellarObjects.get(row);
-      return !b.getRangement().isSimplePlace();
+      return !b.getAbstractPlace().isSimplePlace();
     }
     return col.isEditable();
   }

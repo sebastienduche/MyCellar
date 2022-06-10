@@ -537,7 +537,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
     super();
     this.myCellarObject = myCellarObject;
     int width = 100;
-    AbstractPlace abstractPlace = myCellarObject.getRangement();
+    AbstractPlace abstractPlace = myCellarObject.getAbstractPlace();
     if (abstractPlace != null && abstractPlace.isSimplePlace()) {
       width = 400;
     }
@@ -566,7 +566,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
             ((RangementCell) parent).updateUI();
             Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
-              final AbstractPlace abstractPlace = myCellarObject.getRangement();
+              final AbstractPlace abstractPlace = myCellarObject.getAbstractPlace();
               if (abstractPlace != null) {
                 abstractPlace.removeObject(myCellarObject);
               } else {

@@ -257,7 +257,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
     ProgramPanels.updateSearchTable();
 
-    AbstractPlace rangement = myCellarObject.getRangement();
+    AbstractPlace rangement = myCellarObject.getAbstractPlace();
     if (!rangement.isSimplePlace()) {
       rangement.updateToStock(myCellarObject);
     }

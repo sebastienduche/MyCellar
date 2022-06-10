@@ -268,7 +268,7 @@ public class SerializedStorage implements Storage {
         Debug("DeleteWine: Deleted by Id. " + myCellarObject);
         found = listMyCellarObject.remove(collect.get(0));
       } else {
-        AbstractPlace rangement = myCellarObject.getRangement();
+        AbstractPlace rangement = myCellarObject.getAbstractPlace();
         boolean isCaisse = rangement == null || rangement.isSimplePlace();
         final List<MyCellarObject> resultBouteilles = getAllList().stream()
             .filter(

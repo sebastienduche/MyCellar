@@ -220,7 +220,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
           for (MyCellarObject myCellarObject : toRestoreList) {
             if (myCellarObject.isInExistingPlace()) {
-              AbstractPlace rangement = myCellarObject.getRangement();
+              AbstractPlace rangement = myCellarObject.getAbstractPlace();
               if (rangement.isSimplePlace()) {
                 Program.getStorage().addHistory(HistoryState.ADD, myCellarObject);
                 Program.getStorage().addWine(myCellarObject);

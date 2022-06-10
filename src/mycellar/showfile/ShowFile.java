@@ -246,7 +246,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       @Override
       Object getDisplayValue(MyCellarObject b) {
-        if (b.getRangement() == null || b.getRangement().isSimplePlace()) {
+        if (b.getAbstractPlace() == null || b.getAbstractPlace().isSimplePlace()) {
           return "";
         }
         return Integer.toString(b.getLigne());
@@ -261,7 +261,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       @Override
       Object getDisplayValue(MyCellarObject b) {
-        if (b.getRangement() == null || b.getRangement().isSimplePlace()) {
+        if (b.getAbstractPlace() == null || b.getAbstractPlace().isSimplePlace()) {
           return "";
         }
         return Integer.toString(b.getColonne());
@@ -809,7 +809,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           } else {
             for (MyCellarObject b : toDeleteList) {
               Program.getStorage().addHistory(HistoryState.DEL, b);
-              final AbstractPlace rangement = b.getRangement();
+              final AbstractPlace rangement = b.getAbstractPlace();
               if (rangement != null) {
                 rangement.removeObject(b);
               } else {
@@ -875,7 +875,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         for (MyCellarObject b : toRestoreList) {
           Program.getTrash().remove(b);
           if (b.isInExistingPlace()) {
-            AbstractPlace r = b.getRangement();
+            AbstractPlace r = b.getAbstractPlace();
             if (r.isSimplePlace()) {
               Program.getStorage().addHistory(HistoryState.ADD, b);
               Program.getStorage().addWine(b);
@@ -913,7 +913,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   private void setPlaceValue(MyCellarObject b, MyCellarFields field, Object value) {
-    AbstractPlace abstractPlace = b.getRangement();
+    AbstractPlace abstractPlace = b.getAbstractPlace();
     int nValueToCheck = -1;
     String empl = b.getEmplacement();
     int num_empl = b.getNumLieu();

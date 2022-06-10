@@ -91,7 +91,7 @@ public final class PlaceUtils {
       search.updateTable();
     });
 
-    final AbstractPlace abstractPlace = newObject.getRangement();
+    final AbstractPlace abstractPlace = newObject.getAbstractPlace();
     if (!abstractPlace.isSimplePlace()) {
       abstractPlace.updateToStock(newObject);
     }
@@ -677,7 +677,7 @@ public final class PlaceUtils {
         Program.addError(new MyCellarError(INEXISTING_PLACE, bouteille, bouteille.getEmplacement()));
         continue;
       }
-      final AbstractPlace rangement = bouteille.getRangement();
+      final AbstractPlace rangement = bouteille.getAbstractPlace();
       if (rangement.isSimplePlace()) {
         if (rangement.isInexistingNumPlace(bouteille.getNumLieu())) {
           // Numero de rangement inexistant

@@ -37,7 +37,7 @@ public interface IMyCellarObject {
 
   double getPriceDouble();
 
-  AbstractPlace getRangement();
+  AbstractPlace getAbstractPlace();
 
   int getNumLieu();
 

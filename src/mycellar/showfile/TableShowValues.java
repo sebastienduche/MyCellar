@@ -149,7 +149,7 @@ class TableShowValues extends AbstractTableModel {
       case NUM_PLACE:
       case LINE:
       case COLUMN: {
-        AbstractPlace rangement = b.getRangement();
+        AbstractPlace rangement = b.getAbstractPlace();
         boolean bError = false;
         int nValueToCheck = -1;
         int num_empl = b.getNumLieu();

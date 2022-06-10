@@ -21,15 +21,15 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 01/06/22
+ * @version 0.4
+ * @since 10/06/22
  */
 public class ComplexPlace extends AbstractPlace {
 
   private int line;
   private int column;
   private MyCellarObject[][][] storage;
-  private List<Part> partList = null;
+  private List<Part> partList;
 
 
   public ComplexPlace(String name, List<Part> listPart) {
@@ -43,15 +43,17 @@ public class ComplexPlace extends AbstractPlace {
     partCount = listPart.size();
     partList = new LinkedList<>();
     for (int i = 0; i < partCount; i++) {
-      Part part = new Part(listPart.get(i).getNum());
+      final Part oldPart = listPart.get(i);
+      Part part = new Part();
+      part.setNum(oldPart.getNum());
       partList.add(part);
-      int rowSize = listPart.get(i).getRowSize();
+      int rowSize = oldPart.getRowSize();
       part.setRows(rowSize);
       if (rowSize > line) {
         line = rowSize;
       }
       for (int j = 0; j < rowSize; j++) {
-        int colSize = listPart.get(i).getRow(j).getCol();
+        int colSize = oldPart.getRow(j).getCol();
         part.getRow(j).setCol(colSize);
         if (colSize > column) {
           column = colSize;
@@ -65,7 +67,8 @@ public class ComplexPlace extends AbstractPlace {
   public LinkedList<Part> getPlace() {
     LinkedList<Part> listPart = new LinkedList<>();
     for (Part p : partList) {
-      Part part = new Part(p.getNum());
+      Part part = new Part();
+      part.setNum(p.getNum());
       listPart.add(part);
       for (int j = 0; j < p.getRowSize(); j++) {
         part.setRows(p.getRowSize());
@@ -171,11 +174,11 @@ public class ComplexPlace extends AbstractPlace {
     return sText.toString();
   }
 
-  public int getColumnCountAt(int emplacement, int ligne) {
-    if (emplacement < 0 || ligne < 0) {
+  public int getColumnCountAt(int part, int line) {
+    if (part < 0 || line < 0) {
       return -1;
     }
-    return partList.get(emplacement).getRow(ligne).getCol();
+    return partList.get(part).getRow(line).getCol();
   }
 
   public int getLineCountAt(int part) {

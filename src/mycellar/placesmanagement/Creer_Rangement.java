@@ -67,8 +67,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.1
- * @since 09/06/22
+ * @version 17.2
+ * @since 10/06/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -242,7 +242,8 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     int newValue = Integer.parseInt(partCountSpinner.getValue().toString());
     if (newValue > listPart.size()) {
       while (listPart.size() < newValue) {
-        Part part = new Part(listPart.size() + 1);
+        Part part = new Part(); // listPart.size() + 1
+        part.setNum(listPart.size());
         listPart.add(part);
         if (notAllLinesSameRadio.isSelected()) {
           part.setRows(1);
@@ -637,28 +638,29 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   }
 
   private void preview_actionPerformed(ActionEvent e) {
-    if (!isSimplePlaceCheckbox.isSelected()) {
-      String nom = toCleanString(nom_obj.getText());
-      if (!MyCellarControl.ctrlName(nom)) {
+    if (isSimplePlaceCheckbox.isSelected()) {
+      return;
+    }
+    String nom = toCleanString(nom_obj.getText());
+    if (!MyCellarControl.ctrlName(nom)) {
+      return;
+    }
+
+    for (Part p : listPart) {
+      if (p.getRows().isEmpty()) {
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNum()), getError("Error.clickOKBeforePreview"));
         return;
       }
-
-      for (Part p : listPart) {
-        if (p.getRows().isEmpty()) {
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNum()), getError("Error.clickOKBeforePreview"));
+      for (Row r : p.getRows()) {
+        if (r.getCol() == 0) {
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNum()), getError("Error.clickOKBeforePreview"));
           return;
         }
-        for (Row r : p.getRows()) {
-          if (r.getCol() == 0) {
-            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNum()), getError("Error.clickOKBeforePreview"));
-            return;
-          }
-        }
       }
-
-      XmlUtils.writePlacesToHTML("", List.of(new Rangement(nom, listPart)), true);
-      Program.open(Program.getPreviewHTMLFileName(), false);
     }
+
+    XmlUtils.writePlacesToHTML("", List.of(new ComplexPlace(nom, listPart)), true);
+    Program.open(Program.getPreviewHTMLFileName(), false);
   }
 
   private void keylistener_actionPerformed(KeyEvent e) {

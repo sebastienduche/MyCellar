@@ -21,6 +21,8 @@ import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.SimplePlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JOptionPane;
@@ -62,8 +64,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.2
- * @since 31/05/22
+ * @version 10.3
+ * @since 10/06/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -128,30 +130,31 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     int num_select = choix.getSelectedIndex();
     if (num_select != 0) {
       preview.setEnabled(true);
-      Rangement rangement = (Rangement) choix.getSelectedItem();
+      AbstractPlace abstractPlace = (AbstractPlace) choix.getSelectedItem();
       // Nombre d'emplacements
-      if (rangement != null) {
-        int num_emplacement = rangement.getPartCount();
+      if (abstractPlace != null) {
+        int num_emplacement = abstractPlace.getPartCount();
 
-        if (!rangement.isSimplePlace()) {
+        if (!abstractPlace.isSimplePlace()) {
+          ComplexPlace complexPlace = (ComplexPlace) abstractPlace;
           model.setCaisse(false);
           Debug("Selecting standard place...");
           // Description du nombre de lignes par partie
           nb_case_use_total = 0;
           for (int i = 0; i < num_emplacement; i++) {
-            SupprimerLine line = new SupprimerLine(i + 1, rangement.getLineCountAt(i), rangement.getTotalCellUsed(i));
+            SupprimerLine line = new SupprimerLine(i + 1, complexPlace.getLineCountAt(i), complexPlace.getTotalCellUsed(i));
             listSupprimer.add(line);
-            nb_case_use_total += rangement.getTotalCellUsed(i);
+            nb_case_use_total += complexPlace.getTotalCellUsed(i);
           }
         } else { //Pour caisse
-          int start_caisse = rangement.getStartSimplePlace();
+          int partNumberIncrement = ((SimplePlace) abstractPlace).getPartNumberIncrement();
           model.setCaisse(true);
           Debug("Selecting simple place...");
           nb_case_use_total = 0;
           for (int i = 0; i < num_emplacement; i++) {
-            SupprimerLine line = new SupprimerLine(i + start_caisse, 0, rangement.getTotalCellUsed(i));
+            SupprimerLine line = new SupprimerLine(i + partNumberIncrement, 0, abstractPlace.getCountCellUsed(i));
             listSupprimer.add(line);
-            nb_case_use_total += rangement.getTotalCellUsed(i);
+            nb_case_use_total += abstractPlace.getCountCellUsed(i);
           }
         }
       }
@@ -186,19 +189,19 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         Erreur.showSimpleErreur(getError("SupprimerRangement.ForbiddenToDelete"));
         return;
       }
-      final Rangement rangement = (Rangement) choix.getSelectedItem();
-      if (rangement == null) {
+      final AbstractPlace abstractPlace = (AbstractPlace) choix.getSelectedItem();
+      if (abstractPlace == null) {
         return;
       }
-      String error;
       if (nb_case_use_total == 0) {
-        String name = rangement.getName();
+        String name = abstractPlace.getName();
         Debug("MESSAGE: Delete this place: " + name + "?");
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(getError("Error.questionDeleteStorage"), name), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          removeSelectedPlace(rangement, num_select);
+          removeSelectedPlace(abstractPlace, num_select);
         }
       } else {
-        String nom = rangement.getName();
+        String nom = abstractPlace.getName();
+        String error;
         if (nb_case_use_total == 1) {
           error = MessageFormat.format(getLabel("DeletePlace.Still1ItemIn", LabelProperty.SINGLE), nom);
         } else {
@@ -212,17 +215,17 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
             @Override
             protected void done() {
               //Suppression des bouteilles presentes dans le rangement
-              List<MyCellarObject> myCellarObjectList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(rangement.getName())).collect(Collectors.toList());
+              List<MyCellarObject> myCellarObjectList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(abstractPlace.getName())).collect(Collectors.toList());
               for (MyCellarObject b : myCellarObjectList) {
                 getStorage().addHistory(HistoryState.DEL, b);
                 try {
-                  rangement.removeObject(b);
+                  abstractPlace.removeObject(b);
                 } catch (MyCellarException myCellarException) {
                   Program.showException(myCellarException);
                 }
                 setToTrash(b);
               }
-              removeSelectedPlace(rangement, num_select);
+              removeSelectedPlace(abstractPlace, num_select);
             }
           }.execute();
 
@@ -231,8 +234,8 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
   }
 
-  private void removeSelectedPlace(Rangement cave, int num_select) {
-    removePlace(cave);
+  private void removeSelectedPlace(AbstractPlace abstractPlace, int num_select) {
+    removePlace(abstractPlace);
     choix.removeItemAt(num_select);
     choix.setSelectedIndex(0);
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
@@ -245,7 +248,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       preview.setEnabled(false);
       return;
     }
-    XmlUtils.writePlacesToXML("", List.of((Rangement) Objects.requireNonNull(choix.getSelectedItem())), false);
+    XmlUtils.writePlacesToXML("", List.of((AbstractPlace) Objects.requireNonNull(choix.getSelectedItem())), false);
     open(getPreviewXMLFileName(), false);
   }
 

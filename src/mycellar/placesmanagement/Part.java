@@ -4,12 +4,15 @@ import java.util.LinkedList;
 import java.util.Objects;
 
 public class Part {
-  private final int num;
+  private int num;
   private final LinkedList<Row> rows;
 
-  public Part(int num) {
-    this.num = num;
+  public Part() {
     rows = new LinkedList<>();
+  }
+
+  public void setNum(int num) {
+    this.num = num;
   }
 
   public LinkedList<Row> getRows() {

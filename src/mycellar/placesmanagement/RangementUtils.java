@@ -71,8 +71,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.9
- * @since 01/06/22
+ * @version 5.0
+ * @since 10/06/22
  */
 public final class RangementUtils {
 
@@ -618,7 +618,9 @@ public final class RangementUtils {
       } else {
         LinkedList<Part> rangement = rangements.get(place);
         while (rangement.size() <= bottle.getNumLieu()) {
-          rangement.add(new Part(rangement.size() + 1));
+          Part part = new Part(); // rangement.size() + 1
+          part.setNum(rangement.size());
+          rangement.add(part);
         }
         final Part part = rangement.get(bottle.getNumLieu() == 0 ? 0 : bottle.getNumLieu() - 1);
         if (part.getRowSize() < bottle.getLigne()) {

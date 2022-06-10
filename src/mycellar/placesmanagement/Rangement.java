@@ -642,7 +642,8 @@ public class Rangement extends AbstractPlace {
   public LinkedList<Part> getPlace() {
     LinkedList<Part> listPart = new LinkedList<>();
     for (Part p : partList) {
-      Part part = new Part(p.getNum());
+      Part part = new Part();
+      part.setNum(p.getNum());
       listPart.add(part);
       for (int j = 0; j < p.getRowSize(); j++) {
         part.setRows(p.getRowSize());
@@ -663,15 +664,17 @@ public class Rangement extends AbstractPlace {
     nbParts = listPart.size();
     partList = new LinkedList<>();
     for (int i = 0; i < nbParts; i++) {
-      Part part = new Part(listPart.get(i).getNum());
+      final Part oldPart = listPart.get(i);
+      Part part = new Part();
+      part.setNum(oldPart.getNum());
       partList.add(part);
-      int rowSize = listPart.get(i).getRowSize();
+      int rowSize = oldPart.getRowSize();
       part.setRows(rowSize);
       if (rowSize > stock_nblign) {
         stock_nblign = rowSize;
       }
       for (int j = 0; j < rowSize; j++) {
-        int colSize = listPart.get(i).getRow(j).getCol();
+        int colSize = oldPart.getRow(j).getCol();
         part.getRow(j).setCol(colSize);
         if (colSize > nbColumnsStock) {
           nbColumnsStock = colSize;
@@ -819,7 +822,8 @@ public class Rangement extends AbstractPlace {
 
     public Rangement build() {
       for (int i = 0; i < nbParts; i++) {
-        Part part = new Part(i);
+        Part part = new Part();
+        part.setNum(i);
         partList.add(part);
         part.setRows(linesByPart[i]);
         if (sameColumns) {

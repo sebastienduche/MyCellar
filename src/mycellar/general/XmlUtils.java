@@ -44,8 +44,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.8
- * @since 01/06/22
+ * @version 3.9
+ * @since 10/06/22
  */
 
 public class XmlUtils {
@@ -144,7 +144,8 @@ public class XmlUtils {
             for (int j = 0; j < internalPlaces.getLength(); j++) {
               Node nInternal = internalPlaces.item(j);
               if (nInternal.getNodeType() == Node.ELEMENT_NODE) {
-                Part part = new Part(j);
+                Part part = new Part();
+                part.setNum(j);
                 listPart.add(part);
                 Element iPlace = (Element) nInternal;
                 int nLine = Integer.parseInt(iPlace.getAttribute(NB_LINE));

@@ -1,6 +1,6 @@
 package mycellar.core;
 
-import mycellar.placesmanagement.Place;
+import mycellar.placesmanagement.places.Place;
 
 public interface IPlace {
 

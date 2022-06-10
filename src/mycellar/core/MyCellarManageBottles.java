@@ -1,14 +1,14 @@
 package mycellar.core;
 
 import mycellar.Program;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JModifyTextArea;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.PanelGeneral;
 import mycellar.general.PanelWineAttribute;
 import mycellar.placesmanagement.PanelPlace;
-import mycellar.placesmanagement.Place;
+import mycellar.placesmanagement.places.Place;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
@@ -18,21 +18,21 @@ import javax.swing.SwingUtilities;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2017</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2017
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.1
- * @since 04/01/22
+ * @version 5.3
+ * @since 24/05/22
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlace {
 
   private static final long serialVersionUID = 3056306291164598750L;
 
-  protected final MyCellarLabel labelComment = new MyCellarLabel(LabelType.INFO, "137");
-  protected final MyCellarLabel end = new MyCellarLabel(""); // Label pour les resultats
+  protected final MyCellarLabel labelComment = new MyCellarLabel("Main.Comment");
+  protected final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   protected final PanelPlace panelPlace = new PanelPlace();
   protected final PanelGeneral panelGeneral = new PanelGeneral();
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
@@ -77,7 +77,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
     end.setVisible(enable);
   }
 
-  public void setUpdateView(UpdateViewType updateViewType) {
+  public void setUpdateViewType(UpdateViewType updateViewType) {
     updateView = true;
     this.updateViewType = updateViewType;
   }

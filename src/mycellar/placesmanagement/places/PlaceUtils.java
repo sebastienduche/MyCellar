@@ -1,4 +1,4 @@
-package mycellar.placesmanagement;
+package mycellar.placesmanagement.places;
 
 import mycellar.Bouteille;
 import mycellar.Erreur;
@@ -14,6 +14,7 @@ import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.general.ProgramPanels;
+import mycellar.placesmanagement.RangementCreationDialog;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -46,7 +47,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static mycellar.MyCellarUtils.toCleanString;
-import static mycellar.Program.getPlaces;
+import static mycellar.Program.getAbstractPlaces;
 import static mycellar.Program.throwNotImplementedIfNotFor;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
@@ -62,18 +63,18 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2017
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2017
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.5
- * @since 20/01/22
+ * @version 5.0
+ * @since 10/06/22
  */
-public final class RangementUtils {
+public final class PlaceUtils {
 
-  private RangementUtils() {
+  private PlaceUtils() {
   }
 
   public static void replaceMyCellarObject(MyCellarObject oldObject, MyCellarObject newObject, Place newObjectPreviousPlace) throws MyCellarException {
@@ -82,7 +83,7 @@ public final class RangementUtils {
     Program.getStorage().deleteWine(oldObject);
 
     if (newObjectPreviousPlace != null) {
-      newObjectPreviousPlace.getRangement().clearStock(newObject, newObjectPreviousPlace);
+      newObjectPreviousPlace.getAbstractPlace().clearStorage(newObject, newObjectPreviousPlace);
     }
 
     ProgramPanels.getSearch().ifPresent(search -> {
@@ -90,9 +91,9 @@ public final class RangementUtils {
       search.updateTable();
     });
 
-    final Rangement rangement = newObject.getRangement();
-    if (!rangement.isSimplePlace()) {
-      rangement.updateToStock(newObject);
+    final AbstractPlace abstractPlace = newObject.getAbstractPlace();
+    if (!abstractPlace.isSimplePlace()) {
+      abstractPlace.updateToStock(newObject);
     }
     Debug("Replace object Done");
   }
@@ -105,8 +106,9 @@ public final class RangementUtils {
    * @param progressBar
    * @return int
    */
-  public static boolean write_CSV(final File file, final List<? extends IMyCellarObject> myCellarObjects, final JProgressBar progressBar) {
+  public static boolean writeCSV(final File file, final List<? extends IMyCellarObject> myCellarObjects, final JProgressBar progressBar) {
 
+    Debug("writeCSV: writing file: " + file.getAbsolutePath());
     String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
 
     final EnumMap<MyCellarFields, Boolean> map = new EnumMap<>(MyCellarFields.class);
@@ -160,14 +162,14 @@ public final class RangementUtils {
   /**
    * write_HTML: Ecriture du fichier HTML
    *
-   * @param fichier    String: fichier HTML a ecrire
+   * @param file       String: fichier HTML a ecrire
    * @param bouteilles List<Bouteille>: stock de bouteilles
    * @param fields
    * @return int
    */
-  public static boolean write_HTML(final File fichier, final List<? extends MyCellarObject> bouteilles, List<MyCellarFields> fields) {
+  public static boolean writeHTML(final File file, final List<? extends MyCellarObject> bouteilles, List<MyCellarFields> fields) {
 
-    Debug("write_HTML: writing file: " + fichier.getAbsolutePath());
+    Debug("writeHTML: writing file: " + file.getAbsolutePath());
     try {
       var dbFactory = DocumentBuilderFactory.newInstance();
       var dBuilder = dbFactory.newDocumentBuilder();
@@ -181,7 +183,7 @@ public final class RangementUtils {
       style.appendChild(doc.createTextNode("table, td, th { border: 1px solid black; border-collapse:collapse} "
           + "tr:nth-child(even) {background-color: #f2f2f2} "));
       root.appendChild(style);
-      title.appendChild(doc.createTextNode(getLabel("Infos207")));
+      title.appendChild(doc.createTextNode(getLabel("Main.HTMLExport")));
       Element body = doc.createElement("body");
       root.appendChild(body);
       Element table = doc.createElement("table");
@@ -264,7 +266,7 @@ public final class RangementUtils {
       var transformerFactory = TransformerFactory.newInstance();
       var transformer = transformerFactory.newTransformer();
       var source = new DOMSource(doc);
-      var result = new StreamResult(fichier);
+      var result = new StreamResult(file);
       transformer.transform(source, result);
     } catch (ParserConfigurationException e) {
       Debug("ParserConfigurationException");
@@ -291,23 +293,23 @@ public final class RangementUtils {
    * @param progressBar JProgressBar
    * @return boolean
    */
-  public static boolean write_XLS(final File file, final List<? extends IMyCellarObject> bouteilles, boolean isExit, JProgressBar progressBar) {
+  public static boolean writeXLS(final File file, final List<? extends IMyCellarObject> bouteilles, boolean isExit, JProgressBar progressBar) {
 
-    Debug("write_XLS: writing file: " + file);
+    Debug("writeXLS: writing file: " + file.getAbsolutePath());
 
     try {
       String sDir = file.getParent();
       if (null != sDir) {
         File f = new File(sDir);
         if (!f.exists()) {
-          Debug("write_XLS: ERROR: directory " + sDir + " doesn't exist.");
-          Debug("write_XLS: ERROR: Unable to write XLS file");
+          Debug("writeXLS: ERROR: directory " + sDir + " doesn't exist.");
+          Debug("writeXLS: ERROR: Unable to write XLS file");
           return false;
         }
       }
     } catch (RuntimeException e) {
       Program.showException(e, false);
-      Debug("write_XLS: ERROR: with file " + file);
+      Debug("writeXLS: ERROR: with file " + file);
       return false;
     }
 
@@ -348,7 +350,7 @@ public final class RangementUtils {
          var output = new FileOutputStream(file)) { //Creation du fichier
       String sheet_title = title;
       if (sheet_title.isEmpty()) {
-        sheet_title = getLabel("Infos389");
+        sheet_title = getLabel("Main.NoTitle");
       }
       SXSSFSheet sheet = workbook.createSheet();
       workbook.setSheetName(0, sheet_title);
@@ -448,21 +450,21 @@ public final class RangementUtils {
   }
 
   /**
-   * write_XLSTab: Fonction d'ecriture du fichier Excel des tableaux
+   * Fonction d'ecriture du fichier Excel des tableaux
    *
    * @param file      String: Fichier a ecrire.
    * @param placeList LinkedList: liste de rangements a ecrire
    */
-  public static void write_XLSTab(final String file, final List<Rangement> placeList) {
+  public static void writeXLSTable(final String file, final List<AbstractPlace> placeList) {
 
-    Debug("write_XLSTab: writing file: " + file);
+    Debug("writeXLSTable: writing file: " + file);
     try (var workbook = new SXSSFWorkbook(100);
          var output = new FileOutputStream(file)) { //Creation du fichier
       String title = Program.getCaveConfigString(MyCellarSettings.XLS_TAB_TITLE, "");
       boolean onePlacePerSheet = Program.getCaveConfigBool(MyCellarSettings.ONE_PER_SHEET_XLS, false);
 
       if (title.isEmpty()) {
-        title = getLabel("Infos001");
+        title = getLabel("MyCellar");
       }
       int count = 0;
       SXSSFSheet sheet = workbook.createSheet();
@@ -502,7 +504,7 @@ public final class RangementUtils {
       int nLine = 3;
       boolean firstSheet = true;
       int nNbCol = 0;
-      for (Rangement place : placeList) {
+      for (AbstractPlace place : placeList) {
         if (onePlacePerSheet) {
           if (firstSheet) {
             workbook.setSheetName(0, place.getName());
@@ -518,16 +520,16 @@ public final class RangementUtils {
         final Cell cellPlace = rowPlace.createCell(1);
         cellPlace.setCellStyle(cellStyle);
         cellPlace.setCellValue(place.getName());
-        for (int j = 1; j <= place.getNbParts(); j++) {
+        for (int j = 1; j <= place.getPartCount(); j++) {
           if (j == 1) {
             nLine++;
           } else {
             nLine += nNbLinePart;
           }
           if (place.isSimplePlace()) {
-            for (int k = 0; k < place.getTotalCellUsed(j - 1); k++) {
+            for (int k = 0; k < place.getCountCellUsed(j - 1); k++) {
               nLine++;
-              final IMyCellarObject b = place.getObjectSimplePlaceAt(j - 1, k);
+              final IMyCellarObject b = ((SimplePlace) place).getObjectAt(j - 1, k);
               if (b != null) {
                 // Contenu de la cellule
                 final SXSSFRow rowBottle = sheet.createRow(nLine);
@@ -537,9 +539,10 @@ public final class RangementUtils {
               }
             }
           } else {
-            for (int k = 1; k <= place.getLineCountAt(j - 1); k++) {
+            ComplexPlace complexPlace = (ComplexPlace) place;
+            for (int k = 1; k <= complexPlace.getLineCountAt(j - 1); k++) {
               nLine++;
-              int nCol = place.getColumnCountAt(j - 1, k - 1);
+              int nCol = complexPlace.getColumnCountAt(j - 1, k - 1);
               if (nCol > nNbCol) {
                 nNbCol = nCol;
               }
@@ -614,7 +617,9 @@ public final class RangementUtils {
       } else {
         LinkedList<Part> rangement = rangements.get(place);
         while (rangement.size() <= bottle.getNumLieu()) {
-          rangement.add(new Part(rangement.size() + 1));
+          Part part = new Part(); // rangement.size() + 1
+          part.setNumber(rangement.size());
+          rangement.add(part);
         }
         final Part part = rangement.get(bottle.getNumLieu() == 0 ? 0 : bottle.getNumLieu() - 1);
         if (part.getRowSize() < bottle.getLigne()) {
@@ -622,8 +627,8 @@ public final class RangementUtils {
         }
         if (bottle.getLigne() > 0) {
           final Row row = part.getRow(bottle.getLigne() - 1);
-          if (row.getCol() < bottle.getColonne()) {
-            row.setCol(bottle.getColonne());
+          if (row.getColumnCount() < bottle.getColonne()) {
+            row.setColumnCount(bottle.getColonne());
           }
         }
       }
@@ -636,7 +641,7 @@ public final class RangementUtils {
     }
 
     final String placeName = name.strip();
-    final boolean found = getPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
+    final boolean found = getAbstractPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
     if (!found) {
       if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
         return true;
@@ -660,7 +665,7 @@ public final class RangementUtils {
       }
     }
     Program.getErrors().clear();
-    Program.getPlaces().forEach(Rangement::resetStock);
+    Program.getAbstractPlaces().forEach(AbstractPlace::resetStockage);
 
     for (var bouteille : Program.getStorage().getAllList()) {
       // On ignore les bouteilles qui sont dans le stock temporairement
@@ -668,12 +673,11 @@ public final class RangementUtils {
         continue;
       }
       if (!bouteille.isInExistingPlace()) {
-        // Rangement inexistant
         Debug("ERROR: Inexisting place: " + bouteille.getNom() + " place: " + bouteille.getEmplacement());
         Program.addError(new MyCellarError(INEXISTING_PLACE, bouteille, bouteille.getEmplacement()));
         continue;
       }
-      final Rangement rangement = bouteille.getRangement();
+      final AbstractPlace rangement = bouteille.getAbstractPlace();
       if (rangement.isSimplePlace()) {
         if (rangement.isInexistingNumPlace(bouteille.getNumLieu())) {
           // Numero de rangement inexistant
@@ -681,7 +685,7 @@ public final class RangementUtils {
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
           continue;
         }
-        if (rangement.hasFreeSpaceInSimplePlace(bouteille.getPlace())) {
+        if (((SimplePlace) rangement).hasFreeSpace(bouteille.getPlace())) {
           rangement.updateToStock(bouteille);
         } else {
           // Caisse pleine
@@ -696,11 +700,11 @@ public final class RangementUtils {
           continue;
         }
         Optional<MyCellarObject> bottle;
-        if (!rangement.isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
+        if (!((ComplexPlace) rangement).isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
           // Cellule inexistante
           Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
-        } else if ((bottle = rangement.getObject(bouteille)).isPresent() && !bottle.get().equals(bouteille)) {
+        } else if ((bottle = rangement.getObject(bouteille.getPlace())).isPresent() && !bottle.get().equals(bouteille)) {
           // Cellule occupee
           Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
@@ -717,7 +721,7 @@ public final class RangementUtils {
   }
 
   private static void Debug(String sText) {
-    Program.Debug("RangementUtils: " + sText);
+    Program.Debug("PlaceUtils: " + sText);
   }
 
   public static boolean isTemporaryPlace(String place) {

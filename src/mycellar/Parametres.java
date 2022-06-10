@@ -4,7 +4,6 @@ import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.text.LabelType;
 import mycellar.core.text.Language;
 import mycellar.core.text.LanguageFileLoader;
 import mycellar.core.uicomponents.MyCellarButton;
@@ -28,6 +27,7 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
+import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.core.MyCellarSettings.ANNEE;
 import static mycellar.core.MyCellarSettings.DEVISE;
@@ -44,26 +44,26 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2004
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2004
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.9
- * @since 18/02/22
+ * @version 13.6
+ * @since 24/05/22
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
   private static final long serialVersionUID = -4208146070057957967L;
   private final MyCellarLabel label_fic_bak;
   private final MyCellarComboBox<String> langue = new MyCellarComboBox<>();
-  private final MyCellarButton parcourir_excel = new MyCellarButton("..."); //Parcourir
+  private final MyCellarButton parcourir_excel = new MyCellarButton(OPEN);
   private final JTextField file_bak = new JTextField();
   private final JTextField devise = new JTextField();
-  private final MyCellarCheckBox jcb_excel = new MyCellarCheckBox(getLabel("Infos234"), false);
+  private final MyCellarCheckBox jcb_excel = new MyCellarCheckBox("Parameter.AutoExportExcel", false);
   private final MyCellarButton buttonResetMessageDialog;
-  private final MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox(getLabel("Infos169"), false);
+  private final MyCellarCheckBox jcb_annee_control = new MyCellarCheckBox("Parameter.Activate", false);
   private final MyCellarLabel label_annee;
   private final MyCellarLabel label_annee2;
   private final MyCellarLabel label_siecle;
@@ -73,18 +73,16 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 
   public Parametres() {
     setLayout(new MigLayout("", "grow", ""));
-    label_fic_bak = new MyCellarLabel(LabelType.INFO, "162"); //"Nom du fichier Excel:"
-    MyCellarLabel label_langue = new MyCellarLabel(LabelType.INFO, "231"); //"Choix de la langue:"
-    MyCellarLabel label_devise = new MyCellarLabel(LabelType.INFO, "163");
-    label_annee = new MyCellarLabel(LabelType.INFO, "292");
-    label_annee2 = new MyCellarLabel(LabelType.INFO, "293");
-    label_siecle = new MyCellarLabel(LabelType.INFO, "295");
-    jcb_excel.setText(getLabel("Infos169"));
-    buttonResetMessageDialog = new MyCellarButton(LabelType.INFO, "160");
-    MyCellarButton buttonManageContenance = new MyCellarButton(LabelType.INFO, "400", new ManageCapacityAction());
-    MyCellarButton valider = new MyCellarButton(LabelType.INFO, "315");
-    parcourir_excel.setToolTipText(getLabel("Infos157"));
-    jcb_annee_control.setText(getLabel("Infos169"));
+    label_fic_bak = new MyCellarLabel("Parameter.ExcelFile");
+    MyCellarLabel label_langue = new MyCellarLabel("Parameter.ChooseLanguage");
+    MyCellarLabel label_devise = new MyCellarLabel("Parameter.Currency");
+    label_annee = new MyCellarLabel("Parameter.YearGreaterThan");
+    label_annee2 = new MyCellarLabel("Parameter.BelongsTo");
+    label_siecle = new MyCellarLabel("Parameter.Century");
+    buttonResetMessageDialog = new MyCellarButton("Parameter.ActivateHiddenMessage");
+    MyCellarButton buttonManageContenance = new MyCellarButton("Parameter.CapacitiesManagement", new ManageCapacityAction());
+    MyCellarButton valider = new MyCellarButton("Main.Validate");
+    parcourir_excel.setToolTipText(getLabel("Main.Browse"));
     setLabels();
 
     jcb_annee_control.addActionListener((e) -> {
@@ -98,14 +96,14 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     PopupListener popup_l = new PopupListener();
     file_bak.addMouseListener(popup_l);
     devise.addMouseListener(popup_l);
-    file_bak.setText(Program.getCaveConfigString(FILE_EXCEL, ""));
+    file_bak.setText(Program.getCaveConfigString(FILE_EXCEL));
 
     annee.setValue(Program.getCaveConfigInt(ANNEE, 50));
     siecle.setValue(Program.getCaveConfigInt(SIECLE, 19));
 
-    devise.setText(Program.getCaveConfigString(DEVISE, ""));
+    devise.setText(Program.getCaveConfigString(DEVISE));
     LanguageFileLoader.getLanguages().forEach(langue::addItem);
-    String the_language = Program.getGlobalConfigString(GLOBAL_LANGUAGE, "");
+    String the_language = Program.getGlobalConfigString(GLOBAL_LANGUAGE);
     langue.setSelectedIndex(LanguageFileLoader.getLanguageIndex(the_language));
 
     valider.addActionListener(this::valider_actionPerformed);
@@ -117,9 +115,9 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
     JPanel generalPanel = new JPanel();
     JPanel excelPanel = new JPanel();
     JPanel otherPanel = new JPanel();
-    dateControlPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Infos294")));
+    dateControlPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Parameter.DateControl")));
     generalPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Main.General")));
-    excelPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Infos234")));
+    excelPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Parameter.AutoExportExcel")));
     otherPanel.setBorder(BorderFactory.createTitledBorder(getLabel("Parameters.Others")));
     generalPanel.setLayout(new MigLayout("", "[][]30px[][]", ""));
     generalPanel.add(label_langue);
@@ -169,9 +167,9 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
   }
 
   private void setLabels() {
-    jcb_excel.setText(getLabel("Infos169"));
-    parcourir_excel.setToolTipText(getLabel("Infos157"));
-    jcb_annee_control.setText(getLabel("Infos169"));
+    jcb_excel.setText(getLabel("Parameter.Activate"));
+    parcourir_excel.setToolTipText(getLabel("Main.Browse"));
+    jcb_annee_control.setText(getLabel("Parameter.Activate"));
   }
 
   /**
@@ -186,7 +184,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
         Program.putCaveConfigBool(HAS_EXCEL_FILE, true);
         String fic = file_bak.getText();
         if (MyCellarControl.hasInvalidExtension(fic, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error034"), fic), getError("Error035"));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.notAnExcelFile"), fic), getError("Error.selectAnExcelFile"));
           return;
         } else {
           Program.putCaveConfigString(FILE_EXCEL, fic);
@@ -218,7 +216,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
    * @param e ActionEvent
    */
   private void parcourir_excel_actionPerformed(ActionEvent e) {
-    JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(DIR, ""));
+    JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(DIR));
     boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
     boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
     boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
@@ -227,7 +225,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(getError("FileNotFound"));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), ""));
         Program.Debug("ERROR: parcourir_excel: File not found while Opening!");
         return;
       }
@@ -251,7 +249,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
    */
   private void modifyLanguage() {
     String thelangue = LanguageFileLoader.getLanguageFromIndex(langue.getSelectedIndex());
-    String currentLanguage = Program.getGlobalConfigString(GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
+    String currentLanguage = Program.getGlobalConfigString(GLOBAL_LANGUAGE, Language.FRENCH.toString());
     if (thelangue.equals(currentLanguage)) {
       return;
     }

@@ -6,14 +6,14 @@ import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.Place;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
@@ -28,29 +28,29 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2005
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2005
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 06/01/22
+ * @version 3.8
+ * @since 01/06/22
  */
 
 final class MoveLine extends JDialog {
 
   private static final long serialVersionUID = 40508;
-  private final MyCellarLabel label_end = new MyCellarLabel();
+  private final MyCellarSimpleLabel label_end = new MyCellarSimpleLabel();
   private final MyCellarComboBox<PanelPlace.ComboItem> new_line_cbx = new MyCellarComboBox<>();
   private final PanelPlace panelPlace = new MoveLinePanelPlace();
 
   MoveLine() {
     setAlwaysOnTop(true);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(getLabel("Infos363"));
+    setTitle(getLabel("Main.Move"));
     setLayout(new MigLayout("", "[]", "[]20px[]10px[]10px[][]20px[]10px"));
-    MyCellarLabel titre = new MyCellarLabel(LabelType.INFO, "363");
+    MyCellarLabel titre = new MyCellarLabel("Main.Move");
     titre.setForeground(Color.red);
     titre.setFont(FONT_DIALOG);
     titre.setHorizontalAlignment(SwingConstants.CENTER);
@@ -58,16 +58,16 @@ final class MoveLine extends JDialog {
     label_end.setHorizontalAlignment(SwingConstants.CENTER);
     panelPlace.setModificationDetectionActive(false);
 
-    MyCellarLabel label_new_line = new MyCellarLabel(LabelType.INFO, "362");
+    MyCellarLabel label_new_line = new MyCellarLabel("Move.ToLine");
 
-    MyCellarButton validate = new MyCellarButton(LabelType.INFO, "315");
-    MyCellarButton cancel = new MyCellarButton(LabelType.INFO, "019");
+    MyCellarButton validate = new MyCellarButton("Main.Validate");
+    MyCellarButton cancel = new MyCellarButton("Main.Close");
 
     validate.addActionListener((e) -> validateAndSave());
     cancel.addActionListener((e) -> dispose());
 
     add(titre, "align center, span 3, wrap");
-    add(new MyCellarLabel(LabelType.INFO_OTHER, "MoveLine.moveFromLine", LabelProperty.PLURAL), "span 3, wrap");
+    add(new MyCellarLabel("MoveLine.MoveFromLine", LabelProperty.PLURAL), "span 3, wrap");
     add(panelPlace, "wrap");
     add(label_new_line, "wrap");
     add(new_line_cbx, "wrap");
@@ -95,35 +95,35 @@ final class MoveLine extends JDialog {
     final Place selectedPlace = panelPlace.getSelectedPlace();
     int nNewSelected = new_line_cbx.getSelectedIndex();
     if (selectedPlace.getLine() == nNewSelected || nNewSelected == 0) {
-      Erreur.showSimpleErreur(this, getError("Error192"));
+      Erreur.showSimpleErreur(this, getError("Error.wrongLineNumber"));
       return;
     }
     nNewSelected--; // We need the o bse index for the next calls
     int nOldSelected = selectedPlace.getLineIndex();
     int nNumLieu = selectedPlace.getPlaceNumIndex();
-    Rangement rangement = selectedPlace.getRangement();
-    int nNbBottle = rangement.getNbCaseUseInLine(nNumLieu, nOldSelected);
+    ComplexPlace complexPlace = (ComplexPlace) selectedPlace.getAbstractPlace();
+    int nNbBottle = complexPlace.getNbCaseUseInLine(nNumLieu, nOldSelected);
     if (nNbBottle == 0) {
-      Erreur.showSimpleErreur(this, getError("Error195", LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getError("Error.noItemsToMove", LabelProperty.PLURAL));
       return;
     }
-    int nOldColumnCount = rangement.getColumnCountAt(nNumLieu, nOldSelected);
-    int nNewColumnCount = rangement.getColumnCountAt(nNumLieu, nNewSelected);
+    int nOldColumnCount = complexPlace.getColumnCountAt(nNumLieu, nOldSelected);
+    int nNewColumnCount = complexPlace.getColumnCountAt(nNumLieu, nNewSelected);
     if (nOldColumnCount > nNewColumnCount && nNbBottle > nNewColumnCount) {
-      Erreur.showSimpleErreur(this, getError("Error194"));
+      Erreur.showSimpleErreur(this, getError("Error.wrongNewColumnNumber"));
       return;
     }
-    int nBottle = rangement.getNbCaseUseInLine(nNumLieu, nNewSelected);
+    int nBottle = complexPlace.getNbCaseUseInLine(nNumLieu, nNewSelected);
     if (nBottle > 0) {
-      Erreur.showSimpleErreur(this, getError("Error193", LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getError("Error.stillItemsOnLine", LabelProperty.PLURAL));
       return;
     }
     List<MyCellarObject> notMoved = new ArrayList<>();
     for (int i = 0; i < nOldColumnCount; i++) {
-      rangement.getObject(nNumLieu, nOldSelected, i).ifPresent(myCellarObject -> {
+      complexPlace.getObject(nNumLieu, nOldSelected, i).ifPresent(myCellarObject -> {
         Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
         try {
-          rangement.moveToLine(myCellarObject, new_line_cbx.getSelectedIndex());
+          complexPlace.moveToLine(myCellarObject, new_line_cbx.getSelectedIndex());
         } catch (MyCellarException myCellarException) {
           notMoved.add(myCellarObject);
         }
@@ -153,7 +153,7 @@ final class MoveLine extends JDialog {
       new MyCellarSwingWorker() {
         @Override
         protected void done() {
-          int lineCount = selectedPlace.getRangement().getLineCountAt(selectedPlace.getPlaceNumIndex());
+          int lineCount = ((ComplexPlace) selectedPlace.getAbstractPlace()).getLineCountAt(selectedPlace.getPlaceNumIndex());
           new_line_cbx.removeAllItems();
           new_line_cbx.addItem(NONE);
           for (int i = 1; i <= lineCount; i++) {

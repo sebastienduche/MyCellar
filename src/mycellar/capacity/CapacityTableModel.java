@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import java.text.MessageFormat;
 import java.util.List;
 
+import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
@@ -19,13 +20,13 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 03/01/22
+ * @version 1.3
+ * @since 25/05/22
  */
 class CapacityTableModel extends DefaultTableModel {
   public static final int ETAT = 1;
   static final long serialVersionUID = 220605;
-  private final String[] columnNames = {getLabel("Infos401"), ""};
+  private final String[] columnNames = {getLabel("Main.Values"), ""};
 
   private final List<String> list;
 
@@ -71,10 +72,10 @@ class CapacityTableModel extends DefaultTableModel {
     final String oldValue = list.get(row);
     if (column == ETAT) {
       if (MyCellarBottleContenance.isContenanceUsed(oldValue)) {
-        JOptionPane.showMessageDialog(Start.getInstance(), getLabel("CapacityPanel.unableDeleteCapacity"), getLabel("Infos032"), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(Start.getInstance(), getLabel("CapacityPanel.UnableDeleteCapacity"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
         return;
       }
-      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("CapacityPanel.delCapacityQuestion"), oldValue), getLabel("Infos049"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("CapacityPanel.DelCapacityQuestion"), oldValue), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
         return;
       }
       list.remove(oldValue);

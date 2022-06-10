@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JCheckBox;
@@ -14,14 +14,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 1998</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 1998
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 22/02/22
+ * @version 2.9
+ * @since 24/05/22
  */
 public class Erreur {
 
@@ -34,7 +34,7 @@ public class Erreur {
    * @param text
    */
   public static void showSimpleErreur(String text) {
-    JOptionPane.showMessageDialog(Start.getInstance(), text, getError("Error015"), JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(Start.getInstance(), text, getError("Error.error"), JOptionPane.ERROR_MESSAGE);
   }
 
   /**
@@ -44,7 +44,7 @@ public class Erreur {
    * @param text
    */
   public static void showSimpleErreur(Component target, String text) {
-    JOptionPane.showMessageDialog(target, text, getError("Error015"), JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(target, text, getError("Error.error"), JOptionPane.ERROR_MESSAGE);
   }
 
   /**
@@ -98,15 +98,15 @@ public class Erreur {
   private void initialize(Component target, String text1, String text2, boolean information, String keyword) {
     JPanel panel = new JPanel();
     panel.setLayout(new MigLayout("", "grow", "[]"));
-    MyCellarLabel label2 = new MyCellarLabel(text2);
-    JCheckBox checkNotShow = new JCheckBox(getLabel("Infos213"));
+    MyCellarSimpleLabel label2 = new MyCellarSimpleLabel(text2);
+    JCheckBox checkNotShow = new JCheckBox(getLabel("Main.DontShowNextTime"));
     checkNotShow.setFont(FONT_BOUTTON_SMALL);
-    panel.add(new MyCellarLabel(text1));
+    panel.add(new MyCellarSimpleLabel(text1));
     panel.add(label2, "newline, hidemode 3");
     panel.add(checkNotShow, "newline, hidemode 3, gaptop 15px");
     checkNotShow.setVisible(MyCellarUtils.isDefined(keyword));
     label2.setVisible(!text2.isEmpty());
-    JOptionPane.showMessageDialog(target, panel, information ? getError("Error032") : getError("Error015"), information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(target, panel, information ? getError("Error032") : getError("Error.error"), information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
     if (checkNotShow.isSelected()) {
       Program.putCaveConfigBool(keyword, true);
     }

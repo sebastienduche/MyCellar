@@ -147,8 +147,8 @@ public class ProgramPanels {
       @Override
       protected void done() {
         Program.Debug("ProgramPanels: updateAllPanels");
-        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.ALL));
-        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.ALL));
+        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.ALL));
+        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.ALL));
       }
     }.execute();
   }
@@ -158,8 +158,8 @@ public class ProgramPanels {
       @Override
       protected void done() {
         Program.Debug("ProgramPanels: updateAllPanelsForUpdatingPlaces");
-        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.PLACE));
-        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.PLACE));
+        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.PLACE));
+        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.PLACE));
       }
     }.execute();
   }
@@ -169,8 +169,8 @@ public class ProgramPanels {
       @Override
       protected void done() {
         Program.Debug("ProgramPanels: updateAllPanelsForUpdatingCapacity");
-        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.CAPACITY));
-        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.CAPACITY));
+        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.CAPACITY));
+        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.CAPACITY));
       }
     }.execute();
   }
@@ -180,8 +180,8 @@ public class ProgramPanels {
       @Override
       protected void done() {
         Program.Debug("ProgramPanels: updateAllPanelsForUpdatingVineyard");
-        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.VINEYARD));
-        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.VINEYARD));
+        UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.VINEYARD));
+        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.VINEYARD));
       }
     }.execute();
   }
@@ -189,7 +189,7 @@ public class ProgramPanels {
   public static void updateCellOrganizerPanel(boolean forceUpdate) {
     final IUpdatable cellOrganizer = UPDATABLE_PANELS.get(CELL_ORGANIZER);
     if (cellOrganizer != null) {
-      cellOrganizer.setUpdateView(UpdateViewType.ALL);
+      cellOrganizer.setUpdateViewType(UpdateViewType.ALL);
       if (forceUpdate) {
         cellOrganizer.updateView();
       }
@@ -197,7 +197,7 @@ public class ProgramPanels {
   }
 
   public static void updatePanelsWithoutBottles() {
-    UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateView(UpdateViewType.ALL));
+    UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.ALL));
   }
 
   public static AddVin createAddVin() {

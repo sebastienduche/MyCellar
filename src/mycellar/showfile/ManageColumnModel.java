@@ -39,13 +39,13 @@ public class ManageColumnModel extends DefaultTableModel {
         final int index = list.indexOf(((ShowFileColumn<?>) c).getField());
         if (index != -1) {
           values[index] = Boolean.TRUE;
-          selectedColumns.add(list.get(index).ordinal());
+          selectedColumns.add(list.get(index).getIndex());
         }
       } else if (c instanceof MyCellarFields) {
         final int index = list.indexOf(c);
         if (index != -1) {
           values[index] = Boolean.TRUE;
-          selectedColumns.add(((MyCellarFields) c).ordinal());
+          selectedColumns.add(((MyCellarFields) c).getIndex());
         }
       }
     }
@@ -91,13 +91,13 @@ public class ManageColumnModel extends DefaultTableModel {
     selectedColumns.clear();
     for (int i = 0; i < values.length; i++) {
       if (values[i]) {
-        selectedColumns.add(list.get(i).ordinal());
+        selectedColumns.add(list.get(i).getIndex());
       }
     }
     if (selectedColumns.isEmpty()) {
       Erreur.showSimpleErreur(getError("ManageColumn.ErrorNb"));
       values[row] = Boolean.TRUE;
-      selectedColumns.add(list.get(row).ordinal());
+      selectedColumns.add(list.get(row).getIndex());
     }
   }
 

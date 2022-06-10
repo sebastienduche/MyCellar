@@ -31,8 +31,10 @@ import mycellar.core.text.LanguageFileLoader;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
-import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlaceUtils;
+import mycellar.placesmanagement.places.SimplePlace;
+import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import mycellar.vignobles.CountryVignobleController;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -70,11 +72,13 @@ import java.util.Scanner;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static mycellar.Filtre.FILTRE_TXT;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.BOUTEILLES_XML;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.CONFIG_INI;
+import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
@@ -100,21 +104,21 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2003
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2003
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 27.9
- * @since 29/03/22
+ * @version 28.7
+ * @since 09/06/22
  */
 
 public final class Program {
 
-  public static final Rangement DEFAULT_PLACE = new Rangement.SimplePlaceBuilder("").setDefaultPlace(true).build();
-  public static final Rangement EMPTY_PLACE = new Rangement.SimplePlaceBuilder("").build();
-  public static final Rangement STOCK_PLACE = new Rangement.SimplePlaceBuilder(TEMP_PLACE).build();
+  public static final SimplePlace DEFAULT_PLACE = new SimplePlaceBuilder("").setDefaultPlace(true).build();
+  public static final SimplePlace EMPTY_PLACE = new SimplePlaceBuilder("").build();
+  public static final SimplePlace STOCK_PLACE = new SimplePlaceBuilder(TEMP_PLACE).build();
 
   public static final CountryJaxb FRANCE = new CountryJaxb(FRA, ProgramConstants.FRANCE);
   public static final CountryJaxb NO_COUNTRY = new CountryJaxb("");
@@ -124,7 +128,7 @@ public final class Program {
 
   // Manage global config
   private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
-  private static final List<Rangement> PLACES = new LinkedList<>();
+  private static final List<AbstractPlace> PLACES = new LinkedList<>();
   private static final List<MyCellarObject> TRASH = new LinkedList<>();
   private static final List<MyCellarError> ERRORS = new LinkedList<>();
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
@@ -160,7 +164,7 @@ public final class Program {
     } catch (UnableToOpenFileException e) {
       showException(e);
     }
-    String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
+    String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, Language.FRENCH.toString());
     Debug("Program: Type of managed object: " + programType);
     setLanguage(Language.getLanguage(thelangue.charAt(0)));
   }
@@ -170,11 +174,11 @@ public final class Program {
       Debug("Program: Initializing Language and Program type");
       LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
 
-      if (!hasConfigGlobalKey(MyCellarSettings.GLOBAL_LANGUAGE) || getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "").isEmpty()) {
-        putGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
+      if (!hasConfigGlobalKey(MyCellarSettings.GLOBAL_LANGUAGE) || getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE).isEmpty()) {
+        putGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, Language.FRENCH.toString());
       }
 
-      String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, "" + Language.FRENCH.getLanguage());
+      String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, Language.FRENCH.toString());
       Debug("Program: Type of managed object: " + programType);
       setLanguage(Language.getLanguage(thelangue.charAt(0)));
       cleanAndUpgrade();
@@ -282,11 +286,6 @@ public final class Program {
     }
   }
 
-  /**
-   * cleanAndUpgrade
-   * <p>
-   * Pour nettoyer et mettre a jour le programme
-   */
   private static void cleanAndUpgrade() {
     if (!hasFile()) {
       return;
@@ -304,13 +303,6 @@ public final class Program {
       putCaveConfigString(PROGRAM_TYPE, ProgramType.WINE.name());
     }
 
-    // TODO Remove when veraion 75
-    if (currentVersion < 71) {
-      getPlaces().stream().filter(rangement ->
-              isDefaultStorageName(rangement, rangement.getName()))
-          .findFirst()
-          .ifPresent(rangement -> rangement.setDefaultPlace(true));
-    }
     Debug("Program: clean and upgrade... Done");
   }
 
@@ -429,11 +421,11 @@ public final class Program {
   }
 
   public static int getSimplePlaceCount() {
-    return (int) getPlaces().stream().filter(Rangement::isSimplePlace).count();
+    return (int) getAbstractPlaces().stream().filter(AbstractPlace::isSimplePlace).count();
   }
 
-  public static List<Rangement> getSimplePlaces() {
-    return getPlaces().stream().filter(Rangement::isSimplePlace).collect(Collectors.toList());
+  public static List<AbstractPlace> getSimplePlaces() {
+    return getAbstractPlaces().stream().filter(AbstractPlace::isSimplePlace).collect(Collectors.toList());
   }
 
   static int getTotalObjectForYear(int year) {
@@ -544,52 +536,53 @@ public final class Program {
 
   }
 
-  public static List<Rangement> getPlaces() {
+  public static List<AbstractPlace> getAbstractPlaces() {
     return Collections.unmodifiableList(PLACES);
   }
 
-  public static Rangement getPlaceAt(int index) {
+  public static AbstractPlace getAbstractPlaceAt(int index) {
     return PLACES.get(index);
   }
+
 
   public static boolean hasOnlyOnePlace() {
     return PLACES.size() == 1;
   }
 
-  public static Rangement getPlaceByName(final String name) {
+  public static AbstractPlace getPlaceByName(final String name) {
     final String placeName = name.strip();
     if (TEMP_PLACE.equals(placeName)) {
       return STOCK_PLACE;
     }
-    final List<Rangement> list = PLACES.stream().filter(rangement -> filterOnPlaceName(rangement, placeName)).collect(Collectors.toList());
-    return list.get(0);
+    final List<AbstractPlace> new_list = PLACES.stream().filter(rangement -> filterOnAbstractPlaceName(rangement, placeName)).collect(Collectors.toList());
+    return new_list.get(0);
   }
 
-  private static boolean filterOnPlaceName(Rangement rangement, String placeName) {
-    return rangement.getName().equals(placeName) || isDefaultStorageName(rangement, placeName);
+  private static boolean filterOnAbstractPlaceName(AbstractPlace rangement, String placeName) {
+    return rangement.getName().equals(placeName) || isDefaultAbstractPlaceName(rangement, placeName);
   }
 
-  private static boolean isDefaultStorageName(Rangement rangement, String placeName) {
+  private static boolean isDefaultAbstractPlaceName(AbstractPlace rangement, String placeName) {
     return rangement.isDefaultPlace() &&
         (rangement.getName().equals(DEFAULT_STORAGE_EN) || rangement.getName().equals(DEFAULT_STORAGE_FR)) &&
         (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
 
-  public static void addPlace(Rangement rangement) {
-    if (rangement == null) {
+  public static void addPlace(AbstractPlace abstractPlace) {
+    if (abstractPlace == null) {
       return;
     }
-    PLACES.add(rangement);
+    PLACES.add(abstractPlace);
     setListCaveModified();
     setModified();
     Collections.sort(PLACES);
   }
 
-  public static void removePlace(Rangement rangement) {
-    if (rangement == null) {
+  public static void removePlace(AbstractPlace abstractPlace) {
+    if (abstractPlace == null) {
       return;
     }
-    PLACES.remove(rangement);
+    PLACES.remove(abstractPlace);
     setModified();
     setListCaveModified();
   }
@@ -599,7 +592,7 @@ public final class Program {
   }
 
   public static boolean hasComplexPlace() {
-    return PLACES.stream().anyMatch(Predicate.not(Rangement::isSimplePlace));
+    return PLACES.stream().anyMatch(Predicate.not(AbstractPlace::isSimplePlace));
   }
 
   /**
@@ -635,10 +628,10 @@ public final class Program {
 
   private static void openaFile(File file, boolean isNewFile) throws UnableToOpenFileException {
     LinkedList<String> list = new LinkedList<>();
-    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3, ""));
-    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, ""));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3));
+    list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4));
     Debug("Program: -------------------");
     if (isNewFile) {
       Debug("Program: openFile: Creating new file");
@@ -659,7 +652,7 @@ public final class Program {
     }
 
     if (!file.exists()) {
-      Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), file.getAbsolutePath())); // File not found
+      Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), file.getAbsolutePath()));
 
       putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, list.pop());
       putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, list.pop());
@@ -677,7 +670,6 @@ public final class Program {
 
     CountryListJaxb.init();
 
-    //Chargement des objets Rangement, Bouteilles et History
     Debug("Program: Reading Places, Bottles & History");
     if (!loadData()) {
       Debug("Program: ERROR Reading Objects KO");
@@ -691,7 +683,7 @@ public final class Program {
       MyCellarMusicSupport.load();
     }
 
-    RangementUtils.putTabStock();
+    PlaceUtils.putTabStock();
     if (!getErrors().isEmpty()) {
       new OpenShowErrorsAction().actionPerformed(null);
     }
@@ -727,7 +719,7 @@ public final class Program {
     boolean bSave = false;
     File newFile = null;
     if (myCellarFile.exists() && isModified()) {
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("Error199"), getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("SaveModifications"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         bSave = true;
         if (!myCellarFile.isFileSavable()) {
           JFileChooser boiteFichier = new JFileChooser();
@@ -785,7 +777,7 @@ public final class Program {
         final String file_excel = getCaveConfigString(MyCellarSettings.FILE_EXCEL, "");
         Debug("Program: Writing backup Excel file: " + file_excel);
         final List<IMyCellarObject> bouteilles = Collections.unmodifiableList(getStorage().getAllList());
-        Thread writingExcel = new Thread(() -> RangementUtils.write_XLS(new File(file_excel), bouteilles, true, null));
+        Thread writingExcel = new Thread(() -> PlaceUtils.writeXLS(new File(file_excel), bouteilles, true, null));
         Runtime.getRuntime().addShutdownHook(writingExcel);
       }
     }
@@ -801,8 +793,8 @@ public final class Program {
     modified = false;
     listCaveModified = false;
     PLACES.clear();
-    DEFAULT_PLACE.resetStock();
-    EMPTY_PLACE.resetStock();
+    DEFAULT_PLACE.resetStockage();
+    EMPTY_PLACE.resetStockage();
     myCellarFile = null;
     Debug("Program: closeFile: Closing file Ended");
   }
@@ -926,8 +918,16 @@ public final class Program {
     return "";
   }
 
+  static String getGlobalConfigString(String key) {
+    return CONFIG_GLOBAL.getString(key, "");
+  }
+
   static String getGlobalConfigString(String key, String defaultValue) {
     return CONFIG_GLOBAL.getString(key, defaultValue);
+  }
+
+  public static String getCaveConfigString(String key) {
+    return getCaveConfigString(key, "");
   }
 
   public static String getCaveConfigString(String key, String defaultValue) {
@@ -1038,7 +1038,7 @@ public final class Program {
     if (check) {
       if (!file.exists() || file.isDirectory()) {
         //Fichier non trouve Verifier le chemin
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error020"), filename), getError("Error022"));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), filename), getError("Error.checkFilePath"));
         return false;
       }
     }
@@ -1138,7 +1138,7 @@ public final class Program {
         date = name.substring(9, name.indexOf(".log"));
       }
       if (!date.isEmpty()) {
-        String[] fields = date.split("-");
+        String[] fields = date.split(DASH);
         LocalDateTime dateTime = now.withMonth(Integer.parseInt(fields[1])).withDayOfMonth(Integer.parseInt(fields[0])).withYear(Integer.parseInt(fields[2]));
         return dateTime.isBefore(monthsAgo);
       }
@@ -1224,7 +1224,7 @@ public final class Program {
     if (f == null || !f.exists()) {
       return "";
     }
-    if (!f.getName().toLowerCase().endsWith(".txt")) {
+    if (!f.getName().toLowerCase().endsWith(FILTRE_TXT.toString())) {
       return "";
     }
     Debug("Program: Reading first line of file " + f.getName());

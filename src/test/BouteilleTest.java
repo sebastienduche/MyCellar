@@ -3,8 +3,11 @@ package test;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.datas.jaxb.VignobleJaxb;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.ComplexPlaceBuilder;
+import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.SimplePlace;
+import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -28,8 +31,8 @@ class BouteilleTest {
 
   private Bouteille bouteille;
   private Bouteille bouteilleCaisse;
-  private Rangement armoire1x3x3;
-  private Rangement caisse;
+  private ComplexPlace armoire1x3x3;
+  private SimplePlace caisse;
 
   @BeforeEach
   void setUp() {
@@ -49,11 +52,11 @@ class BouteilleTest {
         .build();
 
     // Caisse avec 2 emplacements commencant a 1 et limite a 6 bouteilles
-    armoire1x3x3 = new Rangement.RangementBuilder("armoire1x3x3")
+    armoire1x3x3 = new ComplexPlaceBuilder("armoire1x3x3")
         .nbParts(new int[]{3})
         .sameColumnsNumber(new int[]{3})
         .build();
-    caisse = new Rangement.SimplePlaceBuilder("caisse")
+    caisse = new SimplePlaceBuilder("caisse")
         .nbParts(1)
         .startSimplePlace(1)
         .build();
@@ -299,7 +302,7 @@ class BouteilleTest {
     assertFalse(bouteille.isPinkWine());
     bouteille.setColor("");
     assertFalse(bouteille.isPinkWine());
-    bouteille.setColor("Pink");
+    bouteille.setColor("pink");
     assertTrue(bouteille.isPinkWine());
     bouteille.setColor("white");
     assertFalse(bouteille.isPinkWine());
@@ -344,20 +347,20 @@ class BouteilleTest {
 
   @Test
   void getRangement() {
-    assertEquals(armoire1x3x3, bouteille.getRangement());
+    assertEquals(armoire1x3x3, bouteille.getAbstractPlace());
   }
 
   @Test
   void getPlace() {
     Place place = bouteille.getPlace();
-    assertEquals(armoire1x3x3, place.getRangement());
-    assertEquals(1, place.getPlaceNum());
+    assertEquals(armoire1x3x3, place.getAbstractPlace());
+    assertEquals(1, place.getPart());
     assertEquals(2, place.getLine());
     assertEquals(3, place.getColumn());
 
     place = bouteilleCaisse.getPlace();
-    assertEquals(caisse, place.getRangement());
-    assertEquals(1, place.getPlaceNum());
+    assertEquals(caisse, place.getAbstractPlace());
+    assertEquals(1, place.getPart());
   }
 
   @Test

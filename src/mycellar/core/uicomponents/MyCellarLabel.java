@@ -3,10 +3,8 @@ package mycellar.core.uicomponents;
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.text.MyCellarLabelManagement;
 
-import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import java.util.Timer;
@@ -21,73 +19,34 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 24/03/22
+ * @version 1.3
+ * @since 24/05/22
  */
 
 public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
   private static final long serialVersionUID = 4972622436840497820L;
 
-  private LabelKey labelKey;
+  private final LabelKey labelKey;
 
-  @Deprecated
-  public MyCellarLabel() {
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarLabel(String text) {
-    super(text);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarLabel(LabelType type, String code) {
-    labelKey = new LabelKey(type, code);
+  public MyCellarLabel(String code) {
+    labelKey = new LabelKey(code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarLabel(LabelType type, String code, LabelProperty labelProperty) {
-    labelKey = new LabelKey(type, code, labelProperty);
+  public MyCellarLabel(String code, LabelProperty labelProperty) {
+    labelKey = new LabelKey(code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarLabel(LabelType type, String code, LabelProperty labelProperty, String value) {
-    labelKey = new LabelKey(type, code, labelProperty, value);
+  public MyCellarLabel(String code, LabelProperty labelProperty, String value) {
+    labelKey = new LabelKey(code, labelProperty, value);
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarLabel(LabelType type, String code, String value) {
-    labelKey = new LabelKey(type, code, null, value);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarLabel(Icon image) {
-    super(image);
-    setFont(FONT_PANEL);
-  }
-
-  @Deprecated
-  public MyCellarLabel(String text, int horizontalAlignment) {
-    super(text, horizontalAlignment);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarLabel(Icon image, int horizontalAlignment) {
-    super(image, horizontalAlignment);
-    setFont(FONT_PANEL);
-  }
-
-  @Deprecated
-  public MyCellarLabel(String text, Icon icon, int horizontalAlignment) {
-    super(text, icon, horizontalAlignment);
     setFont(FONT_PANEL);
   }
 

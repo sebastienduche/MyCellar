@@ -1,7 +1,7 @@
 package mycellar.requester.ui;
 
 import mycellar.Program;
-import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.Predicates;
 import net.miginfocom.swing.MigLayout;
@@ -25,15 +25,15 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 11/01/22
+ * @version 1.3
+ * @since 24/05/22
  */
 public final class PanelRequest extends JPanel {
 
   private static final long serialVersionUID = -1239228393406479587L;
 
   private final PanelDAndD panelRequest;
-  private final MyCellarLabel labelError = new MyCellarLabel();
+  private final MyCellarSimpleLabel labelError = new MyCellarSimpleLabel();
 
   public PanelRequest() {
     labelError.setFont(FONT_LABEL_BOLD);

@@ -1,8 +1,7 @@
 package mycellar;
 
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
-import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ImageIcon;
@@ -23,31 +22,31 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 1998</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 1998
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 14/10/21
+ * @version 2.0
+ * @since 24/05/22
  */
 final class APropos extends JDialog {
   static final long serialVersionUID = 150505;
 
   APropos() {
-    super(new JFrame(), getLabel("Infos198"), true);
+    super(new JFrame(), getLabel("Main.About"), true);
     IconPanel ip = new IconPanel(MyCellarImage.ICON);
-    MyCellarButton ok = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
+    MyCellarButton ok = new MyCellarButton("Main.OK");
     ok.addActionListener((e) -> dispose());
-    MyCellarLabel myCellarLabel1 = new MyCellarLabel("MyCellar");
+    MyCellarSimpleLabel myCellarLabel1 = new MyCellarSimpleLabel("MyCellar");
     myCellarLabel1.setForeground(Color.red);
     myCellarLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-    MyCellarLabel myCellarLabel2 = new MyCellarLabel("Copyright: S.Duché");
+    MyCellarSimpleLabel myCellarLabel2 = new MyCellarSimpleLabel("Copyright: S.Duché");
     myCellarLabel2.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel myCellarLabel3 = new MyCellarLabel("Release: " + INTERNAL_VERSION);
+    MyCellarSimpleLabel myCellarLabel3 = new MyCellarSimpleLabel("Release: " + INTERNAL_VERSION);
     myCellarLabel3.setHorizontalAlignment(SwingConstants.LEFT);
-    MyCellarLabel myCellarLabel4 = new MyCellarLabel("Version: " + MAIN_VERSION);
+    MyCellarSimpleLabel myCellarLabel4 = new MyCellarSimpleLabel("Version: " + MAIN_VERSION);
     myCellarLabel4.setHorizontalAlignment(SwingConstants.LEFT);
     myCellarLabel1.setFont(new Font("Arial", Font.BOLD, 13));
     setLayout(new MigLayout("", "[][]", "[]"));

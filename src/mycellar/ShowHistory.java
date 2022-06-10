@@ -11,13 +11,12 @@ import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.tablecomponents.DateCellRenderer;
 import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlaceUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -52,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.0
- * @since 16/04/21
+ * @version 5.7
+ * @since 01/06/22
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -63,11 +62,11 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
   public ShowHistory() {
     Debug("Constructor");
-    MyCellarLabel filterLabel = new MyCellarLabel(LabelType.INFO, "350"); // Filtre
-    filterCbx.addItem(new FilterItem(HistoryState.ALL, getLabel("Infos351")));
-    filterCbx.addItem(new FilterItem(HistoryState.ADD, getLabel("Infos345")));
-    filterCbx.addItem(new FilterItem(HistoryState.MODIFY, getLabel("Infos346")));
-    filterCbx.addItem(new FilterItem(HistoryState.DEL, getLabel("Infos347")));
+    MyCellarLabel filterLabel = new MyCellarLabel("History.Filter");
+    filterCbx.addItem(new FilterItem(HistoryState.ALL, getLabel("History.None")));
+    filterCbx.addItem(new FilterItem(HistoryState.ADD, getLabel("History.Entered")));
+    filterCbx.addItem(new FilterItem(HistoryState.MODIFY, getLabel("History.Modified")));
+    filterCbx.addItem(new FilterItem(HistoryState.DEL, getLabel("History.Exited")));
     filterCbx.addItem(new FilterItem(HistoryState.VALIDATED, getLabel("History.Validated")));
     filterCbx.addItem(new FilterItem(HistoryState.TOCHECK, getLabel("History.ToCheck")));
     filterCbx.addItemListener(this::filter_itemStateChanged);
@@ -121,11 +120,11 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
     setLayout(new MigLayout("", "grow", "[][grow][]"));
     add(filterLabel, "split 5");
     add(filterCbx);
-    add(new MyCellarButton(LabelType.INFO_OTHER, "ShowHistory.ClearHistory", new ClearHistoryAction()), "gapleft 10px");
+    add(new MyCellarButton("ShowHistory.ClearHistory", new ClearHistoryAction()), "gapleft 10px");
     add(new JLabel(), "growx");
-    add(new MyCellarButton(LabelType.INFO_OTHER, "ShowFile.Restore", new RestoreAction()), "align right, wrap");
+    add(new MyCellarButton("ShowFile.Restore", new RestoreAction()), "align right, wrap");
     add(new JScrollPane(table), "grow, wrap");
-    add(new MyCellarButton(LabelType.INFO_OTHER, "Main.Delete", new DeleteAction()), "center");
+    add(new MyCellarButton("Main.Delete", new DeleteAction()), "center");
   }
 
   private static void Debug(String sText) {
@@ -210,18 +209,18 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
       } else {
         String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {
-          erreur_txt1 = getError("Error067", LabelProperty.SINGLE); // "1 vin selectionne.
+          erreur_txt1 = getError("Error.1ItemSelected", LabelProperty.SINGLE);
           erreur_txt2 = getLabel("ShowFile.RestoreOne");
         } else {
-          erreur_txt1 = MessageFormat.format(getError("Error130", LabelProperty.PLURAL), toRestoreList.size()); // vins selectionnes.
+          erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), toRestoreList.size());
           erreur_txt2 = getLabel("ShowFile.RestoreSeveral");
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"),
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
           for (MyCellarObject myCellarObject : toRestoreList) {
             if (myCellarObject.isInExistingPlace()) {
-              Rangement rangement = myCellarObject.getRangement();
+              AbstractPlace rangement = myCellarObject.getAbstractPlace();
               if (rangement.isSimplePlace()) {
                 Program.getStorage().addHistory(HistoryState.ADD, myCellarObject);
                 Program.getStorage().addWine(myCellarObject);
@@ -243,7 +242,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
             Program.modifyBottles(cantRestoreList);
           }
         }
-        RangementUtils.putTabStock();
+        PlaceUtils.putTabStock();
         model.setHistory(Program.getHistory());
       }
     }
@@ -274,20 +273,19 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
         } while (row < max_row);
 
         if (toDeleteList.isEmpty()) {
-          // Aucune ligne selectionnee "Veuillez selectionner des lignes a supprimer.
-          Erreur.showInformationMessage(getError("Error184"), getError("Error185"));
+          Erreur.showInformationMessage(getError("Error.NoLineSelected"), getError("Error.selectLinesToDelete"));
           Debug("ERROR: No lines selected");
         } else {
-          String erreur_txt1, erreur_txt2;// erreur_txt3, erreur_txt4;
+          String erreur_txt1, erreur_txt2;
           if (toDeleteList.size() == 1) {
-            erreur_txt1 = getError("Error186"); // "1 ligne selectionnee.
-            erreur_txt2 = getError("Error188"); // "Voulez-vous la supprimer?
+            erreur_txt1 = getError("Error.1LineSelected");
+            erreur_txt2 = getError("Error.deleteIt");
           } else {
-            erreur_txt1 = MessageFormat.format(getError("Error187"), toDeleteList.size()); // lignes
-            erreur_txt2 = getError("Error131"); // "Voulez-vous les supprimer?
+            erreur_txt1 = MessageFormat.format(getError("Error.NLineSelected"), toDeleteList.size());
+            erreur_txt2 = getError("Error.confirmNDelete");
           }
           Debug(toDeleteList.size() + " line(s) selected");
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Infos049"),
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"),
               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             Debug("Deleting lines...");
             for (History b : toDeleteList) {

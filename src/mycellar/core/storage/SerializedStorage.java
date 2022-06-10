@@ -11,7 +11,7 @@ import mycellar.core.datas.worksheet.WorkSheetData;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
@@ -21,24 +21,24 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static mycellar.ProgramConstants.HISTORY_XML;
+import static mycellar.ProgramConstants.WORKSHEET_XML;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2011
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2011
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.3
- * @since 14/12/21
+ * @version 7.8
+ * @since 01/06/22
  */
 
 public class SerializedStorage implements Storage {
 
-  private static final String HISTORY_XML = "history.xml";
-  private static final String WORKSHEET_XML = "worksheet.xml";
   private static final HistoryList HISTORY_LIST = new HistoryList();
   private static final WorkSheetList WORKSHEET_LIST = new WorkSheetList();
   private static final int DISTINCT_NAME_LENGTH = 100;
@@ -170,7 +170,7 @@ public class SerializedStorage implements Storage {
   public void addHistory(HistoryState type, MyCellarObject myCellarObject) {
     historyModified = true;
     Program.setModified();
-    HISTORY_LIST.add(new History(myCellarObject, type.ordinal(), getItemsCount()));
+    HISTORY_LIST.add(new History(myCellarObject, type.getIndex(), getItemsCount()));
   }
 
   @Override
@@ -204,28 +204,28 @@ public class SerializedStorage implements Storage {
     String sValue;
     switch (historyState) {
       case ALL:
-        sValue = getError("Error182");
+        sValue = getError("Error.confirmDeletionAllHistory");
         break;
       case ADD:
-        sValue = getError("Error189");
+        sValue = getError("Error.questionDeleteEnteredHistory");
         break;
       case MODIFY:
-        sValue = getError("Error191");
+        sValue = getError("Error.questionDeleteModifiedHistory");
         break;
       case DEL:
-        sValue = getError("Error190");
+        sValue = getError("Error.questionDeleteExitedHistory");
         break;
       case VALIDATED:
-        sValue = getError("Error.HistoryValidatedDelete", LabelProperty.OF_THE_PLURAL);
+        sValue = getError("Error.questionDeleteValidatedHistory", LabelProperty.OF_THE_PLURAL);
         break;
       case TOCHECK:
-        sValue = getError("Error.HistoryToCheckDelete", LabelProperty.OF_THE_PLURAL);
+        sValue = getError("Error.questionDeleteCheckedHistory", LabelProperty.OF_THE_PLURAL);
         break;
       default:
         sValue = "";
     }
 
-    if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, getLabel("Infos049"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+    if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
       return;
     }
 
@@ -237,7 +237,7 @@ public class SerializedStorage implements Storage {
     }
     HISTORY_LIST.getHistory()
         .stream()
-        .filter(history -> history.getType() == historyState.ordinal())
+        .filter(history -> history.getType() == historyState.getIndex())
         .forEach(this::removeHistory);
   }
 
@@ -268,7 +268,7 @@ public class SerializedStorage implements Storage {
         Debug("DeleteWine: Deleted by Id. " + myCellarObject);
         found = listMyCellarObject.remove(collect.get(0));
       } else {
-        Rangement rangement = myCellarObject.getRangement();
+        AbstractPlace rangement = myCellarObject.getAbstractPlace();
         boolean isCaisse = rangement == null || rangement.isSimplePlace();
         final List<MyCellarObject> resultBouteilles = getAllList().stream()
             .filter(

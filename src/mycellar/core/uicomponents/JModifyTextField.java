@@ -1,5 +1,6 @@
 package mycellar.core.uicomponents;
 
+import mycellar.core.IModifyable;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.JTextField;
@@ -14,10 +15,10 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 30/12/21
+ * @version 0.9
+ * @since 13/04/22
  */
-public final class JModifyTextField extends JTextField {
+public final class JModifyTextField extends JTextField implements IModifyable {
 
   private static final long serialVersionUID = 7663077125632345441L;
 
@@ -34,29 +35,30 @@ public final class JModifyTextField extends JTextField {
       @Override
       public void keyTyped(KeyEvent arg0) {
         if (active && listenerEnable) {
+          ProgramPanels.setSelectedPaneModified(true);
           modified = true;
-          doAfterModify();
         }
       }
     });
   }
 
-  private void doAfterModify() {
-    ProgramPanels.setSelectedPaneModified(true);
+  @Override
+  public void reset() {
+    setText("");
+    setModified(false);
   }
 
+  @Override
   public boolean isModified() {
     return modified;
   }
 
+  @Override
   public void setModified(boolean modified) {
     this.modified = modified;
   }
 
-  public boolean isActive() {
-    return active;
-  }
-
+  @Override
   public void setActive(boolean active) {
     this.active = active;
   }
@@ -66,6 +68,7 @@ public final class JModifyTextField extends JTextField {
     return Objects.requireNonNull(super.getText()).strip();
   }
 
+  @Override
   public void setListenerEnable(boolean listenerEnable) {
     this.listenerEnable = listenerEnable;
   }

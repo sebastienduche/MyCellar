@@ -1,23 +1,23 @@
 package mycellar.placesmanagement;
 
-import mycellar.core.text.LabelType;
+import mycellar.placesmanagement.places.Part;
 
 import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.Map;
 
-import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelCode;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2018
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2018
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 24/02/22
+ * @version 0.7
+ * @since 25/05/22
  */
 public class RangementToCreateTableModel extends AbstractTableModel {
 
@@ -44,7 +44,7 @@ public class RangementToCreateTableModel extends AbstractTableModel {
   @Override
   public String getColumnName(int column) {
     if (column == 0) {
-      return getLabel(LabelType.INFO, "208");
+      return getLabelCode("Main.Name");
     }
     return "";
   }
@@ -60,7 +60,7 @@ public class RangementToCreateTableModel extends AbstractTableModel {
     for (Part part : parts) {
       row += part.getRowSize();
     }
-    return MessageFormat.format(getLabel(LabelType.INFO_OTHER, "RangementToCreateTableModel.message"), parts.size(), row);
+    return MessageFormat.format(getLabelCode("RangementToCreateTableModel.Message"), parts.size(), row);
   }
 
   public void clear() {

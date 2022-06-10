@@ -1,45 +1,45 @@
-package mycellar.placesmanagement;
+package mycellar.placesmanagement.places;
 
 import mycellar.Program;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2021</p>
- * <p>Societe : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2021
+ * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 20/05/21
+ * @version 0.8
+ * @since 01/06/22
  */
 
 public class Place {
 
-  private final Rangement rangement;
-  private final int placeNum;
+  private final AbstractPlace abstractPlace;
+  private final int part;
   private final int line;
   private final int column;
 
-  private Place(Rangement rangement, int placeNum) {
-    this.rangement = rangement;
-    this.placeNum = placeNum;
+  private Place(AbstractPlace abstractPlace, int part) {
+    this.abstractPlace = abstractPlace;
+    this.part = part;
     line = -1;
     column = -1;
   }
 
-  private Place(Rangement rangement, int placeNum, int line, int column) {
-    this.rangement = rangement;
-    this.placeNum = placeNum;
+  private Place(AbstractPlace abstractPlace, int part, int line, int column) {
+    this.abstractPlace = abstractPlace;
+    this.part = part;
     this.line = line;
     this.column = column;
   }
 
-  public Rangement getRangement() {
-    return rangement;
+  public AbstractPlace getAbstractPlace() {
+    return abstractPlace;
   }
 
-  public int getPlaceNum() {
-    return placeNum;
+  public int getPart() {
+    return part;
   }
 
   public int getLine() {
@@ -55,9 +55,9 @@ public class Place {
    */
   public int getPlaceNumIndex() {
     if (isSimplePlace()) {
-      return placeNum - rangement.getStartSimplePlace();
+      return part - ((SimplePlace) abstractPlace).getPartNumberIncrement();
     }
-    return placeNum - 1;
+    return part - 1;
   }
 
   /**
@@ -75,18 +75,18 @@ public class Place {
   }
 
   public boolean isSimplePlace() {
-    return rangement.isSimplePlace();
+    return abstractPlace.isSimplePlace();
   }
 
   public boolean hasPlace() {
-    return !Program.EMPTY_PLACE.equals(rangement);
+    return !Program.EMPTY_PLACE.equals(abstractPlace);
   }
 
   @Override
   public String toString() {
     return "Place{" +
-        "rangement=" + rangement +
-        ", placeNum=" + placeNum +
+        "abstractPlace=" + abstractPlace +
+        ", part=" + part +
         ", line=" + line +
         ", column=" + column +
         '}';
@@ -94,12 +94,12 @@ public class Place {
 
   public static class PlaceBuilder {
 
-    protected final Rangement rangement;
+    protected final AbstractPlace rangement;
     private int numPlace;
     private int line;
     private int column;
 
-    public PlaceBuilder(Rangement rangement) {
+    public PlaceBuilder(AbstractPlace rangement) {
       this.rangement = rangement;
     }
 

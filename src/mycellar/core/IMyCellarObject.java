@@ -1,20 +1,20 @@
 package mycellar.core;
 
 import mycellar.core.common.MyCellarFields;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.Place;
 
 import java.math.BigDecimal;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2021</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2021
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 23/04/21
+ * @version 0.6
+ * @since 31/05/22
  */
 public interface IMyCellarObject {
   int getId();
@@ -37,7 +37,7 @@ public interface IMyCellarObject {
 
   double getPriceDouble();
 
-  Rangement getRangement();
+  AbstractPlace getAbstractPlace();
 
   int getNumLieu();
 

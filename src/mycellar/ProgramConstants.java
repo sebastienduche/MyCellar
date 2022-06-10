@@ -5,20 +5,20 @@ import java.awt.event.KeyEvent;
 import java.time.format.DateTimeFormatter;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2003</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2003
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 18/02/22
+ * @version 0.9
+ * @since 13/05/22
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.5.0.7";
-  public static final int VERSION = 73;
-  public static final String MAIN_VERSION = VERSION + " CG";
+  public static final String INTERNAL_VERSION = "4.8.6.6";
+  public static final int VERSION = 74;
+  public static final String MAIN_VERSION = VERSION + " BI";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
   public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
   public static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
@@ -26,6 +26,7 @@ public final class ProgramConstants {
   public static final Font FONT_LABEL_BOLD = new Font("Arial", Font.BOLD, 12);
   public static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
   public static final String UNTITLED1_SINFO = "Untitled1.sinfo";
+  public static final String UNTITLED = "Untitled";
   public static final String COUNTRIES_XML = "countries.xml";
   public static final String TEXT = ".txt";
   public static final String FRA = "FRA";
@@ -61,7 +62,6 @@ public final class ProgramConstants {
   public static final int IMPORT_COMBO_COUNT = 18;
   public static final String KEY_TYPE = "<KEY>";
   public static final String COUNTRY_LABEL_KEY = "Country.";
-  public static final String INFOS_LABEL_KEY = "Infos";
   public static final String ERRORS_LABEL_KEY = "Errors";
   static final String INFOS_VERSION = " 2022 v";
   static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
@@ -72,6 +72,8 @@ public final class ProgramConstants {
   static final String TYPES_XML = "Types.xml";
   static final String TYPES_MUSIC_XML = "music_types.xml";
   static final String BOUTEILLES_XML = "Bouteilles.xml";
+  public static final String HISTORY_XML = "history.xml";
+  public static final String WORKSHEET_XML = "worksheet.xml";
   static final String CONFIG_INI = "config.ini";
   static final String RESTART_COMMAND = "restart";
   static final String DOWNLOAD_COMMAND = "download";

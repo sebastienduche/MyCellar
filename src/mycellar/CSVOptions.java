@@ -2,11 +2,11 @@ package mycellar;
 
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -28,14 +28,14 @@ import static mycellar.ProgramConstants.isVK_O;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2004</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2004
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 16/12/21
+ * @version 2.9
+ * @since 24/05/22
  */
 final class CSVOptions extends JDialog {
   static final long serialVersionUID = 230705;
@@ -48,7 +48,7 @@ final class CSVOptions extends JDialog {
     Debug("Constructor");
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setModal(true);
-    setTitle(getLabel("Infos269"));
+    setTitle(getLabel("CSVOptions.Title"));
 
     addKeyListener(new KeyAdapter() {
       @Override
@@ -65,24 +65,24 @@ final class CSVOptions extends JDialog {
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setLayout(new MigLayout("", "grow", ""));
     panel.setFont(FONT_PANEL);
-    MyCellarLabel info_separator = new MyCellarLabel(LabelType.INFO, "034"); //Separateur
+    MyCellarLabel info_separator = new MyCellarLabel("Import.Separator");
     listColumns = MyCellarFields.getFieldsList();
     nb_colonnes = listColumns.size();
     export = new MyCellarCheckBox[nb_colonnes];
-    final MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
+    final MyCellarSimpleLabel[] colonnes = new MyCellarSimpleLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox(LabelType.INFO, "261");
+      export[i] = new MyCellarCheckBox("Main.Exported");
       export[i].setSelected(Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0) == 1);
-      colonnes[i] = new MyCellarLabel(listColumns.get(i).toString());
+      colonnes[i] = new MyCellarSimpleLabel(listColumns.get(i).toString());
     }
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));
     jPanel2.setFont(FONT_PANEL);
-    MyCellarButton valider = new MyCellarButton(LabelType.INFO_OTHER, "Main.OK");
-    separator.addItem(getLabel("Infos002"));
-    separator.addItem(getLabel("Infos042"));
-    separator.addItem(getLabel("Infos043"));
-    separator.addItem(getLabel("Infos044"));
+    MyCellarButton valider = new MyCellarButton("Main.OK");
+    separator.addItem(getLabel("CSV.SeparatorComma"));
+    separator.addItem(getLabel("CSV.SeparatorDotComma"));
+    separator.addItem(getLabel("CSV.SeparatorDoubleDot"));
+    separator.addItem(getLabel("CSV.SeparatorSlash"));
     String key = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
     switch (key) {
       case COLUMNS_SEPARATOR:
@@ -99,14 +99,14 @@ final class CSVOptions extends JDialog {
         break;
     }
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(LabelType.INFO, "055");
+    MyCellarButton annuler = new MyCellarButton("Main.Cancel");
     annuler.addActionListener((e) -> dispose());
 
     add(info_separator, "split 2");
     add(separator, "wrap");
 
     JScrollPane scrollPane = new JScrollPane(jPanel2);
-    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Infos258")));
+    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Options.TableColumns")));
     add(scrollPane, "grow, gaptop 15px, wrap");
     for (int i = 0; i < nb_colonnes; i++) {
       jPanel2.add(colonnes[i], "grow");

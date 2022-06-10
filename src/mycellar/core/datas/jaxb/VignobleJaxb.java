@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
+import static mycellar.ProgramConstants.DASH;
+
 /*
  * <p>Titre : Cave à vin</p>
  * <p>Description : Votre description</p>
@@ -242,15 +244,15 @@ public class VignobleJaxb implements Serializable {
       }
     }
     if (name != null && !name.isEmpty()) {
-      sb.append("-");
+      sb.append(DASH);
       sb.append(name);
     }
     if (aoc != null && !aoc.isEmpty()) {
-      sb.append("-");
+      sb.append(DASH);
       sb.append(aoc);
     }
     if (igp != null && !igp.isEmpty()) {
-      sb.append("-");
+      sb.append(DASH);
       sb.append(igp);
     }
     return sb.toString();

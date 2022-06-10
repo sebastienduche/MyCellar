@@ -1,10 +1,11 @@
 package mycellar.core.uicomponents;
 
+import mycellar.core.IModifyable;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.JFormattedTextField;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.text.Format;
 
 /**
@@ -14,11 +15,11 @@ import java.text.Format;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 22/10/21
+ * @version 0.7
+ * @since 13/04/22
  */
 
-public final class JModifyFormattedTextField extends JFormattedTextField {
+public final class JModifyFormattedTextField extends JFormattedTextField implements IModifyable {
 
   private static final long serialVersionUID = -7364848812779720027L;
 
@@ -31,38 +32,40 @@ public final class JModifyFormattedTextField extends JFormattedTextField {
     modified = false;
     active = true;
     listenerEnable = true;
-    addKeyListener(new KeyListener() {
+    addKeyListener(new KeyAdapter() {
 
       @Override
       public void keyTyped(KeyEvent arg0) {
         if (active && listenerEnable) {
-          modified = true;
           ProgramPanels.setSelectedPaneModified(true);
+          modified = true;
         }
-      }
-
-      @Override
-      public void keyReleased(KeyEvent arg0) {
-      }
-
-      @Override
-      public void keyPressed(KeyEvent arg0) {
       }
     });
   }
 
+  @Override
+  public void reset() {
+    setText("");
+    setModified(false);
+  }
+
+  @Override
   public boolean isModified() {
     return modified;
   }
 
+  @Override
   public void setModified(boolean modified) {
     this.modified = modified;
   }
 
+  @Override
   public void setActive(boolean active) {
     this.active = active;
   }
 
+  @Override
   public void setListenerEnable(boolean listenerEnable) {
     this.listenerEnable = listenerEnable;
   }

@@ -6,9 +6,9 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.placesmanagement.Rangement;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
+import mycellar.placesmanagement.places.AbstractPlace;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -27,14 +27,14 @@ import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2013
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2013
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 20/01/22
+ * @version 3.1
+ * @since 31/05/22
  */
 public final class PanelInfos extends JPanel {
 
@@ -75,10 +75,10 @@ public final class PanelInfos extends JPanel {
 final class PanelStats extends JPanel {
 
   private static final long serialVersionUID = 7438892143990782047L;
-  private final MyCellarLabel bottles = new MyCellarLabel(LabelType.INFO_OTHER, "Main.NumberOfItems", LabelProperty.PLURAL, "");
-  private final MyCellarLabel cellarValue = new MyCellarLabel(LabelType.INFO, "406");
-  private final MyCellarLabel bottlesNb = new MyCellarLabel();
-  private final MyCellarLabel cellarTotal = new MyCellarLabel();
+  private final MyCellarLabel bottles = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
+  private final MyCellarLabel cellarValue = new MyCellarLabel("Main.GlobalValue");
+  private final MyCellarSimpleLabel bottlesNb = new MyCellarSimpleLabel();
+  private final MyCellarSimpleLabel cellarTotal = new MyCellarSimpleLabel();
   private final PanelStatsModel model = new PanelStatsModel();
   private final JTable table;
 
@@ -104,7 +104,7 @@ final class PanelStats extends JPanel {
     bottlesNb.setEnabled(false);
     cellarValue.setEnabled(false);
     cellarTotal.setEnabled(false);
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos404")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos.Stats")));
     setEnabled(false);
   }
 
@@ -112,7 +112,7 @@ final class PanelStats extends JPanel {
     SwingUtilities.invokeLater(() -> {
       model.clearRows();
       int nbBottles = 0;
-      for (Rangement rangement : Program.getPlaces()) {
+      for (AbstractPlace rangement : Program.getAbstractPlaces()) {
         nbBottles += rangement.getTotalCountCellUsed();
         model.addRow(rangement, rangement.getTotalCountCellUsed());
       }
@@ -126,7 +126,7 @@ final class PanelStats extends JPanel {
   }
 
   void setLabels() {
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos404")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Infos.Stats")));
     bottles.updateText();
     cellarValue.updateText();
     TableColumnModel tcm = table.getColumnModel();
@@ -144,7 +144,7 @@ final class PanelStats extends JPanel {
 
   private static class PanelStatsModel extends DefaultTableModel {
     private static final long serialVersionUID = -3683870571523007857L;
-    private final LinkedList<Rangement> names;
+    private final LinkedList<AbstractPlace> names;
     private final LinkedList<String> values;
     private final boolean isInit;
 
@@ -154,7 +154,7 @@ final class PanelStats extends JPanel {
       isInit = true;
     }
 
-    private void addRow(Rangement name, int value) {
+    private void addRow(AbstractPlace name, int value) {
       names.add(name);
       values.add(Integer.toString(value));
     }
@@ -185,7 +185,7 @@ final class PanelStats extends JPanel {
     @Override
     public void setValueAt(Object arg0, int row, int column) {
       if (column == 2) {
-        Rangement rangement = names.get(row);
+        AbstractPlace rangement = names.get(row);
         XmlUtils.writePlacesToHTML("", List.of(rangement), false);
         Program.open(Program.getPreviewHTMLFileName(), false);
       }

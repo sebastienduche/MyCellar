@@ -7,15 +7,18 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlaceUtils;
+import mycellar.placesmanagement.places.SimplePlace;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
+import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -27,27 +30,44 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 20/01/22
+ * @version 2.7
+ * @since 01/06/22
  */
 
 public class ErrorShowValues extends TableShowValues {
 
-  public static final int NAME = 2;
-  public static final int YEAR = 3;
-  public static final int TYPE = 4;
-  public static final int PLACE = 5;
-  static final int STATUS = 9;
-  static final int BUTTON = 10;
+  enum Column {
+    ETAT(0),
+    ERROR(1),
+    NAME(2),
+    YEAR(3),
+    TYPE(4),
+    PLACE(5),
+    NUM_PLACE(6),
+    LINE(7),
+    COLUMN(8),
+    STATUS(9),
+    BUTTON(10);
+
+    private final int index;
+
+    Column(int i) {
+      index = i;
+    }
+
+    int getIndex() {
+      return index;
+    }
+
+    static Column fromIndex(int i) {
+      return Arrays.stream(values()).filter(column -> column.getIndex() == i).findFirst().orElse(null);
+    }
+  }
+
   private static final long serialVersionUID = 2477822182069165515L;
-  private static final int ETAT = 0;
-  private static final int ERROR = 1;
-  private static final int NUM_PLACE = 6;
-  private static final int LINE = 7;
-  private static final int COLUMN = 8;
   private static final int NBCOL = 11;
-  private final String[] columnNames = {"", getLabel("ErrorShowValues.error"), getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Infos189"), getLabel("Infos134"), getLabel("Infos217"),
-      getLabel("Infos082"), getLabel("Infos028"), getLabel("Infos083"), getLabel("ShowFile.Status"), ""};
+  private final String[] columnNames = {"", getLabel("ErrorShowValues.Error"), getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
+      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel("MyCellarFields.Column"), getLabel("ShowFile.Status"), ""};
 
   private Boolean[] status = null;
   private Boolean[] editable = null;
@@ -71,7 +91,11 @@ public class ErrorShowValues extends TableShowValues {
     }
     MyCellarError error = errors.get(row);
     IMyCellarObject b = error.getMyCellarObject();
-    switch (column) {
+    final Column column1 = Column.fromIndex(column);
+    if (column1 == null) {
+      return "";
+    }
+    switch (column1) {
       case ETAT:
         return values[row];
       case NAME:
@@ -108,30 +132,40 @@ public class ErrorShowValues extends TableShowValues {
   }
 
   @Override
-  public boolean isCellEditable(int row, int column) {
-    return !Boolean.FALSE.equals(editable[row]) && (column == ETAT
-        || column == NAME
-        || column == TYPE
-        || column == YEAR
-        || column == PLACE
-        || column == NUM_PLACE
-        || column == LINE
-        || column == COLUMN
-        || column == BUTTON);
+  public boolean isCellEditable(int row, int col) {
+    if (!Boolean.FALSE.equals(editable[row])) {
+      final Column column = Column.fromIndex(col);
+      switch (column) {
+        case ETAT:
+        case NAME:
+        case TYPE:
+        case YEAR:
+        case PLACE:
+        case NUM_PLACE:
+        case LINE:
+        case COLUMN:
+        case BUTTON:
+          return true;
+        default:
+          return false;
+      }
+    }
+    return false;
   }
 
   @Override
-  public void setValueAt(Object value, int row, int column) {
+  public void setValueAt(Object value, int row, int col) {
     MyCellarError error = errors.get(row);
     MyCellarObject b = error.getMyCellarObject();
-    Rangement rangement;
+    AbstractPlace rangement;
+    final Column column = Column.fromIndex(col);
     switch (column) {
       case ETAT:
         values[row] = (Boolean) value;
         break;
       case BUTTON:
-        rangement = b.getRangement();
-        if (rangement != null && rangement.canAddObjectAt(b)) {
+        rangement = b.getAbstractPlace();
+        if (rangement != null && rangement.canAddObjectAt(b.getPlace())) {
           error.setSolved(true);
           Program.getStorage().addWine(b);
           editable[row] = Boolean.FALSE;
@@ -150,7 +184,7 @@ public class ErrorShowValues extends TableShowValues {
         break;
       case YEAR:
         if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
-          Erreur.showSimpleErreur(getError("Error053"));
+          Erreur.showSimpleErreur(getError("Error.enterValidYear"));
         } else {
           b.setAnnee((String) value);
         }
@@ -163,7 +197,7 @@ public class ErrorShowValues extends TableShowValues {
         int num_empl_old = b.getNumLieu();
         int line_old = b.getLigne();
         int column_old = b.getColonne();
-        rangement = b.getRangement();
+        rangement = b.getAbstractPlace();
         boolean bError = false;
         int nValueToCheck = -1;
         String empl = empl_old;
@@ -171,40 +205,40 @@ public class ErrorShowValues extends TableShowValues {
         int line = line_old;
         int column1 = column_old;
 
-        if (column == PLACE) {
+        if (column.equals(Column.PLACE)) {
           empl = (String) value;
-          if (RangementUtils.isExistingPlace(empl)) {
+          if (PlaceUtils.isExistingPlace(empl)) {
             rangement = Program.getPlaceByName(empl);
           }
-        } else if (column == NUM_PLACE) {
-          try {
-            num_empl = Integer.parseInt((String) value);
-            nValueToCheck = num_empl;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+        } else if (column.equals(Column.NUM_PLACE)) {
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            num_empl = i;
+            nValueToCheck = i;
           }
-        } else if (column == LINE) {
-          try {
-            line = Integer.parseInt((String) value);
-            nValueToCheck = line;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+        } else if (column.equals(Column.LINE)) {
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            line = i;
+            nValueToCheck = i;
           }
         } else {
-          try {
-            column1 = Integer.parseInt((String) value);
-            nValueToCheck = column1;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            column1 = i;
+            nValueToCheck = i;
           }
         }
 
-        if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
+        if (!bError && (column.equals(Column.NUM_PLACE) || column.equals(Column.LINE) || column.equals(Column.COLUMN))) {
           if (!rangement.isSimplePlace() && nValueToCheck <= 0) {
-            Erreur.showSimpleErreur(getError("Error197"));
+            Erreur.showSimpleErreur(getError("Error.enterNumericValueAboveZero"));
             bError = true;
           }
         }
@@ -219,7 +253,7 @@ public class ErrorShowValues extends TableShowValues {
             tmpCol--;
             tmpLine--;
           } else {
-            tmpNumEmpl -= rangement.getStartSimplePlace();
+            tmpNumEmpl -= ((SimplePlace) rangement).getPartNumberIncrement();
           }
           if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
@@ -228,21 +262,21 @@ public class ErrorShowValues extends TableShowValues {
             }
             if (bTemp.isPresent()) {
               status[row] = Boolean.FALSE;
-              Erreur.showSimpleErreur(MessageFormat.format(getError("Error059"), convertStringFromHTMLString(bTemp.get().getNom()), b.getAnnee()));
+              Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(bTemp.get().getNom()), b.getAnnee()));
             } else {
-              if (column == PLACE) {
+              if (column.equals(Column.PLACE)) {
                 b.setEmplacement((String) value);
                 if (rangement.isSimplePlace()) {
                   int nNumEmpl = b.getNumLieu();
                   if (nNumEmpl > rangement.getLastPartNumber()) {
-                    b.setNumLieu(rangement.getFreeNumPlaceInSimplePlace());
+                    b.setNumLieu(((SimplePlace) rangement).getFreeNumPlace());
                   }
                   b.setLigne(0);
                   b.setColonne(0);
                 }
-              } else if (column == NUM_PLACE) {
+              } else if (column.equals(Column.NUM_PLACE)) {
                 b.setNumLieu(Integer.parseInt((String) value));
-              } else if (column == LINE) {
+              } else if (column.equals(Column.LINE)) {
                 b.setLigne(Integer.parseInt((String) value));
               } else {
                 b.setColonne(Integer.parseInt((String) value));
@@ -256,6 +290,8 @@ public class ErrorShowValues extends TableShowValues {
         fireTableRowsUpdated(row, row);
       }
       break;
+      default:
+        break;
     }
   }
 

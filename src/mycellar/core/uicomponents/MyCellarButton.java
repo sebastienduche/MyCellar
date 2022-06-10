@@ -3,7 +3,6 @@ package mycellar.core.uicomponents;
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.text.MyCellarLabelManagement;
 
 import javax.swing.Action;
@@ -19,8 +18,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 22/02/22
+ * @version 1.1
+ * @since 05/05/22
  */
 
 public final class MyCellarButton extends JButton implements IMyCellarComponent {
@@ -34,65 +33,39 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     setFont(FONT_PANEL);
   }
 
-  @Deprecated
-  public MyCellarButton(String text) {
-    super(text);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarButton(LabelType type, String code) {
-    labelKey = new LabelKey(type, code);
+  public MyCellarButton(String code) {
+    labelKey = new LabelKey(code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(LabelType type, String code, String value) {
-    labelKey = new LabelKey(type, code, null, value);
+  public MyCellarButton(String code, LabelProperty labelProperty) {
+    labelKey = new LabelKey(code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(LabelType type, String code, LabelProperty labelProperty) {
-    labelKey = new LabelKey(type, code, labelProperty);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarButton(LabelType type, String code, Action a) {
+  public MyCellarButton(String code, Action a) {
     super(a);
-    labelKey = new LabelKey(type, code);
+    labelKey = new LabelKey(code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(LabelType type, String code, LabelProperty labelProperty, Action a) {
+  public MyCellarButton(String code, LabelProperty labelProperty, Action a) {
     super(a);
-    labelKey = new LabelKey(type, code, labelProperty);
+    labelKey = new LabelKey(code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(LabelType type, String code, String value, Action a) {
-    super(a);
-    labelKey = new LabelKey(type, code, null, value);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarButton(String text, Icon icon) {
-    super(text, icon);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarButton(LabelType type, String code, Icon icon) {
+  public MyCellarButton(String code, Icon icon) {
     super(icon);
-    labelKey = new LabelKey(type, code);
+    labelKey = new LabelKey(code);
     updateText();
     setFont(FONT_PANEL);
   }

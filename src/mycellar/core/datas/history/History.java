@@ -125,11 +125,11 @@ public class History {
   }
 
   public boolean isDeleted() {
-    return type == HistoryState.DEL.ordinal();
+    return type == HistoryState.DEL.getIndex();
   }
 
   public boolean isAddedOrDeleted() {
-    return type == HistoryState.ADD.ordinal() || type == HistoryState.DEL.ordinal();
+    return type == HistoryState.ADD.getIndex() || type == HistoryState.DEL.getIndex();
   }
 
   public Bouteille getBouteille() {

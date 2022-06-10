@@ -3,7 +3,6 @@ package mycellar;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.tablecomponents.DateCellRenderer;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
@@ -23,9 +22,9 @@ public final class PanelHistory extends JPanel {
   private final TableHistoryValues model;
   private final JTable table;
   private final JPanel whatNewPanel = new JPanel();
-  private final MyCellarLabel label1 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew1");
-  private final MyCellarLabel label2 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew2");
-  private final MyCellarLabel label3 = new MyCellarLabel(LabelType.INFO_OTHER, "WhatsNew3");
+  private final MyCellarLabel label1 = new MyCellarLabel("WhatsNew1");
+  private final MyCellarLabel label2 = new MyCellarLabel("WhatsNew2");
+  private final MyCellarLabel label3 = new MyCellarLabel("WhatsNew3");
 
   public PanelHistory() {
     setLayout(new MigLayout("", "[grow]", "[]"));
@@ -59,21 +58,21 @@ public final class PanelHistory extends JPanel {
     tc = tcm.getColumn(TableHistoryValues.DATE - 1);
     tc.setCellRenderer(new DateCellRenderer());
 
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos407")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Main.RecentActivity")));
     setEnable(false);
   }
 
   public void refresh() {
     SwingUtilities.invokeLater(() -> {
       model.removeAll();
-      if (!Program.getPlaces().isEmpty()) {
+      if (!Program.getAbstractPlaces().isEmpty()) {
         model.setHistory(Program.getHistory());
       }
     });
   }
 
   public void setLabels() {
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos407")));
+    setBorder(BorderFactory.createTitledBorder(getLabel("Main.RecentActivity")));
     TableColumnModel tcm = table.getColumnModel();
     TableColumn tc = tcm.getColumn(TableHistoryValues.ACTION - 1);
     tc.setCellRenderer(new ButtonCellRenderer());

@@ -6,6 +6,7 @@ import mycellar.core.common.MyCellarFields;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;
 
@@ -27,25 +28,23 @@ import static mycellar.core.MyCellarSettings.SIZE_COL;
 import static mycellar.core.MyCellarSettings.TEXT_SIZE_XLS;
 import static mycellar.core.MyCellarSettings.TITLE_SIZE_XLS;
 import static mycellar.core.MyCellarSettings.XLS_TITLE;
-import static mycellar.core.text.LabelType.INFO;
-import static mycellar.core.text.LabelType.INFO_OTHER;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2004</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2004
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 16/04/21
+ * @version 2.5
+ * @since 24/05/22
  */
 public final class XLSOptions extends JDialog {
 
   private static final long serialVersionUID = 5307297932934344545L;
   private final MyCellarSpinner titleSize = new MyCellarSpinner(1, 999);
-  private final MyCellarCheckBox myCellarCheckBox = new MyCellarCheckBox(INFO, "257");
+  private final MyCellarCheckBox myCellarCheckBox = new MyCellarCheckBox("Options.Bold");
   private final MyCellarCheckBox[] export;
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner textSize = new MyCellarSpinner(1, 999);
@@ -54,7 +53,7 @@ public final class XLSOptions extends JDialog {
   public XLSOptions() {
     setModal(true);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(getLabel("Infos268"));
+    setTitle(getLabel("XLSOptions.Title"));
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
@@ -79,26 +78,26 @@ public final class XLSOptions extends JDialog {
     List<MyCellarFields> columns = MyCellarFields.getFieldsList();
     nb_colonnes = columns.size();
     export = new MyCellarCheckBox[nb_colonnes];
-    MyCellarLabel[] colonnes = new MyCellarLabel[nb_colonnes];
+    MyCellarSimpleLabel[] colonnes = new MyCellarSimpleLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox(INFO, "261");
+      export[i] = new MyCellarCheckBox("Main.Exported");
       export[i].setSelected(1 == Program.getCaveConfigInt(SIZE_COL + i + "EXPORT_XLS", 0));
-      colonnes[i] = new MyCellarLabel(columns.get(i).toString());
+      colonnes[i] = new MyCellarSimpleLabel(columns.get(i).toString());
 
     }
     JPanel panel1 = new JPanel();
     panel1.setLayout(new MigLayout("", "[grow][grow]", ""));
     panel1.setFont(FONT_PANEL);
-    MyCellarButton valider = new MyCellarButton(INFO_OTHER, "Main.OK");
+    MyCellarButton valider = new MyCellarButton("Main.OK");
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton(INFO, "055");
+    MyCellarButton annuler = new MyCellarButton("Main.Cancel");
     annuler.addActionListener((e) -> dispose());
-    MyCellarLabel MyCellarLabel6 = new MyCellarLabel("pt");
-    MyCellarLabel MyCellarLabel7 = new MyCellarLabel(INFO, "256"); //Taille du texte
-    MyCellarLabel MyCellarLabel8 = new MyCellarLabel("pt");
+    MyCellarSimpleLabel MyCellarLabel6 = new MyCellarSimpleLabel("pt");
+    MyCellarLabel MyCellarLabel7 = new MyCellarLabel("Options.TextSize");
+    MyCellarSimpleLabel MyCellarLabel8 = new MyCellarSimpleLabel("pt");
 
-    MyCellarLabel MyCellarLabel2 = new MyCellarLabel(INFO, "270"); //Titre du XLS
-    MyCellarLabel MyCellarLabel3 = new MyCellarLabel(INFO, "256"); //Taille du texte
+    MyCellarLabel MyCellarLabel2 = new MyCellarLabel("XLSOptions.XLSTitle");
+    MyCellarLabel MyCellarLabel3 = new MyCellarLabel("Options.TextSize");
     panel.add(MyCellarLabel2, "split 2");
     panel.add(pdf_title, "grow, wrap");
     panel.add(MyCellarLabel3, "split 6");
@@ -115,7 +114,7 @@ public final class XLSOptions extends JDialog {
       panel1.add(export[i], "push, align right");
     }
     JScrollPane scrollPane = new JScrollPane(panel1);
-    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Infos258")));
+    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Options.TableColumns")));
     add(scrollPane, "gaptop 15px, grow, wrap");
     add(valider, "split 2, center");
     add(annuler);

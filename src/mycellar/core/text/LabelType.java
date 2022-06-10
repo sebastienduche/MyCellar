@@ -1,8 +1,9 @@
 package mycellar.core.text;
 
 public enum LabelType {
-  INFO,
+  @Deprecated
   ERROR,
-  INFO_OTHER,
-  ERROR_OTHER
+  LABEL,
+  ERROR_OTHER,
+  NONE
 }

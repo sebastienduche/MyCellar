@@ -14,9 +14,9 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.VignobleJaxb;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlaceUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -43,8 +43,8 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.6
- * @since 20/01/22
+ * @version 7.9
+ * @since 31/05/22
  *
  * <p>Java class for anonymous complex type.
  *
@@ -372,7 +372,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public Rangement getRangement() {
+  public AbstractPlace getAbstractPlace() {
     return Program.getPlaceByName(emplacement);
   }
 
@@ -399,12 +399,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public double getPriceDouble() {
-    String price = MyCellarUtils.convertStringFromHTMLString(prix);
-    if (price.isEmpty()) {
-      return 0;
-    }
-
-    return MyCellarUtils.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
+    return getPrice().doubleValue();
   }
 
   @Override
@@ -419,12 +414,11 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public boolean hasPrice() {
-    String price = MyCellarUtils.convertStringFromHTMLString(prix);
-    if (price.isEmpty()) {
+    if (prix.isBlank()) {
       return false;
     }
     try {
-      MyCellarUtils.stringToBigDecimal(price);
+      MyCellarUtils.stringToBigDecimal(MyCellarUtils.convertStringFromHTMLString(prix));
     } catch (NumberFormatException ignored) {
       return false;
     }
@@ -445,7 +439,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public Place getPlace() {
-    return new Place.PlaceBuilder(getRangement())
+    return new Place.PlaceBuilder(getAbstractPlace())
         .withNumPlace(getNumLieu())
         .withLine(getLigne())
         .withColumn(getColonne())
@@ -616,7 +610,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public boolean isInTemporaryStock() {
-    return RangementUtils.isTemporaryPlace(emplacement);
+    return PlaceUtils.isTemporaryPlace(emplacement);
   }
 
   @Override
@@ -760,7 +754,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public boolean isInExistingPlace() {
-    return RangementUtils.isExistingPlace(emplacement);
+    return PlaceUtils.isExistingPlace(emplacement);
   }
 
 

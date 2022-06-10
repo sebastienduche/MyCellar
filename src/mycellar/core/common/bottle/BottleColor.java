@@ -1,12 +1,13 @@
 package mycellar.core.common.bottle;
 
+import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public enum BottleColor {
   NONE(""),
-  RED(getLabel("BottleColor.red")),
-  PINK(getLabel("BottleColor.pink")),
-  WHITE(getLabel("BottleColor.white"));
+  RED("BottleColor.Red"),
+  PINK("BottleColor.Pink"),
+  WHITE("BottleColor.White");
 
   private final String label;
 
@@ -34,7 +35,10 @@ public enum BottleColor {
 
   @Override
   public String toString() {
-    return label;
+    if (isNullOrEmpty(label)) {
+      return "";
+    }
+    return getLabel(label);
   }
 
 }

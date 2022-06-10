@@ -7,8 +7,9 @@ import mycellar.Start;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlaceUtils;
+import mycellar.placesmanagement.places.SimplePlace;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
+import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -29,8 +31,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.3
- * @since 20/01/22
+ * @version 6.0
+ * @since 01/06/22
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -48,17 +50,17 @@ class TableShowValues extends AbstractTableModel {
   private static final int COMMENT = 9;
   private static final int MATURITY = 10;
   private static final int PARKER = 11;
-  private final String[] columnNames = {"", getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Infos189"), getLabel("Infos134"), getLabel("Infos217"),
-      getLabel("Infos082"), getLabel("Infos028"), getLabel("Infos083"), getLabel("Infos135"), getLabel("Infos137"),
-      getLabel("Infos391"), getLabel("Infos392")};
+  private final String[] columnNames = {"", getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
+      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel("MyCellarFields.Column"), getLabel("Main.Price"), getLabel("Main.Comment"),
+      getLabel("Main.Maturity"), getLabel("Main.Rating")};
 
   protected Boolean[] values = null;
 
-  List<? extends MyCellarObject> monVector = new LinkedList<>();
+  List<? extends MyCellarObject> myCellarObjects = new LinkedList<>();
 
   @Override
   public int getRowCount() {
-    return monVector.size();
+    return myCellarObjects.size();
   }
 
   @Override
@@ -68,14 +70,13 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public Object getValueAt(int row, int column) {
-    Program.throwNotImplementedIfNotFor(monVector.get(row), Bouteille.class);
-    Bouteille b = (Bouteille) monVector.get(row);
+    Program.throwNotImplementedIfNotFor(myCellarObjects.get(row), Bouteille.class);
+    Bouteille b = (Bouteille) myCellarObjects.get(row);
     switch (column) {
       case ETAT:
         return values[row];
       case NAME:
-        String nom = b.getNom();
-        return convertStringFromHTMLString(nom);
+        return convertStringFromHTMLString(b.getNom());
       case YEAR:
         return b.getAnnee();
       case TYPE:
@@ -113,8 +114,8 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public void setValueAt(Object value, int row, int column) {
-    Program.throwNotImplementedIfNotFor(monVector.get(row), Bouteille.class);
-    Bouteille b = (Bouteille) monVector.get(row);
+    Program.throwNotImplementedIfNotFor(myCellarObjects.get(row), Bouteille.class);
+    Bouteille b = (Bouteille) myCellarObjects.get(row);
     switch (column) {
       case ETAT:
         values[row] = (Boolean) value;
@@ -139,7 +140,7 @@ class TableShowValues extends AbstractTableModel {
         break;
       case YEAR:
         if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
-          Erreur.showSimpleErreur(getError("Error053"));
+          Erreur.showSimpleErreur(getError("Error.enterValidYear"));
         } else {
           b.setAnnee((String) value);
         }
@@ -148,7 +149,7 @@ class TableShowValues extends AbstractTableModel {
       case NUM_PLACE:
       case LINE:
       case COLUMN: {
-        Rangement rangement = b.getRangement();
+        AbstractPlace rangement = b.getAbstractPlace();
         boolean bError = false;
         int nValueToCheck = -1;
         int num_empl = b.getNumLieu();
@@ -157,38 +158,38 @@ class TableShowValues extends AbstractTableModel {
         String empl = b.getEmplacement();
         if (column == PLACE) {
           empl = (String) value;
-          if (RangementUtils.isExistingPlace(empl)) {
+          if (PlaceUtils.isExistingPlace(empl)) {
             rangement = Program.getPlaceByName(empl);
           }
         } else if (column == NUM_PLACE) {
-          try {
-            num_empl = Integer.parseInt((String) value);
-            nValueToCheck = num_empl;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            num_empl = i;
+            nValueToCheck = i;
           }
         } else if (column == LINE) {
-          try {
-            line = Integer.parseInt((String) value);
-            nValueToCheck = line;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            line = i;
+            nValueToCheck = i;
           }
         } else {
-          try {
-            column1 = Integer.parseInt((String) value);
-            nValueToCheck = column1;
-          } catch (NumberFormatException e) {
-            Erreur.showSimpleErreur(getError("Error196"));
+          Integer i = parseIntOrError(value);
+          if (i == null) {
             bError = true;
+          } else {
+            column1 = i;
+            nValueToCheck = i;
           }
         }
 
         if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
           if (!rangement.isSimplePlace() && nValueToCheck <= 0) {
-            Erreur.showSimpleErreur(getError("Error197"));
+            Erreur.showSimpleErreur(getError("Error.enterNumericValueAboveZero"));
             bError = true;
           }
         }
@@ -203,7 +204,7 @@ class TableShowValues extends AbstractTableModel {
             tmpCol--;
             tmpLine--;
           } else {
-            tmpNumEmpl -= rangement.getStartSimplePlace();
+            tmpNumEmpl -= ((SimplePlace) rangement).getPartNumberIncrement();
           }
           if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
@@ -212,7 +213,7 @@ class TableShowValues extends AbstractTableModel {
             }
             if (bTemp.isPresent()) {
               final IMyCellarObject bouteille = bTemp.get();
-              Erreur.showSimpleErreur(MessageFormat.format(getError("Error059"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
+              Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
             } else {
               if (column == PLACE) {
                 b.setEmplacement((String) value);
@@ -226,18 +227,18 @@ class TableShowValues extends AbstractTableModel {
               if (column == PLACE && rangement.isSimplePlace()) {
                 int nNumEmpl = b.getNumLieu();
                 if (nNumEmpl > rangement.getLastPartNumber()) {
-                  b.setNumLieu(rangement.getFreeNumPlaceInSimplePlace());
+                  b.setNumLieu(((SimplePlace) rangement).getFreeNumPlace());
                 }
                 b.setLigne(0);
                 b.setColonne(0);
               }
-              RangementUtils.putTabStock();
+              PlaceUtils.putTabStock();
             }
           } else {
             if (rangement.isSimplePlace()) {
-              Erreur.showSimpleErreur(getError("Error154"));
+              Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"));
             } else {
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error198", LabelProperty.THE_SINGLE), getError("Error015"), JOptionPane.YES_NO_OPTION)) {
+              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getError("Error.error"), JOptionPane.YES_NO_OPTION)) {
                 LinkedList<MyCellarObject> list = new LinkedList<>();
                 list.add(b);
                 Program.modifyBottles(list);
@@ -251,20 +252,20 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  public void setMyCellarObjects(List<? extends MyCellarObject> b) {
-    if (b == null) {
+  public void setMyCellarObjects(List<? extends MyCellarObject> list) {
+    if (list == null) {
       return;
     }
-    values = new Boolean[b.size()];
-    monVector = b;
-    for (int i = 0; i < b.size(); i++) {
+    values = new Boolean[list.size()];
+    myCellarObjects = list;
+    for (int i = 0; i < list.size(); i++) {
       values[i] = false;
     }
     fireTableDataChanged();
   }
 
   public MyCellarObject getMyCellarObject(int i) {
-    return monVector.get(i);
+    return myCellarObjects.get(i);
   }
 
 }

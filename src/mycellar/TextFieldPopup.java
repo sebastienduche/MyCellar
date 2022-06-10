@@ -1,6 +1,6 @@
 package mycellar;
 
-import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 23/10/20
+ * @version 0.8
+ * @since 24/05/22
  */
 public abstract class TextFieldPopup extends JPanel {
 
@@ -238,7 +238,7 @@ public abstract class TextFieldPopup extends JPanel {
     }
   }
 
-  final class MyJMenuItem extends MyCellarLabel {
+  final class MyJMenuItem extends MyCellarSimpleLabel {
 
     private static final long serialVersionUID = -463113999199742853L;
     private final Color blue = new Color(51, 153, 255);

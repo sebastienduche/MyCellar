@@ -6,9 +6,9 @@ import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.music.MusicSupport;
 import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.Rangement;
-import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlaceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -33,14 +33,14 @@ import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.general.XmlUtils.getTextContent;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2021</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2021
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 20/01/22
+ * @version 1.6
+ * @since 01/06/22
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -424,7 +424,7 @@ public class Music extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public Rangement getRangement() {
+  public AbstractPlace getAbstractPlace() {
     return Program.getPlaceByName(emplacement);
   }
 
@@ -460,12 +460,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public double getPriceDouble() {
-    String price = MyCellarUtils.convertStringFromHTMLString(prix);
-    if (price.isEmpty()) {
-      return 0;
-    }
-
-    return MyCellarUtils.safeStringToBigDecimal(price, BigDecimal.ZERO).doubleValue();
+    return getPrice().doubleValue();
   }
 
   @Override
@@ -480,12 +475,11 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public boolean hasPrice() {
-    String price = MyCellarUtils.convertStringFromHTMLString(prix);
-    if (price.isEmpty()) {
+    if (prix.isBlank()) {
       return false;
     }
     try {
-      MyCellarUtils.stringToBigDecimal(price);
+      MyCellarUtils.stringToBigDecimal(MyCellarUtils.convertStringFromHTMLString(prix));
     } catch (NumberFormatException ignored) {
       return false;
     }
@@ -494,7 +488,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public Place getPlace() {
-    return new Place.PlaceBuilder(getRangement())
+    return new Place.PlaceBuilder(getAbstractPlace())
         .withNumPlace(getNumLieu())
         .withLine(getLigne())
         .withColumn(getColonne())
@@ -634,7 +628,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public boolean isInTemporaryStock() {
-    return RangementUtils.isTemporaryPlace(emplacement);
+    return PlaceUtils.isTemporaryPlace(emplacement);
   }
 
   @Override
@@ -832,7 +826,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public boolean isInExistingPlace() {
-    return RangementUtils.isExistingPlace(emplacement);
+    return PlaceUtils.isExistingPlace(emplacement);
   }
 
 

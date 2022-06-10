@@ -13,7 +13,6 @@ import java.util.MissingResourceException;
 
 import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.ERRORS_LABEL_KEY;
-import static mycellar.ProgramConstants.INFOS_LABEL_KEY;
 import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.THREE_DOTS;
@@ -25,8 +24,8 @@ import static mycellar.ProgramConstants.THREE_DOTS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 22/02/22
+ * @version 0.9
+ * @since 25/05/22
  */
 
 public class MyCellarLabelManagement {
@@ -41,42 +40,38 @@ public class MyCellarLabelManagement {
     component.setText(getLabel(labelKey.getLabelType(), labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue()));
   }
 
-  public static String getLabel(LabelKey labelKey) {
-    return getLabel(labelKey.getLabelType(), labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue());
+  public static String getLabelCode(String code) {
+    return getLabel(LabelType.LABEL, code, null, null);
   }
 
-  public static String getLabel(LabelType type, String code) {
-    return getLabel(type, code, null, null);
-  }
-
-  private static String getLabel(LabelType type, String code, LabelProperty labelProperty, String labelValue) {
+  public static String getLabel(LabelType type, String code, LabelProperty labelProperty, String labelValue) {
     if (type == null || code == null) {
       return "";
     }
 
     if (labelValue == null) {
       switch (type) {
-        case INFO:
-          return getLabel(INFOS_LABEL_KEY + code, labelProperty);
         case ERROR:
           return getError(ERRORS_LABEL_KEY + code, labelProperty);
-        case INFO_OTHER:
+        case LABEL:
           return getLabel(code, labelProperty);
         case ERROR_OTHER:
           return getError(code, labelProperty);
+        case NONE:
+          return code;
         default:
           throw new RuntimeException("Not implemented for type: " + type);
       }
     } else {
       switch (type) {
-        case INFO:
-          return MessageFormat.format(getLabel(INFOS_LABEL_KEY + code, labelProperty), labelValue).strip();
         case ERROR:
           return MessageFormat.format(getError(ERRORS_LABEL_KEY + code, labelProperty), labelValue).strip();
-        case INFO_OTHER:
+        case LABEL:
           return MessageFormat.format(getLabel(code, labelProperty), labelValue).strip();
         case ERROR_OTHER:
           return MessageFormat.format(getError(code, labelProperty), labelValue).strip();
+        case NONE:
+          return code;
         default:
           throw new RuntimeException("Not implemented for type: " + type);
       }
@@ -108,7 +103,7 @@ public class MyCellarLabelManagement {
     } catch (MissingResourceException e) {
       if (displayError) {
         Program.Debug("Program: ERROR: Missing Label " + id);
-        JOptionPane.showMessageDialog(null, "Missing Label " + id, "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Missing Label '" + id + "'", "Error", JOptionPane.ERROR_MESSAGE);
       }
       return id;
     }
@@ -126,7 +121,7 @@ public class MyCellarLabelManagement {
     try {
       return LanguageFileLoader.getError(id);
     } catch (MissingResourceException e) {
-      JOptionPane.showMessageDialog(null, "Missing Error " + id, "Error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "Missing Error '" + id + "'", "Error", JOptionPane.ERROR_MESSAGE);
       return id;
     }
   }

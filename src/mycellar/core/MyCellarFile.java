@@ -29,8 +29,8 @@ import static mycellar.ProgramConstants.UNTITLED1_SINFO;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 15/02/21
+ * @version 0.4
+ * @since 08/04/22
  */
 public class MyCellarFile {
 
@@ -214,8 +214,6 @@ public class MyCellarFile {
             fileOutputStream.close();
           }
         }
-        bufferedInputStream.close();
-        fileInputStream.close();
       }
     } catch (IOException e) {
       Debug("Unzip: Archive Error");

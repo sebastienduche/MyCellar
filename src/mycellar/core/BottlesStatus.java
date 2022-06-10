@@ -4,10 +4,10 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public enum BottlesStatus {
   NONE(""),
-  CREATED(getLabel("BottlesStatus.created")),
-  MODIFIED(getLabel("BottlesStatus.modified")),
-  VERIFIED(getLabel("BottlesStatus.verified")),
-  TOCHECK(getLabel("BottlesStatus.tocheck"));
+  CREATED(getLabel("BottlesStatus.Created")),
+  MODIFIED(getLabel("BottlesStatus.Modified")),
+  VERIFIED(getLabel("BottlesStatus.Verified")),
+  TOCHECK(getLabel("BottlesStatus.ToCheck"));
 
   private final String label;
 

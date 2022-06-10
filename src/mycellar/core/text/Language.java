@@ -23,4 +23,8 @@ public enum Language {
   public char getLanguage() {
     return language;
   }
+  
+  public String toString() {
+    return "" + language;
+  }
 }

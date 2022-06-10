@@ -12,7 +12,7 @@ import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
-import mycellar.placesmanagement.Rangement;
+import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.requester.ui.ValueSearch;
 import net.miginfocom.swing.MigLayout;
 
@@ -25,14 +25,14 @@ import java.math.BigDecimal;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2014
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2014
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 20/01/22
+ * @version 2.2
+ * @since 01/06/22
  */
 
 public class Predicates {
@@ -107,7 +107,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("MyCellarManageBottles.status");
+      return getLabel("MyCellarManageBottles.Status");
     }
 
     @Override
@@ -355,14 +355,14 @@ public class Predicates {
     public ValueSearch askforValue() {
       JPanel panel = new JPanel();
       panel.setLayout(new MigLayout("", "grow", "[]"));
-      JComboBox<Rangement> liste = new JComboBox<>();
-      Program.getPlaces().forEach(liste::addItem);
+      JComboBox<AbstractPlace> liste = new JComboBox<>();
+      Program.getAbstractPlaces().forEach(liste::addItem);
       panel.add(new JLabel(getLabel("Predicates.SelectPlace")), "wrap");
       panel.add(liste);
       JOptionPane.showMessageDialog(null, panel,
           "",
           JOptionPane.PLAIN_MESSAGE);
-      return new ValueSearch(((Rangement) liste.getSelectedItem()).getName());
+      return new ValueSearch(((AbstractPlace) liste.getSelectedItem()).getName());
     }
   };
 
@@ -386,7 +386,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("Infos134");
+      return getLabel("Main.CapacityOrSupport");
     }
 
     @Override

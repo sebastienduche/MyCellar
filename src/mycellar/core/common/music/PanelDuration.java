@@ -1,6 +1,5 @@
 package mycellar.core.common.music;
 
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import net.miginfocom.swing.MigLayout;
@@ -9,14 +8,14 @@ import javax.swing.JPanel;
 import java.time.LocalDateTime;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2021
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2021
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 15/05/21
+ * @version 0.3
+ * @since 25/05/21
  */
 public final class PanelDuration extends JPanel {
 
@@ -27,9 +26,9 @@ public final class PanelDuration extends JPanel {
 
   public PanelDuration(LocalDateTime time) {
     setLayout(new MigLayout("", "[][][]", ""));
-    add(new MyCellarLabel(LabelType.INFO_OTHER, "PanelDuration.hour"));
-    add(new MyCellarLabel(LabelType.INFO_OTHER, "PanelDuration.minute"));
-    add(new MyCellarLabel(LabelType.INFO_OTHER, "PanelDuration.second"), "wrap");
+    add(new MyCellarLabel("PanelDuration.Hour"));
+    add(new MyCellarLabel("PanelDuration.Minute"));
+    add(new MyCellarLabel("PanelDuration.Second"), "wrap");
     add(hour);
     add(minute);
     add(second);

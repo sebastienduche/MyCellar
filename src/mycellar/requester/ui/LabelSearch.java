@@ -1,6 +1,6 @@
 package mycellar.requester.ui;
 
-import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.requester.IPredicate;
 
 import javax.swing.BorderFactory;
@@ -18,14 +18,14 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 08/03/19
+ * @version 0.5
+ * @since 24/05/22
  */
 final class LabelSearch extends JPanel {
 
   private static final long serialVersionUID = 3361283505652395494L;
   private final IPredicate<?> predicate;
-  private final MyCellarLabel MyCellarLabel = new MyCellarLabel();
+  private final MyCellarSimpleLabel myCellarLabel = new MyCellarSimpleLabel();
   private final PanelCloseButton panelClose;
   private String label;
   private ValueSearch value;
@@ -38,10 +38,10 @@ final class LabelSearch extends JPanel {
     label = predicate.getName();
     this.predicate = predicate;
     type = predicate.getType();
-    MyCellarLabel.setText(label);
+    myCellarLabel.setText(label);
     setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED, Color.gray, Color.white));
     setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
-    add(MyCellarLabel);
+    add(myCellarLabel);
     add(panelClose = new PanelCloseButton() {
       private static final long serialVersionUID = 3495975676025406824L;
 
@@ -80,7 +80,7 @@ final class LabelSearch extends JPanel {
   }
 
   public String getText() {
-    return MyCellarLabel.getText();
+    return myCellarLabel.getText();
   }
 
   private void setLabel() {
@@ -94,7 +94,7 @@ final class LabelSearch extends JPanel {
     if (value != null) {
       s.append(value.getLabel());
     }
-    MyCellarLabel.setText(s.toString());
+    myCellarLabel.setText(s.toString());
   }
 
   ValueSearch getValueSearch() {
@@ -149,12 +149,12 @@ final class LabelSearch extends JPanel {
     if (b) {
       setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED, Color.gray, Color.white));
       setBackground(null);
-      MyCellarLabel.setForeground(null);
+      myCellarLabel.setForeground(null);
       setValue(null);
     } else {
       setBorder(BorderFactory.createEtchedBorder());
       setBackground(new Color(102, 102, 255));
-      MyCellarLabel.setForeground(new Color(255, 255, 255));
+      myCellarLabel.setForeground(new Color(255, 255, 255));
     }
     panelClose.setVisible(!b);
   }

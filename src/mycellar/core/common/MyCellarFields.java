@@ -14,52 +14,53 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2016
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2016
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 29/03/22
+ * @version 2.6
+ * @since 25/05/22
  */
 
 public enum MyCellarFields {
-  NAME(getLabel("Main.Item", LabelProperty.SINGLE.withCapital())),
-  YEAR(getLabel("Infos189")),
-  TYPE(getLabel("Infos134")),
-  PLACE(getLabel("Infos217")),
-  NUM_PLACE(getLabel("Infos082")),
-  LINE(getLabel("Infos028")),
-  COLUMN(getLabel("Infos083")),
-  PRICE(getLabel("Infos135")),
-  COMMENT(getLabel("Infos137")),
-  MATURITY(getLabel("Infos391")),
-  PARKER(getLabel("Infos392")),
-  COLOR(getLabel("AddVin.Color")),
-  COUNTRY(getLabel("Main.Country")),
-  VINEYARD(getLabel("Main.Vignoble")),
-  AOC(getLabel("Main.AppelationAOC")),
-  IGP(getLabel("Main.AppelationIGP")),
-  STATUS(getLabel("Main.Status")),
-  STYLE(getLabel("Main.Style")),
-  COMPOSER(getLabel("Main.Composer")),
-  ARTIST(getLabel("Main.Artist")),
-  SUPPORT(getLabel("Main.Support")),
-  DURATION(getLabel("Main.Duration")),
-  DISK_NUMBER(getLabel("Main.DiskNumber")),
-  DISK_COUNT(getLabel("Main.DiskCount")),
-  RATING(getLabel("Main.Rating")),
-  FILE(getLabel("Main.File")),
-  EXTERNAL_ID(getLabel("Main.ExternalId")),
-  ALBUM(getLabel("Main.Album")),
+  NAME(0, "Main.Item", LabelProperty.SINGLE.withCapital()),
+  YEAR(1, "Main.Year"),
+  TYPE(2, "Main.CapacityOrSupport"),
+  PLACE(3, "Main.Storage"),
+  NUM_PLACE(4, "MyCellarFields.NumPlace"),
+  LINE(5, "MyCellarFields.Line"),
+  COLUMN(6, "MyCellarFields.Column"),
+  PRICE(7, "Main.Price"),
+  COMMENT(8, "Main.Comment"),
+  MATURITY(9, "Main.Maturity"),
+  PARKER(10, "Main.Rating"),
+  COLOR(11, "AddVin.Color"),
+  COUNTRY(12, "Main.Country"),
+  VINEYARD(13, "Main.Vineyard"),
+  AOC(14, "Main.AppelationAOC"),
+  IGP(15, "Main.AppelationIGP"),
+  STATUS(16, "Main.Status"),
+  STYLE(17, "Main.Style"),
+  COMPOSER(18, "Main.Composer"),
+  ARTIST(19, "Main.Artist"),
+  SUPPORT(20, "Main.Support"),
+  DURATION(21, "Main.Duration"),
+  DISK_NUMBER(22, "Main.DiskNumber"),
+  DISK_COUNT(23, "Main.DiskCount"),
+  RATING(24, "Main.Rating"),
+  FILE(25, "Main.File"),
+  EXTERNAL_ID(26, "Main.ExternalId"),
+  ALBUM(27, "Main.Album"),
 
   // Pour l'import de donnees
-  EMPTY(""),
-  USELESS(getLabel("Infos271"));
+  EMPTY(28, ""),
+  USELESS(29, getLabel("Main.Useless"));
 
   private static final List<MyCellarFields> FIELDSFORIMPORT_WINE = Arrays.asList(
       NAME, YEAR, TYPE, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, MATURITY, PARKER, COLOR,
@@ -75,10 +76,24 @@ public enum MyCellarFields {
   private static final List<MyCellarFields> FIELDS_MUSIC = Arrays.asList(
       NAME, YEAR, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, STATUS, ARTIST, COMPOSER, STYLE, SUPPORT, DURATION, EXTERNAL_ID, ALBUM
   );
-  private final String label;
+  private final int index;
+  private final String keyLabel;
+  private final LabelProperty labelProperty;
 
-  MyCellarFields(String label) {
-    this.label = label;
+  MyCellarFields(int index, String keyLabel) {
+    this.index = index;
+    this.keyLabel = keyLabel;
+    labelProperty = null;
+  }
+
+  MyCellarFields(int index, String keyLabel, LabelProperty labelProperty) {
+    this.index = index;
+    this.keyLabel = keyLabel;
+    this.labelProperty = labelProperty;
+  }
+
+  public int getIndex() {
+    return index;
   }
 
   public static String getValue(String field, IMyCellarObject myCellarObject) {
@@ -259,6 +274,9 @@ public enum MyCellarFields {
 
   @Override
   public String toString() {
-    return label;
+    if (isNullOrEmpty(keyLabel)) {
+      return "";
+    }
+    return getLabel(keyLabel, labelProperty);
   }
 }

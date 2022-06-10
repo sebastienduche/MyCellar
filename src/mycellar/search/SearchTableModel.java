@@ -19,8 +19,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 25/03/22
+ * @version 3.7
+ * @since 25/05/22
  */
 class SearchTableModel extends AbstractTableModel {
 
@@ -28,8 +28,8 @@ class SearchTableModel extends AbstractTableModel {
   static final int SHOW = 7;
   private static final long serialVersionUID = -3899189654755476591L;
   private final List<String> columnNames = List.of("",
-      getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Infos189"), getLabel("Infos217"),
-      getLabel("Infos082"), getLabel("Infos028"), getLabel("Infos083"), "");
+      getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.Storage"),
+      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel("MyCellarFields.Column"), "");
 
   private final List<Boolean> listBoolean = new ArrayList<>();
   private final List<MyCellarObject> datas = new ArrayList<>();

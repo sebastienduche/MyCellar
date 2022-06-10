@@ -9,7 +9,6 @@ import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.datas.jaxb.VignobleListJaxb;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.JCompletionComboBox;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -33,14 +32,14 @@ import static mycellar.ProgramConstants.FR;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2017</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2017
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 22/10/21
+ * @version 1.8
+ * @since 25/05/22
  */
 public final class PanelVignobles extends JPanel {
 
@@ -53,10 +52,10 @@ public final class PanelVignobles extends JPanel {
 
   public PanelVignobles(boolean modifyActive, boolean manageButton, boolean editable) {
 
-    MyCellarLabel labelCountry = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Country");
-    MyCellarLabel labelVignoble = new MyCellarLabel(LabelType.INFO_OTHER, "Main.Vignoble");
-    MyCellarLabel labelAppelationAOC = new MyCellarLabel(LabelType.INFO_OTHER, "Main.AppelationAOC");
-    MyCellarLabel labelAppelationIGP = new MyCellarLabel(LabelType.INFO_OTHER, "Main.AppelationIGP");
+    MyCellarLabel labelCountry = new MyCellarLabel("Main.Country");
+    MyCellarLabel labelVignoble = new MyCellarLabel("Main.Vineyard");
+    MyCellarLabel labelAppelationAOC = new MyCellarLabel("Main.AppelationAOC");
+    MyCellarLabel labelAppelationIGP = new MyCellarLabel("Main.AppelationIGP");
     setLayout(new MigLayout("", "[grow][grow]", ""));
     comboCountry = new JCompletionComboBox<>() {
       private static final long serialVersionUID = 8137073557763181546L;
@@ -169,7 +168,7 @@ public final class PanelVignobles extends JPanel {
       }
     });
 
-    MyCellarButton manageVineyardButton = new MyCellarButton(LabelType.INFO, "165", new ManageVineyardAction());
+    MyCellarButton manageVineyardButton = new MyCellarButton("Main.VineyardManagement", new ManageVineyardAction());
     manageVineyardButton.setVisible(manageButton);
     add(labelCountry, "w 150:150:150, split 2");
     add(labelVignoble, "wrap");
@@ -182,7 +181,7 @@ public final class PanelVignobles extends JPanel {
     add(comboAppelationAOC, "w 200:200:, growx");
     add(comboAppelationIGP, "w 200:200:");
 
-    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel("Main.Vignoble")));
+    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel("Main.Vineyard")));
   }
 
   public void updateList() {

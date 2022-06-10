@@ -544,7 +544,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     }
 
     final List<MyCellarObject> myCellarObjectList;
-    if (panelPlace.getSelectedRangement().isSimplePlace()) {
+    if (panelPlace.getSelectedAbstractPlace().isSimplePlace()) {
       myCellarObjectList = searchSimplePlace();
     } else {
       myCellarObjectList = searchComplexPlace();

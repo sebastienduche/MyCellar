@@ -40,8 +40,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 01/06/22
+ * @version 3.8
+ * @since 10/06/22
  */
 public class PanelPlace extends JPanel implements IPlace {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -162,7 +162,7 @@ public class PanelPlace extends JPanel implements IPlace {
         .build();
   }
 
-  public AbstractPlace getSelectedRangement() {
+  public AbstractPlace getSelectedAbstractPlace() {
     return getSelectedPlace().getAbstractPlace();
   }
 

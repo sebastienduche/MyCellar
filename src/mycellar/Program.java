@@ -78,6 +78,7 @@ import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.BOUTEILLES_XML;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.CONFIG_INI;
+import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
@@ -1137,7 +1138,7 @@ public final class Program {
         date = name.substring(9, name.indexOf(".log"));
       }
       if (!date.isEmpty()) {
-        String[] fields = date.split("-");
+        String[] fields = date.split(DASH);
         LocalDateTime dateTime = now.withMonth(Integer.parseInt(fields[1])).withDayOfMonth(Integer.parseInt(fields[0])).withYear(Integer.parseInt(fields[2]));
         return dateTime.isBefore(monthsAgo);
       }

@@ -63,8 +63,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.5
- * @since 31/05/22
+ * @version 9.6
+ * @since 10/06/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -384,9 +384,9 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     final int nbCaseUseAll = cave.getTotalCountCellUsed();
     final MyCellarLabel list_num_empl;
     if (nbEmplacements == 1) {
-      list_num_empl = new MyCellarLabel("Stats.1Storage");
+      list_num_empl = new MyCellarLabel("Stats.1Shelve");
     } else {
-      list_num_empl = new MyCellarLabel("Stats.NStorage", LabelProperty.SINGLE, Integer.toString(nbEmplacements));
+      list_num_empl = new MyCellarLabel("Stats.NShelves", LabelProperty.SINGLE, Integer.toString(nbEmplacements));
     }
     final MyCellarSimpleLabel list_nb_bottle = new MyCellarSimpleLabel(MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll));
     panel.add(list_num_empl);
@@ -415,7 +415,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
   private void displayNbBottlePlace(AbstractPlace cave) {
     for (int j = 0; j < cave.getPartCount(); j++) {
-      panel.add(new MyCellarLabel("Stats.StorageNumber", LabelProperty.SINGLE, Integer.toString(j + 1)));
+      panel.add(new MyCellarLabel("Stats.ShelveNumber", LabelProperty.SINGLE, Integer.toString(j + 1)));
       panel.add(new MyCellarLabel("Main.SeveralItems", new LabelProperty(cave.getTotalCountCellUsed() > 1), Integer.toString(cave.getCountCellUsed(j))), "span 2, align right, wrap");
     }
   }
@@ -548,7 +548,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       }
       DefaultPieDataset dataset = new DefaultPieDataset();
       for (Part part : rangement.getParts()) {
-        dataset.setValue(MessageFormat.format(getLabel("Stats.StorageNumber"), part.getNumber() + 1), rangement.getTotalCellUsed(part.getNumber()));
+        dataset.setValue(MessageFormat.format(getLabel("Stats.ShelveNumber"), part.getNumber() + 1), rangement.getTotalCellUsed(part.getNumber()));
       }
       JFreeChart chart = ChartFactory.createPieChart(rangement.getName(),          // chart title
           dataset,                // data

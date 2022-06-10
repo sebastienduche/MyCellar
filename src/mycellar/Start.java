@@ -73,6 +73,7 @@ import static mycellar.ProgramConstants.CHAR_C;
 import static mycellar.ProgramConstants.CHAR_O;
 import static mycellar.ProgramConstants.CHAR_V;
 import static mycellar.ProgramConstants.CHAR_X;
+import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.DOWNLOAD_COMMAND;
 import static mycellar.ProgramConstants.FR;
 import static mycellar.ProgramConstants.INFOS_VERSION;
@@ -881,7 +882,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 
     update.setVisible(bUpdateAvailable);
     if (bUpdateAvailable) {
-      update.setText(MessageFormat.format(getLabel("Main.UpdateAvailable"), MyCellarServer.getInstance().getAvailableVersion(), MAIN_VERSION + "-" + INTERNAL_VERSION), true, 30000, false);
+      update.setText(MessageFormat.format(getLabel("Main.UpdateAvailable"), MyCellarServer.getInstance().getAvailableVersion(), MAIN_VERSION + DASH + INTERNAL_VERSION), true, 30000, false);
     }
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Debug("Display Frame ended");

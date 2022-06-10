@@ -16,15 +16,15 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 29/04/22
+ * @version 1.1
+ * @since 10/06/22
  */
 
 public class Filtre extends FileFilter {
 
   public static final String EXTENSION_SINFO = "sinfo";
   public static final String EXTENSION_XLS = "xls";
-  public static final String EXTENSION_XLSX = "xslx";
+  public static final String EXTENSION_XLSX = "xlsx";
   public static final String EXTENSION_ODS = "ods";
   public static final String EXTENSION_HTML = "html";
   public static final String EXTENSION_XML = "xml";

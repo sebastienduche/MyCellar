@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
+import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -203,9 +204,7 @@ public class XmlUtils {
       filename = Program.getXMLPlacesFileName();
     }
     try (var fileWriter = new FileWriter(filename)) {
-      //Init XML File
       fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
-      // Ecriture des rangements
       for (AbstractPlace r : abstractPlaces) {
         fileWriter.write(r.toXml());
       }
@@ -296,7 +295,7 @@ public class XmlUtils {
                 if (b != null)
                   vin_name.setTextContent(b.getNom());
                 else
-                  vin_name.setTextContent("-");
+                  vin_name.setTextContent(DASH);
               }
             }
           }
@@ -307,7 +306,7 @@ public class XmlUtils {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);
             name = doc.createElement(NOM_PARTIE);
-            name.setTextContent(getLabel("Storage.Shelve") + SPACE + i + 1);
+            name.setTextContent(getLabel("Storage.Shelve") + SPACE + (i + 1));
             partie.appendChild(name);
             int lig = complexPlace.getLineCountAt(i);
             for (int j = 0; j < lig; j++) {
@@ -323,7 +322,7 @@ public class XmlUtils {
                   vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
                 } else {
                   rangement.getObject(i, j, k)
-                      .ifPresentOrElse(myCellarObject -> vin_name.setTextContent(myCellarObject.getNom()), () -> vin_name.setTextContent("-"));
+                      .ifPresentOrElse(myCellarObject -> vin_name.setTextContent(myCellarObject.getNom()), () -> vin_name.setTextContent(DASH));
                 }
               }
             }

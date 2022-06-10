@@ -144,7 +144,7 @@ public final class SimplePlace extends AbstractPlace {
 
   @Override
   public void clearStorage(MyCellarObject myCellarObject, Place place) {
-    storage.get(place.getPlaceNum() - partNumberIncrement).remove(myCellarObject);
+    storage.get(place.getPart() - partNumberIncrement).remove(myCellarObject);
   }
 
   @Override

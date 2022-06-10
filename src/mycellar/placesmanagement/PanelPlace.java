@@ -338,7 +338,7 @@ public class PanelPlace extends JPanel implements IPlace {
         if (!abstractPlace.isSimplePlace()) { // Need the last place number for complex places
           numPlace.addItem(new ComboItem(abstractPlace.getLastPartNumber()));
         }
-        numPlace.setSelectedItem(new ComboItem(placeRangement.getPlaceNum()));
+        numPlace.setSelectedItem(new ComboItem(placeRangement.getPart()));
 
         if (!abstractPlace.isSimplePlace()) {
           ComplexPlace complexPlace = (ComplexPlace) abstractPlace;
@@ -595,7 +595,7 @@ public class PanelPlace extends JPanel implements IPlace {
     if (isSeveralLocationStatePlaceChecked()) {
       return true;
     }
-    if (MyCellarControl.hasInvalidNumLieuNumber(placeWithoutValidation.getPlaceNum(), placeWithoutValidation.isSimplePlace(), component)) {
+    if (MyCellarControl.hasInvalidNumLieuNumber(placeWithoutValidation.getPart(), placeWithoutValidation.isSimplePlace(), component)) {
       enableAll(true);
       return false;
     }

@@ -583,13 +583,13 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       int placeNumEnd = complexPlace.getPartCount();
       if (panelPlace.isSeveralLocationStatePartChecked()) {
         placeNumStart = selectedPlace.getPlaceNumIndex();
-        placeNumEnd = selectedPlace.getPlaceNum();
+        placeNumEnd = selectedPlace.getPart();
       }
       int lineStart = 0;
       int lineEnd = 0;
       if (panelPlace.isSeveralLocationStateLineChecked()) {
         placeNumStart = selectedPlace.getPlaceNumIndex();
-        placeNumEnd = selectedPlace.getPlaceNum();
+        placeNumEnd = selectedPlace.getPart();
         lineStart = selectedPlace.getLineIndex();
         lineEnd = selectedPlace.getLine();
       }

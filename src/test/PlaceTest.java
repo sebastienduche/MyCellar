@@ -49,7 +49,7 @@ class PlaceTest {
   @Test
   void testSimplePlace() {
     Place placeNoLimit = new Place.PlaceBuilder(caisseNoLimit).withNumPlace(0).build();
-    assertEquals(0, placeNoLimit.getPlaceNum());
+    assertEquals(0, placeNoLimit.getPart());
     assertEquals(0, placeNoLimit.getPlaceNumIndex());
     assertEquals(caisseNoLimit, placeNoLimit.getAbstractPlace());
     assertTrue(placeNoLimit.isSimplePlace());
@@ -58,7 +58,7 @@ class PlaceTest {
   @Test
   void testSimplePlaceLimit() {
     Place placeLimit = new Place.PlaceBuilder(caisseLimit).withNumPlace(2).build();
-    assertEquals(2, placeLimit.getPlaceNum());
+    assertEquals(2, placeLimit.getPart());
     assertEquals(1, placeLimit.getPlaceNumIndex());
     assertEquals(caisseLimit, placeLimit.getAbstractPlace());
     assertTrue(placeLimit.isSimplePlace());
@@ -67,7 +67,7 @@ class PlaceTest {
   @Test
   void testArmoire() {
     Place placeArmoire = new Place.PlaceBuilder(armoire1x3x3).withNumPlace(1).withLine(1).withColumn(1).build();
-    assertEquals(1, placeArmoire.getPlaceNum());
+    assertEquals(1, placeArmoire.getPart());
     assertEquals(0, placeArmoire.getPlaceNumIndex());
     assertEquals(1, placeArmoire.getLine());
     assertEquals(0, placeArmoire.getLineIndex());

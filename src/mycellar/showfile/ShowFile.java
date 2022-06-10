@@ -958,7 +958,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (place.hasPlace()) {
           abstractPlace = place.getAbstractPlace();
           empl = abstractPlace.getName();
-          num_empl = place.getPlaceNum();
+          num_empl = place.getPart();
           line = place.getLine();
           column = place.getColumn();
         } else {
@@ -991,7 +991,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (!hasObject) {
           if (field == MyCellarFields.PLACE) {
             b.setEmplacement(empl);
-            b.setNumLieu(place.getPlaceNum());
+            b.setNumLieu(place.getPart());
             b.setLigne(place.getLine());
             b.setColonne(place.getColumn());
           } else if (field == MyCellarFields.NUM_PLACE) {

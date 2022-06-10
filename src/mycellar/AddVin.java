@@ -320,7 +320,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           enableAll(true);
         } else {
           // Ajout d'une bouteille dans l'armoire
-          int lieu_num_selected = place.getPlaceNum();
+          int lieu_num_selected = place.getPart();
           int ligne = place.getLine();
           int colonne = place.getColumn();
 
@@ -479,7 +479,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         }
         //Ajout des bouteilles dans la caisse
         tmp.setEmplacement(simplePlace.getName());
-        tmp.setNumLieu(place.getPlaceNum());
+        tmp.setNumLieu(place.getPart());
         tmp.setLigne(0);
         tmp.setColonne(0);
         tmp.updateStatus();
@@ -528,7 +528,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         .annee(annee)
         .type(panelGeneral.getType())
         .place(basicPlace.getName())
-        .numPlace(place != null ? place.getPlaceNum() : numLieu)
+        .numPlace(place != null ? place.getPart() : numLieu)
         .price(panelWineAttribute.getPrice())
         .comment(commentTextArea.getText())
         .maturity(panelWineAttribute.getMaturity())
@@ -550,7 +550,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         .annee(annee)
 //        .type(demie)
         .place(basicPlace.getName())
-        .numPlace(place != null ? place.getPlaceNum() : numLieu)
+        .numPlace(place != null ? place.getPart() : numLieu)
         .price(panelWineAttribute.getPrice())
         .comment(commentTextArea.getText())
 //        .maturity(dateOfC)

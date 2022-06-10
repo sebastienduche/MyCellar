@@ -16,20 +16,20 @@ import mycellar.Program;
 public class Place {
 
   private final AbstractPlace abstractPlace;
-  private final int placeNum;
+  private final int part;
   private final int line;
   private final int column;
 
-  private Place(AbstractPlace abstractPlace, int placeNum) {
+  private Place(AbstractPlace abstractPlace, int part) {
     this.abstractPlace = abstractPlace;
-    this.placeNum = placeNum;
+    this.part = part;
     line = -1;
     column = -1;
   }
 
-  private Place(AbstractPlace abstractPlace, int placeNum, int line, int column) {
+  private Place(AbstractPlace abstractPlace, int part, int line, int column) {
     this.abstractPlace = abstractPlace;
-    this.placeNum = placeNum;
+    this.part = part;
     this.line = line;
     this.column = column;
   }
@@ -38,8 +38,8 @@ public class Place {
     return abstractPlace;
   }
 
-  public int getPlaceNum() {
-    return placeNum;
+  public int getPart() {
+    return part;
   }
 
   public int getLine() {
@@ -55,9 +55,9 @@ public class Place {
    */
   public int getPlaceNumIndex() {
     if (isSimplePlace()) {
-      return placeNum - ((SimplePlace) abstractPlace).getPartNumberIncrement();
+      return part - ((SimplePlace) abstractPlace).getPartNumberIncrement();
     }
-    return placeNum - 1;
+    return part - 1;
   }
 
   /**
@@ -86,7 +86,7 @@ public class Place {
   public String toString() {
     return "Place{" +
         "abstractPlace=" + abstractPlace +
-        ", placeNum=" + placeNum +
+        ", part=" + part +
         ", line=" + line +
         ", column=" + column +
         '}';

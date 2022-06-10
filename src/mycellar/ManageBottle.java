@@ -183,7 +183,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       return false;
     }
 
-    int lieu_num = place.getPlaceNum();
+    int lieu_num = place.getPart();
     AbstractPlace cave = place.getAbstractPlace();
     boolean isCaisse = cave.isSimplePlace();
 
@@ -206,7 +206,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
     Place oldPlace = myCellarObject.getPlace();
     if (isCaisse) {
-      lieu_num = place.getPlaceNum();
+      lieu_num = place.getPart();
       myCellarObject.setNumLieu(lieu_num);
       myCellarObject.setLigne(0);
       myCellarObject.setColonne(0);
@@ -221,7 +221,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
           .build()).orElse(null);
       if (bottleInPlace != null) {
         if (!askToReplaceBottle(bottleInPlace, oldPlace)) {
-          myCellarObject.setNumLieu(oldPlace.getPlaceNum());
+          myCellarObject.setNumLieu(oldPlace.getPart());
           myCellarObject.setLigne(oldPlace.getLine());
           myCellarObject.setColonne(oldPlace.getColumn());
           return false;

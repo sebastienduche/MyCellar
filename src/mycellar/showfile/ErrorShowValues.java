@@ -7,8 +7,8 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 
 import java.text.MessageFormat;
@@ -207,7 +207,7 @@ public class ErrorShowValues extends TableShowValues {
 
         if (column.equals(Column.PLACE)) {
           empl = (String) value;
-          if (RangementUtils.isExistingPlace(empl)) {
+          if (PlaceUtils.isExistingPlace(empl)) {
             rangement = Program.getPlaceByName(empl);
           }
         } else if (column.equals(Column.NUM_PLACE)) {

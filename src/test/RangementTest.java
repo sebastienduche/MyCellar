@@ -3,11 +3,11 @@ package test;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.placesmanagement.Part;
-import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
+import mycellar.placesmanagement.places.Part;
+import mycellar.placesmanagement.places.Place;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,12 +39,12 @@ class RangementTest {
     // Caisse avec 2 emplacements commencant a 1 et limite a 6 bouteilles
     simplePlaceLimit = new SimplePlaceBuilder("simplePlaceLimit").nbParts(2).startSimplePlace(1).limited(true).limit(6).build();
     Part partie = new Part();
-    partie.setNum(0);
+    partie.setNumber(0);
     LinkedList<Part> list = new LinkedList<>();
     list.add(partie);
     partie.setRows(3);
     for (int i = 0; i < 3; i++) {
-      partie.getRow(i).setCol(3);
+      partie.getRow(i).setColumnCount(3);
     }
     complexPlace1x3x3 = new ComplexPlace("armoire1x3x3", list);
     complexPlace1x3x3Builder = new ComplexPlaceBuilder("armoire1x3x3")
@@ -52,20 +52,20 @@ class RangementTest {
         .sameColumnsNumber(new int[]{3})
         .build();
     partie = new Part();
-    partie.setNum(0);
+    partie.setNumber(0);
     list = new LinkedList<>();
     list.add(partie);
     partie.setRows(2);
     for (int i = 0; i < 2; i++) {
-      partie.getRow(i).setCol(2);
+      partie.getRow(i).setColumnCount(2);
     }
     partie = new Part();
-    partie.setNum(1);
+    partie.setNumber(1);
     list.add(partie);
     partie.setRows(3);
-    partie.getRow(0).setCol(5);
-    partie.getRow(1).setCol(4);
-    partie.getRow(2).setCol(5);
+    partie.getRow(0).setColumnCount(5);
+    partie.getRow(1).setColumnCount(4);
+    partie.getRow(2).setColumnCount(5);
     complexPlace2x2_3x22545 = new ComplexPlace("armoire2x2_3x22545", list);
     try {
       complexPlace2x2_3x22545Builder = new ComplexPlaceBuilder("armoire2x2_3x22545")
@@ -730,41 +730,41 @@ class RangementTest {
 
     LinkedList<Part> list = new LinkedList<>();
     Part partie = new Part();
-    partie.setNum(0);
+    partie.setNumber(0);
     list.add(partie);
     partie.setRows(1);
-    partie.getRow(0).setCol(1);
+    partie.getRow(0).setColumnCount(1);
     ComplexPlace complexPlace2 = new ComplexPlace("r", list);
     list = new LinkedList<>();
     partie = new Part();
-    partie.setNum(0);
+    partie.setNumber(0);
     list.add(partie);
     partie.setRows(1);
-    partie.getRow(0).setCol(1);
+    partie.getRow(0).setColumnCount(1);
     partie = new Part();
-    partie.setNum(1);
+    partie.setNumber(1);
     list.add(partie);
     partie.setRows(1);
-    partie.getRow(0).setCol(2);
+    partie.getRow(0).setColumnCount(2);
     ComplexPlace complexPlace3 = new ComplexPlace("r", list);
     assertFalse(complexPlace2.isSame(complexPlace3));
     assertNotEquals(complexPlace2, complexPlace3);
     list = new LinkedList<>();
     partie = new Part();
-    partie.setNum(0);
+    partie.setNumber(0);
     list.add(partie);
     partie.setRows(2);
-    partie.getRow(0).setCol(1);
-    partie.getRow(1).setCol(2);
+    partie.getRow(0).setColumnCount(1);
+    partie.getRow(1).setColumnCount(2);
     ComplexPlace complexPlace4 = new ComplexPlace("r", list);
     assertFalse(complexPlace2.isSame(complexPlace4));
     assertNotEquals(complexPlace2, complexPlace4);
     list = new LinkedList<>();
     partie = new Part();
-    partie.setNum(0);
+    partie.setNumber(0);
     list.add(partie);
     partie.setRows(1);
-    partie.getRow(0).setCol(3);
+    partie.getRow(0).setColumnCount(3);
     ComplexPlace complexPlace5 = new ComplexPlace("r", list);
     assertFalse(complexPlace2.isSame(complexPlace5));
     assertNotEquals(complexPlace2, complexPlace5);

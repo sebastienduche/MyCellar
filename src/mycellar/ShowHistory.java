@@ -15,8 +15,8 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlaceUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -242,7 +242,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
             Program.modifyBottles(cantRestoreList);
           }
         }
-        RangementUtils.putTabStock();
+        PlaceUtils.putTabStock();
         model.setHistory(Program.getHistory());
       }
     }

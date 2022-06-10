@@ -2,7 +2,6 @@ package mycellar.placesmanagement.places;
 
 import mycellar.Program;
 import mycellar.core.MyCellarObject;
-import mycellar.placesmanagement.Place;
 
 import java.util.ArrayList;
 import java.util.HashMap;

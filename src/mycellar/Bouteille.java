@@ -14,9 +14,9 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.VignobleJaxb;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlaceUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -610,7 +610,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public boolean isInTemporaryStock() {
-    return RangementUtils.isTemporaryPlace(emplacement);
+    return PlaceUtils.isTemporaryPlace(emplacement);
   }
 
   @Override
@@ -754,7 +754,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public boolean isInExistingPlace() {
-    return RangementUtils.isExistingPlace(emplacement);
+    return PlaceUtils.isExistingPlace(emplacement);
   }
 
 

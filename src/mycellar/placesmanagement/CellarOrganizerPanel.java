@@ -24,6 +24,8 @@ import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 import net.miginfocom.swing.MigLayout;
 
@@ -730,7 +732,7 @@ class LabelTransferHandler extends TransferHandler {
       bouteille.updateStatus();
       target.addBottle(bouteilleLabel);
       src.draggingLabel.removeObject();
-      RangementUtils.putTabStock();
+      PlaceUtils.putTabStock();
       if (target.isCaisse()) {
         cellarOrganizerPanel.rangementCells.add(target.createNewCell());
       }

@@ -27,6 +27,9 @@ import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.Part;
+import mycellar.placesmanagement.places.PlaceUtils;
+import mycellar.placesmanagement.places.Row;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import net.miginfocom.swing.MigLayout;
@@ -243,7 +246,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     if (newValue > listPart.size()) {
       while (listPart.size() < newValue) {
         Part part = new Part(); // listPart.size() + 1
-        part.setNum(listPart.size());
+        part.setNumber(listPart.size());
         listPart.add(part);
         if (notAllLinesSameRadio.isSelected()) {
           part.setRows(1);
@@ -285,7 +288,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       ComplexPlace complexPlace = (ComplexPlace) abstractPlace;
       allLinesSameRadio.setSelected(complexPlace.isSameColumnNumber());
       notAllLinesSameRadio.setSelected(!complexPlace.isSameColumnNumber());
-      listPart = complexPlace.getPlace();
+      listPart = complexPlace.getParts();
       model.setValues(listPart);
     }
     partCountSpinner.setValue(abstractPlace.getPartCount());
@@ -391,14 +394,14 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     int nbBottles = complexPlace.getTotalCountCellUsed();
     for (Part p : listPart) {
       if (p.getRows().isEmpty()) {
-        Debug("ERROR: Wrong number of lines on part: " + p.getNum());
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNum()));
+        Debug("ERROR: Wrong number of lines on part: " + p.getNumber());
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNumber()));
         return;
       }
       for (Row r : p.getRows()) {
-        if (r.getCol() == 0) {
-          Debug("ERROR: Wrong number of columns on part: " + p.getNum());
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNum()));
+        if (r.getColumnCount() == 0) {
+          Debug("ERROR: Wrong number of columns on part: " + p.getNumber());
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNumber()));
           return;
         }
       }
@@ -457,7 +460,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
             if (i < complexPlace.getPartCount() && j < complexPlace.getLineCountAt(i)) {
               nbCol = complexPlace.getColumnCountAt(i, j);
             }
-            int newNbCol = part.getRow(j).getCol();
+            int newNbCol = part.getRow(j).getColumnCount();
             if (nbCol > newNbCol) {
               for (int k = newNbCol; k < nbCol; k++) {
                 if (!canContinue) {
@@ -527,7 +530,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   }
 
   private void putTabStock() {
-    if (!RangementUtils.putTabStock()) {
+    if (!PlaceUtils.putTabStock()) {
       new OpenShowErrorsAction().actionPerformed(null);
     }
   }
@@ -562,12 +565,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       Debug("Creating complex place...");
       for (Part p : listPart) {
         if (p.getRows().isEmpty()) {
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNum()));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNumber()));
           bResul = false;
         }
         for (Row r : p.getRows()) {
-          if (r.getCol() == 0) {
-            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNum()));
+          if (r.getColumnCount() == 0) {
+            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNumber()));
             bResul = false;
           }
         }
@@ -648,12 +651,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
     for (Part p : listPart) {
       if (p.getRows().isEmpty()) {
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNum()), getError("Error.clickOKBeforePreview"));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNumber()), getError("Error.clickOKBeforePreview"));
         return;
       }
       for (Row r : p.getRows()) {
-        if (r.getCol() == 0) {
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNum()), getError("Error.clickOKBeforePreview"));
+        if (r.getColumnCount() == 0) {
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNumber()), getError("Error.clickOKBeforePreview"));
           return;
         }
       }

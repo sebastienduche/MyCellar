@@ -1,18 +1,18 @@
-package mycellar.placesmanagement;
+package mycellar.placesmanagement.places;
 
 import java.util.LinkedList;
 import java.util.Objects;
 
 public class Part {
-  private int num;
+  private int number;
   private final LinkedList<Row> rows;
 
   public Part() {
     rows = new LinkedList<>();
   }
 
-  public void setNum(int num) {
-    this.num = num;
+  public void setNumber(int number) {
+    this.number = number;
   }
 
   public LinkedList<Row> getRows() {
@@ -42,14 +42,14 @@ public class Part {
     return rows.get(n);
   }
 
-  public int getNum() {
-    return num;
+  public int getNumber() {
+    return number;
   }
 
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
-    builder.append("[ Part ").append(num).append('\n');
+    builder.append("[ Part ").append(number).append('\n');
     for (Row row : rows) {
       builder.append(row).append('\n');
     }
@@ -62,11 +62,11 @@ public class Part {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Part part = (Part) o;
-    return num == part.num && Objects.equals(rows, part.rows);
+    return number == part.number && Objects.equals(rows, part.rows);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(num, rows);
+    return Objects.hash(number, rows);
   }
 }

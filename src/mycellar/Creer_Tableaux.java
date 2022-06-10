@@ -17,8 +17,8 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.XmlUtils;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.xls.XLSTabOptions;
 import net.miginfocom.swing.MigLayout;
 
@@ -265,7 +265,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     } else if (type_XLS.isSelected()) {
       Debug("Exporting in XLS in progress...");
       caisseCount = rangements.stream().filter(AbstractPlace::isSimplePlace).count();
-      RangementUtils.write_XLSTab(filename, rangements);
+      PlaceUtils.writeXLSTable(filename, rangements);
     }
 
     if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_TAB_MESS, false)) {

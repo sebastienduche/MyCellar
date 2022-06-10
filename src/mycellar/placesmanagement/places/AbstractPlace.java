@@ -3,7 +3,6 @@ package mycellar.placesmanagement.places;
 import mycellar.Program;
 import mycellar.core.MyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.placesmanagement.Place;
 
 import java.util.Objects;
 import java.util.Optional;

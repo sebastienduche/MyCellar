@@ -24,8 +24,8 @@ import mycellar.general.XmlUtils;
 import mycellar.launcher.MyCellarServer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
 import net.miginfocom.swing.MigLayout;
@@ -907,7 +907,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuExportXmlPlaces.addActionListener((e) -> exportXmlPlace_actionPerformed());
     menuExportXml.addActionListener((e) -> exportXml_actionPerformed());
     menuCloseFile.addActionListener((e) -> closeFile_actionPerformed());
-    menuToCreate.addActionListener((e) -> RangementUtils.findRangementToCreate());
+    menuToCreate.addActionListener((e) -> PlaceUtils.findRangementToCreate());
     menuReopen1.addActionListener((e) -> reopen1_actionPerformed());
     menuReopen2.addActionListener((e) -> reopen2_actionPerformed());
     menuReopen3.addActionListener((e) -> reopen3_actionPerformed());

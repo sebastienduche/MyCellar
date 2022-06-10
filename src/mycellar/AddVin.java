@@ -16,10 +16,10 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 
 import javax.swing.AbstractAction;
@@ -703,7 +703,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Debug("ReplaceWine...");
     //Change wine in a place
     Program.getStorage().addHistory(isModify ? HistoryState.MODIFY : HistoryState.ADD, newMyCellarObject);
-    RangementUtils.replaceMyCellarObject(objectToDelete, newMyCellarObject, isModify ? myCellarObject.getPlace() : null);
+    PlaceUtils.replaceMyCellarObject(objectToDelete, newMyCellarObject, isModify ? myCellarObject.getPlace() : null);
     if (isModify) {
       myCellarObject.update(newMyCellarObject);
       if (listVin != null) {
@@ -768,7 +768,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     }
 
     Debug("Quitting...");
-    if (!RangementUtils.putTabStock()) {
+    if (!PlaceUtils.putTabStock()) {
       new OpenShowErrorsAction().actionPerformed(null);
     }
     panelWineAttribute.runExit();

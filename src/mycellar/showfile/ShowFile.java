@@ -40,9 +40,9 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 import net.miginfocom.swing.MigLayout;
 
@@ -1008,7 +1008,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
             b.setLigne(0);
             b.setColonne(0);
           }
-          RangementUtils.putTabStock();
+          PlaceUtils.putTabStock();
           Program.setModified();
           b.setModified();
           Program.getStorage().addHistory(HistoryState.MODIFY, b);
@@ -1163,7 +1163,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), getLabel("ShowFile.QuitErrors"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION);
       }
     }
-    RangementUtils.putTabStock();
+    PlaceUtils.putTabStock();
     return true;
   }
 
@@ -1192,7 +1192,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      RangementUtils.findRangementToCreate();
+      PlaceUtils.findRangementToCreate();
     }
   }
 
@@ -1303,7 +1303,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      RangementUtils.putTabStock();
+      PlaceUtils.putTabStock();
       ((ErrorShowValues) model).setErrors(Program.getErrors());
     }
   }

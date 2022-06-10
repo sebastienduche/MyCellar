@@ -6,6 +6,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
+import mycellar.placesmanagement.places.Part;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import net.miginfocom.swing.MigLayout;
 

@@ -2,7 +2,6 @@ package mycellar.placesmanagement.places;
 
 import mycellar.core.MyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.placesmanagement.Place;
 
 import java.util.Map;
 import java.util.Optional;

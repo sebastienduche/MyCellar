@@ -1,8 +1,8 @@
 package mycellar;
 
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlaceUtils;
 
 import java.awt.Component;
 import java.io.File;
@@ -167,7 +167,7 @@ public final class MyCellarControl {
    */
   public static boolean ctrl_existingName(String name) {
     Debug("Controlling existing name...");
-    if (RangementUtils.isExistingPlace(name)) {
+    if (PlaceUtils.isExistingPlace(name)) {
       Debug("ERROR: Name already use!");
       Erreur.showSimpleErreur(getError("Error.storageNameAlreadyUsed"));
       return false;

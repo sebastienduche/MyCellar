@@ -3,9 +3,6 @@ package mycellar.placesmanagement.places;
 import mycellar.Program;
 import mycellar.core.MyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.placesmanagement.Part;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.Row;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -45,7 +42,7 @@ public class ComplexPlace extends AbstractPlace {
     for (int i = 0; i < partCount; i++) {
       final Part oldPart = listPart.get(i);
       Part part = new Part();
-      part.setNum(oldPart.getNum());
+      part.setNumber(oldPart.getNumber());
       partList.add(part);
       int rowSize = oldPart.getRowSize();
       part.setRows(rowSize);
@@ -53,8 +50,8 @@ public class ComplexPlace extends AbstractPlace {
         line = rowSize;
       }
       for (int j = 0; j < rowSize; j++) {
-        int colSize = oldPart.getRow(j).getCol();
-        part.getRow(j).setCol(colSize);
+        int colSize = oldPart.getRow(j).getColumnCount();
+        part.getRow(j).setColumnCount(colSize);
         if (colSize > column) {
           column = colSize;
         }
@@ -64,15 +61,15 @@ public class ComplexPlace extends AbstractPlace {
     storage = new MyCellarObject[partCount][line][column];
   }
 
-  public LinkedList<Part> getPlace() {
+  public LinkedList<Part> getParts() {
     LinkedList<Part> listPart = new LinkedList<>();
     for (Part p : partList) {
       Part part = new Part();
-      part.setNum(p.getNum());
+      part.setNumber(p.getNumber());
       listPart.add(part);
       for (int j = 0; j < p.getRowSize(); j++) {
         part.setRows(p.getRowSize());
-        part.getRow(j).setCol(p.getRow(j).getCol());
+        part.getRow(j).setColumnCount(p.getRow(j).getColumnCount());
       }
     }
     return listPart;
@@ -178,7 +175,7 @@ public class ComplexPlace extends AbstractPlace {
     if (part < 0 || line < 0) {
       return -1;
     }
-    return partList.get(part).getRow(line).getCol();
+    return partList.get(part).getRow(line).getColumnCount();
   }
 
   public int getLineCountAt(int part) {
@@ -203,7 +200,7 @@ public class ComplexPlace extends AbstractPlace {
 
 
   public int getMaxColumCountAt(int part) {
-    return partList.get(part).getRows().stream().mapToInt(Row::getCol).max().getAsInt();
+    return partList.get(part).getRows().stream().mapToInt(Row::getColumnCount).max().getAsInt();
   }
 
   public int getMaxColumCount() {

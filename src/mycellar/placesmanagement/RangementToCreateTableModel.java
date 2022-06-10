@@ -1,5 +1,7 @@
 package mycellar.placesmanagement;
 
+import mycellar.placesmanagement.places.Part;
+
 import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
 import java.util.LinkedList;

@@ -14,10 +14,10 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
@@ -252,7 +252,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       ((ComplexPlace) oldPlace.getAbstractPlace()).clearStorage(oldPlace);
     }
 
-    if (!RangementUtils.putTabStock()) {
+    if (!PlaceUtils.putTabStock()) {
       new OpenShowErrorsAction().actionPerformed(null);
     }
     ProgramPanels.updateSearchTable();
@@ -300,7 +300,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   private void replaceWine(final MyCellarObject bToDelete, Place oldPlace) throws MyCellarException {
     //Change wine in a place
     Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
-    RangementUtils.replaceMyCellarObject(bToDelete, myCellarObject, oldPlace);
+    PlaceUtils.replaceMyCellarObject(bToDelete, myCellarObject, oldPlace);
   }
 
   private boolean runExit() {
@@ -322,7 +322,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
 
     Debug("Quitting...");
-    if (!RangementUtils.putTabStock()) {
+    if (!PlaceUtils.putTabStock()) {
       new OpenShowErrorsAction().actionPerformed(null);
     }
     panelWineAttribute.runExit();

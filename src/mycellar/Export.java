@@ -20,7 +20,7 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.pdf.PDFOptions;
-import mycellar.placesmanagement.RangementUtils;
+import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.showfile.ManageColumnModel;
 import mycellar.xls.XLSOptions;
 import net.miginfocom.swing.MigLayout;
@@ -315,7 +315,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         return;
       }
 
-      if (RangementUtils.write_HTML(aFile, myCellarObjects, Program.getHTMLColumns())) {
+      if (PlaceUtils.writeHTML(aFile, myCellarObjects, Program.getHTMLColumns())) {
         end.setText(getLabel("Export.Ended"));
         Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.SavedFile"), aFile.getAbsolutePath()));
         openit.setEnabled(true);
@@ -332,7 +332,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
 
       progressBar.setVisible(true);
-      if (RangementUtils.write_CSV(aFile, myCellarObjects, progressBar)) {
+      if (PlaceUtils.writeCSV(aFile, myCellarObjects, progressBar)) {
         end.setText(getLabel("Export.Ended"));
         Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.SavedFile"), aFile.getAbsolutePath()),
             getLabel("Export.CSVInfo"));
@@ -348,7 +348,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
 
       progressBar.setVisible(true);
-      if (RangementUtils.write_XLS(aFile, myCellarObjects, false, progressBar)) {
+      if (PlaceUtils.writeXLS(aFile, myCellarObjects, false, progressBar)) {
         end.setText(getLabel("Export.Ended"));
         Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.SavedFile"), aFile.getAbsolutePath()));
         openit.setEnabled(true);

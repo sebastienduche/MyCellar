@@ -1,8 +1,6 @@
-package mycellar.placesmanagement;
+package mycellar.placesmanagement.places;
 
 import mycellar.Program;
-import mycellar.placesmanagement.places.AbstractPlace;
-import mycellar.placesmanagement.places.SimplePlace;
 
 /**
  * Titre : Cave &agrave; vin

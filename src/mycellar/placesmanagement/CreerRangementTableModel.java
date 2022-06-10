@@ -1,6 +1,8 @@
 package mycellar.placesmanagement;
 
 import mycellar.MyCellarUtils;
+import mycellar.placesmanagement.places.Part;
+import mycellar.placesmanagement.places.Row;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.HashMap;
@@ -71,12 +73,12 @@ class CreerRangementTableModel extends AbstractTableModel {
       }
       switch (col) {
         case NAME:
-          return getLabel("Storage.Shelve") + SPACE + p.getNum();
+          return getLabel("Storage.Shelve") + SPACE + p.getNumber();
         case ROW:
           return p.getRows().size();
         case COLUMN:
           if (p.getRowSize() > 0) {
-            return p.getRow(0).getCol();
+            return p.getRow(0).getColumnCount();
           }
           return ZERO;
         default:
@@ -91,12 +93,12 @@ class CreerRangementTableModel extends AbstractTableModel {
       }
       switch (col) {
         case NAME:
-          return getLabel("Storage.Shelve") + SPACE + p.getNum() + SPACE + getLabel("Storage.NumberLines");
+          return getLabel("Storage.Shelve") + SPACE + p.getNumber() + SPACE + getLabel("Storage.NumberLines");
         case ROW:
           return line;
         case COLUMN:
           if (p.getRow(line - 1) != null) {
-            return p.getRow(line - 1).getCol();
+            return p.getRow(line - 1).getColumnCount();
           }
           return ZERO;
         default:
@@ -143,9 +145,9 @@ class CreerRangementTableModel extends AbstractTableModel {
           fireTableDataChanged();
           fireTableStructureChanged();
         } else if (p.getRowSize() > 0) {
-          final int nCol = p.getRow(0).getCol();
+          final int nCol = p.getRow(0).getColumnCount();
           for (Row r : p.getRows()) {
-            r.setCol(nCol);
+            r.setColumnCount(nCol);
           }
         }
         return;
@@ -156,11 +158,11 @@ class CreerRangementTableModel extends AbstractTableModel {
         }
         if (sameColumnNumber) {
           for (Row r : p.getRows()) {
-            r.setCol(nCol);
+            r.setColumnCount(nCol);
           }
         } else {
           int line = mapLine.get(row);
-          p.getRow(line - 1).setCol(nCol);
+          p.getRow(line - 1).setColumnCount(nCol);
         }
     }
   }
@@ -184,9 +186,9 @@ class CreerRangementTableModel extends AbstractTableModel {
     for (Part part : rows) {
       if (sameColumnNumber && part.getRowSize() > 0) {
         // Set the number of columns of the first line to all others lines
-        final int col = part.getRow(0).getCol();
+        final int col = part.getRow(0).getColumnCount();
         for (Row r : part.getRows()) {
-          r.setCol(col);
+          r.setColumnCount(col);
         }
       }
       int line = 1;

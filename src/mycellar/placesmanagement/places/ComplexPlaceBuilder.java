@@ -1,8 +1,5 @@
 package mycellar.placesmanagement.places;
 
-import mycellar.placesmanagement.Part;
-import mycellar.placesmanagement.Row;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,16 +61,16 @@ public class ComplexPlaceBuilder {
     if (partList.isEmpty()) {
       for (int i = 0; i < nbParts; i++) {
         Part part = new Part();
-        part.setNum(i);
+        part.setNumber(i);
         partList.add(part);
         part.setRows(linesByPart[i]);
         if (sameColumns) {
           for (Row row : part.getRows()) {
-            row.setCol(columnsByPart[i]);
+            row.setColumnCount(columnsByPart[i]);
           }
         } else {
           for (Row row : part.getRows()) {
-            row.setCol(columnsByLines[i][row.getNum() - 1]);
+            row.setColumnCount(columnsByLines[i][row.getNumber() - 1]);
           }
         }
       }

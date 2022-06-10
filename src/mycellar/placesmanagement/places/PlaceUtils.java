@@ -1,4 +1,4 @@
-package mycellar.placesmanagement;
+package mycellar.placesmanagement.places;
 
 import mycellar.Bouteille;
 import mycellar.Erreur;
@@ -14,9 +14,7 @@ import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.general.ProgramPanels;
-import mycellar.placesmanagement.places.AbstractPlace;
-import mycellar.placesmanagement.places.ComplexPlace;
-import mycellar.placesmanagement.places.SimplePlace;
+import mycellar.placesmanagement.RangementCreationDialog;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -74,9 +72,9 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * @version 5.0
  * @since 10/06/22
  */
-public final class RangementUtils {
+public final class PlaceUtils {
 
-  private RangementUtils() {
+  private PlaceUtils() {
   }
 
   public static void replaceMyCellarObject(MyCellarObject oldObject, MyCellarObject newObject, Place newObjectPreviousPlace) throws MyCellarException {
@@ -108,8 +106,9 @@ public final class RangementUtils {
    * @param progressBar
    * @return int
    */
-  public static boolean write_CSV(final File file, final List<? extends IMyCellarObject> myCellarObjects, final JProgressBar progressBar) {
+  public static boolean writeCSV(final File file, final List<? extends IMyCellarObject> myCellarObjects, final JProgressBar progressBar) {
 
+    Debug("writeCSV: writing file: " + file.getAbsolutePath());
     String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
 
     final EnumMap<MyCellarFields, Boolean> map = new EnumMap<>(MyCellarFields.class);
@@ -163,14 +162,14 @@ public final class RangementUtils {
   /**
    * write_HTML: Ecriture du fichier HTML
    *
-   * @param fichier    String: fichier HTML a ecrire
+   * @param file       String: fichier HTML a ecrire
    * @param bouteilles List<Bouteille>: stock de bouteilles
    * @param fields
    * @return int
    */
-  public static boolean write_HTML(final File fichier, final List<? extends MyCellarObject> bouteilles, List<MyCellarFields> fields) {
+  public static boolean writeHTML(final File file, final List<? extends MyCellarObject> bouteilles, List<MyCellarFields> fields) {
 
-    Debug("write_HTML: writing file: " + fichier.getAbsolutePath());
+    Debug("writeHTML: writing file: " + file.getAbsolutePath());
     try {
       var dbFactory = DocumentBuilderFactory.newInstance();
       var dBuilder = dbFactory.newDocumentBuilder();
@@ -267,7 +266,7 @@ public final class RangementUtils {
       var transformerFactory = TransformerFactory.newInstance();
       var transformer = transformerFactory.newTransformer();
       var source = new DOMSource(doc);
-      var result = new StreamResult(fichier);
+      var result = new StreamResult(file);
       transformer.transform(source, result);
     } catch (ParserConfigurationException e) {
       Debug("ParserConfigurationException");
@@ -294,23 +293,23 @@ public final class RangementUtils {
    * @param progressBar JProgressBar
    * @return boolean
    */
-  public static boolean write_XLS(final File file, final List<? extends IMyCellarObject> bouteilles, boolean isExit, JProgressBar progressBar) {
+  public static boolean writeXLS(final File file, final List<? extends IMyCellarObject> bouteilles, boolean isExit, JProgressBar progressBar) {
 
-    Debug("write_XLS: writing file: " + file);
+    Debug("writeXLS: writing file: " + file.getAbsolutePath());
 
     try {
       String sDir = file.getParent();
       if (null != sDir) {
         File f = new File(sDir);
         if (!f.exists()) {
-          Debug("write_XLS: ERROR: directory " + sDir + " doesn't exist.");
-          Debug("write_XLS: ERROR: Unable to write XLS file");
+          Debug("writeXLS: ERROR: directory " + sDir + " doesn't exist.");
+          Debug("writeXLS: ERROR: Unable to write XLS file");
           return false;
         }
       }
     } catch (RuntimeException e) {
       Program.showException(e, false);
-      Debug("write_XLS: ERROR: with file " + file);
+      Debug("writeXLS: ERROR: with file " + file);
       return false;
     }
 
@@ -451,14 +450,14 @@ public final class RangementUtils {
   }
 
   /**
-   * write_XLSTab: Fonction d'ecriture du fichier Excel des tableaux
+   * Fonction d'ecriture du fichier Excel des tableaux
    *
    * @param file      String: Fichier a ecrire.
    * @param placeList LinkedList: liste de rangements a ecrire
    */
-  public static void write_XLSTab(final String file, final List<AbstractPlace> placeList) {
+  public static void writeXLSTable(final String file, final List<AbstractPlace> placeList) {
 
-    Debug("write_XLSTab: writing file: " + file);
+    Debug("writeXLSTable: writing file: " + file);
     try (var workbook = new SXSSFWorkbook(100);
          var output = new FileOutputStream(file)) { //Creation du fichier
       String title = Program.getCaveConfigString(MyCellarSettings.XLS_TAB_TITLE, "");
@@ -619,7 +618,7 @@ public final class RangementUtils {
         LinkedList<Part> rangement = rangements.get(place);
         while (rangement.size() <= bottle.getNumLieu()) {
           Part part = new Part(); // rangement.size() + 1
-          part.setNum(rangement.size());
+          part.setNumber(rangement.size());
           rangement.add(part);
         }
         final Part part = rangement.get(bottle.getNumLieu() == 0 ? 0 : bottle.getNumLieu() - 1);
@@ -628,8 +627,8 @@ public final class RangementUtils {
         }
         if (bottle.getLigne() > 0) {
           final Row row = part.getRow(bottle.getLigne() - 1);
-          if (row.getCol() < bottle.getColonne()) {
-            row.setCol(bottle.getColonne());
+          if (row.getColumnCount() < bottle.getColonne()) {
+            row.setColumnCount(bottle.getColonne());
           }
         }
       }
@@ -674,7 +673,6 @@ public final class RangementUtils {
         continue;
       }
       if (!bouteille.isInExistingPlace()) {
-        // Rangement inexistant
         Debug("ERROR: Inexisting place: " + bouteille.getNom() + " place: " + bouteille.getEmplacement());
         Program.addError(new MyCellarError(INEXISTING_PLACE, bouteille, bouteille.getEmplacement()));
         continue;
@@ -723,7 +721,7 @@ public final class RangementUtils {
   }
 
   private static void Debug(String sText) {
-    Program.Debug("RangementUtils: " + sText);
+    Program.Debug("PlaceUtils: " + sText);
   }
 
   public static boolean isTemporaryPlace(String place) {

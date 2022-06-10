@@ -12,8 +12,8 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlace;
-import mycellar.placesmanagement.Place;
 import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.Place;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;

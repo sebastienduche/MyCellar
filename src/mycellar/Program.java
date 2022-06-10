@@ -31,8 +31,8 @@ import mycellar.core.text.LanguageFileLoader;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import mycellar.vignobles.CountryVignobleController;
@@ -669,7 +669,6 @@ public final class Program {
 
     CountryListJaxb.init();
 
-    //Chargement des objets Rangement, Bouteilles et History
     Debug("Program: Reading Places, Bottles & History");
     if (!loadData()) {
       Debug("Program: ERROR Reading Objects KO");
@@ -683,7 +682,7 @@ public final class Program {
       MyCellarMusicSupport.load();
     }
 
-    RangementUtils.putTabStock();
+    PlaceUtils.putTabStock();
     if (!getErrors().isEmpty()) {
       new OpenShowErrorsAction().actionPerformed(null);
     }
@@ -777,7 +776,7 @@ public final class Program {
         final String file_excel = getCaveConfigString(MyCellarSettings.FILE_EXCEL, "");
         Debug("Program: Writing backup Excel file: " + file_excel);
         final List<IMyCellarObject> bouteilles = Collections.unmodifiableList(getStorage().getAllList());
-        Thread writingExcel = new Thread(() -> RangementUtils.write_XLS(new File(file_excel), bouteilles, true, null));
+        Thread writingExcel = new Thread(() -> PlaceUtils.writeXLS(new File(file_excel), bouteilles, true, null));
         Runtime.getRuntime().addShutdownHook(writingExcel);
       }
     }

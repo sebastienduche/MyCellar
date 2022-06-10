@@ -6,9 +6,9 @@ import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.music.MusicSupport;
 import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
-import mycellar.placesmanagement.Place;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlaceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -628,7 +628,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public boolean isInTemporaryStock() {
-    return RangementUtils.isTemporaryPlace(emplacement);
+    return PlaceUtils.isTemporaryPlace(emplacement);
   }
 
   @Override
@@ -826,7 +826,7 @@ public class Music extends MyCellarObject implements Serializable {
 
   @Override
   public boolean isInExistingPlace() {
-    return RangementUtils.isExistingPlace(emplacement);
+    return PlaceUtils.isExistingPlace(emplacement);
   }
 
 

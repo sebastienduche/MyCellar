@@ -12,9 +12,9 @@ import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
+import mycellar.placesmanagement.places.Part;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.jfree.chart.ChartFactory;
@@ -547,8 +547,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
         return;
       }
       DefaultPieDataset dataset = new DefaultPieDataset();
-      for (Part part : rangement.getPlace()) {
-        dataset.setValue(MessageFormat.format(getLabel("Stats.StorageNumber"), part.getNum() + 1), rangement.getTotalCellUsed(part.getNum()));
+      for (Part part : rangement.getParts()) {
+        dataset.setValue(MessageFormat.format(getLabel("Stats.StorageNumber"), part.getNumber() + 1), rangement.getTotalCellUsed(part.getNumber()));
       }
       JFreeChart chart = ChartFactory.createPieChart(rangement.getName(),          // chart title
           dataset,                // data

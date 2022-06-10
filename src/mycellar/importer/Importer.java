@@ -30,8 +30,8 @@ import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import net.miginfocom.swing.MigLayout;
 import org.apache.poi.ss.usermodel.Cell;
@@ -511,7 +511,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
                 // Controle de l'existance du rangement
                 resul = true;
                 if (!nom1.isEmpty()) {
-                  if (RangementUtils.isExistingPlace(nom1)) {
+                  if (PlaceUtils.isExistingPlace(nom1)) {
                     Options options = new Options(getLabel("Import.StorageName"), getLabel("Import.FillStorageName"), getLabel("Import.StorageName"), nom1,
                         getError("Error.storageNameAlreadyUsed"), false);
                     options.setVisible(true);
@@ -601,7 +601,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     } catch (IOException exc) {
       Program.showException(exc);
     }
-    if (RangementUtils.putTabStock()) {
+    if (PlaceUtils.putTabStock()) {
       if (Program.isMusicType()) {
         MyCellarMusicSupport.load();
       } else {
@@ -726,7 +726,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private void showImportDone() {
     importe.setEnabled(true);
     label_progression.setText(getLabel("Import.Done"), true);
-    if (!RangementUtils.putTabStock()) {
+    if (!PlaceUtils.putTabStock()) {
       new OpenShowErrorsAction().actionPerformed(null);
     }
   }

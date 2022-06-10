@@ -7,8 +7,8 @@ import mycellar.Start;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.RangementUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 
 import javax.swing.JOptionPane;
@@ -158,7 +158,7 @@ class TableShowValues extends AbstractTableModel {
         String empl = b.getEmplacement();
         if (column == PLACE) {
           empl = (String) value;
-          if (RangementUtils.isExistingPlace(empl)) {
+          if (PlaceUtils.isExistingPlace(empl)) {
             rangement = Program.getPlaceByName(empl);
           }
         } else if (column == NUM_PLACE) {
@@ -232,7 +232,7 @@ class TableShowValues extends AbstractTableModel {
                 b.setLigne(0);
                 b.setColonne(0);
               }
-              RangementUtils.putTabStock();
+              PlaceUtils.putTabStock();
             }
           } else {
             if (rangement.isSimplePlace()) {

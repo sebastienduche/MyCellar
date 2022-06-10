@@ -4,10 +4,10 @@ import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.Part;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
+import mycellar.placesmanagement.places.Part;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import org.w3c.dom.Element;
@@ -145,7 +145,7 @@ public class XmlUtils {
               Node nInternal = internalPlaces.item(j);
               if (nInternal.getNodeType() == Node.ELEMENT_NODE) {
                 Part part = new Part();
-                part.setNum(j);
+                part.setNumber(j);
                 listPart.add(part);
                 Element iPlace = (Element) nInternal;
                 int nLine = Integer.parseInt(iPlace.getAttribute(NB_LINE));
@@ -156,7 +156,7 @@ public class XmlUtils {
                   if (nTempLine.getNodeType() == Node.ELEMENT_NODE) {
                     Element oLine = (Element) nTempLine;
                     int nColumn = Integer.parseInt(oLine.getAttribute(NB_COLUMN));
-                    part.getRow(k).setCol(nColumn);
+                    part.getRow(k).setColumnCount(nColumn);
                   }
                 }
               }
@@ -195,9 +195,9 @@ public class XmlUtils {
   /**
    * writeMyCellarXml
    *
-   * @param rangements LinkedList<IBasicPlace>
+   * @param abstractPlaces LinkedList<AbstractPlace>
    */
-  public static void writeMyCellarXml(List<? extends AbstractPlace> rangements, String filename) {
+  public static void writeMyCellarXml(List<AbstractPlace> abstractPlaces, String filename) {
     Debug("writeMyCellarXml: Writing file");
     if (isNullOrEmpty(filename)) {
       filename = Program.getXMLPlacesFileName();
@@ -206,7 +206,7 @@ public class XmlUtils {
       //Init XML File
       fileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MyCellar>");
       // Ecriture des rangements
-      for (AbstractPlace r : rangements) {
+      for (AbstractPlace r : abstractPlaces) {
         fileWriter.write(r.toXml());
       }
       fileWriter.write("</MyCellar>");
@@ -220,9 +220,9 @@ public class XmlUtils {
   /**
    * Writes content of places in HTML file
    */
-  public static void writePlacesToHTML(String filename, List<AbstractPlace> rangements, boolean preview) {
+  public static void writePlacesToHTML(String filename, List<AbstractPlace> abstractPlaces, boolean preview) {
     Debug("writePlacesToHTML: Writing file");
-    writePlacesToXML(Program.getPreviewXMLFileName(), rangements, preview);
+    writePlacesToXML(Program.getPreviewXMLFileName(), abstractPlaces, preview);
     TransformerFactory tFactory = TransformerFactory.newInstance();
 
     StreamSource xslDoc = new StreamSource("resources/Rangement.xsl");

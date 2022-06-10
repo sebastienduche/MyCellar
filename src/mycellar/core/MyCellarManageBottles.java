@@ -8,7 +8,7 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.PanelGeneral;
 import mycellar.general.PanelWineAttribute;
 import mycellar.placesmanagement.PanelPlace;
-import mycellar.placesmanagement.Place;
+import mycellar.placesmanagement.places.Place;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;

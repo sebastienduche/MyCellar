@@ -7,8 +7,8 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.PanelGeneral;
 import mycellar.general.PanelWineAttribute;
-import mycellar.placesmanagement.PanelPlace;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.PanelPlacePosition;
+import mycellar.placesmanagement.places.PlacePosition;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
@@ -24,16 +24,16 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.3
- * @since 24/05/22
+ * @version 5.4
+ * @since 13/06/22
  */
-public abstract class MyCellarManageBottles extends JPanel implements IPlace {
+public abstract class MyCellarManageBottles extends JPanel implements IPlacePosition {
 
   private static final long serialVersionUID = 3056306291164598750L;
 
   protected final MyCellarLabel labelComment = new MyCellarLabel("Main.Comment");
   protected final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
-  protected final PanelPlace panelPlace = new PanelPlace();
+  protected final PanelPlacePosition panelPlace = new PanelPlacePosition();
   protected final PanelGeneral panelGeneral = new PanelGeneral();
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
   protected final JModifyTextArea commentTextArea = new JModifyTextArea();
@@ -108,7 +108,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlace {
    * @param place
    */
   @Override
-  public void selectPlace(Place place) {
+  public void selectPlace(PlacePosition place) {
     panelPlace.selectPlace(place);
   }
 

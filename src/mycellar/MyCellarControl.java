@@ -1,7 +1,7 @@
 package mycellar;
 
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 
 import java.awt.Component;
@@ -20,8 +20,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 01/06/22
+ * @version 2.7
+ * @since 13/06/22
  */
 
 public final class MyCellarControl {
@@ -44,13 +44,13 @@ public final class MyCellarControl {
     return false;
   }
 
-  public static boolean hasInvalidPlace(Place place) {
+  public static boolean hasInvalidPlace(PlacePosition place) {
     return hasInvalidPlace(place, Start.getInstance());
   }
 
-  public static boolean hasInvalidPlace(Place place, Component component) {
+  public static boolean hasInvalidPlace(PlacePosition place, Component component) {
     if (Program.EMPTY_PLACE.equals(place.getAbstractPlace())) {
-      Debug("ERROR: Wrong Place");
+      Debug("ERROR: Wrong PlacePosition");
       Erreur.showSimpleErreur(component, getError("Error.selectStorage"));
       return true;
     }
@@ -63,12 +63,12 @@ public final class MyCellarControl {
 
   public static boolean hasInvalidNumLieuNumber(int placeNum, boolean simplePlace, Component component) {
     if (simplePlace && placeNum < 0) {
-      Debug("ERROR: Wrong Num Place");
+      Debug("ERROR: Wrong Part");
       Erreur.showSimpleErreur(component, getError("Error.selectStorageNumber"));
       return true;
     }
     if (!simplePlace && placeNum <= 0) {
-      Debug("ERROR: Wrong Num Place");
+      Debug("ERROR: Wrong Part");
       Erreur.showSimpleErreur(component, getError("Error.enterShelveNumber"));
       return true;
     }

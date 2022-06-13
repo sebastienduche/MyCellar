@@ -18,8 +18,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 10/06/22
+ * @version 0.5
+ * @since 13/06/22
  */
 public class ComplexPlace extends AbstractPlace {
 
@@ -113,14 +113,14 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
-  public Optional<MyCellarObject> getObject(Place place) {
+  public Optional<MyCellarObject> getObject(PlacePosition place) {
     final MyCellarObject myCellarObject = storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()];
     return Optional.ofNullable(myCellarObject);
   }
 
   @Override
   public void updateToStock(MyCellarObject myCellarObject) {
-    final Place place = myCellarObject.getPlace();
+    final PlacePosition place = myCellarObject.getPlacePosition();
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = myCellarObject;
   }
 
@@ -129,11 +129,11 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
-  public void clearStorage(MyCellarObject myCellarObject, Place place) {
+  public void clearStorage(MyCellarObject myCellarObject, PlacePosition place) {
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = null;
   }
 
-  public void clearStorage(Place place) {
+  public void clearStorage(PlacePosition place) {
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = null;
   }
 

@@ -4,7 +4,7 @@ import mycellar.actions.ExportPDFAction;
 import mycellar.actions.OpenWorkSheetAction;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.ICutCopyPastable;
-import mycellar.core.IPlace;
+import mycellar.core.IPlacePosition;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.exceptions.MyCellarException;
@@ -53,6 +53,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -69,10 +70,6 @@ import static mycellar.MyCellarUtils.getShortFilename;
 import static mycellar.MyCellarUtils.isDefined;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.Program.getGlobalConfigString;
-import static mycellar.ProgramConstants.CHAR_C;
-import static mycellar.ProgramConstants.CHAR_O;
-import static mycellar.ProgramConstants.CHAR_V;
-import static mycellar.ProgramConstants.CHAR_X;
 import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.DOWNLOAD_COMMAND;
 import static mycellar.ProgramConstants.FR;
@@ -99,8 +96,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.4
- * @since 01/06/22
+ * @version 32.5
+ * @since 13/06/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -865,10 +862,10 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     menuQuit.setAccelerator(KeyStroke.getKeyStroke(quitChar, InputEvent.CTRL_DOWN_MASK));
     menuSave.setAccelerator(KeyStroke.getKeyStroke(saveChar, InputEvent.CTRL_DOWN_MASK));
     menuNewFile.setAccelerator(KeyStroke.getKeyStroke(newChar, InputEvent.CTRL_DOWN_MASK));
-    menuOpenFile.setAccelerator(KeyStroke.getKeyStroke(CHAR_O, InputEvent.CTRL_DOWN_MASK));
-    menuCut.setAccelerator(KeyStroke.getKeyStroke(CHAR_X, InputEvent.CTRL_DOWN_MASK));
-    menuCopy.setAccelerator(KeyStroke.getKeyStroke(CHAR_C, InputEvent.CTRL_DOWN_MASK));
-    menuPaste.setAccelerator(KeyStroke.getKeyStroke(CHAR_V, InputEvent.CTRL_DOWN_MASK));
+    menuOpenFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+    menuCut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK));
+    menuCopy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
+    menuPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
     JMenuBar menuBar = new JMenuBar();
     menuBar.add(menuFile);
     menuBar.add(menuEdition);
@@ -982,7 +979,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     updateMainPanel();
   }
 
-  public void openCellChooserPanel(IPlace iPlace) {
+  public void openCellChooserPanel(IPlacePosition iPlace) {
     final int selectedTabIndex = ProgramPanels.getSelectedTabIndex() + 1;
     final CellarOrganizerPanel chooseCellPanel = ProgramPanels.createChooseCellPanel(iPlace);
     try {

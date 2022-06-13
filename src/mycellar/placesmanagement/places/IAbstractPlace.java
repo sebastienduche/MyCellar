@@ -13,8 +13,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 01/06/22
+ * @version 0.5
+ * @since 13/06/22
  */
 public interface IAbstractPlace {
 
@@ -26,7 +26,7 @@ public interface IAbstractPlace {
 
   public void clearStorage(MyCellarObject myCellarObject);
 
-  public void clearStorage(MyCellarObject myCellarObject, Place place);
+  public void clearStorage(MyCellarObject myCellarObject, PlacePosition place);
 
   public int getCountCellUsed(int part);
 
@@ -39,7 +39,7 @@ public interface IAbstractPlace {
   @Deprecated
   public boolean canAddObjectAt(MyCellarObject b);
 
-  public boolean canAddObjectAt(Place place);
+  public boolean canAddObjectAt(PlacePosition place);
 
   @Deprecated
   public boolean canAddObjectAt(int tmpNumEmpl, int tmpLine, int tmpCol);
@@ -47,7 +47,7 @@ public interface IAbstractPlace {
   @Deprecated
   public Optional<MyCellarObject> getObject(int num_empl, int line, int column);
 
-  public Optional<MyCellarObject> getObject(Place place);
+  public Optional<MyCellarObject> getObject(PlacePosition place);
 
   public String toXml();
 

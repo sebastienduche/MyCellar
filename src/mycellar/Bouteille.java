@@ -15,7 +15,7 @@ import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.places.AbstractPlace;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -37,14 +37,14 @@ import static mycellar.MyCellarUtils.assertObjectType;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2005</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2005
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.9
- * @since 31/05/22
+ * @version 8.0
+ * @since 13/06/22
  *
  * <p>Java class for anonymous complex type.
  *
@@ -438,8 +438,8 @@ public class Bouteille extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public Place getPlace() {
-    return new Place.PlaceBuilder(getAbstractPlace())
+  public PlacePosition getPlacePosition() {
+    return new PlacePosition.PlacePositionBuilder(getAbstractPlace())
         .withNumPlace(getNumLieu())
         .withLine(getLigne())
         .withColumn(getColonne())

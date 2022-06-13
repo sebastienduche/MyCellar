@@ -39,9 +39,9 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
-import mycellar.placesmanagement.PanelPlace;
+import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 import net.miginfocom.swing.MigLayout;
@@ -88,8 +88,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.6
- * @since 10/06/22
+ * @version 12.7
+ * @since 13/06/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -880,7 +880,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
               Program.getStorage().addHistory(HistoryState.ADD, b);
               Program.getStorage().addWine(b);
             } else {
-              if (r.getObject(b.getPlace()).isEmpty()) {
+              if (r.getObject(b.getPlacePosition()).isEmpty()) {
                 Program.getStorage().addHistory(HistoryState.ADD, b);
                 Program.getStorage().addWine(b);
               } else {
@@ -946,15 +946,15 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       nValueToCheck = i;
     }
 
-    Place place = null;
+    PlacePosition place = null;
     if (field == MyCellarFields.PLACE) {
       placeCbx.setSelectedIndex(0);
       if (!abstractPlace.isSimplePlace()) {
-        final PanelPlace panelPlace = new PanelPlace(abstractPlace, true, false, true, true, false, true, false);
+        final PanelPlacePosition panelPlace = new PanelPlacePosition(abstractPlace, true, false, true, true, false, true, false);
         JOptionPane.showMessageDialog(Start.getInstance(), panelPlace,
             getLabel("Main.ChooseCell"),
             JOptionPane.PLAIN_MESSAGE);
-        place = panelPlace.getSelectedPlace();
+        place = panelPlace.getSelectedPlacePosition();
         if (place.hasPlace()) {
           abstractPlace = place.getAbstractPlace();
           empl = abstractPlace.getName();
@@ -977,7 +977,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     if (b.getEmplacement().compareTo(empl) != 0 || b.getNumLieu() != num_empl || b.getLigne() != line || b.getColonne() != column) {
       // Controle de l'emplacement de la bouteille
       if (place == null) {
-        place = new Place.PlaceBuilder(abstractPlace != null ? abstractPlace : Program.EMPTY_PLACE).withNumPlace(num_empl).withLine(line).withColumn(column).build();
+        place = new PlacePosition.PlacePositionBuilder(abstractPlace != null ? abstractPlace : Program.EMPTY_PLACE).withNumPlace(num_empl).withLine(line).withColumn(column).build();
       }
       if (abstractPlace != null && (place != null && abstractPlace.canAddObjectAt(place))) {
         boolean hasObject = false;

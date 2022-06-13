@@ -13,8 +13,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 31/05/22
+ * @version 0.3
+ * @since 13/06/22
  */
 public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstractPlace {
 
@@ -64,10 +64,10 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
 
   @Override
   public void clearStorage(MyCellarObject myCellarObject) {
-    clearStorage(myCellarObject, myCellarObject.getPlace());
+    clearStorage(myCellarObject, myCellarObject.getPlacePosition());
   }
 
-  public int getCountCellUsed(Place place) {
+  public int getCountCellUsed(PlacePosition place) {
     return getCountCellUsed(place.getPlaceNumIndex());
   }
 
@@ -80,7 +80,7 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
   }
 
   @Override
-  public boolean canAddObjectAt(Place place) {
+  public boolean canAddObjectAt(PlacePosition place) {
     return canAddObjectAt(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
   }
 

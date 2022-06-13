@@ -7,7 +7,7 @@ import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
 import mycellar.placesmanagement.places.Part;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -415,24 +415,24 @@ class RangementTest {
     b01.setEmplacement("simplePlaceLimit");
     simplePlaceLimit.addObject(b01);
     assertEquals(1, simplePlaceLimit.getCountCellUsed(1));
-    assertEquals(1, simplePlaceLimit.getCountCellUsed(b01.getPlace().getPlaceNumIndex()));
-    assertEquals(1, simplePlaceLimit.getCountCellUsed(b01.getPlace()));
+    assertEquals(1, simplePlaceLimit.getCountCellUsed(b01.getPlacePosition().getPlaceNumIndex()));
+    assertEquals(1, simplePlaceLimit.getCountCellUsed(b01.getPlacePosition()));
     Bouteille b11 = new Bouteille();
     b11.setNom("B11");
     b11.setNumLieu(0);
     b11.setEmplacement("simplePlaceNoLimit");
     simplePlaceNoLimit.addObject(b11);
     assertEquals(1, simplePlaceNoLimit.getCountCellUsed(0));
-    assertEquals(1, simplePlaceNoLimit.getCountCellUsed(b11.getPlace().getPlaceNumIndex()));
-    assertEquals(1, simplePlaceNoLimit.getCountCellUsed(b11.getPlace()));
+    assertEquals(1, simplePlaceNoLimit.getCountCellUsed(b11.getPlacePosition().getPlaceNumIndex()));
+    assertEquals(1, simplePlaceNoLimit.getCountCellUsed(b11.getPlacePosition()));
     simplePlaceLimit.removeObject(b01);
     assertEquals(0, simplePlaceLimit.getCountCellUsed(1));
-    assertEquals(0, simplePlaceLimit.getCountCellUsed(b01.getPlace().getPlaceNumIndex()));
-    assertEquals(0, simplePlaceLimit.getCountCellUsed(b01.getPlace()));
+    assertEquals(0, simplePlaceLimit.getCountCellUsed(b01.getPlacePosition().getPlaceNumIndex()));
+    assertEquals(0, simplePlaceLimit.getCountCellUsed(b01.getPlacePosition()));
     simplePlaceNoLimit.removeObject(b11);
     assertEquals(0, simplePlaceNoLimit.getCountCellUsed(0));
-    assertEquals(0, simplePlaceNoLimit.getCountCellUsed(b11.getPlace().getPlaceNumIndex()));
-    assertEquals(0, simplePlaceNoLimit.getCountCellUsed(b11.getPlace()));
+    assertEquals(0, simplePlaceNoLimit.getCountCellUsed(b11.getPlacePosition().getPlaceNumIndex()));
+    assertEquals(0, simplePlaceNoLimit.getCountCellUsed(b11.getPlacePosition()));
   }
 
   @Test
@@ -451,7 +451,7 @@ class RangementTest {
     updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", complexPlace2x2_3x22545);
     assertEquals(1, complexPlace2x2_3x22545.getNbCaseUseInLine(1, 0));
     assertEquals(b, complexPlace2x2_3x22545.getObject(1, 0, 1).get());
-    assertEquals(b, complexPlace2x2_3x22545.getObject(b.getPlace()).get());
+    assertEquals(b, complexPlace2x2_3x22545.getObject(b.getPlacePosition()).get());
     complexPlace2x2_3x22545.removeObject(b);
     return b;
   }
@@ -471,12 +471,12 @@ class RangementTest {
     b.setNom("B13");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", complexPlace1x3x3);
     assertEquals(b, complexPlace1x3x3.getObject(0, 0, 1).get());
-    assertEquals(b, complexPlace1x3x3.getObject(b.getPlace()).get());
+    assertEquals(b, complexPlace1x3x3.getObject(b.getPlacePosition()).get());
     Bouteille b1 = new Bouteille();
     b1.setNom("B14");
     updateToComplexPlace1x3x3(b1, 1, 2);
     assertEquals(b1, complexPlace1x3x3.getObject(0, 0, 1).get());
-    assertEquals(b1, complexPlace1x3x3.getObject(b1.getPlace()).get());
+    assertEquals(b1, complexPlace1x3x3.getObject(b1.getPlacePosition()).get());
     complexPlace1x3x3.clearStorage(b1);
     assertTrue(complexPlace1x3x3.getObject(0, 0, 1).isEmpty());
     complexPlace1x3x3.removeObject(b);
@@ -499,17 +499,17 @@ class RangementTest {
     b.setNom("B16");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", complexPlace1x3x3);
     assertEquals(b, complexPlace1x3x3.getObject(0, 0, 1).get());
-    assertEquals(b, complexPlace1x3x3.getObject(b.getPlace()).get());
+    assertEquals(b, complexPlace1x3x3.getObject(b.getPlacePosition()).get());
     Bouteille b1 = new Bouteille();
     b.setNom("B17");
     updateToArmoire(b1, 2, 2, 3, "armoire2x2_3x22545", complexPlace2x2_3x22545);
     assertEquals(b1, complexPlace2x2_3x22545.getObject(1, 1, 2).get());
-    assertEquals(b1, complexPlace2x2_3x22545.getObject(b1.getPlace()).get());
+    assertEquals(b1, complexPlace2x2_3x22545.getObject(b1.getPlacePosition()).get());
     complexPlace1x3x3.clearStorage(b);
     complexPlace2x2_3x22545.clearStorage(b1);
     assertTrue(complexPlace1x3x3.getObject(0, 0, 1).isEmpty());
-    assertTrue(complexPlace1x3x3.getObject(b.getPlace()).isEmpty());
-    assertTrue(complexPlace2x2_3x22545.getObject(b1.getPlace()).isEmpty());
+    assertTrue(complexPlace1x3x3.getObject(b.getPlacePosition()).isEmpty());
+    assertTrue(complexPlace2x2_3x22545.getObject(b1.getPlacePosition()).isEmpty());
   }
 
   @Test
@@ -543,7 +543,7 @@ class RangementTest {
   void canAddObjectAt() {
     SimplePlace caisse = new SimplePlaceBuilder("caisse20").nbParts(2).startSimplePlace(1).limited(true).limit(1).build();
     Program.addPlace(caisse);
-    final Place place = new Place.PlaceBuilder(caisse).withNumPlace(1).build();
+    final PlacePosition place = new PlacePosition.PlacePositionBuilder(caisse).withNumPlace(1).build();
     assertTrue(caisse.hasFreeSpace(place));
     Bouteille b = new Bouteille();
     b.setEmplacement("caisse20");
@@ -558,7 +558,7 @@ class RangementTest {
     assertFalse(caisse.canAddObjectAt(b));
     b.setNumLieu(2);
     assertTrue(caisse.canAddObjectAt(b));
-    assertTrue(caisse.canAddObjectAt(b.getPlace()));
+    assertTrue(caisse.canAddObjectAt(b.getPlacePosition()));
     LinkedList<ComplexPlace> listPlace = new LinkedList<>();
     listPlace.add(complexPlace1x3x3);
     listPlace.add(complexPlace1x3x3Builder);
@@ -584,43 +584,43 @@ class RangementTest {
     b.setNom("B20bis");
     b.setEmplacement("caisse20");
     assertFalse(complexPlace1x3x3.canAddObjectAt(b));
-    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlace()));
+    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlacePosition()));
     assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b));
-    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlace()));
+    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlacePosition()));
     b.setNumLieu(1);
     assertFalse(complexPlace1x3x3.canAddObjectAt(b));
-    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlace()));
+    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlacePosition()));
     assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b));
-    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlace()));
+    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlacePosition()));
     b.setLigne(1);
     assertFalse(complexPlace1x3x3.canAddObjectAt(b));
-    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlace()));
+    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlacePosition()));
     assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b));
-    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlace()));
+    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlacePosition()));
     b.setColonne(1);
     assertFalse(complexPlace1x3x3.canAddObjectAt(b));
-    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlace()));
+    assertFalse(complexPlace1x3x3.canAddObjectAt(b.getPlacePosition()));
     assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b));
-    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlace()));
+    assertFalse(complexPlace1x3x3Builder.canAddObjectAt(b.getPlacePosition()));
   }
 
   @Test
   void putTabStock() {
     SimplePlace simplePlace = new SimplePlaceBuilder("caisse").nbParts(2).startSimplePlace(1).limited(true).limit(2).build();
     Program.addPlace(simplePlace);
-    assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(1).build()));
+    assertTrue(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(1).build()));
 
     Bouteille b = new Bouteille();
     b.setNom("B20");
     b.setEmplacement("caisse");
     b.setNumLieu(1);
     simplePlace.addObject(b);
-    assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(1).build()));
+    assertTrue(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(1).build()));
     assertEquals(1, simplePlace.getCountCellUsed(0));
     assertTrue(simplePlace.canAddObjectAt(0, 0, 0));
     assertTrue(simplePlace.canAddObjectAt(1, 0, 0));
     assertTrue(simplePlace.canAddObjectAt(b));
-    assertTrue(simplePlace.hasFreeSpace(b.getPlace()));
+    assertTrue(simplePlace.hasFreeSpace(b.getPlacePosition()));
     b.setNumLieu(0);
     assertFalse(simplePlace.canAddObjectAt(b));
   }
@@ -629,7 +629,7 @@ class RangementTest {
   void hasFreeSpaceInCaisse() {
     SimplePlace simplePlace = new SimplePlaceBuilder("caisse").nbParts(2).startSimplePlace(1).limited(true).limit(1).build();
     Program.addPlace(simplePlace);
-    assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(1).build()));
+    assertTrue(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(1).build()));
     Bouteille b = new Bouteille();
     b.setNom("B21");
     b.setEmplacement("caisse");
@@ -637,9 +637,9 @@ class RangementTest {
     assertTrue(simplePlace.canAddObjectAt(b));
     simplePlace.addObject(b);
     assertFalse(simplePlace.canAddObjectAt(b));
-    assertFalse(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(1).build()));
-    assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(2).build()));
-    assertFalse(simplePlace.hasFreeSpace(b.getPlace()));
+    assertFalse(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(1).build()));
+    assertTrue(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(2).build()));
+    assertFalse(simplePlace.hasFreeSpace(b.getPlacePosition()));
   }
 
   @Test
@@ -667,7 +667,7 @@ class RangementTest {
     assertEquals(1, simplePlaceLimit.getFreeNumPlace());
     assertEquals(0, simplePlaceNoLimit.getFreeNumPlace());
     SimplePlace simplePlace = new SimplePlaceBuilder("caisse22").nbParts(2).startSimplePlace(1).limited(true).limit(1).build();
-    assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(2).build()));
+    assertTrue(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(2).build()));
     Bouteille b = new Bouteille();
     b.setNom("B22");
     b.setNumLieu(1);
@@ -695,29 +695,29 @@ class RangementTest {
   void complexCaisse() {
     SimplePlace simplePlace = new SimplePlaceBuilder("caisse24").nbParts(1).startSimplePlace(0).limited(true).limit(3).build();
     Program.addPlace(simplePlace);
-    assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(0).build()));
+    assertTrue(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(0).build()));
     Bouteille b = new Bouteille();
     b.setNom("B24");
     b.setNumLieu(0);
     b.setEmplacement("caisse24");
     simplePlace.addObject(b);
-    assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(0).build()));
+    assertTrue(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(0).build()));
     Bouteille b1 = new Bouteille();
     b1.setNom("B25");
     b1.setNumLieu(0);
     b1.setEmplacement("caisse24");
     simplePlace.addObject(b1);
-    assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(0).build()));
+    assertTrue(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(0).build()));
     Bouteille b2 = new Bouteille();
     b2.setNom("B26");
     b2.setNumLieu(0);
     b2.setEmplacement("caisse24");
     simplePlace.addObject(b2);
-    assertFalse(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(0).build()));
+    assertFalse(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(0).build()));
     simplePlace.clearStorage(b1);
-    assertTrue(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(0).build()));
+    assertTrue(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(0).build()));
     simplePlace.addObject(b1);
-    assertFalse(simplePlace.hasFreeSpace(new Place.PlaceBuilder(simplePlace).withNumPlace(0).build()));
+    assertFalse(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(0).build()));
   }
 
   @Test

@@ -7,7 +7,7 @@ import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.IMyCellar;
-import mycellar.core.IPlace;
+import mycellar.core.IPlacePosition;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarObject;
 import mycellar.core.PanelCloseButton;
@@ -24,7 +24,7 @@ import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 import net.miginfocom.swing.MigLayout;
@@ -78,8 +78,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.5
- * @since 01/06/22
+ * @version 5.6
+ * @since 13/06/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -96,7 +96,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   private MyCellarComboBox<AbstractPlace> abstractPlaceCombo;
   private AbstractPlace abstractPlace;
   private RangementCell stock;
-  private IPlace iPlace;
+  private IPlacePosition iPlace;
 
   private boolean updateView = false;
   private UpdateViewType updateViewType;
@@ -106,7 +106,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     init();
   }
 
-  public CellarOrganizerPanel(IPlace iPlace) {
+  public CellarOrganizerPanel(IPlacePosition iPlace) {
     cellChooser = true;
     this.iPlace = iPlace;
     init();
@@ -301,7 +301,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         return false;
       }
       if (selectedCell != null) {
-        iPlace.selectPlace(new Place.PlaceBuilder(abstractPlace)
+        iPlace.selectPlace(new PlacePosition.PlacePositionBuilder(abstractPlace)
             .withNumPlace(selectedCell.getPlaceNum())
             .withLine(selectedCell.getRow())
             .withColumn(selectedCell.getColumn())
@@ -321,7 +321,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     placePanel.removeAll();
   }
 
-  public IPlace getIPlace() {
+  public IPlacePosition getIPlace() {
     return iPlace;
   }
 

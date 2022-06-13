@@ -7,7 +7,7 @@ import mycellar.core.common.music.MusicSupport;
 import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
 import mycellar.placesmanagement.places.AbstractPlace;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
@@ -39,8 +39,8 @@ import static mycellar.general.XmlUtils.getTextContent;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 01/06/22
+ * @version 1.7
+ * @since 13/06/22
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -487,8 +487,8 @@ public class Music extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public Place getPlace() {
-    return new Place.PlaceBuilder(getAbstractPlace())
+  public PlacePosition getPlacePosition() {
+    return new PlacePosition.PlacePositionBuilder(getAbstractPlace())
         .withNumPlace(getNumLieu())
         .withLine(getLigne())
         .withColumn(getColonne())

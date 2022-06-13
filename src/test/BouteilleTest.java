@@ -5,7 +5,7 @@ import mycellar.Program;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -346,19 +346,19 @@ class BouteilleTest {
   }
 
   @Test
-  void getRangement() {
+  void getAbstractPlace() {
     assertEquals(armoire1x3x3, bouteille.getAbstractPlace());
   }
 
   @Test
-  void getPlace() {
-    Place place = bouteille.getPlace();
+  void getPlacePosition() {
+    PlacePosition place = bouteille.getPlacePosition();
     assertEquals(armoire1x3x3, place.getAbstractPlace());
     assertEquals(1, place.getPart());
     assertEquals(2, place.getLine());
     assertEquals(3, place.getColumn());
 
-    place = bouteilleCaisse.getPlace();
+    place = bouteilleCaisse.getPlacePosition();
     assertEquals(caisse, place.getAbstractPlace());
     assertEquals(1, place.getPart());
   }

@@ -11,13 +11,13 @@ import java.time.format.DateTimeFormatter;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 13/05/22
+ * @version 1.0
+ * @since 13/06/22
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.8.6.6";
-  public static final int VERSION = 74;
+  public static final String INTERNAL_VERSION = "4.8.9.0";
+  public static final int VERSION = 75;
   public static final String MAIN_VERSION = VERSION + " BI";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
   public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
@@ -51,10 +51,6 @@ public final class ProgramConstants {
   public static final String EURO = "\u20ac";
   public static final String DASH = "-";
   public static final char CHAR_O = 'O';
-  public static final char CHAR_C = 'C';
-  public static final char CHAR_X = 'X';
-  public static final char CHAR_V = 'V';
-  public static final char CHAR_Q = 'Q';
   public static final char CHAR_DOT = '.';
   public static final char CHAR_COMMA = ',';
   public static final String NORMAL = "75cl";

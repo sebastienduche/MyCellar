@@ -30,8 +30,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 01/06/22
+ * @version 2.8
+ * @since 13/06/22
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -157,15 +157,15 @@ public class ErrorShowValues extends TableShowValues {
   public void setValueAt(Object value, int row, int col) {
     MyCellarError error = errors.get(row);
     MyCellarObject b = error.getMyCellarObject();
-    AbstractPlace rangement;
+    AbstractPlace abstractPlace;
     final Column column = Column.fromIndex(col);
     switch (column) {
       case ETAT:
         values[row] = (Boolean) value;
         break;
       case BUTTON:
-        rangement = b.getAbstractPlace();
-        if (rangement != null && rangement.canAddObjectAt(b.getPlace())) {
+        abstractPlace = b.getAbstractPlace();
+        if (abstractPlace != null && abstractPlace.canAddObjectAt(b.getPlacePosition())) {
           error.setSolved(true);
           Program.getStorage().addWine(b);
           editable[row] = Boolean.FALSE;
@@ -197,7 +197,7 @@ public class ErrorShowValues extends TableShowValues {
         int num_empl_old = b.getNumLieu();
         int line_old = b.getLigne();
         int column_old = b.getColonne();
-        rangement = b.getAbstractPlace();
+        abstractPlace = b.getAbstractPlace();
         boolean bError = false;
         int nValueToCheck = -1;
         String empl = empl_old;
@@ -208,7 +208,7 @@ public class ErrorShowValues extends TableShowValues {
         if (column.equals(Column.PLACE)) {
           empl = (String) value;
           if (PlaceUtils.isExistingPlace(empl)) {
-            rangement = Program.getPlaceByName(empl);
+            abstractPlace = Program.getPlaceByName(empl);
           }
         } else if (column.equals(Column.NUM_PLACE)) {
           Integer i = parseIntOrError(value);
@@ -237,7 +237,7 @@ public class ErrorShowValues extends TableShowValues {
         }
 
         if (!bError && (column.equals(Column.NUM_PLACE) || column.equals(Column.LINE) || column.equals(Column.COLUMN))) {
-          if (!rangement.isSimplePlace() && nValueToCheck <= 0) {
+          if (!abstractPlace.isSimplePlace() && nValueToCheck <= 0) {
             Erreur.showSimpleErreur(getError("Error.enterNumericValueAboveZero"));
             bError = true;
           }
@@ -248,17 +248,17 @@ public class ErrorShowValues extends TableShowValues {
           int tmpNumEmpl = num_empl;
           int tmpLine = line;
           int tmpCol = column1;
-          if (!rangement.isSimplePlace()) {
+          if (!abstractPlace.isSimplePlace()) {
             tmpNumEmpl--;
             tmpCol--;
             tmpLine--;
           } else {
-            tmpNumEmpl -= ((SimplePlace) rangement).getPartNumberIncrement();
+            tmpNumEmpl -= ((SimplePlace) abstractPlace).getPartNumberIncrement();
           }
-          if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
+          if (abstractPlace.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
-            if (!rangement.isSimplePlace()) {
-              bTemp = rangement.getObject(num_empl - 1, line - 1, column1 - 1);
+            if (!abstractPlace.isSimplePlace()) {
+              bTemp = abstractPlace.getObject(num_empl - 1, line - 1, column1 - 1);
             }
             if (bTemp.isPresent()) {
               status[row] = Boolean.FALSE;
@@ -266,10 +266,10 @@ public class ErrorShowValues extends TableShowValues {
             } else {
               if (column.equals(Column.PLACE)) {
                 b.setEmplacement((String) value);
-                if (rangement.isSimplePlace()) {
+                if (abstractPlace.isSimplePlace()) {
                   int nNumEmpl = b.getNumLieu();
-                  if (nNumEmpl > rangement.getLastPartNumber()) {
-                    b.setNumLieu(((SimplePlace) rangement).getFreeNumPlace());
+                  if (nNumEmpl > abstractPlace.getLastPartNumber()) {
+                    b.setNumLieu(((SimplePlace) abstractPlace).getFreeNumPlace());
                   }
                   b.setLigne(0);
                   b.setColonne(0);

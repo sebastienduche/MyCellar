@@ -5,7 +5,7 @@ import mycellar.Program;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class PlaceTest {
+class PlacePositionTest {
 
   private SimplePlace caisseNoLimit;
   private ComplexPlace armoire1x3x3;
@@ -48,7 +48,7 @@ class PlaceTest {
 
   @Test
   void testSimplePlace() {
-    Place placeNoLimit = new Place.PlaceBuilder(caisseNoLimit).withNumPlace(0).build();
+    PlacePosition placeNoLimit = new PlacePosition.PlacePositionBuilder(caisseNoLimit).withNumPlace(0).build();
     assertEquals(0, placeNoLimit.getPart());
     assertEquals(0, placeNoLimit.getPlaceNumIndex());
     assertEquals(caisseNoLimit, placeNoLimit.getAbstractPlace());
@@ -57,7 +57,7 @@ class PlaceTest {
 
   @Test
   void testSimplePlaceLimit() {
-    Place placeLimit = new Place.PlaceBuilder(caisseLimit).withNumPlace(2).build();
+    PlacePosition placeLimit = new PlacePosition.PlacePositionBuilder(caisseLimit).withNumPlace(2).build();
     assertEquals(2, placeLimit.getPart());
     assertEquals(1, placeLimit.getPlaceNumIndex());
     assertEquals(caisseLimit, placeLimit.getAbstractPlace());
@@ -66,7 +66,7 @@ class PlaceTest {
 
   @Test
   void testArmoire() {
-    Place placeArmoire = new Place.PlaceBuilder(armoire1x3x3).withNumPlace(1).withLine(1).withColumn(1).build();
+    PlacePosition placeArmoire = new PlacePosition.PlacePositionBuilder(armoire1x3x3).withNumPlace(1).withLine(1).withColumn(1).build();
     assertEquals(1, placeArmoire.getPart());
     assertEquals(0, placeArmoire.getPlaceNumIndex());
     assertEquals(1, placeArmoire.getLine());
@@ -92,7 +92,7 @@ class PlaceTest {
     armoire1x3x3.addObject(b1);
     armoire1x3x3.addObject(b2);
     assertEquals(2, armoire1x3x3.getTotalCountCellUsed());
-    final Place oldb2Place = b2.getPlace();
+    final PlacePosition oldb2Place = b2.getPlacePosition();
     b2.setColonne(1);
     PlaceUtils.replaceMyCellarObject(b1, b2, oldb2Place);
     assertEquals(1, armoire1x3x3.getTotalCountCellUsed());
@@ -120,7 +120,7 @@ class PlaceTest {
     armoire2x3x3.addObject(b2);
     assertEquals(1, armoire1x3x3.getTotalCountCellUsed());
     assertEquals(1, armoire2x3x3.getTotalCountCellUsed());
-    final Place oldb2Place = b2.getPlace();
+    final PlacePosition oldb2Place = b2.getPlacePosition();
     b2.setEmplacement(armoire1x3x3.getName());
     PlaceUtils.replaceMyCellarObject(b1, b2, oldb2Place);
     assertEquals(1, armoire1x3x3.getTotalCountCellUsed());

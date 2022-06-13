@@ -9,25 +9,25 @@ import mycellar.Program;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 01/06/22
+ * @version 0.9
+ * @since 13/06/22
  */
 
-public class Place {
+public class PlacePosition {
 
   private final AbstractPlace abstractPlace;
   private final int part;
   private final int line;
   private final int column;
 
-  private Place(AbstractPlace abstractPlace, int part) {
+  private PlacePosition(AbstractPlace abstractPlace, int part) {
     this.abstractPlace = abstractPlace;
     this.part = part;
     line = -1;
     column = -1;
   }
 
-  private Place(AbstractPlace abstractPlace, int part, int line, int column) {
+  private PlacePosition(AbstractPlace abstractPlace, int part, int line, int column) {
     this.abstractPlace = abstractPlace;
     this.part = part;
     this.line = line;
@@ -84,7 +84,7 @@ public class Place {
 
   @Override
   public String toString() {
-    return "Place{" +
+    return "PlacePosition{" +
         "abstractPlace=" + abstractPlace +
         ", part=" + part +
         ", line=" + line +
@@ -92,37 +92,37 @@ public class Place {
         '}';
   }
 
-  public static class PlaceBuilder {
+  public static class PlacePositionBuilder {
 
     protected final AbstractPlace rangement;
     private int numPlace;
     private int line;
     private int column;
 
-    public PlaceBuilder(AbstractPlace rangement) {
+    public PlacePositionBuilder(AbstractPlace rangement) {
       this.rangement = rangement;
     }
 
-    public PlaceBuilder withNumPlace(int numPlace) {
+    public PlacePositionBuilder withNumPlace(int numPlace) {
       this.numPlace = numPlace;
       return this;
     }
 
-    public PlaceBuilder withLine(int line) {
+    public PlacePositionBuilder withLine(int line) {
       this.line = line;
       return this;
     }
 
-    public PlaceBuilder withColumn(int column) {
+    public PlacePositionBuilder withColumn(int column) {
       this.column = column;
       return this;
     }
 
-    public Place build() {
+    public PlacePosition build() {
       if (rangement.isSimplePlace()) {
-        return new Place(rangement, numPlace);
+        return new PlacePosition(rangement, numPlace);
       }
-      return new Place(rangement, numPlace, line, column);
+      return new PlacePosition(rangement, numPlace, line, column);
     }
   }
 }

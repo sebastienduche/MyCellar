@@ -16,7 +16,7 @@ import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.vignobles.CountryVignobleController;
 
@@ -41,8 +41,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.0
- * @since 01/06/22
+ * @version 10.1
+ * @since 13/06/22
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -177,7 +177,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       return false;
     }
 
-    final Place place = panelPlace.getSelectedPlace();
+    final PlacePosition place = panelPlace.getSelectedPlacePosition();
 
     if (MyCellarControl.hasInvalidPlace(place)) {
       return false;
@@ -204,7 +204,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       }
     }
 
-    Place oldPlace = myCellarObject.getPlace();
+    PlacePosition oldPlace = myCellarObject.getPlacePosition();
     if (isCaisse) {
       lieu_num = place.getPart();
       myCellarObject.setNumLieu(lieu_num);
@@ -214,7 +214,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       myCellarObject.setNumLieu(lieu_num);
       myCellarObject.setLigne(line);
       myCellarObject.setColonne(column);
-      MyCellarObject bottleInPlace = cave.getObject(new Place.PlaceBuilder(cave)
+      MyCellarObject bottleInPlace = cave.getObject(new PlacePosition.PlacePositionBuilder(cave)
           .withNumPlace(lieu_num)
           .withLine(line)
           .withColumn(column)
@@ -274,7 +274,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     return true;
   }
 
-  private boolean askToReplaceBottle(MyCellarObject bouteille, Place oldPlace) throws MyCellarException {
+  private boolean askToReplaceBottle(MyCellarObject bouteille, PlacePosition oldPlace) throws MyCellarException {
     if (!bouteille.equals(myCellarObject)) {
       Debug("ERROR: Not an empty place, Replace?");
       String erreur_txt1 = MessageFormat.format(getError("Error.alreadyInStorage"), bouteille.getNom(), bouteille.getAnnee());
@@ -297,7 +297,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     panelPlace.clearModified();
   }
 
-  private void replaceWine(final MyCellarObject bToDelete, Place oldPlace) throws MyCellarException {
+  private void replaceWine(final MyCellarObject bToDelete, PlacePosition oldPlace) throws MyCellarException {
     //Change wine in a place
     Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
     PlaceUtils.replaceMyCellarObject(bToDelete, myCellarObject, oldPlace);

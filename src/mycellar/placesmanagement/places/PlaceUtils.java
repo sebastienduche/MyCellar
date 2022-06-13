@@ -69,16 +69,16 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.0
- * @since 10/06/22
+ * @version 5.1
+ * @since 13/06/22
  */
 public final class PlaceUtils {
 
   private PlaceUtils() {
   }
 
-  public static void replaceMyCellarObject(MyCellarObject oldObject, MyCellarObject newObject, Place newObjectPreviousPlace) throws MyCellarException {
-    Debug("Replace objet '" + oldObject + "' by '" + newObject + "' previous place: " + newObjectPreviousPlace + " current name " + newObject.getPlace());
+  public static void replaceMyCellarObject(MyCellarObject oldObject, MyCellarObject newObject, PlacePosition newObjectPreviousPlace) throws MyCellarException {
+    Debug("Replace objet '" + oldObject + "' by '" + newObject + "' previous place: " + newObjectPreviousPlace + " current name " + newObject.getPlacePosition());
     Program.getStorage().addHistory(HistoryState.DEL, oldObject);
     Program.getStorage().deleteWine(oldObject);
 
@@ -685,7 +685,7 @@ public final class PlaceUtils {
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
           continue;
         }
-        if (((SimplePlace) rangement).hasFreeSpace(bouteille.getPlace())) {
+        if (((SimplePlace) rangement).hasFreeSpace(bouteille.getPlacePosition())) {
           rangement.updateToStock(bouteille);
         } else {
           // Caisse pleine
@@ -704,7 +704,7 @@ public final class PlaceUtils {
           // Cellule inexistante
           Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
-        } else if ((bottle = rangement.getObject(bouteille.getPlace())).isPresent() && !bottle.get().equals(bouteille)) {
+        } else if ((bottle = rangement.getObject(bouteille.getPlacePosition())).isPresent() && !bottle.get().equals(bouteille)) {
           // Cellule occupee
           Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));

@@ -16,8 +16,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 01/06/22
+ * @version 0.5
+ * @since 13/06/22
  */
 public final class SimplePlace extends AbstractPlace {
 
@@ -102,9 +102,9 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  public Optional<MyCellarObject> getObject(Place place) {
-    Debug("ERROR: Function getObject(Place) can't be called on a simple place!");
-    throw new RuntimeException("Function getObject(Place) can't be called on a simple place!");
+  public Optional<MyCellarObject> getObject(PlacePosition place) {
+    Debug("ERROR: Function getObject(PlacePosition) can't be called on a simple place!");
+    throw new RuntimeException("Function getObject(PlacePosition) can't be called on a simple place!");
   }
 
   /**
@@ -118,7 +118,7 @@ public final class SimplePlace extends AbstractPlace {
     return storage.get(num_empl).get(index);
   }
 
-  public boolean hasFreeSpace(Place place) {
+  public boolean hasFreeSpace(PlacePosition place) {
     return hasFreeSpace(place.getPlaceNumIndex());
   }
 
@@ -150,7 +150,7 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  public void clearStorage(MyCellarObject myCellarObject, Place place) {
+  public void clearStorage(MyCellarObject myCellarObject, PlacePosition place) {
     storage.get(place.getPart() - partNumberIncrement).remove(myCellarObject);
   }
 

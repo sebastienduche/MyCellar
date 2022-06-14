@@ -18,8 +18,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 13/06/22
+ * @version 0.6
+ * @since 14/06/22
  */
 public class ComplexPlace extends AbstractPlace {
 
@@ -143,12 +143,6 @@ public class ComplexPlace extends AbstractPlace {
     setPlace(listPart);
     Program.setListCaveModified();
     Program.setModified();
-  }
-
-  @Override
-  @Deprecated
-  public boolean canAddObjectAt(MyCellarObject b) {
-    return canAddObjectAt(b.getNumLieu(), -1, -1);
   }
 
   @Override

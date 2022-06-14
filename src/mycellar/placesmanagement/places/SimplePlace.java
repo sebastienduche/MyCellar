@@ -16,8 +16,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 13/06/22
+ * @version 0.6
+ * @since 14/06/22
  */
 public final class SimplePlace extends AbstractPlace {
 
@@ -152,12 +152,6 @@ public final class SimplePlace extends AbstractPlace {
   @Override
   public void clearStorage(MyCellarObject myCellarObject, PlacePosition place) {
     storage.get(place.getPart() - partNumberIncrement).remove(myCellarObject);
-  }
-
-  @Override
-  @Deprecated
-  public boolean canAddObjectAt(MyCellarObject b) {
-    return canAddObjectAt(b.getNumLieu() - partNumberIncrement, -1, -1);
   }
 
   @Override

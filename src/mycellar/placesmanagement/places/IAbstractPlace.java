@@ -13,8 +13,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 13/06/22
+ * @version 0.6
+ * @since 14/06/22
  */
 public interface IAbstractPlace {
 
@@ -35,9 +35,6 @@ public interface IAbstractPlace {
   public void removeObject(MyCellarObject myCellarObject) throws MyCellarException;
 
   public void updateToStock(MyCellarObject myCellarObject);
-
-  @Deprecated
-  public boolean canAddObjectAt(MyCellarObject b);
 
   public boolean canAddObjectAt(PlacePosition place);
 

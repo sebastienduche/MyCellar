@@ -41,8 +41,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.1
- * @since 13/06/22
+ * @version 10.2
+ * @since 17/06/22
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -114,7 +114,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       }
       initStatusAndTime();
 
-      panelPlace.selectPlace(cellarObject);
+      panelPlace.selectPlace(cellarObject.getPlacePosition());
       end.setText(getLabel("AddVin.EnterChanges"));
       resetModified();
     } catch (RuntimeException e) {
@@ -359,7 +359,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       if (updateViewType == UpdateViewType.PLACE || updateViewType == UpdateViewType.ALL) {
         panelPlace.updateView();
       }
-      panelPlace.selectPlace(myCellarObject);
+      panelPlace.selectPlace(myCellarObject.getPlacePosition());
       panelPlace.setListenersEnabled(true);
       Debug("updateView Done");
     });

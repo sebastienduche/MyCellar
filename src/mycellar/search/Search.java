@@ -86,8 +86,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.1
- * @since 13/06/22
+ * @version 24.2
+ * @since 17/06/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -238,10 +238,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private static void Debug(String sText) {
     Program.Debug("Search: " + sText);
-  }
-
-  public void updateTable() {
-    SwingUtilities.invokeLater(searchTableModel::fireTableDataChanged);
   }
 
   /**
@@ -796,10 +792,17 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   }
 
   public void removeObject(MyCellarObject myCellarObject) {
-    SwingUtilities.invokeLater(() -> {
-      searchTableModel.removeObject(myCellarObject);
-      updateLabelObjectNumber(true);
-    });
+    new MyCellarObjectSwingWorker() {
+      @Override
+      protected void done() {
+        searchTableModel.removeObject(myCellarObject);
+        updateLabelObjectNumber(true);
+      }
+    }.execute();
+  }
+
+  public void updateTable() {
+    SwingUtilities.invokeLater(searchTableModel::fireTableDataChanged);
   }
 
   @Override

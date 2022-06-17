@@ -47,8 +47,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.6
- * @since 13/06/22
+ * @version 31.7
+ * @since 17/06/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -381,7 +381,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
                 panelWineAttribute.setEditable(false);
                 commentTextArea.setEditable(false);
                 addButton.setEnabled(false);
-                panelPlace.enableAll(false);
+                panelPlace.enablePlaceSelection(false);
               }
             }
             if (isModify) {

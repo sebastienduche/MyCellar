@@ -78,8 +78,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.6
- * @since 13/06/22
+ * @version 5.7
+ * @since 17/06/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -259,10 +259,10 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   }
 
   private void initPlacesCombo() {
-    for (AbstractPlace rangement1 : Program.getAbstractPlaces()) {
-      if (iPlace == null || !rangement1.isSimplePlace()) {
-        complexPlaces.add(rangement1);
-        abstractPlaceCombo.addItem(rangement1);
+    for (AbstractPlace place : Program.getAbstractPlaces()) {
+      if (iPlace == null || !place.isSimplePlace()) {
+        complexPlaces.add(place);
+        abstractPlaceCombo.addItem(place);
       }
     }
   }
@@ -572,10 +572,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
               } else {
                 Program.getStorage().deleteWine(myCellarObject);
               }
-              ProgramPanels.getSearch().ifPresent(search -> {
-                search.removeObject(myCellarObject);
-                search.updateTable();
-              });
+              ProgramPanels.getSearch().ifPresent(search -> search.removeObject(myCellarObject));
               ProgramPanels.updateAllPanels();
             } catch (MyCellarException e) {
               Program.showException(e);

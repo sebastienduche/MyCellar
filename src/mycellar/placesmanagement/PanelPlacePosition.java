@@ -40,8 +40,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.9
- * @since 13/06/22
+ * @version 4.0
+ * @since 17/06/22
  */
 public class PanelPlacePosition extends JPanel implements IPlacePosition {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -140,10 +140,11 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
     setListenersEnabled(true);
     setBeforeLabelsVisible(false);
     place.setEnabled(false);
+    preview.setEnabled(false);
     if (abstractPlace != null) {
       place.setSelectedItem(abstractPlace);
     }
-    managePlaceCombos();
+    prefillPlace();
     setModificationDetectionActive(true);
   }
 
@@ -178,9 +179,8 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
     }
   }
 
-  private void managePlaceCombos() {
-    enableAll(false);
-    preview.setEnabled(false);
+  private void prefillPlace() {
+    enablePlaceSelection(false);
     if (place.getItemCount() == 2) {
       if (place.getSelectedIndex() == 0) {
         place.setSelectedIndex(1);
@@ -196,7 +196,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
       }
     }
     setLineColumnVisible(abstractPlace);
-    enableAll(true);
+    enablePlaceSelection(true);
   }
 
   private void setLineColumnVisible(AbstractPlace abstractPlace) {
@@ -240,10 +240,10 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
 
   public void setEditable(boolean editable) {
     this.editable = editable;
-    enableAll(editable);
+    enablePlaceSelection(editable);
   }
 
-  public void enableAll(boolean enable) {
+  public void enablePlaceSelection(boolean enable) {
     place.setEnabled(editable && enable && (place.getItemCount() > 2 || place.getSelectedIndex() != 1));
     numPlace.setEnabled(editable && enable && place.getSelectedIndex() > 0 && (numPlace.getItemCount() > 2 || numPlace.getSelectedIndex() != 1 || !((AbstractPlace) Objects.requireNonNull(place.getSelectedItem())).isSimplePlace()));
     line.setEnabled(editable && enable && numPlace.getSelectedIndex() > 0);
@@ -279,7 +279,8 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
         resetCombos();
         clearBeforeObjectLabels();
         clearLabelEnd();
-        managePlaceCombos();
+        preview.setEnabled(false);
+        prefillPlace();
         setListenersEnabled(true);
       }
     }.execute();
@@ -300,16 +301,14 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
         setListenersEnabled(false);
         resetCombos();
         initPlaceCombo();
-        managePlaceCombos();
+        preview.setEnabled(false);
+        prefillPlace();
+        updateMultiCheckboxState();
         setListenersEnabled(true);
         clearLabelEnd();
         Debug("Update view... Done");
       }
     }.execute();
-  }
-
-  public void selectPlace(MyCellarObject cellarObject) {
-    selectPlace(cellarObject.getPlacePosition());
   }
 
   @Override
@@ -318,7 +317,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
       @Override
       protected void done() {
         Debug("Select PlacePosition...");
-        enableAll(false);
+        enablePlaceSelection(false);
         setListenersEnabled(false);
         final AbstractPlace abstractPlace = placeRangement.getAbstractPlace();
         place.setSelectedItem(abstractPlace);
@@ -353,7 +352,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
           line.setSelectedItem(new ComboItem(placeRangement.getLine()));
           column.setSelectedItem(new ComboItem(placeRangement.getColumn()));
         }
-        enableAll(true);
+        enablePlaceSelection(true);
 
         labelLine.setVisible(!simplePlace);
         labelColumn.setVisible(!simplePlace);
@@ -408,7 +407,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
         Debug("Lieu_itemStateChanging...");
         AbstractPlace abstractPlace = (AbstractPlace) place.getSelectedItem();
         Objects.requireNonNull(abstractPlace);
-        enableAll(false);
+        enablePlaceSelection(false);
         labelExist.setText("");
         setLineColumnVisible(abstractPlace);
 
@@ -434,7 +433,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
           numPlace.addItem(new ComboItem(abstractPlace.getLastPartNumber()));
           labelNumPlace.setText(getLabel("MyCellarFields.NumPlace"));
         }
-        enableAll(true);
+        enablePlaceSelection(true);
         updateMultiCheckboxState();
         Debug("Lieu_itemStateChanging... Done");
       }
@@ -453,7 +452,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
       @Override
       protected void done() {
         Debug("Num_lieu_itemStateChanging...");
-        enableAll(false);
+        enablePlaceSelection(false);
         int numPlaceSelectedIndex = numPlace.getSelectedIndex();
         int placeSelectedIndex = place.getSelectedIndex();
 
@@ -471,7 +470,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
         } else {
           line.reset();
         }
-        enableAll(true);
+        enablePlaceSelection(true);
         updateMultiCheckboxState();
         Debug("Num_lieu_itemStateChanging... Done");
       }
@@ -496,7 +495,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
       @Override
       protected void done() {
         Debug("Line_itemStateChanging...");
-        enableAll(false);
+        enablePlaceSelection(false);
         int num_select = line.getSelectedIndex();
         int emplacement = numPlace.getSelectedIndex();
         int lieu_select = place.getSelectedIndex();
@@ -511,7 +510,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
         for (int i = 1; i <= nb_col; i++) {
           column.addItem(new ComboItem(i));
         }
-        enableAll(true);
+        enablePlaceSelection(true);
         updateMultiCheckboxState();
         Debug("Line_itemStateChanging... Done");
       }
@@ -596,7 +595,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
       return true;
     }
     if (MyCellarControl.hasInvalidNumLieuNumber(placeWithoutValidation.getPart(), placeWithoutValidation.isSimplePlace(), component)) {
-      enableAll(true);
+      enablePlaceSelection(true);
       return false;
     }
     if (placeWithoutValidation.isSimplePlace()) {
@@ -606,14 +605,14 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
       return true;
     }
     if (MyCellarControl.hasInvalidLineNumber(placeWithoutValidation.getLine(), component)) {
-      enableAll(true);
+      enablePlaceSelection(true);
       return false;
     }
     if (!columnComboVisible || isSeveralLocationStateLineChecked()) {
       return true;
     }
     if (MyCellarControl.hasInvalidColumnNumber(placeWithoutValidation.getColumn(), component)) {
-      enableAll(true);
+      enablePlaceSelection(true);
       return false;
     }
     return true;

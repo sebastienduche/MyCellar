@@ -69,8 +69,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.1
- * @since 13/06/22
+ * @version 5.2
+ * @since 17/06/22
  */
 public final class PlaceUtils {
 
@@ -86,10 +86,7 @@ public final class PlaceUtils {
       newObjectPreviousPlace.getAbstractPlace().clearStorage(newObject, newObjectPreviousPlace);
     }
 
-    ProgramPanels.getSearch().ifPresent(search -> {
-      search.removeObject(oldObject);
-      search.updateTable();
-    });
+    ProgramPanels.getSearch().ifPresent(search -> search.removeObject(oldObject));
 
     final AbstractPlace abstractPlace = newObject.getAbstractPlace();
     if (!abstractPlace.isSimplePlace()) {

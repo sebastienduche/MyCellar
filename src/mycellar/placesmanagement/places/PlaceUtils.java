@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.Program.getAbstractPlaces;
@@ -69,10 +70,12 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.2
- * @since 17/06/22
+ * @version 5.3
+ * @since 30/06/22
  */
 public final class PlaceUtils {
+
+  public static final SimplePlace STOCK_PLACE = new SimplePlaceBuilder(TEMP_PLACE).build();
 
   private PlaceUtils() {
   }
@@ -639,12 +642,26 @@ public final class PlaceUtils {
 
     final String placeName = name.strip();
     final boolean found = getAbstractPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
-    if (!found) {
-      if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
-        return true;
-      }
+    return found || placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR);
+  }
+
+  public static AbstractPlace getPlaceByName(final String name) {
+    final String placeName = name.strip();
+    if (TEMP_PLACE.equals(placeName)) {
+      return STOCK_PLACE;
     }
-    return found;
+    final List<AbstractPlace> new_list = Program.getAbstractPlaces().stream().filter(rangement -> filterOnAbstractPlaceName(rangement, placeName)).collect(Collectors.toList());
+    return new_list.get(0);
+  }
+
+  private static boolean filterOnAbstractPlaceName(AbstractPlace rangement, String placeName) {
+    return rangement.getName().equals(placeName) || isDefaultAbstractPlaceName(rangement, placeName);
+  }
+
+  private static boolean isDefaultAbstractPlaceName(AbstractPlace rangement, String placeName) {
+    return rangement.isDefaultPlace() &&
+        (rangement.getName().equals(DEFAULT_STORAGE_EN) || rangement.getName().equals(DEFAULT_STORAGE_FR)) &&
+        (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
 
   /**

@@ -78,8 +78,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.7
- * @since 17/06/22
+ * @version 5.8
+ * @since 30/06/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -721,7 +721,7 @@ class LabelTransferHandler extends TransferHandler {
       final RangementCell src = (RangementCell) support.getTransferable().getTransferData(localObjectFlavor);
       final MyCellarObjectDraggingLabel bouteilleLabel = new MyCellarObjectDraggingLabel(src.draggingLabel.getMyCellarObject());
       final MyCellarObject bouteille = bouteilleLabel.getMyCellarObject();
-      target.setPlace(Program.getPlaceByName(target.getPlaceName()));
+      target.setPlace(PlaceUtils.getPlaceByName(target.getPlaceName()));
       bouteille.setEmplacement(target.getPlaceName());
       bouteille.setLigne(target.getRow());
       bouteille.setColonne(target.getColumn());

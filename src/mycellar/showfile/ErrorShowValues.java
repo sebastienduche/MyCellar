@@ -30,8 +30,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 13/06/22
+ * @version 2.9
+ * @since 30/06/22
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -208,7 +208,7 @@ public class ErrorShowValues extends TableShowValues {
         if (column.equals(Column.PLACE)) {
           empl = (String) value;
           if (PlaceUtils.isExistingPlace(empl)) {
-            abstractPlace = Program.getPlaceByName(empl);
+            abstractPlace = PlaceUtils.getPlaceByName(empl);
           }
         } else if (column.equals(Column.NUM_PLACE)) {
           Integer i = parseIntOrError(value);

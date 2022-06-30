@@ -159,7 +159,7 @@ class TableShowValues extends AbstractTableModel {
         if (column == PLACE) {
           empl = (String) value;
           if (PlaceUtils.isExistingPlace(empl)) {
-            rangement = Program.getPlaceByName(empl);
+            rangement = PlaceUtils.getPlaceByName(empl);
           }
         } else if (column == NUM_PLACE) {
           Integer i = parseIntOrError(value);

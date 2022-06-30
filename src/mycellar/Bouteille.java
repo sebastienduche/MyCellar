@@ -43,8 +43,8 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.0
- * @since 13/06/22
+ * @version 8.1
+ * @since 30/06/22
  *
  * <p>Java class for anonymous complex type.
  *
@@ -129,9 +129,6 @@ public class Bouteille extends MyCellarObject implements Serializable {
   @XmlElement()
   private String lastModified;
 
-  /**
-   * Bouteille: Constructeur d'une bouteille vide.
-   */
   public Bouteille() {
     nom = type = emplacement = prix = comment = annee = maturity = parker = color = "";
     vignoble = null;
@@ -139,9 +136,6 @@ public class Bouteille extends MyCellarObject implements Serializable {
     lastModified = null;
   }
 
-  /**
-   * Bouteille: Constructeur par copie.
-   */
   public Bouteille(Bouteille b) {
     Objects.requireNonNull(b);
     id = Program.getNewID();
@@ -373,7 +367,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public AbstractPlace getAbstractPlace() {
-    return Program.getPlaceByName(emplacement);
+    return PlaceUtils.getPlaceByName(emplacement);
   }
 
   @Override

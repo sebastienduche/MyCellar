@@ -80,8 +80,6 @@ import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.CONFIG_INI;
 import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
-import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
-import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FRA;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
@@ -92,7 +90,6 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.PREVIEW_HTML;
 import static mycellar.ProgramConstants.PREVIEW_XML;
 import static mycellar.ProgramConstants.SLASH;
-import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.ProgramConstants.TIMESTAMP_PATTERN;
 import static mycellar.ProgramConstants.TYPES_MUSIC_XML;
 import static mycellar.ProgramConstants.TYPES_XML;
@@ -110,15 +107,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.7
- * @since 09/06/22
+ * @version 28.8
+ * @since 30/06/22
  */
 
 public final class Program {
 
   public static final SimplePlace DEFAULT_PLACE = new SimplePlaceBuilder("").setDefaultPlace(true).build();
   public static final SimplePlace EMPTY_PLACE = new SimplePlaceBuilder("").build();
-  public static final SimplePlace STOCK_PLACE = new SimplePlaceBuilder(TEMP_PLACE).build();
 
   public static final CountryJaxb FRANCE = new CountryJaxb(FRA, ProgramConstants.FRANCE);
   public static final CountryJaxb NO_COUNTRY = new CountryJaxb("");
@@ -547,25 +543,6 @@ public final class Program {
 
   public static boolean hasOnlyOnePlace() {
     return PLACES.size() == 1;
-  }
-
-  public static AbstractPlace getPlaceByName(final String name) {
-    final String placeName = name.strip();
-    if (TEMP_PLACE.equals(placeName)) {
-      return STOCK_PLACE;
-    }
-    final List<AbstractPlace> new_list = PLACES.stream().filter(rangement -> filterOnAbstractPlaceName(rangement, placeName)).collect(Collectors.toList());
-    return new_list.get(0);
-  }
-
-  private static boolean filterOnAbstractPlaceName(AbstractPlace rangement, String placeName) {
-    return rangement.getName().equals(placeName) || isDefaultAbstractPlaceName(rangement, placeName);
-  }
-
-  private static boolean isDefaultAbstractPlaceName(AbstractPlace rangement, String placeName) {
-    return rangement.isDefaultPlace() &&
-        (rangement.getName().equals(DEFAULT_STORAGE_EN) || rangement.getName().equals(DEFAULT_STORAGE_FR)) &&
-        (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
 
   public static void addPlace(AbstractPlace abstractPlace) {

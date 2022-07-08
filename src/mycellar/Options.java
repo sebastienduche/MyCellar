@@ -15,7 +15,7 @@ import java.awt.event.KeyEvent;
 
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.CHAR_O;
-import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.isVK_ENTER;
 import static mycellar.ProgramConstants.isVK_O;
 
@@ -27,8 +27,8 @@ import static mycellar.ProgramConstants.isVK_O;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 24/05/22
+ * @version 2.3
+ * @since 08/07/22
  */
 @Deprecated
 public final class Options extends JDialog {
@@ -48,7 +48,7 @@ public final class Options extends JDialog {
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     setTitle(title);
     MyCellarSimpleLabel titleLabel = new MyCellarSimpleLabel(title);
-    titleLabel.setFont(FONT_DIALOG_SMALL);
+    titleLabel.setFont(FONT_DIALOG_BOLD);
     titleLabel.setForeground(Color.red);
     titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
     MyCellarSimpleLabel definition = new MyCellarSimpleLabel(message);

@@ -22,7 +22,7 @@ import java.util.List;
 
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.CHAR_O;
-import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.isVK_ENTER;
 import static mycellar.ProgramConstants.isVK_O;
 
@@ -34,8 +34,8 @@ import static mycellar.ProgramConstants.isVK_O;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 24/05/22
+ * @version 3.1
+ * @since 08/07/22
  */
 public final class MyOptions extends JDialog {
 
@@ -61,7 +61,7 @@ public final class MyOptions extends JDialog {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(title);
     MyCellarSimpleLabel textControl1 = new MyCellarSimpleLabel(title);
-    textControl1.setFont(FONT_DIALOG_SMALL);
+    textControl1.setFont(FONT_DIALOG_BOLD);
     textControl1.setForeground(Color.red);
     textControl1.setText(title);
     textControl1.setHorizontalAlignment(SwingConstants.CENTER);
@@ -155,7 +155,7 @@ public final class MyOptions extends JDialog {
   }
 
   private void valider_actionPerformed(ActionEvent e) {
-    if (!Program.hasFile()) {
+    if (!Program.hasOpenedFile()) {
       throw new RuntimeException("Unable to save a property because no file is opened");
     }
     String defaut = null;

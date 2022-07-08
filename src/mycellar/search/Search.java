@@ -73,7 +73,7 @@ import static mycellar.MyCellarImage.SEARCH;
 import static mycellar.MyCellarImage.WINE;
 import static mycellar.MyCellarImage.WORK;
 import static mycellar.ProgramConstants.DASH;
-import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -86,8 +86,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.2
- * @since 17/06/22
+ * @version 24.3
+ * @since 08/07/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -199,10 +199,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       modifyButton.addActionListener(this::modif_actionPerformed);
       resultInfoLabel.setForeground(Color.red);
       resultInfoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-      resultInfoLabel.setFont(FONT_DIALOG_SMALL);
+      resultInfoLabel.setFont(FONT_DIALOG_BOLD);
 
       countLabel.setForeground(Color.red);
-      countLabel.setFont(FONT_DIALOG_SMALL);
+      countLabel.setFont(FONT_DIALOG_BOLD);
       objectFoundCountLabels.setHorizontalAlignment(SwingConstants.RIGHT);
 
       tabbedPane.addChangeListener((e) -> {

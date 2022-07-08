@@ -5,6 +5,7 @@ import mycellar.actions.OpenWorkSheetAction;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IPlacePosition;
+import mycellar.core.MyCellarFile;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarVersion;
 import mycellar.core.exceptions.MyCellarException;
@@ -96,8 +97,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.5
- * @since 13/06/22
+ * @version 32.6
+ * @since 08/07/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -284,7 +285,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
     // _________
 
     Program.initializeLanguageProgramType();
-    boolean hasFile = Program.hasFile();
+    boolean hasFile = Program.hasOpenedFile();
     if (!hasFile && !Program.getGlobalConfigBool(MyCellarSettings.GLOBAL_STARTUP, false)) {
       // Langue au premier demarrage
       String lang = System.getProperty("user.language");
@@ -459,7 +460,9 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   }
 
   private void openFile(String file) throws UnableToOpenFileException {
-    Program.openaFile(new File(file));
+    final MyCellarFile myCellarFile = new MyCellarFile(file);
+    myCellarFile.setNewFile(false);
+    Program.openaFile(myCellarFile);
     postOpenFile();
   }
 
@@ -1159,7 +1162,7 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
 //				return;
 //			}
 //			Program.putGlobalConfigString(PROGRAM_TYPE, panelObjectType.getSelectedType().name());
-      Program.newFile();
+      Program.createNewFile();
       postOpenFile();
       Debug("newFileAction: Creating a new file OK");
     }

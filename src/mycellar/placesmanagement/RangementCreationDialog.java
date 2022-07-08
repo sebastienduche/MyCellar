@@ -20,7 +20,7 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.Map;
 
-import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
@@ -30,8 +30,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 01/06/22
+ * @version 1.2
+ * @since 08/07/22
  */
 public final class RangementCreationDialog extends JDialog {
 
@@ -53,7 +53,7 @@ public final class RangementCreationDialog extends JDialog {
     JTable table = new JTable(model);
     end.setHorizontalAlignment(SwingConstants.CENTER);
     end.setForeground(Color.red);
-    end.setFont(FONT_DIALOG_SMALL);
+    end.setFont(FONT_DIALOG_BOLD);
     add(new JScrollPane(table), "grow, wrap");
     add(end, "grow, wrap");
 

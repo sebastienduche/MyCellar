@@ -56,7 +56,7 @@ import java.util.Map;
 
 import static javax.swing.border.EtchedBorder.RAISED;
 import static mycellar.MyCellarUtils.toCleanString;
-import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -70,8 +70,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.2
- * @since 10/06/22
+ * @version 17.3
+ * @since 08/07/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -128,7 +128,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     cbg.add(notAllLinesSameRadio);
     allLinesSameRadio.addItemListener((e) -> model.setSameColumnNumber(allLinesSameRadio.isSelected()));
     labelCreated.setForeground(Color.red);
-    labelCreated.setFont(FONT_DIALOG_SMALL);
+    labelCreated.setFont(FONT_DIALOG_BOLD);
     labelCreated.setText("");
     labelCreated.setHorizontalAlignment(SwingConstants.CENTER);
 

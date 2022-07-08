@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static mycellar.ProgramConstants.FONT_DIALOG;
+import static mycellar.ProgramConstants.FONT_DIALOG_BIG_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -34,8 +34,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.9
- * @since 13/06/22
+ * @version 4.0
+ * @since 08/07/22
  */
 
 final class MoveLine extends JDialog {
@@ -52,7 +52,7 @@ final class MoveLine extends JDialog {
     setLayout(new MigLayout("", "[]", "[]20px[]10px[]10px[][]20px[]10px"));
     MyCellarLabel titre = new MyCellarLabel("Main.Move");
     titre.setForeground(Color.red);
-    titre.setFont(FONT_DIALOG);
+    titre.setFont(FONT_DIALOG_BIG_BOLD);
     titre.setHorizontalAlignment(SwingConstants.CENTER);
     label_end.setForeground(Color.red);
     label_end.setHorizontalAlignment(SwingConstants.CENTER);

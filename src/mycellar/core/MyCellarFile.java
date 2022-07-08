@@ -20,6 +20,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import static mycellar.Program.getWorkDir;
 import static mycellar.ProgramConstants.UNTITLED1_SINFO;
 
 /**
@@ -29,18 +30,30 @@ import static mycellar.ProgramConstants.UNTITLED1_SINFO;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 08/04/22
+ * @version 0.5
+ * @since 08/07/22
  */
 public class MyCellarFile {
 
-  private final MyLinkedHashMap caveConfig;
+  private final MyLinkedHashMap caveConfig = new MyLinkedHashMap();
   private File file;
   private boolean valid = false;
+  private boolean newFile = false;
 
-  public MyCellarFile(File file) {
-    this.file = file;
-    caveConfig = new MyLinkedHashMap();
+  public MyCellarFile() {
+    file = new File(getWorkDir(true) + UNTITLED1_SINFO);
+  }
+
+  public MyCellarFile(String file) {
+    this.file = new File(file);
+  }
+
+  public void setNewFile(boolean newFile) {
+    this.newFile = newFile;
+  }
+
+  public boolean isNewFile() {
+    return newFile;
   }
 
   private static void Debug(String sText) {
@@ -55,7 +68,7 @@ public class MyCellarFile {
    */
   private static void zipDir(File fileName) {
 
-    final String workDir = Program.getWorkDir(false);
+    final String workDir = getWorkDir(false);
     Debug("zipDir: Zipping in " + workDir + " with archive " + fileName);
     try {
       // creation d'un flux d'ecriture sur fichier
@@ -79,7 +92,7 @@ public class MyCellarFile {
           LinkedList<String> zipEntryList = new LinkedList<>();
           int BUFFER = 2048;
           for (String file : files) {
-            final String workDir1 = Program.getWorkDir(true);
+            final String workDir1 = getWorkDir(true);
             f = new File(workDir1 + file);
             if (f.isDirectory() || UNTITLED1_SINFO.compareTo(file) == 0) {
               continue;
@@ -127,7 +140,7 @@ public class MyCellarFile {
     }
     try {
       // Dezippage
-      final String workDir = Program.getWorkDir(false);
+      final String workDir = getWorkDir(false);
       boolean unzipOK = unzipDir(workDir);
       final String absolutePath = file.getAbsolutePath();
       Debug("Unzipping " + absolutePath + " to " + workDir + (unzipOK ? " OK" : " KO"));

@@ -12,6 +12,7 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.common.MyCellarFields;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.history.History;
@@ -670,6 +671,15 @@ public final class Program {
     Debug("Program: ----------------");
     Debug("Program: Open a File Done");
     Debug("Program: ----------------");
+
+    if (Program.isWineType()) {
+      Program.getStorage().getAllList()
+          .stream()
+          .map(o -> (Bouteille) o)
+          .filter(bouteille -> BottleColor.getColor(bouteille.getColor()).equals(BottleColor.NONE))
+          .forEach(bouteille ->
+              System.out.println(bouteille.getColor() + ": " + bouteille.getNom()));
+    }
   }
 
   static void closeFile() {

@@ -107,8 +107,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.9
- * @since 14/07/22
+ * @version 29.0
+ * @since 06/09/22
  */
 
 public final class Program {
@@ -645,6 +645,22 @@ public final class Program {
     if (isWineType()) {
       MyCellarBottleContenance.load();
       CountryVignobleController.load();
+
+      Debug("Fixing the color of the bottles");
+      getStorage().getAllList()
+          .stream()
+          .map(o -> (Bouteille) o)
+          .filter(bouteille -> BottleColor.getColor(bouteille.getColor()).equals(BottleColor.NONE))
+          .forEach(bouteille -> {
+            final String color = bouteille.getColor();
+            if ("red".equalsIgnoreCase(color) || "rouge".equalsIgnoreCase(color)) {
+              bouteille.setColor(BottleColor.RED.name());
+            } else if ("white".equalsIgnoreCase(color) || "blanc".equalsIgnoreCase(color)) {
+              bouteille.setColor(BottleColor.WHITE.name());
+            } else if ((color != null && color.toLowerCase().startsWith("ros")) || "pink".equalsIgnoreCase(color)) {
+              bouteille.setColor(BottleColor.PINK.name());
+            }
+          });
     } else if (isMusicType()) {
       MyCellarMusicSupport.load();
     }
@@ -671,15 +687,6 @@ public final class Program {
     Debug("Program: ----------------");
     Debug("Program: Open a File Done");
     Debug("Program: ----------------");
-
-    if (Program.isWineType()) {
-      Program.getStorage().getAllList()
-          .stream()
-          .map(o -> (Bouteille) o)
-          .filter(bouteille -> BottleColor.getColor(bouteille.getColor()).equals(BottleColor.NONE))
-          .forEach(bouteille ->
-              System.out.println(bouteille.getColor() + ": " + bouteille.getNom()));
-    }
   }
 
   static void closeFile() {

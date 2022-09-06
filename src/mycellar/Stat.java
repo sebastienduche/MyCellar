@@ -32,8 +32,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -67,8 +69,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelForType;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.8
- * @since 02/09/22
+ * @version 9.9
+ * @since 06/09/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -123,6 +125,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listChart.addItem(getLabel("Stats.ChartPie"));
     listChart.addItemListener(this::chartItemStateChanged);
     listChart.setEnabled(listStatsType.getSelectedIndex() != 0);
+
+    panelOther.setLayout(new MigLayout("", "grow", "grow"));
 
     setLayout(new MigLayout("", "[][][grow]", "[][][]20px[grow][][]"));
     add(new MyCellarLabel("Stats.Type"));
@@ -360,13 +364,15 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   private void displayByObject() {
     Debug("By object");
     panel.removeAll();
+    panelOther.removeAll();
     options.setEnabled(false);
     moy.setText("");
 
     panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Stats.Items", LabelProperty.PLURAL), "")));
     panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getNbItems())), "span 2, align right, wrap");
     panel.add(new MyCellarSimpleLabel(getLabel("Stats.UniqueItems", LabelProperty.PLURAL)));
-    panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getStorage().getDistinctNames().size())), "span 2, align right, gapbottom 10px, wrap");
+    final List<String> distinctNames = Program.getStorage().getDistinctNames().stream().sorted().collect(Collectors.toList());
+    panel.add(new MyCellarSimpleLabel(Integer.toString(distinctNames.size())), "span 2, align right, gapbottom 10px, wrap");
     if (Program.isWineType()) {
       panel.add(new MyCellarSimpleLabel(getLabel("Stats.ByColor")), "wrap");
       final Map<String, Long> collect = Program.getStorage().getAllList()
@@ -382,6 +388,18 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
         panel.add(new MyCellarSimpleLabel(Long.toString(value)), "span 2, align right, wrap");
       });
     }
+    String[][] names = new String[distinctNames.size()][1];
+    for (int i = 0; i < distinctNames.size(); i++) {
+      names[i][0] = distinctNames.get(i);
+    }
+    final DefaultTableModel defaultTableModel = new DefaultTableModel(names, new String[]{getLabel("Main.Name")}) {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        return false;
+      }
+    };
+    final JTable table = new JTable(defaultTableModel);
+    panelOther.add(new JScrollPane(table), "grow");
     panel.repaint();
     panelChart.setVisible(false);
     panelOther.setVisible(true);

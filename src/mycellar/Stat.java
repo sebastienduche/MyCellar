@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarEnum;
 import mycellar.core.MyCellarObject;
@@ -36,6 +37,8 @@ import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -69,8 +72,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelForType;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.9
- * @since 06/09/22
+ * @version 10.0
+ * @since 07/09/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -371,8 +374,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Stats.Items", LabelProperty.PLURAL), "")));
     panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getNbItems())), "span 2, align right, wrap");
     panel.add(new MyCellarSimpleLabel(getLabel("Stats.UniqueItems", LabelProperty.PLURAL)));
-    final List<String> distinctNames = Program.getStorage().getDistinctNames().stream().sorted().collect(Collectors.toList());
-    panel.add(new MyCellarSimpleLabel(Integer.toString(distinctNames.size())), "span 2, align right, gapbottom 10px, wrap");
+    panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getStorage().getBottlesCount())), "span 2, align right, gapbottom 10px, wrap");
     if (Program.isWineType()) {
       panel.add(new MyCellarSimpleLabel(getLabel("Stats.ByColor")), "wrap");
       final Map<String, Long> collect = Program.getStorage().getAllList()
@@ -388,17 +390,29 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
         panel.add(new MyCellarSimpleLabel(Long.toString(value)), "span 2, align right, wrap");
       });
     }
-    String[][] names = new String[distinctNames.size()][1];
-    for (int i = 0; i < distinctNames.size(); i++) {
-      names[i][0] = distinctNames.get(i);
+
+    // List of unique names and count
+    final Map<String, Long> uniqueNamesCount = Program.getStorage().getAllList()
+        .stream()
+        .collect(Collectors.groupingBy(IMyCellarObject::getNom, Collectors.counting()));
+    final Object[] sortedKeys = uniqueNamesCount.entrySet().stream().sorted(Map.Entry.comparingByKey()).toArray();
+    String[][] tableValues = new String[sortedKeys.length][2];
+    for (int i = 0; i < sortedKeys.length; i++) {
+      Map.Entry<String, Long> entry = (Map.Entry<String, Long>) sortedKeys[i];
+      tableValues[i][0] = entry.getKey();
+      tableValues[i][1] = entry.getValue().toString();
     }
-    final DefaultTableModel defaultTableModel = new DefaultTableModel(names, new String[]{getLabel("Main.Name")}) {
+    final DefaultTableModel defaultTableModel = new DefaultTableModel(tableValues, new String[]{getLabel("Main.Name"), getLabel("Stats.Count")}) {
       @Override
       public boolean isCellEditable(int row, int column) {
         return false;
       }
     };
     final JTable table = new JTable(defaultTableModel);
+    final TableColumnModel columnModel = table.getColumnModel();
+    final TableColumn column = columnModel.getColumn(1);
+    column.setMinWidth(50);
+    column.setMaxWidth(50);
     panelOther.add(new JScrollPane(table), "grow");
     panel.repaint();
     panelChart.setVisible(false);

@@ -47,8 +47,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.7
- * @since 17/06/22
+ * @version 31.8
+ * @since 07/09/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -332,7 +332,12 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           MyCellarObject myCellarObjectFound = null;
           if (!isModify || panelPlace.isPlaceModified()) { //Si Ajout bouteille ou modification du lieu
             Debug("Adding bottle or modifying place");
-            myCellarObjectFound = complexPlace.getObject(lieu_num_selected - 1, ligne - 1, colonne - 1).orElse(null);
+            myCellarObjectFound = complexPlace.getObject(
+                new PlacePosition.PlacePositionBuilder(complexPlace)
+                    .withNumPlace(lieu_num_selected)
+                    .withLine(ligne)
+                    .withColumn(colonne)
+                    .build()).orElse(null);
             if (myCellarObjectFound == null) {
               nb_free_space = complexPlace.getCountFreeCellFrom(lieu_num_selected - 1, ligne - 1, colonne - 1);
             }

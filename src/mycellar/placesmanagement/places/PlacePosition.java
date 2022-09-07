@@ -9,8 +9,8 @@ import mycellar.Program;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 13/06/22
+ * @version 1.0
+ * @since 07/09/22
  */
 
 public class PlacePosition {
@@ -108,13 +108,28 @@ public class PlacePosition {
       return this;
     }
 
+    public PlacePositionBuilder withNumPlace1Based(int numPlace) {
+      this.numPlace = numPlace + 1;
+      return this;
+    }
+
     public PlacePositionBuilder withLine(int line) {
       this.line = line;
       return this;
     }
 
+    public PlacePositionBuilder withLine1Based(int line) {
+      this.line = line + 1;
+      return this;
+    }
+
     public PlacePositionBuilder withColumn(int column) {
       this.column = column;
+      return this;
+    }
+
+    public PlacePositionBuilder withColumn1Based(int column) {
+      this.column = column + 1;
       return this;
     }
 

@@ -28,6 +28,7 @@ import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.Part;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.Row;
 import mycellar.placesmanagement.places.SimplePlace;
@@ -70,8 +71,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.3
- * @since 08/07/22
+ * @version 17.4
+ * @since 07/09/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -467,7 +468,11 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
                   Debug("ERROR: canContinue false, skipping column");
                   break;
                 }
-                if (complexPlace.getObject(i, j, k).isPresent()) {
+                if (complexPlace.getObject(new PlacePosition.PlacePositionBuilder(complexPlace)
+                    .withNumPlace1Based(i)
+                    .withLine1Based(j)
+                    .withColumn1Based(k)
+                    .build()).isPresent()) {
                   canContinue = false;
                   Debug("ERROR: Unable to reduce the size of the number of column");
                   Erreur.showSimpleErreur(MessageFormat.format(getError("Error.removeNotEmptyShelveLineColumns"), Integer.toString(j + 1), Integer.toString(i + 1)));

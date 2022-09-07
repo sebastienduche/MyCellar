@@ -34,8 +34,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.0
- * @since 08/07/22
+ * @version 4.1
+ * @since 07/09/22
  */
 
 final class MoveLine extends JDialog {
@@ -120,7 +120,11 @@ final class MoveLine extends JDialog {
     }
     List<MyCellarObject> notMoved = new ArrayList<>();
     for (int i = 0; i < nOldColumnCount; i++) {
-      complexPlace.getObject(nNumLieu, nOldSelected, i).ifPresent(myCellarObject -> {
+      complexPlace.getObject(new PlacePosition.PlacePositionBuilder(complexPlace)
+          .withNumPlace1Based(nNumLieu)
+          .withLine1Based(nOldSelected)
+          .withColumn1Based(i)
+          .build()).ifPresent(myCellarObject -> {
         Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
         try {
           complexPlace.moveToLine(myCellarObject, new_line_cbx.getSelectedIndex());

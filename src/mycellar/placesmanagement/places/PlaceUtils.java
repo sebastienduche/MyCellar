@@ -70,8 +70,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.3
- * @since 30/06/22
+ * @version 5.4
+ * @since 07/09/22
  */
 public final class PlaceUtils {
 
@@ -313,11 +313,11 @@ public final class PlaceUtils {
       return false;
     }
 
-    //Recuperation des colonnes a exporter
+    // Columns to export
     List<MyCellarFields> fields = MyCellarFields.getFieldsList();
-    int i = 0;
     assert fields != null;
     EnumMap<MyCellarFields, Boolean> mapCle = new EnumMap<>(MyCellarFields.class);
+    int i = 0;
     for (MyCellarFields field : fields) {
       mapCle.put(field, Program.getCaveConfigBool(MyCellarSettings.SIZE_COL + i + "EXPORT_XLS", true));
       i++;
@@ -549,7 +549,11 @@ public final class PlaceUtils {
               final SXSSFRow rowBottle = sheet.createRow(nLine);
               for (int l = 1; l <= nCol; l++) {
                 int finalL = l;
-                place.getObject(j - 1, k - 1, l - 1).ifPresent(bouteille -> {
+                place.getObject(new PlacePosition.PlacePositionBuilder(place)
+                    .withNumPlace(j)
+                    .withLine(k)
+                    .withColumn(l)
+                    .build()).ifPresent(bouteille -> {
                   final Cell cellBottle = rowBottle.createCell(finalL);
                   cellBottle.setCellValue(getLabelToDisplay(bouteille));
                   cellBottle.setCellStyle(cellStyle);

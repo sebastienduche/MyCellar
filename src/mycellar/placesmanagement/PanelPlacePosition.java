@@ -40,8 +40,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.0
- * @since 17/06/22
+ * @version 4.1
+ * @since 07/09/22
  */
 public class PanelPlacePosition extends JPanel implements IPlacePosition {
   protected static final ComboItem NONE = new ComboItem(-1, "");
@@ -541,7 +541,11 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
 
         if (checkExist) {
           ComplexPlace complexPlace = (ComplexPlace) place.getItemAt(nPlace);
-          complexPlace.getObject(nNumLieu - 1, nLine - 1, nColumn - 1)
+          complexPlace.getObject(new PlacePosition.PlacePositionBuilder(complexPlace)
+                  .withNumPlace(nNumLieu)
+                  .withLine(nLine)
+                  .withColumn(nColumn)
+                  .build())
               .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(getLabel("PanelPlace.CellUsedBy"), MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom()))));
         }
         Debug("Column_itemStateChanging... Done");

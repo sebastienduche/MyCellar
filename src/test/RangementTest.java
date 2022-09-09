@@ -450,7 +450,6 @@ class RangementTest {
     b.setNom("B12");
     updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", complexPlace2x2_3x22545);
     assertEquals(1, complexPlace2x2_3x22545.getNbCaseUseInLine(1, 0));
-    assertEquals(b, complexPlace2x2_3x22545.getObject(1, 0, 1).get());
     assertEquals(b, complexPlace2x2_3x22545.getObject(b.getPlacePosition()).get());
     complexPlace2x2_3x22545.removeObject(b);
     return b;
@@ -470,15 +469,17 @@ class RangementTest {
     Bouteille b = new Bouteille();
     b.setNom("B13");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", complexPlace1x3x3);
-    assertEquals(b, complexPlace1x3x3.getObject(0, 0, 1).get());
     assertEquals(b, complexPlace1x3x3.getObject(b.getPlacePosition()).get());
     Bouteille b1 = new Bouteille();
     b1.setNom("B14");
     updateToComplexPlace1x3x3(b1, 1, 2);
-    assertEquals(b1, complexPlace1x3x3.getObject(0, 0, 1).get());
     assertEquals(b1, complexPlace1x3x3.getObject(b1.getPlacePosition()).get());
     complexPlace1x3x3.clearStorage(b1);
-    assertTrue(complexPlace1x3x3.getObject(0, 0, 1).isEmpty());
+    assertTrue(complexPlace1x3x3.getObject(new PlacePosition.PlacePositionBuilder(complexPlace1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(2)
+        .build()).isEmpty());
     complexPlace1x3x3.removeObject(b);
   }
 
@@ -487,10 +488,22 @@ class RangementTest {
     Bouteille b = new Bouteille();
     b.setNom("B15");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", complexPlace1x3x3);
-    assertEquals(b, complexPlace1x3x3.getObject(0, 0, 1).get());
+    assertEquals(b, complexPlace1x3x3.getObject(new PlacePosition.PlacePositionBuilder(complexPlace1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(2)
+        .build()).get());
     complexPlace1x3x3.moveToLine(b, 2);
-    assertTrue(complexPlace1x3x3.getObject(0, 0, 1).isEmpty());
-    assertEquals(b, complexPlace1x3x3.getObject(0, 1, 1).get());
+    assertTrue(complexPlace1x3x3.getObject(new PlacePosition.PlacePositionBuilder(complexPlace1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(2)
+        .build()).isEmpty());
+    assertEquals(b, complexPlace1x3x3.getObject(new PlacePosition.PlacePositionBuilder(complexPlace1x3x3)
+        .withNumPlace(1)
+        .withLine(2)
+        .withColumn(2)
+        .build()).get());
   }
 
   @Test
@@ -498,20 +511,32 @@ class RangementTest {
     Bouteille b = new Bouteille();
     b.setNom("B16");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", complexPlace1x3x3);
-    assertEquals(b, complexPlace1x3x3.getObject(0, 0, 1).get());
+    assertEquals(b, complexPlace1x3x3.getObject(new PlacePosition.PlacePositionBuilder(complexPlace1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(2)
+        .build()).get());
     assertEquals(b, complexPlace1x3x3.getObject(b.getPlacePosition()).get());
     PlacePosition placePosition = new PlacePosition.PlacePositionBuilder(complexPlace1x3x3).withNumPlace(1).withLine(1).withColumn(2).build();
     assertEquals(b, complexPlace1x3x3.getObject(placePosition).get());
     Bouteille b1 = new Bouteille();
     b.setNom("B17");
     updateToArmoire(b1, 2, 2, 3, "armoire2x2_3x22545", complexPlace2x2_3x22545);
-    assertEquals(b1, complexPlace2x2_3x22545.getObject(1, 1, 2).get());
+    assertEquals(b1, complexPlace2x2_3x22545.getObject(new PlacePosition.PlacePositionBuilder(complexPlace2x2_3x22545)
+        .withNumPlace(2)
+        .withLine(2)
+        .withColumn(3)
+        .build()).get());
     assertEquals(b1, complexPlace2x2_3x22545.getObject(b1.getPlacePosition()).get());
     placePosition = new PlacePosition.PlacePositionBuilder(complexPlace2x2_3x22545).withNumPlace(2).withLine(2).withColumn(3).build();
     assertEquals(b1, complexPlace2x2_3x22545.getObject(placePosition).get());
     complexPlace1x3x3.clearStorage(b);
     complexPlace2x2_3x22545.clearStorage(b1);
-    assertTrue(complexPlace1x3x3.getObject(0, 0, 1).isEmpty());
+    assertTrue(complexPlace1x3x3.getObject(new PlacePosition.PlacePositionBuilder(complexPlace1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(2)
+        .build()).isEmpty());
     assertTrue(complexPlace1x3x3.getObject(b.getPlacePosition()).isEmpty());
     assertTrue(complexPlace2x2_3x22545.getObject(b1.getPlacePosition()).isEmpty());
     assertTrue(complexPlace2x2_3x22545.getObject(placePosition).isEmpty());
@@ -522,15 +547,31 @@ class RangementTest {
     Bouteille b = new Bouteille();
     b.setNom("B18");
     updateToArmoire(b, 1, 1, 2, "armoire1x3x3", complexPlace1x3x3);
-    assertEquals(b, complexPlace1x3x3.getObject(0, 0, 1).get());
+    assertEquals(b, complexPlace1x3x3.getObject(new PlacePosition.PlacePositionBuilder(complexPlace1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(2)
+        .build()).get());
     Bouteille b1 = new Bouteille();
     b1.setNom("B19");
     updateToArmoire(b1, 2, 2, 3, "armoire2x2_3x22545", complexPlace2x2_3x22545);
-    assertEquals(b1, complexPlace2x2_3x22545.getObject(1, 1, 2).get());
+    assertEquals(b1, complexPlace2x2_3x22545.getObject(new PlacePosition.PlacePositionBuilder(complexPlace2x2_3x22545)
+        .withNumPlace(2)
+        .withLine(2)
+        .withColumn(3)
+        .build()).get());
     complexPlace1x3x3.clearStorage(b);
     complexPlace2x2_3x22545.clearStorage(b1);
-    assertTrue(complexPlace1x3x3.getObject(0, 0, 1).isEmpty());
-    assertTrue(complexPlace2x2_3x22545.getObject(1, 1, 2).isEmpty());
+    assertTrue(complexPlace1x3x3.getObject(new PlacePosition.PlacePositionBuilder(complexPlace1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(2)
+        .build()).isEmpty());
+    assertTrue(complexPlace2x2_3x22545.getObject(new PlacePosition.PlacePositionBuilder(complexPlace2x2_3x22545)
+        .withNumPlace(2)
+        .withLine(2)
+        .withColumn(3)
+        .build()).isEmpty());
     complexPlace2x2_3x22545.removeObject(b1);
     complexPlace1x3x3.removeObject(b);
   }

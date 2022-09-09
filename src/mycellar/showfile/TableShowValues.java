@@ -8,6 +8,7 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 
@@ -31,8 +32,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.0
- * @since 01/06/22
+ * @version 6.1
+ * @since 09/09/22
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -209,7 +210,11 @@ class TableShowValues extends AbstractTableModel {
           if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
             if (!rangement.isSimplePlace()) {
-              bTemp = rangement.getObject(num_empl - 1, line - 1, column1 - 1);
+              bTemp = rangement.getObject(new PlacePosition.PlacePositionBuilder(rangement)
+                  .withNumPlace1Based(num_empl)
+                  .withLine1Based(line)
+                  .withColumn1Based(column1)
+                  .build());
             }
             if (bTemp.isPresent()) {
               final IMyCellarObject bouteille = bTemp.get();

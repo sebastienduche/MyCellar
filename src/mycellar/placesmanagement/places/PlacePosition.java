@@ -9,8 +9,8 @@ import mycellar.Program;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 07/09/22
+ * @version 1.1
+ * @since 09/09/22
  */
 
 public class PlacePosition {
@@ -54,6 +54,9 @@ public class PlacePosition {
    * Zero based
    */
   public int getPlaceNumIndex() {
+    if (part == -1) {
+      return part;
+    }
     if (isSimplePlace()) {
       return part - ((SimplePlace) abstractPlace).getPartNumberIncrement();
     }

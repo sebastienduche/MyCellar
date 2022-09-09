@@ -96,12 +96,24 @@ class PlacePositionTest {
     b2.setColonne(1);
     PlaceUtils.replaceMyCellarObject(b1, b2, oldb2Place);
     assertEquals(1, armoire1x3x3.getTotalCountCellUsed());
-    assertEquals("b2", armoire1x3x3.getObject(0, 0, 0).get().getNom());
-    assertTrue(armoire1x3x3.getObject(0, 0, 1).isEmpty());
+    assertEquals("b2", armoire1x3x3.getObject(new PlacePosition.PlacePositionBuilder(armoire1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(1)
+        .build()).get().getNom());
+    assertTrue(armoire1x3x3.getObject(new PlacePosition.PlacePositionBuilder(armoire1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(2)
+        .build()).isEmpty());
 
     armoire1x3x3.removeObject(b2);
     assertEquals(0, armoire1x3x3.getTotalCountCellUsed());
-    assertTrue(armoire1x3x3.getObject(0, 0, 0).isEmpty());
+    assertTrue(armoire1x3x3.getObject(new PlacePosition.PlacePositionBuilder(armoire1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(1)
+        .build()).isEmpty());
   }
 
   @Test
@@ -125,11 +137,23 @@ class PlacePositionTest {
     PlaceUtils.replaceMyCellarObject(b1, b2, oldb2Place);
     assertEquals(1, armoire1x3x3.getTotalCountCellUsed());
     assertEquals(0, armoire2x3x3.getTotalCountCellUsed());
-    assertEquals("b2", armoire1x3x3.getObject(0, 0, 0).get().getNom());
-    assertTrue(armoire2x3x3.getObject(0, 0, 0).isEmpty());
+    assertEquals("b2", armoire1x3x3.getObject(new PlacePosition.PlacePositionBuilder(armoire1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(1)
+        .build()).get().getNom());
+    assertTrue(armoire2x3x3.getObject(new PlacePosition.PlacePositionBuilder(armoire2x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(1)
+        .build()).isEmpty());
 
     armoire1x3x3.removeObject(b2);
     assertEquals(0, armoire1x3x3.getTotalCountCellUsed());
-    assertTrue(armoire1x3x3.getObject(0, 0, 0).isEmpty());
+    assertTrue(armoire1x3x3.getObject(new PlacePosition.PlacePositionBuilder(armoire1x3x3)
+        .withNumPlace(1)
+        .withLine(1)
+        .withColumn(1)
+        .build()).isEmpty());
   }
 }

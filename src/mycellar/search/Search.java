@@ -86,8 +86,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.3
- * @since 08/07/22
+ * @version 24.4
+ * @since 09/09/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -597,7 +597,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         for (int j = lineStart; j < lineEnd; j++) {
           int nb_colonnes = complexPlace.getColumnCountAt(i, j);
           for (int k = 0; k < nb_colonnes; k++) {
-            MyCellarObject myCellarObject = complexPlace.getObject(i, j, k).orElse(null);
+            MyCellarObject myCellarObject = complexPlace.getObject(new PlacePosition.PlacePositionBuilder(complexPlace)
+                .withNumPlace1Based(i)
+                .withLine1Based(j)
+                .withColumn1Based(1)
+                .build()).orElse(null);
             if (myCellarObject != null) {
               if (searchTableModel.doesNotContain(myCellarObject)) {
                 myCellarObjectList.add(myCellarObject);
@@ -619,7 +623,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     int nb_empl_cave = simplePlace.getPartCount();
     int boucle_toutes;
     int start_boucle;
-    if (lieu_num == 0) {
+    if (lieu_num == -1) {
       start_boucle = 1;
       boucle_toutes = nb_empl_cave + 1;
     } else {
@@ -629,9 +633,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
     List<MyCellarObject> myCellarObjectList = new LinkedList<>();
     for (int part = start_boucle; part < boucle_toutes; part++) {
-      int totalCellUsed = simplePlace.getCountCellUsed(part - 1);
+      int totalCellUsed = simplePlace.getCountCellUsed(part);
       for (int i = 0; i < totalCellUsed; i++) {
-        MyCellarObject b = simplePlace.getObjectAt(part - 1, i);
+        MyCellarObject b = simplePlace.getObjectAt(part, i);
         if (b != null) {
           if (searchTableModel.doesNotContain(b)) {
             myCellarObjectList.add(b);
@@ -639,10 +643,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             alreadyFoundItems = true;
           }
         } else {
-          Debug("No object found in " + simplePlace.getName() + ": x-1=" + (part - 1) + " l+1=" + (i + 1));
+          Debug("No object found in " + simplePlace.getName() + ": part=" + part + " index=" + i);
         }
-      } //Fin for
-    } //Fin for
+      }
+    }
     return myCellarObjectList;
   }
 

@@ -71,8 +71,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.4
- * @since 07/09/22
+ * @version 17.5
+ * @since 09/09/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -569,12 +569,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     } else {
       Debug("Creating complex place...");
       for (Part p : listPart) {
-        if (p.getRows().isEmpty()) {
+        if (bResul && p.getRows().isEmpty()) {
           Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNumber()));
           bResul = false;
         }
         for (Row r : p.getRows()) {
-          if (r.getColumnCount() == 0) {
+          if (bResul && r.getColumnCount() == 0) {
             Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNumber()));
             bResul = false;
           }
@@ -683,7 +683,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (!toCleanString(nom_obj.getText()).isEmpty()) {
-      String label = modify ? getLabel("Error.storageModificationIncompleted") : getError("Error.storageCreationIncompleted");
+      String label = modify ? getError("Error.storageModificationIncompleted") : getError("Error.storageCreationIncompleted");
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }

@@ -32,8 +32,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.1
- * @since 09/09/22
+ * @version 6.2
+ * @since 13/09/22
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -198,16 +198,16 @@ class TableShowValues extends AbstractTableModel {
         if (!bError && (b.getEmplacement().compareTo(empl) != 0 || b.getNumLieu() != num_empl || b.getLigne() != line || b.getColonne() != column1)) {
           // Controle de l'emplacement de la bouteille
           int tmpNumEmpl = num_empl;
-          int tmpLine = line;
-          int tmpCol = column1;
           if (!rangement.isSimplePlace()) {
             tmpNumEmpl--;
-            tmpCol--;
-            tmpLine--;
           } else {
             tmpNumEmpl -= ((SimplePlace) rangement).getPartNumberIncrement();
           }
-          if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
+          if (rangement.canAddObjectAt(new PlacePosition.PlacePositionBuilder(rangement)
+              .withNumPlace(tmpNumEmpl)
+              .withLine(line - 1)
+              .withColumn(column1 - 1).build())) {
+//          if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
             if (!rangement.isSimplePlace()) {
               bTemp = rangement.getObject(new PlacePosition.PlacePositionBuilder(rangement)

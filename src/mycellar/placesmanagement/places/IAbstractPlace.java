@@ -13,8 +13,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 14/06/22
+ * @version 0.7
+ * @since 13/09/22
  */
 public interface IAbstractPlace {
 
@@ -37,12 +37,6 @@ public interface IAbstractPlace {
   public void updateToStock(MyCellarObject myCellarObject);
 
   public boolean canAddObjectAt(PlacePosition place);
-
-  @Deprecated
-  public boolean canAddObjectAt(int tmpNumEmpl, int tmpLine, int tmpCol);
-
-  @Deprecated
-  public Optional<MyCellarObject> getObject(int num_empl, int line, int column);
 
   public Optional<MyCellarObject> getObject(PlacePosition place);
 

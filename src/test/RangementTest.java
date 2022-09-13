@@ -596,9 +596,8 @@ class RangementTest {
     b.setNom("B20");
     b.setNumLieu(1);
     caisse.addObject(b);
-    assertFalse(caisse.canAddObjectAt(0, 0, 0));
-    assertTrue(caisse.canAddObjectAt(1, 0, 0));
     assertFalse(caisse.canAddObjectAt(place));
+    assertFalse(caisse.canAddObjectAt(b.getPlacePosition()));
     b.setNumLieu(0);
     assertFalse(caisse.canAddObjectAt(b.getPlacePosition()));
     b.setNumLieu(2);
@@ -609,21 +608,6 @@ class RangementTest {
     listPlace.add(complexPlace2x2_3x22545);
     listPlace.add(complexPlace2x2_3x22545Builder);
     listPlace.add(complexPlace2x2_3x22545Builder2);
-    for (ComplexPlace r : listPlace) {
-      int emplacementMax = r.getPartCount();
-      for (int i = 0; i < emplacementMax; i++) {
-        int ligneMax = r.getLineCountAt(i);
-        for (int j = 0; j < ligneMax; j++) {
-          int colMax = r.getColumnCountAt(i, j);
-          for (int k = 0; k < colMax; k++) {
-            assertTrue(r.canAddObjectAt(i, j, k));
-          }
-          assertFalse(r.canAddObjectAt(i, j, colMax));
-        }
-        assertFalse(r.canAddObjectAt(i, ligneMax, 0));
-      }
-      assertFalse(r.canAddObjectAt(emplacementMax, 0, 0));
-    }
     b = new Bouteille();
     b.setNom("B20bis");
     b.setEmplacement("caisse20");
@@ -653,8 +637,6 @@ class RangementTest {
     simplePlace.addObject(b);
     assertTrue(simplePlace.hasFreeSpace(new PlacePosition.PlacePositionBuilder(simplePlace).withNumPlace(1).build()));
     assertEquals(1, simplePlace.getCountCellUsed(0));
-    assertTrue(simplePlace.canAddObjectAt(0, 0, 0));
-    assertTrue(simplePlace.canAddObjectAt(1, 0, 0));
     assertTrue(simplePlace.hasFreeSpace(b.getPlacePosition()));
     b.setNumLieu(0);
     assertFalse(simplePlace.canAddObjectAt(b.getPlacePosition()));

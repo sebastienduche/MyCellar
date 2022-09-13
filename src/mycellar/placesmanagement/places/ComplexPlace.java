@@ -18,8 +18,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 14/06/22
+ * @version 0.7
+ * @since 13/09/22
  */
 public class ComplexPlace extends AbstractPlace {
 
@@ -106,13 +106,6 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
-  @Deprecated
-  public Optional<MyCellarObject> getObject(int num_empl, int line, int column) {
-    final MyCellarObject myCellarObject = storage[num_empl][line][column];
-    return Optional.ofNullable(myCellarObject);
-  }
-
-  @Override
   public Optional<MyCellarObject> getObject(PlacePosition place) {
     final MyCellarObject myCellarObject = storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()];
     return Optional.ofNullable(myCellarObject);
@@ -146,12 +139,15 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
-  @Deprecated
-  public boolean canAddObjectAt(int tmpNumEmpl, int tmpLine, int tmpCol) {
-    if (tmpNumEmpl < 0 || tmpNumEmpl >= partCount) {
+  public boolean canAddObjectAt(PlacePosition place) {
+//    return canAddObjectAt(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
+    final int placeNumIndex = place.getPlaceNumIndex();
+    final int lineIndex = place.getLineIndex();
+    final int columnIndex = place.getColumnIndex();
+    if (placeNumIndex < 0 || placeNumIndex >= partCount) {
       return false;
     }
-    return tmpLine >= 0 && tmpLine < getLineCountAt(tmpNumEmpl) && !(tmpCol < 0 || tmpCol >= getColumnCountAt(tmpNumEmpl, tmpLine));
+    return lineIndex >= 0 && lineIndex < getLineCountAt(placeNumIndex) && !(columnIndex < 0 || columnIndex >= getColumnCountAt(placeNumIndex, lineIndex));
   }
 
   @Override

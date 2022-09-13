@@ -31,8 +31,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 09/09/22
+ * @version 3.1
+ * @since 13/09/22
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -247,16 +247,16 @@ public class ErrorShowValues extends TableShowValues {
         if (!bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
           // Controle de l'emplacement de la bouteille
           int tmpNumEmpl = num_empl;
-          int tmpLine = line;
-          int tmpCol = column1;
           if (!abstractPlace.isSimplePlace()) {
             tmpNumEmpl--;
-            tmpCol--;
-            tmpLine--;
           } else {
             tmpNumEmpl -= ((SimplePlace) abstractPlace).getPartNumberIncrement();
           }
-          if (abstractPlace.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
+          if (abstractPlace.canAddObjectAt(new PlacePosition.PlacePositionBuilder(abstractPlace)
+              .withNumPlace(tmpNumEmpl)
+              .withLine(line - 1)
+              .withColumn(column1 - 1).build())) {
+//          if (abstractPlace.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
             if (!abstractPlace.isSimplePlace()) {
               bTemp = abstractPlace.getObject(new PlacePosition.PlacePositionBuilder(abstractPlace)

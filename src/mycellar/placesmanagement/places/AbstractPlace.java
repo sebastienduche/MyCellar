@@ -13,8 +13,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 13/06/22
+ * @version 0.4
+ * @since 13/09/22
  */
 public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstractPlace {
 
@@ -77,11 +77,6 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
       resul += getCountCellUsed(i);
     }
     return resul;
-  }
-
-  @Override
-  public boolean canAddObjectAt(PlacePosition place) {
-    return canAddObjectAt(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
   }
 
   @Override

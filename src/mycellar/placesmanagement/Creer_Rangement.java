@@ -71,8 +71,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.5
- * @since 09/09/22
+ * @version 17.6
+ * @since 13/09/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -468,10 +468,10 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
                   Debug("ERROR: canContinue false, skipping column");
                   break;
                 }
-                if (complexPlace.getObject(new PlacePosition.PlacePositionBuilder(complexPlace)
-                    .withNumPlace1Based(i)
-                    .withLine1Based(j)
-                    .withColumn1Based(k)
+                if (complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
+                    .withNumPlace(i)
+                    .withLine(j)
+                    .withColumn(k)
                     .build()).isPresent()) {
                   canContinue = false;
                   Debug("ERROR: Unable to reduce the size of the number of column");

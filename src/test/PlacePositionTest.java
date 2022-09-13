@@ -25,6 +25,10 @@ class PlacePositionTest {
 
   @BeforeEach
   void setUp() {
+    Program.removePlace(caisseLimit);
+    Program.removePlace(caisseNoLimit);
+    Program.removePlace(armoire1x3x3);
+    Program.removePlace(armoire2x3x3);
     caisseNoLimit = new SimplePlaceBuilder("caisseNoLimit").build(); // 1 emplacement : 0
     // Caisse avec 2 emplacements commencant a 1 et limite a 6 bouteilles
     caisseLimit = new SimplePlaceBuilder("caisseLimit")
@@ -49,8 +53,11 @@ class PlacePositionTest {
   @Test
   void testSimplePlace() {
     PlacePosition placeNoLimit = new PlacePosition.PlacePositionBuilder(caisseNoLimit).withNumPlace(0).build();
+    PlacePosition placeNoLimit2 = new PlacePosition.PlacePositionBuilderZeroBased(caisseNoLimit).withNumPlace(0).build();
     assertEquals(0, placeNoLimit.getPart());
     assertEquals(0, placeNoLimit.getPlaceNumIndex());
+    assertEquals(0, placeNoLimit2.getPart());
+    assertEquals(0, placeNoLimit2.getPlaceNumIndex());
     assertEquals(caisseNoLimit, placeNoLimit.getAbstractPlace());
     assertTrue(placeNoLimit.isSimplePlace());
   }
@@ -58,8 +65,11 @@ class PlacePositionTest {
   @Test
   void testSimplePlaceLimit() {
     PlacePosition placeLimit = new PlacePosition.PlacePositionBuilder(caisseLimit).withNumPlace(2).build();
+    PlacePosition placeLimit2 = new PlacePosition.PlacePositionBuilderZeroBased(caisseLimit).withNumPlace(1).build();
     assertEquals(2, placeLimit.getPart());
     assertEquals(1, placeLimit.getPlaceNumIndex());
+    assertEquals(1, placeLimit2.getPart());
+    assertEquals(0, placeLimit2.getPlaceNumIndex());
     assertEquals(caisseLimit, placeLimit.getAbstractPlace());
     assertTrue(placeLimit.isSimplePlace());
   }
@@ -67,12 +77,19 @@ class PlacePositionTest {
   @Test
   void testArmoire() {
     PlacePosition placeArmoire = new PlacePosition.PlacePositionBuilder(armoire1x3x3).withNumPlace(1).withLine(1).withColumn(1).build();
+    PlacePosition placeArmoire2 = new PlacePosition.PlacePositionBuilderZeroBased(armoire1x3x3).withNumPlace(0).withLine(0).withColumn(0).build();
     assertEquals(1, placeArmoire.getPart());
     assertEquals(0, placeArmoire.getPlaceNumIndex());
     assertEquals(1, placeArmoire.getLine());
     assertEquals(0, placeArmoire.getLineIndex());
     assertEquals(1, placeArmoire.getColumn());
     assertEquals(0, placeArmoire.getColumnIndex());
+    assertEquals(0, placeArmoire2.getPart());
+    assertEquals(0, placeArmoire2.getPlaceNumIndex());
+    assertEquals(0, placeArmoire2.getLine());
+    assertEquals(0, placeArmoire2.getLineIndex());
+    assertEquals(0, placeArmoire2.getColumn());
+    assertEquals(0, placeArmoire2.getColumnIndex());
     assertEquals(armoire1x3x3, placeArmoire.getAbstractPlace());
     assertFalse(placeArmoire.isSimplePlace());
   }

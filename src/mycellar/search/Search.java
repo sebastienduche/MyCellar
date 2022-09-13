@@ -86,8 +86,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.4
- * @since 09/09/22
+ * @version 24.5
+ * @since 13/09/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -597,10 +597,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         for (int j = lineStart; j < lineEnd; j++) {
           int nb_colonnes = complexPlace.getColumnCountAt(i, j);
           for (int k = 0; k < nb_colonnes; k++) {
-            MyCellarObject myCellarObject = complexPlace.getObject(new PlacePosition.PlacePositionBuilder(complexPlace)
-                .withNumPlace1Based(i)
-                .withLine1Based(j)
-                .withColumn1Based(1)
+            MyCellarObject myCellarObject = complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
+                .withNumPlace(i)
+                .withLine(j)
+                .withColumn(1)
                 .build()).orElse(null);
             if (myCellarObject != null) {
               if (searchTableModel.doesNotContain(myCellarObject)) {

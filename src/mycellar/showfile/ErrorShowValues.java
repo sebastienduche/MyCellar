@@ -246,23 +246,23 @@ public class ErrorShowValues extends TableShowValues {
 
         if (!bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
           // Controle de l'emplacement de la bouteille
-          int tmpNumEmpl = num_empl;
-          if (!abstractPlace.isSimplePlace()) {
-            tmpNumEmpl--;
-          } else {
-            tmpNumEmpl -= ((SimplePlace) abstractPlace).getPartNumberIncrement();
-          }
-          if (abstractPlace.canAddObjectAt(new PlacePosition.PlacePositionBuilder(abstractPlace)
-              .withNumPlace(tmpNumEmpl)
-              .withLine(line - 1)
-              .withColumn(column1 - 1).build())) {
+//          int tmpNumEmpl = num_empl;
+//          if (!abstractPlace.isSimplePlace()) {
+//            tmpNumEmpl--;
+//          } else {
+//            tmpNumEmpl -= ((SimplePlace) abstractPlace).getPartNumberIncrement();
+//          }
+          if (abstractPlace.canAddObjectAt(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
+              .withNumPlace(num_empl)
+              .withLine(line)
+              .withColumn(column1).build())) {
 //          if (abstractPlace.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
             if (!abstractPlace.isSimplePlace()) {
-              bTemp = abstractPlace.getObject(new PlacePosition.PlacePositionBuilder(abstractPlace)
-                  .withNumPlace1Based(num_empl)
-                  .withLine1Based(line)
-                  .withColumn1Based(column1)
+              bTemp = abstractPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
+                  .withNumPlace(num_empl)
+                  .withLine(line)
+                  .withColumn(column1)
                   .build());
             }
             if (bTemp.isPresent()) {

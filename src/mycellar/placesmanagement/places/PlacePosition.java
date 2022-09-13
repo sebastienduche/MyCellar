@@ -9,8 +9,8 @@ import mycellar.Program;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 09/09/22
+ * @version 1.2
+ * @since 13/09/22
  */
 
 public class PlacePosition {
@@ -19,19 +19,14 @@ public class PlacePosition {
   private final int part;
   private final int line;
   private final int column;
+  private final boolean oneBased;
 
-  private PlacePosition(AbstractPlace abstractPlace, int part) {
-    this.abstractPlace = abstractPlace;
-    this.part = part;
-    line = -1;
-    column = -1;
-  }
-
-  private PlacePosition(AbstractPlace abstractPlace, int part, int line, int column) {
+  private PlacePosition(AbstractPlace abstractPlace, int part, int line, int column, boolean oneBased) {
     this.abstractPlace = abstractPlace;
     this.part = part;
     this.line = line;
     this.column = column;
+    this.oneBased = oneBased;
   }
 
   public AbstractPlace getAbstractPlace() {
@@ -60,21 +55,21 @@ public class PlacePosition {
     if (isSimplePlace()) {
       return part - ((SimplePlace) abstractPlace).getPartNumberIncrement();
     }
-    return part - 1;
+    return oneBased ? part - 1 : part;
   }
 
   /**
    * Zero based
    */
   public int getLineIndex() {
-    return line - 1;
+    return oneBased ? line - 1 : line;
   }
 
   /**
    * Zero based
    */
   public int getColumnIndex() {
-    return column - 1;
+    return oneBased ? column - 1 : column;
   }
 
   public boolean isSimplePlace() {
@@ -111,18 +106,8 @@ public class PlacePosition {
       return this;
     }
 
-    public PlacePositionBuilder withNumPlace1Based(int numPlace) {
-      this.numPlace = numPlace + 1;
-      return this;
-    }
-
     public PlacePositionBuilder withLine(int line) {
       this.line = line;
-      return this;
-    }
-
-    public PlacePositionBuilder withLine1Based(int line) {
-      this.line = line + 1;
       return this;
     }
 
@@ -131,16 +116,45 @@ public class PlacePosition {
       return this;
     }
 
-    public PlacePositionBuilder withColumn1Based(int column) {
-      this.column = column + 1;
+    public PlacePosition build() {
+      if (rangement.isSimplePlace()) {
+        return new PlacePosition(rangement, numPlace, -1, -1, true);
+      }
+      return new PlacePosition(rangement, numPlace, line, column, true);
+    }
+  }
+
+  public static class PlacePositionBuilderZeroBased {
+
+    protected final AbstractPlace rangement;
+    private int numPlace;
+    private int line;
+    private int column;
+
+    public PlacePositionBuilderZeroBased(AbstractPlace rangement) {
+      this.rangement = rangement;
+    }
+
+    public PlacePositionBuilderZeroBased withNumPlace(int numPlace) {
+      this.numPlace = numPlace;
+      return this;
+    }
+
+    public PlacePositionBuilderZeroBased withLine(int line) {
+      this.line = line;
+      return this;
+    }
+
+    public PlacePositionBuilderZeroBased withColumn(int column) {
+      this.column = column;
       return this;
     }
 
     public PlacePosition build() {
       if (rangement.isSimplePlace()) {
-        return new PlacePosition(rangement, numPlace);
+        return new PlacePosition(rangement, numPlace, -1, -1, false);
       }
-      return new PlacePosition(rangement, numPlace, line, column);
+      return new PlacePosition(rangement, numPlace, line, column, false);
     }
   }
 }

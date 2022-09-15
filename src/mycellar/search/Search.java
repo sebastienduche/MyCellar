@@ -600,7 +600,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             MyCellarObject myCellarObject = complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
                 .withNumPlace(i)
                 .withLine(j)
-                .withColumn(1)
+                .withColumn(k)
                 .build()).orElse(null);
             if (myCellarObject != null) {
               if (searchTableModel.doesNotContain(myCellarObject)) {

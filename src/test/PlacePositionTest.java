@@ -52,12 +52,12 @@ class PlacePositionTest {
 
   @Test
   void testSimplePlace() {
-    PlacePosition placeNoLimit = new PlacePosition.PlacePositionBuilder(caisseNoLimit).withNumPlace(0).build();
+    PlacePosition placeNoLimit = new PlacePosition.PlacePositionBuilder(caisseNoLimit).withNumPlace(1).build();
     PlacePosition placeNoLimit2 = new PlacePosition.PlacePositionBuilderZeroBased(caisseNoLimit).withNumPlace(0).build();
-    assertEquals(0, placeNoLimit.getPart());
-    assertEquals(0, placeNoLimit.getPlaceNumIndex());
-    assertEquals(0, placeNoLimit2.getPart());
-    assertEquals(0, placeNoLimit2.getPlaceNumIndex());
+    assertEquals(1, placeNoLimit.getPart());
+    assertEquals(1, placeNoLimit.getPlaceNumIndex());
+    assertEquals(1, placeNoLimit2.getPart());
+    assertEquals(1, placeNoLimit2.getPlaceNumIndex());
     assertEquals(caisseNoLimit, placeNoLimit.getAbstractPlace());
     assertTrue(placeNoLimit.isSimplePlace());
   }
@@ -68,8 +68,8 @@ class PlacePositionTest {
     PlacePosition placeLimit2 = new PlacePosition.PlacePositionBuilderZeroBased(caisseLimit).withNumPlace(1).build();
     assertEquals(2, placeLimit.getPart());
     assertEquals(1, placeLimit.getPlaceNumIndex());
-    assertEquals(1, placeLimit2.getPart());
-    assertEquals(0, placeLimit2.getPlaceNumIndex());
+    assertEquals(2, placeLimit2.getPart());
+    assertEquals(1, placeLimit2.getPlaceNumIndex());
     assertEquals(caisseLimit, placeLimit.getAbstractPlace());
     assertTrue(placeLimit.isSimplePlace());
   }
@@ -84,11 +84,11 @@ class PlacePositionTest {
     assertEquals(0, placeArmoire.getLineIndex());
     assertEquals(1, placeArmoire.getColumn());
     assertEquals(0, placeArmoire.getColumnIndex());
-    assertEquals(0, placeArmoire2.getPart());
+    assertEquals(1, placeArmoire2.getPart());
     assertEquals(0, placeArmoire2.getPlaceNumIndex());
-    assertEquals(0, placeArmoire2.getLine());
+    assertEquals(1, placeArmoire2.getLine());
     assertEquals(0, placeArmoire2.getLineIndex());
-    assertEquals(0, placeArmoire2.getColumn());
+    assertEquals(1, placeArmoire2.getColumn());
     assertEquals(0, placeArmoire2.getColumnIndex());
     assertEquals(armoire1x3x3, placeArmoire.getAbstractPlace());
     assertFalse(placeArmoire.isSimplePlace());

@@ -20,8 +20,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 09/09/22
+ * @version 2.9
+ * @since 15/09/22
  */
 
 public final class MyCellarControl {
@@ -62,7 +62,7 @@ public final class MyCellarControl {
   }
 
   public static boolean hasInvalidNumLieuNumber(int placeNum, boolean simplePlace, Component component) {
-    if (simplePlace && placeNum < -1) {
+    if (simplePlace && placeNum <= -1) {
       Debug("ERROR: Wrong Part");
       Erreur.showSimpleErreur(component, getError("Error.selectStorageNumber"));
       return true;

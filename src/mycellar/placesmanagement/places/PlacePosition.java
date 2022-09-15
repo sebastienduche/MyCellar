@@ -9,8 +9,8 @@ import mycellar.Program;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 13/09/22
+ * @version 1.3
+ * @since 15/09/22
  */
 
 public class PlacePosition {
@@ -34,15 +34,15 @@ public class PlacePosition {
   }
 
   public int getPart() {
-    return part;
+    return oneBased ? part : part + 1;
   }
 
   public int getLine() {
-    return line;
+    return oneBased ? line : line + 1;
   }
 
   public int getColumn() {
-    return column;
+    return oneBased ? column : column + 1;
   }
 
   /**
@@ -53,7 +53,7 @@ public class PlacePosition {
       return part;
     }
     if (isSimplePlace()) {
-      return part - ((SimplePlace) abstractPlace).getPartNumberIncrement();
+      return part - ((SimplePlace) abstractPlace).getPartNumberIncrement() + (oneBased ? 0 : 1);
     }
     return oneBased ? part - 1 : part;
   }

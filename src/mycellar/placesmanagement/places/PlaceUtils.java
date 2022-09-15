@@ -520,6 +520,7 @@ public final class PlaceUtils {
         final Cell cellPlace = rowPlace.createCell(1);
         cellPlace.setCellStyle(cellStyle);
         cellPlace.setCellValue(place.getName());
+        // TODO ZERO BASED
         for (int j = 1; j <= place.getPartCount(); j++) {
           if (j == 1) {
             nLine++;

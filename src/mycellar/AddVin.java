@@ -8,6 +8,7 @@ import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
+import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.exceptions.MyCellarException;
@@ -47,8 +48,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 31.9
- * @since 15/09/22
+ * @version 32.0
+ * @since 16/09/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -106,7 +107,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
     ProgramPanels.updateSearchTable();
     panelVignobles.resetCombos();
-    panelPlace.resetValues();
     placeInModification = null;
     Debug("Reset Values... Done");
   }
@@ -134,25 +134,30 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
    * @param cellarObject MyCellarObject
    */
   private void setBottle(MyCellarObject cellarObject) {
-    Debug("Set Bottle...");
-    myCellarObject = cellarObject;
-    panelGeneral.setSeveralItems(false);
-    panelGeneral.setMyCellarObject(myCellarObject);
-    listBottleInModification = new LinkedList<>();
-    listBottleInModification.add(myCellarObject);
-    isModify = true;
-    initializeExtraProperties();
-    panelWineAttribute.setStatus(myCellarObject);
-    if (Program.isWineType()) {
-      panelVignobles.initializeVignobles((Bouteille) myCellarObject);
-    }
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        Debug("Set Bottle...");
+        myCellarObject = cellarObject;
+        panelGeneral.setSeveralItems(false);
+        panelGeneral.setMyCellarObject(myCellarObject);
+        listBottleInModification = new LinkedList<>();
+        listBottleInModification.add(myCellarObject);
+        isModify = true;
+        initializeExtraProperties();
+        panelWineAttribute.setStatus(myCellarObject);
+        if (Program.isWineType()) {
+          panelVignobles.initializeVignobles((Bouteille) myCellarObject);
+        }
 
-    panelPlace.resetValues();
-    panelPlace.setBeforeObjectLabels(myCellarObject);
-    addButton.setText(getLabel("Main.Modify"));
-    placeInModification = myCellarObject.getAbstractPlace();
-    end.setText(getLabel("AddVin.EnterChanges"));
-    Debug("Set Bottle... Done");
+        panelPlace.resetPanel();
+        panelPlace.setBeforeObjectLabels(myCellarObject);
+        addButton.setText(getLabel("Main.Modify"));
+        placeInModification = myCellarObject.getAbstractPlace();
+        end.setText(getLabel("AddVin.EnterChanges"));
+        Debug("Set Bottle... Done");
+      }
+    }.execute();
   }
 
   /**
@@ -220,6 +225,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       end.setText(getLabel("AddVin.AddingInProgress"));
       boolean objectAdded = false;
       boolean hasNoError = true;
+      boolean shouldResetValues = true;
       int nb_bottle_add_only_one_place = 0;
       if (!panelPlace.isPlaceModified() && isModify) {
         objectAdded = modifyOneOrSeveralObjectsWithoutPlaceModification(annee);
@@ -237,7 +243,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           MyCellarObject newMyCellarObject = createMyCellarObject(annee, place, simplePlace);
           // Add multiple bottle with question
           if (countStillToAdd > 1) {
-            if (Program.hasOnlyOnePlace()) {
+            if (!Program.hasOnlyOnePlace()) {
               Debug("Adding multiple objects in the same place?");
               String message = MessageFormat.format(getError("Error.questionAddNItemIn", LabelProperty.PLURAL), countStillToAdd, simplePlace.getName());
               if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), message, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {

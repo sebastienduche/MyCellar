@@ -50,8 +50,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.6
- * @since 24/05/22
+ * @version 13.7
+ * @since 08/07/22
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
@@ -146,9 +146,9 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 
     add(valider, "gaptop 15px, center");
 
-    jcb_annee_control.setEnabled(Program.hasFile());
-    jcb_excel.setEnabled(Program.hasFile());
-    devise.setEnabled(Program.hasFile());
+    jcb_annee_control.setEnabled(Program.hasOpenedFile());
+    jcb_excel.setEnabled(Program.hasOpenedFile());
+    devise.setEnabled(Program.hasOpenedFile());
 
     boolean excel = Program.getCaveConfigBool(HAS_EXCEL_FILE, false);
     file_bak.setEnabled(excel);

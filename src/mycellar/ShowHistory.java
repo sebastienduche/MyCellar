@@ -51,8 +51,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.7
- * @since 01/06/22
+ * @version 5.8
+ * @since 13/09/22
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -225,7 +225,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
                 Program.getStorage().addHistory(HistoryState.ADD, myCellarObject);
                 Program.getStorage().addWine(myCellarObject);
               } else {
-                if (rangement.canAddObjectAt(myCellarObject.getNumLieu() - 1, myCellarObject.getLigne() - 1, myCellarObject.getColonne() - 1)) {
+                if (rangement.canAddObjectAt(myCellarObject.getPlacePosition())) {
                   Program.getStorage().addHistory(HistoryState.ADD, myCellarObject);
                   Program.getStorage().addWine(myCellarObject);
                 } else {

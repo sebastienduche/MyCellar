@@ -32,10 +32,10 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
-import mycellar.placesmanagement.PanelPlace;
+import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.ui.PanelRequest;
@@ -73,7 +73,7 @@ import static mycellar.MyCellarImage.SEARCH;
 import static mycellar.MyCellarImage.WINE;
 import static mycellar.MyCellarImage.WORK;
 import static mycellar.ProgramConstants.DASH;
-import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -86,8 +86,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.0
- * @since 01/06/22
+ * @version 24.5
+ * @since 15/09/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -113,7 +113,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final JTabbedPane tabbedPane = new JTabbedPane();
   private final PanelYear panelYear = new PanelYear();
   private final PanelRequest panelRequest = new PanelRequest();
-  private final PanelPlace panelPlace = new PanelPlace(null, false, false, false, true, false, false, true);
+  private final PanelPlacePosition panelPlace = new PanelPlacePosition(null, false, false, false, true, false, false, true);
   private JTable table;
   private TextFieldPopup name;
   private boolean alreadyFoundItems = false;
@@ -199,10 +199,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       modifyButton.addActionListener(this::modif_actionPerformed);
       resultInfoLabel.setForeground(Color.red);
       resultInfoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-      resultInfoLabel.setFont(FONT_DIALOG_SMALL);
+      resultInfoLabel.setFont(FONT_DIALOG_BOLD);
 
       countLabel.setForeground(Color.red);
-      countLabel.setFont(FONT_DIALOG_SMALL);
+      countLabel.setFont(FONT_DIALOG_BOLD);
       objectFoundCountLabels.setHorizontalAlignment(SwingConstants.RIGHT);
 
       tabbedPane.addChangeListener((e) -> {
@@ -238,10 +238,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private static void Debug(String sText) {
     Program.Debug("Search: " + sText);
-  }
-
-  public void updateTable() {
-    SwingUtilities.invokeLater(searchTableModel::fireTableDataChanged);
   }
 
   /**
@@ -558,7 +554,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   }
 
   private List<MyCellarObject> searchComplexPlace() {
-    final Place selectedPlace = panelPlace.getSelectedPlace();
+    final PlacePosition selectedPlace = panelPlace.getSelectedPlacePosition();
     ComplexPlace complexPlace = (ComplexPlace) selectedPlace.getAbstractPlace();
     List<MyCellarObject> myCellarObjectList = new LinkedList<>();
     if (!panelPlace.isSeveralLocationChecked()) {
@@ -601,7 +597,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         for (int j = lineStart; j < lineEnd; j++) {
           int nb_colonnes = complexPlace.getColumnCountAt(i, j);
           for (int k = 0; k < nb_colonnes; k++) {
-            MyCellarObject myCellarObject = complexPlace.getObject(i, j, k).orElse(null);
+            MyCellarObject myCellarObject = complexPlace.getObject(new PlacePosition.PlacePositionBuilder(complexPlace)
+                .withNumPlace1Based(i)
+                .withLine1Based(j)
+                .withColumn1Based(k)
+                .build()).orElse(null);
             if (myCellarObject != null) {
               if (searchTableModel.doesNotContain(myCellarObject)) {
                 myCellarObjectList.add(myCellarObject);
@@ -617,13 +617,13 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   }
 
   private List<MyCellarObject> searchSimplePlace() {
-    final Place selectedPlace = panelPlace.getSelectedPlace();
+    final PlacePosition selectedPlace = panelPlace.getSelectedPlacePosition();
     SimplePlace simplePlace = (SimplePlace) selectedPlace.getAbstractPlace();
     int lieu_num = selectedPlace.getPlaceNumIndex();
     int nb_empl_cave = simplePlace.getPartCount();
     int boucle_toutes;
     int start_boucle;
-    if (lieu_num == 0) {
+    if (lieu_num == -1) {
       start_boucle = 1;
       boucle_toutes = nb_empl_cave + 1;
     } else {
@@ -633,9 +633,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
     List<MyCellarObject> myCellarObjectList = new LinkedList<>();
     for (int part = start_boucle; part < boucle_toutes; part++) {
-      int totalCellUsed = simplePlace.getCountCellUsed(part - 1);
+      int totalCellUsed = simplePlace.getCountCellUsed(part);
       for (int i = 0; i < totalCellUsed; i++) {
-        MyCellarObject b = simplePlace.getObjectAt(part - 1, i);
+        MyCellarObject b = simplePlace.getObjectAt(part, i);
         if (b != null) {
           if (searchTableModel.doesNotContain(b)) {
             myCellarObjectList.add(b);
@@ -643,10 +643,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             alreadyFoundItems = true;
           }
         } else {
-          Debug("No object found in " + simplePlace.getName() + ": x-1=" + (part - 1) + " l+1=" + (i + 1));
+          Debug("No object found in " + simplePlace.getName() + ": part=" + part + " index=" + i);
         }
-      } //Fin for
-    } //Fin for
+      }
+    }
     return myCellarObjectList;
   }
 
@@ -796,10 +796,17 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   }
 
   public void removeObject(MyCellarObject myCellarObject) {
-    SwingUtilities.invokeLater(() -> {
-      searchTableModel.removeObject(myCellarObject);
-      updateLabelObjectNumber(true);
-    });
+    new MyCellarObjectSwingWorker() {
+      @Override
+      protected void done() {
+        searchTableModel.removeObject(myCellarObject);
+        updateLabelObjectNumber(true);
+      }
+    }.execute();
+  }
+
+  public void updateTable() {
+    SwingUtilities.invokeLater(searchTableModel::fireTableDataChanged);
   }
 
   @Override

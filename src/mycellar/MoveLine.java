@@ -11,9 +11,9 @@ import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.ProgramPanels;
-import mycellar.placesmanagement.PanelPlace;
+import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.ComplexPlace;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static mycellar.ProgramConstants.FONT_DIALOG;
+import static mycellar.ProgramConstants.FONT_DIALOG_BIG_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -34,16 +34,16 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.8
- * @since 01/06/22
+ * @version 4.1
+ * @since 07/09/22
  */
 
 final class MoveLine extends JDialog {
 
   private static final long serialVersionUID = 40508;
   private final MyCellarSimpleLabel label_end = new MyCellarSimpleLabel();
-  private final MyCellarComboBox<PanelPlace.ComboItem> new_line_cbx = new MyCellarComboBox<>();
-  private final PanelPlace panelPlace = new MoveLinePanelPlace();
+  private final MyCellarComboBox<PanelPlacePosition.ComboItem> new_line_cbx = new MyCellarComboBox<>();
+  private final PanelPlacePosition panelPlace = new MoveLinePanelPlacePosition();
 
   MoveLine() {
     setAlwaysOnTop(true);
@@ -52,7 +52,7 @@ final class MoveLine extends JDialog {
     setLayout(new MigLayout("", "[]", "[]20px[]10px[]10px[][]20px[]10px"));
     MyCellarLabel titre = new MyCellarLabel("Main.Move");
     titre.setForeground(Color.red);
-    titre.setFont(FONT_DIALOG);
+    titre.setFont(FONT_DIALOG_BIG_BOLD);
     titre.setHorizontalAlignment(SwingConstants.CENTER);
     label_end.setForeground(Color.red);
     label_end.setHorizontalAlignment(SwingConstants.CENTER);
@@ -92,7 +92,7 @@ final class MoveLine extends JDialog {
       Debug("Validating and saving... Failed");
       return;
     }
-    final Place selectedPlace = panelPlace.getSelectedPlace();
+    final PlacePosition selectedPlace = panelPlace.getSelectedPlacePosition();
     int nNewSelected = new_line_cbx.getSelectedIndex();
     if (selectedPlace.getLine() == nNewSelected || nNewSelected == 0) {
       Erreur.showSimpleErreur(this, getError("Error.wrongLineNumber"));
@@ -120,7 +120,11 @@ final class MoveLine extends JDialog {
     }
     List<MyCellarObject> notMoved = new ArrayList<>();
     for (int i = 0; i < nOldColumnCount; i++) {
-      complexPlace.getObject(nNumLieu, nOldSelected, i).ifPresent(myCellarObject -> {
+      complexPlace.getObject(new PlacePosition.PlacePositionBuilder(complexPlace)
+          .withNumPlace1Based(nNumLieu)
+          .withLine1Based(nOldSelected)
+          .withColumn1Based(i)
+          .build()).ifPresent(myCellarObject -> {
         Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
         try {
           complexPlace.moveToLine(myCellarObject, new_line_cbx.getSelectedIndex());
@@ -141,15 +145,15 @@ final class MoveLine extends JDialog {
     Debug("Validating and saving... Done");
   }
 
-  class MoveLinePanelPlace extends PanelPlace {
+  class MoveLinePanelPlacePosition extends PanelPlacePosition {
     private static final long serialVersionUID = 1742129778730101248L;
 
-    public MoveLinePanelPlace() {
+    public MoveLinePanelPlacePosition() {
       super(false, false, false, true);
     }
 
     @Override
-    public void onLineSelected(Place selectedPlace) {
+    public void onLineSelected(PlacePosition selectedPlace) {
       new MyCellarSwingWorker() {
         @Override
         protected void done() {

@@ -18,8 +18,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 10/06/22
+ * @version 0.7
+ * @since 13/09/22
  */
 public class ComplexPlace extends AbstractPlace {
 
@@ -106,21 +106,14 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
-  @Deprecated
-  public Optional<MyCellarObject> getObject(int num_empl, int line, int column) {
-    final MyCellarObject myCellarObject = storage[num_empl][line][column];
-    return Optional.ofNullable(myCellarObject);
-  }
-
-  @Override
-  public Optional<MyCellarObject> getObject(Place place) {
+  public Optional<MyCellarObject> getObject(PlacePosition place) {
     final MyCellarObject myCellarObject = storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()];
     return Optional.ofNullable(myCellarObject);
   }
 
   @Override
   public void updateToStock(MyCellarObject myCellarObject) {
-    final Place place = myCellarObject.getPlace();
+    final PlacePosition place = myCellarObject.getPlacePosition();
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = myCellarObject;
   }
 
@@ -129,11 +122,11 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
-  public void clearStorage(MyCellarObject myCellarObject, Place place) {
+  public void clearStorage(MyCellarObject myCellarObject, PlacePosition place) {
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = null;
   }
 
-  public void clearStorage(Place place) {
+  public void clearStorage(PlacePosition place) {
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = null;
   }
 
@@ -146,18 +139,15 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
-  @Deprecated
-  public boolean canAddObjectAt(MyCellarObject b) {
-    return canAddObjectAt(b.getNumLieu(), -1, -1);
-  }
-
-  @Override
-  @Deprecated
-  public boolean canAddObjectAt(int tmpNumEmpl, int tmpLine, int tmpCol) {
-    if (tmpNumEmpl < 0 || tmpNumEmpl >= partCount) {
+  public boolean canAddObjectAt(PlacePosition place) {
+//    return canAddObjectAt(place.getPlaceNumIndex(), place.getLineIndex(), place.getColumnIndex());
+    final int placeNumIndex = place.getPlaceNumIndex();
+    final int lineIndex = place.getLineIndex();
+    final int columnIndex = place.getColumnIndex();
+    if (placeNumIndex < 0 || placeNumIndex >= partCount) {
       return false;
     }
-    return tmpLine >= 0 && tmpLine < getLineCountAt(tmpNumEmpl) && !(tmpCol < 0 || tmpCol >= getColumnCountAt(tmpNumEmpl, tmpLine));
+    return lineIndex >= 0 && lineIndex < getLineCountAt(placeNumIndex) && !(columnIndex < 0 || columnIndex >= getColumnCountAt(placeNumIndex, lineIndex));
   }
 
   @Override

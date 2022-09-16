@@ -50,7 +50,7 @@ import static mycellar.Program.getStorage;
 import static mycellar.Program.open;
 import static mycellar.Program.removePlace;
 import static mycellar.Program.setToTrash;
-import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -64,8 +64,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.3
- * @since 10/06/22
+ * @version 10.4
+ * @since 08/07/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -160,7 +160,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       }
 
       label_final.setForeground(Color.red);
-      label_final.setFont(FONT_DIALOG_SMALL);
+      label_final.setFont(FONT_DIALOG_BOLD);
       label_final.setHorizontalAlignment(SwingConstants.CENTER);
       Debug("There is (are) " + nb_case_use_total + " object(s) in this place!");
       if (nb_case_use_total == 0) {

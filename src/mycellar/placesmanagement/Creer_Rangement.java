@@ -28,6 +28,7 @@ import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.Part;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.Row;
 import mycellar.placesmanagement.places.SimplePlace;
@@ -56,7 +57,7 @@ import java.util.Map;
 
 import static javax.swing.border.EtchedBorder.RAISED;
 import static mycellar.MyCellarUtils.toCleanString;
-import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -70,8 +71,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.2
- * @since 10/06/22
+ * @version 17.5
+ * @since 09/09/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -128,7 +129,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     cbg.add(notAllLinesSameRadio);
     allLinesSameRadio.addItemListener((e) -> model.setSameColumnNumber(allLinesSameRadio.isSelected()));
     labelCreated.setForeground(Color.red);
-    labelCreated.setFont(FONT_DIALOG_SMALL);
+    labelCreated.setFont(FONT_DIALOG_BOLD);
     labelCreated.setText("");
     labelCreated.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -467,7 +468,11 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
                   Debug("ERROR: canContinue false, skipping column");
                   break;
                 }
-                if (complexPlace.getObject(i, j, k).isPresent()) {
+                if (complexPlace.getObject(new PlacePosition.PlacePositionBuilder(complexPlace)
+                    .withNumPlace1Based(i)
+                    .withLine1Based(j)
+                    .withColumn1Based(k)
+                    .build()).isPresent()) {
                   canContinue = false;
                   Debug("ERROR: Unable to reduce the size of the number of column");
                   Erreur.showSimpleErreur(MessageFormat.format(getError("Error.removeNotEmptyShelveLineColumns"), Integer.toString(j + 1), Integer.toString(i + 1)));
@@ -564,12 +569,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     } else {
       Debug("Creating complex place...");
       for (Part p : listPart) {
-        if (p.getRows().isEmpty()) {
+        if (bResul && p.getRows().isEmpty()) {
           Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNumber()));
           bResul = false;
         }
         for (Row r : p.getRows()) {
-          if (r.getColumnCount() == 0) {
+          if (bResul && r.getColumnCount() == 0) {
             Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNumber()));
             bResul = false;
           }
@@ -678,7 +683,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (!toCleanString(nom_obj.getText()).isEmpty()) {
-      String label = modify ? getLabel("Error.storageModificationIncompleted") : getError("Error.storageCreationIncompleted");
+      String label = modify ? getError("Error.storageModificationIncompleted") : getError("Error.storageCreationIncompleted");
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }

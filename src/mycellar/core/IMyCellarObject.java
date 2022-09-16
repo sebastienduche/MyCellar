@@ -2,7 +2,7 @@ package mycellar.core;
 
 import mycellar.core.common.MyCellarFields;
 import mycellar.placesmanagement.places.AbstractPlace;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 
 import java.math.BigDecimal;
 
@@ -13,8 +13,8 @@ import java.math.BigDecimal;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 31/05/22
+ * @version 0.7
+ * @since 13/06/22
  */
 public interface IMyCellarObject {
   int getId();
@@ -43,7 +43,7 @@ public interface IMyCellarObject {
 
   void setNumLieu(int i);
 
-  Place getPlace();
+  PlacePosition getPlacePosition();
 
   int getLigne();
 

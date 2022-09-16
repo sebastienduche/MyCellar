@@ -22,14 +22,14 @@ import static mycellar.ProgramConstants.COUNTRIES_XML;
 import static mycellar.ProgramConstants.FR;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 1998</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 1998
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 03/12/20
+ * @version 1.2
+ * @since 08/07/22
  */
 
 @XmlRootElement(name = "countries")
@@ -57,7 +57,7 @@ public class CountryListJaxb {
 
   private static CountryListJaxb load() {
     File f = null;
-    if (Program.hasFile()) {
+    if (Program.hasOpenedFile()) {
       f = new File(Program.getWorkDir(true), COUNTRIES_XML);
     }
     CountryListJaxb countryListJaxb = null;

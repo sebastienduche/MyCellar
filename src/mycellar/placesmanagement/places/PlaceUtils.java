@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.Program.getAbstractPlaces;
@@ -69,16 +70,18 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.0
- * @since 10/06/22
+ * @version 5.4
+ * @since 07/09/22
  */
 public final class PlaceUtils {
+
+  public static final SimplePlace STOCK_PLACE = new SimplePlaceBuilder(TEMP_PLACE).build();
 
   private PlaceUtils() {
   }
 
-  public static void replaceMyCellarObject(MyCellarObject oldObject, MyCellarObject newObject, Place newObjectPreviousPlace) throws MyCellarException {
-    Debug("Replace objet '" + oldObject + "' by '" + newObject + "' previous place: " + newObjectPreviousPlace + " current name " + newObject.getPlace());
+  public static void replaceMyCellarObject(MyCellarObject oldObject, MyCellarObject newObject, PlacePosition newObjectPreviousPlace) throws MyCellarException {
+    Debug("Replace objet '" + oldObject + "' by '" + newObject + "' previous place: " + newObjectPreviousPlace + " current name " + newObject.getPlacePosition());
     Program.getStorage().addHistory(HistoryState.DEL, oldObject);
     Program.getStorage().deleteWine(oldObject);
 
@@ -86,10 +89,7 @@ public final class PlaceUtils {
       newObjectPreviousPlace.getAbstractPlace().clearStorage(newObject, newObjectPreviousPlace);
     }
 
-    ProgramPanels.getSearch().ifPresent(search -> {
-      search.removeObject(oldObject);
-      search.updateTable();
-    });
+    ProgramPanels.getSearch().ifPresent(search -> search.removeObject(oldObject));
 
     final AbstractPlace abstractPlace = newObject.getAbstractPlace();
     if (!abstractPlace.isSimplePlace()) {
@@ -313,11 +313,11 @@ public final class PlaceUtils {
       return false;
     }
 
-    //Recuperation des colonnes a exporter
+    // Columns to export
     List<MyCellarFields> fields = MyCellarFields.getFieldsList();
-    int i = 0;
     assert fields != null;
     EnumMap<MyCellarFields, Boolean> mapCle = new EnumMap<>(MyCellarFields.class);
+    int i = 0;
     for (MyCellarFields field : fields) {
       mapCle.put(field, Program.getCaveConfigBool(MyCellarSettings.SIZE_COL + i + "EXPORT_XLS", true));
       i++;
@@ -549,7 +549,11 @@ public final class PlaceUtils {
               final SXSSFRow rowBottle = sheet.createRow(nLine);
               for (int l = 1; l <= nCol; l++) {
                 int finalL = l;
-                place.getObject(j - 1, k - 1, l - 1).ifPresent(bouteille -> {
+                place.getObject(new PlacePosition.PlacePositionBuilder(place)
+                    .withNumPlace(j)
+                    .withLine(k)
+                    .withColumn(l)
+                    .build()).ifPresent(bouteille -> {
                   final Cell cellBottle = rowBottle.createCell(finalL);
                   cellBottle.setCellValue(getLabelToDisplay(bouteille));
                   cellBottle.setCellStyle(cellStyle);
@@ -642,12 +646,26 @@ public final class PlaceUtils {
 
     final String placeName = name.strip();
     final boolean found = getAbstractPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
-    if (!found) {
-      if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
-        return true;
-      }
+    return found || placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR);
+  }
+
+  public static AbstractPlace getPlaceByName(final String name) {
+    final String placeName = name.strip();
+    if (TEMP_PLACE.equals(placeName)) {
+      return STOCK_PLACE;
     }
-    return found;
+    final List<AbstractPlace> new_list = Program.getAbstractPlaces().stream().filter(rangement -> filterOnAbstractPlaceName(rangement, placeName)).collect(Collectors.toList());
+    return new_list.get(0);
+  }
+
+  private static boolean filterOnAbstractPlaceName(AbstractPlace rangement, String placeName) {
+    return rangement.getName().equals(placeName) || isDefaultAbstractPlaceName(rangement, placeName);
+  }
+
+  private static boolean isDefaultAbstractPlaceName(AbstractPlace rangement, String placeName) {
+    return rangement.isDefaultPlace() &&
+        (rangement.getName().equals(DEFAULT_STORAGE_EN) || rangement.getName().equals(DEFAULT_STORAGE_FR)) &&
+        (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
   }
 
   /**
@@ -685,7 +703,7 @@ public final class PlaceUtils {
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
           continue;
         }
-        if (((SimplePlace) rangement).hasFreeSpace(bouteille.getPlace())) {
+        if (((SimplePlace) rangement).hasFreeSpace(bouteille.getPlacePosition())) {
           rangement.updateToStock(bouteille);
         } else {
           // Caisse pleine
@@ -704,7 +722,7 @@ public final class PlaceUtils {
           // Cellule inexistante
           Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
-        } else if ((bottle = rangement.getObject(bouteille.getPlace())).isPresent() && !bottle.get().equals(bouteille)) {
+        } else if ((bottle = rangement.getObject(bouteille.getPlacePosition())).isPresent() && !bottle.get().equals(bouteille)) {
           // Cellule occupee
           Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));

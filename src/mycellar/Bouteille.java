@@ -15,7 +15,7 @@ import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.placesmanagement.places.AbstractPlace;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -37,14 +37,14 @@ import static mycellar.MyCellarUtils.assertObjectType;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 
 /**
- * <p>Titre : Cave &agrave; vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2005</p>
- * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2005
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.9
- * @since 31/05/22
+ * @version 8.1
+ * @since 30/06/22
  *
  * <p>Java class for anonymous complex type.
  *
@@ -129,9 +129,6 @@ public class Bouteille extends MyCellarObject implements Serializable {
   @XmlElement()
   private String lastModified;
 
-  /**
-   * Bouteille: Constructeur d'une bouteille vide.
-   */
   public Bouteille() {
     nom = type = emplacement = prix = comment = annee = maturity = parker = color = "";
     vignoble = null;
@@ -139,9 +136,6 @@ public class Bouteille extends MyCellarObject implements Serializable {
     lastModified = null;
   }
 
-  /**
-   * Bouteille: Constructeur par copie.
-   */
   public Bouteille(Bouteille b) {
     Objects.requireNonNull(b);
     id = Program.getNewID();
@@ -373,7 +367,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
 
   @Override
   public AbstractPlace getAbstractPlace() {
-    return Program.getPlaceByName(emplacement);
+    return PlaceUtils.getPlaceByName(emplacement);
   }
 
   @Override
@@ -438,8 +432,8 @@ public class Bouteille extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public Place getPlace() {
-    return new Place.PlaceBuilder(getAbstractPlace())
+  public PlacePosition getPlacePosition() {
+    return new PlacePosition.PlacePositionBuilder(getAbstractPlace())
         .withNumPlace(getNumLieu())
         .withLine(getLigne())
         .withColumn(getColonne())

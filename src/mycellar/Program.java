@@ -12,6 +12,7 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.common.MyCellarFields;
+import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.history.History;
@@ -80,8 +81,6 @@ import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.CONFIG_INI;
 import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
-import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
-import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FRA;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
@@ -92,11 +91,9 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.PREVIEW_HTML;
 import static mycellar.ProgramConstants.PREVIEW_XML;
 import static mycellar.ProgramConstants.SLASH;
-import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.ProgramConstants.TIMESTAMP_PATTERN;
 import static mycellar.ProgramConstants.TYPES_MUSIC_XML;
 import static mycellar.ProgramConstants.TYPES_XML;
-import static mycellar.ProgramConstants.UNTITLED1_SINFO;
 import static mycellar.ProgramConstants.VERSION;
 import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
@@ -110,15 +107,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 28.7
- * @since 09/06/22
+ * @version 29.0
+ * @since 06/09/22
  */
 
 public final class Program {
 
   public static final SimplePlace DEFAULT_PLACE = new SimplePlaceBuilder("").setDefaultPlace(true).build();
   public static final SimplePlace EMPTY_PLACE = new SimplePlaceBuilder("").build();
-  public static final SimplePlace STOCK_PLACE = new SimplePlaceBuilder(TEMP_PLACE).build();
 
   public static final CountryJaxb FRANCE = new CountryJaxb(FRA, ProgramConstants.FRANCE);
   public static final CountryJaxb NO_COUNTRY = new CountryJaxb("");
@@ -133,7 +129,7 @@ public final class Program {
   private static final List<MyCellarError> ERRORS = new LinkedList<>();
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
   private static ProgramType programType = ProgramType.WINE;
-  private static MyCellarFile myCellarFile = null;
+  private static MyCellarFile openedFile = null;
   private static FileWriter oDebugFile = null;
   private static File debugFile = null;
   private static String workDir = null;
@@ -204,15 +200,15 @@ public final class Program {
   }
 
   static void setNewFile(String file) {
-    myCellarFile = new MyCellarFile(new File(file));
+    openedFile = new MyCellarFile(file);
   }
 
-  public static boolean hasFile() {
-    return myCellarFile != null;
+  public static boolean hasOpenedFile() {
+    return openedFile != null;
   }
 
   public static MyCellarFile getOpenedFile() {
-    return myCellarFile;
+    return openedFile;
   }
 
   public static String getConfigFilePath() {
@@ -287,7 +283,7 @@ public final class Program {
   }
 
   private static void cleanAndUpgrade() {
-    if (!hasFile()) {
+    if (!hasOpenedFile()) {
       return;
     }
     Debug("Program: clean and upgrade...");
@@ -307,7 +303,7 @@ public final class Program {
   }
 
   private static void checkFileVersion() throws UnableToOpenMyCellarFileException {
-    if (!hasFile()) {
+    if (!hasOpenedFile()) {
       return;
     }
     int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
@@ -468,7 +464,7 @@ public final class Program {
    */
   public static void save() {
     Debug("Program: Saving...");
-    saveAs(myCellarFile.getFile());
+    saveAs(openedFile.getFile());
   }
 
   /**
@@ -493,7 +489,7 @@ public final class Program {
     CountryListJaxb.save();
     ListeBouteille.writeXML();
 
-    myCellarFile.saveAs(file);
+    openedFile.saveAs(file);
 
     modified = false;
     listCaveModified = false;
@@ -549,25 +545,6 @@ public final class Program {
     return PLACES.size() == 1;
   }
 
-  public static AbstractPlace getPlaceByName(final String name) {
-    final String placeName = name.strip();
-    if (TEMP_PLACE.equals(placeName)) {
-      return STOCK_PLACE;
-    }
-    final List<AbstractPlace> new_list = PLACES.stream().filter(rangement -> filterOnAbstractPlaceName(rangement, placeName)).collect(Collectors.toList());
-    return new_list.get(0);
-  }
-
-  private static boolean filterOnAbstractPlaceName(AbstractPlace rangement, String placeName) {
-    return rangement.getName().equals(placeName) || isDefaultAbstractPlaceName(rangement, placeName);
-  }
-
-  private static boolean isDefaultAbstractPlaceName(AbstractPlace rangement, String placeName) {
-    return rangement.isDefaultPlace() &&
-        (rangement.getName().equals(DEFAULT_STORAGE_EN) || rangement.getName().equals(DEFAULT_STORAGE_FR)) &&
-        (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR));
-  }
-
   public static void addPlace(AbstractPlace abstractPlace) {
     if (abstractPlace == null) {
       return;
@@ -595,49 +572,38 @@ public final class Program {
     return PLACES.stream().anyMatch(Predicate.not(AbstractPlace::isSimplePlace));
   }
 
-  /**
-   * newFile: Create a new file.
-   */
-  static void newFile() {
-    final File file = new File(getWorkDir(true) + UNTITLED1_SINFO);
-    if (file.exists()) {
-      FileUtils.deleteQuietly(file);
+  static void createNewFile() {
+    final MyCellarFile myCellarFile = new MyCellarFile();
+    myCellarFile.setNewFile(true);
+    if (myCellarFile.exists()) {
+      FileUtils.deleteQuietly(myCellarFile.getFile());
     }
     try {
-      if (!file.createNewFile()) {
-        Debug("ERROR: Unable to create file: " + file.getAbsolutePath());
+      if (!myCellarFile.getFile().createNewFile()) {
+        Debug("ERROR: Unable to create file: " + myCellarFile.getFile().getAbsolutePath());
       }
     } catch (IOException e) {
       showException(e);
     }
     try {
-      openaFile(file, true);
+      openaFile(myCellarFile);
     } catch (UnableToOpenFileException e) {
       showException(e);
     }
   }
 
-  /**
-   * openaFile: Ouvre un fichier
-   *
-   * @param file File
-   */
-  static void openaFile(File file) throws UnableToOpenFileException {
-    openaFile(file, false);
-  }
-
-  private static void openaFile(File file, boolean isNewFile) throws UnableToOpenFileException {
+  static void openaFile(MyCellarFile myCellarFile) throws UnableToOpenFileException {
     LinkedList<String> list = new LinkedList<>();
     list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1));
     list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2));
     list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3));
     list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4));
     Debug("Program: -------------------");
-    if (isNewFile) {
+    if (myCellarFile.isNewFile()) {
       Debug("Program: openFile: Creating new file");
     } else {
-      Debug("Program: openFile: Opening file: " + file.getAbsolutePath());
-      list.remove(file.getAbsolutePath());
+      Debug("Program: openFile: Opening file: " + myCellarFile.getFile().getAbsolutePath());
+      list.remove(myCellarFile.getFile().getAbsolutePath());
     }
     Debug("Program: -------------------");
 
@@ -646,13 +612,13 @@ public final class Program {
 
     CountryVignobleController.init();
 
-    if (isNewFile) {
+    if (myCellarFile.isNewFile()) {
       // Nouveau fichier de bouteilles
       ListeBouteille.writeXML();
     }
 
-    if (!file.exists()) {
-      Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), file.getAbsolutePath()));
+    if (!myCellarFile.exists()) {
+      Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), myCellarFile.getFile().getAbsolutePath()));
 
       putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, list.pop());
       putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, list.pop());
@@ -660,11 +626,11 @@ public final class Program {
       // On a deja enleve un element de la liste
       putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, "");
       saveGlobalProperties();
-      throw new UnableToOpenMyCellarFileException("File not found: " + file.getAbsolutePath());
+      throw new UnableToOpenMyCellarFileException("File not found: " + myCellarFile.getFile().getAbsolutePath());
     }
 
-    myCellarFile = new MyCellarFile(file);
-    myCellarFile.unzip();
+    openedFile = myCellarFile;
+    openedFile.unzip();
     loadPropertiesAndSetProgramType();
     checkFileVersion();
 
@@ -679,6 +645,23 @@ public final class Program {
     if (isWineType()) {
       MyCellarBottleContenance.load();
       CountryVignobleController.load();
+
+      // TODO Remove version 78
+      Debug("Fixing the color of the bottles");
+      getStorage().getAllList()
+          .stream()
+          .map(o -> (Bouteille) o)
+          .filter(bouteille -> BottleColor.getColor(bouteille.getColor()).equals(BottleColor.NONE))
+          .forEach(bouteille -> {
+            final String color = bouteille.getColor();
+            if ("red".equalsIgnoreCase(color) || "rouge".equalsIgnoreCase(color)) {
+              bouteille.setColor(BottleColor.RED.name());
+            } else if ("white".equalsIgnoreCase(color) || "blanc".equalsIgnoreCase(color)) {
+              bouteille.setColor(BottleColor.WHITE.name());
+            } else if ((color != null && color.toLowerCase().startsWith("ros")) || "pink".equalsIgnoreCase(color)) {
+              bouteille.setColor(BottleColor.PINK.name());
+            }
+          });
     } else if (isMusicType()) {
       MyCellarMusicSupport.load();
     }
@@ -688,8 +671,8 @@ public final class Program {
       new OpenShowErrorsAction().actionPerformed(null);
     }
 
-    if (myCellarFile.isFileSavable()) {
-      list.addFirst(file.getAbsolutePath());
+    if (openedFile.isFileSavable()) {
+      list.addFirst(myCellarFile.getFile().getAbsolutePath());
     }
 
     putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, list.pop());
@@ -697,7 +680,7 @@ public final class Program {
     putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3, list.pop());
     putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, list.pop());
 
-    putCaveConfigString(MyCellarSettings.DIR, file.getParent());
+    putCaveConfigString(MyCellarSettings.DIR, myCellarFile.getFile().getParent());
 
     saveGlobalProperties();
     modified = false;
@@ -707,21 +690,18 @@ public final class Program {
     Debug("Program: ----------------");
   }
 
-  /**
-   * closeFile: Fermeture du fichier.
-   */
   static void closeFile() {
-    if (!hasFile()) {
+    if (!hasOpenedFile()) {
       Debug("Program: closeFile: File already closed!");
       return;
     }
     Debug("Program: closeFile: Closing file...");
     boolean bSave = false;
     File newFile = null;
-    if (myCellarFile.exists() && isModified()) {
+    if (openedFile.exists() && isModified()) {
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("SaveModifications"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         bSave = true;
-        if (!myCellarFile.isFileSavable()) {
+        if (!openedFile.isFileSavable()) {
           JFileChooser boiteFichier = new JFileChooser();
           boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
           boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
@@ -761,14 +741,14 @@ public final class Program {
         getStorage().saveWorksheet();
         CountryVignobleController.save();
         if (newFile != null) {
-          myCellarFile.saveAs(newFile);
+          openedFile.saveAs(newFile);
         } else {
-          myCellarFile.save();
+          openedFile.save();
         }
       }
     }
 
-    if (myCellarFile.exists()) {
+    if (openedFile.exists()) {
       // Sauvegarde des proprietes globales
       saveGlobalProperties();
 
@@ -783,7 +763,7 @@ public final class Program {
     }
 
     ProgramPanels.removeAll();
-    if (myCellarFile.exists()) {
+    if (openedFile.exists()) {
       getStorage().close();
       CountryVignobleController.close();
       CountryListJaxb.close();
@@ -795,7 +775,7 @@ public final class Program {
     PLACES.clear();
     DEFAULT_PLACE.resetStockage();
     EMPTY_PLACE.resetStockage();
-    myCellarFile = null;
+    openedFile = null;
     Debug("Program: closeFile: Closing file Ended");
   }
 
@@ -912,8 +892,8 @@ public final class Program {
   }
 
   static String getShortFilename() {
-    if (hasFile()) {
-      return MyCellarUtils.getShortFilename(myCellarFile.getFile().getAbsolutePath());
+    if (hasOpenedFile()) {
+      return MyCellarUtils.getShortFilename(openedFile.getFile().getAbsolutePath());
     }
     return "";
   }
@@ -1288,7 +1268,7 @@ public final class Program {
   }
 
   static boolean isFileSavable() {
-    return myCellarFile != null && myCellarFile.isFileSavable();
+    return openedFile != null && openedFile.isFileSavable();
   }
 
   public static void throwNotImplementedIfNotFor(MyCellarObject myCellarObject, Class<?> aClass) {

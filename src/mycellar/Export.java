@@ -52,7 +52,7 @@ import java.util.List;
 
 import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
-import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.core.MyCellarSettings.EXPORT_DEFAULT;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -65,8 +65,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.2
- * @since 25/05/22
+ * @version 11.3
+ * @since 08/07/22
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -121,7 +121,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
   private void initialize() {
     MyCellarLabel nameLabel = new MyCellarLabel("Export.FileName");
-    end.setFont(FONT_DIALOG_SMALL);
+    end.setFont(FONT_DIALOG_BOLD);
     openit.setMnemonic(OUVRIR);
     openit.addActionListener((e) -> openit_actionPerformed());
     MyCellarRadioButtonXML.addActionListener((e) -> jradio_actionPerformed());

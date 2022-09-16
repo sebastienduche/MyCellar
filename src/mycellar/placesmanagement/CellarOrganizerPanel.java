@@ -7,7 +7,7 @@ import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.Start;
 import mycellar.core.IMyCellar;
-import mycellar.core.IPlace;
+import mycellar.core.IPlacePosition;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarObject;
 import mycellar.core.PanelCloseButton;
@@ -24,7 +24,7 @@ import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 import net.miginfocom.swing.MigLayout;
@@ -78,8 +78,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.5
- * @since 01/06/22
+ * @version 5.8
+ * @since 30/06/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -96,7 +96,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   private MyCellarComboBox<AbstractPlace> abstractPlaceCombo;
   private AbstractPlace abstractPlace;
   private RangementCell stock;
-  private IPlace iPlace;
+  private IPlacePosition iPlace;
 
   private boolean updateView = false;
   private UpdateViewType updateViewType;
@@ -106,7 +106,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     init();
   }
 
-  public CellarOrganizerPanel(IPlace iPlace) {
+  public CellarOrganizerPanel(IPlacePosition iPlace) {
     cellChooser = true;
     this.iPlace = iPlace;
     init();
@@ -259,10 +259,10 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   }
 
   private void initPlacesCombo() {
-    for (AbstractPlace rangement1 : Program.getAbstractPlaces()) {
-      if (iPlace == null || !rangement1.isSimplePlace()) {
-        complexPlaces.add(rangement1);
-        abstractPlaceCombo.addItem(rangement1);
+    for (AbstractPlace place : Program.getAbstractPlaces()) {
+      if (iPlace == null || !place.isSimplePlace()) {
+        complexPlaces.add(place);
+        abstractPlaceCombo.addItem(place);
       }
     }
   }
@@ -301,7 +301,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         return false;
       }
       if (selectedCell != null) {
-        iPlace.selectPlace(new Place.PlaceBuilder(abstractPlace)
+        iPlace.selectPlace(new PlacePosition.PlacePositionBuilder(abstractPlace)
             .withNumPlace(selectedCell.getPlaceNum())
             .withLine(selectedCell.getRow())
             .withColumn(selectedCell.getColumn())
@@ -321,7 +321,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     placePanel.removeAll();
   }
 
-  public IPlace getIPlace() {
+  public IPlacePosition getIPlace() {
     return iPlace;
   }
 
@@ -572,10 +572,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
               } else {
                 Program.getStorage().deleteWine(myCellarObject);
               }
-              ProgramPanels.getSearch().ifPresent(search -> {
-                search.removeObject(myCellarObject);
-                search.updateTable();
-              });
+              ProgramPanels.getSearch().ifPresent(search -> search.removeObject(myCellarObject));
               ProgramPanels.updateAllPanels();
             } catch (MyCellarException e) {
               Program.showException(e);
@@ -724,7 +721,7 @@ class LabelTransferHandler extends TransferHandler {
       final RangementCell src = (RangementCell) support.getTransferable().getTransferData(localObjectFlavor);
       final MyCellarObjectDraggingLabel bouteilleLabel = new MyCellarObjectDraggingLabel(src.draggingLabel.getMyCellarObject());
       final MyCellarObject bouteille = bouteilleLabel.getMyCellarObject();
-      target.setPlace(Program.getPlaceByName(target.getPlaceName()));
+      target.setPlace(PlaceUtils.getPlaceByName(target.getPlaceName()));
       bouteille.setEmplacement(target.getPlaceName());
       bouteille.setLigne(target.getRow());
       bouteille.setColonne(target.getColumn());

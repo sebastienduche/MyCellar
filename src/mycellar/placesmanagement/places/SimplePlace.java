@@ -16,8 +16,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 01/06/22
+ * @version 0.7
+ * @since 13/09/22
  */
 public final class SimplePlace extends AbstractPlace {
 
@@ -95,16 +95,9 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  @Deprecated
-  public Optional<MyCellarObject> getObject(int num_empl, int line, int column) {
-    Debug("ERROR: Function getObject(int, int, int) can't be called on a simple place!");
-    return Optional.empty();
-  }
-
-  @Override
-  public Optional<MyCellarObject> getObject(Place place) {
-    Debug("ERROR: Function getObject(Place) can't be called on a simple place!");
-    throw new RuntimeException("Function getObject(Place) can't be called on a simple place!");
+  public Optional<MyCellarObject> getObject(PlacePosition place) {
+    Debug("ERROR: Function getObject(PlacePosition) can't be called on a simple place!");
+    throw new RuntimeException("Function getObject(PlacePosition) can't be called on a simple place!");
   }
 
   /**
@@ -118,7 +111,7 @@ public final class SimplePlace extends AbstractPlace {
     return storage.get(num_empl).get(index);
   }
 
-  public boolean hasFreeSpace(Place place) {
+  public boolean hasFreeSpace(PlacePosition place) {
     return hasFreeSpace(place.getPlaceNumIndex());
   }
 
@@ -150,26 +143,20 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  public void clearStorage(MyCellarObject myCellarObject, Place place) {
+  public void clearStorage(MyCellarObject myCellarObject, PlacePosition place) {
     storage.get(place.getPart() - partNumberIncrement).remove(myCellarObject);
   }
 
   @Override
-  @Deprecated
-  public boolean canAddObjectAt(MyCellarObject b) {
-    return canAddObjectAt(b.getNumLieu() - partNumberIncrement, -1, -1);
-  }
-
-  @Override
-  @Deprecated
-  public boolean canAddObjectAt(int part, int tmpLine, int tmpCol) {
-    if (part < 0 || part >= getPartCount()) {
+  public boolean canAddObjectAt(PlacePosition place) {
+    final int placeNumIndex = place.getPlaceNumIndex();
+    if (placeNumIndex < 0 || placeNumIndex >= getPartCount()) {
       return false;
     }
     if (!isLimited()) {
       return true;
     }
-    if (getCountCellUsed(part) < maxItemCount) {
+    if (getCountCellUsed(placeNumIndex) < maxItemCount) {
       return true;
     }
     return false;

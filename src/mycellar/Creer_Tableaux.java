@@ -45,7 +45,7 @@ import java.util.List;
 
 import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
-import static mycellar.ProgramConstants.FONT_DIALOG_SMALL;
+import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -56,8 +56,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.2
- * @since 31/05/22
+ * @version 9.3
+ * @since 08/07/22
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   static final long serialVersionUID = 260706;
@@ -110,7 +110,7 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
     JScrollPane jScrollPane = new JScrollPane(table);
     end.setHorizontalAlignment(SwingConstants.CENTER);
     end.setForeground(Color.red);
-    end.setFont(FONT_DIALOG_SMALL);
+    end.setFont(FONT_DIALOG_BOLD);
     preview.setMnemonic(ouvrirChar);
     selectall.setHorizontalAlignment(SwingConstants.RIGHT);
     selectall.setHorizontalTextPosition(SwingConstants.LEFT);

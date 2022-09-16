@@ -15,7 +15,7 @@ import mycellar.Stat;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
-import mycellar.core.IPlace;
+import mycellar.core.IPlacePosition;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
@@ -77,14 +77,14 @@ import static mycellar.ScreenType.VIGNOBLES;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
- * <p>Titre : Cave &agrave; vin
- * <p>Description : Votre description
- * <p>Copyright : Copyright (c) 2012
- * <p>Soci&eacute;t&eacute; : Seb Informatique
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2012
+ * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 10/01/22
+ * @version 1.6
+ * @since 13/06/22
  */
 public class ProgramPanels {
 
@@ -339,7 +339,7 @@ public class ProgramPanels {
     OPENED_PANELS.remove(PARAMETRES);
   }
 
-  public static CellarOrganizerPanel createChooseCellPanel(IPlace iPlace) {
+  public static CellarOrganizerPanel createChooseCellPanel(IPlacePosition iPlace) {
     CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL0);
     if (cellarOrganizerPanel == null) {
       cellarOrganizerPanel = new CellarOrganizerPanel(iPlace);
@@ -374,7 +374,7 @@ public class ProgramPanels {
     return cellarOrganizerPanel;
   }
 
-  public static void deleteChooseCellPanel(IPlace iPlace) {
+  public static void deleteChooseCellPanel(IPlacePosition iPlace) {
     CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL0);
     if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
       OPENED_PANELS.remove(CHOOSE_CELL0);

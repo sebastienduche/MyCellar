@@ -8,6 +8,7 @@ import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
 import mycellar.placesmanagement.places.Part;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import org.w3c.dom.Element;
@@ -45,8 +46,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.9
- * @since 10/06/22
+ * @version 4.0
+ * @since 07/09/22
  */
 
 public class XmlUtils {
@@ -321,7 +322,11 @@ public class XmlUtils {
                 if (preview) {
                   vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
                 } else {
-                  rangement.getObject(i, j, k)
+                  rangement.getObject(new PlacePosition.PlacePositionBuilder(rangement)
+                          .withNumPlace1Based(i)
+                          .withLine1Based(j)
+                          .withColumn1Based(k)
+                          .build())
                       .ifPresentOrElse(myCellarObject -> vin_name.setTextContent(myCellarObject.getNom()), () -> vin_name.setTextContent(DASH));
                 }
               }

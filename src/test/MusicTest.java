@@ -6,7 +6,7 @@ import mycellar.core.common.music.MusicSupport;
 import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
-import mycellar.placesmanagement.places.Place;
+import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -414,14 +414,14 @@ class MusicTest {
   }
 
   @Test
-  void getPlace() {
-    Place place = music.getPlace();
+  void getPlacePosition() {
+    PlacePosition place = music.getPlacePosition();
     assertEquals(armoire1x3x3, place.getAbstractPlace());
     assertEquals(1, place.getPart());
     assertEquals(2, place.getLine());
     assertEquals(3, place.getColumn());
 
-    place = musicCaisse.getPlace();
+    place = musicCaisse.getPlacePosition();
     assertEquals(caisse, place.getAbstractPlace());
     assertEquals(1, place.getPart());
   }

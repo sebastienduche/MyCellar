@@ -646,6 +646,7 @@ public final class Program {
       MyCellarBottleContenance.load();
       CountryVignobleController.load();
 
+      // TODO Remove version 78
       Debug("Fixing the color of the bottles");
       getStorage().getAllList()
           .stream()

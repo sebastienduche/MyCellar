@@ -101,6 +101,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Debug("Reset Values...");
     panelGeneral.resetValues();
     panelWineAttribute.resetValues();
+    panelPlace.resetValues();
 
     commentTextArea.setText("");
     commentTextArea.setModified(false);
@@ -211,13 +212,13 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       }
 
       PlacePosition place = panelPlace.getSelectedPlacePosition();
-      AbstractPlace rangement = place.getAbstractPlace();
-      Objects.requireNonNull(rangement);
+      AbstractPlace abstractPlace = place.getAbstractPlace();
+      Objects.requireNonNull(abstractPlace);
       if (!place.hasPlace() && isModify) {
         //Si aucun emplacement n'a ete selectionne (modif du nom)
         place = myCellarObject.getPlacePosition();
         if (placeInModification != null) {
-          rangement = placeInModification;
+          abstractPlace = placeInModification;
         }
       }
 
@@ -225,10 +226,10 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       Result result;
       if (!panelPlace.isPlaceModified() && isModify) {
         result = modifyOneOrSeveralObjectsWithoutPlaceModification(annee);
-      } else if (rangement.isSimplePlace()) {
-        result = modifyOrAddObjectsInSimplePlace(rangement, place, annee);
+      } else if (abstractPlace.isSimplePlace()) {
+        result = modifyOrAddObjectsInSimplePlace(abstractPlace, place, annee);
       } else {
-        result = modifyOrAddObjectsInComplexPlace(rangement, place, annee);
+        result = modifyOrAddObjectsInComplexPlace(abstractPlace, place, annee);
       }
 
       if (result.isAdded()) {
@@ -249,6 +250,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           }
           panelGeneral.setTypeDefault();
         }
+      }
+      if (result.isRequireReset()) {
+        resetValues();
       }
       if (!result.isHasError()) {
         doAfterRun();
@@ -326,11 +330,11 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
             Debug("Putting multiple bottle in chosen place");
             result.setNbItemsAdded(nb_free_space);
             countStillToAdd -= nb_free_space + 1;
-            for (int z = 1; z < nb_free_space; z++) {
+            for (int i = 1; i < nb_free_space; i++) {
               newMyCellarObject = createMyCellarObject(annee, new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
                   .withNumPlace(part)
                   .withLine(line)
-                  .withColumn(column + z)
+                  .withColumn(column + i)
                   .build(), complexPlace);
               Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
               complexPlace.addObject(newMyCellarObject);
@@ -376,11 +380,11 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     return result;
   }
 
-  private Result modifyOrAddObjectsInSimplePlace(AbstractPlace rangement, PlacePosition place, String annee) {
+  private Result modifyOrAddObjectsInSimplePlace(AbstractPlace abstractPlace, PlacePosition place, String annee) {
     Debug("modifyOrAddObjectsInSimplePlace...");
     Result result = new Result();
     int countStillToAdd = panelWineAttribute.getNbItems();
-    SimplePlace simplePlace = (SimplePlace) rangement;
+    SimplePlace simplePlace = (SimplePlace) abstractPlace;
     if (!simplePlace.hasFreeSpace(place)) {
       Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
       end.setText("");
@@ -431,8 +435,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
           end.setText("");
         } else {
-          for (int z = 0; z < countStillToAdd - 1; z++) {
-            Debug("Adding bottle... " + z);
+          Debug("Adding n objects: " + (countStillToAdd - 1));
+          for (int i = 0; i < countStillToAdd - 1; i++) {
             MyCellarObject copy = createCopy(newMyCellarObject);
             Program.getStorage().addHistory(HistoryState.ADD, copy);
             simplePlace.addObject(copy);
@@ -562,22 +566,22 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     return new Bouteille();
   }
 
-  private MyCellarObject createMyCellarObject(String annee, PlacePosition place, AbstractPlace basicPlace) {
+  private MyCellarObject createMyCellarObject(String annee, PlacePosition place, AbstractPlace abstractPlace) {
     if (Program.isWineType()) {
-      return createBouteille(annee, place, basicPlace);
+      return createBouteille(annee, place, abstractPlace);
     }
     if (Program.isMusicType()) {
-      return createMusic(annee, place, basicPlace);
+      return createMusic(annee, place, abstractPlace);
     }
     Program.throwNotImplementedForNewType();
     return new Bouteille();
   }
 
-  private Bouteille createBouteille(String annee, PlacePosition place, AbstractPlace basicPlace) {
+  private Bouteille createBouteille(String annee, PlacePosition place, AbstractPlace abstractPlace) {
     BouteilleBuilder bouteilleBuilder = new BouteilleBuilder(panelGeneral.getObjectName())
         .annee(annee)
         .type(panelGeneral.getType())
-        .place(basicPlace.getName())
+        .place(abstractPlace.getName())
         .numPlace(place.getPart())
         .price(panelWineAttribute.getPrice())
         .comment(commentTextArea.getText())
@@ -586,18 +590,18 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         .color(panelWineAttribute.getColor())
         .status(nonNullValueOrDefault(panelWineAttribute.getStatusIfModified(), BottlesStatus.CREATED.name()))
         .vignoble(panelVignobles.getCountry(), panelVignobles.getVignoble(), panelVignobles.getAOC(), panelVignobles.getIGP());
-    if (!basicPlace.isSimplePlace()) {
+    if (!abstractPlace.isSimplePlace()) {
       bouteilleBuilder.line(place.getLine());
       bouteilleBuilder.column(place.getColumn());
     }
     return bouteilleBuilder.build();
   }
 
-  private Music createMusic(String annee, PlacePosition place, AbstractPlace basicPlace) {
+  private Music createMusic(String annee, PlacePosition place, AbstractPlace abstractPlace) {
     Music.MusicBuilder musicBuilder = new Music.MusicBuilder(panelGeneral.getObjectName())
         .annee(annee)
 //        .type(demie)
-        .place(basicPlace.getName())
+        .place(abstractPlace.getName())
         .numPlace(place.getPart())
         .price(panelWineAttribute.getPrice())
         .comment(commentTextArea.getText())
@@ -606,7 +610,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 //        .color(color)
         .status(nonNullValueOrDefault(panelWineAttribute.getStatusIfModified(), BottlesStatus.CREATED.name()));
 //        .vignoble(country, vignoble, aoc, igp);
-    if (!basicPlace.isSimplePlace()) {
+    if (!abstractPlace.isSimplePlace()) {
       musicBuilder.line(place.getLine());
       musicBuilder.column(place.getColumn());
     }

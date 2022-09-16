@@ -210,7 +210,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         enableAll(false);
       }
 
-      int countStillToAdd = panelWineAttribute.getNbItems();
       PlacePosition place = panelPlace.getSelectedPlacePosition();
       AbstractPlace rangement = place.getAbstractPlace();
       Objects.requireNonNull(rangement);
@@ -223,208 +222,16 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       }
 
       end.setText(getLabel("AddVin.AddingInProgress"));
-      boolean objectAdded = false;
-      boolean hasNoError = true;
-      boolean shouldResetValues = true;
-      int nb_bottle_add_only_one_place = 0;
+      Result result;
       if (!panelPlace.isPlaceModified() && isModify) {
-        objectAdded = modifyOneOrSeveralObjectsWithoutPlaceModification(annee);
+        result = modifyOneOrSeveralObjectsWithoutPlaceModification(annee);
       } else if (rangement.isSimplePlace()) {
-        Debug("Is a Caisse");
-        SimplePlace simplePlace = (SimplePlace) rangement;
-        if (!simplePlace.hasFreeSpace(place)) {
-          Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
-          end.setText("");
-          Debug("ERROR: No free spaces");
-          return;
-        }
-
-        if (!severalItems) {
-          MyCellarObject newMyCellarObject = createMyCellarObject(annee, place, simplePlace);
-          // Add multiple bottle with question
-          if (countStillToAdd > 1) {
-            if (!Program.hasOnlyOnePlace()) {
-              Debug("Adding multiple objects in the same place?");
-              String message = MessageFormat.format(getError("Error.questionAddNItemIn", LabelProperty.PLURAL), countStillToAdd, simplePlace.getName());
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), message, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
-                //Add several bottles in Caisse
-                Debug("Adding multiple objects in the same place: YES");
-
-                if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + countStillToAdd) > simplePlace.getMaxItemCount()) {
-                  Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
-                  end.setText("");
-                } else {
-                  for (int j = 0; j < countStillToAdd; j++) {
-                    MyCellarObject copy = createCopy(newMyCellarObject);
-                    Program.getStorage().addHistory(HistoryState.ADD, copy);
-                    simplePlace.addObject(copy);
-                  }
-                  end.setText(MessageFormat.format(getLabel("AddVin.NItemAdded", LabelProperty.PLURAL), countStillToAdd), true);
-                  resetValues();
-                }
-              } else {
-                Debug("Adding multiple objects in the same place: NO");
-                //Add a single bottle in Caisse
-                Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
-                simplePlace.addObject(newMyCellarObject);
-                end.setText(getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE), true);
-                panelWineAttribute.setStillNbItems(countStillToAdd - 1);
-              }
-            } else { // One simplePlace
-              if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + countStillToAdd) > simplePlace.getMaxItemCount()) {
-                hasNoError = false;
-                Debug("ERROR: This caisse is full. Unable to add all bottles in the same place!");
-                Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
-                end.setText("");
-              } else {
-                nb_bottle_add_only_one_place = countStillToAdd;
-                for (int z = 0; z < countStillToAdd - 1; z++) {
-                  Debug("Adding bottle... " + z);
-                  MyCellarObject copy = createCopy(newMyCellarObject);
-                  Program.getStorage().addHistory(HistoryState.ADD, copy);
-                  simplePlace.addObject(copy);
-                }
-                countStillToAdd = 1;
-              }
-            }
-          } // Fin de l'ajout de plusieurs bouteilles restantes
-
-          if (countStillToAdd == 1) {
-            if (isModify) {
-              //Suppression de la bouteille lors de la modification
-              Debug("Updating bottle when modifying");
-              myCellarObject.getAbstractPlace().clearStorage(myCellarObject);
-              myCellarObject.update(newMyCellarObject);
-              Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
-              objectAdded = true;
-            } else {
-              //Ajout de la bouteille
-              Debug("Adding bottle...");
-              Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
-              objectAdded = simplePlace.addObject(newMyCellarObject);
-            }
-
-            if (objectAdded) {
-              resetValues();
-            } else {
-              Debug("ERROR: Adding bottle: Storage full");
-              Erreur.showSimpleErreur(MessageFormat.format(getError("Error.storageFull"), simplePlace.getName()), getError("Error.selectAnotherStorage"));
-              hasNoError = false;
-            }
-          }
-        } else { // Modification de plusieurs vins vers une caisse
-          objectAdded = modifySeveralObjectsInSimplePlace(place, simplePlace);
-        }
+        result = modifyOrAddObjectsInSimplePlace(rangement, place, annee);
       } else {
-        ComplexPlace complexPlace = (ComplexPlace) rangement;
-        // Ajout dans une Armoire
-        if (severalItems) { //On ne peut pas deplacer plusieurs bouteilles vers une armoire
-          Debug("ERROR: Unable to move multiple bottles to a Complex place");
-          end.setText("");
-          String nomRangement = complexPlace.getName();
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.unableToMoveNItemsIn", PLURAL), nomRangement), getError("Error.selectSimpleStorage"));
-          enableAll(true);
-        } else {
-          // Ajout d'une bouteille dans l'armoire
-          int part = place.getPlaceNumIndex();
-          int line = place.getLineIndex();
-          int column = place.getColumnIndex();
-
-          if (isModify && !panelPlace.isPlaceModified()) { //Si aucune modification du Lieu
-            Debug("ERROR: Shouldn't come here");
-            throw new RuntimeException("Shouldn't happen!");
-          }
-          int nb_free_space = 0;
-          MyCellarObject myCellarObjectFound = null;
-          if (!isModify || panelPlace.isPlaceModified()) { //Si Ajout bouteille ou modification du lieu
-            Debug("Adding bottle or modifying place");
-            myCellarObjectFound = complexPlace.getObject(
-                new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
-                    .withNumPlace(part)
-                    .withLine(line)
-                    .withColumn(column)
-                    .build()).orElse(null);
-            if (myCellarObjectFound == null) {
-              nb_free_space = complexPlace.getCountFreeCellFrom(part, line, column);
-            }
-          }
-          Debug("Creating new bottle...");
-          MyCellarObject newMyCellarObject = createMyCellarObject(annee, new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
-              .withNumPlace(part)
-              .withLine(line)
-              .withColumn(column)
-              .build(), complexPlace);
-          if (myCellarObjectFound == null) {
-            if (isModify) {
-              Debug("Empty case: Modifying bottle");
-              final PlacePosition oldPLace = myCellarObject.getPlacePosition();
-              myCellarObject.update(newMyCellarObject);
-              newMyCellarObject.getAbstractPlace().updateToStock(newMyCellarObject);
-              Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
-              if (!complexPlace.isSimplePlace()) {
-                Debug("Deleting from older complex place");
-                ((ComplexPlace) oldPLace.getAbstractPlace()).clearStorage(oldPLace);
-              }
-            } else {
-              Debug("Empty case: Adding bottle");
-              Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
-              complexPlace.addObject(newMyCellarObject);
-              if (countStillToAdd > 1 && nb_free_space > 1) { // Add bottles next to each others
-                if (nb_free_space > countStillToAdd) {
-                  nb_free_space = countStillToAdd;
-                }
-                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getError("Error.questionAddNItemsNext", PLURAL), nb_free_space), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
-                  Debug("Putting multiple bottle in chosen place");
-                  nb_bottle_add_only_one_place = nb_free_space;
-                  countStillToAdd -= nb_free_space + 1;
-                  for (int z = 1; z < nb_free_space; z++) {
-                    newMyCellarObject = createMyCellarObject(annee, new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
-                        .withNumPlace(part)
-                        .withLine(line)
-                        .withColumn(column + z)
-                        .build(), complexPlace);
-                    Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
-                    complexPlace.addObject(newMyCellarObject);
-                  }
-                }
-              }
-            }
-
-            if (countStillToAdd > 1) {
-              panelWineAttribute.setStillNbItems(countStillToAdd - 1);
-              panelPlace.resetValues();
-            } else {
-              resetValues();
-              if (isModify) {
-                panelGeneral.setEditable(false);
-                panelWineAttribute.setEditable(false);
-                commentTextArea.setEditable(false);
-                addButton.setEnabled(false);
-                panelPlace.enablePlaceSelection(false);
-              }
-            }
-            if (isModify) {
-              panelPlace.enablePlace(true);
-            }
-            objectAdded = true;
-          } else { // La case n'est pas vide
-            Debug("WARNING: Not an empty place, Replace?");
-            String erreur_txt1 = MessageFormat.format(getError("Error.alreadyInStorage"), myCellarObjectFound.getNom(), myCellarObjectFound.getAnnee());
-            String erreur_txt2 = getError("Error.questionReplaceIt");
-            if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
-              replaceWine(newMyCellarObject, myCellarObjectFound);
-              end.setText(isModify ? getLabel("AddVin.1ItemModified", LabelProperty.SINGLE) : getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE), true);
-              resetValues();
-            } else {
-              end.setText(getLabel("AddVin.NotSaved", LabelProperty.THE_SINGLE));
-              enableAll(true);
-              hasNoError = false;
-            }
-          }
-        }
+        result = modifyOrAddObjectsInComplexPlace(rangement, place, annee);
       }
 
-      if (objectAdded) {
+      if (result.isAdded()) {
         if (isModify) {
           if (listVin != null) {
             listVin.updateList(listBottleInModification);
@@ -435,15 +242,15 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
             end.setText(MessageFormat.format(getLabel("AddVin.NItemModified", LabelProperty.PLURAL), listBottleInModification.size()));
           }
         } else {
-          if (nb_bottle_add_only_one_place == 0) {
+          if (result.getNbItemsAdded() == 0) {
             end.setText(getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE), true);
           } else {
-            end.setText(MessageFormat.format(getLabel("AddVin.NItemAdded", LabelProperty.PLURAL), nb_bottle_add_only_one_place));
+            end.setText(MessageFormat.format(getLabel("AddVin.NItemAdded", LabelProperty.PLURAL), result.getNbItemsAdded()));
           }
           panelGeneral.setTypeDefault();
         }
       }
-      if (hasNoError) {
+      if (!result.isHasError()) {
         doAfterRun();
       }
     } catch (MyCellarException e) {
@@ -452,72 +259,296 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Debug("Running Done");
   }
 
-  private boolean modifySeveralObjectsInSimplePlace(PlacePosition place, SimplePlace simplePlace) {
+  private Result modifyOrAddObjectsInComplexPlace(AbstractPlace rangement, PlacePosition place, String annee) throws MyCellarException {
+    Result result = new Result();
+    int countStillToAdd = panelWineAttribute.getNbItems();
+    ComplexPlace complexPlace = (ComplexPlace) rangement;
+    // Ajout dans une Armoire
+    if (severalItems) { //On ne peut pas deplacer plusieurs bouteilles vers une armoire
+      Debug("ERROR: Unable to move multiple objects to a Complex place");
+      end.setText("");
+      String nomRangement = complexPlace.getName();
+      Erreur.showSimpleErreur(MessageFormat.format(getError("Error.unableToMoveNItemsIn", PLURAL), nomRangement), getError("Error.selectSimpleStorage"));
+      enableAll(true);
+      return result;
+    }
+
+    // Ajout d'une bouteille dans l'armoire
+    int part = place.getPlaceNumIndex();
+    int line = place.getLineIndex();
+    int column = place.getColumnIndex();
+
+    if (isModify && !panelPlace.isPlaceModified()) { //Si aucune modification du Lieu
+      Debug("ERROR: Shouldn't come here");
+      throw new RuntimeException("Shouldn't happen!");
+    }
+    int nb_free_space = 0;
+    MyCellarObject myCellarObjectFound = null;
+    if (!isModify || panelPlace.isPlaceModified()) { //Si Ajout bouteille ou modification du lieu
+      Debug("Adding bottle or modifying place");
+      myCellarObjectFound = complexPlace.getObject(
+          new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
+              .withNumPlace(part)
+              .withLine(line)
+              .withColumn(column)
+              .build()).orElse(null);
+      if (myCellarObjectFound == null) {
+        nb_free_space = complexPlace.getCountFreeCellFrom(part, line, column);
+      }
+    }
+
+    Debug("Creating new bottle...");
+    MyCellarObject newMyCellarObject = createMyCellarObject(annee, new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
+        .withNumPlace(part)
+        .withLine(line)
+        .withColumn(column)
+        .build(), complexPlace);
+    if (myCellarObjectFound == null) {
+      if (isModify) {
+        Debug("Empty case: Modifying bottle");
+        final PlacePosition oldPLace = myCellarObject.getPlacePosition();
+        myCellarObject.update(newMyCellarObject);
+        newMyCellarObject.getAbstractPlace().updateToStock(newMyCellarObject);
+        Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
+        if (!complexPlace.isSimplePlace()) {
+          Debug("Deleting from older complex place");
+          ((ComplexPlace) oldPLace.getAbstractPlace()).clearStorage(oldPLace);
+        }
+      } else {
+        Debug("Empty case: Adding bottle");
+        Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
+        complexPlace.addObject(newMyCellarObject);
+        if (countStillToAdd > 1 && nb_free_space > 1) { // Add bottles next to each others
+          if (nb_free_space > countStillToAdd) {
+            nb_free_space = countStillToAdd;
+          }
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getError("Error.questionAddNItemsNext", PLURAL), nb_free_space), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+            Debug("Putting multiple bottle in chosen place");
+            result.setNbItemsAdded(nb_free_space);
+            countStillToAdd -= nb_free_space + 1;
+            for (int z = 1; z < nb_free_space; z++) {
+              newMyCellarObject = createMyCellarObject(annee, new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
+                  .withNumPlace(part)
+                  .withLine(line)
+                  .withColumn(column + z)
+                  .build(), complexPlace);
+              Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
+              complexPlace.addObject(newMyCellarObject);
+            }
+          }
+        }
+      }
+
+      if (countStillToAdd > 1) {
+        panelWineAttribute.setStillNbItems(countStillToAdd - 1);
+        panelPlace.resetValues();
+      } else {
+        result.setRequireReset(true);
+        resetValues();
+        if (isModify) {
+          panelGeneral.setEditable(false);
+          panelWineAttribute.setEditable(false);
+          commentTextArea.setEditable(false);
+          addButton.setEnabled(false);
+          panelPlace.enablePlaceSelection(false);
+        }
+      }
+      if (isModify) {
+        panelPlace.enablePlace(true);
+      }
+      result.setAdded(true);
+    } else { // La case n'est pas vide
+      Debug("WARNING: Not an empty place, Replace?");
+      String erreur_txt1 = MessageFormat.format(getError("Error.alreadyInStorage"), myCellarObjectFound.getNom(), myCellarObjectFound.getAnnee());
+      String erreur_txt2 = getError("Error.questionReplaceIt");
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+        replaceWine(newMyCellarObject, myCellarObjectFound);
+        end.setText(isModify ? getLabel("AddVin.1ItemModified", LabelProperty.SINGLE) : getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE), true);
+        result.setAdded(true);
+        result.setRequireReset(true);
+        resetValues();
+      } else {
+        end.setText(getLabel("AddVin.NotSaved", LabelProperty.THE_SINGLE));
+        enableAll(true);
+        result.setHasError(true);
+      }
+    }
+    return result;
+  }
+
+  private Result modifyOrAddObjectsInSimplePlace(AbstractPlace rangement, PlacePosition place, String annee) {
+    Debug("modifyOrAddObjectsInSimplePlace...");
+    Result result = new Result();
+    int countStillToAdd = panelWineAttribute.getNbItems();
+    SimplePlace simplePlace = (SimplePlace) rangement;
+    if (!simplePlace.hasFreeSpace(place)) {
+      Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
+      end.setText("");
+      Debug("ERROR: No free spaces");
+      return result;
+    }
+
+    if (severalItems) {
+      return modifySeveralObjectsInSimplePlace(place, simplePlace);
+    }
+
+    MyCellarObject newMyCellarObject = createMyCellarObject(annee, place, simplePlace);
+    // Add multiple bottle with question
+    if (countStillToAdd > 1) {
+      if (!Program.hasOnlyOnePlace()) {
+        Debug("Adding multiple objects in the same place?");
+        String message = MessageFormat.format(getError("Error.questionAddNItemIn", LabelProperty.PLURAL), countStillToAdd, simplePlace.getName());
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), message, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+          //Add several bottles in Caisse
+          Debug("Adding multiple objects in the same place: YES");
+
+          if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + countStillToAdd) > simplePlace.getMaxItemCount()) {
+            Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
+            end.setText("");
+          } else {
+            result.setNbItemsAdded(countStillToAdd);
+            for (int j = 0; j < countStillToAdd; j++) {
+              MyCellarObject copy = createCopy(newMyCellarObject);
+              Program.getStorage().addHistory(HistoryState.ADD, copy);
+              simplePlace.addObject(copy);
+            }
+            end.setText(MessageFormat.format(getLabel("AddVin.NItemAdded", LabelProperty.PLURAL), countStillToAdd), true);
+            result.setAdded(true);
+            result.setRequireReset(true);
+          }
+        } else {
+          Debug("Adding multiple objects in the same place: NO");
+          //Add a single bottle in Caisse
+          Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
+          simplePlace.addObject(newMyCellarObject);
+          end.setText(getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE), true);
+          panelWineAttribute.setStillNbItems(countStillToAdd - 1);
+        }
+      } else { // One simplePlace
+        if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + countStillToAdd) > simplePlace.getMaxItemCount()) {
+          result.setHasError(true);
+          Debug("ERROR: This caisse is full. Unable to add all bottles in the same place!");
+          Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
+          end.setText("");
+        } else {
+          for (int z = 0; z < countStillToAdd - 1; z++) {
+            Debug("Adding bottle... " + z);
+            MyCellarObject copy = createCopy(newMyCellarObject);
+            Program.getStorage().addHistory(HistoryState.ADD, copy);
+            simplePlace.addObject(copy);
+          }
+          result.setAdded(true);
+          result.setRequireReset(true);
+          countStillToAdd = 1;
+        }
+      }
+    } // Fin de l'ajout de plusieurs bouteilles restantes
+
+    if (countStillToAdd == 1) {
+      if (isModify) {
+        //Suppression de la bouteille lors de la modification
+        Debug("Updating bottle when modifying");
+        myCellarObject.getAbstractPlace().clearStorage(myCellarObject);
+        myCellarObject.update(newMyCellarObject);
+        Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
+      } else {
+        //Ajout de la bouteille
+        Debug("Adding bottle...");
+        Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
+        final boolean added = simplePlace.addObject(newMyCellarObject);
+        result.setAdded(added);
+        result.setRequireReset(added);
+      }
+
+      if (result.isAdded()) {
+        resetValues();
+      } else {
+        Debug("ERROR: Adding bottle: Storage full");
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.storageFull"), simplePlace.getName()), getError("Error.selectAnotherStorage"));
+        result.setHasError(true);
+      }
+    }
+    return result;
+  }
+
+  private Result modifySeveralObjectsInSimplePlace(PlacePosition place, SimplePlace simplePlace) {
     Debug("modifySeveralObjectsInSimplePlace...");
     Debug("Modifying multiple bottles to a Simple place");
-    boolean objectAdded = false;
     if (!place.hasPlace()) {
-      Debug("Modifying without changing place");
-      boolean bOneBottle = listBottleInModification.size() == 1;
-      for (MyCellarObject tmp : listBottleInModification) {
-        updateMyCellarObject(bOneBottle, tmp);
-        tmp.updateStatus();
-
-        if (isModify) {
-          Debug("Modifying bottle...");
-          Program.getStorage().addHistory(HistoryState.MODIFY, tmp);
-          objectAdded = true;
-        } else {
-          Debug("Adding bottle...");
-          Program.getStorage().addHistory(HistoryState.ADD, tmp);
-          //Ajout des bouteilles
-          if (tmp.getAbstractPlace().addObject(tmp)) {
-            objectAdded = true;
-          }
-        }
-      }
-      resetValues();
+      return modifySeveralObjectsWithoutChangingSimplePlace();
     } else {
-      Debug("Modifying with changing place");
-      int nbbottle = listBottleInModification.size();
-      if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + nbbottle) > simplePlace.getMaxItemCount()) {
-        Debug("ERROR: Not enough place!");
-        Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
-        panelPlace.enableSimplePlace(true);
-        addButton.setEnabled(true);
-        end.setText("");
-        return false;
+      return modifySeveralObjectsWithChangingSimplePlace(place, simplePlace);
+    }
+  }
+
+  private Result modifySeveralObjectsWithChangingSimplePlace(PlacePosition place, SimplePlace simplePlace) {
+    Debug("Modifying with changing place");
+    Result result = new Result();
+    int nbbottle = listBottleInModification.size();
+    if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + nbbottle) > simplePlace.getMaxItemCount()) {
+      Debug("ERROR: Not enough place!");
+      Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
+      panelPlace.enableSimplePlace(true);
+      addButton.setEnabled(true);
+      end.setText("");
+      return result;
+    }
+    boolean bOneBottle = listBottleInModification.size() == 1;
+    for (MyCellarObject tmp : listBottleInModification) {
+      updateMyCellarObject(bOneBottle, tmp);
+      Debug("Adding multiple bottles in simple place...");
+      if (isModify && tmp.isInExistingPlace()) {
+        Debug("Delete from stock");
+        tmp.getAbstractPlace().clearStorage(tmp, tmp.getPlacePosition());
       }
-      boolean bOneBottle = listBottleInModification.size() == 1;
-      for (MyCellarObject tmp : listBottleInModification) {
-        updateMyCellarObject(bOneBottle, tmp);
-        Debug("Adding multiple bottles in simple place...");
-        if (isModify && tmp.isInExistingPlace()) {
-          Debug("Delete from stock");
-          tmp.getAbstractPlace().clearStorage(tmp, tmp.getPlacePosition());
-        }
-        //Ajout des bouteilles dans la caisse
-        tmp.setEmplacement(simplePlace.getName());
-        tmp.setNumLieu(place.getPart());
-        tmp.setLigne(0);
-        tmp.setColonne(0);
-        tmp.updateStatus();
-        tmp.getAbstractPlace().updateToStock(tmp);
-        Debug("Bottle updated.");
-        Program.getStorage().addHistory(isModify ? HistoryState.MODIFY : HistoryState.ADD, tmp);
-        if (isModify) {
-          objectAdded = true;
+      //Ajout des bouteilles dans la caisse
+      tmp.setEmplacement(simplePlace.getName());
+      tmp.setNumLieu(place.getPart());
+      tmp.setLigne(0);
+      tmp.setColonne(0);
+      tmp.updateStatus();
+      tmp.getAbstractPlace().updateToStock(tmp);
+      Debug("Bottle updated.");
+      Program.getStorage().addHistory(isModify ? HistoryState.MODIFY : HistoryState.ADD, tmp);
+      if (isModify) {
+        result.setAdded(true);
+        result.setRequireReset(true);
+        resetValues();
+      } else {
+        if (simplePlace.addObject(tmp)) {
+          result.setAdded(true);
+          result.setRequireReset(true);
           resetValues();
-        } else {
-          if (simplePlace.addObject(tmp)) {
-            objectAdded = true;
-            resetValues();
-          }
         }
       }
     }
-    Debug("modifySeveralObjectsInSimplePlace... Done");
-    return objectAdded;
+    return result;
+  }
+
+  private Result modifySeveralObjectsWithoutChangingSimplePlace() {
+    Result result = new Result();
+    Debug("Modifying without changing place");
+    boolean bOneBottle = listBottleInModification.size() == 1;
+    for (MyCellarObject tmp : listBottleInModification) {
+      updateMyCellarObject(bOneBottle, tmp);
+      tmp.updateStatus();
+
+      if (isModify) {
+        Debug("Modifying bottle...");
+        Program.getStorage().addHistory(HistoryState.MODIFY, tmp);
+        result.setAdded(true);
+        result.setRequireReset(true);
+      } else {
+        Debug("Adding bottle...");
+        Program.getStorage().addHistory(HistoryState.ADD, tmp);
+        if (tmp.getAbstractPlace().addObject(tmp)) {
+          result.setAdded(true);
+          result.setRequireReset(true);
+        }
+      }
+    }
+    resetValues();
+    return result;
   }
 
   private MyCellarObject createCopy(MyCellarObject newMyCellarObject) {
@@ -646,16 +677,16 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     }
   }
 
-  private boolean modifyOneOrSeveralObjectsWithoutPlaceModification(String annee) throws MyCellarException {
+  private Result modifyOneOrSeveralObjectsWithoutPlaceModification(String annee) throws MyCellarException {
+    Result result = new Result();
     Debug("modifyOneOrSeveralObjectsWithoutPlaceModification...");
-    boolean m_bbottle_add = false;
     if (!severalItems) {
       Debug("Modifying one bottle in Armoire without changing place");
       MyCellarObject tmp = createMyCellarObject(annee, myCellarObject.getPlacePosition(), myCellarObject.getAbstractPlace());
       Debug("Replacing bottle...");
       myCellarObject.update(tmp);
       Program.getStorage().addHistory(HistoryState.MODIFY, tmp);
-      m_bbottle_add = true;
+      result.setAdded(true);
     } else {
       Debug("Modifying multiple bottles in Armoire without changing place");
       final String comment = commentTextArea.isModified() ? commentTextArea.getText() : null;
@@ -705,13 +736,14 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         Program.getStorage().addHistory(isModify ? HistoryState.MODIFY : HistoryState.ADD, tmp);
         //Ajout des bouteilles dans ALL
         if (rangement.addObject(tmp)) {
-          m_bbottle_add = true;
+          result.setAdded(true);
         }
       }
     }
+    result.setRequireReset(true);
     resetValues();
     Debug("modifyOneOrSeveralObjectsWithoutPlaceModification... Done");
-    return m_bbottle_add;
+    return result;
   }
 
   private void replaceWine(final MyCellarObject newMyCellarObject, final MyCellarObject objectToDelete) throws MyCellarException {
@@ -802,6 +834,50 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     listBottleInModification = null;
     reInitAddVin();
     Debug("ReInit... Done");
+  }
+
+  private static class Result {
+    private boolean added = false;
+    private boolean requireReset = false;
+    private boolean hasError = false;
+    private int nbItemsAdded;
+
+    public boolean isAdded() {
+      return added;
+    }
+
+    public void setAdded(boolean added) {
+      this.added = added;
+    }
+
+    public boolean isRequireReset() {
+      return requireReset;
+    }
+
+    public void setRequireReset(boolean requireReset) {
+      this.requireReset = requireReset;
+    }
+
+    public void merge(Result result) {
+      added = added || result.isAdded();
+      requireReset = requireReset || result.isRequireReset();
+    }
+
+    public boolean isHasError() {
+      return hasError;
+    }
+
+    public void setHasError(boolean hasError) {
+      this.hasError = hasError;
+    }
+
+    public void setNbItemsAdded(int nbItemsAdded) {
+      this.nbItemsAdded = nbItemsAdded;
+    }
+
+    public int getNbItemsAdded() {
+      return nbItemsAdded;
+    }
   }
 
   @Override

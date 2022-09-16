@@ -72,8 +72,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelForType;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.0
- * @since 07/09/22
+ * @version 10.1
+ * @since 13/09/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -374,7 +374,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Stats.Items", LabelProperty.PLURAL), "")));
     panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getNbItems())), "span 2, align right, wrap");
     panel.add(new MyCellarSimpleLabel(getLabel("Stats.UniqueItems", LabelProperty.PLURAL)));
-    panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getStorage().getBottlesCount())), "span 2, align right, gapbottom 10px, wrap");
+    panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getStorage().getDistinctNames().size())), "span 2, align right, gapbottom 10px, wrap");
     if (Program.isWineType()) {
       panel.add(new MyCellarSimpleLabel(getLabel("Stats.ByColor")), "wrap");
       final Map<String, Long> collect = Program.getStorage().getAllList()
@@ -413,6 +413,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     final TableColumn column = columnModel.getColumn(1);
     column.setMinWidth(50);
     column.setMaxWidth(50);
+    panelOther.setLayout(new MigLayout("", "grow", "[][grow]"));
+    panelOther.add(new MyCellarSimpleLabel(getLabel("Stats.NbObjectPerLabel", PLURAL)), "wrap");
     panelOther.add(new JScrollPane(table), "grow");
     panel.repaint();
     panelChart.setVisible(false);

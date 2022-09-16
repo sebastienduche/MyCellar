@@ -87,7 +87,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 24.5
- * @since 13/09/22
+ * @since 15/09/22
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 

@@ -107,8 +107,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.0
- * @since 06/09/22
+ * @version 29.1
+ * @since 09/10/22
  */
 
 public final class Program {
@@ -494,6 +494,7 @@ public final class Program {
     modified = false;
     listCaveModified = false;
     ProgramPanels.setAllPanesModified(false);
+    Start.setApplicationTitleUnmodified();
     Debug("Program: -------------------");
     Debug("Program: Saving all files OK");
     Debug("Program: -------------------");

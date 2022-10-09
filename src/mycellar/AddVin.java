@@ -48,8 +48,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.0
- * @since 16/09/22
+ * @version 32.1
+ * @since 09/10/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -192,75 +192,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
   @Override
   public void run() {
-    Debug("Running...");
-    try {
-      // Check Name / Year / Place / Part
-      if (!performValidations()) {
-        end.setText("");
-        enableAll(true);
-        Debug("ERROR: Validations failed");
-        return;
-      }
-      Debug("Adding / Modifying...");
-
-      final String annee = panelGeneral.updateYear(); // Keep it here before it become not editable
-      if (isModify) {
-        //On grise les champs en cours de modif
-        Debug("Modifying in Progress...");
-        end.setText(getLabel("AddVin.ModifyInProgreess"));
-        enableAll(false);
-      }
-
-      PlacePosition place = panelPlace.getSelectedPlacePosition();
-      AbstractPlace abstractPlace = place.getAbstractPlace();
-      Objects.requireNonNull(abstractPlace);
-      if (!place.hasPlace() && isModify) {
-        //Si aucun emplacement n'a ete selectionne (modif du nom)
-        place = myCellarObject.getPlacePosition();
-        if (placeInModification != null) {
-          abstractPlace = placeInModification;
-        }
-      }
-
-      end.setText(getLabel("AddVin.AddingInProgress"));
-      Result result;
-      if (!panelPlace.isPlaceModified() && isModify) {
-        result = modifyOneOrSeveralObjectsWithoutPlaceModification(annee);
-      } else if (abstractPlace.isSimplePlace()) {
-        result = modifyOrAddObjectsInSimplePlace(abstractPlace, place, annee);
-      } else {
-        result = modifyOrAddObjectsInComplexPlace(abstractPlace, place, annee);
-      }
-
-      if (result.isAdded()) {
-        if (isModify) {
-          if (listVin != null) {
-            listVin.updateList(listBottleInModification);
-          }
-          if (listBottleInModification.size() == 1) {
-            end.setText(getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
-          } else {
-            end.setText(MessageFormat.format(getLabel("AddVin.NItemModified", LabelProperty.PLURAL), listBottleInModification.size()));
-          }
-        } else {
-          if (result.getNbItemsAdded() == 0) {
-            end.setText(getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE), true);
-          } else {
-            end.setText(MessageFormat.format(getLabel("AddVin.NItemAdded", LabelProperty.PLURAL), result.getNbItemsAdded()));
-          }
-          panelGeneral.setTypeDefault();
-        }
-      }
-      if (result.isRequireReset()) {
-        resetValues();
-      }
-      if (!result.isHasError()) {
-        doAfterRun();
-      }
-    } catch (MyCellarException e) {
-      Program.showException(e);
-    }
-    Debug("Running Done");
+    saveObject();
   }
 
   private Result modifyOrAddObjectsInComplexPlace(AbstractPlace rangement, PlacePosition place, String annee) throws MyCellarException {
@@ -773,7 +705,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     panelGeneral.setMyCellarObject(null);
     panelPlace.clearModified();
     ProgramPanels.updateCellOrganizerPanel(false);
-    ProgramPanels.setSelectedPaneModified(false);
+    ProgramPanels.setPaneModified(selectedPaneIndex, false);
     if (!isModify) {
       Debug("Do After Run... Done");
       return;
@@ -813,7 +745,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Debug("runExit...");
     addButton.setEnabled(false);
     //Verification qu'il n'y a pas de bouteilles en modif ou creation
-    if (!panelGeneral.runExit(isModify)) {
+    if (panelGeneral.askForQuit(isModify)) {
       addButton.setEnabled(true);
       return false;
     }
@@ -838,6 +770,86 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     listBottleInModification = null;
     reInitAddVin();
     Debug("ReInit... Done");
+  }
+
+  public boolean save() {
+    if (panelGeneral.askForSave(isModify)) {
+      return saveObject();
+    }
+    return true;
+  }
+
+  private boolean saveObject() {
+    Debug("Running...");
+    try {
+      // Check Name / Year / Place / Part
+      if (!performValidations()) {
+        end.setText("");
+        enableAll(true);
+        Debug("ERROR: Validations failed");
+        return false;
+      }
+      Debug("Adding / Modifying...");
+
+      final String annee = panelGeneral.updateYear(); // Keep it here before it become not editable
+      if (isModify) {
+        //On grise les champs en cours de modif
+        Debug("Modifying in Progress...");
+        end.setText(getLabel("AddVin.ModifyInProgreess"));
+        enableAll(false);
+      }
+
+      PlacePosition place = panelPlace.getSelectedPlacePosition();
+      AbstractPlace abstractPlace = place.getAbstractPlace();
+      Objects.requireNonNull(abstractPlace);
+      if (!place.hasPlace() && isModify) {
+        //Si aucun emplacement n'a ete selectionne (modif du nom)
+        place = myCellarObject.getPlacePosition();
+        if (placeInModification != null) {
+          abstractPlace = placeInModification;
+        }
+      }
+
+      end.setText(getLabel("AddVin.AddingInProgress"));
+      Result result;
+      if (!panelPlace.isPlaceModified() && isModify) {
+        result = modifyOneOrSeveralObjectsWithoutPlaceModification(annee);
+      } else if (abstractPlace.isSimplePlace()) {
+        result = modifyOrAddObjectsInSimplePlace(abstractPlace, place, annee);
+      } else {
+        result = modifyOrAddObjectsInComplexPlace(abstractPlace, place, annee);
+      }
+
+      if (result.isAdded()) {
+        if (isModify) {
+          if (listVin != null) {
+            listVin.updateList(listBottleInModification);
+          }
+          if (listBottleInModification.size() == 1) {
+            end.setText(getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
+          } else {
+            end.setText(MessageFormat.format(getLabel("AddVin.NItemModified", LabelProperty.PLURAL), listBottleInModification.size()));
+          }
+        } else {
+          if (result.getNbItemsAdded() == 0) {
+            end.setText(getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE), true);
+          } else {
+            end.setText(MessageFormat.format(getLabel("AddVin.NItemAdded", LabelProperty.PLURAL), result.getNbItemsAdded()));
+          }
+          panelGeneral.setTypeDefault();
+        }
+      }
+      if (result.isRequireReset()) {
+        resetValues();
+      }
+      if (!result.isHasError()) {
+        doAfterRun();
+      }
+    } catch (MyCellarException e) {
+      Program.showException(e);
+    }
+    Debug("Running Done");
+    return true;
   }
 
   private static class Result {

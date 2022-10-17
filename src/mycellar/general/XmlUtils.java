@@ -85,7 +85,7 @@ public class XmlUtils {
   }
 
   public static boolean readMyCellarXml(String filename, final List<AbstractPlace> rangementList) {
-    Debug("readMyCellarXml1: Reading file");
+    Debug("readMyCellarXml: Reading file");
     rangementList.clear();
     if (isNullOrEmpty(filename)) {
       filename = Program.getXMLPlacesFileName();
@@ -176,21 +176,12 @@ public class XmlUtils {
 
         }
       }
-    } catch (IOException e) {
-      Debug("IOException");
-      Program.showException(e, false);
-      return false;
-    } catch (ParserConfigurationException e) {
-      Debug("ParserConfigurationException");
-      Program.showException(e, false);
-      return false;
-    } catch (SAXException e) {
-      Debug("SAXException");
+    } catch (IOException | ParserConfigurationException | SAXException e) {
       Program.showException(e, false);
       return false;
     }
 
-    Debug("readMyCellarXml1: Reading file OK");
+    Debug("readMyCellarXml: Reading file OK");
     return true;
   }
 

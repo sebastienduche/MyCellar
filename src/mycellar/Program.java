@@ -74,6 +74,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static mycellar.Filtre.FILTRE_TXT;
+import static mycellar.MyCellarUtils.isDefined;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.BOUTEILLES_XML;
@@ -754,12 +755,12 @@ public final class Program {
       saveGlobalProperties();
 
       if (getCaveConfigBool(MyCellarSettings.HAS_EXCEL_FILE, false)) {
-        //Ecriture Excel
         final String file_excel = getCaveConfigString(MyCellarSettings.FILE_EXCEL, "");
-        Debug("Program: Writing backup Excel file: " + file_excel);
-        final List<IMyCellarObject> bouteilles = Collections.unmodifiableList(getStorage().getAllList());
-        Thread writingExcel = new Thread(() -> PlaceUtils.writeXLS(new File(file_excel), bouteilles, true, null));
-        Runtime.getRuntime().addShutdownHook(writingExcel);
+        if (isDefined(file_excel)) {
+          Debug("Program: Writing backup Excel file: " + file_excel);
+          Thread writingExcel = new Thread(() -> PlaceUtils.writeXLS(new File(file_excel), Collections.unmodifiableList(getStorage().getAllList()), true, null));
+          Runtime.getRuntime().addShutdownHook(writingExcel);
+        }
       }
     }
 

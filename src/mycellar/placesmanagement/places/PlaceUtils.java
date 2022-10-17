@@ -106,7 +106,7 @@ public final class PlaceUtils {
    * @param progressBar
    * @return int
    */
-  public static boolean writeCSV(final File file, final List<? extends IMyCellarObject> myCellarObjects, final JProgressBar progressBar) {
+  public static boolean writeCSV(final File file, final List<? extends MyCellarObject> myCellarObjects, final JProgressBar progressBar) {
 
     Debug("writeCSV: writing file: " + file.getAbsolutePath());
     String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
@@ -293,7 +293,7 @@ public final class PlaceUtils {
    * @param progressBar JProgressBar
    * @return boolean
    */
-  public static boolean writeXLS(final File file, final List<? extends IMyCellarObject> bouteilles, boolean isExit, JProgressBar progressBar) {
+  public static boolean writeXLS(final File file, final List<? extends MyCellarObject> bouteilles, boolean isExit, JProgressBar progressBar) {
 
     Debug("writeXLS: writing file: " + file.getAbsolutePath());
 

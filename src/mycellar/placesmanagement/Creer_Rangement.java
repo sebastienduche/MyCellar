@@ -71,8 +71,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.6
- * @since 13/09/22
+ * @version 17.7
+ * @since 17/10/22
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -420,7 +420,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       if (complexPlace.getPartCount() > listPart.size()) {
         int nb = 0;
         for (int i = listPart.size(); i < complexPlace.getPartCount(); i++) {
-          nb += complexPlace.getTotalCellUsed(i);
+          nb += complexPlace.getCountCellUsed(i);
         }
         if (nb > 0) {
           Debug("ERROR: Unable to reduce the number of place");

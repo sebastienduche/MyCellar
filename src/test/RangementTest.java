@@ -127,11 +127,11 @@ class RangementTest {
 
   @Test
   void getMexColumnNumber() {
-    assertEquals(3, complexPlace1x3x3.getMaxColumnNumber());
-    assertEquals(3, complexPlace1x3x3Builder.getMaxColumnNumber());
-    assertEquals(5, complexPlace2x2_3x22545.getMaxColumnNumber());
-    assertEquals(5, complexPlace2x2_3x22545Builder.getMaxColumnNumber());
-    assertEquals(5, complexPlace2x2_3x22545Builder2.getMaxColumnNumber());
+    assertEquals(3, complexPlace1x3x3.getColumnCount());
+    assertEquals(3, complexPlace1x3x3Builder.getColumnCount());
+    assertEquals(5, complexPlace2x2_3x22545.getColumnCount());
+    assertEquals(5, complexPlace2x2_3x22545Builder.getColumnCount());
+    assertEquals(5, complexPlace2x2_3x22545Builder2.getColumnCount());
   }
 
   @Test
@@ -349,26 +349,6 @@ class RangementTest {
   }
 
   @Test
-  void getTotalCellUsed() {
-    assertEquals(0, complexPlace1x3x3.getTotalCellUsed(0));
-    assertEquals(0, complexPlace1x3x3Builder.getTotalCellUsed(0));
-    assertEquals(0, complexPlace2x2_3x22545.getTotalCellUsed(0));
-    assertEquals(0, complexPlace2x2_3x22545Builder.getTotalCellUsed(0));
-    assertEquals(0, complexPlace2x2_3x22545Builder2.getTotalCellUsed(0));
-    assertEquals(0, complexPlace2x2_3x22545.getTotalCellUsed(1));
-    assertEquals(0, complexPlace2x2_3x22545Builder.getTotalCellUsed(1));
-    assertEquals(0, complexPlace2x2_3x22545Builder2.getTotalCellUsed(1));
-    Bouteille b = new Bouteille();
-    b.setNom("B7");
-    updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", complexPlace2x2_3x22545);
-    assertEquals(0, complexPlace2x2_3x22545.getTotalCellUsed(0));
-    assertEquals(1, complexPlace2x2_3x22545.getTotalCellUsed(1));
-    complexPlace2x2_3x22545.clearStorage(b);
-    assertEquals(0, complexPlace2x2_3x22545.getTotalCellUsed(0));
-    assertEquals(0, complexPlace2x2_3x22545.getTotalCellUsed(0));
-  }
-
-  @Test
   void getTotalCountCellUsed() throws MyCellarException {
     assertEquals(0, complexPlace1x3x3.getTotalCountCellUsed());
     assertEquals(0, complexPlace1x3x3Builder.getTotalCountCellUsed());
@@ -407,6 +387,22 @@ class RangementTest {
 
   @Test
   void getCountCellUsed() throws MyCellarException {
+    assertEquals(0, complexPlace1x3x3.getCountCellUsed(0));
+    assertEquals(0, complexPlace1x3x3Builder.getCountCellUsed(0));
+    assertEquals(0, complexPlace2x2_3x22545.getCountCellUsed(0));
+    assertEquals(0, complexPlace2x2_3x22545Builder.getCountCellUsed(0));
+    assertEquals(0, complexPlace2x2_3x22545Builder2.getCountCellUsed(0));
+    assertEquals(0, complexPlace2x2_3x22545.getCountCellUsed(1));
+    assertEquals(0, complexPlace2x2_3x22545Builder.getCountCellUsed(1));
+    assertEquals(0, complexPlace2x2_3x22545Builder2.getCountCellUsed(1));
+    Bouteille b = new Bouteille();
+    b.setNom("B7");
+    updateToArmoire(b, 2, 1, 2, "armoire2x2_3x22545", complexPlace2x2_3x22545);
+    assertEquals(0, complexPlace2x2_3x22545.getCountCellUsed(0));
+    assertEquals(1, complexPlace2x2_3x22545.getCountCellUsed(1));
+    complexPlace2x2_3x22545.clearStorage(b);
+    assertEquals(0, complexPlace2x2_3x22545.getCountCellUsed(0));
+    assertEquals(0, complexPlace2x2_3x22545.getCountCellUsed(0));
     assertEquals(0, simplePlaceLimit.getCountCellUsed(1));
     assertEquals(0, simplePlaceNoLimit.getCountCellUsed(0));
     Bouteille b01 = new Bouteille();

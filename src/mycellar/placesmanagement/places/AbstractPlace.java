@@ -13,8 +13,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 13/09/22
+ * @version 0.5
+ * @since 17/10/22
  */
 public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstractPlace {
 
@@ -81,6 +81,11 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
 
   @Override
   public boolean isSimplePlace() {
+    return false;
+  }
+
+  @Override
+  public boolean isComplexPlace() {
     return false;
   }
 

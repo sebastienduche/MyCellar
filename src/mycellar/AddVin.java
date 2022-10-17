@@ -48,8 +48,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.1
- * @since 09/10/22
+ * @version 32.2
+ * @since 17/10/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -246,7 +246,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         myCellarObject.update(newMyCellarObject);
         newMyCellarObject.getAbstractPlace().updateToStock(newMyCellarObject);
         Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
-        if (!complexPlace.isSimplePlace()) {
+        if (complexPlace.isComplexPlace()) {
           Debug("Deleting from older complex place");
           ((ComplexPlace) oldPLace.getAbstractPlace()).clearStorage(oldPLace);
         }

@@ -9,8 +9,8 @@ import mycellar.Program;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 15/09/22
+ * @version 1.4
+ * @since 17/10/22
  */
 
 public class PlacePosition {
@@ -74,6 +74,10 @@ public class PlacePosition {
 
   public boolean isSimplePlace() {
     return abstractPlace.isSimplePlace();
+  }
+
+  public boolean isComplexPlace() {
+    return abstractPlace.isComplexPlace();
   }
 
   public boolean hasPlace() {

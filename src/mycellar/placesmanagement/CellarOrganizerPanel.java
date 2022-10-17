@@ -78,8 +78,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.8
- * @since 30/06/22
+ * @version 5.9
+ * @since 17/10/22
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -172,7 +172,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         for (int i = 0; i < complexPlace.getPartCount(); i++) {
           JPanel[][] place;
           places.add(place = new JPanel[complexPlace.getLineCountAt(i)][complexPlace.getMaxColumCountAt(i)]);
-          JPanel panelCellar = new JPanel(new GridLayout(complexPlace.getLineCountAt(i), complexPlace.getMaxColumnNumber()));
+          JPanel panelCellar = new JPanel(new GridLayout(complexPlace.getLineCountAt(i), complexPlace.getColumnCount()));
 
           for (int k = 0; k < place.length; k++) {
             for (int j = 0; j < place[k].length; j++) {

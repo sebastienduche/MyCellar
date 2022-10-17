@@ -41,8 +41,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.2
- * @since 17/06/22
+ * @version 10.3
+ * @since 17/10/22
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private static final long serialVersionUID = 5330256984954964913L;
@@ -248,7 +248,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     myCellarObject.setModified();
     Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
 
-    if (!oldPlace.isSimplePlace()) {
+    if (oldPlace.isComplexPlace()) {
       ((ComplexPlace) oldPlace.getAbstractPlace()).clearStorage(oldPlace);
     }
 

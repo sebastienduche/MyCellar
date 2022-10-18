@@ -84,8 +84,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 09/10/22
+ * @version 1.8
+ * @since 18/10/22
  */
 public class ProgramPanels {
 
@@ -482,9 +482,11 @@ public class ProgramPanels {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
-        Component tab = TABBED_PANE.getComponentAt(index);
-        if (tab instanceof IPanelModifyable) {
-          ((IPanelModifyable) tab).setModified(modified);
+        if (index < TABBED_PANE.getTabCount()) {
+          Component tab = TABBED_PANE.getComponentAt(index);
+          if (tab instanceof IPanelModifyable) {
+            ((IPanelModifyable) tab).setModified(modified);
+          }
         }
       }
     }.execute();

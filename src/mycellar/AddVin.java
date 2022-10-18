@@ -48,8 +48,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.2
- * @since 17/10/22
+ * @version 32.3
+ * @since 18/10/22
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -731,6 +731,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       final int selectedIndex = ProgramPanels.getSelectedTabIndex();
       final String label = getLabel("Main.TabAdd", A_SINGLE);
       ProgramPanels.setTitleAt(selectedIndex, label);
+      ProgramPanels.setPaneModified(selectedIndex, false);
+      end.setText("");
     }
     panelGeneral.setSeveralItems(severalItems);
     panelPlace.resetValues();
@@ -913,7 +915,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
   @Override
   public boolean tabWillClose(TabEvent event) {
-    return ProgramPanels.createAddVin().runExit();
+    return runExit();
   }
 
   @Override

@@ -16,7 +16,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.MyCellarUtils.parseIntOrError;
@@ -31,8 +30,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 13/09/22
+ * @version 3.2
+ * @since 24/10/22
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -256,18 +255,17 @@ public class ErrorShowValues extends TableShowValues {
               .withNumPlace(num_empl)
               .withLine(line)
               .withColumn(column1).build())) {
-//          if (abstractPlace.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
-            Optional<MyCellarObject> bTemp = Optional.empty();
+            MyCellarObject searchObject = null;
             if (!abstractPlace.isSimplePlace()) {
-              bTemp = abstractPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
+              searchObject = abstractPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
                   .withNumPlace(num_empl)
                   .withLine(line)
                   .withColumn(column1)
-                  .build());
+                  .build()).orElse(null);
             }
-            if (bTemp.isPresent()) {
+            if (searchObject != null) {
               status[row] = Boolean.FALSE;
-              Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(bTemp.get().getNom()), b.getAnnee()));
+              Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(searchObject.getNom()), b.getAnnee()));
             } else {
               if (column.equals(Column.PLACE)) {
                 b.setEmplacement((String) value);

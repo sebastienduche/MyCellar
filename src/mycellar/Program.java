@@ -82,6 +82,7 @@ import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.CONFIG_INI;
 import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
+import static mycellar.ProgramConstants.DATE_FORMATER_TIMESTAMP;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FRA;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
@@ -92,7 +93,6 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.PREVIEW_HTML;
 import static mycellar.ProgramConstants.PREVIEW_XML;
 import static mycellar.ProgramConstants.SLASH;
-import static mycellar.ProgramConstants.TIMESTAMP_PATTERN;
 import static mycellar.ProgramConstants.TYPES_MUSIC_XML;
 import static mycellar.ProgramConstants.TYPES_XML;
 import static mycellar.ProgramConstants.VERSION;
@@ -108,8 +108,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.1
- * @since 09/10/22
+ * @version 29.2
+ * @since 24/10/22
  */
 
 public final class Program {
@@ -806,12 +806,8 @@ public final class Program {
   }
 
   public static void saveProperties(final MyLinkedHashMap map, final String file) {
-    Object[] val = map.keySet().toArray();
     final Properties properties = new Properties();
-    for (Object o : val) {
-      String key = o.toString();
-      properties.put(key, map.getString(key));
-    }
+    properties.putAll(map);
     try (var outputStream = new FileOutputStream(file)) {
       properties.store(outputStream, null);
     } catch (IOException e) {
@@ -874,7 +870,7 @@ public final class Program {
       }
     }
 
-    String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(TIMESTAMP_PATTERN));
+    String time = LocalDateTime.now().format(DATE_FORMATER_TIMESTAMP);
     workDir += File.separator + time;
 
     file = new File(workDir);
@@ -913,7 +909,6 @@ public final class Program {
   }
 
   public static String getCaveConfigString(String key, String defaultValue) {
-    final MyCellarFile openedFile = getOpenedFile();
     if (null != openedFile) {
       return openedFile.getCaveConfig().getString(key, defaultValue);
     }
@@ -926,7 +921,6 @@ public final class Program {
   }
 
   public static boolean getCaveConfigBool(String key, boolean defaultValue) {
-    final MyCellarFile openedFile = getOpenedFile();
     if (null != openedFile) {
       final String value = openedFile.getCaveConfig().getString(key, defaultValue ? ONE : ZERO);
       return (ONE.equals(value) || ON.equalsIgnoreCase(value));
@@ -936,7 +930,6 @@ public final class Program {
   }
 
   public static int getCaveConfigInt(String key, int defaultValue) {
-    final MyCellarFile openedFile = getOpenedFile();
     if (null != openedFile) {
       return openedFile.getCaveConfig().getInt(key, defaultValue);
     }
@@ -949,7 +942,6 @@ public final class Program {
   }
 
   public static void putCaveConfigString(String key, String value) {
-    final MyCellarFile openedFile = getOpenedFile();
     if (null != openedFile) {
       openedFile.getCaveConfig().put(key, value);
     } else {
@@ -962,7 +954,6 @@ public final class Program {
   }
 
   public static void putCaveConfigBool(String key, boolean value) {
-    final MyCellarFile openedFile = getOpenedFile();
     if (null != openedFile) {
       openedFile.getCaveConfig().put(key, value ? ONE : ZERO);
     } else {
@@ -971,12 +962,10 @@ public final class Program {
   }
 
   public static void putCaveConfigInt(String key, int value) {
-    final MyCellarFile openedFile = getOpenedFile();
     Objects.requireNonNull(openedFile).getCaveConfig().put(key, value);
   }
 
   public static boolean hasConfigCaveKey(String key) {
-    final MyCellarFile openedFile = getOpenedFile();
     return null != openedFile && openedFile.getCaveConfig().containsKey(key);
   }
 
@@ -1144,7 +1133,7 @@ public final class Program {
       return;
     }
 
-    long time = Long.parseLong(LocalDateTime.now().minusMonths(2).format(DateTimeFormatter.ofPattern(TIMESTAMP_PATTERN)));
+    long time = Long.parseLong(LocalDateTime.now().minusMonths(2).format(DATE_FORMATER_TIMESTAMP));
 
     final String[] list = file.list();
     if (list != null) {

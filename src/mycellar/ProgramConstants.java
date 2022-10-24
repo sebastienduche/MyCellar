@@ -11,12 +11,12 @@ import java.time.format.DateTimeFormatter;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 08/07/22
+ * @version 1.2
+ * @since 24/10/22
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.9.8.4";
+  public static final String INTERNAL_VERSION = "4.9.8.8";
   public static final int VERSION = 76;
   public static final String MAIN_VERSION = VERSION + " BI";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
@@ -44,7 +44,7 @@ public final class ProgramConstants {
   public static final DateTimeFormatter DATE_FORMATER_DDMMYYYY = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   public static final DateTimeFormatter DATE_FORMATER_DD_MM_YYYY = DateTimeFormatter.ofPattern("dd-MM-yyyy");
   public static final DateTimeFormatter DATE_FORMATER_DD_MM_YYYY_HH_MM = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-  public static final String TIMESTAMP_PATTERN = "yyyyMMddHHmmss";
+  public static final DateTimeFormatter DATE_FORMATER_TIMESTAMP = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
   public static final String STAR = "*";
   public static final String THREE_DOTS = "...";
   public static final String ONE_DOT = ".";

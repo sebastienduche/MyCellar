@@ -97,8 +97,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.7
- * @since 09/10/22
+ * @version 32.8
+ * @since 24/10/22
  */
 public final class Start extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -193,58 +193,8 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
   public static void main(String[] args) {
     try {
       final SplashScreen splashscreen = new SplashScreen();
-      // initialisation
       Program.start();
-      // Lecture des parametres
-      // ______________________
-
-      String parameters = "";
-
-      for (String arg : args) {
-        parameters = parameters.concat(arg + SPACE);
-      }
-      if (!parameters.isBlank()) {
-        int nIndex = parameters.indexOf(OPTIONS_PARAM);
-        if (nIndex == -1) {
-          // demarrage sans options
-          Program.setNewFile(toCleanString(parameters));
-        } else {
-          // demarrage avec options
-          // ______________________
-          String tmp = parameters.substring(0, nIndex);
-          // Recuperation du nom du fichier
-          if (tmp.contains(ONE_DOT + EXTENSION_SINFO)) {
-            Program.setNewFile(tmp.strip());
-          } else {
-            // On prend tout ce qu'il y a apres -opts
-            tmp = parameters.substring(nIndex);
-            if (tmp.contains(ONE_DOT + EXTENSION_SINFO)) {
-              // Si l'on trouve l'extension du fichier
-              // on cherche le caractere ' ' qui va separer les
-              // options du nom du fichier
-              String tmp2 = tmp.strip();
-              tmp2 = tmp2.substring(tmp2.indexOf(SPACE));
-              Program.setNewFile(tmp2.strip());
-            }
-          }
-          // Recuperation des options
-          tmp = parameters.substring(nIndex + OPTIONS_PARAM.length()).strip().toLowerCase();
-          if (tmp.indexOf(' ') != -1) {
-            tmp = tmp.substring(0, tmp.indexOf(' ')).strip();
-          }
-          // Options a gerer
-          if (RESTART_COMMAND.equals(tmp)) {
-            // Demarrage avec une nouvelle cave
-            Program.putGlobalConfigBool(MyCellarSettings.GLOBAL_STARTUP, false);
-            Program.putCaveConfigBool(MyCellarSettings.HAS_YEAR_CTRL, true);
-            Program.putCaveConfigBool(MyCellarSettings.HAS_EXCEL_FILE, false);
-          } else if (DOWNLOAD_COMMAND.equals(tmp)) {
-            Debug("Download a new version and exit");
-            MyCellarServer.getInstance().downloadVersion();
-            System.exit(3);
-          }
-        }
-      }
+      checkProgramParameters(args);
 
       Thread.setDefaultUncaughtExceptionHandler((t, e) -> Program.showException(e, true));
 
@@ -406,6 +356,56 @@ public final class Start extends JFrame implements Thread.UncaughtExceptionHandl
       if (f.exists() && XmlUtils.readMyCellarXml(fic, abstractPlaces)) {
         XmlUtils.writeMyCellarXml(abstractPlaces, "");
         Program.loadData();
+      }
+    }
+  }
+
+  private static void checkProgramParameters(String[] args) {
+    String parameters = "";
+
+    for (String arg : args) {
+      parameters = parameters.concat(arg + SPACE);
+    }
+    if (!parameters.isBlank()) {
+      int nIndex = parameters.indexOf(OPTIONS_PARAM);
+      if (nIndex == -1) {
+        // demarrage sans options
+        Program.setNewFile(toCleanString(parameters));
+      } else {
+        // demarrage avec options
+        // ______________________
+        String tmp = parameters.substring(0, nIndex);
+        // Recuperation du nom du fichier
+        if (tmp.contains(ONE_DOT + EXTENSION_SINFO)) {
+          Program.setNewFile(tmp.strip());
+        } else {
+          // On prend tout ce qu'il y a apres -opts
+          tmp = parameters.substring(nIndex);
+          if (tmp.contains(ONE_DOT + EXTENSION_SINFO)) {
+            // Si l'on trouve l'extension du fichier
+            // on cherche le caractere ' ' qui va separer les
+            // options du nom du fichier
+            String tmp2 = tmp.strip();
+            tmp2 = tmp2.substring(tmp2.indexOf(SPACE));
+            Program.setNewFile(tmp2.strip());
+          }
+        }
+        // Recuperation des options
+        tmp = parameters.substring(nIndex + OPTIONS_PARAM.length()).strip().toLowerCase();
+        if (tmp.indexOf(' ') != -1) {
+          tmp = tmp.substring(0, tmp.indexOf(' ')).strip();
+        }
+        // Options a gerer
+        if (RESTART_COMMAND.equals(tmp)) {
+          // Demarrage avec une nouvelle cave
+          Program.putGlobalConfigBool(MyCellarSettings.GLOBAL_STARTUP, false);
+          Program.putCaveConfigBool(MyCellarSettings.HAS_YEAR_CTRL, true);
+          Program.putCaveConfigBool(MyCellarSettings.HAS_EXCEL_FILE, false);
+        } else if (DOWNLOAD_COMMAND.equals(tmp)) {
+          Debug("Download a new version and exit");
+          MyCellarServer.getInstance().downloadVersion();
+          System.exit(3);
+        }
       }
     }
   }

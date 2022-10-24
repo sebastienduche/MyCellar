@@ -30,14 +30,13 @@ import static mycellar.ProgramConstants.UNTITLED1_SINFO;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 08/07/22
+ * @version 0.6
+ * @since 24/10/22
  */
 public class MyCellarFile {
 
   private final MyLinkedHashMap caveConfig = new MyLinkedHashMap();
   private File file;
-  private boolean valid = false;
   private boolean newFile = false;
 
   public MyCellarFile() {
@@ -145,16 +144,13 @@ public class MyCellarFile {
       final String absolutePath = file.getAbsolutePath();
       Debug("Unzipping " + absolutePath + " to " + workDir + (unzipOK ? " OK" : " KO"));
       if (!unzipOK) {
-        valid = false;
         throw new UnableToOpenFileException("Unzipping error for file: " + absolutePath);
       }
     } catch (UnableToOpenFileException e) {
       Debug("ERROR: Unable to unzip file " + file.getAbsolutePath());
       Program.showException(e, false);
-      valid = false;
       throw new UnableToOpenFileException("Unzipping error: " + e.getMessage());
     }
-    valid = true;
   }
 
   public boolean exists() {
@@ -165,18 +161,14 @@ public class MyCellarFile {
     return !file.getName().endsWith(UNTITLED1_SINFO) && exists();
   }
 
-  public boolean isValid() {
-    return valid;
-  }
-
   public void save() {
     saveAs(file);
   }
 
-  public void saveAs(File newFile) {
+  public void saveAs(File newfile) {
     saveCaveProperties();
-    zipDir(newFile);
-    file = newFile;
+    zipDir(newfile);
+    file = newfile;
   }
 
   /**
@@ -196,12 +188,12 @@ public class MyCellarFile {
   }
 
   /**
-   * unzipDir: Dezippe une archive dans un repertoire
+   * unzipDir: Unzip the archive in a directory
    *
-   * @param dest_dir String
+   * @param targetDir String
    * @return boolean
    */
-  private boolean unzipDir(String dest_dir) {
+  private boolean unzipDir(String targetDir) {
     try {
       String fileName = file.getAbsolutePath();
       Debug("Unzip: Archive " + fileName);
@@ -210,16 +202,16 @@ public class MyCellarFile {
            var bufferedInputStream = new BufferedInputStream(fileInputStream);
            var zipInputStream = new ZipInputStream(bufferedInputStream)) {
         ZipEntry entry;
-        int BUFFER = 2048;
+        int buffer = 2048;
         while ((entry = zipInputStream.getNextEntry()) != null) {
-          File f = new File(dest_dir);
+          File f = new File(targetDir);
           if (f.exists() || f.mkdir()) {
-            var fileOutputStream = new FileOutputStream(dest_dir + File.separator + entry.getName());
-            Debug("Unzip: File " + dest_dir + File.separator + entry.getName());
-            try (var bufferOutputStream = new BufferedOutputStream(fileOutputStream, BUFFER)) {
+            var fileOutputStream = new FileOutputStream(targetDir + File.separator + entry.getName());
+            Debug("Unzip: File " + targetDir + File.separator + entry.getName());
+            try (var bufferOutputStream = new BufferedOutputStream(fileOutputStream, buffer)) {
               int count;
-              byte[] data = new byte[BUFFER];
-              while ((count = zipInputStream.read(data, 0, BUFFER)) != -1) {
+              byte[] data = new byte[buffer];
+              while ((count = zipInputStream.read(data, 0, buffer)) != -1) {
                 bufferOutputStream.write(data, 0, count);
               }
               bufferOutputStream.flush();

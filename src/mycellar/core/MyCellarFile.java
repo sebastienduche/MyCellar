@@ -30,8 +30,8 @@ import static mycellar.ProgramConstants.UNTITLED1_SINFO;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 24/10/22
+ * @version 0.7
+ * @since 25/10/22
  */
 public class MyCellarFile {
 
@@ -55,20 +55,27 @@ public class MyCellarFile {
     return newFile;
   }
 
+  public File getFile() {
+    return file;
+  }
+
+  public MyLinkedHashMap getCaveConfig() {
+    return caveConfig;
+  }
+
   private static void Debug(String sText) {
     Program.Debug("MyCellarFile: " + sText);
   }
 
   /**
-   * zipDir: Compression de repertoire
+   * Compress the files
    *
    * @param fileName File
-   * @return boolean
    */
-  private static void zipDir(File fileName) {
+  private static void zip(File fileName) {
 
     final String workDir = getWorkDir(false);
-    Debug("zipDir: Zipping in " + workDir + " with archive " + fileName);
+    Debug("zip: Zipping in " + workDir + " with archive " + fileName);
     try {
       // creation d'un flux d'ecriture sur fichier
       var dest = new FileOutputStream(fileName);
@@ -130,27 +137,14 @@ public class MyCellarFile {
       Debug("zipDir: Error while zipping");
       Program.showException(e, false);
     }
-    Debug("zipDir OK");
+    Debug("zip Done");
   }
 
   public void unzip() throws UnableToOpenFileException {
     if (!file.exists()) {
       throw new UnableToOpenMyCellarFileException("File doesn't exist: " + file.getAbsolutePath());
     }
-    try {
-      // Dezippage
-      final String workDir = getWorkDir(false);
-      boolean unzipOK = unzipDir(workDir);
-      final String absolutePath = file.getAbsolutePath();
-      Debug("Unzipping " + absolutePath + " to " + workDir + (unzipOK ? " OK" : " KO"));
-      if (!unzipOK) {
-        throw new UnableToOpenFileException("Unzipping error for file: " + absolutePath);
-      }
-    } catch (UnableToOpenFileException e) {
-      Debug("ERROR: Unable to unzip file " + file.getAbsolutePath());
-      Program.showException(e, false);
-      throw new UnableToOpenFileException("Unzipping error: " + e.getMessage());
-    }
+    unzipTo(getWorkDir(false));
   }
 
   public boolean exists() {
@@ -167,7 +161,7 @@ public class MyCellarFile {
 
   public void saveAs(File newfile) {
     saveCaveProperties();
-    zipDir(newfile);
+    zip(newfile);
     file = newfile;
   }
 
@@ -179,21 +173,12 @@ public class MyCellarFile {
     Program.saveProperties(caveConfig, Program.getConfigFilePath());
   }
 
-  public File getFile() {
-    return file;
-  }
-
-  public MyLinkedHashMap getCaveConfig() {
-    return caveConfig;
-  }
-
   /**
-   * unzipDir: Unzip the archive in a directory
+   * Unzip the archive to a directory
    *
    * @param targetDir String
-   * @return boolean
    */
-  private boolean unzipDir(String targetDir) {
+  private void unzipTo(String targetDir) throws UnableToOpenFileException {
     try {
       String fileName = file.getAbsolutePath();
       Debug("Unzip: Archive " + fileName);
@@ -223,9 +208,9 @@ public class MyCellarFile {
     } catch (IOException e) {
       Debug("Unzip: Archive Error");
       Debug(e.getMessage());
-      return false;
+      throw new UnableToOpenFileException("Unzipping error for file: " + file.getAbsolutePath());
     }
-    Debug("Unzip: Archive OK");
-    return true;
+    Debug("Unzipping " + file.getAbsolutePath() + " to " + targetDir + " OK");
+    Debug("Unzip: Archive Done");
   }
 }

@@ -18,8 +18,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 31/05/22
+ * @version 2.1
+ * @since 17/10/22
  */
 class TableauValues extends AbstractTableModel {
   public static final int ETAT = 0;
@@ -65,7 +65,7 @@ class TableauValues extends AbstractTableModel {
           nombre_vin = rangement.getTotalCountCellUsed();
         } else {
           for (int k = 0; k < rangement.getPartCount(); k++) {
-            nombre_vin += ((ComplexPlace) rangement).getTotalCellUsed(k);
+            nombre_vin += rangement.getCountCellUsed(k);
           }
         }
         return MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(nombre_vin > 1)), nombre_vin);

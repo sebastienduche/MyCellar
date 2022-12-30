@@ -24,10 +24,10 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.4
- * @since 13/06/22
+ * @version 5.5
+ * @since 09/10/22
  */
-public abstract class MyCellarManageBottles extends JPanel implements IPlacePosition {
+public abstract class MyCellarManageBottles extends JPanel implements IPlacePosition, IPanelModifyable {
 
   private static final long serialVersionUID = 3056306291164598750L;
 
@@ -39,6 +39,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
   protected final JModifyTextArea commentTextArea = new JModifyTextArea();
   protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
   protected final char ajouterChar = getLabel("AJOUTER").charAt(0);
+  protected int selectedPaneIndex;
   protected MyCellarButton addButton;
   protected MyCellarButton cancelButton;
   protected PanelVignobles panelVignobles;
@@ -100,6 +101,22 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
       }
       Debug("updateView Done");
     });
+  }
+
+  @Override
+  public void setModified(boolean modified) {
+    panelGeneral.setModified(modified);
+  }
+
+  @Override
+  public void setPaneIndex(int index) {
+    selectedPaneIndex = index;
+    panelGeneral.setPaneIndex(index);
+  }
+
+  @Override
+  public boolean isModified() {
+    return panelGeneral.isModified();
   }
 
   /**

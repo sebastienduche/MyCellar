@@ -11,14 +11,14 @@ import java.time.format.DateTimeFormatter;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 08/07/22
+ * @version 1.2
+ * @since 24/10/22
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.9.4.9";
-  public static final int VERSION = 75;
-  public static final String MAIN_VERSION = VERSION + " QE";
+  public static final String INTERNAL_VERSION = "4.9.9.7";
+  public static final int VERSION = 76;
+  public static final String MAIN_VERSION = VERSION + " CO";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
   public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
 
@@ -44,7 +44,7 @@ public final class ProgramConstants {
   public static final DateTimeFormatter DATE_FORMATER_DDMMYYYY = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   public static final DateTimeFormatter DATE_FORMATER_DD_MM_YYYY = DateTimeFormatter.ofPattern("dd-MM-yyyy");
   public static final DateTimeFormatter DATE_FORMATER_DD_MM_YYYY_HH_MM = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-  public static final String TIMESTAMP_PATTERN = "yyyyMMddHHmmss";
+  public static final DateTimeFormatter DATE_FORMATER_TIMESTAMP = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
   public static final String STAR = "*";
   public static final String THREE_DOTS = "...";
   public static final String ONE_DOT = ".";
@@ -62,7 +62,6 @@ public final class ProgramConstants {
   public static final int IMPORT_COMBO_COUNT = 18;
   public static final String KEY_TYPE = "<KEY>";
   public static final String COUNTRY_LABEL_KEY = "Country.";
-  public static final String ERRORS_LABEL_KEY = "Errors";
   static final String INFOS_VERSION = " 2022 v";
   static final String PREVIEW_XML = "preview.xml";
   static final String PREVIEW_HTML = "preview.html";

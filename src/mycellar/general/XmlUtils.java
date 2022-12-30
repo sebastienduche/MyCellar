@@ -46,8 +46,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.0
- * @since 07/09/22
+ * @version 4.1
+ * @since 13/09/22
  */
 
 public class XmlUtils {
@@ -85,7 +85,7 @@ public class XmlUtils {
   }
 
   public static boolean readMyCellarXml(String filename, final List<AbstractPlace> rangementList) {
-    Debug("readMyCellarXml1: Reading file");
+    Debug("readMyCellarXml: Reading file");
     rangementList.clear();
     if (isNullOrEmpty(filename)) {
       filename = Program.getXMLPlacesFileName();
@@ -176,21 +176,12 @@ public class XmlUtils {
 
         }
       }
-    } catch (IOException e) {
-      Debug("IOException");
-      Program.showException(e, false);
-      return false;
-    } catch (ParserConfigurationException e) {
-      Debug("ParserConfigurationException");
-      Program.showException(e, false);
-      return false;
-    } catch (SAXException e) {
-      Debug("SAXException");
+    } catch (IOException | ParserConfigurationException | SAXException e) {
       Program.showException(e, false);
       return false;
     }
 
-    Debug("readMyCellarXml1: Reading file OK");
+    Debug("readMyCellarXml: Reading file OK");
     return true;
   }
 
@@ -322,10 +313,10 @@ public class XmlUtils {
                 if (preview) {
                   vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
                 } else {
-                  rangement.getObject(new PlacePosition.PlacePositionBuilder(rangement)
-                          .withNumPlace1Based(i)
-                          .withLine1Based(j)
-                          .withColumn1Based(k)
+                  rangement.getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
+                          .withNumPlace(i)
+                          .withLine(j)
+                          .withColumn(k)
                           .build())
                       .ifPresentOrElse(myCellarObject -> vin_name.setTextContent(myCellarObject.getNom()), () -> vin_name.setTextContent(DASH));
                 }

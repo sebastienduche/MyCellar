@@ -14,6 +14,7 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
@@ -27,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 
 import static mycellar.MyCellarUtils.assertObjectType;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
 
 /**
  * Titre : Cave &agrave; vin
@@ -43,8 +46,8 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.1
- * @since 30/06/22
+ * @version 8.2
+ * @since 30/12/22
  *
  * <p>Java class for anonymous complex type.
  *
@@ -204,7 +207,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
   }
 
   public static Bouteille fromXml(Element element) {
-    return new Bouteille().fromXmlElemnt(element);
+    return new Bouteille().fromXmlElement(element);
   }
 
   /**
@@ -591,6 +594,23 @@ public class Bouteille extends MyCellarObject implements Serializable {
   }
 
   @Override
+  public void validateValue(MyCellarFields field, String value) throws MyCellarException {
+    switch (field) {
+      case NUM_PLACE:
+      case LINE:
+      case COLUMN:
+        try {
+          Double.valueOf(value);
+        } catch (NumberFormatException e) {
+          throw new MyCellarException(MessageFormat.format(getError("Import.errorValue"), value, field));
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  @Override
   public boolean updateID() {
     if (id != -1) {
       final List<IMyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
@@ -608,7 +628,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public Bouteille fromXmlElemnt(Element element) {
+  public Bouteille fromXmlElement(Element element) {
     NodeList nodeId = element.getElementsByTagName("id");
     final int elemId = Integer.parseInt(nodeId.item(0).getTextContent());
     NodeList nodeName = element.getElementsByTagName("nom");

@@ -597,10 +597,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         for (int j = lineStart; j < lineEnd; j++) {
           int nb_colonnes = complexPlace.getColumnCountAt(i, j);
           for (int k = 0; k < nb_colonnes; k++) {
-            MyCellarObject myCellarObject = complexPlace.getObject(new PlacePosition.PlacePositionBuilder(complexPlace)
-                .withNumPlace1Based(i)
-                .withLine1Based(j)
-                .withColumn1Based(k)
+            MyCellarObject myCellarObject = complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
+                .withNumPlace(i)
+                .withLine(j)
+                .withColumn(k)
                 .build()).orElse(null);
             if (myCellarObject != null) {
               if (searchTableModel.doesNotContain(myCellarObject)) {

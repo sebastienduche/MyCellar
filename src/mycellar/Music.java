@@ -6,6 +6,7 @@ import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.music.MusicSupport;
 import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
@@ -20,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 import static mycellar.MyCellarUtils.assertObjectType;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 import static mycellar.ProgramConstants.DOUBLE_DOT;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.general.XmlUtils.getTextContent;
 
 /**
@@ -39,8 +42,8 @@ import static mycellar.general.XmlUtils.getTextContent;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 30/06/22
+ * @version 1.9
+ * @since 30/12/22
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -198,7 +201,7 @@ public class Music extends MyCellarObject implements Serializable {
   }
 
   public static Music fromXml(Element element) {
-    return new Music().fromXmlElemnt(element);
+    return new Music().fromXmlElement(element);
   }
 
   /**
@@ -615,6 +618,33 @@ public class Music extends MyCellarObject implements Serializable {
   }
 
   @Override
+  public void validateValue(MyCellarFields field, String value) throws MyCellarException {
+    switch (field) {
+      case NUM_PLACE:
+      case LINE:
+      case COLUMN:
+      case DISK_NUMBER:
+      case DISK_COUNT:
+      case RATING:
+        try {
+          Double.valueOf(value);
+        } catch (NumberFormatException e) {
+          throw new MyCellarException(MessageFormat.format(getError("Import.errorValue"), value, field));
+        }
+        break;
+      case EXTERNAL_ID:
+        try {
+          Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+          throw new MyCellarException(MessageFormat.format(getError("Import.errorValue"), value, field));
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  @Override
   public boolean updateID() {
     if (id != -1) {
       final List<MyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
@@ -632,7 +662,7 @@ public class Music extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public Music fromXmlElemnt(Element element) {
+  public Music fromXmlElement(Element element) {
     final int elemId = Integer.parseInt(getTextContent(element.getElementsByTagName("id"), "-1"));
     final int elemExternalId = Integer.parseInt(getTextContent(element.getElementsByTagName("external_id"), "-1"));
     final String name = getTextContent(element.getElementsByTagName("title"));

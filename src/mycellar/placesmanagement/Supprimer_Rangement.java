@@ -64,8 +64,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.4
- * @since 08/07/22
+ * @version 10.5
+ * @since 17/10/22
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -142,9 +142,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
           // Description du nombre de lignes par partie
           nb_case_use_total = 0;
           for (int i = 0; i < num_emplacement; i++) {
-            SupprimerLine line = new SupprimerLine(i + 1, complexPlace.getLineCountAt(i), complexPlace.getTotalCellUsed(i));
+            SupprimerLine line = new SupprimerLine(i + 1, complexPlace.getLineCountAt(i), complexPlace.getCountCellUsed(i));
             listSupprimer.add(line);
-            nb_case_use_total += complexPlace.getTotalCellUsed(i);
+            nb_case_use_total += complexPlace.getCountCellUsed(i);
           }
         } else { //Pour caisse
           int partNumberIncrement = ((SimplePlace) abstractPlace).getPartNumberIncrement();

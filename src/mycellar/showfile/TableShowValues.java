@@ -197,23 +197,23 @@ class TableShowValues extends AbstractTableModel {
 
         if (!bError && (b.getEmplacement().compareTo(empl) != 0 || b.getNumLieu() != num_empl || b.getLigne() != line || b.getColonne() != column1)) {
           // Controle de l'emplacement de la bouteille
-          int tmpNumEmpl = num_empl;
-          if (!rangement.isSimplePlace()) {
-            tmpNumEmpl--;
-          } else {
-            tmpNumEmpl -= ((SimplePlace) rangement).getPartNumberIncrement();
-          }
-          if (rangement.canAddObjectAt(new PlacePosition.PlacePositionBuilder(rangement)
-              .withNumPlace(tmpNumEmpl)
-              .withLine(line - 1)
-              .withColumn(column1 - 1).build())) {
+//          int tmpNumEmpl = num_empl;
+//          if (!rangement.isSimplePlace()) {
+//            tmpNumEmpl--;
+//          } else {
+//            tmpNumEmpl -= ((SimplePlace) rangement).getPartNumberIncrement();
+//          }
+          if (rangement.canAddObjectAt(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
+              .withNumPlace(num_empl)
+              .withLine(line)
+              .withColumn(column1).build())) {
 //          if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
             Optional<MyCellarObject> bTemp = Optional.empty();
             if (!rangement.isSimplePlace()) {
-              bTemp = rangement.getObject(new PlacePosition.PlacePositionBuilder(rangement)
-                  .withNumPlace1Based(num_empl)
-                  .withLine1Based(line)
-                  .withColumn1Based(column1)
+              bTemp = rangement.getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
+                  .withNumPlace(num_empl)
+                  .withLine(line)
+                  .withColumn(column1)
                   .build());
             }
             if (bTemp.isPresent()) {

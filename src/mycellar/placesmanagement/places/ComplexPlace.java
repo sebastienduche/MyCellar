@@ -18,13 +18,13 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 13/09/22
+ * @version 0.8
+ * @since 17/10/22
  */
 public class ComplexPlace extends AbstractPlace {
 
-  private int line;
-  private int column;
+  private int lineCount;
+  private int columnCount;
   private MyCellarObject[][][] storage;
   private List<Part> partList;
 
@@ -35,8 +35,8 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   private void setPlace(List<Part> listPart) {
-    column = 0;
-    line = 0;
+    columnCount = 0;
+    lineCount = 0;
     partCount = listPart.size();
     partList = new LinkedList<>();
     for (int i = 0; i < partCount; i++) {
@@ -46,19 +46,19 @@ public class ComplexPlace extends AbstractPlace {
       partList.add(part);
       int rowSize = oldPart.getRowSize();
       part.setRows(rowSize);
-      if (rowSize > line) {
-        line = rowSize;
+      if (rowSize > lineCount) {
+        lineCount = rowSize;
       }
       for (int j = 0; j < rowSize; j++) {
         int colSize = oldPart.getRow(j).getColumnCount();
         part.getRow(j).setColumnCount(colSize);
-        if (colSize > column) {
-          column = colSize;
+        if (colSize > columnCount) {
+          columnCount = colSize;
         }
       }
     }
 
-    storage = new MyCellarObject[partCount][line][column];
+    storage = new MyCellarObject[partCount][lineCount][columnCount];
   }
 
   public LinkedList<Part> getParts() {
@@ -75,8 +75,13 @@ public class ComplexPlace extends AbstractPlace {
     return listPart;
   }
 
-  public int getMaxColumnNumber() {
-    return column;
+  public int getColumnCount() {
+    return columnCount;
+  }
+
+  @Override
+  public boolean isComplexPlace() {
+    return true;
   }
 
   @Override
@@ -118,7 +123,7 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   private static void Debug(String sText) {
-    Program.Debug("SimplePlace: " + sText);
+    Program.Debug("ComplexPlace: " + sText);
   }
 
   @Override
@@ -180,7 +185,7 @@ public class ComplexPlace extends AbstractPlace {
 
   @Override
   public void resetStockage() {
-    storage = new MyCellarObject[partCount][line][column];
+    storage = new MyCellarObject[partCount][lineCount][columnCount];
   }
 
   public boolean isExistingCell(int part, int line, int column) {
@@ -234,25 +239,11 @@ public class ComplexPlace extends AbstractPlace {
     return resul;
   }
 
-  public int getTotalCellUsed(int part) {
-    int resul = 0;
-    int nb_ligne = getLineCountAt(part);
-    for (int j = 0; j < nb_ligne; j++) {
-      int nb_colonne = getColumnCountAt(part, j);
-      for (int i = 0; i < nb_colonne; i++) {
-        if (storage[part][j][i] != null) {
-          resul++;
-        }
-      }
-    }
-    return resul;
-  }
-
   @Override
   public int getTotalCountCellUsed() {
     int resul = 0;
     for (int i = 0; i < partCount; i++) {
-      resul += getTotalCellUsed(i);
+      resul += getCountCellUsed(i);
     }
     return resul;
   }
@@ -286,7 +277,7 @@ public class ComplexPlace extends AbstractPlace {
   public Map<Integer, Integer> getNumberOfObjectsPerPlace() {
     Map<Integer, Integer> numberOfObjectsPerPlace = new HashMap<>(partCount);
     for (int i = 0; i < partCount; i++) {
-      numberOfObjectsPerPlace.put(i, getTotalCellUsed(i));
+      numberOfObjectsPerPlace.put(i, getCountCellUsed(i));
     }
     return numberOfObjectsPerPlace;
   }
@@ -332,11 +323,11 @@ public class ComplexPlace extends AbstractPlace {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ComplexPlace that = (ComplexPlace) o;
-    return line == that.line && column == that.column && Objects.equals(partList, that.partList);
+    return lineCount == that.lineCount && columnCount == that.columnCount && Objects.equals(partList, that.partList);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), line, column, partList);
+    return Objects.hash(super.hashCode(), lineCount, columnCount, partList);
   }
 }

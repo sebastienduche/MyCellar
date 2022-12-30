@@ -28,7 +28,6 @@ import org.w3c.dom.Element;
 import javax.swing.JProgressBar;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -44,7 +43,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static mycellar.MyCellarUtils.toCleanString;
@@ -70,8 +68,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.4
- * @since 07/09/22
+ * @version 5.6
+ * @since 30/12/22
  */
 public final class PlaceUtils {
 
@@ -101,15 +99,12 @@ public final class PlaceUtils {
   /**
    * Write a CSV file
    *
-   * @param file
-   * @param myCellarObjects list of objects to write
-   * @param progressBar
    * @return int
    */
-  public static boolean writeCSV(final File file, final List<? extends IMyCellarObject> myCellarObjects, final JProgressBar progressBar) {
+  public static boolean writeCSV(final File file, final List<? extends MyCellarObject> myCellarObjects, final JProgressBar progressBar) {
 
     Debug("writeCSV: writing file: " + file.getAbsolutePath());
-    String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
+    final String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
 
     final EnumMap<MyCellarFields, Boolean> map = new EnumMap<>(MyCellarFields.class);
     for (var field : Objects.requireNonNull(MyCellarFields.getFieldsList())) {
@@ -121,26 +116,29 @@ public final class PlaceUtils {
 
     try (var fileWriter = new FileWriter(file)) {
 
-      StringBuilder line = new StringBuilder();
+      final StringBuilder titleLine = new StringBuilder();
       // Title line
       for (var field : map.keySet()) {
         if (map.get(field)) {
-          line.append(field).append(separator);
+          titleLine.append(field).append(separator);
         }
       }
-      line.append('\n');
-      fileWriter.write(line.toString());
+      titleLine.append('\n');
+      fileWriter.write(titleLine.toString());
+
       int i = 0;
-      for (IMyCellarObject b : myCellarObjects) {
+      for (MyCellarObject myCellarObject : myCellarObjects) {
         progressBar.setValue(i++);
-        line = new StringBuilder();
+        StringBuilder line = new StringBuilder();
         final String doubleCote = "\"";
         final String escapedDoubleCote = "\"\"";
         for (var field : map.keySet()) {
           if (map.get(field)) {
-            String value = MyCellarFields.getValue(field, b);
+            String value;
             if (MyCellarFields.hasSpecialHTMLCharacters(field)) {
-              value = MyCellarUtils.convertStringFromHTMLString(value);
+              value = MyCellarUtils.convertStringFromHTMLString(MyCellarFields.getValue(field, myCellarObject));
+            } else {
+              value = MyCellarFields.getValue(field, myCellarObject);
             }
             line.append(doubleCote).append(value.replaceAll(doubleCote, escapedDoubleCote)).append(doubleCote).append(separator);
           }
@@ -191,9 +189,8 @@ public final class PlaceUtils {
       Element thead = doc.createElement("thead");
       table.appendChild(thead);
       if (fields.isEmpty()) {
-        fields = MyCellarFields.getFieldsList();
+        fields = Objects.requireNonNull(MyCellarFields.getFieldsList());
       }
-      assert fields != null;
       for (MyCellarFields field : fields) {
         Element td = doc.createElement("td");
         thead.appendChild(td);
@@ -268,16 +265,7 @@ public final class PlaceUtils {
       var source = new DOMSource(doc);
       var result = new StreamResult(file);
       transformer.transform(source, result);
-    } catch (ParserConfigurationException e) {
-      Debug("ParserConfigurationException");
-      Program.showException(e, false);
-      return false;
-    } catch (TransformerConfigurationException e) {
-      Debug("TransformerConfigurationException");
-      Program.showException(e, false);
-      return false;
-    } catch (TransformerException e) {
-      Debug("TransformerException");
+    } catch (ParserConfigurationException | TransformerException e) {
       Program.showException(e, false);
       return false;
     }
@@ -293,7 +281,7 @@ public final class PlaceUtils {
    * @param progressBar JProgressBar
    * @return boolean
    */
-  public static boolean writeXLS(final File file, final List<? extends IMyCellarObject> bouteilles, boolean isExit, JProgressBar progressBar) {
+  public static boolean writeXLS(final File file, final List<? extends MyCellarObject> bouteilles, boolean isExit, JProgressBar progressBar) {
 
     Debug("writeXLS: writing file: " + file.getAbsolutePath());
 
@@ -314,8 +302,7 @@ public final class PlaceUtils {
     }
 
     // Columns to export
-    List<MyCellarFields> fields = MyCellarFields.getFieldsList();
-    assert fields != null;
+    List<MyCellarFields> fields = Objects.requireNonNull(MyCellarFields.getFieldsList());
     EnumMap<MyCellarFields, Boolean> mapCle = new EnumMap<>(MyCellarFields.class);
     int i = 0;
     for (MyCellarFields field : fields) {
@@ -520,6 +507,7 @@ public final class PlaceUtils {
         final Cell cellPlace = rowPlace.createCell(1);
         cellPlace.setCellStyle(cellStyle);
         cellPlace.setCellValue(place.getName());
+        // TODO ZERO BASED
         for (int j = 1; j <= place.getPartCount(); j++) {
           if (j == 1) {
             nLine++;
@@ -669,17 +657,19 @@ public final class PlaceUtils {
   }
 
   /**
-   * Positionne toutes les bouteilles dans les differents rangements
-   * - Une liste d'erreurs est cree
-   * - Les bouteilles en erreurs sont supprimees de la liste principale pour correction
+   * Set all objects in the places
+   * - In case of collision or others kind of errors, a list of errors is filled.
+   * - Objects with errors are removed from the main list
    *
-   * @return boolean: false si des erreurs existent
+   * @return boolean: Successful?
    */
   public static boolean putTabStock() {
     Debug("putTabStock...");
     for (MyCellarError error : Program.getErrors()) {
       if (!error.isSolved()) {
-        Program.getStorage().add(error.getMyCellarObject());
+        if (!Program.getStorage().getAllList().contains(error.getMyCellarObject())) {
+          Program.getStorage().add(error.getMyCellarObject());
+        }
       }
     }
     Program.getErrors().clear();
@@ -717,22 +707,28 @@ public final class PlaceUtils {
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement()));
           continue;
         }
-        Optional<MyCellarObject> bottle;
         if (!((ComplexPlace) rangement).isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
           // Cellule inexistante
           Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
-        } else if ((bottle = rangement.getObject(bouteille.getPlacePosition())).isPresent() && !bottle.get().equals(bouteille)) {
-          // Cellule occupee
-          Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
-          Program.addError(new MyCellarError(CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
         } else {
-          rangement.updateToStock(bouteille);
+          final MyCellarObject myCellarObject = (rangement.getObject(bouteille.getPlacePosition())).orElse(null);
+          if (myCellarObject != null && !myCellarObject.equals(bouteille)) {
+            // Cellule occupee
+            Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
+            Program.addError(new MyCellarError(CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
+          } else {
+            rangement.updateToStock(bouteille);
+          }
         }
       }
     }
+    if (!Program.getErrors().isEmpty()) {
+      Debug("List of objects with errors:");
+    }
     for (var error : Program.getErrors()) {
-      Debug("Error putTabStock: " + error.getMyCellarObject());
+      Debug("Error: " + error.getMyCellarObject());
+      Program.getStorage().getAllList().remove(error.getMyCellarObject());
     }
     Debug("putTabStock Done");
     return Program.getErrors().isEmpty();

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.MissingResourceException;
 
 import static mycellar.ProgramConstants.DOUBLE_DOT;
-import static mycellar.ProgramConstants.ERRORS_LABEL_KEY;
 import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.THREE_DOTS;
@@ -51,11 +50,9 @@ public class MyCellarLabelManagement {
 
     if (labelValue == null) {
       switch (type) {
-        case ERROR:
-          return getError(ERRORS_LABEL_KEY + code, labelProperty);
         case LABEL:
           return getLabel(code, labelProperty);
-        case ERROR_OTHER:
+        case ERROR:
           return getError(code, labelProperty);
         case NONE:
           return code;
@@ -64,11 +61,9 @@ public class MyCellarLabelManagement {
       }
     } else {
       switch (type) {
-        case ERROR:
-          return MessageFormat.format(getError(ERRORS_LABEL_KEY + code, labelProperty), labelValue).strip();
         case LABEL:
           return MessageFormat.format(getLabel(code, labelProperty), labelValue).strip();
-        case ERROR_OTHER:
+        case ERROR:
           return MessageFormat.format(getError(code, labelProperty), labelValue).strip();
         case NONE:
           return code;

@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 
 public abstract class MyCellarObject implements IMyCellarObject {
 
-  public abstract Object fromXmlElemnt(Element element);
+  public abstract Object fromXmlElement(Element element);
 
   protected boolean equalsValue(String value, String other) {
     if (value == null) {

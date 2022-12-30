@@ -797,7 +797,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       if (isModify) {
         //On grise les champs en cours de modif
         Debug("Modifying in Progress...");
-        end.setText(getLabel("AddVin.ModifyInProgreess"));
+        end.setText(getLabel("AddVin.ModifyInProgress"));
         enableAll(false);
       }
 

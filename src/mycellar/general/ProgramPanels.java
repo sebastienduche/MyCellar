@@ -84,8 +84,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 18/10/22
+ * @version 1.9
+ * @since 30/12/22
  */
 public class ProgramPanels {
 
@@ -630,7 +630,7 @@ public class ProgramPanels {
     for (Component c : TABBED_PANE.getComponents()) {
       if (c instanceof ITabListener) {
         if (!((ITabListener) c).tabWillClose(null)) {
-          Program.Debug("ProgramPanels: Exiting progam cancelled!");
+          Program.Debug("ProgramPanels: Exiting program cancelled!");
           return false;
         }
       }

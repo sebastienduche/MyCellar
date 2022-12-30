@@ -68,8 +68,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.5
- * @since 24/10/22
+ * @version 5.6
+ * @since 30/12/22
  */
 public final class PlaceUtils {
 
@@ -99,9 +99,6 @@ public final class PlaceUtils {
   /**
    * Write a CSV file
    *
-   * @param file
-   * @param myCellarObjects list of objects to write
-   * @param progressBar
    * @return int
    */
   public static boolean writeCSV(final File file, final List<? extends MyCellarObject> myCellarObjects, final JProgressBar progressBar) {
@@ -660,17 +657,19 @@ public final class PlaceUtils {
   }
 
   /**
-   * Positionne toutes les bouteilles dans les differents rangements
-   * - Une liste d'erreurs est cree
-   * - Les bouteilles en erreurs sont supprimees de la liste principale pour correction
+   * Set all objects in the places
+   * - In case of collision or others kind of errors, a list of errors is filled.
+   * - Objects with errors are removed from the main list
    *
-   * @return boolean: false si des erreurs existent
+   * @return boolean: Successful?
    */
   public static boolean putTabStock() {
     Debug("putTabStock...");
     for (MyCellarError error : Program.getErrors()) {
       if (!error.isSolved()) {
-        Program.getStorage().add(error.getMyCellarObject());
+        if (!Program.getStorage().getAllList().contains(error.getMyCellarObject())) {
+          Program.getStorage().add(error.getMyCellarObject());
+        }
       }
     }
     Program.getErrors().clear();
@@ -724,8 +723,12 @@ public final class PlaceUtils {
         }
       }
     }
+    if (!Program.getErrors().isEmpty()) {
+      Debug("List of objects with errors:");
+    }
     for (var error : Program.getErrors()) {
-      Debug("Error putTabStock: " + error.getMyCellarObject());
+      Debug("Error: " + error.getMyCellarObject());
+      Program.getStorage().getAllList().remove(error.getMyCellarObject());
     }
     Debug("putTabStock Done");
     return Program.getErrors().isEmpty();

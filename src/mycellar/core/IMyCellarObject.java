@@ -1,6 +1,7 @@
 package mycellar.core;
 
 import mycellar.core.common.MyCellarFields;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 
@@ -13,8 +14,8 @@ import java.math.BigDecimal;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 13/06/22
+ * @version 0.8
+ * @since 30/12/22
  */
 public interface IMyCellarObject {
   int getId();
@@ -86,6 +87,7 @@ public interface IMyCellarObject {
   String getComment();
 
   void setValue(MyCellarFields field, String value);
+  void validateValue(MyCellarFields field, String value) throws MyCellarException;
 
   boolean isNonVintage();
 }

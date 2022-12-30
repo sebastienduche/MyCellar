@@ -20,6 +20,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
@@ -86,8 +87,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.0
- * @since 01/06/22
+ * @version 16.1
+ * @since 30/12/22
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -578,6 +579,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
               }
               value = MyCellarUtils.convertToHTMLString(value);
               MyCellarFields selectedField = getSelectedField(i);
+              bottle.validateValue(selectedField, value);
               bottle.setValue(selectedField, value);
               if (selectedField.equals(MyCellarFields.NUM_PLACE) && maxNumPlace < bottle.getNumLieu()) {
                 maxNumPlace = bottle.getNumLieu();
@@ -590,8 +592,11 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             Program.getStorage().addWine(bottle);
             line = reader.readLine();
           }
+          displayImportDone();
+        } catch (MyCellarException e) {
+          Erreur.showSimpleErreur(this, e.getMessage());
+          displayImportError();
         }
-        displayImportDone();
       } else {
         if (!importExcelFile(filename, new_rangement)) {
           return;
@@ -631,6 +636,11 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private void displayImportDone() {
     label_progression.setText(getLabel("Import.Successful"), true);
     Debug("Import OK.");
+  }
+
+  private void displayImportError() {
+    label_progression.setText(getLabel("Import.Error"), true);
+    Debug("Import Error.");
   }
 
   private boolean importExcelFile(final String nom, final AbstractPlace rangement) {

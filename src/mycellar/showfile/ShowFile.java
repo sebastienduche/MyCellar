@@ -88,8 +88,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.7
- * @since 13/06/22
+ * @version 12.8
+ * @since 30/12/22
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -566,7 +566,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       public boolean execute(MyCellarObject myCellarObject, int row, int column) {
         if (!Program.isExistingMyCellarObject(myCellarObject)) {
           Debug("Inexisting object " + myCellarObject.getNom() + " [" + myCellarObject.getId() + "]");
-          Erreur.showSimpleErreur(MessageFormat.format(getError("ShowFile.InexisitingBottle", LabelProperty.THE_SINGLE), myCellarObject.getNom()));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("ShowFile.InexistingBottle", LabelProperty.THE_SINGLE), myCellarObject.getNom()));
           return false;
         }
         ProgramPanels.showBottle(myCellarObject, true);
@@ -1062,6 +1062,11 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     TableColumnModel tcm = table.getColumnModel();
     TableColumn tc;
     if (isError()) {
+      tc = tcm.getColumn(ErrorShowValues.Column.ETAT.getIndex());
+      tc.setCellRenderer(new CheckboxCellRenderer());
+      tc.setCellEditor(new CheckboxCellEditor());
+      tc.setMinWidth(25);
+      tc.setMaxWidth(25);
       tc = tcm.getColumn(ErrorShowValues.Column.PLACE.getIndex());
       tc.setCellEditor(new DefaultCellEditor(placeCbx));
       tc = tcm.getColumn(ErrorShowValues.Column.TYPE.getIndex());
@@ -1285,7 +1290,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       for (MyCellarObject bottle : selectedObjects) {
         if (!Program.isExistingMyCellarObject(bottle)) {
           Debug("Inexisting object " + bottle.getNom() + " [" + bottle.getId() + "]");
-          Erreur.showSimpleErreur(MessageFormat.format(getError("ShowFile.InexisitingBottle", LabelProperty.THE_SINGLE), bottle.getNom()));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("ShowFile.InexistingBottle", LabelProperty.THE_SINGLE), bottle.getNom()));
         } else {
           existingObjects.add(bottle);
         }

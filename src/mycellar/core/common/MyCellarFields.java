@@ -24,8 +24,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 25/05/22
+ * @version 2.7
+ * @since 30/12/22
  */
 
 public enum MyCellarFields {
@@ -60,7 +60,7 @@ public enum MyCellarFields {
 
   // Pour l'import de donnees
   EMPTY(28, ""),
-  USELESS(29, getLabel("Main.Useless"));
+  USELESS(29, "Main.Useless");
 
   private static final List<MyCellarFields> FIELDSFORIMPORT_WINE = Arrays.asList(
       NAME, YEAR, TYPE, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, MATURITY, PARKER, COLOR,

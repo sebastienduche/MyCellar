@@ -48,7 +48,7 @@
                 <attribute name="Class-Path" value="${jar.classpath}"/>
                 <attribute name="SplashScreen-Image" value="resources/SebInformatique.jpg"/>
             </manifest>
-            <fileset dir="./bin/production/MyCellar-test">
+            <fileset dir="./bin/production/MyCellar">
                 <include name="**/*/*MyCellarLauncher*"/>
                 <include name="**/*/*Server*"/>
                 <include name="**/*/*MyCellarVersion*"/>
@@ -61,7 +61,7 @@
                 <attribute name="Main-Class" value="mycellar.Start"/>
                 <attribute name="Class-Path" value="${jar.classpath}"/>
             </manifest>
-            <fileset dir="./bin/production/MyCellar-test">
+            <fileset dir="./bin/production/MyCellar">
                 <include name="**/*.class"/>
                 <include name="**/*/*.class"/>
                 <include name="**/*.properties"/>

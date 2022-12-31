@@ -25,7 +25,7 @@
         <copy file="./lib/poi-ooxml-4.0.0.jar" todir="./Build/lib"/>
         <copy file="./lib/poi-ooxml-schemas-4.0.0.jar" todir="./Build/lib"/>
         <copy file="./lib/xmlbeans-3.0.1.jar" todir="./Build/lib"/>
-        <copy file="./lib/GitHubServer-2.0.jar" todir="./Build/lib"/>
+        <copy file="./lib/GitHubServer-2.3.jar" todir="./Build/lib"/>
         <copy file="./lib/my-pdf-generator-1.0.jar" todir="./Build/lib"/>
         <!-- 5.7 -->
         <copy file="./lib/activation-1.0.2.jar" todir="./Build/lib"/>
@@ -53,7 +53,7 @@
                 <include name="**/*/*Server*"/>
                 <include name="**/*/*MyCellarVersion*"/>
             </fileset>
-            <zipfileset excludes="META-INF/*.SF" src="./lib/GitHubServer-2.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/GitHubServer-2.3.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="./lib/commons-io-2.4.jar"/>
         </jar>
         <jar destfile="./Build/MyCellar.jar">

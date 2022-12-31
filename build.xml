@@ -48,18 +48,20 @@
                 <attribute name="Class-Path" value="${jar.classpath}"/>
                 <attribute name="SplashScreen-Image" value="resources/SebInformatique.jpg"/>
             </manifest>
-            <fileset dir="./bin">
+            <fileset dir="./bin/production/MyCellar-test">
                 <include name="**/*/*MyCellarLauncher*"/>
                 <include name="**/*/*Server*"/>
                 <include name="**/*/*MyCellarVersion*"/>
             </fileset>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/GitHubServer-2.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/commons-io-2.4.jar"/>
         </jar>
         <jar destfile="./Build/MyCellar.jar">
             <manifest>
                 <attribute name="Main-Class" value="mycellar.Start"/>
                 <attribute name="Class-Path" value="${jar.classpath}"/>
             </manifest>
-            <fileset dir="./bin">
+            <fileset dir="./bin/production/MyCellar-test">
                 <include name="**/*.class"/>
                 <include name="**/*/*.class"/>
                 <include name="**/*.properties"/>

@@ -27,15 +27,15 @@ public class GenerateMd5 {
       writer.write(VERSION + "\n");
       writer.write("MyCellar.jar@" + checksum + "\n");
       writer.write("Finish.html\n");
-      getLibFiles()
-          .forEach(libFile -> {
-            try {
-              String md5 = getMD5Checksum("./Build/lib/" + libFile);
-              writer.write(libFile + "@" + md5 + "\n");
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-          });
+//      getLibFiles()
+//          .forEach(libFile -> {
+//            try {
+//              String md5 = getMD5Checksum("./Build/lib/" + libFile);
+//              writer.write(libFile + "@" + md5 + "\n");
+//            } catch (Exception e) {
+//              e.printStackTrace();
+//            }
+//          });
       writer.flush();
       System.out.println("Checksum");
       System.out.println(checksum);

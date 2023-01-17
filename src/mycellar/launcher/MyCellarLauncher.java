@@ -3,8 +3,10 @@ package mycellar.launcher;
 import mycellar.core.MyCellarVersion;
 import org.apache.commons.io.FileUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -16,8 +18,8 @@ import static javax.swing.JOptionPane.showMessageDialog;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 08/07/21
+ * @version 1.7
+ * @since 17/01/22
  */
 class MyCellarLauncher {
 
@@ -78,21 +80,28 @@ class MyCellarLauncher {
       System.exit(0);
     });
 
+    ProcessBuilder processBuilder = new ProcessBuilder("java", "-Dfile.encoding=UTF8", "-jar", MYCELLAR_JAR);
+    processBuilder.directory(new File("."));
+
     try {
-      var pb = new ProcessBuilder("java", "-Dfile.encoding=UTF8", "-jar", MYCELLAR_JAR);
-      pb.redirectErrorStream(true);
-      Process p = pb.start();
-      p.waitFor();
+      Process process = processBuilder.start();
+
+      BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+      String line;
+      while ((line = reader.readLine()) != null) {
+        MyCellarServer.Debug(line);
+      }
+
+      int exitCode = process.waitFor();
+      MyCellarServer.Debug("Exited with code : " + exitCode);
+
       Runtime.getRuntime().addShutdownHook(updateThread);
       updateThread.start();
-    } catch (IOException | InterruptedException ex) {
-      showException(ex);
+    } catch (IOException | InterruptedException e) {
+      showException(e);
     }
   }
 
-  /**
-   * @param args
-   */
   public static void main(String[] args) {
     new MyCellarLauncher();
 

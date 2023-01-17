@@ -77,7 +77,7 @@ class MyCellarLauncher {
       } else {
         MyCellarServer.Debug("ERROR: Missing download directory");
       }
-      System.exit(0);
+      Runtime.getRuntime().halt(0);
     });
 
     ProcessBuilder processBuilder = new ProcessBuilder("java", "-Dfile.encoding=UTF8", "-jar", MYCELLAR_JAR);
@@ -93,6 +93,7 @@ class MyCellarLauncher {
       }
 
       int exitCode = process.waitFor();
+      process.destroy();
       MyCellarServer.Debug("Exited with code : " + exitCode);
 
       Runtime.getRuntime().addShutdownHook(updateThread);

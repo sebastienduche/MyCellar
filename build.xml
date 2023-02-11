@@ -67,7 +67,7 @@
             <zipfileset excludes="META-INF/*.SF" src="./lib/miglayout-4.0-swing.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="./lib/my-pdf-generator-1.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="./lib/pdfbox-app-2.0.5.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="./lib/poi-ooxml-4.0.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/poi-4.0.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="./lib/poi-ooxml-4.0.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="./lib/poi-ooxml-schemas-4.0.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="./lib/slf4j-api-1.7.5.jar"/>

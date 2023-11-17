@@ -6,6 +6,7 @@ import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
+import mycellar.frame.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ButtonGroup;
@@ -53,7 +54,7 @@ public final class MyOptions extends JDialog {
   public MyOptions(String title, String message2, List<String> propriete, List<String> default_value, List<String> cle2, List<String> type_objet,
                    boolean cancel) {
 
-    super(Start.getInstance(), "", true);
+    super(MainFrame.getInstance(), "", true);
     cle = cle2;
     taille_value = propriete.size();
     resul = new String[taille_value];
@@ -150,7 +151,7 @@ public final class MyOptions extends JDialog {
       getContentPane().add(valider, "span 2, center");
     }
     pack();
-    setLocationRelativeTo(Start.getInstance());
+    setLocationRelativeTo(MainFrame.getInstance());
     setResizable(false);
   }
 

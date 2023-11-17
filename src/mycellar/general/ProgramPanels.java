@@ -10,7 +10,6 @@ import mycellar.Parametres;
 import mycellar.Program;
 import mycellar.ScreenType;
 import mycellar.ShowHistory;
-import mycellar.Start;
 import mycellar.Stat;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.ICutCopyPastable;
@@ -24,6 +23,7 @@ import mycellar.core.UpdateViewType;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.JButtonTabComponent;
+import mycellar.frame.MainFrame;
 import mycellar.importer.Importer;
 import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
@@ -440,7 +440,7 @@ public class ProgramPanels {
           bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
         }
         addTab(bottleName, MyCellarImage.WINE, manage);
-        Start.getInstance().updateMainPanel();
+        MainFrame.updateMainPanel();
       }
     }.execute();
   }
@@ -477,7 +477,7 @@ public class ProgramPanels {
       return;
     }
     if (modified) {
-      Start.setApplicationTitleModified();
+      MainFrame.setApplicationTitleModified();
     }
     new MyCellarSwingWorker() {
       @Override

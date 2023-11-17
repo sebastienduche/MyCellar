@@ -4,7 +4,6 @@ import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarObject;
@@ -17,7 +16,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -263,13 +262,8 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   }
 
   @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
   public void tabClosed() {
-    Start.getInstance().updateMainPanel();
+    MainFrame.updateMainPanel();
     deleteSupprimerRangement();
   }
 

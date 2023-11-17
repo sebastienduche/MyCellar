@@ -1,8 +1,8 @@
 package mycellar.vignobles;
 
-import mycellar.Start;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
+import mycellar.frame.MainFrame;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -29,11 +29,6 @@ class VineyardTableModel extends DefaultTableModel {
   private static final long serialVersionUID = -6356586420904968734L;
   private List<AppelationJaxb> appelationJaxbs;
   private CountryVignobleJaxb vignoble;
-
-  @Override
-  public boolean isCellEditable(int row, int column) {
-    return true;
-  }
 
   @Override
   public int getColumnCount() {
@@ -99,11 +94,11 @@ class VineyardTableModel extends DefaultTableModel {
         String name = appelationJaxb.getAOC() != null ? appelationJaxb.getAOC() : appelationJaxb.getIGP();
         CountryVignobleController.rebuild();
         if (CountryVignobleController.isAppellationUsed(appelationJaxb)) {
-          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.UnableDeleteAppellation"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(MainFrame.getInstance(), getLabel("VineyardPanel.UnableDeleteAppellation"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
           return;
         }
 
-        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelAppellationQuestion"), name), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelAppellationQuestion"), name), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         CountryVignobleController.setModified();

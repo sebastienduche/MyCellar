@@ -2,7 +2,6 @@ package mycellar.pdf;
 
 import mycellar.Erreur;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.uicomponents.MyCellarButton;
@@ -10,6 +9,7 @@ import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
+import mycellar.frame.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -39,7 +39,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * @since 24/05/22
  */
 public final class PDFOptions extends JDialog {
-  static final long serialVersionUID = 110805;
+  private static final long serialVersionUID = 110805;
   private final MyCellarSpinner titleSize = new MyCellarSpinner(1, 99);
   private final MyCellarCheckBox boldCheck = new MyCellarCheckBox("Options.Bold");
   private final MyCellarCheckBox borderCheck = new MyCellarCheckBox("Options.Border");
@@ -126,7 +126,7 @@ public final class PDFOptions extends JDialog {
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
     setSize(400, 500);
-    setLocationRelativeTo(Start.getInstance());
+    setLocationRelativeTo(MainFrame.getInstance());
   }
 
   /**

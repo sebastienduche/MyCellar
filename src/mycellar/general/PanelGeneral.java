@@ -6,7 +6,6 @@ import mycellar.Music;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellarObject;
@@ -22,6 +21,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.PopupListener;
+import mycellar.frame.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JOptionPane;
@@ -431,7 +431,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
         label = getError("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return true;
       }
@@ -448,7 +448,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
         label = getError("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), label + SPACE + getError("Error.confirmSave"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmSave"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return true;
       }

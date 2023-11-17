@@ -31,10 +31,10 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * @version 2.0
  * @since 24/05/22
  */
-final class APropos extends JDialog {
-  static final long serialVersionUID = 150505;
+public final class APropos extends JDialog {
+  private static final long serialVersionUID = 150505;
 
-  APropos() {
+  public APropos() {
     super(new JFrame(), getLabel("Main.About"), true);
     IconPanel ip = new IconPanel(MyCellarImage.ICON);
     MyCellarButton ok = new MyCellarButton("Main.OK");
@@ -64,7 +64,7 @@ final class APropos extends JDialog {
   }
 
   private static class IconPanel extends JPanel {
-    static final long serialVersionUID = 1505051;
+    private static final long serialVersionUID = 1505051;
     private final ImageIcon img;
 
     private IconPanel(ImageIcon img) {

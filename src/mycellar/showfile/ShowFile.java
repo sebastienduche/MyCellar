@@ -7,7 +7,6 @@ import mycellar.ITabListener;
 import mycellar.Music;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
@@ -38,6 +37,7 @@ import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -402,7 +402,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           throwNotImplementedIfNotFor(b, Music.class);
           Music music = (Music) b;
           PanelDuration panelDuration = new PanelDuration(DurationConverter.getTimeFromDisplay((String) getDisplayValue(music)));
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), panelDuration,
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), panelDuration,
               getLabel("Main.ChooseDuration"), JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.PLAIN_MESSAGE)) {
             b.setModified();
@@ -951,7 +951,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       placeCbx.setSelectedIndex(0);
       if (!abstractPlace.isSimplePlace()) {
         final PanelPlacePosition panelPlace = new PanelPlacePosition(abstractPlace, true, false, true, true, false, true, false);
-        JOptionPane.showMessageDialog(Start.getInstance(), panelPlace,
+        JOptionPane.showMessageDialog(MainFrame.getInstance(), panelPlace,
             getLabel("Main.ChooseCell"),
             JOptionPane.PLAIN_MESSAGE);
         place = panelPlace.getSelectedPlacePosition();
@@ -1017,7 +1017,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         if (abstractPlace != null && abstractPlace.isSimplePlace()) {
           Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"));
         } else {
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             ProgramPanels.showBottle(b, true);
           }
         }
@@ -1165,16 +1165,11 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   public boolean tabWillClose(TabEvent event) {
     if (isError()) {
       if (Program.getErrors().stream().anyMatch(MyCellarError::isNotSolved)) {
-        return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), getLabel("ShowFile.QuitErrors"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION);
+        return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), getLabel("ShowFile.QuitErrors"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION);
       }
     }
     PlaceUtils.putTabStock();
     return true;
-  }
-
-  @Override
-  public void tabClosed() {
-    Start.getInstance().updateMainPanel();
   }
 
   public void Debug(String text) {
@@ -1228,7 +1223,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       tc.setMinWidth(25);
       tc.setMaxWidth(25);
       panel.add(new JScrollPane(jTable));
-      JOptionPane.showMessageDialog(Start.getInstance(), panel, getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
+      JOptionPane.showMessageDialog(MainFrame.getInstance(), panel, getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
       List<Integer> properties = modelColumn.getSelectedColumns();
       if (!properties.isEmpty()) {
         cols = new ArrayList<>();

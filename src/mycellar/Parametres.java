@@ -12,7 +12,7 @@ import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.uicomponents.PopupListener;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
@@ -272,13 +272,8 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
   }
 
   @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
   public void tabClosed() {
-    Start.getInstance().updateMainPanel();
+    MainFrame.updateMainPanel();
     ProgramPanels.deleteParametres();
   }
 

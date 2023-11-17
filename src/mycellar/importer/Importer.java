@@ -11,7 +11,6 @@ import mycellar.MyCellarUtils;
 import mycellar.MyOptions;
 import mycellar.Options;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
@@ -30,7 +29,6 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
-import mycellar.core.uicomponents.TabEvent;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
@@ -92,7 +90,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
-  static final long serialVersionUID = 280706;
+  private static final long serialVersionUID = 280706;
   private final MyCellarButton importe = new MyCellarButton("Import.Title");
   private final MyCellarRadioButton type_txt = new MyCellarRadioButton("Import.TxtCsv", true);
   private final MyCellarRadioButton type_xls = new MyCellarRadioButton("Import.Xls", false);
@@ -324,7 +322,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   }
 
   /**
-   * run: Fonction d'import
+   * Do the import
    */
   @Override
   public void run() {
@@ -334,7 +332,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
       String filename = toCleanString(file.getText());
       if (filename.isEmpty()) {
-        //Erreur le filename ne doit pas etre vide
         Debug("ERROR: filename cannot be empty");
         resetLabelProgress();
         Erreur.showSimpleErreur(getError("Error.fileNameShouldntBeEmpty"));
@@ -671,7 +668,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
           int i = 0;
           for (String value : bottleValues) {
-            //Recuperation des champs selectionnes
             MyCellarFields selectedField = getSelectedField(i);
             //Alimentation de la HashMap
             Debug("Write " + selectedField + "->" + value);
@@ -755,16 +751,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     if (e.getKeyCode() == ouvrirChar && e.isControlDown()) {
       openit_actionPerformed(null);
     }
-  }
-
-  @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
-  public void tabClosed() {
-    Start.getInstance().updateMainPanel();
   }
 
   @Override

@@ -18,7 +18,7 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.pdf.PDFOptions;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.showfile.ManageColumnModel;
@@ -70,7 +70,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
-  static final long serialVersionUID = 240706;
+  private static final long serialVersionUID = 240706;
   private static final char OUVRIR = getLabel("OUVRIR").charAt(0);
   private static final char EXPORT = getLabel("EXPORT").charAt(0);
   private final MyCellarButton valider = new MyCellarButton("Main.Export");
@@ -277,7 +277,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     if (aFile.exists()) {
       // Existing file. replace?
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(
-          Start.getInstance(),
+          MainFrame.getInstance(),
           MessageFormat.format(getError("Export.replaceFileQuestion"), aFile.getAbsolutePath()),
           getLabel("Main.AskConfirmation"),
           JOptionPane.YES_NO_OPTION,
@@ -397,16 +397,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     file.setText(fullText.substring(0, file.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(file.getSelectionEnd()));
   }
 
-  @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
-  public void tabClosed() {
-    Start.getInstance().updateMainPanel();
-  }
-
   class SettingsAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
 
@@ -444,7 +434,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         tc.setMaxWidth(25);
         JPanel panel = new JPanel();
         panel.add(new JScrollPane(table));
-        JOptionPane.showMessageDialog(Start.getInstance(), panel, getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(MainFrame.getInstance(), panel, getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
         Program.setModified();
         List<Integer> properties = modelColumn.getSelectedColumns();
         List<MyCellarFields> cols = new ArrayList<>();
@@ -458,7 +448,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     }
   }
 
-  class ParametersAction extends MyCellarAction {
+  static class ParametersAction extends MyCellarAction {
     private static final long serialVersionUID = -3212527164505184899L;
 
     private ParametersAction() {

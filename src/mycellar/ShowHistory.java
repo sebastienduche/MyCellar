@@ -14,7 +14,7 @@ import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
 import net.miginfocom.swing.MigLayout;
@@ -136,17 +136,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
     model.setFilter(filterCbx.getSelectedIndex() - 1);
   }
 
-  @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
-  public void tabClosed() {
-    Start.getInstance().updateMainPanel();
-  }
-
-  void refresh() {
+  public void refresh() {
     model.setHistory(Program.getHistory());
   }
 
@@ -215,7 +205,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), toRestoreList.size());
           erreur_txt2 = getLabel("ShowFile.RestoreSeveral");
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"),
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
           for (MyCellarObject myCellarObject : toRestoreList) {
@@ -285,7 +275,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
             erreur_txt2 = getError("Error.confirmNDelete");
           }
           Debug(toDeleteList.size() + " line(s) selected");
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"),
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"),
               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             Debug("Deleting lines...");
             for (History b : toDeleteList) {

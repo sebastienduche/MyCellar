@@ -2,9 +2,9 @@ package mycellar.actions;
 
 import mycellar.AddVin;
 import mycellar.MyCellarImage;
-import mycellar.Start;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.AbstractAction;
@@ -37,7 +37,7 @@ public class OpenAddVinAction extends AbstractAction {
         ProgramPanels.addTab(label, MyCellarImage.WINE, addVin);
       }
 
-      Start.getInstance().updateMainPanel();
+      MainFrame.updateMainPanel();
     });
   }
 }

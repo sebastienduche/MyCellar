@@ -1,9 +1,9 @@
 package mycellar.placesmanagement;
 
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
+import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
 import mycellar.placesmanagement.places.Part;
@@ -65,7 +65,7 @@ public final class RangementCreationDialog extends JDialog {
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
     setSize(600, 500);
-    setLocationRelativeTo(Start.getInstance());
+    setLocationRelativeTo(MainFrame.getInstance());
     setVisible(true);
     Debug("Constructor Done");
   }

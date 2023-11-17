@@ -1,8 +1,8 @@
 package mycellar.actions;
 
 import mycellar.MyCellarImage;
-import mycellar.Start;
 import mycellar.core.text.MyCellarLabelManagement;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.ShowFile;
 
@@ -30,7 +30,7 @@ public class OpenShowErrorsAction extends AbstractAction {
         ProgramPanels.addTab(label, MyCellarImage.ERROR, showErrors);
       }
 
-      Start.getInstance().updateMainPanel();
+      MainFrame.updateMainPanel();
     });
   }
 }

@@ -3,10 +3,10 @@ package mycellar.showfile;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
+import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
@@ -243,7 +243,7 @@ class TableShowValues extends AbstractTableModel {
             if (rangement.isSimplePlace()) {
               Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"));
             } else {
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getError("Error.error"), JOptionPane.YES_NO_OPTION)) {
+              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getError("Error.error"), JOptionPane.YES_NO_OPTION)) {
                 LinkedList<MyCellarObject> list = new LinkedList<>();
                 list.add(b);
                 Program.modifyBottles(list);

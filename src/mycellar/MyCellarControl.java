@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.text.LabelProperty;
+import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 
@@ -45,7 +46,7 @@ public final class MyCellarControl {
   }
 
   public static boolean hasInvalidPlace(PlacePosition place) {
-    return hasInvalidPlace(place, Start.getInstance());
+    return hasInvalidPlace(place, MainFrame.getInstance());
   }
 
   public static boolean hasInvalidPlace(PlacePosition place, Component component) {

@@ -3,7 +3,6 @@ package mycellar.requester;
 import mycellar.Bouteille;
 import mycellar.Music;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
@@ -12,6 +11,7 @@ import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.requester.ui.ValueSearch;
 import net.miginfocom.swing.MigLayout;
@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -362,7 +363,7 @@ public class Predicates {
       JOptionPane.showMessageDialog(null, panel,
           "",
           JOptionPane.PLAIN_MESSAGE);
-      return new ValueSearch(((AbstractPlace) liste.getSelectedItem()).getName());
+      return new ValueSearch(((AbstractPlace) Objects.requireNonNull(liste.getSelectedItem())).getName());
     }
   };
 
@@ -519,7 +520,7 @@ public class Predicates {
     @Override
     public ValueSearch askforValue() {
       PanelVignobles panelVignobles = new PanelVignobles(true, false, false);
-      JOptionPane.showMessageDialog(Start.getInstance(), panelVignobles,
+      JOptionPane.showMessageDialog(MainFrame.getInstance(), panelVignobles,
           "",
           JOptionPane.PLAIN_MESSAGE);
       final VignobleJaxb selectedVignobleJaxb = panelVignobles.getSelectedVignoble();

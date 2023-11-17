@@ -6,7 +6,6 @@ import mycellar.Export;
 import mycellar.ITabListener;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.TextFieldPopup;
 import mycellar.actions.OpenWorkSheetAction;
 import mycellar.core.ICutCopyPastable;
@@ -30,7 +29,7 @@ import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -251,7 +250,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     dialog.add(new Export(searchTableModel.getDatas()));
     dialog.pack();
     dialog.setTitle(getLabel("Export.ExportFormat"));
-    dialog.setLocationRelativeTo(Start.getInstance());
+    dialog.setLocationRelativeTo(MainFrame.getInstance());
     dialog.setModal(true);
     dialog.setVisible(true);
     Debug("Export Done");
@@ -765,16 +764,6 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private void empty_search_actionPerformed(ActionEvent e) {
     Program.putCaveConfigBool(MyCellarSettings.EMPTY_SEARCH, emptySearchCheck.isSelected());
-  }
-
-  @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
-  public void tabClosed() {
-    Start.getInstance().updateMainPanel();
   }
 
   @Override

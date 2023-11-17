@@ -1,8 +1,8 @@
 package mycellar.capacity;
 
 import mycellar.MyCellarUtils;
-import mycellar.Start;
 import mycellar.core.datas.MyCellarBottleContenance;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.JOptionPane;
@@ -24,8 +24,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * @since 25/05/22
  */
 class CapacityTableModel extends DefaultTableModel {
-  public static final int ETAT = 1;
-  static final long serialVersionUID = 220605;
+  public static final int STATE = 1;
+  private static final long serialVersionUID = 220605;
   private final String[] columnNames = {getLabel("Main.Values"), ""};
 
   private final List<String> list;
@@ -51,7 +51,7 @@ class CapacityTableModel extends DefaultTableModel {
 
   @Override
   public Object getValueAt(int row, int column) {
-    if (column == ETAT) {
+    if (column == STATE) {
       return Boolean.FALSE;
     }
     return list.get(row);
@@ -63,19 +63,14 @@ class CapacityTableModel extends DefaultTableModel {
   }
 
   @Override
-  public boolean isCellEditable(int row, int column) {
-    return true;
-  }
-
-  @Override
   public void setValueAt(Object value, int row, int column) {
     final String oldValue = list.get(row);
-    if (column == ETAT) {
+    if (column == STATE) {
       if (MyCellarBottleContenance.isContenanceUsed(oldValue)) {
-        JOptionPane.showMessageDialog(Start.getInstance(), getLabel("CapacityPanel.UnableDeleteCapacity"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(MainFrame.getInstance(), getLabel("CapacityPanel.UnableDeleteCapacity"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
         return;
       }
-      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("CapacityPanel.DelCapacityQuestion"), oldValue), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getLabel("CapacityPanel.DelCapacityQuestion"), oldValue), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
         return;
       }
       list.remove(oldValue);

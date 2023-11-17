@@ -7,6 +7,7 @@ import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
+import mycellar.frame.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -38,7 +39,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * @since 24/05/22
  */
 final class CSVOptions extends JDialog {
-  static final long serialVersionUID = 230705;
+  private static final long serialVersionUID = 230705;
   private final MyCellarCheckBox[] export;
   private final MyCellarComboBox<String> separator = new MyCellarComboBox<>();
   private final int nb_colonnes;
@@ -116,7 +117,7 @@ final class CSVOptions extends JDialog {
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
     pack();
-    setLocationRelativeTo(Start.getInstance());
+    setLocationRelativeTo(MainFrame.getInstance());
     Debug("Constructor Done");
   }
 

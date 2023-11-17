@@ -1,10 +1,10 @@
 package mycellar.actions;
 
 import mycellar.MyCellarImage;
-import mycellar.Start;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarAction;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.ShowFile;
 
@@ -44,7 +44,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
         ProgramPanels.addTab(label, MyCellarImage.WORK, showWorksheet);
       }
 
-      Start.getInstance().updateMainPanel();
+      MainFrame.updateMainPanel();
       showWorksheet.addToWorsheet(bouteilles);
     });
   }

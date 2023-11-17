@@ -15,7 +15,6 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
-import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
@@ -60,7 +59,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * @since 08/07/22
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
-  static final long serialVersionUID = 260706;
+  private static final long serialVersionUID = 260706;
   private final JTextField name = new JTextField();
   private final MyCellarRadioButton type_XML = new MyCellarRadioButton("Export.Xml", false);
   private final MyCellarRadioButton type_HTML = new MyCellarRadioButton("Export.Html", true);
@@ -352,16 +351,6 @@ public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCo
   public void paste() {
     String fullText = name.getText();
     name.setText(fullText.substring(0, name.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(name.getSelectionEnd()));
-  }
-
-  @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
-  public void tabClosed() {
-    Start.getInstance().updateMainPanel();
   }
 
   @Override

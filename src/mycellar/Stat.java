@@ -13,7 +13,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.Part;
@@ -183,8 +183,6 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   /**
    * typeStats_itemStateChanged: Fonction appelle lors d'un changement dans la
    * premiere liste.
-   *
-   * @param e
    */
   private void typeStats_itemStateChanged(ItemEvent e) {
     final MyCellarEnum selectedItem = getSelectedStatType();
@@ -519,11 +517,6 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   }
 
   @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
   public void tabClosed() {
     listHistory.clear();
     listNumberBottles.clear();
@@ -531,7 +524,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listYear.clear();
     mapAddedPerYear.clear();
     mapDeletedPerYear.clear();
-    Start.getInstance().updateMainPanel();
+    MainFrame.updateMainPanel();
   }
 
   @Override

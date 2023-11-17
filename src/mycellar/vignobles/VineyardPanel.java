@@ -4,7 +4,6 @@ import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.UpdateViewType;
@@ -17,7 +16,7 @@ import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
@@ -179,16 +178,11 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   }
 
   @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
   public void tabClosed() {
     comboCountry.setSelectedIndex(0);
     model.setAppellations(null, null);
     ProgramPanels.updateAllPanelsForUpdatingVineyard();
-    Start.getInstance().updateMainPanel();
+    MainFrame.updateMainPanel();
   }
 
   private class AddVignobleAction extends AbstractAction {
@@ -233,10 +227,10 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
       if (countryVignobleJaxb != null) {
         CountryVignobleController.rebuild();
         if (CountryVignobleController.isVignobleUsed(countryJaxb, countryVignobleJaxb)) {
-          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.UnableDeleteVignoble"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(MainFrame.getInstance(), getLabel("VineyardPanel.UnableDeleteVignoble"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
           return;
         }
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelVignobleQuestion"), countryVignobleJaxb.getName()), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelVignobleQuestion"), countryVignobleJaxb.getName()), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         comboVignoble.removeItemAt(comboVignoble.getSelectedIndex());
@@ -330,11 +324,11 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
         CountryVignobleController.rebuild();
         for (CountryVignobleJaxb countryVignobleJaxb : vignoble.getCountryVignobleJaxbList()) {
           if (CountryVignobleController.isVignobleUsed(countryJaxb, countryVignobleJaxb)) {
-            JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.UnableDeleteCountry"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(MainFrame.getInstance(), getLabel("VineyardPanel.UnableDeleteCountry"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
             return;
           }
         }
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelCountryQuestion"), countryJaxb), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelCountryQuestion"), countryJaxb), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         CountryVignobleController.deleteCountry(countryJaxb);

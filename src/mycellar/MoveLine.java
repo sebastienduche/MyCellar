@@ -10,6 +10,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -38,14 +39,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * @since 13/09/22
  */
 
-final class MoveLine extends JDialog {
+public final class MoveLine extends JDialog {
 
   private static final long serialVersionUID = 40508;
   private final MyCellarSimpleLabel label_end = new MyCellarSimpleLabel();
   private final MyCellarComboBox<PanelPlacePosition.ComboItem> new_line_cbx = new MyCellarComboBox<>();
   private final PanelPlacePosition panelPlace = new MoveLinePanelPlacePosition();
 
-  MoveLine() {
+  public MoveLine() {
     setAlwaysOnTop(true);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(getLabel("Main.Move"));
@@ -77,8 +78,10 @@ final class MoveLine extends JDialog {
 
     pack();
     setResizable(true);
-    setIconImage(MyCellarImage.ICON.getImage());
-    setLocationRelativeTo(Start.getInstance());
+    if (MyCellarImage.ICON != null) {
+      setIconImage(MyCellarImage.ICON.getImage());
+    }
+    setLocationRelativeTo(MainFrame.getInstance());
     setVisible(true);
   }
 

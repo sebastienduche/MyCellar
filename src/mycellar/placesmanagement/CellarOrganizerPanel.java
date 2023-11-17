@@ -5,7 +5,6 @@ import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IPlacePosition;
 import mycellar.core.IUpdatable;
@@ -21,6 +20,7 @@ import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -270,7 +270,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (stock.getComponentCount() > 0) {
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("ManageStock.ConfirmLost", LabelProperty.PLURAL), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError("ManageStock.ConfirmLost", LabelProperty.PLURAL), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }
       if (stock.getComponentCount() > 0) {
@@ -314,7 +314,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 
   @Override
   public void tabClosed() {
-    Start.getInstance().updateMainPanel();
+    MainFrame.updateMainPanel();
     rangementCells.clear();
     stock.removeAll();
     places.clear();
@@ -559,7 +559,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
       @Override
       public void perform() {
         String mess = MessageFormat.format(MyCellarLabelManagement.getLabel("Main.DeleteWine", LabelProperty.THE_SINGLE), myCellarObject.getNom());
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), mess, MyCellarLabelManagement.getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), mess, MyCellarLabelManagement.getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
           Component parent = MyCellarObjectDraggingLabel.this.getParent();
           if (parent instanceof RangementCell) {
             ((RangementCell) parent).remove(MyCellarObjectDraggingLabel.this);

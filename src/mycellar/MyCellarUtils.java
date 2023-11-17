@@ -84,7 +84,7 @@ public final class MyCellarUtils {
     return new BigDecimal(buf.toString()).setScale(2, RoundingMode.HALF_UP);
   }
 
-  static String getShortFilename(String sFilename) {
+  public static String getShortFilename(String sFilename) {
     String tmp = sFilename.replaceAll("\\\\", SLASH);
     int ind1 = tmp.lastIndexOf(SLASH);
     int ind2 = tmp.indexOf(ONE_DOT + EXTENSION_SINFO);

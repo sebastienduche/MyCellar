@@ -4,7 +4,6 @@ import mycellar.AddVin;
 import mycellar.MyCellarImage;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
-import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.AbstractAction;
@@ -16,7 +15,6 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public class OpenAddVinAction extends AbstractAction {
 
-  private static final long serialVersionUID = 6187152928186377148L;
   private final List<MyCellarObject> listToModify;
 
   public OpenAddVinAction(List<MyCellarObject> listToModify) {
@@ -36,8 +34,6 @@ public class OpenAddVinAction extends AbstractAction {
       } else {
         ProgramPanels.addTab(label, MyCellarImage.WINE, addVin);
       }
-
-      MainFrame.updateMainPanel();
     });
   }
 }

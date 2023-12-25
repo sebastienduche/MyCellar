@@ -109,8 +109,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.2
- * @since 24/10/22
+ * @version 29.3
+ * @since 08/07/22
  */
 
 public final class Program {
@@ -322,7 +322,6 @@ public final class Program {
     MyCellarLabelManagement.updateLabels();
     ProgramPanels.PANEL_INFOS.setLabels();
     MainFrame.getInstance().updateLabels();
-    MainFrame.updateMainPanel();
   }
 
   public static void showException(Exception e) {
@@ -781,6 +780,7 @@ public final class Program {
     PLACES.clear();
     DEFAULT_PLACE.resetStockage();
     EMPTY_PLACE.resetStockage();
+    MainFrame.updateManagePlaceButton();
     openedFile = null;
     Debug("Program: closeFile: Closing file Ended");
   }
@@ -848,9 +848,7 @@ public final class Program {
   }
 
   /**
-   * Retourne le nom du repertoire de travail.
-   *
-   * @param withEndSlash
+   * Get working directory
    */
   public static String getWorkDir(boolean withEndSlash) {
     if (workDirCalculated) {
@@ -1020,7 +1018,7 @@ public final class Program {
 
     try {
       if (System.getProperty("os.name").startsWith("Mac")) {
-        Runtime.getRuntime().exec("/usr/bin/open " + file.getAbsolutePath());
+        new ProcessBuilder("/usr/bin/open", file.getAbsolutePath()).start();
       } else {
         Desktop.getDesktop().browse(file.toURI());
       }
@@ -1144,7 +1142,7 @@ public final class Program {
       List<Long> oldTime = Arrays.stream(list)
           .filter(StringUtils::isNumeric)
           .map(Long::parseLong)
-          .filter(value -> value < time).collect(Collectors.toList());
+          .filter(value -> value < time).toList();
 
       oldTime.forEach(value -> DIR_TO_DELETE.add(new File(file + File.separator + value)));
     }
@@ -1169,7 +1167,7 @@ public final class Program {
   static void saveHTMLColumns(List<MyCellarFields> cols) {
     StringBuilder s = new StringBuilder();
     for (MyCellarFields f : cols) {
-      if (s.length() != 0) {
+      if (!s.isEmpty()) {
         s.append(COLUMNS_SEPARATOR);
       }
       s.append(f.name());
@@ -1240,7 +1238,7 @@ public final class Program {
       return;
     }
     if (listToModify.size() == 1) {
-      ProgramPanels.showBottle(listToModify.get(0), true);
+      ProgramPanels.showBottle(listToModify.getFirst(), true);
     } else {
       new OpenAddVinAction(listToModify).actionPerformed(null);
     }
@@ -1250,8 +1248,8 @@ public final class Program {
     return getStorage().getAllList().stream().filter(myCellarObject -> objectIds.contains(myCellarObject.getId())).collect(Collectors.toList());
   }
 
-  public static boolean isExistingMyCellarObject(MyCellarObject myCellarObject) {
-    return getStorage().getAllList().stream().anyMatch(myCellarObject1 -> myCellarObject1.getId() == myCellarObject.getId());
+  public static boolean isNotExistingMyCellarObject(MyCellarObject myCellarObject) {
+    return getStorage().getAllList().stream().noneMatch(myCellarObject1 -> myCellarObject1.getId() == myCellarObject.getId());
   }
 
   public static void exit() {

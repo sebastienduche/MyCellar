@@ -56,8 +56,6 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
-  private static final long serialVersionUID = 2661586945830305901L;
-
   private final MyCellarComboBox<CountryJaxb> comboCountry = new MyCellarComboBox<>();
   private final MyCellarComboBox<CountryVignobleJaxb> comboVignoble = new MyCellarComboBox<>();
   private final CountryJaxb emptyCountryJaxb = new CountryJaxb();
@@ -182,12 +180,9 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
     comboCountry.setSelectedIndex(0);
     model.setAppellations(null, null);
     ProgramPanels.updateAllPanelsForUpdatingVineyard();
-    MainFrame.updateMainPanel();
   }
 
   private class AddVignobleAction extends AbstractAction {
-
-    private static final long serialVersionUID = 2164410331118124652L;
 
     private AddVignobleAction() {
       super("", MyCellarImage.ADD);
@@ -213,8 +208,6 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   }
 
   class DelVignobleAction extends AbstractAction {
-
-    private static final long serialVersionUID = 2839462637218767338L;
 
     private DelVignobleAction() {
       super("", MyCellarImage.DELETE);
@@ -244,11 +237,6 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 
   class RenameVignobleAction extends AbstractAction {
 
-    private static final long serialVersionUID = 2912399011575692147L;
-
-    private RenameVignobleAction() {
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
       CountryVignobleJaxb countryVignobleJaxb = (CountryVignobleJaxb) comboVignoble.getSelectedItem();
@@ -264,8 +252,6 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   }
 
   class AddAppellationAction extends AbstractAction {
-
-    private static final long serialVersionUID = 2174872605239470622L;
 
     private AddAppellationAction() {
       super("", MyCellarImage.ADD);
@@ -283,8 +269,6 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   }
 
   class AddCountryAction extends AbstractAction {
-
-    private static final long serialVersionUID = -6725950975161352023L;
 
     private AddCountryAction() {
       super("", MyCellarImage.ADD);
@@ -307,8 +291,6 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   }
 
   class DelCountryAction extends AbstractAction {
-
-    private static final long serialVersionUID = -2587952745857642464L;
 
     private DelCountryAction() {
       super("", MyCellarImage.DELETE);

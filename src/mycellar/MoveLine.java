@@ -35,13 +35,12 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.2
- * @since 13/09/22
+ * @version 4.3
+ * @since 25/12/23
  */
 
 public final class MoveLine extends JDialog {
 
-  private static final long serialVersionUID = 40508;
   private final MyCellarSimpleLabel label_end = new MyCellarSimpleLabel();
   private final MyCellarComboBox<PanelPlacePosition.ComboItem> new_line_cbx = new MyCellarComboBox<>();
   private final PanelPlacePosition panelPlace = new MoveLinePanelPlacePosition();
@@ -149,7 +148,6 @@ public final class MoveLine extends JDialog {
   }
 
   class MoveLinePanelPlacePosition extends PanelPlacePosition {
-    private static final long serialVersionUID = 1742129778730101248L;
 
     public MoveLinePanelPlacePosition() {
       super(false, false, false, true);

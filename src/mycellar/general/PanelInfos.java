@@ -33,12 +33,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 31/05/22
+ * @version 3.2
+ * @since 25/12/23
  */
 public final class PanelInfos extends JPanel {
 
-  private static final long serialVersionUID = 7993820887000979660L;
   private final PanelStats panelStats;
   private final PanelHistory panelHistory;
 
@@ -74,7 +73,6 @@ public final class PanelInfos extends JPanel {
 
 final class PanelStats extends JPanel {
 
-  private static final long serialVersionUID = 7438892143990782047L;
   private final MyCellarLabel bottles = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
   private final MyCellarLabel cellarValue = new MyCellarLabel("Main.GlobalValue");
   private final MyCellarSimpleLabel bottlesNb = new MyCellarSimpleLabel();
@@ -143,7 +141,6 @@ final class PanelStats extends JPanel {
   }
 
   private static class PanelStatsModel extends DefaultTableModel {
-    private static final long serialVersionUID = -3683870571523007857L;
     private final LinkedList<AbstractPlace> names;
     private final LinkedList<String> values;
     private final boolean isInit;

@@ -36,13 +36,12 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 24/05/22
+ * @version 2.1
+ * @since 25/12/23
  */
 
 public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
-  private static final long serialVersionUID = -116789055896509475L;
   private final CapacityTableModel model = new CapacityTableModel();
   private final MyCellarComboBox<String> defaultComboBox = new MyCellarComboBox<>();
   private final JTable table;
@@ -99,7 +98,6 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   @Override
   public void tabClosed() {
     model.setModify(false);
-    MainFrame.updateMainPanel();
   }
 
   @Override

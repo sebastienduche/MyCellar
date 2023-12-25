@@ -28,11 +28,10 @@ import java.util.List;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.5
- * @since 24/05/22
+ * @version 4.6
+ * @since 25/12/23
  */
 final class ListVin extends JPanel {
-  static final long serialVersionUID = 10805;
   private final ListValues listValues;
   private final AddVin addVin;
 
@@ -40,7 +39,6 @@ final class ListVin extends JPanel {
    * Constructeur avec liste d'objets
    *
    * @param myCellarObjects LinkedList<IMyCellarObject>: Liste des objets.
-   * @param addVin
    */
   ListVin(List<? extends IMyCellarObject> myCellarObjects, final AddVin addVin) {
     this.addVin = addVin;
@@ -70,16 +68,16 @@ final class ListVin extends JPanel {
       }
     });
 
-    JScrollPane scrollpane = new JScrollPane(table);
     MyCellarLabel selectItemsLabel = new MyCellarLabel("ListVin.SelectItems", LabelProperty.THE_PLURAL);
 
-    scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     setLayout(new MigLayout("", "grow", "[grow][]"));
     MyCellarLabel listProblemsLabel = new MyCellarLabel("ListVin.ListProblems", LabelProperty.PLURAL);
     listProblemsLabel.setForeground(Color.red);
     listProblemsLabel.setFont(new Font("Dialog", Font.BOLD, 13));
     listProblemsLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
+    JScrollPane scrollpane = new JScrollPane(table);
+    scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     add(scrollpane, "grow,wrap,width min(100,200)");
     add(selectItemsLabel, "width min(100,200)");
     setVisible(true);

@@ -27,7 +27,7 @@ import static mycellar.ProgramConstants.SPACE;
  * @since 24/10/22
  */
 public final class Start {
-
+// New bottle, set previous vineyard
 
   private Start() {
   }
@@ -53,7 +53,7 @@ public final class Start {
       System.exit(999);
     }
   }
-  
+
   private static void checkProgramParameters(String[] args) {
     String parameters = "";
 

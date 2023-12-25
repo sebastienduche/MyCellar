@@ -4,7 +4,6 @@ import mycellar.MyCellarImage;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarAction;
-import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.ShowFile;
 
@@ -17,7 +16,6 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public final class OpenWorkSheetAction extends MyCellarAction {
 
-  private static final long serialVersionUID = -2351197475699686315L;
   private static final String LABEL = "ShowFile.Worksheet";
   private final List<MyCellarObject> bouteilles;
 
@@ -44,7 +42,6 @@ public final class OpenWorkSheetAction extends MyCellarAction {
         ProgramPanels.addTab(label, MyCellarImage.WORK, showWorksheet);
       }
 
-      MainFrame.updateMainPanel();
       showWorksheet.addToWorsheet(bouteilles);
     });
   }

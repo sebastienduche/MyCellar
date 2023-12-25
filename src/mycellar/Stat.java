@@ -13,7 +13,6 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
-import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.Part;
@@ -72,12 +71,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelForType;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.2
- * @since 17/10/22
+ * @version 10.3
+ * @since 08/07/22
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
-  private static final long serialVersionUID = -5333602919958999440L;
   private static final int PRICE_BRACKET_DEFAULT = 50;
   private final MyCellarLabel comboLabel = new MyCellarLabel("Main.Storage", LabelProperty.SINGLE.withDoubleQuote());
   private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
@@ -524,7 +522,6 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listYear.clear();
     mapAddedPerYear.clear();
     mapDeletedPerYear.clear();
-    MainFrame.updateMainPanel();
   }
 
   @Override
@@ -592,8 +589,6 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   }
 
   private static final class PanelChart extends JPanel {
-
-    private static final long serialVersionUID = -6697139633950076186L;
 
     private PanelChart() {
       setLayout(new MigLayout("", "grow", "grow"));

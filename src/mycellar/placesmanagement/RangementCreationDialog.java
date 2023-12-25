@@ -30,8 +30,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 08/07/22
+ * @version 1.3
+ * @since 25/12/23
  */
 public final class RangementCreationDialog extends JDialog {
 
@@ -92,6 +92,7 @@ public final class RangementCreationDialog extends JDialog {
         abstractPlace = new ComplexPlaceBuilder(name).withPartList(parts).build();
       }
       Program.addPlace(abstractPlace);
+      MainFrame.updateManagePlaceButton();
     });
     end.setText(MessageFormat.format(getLabel("RangementToCreateTableModel.End"), map.size()));
     model.clear();

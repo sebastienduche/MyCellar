@@ -14,9 +14,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 
 public class ExportPDFAction extends AbstractAction {
-
-  private static final long serialVersionUID = -7521113567474056823L;
-
+  
   public ExportPDFAction() {
     super("", MyCellarImage.PDF);
     putValue(SHORT_DESCRIPTION, MyCellarLabelManagement.getLabel("Export.Pdf"));

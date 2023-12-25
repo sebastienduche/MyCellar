@@ -55,11 +55,10 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.3
- * @since 08/07/22
+ * @version 9.4
+ * @since 25/12/23
  */
 public final class Creer_Tableaux extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
-  private static final long serialVersionUID = 260706;
   private final JTextField name = new JTextField();
   private final MyCellarRadioButton type_XML = new MyCellarRadioButton("Export.Xml", false);
   private final MyCellarRadioButton type_HTML = new MyCellarRadioButton("Export.Html", true);

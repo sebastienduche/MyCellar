@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import java.util.List;
 
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
@@ -35,13 +36,12 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.9
- * @since 24/05/22
+ * @version 3.0
+ * @since 25/12/23
  */
 final class CSVOptions extends JDialog {
-  private static final long serialVersionUID = 230705;
   private final MyCellarCheckBox[] export;
-  private final MyCellarComboBox<String> separator = new MyCellarComboBox<>();
+  private final MyCellarComboBox<SeparatorType> separator = new MyCellarComboBox<>();
   private final int nb_colonnes;
   private final List<MyCellarFields> listColumns;
 
@@ -80,25 +80,14 @@ final class CSVOptions extends JDialog {
     jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));
     jPanel2.setFont(FONT_PANEL);
     MyCellarButton valider = new MyCellarButton("Main.OK");
-    separator.addItem(getLabel("CSV.SeparatorComma"));
-    separator.addItem(getLabel("CSV.SeparatorDotComma"));
-    separator.addItem(getLabel("CSV.SeparatorDoubleDot"));
-    separator.addItem(getLabel("CSV.SeparatorSlash"));
+    separator.addItem(SeparatorType.COMMA);
+    separator.addItem(SeparatorType.COLUMNS);
+    separator.addItem(SeparatorType.DOUBLE_DOT);
+    separator.addItem(SeparatorType.SLASH);
     String key = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
-    switch (key) {
-      case COLUMNS_SEPARATOR:
-        separator.setSelectedIndex(1);
-        break;
-      case DOUBLE_DOT:
-        separator.setSelectedIndex(2);
-        break;
-      case SLASH:
-        separator.setSelectedIndex(3);
-        break;
-      default:
-        Debug("ERROR: Unknown separator");
-        break;
-    }
+    SeparatorType separatorType = SeparatorType.fromValue(key);
+    separator.setSelectedItem(separatorType);
+
     valider.addActionListener(this::valider_actionPerformed);
     MyCellarButton annuler = new MyCellarButton("Main.Cancel");
     annuler.addActionListener((e) -> dispose());
@@ -130,21 +119,53 @@ final class CSVOptions extends JDialog {
     for (int i = 0; i < nb_colonnes; i++) {
       Program.putCaveConfigBool(MyCellarSettings.EXPORT_CSV + listColumns.get(i).name(), export[i].isSelected());
     }
-    switch (separator.getSelectedIndex()) {
-      case 0:
+    switch (separator.getSelectedItem()) {
+      case SeparatorType.COMMA:
         Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COMMA);
         break;
-      case 1:
+      case SeparatorType.COLUMNS:
         Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
         break;
-      case 2:
+      case SeparatorType.DOUBLE_DOT:
         Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, DOUBLE_DOT);
         break;
-      case 3:
+      case SeparatorType.SLASH:
         Program.putCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, SLASH);
         break;
+      case null:
+        throw new IllegalStateException("Unexpected null value ");
+      default:
+        throw new IllegalStateException("Unexpected value: " + separator.getSelectedItem());
     }
     dispose();
   }
 
+  private enum SeparatorType {
+    COMMA(ProgramConstants.COMMA, getLabel("CSV.SeparatorComma")),
+    DOUBLE_DOT(ProgramConstants.DOUBLE_DOT, getLabel("CSV.SeparatorDoubleDot")),
+    SLASH(ProgramConstants.SLASH, getLabel("CSV.SeparatorSlash")),
+    COLUMNS(COLUMNS_SEPARATOR, getLabel("CSV.SeparatorDotComma"));
+    private final String separator;
+    private final String label;
+
+    SeparatorType(String separator, String label) {
+      this.separator = separator;
+      this.label = label;
+    }
+
+    public String getSeparator() {
+      return separator;
+    }
+
+    @Override
+    public String toString() {
+      return label;
+    }
+
+    public static SeparatorType fromValue(String value) {
+      return Arrays.stream(values()).filter(separatorType -> separatorType.getSeparator().equals(value))
+          .findFirst()
+          .orElse(DOUBLE_DOT);
+    }
+  }
 }

@@ -88,8 +88,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.8
- * @since 30/12/22
+ * @version 12.6
+ * @since 25/12/23
  */
 
 public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -98,7 +98,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private static final MyCellarEnum VALIDATED = new MyCellarEnum(1, getLabel("History.Validated"));
   private static final MyCellarEnum TOCHECK = new MyCellarEnum(2, getLabel("History.ToCheck"));
 
-  private static final long serialVersionUID = 1265789936970092250L;
   private final MyCellarSimpleLabel titleLabel = new MyCellarSimpleLabel();
   private final MyCellarLabel labelCount = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
   private final MyCellarButton createPlacesButton = new MyCellarButton("Main.StorageToCreate", new CreatePlacesAction());
@@ -564,7 +563,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
       @Override
       public boolean execute(MyCellarObject myCellarObject, int row, int column) {
-        if (!Program.isExistingMyCellarObject(myCellarObject)) {
+        if (Program.isNotExistingMyCellarObject(myCellarObject)) {
           Debug("Inexisting object " + myCellarObject.getNom() + " [" + myCellarObject.getId() + "]");
           Erreur.showSimpleErreur(MessageFormat.format(getError("ShowFile.InexistingBottle", LabelProperty.THE_SINGLE), myCellarObject.getNom()));
           return false;
@@ -924,21 +923,21 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       abstractPlace = (AbstractPlace) value;
       empl = abstractPlace.getName();
     } else if (field == MyCellarFields.NUM_PLACE) {
-      Integer i = parseIntOrError(value);
+      Integer i = parseIntOrError(String.valueOf(value));
       if (i == null) {
         return;
       }
       num_empl = i;
       nValueToCheck = i;
     } else if (field == MyCellarFields.LINE) {
-      Integer i = parseIntOrError(value);
+      Integer i = parseIntOrError(String.valueOf(value));
       if (i == null) {
         return;
       }
       line = i;
       nValueToCheck = i;
     } else if (field == MyCellarFields.COLUMN) {
-      Integer i = parseIntOrError(value);
+      Integer i = parseIntOrError(String.valueOf(value));
       if (i == null) {
         return;
       }
@@ -1283,7 +1282,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       Debug("Modifying " + selectedObjects.size() + " objects...");
       LinkedList<MyCellarObject> existingObjects = new LinkedList<>();
       for (MyCellarObject bottle : selectedObjects) {
-        if (!Program.isExistingMyCellarObject(bottle)) {
+        if (Program.isNotExistingMyCellarObject(bottle)) {
           Debug("Inexisting object " + bottle.getNom() + " [" + bottle.getId() + "]");
           Erreur.showSimpleErreur(MessageFormat.format(getError("ShowFile.InexistingBottle", LabelProperty.THE_SINGLE), bottle.getNom()));
         } else {

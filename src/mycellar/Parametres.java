@@ -12,7 +12,6 @@ import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.uicomponents.PopupListener;
-import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
@@ -50,12 +49,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.7
+ * @version 13.8
  * @since 08/07/22
  */
 public final class Parametres extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar {
 
-  private static final long serialVersionUID = -4208146070057957967L;
   private final MyCellarLabel label_fic_bak;
   private final MyCellarComboBox<String> langue = new MyCellarComboBox<>();
   private final MyCellarButton parcourir_excel = new MyCellarButton(OPEN);
@@ -273,7 +271,6 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 
   @Override
   public void tabClosed() {
-    MainFrame.updateMainPanel();
     ProgramPanels.deleteParametres();
   }
 

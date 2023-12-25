@@ -102,8 +102,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 17/11/23
+ * @version 0.2
+ * @since 25/12/23
  */
 public final class MainFrame extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -341,7 +341,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     Program.addDefaultPlaceIfNeeded();
     enableAll(true);
     ProgramPanels.updateAllPanels();
-    updateMainPanel();
     ProgramPanels.PANEL_INFOS.setEnable(true);
     ProgramPanels.PANEL_INFOS.refresh();
     setApplicationTitle(Program.getShortFilename(), false);
@@ -376,9 +375,9 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       } else {
         enableAll(false);
         ProgramPanels.updateAllPanels();
-        updateMainPanel();
         setApplicationTitle("", false);
       }
+      updateManagePlaceButton();
     } catch (UnableToOpenFileException e) {
       if (!(e instanceof UnableToOpenMyCellarFileException)) {
         Erreur.showSimpleErreur(getError("Error.LoadingFile"));
@@ -429,7 +428,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     enableAll(false);
     ProgramPanels.PANEL_INFOS.setEnable(false);
     ProgramPanels.PANEL_INFOS.refresh();
-    updateMainPanel();
     setApplicationTitle("", false);
     setCursor(Cursor.getDefaultCursor());
   }
@@ -829,7 +827,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     menuCheckUpdate.addActionListener(this::checkUpdate);
   }
 
-  public static void updateMainPanel() {
+  public static void updateManagePlaceButton() {
     INSTANCE.managePlaceButton.setEnabled(Program.hasComplexPlace());
   }
 
@@ -865,24 +863,20 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
   public void removeCurrentTab() {
     ProgramPanels.removeSelectedTab();
-    updateMainPanel();
   }
 
   public void openVineyardPanel() {
     ProgramPanels.addTab(getLabel("Main.VineyardManagement"), null, ProgramPanels.createVineyardPanel());
-    updateMainPanel();
   }
 
   public static void openCapacityPanel() {
     ProgramPanels.addTab(getLabel("Parameter.CapacitiesManagement"), null, ProgramPanels.createCapacityPanel());
-    updateMainPanel();
   }
 
   public void openCellChooserPanel(IPlacePosition iPlace) {
     final int selectedTabIndex = ProgramPanels.getSelectedTabIndex() + 1;
     final CellarOrganizerPanel chooseCellPanel = ProgramPanels.createChooseCellPanel(iPlace);
     ProgramPanels.insertTab(getLabel("Main.ChooseCell"), MyCellarImage.PLACE, chooseCellPanel, selectedTabIndex);
-    updateMainPanel();
   }
 
   @Override
@@ -908,7 +902,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   static final class CutAction extends MyCellarAction {
-    private static final long serialVersionUID = -8024045169612180263L;
     private static final String LABEL = "Main.Cut";
 
     private CutAction(boolean withText) {
@@ -926,7 +919,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   static final class CopyAction extends MyCellarAction {
-    private static final long serialVersionUID = -4416042464174203695L;
     private static final String LABEL = "Main.Copy";
 
     private CopyAction(boolean withText) {
@@ -944,7 +936,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   static final class PasteAction extends MyCellarAction {
-    private static final long serialVersionUID = 7152419581737782003L;
     private static final String LABEL = "Main.Paste";
 
     private PasteAction(boolean withText) {
@@ -994,7 +985,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   final class OpenAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.Open";
 
     private OpenAction(boolean withText) {
@@ -1017,7 +1007,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
             Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), ""));
             Debug("ERROR: OpenAction: File not found during Opening!");
             ProgramPanels.updateAllPanels();
-            updateMainPanel();
             setApplicationTitle("", false);
             return;
           }
@@ -1033,7 +1022,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   final class NewAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.New";
 
     private NewAction(boolean withText) {
@@ -1059,7 +1047,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   final class SaveAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.Save";
 
     private SaveAction(boolean withText) {
@@ -1091,7 +1078,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   final class SaveAsAction extends MyCellarAction {
-    private static final long serialVersionUID = -2340786091568284033L;
     private static final String LABEL = "Main.SaveAs";
 
     private SaveAsAction() {
@@ -1106,7 +1092,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   final class AddWineAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.TabAdd";
 
     private AddWineAction() {
@@ -1120,12 +1105,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       final AddVin addVin = ProgramPanels.createAddVin();
       selectOrAddTab(addVin, LABEL, MyCellarImage.WINE);
       addVin.reInit();
-      updateMainPanel();
     }
   }
 
   static final class AddPlaceAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "CreateStorage.Title";
 
     private AddPlaceAction() {
@@ -1136,12 +1119,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     @Override
     public void actionPerformed(ActionEvent arg0) {
       selectOrAddTab(ProgramPanels.createCreerRangement(), LABEL, MyCellarImage.PLACE);
-      updateMainPanel();
     }
   }
 
   static final class DeletePlaceAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.DeleteStorage";
 
     private DeletePlaceAction() {
@@ -1152,12 +1133,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     @Override
     public void actionPerformed(ActionEvent arg0) {
       selectOrAddTab(ProgramPanels.createSupprimerRangement(), LABEL, MyCellarImage.DELPLACE);
-      updateMainPanel();
     }
   }
 
   static final class PlaceMoveLineAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "MoveLine.Title";
 
     private PlaceMoveLineAction() {
@@ -1172,7 +1151,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   static final class ModifyPlaceAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.ModifyStorage";
 
     private ModifyPlaceAction() {
@@ -1185,12 +1163,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       final Creer_Rangement modifierRangement = ProgramPanels.createModifierRangement();
       selectOrAddTab(modifierRangement, LABEL, MyCellarImage.MODIFYPLACE);
       modifierRangement.updateView();
-      updateMainPanel();
     }
   }
 
   static final class SearchAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.TabSearchSimple";
 
     private SearchAction() {
@@ -1201,12 +1177,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     @Override
     public void actionPerformed(ActionEvent arg0) {
       selectOrAddTab(ProgramPanels.createSearch(), LABEL, MyCellarImage.SEARCH);
-      updateMainPanel();
     }
   }
 
   static final class CreateTabAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.createTable";
 
     private CreateTabAction() {
@@ -1217,12 +1191,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     @Override
     public void actionPerformed(ActionEvent arg0) {
       selectOrAddTab(ProgramPanels.createCreerTableaux(), LABEL, MyCellarImage.TABLE);
-      updateMainPanel();
     }
   }
 
   static final class ImportFileAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Import.Title";
 
     private ImportFileAction() {
@@ -1233,12 +1205,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     @Override
     public void actionPerformed(ActionEvent arg0) {
       selectOrAddTab(ProgramPanels.createImporter(), LABEL, MyCellarImage.IMPORT);
-      updateMainPanel();
     }
   }
 
   static final class ExportFileAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.FileExport";
 
     private ExportFileAction() {
@@ -1249,12 +1219,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     @Override
     public void actionPerformed(ActionEvent arg0) {
       selectOrAddTab(ProgramPanels.createExport(), LABEL, MyCellarImage.EXPORT);
-      updateMainPanel();
     }
   }
 
   static final class StatAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.Statistics";
 
     private StatAction() {
@@ -1267,12 +1235,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       final Stat stat = ProgramPanels.createStat();
       selectOrAddTab(stat, LABEL, MyCellarImage.STATS);
       stat.updateView();
-      updateMainPanel();
     }
   }
 
   static class ShowHistoryAction extends MyCellarAction {
-    private static final long serialVersionUID = -2981766233846291757L;
     private static final String LABEL = "Main.History";
 
     private ShowHistoryAction() {
@@ -1284,13 +1250,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       final ShowHistory showHistory = ProgramPanels.createShowHistory();
       selectOrAddTab(showHistory, LABEL, null);
       showHistory.refresh();
-      updateMainPanel();
     }
   }
 
   class VignoblesAction extends MyCellarAction {
-
-    private static final long serialVersionUID = -7956676252030557402L;
 
     private VignoblesAction() {
       super("Main.VineyardManagement", LabelProperty.SINGLE.withThreeDashes());
@@ -1304,8 +1267,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
   static class CapacityAction extends MyCellarAction {
 
-    private static final long serialVersionUID = -7204054967253027549L;
-
     private CapacityAction() {
       super("Parameter.CapacitiesManagement", LabelProperty.SINGLE.withThreeDashes());
     }
@@ -1318,7 +1279,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   static final class ShowFileAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.FileContent";
 
     private ShowFileAction() {
@@ -1329,12 +1289,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     @Override
     public void actionPerformed(ActionEvent arg0) {
       selectOrAddTab(ProgramPanels.createShowFile(), LABEL, MyCellarImage.SHOW);
-      updateMainPanel();
     }
   }
 
   static final class ShowTrashAction extends AbstractAction {
-    private static final long serialVersionUID = -3212527164505184899L;
     private static final String LABEL = "Main.ShowTrash";
 
     private ShowTrashAction() {
@@ -1347,12 +1305,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       final ShowFile showTrash = ProgramPanels.createShowTrash();
       selectOrAddTab(showTrash, LABEL, MyCellarImage.TRASH);
       showTrash.updateView();
-      updateMainPanel();
     }
   }
 
   static final class ManagePlaceAction extends MyCellarAction {
-    private static final long serialVersionUID = -5144284671743409095L;
     private static final String LABEL = "Main.ManagePlace";
 
     private ManagePlaceAction() {
@@ -1363,12 +1319,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     @Override
     public void actionPerformed(ActionEvent arg0) {
       selectOrAddTab(ProgramPanels.createCellarOrganizerPanel(), LABEL, MyCellarImage.PLACE);
-      updateMainPanel();
     }
   }
 
   static final class ParametersAction extends MyCellarAction {
-    private static final long serialVersionUID = -5144284671743409095L;
     private static final String LABEL = "Main.Settings";
 
     private ParametersAction() {
@@ -1378,12 +1332,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     @Override
     public void actionPerformed(ActionEvent arg0) {
       selectOrAddTab(ProgramPanels.createParametres(), LABEL, MyCellarImage.PARAMETER);
-      updateMainPanel();
     }
   }
 
   static final class SetConfigAction extends MyCellarAction {
-    private static final long serialVersionUID = -5144284671743409095L;
 
     private SetConfigAction() {
       super("Start.ModifyParameter", LabelProperty.SINGLE.withThreeDashes());

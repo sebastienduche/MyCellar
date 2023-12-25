@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.STAR;
@@ -440,7 +439,6 @@ public class ProgramPanels {
           bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
         }
         addTab(bottleName, MyCellarImage.WINE, manage);
-        MainFrame.updateMainPanel();
       }
     }.execute();
   }
@@ -492,7 +490,7 @@ public class ProgramPanels {
     }.execute();
   }
 
-  public static void selectOrAddTab(Component component, String tabLabel, Icon icon) {
+  public static void selectOrAddTab(Component component, String labelId, Icon icon) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
@@ -502,7 +500,7 @@ public class ProgramPanels {
             ((IPanelModifyable) component).setPaneIndex(TABBED_PANE.getSelectedIndex());
           }
         } catch (IllegalArgumentException e) {
-          addTab(getLabel(tabLabel, LabelProperty.SINGLE), icon, component);
+          addTab(getLabel(labelId, LabelProperty.SINGLE), icon, component);
         }
       }
     }.execute();
@@ -574,7 +572,7 @@ public class ProgramPanels {
 
   public static void removeTabAt(int index) {
     TABBED_PANE.removeTabAt(index);
-    final List<TabLabel> tabLabels = TAB_LABELS.stream().filter(tabLabel -> tabLabel.getIndex() == index).collect(Collectors.toList());
+    final List<TabLabel> tabLabels = TAB_LABELS.stream().filter(tabLabel -> tabLabel.getIndex() == index).toList();
     TAB_LABELS.removeAll(tabLabels);
     TAB_LABELS.stream().filter(tabLabel -> tabLabel.getIndex() > index).forEach(TabLabel::decrementIndex);
   }

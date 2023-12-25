@@ -71,8 +71,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.7
- * @since 17/10/22
+ * @version 17.8
+ * @since 25/12/23
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -560,6 +560,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
             .startSimplePlace(partNumberIncrementSimplePlace)
             .limited(islimited)
             .limit(simplePlaceLimit).build());
+        MainFrame.updateManagePlaceButton();
         Debug("Creation of '" + nom + "' completed.");
         nom_obj.setText("");
         labelCreated.setText(getLabel("CreateStorage.Created"), true);
@@ -599,6 +600,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
   private void createComplexPlace(String name) {
     Program.addPlace(new ComplexPlace(name, listPart));
+    MainFrame.updateManagePlaceButton();
     Debug("Creating " + name + " completed.");
     labelCreated.setText(getLabel("CreateStorage.Created"), true);
     nom_obj.setText("");

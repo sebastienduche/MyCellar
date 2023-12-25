@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 
 public class ChooseCellAction extends AbstractAction {
 
-  private static final long serialVersionUID = -6674616199012746620L;
   private final IPlacePosition iPlace;
 
   public ChooseCellAction(IPlacePosition iPlace) {

@@ -42,11 +42,10 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.3
- * @since 17/10/22
+ * @version 10.4
+ * @since 25/12/23
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
-  private static final long serialVersionUID = 5330256984954964913L;
   private boolean saveAndExit;
 
   /**

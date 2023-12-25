@@ -5,7 +5,6 @@
 package mycellar;
 
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.frame.MainFrame;
 
 import java.util.EventListener;
 
@@ -28,6 +27,5 @@ public interface ITabListener extends EventListener {
   }
 
   default void tabClosed() {
-    MainFrame.updateMainPanel();
   }
 }

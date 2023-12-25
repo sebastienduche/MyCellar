@@ -49,12 +49,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.3
- * @since 18/10/22
+ * @version 32.4
+ * @since 25/12/23
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
-  private static final long serialVersionUID = -8925831759212999905L;
   private final AddVin instance;
   private boolean isModify = false; // Pour la Modification
   private AbstractPlace placeInModification;
@@ -127,7 +126,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       listVin.setObjects(myCellarObjects);
     }
 
-    setBottle(myCellarObjects.get(0));
+    setBottle(myCellarObjects.getFirst());
   }
 
   /**
@@ -421,8 +420,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   private Result modifySeveralObjectsWithChangingSimplePlace(PlacePosition place, SimplePlace simplePlace) {
     Debug("Modifying with changing place");
     Result result = new Result();
-    int nbbottle = listBottleInModification.size();
-    if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + nbbottle) > simplePlace.getMaxItemCount()) {
+    if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + listBottleInModification.size()) > simplePlace.getMaxItemCount()) {
       Debug("ERROR: Not enough place!");
       Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
       panelPlace.enableSimplePlace(true);
@@ -735,7 +733,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       ProgramPanels.setPaneModified(selectedIndex, false);
       end.setText("");
     }
-    panelGeneral.setSeveralItems(severalItems);
+    panelGeneral.setSeveralItems(false);
     panelPlace.resetValues();
     panelPlace.clearModified();
     enableAll(true);
@@ -877,11 +875,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       this.requireReset = requireReset;
     }
 
-    public void merge(Result result) {
-      added = added || result.isAdded();
-      requireReset = requireReset || result.isRequireReset();
-    }
-
     public boolean isHasError() {
       return hasError;
     }
@@ -921,8 +914,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
   class AddAction extends AbstractAction {
 
-    private static final long serialVersionUID = -2958181161054647775L;
-
     private AddAction() {
       super("", MyCellarImage.ADD);
     }
@@ -934,8 +925,6 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   }
 
   class CancelAction extends AbstractAction {
-
-    private static final long serialVersionUID = -8689301287853923641L;
 
     private CancelAction() {
       super("", MyCellarImage.DELETE);

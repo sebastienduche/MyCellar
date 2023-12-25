@@ -65,12 +65,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.3
- * @since 08/07/22
+ * @version 11.4
+ * @since 25/12/23
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
-  private static final long serialVersionUID = 240706;
   private static final char OUVRIR = getLabel("OUVRIR").charAt(0);
   private static final char EXPORT = getLabel("EXPORT").charAt(0);
   private final MyCellarButton valider = new MyCellarButton("Main.Export");
@@ -124,13 +123,13 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     end.setFont(FONT_DIALOG_BOLD);
     openit.setMnemonic(OUVRIR);
     openit.addActionListener((e) -> openit_actionPerformed());
-    MyCellarRadioButtonXML.addActionListener((e) -> jradio_actionPerformed());
-    MyCellarRadioButtonHTML.addActionListener((e) -> jradio_actionPerformed());
-    MyCellarRadioButtonCSV.addActionListener((e) -> jradio_actionPerformed());
+    MyCellarRadioButtonXML.addActionListener(this::jradio_actionPerformed);
+    MyCellarRadioButtonHTML.addActionListener(this::jradio_actionPerformed);
+    MyCellarRadioButtonCSV.addActionListener(this::jradio_actionPerformed);
     end.setHorizontalAlignment(SwingConstants.CENTER);
     end.setForeground(Color.red);
-    MyCellarRadioButtonXLS.addActionListener((e) -> jradio_actionPerformed());
-    MyCellarRadioButtonPDF.addActionListener((e) -> jradio_actionPerformed());
+    MyCellarRadioButtonXLS.addActionListener(this::jradio_actionPerformed);
+    MyCellarRadioButtonPDF.addActionListener(this::jradio_actionPerformed);
 
     file.addMouseListener(new PopupListener());
 
@@ -252,7 +251,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     }
   }
 
-  private void jradio_actionPerformed() {
+  private void jradio_actionPerformed(ActionEvent e) {
     end.setText("");
     options.setEnabled(!MyCellarRadioButtonXML.isSelected());
   }
@@ -398,7 +397,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   }
 
   class SettingsAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
 
     private SettingsAction() {
       super("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
@@ -449,7 +447,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   }
 
   static class ParametersAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
 
     private ParametersAction() {
       super("Main.Settings", LabelProperty.SINGLE.withThreeDashes());

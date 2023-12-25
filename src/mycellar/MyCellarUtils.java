@@ -19,8 +19,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 06/05/22
+ * @version 0.4
+ * @since 25/12/23
  */
 public final class MyCellarUtils {
 
@@ -50,9 +50,9 @@ public final class MyCellarUtils {
     }
   }
 
-  public static Integer parseIntOrError(Object value) {
+  public static Integer parseIntOrError(String value) {
     try {
-      return Integer.parseInt((String) value);
+      return Integer.parseInt(value);
     } catch (NumberFormatException e) {
       Erreur.showSimpleErreur(getError("Error.enterNumericValue"));
       return null;

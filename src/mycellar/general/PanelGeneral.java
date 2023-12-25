@@ -45,12 +45,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 09/10/22
+ * @version 2.0
+ * @since 25/12/23
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPanelModifyable {
 
-  private static final long serialVersionUID = 5905201984124426737L;
   private final MyCellarLabel labelModified = new MyCellarLabel("AddVin.ItemModified", LabelProperty.SINGLE);
   private final MyCellarButton manageContenance = new MyCellarButton("Parameter.CapacitiesManagement");
   private final JModifyTextField year = new JModifyTextField();
@@ -69,8 +68,6 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   public PanelGeneral() {
     setModificationDetectionActive(false);
     name = new JCompletionComboBox<>() {
-      private static final long serialVersionUID = 8137073557763181546L;
-
       @Override
       protected void doAfterModify() {
         super.doAfterModify();
@@ -379,8 +376,12 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
       return false;
     }
 
+    if (severalItems) {
+      return true;
+    }
+
     // Controle de la date
-    if (!severalItems && (year.isEditable() || !noYear.isSelected())) {
+    if (year.isEditable() || !noYear.isSelected()) {
       String annee = year.getText();
 
       // Erreur sur la date

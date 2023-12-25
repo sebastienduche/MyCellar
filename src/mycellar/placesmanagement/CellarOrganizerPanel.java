@@ -64,7 +64,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
@@ -78,13 +77,12 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.9
- * @since 17/10/22
+ * @version 6.0
+ * @since 25/12/23
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
-  private static final long serialVersionUID = -1239228393406479587L;
   protected final List<RangementCell> rangementCells = new ArrayList<>();
   private final MouseListener handler = new Handler();
   private final List<JPanel[][]> places = new LinkedList<>();
@@ -160,7 +158,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
         }
 
         Program.getStorage().getAllList().stream()
-            .filter(bouteille -> bouteille.getEmplacement().endsWith(simplePlace.getName())).collect(Collectors.toList())
+            .filter(bouteille -> bouteille.getEmplacement().endsWith(simplePlace.getName())).toList()
             .forEach(b -> {
               JPanel[][] place = places.get(b.getNumLieu() - simplePlace.getPartNumberIncrement());
               int line = mapEmplSize.get(b.getNumLieu());
@@ -314,7 +312,6 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 
   @Override
   public void tabClosed() {
-    MainFrame.updateMainPanel();
     rangementCells.clear();
     stock.removeAll();
     places.clear();
@@ -351,8 +348,6 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 
   private class MoveAction extends AbstractAction {
 
-    private static final long serialVersionUID = 6973442058662866086L;
-
     private MoveAction() {
       super(getLabel("ManageStock.MoveAll", LabelProperty.PLURAL));
     }
@@ -380,7 +375,6 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 
 
 final class RangementCell extends JPanel {
-  private static final long serialVersionUID = -3180057277279430308L;
   public static final int WIDTH_SIMPLE_PLACE = 400;
   public static final int WIDTH_COMPLEX_PLACE = 100;
   private final boolean stock;
@@ -529,7 +523,6 @@ final class RangementCell extends JPanel {
 
 final class MyCellarObjectDraggingLabel extends JPanel {
 
-  private static final long serialVersionUID = -3982812616929975895L;
   private final MyCellarSimpleLabel label = new MyCellarSimpleLabel();
   private MyCellarObject myCellarObject;
 
@@ -620,11 +613,8 @@ class Handler extends MouseAdapter {
 }
 
 class LabelTransferHandler extends TransferHandler {
-  private static final long serialVersionUID = -4338469857987642038L;
   private final DataFlavor localObjectFlavor;
   private final MyCellarSimpleLabel label = new MyCellarSimpleLabel() {
-    private static final long serialVersionUID = 5065631180392050633L;
-
     @Override
     public boolean contains(int x, int y) {
       return false;

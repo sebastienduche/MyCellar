@@ -29,6 +29,7 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
+import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
@@ -85,12 +86,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.1
- * @since 30/12/22
+ * @version 16.2
+ * @since 25/12/23
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
-  private static final long serialVersionUID = 280706;
   private final MyCellarButton importe = new MyCellarButton("Import.Title");
   private final MyCellarRadioButton type_txt = new MyCellarRadioButton("Import.TxtCsv", true);
   private final MyCellarRadioButton type_xls = new MyCellarRadioButton("Import.Xls", false);
@@ -523,6 +523,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           Debug("Creating new place with name: " + nom1);
           new_rangement = new SimplePlaceBuilder(nom1).build();
           Program.addPlace(new_rangement);
+          MainFrame.updateManagePlaceButton();
         } else {
           new_rangement = Program.getAbstractPlaceAt(num_r);
         }
@@ -530,21 +531,12 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (type_txt.isSelected()) {
         //Cas des fichiers TXT
         Debug("Importing Text File...");
-        String separe;
-        switch (separateur.getSelectedIndex()) {
-          case 1:
-            separe = DOUBLE_DOT;
-            break;
-          case 2:
-            separe = SLASH;
-            break;
-          case 3:
-            separe = COMMA;
-            break;
-          case 0:
-          default:
-            separe = COLUMNS_SEPARATOR;
-        }
+        String separe = switch (separateur.getSelectedIndex()) {
+          case 1 -> DOUBLE_DOT;
+          case 2 -> SLASH;
+          case 3 -> COMMA;
+          default -> COLUMNS_SEPARATOR;
+        };
 
         try (var reader = new BufferedReader(new FileReader(f))) {
           String line = reader.readLine();

@@ -77,8 +77,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.0
- * @since 25/12/23
+ * @version 6.1
+ * @since 26/12/23
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -276,8 +276,8 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       }
       for (int i = 0; i < stock.getComponentCount(); i++) {
         Component c = stock.getComponent(i);
-        if (c instanceof MyCellarObjectDraggingLabel) {
-          final MyCellarObject myCellarObject = ((MyCellarObjectDraggingLabel) c).getMyCellarObject();
+        if (c instanceof MyCellarObjectDraggingLabel label) {
+          final MyCellarObject myCellarObject = label.getMyCellarObject();
           Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
           Program.getStorage().getAllList().remove(myCellarObject);
           Program.setToTrash(myCellarObject);
@@ -535,10 +535,10 @@ final class MyCellarObjectDraggingLabel extends JPanel {
       width = 400;
     }
     setLayout(new MigLayout("", "5px[" + width + ":" + width + ":" + width + "][10:10:10]0px", "0px[align center, grow]0px"));
-    if (myCellarObject instanceof Bouteille) {
-      if (((Bouteille) myCellarObject).isWhiteWine()) {
+    if (myCellarObject instanceof Bouteille bouteille) {
+      if (bouteille.isWhiteWine()) {
         label.setIcon(MyCellarImage.WHITEWINE);
-      } else if (((Bouteille) myCellarObject).isPinkWine()) {
+      } else if (bouteille.isPinkWine()) {
         label.setIcon(MyCellarImage.PINKWINE);
       } else {
         label.setIcon(MyCellarImage.BLACKWINE);
@@ -547,16 +547,14 @@ final class MyCellarObjectDraggingLabel extends JPanel {
     label.setText("<html>" + myCellarObject.getNom() + "</html>");
     add(label, "grow");
     add(new PanelCloseButton() {
-      private static final long serialVersionUID = 3495975676025406824L;
-
       @Override
       public void perform() {
         String mess = MessageFormat.format(MyCellarLabelManagement.getLabel("Main.DeleteWine", LabelProperty.THE_SINGLE), myCellarObject.getNom());
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), mess, MyCellarLabelManagement.getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
           Component parent = MyCellarObjectDraggingLabel.this.getParent();
-          if (parent instanceof RangementCell) {
-            ((RangementCell) parent).remove(MyCellarObjectDraggingLabel.this);
-            ((RangementCell) parent).updateUI();
+          if (parent instanceof RangementCell rangementCell) {
+            rangementCell.remove(MyCellarObjectDraggingLabel.this);
+            rangementCell.updateUI();
             Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
               final AbstractPlace abstractPlace = myCellarObject.getAbstractPlace();

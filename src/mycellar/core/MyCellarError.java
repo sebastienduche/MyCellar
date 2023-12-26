@@ -12,8 +12,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 09/04/21
+ * @version 0.8
+ * @since 26/12/23
  */
 
 public class MyCellarError {
@@ -53,20 +53,16 @@ public class MyCellarError {
   }
 
   public String getErrorMessage() {
-    switch (error) {
-      case INEXISTING_PLACE:
-        return MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingPlace"), place);
-      case INEXISTING_NUM_PLACE:
-        return MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingNumPlace"), numLieu);
-      case FULL_BOX:
-        return MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.fullCaisse"), numLieu);
-      case INEXISTING_CELL:
-        return MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingCase"), place);
-      case CELL_FULL:
-        return MyCellarLabelManagement.getError("MyCellarError.occupiedCase");
-      default:
-        return "";
-    }
+    return switch (error) {
+      case INEXISTING_PLACE ->
+          MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingPlace"), place);
+      case INEXISTING_NUM_PLACE ->
+          MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingNumPlace"), numLieu);
+      case FULL_BOX -> MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.fullCaisse"), numLieu);
+      case INEXISTING_CELL ->
+          MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingCase"), place);
+      case CELL_FULL -> MyCellarLabelManagement.getError("MyCellarError.occupiedCase");
+    };
   }
 
   public ID getError() {
@@ -99,7 +95,7 @@ public class MyCellarError {
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof MyCellarError && myCellarObject.equals(((MyCellarError) obj).myCellarObject);
+    return obj instanceof MyCellarError err && myCellarObject.equals(err.myCellarObject);
   }
 
   @Override

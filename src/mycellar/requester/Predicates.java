@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -32,8 +33,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 01/06/22
+ * @version 2.3
+ * @since 25/12/23
  */
 
 public class Predicates {
@@ -41,18 +42,11 @@ public class Predicates {
   public static final IPredicate<Bouteille> COLOR = new IPredicate<>() {
 
     @Override
-    public boolean apply(Bouteille bottle) {
-      return apply(bottle, "", -1);
-    }
-
-    @Override
     public boolean apply(Bouteille bottle, Object compare, int type) {
-      return bottle.getColor().equals(((BottleColor) compare).name());
-    }
-
-    @Override
-    public boolean isValueRequired() {
-      return true;
+      if (compare instanceof BottleColor color) {
+        return bottle.getColor().equals(color.name());
+      }
+      throw new UnsupportedOperationException("Unknown type: " + compare);
     }
 
     @Override
@@ -61,26 +55,19 @@ public class Predicates {
     }
 
     @Override
-    public int getType() {
-      return 0;
-    }
-
-    @Override
     public boolean isEmptyValueForbidden() {
       return false;
     }
 
     @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       JPanel panel = new JPanel();
       panel.setLayout(new MigLayout("", "grow", "[]"));
       JComboBox<BottleColor> liste = new JComboBox<>();
-      for (BottleColor color : BottleColor.values()) {
-        liste.addItem(color);
-      }
+      Arrays.stream(BottleColor.values()).forEach(liste::addItem);
       panel.add(new JLabel(getLabel("Predicates.SelectColor")), "wrap");
       panel.add(liste);
-      JOptionPane.showMessageDialog(null, panel,
+      JOptionPane.showMessageDialog(MainFrame.getInstance(), panel,
           "",
           JOptionPane.PLAIN_MESSAGE);
       return new ValueSearch(liste.getSelectedItem());
@@ -90,20 +77,10 @@ public class Predicates {
   public static final IPredicate<IMyCellarObject> STATUS = new IPredicate<>() {
 
     @Override
-    public boolean apply(IMyCellarObject bottle) {
-      return apply(bottle, "", -1);
-    }
-
-    @Override
     public boolean apply(IMyCellarObject bottle, Object compare, int type) {
       final String status = bottle.getStatus();
       final BottlesStatus bottlesStatus = (BottlesStatus) compare;
       return (status.isEmpty() && BottlesStatus.NONE.equals(bottlesStatus)) || status.equals(bottlesStatus.name());
-    }
-
-    @Override
-    public boolean isValueRequired() {
-      return true;
     }
 
     @Override
@@ -112,26 +89,19 @@ public class Predicates {
     }
 
     @Override
-    public int getType() {
-      return 0;
-    }
-
-    @Override
     public boolean isEmptyValueForbidden() {
       return false;
     }
 
     @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       JPanel panel = new JPanel();
       panel.setLayout(new MigLayout("", "grow", "[]"));
       JComboBox<BottlesStatus> liste = new JComboBox<>();
-      for (BottlesStatus status : BottlesStatus.values()) {
-        liste.addItem(status);
-      }
+      Arrays.stream(BottlesStatus.values()).forEach(liste::addItem);
       panel.add(new JLabel(getLabel("Predicates.SelectStatus")), "wrap");
       panel.add(liste);
-      JOptionPane.showMessageDialog(null, panel,
+      JOptionPane.showMessageDialog(MainFrame.getInstance(), panel,
           "",
           JOptionPane.PLAIN_MESSAGE);
       return new ValueSearch(liste.getSelectedItem());
@@ -143,41 +113,26 @@ public class Predicates {
     private int type = -1;
 
     @Override
-    public boolean apply(IMyCellarObject bouteille) {
-      return apply(bouteille, "", -1);
-    }
-
-    @Override
     public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
       if (type == 0) {
-        if (compare instanceof String) {
-          return myCellarObject.getNom() != null && myCellarObject.getNom().startsWith((String) compare);
+        if (compare instanceof String s) {
+          return myCellarObject.getNom() != null && myCellarObject.getNom().startsWith(s);
         }
       } else if (type == 1) {
-        if (compare instanceof String) {
-          return myCellarObject.getNom() != null && myCellarObject.getNom().endsWith((String) compare);
+        if (compare instanceof String s) {
+          return myCellarObject.getNom() != null && myCellarObject.getNom().endsWith(s);
         }
       } else if (type == 2) {
-        if (compare instanceof String) {
-          return myCellarObject.getNom() != null && myCellarObject.getNom().contains((String) compare);
+        if (compare instanceof String s) {
+          return myCellarObject.getNom() != null && myCellarObject.getNom().contains(s);
         }
       }
       return false;
     }
 
     @Override
-    public boolean isValueRequired() {
-      return true;
-    }
-
-    @Override
     public int getType() {
       return type;
-    }
-
-    @Override
-    public boolean isEmptyValueForbidden() {
-      return true;
     }
 
     @Override
@@ -194,7 +149,7 @@ public class Predicates {
     }
 
     @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       type = 0;
       JPanel panel = new JPanel();
       JComboBox<String> combo = new JComboBox<>();
@@ -212,11 +167,6 @@ public class Predicates {
     private int type = -1;
 
     @Override
-    public boolean apply(MyCellarObject music) {
-      return apply(music, "", -1);
-    }
-
-    @Override
     public boolean apply(MyCellarObject myCellarObject, Object compare, int type) {
       Program.throwNotImplementedIfNotFor(myCellarObject, Music.class);
       Music music = (Music) myCellarObject;
@@ -224,34 +174,24 @@ public class Predicates {
         return false;
       }
       if (type == 0) {
-        if (compare instanceof String) {
-          return music.getArtist().startsWith((String) compare);
+        if (compare instanceof String s) {
+          return music.getArtist().startsWith(s);
         }
       } else if (type == 1) {
-        if (compare instanceof String) {
-          return music.getArtist().endsWith((String) compare);
+        if (compare instanceof String s) {
+          return music.getArtist().endsWith(s);
         }
       } else if (type == 2) {
-        if (compare instanceof String) {
-          return music.getArtist().contains((String) compare);
+        if (compare instanceof String s) {
+          return music.getArtist().contains(s);
         }
       }
       return false;
     }
 
     @Override
-    public boolean isValueRequired() {
-      return true;
-    }
-
-    @Override
     public int getType() {
       return type;
-    }
-
-    @Override
-    public boolean isEmptyValueForbidden() {
-      return true;
     }
 
     @Override
@@ -268,7 +208,7 @@ public class Predicates {
     }
 
     @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       type = 0;
       JPanel panel = new JPanel();
       JComboBox<String> combo = new JComboBox<>();
@@ -285,18 +225,8 @@ public class Predicates {
   public static final IPredicate<IMyCellarObject> YEAR = new IPredicate<>() {
 
     @Override
-    public boolean apply(IMyCellarObject myCellarObject) {
-      return apply(myCellarObject, "", -1);
-    }
-
-    @Override
     public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
       return (compare instanceof String) && myCellarObject.getAnnee() != null && myCellarObject.getAnnee().equals(compare);
-    }
-
-    @Override
-    public boolean isValueRequired() {
-      return true;
     }
 
     @Override
@@ -305,36 +235,17 @@ public class Predicates {
     }
 
     @Override
-    public int getType() {
-      return 0;
-    }
-
-    @Override
-    public boolean isEmptyValueForbidden() {
-      return true;
-    }
-
-    @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       return new ValueSearch(JOptionPane.showInputDialog(getName()));
     }
   };
 
   public static final IPredicate<IMyCellarObject> RANGEMENT = new IPredicate<>() {
 
-    @Override
-    public boolean apply(IMyCellarObject myCellarObject) {
-      return apply(myCellarObject, "", -1);
-    }
 
     @Override
     public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
       return (compare instanceof String) && myCellarObject.getEmplacement() != null && myCellarObject.getEmplacement().equals(compare);
-    }
-
-    @Override
-    public boolean isValueRequired() {
-      return true;
     }
 
     @Override
@@ -343,24 +254,14 @@ public class Predicates {
     }
 
     @Override
-    public int getType() {
-      return 0;
-    }
-
-    @Override
-    public boolean isEmptyValueForbidden() {
-      return true;
-    }
-
-    @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       JPanel panel = new JPanel();
       panel.setLayout(new MigLayout("", "grow", "[]"));
       JComboBox<AbstractPlace> liste = new JComboBox<>();
       Program.getAbstractPlaces().forEach(liste::addItem);
       panel.add(new JLabel(getLabel("Predicates.SelectPlace")), "wrap");
       panel.add(liste);
-      JOptionPane.showMessageDialog(null, panel,
+      JOptionPane.showMessageDialog(MainFrame.getInstance(), panel,
           "",
           JOptionPane.PLAIN_MESSAGE);
       return new ValueSearch(((AbstractPlace) Objects.requireNonNull(liste.getSelectedItem())).getName());
@@ -371,18 +272,8 @@ public class Predicates {
   public static final IPredicate<Bouteille> CAPACITY = new IPredicate<>() {
 
     @Override
-    public boolean apply(Bouteille bottle) {
-      return apply(bottle, "", -1);
-    }
-
-    @Override
     public boolean apply(Bouteille bottle, Object compare, int type) {
       return bottle.getKind().equals(compare);
-    }
-
-    @Override
-    public boolean isValueRequired() {
-      return true;
     }
 
     @Override
@@ -391,24 +282,14 @@ public class Predicates {
     }
 
     @Override
-    public int getType() {
-      return 0;
-    }
-
-    @Override
-    public boolean isEmptyValueForbidden() {
-      return true;
-    }
-
-    @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       JPanel panel = new JPanel();
       panel.setLayout(new MigLayout("", "grow", "[]"));
       JComboBox<String> liste = new JComboBox<>();
       MyCellarBottleContenance.getList().forEach(liste::addItem);
       panel.add(new JLabel(getLabel("Predicates.SelectSize")), "wrap");
       panel.add(liste);
-      JOptionPane.showMessageDialog(null, panel,
+      JOptionPane.showMessageDialog(MainFrame.getInstance(), panel,
           "",
           JOptionPane.PLAIN_MESSAGE);
       return new ValueSearch(liste.getSelectedItem());
@@ -420,27 +301,17 @@ public class Predicates {
     private int type = -1;
 
     @Override
-    public boolean apply(IMyCellarObject myCellarObject) {
-      return apply(myCellarObject, "", -1);
-    }
-
-    @Override
     public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
       if (type == 0) {
-        if (compare instanceof String) {
-          return myCellarObject.getPrice().compareTo(BigDecimal.ZERO) != 0 && myCellarObject.getPrice().compareTo(new BigDecimal((String) compare)) < 0;
+        if (compare instanceof String s) {
+          return myCellarObject.getPrice().compareTo(BigDecimal.ZERO) != 0 && myCellarObject.getPrice().compareTo(new BigDecimal(s)) < 0;
         }
       } else if (type == 1) {
-        if (compare instanceof String) {
-          return myCellarObject.getPrice().compareTo(BigDecimal.ZERO) != 0 && myCellarObject.getPrice().compareTo(new BigDecimal((String) compare)) > 0;
+        if (compare instanceof String s) {
+          return myCellarObject.getPrice().compareTo(BigDecimal.ZERO) != 0 && myCellarObject.getPrice().compareTo(new BigDecimal(s)) > 0;
         }
       }
       return false;
-    }
-
-    @Override
-    public boolean isValueRequired() {
-      return true;
     }
 
     @Override
@@ -460,12 +331,7 @@ public class Predicates {
     }
 
     @Override
-    public boolean isEmptyValueForbidden() {
-      return true;
-    }
-
-    @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       type = 0;
       JPanel panel = new JPanel();
       JComboBox<String> combo = new JComboBox<>();
@@ -480,16 +346,10 @@ public class Predicates {
   public static final IPredicate<Bouteille> COUNTRY = new IPredicate<>() {
 
     @Override
-    public boolean apply(Bouteille bouteille) {
-      return apply(bouteille, "", -1);
-    }
-
-    @Override
     public boolean apply(Bouteille bouteille, Object compare, int type) {
-      if (!(compare instanceof VignobleJaxb) || bouteille.getVignoble() == null) {
+      if (!(compare instanceof VignobleJaxb compareVignobleJaxb) || bouteille.getVignoble() == null) {
         return false;
       }
-      VignobleJaxb compareVignobleJaxb = (VignobleJaxb) compare;
       final VignobleJaxb vignobleJaxb = bouteille.getVignoble();
       return compareVignobleJaxb.getCountry().equals(vignobleJaxb.getCountry()) &&
           (compareVignobleJaxb.getName().isEmpty() || compareVignobleJaxb.getName().equals(vignobleJaxb.getName())) &&
@@ -498,27 +358,12 @@ public class Predicates {
     }
 
     @Override
-    public boolean isValueRequired() {
-      return true;
-    }
-
-    @Override
     public String getName() {
       return getLabel("Predicates.Vignoble");
     }
 
     @Override
-    public int getType() {
-      return 0;
-    }
-
-    @Override
-    public boolean isEmptyValueForbidden() {
-      return true;
-    }
-
-    @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       PanelVignobles panelVignobles = new PanelVignobles(true, false, false);
       JOptionPane.showMessageDialog(MainFrame.getInstance(), panelVignobles,
           "",
@@ -551,17 +396,7 @@ public class Predicates {
     }
 
     @Override
-    public int getType() {
-      return 0;
-    }
-
-    @Override
-    public boolean isEmptyValueForbidden() {
-      return true;
-    }
-
-    @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       return null;
     }
   };
@@ -589,17 +424,7 @@ public class Predicates {
     }
 
     @Override
-    public int getType() {
-      return 0;
-    }
-
-    @Override
-    public boolean isEmptyValueForbidden() {
-      return true;
-    }
-
-    @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       return null;
     }
   };
@@ -627,17 +452,7 @@ public class Predicates {
     }
 
     @Override
-    public int getType() {
-      return 0;
-    }
-
-    @Override
-    public boolean isEmptyValueForbidden() {
-      return true;
-    }
-
-    @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       return null;
     }
   };
@@ -665,17 +480,7 @@ public class Predicates {
     }
 
     @Override
-    public int getType() {
-      return 0;
-    }
-
-    @Override
-    public boolean isEmptyValueForbidden() {
-      return true;
-    }
-
-    @Override
-    public ValueSearch askforValue() {
+    public ValueSearch askForValue() {
       return null;
     }
   };

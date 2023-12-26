@@ -6,6 +6,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.Normalizer;
+import java.util.List;
 
 import static mycellar.Filtre.EXTENSION_SINFO;
 import static mycellar.ProgramConstants.ONE_DOT;
@@ -19,8 +20,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 25/12/23
+ * @version 0.5
+ * @since 26/12/23
  */
 public final class MyCellarUtils {
 
@@ -114,5 +115,9 @@ public final class MyCellarUtils {
     }
     String value = o.toString();
     return value == null ? "" : value.strip();
+  }
+
+  public static boolean isAnyOf(Object value, List<Object> list) {
+    return list.stream().anyMatch(value::equals);
   }
 }

@@ -35,8 +35,8 @@ import static mycellar.ProgramConstants.isVK_O;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 08/07/22
+ * @version 3.2
+ * @since 26/12/23
  */
 public final class MyOptions extends JDialog {
 
@@ -45,7 +45,6 @@ public final class MyOptions extends JDialog {
   public static final String MY_CELLAR_CHECK_BOX = "MyCellarCheckBox";
   public static final String MY_CELLAR_RADIO_BUTTON = "MyCellarRadioButton";
   public static final String MY_CELLAR_LABEL = "MyCellarLabel";
-  private static final long serialVersionUID = -6731924694322085086L;
   private final List<String> cle;
   private final JComponent[] value;
   private final int taille_value;
@@ -162,28 +161,19 @@ public final class MyOptions extends JDialog {
     String defaut = null;
     int nb_jradio = 0;
     for (int i = 0; i < taille_value; i++) {
-      if (value[i] instanceof JTextField) {
-        JTextField jtex = (JTextField) value[i];
+      if (value[i] instanceof JTextField jtex) {
         resul[i] = toCleanString(jtex.getText());
         saveInConfig(i, resul[i]);
         if (defaut == null) {
           defaut = toCleanString(jtex.getText());
         }
-      }
-      if (value[i] instanceof MyCellarSpinner) {
-        MyCellarSpinner jspi = (MyCellarSpinner) value[i];
+      } else if (value[i] instanceof MyCellarSpinner jspi) {
         resul[i] = jspi.getValue().toString();
         saveInConfig(i, resul[i]);
-      }
-      if (value[i] instanceof MyCellarCheckBox) {
-        MyCellarCheckBox jchk = (MyCellarCheckBox) value[i];
-        if (jchk.isSelected()) {
-          resul[i] = defaut;
-          saveInConfig(i, defaut);
-        }
-      }
-      if (value[i] instanceof MyCellarRadioButton) {
-        MyCellarRadioButton jrb = (MyCellarRadioButton) value[i];
+      } else if (value[i] instanceof MyCellarCheckBox jchk && jchk.isSelected()) {
+        resul[i] = defaut;
+        saveInConfig(i, defaut);
+      } else if (value[i] instanceof MyCellarRadioButton jrb) {
         if (jrb.isSelected()) {
           resul[i] = Integer.toString(nb_jradio);
           saveInConfig(i, resul[i]);

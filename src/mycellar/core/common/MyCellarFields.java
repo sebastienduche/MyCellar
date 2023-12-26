@@ -2,6 +2,7 @@ package mycellar.core.common;
 
 import mycellar.Bouteille;
 import mycellar.Music;
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
@@ -24,8 +25,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 30/12/22
+ * @version 2.8
+ * @since 26/12/23
  */
 
 public enum MyCellarFields {
@@ -132,81 +133,80 @@ public enum MyCellarFields {
       return myCellarObject.getComment();
     }
     if (field == MATURITY) {
-      if (myCellarObject instanceof Bouteille) {
-        return ((Bouteille) myCellarObject).getMaturity();
+      if (myCellarObject instanceof Bouteille bouteille) {
+        return bouteille.getMaturity();
       }
     }
     if (field == PARKER) {
-      if (myCellarObject instanceof Bouteille) {
-        return ((Bouteille) myCellarObject).getParker();
+      if (myCellarObject instanceof Bouteille bouteille) {
+        return bouteille.getParker();
       }
     }
     if (field == COLOR) {
-      if (myCellarObject instanceof Bouteille) {
-        return BottleColor.getColor(((Bouteille) myCellarObject).getColor()).toString();
+      if (myCellarObject instanceof Bouteille bouteille) {
+        return BottleColor.getColor(bouteille.getColor()).toString();
       }
     }
     if (field == STATUS) {
       return BottlesStatus.getStatus(myCellarObject.getStatus()).toString();
     }
     if (field == STYLE) {
-      if (myCellarObject instanceof Music) {
-        return ((Music) myCellarObject).getGenre();
+      if (myCellarObject instanceof Music music) {
+        return music.getGenre();
       }
     }
     if (field == COMPOSER) {
-      if (myCellarObject instanceof Music) {
-        return ((Music) myCellarObject).getComposer();
+      if (myCellarObject instanceof Music music) {
+        return music.getComposer();
       }
     }
     if (field == ARTIST) {
-      if (myCellarObject instanceof Music) {
-        return ((Music) myCellarObject).getArtist();
+      if (myCellarObject instanceof Music music) {
+        return music.getArtist();
       }
     }
     if (field == SUPPORT) {
-      if (myCellarObject instanceof Music) {
-        return ((Music) myCellarObject).getMusicSupport().name();
+      if (myCellarObject instanceof Music music) {
+        return music.getMusicSupport().name();
       }
     }
     if (field == DURATION) {
-      if (myCellarObject instanceof Music) {
-        return ((Music) myCellarObject).getDuration();
+      if (myCellarObject instanceof Music music) {
+        return music.getDuration();
       }
     }
     if (field == FILE) {
-      if (myCellarObject instanceof Music) {
-        return ((Music) myCellarObject).getFile();
+      if (myCellarObject instanceof Music music) {
+        return music.getFile();
       }
     }
     if (field == DISK_COUNT) {
-      if (myCellarObject instanceof Music) {
-        return Integer.toString(((Music) myCellarObject).getDiskCount());
+      if (myCellarObject instanceof Music music) {
+        return Integer.toString(music.getDiskCount());
       }
     }
     if (field == DISK_NUMBER) {
-      if (myCellarObject instanceof Music) {
-        return Integer.toString(((Music) myCellarObject).getDiskNumber());
+      if (myCellarObject instanceof Music music) {
+        return Integer.toString(music.getDiskNumber());
       }
     }
     if (field == RATING) {
-      if (myCellarObject instanceof Music) {
-        return Integer.toString(((Music) myCellarObject).getRating());
+      if (myCellarObject instanceof Music music) {
+        return Integer.toString(music.getRating());
       }
     }
     if (field == EXTERNAL_ID) {
-      if (myCellarObject instanceof Music) {
-        return Integer.toString(((Music) myCellarObject).getExternalId());
+      if (myCellarObject instanceof Music music) {
+        return Integer.toString(music.getExternalId());
       }
     }
     if (field == ALBUM) {
-      if (myCellarObject instanceof Music) {
-        return ((Music) myCellarObject).getAlbum();
+      if (myCellarObject instanceof Music music) {
+        return music.getAlbum();
       }
     }
     if (field == COUNTRY) {
-      if (myCellarObject instanceof Bouteille) {
-        Bouteille bouteille = (Bouteille) myCellarObject;
+      if (myCellarObject instanceof Bouteille bouteille) {
         if (bouteille.getVignoble() != null) {
           CountryJaxb c = CountryListJaxb.findbyId(bouteille.getVignoble().getCountry()).orElse(null);
           if (c != null) {
@@ -216,24 +216,21 @@ public enum MyCellarFields {
       }
     }
     if (field == VINEYARD) {
-      if (myCellarObject instanceof Bouteille) {
-        Bouteille bouteille = (Bouteille) myCellarObject;
+      if (myCellarObject instanceof Bouteille bouteille) {
         if (bouteille.getVignoble() != null) {
           return bouteille.getVignoble().getName();
         }
       }
     }
     if (field == AOC) {
-      if (myCellarObject instanceof Bouteille) {
-        Bouteille bouteille = (Bouteille) myCellarObject;
+      if (myCellarObject instanceof Bouteille bouteille) {
         if (bouteille.getVignoble() != null && bouteille.getVignoble().getAOC() != null) {
           return bouteille.getVignoble().getAOC();
         }
       }
     }
     if (field == IGP) {
-      if (myCellarObject instanceof Bouteille) {
-        Bouteille bouteille = (Bouteille) myCellarObject;
+      if (myCellarObject instanceof Bouteille bouteille) {
         if (bouteille.getVignoble() != null && bouteille.getVignoble().getIGP() != null) {
           return bouteille.getVignoble().getIGP();
         }
@@ -243,7 +240,7 @@ public enum MyCellarFields {
   }
 
   public static boolean hasSpecialHTMLCharacters(MyCellarFields field) {
-    return field != null && (field.equals(NAME) || field.equals(TYPE) || field.equals(COMMENT) || field.equals(PRICE) || field.equals(PLACE));
+    return field != null && MyCellarUtils.isAnyOf(field, List.of(NAME, TYPE, COMMENT, PRICE, PLACE));
   }
 
   public static boolean isRealField(MyCellarFields field) {

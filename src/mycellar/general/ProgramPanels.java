@@ -83,8 +83,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 30/12/22
+ * @version 2.0
+ * @since 26/12/23
  */
 public class ProgramPanels {
 
@@ -426,7 +426,7 @@ public class ProgramPanels {
       protected void done() {
         for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
           Component tab = TABBED_PANE.getComponentAt(i);
-          if (tab instanceof ManageBottle && ((ManageBottle) tab).getMyCellarObject().equals(myCellarObject)) {
+          if (tab instanceof ManageBottle manageBottle && manageBottle.getMyCellarObject().equals(myCellarObject)) {
             TABBED_PANE.setSelectedIndex(i);
             return;
           }
@@ -449,7 +449,7 @@ public class ProgramPanels {
       protected void done() {
         for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
           Component tab = TABBED_PANE.getComponentAt(i);
-          if (tab instanceof ManageBottle && ((ManageBottle) tab).getMyCellarObject().equals(myCellarObject)) {
+          if (tab instanceof ManageBottle manageBottle && manageBottle.getMyCellarObject().equals(myCellarObject)) {
             removeTabAt(i);
             return;
           }
@@ -482,8 +482,8 @@ public class ProgramPanels {
       protected void done() {
         if (index < TABBED_PANE.getTabCount()) {
           Component tab = TABBED_PANE.getComponentAt(index);
-          if (tab instanceof IPanelModifyable) {
-            ((IPanelModifyable) tab).setModified(modified);
+          if (tab instanceof IPanelModifyable iPanelModifyable) {
+            iPanelModifyable.setModified(modified);
           }
         }
       }
@@ -496,8 +496,8 @@ public class ProgramPanels {
       protected void done() {
         try {
           TABBED_PANE.setSelectedComponent(component);
-          if (component instanceof IPanelModifyable) {
-            ((IPanelModifyable) component).setPaneIndex(TABBED_PANE.getSelectedIndex());
+          if (component instanceof IPanelModifyable iPanelModifyable) {
+            iPanelModifyable.setPaneIndex(TABBED_PANE.getSelectedIndex());
           }
         } catch (IllegalArgumentException e) {
           addTab(getLabel(labelId, LabelProperty.SINGLE), icon, component);
@@ -525,8 +525,8 @@ public class ProgramPanels {
         TABBED_PANE.addTab(title, icon, component);
         addCloseButtonToTab(component);
         int index = TABBED_PANE.getTabCount() - 1;
-        if (component instanceof IPanelModifyable) {
-          ((IPanelModifyable) component).setPaneIndex(index);
+        if (component instanceof IPanelModifyable iPanelModifyable) {
+          iPanelModifyable.setPaneIndex(index);
         }
         addTabLabel(index, title);
         TABBED_PANE.setSelectedIndex(index);
@@ -626,8 +626,8 @@ public class ProgramPanels {
 
   public static boolean runExit() {
     for (Component c : TABBED_PANE.getComponents()) {
-      if (c instanceof ITabListener) {
-        if (!((ITabListener) c).tabWillClose(null)) {
+      if (c instanceof ITabListener iTabListener) {
+        if (!iTabListener.tabWillClose(null)) {
           Program.Debug("ProgramPanels: Exiting program cancelled!");
           return false;
         }
@@ -643,15 +643,15 @@ public class ProgramPanels {
   public static boolean saveObjects() throws MyCellarException {
     for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
       Component tab = TABBED_PANE.getComponentAt(i);
-      if (tab instanceof IPanelModifyable) {
-        if (((IPanelModifyable) tab).isModified()) {
-          if (tab instanceof ManageBottle) {
-            if (!((ManageBottle) tab).save()) {
+      if (tab instanceof IPanelModifyable iPanelModifyable) {
+        if (iPanelModifyable.isModified()) {
+          if (tab instanceof ManageBottle manageBottle) {
+            if (!manageBottle.save()) {
               return false;
             }
           }
-          if (tab instanceof AddVin) {
-            if (!((AddVin) tab).save()) {
+          if (tab instanceof AddVin addVin) {
+            if (!addVin.save()) {
               return false;
             }
           }

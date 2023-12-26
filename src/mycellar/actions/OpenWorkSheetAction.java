@@ -42,7 +42,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
         ProgramPanels.addTab(label, MyCellarImage.WORK, showWorksheet);
       }
 
-      showWorksheet.addToWorsheet(bouteilles);
+      showWorksheet.addToWorksheet(bouteilles);
     });
   }
 }

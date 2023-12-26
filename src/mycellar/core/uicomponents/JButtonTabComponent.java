@@ -63,13 +63,11 @@ import java.awt.event.MouseListener;
  */
 public final class JButtonTabComponent extends JPanel {
 
-  private static final long serialVersionUID = -3455621665205397725L;
   private static final MouseListener MOUSE_LISTENER = new MouseAdapter() {
     @Override
     public void mouseEntered(MouseEvent e) {
       Component component = e.getComponent();
-      if (component instanceof AbstractButton) {
-        AbstractButton button = (AbstractButton) component;
+      if (component instanceof AbstractButton button) {
         button.setBorderPainted(true);
       }
     }
@@ -77,8 +75,7 @@ public final class JButtonTabComponent extends JPanel {
     @Override
     public void mouseExited(MouseEvent e) {
       Component component = e.getComponent();
-      if (component instanceof AbstractButton) {
-        AbstractButton button = (AbstractButton) component;
+      if (component instanceof AbstractButton button) {
         button.setBorderPainted(false);
       }
     }
@@ -98,7 +95,6 @@ public final class JButtonTabComponent extends JPanel {
 
     // make JLabel read titles from JTabbedPane
     JLabel label = new JLabel() {
-      private static final long serialVersionUID = 262648555562361924L;
 
       @Override
       public String getText() {
@@ -131,8 +127,6 @@ public final class JButtonTabComponent extends JPanel {
 
   private final class TabButton extends JButton implements ActionListener {
 
-    private static final long serialVersionUID = 76516458718107537L;
-
     private TabButton() {
       int size = 17;
       setPreferredSize(new Dimension(size, size));
@@ -159,9 +153,7 @@ public final class JButtonTabComponent extends JPanel {
       if (i != -1) {
         Component component = pane.getComponentAt(i);
 
-        if (component instanceof ITabListener) {
-          ITabListener listener = (ITabListener) component;
-
+        if (component instanceof ITabListener listener) {
           // Notifier le composant du JTabbedPane que le tab qui le
           // contient va se fermer
           if (!listener.tabWillClose(new TabEvent(pane))) {

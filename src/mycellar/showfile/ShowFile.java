@@ -69,8 +69,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.MyCellarUtils.safeStringToBigDecimal;
@@ -141,7 +141,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       final List<Integer> bouteilles = Program.getWorksheetList().getWorsheet()
           .stream()
           .map(WorkSheetData::getBouteilleId)
-          .collect(Collectors.toList());
+          .collect(toList());
       workingBottles.addAll(Program.getExistingMyCellarObjects(bouteilles));
     }
     try {
@@ -605,11 +605,11 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     }
   }
 
-  public void addToWorsheet(List<MyCellarObject> list) {
+  public void addToWorksheet(List<MyCellarObject> list) {
     final List<MyCellarObject> myCellarObjects = list
         .stream()
         .filter(bouteille -> !workingBottles.contains(bouteille))
-        .collect(Collectors.toList());
+        .toList();
     for (MyCellarObject myCellarObject : myCellarObjects) {
       Program.getStorage().addToWorksheet(myCellarObject);
     }
@@ -699,9 +699,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
             !field.getField().equals(MyCellarFields.VINEYARD)
                 && !field.getField().equals(MyCellarFields.AOC)
                 && !field.getField().equals(MyCellarFields.IGP)
-                && !field.getField().equals(MyCellarFields.COUNTRY)).collect(Collectors.toList());
+                && !field.getField().equals(MyCellarFields.COUNTRY)).collect(toList());
       } else {
-        cols.add(0, checkBoxStartColumn);
+        cols.addFirst(checkBoxStartColumn);
         cols.add(modifyButtonColumn);
         if (isWorksheet()) {
           cols.add(checkedButtonColumn);
@@ -835,8 +835,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       return list;
     }
     int row = 0;
-    if (model instanceof ShowFileModel) {
-      ShowFileModel showFileModel = (ShowFileModel) model;
+    if (model instanceof ShowFileModel showFileModel) {
       do {
         if (showFileModel.getValueAt(row, TableShowValues.ETAT).equals(Boolean.TRUE)) {
           list.add(showFileModel.getMyCellarObject(row));
@@ -1145,10 +1144,10 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           !field.getField().equals(MyCellarFields.VINEYARD)
               && !field.getField().equals(MyCellarFields.AOC)
               && !field.getField().equals(MyCellarFields.IGP)
-              && !field.getField().equals(MyCellarFields.COUNTRY)).collect(Collectors.toList());
+              && !field.getField().equals(MyCellarFields.COUNTRY)).collect(toList());
     } else {
       if (!cols.contains(checkBoxStartColumn)) {
-        cols.add(0, checkBoxStartColumn);
+        cols.addFirst(checkBoxStartColumn);
       }
       if (!cols.contains(modifyButtonColumn)) {
         cols.add(modifyButtonColumn);
@@ -1183,12 +1182,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   private static class CreatePlacesAction extends AbstractAction {
-
-    private static final long serialVersionUID = -3652414491735669984L;
-
-    private CreatePlacesAction() {
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
       PlaceUtils.findRangementToCreate();
@@ -1196,12 +1189,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   private class ManageColumnsAction extends AbstractAction {
-
-    private static final long serialVersionUID = 8165964725562440277L;
-
-    private ManageColumnsAction() {
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
       JPanel panel = new JPanel();
@@ -1212,7 +1199,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         list = MyCellarFields.getFieldsList();
       }
       List<ShowFileColumn<?>> cols = ((ShowFileModel) model).getColumns();
-      final List<ShowFileColumn<?>> showFileColumns = cols.stream().filter(ShowFileColumn::isDefault).collect(Collectors.toList());
+      final List<ShowFileColumn<?>> showFileColumns = cols.stream().filter(ShowFileColumn::isDefault).collect(toList());
       ManageColumnModel modelColumn = new ManageColumnModel(list, showFileColumns);
       JTable jTable = new JTable(modelColumn);
       TableColumnModel tcm = jTable.getColumnModel();
@@ -1264,9 +1251,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   class ModifyBottlesAction extends AbstractAction {
-
-    private static final long serialVersionUID = -7590310564039085580L;
-
     private ModifyBottlesAction() {
       super("", MyCellarImage.WINE);
     }
@@ -1294,12 +1278,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   private class ReloadErrorsAction extends AbstractAction {
-
-    private static final long serialVersionUID = 983425309954475989L;
-
-    private ReloadErrorsAction() {
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
       PlaceUtils.putTabStock();
@@ -1308,12 +1286,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   private class ClearWorksheetAction extends AbstractAction {
-
-    private static final long serialVersionUID = 983425309954475988L;
-
-    private ClearWorksheetAction() {
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
       workingBottles.clear();
@@ -1326,12 +1298,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   }
 
   private class RemoveFromWorksheetAction extends AbstractAction {
-
-    private static final long serialVersionUID = 983425309954475987L;
-
-    private RemoveFromWorksheetAction() {
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
       SwingUtilities.invokeLater(() -> {

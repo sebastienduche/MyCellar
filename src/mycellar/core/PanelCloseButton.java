@@ -25,18 +25,16 @@ import java.awt.event.MouseListener;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 27/05/21
+ * @version 0.4
+ * @since 26/12/23
  */
 public abstract class PanelCloseButton extends JButton implements ActionListener {
 
-  private static final long serialVersionUID = 76516458718107537L;
   private static final MouseListener MOUSE_LISTENER = new MouseAdapter() {
     @Override
     public void mouseEntered(MouseEvent e) {
       Component component = e.getComponent();
-      if (component instanceof AbstractButton) {
-        AbstractButton button = (AbstractButton) component;
+      if (component instanceof AbstractButton button) {
         button.setBorderPainted(true);
       }
     }
@@ -44,8 +42,7 @@ public abstract class PanelCloseButton extends JButton implements ActionListener
     @Override
     public void mouseExited(MouseEvent e) {
       Component component = e.getComponent();
-      if (component instanceof AbstractButton) {
-        AbstractButton button = (AbstractButton) component;
+      if (component instanceof AbstractButton button) {
         button.setBorderPainted(false);
       }
     }

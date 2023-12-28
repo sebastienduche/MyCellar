@@ -18,8 +18,6 @@ import java.awt.event.ItemEvent;
 
 public final class JModifyComboBox<T> extends MyCellarComboBox<T> implements IModifyable {
 
-  private static final long serialVersionUID = 833606680694326736L;
-
   private boolean modified;
   private boolean active;
   private boolean listenerEnable;

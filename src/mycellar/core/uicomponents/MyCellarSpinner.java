@@ -17,7 +17,6 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  */
 public final class MyCellarSpinner extends JSpinner {
 
-  private static final long serialVersionUID = -6429351001334594600L;
   private final SpinnerNumberModel model;
 
 

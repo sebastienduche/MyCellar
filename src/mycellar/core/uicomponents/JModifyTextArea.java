@@ -20,8 +20,6 @@ import java.awt.event.KeyEvent;
 
 public final class JModifyTextArea extends JTextArea implements IModifyable {
 
-  private static final long serialVersionUID = 7858711227949516336L;
-
   private boolean modified;
   private boolean active;
   private boolean listenerEnable;

@@ -68,6 +68,7 @@ public final class MyCellarSettings {
   public static final String PROGRAM_TYPE = "PROGRAM_TYPE";
   public static final String ANNEE_AUTO_FALSE = "ANNEE_AUTO_FALSE";
   public static final String ANNEE_AUTO_TRUE = "ANNEE_AUTO_TRUE";
+  public static final String KEEP_VINEYARD = "KEEP_VINEYARD";
 
   private MyCellarSettings() {
   }

@@ -45,7 +45,6 @@ import java.util.List;
  */
 public class JCompletionComboBox<T> extends JComboBox<T> {
 
-  private static final long serialVersionUID = -7209698149395632434L;
   private final boolean handleSelectionChange = false;
   private Object lastSelectedItem;
   private ComboDocument document;
@@ -78,15 +77,13 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
     document.highlightCompletedText(0);
 
     setRenderer(new DefaultListCellRenderer() {
-      private static final long serialVersionUID = -7728351788449961901L;
-
       @Override
       public Component getListCellRendererComponent(JList jlist,
                                                     Object obj, int i, boolean isSelected, boolean flag1) {
 
         Component c = super.getListCellRendererComponent(jlist, obj, i, isSelected, flag1);
 
-        if ((lastSelectedItem != null) && (lastSelectedItem.equals(obj))) {
+        if (lastSelectedItem != null && lastSelectedItem.equals(obj)) {
           c.setForeground(Color.BLUE);
         } else {
           c.setForeground(Color.BLACK);
@@ -193,7 +190,6 @@ public class JCompletionComboBox<T> extends JComboBox<T> {
   private static final class ComboDocument extends PlainDocument implements
       ActionListener, KeyListener, FocusListener {
 
-    private static final long serialVersionUID = 2104011788354384089L;
     private final boolean hidePopupOnFocusLoss;
     private final JComboBox<?> comboBox;
     private final List<Object> objectList = new LinkedList<>();

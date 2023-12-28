@@ -20,8 +20,6 @@ import java.util.Objects;
  */
 public final class JModifyTextField extends JTextField implements IModifyable {
 
-  private static final long serialVersionUID = 7663077125632345441L;
-
   private boolean modified;
   private boolean active;
   private boolean listenerEnable;

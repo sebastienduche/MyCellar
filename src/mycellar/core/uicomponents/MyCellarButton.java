@@ -24,8 +24,6 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 
 public final class MyCellarButton extends JButton implements IMyCellarComponent {
 
-  private static final long serialVersionUID = 8395284022737446765L;
-
   private LabelKey labelKey;
 
   public MyCellarButton(Icon icon) {

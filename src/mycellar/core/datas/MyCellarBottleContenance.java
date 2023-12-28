@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static mycellar.MyCellarUtils.isDefined;
 import static mycellar.ProgramConstants.HALF;
@@ -99,7 +98,7 @@ public final class MyCellarBottleContenance {
           .map(Bouteille::getKind)
           .distinct()
           .filter(Predicate.not(String::isBlank))
-          .collect(Collectors.toList());
+          .toList();
       for (String val : collect) {
         if (!list.contains(val)) {
           list.add(val);
@@ -179,7 +178,6 @@ public final class MyCellarBottleContenance {
       fileWriter.write("</MyCellar>");
       fileWriter.flush();
     } catch (IOException ex) {
-      Debug("IOException");
       Program.showException(ex);
     }
     Debug("writeTypeXml: Writing file OK");

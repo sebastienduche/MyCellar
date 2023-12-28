@@ -5,6 +5,7 @@ import mycellar.core.BottlesStatus;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
@@ -80,7 +81,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       cancelButton.addActionListener((e) -> savingExit());
 
       setVisible(true);
-      Debug("JbInit Done");
+      Debug("Constructor Done");
 
       setBottle(bottle);
     } catch (RuntimeException e) {
@@ -255,6 +256,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       rangement.updateToStock(myCellarObject);
     }
 
+    Program.putCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, panelVignobles.isKeepPreviousVineyardSelected());
     end.setText(getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
     ProgramPanels.updatePanelsWithoutBottles();
     panelWineAttribute.setModificationDetectionActive(false);

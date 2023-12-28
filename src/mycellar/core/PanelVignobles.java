@@ -206,6 +206,14 @@ public final class PanelVignobles extends JPanel {
     }
   }
 
+  public boolean isKeepPreviousVineyardSelected() {
+    return keepPreviousVignoble.isSelected();
+  }
+
+  public void setKeepPreviousVineyardSelected(boolean selected) {
+    keepPreviousVignoble.setSelected(selected);
+  }
+
   private void Debug(String text) {
     Program.Debug("PanelVignoble: " + text);
   }

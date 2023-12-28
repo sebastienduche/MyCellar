@@ -24,8 +24,6 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
-  private static final long serialVersionUID = -6495907213999756931L;
-
   private final LabelKey labelKey;
 
   private String descriptionLabelCode;
@@ -85,8 +83,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   @Override
   public MyCellarAction clone() {
     try {
-      MyCellarAction clone = (MyCellarAction) super.clone();
-      return clone;
+      return (MyCellarAction) super.clone();
     } catch (CloneNotSupportedException e) {
       throw new AssertionError();
     }

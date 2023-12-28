@@ -25,7 +25,6 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 class CapacityTableModel extends DefaultTableModel {
   public static final int STATE = 1;
-  private static final long serialVersionUID = 220605;
   private final String[] columnNames = {getLabel("Main.Values"), ""};
 
   private final List<String> list;

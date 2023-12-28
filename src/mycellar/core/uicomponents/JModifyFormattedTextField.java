@@ -21,8 +21,6 @@ import java.text.Format;
 
 public final class JModifyFormattedTextField extends JFormattedTextField implements IModifyable {
 
-  private static final long serialVersionUID = -7364848812779720027L;
-
   private boolean modified;
   private boolean active;
   private boolean listenerEnable;

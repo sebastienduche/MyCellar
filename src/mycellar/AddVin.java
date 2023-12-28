@@ -8,6 +8,7 @@ import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
@@ -758,6 +759,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     panelWineAttribute.runExit();
     panelPlace.resetValues();
     panelPlace.clearModified();
+    Program.putCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, panelVignobles.isKeepPreviousVineyardSelected());
     clearValues();
     reInitAddVin();
     Debug("runExit... Done");

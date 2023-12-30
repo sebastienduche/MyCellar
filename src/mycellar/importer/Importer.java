@@ -68,6 +68,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static mycellar.MyCellarImage.OPEN;
+import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.COMMA;
@@ -258,18 +259,18 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
    */
   private LinkedList<String> readRow(Row row) {
     final Iterator<Cell> cellIterator = row.cellIterator();
-    LinkedList<String> bottle = new LinkedList<>();
+    LinkedList<String> valueList = new LinkedList<>();
     while (cellIterator.hasNext()) {
       final Cell cell = cellIterator.next();
       if (cell.getCellType() == CellType.NUMERIC) {
-        bottle.add(Double.toString(cell.getNumericCellValue()));
+        valueList.add(Double.toString(cell.getNumericCellValue()));
       } else if (cell.getCellType() == CellType.STRING) {
-        bottle.add(cell.getStringCellValue());
+        valueList.add(cell.getStringCellValue());
       } else {
         throw new UnsupportedOperationException(MessageFormat.format(getError("Importer.unknownCellType"), cell.getCellType()));
       }
     }
-    return bottle;
+    return valueList;
   }
 
   private void parcourir_actionPerformed(ActionEvent e) {
@@ -574,7 +575,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
                 maxNumPlace = bottle.getNumLieu();
               }
             }
-            if ((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
+            if (isNullOrEmpty(bottle.getEmplacement()) && new_rangement != null) {
               bottle.setEmplacement(new_rangement.getName());
               new_rangement.setPartCount(maxNumPlace + 1);
             }
@@ -647,34 +648,34 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       boolean skipLine = labelTitle.isSelected();
       int maxNumPlace = 0;
       while (iterator.hasNext()) {
-        LinkedList<String> bottleValues = readRow(iterator.next());
-        final long count = bottleValues.stream().filter(s -> !s.isEmpty()).count();
+        LinkedList<String> valueList = readRow(iterator.next());
+        final long count = valueList.stream().filter(s -> !s.isEmpty()).count();
         if (skipLine && count > 0) {
           Debug("Skipping title line");
           skipLine = false;
           continue;
         }
         if (count > 0) {
-          MyCellarObject bottle = createObject();
-          bottle.updateID();
+          MyCellarObject myCellarObject = createObject();
+          myCellarObject.updateID();
 
           int i = 0;
-          for (String value : bottleValues) {
+          for (String value : valueList) {
             MyCellarFields selectedField = getSelectedField(i);
             //Alimentation de la HashMap
             Debug("Write " + selectedField + "->" + value);
-            bottle.setValue(selectedField, value);
-            if (selectedField.equals(MyCellarFields.NUM_PLACE) && maxNumPlace < bottle.getNumLieu()) {
-              maxNumPlace = bottle.getNumLieu();
+            myCellarObject.setValue(selectedField, value);
+            if (selectedField.equals(MyCellarFields.NUM_PLACE) && maxNumPlace < myCellarObject.getNumLieu()) {
+              maxNumPlace = myCellarObject.getNumLieu();
             }
 
-            if ((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && rangement != null) {
-              bottle.setEmplacement(rangement.getName());
+            if (isNullOrEmpty(myCellarObject.getEmplacement()) && rangement != null) {
+              myCellarObject.setEmplacement(rangement.getName());
               rangement.setPartCount(maxNumPlace + 1);
             }
             i++;
           }
-          Program.getStorage().addWine(bottle);
+          Program.getStorage().addWine(myCellarObject);
         }
       }
     } catch (IOException e) {

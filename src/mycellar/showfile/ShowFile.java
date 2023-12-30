@@ -11,7 +11,6 @@ import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarEnum;
-import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarObject;
 import mycellar.core.UpdateViewType;
 import mycellar.core.common.MyCellarFields;
@@ -100,11 +99,9 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
   private final MyCellarSimpleLabel titleLabel = new MyCellarSimpleLabel();
   private final MyCellarLabel labelCount = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
-  private final MyCellarButton createPlacesButton = new MyCellarButton("Main.StorageToCreate", new CreatePlacesAction());
   private final MyCellarButton manageColumnsButton = new MyCellarButton("Main.Columns", new ManageColumnsAction());
   private final MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
   private final MyCellarButton modifyButton = new MyCellarButton("Main.Modify", new ModifyBottlesAction());
-  private final MyCellarButton reloadButton = new MyCellarButton("ShowFile.ReloadErrors", new ReloadErrorsAction());
   private final MyCellarButton removeFromWorksheetButton = new MyCellarButton("ShowFile.RemoveFromWorksheet", new RemoveFromWorksheetAction());
   private final MyCellarButton clearWorksheetButton = new MyCellarButton("ShowFile.ClearWorksheet", new ClearWorksheetAction());
   private final MyCellarComboBox<AbstractPlace> placeCbx = new MyCellarComboBox<>();
@@ -144,11 +141,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           .collect(toList());
       workingBottles.addAll(Program.getExistingMyCellarObjects(bouteilles));
     }
-    try {
-      init();
-    } catch (RuntimeException e) {
-      Program.showException(e);
-    }
+    init();
   }
 
   private void initializeStandardColumns() {
@@ -621,20 +614,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   private void init() {
     titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
     setLayout(new MigLayout("", "[][grow]", "[]10px[grow][]"));
-    if (isTrash()) {
-      deleteButton.setText(getLabel("ShowFile.Restore"));
-      deleteButton.setIcon(MyCellarImage.RESTORE);
-    } else {
-      deleteButton.setText(getLabel("Main.Delete"));
-    }
-
-    deleteButton.addActionListener((e) -> {
-      if (isTrash()) {
-        restore();
-      } else {
-        delete();
-      }
-    });
     add(titleLabel, "align left");
     if (isNormal()) {
       add(manageColumnsButton, "align right, split 3");
@@ -644,9 +623,15 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
       add(clearWorksheetButton, "align right");
       add(removeFromWorksheetButton, "align right");
       add(modifyButton, "align right");
-    } else if (isError()) {
-      add(createPlacesButton, "align right, split 3");
-      add(reloadButton, "align right");
+    }
+
+    if (isTrash()) {
+      deleteButton.setText(getLabel("ShowFile.Restore"));
+      deleteButton.setIcon(MyCellarImage.RESTORE);
+      deleteButton.addActionListener(e -> restore());
+    } else {
+      deleteButton.setText(getLabel("Main.Delete"));
+      deleteButton.addActionListener(e -> delete());
     }
     add(deleteButton, "align right, wrap");
 
@@ -670,11 +655,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     if (isTrash()) {
       model = new TableShowValues();
       table = new JTable(model);
-    } else if (isError()) {
-      model = new ErrorShowValues();
-      ((ErrorShowValues) model).setErrors(Program.getErrors());
-      table = new JTable(model);
-      titleLabel.setText(getLabel("ShowFile.ManageError"));
     } else {
       model = new ShowFileModel();
       String savedColumns;
@@ -735,31 +715,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
     sorter.setSortKeys(sortKeys);
     sorter.sort();
-    TableColumnModel tcm = table.getColumnModel();
-    TableColumn[] tc1 = new TableColumn[5];
-    for (int w = 0; w < 5; w++) {
-      tc1[w] = tcm.getColumn(w);
-      tc1[w].setCellRenderer(new ToolTipRenderer());
-      switch (w) {
-        case 1:
-          tc1[w].setMinWidth(150);
-          break;
-        case 2:
-          tc1[w].setMinWidth(50);
-          break;
-        case 4:
-          tc1[w].setMinWidth(100);
-          break;
-        default:
-          tc1[w].setMinWidth(30);
-          break;
-      }
-    }
-    TableColumn tc = tcm.getColumn(TableShowValues.ETAT);
-    tc.setCellRenderer(new CheckboxCellRenderer());
-    tc.setCellEditor(new CheckboxCellEditor());
-    tc.setMinWidth(25);
-    tc.setMaxWidth(25);
+
     updateModel();
 
     table.setPreferredScrollableViewportSize(new Dimension(300, 200));
@@ -775,10 +731,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
   private boolean isTrash() {
     return showType == ShowType.TRASH;
-  }
-
-  private boolean isError() {
-    return showType == ShowType.ERROR;
   }
 
   private boolean isWorksheet() {
@@ -801,23 +753,17 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
           erreur_txt2 = getError("Error.confirmNDelete");
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          if (isError()) {
-            for (MyCellarObject b : toDeleteList) {
-              Program.getErrors().remove(new MyCellarError(MyCellarError.ID.INEXISTING_PLACE, b));
+          for (MyCellarObject b : toDeleteList) {
+            Program.getStorage().addHistory(HistoryState.DEL, b);
+            final AbstractPlace rangement = b.getAbstractPlace();
+            if (rangement != null) {
+              rangement.removeObject(b);
+            } else {
+              Program.getStorage().deleteWine(b);
             }
-          } else {
-            for (MyCellarObject b : toDeleteList) {
-              Program.getStorage().addHistory(HistoryState.DEL, b);
-              final AbstractPlace rangement = b.getAbstractPlace();
-              if (rangement != null) {
-                rangement.removeObject(b);
-              } else {
-                Program.getStorage().deleteWine(b);
-              }
-              Program.setToTrash(b);
-              if (isWorksheet()) {
-                workingBottles.remove(b);
-              }
+            Program.setToTrash(b);
+            if (isWorksheet()) {
+              workingBottles.remove(b);
             }
           }
         }
@@ -899,8 +845,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
     SwingUtilities.invokeLater(() -> {
       if (isTrash()) {
         model.setMyCellarObjects(Program.getTrash());
-      } else if (isError()) {
-        ((ErrorShowValues) model).setErrors(Program.getErrors());
       } else if (isWorksheet()) {
         model.setMyCellarObjects(workingBottles);
       } else {
@@ -1058,63 +1002,73 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
   private void updateModel() {
     TableColumnModel tcm = table.getColumnModel();
-    TableColumn tc;
-    if (isError()) {
-      tc = tcm.getColumn(ErrorShowValues.Column.ETAT.getIndex());
-      tc.setCellRenderer(new CheckboxCellRenderer());
-      tc.setCellEditor(new CheckboxCellEditor());
-      tc.setMinWidth(25);
-      tc.setMaxWidth(25);
-      tc = tcm.getColumn(ErrorShowValues.Column.PLACE.getIndex());
-      tc.setCellEditor(new DefaultCellEditor(placeCbx));
-      tc = tcm.getColumn(ErrorShowValues.Column.TYPE.getIndex());
-      tc.setCellEditor(new DefaultCellEditor(typeCbx));
-      tc = tcm.getColumn(ErrorShowValues.Column.STATUS.getIndex());
-      tc.setCellRenderer(new FontBoldTableCellRenderer());
-      tc = tcm.getColumn(ErrorShowValues.Column.BUTTON.getIndex());
-      tc.setCellRenderer(new ButtonCellRenderer(getLabel("Main.Add"), MyCellarImage.ADD));
-      tc.setCellEditor(new ButtonCellEditor());
-    } else if (isNormal() || isWorksheet()) {
-      List<ShowFileColumn<?>> cols = filterColumns();
-      int i = 0;
-      final int columnCount = tcm.getColumnCount();
-      for (ShowFileColumn<?> column : cols) {
-        if (i >= columnCount) {
-          Debug("ERROR: i >= columnCount: Column: " + column.getField().name() + " " + i + " >= " + columnCount);
-          Debug("----");
-          i++;
-          continue;
-        }
-        tc = tcm.getColumn(i);
-        if (column.getField().equals(MyCellarFields.PLACE)) {
-          tc.setCellEditor(new DefaultCellEditor(placeCbx));
-        } else if (column.getField().equals(MyCellarFields.TYPE)) {
-          tc.setCellEditor(new DefaultCellEditor(typeCbx));
-        } else if (column.getField().equals(MyCellarFields.COLOR)) {
-          tc.setCellEditor(new DefaultCellEditor(colorCbx));
-        } else if (column.getField().equals(MyCellarFields.SUPPORT)) {
-          tc.setCellEditor(new DefaultCellEditor(musicSupportCbx));
-        } else if (column.getField().equals(MyCellarFields.DURATION)) {
-          tc.setCellEditor(new SimpleButtonEditor());
-        } else if (column.getField().equals(MyCellarFields.STATUS)) {
-          tc.setCellEditor(new DefaultCellEditor(statusCbx));
-        } else if (column.isButton()) {
-          tc.setCellRenderer(new ButtonCellRenderer(column.getButtonLabel()));
-          tc.setCellEditor(new ButtonCellEditor());
-          tc.setMinWidth(column.getWidth());
-          tc.setMaxWidth(column.getWidth());
-        } else if (column.isCheckBox()) {
-          tc.setCellRenderer(new CheckboxCellRenderer());
-          tc.setCellEditor(new CheckboxCellEditor());
-          tc.setMinWidth(column.getWidth());
-          tc.setMaxWidth(column.getWidth());
-        } else if (checkedButtonColumn.equals(column)) {
-          tc.setCellEditor(new DefaultCellEditor(verifyStatusCbx));
-          tc.setMinWidth(column.getWidth());
-          tc.setMaxWidth(column.getWidth());
-        }
-        i++;
+    TableColumn[] tc1 = new TableColumn[5];
+    for (int w = 0; w < 5; w++) {
+      tc1[w] = tcm.getColumn(w);
+      tc1[w].setCellRenderer(new ToolTipRenderer());
+      switch (w) {
+        case 1:
+          tc1[w].setMinWidth(150);
+          break;
+        case 2:
+          tc1[w].setMinWidth(50);
+          break;
+        case 4:
+          tc1[w].setMinWidth(100);
+          break;
+        default:
+          tc1[w].setMinWidth(30);
+          break;
       }
+    }
+    TableColumn tc = tcm.getColumn(TableShowValues.ETAT);
+    tc.setCellRenderer(new CheckboxCellRenderer());
+    tc.setCellEditor(new CheckboxCellEditor());
+    tc.setMinWidth(25);
+    tc.setMaxWidth(25);
+
+    if (isTrash()) {
+      return;
+    }
+    List<ShowFileColumn<?>> cols = filterColumns();
+    int i = 0;
+    final int columnCount = tcm.getColumnCount();
+    for (ShowFileColumn<?> column : cols) {
+      if (i >= columnCount) {
+        Debug("ERROR: i >= columnCount: Column: " + column.getField().name() + " " + i + " >= " + columnCount);
+        Debug("----");
+        i++;
+        continue;
+      }
+      tc = tcm.getColumn(i);
+      if (column.getField().equals(MyCellarFields.PLACE)) {
+        tc.setCellEditor(new DefaultCellEditor(placeCbx));
+      } else if (column.getField().equals(MyCellarFields.TYPE)) {
+        tc.setCellEditor(new DefaultCellEditor(typeCbx));
+      } else if (column.getField().equals(MyCellarFields.COLOR)) {
+        tc.setCellEditor(new DefaultCellEditor(colorCbx));
+      } else if (column.getField().equals(MyCellarFields.SUPPORT)) {
+        tc.setCellEditor(new DefaultCellEditor(musicSupportCbx));
+      } else if (column.getField().equals(MyCellarFields.DURATION)) {
+        tc.setCellEditor(new SimpleButtonEditor());
+      } else if (column.getField().equals(MyCellarFields.STATUS)) {
+        tc.setCellEditor(new DefaultCellEditor(statusCbx));
+      } else if (column.isButton()) {
+        tc.setCellRenderer(new ButtonCellRenderer(column.getButtonLabel()));
+        tc.setCellEditor(new ButtonCellEditor());
+        tc.setMinWidth(column.getWidth());
+        tc.setMaxWidth(column.getWidth());
+      } else if (column.isCheckBox()) {
+        tc.setCellRenderer(new CheckboxCellRenderer());
+        tc.setCellEditor(new CheckboxCellEditor());
+        tc.setMinWidth(column.getWidth());
+        tc.setMaxWidth(column.getWidth());
+      } else if (checkedButtonColumn.equals(column)) {
+        tc.setCellEditor(new DefaultCellEditor(verifyStatusCbx));
+        tc.setMinWidth(column.getWidth());
+        tc.setMaxWidth(column.getWidth());
+      }
+      i++;
     }
   }
 
@@ -1161,11 +1115,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
 
   @Override
   public boolean tabWillClose(TabEvent event) {
-    if (isError()) {
-      if (Program.getErrors().stream().anyMatch(MyCellarError::isNotSolved)) {
-        return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), getLabel("ShowFile.QuitErrors"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION);
-      }
-    }
     PlaceUtils.putTabStock();
     return true;
   }
@@ -1177,15 +1126,7 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
   public enum ShowType {
     NORMAL,
     TRASH,
-    ERROR,
     WORKSHEET
-  }
-
-  private static class CreatePlacesAction extends AbstractAction {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      PlaceUtils.findRangementToCreate();
-    }
   }
 
   private class ManageColumnsAction extends AbstractAction {
@@ -1274,14 +1215,6 @@ public class ShowFile extends JPanel implements ITabListener, IMyCellar, IUpdata
         }
       }
       Program.modifyBottles(existingObjects);
-    }
-  }
-
-  private class ReloadErrorsAction extends AbstractAction {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      PlaceUtils.putTabStock();
-      ((ErrorShowValues) model).setErrors(Program.getErrors());
     }
   }
 

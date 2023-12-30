@@ -2,16 +2,19 @@ package mycellar.showfile;
 
 import mycellar.Bouteille;
 import mycellar.Erreur;
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
+import mycellar.frame.MainFrame;
+import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlacePosition;
-import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 
+import javax.swing.JOptionPane;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -37,7 +40,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 public class ErrorShowValues extends TableShowValues {
 
   enum Column {
-    ETAT(0),
+    STATE(0),
     ERROR(1),
     NAME(2),
     YEAR(3),
@@ -64,7 +67,6 @@ public class ErrorShowValues extends TableShowValues {
     }
   }
 
-  private static final long serialVersionUID = 2477822182069165515L;
   private static final int NBCOL = 11;
   private final String[] columnNames = {"", getLabel("ErrorShowValues.Error"), getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
       getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel("MyCellarFields.Column"), getLabel("ShowFile.Status"), ""};
@@ -95,35 +97,24 @@ public class ErrorShowValues extends TableShowValues {
     if (column1 == null) {
       return "";
     }
-    switch (column1) {
-      case ETAT:
-        return values[row];
-      case NAME:
-        return convertStringFromHTMLString(b.getNom());
-      case YEAR:
-        return b.getAnnee();
-      case TYPE:
-        return b.getKind();
-      case PLACE:
-        return convertStringFromHTMLString(b.getEmplacement());
-      case NUM_PLACE:
-        return Integer.toString(b.getNumLieu());
-      case LINE:
-        return Integer.toString(b.getLigne());
-      case COLUMN:
-        return Integer.toString(b.getColonne());
-      case STATUS:
+    return switch (column1) {
+      case STATE -> values[row];
+      case NAME -> convertStringFromHTMLString(b.getNom());
+      case YEAR -> b.getAnnee();
+      case TYPE -> b.getKind();
+      case PLACE -> convertStringFromHTMLString(b.getEmplacement());
+      case NUM_PLACE -> Integer.toString(b.getNumLieu());
+      case LINE -> Integer.toString(b.getLigne());
+      case COLUMN -> Integer.toString(b.getColonne());
+      case STATUS -> {
         if (error.isStatus()) {
-          return getLabel("ShowFile.Added");
+          yield getLabel("ShowFile.Added");
         }
-        return status[row] ? getLabel("Main.OK") : getLabel("Main.KO");
-      case BUTTON:
-        return true;
-      case ERROR:
-        return convertStringFromHTMLString(error.getErrorMessage());
-      default:
-        return "";
-    }
+        yield status[row] ? getLabel("Main.OK") : getLabel("Main.KO");
+      }
+      case BUTTON -> true;
+      case ERROR -> convertStringFromHTMLString(error.getErrorMessage());
+    };
   }
 
   @Override
@@ -135,20 +126,10 @@ public class ErrorShowValues extends TableShowValues {
   public boolean isCellEditable(int row, int col) {
     if (!Boolean.FALSE.equals(editable[row])) {
       final Column column = Column.fromIndex(col);
-      switch (column) {
-        case ETAT:
-        case NAME:
-        case TYPE:
-        case YEAR:
-        case PLACE:
-        case NUM_PLACE:
-        case LINE:
-        case COLUMN:
-        case BUTTON:
-          return true;
-        default:
-          return false;
-      }
+      return switch (column) {
+        case STATE, NAME, TYPE, YEAR, PLACE, NUM_PLACE, LINE, COLUMN, BUTTON -> true;
+        default -> false;
+      };
     }
     return false;
   }
@@ -160,12 +141,11 @@ public class ErrorShowValues extends TableShowValues {
     AbstractPlace abstractPlace;
     final Column column = Column.fromIndex(col);
     switch (column) {
-      case ETAT:
+      case STATE:
         values[row] = (Boolean) value;
         break;
       case BUTTON:
-        abstractPlace = b.getAbstractPlace();
-        if (abstractPlace != null && abstractPlace.canAddObjectAt(b.getPlacePosition())) {
+        if (b.getAbstractPlace() != null && b.getAbstractPlace().canAddObjectAt(b.getPlacePosition())) {
           error.setSolved(true);
           Program.getStorage().addWine(b);
           editable[row] = Boolean.FALSE;
@@ -177,16 +157,16 @@ public class ErrorShowValues extends TableShowValues {
         }
         break;
       case NAME:
-        b.setNom((String) value);
+        b.setNom(String.valueOf(value));
         break;
       case TYPE:
-        b.setKind((String) value);
+        b.setKind(String.valueOf(value));
         break;
       case YEAR:
         if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
           Erreur.showSimpleErreur(getError("Error.enterValidYear"));
         } else {
-          b.setAnnee((String) value);
+          b.setAnnee(String.valueOf(value));
         }
         break;
       case PLACE:
@@ -206,10 +186,8 @@ public class ErrorShowValues extends TableShowValues {
         int column1 = column_old;
 
         if (column.equals(Column.PLACE)) {
-          empl = (String) value;
-          if (PlaceUtils.isExistingPlace(empl)) {
-            abstractPlace = PlaceUtils.getPlaceByName(empl);
-          }
+          empl = ((AbstractPlace) value).getName();
+          abstractPlace = (AbstractPlace) value;
         } else if (column.equals(Column.NUM_PLACE)) {
           Integer i = parseIntOrError(String.valueOf(value));
           if (i == null) {
@@ -237,21 +215,14 @@ public class ErrorShowValues extends TableShowValues {
         }
 
         if (!bError && (column.equals(Column.NUM_PLACE) || column.equals(Column.LINE) || column.equals(Column.COLUMN))) {
-          if (!abstractPlace.isSimplePlace() && nValueToCheck <= 0) {
+          if (b.getAbstractPlace() != null && !b.getAbstractPlace().isSimplePlace() && nValueToCheck <= 0) {
             Erreur.showSimpleErreur(getError("Error.enterNumericValueAboveZero"));
             bError = true;
           }
         }
 
-        if (!bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
-          // Controle de l'emplacement de la bouteille
-//          int tmpNumEmpl = num_empl;
-//          if (!abstractPlace.isSimplePlace()) {
-//            tmpNumEmpl--;
-//          } else {
-//            tmpNumEmpl -= ((SimplePlace) abstractPlace).getPartNumberIncrement();
-//          }
-          if (abstractPlace.canAddObjectAt(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
+        if (abstractPlace != null && !bError && (empl_old.compareTo(empl) != 0 || num_empl_old != num_empl || line_old != line || column_old != column1)) {
+          if (abstractPlace.canAddObjectAt(new PlacePosition.PlacePositionBuilder(abstractPlace)
               .withNumPlace(num_empl)
               .withLine(line)
               .withColumn(column1).build())) {
@@ -268,7 +239,7 @@ public class ErrorShowValues extends TableShowValues {
               Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(searchObject.getNom()), b.getAnnee()));
             } else {
               if (column.equals(Column.PLACE)) {
-                b.setEmplacement((String) value);
+                b.setEmplacement(empl);
                 if (abstractPlace.isSimplePlace()) {
                   int nNumEmpl = b.getNumLieu();
                   if (nNumEmpl > abstractPlace.getLastPartNumber()) {
@@ -287,7 +258,23 @@ public class ErrorShowValues extends TableShowValues {
               status[row] = Boolean.TRUE;
             }
           } else {
-            status[row] = Boolean.FALSE;
+            if (MyCellarUtils.isAnyOf(column, List.of(Column.PLACE, Column.NUM_PLACE, Column.LINE, Column.COLUMN))) {
+              final PanelPlacePosition panelPlace = new PanelPlacePosition(abstractPlace, true, false, true, true, false, true, false);
+              JOptionPane.showMessageDialog(MainFrame.getInstance(), panelPlace,
+                  getLabel("Main.ChooseCell"),
+                  JOptionPane.PLAIN_MESSAGE);
+              PlacePosition place = panelPlace.getSelectedPlacePosition();
+              if (place.hasPlace()) {
+                abstractPlace = place.getAbstractPlace();
+                b.setEmplacement(abstractPlace.getName());
+                b.setNumLieu(place.getPart());
+                b.setLigne(place.getLine());
+                b.setColonne(place.getColumn());
+                status[row] = place.hasValidPlace();
+              } else {
+                status[row] = Boolean.FALSE;
+              }
+            }
           }
         }
         fireTableRowsUpdated(row, row);

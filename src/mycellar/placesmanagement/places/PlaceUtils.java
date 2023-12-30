@@ -43,7 +43,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.Program.getAbstractPlaces;
@@ -158,11 +157,8 @@ public final class PlaceUtils {
   }
 
   /**
-   * write_HTML: Ecriture du fichier HTML
-   *
    * @param file       String: fichier HTML a ecrire
    * @param bouteilles List<Bouteille>: stock de bouteilles
-   * @param fields
    * @return int
    */
   public static boolean writeHTML(final File file, final List<? extends MyCellarObject> bouteilles, List<MyCellarFields> fields) {
@@ -642,8 +638,11 @@ public final class PlaceUtils {
     if (TEMP_PLACE.equals(placeName)) {
       return STOCK_PLACE;
     }
-    final List<AbstractPlace> new_list = Program.getAbstractPlaces().stream().filter(rangement -> filterOnAbstractPlaceName(rangement, placeName)).collect(Collectors.toList());
-    return new_list.get(0);
+    return Program.getAbstractPlaces()
+        .stream()
+        .filter(rangement -> filterOnAbstractPlaceName(rangement, placeName))
+        .findFirst()
+        .orElse(null);
   }
 
   private static boolean filterOnAbstractPlaceName(AbstractPlace rangement, String placeName) {

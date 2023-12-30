@@ -29,6 +29,7 @@ import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.search.Search;
+import mycellar.showfile.ErrorShowPanel;
 import mycellar.showfile.ShowFile;
 import mycellar.vignobles.VineyardPanel;
 
@@ -315,10 +316,10 @@ public class ProgramPanels {
     return showFile;
   }
 
-  public static ShowFile createShowErrors() {
-    ShowFile showFile = (ShowFile) OPENED_PANELS.get(SHOW_ERRORS);
+  public static ErrorShowPanel createShowErrors() {
+    ErrorShowPanel showFile = (ErrorShowPanel) OPENED_PANELS.get(SHOW_ERRORS);
     if (showFile == null) {
-      showFile = new ShowFile(ShowFile.ShowType.ERROR);
+      showFile = new ErrorShowPanel();
       OPENED_PANELS.put(SHOW_ERRORS, showFile);
       UPDATABLE_PANELS.put(SHOW_ERRORS, showFile);
     }

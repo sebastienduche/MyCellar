@@ -317,13 +317,9 @@ public class ProgramPanels {
   }
 
   public static ErrorShowPanel createShowErrors() {
-    ErrorShowPanel showFile = (ErrorShowPanel) OPENED_PANELS.get(SHOW_ERRORS);
-    if (showFile == null) {
-      showFile = new ErrorShowPanel();
-      OPENED_PANELS.put(SHOW_ERRORS, showFile);
-      UPDATABLE_PANELS.put(SHOW_ERRORS, showFile);
-    }
-    return showFile;
+    final ErrorShowPanel errorShowPanel = (ErrorShowPanel) createOpenedObject(ErrorShowPanel.class, SHOW_ERRORS);
+    UPDATABLE_PANELS.put(SHOW_ERRORS, errorShowPanel);
+    return errorShowPanel;
   }
 
   public static CellarOrganizerPanel createCellarOrganizerPanel() {

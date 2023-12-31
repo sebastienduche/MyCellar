@@ -31,6 +31,7 @@ import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.search.Search;
 import mycellar.showfile.ErrorShowPanel;
 import mycellar.showfile.ShowFile;
+import mycellar.showfile.WorksheetPanel;
 import mycellar.vignobles.VineyardPanel;
 
 import javax.swing.Icon;
@@ -61,12 +62,12 @@ import static mycellar.ScreenType.CHOOSE_CELL2;
 import static mycellar.ScreenType.CHOOSE_CELL3;
 import static mycellar.ScreenType.CHOOSE_CELL4;
 import static mycellar.ScreenType.CREATE_PLACE;
-import static mycellar.ScreenType.CREER_TABLEAU;
+import static mycellar.ScreenType.CREATE_TABLE;
 import static mycellar.ScreenType.EXPORT;
 import static mycellar.ScreenType.HISTORY;
 import static mycellar.ScreenType.IMPORTER;
 import static mycellar.ScreenType.MODIFY_PLACE;
-import static mycellar.ScreenType.PARAMETRES;
+import static mycellar.ScreenType.PARAMETERS;
 import static mycellar.ScreenType.SEARCH;
 import static mycellar.ScreenType.SHOW_ERRORS;
 import static mycellar.ScreenType.SHOW_FILE;
@@ -258,9 +259,9 @@ public class ProgramPanels {
     }
   }
 
-  public static Creer_Tableaux createCreerTableaux() {
-    final Creer_Tableaux creerTableaux = (Creer_Tableaux) createOpenedObject(Creer_Tableaux.class, CREER_TABLEAU);
-    UPDATABLE_PANELS.put(CREER_TABLEAU, creerTableaux);
+  public static Creer_Tableaux createCreateTable() {
+    final Creer_Tableaux creerTableaux = (Creer_Tableaux) createOpenedObject(Creer_Tableaux.class, CREATE_TABLE);
+    UPDATABLE_PANELS.put(CREATE_TABLE, creerTableaux);
     return creerTableaux;
   }
 
@@ -306,14 +307,10 @@ public class ProgramPanels {
     return showFile;
   }
 
-  public static ShowFile createShowWorksheet() {
-    ShowFile showFile = (ShowFile) OPENED_PANELS.get(SHOW_WORKSHEET);
-    if (showFile == null) {
-      showFile = new ShowFile(ShowFile.ShowType.WORKSHEET);
-      OPENED_PANELS.put(SHOW_WORKSHEET, showFile);
-      UPDATABLE_PANELS.put(SHOW_WORKSHEET, showFile);
-    }
-    return showFile;
+  public static WorksheetPanel createWorksheetPanel() {
+    final WorksheetPanel worksheetPanel = (WorksheetPanel) createOpenedObject(WorksheetPanel.class, SHOW_WORKSHEET);
+    UPDATABLE_PANELS.put(SHOW_WORKSHEET, worksheetPanel);
+    return worksheetPanel;
   }
 
   public static ErrorShowPanel createShowErrors() {
@@ -329,11 +326,11 @@ public class ProgramPanels {
   }
 
   public static Parametres createParametres() {
-    return (Parametres) createOpenedObject(Parametres.class, PARAMETRES);
+    return (Parametres) createOpenedObject(Parametres.class, PARAMETERS);
   }
 
-  public static void deleteParametres() {
-    OPENED_PANELS.remove(PARAMETRES);
+  public static void deleteParameters() {
+    OPENED_PANELS.remove(PARAMETERS);
   }
 
   public static CellarOrganizerPanel createChooseCellPanel(IPlacePosition iPlace) {
@@ -603,7 +600,7 @@ public class ProgramPanels {
               TABBED_PANE.setSelectedIndex(previousIndex);
             }
 
-            // Se deferencer en tant que listener
+            // dereference itself
             TABBED_PANE.removeKeyListener(this);
 
             e.consume();

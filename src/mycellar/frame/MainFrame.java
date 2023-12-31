@@ -1190,7 +1190,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      selectOrAddTab(ProgramPanels.createCreerTableaux(), LABEL, MyCellarImage.TABLE);
+      selectOrAddTab(ProgramPanels.createCreateTable(), LABEL, MyCellarImage.TABLE);
     }
   }
 

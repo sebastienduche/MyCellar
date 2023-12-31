@@ -7,13 +7,13 @@ package mycellar;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 01/01/22
+ * @version 0.3
+ * @since 31/12/23
  */
 public enum ScreenType {
   EXPORT,
-  PARAMETRES,
-  CREER_TABLEAU,
+  PARAMETERS,
+  CREATE_TABLE,
   IMPORTER,
   SHOW_FILE,
   SHOW_TRASH,

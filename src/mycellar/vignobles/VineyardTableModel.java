@@ -19,15 +19,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 25/05/22
+ * @version 1.6
+ * @since 31/12/23
  */
 
 class VineyardTableModel extends DefaultTableModel {
 
   static final int ACTION = 2;
-  private static final long serialVersionUID = -6356586420904968734L;
-  private List<AppelationJaxb> appelationJaxbs;
+  private List<AppelationJaxb> appellationJaxbs;
   private CountryVignobleJaxb vignoble;
 
   @Override
@@ -37,50 +36,40 @@ class VineyardTableModel extends DefaultTableModel {
 
   @Override
   public String getColumnName(int column) {
-    switch (column) {
-      case 0:
-        return getLabel("Main.AppelationAOC");
-      case 1:
-        return getLabel("Main.AppelationIGP");
-      default:
-        return "";
-    }
+    return switch (column) {
+      case 0 -> getLabel("Main.AppellationAOC");
+      case 1 -> getLabel("Main.AppellationIGP");
+      default -> "";
+    };
   }
 
   @Override
   public int getRowCount() {
-    if (appelationJaxbs == null) {
-      return 0;
-    }
-    return appelationJaxbs.size();
+    return appellationJaxbs == null ? 0 : appellationJaxbs.size();
   }
 
   @Override
   public Object getValueAt(int row, int column) {
-    if (appelationJaxbs == null) {
+    if (appellationJaxbs == null) {
       return "";
     }
 
-    AppelationJaxb appelationJaxb = appelationJaxbs.get(row);
-    switch (column) {
-      case 0:
-        return appelationJaxb.getAOC();
-      case 1:
-        return appelationJaxb.getIGP();
-      case 2:
-        return Boolean.FALSE;
-      default:
-        return "";
-    }
+    AppelationJaxb appelationJaxb = appellationJaxbs.get(row);
+    return switch (column) {
+      case 0 -> appelationJaxb.getAOC();
+      case 1 -> appelationJaxb.getIGP();
+      case 2 -> Boolean.FALSE;
+      default -> "";
+    };
   }
 
   @Override
   public void setValueAt(Object aValue, int row, int column) {
-    if (appelationJaxbs == null) {
+    if (appellationJaxbs == null) {
       return;
     }
 
-    AppelationJaxb appelationJaxb = appelationJaxbs.get(row);
+    AppelationJaxb appelationJaxb = appellationJaxbs.get(row);
     switch (column) {
       case 0:
         CountryVignobleController.setModified();
@@ -102,20 +91,20 @@ class VineyardTableModel extends DefaultTableModel {
           return;
         }
         CountryVignobleController.setModified();
-        appelationJaxbs.remove(appelationJaxb);
+        appellationJaxbs.remove(appelationJaxb);
         fireTableDataChanged();
         break;
     }
   }
 
-  void setAppellations(CountryVignobleJaxb vignoble, List<AppelationJaxb> appelationJaxbs) {
+  void setAppellations(CountryVignobleJaxb vignoble, List<AppelationJaxb> appellationJaxbs) {
     this.vignoble = vignoble;
-    this.appelationJaxbs = appelationJaxbs;
+    this.appellationJaxbs = appellationJaxbs;
     fireTableDataChanged();
   }
 
   void addAppellation(AppelationJaxb appellation) {
-    appelationJaxbs.add(appellation);
+    appellationJaxbs.add(appellation);
     fireTableDataChanged();
     CountryVignobleController.setModified();
   }

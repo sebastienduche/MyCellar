@@ -25,8 +25,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 26/12/23
+ * @version 2.9
+ * @since 31/12/23
  */
 
 public enum MyCellarFields {
@@ -44,8 +44,8 @@ public enum MyCellarFields {
   COLOR(11, "AddVin.Color"),
   COUNTRY(12, "Main.Country"),
   VINEYARD(13, "Main.Vineyard"),
-  AOC(14, "Main.AppelationAOC"),
-  IGP(15, "Main.AppelationIGP"),
+  AOC(14, "Main.AppellationAOC"),
+  IGP(15, "Main.AppellationIGP"),
   STATUS(16, "Main.Status"),
   STYLE(17, "Main.Style"),
   COMPOSER(18, "Main.Composer"),

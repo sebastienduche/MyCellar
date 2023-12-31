@@ -246,13 +246,13 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
    * Modification de la langue a la fermeture de la boite de dialogue
    */
   private void modifyLanguage() {
-    String thelangue = LanguageFileLoader.getLanguageFromIndex(langue.getSelectedIndex());
+    String theLanguage = LanguageFileLoader.getLanguageFromIndex(langue.getSelectedIndex());
     String currentLanguage = Program.getGlobalConfigString(GLOBAL_LANGUAGE, Language.FRENCH.toString());
-    if (thelangue.equals(currentLanguage)) {
+    if (theLanguage.equals(currentLanguage)) {
       return;
     }
-    Program.putGlobalConfigString(GLOBAL_LANGUAGE, thelangue);
-    Program.setLanguage(Language.getLanguage(thelangue.charAt(0)));
+    Program.putGlobalConfigString(GLOBAL_LANGUAGE, theLanguage);
+    Program.setLanguage(Language.getLanguage(theLanguage.charAt(0)));
     if (LanguageFileLoader.getInstance().isLoaded()) {
       setLabels();
     } else {
@@ -271,7 +271,7 @@ public final class Parametres extends JPanel implements ITabListener, ICutCopyPa
 
   @Override
   public void tabClosed() {
-    ProgramPanels.deleteParametres();
+    ProgramPanels.deleteParameters();
   }
 
   @Override

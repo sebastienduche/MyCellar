@@ -20,8 +20,6 @@ import java.util.List;
 
 public class ShowFileModel extends TableShowValues {
 
-  private static final long serialVersionUID = -3120339216315975530L;
-
   private List<ShowFileColumn<?>> columns = new ArrayList<>();
 
   @Override
@@ -52,24 +50,11 @@ public class ShowFileModel extends TableShowValues {
     columns.get(column).setModelValue(b, value);
   }
 
-  /**
-   * getColumnName
-   *
-   * @param column int
-   * @return String
-   */
   @Override
   public String getColumnName(int column) {
     return columns.get(column).getColumnName();
   }
 
-  /**
-   * isCellEditable
-   *
-   * @param row    int
-   * @param column int
-   * @return boolean
-   */
   @Override
   public boolean isCellEditable(int row, int column) {
     ShowFileColumn<?> col = columns.get(column);

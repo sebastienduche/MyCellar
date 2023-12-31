@@ -39,8 +39,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 25/12/23
+ * @version 2.0
+ * @since 31/12/23
  */
 public final class PanelVignobles extends JPanel {
 
@@ -54,8 +54,8 @@ public final class PanelVignobles extends JPanel {
 
     MyCellarLabel labelCountry = new MyCellarLabel("Main.Country");
     MyCellarLabel labelVignoble = new MyCellarLabel("Main.Vineyard");
-    MyCellarLabel labelAppellationAOC = new MyCellarLabel("Main.AppelationAOC");
-    MyCellarLabel labelAppellationIGP = new MyCellarLabel("Main.AppelationIGP");
+    MyCellarLabel labelAppellationAOC = new MyCellarLabel("Main.AppellationAOC");
+    MyCellarLabel labelAppellationIGP = new MyCellarLabel("Main.AppellationIGP");
     setLayout(new MigLayout("", "[grow][grow]", ""));
     comboCountry = new JCompletionComboBox<>() {
       @Override

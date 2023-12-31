@@ -31,6 +31,7 @@ import mycellar.placesmanagement.Supprimer_Rangement;
 import mycellar.search.Search;
 import mycellar.showfile.ErrorShowPanel;
 import mycellar.showfile.ShowFile;
+import mycellar.showfile.TrashPanel;
 import mycellar.showfile.WorksheetPanel;
 import mycellar.vignobles.VineyardPanel;
 
@@ -297,13 +298,9 @@ public class ProgramPanels {
     return showFile;
   }
 
-  public static ShowFile createShowTrash() {
-    ShowFile showFile = (ShowFile) OPENED_PANELS.get(SHOW_TRASH);
-    if (showFile == null) {
-      showFile = new ShowFile(ShowFile.ShowType.TRASH);
-      OPENED_PANELS.put(SHOW_TRASH, showFile);
-      UPDATABLE_PANELS.put(SHOW_TRASH, showFile);
-    }
+  public static TrashPanel createShowTrash() {
+    final TrashPanel showFile = (TrashPanel) createOpenedObject(TrashPanel.class, SHOW_TRASH);
+    UPDATABLE_PANELS.put(SHOW_TRASH, showFile);
     return showFile;
   }
 

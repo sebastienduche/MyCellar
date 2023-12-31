@@ -33,8 +33,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 25/12/23
+ * @version 3.4
+ * @since 31/12/23
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -145,12 +145,18 @@ public class ErrorShowValues extends TableShowValues {
         values[row] = (Boolean) value;
         break;
       case BUTTON:
-        if (b.getAbstractPlace() != null && b.getAbstractPlace().canAddObjectAt(b.getPlacePosition())) {
-          error.setSolved(true);
-          Program.getStorage().addWine(b);
-          editable[row] = Boolean.FALSE;
-          error.setStatus(true);
-          fireTableRowsUpdated(row, row);
+        AbstractPlace abstractPlace1 = b.getAbstractPlace();
+        if (abstractPlace1 != null && abstractPlace1.canAddObjectAt(b.getPlacePosition())) {
+          if (abstractPlace1.isSimplePlace() || (abstractPlace1.isComplexPlace() && abstractPlace1.getObject(b.getPlacePosition()).isEmpty())) {
+            error.setSolved(true);
+            Program.getStorage().addWine(b);
+            editable[row] = Boolean.FALSE;
+            error.setStatus(true);
+            fireTableRowsUpdated(row, row);
+          } else {
+            status[row] = Boolean.FALSE;
+            Erreur.showSimpleErreur(getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
+          }
         } else {
           status[row] = Boolean.FALSE;
           Erreur.showSimpleErreur(getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));

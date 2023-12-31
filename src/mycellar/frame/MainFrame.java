@@ -37,7 +37,7 @@ import mycellar.placesmanagement.CellarOrganizerPanel;
 import mycellar.placesmanagement.Creer_Rangement;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
-import mycellar.showfile.ShowFile;
+import mycellar.showfile.TrashPanel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -1302,7 +1302,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      final ShowFile showTrash = ProgramPanels.createShowTrash();
+      final TrashPanel showTrash = ProgramPanels.createShowTrash();
       selectOrAddTab(showTrash, LABEL, MyCellarImage.TRASH);
       showTrash.updateView();
     }

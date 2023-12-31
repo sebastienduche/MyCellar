@@ -98,11 +98,11 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
   final MyCellarLabel labelCount = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
   final MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
   final MyCellarButton modifyButton = new MyCellarButton("Main.Modify", new ModifyBottlesAction());
-  private final MyCellarComboBox<AbstractPlace> placeCbx = new MyCellarComboBox<>();
+  final MyCellarComboBox<AbstractPlace> placeCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottleColor> colorCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<MusicSupport> musicSupportCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottlesStatus> statusCbx = new MyCellarComboBox<>();
-  private final MyCellarComboBox<String> typeCbx = new MyCellarComboBox<>();
+  final MyCellarComboBox<String> typeCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<MyCellarEnum> verifyStatusCbx = new MyCellarComboBox<>();
   private boolean updateView = false;
   private UpdateViewType updateViewType;
@@ -992,9 +992,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     return true;
   }
 
-  public void Debug(String text) {
-    Program.Debug("ShowFile: " + text);
-  }
+  public abstract void Debug(String text);
 
   class ManageColumnsAction extends AbstractAction {
 

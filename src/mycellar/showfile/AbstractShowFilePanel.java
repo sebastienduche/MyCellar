@@ -9,8 +9,8 @@ import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarEnum;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarEnum;
 import mycellar.core.MyCellarObject;
 import mycellar.core.UpdateViewType;
 import mycellar.core.common.MyCellarFields;
@@ -90,10 +90,6 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 public abstract class AbstractShowFilePanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
-  private static final MyCellarEnum NONE = new MyCellarEnum(0, "");
-  private static final MyCellarEnum VALIDATED = new MyCellarEnum(1, getLabel("History.Validated"));
-  private static final MyCellarEnum TO_CHECK = new MyCellarEnum(2, getLabel("History.ToCheck"));
-
   final MyCellarSimpleLabel titleLabel = new MyCellarSimpleLabel();
   final MyCellarLabel labelCount = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
   final MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
@@ -103,7 +99,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
   private final MyCellarComboBox<MusicSupport> musicSupportCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottlesStatus> statusCbx = new MyCellarComboBox<>();
   final MyCellarComboBox<String> typeCbx = new MyCellarComboBox<>();
-  private final MyCellarComboBox<MyCellarEnum> verifyStatusCbx = new MyCellarComboBox<>();
+  private final MyCellarComboBox<State> verifyStatusCbx = new MyCellarComboBox<>();
   private boolean updateView = false;
   private UpdateViewType updateViewType;
   final List<ShowFileColumn<?>> columns = new ArrayList<>();
@@ -112,7 +108,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
   JTable table;
   ShowFileColumn<Boolean> checkBoxStartColumn;
   ShowFileColumn<?> modifyButtonColumn;
-  ShowFileColumn<MyCellarEnum> checkedButtonColumn;
+  ShowFileColumn<State> checkedButtonColumn;
 
   public AbstractShowFilePanel(boolean worksheet) {
     checkBoxStartColumn = new ShowFileColumn<>(25, true, true, "", Boolean.FALSE) {
@@ -537,14 +533,14 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     columns.add(modifyButtonColumn);
     checkedButtonColumn = new ShowFileColumn<>(100, true, false, getLabel("ShowFile.Valid"), null) {
       @Override
-      void setValue(MyCellarObject b, MyCellarEnum value) {
+      void setValue(MyCellarObject b, State value) {
         setMapValue(b, value);
-        if (VALIDATED.equals(value)) {
+        if (State.VALIDATED == value) {
           b.setStatus(BottlesStatus.VERIFIED.name());
           b.setModified();
           Program.setModified();
           Program.getStorage().addHistory(HistoryState.VALIDATED, b);
-        } else if (TO_CHECK.equals(value)) {
+        } else if (State.TO_CHECK == value) {
           b.setStatus(BottlesStatus.TOCHECK.name());
           b.setModified();
           Program.setModified();
@@ -580,9 +576,9 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     typeCbx.addItem("");
     MyCellarBottleContenance.getList().forEach(typeCbx::addItem);
 
-    verifyStatusCbx.addItem(NONE);
-    verifyStatusCbx.addItem(VALIDATED);
-    verifyStatusCbx.addItem(TO_CHECK);
+    verifyStatusCbx.addItem(State.NONE);
+    verifyStatusCbx.addItem(State.VALIDATED);
+    verifyStatusCbx.addItem(State.TO_CHECK);
 
     refresh();
 
@@ -1087,6 +1083,32 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         }
       }
       Program.modifyBottles(existingObjects);
+    }
+  }
+
+  private enum State implements IMyCellarEnum {
+
+    NONE(0, ""),
+    VALIDATED(1, getLabel("History.Validated")),
+    TO_CHECK(2, getLabel("History.ToCheck"));
+
+    private final int index;
+    private final String label;
+
+    State(int index, String label) {
+      this.index = index;
+      this.label = label;
+    }
+
+    @Override
+    public int getValue() {
+      return index;
+    }
+
+
+    @Override
+    public String toString() {
+      return label;
     }
   }
 }

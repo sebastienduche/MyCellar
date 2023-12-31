@@ -72,34 +72,21 @@ class TableShowValues extends AbstractTableModel {
   public Object getValueAt(int row, int column) {
     Program.throwNotImplementedIfNotFor(myCellarObjects.get(row), Bouteille.class);
     Bouteille b = (Bouteille) myCellarObjects.get(row);
-    switch (column) {
-      case ETAT:
-        return values[row];
-      case NAME:
-        return convertStringFromHTMLString(b.getNom());
-      case YEAR:
-        return b.getAnnee();
-      case TYPE:
-        return b.getKind();
-      case PLACE:
-        return convertStringFromHTMLString(b.getEmplacement());
-      case NUM_PLACE:
-        return Integer.toString(b.getNumLieu());
-      case LINE:
-        return Integer.toString(b.getLigne());
-      case COLUMN:
-        return Integer.toString(b.getColonne());
-      case PRICE:
-        return b.hasPrice() ? b.getPriceDouble() : "";
-      case COMMENT:
-        return convertStringFromHTMLString(b.getComment());
-      case MATURITY:
-        return convertStringFromHTMLString(b.getMaturity());
-      case PARKER:
-        return b.getParker();
-      default:
-        return "";
-    }
+    return switch (column) {
+      case ETAT -> values[row];
+      case NAME -> convertStringFromHTMLString(b.getNom());
+      case YEAR -> b.getAnnee();
+      case TYPE -> b.getKind();
+      case PLACE -> convertStringFromHTMLString(b.getEmplacement());
+      case NUM_PLACE -> Integer.toString(b.getNumLieu());
+      case LINE -> Integer.toString(b.getLigne());
+      case COLUMN -> Integer.toString(b.getColonne());
+      case PRICE -> b.hasPrice() ? b.getPriceDouble() : "";
+      case COMMENT -> convertStringFromHTMLString(b.getComment());
+      case MATURITY -> convertStringFromHTMLString(b.getMaturity());
+      case PARKER -> b.getParker();
+      default -> "";
+    };
   }
 
   @Override

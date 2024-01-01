@@ -30,6 +30,7 @@ import mycellar.core.storage.Storage;
 import mycellar.core.text.Language;
 import mycellar.core.text.LanguageFileLoader;
 import mycellar.core.text.MyCellarLabelManagement;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -108,8 +109,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.2
- * @since 24/10/22
+ * @version 29.3
+ * @since 08/07/22
  */
 
 public final class Program {
@@ -150,7 +151,7 @@ public final class Program {
     LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
   }
 
-  static void loadPropertiesAndSetProgramType() {
+  public static void loadPropertiesAndSetProgramType() {
     try {
       Debug("Program: Initializing Configuration files and Program type");
       if (loadProperties()) {
@@ -166,7 +167,7 @@ public final class Program {
     setLanguage(Language.getLanguage(thelangue.charAt(0)));
   }
 
-  static void initializeLanguageProgramType() {
+  public static void initializeLanguageProgramType() {
     try {
       Debug("Program: Initializing Language and Program type");
       LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
@@ -314,14 +315,13 @@ public final class Program {
     }
   }
 
-  static void setLanguage(Language lang) {
+  public static void setLanguage(Language lang) {
     Debug("Program: Set Language: " + lang);
     ProgramPanels.removeAll();
     LanguageFileLoader.getInstance().loadLanguageFiles(lang);
     MyCellarLabelManagement.updateLabels();
     ProgramPanels.PANEL_INFOS.setLabels();
-    Start.getInstance().updateLabels();
-    Start.getInstance().updateMainPanel();
+    MainFrame.getInstance().updateLabels();
   }
 
   public static void showException(Exception e) {
@@ -336,7 +336,7 @@ public final class Program {
     }
 
     if (_bShowWindowErrorAndExit) {
-      JOptionPane.showMessageDialog(Start.getInstance(), e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(MainFrame.getInstance(), e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
     }
     Debug("Program: ERROR:");
     Debug("Program: " + e);
@@ -393,7 +393,7 @@ public final class Program {
     ERRORS.add(error);
   }
 
-  static boolean loadData() {
+  public static boolean loadData() {
     PLACES.clear();
     boolean load = XmlUtils.readMyCellarXml("", PLACES);
     if (!load || PLACES.isEmpty()) {
@@ -446,10 +446,13 @@ public final class Program {
   public static void getAide() {
     File f = new File("./Help/MyCellar.hs");
     if (f.exists()) {
+      ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", "./Help/hsviewer.jar", "-hsURL", "\"file:./Help/MyCellar.hs\"");
       try {
-        Runtime.getRuntime().exec("java -jar ./Help/hsviewer.jar -hsURL \"file:./Help/MyCellar.hs\"");
-      } catch (IOException ignored) {
+        processBuilder.start();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
       }
+
     } else {
       Erreur.showSimpleErreur(getError("Error162"));
     }
@@ -473,7 +476,7 @@ public final class Program {
    *
    * @param file File
    */
-  static void saveAs(File file) {
+  public static void saveAs(File file) {
     Debug("Program: -------------------");
     Debug("Program: Saving all files...");
     Debug("Program: -------------------");
@@ -495,7 +498,7 @@ public final class Program {
     modified = false;
     listCaveModified = false;
     ProgramPanels.setAllPanesModified(false);
-    Start.setApplicationTitleUnmodified();
+    MainFrame.setApplicationTitleUnmodified();
     Debug("Program: -------------------");
     Debug("Program: Saving all files OK");
     Debug("Program: -------------------");
@@ -574,7 +577,7 @@ public final class Program {
     return PLACES.stream().anyMatch(Predicate.not(AbstractPlace::isSimplePlace));
   }
 
-  static void createNewFile() {
+  public static void createNewFile() {
     final MyCellarFile myCellarFile = new MyCellarFile();
     myCellarFile.setNewFile(true);
     if (myCellarFile.exists()) {
@@ -594,7 +597,7 @@ public final class Program {
     }
   }
 
-  static void openaFile(MyCellarFile myCellarFile) throws UnableToOpenFileException {
+  public static void openaFile(MyCellarFile myCellarFile) throws UnableToOpenFileException {
     LinkedList<String> list = new LinkedList<>();
     list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1));
     list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2));
@@ -692,7 +695,7 @@ public final class Program {
     Debug("Program: ----------------");
   }
 
-  static void closeFile() {
+  public static void closeFile() {
     if (!hasOpenedFile()) {
       Debug("Program: closeFile: File already closed!");
       return;
@@ -777,6 +780,7 @@ public final class Program {
     PLACES.clear();
     DEFAULT_PLACE.resetStockage();
     EMPTY_PLACE.resetStockage();
+    MainFrame.updateManagePlaceButton();
     openedFile = null;
     Debug("Program: closeFile: Closing file Ended");
   }
@@ -799,7 +803,7 @@ public final class Program {
   /**
    * Save global properties
    */
-  static void saveGlobalProperties() {
+  public static void saveGlobalProperties() {
     Debug("Program: Saving Global Properties");
     saveProperties(CONFIG_GLOBAL, getGlobalConfigFilePath());
     Debug("Program: Saving Global Properties Done");
@@ -844,9 +848,7 @@ public final class Program {
   }
 
   /**
-   * Retourne le nom du repertoire de travail.
-   *
-   * @param withEndSlash
+   * Get working directory
    */
   public static String getWorkDir(boolean withEndSlash) {
     if (workDirCalculated) {
@@ -889,18 +891,18 @@ public final class Program {
     return workDir;
   }
 
-  static String getShortFilename() {
+  public static String getShortFilename() {
     if (hasOpenedFile()) {
       return MyCellarUtils.getShortFilename(openedFile.getFile().getAbsolutePath());
     }
     return "";
   }
 
-  static String getGlobalConfigString(String key) {
+  public static String getGlobalConfigString(String key) {
     return CONFIG_GLOBAL.getString(key, "");
   }
 
-  static String getGlobalConfigString(String key, String defaultValue) {
+  public static String getGlobalConfigString(String key, String defaultValue) {
     return CONFIG_GLOBAL.getString(key, defaultValue);
   }
 
@@ -916,7 +918,7 @@ public final class Program {
     return defaultValue;
   }
 
-  static boolean getGlobalConfigBool(String key, boolean defaultValue) {
+  public static boolean getGlobalConfigBool(String key, boolean defaultValue) {
     return 1 == CONFIG_GLOBAL.getInt(key, defaultValue ? 1 : 0);
   }
 
@@ -937,7 +939,7 @@ public final class Program {
     return defaultValue;
   }
 
-  static void putGlobalConfigString(String key, String value) {
+  public static void putGlobalConfigString(String key, String value) {
     CONFIG_GLOBAL.put(key, value);
   }
 
@@ -949,7 +951,7 @@ public final class Program {
     }
   }
 
-  static void putGlobalConfigBool(String key, boolean value) {
+  public static void putGlobalConfigBool(String key, boolean value) {
     CONFIG_GLOBAL.put(key, value ? ONE : ZERO);
   }
 
@@ -1016,7 +1018,7 @@ public final class Program {
 
     try {
       if (System.getProperty("os.name").startsWith("Mac")) {
-        Runtime.getRuntime().exec("/usr/bin/open " + file.getAbsolutePath());
+        new ProcessBuilder("/usr/bin/open", file.getAbsolutePath()).start();
       } else {
         Desktop.getDesktop().browse(file.toURI());
       }
@@ -1140,7 +1142,7 @@ public final class Program {
       List<Long> oldTime = Arrays.stream(list)
           .filter(StringUtils::isNumeric)
           .map(Long::parseLong)
-          .filter(value -> value < time).collect(Collectors.toList());
+          .filter(value -> value < time).toList();
 
       oldTime.forEach(value -> DIR_TO_DELETE.add(new File(file + File.separator + value)));
     }
@@ -1165,7 +1167,7 @@ public final class Program {
   static void saveHTMLColumns(List<MyCellarFields> cols) {
     StringBuilder s = new StringBuilder();
     for (MyCellarFields f : cols) {
-      if (s.length() != 0) {
+      if (!s.isEmpty()) {
         s.append(COLUMNS_SEPARATOR);
       }
       s.append(f.name());
@@ -1236,7 +1238,7 @@ public final class Program {
       return;
     }
     if (listToModify.size() == 1) {
-      ProgramPanels.showBottle(listToModify.get(0), true);
+      ProgramPanels.showBottle(listToModify.getFirst(), true);
     } else {
       new OpenAddVinAction(listToModify).actionPerformed(null);
     }
@@ -1246,11 +1248,11 @@ public final class Program {
     return getStorage().getAllList().stream().filter(myCellarObject -> objectIds.contains(myCellarObject.getId())).collect(Collectors.toList());
   }
 
-  public static boolean isExistingMyCellarObject(MyCellarObject myCellarObject) {
-    return getStorage().getAllList().stream().anyMatch(myCellarObject1 -> myCellarObject1.getId() == myCellarObject.getId());
+  public static boolean isNotExistingMyCellarObject(MyCellarObject myCellarObject) {
+    return getStorage().getAllList().stream().noneMatch(myCellarObject1 -> myCellarObject1.getId() == myCellarObject.getId());
   }
 
-  static void exit() {
+  public static void exit() {
     cleanTempDirs();
     deleteTempFiles();
     cleanDebugFiles();
@@ -1258,7 +1260,7 @@ public final class Program {
     closeDebug();
   }
 
-  static boolean isFileSavable() {
+  public static boolean isFileSavable() {
     return openedFile != null && openedFile.isFileSavable();
   }
 

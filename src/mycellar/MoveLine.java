@@ -10,6 +10,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -34,18 +35,17 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.2
- * @since 13/09/22
+ * @version 4.3
+ * @since 25/12/23
  */
 
-final class MoveLine extends JDialog {
+public final class MoveLine extends JDialog {
 
-  private static final long serialVersionUID = 40508;
   private final MyCellarSimpleLabel label_end = new MyCellarSimpleLabel();
   private final MyCellarComboBox<PanelPlacePosition.ComboItem> new_line_cbx = new MyCellarComboBox<>();
   private final PanelPlacePosition panelPlace = new MoveLinePanelPlacePosition();
 
-  MoveLine() {
+  public MoveLine() {
     setAlwaysOnTop(true);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(getLabel("Main.Move"));
@@ -77,8 +77,10 @@ final class MoveLine extends JDialog {
 
     pack();
     setResizable(true);
-    setIconImage(MyCellarImage.ICON.getImage());
-    setLocationRelativeTo(Start.getInstance());
+    if (MyCellarImage.ICON != null) {
+      setIconImage(MyCellarImage.ICON.getImage());
+    }
+    setLocationRelativeTo(MainFrame.getInstance());
     setVisible(true);
   }
 
@@ -146,7 +148,6 @@ final class MoveLine extends JDialog {
   }
 
   class MoveLinePanelPlacePosition extends PanelPlacePosition {
-    private static final long serialVersionUID = 1742129778730101248L;
 
     public MoveLinePanelPlacePosition() {
       super(false, false, false, true);

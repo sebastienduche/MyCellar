@@ -22,8 +22,6 @@ import static mycellar.ProgramConstants.KEY_TYPE;
  */
 public final class MyCellarRadioButton extends JRadioButton implements IMyCellarComponent {
 
-  private static final long serialVersionUID = 5420315767498997450L;
-
   private final LabelKey labelKey;
 
   public MyCellarRadioButton(String code, boolean selected) {

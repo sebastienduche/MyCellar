@@ -21,8 +21,6 @@ import java.util.EventObject;
 
 public final class ButtonCellEditor extends JButton implements TableCellEditor {
 
-  private static final long serialVersionUID = 3070998772944465050L;
-
   public ButtonCellEditor() {
     super();
     addActionListener((e) -> fireEditingStopped());

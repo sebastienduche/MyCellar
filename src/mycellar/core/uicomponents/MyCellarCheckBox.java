@@ -22,7 +22,6 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 
 public final class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
 
-  private static final long serialVersionUID = 2584507081563652083L;
   private LabelKey labelKey;
 
   public MyCellarCheckBox() {

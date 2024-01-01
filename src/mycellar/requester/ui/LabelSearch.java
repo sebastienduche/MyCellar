@@ -18,12 +18,11 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 24/05/22
+ * @version 0.6
+ * @since 26/12/23
  */
 final class LabelSearch extends JPanel {
 
-  private static final long serialVersionUID = 3361283505652395494L;
   private final IPredicate<?> predicate;
   private final MyCellarSimpleLabel myCellarLabel = new MyCellarSimpleLabel();
   private final PanelCloseButton panelClose;
@@ -43,15 +42,13 @@ final class LabelSearch extends JPanel {
     setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
     add(myCellarLabel);
     add(panelClose = new PanelCloseButton() {
-      private static final long serialVersionUID = 3495975676025406824L;
-
       @Override
       protected void actionPerformed() {
         Component parent = LabelSearch.this.getParent();
-        if (parent instanceof JPanel) {
-          ((JPanel) parent).remove(LabelSearch.this);
+        if (parent instanceof JPanel panel) {
+          panel.remove(LabelSearch.this);
           source.add(LabelSearch.this);
-          ((JPanel) parent).updateUI();
+          panel.updateUI();
         }
       }
     });
@@ -122,7 +119,7 @@ final class LabelSearch extends JPanel {
       return;
     }
 
-    value = predicate.askforValue();
+    value = predicate.askForValue();
     type = predicate.getType();
     setLabel(predicate.getName());
   }

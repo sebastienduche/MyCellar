@@ -1,7 +1,6 @@
 package mycellar.xls;
 
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.uicomponents.MyCellarButton;
@@ -9,6 +8,7 @@ import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
+import mycellar.frame.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -55,7 +55,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * @since 25/05/22
  */
 public final class XLSTabOptions extends JDialog {
-  static final long serialVersionUID = 260706;
+  private static final long serialVersionUID = 260706;
   private static final int LARGEUR = 480;
   private static final int HAUTEUR = 550;
   private final MyCellarSpinner title_size = new MyCellarSpinner(1, 99);
@@ -174,7 +174,7 @@ public final class XLSTabOptions extends JDialog {
     add(scrollPane, "grow, wrap");
     add(valider, "split 2, center, gaptop 15px");
     add(annuler);
-    setLocationRelativeTo(Start.getInstance());
+    setLocationRelativeTo(MainFrame.getInstance());
   }
 
   private void updatePlaceSettings(boolean b) {

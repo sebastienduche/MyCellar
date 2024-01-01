@@ -18,7 +18,7 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.pdf.PDFOptions;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.showfile.ManageColumnModel;
@@ -65,12 +65,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.3
- * @since 08/07/22
+ * @version 11.4
+ * @since 25/12/23
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
-  static final long serialVersionUID = 240706;
   private static final char OUVRIR = getLabel("OUVRIR").charAt(0);
   private static final char EXPORT = getLabel("EXPORT").charAt(0);
   private final MyCellarButton valider = new MyCellarButton("Main.Export");
@@ -124,13 +123,13 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     end.setFont(FONT_DIALOG_BOLD);
     openit.setMnemonic(OUVRIR);
     openit.addActionListener((e) -> openit_actionPerformed());
-    MyCellarRadioButtonXML.addActionListener((e) -> jradio_actionPerformed());
-    MyCellarRadioButtonHTML.addActionListener((e) -> jradio_actionPerformed());
-    MyCellarRadioButtonCSV.addActionListener((e) -> jradio_actionPerformed());
+    MyCellarRadioButtonXML.addActionListener(this::jradio_actionPerformed);
+    MyCellarRadioButtonHTML.addActionListener(this::jradio_actionPerformed);
+    MyCellarRadioButtonCSV.addActionListener(this::jradio_actionPerformed);
     end.setHorizontalAlignment(SwingConstants.CENTER);
     end.setForeground(Color.red);
-    MyCellarRadioButtonXLS.addActionListener((e) -> jradio_actionPerformed());
-    MyCellarRadioButtonPDF.addActionListener((e) -> jradio_actionPerformed());
+    MyCellarRadioButtonXLS.addActionListener(this::jradio_actionPerformed);
+    MyCellarRadioButtonPDF.addActionListener(this::jradio_actionPerformed);
 
     file.addMouseListener(new PopupListener());
 
@@ -252,7 +251,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     }
   }
 
-  private void jradio_actionPerformed() {
+  private void jradio_actionPerformed(ActionEvent e) {
     end.setText("");
     options.setEnabled(!MyCellarRadioButtonXML.isSelected());
   }
@@ -277,7 +276,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     if (aFile.exists()) {
       // Existing file. replace?
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(
-          Start.getInstance(),
+          MainFrame.getInstance(),
           MessageFormat.format(getError("Export.replaceFileQuestion"), aFile.getAbsolutePath()),
           getLabel("Main.AskConfirmation"),
           JOptionPane.YES_NO_OPTION,
@@ -397,18 +396,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     file.setText(fullText.substring(0, file.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(file.getSelectionEnd()));
   }
 
-  @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
-  public void tabClosed() {
-    Start.getInstance().updateMainPanel();
-  }
-
   class SettingsAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
 
     private SettingsAction() {
       super("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
@@ -444,7 +432,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         tc.setMaxWidth(25);
         JPanel panel = new JPanel();
         panel.add(new JScrollPane(table));
-        JOptionPane.showMessageDialog(Start.getInstance(), panel, getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(MainFrame.getInstance(), panel, getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
         Program.setModified();
         List<Integer> properties = modelColumn.getSelectedColumns();
         List<MyCellarFields> cols = new ArrayList<>();
@@ -458,8 +446,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     }
   }
 
-  class ParametersAction extends MyCellarAction {
-    private static final long serialVersionUID = -3212527164505184899L;
+  static class ParametersAction extends MyCellarAction {
 
     private ParametersAction() {
       super("Main.Settings", LabelProperty.SINGLE.withThreeDashes());

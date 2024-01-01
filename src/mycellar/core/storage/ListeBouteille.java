@@ -42,8 +42,8 @@ import java.util.LinkedList;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 24/08/21
+ * @version 1.6
+ * @since 26/12/23
  *
  * <p>Java class for anonymous complex type.
  *
@@ -216,10 +216,10 @@ public class ListeBouteille {
   }
 
   public boolean add(MyCellarObject myCellarObject) {
-    if (myCellarObject instanceof Bouteille) {
-      return getBouteille().add((Bouteille) myCellarObject);
-    } else if (myCellarObject instanceof Music) {
-      return getMusic().add((Music) myCellarObject);
+    if (myCellarObject instanceof Bouteille b) {
+      return getBouteille().add(b);
+    } else if (myCellarObject instanceof Music m) {
+      return getMusic().add(m);
     } else {
       Program.throwNotImplementedForNewType();
       return false;
@@ -227,10 +227,10 @@ public class ListeBouteille {
   }
 
   public boolean remove(MyCellarObject myCellarObject) {
-    if (myCellarObject instanceof Bouteille) {
-      return getBouteille().remove((Bouteille) myCellarObject);
-    } else if (myCellarObject instanceof Music) {
-      return getMusic().remove((Music) myCellarObject);
+    if (myCellarObject instanceof Bouteille b) {
+      return getBouteille().remove(b);
+    } else if (myCellarObject instanceof Music m) {
+      return getMusic().remove(m);
     } else {
       Program.throwNotImplementedForNewType();
     }

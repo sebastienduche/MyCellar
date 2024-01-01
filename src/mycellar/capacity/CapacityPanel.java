@@ -3,7 +3,6 @@ package mycellar.capacity;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarSwingWorker;
@@ -16,6 +15,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
@@ -36,13 +36,12 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 24/05/22
+ * @version 2.1
+ * @since 25/12/23
  */
 
 public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
-  private static final long serialVersionUID = -116789055896509475L;
   private final CapacityTableModel model = new CapacityTableModel();
   private final MyCellarComboBox<String> defaultComboBox = new MyCellarComboBox<>();
   private final JTable table;
@@ -54,7 +53,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
     defaultComboBox.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
     table = new JTable(model);
     TableColumnModel tcm = table.getColumnModel();
-    TableColumn tc = tcm.getColumn(CapacityTableModel.ETAT);
+    TableColumn tc = tcm.getColumn(CapacityTableModel.STATE);
     tc.setCellRenderer(new ButtonCellRenderer("", MyCellarImage.DELETE));
     tc.setCellEditor(new ButtonCellEditor());
     tc.setMinWidth(25);
@@ -73,7 +72,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   }
 
   private void add() {
-    String s = toCleanString(JOptionPane.showInputDialog(Start.getInstance(), getLabel("Main.NewValue"), getLabel("Main.EnterValue"), JOptionPane.QUESTION_MESSAGE));
+    String s = toCleanString(JOptionPane.showInputDialog(MainFrame.getInstance(), getLabel("Main.NewValue"), getLabel("Main.EnterValue"), JOptionPane.QUESTION_MESSAGE));
     if (!s.isEmpty()) {
       Program.setModified();
       model.addValue(s);
@@ -99,7 +98,6 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   @Override
   public void tabClosed() {
     model.setModify(false);
-    Start.getInstance().updateMainPanel();
   }
 
   @Override

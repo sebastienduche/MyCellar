@@ -25,8 +25,6 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 
 public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
-  private static final long serialVersionUID = 4972622436840497820L;
-
   private final LabelKey labelKey;
 
   public MyCellarLabel(String code) {

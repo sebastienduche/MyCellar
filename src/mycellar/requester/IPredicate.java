@@ -9,23 +9,31 @@ import mycellar.requester.ui.ValueSearch;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 15/07/19
+ * @version 0.6
+ * @since 25/12/23
  */
 
 public interface IPredicate<T> {
 
-  boolean apply(T type);
+  default boolean apply(T type) {
+    return apply(type, "", -1);
+  }
 
   boolean apply(T predicate, Object compare, int type);
 
-  boolean isValueRequired();
+  default boolean isValueRequired() {
+    return true;
+  }
 
-  ValueSearch askforValue();
+  ValueSearch askForValue();
 
   String getName();
 
-  int getType();
+  default int getType() {
+    return 0;
+  }
 
-  boolean isEmptyValueForbidden();
+  default boolean isEmptyValueForbidden() {
+    return true;
+  }
 }

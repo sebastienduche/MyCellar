@@ -4,7 +4,6 @@ import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.UpdateViewType;
@@ -17,7 +16,7 @@ import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import net.miginfocom.swing.MigLayout;
 
@@ -56,8 +55,6 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
-
-  private static final long serialVersionUID = 2661586945830305901L;
 
   private final MyCellarComboBox<CountryJaxb> comboCountry = new MyCellarComboBox<>();
   private final MyCellarComboBox<CountryVignobleJaxb> comboVignoble = new MyCellarComboBox<>();
@@ -179,21 +176,13 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   }
 
   @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
   public void tabClosed() {
     comboCountry.setSelectedIndex(0);
     model.setAppellations(null, null);
     ProgramPanels.updateAllPanelsForUpdatingVineyard();
-    Start.getInstance().updateMainPanel();
   }
 
   private class AddVignobleAction extends AbstractAction {
-
-    private static final long serialVersionUID = 2164410331118124652L;
 
     private AddVignobleAction() {
       super("", MyCellarImage.ADD);
@@ -220,8 +209,6 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 
   class DelVignobleAction extends AbstractAction {
 
-    private static final long serialVersionUID = 2839462637218767338L;
-
     private DelVignobleAction() {
       super("", MyCellarImage.DELETE);
     }
@@ -233,10 +220,10 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
       if (countryVignobleJaxb != null) {
         CountryVignobleController.rebuild();
         if (CountryVignobleController.isVignobleUsed(countryJaxb, countryVignobleJaxb)) {
-          JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.UnableDeleteVignoble"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(MainFrame.getInstance(), getLabel("VineyardPanel.UnableDeleteVignoble"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
           return;
         }
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelVignobleQuestion"), countryVignobleJaxb.getName()), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelVignobleQuestion"), countryVignobleJaxb.getName()), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         comboVignoble.removeItemAt(comboVignoble.getSelectedIndex());
@@ -249,11 +236,6 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   }
 
   class RenameVignobleAction extends AbstractAction {
-
-    private static final long serialVersionUID = 2912399011575692147L;
-
-    private RenameVignobleAction() {
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -271,8 +253,6 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 
   class AddAppellationAction extends AbstractAction {
 
-    private static final long serialVersionUID = 2174872605239470622L;
-
     private AddAppellationAction() {
       super("", MyCellarImage.ADD);
     }
@@ -289,8 +269,6 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
   }
 
   class AddCountryAction extends AbstractAction {
-
-    private static final long serialVersionUID = -6725950975161352023L;
 
     private AddCountryAction() {
       super("", MyCellarImage.ADD);
@@ -314,8 +292,6 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 
   class DelCountryAction extends AbstractAction {
 
-    private static final long serialVersionUID = -2587952745857642464L;
-
     private DelCountryAction() {
       super("", MyCellarImage.DELETE);
     }
@@ -330,11 +306,11 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
         CountryVignobleController.rebuild();
         for (CountryVignobleJaxb countryVignobleJaxb : vignoble.getCountryVignobleJaxbList()) {
           if (CountryVignobleController.isVignobleUsed(countryJaxb, countryVignobleJaxb)) {
-            JOptionPane.showMessageDialog(Start.getInstance(), getLabel("VineyardPanel.UnableDeleteCountry"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(MainFrame.getInstance(), getLabel("VineyardPanel.UnableDeleteCountry"), getError("Error.error"), JOptionPane.ERROR_MESSAGE);
             return;
           }
         }
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelCountryQuestion"), countryJaxb), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getLabel("VineyardPanel.DelCountryQuestion"), countryJaxb), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         CountryVignobleController.deleteCountry(countryJaxb);

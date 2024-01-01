@@ -1,10 +1,9 @@
 package mycellar.actions;
 
 import mycellar.MyCellarImage;
-import mycellar.Start;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ProgramPanels;
-import mycellar.showfile.ShowFile;
+import mycellar.showfile.ErrorShowPanel;
 
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
@@ -12,15 +11,10 @@ import java.awt.event.ActionEvent;
 
 public class OpenShowErrorsAction extends AbstractAction {
 
-  private static final long serialVersionUID = -2556341758211178986L;
-
-  public OpenShowErrorsAction() {
-  }
-
   @Override
   public void actionPerformed(ActionEvent e) {
     SwingUtilities.invokeLater(() -> {
-      final ShowFile showErrors = ProgramPanels.createShowErrors();
+      final ErrorShowPanel showErrors = ProgramPanels.createShowErrors();
       showErrors.updateView();
       int tabIndex = ProgramPanels.findTab(MyCellarImage.ERROR, null);
       final String label = MyCellarLabelManagement.getLabel("ShowFile.ErrorTitle");
@@ -29,8 +23,6 @@ public class OpenShowErrorsAction extends AbstractAction {
       } else {
         ProgramPanels.addTab(label, MyCellarImage.ERROR, showErrors);
       }
-
-      Start.getInstance().updateMainPanel();
     });
   }
 }

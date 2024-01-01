@@ -18,13 +18,12 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 14/09/21
+ * @version 1.1
+ * @since 26/12/23
  */
 
 public class ManageColumnModel extends DefaultTableModel {
 
-  private static final long serialVersionUID = 826266254625465003L;
   private final List<MyCellarFields> list;
   private final List<Integer> selectedColumns = new LinkedList<>();
   private final Boolean[] values;
@@ -41,11 +40,11 @@ public class ManageColumnModel extends DefaultTableModel {
           values[index] = Boolean.TRUE;
           selectedColumns.add(list.get(index).getIndex());
         }
-      } else if (c instanceof MyCellarFields) {
+      } else if (c instanceof MyCellarFields fields) {
         final int index = list.indexOf(c);
         if (index != -1) {
           values[index] = Boolean.TRUE;
-          selectedColumns.add(((MyCellarFields) c).getIndex());
+          selectedColumns.add(fields.getIndex());
         }
       }
     }

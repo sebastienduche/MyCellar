@@ -17,8 +17,6 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  */
 public class MyCellarComboBox<T> extends JComboBox<T> {
 
-  private static final long serialVersionUID = -1622264730055596931L;
-
   public MyCellarComboBox() {
     setFont(FONT_PANEL);
   }

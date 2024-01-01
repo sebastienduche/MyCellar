@@ -26,8 +26,8 @@ import static mycellar.ProgramConstants.DASH;
  * <p>Société : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 1.6
- * @since 20/11/20
+ * @version 1.7
+ * @since 26/12/23
  */
 
 /**
@@ -60,8 +60,6 @@ import static mycellar.ProgramConstants.DASH;
 })
 @XmlRootElement(name = "vignoble")
 public class VignobleJaxb implements Serializable {
-
-  private static final long serialVersionUID = -4668411717652334826L;
 
   @XmlElement(required = true)
   public String country;

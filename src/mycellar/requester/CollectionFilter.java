@@ -17,8 +17,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 10/09/21
+ * @version 0.9
+ * @since 26/12/23
  */
 
 @SuppressWarnings(value = {"rawtypes", "unchecked"})
@@ -36,9 +36,7 @@ public class CollectionFilter<T> {
   /**
    * Select objects that match the predicates
    *
-   * @param src       List to filter
-   * @param predicate
-   * @return
+   * @param src List to filter
    */
   public static <T> CollectionFilter<T> select(Collection<T> src, IPredicate<T> predicate) {
     if (src == null || predicate == null) {
@@ -56,11 +54,7 @@ public class CollectionFilter<T> {
   /**
    * Select objects that match the predicates with the corresponding value
    *
-   * @param src       List to filter
-   * @param predicate
-   * @param value
-   * @param type
-   * @return
+   * @param src List to filter
    */
   public static <T> CollectionFilter<T> select(Collection<T> src, IPredicate<T> predicate, Object value, int type) {
     if (src == null || predicate == null) {
@@ -77,10 +71,6 @@ public class CollectionFilter<T> {
 
   /**
    * Select objects that match the collection of predicates (with keywords between predicates)
-   *
-   * @param src
-   * @param predicates
-   * @return
    */
   public static <T> CollectionFilter<T> select(Collection<T> src, Collection<Predicates> predicates) {
     if (src == null || predicates == null) {
@@ -179,10 +169,6 @@ public class CollectionFilter<T> {
 
   /**
    * Select objects that matches the {@link Predicates}
-   *
-   * @param src
-   * @param predicate
-   * @return
    */
   private static <T> CollectionFilter<T> select(Collection<T> src, Predicates predicate) {
     if (src == null || predicate == null) {
@@ -199,9 +185,6 @@ public class CollectionFilter<T> {
 
   /**
    * Filter the existing list with AND condition on the predicate
-   *
-   * @param predicate
-   * @return
    */
   public static <T> CollectionFilter<T> and(IPredicate<T> predicate) {
     if (predicate == null) {
@@ -219,11 +202,6 @@ public class CollectionFilter<T> {
 
   /**
    * Filter the existing list with AND condition on the predicate with the corresponding value
-   *
-   * @param predicate
-   * @param value
-   * @param type
-   * @return
    */
   public static <T> CollectionFilter<T> and(IPredicate<T> predicate, Object value, int type) {
     if (predicate == null) {
@@ -241,9 +219,6 @@ public class CollectionFilter<T> {
 
   /**
    * Filter the existing list with AND condition on the {@link Predicates}
-   *
-   * @param predicate
-   * @return
    */
   public static <T> CollectionFilter<T> and(Predicates predicate) {
     if (predicate == null) {
@@ -261,9 +236,6 @@ public class CollectionFilter<T> {
 
   /**
    * Filter the existing list with AND condition for the collection of {@link Predicates}
-   *
-   * @param predicates
-   * @return
    */
   private static <T> CollectionFilter<T> and(Collection<Predicates> predicates) {
     if (predicates == null) {
@@ -288,10 +260,6 @@ public class CollectionFilter<T> {
 
   /**
    * Filter the source list with AND condition for the collection of {@link Predicates}
-   *
-   * @param src        Source list to filter
-   * @param predicates
-   * @return
    */
   public static <T> CollectionFilter<T> and(Collection<T> src, Collection<Predicates> predicates) {
     if (src == null || predicates == null) {
@@ -315,9 +283,6 @@ public class CollectionFilter<T> {
 
   /**
    * Union the existing list with the source liste
-   *
-   * @param src
-   * @return
    */
   private static <T> CollectionFilter<T> union(Collection<T> src) {
     if (src == null) {
@@ -333,9 +298,6 @@ public class CollectionFilter<T> {
 
   /**
    * Filter the existing list to keep items that are included in the source list
-   *
-   * @param src
-   * @return
    */
   private static <T> CollectionFilter<T> intersect(Collection<T> src) {
     if (src == null) {
@@ -353,9 +315,6 @@ public class CollectionFilter<T> {
 
   /**
    * Filter the existing list with OR condition for the collection of {@link Predicates}
-   *
-   * @param predicates
-   * @return
    */
   public static <T> CollectionFilter<T> or(Collection<Predicates> predicates) {
     if (predicates == null) {
@@ -381,9 +340,7 @@ public class CollectionFilter<T> {
   /**
    * Filter the source list with OR condition for the collection of {@link Predicates}
    *
-   * @param src        Source list to filter
-   * @param predicates
-   * @return
+   * @param src Source list to filter
    */
   public static <T> CollectionFilter<T> or(Collection<T> src, Collection<Predicates> predicates) {
     if (src == null || predicates == null) {
@@ -407,9 +364,6 @@ public class CollectionFilter<T> {
 
   /**
    * Validate the collection of predicates
-   *
-   * @param predicates
-   * @return
    */
   public static boolean validatePredicates(Collection<Predicates> predicates) {
     if (predicates == null) {
@@ -484,8 +438,6 @@ public class CollectionFilter<T> {
 
   /**
    * Get the error to display
-   *
-   * @return
    */
   public static String getError() {
     return error;
@@ -493,9 +445,6 @@ public class CollectionFilter<T> {
 
   /**
    * Split the list of predicates in a collection of predicates to do (group by parenthesis)
-   *
-   * @param predicates
-   * @return
    */
   private static Collection<LinkedList<Predicates>> splitPredicates(Collection<Predicates> predicates) {
     Collection<LinkedList<Predicates>> predicatesToDo = new LinkedList<>();
@@ -546,8 +495,6 @@ public class CollectionFilter<T> {
 
   /**
    * Get the result list
-   *
-   * @return
    */
   public Collection<T> getResults() {
     return result;
@@ -555,9 +502,6 @@ public class CollectionFilter<T> {
 
   /**
    * Filter the existing list with OR condition on the predicate
-   *
-   * @param predicate
-   * @return
    */
   public CollectionFilter<T> or(Collection<T> src, IPredicate<T> predicate) {
     if (src == null || predicate == null) {
@@ -573,10 +517,6 @@ public class CollectionFilter<T> {
 
   /**
    * Filter the existing list with OR condition on the predicate with the corresponding value
-   *
-   * @param predicate
-   * @param value
-   * @return
    */
   public CollectionFilter<T> or(Collection<T> src, IPredicate<T> predicate, Object value, int type) {
     if (src == null || predicate == null) {

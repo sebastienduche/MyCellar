@@ -29,8 +29,6 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlacePosition, IPanelModifyable {
 
-  private static final long serialVersionUID = 3056306291164598750L;
-
   protected final MyCellarLabel labelComment = new MyCellarLabel("Main.Comment");
   protected final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   protected final PanelPlacePosition panelPlace = new PanelPlacePosition();
@@ -137,7 +135,6 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
   }
 
   public final class PanelMain extends JPanel {
-    private static final long serialVersionUID = -4824541234206895953L;
 
     public PanelMain() {
       panelVignobles = new PanelVignobles(false, true, true);
@@ -147,6 +144,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
       add(panelWineAttribute, "growx, split 2");
       if (Program.isWineType()) {
         add(panelVignobles, "growx, wrap");
+        panelVignobles.setKeepPreviousVineyardSelected(Program.getCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, false));
       } else {
         add(new JPanel(), "growx, wrap");
       }

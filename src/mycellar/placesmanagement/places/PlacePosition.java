@@ -45,6 +45,13 @@ public class PlacePosition {
     return oneBased ? column : column + 1;
   }
 
+  public boolean hasValidPlace() {
+    if (hasPlace()) {
+      return abstractPlace.canAddObjectAt(this);
+    }
+    return false;
+  }
+
   /**
    * Zero based
    */

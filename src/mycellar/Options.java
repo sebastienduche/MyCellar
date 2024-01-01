@@ -2,6 +2,7 @@ package mycellar;
 
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
+import mycellar.frame.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
@@ -32,7 +33,7 @@ import static mycellar.ProgramConstants.isVK_O;
  */
 @Deprecated
 public final class Options extends JDialog {
-  static final long serialVersionUID = 190305;
+  private static final long serialVersionUID = 190305;
   private static final int LARGEUR = 420;
   private static final int HAUTEUR = 230;
   private final JTextField value = new JTextField();
@@ -66,7 +67,7 @@ public final class Options extends JDialog {
     });
 
     setSize(LARGEUR, HAUTEUR);
-    setLocationRelativeTo(Start.getInstance());
+    setLocationRelativeTo(MainFrame.getInstance());
     setLayout(new MigLayout("", "grow", ""));
     getContentPane().add(titleLabel, "grow, wrap");
     getContentPane().add(definition, "gaptop 15px, grow, wrap");

@@ -11,7 +11,6 @@ import mycellar.MyCellarUtils;
 import mycellar.MyOptions;
 import mycellar.Options;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
@@ -30,7 +29,7 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
@@ -69,6 +68,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static mycellar.MyCellarImage.OPEN;
+import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.COMMA;
@@ -87,12 +87,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.1
- * @since 30/12/22
+ * @version 16.2
+ * @since 25/12/23
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
-  static final long serialVersionUID = 280706;
   private final MyCellarButton importe = new MyCellarButton("Import.Title");
   private final MyCellarRadioButton type_txt = new MyCellarRadioButton("Import.TxtCsv", true);
   private final MyCellarRadioButton type_xls = new MyCellarRadioButton("Import.Xls", false);
@@ -260,18 +259,18 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
    */
   private LinkedList<String> readRow(Row row) {
     final Iterator<Cell> cellIterator = row.cellIterator();
-    LinkedList<String> bottle = new LinkedList<>();
+    LinkedList<String> valueList = new LinkedList<>();
     while (cellIterator.hasNext()) {
       final Cell cell = cellIterator.next();
       if (cell.getCellType() == CellType.NUMERIC) {
-        bottle.add(Double.toString(cell.getNumericCellValue()));
+        valueList.add(Double.toString(cell.getNumericCellValue()));
       } else if (cell.getCellType() == CellType.STRING) {
-        bottle.add(cell.getStringCellValue());
+        valueList.add(cell.getStringCellValue());
       } else {
         throw new UnsupportedOperationException(MessageFormat.format(getError("Importer.unknownCellType"), cell.getCellType()));
       }
     }
-    return bottle;
+    return valueList;
   }
 
   private void parcourir_actionPerformed(ActionEvent e) {
@@ -324,7 +323,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   }
 
   /**
-   * run: Fonction d'import
+   * Do the import
    */
   @Override
   public void run() {
@@ -334,7 +333,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
       String filename = toCleanString(file.getText());
       if (filename.isEmpty()) {
-        //Erreur le filename ne doit pas etre vide
         Debug("ERROR: filename cannot be empty");
         resetLabelProgress();
         Erreur.showSimpleErreur(getError("Error.fileNameShouldntBeEmpty"));
@@ -526,6 +524,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           Debug("Creating new place with name: " + nom1);
           new_rangement = new SimplePlaceBuilder(nom1).build();
           Program.addPlace(new_rangement);
+          MainFrame.updateManagePlaceButton();
         } else {
           new_rangement = Program.getAbstractPlaceAt(num_r);
         }
@@ -533,21 +532,12 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (type_txt.isSelected()) {
         //Cas des fichiers TXT
         Debug("Importing Text File...");
-        String separe;
-        switch (separateur.getSelectedIndex()) {
-          case 1:
-            separe = DOUBLE_DOT;
-            break;
-          case 2:
-            separe = SLASH;
-            break;
-          case 3:
-            separe = COMMA;
-            break;
-          case 0:
-          default:
-            separe = COLUMNS_SEPARATOR;
-        }
+        String separe = switch (separateur.getSelectedIndex()) {
+          case 1 -> DOUBLE_DOT;
+          case 2 -> SLASH;
+          case 3 -> COMMA;
+          default -> COLUMNS_SEPARATOR;
+        };
 
         try (var reader = new BufferedReader(new FileReader(f))) {
           String line = reader.readLine();
@@ -585,7 +575,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
                 maxNumPlace = bottle.getNumLieu();
               }
             }
-            if ((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && new_rangement != null) {
+            if (isNullOrEmpty(bottle.getEmplacement()) && new_rangement != null) {
               bottle.setEmplacement(new_rangement.getName());
               new_rangement.setPartCount(maxNumPlace + 1);
             }
@@ -658,35 +648,34 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       boolean skipLine = labelTitle.isSelected();
       int maxNumPlace = 0;
       while (iterator.hasNext()) {
-        LinkedList<String> bottleValues = readRow(iterator.next());
-        final long count = bottleValues.stream().filter(s -> !s.isEmpty()).count();
+        LinkedList<String> valueList = readRow(iterator.next());
+        final long count = valueList.stream().filter(s -> !s.isEmpty()).count();
         if (skipLine && count > 0) {
           Debug("Skipping title line");
           skipLine = false;
           continue;
         }
         if (count > 0) {
-          MyCellarObject bottle = createObject();
-          bottle.updateID();
+          MyCellarObject myCellarObject = createObject();
+          myCellarObject.updateID();
 
           int i = 0;
-          for (String value : bottleValues) {
-            //Recuperation des champs selectionnes
+          for (String value : valueList) {
             MyCellarFields selectedField = getSelectedField(i);
             //Alimentation de la HashMap
             Debug("Write " + selectedField + "->" + value);
-            bottle.setValue(selectedField, value);
-            if (selectedField.equals(MyCellarFields.NUM_PLACE) && maxNumPlace < bottle.getNumLieu()) {
-              maxNumPlace = bottle.getNumLieu();
+            myCellarObject.setValue(selectedField, value);
+            if (selectedField.equals(MyCellarFields.NUM_PLACE) && maxNumPlace < myCellarObject.getNumLieu()) {
+              maxNumPlace = myCellarObject.getNumLieu();
             }
 
-            if ((bottle.getEmplacement() == null || bottle.getEmplacement().isEmpty()) && rangement != null) {
-              bottle.setEmplacement(rangement.getName());
+            if (isNullOrEmpty(myCellarObject.getEmplacement()) && rangement != null) {
+              myCellarObject.setEmplacement(rangement.getName());
               rangement.setPartCount(maxNumPlace + 1);
             }
             i++;
           }
-          Program.getStorage().addWine(bottle);
+          Program.getStorage().addWine(myCellarObject);
         }
       }
     } catch (IOException e) {
@@ -755,16 +744,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     if (e.getKeyCode() == ouvrirChar && e.isControlDown()) {
       openit_actionPerformed(null);
     }
-  }
-
-  @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
-  public void tabClosed() {
-    Start.getInstance().updateMainPanel();
   }
 
   @Override

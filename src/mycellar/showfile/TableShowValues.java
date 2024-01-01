@@ -3,10 +3,10 @@ package mycellar.showfile;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
+import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
@@ -32,8 +32,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.2
- * @since 13/09/22
+ * @version 6.3
+ * @since 25/12/23
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -43,7 +43,6 @@ class TableShowValues extends AbstractTableModel {
   static final int TYPE = 3;
   static final int PLACE = 4;
   static final int PRICE = 8;
-  private static final long serialVersionUID = 1183158496820687240L;
   private static final int NAME = 1;
   private static final int NUM_PLACE = 5;
   private static final int LINE = 6;
@@ -73,34 +72,21 @@ class TableShowValues extends AbstractTableModel {
   public Object getValueAt(int row, int column) {
     Program.throwNotImplementedIfNotFor(myCellarObjects.get(row), Bouteille.class);
     Bouteille b = (Bouteille) myCellarObjects.get(row);
-    switch (column) {
-      case ETAT:
-        return values[row];
-      case NAME:
-        return convertStringFromHTMLString(b.getNom());
-      case YEAR:
-        return b.getAnnee();
-      case TYPE:
-        return b.getKind();
-      case PLACE:
-        return convertStringFromHTMLString(b.getEmplacement());
-      case NUM_PLACE:
-        return Integer.toString(b.getNumLieu());
-      case LINE:
-        return Integer.toString(b.getLigne());
-      case COLUMN:
-        return Integer.toString(b.getColonne());
-      case PRICE:
-        return b.hasPrice() ? b.getPriceDouble() : "";
-      case COMMENT:
-        return convertStringFromHTMLString(b.getComment());
-      case MATURITY:
-        return convertStringFromHTMLString(b.getMaturity());
-      case PARKER:
-        return b.getParker();
-      default:
-        return "";
-    }
+    return switch (column) {
+      case ETAT -> values[row];
+      case NAME -> convertStringFromHTMLString(b.getNom());
+      case YEAR -> b.getAnnee();
+      case TYPE -> b.getKind();
+      case PLACE -> convertStringFromHTMLString(b.getEmplacement());
+      case NUM_PLACE -> Integer.toString(b.getNumLieu());
+      case LINE -> Integer.toString(b.getLigne());
+      case COLUMN -> Integer.toString(b.getColonne());
+      case PRICE -> b.hasPrice() ? b.getPriceDouble() : "";
+      case COMMENT -> convertStringFromHTMLString(b.getComment());
+      case MATURITY -> convertStringFromHTMLString(b.getMaturity());
+      case PARKER -> b.getParker();
+      default -> "";
+    };
   }
 
   @Override
@@ -163,7 +149,7 @@ class TableShowValues extends AbstractTableModel {
             rangement = PlaceUtils.getPlaceByName(empl);
           }
         } else if (column == NUM_PLACE) {
-          Integer i = parseIntOrError(value);
+          Integer i = parseIntOrError(String.valueOf(value));
           if (i == null) {
             bError = true;
           } else {
@@ -171,7 +157,7 @@ class TableShowValues extends AbstractTableModel {
             nValueToCheck = i;
           }
         } else if (column == LINE) {
-          Integer i = parseIntOrError(value);
+          Integer i = parseIntOrError(String.valueOf(value));
           if (i == null) {
             bError = true;
           } else {
@@ -179,7 +165,7 @@ class TableShowValues extends AbstractTableModel {
             nValueToCheck = i;
           }
         } else {
-          Integer i = parseIntOrError(value);
+          Integer i = parseIntOrError(String.valueOf(value));
           if (i == null) {
             bError = true;
           } else {
@@ -243,7 +229,7 @@ class TableShowValues extends AbstractTableModel {
             if (rangement.isSimplePlace()) {
               Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"));
             } else {
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getError("Error.error"), JOptionPane.YES_NO_OPTION)) {
+              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getError("Error.error"), JOptionPane.YES_NO_OPTION)) {
                 LinkedList<MyCellarObject> list = new LinkedList<>();
                 list.add(b);
                 Program.modifyBottles(list);

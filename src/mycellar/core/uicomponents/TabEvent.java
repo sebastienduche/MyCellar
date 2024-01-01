@@ -13,12 +13,8 @@ import java.util.EventObject;
  */
 public class TabEvent extends EventObject {
 
-  private static final long serialVersionUID = -7541555469417472595L;
-
   /**
    * Creates a new instance of TabEvent.
-   *
-   * @param source
    */
   public TabEvent(Object source) {
     super(source);

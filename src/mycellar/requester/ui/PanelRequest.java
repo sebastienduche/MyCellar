@@ -25,12 +25,10 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 24/05/22
+ * @version 1.4
+ * @since 26/12/23
  */
 public final class PanelRequest extends JPanel {
-
-  private static final long serialVersionUID = -1239228393406479587L;
 
   private final PanelDAndD panelRequest;
   private final MyCellarSimpleLabel labelError = new MyCellarSimpleLabel();
@@ -89,8 +87,7 @@ public final class PanelRequest extends JPanel {
     if (panelRequest != null) {
       for (int i = 0; i < panelRequest.getComponentCount(); i++) {
         Object obj = panelRequest.getComponent(i);
-        if (obj instanceof LabelSearch) {
-          LabelSearch label = (LabelSearch) obj;
+        if (obj instanceof LabelSearch label) {
           predicates.add(new Predicates(label.getPredicate(), label.getValue(), label.getType()));
         }
       }

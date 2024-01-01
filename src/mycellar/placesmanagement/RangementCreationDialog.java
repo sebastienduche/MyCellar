@@ -1,9 +1,9 @@
 package mycellar.placesmanagement;
 
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
+import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
 import mycellar.placesmanagement.places.Part;
@@ -30,8 +30,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 08/07/22
+ * @version 1.3
+ * @since 25/12/23
  */
 public final class RangementCreationDialog extends JDialog {
 
@@ -65,7 +65,7 @@ public final class RangementCreationDialog extends JDialog {
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
     setSize(600, 500);
-    setLocationRelativeTo(Start.getInstance());
+    setLocationRelativeTo(MainFrame.getInstance());
     setVisible(true);
     Debug("Constructor Done");
   }
@@ -92,6 +92,7 @@ public final class RangementCreationDialog extends JDialog {
         abstractPlace = new ComplexPlaceBuilder(name).withPartList(parts).build();
       }
       Program.addPlace(abstractPlace);
+      MainFrame.updateManagePlaceButton();
     });
     end.setText(MessageFormat.format(getLabel("RangementToCreateTableModel.End"), map.size()));
     model.clear();

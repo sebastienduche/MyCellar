@@ -49,27 +49,17 @@ public class MyCellarLabelManagement {
     }
 
     if (labelValue == null) {
-      switch (type) {
-        case LABEL:
-          return getLabel(code, labelProperty);
-        case ERROR:
-          return getError(code, labelProperty);
-        case NONE:
-          return code;
-        default:
-          throw new RuntimeException("Not implemented for type: " + type);
-      }
+      return switch (type) {
+        case LABEL -> getLabel(code, labelProperty);
+        case ERROR -> getError(code, labelProperty);
+        case NONE -> code;
+      };
     } else {
-      switch (type) {
-        case LABEL:
-          return MessageFormat.format(getLabel(code, labelProperty), labelValue).strip();
-        case ERROR:
-          return MessageFormat.format(getError(code, labelProperty), labelValue).strip();
-        case NONE:
-          return code;
-        default:
-          throw new RuntimeException("Not implemented for type: " + type);
-      }
+      return switch (type) {
+        case LABEL -> MessageFormat.format(getLabel(code, labelProperty), labelValue).strip();
+        case ERROR -> MessageFormat.format(getError(code, labelProperty), labelValue).strip();
+        case NONE -> code;
+      };
     }
   }
 
@@ -134,32 +124,17 @@ public class MyCellarLabelManagement {
     String value;
     String prefix;
     String postfix = labelProperty.isPlural() ? "s" : "";
-    switch (labelProperty.getGrammar()) {
-      case SINGLE:
-        prefix = labelProperty.isPlural() ? "more" : "one";
-        break;
-      case THE:
-        prefix = "the";
-        break;
-      case OF_THE:
-        prefix = "ofthe";
-        break;
-      case NONE:
-      default:
-        prefix = "";
-        break;
-    }
-    switch (programType) {
-      case BOOK:
-        value = getLabel("Program." + prefix + "book" + postfix);
-        break;
-      case MUSIC:
-        value = getLabel("Program." + prefix + "disc" + postfix);
-        break;
-      case WINE:
-      default:
-        value = getLabel("Program." + prefix + "wine" + postfix);
-    }
+    prefix = switch (labelProperty.getGrammar()) {
+      case SINGLE -> labelProperty.isPlural() ? "more" : "one";
+      case THE -> "the";
+      case OF_THE -> "ofthe";
+      default -> "";
+    };
+    value = switch (programType) {
+      case BOOK -> getLabel("Program." + prefix + "book" + postfix);
+      case MUSIC -> getLabel("Program." + prefix + "disc" + postfix);
+      default -> getLabel("Program." + prefix + "wine" + postfix);
+    };
     if (labelProperty.isUppercaseFirst()) {
       value = StringUtils.capitalize(value);
     }

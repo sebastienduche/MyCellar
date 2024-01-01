@@ -6,7 +6,6 @@ import mycellar.Music;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellarObject;
@@ -22,6 +21,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.PopupListener;
+import mycellar.frame.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JOptionPane;
@@ -45,12 +45,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.9
- * @since 09/10/22
+ * @version 2.0
+ * @since 25/12/23
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPanelModifyable {
 
-  private static final long serialVersionUID = 5905201984124426737L;
   private final MyCellarLabel labelModified = new MyCellarLabel("AddVin.ItemModified", LabelProperty.SINGLE);
   private final MyCellarButton manageContenance = new MyCellarButton("Parameter.CapacitiesManagement");
   private final JModifyTextField year = new JModifyTextField();
@@ -69,8 +68,6 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   public PanelGeneral() {
     setModificationDetectionActive(false);
     name = new JCompletionComboBox<>() {
-      private static final long serialVersionUID = 8137073557763181546L;
-
       @Override
       protected void doAfterModify() {
         super.doAfterModify();
@@ -379,8 +376,12 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
       return false;
     }
 
+    if (severalItems) {
+      return true;
+    }
+
     // Controle de la date
-    if (!severalItems && (year.isEditable() || !noYear.isSelected())) {
+    if (year.isEditable() || !noYear.isSelected()) {
       String annee = year.getText();
 
       // Erreur sur la date
@@ -431,7 +432,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
         label = getError("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return true;
       }
@@ -448,7 +449,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
         label = getError("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), label + SPACE + getError("Error.confirmSave"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmSave"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return true;
       }

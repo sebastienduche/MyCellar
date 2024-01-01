@@ -4,7 +4,6 @@ import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarObject;
@@ -17,7 +16,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
-import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -64,13 +63,12 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.5
- * @since 17/10/22
+ * @version 10.6
+ * @since 25/12/23
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
-  private static final long serialVersionUID = 6959053537854600207L;
   private final MyCellarComboBox<AbstractPlace> choix = new MyCellarComboBox<>();
   private final MyCellarSimpleLabel label_final = new MyCellarSimpleLabel();
   private final MyCellarButton preview = new MyCellarButton("Storage.Preview");
@@ -238,6 +236,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     removePlace(abstractPlace);
     choix.removeItemAt(num_select);
     choix.setSelectedIndex(0);
+    MainFrame.updateManagePlaceButton();
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
   }
 
@@ -263,13 +262,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   }
 
   @Override
-  public boolean tabWillClose(TabEvent event) {
-    return true;
-  }
-
-  @Override
   public void tabClosed() {
-    Start.getInstance().updateMainPanel();
     deleteSupprimerRangement();
   }
 

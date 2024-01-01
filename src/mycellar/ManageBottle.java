@@ -5,6 +5,7 @@ import mycellar.core.BottlesStatus;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarObject;
+import mycellar.core.MyCellarSettings;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
@@ -13,6 +14,7 @@ import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -41,17 +43,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.3
- * @since 17/10/22
+ * @version 10.4
+ * @since 25/12/23
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
-  private static final long serialVersionUID = 5330256984954964913L;
   private boolean saveAndExit;
 
   /**
    * Constructeur pour la modification de vins
-   *
-   * @param bottle
    */
   public ManageBottle(MyCellarObject bottle) {
     super();
@@ -82,7 +81,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       cancelButton.addActionListener((e) -> savingExit());
 
       setVisible(true);
-      Debug("JbInit Done");
+      Debug("Constructor Done");
 
       setBottle(bottle);
     } catch (RuntimeException e) {
@@ -100,8 +99,6 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
   /**
    * Fonction de chargement d'un vin
-   *
-   * @param cellarObject
    */
   private void setBottle(MyCellarObject cellarObject) {
     Debug("Set Bottle...");
@@ -131,9 +128,6 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     panelWineAttribute.initStatusAndTime(myCellarObject);
   }
 
-  /**
-   * saving: Fonction de sauvegarde
-   */
   private void saving() {
     saveAndExit = false;
     new Thread(this).start();
@@ -262,6 +256,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       rangement.updateToStock(myCellarObject);
     }
 
+    Program.putCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, panelVignobles.isKeepPreviousVineyardSelected());
     end.setText(getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
     ProgramPanels.updatePanelsWithoutBottles();
     panelWineAttribute.setModificationDetectionActive(false);
@@ -278,7 +273,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     if (!bouteille.equals(myCellarObject)) {
       Debug("ERROR: Not an empty place, Replace?");
       String erreur_txt1 = MessageFormat.format(getError("Error.alreadyInStorage"), bouteille.getNom(), bouteille.getAnnee());
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + "\n" + getError("Error.questionReplaceIt"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + "\n" + getError("Error.questionReplaceIt"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
         panelPlace.clearLabelEnd();
         end.setText(getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
@@ -314,7 +309,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     modified |= panelPlace.isModified();
     modified |= panelVignobles.isModified();
 
-    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), getError("Error.modificationIncompleted", OF_THE_SINGLE) + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError("Error.modificationIncompleted", OF_THE_SINGLE) + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
       Debug("Don't Quit.");
       addButton.setEnabled(true);
       cancelButton.setEnabled(true);
@@ -334,11 +329,6 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   @Override
   public boolean tabWillClose(TabEvent event) {
     return runExit();
-  }
-
-  @Override
-  public void tabClosed() {
-    Start.getInstance().updateMainPanel();
   }
 
   @Override

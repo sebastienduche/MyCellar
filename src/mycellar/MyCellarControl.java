@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.text.LabelProperty;
+import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 
@@ -20,8 +21,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.9
- * @since 15/09/22
+ * @version 3.0
+ * @since 25/12/23
  */
 
 public final class MyCellarControl {
@@ -45,7 +46,7 @@ public final class MyCellarControl {
   }
 
   public static boolean hasInvalidPlace(PlacePosition place) {
-    return hasInvalidPlace(place, Start.getInstance());
+    return hasInvalidPlace(place, MainFrame.getInstance());
   }
 
   public static boolean hasInvalidPlace(PlacePosition place, Component component) {
@@ -142,7 +143,7 @@ public final class MyCellarControl {
    * @return boolean
    */
   static boolean controlPath(String path) {
-    Debug("Controling path...");
+    Debug("Controlling path...");
     if (isNullOrEmpty(path)) {
       Debug("ERROR: Name cannot be empty!");
       Erreur.showSimpleErreur(getError("MyCellarControl.emptyPath"));
@@ -160,7 +161,7 @@ public final class MyCellarControl {
   }
 
   /**
-   * ctrl_existingName Controle si le nom renseigne est deja utilise
+   * Check if the name of the storage is already used
    *
    * @param name String
    * @return boolean

@@ -6,6 +6,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.Normalizer;
+import java.util.List;
 
 import static mycellar.Filtre.EXTENSION_SINFO;
 import static mycellar.ProgramConstants.ONE_DOT;
@@ -19,8 +20,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 06/05/22
+ * @version 0.5
+ * @since 26/12/23
  */
 public final class MyCellarUtils {
 
@@ -50,9 +51,9 @@ public final class MyCellarUtils {
     }
   }
 
-  public static Integer parseIntOrError(Object value) {
+  public static Integer parseIntOrError(String value) {
     try {
-      return Integer.parseInt((String) value);
+      return Integer.parseInt(value);
     } catch (NumberFormatException e) {
       Erreur.showSimpleErreur(getError("Error.enterNumericValue"));
       return null;
@@ -84,7 +85,7 @@ public final class MyCellarUtils {
     return new BigDecimal(buf.toString()).setScale(2, RoundingMode.HALF_UP);
   }
 
-  static String getShortFilename(String sFilename) {
+  public static String getShortFilename(String sFilename) {
     String tmp = sFilename.replaceAll("\\\\", SLASH);
     int ind1 = tmp.lastIndexOf(SLASH);
     int ind2 = tmp.indexOf(ONE_DOT + EXTENSION_SINFO);
@@ -114,5 +115,9 @@ public final class MyCellarUtils {
     }
     String value = o.toString();
     return value == null ? "" : value.strip();
+  }
+
+  public static boolean isAnyOf(Object value, List<Object> list) {
+    return list.stream().anyMatch(value::equals);
   }
 }

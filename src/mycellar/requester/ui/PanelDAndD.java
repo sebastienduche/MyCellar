@@ -37,12 +37,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 03/05/22
+ * @version 0.6
+ * @since 26/12/23
  */
 public final class PanelDAndD extends JPanel {
 
-  private static final long serialVersionUID = -3180057277279430308L;
   private final List<LabelSearch> labels = new ArrayList<>();
   public LabelSearch draggingLabel;
   ChangeListener listener = MainChangeListener.getChangeListener();
@@ -99,8 +98,7 @@ public final class PanelDAndD extends JPanel {
   @Override
   public void remove(Component comp) {
     super.remove(comp);
-    if (comp instanceof LabelSearch) {
-      LabelSearch search = (LabelSearch) comp;
+    if (comp instanceof LabelSearch search) {
       // Lorsque l'on est sur un element qui peut uniquement etre deplace
       // On le supprime de la liste si l'on est sur la source
       // et on l'ajoute a la source si l'on n'est pas deja dessus.
@@ -123,8 +121,7 @@ class PanelHandler extends MouseAdapter {
   public void mousePressed(MouseEvent e) {
     final PanelDAndD p = (PanelDAndD) e.getSource();
     Component c = SwingUtilities.getDeepestComponentAt(p, e.getX(), e.getY());
-    if (c != null && c.getParent() instanceof LabelSearch && c.getParent().getParent() instanceof PanelDAndD) {
-      final LabelSearch labelSearch = (LabelSearch) c.getParent();
+    if (c != null && c.getParent() instanceof LabelSearch labelSearch && c.getParent().getParent() instanceof PanelDAndD) {
       if (e.getButton() == MouseEvent.BUTTON3) {
         if (p.isTarget() && labelSearch.getPredicate().isValueRequired()) {
           JPopupMenu popup = new JPopupMenu();
@@ -147,11 +144,8 @@ class PanelHandler extends MouseAdapter {
 }
 
 class PanelLabelTransferHandler extends TransferHandler {
-  private static final long serialVersionUID = -4338469857987642038L;
   private final DataFlavor localObjectFlavor;
   private final JLabel label = new JLabel() {
-    private static final long serialVersionUID = 5065631180392050633L;
-
     @Override
     public boolean contains(int x, int y) {
       return false;

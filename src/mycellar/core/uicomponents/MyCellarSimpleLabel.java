@@ -22,8 +22,6 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 
 public class MyCellarSimpleLabel extends JLabel implements IMyCellarComponent {
 
-  private static final long serialVersionUID = 4972622436840497820L;
-
   public MyCellarSimpleLabel() {
     setFont(FONT_PANEL);
   }

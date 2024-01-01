@@ -16,14 +16,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 26/04/22
+ * @version 1.5
+ * @since 25/12/23
  */
 class ListValues extends AbstractTableModel {
-  static final long serialVersionUID = 200505;
-
   private List<? extends IMyCellarObject> list = new LinkedList<>();
-
 
   @Override
   public int getRowCount() {
@@ -45,15 +42,6 @@ class ListValues extends AbstractTableModel {
   @Override
   public String getColumnName(int column) {
     return getLabel("Main.Name");
-  }
-
-  @Override
-  public boolean isCellEditable(int row, int column) {
-    return false;
-  }
-
-  @Override
-  public void setValueAt(Object value, int row, int column) {
   }
 
   protected void setObjects(List<? extends IMyCellarObject> b) {

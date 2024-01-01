@@ -21,8 +21,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelCode;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 05/05/33
+ * @version 0.7
+ * @since 26/12/23
  */
 public class PopupListener extends MouseAdapter {
 
@@ -64,12 +64,12 @@ public class PopupListener extends MouseAdapter {
     if (e.getButton() == MouseEvent.BUTTON3) {
       if (textField.isFocusable() && textField.isEnabled()) {
         textField.requestFocus();
-        if (textField instanceof JTextField) {
-          cut.setEnabled(((JTextField) textField).getSelectedText() != null);
-          copy.setEnabled(((JTextField) textField).getSelectedText() != null);
-        } else if (textField instanceof JTextArea) {
-          cut.setEnabled(((JTextArea) textField).getSelectedText() != null);
-          copy.setEnabled(((JTextArea) textField).getSelectedText() != null);
+        if (textField instanceof JTextField jTextField) {
+          cut.setEnabled(jTextField.getSelectedText() != null);
+          copy.setEnabled(jTextField.getSelectedText() != null);
+        } else if (textField instanceof JTextArea jTextArea) {
+          cut.setEnabled(jTextArea.getSelectedText() != null);
+          copy.setEnabled(jTextArea.getSelectedText() != null);
         }
         if (textField.isVisible()) {
           popup.show(e.getComponent(), e.getX(), e.getY());
@@ -79,23 +79,19 @@ public class PopupListener extends MouseAdapter {
   }
 
   private void paste_actionPerformed(ActionEvent e) {
-    if (textField instanceof JTextField) {
-      JTextField jtf = (JTextField) textField;
+    if (textField instanceof JTextField jtf) {
       jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.paste() + jtf.getText().substring(jtf.getSelectionEnd()));
-    } else if (textField instanceof JTextArea) {
-      JTextArea jtf = (JTextArea) textField;
+    } else if (textField instanceof JTextArea jtf) {
       jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + Program.CLIPBOARD.paste() + jtf.getText().substring(jtf.getSelectionEnd()));
     }
   }
 
   private void cut_actionPerformed(ActionEvent e) {
     String txt = "";
-    if (textField instanceof JTextField) {
-      JTextField jtf = (JTextField) textField;
+    if (textField instanceof JTextField jtf) {
       txt = jtf.getSelectedText();
       jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
-    } else if (textField instanceof JTextArea) {
-      JTextArea jtf = (JTextArea) textField;
+    } else if (textField instanceof JTextArea jtf) {
       txt = jtf.getSelectedText();
       jtf.setText(jtf.getText().substring(0, jtf.getSelectionStart()) + jtf.getText().substring(jtf.getSelectionEnd()));
     }
@@ -105,11 +101,9 @@ public class PopupListener extends MouseAdapter {
 
   private void copy_actionPerformed(ActionEvent e) {
     String txt = "";
-    if (textField instanceof JTextField) {
-      JTextField jtf = (JTextField) textField;
+    if (textField instanceof JTextField jtf) {
       txt = jtf.getSelectedText();
-    } else if (textField instanceof JTextArea) {
-      JTextArea jtf = (JTextArea) textField;
+    } else if (textField instanceof JTextArea jtf) {
       txt = jtf.getSelectedText();
     }
 

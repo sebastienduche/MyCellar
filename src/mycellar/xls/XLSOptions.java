@@ -1,13 +1,13 @@
 package mycellar.xls;
 
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
+import mycellar.frame.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -118,7 +118,7 @@ public final class XLSOptions extends JDialog {
     add(scrollPane, "gaptop 15px, grow, wrap");
     add(valider, "split 2, center");
     add(annuler);
-    setLocationRelativeTo(Start.getInstance());
+    setLocationRelativeTo(MainFrame.getInstance());
   }
 
   /**

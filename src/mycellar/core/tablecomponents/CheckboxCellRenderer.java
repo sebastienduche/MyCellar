@@ -12,8 +12,8 @@ import java.awt.Component;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 13/09/21
+ * @version 0.7
+ * @since 26/12/23
  */
 public class CheckboxCellRenderer extends JCheckBox implements TableCellRenderer {
 
@@ -27,8 +27,8 @@ public class CheckboxCellRenderer extends JCheckBox implements TableCellRenderer
       setForeground(table.getForeground());
       setBackground(table.getBackground());
     }
-    if (value instanceof Boolean) {
-      setSelected((Boolean) value);
+    if (value instanceof Boolean b) {
+      setSelected(b);
     }
     return this;
   }

@@ -5,7 +5,6 @@ import mycellar.ITabListener;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.Start;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
@@ -23,6 +22,7 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
+import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -71,12 +71,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.7
- * @since 17/10/22
+ * @version 17.8
+ * @since 25/12/23
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
-  static final long serialVersionUID = 280706;
   private static final char CREER = getLabel("CREER").charAt(0);
   private static final char PREVIEW = getLabel("PREVIEW").charAt(0);
   private final MyCellarComboBox<AbstractPlace> comboPlace = new MyCellarComboBox<>();
@@ -360,7 +359,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           erreur_txt1 = MessageFormat.format(getError("Error.NItemsInStorage", LabelProperty.PLURAL), nb_bottle);
           erreur_txt2 = getError("Error.questionChangeStorageItems", LabelProperty.PLURAL);
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           // Modify Name of place
           Program.getStorage().getAllList()
               .stream()
@@ -372,7 +371,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         String erreur_txt1 = MessageFormat.format(getError("CreerRangement.UpdatedBottlePart"), partNumberIncrementSimplePlace, simplePlace.getPartNumberIncrement());
         String erreur_txt2 = getError("CreerRangement.AskUpdateBottlePart", LabelProperty.PLURAL);
 
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify start part number
           final int difference = partNumberIncrementSimplePlace - simplePlace.getPartNumberIncrement();
           Program.getStorage().getAllList()
@@ -499,7 +498,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           erreur_txt1 = MessageFormat.format(getError("Error.NItemsInStorage", LabelProperty.PLURAL), nbBottles);
           erreur_txt2 = getError("Error.questionChangeStorageItems", LabelProperty.PLURAL);
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify Name of place
           complexPlace.setName(nom);
           complexPlace.updatePlace(listPart);
@@ -561,6 +560,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
             .startSimplePlace(partNumberIncrementSimplePlace)
             .limited(islimited)
             .limit(simplePlaceLimit).build());
+        MainFrame.updateManagePlaceButton();
         Debug("Creation of '" + nom + "' completed.");
         nom_obj.setText("");
         labelCreated.setText(getLabel("CreateStorage.Created"), true);
@@ -594,12 +594,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       Erreur.showInformationMessageWithKey(getError("Error.canCreateAnotherStorageSameOptions"), MyCellarSettings.DONT_SHOW_CREATE_MESS);
     }
     if (bResul) {
-      Start.getInstance().enableAll(true);
+      MainFrame.getInstance().enableAll(true);
     }
   }
 
   private void createComplexPlace(String name) {
     Program.addPlace(new ComplexPlace(name, listPart));
+    MainFrame.updateManagePlaceButton();
     Debug("Creating " + name + " completed.");
     labelCreated.setText(getLabel("CreateStorage.Created"), true);
     nom_obj.setText("");
@@ -684,7 +685,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   public boolean tabWillClose(TabEvent event) {
     if (!toCleanString(nom_obj.getText()).isEmpty()) {
       String label = modify ? getError("Error.storageModificationIncompleted") : getError("Error.storageCreationIncompleted");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(Start.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }
     }
@@ -692,11 +693,6 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     labelCreated.setText("");
     comboPlace.setSelectedIndex(0);
     return true;
-  }
-
-  @Override
-  public void tabClosed() {
-    Start.getInstance().updateMainPanel();
   }
 
   @Override

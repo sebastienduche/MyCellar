@@ -1,15 +1,14 @@
 package mycellar.actions;
 
-import mycellar.Start;
 import mycellar.core.IPlacePosition;
 import mycellar.core.text.MyCellarLabelManagement;
+import mycellar.frame.MainFrame;
 
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 
 public class ChooseCellAction extends AbstractAction {
 
-  private static final long serialVersionUID = -6674616199012746620L;
   private final IPlacePosition iPlace;
 
   public ChooseCellAction(IPlacePosition iPlace) {
@@ -19,6 +18,6 @@ public class ChooseCellAction extends AbstractAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    Start.getInstance().openCellChooserPanel(iPlace);
+    MainFrame.getInstance().openCellChooserPanel(iPlace);
   }
 }

@@ -16,9 +16,9 @@ import java.time.format.DateTimeFormatter;
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "4.9.9.9";
-  public static final int VERSION = 76;
-  public static final String MAIN_VERSION = VERSION + " CO";
+  public static final String INTERNAL_VERSION = "5.1.0.1";
+  public static final int VERSION = 77;
+  public static final String MAIN_VERSION = VERSION + " BM";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
   public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
 
@@ -62,7 +62,7 @@ public final class ProgramConstants {
   public static final int IMPORT_COMBO_COUNT = 18;
   public static final String KEY_TYPE = "<KEY>";
   public static final String COUNTRY_LABEL_KEY = "Country.";
-  static final String INFOS_VERSION = " 2022 v";
+  public static final String INFOS_VERSION = " 2023 v";
   static final String PREVIEW_XML = "preview.xml";
   static final String PREVIEW_HTML = "preview.html";
   static final String MY_CELLAR_XML = "MyCellar.xml";

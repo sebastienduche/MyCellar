@@ -179,24 +179,13 @@ public final class MyCellarControl {
   /**
    * Check if the filename contains the extension and add it if needed
    *
-   * @param name   String
-   * @param filtre Filtre
-   * @return String
-   */
-  public static String controlAndUpdateExtension(final String name, final Filtre filtre) {
-    return controlAndUpdateExtension(name, filtre.toString());
-  }
-
-  /**
-   * Check if the filename contains the extension and add it if needed
-   *
    * @param name      String
-   * @param extension String
+   * @param extension Filtre
    * @return String
    */
-  public static String controlAndUpdateExtension(final String name, final String extension) {
+  public static String controlAndUpdateExtension(final String name, final Filtre extension) {
     if (hasInvalidExtension(name, List.of(extension))) {
-      return name + extension.toLowerCase();
+      return name + extension.toString().toLowerCase();
     }
     return name;
   }
@@ -208,7 +197,7 @@ public final class MyCellarControl {
    * @param extensions List
    * @return String
    */
-  public static boolean hasInvalidExtension(final String name, final List<String> extensions) {
+  public static boolean hasInvalidExtension(final String name, final List<Filtre> extensions) {
     Debug("Controlling extension...");
     if (name == null) {
       Debug("ERROR: name is null!");
@@ -221,7 +210,7 @@ public final class MyCellarControl {
     }
 
     String nameClean = name.toLowerCase().strip();
-    return extensions.stream().noneMatch(nameClean::endsWith);
+    return extensions.stream().noneMatch(filtre -> nameClean.endsWith(filtre.toString()));
   }
 
   private static void Debug(String sText) {

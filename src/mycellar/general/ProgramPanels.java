@@ -1,12 +1,12 @@
 package mycellar.general;
 
 import mycellar.AddVin;
-import mycellar.Creer_Tableaux;
+import mycellar.CreateTablePanel;
 import mycellar.Export;
 import mycellar.ITabListener;
 import mycellar.ManageBottle;
 import mycellar.MyCellarImage;
-import mycellar.Parametres;
+import mycellar.ParametersPanel;
 import mycellar.Program;
 import mycellar.ScreenType;
 import mycellar.ShowHistory;
@@ -260,10 +260,10 @@ public class ProgramPanels {
     }
   }
 
-  public static Creer_Tableaux createCreateTable() {
-    final Creer_Tableaux creerTableaux = (Creer_Tableaux) createOpenedObject(Creer_Tableaux.class, CREATE_TABLE);
-    UPDATABLE_PANELS.put(CREATE_TABLE, creerTableaux);
-    return creerTableaux;
+  public static CreateTablePanel createCreateTable() {
+    final CreateTablePanel createTable = (CreateTablePanel) createOpenedObject(CreateTablePanel.class, CREATE_TABLE);
+    UPDATABLE_PANELS.put(CREATE_TABLE, createTable);
+    return createTable;
   }
 
   public static Importer createImporter() {
@@ -322,8 +322,8 @@ public class ProgramPanels {
     return cellarOrganizerPanel;
   }
 
-  public static Parametres createParametres() {
-    return (Parametres) createOpenedObject(Parametres.class, PARAMETERS);
+  public static ParametersPanel createParametres() {
+    return (ParametersPanel) createOpenedObject(ParametersPanel.class, PARAMETERS);
   }
 
   public static void deleteParameters() {

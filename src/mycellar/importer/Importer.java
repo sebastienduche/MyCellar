@@ -59,16 +59,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Arrays.asList;
 import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
+import static mycellar.MyCellarUtils.removeQuotes;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.COMMA;
@@ -87,8 +87,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.2
- * @since 25/12/23
+ * @version 16.3
+ * @since 13/01/24
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -104,20 +104,20 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private final MyCellarLabel labelTitle2 = new MyCellarLabel("Import.ChooseColumns");
   private final MyCellarSimpleLabel label_progression = new MyCellarSimpleLabel();
   private final MyCellarLabel label2 = new MyCellarLabel("Import.Separator");
-  private final MyCellarComboBox<String> separateur = new MyCellarComboBox<>();
+  private final MyCellarComboBox<String> separatorCombo = new MyCellarComboBox<>();
   private final JTextField file = new JTextField();
 
 
   public Importer() {
     Debug("Constructor");
-    MyCellarButton openit = new MyCellarButton("Main.OpenTheFile");
-    openit.setToolTipText(getLabel("Main.OpenTheFile"));
-    MyCellarButton parcourir = new MyCellarButton(OPEN);
-    parcourir.setToolTipText(getLabel("Main.Browse"));
+    MyCellarButton openItButton = new MyCellarButton("Main.OpenTheFile");
+    openItButton.setToolTipText(getLabel("Main.OpenTheFile"));
+    MyCellarButton browseButton = new MyCellarButton(OPEN);
+    browseButton.setToolTipText(getLabel("Main.Browse"));
     importe.setMnemonic(importChar);
-    openit.setMnemonic(ouvrirChar);
+    openItButton.setMnemonic(ouvrirChar);
     importe.setText(getLabel("Import.Action"));
-    importe.addActionListener(this::importe_actionPerformed);
+    importe.addActionListener(this::runImport);
     labelTitle.setHorizontalTextPosition(SwingConstants.LEFT);
     label_progression.setForeground(Color.red);
     label_progression.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -131,8 +131,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       type_iTunes.addItemListener(this::type_itemStateChanged);
     }
     type_txt.addItemListener(this::type_itemStateChanged);
-    openit.addActionListener(this::openit_actionPerformed);
-    parcourir.addActionListener(this::parcourir_actionPerformed);
+    openItButton.addActionListener(this::openit_actionPerformed);
+    browseButton.addActionListener(this::parcourir_actionPerformed);
     type_xls.addItemListener(this::type_itemStateChanged);
     type_xml.addItemListener(this::type_itemStateChanged);
 
@@ -161,15 +161,15 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     JPanel panelSeparator = new JPanel();
     panelSeparator.setLayout(new MigLayout("", "", ""));
     panelSeparator.add(label2);
-    panelSeparator.add(separateur, "gapleft 10px");
+    panelSeparator.add(separatorCombo, "gapleft 10px");
     panelType.add(panelSeparator);
     add(panelType, "grow, wrap");
     JPanel panelFile = new JPanel();
     panelFile.setLayout(new MigLayout("", "[grow][][]", "[]"));
     panelFile.add(new MyCellarLabel("Import.Path"), "wrap");
     panelFile.add(file, "grow");
-    panelFile.add(parcourir);
-    panelFile.add(openit);
+    panelFile.add(browseButton);
+    panelFile.add(openItButton);
     add(panelFile, "grow,wrap");
     JPanel panel = new JPanel();
     panel.setLayout(new MigLayout());
@@ -190,18 +190,16 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       combo.addItem(MyCellarFields.USELESS);
       comboBoxList.add(combo);
       panelChoix.add(combo, i % 6 == 5 ? "wrap" : "");
-      if (i > 0) {
-        combo.setEnabled(false);
-      }
+      combo.setEnabled(i == 0);
     }
     add(panelChoix, "grow, wrap");
     add(label_progression, "grow, center, hidemode 3, wrap");
     add(importe, "center");
 
-    separateur.addItem(getLabel("CSV.SeparatorDotComma"));
-    separateur.addItem(getLabel("CSV.SeparatorDoubleDot"));
-    separateur.addItem(getLabel("CSV.SeparatorSlash"));
-    separateur.addItem(getLabel("CSV.SeparatorComma"));
+    separatorCombo.addItem(getLabel("CSV.SeparatorDotComma"));
+    separatorCombo.addItem(getLabel("CSV.SeparatorDoubleDot"));
+    separatorCombo.addItem(getLabel("CSV.SeparatorSlash"));
+    separatorCombo.addItem(getLabel("CSV.SeparatorComma"));
 
     Debug("Constructor Done");
   }
@@ -218,7 +216,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private void type_itemStateChanged(ItemEvent e) {
     resetLabelProgress();
     label2.setVisible(type_txt.isSelected());
-    separateur.setVisible(type_txt.isSelected());
+    separatorCombo.setVisible(type_txt.isSelected());
     boolean typeXml = type_xml.isSelected() || type_iTunes.isSelected();
     comboBoxList.forEach(c -> c.setVisible(!typeXml));
     labelTitle.setVisible(!typeXml);
@@ -229,16 +227,10 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     label_progression.setText("");
   }
 
-  private void importe_actionPerformed(ActionEvent e) {
+  private void runImport(ActionEvent e) {
     new Thread(this).start();
   }
 
-  /**
-   * updateCombo: Choix
-   *
-   * @param e     ActionEvent
-   * @param index int
-   */
   private void updateCombo(ActionEvent e, int index) {
     if (((MyCellarComboBox<?>) e.getSource()).getSelectedIndex() == 0) {
       for (int i = index; i < IMPORT_COMBO_COUNT; i++) {
@@ -252,10 +244,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   }
 
   /**
-   * Realise la lecture d'une ligne d'un fichier XLS
-   *
-   * @param row Row Ligne d'une feuille Excel
-   * @return LinkedList<String>
+   * Read an XSL row
    */
   private LinkedList<String> readRow(Row row) {
     final Iterator<Cell> cellIterator = row.cellIterator();
@@ -312,7 +301,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private void openit_actionPerformed(ActionEvent e) {
     Debug("openit_actionPerforming...");
     final String filename = toCleanString(file.getText());
-    if (!filename.isEmpty()) {
+    if (!filename.isBlank()) {
       File f = new File(filename);
       file.setText(f.getAbsolutePath());
       if (!Program.open(filename, true)) {
@@ -332,7 +321,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       importe.setEnabled(false);
 
       String filename = toCleanString(file.getText());
-      if (filename.isEmpty()) {
+      if (filename.isBlank()) {
         Debug("ERROR: filename cannot be empty");
         resetLabelProgress();
         Erreur.showSimpleErreur(getError("Error.fileNameShouldntBeEmpty"));
@@ -340,16 +329,16 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         return;
       }
 
-      int nb_choix = 0;
+      int counterChoice = 0;
       EnumMap<MyCellarFields, Integer> mapFieldCount = new EnumMap<>(MyCellarFields.class);
       if (type_xls.isSelected() || type_txt.isSelected()) {
         for (var combo : comboBoxList) {
           if (combo.getSelectedIndex() != 0) {
-            nb_choix++;
+            counterChoice++;
           }
         }
 
-        for (int i = 0; i < nb_choix; i++) {
+        for (int i = 0; i < counterChoice; i++) {
           final var comboBox = comboBoxList.get(i);
           final MyCellarFields selectedField = (MyCellarFields) comboBox.getSelectedItem();
           if (MyCellarFields.isRealField(selectedField)) {
@@ -365,24 +354,22 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (!f.exists()) {
         resetLabelProgress();
         Debug("ERROR: File not found: " + filename);
-        //Fichier non trouve Verifier le chemin
         Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), filename), getError("Error.checkFilePath"));
         importe.setEnabled(true);
         return;
       }
 
-      if ((type_xls.isSelected() || type_txt.isSelected()) && nb_choix == 0) {
+      if ((type_xls.isSelected() || type_txt.isSelected()) && counterChoice == 0) {
         resetLabelProgress();
         Debug("ERROR: No field selected");
-        // Aucuns champs selectionnes
-        // Veuillez selectionner des champs pour que les donnees soient traitees
+        // Please select fields
         Erreur.showSimpleErreur(getError("Error025"), getError("Error026"));
         importe.setEnabled(true);
         return;
       }
 
       if (type_xls.isSelected()) {
-        if (MyCellarControl.hasInvalidExtension(filename, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+        if (MyCellarControl.hasInvalidExtension(filename, asList(Filtre.FILTRE_XLSX, Filtre.FILTRE_XLS, Filtre.FILTRE_ODS))) {
           resetLabelProgress();
           Debug("ERROR: Not a XLS File");
           Erreur.showSimpleErreur(MessageFormat.format(getError("Error.notAnExcelFile"), filename), getError("Error.selectAnExcelFile"));
@@ -390,7 +377,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           return;
         }
       } else if (type_txt.isSelected()) {
-        if (MyCellarControl.hasInvalidExtension(filename, Arrays.asList(Filtre.FILTRE_TXT.toString(), Filtre.FILTRE_CSV.toString()))) {
+        if (MyCellarControl.hasInvalidExtension(filename, asList(Filtre.FILTRE_TXT, Filtre.FILTRE_CSV))) {
           resetLabelProgress();
           Debug("ERROR: Not a Text File");
           Erreur.showSimpleErreur(MessageFormat.format(getError("Error023"), filename), getError("Error024"));
@@ -398,7 +385,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           return;
         }
       } else {
-        if (MyCellarControl.hasInvalidExtension(filename, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
+        if (MyCellarControl.hasInvalidExtension(filename, List.of(Filtre.FILTRE_XML))) {
           resetLabelProgress();
           Debug("ERROR: Not a XML File");
           Erreur.showSimpleErreur(MessageFormat.format(getError("Error204"), filename), getError("Error205"));
@@ -507,7 +494,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             } while (nom1.isEmpty());
             if (resul) {
               do {
-                // Controle de l'existance du rangement
+                // Check if storage exists
                 resul = true;
                 if (!nom1.isEmpty()) {
                   if (PlaceUtils.isExistingPlace(nom1)) {
@@ -532,7 +519,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (type_txt.isSelected()) {
         //Cas des fichiers TXT
         Debug("Importing Text File...");
-        String separe = switch (separateur.getSelectedIndex()) {
+        String fieldSeparator = switch (separatorCombo.getSelectedIndex()) {
           case 1 -> DOUBLE_DOT;
           case 2 -> SLASH;
           case 3 -> COMMA;
@@ -542,11 +529,9 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         try (var reader = new BufferedReader(new FileReader(f))) {
           String line = reader.readLine();
           if (line != null) {
-            if (line.split(separe).length <= 1) {
+            if (line.split(fieldSeparator).length <= 1) {
               resetLabelProgress();
               Debug("ERROR: No separator found");
-              //"Le separateur selectionne n'a pas ete trouve.
-              //"Veuillez selectionner le separateur utilise dans votre fichier.
               Erreur.showSimpleErreur(getError("Error042"), getError("Error043"));
               importe.setEnabled(true);
               reader.close();
@@ -554,19 +539,17 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             }
           }
           if (labelTitle.isSelected()) {
+            // Skip one line
             line = reader.readLine();
           }
           setLabelInProgress();
           int maxNumPlace = 0;
           while (line != null) {
-            String[] lu = line.split(separe);
+            String[] readValues = line.split(fieldSeparator);
             MyCellarObject bottle = createObject();
             bottle.updateID();
-            for (int i = 0; i < lu.length; i++) {
-              String value = lu[i];
-              if (value.length() > 1 && value.charAt(0) == '"' && value.charAt(value.length() - 1) == '"') {
-                value = value.substring(1, value.length() - 1);
-              }
+            for (int i = 0; i < readValues.length; i++) {
+              String value = removeQuotes(readValues[i]);
               value = MyCellarUtils.convertToHTMLString(value);
               MyCellarFields selectedField = getSelectedField(i);
               bottle.validateValue(selectedField, value);
@@ -739,7 +722,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
   private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == importChar && e.isControlDown()) {
-      importe_actionPerformed(null);
+      runImport(null);
     }
     if (e.getKeyCode() == ouvrirChar && e.isControlDown()) {
       openit_actionPerformed(null);

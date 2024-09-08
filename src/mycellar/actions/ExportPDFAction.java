@@ -14,7 +14,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 
 public class ExportPDFAction extends AbstractAction {
-  
+
   public ExportPDFAction() {
     super("", MyCellarImage.PDF);
     putValue(SHORT_DESCRIPTION, MyCellarLabelManagement.getLabel("Export.Pdf"));
@@ -30,7 +30,7 @@ public class ExportPDFAction extends AbstractAction {
     if (retour_jfc == JFileChooser.APPROVE_OPTION) {
       File nomFichier = boiteFichier.getSelectedFile();
       String name = nomFichier.getAbsolutePath();
-      name = MyCellarControl.controlAndUpdateExtension(name, Filtre.FILTRE_PDF.toString());
+      name = MyCellarControl.controlAndUpdateExtension(name, Filtre.FILTRE_PDF);
       Export.exportToPDF(Program.getStorage().getAllList(), new File(name));
     }
   }

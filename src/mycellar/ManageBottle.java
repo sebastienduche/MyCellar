@@ -243,7 +243,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
 
     if (oldPlace.isComplexPlace()) {
-      ((ComplexPlace) oldPlace.getAbstractPlace()).clearStorage(oldPlace);
+      ((ComplexPlace) oldPlace.getAbstractPlace()).clearStorage(myCellarObject, oldPlace);
     }
 
     if (!PlaceUtils.putTabStock()) {

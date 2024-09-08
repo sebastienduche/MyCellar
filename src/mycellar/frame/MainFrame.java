@@ -87,6 +87,7 @@ import static mycellar.ProgramConstants.INTERNAL_VERSION;
 import static mycellar.ProgramConstants.MAIN_VERSION;
 import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.UNTITLED;
+import static mycellar.core.MyCellarSettings.DIR;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.core.text.LabelProperty.A_SINGLE;
 import static mycellar.core.text.LabelProperty.PLURAL;
@@ -102,8 +103,8 @@ import static mycellar.general.ProgramPanels.selectOrAddTab;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 25/12/23
+ * @version 0.3
+ * @since 13/01/24
  */
 public final class MainFrame extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -440,10 +441,9 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
     boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
     if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-      File nomFichier = boiteFichier.getSelectedFile();
-      String fic = nomFichier.getAbsolutePath();
-      fic = MyCellarControl.controlAndUpdateExtension(fic, Filtre.FILTRE_XML.toString());
-      XmlUtils.writeMyCellarXml(Program.getAbstractPlaces(), fic);
+      String filename = boiteFichier.getSelectedFile().getAbsolutePath();
+      filename = MyCellarControl.controlAndUpdateExtension(filename, Filtre.FILTRE_XML);
+      XmlUtils.writeMyCellarXml(Program.getAbstractPlaces(), filename);
     }
   }
 
@@ -457,7 +457,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
       File nomFichier = boiteFichier.getSelectedFile();
       String fic = nomFichier.getAbsolutePath();
-      fic = MyCellarControl.controlAndUpdateExtension(fic, Filtre.FILTRE_XML.toString());
+      fic = MyCellarControl.controlAndUpdateExtension(fic, Filtre.FILTRE_XML);
       ListeBouteille.writeXML(new File(fic));
     }
   }
@@ -602,13 +602,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     setApplicationTitle(Program.getShortFilename(), false);
     setResizable(true);
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    int x = prefs.getInt("Start.x", -1);
-    int y = prefs.getInt("Start.y", -1);
-    if (x >= 0 && y >= 0) {
-      setLocation(x, y);
-    } else {
-      setLocation(0, 0);
-    }
+    setLocation(prefs.getInt("Start.x", 0), prefs.getInt("Start.y", 0));
     int w = prefs.getInt("Start.width", -1);
     int h = prefs.getInt("Start.height", -1);
     if (w >= 0 && h >= 0) {
@@ -997,7 +991,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     public void actionPerformed(ActionEvent arg0) {
       try {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR));
+        JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(DIR));
         boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
         boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
         if (JFileChooser.APPROVE_OPTION == boiteFichier.showOpenDialog(null)) {

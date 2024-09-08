@@ -50,8 +50,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.4
- * @since 25/12/23
+ * @version 32.5
+ * @since 08/09/24
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -243,13 +243,13 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     if (myCellarObjectFound == null) {
       if (isModify) {
         Debug("Empty case: Modifying bottle");
-        final PlacePosition oldPLace = myCellarObject.getPlacePosition();
+        final PlacePosition oldPlace = myCellarObject.getPlacePosition();
         myCellarObject.update(newMyCellarObject);
         newMyCellarObject.getAbstractPlace().updateToStock(newMyCellarObject);
         Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
         if (complexPlace.isComplexPlace()) {
-          Debug("Deleting from older complex place");
-          ((ComplexPlace) oldPLace.getAbstractPlace()).clearStorage(oldPLace);
+          Debug("Deleting from previous complex place");
+          oldPlace.getAbstractPlace().clearStorage(myCellarObject, oldPlace);
         }
       } else {
         Debug("Empty case: Adding bottle");

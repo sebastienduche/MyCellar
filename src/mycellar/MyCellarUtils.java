@@ -20,8 +20,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 26/12/23
+ * @version 0.6
+ * @since 13/01/24
  */
 public final class MyCellarUtils {
 
@@ -115,6 +115,16 @@ public final class MyCellarUtils {
     }
     String value = o.toString();
     return value == null ? "" : value.strip();
+  }
+
+  public static String removeQuotes(final String value) {
+    if (value == null || value.isEmpty()) {
+      return value;
+    }
+    if (value.charAt(0) == '"' && value.charAt(value.length() - 1) == '"') {
+      return value.substring(1, value.length() - 1);
+    }
+    return value;
   }
 
   public static boolean isAnyOf(Object value, List<Object> list) {

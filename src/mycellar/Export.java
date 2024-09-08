@@ -46,10 +46,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
@@ -65,8 +65,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.4
- * @since 25/12/23
+ * @version 11.5
+ * @since 13/01/24
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -92,11 +92,6 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     initialize();
   }
 
-  /**
-   * Export: Constructeur pour l'export.
-   *
-   * @param myCellarObjects LinkedList<>: objects to export
-   */
   public Export(final List<MyCellarObject> myCellarObjects) {
     this.myCellarObjects = myCellarObjects;
     initialize();
@@ -288,7 +283,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     }
 
     if (MyCellarRadioButtonXML.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML.toString()))) {
+      if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML))) {
         //"Le fichier saisi ne possede pas une extension XML: " + str_tmp3);
         end.setText("");
         Erreur.showSimpleErreur(MessageFormat.format(getError("Error087"), nom));
@@ -306,7 +301,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         end.setText(getError("Error.exportError"));
       }
     } else if (MyCellarRadioButtonHTML.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_HTML.toString()))) {
+      if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_HTML))) {
         //"Le fichier saisi ne possede pas une extension HTML: " + str_tmp3);
         end.setText("");
         Erreur.showSimpleErreur(MessageFormat.format(getError("Error107"), nom));
@@ -322,7 +317,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         end.setText(getError("Error.exportError"));
       }
     } else if (MyCellarRadioButtonCSV.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_CSV.toString()))) {
+      if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_CSV))) {
         //"Le fichier saisi ne possede pas une extension CSV: " + str_tmp3);
         end.setText("");
         Erreur.showSimpleErreur(MessageFormat.format(getError("Error108"), nom));
@@ -339,7 +334,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonXLS.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(nom, Arrays.asList(Filtre.FILTRE_XLSX.toString(), Filtre.FILTRE_XLS.toString(), Filtre.FILTRE_ODS.toString()))) {
+      if (MyCellarControl.hasInvalidExtension(nom, asList(Filtre.FILTRE_XLSX, Filtre.FILTRE_XLS, Filtre.FILTRE_ODS))) {
         end.setText("");
         Erreur.showSimpleErreur(MessageFormat.format(getError("Error.notAnExcelFile"), nom));
         valider.setEnabled(true);
@@ -357,7 +352,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonPDF.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_PDF.toString()))) {
+      if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_PDF))) {
         //"Le fichier saisi ne possede pas une extension PDF: " + str_tmp3);
         end.setText("");
         Erreur.showSimpleErreur(MessageFormat.format(getError("Error157"), nom));

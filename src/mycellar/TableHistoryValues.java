@@ -25,8 +25,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 24/05/22
+ * @version 3.5
+ * @since 08/09/24
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -34,18 +34,21 @@ class TableHistoryValues extends AbstractTableModel {
   static final int DATE = 1;
   static final int TYPE = 2;
   static final int ACTION = 4;
-  private static final long serialVersionUID = 2991755646049419440L;
   private static final int LABEL = 3;
   private static final int MAX_ROWS = 10;
   private final List<String> columnList = new LinkedList<>();
-  private final boolean firstcolumn;
+  private final boolean withFirstColumnEmpty;
   private List<History> fullList = new ArrayList<>();
   private List<History> displayList = new LinkedList<>();
   private Boolean[] booleanTab = null;
 
-  TableHistoryValues(boolean firstcolumn) {
-    this.firstcolumn = firstcolumn;
-    if (firstcolumn) {
+  TableHistoryValues() {
+    this(false);
+  }
+
+  TableHistoryValues(boolean withFirstColumnEmpty) {
+    this.withFirstColumnEmpty = withFirstColumnEmpty;
+    if (withFirstColumnEmpty) {
       columnList.add("");
     }
     columnList.add(getLabel("History.Date"));
@@ -67,7 +70,7 @@ class TableHistoryValues extends AbstractTableModel {
   @Override
   public Object getValueAt(int row, int column) {
     History h = displayList.get(row);
-    if (!firstcolumn) {
+    if (!withFirstColumnEmpty) {
       column++;
     }
     switch (column) {
@@ -140,7 +143,7 @@ class TableHistoryValues extends AbstractTableModel {
 
   @Override
   public Class<?> getColumnClass(int column) {
-    if (!firstcolumn) {
+    if (!withFirstColumnEmpty) {
       column++;
     }
 
@@ -148,13 +151,12 @@ class TableHistoryValues extends AbstractTableModel {
       return LocalDate.class;
     }
 
-    Class<?> dataType = super.getColumnClass(column);
-    return dataType;
+    return super.getColumnClass(column);
   }
 
   @Override
   public boolean isCellEditable(int row, int column) {
-    if (!firstcolumn) {
+    if (!withFirstColumnEmpty) {
       column++;
     }
     return column == ACTION || column == SELECT;
@@ -162,7 +164,7 @@ class TableHistoryValues extends AbstractTableModel {
 
   @Override
   public void setValueAt(Object value, int row, int column) {
-    if (!firstcolumn) {
+    if (!withFirstColumnEmpty) {
       column++;
     }
     switch (column) {
@@ -223,7 +225,7 @@ class TableHistoryValues extends AbstractTableModel {
       fullList = list;
       displayList = new LinkedList<>();
       booleanTab = new Boolean[list.size()];
-      if (firstcolumn) {
+      if (withFirstColumnEmpty) {
         displayList.addAll(list);
       } else {
         Iterator<History> it = list
@@ -247,7 +249,7 @@ class TableHistoryValues extends AbstractTableModel {
   }
 
   /**
-   * setFilter: Filtre l'historique
+   * filter the history
    *
    * @param filter int
    */

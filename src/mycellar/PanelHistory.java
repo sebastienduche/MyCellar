@@ -28,7 +28,7 @@ public final class PanelHistory extends JPanel {
 
   public PanelHistory() {
     setLayout(new MigLayout("", "[grow]", "[]"));
-    model = new TableHistoryValues(false);
+    model = new TableHistoryValues();
     table = new JTable(model);
     add(table, "grow, wrap");
     add(new JPanel(), "grow, push, wrap");

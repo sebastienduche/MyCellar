@@ -18,8 +18,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 17/10/22
+ * @version 0.9
+ * @since 08/09/24
  */
 public class ComplexPlace extends AbstractPlace {
 
@@ -131,10 +131,6 @@ public class ComplexPlace extends AbstractPlace {
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = null;
   }
 
-  public void clearStorage(PlacePosition place) {
-    storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = null;
-  }
-
   public void updatePlace(List<Part> listPart) {
     Debug("Updating the list of places: ");
     listPart.forEach(part -> Debug(part.toString()));
@@ -201,7 +197,8 @@ public class ComplexPlace extends AbstractPlace {
 
 
   public int getMaxColumCountAt(int part) {
-    return partList.get(part).getRows().stream().mapToInt(Row::getColumnCount).max().getAsInt();
+    return partList.get(part).getRows().stream().mapToInt(Row::getColumnCount).max()
+        .orElse(0);
   }
 
   public int getMaxColumCount() {

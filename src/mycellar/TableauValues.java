@@ -18,12 +18,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 17/10/22
+ * @version 2.2
+ * @since 08/09/24
  */
 class TableauValues extends AbstractTableModel {
-  public static final int ETAT = 0;
-  static final long serialVersionUID = 220605;
+  public static final int STATE = 0;
   private final String[] columnNames = {"", getLabel("Main.Storage"), getLabel("Storage.NumberLines"), getLabel("Storage.NumberOf", LabelProperty.PLURAL)};
 
   private final List<AbstractPlace> list = new LinkedList<>();
@@ -43,7 +42,7 @@ class TableauValues extends AbstractTableModel {
   public Object getValueAt(int row, int column) {
     AbstractPlace rangement = list.get(row);
     switch (column) {
-      case 0:
+      case STATE:
         return listBoolean.get(row);
       case 1:
         return rangement.getName();
@@ -80,7 +79,7 @@ class TableauValues extends AbstractTableModel {
 
   @Override
   public boolean isCellEditable(int row, int column) {
-    return (column == ETAT);
+    return (column == STATE);
   }
 
   @Override

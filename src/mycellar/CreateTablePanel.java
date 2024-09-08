@@ -93,7 +93,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     table = new JTable(tableauValues);
     table.setAutoCreateRowSorter(true);
     TableColumnModel tcm = table.getColumnModel();
-    TableColumn tc = tcm.getColumn(TableauValues.ETAT);
+    TableColumn tc = tcm.getColumn(TableauValues.STATE);
     tc.setCellRenderer(new CheckboxCellRenderer());
     tc.setCellEditor(new CheckboxCellEditor());
     tc.setMinWidth(25);
@@ -242,7 +242,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     int row = 0;
     LinkedList<AbstractPlace> rangements = new LinkedList<>();
     do {
-      if (tableauValues.getValueAt(row, TableauValues.ETAT).equals(Boolean.TRUE)) {
+      if (tableauValues.getValueAt(row, TableauValues.STATE).equals(Boolean.TRUE)) {
         rangements.add(tableauValues.getRangementAt(row));
       }
       row++;

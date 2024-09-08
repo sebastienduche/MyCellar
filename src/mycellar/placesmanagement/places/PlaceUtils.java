@@ -67,8 +67,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.6
- * @since 30/12/22
+ * @version 5.7
+ * @since 08/09/24
  */
 public final class PlaceUtils {
 
@@ -511,6 +511,7 @@ public final class PlaceUtils {
             nLine += nNbLinePart;
           }
           if (place.isSimplePlace()) {
+            assert place instanceof SimplePlace;
             for (int k = 0; k < place.getCountCellUsed(j - 1); k++) {
               nLine++;
               final IMyCellarObject b = ((SimplePlace) place).getObjectAt(j - 1, k);
@@ -523,6 +524,7 @@ public final class PlaceUtils {
               }
             }
           } else {
+            assert place instanceof ComplexPlace;
             ComplexPlace complexPlace = (ComplexPlace) place;
             for (int k = 1; k <= complexPlace.getLineCountAt(j - 1); k++) {
               nLine++;

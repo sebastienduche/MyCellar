@@ -21,6 +21,8 @@ public interface IAbstractPlace {
 
   public boolean isComplexPlace();
 
+  public boolean isIncorrectNumPlace(int numPlace);
+
   public String getName();
 
   public int getPartCount();

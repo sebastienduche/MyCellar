@@ -90,6 +90,11 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
+  public boolean isIncorrectNumPlace(int numPlace) {
+    return numPlace < 0 || numPlace >= partCount;
+  }
+
+  @Override
   public int getCountCellUsed(int part) {
     int resul = 0;
     int nb_ligne = getLineCountAt(part);
@@ -189,7 +194,7 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   public boolean isExistingCell(int part, int line, int column) {
-    if (isInexistingNumPlace(part)) {
+    if (isIncorrectNumPlace(part)) {
       return false;
     }
     if (getLineCountAt(part) <= line) {

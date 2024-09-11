@@ -52,10 +52,6 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
     this.defaultPlace = defaultPlace;
   }
 
-  public boolean isInexistingNumPlace(int numPlace) {
-    return numPlace < 0 || numPlace >= partCount;
-  }
-
   @Override
   public void removeObject(MyCellarObject myCellarObject) throws MyCellarException {
     clearStorage(myCellarObject);

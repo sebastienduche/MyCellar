@@ -118,7 +118,7 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  public boolean isInexistingNumPlace(int numPlace) {
+  public boolean isIncorrectNumPlace(int numPlace) {
     return numPlace < partNumberIncrement || numPlace >= partCount + partNumberIncrement;
   }
 

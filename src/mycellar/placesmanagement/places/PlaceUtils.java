@@ -688,7 +688,7 @@ public final class PlaceUtils {
       }
       final AbstractPlace rangement = bouteille.getAbstractPlace();
       if (rangement.isSimplePlace()) {
-        if (rangement.isInexistingNumPlace(bouteille.getNumLieu())) {
+        if (rangement.isIncorrectNumPlace(bouteille.getNumLieu())) {
           // Numero de rangement inexistant
           Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: " + bouteille.getNumLieu() + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
@@ -703,7 +703,7 @@ public final class PlaceUtils {
         }
       } else {
         ComplexPlace complexPlace = (ComplexPlace) rangement;
-        if (rangement.isInexistingNumPlace(bouteille.getNumLieu() - 1)) {
+        if (rangement.isIncorrectNumPlace(bouteille.getNumLieu() - 1)) {
           // Numero de rangement inexistant
           Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement()));

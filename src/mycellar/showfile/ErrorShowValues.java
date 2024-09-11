@@ -277,7 +277,7 @@ public class ErrorShowValues extends TableShowValues {
                 b.setNumLieu(place.getPart());
                 b.setLigne(place.getLine());
                 b.setColonne(place.getColumn());
-                status[row] = place.hasValidPlace();
+                status[row] = abstractPlace.canAddObjectAt(place);
               } else {
                 status[row] = Boolean.FALSE;
               }

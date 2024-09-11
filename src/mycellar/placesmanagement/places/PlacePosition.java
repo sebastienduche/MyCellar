@@ -9,8 +9,8 @@ import mycellar.Program;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 17/10/22
+ * @version 1.5
+ * @since 11/09/24
  */
 
 public class PlacePosition {
@@ -43,13 +43,6 @@ public class PlacePosition {
 
   public int getColumn() {
     return oneBased ? column : column + 1;
-  }
-
-  public boolean hasValidPlace() {
-    if (hasPlace()) {
-      return abstractPlace.canAddObjectAt(this);
-    }
-    return false;
   }
 
   /**

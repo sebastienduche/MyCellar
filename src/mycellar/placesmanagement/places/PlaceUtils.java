@@ -67,8 +67,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.7
- * @since 08/09/24
+ * @version 5.8
+ * @since 11/09/24
  */
 public final class PlaceUtils {
 
@@ -535,7 +535,7 @@ public final class PlaceUtils {
               final SXSSFRow rowBottle = sheet.createRow(nLine);
               for (int l = 1; l <= nCol; l++) {
                 int finalL = l;
-                place.getObject(new PlacePosition.PlacePositionBuilder(place)
+                complexPlace.getObject(new PlacePosition.PlacePositionBuilder(place)
                     .withNumPlace(j)
                     .withLine(k)
                     .withColumn(l)
@@ -702,18 +702,19 @@ public final class PlaceUtils {
           Program.addError(new MyCellarError(FULL_BOX, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
         }
       } else {
+        ComplexPlace complexPlace = (ComplexPlace) rangement;
         if (rangement.isInexistingNumPlace(bouteille.getNumLieu() - 1)) {
           // Numero de rangement inexistant
           Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement()));
           continue;
         }
-        if (!((ComplexPlace) rangement).isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
+        if (!complexPlace.isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
           // Cellule inexistante
           Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
         } else {
-          final MyCellarObject myCellarObject = (rangement.getObject(bouteille.getPlacePosition())).orElse(null);
+          final MyCellarObject myCellarObject = complexPlace.getObject(bouteille.getPlacePosition()).orElse(null);
           if (myCellarObject != null && !myCellarObject.equals(bouteille)) {
             // Cellule occupee
             Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());

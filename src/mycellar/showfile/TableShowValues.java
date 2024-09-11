@@ -8,6 +8,7 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
@@ -17,7 +18,6 @@ import javax.swing.table.AbstractTableModel;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.MyCellarUtils.parseIntOrError;
@@ -32,8 +32,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.3
- * @since 25/12/23
+ * @version 6.4
+ * @since 11/09/24
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -183,29 +183,23 @@ class TableShowValues extends AbstractTableModel {
 
         if (!bError && (b.getEmplacement().compareTo(empl) != 0 || b.getNumLieu() != num_empl || b.getLigne() != line || b.getColonne() != column1)) {
           // Controle de l'emplacement de la bouteille
-//          int tmpNumEmpl = num_empl;
-//          if (!rangement.isSimplePlace()) {
-//            tmpNumEmpl--;
-//          } else {
-//            tmpNumEmpl -= ((SimplePlace) rangement).getPartNumberIncrement();
-//          }
           if (rangement.canAddObjectAt(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
               .withNumPlace(num_empl)
               .withLine(line)
               .withColumn(column1).build())) {
-//          if (rangement.canAddObjectAt(tmpNumEmpl, tmpLine, tmpCol)) {
-            Optional<MyCellarObject> bTemp = Optional.empty();
-            if (!rangement.isSimplePlace()) {
-              bTemp = rangement.getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
+            boolean isPresent = false;
+            if (rangement.isComplexPlace()) {
+              final IMyCellarObject bouteille = ((ComplexPlace)rangement).getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
                   .withNumPlace(num_empl)
                   .withLine(line)
                   .withColumn(column1)
-                  .build());
+                  .build()).orElse(null);
+              if (bouteille != null) {
+                isPresent = true;
+                Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
+              }
             }
-            if (bTemp.isPresent()) {
-              final IMyCellarObject bouteille = bTemp.get();
-              Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
-            } else {
+            if (!isPresent) {
               if (column == PLACE) {
                 b.setEmplacement((String) value);
               } else if (column == NUM_PLACE) {

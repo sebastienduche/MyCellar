@@ -4,7 +4,6 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
 
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Titre : Cave &agrave; vin
@@ -13,8 +12,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 17/10/22
+ * @version 0.9
+ * @since 11/09/24
  */
 public interface IAbstractPlace {
 
@@ -39,8 +38,6 @@ public interface IAbstractPlace {
   public void updateToStock(MyCellarObject myCellarObject);
 
   public boolean canAddObjectAt(PlacePosition place);
-
-  public Optional<MyCellarObject> getObject(PlacePosition place);
 
   public String toXml();
 

@@ -11,6 +11,7 @@ import mycellar.core.text.LabelProperty;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.SimplePlace;
 
@@ -33,8 +34,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 31/12/23
+ * @version 3.5
+ * @since 11/09/24
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -147,7 +148,7 @@ public class ErrorShowValues extends TableShowValues {
       case BUTTON:
         AbstractPlace abstractPlace1 = b.getAbstractPlace();
         if (abstractPlace1 != null && abstractPlace1.canAddObjectAt(b.getPlacePosition())) {
-          if (abstractPlace1.isSimplePlace() || (abstractPlace1.isComplexPlace() && abstractPlace1.getObject(b.getPlacePosition()).isEmpty())) {
+          if (abstractPlace1.isSimplePlace() || (abstractPlace1.isComplexPlace() && ((ComplexPlace)abstractPlace1).getObject(b.getPlacePosition()).isEmpty())) {
             error.setSolved(true);
             Program.getStorage().addWine(b);
             editable[row] = Boolean.FALSE;
@@ -233,8 +234,8 @@ public class ErrorShowValues extends TableShowValues {
               .withLine(line)
               .withColumn(column1).build())) {
             MyCellarObject searchObject = null;
-            if (!abstractPlace.isSimplePlace()) {
-              searchObject = abstractPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
+            if (abstractPlace.isComplexPlace()) {
+              searchObject = ((ComplexPlace)abstractPlace).getObject(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
                   .withNumPlace(num_empl)
                   .withLine(line)
                   .withColumn(column1)

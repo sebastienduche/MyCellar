@@ -39,6 +39,7 @@ import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
+import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
@@ -84,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 31/12/23
+ * @version 0.2
+ * @since 10/09/24
  */
 
 public abstract class AbstractShowFilePanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -702,7 +703,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
               Program.getStorage().addHistory(HistoryState.ADD, b);
               Program.getStorage().addWine(b);
             } else {
-              if (r.getObject(b.getPlacePosition()).isEmpty()) {
+              if (((ComplexPlace)r).getObject(b.getPlacePosition()).isEmpty()) {
                 Program.getStorage().addHistory(HistoryState.ADD, b);
                 Program.getStorage().addWine(b);
               } else {
@@ -790,8 +791,8 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       }
       if (abstractPlace != null && (place != null && abstractPlace.canAddObjectAt(place))) {
         boolean hasObject = false;
-        if (!abstractPlace.isSimplePlace()) {
-          final MyCellarObject bouteille = abstractPlace.getObject(place).orElse(null);
+        if (abstractPlace.isComplexPlace()) {
+          final MyCellarObject bouteille = ((ComplexPlace)abstractPlace).getObject(place).orElse(null);
           if (bouteille != null) {
             Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
             hasObject = true;

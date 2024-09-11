@@ -46,8 +46,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.1
- * @since 13/09/22
+ * @version 4.2
+ * @since 11/09/24
  */
 
 public class XmlUtils {
@@ -313,7 +313,7 @@ public class XmlUtils {
                 if (preview) {
                   vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
                 } else {
-                  rangement.getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
+                  complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
                           .withNumPlace(i)
                           .withLine(j)
                           .withColumn(k)

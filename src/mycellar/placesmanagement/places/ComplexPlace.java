@@ -18,8 +18,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 08/09/24
+ * @version 1.0
+ * @since 10/09/24
  */
 public class ComplexPlace extends AbstractPlace {
 
@@ -85,6 +85,11 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
+  public boolean isSimplePlace() {
+    return false;
+  }
+
+  @Override
   public int getCountCellUsed(int part) {
     int resul = 0;
     int nb_ligne = getLineCountAt(part);
@@ -110,7 +115,6 @@ public class ComplexPlace extends AbstractPlace {
     return true;
   }
 
-  @Override
   public Optional<MyCellarObject> getObject(PlacePosition place) {
     final MyCellarObject myCellarObject = storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()];
     return Optional.ofNullable(myCellarObject);

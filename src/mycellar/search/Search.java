@@ -284,11 +284,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
             Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
               final AbstractPlace abstractPlace = myCellarObject.getAbstractPlace();
-              if (abstractPlace != null) {
-                abstractPlace.removeObject(myCellarObject);
-              } else {
-                Program.getStorage().deleteWine(myCellarObject);
-              }
+              abstractPlace.removeObject(myCellarObject);
             } catch (MyCellarException myCellarException) {
               Program.showException(myCellarException);
             }

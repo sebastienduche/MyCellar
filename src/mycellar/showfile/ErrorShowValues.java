@@ -147,8 +147,8 @@ public class ErrorShowValues extends TableShowValues {
         break;
       case BUTTON:
         AbstractPlace abstractPlace1 = b.getAbstractPlace();
-        if (abstractPlace1 != null && abstractPlace1.canAddObjectAt(b.getPlacePosition())) {
-          if (abstractPlace1.isSimplePlace() || (abstractPlace1.isComplexPlace() && ((ComplexPlace)abstractPlace1).getObject(b.getPlacePosition()).isEmpty())) {
+        if (abstractPlace1.canAddObjectAt(b.getPlacePosition())) {
+          if (abstractPlace1.isSimplePlace() || (abstractPlace1.isComplexPlace() && ((ComplexPlace) abstractPlace1).getObject(b.getPlacePosition()).isEmpty())) {
             error.setSolved(true);
             Program.getStorage().addWine(b);
             editable[row] = Boolean.FALSE;
@@ -222,7 +222,7 @@ public class ErrorShowValues extends TableShowValues {
         }
 
         if (!bError && (column.equals(Column.NUM_PLACE) || column.equals(Column.LINE) || column.equals(Column.COLUMN))) {
-          if (b.getAbstractPlace() != null && !b.getAbstractPlace().isSimplePlace() && nValueToCheck <= 0) {
+          if (!b.getAbstractPlace().isSimplePlace() && nValueToCheck <= 0) {
             Erreur.showSimpleErreur(getError("Error.enterNumericValueAboveZero"));
             bError = true;
           }
@@ -235,7 +235,7 @@ public class ErrorShowValues extends TableShowValues {
               .withColumn(column1).build())) {
             MyCellarObject searchObject = null;
             if (abstractPlace.isComplexPlace()) {
-              searchObject = ((ComplexPlace)abstractPlace).getObject(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
+              searchObject = ((ComplexPlace) abstractPlace).getObject(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
                   .withNumPlace(num_empl)
                   .withLine(line)
                   .withColumn(column1)

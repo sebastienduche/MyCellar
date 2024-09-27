@@ -11,7 +11,6 @@ import mycellar.core.datas.worksheet.WorkSheetData;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
@@ -255,14 +254,12 @@ public class SerializedStorage implements Storage {
         Debug("DeleteWine: Deleted by Id. " + myCellarObject);
         found = listMyCellarObject.remove(collect.getFirst());
       } else {
-        AbstractPlace rangement = myCellarObject.getAbstractPlace();
-        boolean isCaisse = rangement == null || rangement.isSimplePlace();
         final List<MyCellarObject> resultBouteilles = getAllList().stream()
             .filter(
                 bouteille -> emplacement.equals(bouteille.getEmplacement())
                     && nom.equals(bouteille.getNom())
                     && numLieu == bouteille.getNumLieu()
-                    && (isCaisse ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(toList());
+                    && (myCellarObject.getAbstractPlace().isSimplePlace() ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(toList());
         if (resultBouteilles.isEmpty()) {
           Debug("ERROR: DeleteWine: Unable to find the object!");
           throw new MyCellarException("Unable to delete object: " + myCellarObject);

@@ -87,6 +87,7 @@ public interface IMyCellarObject {
   String getComment();
 
   void setValue(MyCellarFields field, String value);
+
   void validateValue(MyCellarFields field, String value) throws MyCellarException;
 
   boolean isNonVintage();

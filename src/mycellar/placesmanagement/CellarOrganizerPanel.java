@@ -529,11 +529,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
   MyCellarObjectDraggingLabel(final MyCellarObject myCellarObject) {
     super();
     this.myCellarObject = myCellarObject;
-    int width = 100;
-    AbstractPlace abstractPlace = myCellarObject.getAbstractPlace();
-    if (abstractPlace != null && abstractPlace.isSimplePlace()) {
-      width = 400;
-    }
+    int width = myCellarObject.getAbstractPlace().isSimplePlace() ? 400 : 100;
     setLayout(new MigLayout("", "5px[" + width + ":" + width + ":" + width + "][10:10:10]0px", "0px[align center, grow]0px"));
     if (myCellarObject instanceof Bouteille bouteille) {
       if (bouteille.isWhiteWine()) {
@@ -558,11 +554,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
             Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
               final AbstractPlace abstractPlace = myCellarObject.getAbstractPlace();
-              if (abstractPlace != null) {
-                abstractPlace.removeObject(myCellarObject);
-              } else {
-                Program.getStorage().deleteWine(myCellarObject);
-              }
+              abstractPlace.removeObject(myCellarObject);
               ProgramPanels.getSearch().ifPresent(search -> search.removeObject(myCellarObject));
               ProgramPanels.updateAllPanels();
             } catch (MyCellarException e) {

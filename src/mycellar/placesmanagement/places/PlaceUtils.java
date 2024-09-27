@@ -89,7 +89,7 @@ public final class PlaceUtils {
     ProgramPanels.getSearch().ifPresent(search -> search.removeObject(oldObject));
 
     final AbstractPlace abstractPlace = newObject.getAbstractPlace();
-    if (!abstractPlace.isSimplePlace()) {
+    if (abstractPlace.isComplexPlace()) {
       abstractPlace.updateToStock(newObject);
     }
     Debug("Replace object Done");
@@ -631,8 +631,10 @@ public final class PlaceUtils {
     }
 
     final String placeName = name.strip();
-    final boolean found = getAbstractPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
-    return found || placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR);
+    if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
+      return true;
+    }
+    return getAbstractPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
   }
 
   public static AbstractPlace getPlaceByName(final String name) {
@@ -640,11 +642,11 @@ public final class PlaceUtils {
     if (TEMP_PLACE.equals(placeName)) {
       return STOCK_PLACE;
     }
-    return Program.getAbstractPlaces()
+    return getAbstractPlaces()
         .stream()
         .filter(rangement -> filterOnAbstractPlaceName(rangement, placeName))
         .findFirst()
-        .orElse(null);
+        .orElseThrow(() -> new IllegalArgumentException("Place not found with name: " + name));
   }
 
   private static boolean filterOnAbstractPlaceName(AbstractPlace rangement, String placeName) {

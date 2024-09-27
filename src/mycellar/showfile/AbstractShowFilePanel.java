@@ -205,7 +205,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
 
       @Override
       Object getDisplayValue(MyCellarObject b) {
-        if (b.getAbstractPlace() == null || b.getAbstractPlace().isSimplePlace()) {
+        if (b.getAbstractPlace().isSimplePlace()) {
           return "";
         }
         return Integer.toString(b.getLigne());
@@ -220,7 +220,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
 
       @Override
       Object getDisplayValue(MyCellarObject b) {
-        if (b.getAbstractPlace() == null || b.getAbstractPlace().isSimplePlace()) {
+        if (b.getAbstractPlace().isSimplePlace()) {
           return "";
         }
         return Integer.toString(b.getColonne());
@@ -637,11 +637,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
           for (MyCellarObject b : toDeleteList) {
             Program.getStorage().addHistory(HistoryState.DEL, b);
             final AbstractPlace rangement = b.getAbstractPlace();
-            if (rangement != null) {
-              rangement.removeObject(b);
-            } else {
-              Program.getStorage().deleteWine(b);
-            }
+            rangement.removeObject(b);
             Program.setToTrash(b);
             workingBottles.remove(b);
           }
@@ -703,7 +699,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
               Program.getStorage().addHistory(HistoryState.ADD, b);
               Program.getStorage().addWine(b);
             } else {
-              if (((ComplexPlace)r).getObject(b.getPlacePosition()).isEmpty()) {
+              if (((ComplexPlace) r).getObject(b.getPlacePosition()).isEmpty()) {
                 Program.getStorage().addHistory(HistoryState.ADD, b);
                 Program.getStorage().addWine(b);
               } else {
@@ -792,7 +788,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       if (abstractPlace != null && (place != null && abstractPlace.canAddObjectAt(place))) {
         boolean hasObject = false;
         if (abstractPlace.isComplexPlace()) {
-          final MyCellarObject bouteille = ((ComplexPlace)abstractPlace).getObject(place).orElse(null);
+          final MyCellarObject bouteille = ((ComplexPlace) abstractPlace).getObject(place).orElse(null);
           if (bouteille != null) {
             Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
             hasObject = true;

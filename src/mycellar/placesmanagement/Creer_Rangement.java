@@ -440,6 +440,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         }
         int newNbRow = part.getRowSize();
         if (nbRow > newNbRow) {
+          // Reduce the number of row, checking that the lines are empty
           int nb = 0;
           for (int j = newNbRow; j < nbRow; j++) {
             nb += complexPlace.getNbCaseUseInLine(i, j);
@@ -462,6 +463,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
             }
             int newNbCol = part.getRow(j).getColumnCount();
             if (nbCol > newNbCol) {
+              // Reduce the number of columns, checking that the lines are empty
               for (int k = newNbCol; k < nbCol; k++) {
                 if (!canContinue) {
                   Debug("ERROR: canContinue false, skipping column");

@@ -162,6 +162,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
             .forEach(b -> {
               JPanel[][] place = places.get(b.getNumLieu() - simplePlace.getPartNumberIncrement());
               int line = mapEmplSize.get(b.getNumLieu());
+              if (line >= place.length) {
+                throw new RuntimeException("Unable to add a bottle at index [" + line + "]: " + b);
+              }
               ((RangementCell) place[line++][0]).addBottle(new MyCellarObjectDraggingLabel(b));
               mapEmplSize.put(b.getNumLieu(), line);
             });

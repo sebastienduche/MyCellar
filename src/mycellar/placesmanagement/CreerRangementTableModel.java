@@ -5,6 +5,7 @@ import mycellar.placesmanagement.places.Part;
 import mycellar.placesmanagement.places.Row;
 
 import javax.swing.table.AbstractTableModel;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 class CreerRangementTableModel extends AbstractTableModel {
 
+  @Serial
   private static final long serialVersionUID = -933488036527447807L;
   private static final int NAME = 0;
   private static final int ROW = 1;

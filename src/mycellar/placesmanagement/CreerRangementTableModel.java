@@ -21,8 +21,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 29/04/22
+ * @version 1.4
+ * @since 01/03/25
  */
 
 class CreerRangementTableModel extends AbstractTableModel {
@@ -34,9 +34,10 @@ class CreerRangementTableModel extends AbstractTableModel {
   private static final int COLUMN = 2;
   private final List<Column> columns = new LinkedList<>();
   private final HashMap<Integer, Integer> mapLine = new HashMap<>();
-  private List<Part> rows = new LinkedList<>();
+  private List<Part> parts = new LinkedList<>();
   private HashMap<Integer, Integer> mapPart = new HashMap<>();
   private boolean sameColumnNumber = false;
+  private boolean modified = false;
 
   CreerRangementTableModel() {
     columns.add(new Column(NAME, getLabel("Storage.Shelve")));
@@ -52,14 +53,14 @@ class CreerRangementTableModel extends AbstractTableModel {
   @Override
   public int getRowCount() {
     if (sameColumnNumber) {
-      return rows.size();
+      return parts.size();
     } else {
       int count = 0;
-      for (Part p : rows) {
-        if (p.getRowSize() == 0) {
+      for (Part p : parts) {
+        if (p.rows().isEmpty()) {
           count++;
         } else {
-          count += p.getRowSize();
+          count += p.rows().size();
         }
       }
       return count;
@@ -69,43 +70,39 @@ class CreerRangementTableModel extends AbstractTableModel {
   @Override
   public Object getValueAt(int row, int col) {
     if (sameColumnNumber) {
-      Part p = rows.get(row);
+      Part p = parts.get(row);
       if (p == null) {
         return "";
       }
-      switch (col) {
-        case NAME:
-          return getLabel("Storage.Shelve") + SPACE + p.getNumber();
-        case ROW:
-          return p.getRows().size();
-        case COLUMN:
-          if (p.getRowSize() > 0) {
-            return p.getRow(0).getColumnCount();
+      return switch (col) {
+        case NAME -> getLabel("Storage.Shelve") + SPACE + p.number();
+        case ROW -> p.rows().size();
+        case COLUMN -> {
+          if (!p.rows().isEmpty()) {
+            yield p.getRowAt(0).getColumnCount();
           }
-          return ZERO;
-        default:
-          return "";
-      }
+          yield ZERO;
+        }
+        default -> "";
+      };
     } else {
       int part = mapPart.get(row);
       int line = mapLine.get(row);
-      Part p = rows.get(part);
+      Part p = parts.get(part);
       if (p == null) {
         return "";
       }
-      switch (col) {
-        case NAME:
-          return getLabel("Storage.Shelve") + SPACE + p.getNumber() + SPACE + getLabel("Storage.NumberLines");
-        case ROW:
-          return line;
-        case COLUMN:
-          if (p.getRow(line - 1) != null) {
-            return p.getRow(line - 1).getColumnCount();
+      return switch (col) {
+        case NAME -> getLabel("Storage.Shelve") + SPACE + p.number() + SPACE + getLabel("Storage.NumberLines");
+        case ROW -> line;
+        case COLUMN -> {
+          if (p.getRowAt(line - 1) != null) {
+            yield p.getRowAt(line - 1).getColumnCount();
           }
-          return ZERO;
-        default:
-          return "";
-      }
+          yield ZERO;
+        }
+        default -> "";
+      };
     }
   }
 
@@ -114,7 +111,7 @@ class CreerRangementTableModel extends AbstractTableModel {
     if (col >= columns.size()) {
       return "";
     }
-    return columns.get(col).getLabel();
+    return columns.get(col).label();
   }
 
   @Override
@@ -124,13 +121,14 @@ class CreerRangementTableModel extends AbstractTableModel {
 
   @Override
   public void setValueAt(Object arg0, int row, int col) {
+    modified = true;
     Part p;
     if (sameColumnNumber) {
-      p = rows.get(row);
+      p = parts.get(row);
     } else {
       // Get part then the line
       int part = mapPart.get(row);
-      p = rows.get(part);
+      p = parts.get(part);
     }
     if (p == null) {
       return;
@@ -141,14 +139,18 @@ class CreerRangementTableModel extends AbstractTableModel {
         if (nRow == -1) {
           return;
         }
-        p.setRows(nRow);
+        if (nRow < p.rows().size()) {
+          p.decreaseRows(nRow);
+        } else if (nRow > p.rows().size()) {
+          p.increaseRows(nRow);
+        }
         if (!sameColumnNumber) {
           updateValues();
           fireTableDataChanged();
           fireTableStructureChanged();
-        } else if (p.getRowSize() > 0) {
-          final int nCol = p.getRow(0).getColumnCount();
-          for (Row r : p.getRows()) {
+        } else if (!p.rows().isEmpty()) {
+          final int nCol = p.getRowAt(0).getColumnCount();
+          for (Row r : p.rows()) {
             r.setColumnCount(nCol);
           }
         }
@@ -159,18 +161,18 @@ class CreerRangementTableModel extends AbstractTableModel {
           return;
         }
         if (sameColumnNumber) {
-          for (Row r : p.getRows()) {
+          for (Row r : p.rows()) {
             r.setColumnCount(nCol);
           }
         } else {
           int line = mapLine.get(row);
-          p.getRow(line - 1).setColumnCount(nCol);
+          p.getRowAt(line - 1).setColumnCount(nCol);
         }
     }
   }
 
   public void setValues(List<Part> parts) {
-    rows = parts;
+    this.parts = parts;
     updateValues();
     fireTableDataChanged();
   }
@@ -185,47 +187,35 @@ class CreerRangementTableModel extends AbstractTableModel {
     mapPart = new HashMap<>();
     int index = 0;
     int numPart = 0;
-    for (Part part : rows) {
-      if (sameColumnNumber && part.getRowSize() > 0) {
+    for (Part part : parts) {
+      if (sameColumnNumber && !part.rows().isEmpty()) {
         // Set the number of columns of the first line to all others lines
-        final int col = part.getRow(0).getColumnCount();
-        for (Row r : part.getRows()) {
+        final int col = part.getRowAt(0).getColumnCount();
+        for (Row r : part.rows()) {
           r.setColumnCount(col);
         }
       }
       int line = 1;
-      for (@SuppressWarnings("unused") Row r : part.getRows()) {
+      for (@SuppressWarnings("unused") Row r : part.rows()) {
         mapPart.put(index, numPart);
         mapLine.put(index, line);
         line++;
         index++;
       }
-      if (part.getRowSize() == 0) {
+      if (part.rows().isEmpty()) {
         mapPart.put(index, numPart);
         mapLine.put(index, line);
-        part.setRows(1);
+        part.buildRows(1);
         index++;
       }
       numPart++;
     }
   }
 
+  public boolean isModified() {
+    return modified;
+  }
 }
 
-class Column {
-  private final int id;
-  private final String label;
-
-  Column(int id, String label) {
-    this.id = id;
-    this.label = label;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public String getLabel() {
-    return label;
-  }
+record Column(int id, String label) {
 }

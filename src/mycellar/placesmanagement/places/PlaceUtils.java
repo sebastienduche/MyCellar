@@ -67,8 +67,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.8
- * @since 11/09/24
+ * @version 5.9
+ * @since 01/03/25
  */
 public final class PlaceUtils {
 
@@ -607,16 +607,14 @@ public final class PlaceUtils {
       } else {
         LinkedList<Part> rangement = rangements.get(place);
         while (rangement.size() <= bottle.getNumLieu()) {
-          Part part = new Part(); // rangement.size() + 1
-          part.setNumber(rangement.size());
-          rangement.add(part);
+          rangement.add(new Part(rangement.size(), new LinkedList<>()));
         }
         final Part part = rangement.get(bottle.getNumLieu() == 0 ? 0 : bottle.getNumLieu() - 1);
-        if (part.getRowSize() < bottle.getLigne()) {
-          part.setRows(bottle.getLigne());
+        if (part.rows().size() < bottle.getLigne()) {
+          part.increaseRows(bottle.getLigne());
         }
         if (bottle.getLigne() > 0) {
-          final Row row = part.getRow(bottle.getLigne() - 1);
+          final Row row = part.getRowAt(bottle.getLigne() - 1);
           if (row.getColumnCount() < bottle.getColonne()) {
             row.setColumnCount(bottle.getColonne());
           }

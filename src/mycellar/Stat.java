@@ -71,8 +71,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelForType;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.3
- * @since 08/07/22
+ * @version 10.4
+ * @since 01/03/25
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -598,7 +598,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       removeAll();
       DefaultPieDataset dataset = new DefaultPieDataset();
       for (Part part : complexPlace.getParts()) {
-        dataset.setValue(MessageFormat.format(getLabel("Stats.ShelveNumber"), part.getNumber() + 1), complexPlace.getCountCellUsed(part.getNumber()));
+        dataset.setValue(MessageFormat.format(getLabel("Stats.ShelveNumber"), part.number() + 1), complexPlace.getCountCellUsed(part.number()));
       }
       JFreeChart chart = ChartFactory.createPieChart(complexPlace.getName(),          // chart title
           dataset,                // data

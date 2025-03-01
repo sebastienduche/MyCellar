@@ -13,6 +13,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.text.LabelProperty;
+import mycellar.core.uicomponents.JModifyTextField;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
@@ -42,7 +43,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -62,6 +62,7 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.placesmanagement.places.ComplexPlace.copyParts;
 
 
 /**
@@ -71,15 +72,15 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.8
- * @since 25/12/23
+ * @version 17.9
+ * @since 01/03/25
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
-
+  // TODO Can we manage the modified status correctly?
   private static final char CREER = getLabel("CREER").charAt(0);
   private static final char PREVIEW = getLabel("PREVIEW").charAt(0);
   private final MyCellarComboBox<AbstractPlace> comboPlace = new MyCellarComboBox<>();
-  private final JTextField nom_obj = new JTextField();
+  private final JModifyTextField nom_obj = new JModifyTextField();
   private final MyCellarRadioButton allLinesSameRadio = new MyCellarRadioButton("CreateStorage.AllLinesSame", true);
   private final MyCellarRadioButton notAllLinesSameRadio = new MyCellarRadioButton("CreateStorage.AllLinesNotSame", false);
   private final MyCellarCheckBox isSimplePlaceLimitedCheckbox = new MyCellarCheckBox("CreateStorage.ActivateLimit");
@@ -245,12 +246,11 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     int newValue = Integer.parseInt(partCountSpinner.getValue().toString());
     if (newValue > listPart.size()) {
       while (listPart.size() < newValue) {
-        Part part = new Part(); // listPart.size() + 1
-        part.setNumber(listPart.size());
-        listPart.add(part);
-        if (notAllLinesSameRadio.isSelected()) {
-          part.setRows(1);
-        }
+        listPart.add(new Part(listPart.size(), new LinkedList<>(List.of(new Row(0)))));
+//        listPart.add(part);
+//        if (notAllLinesSameRadio.isSelected()) {
+//          part.setRows(1);
+//        }
       }
     } else {
       while (listPart.size() > newValue) {
@@ -288,7 +288,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       ComplexPlace complexPlace = (ComplexPlace) abstractPlace;
       allLinesSameRadio.setSelected(complexPlace.isSameColumnNumber());
       notAllLinesSameRadio.setSelected(!complexPlace.isSameColumnNumber());
-      listPart = complexPlace.getParts();
+      listPart = copyParts(complexPlace.getParts());
       model.setValues(listPart);
     }
     partCountSpinner.setValue(abstractPlace.getPartCount());
@@ -381,27 +381,26 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         }
       }
     }
-    nom_obj.setText("");
     updateSimplePlace(nom, nbPart, simplePlace);
-    updateView();
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
     Debug("Modifications completed");
     labelCreated.setText(getLabel("CreateStorage.StorageModified"), true);
+    nom_obj.setModified(false);
   }
 
   private void modifyComplexPlace(ComplexPlace complexPlace, String nom) {
     Debug("Modifying complex place...");
     int nbBottles = complexPlace.getTotalCountCellUsed();
     for (Part p : listPart) {
-      if (p.getRows().isEmpty()) {
-        Debug("ERROR: Wrong number of lines on part: " + p.getNumber());
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNumber()));
+      if (p.rows().isEmpty()) {
+        Debug("ERROR: Wrong number of lines on part: " + p.number());
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.number()));
         return;
       }
-      for (Row r : p.getRows()) {
+      for (Row r : p.rows()) {
         if (r.getColumnCount() == 0) {
-          Debug("ERROR: Wrong number of columns on part: " + p.getNumber());
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNumber()));
+          Debug("ERROR: Wrong number of columns on part: " + p.number());
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.number()));
           return;
         }
       }
@@ -411,10 +410,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       complexPlace.setName(nom);
       complexPlace.updatePlace(listPart);
       putTabStock();
-      nom_obj.setText("");
-      updateView();
       ProgramPanels.updateAllPanelsForUpdatingPlaces();
       labelCreated.setText(getLabel("CreateStorage.StorageModified"), true);
+      nom_obj.setModified(false);
     } else {
       if (complexPlace.getPartCount() > listPart.size()) {
         int nb = 0;
@@ -438,7 +436,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         if (i < complexPlace.getPartCount()) {
           nbRow = complexPlace.getLineCountAt(i);
         }
-        int newNbRow = part.getRowSize();
+        int newNbRow = part.rows().size();
         if (nbRow > newNbRow) {
           // Reduce the number of row, checking that the lines are empty
           int nb = 0;
@@ -452,7 +450,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           }
         }
         if (canContinue) {
-          for (int j = 0; j < part.getRowSize(); j++) {
+          for (int j = 0; j < part.rows().size(); j++) {
             if (!canContinue) {
               Debug("ERROR: canContinue false, skipping row");
               break;
@@ -461,7 +459,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
             if (i < complexPlace.getPartCount() && j < complexPlace.getLineCountAt(i)) {
               nbCol = complexPlace.getColumnCountAt(i, j);
             }
-            int newNbCol = part.getRow(j).getColumnCount();
+            int newNbCol = part.getRowAt(j).getColumnCount();
             if (nbCol > newNbCol) {
               // Reduce the number of columns, checking that the lines are empty
               for (int k = newNbCol; k < nbCol; k++) {
@@ -517,9 +515,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         complexPlace.updatePlace(listPart);
       }
       putTabStock();
-      updateView();
       ProgramPanels.updateAllPanelsForUpdatingPlaces();
-      comboPlace.setSelectedIndex(0);
       labelCreated.setText(getLabel("CreateStorage.StorageModified"), true);
     }
   }
@@ -571,13 +567,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     } else {
       Debug("Creating complex place...");
       for (Part p : listPart) {
-        if (bResul && p.getRows().isEmpty()) {
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNumber()));
+        if (bResul && p.rows().isEmpty()) {
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.number()));
           bResul = false;
         }
-        for (Row r : p.getRows()) {
+        for (Row r : p.rows()) {
           if (bResul && r.getColumnCount() == 0) {
-            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNumber()));
+            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.number()));
             bResul = false;
           }
         }
@@ -658,13 +654,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     }
 
     for (Part p : listPart) {
-      if (p.getRows().isEmpty()) {
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNumber()), getError("Error.clickOKBeforePreview"));
+      if (p.rows().isEmpty()) {
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.number()), getError("Error.clickOKBeforePreview"));
         return;
       }
-      for (Row r : p.getRows()) {
+      for (Row r : p.rows()) {
         if (r.getColumnCount() == 0) {
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNumber()), getError("Error.clickOKBeforePreview"));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.number()), getError("Error.clickOKBeforePreview"));
           return;
         }
       }
@@ -685,12 +681,22 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
   @Override
   public boolean tabWillClose(TabEvent event) {
-    if (!toCleanString(nom_obj.getText()).isEmpty()) {
-      String label = modify ? getError("Error.storageModificationIncompleted") : getError("Error.storageCreationIncompleted");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-        return false;
+    if (modify) {
+      if (nom_obj.isModified() || model.isModified()) {
+        String label = getError("Error.storageModificationIncompleted");
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          return false;
+        }
+      }
+    } else {
+      if (!toCleanString(nom_obj.getText()).isEmpty()) {
+        String label = getError("Error.storageCreationIncompleted");
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          return false;
+        }
       }
     }
+    nom_obj.setModified(false);
     Debug("Quitting...");
     labelCreated.setText("");
     comboPlace.setSelectedIndex(0);

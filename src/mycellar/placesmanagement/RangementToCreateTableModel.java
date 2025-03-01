@@ -16,8 +16,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelCode;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 25/05/22
+ * @version 0.8
+ * @since 01/03/25
  */
 public class RangementToCreateTableModel extends AbstractTableModel {
 
@@ -58,7 +58,7 @@ public class RangementToCreateTableModel extends AbstractTableModel {
     final LinkedList<Part> parts = map.get(name);
     int row = 0;
     for (Part part : parts) {
-      row += part.getRowSize();
+      row += part.rows().size();
     }
     return MessageFormat.format(getLabelCode("RangementToCreateTableModel.Message"), parts.size(), row);
   }

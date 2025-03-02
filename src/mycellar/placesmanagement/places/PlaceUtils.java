@@ -67,8 +67,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.9
- * @since 01/03/25
+ * @version 6.0
+ * @since 02/03/25
  */
 public final class PlaceUtils {
 
@@ -675,6 +675,7 @@ public final class PlaceUtils {
     }
     Program.getErrors().clear();
     Program.getAbstractPlaces().forEach(AbstractPlace::resetStockage);
+    Program.getStorage().updateDistinctNames();
 
     for (var bouteille : Program.getStorage().getAllList()) {
       // On ignore les bouteilles qui sont dans le stock temporairement

@@ -85,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.5
- * @since 15/09/22
+ * @version 24.6
+ * @since 02/03/25
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -114,7 +114,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final PanelRequest panelRequest = new PanelRequest();
   private final PanelPlacePosition panelPlace = new PanelPlacePosition(null, false, false, false, true, false, false, true);
   private JTable table;
-  private TextFieldPopup name;
+  private TextFieldPopup searchByName;
   private boolean alreadyFoundItems = false;
   private boolean updateView = false;
   private UpdateViewType updateViewType;
@@ -128,7 +128,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         emptySearchCheck.setSelected(true);
       }
 
-      name = new TextFieldPopup(Program.getStorage().getDistinctNames(), 150) {
+      searchByName = new TextFieldPopup(Program.getStorage().getDistinctNames(), 150) {
         private static final long serialVersionUID = 3894902403893114601L;
 
         @Override
@@ -229,8 +229,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       add(deleteButton, "wrap");
 
       setVisible(true);
-      if (name.isVisible()) {
-        name.requestFocusInWindow();
+      if (searchByName.isVisible()) {
+        searchByName.requestFocusInWindow();
       }
     });
   }
@@ -312,7 +312,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private void cherche_actionPerformed(ActionEvent e) {
     Debug("Cherche_actionPerforming...");
-    name.removeMenu();
+    searchByName.removeMenu();
     updateLabelObjectNumber(false);
     resultInfoLabel.setText(getLabel("Search.InProgress"));
     new Thread(this).start();
@@ -338,7 +338,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   private void searchByText() {
     Debug("Searching by text with pattern");
-    String search = name.getText();
+    String search = searchByName.getText();
     StringBuilder regex = new StringBuilder(search);
     regex = replaceCharInSearch(regex, "*", ".{0,}");
     regex = replaceCharInSearch(regex, "?", ".{1}");
@@ -792,15 +792,16 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
   public void updateTable() {
     SwingUtilities.invokeLater(searchTableModel::fireTableDataChanged);
+    searchByName.setList(Program.getStorage().getDistinctNames());
   }
 
   @Override
   public void cut() {
     if (tabbedPane.getSelectedIndex() == 0) {
-      String text = name.getSelectedText();
+      String text = searchByName.getSelectedText();
       if (text != null) {
-        String fullText = name.getText();
-        name.setText(fullText.substring(0, name.getSelectionStart()) + fullText.substring(name.getSelectionEnd()));
+        String fullText = searchByName.getText();
+        searchByName.setText(fullText.substring(0, searchByName.getSelectionStart()) + fullText.substring(searchByName.getSelectionEnd()));
         Program.CLIPBOARD.copy(text);
       }
     }
@@ -809,15 +810,15 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   @Override
   public void copy() {
     if (tabbedPane.getSelectedIndex() == 0) {
-      Program.CLIPBOARD.copy(name.getSelectedText());
+      Program.CLIPBOARD.copy(searchByName.getSelectedText());
     }
   }
 
   @Override
   public void paste() {
     if (tabbedPane.getSelectedIndex() == 0) {
-      String fullText = name.getText();
-      name.setText(fullText.substring(0, name.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(name.getSelectionEnd()));
+      String fullText = searchByName.getText();
+      searchByName.setText(fullText.substring(0, searchByName.getSelectionStart()) + Program.CLIPBOARD.paste() + fullText.substring(searchByName.getSelectionEnd()));
     }
   }
 
@@ -825,12 +826,12 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     private static final long serialVersionUID = -2125241372841734287L;
 
     private PanelName() {
-      name.setEditable(true);
-      name.addMouseListener(popupListener);
-      name.setFont(FONT_PANEL);
+      searchByName.setEditable(true);
+      searchByName.addMouseListener(popupListener);
+      searchByName.setFont(FONT_PANEL);
       setLayout(new MigLayout("", "[grow]", "[]"));
       add(new MyCellarLabel("Search.Name"), "wrap");
-      add(name, "grow");
+      add(searchByName, "grow");
     }
   }
 

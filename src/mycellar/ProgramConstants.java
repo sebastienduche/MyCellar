@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "5.1.3.6";
+  public static final String INTERNAL_VERSION = "5.1.4.1";
   public static final int VERSION = 78;
   public static final String MAIN_VERSION = VERSION + " BI";
   public static final String DEFAULT_STORAGE_EN = "Default storage";

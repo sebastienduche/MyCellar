@@ -32,15 +32,15 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.9
- * @since 26/12/23
+ * @version 8.0
+ * @since 02/03/25
  */
 
 public class SerializedStorage implements Storage {
 
   private static final HistoryList HISTORY_LIST = new HistoryList();
   private static final WorkSheetList WORKSHEET_LIST = new WorkSheetList();
-  private static final int DISTINCT_NAME_LENGTH = 100;
+  private static final int DISTINCT_NAME_LENGTH = 150;
   private static final int DISTINCT_COMPOSER_ARTIST_LENGTH = 75;
   private final List<String> distinctNames = new LinkedList<>(); // Liste des noms
   private final List<String> distinctComposers = new LinkedList<>(); // Liste des composers
@@ -146,6 +146,18 @@ public class SerializedStorage implements Storage {
         .stream()
         .map(value -> value.length() > DISTINCT_NAME_LENGTH ? value.substring(0, DISTINCT_NAME_LENGTH) : value)
         .collect(toList());
+  }
+
+  @Override
+  public void updateDistinctNames() {
+    distinctNames.clear();
+    getAllList().forEach(
+        myCellarObject -> {
+          if (!distinctNames.contains(myCellarObject.getNom())) {
+            distinctNames.add(myCellarObject.getNom());
+          }
+        }
+    );
   }
 
   @Override

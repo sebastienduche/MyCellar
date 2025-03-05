@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.Component;
 
-import static mycellar.ProgramConstants.FONT_BOUTTON_SMALL;
+import static mycellar.ProgramConstants.FONT_BUTTON_SMALL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
@@ -84,7 +84,7 @@ public class Erreur {
     panel.setLayout(new MigLayout("", "grow", "[]"));
     MyCellarSimpleLabel label2 = new MyCellarSimpleLabel(text2);
     JCheckBox checkNotShow = new JCheckBox(getLabel("Main.DontShowNextTime"));
-    checkNotShow.setFont(FONT_BOUTTON_SMALL);
+    checkNotShow.setFont(FONT_BUTTON_SMALL);
     panel.add(new MyCellarSimpleLabel(text1));
     panel.add(label2, "newline, hidemode 3");
     panel.add(checkNotShow, "newline, hidemode 3, gaptop 15px");

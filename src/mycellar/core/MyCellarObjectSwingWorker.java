@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MyCellarObjectSwingWorker extends SwingWorker<List<MyCellarObject>, MyCellarObject> {
   @Override
-  protected List<MyCellarObject> doInBackground() throws Exception {
+  protected List<MyCellarObject> doInBackground() {
     return null;
   }
 }

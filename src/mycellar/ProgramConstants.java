@@ -25,7 +25,7 @@ public final class ProgramConstants {
   public static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
   public static final Font FONT_DIALOG_BOLD = new Font("Dialog", Font.BOLD, 12);
   public static final Font FONT_LABEL_BOLD = new Font("Arial", Font.BOLD, 12);
-  static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
+  static final Font FONT_BUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
   static final Font FONT_DIALOG_BIG_BOLD = new Font("Dialog", Font.BOLD, 16);
 
   public static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";

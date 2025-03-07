@@ -10,6 +10,11 @@ public class Row {
     this.number = number;
   }
 
+  public Row(int number, int columnCount) {
+    this.number = number;
+    this.columnCount = columnCount;
+  }
+
   public int getNumber() {
     return number;
   }

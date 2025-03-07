@@ -43,8 +43,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.4
- * @since 25/12/23
+ * @version 10.5
+ * @since 11/09/24
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private boolean saveAndExit;
@@ -208,7 +208,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       myCellarObject.setNumLieu(lieu_num);
       myCellarObject.setLigne(line);
       myCellarObject.setColonne(column);
-      MyCellarObject bottleInPlace = cave.getObject(new PlacePosition.PlacePositionBuilder(cave)
+      MyCellarObject bottleInPlace = ((ComplexPlace) cave).getObject(new PlacePosition.PlacePositionBuilder(cave)
           .withNumPlace(lieu_num)
           .withLine(line)
           .withColumn(column)
@@ -243,7 +243,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
 
     if (oldPlace.isComplexPlace()) {
-      ((ComplexPlace) oldPlace.getAbstractPlace()).clearStorage(myCellarObject, oldPlace);
+      oldPlace.getAbstractPlace().clearStorage(myCellarObject, oldPlace);
     }
 
     if (!PlaceUtils.putTabStock()) {

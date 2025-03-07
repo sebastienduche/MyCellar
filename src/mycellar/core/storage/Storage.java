@@ -1,11 +1,11 @@
 package mycellar.core.storage;
 
-import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.worksheet.WorkSheetList;
+import mycellar.core.exceptions.MyCellarException;
 
 import java.util.List;
 
@@ -16,8 +16,8 @@ import java.util.List;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 24/08/21
+ * @version 2.6
+ * @since 02/03/25
  */
 
 public interface Storage {
@@ -29,6 +29,8 @@ public interface Storage {
   void setListMyCellarObject(ListeBouteille listMyCellarObject);
 
   List<String> getDistinctNames();
+
+  void updateDistinctNames();
 
   void addHistory(HistoryState historyState, MyCellarObject myCellarObject);
 

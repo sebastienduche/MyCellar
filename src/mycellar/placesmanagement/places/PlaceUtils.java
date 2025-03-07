@@ -67,8 +67,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.7
- * @since 08/09/24
+ * @version 6.0
+ * @since 02/03/25
  */
 public final class PlaceUtils {
 
@@ -89,7 +89,7 @@ public final class PlaceUtils {
     ProgramPanels.getSearch().ifPresent(search -> search.removeObject(oldObject));
 
     final AbstractPlace abstractPlace = newObject.getAbstractPlace();
-    if (!abstractPlace.isSimplePlace()) {
+    if (abstractPlace.isComplexPlace()) {
       abstractPlace.updateToStock(newObject);
     }
     Debug("Replace object Done");
@@ -535,7 +535,7 @@ public final class PlaceUtils {
               final SXSSFRow rowBottle = sheet.createRow(nLine);
               for (int l = 1; l <= nCol; l++) {
                 int finalL = l;
-                place.getObject(new PlacePosition.PlacePositionBuilder(place)
+                complexPlace.getObject(new PlacePosition.PlacePositionBuilder(place)
                     .withNumPlace(j)
                     .withLine(k)
                     .withColumn(l)
@@ -607,16 +607,14 @@ public final class PlaceUtils {
       } else {
         LinkedList<Part> rangement = rangements.get(place);
         while (rangement.size() <= bottle.getNumLieu()) {
-          Part part = new Part(); // rangement.size() + 1
-          part.setNumber(rangement.size());
-          rangement.add(part);
+          rangement.add(new Part(rangement.size(), new LinkedList<>()));
         }
         final Part part = rangement.get(bottle.getNumLieu() == 0 ? 0 : bottle.getNumLieu() - 1);
-        if (part.getRowSize() < bottle.getLigne()) {
-          part.setRows(bottle.getLigne());
+        if (part.rows().size() < bottle.getLigne()) {
+          part.increaseRows(bottle.getLigne());
         }
         if (bottle.getLigne() > 0) {
-          final Row row = part.getRow(bottle.getLigne() - 1);
+          final Row row = part.getRowAt(bottle.getLigne() - 1);
           if (row.getColumnCount() < bottle.getColonne()) {
             row.setColumnCount(bottle.getColonne());
           }
@@ -631,8 +629,10 @@ public final class PlaceUtils {
     }
 
     final String placeName = name.strip();
-    final boolean found = getAbstractPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
-    return found || placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR);
+    if (placeName.equals(DEFAULT_STORAGE_EN) || placeName.equals(DEFAULT_STORAGE_FR)) {
+      return true;
+    }
+    return getAbstractPlaces().stream().anyMatch(rangement -> rangement.getName().equals(placeName));
   }
 
   public static AbstractPlace getPlaceByName(final String name) {
@@ -640,11 +640,11 @@ public final class PlaceUtils {
     if (TEMP_PLACE.equals(placeName)) {
       return STOCK_PLACE;
     }
-    return Program.getAbstractPlaces()
+    return getAbstractPlaces()
         .stream()
         .filter(rangement -> filterOnAbstractPlaceName(rangement, placeName))
         .findFirst()
-        .orElse(null);
+        .orElseThrow(() -> new IllegalArgumentException("Place not found with name: " + name));
   }
 
   private static boolean filterOnAbstractPlaceName(AbstractPlace rangement, String placeName) {
@@ -675,6 +675,7 @@ public final class PlaceUtils {
     }
     Program.getErrors().clear();
     Program.getAbstractPlaces().forEach(AbstractPlace::resetStockage);
+    Program.getStorage().updateDistinctNames();
 
     for (var bouteille : Program.getStorage().getAllList()) {
       // On ignore les bouteilles qui sont dans le stock temporairement
@@ -688,7 +689,7 @@ public final class PlaceUtils {
       }
       final AbstractPlace rangement = bouteille.getAbstractPlace();
       if (rangement.isSimplePlace()) {
-        if (rangement.isInexistingNumPlace(bouteille.getNumLieu())) {
+        if (rangement.isIncorrectNumPlace(bouteille.getNumLieu())) {
           // Numero de rangement inexistant
           Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: " + bouteille.getNumLieu() + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
@@ -702,18 +703,19 @@ public final class PlaceUtils {
           Program.addError(new MyCellarError(FULL_BOX, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
         }
       } else {
-        if (rangement.isInexistingNumPlace(bouteille.getNumLieu() - 1)) {
+        ComplexPlace complexPlace = (ComplexPlace) rangement;
+        if (rangement.isIncorrectNumPlace(bouteille.getNumLieu() - 1)) {
           // Numero de rangement inexistant
           Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement()));
           continue;
         }
-        if (!((ComplexPlace) rangement).isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
+        if (!complexPlace.isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
           // Cellule inexistante
           Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
         } else {
-          final MyCellarObject myCellarObject = (rangement.getObject(bouteille.getPlacePosition())).orElse(null);
+          final MyCellarObject myCellarObject = complexPlace.getObject(bouteille.getPlacePosition()).orElse(null);
           if (myCellarObject != null && !myCellarObject.equals(bouteille)) {
             // Cellule occupee
             Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());

@@ -63,8 +63,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.6
- * @since 25/12/23
+ * @version 10.7
+ * @since 07/03/25
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -393,7 +393,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
 
     String getNumPartLabel() {
-      return getLabel("Storage.Shelve") + SPACE + numPart;
+      return MessageFormat.format(getLabel("Storage.ShelveNumber"), numPart);
     }
 
     String getNbLineLabel() {

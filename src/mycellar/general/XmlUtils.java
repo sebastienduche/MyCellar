@@ -31,12 +31,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.ProgramConstants.DASH;
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
@@ -46,8 +46,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.1
- * @since 13/09/22
+ * @version 4.4
+ * @since 07/03/25
  */
 
 public class XmlUtils {
@@ -146,19 +146,17 @@ public class XmlUtils {
             for (int j = 0; j < internalPlaces.getLength(); j++) {
               Node nInternal = internalPlaces.item(j);
               if (nInternal.getNodeType() == Node.ELEMENT_NODE) {
-                Part part = new Part();
-                part.setNumber(j);
-                listPart.add(part);
                 Element iPlace = (Element) nInternal;
                 int nLine = Integer.parseInt(iPlace.getAttribute(NB_LINE));
-                part.setRows(nLine);
+                Part part = new Part(j, Part.generateRows(nLine));
+                listPart.add(part);
                 NodeList Line = iPlace.getElementsByTagName(LINE);
                 for (int k = 0; k < Line.getLength(); k++) {
                   Node nTempLine = Line.item(k);
                   if (nTempLine.getNodeType() == Node.ELEMENT_NODE) {
                     Element oLine = (Element) nTempLine;
                     int nColumn = Integer.parseInt(oLine.getAttribute(NB_COLUMN));
-                    part.getRow(k).setColumnCount(nColumn);
+                    part.getRowAt(k).setColumnCount(nColumn);
                   }
                 }
               }
@@ -271,7 +269,7 @@ public class XmlUtils {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);
             name = doc.createElement(NOM_PARTIE);
-            name.setTextContent(getLabel("Storage.Shelve") + SPACE + (i + ((SimplePlace) rangement).getPartNumberIncrement()));
+            name.setTextContent(MessageFormat.format(getLabel("Storage.ShelveNumber"), i + ((SimplePlace) rangement).getPartNumberIncrement()));
             partie.appendChild(name);
             Element caisse = doc.createElement(CAISSE);
             partie.appendChild(caisse);
@@ -298,7 +296,7 @@ public class XmlUtils {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);
             name = doc.createElement(NOM_PARTIE);
-            name.setTextContent(getLabel("Storage.Shelve") + SPACE + (i + 1));
+            name.setTextContent(MessageFormat.format(getLabel("Storage.ShelveNumber"), i + 1));
             partie.appendChild(name);
             int lig = complexPlace.getLineCountAt(i);
             for (int j = 0; j < lig; j++) {
@@ -313,7 +311,7 @@ public class XmlUtils {
                 if (preview) {
                   vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
                 } else {
-                  rangement.getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
+                  complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
                           .withNumPlace(i)
                           .withLine(j)
                           .withColumn(k)

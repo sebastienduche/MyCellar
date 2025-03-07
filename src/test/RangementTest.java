@@ -38,34 +38,28 @@ class RangementTest {
     simplePlaceNoLimit = new SimplePlaceBuilder("simplePlaceNoLimit").build();
     // Caisse avec 2 emplacements commencant a 1 et limite a 6 bouteilles
     simplePlaceLimit = new SimplePlaceBuilder("simplePlaceLimit").nbParts(2).startSimplePlace(1).limited(true).limit(6).build();
-    Part partie = new Part();
-    partie.setNumber(0);
+    Part partie = new Part(0, Part.generateRows(3));
     LinkedList<Part> list = new LinkedList<>();
     list.add(partie);
-    partie.setRows(3);
     for (int i = 0; i < 3; i++) {
-      partie.getRow(i).setColumnCount(3);
+      partie.getRowAt(i).setColumnCount(3);
     }
     complexPlace1x3x3 = new ComplexPlace("armoire1x3x3", list);
     complexPlace1x3x3Builder = new ComplexPlaceBuilder("armoire1x3x3")
         .nbParts(new int[]{3})
         .sameColumnsNumber(new int[]{3})
         .build();
-    partie = new Part();
-    partie.setNumber(0);
+    partie = new Part(0, Part.generateRows(2));
     list = new LinkedList<>();
     list.add(partie);
-    partie.setRows(2);
     for (int i = 0; i < 2; i++) {
-      partie.getRow(i).setColumnCount(2);
+      partie.getRowAt(i).setColumnCount(2);
     }
-    partie = new Part();
-    partie.setNumber(1);
+    partie = new Part(1, Part.generateRows(3));
     list.add(partie);
-    partie.setRows(3);
-    partie.getRow(0).setColumnCount(5);
-    partie.getRow(1).setColumnCount(4);
-    partie.getRow(2).setColumnCount(5);
+    partie.getRowAt(0).setColumnCount(5);
+    partie.getRowAt(1).setColumnCount(4);
+    partie.getRowAt(2).setColumnCount(5);
     complexPlace2x2_3x22545 = new ComplexPlace("armoire2x2_3x22545", list);
     try {
       complexPlace2x2_3x22545Builder = new ComplexPlaceBuilder("armoire2x2_3x22545")
@@ -756,42 +750,32 @@ class RangementTest {
     assertEquals(simplePlace, simplePlace1);
 
     LinkedList<Part> list = new LinkedList<>();
-    Part partie = new Part();
-    partie.setNumber(0);
+    Part partie = new Part(0, Part.generateRows(1));
     list.add(partie);
-    partie.setRows(1);
-    partie.getRow(0).setColumnCount(1);
+    partie.getRowAt(0).setColumnCount(1);
     ComplexPlace complexPlace2 = new ComplexPlace("r", list);
     list = new LinkedList<>();
-    partie = new Part();
-    partie.setNumber(0);
+    partie = new Part(0, Part.generateRows(1));
     list.add(partie);
-    partie.setRows(1);
-    partie.getRow(0).setColumnCount(1);
-    partie = new Part();
-    partie.setNumber(1);
+    partie.getRowAt(0).setColumnCount(1);
+    partie = new Part(1, Part.generateRows(1));
     list.add(partie);
-    partie.setRows(1);
-    partie.getRow(0).setColumnCount(2);
+    partie.getRowAt(0).setColumnCount(2);
     ComplexPlace complexPlace3 = new ComplexPlace("r", list);
     assertFalse(complexPlace2.isSame(complexPlace3));
     assertNotEquals(complexPlace2, complexPlace3);
     list = new LinkedList<>();
-    partie = new Part();
-    partie.setNumber(0);
+    partie = new Part(0, Part.generateRows(2));
     list.add(partie);
-    partie.setRows(2);
-    partie.getRow(0).setColumnCount(1);
-    partie.getRow(1).setColumnCount(2);
+    partie.getRowAt(0).setColumnCount(1);
+    partie.getRowAt(1).setColumnCount(2);
     ComplexPlace complexPlace4 = new ComplexPlace("r", list);
     assertFalse(complexPlace2.isSame(complexPlace4));
     assertNotEquals(complexPlace2, complexPlace4);
     list = new LinkedList<>();
-    partie = new Part();
-    partie.setNumber(0);
+    partie = new Part(0, Part.generateRows(1));
     list.add(partie);
-    partie.setRows(1);
-    partie.getRow(0).setColumnCount(3);
+    partie.getRowAt(0).setColumnCount(3);
     ComplexPlace complexPlace5 = new ComplexPlace("r", list);
     assertFalse(complexPlace2.isSame(complexPlace5));
     assertNotEquals(complexPlace2, complexPlace5);

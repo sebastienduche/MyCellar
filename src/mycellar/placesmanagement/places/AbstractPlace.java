@@ -13,8 +13,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 17/10/22
+ * @version 0.6
+ * @since 11/09/24
  */
 public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstractPlace {
 
@@ -52,10 +52,6 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
     this.defaultPlace = defaultPlace;
   }
 
-  public boolean isInexistingNumPlace(int numPlace) {
-    return numPlace < 0 || numPlace >= partCount;
-  }
-
   @Override
   public void removeObject(MyCellarObject myCellarObject) throws MyCellarException {
     clearStorage(myCellarObject);
@@ -77,16 +73,6 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
       resul += getCountCellUsed(i);
     }
     return resul;
-  }
-
-  @Override
-  public boolean isSimplePlace() {
-    return false;
-  }
-
-  @Override
-  public boolean isComplexPlace() {
-    return false;
   }
 
   @Override

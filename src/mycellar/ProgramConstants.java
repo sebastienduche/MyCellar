@@ -16,8 +16,8 @@ import java.time.format.DateTimeFormatter;
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "5.1.1.5";
-  public static final int VERSION = 78;
+  public static final String INTERNAL_VERSION = "5.1.4.8";
+  public static final int VERSION = 79;
   public static final String MAIN_VERSION = VERSION + " BI";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
   public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
@@ -25,7 +25,7 @@ public final class ProgramConstants {
   public static final Font FONT_PANEL = new Font("Arial", Font.PLAIN, 12);
   public static final Font FONT_DIALOG_BOLD = new Font("Dialog", Font.BOLD, 12);
   public static final Font FONT_LABEL_BOLD = new Font("Arial", Font.BOLD, 12);
-  static final Font FONT_BOUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
+  static final Font FONT_BUTTON_SMALL = new Font("Arial", Font.PLAIN, 10);
   static final Font FONT_DIALOG_BIG_BOLD = new Font("Dialog", Font.BOLD, 16);
 
   public static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";

@@ -17,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.Serial;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,17 +29,18 @@ import java.util.stream.Collectors;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 24/05/22
+ * @version 0.9
+ * @since 02/03/25
  */
 public abstract class TextFieldPopup extends JPanel {
 
+  @Serial
   private static final long serialVersionUID = -7190629333835800410L;
   private final JScrollPane scroll;
   private final JPanel menu = new JPanel();
   private final JTextField textfield = new JTextField();
   private final List<MyJMenuItem> items = new LinkedList<>();
-  private final List<String> list;
+  private List<String> list;
   private final JPopupMenu popupMenu = new JPopupMenu();
   private boolean can;
   private int listHeight;
@@ -68,6 +70,10 @@ public abstract class TextFieldPopup extends JPanel {
     add(textfield, "growx, wrap");
     popupMenu.add(scroll);
     scroll.setBorder(BorderFactory.createEmptyBorder());
+  }
+
+  public void setList(List<String> list) {
+    this.list = list;
   }
 
   public abstract void doAfterValidate();

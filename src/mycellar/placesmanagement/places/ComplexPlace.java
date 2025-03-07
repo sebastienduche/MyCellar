@@ -4,6 +4,7 @@ import mycellar.Program;
 import mycellar.core.MyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,8 +19,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 08/09/24
+ * @version 1.2
+ * @since 07/03/25
  */
 public class ComplexPlace extends AbstractPlace {
 
@@ -41,38 +42,27 @@ public class ComplexPlace extends AbstractPlace {
     partList = new LinkedList<>();
     for (int i = 0; i < partCount; i++) {
       final Part oldPart = listPart.get(i);
-      Part part = new Part();
-      part.setNumber(oldPart.getNumber());
-      partList.add(part);
-      int rowSize = oldPart.getRowSize();
-      part.setRows(rowSize);
-      if (rowSize > lineCount) {
-        lineCount = rowSize;
-      }
+      int rowSize = oldPart.rows().size();
+      LinkedList<Row> rows = new LinkedList<>();
       for (int j = 0; j < rowSize; j++) {
-        int colSize = oldPart.getRow(j).getColumnCount();
-        part.getRow(j).setColumnCount(colSize);
+        int colSize = oldPart.getRowAt(j).getColumnCount();
+        rows.add(new Row(j + 1, colSize));
         if (colSize > columnCount) {
           columnCount = colSize;
         }
+      }
+      Part part = new Part(oldPart.number(), rows);
+      partList.add(part);
+      if (rowSize > lineCount) {
+        lineCount = rowSize;
       }
     }
 
     storage = new MyCellarObject[partCount][lineCount][columnCount];
   }
 
-  public LinkedList<Part> getParts() {
-    LinkedList<Part> listPart = new LinkedList<>();
-    for (Part p : partList) {
-      Part part = new Part();
-      part.setNumber(p.getNumber());
-      listPart.add(part);
-      for (int j = 0; j < p.getRowSize(); j++) {
-        part.setRows(p.getRowSize());
-        part.getRow(j).setColumnCount(p.getRow(j).getColumnCount());
-      }
-    }
-    return listPart;
+  public List<Part> getParts() {
+    return Collections.unmodifiableList(partList);
   }
 
   public int getColumnCount() {
@@ -82,6 +72,20 @@ public class ComplexPlace extends AbstractPlace {
   @Override
   public boolean isComplexPlace() {
     return true;
+  }
+
+  @Override
+  public boolean isSimplePlace() {
+    return false;
+  }
+
+  @Override
+  public boolean isIncorrectNumPlace(int numPlace) {
+    return numPlace < 0 || numPlace >= partCount;
+  }
+
+  public int getCountCellUsed(Part part) {
+    return getCountCellUsed(part.number());
   }
 
   @Override
@@ -110,7 +114,6 @@ public class ComplexPlace extends AbstractPlace {
     return true;
   }
 
-  @Override
   public Optional<MyCellarObject> getObject(PlacePosition place) {
     final MyCellarObject myCellarObject = storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()];
     return Optional.ofNullable(myCellarObject);
@@ -172,11 +175,11 @@ public class ComplexPlace extends AbstractPlace {
     if (part < 0 || line < 0) {
       return -1;
     }
-    return partList.get(part).getRow(line).getColumnCount();
+    return partList.get(part).getRowAt(line).getColumnCount();
   }
 
   public int getLineCountAt(int part) {
-    return partList.get(part).getRowSize();
+    return partList.get(part).rows().size();
   }
 
   @Override
@@ -185,7 +188,7 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   public boolean isExistingCell(int part, int line, int column) {
-    if (isInexistingNumPlace(part)) {
+    if (isIncorrectNumPlace(part)) {
       return false;
     }
     if (getLineCountAt(part) <= line) {
@@ -197,7 +200,7 @@ public class ComplexPlace extends AbstractPlace {
 
 
   public int getMaxColumCountAt(int part) {
-    return partList.get(part).getRows().stream().mapToInt(Row::getColumnCount).max()
+    return partList.get(part).rows().stream().mapToInt(Row::getColumnCount).max()
         .orElse(0);
   }
 
@@ -213,27 +216,27 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   public int getNbCaseUseInLine(int part, int line) {
-    int resul = 0;
+    int count = 0;
     int nb_colonne = getColumnCountAt(part, line);
     for (int i = 0; i < nb_colonne; i++) {
       if (storage[part][line][i] != null) {
-        resul++;
+        count++;
       }
     }
-    return resul;
+    return count;
   }
 
   public int getCountFreeCellFrom(int part, int line, int column) {
-    int resul = 0;
+    int count = 0;
     int nb_colonne = getColumnCountAt(part, line);
     for (int i = column; i < nb_colonne; i++) {
       if (storage[part][line][i] == null) {
-        resul++;
+        count++;
       } else {
-        return resul;
+        return count;
       }
     }
-    return resul;
+    return count;
   }
 
   @Override
@@ -312,6 +315,18 @@ public class ComplexPlace extends AbstractPlace {
       }
     }
     return true;
+  }
+
+  public static LinkedList<Part> copyParts(List<Part> partList) {
+    LinkedList<Part> list = new LinkedList<>();
+    for (Part part : partList) {
+      LinkedList<Row> rows = new LinkedList<>();
+      for (int j = 0; j < part.rows().size(); j++) {
+        rows.add(new Row(j + 1, part.getRowAt(j).getColumnCount()));
+      }
+      list.add(new Part(part.number(), rows));
+    }
+    return list;
   }
 
   @Override

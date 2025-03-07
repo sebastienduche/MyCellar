@@ -11,7 +11,6 @@ import mycellar.core.datas.worksheet.WorkSheetData;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.text.LabelProperty;
-import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
@@ -33,15 +32,15 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 7.9
- * @since 26/12/23
+ * @version 8.0
+ * @since 02/03/25
  */
 
 public class SerializedStorage implements Storage {
 
   private static final HistoryList HISTORY_LIST = new HistoryList();
   private static final WorkSheetList WORKSHEET_LIST = new WorkSheetList();
-  private static final int DISTINCT_NAME_LENGTH = 100;
+  private static final int DISTINCT_NAME_LENGTH = 150;
   private static final int DISTINCT_COMPOSER_ARTIST_LENGTH = 75;
   private final List<String> distinctNames = new LinkedList<>(); // Liste des noms
   private final List<String> distinctComposers = new LinkedList<>(); // Liste des composers
@@ -150,6 +149,18 @@ public class SerializedStorage implements Storage {
   }
 
   @Override
+  public void updateDistinctNames() {
+    distinctNames.clear();
+    getAllList().forEach(
+        myCellarObject -> {
+          if (!distinctNames.contains(myCellarObject.getNom())) {
+            distinctNames.add(myCellarObject.getNom());
+          }
+        }
+    );
+  }
+
+  @Override
   public List<String> getDistinctComposers() {
     return distinctComposers
         .stream()
@@ -255,14 +266,12 @@ public class SerializedStorage implements Storage {
         Debug("DeleteWine: Deleted by Id. " + myCellarObject);
         found = listMyCellarObject.remove(collect.getFirst());
       } else {
-        AbstractPlace rangement = myCellarObject.getAbstractPlace();
-        boolean isCaisse = rangement == null || rangement.isSimplePlace();
         final List<MyCellarObject> resultBouteilles = getAllList().stream()
             .filter(
                 bouteille -> emplacement.equals(bouteille.getEmplacement())
                     && nom.equals(bouteille.getNom())
                     && numLieu == bouteille.getNumLieu()
-                    && (isCaisse ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(toList());
+                    && (myCellarObject.getAbstractPlace().isSimplePlace() ? annee.equals(bouteille.getAnnee()) : (ligne == bouteille.getLigne() && colonne == bouteille.getColonne()))).collect(toList());
         if (resultBouteilles.isEmpty()) {
           Debug("ERROR: DeleteWine: Unable to find the object!");
           throw new MyCellarException("Unable to delete object: " + myCellarObject);

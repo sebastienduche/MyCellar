@@ -65,7 +65,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -77,8 +76,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.1
- * @since 26/12/23
+ * @version 6.2
+ * @since 07/03/25
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -153,7 +152,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
             rangementCells.add(cell);
             panelCellar.add(cell, "growx, wrap");
           }
-          placePanel.add(new MyCellarSimpleLabel(getLabel("Storage.Shelve") + SPACE + empl), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Storage.ShelveNumber"), empl)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 
@@ -162,6 +161,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
             .forEach(b -> {
               JPanel[][] place = places.get(b.getNumLieu() - simplePlace.getPartNumberIncrement());
               int line = mapEmplSize.get(b.getNumLieu());
+              if (line >= place.length) {
+                throw new RuntimeException("Unable to add a bottle at index [" + line + "]: " + b);
+              }
               ((RangementCell) place[line++][0]).addBottle(new MyCellarObjectDraggingLabel(b));
               mapEmplSize.put(b.getNumLieu(), line);
             });
@@ -190,7 +192,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
               panelCellar.add(panel);
             }
           }
-          placePanel.add(new MyCellarSimpleLabel(getLabel("Storage.Shelve") + SPACE + (i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Storage.ShelveNumber"), i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 
@@ -529,11 +531,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
   MyCellarObjectDraggingLabel(final MyCellarObject myCellarObject) {
     super();
     this.myCellarObject = myCellarObject;
-    int width = 100;
-    AbstractPlace abstractPlace = myCellarObject.getAbstractPlace();
-    if (abstractPlace != null && abstractPlace.isSimplePlace()) {
-      width = 400;
-    }
+    int width = myCellarObject.getAbstractPlace().isSimplePlace() ? 400 : 100;
     setLayout(new MigLayout("", "5px[" + width + ":" + width + ":" + width + "][10:10:10]0px", "0px[align center, grow]0px"));
     if (myCellarObject instanceof Bouteille bouteille) {
       if (bouteille.isWhiteWine()) {
@@ -558,11 +556,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
             Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
               final AbstractPlace abstractPlace = myCellarObject.getAbstractPlace();
-              if (abstractPlace != null) {
-                abstractPlace.removeObject(myCellarObject);
-              } else {
-                Program.getStorage().deleteWine(myCellarObject);
-              }
+              abstractPlace.removeObject(myCellarObject);
               ProgramPanels.getSearch().ifPresent(search -> search.removeObject(myCellarObject));
               ProgramPanels.updateAllPanels();
             } catch (MyCellarException e) {

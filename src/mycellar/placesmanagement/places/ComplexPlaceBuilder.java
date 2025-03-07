@@ -60,16 +60,14 @@ public class ComplexPlaceBuilder {
   public ComplexPlace build() {
     if (partList.isEmpty()) {
       for (int i = 0; i < nbParts; i++) {
-        Part part = new Part();
-        part.setNumber(i);
+        Part part = new Part(i, Part.generateRows(linesByPart[i]));
         partList.add(part);
-        part.setRows(linesByPart[i]);
         if (sameColumns) {
-          for (Row row : part.getRows()) {
+          for (Row row : part.rows()) {
             row.setColumnCount(columnsByPart[i]);
           }
         } else {
-          for (Row row : part.getRows()) {
+          for (Row row : part.rows()) {
             row.setColumnCount(columnsByLines[i][row.getNumber() - 1]);
           }
         }

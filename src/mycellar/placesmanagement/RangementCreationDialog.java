@@ -16,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.io.Serial;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.Map;
@@ -30,11 +31,12 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 25/12/23
+ * @version 1.4
+ * @since 01/03/25
  */
 public final class RangementCreationDialog extends JDialog {
 
+  @Serial
   private static final long serialVersionUID = 5075363436018889969L;
   private final Map<String, LinkedList<Part>> map;
   private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
@@ -79,7 +81,7 @@ public final class RangementCreationDialog extends JDialog {
       final LinkedList<Part> parts = map.get(name);
       int row = 0;
       for (Part part : parts) {
-        row += part.getRowSize();
+        row += part.rows().size();
       }
       AbstractPlace abstractPlace;
       if (row == 0) {

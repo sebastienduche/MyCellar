@@ -62,7 +62,7 @@ public final class ProgramConstants {
   public static final int IMPORT_COMBO_COUNT = 18;
   public static final String KEY_TYPE = "<KEY>";
   public static final String COUNTRY_LABEL_KEY = "Country.";
-  public static final String INFOS_VERSION = " 2024 v";
+  public static final String INFOS_VERSION = " 2025 v";
   static final String PREVIEW_XML = "preview.xml";
   static final String PREVIEW_HTML = "preview.html";
   static final String MY_CELLAR_XML = "MyCellar.xml";

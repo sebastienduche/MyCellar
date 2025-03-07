@@ -94,7 +94,9 @@ import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelCode;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
+import static mycellar.general.ResourceKey.MAIN_STATISTICS;
 
 /**
  * Titre : Cave &agrave; vin
@@ -488,7 +490,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     // differents menus
     menuFile.setText(getLabel("Main.File"));
     menuPlace.setText(getLabel("Main.Storage"));
-    menuWine.setText(getLabel("Main.Item", LabelProperty.SINGLE.withCapital()));
+    menuWine.setText(getLabelWithProperty("Main.Item", LabelProperty.SINGLE.withCapital()));
     menuTools.setText(getLabel("Main.Tools"));
     menuEdition.setText(getLabel("Main.Edit"));
 
@@ -528,13 +530,13 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     importButton.setText(getLabel("Import.Title"));
     exportButton.setText(getLabel("Main.ExportFile"));
     createButton.setText(getLabel("CreateStorage.Title"));
-    statsButton.setText(getLabel("Main.Statistics"));
+    statsButton.setText(getLabel(MAIN_STATISTICS));
     managePlaceButton.setText(getLabel("Main.ManagePlace"));
     worksheetButton.setText(getLabel("ShowFile.Worksheet"));
     modifyButton.setText(getLabel("Main.ModifyStorage"));
     showFileButton.setText(getLabel("Main.ShowFile"));
     tableButton.setText(getLabel("Main.createTable"));
-    addButton.setText(getLabel("Main.TabAdd", LabelProperty.SINGLE));
+    addButton.setText(getLabelWithProperty("Main.TabAdd", LabelProperty.SINGLE));
     searchButton.setText(getLabel("Main.TabSearchButton"));
     deleteButton.setText(getLabel("Main.DeleteStorage"));
     version.setText(getLabel("MonthVersion") + INFOS_VERSION + MAIN_VERSION);
@@ -1217,7 +1219,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   static final class StatAction extends MyCellarAction {
-    private static final String LABEL = "Main.Statistics";
+    private static final String LABEL = MAIN_STATISTICS.getKey();
 
     private StatAction() {
       super(LABEL, MyCellarImage.STATS);

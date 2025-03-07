@@ -33,6 +33,9 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.MAIN_NAME;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
 
 /**
  * Titre : Cave &agrave; vin
@@ -56,7 +59,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
   private final MyCellarButton preview = new MyCellarButton("Storage.Preview");
   private final MyCellarLabel labelNumPlace = new MyCellarLabel("MyCellarFields.NumPlace");
   private final MyCellarLabel labelLine = new MyCellarLabel("MyCellarFields.Line");
-  private final MyCellarLabel labelColumn = new MyCellarLabel("MyCellarFields.Column");
+  private final MyCellarLabel labelColumn = new MyCellarLabel(MYCELLARFIELDS_COLUMN);
 
   private final MyCellarLabel beforeLabel = new MyCellarLabel("PanelPlace.Before"); // Pour la Modification
   private final MyCellarSimpleLabel previousPlaceLabel = new MyCellarSimpleLabel(); // Pour la Modification
@@ -65,9 +68,9 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
   private final MyCellarSimpleLabel previousColumnLabel = new MyCellarSimpleLabel(); // Pour la Modification
 
   private final MyCellarCheckBox searchSeveralLocation = new MyCellarCheckBox("Search.AllBottlesInPlace", LabelProperty.PLURAL);
-  private final String labelAllObjectsInPlace = getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL);
-  private final String labelAllObjectsInPart = getLabel("Search.AllBottlesInPart", LabelProperty.PLURAL);
-  private final String labelAllObjectsInLine = getLabel("Search.AllBottlesInLine", LabelProperty.PLURAL);
+  private final String labelAllObjectsInPlace = getLabelWithProperty("Search.AllBottlesInPlace", LabelProperty.PLURAL);
+  private final String labelAllObjectsInPart = getLabelWithProperty("Search.AllBottlesInPart", LabelProperty.PLURAL);
+  private final String labelAllObjectsInLine = getLabelWithProperty("Search.AllBottlesInLine", LabelProperty.PLURAL);
   private final MyCellarButton chooseCell;
   private final boolean columnComboVisible;
   private final boolean onlyComplexPlaces;
@@ -98,7 +101,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
     initPlaceCombo();
     setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));
     setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), getLabel("Main.Storage")));
-    add(new MyCellarLabel("Main.Name"));
+    add(new MyCellarLabel(MAIN_NAME));
     add(labelNumPlace);
     add(labelLine);
     if (columnComboVisible) {

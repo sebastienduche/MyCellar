@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 
 /**
  * Titre : Cave &agrave; vin
@@ -23,7 +24,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 class TableauValues extends AbstractTableModel {
   public static final int STATE = 0;
-  private final String[] columnNames = {"", getLabel("Main.Storage"), getLabel("Storage.NumberLines"), getLabel("Storage.NumberOf", LabelProperty.PLURAL)};
+  private final String[] columnNames = {"", getLabel("Main.Storage"), getLabel("Storage.NumberLines"), getLabelWithProperty("Storage.NumberOf", LabelProperty.PLURAL)};
 
   private final List<AbstractPlace> list = new LinkedList<>();
   private final List<Boolean> listBoolean = new LinkedList<>();
@@ -67,7 +68,7 @@ class TableauValues extends AbstractTableModel {
             nombre_vin += rangement.getCountCellUsed(k);
           }
         }
-        return MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(nombre_vin > 1)), nombre_vin);
+        return MessageFormat.format(getLabelWithProperty("Main.SeveralItems", new LabelProperty(nombre_vin > 1)), nombre_vin);
     }
     return "";
   }

@@ -79,6 +79,7 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRM1DELETE;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMNDELETE;
 import static mycellar.general.ResourceKey.EXPORT_EXPORTFORMAT;
@@ -312,9 +313,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           ProgramPanels.updateCellOrganizerPanel(false);
 
           if (listToDelete.size() == 1) {
-            resultInfoLabel.setText(getLabel("Search.1ItemDeleted", LabelProperty.SINGLE));
+            resultInfoLabel.setText(getLabelWithProperty("Search.1ItemDeleted", LabelProperty.SINGLE));
           } else {
-            resultInfoLabel.setText(MessageFormat.format(getLabel("Search.NItemDeleted", LabelProperty.PLURAL), listToDelete.size()));
+            resultInfoLabel.setText(MessageFormat.format(getLabelWithProperty("Search.NItemDeleted", LabelProperty.PLURAL), listToDelete.size()));
           }
         });
       }
@@ -541,7 +542,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     } else {
       countLabel.setText(DASH);
     }
-    objectFoundCountLabels.setText(getLabel("Search.bottleFound", new LabelProperty(searchTableModel.getRowCount() > 1).withCapital()));
+    objectFoundCountLabels.setText(getLabelWithProperty("Search.bottleFound", new LabelProperty(searchTableModel.getRowCount() > 1).withCapital()));
   }
 
   private void searchByPlace() {

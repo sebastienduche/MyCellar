@@ -41,6 +41,7 @@ public class MyCellarLabelManagement {
     component.setText(getLabel(labelKey.getLabelType(), labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue()));
   }
 
+  @Deprecated(since = "version90")
   public static String getLabelCode(String code) {
     return getLabel(LabelType.LABEL, code, null, null);
   }
@@ -52,13 +53,13 @@ public class MyCellarLabelManagement {
 
     if (labelValue == null) {
       return switch (type) {
-        case LABEL -> getLabel(code, labelProperty);
+        case LABEL -> getLabelWithProperty(code, labelProperty);
         case ERROR -> getError(code, labelProperty);
         case NONE -> code;
       };
     } else {
       return switch (type) {
-        case LABEL -> MessageFormat.format(getLabel(code, labelProperty), labelValue).strip();
+        case LABEL -> MessageFormat.format(getLabelWithProperty(code, labelProperty), labelValue).strip();
         case ERROR -> MessageFormat.format(getError(code, labelProperty), labelValue).strip();
         case NONE -> code;
       };
@@ -78,7 +79,7 @@ public class MyCellarLabelManagement {
     return MessageFormat.format(getLabel(id.getKey(), true), parameters);
   }
 
-  public static String getLabel(String id, LabelProperty labelProperty) {
+  public static String getLabelWithProperty(String id, LabelProperty labelProperty) {
     if (labelProperty == null) {
       return getLabel(id, true);
     }

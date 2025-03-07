@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_NAME;
 
 /**
  * Titre : Cave &agrave; vin
@@ -41,7 +42,7 @@ class ListValues extends AbstractTableModel {
 
   @Override
   public String getColumnName(int column) {
-    return getLabel("Main.Name");
+    return getLabel(MAIN_NAME);
   }
 
   protected void setObjects(List<? extends IMyCellarObject> b) {

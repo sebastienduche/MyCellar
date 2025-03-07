@@ -25,6 +25,8 @@ import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
 
 
 /**
@@ -69,8 +71,8 @@ public class ErrorShowValues extends TableShowValues {
   }
 
   private static final int NBCOL = 11;
-  private final String[] columnNames = {"", getLabel("ErrorShowValues.Error"), getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
-      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel("MyCellarFields.Column"), getLabel("ShowFile.Status"), ""};
+  private final String[] columnNames = {"", getLabel("ErrorShowValues.Error"), getLabelWithProperty("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
+      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel(MYCELLARFIELDS_COLUMN), getLabel("ShowFile.Status"), ""};
 
   private Boolean[] status = null;
   private Boolean[] editable = null;

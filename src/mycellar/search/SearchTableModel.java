@@ -7,10 +7,13 @@ import mycellar.core.text.LabelProperty;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.table.AbstractTableModel;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
 
 /**
  * Titre : Cave &agrave; vin
@@ -24,12 +27,13 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 class SearchTableModel extends AbstractTableModel {
 
+  @Serial
+  private static final long serialVersionUID = -3899189654755476591L;
   static final int ETAT = 0;
   static final int SHOW = 7;
-  private static final long serialVersionUID = -3899189654755476591L;
   private final List<String> columnNames = List.of("",
-      getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.Storage"),
-      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel("MyCellarFields.Column"), "");
+      getLabelWithProperty("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.Storage"),
+      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel(MYCELLARFIELDS_COLUMN), "");
 
   private final List<Boolean> listBoolean = new ArrayList<>();
   private final List<MyCellarObject> datas = new ArrayList<>();

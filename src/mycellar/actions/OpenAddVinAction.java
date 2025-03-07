@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 
 public class OpenAddVinAction extends AbstractAction {
 
@@ -28,7 +28,7 @@ public class OpenAddVinAction extends AbstractAction {
       addVin.setBottles(listToModify);
 
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WINE, addVin);
-      final String label = getLabel("OpenVin.Modify1Item", LabelProperty.PLURAL);
+      final String label = getLabelWithProperty("OpenVin.Modify1Item", LabelProperty.PLURAL);
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);
       } else {

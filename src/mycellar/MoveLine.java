@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import static mycellar.ProgramConstants.FONT_DIALOG_BIG_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 
 /**
  * Titre : Cave &agrave; vin
@@ -140,7 +141,7 @@ public final class MoveLine extends JDialog {
       Erreur.showSimpleErreur(this, getError("MoveLine.UnableToMove", LabelProperty.PLURAL), value);
       Debug("ERROR: Unable to move objects: " + value);
     } else {
-      label_end.setText(getLabel("MoveLine.ItemsMoved", LabelProperty.THE_PLURAL.withCapital()), true);
+      label_end.setText(getLabelWithProperty("MoveLine.ItemsMoved", LabelProperty.THE_PLURAL.withCapital()), true);
     }
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
     ProgramPanels.updateCellOrganizerPanel(true);

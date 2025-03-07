@@ -62,6 +62,7 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
 import static mycellar.placesmanagement.places.ComplexPlace.copyParts;
 
@@ -152,7 +153,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
     simplePlaceLimitSpinner.addChangeListener((e) -> {
       final int count = Integer.parseInt(simplePlaceLimitSpinner.getValue().toString());
-      label_limite.setText(getLabel("Main.Item", new LabelProperty(count > 1)));
+      label_limite.setText(getLabelWithProperty("Main.Item", new LabelProperty(count > 1)));
     });
 
     // Init part count

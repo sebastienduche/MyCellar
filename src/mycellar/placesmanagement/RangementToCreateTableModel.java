@@ -7,7 +7,9 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.Map;
 
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelCode;
+import static mycellar.general.ResourceKey.MAIN_NAME;
 
 /**
  * Titre : Cave &agrave; vin
@@ -44,7 +46,7 @@ public class RangementToCreateTableModel extends AbstractTableModel {
   @Override
   public String getColumnName(int column) {
     if (column == 0) {
-      return getLabelCode("Main.Name");
+      return getLabel(MAIN_NAME);
     }
     return "";
   }

@@ -38,6 +38,8 @@ import java.util.List;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.ProgramConstants.DASH;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.MYXMLDOM_ITEMHERE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -279,7 +281,7 @@ public class XmlUtils {
               Element vin_name = doc.createElement(VIN_1);
               vin.appendChild(vin_name);
               if (preview) {
-                vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
+                vin_name.setTextContent(getLabelWithProperty(MYXMLDOM_ITEMHERE.getKey(), LabelProperty.A_SINGLE.withCapital()));
               } else {
                 IMyCellarObject b = ((SimplePlace) rangement).getObjectAt(i, j);
                 if (b != null)
@@ -309,7 +311,7 @@ public class XmlUtils {
                 Element vin_name = doc.createElement(VIN_1);
                 vin.appendChild(vin_name);
                 if (preview) {
-                  vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
+                  vin_name.setTextContent(getLabel(MYXMLDOM_ITEMHERE, LabelProperty.A_SINGLE.withCapital()));
                 } else {
                   complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
                           .withNumPlace(i)

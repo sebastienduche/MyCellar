@@ -42,6 +42,7 @@ import static mycellar.core.MyCellarSettings.XLSTAB_COL2;
 import static mycellar.core.MyCellarSettings.XLSTAB_COL3;
 import static mycellar.core.MyCellarSettings.XLS_TAB_TITLE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_NAME;
 
 
 /**
@@ -121,7 +122,7 @@ public final class XLSTabOptions extends JDialog {
     table.setSize(460, 100);
     JScrollPane scrollPane = new JScrollPane(table);
 
-    xlsOptionsTableValues.addString(getLabel("Main.Name"), Program.getCaveConfigBool(XLSTAB_COL0, true));
+    xlsOptionsTableValues.addString(getLabel(MAIN_NAME), Program.getCaveConfigBool(XLSTAB_COL0, true));
     xlsOptionsTableValues.addString(getLabel("Main.Year"), Program.getCaveConfigBool(XLSTAB_COL1, false));
     xlsOptionsTableValues.addString(getLabel("Main.CapacityOrSupport"), Program.getCaveConfigBool(XLSTAB_COL2, false));
     xlsOptionsTableValues.addString(getLabel("Main.Price"), Program.getCaveConfigBool(XLSTAB_COL3, false));

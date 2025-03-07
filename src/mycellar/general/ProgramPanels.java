@@ -77,7 +77,7 @@ import static mycellar.ScreenType.SHOW_WORKSHEET;
 import static mycellar.ScreenType.STATS;
 import static mycellar.ScreenType.SUPPRIMER_RANGEMENT;
 import static mycellar.ScreenType.VIGNOBLES;
-import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 
 /**
  * Titre : Cave &agrave; vin
@@ -491,7 +491,7 @@ public class ProgramPanels {
             iPanelModifyable.setPaneIndex(TABBED_PANE.getSelectedIndex());
           }
         } catch (IllegalArgumentException e) {
-          addTab(getLabel(labelId, LabelProperty.SINGLE), icon, component);
+          addTab(getLabelWithProperty(labelId, LabelProperty.SINGLE), icon, component);
         }
       }
     }.execute();

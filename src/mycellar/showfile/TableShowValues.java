@@ -23,6 +23,8 @@ import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
 
 
 /**
@@ -50,8 +52,8 @@ class TableShowValues extends AbstractTableModel {
   private static final int COMMENT = 9;
   private static final int MATURITY = 10;
   private static final int PARKER = 11;
-  private final String[] columnNames = {"", getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
-      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel("MyCellarFields.Column"), getLabel("Main.Price"), getLabel("Main.Comment"),
+  private final String[] columnNames = {"", getLabelWithProperty("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
+      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel(MYCELLARFIELDS_COLUMN), getLabel("Main.Price"), getLabel("Main.Comment"),
       getLabel("Main.Maturity"), getLabel("Main.Rating")};
 
   protected Boolean[] values = null;
@@ -189,7 +191,7 @@ class TableShowValues extends AbstractTableModel {
               .withColumn(column1).build())) {
             boolean isPresent = false;
             if (rangement.isComplexPlace()) {
-              final IMyCellarObject bouteille = ((ComplexPlace)rangement).getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
+              final IMyCellarObject bouteille = ((ComplexPlace) rangement).getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
                   .withNumPlace(num_empl)
                   .withLine(line)
                   .withColumn(column1)

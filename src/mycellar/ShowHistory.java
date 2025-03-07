@@ -43,6 +43,8 @@ import java.util.Objects;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.SHOWFILE_RESTORESEVERAL;
 
 /**
  * Titre : Cave &agrave; vin
@@ -190,12 +192,12 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
       }
 
       if (nonExit) {
-        Erreur.showInformationMessage(getLabel("ShowHistory.CantRestoreNonDeleted", LabelProperty.PLURAL));
+        Erreur.showInformationMessage(getLabelWithProperty("ShowHistory.CantRestoreNonDeleted", LabelProperty.PLURAL));
         return;
       }
 
       if (toRestoreList.isEmpty()) {
-        Erreur.showInformationMessage(getLabel("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), getLabel("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getLabelWithProperty("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), getLabelWithProperty("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL));
       } else {
         String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {
@@ -203,7 +205,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           erreur_txt2 = getLabel("ShowFile.RestoreOne");
         } else {
           erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), toRestoreList.size());
-          erreur_txt2 = getLabel("ShowFile.RestoreSeveral");
+          erreur_txt2 = getLabel(SHOWFILE_RESTORESEVERAL);
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {

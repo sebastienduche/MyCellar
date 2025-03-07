@@ -68,6 +68,7 @@ import java.util.List;
 import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 
 /**
  * Titre : Cave &agrave; vin
@@ -351,7 +352,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   private class MoveAction extends AbstractAction {
 
     private MoveAction() {
-      super(getLabel("ManageStock.MoveAll", LabelProperty.PLURAL));
+      super(getLabelWithProperty("ManageStock.MoveAll", LabelProperty.PLURAL));
     }
 
     @Override
@@ -547,7 +548,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
     add(new PanelCloseButton() {
       @Override
       public void perform() {
-        String mess = MessageFormat.format(MyCellarLabelManagement.getLabel("Main.DeleteWine", LabelProperty.THE_SINGLE), myCellarObject.getNom());
+        String mess = MessageFormat.format(getLabelWithProperty("Main.DeleteWine", LabelProperty.THE_SINGLE), myCellarObject.getNom());
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), mess, MyCellarLabelManagement.getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
           Component parent = MyCellarObjectDraggingLabel.this.getParent();
           if (parent instanceof RangementCell rangementCell) {

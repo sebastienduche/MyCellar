@@ -34,6 +34,7 @@ import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.LabelProperty.OF_THE_SINGLE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 
 
 /**
@@ -257,7 +258,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
 
     Program.putCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, panelVignobles.isKeepPreviousVineyardSelected());
-    end.setText(getLabel("AddVin.1ItemModified", LabelProperty.SINGLE), true);
+    end.setText(getLabelWithProperty("AddVin.1ItemModified", LabelProperty.SINGLE), true);
     ProgramPanels.updatePanelsWithoutBottles();
     panelWineAttribute.setModificationDetectionActive(false);
     updateStatusAndTime();
@@ -276,7 +277,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + "\n" + getError("Error.questionReplaceIt"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
         panelPlace.clearLabelEnd();
-        end.setText(getLabel("AddVin.1ItemAdded", LabelProperty.SINGLE));
+        end.setText(getLabelWithProperty("AddVin.1ItemAdded", LabelProperty.SINGLE));
       } else {
         return false;
       }

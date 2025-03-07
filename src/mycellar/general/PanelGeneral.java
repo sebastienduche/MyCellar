@@ -37,6 +37,8 @@ import static mycellar.core.text.LabelProperty.OF_THE_SINGLE;
 import static mycellar.core.text.LabelProperty.THE_SINGLE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.MAIN_NAME;
 
 /**
  * Titre : Cave &agrave; vin
@@ -105,7 +107,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     labelModified.setForeground(Color.red);
     setLayout(new MigLayout("", "[grow]30px[]10px[]10px[]30px[]10px[]", ""));
     add(labelModified, "hidemode 3");
-    add(new MyCellarLabel("Main.Name"), "newline, grow");
+    add(new MyCellarLabel(MAIN_NAME), "newline, grow");
     add(new MyCellarLabel("Main.Year"));
     add(yearAuto);
     add(new MyCellarLabel("Main.CapacityOrSupport"), "wrap");
@@ -225,7 +227,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
 
   public void setViewToSeveralItemsMode(int itemCount) {
     if (itemCount > 1) {
-      name.setSelectedItem(MessageFormat.format(getLabel("AddVin.NbItemsSelected", LabelProperty.PLURAL), itemCount));
+      name.setSelectedItem(MessageFormat.format(getLabelWithProperty("AddVin.NbItemsSelected", LabelProperty.PLURAL), itemCount));
       name.setEnabled(false);
       if (Program.isMusicType()) {
         composer.setEnabled(false);

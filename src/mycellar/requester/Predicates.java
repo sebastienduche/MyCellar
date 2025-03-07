@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.PREDICATES_PRICE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -316,7 +317,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      String label = getLabel("Predicates.Price");
+      String label = getLabel(PREDICATES_PRICE);
       if (type == 0) {
         label += getLabel("Predicates.Smaller");
       } else if (type == 1) {

@@ -78,6 +78,7 @@ import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.SLASH;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.IMPORT_DONE;
 
 
 /**
@@ -707,7 +708,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
   private void showImportDone() {
     importe.setEnabled(true);
-    label_progression.setText(getLabel("Import.Done"), true);
+    label_progression.setText(getLabel(IMPORT_DONE), true);
     if (!PlaceUtils.putTabStock()) {
       new OpenShowErrorsAction().actionPerformed(null);
     }

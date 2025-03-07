@@ -28,7 +28,7 @@ import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.ProgramConstants.CHAR_COMMA;
 import static mycellar.ProgramConstants.CHAR_DOT;
 import static mycellar.ProgramConstants.EURO;
-import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 
 /**
  * Titre : Cave &agrave; vin
@@ -129,7 +129,7 @@ public final class PanelWineAttribute extends JPanel {
   }
 
   public void initValues() {
-    nbItems.setToolTipText(getLabel("AddVin.NbItemsToAdd", LabelProperty.PLURAL));
+    nbItems.setToolTipText(getLabelWithProperty("AddVin.NbItemsToAdd", LabelProperty.PLURAL));
     nbItems.setValue(1);
     labelStillToAdd.setForeground(Color.red);
     nbItems.addChangeListener((e) -> {
@@ -286,7 +286,7 @@ public final class PanelWineAttribute extends JPanel {
 
   public void setStillNbItems(int count) {
     nbItems.setValue(count);
-    labelStillToAdd.setText(MessageFormat.format(getLabel("AddVin.StillNtoAdd", new LabelProperty(count > 1)), count));
+    labelStillToAdd.setText(MessageFormat.format(getLabelWithProperty("AddVin.StillNtoAdd", new LabelProperty(count > 1)), count));
   }
 
   public void seNbItemsEnabled(boolean b) {

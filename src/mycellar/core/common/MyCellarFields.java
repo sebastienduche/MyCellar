@@ -16,7 +16,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
-import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
 
 /**
  * Titre : Cave &agrave; vin
@@ -36,7 +37,7 @@ public enum MyCellarFields {
   PLACE(3, "Main.Storage"),
   NUM_PLACE(4, "MyCellarFields.NumPlace"),
   LINE(5, "MyCellarFields.Line"),
-  COLUMN(6, "MyCellarFields.Column"),
+  COLUMN(6, MYCELLARFIELDS_COLUMN.getKey()),
   PRICE(7, "Main.Price"),
   COMMENT(8, "Main.Comment"),
   MATURITY(9, "Main.Maturity"),
@@ -274,6 +275,6 @@ public enum MyCellarFields {
     if (isNullOrEmpty(keyLabel)) {
       return "";
     }
-    return getLabel(keyLabel, labelProperty);
+    return getLabelWithProperty(keyLabel, labelProperty);
   }
 }

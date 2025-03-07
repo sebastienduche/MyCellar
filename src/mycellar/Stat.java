@@ -62,6 +62,8 @@ import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
 import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelForType;
+import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.MAIN_NAME;
 
 
 /**
@@ -153,7 +155,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
   private void updateCountLabel() {
     int nbItems = Program.getNbItems();
-    end.setText(MessageFormat.format(getLabel("Stats.TotalItems", new LabelProperty(nbItems > 1)), nbItems));
+    end.setText(MessageFormat.format(getLabelWithProperty("Stats.TotalItems", new LabelProperty(nbItems > 1)), nbItems));
   }
 
   private void chartItemStateChanged(ItemEvent itemEvent) {
@@ -294,7 +296,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       final int priceCount = price.getCount();
       if (all_bracket || priceCount > 0) {
         panel.add(new MyCellarSimpleLabel(price.getName()));
-        panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(priceCount > 1)), priceCount)), "span 2, align right, wrap");
+        panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabelWithProperty("Main.SeveralItems", new LabelProperty(priceCount > 1)), priceCount)), "span 2, align right, wrap");
       }
     }
     panel.updateUI();
@@ -326,12 +328,12 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     for (StatData data : listYear) {
       panel.add(new MyCellarSimpleLabel(data.getName()));
       final int dataCount = data.getCount();
-      panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(dataCount > 1)), dataCount)), "span 2, align right, wrap");
+      panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabelWithProperty("Main.SeveralItems", new LabelProperty(dataCount > 1)), dataCount)), "span 2, align right, wrap");
     }
     panel.updateUI();
     panelChart.setVisible(true);
     panelChart.setDataPieChart(listYear, getLabel("Stats.Years"));
-    end.setText(MessageFormat.format(getLabel("Stats.Items", LabelProperty.PLURAL), Program.getNbItems()));
+    end.setText(MessageFormat.format(getLabelWithProperty("Stats.Items", LabelProperty.PLURAL), Program.getNbItems()));
   }
 
   private void displayHistory() {
@@ -367,9 +369,9 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     options.setEnabled(false);
     moy.setText("");
 
-    panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Stats.Items", LabelProperty.PLURAL), "")));
+    panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabelWithProperty("Stats.Items", LabelProperty.PLURAL), "")));
     panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getNbItems())), "span 2, align right, wrap");
-    panel.add(new MyCellarSimpleLabel(getLabel("Stats.UniqueItems", LabelProperty.PLURAL)));
+    panel.add(new MyCellarSimpleLabel(getLabelWithProperty("Stats.UniqueItems", LabelProperty.PLURAL)));
     panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getStorage().getDistinctNames().size())), "span 2, align right, gapbottom 10px, wrap");
     if (Program.isWineType()) {
       panel.add(new MyCellarSimpleLabel(getLabel("Stats.ByColor")), "wrap");
@@ -398,7 +400,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       tableValues[i][0] = entry.getKey();
       tableValues[i][1] = entry.getValue().toString();
     }
-    final DefaultTableModel defaultTableModel = new DefaultTableModel(tableValues, new String[]{getLabel("Main.Name"), getLabel("Stats.Count")}) {
+    final DefaultTableModel defaultTableModel = new DefaultTableModel(tableValues, new String[]{getLabel(MAIN_NAME), getLabel("Stats.Count")}) {
       @Override
       public boolean isCellEditable(int row, int column) {
         return false;
@@ -410,7 +412,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     column.setMinWidth(50);
     column.setMaxWidth(50);
     panelOther.setLayout(new MigLayout("", "grow", "[][grow]"));
-    panelOther.add(new MyCellarSimpleLabel(getLabel("Stats.NbObjectPerLabel", PLURAL)), "wrap");
+    panelOther.add(new MyCellarSimpleLabel(getLabelWithProperty("Stats.NbObjectPerLabel", PLURAL)), "wrap");
     panelOther.add(new JScrollPane(table), "grow");
     panel.repaint();
     panelChart.setVisible(false);
@@ -430,7 +432,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           .sorted(Comparator.comparing(History::getLocaleDate))
           .forEach(history -> listNumberBottles.add(new StatData(history.getLocaleDate().format(DATE_FORMATER_DDMMYYYY), history.getTotalBottle())));
     }
-    panelChart.setLineChart(listNumberBottles, getLabel("Stats.BottleCount", LabelProperty.PLURAL));
+    panelChart.setLineChart(listNumberBottles, getLabelWithProperty("Stats.BottleCount", LabelProperty.PLURAL));
   }
 
   private void displayOnePlace() {
@@ -451,7 +453,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       panel.add(new MyCellarSimpleLabel(abstractPlace.getName()));
       displayPlace(abstractPlace);
     }
-    end.setText(MessageFormat.format(getLabel("Stats.Items", LabelProperty.PLURAL), nbItems));
+    end.setText(MessageFormat.format(getLabelWithProperty("Stats.Items", LabelProperty.PLURAL), nbItems));
   }
 
   private void displayPlace(AbstractPlace abstractPlace) {
@@ -464,7 +466,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       list_num_empl = new MyCellarLabel("Stats.NShelves", LabelProperty.SINGLE, Integer.toString(partCount));
     }
     panel.add(list_num_empl);
-    panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll)), "span 2, align right, wrap");
+    panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabelWithProperty("Main.SeveralItems", new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll)), "span 2, align right, wrap");
     if (!abstractPlace.isSimplePlace()) {
       displayNbBottlePlace(abstractPlace);
     }
@@ -485,7 +487,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       displayPlace(abstractPlace);
     }
     moy.setText("");
-    end.setText(MessageFormat.format(getLabel("Stats.TotalItems", new LabelProperty(countItems > 1)), countItems));
+    end.setText(MessageFormat.format(getLabelWithProperty("Stats.TotalItems", new LabelProperty(countItems > 1)), countItems));
   }
 
   private void displayNbBottlePlace(AbstractPlace abstractPlace) {
@@ -546,26 +548,26 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listPlaces.setEnabled(false);
     if (selectedStatType == StatsEnum.PLACE) {
       listPlaces.setEnabled(true);
-      comboLabel.setText(getLabel("Main.Storage", LabelProperty.SINGLE.withDoubleQuote()));
+      comboLabel.setText(getLabelWithProperty("Main.Storage", LabelProperty.SINGLE.withDoubleQuote()));
       listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllStorages")));
       Program.getAbstractPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
     } else if (selectedStatType == StatsEnum.HISTORY) {
       listPlaces.setEnabled(true);
       comboLabel.setText("");
       listPlaces.addItem(new PlaceComboItem(getLabel("Stats.Inout")));
-      listPlaces.addItem(new PlaceComboItem(getLabel("Stats.BottleCount", LabelProperty.PLURAL)));
+      listPlaces.addItem(new PlaceComboItem(getLabelWithProperty("Stats.BottleCount", LabelProperty.PLURAL)));
     } else if (selectedStatType == StatsEnum.PRICE) {
       listPlaces.setEnabled(true);
       comboLabel.setText(getLabel("Stats.PriceBracket"));
       listPlaces.removeAllItems();
       listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllBrackets")));
-      listPlaces.addItem(new PlaceComboItem(getLabel("Stats.BracketsWith", LabelProperty.PLURAL)));
+      listPlaces.addItem(new PlaceComboItem(getLabelWithProperty("Stats.BracketsWith", LabelProperty.PLURAL)));
     } else if (selectedStatType == StatsEnum.YEAR) {
       comboLabel.setText("");
       listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllYears")));
     } else if (selectedStatType == StatsEnum.OBJECT) {
       comboLabel.setText("");
-      listPlaces.addItem(new PlaceComboItem(getLabel("Stats.BottleCount", LabelProperty.PLURAL)));
+      listPlaces.addItem(new PlaceComboItem(getLabelWithProperty("Stats.BottleCount", LabelProperty.PLURAL)));
     }
     listPlaces.setSelectedIndex(0);
   }

@@ -31,6 +31,7 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
+import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -78,6 +79,19 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_CONFIRM1DELETE;
+import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMNDELETE;
+import static mycellar.general.ResourceKey.EXPORT_EXPORTFORMAT;
+import static mycellar.general.ResourceKey.MAIN_NV;
+import static mycellar.general.ResourceKey.MAIN_OTHER;
+import static mycellar.general.ResourceKey.MODIF;
+import static mycellar.general.ResourceKey.RECHERCHE;
+import static mycellar.general.ResourceKey.SEARCH_COMPLETED;
+import static mycellar.general.ResourceKey.SEARCH_FAILED;
+import static mycellar.general.ResourceKey.SEARCH_INPROGRESS;
+import static mycellar.general.ResourceKey.SEARCH_NAME;
+import static mycellar.general.ResourceKey.SEARCH_YEAR;
+import static mycellar.general.ResourceKey.SUPPR;
 
 /**
  * Titre : Cave &agrave; vin
@@ -86,8 +100,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.6
- * @since 02/03/25
+ * @version 24.7
+ * @since 07/03/25
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -102,10 +116,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final MyCellarComboBox<String> year = new MyCellarComboBox<>();
   private final MyCellarButton searchButton = new MyCellarButton("Main.Search", SEARCH);
   private final MyCellarButton emptyRowsButton = new MyCellarButton("Search.Clear");
-  private final char searchKey = getLabel("RECHERCHE").charAt(0);
-  private final char modificationKey = getLabel("MODIF").charAt(0);
-  private final char deleteKey = getLabel("SUPPR").charAt(0);
-  private final char exportKey = getLabel("EXPORT").charAt(0);
+  private final char searchKey = getLabel(RECHERCHE).charAt(0);
+  private final char modificationKey = getLabel(MODIF).charAt(0);
+  private final char deleteKey = getLabel(SUPPR).charAt(0);
+  private final char exportKey = getLabel(ResourceKey.EXPORT).charAt(0);
   private final MyCellarSimpleLabel resultInfoLabel = new MyCellarSimpleLabel();
   private final MyCellarCheckBox selectAllCheck = new MyCellarCheckBox("Main.SelectAll");
   private final MyCellarButton addToWorksheetButton = new MyCellarButton("Search.AddWorksheet", WORK);
@@ -131,6 +145,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       }
 
       searchByName = new TextFieldPopup(Program.getStorage().getDistinctNames(), 150) {
+        @Serial
         private static final long serialVersionUID = 3894902403893114601L;
 
         @Override
@@ -196,7 +211,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       tc = tcm.getColumn(SearchTableModel.SHOW);
       tc.setCellRenderer(new ButtonCellRenderer());
       tc.setCellEditor(new ButtonCellEditor());
-      JScrollPane scrollpane = new JScrollPane(table);
+      JScrollPane scrollPane = new JScrollPane(table);
       modifyButton.addActionListener(this::modif_actionPerformed);
       resultInfoLabel.setForeground(Color.red);
       resultInfoLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -222,7 +237,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
       add(tabbedPane, "growx");
       add(new PanelOption(), "wrap");
-      add(scrollpane, "grow, wrap, span 2");
+      add(scrollPane, "grow, wrap, span 2");
       add(addToWorksheetButton, "alignx left, aligny top");
       add(selectAllCheck, "wrap, alignx right, aligny top");
       add(new MyCellarLabel("Search.SelectRows", LabelProperty.SINGLE), "wrap, span 2, alignx center");
@@ -251,7 +266,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     JDialog dialog = new JDialog();
     dialog.add(new Export(searchTableModel.getDatas()));
     dialog.pack();
-    dialog.setTitle(getLabel("Export.ExportFormat"));
+    dialog.setTitle(getLabel(EXPORT_EXPORTFORMAT));
     dialog.setLocationRelativeTo(MainFrame.getInstance());
     dialog.setModal(true);
     dialog.setVisible(true);
@@ -273,10 +288,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       String erreur_txt2;
       if (listToDelete.size() == 1) {
         erreur_txt1 = getError("Error.1ItemSelected", LabelProperty.SINGLE);
-        erreur_txt2 = getError("Error.Confirm1Delete");
+        erreur_txt2 = getError(ERROR_CONFIRM1DELETE);
       } else {
         erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), listToDelete.size());
-        erreur_txt2 = getError("Error.confirmNDelete");
+        erreur_txt2 = getError(ERROR_CONFIRMNDELETE);
       }
       int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       if (resul == JOptionPane.YES_OPTION) {
@@ -316,7 +331,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     Debug("Cherche_actionPerforming...");
     searchByName.removeMenu();
     updateLabelObjectNumber(false);
-    resultInfoLabel.setText(getLabel("Search.InProgress"));
+    resultInfoLabel.setText(getLabel(SEARCH_INPROGRESS));
     new Thread(this).start();
   }
 
@@ -463,7 +478,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       }
     }
     alreadyFoundItems = false;
-    resultInfoLabel.setText(getLabel("Search.Completed"));
+    resultInfoLabel.setText(getLabel(SEARCH_COMPLETED));
     if (searchTableModel.getRowCount() > 0) {
       exportButton.setEnabled(true);
       modifyButton.setEnabled(true);
@@ -559,7 +574,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (myCellarObject == null) {
         searchTableModel.removeAll();
         updateLabelObjectNumber(true);
-        resultInfoLabel.setText(getLabel("Search.Failed"));
+        resultInfoLabel.setText(getLabel(SEARCH_FAILED));
         Erreur.showSimpleErreur(getError("Error.NoItemFound", LabelProperty.SINGLE)); //Aucun objet trouve
         modifyButton.setEnabled(false);
         deleteButton.setEnabled(false);
@@ -825,6 +840,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   }
 
   private final class PanelName extends JPanel {
+    @Serial
     private static final long serialVersionUID = -2125241372841734287L;
 
     private PanelName() {
@@ -832,17 +848,18 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       searchByName.addMouseListener(popupListener);
       searchByName.setFont(FONT_PANEL);
       setLayout(new MigLayout("", "[grow]", "[]"));
-      add(new MyCellarLabel("Search.Name"), "wrap");
+      add(new MyCellarLabel(SEARCH_NAME), "wrap");
       add(searchByName, "grow");
     }
   }
 
   private final class PanelYear extends JPanel {
+    @Serial
     private static final long serialVersionUID = 8579611890313378015L;
 
     private PanelYear() {
       setLayout(new MigLayout());
-      MyCellarLabel labelYear = new MyCellarLabel("Search.Year");
+      MyCellarLabel labelYear = new MyCellarLabel(SEARCH_YEAR);
       add(labelYear, "wrap");
       add(year);
     }
@@ -855,12 +872,13 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           year.addItem(Integer.toString(s));
         }
       }
-      year.addItem(getLabel("Main.NV"));
-      year.addItem(getLabel("Main.Other"));
+      year.addItem(getLabel(MAIN_NV));
+      year.addItem(getLabel(MAIN_OTHER));
     }
   }
 
   private final class PanelOption extends JPanel {
+    @Serial
     private static final long serialVersionUID = 6761656985728428915L;
 
     private PanelOption() {

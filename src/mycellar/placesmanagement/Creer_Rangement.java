@@ -62,6 +62,7 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
 import static mycellar.placesmanagement.places.ComplexPlace.copyParts;
 
 
@@ -305,7 +306,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     final AbstractPlace abstractPlace = (AbstractPlace) comboPlace.getSelectedItem();
     if (comboPlace.getSelectedIndex() == 0 || abstractPlace == null) {
       Debug("ERROR: Please select a place");
-      Erreur.showSimpleErreur(getError("Error.SelectStorage"));
+      Erreur.showSimpleErreur(getError(ERROR_SELECTSTORAGE));
       return;
     }
 

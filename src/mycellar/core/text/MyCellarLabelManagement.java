@@ -3,6 +3,8 @@ package mycellar.core.text;
 import mycellar.Program;
 import mycellar.ProgramType;
 import mycellar.core.IMyCellarComponent;
+import mycellar.general.ResourceErrorKey;
+import mycellar.general.ResourceKey;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.JOptionPane;
@@ -23,8 +25,8 @@ import static mycellar.ProgramConstants.THREE_DOTS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 25/05/22
+ * @version 1.0
+ * @since 07/03/25
  */
 
 public class MyCellarLabelManagement {
@@ -63,8 +65,17 @@ public class MyCellarLabelManagement {
     }
   }
 
+  @Deprecated(since = "version 90")
   public static String getLabel(String id) {
     return getLabel(id, true);
+  }
+
+  public static String getLabel(ResourceKey id) {
+    return getLabel(id.getKey(), true);
+  }
+
+  public static String getLabel(ResourceKey id, Object... parameters) {
+    return MessageFormat.format(getLabel(id.getKey(), true), parameters);
   }
 
   public static String getLabel(String id, LabelProperty labelProperty) {
@@ -102,6 +113,11 @@ public class MyCellarLabelManagement {
     return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
   }
 
+  public static String getError(ResourceErrorKey key) {
+    return getError(key.getKey());
+  }
+
+  @Deprecated(since = "version 90")
   public static String getError(String id) {
     try {
       return LanguageFileLoader.getError(id);

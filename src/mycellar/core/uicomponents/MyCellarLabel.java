@@ -4,6 +4,7 @@ import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.text.MyCellarLabelManagement;
+import mycellar.general.ResourceKey;
 
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -27,8 +28,23 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
   private final LabelKey labelKey;
 
+  @Deprecated(since = "version 90")
   public MyCellarLabel(String code) {
     labelKey = new LabelKey(code);
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT_PANEL);
+  }
+
+  public MyCellarLabel(ResourceKey resourceKey) {
+    labelKey = new LabelKey(resourceKey.getKey());
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT_PANEL);
+  }
+
+  public MyCellarLabel(ResourceKey resourceKey, String parameter) {
+    labelKey = new LabelKey(resourceKey.getKey(), null, parameter);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

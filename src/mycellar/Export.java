@@ -19,6 +19,7 @@ import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.frame.MainFrame;
+import mycellar.general.ResourceKey;
 import mycellar.pdf.PDFOptions;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.showfile.ManageColumnModel;
@@ -56,6 +57,25 @@ import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.core.MyCellarSettings.EXPORT_DEFAULT;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR087;
+import static mycellar.general.ResourceErrorKey.ERROR107;
+import static mycellar.general.ResourceErrorKey.ERROR108;
+import static mycellar.general.ResourceErrorKey.ERROR157;
+import static mycellar.general.ResourceErrorKey.ERROR160;
+import static mycellar.general.ResourceErrorKey.ERROR161;
+import static mycellar.general.ResourceErrorKey.ERROR_EXPORTERROR;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTANEXCELFILE;
+import static mycellar.general.ResourceErrorKey.EXPORT_REPLACEFILEQUESTION;
+import static mycellar.general.ResourceKey.EXPORT_CSVINFO;
+import static mycellar.general.ResourceKey.EXPORT_ENDED;
+import static mycellar.general.ResourceKey.EXPORT_EXPORTFORMAT;
+import static mycellar.general.ResourceKey.EXPORT_EXPORTINPROGRESS;
+import static mycellar.general.ResourceKey.EXPORT_FILENAME;
+import static mycellar.general.ResourceKey.EXPORT_OPTIONS;
+import static mycellar.general.ResourceKey.EXPORT_SELECTDEFAULTMODE;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
+import static mycellar.general.ResourceKey.MAIN_COLUMN;
+import static mycellar.general.ResourceKey.MAIN_SAVEDFILE;
 
 
 /**
@@ -65,13 +85,13 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.5
- * @since 13/01/24
+ * @version 11.6
+ * @since 07/03/25
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
-  private static final char OUVRIR = getLabel("OUVRIR").charAt(0);
-  private static final char EXPORT = getLabel("EXPORT").charAt(0);
+  private static final char OUVRIR = getLabel(ResourceKey.OUVRIR).charAt(0);
+  private static final char EXPORT = getLabel(ResourceKey.EXPORT).charAt(0);
   private final MyCellarButton valider = new MyCellarButton("Main.Export");
   private final JTextField file = new JTextField();
   private final MyCellarButton browse = new MyCellarButton(OPEN);
@@ -104,9 +124,9 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       final PDFTools pdf = new PDFTools(pdfProperties, pageProperties, true);
       pdf.writeData(Program.getPDFRows(bottles, pdfProperties));
       pdf.save(nomFichier);
-      Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.SavedFile"), nomFichier.getAbsolutePath()));
+      Erreur.showInformationMessage(getLabel(MAIN_SAVEDFILE, nomFichier.getAbsolutePath()));
     } catch (IOException | RuntimeException ex) {
-      Erreur.showSimpleErreur(getError("Error160"), getError("Error161"));
+      Erreur.showSimpleErreur(getError(ERROR160), getError(ERROR161));
       Program.showException(ex, false);
       return false;
     }
@@ -114,7 +134,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   }
 
   private void initialize() {
-    MyCellarLabel nameLabel = new MyCellarLabel("Export.FileName");
+    MyCellarLabel nameLabel = new MyCellarLabel(EXPORT_FILENAME);
     end.setFont(FONT_DIALOG_BOLD);
     openit.setMnemonic(OUVRIR);
     openit.addActionListener((e) -> openit_actionPerformed());
@@ -156,7 +176,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     panelFormat.add(MyCellarRadioButtonXLS);
     panelFormat.add(MyCellarRadioButtonPDF);
     panelFormat.add(options, "w 100:100:100, push");
-    panelFormat.setBorder(BorderFactory.createTitledBorder(getLabel("Export.ExportFormat")));
+    panelFormat.setBorder(BorderFactory.createTitledBorder(getLabel(EXPORT_EXPORTFORMAT)));
     add(panelFormat, "grow, wrap");
     JPanel panelTitle = new JPanel();
     panelTitle.setLayout(new MigLayout("", "grow", ""));
@@ -259,7 +279,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     valider.setEnabled(false);
     openit.setEnabled(false);
     String nom = toCleanString(file.getText());
-    end.setText(getLabel("Export.ExportInProgress"));
+    end.setText(getLabel(EXPORT_EXPORTINPROGRESS));
 
     if (!MyCellarControl.controlPath(nom)) {
       end.setText("");
@@ -272,8 +292,8 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       // Existing file. replace?
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(
           MainFrame.getInstance(),
-          MessageFormat.format(getError("Export.replaceFileQuestion"), aFile.getAbsolutePath()),
-          getLabel("Main.AskConfirmation"),
+          MessageFormat.format(getError(EXPORT_REPLACEFILEQUESTION), aFile.getAbsolutePath()),
+          getLabel(MAIN_ASKCONFIRMATION),
           JOptionPane.YES_NO_OPTION,
           JOptionPane.QUESTION_MESSAGE)) {
         end.setText("");
@@ -286,7 +306,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML))) {
         //"Le fichier saisi ne possede pas une extension XML: " + str_tmp3);
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error087"), nom));
+        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR087), nom));
         valider.setEnabled(true);
         return;
       }
@@ -295,73 +315,73 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       myCellarObjects.forEach(liste::add);
       boolean ok = ListeBouteille.writeXML(liste, aFile);
       if (ok) {
-        end.setText(getLabel("Export.Ended"));
+        end.setText(getLabel(EXPORT_ENDED));
         openit.setEnabled(true);
       } else {
-        end.setText(getError("Error.exportError"));
+        end.setText(getError(ERROR_EXPORTERROR));
       }
     } else if (MyCellarRadioButtonHTML.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_HTML))) {
         //"Le fichier saisi ne possede pas une extension HTML: " + str_tmp3);
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error107"), nom));
+        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR107), nom));
         valider.setEnabled(true);
         return;
       }
 
       if (PlaceUtils.writeHTML(aFile, myCellarObjects, Program.getHTMLColumns())) {
-        end.setText(getLabel("Export.Ended"));
-        Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.SavedFile"), aFile.getAbsolutePath()));
+        end.setText(getLabel(EXPORT_ENDED));
+        Erreur.showInformationMessage(getLabel(MAIN_SAVEDFILE, aFile.getAbsolutePath()));
         openit.setEnabled(true);
       } else {
-        end.setText(getError("Error.exportError"));
+        end.setText(getError(ERROR_EXPORTERROR));
       }
     } else if (MyCellarRadioButtonCSV.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_CSV))) {
         //"Le fichier saisi ne possede pas une extension CSV: " + str_tmp3);
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error108"), nom));
+        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR108), nom));
         valider.setEnabled(true);
         return;
       }
 
       progressBar.setVisible(true);
       if (PlaceUtils.writeCSV(aFile, myCellarObjects, progressBar)) {
-        end.setText(getLabel("Export.Ended"));
-        Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.SavedFile"), aFile.getAbsolutePath()),
-            getLabel("Export.CSVInfo"));
+        end.setText(getLabel(EXPORT_ENDED));
+        Erreur.showInformationMessage(getLabel(MAIN_SAVEDFILE, aFile.getAbsolutePath()),
+            getLabel(EXPORT_CSVINFO));
         openit.setEnabled(true);
       }
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonXLS.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(nom, asList(Filtre.FILTRE_XLSX, Filtre.FILTRE_XLS, Filtre.FILTRE_ODS))) {
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.notAnExcelFile"), nom));
+        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR_NOTANEXCELFILE), nom));
         valider.setEnabled(true);
         return;
       }
 
       progressBar.setVisible(true);
       if (PlaceUtils.writeXLS(aFile, myCellarObjects, false, progressBar)) {
-        end.setText(getLabel("Export.Ended"));
-        Erreur.showInformationMessage(MessageFormat.format(getLabel("Main.SavedFile"), aFile.getAbsolutePath()));
+        end.setText(getLabel(EXPORT_ENDED));
+        Erreur.showInformationMessage(getLabel(MAIN_SAVEDFILE, aFile.getAbsolutePath()));
         openit.setEnabled(true);
       } else {
-        end.setText(getError("Error.exportError"));
-        Erreur.showSimpleErreur(getError("Error160"), getError("Error161"));
+        end.setText(getError(ERROR_EXPORTERROR));
+        Erreur.showSimpleErreur(getError(ERROR160), getError(ERROR161));
       }
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonPDF.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_PDF))) {
         //"Le fichier saisi ne possede pas une extension PDF: " + str_tmp3);
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error157"), nom));
+        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR157), nom));
         valider.setEnabled(true);
         return;
       }
 
       if (exportToPDF(myCellarObjects, aFile)) {
-        end.setText(getLabel("Export.Ended"));
+        end.setText(getLabel(EXPORT_ENDED));
         openit.setEnabled(true);
       } else {
         end.setText("");
@@ -427,7 +447,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         tc.setMaxWidth(25);
         JPanel panel = new JPanel();
         panel.add(new JScrollPane(table));
-        JOptionPane.showMessageDialog(MainFrame.getInstance(), panel, getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(MainFrame.getInstance(), panel, getLabel(MAIN_COLUMN), JOptionPane.PLAIN_MESSAGE);
         Program.setModified();
         List<Integer> properties = modelColumn.getSelectedColumns();
         List<MyCellarFields> cols = new ArrayList<>();
@@ -461,7 +481,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       default_value.set(Program.getCaveConfigInt(key_properties.get(0), 0), "true");
 
       List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
-      MyOptions myoptions = new MyOptions(getLabel("Export.Options"), getLabel("Export.SelectDefaultMode"), titre_properties, default_value, key_properties, type_objet, false);
+      MyOptions myoptions = new MyOptions(getLabel(EXPORT_OPTIONS), getLabel(EXPORT_SELECTDEFAULTMODE), titre_properties, default_value, key_properties, type_objet, false);
       myoptions.setVisible(true);
     }
   }

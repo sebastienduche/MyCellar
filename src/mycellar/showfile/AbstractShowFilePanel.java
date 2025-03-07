@@ -77,6 +77,8 @@ import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
+import static mycellar.general.ResourceKey.BOUTEILLE_TEMPORARYPLACE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -85,8 +87,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 10/09/24
+ * @version 0.3
+ * @since 07/03/25
  */
 
 public abstract class AbstractShowFilePanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -170,7 +172,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       @Override
       void setValue(MyCellarObject b, AbstractPlace value) {
         if (Program.EMPTY_PLACE.equals(value)) {
-          Erreur.showSimpleErreur(getError("Error.selectStorage"));
+          Erreur.showSimpleErreur(getError(ERROR_SELECTSTORAGE));
           return;
         }
         setPlaceValue(b, MyCellarFields.PLACE, value);
@@ -179,7 +181,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       @Override
       Object getDisplayValue(MyCellarObject b) {
         if (b.isInTemporaryStock()) {
-          return getLabel("Bouteille.TemporaryPlace");
+          return getLabel(BOUTEILLE_TEMPORARYPLACE);
         }
         return convertStringFromHTMLString(b.getEmplacement());
       }

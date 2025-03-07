@@ -23,8 +23,8 @@ import java.util.ResourceBundle.Control;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 28/12/21
+ * @version 1.3
+ * @since 07/03/25
  */
 public final class LanguageFileLoader {
 
@@ -39,6 +39,14 @@ public final class LanguageFileLoader {
 
   private LanguageFileLoader() {
     loadLanguageFiles(Language.ENGLISH);
+  }
+
+  public ResourceBundle getBundleTitle() {
+    return bundleTitle;
+  }
+
+  public ResourceBundle getBundleError() {
+    return bundleError;
   }
 
   public static LanguageFileLoader getInstance() {

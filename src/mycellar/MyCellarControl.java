@@ -13,6 +13,7 @@ import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -21,8 +22,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 25/12/23
+ * @version 3.1
+ * @since 07/03/25
  */
 
 public final class MyCellarControl {
@@ -52,7 +53,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidPlace(PlacePosition place, Component component) {
     if (Program.EMPTY_PLACE.equals(place.getAbstractPlace())) {
       Debug("ERROR: Wrong PlacePosition");
-      Erreur.showSimpleErreur(component, getError("Error.selectStorage"));
+      Erreur.showSimpleErreur(component, getError(ERROR_SELECTSTORAGE));
       return true;
     }
     return false;

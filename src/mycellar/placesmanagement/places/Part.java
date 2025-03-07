@@ -3,6 +3,10 @@ package mycellar.placesmanagement.places;
 import java.util.LinkedList;
 import java.util.Objects;
 
+/**
+ * @param number starts at 0
+ * @param rows
+ */
 public record Part(int number, LinkedList<Row> rows) {
   public Row getRowAt(int j) {
     if (j >= rows.size()) {
@@ -37,6 +41,21 @@ public record Part(int number, LinkedList<Row> rows) {
     for (int j = 0; j < count; j++) {
       rows.add(new Row(j + 1));
     }
+  }
+
+  @Deprecated(since = "Shouldn't be used to display the value as it's 0 based")
+  @Override
+  public int number() {
+    return number;
+  }
+
+  /**
+   * number is zero base
+   *
+   * @return number + 1
+   */
+  public int getNumberAsDisplay() {
+    return number + 1;
   }
 
   @Override

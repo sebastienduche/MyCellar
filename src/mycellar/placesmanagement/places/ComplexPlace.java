@@ -19,8 +19,8 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 01/03/25
+ * @version 1.2
+ * @since 07/03/25
  */
 public class ComplexPlace extends AbstractPlace {
 
@@ -56,13 +56,6 @@ public class ComplexPlace extends AbstractPlace {
       if (rowSize > lineCount) {
         lineCount = rowSize;
       }
-//      for (int j = 0; j < rowSize; j++) {
-//        int colSize = oldPart.getRowAt(j).getColumnCount();
-//        part.getRowAt(j).setColumnCount(colSize);
-//        if (colSize > columnCount) {
-//          columnCount = colSize;
-//        }
-//      }
     }
 
     storage = new MyCellarObject[partCount][lineCount][columnCount];
@@ -89,6 +82,10 @@ public class ComplexPlace extends AbstractPlace {
   @Override
   public boolean isIncorrectNumPlace(int numPlace) {
     return numPlace < 0 || numPlace >= partCount;
+  }
+
+  public int getCountCellUsed(Part part) {
+    return getCountCellUsed(part.number());
   }
 
   @Override

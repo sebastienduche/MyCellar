@@ -57,6 +57,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
+import java.io.Serial;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -90,6 +91,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
+  @Serial
   private static final long serialVersionUID = 8497660112193602839L;
   private final SearchTableModel searchTableModel = new SearchTableModel();
   private final MyCellarLabel objectFoundCountLabels = new MyCellarLabel("Search.bottleFound", LabelProperty.PLURAL.withCapital());

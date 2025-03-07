@@ -72,8 +72,8 @@ import static mycellar.placesmanagement.places.ComplexPlace.copyParts;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.9
- * @since 01/03/25
+ * @version 18.0
+ * @since 07/03/25
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   // TODO Can we manage the modified status correctly?
@@ -247,10 +247,6 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     if (newValue > listPart.size()) {
       while (listPart.size() < newValue) {
         listPart.add(new Part(listPart.size(), new LinkedList<>(List.of(new Row(0)))));
-//        listPart.add(part);
-//        if (notAllLinesSameRadio.isSelected()) {
-//          part.setRows(1);
-//        }
       }
     } else {
       while (listPart.size() > newValue) {
@@ -393,14 +389,14 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     int nbBottles = complexPlace.getTotalCountCellUsed();
     for (Part p : listPart) {
       if (p.rows().isEmpty()) {
-        Debug("ERROR: Wrong number of lines on part: " + p.number());
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.number()));
+        Debug("ERROR: Wrong number of lines on part: " + p.getNumberAsDisplay());
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNumberAsDisplay()));
         return;
       }
       for (Row r : p.rows()) {
         if (r.getColumnCount() == 0) {
-          Debug("ERROR: Wrong number of columns on part: " + p.number());
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.number()));
+          Debug("ERROR: Wrong number of columns on part: " + p.getNumberAsDisplay());
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNumberAsDisplay()));
           return;
         }
       }
@@ -568,12 +564,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       Debug("Creating complex place...");
       for (Part p : listPart) {
         if (bResul && p.rows().isEmpty()) {
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.number()));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNumberAsDisplay()));
           bResul = false;
         }
         for (Row r : p.rows()) {
           if (bResul && r.getColumnCount() == 0) {
-            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.number()));
+            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNumberAsDisplay()));
             bResul = false;
           }
         }
@@ -655,12 +651,12 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
     for (Part p : listPart) {
       if (p.rows().isEmpty()) {
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.number()), getError("Error.clickOKBeforePreview"));
+        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberLinesForShelve"), p.getNumberAsDisplay()), getError("Error.clickOKBeforePreview"));
         return;
       }
       for (Row r : p.rows()) {
         if (r.getColumnCount() == 0) {
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.number()), getError("Error.clickOKBeforePreview"));
+          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.incorrectNumberColumnsForShelve"), p.getNumberAsDisplay()), getError("Error.clickOKBeforePreview"));
           return;
         }
       }

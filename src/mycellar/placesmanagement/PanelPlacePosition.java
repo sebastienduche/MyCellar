@@ -26,6 +26,7 @@ import javax.swing.border.EtchedBorder;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.io.Serial;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
@@ -44,8 +45,9 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * @since 16/09/22
  */
 public class PanelPlacePosition extends JPanel implements IPlacePosition {
-  protected static final ComboItem NONE = new ComboItem(-1, "");
+  @Serial
   private static final long serialVersionUID = -2601861017578176513L;
+  protected static final ComboItem NONE = new ComboItem(-1, "");
   private final JModifyComboBox<AbstractPlace> place = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> numPlace = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> line = new JModifyComboBox<>();

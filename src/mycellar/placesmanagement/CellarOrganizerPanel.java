@@ -65,7 +65,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -77,8 +76,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.1
- * @since 26/12/23
+ * @version 6.2
+ * @since 07/03/25
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -153,7 +152,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
             rangementCells.add(cell);
             panelCellar.add(cell, "growx, wrap");
           }
-          placePanel.add(new MyCellarSimpleLabel(getLabel("Storage.Shelve") + SPACE + empl), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Storage.ShelveNumber"), empl)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 
@@ -193,7 +192,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
               panelCellar.add(panel);
             }
           }
-          placePanel.add(new MyCellarSimpleLabel(getLabel("Storage.Shelve") + SPACE + (i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
+          placePanel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabel("Storage.ShelveNumber"), i + 1)), i > 0 ? "newline, gaptop 30, wrap" : "wrap");
           placePanel.add(panelCellar, "grow");
         }
 

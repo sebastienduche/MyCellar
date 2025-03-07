@@ -6,6 +6,7 @@ import mycellar.placesmanagement.places.Row;
 
 import javax.swing.table.AbstractTableModel;
 import java.io.Serial;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,8 +22,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 01/03/25
+ * @version 1.5
+ * @since 07/03/25
  */
 
 class CreerRangementTableModel extends AbstractTableModel {
@@ -75,7 +76,7 @@ class CreerRangementTableModel extends AbstractTableModel {
         return "";
       }
       return switch (col) {
-        case NAME -> getLabel("Storage.Shelve") + SPACE + p.number();
+        case NAME -> MessageFormat.format(getLabel("Storage.ShelveNumber"), p.getNumberAsDisplay());
         case ROW -> p.rows().size();
         case COLUMN -> {
           if (!p.rows().isEmpty()) {
@@ -93,7 +94,8 @@ class CreerRangementTableModel extends AbstractTableModel {
         return "";
       }
       return switch (col) {
-        case NAME -> getLabel("Storage.Shelve") + SPACE + p.number() + SPACE + getLabel("Storage.NumberLines");
+        case NAME ->
+            MessageFormat.format(getLabel("Storage.ShelveNumber"), p.getNumberAsDisplay()) + SPACE + getLabel("Storage.NumberLines");
         case ROW -> line;
         case COLUMN -> {
           if (p.getRowAt(line - 1) != null) {

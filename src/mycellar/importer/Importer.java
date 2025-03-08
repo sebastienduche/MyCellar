@@ -77,6 +77,7 @@ import static mycellar.ProgramConstants.IMPORT_COMBO_COUNT;
 import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.SLASH;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceKey.IMPORT_DONE;
 
@@ -88,8 +89,8 @@ import static mycellar.general.ResourceKey.IMPORT_DONE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.3
- * @since 13/01/24
+ * @version 16.4
+ * @since 08/03/25
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -427,7 +428,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         Debug("ERROR: No column for wine name");
         //"Aucune colonne n'indique le nom du vin.
         //"Veuillez selectionner une colonne avec le nom du vin
-        Erreur.showSimpleErreur(getError("Error.NoColumnSelectedForName", LabelProperty.OF_THE_SINGLE), getError("Error143", LabelProperty.SINGLE));
+        Erreur.showSimpleErreur(getErrorWithProperty("Error.NoColumnSelectedForName", LabelProperty.OF_THE_SINGLE), getErrorWithProperty("Error143", LabelProperty.SINGLE));
         importe.setEnabled(true);
         return;
       }

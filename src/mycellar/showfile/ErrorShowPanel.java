@@ -30,6 +30,9 @@ import javax.swing.table.TableColumnModel;
 import java.awt.event.ActionEvent;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
+import static mycellar.general.ResourceKey.MAIN_DELETE;
+import static mycellar.general.ResourceKey.SHOWFILE_QUITERRORS;
 
 /**
  * Titre : Cave &agrave; vin
@@ -38,8 +41,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 31/12/23
+ * @version 0.4
+ * @since 08/03/25
  */
 
 public class ErrorShowPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
@@ -50,7 +53,7 @@ public class ErrorShowPanel extends AbstractShowFilePanel implements ITabListene
     titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
     setLayout(new MigLayout("", "[][grow]", "[]10px[grow][]"));
     MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
-    deleteButton.setText(getLabel("Main.Delete"));
+    deleteButton.setText(getLabel(MAIN_DELETE));
     deleteButton.addActionListener((e) -> delete());
 
     add(titleLabel, "align left");
@@ -127,7 +130,7 @@ public class ErrorShowPanel extends AbstractShowFilePanel implements ITabListene
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (Program.getErrors().stream().anyMatch(MyCellarError::isNotSolved)) {
-      return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), getLabel("ShowFile.QuitErrors"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION);
+      return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), getLabel(SHOWFILE_QUITERRORS), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION);
     }
     PlaceUtils.putTabStock();
     return true;

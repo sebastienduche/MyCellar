@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.FONT_DIALOG_BIG_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 
@@ -36,8 +37,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.3
- * @since 25/12/23
+ * @version 4.4
+ * @since 08/03/25
  */
 
 public final class MoveLine extends JDialog {
@@ -107,7 +108,7 @@ public final class MoveLine extends JDialog {
     ComplexPlace complexPlace = (ComplexPlace) selectedPlace.getAbstractPlace();
     int nNbBottle = complexPlace.getNbCaseUseInLine(nNumLieu, nOldSelected);
     if (nNbBottle == 0) {
-      Erreur.showSimpleErreur(this, getError("Error.noItemsToMove", LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getErrorWithProperty("Error.noItemsToMove", LabelProperty.PLURAL));
       return;
     }
     int nOldColumnCount = complexPlace.getColumnCountAt(nNumLieu, nOldSelected);
@@ -118,7 +119,7 @@ public final class MoveLine extends JDialog {
     }
     int nBottle = complexPlace.getNbCaseUseInLine(nNumLieu, nNewSelected);
     if (nBottle > 0) {
-      Erreur.showSimpleErreur(this, getError("Error.stillItemsOnLine", LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getErrorWithProperty("Error.stillItemsOnLine", LabelProperty.PLURAL));
       return;
     }
     List<MyCellarObject> notMoved = new ArrayList<>();
@@ -138,7 +139,7 @@ public final class MoveLine extends JDialog {
     }
     if (!notMoved.isEmpty()) {
       final String value = notMoved.stream().map(IMyCellarObject::getNom).collect(Collectors.joining(", "));
-      Erreur.showSimpleErreur(this, getError("MoveLine.UnableToMove", LabelProperty.PLURAL), value);
+      Erreur.showSimpleErreur(this, getErrorWithProperty("MoveLine.UnableToMove", LabelProperty.PLURAL), value);
       Debug("ERROR: Unable to move objects: " + value);
     } else {
       label_end.setText(getLabelWithProperty("MoveLine.ItemsMoved", LabelProperty.THE_PLURAL.withCapital()), true);

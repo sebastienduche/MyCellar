@@ -101,6 +101,8 @@ import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.SAVEMODIFICATIONS;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 
 /**
  * Titre : Cave &agrave; vin
@@ -109,8 +111,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.3
- * @since 08/07/22
+ * @version 29.4
+ * @since 08/03/25
  */
 
 public final class Program {
@@ -704,7 +706,7 @@ public final class Program {
     boolean bSave = false;
     File newFile = null;
     if (openedFile.exists() && isModified()) {
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("SaveModifications"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError(SAVEMODIFICATIONS), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         bSave = true;
         if (!openedFile.isFileSavable()) {
           JFileChooser boiteFichier = new JFileChooser();

@@ -19,6 +19,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_DELETE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -27,8 +28,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.7
- * @since 31/12/23
+ * @version 12.8
+ * @since 08/03/25
  */
 
 public class WorksheetPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
@@ -69,7 +70,7 @@ public class WorksheetPanel extends AbstractShowFilePanel implements ITabListene
     add(removeFromWorksheetButton, "align right");
     add(modifyButton, "align right");
 
-    deleteButton.setText(getLabel("Main.Delete"));
+    deleteButton.setText(getLabel(MAIN_DELETE));
     deleteButton.addActionListener(e -> delete());
     add(deleteButton, "align right, wrap");
 

@@ -76,10 +76,21 @@ import static mycellar.Program.throwNotImplementedIfNotFor;
 import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceErrorKey.ERROR_1ITEMSELECTED;
+import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_CANTMODIFYSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUEABOVEZERO;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
+import static mycellar.general.ResourceErrorKey.ERROR_NITEMSSELECTED;
+import static mycellar.general.ResourceErrorKey.ERROR_NOITEMTODELETE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTENOUGHSPACESTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
 import static mycellar.general.ResourceKey.BOUTEILLE_TEMPORARYPLACE;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
+import static mycellar.general.ResourceKey.SHOWFILE_NOBOTTLETORESTORE;
 import static mycellar.general.ResourceKey.SHOWFILE_RESTORESEVERAL;
 
 /**
@@ -89,8 +100,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_RESTORESEVERAL;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 07/03/25
+ * @version 0.4
+ * @since 08/03/25
  */
 
 public abstract class AbstractShowFilePanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -144,7 +155,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       @Override
       void setValue(MyCellarObject b, String value) {
         if (Program.hasYearControl() && Bouteille.isInvalidYear(value)) {
-          Erreur.showSimpleErreur(getError("Error.enterValidYear"));
+          Erreur.showSimpleErreur(getError(ERROR_ENTERVALIDYEAR));
         } else {
           setStringValue(b, value);
         }
@@ -527,8 +538,8 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       @Override
       public boolean execute(MyCellarObject myCellarObject, int row, int column) {
         if (Program.isNotExistingMyCellarObject(myCellarObject)) {
-          Debug("Inexisting object " + myCellarObject.getNom() + " [" + myCellarObject.getId() + "]");
-          Erreur.showSimpleErreur(MessageFormat.format(getError("ShowFile.InexistingBottle", LabelProperty.THE_SINGLE), myCellarObject.getNom()));
+          Debug("Object " + myCellarObject.getNom() + " [" + myCellarObject.getId() + "] doesn't exist");
+          Erreur.showSimpleErreur(MessageFormat.format(getErrorWithProperty("ShowFile.InexistingBottle", LabelProperty.THE_SINGLE), myCellarObject.getNom()));
           return false;
         }
         ProgramPanels.showBottle(myCellarObject, true);
@@ -627,17 +638,17 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       List<MyCellarObject> toDeleteList = getSelectedMyCellarObjects();
 
       if (toDeleteList.isEmpty()) {
-        Erreur.showInformationMessage(getError("Error.NoItemToDelete", LabelProperty.SINGLE), getError("Error.pleaseSelect", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOITEMTODELETE, LabelProperty.SINGLE), getErrorWithProperty("Error.pleaseSelect", LabelProperty.THE_PLURAL));
       } else {
         String erreur_txt1, erreur_txt2;
         if (toDeleteList.size() == 1) {
-          erreur_txt1 = getError("Error.1ItemSelected", LabelProperty.SINGLE);
+          erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
           erreur_txt2 = getError("Error.Confirm1Delete");
         } else {
-          erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), toDeleteList.size());
+          erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL), toDeleteList.size());
           erreur_txt2 = getError("Error.confirmNDelete");
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           for (MyCellarObject b : toDeleteList) {
             Program.getStorage().addHistory(HistoryState.DEL, b);
             final AbstractPlace rangement = b.getAbstractPlace();
@@ -683,17 +694,17 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     final List<MyCellarObject> toRestoreList = getSelectedMyCellarObjects();
 
     if (toRestoreList.isEmpty()) {
-      Erreur.showInformationMessage(getLabelWithProperty("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), getLabelWithProperty("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL));
+      Erreur.showInformationMessage(getLabelWithProperty(SHOWFILE_NOBOTTLETORESTORE, LabelProperty.SINGLE), getLabelWithProperty("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL));
     } else {
       String erreur_txt1, erreur_txt2;
       if (toRestoreList.size() == 1) {
-        erreur_txt1 = getError("Error.1ItemSelected", LabelProperty.SINGLE);
+        erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
         erreur_txt2 = getLabel("ShowFile.RestoreOne");
       } else {
-        erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), toRestoreList.size());
+        erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL), toRestoreList.size());
         erreur_txt2 = getLabel(SHOWFILE_RESTORESEVERAL);
       }
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
         for (MyCellarObject b : toRestoreList) {
           Program.getTrash().remove(b);
@@ -779,7 +790,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
 
     if (field == MyCellarFields.NUM_PLACE || field == MyCellarFields.LINE || field == MyCellarFields.COLUMN) {
       if (abstractPlace != null && !abstractPlace.isSimplePlace() && nValueToCheck <= 0) {
-        Erreur.showSimpleErreur(getError("Error.enterNumericValueAboveZero"));
+        Erreur.showSimpleErreur(getError(ERROR_ENTERNUMERICVALUEABOVEZERO));
         return;
       }
     }
@@ -794,7 +805,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         if (abstractPlace.isComplexPlace()) {
           final MyCellarObject bouteille = ((ComplexPlace) abstractPlace).getObject(place).orElse(null);
           if (bouteille != null) {
-            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
+            Erreur.showSimpleErreur(getError(ERROR_ALREADYINSTORAGE, convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
             hasObject = true;
           }
         }
@@ -825,9 +836,9 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         }
       } else {
         if (abstractPlace != null && abstractPlace.isSimplePlace()) {
-          Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"));
+          Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE));
         } else {
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getErrorWithProperty(ERROR_CANTMODIFYSTORAGE, LabelProperty.THE_SINGLE), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             ProgramPanels.showBottle(b, true);
           }
         }
@@ -1069,7 +1080,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     public void actionPerformed(ActionEvent e) {
       List<MyCellarObject> selectedObjects = getSelectedMyCellarObjects();
       if (selectedObjects.isEmpty()) {
-        Erreur.showInformationMessage(getError("Error.NoItemToModify", LabelProperty.SINGLE), getError("Error.SelectItemToModify", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getErrorWithProperty("Error.NoItemToModify", LabelProperty.SINGLE), getErrorWithProperty("Error.SelectItemToModify", LabelProperty.THE_PLURAL));
         return;
       }
 
@@ -1077,8 +1088,8 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       LinkedList<MyCellarObject> existingObjects = new LinkedList<>();
       for (MyCellarObject bottle : selectedObjects) {
         if (Program.isNotExistingMyCellarObject(bottle)) {
-          Debug("Inexisting object " + bottle.getNom() + " [" + bottle.getId() + "]");
-          Erreur.showSimpleErreur(MessageFormat.format(getError("ShowFile.InexistingBottle", LabelProperty.THE_SINGLE), bottle.getNom()));
+          Debug("Object " + bottle.getNom() + " [" + bottle.getId() + "] doesn't exist");
+          Erreur.showSimpleErreur(MessageFormat.format(getErrorWithProperty("ShowFile.InexistingBottle", LabelProperty.THE_SINGLE), bottle.getNom()));
         } else {
           existingObjects.add(bottle);
         }

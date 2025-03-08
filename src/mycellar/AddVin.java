@@ -40,8 +40,13 @@ import static mycellar.MyCellarUtils.nonNullValueOrDefault;
 import static mycellar.core.text.LabelProperty.A_SINGLE;
 import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTENOUGHSPACESTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONREPLACEIT;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 
 
 /**
@@ -51,8 +56,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.5
- * @since 08/09/24
+ * @version 32.6
+ * @since 08/03/25
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -206,7 +211,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       Debug("ERROR: Unable to move multiple objects to a Complex place");
       end.setText("");
       String nomRangement = complexPlace.getName();
-      Erreur.showSimpleErreur(MessageFormat.format(getError("Error.unableToMoveNItemsIn", PLURAL), nomRangement), getError("Error.selectSimpleStorage"));
+      Erreur.showSimpleErreur(MessageFormat.format(getErrorWithProperty("Error.unableToMoveNItemsIn", PLURAL), nomRangement), getError("Error.selectSimpleStorage"));
       enableAll(true);
       return result;
     }
@@ -260,7 +265,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           if (nb_free_space > countStillToAdd) {
             nb_free_space = countStillToAdd;
           }
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getError("Error.questionAddNItemsNext", PLURAL), nb_free_space), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getErrorWithProperty("Error.questionAddNItemsNext", PLURAL), nb_free_space), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
             Debug("Putting multiple bottle in chosen place");
             result.setNbItemsAdded(nb_free_space);
             countStillToAdd -= nb_free_space + 1;
@@ -297,9 +302,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       result.setAdded(true);
     } else { // La case n'est pas vide
       Debug("WARNING: Not an empty place, Replace?");
-      String erreur_txt1 = MessageFormat.format(getError("Error.alreadyInStorage"), myCellarObjectFound.getNom(), myCellarObjectFound.getAnnee());
-      String erreur_txt2 = getError("Error.questionReplaceIt");
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + "\n" + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      String erreur_txt1 = MessageFormat.format(getError(ERROR_ALREADYINSTORAGE), myCellarObjectFound.getNom(), myCellarObjectFound.getAnnee());
+      String erreur_txt2 = getError(ERROR_QUESTIONREPLACEIT);
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + "\n" + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         replaceWine(newMyCellarObject, myCellarObjectFound);
         end.setText(isModify ? getLabelWithProperty("AddVin.1ItemModified", LabelProperty.SINGLE) : getLabelWithProperty("AddVin.1ItemAdded", LabelProperty.SINGLE), true);
         result.setAdded(true);
@@ -320,7 +325,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     int countStillToAdd = panelWineAttribute.getNbItems();
     SimplePlace simplePlace = (SimplePlace) abstractPlace;
     if (!simplePlace.hasFreeSpace(place)) {
-      Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
+      Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE), getError("Error.selectAnotherStorage"));
       end.setText("");
       Debug("ERROR: No free spaces");
       return result;
@@ -335,13 +340,13 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     if (countStillToAdd > 1) {
       if (!Program.hasOnlyOnePlace()) {
         Debug("Adding multiple objects in the same place?");
-        String message = MessageFormat.format(getError("Error.questionAddNItemIn", LabelProperty.PLURAL), countStillToAdd, simplePlace.getName());
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+        String message = MessageFormat.format(getErrorWithProperty("Error.questionAddNItemIn", LabelProperty.PLURAL), countStillToAdd, simplePlace.getName());
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
           //Add several bottles in Caisse
           Debug("Adding multiple objects in the same place: YES");
 
           if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + countStillToAdd) > simplePlace.getMaxItemCount()) {
-            Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
+            Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE), getError("Error.selectAnotherStorage"));
             end.setText("");
           } else {
             result.setNbItemsAdded(countStillToAdd);
@@ -366,7 +371,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + countStillToAdd) > simplePlace.getMaxItemCount()) {
           result.setHasError(true);
           Debug("ERROR: This caisse is full. Unable to add all bottles in the same place!");
-          Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
+          Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE), getError("Error.selectAnotherStorage"));
           end.setText("");
         } else {
           Debug("Adding n objects: " + (countStillToAdd - 1));
@@ -424,7 +429,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Result result = new Result();
     if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + listBottleInModification.size()) > simplePlace.getMaxItemCount()) {
       Debug("ERROR: Not enough place!");
-      Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"), getError("Error.selectAnotherStorage"));
+      Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE), getError("Error.selectAnotherStorage"));
       panelPlace.enableSimplePlace(true);
       addButton.setEnabled(true);
       end.setText("");

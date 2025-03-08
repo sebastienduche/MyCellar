@@ -25,8 +25,8 @@ import static mycellar.ProgramConstants.THREE_DOTS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 07/03/25
+ * @version 1.1
+ * @since 08/03/25
  */
 
 public class MyCellarLabelManagement {
@@ -54,13 +54,13 @@ public class MyCellarLabelManagement {
     if (labelValue == null) {
       return switch (type) {
         case LABEL -> getLabelWithProperty(code, labelProperty);
-        case ERROR -> getError(code, labelProperty);
+        case ERROR -> getErrorWithProperty(code, labelProperty);
         case NONE -> code;
       };
     } else {
       return switch (type) {
         case LABEL -> MessageFormat.format(getLabelWithProperty(code, labelProperty), labelValue).strip();
-        case ERROR -> MessageFormat.format(getError(code, labelProperty), labelValue).strip();
+        case ERROR -> MessageFormat.format(getErrorWithProperty(code, labelProperty), labelValue).strip();
         case NONE -> code;
       };
     }
@@ -79,11 +79,27 @@ public class MyCellarLabelManagement {
     return MessageFormat.format(getLabel(id.getKey(), true), parameters);
   }
 
+  @Deprecated(since = "version90")
   public static String getLabelWithProperty(String id, LabelProperty labelProperty) {
     if (labelProperty == null) {
       return getLabel(id, true);
     }
     String label = getLabel(id, true);
+    label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
+    if (labelProperty.isThreeDashes()) {
+      label += THREE_DOTS;
+    }
+    if (labelProperty.isDoubleQuote()) {
+      label += LanguageFileLoader.isFrench() ? SPACE + DOUBLE_DOT : DOUBLE_DOT;
+    }
+    return label;
+  }
+
+  public static String getLabelWithProperty(ResourceKey key, LabelProperty labelProperty) {
+    if (labelProperty == null) {
+      return getLabel(key);
+    }
+    String label = getLabel(key);
     label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
     if (labelProperty.isThreeDashes()) {
       label += THREE_DOTS;
@@ -106,7 +122,16 @@ public class MyCellarLabelManagement {
     }
   }
 
-  public static String getError(String id, LabelProperty labelProperty) {
+  public static String getErrorWithProperty(ResourceErrorKey key, LabelProperty labelProperty) {
+    if (labelProperty == null) {
+      return getError(key);
+    }
+    String label = getError(key);
+    return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
+  }
+
+  @Deprecated(since = "version90")
+  public static String getErrorWithProperty(String id, LabelProperty labelProperty) {
     if (labelProperty == null) {
       return getError(id);
     }
@@ -116,6 +141,10 @@ public class MyCellarLabelManagement {
 
   public static String getError(ResourceErrorKey key) {
     return getError(key.getKey());
+  }
+
+  public static String getError(ResourceErrorKey id, Object... parameters) {
+    return MessageFormat.format(getError(id.getKey()), parameters);
   }
 
   @Deprecated(since = "version 90")

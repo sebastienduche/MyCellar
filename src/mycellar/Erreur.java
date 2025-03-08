@@ -12,6 +12,7 @@ import java.awt.Component;
 import static mycellar.ProgramConstants.FONT_BUTTON_SMALL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_ERROR;
 
 
 /**
@@ -21,8 +22,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.9
- * @since 24/05/22
+ * @version 3.0
+ * @since 08/03/25
  */
 public class Erreur {
 
@@ -33,14 +34,14 @@ public class Erreur {
    * Error message with one label
    */
   public static void showSimpleErreur(String text) {
-    JOptionPane.showMessageDialog(MainFrame.getInstance(), text, getError("Error.error"), JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(MainFrame.getInstance(), text, getError(ERROR_ERROR), JOptionPane.ERROR_MESSAGE);
   }
 
   /**
    * Error message with one label
    */
   public static void showSimpleErreur(Component target, String text) {
-    JOptionPane.showMessageDialog(target, text, getError("Error.error"), JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(target, text, getError(ERROR_ERROR), JOptionPane.ERROR_MESSAGE);
   }
 
   /**
@@ -90,7 +91,7 @@ public class Erreur {
     panel.add(checkNotShow, "newline, hidemode 3, gaptop 15px");
     checkNotShow.setVisible(MyCellarUtils.isDefined(keyword));
     label2.setVisible(!text2.isEmpty());
-    JOptionPane.showMessageDialog(target, panel, information ? getError("Error032") : getError("Error.error"), information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(target, panel, information ? getError("Error032") : getError(ERROR_ERROR), information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
     if (checkNotShow.isSelected()) {
       Program.putCaveConfigBool(keyword, true);
     }

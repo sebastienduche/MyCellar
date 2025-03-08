@@ -78,11 +78,17 @@ import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceErrorKey.ERROR_1ITEMSELECTED;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRM1DELETE;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMNDELETE;
+import static mycellar.general.ResourceErrorKey.ERROR_NITEMSSELECTED;
+import static mycellar.general.ResourceErrorKey.ERROR_NOITEMTODELETE;
 import static mycellar.general.ResourceKey.EXPORT_EXPORTFORMAT;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
+import static mycellar.general.ResourceKey.MAIN_DELETE;
 import static mycellar.general.ResourceKey.MAIN_NV;
 import static mycellar.general.ResourceKey.MAIN_OTHER;
 import static mycellar.general.ResourceKey.MODIF;
@@ -101,8 +107,8 @@ import static mycellar.general.ResourceKey.SUPPR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.7
- * @since 07/03/25
+ * @version 24.8
+ * @since 08/03/25
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -111,7 +117,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private final SearchTableModel searchTableModel = new SearchTableModel();
   private final MyCellarLabel objectFoundCountLabels = new MyCellarLabel("Search.bottleFound", LabelProperty.PLURAL.withCapital());
   private final MyCellarSimpleLabel countLabel = new MyCellarSimpleLabel(DASH);
-  private final MyCellarButton deleteButton = new MyCellarButton("Main.Delete", DELETE);
+  private final MyCellarButton deleteButton = new MyCellarButton(MAIN_DELETE, DELETE);
   private final MyCellarButton exportButton = new MyCellarButton("Search.Export", EXPORT);
   private final MyCellarButton modifyButton = new MyCellarButton("Main.Modify", WINE);
   private final MyCellarComboBox<String> year = new MyCellarComboBox<>();
@@ -282,19 +288,19 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (listToDelete.isEmpty()) {
         // No objet to delete / Select...
         Debug("ERROR: No bottle to delete!");
-        Erreur.showInformationMessage(getError("Error.NoItemToDelete", LabelProperty.SINGLE), getError("Error.pleaseSelect", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOITEMTODELETE, LabelProperty.SINGLE), getErrorWithProperty("Error.pleaseSelect", LabelProperty.THE_PLURAL));
         return;
       }
       String erreur_txt1;
       String erreur_txt2;
       if (listToDelete.size() == 1) {
-        erreur_txt1 = getError("Error.1ItemSelected", LabelProperty.SINGLE);
+        erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
         erreur_txt2 = getError(ERROR_CONFIRM1DELETE);
       } else {
-        erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), listToDelete.size());
+        erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL), listToDelete.size());
         erreur_txt2 = getError(ERROR_CONFIRMNDELETE);
       }
-      int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       if (resul == JOptionPane.YES_OPTION) {
         SwingUtilities.invokeLater(() -> {
           for (MyCellarObject myCellarObject : listToDelete) {
@@ -429,7 +435,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         final List<MyCellarObject> listToModify = searchTableModel.getSelectedObjects();
 
         if (listToModify.isEmpty()) {
-          Erreur.showInformationMessage(getError("Error.NoItemToModify", LabelProperty.SINGLE), getError("Error.SelectItemToModify", LabelProperty.THE_PLURAL));
+          Erreur.showInformationMessage(getErrorWithProperty("Error.NoItemToModify", LabelProperty.SINGLE), getErrorWithProperty("Error.SelectItemToModify", LabelProperty.THE_PLURAL));
         } else {
           Debug("Modifying " + listToModify.size() + " object(s)...");
           Program.modifyBottles(listToModify);
@@ -475,7 +481,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     updateLabelObjectNumber(true);
     if (alreadyFoundItems) {
       if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false)) {
-        Erreur.showInformationMessageWithKey(getError("Error.DontAddTwice", LabelProperty.A_SINGLE), MyCellarSettings.DONT_SHOW_INFO);
+        Erreur.showInformationMessageWithKey(getErrorWithProperty("Error.DontAddTwice", LabelProperty.A_SINGLE), MyCellarSettings.DONT_SHOW_INFO);
       }
     }
     alreadyFoundItems = false;
@@ -576,7 +582,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         searchTableModel.removeAll();
         updateLabelObjectNumber(true);
         resultInfoLabel.setText(getLabel(SEARCH_FAILED));
-        Erreur.showSimpleErreur(getError("Error.NoItemFound", LabelProperty.SINGLE)); //Aucun objet trouve
+        Erreur.showSimpleErreur(getErrorWithProperty("Error.NoItemFound", LabelProperty.SINGLE)); //Aucun objet trouve
         modifyButton.setEnabled(false);
         deleteButton.setEnabled(false);
       } else {
@@ -769,7 +775,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     final List<MyCellarObject> list = searchTableModel.getSelectedObjects();
 
     if (list.isEmpty()) {
-      Erreur.showInformationMessage(getError("Error.NoWineSelected", LabelProperty.SINGLE));
+      Erreur.showInformationMessage(getErrorWithProperty("Error.NoWineSelected", LabelProperty.SINGLE));
       return;
     }
     new OpenWorkSheetAction(list).actionPerformed(null);

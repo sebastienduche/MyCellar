@@ -55,6 +55,13 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETESTORAGE;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
+import static mycellar.general.ResourceKey.MAIN_DELETE;
+import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
+import static mycellar.general.ResourceKey.STORAGE_NBLINE;
+import static mycellar.general.ResourceKey.STORAGE_NBLINES;
 
 
 /**
@@ -64,8 +71,8 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.7
- * @since 07/03/25
+ * @version 10.8
+ * @since 08/03/25
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -86,7 +93,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   public Supprimer_Rangement() {
     Debug("Initializing...");
     setLayout(new MigLayout("", "[grow]", "20px[]15px[grow]15px[]"));
-    MyCellarButton supprimer = new MyCellarButton("Main.Delete", MyCellarImage.DELETE);
+    MyCellarButton supprimer = new MyCellarButton(MAIN_DELETE, MyCellarImage.DELETE);
     supprimer.setMnemonic(supprimerChar);
     preview.setMnemonic(previewChar);
 
@@ -195,7 +202,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       if (nb_case_use_total == 0) {
         String name = abstractPlace.getName();
         Debug("MESSAGE: Delete this place: " + name + "?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(getError("Error.questionDeleteStorage"), name), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(getError(ERROR_QUESTIONDELETESTORAGE), name), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           removeSelectedPlace(abstractPlace, num_select);
         }
       } else {
@@ -207,9 +214,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
           error = MessageFormat.format(getLabelWithProperty("DeletePlace.StillNItemsIn", LabelProperty.PLURAL), nb_case_use_total, nom);
         }
         // Delete place and objects in the place
-        String errorPart2 = getError("Error.questionDeleteAllIncludedObjects", LabelProperty.THE_PLURAL);
+        String errorPart2 = getError(ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS, LabelProperty.THE_PLURAL);
         Debug("MESSAGE: Delete this place " + nom + " and all object(s) (" + nb_case_use_total + ")?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + errorPart2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + errorPart2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           new MyCellarSwingWorker() {
             @Override
             protected void done() {
@@ -399,13 +406,13 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 
     String getNbLineLabel() {
       if (nbLine <= 1) {
-        return MessageFormat.format(getLabel("Storage.NbLine"), nbLine);
+        return MessageFormat.format(getLabel(STORAGE_NBLINE), nbLine);
       }
-      return MessageFormat.format(getLabel("Storage.NbLines"), nbLine);
+      return MessageFormat.format(getLabel(STORAGE_NBLINES), nbLine);
     }
 
     String getNbWineLabel() {
-      return MessageFormat.format(getLabelWithProperty("Main.SeveralItems", new LabelProperty(nbWine > 1)), nbWine);
+      return MessageFormat.format(getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(nbWine > 1)), nbWine);
     }
   }
 

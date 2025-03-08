@@ -36,8 +36,12 @@ import static mycellar.core.text.LabelProperty.OF_THE_PLURAL;
 import static mycellar.core.text.LabelProperty.OF_THE_SINGLE;
 import static mycellar.core.text.LabelProperty.THE_SINGLE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMQUIT;
+import static mycellar.general.ResourceErrorKey.ERROR_MODIFICATIONINCOMPLETED;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_NAME;
 
 /**
@@ -47,8 +51,8 @@ import static mycellar.general.ResourceKey.MAIN_NAME;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 25/12/23
+ * @version 2.1
+ * @since 08/03/25
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPanelModifyable {
 
@@ -429,12 +433,12 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     if (isModified()/*!name.getText().isEmpty()*/) {
       String label;
       if (modify) {
-        label = getError("Error.modificationIncompleted", name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
+        label = getErrorWithProperty(ERROR_MODIFICATIONINCOMPLETED, name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
       } else {
-        label = getError("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
+        label = getErrorWithProperty("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError(ERROR_CONFIRMQUIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return true;
       }
@@ -446,12 +450,12 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     if (isModified()/*!name.getText().isEmpty()*/) {
       String label;
       if (modify) {
-        label = getError("Error.modificationIncompleted", name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
+        label = getErrorWithProperty(ERROR_MODIFICATIONINCOMPLETED, name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
       } else {
-        label = getError("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
+        label = getErrorWithProperty("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmSave"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmSave"), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return true;
       }

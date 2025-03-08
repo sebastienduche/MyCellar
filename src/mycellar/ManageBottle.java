@@ -33,8 +33,14 @@ import static mycellar.MyCellarUtils.nonNullValueOrDefault;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.LabelProperty.OF_THE_SINGLE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMQUIT;
+import static mycellar.general.ResourceErrorKey.ERROR_MODIFICATIONINCOMPLETED;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONREPLACEIT;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 
 
 /**
@@ -44,8 +50,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.5
- * @since 11/09/24
+ * @version 10.6
+ * @since 08/03/25
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private boolean saveAndExit;
@@ -273,8 +279,8 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   private boolean askToReplaceBottle(MyCellarObject bouteille, PlacePosition oldPlace) throws MyCellarException {
     if (!bouteille.equals(myCellarObject)) {
       Debug("ERROR: Not an empty place, Replace?");
-      String erreur_txt1 = MessageFormat.format(getError("Error.alreadyInStorage"), bouteille.getNom(), bouteille.getAnnee());
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + "\n" + getError("Error.questionReplaceIt"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+      String erreur_txt1 = MessageFormat.format(getError(ERROR_ALREADYINSTORAGE), bouteille.getNom(), bouteille.getAnnee());
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + "\n" + getError(ERROR_QUESTIONREPLACEIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
         panelPlace.clearLabelEnd();
         end.setText(getLabelWithProperty("AddVin.1ItemAdded", LabelProperty.SINGLE));
@@ -310,7 +316,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     modified |= panelPlace.isModified();
     modified |= panelVignobles.isModified();
 
-    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError("Error.modificationIncompleted", OF_THE_SINGLE) + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION)) {
+    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getErrorWithProperty(ERROR_MODIFICATIONINCOMPLETED, OF_THE_SINGLE) + SPACE + getError(ERROR_CONFIRMQUIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
       Debug("Don't Quit.");
       addButton.setEnabled(true);
       cancelButton.setEnabled(true);

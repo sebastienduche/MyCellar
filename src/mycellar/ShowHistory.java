@@ -33,6 +33,7 @@ import javax.swing.table.TableRowSorter;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.io.Serial;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -42,8 +43,14 @@ import java.util.Objects;
 
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceErrorKey.ERROR_1ITEMSELECTED;
+import static mycellar.general.ResourceErrorKey.ERROR_NITEMSSELECTED;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
+import static mycellar.general.ResourceKey.MAIN_DELETE;
+import static mycellar.general.ResourceKey.SHOWFILE_NOBOTTLETORESTORE;
 import static mycellar.general.ResourceKey.SHOWFILE_RESTORESEVERAL;
 
 /**
@@ -53,11 +60,12 @@ import static mycellar.general.ResourceKey.SHOWFILE_RESTORESEVERAL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.8
- * @since 13/09/22
+ * @version 5.6
+ * @since 08/03/25
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
+  @Serial
   private static final long serialVersionUID = 4778721795659106312L;
   private final MyCellarComboBox<FilterItem> filterCbx = new MyCellarComboBox<>();
   private final TableHistoryValues model;
@@ -126,7 +134,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
     add(new JLabel(), "growx");
     add(new MyCellarButton("ShowFile.Restore", new RestoreAction()), "align right, wrap");
     add(new JScrollPane(table), "grow, wrap");
-    add(new MyCellarButton("Main.Delete", new DeleteAction()), "center");
+    add(new MyCellarButton(MAIN_DELETE, new DeleteAction()), "center");
   }
 
   private static void Debug(String sText) {
@@ -197,17 +205,17 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
       }
 
       if (toRestoreList.isEmpty()) {
-        Erreur.showInformationMessage(getLabelWithProperty("ShowFile.NoBottleToRestore", LabelProperty.SINGLE), getLabelWithProperty("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getLabelWithProperty(SHOWFILE_NOBOTTLETORESTORE, LabelProperty.SINGLE), getLabelWithProperty("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL));
       } else {
         String erreur_txt1, erreur_txt2;
         if (toRestoreList.size() == 1) {
-          erreur_txt1 = getError("Error.1ItemSelected", LabelProperty.SINGLE);
+          erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
           erreur_txt2 = getLabel("ShowFile.RestoreOne");
         } else {
-          erreur_txt1 = MessageFormat.format(getError("Error.NItemsSelected", LabelProperty.PLURAL), toRestoreList.size());
+          erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL), toRestoreList.size());
           erreur_txt2 = getLabel(SHOWFILE_RESTORESEVERAL);
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"),
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
           for (MyCellarObject myCellarObject : toRestoreList) {
@@ -242,11 +250,12 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
   final class DeleteAction extends AbstractAction {
 
+    @Serial
     private static final long serialVersionUID = -1982193809982154836L;
 
     private DeleteAction() {
       super("", MyCellarImage.DELETE);
-      putValue(SHORT_DESCRIPTION, getLabel("Main.Delete"));
+      putValue(SHORT_DESCRIPTION, getLabel(MAIN_DELETE));
     }
 
     @Override
@@ -277,7 +286,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
             erreur_txt2 = getError("Error.confirmNDelete");
           }
           Debug(toDeleteList.size() + " line(s) selected");
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"),
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION),
               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             Debug("Deleting lines...");
             for (History b : toDeleteList) {

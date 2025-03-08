@@ -61,9 +61,15 @@ import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMQUIT;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_STORAGECREATIONINCOMPLETED;
+import static mycellar.general.ResourceErrorKey.ERROR_STORAGEMODIFICATIONINCOMPLETED;
+import static mycellar.general.ResourceKey.CREATESTORAGE_SIMPLESTORAGE;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.placesmanagement.places.ComplexPlace.copyParts;
 
 
@@ -74,8 +80,8 @@ import static mycellar.placesmanagement.places.ComplexPlace.copyParts;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 18.0
- * @since 07/03/25
+ * @version 18.1
+ * @since 08/03/25
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   // TODO Can we manage the modified status correctly?
@@ -90,7 +96,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private final MyCellarSpinner simplePlaceLimitSpinner = new MyCellarSpinner(1, 999);
   private final MyCellarSpinner partCountSpinner = new MyCellarSpinner(1, 99);
   private final MyCellarSpinner partIncrementSimplePlaceSpinner = new MyCellarSpinner(0, 99);
-  private final MyCellarCheckBox isSimplePlaceCheckbox = new MyCellarCheckBox("CreateStorage.SimpleStorage");
+  private final MyCellarCheckBox isSimplePlaceCheckbox = new MyCellarCheckBox(CREATESTORAGE_SIMPLESTORAGE);
   private final MyCellarSimpleLabel labelCreated = new MyCellarSimpleLabel();
   private final MyCellarButton preview = new MyCellarButton("CreateStorage.Preview");
   private final JPanel panelType;
@@ -350,14 +356,14 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         String erreur_txt1, erreur_txt2;
         if (nb_bottle == 1) {
           Debug("MESSAGE: 1 object in this place, Modify?");
-          erreur_txt1 = getError("Error.1ItemInStorage", LabelProperty.SINGLE);
-          erreur_txt2 = getError("Error.confirmChangeStorage1Item", LabelProperty.SINGLE);
+          erreur_txt1 = getErrorWithProperty("Error.1ItemInStorage", LabelProperty.SINGLE);
+          erreur_txt2 = getErrorWithProperty("Error.confirmChangeStorage1Item", LabelProperty.SINGLE);
         } else {
           Debug("MESSAGE: " + nb_bottle + " objects in this place, Modify?");
-          erreur_txt1 = MessageFormat.format(getError("Error.NItemsInStorage", LabelProperty.PLURAL), nb_bottle);
-          erreur_txt2 = getError("Error.questionChangeStorageItems", LabelProperty.PLURAL);
+          erreur_txt1 = MessageFormat.format(getErrorWithProperty("Error.NItemsInStorage", LabelProperty.PLURAL), nb_bottle);
+          erreur_txt2 = getErrorWithProperty("Error.questionChangeStorageItems", LabelProperty.PLURAL);
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           // Modify Name of place
           Program.getStorage().getAllList()
               .stream()
@@ -367,9 +373,9 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       } else if (simplePlace.getPartNumberIncrement() != partNumberIncrementSimplePlace) {
         // Le numero de la premiere partie a change, renumeroter
         String erreur_txt1 = MessageFormat.format(getError("CreerRangement.UpdatedBottlePart"), partNumberIncrementSimplePlace, simplePlace.getPartNumberIncrement());
-        String erreur_txt2 = getError("CreerRangement.AskUpdateBottlePart", LabelProperty.PLURAL);
+        String erreur_txt2 = getErrorWithProperty("CreerRangement.AskUpdateBottlePart", LabelProperty.PLURAL);
 
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify start part number
           final int difference = partNumberIncrementSimplePlace - simplePlace.getPartNumberIncrement();
           Program.getStorage().getAllList()
@@ -487,16 +493,16 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       Debug("Updating complex place: " + complexPlace.getName());
       String name = complexPlace.getName();
       if (!name.equalsIgnoreCase(nom)) {
-        String erreur_txt1 = getError("Error.1ItemInStorage", LabelProperty.SINGLE);
-        String erreur_txt2 = getError("Error.confirmChangeStorage1Item", LabelProperty.SINGLE);
+        String erreur_txt1 = getErrorWithProperty("Error.1ItemInStorage", LabelProperty.SINGLE);
+        String erreur_txt2 = getErrorWithProperty("Error.confirmChangeStorage1Item", LabelProperty.SINGLE);
         if (nbBottles == 1) {
           Debug("MESSAGE: 1 object in this place, Modify?");
         } else {
           Debug("MESSAGE: " + nbBottles + " objects in this place, Modify?");
-          erreur_txt1 = MessageFormat.format(getError("Error.NItemsInStorage", LabelProperty.PLURAL), nbBottles);
-          erreur_txt2 = getError("Error.questionChangeStorageItems", LabelProperty.PLURAL);
+          erreur_txt1 = MessageFormat.format(getErrorWithProperty("Error.NItemsInStorage", LabelProperty.PLURAL), nbBottles);
+          erreur_txt2 = getErrorWithProperty("Error.questionChangeStorageItems", LabelProperty.PLURAL);
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify Name of place
           complexPlace.setName(nom);
           complexPlace.updatePlace(listPart);
@@ -681,15 +687,15 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   public boolean tabWillClose(TabEvent event) {
     if (modify) {
       if (nom_obj.isModified() || model.isModified()) {
-        String label = getError("Error.storageModificationIncompleted");
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        String label = getError(ERROR_STORAGEMODIFICATIONINCOMPLETED);
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError(ERROR_CONFIRMQUIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           return false;
         }
       }
     } else {
       if (!toCleanString(nom_obj.getText()).isEmpty()) {
-        String label = getError("Error.storageCreationIncompleted");
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmQuit"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        String label = getError(ERROR_STORAGECREATIONINCOMPLETED);
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError(ERROR_CONFIRMQUIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           return false;
         }
       }

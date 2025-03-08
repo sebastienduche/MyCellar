@@ -1,9 +1,8 @@
 package mycellar.general;
 
 public enum ResourceErrorKey {
-  ERROR107("Error107"),
-  ERROR108("Error108"),
   ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS("Error.questionDeleteAllIncludedObjects"),
+  ERROR_NOTHTMLFILE("Error.notHTMLFile"),
   ERROR_STORAGECREATIONINCOMPLETED("Error.storageCreationIncompleted"),
   ERROR_QUESTIONDELETESTORAGE("Error.questionDeleteStorage"),
   ERROR_ENTERCOLUMNNUMBER("Error.enterColumnNumber"),
@@ -95,6 +94,7 @@ public enum ResourceErrorKey {
   SUPPRIMERRANGEMENT_FORBIDDENTODELETE("SupprimerRangement.ForbiddenToDelete"),
   ERROR_LOADINGFILE("Error.LoadingFile"),
   ERROR_DONTADDTWICE("Error.DontAddTwice"),
+  ERROR_NOTCSVFILE("Error.notCSVFile"),
   MYCELLARCONTROL_INVALIDPATH("MyCellarControl.invalidPath"),
   ERROR_NOITEMSTOMOVE("Error.noItemsToMove"),
   ERROR_WRONGNEWCOLUMNNUMBER("Error.wrongNewColumnNumber"),

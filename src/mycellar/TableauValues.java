@@ -11,6 +11,13 @@ import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.CREATESTORAGE_SIMPLESTORAGE;
+import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
+import static mycellar.general.ResourceKey.MAIN_STORAGE;
+import static mycellar.general.ResourceKey.STORAGE_NBLINE;
+import static mycellar.general.ResourceKey.STORAGE_NBLINES;
+import static mycellar.general.ResourceKey.STORAGE_NUMBERLINES;
+import static mycellar.general.ResourceKey.STORAGE_NUMBEROF;
 
 /**
  * Titre : Cave &agrave; vin
@@ -19,12 +26,15 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 08/09/24
+ * @version 2.3
+ * @since 08/03/25
  */
 class TableauValues extends AbstractTableModel {
   public static final int STATE = 0;
-  private final String[] columnNames = {"", getLabel("Main.Storage"), getLabel("Storage.NumberLines"), getLabelWithProperty("Storage.NumberOf", LabelProperty.PLURAL)};
+  private final String[] columnNames = new String[]{"",
+      getLabel(MAIN_STORAGE),
+      getLabel(STORAGE_NUMBERLINES),
+      getLabelWithProperty(STORAGE_NUMBEROF, LabelProperty.PLURAL)};
 
   private final List<AbstractPlace> list = new LinkedList<>();
   private final List<Boolean> listBoolean = new LinkedList<>();
@@ -49,16 +59,16 @@ class TableauValues extends AbstractTableModel {
         return rangement.getName();
       case 2:
         if (rangement.isSimplePlace()) {
-          return getLabel("CreateStorage.SimpleStorage");
+          return getLabel(CREATESTORAGE_SIMPLESTORAGE);
         }
         int nombre_ligne = 0;
         for (int k = 0; k < rangement.getPartCount(); k++) {
           nombre_ligne += ((ComplexPlace) rangement).getLineCountAt(k);
         }
         if (nombre_ligne <= 1) {
-          return MessageFormat.format(getLabel("Storage.NbLine"), nombre_ligne);
+          return MessageFormat.format(getLabel(STORAGE_NBLINE), nombre_ligne);
         }
-        return MessageFormat.format(getLabel("Storage.NbLines"), nombre_ligne);
+        return MessageFormat.format(getLabel(STORAGE_NBLINES), nombre_ligne);
       case 3:
         int nombre_vin = 0;
         if (rangement.isSimplePlace()) {
@@ -68,7 +78,7 @@ class TableauValues extends AbstractTableModel {
             nombre_vin += rangement.getCountCellUsed(k);
           }
         }
-        return MessageFormat.format(getLabelWithProperty("Main.SeveralItems", new LabelProperty(nombre_vin > 1)), nombre_vin);
+        return MessageFormat.format(getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(nombre_vin > 1)), nombre_vin);
     }
     return "";
   }

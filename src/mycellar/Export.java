@@ -58,13 +58,13 @@ import static mycellar.core.MyCellarSettings.EXPORT_DEFAULT;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR087;
-import static mycellar.general.ResourceErrorKey.ERROR107;
-import static mycellar.general.ResourceErrorKey.ERROR108;
 import static mycellar.general.ResourceErrorKey.ERROR157;
 import static mycellar.general.ResourceErrorKey.ERROR160;
 import static mycellar.general.ResourceErrorKey.ERROR161;
 import static mycellar.general.ResourceErrorKey.ERROR_EXPORTERROR;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTANEXCELFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTCSVFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTHTMLFILE;
 import static mycellar.general.ResourceErrorKey.EXPORT_REPLACEFILEQUESTION;
 import static mycellar.general.ResourceKey.EXPORT_CSVINFO;
 import static mycellar.general.ResourceKey.EXPORT_ENDED;
@@ -85,8 +85,8 @@ import static mycellar.general.ResourceKey.MAIN_SAVEDFILE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.6
- * @since 07/03/25
+ * @version 11.7
+ * @since 08/03/25
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -324,7 +324,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_HTML))) {
         //"Le fichier saisi ne possede pas une extension HTML: " + str_tmp3);
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR107), nom));
+        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR_NOTHTMLFILE), nom));
         valider.setEnabled(true);
         return;
       }
@@ -340,7 +340,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_CSV))) {
         //"Le fichier saisi ne possede pas une extension CSV: " + str_tmp3);
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR108), nom));
+        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR_NOTCSVFILE), nom));
         valider.setEnabled(true);
         return;
       }

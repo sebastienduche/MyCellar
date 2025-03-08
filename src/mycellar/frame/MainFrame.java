@@ -96,6 +96,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelCode;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
+import static mycellar.general.ResourceKey.MAIN_DELETE;
 import static mycellar.general.ResourceKey.MAIN_STATISTICS;
 
 /**
@@ -105,8 +106,8 @@ import static mycellar.general.ResourceKey.MAIN_STATISTICS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 13/01/24
+ * @version 0.4
+ * @since 08/03/25
  */
 public final class MainFrame extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1122,7 +1123,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     private static final String LABEL = "Main.DeleteStorage";
 
     private DeletePlaceAction() {
-      super("Main.Delete", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.DELPLACE);
+      super(MAIN_DELETE, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.DELPLACE);
       setDescriptionLabel(LABEL);
     }
 

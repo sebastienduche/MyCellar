@@ -46,7 +46,9 @@ import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTHTMLFILE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -55,8 +57,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.5
- * @since 13/01/24
+ * @version 9.6
+ * @since 08/03/25
  */
 public final class CreateTablePanel extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   private final JTextField name = new JTextField();
@@ -228,7 +230,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     } else if (type_HTML.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(filename, singletonList(Filtre.FILTRE_HTML))) {
         Debug("ERROR: Not a HTML File");
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error107"), filename));
+        Erreur.showSimpleErreur(getError(ERROR_NOTHTMLFILE), filename);
         return;
       }
     } else if (type_XLS.isSelected()) {
@@ -271,10 +273,10 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
         String erreur_txt1, erreur_txt2;
         if (caisseCount == 1) {
           erreur_txt1 = getError("Error.SimpleStorageSelected");
-          erreur_txt2 = getError("Error.ListOfItemsInStorageGenerated", LabelProperty.PLURAL);
+          erreur_txt2 = getErrorWithProperty("Error.ListOfItemsInStorageGenerated", LabelProperty.PLURAL);
         } else {
           erreur_txt1 = getError("Error127"); //"Vous avez selectionne des rangements de type Caisse
-          erreur_txt2 = getError("Error128", LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.
+          erreur_txt2 = getErrorWithProperty("Error128", LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.
         }
         Erreur.showInformationMessageWithKey(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
       }

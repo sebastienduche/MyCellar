@@ -23,7 +23,15 @@ import static java.util.stream.Collectors.toList;
 import static mycellar.ProgramConstants.HISTORY_XML;
 import static mycellar.ProgramConstants.WORKSHEET_XML;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMDELETIONALLHISTORY;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETECHECKEDHISTORY;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETEENTEREDHISTORY;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETEEXITEDHISTORY;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETEMODIFIEDHISTORY;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETEVALIDATEDHISTORY;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 
 /**
  * Titre : Cave &agrave; vin
@@ -32,8 +40,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.0
- * @since 02/03/25
+ * @version 8.1
+ * @since 08/03/25
  */
 
 public class SerializedStorage implements Storage {
@@ -213,15 +221,15 @@ public class SerializedStorage implements Storage {
   public void clearHistory(HistoryState historyState) {
     Debug("Program: Clearing history: " + historyState);
     String sValue = switch (historyState) {
-      case ALL -> getError("Error.confirmDeletionAllHistory");
-      case ADD -> getError("Error.questionDeleteEnteredHistory");
-      case MODIFY -> getError("Error.questionDeleteModifiedHistory");
-      case DEL -> getError("Error.questionDeleteExitedHistory");
-      case VALIDATED -> getError("Error.questionDeleteValidatedHistory", LabelProperty.OF_THE_PLURAL);
-      case TOCHECK -> getError("Error.questionDeleteCheckedHistory", LabelProperty.OF_THE_PLURAL);
+      case ALL -> getError(ERROR_CONFIRMDELETIONALLHISTORY);
+      case ADD -> getError(ERROR_QUESTIONDELETEENTEREDHISTORY);
+      case MODIFY -> getError(ERROR_QUESTIONDELETEMODIFIEDHISTORY);
+      case DEL -> getError(ERROR_QUESTIONDELETEEXITEDHISTORY);
+      case VALIDATED -> getErrorWithProperty(ERROR_QUESTIONDELETEVALIDATEDHISTORY, LabelProperty.OF_THE_PLURAL);
+      case TOCHECK -> getErrorWithProperty(ERROR_QUESTIONDELETECHECKEDHISTORY, LabelProperty.OF_THE_PLURAL);
     };
 
-    if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+    if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
       return;
     }
 

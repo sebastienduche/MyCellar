@@ -24,8 +24,12 @@ import java.util.List;
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUEABOVEZERO;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
 import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
 
 
@@ -36,8 +40,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.5
- * @since 11/09/24
+ * @version 3.6
+ * @since 08/03/25
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -158,11 +162,11 @@ public class ErrorShowValues extends TableShowValues {
             fireTableRowsUpdated(row, row);
           } else {
             status[row] = Boolean.FALSE;
-            Erreur.showSimpleErreur(getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
+            Erreur.showSimpleErreur(getErrorWithProperty("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
           }
         } else {
           status[row] = Boolean.FALSE;
-          Erreur.showSimpleErreur(getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
+          Erreur.showSimpleErreur(getErrorWithProperty("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
         }
         break;
       case NAME:
@@ -173,7 +177,7 @@ public class ErrorShowValues extends TableShowValues {
         break;
       case YEAR:
         if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
-          Erreur.showSimpleErreur(getError("Error.enterValidYear"));
+          Erreur.showSimpleErreur(getError(ERROR_ENTERVALIDYEAR));
         } else {
           b.setAnnee(String.valueOf(value));
         }
@@ -225,7 +229,7 @@ public class ErrorShowValues extends TableShowValues {
 
         if (!bError && (column.equals(Column.NUM_PLACE) || column.equals(Column.LINE) || column.equals(Column.COLUMN))) {
           if (!b.getAbstractPlace().isSimplePlace() && nValueToCheck <= 0) {
-            Erreur.showSimpleErreur(getError("Error.enterNumericValueAboveZero"));
+            Erreur.showSimpleErreur(getError(ERROR_ENTERNUMERICVALUEABOVEZERO));
             bError = true;
           }
         }
@@ -245,7 +249,7 @@ public class ErrorShowValues extends TableShowValues {
             }
             if (searchObject != null) {
               status[row] = Boolean.FALSE;
-              Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(searchObject.getNom()), b.getAnnee()));
+              Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR_ALREADYINSTORAGE), convertStringFromHTMLString(searchObject.getNom()), b.getAnnee()));
             } else {
               if (column.equals(Column.PLACE)) {
                 b.setEmplacement(empl);

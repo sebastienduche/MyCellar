@@ -1,6 +1,7 @@
 package mycellar;
 
 import mycellar.core.text.LabelProperty;
+import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
@@ -13,6 +14,8 @@ import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERCOLUMNNUMBER;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
 
 /**
@@ -22,8 +25,8 @@ import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 07/03/25
+ * @version 3.2
+ * @since 08/03/25
  */
 
 public final class MyCellarControl {
@@ -31,7 +34,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidBotteName(String name) {
     if (isNullOrEmpty(name)) {
       Debug("ERROR: Wrong Name");
-      Erreur.showSimpleErreur(getError("Error.enterName", LabelProperty.OF_THE_SINGLE));
+      Erreur.showSimpleErreur(MyCellarLabelManagement.getErrorWithProperty("Error.enterName", LabelProperty.OF_THE_SINGLE));
       return true;
     }
     return false;
@@ -40,7 +43,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidYear(String year) {
     if (Bouteille.isInvalidYear(year)) {
       Debug("ERROR: Wrong date");
-      Erreur.showSimpleErreur(getError("Error.enterValidYear"));
+      Erreur.showSimpleErreur(getError(ERROR_ENTERVALIDYEAR));
       return true;
     }
     return false;
@@ -97,7 +100,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidColumnNumber(int column, Component component) {
     if (column <= 0) {
       Debug("ERROR: Wrong Column");
-      Erreur.showSimpleErreur(component, getError("Error.enterColumnNumber"));
+      Erreur.showSimpleErreur(component, getError(ERROR_ENTERCOLUMNNUMBER));
       return true;
     }
     return false;

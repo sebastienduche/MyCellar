@@ -5,6 +5,7 @@ import mycellar.core.text.LabelKey;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.text.LabelType;
 import mycellar.core.text.MyCellarLabelManagement;
+import mycellar.general.ResourceKey;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -19,8 +20,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 06/05/22
+ * @version 0.8
+ * @since 08/03/25
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
@@ -37,9 +38,17 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
     MyCellarLabelManagement.add(this);
   }
 
+  @Deprecated(since = "version90")
   public MyCellarAction(String code, LabelProperty textLabelProperty, Icon icon) {
     super("", icon);
     labelKey = new LabelKey(code, textLabelProperty);
+    updateText();
+    MyCellarLabelManagement.add(this);
+  }
+
+  public MyCellarAction(ResourceKey key, LabelProperty textLabelProperty, Icon icon) {
+    super("", icon);
+    labelKey = new LabelKey(key.getKey(), textLabelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
   }

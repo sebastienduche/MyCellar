@@ -1,6 +1,6 @@
 package mycellar.general;
 
-public enum ResourceErrorKey {
+public enum ResourceErrorKey implements IResource {
   ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS("Error.questionDeleteAllIncludedObjects"),
   ERROR_NOTHTMLFILE("Error.notHTMLFile"),
   ERROR_STORAGECREATIONINCOMPLETED("Error.storageCreationIncompleted"),

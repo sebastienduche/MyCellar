@@ -10,7 +10,7 @@ public class GenerateResourcesEnum {
   public static void main(String[] args) {
     try (FileWriter writer = new FileWriter("./src/mycellar/general/ResourceKey.java")) {
       writer.write("package mycellar.general;\n\n");
-      writer.write("public enum ResourceKey {\n");
+      writer.write("public enum ResourceKey implements IResource {\n");
       LanguageFileLoader.getInstance().getBundleTitle().keySet().forEach(
           s -> {
             try {
@@ -35,7 +35,7 @@ public class GenerateResourcesEnum {
 
     try (FileWriter writer = new FileWriter("./src/mycellar/general/ResourceErrorKey.java")) {
       writer.write("package mycellar.general;\n\n");
-      writer.write("public enum ResourceErrorKey {\n");
+      writer.write("public enum ResourceErrorKey implements IResource {\n");
       LanguageFileLoader.getInstance().getBundleError().keySet().forEach(
           s -> {
             try {

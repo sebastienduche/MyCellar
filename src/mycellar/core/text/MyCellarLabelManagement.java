@@ -3,8 +3,8 @@ package mycellar.core.text;
 import mycellar.Program;
 import mycellar.ProgramType;
 import mycellar.core.IMyCellarComponent;
+import mycellar.general.IResource;
 import mycellar.general.ResourceErrorKey;
-import mycellar.general.ResourceKey;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.JOptionPane;
@@ -46,6 +46,7 @@ public class MyCellarLabelManagement {
     return getLabel(LabelType.LABEL, code, null, null);
   }
 
+  @Deprecated(since = "version90")
   public static String getLabel(LabelType type, String code, LabelProperty labelProperty, String labelValue) {
     if (type == null || code == null) {
       return "";
@@ -66,16 +67,36 @@ public class MyCellarLabelManagement {
     }
   }
 
+  public static String getLabel(LabelType type, IResource key, LabelProperty labelProperty, String labelValue) {
+    if (type == null || key == null) {
+      return "";
+    }
+
+    if (labelValue == null) {
+      return switch (type) {
+        case LABEL -> getLabelWithProperty(key, labelProperty);
+        case ERROR -> getErrorWithProperty(key, labelProperty);
+        case NONE -> key.getKey();
+      };
+    } else {
+      return switch (type) {
+        case LABEL -> MessageFormat.format(getLabelWithProperty(key, labelProperty), labelValue).strip();
+        case ERROR -> MessageFormat.format(getErrorWithProperty(key, labelProperty), labelValue).strip();
+        case NONE -> key.getKey();
+      };
+    }
+  }
+
   @Deprecated(since = "version 90")
   public static String getLabel(String id) {
     return getLabel(id, true);
   }
 
-  public static String getLabel(ResourceKey id) {
+  public static String getLabel(IResource id) {
     return getLabel(id.getKey(), true);
   }
 
-  public static String getLabel(ResourceKey id, Object... parameters) {
+  public static String getLabel(IResource id, Object... parameters) {
     return MessageFormat.format(getLabel(id.getKey(), true), parameters);
   }
 
@@ -95,7 +116,7 @@ public class MyCellarLabelManagement {
     return label;
   }
 
-  public static String getLabelWithProperty(ResourceKey key, LabelProperty labelProperty) {
+  public static String getLabelWithProperty(IResource key, LabelProperty labelProperty) {
     if (labelProperty == null) {
       return getLabel(key);
     }
@@ -122,11 +143,12 @@ public class MyCellarLabelManagement {
     }
   }
 
-  public static String getErrorWithProperty(ResourceErrorKey key, LabelProperty labelProperty) {
+  public static String getErrorWithProperty(IResource key, LabelProperty labelProperty) {
+    assert key instanceof ResourceErrorKey;
     if (labelProperty == null) {
-      return getError(key);
+      return getError((ResourceErrorKey) key);
     }
-    String label = getError(key);
+    String label = getError((ResourceErrorKey) key);
     return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
   }
 

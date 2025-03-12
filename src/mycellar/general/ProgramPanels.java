@@ -481,6 +481,7 @@ public class ProgramPanels {
     }.execute();
   }
 
+  @Deprecated(since = "version90")
   public static void selectOrAddTab(Component component, String labelId, Icon icon) {
     new MyCellarSwingWorker() {
       @Override
@@ -492,6 +493,22 @@ public class ProgramPanels {
           }
         } catch (IllegalArgumentException e) {
           addTab(getLabelWithProperty(labelId, LabelProperty.SINGLE), icon, component);
+        }
+      }
+    }.execute();
+  }
+
+  public static void selectOrAddTab(Component component, ResourceKey key, Icon icon) {
+    new MyCellarSwingWorker() {
+      @Override
+      protected void done() {
+        try {
+          TABBED_PANE.setSelectedComponent(component);
+          if (component instanceof IPanelModifyable iPanelModifyable) {
+            iPanelModifyable.setPaneIndex(TABBED_PANE.getSelectedIndex());
+          }
+        } catch (IllegalArgumentException e) {
+          addTab(getLabelWithProperty(key, LabelProperty.SINGLE), icon, component);
         }
       }
     }.execute();

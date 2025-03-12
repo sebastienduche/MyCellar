@@ -76,6 +76,7 @@ import static mycellar.general.ResourceKey.EXPORT_SELECTDEFAULTMODE;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_COLUMN;
 import static mycellar.general.ResourceKey.MAIN_SAVEDFILE;
+import static mycellar.general.ResourceKey.MAIN_SETTINGS;
 
 
 /**
@@ -414,7 +415,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   class SettingsAction extends MyCellarAction {
 
     private SettingsAction() {
-      super("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
+      super(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override
@@ -464,7 +465,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   static class ParametersAction extends MyCellarAction {
 
     private ParametersAction() {
-      super("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
+      super(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override

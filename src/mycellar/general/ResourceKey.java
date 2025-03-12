@@ -1,6 +1,6 @@
 package mycellar.general;
 
-public enum ResourceKey {
+public enum ResourceKey implements IResource {
   MYCELLARFIELDS_COLUMN("MyCellarFields.Column"),
   SHOWFILE_RESTORESEVERAL("ShowFile.RestoreSeveral"),
   SUPPR("SUPPR"),

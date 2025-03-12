@@ -67,7 +67,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -93,11 +92,85 @@ import static mycellar.core.text.LabelProperty.A_SINGLE;
 import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelCode;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
+import static mycellar.general.ResourceErrorKey.ERROR_FILENOTFOUND;
+import static mycellar.general.ResourceErrorKey.ERROR_LOADINGFILE;
+import static mycellar.general.ResourceKey.AJOUTERR;
+import static mycellar.general.ResourceKey.AJOUTERV;
+import static mycellar.general.ResourceKey.CREATESTORAGE_TITLE;
+import static mycellar.general.ResourceKey.EXPORT;
+import static mycellar.general.ResourceKey.HISTORY;
+import static mycellar.general.ResourceKey.IMPORT;
+import static mycellar.general.ResourceKey.IMPORT_TITLE;
+import static mycellar.general.ResourceKey.MAIN_ABOUT;
+import static mycellar.general.ResourceKey.MAIN_ADD;
+import static mycellar.general.ResourceKey.MAIN_CHECKUPDATE;
+import static mycellar.general.ResourceKey.MAIN_CHOOSECELL;
+import static mycellar.general.ResourceKey.MAIN_CLOSE;
+import static mycellar.general.ResourceKey.MAIN_COPY;
+import static mycellar.general.ResourceKey.MAIN_CREATETABLE;
+import static mycellar.general.ResourceKey.MAIN_CUT;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
+import static mycellar.general.ResourceKey.MAIN_DELETESTORAGE;
+import static mycellar.general.ResourceKey.MAIN_EXIT;
+import static mycellar.general.ResourceKey.MAIN_EXPORT;
+import static mycellar.general.ResourceKey.MAIN_EXPORTFILE;
+import static mycellar.general.ResourceKey.MAIN_EXPORTXMLPLACES;
+import static mycellar.general.ResourceKey.MAIN_FILE;
+import static mycellar.general.ResourceKey.MAIN_FILECONTENT;
+import static mycellar.general.ResourceKey.MAIN_FILEEXPORT;
+import static mycellar.general.ResourceKey.MAIN_HELP;
+import static mycellar.general.ResourceKey.MAIN_HISTORY;
+import static mycellar.general.ResourceKey.MAIN_IMPORTXMLPLACES;
+import static mycellar.general.ResourceKey.MAIN_ITEM;
+import static mycellar.general.ResourceKey.MAIN_MANAGEPLACE;
+import static mycellar.general.ResourceKey.MAIN_MODIFY;
+import static mycellar.general.ResourceKey.MAIN_MODIFYSTORAGE;
+import static mycellar.general.ResourceKey.MAIN_NEW;
+import static mycellar.general.ResourceKey.MAIN_OPEN;
+import static mycellar.general.ResourceKey.MAIN_PASTE;
+import static mycellar.general.ResourceKey.MAIN_SAVE;
+import static mycellar.general.ResourceKey.MAIN_SAVEAS;
+import static mycellar.general.ResourceKey.MAIN_SETTINGS;
+import static mycellar.general.ResourceKey.MAIN_SHOWFILE;
+import static mycellar.general.ResourceKey.MAIN_SHOWTRASH;
 import static mycellar.general.ResourceKey.MAIN_STATISTICS;
+import static mycellar.general.ResourceKey.MAIN_STORAGE;
+import static mycellar.general.ResourceKey.MAIN_STORAGETOCREATE;
+import static mycellar.general.ResourceKey.MAIN_TABADD;
+import static mycellar.general.ResourceKey.MAIN_TABSEARCH;
+import static mycellar.general.ResourceKey.MAIN_TABSEARCHBUTTON;
+import static mycellar.general.ResourceKey.MAIN_TABSEARCHSIMPLE;
+import static mycellar.general.ResourceKey.MAIN_TOOLS;
+import static mycellar.general.ResourceKey.MAIN_UPDATEAVAILABLE;
+import static mycellar.general.ResourceKey.MAIN_VINEYARDMANAGEMENT;
+import static mycellar.general.ResourceKey.MAIN_WHATSNEW;
+import static mycellar.general.ResourceKey.MAIN_XMLEXPORT;
+import static mycellar.general.ResourceKey.MODIF;
+import static mycellar.general.ResourceKey.MONTHVERSION;
+import static mycellar.general.ResourceKey.MOVELINE_TITLE;
+import static mycellar.general.ResourceKey.MYCELLAR;
+import static mycellar.general.ResourceKey.NEW;
+import static mycellar.general.ResourceKey.PARAMETERS_TYPELABEL;
+import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENT;
+import static mycellar.general.ResourceKey.PROGRAM_DEFAULTPLACE;
+import static mycellar.general.ResourceKey.QUITTER;
+import static mycellar.general.ResourceKey.RECHERCHE;
+import static mycellar.general.ResourceKey.SAVE;
+import static mycellar.general.ResourceKey.SHOWFILE_WORKSHEET;
+import static mycellar.general.ResourceKey.START_KEY;
+import static mycellar.general.ResourceKey.START_MODIFIED;
+import static mycellar.general.ResourceKey.START_MODIFYPARAMETER;
+import static mycellar.general.ResourceKey.START_NEWVERSION;
+import static mycellar.general.ResourceKey.START_NOUPDATE;
+import static mycellar.general.ResourceKey.START_PARAMETERTOMODIFY;
+import static mycellar.general.ResourceKey.START_SELECTTYPEOBJECT;
+import static mycellar.general.ResourceKey.START_VALUE;
+import static mycellar.general.ResourceKey.STAT;
+import static mycellar.general.ResourceKey.SUPPR;
+import static mycellar.general.ResourceKey.TABLEAUX;
+import static mycellar.general.ResourceKey.VISUAL;
 
 /**
  * Titre : Cave &agrave; vin
@@ -106,8 +179,8 @@ import static mycellar.general.ResourceKey.MAIN_STATISTICS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 08/03/25
+ * @version 0.5
+ * @since 12/03/25
  */
 public final class MainFrame extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -319,7 +392,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), ""));
+        Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, ""));
         Debug("ERROR: ImportXmlPlace: File not found during Opening!");
         return;
       }
@@ -351,11 +424,11 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   private static void setApplicationTitle(String filename, boolean modified) {
-    String modifyLabel = modified ? getLabel("Start.Modified") : "";
+    String modifyLabel = modified ? getLabel(START_MODIFIED) : "";
     if (filename.isEmpty()) {
-      INSTANCE.setTitle(getLabel("MyCellar") + " " + modifyLabel);
+      INSTANCE.setTitle(getLabel(MYCELLAR) + " " + modifyLabel);
     } else {
-      INSTANCE.setTitle(getLabel("MyCellar") + " - [" + filename + "] " + modifyLabel);
+      INSTANCE.setTitle(getLabel(MYCELLAR) + " - [" + filename + "] " + modifyLabel);
     }
   }
 
@@ -384,7 +457,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       updateManagePlaceButton();
     } catch (UnableToOpenFileException e) {
       if (!(e instanceof UnableToOpenMyCellarFileException)) {
-        Erreur.showSimpleErreur(getError("Error.LoadingFile"));
+        Erreur.showSimpleErreur(getError(ERROR_LOADINGFILE));
       }
       Program.showException(e, false);
     } finally {
@@ -466,51 +539,51 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   public void updateLabels() {
-    final String quitter = getLabel("QUITTER");
+    final String quitter = getLabel(QUITTER);
     if (quitter == null || quitter.isEmpty()) {
       Program.setLanguage(Language.FRENCH);
-      quitChar = getLabel("QUITTER").charAt(0);
+      quitChar = getLabel(QUITTER).charAt(0);
     } else {
       quitChar = quitter.charAt(0);
     }
 
-    importChar = getLabel("IMPORT").charAt(0);
-    addWineChar = getLabel("AJOUTERV").charAt(0);
-    addPlaceChar = getLabel("AJOUTERR").charAt(0);
-    exportChar = getLabel("EXPORT").charAt(0);
-    tableChar = getLabel("TABLEAUX").charAt(0);
-    statChar = getLabel("STAT").charAt(0);
-    modifyChar = getLabel("MODIF").charAt(0);
-    searchChar = getLabel("RECHERCHE").charAt(0);
-    deleteChar = getLabel("SUPPR").charAt(0);
-    viewChar = getLabel("VISUAL").charAt(0);
-    historyChar = getLabel("HISTORY").charAt(0);
-    saveChar = getLabel("SAVE").charAt(0);
-    newChar = getLabel("NEW").charAt(0);
+    importChar = getLabel(IMPORT).charAt(0);
+    addWineChar = getLabel(AJOUTERV).charAt(0);
+    addPlaceChar = getLabel(AJOUTERR).charAt(0);
+    exportChar = getLabel(EXPORT).charAt(0);
+    tableChar = getLabel(TABLEAUX).charAt(0);
+    statChar = getLabel(STAT).charAt(0);
+    modifyChar = getLabel(MODIF).charAt(0);
+    searchChar = getLabel(RECHERCHE).charAt(0);
+    deleteChar = getLabel(SUPPR).charAt(0);
+    viewChar = getLabel(VISUAL).charAt(0);
+    historyChar = getLabel(HISTORY).charAt(0);
+    saveChar = getLabel(SAVE).charAt(0);
+    newChar = getLabel(NEW).charAt(0);
 
     // differents menus
-    menuFile.setText(getLabel("Main.File"));
-    menuPlace.setText(getLabel("Main.Storage"));
-    menuWine.setText(getLabelWithProperty("Main.Item", LabelProperty.SINGLE.withCapital()));
-    menuTools.setText(getLabel("Main.Tools"));
-    menuEdition.setText(getLabel("Main.Edit"));
+    menuFile.setText(getLabel(MAIN_FILE));
+    menuPlace.setText(getLabel(MAIN_STORAGE));
+    menuWine.setText(getLabelWithProperty(MAIN_ITEM, LabelProperty.SINGLE.withCapital()));
+    menuTools.setText(getLabel(MAIN_TOOLS));
+    menuEdition.setText(getLabel(MAIN_EXIT));
 
     // differents choix de chaque menu
-    menuShowWorksheet.setText(getLabel("ShowFile.Worksheet"));
-    menuSearch.setText(getLabel("Main.TabSearchButton"));
-    menuQuit.setText(getLabel("Main.Exit"));
-    menuHelp.setText(getLabel("Main.Help"));
+    menuShowWorksheet.setText(getLabel(SHOWFILE_WORKSHEET));
+    menuSearch.setText(getLabel(MAIN_TABSEARCHBUTTON));
+    menuQuit.setText(getLabel(MAIN_EXIT));
+    menuHelp.setText(getLabel(MAIN_HELP));
 
-    about.setText(getLabel("Main.About") + "...");
-    menuNews.setText(getLabel("Main.WhatsNew"));
-    menuToCreate.setText(getLabel("Main.StorageToCreate"));
-    menuVignobles.setText(getLabel("Main.VineyardManagement") + "...");
-    menuBottleCapacity.setText(getLabel("Parameter.CapacitiesManagement") + "...");
-    menuImportXmlPlaces.setText(getLabel("Main.ImportXMLPlaces"));
-    menuExportXmlPlaces.setText(getLabel("Main.ExportXMLPlaces"));
-    menuExportXml.setText(getLabel("Main.XMLExport"));
-    menuCloseFile.setText(getLabel("Main.Close"));
-    menuCheckUpdate.setText(getLabel("Main.CheckUpdate"));
+    about.setText(getLabel(MAIN_ABOUT) + "...");
+    menuNews.setText(getLabel(MAIN_WHATSNEW));
+    menuToCreate.setText(getLabel(MAIN_STORAGETOCREATE));
+    menuVignobles.setText(getLabel(MAIN_VINEYARDMANAGEMENT) + "...");
+    menuBottleCapacity.setText(getLabel(PARAMETER_CAPACITIESMANAGEMENT) + "...");
+    menuImportXmlPlaces.setText(getLabel(MAIN_IMPORTXMLPLACES));
+    menuExportXmlPlaces.setText(getLabel(MAIN_EXPORTXMLPLACES));
+    menuExportXml.setText(getLabel(MAIN_XMLEXPORT));
+    menuCloseFile.setText(getLabel(MAIN_CLOSE));
+    menuCheckUpdate.setText(getLabel(MAIN_CHECKUPDATE));
     menuReopen1.setText("1 - " + getShortFilename(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1)) + ONE_DOT + EXTENSION_SINFO);
     menuReopen2.setText("2 - " + getShortFilename(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2)) + ONE_DOT + EXTENSION_SINFO);
     menuReopen3.setText("3 - " + getShortFilename(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3)) + ONE_DOT + EXTENSION_SINFO);
@@ -524,23 +597,23 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     menuReopen3.setToolTipText(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3));
     menuReopen4.setToolTipText(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4));
 
-    menuCut.setText(getLabel("Main.Cut"));
-    menuCopy.setText(getLabel("Main.Copy"));
-    menuPaste.setText(getLabel("Main.Paste"));
+    menuCut.setText(getLabel(MAIN_CUT));
+    menuCopy.setText(getLabel(MAIN_COPY));
+    menuPaste.setText(getLabel(MAIN_PASTE));
 
-    importButton.setText(getLabel("Import.Title"));
-    exportButton.setText(getLabel("Main.ExportFile"));
-    createButton.setText(getLabel("CreateStorage.Title"));
+    importButton.setText(getLabel(IMPORT_TITLE));
+    exportButton.setText(getLabel(MAIN_EXPORTFILE));
+    createButton.setText(getLabel(CREATESTORAGE_TITLE));
     statsButton.setText(getLabel(MAIN_STATISTICS));
-    managePlaceButton.setText(getLabel("Main.ManagePlace"));
-    worksheetButton.setText(getLabel("ShowFile.Worksheet"));
-    modifyButton.setText(getLabel("Main.ModifyStorage"));
-    showFileButton.setText(getLabel("Main.ShowFile"));
-    tableButton.setText(getLabel("Main.createTable"));
-    addButton.setText(getLabelWithProperty("Main.TabAdd", LabelProperty.SINGLE));
-    searchButton.setText(getLabel("Main.TabSearchButton"));
-    deleteButton.setText(getLabel("Main.DeleteStorage"));
-    version.setText(getLabel("MonthVersion") + INFOS_VERSION + MAIN_VERSION);
+    managePlaceButton.setText(getLabel(MAIN_MANAGEPLACE));
+    worksheetButton.setText(getLabel(SHOWFILE_WORKSHEET));
+    modifyButton.setText(getLabel(MAIN_MODIFYSTORAGE));
+    showFileButton.setText(getLabel(MAIN_SHOWFILE));
+    tableButton.setText(getLabel(MAIN_CREATETABLE));
+    addButton.setText(getLabelWithProperty(MAIN_TABADD, LabelProperty.SINGLE));
+    searchButton.setText(getLabel(MAIN_TABSEARCHBUTTON));
+    deleteButton.setText(getLabel(MAIN_DELETESTORAGE));
+    version.setText(getLabel(MONTHVERSION) + INFOS_VERSION + MAIN_VERSION);
     menuAddObject.setAccelerator(KeyStroke.getKeyStroke(addWineChar, InputEvent.CTRL_DOWN_MASK));
     menuAddPlace.setAccelerator(KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
     menuDelPlace.setAccelerator(KeyStroke.getKeyStroke(deleteChar, InputEvent.CTRL_DOWN_MASK));
@@ -552,7 +625,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     menuModifPlace.setAccelerator(KeyStroke.getKeyStroke(modifyChar, InputEvent.CTRL_DOWN_MASK));
     menuQuit.setAccelerator(KeyStroke.getKeyStroke(quitChar, InputEvent.CTRL_DOWN_MASK));
     SwingUtilities.updateComponentTreeUI(this);
-    Program.DEFAULT_PLACE.setName(getLabel("Program.DefaultPlace"));
+    Program.DEFAULT_PLACE.setName(getLabel(PROGRAM_DEFAULTPLACE));
     setApplicationTitle(Program.getShortFilename(), false);
   }
 
@@ -789,7 +862,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     boolean bUpdateAvailable = MyCellarServer.getInstance().hasAvailableUpdate(MyCellarVersion.getLocalVersion());
     update.setVisible(bUpdateAvailable);
     if (bUpdateAvailable) {
-      update.setText(MessageFormat.format(getLabel("Main.UpdateAvailable"), MyCellarServer.getInstance().getAvailableVersion(), MAIN_VERSION + DASH + INTERNAL_VERSION), true, 30000, false);
+      update.setText(getLabel(MAIN_UPDATEAVAILABLE, MyCellarServer.getInstance().getAvailableVersion(), MAIN_VERSION + DASH + INTERNAL_VERSION), true, 30000, false);
     }
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Debug("Display Frame ended");
@@ -836,7 +909,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), ""));
+        Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, ""));
         Debug("ERROR: menuSaveAs: File not found during Opening!");
         return;
       }
@@ -852,9 +925,9 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
   private void checkUpdate(ActionEvent e) {
     if (MyCellarServer.getInstance().hasAvailableUpdate(MyCellarVersion.getLocalVersion())) {
-      Erreur.showInformationMessage(MessageFormat.format(getLabel("Start.NewVersion"), MyCellarServer.getInstance().getAvailableVersion(), INTERNAL_VERSION));
+      Erreur.showInformationMessage(getLabel(START_NEWVERSION, MyCellarServer.getInstance().getAvailableVersion(), INTERNAL_VERSION));
     } else {
-      Erreur.showInformationMessage(getLabel("Start.NoUpdate"));
+      Erreur.showInformationMessage(getLabel(START_NOUPDATE));
     }
   }
 
@@ -863,17 +936,17 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   public void openVineyardPanel() {
-    ProgramPanels.addTab(getLabel("Main.VineyardManagement"), null, ProgramPanels.createVineyardPanel());
+    ProgramPanels.addTab(getLabel(MAIN_VINEYARDMANAGEMENT), null, ProgramPanels.createVineyardPanel());
   }
 
   public static void openCapacityPanel() {
-    ProgramPanels.addTab(getLabel("Parameter.CapacitiesManagement"), null, ProgramPanels.createCapacityPanel());
+    ProgramPanels.addTab(getLabel(PARAMETER_CAPACITIESMANAGEMENT), null, ProgramPanels.createCapacityPanel());
   }
 
   public void openCellChooserPanel(IPlacePosition iPlace) {
     final int selectedTabIndex = ProgramPanels.getSelectedTabIndex() + 1;
     final CellarOrganizerPanel chooseCellPanel = ProgramPanels.createChooseCellPanel(iPlace);
-    ProgramPanels.insertTab(getLabel("Main.ChooseCell"), MyCellarImage.PLACE, chooseCellPanel, selectedTabIndex);
+    ProgramPanels.insertTab(getLabel(MAIN_CHOOSECELL), MyCellarImage.PLACE, chooseCellPanel, selectedTabIndex);
   }
 
   @Override
@@ -899,11 +972,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   static final class CutAction extends MyCellarAction {
-    private static final String LABEL = "Main.Cut";
 
     private CutAction(boolean withText) {
-      super(LABEL, LabelProperty.SINGLE, MyCellarImage.CUT);
-      setDescriptionLabel(LABEL, LabelProperty.SINGLE);
+      super(MAIN_CUT, LabelProperty.SINGLE, MyCellarImage.CUT);
+      setDescriptionLabel(MAIN_CUT, LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -916,11 +988,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   static final class CopyAction extends MyCellarAction {
-    private static final String LABEL = "Main.Copy";
 
     private CopyAction(boolean withText) {
-      super(LABEL, LabelProperty.SINGLE, MyCellarImage.COPY);
-      setDescriptionLabel(LABEL, LabelProperty.SINGLE);
+      super(MAIN_COPY, LabelProperty.SINGLE, MyCellarImage.COPY);
+      setDescriptionLabel(MAIN_COPY, LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -933,11 +1004,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   static final class PasteAction extends MyCellarAction {
-    private static final String LABEL = "Main.Paste";
 
     private PasteAction(boolean withText) {
-      super(LABEL, LabelProperty.SINGLE, MyCellarImage.PASTE);
-      setDescriptionLabel(LABEL, LabelProperty.SINGLE);
+      super(MAIN_PASTE, LabelProperty.SINGLE, MyCellarImage.PASTE);
+      setDescriptionLabel(MAIN_PASTE, LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -967,8 +1037,8 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       types.setSelectedItem(objectType);
 
       setLayout(new MigLayout("", "[grow]", "[]25px[]"));
-      add(new MyCellarLabel("Start.SelectTypeObject"), "span 2, wrap");
-      add(new MyCellarLabel("Parameters.TypeLabel"));
+      add(new MyCellarLabel(START_SELECTTYPEOBJECT), "span 2, wrap");
+      add(new MyCellarLabel(PARAMETERS_TYPELABEL));
       add(types);
     }
 
@@ -982,11 +1052,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   final class OpenAction extends MyCellarAction {
-    private static final String LABEL = "Main.Open";
 
     private OpenAction(boolean withText) {
-      super(LABEL, LabelProperty.SINGLE, MyCellarImage.OPEN);
-      setDescriptionLabel(LABEL, LabelProperty.SINGLE);
+      super(MAIN_OPEN, LabelProperty.SINGLE, MyCellarImage.OPEN);
+      setDescriptionLabel(MAIN_OPEN, LabelProperty.SINGLE);
       setWithText(withText);
     }
 
@@ -1001,7 +1070,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
           File file = boiteFichier.getSelectedFile();
           if (file == null) {
             setCursor(Cursor.getDefaultCursor());
-            Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), ""));
+            Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, ""));
             Debug("ERROR: OpenAction: File not found during Opening!");
             ProgramPanels.updateAllPanels();
             setApplicationTitle("", false);
@@ -1010,7 +1079,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
           openFile(MyCellarControl.controlAndUpdateExtension(file.getAbsolutePath(), Filtre.FILTRE_SINFO));
         }
       } catch (UnableToOpenFileException e) {
-        Erreur.showSimpleErreur(getError("Error.LoadingFile"));
+        Erreur.showSimpleErreur(getError(ERROR_LOADINGFILE));
         Program.showException(e, false);
       } finally {
         setCursor(Cursor.getDefaultCursor());
@@ -1019,11 +1088,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   final class NewAction extends MyCellarAction {
-    private static final String LABEL = "Main.New";
 
     private NewAction(boolean withText) {
-      super(LABEL, MyCellarImage.NEW);
-      setDescriptionLabel(LABEL);
+      super(MAIN_NEW, MyCellarImage.NEW);
+      setDescriptionLabel(MAIN_NEW);
       setWithText(withText);
     }
 
@@ -1044,11 +1112,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   final class SaveAction extends MyCellarAction {
-    private static final String LABEL = "Main.Save";
 
     private SaveAction(boolean withText) {
-      super(LABEL, MyCellarImage.SAVE);
-      setDescriptionLabel(LABEL);
+      super(MAIN_SAVE, MyCellarImage.SAVE);
+      setDescriptionLabel(MAIN_SAVE);
       setWithText(withText);
     }
 
@@ -1075,11 +1142,10 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   final class SaveAsAction extends MyCellarAction {
-    private static final String LABEL = "Main.SaveAs";
 
     private SaveAsAction() {
-      super(LABEL, MyCellarImage.SAVEAS);
-      setDescriptionLabel(LABEL);
+      super(MAIN_SAVEAS, MyCellarImage.SAVEAS);
+      setDescriptionLabel(MAIN_SAVEAS);
     }
 
     @Override
@@ -1089,56 +1155,52 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   final class AddWineAction extends MyCellarAction {
-    private static final String LABEL = "Main.TabAdd";
 
     private AddWineAction() {
-      super(LABEL, MyCellarImage.WINE);
+      super(MAIN_TABADD, MyCellarImage.WINE);
       putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
-      setDescriptionLabel(LABEL, A_SINGLE);
+      setDescriptionLabel(MAIN_TABADD, A_SINGLE);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       final AddVin addVin = ProgramPanels.createAddVin();
-      selectOrAddTab(addVin, LABEL, MyCellarImage.WINE);
+      selectOrAddTab(addVin, MAIN_TABADD, MyCellarImage.WINE);
       addVin.reInit();
     }
   }
 
   static final class AddPlaceAction extends MyCellarAction {
-    private static final String LABEL = "CreateStorage.Title";
 
     private AddPlaceAction() {
-      super("Main.Add", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PLACE);
-      setDescriptionLabel(LABEL);
+      super(MAIN_ADD, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PLACE);
+      setDescriptionLabel(CREATESTORAGE_TITLE);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      selectOrAddTab(ProgramPanels.createCreerRangement(), LABEL, MyCellarImage.PLACE);
+      selectOrAddTab(ProgramPanels.createCreerRangement(), CREATESTORAGE_TITLE, MyCellarImage.PLACE);
     }
   }
 
   static final class DeletePlaceAction extends MyCellarAction {
-    private static final String LABEL = "Main.DeleteStorage";
 
     private DeletePlaceAction() {
       super(MAIN_DELETE, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.DELPLACE);
-      setDescriptionLabel(LABEL);
+      setDescriptionLabel(MAIN_DELETESTORAGE);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      selectOrAddTab(ProgramPanels.createSupprimerRangement(), LABEL, MyCellarImage.DELPLACE);
+      selectOrAddTab(ProgramPanels.createSupprimerRangement(), MAIN_DELETESTORAGE, MyCellarImage.DELPLACE);
     }
   }
 
   static final class PlaceMoveLineAction extends MyCellarAction {
-    private static final String LABEL = "MoveLine.Title";
 
     private PlaceMoveLineAction() {
-      super(LABEL, LabelProperty.SINGLE.withThreeDashes());
-      setDescriptionLabel(LABEL, LabelProperty.SINGLE);
+      super(MOVELINE_TITLE, LabelProperty.SINGLE.withThreeDashes());
+      setDescriptionLabel(MOVELINE_TITLE, LabelProperty.SINGLE);
     }
 
     @Override
@@ -1148,104 +1210,97 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   static final class ModifyPlaceAction extends MyCellarAction {
-    private static final String LABEL = "Main.ModifyStorage";
 
     private ModifyPlaceAction() {
-      super("Main.Modify", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.MODIFYPLACE);
-      setDescriptionLabel(LABEL);
+      super(MAIN_MODIFY, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.MODIFYPLACE);
+      setDescriptionLabel(MAIN_MODIFYSTORAGE);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       final Creer_Rangement modifierRangement = ProgramPanels.createModifierRangement();
-      selectOrAddTab(modifierRangement, LABEL, MyCellarImage.MODIFYPLACE);
+      selectOrAddTab(modifierRangement, MAIN_MODIFYSTORAGE, MyCellarImage.MODIFYPLACE);
       modifierRangement.updateView();
     }
   }
 
   static final class SearchAction extends MyCellarAction {
-    private static final String LABEL = "Main.TabSearchSimple";
 
     private SearchAction() {
-      super("Main.TabSearchButton", MyCellarImage.SEARCH);
-      setDescriptionLabel("Main.TabSearch", A_SINGLE);
+      super(MAIN_TABSEARCHBUTTON, MyCellarImage.SEARCH);
+      setDescriptionLabel(MAIN_TABSEARCH, A_SINGLE);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      selectOrAddTab(ProgramPanels.createSearch(), LABEL, MyCellarImage.SEARCH);
+      selectOrAddTab(ProgramPanels.createSearch(), MAIN_TABSEARCHSIMPLE, MyCellarImage.SEARCH);
     }
   }
 
   static final class CreateTabAction extends MyCellarAction {
-    private static final String LABEL = "Main.createTable";
 
     private CreateTabAction() {
-      super(LABEL, MyCellarImage.TABLE);
-      setDescriptionLabel(LABEL);
+      super(MAIN_CREATETABLE, MyCellarImage.TABLE);
+      setDescriptionLabel(MAIN_CREATETABLE);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      selectOrAddTab(ProgramPanels.createCreateTable(), LABEL, MyCellarImage.TABLE);
+      selectOrAddTab(ProgramPanels.createCreateTable(), MAIN_CREATETABLE, MyCellarImage.TABLE);
     }
   }
 
   static final class ImportFileAction extends MyCellarAction {
-    private static final String LABEL = "Import.Title";
 
     private ImportFileAction() {
-      super(LABEL, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.IMPORT);
-      setDescriptionLabel(LABEL);
+      super(IMPORT_TITLE, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.IMPORT);
+      setDescriptionLabel(IMPORT_TITLE);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      selectOrAddTab(ProgramPanels.createImporter(), LABEL, MyCellarImage.IMPORT);
+      selectOrAddTab(ProgramPanels.createImporter(), IMPORT_TITLE, MyCellarImage.IMPORT);
     }
   }
 
   static final class ExportFileAction extends MyCellarAction {
-    private static final String LABEL = "Main.FileExport";
 
     private ExportFileAction() {
-      super("Main.Export", LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.EXPORT);
-      setDescriptionLabel(LABEL);
+      super(MAIN_EXPORT, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.EXPORT);
+      setDescriptionLabel(MAIN_FILEEXPORT);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      selectOrAddTab(ProgramPanels.createExport(), LABEL, MyCellarImage.EXPORT);
+      selectOrAddTab(ProgramPanels.createExport(), MAIN_FILEEXPORT, MyCellarImage.EXPORT);
     }
   }
 
   static final class StatAction extends MyCellarAction {
-    private static final String LABEL = MAIN_STATISTICS.getKey();
 
     private StatAction() {
-      super(LABEL, MyCellarImage.STATS);
-      setDescriptionLabel(LABEL);
+      super(MAIN_STATISTICS, MyCellarImage.STATS);
+      setDescriptionLabel(MAIN_STATISTICS);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       final Stat stat = ProgramPanels.createStat();
-      selectOrAddTab(stat, LABEL, MyCellarImage.STATS);
+      selectOrAddTab(stat, MAIN_STATISTICS, MyCellarImage.STATS);
       stat.updateView();
     }
   }
 
   static class ShowHistoryAction extends MyCellarAction {
-    private static final String LABEL = "Main.History";
 
     private ShowHistoryAction() {
-      super(LABEL, LabelProperty.SINGLE.withThreeDashes());
+      super(MAIN_HISTORY, LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       final ShowHistory showHistory = ProgramPanels.createShowHistory();
-      selectOrAddTab(showHistory, LABEL, null);
+      selectOrAddTab(showHistory, MAIN_HISTORY, null);
       showHistory.refresh();
     }
   }
@@ -1253,7 +1308,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   class VignoblesAction extends MyCellarAction {
 
     private VignoblesAction() {
-      super("Main.VineyardManagement", LabelProperty.SINGLE.withThreeDashes());
+      super(MAIN_VINEYARDMANAGEMENT, LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override
@@ -1265,7 +1320,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static class CapacityAction extends MyCellarAction {
 
     private CapacityAction() {
-      super("Parameter.CapacitiesManagement", LabelProperty.SINGLE.withThreeDashes());
+      super(PARAMETER_CAPACITIESMANAGEMENT, LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override
@@ -1276,66 +1331,62 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   }
 
   static final class ShowFileAction extends MyCellarAction {
-    private static final String LABEL = "Main.FileContent";
 
     private ShowFileAction() {
-      super("Main.ShowFile", MyCellarImage.SHOW);
-      setDescriptionLabel(LABEL);
+      super(MAIN_SHOWFILE, MyCellarImage.SHOW);
+      setDescriptionLabel(MAIN_FILECONTENT);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      selectOrAddTab(ProgramPanels.createShowFile(), LABEL, MyCellarImage.SHOW);
+      selectOrAddTab(ProgramPanels.createShowFile(), MAIN_FILECONTENT, MyCellarImage.SHOW);
     }
   }
 
   static final class ShowTrashAction extends AbstractAction {
-    private static final String LABEL = "Main.ShowTrash";
 
     private ShowTrashAction() {
       super("", MyCellarImage.TRASH);
-      putValue(SHORT_DESCRIPTION, getLabel(LABEL));
+      putValue(SHORT_DESCRIPTION, getLabel(MAIN_SHOWTRASH));
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
       final TrashPanel showTrash = ProgramPanels.createShowTrash();
-      selectOrAddTab(showTrash, LABEL, MyCellarImage.TRASH);
+      selectOrAddTab(showTrash, MAIN_SHOWTRASH, MyCellarImage.TRASH);
       showTrash.updateView();
     }
   }
 
   static final class ManagePlaceAction extends MyCellarAction {
-    private static final String LABEL = "Main.ManagePlace";
 
     private ManagePlaceAction() {
-      super(LABEL, MyCellarImage.PLACE);
-      putValue(SHORT_DESCRIPTION, getLabel(LABEL));
+      super(MAIN_MANAGEPLACE, MyCellarImage.PLACE);
+      putValue(SHORT_DESCRIPTION, getLabel(MAIN_MANAGEPLACE));
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      selectOrAddTab(ProgramPanels.createCellarOrganizerPanel(), LABEL, MyCellarImage.PLACE);
+      selectOrAddTab(ProgramPanels.createCellarOrganizerPanel(), MAIN_MANAGEPLACE, MyCellarImage.PLACE);
     }
   }
 
   static final class ParametersAction extends MyCellarAction {
-    private static final String LABEL = "Main.Settings";
 
     private ParametersAction() {
-      super(LABEL, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PARAMETER);
+      super(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PARAMETER);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      selectOrAddTab(ProgramPanels.createParametres(), LABEL, MyCellarImage.PARAMETER);
+      selectOrAddTab(ProgramPanels.createParametres(), MAIN_SETTINGS, MyCellarImage.PARAMETER);
     }
   }
 
   static final class SetConfigAction extends MyCellarAction {
 
     private SetConfigAction() {
-      super("Start.ModifyParameter", LabelProperty.SINGLE.withThreeDashes());
+      super(START_MODIFYPARAMETER, LabelProperty.SINGLE.withThreeDashes());
     }
 
     @Override
@@ -1344,12 +1395,12 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       panel.setLayout(new MigLayout("", "grow"));
       JTextField key = new JTextField();
       JTextField value = new JTextField();
-      panel.add(new MyCellarLabel("Start.ParameterToModify"), "grow, wrap");
-      panel.add(new MyCellarLabel("Start.Key"), "split 2");
+      panel.add(new MyCellarLabel(START_PARAMETERTOMODIFY), "grow, wrap");
+      panel.add(new MyCellarLabel(START_KEY), "split 2");
       panel.add(key, "grow, wrap");
-      panel.add(new MyCellarLabel("Start.Value"), "split 2");
+      panel.add(new MyCellarLabel(START_VALUE), "split 2");
       panel.add(value, "grow");
-      if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(getInstance(), panel, getLabelCode("Start.ModifyParameter"), JOptionPane.OK_CANCEL_OPTION)) {
+      if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(getInstance(), panel, getLabel(START_MODIFYPARAMETER), JOptionPane.OK_CANCEL_OPTION)) {
         final String parameter = toCleanString(key.getText());
         final String parameterValue = toCleanString(value.getText());
         if (isDefined(parameter)) {

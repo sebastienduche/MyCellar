@@ -13,10 +13,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.SHOWFILE_WORKSHEET;
 
 public final class OpenWorkSheetAction extends MyCellarAction {
 
-  private static final String LABEL = "ShowFile.Worksheet";
   private final List<MyCellarObject> myCellarObjects;
 
   public OpenWorkSheetAction() {
@@ -24,8 +24,8 @@ public final class OpenWorkSheetAction extends MyCellarAction {
   }
 
   public OpenWorkSheetAction(List<MyCellarObject> list) {
-    super(LABEL, LabelProperty.SINGLE, MyCellarImage.WORK);
-    setDescriptionLabel(LABEL, LabelProperty.SINGLE);
+    super(SHOWFILE_WORKSHEET, LabelProperty.SINGLE, MyCellarImage.WORK);
+    setDescriptionLabel(SHOWFILE_WORKSHEET, LabelProperty.SINGLE);
     myCellarObjects = list != null ? list : Collections.emptyList();
   }
 
@@ -35,7 +35,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
       final WorksheetPanel showWorksheet = ProgramPanels.createWorksheetPanel();
       showWorksheet.updateView();
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK, null);
-      final String label = getLabel(LABEL);
+      final String label = getLabel(SHOWFILE_WORKSHEET);
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);
       } else {

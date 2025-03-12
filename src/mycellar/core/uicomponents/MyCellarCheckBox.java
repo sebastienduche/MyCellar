@@ -4,6 +4,7 @@ import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.text.MyCellarLabelManagement;
+import mycellar.general.IResource;
 import mycellar.general.ResourceKey;
 
 import javax.swing.JCheckBox;
@@ -45,9 +46,18 @@ public final class MyCellarCheckBox extends JCheckBox implements IMyCellarCompon
     setFont(FONT_PANEL);
   }
 
+  @Deprecated(since = "version90")
   public MyCellarCheckBox(String code, boolean selected) {
     super("", selected);
     labelKey = new LabelKey(code);
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT_PANEL);
+  }
+
+  public MyCellarCheckBox(IResource key, boolean selected) {
+    super("", selected);
+    labelKey = new LabelKey(key.getKey());
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

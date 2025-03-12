@@ -66,15 +66,23 @@ import static mycellar.general.ResourceErrorKey.ERROR_NOTANEXCELFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTCSVFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTHTMLFILE;
 import static mycellar.general.ResourceErrorKey.EXPORT_REPLACEFILEQUESTION;
+import static mycellar.general.ResourceKey.EXPORT_CSV;
 import static mycellar.general.ResourceKey.EXPORT_CSVINFO;
 import static mycellar.general.ResourceKey.EXPORT_ENDED;
 import static mycellar.general.ResourceKey.EXPORT_EXPORTFORMAT;
 import static mycellar.general.ResourceKey.EXPORT_EXPORTINPROGRESS;
 import static mycellar.general.ResourceKey.EXPORT_FILENAME;
+import static mycellar.general.ResourceKey.EXPORT_HTML;
 import static mycellar.general.ResourceKey.EXPORT_OPTIONS;
+import static mycellar.general.ResourceKey.EXPORT_PDF;
 import static mycellar.general.ResourceKey.EXPORT_SELECTDEFAULTMODE;
+import static mycellar.general.ResourceKey.EXPORT_XLS;
+import static mycellar.general.ResourceKey.EXPORT_XML;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_COLUMN;
+import static mycellar.general.ResourceKey.MAIN_EXPORT;
+import static mycellar.general.ResourceKey.MAIN_OPENTHEFILE;
+import static mycellar.general.ResourceKey.MAIN_PARAMETERS;
 import static mycellar.general.ResourceKey.MAIN_SAVEDFILE;
 import static mycellar.general.ResourceKey.MAIN_SETTINGS;
 
@@ -86,26 +94,26 @@ import static mycellar.general.ResourceKey.MAIN_SETTINGS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.7
- * @since 08/03/25
+ * @version 11.8
+ * @since 12/03/25
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
   private static final char OUVRIR = getLabel(ResourceKey.OUVRIR).charAt(0);
   private static final char EXPORT = getLabel(ResourceKey.EXPORT).charAt(0);
-  private final MyCellarButton valider = new MyCellarButton("Main.Export");
+  private final MyCellarButton valider = new MyCellarButton(MAIN_EXPORT);
   private final JTextField file = new JTextField();
   private final MyCellarButton browse = new MyCellarButton(OPEN);
-  private final MyCellarButton parameters = new MyCellarButton("Main.Parameters", new ParametersAction());
+  private final MyCellarButton parameters = new MyCellarButton(MAIN_PARAMETERS, new ParametersAction());
   private final JProgressBar progressBar = new JProgressBar();
-  private final MyCellarRadioButton MyCellarRadioButtonXML = new MyCellarRadioButton("Export.Xml", true);
-  private final MyCellarRadioButton MyCellarRadioButtonHTML = new MyCellarRadioButton("Export.Html", false);
-  private final MyCellarRadioButton MyCellarRadioButtonCSV = new MyCellarRadioButton("Export.Csv", false);
-  private final MyCellarRadioButton MyCellarRadioButtonXLS = new MyCellarRadioButton("Export.Xls", false);
-  private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton("Export.Pdf", false);
+  private final MyCellarRadioButton MyCellarRadioButtonXML = new MyCellarRadioButton(EXPORT_XML, true);
+  private final MyCellarRadioButton MyCellarRadioButtonHTML = new MyCellarRadioButton(EXPORT_HTML, false);
+  private final MyCellarRadioButton MyCellarRadioButtonCSV = new MyCellarRadioButton(EXPORT_CSV, false);
+  private final MyCellarRadioButton MyCellarRadioButtonXLS = new MyCellarRadioButton(EXPORT_XLS, false);
+  private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton(EXPORT_PDF, false);
   private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
-  private final MyCellarButton openit = new MyCellarButton("Main.OpenTheFile");
-  private final MyCellarButton options = new MyCellarButton("Main.Settings", LabelProperty.SINGLE.withThreeDashes(), new SettingsAction());
+  private final MyCellarButton openit = new MyCellarButton(MAIN_OPENTHEFILE);
+  private final MyCellarButton options = new MyCellarButton(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes(), new SettingsAction());
   private final List<? extends MyCellarObject> myCellarObjects;
 
   public Export() {
@@ -138,7 +146,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     MyCellarLabel nameLabel = new MyCellarLabel(EXPORT_FILENAME);
     end.setFont(FONT_DIALOG_BOLD);
     openit.setMnemonic(OUVRIR);
-    openit.addActionListener((e) -> openit_actionPerformed());
+    openit.addActionListener((e) -> openIt_actionPerformed());
     MyCellarRadioButtonXML.addActionListener(this::jradio_actionPerformed);
     MyCellarRadioButtonHTML.addActionListener(this::jradio_actionPerformed);
     MyCellarRadioButtonCSV.addActionListener(this::jradio_actionPerformed);
@@ -237,7 +245,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
       File nomFichier = boiteFichier.getSelectedFile();
       Program.putCaveConfigString(MyCellarSettings.DIR, boiteFichier.getCurrentDirectory().toString());
-      //Erreur utilisation de caracteres interdits
+      // Check for unauthorised characters
       if (MyCellarControl.controlPath(nomFichier)) {
         Filtre filtre = (Filtre) boiteFichier.getFileFilter();
         String nom = nomFichier.getAbsolutePath();
@@ -248,9 +256,9 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   }
 
   /**
-   * openit_actionPerformed: Ouvrir le fichier issu de l'export.
+   * Open the exported file.
    */
-  private void openit_actionPerformed() {
+  private void openIt_actionPerformed() {
     String nom = toCleanString(file.getText());
     if (!Program.open(nom, true)) {
       end.setText("");
@@ -259,7 +267,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
   private void keylistener_actionPerformed(KeyEvent e) {
     if (e.getKeyCode() == OUVRIR && openit.isEnabled()) {
-      openit_actionPerformed();
+      openIt_actionPerformed();
     } else if (e.getKeyCode() == EXPORT) {
       export();
     } else if (e.getKeyCode() == KeyEvent.VK_F1) {
@@ -305,7 +313,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
     if (MyCellarRadioButtonXML.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML))) {
-        //"Le fichier saisi ne possede pas une extension XML: " + str_tmp3);
+        // Error, not a xml file
         end.setText("");
         Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR087), nom));
         valider.setEnabled(true);
@@ -323,7 +331,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
     } else if (MyCellarRadioButtonHTML.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_HTML))) {
-        //"Le fichier saisi ne possede pas une extension HTML: " + str_tmp3);
+        // Error: Not a html file
         end.setText("");
         Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR_NOTHTMLFILE), nom));
         valider.setEnabled(true);
@@ -339,7 +347,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
     } else if (MyCellarRadioButtonCSV.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_CSV))) {
-        //"Le fichier saisi ne possede pas une extension CSV: " + str_tmp3);
+        // Error not a csv file
         end.setText("");
         Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR_NOTCSVFILE), nom));
         valider.setEnabled(true);
@@ -374,7 +382,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonPDF.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_PDF))) {
-        //"Le fichier saisi ne possede pas une extension PDF: " + str_tmp3);
+        // Error, not a pdf file
         end.setText("");
         Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR157), nom));
         valider.setEnabled(true);

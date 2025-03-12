@@ -30,6 +30,7 @@ import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.frame.MainFrame;
+import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
@@ -465,7 +466,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         key_properties[i] = MyCellarSettings.RANGEMENT_NAME;
         default_value[i] = "";
         type_objet[i] = MyOptions.JTEXT_FIELD;
-        MyOptions myoptions = new MyOptions(getLabel("CreateStorage.Title"), getLabel("Import.SelectStorageName"), List.of(titre_properties), List.of(default_value), List.of(key_properties), List.of(type_objet), false);
+        MyOptions myoptions = new MyOptions(getLabel(ResourceKey.CREATESTORAGE_TITLE), getLabel(ResourceKey.IMPORT_SELECTSTORAGENAME), List.of(titre_properties), List.of(default_value), List.of(key_properties), List.of(type_objet), false);
         myoptions.setVisible(true);
         int num_r = Program.getCaveConfigInt(MyCellarSettings.RANGEMENT_DEFAULT, -1);
         if (num_r == Program.getPlaceLength()) {

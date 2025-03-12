@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.Serial;
 
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.CHAR_O;
@@ -33,6 +34,7 @@ import static mycellar.ProgramConstants.isVK_O;
  */
 @Deprecated
 public final class Options extends JDialog {
+  @Serial
   private static final long serialVersionUID = 190305;
   private static final int LARGEUR = 420;
   private static final int HAUTEUR = 230;

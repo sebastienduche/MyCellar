@@ -15,6 +15,8 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
+import mycellar.general.ResourceErrorKey;
+import mycellar.general.ResourceKey;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
@@ -57,20 +59,20 @@ import static mycellar.general.ResourceErrorKey.ERROR_NOTHTMLFILE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.6
- * @since 08/03/25
+ * @version 9.7
+ * @since 12/03/25
  */
 public final class CreateTablePanel extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   private final JTextField name = new JTextField();
-  private final MyCellarRadioButton type_XML = new MyCellarRadioButton("Export.Xml", false);
-  private final MyCellarRadioButton type_HTML = new MyCellarRadioButton("Export.Html", true);
-  private final MyCellarRadioButton type_XLS = new MyCellarRadioButton("Export.Xls", false);
+  private final MyCellarRadioButton type_XML = new MyCellarRadioButton(ResourceKey.EXPORT_XML, false);
+  private final MyCellarRadioButton type_HTML = new MyCellarRadioButton(ResourceKey.EXPORT_HTML, true);
+  private final MyCellarRadioButton type_XLS = new MyCellarRadioButton(ResourceKey.EXPORT_XLS, false);
   private final TableauValues tableauValues = new TableauValues();
   private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
-  private final MyCellarButton preview = new MyCellarButton("Main.OpenTheFile");
-  private final char createChar = getLabel("CREER").charAt(0);
-  private final char ouvrirChar = getLabel("OUVRIR").charAt(0);
-  private final MyCellarCheckBox selectAll = new MyCellarCheckBox("Main.SelectAll");
+  private final MyCellarButton preview = new MyCellarButton(ResourceKey.MAIN_OPENTHEFILE);
+  private final char createChar = getLabel(ResourceKey.CREER).charAt(0);
+  private final char ouvrirChar = getLabel(ResourceKey.OUVRIR).charAt(0);
+  private final MyCellarCheckBox selectAll = new MyCellarCheckBox(ResourceKey.MAIN_SELECTALL);
   private final MyCellarButton m_jcb_options = new MyCellarButton("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
   private final JTable table;
   private boolean updateView;
@@ -78,14 +80,14 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
 
   public CreateTablePanel() {
     Debug("Constructor");
-    final MyCellarLabel fileLabel = new MyCellarLabel("CreateTable.FileToGenerate");
+    final MyCellarLabel fileLabel = new MyCellarLabel(ResourceKey.CREATETABLE_FILEGENERATED);
     m_jcb_options.addActionListener(this::options_actionPerformed);
     final MyCellarButton browse = new MyCellarButton(OPEN);
     browse.addActionListener(this::browse_actionPerformed);
-    final MyCellarButton parameter = new MyCellarButton("Main.Parameters");
+    final MyCellarButton parameter = new MyCellarButton(ResourceKey.MAIN_PARAMETERS);
     parameter.addActionListener(this::param_actionPerformed);
-    final MyCellarLabel chooseLabel = new MyCellarLabel("CreateTable.SelectStoragesToGenerate");
-    final MyCellarButton create = new MyCellarButton("Main.Create");
+    final MyCellarLabel chooseLabel = new MyCellarLabel(ResourceKey.CREATETABLE_SELECTSTORAGESTOGENERATE);
+    final MyCellarButton create = new MyCellarButton(ResourceKey.MAIN_CREATE);
     create.setMnemonic(createChar);
 
     final ButtonGroup buttonGroup = new ButtonGroup();
@@ -154,7 +156,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     panelType.add(type_HTML);
     panelType.add(type_XLS, "split 2");
     panelType.add(m_jcb_options, "push");
-    panelType.setBorder(BorderFactory.createTitledBorder(getLabel("Export.ExportFormat")));
+    panelType.setBorder(BorderFactory.createTitledBorder(getLabel(ResourceKey.EXPORT_EXPORTFORMAT)));
     add(panelType, "grow, wrap");
     final JPanel panelTable = new JPanel();
     panelTable.setLayout(new MigLayout("", "grow", "grow"));
@@ -252,7 +254,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
 
     if (rangements.isEmpty()) {
       Debug("ERROR: No place selected");
-      Erreur.showInformationMessage(getError("Error.NoStorageSelected"), getError("Error.SelectStorageToGenerate"));
+      Erreur.showInformationMessage(getError(ResourceErrorKey.ERROR_NOSTORAGESELECTED), getError(ResourceErrorKey.ERROR_SELECTSTORAGETOGENERATE));
       return;
     }
     long caisseCount = 0;
@@ -272,8 +274,8 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
       if (caisseCount > 0) {
         String erreur_txt1, erreur_txt2;
         if (caisseCount == 1) {
-          erreur_txt1 = getError("Error.SimpleStorageSelected");
-          erreur_txt2 = getErrorWithProperty("Error.ListOfItemsInStorageGenerated", LabelProperty.PLURAL);
+          erreur_txt1 = getError(ResourceErrorKey.ERROR_SIMPLESTORAGESELECTED);
+          erreur_txt2 = getErrorWithProperty(ResourceErrorKey.ERROR_LISTOFITEMSINSTORAGEGENERATED, LabelProperty.PLURAL);
         } else {
           erreur_txt1 = getError("Error127"); //"Vous avez selectionne des rangements de type Caisse
           erreur_txt2 = getErrorWithProperty("Error128", LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.
@@ -281,7 +283,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
         Erreur.showInformationMessageWithKey(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
       }
     }
-    end.setText(getLabel("CreateTable.FileGenerated"), true);
+    end.setText(getLabel(ResourceKey.CREATETABLE_FILEGENERATED), true);
     preview.setEnabled(true);
   }
 
@@ -329,7 +331,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     String val = Program.getCaveConfigString(key_properties.getFirst(), "1");
     List<String> default_value = List.of("0".equals(val) ? "true" : "false", "1".equals(val) ? "true" : "false", "2".equals(val) ? "true" : "false");
     List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
-    MyOptions myoptions = new MyOptions(getLabel("Export.Options"), getLabel("Export.SelectDefaultMode"), titre_properties, default_value, key_properties, type_objet, false);
+    MyOptions myoptions = new MyOptions(getLabel(ResourceKey.EXPORT_OPTIONS), getLabel(ResourceKey.EXPORT_SELECTDEFAULTMODE), titre_properties, default_value, key_properties, type_objet, false);
     myoptions.setVisible(true);
   }
 

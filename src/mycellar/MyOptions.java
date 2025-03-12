@@ -7,6 +7,7 @@ import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.frame.MainFrame;
+import mycellar.general.ResourceKey;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ButtonGroup;
@@ -14,13 +15,13 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
 
+import static javax.swing.SwingConstants.CENTER;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.CHAR_O;
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
@@ -35,8 +36,8 @@ import static mycellar.ProgramConstants.isVK_O;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 26/12/23
+ * @version 3.3
+ * @since 12/03/25
  */
 public final class MyOptions extends JDialog {
 
@@ -50,50 +51,50 @@ public final class MyOptions extends JDialog {
   private final int taille_value;
   private final String[] resul;
 
-  public MyOptions(String title, String message2, List<String> propriete, List<String> default_value, List<String> cle2, List<String> type_objet,
+  public MyOptions(String title, String information, List<String> resourceList, List<String> defaultValueList, List<String> cle2, List<String> type_objet,
                    boolean cancel) {
 
     super(MainFrame.getInstance(), "", true);
     cle = cle2;
-    taille_value = propriete.size();
+    taille_value = resourceList.size();
     resul = new String[taille_value];
     value = new JComponent[taille_value];
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setTitle(title);
-    MyCellarSimpleLabel textControl1 = new MyCellarSimpleLabel(title);
-    textControl1.setFont(FONT_DIALOG_BOLD);
-    textControl1.setForeground(Color.red);
-    textControl1.setText(title);
-    textControl1.setHorizontalAlignment(SwingConstants.CENTER);
-    MyCellarSimpleLabel definition2 = new MyCellarSimpleLabel(message2);
-    MyCellarButton valider = new MyCellarButton("Main.OK");
-    MyCellarButton annuler = new MyCellarButton("Main.Cancel");
-    definition2.setText(message2);
+    MyCellarSimpleLabel titleLabel = new MyCellarSimpleLabel(title);
+    titleLabel.setFont(FONT_DIALOG_BOLD);
+    titleLabel.setForeground(Color.red);
+    titleLabel.setText(title);
+    titleLabel.setHorizontalAlignment(CENTER);
+    MyCellarSimpleLabel informationLabel = new MyCellarSimpleLabel(information);
+    MyCellarButton valider = new MyCellarButton(ResourceKey.MAIN_OK);
+    MyCellarButton annuler = new MyCellarButton(ResourceKey.MAIN_CANCEL);
+    informationLabel.setText(information);
     MyCellarSimpleLabel textControl3 = new MyCellarSimpleLabel();
     textControl3.setForeground(Color.red);
-    textControl3.setHorizontalAlignment(SwingConstants.CENTER);
+    textControl3.setHorizontalAlignment(CENTER);
     valider.setMnemonic(CHAR_O);
 
     MyCellarSimpleLabel[] label_value = new MyCellarSimpleLabel[taille_value];
-    for (int i = 0; i < propriete.size(); i++) {
+    for (int i = 0; i < resourceList.size(); i++) {
       value[i] = null;
-      label_value[i] = new MyCellarSimpleLabel(propriete.get(i));
+      label_value[i] = new MyCellarSimpleLabel(resourceList.get(i));
       if (type_objet.get(i).equals(JTEXT_FIELD)) {
-        value[i] = new JTextField(default_value.get(i));
+        value[i] = new JTextField(defaultValueList.get(i));
       }
       if (type_objet.get(i).equals(MY_CELLAR_SPINNER)) {
         final MyCellarSpinner jspi = new MyCellarSpinner(0, 99999);
-        jspi.setValue(Integer.parseInt(default_value.get(i)));
+        jspi.setValue(Integer.parseInt(defaultValueList.get(i)));
         value[i] = jspi;
       }
       if (type_objet.get(i).equals(MY_CELLAR_CHECK_BOX)) {
-        boolean bool = default_value.get(i).equals("true");
-        value[i] = new MyCellarCheckBox(propriete.get(i), bool);
+        boolean bool = defaultValueList.get(i).equals("true");
+        value[i] = new MyCellarCheckBox(resourceList.get(i), bool);
         label_value[i] = new MyCellarSimpleLabel();
       }
       if (type_objet.get(i).equals(MY_CELLAR_RADIO_BUTTON)) {
-        boolean bool = default_value.get(i).equals("true");
-        value[i] = new MyCellarRadioButton(propriete.get(i), bool);
+        boolean bool = defaultValueList.get(i).equals("true");
+        value[i] = new MyCellarRadioButton(resourceList.get(i), bool);
         value[i].setEnabled(false);
         label_value[i] = new MyCellarSimpleLabel();
         if (i > 0) {
@@ -130,9 +131,9 @@ public final class MyOptions extends JDialog {
     });
 
     getContentPane().setLayout(new MigLayout("", "[grow][grow]", "[]15px[][]15px[]"));
-    getContentPane().add(textControl1, "center, grow, span 2, wrap");
+    getContentPane().add(titleLabel, "center, grow, span 2, wrap");
     getContentPane().add(new JLabel(), "span 2, wrap");
-    getContentPane().add(definition2, "span 2, wrap");
+    getContentPane().add(informationLabel, "span 2, wrap");
     for (int i = 0; i < taille_value; i++) {
       if (type_objet.get(i).equals(MY_CELLAR_LABEL)) {
         getContentPane().add(label_value[i], "wrap");

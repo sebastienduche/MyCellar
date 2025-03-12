@@ -116,7 +116,7 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  */
 
 public final class Program {
-
+  
   public static final SimplePlace DEFAULT_PLACE = new SimplePlaceBuilder("").setDefaultPlace(true).build();
   public static final SimplePlace EMPTY_PLACE = new SimplePlaceBuilder("").build();
 

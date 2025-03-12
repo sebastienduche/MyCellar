@@ -16,8 +16,10 @@ import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.general.ResourceErrorKey;
-import mycellar.general.ResourceKey;
 import mycellar.general.XmlUtils;
+import mycellar.myoptions.MyOptionKey;
+import mycellar.myoptions.MyOptionObjectType;
+import mycellar.myoptions.MyOptions;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.xls.XLSTabOptions;
@@ -47,10 +49,25 @@ import static java.util.Collections.singletonList;
 import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
+import static mycellar.core.MyCellarSettings.CREATE_TAB_DEFAULT;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTHTMLFILE;
+import static mycellar.general.ResourceKey.CREATETABLE_FILEGENERATED;
+import static mycellar.general.ResourceKey.CREATETABLE_SELECTSTORAGESTOGENERATE;
+import static mycellar.general.ResourceKey.CREER;
+import static mycellar.general.ResourceKey.EXPORT_EXPORTFORMAT;
+import static mycellar.general.ResourceKey.EXPORT_HTML;
+import static mycellar.general.ResourceKey.EXPORT_OPTIONS;
+import static mycellar.general.ResourceKey.EXPORT_SELECTDEFAULTMODE;
+import static mycellar.general.ResourceKey.EXPORT_XLS;
+import static mycellar.general.ResourceKey.EXPORT_XML;
+import static mycellar.general.ResourceKey.MAIN_CREATE;
+import static mycellar.general.ResourceKey.MAIN_OPENTHEFILE;
+import static mycellar.general.ResourceKey.MAIN_PARAMETERS;
+import static mycellar.general.ResourceKey.MAIN_SELECTALL;
+import static mycellar.general.ResourceKey.OUVRIR;
 
 /**
  * Titre : Cave &agrave; vin
@@ -64,15 +81,15 @@ import static mycellar.general.ResourceErrorKey.ERROR_NOTHTMLFILE;
  */
 public final class CreateTablePanel extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   private final JTextField name = new JTextField();
-  private final MyCellarRadioButton type_XML = new MyCellarRadioButton(ResourceKey.EXPORT_XML, false);
-  private final MyCellarRadioButton type_HTML = new MyCellarRadioButton(ResourceKey.EXPORT_HTML, true);
-  private final MyCellarRadioButton type_XLS = new MyCellarRadioButton(ResourceKey.EXPORT_XLS, false);
+  private final MyCellarRadioButton type_XML = new MyCellarRadioButton(EXPORT_XML, false);
+  private final MyCellarRadioButton type_HTML = new MyCellarRadioButton(EXPORT_HTML, true);
+  private final MyCellarRadioButton type_XLS = new MyCellarRadioButton(EXPORT_XLS, false);
   private final TableauValues tableauValues = new TableauValues();
   private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
-  private final MyCellarButton preview = new MyCellarButton(ResourceKey.MAIN_OPENTHEFILE);
-  private final char createChar = getLabel(ResourceKey.CREER).charAt(0);
-  private final char ouvrirChar = getLabel(ResourceKey.OUVRIR).charAt(0);
-  private final MyCellarCheckBox selectAll = new MyCellarCheckBox(ResourceKey.MAIN_SELECTALL);
+  private final MyCellarButton preview = new MyCellarButton(MAIN_OPENTHEFILE);
+  private final char createChar = getLabel(CREER).charAt(0);
+  private final char ouvrirChar = getLabel(OUVRIR).charAt(0);
+  private final MyCellarCheckBox selectAll = new MyCellarCheckBox(MAIN_SELECTALL);
   private final MyCellarButton m_jcb_options = new MyCellarButton("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
   private final JTable table;
   private boolean updateView;
@@ -80,14 +97,14 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
 
   public CreateTablePanel() {
     Debug("Constructor");
-    final MyCellarLabel fileLabel = new MyCellarLabel(ResourceKey.CREATETABLE_FILEGENERATED);
+    final MyCellarLabel fileLabel = new MyCellarLabel(CREATETABLE_FILEGENERATED);
     m_jcb_options.addActionListener(this::options_actionPerformed);
     final MyCellarButton browse = new MyCellarButton(OPEN);
     browse.addActionListener(this::browse_actionPerformed);
-    final MyCellarButton parameter = new MyCellarButton(ResourceKey.MAIN_PARAMETERS);
+    final MyCellarButton parameter = new MyCellarButton(MAIN_PARAMETERS);
     parameter.addActionListener(this::param_actionPerformed);
-    final MyCellarLabel chooseLabel = new MyCellarLabel(ResourceKey.CREATETABLE_SELECTSTORAGESTOGENERATE);
-    final MyCellarButton create = new MyCellarButton(ResourceKey.MAIN_CREATE);
+    final MyCellarLabel chooseLabel = new MyCellarLabel(CREATETABLE_SELECTSTORAGESTOGENERATE);
+    final MyCellarButton create = new MyCellarButton(MAIN_CREATE);
     create.setMnemonic(createChar);
 
     final ButtonGroup buttonGroup = new ButtonGroup();
@@ -129,7 +146,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     name.addMouseListener(new PopupListener());
 
     m_jcb_options.setEnabled(false);
-    switch (Program.getCaveConfigInt(MyCellarSettings.CREATE_TAB_DEFAULT, 1)) {
+    switch (Program.getCaveConfigInt(CREATE_TAB_DEFAULT, 1)) {
       case 0:
         type_XML.setSelected(true);
         break;
@@ -156,7 +173,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     panelType.add(type_HTML);
     panelType.add(type_XLS, "split 2");
     panelType.add(m_jcb_options, "push");
-    panelType.setBorder(BorderFactory.createTitledBorder(getLabel(ResourceKey.EXPORT_EXPORTFORMAT)));
+    panelType.setBorder(BorderFactory.createTitledBorder(getLabel(EXPORT_EXPORTFORMAT)));
     add(panelType, "grow, wrap");
     final JPanel panelTable = new JPanel();
     panelTable.setLayout(new MigLayout("", "grow", "grow"));
@@ -283,7 +300,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
         Erreur.showInformationMessageWithKey(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
       }
     }
-    end.setText(getLabel(ResourceKey.CREATETABLE_FILEGENERATED), true);
+    end.setText(getLabel(CREATETABLE_FILEGENERATED), true);
     preview.setEnabled(true);
   }
 
@@ -320,18 +337,23 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
 
   private void param_actionPerformed(ActionEvent e) {
     Debug("param_actionPerforming...");
-    List<String> titre_properties = List.of(
-        "Export.Xml",
-        "Export.Html",
-        "Export.Xls");
-    List<String> key_properties = List.of(
-        MyCellarSettings.CREATE_TAB_DEFAULT,
-        MyCellarSettings.CREATE_TAB_DEFAULT,
-        MyCellarSettings.CREATE_TAB_DEFAULT);
-    String val = Program.getCaveConfigString(key_properties.getFirst(), "1");
-    List<String> default_value = List.of("0".equals(val) ? "true" : "false", "1".equals(val) ? "true" : "false", "2".equals(val) ? "true" : "false");
-    List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
-    MyOptions myoptions = new MyOptions(getLabel(ResourceKey.EXPORT_OPTIONS), getLabel(ResourceKey.EXPORT_SELECTDEFAULTMODE), titre_properties, default_value, key_properties, type_objet, false);
+    String val = Program.getCaveConfigString(CREATE_TAB_DEFAULT, "1");
+    List<MyOptionKey> myOptionKeys = List.of(
+        new MyOptionKey(EXPORT_XML, "0".equals(val) ? "true" : "false", CREATE_TAB_DEFAULT, MyOptionObjectType.MY_CELLAR_RADIO_BUTTON),
+        new MyOptionKey(EXPORT_HTML, "1".equals(val) ? "true" : "false", CREATE_TAB_DEFAULT, MyOptionObjectType.MY_CELLAR_RADIO_BUTTON),
+        new MyOptionKey(EXPORT_XLS, "2".equals(val) ? "true" : "false", CREATE_TAB_DEFAULT, MyOptionObjectType.MY_CELLAR_RADIO_BUTTON)
+    );
+//    List<IResource> titre_properties = List.of(
+//        EXPORT_XML,
+//        EXPORT_HTML,
+//        EXPORT_XLS);
+//    List<String> key_properties = List.of(
+//        CREATE_TAB_DEFAULT,
+//        CREATE_TAB_DEFAULT,
+//        CREATE_TAB_DEFAULT);
+//    List<String> default_value = List.of("0".equals(val) ? "true" : "false", "1".equals(val) ? "true" : "false", "2".equals(val) ? "true" : "false");
+//    List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
+    MyOptions myoptions = new MyOptions(getLabel(EXPORT_OPTIONS), getLabel(EXPORT_SELECTDEFAULTMODE), myOptionKeys);
     myoptions.setVisible(true);
   }
 

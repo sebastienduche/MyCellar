@@ -25,6 +25,9 @@ import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.INFOS_STATS;
+import static mycellar.general.ResourceKey.MAIN_GLOBALVALUE;
+import static mycellar.general.ResourceKey.MAIN_NUMBEROFITEMS;
 
 /**
  * Titre : Cave &agrave; vin
@@ -33,8 +36,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 25/12/23
+ * @version 3.3
+ * @since 12/03/25
  */
 public final class PanelInfos extends JPanel {
 
@@ -73,8 +76,8 @@ public final class PanelInfos extends JPanel {
 
 final class PanelStats extends JPanel {
 
-  private final MyCellarLabel bottles = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
-  private final MyCellarLabel cellarValue = new MyCellarLabel("Main.GlobalValue");
+  private final MyCellarLabel bottles = new MyCellarLabel(MAIN_NUMBEROFITEMS, LabelProperty.PLURAL, "");
+  private final MyCellarLabel cellarValue = new MyCellarLabel(MAIN_GLOBALVALUE);
   private final MyCellarSimpleLabel bottlesNb = new MyCellarSimpleLabel();
   private final MyCellarSimpleLabel cellarTotal = new MyCellarSimpleLabel();
   private final PanelStatsModel model = new PanelStatsModel();
@@ -102,7 +105,7 @@ final class PanelStats extends JPanel {
     bottlesNb.setEnabled(false);
     cellarValue.setEnabled(false);
     cellarTotal.setEnabled(false);
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos.Stats")));
+    setBorder(BorderFactory.createTitledBorder(getLabel(INFOS_STATS)));
     setEnabled(false);
   }
 
@@ -124,7 +127,7 @@ final class PanelStats extends JPanel {
   }
 
   void setLabels() {
-    setBorder(BorderFactory.createTitledBorder(getLabel("Infos.Stats")));
+    setBorder(BorderFactory.createTitledBorder(getLabel(INFOS_STATS)));
     bottles.updateText();
     cellarValue.updateText();
     TableColumnModel tcm = table.getColumnModel();

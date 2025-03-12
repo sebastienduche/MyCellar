@@ -20,6 +20,8 @@ import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.frame.MainFrame;
 import mycellar.general.ResourceKey;
+import mycellar.myoptions.MyOptionKey;
+import mycellar.myoptions.MyOptions;
 import mycellar.pdf.PDFOptions;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.showfile.ManageColumnModel;
@@ -85,6 +87,7 @@ import static mycellar.general.ResourceKey.MAIN_OPENTHEFILE;
 import static mycellar.general.ResourceKey.MAIN_PARAMETERS;
 import static mycellar.general.ResourceKey.MAIN_SAVEDFILE;
 import static mycellar.general.ResourceKey.MAIN_SETTINGS;
+import static mycellar.myoptions.MyOptionObjectType.MY_CELLAR_RADIO_BUTTON;
 
 
 /**
@@ -478,19 +481,15 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      List<String> titre_properties = List.of(
-          "Export.Xml",
-          "Export.Html",
-          "Export.Csv",
-          "Export.Xls",
-          "Export.Pdf");
-      ArrayList<String> default_value = new ArrayList<>(List.of("false", "false", "false", "false", "false"));
-      List<String> key_properties = List.of(EXPORT_DEFAULT, EXPORT_DEFAULT,
-          EXPORT_DEFAULT, EXPORT_DEFAULT, EXPORT_DEFAULT);
-      default_value.set(Program.getCaveConfigInt(key_properties.get(0), 0), "true");
-
-      List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
-      MyOptions myoptions = new MyOptions(getLabel(EXPORT_OPTIONS), getLabel(EXPORT_SELECTDEFAULTMODE), titre_properties, default_value, key_properties, type_objet, false);
+      String val = Program.getCaveConfigString(EXPORT_DEFAULT, "0");
+      List<MyOptionKey> optionKeys = List.of(
+          new MyOptionKey(EXPORT_XML, "0".equals(val) ? "true" : "false", EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
+          new MyOptionKey(EXPORT_HTML, "1".equals(val) ? "true" : "false", EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
+          new MyOptionKey(EXPORT_CSV, "2".equals(val) ? "true" : "false", EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
+          new MyOptionKey(EXPORT_XLS, "3".equals(val) ? "true" : "false", EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
+          new MyOptionKey(EXPORT_PDF, "4".equals(val) ? "true" : "false", EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON)
+      );
+      MyOptions myoptions = new MyOptions(getLabel(EXPORT_OPTIONS), getLabel(EXPORT_SELECTDEFAULTMODE), optionKeys);
       myoptions.setVisible(true);
     }
   }

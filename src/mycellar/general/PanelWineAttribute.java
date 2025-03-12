@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.Serial;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 
@@ -29,6 +30,15 @@ import static mycellar.ProgramConstants.CHAR_COMMA;
 import static mycellar.ProgramConstants.CHAR_DOT;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.ADDVIN_COLOR;
+import static mycellar.general.ResourceKey.ADDVIN_NBITEMSTOADD;
+import static mycellar.general.ResourceKey.ADDVIN_STILLNTOADD;
+import static mycellar.general.ResourceKey.MAIN_MATURITY;
+import static mycellar.general.ResourceKey.MAIN_NUMBEROFITEMS;
+import static mycellar.general.ResourceKey.MAIN_PRICE;
+import static mycellar.general.ResourceKey.MAIN_RATING;
+import static mycellar.general.ResourceKey.MYCELLARMANAGEBOTTLES_LASTMODIFIED;
+import static mycellar.general.ResourceKey.MYCELLARMANAGEBOTTLES_STATUS;
 
 /**
  * Titre : Cave &agrave; vin
@@ -37,10 +47,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 25/05/22
+ * @version 1.4
+ * @since 12/03/25
  */
 public final class PanelWineAttribute extends JPanel {
+  @Serial
   private static final long serialVersionUID = 183053076444982489L;
 
   private final MyCellarSimpleLabel labelStillToAdd = new MyCellarSimpleLabel();
@@ -67,20 +78,20 @@ public final class PanelWineAttribute extends JPanel {
     statusList.addItem(BottlesStatus.TOCHECK);
 
     setLayout(new MigLayout("", "[]30px[]30px[]", ""));
-    add(new MyCellarLabel("Main.Maturity"));
-    add(new MyCellarLabel("Main.Rating"));
-    add(new MyCellarLabel("AddVin.Color"), "wrap");
+    add(new MyCellarLabel(MAIN_MATURITY));
+    add(new MyCellarLabel(MAIN_RATING));
+    add(new MyCellarLabel(ADDVIN_COLOR), "wrap");
     add(maturity, "width min(200,40%)");
     add(parker, "width min(150,30%)");
     add(colorList, "wrap, width min(150,30%)");
-    add(new MyCellarLabel("Main.Price"), "wrap");
+    add(new MyCellarLabel(MAIN_PRICE), "wrap");
     add(price, "width min(100,45%), split 2");
     add(new MyCellarSimpleLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, EURO)), "gapleft 5px");
-    add(new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, ""), "split, span 2");
+    add(new MyCellarLabel(MAIN_NUMBEROFITEMS, LabelProperty.PLURAL, ""), "split, span 2");
     add(nbItems, "width min(50,10%)");
     add(labelStillToAdd, "wrap");
-    add(new MyCellarLabel("MyCellarManageBottles.Status"));
-    add(new MyCellarLabel("MyCellarManageBottles.LastModified"), "wrap");
+    add(new MyCellarLabel(MYCELLARMANAGEBOTTLES_STATUS));
+    add(new MyCellarLabel(MYCELLARMANAGEBOTTLES_LASTMODIFIED), "wrap");
     add(statusList, "width min(150,30%)");
     add(lastModified);
     setModificationDetectionActive(true);
@@ -129,7 +140,7 @@ public final class PanelWineAttribute extends JPanel {
   }
 
   public void initValues() {
-    nbItems.setToolTipText(getLabelWithProperty("AddVin.NbItemsToAdd", LabelProperty.PLURAL));
+    nbItems.setToolTipText(getLabelWithProperty(ADDVIN_NBITEMSTOADD, LabelProperty.PLURAL));
     nbItems.setValue(1);
     labelStillToAdd.setForeground(Color.red);
     nbItems.addChangeListener((e) -> {
@@ -286,7 +297,7 @@ public final class PanelWineAttribute extends JPanel {
 
   public void setStillNbItems(int count) {
     nbItems.setValue(count);
-    labelStillToAdd.setText(MessageFormat.format(getLabelWithProperty("AddVin.StillNtoAdd", new LabelProperty(count > 1)), count));
+    labelStillToAdd.setText(MessageFormat.format(getLabelWithProperty(ADDVIN_STILLNTOADD, new LabelProperty(count > 1)), count));
   }
 
   public void seNbItemsEnabled(boolean b) {

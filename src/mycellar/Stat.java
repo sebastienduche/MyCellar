@@ -65,6 +65,10 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelForType;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceKey.MAIN_NAME;
 import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
+import static mycellar.general.ResourceKey.STATS_1SHELVE;
+import static mycellar.general.ResourceKey.STATS_NSHELVES;
+import static mycellar.general.ResourceKey.STATS_SHELVENUMBER;
+import static mycellar.general.ResourceKey.STATS_TOTALITEMS;
 
 
 /**
@@ -74,8 +78,8 @@ import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.6
- * @since 08/03/25
+ * @version 10.7
+ * @since 12/03/25
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -462,9 +466,9 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     final int nbCaseUseAll = abstractPlace.getTotalCountCellUsed();
     final MyCellarLabel list_num_empl;
     if (partCount == 1) {
-      list_num_empl = new MyCellarLabel("Stats.1Shelve");
+      list_num_empl = new MyCellarLabel(STATS_1SHELVE);
     } else {
-      list_num_empl = new MyCellarLabel("Stats.NShelves", LabelProperty.SINGLE, Integer.toString(partCount));
+      list_num_empl = new MyCellarLabel(STATS_NSHELVES, LabelProperty.SINGLE, Integer.toString(partCount));
     }
     panel.add(list_num_empl);
     panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll)), "span 2, align right, wrap");
@@ -488,12 +492,12 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       displayPlace(abstractPlace);
     }
     moy.setText("");
-    end.setText(MessageFormat.format(getLabelWithProperty("Stats.TotalItems", new LabelProperty(countItems > 1)), countItems));
+    end.setText(MessageFormat.format(getLabelWithProperty(STATS_TOTALITEMS, new LabelProperty(countItems > 1)), countItems));
   }
 
   private void displayNbBottlePlace(AbstractPlace abstractPlace) {
     for (int j = 0; j < abstractPlace.getPartCount(); j++) {
-      panel.add(new MyCellarLabel("Stats.ShelveNumber", LabelProperty.SINGLE, Integer.toString(j + 1)));
+      panel.add(new MyCellarLabel(STATS_SHELVENUMBER, LabelProperty.SINGLE, Integer.toString(j + 1)));
       panel.add(new MyCellarLabel(MAIN_SEVERALITEMS, new LabelProperty(abstractPlace.getTotalCountCellUsed() > 1), Integer.toString(abstractPlace.getCountCellUsed(j))), "span 2, align right, wrap");
     }
   }

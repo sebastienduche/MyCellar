@@ -82,16 +82,34 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_1ITEMSELECTED;
 import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_CANTMODIFYSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_CONFIRM1DELETE;
+import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMNDELETE;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUEABOVEZERO;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
 import static mycellar.general.ResourceErrorKey.ERROR_NITEMSSELECTED;
 import static mycellar.general.ResourceErrorKey.ERROR_NOITEMTODELETE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOITEMTOMODIFY;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTENOUGHSPACESTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_PLEASESELECT;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTITEMTOMODIFY;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
+import static mycellar.general.ResourceErrorKey.SHOWFILE_INEXISTINGBOTTLE;
 import static mycellar.general.ResourceKey.BOUTEILLE_TEMPORARYPLACE;
+import static mycellar.general.ResourceKey.HISTORY_TOCHECK;
+import static mycellar.general.ResourceKey.HISTORY_VALIDATED;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
+import static mycellar.general.ResourceKey.MAIN_CHOOSECELL;
+import static mycellar.general.ResourceKey.MAIN_CHOOSEDURATION;
+import static mycellar.general.ResourceKey.MAIN_COLUMNS;
+import static mycellar.general.ResourceKey.MAIN_MODIFY;
+import static mycellar.general.ResourceKey.MAIN_NUMBEROFITEMS;
+import static mycellar.general.ResourceKey.SHOWFILE_MORE;
 import static mycellar.general.ResourceKey.SHOWFILE_NOBOTTLETORESTORE;
+import static mycellar.general.ResourceKey.SHOWFILE_RESTOREONE;
 import static mycellar.general.ResourceKey.SHOWFILE_RESTORESEVERAL;
+import static mycellar.general.ResourceKey.SHOWFILE_SELECTTORESTORE;
+import static mycellar.general.ResourceKey.SHOWFILE_STATUS;
+import static mycellar.general.ResourceKey.SHOWFILE_VALID;
 
 /**
  * Titre : Cave &agrave; vin
@@ -100,16 +118,16 @@ import static mycellar.general.ResourceKey.SHOWFILE_RESTORESEVERAL;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 08/03/25
+ * @version 0.5
+ * @since 12/03/25
  */
 
 public abstract class AbstractShowFilePanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
   final MyCellarSimpleLabel titleLabel = new MyCellarSimpleLabel();
-  final MyCellarLabel labelCount = new MyCellarLabel("Main.NumberOfItems", LabelProperty.PLURAL, "");
+  final MyCellarLabel labelCount = new MyCellarLabel(MAIN_NUMBEROFITEMS, LabelProperty.PLURAL, "");
   final MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
-  final MyCellarButton modifyButton = new MyCellarButton("Main.Modify", new ModifyBottlesAction());
+  final MyCellarButton modifyButton = new MyCellarButton(MAIN_MODIFY, new ModifyBottlesAction());
   final MyCellarComboBox<AbstractPlace> placeCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottleColor> colorCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<MusicSupport> musicSupportCbx = new MyCellarComboBox<>();
@@ -376,7 +394,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
           Music music = (Music) b;
           PanelDuration panelDuration = new PanelDuration(DurationConverter.getTimeFromDisplay((String) getDisplayValue(music)));
           if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), panelDuration,
-              getLabel("Main.ChooseDuration"), JOptionPane.OK_CANCEL_OPTION,
+              getLabel(MAIN_CHOOSEDURATION), JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.PLAIN_MESSAGE)) {
             b.setModified();
             Program.setModified();
@@ -525,7 +543,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         }
       });
     }
-    modifyButtonColumn = new ShowFileColumn<>(100, true, getLabel("ShowFile.More")) {
+    modifyButtonColumn = new ShowFileColumn<>(100, true, getLabel(SHOWFILE_MORE)) {
       @Override
       void setValue(MyCellarObject b, Object value) {
       }
@@ -539,7 +557,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       public boolean execute(MyCellarObject myCellarObject, int row, int column) {
         if (Program.isNotExistingMyCellarObject(myCellarObject)) {
           Debug("Object " + myCellarObject.getNom() + " [" + myCellarObject.getId() + "] doesn't exist");
-          Erreur.showSimpleErreur(MessageFormat.format(getErrorWithProperty("ShowFile.InexistingBottle", LabelProperty.THE_SINGLE), myCellarObject.getNom()));
+          Erreur.showSimpleErreur(MessageFormat.format(getErrorWithProperty(SHOWFILE_INEXISTINGBOTTLE, LabelProperty.THE_SINGLE), myCellarObject.getNom()));
           return false;
         }
         ProgramPanels.showBottle(myCellarObject, true);
@@ -547,7 +565,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       }
     };
     columns.add(modifyButtonColumn);
-    checkedButtonColumn = new ShowFileColumn<>(100, true, false, getLabel("ShowFile.Valid"), null) {
+    checkedButtonColumn = new ShowFileColumn<>(100, true, false, getLabel(SHOWFILE_VALID), null) {
       @Override
       void setValue(MyCellarObject b, State value) {
         setMapValue(b, value);
@@ -571,7 +589,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
 
       @Override
       public String getColumnName() {
-        return getLabel("ShowFile.Status");
+        return getLabel(SHOWFILE_STATUS);
       }
     };
     if (worksheet) {
@@ -638,15 +656,15 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       List<MyCellarObject> toDeleteList = getSelectedMyCellarObjects();
 
       if (toDeleteList.isEmpty()) {
-        Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOITEMTODELETE, LabelProperty.SINGLE), getErrorWithProperty("Error.pleaseSelect", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOITEMTODELETE, LabelProperty.SINGLE), getErrorWithProperty(ERROR_PLEASESELECT, LabelProperty.THE_PLURAL));
       } else {
         String erreur_txt1, erreur_txt2;
         if (toDeleteList.size() == 1) {
           erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
-          erreur_txt2 = getError("Error.Confirm1Delete");
+          erreur_txt2 = getError(ERROR_CONFIRM1DELETE);
         } else {
           erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL), toDeleteList.size());
-          erreur_txt2 = getError("Error.confirmNDelete");
+          erreur_txt2 = getError(ERROR_CONFIRMNDELETE);
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           for (MyCellarObject b : toDeleteList) {
@@ -694,12 +712,12 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     final List<MyCellarObject> toRestoreList = getSelectedMyCellarObjects();
 
     if (toRestoreList.isEmpty()) {
-      Erreur.showInformationMessage(getLabelWithProperty(SHOWFILE_NOBOTTLETORESTORE, LabelProperty.SINGLE), getLabelWithProperty("ShowFile.SelectToRestore", LabelProperty.THE_PLURAL));
+      Erreur.showInformationMessage(getLabelWithProperty(SHOWFILE_NOBOTTLETORESTORE, LabelProperty.SINGLE), getLabelWithProperty(SHOWFILE_SELECTTORESTORE, LabelProperty.THE_PLURAL));
     } else {
       String erreur_txt1, erreur_txt2;
       if (toRestoreList.size() == 1) {
         erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
-        erreur_txt2 = getLabel("ShowFile.RestoreOne");
+        erreur_txt2 = getLabel(SHOWFILE_RESTOREONE);
       } else {
         erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL), toRestoreList.size());
         erreur_txt2 = getLabel(SHOWFILE_RESTORESEVERAL);
@@ -773,7 +791,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       if (!abstractPlace.isSimplePlace()) {
         final PanelPlacePosition panelPlace = new PanelPlacePosition(abstractPlace, true, false, true, true, false, true, false);
         JOptionPane.showMessageDialog(MainFrame.getInstance(), panelPlace,
-            getLabel("Main.ChooseCell"),
+            getLabel(MAIN_CHOOSECELL),
             JOptionPane.PLAIN_MESSAGE);
         place = panelPlace.getSelectedPlacePosition();
         if (place.hasPlace()) {
@@ -1030,7 +1048,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       tc.setMinWidth(25);
       tc.setMaxWidth(25);
       panel.add(new JScrollPane(jTable));
-      JOptionPane.showMessageDialog(MainFrame.getInstance(), panel, getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
+      JOptionPane.showMessageDialog(MainFrame.getInstance(), panel, getLabel(MAIN_COLUMNS), JOptionPane.PLAIN_MESSAGE);
       List<Integer> properties = modelColumn.getSelectedColumns();
       if (!properties.isEmpty()) {
         cols = new ArrayList<>();
@@ -1080,7 +1098,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     public void actionPerformed(ActionEvent e) {
       List<MyCellarObject> selectedObjects = getSelectedMyCellarObjects();
       if (selectedObjects.isEmpty()) {
-        Erreur.showInformationMessage(getErrorWithProperty("Error.NoItemToModify", LabelProperty.SINGLE), getErrorWithProperty("Error.SelectItemToModify", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOITEMTOMODIFY, LabelProperty.SINGLE), getErrorWithProperty(ERROR_SELECTITEMTOMODIFY, LabelProperty.THE_PLURAL));
         return;
       }
 
@@ -1089,7 +1107,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       for (MyCellarObject bottle : selectedObjects) {
         if (Program.isNotExistingMyCellarObject(bottle)) {
           Debug("Object " + bottle.getNom() + " [" + bottle.getId() + "] doesn't exist");
-          Erreur.showSimpleErreur(MessageFormat.format(getErrorWithProperty("ShowFile.InexistingBottle", LabelProperty.THE_SINGLE), bottle.getNom()));
+          Erreur.showSimpleErreur(MessageFormat.format(getErrorWithProperty(SHOWFILE_INEXISTINGBOTTLE, LabelProperty.THE_SINGLE), bottle.getNom()));
         } else {
           existingObjects.add(bottle);
         }
@@ -1101,8 +1119,8 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
   private enum State implements IMyCellarEnum {
 
     NONE(0, ""),
-    VALIDATED(1, getLabel("History.Validated")),
-    TO_CHECK(2, getLabel("History.ToCheck"));
+    VALIDATED(1, getLabel(HISTORY_VALIDATED)),
+    TO_CHECK(2, getLabel(HISTORY_TOCHECK));
 
     private final int index;
     private final String label;

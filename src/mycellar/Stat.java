@@ -13,6 +13,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
+import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.Part;
@@ -78,13 +79,13 @@ import static mycellar.general.ResourceKey.STATS_TOTALITEMS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.7
- * @since 12/03/25
+ * @version 10.8
+ * @since 13/03/25
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
   private static final int PRICE_BRACKET_DEFAULT = 50;
-  private final MyCellarLabel comboLabel = new MyCellarLabel("Main.Storage", LabelProperty.SINGLE.withDoubleQuote());
+  private final MyCellarLabel comboLabel = new MyCellarLabel(ResourceKey.MAIN_STORAGE, LabelProperty.SINGLE.withDoubleQuote(), "");
   private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   private final MyCellarSimpleLabel moy = new MyCellarSimpleLabel();
   private final MyCellarComboBox<StatsEnum> listStatsType = new MyCellarComboBox<>();
@@ -94,7 +95,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   private final JScrollPane scroll;
   private final PanelChart panelChart = new PanelChart();
   private final JPanel panelOther = new JPanel();
-  private final MyCellarButton options = new MyCellarButton("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
+  private final MyCellarButton options = new MyCellarButton(ResourceKey.MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes());
   private final List<StatData> listPrice = new LinkedList<>();
   private final List<StatData> listYear = new LinkedList<>();
   private final List<StatData> listHistory = new LinkedList<>();

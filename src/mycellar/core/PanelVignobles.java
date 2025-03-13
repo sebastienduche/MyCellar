@@ -31,6 +31,12 @@ import static mycellar.Program.NO_COUNTRY;
 import static mycellar.Program.NO_VIGNOBLE;
 import static mycellar.ProgramConstants.FR;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_APPELLATIONAOC;
+import static mycellar.general.ResourceKey.MAIN_APPELLATIONIGP;
+import static mycellar.general.ResourceKey.MAIN_COUNTRY;
+import static mycellar.general.ResourceKey.MAIN_VINEYARD;
+import static mycellar.general.ResourceKey.MAIN_VINEYARDMANAGEMENT;
+import static mycellar.general.ResourceKey.PANELVIGNOBLES_KEEPVALUES;
 
 /**
  * Titre : Cave &agrave; vin
@@ -39,8 +45,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 31/12/23
+ * @version 2.1
+ * @since 13/03/25
  */
 public final class PanelVignobles extends JPanel {
 
@@ -52,10 +58,10 @@ public final class PanelVignobles extends JPanel {
 
   public PanelVignobles(boolean modifyActive, boolean manageButton, boolean editable) {
 
-    MyCellarLabel labelCountry = new MyCellarLabel("Main.Country");
-    MyCellarLabel labelVignoble = new MyCellarLabel("Main.Vineyard");
-    MyCellarLabel labelAppellationAOC = new MyCellarLabel("Main.AppellationAOC");
-    MyCellarLabel labelAppellationIGP = new MyCellarLabel("Main.AppellationIGP");
+    MyCellarLabel labelCountry = new MyCellarLabel(MAIN_COUNTRY);
+    MyCellarLabel labelVignoble = new MyCellarLabel(MAIN_VINEYARD);
+    MyCellarLabel labelAppellationAOC = new MyCellarLabel(MAIN_APPELLATIONAOC);
+    MyCellarLabel labelAppellationIGP = new MyCellarLabel(MAIN_APPELLATIONIGP);
     setLayout(new MigLayout("", "[grow][grow]", ""));
     comboCountry = new JCompletionComboBox<>() {
       @Override
@@ -101,7 +107,7 @@ public final class PanelVignobles extends JPanel {
     comboCountry.setCaseSensitive(false);
     comboAppellationAOC.setCaseSensitive(false);
 
-    keepPreviousVignoble = new MyCellarCheckBox("PanelVignobles.keepValues", true);
+    keepPreviousVignoble = new MyCellarCheckBox(PANELVIGNOBLES_KEEPVALUES, true);
 
     comboAppellationIGP.setEditable(editable);
     comboVignoble.setEditable(editable);
@@ -163,7 +169,7 @@ public final class PanelVignobles extends JPanel {
       }
     });
 
-    MyCellarButton manageVineyardButton = new MyCellarButton("Main.VineyardManagement", new ManageVineyardAction());
+    MyCellarButton manageVineyardButton = new MyCellarButton(MAIN_VINEYARDMANAGEMENT, new ManageVineyardAction());
     manageVineyardButton.setVisible(manageButton);
     keepPreviousVignoble.setVisible(manageButton);
     add(keepPreviousVignoble, "wrap");
@@ -178,7 +184,7 @@ public final class PanelVignobles extends JPanel {
     add(comboAppellationAOC, "w 200:200:, growx");
     add(comboAppellationIGP, "w 200:200:");
 
-    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel("Main.Vineyard")));
+    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel(MAIN_VINEYARD)));
   }
 
   public void updateList() {

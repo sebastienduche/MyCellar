@@ -84,19 +84,40 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_1ITEMSELECTED;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRM1DELETE;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMNDELETE;
+import static mycellar.general.ResourceErrorKey.ERROR_DONTADDTWICE;
 import static mycellar.general.ResourceErrorKey.ERROR_NITEMSSELECTED;
+import static mycellar.general.ResourceErrorKey.ERROR_NOITEMFOUND;
 import static mycellar.general.ResourceErrorKey.ERROR_NOITEMTODELETE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOITEMTOMODIFY;
+import static mycellar.general.ResourceErrorKey.ERROR_NOWINESELECTED;
+import static mycellar.general.ResourceErrorKey.ERROR_PLEASESELECT;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTITEMTOMODIFY;
 import static mycellar.general.ResourceKey.EXPORT_EXPORTFORMAT;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
+import static mycellar.general.ResourceKey.MAIN_MODIFY;
 import static mycellar.general.ResourceKey.MAIN_NV;
 import static mycellar.general.ResourceKey.MAIN_OTHER;
+import static mycellar.general.ResourceKey.MAIN_SEARCH;
+import static mycellar.general.ResourceKey.MAIN_SELECTALL;
 import static mycellar.general.ResourceKey.MODIF;
 import static mycellar.general.ResourceKey.RECHERCHE;
+import static mycellar.general.ResourceKey.SEARCH_1ITEMDELETED;
+import static mycellar.general.ResourceKey.SEARCH_ADDWORKSHEET;
+import static mycellar.general.ResourceKey.SEARCH_ADVANCEDSEARCH;
+import static mycellar.general.ResourceKey.SEARCH_BOTTLEFOUND;
+import static mycellar.general.ResourceKey.SEARCH_BYNAME;
+import static mycellar.general.ResourceKey.SEARCH_BYSTORAGE;
+import static mycellar.general.ResourceKey.SEARCH_BYYEAR;
+import static mycellar.general.ResourceKey.SEARCH_CLEAR;
+import static mycellar.general.ResourceKey.SEARCH_CLEARALL;
 import static mycellar.general.ResourceKey.SEARCH_COMPLETED;
+import static mycellar.general.ResourceKey.SEARCH_EXPORT;
 import static mycellar.general.ResourceKey.SEARCH_FAILED;
 import static mycellar.general.ResourceKey.SEARCH_INPROGRESS;
 import static mycellar.general.ResourceKey.SEARCH_NAME;
+import static mycellar.general.ResourceKey.SEARCH_NITEMDELETED;
+import static mycellar.general.ResourceKey.SEARCH_SELECTROWS;
 import static mycellar.general.ResourceKey.SEARCH_YEAR;
 import static mycellar.general.ResourceKey.SUPPR;
 
@@ -107,30 +128,30 @@ import static mycellar.general.ResourceKey.SUPPR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.8
- * @since 08/03/25
+ * @version 24.9
+ * @since 13/03/25
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
   @Serial
   private static final long serialVersionUID = 8497660112193602839L;
   private final SearchTableModel searchTableModel = new SearchTableModel();
-  private final MyCellarLabel objectFoundCountLabels = new MyCellarLabel("Search.bottleFound", LabelProperty.PLURAL.withCapital());
+  private final MyCellarLabel objectFoundCountLabels = new MyCellarLabel(SEARCH_BOTTLEFOUND, LabelProperty.PLURAL.withCapital(), "");
   private final MyCellarSimpleLabel countLabel = new MyCellarSimpleLabel(DASH);
   private final MyCellarButton deleteButton = new MyCellarButton(MAIN_DELETE, DELETE);
-  private final MyCellarButton exportButton = new MyCellarButton("Search.Export", EXPORT);
-  private final MyCellarButton modifyButton = new MyCellarButton("Main.Modify", WINE);
+  private final MyCellarButton exportButton = new MyCellarButton(SEARCH_EXPORT, EXPORT);
+  private final MyCellarButton modifyButton = new MyCellarButton(MAIN_MODIFY, WINE);
   private final MyCellarComboBox<String> year = new MyCellarComboBox<>();
-  private final MyCellarButton searchButton = new MyCellarButton("Main.Search", SEARCH);
-  private final MyCellarButton emptyRowsButton = new MyCellarButton("Search.Clear");
+  private final MyCellarButton searchButton = new MyCellarButton(MAIN_SEARCH, SEARCH);
+  private final MyCellarButton emptyRowsButton = new MyCellarButton(SEARCH_CLEAR);
   private final char searchKey = getLabel(RECHERCHE).charAt(0);
   private final char modificationKey = getLabel(MODIF).charAt(0);
   private final char deleteKey = getLabel(SUPPR).charAt(0);
   private final char exportKey = getLabel(ResourceKey.EXPORT).charAt(0);
   private final MyCellarSimpleLabel resultInfoLabel = new MyCellarSimpleLabel();
-  private final MyCellarCheckBox selectAllCheck = new MyCellarCheckBox("Main.SelectAll");
-  private final MyCellarButton addToWorksheetButton = new MyCellarButton("Search.AddWorksheet", WORK);
-  private final MyCellarCheckBox emptySearchCheck = new MyCellarCheckBox("Search.ClearAll");
+  private final MyCellarCheckBox selectAllCheck = new MyCellarCheckBox(MAIN_SELECTALL);
+  private final MyCellarButton addToWorksheetButton = new MyCellarButton(SEARCH_ADDWORKSHEET, WORK);
+  private final MyCellarCheckBox emptySearchCheck = new MyCellarCheckBox(SEARCH_CLEARALL);
   private final MouseListener popupListener = new PopupListener();
   private final JTabbedPane tabbedPane = new JTabbedPane();
   private final PanelYear panelYear = new PanelYear();
@@ -237,17 +258,17 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
 
       setLayout(new MigLayout("", "[grow][]", "[]10px[][grow][]"));
 
-      tabbedPane.add(getLabel("Search.ByName"), new PanelName());
-      tabbedPane.add(getLabel("Search.ByStorage"), panelPlace);
-      tabbedPane.add(getLabel("Search.ByYear"), panelYear);
-      tabbedPane.add(getLabel("Search.AdvancedSearch"), panelRequest);
+      tabbedPane.add(getLabel(SEARCH_BYNAME), new PanelName());
+      tabbedPane.add(getLabel(SEARCH_BYSTORAGE), panelPlace);
+      tabbedPane.add(getLabel(SEARCH_BYYEAR), panelYear);
+      tabbedPane.add(getLabel(SEARCH_ADVANCEDSEARCH), panelRequest);
 
       add(tabbedPane, "growx");
       add(new PanelOption(), "wrap");
       add(scrollPane, "grow, wrap, span 2");
       add(addToWorksheetButton, "alignx left, aligny top");
       add(selectAllCheck, "wrap, alignx right, aligny top");
-      add(new MyCellarLabel("Search.SelectRows", LabelProperty.SINGLE), "wrap, span 2, alignx center");
+      add(new MyCellarLabel(SEARCH_SELECTROWS, LabelProperty.SINGLE, ""), "wrap, span 2, alignx center");
       add(resultInfoLabel, "wrap, span 2, alignx center");
       add(modifyButton, "split, span 2, align center");
       add(deleteButton, "wrap");
@@ -288,7 +309,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (listToDelete.isEmpty()) {
         // No objet to delete / Select...
         Debug("ERROR: No bottle to delete!");
-        Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOITEMTODELETE, LabelProperty.SINGLE), getErrorWithProperty("Error.pleaseSelect", LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOITEMTODELETE, LabelProperty.SINGLE), getErrorWithProperty(ERROR_PLEASESELECT, LabelProperty.THE_PLURAL));
         return;
       }
       String erreur_txt1;
@@ -319,9 +340,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           ProgramPanels.updateCellOrganizerPanel(false);
 
           if (listToDelete.size() == 1) {
-            resultInfoLabel.setText(getLabelWithProperty("Search.1ItemDeleted", LabelProperty.SINGLE));
+            resultInfoLabel.setText(getLabelWithProperty(SEARCH_1ITEMDELETED, LabelProperty.SINGLE));
           } else {
-            resultInfoLabel.setText(MessageFormat.format(getLabelWithProperty("Search.NItemDeleted", LabelProperty.PLURAL), listToDelete.size()));
+            resultInfoLabel.setText(MessageFormat.format(getLabelWithProperty(SEARCH_NITEMDELETED, LabelProperty.PLURAL), listToDelete.size()));
           }
         });
       }
@@ -435,7 +456,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         final List<MyCellarObject> listToModify = searchTableModel.getSelectedObjects();
 
         if (listToModify.isEmpty()) {
-          Erreur.showInformationMessage(getErrorWithProperty("Error.NoItemToModify", LabelProperty.SINGLE), getErrorWithProperty("Error.SelectItemToModify", LabelProperty.THE_PLURAL));
+          Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOITEMTOMODIFY, LabelProperty.SINGLE), getErrorWithProperty(ERROR_SELECTITEMTOMODIFY, LabelProperty.THE_PLURAL));
         } else {
           Debug("Modifying " + listToModify.size() + " object(s)...");
           Program.modifyBottles(listToModify);
@@ -481,7 +502,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     updateLabelObjectNumber(true);
     if (alreadyFoundItems) {
       if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false)) {
-        Erreur.showInformationMessageWithKey(getErrorWithProperty("Error.DontAddTwice", LabelProperty.A_SINGLE), MyCellarSettings.DONT_SHOW_INFO);
+        Erreur.showInformationMessageWithKey(getErrorWithProperty(ERROR_DONTADDTWICE, LabelProperty.A_SINGLE), MyCellarSettings.DONT_SHOW_INFO);
       }
     }
     alreadyFoundItems = false;
@@ -548,7 +569,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     } else {
       countLabel.setText(DASH);
     }
-    objectFoundCountLabels.setText(getLabelWithProperty("Search.bottleFound", new LabelProperty(searchTableModel.getRowCount() > 1).withCapital()));
+    objectFoundCountLabels.setText(getLabelWithProperty(SEARCH_BOTTLEFOUND, new LabelProperty(searchTableModel.getRowCount() > 1).withCapital()));
   }
 
   private void searchByPlace() {
@@ -582,7 +603,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         searchTableModel.removeAll();
         updateLabelObjectNumber(true);
         resultInfoLabel.setText(getLabel(SEARCH_FAILED));
-        Erreur.showSimpleErreur(getErrorWithProperty("Error.NoItemFound", LabelProperty.SINGLE)); //Aucun objet trouve
+        Erreur.showSimpleErreur(getErrorWithProperty(ERROR_NOITEMFOUND, LabelProperty.SINGLE)); //Aucun objet trouve
         modifyButton.setEnabled(false);
         deleteButton.setEnabled(false);
       } else {
@@ -775,7 +796,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     final List<MyCellarObject> list = searchTableModel.getSelectedObjects();
 
     if (list.isEmpty()) {
-      Erreur.showInformationMessage(getErrorWithProperty("Error.NoWineSelected", LabelProperty.SINGLE));
+      Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOWINESELECTED, LabelProperty.SINGLE));
       return;
     }
     new OpenWorkSheetAction(list).actionPerformed(null);

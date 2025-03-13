@@ -5,15 +5,12 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.general.ResourceKey;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;

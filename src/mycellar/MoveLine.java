@@ -12,8 +12,6 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
-import mycellar.general.ResourceErrorKey;
-import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.PlacePosition;

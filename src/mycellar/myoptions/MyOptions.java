@@ -33,6 +33,7 @@ import static mycellar.ProgramConstants.isVK_ENTER;
 import static mycellar.ProgramConstants.isVK_O;
 import static mycellar.general.ResourceKey.MAIN_CANCEL;
 import static mycellar.general.ResourceKey.MAIN_OK;
+import static mycellar.myoptions.MyOptionObjectType.MY_CELLAR_LABEL;
 
 
 /**
@@ -42,27 +43,17 @@ import static mycellar.general.ResourceKey.MAIN_OK;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 12/03/25
+ * @version 3.4
+ * @since 13/03/25
  */
 public final class MyOptions extends JDialog {
 
-  @Deprecated
-  public static final String JTEXT_FIELD = "JTextField";
-  @Deprecated
-  public static final String MY_CELLAR_SPINNER = "MyCellarSpinner";
-  @Deprecated
-  public static final String MY_CELLAR_CHECK_BOX = "MyCellarCheckBox";
-  @Deprecated
-  public static final String MY_CELLAR_RADIO_BUTTON = "MyCellarRadioButton";
-  @Deprecated
-  public static final String MY_CELLAR_LABEL = "MyCellarLabel";
   private final List<String> keyList;
   private final JComponent[] value;
   private final String title;
   private final String information;
   private final boolean withCancelButton;
-  private final List<String> objectType;
+  private final List<MyOptionObjectType> objectType;
   private final List<IMyCellarComponent> labelValues = new ArrayList<>();
 
   private final MyCellarButton valider = new MyCellarButton(MAIN_OK);
@@ -71,56 +62,6 @@ public final class MyOptions extends JDialog {
   private MyCellarSimpleLabel informationLabel;
   MyCellarSimpleLabel textControl3 = new MyCellarSimpleLabel();
 
-  @Deprecated(since = "version90")
-  public MyOptions(String title, String information, List<String> resourceList, List<String> defaultValueList, List<String> cle2, List<String> type_objet,
-                   boolean cancel) {
-    super(MainFrame.getInstance(), "", true);
-    keyList = cle2;
-    value = new JComponent[resourceList.size()];
-    this.title = title;
-    this.information = information;
-    this.withCancelButton = cancel;
-    objectType = type_objet;
-
-    buildDefaulComponent();
-
-    for (int i = 0; i < resourceList.size(); i++) {
-      value[i] = null;
-      MyCellarSimpleLabel simpleLabel = new MyCellarSimpleLabel(resourceList.get(i));
-//      labelValues.add(simpleLabel);
-      if (type_objet.get(i).equals(JTEXT_FIELD)) {
-        value[i] = new JTextField(defaultValueList.get(i));
-      } else if (type_objet.get(i).equals(MY_CELLAR_SPINNER)) {
-        final MyCellarSpinner jspi = new MyCellarSpinner(0, 99999);
-        jspi.setValue(Integer.parseInt(defaultValueList.get(i)));
-        value[i] = jspi;
-      } else if (type_objet.get(i).equals(MY_CELLAR_CHECK_BOX)) {
-        boolean bool = "true".equals(defaultValueList.get(i));
-        value[i] = new MyCellarCheckBox(resourceList.get(i), bool);
-        labelValues.add(new MyCellarSimpleLabel());
-      } else if (type_objet.get(i).equals(MY_CELLAR_RADIO_BUTTON)) {
-        boolean bool = "true".equals(defaultValueList.get(i));
-        value[i] = new MyCellarRadioButton(resourceList.get(i), bool);
-        value[i].setEnabled(false);
-        labelValues.add(new MyCellarSimpleLabel());
-        if (i > 0) {
-          if (type_objet.get(i - 1).equals(MY_CELLAR_RADIO_BUTTON) && keyList.get(i - 1).equals(keyList.get(i))) {
-            ButtonGroup buttonGroup = new ButtonGroup();
-            buttonGroup.add((MyCellarRadioButton) value[i - 1]);
-            buttonGroup.add((MyCellarRadioButton) value[i]);
-            value[i - 1].setEnabled(true);
-            value[i].setEnabled(true);
-          }
-        }
-      } else if (type_objet.get(i).equals(MY_CELLAR_LABEL)) {
-        simpleLabel.setForeground(Color.red);
-        labelValues.add(simpleLabel);
-      }
-    }
-    buildFrame();
-  }
-
-  //  public MyOptions(String title, String information, List<IResource> resourceList, List<String> defaultValueList, List<String> cle2, List<String> type_objet) {
   public MyOptions(String title, String information, List<MyOptionKey> resourceList) {
     super(MainFrame.getInstance(), "", true);
     keyList = resourceList.stream().map(MyOptionKey::propertyKey).toList();
@@ -128,17 +69,15 @@ public final class MyOptions extends JDialog {
     this.title = title;
     this.information = information;
     this.withCancelButton = false;
-    objectType = buildObjectTypes(resourceList);
+    objectType = resourceList.stream().map(MyOptionKey::objectType).toList();
 
     buildDefaulComponent();
 
     for (int i = 0; i < resourceList.size(); i++) {
       MyOptionKey myOptionKey = resourceList.get(i);
-      value[i] = null;
-      MyCellarLabel simpleLabel = new MyCellarLabel(myOptionKey.resource());
-//      labelValues.add(simpleLabel);
       if (MyOptionObjectType.JTEXT_FIELD.equals(myOptionKey.objectType())) {
         value[i] = new JTextField(myOptionKey.defaultValue());
+        labelValues.add(new MyCellarSimpleLabel());
       } else if (MyOptionObjectType.MY_CELLAR_SPINNER.equals(myOptionKey.objectType())) {
         final MyCellarSpinner jspi = new MyCellarSpinner(0, 99999);
         jspi.setValue(Integer.parseInt(myOptionKey.defaultValue()));
@@ -149,7 +88,11 @@ public final class MyOptions extends JDialog {
         labelValues.add(new MyCellarSimpleLabel());
       } else if (MyOptionObjectType.MY_CELLAR_RADIO_BUTTON.equals(myOptionKey.objectType())) {
         boolean bool = "true".equals(myOptionKey.defaultValue());
-        value[i] = new MyCellarRadioButton(myOptionKey.resource(), bool);
+        if (myOptionKey.resource() == null) {
+          value[i] = new MyCellarRadioButton(myOptionKey.labelKey(), bool);
+        } else {
+          value[i] = new MyCellarRadioButton(myOptionKey.resource(), bool);
+        }
         value[i].setEnabled(false);
         labelValues.add(new MyCellarSimpleLabel());
         if (i > 0) {
@@ -161,29 +104,14 @@ public final class MyOptions extends JDialog {
             value[i].setEnabled(true);
           }
         }
-      } else if (MyOptionObjectType.MY_CELLAR_LABEL.equals(myOptionKey.objectType())) {
+      } else if (MY_CELLAR_LABEL.equals(myOptionKey.objectType())) {
+        MyCellarLabel simpleLabel = new MyCellarLabel(myOptionKey.resource());
         simpleLabel.setForeground(Color.red);
         labelValues.add(simpleLabel);
       }
     }
     buildFrame();
   }
-
-  private List<String> buildObjectTypes(List<MyOptionKey> resourceList) {
-    List<String> objects = new ArrayList<>();
-    for (MyOptionKey myOptionKey : resourceList) {
-      String value = switch (myOptionKey.objectType()) {
-        case JTEXT_FIELD -> JTEXT_FIELD;
-        case MY_CELLAR_SPINNER -> MY_CELLAR_SPINNER;
-        case MY_CELLAR_CHECK_BOX -> MY_CELLAR_CHECK_BOX;
-        case MY_CELLAR_RADIO_BUTTON -> MY_CELLAR_RADIO_BUTTON;
-        case MY_CELLAR_LABEL -> MY_CELLAR_LABEL;
-      };
-      objects.add(value);
-    }
-    return objects;
-  }
-
 
   private void buildFrame() {
     valider.addActionListener(this::valider_actionPerformed);
@@ -209,7 +137,7 @@ public final class MyOptions extends JDialog {
     getContentPane().add(new JLabel(), "span 2, wrap");
     getContentPane().add(informationLabel, "span 2, wrap");
     for (int i = 0; i < objectType.size(); i++) {
-      if (objectType.get(i).equals(MY_CELLAR_LABEL)) {
+      if (MY_CELLAR_LABEL.equals(objectType.get(i))) {
         getContentPane().add((Component) labelValues.get(i), "wrap");
       } else {
         getContentPane().add((Component) labelValues.get(i), "grow");
@@ -258,9 +186,7 @@ public final class MyOptions extends JDialog {
             defaut = toCleanString(jTextField.getText());
           }
         }
-        case MyCellarSpinner jspi -> {
-          saveInConfig(i, jspi.getValue().toString());
-        }
+        case MyCellarSpinner jspi -> saveInConfig(i, jspi.getValue().toString());
         case MyCellarCheckBox jchk when jchk.isSelected() -> saveInConfig(i, defaut);
         case MyCellarRadioButton jrb -> {
           if (jrb.isSelected()) {

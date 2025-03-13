@@ -22,7 +22,7 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 1.5
- * @since 12/03/25
+ * @since 13/03/25
  */
 
 public class MyCellarLabel extends JLabel implements IMyCellarComponent {
@@ -46,14 +46,6 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
   public MyCellarLabel(IResource resourceKey, String parameter) {
     labelKey = new LabelKey(resourceKey.getKey(), null, parameter);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  @Deprecated(since = "version90")
-  public MyCellarLabel(String code, LabelProperty labelProperty) {
-    labelKey = new LabelKey(code, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

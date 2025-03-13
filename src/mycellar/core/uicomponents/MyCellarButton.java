@@ -47,8 +47,16 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     setFont(FONT_PANEL);
   }
 
+  @Deprecated(since = "version90")
   public MyCellarButton(String code, LabelProperty labelProperty) {
     labelKey = new LabelKey(code, labelProperty);
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT_PANEL);
+  }
+
+  public MyCellarButton(IResource key, LabelProperty labelProperty) {
+    labelKey = new LabelKey(key.getKey(), labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

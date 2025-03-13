@@ -28,6 +28,16 @@ import static mycellar.ProgramConstants.SLASH;
 import static mycellar.ProgramConstants.isVK_ENTER;
 import static mycellar.ProgramConstants.isVK_O;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.CSVOPTIONS_TITLE;
+import static mycellar.general.ResourceKey.CSV_SEPARATORCOMMA;
+import static mycellar.general.ResourceKey.CSV_SEPARATORDOTCOMMA;
+import static mycellar.general.ResourceKey.CSV_SEPARATORDOUBLEDOT;
+import static mycellar.general.ResourceKey.CSV_SEPARATORSLASH;
+import static mycellar.general.ResourceKey.IMPORT_SEPARATOR;
+import static mycellar.general.ResourceKey.MAIN_CANCEL;
+import static mycellar.general.ResourceKey.MAIN_EXPORTED;
+import static mycellar.general.ResourceKey.MAIN_OK;
+import static mycellar.general.ResourceKey.OPTIONS_TABLECOLUMNS;
 
 /**
  * Titre : Cave &agrave; vin
@@ -36,8 +46,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 25/12/23
+ * @version 3.1
+ * @since 13/03/25
  */
 final class CSVOptions extends JDialog {
   private final MyCellarCheckBox[] export;
@@ -49,7 +59,7 @@ final class CSVOptions extends JDialog {
     Debug("Constructor");
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setModal(true);
-    setTitle(getLabel("CSVOptions.Title"));
+    setTitle(getLabel(CSVOPTIONS_TITLE));
 
     addKeyListener(new KeyAdapter() {
       @Override
@@ -66,20 +76,20 @@ final class CSVOptions extends JDialog {
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setLayout(new MigLayout("", "grow", ""));
     panel.setFont(FONT_PANEL);
-    MyCellarLabel info_separator = new MyCellarLabel("Import.Separator");
+    MyCellarLabel info_separator = new MyCellarLabel(IMPORT_SEPARATOR);
     listColumns = MyCellarFields.getFieldsList();
     nb_colonnes = listColumns.size();
     export = new MyCellarCheckBox[nb_colonnes];
     final MyCellarSimpleLabel[] colonnes = new MyCellarSimpleLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox("Main.Exported");
+      export[i] = new MyCellarCheckBox(MAIN_EXPORTED);
       export[i].setSelected(Program.getCaveConfigInt("SIZE_COL" + i + "EXPORT_CSV", 0) == 1);
       colonnes[i] = new MyCellarSimpleLabel(listColumns.get(i).toString());
     }
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow]", ""));
     jPanel2.setFont(FONT_PANEL);
-    MyCellarButton valider = new MyCellarButton("Main.OK");
+    MyCellarButton valider = new MyCellarButton(MAIN_OK);
     separator.addItem(SeparatorType.COMMA);
     separator.addItem(SeparatorType.COLUMNS);
     separator.addItem(SeparatorType.DOUBLE_DOT);
@@ -89,14 +99,14 @@ final class CSVOptions extends JDialog {
     separator.setSelectedItem(separatorType);
 
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton("Main.Cancel");
+    MyCellarButton annuler = new MyCellarButton(MAIN_CANCEL);
     annuler.addActionListener((e) -> dispose());
 
     add(info_separator, "split 2");
     add(separator, "wrap");
 
     JScrollPane scrollPane = new JScrollPane(jPanel2);
-    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Options.TableColumns")));
+    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel(OPTIONS_TABLECOLUMNS)));
     add(scrollPane, "grow, gaptop 15px, wrap");
     for (int i = 0; i < nb_colonnes; i++) {
       jPanel2.add(colonnes[i], "grow");
@@ -141,10 +151,10 @@ final class CSVOptions extends JDialog {
   }
 
   private enum SeparatorType {
-    COMMA(ProgramConstants.COMMA, getLabel("CSV.SeparatorComma")),
-    DOUBLE_DOT(ProgramConstants.DOUBLE_DOT, getLabel("CSV.SeparatorDoubleDot")),
-    SLASH(ProgramConstants.SLASH, getLabel("CSV.SeparatorSlash")),
-    COLUMNS(COLUMNS_SEPARATOR, getLabel("CSV.SeparatorDotComma"));
+    COMMA(ProgramConstants.COMMA, getLabel(CSV_SEPARATORCOMMA)),
+    DOUBLE_DOT(ProgramConstants.DOUBLE_DOT, getLabel(CSV_SEPARATORDOUBLEDOT)),
+    SLASH(ProgramConstants.SLASH, getLabel(CSV_SEPARATORSLASH)),
+    COLUMNS(COLUMNS_SEPARATOR, getLabel(CSV_SEPARATORDOTCOMMA));
     private final String separator;
     private final String label;
 

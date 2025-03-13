@@ -18,8 +18,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 08/03/25
+ * @version 1.2
+ * @since 12/03/25
  */
 
 public final class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
@@ -31,25 +31,8 @@ public final class MyCellarCheckBox extends JCheckBox implements IMyCellarCompon
     setFont(FONT_PANEL);
   }
 
-  @Deprecated(since = "version90")
-  public MyCellarCheckBox(String code) {
-    labelKey = new LabelKey(code);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
   public MyCellarCheckBox(ResourceKey key) {
     labelKey = new LabelKey(key.getKey());
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  @Deprecated(since = "version90")
-  public MyCellarCheckBox(String code, boolean selected) {
-    super("", selected);
-    labelKey = new LabelKey(code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -63,8 +46,8 @@ public final class MyCellarCheckBox extends JCheckBox implements IMyCellarCompon
     setFont(FONT_PANEL);
   }
 
-  public MyCellarCheckBox(String code, LabelProperty labelProperty) {
-    labelKey = new LabelKey(code, labelProperty);
+  public MyCellarCheckBox(IResource key, LabelProperty labelProperty) {
+    labelKey = new LabelKey(key.getKey(), labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

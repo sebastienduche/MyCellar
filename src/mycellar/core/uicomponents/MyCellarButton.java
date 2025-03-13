@@ -20,7 +20,7 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 1.3
- * @since 12/03/25
+ * @since 13/03/25
  */
 
 public final class MyCellarButton extends JButton implements IMyCellarComponent {
@@ -32,14 +32,6 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     setFont(FONT_PANEL);
   }
 
-  @Deprecated(since = "version90")
-  public MyCellarButton(String code) {
-    labelKey = new LabelKey(code);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
   public MyCellarButton(IResource code) {
     labelKey = new LabelKey(code.getKey());
     updateText();
@@ -47,25 +39,8 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     setFont(FONT_PANEL);
   }
 
-  @Deprecated(since = "version90")
-  public MyCellarButton(String code, LabelProperty labelProperty) {
-    labelKey = new LabelKey(code, labelProperty);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
   public MyCellarButton(IResource key, LabelProperty labelProperty) {
     labelKey = new LabelKey(key.getKey(), labelProperty);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  @Deprecated(since = "version90")
-  public MyCellarButton(String code, Action a) {
-    super(a);
-    labelKey = new LabelKey(code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -79,28 +54,11 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     setFont(FONT_PANEL);
   }
 
-  @Deprecated(since = "version90")
-  public MyCellarButton(String code, LabelProperty labelProperty, Action a) {
-    super(a);
-    labelKey = new LabelKey(code, labelProperty);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
   public MyCellarButton(IResource key, LabelProperty labelProperty, Action a) {
     super(a);
     labelKey = new LabelKey(key.getKey(), labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  @Deprecated(since = "version90")
-  public MyCellarButton(String code, Icon icon) {
-    super(icon);
-    labelKey = new LabelKey(code);
-    updateText();
     setFont(FONT_PANEL);
   }
 

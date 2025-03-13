@@ -20,6 +20,7 @@ import static mycellar.ProgramConstants.CHAR_O;
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.isVK_ENTER;
 import static mycellar.ProgramConstants.isVK_O;
+import static mycellar.general.ResourceKey.MAIN_OK;
 
 
 /**
@@ -29,8 +30,8 @@ import static mycellar.ProgramConstants.isVK_O;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 08/07/22
+ * @version 2.4
+ * @since 13/03/25
  */
 @Deprecated
 public final class Options extends JDialog {
@@ -58,7 +59,7 @@ public final class Options extends JDialog {
     MyCellarSimpleLabel textControl2 = new MyCellarSimpleLabel(propriete);
     textControl3.setForeground(Color.red);
     textControl3.setHorizontalAlignment(SwingConstants.CENTER);
-    MyCellarButton valider = new MyCellarButton("Main.OK");
+    MyCellarButton valider = new MyCellarButton(MAIN_OK);
     valider.setMnemonic(CHAR_O);
     valider.addActionListener(this::valider_actionPerformed);
     addKeyListener(new KeyAdapter() {

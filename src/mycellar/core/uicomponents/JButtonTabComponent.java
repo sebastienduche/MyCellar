@@ -57,6 +57,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import static mycellar.general.ResourceKey.MAIN_CLOSE;
+
 /**
  * Component to be used as tabComponent; Contains a JLabel to show the text and
  * a JButton to close the tab it belongs to
@@ -130,7 +132,7 @@ public final class JButtonTabComponent extends JPanel {
     private TabButton() {
       int size = 17;
       setPreferredSize(new Dimension(size, size));
-      setToolTipText(MyCellarLabelManagement.getLabel("Main.Close"));
+      setToolTipText(MyCellarLabelManagement.getLabel(MAIN_CLOSE));
       // Make the button looks the same for all Laf's
       setUI(new BasicButtonUI());
       // Make it transparent

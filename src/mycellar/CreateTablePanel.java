@@ -67,6 +67,7 @@ import static mycellar.general.ResourceKey.MAIN_CREATE;
 import static mycellar.general.ResourceKey.MAIN_OPENTHEFILE;
 import static mycellar.general.ResourceKey.MAIN_PARAMETERS;
 import static mycellar.general.ResourceKey.MAIN_SELECTALL;
+import static mycellar.general.ResourceKey.MAIN_SETTINGS;
 import static mycellar.general.ResourceKey.OUVRIR;
 
 /**
@@ -76,8 +77,8 @@ import static mycellar.general.ResourceKey.OUVRIR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.7
- * @since 12/03/25
+ * @version 9.8
+ * @since 13/03/25
  */
 public final class CreateTablePanel extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   private final JTextField name = new JTextField();
@@ -90,7 +91,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
   private final char createChar = getLabel(CREER).charAt(0);
   private final char ouvrirChar = getLabel(OUVRIR).charAt(0);
   private final MyCellarCheckBox selectAll = new MyCellarCheckBox(MAIN_SELECTALL);
-  private final MyCellarButton m_jcb_options = new MyCellarButton("Main.Settings", LabelProperty.SINGLE.withThreeDashes());
+  private final MyCellarButton m_jcb_options = new MyCellarButton(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes());
   private final JTable table;
   private boolean updateView;
   private UpdateViewType updateViewType;
@@ -255,7 +256,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     } else if (type_XLS.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(filename, asList(Filtre.FILTRE_XLSX, Filtre.FILTRE_XLS, Filtre.FILTRE_ODS))) {
         Debug("ERROR: Not a XLS File");
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.notAnExcelFile"), filename));
+        Erreur.showSimpleErreur(getError(ResourceErrorKey.ERROR_NOTANEXCELFILE, filename));
         return;
       }
     }
@@ -343,16 +344,6 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
         new MyOptionKey(EXPORT_HTML, "1".equals(val) ? "true" : "false", CREATE_TAB_DEFAULT, MyOptionObjectType.MY_CELLAR_RADIO_BUTTON),
         new MyOptionKey(EXPORT_XLS, "2".equals(val) ? "true" : "false", CREATE_TAB_DEFAULT, MyOptionObjectType.MY_CELLAR_RADIO_BUTTON)
     );
-//    List<IResource> titre_properties = List.of(
-//        EXPORT_XML,
-//        EXPORT_HTML,
-//        EXPORT_XLS);
-//    List<String> key_properties = List.of(
-//        CREATE_TAB_DEFAULT,
-//        CREATE_TAB_DEFAULT,
-//        CREATE_TAB_DEFAULT);
-//    List<String> default_value = List.of("0".equals(val) ? "true" : "false", "1".equals(val) ? "true" : "false", "2".equals(val) ? "true" : "false");
-//    List<String> type_objet = List.of(MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON, MyOptions.MY_CELLAR_RADIO_BUTTON);
     MyOptions myoptions = new MyOptions(getLabel(EXPORT_OPTIONS), getLabel(EXPORT_SELECTDEFAULTMODE), myOptionKeys);
     myoptions.setVisible(true);
   }

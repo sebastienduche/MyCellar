@@ -18,6 +18,7 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
+import mycellar.general.ResourceKey;
 import mycellar.general.XmlUtils;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -62,6 +63,7 @@ import static mycellar.general.ResourceKey.MAIN_DELETE;
 import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
 import static mycellar.general.ResourceKey.STORAGE_NBLINE;
 import static mycellar.general.ResourceKey.STORAGE_NBLINES;
+import static mycellar.general.ResourceKey.STORAGE_PREVIEW;
 
 
 /**
@@ -71,15 +73,15 @@ import static mycellar.general.ResourceKey.STORAGE_NBLINES;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.8
- * @since 08/03/25
+ * @version 10.9
+ * @since 13/03/25
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
   private final MyCellarComboBox<AbstractPlace> choix = new MyCellarComboBox<>();
   private final MyCellarSimpleLabel label_final = new MyCellarSimpleLabel();
-  private final MyCellarButton preview = new MyCellarButton("Storage.Preview");
+  private final MyCellarButton preview = new MyCellarButton(STORAGE_PREVIEW);
   private final char supprimerChar = getLabel("SUPPR").charAt(0);
   private final char previewChar = getLabel("VISUAL").charAt(0);
   private final JTable table;
@@ -109,7 +111,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     table = new JTable(model);
     JScrollPane scroll = new JScrollPane(table);
 
-    add(new MyCellarLabel("PlaceManagement.SelectToDelete"), "split 2, gap");
+    add(new MyCellarLabel(ResourceKey.PLACEMANAGEMENT_SELECTTODELETE), "split 2, gap");
     add(choix, "wrap");
     add(scroll, "grow, wrap");
     add(label_final, "grow, center, wrap");

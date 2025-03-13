@@ -13,7 +13,6 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
-import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.Part;
@@ -65,11 +64,15 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelForType;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceKey.MAIN_NAME;
+import static mycellar.general.ResourceKey.MAIN_SETTINGS;
 import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
+import static mycellar.general.ResourceKey.MAIN_STORAGE;
 import static mycellar.general.ResourceKey.STATS_1SHELVE;
+import static mycellar.general.ResourceKey.STATS_CHARTTYPE;
 import static mycellar.general.ResourceKey.STATS_NSHELVES;
 import static mycellar.general.ResourceKey.STATS_SHELVENUMBER;
 import static mycellar.general.ResourceKey.STATS_TOTALITEMS;
+import static mycellar.general.ResourceKey.STATS_TYPE;
 
 
 /**
@@ -85,7 +88,7 @@ import static mycellar.general.ResourceKey.STATS_TOTALITEMS;
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
   private static final int PRICE_BRACKET_DEFAULT = 50;
-  private final MyCellarLabel comboLabel = new MyCellarLabel(ResourceKey.MAIN_STORAGE, LabelProperty.SINGLE.withDoubleQuote(), "");
+  private final MyCellarLabel comboLabel = new MyCellarLabel(MAIN_STORAGE, LabelProperty.SINGLE.withDoubleQuote(), "");
   private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   private final MyCellarSimpleLabel moy = new MyCellarSimpleLabel();
   private final MyCellarComboBox<StatsEnum> listStatsType = new MyCellarComboBox<>();
@@ -95,7 +98,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   private final JScrollPane scroll;
   private final PanelChart panelChart = new PanelChart();
   private final JPanel panelOther = new JPanel();
-  private final MyCellarButton options = new MyCellarButton(ResourceKey.MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes());
+  private final MyCellarButton options = new MyCellarButton(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes());
   private final List<StatData> listPrice = new LinkedList<>();
   private final List<StatData> listYear = new LinkedList<>();
   private final List<StatData> listHistory = new LinkedList<>();
@@ -138,11 +141,11 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     panelOther.setLayout(new MigLayout("", "grow", "grow"));
 
     setLayout(new MigLayout("", "[][][grow]", "[][][]20px[grow][][]"));
-    add(new MyCellarLabel("Stats.Type"));
+    add(new MyCellarLabel(STATS_TYPE));
     add(listStatsType, "wrap");
     add(comboLabel);
     add(listPlaces, "wrap");
-    add(new MyCellarLabel("Stats.ChartType"));
+    add(new MyCellarLabel(STATS_CHARTTYPE));
     add(listChart, "wrap");
     add(scroll, "span 3, split 2, grow 30, hidemode 3");
     add(panelChart, "span 3, grow, hidemode 3, wrap");

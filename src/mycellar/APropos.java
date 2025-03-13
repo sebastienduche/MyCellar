@@ -19,6 +19,8 @@ import java.awt.Toolkit;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
 import static mycellar.ProgramConstants.MAIN_VERSION;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_ABOUT;
+import static mycellar.general.ResourceKey.MAIN_OK;
 
 
 /**
@@ -28,14 +30,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 24/05/22
+ * @version 2.1
+ * @since 13/03/25
  */
 public final class APropos extends JDialog {
   public APropos() {
-    super(new JFrame(), getLabel("Main.About"), true);
+    super(new JFrame(), getLabel(MAIN_ABOUT), true);
     IconPanel ip = new IconPanel(MyCellarImage.ICON);
-    MyCellarButton ok = new MyCellarButton("Main.OK");
+    MyCellarButton ok = new MyCellarButton(MAIN_OK);
     ok.addActionListener((e) -> dispose());
     MyCellarSimpleLabel myCellarLabel1 = new MyCellarSimpleLabel("MyCellar");
     myCellarLabel1.setForeground(Color.red);

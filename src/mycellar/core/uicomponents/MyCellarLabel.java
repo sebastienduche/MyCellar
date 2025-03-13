@@ -29,14 +29,6 @@ public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
   private final LabelKey labelKey;
 
-  @Deprecated(since = "version 90")
-  public MyCellarLabel(String code) {
-    labelKey = new LabelKey(code);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
   public MyCellarLabel(IResource resourceKey) {
     labelKey = new LabelKey(resourceKey.getKey());
     updateText();

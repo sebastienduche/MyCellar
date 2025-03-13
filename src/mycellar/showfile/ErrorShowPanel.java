@@ -16,6 +16,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.frame.MainFrame;
+import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.places.PlaceUtils;
 import net.miginfocom.swing.MigLayout;
 
@@ -30,9 +31,12 @@ import javax.swing.table.TableColumnModel;
 import java.awt.event.ActionEvent;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_ADD;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
+import static mycellar.general.ResourceKey.MAIN_STORAGETOCREATE;
 import static mycellar.general.ResourceKey.SHOWFILE_QUITERRORS;
+import static mycellar.general.ResourceKey.SHOWFILE_RELOADERRORS;
 
 /**
  * Titre : Cave &agrave; vin
@@ -41,8 +45,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_QUITERRORS;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 08/03/25
+ * @version 0.5
+ * @since 13/03/25
  */
 
 public class ErrorShowPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
@@ -57,9 +61,9 @@ public class ErrorShowPanel extends AbstractShowFilePanel implements ITabListene
     deleteButton.addActionListener((e) -> delete());
 
     add(titleLabel, "align left");
-    MyCellarButton createPlacesButton = new MyCellarButton("Main.StorageToCreate", new CreatePlacesAction());
+    MyCellarButton createPlacesButton = new MyCellarButton(MAIN_STORAGETOCREATE, new CreatePlacesAction());
     add(createPlacesButton, "align right, split 3");
-    MyCellarButton reloadButton = new MyCellarButton("ShowFile.ReloadErrors", new ReloadErrorsAction());
+    MyCellarButton reloadButton = new MyCellarButton(SHOWFILE_RELOADERRORS, new ReloadErrorsAction());
     add(reloadButton, "align right");
     add(deleteButton, "align right, wrap");
 
@@ -67,7 +71,7 @@ public class ErrorShowPanel extends AbstractShowFilePanel implements ITabListene
     model = new ErrorShowValues();
     ((ErrorShowValues) model).setErrors(Program.getErrors());
     table = new JTable(model);
-    titleLabel.setText(getLabel("ShowFile.ManageError"));
+    titleLabel.setText(getLabel(ResourceKey.SHOWFILE_MANAGEERROR));
 
     postInit();
     refresh();
@@ -123,7 +127,7 @@ public class ErrorShowPanel extends AbstractShowFilePanel implements ITabListene
     tc = tcm.getColumn(ErrorShowValues.Column.STATUS.getIndex());
     tc.setCellRenderer(new FontBoldTableCellRenderer());
     tc = tcm.getColumn(ErrorShowValues.Column.BUTTON.getIndex());
-    tc.setCellRenderer(new ButtonCellRenderer(getLabel("Main.Add"), MyCellarImage.ADD));
+    tc.setCellRenderer(new ButtonCellRenderer(getLabel(MAIN_ADD), MyCellarImage.ADD));
     tc.setCellEditor(new ButtonCellEditor());
   }
 

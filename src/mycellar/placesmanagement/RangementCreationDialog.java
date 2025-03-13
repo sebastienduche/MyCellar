@@ -17,12 +17,15 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.Map;
 
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_CLOSE;
+import static mycellar.general.ResourceKey.MAIN_CREATE;
+import static mycellar.general.ResourceKey.MAIN_STORAGETOCREATE;
+import static mycellar.general.ResourceKey.RANGEMENTTOCREATETABLEMODEL_END;
 
 /**
  * Titre : Cave &agrave; vin
@@ -31,8 +34,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 01/03/25
+ * @version 1.5
+ * @since 13/03/25
  */
 public final class RangementCreationDialog extends JDialog {
 
@@ -48,7 +51,7 @@ public final class RangementCreationDialog extends JDialog {
     Debug("Constructor");
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setModal(true);
-    setTitle(getLabel("Main.StorageToCreate"));
+    setTitle(getLabel(MAIN_STORAGETOCREATE));
     setLayout(new MigLayout("", "grow", ""));
     setResizable(false);
     model = new RangementToCreateTableModel(map);
@@ -59,9 +62,9 @@ public final class RangementCreationDialog extends JDialog {
     add(new JScrollPane(table), "grow, wrap");
     add(end, "grow, wrap");
 
-    MyCellarButton valider = new MyCellarButton("Main.Create");
+    MyCellarButton valider = new MyCellarButton(MAIN_CREATE);
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton("Main.Close");
+    MyCellarButton annuler = new MyCellarButton(MAIN_CLOSE);
     annuler.addActionListener((e) -> dispose());
 
     add(valider, "gaptop 15px, split 2, center");
@@ -96,7 +99,7 @@ public final class RangementCreationDialog extends JDialog {
       Program.addPlace(abstractPlace);
       MainFrame.updateManagePlaceButton();
     });
-    end.setText(MessageFormat.format(getLabel("RangementToCreateTableModel.End"), map.size()));
+    end.setText(getLabel(RANGEMENTTOCREATETABLEMODEL_END, map.size()));
     model.clear();
   }
 }

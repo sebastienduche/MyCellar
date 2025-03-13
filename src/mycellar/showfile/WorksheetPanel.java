@@ -19,7 +19,10 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_COLUMNS;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
+import static mycellar.general.ResourceKey.SHOWFILE_CLEARWORKSHEET;
+import static mycellar.general.ResourceKey.SHOWFILE_REMOVEFROMWORKSHEET;
 
 /**
  * Titre : Cave &agrave; vin
@@ -28,15 +31,15 @@ import static mycellar.general.ResourceKey.MAIN_DELETE;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.8
- * @since 08/03/25
+ * @version 12.9
+ * @since 13/03/25
  */
 
 public class WorksheetPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
 
-  private final MyCellarButton manageColumnsButton = new MyCellarButton("Main.Columns", new ManageColumnsAction(true));
-  private final MyCellarButton removeFromWorksheetButton = new MyCellarButton("ShowFile.RemoveFromWorksheet", new RemoveFromWorksheetAction());
-  private final MyCellarButton clearWorksheetButton = new MyCellarButton("ShowFile.ClearWorksheet", new ClearWorksheetAction());
+  private final MyCellarButton manageColumnsButton = new MyCellarButton(MAIN_COLUMNS, new ManageColumnsAction(true));
+  private final MyCellarButton removeFromWorksheetButton = new MyCellarButton(SHOWFILE_REMOVEFROMWORKSHEET, new RemoveFromWorksheetAction());
+  private final MyCellarButton clearWorksheetButton = new MyCellarButton(SHOWFILE_CLEARWORKSHEET, new ClearWorksheetAction());
 
   public WorksheetPanel() {
     super(true);

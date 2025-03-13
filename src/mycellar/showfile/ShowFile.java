@@ -27,6 +27,8 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_COLUMN;
+import static mycellar.general.ResourceKey.MAIN_COLUMNS;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
 
 /**
@@ -36,13 +38,13 @@ import static mycellar.general.ResourceKey.MAIN_DELETE;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.7
- * @since 08/03/25
+ * @version 12.8
+ * @since 13/03/25
  */
 
 public class ShowFile extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
 
-  private final MyCellarButton manageColumnsButton = new MyCellarButton("Main.Columns", new ManageColumnsAction());
+  private final MyCellarButton manageColumnsButton = new MyCellarButton(MAIN_COLUMN, new ManageColumnsAction());
 
   public ShowFile() {
     super(false);
@@ -101,7 +103,7 @@ public class ShowFile extends AbstractShowFilePanel implements ITabListener, IMy
       tc.setMinWidth(25);
       tc.setMaxWidth(25);
       panel.add(new JScrollPane(jTable));
-      JOptionPane.showMessageDialog(MainFrame.getInstance(), panel, getLabel("Main.Columns"), JOptionPane.PLAIN_MESSAGE);
+      JOptionPane.showMessageDialog(MainFrame.getInstance(), panel, getLabel(MAIN_COLUMNS), JOptionPane.PLAIN_MESSAGE);
       List<Integer> properties = modelColumn.getSelectedColumns();
       if (!properties.isEmpty()) {
         cols = new ArrayList<>();

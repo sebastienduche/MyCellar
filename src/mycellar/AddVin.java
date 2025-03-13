@@ -46,7 +46,9 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTENOUGHSPACESTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONREPLACEIT;
+import static mycellar.general.ResourceKey.MAIN_ADD;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
+import static mycellar.general.ResourceKey.MAIN_CANCEL;
 
 
 /**
@@ -56,8 +58,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.6
- * @since 08/03/25
+ * @version 32.7
+ * @since 13/03/25
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -73,9 +75,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Debug("Constructor");
     myCellarObject = null;
     panelGeneral.setMyCellarObject(null);
-    addButton = new MyCellarButton("Main.Add", new AddAction());
+    addButton = new MyCellarButton(MAIN_ADD, new AddAction());
     addButton.setMnemonic(ajouterChar);
-    cancelButton = new MyCellarButton("Main.Cancel", new CancelAction());
+    cancelButton = new MyCellarButton(MAIN_CANCEL, new CancelAction());
 
     panelGeneral.setModificationDetectionActive(false);
     panelWineAttribute.setModificationDetectionActive(false);

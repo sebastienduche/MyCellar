@@ -19,7 +19,6 @@ public final class MyCellarSpinner extends JSpinner {
 
   private final SpinnerNumberModel model;
 
-
   public MyCellarSpinner(int min, int max) {
     model = new SpinnerNumberModel(min, min, max, 1);
     setModel(model);

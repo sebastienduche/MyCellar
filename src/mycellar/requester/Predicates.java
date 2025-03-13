@@ -25,7 +25,26 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.ADDVIN_COLOR;
+import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
+import static mycellar.general.ResourceKey.MYCELLARMANAGEBOTTLES_STATUS;
+import static mycellar.general.ResourceKey.PREDICATES_AND;
+import static mycellar.general.ResourceKey.PREDICATES_ARTIST;
+import static mycellar.general.ResourceKey.PREDICATES_CONTAINS;
+import static mycellar.general.ResourceKey.PREDICATES_ENDWITH;
+import static mycellar.general.ResourceKey.PREDICATES_GREATER;
+import static mycellar.general.ResourceKey.PREDICATES_NAME;
+import static mycellar.general.ResourceKey.PREDICATES_OR;
+import static mycellar.general.ResourceKey.PREDICATES_PLACE;
 import static mycellar.general.ResourceKey.PREDICATES_PRICE;
+import static mycellar.general.ResourceKey.PREDICATES_SELECTCOLOR;
+import static mycellar.general.ResourceKey.PREDICATES_SELECTPLACE;
+import static mycellar.general.ResourceKey.PREDICATES_SELECTSIZE;
+import static mycellar.general.ResourceKey.PREDICATES_SELECTSTATUS;
+import static mycellar.general.ResourceKey.PREDICATES_SMALLER;
+import static mycellar.general.ResourceKey.PREDICATES_STARTWITH;
+import static mycellar.general.ResourceKey.PREDICATES_VIGNOBLE;
+import static mycellar.general.ResourceKey.PREDICATES_YEAR;
 
 /**
  * Titre : Cave &agrave; vin
@@ -34,8 +53,8 @@ import static mycellar.general.ResourceKey.PREDICATES_PRICE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 25/12/23
+ * @version 2.4
+ * @since 13/03/25
  */
 
 public class Predicates {
@@ -52,7 +71,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("AddVin.Color");
+      return getLabel(ADDVIN_COLOR);
     }
 
     @Override
@@ -66,7 +85,7 @@ public class Predicates {
       panel.setLayout(new MigLayout("", "grow", "[]"));
       JComboBox<BottleColor> liste = new JComboBox<>();
       Arrays.stream(BottleColor.values()).forEach(liste::addItem);
-      panel.add(new JLabel(getLabel("Predicates.SelectColor")), "wrap");
+      panel.add(new JLabel(getLabel(PREDICATES_SELECTCOLOR)), "wrap");
       panel.add(liste);
       JOptionPane.showMessageDialog(MainFrame.getInstance(), panel,
           "",
@@ -86,7 +105,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("MyCellarManageBottles.Status");
+      return getLabel(MYCELLARMANAGEBOTTLES_STATUS);
     }
 
     @Override
@@ -100,7 +119,7 @@ public class Predicates {
       panel.setLayout(new MigLayout("", "grow", "[]"));
       JComboBox<BottlesStatus> liste = new JComboBox<>();
       Arrays.stream(BottlesStatus.values()).forEach(liste::addItem);
-      panel.add(new JLabel(getLabel("Predicates.SelectStatus")), "wrap");
+      panel.add(new JLabel(getLabel(PREDICATES_SELECTSTATUS)), "wrap");
       panel.add(liste);
       JOptionPane.showMessageDialog(MainFrame.getInstance(), panel,
           "",
@@ -138,13 +157,13 @@ public class Predicates {
 
     @Override
     public String getName() {
-      String label = getLabel("Predicates.Name");
+      String label = getLabel(PREDICATES_NAME);
       if (type == 0) {
-        label += getLabel("Predicates.StartWith");
+        label += getLabel(PREDICATES_STARTWITH);
       } else if (type == 1) {
-        label += getLabel("Predicates.EndWith");
+        label += getLabel(PREDICATES_ENDWITH);
       } else if (type == 2) {
-        label += getLabel("Predicates.Contains");
+        label += getLabel(PREDICATES_CONTAINS);
       }
       return label;
     }
@@ -154,9 +173,9 @@ public class Predicates {
       type = 0;
       JPanel panel = new JPanel();
       JComboBox<String> combo = new JComboBox<>();
-      combo.addItem(getLabel("Predicates.StartWith"));
-      combo.addItem(getLabel("Predicates.EndWith"));
-      combo.addItem(getLabel("Predicates.Contains"));
+      combo.addItem(getLabel(PREDICATES_STARTWITH));
+      combo.addItem(getLabel(PREDICATES_ENDWITH));
+      combo.addItem(getLabel(PREDICATES_CONTAINS));
       combo.addItemListener((e) -> type = combo.getSelectedIndex());
       panel.add(combo);
       return new ValueSearch(JOptionPane.showInputDialog(panel));
@@ -197,13 +216,13 @@ public class Predicates {
 
     @Override
     public String getName() {
-      String label = getLabel("Predicates.Artist");
+      String label = getLabel(PREDICATES_ARTIST);
       if (type == 0) {
-        label += getLabel("Predicates.StartWith");
+        label += getLabel(PREDICATES_STARTWITH);
       } else if (type == 1) {
-        label += getLabel("Predicates.EndWith");
+        label += getLabel(PREDICATES_ENDWITH);
       } else if (type == 2) {
-        label += getLabel("Predicates.Contains");
+        label += getLabel(PREDICATES_CONTAINS);
       }
       return label;
     }
@@ -213,9 +232,9 @@ public class Predicates {
       type = 0;
       JPanel panel = new JPanel();
       JComboBox<String> combo = new JComboBox<>();
-      combo.addItem(getLabel("Predicates.StartWith"));
-      combo.addItem(getLabel("Predicates.EndWith"));
-      combo.addItem(getLabel("Predicates.Contains"));
+      combo.addItem(getLabel(PREDICATES_STARTWITH));
+      combo.addItem(getLabel(PREDICATES_ENDWITH));
+      combo.addItem(getLabel(PREDICATES_CONTAINS));
       combo.addItemListener((e) -> type = combo.getSelectedIndex());
       panel.add(combo);
       return new ValueSearch(JOptionPane.showInputDialog(panel));
@@ -232,7 +251,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("Predicates.Year");
+      return getLabel(PREDICATES_YEAR);
     }
 
     @Override
@@ -251,7 +270,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("Predicates.Place");
+      return getLabel(PREDICATES_PLACE);
     }
 
     @Override
@@ -260,7 +279,7 @@ public class Predicates {
       panel.setLayout(new MigLayout("", "grow", "[]"));
       JComboBox<AbstractPlace> liste = new JComboBox<>();
       Program.getAbstractPlaces().forEach(liste::addItem);
-      panel.add(new JLabel(getLabel("Predicates.SelectPlace")), "wrap");
+      panel.add(new JLabel(getLabel(PREDICATES_SELECTPLACE)), "wrap");
       panel.add(liste);
       JOptionPane.showMessageDialog(MainFrame.getInstance(), panel,
           "",
@@ -279,7 +298,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("Main.CapacityOrSupport");
+      return getLabel(MAIN_CAPACITYORSUPPORT);
     }
 
     @Override
@@ -288,7 +307,7 @@ public class Predicates {
       panel.setLayout(new MigLayout("", "grow", "[]"));
       JComboBox<String> liste = new JComboBox<>();
       MyCellarBottleContenance.getList().forEach(liste::addItem);
-      panel.add(new JLabel(getLabel("Predicates.SelectSize")), "wrap");
+      panel.add(new JLabel(getLabel(PREDICATES_SELECTSIZE)), "wrap");
       panel.add(liste);
       JOptionPane.showMessageDialog(MainFrame.getInstance(), panel,
           "",
@@ -319,9 +338,9 @@ public class Predicates {
     public String getName() {
       String label = getLabel(PREDICATES_PRICE);
       if (type == 0) {
-        label += getLabel("Predicates.Smaller");
+        label += getLabel(PREDICATES_SMALLER);
       } else if (type == 1) {
-        label += getLabel("Predicates.Greater");
+        label += getLabel(PREDICATES_GREATER);
       }
       return label;
     }
@@ -336,8 +355,8 @@ public class Predicates {
       type = 0;
       JPanel panel = new JPanel();
       JComboBox<String> combo = new JComboBox<>();
-      combo.addItem(getLabel("Predicates.Smaller"));
-      combo.addItem(getLabel("Predicates.Greater"));
+      combo.addItem(getLabel(PREDICATES_SMALLER));
+      combo.addItem(getLabel(PREDICATES_GREATER));
       combo.addItemListener((e) -> type = combo.getSelectedIndex());
       panel.add(combo);
       return new ValueSearch(JOptionPane.showInputDialog(panel));
@@ -360,7 +379,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("Predicates.Vignoble");
+      return getLabel(PREDICATES_VIGNOBLE);
     }
 
     @Override
@@ -393,7 +412,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("Predicates.And");
+      return getLabel(PREDICATES_AND);
     }
 
     @Override
@@ -421,7 +440,7 @@ public class Predicates {
 
     @Override
     public String getName() {
-      return getLabel("Predicates.Or");
+      return getLabel(PREDICATES_OR);
     }
 
     @Override

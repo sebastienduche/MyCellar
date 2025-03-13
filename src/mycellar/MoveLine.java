@@ -12,6 +12,8 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
+import mycellar.general.ResourceErrorKey;
+import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.PlacePosition;
@@ -29,6 +31,9 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceErrorKey.*;
+import static mycellar.general.ResourceKey.*;
+import static mycellar.general.ResourceKey.MAIN_MOVE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -37,8 +42,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.4
- * @since 08/03/25
+ * @version 4.5
+ * @since 13/03/25
  */
 
 public final class MoveLine extends JDialog {
@@ -50,9 +55,9 @@ public final class MoveLine extends JDialog {
   public MoveLine() {
     setAlwaysOnTop(true);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(getLabel("Main.Move"));
+    setTitle(getLabel(MAIN_MOVE));
     setLayout(new MigLayout("", "[]", "[]20px[]10px[]10px[][]20px[]10px"));
-    MyCellarLabel titre = new MyCellarLabel("Main.Move");
+    MyCellarLabel titre = new MyCellarLabel(MAIN_MOVE);
     titre.setForeground(Color.red);
     titre.setFont(FONT_DIALOG_BIG_BOLD);
     titre.setHorizontalAlignment(SwingConstants.CENTER);
@@ -60,16 +65,16 @@ public final class MoveLine extends JDialog {
     label_end.setHorizontalAlignment(SwingConstants.CENTER);
     panelPlace.setModificationDetectionActive(false);
 
-    MyCellarLabel label_new_line = new MyCellarLabel("Move.ToLine");
+    MyCellarLabel label_new_line = new MyCellarLabel(MOVE_TOLINE);
 
-    MyCellarButton validate = new MyCellarButton("Main.Validate");
-    MyCellarButton cancel = new MyCellarButton("Main.Close");
+    MyCellarButton validate = new MyCellarButton(MAIN_VALIDATE);
+    MyCellarButton cancel = new MyCellarButton(MAIN_CLOSE);
 
     validate.addActionListener((e) -> validateAndSave());
     cancel.addActionListener((e) -> dispose());
 
     add(titre, "align center, span 3, wrap");
-    add(new MyCellarLabel("MoveLine.MoveFromLine", LabelProperty.PLURAL), "span 3, wrap");
+    add(new MyCellarLabel(MOVELINE_MOVEFROMLINE, LabelProperty.PLURAL, ""), "span 3, wrap");
     add(panelPlace, "wrap");
     add(label_new_line, "wrap");
     add(new_line_cbx, "wrap");
@@ -99,7 +104,7 @@ public final class MoveLine extends JDialog {
     final PlacePosition selectedPlace = panelPlace.getSelectedPlacePosition();
     int nNewSelected = new_line_cbx.getSelectedIndex();
     if (selectedPlace.getLine() == nNewSelected || nNewSelected == 0) {
-      Erreur.showSimpleErreur(this, getError("Error.wrongLineNumber"));
+      Erreur.showSimpleErreur(this, getError(ERROR_WRONGLINENUMBER));
       return;
     }
     nNewSelected--; // We need the 0 bse index for the next calls
@@ -108,18 +113,18 @@ public final class MoveLine extends JDialog {
     ComplexPlace complexPlace = (ComplexPlace) selectedPlace.getAbstractPlace();
     int nNbBottle = complexPlace.getNbCaseUseInLine(nNumLieu, nOldSelected);
     if (nNbBottle == 0) {
-      Erreur.showSimpleErreur(this, getErrorWithProperty("Error.noItemsToMove", LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getErrorWithProperty(ERROR_NOITEMSTOMOVE, LabelProperty.PLURAL));
       return;
     }
     int nOldColumnCount = complexPlace.getColumnCountAt(nNumLieu, nOldSelected);
     int nNewColumnCount = complexPlace.getColumnCountAt(nNumLieu, nNewSelected);
     if (nOldColumnCount > nNewColumnCount && nNbBottle > nNewColumnCount) {
-      Erreur.showSimpleErreur(this, getError("Error.wrongNewColumnNumber"));
+      Erreur.showSimpleErreur(this, getError(ERROR_WRONGNEWCOLUMNNUMBER));
       return;
     }
     int nBottle = complexPlace.getNbCaseUseInLine(nNumLieu, nNewSelected);
     if (nBottle > 0) {
-      Erreur.showSimpleErreur(this, getErrorWithProperty("Error.stillItemsOnLine", LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getErrorWithProperty(ERROR_STILLITEMSONLINE, LabelProperty.PLURAL));
       return;
     }
     List<MyCellarObject> notMoved = new ArrayList<>();
@@ -139,19 +144,19 @@ public final class MoveLine extends JDialog {
     }
     if (!notMoved.isEmpty()) {
       final String value = notMoved.stream().map(IMyCellarObject::getNom).collect(Collectors.joining(", "));
-      Erreur.showSimpleErreur(this, getErrorWithProperty("MoveLine.UnableToMove", LabelProperty.PLURAL), value);
+      Erreur.showSimpleErreur(this, getErrorWithProperty(MOVELINE_UNABLETOMOVE, LabelProperty.PLURAL), value);
       Debug("ERROR: Unable to move objects: " + value);
     } else {
-      label_end.setText(getLabelWithProperty("MoveLine.ItemsMoved", LabelProperty.THE_PLURAL.withCapital()), true);
+      label_end.setText(getLabelWithProperty(MOVELINE_ITEMSMOVED, LabelProperty.THE_PLURAL.withCapital()), true);
     }
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
     ProgramPanels.updateCellOrganizerPanel(true);
     Debug("Validating and saving... Done");
   }
 
-  class MoveLinePanelPlacePosition extends PanelPlacePosition {
+  private class MoveLinePanelPlacePosition extends PanelPlacePosition {
 
-    public MoveLinePanelPlacePosition() {
+    private MoveLinePanelPlacePosition() {
       super(false, false, false, true);
     }
 

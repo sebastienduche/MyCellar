@@ -45,7 +45,7 @@ class ListValues extends AbstractTableModel {
     return getLabel(MAIN_NAME);
   }
 
-  protected void setObjects(List<? extends IMyCellarObject> b) {
+  void setObjects(List<? extends IMyCellarObject> b) {
     list = b;
     fireTableDataChanged();
   }

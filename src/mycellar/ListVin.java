@@ -5,6 +5,7 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarLabel;
+import mycellar.general.ResourceKey;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
@@ -20,6 +21,8 @@ import java.awt.Font;
 import java.util.LinkedList;
 import java.util.List;
 
+import static mycellar.general.ResourceKey.*;
+
 
 /**
  * Titre : Cave &agrave; vin
@@ -28,8 +31,8 @@ import java.util.List;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.6
- * @since 25/12/23
+ * @version 4.7
+ * @since 13/03/25
  */
 final class ListVin extends JPanel {
   private final ListValues listValues;
@@ -68,10 +71,10 @@ final class ListVin extends JPanel {
       }
     });
 
-    MyCellarLabel selectItemsLabel = new MyCellarLabel("ListVin.SelectItems", LabelProperty.THE_PLURAL);
+    MyCellarLabel selectItemsLabel = new MyCellarLabel(LISTVIN_SELECTITEMS, LabelProperty.THE_PLURAL, "");
 
     setLayout(new MigLayout("", "grow", "[grow][]"));
-    MyCellarLabel listProblemsLabel = new MyCellarLabel("ListVin.ListProblems", LabelProperty.PLURAL);
+    MyCellarLabel listProblemsLabel = new MyCellarLabel(LISTVIN_LISTPROBLEMS, LabelProperty.PLURAL, "");
     listProblemsLabel.setForeground(Color.red);
     listProblemsLabel.setFont(new Font("Dialog", Font.BOLD, 13));
     listProblemsLabel.setHorizontalAlignment(SwingConstants.CENTER);

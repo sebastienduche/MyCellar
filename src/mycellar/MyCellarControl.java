@@ -1,7 +1,6 @@
 package mycellar;
 
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
@@ -12,8 +11,11 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static java.util.List.of;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
+import static mycellar.general.ResourceErrorKey.*;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERCOLUMNNUMBER;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
@@ -25,8 +27,8 @@ import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 08/03/25
+ * @version 3.3
+ * @since 12/03/25
  */
 
 public final class MyCellarControl {
@@ -34,7 +36,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidBotteName(String name) {
     if (isNullOrEmpty(name)) {
       Debug("ERROR: Wrong Name");
-      Erreur.showSimpleErreur(MyCellarLabelManagement.getErrorWithProperty("Error.enterName", LabelProperty.OF_THE_SINGLE));
+      Erreur.showSimpleErreur(getErrorWithProperty(ERROR_ENTERNAME, LabelProperty.OF_THE_SINGLE));
       return true;
     }
     return false;
@@ -69,12 +71,12 @@ public final class MyCellarControl {
   public static boolean hasInvalidNumLieuNumber(int placeNum, boolean simplePlace, Component component) {
     if (simplePlace && placeNum <= -1) {
       Debug("ERROR: Wrong Part");
-      Erreur.showSimpleErreur(component, getError("Error.selectStorageNumber"));
+      Erreur.showSimpleErreur(component, getError(ERROR_SELECTSTORAGENUMBER));
       return true;
     }
     if (!simplePlace && placeNum <= 0) {
       Debug("ERROR: Wrong Part");
-      Erreur.showSimpleErreur(component, getError("Error.enterShelveNumber"));
+      Erreur.showSimpleErreur(component, getError(ERROR_ENTERSHELVENUMBER));
       return true;
     }
     return false;
@@ -87,7 +89,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidLineNumber(int line, Component component) {
     if (line <= 0) {
       Debug("ERROR: Wrong Line");
-      Erreur.showSimpleErreur(component, getError("Error.enterLineNumber"));
+      Erreur.showSimpleErreur(component, getError(ERROR_ENTERLINENUMBER));
       return true;
     }
     return false;
@@ -116,7 +118,7 @@ public final class MyCellarControl {
     Debug("Controling name...");
     if (isNullOrEmpty(name)) {
       Debug("ERROR: Name cannot be empty!");
-      Erreur.showSimpleErreur(getError("Error.requireStorageName"));
+      Erreur.showSimpleErreur(getError(ERROR_REQUIRESTORAGENAME));
       return false;
     }
 
@@ -124,7 +126,7 @@ public final class MyCellarControl {
       Paths.get(name.strip());
     } catch (InvalidPathException e) {
       Debug("ERROR: Forbidden Characters!");
-      Erreur.showSimpleErreur(getError("Error.forbiddenCharacters"));
+      Erreur.showSimpleErreur(getError(ERROR_FORBIDDENCHARACTERS));
       return false;
     }
     return true;
@@ -150,7 +152,7 @@ public final class MyCellarControl {
     Debug("Controlling path...");
     if (isNullOrEmpty(path)) {
       Debug("ERROR: Name cannot be empty!");
-      Erreur.showSimpleErreur(getError("MyCellarControl.emptyPath"));
+      Erreur.showSimpleErreur(getError(MYCELLARCONTROL_EMPTYPATH));
       return false;
     }
 
@@ -158,7 +160,7 @@ public final class MyCellarControl {
       Paths.get(path.strip());
     } catch (InvalidPathException e) {
       Debug("ERROR:Invalid Path!");
-      Erreur.showSimpleErreur(getError("MyCellarControl.invalidPath"));
+      Erreur.showSimpleErreur(getError(MYCELLARCONTROL_INVALIDPATH));
       return false;
     }
     return true;
@@ -174,7 +176,7 @@ public final class MyCellarControl {
     Debug("Controlling existing name...");
     if (PlaceUtils.isExistingPlace(name)) {
       Debug("ERROR: Name already use!");
-      Erreur.showSimpleErreur(getError("Error.storageNameAlreadyUsed"));
+      Erreur.showSimpleErreur(getError(ERROR_STORAGENAMEALREADYUSED));
       return false;
     }
     return true;
@@ -188,7 +190,7 @@ public final class MyCellarControl {
    * @return String
    */
   public static String controlAndUpdateExtension(final String name, final Filtre extension) {
-    if (hasInvalidExtension(name, List.of(extension))) {
+    if (hasInvalidExtension(name, of(extension))) {
       return name + extension.toString().toLowerCase();
     }
     return name;

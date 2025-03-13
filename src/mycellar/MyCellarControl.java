@@ -15,10 +15,18 @@ import static java.util.List.of;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
-import static mycellar.general.ResourceErrorKey.*;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERCOLUMNNUMBER;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERLINENUMBER;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERNAME;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERSHELVENUMBER;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
+import static mycellar.general.ResourceErrorKey.ERROR_FORBIDDENCHARACTERS;
+import static mycellar.general.ResourceErrorKey.ERROR_REQUIRESTORAGENAME;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGENUMBER;
+import static mycellar.general.ResourceErrorKey.ERROR_STORAGENAMEALREADYUSED;
+import static mycellar.general.ResourceErrorKey.MYCELLARCONTROL_EMPTYPATH;
+import static mycellar.general.ResourceErrorKey.MYCELLARCONTROL_INVALIDPATH;
 
 /**
  * Titre : Cave &agrave; vin
@@ -28,12 +36,12 @@ import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 3.3
- * @since 12/03/25
+ * @since 13/03/25
  */
 
 public final class MyCellarControl {
 
-  public static boolean hasInvalidBotteName(String name) {
+  public static boolean hasInvalidObjectName(String name) {
     if (isNullOrEmpty(name)) {
       Debug("ERROR: Wrong Name");
       Erreur.showSimpleErreur(getErrorWithProperty(ERROR_ENTERNAME, LabelProperty.OF_THE_SINGLE));
@@ -109,12 +117,9 @@ public final class MyCellarControl {
   }
 
   /**
-   * ctrlName Controle le nom saisi pour la creation d'un rangement
-   *
-   * @param name String
-   * @return boolean
+   * Check the name of a storage
    */
-  public static boolean ctrlName(String name) {
+  public static boolean hasValidStorageName(String name) {
     Debug("Controling name...");
     if (isNullOrEmpty(name)) {
       Debug("ERROR: Name cannot be empty!");
@@ -133,20 +138,14 @@ public final class MyCellarControl {
   }
 
   /**
-   * controlPath Controle le chemin d'un fichier
-   *
-   * @param file File
-   * @return boolean
+   * Check the file path
    */
   static boolean controlPath(File file) {
     return controlPath(file.getAbsolutePath());
   }
 
   /**
-   * controlPath Controle le chemin d'un fichier
-   *
-   * @param path String
-   * @return boolean
+   * Check the file path
    */
   static boolean controlPath(String path) {
     Debug("Controlling path...");
@@ -168,9 +167,6 @@ public final class MyCellarControl {
 
   /**
    * Check if the name of the storage is already used
-   *
-   * @param name String
-   * @return boolean
    */
   public static boolean ctrl_existingName(String name) {
     Debug("Controlling existing name...");
@@ -184,10 +180,6 @@ public final class MyCellarControl {
 
   /**
    * Check if the filename contains the extension and add it if needed
-   *
-   * @param name      String
-   * @param extension Filtre
-   * @return String
    */
   public static String controlAndUpdateExtension(final String name, final Filtre extension) {
     if (hasInvalidExtension(name, of(extension))) {
@@ -198,10 +190,6 @@ public final class MyCellarControl {
 
   /**
    * Check if the filename contains one of the file extensions
-   *
-   * @param name       String
-   * @param extensions List
-   * @return String
    */
   public static boolean hasInvalidExtension(final String name, final List<Filtre> extensions) {
     Debug("Controlling extension...");

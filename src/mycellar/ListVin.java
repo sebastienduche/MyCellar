@@ -21,8 +21,10 @@ import java.awt.Font;
 import java.util.LinkedList;
 import java.util.List;
 
-import static mycellar.general.ResourceKey.*;
-
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+import static javax.swing.SwingConstants.CENTER;
+import static mycellar.general.ResourceKey.LISTVIN_LISTPROBLEMS;
+import static mycellar.general.ResourceKey.LISTVIN_SELECTITEMS;
 
 /**
  * Titre : Cave &agrave; vin
@@ -77,10 +79,10 @@ final class ListVin extends JPanel {
     MyCellarLabel listProblemsLabel = new MyCellarLabel(LISTVIN_LISTPROBLEMS, LabelProperty.PLURAL, "");
     listProblemsLabel.setForeground(Color.red);
     listProblemsLabel.setFont(new Font("Dialog", Font.BOLD, 13));
-    listProblemsLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    listProblemsLabel.setHorizontalAlignment(CENTER);
 
     JScrollPane scrollpane = new JScrollPane(table);
-    scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+    scrollpane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
     add(scrollpane, "grow,wrap,width min(100,200)");
     add(selectItemsLabel, "width min(100,200)");
     setVisible(true);

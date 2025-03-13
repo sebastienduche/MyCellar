@@ -20,20 +20,28 @@ import mycellar.placesmanagement.places.PlacePosition;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JDialog;
-import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static javax.swing.SwingConstants.CENTER;
 import static mycellar.ProgramConstants.FONT_DIALOG_BIG_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
-import static mycellar.general.ResourceErrorKey.*;
-import static mycellar.general.ResourceKey.*;
+import static mycellar.general.ResourceErrorKey.ERROR_NOITEMSTOMOVE;
+import static mycellar.general.ResourceErrorKey.ERROR_STILLITEMSONLINE;
+import static mycellar.general.ResourceErrorKey.ERROR_WRONGLINENUMBER;
+import static mycellar.general.ResourceErrorKey.ERROR_WRONGNEWCOLUMNNUMBER;
+import static mycellar.general.ResourceErrorKey.MOVELINE_UNABLETOMOVE;
+import static mycellar.general.ResourceKey.MAIN_CLOSE;
 import static mycellar.general.ResourceKey.MAIN_MOVE;
+import static mycellar.general.ResourceKey.MAIN_VALIDATE;
+import static mycellar.general.ResourceKey.MOVELINE_ITEMSMOVED;
+import static mycellar.general.ResourceKey.MOVELINE_MOVEFROMLINE;
+import static mycellar.general.ResourceKey.MOVE_TOLINE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -60,9 +68,9 @@ public final class MoveLine extends JDialog {
     MyCellarLabel titre = new MyCellarLabel(MAIN_MOVE);
     titre.setForeground(Color.red);
     titre.setFont(FONT_DIALOG_BIG_BOLD);
-    titre.setHorizontalAlignment(SwingConstants.CENTER);
+    titre.setHorizontalAlignment(CENTER);
     label_end.setForeground(Color.red);
-    label_end.setHorizontalAlignment(SwingConstants.CENTER);
+    label_end.setHorizontalAlignment(CENTER);
     panelPlace.setModificationDetectionActive(false);
 
     MyCellarLabel label_new_line = new MyCellarLabel(MOVE_TOLINE);
@@ -70,8 +78,8 @@ public final class MoveLine extends JDialog {
     MyCellarButton validate = new MyCellarButton(MAIN_VALIDATE);
     MyCellarButton cancel = new MyCellarButton(MAIN_CLOSE);
 
-    validate.addActionListener((e) -> validateAndSave());
-    cancel.addActionListener((e) -> dispose());
+    validate.addActionListener(e -> validateAndSave());
+    cancel.addActionListener(e -> dispose());
 
     add(titre, "align center, span 3, wrap");
     add(new MyCellarLabel(MOVELINE_MOVEFROMLINE, LabelProperty.PLURAL, ""), "span 3, wrap");

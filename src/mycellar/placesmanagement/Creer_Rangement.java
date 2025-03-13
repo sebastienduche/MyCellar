@@ -318,7 +318,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     }
 
     final String nom = toCleanString(nom_obj.getText());
-    if (!MyCellarControl.ctrlName(nom)) {
+    if (!MyCellarControl.hasValidStorageName(nom)) {
       return;
     }
 
@@ -546,7 +546,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     String nom = toCleanString(nom_obj.getText());
 
     boolean bResul = MyCellarControl.ctrl_existingName(nom);
-    bResul &= MyCellarControl.ctrlName(nom);
+    bResul &= MyCellarControl.hasValidStorageName(nom);
 
     if (isSimplePlaceCheckbox.isSelected()) {
       Debug("Creating a simple place...");
@@ -653,7 +653,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       return;
     }
     String nom = toCleanString(nom_obj.getText());
-    if (!MyCellarControl.ctrlName(nom)) {
+    if (!MyCellarControl.hasValidStorageName(nom)) {
       return;
     }
 

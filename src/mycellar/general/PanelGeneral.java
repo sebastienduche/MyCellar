@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.io.Serial;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 
@@ -40,9 +41,20 @@ import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMQUIT;
+import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMSAVE;
+import static mycellar.general.ResourceErrorKey.ERROR_ITEMNOTYETADDED;
 import static mycellar.general.ResourceErrorKey.ERROR_MODIFICATIONINCOMPLETED;
+import static mycellar.general.ResourceErrorKey.ERROR_UNCHECKTRANSFORMTO4DIGITSYEAR;
+import static mycellar.general.ResourceKey.ADDVIN_ITEMMODIFIED;
+import static mycellar.general.ResourceKey.ADDVIN_NBITEMSSELECTED;
+import static mycellar.general.ResourceKey.ADDWINE_NOYEAR;
+import static mycellar.general.ResourceKey.MAIN_ARTIST;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
+import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
+import static mycellar.general.ResourceKey.MAIN_COMPOSER;
 import static mycellar.general.ResourceKey.MAIN_NAME;
+import static mycellar.general.ResourceKey.MAIN_YEAR;
+import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENT;
 
 /**
  * Titre : Cave &agrave; vin
@@ -52,15 +64,15 @@ import static mycellar.general.ResourceKey.MAIN_NAME;
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 2.1
- * @since 08/03/25
+ * @since 13/03/25
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPanelModifyable {
 
-  private final MyCellarLabel labelModified = new MyCellarLabel("AddVin.ItemModified", LabelProperty.SINGLE);
-  private final MyCellarButton manageContenance = new MyCellarButton("Parameter.CapacitiesManagement");
+  private final MyCellarLabel labelModified = new MyCellarLabel(ADDVIN_ITEMMODIFIED, LabelProperty.SINGLE, "");
+  private final MyCellarButton manageContenance = new MyCellarButton(PARAMETER_CAPACITIESMANAGEMENT);
   private final JModifyTextField year = new JModifyTextField();
   private final JModifyComboBox<String> type = new JModifyComboBox<>();
-  private final MyCellarCheckBox noYear = new MyCellarCheckBox("AddWine.NoYear");
+  private final MyCellarCheckBox noYear = new MyCellarCheckBox(ADDWINE_NOYEAR);
   private final MyCellarCheckBox yearAuto = new MyCellarCheckBox();
   private final int siecle = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
   private final JCompletionComboBox<String> name;
@@ -84,6 +96,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     };
     if (Program.isMusicType()) {
       artist = new JCompletionComboBox<>() {
+        @Serial
         private static final long serialVersionUID = 8137073557763181546L;
 
         @Override
@@ -96,6 +109,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
       };
 
       composer = new JCompletionComboBox<>() {
+        @Serial
         private static final long serialVersionUID = 8137073557763181546L;
 
         @Override
@@ -112,9 +126,9 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     setLayout(new MigLayout("", "[grow]30px[]10px[]10px[]30px[]10px[]", ""));
     add(labelModified, "hidemode 3");
     add(new MyCellarLabel(MAIN_NAME), "newline, grow");
-    add(new MyCellarLabel("Main.Year"));
+    add(new MyCellarLabel(MAIN_YEAR));
     add(yearAuto);
-    add(new MyCellarLabel("Main.CapacityOrSupport"), "wrap");
+    add(new MyCellarLabel(MAIN_CAPACITYORSUPPORT), "wrap");
     add(name, "growx");
     add(year, "width min(100,10%)");
     add(noYear);
@@ -125,8 +139,8 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
       JPanel panelArtistComposer = new JPanel();
       panelArtistComposer.setBounds(0, 0, 0, 0);
       panelArtistComposer.setLayout(new MigLayout("", "0px[]10px[]0px"));
-      panelArtistComposer.add(new MyCellarLabel("Main.Artist"), "grow");
-      panelArtistComposer.add(new MyCellarLabel("Main.Composer"), "grow, wrap");
+      panelArtistComposer.add(new MyCellarLabel(MAIN_ARTIST), "grow");
+      panelArtistComposer.add(new MyCellarLabel(MAIN_COMPOSER), "grow, wrap");
       panelArtistComposer.add(artist, "width min(100,10%)");
       panelArtistComposer.add(composer, "width min(100,10%)");
       add(panelArtistComposer, "span 5, newline");
@@ -192,14 +206,14 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false);
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_FALSE, false)) {
-        String erreur_txt1 = MessageFormat.format(getError("Error.uncheckTransformTo4digitsYear"), ((siecle + 1) * 100));
+        String erreur_txt1 = getError(ERROR_UNCHECKTRANSFORMTO4DIGITSYEAR, ((siecle + 1) * 100));
         Erreur.showInformationMessageWithKey(erreur_txt1, MyCellarSettings.ANNEE_AUTO_FALSE);
       }
     } else {
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, true);
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_TRUE, false)) {
-        String erreur_txt1 = MessageFormat.format(getError("Error.checkTransformTo4digitsYear"), ((siecle + 1) * 100));
+        String erreur_txt1 = getError(ERROR_UNCHECKTRANSFORMTO4DIGITSYEAR, ((siecle + 1) * 100));
         Erreur.showInformationMessageWithKey(erreur_txt1, MyCellarSettings.ANNEE_AUTO_TRUE);
       }
     }
@@ -231,7 +245,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
 
   public void setViewToSeveralItemsMode(int itemCount) {
     if (itemCount > 1) {
-      name.setSelectedItem(MessageFormat.format(getLabelWithProperty("AddVin.NbItemsSelected", LabelProperty.PLURAL), itemCount));
+      name.setSelectedItem(MessageFormat.format(getLabelWithProperty(ADDVIN_NBITEMSSELECTED, LabelProperty.PLURAL), itemCount));
       name.setEnabled(false);
       if (Program.isMusicType()) {
         composer.setEnabled(false);
@@ -264,7 +278,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   }
 
   private void setYearAuto() {
-    yearAuto.setText(MessageFormat.format(getLabel("PanelGeneral.4digitsYear"), ((siecle + 1) * 100)));
+    yearAuto.setText(getLabel(ResourceKey.PANELGENERAL_4DIGITSYEAR, ((siecle + 1) * 100)));
     yearAuto.setSelected(Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO, false));
   }
 
@@ -378,7 +392,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
 
   public boolean performValidation() {
     String nom = name.getEditor().getItem().toString();
-    if (MyCellarControl.hasInvalidBotteName(nom)) {
+    if (MyCellarControl.hasInvalidObjectName(nom)) {
       return false;
     }
 
@@ -435,7 +449,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
       if (modify) {
         label = getErrorWithProperty(ERROR_MODIFICATIONINCOMPLETED, name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
       } else {
-        label = getErrorWithProperty("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
+        label = getErrorWithProperty(ERROR_ITEMNOTYETADDED, THE_SINGLE.withCapital());
       }
       Debug("Message: Confirm to Quit?");
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError(ERROR_CONFIRMQUIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
@@ -447,15 +461,15 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   }
 
   public boolean askForSave(boolean modify) {
-    if (isModified()/*!name.getText().isEmpty()*/) {
+    if (isModified()) {
       String label;
       if (modify) {
         label = getErrorWithProperty(ERROR_MODIFICATIONINCOMPLETED, name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
       } else {
-        label = getErrorWithProperty("Error.ItemNotYetAdded", THE_SINGLE.withCapital());
+        label = getErrorWithProperty(ERROR_ITEMNOTYETADDED, THE_SINGLE.withCapital());
       }
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError("Error.confirmSave"), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError(ERROR_CONFIRMSAVE), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return true;
       }
@@ -492,7 +506,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     loadTypeComboBox();
 
     setYearAuto();
-    manageContenance.setText(getLabel("Parameter.CapacitiesManagement"));
+    manageContenance.setText(getLabel(PARAMETER_CAPACITIESMANAGEMENT));
 
     initYearAndContenance();
     setModificationDetectionActive(true);

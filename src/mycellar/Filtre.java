@@ -8,7 +8,14 @@ import static java.util.stream.Collectors.toList;
 import static mycellar.ProgramConstants.CHAR_DOT;
 import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.general.ResourceKey.*;
+import static mycellar.general.ResourceKey.FILTER_CSV;
+import static mycellar.general.ResourceKey.FILTER_HTML;
+import static mycellar.general.ResourceKey.FILTER_ODS;
+import static mycellar.general.ResourceKey.FILTER_PDF;
+import static mycellar.general.ResourceKey.FILTER_SINFO;
+import static mycellar.general.ResourceKey.FILTER_TXT;
+import static mycellar.general.ResourceKey.FILTER_XLS;
+import static mycellar.general.ResourceKey.FILTER_XML;
 
 /**
  * Titre : Cave &agrave; vin

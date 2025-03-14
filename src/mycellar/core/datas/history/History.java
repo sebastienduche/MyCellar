@@ -22,7 +22,7 @@ import java.time.LocalDate;
 
 import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
 
-/*
+/**
  * <p>Titre : Cave &agrave; vin</p>
  * <p>Description : Votre description</p>
  * <p>Copyright : Copyright (c) 1998</p>

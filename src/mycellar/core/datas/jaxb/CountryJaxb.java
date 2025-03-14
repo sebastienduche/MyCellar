@@ -17,8 +17,8 @@ import static mycellar.ProgramConstants.COUNTRY_LABEL_KEY;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 21/02/22
+ * @version 0.6
+ * @since 14/03/25
  */
 
 @XmlRootElement(name = "country")
@@ -63,7 +63,7 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
     if (id == null) {
       return "";
     }
-    String label = MyCellarLabelManagement.getLabel(COUNTRY_LABEL_KEY + id, false);
+    String label = MyCellarLabelManagement.getLabelFromCode(COUNTRY_LABEL_KEY + id, false);
     if (label.equals(COUNTRY_LABEL_KEY + id)) {
       return getName();
     }

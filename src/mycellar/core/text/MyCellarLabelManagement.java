@@ -25,8 +25,8 @@ import static mycellar.ProgramConstants.THREE_DOTS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 08/03/25
+ * @version 1.2
+ * @since 14/03/25
  */
 
 public class MyCellarLabelManagement {
@@ -89,23 +89,23 @@ public class MyCellarLabelManagement {
 
   @Deprecated(since = "version 90")
   public static String getLabel(String id) {
-    return getLabel(id, true);
+    return getLabelFromCode(id, true);
   }
 
   public static String getLabel(IResource id) {
-    return getLabel(id.getKey(), true);
+    return getLabelFromCode(id.getKey(), true);
   }
 
   public static String getLabel(IResource id, Object... parameters) {
-    return MessageFormat.format(getLabel(id.getKey(), true), parameters);
+    return MessageFormat.format(getLabelFromCode(id.getKey(), true), parameters);
   }
 
   @Deprecated(since = "version90")
   public static String getLabelWithProperty(String id, LabelProperty labelProperty) {
     if (labelProperty == null) {
-      return getLabel(id, true);
+      return getLabelFromCode(id, true);
     }
-    String label = getLabel(id, true);
+    String label = getLabelFromCode(id, true);
     label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
     if (labelProperty.isThreeDashes()) {
       label += THREE_DOTS;
@@ -131,7 +131,7 @@ public class MyCellarLabelManagement {
     return label;
   }
 
-  public static String getLabel(String id, boolean displayError) {
+  public static String getLabelFromCode(String id, boolean displayError) {
     try {
       return LanguageFileLoader.getLabel(id);
     } catch (MissingResourceException e) {

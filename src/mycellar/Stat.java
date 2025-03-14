@@ -13,6 +13,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
+import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.Part;
@@ -64,15 +65,43 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelForType;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceKey.MAIN_NAME;
+import static mycellar.general.ResourceKey.MAIN_NV;
+import static mycellar.general.ResourceKey.MAIN_OTHER;
 import static mycellar.general.ResourceKey.MAIN_SETTINGS;
 import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
 import static mycellar.general.ResourceKey.MAIN_STORAGE;
 import static mycellar.general.ResourceKey.STATS_1SHELVE;
+import static mycellar.general.ResourceKey.STATS_ALLBRACKETS;
+import static mycellar.general.ResourceKey.STATS_ALLSTORAGES;
+import static mycellar.general.ResourceKey.STATS_ALLYEARS;
+import static mycellar.general.ResourceKey.STATS_AVERAGEPRICE;
+import static mycellar.general.ResourceKey.STATS_BOTTLECOUNT;
+import static mycellar.general.ResourceKey.STATS_BRACKETSWITH;
+import static mycellar.general.ResourceKey.STATS_BYCOLOR;
+import static mycellar.general.ResourceKey.STATS_CHARTBAR;
+import static mycellar.general.ResourceKey.STATS_CHARTPIE;
 import static mycellar.general.ResourceKey.STATS_CHARTTYPE;
+import static mycellar.general.ResourceKey.STATS_COUNT;
+import static mycellar.general.ResourceKey.STATS_FROMTO;
+import static mycellar.general.ResourceKey.STATS_HISTORY;
+import static mycellar.general.ResourceKey.STATS_IN;
+import static mycellar.general.ResourceKey.STATS_INOUT;
+import static mycellar.general.ResourceKey.STATS_ITEMS;
+import static mycellar.general.ResourceKey.STATS_NBOBJECTPERLABEL;
+import static mycellar.general.ResourceKey.STATS_NOPRICE;
 import static mycellar.general.ResourceKey.STATS_NSHELVES;
+import static mycellar.general.ResourceKey.STATS_OUT;
+import static mycellar.general.ResourceKey.STATS_PRICEBRACKET;
+import static mycellar.general.ResourceKey.STATS_PRICES;
+import static mycellar.general.ResourceKey.STATS_QUESTIONPRICEBRACKET;
 import static mycellar.general.ResourceKey.STATS_SHELVENUMBER;
+import static mycellar.general.ResourceKey.STATS_STORAGES;
 import static mycellar.general.ResourceKey.STATS_TOTALITEMS;
+import static mycellar.general.ResourceKey.STATS_TOTALPRICE;
 import static mycellar.general.ResourceKey.STATS_TYPE;
+import static mycellar.general.ResourceKey.STATS_UNIQUEITEMS;
+import static mycellar.general.ResourceKey.STATS_UNKNOWN;
+import static mycellar.general.ResourceKey.STATS_YEARS;
 
 
 /**
@@ -82,8 +111,8 @@ import static mycellar.general.ResourceKey.STATS_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.8
- * @since 13/03/25
+ * @version 10.9
+ * @since 14/03/25
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -119,7 +148,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
     options.addActionListener(this::options_actionPerformed);
 
-    listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllStorages")));
+    listPlaces.addItem(new PlaceComboItem(getLabel(STATS_ALLSTORAGES)));
     Program.getAbstractPlaces().forEach(abstractPlace -> listPlaces.addItem(new PlaceComboItem(abstractPlace)));
 
     listStatsType.addItem(StatsEnum.PLACE);
@@ -133,8 +162,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listStatsType.addItemListener(this::typeStats_itemStateChanged);
     listPlaces.addItemListener(this::listStatOptionItemStateChanged);
 
-    listChart.addItem(getLabel("Stats.ChartBar"));
-    listChart.addItem(getLabel("Stats.ChartPie"));
+    listChart.addItem(getLabel(STATS_CHARTBAR));
+    listChart.addItem(getLabel(STATS_CHARTPIE));
     listChart.addItemListener(this::chartItemStateChanged);
     listChart.setEnabled(listStatsType.getSelectedIndex() != 0);
 
@@ -164,7 +193,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
   private void updateCountLabel() {
     int nbItems = Program.getNbItems();
-    end.setText(MessageFormat.format(getLabelWithProperty("Stats.TotalItems", new LabelProperty(nbItems > 1)), nbItems));
+    end.setText(MessageFormat.format(getLabelWithProperty(STATS_TOTALITEMS, new LabelProperty(nbItems > 1)), nbItems));
   }
 
   private void chartItemStateChanged(ItemEvent itemEvent) {
@@ -175,23 +204,22 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     if (listChart.getSelectedIndex() == 0) {
       Debug("Bar Chart");
       if (selectedItem == StatsEnum.YEAR) {
-        panelChart.setDataBarChart(listYear, getLabel("Stats.Years"));
+        panelChart.setDataBarChart(listYear, getLabel(STATS_YEARS));
       } else if (selectedItem == StatsEnum.PRICE) {
-        panelChart.setDataBarChart(listPrice, getLabel("Stats.Prices"));
+        panelChart.setDataBarChart(listPrice, getLabel(STATS_PRICES));
       }
     } else if (listChart.getSelectedIndex() == 1) {
       Debug("Pie Chart");
       if (selectedItem == StatsEnum.YEAR) {
-        panelChart.setDataPieChart(listYear, getLabel("Stats.Years"));
+        panelChart.setDataPieChart(listYear, getLabel(STATS_YEARS));
       } else if (selectedItem == StatsEnum.PRICE) {
-        panelChart.setDataPieChart(listPrice, getLabel("Stats.Prices"));
+        panelChart.setDataPieChart(listPrice, getLabel(STATS_PRICES));
       }
     }
   }
 
   /**
-   * typeStats_itemStateChanged: Fonction appelle lors d'un changement dans la
-   * premiere liste.
+   * Selection change on the type list
    */
   private void typeStats_itemStateChanged(ItemEvent e) {
     final StatsEnum selectedItem = getSelectedStatType();
@@ -288,7 +316,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
         }
       }
       for (int i = 0; i <= Program.getMaxPrice(); i += tranche) {
-        String label = MessageFormat.format(getLabel("Stats.FromTo"), i, (i + tranche - 1), Program.getCaveConfigString(DEVISE, ""));
+        String label = getLabel(STATS_FROMTO, i, (i + tranche - 1), Program.getCaveConfigString(DEVISE, ""));
         int nb = 0;
         for (int j = i; j < (i + tranche); j++) {
           if (mapPriceCount.containsKey(j)) {
@@ -299,7 +327,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           listPrice.add(new StatData(label, nb));
         }
       }
-      listPrice.add(new StatData(getLabel("Stats.NoPrice"), withoutPrice));
+      listPrice.add(new StatData(getLabel(STATS_NOPRICE), withoutPrice));
     }
     for (StatData price : listPrice) {
       final int priceCount = price.getCount();
@@ -309,12 +337,12 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       }
     }
     panel.updateUI();
-    end.setText(MessageFormat.format(getLabel("Stats.TotalPrice"), Program.sumAllPrices(), Program.getCaveConfigString(DEVISE, "")));
+    end.setText(getLabel(STATS_TOTALPRICE, Program.sumAllPrices(), Program.getCaveConfigString(DEVISE, "")));
     final int bottlesCount = Program.getStorage().getBottlesCount();
     if (bottlesCount > 0) {
-      moy.setText(MessageFormat.format(getLabel("Stats.AveragePrice"), (Program.sumAllPrices() / bottlesCount), Program.getCaveConfigString(DEVISE, "")));
+      moy.setText(getLabel(STATS_AVERAGEPRICE, (Program.sumAllPrices() / bottlesCount), Program.getCaveConfigString(DEVISE, "")));
     }
-    panelChart.setDataPieChart(listPrice, getLabel("Stats.Prices"));
+    panelChart.setDataPieChart(listPrice, getLabel(STATS_PRICES));
   }
 
   private void displayYear() {
@@ -330,9 +358,9 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
         }
       }
       if (Program.isWineType()) {
-        listYear.add(new StatData(getLabel("Main.NV"), Program.getNbNonVintage()));
+        listYear.add(new StatData(getLabel(MAIN_NV), Program.getNbNonVintage()));
       }
-      listYear.add(new StatData(getLabel("Main.Other"), Program.getTotalOtherYears()));
+      listYear.add(new StatData(getLabel(MAIN_OTHER), Program.getTotalOtherYears()));
     }
     for (StatData data : listYear) {
       panel.add(new MyCellarSimpleLabel(data.getName()));
@@ -341,8 +369,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     }
     panel.updateUI();
     panelChart.setVisible(true);
-    panelChart.setDataPieChart(listYear, getLabel("Stats.Years"));
-    end.setText(MessageFormat.format(getLabelWithProperty("Stats.Items", LabelProperty.PLURAL), Program.getNbItems()));
+    panelChart.setDataPieChart(listYear, getLabel(STATS_YEARS));
+    end.setText(MessageFormat.format(getLabelWithProperty(STATS_ITEMS, LabelProperty.PLURAL), Program.getNbItems()));
   }
 
   private void displayHistory() {
@@ -357,11 +385,11 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           .stream()
           .filter(History::isAddedOrDeleted)
           .forEach(this::mapToAddedDeletedStat);
-      mapAddedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100, getLabel("Stats.In") + SPACE + year, value.intValue())));
-      mapDeletedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100 + 1, getLabel("Stats.Out") + SPACE + year, value.intValue())));
+      mapAddedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100, getLabel(STATS_IN) + SPACE + year, value.intValue())));
+      mapDeletedPerYear.forEach((year, value) -> listHistory.add(new StatData(year * 100 + 1, getLabel(STATS_OUT) + SPACE + year, value.intValue())));
       listHistory.sort(Comparator.comparingInt(o -> o.id));
     }
-    final JFreeChart chart = panelChart.setDataBarChart(listHistory, getLabel("Stats.Inout"));
+    final JFreeChart chart = panelChart.setDataBarChart(listHistory, getLabel(STATS_INOUT));
     CategoryPlot cplot = (CategoryPlot) chart.getPlot();
     ((BarRenderer) cplot.getRenderer()).setBarPainter(new StandardBarPainter());
 
@@ -378,12 +406,12 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     options.setEnabled(false);
     moy.setText("");
 
-    panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabelWithProperty("Stats.Items", LabelProperty.PLURAL), "")));
+    panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabelWithProperty(STATS_ITEMS, LabelProperty.PLURAL), "")));
     panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getNbItems())), "span 2, align right, wrap");
-    panel.add(new MyCellarSimpleLabel(getLabelWithProperty("Stats.UniqueItems", LabelProperty.PLURAL)));
+    panel.add(new MyCellarSimpleLabel(getLabelWithProperty(STATS_UNIQUEITEMS, LabelProperty.PLURAL)));
     panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getStorage().getDistinctNames().size())), "span 2, align right, gapbottom 10px, wrap");
     if (Program.isWineType()) {
-      panel.add(new MyCellarSimpleLabel(getLabel("Stats.ByColor")), "wrap");
+      panel.add(new MyCellarSimpleLabel(getLabel(STATS_BYCOLOR)), "wrap");
       final Map<String, Long> collect = Program.getStorage().getAllList()
           .stream()
           .map(o -> (Bouteille) o)
@@ -391,7 +419,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       collect.forEach((color, value) -> {
         String label = BottleColor.getColor(color).toString();
         if (MyCellarUtils.isNullOrEmpty(label)) {
-          label = getLabel("Stats.Unknown");
+          label = getLabel(STATS_UNKNOWN);
         }
         panel.add(new MyCellarSimpleLabel(label));
         panel.add(new MyCellarSimpleLabel(Long.toString(value)), "span 2, align right, wrap");
@@ -409,7 +437,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       tableValues[i][0] = entry.getKey();
       tableValues[i][1] = entry.getValue().toString();
     }
-    final DefaultTableModel defaultTableModel = new DefaultTableModel(tableValues, new String[]{getLabel(MAIN_NAME), getLabel("Stats.Count")}) {
+    final DefaultTableModel defaultTableModel = new DefaultTableModel(tableValues, new String[]{getLabel(MAIN_NAME), getLabel(STATS_COUNT)}) {
       @Override
       public boolean isCellEditable(int row, int column) {
         return false;
@@ -421,7 +449,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     column.setMinWidth(50);
     column.setMaxWidth(50);
     panelOther.setLayout(new MigLayout("", "grow", "[][grow]"));
-    panelOther.add(new MyCellarSimpleLabel(getLabelWithProperty("Stats.NbObjectPerLabel", PLURAL)), "wrap");
+    panelOther.add(new MyCellarSimpleLabel(getLabelWithProperty(STATS_NBOBJECTPERLABEL, PLURAL)), "wrap");
     panelOther.add(new JScrollPane(table), "grow");
     panel.repaint();
     panelChart.setVisible(false);
@@ -441,7 +469,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           .sorted(Comparator.comparing(History::getLocaleDate))
           .forEach(history -> listNumberBottles.add(new StatData(history.getLocaleDate().format(DATE_FORMATER_DDMMYYYY), history.getTotalBottle())));
     }
-    panelChart.setLineChart(listNumberBottles, getLabelWithProperty("Stats.BottleCount", LabelProperty.PLURAL));
+    panelChart.setLineChart(listNumberBottles, getLabelWithProperty(STATS_BOTTLECOUNT, LabelProperty.PLURAL));
   }
 
   private void displayOnePlace() {
@@ -462,7 +490,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       panel.add(new MyCellarSimpleLabel(abstractPlace.getName()));
       displayPlace(abstractPlace);
     }
-    end.setText(MessageFormat.format(getLabelWithProperty("Stats.Items", LabelProperty.PLURAL), nbItems));
+    end.setText(MessageFormat.format(getLabelWithProperty(STATS_ITEMS, LabelProperty.PLURAL), nbItems));
   }
 
   private void displayPlace(AbstractPlace abstractPlace) {
@@ -517,7 +545,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   private void options_actionPerformed(ActionEvent e) {
     Debug("options_actionPerforming...");
     options.setSelected(false);
-    String value = JOptionPane.showInputDialog(this, getLabel("Stats.QuestionPriceBracket"));
+    String value = JOptionPane.showInputDialog(this, getLabel(STATS_QUESTIONPRICEBRACKET));
     if (StringUtils.isNumeric(value)) {
       Program.putCaveConfigInt(TRANCHE_PRIX, Integer.parseInt(value));
       listPrice.clear();
@@ -557,26 +585,26 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     listPlaces.setEnabled(false);
     if (selectedStatType == StatsEnum.PLACE) {
       listPlaces.setEnabled(true);
-      comboLabel.setText(getLabelWithProperty("Main.Storage", LabelProperty.SINGLE.withDoubleQuote()));
-      listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllStorages")));
+      comboLabel.setText(getLabelWithProperty(MAIN_STORAGE, LabelProperty.SINGLE.withDoubleQuote()));
+      listPlaces.addItem(new PlaceComboItem(getLabel(STATS_ALLSTORAGES)));
       Program.getAbstractPlaces().forEach(rangement -> listPlaces.addItem(new PlaceComboItem(rangement)));
     } else if (selectedStatType == StatsEnum.HISTORY) {
       listPlaces.setEnabled(true);
       comboLabel.setText("");
-      listPlaces.addItem(new PlaceComboItem(getLabel("Stats.Inout")));
-      listPlaces.addItem(new PlaceComboItem(getLabelWithProperty("Stats.BottleCount", LabelProperty.PLURAL)));
+      listPlaces.addItem(new PlaceComboItem(getLabel(STATS_INOUT)));
+      listPlaces.addItem(new PlaceComboItem(getLabelWithProperty(STATS_BOTTLECOUNT, LabelProperty.PLURAL)));
     } else if (selectedStatType == StatsEnum.PRICE) {
       listPlaces.setEnabled(true);
-      comboLabel.setText(getLabel("Stats.PriceBracket"));
+      comboLabel.setText(getLabel(STATS_PRICEBRACKET));
       listPlaces.removeAllItems();
-      listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllBrackets")));
-      listPlaces.addItem(new PlaceComboItem(getLabelWithProperty("Stats.BracketsWith", LabelProperty.PLURAL)));
+      listPlaces.addItem(new PlaceComboItem(getLabel(STATS_ALLBRACKETS)));
+      listPlaces.addItem(new PlaceComboItem(getLabelWithProperty(STATS_BRACKETSWITH, LabelProperty.PLURAL)));
     } else if (selectedStatType == StatsEnum.YEAR) {
       comboLabel.setText("");
-      listPlaces.addItem(new PlaceComboItem(getLabel("Stats.AllYears")));
+      listPlaces.addItem(new PlaceComboItem(getLabel(STATS_ALLYEARS)));
     } else if (selectedStatType == StatsEnum.OBJECT) {
       comboLabel.setText("");
-      listPlaces.addItem(new PlaceComboItem(getLabelWithProperty("Stats.BottleCount", LabelProperty.PLURAL)));
+      listPlaces.addItem(new PlaceComboItem(getLabelWithProperty(ResourceKey.STATS_BOTTLECOUNT, LabelProperty.PLURAL)));
     }
     listPlaces.setSelectedIndex(0);
   }
@@ -594,7 +622,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           .filter(Objects::nonNull)
           .forEach(abstractPlace -> dataset.setValue(abstractPlace.getName(), abstractPlace.getTotalCountCellUsed()));
 
-      JFreeChart chart = ChartFactory.createPieChart(getLabel("Stats.AllStorages"),          // chart title
+      JFreeChart chart = ChartFactory.createPieChart(getLabel(STATS_ALLSTORAGES),          // chart title
           dataset,                // data
           false,                   // include legend
           true,
@@ -609,7 +637,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       removeAll();
       DefaultPieDataset dataset = new DefaultPieDataset();
       for (Part part : complexPlace.getParts()) {
-        dataset.setValue(MessageFormat.format(getLabel("Stats.ShelveNumber"), part.getNumberAsDisplay()), complexPlace.getCountCellUsed(part));
+        dataset.setValue(getLabel(STATS_SHELVENUMBER, part.getNumberAsDisplay()), complexPlace.getCountCellUsed(part));
       }
       JFreeChart chart = ChartFactory.createPieChart(complexPlace.getName(),          // chart title
           dataset,                // data
@@ -646,7 +674,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           .filter(statData -> statData.getCount() > 0)
           .forEach(statData -> dataset.addValue(statData.getCount(), statData.getName(), statData.getName()));
       JFreeChart chart = ChartFactory.createBarChart3D(title,          // chart title
-          "", getLabel("Stats.Count"),
+          "", getLabel(STATS_COUNT),
           dataset,                // data
           PlotOrientation.VERTICAL,
           true,                   // include legend
@@ -666,7 +694,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       datas.forEach(statData -> dataset.addValue(statData.getCount(), title, statData.getName()));
 
       final JFreeChart chart = ChartFactory.createLineChart(title,
-          null, getLabel("Stats.Count"),
+          null, getLabel(STATS_COUNT),
           dataset, PlotOrientation.VERTICAL, true, true, false);
       ChartPanel chartPanel = new ChartPanel(chart);
       add(chartPanel, "grow");
@@ -726,10 +754,10 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   }
 
   private enum StatsEnum implements IMyCellarEnum {
-    PLACE(0, getLabel("Stats.Storages")),
-    YEAR(1, getLabel("Stats.Years")),
-    PRICE(2, getLabel("Stats.Prices")),
-    HISTORY(3, getLabel("Stats.History")),
+    PLACE(0, getLabel(STATS_STORAGES)),
+    YEAR(1, getLabel(STATS_YEARS)),
+    PRICE(2, getLabel(STATS_PRICES)),
+    HISTORY(3, getLabel(STATS_HISTORY)),
     OBJECT(4, getLabelForType(Program.getProgramType(), PLURAL.withCapital()));
 
     private final int index;

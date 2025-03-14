@@ -39,8 +39,8 @@ import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 08/04/22
+ * @version 3.1
+ * @since 14/03/25
  */
 
 public final class CountryVignobleController {
@@ -375,7 +375,7 @@ public final class CountryVignobleController {
       Program.showException(e);
       return null;
     }
-    vignobleListJaxb.checkAvaibility();
+    vignobleListJaxb.checkAvailability();
     Collections.sort(vignobleListJaxb.getCountryVignobleJaxbList());
     for (CountryVignobleJaxb vignoble : vignobleListJaxb.getCountryVignobleJaxbList()) {
       vignoble.checkAvaibility();

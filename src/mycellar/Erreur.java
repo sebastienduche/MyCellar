@@ -12,7 +12,9 @@ import java.awt.Component;
 import static mycellar.ProgramConstants.FONT_BUTTON_SMALL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR032;
 import static mycellar.general.ResourceErrorKey.ERROR_ERROR;
+import static mycellar.general.ResourceKey.MAIN_DONTSHOWNEXTTIME;
 
 
 /**
@@ -22,8 +24,8 @@ import static mycellar.general.ResourceErrorKey.ERROR_ERROR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 08/03/25
+ * @version 3.1
+ * @since 14/03/25
  */
 public class Erreur {
 
@@ -48,7 +50,7 @@ public class Erreur {
    * Information message with one label.
    */
   public static void showInformationMessage(String text) {
-    JOptionPane.showMessageDialog(MainFrame.getInstance(), text, getError("Error032"), JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(MainFrame.getInstance(), text, getError(ERROR032), JOptionPane.INFORMATION_MESSAGE);
   }
 
   /**
@@ -84,14 +86,14 @@ public class Erreur {
     JPanel panel = new JPanel();
     panel.setLayout(new MigLayout("", "grow", "[]"));
     MyCellarSimpleLabel label2 = new MyCellarSimpleLabel(text2);
-    JCheckBox checkNotShow = new JCheckBox(getLabel("Main.DontShowNextTime"));
+    JCheckBox checkNotShow = new JCheckBox(getLabel(MAIN_DONTSHOWNEXTTIME));
     checkNotShow.setFont(FONT_BUTTON_SMALL);
     panel.add(new MyCellarSimpleLabel(text1));
     panel.add(label2, "newline, hidemode 3");
     panel.add(checkNotShow, "newline, hidemode 3, gaptop 15px");
     checkNotShow.setVisible(MyCellarUtils.isDefined(keyword));
     label2.setVisible(!text2.isEmpty());
-    JOptionPane.showMessageDialog(target, panel, information ? getError("Error032") : getError(ERROR_ERROR), information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(target, panel, information ? getError(ERROR032) : getError(ERROR_ERROR), information ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
     if (checkNotShow.isSelected()) {
       Program.putCaveConfigBool(keyword, true);
     }

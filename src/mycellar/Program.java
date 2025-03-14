@@ -101,6 +101,10 @@ import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR162;
+import static mycellar.general.ResourceErrorKey.ERROR_CHECKFILEPATH;
+import static mycellar.general.ResourceErrorKey.ERROR_FILENOTFOUND;
+import static mycellar.general.ResourceErrorKey.PROGRAM_NOTSUPPORTEDVERSION;
 import static mycellar.general.ResourceErrorKey.SAVEMODIFICATIONS;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 
@@ -111,8 +115,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.4
- * @since 08/03/25
+ * @version 29.5
+ * @since 14/03/25
  */
 
 public final class Program {
@@ -312,7 +316,7 @@ public final class Program {
     }
     int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
     if (currentVersion > VERSION) {
-      Erreur.showSimpleErreur(getError("Program.NotSupportedVersion"));
+      Erreur.showSimpleErreur(getError(PROGRAM_NOTSUPPORTEDVERSION));
       throw new UnableToOpenMyCellarFileException("The file version '" + currentVersion + "' is not supported by this program version: " + VERSION);
     }
   }
@@ -456,7 +460,7 @@ public final class Program {
       }
 
     } else {
-      Erreur.showSimpleErreur(getError("Error162"));
+      Erreur.showSimpleErreur(getError(ERROR162));
     }
   }
 
@@ -625,7 +629,7 @@ public final class Program {
     }
 
     if (!myCellarFile.exists()) {
-      Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), myCellarFile.getFile().getAbsolutePath()));
+      Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, myCellarFile.getFile().getAbsolutePath()));
 
       putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, list.pop());
       putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, list.pop());
@@ -1013,7 +1017,7 @@ public final class Program {
     if (check) {
       if (!file.exists() || file.isDirectory()) {
         //Fichier non trouve Verifier le chemin
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), filename), getError("Error.checkFilePath"));
+        Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, filename), getError(ERROR_CHECKFILEPATH));
         return false;
       }
     }
@@ -1058,7 +1062,7 @@ public final class Program {
     return listCaveModified;
   }
 
-  public static PDFProperties getPDFProperties() {
+  static PDFProperties getPDFProperties() {
     String title = getCaveConfigString(MyCellarSettings.PDF_TITLE, "");
     int titleSize = getCaveConfigInt(MyCellarSettings.TITLE_SIZE, 10);
     int textSize = getCaveConfigInt(MyCellarSettings.TEXT_SIZE, 10);
@@ -1276,7 +1280,7 @@ public final class Program {
     throw new NotImplementedException("Not implemented For New Type");
   }
 
-  public static void throwNotImplemented() {
+  static void throwNotImplemented() {
     throw new NotImplementedException("Not implemented yet!");
   }
 

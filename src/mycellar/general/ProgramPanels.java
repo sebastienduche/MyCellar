@@ -675,7 +675,7 @@ public class ProgramPanels {
     private String modifiedLabel;
     private boolean modified;
 
-    public TabLabel(int index, String label) {
+    private TabLabel(int index, String label) {
       this.index = index;
       this.label = label;
       modifiedLabel = label + STAR;

@@ -12,6 +12,7 @@ import static mycellar.Filtre.EXTENSION_SINFO;
 import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.SLASH;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -20,8 +21,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 13/01/24
+ * @version 0.7
+ * @since 14/01/24
  */
 public final class MyCellarUtils {
 
@@ -55,7 +56,7 @@ public final class MyCellarUtils {
     try {
       return Integer.parseInt(value);
     } catch (NumberFormatException e) {
-      Erreur.showSimpleErreur(getError("Error.enterNumericValue"));
+      Erreur.showSimpleErreur(getError(ERROR_ENTERNUMERICVALUE));
       return null;
     }
   }

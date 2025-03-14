@@ -2,8 +2,14 @@ package mycellar.core;
 
 import mycellar.core.text.MyCellarLabelManagement;
 
-import java.text.MessageFormat;
 import java.util.Objects;
+
+import static mycellar.general.ResourceErrorKey.MYCELLARERROR_FULLCAISSE;
+import static mycellar.general.ResourceErrorKey.MYCELLARERROR_INEXISTINGCASE;
+import static mycellar.general.ResourceErrorKey.MYCELLARERROR_INEXISTINGNUMPLACE;
+import static mycellar.general.ResourceErrorKey.MYCELLARERROR_INEXISTINGPLACE;
+import static mycellar.general.ResourceErrorKey.MYCELLARERROR_OCCUPIEDCASE;
+
 
 /**
  * Titre : Cave &agrave; vin
@@ -12,8 +18,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 26/12/23
+ * @version 0.9
+ * @since 14/03/25
  */
 
 public class MyCellarError {
@@ -55,13 +61,13 @@ public class MyCellarError {
   public String getErrorMessage() {
     return switch (error) {
       case INEXISTING_PLACE ->
-          MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingPlace"), place);
+          MyCellarLabelManagement.getError(MYCELLARERROR_INEXISTINGPLACE, place);
       case INEXISTING_NUM_PLACE ->
-          MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingNumPlace"), numLieu);
-      case FULL_BOX -> MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.fullCaisse"), numLieu);
+          MyCellarLabelManagement.getError(MYCELLARERROR_INEXISTINGNUMPLACE, numLieu);
+      case FULL_BOX -> MyCellarLabelManagement.getError(MYCELLARERROR_FULLCAISSE, numLieu);
       case INEXISTING_CELL ->
-          MessageFormat.format(MyCellarLabelManagement.getError("MyCellarError.inexistingCase"), place);
-      case CELL_FULL -> MyCellarLabelManagement.getError("MyCellarError.occupiedCase");
+          MyCellarLabelManagement.getError(MYCELLARERROR_INEXISTINGCASE, place);
+      case CELL_FULL -> MyCellarLabelManagement.getError(MYCELLARERROR_OCCUPIEDCASE);
     };
   }
 

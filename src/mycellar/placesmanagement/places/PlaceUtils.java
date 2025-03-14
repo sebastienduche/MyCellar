@@ -59,6 +59,11 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_NUM_PLACE;
 import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR120;
+import static mycellar.general.ResourceErrorKey.ERROR161;
+import static mycellar.general.ResourceKey.MAIN_HTMLEXPORT;
+import static mycellar.general.ResourceKey.MAIN_NOTITLE;
+import static mycellar.general.ResourceKey.MYCELLAR;
 
 /**
  * Titre : Cave &agrave; vin
@@ -150,7 +155,7 @@ public final class PlaceUtils {
       progressBar.setValue(progressBar.getMaximum());
     } catch (IOException ioe) {
       Debug("ERROR: Error writing CSV \n" + ioe);
-      Erreur.showSimpleErreur(getError("Error120"), getError("Error161"));
+      Erreur.showSimpleErreur(getError(ERROR120), getError(ERROR161));
       return false;
     }
     return true;
@@ -177,7 +182,7 @@ public final class PlaceUtils {
       style.appendChild(doc.createTextNode("table, td, th { border: 1px solid black; border-collapse:collapse} "
           + "tr:nth-child(even) {background-color: #f2f2f2} "));
       root.appendChild(style);
-      title.appendChild(doc.createTextNode(getLabel("Main.HTMLExport")));
+      title.appendChild(doc.createTextNode(getLabel(MAIN_HTMLEXPORT)));
       Element body = doc.createElement("body");
       root.appendChild(body);
       Element table = doc.createElement("table");
@@ -333,7 +338,7 @@ public final class PlaceUtils {
          var output = new FileOutputStream(file)) { //Creation du fichier
       String sheet_title = title;
       if (sheet_title.isEmpty()) {
-        sheet_title = getLabel("Main.NoTitle");
+        sheet_title = getLabel(MAIN_NOTITLE);
       }
       SXSSFSheet sheet = workbook.createSheet();
       workbook.setSheetName(0, sheet_title);
@@ -447,7 +452,7 @@ public final class PlaceUtils {
       boolean onePlacePerSheet = Program.getCaveConfigBool(MyCellarSettings.ONE_PER_SHEET_XLS, false);
 
       if (title.isEmpty()) {
-        title = getLabel("MyCellar");
+        title = getLabel(MYCELLAR);
       }
       int count = 0;
       SXSSFSheet sheet = workbook.createSheet();

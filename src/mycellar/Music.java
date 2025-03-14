@@ -7,6 +7,7 @@ import mycellar.core.common.music.MusicSupport;
 import mycellar.core.datas.jaxb.tracks.Track;
 import mycellar.core.datas.jaxb.tracks.Tracks;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.general.ResourceErrorKey;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
@@ -33,6 +34,7 @@ import static mycellar.MyCellarUtils.assertObjectType;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.general.ResourceErrorKey.IMPORT_ERRORVALUE;
 import static mycellar.general.XmlUtils.getTextContent;
 
 /**
@@ -629,14 +631,14 @@ public class Music extends MyCellarObject implements Serializable {
         try {
           Double.valueOf(value);
         } catch (NumberFormatException e) {
-          throw new MyCellarException(MessageFormat.format(getError("Import.errorValue"), value, field));
+          throw new MyCellarException(getError(IMPORT_ERRORVALUE, value, field));
         }
         break;
       case EXTERNAL_ID:
         try {
           Integer.parseInt(value);
         } catch (NumberFormatException e) {
-          throw new MyCellarException(MessageFormat.format(getError("Import.errorValue"), value, field));
+          throw new MyCellarException(getError(IMPORT_ERRORVALUE, value, field));
         }
         break;
       default:
@@ -648,7 +650,7 @@ public class Music extends MyCellarObject implements Serializable {
   public boolean updateID() {
     if (id != -1) {
       final List<MyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
-      if (bouteilles.size() == 1 && bouteilles.get(0).equals(this)) {
+      if (bouteilles.size() == 1 && bouteilles.getFirst().equals(this)) {
         return false;
       }
     }

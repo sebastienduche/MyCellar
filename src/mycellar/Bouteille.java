@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,6 +37,7 @@ import java.util.stream.Collectors;
 import static mycellar.MyCellarUtils.assertObjectType;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.general.ResourceErrorKey.IMPORT_ERRORVALUE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -46,8 +46,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.2
- * @since 30/12/22
+ * @version 8.3
+ * @since 14/03/25
  *
  * <p>Java class for anonymous complex type.
  *
@@ -602,7 +602,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
         try {
           Double.valueOf(value);
         } catch (NumberFormatException e) {
-          throw new MyCellarException(MessageFormat.format(getError("Import.errorValue"), value, field));
+          throw new MyCellarException(getError(IMPORT_ERRORVALUE, value, field));
         }
         break;
       default:
@@ -614,7 +614,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
   public boolean updateID() {
     if (id != -1) {
       final List<IMyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
-      if (bouteilles.size() == 1 && bouteilles.get(0).equals(this)) {
+      if (bouteilles.size() == 1 && bouteilles.getFirst().equals(this)) {
         return false;
       }
     }

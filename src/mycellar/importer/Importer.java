@@ -82,6 +82,19 @@ import static mycellar.ProgramConstants.SLASH;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR017;
+import static mycellar.general.ResourceErrorKey.ERROR018;
+import static mycellar.general.ResourceErrorKey.ERROR024;
+import static mycellar.general.ResourceErrorKey.ERROR025;
+import static mycellar.general.ResourceErrorKey.ERROR026;
+import static mycellar.general.ResourceErrorKey.ERROR042;
+import static mycellar.general.ResourceErrorKey.ERROR043;
+import static mycellar.general.ResourceErrorKey.ERROR082;
+import static mycellar.general.ResourceErrorKey.ERROR140;
+import static mycellar.general.ResourceErrorKey.ERROR141;
+import static mycellar.general.ResourceErrorKey.ERROR143;
+import static mycellar.general.ResourceErrorKey.ERROR204;
+import static mycellar.general.ResourceErrorKey.ERROR205;
 import static mycellar.general.ResourceErrorKey.ERROR_CHECKFILEPATH;
 import static mycellar.general.ResourceErrorKey.ERROR_FILENAMESHOULDNTBEEMPTY;
 import static mycellar.general.ResourceErrorKey.ERROR_FILENOTFOUND;
@@ -407,7 +420,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         resetLabelProgress();
         Debug("ERROR: No field selected");
         // Please select fields
-        Erreur.showSimpleErreur(getError("Error025"), getError("Error026"));
+        Erreur.showSimpleErreur(getError(ERROR025), getError(ERROR026));
         importe.setEnabled(true);
         return;
       }
@@ -424,7 +437,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         if (MyCellarControl.hasInvalidExtension(filename, asList(Filtre.FILTRE_TXT, Filtre.FILTRE_CSV))) {
           resetLabelProgress();
           Debug("ERROR: Not a Text File");
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error023"), filename), getError("Error024"));
           importe.setEnabled(true);
           return;
         }
@@ -432,7 +444,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         if (MyCellarControl.hasInvalidExtension(filename, List.of(Filtre.FILTRE_XML))) {
           resetLabelProgress();
           Debug("ERROR: Not a XML File");
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error204"), filename), getError("Error205"));
+          Erreur.showSimpleErreur(getError(ERROR204, filename), getError(ERROR205));
           importe.setEnabled(true);
           return;
         }
@@ -458,7 +470,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (isMoreThanOne) {
         resetLabelProgress();
         Debug("ERROR: fields cannot be selected more than one time");
-        Erreur.showSimpleErreur(getError("Error017"), getError("Error018"));
+        Erreur.showSimpleErreur(getError(ERROR017), getError(ERROR018));
         importe.setEnabled(true);
         return;
       }
@@ -466,7 +478,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (mapFieldCount.get(MyCellarFields.NAME) == null) {
         resetLabelProgress();
         Debug("ERROR: No column for wine name");
-        Erreur.showSimpleErreur(getErrorWithProperty(ERROR_NOCOLUMNSELECTEDFORNAME, LabelProperty.OF_THE_SINGLE), getErrorWithProperty("Error143", LabelProperty.SINGLE));
+        Erreur.showSimpleErreur(getErrorWithProperty(ERROR_NOCOLUMNSELECTEDFORNAME, LabelProperty.OF_THE_SINGLE), getErrorWithProperty(ERROR143, LabelProperty.SINGLE));
         importe.setEnabled(true);
         return;
       }
@@ -475,7 +487,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (mapFieldCount.get(MyCellarFields.PLACE) == null) {
         resetLabelProgress();
         Debug("ERROR: No place defined, a place will be create");
-        Erreur.showInformationMessage(getError("Error140"), getError("Error141"));
+        Erreur.showInformationMessage(getError(ERROR140), getError(ERROR141));
 
         List<MyOptionKey> myOptionKeys = new ArrayList<>();
         int i;
@@ -555,7 +567,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             if (line.split(fieldSeparator).length <= 1) {
               resetLabelProgress();
               Debug("ERROR: No separator found");
-              Erreur.showSimpleErreur(getError("Error042"), getError("Error043"));
+              Erreur.showSimpleErreur(getError(ERROR042), getError(ERROR043));
               importe.setEnabled(true);
               reader.close();
               return;
@@ -695,7 +707,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       Program.showException(e, false);
       resetLabelProgress();
       Debug("ERROR: " + e);
-      Erreur.showSimpleErreur(getError("Error082"));
+      Erreur.showSimpleErreur(getError(ERROR082));
       importe.setEnabled(true);
       return false;
     }

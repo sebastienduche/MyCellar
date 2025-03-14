@@ -40,6 +40,7 @@ import static mycellar.ProgramConstants.DASH;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceKey.MYXMLDOM_ITEMHERE;
+import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
 
 /**
  * Titre : Cave &agrave; vin
@@ -48,8 +49,8 @@ import static mycellar.general.ResourceKey.MYXMLDOM_ITEMHERE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.4
- * @since 07/03/25
+ * @version 4.5
+ * @since 14/03/25
  */
 
 public class XmlUtils {
@@ -271,7 +272,7 @@ public class XmlUtils {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);
             name = doc.createElement(NOM_PARTIE);
-            name.setTextContent(MessageFormat.format(getLabel("Storage.ShelveNumber"), i + ((SimplePlace) rangement).getPartNumberIncrement()));
+            name.setTextContent(getLabel(STORAGE_SHELVENUMBER, i + ((SimplePlace) rangement).getPartNumberIncrement()));
             partie.appendChild(name);
             Element caisse = doc.createElement(CAISSE);
             partie.appendChild(caisse);
@@ -281,7 +282,7 @@ public class XmlUtils {
               Element vin_name = doc.createElement(VIN_1);
               vin.appendChild(vin_name);
               if (preview) {
-                vin_name.setTextContent(getLabelWithProperty(MYXMLDOM_ITEMHERE.getKey(), LabelProperty.A_SINGLE.withCapital()));
+                vin_name.setTextContent(getLabelWithProperty(MYXMLDOM_ITEMHERE, LabelProperty.A_SINGLE.withCapital()));
               } else {
                 IMyCellarObject b = ((SimplePlace) rangement).getObjectAt(i, j);
                 if (b != null)
@@ -298,7 +299,7 @@ public class XmlUtils {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);
             name = doc.createElement(NOM_PARTIE);
-            name.setTextContent(MessageFormat.format(getLabel("Storage.ShelveNumber"), i + 1));
+            name.setTextContent(getLabel(STORAGE_SHELVENUMBER, i + 1));
             partie.appendChild(name);
             int lig = complexPlace.getLineCountAt(i);
             for (int j = 0; j < lig; j++) {

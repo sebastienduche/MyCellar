@@ -55,6 +55,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
+import static javax.swing.SwingConstants.RIGHT;
 import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
@@ -139,8 +140,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
   public Stat() {
     Debug("Stats");
-    end.setHorizontalAlignment(SwingConstants.RIGHT);
-    moy.setHorizontalAlignment(SwingConstants.RIGHT);
+    end.setHorizontalAlignment(RIGHT);
+    moy.setHorizontalAlignment(RIGHT);
     panel.setLayout(new MigLayout("", "[][][grow]", ""));
     panel.setFont(FONT_PANEL);
 

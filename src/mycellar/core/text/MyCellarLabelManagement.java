@@ -170,7 +170,7 @@ public class MyCellarLabelManagement {
   }
 
   @Deprecated(since = "version 90")
-  public static String getError(String id) {
+  private static String getError(String id) {
     try {
       return LanguageFileLoader.getError(id);
     } catch (MissingResourceException e) {

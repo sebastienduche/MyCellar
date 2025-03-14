@@ -53,7 +53,15 @@ import static mycellar.core.MyCellarSettings.CREATE_TAB_DEFAULT;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR087;
+import static mycellar.general.ResourceErrorKey.ERROR127;
+import static mycellar.general.ResourceErrorKey.ERROR128;
+import static mycellar.general.ResourceErrorKey.ERROR_LISTOFITEMSINSTORAGEGENERATED;
+import static mycellar.general.ResourceErrorKey.ERROR_NOSTORAGESELECTED;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTANEXCELFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTHTMLFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGETOGENERATE;
+import static mycellar.general.ResourceErrorKey.ERROR_SIMPLESTORAGESELECTED;
 import static mycellar.general.ResourceKey.CREATETABLE_FILEGENERATED;
 import static mycellar.general.ResourceKey.CREATETABLE_SELECTSTORAGESTOGENERATE;
 import static mycellar.general.ResourceKey.CREER;
@@ -244,7 +252,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     if (type_XML.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(filename, singletonList(Filtre.FILTRE_XML))) {
         Debug("ERROR: Not a XML File");
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error087"), filename));
+        Erreur.showSimpleErreur(getError(ERROR087, filename));
         return;
       }
     } else if (type_HTML.isSelected()) {
@@ -256,7 +264,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     } else if (type_XLS.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(filename, asList(Filtre.FILTRE_XLSX, Filtre.FILTRE_XLS, Filtre.FILTRE_ODS))) {
         Debug("ERROR: Not a XLS File");
-        Erreur.showSimpleErreur(getError(ResourceErrorKey.ERROR_NOTANEXCELFILE, filename));
+        Erreur.showSimpleErreur(getError(ERROR_NOTANEXCELFILE, filename));
         return;
       }
     }
@@ -272,7 +280,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
 
     if (rangements.isEmpty()) {
       Debug("ERROR: No place selected");
-      Erreur.showInformationMessage(getError(ResourceErrorKey.ERROR_NOSTORAGESELECTED), getError(ResourceErrorKey.ERROR_SELECTSTORAGETOGENERATE));
+      Erreur.showInformationMessage(getError(ERROR_NOSTORAGESELECTED), getError(ERROR_SELECTSTORAGETOGENERATE));
       return;
     }
     long caisseCount = 0;
@@ -292,11 +300,11 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
       if (caisseCount > 0) {
         String erreur_txt1, erreur_txt2;
         if (caisseCount == 1) {
-          erreur_txt1 = getError(ResourceErrorKey.ERROR_SIMPLESTORAGESELECTED);
-          erreur_txt2 = getErrorWithProperty(ResourceErrorKey.ERROR_LISTOFITEMSINSTORAGEGENERATED, LabelProperty.PLURAL);
+          erreur_txt1 = getError(ERROR_SIMPLESTORAGESELECTED);
+          erreur_txt2 = getErrorWithProperty(ERROR_LISTOFITEMSINSTORAGEGENERATED, LabelProperty.PLURAL);
         } else {
-          erreur_txt1 = getError("Error127"); //"Vous avez selectionne des rangements de type Caisse
-          erreur_txt2 = getErrorWithProperty("Error128", LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.
+          erreur_txt1 = getError(ERROR127); //"Vous avez selectionne des rangements de type Caisse
+          erreur_txt2 = getErrorWithProperty(ERROR128, LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.
         }
         Erreur.showInformationMessageWithKey(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
       }

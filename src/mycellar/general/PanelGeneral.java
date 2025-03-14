@@ -40,6 +40,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceErrorKey.ERROR_CHECKTRANSFORMTO4DIGITSYEAR;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMQUIT;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMSAVE;
 import static mycellar.general.ResourceErrorKey.ERROR_ITEMNOTYETADDED;
@@ -63,8 +64,8 @@ import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENT;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 13/03/25
+ * @version 2.2
+ * @since 14/03/25
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPanelModifyable {
 
@@ -213,7 +214,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
       Program.putCaveConfigBool(MyCellarSettings.ANNEE_AUTO, true);
 
       if (!Program.getCaveConfigBool(MyCellarSettings.ANNEE_AUTO_TRUE, false)) {
-        String erreur_txt1 = getError(ERROR_UNCHECKTRANSFORMTO4DIGITSYEAR, ((siecle + 1) * 100));
+        String erreur_txt1 = getError(ERROR_CHECKTRANSFORMTO4DIGITSYEAR, ((siecle + 1) * 100));
         Erreur.showInformationMessageWithKey(erreur_txt1, MyCellarSettings.ANNEE_AUTO_TRUE);
       }
     }

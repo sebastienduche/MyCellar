@@ -10,6 +10,8 @@ import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.MANAGECOLUMN_ERRORNB;
+import static mycellar.general.ResourceKey.MAIN_COLUMN;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -18,8 +20,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 26/12/23
+ * @version 1.2
+ * @since 14/03/25
  */
 
 public class ManageColumnModel extends DefaultTableModel {
@@ -60,7 +62,7 @@ public class ManageColumnModel extends DefaultTableModel {
     if (column == 0) {
       return "";
     }
-    return getLabel("Main.Column");
+    return getLabel(MAIN_COLUMN);
   }
 
   @Override
@@ -94,7 +96,7 @@ public class ManageColumnModel extends DefaultTableModel {
       }
     }
     if (selectedColumns.isEmpty()) {
-      Erreur.showSimpleErreur(getError("ManageColumn.ErrorNb"));
+      Erreur.showSimpleErreur(getError(MANAGECOLUMN_ERRORNB));
       values[row] = Boolean.TRUE;
       selectedColumns.add(list.get(row).getIndex());
     }

@@ -15,28 +15,23 @@ import mycellar.general.IResource;
 public class LabelKey {
 
   private final LabelType labelType;
-  @Deprecated(since = "version80")
-  private final String key;
   private LabelProperty labelProperty;
   private String value;
   private final IResource resource;
 
   public LabelKey(IResource resource) {
     labelType = LabelType.LABEL;
-    key = resource.getKey();
     this.resource = resource;
   }
 
   public LabelKey(LabelType labelType, IResource resource) {
     this.labelType = labelType;
-    key = resource.getKey();
     this.resource = resource;
   }
 
   public LabelKey(IResource resource, LabelProperty labelProperty) {
     labelType = LabelType.LABEL;
     this.labelProperty = labelProperty;
-    key = resource.getKey();
     this.resource = resource;
   }
 
@@ -44,7 +39,6 @@ public class LabelKey {
     labelType = LabelType.LABEL;
     this.labelProperty = labelProperty;
     this.value = value;
-    key = resource.getKey();
     this.resource = resource;
   }
 
@@ -52,17 +46,11 @@ public class LabelKey {
   public LabelKey(String value) {
     labelType = LabelType.NONE;
     this.value = value;
-    key = null;
     resource = null;
   }
 
   LabelType getLabelType() {
     return labelType;
-  }
-
-  @Deprecated(since = "version80")
-  public String getKey() {
-    return key;
   }
 
   public IResource getResource() {

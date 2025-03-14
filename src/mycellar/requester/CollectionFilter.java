@@ -9,6 +9,14 @@ import java.util.LinkedList;
 
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.COLLECTIONFILTER_ERRORFIELDFIELD;
+import static mycellar.general.ResourceKey.COLLECTIONFILTER_ERRORFIELDPARENTHESIS;
+import static mycellar.general.ResourceKey.COLLECTIONFILTER_ERRORKEYWORDPARAMETER;
+import static mycellar.general.ResourceKey.COLLECTIONFILTER_ERRORKEYWORDPARENTHESIS;
+import static mycellar.general.ResourceKey.COLLECTIONFILTER_ERRORPARENTHESIS;
+import static mycellar.general.ResourceKey.COLLECTIONFILTER_ERRORPARENTHESISKEYWORD;
+import static mycellar.general.ResourceKey.COLLECTIONFILTER_ERRORSTART;
+import static mycellar.general.ResourceKey.COLLECTIONFILTER_ERRORVALUEREQUIRED;
 
 /**
  * <p>Titre : Cave &agrave; vin
@@ -17,8 +25,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 26/12/23
+ * @version 1.0
+ * @since 14/03/25
  */
 
 @SuppressWarnings(value = {"rawtypes", "unchecked"})
@@ -376,45 +384,45 @@ public class CollectionFilter<T> {
     IPredicate<?> previous = null;
     for (Predicates predicate : predicates) {
       if (first && Predicates.isKeywordPredicate(predicate.getPredicate())) {
-        error = getLabel("CollectionFilter.ErrorStart");
+        error = getLabel(COLLECTIONFILTER_ERRORSTART);
         Debug("Cant start by AND/OR");
         return false;
       }
       if (predicate.getPredicate().isValueRequired()) {
         if (predicate.getValue() == null) {
-          error = getLabel("CollectionFilter.ErrorValueRequired");
+          error = getLabel(COLLECTIONFILTER_ERRORVALUEREQUIRED);
           Debug("Value required for this predicate");
           return false;
         }
         if (predicate.getPredicate().isEmptyValueForbidden() && predicate.getValue().toString().isEmpty()) {
-          error = getLabel("CollectionFilter.ErrorValueRequired");
+          error = getLabel(COLLECTIONFILTER_ERRORVALUEREQUIRED);
           Debug("Value required for this predicate");
           return false;
         }
       }
       if (previous != null) {
         if ((Predicates.OPEN_PARENTHESIS.equals(previous) || Predicates.isKeywordPredicate(previous)) && Predicates.isKeywordPredicate(predicate.getPredicate())) {
-          error = getLabel("CollectionFilter.ErrorKeywordParameter");
+          error = getLabel(COLLECTIONFILTER_ERRORKEYWORDPARAMETER);
           Debug("Cant put AND/OR after open parenthesis or keyword");
           return false;
         }
         if (Predicates.OPEN_PARENTHESIS.equals(previous) && Predicates.isKeywordPredicate(predicate.getPredicate())) {
-          error = getLabel("CollectionFilter.ErrorKeywordParenthesis");
+          error = getLabel(COLLECTIONFILTER_ERRORKEYWORDPARENTHESIS);
           Debug("Cant put keyword after open parenthesis");
           return false;
         }
         if (Predicates.CLOSE_PARENTHESIS.equals(predicate.getPredicate()) && Predicates.isKeywordPredicate(previous)) {
-          error = getLabel("CollectionFilter.ErrorParenthesisKeyword");
+          error = getLabel(COLLECTIONFILTER_ERRORPARENTHESISKEYWORD);
           Debug("Cant put close parenthesis after keyword");
           return false;
         }
         if (Predicates.CLOSE_PARENTHESIS.equals(previous) && !Predicates.isKeywordPredicate(predicate.getPredicate())) {
-          error = getLabel("CollectionFilter.ErrorFieldParenthesis");
+          error = getLabel(COLLECTIONFILTER_ERRORFIELDPARENTHESIS);
           Debug("Cant put field after close parenthesis");
           return false;
         }
         if (Predicates.isFieldPredicate(predicate.getPredicate()) && Predicates.isFieldPredicate(previous)) {
-          error = getLabel("CollectionFilter.ErrorFieldField");
+          error = getLabel(COLLECTIONFILTER_ERRORFIELDFIELD);
           Debug("Cant put field after field");
           return false;
         }
@@ -429,7 +437,7 @@ public class CollectionFilter<T> {
       first = false;
     }
     if (openParenthesis != closeParenthesis) {
-      error = getLabel("CollectionFilter.ErrorParenthesis");
+      error = getLabel(COLLECTIONFILTER_ERRORPARENTHESIS);
       Debug("Should have the same number of open and close parenthesis");
       return false;
     }

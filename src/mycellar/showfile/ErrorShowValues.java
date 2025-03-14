@@ -34,6 +34,7 @@ import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
 import static mycellar.general.ResourceErrorKey.SHOWFILE_ERRORADDINGBOTTLE;
 import static mycellar.general.ResourceKey.ERRORSHOWVALUES_ERROR;
 import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
+import static mycellar.general.ResourceKey.MAIN_CHOOSECELL;
 import static mycellar.general.ResourceKey.MAIN_ITEM;
 import static mycellar.general.ResourceKey.MAIN_KO;
 import static mycellar.general.ResourceKey.MAIN_OK;
@@ -294,7 +295,7 @@ public class ErrorShowValues extends TableShowValues {
             if (MyCellarUtils.isAnyOf(column, List.of(Column.PLACE, Column.NUM_PLACE, Column.LINE, Column.COLUMN))) {
               final PanelPlacePosition panelPlace = new PanelPlacePosition(abstractPlace, true, false, true, true, false, true, false);
               JOptionPane.showMessageDialog(MainFrame.getInstance(), panelPlace,
-                  getLabel("Main.ChooseCell"),
+                  getLabel(MAIN_CHOOSECELL),
                   JOptionPane.PLAIN_MESSAGE);
               PlacePosition place = panelPlace.getSelectedPlacePosition();
               if (place.hasPlace()) {

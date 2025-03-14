@@ -16,6 +16,9 @@ import java.util.Collection;
 
 import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.PANELREQUEST_OPERATORS;
+import static mycellar.general.ResourceKey.PANELREQUEST_PARAMETERS;
+import static mycellar.general.ResourceKey.PANELREQUEST_REQUEST;
 
 
 /**
@@ -25,8 +28,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 26/12/23
+ * @version 1.5
+ * @since 14/03/25
  */
 public final class PanelRequest extends JPanel {
 
@@ -68,8 +71,8 @@ public final class PanelRequest extends JPanel {
     }
     panelKeyword.add(new LabelSearch(Predicates.PRICE, panelKeyword, true));
     panelKeyword.add(new LabelSearch(Predicates.STATUS, panelKeyword, true));
-    panelKeyword.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel("PanelRequest.Parameters")));
-    panelOperator.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel("PanelRequest.Operators")));
+    panelKeyword.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel(PANELREQUEST_PARAMETERS)));
+    panelOperator.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel(PANELREQUEST_OPERATORS)));
     add(panelKeyword, "grow");
     add(panelOperator, "grow, wrap");
     panelRequest = new PanelDAndD(true);
@@ -77,7 +80,7 @@ public final class PanelRequest extends JPanel {
     JScrollPane scroll = new JScrollPane(panelRequest);
     scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
     scroll.setBorder(BorderFactory.createEmptyBorder());
-    panelRequest.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel("PanelRequest.Request")));
+    panelRequest.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel(PANELREQUEST_REQUEST)));
     add(scroll, "h 75::, grow, span 2");
     add(labelError, "newline, span 2, center, hidemode 3");
   }

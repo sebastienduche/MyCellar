@@ -12,6 +12,8 @@ import java.util.List;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_ERROR;
+import static mycellar.general.ResourceKey.MAIN_APPELLATIONAOC;
+import static mycellar.general.ResourceKey.MAIN_APPELLATIONIGP;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.VINEYARDPANEL_DELAPPELLATIONQUESTION;
 import static mycellar.general.ResourceKey.VINEYARDPANEL_UNABLEDELETEAPPELLATION;
@@ -23,8 +25,8 @@ import static mycellar.general.ResourceKey.VINEYARDPANEL_UNABLEDELETEAPPELLATION
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 08/03/25
+ * @version 1.8
+ * @since 14/03/25
  */
 
 class VineyardTableModel extends DefaultTableModel {
@@ -41,8 +43,8 @@ class VineyardTableModel extends DefaultTableModel {
   @Override
   public String getColumnName(int column) {
     return switch (column) {
-      case 0 -> getLabel("Main.AppellationAOC");
-      case 1 -> getLabel("Main.AppellationIGP");
+      case 0 -> getLabel(MAIN_APPELLATIONAOC);
+      case 1 -> getLabel(MAIN_APPELLATIONIGP);
       default -> "";
     };
   }

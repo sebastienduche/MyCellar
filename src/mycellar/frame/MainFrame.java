@@ -113,6 +113,7 @@ import static mycellar.general.ResourceKey.MAIN_CREATETABLE;
 import static mycellar.general.ResourceKey.MAIN_CUT;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
 import static mycellar.general.ResourceKey.MAIN_DELETESTORAGE;
+import static mycellar.general.ResourceKey.MAIN_EDIT;
 import static mycellar.general.ResourceKey.MAIN_EXIT;
 import static mycellar.general.ResourceKey.MAIN_EXPORT;
 import static mycellar.general.ResourceKey.MAIN_EXPORTFILE;
@@ -566,7 +567,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     menuPlace.setText(getLabel(MAIN_STORAGE));
     menuWine.setText(getLabelWithProperty(MAIN_ITEM, LabelProperty.SINGLE.withCapital()));
     menuTools.setText(getLabel(MAIN_TOOLS));
-    menuEdition.setText(getLabel(MAIN_EXIT));
+    menuEdition.setText(getLabel(MAIN_EDIT));
 
     // differents choix de chaque menu
     menuShowWorksheet.setText(getLabel(SHOWFILE_WORKSHEET));

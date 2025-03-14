@@ -78,8 +78,8 @@ import static mycellar.general.ResourceKey.SHOWHISTORY_CLEARHISTORY;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.7
- * @since 12/03/25
+ * @version 5.8
+ * @since 14/03/25
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -150,7 +150,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
     add(filterCbx);
     add(new MyCellarButton(SHOWHISTORY_CLEARHISTORY, new ClearHistoryAction()), "gapleft 10px");
     add(new JLabel(), "growx");
-    add(new MyCellarButton(SHOWFILE_RESTORESEVERAL, new RestoreAction()), "align right, wrap");
+    add(new MyCellarButton(SHOWFILE_RESTORE, new RestoreAction()), "align right, wrap");
     add(new JScrollPane(table), "grow, wrap");
     add(new MyCellarButton(MAIN_DELETE, new DeleteAction()), "center");
   }

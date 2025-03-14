@@ -38,7 +38,6 @@ public class MyCellarLabelManagement {
   }
 
   public static void updateText(IMyCellarComponent component, LabelKey labelKey) {
-//    component.setText(getLabel(labelKey.getLabelType(), labelKey.getLabelType() == LabelType.NONE ? labelKey.getValue() : labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue()));
     component.setText(getLabel(labelKey));
   }
 
@@ -60,11 +59,6 @@ public class MyCellarLabelManagement {
         case NONE -> key.getKey();
       };
     }
-  }
-
-  @Deprecated(since = "version80")
-  public static String getLabel(String id) {
-    return getLabelFromCode(id, true);
   }
 
   public static String getLabel(IResource id) {
@@ -116,10 +110,6 @@ public class MyCellarLabelManagement {
   }
 
   private static String getLabel(LabelKey labelKey) {
-//    return getLabel(labelKey.getLabelType(), labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue());
-//  }
-//  @Deprecated(since = "version80")
-//  private static String getLabel(LabelType type, String code, LabelProperty labelProperty, String labelValue) {
     LabelType type = labelKey.getLabelType();
     LabelProperty labelProperty = labelKey.getLabelProperty();
     String labelValue = labelKey.getValue();
@@ -140,41 +130,6 @@ public class MyCellarLabelManagement {
         case ERROR -> MessageFormat.format(getErrorWithProperty(resource, labelProperty), labelValue).strip();
         case NONE -> resource.getKey();
       };
-    }
-  }
-
-  @Deprecated(since = "version80")
-  private static String getLabelWithProperty(String id, LabelProperty labelProperty) {
-    if (labelProperty == null) {
-      return getLabelFromCode(id, true);
-    }
-    String label = getLabelFromCode(id, true);
-    label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
-    if (labelProperty.isThreeDashes()) {
-      label += THREE_DOTS;
-    }
-    if (labelProperty.isDoubleQuote()) {
-      label += LanguageFileLoader.isFrench() ? SPACE + DOUBLE_DOT : DOUBLE_DOT;
-    }
-    return label;
-  }
-
-  @Deprecated(since = "version80")
-  private static String getErrorWithProperty(String id, LabelProperty labelProperty) {
-    if (labelProperty == null) {
-      return getError(id);
-    }
-    String label = getError(id);
-    return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
-  }
-
-  @Deprecated(since = "version80")
-  private static String getError(String id) {
-    try {
-      return LanguageFileLoader.getError(id);
-    } catch (MissingResourceException e) {
-      JOptionPane.showMessageDialog(null, "Missing Error '" + id + "'", "Error", JOptionPane.ERROR_MESSAGE);
-      return id;
     }
   }
 
@@ -206,9 +161,9 @@ public class MyCellarLabelManagement {
       default -> "";
     };
     value = switch (programType) {
-      case BOOK -> getLabel("Program." + prefix + "book" + postfix);
-      case MUSIC -> getLabel("Program." + prefix + "disc" + postfix);
-      default -> getLabel("Program." + prefix + "wine" + postfix);
+      case BOOK -> getLabelFromCode("Program." + prefix + "book" + postfix, true);
+      case MUSIC -> getLabelFromCode("Program." + prefix + "disc" + postfix, true);
+      default -> getLabelFromCode("Program." + prefix + "wine" + postfix, true);
     };
     if (labelProperty.isUppercaseFirst()) {
       value = StringUtils.capitalize(value);

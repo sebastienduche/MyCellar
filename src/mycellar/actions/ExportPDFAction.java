@@ -13,11 +13,13 @@ import javax.swing.JFileChooser;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
+import static mycellar.general.ResourceKey.EXPORT_PDF;
+
 public class ExportPDFAction extends AbstractAction {
 
   public ExportPDFAction() {
     super("", MyCellarImage.PDF);
-    putValue(SHORT_DESCRIPTION, MyCellarLabelManagement.getLabel("Export.Pdf"));
+    putValue(SHORT_DESCRIPTION, MyCellarLabelManagement.getLabel(EXPORT_PDF));
   }
 
   @Override

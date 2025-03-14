@@ -88,10 +88,14 @@ import static mycellar.general.ResourceKey.CREATESTORAGE_ACTIVATELIMIT;
 import static mycellar.general.ResourceKey.CREATESTORAGE_ALLLINESNOTSAME;
 import static mycellar.general.ResourceKey.CREATESTORAGE_ALLLINESSAME;
 import static mycellar.general.ResourceKey.CREATESTORAGE_CREATED;
+import static mycellar.general.ResourceKey.CREATESTORAGE_FIRSTSHELVENUMBER;
+import static mycellar.general.ResourceKey.CREATESTORAGE_LIMITPERSHELVE;
 import static mycellar.general.ResourceKey.CREATESTORAGE_PREVIEW;
 import static mycellar.general.ResourceKey.CREATESTORAGE_SELECTPLACETOMODIFY;
+import static mycellar.general.ResourceKey.CREATESTORAGE_SHELVENUMBER;
 import static mycellar.general.ResourceKey.CREATESTORAGE_SIMPLESTORAGE;
 import static mycellar.general.ResourceKey.CREATESTORAGE_STORAGEMODIFIED;
+import static mycellar.general.ResourceKey.CREATESTORAGE_TYPELINES;
 import static mycellar.general.ResourceKey.IMPORT_STORAGENAME;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_CREATE;
@@ -107,8 +111,8 @@ import static mycellar.placesmanagement.places.ComplexPlace.copyParts;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 18.2
- * @since 13/03/25
+ * @version 18.3
+ * @since 16/03/25
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   // TODO Can we manage the modified status correctly?
@@ -213,18 +217,18 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     add(isSimplePlaceCheckbox, "wrap");
 
     panelType = new JPanel();
-    panelType.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel("CreateStorage.TypeLines"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelType.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel(CREATESTORAGE_TYPELINES), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelType.setLayout(new GridLayout(0, 2));
     panelType.add(allLinesSameRadio);
     panelType.add(notAllLinesSameRadio);
 
     panelStartCaisse = new JPanel();
-    panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel("CreateStorage.FirstShelveNumber"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelStartCaisse.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel(CREATESTORAGE_FIRSTSHELVENUMBER), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelStartCaisse.setLayout(new MigLayout("", "[]", "[]"));
     panelStartCaisse.add(partIncrementSimplePlaceSpinner, "wmin 50");
 
     panelLimite = new JPanel();
-    panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel("CreateStorage.LimitPerShelve"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelLimite.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel(CREATESTORAGE_LIMITPERSHELVE), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelLimite.setLayout(new MigLayout("", "[][]", "[]"));
     panelLimite.add(isSimplePlaceLimitedCheckbox, "gapright 10");
     panelLimite.add(simplePlaceLimitSpinner, "split 2, wmin 50, hidemode 3");
@@ -236,7 +240,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     model.setValues(listPart);
 
     JPanel panelPartie = new JPanel();
-    panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel("CreateStorage.ShelveNumber"), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
+    panelPartie.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(RAISED), getLabel(CREATESTORAGE_SHELVENUMBER), 0, 0, FONT_PANEL), BorderFactory.createEmptyBorder()));
     panelPartie.setLayout(new MigLayout("", "[]", "[]"));
     panelPartie.add(partCountSpinner, "wmin 50");
 

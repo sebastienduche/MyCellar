@@ -21,7 +21,7 @@ import java.util.Objects;
  * @version 0.6
  * @since 26/12/23
  */
-final class LabelSearch extends JPanel {
+final public class LabelSearch extends JPanel {
 
   private final IPredicate<?> predicate;
   private final MyCellarSimpleLabel myCellarLabel = new MyCellarSimpleLabel();

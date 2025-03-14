@@ -59,7 +59,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -128,8 +127,8 @@ import static mycellar.general.ResourceKey.SUPPR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 24.9
- * @since 13/03/25
+ * @version 25.0
+ * @since 14/03/25
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -318,7 +317,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
         erreur_txt2 = getError(ERROR_CONFIRM1DELETE);
       } else {
-        erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL), listToDelete.size());
+        erreur_txt1 = getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL, listToDelete.size());
         erreur_txt2 = getError(ERROR_CONFIRMNDELETE);
       }
       int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -342,7 +341,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           if (listToDelete.size() == 1) {
             resultInfoLabel.setText(getLabelWithProperty(SEARCH_1ITEMDELETED, LabelProperty.SINGLE));
           } else {
-            resultInfoLabel.setText(MessageFormat.format(getLabelWithProperty(SEARCH_NITEMDELETED, LabelProperty.PLURAL), listToDelete.size()));
+            resultInfoLabel.setText(getLabelWithProperty(SEARCH_NITEMDELETED, LabelProperty.PLURAL, listToDelete.size()));
           }
         });
       }

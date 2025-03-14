@@ -7,7 +7,6 @@ import mycellar.general.ProgramPanels;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.text.MessageFormat;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -25,8 +24,8 @@ import static mycellar.general.ResourceKey.MAIN_VALUES;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 08/03/25
+ * @version 1.5
+ * @since 14/03/25
  */
 class CapacityTableModel extends DefaultTableModel {
   public static final int STATE = 1;
@@ -74,7 +73,7 @@ class CapacityTableModel extends DefaultTableModel {
         JOptionPane.showMessageDialog(MainFrame.getInstance(), getLabel(CAPACITYPANEL_UNABLEDELETECAPACITY), getError(ERROR_ERROR), JOptionPane.ERROR_MESSAGE);
         return;
       }
-      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getLabel(CAPACITYPANEL_DELCAPACITYQUESTION), oldValue), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), getLabel(CAPACITYPANEL_DELCAPACITYQUESTION, oldValue), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         return;
       }
       list.remove(oldValue);

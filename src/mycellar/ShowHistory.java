@@ -34,7 +34,6 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -231,7 +230,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
           erreur_txt2 = getLabel(SHOWFILE_RESTOREONE);
         } else {
-          erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL), toRestoreList.size());
+          erreur_txt1 = getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL, toRestoreList.size());
           erreur_txt2 = getLabel(SHOWFILE_RESTORESEVERAL);
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION),

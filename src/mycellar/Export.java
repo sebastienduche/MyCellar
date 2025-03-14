@@ -47,7 +47,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -97,8 +96,8 @@ import static mycellar.myoptions.MyOptionObjectType.MY_CELLAR_RADIO_BUTTON;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.8
- * @since 12/03/25
+ * @version 11.9
+ * @since 14/03/25
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -290,21 +289,21 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   public void run() {
     valider.setEnabled(false);
     openit.setEnabled(false);
-    String nom = toCleanString(file.getText());
+    String fileName = toCleanString(file.getText());
     end.setText(getLabel(EXPORT_EXPORTINPROGRESS));
 
-    if (!MyCellarControl.controlPath(nom)) {
+    if (!MyCellarControl.controlPath(fileName)) {
       end.setText("");
       valider.setEnabled(true);
       return;
     }
 
-    File aFile = new File(nom);
+    File aFile = new File(fileName);
     if (aFile.exists()) {
       // Existing file. replace?
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(
           MainFrame.getInstance(),
-          MessageFormat.format(getError(EXPORT_REPLACEFILEQUESTION), aFile.getAbsolutePath()),
+          getError(EXPORT_REPLACEFILEQUESTION, aFile.getAbsolutePath()),
           getLabel(MAIN_ASKCONFIRMATION),
           JOptionPane.YES_NO_OPTION,
           JOptionPane.QUESTION_MESSAGE)) {
@@ -315,10 +314,10 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     }
 
     if (MyCellarRadioButtonXML.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(nom, Collections.singletonList(Filtre.FILTRE_XML))) {
+      if (MyCellarControl.hasInvalidExtension(fileName, Collections.singletonList(Filtre.FILTRE_XML))) {
         // Error, not a xml file
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR087), nom));
+        Erreur.showSimpleErreur(getError(ERROR087, fileName));
         valider.setEnabled(true);
         return;
       }
@@ -333,10 +332,10 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         end.setText(getError(ERROR_EXPORTERROR));
       }
     } else if (MyCellarRadioButtonHTML.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_HTML))) {
+      if (MyCellarControl.hasInvalidExtension(fileName, List.of(Filtre.FILTRE_HTML))) {
         // Error: Not a html file
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR_NOTHTMLFILE), nom));
+        Erreur.showSimpleErreur(getError(ERROR_NOTHTMLFILE, fileName));
         valider.setEnabled(true);
         return;
       }
@@ -349,10 +348,10 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         end.setText(getError(ERROR_EXPORTERROR));
       }
     } else if (MyCellarRadioButtonCSV.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_CSV))) {
+      if (MyCellarControl.hasInvalidExtension(fileName, List.of(Filtre.FILTRE_CSV))) {
         // Error not a csv file
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR_NOTCSVFILE), nom));
+        Erreur.showSimpleErreur(getError(ERROR_NOTCSVFILE, fileName));
         valider.setEnabled(true);
         return;
       }
@@ -366,9 +365,9 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonXLS.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(nom, asList(Filtre.FILTRE_XLSX, Filtre.FILTRE_XLS, Filtre.FILTRE_ODS))) {
+      if (MyCellarControl.hasInvalidExtension(fileName, asList(Filtre.FILTRE_XLSX, Filtre.FILTRE_XLS, Filtre.FILTRE_ODS))) {
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR_NOTANEXCELFILE), nom));
+        Erreur.showSimpleErreur(getError(ERROR_NOTANEXCELFILE, fileName));
         valider.setEnabled(true);
         return;
       }
@@ -384,10 +383,10 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonPDF.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(nom, List.of(Filtre.FILTRE_PDF))) {
+      if (MyCellarControl.hasInvalidExtension(fileName, List.of(Filtre.FILTRE_PDF))) {
         // Error, not a pdf file
         end.setText("");
-        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR157), nom));
+        Erreur.showSimpleErreur(getError(ERROR157, fileName));
         valider.setEnabled(true);
         return;
       }

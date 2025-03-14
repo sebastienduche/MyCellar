@@ -34,7 +34,6 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.event.ActionEvent;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -243,7 +242,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
           JOptionPane.showMessageDialog(MainFrame.getInstance(), getLabel(VINEYARDPANEL_UNABLEDELETEVIGNOBLE), getError(ERROR_ERROR), JOptionPane.ERROR_MESSAGE);
           return;
         }
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getLabel(VINEYARDPANEL_DELVIGNOBLEQUESTION), countryVignobleJaxb.getName()), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getLabel(VINEYARDPANEL_DELVIGNOBLEQUESTION, countryVignobleJaxb.getName()), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         comboVignoble.removeItemAt(comboVignoble.getSelectedIndex());

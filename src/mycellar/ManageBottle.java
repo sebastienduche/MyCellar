@@ -27,7 +27,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.text.MessageFormat;
 
 import static mycellar.MyCellarUtils.nonNullValueOrDefault;
 import static mycellar.ProgramConstants.SPACE;
@@ -284,7 +283,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   private boolean askToReplaceBottle(MyCellarObject bouteille, PlacePosition oldPlace) throws MyCellarException {
     if (!bouteille.equals(myCellarObject)) {
       Debug("ERROR: Not an empty place, Replace?");
-      String erreur_txt1 = MessageFormat.format(getError(ERROR_ALREADYINSTORAGE), bouteille.getNom(), bouteille.getAnnee());
+      String erreur_txt1 = getError(ERROR_ALREADYINSTORAGE, bouteille.getNom(), bouteille.getAnnee());
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + "\n" + getError(ERROR_QUESTIONREPLACEIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
         panelPlace.clearLabelEnd();

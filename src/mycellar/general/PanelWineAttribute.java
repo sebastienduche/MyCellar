@@ -22,7 +22,6 @@ import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.text.NumberFormat;
 
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
@@ -47,8 +46,8 @@ import static mycellar.general.ResourceKey.MYCELLARMANAGEBOTTLES_STATUS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 12/03/25
+ * @version 1.5
+ * @since 14/03/25
  */
 public final class PanelWineAttribute extends JPanel {
   @Serial
@@ -297,7 +296,7 @@ public final class PanelWineAttribute extends JPanel {
 
   public void setStillNbItems(int count) {
     nbItems.setValue(count);
-    labelStillToAdd.setText(MessageFormat.format(getLabelWithProperty(ADDVIN_STILLNTOADD, new LabelProperty(count > 1)), count));
+    labelStillToAdd.setText(getLabelWithProperty(ADDVIN_STILLNTOADD, new LabelProperty(count > 1), count));
   }
 
   public void seNbItemsEnabled(boolean b) {

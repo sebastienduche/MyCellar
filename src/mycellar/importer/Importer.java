@@ -60,7 +60,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -311,7 +310,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       } else if (cell.getCellType() == CellType.STRING) {
         valueList.add(cell.getStringCellValue());
       } else {
-        throw new UnsupportedOperationException(MessageFormat.format(getError(IMPORTER_UNKNOWNCELLTYPE), cell.getCellType()));
+        throw new UnsupportedOperationException(getError(IMPORTER_UNKNOWNCELLTYPE, cell.getCellType()));
       }
     }
     return valueList;
@@ -409,7 +408,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (!f.exists()) {
         resetLabelProgress();
         Debug("ERROR: File not found: " + filename);
-        Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR_FILENOTFOUND), filename), getError(ERROR_CHECKFILEPATH));
+        Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, filename), getError(ERROR_CHECKFILEPATH));
         importe.setEnabled(true);
         return;
       }

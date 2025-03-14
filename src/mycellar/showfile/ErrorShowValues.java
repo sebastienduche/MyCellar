@@ -17,7 +17,6 @@ import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.SimplePlace;
 
 import javax.swing.JOptionPane;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -270,7 +269,7 @@ public class ErrorShowValues extends TableShowValues {
             }
             if (searchObject != null) {
               status[row] = Boolean.FALSE;
-              Erreur.showSimpleErreur(MessageFormat.format(getError(ERROR_ALREADYINSTORAGE), convertStringFromHTMLString(searchObject.getNom()), b.getAnnee()));
+              Erreur.showSimpleErreur(getError(ERROR_ALREADYINSTORAGE, convertStringFromHTMLString(searchObject.getNom()), b.getAnnee()));
             } else {
               if (column.equals(Column.PLACE)) {
                 b.setEmplacement(empl);

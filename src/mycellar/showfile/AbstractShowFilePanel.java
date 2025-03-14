@@ -60,7 +60,6 @@ import javax.swing.table.TableRowSorter;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -557,7 +556,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       public boolean execute(MyCellarObject myCellarObject, int row, int column) {
         if (Program.isNotExistingMyCellarObject(myCellarObject)) {
           Debug("Object " + myCellarObject.getNom() + " [" + myCellarObject.getId() + "] doesn't exist");
-          Erreur.showSimpleErreur(MessageFormat.format(getErrorWithProperty(SHOWFILE_INEXISTINGBOTTLE, LabelProperty.THE_SINGLE), myCellarObject.getNom()));
+          Erreur.showSimpleErreur(getErrorWithProperty(SHOWFILE_INEXISTINGBOTTLE, LabelProperty.THE_SINGLE, myCellarObject.getNom()));
           return false;
         }
         ProgramPanels.showBottle(myCellarObject, true);
@@ -663,7 +662,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
           erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
           erreur_txt2 = getError(ERROR_CONFIRM1DELETE);
         } else {
-          erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL), toDeleteList.size());
+          erreur_txt1 = getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL, toDeleteList.size());
           erreur_txt2 = getError(ERROR_CONFIRMNDELETE);
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -719,7 +718,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
         erreur_txt2 = getLabel(SHOWFILE_RESTOREONE);
       } else {
-        erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL), toRestoreList.size());
+        erreur_txt1 = getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL, toRestoreList.size());
         erreur_txt2 = getLabel(SHOWFILE_RESTORESEVERAL);
       }
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -1107,7 +1106,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       for (MyCellarObject bottle : selectedObjects) {
         if (Program.isNotExistingMyCellarObject(bottle)) {
           Debug("Object " + bottle.getNom() + " [" + bottle.getId() + "] doesn't exist");
-          Erreur.showSimpleErreur(MessageFormat.format(getErrorWithProperty(SHOWFILE_INEXISTINGBOTTLE, LabelProperty.THE_SINGLE), bottle.getNom()));
+          Erreur.showSimpleErreur(getErrorWithProperty(SHOWFILE_INEXISTINGBOTTLE, LabelProperty.THE_SINGLE, bottle.getNom()));
         } else {
           existingObjects.add(bottle);
         }

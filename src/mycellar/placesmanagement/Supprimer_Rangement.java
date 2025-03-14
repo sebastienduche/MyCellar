@@ -36,7 +36,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -86,8 +85,8 @@ import static mycellar.general.ResourceKey.VISUAL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.9
- * @since 13/03/25
+ * @version 11.0
+ * @since 14/03/25
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -190,7 +189,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         if (nb_case_use_total == 1) {
           label_final.setText(getLabelWithProperty(DELETEPLACE_STILL1ITEM, LabelProperty.SINGLE));
         } else {
-          label_final.setText(MessageFormat.format(getLabelWithProperty(DELETEPLACE_STILLNITEMS, LabelProperty.PLURAL), nb_case_use_total));
+          label_final.setText(getLabelWithProperty(DELETEPLACE_STILLNITEMS, LabelProperty.PLURAL, nb_case_use_total));
         }
       }
       table.updateUI();
@@ -217,16 +216,16 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       if (nb_case_use_total == 0) {
         String name = abstractPlace.getName();
         Debug("MESSAGE: Delete this place: " + name + "?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(getError(ERROR_QUESTIONDELETESTORAGE), name), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, getError(ERROR_QUESTIONDELETESTORAGE, name), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           removeSelectedPlace(abstractPlace, num_select);
         }
       } else {
         String nom = abstractPlace.getName();
         String error;
         if (nb_case_use_total == 1) {
-          error = MessageFormat.format(getLabelWithProperty(DELETEPLACE_STILL1ITEMIN, LabelProperty.SINGLE), nom);
+          error = getLabelWithProperty(DELETEPLACE_STILL1ITEMIN, LabelProperty.SINGLE, nom);
         } else {
-          error = MessageFormat.format(getLabelWithProperty(DELETEPLACE_STILLNITEMSIN, LabelProperty.PLURAL), nb_case_use_total, nom);
+          error = getLabelWithProperty(DELETEPLACE_STILLNITEMSIN, LabelProperty.PLURAL, nb_case_use_total, nom);
         }
         // Delete place and objects in the place
         String errorPart2 = getError(ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS, LabelProperty.THE_PLURAL);
@@ -417,14 +416,11 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
 
     String getNbLineLabel() {
-      if (nbLine <= 1) {
-        return MessageFormat.format(getLabel(STORAGE_NBLINE), nbLine);
-      }
-      return MessageFormat.format(getLabel(STORAGE_NBLINES), nbLine);
+      return getLabel(nbLine > 1 ? STORAGE_NBLINES : STORAGE_NBLINE, nbLine);
     }
 
     String getNbWineLabel() {
-      return MessageFormat.format(getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(nbWine > 1)), nbWine);
+      return getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(nbWine > 1), nbWine);
     }
   }
 

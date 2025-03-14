@@ -54,8 +54,8 @@ public class MyCellarLabelManagement {
       };
     } else {
       return switch (type) {
-        case LABEL -> MessageFormat.format(getLabelWithProperty(key, labelProperty), labelValue).strip();
-        case ERROR -> MessageFormat.format(getErrorWithProperty(key, labelProperty), labelValue).strip();
+        case LABEL -> getLabelWithProperty(key, labelProperty, labelValue).strip();
+        case ERROR -> getErrorWithProperty(key, labelProperty, labelValue).strip();
         case NONE -> key.getKey();
       };
     }
@@ -84,6 +84,10 @@ public class MyCellarLabelManagement {
     return label;
   }
 
+  public static String getLabelWithProperty(IResource key, LabelProperty labelProperty, Object... parameters) {
+    return MessageFormat.format(getLabelWithProperty(key, labelProperty), parameters);
+  }
+
   public static String getLabelFromCode(String id, boolean displayError) {
     try {
       return LanguageFileLoader.getLabel(id);
@@ -103,6 +107,10 @@ public class MyCellarLabelManagement {
     }
     String label = getError((ResourceErrorKey) key);
     return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
+  }
+
+  public static String getErrorWithProperty(IResource key, LabelProperty labelProperty, Object... parameters) {
+    return MessageFormat.format(getErrorWithProperty(key, labelProperty), parameters);
   }
 
   public static String getError(ResourceErrorKey id, Object... parameters) {
@@ -126,8 +134,8 @@ public class MyCellarLabelManagement {
       };
     } else {
       return switch (type) {
-        case LABEL -> MessageFormat.format(getLabelWithProperty(resource, labelProperty), labelValue).strip();
-        case ERROR -> MessageFormat.format(getErrorWithProperty(resource, labelProperty), labelValue).strip();
+        case LABEL -> getLabelWithProperty(resource, labelProperty, labelValue).strip();
+        case ERROR -> getErrorWithProperty(resource, labelProperty, labelValue).strip();
         case NONE -> resource.getKey();
       };
     }

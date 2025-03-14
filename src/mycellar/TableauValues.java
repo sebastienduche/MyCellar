@@ -5,7 +5,6 @@ import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 
 import javax.swing.table.AbstractTableModel;
-import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,8 +25,8 @@ import static mycellar.general.ResourceKey.STORAGE_NUMBEROF;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 08/03/25
+ * @version 2.4
+ * @since 14/03/25
  */
 class TableauValues extends AbstractTableModel {
   public static final int STATE = 0;
@@ -65,10 +64,7 @@ class TableauValues extends AbstractTableModel {
         for (int k = 0; k < rangement.getPartCount(); k++) {
           nombre_ligne += ((ComplexPlace) rangement).getLineCountAt(k);
         }
-        if (nombre_ligne <= 1) {
-          return MessageFormat.format(getLabel(STORAGE_NBLINE), nombre_ligne);
-        }
-        return MessageFormat.format(getLabel(STORAGE_NBLINES), nombre_ligne);
+        return getLabel(nombre_ligne > 1 ? STORAGE_NBLINES : STORAGE_NBLINE, nombre_ligne);
       case 3:
         int nombre_vin = 0;
         if (rangement.isSimplePlace()) {
@@ -78,7 +74,7 @@ class TableauValues extends AbstractTableModel {
             nombre_vin += rangement.getCountCellUsed(k);
           }
         }
-        return MessageFormat.format(getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(nombre_vin > 1)), nombre_vin);
+        return getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(nombre_vin > 1), nombre_vin);
     }
     return "";
   }

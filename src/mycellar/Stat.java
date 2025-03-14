@@ -35,14 +35,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -194,7 +192,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
   private void updateCountLabel() {
     int nbItems = Program.getNbItems();
-    end.setText(MessageFormat.format(getLabelWithProperty(STATS_TOTALITEMS, new LabelProperty(nbItems > 1)), nbItems));
+    end.setText(getLabelWithProperty(STATS_TOTALITEMS, new LabelProperty(nbItems > 1), nbItems));
   }
 
   private void chartItemStateChanged(ItemEvent itemEvent) {
@@ -334,7 +332,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       final int priceCount = price.getCount();
       if (all_bracket || priceCount > 0) {
         panel.add(new MyCellarSimpleLabel(price.getName()));
-        panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(priceCount > 1)), priceCount)), "span 2, align right, wrap");
+        panel.add(new MyCellarSimpleLabel(getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(priceCount > 1), priceCount)), "span 2, align right, wrap");
       }
     }
     panel.updateUI();
@@ -366,12 +364,12 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     for (StatData data : listYear) {
       panel.add(new MyCellarSimpleLabel(data.getName()));
       final int dataCount = data.getCount();
-      panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(dataCount > 1)), dataCount)), "span 2, align right, wrap");
+      panel.add(new MyCellarSimpleLabel(getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(dataCount > 1), dataCount)), "span 2, align right, wrap");
     }
     panel.updateUI();
     panelChart.setVisible(true);
     panelChart.setDataPieChart(listYear, getLabel(STATS_YEARS));
-    end.setText(MessageFormat.format(getLabelWithProperty(STATS_ITEMS, LabelProperty.PLURAL), Program.getNbItems()));
+    end.setText(getLabelWithProperty(STATS_ITEMS, LabelProperty.PLURAL, Program.getNbItems()));
   }
 
   private void displayHistory() {
@@ -407,7 +405,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     options.setEnabled(false);
     moy.setText("");
 
-    panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabelWithProperty(STATS_ITEMS, LabelProperty.PLURAL), "")));
+    panel.add(new MyCellarSimpleLabel(getLabelWithProperty(STATS_ITEMS, LabelProperty.PLURAL, "")));
     panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getNbItems())), "span 2, align right, wrap");
     panel.add(new MyCellarSimpleLabel(getLabelWithProperty(STATS_UNIQUEITEMS, LabelProperty.PLURAL)));
     panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getStorage().getDistinctNames().size())), "span 2, align right, gapbottom 10px, wrap");
@@ -491,7 +489,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       panel.add(new MyCellarSimpleLabel(abstractPlace.getName()));
       displayPlace(abstractPlace);
     }
-    end.setText(MessageFormat.format(getLabelWithProperty(STATS_ITEMS, LabelProperty.PLURAL), nbItems));
+    end.setText(getLabelWithProperty(STATS_ITEMS, LabelProperty.PLURAL, nbItems));
   }
 
   private void displayPlace(AbstractPlace abstractPlace) {
@@ -504,7 +502,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       list_num_empl = new MyCellarLabel(STATS_NSHELVES, LabelProperty.SINGLE, Integer.toString(partCount));
     }
     panel.add(list_num_empl);
-    panel.add(new MyCellarSimpleLabel(MessageFormat.format(getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(nbCaseUseAll > 1)), nbCaseUseAll)), "span 2, align right, wrap");
+    panel.add(new MyCellarSimpleLabel(getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(nbCaseUseAll > 1), nbCaseUseAll)), "span 2, align right, wrap");
     if (!abstractPlace.isSimplePlace()) {
       displayNbBottlePlace(abstractPlace);
     }
@@ -525,7 +523,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       displayPlace(abstractPlace);
     }
     moy.setText("");
-    end.setText(MessageFormat.format(getLabelWithProperty(STATS_TOTALITEMS, new LabelProperty(countItems > 1)), countItems));
+    end.setText(getLabelWithProperty(STATS_TOTALITEMS, new LabelProperty(countItems > 1), countItems));
   }
 
   private void displayNbBottlePlace(AbstractPlace abstractPlace) {

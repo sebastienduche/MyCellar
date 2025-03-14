@@ -6,7 +6,6 @@ import mycellar.frame.MainFrame;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.text.MessageFormat;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -93,7 +92,7 @@ class VineyardTableModel extends DefaultTableModel {
           return;
         }
 
-        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getLabel(VINEYARDPANEL_DELAPPELLATIONQUESTION), name), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), getLabel(VINEYARDPANEL_DELAPPELLATIONQUESTION, name), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
           return;
         }
         CountryVignobleController.setModified();

@@ -59,7 +59,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -89,8 +88,8 @@ import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.4
- * @since 12/03/25
+ * @version 6.5
+ * @since 14/03/25
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -560,7 +559,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
     add(new PanelCloseButton() {
       @Override
       public void perform() {
-        String mess = MessageFormat.format(getLabelWithProperty(MAIN_DELETEWINE, LabelProperty.THE_SINGLE), myCellarObject.getNom());
+        String mess = getLabelWithProperty(MAIN_DELETEWINE, LabelProperty.THE_SINGLE, myCellarObject.getNom());
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), mess, MyCellarLabelManagement.getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
           Component parent = MyCellarObjectDraggingLabel.this.getParent();
           if (parent instanceof RangementCell rangementCell) {

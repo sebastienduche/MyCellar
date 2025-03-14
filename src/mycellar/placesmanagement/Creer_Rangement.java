@@ -52,7 +52,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +111,7 @@ import static mycellar.placesmanagement.places.ComplexPlace.copyParts;
  *
  * @author S&eacute;bastien Duch&eacute;
  * @version 18.3
- * @since 16/03/25
+ * @since 14/03/25
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   // TODO Can we manage the modified status correctly?
@@ -391,7 +390,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           erreur_txt2 = getErrorWithProperty(ERROR_CONFIRMCHANGESTORAGE1ITEM, LabelProperty.SINGLE);
         } else {
           Debug("MESSAGE: " + nb_bottle + " objects in this place, Modify?");
-          erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSINSTORAGE, LabelProperty.PLURAL), nb_bottle);
+          erreur_txt1 = getErrorWithProperty(ERROR_NITEMSINSTORAGE, LabelProperty.PLURAL, nb_bottle);
           erreur_txt2 = getErrorWithProperty(ERROR_QUESTIONCHANGESTORAGEITEMS, LabelProperty.PLURAL);
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -530,7 +529,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           Debug("MESSAGE: 1 object in this place, Modify?");
         } else {
           Debug("MESSAGE: " + nbBottles + " objects in this place, Modify?");
-          erreur_txt1 = MessageFormat.format(getErrorWithProperty(ERROR_NITEMSINSTORAGE, LabelProperty.PLURAL), nbBottles);
+          erreur_txt1 = getErrorWithProperty(ERROR_NITEMSINSTORAGE, LabelProperty.PLURAL, nbBottles);
           erreur_txt2 = getErrorWithProperty(ERROR_QUESTIONCHANGESTORAGEITEMS, LabelProperty.PLURAL);
         }
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {

@@ -29,7 +29,6 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.util.LinkedList;
 
 import static mycellar.ProgramConstants.SPACE;
@@ -246,7 +245,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
 
   public void setViewToSeveralItemsMode(int itemCount) {
     if (itemCount > 1) {
-      name.setSelectedItem(MessageFormat.format(getLabelWithProperty(ADDVIN_NBITEMSSELECTED, LabelProperty.PLURAL), itemCount));
+      name.setSelectedItem(getLabelWithProperty(ADDVIN_NBITEMSSELECTED, LabelProperty.PLURAL, itemCount));
       name.setEnabled(false);
       if (Program.isMusicType()) {
         composer.setEnabled(false);

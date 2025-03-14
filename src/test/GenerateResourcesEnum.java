@@ -20,6 +20,7 @@ public class GenerateResourcesEnum {
             }
           }
       );
+      writer.write("EMPTY(\"\")\n");
       writer.write(";\n");
       writer.write("private final String key;\n\n");
       writer.write("ResourceKey(String key) {\n");
@@ -45,6 +46,7 @@ public class GenerateResourcesEnum {
             }
           }
       );
+      writer.write("EMPTY(\"\")\n");
       writer.write(";\n");
       writer.write("private final String key;\n\n");
       writer.write("ResourceErrorKey(String key) {\n");

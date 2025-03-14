@@ -38,12 +38,8 @@ public class MyCellarLabelManagement {
   }
 
   public static void updateText(IMyCellarComponent component, LabelKey labelKey) {
-    component.setText(getLabel(labelKey.getLabelType(), labelKey.getLabelType() == LabelType.NONE ? labelKey.getValue() : labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue()));
-  }
-
-  @Deprecated(since = "version80")
-  public static String getLabelCode(String code) {
-    return getLabel(LabelType.LABEL, code, null, null);
+//    component.setText(getLabel(labelKey.getLabelType(), labelKey.getLabelType() == LabelType.NONE ? labelKey.getValue() : labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue()));
+    component.setText(getLabel(labelKey));
   }
 
   public static String getLabel(LabelType type, IResource key, LabelProperty labelProperty, String labelValue) {
@@ -119,23 +115,30 @@ public class MyCellarLabelManagement {
     return MessageFormat.format(getError(id), parameters);
   }
 
-  @Deprecated(since = "version80")
-  private static String getLabel(LabelType type, String code, LabelProperty labelProperty, String labelValue) {
-    if (type == null || code == null) {
-      return "";
+  private static String getLabel(LabelKey labelKey) {
+//    return getLabel(labelKey.getLabelType(), labelKey.getKey(), labelKey.getLabelProperty(), labelKey.getValue());
+//  }
+//  @Deprecated(since = "version80")
+//  private static String getLabel(LabelType type, String code, LabelProperty labelProperty, String labelValue) {
+    LabelType type = labelKey.getLabelType();
+    LabelProperty labelProperty = labelKey.getLabelProperty();
+    String labelValue = labelKey.getValue();
+    IResource resource = labelKey.getResource();
+    if (type == null || resource == null) {
+      return labelValue == null ? "" : labelValue;
     }
 
     if (labelValue == null) {
       return switch (type) {
-        case LABEL -> getLabelWithProperty(code, labelProperty);
-        case ERROR -> getErrorWithProperty(code, labelProperty);
-        case NONE -> code;
+        case LABEL -> getLabelWithProperty(resource, labelProperty);
+        case ERROR -> getErrorWithProperty(resource, labelProperty);
+        case NONE -> resource.getKey();
       };
     } else {
       return switch (type) {
-        case LABEL -> MessageFormat.format(getLabelWithProperty(code, labelProperty), labelValue).strip();
-        case ERROR -> MessageFormat.format(getErrorWithProperty(code, labelProperty), labelValue).strip();
-        case NONE -> code;
+        case LABEL -> MessageFormat.format(getLabelWithProperty(resource, labelProperty), labelValue).strip();
+        case ERROR -> MessageFormat.format(getErrorWithProperty(resource, labelProperty), labelValue).strip();
+        case NONE -> resource.getKey();
       };
     }
   }

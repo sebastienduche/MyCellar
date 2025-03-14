@@ -50,27 +50,26 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
     this(key, LabelProperty.SINGLE, icon);
   }
 
-
-  public LabelKey getLabelKey() {
+  LabelKey getLabelKey() {
     return labelKey;
   }
 
   @Override
   public void setText(String text) {
-    putValue(Action.NAME, withText ? text : "");
-    putValue(Action.SHORT_DESCRIPTION, getLabel(LabelType.LABEL, descriptionResource, descriptionLabelProperty, null));
+    putValue(NAME, withText ? text : "");
+    putValue(SHORT_DESCRIPTION, getLabel(LabelType.LABEL, descriptionResource, descriptionLabelProperty, null));
   }
 
-  public void setDescriptionLabel(ResourceKey key) {
+  protected void setDescriptionLabel(ResourceKey key) {
     setDescriptionLabel(key, null);
   }
 
-  public void setDescriptionLabel(ResourceKey key, LabelProperty labelProperty) {
+  protected void setDescriptionLabel(ResourceKey key, LabelProperty labelProperty) {
     descriptionResource = key;
     descriptionLabelProperty = labelProperty;
   }
 
-  public void setWithText(boolean withText) {
+  protected void setWithText(boolean withText) {
     this.withText = withText;
     if (!withText) {
       setText("");

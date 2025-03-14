@@ -9,6 +9,7 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 
 import static mycellar.ProgramConstants.FONT_PANEL;
+import static mycellar.general.ResourceKey.SHOWFILE_MORE;
 
 
 /**
@@ -18,8 +19,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 05/05/22
+ * @version 1.0
+ * @since 14/03/25
  */
 public class ButtonCellRenderer extends JButton implements TableCellRenderer {
 
@@ -29,7 +30,7 @@ public class ButtonCellRenderer extends JButton implements TableCellRenderer {
 
   public ButtonCellRenderer() {
     super();
-    label = MyCellarLabelManagement.getLabelCode("ShowFile.More");
+    label = MyCellarLabelManagement.getLabel(SHOWFILE_MORE);
   }
 
   public ButtonCellRenderer(String label) {

@@ -23,20 +23,20 @@ public class LabelKey {
 
   public LabelKey(IResource resource) {
     labelType = LabelType.LABEL;
-    this.key = resource.getKey();
+    key = resource.getKey();
     this.resource = resource;
   }
 
   public LabelKey(LabelType labelType, IResource resource) {
     this.labelType = labelType;
-    this.key = resource.getKey();
+    key = resource.getKey();
     this.resource = resource;
   }
 
   public LabelKey(IResource resource, LabelProperty labelProperty) {
     labelType = LabelType.LABEL;
     this.labelProperty = labelProperty;
-    this.key = resource.getKey();
+    key = resource.getKey();
     this.resource = resource;
   }
 
@@ -44,19 +44,19 @@ public class LabelKey {
     labelType = LabelType.LABEL;
     this.labelProperty = labelProperty;
     this.value = value;
-    this.key = resource.getKey();
+    key = resource.getKey();
     this.resource = resource;
   }
 
   // Specific case when the key is a value and not a resource
   public LabelKey(String value) {
-    this.labelType = LabelType.NONE;
+    labelType = LabelType.NONE;
     this.value = value;
     key = null;
     resource = null;
   }
 
-  public LabelType getLabelType() {
+  LabelType getLabelType() {
     return labelType;
   }
 

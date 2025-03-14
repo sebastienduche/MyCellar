@@ -17,8 +17,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 13/03/25
+ * @version 1.1
+ * @since 14/03/25
  */
 public final class MyCellarRadioButton extends JRadioButton implements IMyCellarComponent {
 
@@ -35,7 +35,7 @@ public final class MyCellarRadioButton extends JRadioButton implements IMyCellar
   public MyCellarRadioButton(IResource key, boolean selected) {
     super("", selected);
     LabelType labelType = LabelType.LABEL;
-    labelKey = new LabelKey(labelType, key.getKey());
+    labelKey = new LabelKey(labelType, key);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

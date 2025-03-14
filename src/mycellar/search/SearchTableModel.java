@@ -13,7 +13,13 @@ import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.BOUTEILLE_TEMPORARYPLACE;
+import static mycellar.general.ResourceKey.MAIN_ITEM;
+import static mycellar.general.ResourceKey.MAIN_STORAGE;
+import static mycellar.general.ResourceKey.MAIN_YEAR;
 import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_LINE;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -22,8 +28,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 25/05/22
+ * @version 3.8
+ * @since 14/03/25
  */
 class SearchTableModel extends AbstractTableModel {
 
@@ -32,8 +38,11 @@ class SearchTableModel extends AbstractTableModel {
   static final int ETAT = 0;
   static final int SHOW = 7;
   private final List<String> columnNames = List.of("",
-      getLabelWithProperty("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.Storage"),
-      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel(MYCELLARFIELDS_COLUMN), "");
+      getLabelWithProperty(MAIN_ITEM, LabelProperty.SINGLE.withCapital()),
+      getLabel(MAIN_YEAR),
+      getLabel(MAIN_STORAGE),
+      getLabel(MYCELLARFIELDS_NUMPLACE),
+      getLabel(MYCELLARFIELDS_LINE), getLabel(MYCELLARFIELDS_COLUMN), "");
 
   private final List<Boolean> listBoolean = new ArrayList<>();
   private final List<MyCellarObject> datas = new ArrayList<>();
@@ -62,29 +71,22 @@ class SearchTableModel extends AbstractTableModel {
       return "";
     }
     final MyCellarObject myCellarObject = datas.get(row);
-    switch (column) {
-      case ETAT:
-        return listBoolean.get(row);
-      case 1:
-        return MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom());
-      case 2:
-        return myCellarObject.getAnnee();
-      case 3:
+    return switch (column) {
+      case ETAT -> listBoolean.get(row);
+      case 1 -> MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom());
+      case 2 -> myCellarObject.getAnnee();
+      case 3 -> {
         if (myCellarObject.isInTemporaryStock()) {
-          return getLabel("Bouteille.TemporaryPlace");
+          yield getLabel(BOUTEILLE_TEMPORARYPLACE);
         }
-        return myCellarObject.getEmplacement();
-      case 4:
-        return Integer.toString(myCellarObject.getNumLieu());
-      case 5:
-        return Integer.toString(myCellarObject.getLigne());
-      case 6:
-        return Integer.toString(myCellarObject.getColonne());
-      case SHOW:
-        return Boolean.FALSE;
-      default:
-        return "";
-    }
+        yield myCellarObject.getEmplacement();
+      }
+      case 4 -> Integer.toString(myCellarObject.getNumLieu());
+      case 5 -> Integer.toString(myCellarObject.getLigne());
+      case 6 -> Integer.toString(myCellarObject.getColonne());
+      case SHOW -> Boolean.FALSE;
+      default -> "";
+    };
   }
 
   @Override

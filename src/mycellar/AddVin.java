@@ -43,14 +43,29 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
-import static mycellar.general.ResourceErrorKey.*;
 import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTENOUGHSPACESTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONADDNITEMIN;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONADDNITEMSNEXT;
 import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONREPLACEIT;
-import static mycellar.general.ResourceKey.*;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTANOTHERSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTSIMPLESTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_STORAGEFULL;
+import static mycellar.general.ResourceErrorKey.ERROR_UNABLETOMOVENITEMSIN;
+import static mycellar.general.ResourceKey.ADDVIN_1ITEMADDED;
+import static mycellar.general.ResourceKey.ADDVIN_1ITEMMODIFIED;
+import static mycellar.general.ResourceKey.ADDVIN_ADDINGINPROGRESS;
+import static mycellar.general.ResourceKey.ADDVIN_ENTERCHANGES;
+import static mycellar.general.ResourceKey.ADDVIN_MODIFYINPROGRESS;
+import static mycellar.general.ResourceKey.ADDVIN_MOVEERROR;
+import static mycellar.general.ResourceKey.ADDVIN_NITEMADDED;
+import static mycellar.general.ResourceKey.ADDVIN_NITEMMODIFIED;
+import static mycellar.general.ResourceKey.ADDVIN_NOTSAVED;
 import static mycellar.general.ResourceKey.MAIN_ADD;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_CANCEL;
+import static mycellar.general.ResourceKey.MAIN_MODIFY;
+import static mycellar.general.ResourceKey.MAIN_TABADD;
 
 
 /**
@@ -186,7 +201,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       panelGeneral.setViewToSeveralItemsMode(listBottleInModification.size());
       panelWineAttribute.seNbItemsEnabled(false);
       addButton.setEnabled(true);
-      end.setText(getLabelWithProperty("AddVin.MoveError", LabelProperty.PLURAL));
+      end.setText(getLabelWithProperty(ADDVIN_MOVEERROR, LabelProperty.PLURAL));
     } else {
       setBottle(listBottleInModification.getFirst());
     }
@@ -269,7 +284,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           if (nb_free_space > countStillToAdd) {
             nb_free_space = countStillToAdd;
           }
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getErrorWithProperty("Error.questionAddNItemsNext", PLURAL), nb_free_space), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), MessageFormat.format(getErrorWithProperty(ERROR_QUESTIONADDNITEMSNEXT, PLURAL), nb_free_space), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
             Debug("Putting multiple bottle in chosen place");
             result.setNbItemsAdded(nb_free_space);
             countStillToAdd -= nb_free_space + 1;

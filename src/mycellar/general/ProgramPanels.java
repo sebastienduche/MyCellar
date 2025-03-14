@@ -86,8 +86,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 26/12/23
+ * @version 2.1
+ * @since 14/03/25
  */
 public class ProgramPanels {
 
@@ -481,24 +481,7 @@ public class ProgramPanels {
     }.execute();
   }
 
-  @Deprecated(since = "version90")
-  public static void selectOrAddTab(Component component, String labelId, Icon icon) {
-    new MyCellarSwingWorker() {
-      @Override
-      protected void done() {
-        try {
-          TABBED_PANE.setSelectedComponent(component);
-          if (component instanceof IPanelModifyable iPanelModifyable) {
-            iPanelModifyable.setPaneIndex(TABBED_PANE.getSelectedIndex());
-          }
-        } catch (IllegalArgumentException e) {
-          addTab(getLabelWithProperty(labelId, LabelProperty.SINGLE), icon, component);
-        }
-      }
-    }.execute();
-  }
-
-  public static void selectOrAddTab(Component component, ResourceKey key, Icon icon) {
+  public static void selectOrAddTab(Component component, IResource key, Icon icon) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {

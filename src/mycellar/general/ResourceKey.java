@@ -464,7 +464,7 @@ public enum ResourceKey implements IResource {
   PREDICATES_GREATER("Predicates.Greater"),
   START_VALUE("Start.Value"),
   EXPORT_CSV("Export.Csv"),
-  ;
+  EMPTY("");
   private final String key;
 
   ResourceKey(String key) {

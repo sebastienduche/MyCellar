@@ -22,7 +22,6 @@ import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.text.LabelKey;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
@@ -84,7 +83,6 @@ import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR017;
 import static mycellar.general.ResourceErrorKey.ERROR018;
-import static mycellar.general.ResourceErrorKey.ERROR024;
 import static mycellar.general.ResourceErrorKey.ERROR025;
 import static mycellar.general.ResourceErrorKey.ERROR026;
 import static mycellar.general.ResourceErrorKey.ERROR042;
@@ -144,8 +142,8 @@ import static mycellar.general.ResourceKey.OUVRIR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.5
- * @since 12/03/25
+ * @version 16.6
+ * @since 14/03/25
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -494,7 +492,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         List<AbstractPlace> simplePlaces = Program.getSimplePlaces();
         for (i = 0; i < simplePlaces.size(); i++) {
           AbstractPlace cave = simplePlaces.get(i);
-          myOptionKeys.add(new MyOptionKey(new LabelKey(LabelType.NONE, cave.getName()), MyOptionObjectType.MY_CELLAR_RADIO_BUTTON, MyCellarSettings.RANGEMENT_DEFAULT, "false"));
+          myOptionKeys.add(new MyOptionKey(new LabelKey(cave.getName()), MyOptionObjectType.MY_CELLAR_RADIO_BUTTON, MyCellarSettings.RANGEMENT_DEFAULT, "false"));
         }
         myOptionKeys.add(new MyOptionKey(MAIN_NEWVALUE, "true", MyCellarSettings.RANGEMENT_DEFAULT, MyOptionObjectType.MY_CELLAR_RADIO_BUTTON));
         myOptionKeys.add(new MyOptionKey(IMPORT_DEFAULTSTORAGENAME, "", MyCellarSettings.RANGEMENT_NAME, MyOptionObjectType.JTEXT_FIELD));

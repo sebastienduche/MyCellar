@@ -1,51 +1,72 @@
 package mycellar.core.text;
 
+import mycellar.general.IResource;
+
+/**
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2016
+ * Soci&eacute;t&eacute; : Seb Informatique
+ *
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.6
+ * @since 14/03/25
+ */
 public class LabelKey {
 
   private final LabelType labelType;
+  @Deprecated(since = "version80")
   private final String key;
   private LabelProperty labelProperty;
   private String value;
+  private final IResource resource;
 
-  /**
-   * Titre : Cave &agrave; vin
-   * Description : Votre description
-   * Copyright : Copyright (c) 2016
-   * Soci&eacute;t&eacute; : Seb Informatique
-   *
-   * @author S&eacute;bastien Duch&eacute;
-   * @version 0.5
-   * @since 24/05/22
-   */
-  public LabelKey(String key) {
+  public LabelKey(IResource resource) {
     labelType = LabelType.LABEL;
-    this.key = key;
+    this.key = resource.getKey();
+    this.resource = resource;
   }
 
-  public LabelKey(LabelType labelType, String key) {
+  public LabelKey(LabelType labelType, IResource resource) {
     this.labelType = labelType;
-    this.key = key;
+    this.key = resource.getKey();
+    this.resource = resource;
   }
 
-  public LabelKey(String key, LabelProperty labelProperty) {
+  public LabelKey(IResource resource, LabelProperty labelProperty) {
     labelType = LabelType.LABEL;
-    this.key = key;
     this.labelProperty = labelProperty;
+    this.key = resource.getKey();
+    this.resource = resource;
   }
 
-  public LabelKey(String key, LabelProperty labelProperty, String value) {
+  public LabelKey(IResource resource, LabelProperty labelProperty, String value) {
     labelType = LabelType.LABEL;
-    this.key = key;
     this.labelProperty = labelProperty;
     this.value = value;
+    this.key = resource.getKey();
+    this.resource = resource;
+  }
+
+  // Specific case when the key is a value and not a resource
+  public LabelKey(String value) {
+    this.labelType = LabelType.NONE;
+    this.value = value;
+    key = null;
+    resource = null;
   }
 
   public LabelType getLabelType() {
     return labelType;
   }
 
+  @Deprecated(since = "version80")
   public String getKey() {
     return key;
+  }
+
+  public IResource getResource() {
+    return resource;
   }
 
   public LabelProperty getLabelProperty() {

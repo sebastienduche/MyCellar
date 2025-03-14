@@ -19,8 +19,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 13/03/25
+ * @version 1.4
+ * @since 14/03/25
  */
 
 public final class MyCellarButton extends JButton implements IMyCellarComponent {
@@ -33,14 +33,14 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
   }
 
   public MyCellarButton(IResource code) {
-    labelKey = new LabelKey(code.getKey());
+    labelKey = new LabelKey(code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
   public MyCellarButton(IResource key, LabelProperty labelProperty) {
-    labelKey = new LabelKey(key.getKey(), labelProperty);
+    labelKey = new LabelKey(key, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -48,7 +48,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
 
   public MyCellarButton(IResource key, Action a) {
     super(a);
-    labelKey = new LabelKey(key.getKey());
+    labelKey = new LabelKey(key);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -56,7 +56,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
 
   public MyCellarButton(IResource key, LabelProperty labelProperty, Action a) {
     super(a);
-    labelKey = new LabelKey(key.getKey(), labelProperty);
+    labelKey = new LabelKey(key, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
@@ -64,7 +64,7 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
 
   public MyCellarButton(IResource key, Icon icon) {
     super(icon);
-    labelKey = new LabelKey(key.getKey());
+    labelKey = new LabelKey(key);
     updateText();
     setFont(FONT_PANEL);
   }

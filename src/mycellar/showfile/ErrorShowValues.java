@@ -9,6 +9,7 @@ import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarObject;
 import mycellar.core.text.LabelProperty;
 import mycellar.frame.MainFrame;
+import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -30,7 +31,18 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUEABOVEZERO;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
+import static mycellar.general.ResourceErrorKey.SHOWFILE_ERRORADDINGBOTTLE;
+import static mycellar.general.ResourceKey.ERRORSHOWVALUES_ERROR;
+import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
+import static mycellar.general.ResourceKey.MAIN_ITEM;
+import static mycellar.general.ResourceKey.MAIN_KO;
+import static mycellar.general.ResourceKey.MAIN_OK;
+import static mycellar.general.ResourceKey.MAIN_STORAGE;
+import static mycellar.general.ResourceKey.MAIN_YEAR;
 import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_LINE;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
+import static mycellar.general.ResourceKey.SHOWFILE_ADDED;
 
 
 /**
@@ -40,8 +52,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.6
- * @since 08/03/25
+ * @version 3.7
+ * @since 14/03/25
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -75,8 +87,16 @@ public class ErrorShowValues extends TableShowValues {
   }
 
   private static final int NBCOL = 11;
-  private final String[] columnNames = {"", getLabel("ErrorShowValues.Error"), getLabelWithProperty("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
-      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel(MYCELLARFIELDS_COLUMN), getLabel("ShowFile.Status"), ""};
+  private final String[] columnNames = new String[]{"",
+      getLabel(ERRORSHOWVALUES_ERROR),
+      getLabelWithProperty(MAIN_ITEM, LabelProperty.SINGLE.withCapital()),
+      getLabel(MAIN_YEAR),
+      getLabel(MAIN_CAPACITYORSUPPORT),
+      getLabel(MAIN_STORAGE),
+      getLabel(MYCELLARFIELDS_NUMPLACE),
+      getLabel(MYCELLARFIELDS_LINE),
+      getLabel(MYCELLARFIELDS_COLUMN),
+      getLabel(ResourceKey.SHOWFILE_STATUS), ""};
 
   private Boolean[] status = null;
   private Boolean[] editable = null;
@@ -115,9 +135,9 @@ public class ErrorShowValues extends TableShowValues {
       case COLUMN -> Integer.toString(b.getColonne());
       case STATUS -> {
         if (error.isStatus()) {
-          yield getLabel("ShowFile.Added");
+          yield getLabel(SHOWFILE_ADDED);
         }
-        yield status[row] ? getLabel("Main.OK") : getLabel("Main.KO");
+        yield status[row] ? getLabel(MAIN_OK) : getLabel(MAIN_KO);
       }
       case BUTTON -> true;
       case ERROR -> convertStringFromHTMLString(error.getErrorMessage());
@@ -162,11 +182,11 @@ public class ErrorShowValues extends TableShowValues {
             fireTableRowsUpdated(row, row);
           } else {
             status[row] = Boolean.FALSE;
-            Erreur.showSimpleErreur(getErrorWithProperty("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
+            Erreur.showSimpleErreur(getErrorWithProperty(SHOWFILE_ERRORADDINGBOTTLE, LabelProperty.THE_SINGLE));
           }
         } else {
           status[row] = Boolean.FALSE;
-          Erreur.showSimpleErreur(getErrorWithProperty("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
+          Erreur.showSimpleErreur(getErrorWithProperty(SHOWFILE_ERRORADDINGBOTTLE, LabelProperty.THE_SINGLE));
         }
         break;
       case NAME:

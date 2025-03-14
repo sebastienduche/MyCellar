@@ -10,6 +10,8 @@ import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.text.LabelProperty;
+import mycellar.general.IResource;
+import mycellar.general.ResourceKey;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,7 +19,33 @@ import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.general.ResourceKey.ADDVIN_COLOR;
+import static mycellar.general.ResourceKey.MAIN_ALBUM;
+import static mycellar.general.ResourceKey.MAIN_APPELLATIONAOC;
+import static mycellar.general.ResourceKey.MAIN_APPELLATIONIGP;
+import static mycellar.general.ResourceKey.MAIN_ARTIST;
+import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
+import static mycellar.general.ResourceKey.MAIN_COMMENT;
+import static mycellar.general.ResourceKey.MAIN_COMPOSER;
+import static mycellar.general.ResourceKey.MAIN_COUNTRY;
+import static mycellar.general.ResourceKey.MAIN_DISKCOUNT;
+import static mycellar.general.ResourceKey.MAIN_DISKNUMBER;
+import static mycellar.general.ResourceKey.MAIN_DURATION;
+import static mycellar.general.ResourceKey.MAIN_EXTERNALID;
+import static mycellar.general.ResourceKey.MAIN_FILE;
+import static mycellar.general.ResourceKey.MAIN_ITEM;
+import static mycellar.general.ResourceKey.MAIN_MATURITY;
+import static mycellar.general.ResourceKey.MAIN_PRICE;
+import static mycellar.general.ResourceKey.MAIN_RATING;
+import static mycellar.general.ResourceKey.MAIN_STATUS;
+import static mycellar.general.ResourceKey.MAIN_STORAGE;
+import static mycellar.general.ResourceKey.MAIN_SUPPORT;
+import static mycellar.general.ResourceKey.MAIN_USELESS;
+import static mycellar.general.ResourceKey.MAIN_VINEYARD;
+import static mycellar.general.ResourceKey.MAIN_YEAR;
 import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_LINE;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -26,43 +54,43 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.9
- * @since 31/12/23
+ * @version 3.0
+ * @since 14/03/25
  */
 
 public enum MyCellarFields {
-  NAME(0, "Main.Item", LabelProperty.SINGLE.withCapital()),
-  YEAR(1, "Main.Year"),
-  TYPE(2, "Main.CapacityOrSupport"),
-  PLACE(3, "Main.Storage"),
-  NUM_PLACE(4, "MyCellarFields.NumPlace"),
-  LINE(5, "MyCellarFields.Line"),
-  COLUMN(6, MYCELLARFIELDS_COLUMN.getKey()),
-  PRICE(7, "Main.Price"),
-  COMMENT(8, "Main.Comment"),
-  MATURITY(9, "Main.Maturity"),
-  PARKER(10, "Main.Rating"),
-  COLOR(11, "AddVin.Color"),
-  COUNTRY(12, "Main.Country"),
-  VINEYARD(13, "Main.Vineyard"),
-  AOC(14, "Main.AppellationAOC"),
-  IGP(15, "Main.AppellationIGP"),
-  STATUS(16, "Main.Status"),
-  STYLE(17, "Main.Style"),
-  COMPOSER(18, "Main.Composer"),
-  ARTIST(19, "Main.Artist"),
-  SUPPORT(20, "Main.Support"),
-  DURATION(21, "Main.Duration"),
-  DISK_NUMBER(22, "Main.DiskNumber"),
-  DISK_COUNT(23, "Main.DiskCount"),
-  RATING(24, "Main.Rating"),
-  FILE(25, "Main.File"),
-  EXTERNAL_ID(26, "Main.ExternalId"),
-  ALBUM(27, "Main.Album"),
+  NAME(0, MAIN_ITEM, LabelProperty.SINGLE.withCapital()),
+  YEAR(1, MAIN_YEAR),
+  TYPE(2, MAIN_CAPACITYORSUPPORT),
+  PLACE(3, MAIN_STORAGE),
+  NUM_PLACE(4, MYCELLARFIELDS_NUMPLACE),
+  LINE(5, MYCELLARFIELDS_LINE),
+  COLUMN(6, MYCELLARFIELDS_COLUMN),
+  PRICE(7, MAIN_PRICE),
+  COMMENT(8, MAIN_COMMENT),
+  MATURITY(9, MAIN_MATURITY),
+  PARKER(10, MAIN_RATING),
+  COLOR(11, ADDVIN_COLOR),
+  COUNTRY(12, MAIN_COUNTRY),
+  VINEYARD(13, MAIN_VINEYARD),
+  AOC(14, MAIN_APPELLATIONAOC),
+  IGP(15, MAIN_APPELLATIONIGP),
+  STATUS(16, MAIN_STATUS),
+  STYLE(17, MAIN_STATUS),
+  COMPOSER(18, MAIN_COMPOSER),
+  ARTIST(19, MAIN_ARTIST),
+  SUPPORT(20, MAIN_SUPPORT),
+  DURATION(21, MAIN_DURATION),
+  DISK_NUMBER(22, MAIN_DISKNUMBER),
+  DISK_COUNT(23, MAIN_DISKCOUNT),
+  RATING(24, MAIN_RATING),
+  FILE(25, MAIN_FILE),
+  EXTERNAL_ID(26, MAIN_EXTERNALID),
+  ALBUM(27, MAIN_ALBUM),
 
   // Pour l'import de donnees
-  EMPTY(28, ""),
-  USELESS(29, "Main.Useless");
+  EMPTY(28, ResourceKey.EMPTY),
+  USELESS(29, MAIN_USELESS);
 
   private static final List<MyCellarFields> FIELDSFORIMPORT_WINE = Arrays.asList(
       NAME, YEAR, TYPE, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, MATURITY, PARKER, COLOR,
@@ -79,16 +107,16 @@ public enum MyCellarFields {
       NAME, YEAR, PLACE, NUM_PLACE, LINE, COLUMN, PRICE, COMMENT, STATUS, ARTIST, COMPOSER, STYLE, SUPPORT, DURATION, EXTERNAL_ID, ALBUM
   );
   private final int index;
-  private final String keyLabel;
+  private final IResource keyLabel;
   private final LabelProperty labelProperty;
 
-  MyCellarFields(int index, String keyLabel) {
+  MyCellarFields(int index, IResource keyLabel) {
     this.index = index;
     this.keyLabel = keyLabel;
     labelProperty = null;
   }
 
-  MyCellarFields(int index, String keyLabel, LabelProperty labelProperty) {
+  MyCellarFields(int index, IResource keyLabel, LabelProperty labelProperty) {
     this.index = index;
     this.keyLabel = keyLabel;
     this.labelProperty = labelProperty;
@@ -272,7 +300,7 @@ public enum MyCellarFields {
 
   @Override
   public String toString() {
-    if (isNullOrEmpty(keyLabel)) {
+    if (isNullOrEmpty(keyLabel.getKey())) {
       return "";
     }
     return getLabelWithProperty(keyLabel, labelProperty);

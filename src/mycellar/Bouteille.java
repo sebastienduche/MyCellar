@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static mycellar.MyCellarUtils.assertObjectType;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
+import static mycellar.core.IMyCellarObject.assertObjectType;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.general.ResourceErrorKey.IMPORT_ERRORVALUE;
 
@@ -46,8 +46,8 @@ import static mycellar.general.ResourceErrorKey.IMPORT_ERRORVALUE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.3
- * @since 14/03/25
+ * @version 8.4
+ * @since 17/03/25
  *
  * <p>Java class for anonymous complex type.
  *

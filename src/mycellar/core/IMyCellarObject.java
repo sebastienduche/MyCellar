@@ -14,8 +14,8 @@ import java.math.BigDecimal;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 30/12/22
+ * @version 0.9
+ * @since 17/03/25
  */
 public interface IMyCellarObject {
   int getId();
@@ -91,4 +91,10 @@ public interface IMyCellarObject {
   void validateValue(MyCellarFields field, String value) throws MyCellarException;
 
   boolean isNonVintage();
+
+  static void assertObjectType(IMyCellarObject myCellarObject, Class<?> aClass) {
+    if (!aClass.isInstance(myCellarObject)) {
+      throw new ClassCastException("Invalid class cast: " + aClass);
+    }
+  }
 }

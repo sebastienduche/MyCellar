@@ -54,8 +54,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 14/03/25
+ * @version 3.1
+ * @since 17/03/25
  */
 
 public enum MyCellarFields {

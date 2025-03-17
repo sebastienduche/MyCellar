@@ -38,12 +38,6 @@ public final class MyCellarUtils {
     return value == null ? defaultValue : value;
   }
 
-  public static void assertObjectType(MyCellarObject myCellarObject, Class<?> aClass) {
-    if (!aClass.isInstance(myCellarObject)) {
-      throw new ClassCastException("Invalid class cast: " + aClass);
-    }
-  }
-
   public static int safeParseInt(String value, int defaultValue) {
     try {
       return Integer.parseInt(value);

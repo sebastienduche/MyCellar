@@ -717,15 +717,18 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   public boolean tabWillClose(TabEvent event) {
     if (modify) {
       if (nom_obj.isModified() || model.isModified()) {
-        String label = getError(ERROR_STORAGEMODIFICATIONINCOMPLETED);
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError(ERROR_CONFIRMQUIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(),
+            getError(ERROR_STORAGEMODIFICATIONINCOMPLETED) + SPACE + getError(ERROR_CONFIRMQUIT),
+            getLabel(MAIN_ASKCONFIRMATION),
+            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           return false;
         }
       }
     } else {
       if (!toCleanString(nom_obj.getText()).isEmpty()) {
-        String label = getError(ERROR_STORAGECREATIONINCOMPLETED);
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError(ERROR_CONFIRMQUIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(),
+            getError(ERROR_STORAGECREATIONINCOMPLETED) + SPACE + getError(ERROR_CONFIRMQUIT),
+            getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           return false;
         }
       }

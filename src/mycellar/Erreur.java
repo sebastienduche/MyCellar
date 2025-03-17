@@ -24,8 +24,8 @@ import static mycellar.general.ResourceKey.MAIN_DONTSHOWNEXTTIME;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 14/03/25
+ * @version 3.2
+ * @since 17/03/25
  */
 public class Erreur {
 
@@ -36,7 +36,7 @@ public class Erreur {
    * Error message with one label
    */
   public static void showSimpleErreur(String text) {
-    JOptionPane.showMessageDialog(MainFrame.getInstance(), text, getError(ERROR_ERROR), JOptionPane.ERROR_MESSAGE);
+    showSimpleErreur(MainFrame.getInstance(), text);
   }
 
   /**
@@ -57,32 +57,32 @@ public class Erreur {
    * Error message with 2 labels
    */
   public static void showSimpleErreur(String text1, String text2) {
-    new Erreur().initialize(MainFrame.getInstance(), text1, text2, false, null);
+    initialise(MainFrame.getInstance(), text1, text2, false, null);
   }
 
   public static void showSimpleErreur(Component target, String texte1, String texte2) {
-    new Erreur().initialize(target, texte1, texte2, false, null);
+   initialise(target, texte1, texte2, false, null);
   }
 
   /**
    * Information message with 2 labels
    */
   public static void showInformationMessage(String text1, String text2) {
-    new Erreur().initialize(MainFrame.getInstance(), text1, text2, true, null);
+   initialise(MainFrame.getInstance(), text1, text2, true, null);
   }
 
   /**
    * Information message with option to not show this message the next time
    */
   public static void showInformationMessageWithKey(String text1, String text2, String key) {
-    new Erreur().initialize(MainFrame.getInstance(), text1, text2, true, key);
+   initialise(MainFrame.getInstance(), text1, text2, true, key);
   }
 
   public static void showInformationMessageWithKey(String text, String key) {
-    new Erreur().initialize(MainFrame.getInstance(), text, "", true, key);
+   initialise(MainFrame.getInstance(), text, "", true, key);
   }
 
-  private void initialize(Component target, String text1, String text2, boolean information, String keyword) {
+  private static void initialise(Component target, String text1, String text2, boolean information, String keyword) {
     JPanel panel = new JPanel();
     panel.setLayout(new MigLayout("", "grow", "[]"));
     MyCellarSimpleLabel label2 = new MyCellarSimpleLabel(text2);

@@ -155,6 +155,7 @@ final class CSVOptions extends JDialog {
     DOUBLE_DOT(ProgramConstants.DOUBLE_DOT, getLabel(CSV_SEPARATORDOUBLEDOT)),
     SLASH(ProgramConstants.SLASH, getLabel(CSV_SEPARATORSLASH)),
     COLUMNS(COLUMNS_SEPARATOR, getLabel(CSV_SEPARATORDOTCOMMA));
+
     private final String separator;
     private final String label;
 
@@ -163,7 +164,7 @@ final class CSVOptions extends JDialog {
       this.label = label;
     }
 
-    public String getSeparator() {
+    private String getSeparator() {
       return separator;
     }
 
@@ -172,7 +173,7 @@ final class CSVOptions extends JDialog {
       return label;
     }
 
-    public static SeparatorType fromValue(String value) {
+    private static SeparatorType fromValue(String value) {
       return Arrays.stream(values()).filter(separatorType -> separatorType.getSeparator().equals(value))
           .findFirst()
           .orElse(DOUBLE_DOT);

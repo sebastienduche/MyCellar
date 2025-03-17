@@ -283,8 +283,8 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   private boolean askToReplaceBottle(MyCellarObject bouteille, PlacePosition oldPlace) throws MyCellarException {
     if (!bouteille.equals(myCellarObject)) {
       Debug("ERROR: Not an empty place, Replace?");
-      String erreur_txt1 = getError(ERROR_ALREADYINSTORAGE, bouteille.getNom(), bouteille.getAnnee());
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + "\n" + getError(ERROR_QUESTIONREPLACEIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+      String message = getError(ERROR_ALREADYINSTORAGE, bouteille.getNom(), bouteille.getAnnee()) + "\n" + getError(ERROR_QUESTIONREPLACEIT);
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message , getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
         panelPlace.clearLabelEnd();
         end.setText(getLabelWithProperty(ADDVIN_1ITEMADDED, LabelProperty.SINGLE));

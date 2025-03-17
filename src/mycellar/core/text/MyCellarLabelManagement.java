@@ -117,6 +117,9 @@ public class MyCellarLabelManagement {
     return MessageFormat.format(getError(id), parameters);
   }
 
+  public static void updateLabels() {
+    LABEL_LIST.forEach(IMyCellarComponent::updateText);
+  }
 
   private static String getError(ResourceErrorKey key) {
     try {
@@ -125,10 +128,6 @@ public class MyCellarLabelManagement {
       JOptionPane.showMessageDialog(null, "Missing Error '" + key.getKey() + "'", "Error", JOptionPane.ERROR_MESSAGE);
       return key.getKey();
     }
-  }
-
-  public static void updateLabels() {
-    LABEL_LIST.forEach(IMyCellarComponent::updateText);
   }
 
   private static String getLabelForType(LabelProperty labelProperty) {

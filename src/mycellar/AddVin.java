@@ -320,9 +320,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       result.setAdded(true);
     } else { // La case n'est pas vide
       Debug("WARNING: Not an empty place, Replace?");
-      String erreur_txt1 = getError(ERROR_ALREADYINSTORAGE, myCellarObjectFound.getNom(), myCellarObjectFound.getAnnee());
-      String erreur_txt2 = getError(ERROR_QUESTIONREPLACEIT);
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + "\n" + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+      String message = getError(ERROR_ALREADYINSTORAGE, myCellarObjectFound.getNom(), myCellarObjectFound.getAnnee()) + "\n" + getError(ERROR_QUESTIONREPLACEIT);
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         replaceWine(newMyCellarObject, myCellarObjectFound);
         end.setText(isModify ? getLabelWithProperty(ADDVIN_1ITEMMODIFIED, LabelProperty.SINGLE) : getLabelWithProperty(ADDVIN_1ITEMADDED, LabelProperty.SINGLE), true);
         result.setAdded(true);

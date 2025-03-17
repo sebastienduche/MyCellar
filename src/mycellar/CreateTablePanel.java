@@ -15,7 +15,6 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
-import mycellar.general.ResourceErrorKey;
 import mycellar.general.XmlUtils;
 import mycellar.myoptions.MyOptionKey;
 import mycellar.myoptions.MyOptionObjectType;
@@ -40,7 +39,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 

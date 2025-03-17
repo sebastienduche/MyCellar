@@ -85,8 +85,8 @@ import static mycellar.general.ResourceKey.OUVRIR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.8
- * @since 13/03/25
+ * @version 9.9
+ * @since 17/03/25
  */
 public final class CreateTablePanel extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   private final JTextField name = new JTextField();
@@ -99,7 +99,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
   private final char createChar = getLabel(CREER).charAt(0);
   private final char ouvrirChar = getLabel(OUVRIR).charAt(0);
   private final MyCellarCheckBox selectAll = new MyCellarCheckBox(MAIN_SELECTALL);
-  private final MyCellarButton m_jcb_options = new MyCellarButton(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes());
+  private final MyCellarButton m_jcb_options = new MyCellarButton(MAIN_SETTINGS, LabelProperty.SINGLE_FOR_ACTION);
   private final JTable table;
   private boolean updateView;
   private UpdateViewType updateViewType;

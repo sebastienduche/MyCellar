@@ -7,13 +7,14 @@ package mycellar.core.text;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 04/12/20
+ * @version 0.6
+ * @since 17/03/25
  */
 public class LabelProperty {
 
   public static final LabelProperty PLURAL = new LabelProperty(true);
   public static final LabelProperty SINGLE = new LabelProperty(false);
+  public static final LabelProperty SINGLE_FOR_ACTION = new LabelProperty(false).withThreeDashes();
   public static final LabelProperty THE_SINGLE = new LabelProperty(false, false, Grammar.THE);
   public static final LabelProperty OF_THE_SINGLE = new LabelProperty(false, false, Grammar.OF_THE);
   public static final LabelProperty THE_PLURAL = new LabelProperty(true, false, Grammar.THE);

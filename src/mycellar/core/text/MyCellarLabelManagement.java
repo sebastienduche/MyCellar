@@ -25,8 +25,8 @@ import static mycellar.ProgramConstants.THREE_DOTS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 14/03/25
+ * @version 1.3
+ * @since 17/03/25
  */
 
 public class MyCellarLabelManagement {
@@ -38,25 +38,25 @@ public class MyCellarLabelManagement {
   }
 
   public static void updateText(IMyCellarComponent component, LabelKey labelKey) {
-    component.setText(getLabel(labelKey));
+    component.setText(getLabel(labelKey.getLabelType(), labelKey.getResource(), labelKey.getLabelProperty(), labelKey.getValue()));
   }
 
-  public static String getLabel(LabelType type, IResource key, LabelProperty labelProperty, String labelValue) {
-    if (type == null || key == null) {
+  public static String getLabel(LabelType type, IResource resource, LabelProperty labelProperty, String labelValue) {
+    if (type == null || resource == null) {
       return "";
     }
 
     if (labelValue == null) {
       return switch (type) {
-        case LABEL -> getLabelWithProperty(key, labelProperty);
-        case ERROR -> getErrorWithProperty(key, labelProperty);
-        case NONE -> key.getKey();
+        case LABEL -> getLabelWithProperty(resource, labelProperty);
+        case ERROR -> getErrorWithProperty(resource, labelProperty);
+        case NONE -> resource.getKey();
       };
     } else {
       return switch (type) {
-        case LABEL -> getLabelWithProperty(key, labelProperty, labelValue).strip();
-        case ERROR -> getErrorWithProperty(key, labelProperty, labelValue).strip();
-        case NONE -> key.getKey();
+        case LABEL -> getLabelWithProperty(resource, labelProperty, labelValue).strip();
+        case ERROR -> getErrorWithProperty(resource, labelProperty, labelValue).strip();
+        case NONE -> resource.getKey();
       };
     }
   }
@@ -117,29 +117,6 @@ public class MyCellarLabelManagement {
     return MessageFormat.format(getError(id), parameters);
   }
 
-  private static String getLabel(LabelKey labelKey) {
-    LabelType type = labelKey.getLabelType();
-    LabelProperty labelProperty = labelKey.getLabelProperty();
-    String labelValue = labelKey.getValue();
-    IResource resource = labelKey.getResource();
-    if (type == null || resource == null) {
-      return labelValue == null ? "" : labelValue;
-    }
-
-    if (labelValue == null) {
-      return switch (type) {
-        case LABEL -> getLabelWithProperty(resource, labelProperty);
-        case ERROR -> getErrorWithProperty(resource, labelProperty);
-        case NONE -> resource.getKey();
-      };
-    } else {
-      return switch (type) {
-        case LABEL -> getLabelWithProperty(resource, labelProperty, labelValue).strip();
-        case ERROR -> getErrorWithProperty(resource, labelProperty, labelValue).strip();
-        case NONE -> resource.getKey();
-      };
-    }
-  }
 
   private static String getError(ResourceErrorKey key) {
     try {

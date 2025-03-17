@@ -180,8 +180,8 @@ import static mycellar.general.ResourceKey.VISUAL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 12/03/25
+ * @version 0.6
+ * @since 17/03/25
  */
 public final class MainFrame extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -1174,7 +1174,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class AddPlaceAction extends MyCellarAction {
 
     private AddPlaceAction() {
-      super(MAIN_ADD, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PLACE);
+      super(MAIN_ADD, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.PLACE);
       setDescriptionLabel(CREATESTORAGE_TITLE);
     }
 
@@ -1187,7 +1187,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class DeletePlaceAction extends MyCellarAction {
 
     private DeletePlaceAction() {
-      super(MAIN_DELETE, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.DELPLACE);
+      super(MAIN_DELETE, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.DELPLACE);
       setDescriptionLabel(MAIN_DELETESTORAGE);
     }
 
@@ -1200,7 +1200,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class PlaceMoveLineAction extends MyCellarAction {
 
     private PlaceMoveLineAction() {
-      super(MOVELINE_TITLE, LabelProperty.SINGLE.withThreeDashes());
+      super(MOVELINE_TITLE, LabelProperty.SINGLE_FOR_ACTION);
       setDescriptionLabel(MOVELINE_TITLE, LabelProperty.SINGLE);
     }
 
@@ -1213,7 +1213,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class ModifyPlaceAction extends MyCellarAction {
 
     private ModifyPlaceAction() {
-      super(MAIN_MODIFY, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.MODIFYPLACE);
+      super(MAIN_MODIFY, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.MODIFYPLACE);
       setDescriptionLabel(MAIN_MODIFYSTORAGE);
     }
 
@@ -1254,7 +1254,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class ImportFileAction extends MyCellarAction {
 
     private ImportFileAction() {
-      super(IMPORT_TITLE, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.IMPORT);
+      super(IMPORT_TITLE, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.IMPORT);
       setDescriptionLabel(IMPORT_TITLE);
     }
 
@@ -1267,7 +1267,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class ExportFileAction extends MyCellarAction {
 
     private ExportFileAction() {
-      super(MAIN_EXPORT, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.EXPORT);
+      super(MAIN_EXPORT, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.EXPORT);
       setDescriptionLabel(MAIN_FILEEXPORT);
     }
 
@@ -1295,7 +1295,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static class ShowHistoryAction extends MyCellarAction {
 
     private ShowHistoryAction() {
-      super(MAIN_HISTORY, LabelProperty.SINGLE.withThreeDashes());
+      super(MAIN_HISTORY, LabelProperty.SINGLE_FOR_ACTION);
     }
 
     @Override
@@ -1309,7 +1309,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   class VignoblesAction extends MyCellarAction {
 
     private VignoblesAction() {
-      super(MAIN_VINEYARDMANAGEMENT, LabelProperty.SINGLE.withThreeDashes());
+      super(MAIN_VINEYARDMANAGEMENT, LabelProperty.SINGLE_FOR_ACTION);
     }
 
     @Override
@@ -1321,7 +1321,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static class CapacityAction extends MyCellarAction {
 
     private CapacityAction() {
-      super(PARAMETER_CAPACITIESMANAGEMENT, LabelProperty.SINGLE.withThreeDashes());
+      super(PARAMETER_CAPACITIESMANAGEMENT, LabelProperty.SINGLE_FOR_ACTION);
     }
 
     @Override
@@ -1375,7 +1375,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class ParametersAction extends MyCellarAction {
 
     private ParametersAction() {
-      super(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes(), MyCellarImage.PARAMETER);
+      super(MAIN_SETTINGS, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.PARAMETER);
     }
 
     @Override
@@ -1387,7 +1387,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class SetConfigAction extends MyCellarAction {
 
     private SetConfigAction() {
-      super(START_MODIFYPARAMETER, LabelProperty.SINGLE.withThreeDashes());
+      super(START_MODIFYPARAMETER, LabelProperty.SINGLE_FOR_ACTION);
     }
 
     @Override

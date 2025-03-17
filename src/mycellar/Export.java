@@ -96,8 +96,8 @@ import static mycellar.myoptions.MyOptionObjectType.MY_CELLAR_RADIO_BUTTON;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.9
- * @since 14/03/25
+ * @version 12.0
+ * @since 17/03/25
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -115,7 +115,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   private final MyCellarRadioButton MyCellarRadioButtonPDF = new MyCellarRadioButton(EXPORT_PDF, false);
   private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   private final MyCellarButton openit = new MyCellarButton(MAIN_OPENTHEFILE);
-  private final MyCellarButton options = new MyCellarButton(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes(), new SettingsAction());
+  private final MyCellarButton options = new MyCellarButton(MAIN_SETTINGS, LabelProperty.SINGLE_FOR_ACTION, new SettingsAction());
   private final List<? extends MyCellarObject> myCellarObjects;
 
   public Export() {
@@ -425,7 +425,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   class SettingsAction extends MyCellarAction {
 
     private SettingsAction() {
-      super(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes());
+      super(MAIN_SETTINGS, LabelProperty.SINGLE_FOR_ACTION);
     }
 
     @Override
@@ -475,7 +475,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   static class ParametersAction extends MyCellarAction {
 
     private ParametersAction() {
-      super(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes());
+      super(MAIN_SETTINGS, LabelProperty.SINGLE_FOR_ACTION);
     }
 
     @Override

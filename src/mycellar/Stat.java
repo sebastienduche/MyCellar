@@ -110,8 +110,8 @@ import static mycellar.general.ResourceKey.STATS_YEARS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.9
- * @since 14/03/25
+ * @version 11.0
+ * @since 17/03/25
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -126,7 +126,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   private final JScrollPane scroll;
   private final PanelChart panelChart = new PanelChart();
   private final JPanel panelOther = new JPanel();
-  private final MyCellarButton options = new MyCellarButton(MAIN_SETTINGS, LabelProperty.SINGLE.withThreeDashes());
+  private final MyCellarButton options = new MyCellarButton(MAIN_SETTINGS, LabelProperty.SINGLE_FOR_ACTION);
   private final List<StatData> listPrice = new LinkedList<>();
   private final List<StatData> listYear = new LinkedList<>();
   private final List<StatData> listHistory = new LinkedList<>();

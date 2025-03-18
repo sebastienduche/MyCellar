@@ -110,8 +110,8 @@ import static mycellar.general.ResourceKey.STATS_YEARS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.0
- * @since 17/03/25
+ * @version 11.1
+ * @since 18/03/25
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -443,6 +443,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       }
     };
     final JTable table = new JTable(defaultTableModel);
+    table.setAutoCreateRowSorter(true);
     final TableColumnModel columnModel = table.getColumnModel();
     final TableColumn column = columnModel.getColumn(1);
     column.setMinWidth(50);

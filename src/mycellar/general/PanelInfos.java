@@ -75,7 +75,7 @@ public final class PanelInfos extends JPanel {
 
 final class PanelStats extends JPanel {
 
-  private final MyCellarLabel bottles = new MyCellarLabel(MAIN_NUMBEROFITEMS);
+  private final MyCellarLabel bottles = new MyCellarLabel(MAIN_NUMBEROFITEMS, "");
   private final MyCellarLabel cellarValue = new MyCellarLabel(MAIN_GLOBALVALUE);
   private final MyCellarSimpleLabel bottlesNb = new MyCellarSimpleLabel();
   private final MyCellarSimpleLabel cellarTotal = new MyCellarSimpleLabel();

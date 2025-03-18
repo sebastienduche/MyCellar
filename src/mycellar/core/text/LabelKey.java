@@ -23,11 +23,6 @@ public class LabelKey {
     this.resource = resource;
   }
 
-  public LabelKey(LabelType labelType, IResource resource) {
-    this.labelType = labelType;
-    this.resource = resource;
-  }
-
   public LabelKey(IResource resource, String value) {
     labelType = LabelType.LABEL;
     this.value = value;

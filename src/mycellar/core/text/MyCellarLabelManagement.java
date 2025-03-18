@@ -34,27 +34,7 @@ public class MyCellarLabelManagement {
   }
 
   public static void updateText(IMyCellarComponent component, LabelKey labelKey) {
-    component.setText(getLabel(labelKey.getLabelType(), labelKey.getResource(), labelKey.getValue()));
-  }
-
-  private static String getLabel(LabelType type, IResource resource, String labelValue) {
-    if (type == null || resource == null) {
-      return "";
-    }
-
-    if (labelValue == null) {
-      return switch (type) {
-        case LABEL -> getLabel(resource);
-        case ERROR -> getError(resource);
-        case NONE -> resource.getKey();
-      };
-    } else {
-      return switch (type) {
-        case LABEL -> getLabel(resource, labelValue).strip();
-        case ERROR -> getError(resource, labelValue).strip();
-        case NONE -> resource.getKey();
-      };
-    }
+    component.setText(getLabel(labelKey));
   }
 
   public static String getLabel(IResource id) {
@@ -83,6 +63,27 @@ public class MyCellarLabelManagement {
 
   public static void updateLabels() {
     LABEL_LIST.forEach(IMyCellarComponent::updateText);
+  }
+
+  private static String getLabel(LabelKey labelKey) {
+    LabelType type = labelKey.getLabelType();
+    IResource resource = labelKey.getResource();
+    String labelValue = labelKey.getValue();
+    if (type == null || resource == null) {
+      return "";
+    }
+
+    if (labelValue == null) {
+      return switch (type) {
+        case LABEL -> getLabel(resource);
+        case NONE -> resource.getKey();
+      };
+    } else {
+      return switch (type) {
+        case LABEL -> getLabel(resource, labelValue).strip();
+        case NONE -> resource.getKey();
+      };
+    }
   }
 
   private static String getError(IResource key) {

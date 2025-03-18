@@ -2,7 +2,6 @@ package mycellar.core.uicomponents;
 
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
-import mycellar.core.text.LabelType;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.IResource;
 
@@ -34,8 +33,7 @@ public final class MyCellarRadioButton extends JRadioButton implements IMyCellar
 
   public MyCellarRadioButton(IResource key, boolean selected) {
     super("", selected);
-    LabelType labelType = LabelType.LABEL;
-    labelKey = new LabelKey(labelType, key);
+    labelKey = new LabelKey(key);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

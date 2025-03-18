@@ -31,6 +31,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
 
   public MyCellarAction(ResourceKey key) {
     labelKey = new LabelKey(key);
+    resource = key;
     updateText();
     MyCellarLabelManagement.add(this);
   }
@@ -38,6 +39,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   public MyCellarAction(ResourceKey key, Icon icon) {
     super("", icon);
     labelKey = new LabelKey(key);
+    resource = key;
     updateText();
     MyCellarLabelManagement.add(this);
   }

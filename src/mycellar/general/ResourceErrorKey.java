@@ -132,7 +132,7 @@ public enum ResourceErrorKey implements IResource {
   ERROR_FILENAMESHOULDNTBEEMPTY("Error.fileNameShouldntBeEmpty"),
   ERROR_NITEMSINSTORAGE("Error.NItemsInStorage"),
   ERROR_ENTERSHELVENUMBER("Error.enterShelveNumber"),
-  ;
+  EMPTY("");
   private final String key;
 
   ResourceErrorKey(String key) {

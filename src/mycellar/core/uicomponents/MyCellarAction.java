@@ -21,15 +21,14 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 14/03/25
+ * @version 1.0
+ * @since 18/03/25
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
   private final LabelKey labelKey;
 
   private IResource descriptionResource;
-  private LabelProperty descriptionLabelProperty;
 
   private boolean withText = true;
 
@@ -57,16 +56,11 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   @Override
   public void setText(String text) {
     putValue(NAME, withText ? text : "");
-    putValue(SHORT_DESCRIPTION, getLabel(LabelType.LABEL, descriptionResource, descriptionLabelProperty, null));
+    putValue(SHORT_DESCRIPTION, getLabel(LabelType.LABEL, descriptionResource, null, null));
   }
 
   protected void setDescriptionLabel(ResourceKey key) {
-    setDescriptionLabel(key, null);
-  }
-
-  protected void setDescriptionLabel(ResourceKey key, LabelProperty labelProperty) {
     descriptionResource = key;
-    descriptionLabelProperty = labelProperty;
   }
 
   protected void setWithText(boolean withText) {

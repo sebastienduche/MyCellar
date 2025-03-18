@@ -88,7 +88,6 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.UNTITLED;
 import static mycellar.core.MyCellarSettings.DIR;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
-import static mycellar.core.text.LabelProperty.A_SINGLE;
 import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -180,8 +179,8 @@ import static mycellar.general.ResourceKey.VISUAL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 17/03/25
+ * @version 0.7
+ * @since 18/03/25
  */
 public final class MainFrame extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -565,7 +564,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     // differents menus
     menuFile.setText(getLabel(MAIN_FILE));
     menuPlace.setText(getLabel(MAIN_STORAGE));
-    menuWine.setText(getLabelWithProperty(MAIN_ITEM, LabelProperty.SINGLE.withCapital()));
+    menuWine.setText(getLabel(MAIN_ITEM));
     menuTools.setText(getLabel(MAIN_TOOLS));
     menuEdition.setText(getLabel(MAIN_EDIT));
 
@@ -611,7 +610,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     modifyButton.setText(getLabel(MAIN_MODIFYSTORAGE));
     showFileButton.setText(getLabel(MAIN_SHOWFILE));
     tableButton.setText(getLabel(MAIN_CREATETABLE));
-    addButton.setText(getLabelWithProperty(MAIN_TABADD, LabelProperty.SINGLE));
+    addButton.setText(getLabel(MAIN_TABADD));
     searchButton.setText(getLabel(MAIN_TABSEARCHBUTTON));
     deleteButton.setText(getLabel(MAIN_DELETESTORAGE));
     version.setText(getLabel(MONTHVERSION) + INFOS_VERSION + MAIN_VERSION);
@@ -976,7 +975,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
     private CutAction(boolean withText) {
       super(MAIN_CUT, LabelProperty.SINGLE, MyCellarImage.CUT);
-      setDescriptionLabel(MAIN_CUT, LabelProperty.SINGLE);
+      setDescriptionLabel(MAIN_CUT);
       setWithText(withText);
     }
 
@@ -992,7 +991,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
     private CopyAction(boolean withText) {
       super(MAIN_COPY, LabelProperty.SINGLE, MyCellarImage.COPY);
-      setDescriptionLabel(MAIN_COPY, LabelProperty.SINGLE);
+      setDescriptionLabel(MAIN_COPY);
       setWithText(withText);
     }
 
@@ -1008,7 +1007,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
     private PasteAction(boolean withText) {
       super(MAIN_PASTE, LabelProperty.SINGLE, MyCellarImage.PASTE);
-      setDescriptionLabel(MAIN_PASTE, LabelProperty.SINGLE);
+      setDescriptionLabel(MAIN_PASTE);
       setWithText(withText);
     }
 
@@ -1056,7 +1055,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
     private OpenAction(boolean withText) {
       super(MAIN_OPEN, LabelProperty.SINGLE, MyCellarImage.OPEN);
-      setDescriptionLabel(MAIN_OPEN, LabelProperty.SINGLE);
+      setDescriptionLabel(MAIN_OPEN);
       setWithText(withText);
     }
 
@@ -1160,7 +1159,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     private AddWineAction() {
       super(MAIN_TABADD, MyCellarImage.WINE);
       putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(addPlaceChar, InputEvent.CTRL_DOWN_MASK));
-      setDescriptionLabel(MAIN_TABADD, A_SINGLE);
+      setDescriptionLabel(MAIN_TABADD);
     }
 
     @Override
@@ -1201,7 +1200,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
     private PlaceMoveLineAction() {
       super(MOVELINE_TITLE, LabelProperty.SINGLE_FOR_ACTION);
-      setDescriptionLabel(MOVELINE_TITLE, LabelProperty.SINGLE);
+      setDescriptionLabel(MOVELINE_TITLE);
     }
 
     @Override
@@ -1229,7 +1228,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
     private SearchAction() {
       super(MAIN_TABSEARCHBUTTON, MyCellarImage.SEARCH);
-      setDescriptionLabel(MAIN_TABSEARCH, A_SINGLE);
+      setDescriptionLabel(MAIN_TABSEARCH);
     }
 
     @Override

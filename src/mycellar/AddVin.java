@@ -36,7 +36,6 @@ import java.util.Objects;
 
 import static javax.swing.SwingConstants.CENTER;
 import static mycellar.MyCellarUtils.nonNullValueOrDefault;
-import static mycellar.core.text.LabelProperty.A_SINGLE;
 import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
@@ -74,8 +73,8 @@ import static mycellar.general.ResourceKey.MAIN_TABADD;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.8
- * @since 14/03/25
+ * @version 32.9
+ * @since 18/03/25
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -200,7 +199,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       panelGeneral.setViewToSeveralItemsMode(listBottleInModification.size());
       panelWineAttribute.seNbItemsEnabled(false);
       addButton.setEnabled(true);
-      end.setText(getLabelWithProperty(ADDVIN_MOVEERROR, LabelProperty.PLURAL));
+      end.setText(getLabel(ADDVIN_MOVEERROR));
     } else {
       setBottle(listBottleInModification.getFirst());
     }
@@ -323,12 +322,12 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       String message = getError(ERROR_ALREADYINSTORAGE, myCellarObjectFound.getNom(), myCellarObjectFound.getAnnee()) + "\n" + getError(ERROR_QUESTIONREPLACEIT);
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         replaceWine(newMyCellarObject, myCellarObjectFound);
-        end.setText(isModify ? getLabelWithProperty(ADDVIN_1ITEMMODIFIED, LabelProperty.SINGLE) : getLabelWithProperty(ADDVIN_1ITEMADDED, LabelProperty.SINGLE), true);
+        end.setText(isModify ? getLabel(ADDVIN_1ITEMMODIFIED) : getLabel(ADDVIN_1ITEMADDED), true);
         result.setAdded(true);
         result.setRequireReset(true);
         resetValues();
       } else {
-        end.setText(getLabelWithProperty(ADDVIN_NOTSAVED, LabelProperty.THE_SINGLE));
+        end.setText(getLabel(ADDVIN_NOTSAVED));
         enableAll(true);
         result.setHasError(true);
       }
@@ -372,7 +371,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
               Program.getStorage().addHistory(HistoryState.ADD, copy);
               simplePlace.addObject(copy);
             }
-            end.setText(getLabelWithProperty(ADDVIN_NITEMADDED, LabelProperty.PLURAL, countStillToAdd), true);
+            end.setText(getLabel(ADDVIN_NITEMADDED, countStillToAdd), true);
             result.setAdded(true);
             result.setRequireReset(true);
           }
@@ -381,7 +380,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           //Add a single bottle in Caisse
           Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
           simplePlace.addObject(newMyCellarObject);
-          end.setText(getLabelWithProperty(ADDVIN_1ITEMADDED, LabelProperty.SINGLE), true);
+          end.setText(getLabel(ADDVIN_1ITEMADDED), true);
           panelWineAttribute.setStillNbItems(countStillToAdd - 1);
         }
       } else { // One simplePlace
@@ -752,7 +751,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       remove(listVin);
       listVin = null;
       final int selectedIndex = ProgramPanels.getSelectedTabIndex();
-      final String label = getLabelWithProperty(MAIN_TABADD, A_SINGLE);
+      final String label = getLabel(MAIN_TABADD);
       ProgramPanels.setTitleAt(selectedIndex, label);
       ProgramPanels.setPaneModified(selectedIndex, false);
       end.setText("");

@@ -25,7 +25,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
 
   public OpenWorkSheetAction(List<MyCellarObject> list) {
     super(SHOWFILE_WORKSHEET, LabelProperty.SINGLE, MyCellarImage.WORK);
-    setDescriptionLabel(SHOWFILE_WORKSHEET, LabelProperty.SINGLE);
+    setDescriptionLabel(SHOWFILE_WORKSHEET);
     myCellarObjects = list != null ? list : Collections.emptyList();
   }
 
